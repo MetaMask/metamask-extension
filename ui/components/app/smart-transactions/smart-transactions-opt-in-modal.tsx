@@ -26,7 +26,7 @@ import {
   ButtonLinkSize,
   AvatarIcon,
   IconName,
-  IconSize,
+  AvatarIconSize,
 } from '../../component-library';
 import { setSmartTransactionsOptInStatus } from '../../../store/actions';
 import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../shared/constants/smartTransactions';
@@ -109,7 +109,13 @@ export default function SmartTransactionsOptInModal({
     );
   };
 
-  const Benefit = ({ text, iconName }: { text: string; iconName: string }) => {
+  const Benefit = ({
+    text,
+    iconName,
+  }: {
+    text: string;
+    iconName: IconName;
+  }) => {
     return (
       <Box
         display={Display.Flex}
@@ -121,7 +127,7 @@ export default function SmartTransactionsOptInModal({
       >
         <AvatarIcon
           iconName={iconName}
-          size={IconSize.Md}
+          size={AvatarIconSize.Md}
           color={IconColor.primaryDefault}
         />
         <Text
