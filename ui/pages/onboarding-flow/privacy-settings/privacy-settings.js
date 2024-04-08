@@ -10,6 +10,7 @@ import {
   COINGECKO_LINK,
   CRYPTOCOMPARE_LINK,
   PRIVACY_POLICY_LINK,
+  TRANSACTION_SIMULATIONS_LEARN_MORE_LINK,
 } from '../../../../shared/lib/ui-utils';
 import {
   Box,
@@ -272,7 +273,15 @@ export default function PrivacySettings() {
             value={isTransactionSimulationsEnabled}
             setValue={setTransactionSimulationsEnabled}
             title={t('simulationsSettingSubHeader')}
-            description={t('simulationsSettingDescription')}
+            description={t('simulationsSettingDescription', [
+              <a
+                key="learn_more_link"
+                href={TRANSACTION_SIMULATIONS_LEARN_MORE_LINK}
+                rel="noreferrer"
+                target="_blank"
+              >
+                {t('learnMoreUpperCase')}
+              </a>])}
           />
           <Setting
             value={addressBarResolution}
