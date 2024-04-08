@@ -3,9 +3,26 @@ const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
+  getEventPayloads,
 } = require('../../../helpers');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const FixtureBuilder = require('../../../fixture-builder');
+const {
+  MetaMetricsEventName,
+} = require('../../../../../shared/constants/metametrics');
+
+async function mockedNftRemoved(mockServer) {
+  return await mockServer
+    .forPost('https://api.segment.io/v1/batch')
+    .withJsonBodyIncluding({
+      batch: [{ type: 'track', event: MetaMetricsEventName.NFTRemoved }],
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+      };
+    });
+}
 
 describe('Remove NFT', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -41,6 +58,42 @@ describe('Remove NFT', function () {
           text: 'No NFTs yet',
         });
         assert.equal(await noNftInfo.isDisplayed(), true);
+      },
+    );
+  });
+
+  it('user should be able to remove ERC721 NFT on details page and get an event', async function () {
+    async function mockSegment(mockServer) {
+      return [await mockedNftRemoved(mockServer)];
+    }
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder().withNftControllerERC721().build(),
+        ganacheOptions: defaultGanacheOptions,
+        smartContract,
+        title: this.test.fullTitle(),
+        testSpecificMock: mockSegment,
+      },
+      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+        await unlockWallet(driver);
+
+        // Open the details and click remove nft button
+        await driver.clickElement('[data-testid="home__nfts-tab"]');
+        await driver.clickElement('.nft-item__container');
+        await driver.clickElement('[data-testid="nft-options__button"]');
+        await driver.clickElement('[data-testid="nft-item-remove"]');
+
+        // Check the remove NFT toaster is displayed
+        const removeNftNotification = await driver.findElement({
+          text: 'NFT was successfully removed!',
+          tag: 'h6',
+        });
+        assert.equal(await removeNftNotification.isDisplayed(), true);
+
+        // Check if event was emitted
+        const events = await getEventPayloads(driver, mockedEndpoints);
+        console.log('🚀 ~ events:', events);
       },
     );
   });
