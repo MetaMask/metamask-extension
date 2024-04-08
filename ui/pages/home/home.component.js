@@ -360,8 +360,6 @@ export default class Home extends PureComponent {
       setNewPrivacyPolicyToastShownDate,
     } = this.props;
 
-    // newPrivacyPolicyToastShownDate is always null (persistence is not working)
-    console.log({ showPrivacyPolicyToast, newPrivacyPolicyToastShownDate });
     if (showPrivacyPolicyToast && !newPrivacyPolicyToastShownDate) {
       setNewPrivacyPolicyToastShownDate(Date.now());
     }

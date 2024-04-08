@@ -190,7 +190,7 @@ export default class Routes extends Component {
     isDeprecatedNetworkModalOpen: PropTypes.bool.isRequired,
     hideDeprecatedNetworkModal: PropTypes.func.isRequired,
     addPermittedAccount: PropTypes.func.isRequired,
-    switchedNetworkDetails: PropTypes.object,
+    switchedNetworkDetails: PropTypes.oneOfType([PropTypes.object, null]),
     clearSwitchedNetworkDetails: PropTypes.func.isRequired,
     setSwitchedNetworkNeverShowMessage: PropTypes.func.isRequired,
     networkToAutomaticallySwitchTo: PropTypes.object,
