@@ -64,7 +64,7 @@ const Footer = () => {
   }, [currentConfirmation]);
 
   return (
-    <PageFooter>
+    <PageFooter className="confirm-footer_page-footer">
       <Button
         block
         onClick={onCancel}
