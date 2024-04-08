@@ -6014,8 +6014,8 @@ export default class MetamaskController extends EventEmitter {
 
   async #onPreferencesControllerStateChange(currentState, previousState) {
     const { currentLocale } = currentState;
-
     const { chainId } = this.networkController.state.providerConfig;
+
     await updateCurrentLocale(currentLocale);
 
     if (currentState.incomingTransactionsPreferences?.[chainId]) {
@@ -6055,10 +6055,8 @@ export default class MetamaskController extends EventEmitter {
   }
 
   #isTokenListRequired(preferencesControllerState) {
-    const {
-      useTokenDetection,
-      preferences: { petnamesEnabled },
-    } = preferencesControllerState;
+    const { useTokenDetection, preferences } = preferencesControllerState ?? {};
+    const { petnamesEnabled } = preferences ?? {};
 
     return useTokenDetection || petnamesEnabled;
   }

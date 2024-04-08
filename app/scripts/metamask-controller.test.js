@@ -26,6 +26,7 @@ import { KeyringType } from '../../shared/constants/keyring';
 import { LOG_EVENT } from '../../shared/constants/logs';
 import mockEncryptor from '../../test/lib/mock-encryptor';
 import * as tokenUtils from '../../shared/lib/token-util';
+import { flushPromises } from '../../test/lib/timer-helpers';
 import { deferredPromise } from './lib/util';
 import MetaMaskController from './metamask-controller';
 
@@ -1779,13 +1780,15 @@ describe('MetaMaskController', () => {
           TransactionController.prototype.startIncomingTransactionPolling,
         ).not.toHaveBeenCalled();
 
-        await metamaskController.preferencesController.store.subscribe.mock.lastCall[0](
+        metamaskController.preferencesController.store.subscribe.mock.lastCall[0](
           {
             incomingTransactionsPreferences: {
               [MAINNET_CHAIN_ID]: true,
             },
           },
         );
+
+        await flushPromises();
 
         expect(
           TransactionController.prototype.startIncomingTransactionPolling,
