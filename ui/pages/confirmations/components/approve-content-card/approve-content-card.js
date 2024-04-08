@@ -157,7 +157,7 @@ export default function ApproveContentCard({
                 color={TextColor.textAlternative}
                 as="h6"
               >
-                {functionName}
+                {`Function: ${functionName}`}
               </Text>
             </Box>
             {isSetApproveForAll && isApprovalOrRejection !== undefined ? (
