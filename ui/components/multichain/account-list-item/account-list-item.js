@@ -164,17 +164,36 @@ export const AccountListItem = ({
             <ConnectedStatus address={identity.address} isActive={isActive} />
           </Box>
           <Box display={[Display.None, Display.Flex]}>
-            <AvatarAccount
-              borderColor={BorderColor.transparent}
-              size={Size.MD}
-              address={identity.address}
-              variant={
-                useBlockie
-                  ? AvatarAccountVariant.Blockies
-                  : AvatarAccountVariant.Jazzicon
-              }
-              marginInlineEnd={2}
-            />
+
+          {
+        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+        <AvatarAccount
+        borderColor={BorderColor.transparent}
+        size={Size.MD}
+        address={identity.address}
+        variant={
+          useBlockie
+            ? AvatarAccountVariant.Blockies
+            : AvatarAccountVariant.Jazzicon
+        }
+        marginInlineEnd={2}
+      />
+        ///: END:ONLY_INCLUDE_IF
+      }
+
+{
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    custodianIcon && (
+      <img
+        src={custodianIcon}
+        data-testid="custody-logo"
+        className="custody-logo"
+        alt="custody logo"
+      />
+    )
+    ///: END:ONLY_INCLUDE_IF
+}
+
           </Box>
         </>
       ) : (
