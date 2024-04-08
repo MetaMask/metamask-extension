@@ -1,5 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
-import { SimulationData } from '@metamask/transaction-controller';
+import {
+  SimulationData,
+  SimulationErrorCode,
+} from '@metamask/transaction-controller';
 import { useTransactionEventFragment } from '../../hooks/useTransactionEventFragment';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import {
@@ -132,7 +135,11 @@ describe('useSimulationMetrics', () => {
 
     it.each([
       ['in progress', undefined, 'simulation_in_progress'],
-      ['reverted', { error: { isReverted: true } }, 'transaction_revert'],
+      [
+        'reverted',
+        { error: { code: SimulationErrorCode.Reverted } },
+        'transaction_revert',
+      ],
       ['failed', { error: { message: 'testError' } }, 'failed'],
       ['no changes', { tokenBalanceChanges: [] }, 'no_balance_change'],
       ['changes', { tokenBalanceChanges: [{}] }, 'balance_change'],
@@ -480,5 +487,22 @@ describe('useSimulationMetrics', () => {
         },
       });
     });
+  });
+
+  it.each([
+    ['simulation disabled', { error: { code: SimulationErrorCode.Disabled } }],
+    [
+      'chain not supported',
+      { error: { code: SimulationErrorCode.ChainNotSupported } },
+    ],
+  ])('does not update fragment if %s', (_, simulationData) => {
+    useSimulationMetrics({
+      balanceChanges: [BALANCE_CHANGE_MOCK],
+      simulationData: simulationData as SimulationData,
+      loadingTime: LOADING_TIME_MOCK,
+      transactionId: TRANSACTION_ID_MOCK,
+    });
+
+    expect(updateTransactionEventFragmentMock).not.toHaveBeenCalled();
   });
 });
