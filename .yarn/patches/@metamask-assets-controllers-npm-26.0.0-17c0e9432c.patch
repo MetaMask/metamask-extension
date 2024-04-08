@@ -1,0 +1,24 @@
+diff --git a/dist/TokenDetectionController.js b/dist/TokenDetectionController.js
+index 9aa09140d47424217eac118aebca9031e5d2a236..8100c432e7e01dbefcb5f53db3c58e51f120a51d 100644
+--- a/dist/TokenDetectionController.js
++++ b/dist/TokenDetectionController.js
+@@ -230,8 +230,7 @@ _TokenDetectionController_intervalId = new WeakMap(), _TokenDetectionController_
+         const isDetectionChangedFromPreferences = __classPrivateFieldGet(this, _TokenDetectionController_isDetectionEnabledFromPreferences, "f") !== useTokenDetection;
+         __classPrivateFieldSet(this, _TokenDetectionController_selectedAddress, newSelectedAddress, "f");
+         __classPrivateFieldSet(this, _TokenDetectionController_isDetectionEnabledFromPreferences, useTokenDetection, "f");
+-        if (useTokenDetection &&
+-            (isSelectedAddressChanged || isDetectionChangedFromPreferences)) {
++        if (isSelectedAddressChanged || isDetectionChangedFromPreferences) {
+             yield __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_restartTokenDetection).call(this, {
+                 selectedAddress: __classPrivateFieldGet(this, _TokenDetectionController_selectedAddress, "f"),
+             });
+@@ -239,8 +238,7 @@ _TokenDetectionController_intervalId = new WeakMap(), _TokenDetectionController_
+     }));
+     this.messagingSystem.subscribe('AccountsController:selectedAccountChange', ({ address: newSelectedAddress }) => __awaiter(this, void 0, void 0, function* () {
+         const isSelectedAddressChanged = __classPrivateFieldGet(this, _TokenDetectionController_selectedAddress, "f") !== newSelectedAddress;
+-        if (isSelectedAddressChanged &&
+-            __classPrivateFieldGet(this, _TokenDetectionController_isDetectionEnabledFromPreferences, "f")) {
++        if (isSelectedAddressChanged) {
+             __classPrivateFieldSet(this, _TokenDetectionController_selectedAddress, newSelectedAddress, "f");
+             yield __classPrivateFieldGet(this, _TokenDetectionController_instances, "m", _TokenDetectionController_restartTokenDetection).call(this, {
+                 selectedAddress: __classPrivateFieldGet(this, _TokenDetectionController_selectedAddress, "f"),
