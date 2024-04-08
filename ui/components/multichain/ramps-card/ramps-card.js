@@ -16,7 +16,9 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import useRamps from '../../../hooks/experiences/useRamps';
+import useRamps, {
+  RampsMetaMaskEntry,
+} from '../../../hooks/experiences/useRamps';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
 
@@ -53,11 +55,17 @@ export const RAMPS_CARD_VARIANTS = {
   },
 };
 
+const metamaskEntryMap = {
+  [RAMPS_CARD_VARIANT_TYPES.TOKEN]: RampsMetaMaskEntry.TokensBanner,
+  [RAMPS_CARD_VARIANT_TYPES.NFT]: RampsMetaMaskEntry.NftBanner,
+  [RAMPS_CARD_VARIANT_TYPES.ACTIVITY]: RampsMetaMaskEntry.ActivityBanner,
+};
+
 export const RampsCard = ({ variant }) => {
   const t = useI18nContext();
   const { gradient, illustrationSrc, title, body } =
     RAMPS_CARD_VARIANTS[variant];
-  const { openBuyCryptoInPdapp } = useRamps();
+  const { openBuyCryptoInPdapp } = useRamps(metamaskEntryMap[variant]);
   const trackEvent = useContext(MetaMetricsContext);
   const currentLocale = useSelector(getCurrentLocale);
   const { chainId, nickname } = useSelector(getCurrentNetwork);

@@ -9,16 +9,24 @@ type IUseRamps = {
   getBuyURI: (chainId: ChainId) => string;
 };
 
-const portfolioUrl = process.env.PORTFOLIO_URL;
+export enum RampsMetaMaskEntry {
+  BuySellButton = 'ext_buy_sell_button',
+  NftBanner = 'ext_buy_banner_nfts',
+  TokensBanner = 'ext_buy_banner_tokens',
+  ActivityBanner = 'ext_buy_banner_activity',
+}
 
-const useRamps = (): IUseRamps => {
+const portfolioUrl = process.env.PORTFOLIO_URL;
+const useRamps = (
+  metamaskEntry: RampsMetaMaskEntry = RampsMetaMaskEntry.BuySellButton,
+): IUseRamps => {
   const chainId = useSelector(getCurrentChainId);
   const metaMetricsId = useSelector(getMetaMetricsId);
 
   const getBuyURI = useCallback(
     (_chainId: Hex) => {
       const params = new URLSearchParams();
-      params.set('metamaskEntry', 'ext_buy_sell_button');
+      params.set('metamaskEntry', metamaskEntry);
       params.set('chainId', _chainId);
       if (metaMetricsId) {
         params.set('metametricsId', metaMetricsId);
