@@ -1,20 +1,18 @@
-type WeakReffedValueObj = {
-  [key: string]: WeakRef<WeakKey>;
+type WeakRefCompatibleObject<T> = {
+  [P in keyof T]: T[P] extends object ? WeakRef<T[P]> : never;
 };
-export class WeakDomainProxyMap {
-  map: Map<string, WeakReffedValueObj>;
+
+export class WeakRefObjectMap {
+  map: Map<string, WeakRefCompatibleObject<Record<string, object>>>;
 
   constructor() {
     this.map = new Map();
   }
 
-  set(
-    key: string,
-    value: {
-      [key: string]: object;
-    },
-  ) {
-    const weakReffedValueObj = {} as WeakReffedValueObj;
+  set(key: string, value: Record<string, object>) {
+    const weakReffedValueObj = {} as WeakRefCompatibleObject<
+      Record<string, object>
+    >;
     Object.keys(value).forEach((valueKey) => {
       weakReffedValueObj[valueKey] = new WeakRef(value[valueKey]);
     });
@@ -22,7 +20,9 @@ export class WeakDomainProxyMap {
   }
 
   get(key: string) {
-    const weakReffedValue = this.map.get(key) as WeakReffedValueObj | undefined;
+    const weakReffedValue = this.map.get(key) as
+      | WeakRefCompatibleObject<Record<string, object>>
+      | undefined;
     if (!weakReffedValue) {
       return undefined;
     }
