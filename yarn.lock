@@ -4922,7 +4922,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/metamask-eth-abis@npm:^3.0.0, @metamask/metamask-eth-abis@npm:^3.1.1":
+"@metamask/metamask-eth-abis@npm:^3.1.1":
   version: 3.1.1
   resolution: "@metamask/metamask-eth-abis@npm:3.1.1"
   checksum: 2d456882c5180eaf02d07f578ee8b8806d18639349d086a6b3b68c87e7ea294749efc332bfe7c1d5fb700933e71f31a46d3cd07b94c4e91c80faea5f9729bf0d
