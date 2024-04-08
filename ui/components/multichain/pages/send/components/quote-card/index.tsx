@@ -103,6 +103,7 @@ export function QuoteCard() {
       paddingBottom={4}
       flexDirection={FlexDirection.Column}
       alignItems={isSwapQuoteLoading ? AlignItems.center : AlignItems.flexStart}
+      gap={3}
     >
       {infoText && (
         <Text
