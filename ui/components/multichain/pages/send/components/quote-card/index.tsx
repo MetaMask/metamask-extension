@@ -23,7 +23,8 @@ import { Quote } from '../../../../../../ducks/send/swap-and-send-utils';
 import { getNativeCurrency } from '../../../../../../ducks/metamask/metamask';
 import { AssetType } from '../../../../../../../shared/constants/transaction';
 import useEthFeeData from './hooks/useEthFeeData';
-import InfoTooltip from '../../../../../ui/info-tooltip';
+import Tooltip from '../../../../../ui/tooltip';
+import InfoTooltipIcon from '../../../../../ui/info-tooltip/info-tooltip-icon';
 import useTranslatedNetworkName from './hooks/useTranslatedNetworkName';
 import { MetaMetricsEventCategory } from '../../../../../../../shared/constants/metametrics';
 import { GAS_FEES_LEARN_MORE_URL } from '../../../../../../pages/swaps/prepare-swap-page/review-quote';
@@ -152,41 +153,42 @@ export function QuoteCard() {
               alignItems={AlignItems.center}
             >
               {t('transactionDetailGasHeading')}
-              <InfoTooltip
+              <Tooltip
+                interactive
                 position="left"
-                contentText={
-                  (
-                    <>
-                      <p className="fee-card__info-tooltip-paragraph">
-                        {t('swapGasFeesSummary', [translatedNetworkName])}
-                      </p>
-                      <p className="fee-card__info-tooltip-paragraph">
-                        {t('swapGasFeesDetails')}
-                      </p>
-                      <p className="fee-card__info-tooltip-paragraph">
-                        <a
-                          className="fee-card__link"
-                          onClick={() => {
-                            /* istanbul ignore next */
-                            trackEvent({
-                              event: 'Clicked "Gas Fees: Learn More" Link',
-                              // TODO: update for swap and send
-                              category: MetaMetricsEventCategory.Swaps,
-                            });
-                            global.platform.openTab({
-                              url: GAS_FEES_LEARN_MORE_URL,
-                            });
-                          }}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          {t('swapGasFeesLearnMore')}
-                        </a>
-                      </p>
-                    </>
-                  ) as any
+                containerClassName="info-tooltip__tooltip-container"
+                tooltipInnerClassName="info-tooltip__tooltip-content"
+                tooltipArrowClassName="info-tooltip__left-tooltip-arrow"
+                style={{ display: 'flex', height: '12px', aspectRatio: '1' }}
+                html={
+                  <>
+                    <p>{t('swapGasFeesSummary', [translatedNetworkName])}</p>
+                    <p>{t('swapGasFeesDetails')}</p>
+                    <p>
+                      <a
+                        onClick={() => {
+                          /* istanbul ignore next */
+                          trackEvent({
+                            event: 'Clicked "Gas Fees: Learn More" Link',
+                            // TODO: update for swap and send
+                            category: MetaMetricsEventCategory.Swaps,
+                          });
+                          global.platform.openTab({
+                            url: GAS_FEES_LEARN_MORE_URL,
+                          });
+                        }}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {t('swapGasFeesLearnMore')}
+                      </a>
+                    </p>
+                  </>
                 }
-              />
+                theme="tippy-tooltip-info"
+              >
+                <InfoTooltipIcon fillColor="var(--color-icon-alternative)" />
+              </Tooltip>
             </Text>
             <Box display={Display.Flex} marginLeft={'auto'}>
               <Text>{formattedEthGasFee}</Text>
