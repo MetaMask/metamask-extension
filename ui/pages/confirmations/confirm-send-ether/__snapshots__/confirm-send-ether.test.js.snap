@@ -39,9 +39,9 @@ exports[`ConfirmSendEther should render correct information for for confirm send
           class="confirm-page-container-navigation__navtext"
         >
           0
-
+           
           of
-
+           
           2
         </div>
         <div
@@ -254,7 +254,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
     <div
       class="confirm-page-container-content"
     >
-
+      
       <div
         class="confirm-page-container-summary"
       >
@@ -521,7 +521,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                           data-testid="gas-timing-time"
                         >
                           ~
-
+                          
                         </span>
                       </p>
                     </div>
@@ -644,7 +644,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                     <strong>
                       Max amount:
                     </strong>
-
+                     
                     <div
                       class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                       title="0.00021 ETH"
