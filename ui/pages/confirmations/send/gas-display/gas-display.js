@@ -46,6 +46,7 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import useRamps from '../../../../hooks/useRamps/useRamps';
+import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
 
 export default function GasDisplay({ gasError }) {
   const t = useContext(I18nContext);
@@ -57,7 +58,7 @@ export default function GasDisplay({ gasError }) {
 
   const providerConfig = useSelector(getProviderConfig);
   const isTestnet = useSelector(getIsTestnet);
-  const { isBuyableChain } = useRamps();
+  const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const draftTransaction = useSelector(getCurrentDraftTransaction);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const { showFiatInTestnets, useNativeCurrencyAsPrimaryCurrency } =

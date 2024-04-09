@@ -1,4 +1,4 @@
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import {
@@ -106,6 +106,7 @@ import { calcGasTotal } from '../../../../shared/lib/transactions-controller-uti
 import { subtractHexes } from '../../../../shared/modules/conversion.utils';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 import useRamps from '../../../hooks/useRamps/useRamps';
+import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 
 let customNonceValue = '';
 const customNonceMerge = (txData) =>
@@ -140,7 +141,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const isGasEstimatesLoading = getIsGasEstimatesLoading(state);
   const gasLoadingAnimationIsShowing = getGasLoadingAnimationIsShowing(state);
-  const { isBuyableChain } = useRamps();
+  const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const { confirmTransaction, metamask } = state;
   const conversionRate = getConversionRate(state);
   const { addressBook, nextNonce } = metamask;

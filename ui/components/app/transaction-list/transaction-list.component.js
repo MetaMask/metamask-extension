@@ -28,6 +28,7 @@ import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBa
 import { RampsCard } from '../../multichain/ramps-card';
 import { RAMPS_CARD_VARIANT_TYPES } from '../../multichain/ramps-card/ramps-card';
 import useRamps from '../../../hooks/useRamps/useRamps';
+import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 
 const PAGE_INCREMENT = 10;
 
@@ -131,7 +132,7 @@ export default function TransactionList({
     shouldHideZeroBalanceTokens,
   );
   const balanceIsZero = Number(totalFiatBalance) === 0;
-  const { isBuyableChain } = useRamps();
+  const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const showRampsCard = isBuyableChain && balanceIsZero;
 
   const renderDateStamp = (index, dateGroup) => {

@@ -1,6 +1,6 @@
-import { AggregatorNetwork } from './useRamps.types';
+import { AggregatorNetwork } from './types';
 
-export const mockRampNetworks: AggregatorNetwork[] = [
+export const defaultBuyableChains: AggregatorNetwork[] = [
   {
     active: true,
     chainId: 1,

@@ -45,6 +45,7 @@ import {
   RampsCard,
 } from '../../multichain/ramps-card/ramps-card';
 import useRamps from '../../../hooks/useRamps/useRamps';
+import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 
 const AssetList = ({ onClickAsset }) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
@@ -102,7 +103,7 @@ const AssetList = ({ onClickAsset }) => {
     token.string = roundToDecimalPlacesRemovingExtraZeroes(token.string, 5);
   });
   const balanceIsZero = Number(totalFiatBalance) === 0;
-  const { isBuyableChain } = useRamps();
+  const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const shouldShowBuy = isBuyableChain && balanceIsZero;
 
   let isStakeable = isMainnet;

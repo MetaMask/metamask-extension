@@ -25,7 +25,6 @@ import ConnectedSites from '../connected-sites';
 import ConnectedAccounts from '../connected-accounts';
 import { Tabs, Tab } from '../../components/ui/tabs';
 import { EthOverview } from '../../components/app/wallet-overview';
-
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import {
   FontWeight,
@@ -89,6 +88,7 @@ import FlaskHomeFooter from './flask/flask-home-footer.component';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import InstitutionalHomeFooter from './institutional/institutional-home-footer';
 ///: END:ONLY_INCLUDE_IF
+import { fetchBuyableChains } from '../../ducks/ramps';
 
 function shouldCloseNotificationPopup({
   isNotification,
@@ -206,6 +206,7 @@ export default class Home extends PureComponent {
     custodianDeepLink: PropTypes.object,
     accountType: PropTypes.string,
     ///: END:ONLY_INCLUDE_IF
+    fetchBuyableChains: PropTypes.func.isRequired,
   };
 
   state = {
@@ -345,6 +346,8 @@ export default class Home extends PureComponent {
       setWaitForConfirmDeepLinkDialog(false);
     });
     ///: END:ONLY_INCLUDE_IF
+
+    this.props.fetchBuyableChains();
   }
 
   static getDerivedStateFromProps(props) {

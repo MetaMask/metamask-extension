@@ -52,6 +52,7 @@ import { IconColor } from '../../../helpers/constants/design-system';
 
 import { useIsOriginalTokenSymbol } from '../../../hooks/useIsOriginalTokenSymbol';
 import WalletOverview from './wallet-overview';
+import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 
 const TokenOverview = ({ className, token }) => {
   const dispatch = useDispatch();
@@ -79,7 +80,7 @@ const TokenOverview = ({ className, token }) => {
   const isSwapsChain = useSelector(getIsSwapsChain);
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBridgeChain = useSelector(getIsBridgeChain);
-  const { isBuyableChain } = useRamps();
+  const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const metaMetricsId = useSelector(getMetaMetricsId);
 
   const { openBuyCryptoInPdapp } = useRamps();

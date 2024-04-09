@@ -71,6 +71,7 @@ import {
 import { hideWhatsNewPopup } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
 import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
+import { fetchBuyableChains } from '../../ducks/ramps';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { getIsBrowserDeprecated } from '../../helpers/utils/util';
 import {
@@ -270,7 +271,8 @@ const mapDispatchToProps = (dispatch) => {
     },
     ///: END:ONLY_INCLUDE_IF
     setSurveyLinkLastClickedOrClosed: (time) =>
-      dispatch(setSurveyLinkLastClickedOrClosed(time)),
+    g  dispatch(setSurveyLinkLastClickedOrClosed(time)),
+    fetchBuyableChains: () => dispatch(fetchBuyableChains()),
   };
 };
 
