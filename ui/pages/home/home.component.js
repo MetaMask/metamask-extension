@@ -819,6 +819,8 @@ export default class Home extends PureComponent {
       setNewPrivacyPolicyToastClickedOrClosed,
     } = this.props;
     const { theme } = document.documentElement.dataset;
+    const inverseTheme =
+      theme === ThemeType.light ? ThemeType.dark : ThemeType.light;
 
     const isPrivacyToastRecent = this.getIsPrivacyToastRecent();
 
@@ -826,9 +828,7 @@ export default class Home extends PureComponent {
       <Box className="home__overlay-banners">
         {showSurveyToast && (
           <BannerBase
-            data-theme={
-              theme === ThemeType.light ? ThemeType.dark : ThemeType.light
-            }
+            data-theme={inverseTheme}
             backgroundColor={BackgroundColor.backgroundAlternative}
             startAccessory={
               <Icon name={IconName.Heart} color={IconColor.errorDefault} />
@@ -848,7 +848,7 @@ export default class Home extends PureComponent {
         )}
         {showPrivacyPolicyToast && isPrivacyToastRecent && (
           <BannerBase
-            data-theme="dark"
+            data-theme={inverseTheme}
             backgroundColor={BackgroundColor.backgroundAlternative}
             startAccessory={
               <Icon name={IconName.Info} color={IconColor.iconDefault} />
