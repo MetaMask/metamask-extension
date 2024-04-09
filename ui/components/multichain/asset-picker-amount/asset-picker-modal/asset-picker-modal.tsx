@@ -191,16 +191,9 @@ export function AssetPickerModal({
   }, []);
 
   // filter and exclude ERC1155
-  const collectionDataFiltered = (collectionsData as Collection[])
-    .map((collection) => {
-      return {
-        ...collection,
-        nfts: collection.nfts.filter(
-          (nft) => nft.standard !== TokenStandard.ERC1155,
-        ),
-      };
-    })
-    .filter((collection) => collection.nfts.length > 0);
+  const collectionDataFiltered = (collectionsData as Collection[]).filter(
+    (collection) => collection.nfts.length > 0,
+  );
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
