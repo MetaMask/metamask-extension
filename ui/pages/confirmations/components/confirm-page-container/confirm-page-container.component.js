@@ -52,7 +52,7 @@ import {
   getNetworkIdentifier,
   getSwapsDefaultToken,
 } from '../../../../selectors';
-import useRamps from '../../../../hooks/experiences/useRamps';
+import useRamps from '../../../../hooks/useRamps/useRamps';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {

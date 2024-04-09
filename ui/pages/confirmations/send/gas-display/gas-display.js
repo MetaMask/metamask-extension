@@ -46,7 +46,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import useRamps from '../../../../hooks/experiences/useRamps';
+import useRamps from '../../../../hooks/useRamps/useRamps';
 
 export default function GasDisplay({ gasError }) {
   const t = useContext(I18nContext);
