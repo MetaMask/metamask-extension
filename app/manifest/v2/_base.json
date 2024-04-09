@@ -34,8 +34,7 @@
         "scripts/disable-console.js",
         "scripts/lockdown-install.js",
         "scripts/lockdown-run.js",
-        "scripts/lockdown-more.js",
-        "scripts/inpage.js"
+        "scripts/lockdown-more.js"
       ],
       "run_at": "document_start",
       "all_frames": true
