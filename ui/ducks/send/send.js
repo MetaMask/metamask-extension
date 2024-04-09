@@ -1400,9 +1400,18 @@ const slice = createSlice({
             amount: draftTransaction.amount.value,
             balance: draftTransaction.sendAsset.balance,
             gasTotal: draftTransaction.gas.gasTotal ?? '0x0',
-          }):
-          draftTransaction.amount.error = INSUFFICIENT_FUNDS_FOR_GAS_ERROR;
+          }): {
+          const isInsufficientWithoutGas = !isBalanceSufficient({
+            amount: draftTransaction.amount.value,
+            balance: draftTransaction.sendAsset.balance,
+            gasTotal: '0x0', // assume gas is free
+          });
+
+          draftTransaction.amount.error = isInsufficientWithoutGas
+            ? INSUFFICIENT_FUNDS_ERROR
+            : INSUFFICIENT_FUNDS_FOR_GAS_ERROR;
           break;
+        }
         // set error to INSUFFICIENT_TOKENS_ERROR if the token balance is lower
         // than the amount of token the user is attempting to send.
         case draftTransaction.sendAsset.type === AssetType.token &&
