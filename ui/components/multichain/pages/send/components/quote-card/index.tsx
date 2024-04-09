@@ -18,10 +18,7 @@ import {
 } from '../../../../../../ducks/send';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { SECOND } from '../../../../../../../shared/constants/time';
-import ExchangeRateDisplay from '../../../../../../pages/swaps/exchange-rate-display';
 import { Quote } from '../../../../../../ducks/send/swap-and-send-utils';
-import { getNativeCurrency } from '../../../../../../ducks/metamask/metamask';
-import { AssetType } from '../../../../../../../shared/constants/transaction';
 import useEthFeeData from './hooks/useEthFeeData';
 import Tooltip from '../../../../../ui/tooltip';
 import InfoTooltipIcon from '../../../../../ui/info-tooltip/info-tooltip-icon';
@@ -29,9 +26,9 @@ import useTranslatedNetworkName from './hooks/useTranslatedNetworkName';
 import { MetaMetricsEventCategory } from '../../../../../../../shared/constants/metametrics';
 import { GAS_FEES_LEARN_MORE_URL } from '../../../../../../pages/swaps/prepare-swap-page/review-quote';
 import { MetaMetricsContext } from '../../../../../../contexts/metametrics';
+import useGetConversionRate from './hooks/useGetConversionRate';
 
 const REFRESH_INTERVAL = 30;
-const NATIVE_CURRENCY_DECIMALS = 18;
 
 /**
  * All the info about the current quote; handles polling and displaying the best quote
@@ -44,28 +41,17 @@ export function QuoteCard() {
   const translatedNetworkName = useTranslatedNetworkName();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const { isSwapQuoteLoading, sendAsset, receiveAsset } = useSelector(
-    getCurrentDraftTransaction,
-  );
-  const nativeCurrencySymbol = useSelector(getNativeCurrency);
+  const { isSwapQuoteLoading } = useSelector(getCurrentDraftTransaction);
 
   const bestQuote: Quote | undefined = useSelector(getBestQuote);
 
   const [timeLeft, setTimeLeft] = useState<number | undefined>(undefined);
 
-  const sourceTokenSymbol =
-    sendAsset.type === AssetType.native
-      ? nativeCurrencySymbol
-      : sendAsset.details?.symbol;
-
-  const destinationTokenSymbol =
-    receiveAsset.type === AssetType.native
-      ? nativeCurrencySymbol
-      : receiveAsset.details?.symbol;
-
   const { formattedEthGasFee, formattedFiatGasFee } = useEthFeeData(
     bestQuote?.gasParams.maxGas,
   );
+
+  const formattedConversionRate = useGetConversionRate();
 
   useEffect(() => {
     if (bestQuote) {
@@ -121,37 +107,28 @@ export function QuoteCard() {
           width={BlockSize.Full}
           gap={2}
           padding={3}
-          className="quote-card__quote-info"
         >
-          <Box display={Display.Flex} alignItems={AlignItems.stretch}>
-            <Text color={TextColor.textAlternative} marginRight={'auto'}>
+          <Box display={Display.Flex} alignItems={AlignItems.center}>
+            <Text
+              className="quote-card__text"
+              color={TextColor.textAlternative}
+              marginRight={'auto'}
+              variant={TextVariant.bodySm}
+            >
               {t('quoteRate')}
             </Text>
-            <Text marginLeft={'auto'}>
-              <ExchangeRateDisplay
-                primaryTokenValue={bestQuote.sourceAmount}
-                primaryTokenDecimals={
-                  sendAsset.details?.decimals || NATIVE_CURRENCY_DECIMALS
-                }
-                primaryTokenSymbol={sourceTokenSymbol}
-                secondaryTokenValue={bestQuote.destinationAmount}
-                secondaryTokenDecimals={
-                  receiveAsset.details?.decimals || NATIVE_CURRENCY_DECIMALS
-                }
-                secondaryTokenSymbol={destinationTokenSymbol}
-                boldSymbols={false}
-                showIconForSwappingTokens={false}
-                className={'quote-card__quote-info'}
-              />
+            <Text marginLeft={'auto'} variant={TextVariant.bodySm}>
+              {formattedConversionRate}
             </Text>
           </Box>
-          <Box display={Display.Flex} alignItems={AlignItems.stretch}>
+          <Box display={Display.Flex} alignItems={AlignItems.center}>
             <Text
               display={Display.Flex}
               color={TextColor.textAlternative}
               marginRight={'auto'}
               gap={1}
               alignItems={AlignItems.center}
+              variant={TextVariant.bodySm}
             >
               {t('transactionDetailGasHeading')}
               <Tooltip
@@ -192,9 +169,13 @@ export function QuoteCard() {
               </Tooltip>
             </Text>
             <Box display={Display.Flex} marginLeft={'auto'}>
-              <Text>{formattedEthGasFee}</Text>
+              <Text variant={TextVariant.bodySm}>{formattedEthGasFee}</Text>
               {formattedFiatGasFee && (
-                <Text color={TextColor.textAlternative} marginLeft={1}>
+                <Text
+                  color={TextColor.textAlternative}
+                  variant={TextVariant.bodySm}
+                  marginLeft={1}
+                >
                   ≈ {formattedFiatGasFee}
                 </Text>
               )}
