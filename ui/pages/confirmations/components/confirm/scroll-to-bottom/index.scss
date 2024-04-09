@@ -1,0 +1,22 @@
+.confirm-scroll-to-bottom__button {
+  bottom: 12px;
+  position: absolute;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  height: 36px;
+  width: 36px;
+  box-shadow: var(--shadow-size-md) var(--color-shadow-default);
+
+  /** arbitrary value to ensure bottom is above content */
+  z-index: 201;
+
+  /**
+    override design-system defaults. current bug exists that sets background-color to #00000005,
+    there's a problem that the color may not match the #000000 background-color
+    */
+  &:hover {
+    background-color: var(--color-background-default);
+    opacity: 0.95;
+  }
+}

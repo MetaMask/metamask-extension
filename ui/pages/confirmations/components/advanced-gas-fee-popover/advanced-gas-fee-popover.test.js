@@ -9,8 +9,8 @@ import { MAX_GAS_LIMIT_DEC } from '../../send/send.constants';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 import configureStore from '../../../../store/store';
 
-import AdvancedGasFeePopover from './advanced-gas-fee-popover';
 import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
+import AdvancedGasFeePopover from './advanced-gas-fee-popover';
 
 jest.mock('../../../../store/actions', () => ({
   gasFeeStartPollingByNetworkClientId: jest

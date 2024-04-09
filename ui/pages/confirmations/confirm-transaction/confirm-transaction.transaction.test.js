@@ -12,6 +12,8 @@ import {
 
 import ConfirmTransaction from './confirm-transaction.component';
 
+jest.mock('../components/simulation-details/useSimulationMetrics');
+
 const middleware = [thunk];
 
 setBackgroundConnection({

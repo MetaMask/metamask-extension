@@ -20,6 +20,7 @@ import {
   getTranslatedUINotifications,
   NOTIFICATION_STAKING_PORTFOLIO,
   NOTIFICATION_PORTFOLIO_V2,
+  NOTIFICATION_SIMULATIONS,
 } from '../../../../shared/notifications';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -85,6 +86,9 @@ function getActionFunctionById(id, history) {
       global.platform.openTab({
         url: 'https://portfolio.metamask.io/',
       });
+    },
+    [NOTIFICATION_SIMULATIONS]: () => {
+      updateViewedNotifications({ [NOTIFICATION_SIMULATIONS]: true });
     },
   };
 
@@ -313,6 +317,7 @@ export default function WhatsNewPopup({ onClose }) {
     ///: END:ONLY_INCLUDE_IF
     [NOTIFICATION_PETNAMES]: renderFirstNotification,
     [NOTIFICATION_PORTFOLIO_V2]: renderFirstNotification,
+    [NOTIFICATION_SIMULATIONS]: renderFirstNotification,
   };
 
   return (

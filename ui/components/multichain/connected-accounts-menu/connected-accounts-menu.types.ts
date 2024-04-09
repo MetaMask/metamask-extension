@@ -1,8 +1,24 @@
 import { InternalAccount } from '@metamask/keyring-api';
 
-export type InternalAccountWithBalance = InternalAccount & {
+export type KeyringMetadata = {
+  type: string;
+};
+
+export type Identity = InternalAccount & {
   balance: string;
-  keyringType: {
-    type: string;
+  label?: string;
+};
+
+export type Permission = {
+  key: string;
+  value: {
+    caveats: {
+      type: string;
+      value: string[];
+    }[];
+    date: number;
+    id: string;
+    invoker: string;
+    parentCapability: string;
   };
 };

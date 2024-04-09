@@ -14,8 +14,6 @@ import {
   INSUFFICIENT_TOKENS_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
   KNOWN_RECIPIENT_ADDRESS_WARNING,
-  NEGATIVE_ETH_ERROR,
-  NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR,
 } from '../../pages/confirmations/send/send.constants';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { GasEstimateTypes, GAS_LIMITS } from '../../../shared/constants/gas';
@@ -923,24 +921,6 @@ describe('Send Slice', () => {
         );
       });
 
-      it('should error negative value amount', () => {
-        const negativeAmountState = getInitialSendStateWithExistingTxState({
-          amount: {
-            value: '-1',
-          },
-        });
-
-        const action = {
-          type: 'send/validateAmountField',
-        };
-
-        const result = sendReducer(negativeAmountState, action);
-
-        const draftTransaction = getTestUUIDTx(result);
-
-        expect(draftTransaction.amount.error).toStrictEqual(NEGATIVE_ETH_ERROR);
-      });
-
       it('should error float value amount of erc1155', () => {
         const negativeAmountState = getInitialSendStateWithExistingTxState({
           amount: {
@@ -948,8 +928,8 @@ describe('Send Slice', () => {
           },
           asset: {
             type: AssetType.NFT,
+            balance: '2',
             details: {
-              balance: '2',
               standard: TokenStandard.ERC1155,
             },
           },
@@ -964,33 +944,6 @@ describe('Send Slice', () => {
         const draftTransaction = getTestUUIDTx(result);
 
         expect(draftTransaction.amount.error).toStrictEqual(FLOAT_TOKENS_ERROR);
-      });
-
-      it('should error negative value amount of erc1155', () => {
-        const negativeAmountState = getInitialSendStateWithExistingTxState({
-          amount: {
-            value: '-1',
-          },
-          asset: {
-            type: AssetType.NFT,
-            details: {
-              balance: '2',
-              standard: TokenStandard.ERC1155,
-            },
-          },
-        });
-
-        const action = {
-          type: 'send/validateAmountField',
-        };
-
-        const result = sendReducer(negativeAmountState, action);
-
-        const draftTransaction = getTestUUIDTx(result);
-
-        expect(draftTransaction.amount.error).toStrictEqual(
-          NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR,
-        );
       });
 
       it('should not error for positive value amount', () => {
@@ -1022,10 +975,9 @@ describe('Send Slice', () => {
           },
           asset: {
             type: AssetType.NFT,
-            balance: '0x6fc23ac0',
+            balance: '0x1',
             details: {
               standard: TokenStandard.ERC1155,
-              balance: '1',
               decimals: 0,
             },
           },

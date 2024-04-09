@@ -5,6 +5,7 @@ const {
 const { merge } = require('lodash');
 const { toHex } = require('@metamask/controller-utils');
 const { NetworkStatus } = require('@metamask/network-controller');
+const { FirstTimeFlowType } = require('../../shared/constants/onboarding');
 const { CHAIN_IDS, NETWORK_TYPES } = require('../../shared/constants/network');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { DAPP_URL, DAPP_ONE_URL } = require('./helpers');
@@ -145,7 +146,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       },
       OnboardingController: {
         completedOnboarding: true,
-        firstTimeFlowType: 'import',
+        firstTimeFlowType: FirstTimeFlowType.import,
         onboardingTabs: {},
         seedPhraseBackedUp: true,
       },
@@ -344,6 +345,13 @@ function onboardingFixture() {
 }
 
 class FixtureBuilder {
+  /**
+   * Constructs a new instance of the FixtureBuilder class.
+   *
+   * @param {object} [options] - The options for the constructor.
+   * @param {boolean} [options.onboarding] - Indicates if onboarding is enabled.
+   * @param {string} [options.inputChainId] - The input chain ID.
+   */
   constructor({ onboarding = false, inputChainId = CHAIN_IDS.LOCALHOST } = {}) {
     this.fixture =
       onboarding === true ? onboardingFixture() : defaultFixture(inputChainId);

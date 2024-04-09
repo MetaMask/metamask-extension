@@ -39,6 +39,7 @@ export const ConnectAccountsModalList: React.FC<ConnectAccountsListProps> = ({
   accounts,
   checked,
   isIndeterminate,
+  onAccountsUpdate,
 }) => {
   const t = useI18nContext();
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
@@ -47,7 +48,6 @@ export const ConnectAccountsModalList: React.FC<ConnectAccountsListProps> = ({
     <Modal isOpen onClose={onClose} data-testid="connect-more-accounts">
       <ModalOverlay />
       <ModalContent>
-        {/* Todo: Replace this with i18 text */}
         <ModalHeader
           data-testid="connect-more-accounts-title"
           onClose={onClose}
@@ -104,9 +104,11 @@ export const ConnectAccountsModalList: React.FC<ConnectAccountsListProps> = ({
                 addMorePermittedAccounts(activeTabOrigin, selectedAccounts),
               );
               onClose();
+              onAccountsUpdate();
             }}
             size={ButtonPrimarySize.Lg}
             block
+            disabled={selectedAccounts.length === 0}
           >
             {t('confirm')}
           </ButtonPrimary>
