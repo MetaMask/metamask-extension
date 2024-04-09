@@ -241,7 +241,7 @@ import {
   getAdditionalSignArguments as getAdditionalSignArgumentsMMI,
 } from './lib/transaction/mmi-hooks';
 ///: END:ONLY_INCLUDE_IF
-import { SmartTransactionHook } from './lib/transaction/smart-transactions';
+import { submitSmartTransactionHook } from './lib/transaction/smart-transactions';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/keyring-snaps-permissions';
 ///: END:ONLY_INCLUDE_IF
@@ -6040,7 +6040,7 @@ export default class MetamaskController extends EventEmitter {
       return { transactionHash: undefined };
     }
     const featureFlags = getFeatureFlagsByChainId(state);
-    const smartTransactionHook = new SmartTransactionHook({
+    return submitSmartTransactionHook({
       transactionMeta,
       transactionController: this.txController,
       smartTransactionsController: this.smartTransactionsController,
@@ -6048,7 +6048,6 @@ export default class MetamaskController extends EventEmitter {
       isSmartTransaction,
       featureFlags,
     });
-    return smartTransactionHook.submit();
   }
 
   _getMetaMaskState() {

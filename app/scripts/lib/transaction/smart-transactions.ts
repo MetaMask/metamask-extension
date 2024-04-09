@@ -66,7 +66,7 @@ export type SubmitSmartTransactionRequest = {
   featureFlags: FeatureFlags;
 };
 
-export class SmartTransactionHook {
+class SmartTransactionHook {
   #approvalFlowEnded: boolean;
 
   #approvalFlowId: string;
@@ -165,12 +165,12 @@ export class SmartTransactionHook {
       return { transactionHash };
     } catch (error) {
       log.error('Error in smart transaction publish hook', error);
-      this.onApproveOrReject();
+      this.#onApproveOrReject();
       throw error;
     }
   }
 
-  async onApproveOrReject() {
+  #onApproveOrReject() {
     if (this.#approvalFlowEnded) {
       return;
     }
@@ -182,7 +182,7 @@ export class SmartTransactionHook {
 
   #addApprovalRequest({ uuid }: { uuid: string }) {
     const onApproveOrRejectWrapper = () => {
-      this.onApproveOrReject();
+      this.#onApproveOrReject();
     };
     this.#controllerMessenger
       .call(
@@ -317,3 +317,10 @@ export class SmartTransactionHook {
     )) as string[];
   }
 }
+
+export const submitSmartTransactionHook = (
+  request: SubmitSmartTransactionRequest,
+) => {
+  const smartTransactionHook = new SmartTransactionHook(request);
+  return smartTransactionHook.submit();
+};

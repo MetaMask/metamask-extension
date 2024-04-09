@@ -6,7 +6,7 @@ import {
 } from '@metamask/transaction-controller';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { SmartTransactionHook } from './smart-transactions';
+import { submitSmartTransactionHook } from './smart-transactions';
 import type {
   SubmitSmartTransactionRequest,
   SmartTransactionsControllerMessenger,
@@ -16,6 +16,8 @@ const addressFrom = '0xabce7847fd3661a9b7c86aaf1daea08d9da5750e';
 const txHash =
   '0x0302b75dfb9fd9eb34056af031efcaee2a8cbd799ea054a85966165cd82a7356';
 const uuid = 'uuid';
+
+let addRequestCallback: () => void;
 
 type SubmitSmartTransactionRequestMocked = SubmitSmartTransactionRequest & {
   smartTransactionsController: jest.Mocked<SmartTransactionsController>;
@@ -40,7 +42,9 @@ const createSmartTransactionsControllerMessengerMock = () => {
     call: jest.fn((type) => {
       if (type === 'ApprovalController:addRequest') {
         return {
-          then: () => undefined,
+          then: (callback: () => void) => {
+            addRequestCallback = callback;
+          },
         };
       }
       return Promise.resolve({ id: 'approvalId' });
@@ -118,19 +122,21 @@ describe('submitSmartTransactionHook', () => {
     };
   };
 
+  beforeEach(() => {
+    addRequestCallback = () => undefined;
+  });
+
   it('does not submit a transaction that is not a smart transaction', async () => {
     const request: SubmitSmartTransactionRequestMocked = createRequest();
     request.isSmartTransaction = false;
-    const smartTransactionHook = new SmartTransactionHook(request);
-    const result = await smartTransactionHook.submit();
+    const result = await submitSmartTransactionHook(request);
     expect(result).toEqual({ transactionHash: undefined });
   });
 
   it('returns a txHash asap if the feature flag requires it', async () => {
     const request: SubmitSmartTransactionRequestMocked = createRequest();
     request.featureFlags.smartTransactions.returnTxHashAsap = true;
-    const smartTransactionHook = new SmartTransactionHook(request);
-    const result = await smartTransactionHook.submit();
+    const result = await submitSmartTransactionHook(request);
     expect(result).toEqual({ transactionHash: txHash });
   });
 
@@ -142,8 +148,7 @@ describe('submitSmartTransactionHook', () => {
         return { uuid: undefined };
       },
     );
-    const smartTransactionHook = new SmartTransactionHook(request);
-    await expect(smartTransactionHook.submit()).rejects.toThrow(
+    await expect(submitSmartTransactionHook(request)).rejects.toThrow(
       'No smart transaction UUID',
     );
   });
@@ -161,15 +166,13 @@ describe('submitSmartTransactionHook', () => {
         },
       );
     });
-    const smartTransactionHook = new SmartTransactionHook(request);
-    await expect(smartTransactionHook.submit()).rejects.toThrow(
+    await expect(submitSmartTransactionHook(request)).rejects.toThrow(
       'Transaction does not have a transaction hash, there was a problem',
     );
   });
 
   it('submits a smart transaction', async () => {
     const request: SubmitSmartTransactionRequestMocked = createRequest();
-    const smartTransactionHook = new SmartTransactionHook(request);
     setImmediate(() => {
       request.smartTransactionsController.eventEmitter.emit(
         `uuid:smartTransaction`,
@@ -190,7 +193,7 @@ describe('submitSmartTransactionHook', () => {
         },
       );
     });
-    const result = await smartTransactionHook.submit();
+    const result = await submitSmartTransactionHook(request);
     expect(result).toEqual({ transactionHash: txHash });
     const { txParams, chainId } = request.transactionMeta;
     expect(
@@ -214,7 +217,7 @@ describe('submitSmartTransactionHook', () => {
       txParams,
       transactionMeta: request.transactionMeta,
     });
-    smartTransactionHook.onApproveOrReject();
+    addRequestCallback();
     expect(request.controllerMessenger.call).toHaveBeenCalledTimes(4);
     expect(request.controllerMessenger.call).toHaveBeenCalledWith(
       'ApprovalController:startFlow',
@@ -263,7 +266,6 @@ describe('submitSmartTransactionHook', () => {
 
   it('submits a smart transaction and does not update approval request if approval was already approved or rejected', async () => {
     const request: SubmitSmartTransactionRequestMocked = createRequest();
-    const smartTransactionHook = new SmartTransactionHook(request);
     setImmediate(() => {
       request.smartTransactionsController.eventEmitter.emit(
         `uuid:smartTransaction`,
@@ -275,7 +277,7 @@ describe('submitSmartTransactionHook', () => {
           },
         },
       );
-      smartTransactionHook.onApproveOrReject();
+      addRequestCallback();
       request.smartTransactionsController.eventEmitter.emit(
         `uuid:smartTransaction`,
         {
@@ -287,7 +289,7 @@ describe('submitSmartTransactionHook', () => {
         },
       );
     });
-    const result = await smartTransactionHook.submit();
+    const result = await submitSmartTransactionHook(request);
     expect(result).toEqual({ transactionHash: txHash });
     const { txParams, chainId } = request.transactionMeta;
     expect(
