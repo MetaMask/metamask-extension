@@ -319,11 +319,7 @@
     "@metamask/snaps-rpc-methods": "^7.0.1",
     "@metamask/snaps-sdk": "^3.1.1",
     "@metamask/snaps-utils": "^7.0.3",
-<<<<<<< HEAD
     "@metamask/transaction-controller": "^26.0.0",
-=======
-    "@metamask/transaction-controller": "25.3.0",
->>>>>>> 27b690807c (fix lockfile)
     "@metamask/user-operation-controller": "^6.0.0",
     "@metamask/utils": "^8.2.1",
     "@ngraveio/bc-ur": "^1.1.12",
