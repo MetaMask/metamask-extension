@@ -5312,6 +5312,10 @@
   "switchToThisAccount": {
     "message": "Switch to this account"
   },
+  "switchedChainToast": {
+    "message": "Using $1 for $2",
+    "description": "$1 represents the network name, $2 represents the dapp hostname"
+  },
   "switchedNetworkToastDecline": {
     "message": "Don't show again"
   },

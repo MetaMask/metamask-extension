@@ -213,6 +213,11 @@ import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { convertNetworkId } from '../../shared/modules/network.utils';
 import { getCurrentNetwork } from '../../ui/selectors';
 import {
+  FALLBACK_LOCALE,
+  fetchLocale,
+  getMessage,
+} from '../../shared/modules/i18n';
+import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
   ///: END:ONLY_INCLUDE_IF
@@ -5841,6 +5846,32 @@ export default class MetamaskController extends EventEmitter {
     this.permissionLogController.updateAccountsHistory(origin, newAccounts);
   }
 
+  async _getLocalizedString(key, args = []) {
+    const locale = this.getLocale();
+    const [routeLocale] = locale.split('-');
+
+    if (!this.localeMessages) {
+      try {
+        this.localeMessages = await fetchLocale(routeLocale);
+        this.englishLocaleMessages = await fetchLocale(FALLBACK_LOCALE);
+      } catch (e) {
+        this.localeMessages = {};
+        this.englishLocaleMessages = {};
+      }
+    }
+
+    const message = getMessage(
+      locale,
+      this.localeMessages[key]
+        ? this.localeMessages
+        : this.englishLocaleMessages,
+      key,
+      args,
+    );
+
+    return message;
+  }
+
   async _notifyChainChange() {
     if (this.preferencesController.getUseRequestQueue()) {
       this.notifyAllConnections(async (origin) => {
@@ -5852,9 +5883,19 @@ export default class MetamaskController extends EventEmitter {
         const state = { metamask: { networkConfigurations, providerConfig } };
         const { nickname } = getCurrentNetwork(state);
 
+        const { host } = new URL(origin);
+
+        const message = await this._getLocalizedString('switchedChainToast', [
+          `[${nickname}]`,
+          `[${host}]`,
+        ]);
+
         return {
           method: NOTIFICATION_NAMES.chainChanged,
-          params: { ...params, nickname },
+          params: {
+            ...params,
+            message,
+          },
         };
       });
     } else {
