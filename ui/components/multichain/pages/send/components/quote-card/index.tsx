@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Box, Text } from '../../../../../component-library';
 import {
   AlignItems,
@@ -41,6 +41,8 @@ export function QuoteCard() {
   const translatedNetworkName = useTranslatedNetworkName();
   const trackEvent = useContext(MetaMetricsContext);
 
+  const scrollRef = useRef<HTMLElement>(null);
+
   const { isSwapQuoteLoading } = useSelector(getCurrentDraftTransaction);
 
   const bestQuote: Quote | undefined = useSelector(getBestQuote);
@@ -53,7 +55,20 @@ export function QuoteCard() {
 
   const formattedConversionRate = useGetConversionRate();
 
+  const prevBestQuote = useRef(bestQuote);
+
   useEffect(() => {
+    const isQuoteJustLoaded = bestQuote && prevBestQuote.current === undefined;
+
+    prevBestQuote.current = bestQuote;
+    // scroll to quote on initial load
+    if (isQuoteJustLoaded) {
+      scrollRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }
+
     if (bestQuote) {
       setTimeLeft(REFRESH_INTERVAL);
     } else {
@@ -85,6 +100,7 @@ export function QuoteCard() {
 
   return (
     <Box
+      ref={scrollRef}
       display={Display.Flex}
       paddingBottom={4}
       flexDirection={FlexDirection.Column}
