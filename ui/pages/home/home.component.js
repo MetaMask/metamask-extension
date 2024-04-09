@@ -823,6 +823,8 @@ export default class Home extends PureComponent {
       theme === ThemeType.light ? ThemeType.dark : ThemeType.light;
 
     const isPrivacyToastRecent = this.getIsPrivacyToastRecent();
+    const surveyLink = 'https://www.getfeedback.com/r/Oczu1vP0';
+    const privacyPolicyLink = 'https://www.consensys.io/privacy-policy';
 
     return showSurveyToast || showPrivacyPolicyToast ? (
       <Box className="home__overlay-banners">
@@ -837,7 +839,7 @@ export default class Home extends PureComponent {
             actionButtonLabel={t('surveyConversion')}
             actionButtonOnClick={() => {
               global.platform.openTab({
-                url: 'https://www.getfeedback.com/r/Oczu1vP0',
+                url: surveyLink,
               });
               setSurveyLinkLastClickedOrClosed(Date.now());
             }}
@@ -857,7 +859,7 @@ export default class Home extends PureComponent {
             actionButtonLabel={t('newPrivacyPolicyActionButton')}
             actionButtonOnClick={() => {
               global.platform.openTab({
-                url: 'https://www.consensys.io/privacy-policy',
+                url: privacyPolicyLink,
               });
               setNewPrivacyPolicyToastClickedOrClosed();
             }}
