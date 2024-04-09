@@ -9,6 +9,7 @@ import {
   TextVariant,
   BlockSize,
   IconColor,
+  FontWeight,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setDisableExternalServices } from '../../../store/actions';
@@ -27,6 +28,7 @@ import {
   IconSize,
   Checkbox,
   ButtonSize,
+  Label,
 } from '../../component-library';
 import { getDisableExternalServices } from '../../../selectors';
 import {
@@ -110,14 +112,19 @@ export function BasicConfigurationModal() {
           {!isBasicConfigurationSettingOff && (
             <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
               <Checkbox
+                id="basic-configuration-checkbox"
                 isChecked={hasAgreed}
                 onClick={() => {
                   setHasAgreed((prevValue) => !prevValue);
                 }}
               />{' '}
-              <Text variant={TextVariant.bodySm}>
+              <Label
+                htmlFor="basic-configuration-checkbox"
+                fontWeight={FontWeight.Normal}
+                variant={TextVariant.bodySm}
+              >
                 {t('basicConfigurationModalCheckbox')}
-              </Text>
+              </Label>
             </Box>
           )}
         </Box>
