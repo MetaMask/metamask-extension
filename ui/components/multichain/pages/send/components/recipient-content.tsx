@@ -103,6 +103,7 @@ export const SendPageRecipientContent = ({
       <SendPageRow>
         <AssetPickerAmount
           asset={receiveAsset}
+          sendingAsset={sendAsset}
           onAssetChange={onAssetChange}
           isAmountLoading={isLoadingInitialQuotes}
           amount={amount} // TODO - this should be the amount of the asset being sent
