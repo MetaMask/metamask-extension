@@ -525,7 +525,7 @@ function extensionStreamMessageListener(msg) {
       removeToast();
 
       node = document.createElement('div');
-      node.innerHTML = `<div style="${themeStyles} ${wrapperStyles}">
+      node.innerHTML = `<div style="${themeStyles} ${wrapperStyles}" data-testid="switch-network-toast">
           <div style="${designStyles}">
             <div style="${imageStyles}">
               <img src="${image}" width="24" height="24" alt="MetaMask" />

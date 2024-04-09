@@ -10,6 +10,57 @@ const {
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
+describe('Switch network toast', function () {
+  if (!process.env.MULTICHAIN) {
+    return;
+  }
+  it('displays when the network changes', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .withPreferencesControllerUseRequestQueueEnabled()
+          .build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+
+        const windowHandles = await driver.getAllWindowHandles();
+        const dappOne = windowHandles[1];
+
+        // switchEthereumChain request
+        const switchEthereumChainRequest = JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: '0x1' }],
+        });
+        await driver.executeScript(
+          `window.ethereum.request(${switchEthereumChainRequest})`,
+        );
+
+        // Confirm switchEthereumChain
+        await switchToNotificationWindow(driver, 4);
+        await driver.findClickableElements({
+          text: 'Switch network',
+          tag: 'button',
+        });
+        await driver.clickElement({ text: 'Switch network', tag: 'button' });
+        await driver.switchToWindow(dappOne);
+
+        // Ensure that the toast displays
+        await driver.waitForSelector('[data-testid="switch-network-toast"]');
+        await driver.findElement({
+          css: '[data-testid="switch-network-toast"] strong',
+          text: 'Ethereum Mainnet',
+        });
+      },
+    );
+  });
+});
+
 describe('Switch Ethereum Chain for two dapps', function () {
   it('switches the chainId of two dapps when switchEthereumChain of one dapp is confirmed', async function () {
     await withFixtures(
