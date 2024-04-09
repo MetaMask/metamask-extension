@@ -48,6 +48,18 @@ function migrateData(state: Record<string, unknown>): void {
   createSelectedAccountForAccountsController(state);
 }
 
+function findInternalAccountByAddress(
+  state: Record<string, any>,
+  address: string,
+): InternalAccount | undefined {
+  return Object.values<InternalAccount>(
+    state.AccountsController.internalAccounts.accounts,
+  ).find(
+    (account: InternalAccount) =>
+      account.address.toLowerCase() === address.toLowerCase(),
+  );
+}
+
 // TODO: Replace `any` with type
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function createDefaultAccountsController(state: Record<string, any>) {
@@ -93,7 +105,14 @@ function createInternalAccountsForAccountsController(
           type: 'HD Key Tree',
         },
       },
-      methods: [...Object.values(EthMethod)],
+      methods: [
+        EthMethod.Sign,
+        EthMethod.PersonalSign,
+        EthMethod.SignTransaction,
+        EthMethod.SignTypedDataV1,
+        EthMethod.SignTypedDataV3,
+        EthMethod.SignTypedDataV4,
+      ],
       type: EthAccountType.Eoa,
     };
   });
@@ -114,18 +133,23 @@ function createSelectedAccountForAccountsController(
         `state.PreferencesController?.selectedAddress is ${selectedAddress}`,
       ),
     );
+
+    // Get the first account if selectedAddress is not a string
+    const [firstAddress] = Object.keys(state.PreferencesController?.identities);
+    const internalAccount = findInternalAccountByAddress(state, firstAddress);
+    if (internalAccount) {
+      state.AccountsController.internalAccounts.selectedAccount =
+        internalAccount.id;
+      state.PreferencesController.selectedAddress = internalAccount.address;
+    }
+    return;
   }
 
-  const selectedAccount = Object.values<InternalAccount>(
-    state.AccountsController.internalAccounts.accounts,
-  ).find((account: InternalAccount) => {
-    return account.address.toLowerCase() === selectedAddress.toLowerCase();
-  }) as InternalAccount;
-
+  const selectedAccount = findInternalAccountByAddress(state, selectedAddress);
   if (selectedAccount) {
     state.AccountsController.internalAccounts = {
       ...state.AccountsController.internalAccounts,
-      selectedAccount: selectedAccount.id ?? '',
+      selectedAccount: selectedAccount.id,
     };
   }
 }

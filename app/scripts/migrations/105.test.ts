@@ -73,7 +73,14 @@ function expectedInternalAccount(
       lastSelected: lastSelected ? expect.any(Number) : undefined,
     },
     options: {},
-    methods: [...Object.values(EthMethod)],
+    methods: [
+      EthMethod.Sign,
+      EthMethod.PersonalSign,
+      EthMethod.SignTransaction,
+      EthMethod.SignTypedDataV1,
+      EthMethod.SignTypedDataV3,
+      EthMethod.SignTypedDataV4,
+    ],
     type: 'eip155:eoa',
   };
 }
@@ -284,6 +291,42 @@ describe('migration #105', () => {
       expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
         new Error(`state.PreferencesController?.selectedAddress is undefined`),
       );
+    });
+
+    it('recovers from invalid selectedAddress state', async () => {
+      const expectedUUID = addressToUUID(MOCK_ADDRESS);
+
+      const oldData = {
+        PreferencesController: {
+          identities: {
+            [MOCK_ADDRESS]: { name: 'Account 1', address: MOCK_ADDRESS },
+          },
+          selectedAddress: undefined,
+        },
+      };
+      const oldStorage = {
+        meta: { version: 103 },
+        data: oldData,
+      };
+
+      const newStorage = await migrate(oldStorage);
+
+      expect(newStorage.data).toStrictEqual({
+        PreferencesController: expect.objectContaining({
+          selectedAddress: MOCK_ADDRESS,
+        }),
+        AccountsController: {
+          internalAccounts: {
+            accounts: {
+              [expectedUUID]: expectedInternalAccount(
+                MOCK_ADDRESS,
+                `Account 1`,
+              ),
+            },
+            selectedAccount: expectedUUID,
+          },
+        },
+      });
     });
   });
 });
