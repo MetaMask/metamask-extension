@@ -214,7 +214,6 @@ export const TokenListItem = ({
               {title?.length > 12 ? (
                 <Tooltip
                   position="bottom"
-                  interactive
                   html={title}
                   tooltipInnerClassName="multichain-token-list-item__tooltip"
                 >
