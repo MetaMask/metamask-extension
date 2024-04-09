@@ -809,7 +809,7 @@ const fetchSwapAndSendQuotes = createAsyncThunk(
           slippage: '5', // TODO: update when solution is available
         })
           .then((response) => resolve(response))
-          .catch(reject);
+          .catch(() => reject(SWAPS_QUOTES_ERROR));
       }, FETCH_DELAY),
     );
 
