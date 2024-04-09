@@ -977,6 +977,7 @@ export default class MetamaskController extends EventEmitter {
       additionalKeyrings.push(
         mmiKeyringBuilderFactory(CUSTODIAN_TYPES[custodianType].keyringClass, {
           mmiConfigurationController: this.mmiConfigurationController,
+          captureException,
         }),
       );
     }

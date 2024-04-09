@@ -914,9 +914,6 @@
   "connectedWith": {
     "message": "Connected with"
   },
-  "connectedaccountsTabKey": {
-    "message": "Connected accounts"
-  },
   "connecting": {
     "message": "Connecting..."
   },
@@ -1824,6 +1821,9 @@
   },
   "fromTokenLists": {
     "message": "From token lists: $1"
+  },
+  "function": {
+    "message": "Function: $1"
   },
   "functionApprove": {
     "message": "Function: Approve"
@@ -3879,6 +3879,9 @@
   "removeNFT": {
     "message": "Remove NFT"
   },
+  "removeNftErrorMessage": {
+    "message": "We could not remove this NFT."
+  },
   "removeNftMessage": {
     "message": "NFT was successfully removed!"
   },
@@ -4384,7 +4387,7 @@
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
   },
   "simulationsSettingDescription": {
-    "message": "Turn this on to estimate balance changes of transactions before you confirm them. This doesn't guarantee the final outcome of your transactions. "
+    "message": "Turn this on to estimate balance changes of transactions before you confirm them. This doesn't guarantee the final outcome of your transactions. $1"
   },
   "simulationsSettingSubHeader": {
     "message": "Estimate balance changes"

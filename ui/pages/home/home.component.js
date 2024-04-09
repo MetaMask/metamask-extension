@@ -507,7 +507,7 @@ export default class Home extends PureComponent {
         ) : null}
         {removeNftMessage === 'success' ? (
           <ActionableMessage
-            type="danger"
+            type="success"
             className="home__new-network-notification"
             autoHideTime={autoHideDelay}
             onAutoHide={onAutoHide}
@@ -516,6 +516,28 @@ export default class Home extends PureComponent {
                 <i className="fa fa-check-circle home__new-nft-notification-icon" />
                 <Text variant={TextVariant.bodySm} as="h6">
                   {t('removeNftMessage')}
+                </Text>
+                <ButtonIcon
+                  iconName={IconName.Close}
+                  size={ButtonIconSize.Sm}
+                  ariaLabel={t('close')}
+                  onClick={onAutoHide}
+                />
+              </Box>
+            }
+          />
+        ) : null}
+        {removeNftMessage === 'error' ? (
+          <ActionableMessage
+            type="danger"
+            className="home__new-network-notification"
+            autoHideTime={autoHideDelay}
+            onAutoHide={onAutoHide}
+            message={
+              <Box display={Display.InlineFlex}>
+                <i className="fa fa-check-circle home__new-nft-notification-icon" />
+                <Text variant={TextVariant.bodySm} as="h6">
+                  {t('removeNftErrorMessage')}
                 </Text>
                 <ButtonIcon
                   iconName={IconName.Close}
