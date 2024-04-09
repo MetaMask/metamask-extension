@@ -18,10 +18,11 @@ import {
   IconColor,
   Size,
 } from '../../../helpers/constants/design-system';
-import { getUseBlockie,
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  getSelectedAddress
-///: END:ONLY_INCLUDE_IF
+import {
+  getUseBlockie,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  getSelectedAddress,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
@@ -72,7 +73,6 @@ export const AccountPicker = ({
     >
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-
         <AvatarAccount
           variant={
             useBlockie
@@ -87,13 +87,24 @@ export const AccountPicker = ({
       }
 
       {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  custodianIcon && (
+        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+        custodianIcon ? (
           <img
             src={custodianIcon}
             data-testid="custody-logo"
             className="custody-logo"
             alt="custody logo"
+          />
+        ) : (
+          <AvatarAccount
+            variant={
+              useBlockie
+                ? AvatarAccountVariant.Blockies
+                : AvatarAccountVariant.Jazzicon
+            }
+            address={address}
+            size={Size.XS}
+            borderColor={BackgroundColor.backgroundDefault}
           />
         )
         ///: END:ONLY_INCLUDE_IF

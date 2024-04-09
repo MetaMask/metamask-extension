@@ -58,11 +58,10 @@ import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBa
 import { TEST_NETWORKS } from '../../../../shared/constants/network';
 import { ConnectedStatus } from '../connected-status/connected-status';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-import { AccountListItemMenuTypes } from './account-list-item.types';
-
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
 ///: END:ONLY_INCLUDE_IF
+import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
@@ -107,11 +106,11 @@ export const AccountListItem = ({
     balanceToTranslate = identity.balance;
   }
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    const custodianIcon = useSelector((state) =>
-      getCustodianIconForAddress(state, identity.address),
-    );
-    ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  const custodianIcon = useSelector((state) =>
+    getCustodianIconForAddress(state, identity.address),
+  );
+  ///: END:ONLY_INCLUDE_IF
 
   // If this is the selected item in the Account menu,
   // scroll the item into view
@@ -201,16 +200,16 @@ export const AccountListItem = ({
                 />
               ) : (
                 <AvatarAccount
-                borderColor={BorderColor.transparent}
-                size={Size.MD}
-                address={identity.address}
-                variant={
-                  useBlockie
-                    ? AvatarAccountVariant.Blockies
-                    : AvatarAccountVariant.Jazzicon
-                }
-                marginInlineEnd={2}
-              />
+                  borderColor={BorderColor.transparent}
+                  size={Size.MD}
+                  address={identity.address}
+                  variant={
+                    useBlockie
+                      ? AvatarAccountVariant.Blockies
+                      : AvatarAccountVariant.Jazzicon
+                  }
+                  marginInlineEnd={2}
+                />
               )
               ///: END:ONLY_INCLUDE_IF
             }
@@ -244,16 +243,16 @@ export const AccountListItem = ({
               />
             ) : (
               <AvatarAccount
-              borderColor={BorderColor.transparent}
-              size={Size.MD}
-              address={identity.address}
-              variant={
-                useBlockie
-                  ? AvatarAccountVariant.Blockies
-                  : AvatarAccountVariant.Jazzicon
-              }
-              marginInlineEnd={2}
-            />
+                borderColor={BorderColor.transparent}
+                size={Size.MD}
+                address={identity.address}
+                variant={
+                  useBlockie
+                    ? AvatarAccountVariant.Blockies
+                    : AvatarAccountVariant.Jazzicon
+                }
+                marginInlineEnd={2}
+              />
             )
             ///: END:ONLY_INCLUDE_IF
           }
