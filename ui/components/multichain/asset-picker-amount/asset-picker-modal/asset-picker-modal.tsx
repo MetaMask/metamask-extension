@@ -284,6 +284,8 @@ export function AssetPickerModal({
     secondaryCurrencyProperties.value,
   ]);
 
+  const isDest = sendingAssetImage && sendingAssetSymbol;
+
   return (
     <Modal
       className="asset-picker-modal"
@@ -296,7 +298,7 @@ export function AssetPickerModal({
         <ModalHeader padding={4} onClose={onClose}>
           {t('selectAToken')}
         </ModalHeader>
-        {sendingAssetImage && sendingAssetSymbol && (
+        {isDest && (
           <Box
             display={Display.Flex}
             gap={1}
@@ -340,84 +342,88 @@ export function AssetPickerModal({
           />
         </Box>
         <Box style={{ flexGrow: '1' }}>
-          <Tabs
-            defaultActiveTabKey={defaultActiveTabKey}
-            tabsClassName="modal-tab__tabs"
-          >
-            {
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              <Tab
-                activeClassName="modal-tab__tab--active"
-                className="modal-tab__tab"
-                name={t('tokens')}
-                tabKey="tokens"
-              >
-                <AssetList />
-              </Tab>
-            }
+          {isDest ? (
+            <AssetList />
+          ) : (
+            <Tabs
+              defaultActiveTabKey={defaultActiveTabKey}
+              tabsClassName="modal-tab__tabs"
+            >
+              {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                <Tab
+                  activeClassName="modal-tab__tab--active"
+                  className="modal-tab__tab"
+                  name={t('tokens')}
+                  tabKey="tokens"
+                >
+                  <AssetList />
+                </Tab>
+              }
 
-            {
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              <Tab
-                activeClassName="modal-tab__tab--active"
-                className="modal-tab__tab"
-                name={t('nfts')}
-                tabKey="nfts"
-              >
-                {hasAnyNfts ? (
-                  <Box className="modal-tab__main-view">
-                    <NftsItems
-                      collections={collectionDataFiltered}
-                      previouslyOwnedCollection={previouslyOwnedCollection}
-                      isModal={true}
-                      onCloseModal={() => onClose()}
-                      showTokenId={true}
-                      displayPreviouslyOwnedCollection={false}
-                    />
-                  </Box>
-                ) : (
-                  <Box
-                    padding={12}
-                    display={Display.Flex}
-                    flexDirection={FlexDirection.Column}
-                    alignItems={AlignItems.center}
-                    justifyContent={JustifyContent.center}
-                  >
-                    <Box justifyContent={JustifyContent.center}>
-                      <img src="./images/no-nfts.svg" />
+              {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                <Tab
+                  activeClassName="modal-tab__tab--active"
+                  className="modal-tab__tab"
+                  name={t('nfts')}
+                  tabKey="nfts"
+                >
+                  {hasAnyNfts ? (
+                    <Box className="modal-tab__main-view">
+                      <NftsItems
+                        collections={collectionDataFiltered}
+                        previouslyOwnedCollection={previouslyOwnedCollection}
+                        isModal={true}
+                        onCloseModal={() => onClose()}
+                        showTokenId={true}
+                        displayPreviouslyOwnedCollection={false}
+                      />
                     </Box>
+                  ) : (
                     <Box
-                      marginTop={4}
-                      marginBottom={12}
+                      padding={12}
                       display={Display.Flex}
-                      justifyContent={JustifyContent.center}
-                      alignItems={AlignItems.center}
                       flexDirection={FlexDirection.Column}
-                      className="nfts-tab__link"
+                      alignItems={AlignItems.center}
+                      justifyContent={JustifyContent.center}
                     >
-                      <Text
-                        color={TextColor.textMuted}
-                        variant={TextVariant.headingSm}
-                        textAlign={TextAlign.Center}
-                        as="h4"
+                      <Box justifyContent={JustifyContent.center}>
+                        <img src="./images/no-nfts.svg" />
+                      </Box>
+                      <Box
+                        marginTop={4}
+                        marginBottom={12}
+                        display={Display.Flex}
+                        justifyContent={JustifyContent.center}
+                        alignItems={AlignItems.center}
+                        flexDirection={FlexDirection.Column}
+                        className="nfts-tab__link"
                       >
-                        {t('noNFTs')}
-                      </Text>
-                      <ButtonLink
-                        size={ButtonLinkSize.Sm}
-                        href={ZENDESK_URLS.NFT_TOKENS}
-                        externalLink
-                      >
-                        {t('learnMoreUpperCase')}
-                      </ButtonLink>
+                        <Text
+                          color={TextColor.textMuted}
+                          variant={TextVariant.headingSm}
+                          textAlign={TextAlign.Center}
+                          as="h4"
+                        >
+                          {t('noNFTs')}
+                        </Text>
+                        <ButtonLink
+                          size={ButtonLinkSize.Sm}
+                          href={ZENDESK_URLS.NFT_TOKENS}
+                          externalLink
+                        >
+                          {t('learnMoreUpperCase')}
+                        </ButtonLink>
+                      </Box>
                     </Box>
-                  </Box>
-                )}
-              </Tab>
-            }
-          </Tabs>
+                  )}
+                </Tab>
+              }
+            </Tabs>
+          )}
         </Box>
       </ModalContent>
     </Modal>
