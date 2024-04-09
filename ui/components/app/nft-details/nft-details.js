@@ -107,21 +107,22 @@ export default function NftDetails({ nft }) {
     } catch (err) {
       dispatch(setNewNftAddedMessage(''));
       dispatch(setRemoveNftMessage('error'));
+    } finally {
+      // track event
+      trackEvent({
+        event: MetaMetricsEventName.NFTRemoved,
+        category: 'Wallet',
+        sensitiveProperties: {
+          token_contract_address: address,
+          tokenId: tokenId.toString(),
+          asset_type: AssetType.NFT,
+          token_standard: standard,
+          chain_id: currentNetwork,
+          isSuccessful: isSuccessfulEvent,
+        },
+      });
+      history.push(DEFAULT_ROUTE);
     }
-    // track event
-    trackEvent({
-      event: MetaMetricsEventName.NFTRemoved,
-      category: 'Wallet',
-      sensitiveProperties: {
-        token_contract_address: address,
-        tokenId: tokenId.toString(),
-        asset_type: AssetType.NFT,
-        token_standard: standard,
-        chain_id: currentNetwork,
-        isSuccessful: isSuccessfulEvent,
-      },
-    });
-    history.push(DEFAULT_ROUTE);
   };
 
   const prevNft = usePrevious(nft);

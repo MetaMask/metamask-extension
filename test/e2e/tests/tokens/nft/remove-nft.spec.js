@@ -10,6 +10,7 @@ const FixtureBuilder = require('../../../fixture-builder');
 const {
   MetaMetricsEventName,
 } = require('../../../../../shared/constants/metametrics');
+const { CHAIN_IDS } = require('../../../../../shared/constants/network');
 
 async function mockedNftRemoved(mockServer) {
   return await mockServer
@@ -69,14 +70,25 @@ describe('Remove NFT', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder().withNftControllerERC721().build(),
+        //  fixtures: new FixtureBuilder().withNftControllerERC721().build(),
+        fixtures: new FixtureBuilder()
+          .withNftControllerERC721()
+          .withMetaMetricsController({
+            metaMetricsId: 'fake-metrics-id',
+            participateInMetaMetrics: true,
+          })
+          .build(),
         ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
-      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+      async ({ driver, mockedEndpoint: mockedEndpoints, contractRegistry }) => {
         await unlockWallet(driver);
+
+        const contractAddress = await contractRegistry.getContractAddress(
+          smartContract,
+        );
 
         // Open the details and click remove nft button
         await driver.clickElement('[data-testid="home__nfts-tab"]');
@@ -93,7 +105,17 @@ describe('Remove NFT', function () {
 
         // Check if event was emitted
         const events = await getEventPayloads(driver, mockedEndpoints);
-        console.log('🚀 ~ events:', events);
+        const nftRemovedProperties = events[0].properties;
+        assert.equal(
+          nftRemovedProperties.token_contract_address,
+          contractAddress,
+        );
+        assert.equal(nftRemovedProperties.tokenId, '1');
+        assert.equal(nftRemovedProperties.asset_type, 'NFT');
+        assert.equal(nftRemovedProperties.token_standard, 'ERC721');
+        assert.equal(nftRemovedProperties.token_standard, 'ERC721');
+        assert.equal(nftRemovedProperties.isSuccessful, true);
+        assert.equal(nftRemovedProperties.chain_id, CHAIN_IDS.LOCALHOST);
       },
     );
   });
