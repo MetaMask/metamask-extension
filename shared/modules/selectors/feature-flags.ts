@@ -28,8 +28,8 @@ export function getFeatureFlagsByChainId(state: FeatureFlagsMetaMaskState) {
   }
   return {
     smartTransactions: {
-      ...featureFlags[networkName].smartTransactions,
       ...featureFlags.smartTransactions,
+      ...featureFlags[networkName].smartTransactions,
     },
   };
 }
