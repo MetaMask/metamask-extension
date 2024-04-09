@@ -1215,17 +1215,8 @@ export const getMemoizedAddressBook = createDeepEqualSelector(
   (addressBook) => addressBook,
 );
 
-/**
- * Returns a memoized selector that gets contract info.
- *
- * @param state - The Redux store state.
- * @param addresses - An array of contract addresses.
- * @param forceRemoteTokenList - Whether to force the use of the remote token list.
- * @returns {Array} A map of contract info, keyed by address.
- */
 export const getMemoizedMetadataContracts = createDeepEqualSelector(
-  (state, _addresses, forceRemoteTokenList) =>
-    getTokenList(state, forceRemoteTokenList),
+  getTokenList,
   (_tokenList, addresses) => addresses,
   (tokenList, addresses) => {
     return addresses.map((address) =>
@@ -1841,18 +1832,15 @@ export function getTheme(state) {
  * from the tokens controller if token detection is enabled, or the static list if not.
  *
  * @param {*} state
- * @param {boolean} forceRemote - Whether to force the use of the remote token list regardless of the user preference. Defaults to false.
  * @returns {object}
  */
-export function getTokenList(state, forceRemote = false) {
+export function getTokenList(state) {
   const isTokenDetectionInactiveOnMainnet =
     getIsTokenDetectionInactiveOnMainnet(state);
-
-  if (isTokenDetectionInactiveOnMainnet && !forceRemote) {
-    return STATIC_MAINNET_TOKEN_LIST;
-  }
-
-  return state.metamask.tokenList;
+  const caseInSensitiveTokenList = isTokenDetectionInactiveOnMainnet
+    ? STATIC_MAINNET_TOKEN_LIST
+    : state.metamask.tokenList;
+  return caseInSensitiveTokenList;
 }
 
 export function doesAddressRequireLedgerHidConnection(state, address) {

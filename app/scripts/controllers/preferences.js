@@ -119,6 +119,7 @@ export default class PreferencesController {
 
     this.store = new ObservableStore(initState);
     this.store.setMaxListeners(13);
+    this.tokenListController = opts.tokenListController;
 
     opts.onKeyringStateChange((state) => {
       const accounts = new Set();
@@ -217,6 +218,13 @@ export default class PreferencesController {
    */
   setUseTokenDetection(val) {
     this.store.updateState({ useTokenDetection: val });
+    this.tokenListController.updatePreventPollingOnNetworkRestart(!val);
+    if (val) {
+      this.tokenListController.start();
+    } else {
+      this.tokenListController.clearingTokenListData();
+      this.tokenListController.stop();
+    }
   }
 
   /**
