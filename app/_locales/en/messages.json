@@ -1822,6 +1822,9 @@
   "fromTokenLists": {
     "message": "From token lists: $1"
   },
+  "function": {
+    "message": "Function: $1"
+  },
   "functionApprove": {
     "message": "Function: Approve"
   },

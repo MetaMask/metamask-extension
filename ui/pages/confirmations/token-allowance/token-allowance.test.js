@@ -419,7 +419,7 @@ describe('TokenAllowancePage', () => {
 
     const viewDetailsButton = getByText('View details');
     fireEvent.click(viewDetailsButton);
-    expect(getByText('Function: approve')).toBeInTheDocument();
+    expect(getByText('Function: Approve')).toBeInTheDocument();
   });
 
   it('should click "Use site suggestion" and set input value to dappProposedTokenAmount', () => {

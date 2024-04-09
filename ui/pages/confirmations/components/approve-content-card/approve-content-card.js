@@ -48,6 +48,9 @@ export default function ApproveContentCard({
 
   const tokenData = parseStandardTokenTransactionData(data);
   const functionName = tokenData?.name;
+  const capitalizedFnName =
+    functionName?.charAt(0).toUpperCase() + functionName?.slice(1);
+
   return (
     <Box
       className={classnames({
@@ -157,7 +160,7 @@ export default function ApproveContentCard({
                 color={TextColor.textAlternative}
                 as="h6"
               >
-                {`Function: ${functionName}`}
+                {`${t('function', [capitalizedFnName])}`}
               </Text>
             </Box>
             {isSetApproveForAll && isApprovalOrRejection !== undefined ? (
