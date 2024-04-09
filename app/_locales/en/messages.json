@@ -4250,6 +4250,12 @@
   "sendNoContactsTitle": {
     "message": "You don't have any contacts yet"
   },
+  "sendSelectReceiveAsset": {
+    "message": "Select asset to receive"
+  },
+  "sendSelectSendAsset": {
+    "message": "Select asset to send"
+  },
   "sendSpecifiedTokens": {
     "message": "Send $1",
     "description": "Symbol of the specified token"
