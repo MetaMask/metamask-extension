@@ -1,3 +1,4 @@
+const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
@@ -107,7 +108,6 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
 
         // Dapp one send tx
         await driver.switchToWindowWithUrl(DAPP_URL);
-        await driver.executeScript(`window.location.reload()`);
         await driver.delay(largeDelayMs);
         await driver.clickElement('#sendButton');
 
@@ -115,7 +115,6 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
 
         // Dapp two send tx
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
-        await driver.executeScript(`window.location.reload()`);
         await driver.delay(largeDelayMs);
         await driver.clickElement('#sendButton');
 
@@ -176,6 +175,111 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
           );
           return confirmedTxes.length === 1;
         }, 10000);
+      },
+    );
+  });
+  it('should preserve per dapp network seelections after connecting without refresh calls @no-mmi', async function () {
+    const port = 8546;
+    const chainId = 1338;
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withNetworkControllerDoubleGanache()
+          .withPreferencesControllerUseRequestQueueEnabled()
+          .withSelectedNetworkControllerPerDomain()
+          .build(),
+        dappOptions: { numberOfDapps: 2 },
+        ganacheOptions: {
+          ...defaultGanacheOptions,
+          concurrent: {
+            port,
+            chainId,
+            ganacheOptions2: defaultGanacheOptions,
+          },
+        },
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+
+        // Navigate to extension home screen
+        await driver.navigate(PAGES.HOME);
+
+        // Open Dapp One
+        await openDapp(driver, undefined, DAPP_URL);
+
+        const initialChainId = await driver.findElement('#chainId');
+        assert.equal(await initialChainId.getText(), '0x539'); // 1337
+
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+
+        // Network Selector
+        await driver.clickElement('[data-testid="network-display"]');
+
+        // Switch to second network
+        await driver.clickElement({
+          text: 'Localhost 8546',
+          css: 'p',
+        });
+
+        await driver.delay(regularDelayMs);
+
+        await driver.switchToWindowWithUrl(DAPP_URL);
+
+        const chainIdAfterSwitch = await driver.findElement('#chainId');
+        assert.equal(await chainIdAfterSwitch.getText(), '0x53a'); // 1338
+
+        // Connect to dapp
+        await driver.findClickableElement({ text: 'Connect', tag: 'button' });
+        await driver.clickElement('#connectButton');
+
+        await driver.delay(regularDelayMs);
+
+        await switchToNotificationWindow(driver);
+
+        await driver.clickElement({
+          text: 'Next',
+          tag: 'button',
+          css: '[data-testid="page-container-footer-next"]',
+        });
+
+        await driver.clickElement({
+          text: 'Connect',
+          tag: 'button',
+          css: '[data-testid="page-container-footer-next"]',
+        });
+
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+
+        // Network Selector
+        await driver.clickElement('[data-testid="network-display"]');
+
+        // Switch to second network
+        await driver.clickElement({
+          text: 'Localhost 8545',
+          css: 'p',
+        });
+
+        // Wait for the first dapp's connect confirmation to disappear
+        await driver.waitUntilXWindowHandles(2);
+
+        await driver.delay(regularDelayMs);
+
+        // Dapp one send tx
+        await driver.switchToWindowWithUrl(DAPP_URL);
+
+        const chainIdAfterConnectAndSwitch = await driver.findElement(
+          '#chainId',
+        );
+
+        // after connecting the dapp should now have its own selected network
+        // independent from the globally selected and therefore should have changed
+        assert.equal(await chainIdAfterConnectAndSwitch.getText(), '0x53a'); // 1338
       },
     );
   });
