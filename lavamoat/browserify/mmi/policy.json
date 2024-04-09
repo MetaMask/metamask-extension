@@ -718,6 +718,7 @@
     },
     "@metamask-institutional/custody-keyring": {
       "globals": {
+        "console.error": true,
         "console.log": true,
         "console.warn": true
       },
@@ -759,6 +760,11 @@
       "globals": {
         "console.log": true,
         "fetch": true
+      }
+    },
+    "@metamask-institutional/rpc-allowlist": {
+      "globals": {
+        "URL": true
       }
     },
     "@metamask-institutional/sdk": {
