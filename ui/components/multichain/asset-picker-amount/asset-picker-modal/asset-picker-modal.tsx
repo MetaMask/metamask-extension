@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { isEqual } from 'lodash';
@@ -148,36 +148,6 @@ export function AssetPickerModal({
       currency: secondaryCurrency,
     });
 
-  const tokenList = tokensWithBalances.map((token: Token) => {
-    token.isSelected =
-      token.address?.toLowerCase() === selectedToken?.toLowerCase();
-    return token;
-  });
-
-  tokenList.push({
-    address: null,
-    symbol: nativeCurrency,
-    decimals: 18,
-    image: nativeCurrencyImage,
-    balance: balanceValue,
-    string: primaryCurrencyProperties.value,
-    type: AssetType.native,
-    isSelected: !selectedToken,
-  });
-
-  tokenList.sort((a, b) => {
-    if (a.type === AssetType.native) {
-      return -1;
-    } else if (b.type === AssetType.native) {
-      return 1;
-    }
-    return 0;
-  });
-
-  const tokensData = tokenList.filter((token) =>
-    token.symbol?.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
-
   const collectionsKeys = Object.keys(collections);
 
   const collectionsData = collectionsKeys.reduce((acc: unknown[], key) => {
@@ -211,6 +181,108 @@ export function AssetPickerModal({
   };
 
   const defaultActiveTabKey = asset?.type === AssetType.NFT ? 'nfts' : 'tokens';
+
+  const AssetList = useCallback(() => {
+    const tokenList = tokensWithBalances.map((token: Token) => {
+      token.isSelected =
+        token.address?.toLowerCase() === selectedToken?.toLowerCase();
+      return token;
+    });
+
+    tokenList.push({
+      address: null,
+      symbol: nativeCurrency,
+      decimals: 18,
+      image: nativeCurrencyImage,
+      balance: balanceValue,
+      string: primaryCurrencyProperties.value,
+      type: AssetType.native,
+      isSelected: !selectedToken,
+    });
+
+    tokenList.sort((a, b) => {
+      if (a.type === AssetType.native) {
+        return -1;
+      } else if (b.type === AssetType.native) {
+        return 1;
+      }
+      return 0;
+    });
+
+    const tokensData = tokenList.filter((token) =>
+      token.symbol?.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
+
+    return (
+      <Box className="tokens-main-view-modal">
+        {tokensData.map((token) => {
+          return (
+            <Box
+              padding={0}
+              gap={0}
+              margin={0}
+              key={token.symbol}
+              backgroundColor={
+                token.isSelected
+                  ? BackgroundColor.primaryMuted
+                  : BackgroundColor.transparent
+              }
+              className={classnames('multichain-asset-picker-list-item', {
+                'multichain-asset-picker-list-item--selected': token.isSelected,
+              })}
+              onClick={handleAssetChange(token)}
+            >
+              {token.isSelected ? (
+                <Box
+                  className="multichain-asset-picker-list-item__selected-indicator"
+                  borderRadius={BorderRadius.pill}
+                  backgroundColor={BackgroundColor.primaryDefault}
+                />
+              ) : null}
+              <Box
+                key={token.address}
+                padding={0}
+                display={Display.Block}
+                flexWrap={FlexWrap.NoWrap}
+                alignItems={AlignItems.center}
+                style={{ cursor: 'pointer' }}
+              >
+                <Box marginInlineStart={2}>
+                  {token.type === AssetType.native ? (
+                    <TokenListItem
+                      title={nativeCurrency}
+                      primary={
+                        primaryCurrencyProperties.value ??
+                        secondaryCurrencyProperties.value
+                      }
+                      tokenSymbol={primaryCurrencyProperties.suffix}
+                      secondary={secondaryCurrencyDisplay}
+                      tokenImage={token.image}
+                    />
+                  ) : (
+                    <TokenCell
+                      key={token.address}
+                      {...token}
+                      onClick={handleAssetChange(token)}
+                    />
+                  )}
+                </Box>
+              </Box>
+            </Box>
+          );
+        })}
+      </Box>
+    );
+  }, [
+    tokensWithBalances,
+    balanceValue,
+    nativeCurrency,
+    nativeCurrencyImage,
+    selectedToken,
+    primaryCurrencyProperties.value,
+    primaryCurrencyProperties.suffix,
+    secondaryCurrencyProperties.value,
+  ]);
 
   return (
     <Modal
@@ -281,68 +353,7 @@ export function AssetPickerModal({
                 name={t('tokens')}
                 tabKey="tokens"
               >
-                <Box className="tokens-main-view-modal">
-                  {tokensData.map((token) => {
-                    return (
-                      <Box
-                        padding={0}
-                        gap={0}
-                        margin={0}
-                        key={token.symbol}
-                        backgroundColor={
-                          token.isSelected
-                            ? BackgroundColor.primaryMuted
-                            : BackgroundColor.transparent
-                        }
-                        className={classnames(
-                          'multichain-asset-picker-list-item',
-                          {
-                            'multichain-asset-picker-list-item--selected':
-                              token.isSelected,
-                          },
-                        )}
-                        onClick={handleAssetChange(token)}
-                      >
-                        {token.isSelected ? (
-                          <Box
-                            className="multichain-asset-picker-list-item__selected-indicator"
-                            borderRadius={BorderRadius.pill}
-                            backgroundColor={BackgroundColor.primaryDefault}
-                          />
-                        ) : null}
-                        <Box
-                          key={token.address}
-                          padding={0}
-                          display={Display.Block}
-                          flexWrap={FlexWrap.NoWrap}
-                          alignItems={AlignItems.center}
-                          style={{ cursor: 'pointer' }}
-                        >
-                          <Box marginInlineStart={2}>
-                            {token.type === AssetType.native ? (
-                              <TokenListItem
-                                title={nativeCurrency}
-                                primary={
-                                  primaryCurrencyProperties.value ??
-                                  secondaryCurrencyProperties.value
-                                }
-                                tokenSymbol={primaryCurrencyProperties.suffix}
-                                secondary={secondaryCurrencyDisplay}
-                                tokenImage={token.image}
-                              />
-                            ) : (
-                              <TokenCell
-                                key={token.address}
-                                {...token}
-                                onClick={handleAssetChange(token)}
-                              />
-                            )}
-                          </Box>
-                        </Box>
-                      </Box>
-                    );
-                  })}
-                </Box>
+                <AssetList />
               </Tab>
             }
 
