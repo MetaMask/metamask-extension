@@ -31,6 +31,17 @@ const addEthereumChain = {
 };
 export default addEthereumChain;
 
+export function isLocalhostOrHttps(urlString) {
+  const url = getValidUrl(urlString);
+
+  return (
+    url !== null &&
+    (url.hostname === 'localhost' ||
+      url.hostname === '127.0.0.1' ||
+      url.protocol === 'https:')
+  );
+}
+
 async function addEthereumChainHandler(
   req,
   res,
@@ -86,17 +97,6 @@ async function addEthereumChainHandler(
       ethErrors.rpc.invalidParams({
         message: `Received unexpected keys on object parameter. Unsupported keys:\n${otherKeys}`,
       }),
-    );
-  }
-
-  function isLocalhostOrHttps(urlString) {
-    const url = getValidUrl(urlString);
-
-    return (
-      url !== null &&
-      (url.hostname === 'localhost' ||
-        url.hostname === '127.0.0.1' ||
-        url.protocol === 'https:')
     );
   }
 

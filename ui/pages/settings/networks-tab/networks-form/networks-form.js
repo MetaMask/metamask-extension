@@ -103,6 +103,7 @@ const NetworksForm = ({
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const DEFAULT_SUGGESTED_TICKER = [];
   const { label, labelKey, viewOnly, rpcPrefs } = selectedNetwork;
   const selectedNetworkName =
     label || (labelKey && t(getNetworkLabelKey(labelKey)));
@@ -110,7 +111,9 @@ const NetworksForm = ({
   const [rpcUrl, setRpcUrl] = useState(selectedNetwork?.rpcUrl || '');
   const [chainId, setChainId] = useState(selectedNetwork?.chainId || '');
   const [ticker, setTicker] = useState(selectedNetwork?.ticker || '');
-  const [suggestedTicker, setSuggestedTicker] = useState([]);
+  const [suggestedTicker, setSuggestedTicker] = useState(
+    DEFAULT_SUGGESTED_TICKER,
+  );
   const [blockExplorerUrl, setBlockExplorerUrl] = useState(
     selectedNetwork?.blockExplorerUrl || '',
   );

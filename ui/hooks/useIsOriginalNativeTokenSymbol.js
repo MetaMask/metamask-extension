@@ -7,7 +7,7 @@ import {
 } from '../../shared/constants/network';
 import { DAY } from '../../shared/constants/time';
 import { useSafeChainsListValidationSelector } from '../selectors';
-import { getValidUrl } from '../../app/scripts/lib/util';
+import { isLocalhostOrHttps } from '../../app/scripts/lib/rpc-method-middleware/handlers/add-ethereum-chain';
 
 export function useIsOriginalNativeTokenSymbol(
   chainId,
@@ -20,15 +20,6 @@ export function useIsOriginalNativeTokenSymbol(
     useSafeChainsListValidationSelector,
   );
 
-  const isLocalhost = (urlString) => {
-    const url = getValidUrl(urlString);
-
-    return (
-      url !== null &&
-      (url.hostname === 'localhost' || url.hostname === '127.0.0.1')
-    );
-  };
-
   useEffect(() => {
     async function getNativeTokenSymbol(networkId) {
       try {
@@ -38,7 +29,7 @@ export function useIsOriginalNativeTokenSymbol(
         }
 
         // exclude local dev network
-        if (isLocalhost(rpcUrl)) {
+        if (isLocalhostOrHttps(rpcUrl)) {
           setIsOriginalNativeSymbol(true);
           return;
         }
@@ -52,11 +43,9 @@ export function useIsOriginalNativeTokenSymbol(
         const mappedAsNetworkCollision =
           CHAIN_ID_TO_CURRENCY_SYMBOL_MAP_NETWORK_COLLISION[chainId];
 
-        if (mappedAsNetworkCollision) {
-          if (mappedAsNetworkCollision === ticker) {
-            setIsOriginalNativeSymbol(true);
-            return;
-          }
+        if (mappedAsNetworkCollision && mappedAsNetworkCollision === ticker) {
+          setIsOriginalNativeSymbol(true);
+          return;
         }
 
         const safeChainsList = await fetchWithCache({
