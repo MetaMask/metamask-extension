@@ -65,7 +65,7 @@ function logWeb3ShimUsageHandler<Params extends JsonRpcParams = JsonRpcParams>(
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
   { getWeb3ShimUsageState, setWeb3ShimUsageRecorded }: LogWeb3ShimUsageOptions,
-) {
+): void {
   const { origin } = req;
   if (getWeb3ShimUsageState(origin) === undefined) {
     setWeb3ShimUsageRecorded(origin);
