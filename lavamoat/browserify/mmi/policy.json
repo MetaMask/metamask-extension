@@ -718,6 +718,7 @@
     },
     "@metamask-institutional/custody-keyring": {
       "globals": {
+        "console.error": true,
         "console.log": true,
         "console.warn": true
       },
