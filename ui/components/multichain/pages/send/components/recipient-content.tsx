@@ -26,7 +26,7 @@ export const SendPageRecipientContent = ({
   onAssetChange,
 }: {
   requireContractAddressAcknowledgement: boolean;
-  onAssetChange: (newAsset: Asset) => void;
+  onAssetChange: (isReceived: boolean) => (newAsset: Asset) => void;
 }) => {
   const t = useI18nContext();
 
@@ -45,6 +45,10 @@ export const SendPageRecipientContent = ({
     amount: sendAmount,
     isSwapQuoteLoading,
   } = useSelector(getCurrentDraftTransaction);
+
+  const isSendingToken = [AssetType.token, AssetType.native].includes(
+    sendAsset.type,
+  );
 
   const bestQuote = useSelector(getBestQuote);
 
@@ -102,9 +106,9 @@ export const SendPageRecipientContent = ({
       ) : null}
       <SendPageRow>
         <AssetPickerAmount
-          asset={receiveAsset}
-          sendingAsset={sendAsset}
-          onAssetChange={onAssetChange}
+          asset={isSendingToken ? receiveAsset : sendAsset}
+          sendingAsset={isSendingToken ? sendAsset : undefined}
+          onAssetChange={onAssetChange(isSendingToken)}
           isAmountLoading={isLoadingInitialQuotes}
           amount={amount} // TODO - this should be the amount of the asset being sent
         />
