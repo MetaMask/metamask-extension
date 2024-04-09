@@ -890,6 +890,7 @@ export default class Home extends PureComponent {
           }
           <SmartTransactionsOptInModal
             isOpen={showSmartTransactionsOptInModal}
+            hideWhatsNewPopup={hideWhatsNewPopup}
           />
           {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
           {!showWhatsNew && showRecoveryPhraseReminder ? (

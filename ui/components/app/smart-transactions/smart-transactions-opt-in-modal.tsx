@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -33,6 +33,7 @@ import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../shared/constants/
 
 export type SmartTransactionsOptInModalProps = {
   isOpen: boolean;
+  hideWhatsNewPopup: () => void;
 };
 
 const LearnMoreLink = () => {
@@ -161,6 +162,7 @@ const Benefits = () => {
 
 export default function SmartTransactionsOptInModal({
   isOpen,
+  hideWhatsNewPopup,
 }: SmartTransactionsOptInModalProps) {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -172,6 +174,15 @@ export default function SmartTransactionsOptInModal({
   const handleNotRightNowLinkClick = useCallback(() => {
     dispatch(setSmartTransactionsOptInStatus(false));
   }, [dispatch]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+    // If the Smart Transactions Opt-In modal is open, hide the What's New popup,
+    // because we don't want to show 2 modals at the same time.
+    hideWhatsNewPopup();
+  }, [isOpen, hideWhatsNewPopup]);
 
   return (
     <Modal
