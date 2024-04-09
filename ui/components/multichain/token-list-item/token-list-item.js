@@ -157,7 +157,9 @@ export const TokenListItem = ({
             return;
           }
 
-          onClick();
+          if (onClick) {
+            onClick();
+          }
           trackEvent({
             category: MetaMetricsEventCategory.Tokens,
             event: MetaMetricsEventName.TokenDetailsOpened,
