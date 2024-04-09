@@ -53,7 +53,7 @@ export default function CurrencyInput({
 }) {
   const t = useContext(I18nContext);
 
-  const assetDecimals = asset?.decimals || NATIVE_CURRENCY_DECIMALS;
+  const assetDecimals = Number(asset?.decimals) || NATIVE_CURRENCY_DECIMALS;
 
   const preferredCurrency = useSelector(getNativeCurrency);
   const secondaryCurrency = useSelector(getCurrentCurrency);
@@ -239,7 +239,7 @@ CurrencyInput.propTypes = {
   asset: PropTypes.shape({
     address: PropTypes.string,
     symbol: PropTypes.string,
-    decimals: PropTypes.number,
+    decimals: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     isERC721: PropTypes.bool,
   }),
   isSkeleton: PropTypes.bool,
