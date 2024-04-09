@@ -22,15 +22,25 @@ import type {
   ValidPermission,
 } from '@metamask/permission-controller';
 import type { Hex, Json } from '@metamask/utils';
+import { InfuraNetworkType } from '@metamask/controller-utils';
 import {
   MetaMetricsEventPayload,
   MetaMetricsPageOptions,
 } from '../../../../../shared/constants/metametrics';
 
+export type ExistingNetworkChainIds = '0x1' | '0xaa36a7' | '0xe704' | '0xe708';
+
 export type HandlerWrapper = {
   methodNames: [string];
   hookNames: Record<string, boolean>;
 };
+
+export type NetworkConfigurations = Record<
+  string,
+  NetworkConfiguration & {
+    id: string;
+  }
+>;
 
 /**
  * @property chainId - The current chain ID.
@@ -60,13 +70,15 @@ export type UpsertNetworkConfigurationOptions = {
 
 export type AddSubjectMetadata = (metadata: SubjectMetadataToAdd) => void;
 export type EndApprovalFlow = ({ id }: EndFlowOptions) => void;
+export type FindNetworkClientIdByChainId = (chainId: Hex) => NetworkClientId;
 export type FindNetworkConfigurationBy = (
   rpcInfo: Record<string, string>,
 ) => ProviderConfig | null;
-export type HasPermissions = (origin: OriginString) => boolean;
+export type HasPermission = (origin: OriginString) => boolean;
 export type GetAccounts = () => Promise<string[]>;
 export type GetCurrentChainId = () => Hex;
 export type GetCurrentRpcUrl = () => string | undefined;
+export type GetNetworkConfigurations = () => NetworkConfiguration;
 export type GetPermissionsForOrigin<
   ControllerCaveatSpecification extends CaveatSpecificationConstraint = CaveatSpecificationConstraint,
 > = (
@@ -126,6 +138,7 @@ export type SetNetworkClientIdForDomain = (
   domain: string,
   networkClientId: NetworkClientId,
 ) => void;
+export type SetProviderType = (type: InfuraNetworkType) => Promise<void>;
 export type SetWeb3ShimUsageRecorded = (origin: OriginString) => void;
 export type StartApprovalFlow = (
   options?: StartFlowOptions,
