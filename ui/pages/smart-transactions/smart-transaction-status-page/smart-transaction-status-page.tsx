@@ -32,6 +32,10 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentChainId } from '../../../selectors';
 import { getFeatureFlagsByChainId } from '../../../../shared/modules/selectors';
 import { BaseUrl } from '../../../../shared/constants/urls';
+import {
+  FALLBACK_SMART_TRANSACTIONS_EXPECTED_DEADLINE,
+  FALLBACK_SMART_TRANSACTIONS_MAX_DEADLINE,
+} from '../../../../shared/constants/smartTransactions';
 import { hideLoadingIndication } from '../../../store/actions';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 
@@ -45,9 +49,6 @@ export type SmartTransactionStatusPageProps = {
   onCloseExtension: () => void;
   onViewActivity: () => void;
 };
-
-const SMART_TRANSACTIONS_EXPECTED_DEADLINE_FALLBACK = 45;
-const SMART_TRANSACTIONS_MAX_DEADLINE_FALLBACK = 150;
 
 export const showRemainingTimeInMinAndSec = (
   remainingTimeInSec: number,
@@ -406,10 +407,10 @@ export const SmartTransactionStatusPage = ({
   } | null = useSelector(getFeatureFlagsByChainId);
   const stxEstimatedDeadline =
     featureFlags?.smartTransactions?.expectedDeadline ||
-    SMART_TRANSACTIONS_EXPECTED_DEADLINE_FALLBACK;
+    FALLBACK_SMART_TRANSACTIONS_EXPECTED_DEADLINE;
   const stxMaxDeadline =
     featureFlags?.smartTransactions?.maxDeadline ||
-    SMART_TRANSACTIONS_MAX_DEADLINE_FALLBACK;
+    FALLBACK_SMART_TRANSACTIONS_MAX_DEADLINE;
   const {
     timeLeftForPendingStxInSec,
     isSmartTransactionTakingTooLong,
