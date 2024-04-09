@@ -55,7 +55,6 @@ import {
   BannerBase,
   Icon,
 } from '../../components/component-library';
-
 import {
   ASSET_ROUTE,
   RESTORE_VAULT_ROUTE,
@@ -78,9 +77,13 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-///: BEGIN:ONLY_INCLUDE_IF(build-main)
-import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
-///: END:ONLY_INCLUDE_IF
+import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
+  SUPPORT_LINK,
+  ///: END:ONLY_INCLUDE_IF
+  SURVEY_LINK,
+  PRIVACY_POLICY_LINK,
+} from '../../../shared/lib/ui-utils';
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
@@ -823,8 +826,6 @@ export default class Home extends PureComponent {
       theme === ThemeType.light ? ThemeType.dark : ThemeType.light;
 
     const isPrivacyToastRecent = this.getIsPrivacyToastRecent();
-    const surveyLink = 'https://www.getfeedback.com/r/Oczu1vP0';
-    const privacyPolicyLink = 'https://www.consensys.io/privacy-policy';
 
     return showSurveyToast || showPrivacyPolicyToast ? (
       <Box className="home__overlay-banners">
@@ -839,7 +840,7 @@ export default class Home extends PureComponent {
             actionButtonLabel={t('surveyConversion')}
             actionButtonOnClick={() => {
               global.platform.openTab({
-                url: surveyLink,
+                url: SURVEY_LINK,
               });
               setSurveyLinkLastClickedOrClosed(Date.now());
             }}
@@ -859,7 +860,7 @@ export default class Home extends PureComponent {
             actionButtonLabel={t('newPrivacyPolicyActionButton')}
             actionButtonOnClick={() => {
               global.platform.openTab({
-                url: privacyPolicyLink,
+                url: PRIVACY_POLICY_LINK,
               });
               setNewPrivacyPolicyToastClickedOrClosed();
             }}
