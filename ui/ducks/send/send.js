@@ -807,12 +807,14 @@ const fetchSwapAndSendQuotes = createAsyncThunk(
           sender,
           recipient: draftTransaction.recipient.address,
           slippage: '5', // TODO: update when solution is available
-        }).then((response) => resolve(response));
+        })
+          .then((response) => resolve(response))
+          .catch(reject);
       }, FETCH_DELAY),
     );
 
     if (!Object.keys(quotes).length) {
-      throw new Error(SWAPS_QUOTES_ERROR);
+      throw new Error('swapQuotesNotAvailableErrorTitle');
     }
 
     return { quotes, requestTimestamp };
