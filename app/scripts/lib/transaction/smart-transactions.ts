@@ -71,13 +71,7 @@ export class SmartTransactionHook {
 
   #approvalFlowId: string;
 
-  #transactionMeta: TransactionMeta;
-
-  #smartTransactionsController: SmartTransactionsController;
-
-  #transactionController: TransactionController;
-
-  #isSmartTransaction: boolean;
+  #chainId: Hex;
 
   #controllerMessenger: SmartTransactionsControllerMessenger;
 
@@ -93,7 +87,13 @@ export class SmartTransactionHook {
 
   #isDapp: boolean;
 
-  #chainId: Hex;
+  #isSmartTransaction: boolean;
+
+  #smartTransactionsController: SmartTransactionsController;
+
+  #transactionController: TransactionController;
+
+  #transactionMeta: TransactionMeta;
 
   #txParams: TransactionParams;
 
