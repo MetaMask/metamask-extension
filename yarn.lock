@@ -5780,9 +5780,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^26.0.0":
-  version: 26.0.0
-  resolution: "@metamask/transaction-controller@npm:26.0.0"
+"@metamask/transaction-controller@npm:^27.0.1":
+  version: 27.0.1
+  resolution: "@metamask/transaction-controller@npm:27.0.1"
   dependencies:
     "@ethereumjs/common": "npm:^3.2.0"
     "@ethereumjs/tx": "npm:^4.2.0"
@@ -5811,7 +5811,7 @@ __metadata:
     "@metamask/approval-controller": ^6.0.0
     "@metamask/gas-fee-controller": ^15.0.0
     "@metamask/network-controller": ^18.0.0
-  checksum: 13af8e619d09ce1da9c2a05885fbd5aba78c5b60bce9a9d7d56ee5026421986a909a2d65b81a5b90b1d7568f6e077d0bc49fbbe55870a40b34fc0dec65eb23dd
+  checksum: aeb682e943120de802f1125a55b4fbd50924cf21d939d264b29562ad302aa59c242eb2ace4a473f0383a3f88bb9b26b3460075797300bbb824ceed8057c170f8
   languageName: node
   linkType: hard
 
@@ -24920,7 +24920,7 @@ __metadata:
     "@metamask/snaps-utils": "npm:^7.0.4"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:^8.4.0"
-    "@metamask/transaction-controller": "npm:^26.0.0"
+    "@metamask/transaction-controller": "npm:^27.0.1"
     "@metamask/user-operation-controller": "npm:^6.0.0"
     "@metamask/utils": "npm:^8.2.1"
     "@ngraveio/bc-ur": "npm:^1.1.12"

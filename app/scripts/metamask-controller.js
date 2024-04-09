@@ -6042,22 +6042,24 @@ export default class MetamaskController extends EventEmitter {
       return;
     }
 
-    log.debug('Updated remote token list usage', newEnabled);
-
     this.tokenListController.updatePreventPollingOnNetworkRestart(!newEnabled);
 
     if (newEnabled) {
+      log.debug('Started token list controller polling');
       this.tokenListController.start();
     } else {
+      log.debug('Stopped token list controller polling');
       this.tokenListController.clearingTokenListData();
       this.tokenListController.stop();
     }
   }
 
   #isTokenListRequired(preferencesControllerState) {
-    const { useTokenDetection, preferences } = preferencesControllerState ?? {};
+    const { useTokenDetection, useTransactionSimulations, preferences } =
+      preferencesControllerState ?? {};
+
     const { petnamesEnabled } = preferences ?? {};
 
-    return useTokenDetection || petnamesEnabled;
+    return useTokenDetection || petnamesEnabled || useTransactionSimulations;
   }
 }
