@@ -214,8 +214,6 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
     console.log('onConnectExternal extension', ...args)
     connectExternal(...args);
   }
-  // console.log('onConnectExternal', ...args)
-  // connectExternal(...args);
 });
 
 function saveTimestamp() {
