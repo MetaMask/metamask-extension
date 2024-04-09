@@ -70,7 +70,12 @@ function BlockaidBannerAlert({ txData, ...props }) {
   ) {
     return null;
   } else if (securityAlertResponse.reason === 'loading') {
-    return <LoadingIndicator isLoading />;
+    return (
+      <LoadingIndicator
+        isLoading
+        style={{ position: 'absolute', paddingTop: '8px' }}
+      />
+    );
   }
 
   const {
