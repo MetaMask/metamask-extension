@@ -69,7 +69,7 @@ export function AssetPicker({
   let sendingTokenImage: string | undefined;
 
   if (sendingAsset) {
-    if (asset.type === AssetType.native) {
+    if (sendingAsset.type === AssetType.native) {
       sendingTokenImage = nativeCurrencyImageUrl;
     } else if (tokenList && sendingAsset.details) {
       sendingTokenImage =
