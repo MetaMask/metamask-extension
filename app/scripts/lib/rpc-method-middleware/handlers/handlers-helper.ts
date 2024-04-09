@@ -31,7 +31,7 @@ import {
 export type ExistingNetworkChainIds = '0x1' | '0xaa36a7' | '0xe704' | '0xe708';
 
 export type HandlerWrapper = {
-  methodNames: [string];
+  methodNames: [string] | string[];
   hookNames: Record<string, boolean>;
 };
 
