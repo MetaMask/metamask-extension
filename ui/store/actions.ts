@@ -2083,7 +2083,7 @@ export function addNftVerifyOwnership(
 export function removeAndIgnoreNft(
   address: string,
   tokenID: string,
-  dontShowLoadingIndicator: boolean,
+  shouldShowLoadingIndicator?: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     if (!address) {
@@ -2092,7 +2092,7 @@ export function removeAndIgnoreNft(
     if (!tokenID) {
       throw new Error('MetaMask - Cannot ignore NFT without tokenID');
     }
-    if (!dontShowLoadingIndicator) {
+    if (!shouldShowLoadingIndicator) {
       dispatch(showLoadingIndication());
     }
     try {
@@ -2100,6 +2100,7 @@ export function removeAndIgnoreNft(
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning(error));
+      throw error;
     } finally {
       await forceUpdateMetamaskState(dispatch);
       dispatch(hideLoadingIndication());
