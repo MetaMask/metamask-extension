@@ -341,6 +341,7 @@ export function AssetPickerModal({
             }}
             endAccessory={null}
             size={TextFieldSearchSize.Lg}
+            marginBottom={1}
           />
         </Box>
         <Box style={{ flexGrow: '1' }}>
