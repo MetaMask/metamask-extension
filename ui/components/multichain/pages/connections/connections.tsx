@@ -22,7 +22,6 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getConnectedSitesList,
   getInternalAccounts,
-  getOrderedConnectedAccountsForActiveTab,
   getOrderedConnectedAccountsForConnected,
   getOriginOfCurrentTab,
   getPermissionSubjects,
@@ -88,10 +87,9 @@ export const Connections = () => {
     setShowDisconnectedAllAccountsUpdatedToast,
   ] = useState(false);
 
-  const CONNECTED_ACCOUNTS_TAB_KEY = 'connected-accounts';
   const urlParams: { origin: string } = useParams();
   const originOfTab = useSelector(getOriginOfCurrentTab);
-  const securedOrigin = `https://${urlParams.origin}`;
+  const securedOrigin = decodeURIComponent(urlParams.origin);
   const activeTabOrigin: string = urlParams.origin
     ? securedOrigin
     : originOfTab;
