@@ -1007,26 +1007,6 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     },
   },
   {
-    chainId: CHAIN_IDS.CELO,
-    nickname: CELO_DISPLAY_NAME,
-    rpcUrl: `https://celo-mainnet.infura.io/v3/${infuraProjectId}`,
-    ticker: CURRENCY_SYMBOLS.CELO,
-    rpcPrefs: {
-      blockExplorerUrl: 'https://celoscan.io',
-      imageUrl: CELO_TOKEN_IMAGE_URL,
-    },
-  },
-  {
-    chainId: CHAIN_IDS.GNOSIS,
-    nickname: GNOSIS_DISPLAY_NAME,
-    rpcUrl: `https://rpc.gnosischain.com`,
-    ticker: CURRENCY_SYMBOLS.GNOSIS,
-    rpcPrefs: {
-      blockExplorerUrl: 'https://gnosisscan.io',
-      imageUrl: GNOSIS_TOKEN_IMAGE_URL,
-    },
-  },
-  {
     chainId: CHAIN_IDS.ZKSYNC_ERA,
     nickname: ZK_SYNC_ERA_DISPLAY_NAME,
     rpcUrl: `https://mainnet.era.zksync.io`,
