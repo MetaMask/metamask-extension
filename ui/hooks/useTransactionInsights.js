@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { SeverityLevel } from '@metamask/snaps-sdk';
 import { TransactionType } from '@metamask/transaction-controller';
 import { stripHexPrefix } from '../../shared/modules/hexstring-utils';
 import { Tab } from '../components/ui/tabs';
@@ -40,7 +39,7 @@ const useTransactionInsights = ({ txData }) => {
     insightSnaps[0]?.id,
   );
 
-  const { data, loading } = useTransactionInsightSnaps({
+  const { data, loading, warnings } = useTransactionInsightSnaps({
     transaction: txParams,
     chainId: caip2ChainId,
     origin,
@@ -115,17 +114,6 @@ const useTransactionInsights = ({ txData }) => {
       </DropdownTab>
     );
   }
-
-  const warnings = data?.reduce((warningsArr, promise) => {
-    if (promise.response?.severity === SeverityLevel.Critical) {
-      const {
-        snapId,
-        response: { id },
-      } = promise;
-      warningsArr.push({ snapId, id });
-    }
-    return warningsArr;
-  }, []);
 
   return { insightComponent, warnings };
 };
