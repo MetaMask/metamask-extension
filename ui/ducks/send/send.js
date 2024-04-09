@@ -127,6 +127,7 @@ import {
   estimateGasLimitForSend,
   generateTransactionParams,
   getRoundedGasPrice,
+  calculateBestQuote,
 } from './helpers';
 
 const RECENT_REQUEST_ERROR =
@@ -2714,14 +2715,7 @@ export const getBestQuote = createSelector(
       return undefined;
     }
 
-    // TODO: account for gas
-    const bestQuote = quotesAsArray.reduce(
-      (best, current) =>
-        current?.destinationAmount > (best?.destinationAmount || 0)
-          ? current
-          : best,
-      undefined,
-    );
+    const bestQuote = calculateBestQuote(quotesAsArray);
 
     return bestQuote;
   },
