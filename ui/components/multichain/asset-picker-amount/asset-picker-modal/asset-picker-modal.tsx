@@ -331,30 +331,6 @@ export function AssetPickerModal({
                 name={t('nfts')}
                 tabKey="nfts"
               >
-                <Box paddingBottom={4} paddingTop={4} padding={4}>
-                  <TextFieldSearch
-                    placeholder={t('searchTokenOrNFT')}
-                    value={searchQuery}
-                    // TODO: Replace `any` with type
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    onChange={(e: any) => handleSearch(e.target.value)}
-                    error={false}
-                    autoFocus
-                    autoComplete={false}
-                    width={BlockSize.Full}
-                    clearButtonOnClick={() => setSearchQuery('')}
-                    clearButtonProps={{
-                      size: ButtonIconSize.Sm,
-                    }}
-                    showClearButton={true}
-                    className="asset-picker-modal__search-list"
-                    inputProps={{
-                      'data-testid': 'asset-picker-modal-search-input',
-                    }}
-                    endAccessory={null}
-                    size={TextFieldSearchSize.Lg}
-                  />
-                </Box>
                 {hasAnyNfts ? (
                   <Box className="modal-tab__main-view">
                     <NftsItems
