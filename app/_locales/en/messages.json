@@ -4260,6 +4260,9 @@
   "sendTokens": {
     "message": "Send tokens"
   },
+  "sendingAsset": {
+    "message": "Sending $1"
+  },
   "sendingDisabled": {
     "message": "Sending of ERC-1155 NFT assets is not yet supported."
   },

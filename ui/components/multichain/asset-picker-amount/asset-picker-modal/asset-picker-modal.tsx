@@ -16,6 +16,8 @@ import {
   ButtonLinkSize,
   ButtonIconSize,
   TextFieldSearchSize,
+  AvatarTokenSize,
+  AvatarToken,
 } from '../../../component-library';
 import {
   BlockSize,
@@ -61,6 +63,8 @@ type AssetPickerModalProps = {
   onClose: () => void;
   asset: Asset;
   onAssetChange: (asset: Asset) => void;
+  sendingAssetImage?: string;
+  sendingAssetSymbol?: string;
 };
 
 type NFT = {
@@ -97,6 +101,8 @@ export function AssetPickerModal({
   onClose,
   asset,
   onAssetChange,
+  sendingAssetImage,
+  sendingAssetSymbol,
 }: AssetPickerModalProps) {
   const t = useI18nContext();
   const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
@@ -218,6 +224,24 @@ export function AssetPickerModal({
         <ModalHeader padding={4} onClose={onClose}>
           {t('selectAToken')}
         </ModalHeader>
+        {sendingAssetImage && sendingAssetSymbol && (
+          <Box
+            display={Display.Flex}
+            gap={1}
+            alignItems={AlignItems.center}
+            marginInline="auto"
+            marginBottom={4}
+          >
+            <AvatarToken
+              borderRadius={BorderRadius.full}
+              src={sendingAssetImage}
+              size={AvatarTokenSize.Xs}
+            />
+            <Text variant={TextVariant.bodySm}>
+              {t('sendingAsset', [sendingAssetSymbol])}
+            </Text>
+          </Box>
+        )}
         <Box padding={1} paddingLeft={4} paddingRight={4}>
           <TextFieldSearch
             borderRadius={BorderRadius.LG}
