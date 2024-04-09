@@ -13,6 +13,7 @@ import {
 } from '../../../../../../../selectors/selectors';
 import { getUsedSwapsGasPrice } from '../../../../../../../ducks/swaps/swaps';
 import { formatCurrency } from '../../../../../../../helpers/utils/confirm-tx.util';
+import { toFixedNoTrailingZeros } from './utils';
 
 export default function useEthFeeData(gasLimit = 0) {
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
@@ -47,7 +48,9 @@ export default function useEthFeeData(gasLimit = 0) {
       currentCurrency,
     );
 
-    const formattedEthGasFee = `${ethGasFee} ${nativeCurrencySymbol}`;
+    const formattedEthGasFee = `${toFixedNoTrailingZeros(
+      ethGasFee.toNumber(),
+    )} ${nativeCurrencySymbol}`;
 
     return { ethGasFee, fiatGasFee, formattedFiatGasFee, formattedEthGasFee };
   }, [
