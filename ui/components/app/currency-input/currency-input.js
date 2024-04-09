@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Box } from '../../component-library';
@@ -79,6 +79,8 @@ export default function CurrencyInput({
     type,
   );
 
+  const inputRef = useRef();
+
   const tokenToFiatConversionRate = useTokenExchangeRate(asset?.address);
 
   const processNewDecimalValue = useProcessNewDecimalValue(
@@ -136,6 +138,10 @@ export default function CurrencyInput({
 
     setTokenDecimalValue(newTokenDecimalValue);
     setFiatDecimalValue(newFiatDecimalValue);
+
+    // timeout intentionally not cleared so this always runs
+    setTimeout(() => inputRef.current?.updateIsOverflowing?.(), 500);
+
     // tokenDecimalValue does not need to be in here, since this side effect is only for upstream updates
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -211,6 +217,7 @@ export default function CurrencyInput({
     </Box>
   ) : (
     <UnitInput
+      ref={inputRef}
       isDisabled={isDisabled}
       hideSuffix={isTokenPrimary && isLongSymbol}
       dataTestId="currency-input"
