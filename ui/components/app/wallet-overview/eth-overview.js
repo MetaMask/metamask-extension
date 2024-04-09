@@ -38,7 +38,6 @@ import {
   getSwapsDefaultToken,
   getCurrentKeyring,
   getIsBridgeChain,
-  getIsBuyableChain,
   getMetaMetricsId,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
@@ -77,7 +76,7 @@ const EthOverview = ({ className, showAddress }) => {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const location = useLocation();
   const isBridgeChain = useSelector(getIsBridgeChain);
-  const isBuyableChain = useSelector(getIsBuyableChain);
+  const { openBuyCryptoInPdapp, isBuyableChain } = useRamps();
   const metaMetricsId = useSelector(getMetaMetricsId);
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
@@ -186,10 +185,6 @@ const EthOverview = ({ className, showAddress }) => {
       </>
     );
   };
-  ///: END:ONLY_INCLUDE_IF
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  const { openBuyCryptoInPdapp } = useRamps();
   ///: END:ONLY_INCLUDE_IF
 
   return (

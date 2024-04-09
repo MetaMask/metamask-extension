@@ -23,7 +23,6 @@ import TransactionDetail from '../../components/transaction-detail';
 import ActionableMessage from '../../../../components/ui/actionable-message';
 import {
   getPreferences,
-  getIsBuyableChain,
   transactionFeeSelector,
   getIsTestnet,
   getUseCurrencyRateCheck,
@@ -58,7 +57,7 @@ export default function GasDisplay({ gasError }) {
 
   const providerConfig = useSelector(getProviderConfig);
   const isTestnet = useSelector(getIsTestnet);
-  const isBuyableChain = useSelector(getIsBuyableChain);
+  const { isBuyableChain } = useRamps();
   const draftTransaction = useSelector(getCurrentDraftTransaction);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const { showFiatInTestnets, useNativeCurrencyAsPrimaryCurrency } =

@@ -45,7 +45,6 @@ import {
   doesAddressRequireLedgerHidConnection,
   getTokenList,
   getIsMultiLayerFeeNetwork,
-  getIsBuyableChain,
   getEnsResolutionByAddress,
   getUnapprovedTransaction,
   getFullTxData,
@@ -106,6 +105,7 @@ import { getTokenAddressParam } from '../../../helpers/utils/token-util';
 import { calcGasTotal } from '../../../../shared/lib/transactions-controller-utils';
 import { subtractHexes } from '../../../../shared/modules/conversion.utils';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
+import useRamps from '../../../hooks/useRamps/useRamps';
 
 let customNonceValue = '';
 const customNonceMerge = (txData) =>
@@ -140,7 +140,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const isGasEstimatesLoading = getIsGasEstimatesLoading(state);
   const gasLoadingAnimationIsShowing = getGasLoadingAnimationIsShowing(state);
-  const isBuyableChain = getIsBuyableChain(state);
+  const { isBuyableChain } = useRamps();
   const { confirmTransaction, metamask } = state;
   const conversionRate = getConversionRate(state);
   const { addressBook, nextNonce } = metamask;

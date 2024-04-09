@@ -7,6 +7,7 @@ import { getCurrentChainId, getMetaMetricsId } from '../../selectors';
 type IUseRamps = {
   openBuyCryptoInPdapp: VoidFunction;
   getBuyURI: (chainId: ChainId) => string;
+  isBuyableChain: boolean;
 };
 
 export enum RampsMetaMaskEntry {
@@ -43,7 +44,7 @@ const useRamps = (
     });
   }, [chainId]);
 
-  return { openBuyCryptoInPdapp, getBuyURI };
+  return { openBuyCryptoInPdapp, getBuyURI, isBuyableChain: true };
 };
 
 export default useRamps;

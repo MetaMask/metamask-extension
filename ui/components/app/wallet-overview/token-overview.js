@@ -32,7 +32,6 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getIsBridgeChain,
   getCurrentKeyring,
-  getIsBuyableChain,
   getMetaMetricsId,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
@@ -80,7 +79,7 @@ const TokenOverview = ({ className, token }) => {
   const isSwapsChain = useSelector(getIsSwapsChain);
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBridgeChain = useSelector(getIsBridgeChain);
-  const isBuyableChain = useSelector(getIsBuyableChain);
+  const { isBuyableChain } = useRamps();
   const metaMetricsId = useSelector(getMetaMetricsId);
 
   const { openBuyCryptoInPdapp } = useRamps();

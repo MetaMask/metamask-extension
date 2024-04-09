@@ -47,7 +47,6 @@ import {
   getAccountName,
   getAddressBookEntry,
   getInternalAccounts,
-  getIsBuyableChain,
   getMetadataContractName,
   getNetworkIdentifier,
   getSwapsDefaultToken,
@@ -124,7 +123,7 @@ const ConfirmPageContainer = (props) => {
   const [isShowingTxInsightWarnings, setIsShowingTxInsightWarnings] =
     useState(false);
   ///: END:ONLY_INCLUDE_IF
-  const isBuyableChain = useSelector(getIsBuyableChain);
+  const { openBuyCryptoInPdapp, isBuyableChain } = useRamps();
   const contact = useSelector((state) => getAddressBookEntry(state, toAddress));
   const networkIdentifier = useSelector(getNetworkIdentifier);
   const defaultToken = useSelector(getSwapsDefaultToken);
@@ -136,12 +135,6 @@ const ConfirmPageContainer = (props) => {
   const toMetadataName = useSelector((state) =>
     getMetadataContractName(state, toAddress),
   );
-
-  // TODO: Move useRamps hook to the confirm-transaction-base parent component.
-  // TODO: openBuyCryptoInPdapp should be passed to this component as a custom prop.
-  // We try to keep this component for layout purpose only, we need to move this hook to the confirm-transaction-base parent
-  // component once it is converted to a functional component
-  const { openBuyCryptoInPdapp } = useRamps();
 
   const isSetApproveForAll =
     currentTransaction.type === TransactionType.tokenMethodSetApprovalForAll;

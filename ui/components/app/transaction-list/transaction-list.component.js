@@ -8,7 +8,6 @@ import {
 } from '../../../selectors/transactions';
 import {
   getCurrentChainId,
-  getIsBuyableChain,
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
 } from '../../../selectors';
@@ -28,6 +27,7 @@ import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { RampsCard } from '../../multichain/ramps-card';
 import { RAMPS_CARD_VARIANT_TYPES } from '../../multichain/ramps-card/ramps-card';
+import useRamps from '../../../hooks/useRamps/useRamps';
 
 const PAGE_INCREMENT = 10;
 
@@ -131,7 +131,7 @@ export default function TransactionList({
     shouldHideZeroBalanceTokens,
   );
   const balanceIsZero = Number(totalFiatBalance) === 0;
-  const isBuyableChain = useSelector(getIsBuyableChain);
+  const { isBuyableChain } = useRamps();
   const showRampsCard = isBuyableChain && balanceIsZero;
 
   const renderDateStamp = (index, dateGroup) => {
