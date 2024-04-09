@@ -2228,7 +2228,7 @@ export default class MetamaskController extends EventEmitter {
       );
     }
 
-    if (this.#isTokenListRequired(preferencesControllerState)) {
+    if (this.#isTokenListPollingRequired(preferencesControllerState)) {
       this.tokenListController.start();
     }
   }
@@ -2247,7 +2247,7 @@ export default class MetamaskController extends EventEmitter {
       this.currencyRateController.stopAllPolling();
     }
 
-    if (this.#isTokenListRequired(preferencesControllerState)) {
+    if (this.#isTokenListPollingRequired(preferencesControllerState)) {
       this.tokenListController.stop();
       this.tokenRatesController.stop();
     }
@@ -6024,7 +6024,7 @@ export default class MetamaskController extends EventEmitter {
       this.txController.stopIncomingTransactionPolling();
     }
 
-    this.#checkTokenDetectionPreferences(currentState, previousState);
+    this.#checkTokenListPolling(currentState, previousState);
 
     // TODO: Remove once the preferences controller has been replaced with the core monorepo implementation
     this.controllerMessenger.publish(
@@ -6034,9 +6034,9 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
-  #checkTokenDetectionPreferences(currentState, previousState) {
-    const previousEnabled = this.#isTokenListRequired(previousState);
-    const newEnabled = this.#isTokenListRequired(currentState);
+  #checkTokenListPolling(currentState, previousState) {
+    const previousEnabled = this.#isTokenListPollingRequired(previousState);
+    const newEnabled = this.#isTokenListPollingRequired(currentState);
 
     if (previousEnabled === newEnabled) {
       return;
@@ -6054,7 +6054,7 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  #isTokenListRequired(preferencesControllerState) {
+  #isTokenListPollingRequired(preferencesControllerState) {
     const { useTokenDetection, useTransactionSimulations, preferences } =
       preferencesControllerState ?? {};
 
