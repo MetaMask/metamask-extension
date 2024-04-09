@@ -1046,9 +1046,11 @@ export default class ConfirmTransactionBase extends Component {
     if (smartTransactionsOptInStatus && currentChainSupportsSmartTransactions) {
       // TODO: Fetching swaps feature flags, which include feature flags for smart transactions, is only a short-term solution.
       // Long-term, we want to have a new proxy service specifically for feature flags.
-      const swapsFeatureFlags = await fetchSwapsFeatureFlags();
+      const [swapsFeatureFlags] = await Promise.all([
+        fetchSwapsFeatureFlags(),
+        fetchSmartTransactionsLiveness(),
+      ]);
       await setSwapsFeatureFlags(swapsFeatureFlags);
-      await fetchSmartTransactionsLiveness();
     }
   }
 
