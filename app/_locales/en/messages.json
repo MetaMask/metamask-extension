@@ -914,9 +914,6 @@
   "connectedWith": {
     "message": "Connected with"
   },
-  "connectedaccountsTabKey": {
-    "message": "Connected accounts"
-  },
   "connecting": {
     "message": "Connecting..."
   },
