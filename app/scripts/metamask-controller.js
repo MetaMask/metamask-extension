@@ -413,6 +413,9 @@ export default class MetamaskController extends EventEmitter {
           'NetworkController:setActiveNetwork',
           'SelectedNetworkController:getNetworkClientIdForDomain',
         ],
+        allowedEvents: [
+          'SelectedNetworkController:stateChange',
+        ]
       }),
     });
 
