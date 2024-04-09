@@ -6,9 +6,10 @@ export default function LoadingIndicator({
   title,
   isLoading,
   children = null,
+  ...props
 }) {
   return isLoading ? (
-    <span className="loading-indicator">
+    <span className="loading-indicator" {...props}>
       <img
         className="loading-indicator__spinner"
         alt={alt}
