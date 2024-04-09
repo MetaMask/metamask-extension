@@ -268,7 +268,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         // Wait for the first dapp's connect confirmation to disappear
         await driver.waitUntilXWindowHandles(2);
 
-        await driver.delay(regularDelayMs);
+        await driver.delay(largeDelayMs);
 
         // Dapp one send tx
         await driver.switchToWindowWithUrl(DAPP_URL);
@@ -280,6 +280,27 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         // after connecting the dapp should now have its own selected network
         // independent from the globally selected and therefore should have changed
         assert.equal(await chainIdAfterConnectAndSwitch.getText(), '0x53a'); // 1338
+
+        // go back to fullscreen and manually switch network one more time
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+
+        // Network Selector
+        await driver.clickElement('[data-testid="network-display"]');
+
+        // Switch to second network
+        await driver.clickElement({
+          text: 'Ethereum Mainnet',
+          css: 'p',
+        });
+
+        await driver.switchToWindowWithUrl(DAPP_URL);
+
+        const finalChainIdCheck = await driver.findElement('#chainId');
+
+        // dapp selected network should still be 0x53
+        assert.equal(await finalChainIdCheck.getText(), '0x53a'); // 1338
       },
     );
   });
