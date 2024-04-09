@@ -2,9 +2,9 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { errorCodes, ethErrors } from 'eth-rpc-errors';
 import { omit } from 'lodash';
 import type {
+  JsonRpcEngineCallbackError,
   JsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,
-  JsonRpcEngineCallbackError,
 } from '@metamask/json-rpc-engine';
 import type {
   JsonRpcRequest,
@@ -12,6 +12,7 @@ import type {
   JsonRpcParams,
   Hex,
 } from '@metamask/utils';
+import { ProviderConfig } from '@metamask/network-controller';
 import {
   MESSAGE_TYPE,
   UNKNOWN_TICKER_SYMBOL,
@@ -122,7 +123,7 @@ async function addEthereumChainHandler<
     rpcUrls,
   } = req.params[0];
 
-  const otherKeys = Object.keys(
+  const otherKeys: string[] = Object.keys(
     omit(req.params[0], [
       'chainId',
       'chainName',
@@ -141,7 +142,7 @@ async function addEthereumChainHandler<
     );
   }
 
-  function isLocalhostOrHttps(urlString: string) {
+  function isLocalhostOrHttps(urlString: string): boolean {
     const url: URL | null = getValidUrl(urlString);
 
     return (
@@ -152,11 +153,11 @@ async function addEthereumChainHandler<
     );
   }
 
-  const firstValidRPCUrl = Array.isArray(rpcUrls)
+  const firstValidRPCUrl: string | null = Array.isArray(rpcUrls)
     ? rpcUrls.find((rpcUrl) => isLocalhostOrHttps(rpcUrl))
     : null;
 
-  const firstValidBlockExplorerUrl =
+  const firstValidBlockExplorerUrl: string | null =
     blockExplorerUrls !== null && Array.isArray(blockExplorerUrls)
       ? blockExplorerUrls.find((blockExplorerUrl) =>
           isLocalhostOrHttps(blockExplorerUrl),
@@ -179,7 +180,7 @@ async function addEthereumChainHandler<
     );
   }
 
-  const _chainId = (typeof chainId === 'string' &&
+  const _chainId: Hex = (typeof chainId === 'string' &&
     chainId.toLowerCase()) as Hex;
 
   if (!isPrefixedFormattedHexString(_chainId)) {
@@ -198,7 +199,9 @@ async function addEthereumChainHandler<
     );
   }
 
-  const existingNetwork = findNetworkConfigurationBy({ chainId: _chainId });
+  const existingNetwork: ProviderConfig | null = findNetworkConfigurationBy({
+    chainId: _chainId,
+  });
 
   // if the request is to add a network that is already added and configured
   // with the same RPC gateway we shouldn't try to add it again.
@@ -206,8 +209,8 @@ async function addEthereumChainHandler<
     // If the network already exists, the request is considered successful
     res.result = null;
 
-    const currentChainId = getCurrentChainId();
-    const currentRpcUrl = getCurrentRpcUrl();
+    const currentChainId: Hex = getCurrentChainId();
+    const currentRpcUrl: string | undefined = getCurrentRpcUrl();
 
     // If the current chainId and rpcUrl matches that of the incoming request
     // We don't need to proceed further.
@@ -247,7 +250,7 @@ async function addEthereumChainHandler<
       }),
     );
   }
-  const _chainName =
+  const _chainName: string =
     chainName.length > 100 ? chainName.substring(0, 100) : chainName;
 
   if (nativeCurrency !== null) {
@@ -320,7 +323,7 @@ async function addEthereumChainHandler<
     networkConfigurationId = await upsertNetworkConfiguration(
       {
         chainId: _chainId,
-        rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
+        rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl as string },
         nickname: _chainName,
         rpcUrl: firstValidRPCUrl,
         ticker,
@@ -330,9 +333,9 @@ async function addEthereumChainHandler<
 
     // Once the network has been added, the requested is considered successful
     res.result = null;
-  } catch (error: any) {
+  } catch (error: unknown) {
     endApprovalFlow({ id: approvalFlowId });
-    return end(error);
+    return end(error as JsonRpcEngineCallbackError);
   }
 
   // Ask the user to switch the network
