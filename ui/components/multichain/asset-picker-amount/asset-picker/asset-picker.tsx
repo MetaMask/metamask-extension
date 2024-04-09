@@ -100,6 +100,7 @@ export function AssetPicker({ asset, onAssetChange }: AssetPickerProps) {
             src={image}
             size={AvatarTokenSize.Md}
             showHalo={!isNFT}
+            {...(isNFT && { backgroundColor: BackgroundColor.transparent })}
           />
           <Tooltip disabled={!isSymbolLong} title={symbol} position="bottom">
             <Text className="asset-picker__symbol" variant={TextVariant.bodyMd}>
