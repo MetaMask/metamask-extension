@@ -218,6 +218,31 @@ export function AssetPickerModal({
         <ModalHeader padding={4} onClose={onClose}>
           {t('selectAToken')}
         </ModalHeader>
+        <Box padding={1} paddingLeft={4} paddingRight={4}>
+          <TextFieldSearch
+            borderRadius={BorderRadius.LG}
+            placeholder={t('searchTokenOrNFT')}
+            value={searchQuery}
+            // TODO: Replace `any` with type
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            onChange={(e: any) => handleSearch(e.target.value)}
+            error={false}
+            autoFocus
+            autoComplete={false}
+            width={BlockSize.Full}
+            clearButtonOnClick={() => setSearchQuery('')}
+            clearButtonProps={{
+              size: ButtonIconSize.Sm,
+            }}
+            showClearButton={true}
+            className="asset-picker-modal__search-list"
+            inputProps={{
+              'data-testid': 'asset-picker-modal-search-input',
+            }}
+            endAccessory={null}
+            size={TextFieldSearchSize.Lg}
+          />
+        </Box>
         <Box style={{ flexGrow: '1' }}>
           <Tabs
             defaultActiveTabKey={defaultActiveTabKey}
@@ -232,30 +257,6 @@ export function AssetPickerModal({
                 name={t('tokens')}
                 tabKey="tokens"
               >
-                <Box paddingBottom={4} paddingTop={4} padding={4}>
-                  <TextFieldSearch
-                    placeholder={t('searchTokenOrNFT')}
-                    value={searchQuery}
-                    // TODO: Replace `any` with type
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    onChange={(e: any) => handleSearch(e.target.value)}
-                    error={false}
-                    autoFocus
-                    autoComplete={false}
-                    width={BlockSize.Full}
-                    clearButtonOnClick={() => setSearchQuery('')}
-                    clearButtonProps={{
-                      size: ButtonIconSize.Sm,
-                    }}
-                    showClearButton={true}
-                    className="asset-picker-modal__search-list"
-                    inputProps={{
-                      'data-testid': 'asset-picker-modal-search-input',
-                    }}
-                    endAccessory={null}
-                    size={TextFieldSearchSize.Lg}
-                  />
-                </Box>
                 <Box className="tokens-main-view-modal">
                   {tokensData.map((token) => {
                     return (
