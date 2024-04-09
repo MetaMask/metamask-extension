@@ -15,6 +15,8 @@ import {
 import { showQrScanner } from '../../../../../store/actions';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import { MetaMetricsEventCategory } from '../../../../../../shared/constants/metametrics';
+import { shortenAddress } from '../../../../../helpers/utils/util';
+import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 import { SendPageRow } from '.';
 
 export const SendPageRecipientInput = () => {
@@ -45,7 +47,11 @@ export const SendPageRecipientInput = () => {
         }}
         internalSearch={isUsingMyAccountsForRecipientSearch}
         selectedAddress={recipient.address}
-        selectedName={recipient.nickname}
+        selectedName={
+          recipient.nickname === recipient.address
+            ? shortenAddress(toChecksumHexAddress(recipient.address))
+            : recipient.nickname
+        }
         onPaste={(text: string) => {
           dispatch(
             addHistoryEntry(
