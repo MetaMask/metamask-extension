@@ -100,11 +100,9 @@ export function AssetPickerModal({
 }: AssetPickerModalProps) {
   const t = useI18nContext();
   const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
+  const selectedToken = asset.details?.address;
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedToken, setSelectedToken] = useState(
-    asset.details?.address || null,
-  );
 
   const nativeCurrencyImage = useSelector(getNativeCurrencyImage);
   const nativeCurrency = useSelector(getNativeCurrency);
@@ -158,7 +156,7 @@ export function AssetPickerModal({
     balance: balanceValue,
     string: primaryCurrencyProperties.value,
     type: AssetType.native,
-    isSelected: selectedToken === null,
+    isSelected: !selectedToken,
   });
 
   tokenList.sort((a, b) => {
@@ -210,7 +208,6 @@ export function AssetPickerModal({
 
   const handleAssetChange = (token: Token) => () => {
     onAssetChange(token);
-    setSelectedToken(token.address);
     onClose();
   };
 
