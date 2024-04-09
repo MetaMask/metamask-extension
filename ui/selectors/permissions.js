@@ -73,7 +73,7 @@ export function getPermittedAccountsForCurrentTab(state) {
   return getPermittedAccounts(state, getOriginOfCurrentTab(state));
 }
 
-export function getPermittedAccountsForCurrent(state, activeTab) {
+export function getPermittedAccountsForSelectedTab(state, activeTab) {
   return getPermittedAccounts(state, activeTab);
 }
 
@@ -329,7 +329,10 @@ export function getOrderedConnectedAccountsForConnected(state, activeTab) {
     // eslint-disable-next-line camelcase
     permissionHistory[activeTab.origin]?.eth_accounts?.accounts;
   const orderedAccounts = getMetaMaskAccountsOrdered(state);
-  const connectedAccounts = getPermittedAccountsForCurrent(state,activeTab);
+  const connectedAccounts = getPermittedAccountsForSelectedTab(
+    state,
+    activeTab,
+  );
 
   return orderedAccounts
     .filter((account) => connectedAccounts.includes(account.address))

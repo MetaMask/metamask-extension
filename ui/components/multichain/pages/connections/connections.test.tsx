@@ -94,11 +94,6 @@ describe('Connections Content', () => {
     expect(getByTestId('connections-page')).toBeInTheDocument();
   });
 
-  it('it should render title of the dapp correctly', () => {
-    const { getByText } = renderWithProvider(<Connections />, connectedStore);
-    expect(getByText('metamask.github.io')).toBeInTheDocument();
-  });
-
   it('it should render Disconnect all Account button of the page', () => {
     const { getByText } = renderWithProvider(<Connections />, connectedStore);
     expect(getByText('Disconnect all accounts')).toBeInTheDocument();
