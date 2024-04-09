@@ -380,19 +380,21 @@ export default class TransactionListItemDetails extends PureComponent {
               }
               {transactionGroup.initialTransaction.type !==
                 TransactionType.incoming && (
-                <Disclosure
-                  title={t('activityLog')}
-                  size="small"
-                  isScrollToBottomOnOpen
-                >
-                  <TransactionActivityLog
-                    transactionGroup={transactionGroup}
-                    className="transaction-list-item-details__transaction-activity-log"
-                    onCancel={this.handleCancel}
-                    onRetry={this.handleRetry}
-                    isEarliestNonce={isEarliestNonce}
-                  />
-                </Disclosure>
+                <Box marginTop={3} marginBottom={3}>
+                  <Disclosure
+                    title={t('activityLog')}
+                    size="small"
+                    isScrollToBottomOnOpen
+                  >
+                    <TransactionActivityLog
+                      transactionGroup={transactionGroup}
+                      className="transaction-list-item-details__transaction-activity-log"
+                      onCancel={this.handleCancel}
+                      onRetry={this.handleRetry}
+                      isEarliestNonce={isEarliestNonce}
+                    />
+                  </Disclosure>
+                </Box>
               )}
             </div>
           </div>
