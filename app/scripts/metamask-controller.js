@@ -3068,10 +3068,9 @@ export default class MetamaskController extends EventEmitter {
           throw new Error(`No account found for address: ${address}`);
         }
       },
-      setDisableExternalServices:
-        preferencesController.setDisableExternalServices.bind(
-          preferencesController,
-        ),
+      setUseExternalServices: preferencesController.setUseExternalServices.bind(
+        preferencesController,
+      ),
       addToken: tokensController.addToken.bind(tokensController),
       updateTokenType: tokensController.updateTokenType.bind(tokensController),
       setFeatureFlag: preferencesController.setFeatureFlag.bind(
@@ -5644,6 +5643,18 @@ export default class MetamaskController extends EventEmitter {
       provider: this.provider,
     };
   }
+
+  // TODO: add manual disabling of the token detection controller and gas fee controller
+  // toggleExternalServices(useExternal) {
+  //   this.preferencesController.setUseExternalServices(useExternal);
+  //   if (useExternal) {
+  //     this.tokenDetectionController.enable();
+  //     this.gasFeeController.enable();
+  //   } else {
+  //     this.tokenDetectionController.disable();
+  //     this.gasFeeController.disable();
+  //   }
+  // }
 
   //=============================================================================
   // CONFIG

@@ -12,7 +12,7 @@ import {
   FontWeight,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { setDisableExternalServices } from '../../../store/actions';
+import { setUseExternalServices } from '../../../store/actions';
 import {
   ModalOverlay,
   ModalContent,
@@ -30,7 +30,7 @@ import {
   ButtonSize,
   Label,
 } from '../../component-library';
-import { getDisableExternalServices } from '../../../selectors';
+import { getUseExternalServices } from '../../../selectors';
 import {
   hideBasicFunctionalityModal,
   onboardingToggleBasicFunctionalityOff,
@@ -41,17 +41,11 @@ export function BasicConfigurationModal() {
   const t = useI18nContext();
   const [hasAgreed, setHasAgreed] = useState(false);
   const dispatch = useDispatch();
-  const isBasicConfigurationSettingOff = useSelector(
-    getDisableExternalServices,
+  const isExternalServicesEnabled = useSelector(
+    getUseExternalServices,
   );
   const { pathname } = useLocation();
   const onboardingFlow = pathname === ONBOARDING_PRIVACY_SETTINGS_ROUTE;
-  function disableExternalServices() {
-    dispatch(setDisableExternalServices(true));
-  }
-  function enableExternalServices() {
-    dispatch(setDisableExternalServices(false));
-  }
 
   function closeModal() {
     dispatch(hideBasicFunctionalityModal());
@@ -89,9 +83,9 @@ export function BasicConfigurationModal() {
               color={IconColor.errorDefault}
             />
             <Text variant={TextVariant.headingSm}>
-              {isBasicConfigurationSettingOff
-                ? t('basicConfigurationModalHeadingOn')
-                : t('basicConfigurationModalHeadingOff')}
+              {isExternalServicesEnabled
+                ? t('basicConfigurationModalHeadingOff')
+                : t('basicConfigurationModalHeadingOn')}
             </Text>
           </Box>
         </ModalHeader>
@@ -105,11 +99,11 @@ export function BasicConfigurationModal() {
           flexDirection={FlexDirection.Column}
         >
           <Text variant={TextVariant.bodySm}>
-            {isBasicConfigurationSettingOff
-              ? t('basicConfigurationModalDisclaimerOn')
-              : t('basicConfigurationModalDisclaimerOff')}
+            {isExternalServicesEnabled
+              ? t('basicConfigurationModalDisclaimerOff')
+              : t('basicConfigurationModalDisclaimerOn')}
           </Text>
-          {!isBasicConfigurationSettingOff && (
+          {isExternalServicesEnabled && (
             <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
               <Checkbox
                 id="basic-configuration-checkbox"
@@ -143,7 +137,7 @@ export function BasicConfigurationModal() {
             </Button>
             <Button
               size={ButtonSize.Lg}
-              disabled={!hasAgreed && !isBasicConfigurationSettingOff}
+              disabled={!hasAgreed && isExternalServicesEnabled}
               width={BlockSize.Half}
               variant={ButtonVariant.Primary}
               onClick={() => {
@@ -152,14 +146,15 @@ export function BasicConfigurationModal() {
                   dispatch(onboardingToggleBasicFunctionalityOff());
                 } else {
                   closeModal();
-                  isBasicConfigurationSettingOff
-                    ? enableExternalServices()
-                    : disableExternalServices();
+                  isExternalServicesEnabled
+                    ? dispatch(setUseExternalServices(false))
+                    : dispatch(setUseExternalServices(true));
+
                 }
               }}
-              danger={!isBasicConfigurationSettingOff}
+              danger={isExternalServicesEnabled}
             >
-              {isBasicConfigurationSettingOff ? t('turnOn') : t('turnOff')}
+              {isExternalServicesEnabled ? t('turnOff') : t('turnOn')}
             </Button>
           </Box>
         </ModalFooter>

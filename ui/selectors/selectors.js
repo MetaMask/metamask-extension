@@ -1172,8 +1172,8 @@ export function getIpfsGateway(state) {
   return state.metamask.ipfsGateway;
 }
 
-export function getDisableExternalServices(state) {
-  return state.metamask.disableExternalServices;
+export function getUseExternalServices(state) {
+  return state.metamask.useExternalServices;
 }
 
 export function getInfuraBlocked(state) {

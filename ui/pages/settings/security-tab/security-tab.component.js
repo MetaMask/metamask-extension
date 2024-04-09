@@ -87,8 +87,8 @@ export default class SecurityTab extends PureComponent {
     useTransactionSimulations: PropTypes.bool.isRequired,
     petnamesEnabled: PropTypes.bool.isRequired,
     securityAlertsEnabled: PropTypes.bool,
-    disableExternalServices: PropTypes.bool,
-    setDisableExternalServices: PropTypes.func.isRequired,
+    useExternalServices: PropTypes.bool,
+    setUseExternalServices: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     setSecurityAlertsEnabled: PropTypes.func,
     ///: END:ONLY_INCLUDE_IF
@@ -981,11 +981,11 @@ export default class SecurityTab extends PureComponent {
   }
   ///: END:ONLY_INCLUDE_IF
 
-  renderDisableExternalServices() {
+  renderUseExternalServices() {
     const { t } = this.context;
     const {
-      disableExternalServices,
-      setDisableExternalServices,
+      useExternalServices,
+      setUseExternalServices,
       setBasicFunctionalityModalOpen,
     } = this.props;
 
@@ -1008,13 +1008,13 @@ export default class SecurityTab extends PureComponent {
 
         <div className="settings-page__content-item-col">
           <ToggleButton
-            value={!disableExternalServices}
-            onToggle={(nextVal) => {
-              if (nextVal === true) {
+            value={useExternalServices}
+            onToggle={() => {
+              if (useExternalServices === true) {
                 // If we are going to be disabling external services, then we want to show the "turn off" warning modal
                 setBasicFunctionalityModalOpen();
               } else {
-                setDisableExternalServices(false);
+                setUseExternalServices(true);
               }
             }}
             offLabel={t('off')}
@@ -1030,7 +1030,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <div className="settings-page__body">
-        {this.renderDisableExternalServices()}
+        {this.renderUseExternalServices()}
 
         {warning && <div className="settings-tab__error">{warning}</div>}
         <span className="settings-page__security-tab-sub-header__bold">

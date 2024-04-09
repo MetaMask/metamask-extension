@@ -20,7 +20,7 @@ import {
   getIsBridgeChain,
   getMetaMetricsId,
   getUseTokenDetection,
-  getDisableExternalServices,
+  getUseExternalServices,
 } from '../../../selectors';
 import { setFirstTimeUsedNetwork } from '../../../store/actions';
 import {
@@ -44,7 +44,7 @@ export default function NewNetworkInfo() {
   const [showPopup, setShowPopup] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const autoDetectToken = useSelector(getUseTokenDetection);
-  const areExternalServicesDisabled = useSelector(getDisableExternalServices);
+  const areExternalServicesEnabled = useSelector(getUseExternalServices);
   const providerConfig = useSelector(getProviderConfig);
   const currentNetwork = useSelector(getCurrentNetwork);
   const metaMetricsId = useSelector(getMetaMetricsId);
@@ -67,7 +67,7 @@ export default function NewNetworkInfo() {
   }, [providerConfig.chainId]);
 
   useEffect(() => {
-    if (areExternalServicesDisabled) {
+    if (!areExternalServicesEnabled) {
       return;
     }
     checkTokenDetection();

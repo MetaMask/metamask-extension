@@ -156,7 +156,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       PreferencesController: {
         advancedGasFee: null,
         currentLocale: 'en',
-        disableExternalServices: false,
+        useExternalServices: true,
         dismissSeedBackUpReminder: true,
         featureFlags: {},
         forgottenPassword: false,
@@ -308,7 +308,7 @@ function onboardingFixture() {
           useNativeCurrencyAsPrimaryCurrency: true,
           petnamesEnabled: true,
         },
-        disableExternalServices: false,
+        useExternalServices: true,
         theme: 'light',
         useBlockie: false,
         useNftDetection: false,

@@ -34,7 +34,7 @@ import {
   getPreferences,
   getSelectedInternalAccount,
   getSelectedAccountCachedBalance,
-  getDisableExternalServices,
+  getUseExternalServices,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
   getCurrentKeyring,
@@ -98,9 +98,7 @@ const EthOverview = ({ className, showAddress }) => {
   );
 
   const account = useSelector(getSelectedInternalAccount);
-  const isBasicConfigurationSettingOff = useSelector(
-    getDisableExternalServices,
-  );
+  const isExternalServicesEnabled = useSelector(getUseExternalServices);
   const isSwapsChain = useSelector(getIsSwapsChain);
   const isSigningEnabled =
     account.methods.includes(EthMethod.SignTransaction) ||
@@ -329,9 +327,7 @@ const EthOverview = ({ className, showAddress }) => {
           <IconButton
             className="eth-overview__button"
             disabled={
-              !isSwapsChain ||
-              !isSigningEnabled ||
-              isBasicConfigurationSettingOff
+              !isSwapsChain || !isSigningEnabled || !isExternalServicesEnabled
             }
             Icon={
               <Icon

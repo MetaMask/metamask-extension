@@ -8,7 +8,7 @@ import {
   displayWarning,
   restoreUserData,
   setAutoLockTimeLimit,
-  setDisableExternalServices,
+  setUseExternalServices,
   setDisabledRpcMethodPreference,
   setDismissSeedBackUpReminder,
   setFeatureFlag,
@@ -86,8 +86,8 @@ export const mapDispatchToProps = (dispatch) => {
     setDisabledRpcMethodPreference: (methodName, isEnabled) => {
       return dispatch(setDisabledRpcMethodPreference(methodName, isEnabled));
     },
-    setDisableExternalServices: (value) => {
-      return dispatch(setDisableExternalServices(value));
+    setUseExternalServices: (value) => {
+      return dispatch(setUseExternalServices(value));
     },
   };
 };

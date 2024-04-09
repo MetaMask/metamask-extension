@@ -199,7 +199,7 @@ export default class Home extends PureComponent {
     setSurveyLinkLastClickedOrClosed: PropTypes.func.isRequired,
     showSurveyToast: PropTypes.bool.isRequired,
     hasAllowedPopupRedirectApprovals: PropTypes.bool.isRequired,
-    disableExternalServices: PropTypes.bool,
+    useExternalServices: PropTypes.bool,
     setBasicFunctionalityModalOpen: PropTypes.func,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     institutionalConnectRequests: PropTypes.arrayOf(PropTypes.object),
@@ -811,7 +811,7 @@ export default class Home extends PureComponent {
     const {
       defaultHomeActiveTabName,
       onTabClick,
-      disableExternalServices,
+      useExternalServices,
       setBasicFunctionalityModalOpen,
       forgottenPassword,
       history,
@@ -915,7 +915,7 @@ export default class Home extends PureComponent {
             ///: END:ONLY_INCLUDE_IF
           }
           <div className="home__main-view">
-            {disableExternalServices ? (
+            {useExternalServices ? null : (
               <BannerAlert
                 margin={4}
                 marginBottom={0}
@@ -926,7 +926,7 @@ export default class Home extends PureComponent {
                 }}
                 title={t('basicConfigurationBannerTitle')}
               ></BannerAlert>
-            ) : null}
+            )}
             <div className="home__balance-wrapper">
               {
                 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)

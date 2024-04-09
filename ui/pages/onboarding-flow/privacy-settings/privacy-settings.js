@@ -47,7 +47,7 @@ import {
   showModal,
   toggleNetworkMenu,
   setIncomingTransactionsPreferences,
-  setDisableExternalServices,
+  setUseExternalServices,
   setUseTransactionSimulations,
   setPetnamesEnabled,
 } from '../../../store/actions';
@@ -108,9 +108,7 @@ export default function PrivacySettings() {
   );
 
   const handleSubmit = () => {
-    dispatch(
-      setDisableExternalServices(!externalServicesOnboardingToggleState),
-    );
+    dispatch(setUseExternalServices(externalServicesOnboardingToggleState));
     dispatch(setUsePhishDetect(usePhishingDetection));
     dispatch(setUse4ByteResolution(turnOn4ByteResolution));
     dispatch(setUseTokenDetection(turnOnTokenDetection));

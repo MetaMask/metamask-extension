@@ -18,7 +18,7 @@ import { getInstitutionalConnectRequests } from '../../ducks/institutional/insti
 ///: END:ONLY_INCLUDE_IF
 import {
   activeTabHasPermissions,
-  getDisableExternalServices,
+  getUseExternalServices,
   getFirstPermissionRequest,
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getFirstSnapInstallOrUpdateRequest,
@@ -70,7 +70,7 @@ import {
   setActiveNetwork,
   setSurveyLinkLastClickedOrClosed,
   setNewTokensImportedError,
-  setDisableExternalServices,
+  setUseExternalServices,
 } from '../../store/actions';
 import {
   hideWhatsNewPopup,
@@ -149,7 +149,7 @@ const mapStateToProps = (state) => {
   ]);
 
   return {
-    disableExternalServices: getDisableExternalServices(state),
+    useExternalServices: getUseExternalServices(state),
     isBasicConfigurationModalOpen: appState.showBasicFunctionalityModal,
     forgottenPassword,
     hasWatchTokenPendingApprovals,
@@ -282,8 +282,7 @@ const mapDispatchToProps = (dispatch) => {
     ///: END:ONLY_INCLUDE_IF
     setSurveyLinkLastClickedOrClosed: (time) =>
       dispatch(setSurveyLinkLastClickedOrClosed(time)),
-    setDisableExternalServices: (disabled) =>
-      dispatch(setDisableExternalServices(disabled)),
+    setUseExternalServices: (value) => dispatch(setUseExternalServices(value)),
     setBasicFunctionalityModalOpen: () =>
       dispatch(openBasicFunctionalityModal()),
   };
