@@ -26,13 +26,11 @@ export default function useEthFeeData(gasLimit = 0) {
     checkNetworkAndAccountSupports1559,
   );
   const gasPrice = useSelector(getUsedSwapsGasPrice);
-  const {
-    medium: { suggestedMaxFeePerGas },
-  } = useSelector(getGasFeeEstimates);
+  const { medium } = useSelector(getGasFeeEstimates);
 
   const { formattedEthGasFee, formattedFiatGasFee } = useMemo(() => {
     const ethGasFee = new Numeric(
-      networkAndAccountSupports1559 ? suggestedMaxFeePerGas : gasPrice,
+      networkAndAccountSupports1559 ? medium?.suggestedMaxFeePerGas : gasPrice,
       10,
       EtherDenomination.GWEI,
     )
@@ -55,7 +53,7 @@ export default function useEthFeeData(gasLimit = 0) {
     return { ethGasFee, fiatGasFee, formattedFiatGasFee, formattedEthGasFee };
   }, [
     networkAndAccountSupports1559,
-    suggestedMaxFeePerGas,
+    medium?.suggestedMaxFeePerGas,
     gasPrice,
     gasLimit,
     selectedNativeConversionRate,
