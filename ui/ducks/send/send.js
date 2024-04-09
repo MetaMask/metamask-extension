@@ -1798,7 +1798,9 @@ const slice = createSlice({
           state.draftTransactions[state.currentTransactionUUID];
 
         if (draftTransaction) {
-          draftTransaction.quotes = draftTransactionInitialState.quotes;
+          if (!action.meta?.arg?.isRefreshingQuotes) {
+            draftTransaction.quotes = draftTransactionInitialState.quotes;
+          }
           draftTransaction.swapQuotesError = null;
           draftTransaction.isSwapQuoteLoading = true;
           draftTransaction.swapQuotesLatestRequestTimestamp = Math.max(
@@ -2092,7 +2094,10 @@ export function updateGasPrice(gasPrice) {
   };
 }
 
-export function updateSendQuote(isComputingSendGasLimit = true) {
+export function updateSendQuote(
+  isComputingSendGasLimit = true,
+  isRefreshingQuotes = false,
+) {
   return async (dispatch, getState) => {
     const state = getState();
 
@@ -2107,7 +2112,12 @@ export function updateSendQuote(isComputingSendGasLimit = true) {
       const currentTime = Date.now();
       // set this synchronously so it can be used in fetchSwapAndSendQuotes thunks immediately
       latestFetchTime = currentTime;
-      await dispatch(fetchSwapAndSendQuotes({ requestTimestamp: currentTime }));
+      await dispatch(
+        fetchSwapAndSendQuotes({
+          requestTimestamp: currentTime,
+          isRefreshingQuotes,
+        }),
+      );
     } else {
       await dispatch({
         type: CLEAR_SWAP_AND_SEND_STATE,
@@ -2735,9 +2745,9 @@ export function getCurrentDraftTransaction(state) {
 
 export const getBestQuote = createSelector(
   getCurrentDraftTransaction,
-  ({ quotes, isSwapQuoteLoading, swapQuotesError }) => {
+  ({ quotes, swapQuotesError }) => {
     const quotesAsArray = Object.values(quotes || {});
-    if (isSwapQuoteLoading || swapQuotesError || !quotesAsArray.length) {
+    if (swapQuotesError || !quotesAsArray.length) {
       return undefined;
     }
 

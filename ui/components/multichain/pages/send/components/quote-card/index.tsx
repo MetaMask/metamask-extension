@@ -67,7 +67,7 @@ export function QuoteCard() {
     }
 
     if (timeLeft <= 0) {
-      dispatch(updateSendQuote());
+      dispatch(updateSendQuote(false, true));
     }
 
     const timeout = setTimeout(() => setTimeLeft(timeLeft - 1), SECOND);
