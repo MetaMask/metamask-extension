@@ -1,4 +1,4 @@
-import { strict as assert } from 'assert';
+const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   defaultGanacheOptions,
