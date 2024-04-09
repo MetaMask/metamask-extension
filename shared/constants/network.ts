@@ -367,6 +367,7 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
 
 export const CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION = {
   WETHIO: 'ZYN',
+  CHZ: 'CHZ',
 };
 
 export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.svg';

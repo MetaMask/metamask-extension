@@ -58,6 +58,10 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+import {
+  getMatchedChain,
+  getMatchedSymbols,
+} from '../../../../helpers/utils/network-helper';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -155,6 +159,12 @@ const NetworksForm = ({
             chainId: 78,
             nativeCurrency: {
               symbol: CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION.WETHIO,
+            },
+          },
+          {
+            chainId: 88888,
+            nativeCurrency: {
+              symbol: CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION.CHZ,
             },
           },
         ];
@@ -464,18 +474,10 @@ const NetworksForm = ({
         warningKey = 'failedToFetchTickerSymbolData';
         warningMessage = t('failedToFetchTickerSymbolData');
       } else {
-        const matchedChain = safeChainsList.current?.find(
-          (chain) => chain.chainId.toString() === decimalChainId,
-        );
-
-        const matchedSymbols = safeChainsList.current?.reduce(
-          (accumulator, currentNetwork) => {
-            if (currentNetwork.chainId.toString() === decimalChainId) {
-              accumulator.push(currentNetwork.nativeCurrency?.symbol);
-            }
-            return accumulator;
-          },
-          [],
+        const matchedChain = getMatchedChain(decimalChainId, safeChainsList);
+        const matchedSymbols = getMatchedSymbols(
+          decimalChainId,
+          safeChainsList,
         );
 
         if (matchedChain === undefined) {
