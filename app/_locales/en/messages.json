@@ -443,6 +443,10 @@
   "approveButtonText": {
     "message": "Approve"
   },
+  "approveIncreaseAllowance": {
+    "message": "Increase $1 spending cap",
+    "description": "The token symbol that is being approved"
+  },
   "approveSpendingCap": {
     "message": "Approve $1 spending cap",
     "description": "The token symbol that is being approved"
@@ -630,7 +634,7 @@
     "message": "If you approve this request, a third party known for scams will take all your assets."
   },
   "blockaidMessage": {
-    "message": "Privacy preserving - no data is shared with third parties. Available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon, Base and Sepolia."
+    "message": "Privacy preserving - no data is shared with third parties. Available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon and Sepolia."
   },
   "blockaidTitleDeceptive": {
     "message": "This is a deceptive request"
@@ -890,6 +894,9 @@
     "message": "$1 can see the account balance, address, activity, and suggest transactions to approve for connected accounts.",
     "description": "$1 is the origin name"
   },
+  "connectedAccountsToast": {
+    "message": "Connected accounts updated"
+  },
   "connectedSites": {
     "message": "Connected sites"
   },
@@ -906,9 +913,6 @@
   },
   "connectedWith": {
     "message": "Connected with"
-  },
-  "connectedaccountsTabKey": {
-    "message": "Connected accounts"
   },
   "connecting": {
     "message": "Connecting..."
@@ -927,6 +931,9 @@
   },
   "connectingToLineaMainnet": {
     "message": "Connecting to Linea Mainnet"
+  },
+  "connectingToLineaSepolia": {
+    "message": "Connecting to Linea Sepolia test network"
   },
   "connectingToMainnet": {
     "message": "Connecting to Ethereum Mainnet"
@@ -1412,6 +1419,14 @@
   "disconnectThisAccount": {
     "message": "Disconnect this account"
   },
+  "disconnectedAllAccountsToast": {
+    "message": "All accounts disconnected from $1",
+    "description": "$1 is name of the dapp`"
+  },
+  "disconnectedSingleAccountToast": {
+    "message": "$1 disconnected from $2",
+    "description": "$1 is name of the name and $2 represents the dapp name`"
+  },
   "discoverSnaps": {
     "message": "Discover Snaps",
     "description": "Text that links to the Snaps website. Displayed in a banner on Snaps list page in settings."
@@ -1806,6 +1821,9 @@
   },
   "fromTokenLists": {
     "message": "From token lists: $1"
+  },
+  "function": {
+    "message": "Function: $1"
   },
   "functionApprove": {
     "message": "Function: Approve"
@@ -2437,6 +2455,9 @@
   "lineaMainnet": {
     "message": "Linea Mainnet"
   },
+  "lineaSepolia": {
+    "message": "Linea Sepolia test network"
+  },
   "link": {
     "message": "Link"
   },
@@ -3030,7 +3051,7 @@
     "message": "Got it"
   },
   "notificationsBlockaidDefaultDescriptionOne": {
-    "message": "Steer clear of known scams while still preserving your privacy with security alerts powered by Blockaid. This feature is available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon, Base and Sepolia."
+    "message": "Steer clear of known scams while still preserving your privacy with security alerts powered by Blockaid. This feature is available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon and Sepolia."
   },
   "notificationsBlockaidDefaultDescriptionTwo": {
     "message": "Always do your own due diligence before approving requests."
@@ -3057,6 +3078,14 @@
   },
   "notificationsEmptyText": {
     "message": "This is where you can find notifications from your installed snaps."
+  },
+  "notificationsFeatureToggle": {
+    "message": "Enable Wallet Notifications",
+    "description": "Experimental feature title"
+  },
+  "notificationsFeatureToggleDescription": {
+    "message": "This enables wallet notifications like send/receive funds or nfts and feature announcements.",
+    "description": "Description of the experimental notifications feature"
   },
   "notificationsHeader": {
     "message": "Notifications"
@@ -3299,6 +3328,15 @@
   },
   "openSeaNew": {
     "message": "OpenSea"
+  },
+  "openSeaToBlockaidBtnLabel": {
+    "message": "Explore Snaps"
+  },
+  "openSeaToBlockaidDescription": {
+    "message": "Security alerts are no longer available on this network. Installing a Snap may improve your security."
+  },
+  "openSeaToBlockaidTitle": {
+    "message": "Heads up!"
   },
   "operationFailed": {
     "message": "Operation Failed"
@@ -3841,6 +3879,9 @@
   "removeNFT": {
     "message": "Remove NFT"
   },
+  "removeNftErrorMessage": {
+    "message": "We could not remove this NFT."
+  },
   "removeNftMessage": {
     "message": "NFT was successfully removed!"
   },
@@ -4346,7 +4387,7 @@
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
   },
   "simulationsSettingDescription": {
-    "message": "Turn this on to estimate balance changes of transactions before you confirm them. This doesn't guarantee the final outcome of your transactions. "
+    "message": "Turn this on to estimate balance changes of transactions before you confirm them. This doesn't guarantee the final outcome of your transactions. $1"
   },
   "simulationsSettingSubHeader": {
     "message": "Estimate balance changes"
@@ -5273,6 +5314,13 @@
   },
   "switchToThisAccount": {
     "message": "Switch to this account"
+  },
+  "switchedNetworkToastDecline": {
+    "message": "Don't show again"
+  },
+  "switchedNetworkToastMessage": {
+    "message": "$1 is now active on $2",
+    "description": "$1 represents the account name, $2 represents the network name"
   },
   "switchedTo": {
     "message": "You're now using"

@@ -6,7 +6,7 @@ const {
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
   unlockWallet,
-  editGasfeeForm,
+  editGasFeeForm,
   WINDOW_TITLES,
   defaultGanacheOptions,
 } = require('../../helpers');
@@ -284,10 +284,10 @@ describe('Send ETH', function () {
               tag: 'button',
             });
             await driver.waitForSelector({
-              text: '0.00021 ETH',
-              tag: 'h1',
+              text: 'Edit priority',
+              tag: 'header',
             });
-            await editGasfeeForm(driver, '21000', '100');
+            await editGasFeeForm(driver, '21000', '100');
             await driver.waitForSelector({
               css: '.transaction-detail-item:nth-of-type(1) h6:nth-of-type(2)',
               text: '0.0021 ETH',

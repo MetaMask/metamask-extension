@@ -11,6 +11,7 @@ export default {
   },
   args: {
     onClose: () => ({}),
+    onAccountsUpdate: () => ({}),
     handleAccountClick: () => ({}),
     deselectAll: () => ({}),
     selectAll: () => ({}),

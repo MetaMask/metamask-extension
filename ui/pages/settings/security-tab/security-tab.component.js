@@ -19,6 +19,7 @@ import {
   CRYPTOCOMPARE_LINK,
   PRIVACY_POLICY_LINK,
   SECURITY_ALERTS_LEARN_MORE_LINK,
+  TRANSACTION_SIMULATIONS_LEARN_MORE_LINK,
 } from '../../../../shared/lib/ui-utils';
 import SRPQuiz from '../../../components/app/srp-quiz-modal/SRPQuiz';
 import {
@@ -186,49 +187,52 @@ export default class SecurityTab extends PureComponent {
 
   renderSecurityAlertsToggle() {
     const { t } = this.context;
-
     const { securityAlertsEnabled } = this.props;
 
     return (
-      <div
-        ref={this.settingsRefs[15]}
-        className="settings-page__security-tab-sub-header"
-      >
-        <Box
-          ref={this.settingsRefs[2]}
-          className="settings-page__content-row"
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          justifyContent={JustifyContent.spaceBetween}
-          gap={4}
-        >
-          <div className="settings-page__content-item">
-            <span>{t('securityAlerts')}</span>
-            <div className="settings-page__content-description">
-              {t('securityAlertsDescription', [
-                <a
-                  key="learn_more_link"
-                  href={SECURITY_ALERTS_LEARN_MORE_LINK}
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  {t('learnMoreUpperCase')}
-                </a>,
-              ])}
-            </div>
-          </div>
-
-          <div
-            className="settings-page__content-item-col"
-            data-testid="securityAlert"
+      <>
+        <div ref={this.settingsRefs[15]}>
+          <span className="settings-page__security-tab-sub-header">
+            {t('securityAlerts')}
+          </span>
+        </div>
+        <div className="settings-page__content-padded">
+          <Box
+            ref={this.settingsRefs[2]}
+            className="settings-page__content-row"
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            justifyContent={JustifyContent.spaceBetween}
+            gap={4}
           >
-            <ToggleButton
-              value={securityAlertsEnabled}
-              onToggle={this.toggleSecurityAlert.bind(this)}
-            />
-          </div>
-        </Box>
-      </div>
+            <div className="settings-page__content-item">
+              <div className="settings-page__content-description">
+                {t('securityAlertsDescription', [
+                  <a
+                    key="learn_more_link"
+                    href={SECURITY_ALERTS_LEARN_MORE_LINK}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    {t('learnMoreUpperCase')}
+                  </a>,
+                ])}
+              </div>
+            </div>
+            <div
+              className="settings-page__content-item-col"
+              data-testid="securityAlert"
+            >
+              <ToggleButton
+                value={securityAlertsEnabled}
+                onToggle={this.toggleSecurityAlert.bind(this)}
+                offLabel={t('off')}
+                onLabel={t('on')}
+              />
+            </div>
+          </Box>
+        </div>
+      </>
     );
   }
 
@@ -926,7 +930,16 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-item">
           <span>{t('simulationsSettingSubHeader')}</span>
           <div className="settings-page__content-description">
-            {t('simulationsSettingDescription')}
+            {t('simulationsSettingDescription', [
+              <a
+                key="learn_more_link"
+                href={TRANSACTION_SIMULATIONS_LEARN_MORE_LINK}
+                rel="noreferrer"
+                target="_blank"
+              >
+                {t('learnMoreUpperCase')}
+              </a>,
+            ])}
           </div>
         </div>
 
