@@ -2522,14 +2522,29 @@ export function resetSendState() {
  *
  * @returns {ThunkAction<void>}
  */
-// TODO: update this?
+
+// TODO: handle approvals once API is ready
 export function signTransaction() {
   return async (dispatch, getState) => {
     const state = getState();
     const { stage, eip1559support, amountMode } = state[name];
-    const txParams = generateTransactionParams(state[name]);
     const draftTransaction =
       state[name].draftTransactions[state[name].currentTransactionUUID];
+
+    let txParams;
+    const isSwapAndSend =
+      draftTransaction?.sendAsset?.details?.address !==
+      draftTransaction?.receiveAsset?.details?.address;
+
+    if (isSwapAndSend) {
+      // TODO: update to selected quote
+      const quotesAsArray = Object.values(draftTransaction.quotes || {});
+      const bestQuote = calculateBestQuote(quotesAsArray);
+
+      txParams = { ...bestQuote.trade };
+    } else {
+      txParams = generateTransactionParams(state[name]);
+    }
 
     if (stage === SEND_STAGES.EDIT) {
       // When dealing with the edit flow there is already a transaction in
