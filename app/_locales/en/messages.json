@@ -634,7 +634,7 @@
     "message": "If you approve this request, a third party known for scams will take all your assets."
   },
   "blockaidMessage": {
-    "message": "Privacy preserving - no data is shared with third parties. Available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon and Sepolia."
+    "message": "Privacy preserving - no data is shared with third parties. Available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon, Base and Sepolia."
   },
   "blockaidTitleDeceptive": {
     "message": "This is a deceptive request"
@@ -3051,7 +3051,7 @@
     "message": "Got it"
   },
   "notificationsBlockaidDefaultDescriptionOne": {
-    "message": "Steer clear of known scams while still preserving your privacy with security alerts powered by Blockaid. This feature is available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon and Sepolia."
+    "message": "Steer clear of known scams while still preserving your privacy with security alerts powered by Blockaid. This feature is available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon, Base and Sepolia."
   },
   "notificationsBlockaidDefaultDescriptionTwo": {
     "message": "Always do your own due diligence before approving requests."
