@@ -474,10 +474,13 @@ const NetworksForm = ({
         warningKey = 'failedToFetchTickerSymbolData';
         warningMessage = t('failedToFetchTickerSymbolData');
       } else {
-        const matchedChain = getMatchedChain(decimalChainId, safeChainsList);
+        const matchedChain = getMatchedChain(
+          decimalChainId,
+          safeChainsList.current,
+        );
         const matchedSymbols = getMatchedSymbols(
           decimalChainId,
-          safeChainsList,
+          safeChainsList.current,
         );
 
         if (matchedChain === undefined) {

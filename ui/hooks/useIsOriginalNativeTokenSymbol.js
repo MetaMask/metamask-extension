@@ -7,7 +7,7 @@ import {
 } from '../../shared/constants/network';
 import { DAY } from '../../shared/constants/time';
 import { useSafeChainsListValidationSelector } from '../selectors';
-import { isLocalhostOrHttps } from '../../app/scripts/lib/rpc-method-middleware/handlers/add-ethereum-chain';
+import { getValidUrl } from '../../app/scripts/lib/util';
 
 export function useIsOriginalNativeTokenSymbol(
   chainId,
@@ -20,6 +20,15 @@ export function useIsOriginalNativeTokenSymbol(
     useSafeChainsListValidationSelector,
   );
 
+  const isLocalhost = (urlString) => {
+    const url = getValidUrl(urlString);
+
+    return (
+      url !== null &&
+      (url.hostname === 'localhost' || url.hostname === '127.0.0.1')
+    );
+  };
+
   useEffect(() => {
     async function getNativeTokenSymbol(networkId) {
       try {
@@ -29,7 +38,7 @@ export function useIsOriginalNativeTokenSymbol(
         }
 
         // exclude local dev network
-        if (isLocalhostOrHttps(rpcUrl)) {
+        if (isLocalhost(rpcUrl)) {
           setIsOriginalNativeSymbol(true);
           return;
         }
