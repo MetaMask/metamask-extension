@@ -20,9 +20,7 @@ export class WeakRefObjectMap {
   }
 
   get(key: string) {
-    const weakReffedValue = this.map.get(key) as
-      | WeakRefCompatibleObject<Record<string, object>>
-      | undefined;
+    const weakReffedValue = this.map.get(key);
     if (!weakReffedValue) {
       return undefined;
     }
