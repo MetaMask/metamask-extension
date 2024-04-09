@@ -197,13 +197,25 @@ browser.runtime.onConnect.addListener(async (...args) => {
   await isInitialized;
 
   // This is set in `setupController`, which is called as part of initialization
+  console.log('onConnect', ...args)
   connectRemote(...args);
 });
 browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   await isInitialized;
   // This is set in `setupController`, which is called as part of initialization
-  connectExternal(...args);
+
+  const port = args[0]
+
+  if(port.sender.tab?.id) {
+    console.log('onConnectExternal inpage', ...args)
+    connectRemote(...args);
+  } else {
+    console.log('onConnectExternal extension', ...args)
+    connectExternal(...args);
+  }
+  // console.log('onConnectExternal', ...args)
+  // connectExternal(...args);
 });
 
 function saveTimestamp() {

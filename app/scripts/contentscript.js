@@ -13,6 +13,7 @@ import shouldInjectProvider from '../../shared/modules/provider-injection';
 const CONTENT_SCRIPT = 'metamask-contentscript';
 const INPAGE = 'metamask-inpage';
 const PHISHING_WARNING_PAGE = 'metamask-phishing-warning-page';
+const EXTENSION_ID = 'nonfpcflonapegmnfeafnddgdniflbnk';
 
 // stream channels
 const PHISHING_SAFELIST = 'metamask-phishing-safelist';
@@ -215,7 +216,7 @@ let METAMASK_EXTENSION_CONNECT_SENT = false;
 
 const setupExtensionStreams = () => {
   METAMASK_EXTENSION_CONNECT_SENT = true;
-  extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
+  extensionPort = browser.runtime.connect(EXTENSION_ID, { name: CONTENT_SCRIPT });
   extensionStream = new PortStream(extensionPort);
   extensionStream.on('data', extensionStreamMessageListener);
 
@@ -506,31 +507,34 @@ function redirectToPhishingWarning() {
   }
 }
 
-const start = () => {
-  const isDetectedPhishingSite =
-    window.location.origin === phishingPageUrl.origin &&
-    window.location.pathname === phishingPageUrl.pathname;
+// const start = () => {
+//   const isDetectedPhishingSite =
+//     window.location.origin === phishingPageUrl.origin &&
+//     window.location.pathname === phishingPageUrl.pathname;
 
-  if (isDetectedPhishingSite) {
-    initPhishingStreams();
-    return;
-  }
+//   if (isDetectedPhishingSite) {
+//     console.log('phishing stream started')
+//     initPhishingStreams();
+//     return;
+//   }
 
-  if (shouldInjectProvider()) {
-    initStreams();
+//   if (shouldInjectProvider()) {
+//     initStreams();
 
-    // https://bugs.chromium.org/p/chromium/issues/detail?id=1457040
-    // Temporary workaround for chromium bug that breaks the content script <=> background connection
-    // for prerendered pages. This resets potentially broken extension streams if a page transitions
-    // from the prerendered state to the active state.
-    if (document.prerendering) {
-      document.addEventListener('prerenderingchange', () => {
-        onDisconnectDestroyStreams(
-          new Error('Prerendered page has become active.'),
-        );
-      });
-    }
-  }
-};
+//     // https://bugs.chromium.org/p/chromium/issues/detail?id=1457040
+//     // Temporary workaround for chromium bug that breaks the content script <=> background connection
+//     // for prerendered pages. This resets potentially broken extension streams if a page transitions
+//     // from the prerendered state to the active state.
+//     if (document.prerendering) {
+//       document.addEventListener('prerenderingchange', () => {
+//         onDisconnectDestroyStreams(
+//           new Error('Prerendered page has become active.'),
+//         );
+//       });
+//     }
+//   }
+// };
 
-start();
+// start();
+
+// console.error('contentscript started. Should not be seeing this logged')

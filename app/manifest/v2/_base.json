@@ -35,7 +35,6 @@
         "scripts/lockdown-install.js",
         "scripts/lockdown-run.js",
         "scripts/lockdown-more.js",
-        "scripts/contentscript.js",
         "scripts/inpage.js"
       ],
       "run_at": "document_start",
