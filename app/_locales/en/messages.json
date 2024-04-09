@@ -3876,6 +3876,9 @@
   "removeNFT": {
     "message": "Remove NFT"
   },
+  "removeNftErrorMessage": {
+    "message": "We could not remove this NFT."
+  },
   "removeNftMessage": {
     "message": "NFT was successfully removed!"
   },
