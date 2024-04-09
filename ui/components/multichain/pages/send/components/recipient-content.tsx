@@ -63,20 +63,17 @@ export const SendPageRecipientContent = ({
   const dispatch = useDispatch();
 
   // FIXME: these should all be resolved before marking the PR as ready
-  // TODO: SWAP+SEND impl steps (all but step 4 correlate to a PR in the merge train):
-  // TODO: 1. update modals and swaps flow; add error states; handle transactions
-  // TODO: 2. begin design review + revisions
-  //          - fix modal scroll behavior
-  //          - remove background for 721/1155 images
-  //          - double border weight for dropdowns
-  //          - ensure all NFTs show up in modal
-  //          - ensure selected token in modal is correct
-  //          - limit dest options
-  //          - add delay and polling
-  //          - tooltips showing after upstream change + pointer type
-  // TODO: 3. add analytics + e2e tests
+  // TODO: SWAP+SEND impl steps (all but step 3 correlate to a PR in the merge train):
+  // TODO: 1. begin design review + revisions
+  //          - add pre-transaction validation and refetch if it doesn't match
+  //          - test hex data input (advanced settings)
+  //          - handle repopulations
+  //          - resolve all TODOs
+  //          - handle approval gas
+  //          - implement hester's comment: https://consensys.slack.com/archives/C068SFX90PN/p1712696346996319
+  // TODO: 2. add analytics + e2e tests
   //       - use transaction lifecycle events once
-  // TODO: 4. final design and technical review + revisions
+  // TODO: 3. final design and technical review + revisions
   return (
     <Box>
       {requireContractAddressAcknowledgement ? (
@@ -110,7 +107,7 @@ export const SendPageRecipientContent = ({
           sendingAsset={isSendingToken ? sendAsset : undefined}
           onAssetChange={onAssetChange(isSendingToken)}
           isAmountLoading={isLoadingInitialQuotes}
-          amount={amount} // TODO - this should be the amount of the asset being sent
+          amount={amount}
         />
       </SendPageRow>
       <QuoteCard />
