@@ -92,7 +92,6 @@ const baseStore = {
         chainId: '0x5',
         txParams: { ...mockTxParams },
         status: 'unapproved',
-        simulationData: {},
       },
     ],
     gasEstimateType: GasEstimateTypes.legacy,
@@ -289,15 +288,6 @@ describe('Confirm Transaction Base', () => {
       send: {
         ...baseStore.send,
         hasSimulationError: true,
-      },
-      metamask: {
-        ...baseStore.metamask,
-        transactions: [
-          {
-            ...baseStore.metamask.transactions[0],
-            simulationData: { error: {} },
-          },
-        ],
       },
     };
 
