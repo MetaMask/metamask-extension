@@ -4,6 +4,7 @@ import { omit } from 'lodash';
 import type {
   JsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,
+  JsonRpcEngineCallbackError,
 } from '@metamask/json-rpc-engine';
 import type {
   JsonRpcRequest,
@@ -28,7 +29,7 @@ import {
   GetCurrentRpcUrl,
   GetProviderConfig,
   HandlerWrapper,
-  HasPermissions,
+  HasPermission,
   RequestUserApproval,
   SetActiveNetwork,
   SetNetworkClientIdForDomain,
@@ -47,7 +48,7 @@ type AddEthereumChainOptions = {
   startApprovalFlow: StartApprovalFlow;
   endApprovalFlow: EndApprovalFlow;
   getProviderConfig: GetProviderConfig;
-  hasPermissions: HasPermissions;
+  hasPermissions: HasPermission;
 };
 
 type AddEthereumChainConstraint<Params extends JsonRpcParams = JsonRpcParams> =
@@ -368,8 +369,8 @@ async function addEthereumChainHandler<
 
   try {
     await setActiveNetwork(networkConfigurationId);
-  } catch (error: any) {
-    return end(error);
+  } catch (error: unknown) {
+    return end(error as JsonRpcEngineCallbackError);
   }
 
   return end();
