@@ -6,6 +6,7 @@ import {
   PendingJsonRpcResponse,
 } from '@metamask/utils';
 import {
+  JsonRpcEngineCallbackError,
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
 } from '@metamask/json-rpc-engine';
@@ -26,7 +27,7 @@ type WatchAssetConstraint<Params extends JsonRpcParams = JsonRpcParams> = {
 } & HandlerWrapper;
 
 const watchAsset = {
-  methodNames: [MESSAGE_TYPE.WATCH_ASSET],
+  methodNames: [MESSAGE_TYPE.WATCH_ASSET, MESSAGE_TYPE.WATCH_ASSET_LEGACY],
   implementation: watchAssetHandler,
   hookNames: {
     handleWatchAssetRequest: true,
@@ -49,7 +50,7 @@ async function watchAssetHandler<Params extends JsonRpcParams = JsonRpcParams>(
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
   { handleWatchAssetRequest }: WatchAssetOptions,
-) {
+): Promise<void> {
   try {
     const {
       params: { options: asset, type },
@@ -74,7 +75,7 @@ async function watchAssetHandler<Params extends JsonRpcParams = JsonRpcParams>(
     await handleWatchAssetRequest({ asset, type, origin, networkClientId });
     res.result = true;
     return end();
-  } catch (error: any) {
-    return end(error);
+  } catch (error: unknown) {
+    return end(error as JsonRpcEngineCallbackError);
   }
 }
