@@ -64,6 +64,7 @@ module.exports = {
         {
           loader: 'css-loader',
           options: {
+            esModule: false,
             import: false,
             url: false,
           },
@@ -83,6 +84,15 @@ module.exports = {
     config.plugins.push(
       new CopyWebpackPlugin({
         patterns: [
+          {
+            from: path.join(
+              'ui',
+              'css',
+              'utilities',
+              'fonts/',
+            ),
+            to: 'fonts',
+          },
           {
             from: path.join(
               'node_modules',

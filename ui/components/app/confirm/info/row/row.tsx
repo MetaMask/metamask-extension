@@ -17,9 +17,9 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import InlineAlert from '../../../../../pages/confirmations/components/alerts/inline-alert/inline-alert';
+import InlineAlert from '../../../confirmations/alerts/inline-alert/inline-alert';
+import useAlerts from '../../../../../hooks/useAlerts';
 import { currentConfirmationSelector } from '../../../../../selectors';
-import useAlerts from '../../../../../pages/confirmations/hooks/useAlerts';
 
 export enum ConfirmInfoRowVariant {
   Default = 'default',

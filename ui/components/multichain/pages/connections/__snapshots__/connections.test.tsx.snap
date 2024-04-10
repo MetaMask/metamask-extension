@@ -218,27 +218,31 @@ exports[`Connections Content should render correctly 1`] = `
         class="mm-box multichain-page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--width-full"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--width-full"
-          data-test-id="connections-button"
+          class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full"
         >
-          <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--width-full"
+            data-test-id="connections-button"
           >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
-              style="mask-image: url('./images/icons/add.svg');"
-            />
-            Connect more accounts
-          </button>
-          <button
-            class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-button-secondary--type-danger mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-error-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-error-default box--border-style-solid box--border-width-1"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
-              style="mask-image: url('./images/icons/logout.svg');"
-            />
-            Disconnect all accounts
-          </button>
+            <button
+              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
+                style="mask-image: url('./images/icons/add.svg');"
+              />
+              Connect more accounts
+            </button>
+            <button
+              class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-button-secondary--type-danger mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-error-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-error-default box--border-style-solid box--border-width-1"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
+                style="mask-image: url('./images/icons/logout.svg');"
+              />
+              Disconnect all accounts
+            </button>
+          </div>
         </div>
       </div>
     </div>

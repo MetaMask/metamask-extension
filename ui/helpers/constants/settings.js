@@ -338,6 +338,13 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('networks'),
+    sectionMessage: (t) => t('lineaSepolia'),
+    descriptionMessage: (t) => t('lineaSepolia'),
+    route: `${NETWORKS_ROUTE}#networks-linea-sepolia`,
+    icon: 'fa fa-plug',
+  },
+  {
+    tabMessage: (t) => t('networks'),
     sectionMessage: (t) => t('localhost'),
     descriptionMessage: (t) => t('localhost'),
     route: `${NETWORKS_ROUTE}#networks-localhost`,
@@ -430,6 +437,13 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('petnamesEnabledToggle'),
     descriptionMessage: (t) => t('petnamesEnabledToggleDescription'),
     route: `${EXPERIMENTAL_ROUTE}#nicknames`,
+    icon: 'fas fa-flask',
+  },
+  {
+    tabMessage: (t) => t('experimental'),
+    sectionMessage: (t) => t('notificationsFeatureToggle'),
+    descriptionMessage: (t) => t('notificationsFeatureToggleDescription'),
+    route: `${EXPERIMENTAL_ROUTE}#notifications`,
     icon: 'fas fa-flask',
   },
 
