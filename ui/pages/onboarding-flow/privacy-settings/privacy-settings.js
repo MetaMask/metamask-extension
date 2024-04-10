@@ -29,7 +29,11 @@ import {
 } from '../../../helpers/constants/design-system';
 import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getAllNetworks, getCurrentNetwork } from '../../../selectors';
+import {
+  getAllNetworks,
+  getCurrentNetwork,
+  getPetnamesEnabled,
+} from '../../../selectors';
 import {
   setCompletedOnboarding,
   setIpfsGateway,
@@ -43,6 +47,7 @@ import {
   toggleNetworkMenu,
   setIncomingTransactionsPreferences,
   setUseTransactionSimulations,
+  setPetnamesEnabled,
 } from '../../../store/actions';
 import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
 import { Setting } from './setting';
@@ -64,6 +69,7 @@ export default function PrivacySettings() {
     useAddressBarEnsResolution,
     useTransactionSimulations,
   } = defaultState;
+  const petnamesEnabled = useSelector(getPetnamesEnabled);
 
   const [usePhishingDetection, setUsePhishingDetection] =
     useState(usePhishDetect);
@@ -85,6 +91,7 @@ export default function PrivacySettings() {
   const [addressBarResolution, setAddressBarResolution] = useState(
     useAddressBarEnsResolution,
   );
+  const [turnOnPetnames, setTurnOnPetnames] = useState(petnamesEnabled);
 
   const trackEvent = useContext(MetaMetricsContext);
   const currentNetwork = useSelector(getCurrentNetwork);
@@ -100,7 +107,8 @@ export default function PrivacySettings() {
     dispatch(setUseCurrencyRateCheck(turnOnCurrencyRateCheck));
     dispatch(setCompletedOnboarding());
     dispatch(setUseAddressBarEnsResolution(addressBarResolution));
-    setUseTransactionSimulations(isTransactionSimulationsEnabled);
+    dispatch(setUseTransactionSimulations(isTransactionSimulationsEnabled));
+    dispatch(setPetnamesEnabled(turnOnPetnames));
 
     if (ipfsURL && !ipfsError) {
       const { host } = new URL(addUrlProtocolPrefix(ipfsURL));
@@ -343,6 +351,12 @@ export default function PrivacySettings() {
                 {t('privacyMsg')}
               </a>,
             ])}
+          />
+          <Setting
+            value={turnOnPetnames}
+            setValue={setTurnOnPetnames}
+            title={t('petnamesEnabledToggle')}
+            description={t('petnamesEnabledToggleDescription')}
           />
           <ButtonPrimary
             size={ButtonPrimarySize.Lg}
