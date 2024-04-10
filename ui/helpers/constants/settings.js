@@ -81,6 +81,13 @@ const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('advanced'),
+    sectionMessage: (t) => t('smartTransactions'),
+    descriptionMessage: (t) => t('stxOptInDescription'),
+    route: `${ADVANCED_ROUTE}#smart-transactions`,
+    icon: 'fas fa-upload',
+  },
+  {
+    tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('showHexData'),
     descriptionMessage: (t) => t('showHexDataDescription'),
     route: `${ADVANCED_ROUTE}#show-hexdata`,
