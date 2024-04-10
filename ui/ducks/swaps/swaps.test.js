@@ -401,64 +401,6 @@ describe('Ducks - Swaps', () => {
     });
   });
 
-  describe('getSmartTransactionsEnabled', () => {
-    it('returns true if feature flag is enabled, not a HW and is Ethereum network', () => {
-      const state = createSwapsMockStore();
-      expect(swaps.getSmartTransactionsEnabled(state)).toBe(true);
-    });
-
-    it('returns false if feature flag is disabled, not a HW and is Ethereum network', () => {
-      const state = createSwapsMockStore();
-      state.metamask.swapsState.swapsFeatureFlags.smartTransactions.extensionActive = false;
-      expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
-    });
-
-    it('returns false if feature flag is enabled, not a HW, STX liveness is false and is Ethereum network', () => {
-      const state = createSwapsMockStore();
-      state.metamask.smartTransactionsState.liveness = false;
-      expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
-    });
-
-    it('returns false if feature flag is enabled, is a HW and is Ethereum network', () => {
-      const state = createSwapsMockStore();
-      state.metamask.internalAccounts.accounts[
-        state.metamask.internalAccounts.selectedAccount
-      ].metadata.keyring.type = 'Trezor Hardware';
-      expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
-    });
-
-    it('returns false if feature flag is enabled, not a HW and is Polygon network', () => {
-      const state = createSwapsMockStore();
-      state.metamask.providerConfig.chainId = CHAIN_IDS.POLYGON;
-      expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
-    });
-
-    it('returns false if feature flag is enabled, not a HW and is BSC network', () => {
-      const state = createSwapsMockStore();
-      state.metamask.providerConfig.chainId = CHAIN_IDS.BSC;
-      expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
-    });
-
-    it('returns true if feature flag is enabled, not a HW and is Goerli network', () => {
-      const state = createSwapsMockStore();
-      state.metamask.providerConfig.chainId = CHAIN_IDS.GOERLI;
-      expect(swaps.getSmartTransactionsEnabled(state)).toBe(true);
-    });
-
-    it('returns false if feature flag is missing', () => {
-      const state = createSwapsMockStore();
-      state.metamask.swapsState.swapsFeatureFlags = {};
-      expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
-    });
-
-    it('returns false if a snap account is used', () => {
-      const state = createSwapsMockStore();
-      state.metamask.internalAccounts.selectedAccount =
-        '36eb02e0-7925-47f0-859f-076608f09b69';
-      expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
-    });
-  });
-
   describe('getCurrentSmartTransactionsEnabled', () => {
     it('returns true if STX are enabled and there is no current STX error', () => {
       const state = createSwapsMockStore();
@@ -684,13 +626,6 @@ describe('Ducks - Swaps', () => {
         ...state.metamask.swapsState.quotes.TEST_AGG_2.approvalNeeded,
         gasPrice: 5,
       });
-    });
-  });
-
-  describe('getSmartTransactionsOptInStatus', () => {
-    it('returns STX opt in status', () => {
-      const state = createSwapsMockStore();
-      expect(swaps.getSmartTransactionsOptInStatus(state)).toBe(true);
     });
   });
 
