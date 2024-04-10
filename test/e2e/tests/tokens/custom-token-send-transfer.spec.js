@@ -128,10 +128,6 @@ describe('Transfer custom tokens @no-mmi', function () {
 
         // edit gas fee
         await driver.clickElement({ text: 'Edit', tag: 'button' });
-        await driver.clickElement(
-          { text: 'Edit suggested gas fee', tag: 'button' },
-          10000,
-        );
         await editGasfeeForm(driver, '60000', '10');
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
