@@ -31,7 +31,9 @@ export const ConnectedStatus: React.FC<ConnectedStatusProps> = ({
   const t = useI18nContext();
 
   const currentTabIsConnectedToSelectedAddress = useSelector((state) =>
-    isAccountConnectedToCurrentTab(state, address),
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (isAccountConnectedToCurrentTab as any)(state, address),
   );
 
   let status = STATUS_NOT_CONNECTED;
