@@ -132,6 +132,7 @@ export const AccountListItem = ({
       className={classnames('multichain-account-list-item', {
         'multichain-account-list-item--selected': selected,
         'multichain-account-list-item--connected': Boolean(connectedAvatar),
+        'multichain-account-list-item--clickable': Boolean(onClick),
       })}
       ref={itemRef}
       onClick={() => {

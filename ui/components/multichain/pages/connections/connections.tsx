@@ -45,8 +45,6 @@ import {
   IconSize,
   Text,
 } from '../../../component-library';
-import { Tab } from '../../../ui/tabs';
-import Tabs from '../../../ui/tabs/tabs.component';
 import { mergeAccounts } from '../../account-list-menu/account-list-menu';
 import {
   AccountListItem,
@@ -89,7 +87,6 @@ export const Connections = () => {
     setShowDisconnectedAllAccountsUpdatedToast,
   ] = useState(false);
 
-  const CONNECTED_ACCOUNTS_TAB_KEY = 'connected-accounts';
   const activeTabOrigin: string = useSelector(getOriginOfCurrentTab);
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -233,51 +230,41 @@ export const Connections = () => {
       </Header>
       <Content padding={0}>
         {connectedSubjectsMetadata && mergeAccounts.length > 0 ? (
-          <Tabs defaultActiveTabKey="connections">
-            {
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              <Tab
-                tabKey={CONNECTED_ACCOUNTS_TAB_KEY}
-                name={t('connectedaccountsTabKey')}
-                padding={4}
-              >
-                {/* TODO: Replace `any` with type */}
-                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                {mergedAccounts.map((account: AccountType, index: any) => {
-                  const connectedSites: ConnectedSites = {};
-                  const connectedSite = connectedSites[account.address]?.find(
-                    ({ origin }) => origin === activeTabOrigin,
-                  );
-                  const isSelectedAccount =
-                    selectedAccount.address === account.address;
-                  // Match the index of latestSelected Account with the index of all the accounts and set the active status
-                  let mergedAccountsProps;
-                  if (index === latestSelected) {
-                    mergedAccountsProps = { ...account, isAccountActive: true };
-                  } else {
-                    mergedAccountsProps = { ...account };
+          <Box>
+            {/* TODO: Replace `any` with type */}
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+            {mergedAccounts.map((account: AccountType, index: any) => {
+              const connectedSites: ConnectedSites = {};
+              const connectedSite = connectedSites[account.address]?.find(
+                ({ origin }) => origin === activeTabOrigin,
+              );
+              const isSelectedAccount =
+                selectedAccount.address === account.address;
+              // Match the index of latestSelected Account with the index of all the accounts and set the active status
+              let mergedAccountsProps;
+              if (index === latestSelected) {
+                mergedAccountsProps = { ...account, isAccountActive: true };
+              } else {
+                mergedAccountsProps = { ...account };
+              }
+              return (
+                <AccountListItem
+                  account={mergedAccountsProps}
+                  key={account.address}
+                  accountsCount={mergedAccounts.length}
+                  selected={isSelectedAccount}
+                  connectedAvatar={connectedSite?.iconUrl}
+                  connectedAvatarName={connectedSite?.name}
+                  menuType={AccountListItemMenuTypes.Connection}
+                  currentTabOrigin={activeTabOrigin}
+                  isActive={
+                    mergedAccountsProps.isAccountActive ? t('active') : null
                   }
-                  return (
-                    <AccountListItem
-                      account={mergedAccountsProps}
-                      key={account.address}
-                      accountsCount={mergedAccounts.length}
-                      selected={isSelectedAccount}
-                      connectedAvatar={connectedSite?.iconUrl}
-                      connectedAvatarName={connectedSite?.name}
-                      menuType={AccountListItemMenuTypes.Connection}
-                      currentTabOrigin={activeTabOrigin}
-                      isActive={
-                        mergedAccountsProps.isAccountActive ? t('active') : null
-                      }
-                      onActionClick={setShowAccountDisconnectedToast}
-                    />
-                  );
-                })}
-              </Tab>
-            }
-          </Tabs>
+                  onActionClick={setShowAccountDisconnectedToast}
+                />
+              );
+            })}
+          </Box>
         ) : (
           <NoConnectionContent />
         )}
