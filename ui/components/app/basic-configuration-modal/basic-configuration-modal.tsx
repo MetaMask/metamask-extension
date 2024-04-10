@@ -41,9 +41,7 @@ export function BasicConfigurationModal() {
   const t = useI18nContext();
   const [hasAgreed, setHasAgreed] = useState(false);
   const dispatch = useDispatch();
-  const isExternalServicesEnabled = useSelector(
-    getUseExternalServices,
-  );
+  const isExternalServicesEnabled = useSelector(getUseExternalServices);
   const { pathname } = useLocation();
   const onboardingFlow = pathname === ONBOARDING_PRIVACY_SETTINGS_ROUTE;
 
@@ -149,7 +147,6 @@ export function BasicConfigurationModal() {
                   isExternalServicesEnabled
                     ? dispatch(setUseExternalServices(false))
                     : dispatch(setUseExternalServices(true));
-
                 }
               }}
               danger={isExternalServicesEnabled}
