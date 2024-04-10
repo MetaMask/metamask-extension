@@ -103,7 +103,7 @@ describe('Request-queue chainId proxy sync', function () {
           `return window.ethereum.request(${chainIdRequest})`,
         );
 
-        assert.equal(firstChainIdCallAfterConnect, '0x1'); // 1337
+        assert.equal(firstChainIdCallAfterConnect, '0x1');
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
