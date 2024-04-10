@@ -513,6 +513,11 @@ export default class Routes extends Component {
     );
   }
 
+  onHomeScreen() {
+    const { location } = this.props;
+    return location.pathname === DEFAULT_ROUTE;
+  }
+
   hideAppHeader() {
     const { location } = this.props;
 
@@ -774,7 +779,9 @@ export default class Routes extends Component {
         </Box>
         {isUnlocked ? <Alerts history={this.props.history} /> : null}
         <ToastContainer>
-          {showConnectAccountToast && !this.state.hideConnectAccountToast ? (
+          {showConnectAccountToast &&
+          this.onHomeScreen() &&
+          !this.state.hideConnectAccountToast ? (
             <Toast
               key="connect-account-toast"
               startAdornment={
