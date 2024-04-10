@@ -1345,6 +1345,112 @@ export const getConnectedSitesList = createDeepEqualSelector(
   },
 );
 
+export const getNonTestNetworks = createDeepEqualSelector(
+  getNetworkConfigurations,
+  (networkConfigurations = {}) => {
+    return [
+      // Mainnet always first
+      {
+        chainId: CHAIN_IDS.MAINNET,
+        nickname: MAINNET_DISPLAY_NAME,
+        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.MAINNET],
+        rpcPrefs: {
+          imageUrl: ETH_TOKEN_IMAGE_URL,
+        },
+        providerType: NETWORK_TYPES.MAINNET,
+        ticker: CURRENCY_SYMBOLS.ETH,
+        id: NETWORK_TYPES.MAINNET,
+        removable: false,
+      },
+      {
+        chainId: CHAIN_IDS.LINEA_MAINNET,
+        nickname: LINEA_MAINNET_DISPLAY_NAME,
+        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_MAINNET],
+        rpcPrefs: {
+          imageUrl: LINEA_MAINNET_TOKEN_IMAGE_URL,
+        },
+        providerType: NETWORK_TYPES.LINEA_MAINNET,
+        ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_MAINNET],
+        id: NETWORK_TYPES.LINEA_MAINNET,
+        removable: false,
+      },
+      // Custom networks added by the user
+      ...Object.values(networkConfigurations)
+        .filter(({ chainId }) => ![CHAIN_IDS.LOCALHOST].includes(chainId))
+        .map((network) => ({
+          ...network,
+          rpcPrefs: {
+            ...network.rpcPrefs,
+            // Provide an image based on chainID if a network
+            // has been added without an image
+            imageUrl:
+              network?.rpcPrefs?.imageUrl ??
+              CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId],
+          },
+          removable: true,
+        })),
+    ];
+  },
+);
+
+export const getTestNetworks = createDeepEqualSelector(
+  getNetworkConfigurations,
+  (networkConfigurations = {}) => {
+    return [
+      {
+        chainId: CHAIN_IDS.SEPOLIA,
+        nickname: SEPOLIA_DISPLAY_NAME,
+        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
+        providerType: NETWORK_TYPES.SEPOLIA,
+        ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
+        id: NETWORK_TYPES.SEPOLIA,
+        removable: false,
+      },
+      {
+        chainId: CHAIN_IDS.LINEA_GOERLI,
+        nickname: LINEA_GOERLI_DISPLAY_NAME,
+        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_GOERLI],
+        rpcPrefs: {
+          imageUrl: LINEA_GOERLI_TOKEN_IMAGE_URL,
+        },
+        providerType: NETWORK_TYPES.LINEA_GOERLI,
+        ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_GOERLI],
+        id: NETWORK_TYPES.LINEA_GOERLI,
+        removable: false,
+      },
+      {
+        chainId: CHAIN_IDS.LINEA_SEPOLIA,
+        nickname: LINEA_SEPOLIA_DISPLAY_NAME,
+        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_SEPOLIA],
+        rpcPrefs: {
+          imageUrl: LINEA_SEPOLIA_TOKEN_IMAGE_URL,
+        },
+        providerType: NETWORK_TYPES.LINEA_SEPOLIA,
+        ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_SEPOLIA],
+        id: NETWORK_TYPES.LINEA_SEPOLIA,
+        removable: false,
+      },
+      // Localhosts
+      ...Object.values(networkConfigurations)
+        .filter(({ chainId }) => chainId === CHAIN_IDS.LOCALHOST)
+        .map((network) => ({ ...network, removable: true })),
+    ];
+  },
+);
+
+export const getAllNetworks = createDeepEqualSelector(
+  getNonTestNetworks,
+  getTestNetworks,
+  (nonTestNetworks, testNetworks) => {
+    return [
+      // Mainnet and custom networks
+      ...nonTestNetworks,
+      // Test networks
+      ...testNetworks,
+    ];
+  },
+);
+
 export const getConnectedSitesListWithNetworkInfo = createDeepEqualSelector(
   getConnectedSitesList,
   getAllDomains,
@@ -1888,16 +1994,17 @@ export function getNetworkConfigurations(state) {
   return state.metamask.networkConfigurations;
 }
 
-export function getCurrentNetwork(state) {
-  const allNetworks = getAllNetworks(state);
-  const providerConfig = getProviderConfig(state);
-
-  const filter =
-    providerConfig.type === 'rpc'
-      ? (network) => network.id === providerConfig.id
-      : (network) => network.id === providerConfig.type;
-  return allNetworks.find(filter);
-}
+export const getCurrentNetwork = createDeepEqualSelector(
+  getAllNetworks,
+  getProviderConfig,
+  (allNetworks, providerConfig) => {
+    const filter =
+      providerConfig.type === 'rpc'
+        ? (network) => network.id === providerConfig.id
+        : (network) => network.id === providerConfig.type;
+    return allNetworks.find(filter);
+  },
+);
 
 export function getIsNetworkSupportedByBlockaid(state) {
   const currentChainId = getCurrentChainId(state);
@@ -1906,115 +2013,14 @@ export function getIsNetworkSupportedByBlockaid(state) {
   return isSupported;
 }
 
-export function getAllEnabledNetworks(state) {
-  const nonTestNetworks = getNonTestNetworks(state);
-  const allNetworks = getAllNetworks(state);
-  const showTestnetNetworks = getShowTestNetworks(state);
-
-  return showTestnetNetworks ? allNetworks : nonTestNetworks;
-}
-
-export function getTestNetworks(state) {
-  const networkConfigurations = getNetworkConfigurations(state) || {};
-
-  return [
-    {
-      chainId: CHAIN_IDS.SEPOLIA,
-      nickname: SEPOLIA_DISPLAY_NAME,
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
-      providerType: NETWORK_TYPES.SEPOLIA,
-      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
-      id: NETWORK_TYPES.SEPOLIA,
-      removable: false,
-    },
-    {
-      chainId: CHAIN_IDS.LINEA_GOERLI,
-      nickname: LINEA_GOERLI_DISPLAY_NAME,
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_GOERLI],
-      rpcPrefs: {
-        imageUrl: LINEA_GOERLI_TOKEN_IMAGE_URL,
-      },
-      providerType: NETWORK_TYPES.LINEA_GOERLI,
-      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_GOERLI],
-      id: NETWORK_TYPES.LINEA_GOERLI,
-      removable: false,
-    },
-    {
-      chainId: CHAIN_IDS.LINEA_SEPOLIA,
-      nickname: LINEA_SEPOLIA_DISPLAY_NAME,
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_SEPOLIA],
-      rpcPrefs: {
-        imageUrl: LINEA_SEPOLIA_TOKEN_IMAGE_URL,
-      },
-      providerType: NETWORK_TYPES.LINEA_SEPOLIA,
-      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_SEPOLIA],
-      id: NETWORK_TYPES.LINEA_SEPOLIA,
-      removable: false,
-    },
-    // Localhosts
-    ...Object.values(networkConfigurations)
-      .filter(({ chainId }) => chainId === CHAIN_IDS.LOCALHOST)
-      .map((network) => ({ ...network, removable: true })),
-  ];
-}
-
-export function getNonTestNetworks(state) {
-  const networkConfigurations = getNetworkConfigurations(state) || {};
-
-  return [
-    // Mainnet always first
-    {
-      chainId: CHAIN_IDS.MAINNET,
-      nickname: MAINNET_DISPLAY_NAME,
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.MAINNET],
-      rpcPrefs: {
-        imageUrl: ETH_TOKEN_IMAGE_URL,
-      },
-      providerType: NETWORK_TYPES.MAINNET,
-      ticker: CURRENCY_SYMBOLS.ETH,
-      id: NETWORK_TYPES.MAINNET,
-      removable: false,
-    },
-    {
-      chainId: CHAIN_IDS.LINEA_MAINNET,
-      nickname: LINEA_MAINNET_DISPLAY_NAME,
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_MAINNET],
-      rpcPrefs: {
-        imageUrl: LINEA_MAINNET_TOKEN_IMAGE_URL,
-      },
-      providerType: NETWORK_TYPES.LINEA_MAINNET,
-      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_MAINNET],
-      id: NETWORK_TYPES.LINEA_MAINNET,
-      removable: false,
-    },
-    // Custom networks added by the user
-    ...Object.values(networkConfigurations)
-      .filter(({ chainId }) => ![CHAIN_IDS.LOCALHOST].includes(chainId))
-      .map((network) => ({
-        ...network,
-        rpcPrefs: {
-          ...network.rpcPrefs,
-          // Provide an image based on chainID if a network
-          // has been added without an image
-          imageUrl:
-            network?.rpcPrefs?.imageUrl ??
-            CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId],
-        },
-        removable: true,
-      })),
-  ];
-}
-
-export function getAllNetworks(state) {
-  const networks = [
-    // Mainnet and custom networks
-    ...getNonTestNetworks(state),
-    // Test networks
-    ...getTestNetworks(state),
-  ];
-
-  return networks;
-}
+export const getAllEnabledNetworks = createDeepEqualSelector(
+  getNonTestNetworks,
+  getAllNetworks,
+  getShowTestNetworks,
+  (nonTestNetworks, allNetworks, showTestnetNetworks) => {
+    return showTestnetNetworks ? allNetworks : nonTestNetworks;
+  },
+);
 
 export function getIsOptimism(state) {
   return (
