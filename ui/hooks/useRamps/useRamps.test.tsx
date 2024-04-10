@@ -122,8 +122,9 @@ describe('useRamps', () => {
     });
   });
 
-  ['0x1', '0x38', '0xa'].forEach((mockChainId) => {
-    it(`should open the buy crypto URL with the currently connected chain ID of ${mockChainId}`, () => {
+  it.each(['0x1', '0x38', '0xa'])(
+    'should open the buy crypto URL with the currently connected chain ID',
+    (mockChainId) => {
       mockStoreState = {
         ...mockStoreState,
         metamask: {
@@ -135,15 +136,14 @@ describe('useRamps', () => {
       };
 
       const mockBuyURI = `${process.env.PORTFOLIO_URL}/buy?metamaskEntry=ext_buy_sell_button&chainId=${mockChainId}&metametricsId=${mockedMetametricsId}`;
-
       const openTabSpy = jest.spyOn(global.platform, 'openTab');
-
       const { result } = renderHook(() => useRamps(), { wrapper });
 
       result.current.openBuyCryptoInPdapp();
+
       expect(openTabSpy).toHaveBeenCalledWith({
         url: mockBuyURI,
       });
-    });
-  });
+    },
+  );
 });

@@ -1842,7 +1842,8 @@
     "message": "Fund your wallet"
   },
   "fundYourWalletDescription": {
-    "message": "Get started by adding some $1 to your wallet."
+    "message": "Get started by adding some $1 to your wallet.",
+    "description": "$1 is the token symbol"
   },
   "gas": {
     "message": "Gas"
@@ -1928,10 +1929,12 @@
     "message": "View account on $1"
   },
   "getStartedWithNFTs": {
-    "message": "Get $1 to buy NFTs"
+    "message": "Get $1 to buy NFTs",
+    "description": "$1 is the token symbol"
   },
   "getStartedWithNFTsDescription": {
-    "message": "Get started with NFTs by adding some $1 to your wallet."
+    "message": "Get started with NFTs by adding some $1 to your wallet.",
+    "description": "$1 is the token symbol"
   },
   "globalTitle": {
     "message": "Global menu"
@@ -4801,10 +4804,12 @@
     "message": "Stake"
   },
   "startYourJourney": {
-    "message": "Start your journey with $1"
+    "message": "Start your journey with $1",
+    "description": "$1 is the token symbol"
   },
   "startYourJourneyDescription": {
-    "message": "Get started with web3 by adding some $1 to your wallet."
+    "message": "Get started with web3 by adding some $1 to your wallet.",
+    "description": "$1 is the token symbol"
   },
   "stateLogError": {
     "message": "Error in retrieving state logs."

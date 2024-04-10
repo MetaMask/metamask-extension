@@ -40,10 +40,12 @@ import {
   showSecondaryCurrency,
 } from '../../../../shared/modules/currency-display.utils';
 import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../helpers/utils/util';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import {
   RAMPS_CARD_VARIANT_TYPES,
   RampsCard,
 } from '../../multichain/ramps-card/ramps-card';
+///: END:ONLY_INCLUDE_IF
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 
 const AssetList = ({ onClickAsset }) => {
@@ -119,7 +121,13 @@ const AssetList = ({ onClickAsset }) => {
             margin={4}
           />
         )}
-      {shouldShowBuy && <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.TOKEN} />}
+      {
+        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+        shouldShowBuy ? (
+          <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.TOKEN} />
+        ) : null
+        ///: END:ONLY_INCLUDE_IF
+      }
       <TokenListItem
         onClick={() => onClickAsset(nativeCurrency)}
         title={nativeCurrency}
