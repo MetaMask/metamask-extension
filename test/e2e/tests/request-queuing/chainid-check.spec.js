@@ -124,7 +124,7 @@ describe('Request-queue chainId proxy sync', function () {
           `return window.ethereum.request(${chainIdRequest})`,
         );
         // after connecting the dapp should now have its own selected network
-        // independent from the globally selected and therefore should have changed
+        // independent from the globally selected and therefore should not have changed
         assert.equal(secondChainIdCall, '0x1');
       },
     );
