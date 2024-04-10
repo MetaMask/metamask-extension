@@ -224,7 +224,7 @@ export const isAccountConnectedToCurrentTab = createDeepEqualSelector(
   getPermittedAccountsForCurrentTab,
   (_state, address) => address,
   (permittedAccounts, address) => {
-    return permittedAccounts.find((account) => account === address);
+    return permittedAccounts.some((account) => account === address);
   },
 );
 
