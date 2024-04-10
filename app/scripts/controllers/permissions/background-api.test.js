@@ -113,7 +113,7 @@ describe('permission background API methods', () => {
       );
     });
 
-    it.failing('adds multiple permitted accounts (partial overlap)', () => {
+    it('adds multiple permitted accounts (partial overlap)', () => {
       const permissionController = {
         getCaveat: jest.fn().mockImplementationOnce(() => {
           return {
@@ -144,7 +144,7 @@ describe('permission background API methods', () => {
       );
     });
 
-    it.failing('does not add an already permitted account', () => {
+    it('does not add an already permitted account', () => {
       const permissionController = {
         getCaveat: jest.fn().mockImplementationOnce(() => {
           return { type: CaveatTypes.restrictReturnedAccounts, value: ['0x1'] };
@@ -165,7 +165,7 @@ describe('permission background API methods', () => {
       expect(permissionController.updateCaveat).not.toHaveBeenCalled();
     });
 
-    it.failing('does not add multiple already permitted accounts', () => {
+    it('does not add multiple already permitted accounts', () => {
       const permissionController = {
         getCaveat: jest.fn().mockImplementationOnce(() => {
           return {

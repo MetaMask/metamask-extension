@@ -27,17 +27,25 @@ export function getPermissionBackgroundApiMethods(permissionController) {
 
     // To add more than one accounts when already connected to the dapp
     addMorePermittedAccounts: (origin, accounts) => {
-      const existing = permissionController.getCaveat(
+      const { value: existingAccounts } = permissionController.getCaveat(
         origin,
         RestrictedMethods.eth_accounts,
         CaveatTypes.restrictReturnedAccounts,
       );
-      // Since this function will be called for unconnected accounts, we dodn't need an extra check
+
+      const updatedAccounts = Array.from(
+        new Set([...existingAccounts, ...accounts]),
+      );
+
+      if (updatedAccounts.length === existingAccounts.length) {
+        return;
+      }
+
       permissionController.updateCaveat(
         origin,
         RestrictedMethods.eth_accounts,
         CaveatTypes.restrictReturnedAccounts,
-        [...existing.value, ...accounts],
+        updatedAccounts,
       );
     },
 
