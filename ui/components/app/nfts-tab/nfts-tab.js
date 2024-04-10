@@ -40,8 +40,12 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
-import { RampsCard } from '../../multichain/ramps-card';
-import { RAMPS_CARD_VARIANT_TYPES } from '../../multichain/ramps-card/ramps-card';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import {
+  RAMPS_CARD_VARIANT_TYPES,
+  RampsCard,
+} from '../../multichain/ramps-card/ramps-card';
+///: END:ONLY_INCLUDE_IF
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 
 export default function NftsTab() {
@@ -105,7 +109,13 @@ export default function NftsTab() {
 
   return (
     <>
-      {showRampsCard && <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.NFT} />}
+      {
+        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+        showRampsCard ? (
+          <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.NFT} />
+        ) : null
+        ///: END:ONLY_INCLUDE_IF
+      }
       <Box className="nfts-tab">
         {hasAnyNfts > 0 || previouslyOwnedCollection.nfts.length > 0 ? (
           <NftsItems

@@ -26,8 +26,12 @@ import {
 } from '../../../helpers/constants/design-system';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
-import { RampsCard } from '../../multichain/ramps-card';
-import { RAMPS_CARD_VARIANT_TYPES } from '../../multichain/ramps-card/ramps-card';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import {
+  RAMPS_CARD_VARIANT_TYPES,
+  RampsCard,
+} from '../../multichain/ramps-card/ramps-card';
+///: END:ONLY_INCLUDE_IF
 
 const PAGE_INCREMENT = 10;
 
@@ -226,10 +230,13 @@ export default function TransactionList({
 
   return (
     <>
-      {showRampsCard && (
-        <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.ACTIVITY} />
-      )}
-
+      {
+        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+        showRampsCard ? (
+          <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.ACTIVITY} />
+        ) : null
+        ///: END:ONLY_INCLUDE_IF
+      }
       <Box className="transaction-list" paddingTop={4}>
         <Box className="transaction-list__transactions">
           {pendingTransactions.length > 0 && (
