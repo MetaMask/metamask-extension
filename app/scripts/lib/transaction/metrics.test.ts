@@ -72,6 +72,7 @@ const mockTransactionMetricsRequest = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   snapAndHardwareMessenger: jest.fn() as any,
   trackEvent: jest.fn(),
+  getIsSmartTransaction: jest.fn(),
 } as TransactionMetricsRequest;
 
 describe('Transaction metrics', () => {
