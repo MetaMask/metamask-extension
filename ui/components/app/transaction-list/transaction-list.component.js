@@ -9,6 +9,7 @@ import {
 import {
   getCurrentChainId,
   getSelectedAccount,
+  getIsBuyableChain,
   getShouldHideZeroBalanceTokens,
 } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -239,8 +240,7 @@ export default function TransactionList({
                 return dateGroup.transactionGroups.map(
                   (transactionGroup, index) => {
                     if (
-                      transactionGroup.initialTransaction.transactionType ===
-                      TransactionType.smart
+                      transactionGroup.initialTransaction?.isSmartTransaction
                     ) {
                       return (
                         <Fragment key={`${transactionGroup.nonce}:${index}`}>
@@ -289,7 +289,7 @@ export default function TransactionList({
                         >
                           {renderDateStamp(index, dateGroup)}
                           {transactionGroup.initialTransaction
-                            ?.transactionType === TransactionType.smart ? (
+                            ?.isSmartTransaction ? (
                             <SmartTransactionListItem
                               transactionGroup={transactionGroup}
                               smartTransaction={
