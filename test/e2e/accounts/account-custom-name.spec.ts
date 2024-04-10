@@ -12,7 +12,7 @@ const newAccountLabel = 'Custom name';
 const anotherAccountLabel = '2nd custom name';
 
 describe('Account Custom Name Persistence', function (this: Suite) {
-  it('persists custom account name through account change and wallet lock', async function () {
+  it('persists custom account label through account change and wallet lock', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -21,7 +21,7 @@ describe('Account Custom Name Persistence', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
 
-        // Change account name
+        // Change account label for existing account
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
@@ -31,13 +31,13 @@ describe('Account Custom Name Persistence', function (this: Suite) {
         await driver.clickElement('[data-testid="save-account-label-input"]');
         await driver.clickElement('button[aria-label="Close"]');
 
-        // Verify account name
+        // Verify account label
         await driver.findElement({
           css: '[data-testid="account-menu-icon"]',
           text: newAccountLabel,
         });
 
-        // Add new account
+        // Add new account with custom label
         await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-action-button"]',
@@ -49,7 +49,7 @@ describe('Account Custom Name Persistence', function (this: Suite) {
         await driver.clickElement({ text: 'Create', tag: 'button' });
         await waitForAccountRendered(driver);
 
-        // Verify account name after another account was active
+        // Verify initial custom account label after freshly added account was active
         const accountOneSelector = await findAnotherAccountFromAccountList(
           driver,
           1,
@@ -74,10 +74,15 @@ describe('Account Custom Name Persistence', function (this: Suite) {
         });
         await unlockWallet(driver);
 
-        // Verify account name after unlock
+        // Verify both account labels persist after unlock
         await driver.findElement({
           css: '[data-testid="account-menu-icon"]',
           text: newAccountLabel,
+        });
+        await driver.clickElement('[data-testid="account-menu-icon"]');
+        await driver.findElement({
+          css: `.multichain-account-list-item__account-name__button`,
+          text: anotherAccountLabel,
         });
       },
     );
