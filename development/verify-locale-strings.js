@@ -177,6 +177,7 @@ async function verifyEnglishLocale() {
     'ui/components/app/metamask-translation/*.ts',
     'ui/pages/confirmation/templates/*.js',
     'ui/pages/confirmation/templates/*.ts',
+    'app/scripts/metamask-controller.js',
   ];
   const testGlob = '**/*.test.js';
   const javascriptFiles = await glob(

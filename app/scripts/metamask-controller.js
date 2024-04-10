@@ -5872,6 +5872,10 @@ export default class MetamaskController extends EventEmitter {
     return message;
   }
 
+  _sanitizeString(str = '') {
+    return str.replace(/<|>/giu, '');
+  }
+
   async _notifyChainChange() {
     if (this.preferencesController.getUseRequestQueue()) {
       this.notifyAllConnections(async (origin) => {
@@ -5885,9 +5889,12 @@ export default class MetamaskController extends EventEmitter {
 
         const { host } = new URL(origin);
 
+        // Removes anything bug letters from a string
+        const sanitizedNickname = this.sanitizeString(nickname);
+
         const message = await this._getLocalizedString('switchedChainToast', [
-          `[${nickname}]`,
-          `[${host}]`,
+          `<strong>${sanitizedNickname}</strong>`,
+          `<strong>${host}</strong>`,
         ]);
 
         return {
