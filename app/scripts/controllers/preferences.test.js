@@ -256,7 +256,6 @@ describe('preferences controller', () => {
         tokenListController,
         initState: {
           useTokenDetection: false,
-          // useNftDetection: false,
         },
         networkConfigurations: NETWORK_CONFIGURATION_DATA,
         onKeyringStateChange: (listener) => {
