@@ -4151,7 +4151,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^8.0.1, @metamask/controller-utils@npm:^8.0.2, @metamask/controller-utils@npm:^8.0.3, @metamask/controller-utils@npm:^8.0.4":
+"@metamask/controller-utils@npm:^8.0.1, @metamask/controller-utils@npm:^8.0.2, @metamask/controller-utils@npm:^8.0.4":
   version: 8.0.4
   resolution: "@metamask/controller-utils@npm:8.0.4"
   dependencies:
