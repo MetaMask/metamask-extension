@@ -1,15 +1,14 @@
-import { defaultBuyableChains } from './constants';
+import { createSelector } from 'reselect';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getCurrentChainId } from '../../selectors';
-import { AggregatorNetwork } from './types';
 import RampAPI from '../../hooks/useRamps/rampAPI';
-import { createSelector } from 'reselect';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
+import { defaultBuyableChains } from './constants';
+import { AggregatorNetwork } from './types';
 
 export const fetchBuyableChains = createAsyncThunk(
   'ramps/fetchBuyableChains',
   async () => {
-    console.log('calling the ramps API');
     return await RampAPI.getNetworks();
   },
 );
@@ -21,16 +20,18 @@ const rampsSlice = createSlice({
   },
   reducers: {
     setBuyableChains: (state, action) => {
-      console.log('SETTING THE BUYABLE CHAINS! ', action.payload);
       state.buyableChains = action.payload;
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchBuyableChains.fulfilled, (state, action) => {
-        state.buyableChains = action.payload;
+        const networks = action.payload;
+        if (networks && networks.length > 0) {
+          state.buyableChains = action.payload;
+        }
       })
-      .addCase(fetchBuyableChains.rejected, (state, action) => {
+      .addCase(fetchBuyableChains.rejected, (state) => {
         state.buyableChains = defaultBuyableChains;
       });
   },
@@ -43,8 +44,6 @@ export const getBuyableChains = (state: any) => state.ramps.buyableChains;
 export const getIsNativeTokenBuyable = createSelector(
   [getCurrentChainId, getBuyableChains],
   (currentChainId, buyableChains) => {
-    console.log('selectotr logic ', { currentChainId, buyableChains });
-
     return buyableChains.some(
       (network: AggregatorNetwork) =>
         String(network.chainId) === hexToDecimal(currentChainId),

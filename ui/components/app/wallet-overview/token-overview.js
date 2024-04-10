@@ -51,8 +51,8 @@ import { Icon, IconName } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 
 import { useIsOriginalTokenSymbol } from '../../../hooks/useIsOriginalTokenSymbol';
-import WalletOverview from './wallet-overview';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
+import WalletOverview from './wallet-overview';
 
 const TokenOverview = ({ className, token }) => {
   const dispatch = useDispatch();

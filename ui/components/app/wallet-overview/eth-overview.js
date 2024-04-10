@@ -66,6 +66,7 @@ import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { showPrimaryCurrency } from '../../../../shared/modules/currency-display.utils';
+import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 import WalletOverview from './wallet-overview';
 
 const EthOverview = ({ className, showAddress }) => {
@@ -76,7 +77,8 @@ const EthOverview = ({ className, showAddress }) => {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const location = useLocation();
   const isBridgeChain = useSelector(getIsBridgeChain);
-  const { openBuyCryptoInPdapp, isBuyableChain } = useRamps();
+  const { openBuyCryptoInPdapp } = useRamps();
+  const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const metaMetricsId = useSelector(getMetaMetricsId);
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);

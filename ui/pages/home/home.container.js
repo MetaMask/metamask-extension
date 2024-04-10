@@ -274,7 +274,7 @@ const mapDispatchToProps = (dispatch) => {
     },
     ///: END:ONLY_INCLUDE_IF
     setSurveyLinkLastClickedOrClosed: (time) =>
-    g  dispatch(setSurveyLinkLastClickedOrClosed(time)),
+      dispatch(setSurveyLinkLastClickedOrClosed(time)),
     fetchBuyableChains: () => dispatch(fetchBuyableChains()),
   };
 };

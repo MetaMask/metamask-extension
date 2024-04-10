@@ -44,7 +44,6 @@ import {
   RAMPS_CARD_VARIANT_TYPES,
   RampsCard,
 } from '../../multichain/ramps-card/ramps-card';
-import useRamps from '../../../hooks/useRamps/useRamps';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 
 const AssetList = ({ onClickAsset }) => {
