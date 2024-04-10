@@ -89,7 +89,8 @@ export const Connections = () => {
 
   const urlParams: { origin: string } = useParams();
   const originOfTab = useSelector(getOriginOfCurrentTab);
-  const securedOrigin = decodeURIComponent(urlParams.origin);
+  const securedOrigin = `https://${urlParams.origin}`;
+
   const activeTabOrigin: string = urlParams.origin
     ? securedOrigin
     : originOfTab;
