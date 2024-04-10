@@ -19,6 +19,7 @@ import {
   CRYPTOCOMPARE_LINK,
   PRIVACY_POLICY_LINK,
   SECURITY_ALERTS_LEARN_MORE_LINK,
+  TRANSACTION_SIMULATIONS_LEARN_MORE_LINK,
 } from '../../../../shared/lib/ui-utils';
 import SRPQuiz from '../../../components/app/srp-quiz-modal/SRPQuiz';
 import {
@@ -931,7 +932,16 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-item">
           <span>{t('simulationsSettingSubHeader')}</span>
           <div className="settings-page__content-description">
-            {t('simulationsSettingDescription')}
+            {t('simulationsSettingDescription', [
+              <a
+                key="learn_more_link"
+                href={TRANSACTION_SIMULATIONS_LEARN_MORE_LINK}
+                rel="noreferrer"
+                target="_blank"
+              >
+                {t('learnMoreUpperCase')}
+              </a>,
+            ])}
           </div>
         </div>
 
