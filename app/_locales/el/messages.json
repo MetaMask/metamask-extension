@@ -3267,6 +3267,10 @@
   "securityAndPrivacy": {
     "message": "Ασφάλεια και απόρρητο"
   },
+  "securityProviderPoweredBy": {
+    "message": "Με την υποστήριξη του $1",
+    "description": "The security provider that is providing data"
+  },
   "seeDetails": {
     "message": "Δείτε λεπτομέρειες"
   },
