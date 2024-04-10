@@ -31,7 +31,6 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentChainId, getFullTxData } from '../../../selectors';
 import { getFeatureFlagsByChainId } from '../../../../shared/modules/selectors';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { BaseUrl } from '../../../../shared/constants/urls';
 import {
   FALLBACK_SMART_TRANSACTIONS_EXPECTED_DEADLINE,
@@ -425,6 +424,8 @@ export const SmartTransactionStatusPage = ({
     stxEstimatedDeadline,
   });
   const chainId: string = useSelector(getCurrentChainId);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore: This same selector is used in the awaiting-swap component.
   const fullTxData = useSelector((state) => getFullTxData(state, txId)) || {};
 
   const countdown = isSmartTransactionPending ? (
@@ -453,8 +454,7 @@ export const SmartTransactionStatusPage = ({
   }, []);
 
   const canShowSimulationDetails =
-    fullTxData.simulationData && chainId === CHAIN_IDS.MAINNET;
-
+    fullTxData.simulationData?.tokenBalanceChanges?.length > 0;
   const uuid = smartTransaction?.uuid;
   const portfolioSmartTransactionStatusUrl =
     uuid && chainId
@@ -488,26 +488,28 @@ export const SmartTransactionStatusPage = ({
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
           alignItems={AlignItems.center}
+          paddingLeft={6}
+          paddingRight={6}
         >
           <SmartTransactionsStatusIcon
             iconName={iconName}
             iconColor={iconColor}
           />
           <Title title={title} />
+          <Deadline
+            isSmartTransactionPending={isSmartTransactionPending}
+            stxDeadline={stxDeadline}
+            timeLeftForPendingStxInSec={timeLeftForPendingStxInSec}
+          />
+          <Description description={description} />
+          <PortfolioSmartTransactionStatusUrl
+            portfolioSmartTransactionStatusUrl={
+              portfolioSmartTransactionStatusUrl
+            }
+            isSmartTransactionPending={isSmartTransactionPending}
+            onCloseExtension={onCloseExtension}
+          />
         </Box>
-        <Deadline
-          isSmartTransactionPending={isSmartTransactionPending}
-          stxDeadline={stxDeadline}
-          timeLeftForPendingStxInSec={timeLeftForPendingStxInSec}
-        />
-        <Description description={description} />
-        <PortfolioSmartTransactionStatusUrl
-          portfolioSmartTransactionStatusUrl={
-            portfolioSmartTransactionStatusUrl
-          }
-          isSmartTransactionPending={isSmartTransactionPending}
-          onCloseExtension={onCloseExtension}
-        />
         {canShowSimulationDetails && (
           <SimulationDetails
             simulationData={fullTxData.simulationData}
