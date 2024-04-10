@@ -198,6 +198,7 @@ class SmartTransactionHook {
               uuid,
             },
             isDapp: this.#isDapp,
+            txId: this.#transactionMeta.id,
           },
         },
         true,
@@ -217,6 +218,7 @@ class SmartTransactionHook {
         requestState: {
           smartTransaction,
           isDapp: this.#isDapp,
+          txId: this.#transactionMeta.id,
         },
       },
     );

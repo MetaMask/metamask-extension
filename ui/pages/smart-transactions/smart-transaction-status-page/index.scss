@@ -23,4 +23,12 @@
   &__countdown {
     width: 25px;
   }
+
+  .simulation-details {
+    &__layout {
+      margin-left: 0;
+      margin-right: 0;
+      width: 100%;
+    }
+  }
 }
