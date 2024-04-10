@@ -32,11 +32,10 @@ const authorTeams = {
     'Charly Chevalier',
     'Mike B',
   ],
-  'Extension UX': [
+  'Wallet UX': [
     'David Walsh',
     'Nidhi Kumari',
     'Jony Bursztyn',
-    'Pedro Figueiredo',
   ],
   'Extension Platform': [
     'chloeYue',
@@ -57,6 +56,7 @@ const authorTeams = {
   ],
   DappAPI: ['tmashuang', 'jiexi', 'BelfordZ', 'Shane'],
   'Confirmation UX': [
+    'Pedro Figueiredo',
     'Sylva Elendu',
     'Olusegun Akintayo',
     'Jyoti Puri',
