@@ -103,6 +103,7 @@ buildTypes:
     env:
       - INFURA_MMI_PROJECT_ID
       - SEGMENT_MMI_WRITE_KEY
+      - SENTRY_MMI_DSN
       - INFURA_ENV_KEY_REF: INFURA_MMI_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_MMI_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
@@ -197,6 +198,14 @@ env:
   - ASSET_PREFIX: null
 
   ###
+  # Notifications Feature
+  ###
+  - AUTH_API: https://authentication.api.cx.metamask.io
+  - OIDC_API: https://oidc.api.cx.metamask.io
+  - OIDC_CLIENT_ID: 77285a0b-a0c6-4681-ba36-cc7d3a21aece
+  - OIDC_GRANT_TYPE: urn:ietf:params:oauth:grant-type:jwt-bearer
+
+  ###
   # API keys to 3rd party services
   ###
 
@@ -261,8 +270,13 @@ env:
   - MULTICHAIN: ''
   # Determines if feature flagged Multichain Transactions should be used
   - TRANSACTION_MULTICHAIN: ''
+
   # Used to enable confirmation redesigned pages
   - ENABLE_CONFIRMATION_REDESIGN: ''
+
+    # Enables the notifications feature within the build:
+  - NOTIFICATIONS: ''
+
   ###
   # Meta variables
   ###

@@ -67,6 +67,8 @@ import { SimulationDetails } from '../components/simulation-details';
 import { BannerAlert } from '../../../components/component-library';
 import { Severity } from '../../../helpers/constants/design-system';
 
+import { fetchSwapsFeatureFlags } from '../../swaps/swaps.util';
+
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
     t: PropTypes.func,
@@ -163,6 +165,8 @@ export default class ConfirmTransactionBase extends Component {
     tokenSymbol: PropTypes.string,
     updateTransaction: PropTypes.func,
     updateTransactionValue: PropTypes.func,
+    setSwapsFeatureFlags: PropTypes.func,
+    fetchSmartTransactionsLiveness: PropTypes.func,
     isUsingPaymaster: PropTypes.bool,
     isSigningOrSubmitting: PropTypes.bool,
     isUserOpContractDeployError: PropTypes.bool,
@@ -173,6 +177,9 @@ export default class ConfirmTransactionBase extends Component {
     hasDismissedOpenSeaToBlockaidBanner: PropTypes.bool,
     dismissOpenSeaToBlockaidBanner: PropTypes.func,
     isNetworkSupportedByBlockaid: PropTypes.bool,
+    isSmartTransaction: PropTypes.bool,
+    smartTransactionsOptInStatus: PropTypes.bool,
+    currentChainSupportsSmartTransactions: PropTypes.bool,
   };
 
   state = {
@@ -724,7 +731,10 @@ export default class ConfirmTransactionBase extends Component {
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       fromInternalAccount,
       ///: END:ONLY_INCLUDE_IF
+      isSmartTransaction,
     } = this.props;
+
+    const hideLoadingIndicator = isSmartTransaction;
 
     let loadingIndicatorMessage;
 
@@ -771,11 +781,7 @@ export default class ConfirmTransactionBase extends Component {
       () => {
         this._removeBeforeUnload();
 
-        sendTransaction(
-          txData,
-          false, // hideLoadingIndicator
-          loadingIndicatorMessage, // loadingIndicatorMessage
-        )
+        sendTransaction(txData, hideLoadingIndicator, loadingIndicatorMessage)
           .then(() => {
             if (!this._isMounted) {
               return;
@@ -977,13 +983,17 @@ export default class ConfirmTransactionBase extends Component {
     window.removeEventListener('beforeunload', this._beforeUnloadForGasPolling);
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     this._isMounted = true;
     const {
       toAddress,
       txData: { origin } = {},
       getNextNonce,
       tryReverseResolveAddress,
+      smartTransactionsOptInStatus,
+      currentChainSupportsSmartTransactions,
+      setSwapsFeatureFlags,
+      fetchSmartTransactionsLiveness,
     } = this.props;
     const { trackEvent } = this.context;
     trackEvent({
@@ -1019,6 +1029,16 @@ export default class ConfirmTransactionBase extends Component {
     });
 
     window.addEventListener('beforeunload', this._beforeUnloadForGasPolling);
+
+    if (smartTransactionsOptInStatus && currentChainSupportsSmartTransactions) {
+      // TODO: Fetching swaps feature flags, which include feature flags for smart transactions, is only a short-term solution.
+      // Long-term, we want to have a new proxy service specifically for feature flags.
+      const [swapsFeatureFlags] = await Promise.all([
+        fetchSwapsFeatureFlags(),
+        fetchSmartTransactionsLiveness(),
+      ]);
+      await setSwapsFeatureFlags(swapsFeatureFlags);
+    }
   }
 
   componentWillUnmount() {
