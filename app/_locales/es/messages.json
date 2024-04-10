@@ -3267,6 +3267,10 @@
   "securityAndPrivacy": {
     "message": "Seguridad y privacidad"
   },
+  "securityProviderPoweredBy": {
+    "message": "Impulsado por $1",
+    "description": "The security provider that is providing data"
+  },
   "seeDetails": {
     "message": "Ver detalles"
   },

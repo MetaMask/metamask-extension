@@ -3267,6 +3267,10 @@
   "securityAndPrivacy": {
     "message": "보안 및 프라이버시"
   },
+  "securityProviderPoweredBy": {
+    "message": "$1 제공",
+    "description": "The security provider that is providing data"
+  },
   "seeDetails": {
     "message": "세부 정보 보기"
   },
