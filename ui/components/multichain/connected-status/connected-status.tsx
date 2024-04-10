@@ -5,7 +5,7 @@ import {
   BorderColor,
   Color,
 } from '../../../helpers/constants/design-system';
-import { isAddressConnectedToCurrentOrigin } from '../../../selectors';
+import { isAccountConnectedToCurrentTab } from '../../../selectors';
 import {
   STATUS_CONNECTED,
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
@@ -31,7 +31,7 @@ export const ConnectedStatus: React.FC<ConnectedStatusProps> = ({
   const t = useI18nContext();
 
   const currentTabIsConnectedToSelectedAddress = useSelector((state) =>
-    isAddressConnectedToCurrentOrigin(state, address),
+    isAccountConnectedToCurrentTab(state, address),
   );
 
   let status = STATUS_NOT_CONNECTED;

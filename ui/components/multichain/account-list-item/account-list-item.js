@@ -48,7 +48,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  isAddressConnectedToCurrentOrigin,
+  isAccountConnectedToCurrentTab,
   getCurrentNetwork,
   getNativeCurrencyImage,
   getShowFiatInTestnets,
@@ -116,7 +116,7 @@ export const AccountListItem = ({
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const nativeCurrency = useSelector(getNativeCurrency);
   const currentTabIsConnectedToSelectedAddress = useSelector((state) =>
-    isAddressConnectedToCurrentOrigin(state, identity.address),
+    isAccountConnectedToCurrentTab(state, identity.address),
   );
   const isConnected =
     currentTabOrigin && currentTabIsConnectedToSelectedAddress;

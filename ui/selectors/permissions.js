@@ -220,7 +220,7 @@ export function getAddressConnectedSubjectMap(state) {
   return addressConnectedIconMap;
 }
 
-export const isAddressConnectedToCurrentOrigin = createDeepEqualSelector(
+export const isAccountConnectedToCurrentTab = createDeepEqualSelector(
   getPermittedAccountsForCurrentTab,
   (_state, address) => address,
   (permittedAccounts, address) => {
