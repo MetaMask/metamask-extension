@@ -73,7 +73,7 @@ function BlockaidBannerAlert({ txData, ...props }) {
     return (
       <LoadingIndicator
         isLoading
-        style={{ position: 'absolute', paddingTop: '8px' }}
+        style={{ position: 'relative', flex: '0 0 auto', margin: '8px auto 0' }}
       />
     );
   }
