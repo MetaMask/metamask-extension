@@ -7,6 +7,7 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { SmartTransaction } from '@metamask/smart-transactions-controller/dist/types';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import {
   determineTransactionAssetType,
@@ -87,6 +88,9 @@ export type TransactionMetricsRequest = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   trackEvent: (payload: any) => void;
   getIsSmartTransaction: () => boolean;
+  getSmartTransactionByMinedTxHash: (
+    txhash: string | undefined,
+  ) => SmartTransaction;
 };
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
@@ -743,6 +747,40 @@ function getUniqueId(
   return uniqueIdentifier;
 }
 
+type SmartTransactionMetricsProperties = {
+  is_smart_transaction: boolean;
+  smart_transaction_duplicated?: boolean;
+  smart_transaction_timed_out?: boolean;
+  smart_transaction_proxied?: boolean;
+};
+
+const getSmartTransactionMetricsProperties = (
+  transactionMetricsRequest: TransactionMetricsRequest,
+  transactionMeta: TransactionMeta,
+) => {
+  const isSmartTransaction = transactionMetricsRequest.getIsSmartTransaction();
+  const properties = {
+    is_smart_transaction: isSmartTransaction,
+  } as SmartTransactionMetricsProperties;
+  if (!isSmartTransaction) {
+    return properties;
+  }
+  const smartTransaction =
+    transactionMetricsRequest.getSmartTransactionByMinedTxHash(
+      transactionMeta.hash,
+    );
+  const smartTransactionStatusMetadata = smartTransaction?.statusMetadata;
+  if (!smartTransactionStatusMetadata) {
+    return properties;
+  }
+  properties.smart_transaction_duplicated =
+    smartTransactionStatusMetadata.duplicated;
+  properties.smart_transaction_timed_out =
+    smartTransactionStatusMetadata.timedOut;
+  properties.smart_transaction_proxied = smartTransactionStatusMetadata.proxied;
+  return properties;
+};
+
 async function buildEventFragmentProperties({
   transactionEventPayload: { transactionMeta },
   transactionMetricsRequest,
@@ -968,6 +1006,12 @@ async function buildEventFragmentProperties({
     uiCustomizations.push(MetaMetricsEventUiCustomization.GasEstimationFailed);
   }
 
+  const smartTransactionMetricsProperties =
+    getSmartTransactionMetricsProperties(
+      transactionMetricsRequest,
+      transactionMeta,
+    );
+
   /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
   let properties = {
     chain_id: chainId,
@@ -994,7 +1038,7 @@ async function buildEventFragmentProperties({
     ///: END:ONLY_INCLUDE_IF
     // ui_customizations must come after ...blockaidProperties
     ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
-    is_smart_transaction: transactionMetricsRequest.getIsSmartTransaction(),
+    ...smartTransactionMetricsProperties,
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as Record<string, any>;
