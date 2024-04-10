@@ -352,7 +352,6 @@
     "@ngraveio/bc-ur": "^1.1.12",
     "@noble/ciphers": "^0.5.2",
     "@noble/hashes": "^1.3.3",
-    "@open-rpc/test-coverage": "../../open-rpc/test-coverage",
     "@popperjs/core": "^2.4.0",
     "@reduxjs/toolkit": "patch:@reduxjs/toolkit@npm%3A1.9.7#~/.yarn/patches/@reduxjs-toolkit-npm-1.9.7-b14925495c.patch",
     "@segment/loosely-validate-event": "^2.0.0",
