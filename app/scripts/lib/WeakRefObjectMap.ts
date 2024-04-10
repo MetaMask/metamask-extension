@@ -53,4 +53,14 @@ export class WeakRefObjectMap {
   clear() {
     this.map.clear();
   }
+
+  forEach(callback: (value: WeakRefCompatibleObject<Record<string, object>>, key: string, map: Map<string, WeakRefCompatibleObject<Record<string, object>>>) => void, thisArg?: any): void {
+    this.map.forEach((value, key) => {
+      if (thisArg) {
+        callback.call(thisArg, value, key, this.map);
+      } else {
+        callback(value, key, this.map);
+      }
+    });
+  }
 }
