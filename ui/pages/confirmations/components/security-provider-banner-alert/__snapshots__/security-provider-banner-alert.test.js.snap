@@ -59,7 +59,7 @@ exports[`Security Provider Banner Alert should match snapshot 1`] = `
                 </li>
               </ul>
               <p
-                class="mm-box mm-text mm-text--body-md mm-box--margin-top-3 mm-box--padding-bottom-1 mm-box--display-flex mm-box--color-text-default"
+                class="mm-box mm-text mm-text--body-md mm-box--margin-top-3 mm-box--display-flex mm-box--color-text-default"
               >
                 [somethingDoesntLookRight]
               </p>
@@ -132,7 +132,7 @@ exports[`Security Provider Banner Alert should render disclosure component if no
               class="disclosure__content normal"
             >
               <p
-                class="mm-box mm-text mm-text--body-md mm-box--margin-top-3 mm-box--padding-bottom-1 mm-box--display-flex mm-box--color-text-default"
+                class="mm-box mm-text mm-text--body-md mm-box--margin-top-3 mm-box--display-flex mm-box--color-text-default"
               >
                 [somethingDoesntLookRight]
               </p>

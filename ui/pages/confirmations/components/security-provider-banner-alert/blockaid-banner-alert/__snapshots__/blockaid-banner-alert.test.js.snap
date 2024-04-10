@@ -47,7 +47,7 @@ exports[`Blockaid Banner Alert should render 'danger' UI when securityAlertRespo
             class="disclosure__content normal"
           >
             <p
-              class="mm-box mm-text mm-text--body-md mm-box--margin-top-3 mm-box--padding-bottom-1 mm-box--display-flex mm-box--color-text-default"
+              class="mm-box mm-text mm-text--body-md mm-box--margin-top-3 mm-box--display-flex mm-box--color-text-default"
             >
               <span>
                  
@@ -144,7 +144,7 @@ exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResp
             class="disclosure__content normal"
           >
             <p
-              class="mm-box mm-text mm-text--body-md mm-box--margin-top-3 mm-box--padding-bottom-1 mm-box--display-flex mm-box--color-text-default"
+              class="mm-box mm-text mm-text--body-md mm-box--margin-top-3 mm-box--display-flex mm-box--color-text-default"
             >
               <span>
                  
@@ -241,7 +241,7 @@ exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResp
             class="disclosure__content normal"
           >
             <p
-              class="mm-box mm-text mm-text--body-md mm-box--margin-top-3 mm-box--padding-bottom-1 mm-box--display-flex mm-box--color-text-default"
+              class="mm-box mm-text mm-text--body-md mm-box--margin-top-3 mm-box--display-flex mm-box--color-text-default"
             >
               <span>
                  
@@ -339,7 +339,7 @@ exports[`Blockaid Banner Alert should render details section even when features 
               class="disclosure__content normal"
             >
               <p
-                class="mm-box mm-text mm-text--body-md mm-box--margin-top-3 mm-box--padding-bottom-1 mm-box--display-flex mm-box--color-text-default"
+                class="mm-box mm-text mm-text--body-md mm-box--margin-top-3 mm-box--display-flex mm-box--color-text-default"
               >
                 <span>
                    
@@ -450,7 +450,7 @@ exports[`Blockaid Banner Alert should render details when provided 1`] = `
                 </li>
               </ul>
               <p
-                class="mm-box mm-text mm-text--body-md mm-box--margin-top-3 mm-box--padding-bottom-1 mm-box--display-flex mm-box--color-text-default"
+                class="mm-box mm-text mm-text--body-md mm-box--margin-top-3 mm-box--display-flex mm-box--color-text-default"
               >
                 <span>
                    
@@ -549,7 +549,7 @@ exports[`Blockaid Banner Alert should render link to report url 1`] = `
               class="disclosure__content normal"
             >
               <p
-                class="mm-box mm-text mm-text--body-md mm-box--margin-top-3 mm-box--padding-bottom-1 mm-box--display-flex mm-box--color-text-default"
+                class="mm-box mm-text mm-text--body-md mm-box--margin-top-3 mm-box--display-flex mm-box--color-text-default"
               >
                 <span>
                    
