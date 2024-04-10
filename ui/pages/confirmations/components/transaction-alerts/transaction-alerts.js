@@ -63,7 +63,7 @@ const TransactionAlerts = ({
     <div className="transaction-alerts">
       {
         ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-        <BlockaidBannerAlert txData={txData} margin={[4, 4, 0, 4]} />
+        <BlockaidBannerAlert txData={txData} />
         ///: END:ONLY_INCLUDE_IF
       }
       {isSuspiciousResponse(txData?.securityProviderResponse) && (
