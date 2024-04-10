@@ -170,12 +170,12 @@ describe('Settings Search Utils', () => {
     });
 
     it('returns "Network" section count', () => {
-      expect(getNumberOfSettingRoutesInTab(t, t('networks'))).toStrictEqual(6);
+      expect(getNumberOfSettingRoutesInTab(t, t('networks'))).toStrictEqual(7);
     });
 
     it('returns "Experimental" section count', () => {
       expect(getNumberOfSettingRoutesInTab(t, t('experimental'))).toStrictEqual(
-        2,
+        3,
       );
     });
 

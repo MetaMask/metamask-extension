@@ -1,16 +1,53 @@
 import { Severity } from '../../helpers/constants/design-system';
 
+/**
+ * Represents an alert object.
+ */
 export type Alert = {
+  /**
+   * The unique key of the alert.
+   */
   key: string;
+
+  /**
+   * The field associated with the alert.
+   */
   field?: string;
+
+  /**
+   * The severity of the alert.
+   */
   severity: Severity.Danger | Severity.Warning | Severity.Info;
+
+  /**
+   * The message describing what may happen if an alert is ignored.
+   */
   message: string;
+
+  /**
+   * The reason for the alert.
+   */
   reason?: string;
+
+  /**
+   * Additional details about the alert.
+   */
   alertDetails?: string[];
 };
 
+/**
+ * Represents the state of confirm alerts in the application.
+ */
 export type ConfirmAlertsState = {
+  /**
+   * The alerts owned by a confirmation, where the confirmation ID is the key.
+   */
   alerts: { [ownerId: string]: Alert[] };
+
+  /**
+   * The acknowledgement status of alerts owned by a confirmation, where the confirmation ID is the key
+   * and the alert key is the nested key.
+   */
   confirmed: { [ownerId: string]: { [alertKey: string]: boolean } };
 };
 

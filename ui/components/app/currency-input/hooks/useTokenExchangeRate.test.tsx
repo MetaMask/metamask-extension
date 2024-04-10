@@ -25,6 +25,8 @@ const renderUseTokenExchangeRate = (tokenAddress?: string) => {
     },
   };
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const wrapper = ({ children }: any) => (
     <Provider store={configureStore(state)}>{children}</Provider>
   );

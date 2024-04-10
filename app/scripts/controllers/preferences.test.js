@@ -199,6 +199,23 @@ describe('preferences controller', () => {
     });
   });
 
+  describe('dismissOpenSeaToBlockaidBanner', () => {
+    it('hasDismissedOpenSeaToBlockaidBanner should default to false', () => {
+      expect(
+        preferencesController.store.getState()
+          .hasDismissedOpenSeaToBlockaidBanner,
+      ).toStrictEqual(false);
+    });
+
+    it('should set the hasDismissedOpenSeaToBlockaidBanner property in state', () => {
+      preferencesController.dismissOpenSeaToBlockaidBanner();
+      expect(
+        preferencesController.store.getState()
+          .hasDismissedOpenSeaToBlockaidBanner,
+      ).toStrictEqual(true);
+    });
+  });
+
   describe('setUseSafeChainsListValidation', function () {
     it('should default to true', function () {
       const state = preferencesController.store.getState();
@@ -347,6 +364,7 @@ describe('preferences controller', () => {
         [CHAIN_IDS.GOERLI]: true,
         [CHAIN_IDS.SEPOLIA]: true,
         [CHAIN_IDS.LINEA_GOERLI]: true,
+        [CHAIN_IDS.LINEA_SEPOLIA]: true,
       });
     });
 
@@ -364,6 +382,7 @@ describe('preferences controller', () => {
         [CHAIN_IDS.GOERLI]: true,
         [CHAIN_IDS.SEPOLIA]: true,
         [CHAIN_IDS.LINEA_GOERLI]: true,
+        [CHAIN_IDS.LINEA_SEPOLIA]: true,
       });
     });
   });
