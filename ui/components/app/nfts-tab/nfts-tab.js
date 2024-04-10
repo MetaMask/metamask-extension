@@ -64,8 +64,9 @@ export default function NftsTab() {
 
   const hasAnyNfts = Object.keys(collections).length > 0;
   const showNftBanner = hasAnyNfts === false;
-  const currentNetwork = useSelector(getCurrentNetwork);
+  const { chainId, nickname } = useSelector(getCurrentNetwork);
   const currentLocale = useSelector(getCurrentLocale);
+
   useEffect(() => {
     if (!showNftBanner) {
       return;
@@ -74,13 +75,13 @@ export default function NftsTab() {
       event: MetaMetricsEventName.EmptyNftsBannerDisplayed,
       category: MetaMetricsEventCategory.Navigation,
       properties: {
-        chain_id: currentNetwork.chainId,
+        chain_id: chainId,
         locale: currentLocale,
-        network: currentNetwork.nickname,
+        network: nickname,
         referrer: ORIGIN_METAMASK,
       },
     });
-  }, [showNftBanner, trackEvent, currentNetwork, currentLocale]);
+  }, [showNftBanner, trackEvent, chainId, nickname, currentLocale]);
 
   if (nftsLoading) {
     return <div className="nfts-tab__loading">{t('loadingNFTs')}</div>;
@@ -116,9 +117,9 @@ export default function NftsTab() {
                     trackEvent({
                       event: MetaMetricsEventName.EmptyNftsBannerClicked,
                       properties: {
-                        chain_id: currentNetwork.chainId,
+                        chain_id: chainId,
                         locale: currentLocale,
-                        network: currentNetwork.nickname,
+                        network: nickname,
                         referrer: ORIGIN_METAMASK,
                       },
                     });
