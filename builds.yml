@@ -202,7 +202,7 @@ env:
   ###
   - AUTH_API: https://authentication.api.cx.metamask.io
   - OIDC_API: https://oidc.api.cx.metamask.io
-  - OIDC_CLIENT_ID: 77285a0b-a0c6-4681-ba36-cc7d3a21aece
+  - OIDC_CLIENT_ID: 1132f10a-b4e5-4390-a5f2-d9c6022db564
   - OIDC_GRANT_TYPE: urn:ietf:params:oauth:grant-type:jwt-bearer
   - USER_STORAGE_API: https://user-storage.api.cx.metamask.io
 
