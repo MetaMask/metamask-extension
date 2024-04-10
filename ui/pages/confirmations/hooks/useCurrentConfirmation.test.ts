@@ -21,7 +21,7 @@ const mockState = {
       '1': {
         id: '1',
         origin: 'origin',
-        time: Date.now(),
+        time: Date.now() - 100,
         type: ApprovalType.PersonalSign,
         requestData: {},
         requestState: null,
