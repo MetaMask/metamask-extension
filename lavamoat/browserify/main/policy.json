@@ -460,11 +460,28 @@
         "define": true
       },
       "packages": {
-        "@ngraveio/bc-ur": true,
+        "@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry>@ngraveio/bc-ur": true,
         "@trezor/connect-web>tslib": true,
         "browserify>buffer": true,
-        "ethereumjs-util>ethereum-cryptography>bs58check": true,
-        "ganache>abstract-level>buffer": true
+        "ethereumjs-util>ethereum-cryptography>bs58check": true
+      }
+    },
+    "@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry>@ngraveio/bc-ur": {
+      "packages": {
+        "@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry>@ngraveio/bc-ur>@apocentre/alias-sampling": true,
+        "@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry>@ngraveio/bc-ur>bignumber.js": true,
+        "@ngraveio/bc-ur>cbor-sync": true,
+        "@ngraveio/bc-ur>crc": true,
+        "@ngraveio/bc-ur>jsbi": true,
+        "addons-linter>sha.js": true,
+        "browserify>assert": true,
+        "browserify>buffer": true
+      }
+    },
+    "@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry>@ngraveio/bc-ur>bignumber.js": {
+      "globals": {
+        "crypto": true,
+        "define": true
       }
     },
     "@keystonehq/metamask-airgapped-keyring": {
