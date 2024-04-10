@@ -54,7 +54,15 @@ export class WeakRefObjectMap {
     this.map.clear();
   }
 
-  forEach(callback: (value: WeakRefCompatibleObject<Record<string, object>>, key: string, map: Map<string, WeakRefCompatibleObject<Record<string, object>>>) => void, thisArg?: any): void {
+  forEach(
+    callback: (
+      value: WeakRefCompatibleObject<Record<string, object>>,
+      key: string,
+      map: Map<string, WeakRefCompatibleObject<Record<string, object>>>,
+    ) => void,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    thisArg?: any,
+  ): void {
     this.map.forEach((value, key) => {
       if (thisArg) {
         callback.call(thisArg, value, key, this.map);
