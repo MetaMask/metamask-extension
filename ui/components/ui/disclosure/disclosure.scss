@@ -3,7 +3,6 @@
 
   &__summary {
     position: relative;
-    padding-bottom: 10px;
     font-weight: bold;
     display: flex;
     cursor: pointer;
@@ -16,6 +15,7 @@
   }
 
   &__content {
+    padding-top: 12px;
     margin-left: 12px;
     font-size: 14px;
 
