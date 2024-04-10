@@ -726,10 +726,7 @@ describe('MetaMaskController', () => {
     describe('sanitizeString', () => {
       it('should remove problematic characters', () => {
         const evilString =
-          '<script>alert("hi!");</script> rozšíření prohlížeče 将二维码放在摄像头前。屏幕是模糊的 Ethereum Mainnetمسح كود'.replace(
-            /<|>/giu,
-            '',
-          );
+          '<script>alert("hi!");</script> rozšíření prohlížeče 将二维码放在摄像头前。屏幕是模糊的 Ethereum Mainnetمسح كود';
         const sanitizedString =
           'scriptalert("hi!");/script rozšíření prohlížeče 将二维码放在摄像头前。屏幕是模糊的 Ethereum Mainnetمسح كود';
 

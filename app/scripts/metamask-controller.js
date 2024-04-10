@@ -5890,7 +5890,7 @@ export default class MetamaskController extends EventEmitter {
         const { host } = new URL(origin);
 
         // Removes anything bug letters from a string
-        const sanitizedNickname = this.sanitizeString(nickname);
+        const sanitizedNickname = this._sanitizeString(nickname);
 
         const message = await this._getLocalizedString('switchedChainToast', [
           `<strong>${sanitizedNickname}</strong>`,
