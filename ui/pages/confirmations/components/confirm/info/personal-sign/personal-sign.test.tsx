@@ -36,7 +36,8 @@ describe('PersonalSignInfo', () => {
   });
 
   it('handle reverse string properly', () => {
-    const mockState = {
+    const newMockState = {
+      ...mockState,
       confirm: {
         currentConfirmation: {
           id: '0050d5b0-c023-11ee-a0cb-3390a510a0ab',
@@ -53,7 +54,7 @@ describe('PersonalSignInfo', () => {
         },
       },
     };
-    const mockStore = configureMockStore([])(mockState);
+    const mockStore = configureMockStore([])(newMockState);
     const { container } = renderWithProvider(<PersonalSignInfo />, mockStore);
     expect(container).toMatchSnapshot();
   });
