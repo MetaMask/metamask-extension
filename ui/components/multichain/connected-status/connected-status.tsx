@@ -5,10 +5,7 @@ import {
   BorderColor,
   Color,
 } from '../../../helpers/constants/design-system';
-import {
-  getAddressConnectedSubjectMap,
-  getOriginOfCurrentTab,
-} from '../../../selectors';
+import { isAddressConnectedToCurrentOrigin } from '../../../selectors';
 import {
   STATUS_CONNECTED,
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
@@ -32,14 +29,9 @@ export const ConnectedStatus: React.FC<ConnectedStatusProps> = ({
   isActive,
 }): JSX.Element => {
   const t = useI18nContext();
-  const addressConnectedSubjectMap = useSelector(
-    getAddressConnectedSubjectMap,
-  ) as AddressConnectedSubjectMap;
-  const originOfCurrentTab = useSelector(getOriginOfCurrentTab);
 
-  const selectedAddressSubjectMap = addressConnectedSubjectMap[address];
-  const currentTabIsConnectedToSelectedAddress = Boolean(
-    selectedAddressSubjectMap?.[originOfCurrentTab],
+  const currentTabIsConnectedToSelectedAddress = useSelector((state) =>
+    isAddressConnectedToCurrentOrigin(state, address),
   );
 
   let status = STATUS_NOT_CONNECTED;

@@ -48,7 +48,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  getAddressConnectedSubjectMap,
+  isAddressConnectedToCurrentOrigin,
   getCurrentNetwork,
   getNativeCurrencyImage,
   getShowFiatInTestnets,
@@ -115,11 +115,8 @@ export const AccountListItem = ({
   const trackEvent = useContext(MetaMetricsContext);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const nativeCurrency = useSelector(getNativeCurrency);
-  const addressConnectedSubjectMap = useSelector(getAddressConnectedSubjectMap);
-  const selectedAddressSubjectMap =
-    addressConnectedSubjectMap[identity.address];
-  const currentTabIsConnectedToSelectedAddress = Boolean(
-    selectedAddressSubjectMap && selectedAddressSubjectMap[currentTabOrigin],
+  const currentTabIsConnectedToSelectedAddress = useSelector((state) =>
+    isAddressConnectedToCurrentOrigin(state, identity.address),
   );
   const isConnected =
     currentTabOrigin && currentTabIsConnectedToSelectedAddress;
