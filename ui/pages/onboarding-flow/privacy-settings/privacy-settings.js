@@ -107,7 +107,7 @@ export default function PrivacySettings() {
     dispatch(setUseCurrencyRateCheck(turnOnCurrencyRateCheck));
     dispatch(setCompletedOnboarding());
     dispatch(setUseAddressBarEnsResolution(addressBarResolution));
-    dispatch(setUseTransactionSimulations(isTransactionSimulationsEnabled));
+    setUseTransactionSimulations(isTransactionSimulationsEnabled);
     dispatch(setPetnamesEnabled(turnOnPetnames));
 
     if (ipfsURL && !ipfsError) {
