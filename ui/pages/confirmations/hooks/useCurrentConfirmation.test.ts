@@ -56,7 +56,7 @@ describe('useCurrentConfirmation', () => {
     );
 
     expect(result.current.currentConfirmation).toBe(
-      mockState.metamask.unapprovedPersonalMsgs['1'],
+      mockState.metamask.unapprovedPersonalMsgs['2'],
     );
   });
 
