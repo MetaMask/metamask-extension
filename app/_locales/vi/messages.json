@@ -3267,6 +3267,10 @@
   "securityAndPrivacy": {
     "message": "Bảo mật và quyền riêng tư"
   },
+  "securityProviderPoweredBy": {
+    "message": "Được cung cấp bởi $1",
+    "description": "The security provider that is providing data"
+  },
   "seeDetails": {
     "message": "Xem chi tiết"
   },

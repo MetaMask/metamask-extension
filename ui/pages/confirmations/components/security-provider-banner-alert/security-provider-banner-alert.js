@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import {
   BannerAlert,
   ButtonLink,
+  Icon,
+  IconName,
+  IconSize,
   Text,
 } from '../../../../components/component-library';
 import Disclosure from '../../../../components/ui/disclosure';
@@ -10,12 +13,19 @@ import { DisclosureVariant } from '../../../../components/ui/disclosure/disclosu
 
 import { I18nContext } from '../../../../contexts/i18n';
 import {
+  AlignItems,
+  Color,
   Display,
+  IconColor,
   Severity,
   Size,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 
-import { SecurityProvider } from '../../../../../shared/constants/security-provider';
+import {
+  SecurityProvider,
+  SECURITY_PROVIDER_CONFIG,
+} from '../../../../../shared/constants/security-provider';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 
 function SecurityProviderBannerAlert({
@@ -55,6 +65,34 @@ function SecurityProviderBannerAlert({
           ])}
         </Text>
       </Disclosure>
+
+      {provider && (
+        <Text
+          marginTop={3}
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          color={Color.textAlternative}
+          variant={TextVariant.bodySm}
+        >
+          <Icon
+            className="disclosure__summary--icon"
+            color={IconColor.primaryDefault}
+            name={IconName.SecurityTick}
+            size={IconSize.Sm}
+            marginInlineEnd={1}
+          />
+          {t('securityProviderPoweredBy', [
+            <ButtonLink
+              key={`security-provider-button-link-${provider}`}
+              size={Size.inherit}
+              href={SECURITY_PROVIDER_CONFIG[provider].url}
+              externalLink
+            >
+              {t(SECURITY_PROVIDER_CONFIG[provider].tKeyName)}
+            </ButtonLink>,
+          ])}
+        </Text>
+      )}
     </BannerAlert>
   );
 }

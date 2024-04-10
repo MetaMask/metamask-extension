@@ -3267,6 +3267,10 @@
   "securityAndPrivacy": {
     "message": "Güvenlik ve gizlilik"
   },
+  "securityProviderPoweredBy": {
+    "message": "$1 hizmetidir",
+    "description": "The security provider that is providing data"
+  },
   "seeDetails": {
     "message": "Ayrıntılara bakın"
   },
