@@ -233,6 +233,10 @@ describe('migration #105', () => {
   });
 
   describe('createSelectedAccountForAccountsController', () => {
+    afterEach(() => {
+      jest.resetAllMocks();
+    });
+
     it('should select the same account as the selected address', async () => {
       const oldData = createMockState();
       const oldStorage = {
