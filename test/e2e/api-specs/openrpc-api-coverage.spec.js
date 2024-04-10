@@ -4594,15 +4594,11 @@ async function main() {
         // do nothing
       }
 
-      process.on('exit', () => {
-        driver.quit();
-      });
-
       await testCoverage({
         exampleCalls: [],
         openrpcDocument,
         transport,
-        reporter: 'console',
+        reporter: 'empty',
         skip: openrpcDocument.methods
           .filter(
             (m) =>
