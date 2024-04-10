@@ -10,7 +10,7 @@ import {
   setUseMultiAccountBalanceChecker,
   setUsePhishDetect,
   setUseTokenDetection,
-  setUseExternalServices,
+  toggleExternalServices,
   setUseAddressBarEnsResolution,
   setOpenSeaEnabled,
   setUseNftDetection,
@@ -111,8 +111,8 @@ const mapDispatchToProps = (dispatch) => {
     setUseExternalNameSources: (value) => {
       return dispatch(setUseExternalNameSources(value));
     },
-    setUseExternalServices: (value) => {
-      return dispatch(setUseExternalServices(value));
+    toggleExternalServices: (value) => {
+      return dispatch(toggleExternalServices(value));
     },
     setUseTransactionSimulations: (value) => {
       return dispatch(setUseTransactionSimulations(value));

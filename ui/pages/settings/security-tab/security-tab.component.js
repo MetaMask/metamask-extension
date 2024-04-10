@@ -88,7 +88,7 @@ export default class SecurityTab extends PureComponent {
     petnamesEnabled: PropTypes.bool.isRequired,
     securityAlertsEnabled: PropTypes.bool,
     useExternalServices: PropTypes.bool,
-    setUseExternalServices: PropTypes.func.isRequired,
+    toggleExternalServices: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     setSecurityAlertsEnabled: PropTypes.func,
     ///: END:ONLY_INCLUDE_IF
@@ -985,7 +985,7 @@ export default class SecurityTab extends PureComponent {
     const { t } = this.context;
     const {
       useExternalServices,
-      setUseExternalServices,
+      toggleExternalServices,
       setBasicFunctionalityModalOpen,
     } = this.props;
 
@@ -1014,7 +1014,7 @@ export default class SecurityTab extends PureComponent {
                 // If we are going to be disabling external services, then we want to show the "turn off" warning modal
                 setBasicFunctionalityModalOpen();
               } else {
-                setUseExternalServices(true);
+                toggleExternalServices(true);
               }
             }}
             offLabel={t('off')}

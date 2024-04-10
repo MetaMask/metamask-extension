@@ -216,7 +216,7 @@ export default class PreferencesController {
     this.store.updateState({ useSafeChainsListValidation: val });
   }
 
-  setUseExternalServices(useExternalServices) {
+  toggleExternalServices(useExternalServices) {
     this.store.updateState({ useExternalServices });
     this.setUseTokenDetection(useExternalServices);
     this.setUseCurrencyRateCheck(useExternalServices);

@@ -12,7 +12,7 @@ import {
   FontWeight,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { setUseExternalServices } from '../../../store/actions';
+import { toggleExternalServices } from '../../../store/actions';
 import {
   ModalOverlay,
   ModalContent,
@@ -145,8 +145,8 @@ export function BasicConfigurationModal() {
                 } else {
                   closeModal();
                   isExternalServicesEnabled
-                    ? dispatch(setUseExternalServices(false))
-                    : dispatch(setUseExternalServices(true));
+                    ? dispatch(toggleExternalServices(false))
+                    : dispatch(toggleExternalServices(true));
                 }
               }}
               danger={isExternalServicesEnabled}

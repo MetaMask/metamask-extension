@@ -70,7 +70,7 @@ import {
   setActiveNetwork,
   setSurveyLinkLastClickedOrClosed,
   setNewTokensImportedError,
-  setUseExternalServices,
+  toggleExternalServices,
 } from '../../store/actions';
 import {
   hideWhatsNewPopup,
@@ -282,7 +282,7 @@ const mapDispatchToProps = (dispatch) => {
     ///: END:ONLY_INCLUDE_IF
     setSurveyLinkLastClickedOrClosed: (time) =>
       dispatch(setSurveyLinkLastClickedOrClosed(time)),
-    setUseExternalServices: (value) => dispatch(setUseExternalServices(value)),
+    toggleExternalServices: (value) => dispatch(toggleExternalServices(value)),
     setBasicFunctionalityModalOpen: () =>
       dispatch(openBasicFunctionalityModal()),
   };

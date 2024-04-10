@@ -47,6 +47,7 @@ describe('Privacy Settings Onboarding View', () => {
       ipfsGateway: 'test.link',
       useAddressBarEnsResolution: true,
       useTransactionSimulations: true,
+      useExternalServices: true,
     },
     appState: {
       externalServicesOnboardingToggleState: true,
@@ -67,7 +68,7 @@ describe('Privacy Settings Onboarding View', () => {
   const setUseAddressBarEnsResolutionStub = jest.fn();
   const setIncomingTransactionsPreferencesStub = jest.fn();
   const onboardingToggleBasicFunctionalityOnStub = jest.fn();
-  const setUseExternalServicesStub = jest.fn();
+  const toggleExternalServicesStub = jest.fn();
   const setUseTransactionSimulationsStub = jest.fn();
   const setPreferenceStub = jest.fn();
 
@@ -82,7 +83,7 @@ describe('Privacy Settings Onboarding View', () => {
     setUseMultiAccountBalanceChecker: setUseMultiAccountBalanceCheckerStub,
     setUseAddressBarEnsResolution: setUseAddressBarEnsResolutionStub,
     setIncomingTransactionsPreferences: setIncomingTransactionsPreferencesStub,
-    setUseExternalServices: setUseExternalServicesStub,
+    toggleExternalServices: toggleExternalServicesStub,
     onboardingToggleBasicFunctionalityOn:
       onboardingToggleBasicFunctionalityOnStub,
     setUseTransactionSimulations: setUseTransactionSimulationsStub,
@@ -124,7 +125,7 @@ describe('Privacy Settings Onboarding View', () => {
 
     fireEvent.click(submitButton);
 
-    expect(setUseExternalServicesStub).toHaveBeenCalledTimes(1);
+    expect(toggleExternalServicesStub).toHaveBeenCalledTimes(1);
     expect(setIncomingTransactionsPreferencesStub).toHaveBeenCalledTimes(2);
     expect(setUsePhishDetectStub).toHaveBeenCalledTimes(1);
     expect(setUse4ByteResolutionStub).toHaveBeenCalledTimes(1);
@@ -140,7 +141,7 @@ describe('Privacy Settings Onboarding View', () => {
       false,
       expect.anything(),
     );
-    expect(setUseExternalServicesStub.mock.calls[0][0]).toStrictEqual(true);
+    expect(toggleExternalServicesStub.mock.calls[0][0]).toStrictEqual(true);
     expect(setUsePhishDetectStub.mock.calls[0][0]).toStrictEqual(false);
     expect(setUse4ByteResolutionStub.mock.calls[0][0]).toStrictEqual(false);
     expect(setUseTokenDetectionStub.mock.calls[0][0]).toStrictEqual(true);
