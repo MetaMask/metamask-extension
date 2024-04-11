@@ -52,6 +52,15 @@ buildTypes:
       - SEGMENT_BETA_WRITE_KEY
       - INFURA_ENV_KEY_REF: INFURA_BETA_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_BETA_WRITE_KEY
+      - PUSH_NOTIFICATIONS_SERVICE_URL: https://push.api.cx.metamask.io
+      - VAPID_KEY
+      - FIREBASE_API_KEY
+      - FIREBASE_AUTH_DOMAIN
+      - FIREBASE_STORAGE_BUCKET
+      - FIREBASE_PROJECT_ID
+      - FIREBASE_MESSAGING_SENDER_ID
+      - FIREBASE_APP_ID
+      - FIREBASE_MEASUREMENT_ID
     # Modifies how the version is displayed.
     # eg. instead of 10.25.0 -> 10.25.0-beta.2
     isPrerelease: true
@@ -79,6 +88,15 @@ buildTypes:
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://metamask.github.io/snaps-directory-staging/main/account-management
+      - PUSH_NOTIFICATIONS_SERVICE_URL: https://push.api.cx.metamask.io
+      - VAPID_KEY
+      - FIREBASE_API_KEY
+      - FIREBASE_AUTH_DOMAIN
+      - FIREBASE_STORAGE_BUCKET
+      - FIREBASE_PROJECT_ID
+      - FIREBASE_MESSAGING_SENDER_ID
+      - FIREBASE_APP_ID
+      - FIREBASE_MEASUREMENT_ID
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
     buildNameOverride: MetaMask Flask
@@ -100,6 +118,15 @@ buildTypes:
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
+      - PUSH_NOTIFICATIONS_SERVICE_URL: https://push.api.cx.metamask.io
+      - VAPID_KEY
+      - FIREBASE_API_KEY
+      - FIREBASE_AUTH_DOMAIN
+      - FIREBASE_STORAGE_BUCKET
+      - FIREBASE_PROJECT_ID
+      - FIREBASE_MESSAGING_SENDER_ID
+      - FIREBASE_APP_ID
+      - FIREBASE_MEASUREMENT_ID
     isPrerelease: true
     manifestOverrides: ./app/build-types/desktop/manifest/
     buildNameOverride: false
@@ -122,6 +149,15 @@ buildTypes:
       - SUPPORT_LINK: https://mmi-support.metamask.io/hc/en-us
       - SUPPORT_REQUEST_LINK: https://mmi-support.metamask.io/hc/en-us/requests/new
       - SENTRY_DSN: SENTRY_MMI_DSN
+      - PUSH_NOTIFICATIONS_SERVICE_URL: https://push.api.cx.metamask.io
+      - VAPID_KEY
+      - FIREBASE_API_KEY
+      - FIREBASE_AUTH_DOMAIN
+      - FIREBASE_STORAGE_BUCKET
+      - FIREBASE_PROJECT_ID
+      - FIREBASE_MESSAGING_SENDER_ID
+      - FIREBASE_APP_ID
+      - FIREBASE_MEASUREMENT_ID
     # For some reason, MMI uses this type of versioning
     # Leaving it on for backwards compatibility
     isPrerelease: true
