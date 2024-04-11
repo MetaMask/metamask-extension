@@ -17,10 +17,8 @@ export const getDelineatorTitle = (type: DelineatorType) => {
       return 'insightsFromSnap';
     case DelineatorType.Description:
       return 'descriptionFromSnap';
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     case DelineatorType.Warning:
       return 'warningFromSnap';
-    ///: END:ONLY_INCLUDE_IF
     default:
       return 'contentFromSnap';
   }
