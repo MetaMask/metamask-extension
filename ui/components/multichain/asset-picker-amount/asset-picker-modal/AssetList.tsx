@@ -30,7 +30,7 @@ import { TokenListItem } from '../..';
 import { Asset, Token } from './types';
 
 type AssetListProps = {
-  handleAssetChange: (token: Token) => () => void;
+  handleAssetChange: (token: Token) => void;
   asset: Asset;
   searchQuery: string;
 };
@@ -117,7 +117,7 @@ export default function AssetList({
             className={classnames('multichain-asset-picker-list-item', {
               'multichain-asset-picker-list-item--selected': isSelected,
             })}
-            onClick={handleAssetChange(token)}
+            onClick={() => handleAssetChange(token)}
           >
             {isSelected ? (
               <Box
@@ -150,7 +150,7 @@ export default function AssetList({
                   <TokenCell
                     key={token.address}
                     {...token}
-                    onClick={handleAssetChange(token)}
+                    onClick={() => handleAssetChange(token)}
                   />
                 )}
               </Box>
