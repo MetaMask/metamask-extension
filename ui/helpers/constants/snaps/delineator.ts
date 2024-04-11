@@ -4,9 +4,7 @@ export enum DelineatorType {
   Error = 'error',
   Insights = 'insights',
   Description = 'description',
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   Warning = 'warning',
-  ///: END:ONLY_INCLUDE_IF
 }
 
 export const getDelineatorTitle = (type: DelineatorType) => {
