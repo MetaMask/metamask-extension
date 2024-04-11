@@ -2562,21 +2562,6 @@
   "notificationsMarkAllAsRead": {
     "message": "모두 읽음으로 표시"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "자세히 알아보기"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "🎉 MetaMask Snaps의 오픈 베타가 시작되었습니다!"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "개발자 커뮤니티가 구축한 스냅으로 지갑을 개별 맞춤하세요!"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "스냅은 추가 네트워크 연결, 트랜잭션 인사이트 확인, 커스텀 알림 받기 등 사용자가 MetaMask에서 더욱 다양한 기능을 사용할 수 있도록 합니다."
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "MetaMask Snaps 소개"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "계정에서 $1개의 새로운 토큰이 발견됨",
     "description": "$1 is the number of new tokens detected"
@@ -3266,6 +3251,10 @@
   },
   "securityAndPrivacy": {
     "message": "보안 및 프라이버시"
+  },
+  "securityProviderPoweredBy": {
+    "message": "$1 제공",
+    "description": "The security provider that is providing data"
   },
   "seeDetails": {
     "message": "세부 정보 보기"

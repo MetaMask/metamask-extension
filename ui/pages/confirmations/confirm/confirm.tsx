@@ -32,7 +32,7 @@ const Confirm = () => {
         {
           // todo: section below is to be removed once new alerts implementation is there
           ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-          <BlockaidAlert />
+          <BlockaidAlert marginTop={4} />
           ///: END:ONLY_INCLUDE_IF
         }
         <Title />
