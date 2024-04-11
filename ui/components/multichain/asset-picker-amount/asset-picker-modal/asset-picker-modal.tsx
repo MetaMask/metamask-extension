@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import { Tab, Tabs } from '../../../ui/tabs';
 import NftsItems from '../../../app/nfts-items/nfts-items';
@@ -89,10 +89,13 @@ export function AssetPickerModal({
     setSearchQuery(query);
   };
 
-  const handleAssetChange = (token: Token) => () => {
-    onAssetChange(token);
-    onClose();
-  };
+  const handleAssetChange = useCallback(
+    (token: Token) => {
+      onAssetChange(token);
+      onClose();
+    },
+    [onAssetChange],
+  );
 
   const defaultActiveTabKey = asset?.type === AssetType.NFT ? 'nfts' : 'tokens';
 
