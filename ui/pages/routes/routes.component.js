@@ -197,6 +197,8 @@ export default class Routes extends Component {
     neverShowSwitchedNetworkMessage: PropTypes.bool.isRequired,
     automaticallySwitchNetwork: PropTypes.func.isRequired,
     unapprovedTransactions: PropTypes.number.isRequired,
+    currentExtensionPopupId: PropTypes.number,
+    useRequestQueue: PropTypes.bool,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal: PropTypes.bool.isRequired,
     hideShowKeyringSnapRemovalResultModal: PropTypes.func.isRequired,
@@ -253,6 +255,8 @@ export default class Routes extends Component {
       activeTabOrigin,
       unapprovedTransactions,
       isUnlocked,
+      useRequestQueue,
+      currentExtensionPopupId,
     } = this.props;
     if (theme !== prevProps.theme) {
       this.setTheme();
@@ -276,6 +280,18 @@ export default class Routes extends Component {
         networkToAutomaticallySwitchTo,
         activeTabOrigin,
       );
+    }
+
+    // Terminate the popup when another popup is opened
+    // if the user is using RPC queueing
+    if (
+      useRequestQueue &&
+      process.env.MULTICHAIN &&
+      currentExtensionPopupId !== undefined &&
+      global.metamask.id !== undefined &&
+      currentExtensionPopupId !== global.metamask.id
+    ) {
+      window.close();
     }
   }
 
@@ -495,6 +511,11 @@ export default class Routes extends Component {
     return Boolean(
       matchPath(location.pathname, { path: BUILD_QUOTE_ROUTE, exact: false }),
     );
+  }
+
+  onHomeScreen() {
+    const { location } = this.props;
+    return location.pathname === DEFAULT_ROUTE;
   }
 
   hideAppHeader() {
@@ -758,7 +779,9 @@ export default class Routes extends Component {
         </Box>
         {isUnlocked ? <Alerts history={this.props.history} /> : null}
         <ToastContainer>
-          {showConnectAccountToast && !this.state.hideConnectAccountToast ? (
+          {showConnectAccountToast &&
+          this.onHomeScreen() &&
+          !this.state.hideConnectAccountToast ? (
             <Toast
               key="connect-account-toast"
               startAdornment={

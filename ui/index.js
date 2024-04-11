@@ -22,6 +22,7 @@ import {
   getUnapprovedTransactions,
   getNetworkToAutomaticallySwitchTo,
   getSwitchedNetworkDetails,
+  getUseRequestQueue,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
@@ -180,6 +181,19 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     );
   }
 
+  // global metamask api - used by tooling
+  global.metamask = {
+    updateCurrentLocale: (code) => {
+      store.dispatch(actions.updateCurrentLocale(code));
+    },
+    setProviderType: (type) => {
+      store.dispatch(actions.setProviderType(type));
+    },
+    setFeatureFlag: (key, value) => {
+      store.dispatch(actions.setFeatureFlag(key, value));
+    },
+  };
+
   if (process.env.MULTICHAIN) {
     // This block autoswitches chains based on the last chain used
     // for a given dapp, when there are no pending confimrations
@@ -201,20 +215,18 @@ async function startApp(metamaskState, backgroundConnection, opts) {
       // if the user didn't just change the dapp network
       await store.dispatch(actions.clearSwitchedNetworkDetails());
     }
-  }
 
-  // global metamask api - used by tooling
-  global.metamask = {
-    updateCurrentLocale: (code) => {
-      store.dispatch(actions.updateCurrentLocale(code));
-    },
-    setProviderType: (type) => {
-      store.dispatch(actions.setProviderType(type));
-    },
-    setFeatureFlag: (key, value) => {
-      store.dispatch(actions.setFeatureFlag(key, value));
-    },
-  };
+    // Register this window as the current popup
+    // and set in background state
+    if (
+      getUseRequestQueue(state) &&
+      getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+    ) {
+      const thisPopupId = Date.now();
+      global.metamask.id = thisPopupId;
+      await store.dispatch(actions.setCurrentExtensionPopupId(thisPopupId));
+    }
+  }
 
   // start app
   render(<Root store={store} />, opts.container);

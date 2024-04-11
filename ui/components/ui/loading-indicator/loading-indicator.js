@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Box } from '../../component-library';
 
 export default function LoadingIndicator({
   alt,
@@ -9,14 +10,14 @@ export default function LoadingIndicator({
   ...props
 }) {
   return isLoading ? (
-    <span className="loading-indicator" {...props}>
+    <Box className="loading-indicator" {...props}>
       <img
         className="loading-indicator__spinner"
         alt={alt}
         title={title}
         src="images/loading.svg"
       />
-    </span>
+    </Box>
   ) : (
     children
   );
