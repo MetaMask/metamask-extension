@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   BannerAlert,
@@ -26,7 +26,7 @@ export const SendPageRecipientContent = ({
   onAssetChange,
 }: {
   requireContractAddressAcknowledgement: boolean;
-  onAssetChange: (isReceived: boolean) => (newAsset: Asset) => void;
+  onAssetChange: (newAsset: Asset, isReceived: boolean) => void;
 }) => {
   const t = useI18nContext();
 
@@ -106,7 +106,10 @@ export const SendPageRecipientContent = ({
         <AssetPickerAmount
           asset={isSendingToken ? receiveAsset : sendAsset}
           sendingAsset={isSendingToken ? sendAsset : undefined}
-          onAssetChange={onAssetChange(isSendingToken)}
+          onAssetChange={useCallback(
+            (newAsset) => onAssetChange(newAsset, isSendingToken),
+            [onAssetChange, isSendingToken],
+          )}
           isAmountLoading={isLoadingInitialQuotes}
           amount={amount}
         />
