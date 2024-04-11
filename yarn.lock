@@ -60,13 +60,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apocentre/alias-sampling@npm:^0.5.3":
-  version: 0.5.3
-  resolution: "@apocentre/alias-sampling@npm:0.5.3"
-  checksum: b1050c19a4391875d042d573eb24d2a885612b98e903b47f0a90e18c98c2b8c82b796f1e622bd9fe61a01ed2a420a47a8acf8af578654634776cefd9b7a32dcd
-  languageName: node
-  linkType: hard
-
 "@aw-web-design/x-default-browser@npm:1.4.126":
   version: 1.4.126
   resolution: "@aw-web-design/x-default-browser@npm:1.4.126"
@@ -3420,16 +3413,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jridgewell/source-map@npm:^0.3.2":
-  version: 0.3.2
-  resolution: "@jridgewell/source-map@npm:0.3.2"
-  dependencies:
-    "@jridgewell/gen-mapping": "npm:^0.3.0"
-    "@jridgewell/trace-mapping": "npm:^0.3.9"
-  checksum: 1aaa42075bac32a551708025da0c07b11c11fb05ccd10fb70df2cb0db88773338ab0f33f175d9865379cb855bb3b1cda478367747a1087309fda40a7b9214bfa
-  languageName: node
-  linkType: hard
-
 "@jridgewell/source-map@npm:^0.3.3":
   version: 0.3.6
   resolution: "@jridgewell/source-map@npm:0.3.6"
@@ -3457,17 +3440,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jridgewell/trace-mapping@npm:^0.3.12, @jridgewell/trace-mapping@npm:^0.3.17, @jridgewell/trace-mapping@npm:^0.3.18, @jridgewell/trace-mapping@npm:^0.3.9":
-  version: 0.3.19
-  resolution: "@jridgewell/trace-mapping@npm:0.3.19"
-  dependencies:
-    "@jridgewell/resolve-uri": "npm:^3.1.0"
-    "@jridgewell/sourcemap-codec": "npm:^1.4.14"
-  checksum: 06a2a4e26e3cc369c41144fad7cbee29ba9ea6aca85acc565ec8f2110e298fdbf93986e17da815afae94539dcc03115cdbdbb575d3bea356e167da6987531e4d
-  languageName: node
-  linkType: hard
-
-"@jridgewell/trace-mapping@npm:^0.3.20, @jridgewell/trace-mapping@npm:^0.3.24, @jridgewell/trace-mapping@npm:^0.3.25":
+"@jridgewell/trace-mapping@npm:^0.3.12, @jridgewell/trace-mapping@npm:^0.3.17, @jridgewell/trace-mapping@npm:^0.3.18, @jridgewell/trace-mapping@npm:^0.3.20, @jridgewell/trace-mapping@npm:^0.3.24, @jridgewell/trace-mapping@npm:^0.3.25, @jridgewell/trace-mapping@npm:^0.3.9":
   version: 0.3.25
   resolution: "@jridgewell/trace-mapping@npm:0.3.25"
   dependencies:
@@ -5940,7 +5913,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ngraveio/bc-ur@npm:^1.1.12":
+"@ngraveio/bc-ur@npm:^1.1.12, @ngraveio/bc-ur@npm:^1.1.5":
   version: 1.1.12
   resolution: "@ngraveio/bc-ur@npm:1.1.12"
   dependencies:
@@ -5952,21 +5925,6 @@ __metadata:
     jsbi: "npm:^3.1.5"
     sha.js: "npm:^2.4.11"
   checksum: 43f030019afc3074546acd61041827c0d6a81a523239f336a25e1540f5353bc69af8a83c9f0989a0bafdb72ebbd32de79965f001f092227caef8e96ee472e21e
-  languageName: node
-  linkType: hard
-
-"@ngraveio/bc-ur@npm:^1.1.5":
-  version: 1.1.6
-  resolution: "@ngraveio/bc-ur@npm:1.1.6"
-  dependencies:
-    "@apocentre/alias-sampling": "npm:^0.5.3"
-    assert: "npm:^2.0.0"
-    bignumber.js: "npm:^9.0.1"
-    cbor-sync: "npm:^1.0.4"
-    crc: "npm:^3.8.0"
-    jsbi: "npm:^3.1.5"
-    sha.js: "npm:^2.4.11"
-  checksum: 2fc883aca227b90e1e4a760ed7f85c439e84d358e0cd8db350746f538112ff8cbde20a79c0755cd8857b26c8ad5fe6fdef4bfd4a3f8fad26f53eba0692e7fa30
   languageName: node
   linkType: hard
 
@@ -10443,21 +10401,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/yargs@npm:^17.0.32":
+"@types/yargs@npm:^17.0.32, @types/yargs@npm:^17.0.8":
   version: 17.0.32
   resolution: "@types/yargs@npm:17.0.32"
   dependencies:
     "@types/yargs-parser": "npm:*"
   checksum: 1e2b2673847011ce43607df690d392f137d95a2d6ea85aa319403eadda2ef4277365efd4982354d8843f2611ef3846c88599660aaeb537fa9ccddae83c2a89de
-  languageName: node
-  linkType: hard
-
-"@types/yargs@npm:^17.0.8":
-  version: 17.0.8
-  resolution: "@types/yargs@npm:17.0.8"
-  dependencies:
-    "@types/yargs-parser": "npm:*"
-  checksum: 3c062686a4741a9b53b75c9d602e366c34f49e372453028e526b9c576686b322bea0682cb086547b66c99c72ee3fe48df793e8bf0a86e168cda044c5b9107529
   languageName: node
   linkType: hard
 
@@ -11205,7 +11154,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"acorn@npm:^8.1.0, acorn@npm:^8.10.0, acorn@npm:^8.11.3, acorn@npm:^8.2.4, acorn@npm:^8.4.1, acorn@npm:^8.5.0, acorn@npm:^8.7.1, acorn@npm:^8.8.1, acorn@npm:^8.8.2, acorn@npm:^8.9.0":
+"acorn@npm:^8.1.0, acorn@npm:^8.10.0, acorn@npm:^8.11.3, acorn@npm:^8.2.4, acorn@npm:^8.4.1, acorn@npm:^8.7.1, acorn@npm:^8.8.1, acorn@npm:^8.8.2, acorn@npm:^8.9.0":
   version: 8.11.3
   resolution: "acorn@npm:8.11.3"
   bin:
@@ -14969,7 +14918,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"css-loader@npm:^6.10.0":
+"css-loader@npm:^6.10.0, css-loader@npm:^6.7.1":
   version: 6.10.0
   resolution: "css-loader@npm:6.10.0"
   dependencies:
@@ -14990,24 +14939,6 @@ __metadata:
     webpack:
       optional: true
   checksum: 1abd52e24a72a4c54762330bab2e0e816778db5bc711a8fc1b1ee99470a1728f2aa9b54b9ebbf2278a1730d68b76303094cc855f9119b2ffc0424fe57fea3bc6
-  languageName: node
-  linkType: hard
-
-"css-loader@npm:^6.7.1":
-  version: 6.7.3
-  resolution: "css-loader@npm:6.7.3"
-  dependencies:
-    icss-utils: "npm:^5.1.0"
-    postcss: "npm:^8.4.19"
-    postcss-modules-extract-imports: "npm:^3.0.0"
-    postcss-modules-local-by-default: "npm:^4.0.0"
-    postcss-modules-scope: "npm:^3.0.0"
-    postcss-modules-values: "npm:^4.0.0"
-    postcss-value-parser: "npm:^4.2.0"
-    semver: "npm:^7.3.8"
-  peerDependencies:
-    webpack: ^5.0.0
-  checksum: 24c983839ce7bf462cfd97acb1b20e9dd569cd40d13f2a61da2602e1098c69e18fe3d8adb06dc82deb6379151fb38f387ffccfb7428cf7dce1565279c1e81beb
   languageName: node
   linkType: hard
 
@@ -28404,7 +28335,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:8.4.35, postcss@npm:^8.4.19":
+"postcss@npm:8.4.35":
   version: 8.4.35
   resolution: "postcss@npm:8.4.35"
   dependencies:
@@ -33256,29 +33187,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"terser-webpack-plugin@npm:^5.3.1":
-  version: 5.3.8
-  resolution: "terser-webpack-plugin@npm:5.3.8"
-  dependencies:
-    "@jridgewell/trace-mapping": "npm:^0.3.17"
-    jest-worker: "npm:^27.4.5"
-    schema-utils: "npm:^3.1.1"
-    serialize-javascript: "npm:^6.0.1"
-    terser: "npm:^5.16.8"
-  peerDependencies:
-    webpack: ^5.1.0
-  peerDependenciesMeta:
-    "@swc/core":
-      optional: true
-    esbuild:
-      optional: true
-    uglify-js:
-      optional: true
-  checksum: 091f1af8ecd464335336390b53255438dd3b08328af8d1ea5f666477dddb217b2ff1a52581d86d42e12cbc4b82e38d94eb93a7ab519069ec2b2a54a7e2a737e4
-  languageName: node
-  linkType: hard
-
-"terser-webpack-plugin@npm:^5.3.10":
+"terser-webpack-plugin@npm:^5.3.1, terser-webpack-plugin@npm:^5.3.10":
   version: 5.3.10
   resolution: "terser-webpack-plugin@npm:5.3.10"
   dependencies:
@@ -33311,20 +33220,6 @@ __metadata:
   bin:
     terser: bin/terser
   checksum: 062df6a8f99ea2635d1b3ce41cfd4180dea6e1c83db9b2cf4b525170b2446d10e069d2877d8dcb59fbf6045870efa17b56462b67045ef2d2b420870f9d144690
-  languageName: node
-  linkType: hard
-
-"terser@npm:^5.16.8":
-  version: 5.17.4
-  resolution: "terser@npm:5.17.4"
-  dependencies:
-    "@jridgewell/source-map": "npm:^0.3.2"
-    acorn: "npm:^8.5.0"
-    commander: "npm:^2.20.0"
-    source-map-support: "npm:~0.5.20"
-  bin:
-    terser: bin/terser
-  checksum: 3b2b82e8cf93a40502a5abbac42b531f356c34f5b2090cd122a21f4596561a8fc743988ee2d07f44449c70b498db3d70712810ad80806496807e44b9d65abf1c
   languageName: node
   linkType: hard
 
