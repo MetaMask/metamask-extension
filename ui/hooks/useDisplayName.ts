@@ -30,7 +30,7 @@ export function useDisplayNames(
   const values = requests.map(({ value }) => value);
 
   const contractInfo = useSelector((state) =>
-    (getMemoizedMetadataContracts as any)(state, values),
+    (getMemoizedMetadataContracts as any)(state, values, true),
   );
 
   const watchedNftNames = useSelector(getNftContractsByAddressOnCurrentChain);
