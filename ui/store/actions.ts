@@ -2244,6 +2244,21 @@ export function clearSwitchedNetworkDetails(): ThunkAction<
   };
 }
 
+/**
+ * Update the currentPopupid generated when the user opened the popup
+ *
+ * @param id - The Snap interface ID.
+ * @returns Promise Resolved on successfully submitted background request.
+ */
+export function setCurrentExtensionPopupId(
+  id: number,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground<void>('setCurrentExtensionPopupId', [id]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 export function abortTransactionSigning(
   transactionId: string,
   // TODO: Replace `any` with type
@@ -4782,6 +4797,22 @@ export function hideNetworkBanner() {
 export function neverShowSwitchedNetworkMessage() {
   return submitRequestToBackground('setSwitchedNetworkNeverShowMessage', [
     true,
+  ]);
+}
+
+/**
+ * Sends the background state the networkClientId and domain upon network switch
+ *
+ * @param selectedTabOrigin - The origin to set the new networkClientId for
+ * @param networkClientId - The new networkClientId
+ */
+export function setNetworkClientIdForDomain(
+  selectedTabOrigin: string,
+  networkClientId: string,
+): Promise<void> {
+  return submitRequestToBackground('setNetworkClientIdForDomain', [
+    selectedTabOrigin,
+    networkClientId,
   ]);
 }
 
