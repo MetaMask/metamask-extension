@@ -17,11 +17,14 @@ type WeakRefCompatibleObject<T> = {
  * to keep per domain selected networks in sync. The properties of the NetworkClient object (provider and blockTracker) are weakly
  * referenced so that they can be garbage collected if/when a dapp connection ends without effective cleanup.
  */
-export class WeakRefObjectMap implements Map<string, object> {
+
+export class WeakRefObjectMap<WeakReffedObject extends Record<string, object>>
+  implements Map<string, WeakReffedObject>
+{
   /**
    * Internal map to store keys and their corresponding weakly referenced object values.
    */
-  map: Map<string, WeakRefCompatibleObject<Record<string, object>>>;
+  private map: Map<string, WeakRefCompatibleObject<WeakReffedObject>>;
 
   constructor() {
     this.map = new Map();
@@ -35,11 +38,20 @@ export class WeakRefObjectMap implements Map<string, object> {
    * @param value - The value to store under the specified key. Must be an object.
    * @returns The `WeakRefObjectMap` instance.
    */
-  set(key: string, value: Record<string, object>): this {
-    const weakReffedValueObj: WeakRefCompatibleObject<Record<string, object>> =
-      {};
-    Object.keys(value).forEach((valueKey) => {
-      weakReffedValueObj[valueKey] = new WeakRef(value[valueKey]);
+  set(key: string, value: WeakReffedObject): this {
+    const weakReffedValueObj: WeakRefCompatibleObject<WeakReffedObject> =
+      {} as WeakRefCompatibleObject<WeakReffedObject>;
+    Object.keys(value).forEach((valueKey: keyof WeakReffedObject) => {
+      const item: WeakReffedObject[typeof valueKey] = value[valueKey];
+      if (typeof item === 'object' && item !== null) {
+        weakReffedValueObj[valueKey] = new WeakRef(item);
+      } else {
+        console.warn(
+          `Property ${String(
+            valueKey,
+          )} is not an object and cannot be weakly referenced.`,
+        );
+      }
     });
     this.map.set(key, weakReffedValueObj);
     return this;
