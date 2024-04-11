@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  useDispatch,
-  ///: END:ONLY_INCLUDE_IF
-  useSelector,
-} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { SeverityLevel } from '@metamask/snaps-sdk';
 import { TransactionType } from '@metamask/transaction-controller';
@@ -17,9 +12,7 @@ import {
   getInsightSnaps,
   getSnapsMetadata,
 } from '../selectors';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { deleteInterface } from '../store/actions';
-///: END:ONLY_INCLUDE_IF
 import { getSnapName } from '../helpers/utils/util';
 import { useTransactionInsightSnaps } from './snaps/useTransactionInsightSnaps';
 
@@ -34,9 +27,7 @@ const isAllowedTransactionTypes = (transactionType) =>
 // https://github.com/MetaMask/metamask-extension/blob/develop/ui/components/app/confirm-page-container/confirm-page-container-content/confirm-page-container-content.component.js#L129
 // Thus it is not possible to use React Component here
 const useTransactionInsights = ({ txData }) => {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const dispatch = useDispatch();
-  ///: END:ONLY_INCLUDE_IF
   const { txParams, chainId, origin } = txData;
   const caip2ChainId = `eip155:${stripHexPrefix(chainId)}`;
   const insightSnaps = useSelector(getInsightSnaps);
