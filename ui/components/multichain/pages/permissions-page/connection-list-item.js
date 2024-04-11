@@ -28,6 +28,7 @@ import {
 import { getURLHost } from '../../../../helpers/utils/util';
 import SnapAvatar from '../../../app/snaps/snap-avatar/snap-avatar';
 import { ConnectionListTooltip } from './connection-list-tooltip/connection-list-tooltip';
+import { getAvatarNetworkColor } from '../../../../helpers/utils/accounts';
 
 export const ConnectionListItem = ({ connection, onClick }) => {
   const t = useI18nContext();
@@ -69,6 +70,7 @@ export const ConnectionListItem = ({ connection, onClick }) => {
                 src={connection.networkIconUrl}
                 borderWidth={1}
                 borderColor={BackgroundColor.backgroundDefault}
+                backgroundColor={getAvatarNetworkColor(connection.networkName)}
               />
             }
           >
