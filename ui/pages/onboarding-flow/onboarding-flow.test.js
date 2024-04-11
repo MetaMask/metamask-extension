@@ -47,6 +47,9 @@ describe('Onboarding Flow', () => {
       incomingTransactionsPreferences: {
         [CHAIN_IDS.MAINNET]: true,
       },
+      preferences: {
+        petnamesEnabled: true,
+      },
     },
     localeMessages: {
       currentLocale: 'en',
