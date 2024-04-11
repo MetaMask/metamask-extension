@@ -36,9 +36,13 @@ import {
   getSwapsTokensReceivedFromTxMeta,
   TRANSACTION_ENVELOPE_TYPE_NAMES,
 } from '../../../../shared/lib/transactions-controller-utils';
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-import { getBlockaidMetricsProps } from '../../../../ui/helpers/utils/metrics';
-///: END:ONLY_INCLUDE_IF
+
+import {
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  getBlockaidMetricsProps,
+  ///: END:ONLY_INCLUDE_IF
+  getSmartTransactionMetricsProperties,
+} from '../../../../ui/helpers/utils/metrics';
 import {
   getSnapAndHardwareInfoForMetrics,
   type SnapAndHardwareMessenger,
@@ -91,6 +95,13 @@ export type TransactionMetricsRequest = {
   getSmartTransactionByMinedTxHash: (
     txhash: string | undefined,
   ) => SmartTransaction;
+};
+
+export type SmartTransactionMetricsProperties = {
+  is_smart_transaction: boolean;
+  smart_transaction_duplicated?: boolean;
+  smart_transaction_timed_out?: boolean;
+  smart_transaction_proxied?: boolean;
 };
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
@@ -746,40 +757,6 @@ function getUniqueId(
 
   return uniqueIdentifier;
 }
-
-type SmartTransactionMetricsProperties = {
-  is_smart_transaction: boolean;
-  smart_transaction_duplicated?: boolean;
-  smart_transaction_timed_out?: boolean;
-  smart_transaction_proxied?: boolean;
-};
-
-const getSmartTransactionMetricsProperties = (
-  transactionMetricsRequest: TransactionMetricsRequest,
-  transactionMeta: TransactionMeta,
-) => {
-  const isSmartTransaction = transactionMetricsRequest.getIsSmartTransaction();
-  const properties = {
-    is_smart_transaction: isSmartTransaction,
-  } as SmartTransactionMetricsProperties;
-  if (!isSmartTransaction) {
-    return properties;
-  }
-  const smartTransaction =
-    transactionMetricsRequest.getSmartTransactionByMinedTxHash(
-      transactionMeta.hash,
-    );
-  const smartTransactionStatusMetadata = smartTransaction?.statusMetadata;
-  if (!smartTransactionStatusMetadata) {
-    return properties;
-  }
-  properties.smart_transaction_duplicated =
-    smartTransactionStatusMetadata.duplicated;
-  properties.smart_transaction_timed_out =
-    smartTransactionStatusMetadata.timedOut;
-  properties.smart_transaction_proxied = smartTransactionStatusMetadata.proxied;
-  return properties;
-};
 
 async function buildEventFragmentProperties({
   transactionEventPayload: { transactionMeta },
