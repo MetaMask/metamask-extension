@@ -175,10 +175,13 @@ export function AssetPickerModal({
     setSearchQuery(query);
   };
 
-  const handleAssetChange = (token: Token) => () => {
-    onAssetChange(token);
-    onClose();
-  };
+  const handleAssetChange = useCallback(
+    (token: Token) => {
+      onAssetChange(token);
+      onClose();
+    },
+    [onAssetChange],
+  );
 
   const defaultActiveTabKey = asset?.type === AssetType.NFT ? 'nfts' : 'tokens';
 
@@ -230,7 +233,7 @@ export function AssetPickerModal({
               className={classnames('multichain-asset-picker-list-item', {
                 'multichain-asset-picker-list-item--selected': token.isSelected,
               })}
-              onClick={handleAssetChange(token)}
+              onClick={() => handleAssetChange(token)}
             >
               {token.isSelected ? (
                 <Box
@@ -263,7 +266,7 @@ export function AssetPickerModal({
                     <TokenCell
                       key={token.address}
                       {...token}
-                      onClick={handleAssetChange(token)}
+                      onClick={() => handleAssetChange(token)}
                     />
                   )}
                 </Box>
@@ -274,6 +277,7 @@ export function AssetPickerModal({
       </Box>
     );
   }, [
+    searchQuery,
     tokensWithBalances,
     balanceValue,
     nativeCurrency,
@@ -282,6 +286,8 @@ export function AssetPickerModal({
     primaryCurrencyProperties.value,
     primaryCurrencyProperties.suffix,
     secondaryCurrencyProperties.value,
+    secondaryCurrencyDisplay,
+    handleAssetChange,
   ]);
 
   const isDest = sendingAssetImage && sendingAssetSymbol;

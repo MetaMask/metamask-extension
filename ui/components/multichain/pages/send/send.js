@@ -69,31 +69,34 @@ export const SendPage = () => {
   const location = useLocation();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const handleSelectToken = (isReceived) => async (token) => {
-    if (token.type === AssetType.native) {
-      dispatch(
-        updateSendAsset({
-          type: token.type,
-          details: token,
-          skipComputeEstimatedGasLimit: true,
-          isReceived,
-        }),
-      );
-    } else {
-      dispatch(
-        updateSendAsset({
-          type: token.type ?? AssetType.token,
-          details: {
-            ...token,
-            standard: token.standard ?? TokenStandard.ERC20,
-          },
-          skipComputeEstimatedGasLimit: true,
-          isReceived,
-        }),
-      );
-    }
-    history.push(SEND_ROUTE);
-  };
+  const handleSelectToken = useCallback(
+    (token, isReceived) => {
+      if (token.type === AssetType.native) {
+        dispatch(
+          updateSendAsset({
+            type: token.type,
+            details: token,
+            skipComputeEstimatedGasLimit: true,
+            isReceived,
+          }),
+        );
+      } else {
+        dispatch(
+          updateSendAsset({
+            type: token.type ?? AssetType.token,
+            details: {
+              ...token,
+              standard: token.standard ?? TokenStandard.ERC20,
+            },
+            skipComputeEstimatedGasLimit: true,
+            isReceived,
+          }),
+        );
+      }
+      history.push(SEND_ROUTE);
+    },
+    [dispatch, history],
+  );
 
   const cleanup = useCallback(() => {
     dispatch(resetSendState());
@@ -185,6 +188,11 @@ export const SendPage = () => {
     draftTransactionExists &&
     [SEND_STAGES.EDIT, SEND_STAGES.DRAFT].includes(sendStage);
 
+  const handleSelectSendToken = useCallback(
+    (newToken) => handleSelectToken(newToken, false),
+    [handleSelectToken],
+  );
+
   return (
     <Page className="multichain-send-page">
       <Header
@@ -205,7 +213,7 @@ export const SendPage = () => {
           <AssetPickerAmount
             asset={transactionAsset}
             amount={amount}
-            onAssetChange={handleSelectToken(false)}
+            onAssetChange={handleSelectSendToken}
             onAmountChange={(newAmount) =>
               dispatch(updateSendAmount(newAmount))
             }
