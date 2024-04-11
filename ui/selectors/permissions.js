@@ -320,7 +320,7 @@ export function getOrderedConnectedAccountsForActiveTab(state) {
     );
 }
 
-export function getOrderedConnectedAccountsForConnected(state, activeTab) {
+export function getOrderedConnectedAccountsForConnectedDapp(state, activeTab) {
   const {
     metamask: { permissionHistory },
   } = state;

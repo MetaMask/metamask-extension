@@ -22,7 +22,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getConnectedSitesList,
   getInternalAccounts,
-  getOrderedConnectedAccountsForConnected,
+  getOrderedConnectedAccountsForConnectedDapp,
   getPermissionSubjects,
   getPermittedAccountsByOrigin,
   getSelectedAccount,
@@ -105,7 +105,7 @@ export const Connections = () => {
   const { id } = useSelector((state: any) => state.activeTab);
 
   const connectedAccounts = useSelector((state) =>
-    getOrderedConnectedAccountsForConnected(state, activeTabOrigin),
+    getOrderedConnectedAccountsForConnectedDapp(state, activeTabOrigin),
   );
   const selectedAccount = useSelector(getSelectedAccount);
   const internalAccounts = useSelector(getInternalAccounts);
