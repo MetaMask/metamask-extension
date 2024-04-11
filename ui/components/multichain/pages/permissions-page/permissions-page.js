@@ -106,7 +106,7 @@ export const PermissionsPage = () => {
           positionObj="44%"
         />
       ) : null}
-      <Content>
+      <Content padding={0}>
         <Box ref={headerRef}></Box>
         {totalConnections > 0 ? (
           renderConnectionsList(sitesConnectionsList)

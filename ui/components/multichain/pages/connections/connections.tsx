@@ -13,9 +13,7 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import {
-  CONNECT_ROUTE,
-} from '../../../../helpers/constants/routes';
+import { CONNECT_ROUTE } from '../../../../helpers/constants/routes';
 import { getURLHost } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {

@@ -45,6 +45,7 @@ export const ConnectionListItem = ({ connection, onClick }) => {
       onClick={onClick}
       padding={4}
       gap={4}
+      className="multichain-connection-list-item"
     >
       <Box
         display={Display.Flex}
