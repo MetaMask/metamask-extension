@@ -2562,21 +2562,6 @@
   "notificationsMarkAllAsRead": {
     "message": "Tümünü okundu olarak işaretle"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "Daha fazla bilgi edinin"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "MetaMask Snaps'in Açık Beta sürümünü duyurmaktan heyecan duyuyoruz!"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "Geliştirici topluluğu tarafından oluşturulan snap'lerle cüzdanınızı kişiselleştirin!"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "Snap'ler MetaMask ile daha fazla ağa bağlanma, işlem içgörülerini görme ve kişisel bildirimler alma gibi daha çok şey yapmanıza yardımcı olur."
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "MetaMask Snaps tanıtımı"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "Bu hesapta $1 yeni token bulundu",
     "description": "$1 is the number of new tokens detected"
@@ -3267,6 +3252,10 @@
   "securityAndPrivacy": {
     "message": "Güvenlik ve gizlilik"
   },
+  "securityProviderPoweredBy": {
+    "message": "$1 hizmetidir",
+    "description": "The security provider that is providing data"
+  },
   "seeDetails": {
     "message": "Ayrıntılara bakın"
   },
@@ -3490,12 +3479,6 @@
   },
   "smartContracts": {
     "message": "Akıllı sözleşmeler"
-  },
-  "smartSwapsAreHere": {
-    "message": "Akıllı Swap'lar burada!"
-  },
-  "smartSwapsDescription": {
-    "message": "MetaMask Swap işlemleri artık çok daha akıllı! Akıllı Swap'ları etkinleştirmek, MetaMask'in aşağıdakilere yardımcı olmak için Swap'ini programlı olarak optimize etmesine olanak tanır:"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Akıllı swap için yeterli para yok."
@@ -3775,18 +3758,6 @@
   },
   "strong": {
     "message": "Güçlü"
-  },
-  "stxBenefit1": {
-    "message": "İşlem maliyetlerini en aza indir"
-  },
-  "stxBenefit2": {
-    "message": "İşlem hatalarını azalt"
-  },
-  "stxBenefit3": {
-    "message": "Sıkışmış işlemleri ortadan kaldır"
-  },
-  "stxBenefit4": {
-    "message": "Önden çalıştırmayı engelle"
   },
   "stxCancelled": {
     "message": "Swap işlemi başarısız olurdu"
@@ -4718,7 +4689,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "$1 ögesini $2 üzerinde görüntüle",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "Etherscan'de $1 görüntüle",
