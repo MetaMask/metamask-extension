@@ -27,6 +27,7 @@ import ConnectedAccounts from '../connected-accounts';
 import { Tabs, Tab } from '../../components/ui/tabs';
 import { EthOverview } from '../../components/app/wallet-overview';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
+
 import {
   FontWeight,
   Display,
@@ -89,7 +90,6 @@ import FlaskHomeFooter from './flask/flask-home-footer.component';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import InstitutionalHomeFooter from './institutional/institutional-home-footer';
 ///: END:ONLY_INCLUDE_IF
-import { fetchBuyableChains } from '../../ducks/ramps';
 
 function shouldCloseNotificationPopup({
   isNotification,

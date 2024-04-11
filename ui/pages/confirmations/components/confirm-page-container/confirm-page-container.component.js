@@ -66,6 +66,7 @@ import {
   ConfirmPageContainerContent,
   ConfirmPageContainerNavigation,
 } from '.';
+import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
 
 const ConfirmPageContainer = (props) => {
   const {
@@ -123,7 +124,7 @@ const ConfirmPageContainer = (props) => {
   const [isShowingTxInsightWarnings, setIsShowingTxInsightWarnings] =
     useState(false);
   ///: END:ONLY_INCLUDE_IF
-  const { openBuyCryptoInPdapp, isBuyableChain } = useRamps();
+  const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const contact = useSelector((state) => getAddressBookEntry(state, toAddress));
   const networkIdentifier = useSelector(getNetworkIdentifier);
   const defaultToken = useSelector(getSwapsDefaultToken);
@@ -135,6 +136,8 @@ const ConfirmPageContainer = (props) => {
   const toMetadataName = useSelector((state) =>
     getMetadataContractName(state, toAddress),
   );
+
+  const { openBuyCryptoInPdapp } = useRamps();
 
   const isSetApproveForAll =
     currentTransaction.type === TransactionType.tokenMethodSetApprovalForAll;

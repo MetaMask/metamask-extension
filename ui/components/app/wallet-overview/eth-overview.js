@@ -77,7 +77,6 @@ const EthOverview = ({ className, showAddress }) => {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const location = useLocation();
   const isBridgeChain = useSelector(getIsBridgeChain);
-  const { openBuyCryptoInPdapp } = useRamps();
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const metaMetricsId = useSelector(getMetaMetricsId);
   const keyring = useSelector(getCurrentKeyring);
@@ -187,6 +186,10 @@ const EthOverview = ({ className, showAddress }) => {
       </>
     );
   };
+  ///: END:ONLY_INCLUDE_IF
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  const { openBuyCryptoInPdapp } = useRamps();
   ///: END:ONLY_INCLUDE_IF
 
   return (

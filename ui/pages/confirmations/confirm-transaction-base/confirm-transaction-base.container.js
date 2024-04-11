@@ -110,9 +110,8 @@ import { showCustodyConfirmLink } from '../../../store/institutional/institution
 import { getTokenAddressParam } from '../../../helpers/utils/token-util';
 import { calcGasTotal } from '../../../../shared/lib/transactions-controller-utils';
 import { subtractHexes } from '../../../../shared/modules/conversion.utils';
-import ConfirmTransactionBase from './confirm-transaction-base.component';
-import useRamps from '../../../hooks/useRamps/useRamps';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
+import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 let customNonceValue = '';
 const customNonceMerge = (txData) =>
