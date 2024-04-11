@@ -34,7 +34,12 @@ describe('PushPlatformNotificationsController', () => {
     it('should fail if a jwt token is not provided', async () => {
       await withController(async ({ controller }) => {
         jest
-          .spyOn(controller as any, 'getBearerToken')
+          .spyOn(
+            controller as unknown as {
+              getBearerToken: () => Promise<string | undefined>;
+            },
+            'getBearerToken',
+          )
           .mockResolvedValue(undefined);
 
         await expect(controller.enablePushNotifications([])).rejects.toThrow();
@@ -63,7 +68,12 @@ describe('PushPlatformNotificationsController', () => {
     it('should fail if a jwt token is not provided', async () => {
       await withController(async ({ controller }) => {
         jest
-          .spyOn(controller as any, 'getBearerToken')
+          .spyOn(
+            controller as unknown as {
+              getBearerToken: () => Promise<string | undefined>;
+            },
+            'getBearerToken',
+          )
           .mockResolvedValue(undefined);
 
         await expect(controller.disablePushNotifications([])).rejects.toThrow();

@@ -1,14 +1,14 @@
-export declare interface Messaging {
+export declare type Messaging = {
   app: FirebaseApp;
-}
+};
 
-export declare interface FirebaseApp {
+export declare type FirebaseApp = {
   readonly name: string;
   readonly options: FirebaseOptions;
   automaticDataCollectionEnabled: boolean;
-}
+};
 
-export declare interface FirebaseOptions {
+export declare type FirebaseOptions = {
   apiKey?: string;
   authDomain?: string;
   databaseURL?: string;
@@ -17,30 +17,30 @@ export declare interface FirebaseOptions {
   messagingSenderId?: string;
   appId?: string;
   measurementId?: string;
-}
+};
 
-export interface NotificationPayload {
+export type NotificationPayload = {
   title?: string;
   body?: string;
   image?: string;
   icon?: string;
-}
+};
 
-export interface FcmOptions {
+export type FcmOptions = {
   link?: string;
   analyticsLabel?: string;
-}
+};
 
-export interface MessagePayload {
+export type MessagePayload = {
   notification?: NotificationPayload;
   data?: { [key: string]: string };
   fcmOptions?: FcmOptions;
   from: string;
   collapseKey: string;
   messageId: string;
-}
+};
 
-export interface GetTokenOptions {
+export type GetTokenOptions = {
   vapidKey?: string;
   serviceWorkerRegistration?: ServiceWorkerRegistration;
-}
+};

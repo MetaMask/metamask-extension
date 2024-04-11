@@ -30,7 +30,7 @@ const chains = {
 };
 
 export const SUPPORTED_CHAINS = [
-  chains.ETHEREUM,
+  chains.MAINNET,
   chains.OPTIMISM,
   chains.BSC,
   chains.POLYGON,
@@ -39,14 +39,14 @@ export const SUPPORTED_CHAINS = [
   chains.LINEA,
 ];
 
-export interface Trigger {
+export type Trigger = {
   supported_chains: (typeof SUPPORTED_CHAINS)[number][];
-}
+};
 
 export const TRIGGERS: Partial<Record<TRIGGER_TYPES, Trigger>> = {
   [TRIGGER_TYPES.METAMASK_SWAP_COMPLETED]: {
     supported_chains: [
-      chains.ETHEREUM,
+      chains.MAINNET,
       chains.OPTIMISM,
       chains.BSC,
       chains.POLYGON,
@@ -56,7 +56,7 @@ export const TRIGGERS: Partial<Record<TRIGGER_TYPES, Trigger>> = {
   },
   [TRIGGER_TYPES.ERC20_SENT]: {
     supported_chains: [
-      chains.ETHEREUM,
+      chains.MAINNET,
       chains.OPTIMISM,
       chains.BSC,
       chains.POLYGON,
@@ -67,7 +67,7 @@ export const TRIGGERS: Partial<Record<TRIGGER_TYPES, Trigger>> = {
   },
   [TRIGGER_TYPES.ERC20_RECEIVED]: {
     supported_chains: [
-      chains.ETHEREUM,
+      chains.MAINNET,
       chains.OPTIMISM,
       chains.BSC,
       chains.POLYGON,
@@ -77,20 +77,20 @@ export const TRIGGERS: Partial<Record<TRIGGER_TYPES, Trigger>> = {
     ],
   },
   [TRIGGER_TYPES.ERC721_SENT]: {
-    supported_chains: [chains.ETHEREUM, chains.POLYGON],
+    supported_chains: [chains.MAINNET, chains.POLYGON],
   },
   [TRIGGER_TYPES.ERC721_RECEIVED]: {
-    supported_chains: [chains.ETHEREUM, chains.POLYGON],
+    supported_chains: [chains.MAINNET, chains.POLYGON],
   },
   [TRIGGER_TYPES.ERC1155_SENT]: {
-    supported_chains: [chains.ETHEREUM, chains.POLYGON],
+    supported_chains: [chains.MAINNET, chains.POLYGON],
   },
   [TRIGGER_TYPES.ERC1155_RECEIVED]: {
-    supported_chains: [chains.ETHEREUM, chains.POLYGON],
+    supported_chains: [chains.MAINNET, chains.POLYGON],
   },
   [TRIGGER_TYPES.ETH_SENT]: {
     supported_chains: [
-      chains.ETHEREUM,
+      chains.MAINNET,
       chains.OPTIMISM,
       chains.BSC,
       chains.POLYGON,
@@ -101,7 +101,7 @@ export const TRIGGERS: Partial<Record<TRIGGER_TYPES, Trigger>> = {
   },
   [TRIGGER_TYPES.ETH_RECEIVED]: {
     supported_chains: [
-      chains.ETHEREUM,
+      chains.MAINNET,
       chains.OPTIMISM,
       chains.BSC,
       chains.POLYGON,
@@ -111,19 +111,19 @@ export const TRIGGERS: Partial<Record<TRIGGER_TYPES, Trigger>> = {
     ],
   },
   [TRIGGER_TYPES.ROCKETPOOL_STAKE_COMPLETED]: {
-    supported_chains: [chains.ETHEREUM],
+    supported_chains: [chains.MAINNET],
   },
   [TRIGGER_TYPES.ROCKETPOOL_UNSTAKE_COMPLETED]: {
-    supported_chains: [chains.ETHEREUM],
+    supported_chains: [chains.MAINNET],
   },
   [TRIGGER_TYPES.LIDO_STAKE_COMPLETED]: {
-    supported_chains: [chains.ETHEREUM],
+    supported_chains: [chains.MAINNET],
   },
   [TRIGGER_TYPES.LIDO_WITHDRAWAL_REQUESTED]: {
-    supported_chains: [chains.ETHEREUM],
+    supported_chains: [chains.MAINNET],
   },
   [TRIGGER_TYPES.LIDO_WITHDRAWAL_COMPLETED]: {
-    supported_chains: [chains.ETHEREUM],
+    supported_chains: [chains.MAINNET],
   },
 };
 

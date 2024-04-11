@@ -238,7 +238,7 @@ export function createNotificationMessage(
   }
 
   return {
-    title: notificationMessage.title,
-    description,
+    title: notificationMessage.title ?? '', // Ensure title is always a string
+    description: description ?? '', // Fallback to empty string if null
   };
 }

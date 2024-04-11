@@ -52,7 +52,7 @@ const metadata = {
  * managing the FCM token, and communicating with the server to register or unregister the device for push notifications.
  * Additionally, it provides functionality to update the server with new UUIDs that should trigger push notifications.
  *
- * @extends {BaseController<typeof controllerName, PushPlatformNotificationsControllerState, PushPlatformNotificationsControllerMessanger>}
+ * @augments {BaseController<typeof controllerName, PushPlatformNotificationsControllerState, PushPlatformNotificationsControllerMessanger>}
  */
 export class PushPlatformNotificationsController extends BaseController<
   typeof controllerName,

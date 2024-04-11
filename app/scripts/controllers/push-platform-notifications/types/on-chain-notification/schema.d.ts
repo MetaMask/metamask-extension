@@ -8,7 +8,7 @@
  * Run `oapi-codegen -generate types -package domain  api.spec.yaml > domain/apispec.gen.go`
  */
 
-export interface paths {
+export type paths = {
   '/api/v1/notifications': {
     /** List all notifications ordered by most recent */
     post: {
@@ -58,11 +58,11 @@ export interface paths {
       };
     };
   };
-}
+};
 
 export type webhooks = Record<string, never>;
 
-export interface components {
+export type components = {
   schemas: {
     Notification: {
       /** Format: uuid */
@@ -296,7 +296,7 @@ export interface components {
   requestBodies: never;
   headers: never;
   pathItems: never;
-}
+};
 
 export type $defs = Record<string, never>;
 

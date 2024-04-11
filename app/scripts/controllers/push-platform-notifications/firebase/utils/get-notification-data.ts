@@ -17,6 +17,10 @@ const defaultFormatOptions = {
  * which could potentially increase the size of the Service Worker script and impact its load time and performance.
  *
  * The original function can be found in the transactions-controller-utils module shared/lib/transactions-controller-utils.js
+ *
+ * @param value - The token amount in its smallest unit (e.g., wei for Ethereum).
+ * @param decimals - The number of decimals the token uses.
+ * @returns The token amount adjusted for its decimal places as a BigNumber.
  */
 export function calcTokenAmount(value: string, decimals: string) {
   const multiplier = Math.pow(10, Number(decimals || 0));
