@@ -29,6 +29,8 @@ const rampsSlice = createSlice({
         const networks = action.payload;
         if (networks && networks.length > 0) {
           state.buyableChains = action.payload;
+        } else {
+          state.buyableChains = defaultBuyableChains;
         }
       })
       .addCase(fetchBuyableChains.rejected, (state) => {
@@ -37,8 +39,10 @@ const rampsSlice = createSlice({
   },
 });
 
-const { actions, reducer } = rampsSlice;
+const { reducer } = rampsSlice;
 
+// Can be typed to RootState if/when the interface is defined
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getBuyableChains = (state: any) => state.ramps.buyableChains;
 
 export const getIsNativeTokenBuyable = createSelector(
