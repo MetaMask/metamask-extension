@@ -81,12 +81,14 @@ const TransactionAlerts = ({
         />
       )}
 
-      {supportsEIP1559 && hasSimulationError && !renderSimulationFailureWarning && (
-        <SimulationErrorMessage
-          userAcknowledgedGasMissing={userAcknowledgedGasMissing}
-          setUserAcknowledgedGasMissing={setUserAcknowledgedGasMissing}
-        />
-      )}
+      {supportsEIP1559 &&
+        hasSimulationError &&
+        !renderSimulationFailureWarning && (
+          <SimulationErrorMessage
+            userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+            setUserAcknowledgedGasMissing={setUserAcknowledgedGasMissing}
+          />
+        )}
 
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
