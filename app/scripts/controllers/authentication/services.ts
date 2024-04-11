@@ -1,6 +1,6 @@
 const AUTH_ENDPOINT = process.env.AUTH_API || '';
 export const AUTH_NONCE_ENDPOINT = `${AUTH_ENDPOINT}/api/v2/nonce`;
-export const AUTH_LOGIN_ENDPOINT = `${AUTH_ENDPOINT}/api/v2/snaps/login`;
+export const AUTH_LOGIN_ENDPOINT = `${AUTH_ENDPOINT}/api/v2/srp/login`;
 
 const OIDC_ENDPOINT = process.env.OIDC_API || '';
 export const OIDC_TOKENS_ENDPOINT = `${OIDC_ENDPOINT}/oauth2/token`;

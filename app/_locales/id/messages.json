@@ -2562,21 +2562,6 @@
   "notificationsMarkAllAsRead": {
     "message": "Tandai semua telah dibaca"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "Selengkapnya"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "🎉 Kami sangat gembira mengumumkan versi Open Beta dari MetaMask Snap!"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "Personalisasikan dompet Anda dengan snap yang dibuat oleh komunitas pengembang!"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "Snap membantu Anda melakukan lebih banyak hal dengan MetaMask — seperti terhubung ke lebih banyak jaringan, melihat wawasan transaksi, dan mendapatkan notifikasi khusus."
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "Memperkenalkan MetaMask Snap"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 token baru ditemukan di akun ini",
     "description": "$1 is the number of new tokens detected"
@@ -3267,6 +3252,10 @@
   "securityAndPrivacy": {
     "message": "Keamanan & privasi"
   },
+  "securityProviderPoweredBy": {
+    "message": "Didukung oleh $1",
+    "description": "The security provider that is providing data"
+  },
   "seeDetails": {
     "message": "Lihat detailnya"
   },
@@ -3490,12 +3479,6 @@
   },
   "smartContracts": {
     "message": "Kontrak cerdas"
-  },
-  "smartSwapsAreHere": {
-    "message": "Smart Swap telah hadir!"
-  },
-  "smartSwapsDescription": {
-    "message": "MetaMask Swaps kini semakin pintar! Mengaktifkan Smart Swap akan mengizinkan MetaMask mengoptimalkan Swap secara terprogram untuk membantu:"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Dana tidak cukup untuk pertukaran cerdas."
@@ -3775,18 +3758,6 @@
   },
   "strong": {
     "message": "Kuat"
-  },
-  "stxBenefit1": {
-    "message": "Meminimalkan biaya transaksi"
-  },
-  "stxBenefit2": {
-    "message": "Kurangi potensi kegagalan transaksi \t"
-  },
-  "stxBenefit3": {
-    "message": "Hapus transaksi yang macet"
-  },
-  "stxBenefit4": {
-    "message": "Cegah perilaku front running \t"
   },
   "stxCancelled": {
     "message": "Pertukaran akan gagal"
@@ -4718,7 +4689,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "Lihat $1 di $2",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "Lihat $1 di Etherscan",
