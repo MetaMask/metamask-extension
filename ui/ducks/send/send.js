@@ -668,7 +668,7 @@ export const initializeSendState = createAsyncThunk(
     ) {
       gasLimit =
         draftTransaction.asset.type === AssetType.token ||
-          draftTransaction.asset.type === AssetType.NFT
+        draftTransaction.asset.type === AssetType.NFT
           ? GAS_LIMITS.BASE_TOKEN_ESTIMATE
           : GAS_LIMITS.SIMPLE;
       // Run our estimateGasLimit logic to get a more accurate estimation of
@@ -1523,7 +1523,7 @@ const slice = createSlice({
             draftTransaction &&
             draftTransaction.fromAccount &&
             draftTransaction.fromAccount.address ===
-            action.payload.account.address
+              action.payload.account.address
           ) {
             draftTransaction.fromAccount.balance =
               action.payload.account.balance;
@@ -1853,10 +1853,10 @@ export function editExistingTransaction(assetType, transactionId) {
               address: transaction.txParams.to,
               ...(assetType === AssetType.NFT
                 ? {
-                  tokenId:
-                    getTokenIdParam(tokenData) ??
-                    getTokenValueParam(tokenData),
-                }
+                    tokenId:
+                      getTokenIdParam(tokenData) ??
+                      getTokenValueParam(tokenData),
+                  }
                 : {}),
             },
           },
@@ -2025,8 +2025,9 @@ export function updateSendAmount(amount) {
           true,
         )
         .toString();
-      logAmount = `${Number(decimalValueString) ? decimalValueString : ''} ${draftTransaction.asset.details?.symbol
-        }`;
+      logAmount = `${Number(decimalValueString) ? decimalValueString : ''} ${
+        draftTransaction.asset.details?.symbol
+      }`;
     } else {
       const ethValue = getValueFromWeiHex({
         value: amount,
@@ -2078,7 +2079,8 @@ export function updateSendAsset(
 
       await dispatch(
         addHistoryEntry(
-          `sendFlow - user set asset of type ${AssetType.native} with symbol ${ticker ?? EtherDenomination.ETH
+          `sendFlow - user set asset of type ${AssetType.native} with symbol ${
+            ticker ?? EtherDenomination.ETH
           }`,
         ),
       );
@@ -2387,7 +2389,7 @@ export function signTransaction() {
         setMaxValueMode(
           transactionId,
           amountMode === AMOUNT_MODES.MAX &&
-          draftTransaction.asset.type === AssetType.native,
+            draftTransaction.asset.type === AssetType.native,
         ),
       );
     }
