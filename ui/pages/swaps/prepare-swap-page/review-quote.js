@@ -62,7 +62,6 @@ import {
   checkNetworkAndAccountSupports1559,
   getUSDConversionRate,
   getIsMultiLayerFeeNetwork,
-  getSelectedNetworkClientId,
 } from '../../../selectors';
 import {
   getSmartTransactionsOptInStatus,
@@ -233,7 +232,6 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const unsignedTransaction = usedQuote.trade;
   const isSmartTransaction =
     currentSmartTransactionsEnabled && smartTransactionsOptInStatus;
-  const networkClientId = useSelector(getSelectedNetworkClientId);
 
   const [slippageErrorKey] = useState(() => {
     const slippage = Number(fetchParams?.slippage);
@@ -998,10 +996,13 @@ export default function ReviewQuote({ setReceiveToAmount }) {
         let l1ApprovalFeeTotal = '0x0';
         if (approveTxParams) {
           l1ApprovalFeeTotal = await dispatch(
-            getLayer1GasFee(chainId, networkClientId, {
-              ...approveTxParams,
-              gasPrice: addHexPrefix(approveTxParams.gasPrice),
-              value: '0x0', // For approval txs we need to use "0x0" here.
+            getLayer1GasFee({
+              transactionParams: {
+                ...approveTxParams,
+                gasPrice: addHexPrefix(approveTxParams.gasPrice),
+                value: '0x0', // For approval txs we need to use "0x0" here.
+              },
+              chainId,
             }),
           );
           setMultiLayerL1ApprovalFeeTotal(l1ApprovalFeeTotal);

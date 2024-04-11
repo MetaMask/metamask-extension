@@ -158,24 +158,6 @@ function useLoadingTime() {
   return { loadingTime, setLoadingComplete };
 }
 
-function normalizeSimulationData(simulationData?: SimulationData) {
-  const isInsufficientGasError = simulationData?.error?.message?.includes(
-    'insufficient funds for gas',
-  );
-
-  if (!isInsufficientGasError) {
-    return simulationData;
-  }
-
-  return {
-    ...simulationData,
-    error: {
-      code: SimulationErrorCode.Reverted,
-      message: 'Transaction was reverted',
-    },
-  };
-}
-
 /**
  * Preview of a transaction's effects using simulation data.
  *
@@ -187,18 +169,17 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   simulationData,
   transactionId,
 }: SimulationDetailsProps) => {
-  // Temporary pending update to controller.
-  const normalizedSimulationData = normalizeSimulationData(simulationData);
-
   const t = useI18nContext();
   const { loadingTime, setLoadingComplete } = useLoadingTime();
-  const balanceChangesResult = useBalanceChanges(normalizedSimulationData);
-  const loading = !normalizedSimulationData || balanceChangesResult.pending;
+  const balanceChangesResult = useBalanceChanges(simulationData);
+  const loading = !simulationData || balanceChangesResult.pending;
+
+  console.log('SimulationDetails', simulationData);
 
   useSimulationMetrics({
     balanceChanges: balanceChangesResult.value,
     loadingTime,
-    simulationData: normalizedSimulationData as SimulationData,
+    simulationData,
     transactionId,
   });
 
@@ -212,7 +193,7 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
 
   setLoadingComplete();
 
-  const { error } = normalizedSimulationData;
+  const { error } = simulationData;
 
   if (
     [

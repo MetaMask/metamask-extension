@@ -117,7 +117,6 @@ export default class SwapsController {
       getTokenRatesState,
       fetchTradesInfo = defaultFetchTradesInfo,
       getCurrentChainId,
-      getNetworkClientId,
       getLayer1GasFee,
       getEIP1559GasFeeEstimates,
       trackMetaMetricsEvent,
@@ -145,7 +144,6 @@ export default class SwapsController {
     this._getEIP1559GasFeeEstimates = getEIP1559GasFeeEstimates;
 
     this._getLayer1GasFee = getLayer1GasFee;
-    this._getNetworkClientId = getNetworkClientId;
 
     this.getBufferedGasLimit = getBufferedGasLimit;
     this.getTokenRatesState = getTokenRatesState;
@@ -260,7 +258,6 @@ export default class SwapsController {
     isPolledRequest,
   ) {
     const { chainId } = fetchParamsMetaData;
-    const networkClientId = this._getNetworkClientId();
 
     if (chainId !== this._ethersProviderChainId) {
       this.ethersProvider = new Web3Provider(this.provider);
@@ -326,11 +323,11 @@ export default class SwapsController {
       await Promise.all(
         Object.values(newQuotes).map(async (quote) => {
           if (quote.trade) {
-            const multiLayerL1TradeFeeTotal = await this._getLayer1GasFee(
+            const multiLayerL1TradeFeeTotal = await this._getLayer1GasFee({
+              transactionParams: quote.trade,
               chainId,
-              networkClientId,
-              quote.trade,
-            );
+            });
+
             quote.multiLayerL1TradeFeeTotal = multiLayerL1TradeFeeTotal;
           }
           return quote;

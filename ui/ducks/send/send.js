@@ -513,22 +513,24 @@ export const computeEstimatedGasLimit = createAsyncThunk(
     const isNonStandardEthChain = getIsNonStandardEthChain(state);
     const chainId = getCurrentChainId(state);
     const selectedAccount = getSelectedInternalAccountWithBalance(state);
-    const networkClientId = getSelectedNetworkClientId(state);
 
     let gasTotalForLayer1;
     if (isMultiLayerFeeNetwork) {
       gasTotalForLayer1 = await thunkApi.dispatch(
-        getLayer1GasFee(chainId, networkClientId, {
-          gasPrice: draftTransaction.gas.gasPrice,
-          gas: draftTransaction.gas.gasLimit,
-          to: draftTransaction.recipient.address?.toLowerCase(),
-          value:
-            send.amountMode === AMOUNT_MODES.MAX
-              ? send.selectedAccount.balance
-              : draftTransaction.amount.value,
-          from: send.selectedAccount.address,
-          data: draftTransaction.userInputHexData,
-          type: '0x0',
+        getLayer1GasFee({
+          transactionParams: {
+            gasPrice: draftTransaction.gas.gasPrice,
+            gas: draftTransaction.gas.gasLimit,
+            to: draftTransaction.recipient.address?.toLowerCase(),
+            value:
+              send.amountMode === AMOUNT_MODES.MAX
+                ? send.selectedAccount.balance
+                : draftTransaction.amount.value,
+            from: send.selectedAccount.address,
+            data: draftTransaction.userInputHexData,
+            type: '0x0',
+          },
+          chainId,
         }),
       );
     }
