@@ -67,6 +67,7 @@
     "http://localhost:8545/",
     "https://*.infura.io/",
     "https://*.codefi.network/",
+    "https://*.cx.metamask.io/",
     "https://chainid.network/chains.json",
     "https://lattice.gridplus.io/*",
     "activeTab",
