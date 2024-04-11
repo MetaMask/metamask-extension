@@ -38,7 +38,7 @@ export function AssetBalanceText({
   const isFiatPrimary = useSelector(getIsFiatPrimary);
 
   const { tokensWithBalances } = useTokenTracker({
-    tokens: [{ address: asset.details?.address }],
+    tokens: asset.details?.address ? [{ address: asset.details.address }] : [],
     address: undefined,
   });
   // TODO: Replace `any` with type
