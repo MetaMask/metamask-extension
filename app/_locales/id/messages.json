@@ -2562,21 +2562,6 @@
   "notificationsMarkAllAsRead": {
     "message": "Tandai semua telah dibaca"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "Selengkapnya"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "🎉 Kami sangat gembira mengumumkan versi Open Beta dari MetaMask Snap!"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "Personalisasikan dompet Anda dengan snap yang dibuat oleh komunitas pengembang!"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "Snap membantu Anda melakukan lebih banyak hal dengan MetaMask — seperti terhubung ke lebih banyak jaringan, melihat wawasan transaksi, dan mendapatkan notifikasi khusus."
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "Memperkenalkan MetaMask Snap"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 token baru ditemukan di akun ini",
     "description": "$1 is the number of new tokens detected"
@@ -3266,6 +3251,10 @@
   },
   "securityAndPrivacy": {
     "message": "Keamanan & privasi"
+  },
+  "securityProviderPoweredBy": {
+    "message": "Didukung oleh $1",
+    "description": "The security provider that is providing data"
   },
   "seeDetails": {
     "message": "Lihat detailnya"

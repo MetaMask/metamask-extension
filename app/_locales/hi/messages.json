@@ -2562,21 +2562,6 @@
   "notificationsMarkAllAsRead": {
     "message": "सभी को पढ़ा हुआ चिन्हित करें"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "ज्यादा जानें।"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "🎉 MetaMask Snaps के Open Beta की घोषणा करते हुए हमें खुशी का अनुभव हो रहा है!"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "डेवलेपर कम्युनिटी द्वारा तैयार किए गए Snaps के साथ अपने वॉलेट को निजीकृत करें!"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "Snaps की मदद से आप MetaMask के साथ और भी बहुत कुछ कर सकते हैं - जैसे, ज़्यादा नेटवर्कों से जुड़ना, ट्रांजेक्शन से संबंधित जानकारी देखना और कस्टम नोटिफ़िकेशन्स पाना।"
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "पेश हैं MetaMask Snaps"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "इस अकाउंट में $1 के नए टोकन पाए गए",
     "description": "$1 is the number of new tokens detected"
@@ -3266,6 +3251,10 @@
   },
   "securityAndPrivacy": {
     "message": "सुरक्षा और गोपनीयता"
+  },
+  "securityProviderPoweredBy": {
+    "message": "$1 द्वारा पावर्ड",
+    "description": "The security provider that is providing data"
   },
   "seeDetails": {
     "message": "ब्यौरा देखें"

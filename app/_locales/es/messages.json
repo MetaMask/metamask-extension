@@ -2562,21 +2562,6 @@
   "notificationsMarkAllAsRead": {
     "message": "Marcar todo como leído"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "Conozca más"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "🎉 ¡Nos complace anunciar la versión Beta abierta de MetaMask Snaps!"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "¡Personalice su monedero con snaps creados por la comunidad de desarrolladores!"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "Los snaps lo ayudan a hacer más con MetaMask, como conectarlo a más redes, ver información sobre transacciones y recibir notificaciones personalizadas."
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "Presentamos MetaMask Snaps"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 nuevos tokens encontrados en esta cuenta",
     "description": "$1 is the number of new tokens detected"
@@ -3266,6 +3251,10 @@
   },
   "securityAndPrivacy": {
     "message": "Seguridad y privacidad"
+  },
+  "securityProviderPoweredBy": {
+    "message": "Impulsado por $1",
+    "description": "The security provider that is providing data"
   },
   "seeDetails": {
     "message": "Ver detalles"
