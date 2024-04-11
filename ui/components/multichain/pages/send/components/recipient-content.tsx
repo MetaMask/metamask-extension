@@ -72,6 +72,8 @@ export const SendPageRecipientContent = ({
   //          - handle approval gas
   //          - implement hester's comment: https://consensys.slack.com/archives/C068SFX90PN/p1712696346996319
   //          - investigate overflow logic
+  //          - Preserve dest token when returning to send page from tx page
+  //          - Ensure max button works with swaps (update on refresh? buffer?)
   // TODO: 2. add analytics + e2e tests
   //       - use transaction lifecycle events once
   // TODO: 3. final design and technical review + revisions
