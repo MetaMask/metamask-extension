@@ -3020,6 +3020,12 @@ export default class MetamaskController extends EventEmitter {
       setActiveNetwork: (networkConfigurationId) => {
         return this.networkController.setActiveNetwork(networkConfigurationId);
       },
+      setNetworkClientIdForDomain: (origin, networkClientId) => {
+        return this.selectedNetworkController.setNetworkClientIdForDomain(
+          origin,
+          networkClientId,
+        );
+      },
       rollbackToPreviousProvider:
         networkController.rollbackToPreviousProvider.bind(networkController),
       removeNetworkConfiguration:
@@ -3135,6 +3141,8 @@ export default class MetamaskController extends EventEmitter {
       // AppStateController
       setLastActiveTime:
         appStateController.setLastActiveTime.bind(appStateController),
+      setCurrentExtensionPopupId:
+        appStateController.setCurrentExtensionPopupId.bind(appStateController),
       setDefaultHomeActiveTabName:
         appStateController.setDefaultHomeActiveTabName.bind(appStateController),
       setConnectedStatusPopoverHasBeenShown:
