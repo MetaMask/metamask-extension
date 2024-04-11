@@ -23,7 +23,6 @@ import {
   getConnectedSitesList,
   getInternalAccounts,
   getOrderedConnectedAccountsForConnected,
-  getOriginOfCurrentTab,
   getPermissionSubjects,
   getPermittedAccountsByOrigin,
   getSelectedAccount,
@@ -88,12 +87,9 @@ export const Connections = () => {
   ] = useState(false);
 
   const urlParams: { origin: string } = useParams();
-  const originOfTab = useSelector(getOriginOfCurrentTab);
-  const securedOrigin = `https://${urlParams.origin}`;
+  const securedOrigin = decodeURIComponent(urlParams.origin);
 
-  const activeTabOrigin: string = urlParams.origin
-    ? securedOrigin
-    : originOfTab;
+  const activeTabOrigin: string = securedOrigin;
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const subjectMetadata: { [key: string]: any } = useSelector(
@@ -230,7 +226,7 @@ export const Connections = () => {
             textAlign={TextAlign.Center}
             ellipsis
           >
-            {urlParams.origin}
+            {getURLHost(securedOrigin)}
           </Text>
         </Box>
       </Header>
@@ -278,6 +274,7 @@ export const Connections = () => {
           <ConnectAccountsModal
             onClose={() => setShowConnectAccountsModal(false)}
             onAccountsUpdate={() => setShowConnectedAccountsUpdatedToast(true)}
+            activeTabOrigin={activeTabOrigin}
           />
         ) : null}
         {showDisconnectAllModal ? (

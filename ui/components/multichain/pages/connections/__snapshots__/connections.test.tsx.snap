@@ -41,7 +41,9 @@ exports[`Connections Content should render correctly 1`] = `
               />
               <span
                 class="mm-box mm-text mm-text--heading-md mm-text--ellipsis mm-text--text-align-center mm-box--color-text-default"
-              />
+              >
+                metamask.github.io
+              </span>
             </div>
           </p>
         </div>
