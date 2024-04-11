@@ -18,7 +18,7 @@ describe('Dapp interactions', function () {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: generateGanacheOptions({
-          concurrent: { port: 8546, chainId: 1338 },
+          concurrent: [{ port: 8546, chainId: 1338 }],
         }),
         title: this.test.fullTitle(),
       },
