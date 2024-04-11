@@ -36,13 +36,10 @@ import {
   getSwapsTokensReceivedFromTxMeta,
   TRANSACTION_ENVELOPE_TYPE_NAMES,
 } from '../../../../shared/lib/transactions-controller-utils';
-
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  getBlockaidMetricsProps,
-  ///: END:ONLY_INCLUDE_IF
-  getSmartTransactionMetricsProperties,
-} from '../../../../ui/helpers/utils/metrics';
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+import { getBlockaidMetricsProps } from '../../../../ui/helpers/utils/metrics';
+///: END:ONLY_INCLUDE_IF
+import { getSmartTransactionMetricsProperties } from '../../../../shared/modules/metametrics';
 import {
   getSnapAndHardwareInfoForMetrics,
   type SnapAndHardwareMessenger,
@@ -95,13 +92,6 @@ export type TransactionMetricsRequest = {
   getSmartTransactionByMinedTxHash: (
     txhash: string | undefined,
   ) => SmartTransaction;
-};
-
-export type SmartTransactionMetricsProperties = {
-  is_smart_transaction: boolean;
-  smart_transaction_duplicated?: boolean;
-  smart_transaction_timed_out?: boolean;
-  smart_transaction_proxied?: boolean;
 };
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';

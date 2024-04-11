@@ -90,37 +90,3 @@ export const getBlockaidMetricsProps = ({ securityAlertResponse }) => {
   return params;
 };
 ///: END:ONLY_INCLUDE_IF
-
-/**
- * Returns the properties object for smart transaction metrics.
- *
- * @param {import('../../../app/scripts/lib/transaction/metrics.ts').TransactionMetricsRequest} transactionMetricsRequest
- * @param {import('@metamask/transaction-controller').TransactionMeta} transactionMeta
- * @returns {import('../../../app/scripts/lib/transaction/metrics.ts').SmartTransactionMetricsProperties}
- */
-export const getSmartTransactionMetricsProperties = (
-  transactionMetricsRequest,
-  transactionMeta,
-) => {
-  const isSmartTransaction = transactionMetricsRequest.getIsSmartTransaction();
-  const properties = {
-    is_smart_transaction: isSmartTransaction,
-  };
-  if (!isSmartTransaction) {
-    return properties;
-  }
-  const smartTransaction =
-    transactionMetricsRequest.getSmartTransactionByMinedTxHash(
-      transactionMeta.hash,
-    );
-  const smartTransactionStatusMetadata = smartTransaction?.statusMetadata;
-  if (!smartTransactionStatusMetadata) {
-    return properties;
-  }
-  properties.smart_transaction_duplicated =
-    smartTransactionStatusMetadata.duplicated;
-  properties.smart_transaction_timed_out =
-    smartTransactionStatusMetadata.timedOut;
-  properties.smart_transaction_proxied = smartTransactionStatusMetadata.proxied;
-  return properties;
-};

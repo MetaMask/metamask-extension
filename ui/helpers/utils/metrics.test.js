@@ -2,11 +2,7 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../shared/constants/security-provider';
-import {
-  getBlockaidMetricsProps,
-  getMethodName,
-  getSmartTransactionMetricsProperties,
-} from './metrics';
+import { getBlockaidMetricsProps, getMethodName } from './metrics';
 
 describe('getMethodName', () => {
   it('gets correct method names', () => {
@@ -178,79 +174,6 @@ describe('getBlockaidMetricsProps', () => {
       ui_customizations: ['flagged_as_malicious'],
       security_alert_response: BlockaidResultType.Malicious,
       security_alert_reason: BlockaidReason.setApprovalForAll,
-    });
-  });
-});
-
-describe('getSmartTransactionMetricsProperties', () => {
-  const txHash =
-    '0x0302b75dfb9fd9eb34056af031efcaee2a8cbd799ea054a85966165cd82a7356';
-
-  it('returns all smart transaction properties', () => {
-    const transactionMetricsRequest = {
-      getIsSmartTransaction: () => true,
-      getSmartTransactionByMinedTxHash: () => {
-        return {
-          statusMetadata: {
-            minedHash: txHash,
-            duplicated: true,
-            timedOut: true,
-            proxied: true,
-          },
-        };
-      },
-    };
-    const transactionMeta = {
-      hash: txHash,
-    };
-
-    const result = getSmartTransactionMetricsProperties(
-      transactionMetricsRequest,
-      transactionMeta,
-    );
-
-    expect(result).toStrictEqual({
-      is_smart_transaction: true,
-      smart_transaction_duplicated: true,
-      smart_transaction_proxied: true,
-      smart_transaction_timed_out: true,
-    });
-  });
-
-  it('returns "is_smart_transaction: false" if it is not a smart transaction', () => {
-    const transactionMetricsRequest = {
-      getIsSmartTransaction: () => false,
-    };
-
-    const result = getSmartTransactionMetricsProperties(
-      transactionMetricsRequest,
-    );
-
-    expect(result).toStrictEqual({
-      is_smart_transaction: false,
-    });
-  });
-
-  it('returns "is_smart_transaction: true" only if it is a smart transaction, but does not have statusMetadata', () => {
-    const transactionMetricsRequest = {
-      getIsSmartTransaction: () => true,
-      getSmartTransactionByMinedTxHash: () => {
-        return {
-          statusMetadata: null,
-        };
-      },
-    };
-    const transactionMeta = {
-      hash: txHash,
-    };
-
-    const result = getSmartTransactionMetricsProperties(
-      transactionMetricsRequest,
-      transactionMeta,
-    );
-
-    expect(result).toStrictEqual({
-      is_smart_transaction: true,
     });
   });
 });
