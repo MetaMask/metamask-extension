@@ -61,12 +61,12 @@ import {
 ///: END:ONLY_INCLUDE_IF
 
 import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
+import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
   ConfirmPageContainerNavigation,
 } from '.';
-import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
 
 const ConfirmPageContainer = (props) => {
   const {

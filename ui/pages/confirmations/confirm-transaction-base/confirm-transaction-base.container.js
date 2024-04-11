@@ -1,4 +1,4 @@
-import { connect, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import {
@@ -146,7 +146,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const isGasEstimatesLoading = getIsGasEstimatesLoading(state);
   const gasLoadingAnimationIsShowing = getGasLoadingAnimationIsShowing(state);
-  const isBuyableChain = useSelector(getIsNativeTokenBuyable);
+  const isBuyableChain = getIsNativeTokenBuyable(state);
   const { confirmTransaction, metamask } = state;
   const conversionRate = getConversionRate(state);
   const { addressBook, nextNonce } = metamask;

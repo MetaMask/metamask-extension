@@ -67,22 +67,6 @@ export type RPCDefinition = {
 };
 
 /**
- * For each chain that we support fiat onramps for, we provide a set of
- * configuration options that help for initializing the connectiong to the
- * onramp providers.
- */
-type BuyableChainSettings = {
-  /**
-   * The native currency for the given chain
-   */
-  nativeCurrency: CurrencySymbol | TestNetworkCurrencySymbol;
-  /**
-   * The network name or identifier
-   */
-  network: string;
-};
-
-/**
  * Throughout the extension we set the current provider by referencing its
  * "type", which can be any of the values in the below object. These values
  * represent the built-in networks of MetaMask, including test nets, as well

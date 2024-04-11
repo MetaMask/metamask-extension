@@ -46,7 +46,6 @@ import {
 } from '../../multichain/ramps-card/ramps-card';
 ///: END:ONLY_INCLUDE_IF
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
-import useRamps from '../../../hooks/useRamps/useRamps';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 
 export default function NftsTab() {

@@ -3,37 +3,8 @@ import { Provider } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
 import configureStore from '../../store/store';
 import useRamps, { RampsMetaMaskEntry } from './useRamps';
-import { mockRampNetworks } from './constants';
-import RampAPI from './rampAPI';
-import { AggregatorNetwork } from './useRamps.types';
-import { cloneDeep } from 'lodash';
 
 const mockedMetametricsId = '0xtestMetaMetricsId';
-const mockedNetworks = mockRampNetworks;
-
-jest.mock('./rampAPI');
-const mockedAPI = RampAPI as jest.Mocked<typeof RampAPI>;
-
-// test utilities
-const buildNewStore = (chainId: string) => ({
-  metamask: {
-    providerConfig: {
-      chainId,
-    },
-  },
-});
-
-const updateOrAddNetwork = (network: AggregatorNetwork) => {
-  const clonedNetworks = cloneDeep(mockedNetworks);
-  const index = clonedNetworks.findIndex(
-    (mockedNetwork) => mockedNetwork.chainId === network.chainId,
-  );
-  if (index === -1) {
-    return clonedNetworks.concat(network);
-  }
-  clonedNetworks[index] = network;
-  return clonedNetworks;
-};
 
 let mockStoreState = {
   metamask: {
@@ -56,17 +27,6 @@ describe('useRamps', () => {
         openTab: jest.fn(),
       },
     });
-  });
-
-  // mock the ramps API to return the mocked networks
-  beforeEach(() => {
-    mockedAPI.getNetworks.mockImplementation(() =>
-      Promise.resolve(mockedNetworks),
-    );
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
   });
 
   it('should default the metamask entry param when opening the buy crypto URL', () => {
