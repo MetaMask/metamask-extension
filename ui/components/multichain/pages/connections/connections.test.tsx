@@ -11,7 +11,6 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { Connections } from './connections';
 
 describe('Connections Content', () => {
-  const history = createMemoryHistory();
   const connectedStore = configureStore({
     ...mockState,
     activeTab: {
