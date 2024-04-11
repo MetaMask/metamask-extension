@@ -30,8 +30,9 @@ export class WeakRefObjectMap implements Map<string, object> {
   /**
    * Associates a key with a value in the map. If the key already exists, its associated value is updated.
    * The values are stored as weak references.
-   * @param key The key under which to store the value.
-   * @param value The value to store under the specified key. Must be an object.
+   *
+   * @param key - The key under which to store the value.
+   * @param value - The value to store under the specified key. Must be an object.
    * @returns The `WeakRefObjectMap` instance.
    */
   set(key: string, value: Record<string, object>): this {
@@ -47,7 +48,8 @@ export class WeakRefObjectMap implements Map<string, object> {
   /**
    * Retrieves the value associated with the specified key. The value is dereferenced before being returned.
    * If the key does not exist or the value has been garbage collected, `undefined` is returned.
-   * @param key The key whose associated value is to be returned.
+   *
+   * @param key - The key whose associated value is to be returned.
    * @returns The dereferenced value associated with the key, or `undefined`.
    */
   get(key: string): { [dereffedValueObjKey: string]: object } | undefined {
@@ -71,7 +73,8 @@ export class WeakRefObjectMap implements Map<string, object> {
 
   /**
    * Checks whether the map contains the specified key.
-   * @param key The key to check for presence in the map.
+   *
+   * @param key - The key to check for presence in the map.
    * @returns `true` if the map contains the key, otherwise `false`.
    */
   has(key: string): boolean {
@@ -80,7 +83,8 @@ export class WeakRefObjectMap implements Map<string, object> {
 
   /**
    * Removes the specified key and its associated value from the map.
-   * @param key The key to remove along with its associated value.
+   *
+   * @param key - The key to remove along with its associated value.
    * @returns `true` if the element was successfully removed, otherwise `false`.
    */
   delete(key: string): boolean {
@@ -110,8 +114,8 @@ export class WeakRefObjectMap implements Map<string, object> {
    * The values are dereferenced before being returned.
    */
   entries(): IterableIterator<[string, object]> {
-    const entries: Array<[string, object]> = [];
-    this.map.forEach((value, key) => {
+    const entries: [string, object][] = [];
+    this.map.forEach((_, key) => {
       const derefValue = this.get(key);
       if (derefValue !== undefined) {
         entries.push([key, derefValue]);
@@ -132,7 +136,7 @@ export class WeakRefObjectMap implements Map<string, object> {
    * The values are dereferenced before being returned.
    */
   values(): IterableIterator<object> {
-    const values: Array<object> = [];
+    const values: object[] = [];
     this.map.forEach((_, key) => {
       const derefValue = this.get(key);
       if (derefValue !== undefined) {
@@ -164,12 +168,12 @@ export class WeakRefObjectMap implements Map<string, object> {
    * not the dereferenced objects. This allows consumers to manage dereferencing according to their needs,
    * acknowledging that some references may have been garbage collected.
    *
-   * @param callback Function to execute for each element, taking three arguments:
-   *        - `value`: The value part of the key-value pair. Note that this is the weakly referenced object,
-   *          encapsulated within a `WeakRefCompatibleObject`, allowing for manual dereferencing.
-   *        - `key`: The key part of the key-value pair.
-   *        - `map`: The `WeakRefObjectMap` instance that the `forEach` method was called on.
-   * @param thisArg Optional. Value to use as `this` when executing `callback`.
+   * @param callback - Function to execute for each element, taking three arguments:
+   * - `value`: The value part of the key-value pair. Note that this is the weakly referenced object,
+   * encapsulated within a `WeakRefCompatibleObject`, allowing for manual dereferencing.
+   * -`key`: The key part of the key-value pair.
+   * - `map`: The `WeakRefObjectMap` instance that the `forEach` method was called on.
+   * @param thisArg - Optional. Value to use as `this` when executing `callback`.
    */
   forEach(
     callback: (
