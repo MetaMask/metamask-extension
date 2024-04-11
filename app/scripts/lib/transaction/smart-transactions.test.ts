@@ -16,6 +16,7 @@ const addressFrom = '0xabce7847fd3661a9b7c86aaf1daea08d9da5750e';
 const txHash =
   '0x0302b75dfb9fd9eb34056af031efcaee2a8cbd799ea054a85966165cd82a7356';
 const uuid = 'uuid';
+const txId = '1';
 
 let addRequestCallback: () => void;
 
@@ -235,6 +236,7 @@ describe('submitSmartTransactionHook', () => {
             creationTime: expect.any(Number),
           },
           isDapp: true,
+          txId,
         },
       },
       true,
@@ -252,6 +254,7 @@ describe('submitSmartTransactionHook', () => {
             },
           },
           isDapp: true,
+          txId,
         },
       },
     );
@@ -330,6 +333,7 @@ describe('submitSmartTransactionHook', () => {
             creationTime: expect.any(Number),
           },
           isDapp: true,
+          txId,
         },
       },
       true,
