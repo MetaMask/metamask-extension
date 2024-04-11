@@ -1291,6 +1291,8 @@ export default class MetamaskController extends EventEmitter {
         allowLocalSnaps,
         requireAllowlist,
       },
+      encryptor: encryptorFactory(600_000),
+      getMnemonic: this.getPrimaryKeyringMnemonic.bind(this),
       preinstalledSnaps: PREINSTALLED_SNAPS,
     });
 
@@ -2402,15 +2404,11 @@ export default class MetamaskController extends EventEmitter {
    * Constructor helper for getting Snap permission specifications.
    */
   getSnapPermissionSpecifications() {
-    const snapEncryptor = encryptorFactory(600_000);
-
     return {
       ...buildSnapEndowmentSpecifications(Object.keys(ExcludedSnapEndowments)),
       ...buildSnapRestrictedMethodSpecifications(
         Object.keys(ExcludedSnapPermissions),
         {
-          encrypt: snapEncryptor.encrypt,
-          decrypt: snapEncryptor.decrypt,
           getLocale: this.getLocale.bind(this),
           clearSnapState: this.controllerMessenger.call.bind(
             this.controllerMessenger,
