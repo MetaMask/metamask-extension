@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [11.14.0]
+## [11.13.3]
+### Fixed
+- [MMI] Adds required variable to prod env ([#23879](https://github.com/MetaMask/metamask-extension/pull/23879))
+
+## [11.13.2]
+### Fixed
+- [MMI] Updates MMI packages to latest versions ([#23841](https://github.com/MetaMask/metamask-extension/pull/23841))
+- [MMI] Updates MMI RPC methods to use latest method ([#23827](https://github.com/MetaMask/metamask-extension/pull/23827))
+- [MMI] Adds MMI Sentry DSN key ([#23826](https://github.com/MetaMask/metamask-extension/pull/23826))
+
+## [11.13.1]
 
 ## [11.13.0]
 ### Added
@@ -4551,6 +4562,10 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.14.0...HEAD
 [11.14.0]: https://github.com/MetaMask/metamask-extension/compare/v11.13.0...v11.14.0
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.13.3...HEAD
+[11.13.3]: https://github.com/MetaMask/metamask-extension/compare/v11.13.2...v11.13.3
+[11.13.2]: https://github.com/MetaMask/metamask-extension/compare/v11.13.1...v11.13.2
+[11.13.1]: https://github.com/MetaMask/metamask-extension/compare/v11.13.0...v11.13.1
 [11.13.0]: https://github.com/MetaMask/metamask-extension/compare/v11.12.4...v11.13.0
 [11.12.4]: https://github.com/MetaMask/metamask-extension/compare/v11.12.3...v11.12.4
 [11.12.3]: https://github.com/MetaMask/metamask-extension/compare/v11.12.2...v11.12.3
