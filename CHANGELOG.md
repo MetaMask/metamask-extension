@@ -42,6 +42,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated the address display with PetNames support ([#23487](https://github.com/MetaMask/metamask-extension/pull/23487))
 - Introduced a permission details modal with a disconnect feature in the Connected Accounts menu ([#23605](https://github.com/MetaMask/metamask-extension/pull/23605))
 - Enhanced the display of connected accounts with new tooltips ([#23189](https://github.com/MetaMask/metamask-extension/pull/23189))
+- Improved Account Metrics Management System  ([#23113] https://github.com/MetaMask/metamask-extension/pull/23113)
+- Introduced Simulation Preview for Token Balance Adjustments([#23529] https://github.com/MetaMask/metamask-extension/pull/23529)
+- Add transaction simulation metrics([#23636] https://github.com/MetaMask/metamask-extension/pull/23636)
+- Add inline alert component ([#23513] https://github.com/MetaMask/metamask-extension/pull/23513)
+- Add Confirm ScrollToBottom component and update ConfirmPage ([#22349] https://github.com/MetaMask/metamask-extension/pull/22349)
+- Updated information row component for Typed Signature Data ([#23315] https://github.com/MetaMask/metamask-extension/pull/23315)
 - [MMI] Enhanced the custody view with a search bar ([#23492](https://github.com/MetaMask/metamask-extension/pull/23492))
 - [MMI] Implemented message text verification for contract call operations ([#23462](https://github.com/MetaMask/metamask-extension/pull/23462))
 
@@ -80,6 +86,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Resolved an issue where Snap names were not displayed in the permission list due to a missing prop ([#23627](https://github.com/MetaMask/metamask-extension/pull/23627))
 - Corrected the calculation of maximum gas displayed and the gas limit determination for swap transactions ([#23545](https://github.com/MetaMask/metamask-extension/pull/23545))
 - Fixed a token display issue in Avatar group ([#23396](https://github.com/MetaMask/metamask-extension/pull/23396))
+- Updated the source of gas estimates in the confirmation flow ([#23010] https://github.com/MetaMask/metamask-extension/pull/23010)
+- Implemented a solution to prevent multiple calls to trackEvent for the same event.([#23633] https://github.com/MetaMask/metamask-extension/pull/23633)
 - [FLASK] Updated the send screen placeholder text in Flask to accurately reflect support for full domain resolution, not just ENS ([#22192](https://github.com/MetaMask/metamask-extension/pull/22192))
 
 ## [11.13.0]
