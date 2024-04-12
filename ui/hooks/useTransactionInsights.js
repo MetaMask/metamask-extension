@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { SeverityLevel } from '@metamask/snaps-sdk';
 import { TransactionType } from '@metamask/transaction-controller';
 import { stripHexPrefix } from '../../shared/modules/hexstring-utils';
 import { Tab } from '../components/ui/tabs';
@@ -47,7 +46,8 @@ const useTransactionInsights = ({ txData }) => {
     insightSnaps: insightSnapIds,
   };
 
-  const { data, loading, warnings } = useTransactionInsightSnaps(insightHookParams);
+  const { data, loading, warnings } =
+    useTransactionInsightSnaps(insightHookParams);
 
   useEffect(() => {
     if (insightSnapIds.length > 0 && !selectedInsightSnapId) {

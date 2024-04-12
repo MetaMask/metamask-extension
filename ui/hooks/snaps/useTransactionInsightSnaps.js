@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getTransactionOriginCaveat } from '@metamask/snaps-rpc-methods';
+import { SeverityLevel } from '@metamask/snaps-sdk';
 import { handleSnapRequest } from '../../store/actions';
 import { getPermissionSubjectsDeepEqual } from '../../selectors';
-import { SeverityLevel } from '@metamask/snaps-sdk';
 
 const INSIGHT_PERMISSION = 'endowment:transaction-insight';
 
