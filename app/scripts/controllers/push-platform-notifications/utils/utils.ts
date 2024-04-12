@@ -1,10 +1,6 @@
-import type { FirebaseApp } from '../types/firebase';
-import {
-  getMessaging,
-  getToken,
-  deleteToken,
-} from '../firebase/lib/firebase-messaging';
-import { getApp, initializeApp } from '../firebase/lib/firebase-app';
+import { getMessaging, getToken, deleteToken } from 'firebase/messaging';
+import type { FirebaseApp } from 'firebase/app';
+import { getApp, initializeApp } from 'firebase/app';
 
 const url = process.env.PUSH_NOTIFICATIONS_SERVICE_URL;
 const REGISTRATION_TOKENS_ENDPOINT = `${url}/v1/link`;

@@ -924,6 +924,25 @@ function setupBundlerDefaults(
           extensions,
         },
       ],
+      // We are transpelling the firebase package to be compatible with the lavaMoat restrictions
+      // and to remove the process.env.__FIREBASE_DEFAULTS__ variable
+      [
+        babelify,
+        {
+          only: ['./**/node_modules/firebase', './**/node_modules/@firebase'],
+          plugins: [
+            [
+              'babel-plugin-transform-replace-expressions',
+              {
+                replace: {
+                  'process.env.__FIREBASE_DEFAULTS__': `""`,
+                },
+              },
+            ],
+          ],
+          global: true,
+        },
+      ],
     ],
     // Look for TypeScript files when walking the dependency tree
     extensions,

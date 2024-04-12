@@ -2,9 +2,9 @@
 // eslint-disable-next-line spaced-comment
 /// <reference lib="WebWorker" />
 
-import type { MessagePayload } from '../types/firebase';
-import { initializeApp } from './lib/firebase-app';
-import { getMessaging, onBackgroundMessage } from './lib/firebase-messaging-sw';
+import { initializeApp } from 'firebase/app';
+import { getMessaging, onBackgroundMessage } from 'firebase/messaging/sw';
+import type { MessagePayload } from 'firebase/messaging/sw';
 import { onPushNotification } from './utils/get-notification-message';
 
 const sw = self as unknown as ServiceWorkerGlobalScope;
