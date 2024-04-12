@@ -2,7 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
 import configureStore from '../../store/store';
-import useRamps, { RampsMetaMaskEntry } from './useRamps';
+import useRamps, { RampsMetaMaskEntry } from '../useRamps/useRamps';
 
 const mockedMetametricsId = '0xtestMetaMetricsId';
 
