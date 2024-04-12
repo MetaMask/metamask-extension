@@ -38,6 +38,7 @@ export const SendPageAccountPicker = () => {
         borderWidth={1}
         paddingTop={4}
         paddingBottom={4}
+        paddingLeft={3}
         block
         justifyContent={JustifyContent.flexStart}
         addressProps={{
@@ -46,6 +47,7 @@ export const SendPageAccountPicker = () => {
         }}
         labelProps={{
           style: { flexGrow: 1, textAlign: 'start' },
+          paddingInlineStart: 1,
           variant: TextVariant.bodySmMedium,
         }}
         textProps={{
