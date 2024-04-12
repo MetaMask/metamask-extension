@@ -17,22 +17,7 @@ jobs:
       pull-requests: write
       contents: write
     steps:
-      - name: Add reviewer when team-mmi label is added
-        if: contains(github.event.pull_request.labels.*.name, 'team-mmi')
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const payload = {
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.issue.number,
-              team_reviewers: ['mmi']
-            };
-            github.rest.pulls.requestReviewers(payload);
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Notify via Slack
+      - name: Notify MMI team via Slack
         if: contains(github.event.pull_request.labels.*.name, 'team-mmi')
         uses: slackapi/slack-github-action@007b2c3c751a190b6f0f040e47ed024deaa72844
         with:
