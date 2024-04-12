@@ -57,7 +57,7 @@ const encryptWithDetailFactory =
  * @param iterations - The number of iterations to use for the PBKDF2 algorithm.
  * @returns A function that checks if the vault was encrypted with the given number of iterations.
  */
-const isVaultUpdatedFactory = (iterations: number) => async (vault: string) =>
+const isVaultUpdatedFactory = (iterations: number) => (vault: string) =>
   isVaultUpdated(vault, {
     algorithm: 'PBKDF2',
     params: {

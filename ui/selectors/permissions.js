@@ -73,6 +73,10 @@ export function getPermittedAccountsForCurrentTab(state) {
   return getPermittedAccounts(state, getOriginOfCurrentTab(state));
 }
 
+export function getPermittedAccountsForSelectedTab(state, activeTab) {
+  return getPermittedAccounts(state, activeTab);
+}
+
 /**
  * Returns a map of permitted accounts by origin for all origins.
  *
@@ -137,7 +141,10 @@ export function getConnectedSubjectsForAllAddresses(state) {
       if (!accountsToConnections[address]) {
         accountsToConnections[address] = [];
       }
-      accountsToConnections[address].push(subjectMetadata[subjectKey] || {});
+      const metadata = subjectMetadata[subjectKey];
+      if (metadata) {
+        accountsToConnections[address].push(metadata);
+      }
     });
   });
 
@@ -288,6 +295,44 @@ export function getOrderedConnectedAccountsForActiveTab(state) {
     permissionHistory[activeTab.origin]?.eth_accounts?.accounts;
   const orderedAccounts = getMetaMaskAccountsOrdered(state);
   const connectedAccounts = getPermittedAccountsForCurrentTab(state);
+
+  return orderedAccounts
+    .filter((account) => connectedAccounts.includes(account.address))
+    .map((account) => ({
+      ...account,
+      metadata: {
+        ...account.metadata,
+        lastActive: permissionHistoryByAccount?.[account.address],
+      },
+    }))
+    .sort(
+      ({ lastSelected: lastSelectedA }, { lastSelected: lastSelectedB }) => {
+        if (lastSelectedA === lastSelectedB) {
+          return 0;
+        } else if (lastSelectedA === undefined) {
+          return 1;
+        } else if (lastSelectedB === undefined) {
+          return -1;
+        }
+
+        return lastSelectedB - lastSelectedA;
+      },
+    );
+}
+
+export function getOrderedConnectedAccountsForConnectedDapp(state, activeTab) {
+  const {
+    metamask: { permissionHistory },
+  } = state;
+
+  const permissionHistoryByAccount =
+    // eslint-disable-next-line camelcase
+    permissionHistory[activeTab.origin]?.eth_accounts?.accounts;
+  const orderedAccounts = getMetaMaskAccountsOrdered(state);
+  const connectedAccounts = getPermittedAccountsForSelectedTab(
+    state,
+    activeTab,
+  );
 
   return orderedAccounts
     .filter((account) => connectedAccounts.includes(account.address))
