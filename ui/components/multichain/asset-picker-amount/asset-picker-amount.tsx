@@ -70,7 +70,7 @@ export const AssetPickerAmount = ({
     }
   }, [selectedAccount]);
 
-  let borderColor = BorderColor.borderDefault;
+  let borderColor = BorderColor.borderMuted;
 
   if (isDisabled) {
     // if disabled, do not show source-side border colors
