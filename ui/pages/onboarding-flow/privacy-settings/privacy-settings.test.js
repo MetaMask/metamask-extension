@@ -93,8 +93,6 @@ describe('Privacy Settings Onboarding View', () => {
     fireEvent.click(toggles[7]);
     fireEvent.click(toggles[8]);
     fireEvent.click(toggles[9]);
-    fireEvent.click(toggles[10]);
-    fireEvent.click(toggles[12]);
 
     fireEvent.click(submitButton);
 
