@@ -24,11 +24,13 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function () {
           .build(),
         ganacheOptions: {
           ...defaultGanacheOptions,
-          concurrent: {
-            port,
-            chainId,
-            ganacheOptions2: defaultGanacheOptions,
-          },
+          concurrent: [
+            {
+              port,
+              chainId,
+              ganacheOptions2: defaultGanacheOptions,
+            },
+          ],
         },
         title: this.test.fullTitle(),
       },

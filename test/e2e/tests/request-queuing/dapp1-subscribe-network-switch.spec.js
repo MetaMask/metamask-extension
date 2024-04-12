@@ -1,3 +1,4 @@
+const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
@@ -10,8 +11,8 @@ const {
   defaultGanacheOptions,
 } = require('../../helpers');
 
-describe('Request Queuing Send Tx -> SwitchChain -> SendTx', function () {
-  it('should not be able to navigate batch send txs with a switch chain in the middle', async function () {
+describe('Request Queueing', function () {
+  it('should keep subscription on dapp network when switching different mm network', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
@@ -65,48 +66,39 @@ describe('Request Queuing Send Tx -> SwitchChain -> SendTx', function () {
         // Navigate to test dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        // Dapp Send Button
-        await driver.clickElement('#sendButton');
-
-        // Keep notification confirmation on screen
-        await driver.waitUntilXWindowHandles(3);
-
-        // Navigate back to test dapp
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-
-        // Switch Ethereum Chain
-        await driver.findClickableElement('#switchEthereumChain');
-        await driver.clickElement('#switchEthereumChain');
-
-        // Navigate back to test dapp
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-
-        // Dapp Send Button
-        await driver.clickElement('#sendButton');
-
-        await switchToNotificationWindow(driver);
-
-        await driver.assertElementNotPresent(
-          '.confirm-page-container-navigation',
-        );
-
-        // Reject Transaction
-        await driver.findClickableElement({ text: 'Reject', tag: 'button' });
-        await driver.clickElement(
-          '[data-testid="page-container-footer-cancel"]',
-        );
-
-        // Switch Chain Next confirmation
-        await driver.findClickableElements({
-          text: 'Switch network',
-          tag: 'button',
+        const subscribeRequest = JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'eth_subscribe',
+          params: ['newHeads'],
         });
 
-        // Confirm Switch Chain
-        await driver.clickElement({ text: 'Switch network', tag: 'button' });
+        const subscribe = await driver.executeScript(
+          `return window.ethereum.request(${subscribeRequest})`,
+        );
 
-        // No confirmations, after switching network, tx queue should be cleared
-        await driver.waitUntilXWindowHandles(2);
+        const subscriptionMessage = await driver.executeAsyncScript(
+          `const callback = arguments[arguments.length - 1];` +
+            `window.ethereum.on('message', (message) => callback(message))`,
+        );
+
+        assert.strictEqual(subscribe, subscriptionMessage.data.subscription);
+        assert.strictEqual(subscriptionMessage.type, 'eth_subscription');
+
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+
+        // Network Selector
+        await driver.clickElement('[data-testid="network-display"]');
+
+        // Switch to second network
+        await driver.clickElement({
+          text: 'Localhost 8546',
+          css: 'p',
+        });
+
+        assert.strictEqual(subscribe, subscriptionMessage.data.subscription);
+        assert.strictEqual(subscriptionMessage.type, 'eth_subscription');
       },
     );
   });

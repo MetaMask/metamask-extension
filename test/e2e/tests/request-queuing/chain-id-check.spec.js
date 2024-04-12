@@ -12,8 +12,8 @@ const {
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 
-describe('Request Queuing for Multiple Dapps and Txs on different networks.', function () {
-  it('should switch to the dapps network automatically when handling sendTransaction calls @no-mmi', async function () {
+describe('Request Queuing', function () {
+  it('should keep chain id the same with request queuing and switching mm network with a connected site.', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
@@ -26,11 +26,13 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
           .build(),
         ganacheOptions: {
           ...defaultGanacheOptions,
-          concurrent: {
-            port,
-            chainId,
-            ganacheOptions2: defaultGanacheOptions,
-          },
+          concurrent: [
+            {
+              port,
+              chainId,
+              ganacheOptions2: defaultGanacheOptions,
+            },
+          ],
         },
         title: this.test.fullTitle(),
       },
