@@ -1,4 +1,4 @@
-name: Add MMI reviewer and notify via Slack
+name: Notify MMI team via Slack
 
 on:
   pull_request:
@@ -25,14 +25,14 @@ jobs:
           fields: repo,message,commit,author,action
           payload: |
             {
-              "text": "A PR with label 'team-mmi' was added and requires review: ${GITHUB_REPOSITORY}#${{ github.event.pull_request.number }}",
+              "text": "A PR with label 'team-mmi' was added and requires review: ${{ github.repository }}#${{ github.event.pull_request.number }}",
               "attachments": [
                 {
                   "color": "#2eb886",
                   "fields": [
                     {
                       "title": "Repository",
-                      "value": "${GITHUB_REPOSITORY}",
+                      "value": "${{ github.repository }}",
                       "short": true
                     },
                     {
