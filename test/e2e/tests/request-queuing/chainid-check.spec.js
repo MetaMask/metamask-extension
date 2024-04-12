@@ -26,11 +26,13 @@ describe('Request-queue chainId proxy sync', function () {
           .build(),
         ganacheOptions: {
           ...defaultGanacheOptions,
-          concurrent: {
-            port,
-            chainId,
-            ganacheOptions2: defaultGanacheOptions,
-          },
+          concurrent: [
+            {
+              port,
+              chainId,
+              ganacheOptions2: defaultGanacheOptions,
+            },
+          ],
         },
         title: this.test.fullTitle(),
       },

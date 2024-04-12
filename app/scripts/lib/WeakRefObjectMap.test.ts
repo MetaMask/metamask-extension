@@ -1,7 +1,7 @@
 import { WeakRefObjectMap } from './WeakRefObjectMap';
 
 describe('WeakDomainProxyMap', () => {
-  let map: WeakRefObjectMap;
+  let map: WeakRefObjectMap<Record<string, object>>;
 
   beforeEach(() => {
     map = new WeakRefObjectMap();
