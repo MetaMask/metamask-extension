@@ -128,7 +128,6 @@ export default function TransactionList({
   );
   const chainId = useSelector(getCurrentChainId);
   const { address: selectedAddress } = useSelector(getSelectedAccount);
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const shouldHideZeroBalanceTokens = useSelector(
