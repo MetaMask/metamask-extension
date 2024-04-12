@@ -1628,9 +1628,7 @@ describe('Send Slice', () => {
         expect(actionResult[2].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
-        expect(actionResult[3].type).toStrictEqual(
-          'GET_LAYER_1_GAS_FEE',
-        );
+        expect(actionResult[3].type).toStrictEqual('GET_LAYER_1_GAS_FEE');
         expect(actionResult[4].type).toStrictEqual(
           'metamask/gas/SET_CUSTOM_GAS_LIMIT',
         );
@@ -1783,7 +1781,9 @@ describe('Send Slice', () => {
           'send/computeEstimatedGasLimit/pending',
         );
         expect(actionResult[3].type).toStrictEqual('GET_LAYER_1_GAS_FEE');
-        expect(actionResult[4].type).toStrictEqual('metamask/gas/SET_CUSTOM_GAS_LIMIT');
+        expect(actionResult[4].type).toStrictEqual(
+          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
+        );
         expect(actionResult[5].type).toStrictEqual(
           'send/computeEstimatedGasLimit/fulfilled',
         );
