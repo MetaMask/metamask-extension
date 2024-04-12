@@ -666,9 +666,6 @@
   "busy": {
     "message": "Busy"
   },
-  "buy": {
-    "message": "Buy"
-  },
   "buyAndSell": {
     "message": "Buy & Sell"
   },
@@ -682,6 +679,10 @@
   },
   "buyNow": {
     "message": "Buy Now"
+  },
+  "buyToken": {
+    "message": "Buy $1",
+    "description": "$1 is the token symbol"
   },
   "bytes": {
     "message": "Bytes"
@@ -1837,6 +1838,13 @@
   "functionType": {
     "message": "Function type"
   },
+  "fundYourWallet": {
+    "message": "Fund your wallet"
+  },
+  "fundYourWalletDescription": {
+    "message": "Get started by adding some $1 to your wallet.",
+    "description": "$1 is the token symbol"
+  },
   "gas": {
     "message": "Gas"
   },
@@ -1919,6 +1927,14 @@
   },
   "genericExplorerView": {
     "message": "View account on $1"
+  },
+  "getStartedWithNFTs": {
+    "message": "Get $1 to buy NFTs",
+    "description": "$1 is the token symbol"
+  },
+  "getStartedWithNFTsDescription": {
+    "message": "Get started with NFTs by adding some $1 to your wallet.",
+    "description": "$1 is the token symbol"
   },
   "globalTitle": {
     "message": "Global menu"
@@ -2891,9 +2907,6 @@
   "nftDisclaimer": {
     "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes gets changed by the marketplace on which the NFT was minted."
   },
-  "nftLearnMore": {
-    "message": "Learn more about NFTs"
-  },
   "nftOptions": {
     "message": "NFT Options"
   },
@@ -3779,6 +3792,9 @@
   },
   "receive": {
     "message": "Receive"
+  },
+  "receiveTokensCamelCase": {
+    "message": "Receive tokens"
   },
   "recipientAddressPlaceholder": {
     "message": "Enter public address (0x) or ENS name"
@@ -4762,6 +4778,14 @@
   },
   "stake": {
     "message": "Stake"
+  },
+  "startYourJourney": {
+    "message": "Start your journey with $1",
+    "description": "$1 is the token symbol"
+  },
+  "startYourJourneyDescription": {
+    "message": "Get started with web3 by adding some $1 to your wallet.",
+    "description": "$1 is the token symbol"
   },
   "stateLogError": {
     "message": "Error in retrieving state logs."
