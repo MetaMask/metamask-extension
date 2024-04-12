@@ -1,5 +1,4 @@
 import React, { createContext, useState } from 'react';
-import { useSelector } from 'react-redux';
 import Tooltip from '../../../../ui/tooltip/tooltip';
 import { Box, Icon, IconName, Text } from '../../../../component-library';
 import {
@@ -19,7 +18,6 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import InlineAlert from '../../../confirmations/alerts/inline-alert/inline-alert';
 import useAlerts from '../../../../../hooks/useAlerts';
-import { currentConfirmationSelector } from '../../../../../selectors';
 import { MultipleAlertModal } from '../../../confirmations/alerts/multiple-alert-modal';
 
 export enum ConfirmInfoRowVariant {
@@ -30,6 +28,7 @@ export enum ConfirmInfoRowVariant {
 
 export type ConfirmInfoRowProps = {
   alertKey?: string;
+  alertOwnerId?: string;
   label: string;
   children: React.ReactNode | string;
   tooltip?: string;
@@ -84,13 +83,17 @@ function getAlertTextColors(variant: ConfirmInfoRowVariant) {
 
 function RowAlert({
   alertKey,
+  alertOwnerId,
   severity,
 }: {
   alertKey: string | undefined;
+  alertOwnerId?: string;
   severity?: Severity;
 }) {
-  const currentConfirmation = useSelector(currentConfirmationSelector);
-  const alertOwnerId = currentConfirmation?.id as string;
+  if (!alertOwnerId) {
+    return null;
+  }
+
   const { getFieldAlerts } = useAlerts(alertOwnerId);
   const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
   const hasFieldAlert = getFieldAlerts(alertKey).length > 0;
@@ -125,6 +128,7 @@ function RowAlert({
 
 export const ConfirmInfoRow = ({
   alertKey,
+  alertOwnerId,
   label,
   children,
   variant = ConfirmInfoRowVariant.Default,
@@ -169,7 +173,11 @@ export const ConfirmInfoRow = ({
           <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
             {label}
           </Text>
-          <RowAlert alertKey={alertKey} severity={SEVERITY_ALERTS[variant]} />
+          <RowAlert
+            alertKey={alertKey}
+            alertOwnerId={alertOwnerId}
+            severity={SEVERITY_ALERTS[variant]}
+          />
           {tooltip && tooltip.length > 0 && (
             <Tooltip title={tooltip} style={{ display: 'flex' }}>
               <Icon
