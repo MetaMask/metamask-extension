@@ -324,7 +324,7 @@ describe('migration #105', () => {
             accounts: {
               [expectedUUID]: expectedInternalAccount(
                 MOCK_ADDRESS,
-                `Account 1`,
+                'Account 1',
               ),
             },
             selectedAccount: expectedUUID,
