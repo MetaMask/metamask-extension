@@ -37,7 +37,7 @@ jobs:
                     },
                     {
                       "title": "PR",
-                      "value": "#${{ github.event.pull_request.number }}",
+                      "value": "<${{ github.event.pull_request.html_url }}|#${{ github.event.pull_request.number }}>",
                       "short": true
                     }
                   ]
