@@ -18,7 +18,7 @@ type WeakRefObject<T extends Record<string, WeakKey>> = {
  * referenced so that they can be garbage collected if/when a dapp connection ends without effective cleanup.
  */
 
-export class WeakRefObjectMap<T extends Record<string, WeakKey>>
+export class WeakRefObjectMap<T extends Record<string, object>>
   implements Map<string, T>
 {
   /**
