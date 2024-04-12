@@ -73,6 +73,7 @@ const mockTransactionMetricsRequest = {
   snapAndHardwareMessenger: jest.fn() as any,
   trackEvent: jest.fn(),
   getIsSmartTransaction: jest.fn(),
+  getSmartTransactionByMinedTxHash: jest.fn(),
 } as TransactionMetricsRequest;
 
 describe('Transaction metrics', () => {

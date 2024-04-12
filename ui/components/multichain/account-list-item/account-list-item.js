@@ -377,6 +377,7 @@ export const AccountListItem = ({
           disableAccountSwitcher={isSingleAccount}
           isOpen={accountOptionsMenuOpen}
           onActionClick={onActionClick}
+          activeTabOrigin={currentTabOrigin}
         />
       )}
     </Box>
