@@ -34,7 +34,7 @@ export const SendPageAccountPicker = () => {
         name={internalAccount.metadata.name}
         onClick={() => setShowAccountPicker(true)}
         showAddress
-        borderColor={BorderColor.borderDefault}
+        borderColor={BorderColor.borderMuted}
         borderWidth={1}
         paddingTop={4}
         paddingBottom={4}
