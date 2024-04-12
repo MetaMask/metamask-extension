@@ -24,6 +24,8 @@ const DEFAULT_PROPS = {
   anchorElement: null,
   disableAccountSwitcher: false,
   closeMenu: jest.fn(),
+  onActionClick: jest.fn(),
+  activeTabOrigin: 'metamask.github.io',
 };
 
 const renderComponent = (props = {}, stateChanges = {}) => {

@@ -31,6 +31,7 @@
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": false,
+      "smartTransactionsOptInStatus": false,
       "useNativeCurrencyAsPrimaryCurrency": true,
       "petnamesEnabled": true
     },
@@ -82,6 +83,9 @@
     "snapsInstallPrivacyWarningShown": true,
     "surveyLinkLastClickedOrClosed": "object",
     "signatureSecurityAlertResponses": "object",
+    "switchedNetworkDetails": "object",
+    "switchedNetworkNeverShowMessage": "boolean",
+    "currentExtensionPopupId": "number",
     "currentAppVersion": "string",
     "previousAppVersion": "",
     "previousMigrationVersion": 0,

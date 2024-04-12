@@ -77,6 +77,7 @@ export const AccountListItem = ({
   currentTabOrigin,
   isActive = false,
   startAccessory,
+  onActionClick,
 }) => {
   const t = useI18nContext();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
@@ -132,6 +133,7 @@ export const AccountListItem = ({
       className={classnames('multichain-account-list-item', {
         'multichain-account-list-item--selected': selected,
         'multichain-account-list-item--connected': Boolean(connectedAvatar),
+        'multichain-account-list-item--clickable': Boolean(onClick),
       })}
       ref={itemRef}
       onClick={() => {
@@ -377,6 +379,8 @@ export const AccountListItem = ({
           closeMenu={closeMenu}
           disableAccountSwitcher={isSingleAccount}
           isOpen={accountOptionsMenuOpen}
+          onActionClick={onActionClick}
+          activeTabOrigin={currentTabOrigin}
         />
       )}
     </Box>
@@ -423,6 +427,10 @@ AccountListItem.propTypes = {
    * Function that closes the menu
    */
   closeMenu: PropTypes.func,
+  /**
+   * Function to set account name to show disconnect toast when an account is disconnected
+   */
+  onActionClick: PropTypes.func,
   /**
    * File location of the avatar icon
    */

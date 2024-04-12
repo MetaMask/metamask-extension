@@ -57,7 +57,7 @@ async function withFixtures(options, testSuite) {
   const bundlerServer = new Bundler();
   const https = await mockttp.generateCACertificate();
   const mockServer = mockttp.getLocal({ https, cors: true });
-  let secondaryGanacheServer;
+  const secondaryGanacheServer = [];
   let numberOfDapps = dapp ? 1 : 0;
   const dappServer = [];
   const phishingPageServer = new PhishingWarningPageServer();
@@ -76,14 +76,17 @@ async function withFixtures(options, testSuite) {
     }
 
     if (ganacheOptions?.concurrent) {
-      const { port, chainId, ganacheOptions2 } = ganacheOptions.concurrent;
-      secondaryGanacheServer = new Ganache();
-      await secondaryGanacheServer.start({
-        blockTime: 2,
-        chain: { chainId },
-        port,
-        vmErrorsOnRPCResponse: false,
-        ...ganacheOptions2,
+      ganacheOptions.concurrent.forEach(async (ganacheSettings) => {
+        const { port, chainId, ganacheOptions2 } = ganacheSettings;
+        const server = new Ganache();
+        secondaryGanacheServer.push(server);
+        await server.start({
+          blockTime: 2,
+          chain: { chainId },
+          port,
+          vmErrorsOnRPCResponse: false,
+          ...ganacheOptions2,
+        });
       });
     }
 
@@ -200,7 +203,7 @@ async function withFixtures(options, testSuite) {
       ...new Set([...privacyReport, ...privacySnapshot]),
     ].sort();
 
-    // To determine if a new host was requsted, we use the lodash difference
+    // To determine if a new host was requested, we use the lodash difference
     // method to generate an array of the items included in the first argument
     // but not in the second
     const newHosts = difference(mergedReport, privacySnapshot);
@@ -255,7 +258,9 @@ async function withFixtures(options, testSuite) {
       await ganacheServer.quit();
 
       if (ganacheOptions?.concurrent) {
-        await secondaryGanacheServer.quit();
+        secondaryGanacheServer.forEach(async (server) => {
+          await server.quit();
+        });
       }
 
       if (useBundler) {
@@ -307,12 +312,12 @@ const WINDOW_TITLES = Object.freeze({
 });
 
 /**
- * @param {*} driver - selinium driver
+ * @param {*} driver - Selenium driver
  * @param {*} handlesCount - total count of windows that should be loaded
  * @returns handles - an object with window handles, properties in object represent windows:
- *            1. extension: metamask extension window
+ *            1. extension: MetaMask extension window
  *            2. dapp: test-app window
- *            3. popup: metsmask extension popup window
+ *            3. popup: MetaMask extension popup window
  */
 const getWindowHandles = async (driver, handlesCount) => {
   await driver.waitUntilXWindowHandles(handlesCount);
@@ -734,7 +739,7 @@ const generateGanacheOptions = ({
 };
 
 // Edit priority gas fee form
-const editGasfeeForm = async (driver, gasLimit, gasPrice) => {
+const editGasFeeForm = async (driver, gasLimit, gasPrice) => {
   const inputs = await driver.findElements('input[type="number"]');
   const gasLimitInput = inputs[0];
   const gasPriceInput = inputs[1];
@@ -918,7 +923,7 @@ function genRandInitBal(minETHBal = 10, maxETHBal = 100, decimalPlaces = 4) {
 }
 
 /**
- * This method handles clicking the sign button on signature confrimation
+ * This method handles clicking the sign button on signature confirmation
  * screen.
  *
  * @param {WebDriver} driver
@@ -1081,7 +1086,7 @@ async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
 
     await bundlerServer.start();
   } catch (error) {
-    console.log('Failed to initialise bundler', error);
+    console.log('Failed to initialize bundler', error);
     throw error;
   }
 }
@@ -1148,5 +1153,5 @@ module.exports = {
   genRandInitBal,
   openActionMenuAndStartSendFlow,
   getCleanAppState,
-  editGasfeeForm,
+  editGasFeeForm,
 };

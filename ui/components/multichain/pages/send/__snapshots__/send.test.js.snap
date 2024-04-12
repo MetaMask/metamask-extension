@@ -182,7 +182,7 @@ exports[`SendPage render and initialization should render correctly even when a 
                 class="mm-box mm-box--padding-bottom-6 mm-box--display-flex mm-box--flex-direction-column"
               >
                 <div
-                  class="mm-box multichain-account-list-item mm-box--padding-4 mm-box--display-flex mm-box--background-color-transparent"
+                  class="mm-box multichain-account-list-item multichain-account-list-item--clickable mm-box--padding-4 mm-box--display-flex mm-box--background-color-transparent"
                 >
                   <div
                     class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"

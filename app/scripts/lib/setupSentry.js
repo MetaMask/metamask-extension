@@ -86,6 +86,7 @@ export const SENTRY_BACKGROUND_STATE = {
     browserEnvironment: true,
     connectedStatusPopoverHasBeenShown: true,
     currentPopupId: false,
+    currentExtensionPopupId: false,
     defaultHomeActiveTabName: true,
     fullScreenGasPollTokens: true,
     hadAdvancedGasFeesSetPriorToMigration92_3: true,
@@ -102,6 +103,8 @@ export const SENTRY_BACKGROUND_STATE = {
     showProductTour: true,
     showNetworkBanner: true,
     showAccountBanner: true,
+    switchedNetworkDetails: false,
+    switchedNetworkNeverShowMessage: false,
     showTestnetMessageInDropdown: true,
     surveyLinkLastClickedOrClosed: true,
     snapsInstallPrivacyWarningShown: true,
@@ -219,6 +222,7 @@ export const SENTRY_BACKGROUND_STATE = {
       showExtensionInFullSizeView: true,
       showFiatInTestnets: true,
       showTestNetworks: true,
+      smartTransactionsOptInStatus: true,
       useNativeCurrencyAsPrimaryCurrency: true,
       petnamesEnabled: true,
     },
@@ -381,6 +385,8 @@ export const SENTRY_UI_STATE = {
     addSnapAccountEnabled: false,
     snapsAddSnapAccountModalDismissed: false,
     ///: END:ONLY_INCLUDE_IF
+    switchedNetworkDetails: false,
+    switchedNetworkNeverShowMessage: false,
   },
   unconnectedAccount: true,
 };

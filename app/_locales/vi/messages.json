@@ -3480,12 +3480,6 @@
   "smartContracts": {
     "message": "Hợp đồng thông minh"
   },
-  "smartSwapsAreHere": {
-    "message": "Hoán đổi thông minh đã ra mắt!"
-  },
-  "smartSwapsDescription": {
-    "message": "Tính năng Hoán đổi của MetaMask nay đã thông minh hơn rất nhiều! Kích hoạt Hoán đổi thông minh sẽ cho phép MetaMask tối ưu quy trình Hoán đổi để giúp bạn:"
-  },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Không có đủ tiền để thực hiện hoán đổi thông minh."
   },
@@ -3764,18 +3758,6 @@
   },
   "strong": {
     "message": "Mạnh"
-  },
-  "stxBenefit1": {
-    "message": "Giảm thiểu chi phí giao dịch"
-  },
-  "stxBenefit2": {
-    "message": "Giảm tỷ lệ thất bại khi giao dịch"
-  },
-  "stxBenefit3": {
-    "message": "Loại bỏ các giao dịch bị mắc kẹt"
-  },
-  "stxBenefit4": {
-    "message": "Ngăn chặn giao dịch chạy trước"
   },
   "stxCancelled": {
     "message": "Hoán đổi sẽ thất bại"
@@ -4707,7 +4689,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "Xem $1 tại $2",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "Xem $1 trên Etherscan",

@@ -3,17 +3,21 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
 import { PriorityLevels } from '../../../../../shared/constants/gas';
-import { submittedPendingTransactionsSelector } from '../../../../selectors';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   BannerAlert,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   ButtonLink,
   Text,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../../components/component-library';
 import SimulationErrorMessage from '../simulation-error-message';
 import { SEVERITIES } from '../../../../helpers/constants/design-system';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import { submittedPendingTransactionsSelector } from '../../../../selectors';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
+///: END:ONLY_INCLUDE_IF
 
 import { isSuspiciousResponse } from '../../../../../shared/modules/security-provider.utils';
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
@@ -33,7 +37,11 @@ const TransactionAlerts = ({
 }) => {
   const { estimateUsed, hasSimulationError, supportsEIP1559, isNetworkBusy } =
     useGasFeeContext();
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const pendingTransactions = useSelector(submittedPendingTransactionsSelector);
+  ///: END:ONLY_INCLUDE_IF
+
   const t = useI18nContext();
   const nativeCurrency = useSelector(getNativeCurrency);
   const transactionData = txData.txParams.data;
@@ -78,30 +86,36 @@ const TransactionAlerts = ({
           setUserAcknowledgedGasMissing={setUserAcknowledgedGasMissing}
         />
       )}
-      {supportsEIP1559 && pendingTransactions?.length > 0 && (
-        <BannerAlert severity={SEVERITIES.WARNING}>
-          <Text as="p">
-            <strong>
-              {pendingTransactions?.length === 1
-                ? t('pendingTransactionSingle', [pendingTransactions?.length])
-                : t('pendingTransactionMultiple', [
-                    pendingTransactions?.length,
-                  ])}
-            </strong>{' '}
-            {t('pendingTransactionInfo')}
-            {t('learnCancelSpeeedup', [
-              <ButtonLink
-                key="cancelSpeedUpInfo"
-                href={ZENDESK_URLS.SPEEDUP_CANCEL}
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                {t('cancelSpeedUp')}
-              </ButtonLink>,
-            ])}
-          </Text>
-        </BannerAlert>
-      )}
+
+      {
+        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+        supportsEIP1559 && pendingTransactions?.length > 0 && (
+          <BannerAlert severity={SEVERITIES.WARNING}>
+            <Text as="p">
+              <strong>
+                {pendingTransactions?.length === 1
+                  ? t('pendingTransactionSingle', [pendingTransactions?.length])
+                  : t('pendingTransactionMultiple', [
+                      pendingTransactions?.length,
+                    ])}
+              </strong>{' '}
+              {t('pendingTransactionInfo')}
+              {t('learnCancelSpeeedup', [
+                <ButtonLink
+                  key="cancelSpeedUpInfo"
+                  href={ZENDESK_URLS.SPEEDUP_CANCEL}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  {t('cancelSpeedUp')}
+                </ButtonLink>,
+              ])}
+            </Text>
+          </BannerAlert>
+        )
+        ///: END:ONLY_INCLUDE_IF
+      }
+
       {estimateUsed === PriorityLevels.low && (
         <BannerAlert
           data-testid="low-gas-fee-alert"
