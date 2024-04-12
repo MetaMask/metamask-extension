@@ -21,7 +21,7 @@ const mockState = {
       '1': {
         id: '1',
         origin: 'origin',
-        time: Date.now() - 100,
+        time: Date.now(),
         type: ApprovalType.PersonalSign,
         requestData: {},
         requestState: null,
@@ -56,7 +56,7 @@ describe('useCurrentConfirmation', () => {
     );
 
     expect(result.current.currentConfirmation).toBe(
-      mockState.metamask.unapprovedPersonalMsgs['2'],
+      mockState.metamask.unapprovedPersonalMsgs['1'],
     );
   });
 

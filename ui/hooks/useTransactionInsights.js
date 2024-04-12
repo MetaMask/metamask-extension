@@ -47,7 +47,7 @@ const useTransactionInsights = ({ txData }) => {
     insightSnaps: insightSnapIds,
   };
 
-  const { data, loading } = useTransactionInsightSnaps(insightHookParams);
+  const { data, loading, warnings } = useTransactionInsightSnaps(insightHookParams);
 
   useEffect(() => {
     if (insightSnapIds.length > 0 && !selectedInsightSnapId) {
@@ -117,17 +117,6 @@ const useTransactionInsights = ({ txData }) => {
       </DropdownTab>
     );
   }
-
-  const warnings = data?.reduce((warningsArr, promise) => {
-    if (promise.response?.severity === SeverityLevel.Critical) {
-      const {
-        snapId,
-        response: { id },
-      } = promise;
-      warningsArr.push({ snapId, id });
-    }
-    return warningsArr;
-  }, []);
 
   return { insightComponent, warnings };
 };
