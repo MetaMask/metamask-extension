@@ -831,7 +831,19 @@ exports[`Security Tab should match snapshot 1`] = `
           <div
             class="settings-page__content-description"
           >
-            Turn this on to estimate balance changes of transactions before you confirm them. This doesn't guarantee the final outcome of your transactions. 
+            <span>
+               
+              Turn this on to estimate balance changes of transactions before you confirm them. This doesn't guarantee the final outcome of your transactions. 
+              <a
+                href="https://support.metamask.io/transactions-and-gas/transactions/simulations/"
+                rel="noreferrer"
+                target="_blank"
+              >
+                Learn more
+              </a>
+              
+               
+            </span>
           </div>
         </div>
         <div
