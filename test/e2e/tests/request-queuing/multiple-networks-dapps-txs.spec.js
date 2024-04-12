@@ -28,11 +28,13 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         dappOptions: { numberOfDapps: 2 },
         ganacheOptions: {
           ...defaultGanacheOptions,
-          concurrent: {
-            port,
-            chainId,
-            ganacheOptions2: defaultGanacheOptions,
-          },
+          concurrent: [
+            {
+              port,
+              chainId,
+              ganacheOptions2: defaultGanacheOptions,
+            },
+          ],
         },
         title: this.test.fullTitle(),
       },
@@ -45,7 +47,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         // Open Dapp One
         await openDapp(driver, undefined, DAPP_URL);
 
-        // Connect to dapp
+        // Connect to dapp 1
         await driver.findClickableElement({ text: 'Connect', tag: 'button' });
         await driver.clickElement('#connectButton');
 
@@ -85,7 +87,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         // Open Dapp Two
         await openDapp(driver, undefined, DAPP_ONE_URL);
 
-        // Connect to dapp
+        // Connect to dapp 2
         await driver.findClickableElement({ text: 'Connect', tag: 'button' });
         await driver.clickElement('#connectButton');
 
