@@ -16,9 +16,11 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useNftsCollections } from '../../../hooks/useNftsCollections';
 import {
   getCurrentNetwork,
-  getIsMainnet,
-  getSelectedAccount,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getShouldHideZeroBalanceTokens,
+  getSelectedAccount,
+  ///: END:ONLY_INCLUDE_IF
+  getIsMainnet,
   getUseNftDetection,
 } from '../../../selectors';
 import {
@@ -44,9 +46,9 @@ import {
   RAMPS_CARD_VARIANT_TYPES,
   RampsCard,
 } from '../../multichain/ramps-card/ramps-card';
-///: END:ONLY_INCLUDE_IF
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
+///: END:ONLY_INCLUDE_IF
 
 export default function NftsTab() {
   const useNftDetection = useSelector(getUseNftDetection);
@@ -56,6 +58,7 @@ export default function NftsTab() {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const { address: selectedAddress } = useSelector(getSelectedAccount);
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
@@ -67,6 +70,7 @@ export default function NftsTab() {
   const balanceIsZero = Number(totalFiatBalance) === 0;
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const showRampsCard = isBuyableChain && balanceIsZero;
+  ///: END:ONLY_INCLUDE_IF
 
   const { nftsLoading, collections, previouslyOwnedCollection } =
     useNftsCollections();

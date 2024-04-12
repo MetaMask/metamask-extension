@@ -45,8 +45,8 @@ import {
   RAMPS_CARD_VARIANT_TYPES,
   RampsCard,
 } from '../../multichain/ramps-card/ramps-card';
-///: END:ONLY_INCLUDE_IF
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
+///: END:ONLY_INCLUDE_IF
 
 const AssetList = ({ onClickAsset }) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
@@ -104,8 +104,10 @@ const AssetList = ({ onClickAsset }) => {
     token.string = roundToDecimalPlacesRemovingExtraZeroes(token.string, 5);
   });
   const balanceIsZero = Number(totalFiatBalance) === 0;
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const shouldShowBuy = isBuyableChain && balanceIsZero;
+  ///: END:ONLY_INCLUDE_IF
 
   let isStakeable = isMainnet;
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)

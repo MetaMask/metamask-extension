@@ -9,7 +9,9 @@ import {
 import {
   getCurrentChainId,
   getSelectedAccount,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getShouldHideZeroBalanceTokens,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TransactionListItem from '../transaction-list-item';
@@ -24,14 +26,14 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
-import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import {
   RAMPS_CARD_VARIANT_TYPES,
   RampsCard,
 } from '../../multichain/ramps-card/ramps-card';
-///: END:ONLY_INCLUDE_IF
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
+///: END:ONLY_INCLUDE_IF
 
 const PAGE_INCREMENT = 10;
 
@@ -127,6 +129,7 @@ export default function TransactionList({
   const chainId = useSelector(getCurrentChainId);
   const { address: selectedAddress } = useSelector(getSelectedAccount);
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
@@ -137,6 +140,7 @@ export default function TransactionList({
   const balanceIsZero = Number(totalFiatBalance) === 0;
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const showRampsCard = isBuyableChain && balanceIsZero;
+  ///: END:ONLY_INCLUDE_IF
 
   const renderDateStamp = (index, dateGroup) => {
     return index === 0 ? (
