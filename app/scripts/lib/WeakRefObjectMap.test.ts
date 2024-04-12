@@ -51,6 +51,74 @@ describe('WeakDomainProxyMap', () => {
   it('delete returns false when key does not exist', () => {
     expect(map.delete('nonExistentKey')).toBe(false);
   });
+
+  describe('iterators', () => {
+    beforeEach(() => {
+      map = new WeakRefObjectMap();
+      map.set('key1', { objKey1: { detail: 'value1' } });
+      map.set('key2', { objKey2: { detail: 'value2' } });
+    });
+    it('iterates over entries correctly', () => {
+      const entries = Array.from(map.entries());
+      expect(entries.length).toBe(2);
+      expect(entries).toEqual(
+        expect.arrayContaining([
+          ['key1', { objKey1: { detail: 'value1' } }],
+          ['key2', { objKey2: { detail: 'value2' } }],
+        ]),
+      );
+    });
+
+    it('iterates over keys correctly', () => {
+      const keys = Array.from(map.keys());
+      expect(keys.length).toBe(2);
+      expect(keys).toEqual(expect.arrayContaining(['key1', 'key2']));
+    });
+
+    it('iterates over values correctly', () => {
+      const values = Array.from(map.values());
+      expect(values.length).toBe(2);
+      expect(values).toEqual(
+        expect.arrayContaining([
+          { objKey1: { detail: 'value1' } },
+          { objKey2: { detail: 'value2' } },
+        ]),
+      );
+    });
+
+    it('executes forEach callback correctly', () => {
+      const mockCallback = jest.fn();
+      map.forEach(mockCallback);
+
+      expect(mockCallback.mock.calls.length).toBe(2);
+      expect(mockCallback).toHaveBeenCalledWith(
+        { objKey1: { detail: 'value1' } },
+        'key1',
+        map,
+      );
+      expect(mockCallback).toHaveBeenCalledWith(
+        { objKey2: { detail: 'value2' } },
+        'key2',
+        map,
+      );
+    });
+
+    it('handles empty map in iterations', () => {
+      const emptyMap = new WeakRefObjectMap<Record<string, object>>();
+      expect(Array.from(emptyMap.entries()).length).toBe(0);
+      expect(Array.from(emptyMap.keys()).length).toBe(0);
+      expect(Array.from(emptyMap.values()).length).toBe(0);
+
+      const mockCallback = jest.fn();
+      emptyMap.forEach(mockCallback);
+      expect(mockCallback).not.toHaveBeenCalled();
+    });
+
+    it('[Symbol.iterator] behaves like entries', () => {
+      const iterator = map[Symbol.iterator]();
+      expect(Array.from(iterator)).toEqual(Array.from(map.entries()));
+    });
+  });
 });
 
 // Commenting until we figure out how best to expose garbage collection in jest env
