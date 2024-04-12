@@ -930,16 +930,6 @@ function setupBundlerDefaults(
         babelify,
         {
           only: ['./**/node_modules/firebase', './**/node_modules/@firebase'],
-          plugins: [
-            [
-              'babel-plugin-transform-replace-expressions',
-              {
-                replace: {
-                  'process.env.__FIREBASE_DEFAULTS__': `""`,
-                },
-              },
-            ],
-          ],
           global: true,
         },
       ],

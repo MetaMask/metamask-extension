@@ -38,6 +38,7 @@ buildTypes:
       - FIREBASE_MESSAGING_SENDER_ID
       - FIREBASE_APP_ID
       - FIREBASE_MEASUREMENT_ID
+      - __FIREBASE_DEFAULTS__: null
     # Main build uses the default browser manifest
     manifestOverrides: false
     # Build name used in multiple user-readable places
@@ -61,6 +62,7 @@ buildTypes:
       - FIREBASE_MESSAGING_SENDER_ID
       - FIREBASE_APP_ID
       - FIREBASE_MEASUREMENT_ID
+      - __FIREBASE_DEFAULTS__: null
     # Modifies how the version is displayed.
     # eg. instead of 10.25.0 -> 10.25.0-beta.2
     isPrerelease: true
@@ -97,6 +99,7 @@ buildTypes:
       - FIREBASE_MESSAGING_SENDER_ID
       - FIREBASE_APP_ID
       - FIREBASE_MEASUREMENT_ID
+      - __FIREBASE_DEFAULTS__: null
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
     buildNameOverride: MetaMask Flask
@@ -127,6 +130,7 @@ buildTypes:
       - FIREBASE_MESSAGING_SENDER_ID
       - FIREBASE_APP_ID
       - FIREBASE_MEASUREMENT_ID
+      - __FIREBASE_DEFAULTS__: null
     isPrerelease: true
     manifestOverrides: ./app/build-types/desktop/manifest/
     buildNameOverride: false
@@ -158,6 +162,7 @@ buildTypes:
       - FIREBASE_MESSAGING_SENDER_ID
       - FIREBASE_APP_ID
       - FIREBASE_MEASUREMENT_ID
+      - __FIREBASE_DEFAULTS__: null
     # For some reason, MMI uses this type of versioning
     # Leaving it on for backwards compatibility
     isPrerelease: true

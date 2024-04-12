@@ -471,7 +471,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/parser@npm:^7.3.3":
+"@babel/parser@npm:^7.1.0, @babel/parser@npm:^7.12.0, @babel/parser@npm:^7.13.16, @babel/parser@npm:^7.13.9, @babel/parser@npm:^7.14.7, @babel/parser@npm:^7.20.7, @babel/parser@npm:^7.21.8, @babel/parser@npm:^7.22.15, @babel/parser@npm:^7.22.7, @babel/parser@npm:^7.23.0, @babel/parser@npm:^7.23.9":
   version: 7.24.4
   resolution: "@babel/parser@npm:7.24.4"
   bin:
@@ -10469,16 +10469,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:>=13.7.0, @types/node@npm:^20, @types/node@npm:^20.11.17":
-  version: 20.12.3
-  resolution: "@types/node@npm:20.12.3"
-  dependencies:
-    undici-types: "npm:~5.26.4"
-  checksum: 3f3c5c6ba118a18aa997c51cdc3c66259d69021f87475a99ed6c913a6956e22de49748e09843bf6447a7a63ae474e61945a6dbcca93e23b2359fc0b6f9914f7a
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:>=12.12.47":
+"@types/node@npm:*, @types/node@npm:>=12.12.47, @types/node@npm:>=13.7.0, @types/node@npm:^20, @types/node@npm:^20.11.17":
   version: 20.12.7
   resolution: "@types/node@npm:20.12.7"
   dependencies:
@@ -12869,17 +12860,6 @@ __metadata:
     lodash: "npm:^4.17.15"
     react-docgen: "npm:^5.0.0"
   checksum: 5de78d0bf984c08e713cbc2244022e4fbbbb0a491d05db31dd89bc8e3940968f4ba03e27837e3cb6f44a9061c83f0287dcafd51885354deb3447e5bbc8763d3d
-  languageName: node
-  linkType: hard
-
-"babel-plugin-transform-replace-expressions@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "babel-plugin-transform-replace-expressions@npm:0.2.0"
-  dependencies:
-    "@babel/parser": "npm:^7.3.3"
-  peerDependencies:
-    "@babel/core": ^7.0.0-0
-  checksum: 792c22e9a3b9c8e11a1acbab3cb556a1992d5d12dced3ff39e156b71779324c12171f12f840caecdffab62f5cb62c0076ac941cd6e60dd462649ad071e0ce99d
   languageName: node
   linkType: hard
 
@@ -25471,7 +25451,6 @@ __metadata:
     autoprefixer: "npm:^10.4.19"
     await-semaphore: "npm:^0.1.1"
     axios: "npm:^1.1.3"
-    babel-plugin-transform-replace-expressions: "npm:^0.2.0"
     babelify: "npm:^10.0.0"
     base32-encode: "npm:^1.2.0"
     base64-js: "npm:^1.5.1"
