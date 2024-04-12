@@ -58,6 +58,7 @@ describe('WeakDomainProxyMap', () => {
       map.set('key1', { objKey1: { detail: 'value1' } });
       map.set('key2', { objKey2: { detail: 'value2' } });
     });
+
     it('iterates over entries correctly', () => {
       const entries = Array.from(map.entries());
       expect(entries.length).toBe(2);
