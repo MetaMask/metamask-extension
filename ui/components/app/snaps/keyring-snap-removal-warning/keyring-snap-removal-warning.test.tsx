@@ -7,6 +7,7 @@ import { renderWithProvider } from '../../../../../test/jest';
 import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
 import messages from '../../../../../app/_locales/en/messages.json';
 import KeyringSnapRemovalWarning from './keyring-snap-removal-warning';
+import userEvent from '@testing-library/user-event';
 
 const mockOnClose = jest.fn();
 const mockOnCancel = jest.fn();
@@ -100,6 +101,26 @@ describe('Keyring Snap Remove Warning', () => {
       expect(removeSnapButton).not.toBeDisabled();
       fireEvent.click(removeSnapButton);
       expect(mockOnSubmit).toBeCalled();
+    });
+  });
+
+  it('prevents pasting of the snap name to remove the snap.', async () => {
+    const { getByText, getByTestId } = renderWithProvider(
+      <KeyringSnapRemovalWarning {...defaultArgs} />,
+      store,
+    );
+
+    const nextButton = getByText('Continue');
+
+    fireEvent.click(nextButton);
+    const confirmationInput = getByTestId('remove-snap-confirmation-input');
+
+    confirmationInput.focus();
+
+    await userEvent.paste(mockSnap.manifest?.proposedName);
+
+    await waitFor(() => {
+      expect(confirmationInput).toHaveValue('');
     });
   });
 

@@ -152,6 +152,10 @@ export default function KeyringRemovalSnapWarning({
                       validateConfirmationInput(e.target.value),
                     );
                   }}
+                  onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
+                    e.preventDefault();
+                    return false;
+                  }}
                   error={error}
                   inputProps={{
                     'data-testid': 'remove-snap-confirmation-input',
