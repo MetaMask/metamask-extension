@@ -101,7 +101,7 @@ function createMockState(
 describe('migration #105', () => {
   it('updates the version metadata', async () => {
     const oldStorage = {
-      meta: { version: 103 },
+      meta: { version: 104 },
       data: createMockState(),
     };
 
@@ -115,7 +115,7 @@ describe('migration #105', () => {
       const oldData = createMockState();
 
       const oldStorage = {
-        meta: { version: 103 },
+        meta: { version: 104 },
         data: oldData,
       };
 
@@ -146,7 +146,7 @@ describe('migration #105', () => {
       const oldData = createMockState();
 
       const oldStorage = {
-        meta: { version: 103 },
+        meta: { version: 104 },
         data: oldData,
       };
 
@@ -175,7 +175,7 @@ describe('migration #105', () => {
         ]),
       );
       const oldStorage = {
-        meta: { version: 103 },
+        meta: { version: 104 },
         data: oldData,
       };
       const newStorage = await migrate(oldStorage);
@@ -205,7 +205,7 @@ describe('migration #105', () => {
       });
 
       const oldStorage = {
-        meta: { version: 103 },
+        meta: { version: 104 },
         data: oldData,
       };
 
@@ -240,7 +240,7 @@ describe('migration #105', () => {
     it('should select the same account as the selected address', async () => {
       const oldData = createMockState();
       const oldStorage = {
-        meta: { version: 103 },
+        meta: { version: 104 },
         data: oldData,
       };
       const newStorage = await migrate(oldStorage);
@@ -263,7 +263,7 @@ describe('migration #105', () => {
         },
       };
       const oldStorage = {
-        meta: { version: 103 },
+        meta: { version: 104 },
         data: oldData,
       };
       const newStorage = await migrate(oldStorage);
@@ -286,7 +286,7 @@ describe('migration #105', () => {
         },
       };
       const oldStorage = {
-        meta: { version: 103 },
+        meta: { version: 104 },
         data: oldData,
       };
       await migrate(oldStorage);
@@ -309,7 +309,7 @@ describe('migration #105', () => {
         },
       };
       const oldStorage = {
-        meta: { version: 103 },
+        meta: { version: 104 },
         data: oldData,
       };
 
