@@ -127,7 +127,7 @@ function createSelectedAccountForAccountsController(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   state: Record<string, any>,
 ) {
-  const selectedAddress = undefined; // state.PreferencesController?.selectedAddress;
+  const selectedAddress = state.PreferencesController?.selectedAddress;
 
   if (typeof selectedAddress !== 'string') {
     global.sentry?.captureException?.(
