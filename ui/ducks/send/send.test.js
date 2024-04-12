@@ -144,6 +144,9 @@ describe('Send Slice', () => {
     jest
       .spyOn(Actions, 'updateTransactionGasFees')
       .mockImplementation(() => ({ type: 'UPDATE_TRANSACTION_GAS_FEES' }));
+    jest
+      .spyOn(Actions, 'getLayer1GasFee')
+      .mockReturnValue({ type: 'GET_LAYER_1_GAS_FEE' });
   });
 
   describe('Reducers', () => {
@@ -1626,9 +1629,12 @@ describe('Send Slice', () => {
           'send/computeEstimatedGasLimit/pending',
         );
         expect(actionResult[3].type).toStrictEqual(
-          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
+          'GET_LAYER_1_GAS_FEE',
         );
         expect(actionResult[4].type).toStrictEqual(
+          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
+        );
+        expect(actionResult[5].type).toStrictEqual(
           'send/computeEstimatedGasLimit/fulfilled',
         );
       });
@@ -1776,10 +1782,9 @@ describe('Send Slice', () => {
         expect(actionResult[2].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
-        expect(actionResult[3].type).toStrictEqual(
-          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
-        );
-        expect(actionResult[4].type).toStrictEqual(
+        expect(actionResult[3].type).toStrictEqual('GET_LAYER_1_GAS_FEE');
+        expect(actionResult[4].type).toStrictEqual('metamask/gas/SET_CUSTOM_GAS_LIMIT');
+        expect(actionResult[5].type).toStrictEqual(
           'send/computeEstimatedGasLimit/fulfilled',
         );
       });
@@ -1836,16 +1841,17 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(5);
+        expect(actionResult).toHaveLength(6);
         expect(actionResult[0].type).toStrictEqual('send/addHistoryEntry');
         expect(actionResult[1].type).toStrictEqual('send/updateSendAmount');
         expect(actionResult[2].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
-        expect(actionResult[3].type).toStrictEqual(
+        expect(actionResult[3].type).toStrictEqual('GET_LAYER_1_GAS_FEE');
+        expect(actionResult[4].type).toStrictEqual(
           'metamask/gas/SET_CUSTOM_GAS_LIMIT',
         );
-        expect(actionResult[4].type).toStrictEqual(
+        expect(actionResult[5].type).toStrictEqual(
           'send/computeEstimatedGasLimit/fulfilled',
         );
       });
@@ -1925,7 +1931,7 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(5);
+        expect(actionResult).toHaveLength(6);
 
         expect(actionResult[0]).toMatchObject({
           type: 'send/addHistoryEntry',
@@ -1945,10 +1951,11 @@ describe('Send Slice', () => {
         expect(actionResult[2].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
-        expect(actionResult[3].type).toStrictEqual(
+        expect(actionResult[3].type).toStrictEqual('GET_LAYER_1_GAS_FEE');
+        expect(actionResult[4].type).toStrictEqual(
           'metamask/gas/SET_CUSTOM_GAS_LIMIT',
         );
-        expect(actionResult[4].type).toStrictEqual(
+        expect(actionResult[5].type).toStrictEqual(
           'send/computeEstimatedGasLimit/fulfilled',
         );
       });
@@ -1984,7 +1991,7 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(7);
+        expect(actionResult).toHaveLength(8);
         expect(actionResult[0].type).toStrictEqual('SHOW_LOADING_INDICATION');
         expect(actionResult[1].type).toStrictEqual('HIDE_LOADING_INDICATION');
         expect(actionResult[2]).toMatchObject({
@@ -2010,10 +2017,11 @@ describe('Send Slice', () => {
         expect(actionResult[4].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
-        expect(actionResult[5].type).toStrictEqual(
+        expect(actionResult[5].type).toStrictEqual('GET_LAYER_1_GAS_FEE');
+        expect(actionResult[6].type).toStrictEqual(
           'metamask/gas/SET_CUSTOM_GAS_LIMIT',
         );
-        expect(actionResult[6].type).toStrictEqual(
+        expect(actionResult[7].type).toStrictEqual(
           'send/computeEstimatedGasLimit/fulfilled',
         );
       });
@@ -2432,7 +2440,7 @@ describe('Send Slice', () => {
         await store.dispatch(resetRecipientInput());
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(12);
+        expect(actionResult).toHaveLength(13);
         expect(actionResult[0]).toMatchObject({
           type: 'send/addHistoryEntry',
           payload: 'sendFlow - user cleared recipient input',
@@ -2457,16 +2465,17 @@ describe('Send Slice', () => {
         expect(actionResult[7].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
-        expect(actionResult[8].type).toStrictEqual(
+        expect(actionResult[8].type).toStrictEqual('GET_LAYER_1_GAS_FEE');
+        expect(actionResult[9].type).toStrictEqual(
           'metamask/gas/SET_CUSTOM_GAS_LIMIT',
         );
-        expect(actionResult[9].type).toStrictEqual(
+        expect(actionResult[10].type).toStrictEqual(
           'send/computeEstimatedGasLimit/fulfilled',
         );
-        expect(actionResult[10].type).toStrictEqual(
+        expect(actionResult[11].type).toStrictEqual(
           'DNS/resetDomainResolution',
         );
-        expect(actionResult[11].type).toStrictEqual(
+        expect(actionResult[12].type).toStrictEqual(
           'send/validateRecipientUserInput',
         );
       });
@@ -2602,7 +2611,7 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(6);
+        expect(actionResult).toHaveLength(7);
         expect(actionResult[0].type).toStrictEqual('send/updateAmountMode');
         expect(actionResult[1].type).toStrictEqual('send/updateSendAmount');
         expect(actionResult[2]).toMatchObject({
@@ -2612,10 +2621,11 @@ describe('Send Slice', () => {
         expect(actionResult[3].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
-        expect(actionResult[4].type).toStrictEqual(
+        expect(actionResult[4].type).toStrictEqual('GET_LAYER_1_GAS_FEE');
+        expect(actionResult[5].type).toStrictEqual(
           'metamask/gas/SET_CUSTOM_GAS_LIMIT',
         );
-        expect(actionResult[5].type).toStrictEqual(
+        expect(actionResult[6].type).toStrictEqual(
           'send/computeEstimatedGasLimit/fulfilled',
         );
       });

@@ -18,10 +18,7 @@ import {
   Text,
 } from '../../../../components/component-library';
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
-import {
-  getIsMultiLayerFeeNetwork,
-  getPreferences,
-} from '../../../../selectors';
+import { getPreferences } from '../../../../selectors';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import LoadingHeartBeat from '../../../../components/ui/loading-heartbeat';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component';
@@ -37,7 +34,6 @@ export default function FeeDetailsComponent({
   const layer1GasFee = txData?.layer1GasFee ?? null;
   const [expandFeeDetails, setExpandFeeDetails] = useState(false);
 
-  const isMultiLayerFeeNetwork = useSelector(getIsMultiLayerFeeNetwork);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
 
   const t = useI18nContext();
@@ -45,12 +41,8 @@ export default function FeeDetailsComponent({
   const { minimumCostInHexWei: hexMinimumTransactionFee } = useGasFeeContext();
 
   const getTransactionFeeTotal = useMemo(() => {
-    if (isMultiLayerFeeNetwork) {
-      return addHexes(hexMinimumTransactionFee, layer1GasFee || 0);
-    }
-
-    return hexMinimumTransactionFee;
-  }, [isMultiLayerFeeNetwork, hexMinimumTransactionFee, layer1GasFee]);
+    return addHexes(hexMinimumTransactionFee, layer1GasFee ?? 0);
+  }, [hexMinimumTransactionFee, layer1GasFee]);
 
   const renderTotalDetailText = useCallback(
     (value) => {
@@ -86,6 +78,8 @@ export default function FeeDetailsComponent({
     [txData, useNativeCurrencyAsPrimaryCurrency],
   );
 
+  const hasLayer1GasFee = layer1GasFee !== null;
+
   return (
     <>
       <Box
@@ -94,7 +88,7 @@ export default function FeeDetailsComponent({
         justifyContent={JustifyContent.center}
         flexDirection={FlexDirection.Column}
       >
-        {!hideGasDetails && isMultiLayerFeeNetwork && (
+        {!hideGasDetails && hasLayer1GasFee && (
           <Box
             padding={4}
             display={Display.Flex}
@@ -125,7 +119,7 @@ export default function FeeDetailsComponent({
 
       {!hideGasDetails && expandFeeDetails && (
         <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-          {isMultiLayerFeeNetwork && (
+          {hasLayer1GasFee && (
             <TransactionDetailItem
               detailTitle={t('optimismFees')}
               detailText={
@@ -136,7 +130,7 @@ export default function FeeDetailsComponent({
               boldHeadings={false}
             />
           )}
-          {isMultiLayerFeeNetwork && layer1GasFee && (
+          {layer1GasFee && (
             <TransactionDetailItem
               detailTitle={t('layer1Fees')}
               detailText={

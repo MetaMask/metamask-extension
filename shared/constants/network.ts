@@ -150,6 +150,8 @@ export const CHAIN_IDS = {
   TEST_ETH: '0x539',
   ARBITRUM_GOERLI: '0x66eed',
   BLAST: '0x13e31',
+  SCROLL: '0x82750',
+  SCROLL_SEPOLIA: '0x8274f',
 } as const;
 
 const CHAINLIST_CHAIN_IDS_MAP = {
@@ -244,6 +246,8 @@ export const GNOSIS_DISPLAY_NAME = 'Gnosis';
 export const ZK_SYNC_ERA_DISPLAY_NAME = 'zkSync Era Mainnet';
 export const BASE_DISPLAY_NAME = 'Base Mainnet';
 export const AURORA_ETH_DISPLAY_NAME = 'Aurora';
+export const SCROLL_DISPLAY_NAME = 'Scroll';
+export const SCROLL_SEPOLIA_DISPLAY_NAME = 'Scroll Sepolia';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -419,6 +423,7 @@ export const TENET_MAINNET_IMAGE_URL = './images/tenet.svg';
 export const VELAS_EVM_MAINNET_IMAGE_URL = './images/velas.svg';
 export const ZKATANA_MAINNET_IMAGE_URL = './images/zkatana.png';
 export const ZORA_MAINNET_IMAGE_URL = './images/zora.svg';
+export const SCROLL_IMAGE_URL = './images/scroll.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -527,6 +532,8 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.LOCALHOST]: LOCALHOST_DISPLAY_NAME,
   [CHAIN_IDS.OPTIMISM]: OPTIMISM_DISPLAY_NAME,
   [CHAIN_IDS.POLYGON]: POLYGON_DISPLAY_NAME,
+  [CHAIN_IDS.SCROLL]: SCROLL_DISPLAY_NAME,
+  [CHAIN_IDS.SCROLL_SEPOLIA]: SCROLL_SEPOLIA_DISPLAY_NAME,
   [CHAIN_IDS.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
 } as const;
 
@@ -747,6 +754,8 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.CELO]: CELO_TOKEN_IMAGE_URL,
   [CHAIN_IDS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
   [CHAIN_IDS.FANTOM]: FTM_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.SCROLL]: SCROLL_IMAGE_URL,
+  [CHAIN_IDS.SCROLL_SEPOLIA]: SCROLL_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
@@ -887,6 +896,8 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.AURORA
     | typeof CHAIN_IDS.ARBITRUM_GOERLI
     | typeof CHAIN_IDS.BLAST
+    | typeof CHAIN_IDS.SCROLL
+    | typeof CHAIN_IDS.SCROLL_SEPOLIA
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {

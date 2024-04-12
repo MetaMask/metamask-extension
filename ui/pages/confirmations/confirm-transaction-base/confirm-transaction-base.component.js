@@ -172,7 +172,6 @@ export default class ConfirmTransactionBase extends Component {
     isUserOpContractDeployError: PropTypes.bool,
     useMaxValue: PropTypes.bool,
     maxValue: PropTypes.string,
-    isMultiLayerFeeNetwork: PropTypes.bool,
     hasMigratedFromOpenSeaToBlockaid: PropTypes.bool,
     hasDismissedOpenSeaToBlockaidBanner: PropTypes.bool,
     dismissOpenSeaToBlockaidBanner: PropTypes.func,
@@ -392,7 +391,6 @@ export default class ConfirmTransactionBase extends Component {
       useCurrencyRateCheck,
       tokenSymbol,
       isUsingPaymaster,
-      isMultiLayerFeeNetwork,
       hasMigratedFromOpenSeaToBlockaid,
       hasDismissedOpenSeaToBlockaidBanner,
       dismissOpenSeaToBlockaidBanner,
@@ -417,7 +415,7 @@ export default class ConfirmTransactionBase extends Component {
       return sumHexes(
         txData.txParams.value,
         useMaxFee ? hexMaximumTransactionFee : hexMinimumTransactionFee,
-        isMultiLayerFeeNetwork ? txData.layer1GasFee : 0,
+        txData.layer1GasFee ?? 0,
       );
     };
 
