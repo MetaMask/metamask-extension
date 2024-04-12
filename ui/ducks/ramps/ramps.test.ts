@@ -117,7 +117,7 @@ describe('rampsSlice', () => {
     });
 
     it('should return false when current chain is not buyable', () => {
-      getCurrentChainIdMock.mockReturnValue(CHAIN_IDS.ROPSTEN);
+      getCurrentChainIdMock.mockReturnValue(CHAIN_IDS.GOERLI);
       const state = store.getState();
       expect(getIsNativeTokenBuyable(state)).toEqual(false);
     });
