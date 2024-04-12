@@ -1436,7 +1436,6 @@ export const getConnectedSitesList = createDeepEqualSelector(
   getAllConnectedAccounts,
   (connectedSubjectsForAllAddresses, identities, connectedAddresses) => {
     const sitesList = {};
-    console.log(sitesList)
     connectedAddresses.forEach((connectedAddress) => {
       connectedSubjectsForAllAddresses[connectedAddress].forEach((app) => {
         const siteKey = app.origin;
@@ -1469,7 +1468,7 @@ export const getConnectedSitesListWithNetworkInfo = createDeepEqualSelector(
         (network) => network.id === domains[siteKey],
       );
       // For the testnets, if we do not have an image, we will have a fallback string
-      sitesList[siteKey].networkIconUrl = connectedNetwork.rpcPrefs ? connectedNetwork.rpcPrefs.imageUrl : '';
+      sitesList[siteKey].networkIconUrl = connectedNetwork.rpcPrefs?.imageUrl || ''
       sitesList[siteKey].networkName = connectedNetwork.nickname;
     });
     return sitesList;
