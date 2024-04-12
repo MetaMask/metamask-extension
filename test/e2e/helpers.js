@@ -786,11 +786,6 @@ const sendScreenToConfirmScreen = async (
     );
 
   await driver.clickElement({ text: 'Continue', tag: 'button' });
-
-  await driver.clickElement({
-    text: 'Continue',
-    tag: 'button',
-  });
 };
 
 const sendTransaction = async (
