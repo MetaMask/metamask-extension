@@ -50,7 +50,7 @@ export class WeakRefObjectMap<T extends Record<string, object>>
       } else {
         console.warn(
           `Property ${String(
-            key,
+            keyValue,
           )} is not an object and cannot be weakly referenced.`,
         );
       }
