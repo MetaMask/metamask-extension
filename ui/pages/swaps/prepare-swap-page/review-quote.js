@@ -41,10 +41,8 @@ import {
   getBackgroundSwapRouteState,
   swapsQuoteSelected,
   getReviewSwapClickedTimestamp,
-  getSmartTransactionsOptInStatus,
   signAndSendSwapsSmartTransaction,
   getSwapsNetworkConfig,
-  getSmartTransactionsEnabled,
   getSmartTransactionsError,
   getCurrentSmartTransactionsError,
   getSwapsSTXLoading,
@@ -65,6 +63,10 @@ import {
   getUSDConversionRate,
   getIsMultiLayerFeeNetwork,
 } from '../../../selectors';
+import {
+  getSmartTransactionsOptInStatus,
+  getSmartTransactionsEnabled,
+} from '../../../../shared/modules/selectors';
 import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
 import {
   setCustomApproveTxData,
