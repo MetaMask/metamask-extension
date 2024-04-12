@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.15.0]
+
 ## [11.14.0]
 ### Added
 - Transaction Simulations
@@ -64,6 +66,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [MMI] Adds MMI Sentry DSN key ([#23826](https://github.com/MetaMask/metamask-extension/pull/23826))
 
 ## [11.13.1]
+## [11.15.0]
 
 ## [11.13.0]
 ### Added
@@ -4606,7 +4609,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.14.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.15.0...HEAD
+[11.15.0]: https://github.com/MetaMask/metamask-extension/compare/v11.14.0...v11.15.0
 [11.14.0]: https://github.com/MetaMask/metamask-extension/compare/v11.13.3...v11.14.0
 [11.13.3]: https://github.com/MetaMask/metamask-extension/compare/v11.13.2...v11.13.3
 [11.13.2]: https://github.com/MetaMask/metamask-extension/compare/v11.13.1...v11.13.2
