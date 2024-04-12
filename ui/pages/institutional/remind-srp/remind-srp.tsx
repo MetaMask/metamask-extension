@@ -6,30 +6,24 @@ import {
   Box,
   Text,
   ButtonVariant,
-  Button,
+  Button as NewButton,
   ButtonSize,
+  IconName,
 } from '../../../components/component-library';
-
-import { ButtonIcon } from '../../../../ui/components/component-library/button-icon/button-icon';
+// Using the old one since they have different properties and this one looks better
+import Button from '../../../components/ui/button';
 
 import {
   AlignItems,
-  BackgroundColor,
   BlockSize,
-  BorderRadius,
   Display,
   FlexDirection,
   FontWeight,
   IconColor,
   JustifyContent,
-  Size,
-  TEXT_ALIGN,
   TextAlign,
-  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-
-import { Icon, IconName } from '../../../components/component-library';
 
 import { MMI_ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import RecoveryPhraseChips from '../../../pages/onboarding-flow/recovery-phrase/recovery-phrase-chips';
@@ -39,15 +33,11 @@ import RecoveryPhraseChips from '../../../pages/onboarding-flow/recovery-phrase/
  *
  * @param props
  * @param props.secretRecoveryPhrase
- * @param props.propB
- * @param props.propC
  * @returns
  */
-export const RemindSRP: React.FC<{
-  secretRecoveryPhrase: string;
-  propB: any[];
-  propC?: string;
-}> = ({ secretRecoveryPhrase, propB, propC }) => {
+export const RemindSRP: React.FC<{ secretRecoveryPhrase: string }> = ({
+  secretRecoveryPhrase,
+}) => {
   const t = useI18nContext();
   const history = useHistory();
   const [copied, handleCopy] = useCopyToClipboard() as [
@@ -64,7 +54,11 @@ export const RemindSRP: React.FC<{
         textAlign={TextAlign.Center}
         marginBottom={4}
       >
-        <Text fontWeight={FontWeight.Bold} variant={TextVariant.headingLg}>
+        <Text
+          fontWeight={FontWeight.Bold}
+          variant={TextVariant.headingLg}
+          marginBottom={4}
+        >
           {t('secretRecoveryPhrase')}
         </Text>
 
@@ -82,7 +76,7 @@ export const RemindSRP: React.FC<{
         justifyContent={JustifyContent.spaceBetween}
         width={BlockSize.Full}
       >
-        <Button
+        <NewButton
           variant={ButtonVariant.Link}
           startIconName={hiddenPhrase ? IconName.Eye : IconName.EyeSlash}
           color={IconColor.primaryDefault}
@@ -94,9 +88,9 @@ export const RemindSRP: React.FC<{
           }}
         >
           {hiddenPhrase ? t('revealTheSeedPhrase') : t('hideSeedPhrase')}
-        </Button>
+        </NewButton>
 
-        <Button
+        <NewButton
           variant={ButtonVariant.Link}
           startIconName={copied ? IconName.CopySuccess : IconName.Copy}
           color={IconColor.primaryDefault}
@@ -105,7 +99,7 @@ export const RemindSRP: React.FC<{
           onClick={() => handleCopy(secretRecoveryPhrase)}
         >
           {copied ? t('copiedExclamation') : t('copyToClipboard')}
-        </Button>
+        </NewButton>
       </Box>
 
       <Box display={Display.Flex} flexDirection={FlexDirection.Row}>
@@ -122,10 +116,11 @@ export const RemindSRP: React.FC<{
         alignItems={AlignItems.center}
       >
         <Button
-          size={ButtonSize.Lg}
           data-testid="recovery-phrase-continue"
+          className="recovery-phrase-continue"
+          icon={null}
           type="primary"
-          className="recovery-phrase__footer--button"
+          large
           onClick={() => {
             history.replace(MMI_ONBOARDING_COMPLETION_ROUTE);
           }}
