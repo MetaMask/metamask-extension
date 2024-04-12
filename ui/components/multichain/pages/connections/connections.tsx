@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { NonEmptyArray } from '@metamask/utils';
 import {
   AlignItems,
@@ -22,8 +22,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getConnectedSitesList,
   getInternalAccounts,
-  getOrderedConnectedAccountsForActiveTab,
-  getOriginOfCurrentTab,
+  getOrderedConnectedAccountsForConnectedDapp,
   getPermissionSubjects,
   getPermittedAccountsByOrigin,
   getSelectedAccount,
@@ -87,7 +86,10 @@ export const Connections = () => {
     setShowDisconnectedAllAccountsUpdatedToast,
   ] = useState(false);
 
-  const activeTabOrigin: string = useSelector(getOriginOfCurrentTab);
+  const urlParams: { origin: string } = useParams();
+  const securedOrigin = decodeURIComponent(urlParams.origin);
+
+  const activeTabOrigin: string = securedOrigin;
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const subjectMetadata: { [key: string]: any } = useSelector(
@@ -102,8 +104,8 @@ export const Connections = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { id } = useSelector((state: any) => state.activeTab);
 
-  const connectedAccounts = useSelector(
-    getOrderedConnectedAccountsForActiveTab,
+  const connectedAccounts = useSelector((state) =>
+    getOrderedConnectedAccountsForConnectedDapp(state, activeTabOrigin),
   );
   const selectedAccount = useSelector(getSelectedAccount);
   const internalAccounts = useSelector(getInternalAccounts);
@@ -224,7 +226,7 @@ export const Connections = () => {
             textAlign={TextAlign.Center}
             ellipsis
           >
-            {getURLHost(activeTabOrigin)}
+            {getURLHost(securedOrigin)}
           </Text>
         </Box>
       </Header>
@@ -272,6 +274,7 @@ export const Connections = () => {
           <ConnectAccountsModal
             onClose={() => setShowConnectAccountsModal(false)}
             onAccountsUpdate={() => setShowConnectedAccountsUpdatedToast(true)}
+            activeTabOrigin={activeTabOrigin}
           />
         ) : null}
         {showDisconnectAllModal ? (
