@@ -18,7 +18,6 @@ export function useTransactionInsightSnaps({
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(undefined);
   const [hasFetchedInsight, setHasFetchedInsight] = useState(false);
-  const [warnings, setWarnings] = useState([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -72,20 +71,8 @@ export function useTransactionInsightSnaps({
         };
       });
 
-      const insightWarnings = data?.reduce((warningsArr, promise) => {
-        if (promise.response?.severity === SeverityLevel.Critical) {
-          const {
-            snapId,
-            response: { id },
-          } = promise;
-          warningsArr.push({ snapId, id });
-        }
-        return warningsArr;
-      }, []);
-
       if (!cancelled) {
         setData(reformattedData);
-        setWarnings(insightWarnings);
         setLoading(false);
         setHasFetchedInsight(true);
       }
@@ -105,6 +92,17 @@ export function useTransactionInsightSnaps({
     JSON.stringify(insightSnaps),
     hasFetchedInsight,
   ]);
+
+  const warnings = data?.reduce((warningsArr, promise) => {
+    if (promise.response?.severity === SeverityLevel.Critical) {
+      const {
+        snapId,
+        response: { id },
+      } = promise;
+      warningsArr.push({ snapId, id });
+    }
+    return warningsArr;
+  }, []);
 
   return { data, loading, warnings };
 }
