@@ -5591,6 +5591,11 @@ export default class MetamaskController extends EventEmitter {
       getIsSmartTransaction: () => {
         return getIsSmartTransaction(this._getMetaMaskState());
       },
+      getSmartTransactionByMinedTxHash: (txHash) => {
+        return this.smartTransactionsController.getSmartTransactionByMinedTxHash(
+          txHash,
+        );
+      },
     };
     return {
       ...controllerActions,
