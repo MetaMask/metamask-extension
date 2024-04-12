@@ -158,7 +158,7 @@ describe('migration #105', () => {
             accounts: {
               [expectedUUID]: expectedInternalAccount(
                 MOCK_ADDRESS,
-                `Account 1`,
+                'Account 1',
               ),
             },
             selectedAccount: expectedUUID,
@@ -186,7 +186,7 @@ describe('migration #105', () => {
             accounts: {
               [expectedUUID]: expectedInternalAccount(
                 MOCK_ADDRESS,
-                `a random name`,
+                'a random name',
               ),
             },
             selectedAccount: expectedUUID,
@@ -217,11 +217,11 @@ describe('migration #105', () => {
             accounts: {
               [expectedUUID]: expectedInternalAccount(
                 MOCK_ADDRESS,
-                `Account 1`,
+                'Account 1',
               ),
               [expectedUUID2]: expectedInternalAccount(
                 MOCK_ADDRESS_2,
-                `Account 2`,
+                'Account 2',
               ),
             },
             selectedAccount: expectedUUID,
