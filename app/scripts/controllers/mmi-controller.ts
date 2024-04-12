@@ -35,6 +35,7 @@ import {
   IInteractiveRefreshTokenChangeEvent,
   Label,
   Signature,
+  ConnectionRequest,
 } from '../../../shared/constants/mmi-controller';
 import AccountTracker from '../lib/account-tracker';
 import AppStateController from './app-state';
@@ -108,7 +109,7 @@ export default class MMIController extends EventEmitter {
 
   private setChannelId: (channelId: string) => void;
 
-  private setConnectionRequest: (payload: any) => void;
+  private setConnectionRequest: (payload: ConnectionRequest) => void;
 
   public trackTransactionEvents: (
     args: { transactionMeta: TransactionMeta },
@@ -201,8 +202,7 @@ export default class MMIController extends EventEmitter {
 
     this.transactionUpdateController.on(
       'connection.request',
-      async (payload) => {
-        console.log('connection.request', payload);
+      async (payload: ConnectionRequest) => {
         this.setConnectionRequest(payload);
       },
     );

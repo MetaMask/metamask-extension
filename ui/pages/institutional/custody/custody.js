@@ -165,7 +165,7 @@ const CustodyPage = () => {
           setSelectedCustodianType(custodian.type);
         } else {
           setMatchedCustodian(custodianByDisplayName);
-          true
+          custodianByDisplayName.isQRCodeSupported
             ? setShowQRCodeModal(true)
             : setIsConfirmConnectCustodianModalVisible(true);
         }
@@ -271,6 +271,16 @@ const CustodyPage = () => {
     [selectedCustodianName, trackEvent],
   );
 
+  const removeConnectRequest = async () => {
+    await dispatch(
+      mmiActions.removeAddTokenConnectRequest({
+        origin: connectRequest.origin,
+        environment: connectRequest.environment,
+        token: connectRequest.token,
+      }),
+    );
+  };
+
   useEffect(() => {
     const fetchConnectRequest = async () => {
       try {
@@ -322,7 +332,7 @@ const CustodyPage = () => {
 
     handleFetchConnectRequest();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [connectRequest]);
 
   useEffect(() => {
     async function handleNetworkChange() {
@@ -352,7 +362,8 @@ const CustodyPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentChainId]);
 
-  const cancelConnectCustodianToken = () => {
+  const cancelConnectCustodianToken = async () => {
+    await removeConnectRequest();
     setSelectedCustodianName('');
     setSelectedCustodianType('');
     setSelectedCustodianImage(null);
@@ -537,6 +548,7 @@ const CustodyPage = () => {
                       );
 
                       setAccounts(accountsValue);
+                      await removeConnectRequest();
                       trackEvent({
                         category: MetaMetricsEventCategory.MMI,
                         event: MetaMetricsEventName.CustodianConnected,
@@ -614,6 +626,8 @@ const CustodyPage = () => {
                 },
               });
 
+              await removeConnectRequest();
+
               history.push({
                 pathname: CUSTODY_ACCOUNT_DONE_ROUTE,
                 state: {
@@ -629,7 +643,8 @@ const CustodyPage = () => {
               setSelectError(e.message);
             }
           }}
-          onCancel={() => {
+          onCancel={async () => {
+            await removeConnectRequest();
             setAccounts(null);
             setSelectedCustodianName(null);
             setSelectedCustodianType(null);

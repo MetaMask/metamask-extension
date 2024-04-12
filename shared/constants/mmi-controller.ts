@@ -57,7 +57,7 @@ export type MMIControllerOptions = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   updateTransaction: (txMeta: any) => void;
   setChannelId: (channelId: string) => void;
-  setConnectionRequest: (payload: any) => void;
+  setConnectionRequest: (payload: ConnectionRequest) => void;
 };
 
 export type ISignedEvent = {
@@ -90,4 +90,19 @@ export type NetworkConfiguration = {
   id: string;
   chainId: string;
   setActiveNetwork: (chainId: string) => void;
+};
+
+export type ConnectionRequest = {
+  payload: string;
+  traceId: string;
+  channelId: string;
+};
+
+export type ConnectRequest = {
+  channelId: string;
+  traceId: string;
+  token: string;
+  environment: string;
+  feature: string;
+  service: string;
 };
