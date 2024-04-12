@@ -55,6 +55,7 @@ describe('ConfirmInfoRow', () => {
         label={KEY_ALERT_KEY_MOCK}
         children={<Text>value</Text>}
         alertKey={KEY_ALERT_KEY_MOCK}
+        alertOwnerId={OWNER_ID_MOCK}
       />,
       mockStore,
     );

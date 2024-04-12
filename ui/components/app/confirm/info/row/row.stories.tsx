@@ -6,10 +6,11 @@ import configureStore from '../../../../../store/store';
 import { Provider } from 'react-redux';
 import { Meta } from '@storybook/react';
 
+const LABEL_FROM_MOCK = 'From';
 const alertsMock: Alert[] = [
   {
-    key: 'From',
-    field: 'From',
+    key: LABEL_FROM_MOCK,
+    field: LABEL_FROM_MOCK,
     severity: Severity.Danger,
     message: 'Description of what may happen if this alert was ignored',
     reason: 'Reason for the alert 1',
@@ -20,15 +21,15 @@ const alertsMock: Alert[] = [
     ],
   },
 ];
-const ownerIdMock = '123';
+const OWNER_ID_MOCK = '123';
 const storeMock = configureStore({
   confirmAlerts: {
-    alerts: { [ownerIdMock]: alertsMock },
-    confirmed: { [ownerIdMock]: { 'From': false, 'data': false, 'contract': false } },
+    alerts: { [OWNER_ID_MOCK]: alertsMock },
+    confirmed: { [OWNER_ID_MOCK]: { [LABEL_FROM_MOCK]: false, 'data': false, 'contract': false } },
   },
   confirm: {
     currentConfirmation: {
-      id: ownerIdMock,
+      id: OWNER_ID_MOCK,
       status: 'unapproved',
       time: new Date().getTime(),
       type: 'json_request',
@@ -71,9 +72,10 @@ export default ConfirmInfoRowStory;
  */
 export const AlertRowCritical = DefaultStory.bind({});
 AlertRowCritical.args = {
-  label: 'From',
+  label: LABEL_FROM_MOCK,
   children: 'Value',
-  alertKey: 'From',
+  alertKey: LABEL_FROM_MOCK,
+  alertOwnerId: OWNER_ID_MOCK,
   variant: ConfirmInfoRowVariant.Critical,
 };
 
@@ -82,9 +84,10 @@ AlertRowCritical.args = {
  */
 export const AlertRowWarning = DefaultStory.bind({});
 AlertRowWarning.args = {
-  label: 'From',
+  label: LABEL_FROM_MOCK,
   children: 'Value',
-  alertKey: 'From',
+  alertKey: LABEL_FROM_MOCK,
+  alertOwnerId: OWNER_ID_MOCK,
   variant: ConfirmInfoRowVariant.Warning,
 };
 
@@ -93,7 +96,8 @@ AlertRowWarning.args = {
  */
 export const AlertRowInformative = DefaultStory.bind({});
 AlertRowInformative.args = {
-  label: 'From',
+  label: LABEL_FROM_MOCK,
   children: 'Value',
-  alertKey: 'From',
+  alertKey: LABEL_FROM_MOCK,
+  alertOwnerId: OWNER_ID_MOCK,
 };
