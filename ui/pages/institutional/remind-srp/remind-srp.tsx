@@ -26,7 +26,7 @@ import {
 } from '../../../helpers/constants/design-system';
 
 import { MMI_ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
-import RecoveryPhraseChips from '../../../pages/onboarding-flow/recovery-phrase/recovery-phrase-chips';
+import RecoveryPhraseChips from '../../onboarding-flow/recovery-phrase/recovery-phrase-chips';
 
 /**
  * Displays a SRP reminder to the user

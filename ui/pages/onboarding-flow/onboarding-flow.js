@@ -174,9 +174,7 @@ export default function OnboardingFlow() {
           <Route
             path={SRP_REMINDER}
             render={() => (
-              <RemindSRP
-                secretRecoveryPhrase={secretRecoveryPhrase}
-              />
+              <RemindSRP secretRecoveryPhrase={secretRecoveryPhrase} />
             )}
           />
           {
