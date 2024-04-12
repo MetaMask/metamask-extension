@@ -121,7 +121,7 @@ export default class DomainInput extends Component {
                       : AvatarAccountVariant.Jazzicon
                   }
                   address={selectedAddress}
-                  size={Size.SM}
+                  size={Size.MD}
                   borderColor={BackgroundColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border
                 />
                 <div className="ens-input__selected-input__title">
