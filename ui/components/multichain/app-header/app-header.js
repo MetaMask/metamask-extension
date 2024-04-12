@@ -75,7 +75,7 @@ import { SEND_STAGES, getSendStage } from '../../../ducks/send';
 import Tooltip from '../../ui/tooltip';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
-import { getURLHost, shortenAddress } from '../../../helpers/utils/util';
+import { shortenAddress } from '../../../helpers/utils/util';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 
 export const AppHeader = ({ location }) => {
@@ -175,9 +175,7 @@ export const AppHeader = ({ location }) => {
   }, [chainId, dispatch, trackEvent]);
 
   const handleConnectionsRoute = () => {
-    const hostName = getURLHost(origin);
-
-    history.push(`${CONNECTIONS}/${encodeURIComponent(hostName)}`);
+    history.push(`${CONNECTIONS}/${encodeURIComponent(origin)}`);
   };
   // This is required to ensure send and confirmation screens
   // look as desired
