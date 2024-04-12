@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enabled Base network support for swaps ([#23394](https://github.com/MetaMask/metamask-extension/pull/23394))
 - Introduced a 'What's New' notification for MetaMask Portfolio ([#23359](https://github.com/MetaMask/metamask-extension/pull/23359))
 - Activated Snaps home pages in the stable release ([#23383](https://github.com/MetaMask/metamask-extension/pull/23383))
+- Added a custom screen for `increaseAllowance` contract interactions ([#23883](https://github.com/MetaMask/metamask-extension/pull/23883))
 - [MMI] Enhanced the custody view with a search bar ([#23492](https://github.com/MetaMask/metamask-extension/pull/23492))
 - [MMI] Implemented message text verification for contract call operations ([#23462](https://github.com/MetaMask/metamask-extension/pull/23462))
 
