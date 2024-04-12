@@ -312,10 +312,10 @@ export const createTransactionEventFragmentWithTxId = async (
     actionId: string;
   },
 ) => {
-  const transactionMeta =
-    transactionMetricsRequest.getTransaction(transactionId);
-
-  transactionMeta.actionId = actionId;
+  const transactionMeta = {
+    ...transactionMetricsRequest.getTransaction(transactionId),
+    actionId,
+  };
 
   const { properties, sensitiveProperties } =
     await buildEventFragmentProperties({
@@ -716,12 +716,11 @@ function getUniqueId(
   eventName: TransactionMetaMetricsEvent,
   transactionId: string,
 ) {
-  const isSubmitted = [
-    TransactionMetaMetricsEvent.finalized,
-    TransactionMetaMetricsEvent.submitted,
-  ].includes(eventName);
+  const isFinalizedOrSubmitted =
+    eventName === TransactionMetaMetricsEvent.finalized ||
+    eventName === TransactionMetaMetricsEvent.submitted;
   const uniqueIdentifier = `transaction-${
-    isSubmitted ? 'submitted' : 'added'
+    isFinalizedOrSubmitted ? 'submitted' : 'added'
   }-${transactionId}`;
 
   return uniqueIdentifier;
@@ -845,6 +844,7 @@ async function buildEventFragmentProperties({
     [
       TransactionType.contractInteraction,
       TransactionType.tokenMethodApprove,
+      TransactionType.tokenMethodIncreaseAllowance,
       TransactionType.tokenMethodSafeTransferFrom,
       TransactionType.tokenMethodSetApprovalForAll,
       TransactionType.tokenMethodTransfer,

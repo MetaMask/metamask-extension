@@ -280,7 +280,16 @@
     },
     "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals": {
       "packages": {
-        "webpack>eslint-scope": true
+        "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals>eslint-scope": true
+      }
+    },
+    "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals>eslint-scope": {
+      "builtin": {
+        "assert": true
+      },
+      "packages": {
+        "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals>eslint-scope>estraverse": true,
+        "eslint>eslint-scope>esrecurse": true
       }
     },
     "@babel/eslint-parser>semver": {
@@ -1377,6 +1386,11 @@
         "define": true
       }
     },
+    "@storybook/test-runner>jest-circus>p-limit": {
+      "packages": {
+        "@storybook/test-runner>jest-circus>p-limit>yocto-queue": true
+      }
+    },
     "@typescript-eslint/eslint-plugin": {
       "packages": {
         "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils": true,
@@ -1399,7 +1413,6 @@
         "@typescript-eslint/eslint-plugin>tsutils": true,
         "eslint-plugin-jest>@typescript-eslint/utils": true,
         "eslint>debug": true,
-        "madge>debug": true,
         "nock>debug": true,
         "typescript": true
       }
@@ -2171,11 +2184,6 @@
         "chokidar>anymatch>picomatch": true
       }
     },
-    "copy-webpack-plugin>p-limit": {
-      "packages": {
-        "copy-webpack-plugin>p-limit>yocto-queue": true
-      }
-    },
     "cross-spawn": {
       "builtin": {
         "child_process.spawn": true,
@@ -2362,17 +2370,6 @@
         "depcheck>cosmiconfig>parse-json>error-ex>is-arrayish": true
       }
     },
-    "depcheck>cosmiconfig>yaml": {
-      "globals": {
-        "Buffer": true,
-        "YAML_SILENCE_DEPRECATION_WARNINGS": true,
-        "YAML_SILENCE_WARNINGS": true,
-        "atob": true,
-        "btoa": true,
-        "console.warn": true,
-        "process": true
-      }
-    },
     "depcheck>is-core-module": {
       "globals": {
         "process.versions": true
@@ -2472,6 +2469,7 @@
         "eslint>@eslint/js": true,
         "eslint>@humanwhocodes/config-array": true,
         "eslint>@nodelib/fs.walk": true,
+        "eslint>@ungap/structured-clone": true,
         "eslint>ajv": true,
         "eslint>doctrine": true,
         "eslint>eslint-scope": true,
@@ -2483,10 +2481,9 @@
         "eslint>file-entry-cache": true,
         "eslint>glob-parent": true,
         "eslint>globals": true,
-        "eslint>grapheme-splitter": true,
+        "eslint>graphemer": true,
         "eslint>ignore": true,
         "eslint>imurmurhash": true,
-        "eslint>js-sdsl": true,
         "eslint>json-stable-stringify-without-jsonify": true,
         "eslint>levn": true,
         "eslint>lodash.merge": true,
@@ -3065,7 +3062,7 @@
         "eslint-plugin-prettier": true,
         "eslint-plugin-react": true,
         "eslint-plugin-react-hooks": true,
-        "eslint>ajv": true,
+        "eslint>@eslint/eslintrc>ajv": true,
         "eslint>globals": true,
         "eslint>ignore": true,
         "eslint>minimatch": true,
@@ -3073,9 +3070,48 @@
         "nock>debug": true
       }
     },
+    "eslint>@eslint/eslintrc>ajv": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "eslint>@eslint/eslintrc>ajv>json-schema-traverse": true,
+        "eslint>ajv>uri-js": true,
+        "eslint>fast-deep-equal": true
+      }
+    },
+    "eslint>@eslint/eslintrc>import-fresh": {
+      "builtin": {
+        "path.dirname": true
+      },
+      "globals": {
+        "__filename": true
+      },
+      "packages": {
+        "eslint>@eslint/eslintrc>import-fresh>parent-module": true,
+        "eslint>@eslint/eslintrc>import-fresh>resolve-from": true
+      }
+    },
+    "eslint>@eslint/eslintrc>import-fresh>parent-module": {
+      "packages": {
+        "@metamask/test-bundler>ow>callsites": true
+      }
+    },
+    "eslint>@eslint/eslintrc>import-fresh>resolve-from": {
+      "builtin": {
+        "fs.realpathSync": true,
+        "module._nodeModulePaths": true,
+        "module._resolveFilename": true,
+        "path.join": true,
+        "path.resolve": true
+      }
+    },
     "eslint>@humanwhocodes/config-array": {
       "builtin": {
-        "path": true
+        "path.dirname": true,
+        "path.join": true,
+        "path.relative": true
       },
       "packages": {
         "eslint>@humanwhocodes/config-array>@humanwhocodes/object-schema": true,
@@ -3123,6 +3159,11 @@
     "eslint>@nodelib/fs.walk>fastq": {
       "packages": {
         "eslint>@nodelib/fs.walk>fastq>reusify": true
+      }
+    },
+    "eslint>@ungap/structured-clone": {
+      "globals": {
+        "structuredClone": true
       }
     },
     "eslint>ajv": {
@@ -3224,32 +3265,6 @@
         "process": true
       }
     },
-    "eslint>import-fresh": {
-      "builtin": {
-        "path.dirname": true
-      },
-      "globals": {
-        "__filename": true
-      },
-      "packages": {
-        "eslint>import-fresh>parent-module": true,
-        "eslint>import-fresh>resolve-from": true
-      }
-    },
-    "eslint>import-fresh>parent-module": {
-      "packages": {
-        "@metamask/test-bundler>ow>callsites": true
-      }
-    },
-    "eslint>import-fresh>resolve-from": {
-      "builtin": {
-        "fs.realpathSync": true,
-        "module._nodeModulePaths": true,
-        "module._resolveFilename": true,
-        "path.join": true,
-        "path.resolve": true
-      }
-    },
     "eslint>levn": {
       "packages": {
         "eslint>levn>prelude-ls": true,
@@ -3329,6 +3344,7 @@
         "fs.stat": true,
         "fs.statSync": true,
         "os.cpus": true,
+        "os.platform": true,
         "path.basename": true,
         "path.resolve": true,
         "stream.PassThrough": true,
@@ -3749,8 +3765,8 @@
         "process.env.NODE_ENV": true
       },
       "packages": {
-        "depcheck>cosmiconfig>yaml": true,
         "gulp-postcss>postcss-load-config>lilconfig": true,
+        "gulp-postcss>postcss-load-config>yaml": true,
         "ts-node": true
       }
     },
@@ -3769,6 +3785,17 @@
       },
       "globals": {
         "process.cwd": true
+      }
+    },
+    "gulp-postcss>postcss-load-config>yaml": {
+      "globals": {
+        "Buffer": true,
+        "YAML_SILENCE_DEPRECATION_WARNINGS": true,
+        "YAML_SILENCE_WARNINGS": true,
+        "atob": true,
+        "btoa": true,
+        "console.warn": true,
+        "process": true
       }
     },
     "gulp-sass": {
@@ -6191,21 +6218,6 @@
         "loose-envify>js-tokens": true
       }
     },
-    "madge>detective-less>gonzales-pe": {
-      "globals": {
-        "console.error": true,
-        "define": true
-      }
-    },
-    "madge>ora>is-unicode-supported": {
-      "globals": {
-        "process.env.CI": true,
-        "process.env.TERM": true,
-        "process.env.TERM_PROGRAM": true,
-        "process.env.WT_SESSION": true,
-        "process.platform": true
-      }
-    },
     "mocha>find-up": {
       "builtin": {
         "path.dirname": true,
@@ -6235,13 +6247,22 @@
     },
     "mocha>find-up>locate-path>p-locate": {
       "packages": {
-        "copy-webpack-plugin>p-limit": true
+        "@storybook/test-runner>jest-circus>p-limit": true
       }
     },
     "mocha>log-symbols": {
       "packages": {
         "chalk": true,
-        "madge>ora>is-unicode-supported": true
+        "mocha>log-symbols>is-unicode-supported": true
+      }
+    },
+    "mocha>log-symbols>is-unicode-supported": {
+      "globals": {
+        "process.env.CI": true,
+        "process.env.TERM": true,
+        "process.env.TERM_PROGRAM": true,
+        "process.env.WT_SESSION": true,
+        "process.platform": true
       }
     },
     "mocha>supports-color": {
@@ -6439,6 +6460,11 @@
         "process.argv.includes": true,
         "process.env": true,
         "process.platform": true
+      }
+    },
+    "postcss>source-map-js": {
+      "globals": {
+        "console": true
       }
     },
     "prettier": {
@@ -7896,9 +7922,20 @@
       },
       "packages": {
         "depcheck>cosmiconfig>parse-json": true,
-        "depcheck>cosmiconfig>yaml": true,
-        "eslint>import-fresh": true,
-        "globby>dir-glob>path-type": true
+        "eslint>@eslint/eslintrc>import-fresh": true,
+        "globby>dir-glob>path-type": true,
+        "stylelint>cosmiconfig>yaml": true
+      }
+    },
+    "stylelint>cosmiconfig>yaml": {
+      "globals": {
+        "Buffer": true,
+        "YAML_SILENCE_DEPRECATION_WARNINGS": true,
+        "YAML_SILENCE_WARNINGS": true,
+        "atob": true,
+        "btoa": true,
+        "console.warn": true,
+        "process": true
       }
     },
     "stylelint>execall": {
@@ -8184,8 +8221,14 @@
     },
     "stylelint>postcss-sass": {
       "packages": {
-        "madge>detective-less>gonzales-pe": true,
+        "stylelint>postcss-sass>gonzales-pe": true,
         "stylelint>postcss-sass>postcss": true
+      }
+    },
+    "stylelint>postcss-sass>gonzales-pe": {
+      "globals": {
+        "console.error": true,
+        "define": true
       }
     },
     "stylelint>postcss-sass>postcss": {
@@ -8315,10 +8358,15 @@
         "process.stdout.write": true
       },
       "packages": {
-        "eslint>ajv": true,
         "lodash": true,
+        "stylelint>table>ajv": true,
         "stylelint>table>slice-ansi": true,
         "stylelint>table>string-width": true
+      }
+    },
+    "stylelint>table>ajv": {
+      "packages": {
+        "eslint>fast-deep-equal": true
       }
     },
     "stylelint>table>slice-ansi": {
@@ -8840,6 +8888,7 @@
         "path.basename": true,
         "path.dirname": true,
         "path.join": true,
+        "path.relative": true,
         "path.resolve": true
       },
       "globals": {
@@ -8853,18 +8902,20 @@
         "webpack>browserslist>node-releases": true
       }
     },
-    "webpack>eslint-scope": {
-      "builtin": {
-        "assert": true
-      },
-      "packages": {
-        "eslint>eslint-scope>esrecurse": true,
-        "webpack>eslint-scope>estraverse": true
-      }
-    },
     "webpack>json-parse-even-better-errors": {
       "globals": {
         "Buffer.isBuffer": true
+      }
+    },
+    "yaml": {
+      "globals": {
+        "Buffer": true,
+        "atob": true,
+        "btoa": true,
+        "console.dir": true,
+        "console.log": true,
+        "console.warn": true,
+        "process": true
       }
     },
     "yargs": {

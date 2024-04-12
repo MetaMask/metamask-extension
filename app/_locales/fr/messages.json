@@ -2565,21 +2565,6 @@
   "notificationsMarkAllAsRead": {
     "message": "Marquer tout comme lu"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "En savoir plus"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "🎉 Nous sommes ravis d’annoncer le lancement de la version bêta publique de MetaMask Snaps !"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "Personnalisez votre portefeuille avec des snaps conçus par la communauté de développeurs !"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "Les snaps vous aident à profiter pleinement de MetaMask, par exemple vous connecter à plus de réseaux, voir un aperçu des transactions et recevoir des notifications personnalisées."
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "Présentation de MetaMask Snaps"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 nouveaux jetons trouvés dans ce compte",
     "description": "$1 is the number of new tokens detected"
@@ -3266,9 +3251,6 @@
   },
   "securityAlerts": {
     "message": "Alertes de sécurité"
-  },
-  "securityAlertsDescription": {
-    "message": "Cette fonctionnalité vous avertit de toute activité malveillante sur le réseau principal Ethereum en examinant activement les transactions et les demandes de signature tout en protégeant vos données personnelles. Vos données ne sont pas partagées avec la tierce partie qui fournit ce service. Vous devez faire preuve de diligence raisonnable avant d’approuver toute demande. Rien ne garantit que toutes les activités malveillantes seront détectées par cette fonctionnalité."
   },
   "securityAndPrivacy": {
     "message": "Sécurité et confidentialité"

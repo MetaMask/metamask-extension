@@ -2562,21 +2562,6 @@
   "notificationsMarkAllAsRead": {
     "message": "Tandai semua telah dibaca"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "Selengkapnya"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "🎉 Kami sangat gembira mengumumkan versi Open Beta dari MetaMask Snap!"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "Personalisasikan dompet Anda dengan snap yang dibuat oleh komunitas pengembang!"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "Snap membantu Anda melakukan lebih banyak hal dengan MetaMask — seperti terhubung ke lebih banyak jaringan, melihat wawasan transaksi, dan mendapatkan notifikasi khusus."
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "Memperkenalkan MetaMask Snap"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 token baru ditemukan di akun ini",
     "description": "$1 is the number of new tokens detected"
@@ -3263,9 +3248,6 @@
   },
   "securityAlerts": {
     "message": "Peringatan keamanan"
-  },
-  "securityAlertsDescription": {
-    "message": "Fitur ini memperingatkan Anda tentang aktivitas berbahaya di Mainnet Ethereum dengan secara aktif meninjau permintaan transaksi dan tanda tangan sambil menjaga privasi. Data Anda tidak dibagikan dengan pihak ketiga yang menyediakan layanan ini. Selalu lakukan uji tuntas sendiri sebelum menyetujui permintaan apa pun. Tidak ada jaminan bahwa fitur ini akan mendeteksi semua aktivitas berbahaya."
   },
   "securityAndPrivacy": {
     "message": "Keamanan & privasi"

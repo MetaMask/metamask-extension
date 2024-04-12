@@ -26,6 +26,7 @@ import {
   TextAlign,
   TextColor,
   Size,
+  Severity,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   IconColor,
   Display,
@@ -36,6 +37,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import {
   ButtonLink,
+  BannerAlert,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   Box,
   Icon,
@@ -85,6 +87,10 @@ export default class SignatureRequestOriginal extends Component {
     mostRecentOverviewPage: PropTypes.string.isRequired,
     resolvePendingApproval: PropTypes.func.isRequired,
     completedTx: PropTypes.func.isRequired,
+    hasMigratedFromOpenSeaToBlockaid: PropTypes.bool.isRequired,
+    isNetworkSupportedByBlockaid: PropTypes.bool.isRequired,
+    hasDismissedOpenSeaToBlockaidBanner: PropTypes.bool.isRequired,
+    dismissOpenSeaToBlockaidBanner: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     // Used to show a warning if the signing account is not the selected account
     // Largely relevant for contract wallet custodians
@@ -129,6 +135,8 @@ export default class SignatureRequestOriginal extends Component {
   };
 
   renderBody = () => {
+    const { t } = this.context;
+
     let rows;
     const notice = `${this.context.t('youSign')}:`;
 
@@ -150,6 +158,20 @@ export default class SignatureRequestOriginal extends Component {
       ? subjectMetadata?.[txData.msgParams.origin]
       : null;
 
+    const {
+      hasMigratedFromOpenSeaToBlockaid,
+      isNetworkSupportedByBlockaid,
+      hasDismissedOpenSeaToBlockaidBanner,
+      dismissOpenSeaToBlockaidBanner,
+    } = this.props;
+    const showOpenSeaToBlockaidBannerAlert =
+      hasMigratedFromOpenSeaToBlockaid &&
+      !isNetworkSupportedByBlockaid &&
+      !hasDismissedOpenSeaToBlockaidBanner;
+    const handleCloseOpenSeaToBlockaidBannerAlert = () => {
+      dismissOpenSeaToBlockaidBanner();
+    };
+
     return (
       <div className="request-signature__body">
         {
@@ -162,6 +184,23 @@ export default class SignatureRequestOriginal extends Component {
             securityProviderResponse={txData.securityProviderResponse}
           />
         )}
+        {showOpenSeaToBlockaidBannerAlert ? (
+          <BannerAlert
+            severity={Severity.Info}
+            title={t('openSeaToBlockaidTitle')}
+            description={t('openSeaToBlockaidDescription')}
+            actionButtonLabel={t('openSeaToBlockaidBtnLabel')}
+            actionButtonProps={{
+              href: 'https://snaps.metamask.io/transaction-insights',
+              externalLink: true,
+            }}
+            marginBottom={4}
+            marginLeft={4}
+            marginTop={4}
+            marginRight={4}
+            onClose={handleCloseOpenSeaToBlockaidBannerAlert}
+          />
+        ) : null}
         {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           this.props.selectedAccount.address ===

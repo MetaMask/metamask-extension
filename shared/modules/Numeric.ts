@@ -532,6 +532,21 @@ export class Numeric {
     );
   }
 
+  /**
+   * Returns a numeric representing the absolute value of the current numeric,
+   * carrying over the base and denomination from the current Numeric.
+   */
+  abs() {
+    return new Numeric(this.value.abs(), this.base, this.denomination);
+  }
+
+  /**
+   * Checks if the Numeric value is zero.
+   */
+  isZero() {
+    return this.value.isZero();
+  }
+
   greaterThan(
     comparator: Numeric | NumericValue,
     base?: NumericBase,

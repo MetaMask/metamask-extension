@@ -2562,21 +2562,6 @@
   "notificationsMarkAllAsRead": {
     "message": "すべて既読にする"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "詳細"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "🎉 MetaMask Snapsのオープンベータについてお知らせします！"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "開発者コミュニティによって開発されたsnapで、ウォレットをカスタマイズできます！"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "Snapsを使えば、他のネットワークへの接続やトランザクションインサイトの表示、カスタム通知の取得など、MetaMaskでより多くのことができるようになります。"
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "MetaMask Snapsのご紹介"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1種類の新しいトークンがこのアカウントで見つかりました",
     "description": "$1 is the number of new tokens detected"
@@ -3263,9 +3248,6 @@
   },
   "securityAlerts": {
     "message": "セキュリティアラート"
-  },
-  "securityAlertsDescription": {
-    "message": "この機能は、ユーザーのプライバシーを守りつつ、トランザクションと署名リクエストをアクティブに確認することで、イーサリアムメインネットでの悪質な行為に対する警告を発します。ユーザーのデータはこのサービスを提供するサードパーティと共有されません。リクエストを承認する前に、必ず独自のデューデリジェンスを行ってください。この機能がすべての悪質な行為を検出するという保証はありません。"
   },
   "securityAndPrivacy": {
     "message": "セキュリティとプライバシー"

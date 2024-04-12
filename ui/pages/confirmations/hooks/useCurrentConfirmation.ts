@@ -3,19 +3,22 @@ import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import { ApprovalRequest } from '@metamask/approval-controller';
+import { ApprovalType } from '@metamask/controller-utils';
 import { Json } from '@metamask/utils';
 
 import {
   latestPendingConfirmationSelector,
   pendingConfirmationsSelector,
-  unapprovedPersonalMsgsSelector,
+  unconfirmedTransactionsHashSelector,
 } from '../../../selectors';
 
 type Approval = ApprovalRequest<Record<string, Json>>;
 
 const useCurrentConfirmation = () => {
   const { id: paramsTransactionId } = useParams<{ id: string }>();
-  const unapprovedPersonalMsgs = useSelector(unapprovedPersonalMsgsSelector);
+  const unconfirmedTransactions = useSelector(
+    unconfirmedTransactionsHashSelector,
+  );
   const latestPendingConfirmation: Approval = useSelector(
     latestPendingConfirmationSelector,
   );
@@ -34,26 +37,44 @@ const useCurrentConfirmation = () => {
       pendingConfirmation = pendingConfirmations.find(
         ({ id: confirmId }) => confirmId === paramsTransactionId,
       );
-    } else {
-      pendingConfirmation = latestPendingConfirmation;
     }
-    if (
-      pendingConfirmation &&
-      pendingConfirmation.id !== currentConfirmation?.id
-    ) {
-      // currently re-design is enabled only for personal signatures
-      // condition below can be changed as we enable it for other transactions also
-      const unapprovedMsg = unapprovedPersonalMsgs[pendingConfirmation.id];
-      if (!unapprovedMsg) {
+    if (!pendingConfirmation) {
+      if (!latestPendingConfirmation) {
+        setCurrentConfirmation(undefined);
         return;
       }
-      const { siwe } = unapprovedMsg.msgParams;
-
-      if (!siwe?.isSIWEMessage) {
-        setCurrentConfirmation(unapprovedMsg);
-      }
+      pendingConfirmation = latestPendingConfirmation;
     }
-  }, [latestPendingConfirmation, paramsTransactionId, unapprovedPersonalMsgs]);
+    if (pendingConfirmation.id !== currentConfirmation?.id) {
+      const unconfirmedTransaction =
+        unconfirmedTransactions[pendingConfirmation.id];
+      if (!unconfirmedTransactions) {
+        setCurrentConfirmation(undefined);
+        return;
+      }
+      if (
+        pendingConfirmation.type !== ApprovalType.PersonalSign &&
+        pendingConfirmation.type !== ApprovalType.EthSignTypedData
+      ) {
+        return;
+      }
+      if (pendingConfirmation.type === ApprovalType.PersonalSign) {
+        const { siwe } = unconfirmedTransaction.msgParams;
+        if (siwe?.isSIWEMessage) {
+          setCurrentConfirmation(undefined);
+          return;
+        }
+      }
+      if (pendingConfirmation.type === ApprovalType.EthSignTypedData) {
+        const { version } = unconfirmedTransaction.msgParams;
+        if (version !== 'V3' && version !== 'V4') {
+          setCurrentConfirmation(undefined);
+          return;
+        }
+      }
+      setCurrentConfirmation(unconfirmedTransaction);
+    }
+  }, [latestPendingConfirmation, paramsTransactionId, unconfirmedTransactions]);
 
   return { currentConfirmation };
 };

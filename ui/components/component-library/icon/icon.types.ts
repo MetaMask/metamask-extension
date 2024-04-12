@@ -184,6 +184,8 @@ export enum IconName {
   PlusMinus = 'plus-minus',
 }
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface IconStyleUtilityProps extends StyleUtilityProps {
   /**
    * The name of the icon to display. Use the IconName enum

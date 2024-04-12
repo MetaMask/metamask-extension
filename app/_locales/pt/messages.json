@@ -2562,21 +2562,6 @@
   "notificationsMarkAllAsRead": {
     "message": "Marcar todas como lidas"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "Saiba mais"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "🎉 Estamos empolgados de anunciar o Beta Aberto do MetaMask Snaps!"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "Personalize sua carteira com snaps criados pela comunidade de desenvolvedores!"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "Os snaps ajudam a fazer mais com a MetaMask, como conectar-se a mais redes, ver insights de transações e receber notificações personalizadas."
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "Apresentamos o MetaMask Snaps"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 novos tokens encontrados nesta conta",
     "description": "$1 is the number of new tokens detected"
@@ -3267,9 +3252,6 @@
   },
   "securityAlerts": {
     "message": "Alertas de segurança"
-  },
-  "securityAlertsDescription": {
-    "message": "Esse recurso alerta sobre atividades mal-intencionadas na Mainnet da Ethereum ao analisar ativamente solicitações de transações e assinaturas enquanto preserva sua privacidade. Seus dados não são compartilhados com os terceiros que prestam esse serviço. Sempre faça sua própria devida diligência antes de aprovar solicitações. Não há garantia de que esse recurso detectará toda e qualquer atividade mal-intencionada."
   },
   "securityAndPrivacy": {
     "message": "Segurança e Privacidade"

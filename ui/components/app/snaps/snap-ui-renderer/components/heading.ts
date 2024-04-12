@@ -11,7 +11,5 @@ export const heading: UIComponentFactory<Heading> = ({ element }) => ({
   props: {
     variant: TextVariant.headingSm,
     overflowWrap: OverflowWrap.Anywhere,
-    marginTop: 1,
-    marginBottom: 1,
   },
 });

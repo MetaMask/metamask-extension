@@ -14,6 +14,7 @@
     "isAccountMenuOpen": false,
     "isNetworkMenuOpen": false,
     "identities": "object",
+    "internalAccounts": { "accounts": "object", "selectedAccount": "string" },
     "transactions": "object",
     "networkConfigurations": "object",
     "addressBook": "object",
@@ -42,8 +43,8 @@
     "currencyRates": {
       "ETH": {
         "conversionDate": "number",
-        "conversionRate": 1300,
-        "usdConversionRate": 1300
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
       }
     },
     "providerConfig": {
@@ -55,7 +56,6 @@
       "type": "rpc",
       "id": "networkConfigurationId"
     },
-    "internalAccounts": { "accounts": "object", "selectedAccount": "string" },
     "connectedStatusPopoverHasBeenShown": true,
     "defaultHomeActiveTabName": null,
     "browserEnvironment": { "os": "string", "browser": "string" },
@@ -67,7 +67,6 @@
     "outdatedBrowserWarningLastShown": "number",
     "nftsDetectionNoticeDismissed": false,
     "showTestnetMessageInDropdown": true,
-    "signatureSecurityAlertResponses": "object",
     "showBetaHeader": false,
     "showPermissionsTour": true,
     "showProductTour": true,
@@ -75,12 +74,14 @@
     "showAccountBanner": true,
     "trezorModel": null,
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
+    "hasDismissedOpenSeaToBlockaidBanner": false,
     "nftsDropdownState": {},
     "termsOfUseLastAgreed": "number",
     "qrHardware": {},
     "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
     "snapsInstallPrivacyWarningShown": true,
     "surveyLinkLastClickedOrClosed": "object",
+    "signatureSecurityAlertResponses": "object",
     "currentAppVersion": "string",
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
@@ -115,11 +116,10 @@
     "useAddressBarEnsResolution": true,
     "ledgerTransportType": "webhid",
     "snapRegistryList": "object",
-    "transactionSecurityCheckEnabled": false,
     "theme": "light",
     "snapsAddSnapAccountModalDismissed": "boolean",
-    "isLineaMainnetReleased": true,
     "useExternalNameSources": "boolean",
+    "useTransactionSimulations": true,
     "selectedAddress": "string",
     "metaMetricsId": "fake-metrics-id",
     "eventsBeforeMetricsOptIn": "object",
@@ -172,6 +172,7 @@
     "jobs": "object",
     "database": "object",
     "lastUpdated": "object",
+    "databaseUnavailable": "boolean",
     "notifications": "object",
     "interfaces": "object",
     "names": "object",

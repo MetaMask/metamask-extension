@@ -11,6 +11,9 @@ describe('Privacy Settings Onboarding View', () => {
   const mockStore = {
     metamask: {
       networkConfigurations: {},
+      preferences: {
+        petnamesEnabled: true,
+      },
       providerConfig: {
         type: 'test',
       },
@@ -28,6 +31,7 @@ describe('Privacy Settings Onboarding View', () => {
       useMultiAccountBalanceChecker: true,
       ipfsGateway: 'test.link',
       useAddressBarEnsResolution: true,
+      useTransactionSimulations: true,
     },
   };
 
@@ -44,6 +48,8 @@ describe('Privacy Settings Onboarding View', () => {
   const setUseMultiAccountBalanceCheckerStub = jest.fn();
   const setUseAddressBarEnsResolutionStub = jest.fn();
   const setIncomingTransactionsPreferencesStub = jest.fn();
+  const setUseTransactionSimulationsStub = jest.fn();
+  const setPreferenceStub = jest.fn();
 
   setBackgroundConnection({
     setFeatureFlag: setFeatureFlagStub,
@@ -56,6 +62,8 @@ describe('Privacy Settings Onboarding View', () => {
     setUseMultiAccountBalanceChecker: setUseMultiAccountBalanceCheckerStub,
     setUseAddressBarEnsResolution: setUseAddressBarEnsResolutionStub,
     setIncomingTransactionsPreferences: setIncomingTransactionsPreferencesStub,
+    setUseTransactionSimulations: setUseTransactionSimulationsStub,
+    setPreference: setPreferenceStub,
   });
 
   it('should update preferences', () => {
@@ -71,6 +79,8 @@ describe('Privacy Settings Onboarding View', () => {
     expect(setUseCurrencyRateCheckStub).toHaveBeenCalledTimes(0);
     expect(setUseAddressBarEnsResolutionStub).toHaveBeenCalledTimes(0);
     expect(setIncomingTransactionsPreferencesStub).toHaveBeenCalledTimes(0);
+    expect(setUseTransactionSimulationsStub).toHaveBeenCalledTimes(0);
+    expect(setPreferenceStub).toHaveBeenCalledTimes(0);
 
     const toggles = container.querySelectorAll('input[type=checkbox]');
     const submitButton = getByText('Done');
@@ -82,6 +92,8 @@ describe('Privacy Settings Onboarding View', () => {
     fireEvent.click(toggles[7]);
     fireEvent.click(toggles[8]);
     fireEvent.click(toggles[9]);
+    fireEvent.click(toggles[10]);
+    fireEvent.click(toggles[12]);
 
     fireEvent.click(submitButton);
 
@@ -92,6 +104,8 @@ describe('Privacy Settings Onboarding View', () => {
     expect(setUseMultiAccountBalanceCheckerStub).toHaveBeenCalledTimes(1);
     expect(setUseCurrencyRateCheckStub).toHaveBeenCalledTimes(1);
     expect(setUseAddressBarEnsResolutionStub).toHaveBeenCalledTimes(1);
+    expect(setUseTransactionSimulationsStub).toHaveBeenCalledTimes(1);
+    expect(setPreferenceStub).toHaveBeenCalledTimes(1);
 
     expect(setIncomingTransactionsPreferencesStub).toHaveBeenCalledWith(
       CHAIN_IDS.MAINNET,
@@ -107,6 +121,13 @@ describe('Privacy Settings Onboarding View', () => {
     );
     expect(setUseCurrencyRateCheckStub.mock.calls[0][0]).toStrictEqual(true);
     expect(setUseAddressBarEnsResolutionStub.mock.calls[0][0]).toStrictEqual(
+      false,
+    );
+    expect(setUseTransactionSimulationsStub.mock.calls[0][0]).toStrictEqual(
+      false,
+    );
+    expect(setPreferenceStub.mock.calls[0][0]).toStrictEqual(
+      'petnamesEnabled',
       false,
     );
   });

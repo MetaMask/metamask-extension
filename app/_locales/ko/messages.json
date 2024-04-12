@@ -2562,21 +2562,6 @@
   "notificationsMarkAllAsRead": {
     "message": "모두 읽음으로 표시"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "자세히 알아보기"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "🎉 MetaMask Snaps의 오픈 베타가 시작되었습니다!"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "개발자 커뮤니티가 구축한 스냅으로 지갑을 개별 맞춤하세요!"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "스냅은 추가 네트워크 연결, 트랜잭션 인사이트 확인, 커스텀 알림 받기 등 사용자가 MetaMask에서 더욱 다양한 기능을 사용할 수 있도록 합니다."
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "MetaMask Snaps 소개"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "계정에서 $1개의 새로운 토큰이 발견됨",
     "description": "$1 is the number of new tokens detected"
@@ -3263,9 +3248,6 @@
   },
   "securityAlerts": {
     "message": "보안 경고"
-  },
-  "securityAlertsDescription": {
-    "message": "이 기능은 개인정보를 보호하면서 트랜잭션 및 서명 요청을 적극적으로 검토하여 이더리움 메인넷에서 악의적인 활동이 있는 경우 경고합니다. 사용자 데이터는 이 서비스를 제공하는 제삼자와 공유되지 않습니다. 요청을 승인하기 전에 항상 직접 확인하세요. 이 기능이 모든 악의적인 활동 탐지를 보장하는 것은 아닙니다."
   },
   "securityAndPrivacy": {
     "message": "보안 및 프라이버시"

@@ -25,6 +25,7 @@ import {
   addToAddressBook,
   updateTransaction,
   updateEditableParams,
+  dismissOpenSeaToBlockaidBanner,
 } from '../../../store/actions';
 import { isBalanceSufficient } from '../send/send.utils';
 import { shortenAddress, valuesFor } from '../../../helpers/utils/util';
@@ -52,6 +53,9 @@ import {
   getUnapprovedTransactions,
   getInternalAccountByAddress,
   getApprovedAndSignedTransactions,
+  getHasDismissedOpenSeaToBlockaidBanner,
+  getHasMigratedFromOpenSeaToBlockaid,
+  getIsNetworkSupportedByBlockaid,
 } from '../../../selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
@@ -160,8 +164,8 @@ const mapStateToProps = (state, ownProps) => {
   const tokenToAddress = getTokenAddressParam(transactionData);
 
   const { balance } = accounts[fromAddress];
-  const fromName = getInternalAccountByAddress(state, fromAddress)?.metadata
-    .name;
+  const fromInternalAccount = getInternalAccountByAddress(state, fromAddress);
+  const fromName = fromInternalAccount?.metadata.name;
   const keyring = findKeyringForAddress(state, fromAddress);
 
   const isSendingAmount =
@@ -268,9 +272,12 @@ const mapStateToProps = (state, ownProps) => {
 
   const isUserOpContractDeployError =
     fullTxData.isUserOperation && type === TransactionType.deployContract;
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  isSigningOrSubmitting = false;
-  ///: END:ONLY_INCLUDE_IF
+
+  const hasMigratedFromOpenSeaToBlockaid =
+    getHasMigratedFromOpenSeaToBlockaid(state);
+  const hasDismissedOpenSeaToBlockaidBanner =
+    getHasDismissedOpenSeaToBlockaidBanner(state);
+  const isNetworkSupportedByBlockaid = getIsNetworkSupportedByBlockaid(state);
 
   return {
     balance,
@@ -323,6 +330,9 @@ const mapStateToProps = (state, ownProps) => {
     isBuyableChain,
     useCurrencyRateCheck: getUseCurrencyRateCheck(state),
     keyringForAccount: keyring,
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+    fromInternalAccount,
+    ///: END:ONLY_INCLUDE_IF
     isUsingPaymaster,
     isSigningOrSubmitting,
     isUserOpContractDeployError,
@@ -335,6 +345,9 @@ const mapStateToProps = (state, ownProps) => {
     custodianPublishesTransaction,
     rpcUrl,
     ///: END:ONLY_INCLUDE_IF
+    hasMigratedFromOpenSeaToBlockaid,
+    hasDismissedOpenSeaToBlockaidBanner,
+    isNetworkSupportedByBlockaid,
   };
 };
 
@@ -425,6 +438,8 @@ export const mapDispatchToProps = (dispatch) => {
     setWaitForConfirmDeepLinkDialog: (wait) =>
       dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
     ///: END:ONLY_INCLUDE_IF
+    dismissOpenSeaToBlockaidBanner: () =>
+      dispatch(dismissOpenSeaToBlockaidBanner()),
   };
 };
 

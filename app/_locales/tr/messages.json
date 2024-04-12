@@ -2562,21 +2562,6 @@
   "notificationsMarkAllAsRead": {
     "message": "Tümünü okundu olarak işaretle"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "Daha fazla bilgi edinin"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "MetaMask Snaps'in Açık Beta sürümünü duyurmaktan heyecan duyuyoruz!"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "Geliştirici topluluğu tarafından oluşturulan snap'lerle cüzdanınızı kişiselleştirin!"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "Snap'ler MetaMask ile daha fazla ağa bağlanma, işlem içgörülerini görme ve kişisel bildirimler alma gibi daha çok şey yapmanıza yardımcı olur."
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "MetaMask Snaps tanıtımı"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "Bu hesapta $1 yeni token bulundu",
     "description": "$1 is the number of new tokens detected"
@@ -3263,9 +3248,6 @@
   },
   "securityAlerts": {
     "message": "Güvenlik uyarıları"
-  },
-  "securityAlertsDescription": {
-    "message": "Bu özellik, işlem ve imza taleplerinizi aktif bir şekilde incelerken gizliliğinizi koruyarak Ethereum Ana Ağındaki kötü amaçlı faaliyetlere karşı sizi uyarır. Verileriniz, bu hizmeti sunan üçüncü taraf ile paylaşılmaz. Talepleri onaylamadan önce her zaman gereken özeni kendiniz gösterin. Bu özelliğin tüm kötü amaçlı faaliyetleri algılayacağına dair herhangi bir garanti bulunmamaktadır."
   },
   "securityAndPrivacy": {
     "message": "Güvenlik ve gizlilik"

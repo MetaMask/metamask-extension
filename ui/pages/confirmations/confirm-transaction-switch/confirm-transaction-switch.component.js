@@ -16,6 +16,7 @@ import {
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
   CONFIRM_SAFE_TRANSFER_FROM_PATH,
   CONFIRM_SET_APPROVAL_FOR_ALL_PATH,
+  CONFIRM_INCREASE_ALLOWANCE_PATH,
 } from '../../../helpers/constants/routes';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 
@@ -58,6 +59,10 @@ export default class ConfirmTransactionSwitch extends Component {
         }
         case TransactionType.tokenMethodSafeTransferFrom: {
           const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${id}${CONFIRM_SAFE_TRANSFER_FROM_PATH}`;
+          return <Redirect to={{ pathname }} />;
+        }
+        case TransactionType.tokenMethodIncreaseAllowance: {
+          const pathname = `${CONFIRM_TRANSACTION_ROUTE}/${id}${CONFIRM_INCREASE_ALLOWANCE_PATH}`;
           return <Redirect to={{ pathname }} />;
         }
         default: {

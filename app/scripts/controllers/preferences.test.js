@@ -199,6 +199,23 @@ describe('preferences controller', () => {
     });
   });
 
+  describe('dismissOpenSeaToBlockaidBanner', () => {
+    it('hasDismissedOpenSeaToBlockaidBanner should default to false', () => {
+      expect(
+        preferencesController.store.getState()
+          .hasDismissedOpenSeaToBlockaidBanner,
+      ).toStrictEqual(false);
+    });
+
+    it('should set the hasDismissedOpenSeaToBlockaidBanner property in state', () => {
+      preferencesController.dismissOpenSeaToBlockaidBanner();
+      expect(
+        preferencesController.store.getState()
+          .hasDismissedOpenSeaToBlockaidBanner,
+      ).toStrictEqual(true);
+    });
+  });
+
   describe('setUseSafeChainsListValidation', function () {
     it('should default to true', function () {
       const state = preferencesController.store.getState();
@@ -404,4 +421,19 @@ describe('preferences controller', () => {
     });
   });
   ///: END:ONLY_INCLUDE_IF
+
+  describe('setUseTransactionSimulations', () => {
+    it('should default to true', () => {
+      expect(
+        preferencesController.store.getState().useExternalNameSources,
+      ).toStrictEqual(true);
+    });
+
+    it('should set the setUseTransactionSimulations property in state', () => {
+      preferencesController.setUseTransactionSimulations(false);
+      expect(
+        preferencesController.store.getState().useTransactionSimulations,
+      ).toStrictEqual(false);
+    });
+  });
 });
