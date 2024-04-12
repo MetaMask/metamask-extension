@@ -64,18 +64,35 @@ describe('ConfirmInfoRow', () => {
     it('renders row with alert', () => {
       const { getByTestId } = renderConfirmInfoRow({
         alertKey: KEY_ALERT_KEY_MOCK,
-        alertOwnerId: OWNER_ID_MOCK
+        alertOwnerId: OWNER_ID_MOCK,
       });
       expect(getByTestId('inline-alert')).toBeDefined();
     });
 
-    it('sets alert modal to visible', () => {
-      const { getByTestId } = renderConfirmInfoRow({
-        alertKey: KEY_ALERT_KEY_MOCK,
-        alertOwnerId: OWNER_ID_MOCK
+    it('does not render when alert properties are not provided', () => {
+      const { queryByTestId } = renderConfirmInfoRow();
+      expect(queryByTestId('inline-alert')).toBeNull();
+    });
+
+    describe('Alert modal visibility:', () => {
+      it('show when clicked in the inline alert', () => {
+        const { getByTestId } = renderConfirmInfoRow({
+          alertKey: KEY_ALERT_KEY_MOCK,
+          alertOwnerId: OWNER_ID_MOCK,
+        });
+        fireEvent.click(getByTestId('inline-alert'));
+        expect(getByTestId('alert-modal-button')).toBeDefined();
       });
-      fireEvent.click(getByTestId('inline-alert'));
-      expect(getByTestId('alert-modal-button')).toBeDefined();
+
+      it('hide when clicked in the `Got it` button', () => {
+        const { getByTestId, queryByTestId } = renderConfirmInfoRow({
+          alertKey: KEY_ALERT_KEY_MOCK,
+          alertOwnerId: OWNER_ID_MOCK,
+        });
+        fireEvent.click(getByTestId('inline-alert'));
+        fireEvent.click(getByTestId('alert-modal-button'));
+        expect(queryByTestId('alert-modal-button')).toBeNull();
+      });
     });
   });
 });

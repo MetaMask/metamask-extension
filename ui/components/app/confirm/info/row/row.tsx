@@ -86,34 +86,34 @@ function RowAlert({
   alertOwnerId,
   severity,
 }: {
-  alertKey: string | undefined;
+  alertKey?: string;
   alertOwnerId?: string;
   severity?: Severity;
 }) {
-  if (!alertOwnerId) {
+  if (!alertOwnerId || !alertKey) {
     return null;
   }
 
   const { getFieldAlerts } = useAlerts(alertOwnerId);
-  const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
   const hasFieldAlert = getFieldAlerts(alertKey).length > 0;
 
   if (!hasFieldAlert) {
     return null;
   }
 
+  const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
+  const handleCloseModal = () => {
+    setAlertModalVisible(false);
+  };
+
   return (
     <>
-      {alertModalVisible && alertKey && (
+      {alertModalVisible && (
         <MultipleAlertModal
           alertKey={alertKey}
           ownerId={alertOwnerId}
-          onFinalAcknowledgeClick={() => {
-            setAlertModalVisible(false);
-          }}
-          onClose={() => {
-            setAlertModalVisible(false);
-          }}
+          onFinalAcknowledgeClick={handleCloseModal}
+          onClose={handleCloseModal}
         />
       )}
       <InlineAlert
