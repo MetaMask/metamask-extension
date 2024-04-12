@@ -41,6 +41,7 @@ export const MESSAGE_TYPE = {
   GET_PROVIDER_STATE: 'metamask_getProviderState',
   LOG_WEB3_SHIM_USAGE: 'metamask_logWeb3ShimUsage',
   PERSONAL_SIGN: 'personal_sign',
+  PROVIDER_AUTHORIZE: 'provider_authorize',
   SEND_METADATA: 'metamask_sendDomainMetadata',
   SWITCH_ETHEREUM_CHAIN: 'wallet_switchEthereumChain',
   TRANSACTION: 'transaction',
