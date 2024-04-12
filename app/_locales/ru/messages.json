@@ -2562,21 +2562,6 @@
   "notificationsMarkAllAsRead": {
     "message": "Отметить все как прочитанные"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "Подробнее"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "🎉 Мы рады объявить об открытой бета-версии MetaMask Snaps!"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "Персонализируйте свой кошелек с помощью snaps, созданных сообществом разработчиков!"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "Snaps помогают вам делать больше с MetaMask — например, подключаться к большему количеству сетей, просматривать статистику транзакций и получать настраиваемые уведомления."
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "Представляем MetaMask Snaps"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 новых токена(-ов) найдены в этом счете",
     "description": "$1 is the number of new tokens detected"
