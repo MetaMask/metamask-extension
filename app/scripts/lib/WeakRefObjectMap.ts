@@ -1,4 +1,4 @@
-type WeakRefObject<T extends Record<string, WeakKey>> = {
+type WeakRefObject<T extends Record<string, object>> = {
   [P in keyof T]: WeakRef<T[P]>;
 };
 
