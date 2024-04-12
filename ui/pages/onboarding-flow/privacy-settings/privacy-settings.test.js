@@ -96,6 +96,7 @@ describe('Privacy Settings Onboarding View', () => {
       store,
     );
     // All settings are initialized toggled to be same as default
+    expect(toggleExternalServicesStub).toHaveBeenCalledTimes(0);
     expect(setUsePhishDetectStub).toHaveBeenCalledTimes(0);
     expect(setUse4ByteResolutionStub).toHaveBeenCalledTimes(0);
     expect(setUseTokenDetectionStub).toHaveBeenCalledTimes(0);
@@ -108,21 +109,21 @@ describe('Privacy Settings Onboarding View', () => {
 
     const toggles = container.querySelectorAll('input[type=checkbox]');
     const submitButton = getByText('Done');
+    // TODO: refactor this toggle array, not very readable
     // toggle to false
-    fireEvent.click(toggles[0]);
-    fireEvent.click(toggles[1]);
-    fireEvent.click(toggles[4]);
-    fireEvent.click(toggles[5]);
-    fireEvent.click(toggles[6]);
-    fireEvent.click(toggles[7]);
-    fireEvent.click(toggles[8]);
-    fireEvent.click(toggles[9]);
-    fireEvent.click(toggles[10]);
-    fireEvent.click(toggles[11]);
+    fireEvent.click(toggles[0]); // toggleExternalServicesStub
+    fireEvent.click(toggles[1]); // setIncomingTransactionsPreferencesStub
+    fireEvent.click(toggles[4]); // setIncomingTransactionsPreferencesStub (2)
+    fireEvent.click(toggles[5]); // setUsePhishDetectStub
+    fireEvent.click(toggles[6]); // setUse4ByteResolutionStub
+    fireEvent.click(toggles[7]); // setUseTokenDetectionStub
+    fireEvent.click(toggles[8]); // setUseMultiAccountBalanceCheckerStub
+    fireEvent.click(toggles[9]); // setUseTransactionSimulationsStub
+    fireEvent.click(toggles[10]); // setUseAddressBarEnsResolutionStub
+    fireEvent.click(toggles[11]); // setUseCurrencyRateCheckStub
+    fireEvent.click(toggles[12]); // setPreferenceStub
 
     expect(mockOpenBasicFunctionalityModal).toHaveBeenCalledTimes(1);
-    fireEvent.click(toggles[12]);
-
     fireEvent.click(submitButton);
 
     expect(toggleExternalServicesStub).toHaveBeenCalledTimes(1);
@@ -141,6 +142,7 @@ describe('Privacy Settings Onboarding View', () => {
       false,
       expect.anything(),
     );
+    // toggleExternalServices is true still because modal is "open" but not confirmed yet
     expect(toggleExternalServicesStub.mock.calls[0][0]).toStrictEqual(true);
     expect(setUsePhishDetectStub.mock.calls[0][0]).toStrictEqual(false);
     expect(setUse4ByteResolutionStub.mock.calls[0][0]).toStrictEqual(false);
@@ -148,7 +150,7 @@ describe('Privacy Settings Onboarding View', () => {
     expect(setUseMultiAccountBalanceCheckerStub.mock.calls[0][0]).toStrictEqual(
       false,
     );
-    expect(setUseCurrencyRateCheckStub.mock.calls[0][0]).toStrictEqual(true);
+    expect(setUseCurrencyRateCheckStub.mock.calls[0][0]).toStrictEqual(false);
     expect(setUseAddressBarEnsResolutionStub.mock.calls[0][0]).toStrictEqual(
       false,
     );
