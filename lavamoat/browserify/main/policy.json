@@ -2757,6 +2757,13 @@
         "define": true
       }
     },
+    "@noble/ciphers": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
     "@noble/hashes": {
       "globals": {
         "TextEncoder": true,
@@ -4771,23 +4778,6 @@
     "sinon>nise>path-to-regexp": {
       "packages": {
         "sinon>nise>path-to-regexp>isarray": true
-      }
-    },
-    "sjcl": {
-      "globals": {
-        "addEventListener": true,
-        "console": true,
-        "crypto": true,
-        "define": true,
-        "document.attachEvent": true,
-        "document.detachEvent": true,
-        "msCrypto": true,
-        "orientation": true,
-        "performance": true,
-        "removeEventListener": true
-      },
-      "packages": {
-        "browserify>crypto-browserify": true
       }
     },
     "stream-browserify": {
