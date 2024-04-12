@@ -15,7 +15,6 @@ import {
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   ONBOARDING_PIN_EXTENSION_ROUTE,
-  MMI_ONBOARDING_COMPLETION_ROUTE,
   SRP_REMINDER,
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)

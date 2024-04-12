@@ -4,6 +4,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import {
   Box,
+  Text,
   ButtonVariant,
   Button,
   ButtonSize,
@@ -22,6 +23,8 @@ import {
   IconColor,
   JustifyContent,
   Size,
+  TEXT_ALIGN,
+  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -56,7 +59,29 @@ export const RemindSRP: React.FC<{
 
   return (
     <Box>
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={3}>
+      <Box
+        justifyContent={JustifyContent.center}
+        textAlign={TextAlign.Center}
+        marginBottom={4}
+      >
+        <Text fontWeight={FontWeight.Bold} variant={TextVariant.headingLg}>
+          {t('secretRecoveryPhrase')}
+        </Text>
+
+        <Text
+          textAlign={TextAlign.Center}
+          fontWeight={FontWeight.Normal}
+          variant={TextVariant.headingSm}
+        >
+          {t('nonCustodialAccounts')}
+        </Text>
+      </Box>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        width={BlockSize.Full}
+      >
         <Button
           variant={ButtonVariant.Link}
           startIconName={hiddenPhrase ? IconName.Eye : IconName.EyeSlash}
@@ -81,7 +106,9 @@ export const RemindSRP: React.FC<{
         >
           {copied ? t('copiedExclamation') : t('copyToClipboard')}
         </Button>
+      </Box>
 
+      <Box display={Display.Flex} flexDirection={FlexDirection.Row}>
         <RecoveryPhraseChips
           secretRecoveryPhrase={secretRecoveryPhrase.split(' ')}
           phraseRevealed={phraseRevealed && !hiddenPhrase}
@@ -89,16 +116,23 @@ export const RemindSRP: React.FC<{
         />
       </Box>
 
-      <Button
-        data-testid="recovery-phrase-continue"
-        type="primary"
-        className="recovery-phrase__footer--button"
-        onClick={() => {
-          history.replace(MMI_ONBOARDING_COMPLETION_ROUTE);
-        }}
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        alignItems={AlignItems.center}
       >
-        {t('continue')}
-      </Button>
+        <Button
+          size={ButtonSize.Lg}
+          data-testid="recovery-phrase-continue"
+          type="primary"
+          className="recovery-phrase__footer--button"
+          onClick={() => {
+            history.replace(MMI_ONBOARDING_COMPLETION_ROUTE);
+          }}
+        >
+          {t('continue')}
+        </Button>
+      </Box>
     </Box>
   );
 };

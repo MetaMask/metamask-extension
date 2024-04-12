@@ -4069,6 +4069,9 @@
   "searchTokens": {
     "message": "Search tokens"
   },
+  "nonCustodialAccounts": {
+    "message": "MetaMask Institutional allows you to use non-custodial accounts, if you plan to use these accounts backup the Secret Recovery Phrase."
+  },
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
   },
