@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 
@@ -8,6 +8,12 @@ import {
   ButtonVariant,
 } from '../../../../../components/component-library';
 import { Footer as PageFooter } from '../../../../../components/multichain/pages/page';
+import { MetaMetricsContext } from '../../../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsEventUiCustomization,
+} from '../../../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { useMMIConfirmations } from '../../../../../hooks/useMMIConfirmations';
@@ -20,7 +26,9 @@ import {
 import { confirmSelector } from '../../../selectors';
 
 const Footer = () => {
+  const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
+
   const confirm = useSelector(confirmSelector);
   const { currentConfirmation, isScrollToBottomNeeded } = confirm;
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -41,6 +49,21 @@ const Footer = () => {
 
   const dispatch = useDispatch();
 
+  function trackSignEvent(event: MetaMetricsEventName) {
+    trackEvent({
+      category: MetaMetricsEventCategory.Transactions,
+      event,
+      properties: {
+        action: 'Sign Request',
+        type: currentConfirmation?.type,
+        version: currentConfirmation?.msgParams?.version,
+        ui_customizations: [
+          MetaMetricsEventUiCustomization.RedesignedConfirmation,
+        ],
+      },
+    });
+  }
+
   const onCancel = useCallback(() => {
     if (!currentConfirmation) {
       return;
@@ -51,6 +74,8 @@ const Footer = () => {
         serializeError(ethErrors.provider.userRejectedRequest()),
       ),
     );
+
+    trackSignEvent(MetaMetricsEventName.Cancel);
   }, [currentConfirmation]);
 
   const onSubmit = useCallback(() => {
@@ -61,6 +86,8 @@ const Footer = () => {
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     mmiOnSignCallback();
     ///: END:ONLY_INCLUDE_IF
+
+    trackSignEvent(MetaMetricsEventName.Confirm);
   }, [currentConfirmation]);
 
   return (
