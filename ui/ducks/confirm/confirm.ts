@@ -18,6 +18,7 @@ export const UPDATE_CURRENT_CONFIRMATION = createActionType(
 
 const initState = {
   currentConfirmation: undefined,
+  isScrollToBottomNeeded: false,
 };
 
 export default function confirmReducer(
