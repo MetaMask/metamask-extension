@@ -904,9 +904,6 @@ export default class MetamaskController extends EventEmitter {
       },
       initState.TokenRatesController,
     );
-    if (this.preferencesController.store.getState().useCurrencyRateCheck) {
-      this.tokenRatesController.start();
-    }
 
     this.preferencesController.store.subscribe(
       previousValueComparator((prevState, currState) => {
@@ -2246,6 +2243,7 @@ export default class MetamaskController extends EventEmitter {
       this.currencyRateController.startPollingByNetworkClientId(
         this.networkController.state.selectedNetworkClientId,
       );
+      this.tokenRatesController.start();
     }
 
     if (this.#isTokenListPollingRequired(preferencesControllerState)) {
@@ -2265,11 +2263,11 @@ export default class MetamaskController extends EventEmitter {
 
     if (useCurrencyRateCheck) {
       this.currencyRateController.stopAllPolling();
+      this.tokenRatesController.stop();
     }
 
     if (this.#isTokenListPollingRequired(preferencesControllerState)) {
       this.tokenListController.stop();
-      this.tokenRatesController.stop();
     }
   }
 
