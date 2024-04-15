@@ -369,6 +369,9 @@
   "invalidSeedPhrase": {
     "message": "عبارت بازیابی نا معتبر"
   },
+  "invalidSymbolLength": {
+    "message": "نماد باید $1 کاراکتر یا کمتر باشد."
+  },
   "jsonFile": {
     "message": "فایل JSON",
     "description": "format for importing an account"
@@ -692,9 +695,6 @@
   },
   "symbol": {
     "message": "سمبول"
-  },
-  "invalidSymbolLength": {
-    "message": "نماد باید $1 کاراکتر یا کمتر باشد."
   },
   "terms": {
     "message": "شرایط استفاده"

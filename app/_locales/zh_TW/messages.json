@@ -751,6 +751,9 @@
   "invalidSeedPhrase": {
     "message": "無效的助憶詞"
   },
+  "invalidSymbolLength": {
+    "message": "符號不得超過 $1 個字元。"
+  },
   "jsonFile": {
     "message": "JSON 格式檔案",
     "description": "format for importing an account"
@@ -1323,9 +1326,6 @@
   },
   "symbol": {
     "message": "符號"
-  },
-  "invalidSymbolLength": {
-    "message": "符號不得超過 $1 個字元。"
   },
   "terms": {
     "message": "使用條款"

@@ -743,6 +743,9 @@
   "invalidSeedPhrase": {
     "message": "Invalid na Secret Recovery Phrase"
   },
+  "invalidSymbolLength": {
+    "message": "Dapat ay $1 character o mas kaunti ang simbolo."
+  },
   "jsonFile": {
     "message": "JSON File",
     "description": "format for importing an account"
@@ -1595,9 +1598,6 @@
   },
   "symbol": {
     "message": "Simbolo"
-  },
-  "invalidSymbolLength": {
-    "message": "Dapat ay $1 character o mas kaunti ang simbolo."
   },
   "terms": {
     "message": "Mga Tuntunin ng Paggamit"

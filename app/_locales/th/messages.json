@@ -194,6 +194,9 @@
   "invalidRPC": {
     "message": "RPC URI ไม่ถูกต้อง"
   },
+  "invalidSymbolLength": {
+    "message": "สัญลักษณ์จะต้องมีความยาว $1 ตัวอักษร"
+  },
   "jsonFile": {
     "message": "ไฟล์ JSON",
     "description": "format for importing an account"
@@ -355,9 +358,6 @@
   },
   "symbol": {
     "message": "เครื่องหมาย"
-  },
-  "invalidSymbolLength": {
-    "message": "สัญลักษณ์จะต้องมีความยาว $1 ตัวอักษร"
   },
   "terms": {
     "message": "ข้อตกลงในการใช้งาน"

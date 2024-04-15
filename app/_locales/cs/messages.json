@@ -166,6 +166,9 @@
   "invalidRPC": {
     "message": "Neplatné RPC URI"
   },
+  "invalidSymbolLength": {
+    "message": "Symbol musí mít $1 nebo méně znaků."
+  },
   "jsonFile": {
     "message": "JSON soubor",
     "description": "format for importing an account"
@@ -321,9 +324,6 @@
   },
   "supportCenter": {
     "message": "Navštivte naše centrum podpory"
-  },
-  "invalidSymbolLength": {
-    "message": "Symbol musí mít $1 nebo méně znaků."
   },
   "terms": {
     "message": "Podmínky použití"

@@ -358,6 +358,9 @@
   "invalidSeedPhrase": {
     "message": "Ungkapan benih tidak sah"
   },
+  "invalidSymbolLength": {
+    "message": "Simbol mestilah $1 aksara atau kurang."
+  },
   "jsonFile": {
     "message": "Fail JSON",
     "description": "format for importing an account"
@@ -672,9 +675,6 @@
   },
   "symbol": {
     "message": "Simbol"
-  },
-  "invalidSymbolLength": {
-    "message": "Simbol mestilah $1 aksara atau kurang."
   },
   "terms": {
     "message": "Syarat-syarat Penggunaan"

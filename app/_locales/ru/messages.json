@@ -1970,6 +1970,9 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "Введены недействительные данные! Секретная фраза для восстановления чувствительна к регистру."
   },
+  "invalidSymbolLength": {
+    "message": "Символ должен состоять из $1 или менее знаков."
+  },
   "ipfsGateway": {
     "message": "Шлюз IPFS"
   },
@@ -4259,9 +4262,6 @@
   },
   "symbol": {
     "message": "Символ"
-  },
-  "invalidSymbolLength": {
-    "message": "Символ должен состоять из $1 или менее знаков."
   },
   "tenPercentIncreased": {
     "message": "Увеличение на 10%"

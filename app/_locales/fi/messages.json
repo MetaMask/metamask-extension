@@ -369,6 +369,9 @@
   "invalidSeedPhrase": {
     "message": "Virheellinen salausteksti"
   },
+  "invalidSymbolLength": {
+    "message": "Symbolin on oltava $1 merkkiä tai vähemmän."
+  },
   "jsonFile": {
     "message": "JSON-tiedosto",
     "description": "format for importing an account"
@@ -689,9 +692,6 @@
   },
   "symbol": {
     "message": "Symboli"
-  },
-  "invalidSymbolLength": {
-    "message": "Symbolin on oltava $1 merkkiä tai vähemmän."
   },
   "terms": {
     "message": "Käyttöehdot"

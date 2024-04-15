@@ -362,6 +362,9 @@
   "invalidSeedPhrase": {
     "message": "Ugyldig backupsætning"
   },
+  "invalidSymbolLength": {
+    "message": "Symbolet skal være mindst $1 tegn."
+  },
   "jsonFile": {
     "message": "JSON-fil",
     "description": "format for importing an account"
@@ -667,9 +670,6 @@
   },
   "switchNetworks": {
     "message": "Skift Netværk"
-  },
-  "invalidSymbolLength": {
-    "message": "Symbolet skal være mindst $1 tegn."
   },
   "terms": {
     "message": "Brugsbetingelser"

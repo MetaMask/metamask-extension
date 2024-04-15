@@ -152,6 +152,9 @@
   "invalidRPC": {
     "message": "अमान्य RPC कै URI"
   },
+  "invalidSymbolLength": {
+    "message": "प्रतीक $1 वर्ण या उससे कम का होना चाहिए।"
+  },
   "jsonFile": {
     "message": "JSON फ़ाइल",
     "description": "format for importing an account"
@@ -286,9 +289,6 @@
   },
   "supportCenter": {
     "message": "हमारे सहायता केंद्र पर जाएं"
-  },
-  "invalidSymbolLength": {
-    "message": "प्रतीक $1 वर्ण या उससे कम का होना चाहिए।"
   },
   "terms": {
     "message": "उपयोग की शर्तें"

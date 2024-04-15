@@ -359,6 +359,9 @@
   "invalidSeedPhrase": {
     "message": "Ogiltig"
   },
+  "invalidSymbolLength": {
+    "message": "Symbolen måste vara $1 tecken eller färre."
+  },
   "jsonFile": {
     "message": "JSON-fil",
     "description": "format for importing an account"
@@ -673,9 +676,6 @@
   },
   "switchNetworks": {
     "message": "Växla nätverk"
-  },
-  "invalidSymbolLength": {
-    "message": "Symbolen måste vara $1 tecken eller färre."
   },
   "terms": {
     "message": "Användarvillkor"

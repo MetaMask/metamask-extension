@@ -356,6 +356,9 @@
   "invalidSeedPhrase": {
     "message": "Kirai kianzio batili"
   },
+  "invalidSymbolLength": {
+    "message": "Alama lazima iwe na herufi $1 au chache."
+  },
   "jsonFile": {
     "message": "Faili la JSON",
     "description": "format for importing an account"
@@ -670,9 +673,6 @@
   },
   "symbol": {
     "message": "Ishara"
-  },
-  "invalidSymbolLength": {
-    "message": "Alama lazima iwe na herufi $1 au chache."
   },
   "terms": {
     "message": "Masharti ya Matumizi"

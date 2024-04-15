@@ -360,6 +360,9 @@
   "invalidSeedPhrase": {
     "message": "የተሳሳተ የዘር ሐረግ"
   },
+  "invalidSymbolLength": {
+    "message": "ምልክቱ $1 ቁምፊዎች ወይም ከዚያ ያነሰ መሆን አለበት።"
+  },
   "jsonFile": {
     "message": "JSON ፋይል",
     "description": "format for importing an account"
@@ -677,9 +680,6 @@
   },
   "symbol": {
     "message": "ምልክት"
-  },
-  "invalidSymbolLength": {
-    "message": "ምልክቱ $1 ቁምፊዎች ወይም ከዚያ ያነሰ መሆን አለበት።"
   },
   "terms": {
     "message": "የአጠቃቀም ደንቦች"

@@ -1970,6 +1970,9 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "入力値が無効です！シークレットリカバリーフレーズは大文字・小文字が区別されます。"
   },
+  "invalidSymbolLength": {
+    "message": "シンボルは $1文字以下にする必要があります。"
+  },
   "ipfsGateway": {
     "message": "IPFSゲートウェイ"
   },
@@ -4259,9 +4262,6 @@
   },
   "symbol": {
     "message": "シンボル"
-  },
-  "invalidSymbolLength": {
-    "message": "シンボルは $1文字以下にする必要があります。"
   },
   "tenPercentIncreased": {
     "message": "10%の増加"

@@ -200,6 +200,9 @@
   "invalidRPC": {
     "message": "தவறான RPC URI"
   },
+  "invalidSymbolLength": {
+    "message": "கசின்னம் $1 எழுத்துக்கள் அல்லது குறைவாக இருக்க வேண்டும்."
+  },
   "jsonFile": {
     "message": "JSON கோப்பு",
     "description": "format for importing an account"
@@ -388,9 +391,6 @@
   },
   "supportCenter": {
     "message": "எங்கள் ஆதரவு மையத்தைப் பார்வையிடவும்"
-  },
-  "invalidSymbolLength": {
-    "message": "கசின்னம் $1 எழுத்துக்கள் அல்லது குறைவாக இருக்க வேண்டும்."
   },
   "terms": {
     "message": "பயன்பாட்டு விதிமுறைகளை"

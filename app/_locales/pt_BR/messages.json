@@ -1096,6 +1096,9 @@
   "invalidSeedPhrase": {
     "message": "Frase de Recuperação Secreta inválida"
   },
+  "invalidSymbolLength": {
+    "message": "O símbolo deve ter até $1 caracteres."
+  },
   "jsDeliver": {
     "message": "jsDeliver"
   },
@@ -2303,9 +2306,6 @@
   },
   "symbol": {
     "message": "Símbolo"
-  },
-  "invalidSymbolLength": {
-    "message": "O símbolo deve ter até $1 caracteres."
   },
   "tenPercentIncreased": {
     "message": "10% de aumento"

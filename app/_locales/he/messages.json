@@ -369,6 +369,9 @@
   "invalidSeedPhrase": {
     "message": "seed phrase לא חוקי"
   },
+  "invalidSymbolLength": {
+    "message": "הסמל חייב להיות $1 תווים או פחות."
+  },
   "jsonFile": {
     "message": "קובץ JSON",
     "description": "format for importing an account"
@@ -689,9 +692,6 @@
   },
   "symbol": {
     "message": "סמל"
-  },
-  "invalidSymbolLength": {
-    "message": "הסמל חייב להיות $1 תווים או פחות."
   },
   "terms": {
     "message": "תנאי שימוש"

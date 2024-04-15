@@ -1970,6 +1970,9 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "Masukan tidak valid! Frasa Pemulihan Rahasia peka terhadap huruf besar/kecil."
   },
+  "invalidSymbolLength": {
+    "message": "Simbol harus terdiri dari $1 karakter atau lebih sedikit."
+  },
   "ipfsGateway": {
     "message": "Gateway IPFS"
   },
@@ -4259,9 +4262,6 @@
   },
   "symbol": {
     "message": "Simbol"
-  },
-  "invalidSymbolLength": {
-    "message": "Simbol harus terdiri dari $1 karakter atau lebih sedikit."
   },
   "tenPercentIncreased": {
     "message": "Meningkat 10%"

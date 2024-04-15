@@ -369,6 +369,9 @@
   "invalidSeedPhrase": {
     "message": "Nieprawidłowa fraza seed"
   },
+  "invalidSymbolLength": {
+    "message": "Symbol musi mieć maksymalnie $1 znaków."
+  },
   "jsonFile": {
     "message": "Plik JSON",
     "description": "format for importing an account"
@@ -683,9 +686,6 @@
   },
   "switchNetworks": {
     "message": "Zmień sieci"
-  },
-  "invalidSymbolLength": {
-    "message": "Symbol musi mieć maksymalnie $1 znaków."
   },
   "terms": {
     "message": "Regulamin"

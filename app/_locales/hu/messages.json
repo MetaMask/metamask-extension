@@ -365,6 +365,9 @@
   "invalidSeedPhrase": {
     "message": "Érvénytelen seed mondat"
   },
+  "invalidSymbolLength": {
+    "message": "A szimbólum legfeljebb $1 karakterből állhat."
+  },
   "jsonFile": {
     "message": "JSON-fájl",
     "description": "format for importing an account"
@@ -685,9 +688,6 @@
   },
   "symbol": {
     "message": "Szimbólum"
-  },
-  "invalidSymbolLength": {
-    "message": "A szimbólum legfeljebb $1 karakterből állhat."
   },
   "terms": {
     "message": "Használati feltételek"

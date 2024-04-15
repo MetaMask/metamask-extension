@@ -365,6 +365,9 @@
   "invalidSeedPhrase": {
     "message": "Vigane seemnefraas"
   },
+  "invalidSymbolLength": {
+    "message": "Sümbol peab olema $1 tähemärki või vähem."
+  },
   "jsonFile": {
     "message": "JSON-laiendiga fail",
     "description": "format for importing an account"
@@ -682,9 +685,6 @@
   },
   "symbol": {
     "message": "Sümbol"
-  },
-  "invalidSymbolLength": {
-    "message": "Sümbol peab olema $1 tähemärki või vähem."
   },
   "terms": {
     "message": "Teenusetingimused"

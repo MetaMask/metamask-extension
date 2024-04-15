@@ -326,6 +326,9 @@
   "invalidSeedPhrase": {
     "message": "Hindi valid ang seed phrase"
   },
+  "invalidSymbolLength": {
+    "message": "Ang simbolo ay dapat na $1 character o mas kaunti."
+  },
   "knownAddressRecipient": {
     "message": "Kilalang address ng contract."
   },
@@ -610,9 +613,6 @@
   },
   "symbol": {
     "message": "Simbolo"
-  },
-  "invalidSymbolLength": {
-    "message": "Ang simbolo ay dapat na $1 character o mas kaunti."
   },
   "terms": {
     "message": "Mga Tuntunin ng Paggamit"

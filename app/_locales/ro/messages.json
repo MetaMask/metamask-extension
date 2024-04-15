@@ -359,6 +359,9 @@
   "invalidSeedPhrase": {
     "message": "Expresie sursă nevalidă"
   },
+  "invalidSymbolLength": {
+    "message": "Simbolul trebuie să fie de $1 caractere sau mai puțin."
+  },
   "jsonFile": {
     "message": "Fișier JSON",
     "description": "format for importing an account"
@@ -679,9 +682,6 @@
   },
   "symbol": {
     "message": "Simbol"
-  },
-  "invalidSymbolLength": {
-    "message": "Simbolul trebuie să fie de $1 caractere sau mai puțin."
   },
   "terms": {
     "message": "Termeni și condiții"

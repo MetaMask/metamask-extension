@@ -369,6 +369,9 @@
   "invalidSeedPhrase": {
     "message": "ಅಮಾನ್ಯವಾದ ಸೀಡ್ ಫ್ರೇಸ್"
   },
+  "invalidSymbolLength": {
+    "message": "ಚಿಹ್ನೆಯು $1 ಅಥವಾ ಅದಕ್ಕಿಂತ ಕಡಿಮೆ ಅಕ್ಷರಗಳಾಗಿರಬೇಕು."
+  },
   "jsonFile": {
     "message": "JSON ಫೈಲ್",
     "description": "format for importing an account"
@@ -692,9 +695,6 @@
   },
   "symbol": {
     "message": "ಚಿಹ್ನೆ"
-  },
-  "invalidSymbolLength": {
-    "message": "ಚಿಹ್ನೆಯು $1 ಅಥವಾ ಅದಕ್ಕಿಂತ ಕಡಿಮೆ ಅಕ್ಷರಗಳಾಗಿರಬೇಕು."
   },
   "terms": {
     "message": "ಬಳಕೆಯ ನಿಯಮಗಳು"

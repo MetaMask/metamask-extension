@@ -369,6 +369,9 @@
   "invalidSeedPhrase": {
     "message": "Netinkama atkūrimo frazė"
   },
+  "invalidSymbolLength": {
+    "message": "Simbolis turi būti ne ilgesnis nei $1 simbolių."
+  },
   "jsonFile": {
     "message": "JSON failas",
     "description": "format for importing an account"
@@ -692,9 +695,6 @@
   },
   "symbol": {
     "message": "Simbolis"
-  },
-  "invalidSymbolLength": {
-    "message": "Simbolis turi būti ne ilgesnis nei $1 simbolių."
   },
   "terms": {
     "message": "Naudojimo sąlygos"

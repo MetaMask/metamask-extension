@@ -1970,6 +1970,9 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "Ungültige Eingabe! Die geheime Wiederherstellungsphrase berücksichtigt Groß- und Kleinschreibung."
   },
+  "invalidSymbolLength": {
+    "message": "Das Symbol darf maximal $1 Zeichen lang sein."
+  },
   "ipfsGateway": {
     "message": "IPFS-Gateway"
   },
@@ -4259,9 +4262,6 @@
   },
   "symbol": {
     "message": "Symbol"
-  },
-  "invalidSymbolLength": {
-    "message": "Das Symbol darf maximal $1 Zeichen lang sein."
   },
   "tenPercentIncreased": {
     "message": "10 % Erhöhung"

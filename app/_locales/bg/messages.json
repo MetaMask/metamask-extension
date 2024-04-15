@@ -365,6 +365,9 @@
   "invalidSeedPhrase": {
     "message": "Невалидна фраза зародиш"
   },
+  "invalidSymbolLength": {
+    "message": "Символът трябва да е $1 символа или по-малко."
+  },
   "jsonFile": {
     "message": "JSON файл",
     "description": "format for importing an account"
@@ -688,9 +691,6 @@
   },
   "symbol": {
     "message": "Символ"
-  },
-  "invalidSymbolLength": {
-    "message": "Символът трябва да е $1 символа или по-малко."
   },
   "terms": {
     "message": "Условия за ползване"

@@ -356,6 +356,9 @@
   "invalidSeedPhrase": {
     "message": "Ugyldig mnemonisk gjenopprettingsfrase"
   },
+  "invalidSymbolLength": {
+    "message": "Symbolet må være $1 tegn eller færre."
+  },
   "jsonFile": {
     "message": "JSON-fil",
     "description": "format for importing an account"
@@ -670,9 +673,6 @@
   },
   "switchNetworks": {
     "message": "Bytt nettverk "
-  },
-  "invalidSymbolLength": {
-    "message": "Symbolet må være $1 tegn eller færre."
   },
   "terms": {
     "message": "Brukervilkår"
