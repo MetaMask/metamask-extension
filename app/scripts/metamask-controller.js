@@ -1814,6 +1814,11 @@ export default class MetamaskController extends EventEmitter {
           this.gasFeeController.fetchGasFeeEstimates.bind(
             this.gasFeeController,
           ),
+        getLayer1GasFee: this.txController.getLayer1GasFee.bind(
+          this.txController,
+        ),
+        getNetworkClientId: () =>
+          this.networkController.state.selectedNetworkClientId,
         trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),
@@ -3246,6 +3251,7 @@ export default class MetamaskController extends EventEmitter {
         txController.updatePreviousGasParams.bind(txController),
       abortTransactionSigning:
         txController.abortTransactionSigning.bind(txController),
+      getLayer1GasFee: txController.getLayer1GasFee.bind(txController),
 
       // decryptMessageController
       decryptMessage: this.decryptMessageController.decryptMessage.bind(
