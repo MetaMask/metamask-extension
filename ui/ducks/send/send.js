@@ -2168,7 +2168,9 @@ export function updateSendAsset(
 
           if (isCurrentOwner) {
             asset.error = null;
-            asset.balance = '0x1';
+            asset.balance = details.balance
+              ? addHexPrefix(decimalToHex(details.balance))
+              : '0x1';
           } else {
             throw new Error(
               'Send slice initialized as NFT send with an NFT not currently owned by the select account',

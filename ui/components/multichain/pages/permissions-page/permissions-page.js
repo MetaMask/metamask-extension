@@ -34,7 +34,6 @@ import {
 } from '../../../../selectors';
 import { Tab, Tabs } from '../../../ui/tabs';
 import { ProductTour } from '../../product-tour-popover';
-import { getURLHost } from '../../../../helpers/utils/util';
 import { hidePermissionsTour } from '../../../../store/actions';
 import { ConnectionListItem } from './connection-list-item';
 
@@ -68,7 +67,7 @@ export const PermissionsPage = () => {
   }, [totalConnections, sitesConnectionsList, snapsConnectionsList]);
 
   const handleConnectionClick = (connection) => {
-    const hostName = getURLHost(connection.origin);
+    const hostName = connection.origin;
     const safeEncodedHost = encodeURIComponent(hostName);
     history.push(`${CONNECTIONS}/${safeEncodedHost}`);
   };

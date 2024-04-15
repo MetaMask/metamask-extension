@@ -88,7 +88,7 @@ import { useMMICustodySignMessage } from '../../../../hooks/useMMICustodySignMes
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
 ///: END:ONLY_INCLUDE_IF
 
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
 ///: END:ONLY_INCLUDE_IF
 import Message from './signature-request-message';
@@ -96,7 +96,7 @@ import Footer from './signature-request-footer';
 
 const SignatureRequest = ({
   txData,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   warnings,
   ///: END:ONLY_INCLUDE_IF
 }) => {
@@ -138,7 +138,7 @@ const SignatureRequest = ({
   const { custodySignFn } = useMMICustodySignMessage();
   ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   const [isShowingSigInsightWarnings, setIsShowingSigInsightWarnings] =
     useState(false);
   ///: END:ONLY_INCLUDE_IF
@@ -246,7 +246,12 @@ const SignatureRequest = ({
         <div className="signature-request-content">
           {
             ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-            <BlockaidBannerAlert txData={txData} margin={[4, 4, 0, 4]} />
+            <BlockaidBannerAlert
+              txData={txData}
+              marginLeft={4}
+              marginRight={4}
+              marginBottom={4}
+            />
             ///: END:ONLY_INCLUDE_IF
           }
           {showOpenSeaToBlockaidBannerAlert ? (
@@ -368,7 +373,7 @@ const SignatureRequest = ({
         <Footer
           cancelAction={onCancel}
           signAction={() => {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+            ///: BEGIN:ONLY_INCLUDE_IF(snaps)
             if (warnings?.length >= 1) {
               return setIsShowingSigInsightWarnings(true);
             }
@@ -405,7 +410,7 @@ const SignatureRequest = ({
         ) : null}
       </div>
       {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+        ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       }
       {isShowingSigInsightWarnings && (
         <InsightWarnings
@@ -428,7 +433,7 @@ const SignatureRequest = ({
 
 SignatureRequest.propTypes = {
   txData: PropTypes.object,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   warnings: PropTypes.array,
   ///: END:ONLY_INCLUDE_IF
 };
