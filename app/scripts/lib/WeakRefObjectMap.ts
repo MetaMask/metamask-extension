@@ -72,7 +72,7 @@ export class WeakRefObjectMap<RecordType extends Record<string, object>>
       return undefined;
     }
 
-    const deRefValue: RecordType = {} as RecordType;
+    const deRefValue: Partial<RecordType> = {};
     for (const keyValue in weakRefValue) {
       if (!Object.hasOwn(weakRefValue, keyValue)) {
         continue;
@@ -85,7 +85,7 @@ export class WeakRefObjectMap<RecordType extends Record<string, object>>
       deRefValue[keyValue] = deref;
     }
 
-    return deRefValue;
+    return deRefValue as RecordType;
   }
 
   /**
