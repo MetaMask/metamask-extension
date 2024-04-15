@@ -25,7 +25,7 @@ jobs:
           fields: repo,message,commit,author,action
           payload: |
             {
-              "text": "A PR with label 'team-mmi' was added and requires review: ${{ github.repository }}#${{ github.event.pull_request.number }}",
+              "text": "A PR with label 'team-mmi' was added and requires review: ${{ github.event.pull_request.html_url }} in ${{ github.repository }}",
               "attachments": [
                 {
                   "color": "#2eb886",
