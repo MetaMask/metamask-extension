@@ -412,6 +412,12 @@ export default class MetamaskController extends EventEmitter {
 
     // next, we will initialize the controllers
     // controller initialization order matters
+    const clearPendingConfirmations = () => {
+      this.encryptionPublicKeyController.clearUnapproved();
+      this.decryptMessageController.clearUnapproved();
+      this.signatureController.clearUnapproved();
+      this.approvalController.clear(ethErrors.provider.userRejectedRequest());
+    };
 
     this.queuedRequestController = new QueuedRequestController({
       messenger: this.controllerMessenger.getRestricted({
@@ -422,6 +428,7 @@ export default class MetamaskController extends EventEmitter {
           'SelectedNetworkController:getNetworkClientIdForDomain',
         ],
       }),
+      clearPendingConfirmations
     });
 
     this.approvalController = new ApprovalController({
@@ -1939,12 +1946,7 @@ export default class MetamaskController extends EventEmitter {
     // clear unapproved transactions and messages when the network will change
     networkControllerMessenger.subscribe(
       'NetworkController:networkWillChange',
-      () => {
-        this.encryptionPublicKeyController.clearUnapproved();
-        this.decryptMessageController.clearUnapproved();
-        this.signatureController.clearUnapproved();
-        this.approvalController.clear(ethErrors.provider.userRejectedRequest());
-      },
+      clearPendingConfirmations.bind(this),
     );
 
     this.metamaskMiddleware = createMetamaskMiddleware({
