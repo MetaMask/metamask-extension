@@ -655,21 +655,13 @@ export default class PreferencesController {
 
     const { identities, lostIdentities } = this.store.getState();
 
-    const newlyLost = {};
     Object.keys(identities).forEach((identity) => {
       if (!addresses.includes(identity)) {
-        newlyLost[identity] = identities[identity];
+        // store lost accounts
+        lostIdentities[identity] = identities[identity];
         delete identities[identity];
       }
     });
-
-    // Identities are no longer present.
-    if (Object.keys(newlyLost).length > 0) {
-      // store lost accounts
-      Object.keys(newlyLost).forEach((key) => {
-        lostIdentities[key] = newlyLost[key];
-      });
-    }
 
     this.store.updateState({ identities, lostIdentities });
     this.addAddresses(addresses);
