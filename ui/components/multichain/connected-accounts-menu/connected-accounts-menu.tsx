@@ -20,10 +20,7 @@ import {
   removePermittedAccount,
   setSelectedAccount,
 } from '../../../store/actions';
-import {
-  getOriginOfCurrentTab,
-  getPermissionsForActiveTab,
-} from '../../../selectors';
+import { getPermissionsForActiveTab } from '../../../selectors';
 import { PermissionDetailsModal } from '../permission-details-modal/permission-details-modal';
 import { Identity } from './connected-accounts-menu.types';
 
@@ -39,6 +36,7 @@ export const ConnectedAccountsMenu = ({
   onClose,
   closeMenu,
   onActionClick,
+  activeTabOrigin,
 }: {
   isOpen: boolean;
   account: Identity;
@@ -47,8 +45,8 @@ export const ConnectedAccountsMenu = ({
   onClose: () => void;
   closeMenu: () => void;
   onActionClick: (message: string) => void;
+  activeTabOrigin: string;
 }) => {
-  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const dispatch = useDispatch();
   const t = useI18nContext();
   const popoverDialogRef = useRef<HTMLDivElement | null>(null);
