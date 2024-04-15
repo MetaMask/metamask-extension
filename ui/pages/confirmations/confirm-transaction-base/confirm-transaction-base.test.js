@@ -27,6 +27,7 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
+import { defaultBuyableChains } from '../../../ducks/ramps/constants';
 import ConfirmTransactionBase from './confirm-transaction-base.container';
 
 jest.mock('../components/simulation-details/useSimulationMetrics');
@@ -209,6 +210,9 @@ const baseStore = {
   },
   appState: {
     sendInputCurrencySwitched: false,
+  },
+  ramps: {
+    buyableChains: defaultBuyableChains,
   },
 };
 
