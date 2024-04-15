@@ -32,11 +32,7 @@ const authorTeams = {
     'Charly Chevalier',
     'Mike B',
   ],
-  'Wallet UX': [
-    'David Walsh',
-    'Nidhi Kumari',
-    'Jony Bursztyn',
-  ],
+  'Wallet UX': ['David Walsh', 'Nidhi Kumari', 'Jony Bursztyn'],
   'Extension Platform': [
     'chloeYue',
     'Chloe Gao',
