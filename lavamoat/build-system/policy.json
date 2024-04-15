@@ -978,7 +978,7 @@
         "@babel/core>@babel/helper-compilation-targets": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
         "@babel/preset-env>babel-plugin-polyfill-corejs2>@babel/helper-define-polyfill-provider>lodash.debounce": true,
-        "brfs>resolve": true
+        "depcheck>resolve": true
       }
     },
     "@babel/preset-env>babel-plugin-polyfill-corejs2>@babel/helper-define-polyfill-provider>lodash.debounce": {
@@ -1508,235 +1508,6 @@
         "readable-stream>util-deprecate": true
       }
     },
-    "brfs": {
-      "builtin": {
-        "fs.createReadStream": true,
-        "fs.readdir": true,
-        "path": true
-      },
-      "packages": {
-        "brfs>quote-stream": true,
-        "brfs>resolve": true,
-        "brfs>static-module": true,
-        "brfs>through2": true
-      }
-    },
-    "brfs>quote-stream": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "brfs>quote-stream>buffer-equal": true,
-        "brfs>quote-stream>through2": true
-      }
-    },
-    "brfs>quote-stream>buffer-equal": {
-      "builtin": {
-        "buffer.Buffer.isBuffer": true
-      }
-    },
-    "brfs>quote-stream>through2": {
-      "builtin": {
-        "util.inherits": true
-      },
-      "globals": {
-        "process.nextTick": true
-      },
-      "packages": {
-        "readable-stream": true,
-        "watchify>xtend": true
-      }
-    },
-    "brfs>resolve": {
-      "builtin": {
-        "fs.readFile": true,
-        "fs.readFileSync": true,
-        "fs.realpath": true,
-        "fs.realpathSync": true,
-        "fs.stat": true,
-        "fs.statSync": true,
-        "os.homedir": true,
-        "path.dirname": true,
-        "path.join": true,
-        "path.parse": true,
-        "path.relative": true,
-        "path.resolve": true
-      },
-      "globals": {
-        "process.env.HOME": true,
-        "process.env.HOMEDRIVE": true,
-        "process.env.HOMEPATH": true,
-        "process.env.LNAME": true,
-        "process.env.LOGNAME": true,
-        "process.env.USER": true,
-        "process.env.USERNAME": true,
-        "process.env.USERPROFILE": true,
-        "process.getuid": true,
-        "process.nextTick": true,
-        "process.platform": true,
-        "process.versions.pnp": true
-      },
-      "packages": {
-        "brfs>resolve>path-parse": true,
-        "depcheck>is-core-module": true
-      }
-    },
-    "brfs>resolve>path-parse": {
-      "globals": {
-        "process.platform": true
-      }
-    },
-    "brfs>static-module": {
-      "packages": {
-        "brfs>static-module>acorn-node": true,
-        "brfs>static-module>escodegen": true,
-        "brfs>static-module>magic-string": true,
-        "brfs>static-module>merge-source-map": true,
-        "brfs>static-module>object-inspect": true,
-        "brfs>static-module>scope-analyzer": true,
-        "brfs>static-module>shallow-copy": true,
-        "brfs>static-module>static-eval": true,
-        "brfs>static-module>through2": true,
-        "browserify>concat-stream": true,
-        "browserify>duplexer2": true,
-        "browserify>has": true,
-        "nyc>convert-source-map": true,
-        "readable-stream": true
-      }
-    },
-    "brfs>static-module>acorn-node": {
-      "packages": {
-        "@storybook/react>acorn-walk": true,
-        "brfs>static-module>acorn-node>acorn": true,
-        "watchify>xtend": true
-      }
-    },
-    "brfs>static-module>acorn-node>acorn": {
-      "globals": {
-        "define": true
-      }
-    },
-    "brfs>static-module>escodegen": {
-      "globals": {
-        "sourceMap.SourceNode": true
-      },
-      "packages": {
-        "brfs>static-module>escodegen>estraverse": true,
-        "brfs>static-module>escodegen>source-map": true,
-        "eslint>esutils": true
-      }
-    },
-    "brfs>static-module>magic-string": {
-      "globals": {
-        "Buffer": true,
-        "btoa": true,
-        "console.warn": true
-      },
-      "packages": {
-        "brfs>static-module>magic-string>sourcemap-codec": true
-      }
-    },
-    "brfs>static-module>magic-string>sourcemap-codec": {
-      "globals": {
-        "define": true
-      }
-    },
-    "brfs>static-module>merge-source-map": {
-      "packages": {
-        "brfs>static-module>merge-source-map>source-map": true
-      }
-    },
-    "brfs>static-module>object-inspect": {
-      "builtin": {
-        "util.inspect": true
-      },
-      "globals": {
-        "HTMLElement": true,
-        "WeakRef": true
-      }
-    },
-    "brfs>static-module>scope-analyzer": {
-      "builtin": {
-        "assert.ok": true,
-        "assert.strictEqual": true
-      },
-      "packages": {
-        "brfs>static-module>scope-analyzer>array-from": true,
-        "brfs>static-module>scope-analyzer>dash-ast": true,
-        "brfs>static-module>scope-analyzer>es6-map": true,
-        "brfs>static-module>scope-analyzer>es6-set": true,
-        "brfs>static-module>scope-analyzer>estree-is-function": true,
-        "brfs>static-module>scope-analyzer>get-assigned-identifiers": true,
-        "resolve-url-loader>es6-iterator>es6-symbol": true
-      }
-    },
-    "brfs>static-module>scope-analyzer>dash-ast": {
-      "builtin": {
-        "assert": true
-      }
-    },
-    "brfs>static-module>scope-analyzer>es6-map": {
-      "packages": {
-        "gulp-sourcemaps>debug-fabulous>memoizee>event-emitter": true,
-        "resolve-url-loader>es6-iterator": true,
-        "resolve-url-loader>es6-iterator>d": true,
-        "resolve-url-loader>es6-iterator>es5-ext": true,
-        "resolve-url-loader>es6-iterator>es6-symbol": true
-      }
-    },
-    "brfs>static-module>scope-analyzer>es6-set": {
-      "packages": {
-        "gulp-sourcemaps>debug-fabulous>memoizee>event-emitter": true,
-        "resolve-url-loader>es6-iterator": true,
-        "resolve-url-loader>es6-iterator>d": true,
-        "resolve-url-loader>es6-iterator>es5-ext": true,
-        "resolve-url-loader>es6-iterator>es6-symbol": true
-      }
-    },
-    "brfs>static-module>scope-analyzer>get-assigned-identifiers": {
-      "builtin": {
-        "assert.equal": true
-      }
-    },
-    "brfs>static-module>static-eval": {
-      "packages": {
-        "brfs>static-module>static-eval>escodegen": true
-      }
-    },
-    "brfs>static-module>static-eval>escodegen": {
-      "globals": {
-        "sourceMap.SourceNode": true
-      },
-      "packages": {
-        "brfs>static-module>static-eval>escodegen>estraverse": true,
-        "brfs>static-module>static-eval>escodegen>source-map": true,
-        "eslint>esutils": true
-      }
-    },
-    "brfs>static-module>through2": {
-      "builtin": {
-        "util.inherits": true
-      },
-      "globals": {
-        "process.nextTick": true
-      },
-      "packages": {
-        "readable-stream": true,
-        "watchify>xtend": true
-      }
-    },
-    "brfs>through2": {
-      "builtin": {
-        "util.inherits": true
-      },
-      "globals": {
-        "process.nextTick": true
-      },
-      "packages": {
-        "readable-stream": true,
-        "watchify>xtend": true
-      }
-    },
     "browserify": {
       "builtin": {
         "events.EventEmitter": true,
@@ -1754,7 +1525,6 @@
         "process.platform": true
       },
       "packages": {
-        "brfs>resolve": true,
         "browserify>browser-pack": true,
         "browserify>browser-resolve": true,
         "browserify>cached-path-relative": true,
@@ -1767,6 +1537,7 @@
         "browserify>shasum-object": true,
         "browserify>syntax-error": true,
         "browserify>through2": true,
+        "depcheck>resolve": true,
         "labeled-stream-splicer": true,
         "lavamoat>htmlescape": true,
         "pumpify>inherits": true,
@@ -1830,7 +1601,7 @@
         "process.platform": true
       },
       "packages": {
-        "brfs>resolve": true
+        "depcheck>resolve": true
       }
     },
     "browserify>cached-path-relative": {
@@ -1894,9 +1665,9 @@
       },
       "packages": {
         "@lavamoat/lavapack>combine-source-map": true,
-        "brfs>static-module>acorn-node": true,
         "browserify>insert-module-globals>through2": true,
         "browserify>insert-module-globals>undeclared-identifiers": true,
+        "browserify>syntax-error>acorn-node": true,
         "gulp-watch>path-is-absolute": true,
         "watchify>xtend": true
       }
@@ -1915,9 +1686,14 @@
     },
     "browserify>insert-module-globals>undeclared-identifiers": {
       "packages": {
-        "brfs>static-module>acorn-node": true,
-        "brfs>static-module>scope-analyzer>get-assigned-identifiers": true,
+        "browserify>insert-module-globals>undeclared-identifiers>get-assigned-identifiers": true,
+        "browserify>syntax-error>acorn-node": true,
         "watchify>xtend": true
+      }
+    },
+    "browserify>insert-module-globals>undeclared-identifiers>get-assigned-identifiers": {
+      "builtin": {
+        "assert.equal": true
       }
     },
     "browserify>module-deps": {
@@ -1938,7 +1714,6 @@
         "tr": true
       },
       "packages": {
-        "brfs>resolve": true,
         "browserify>browser-resolve": true,
         "browserify>cached-path-relative": true,
         "browserify>concat-stream": true,
@@ -1947,6 +1722,7 @@
         "browserify>module-deps>stream-combiner2": true,
         "browserify>module-deps>through2": true,
         "browserify>parents": true,
+        "depcheck>resolve": true,
         "loose-envify": true,
         "pumpify>inherits": true,
         "readable-stream": true,
@@ -1956,7 +1732,7 @@
     },
     "browserify>module-deps>detective": {
       "packages": {
-        "brfs>static-module>acorn-node": true,
+        "browserify>syntax-error>acorn-node": true,
         "watchify>defined": true
       }
     },
@@ -2022,7 +1798,19 @@
     },
     "browserify>syntax-error": {
       "packages": {
-        "brfs>static-module>acorn-node": true
+        "browserify>syntax-error>acorn-node": true
+      }
+    },
+    "browserify>syntax-error>acorn-node": {
+      "packages": {
+        "@storybook/react>acorn-walk": true,
+        "browserify>syntax-error>acorn-node>acorn": true,
+        "watchify>xtend": true
+      }
+    },
+    "browserify>syntax-error>acorn-node>acorn": {
+      "globals": {
+        "define": true
       }
     },
     "browserify>through2": {
@@ -2388,6 +2176,45 @@
         "console.warn": true
       }
     },
+    "depcheck>resolve": {
+      "builtin": {
+        "fs.readFile": true,
+        "fs.readFileSync": true,
+        "fs.realpath": true,
+        "fs.realpathSync": true,
+        "fs.stat": true,
+        "fs.statSync": true,
+        "os.homedir": true,
+        "path.dirname": true,
+        "path.join": true,
+        "path.parse": true,
+        "path.relative": true,
+        "path.resolve": true
+      },
+      "globals": {
+        "process.env.HOME": true,
+        "process.env.HOMEDRIVE": true,
+        "process.env.HOMEPATH": true,
+        "process.env.LNAME": true,
+        "process.env.LOGNAME": true,
+        "process.env.USER": true,
+        "process.env.USERNAME": true,
+        "process.env.USERPROFILE": true,
+        "process.getuid": true,
+        "process.nextTick": true,
+        "process.platform": true,
+        "process.versions.pnp": true
+      },
+      "packages": {
+        "depcheck>is-core-module": true,
+        "depcheck>resolve>path-parse": true
+      }
+    },
+    "depcheck>resolve>path-parse": {
+      "globals": {
+        "process.platform": true
+      }
+    },
     "duplexify": {
       "globals": {
         "Buffer": true,
@@ -2506,7 +2333,7 @@
         "path.resolve": true
       },
       "packages": {
-        "brfs>resolve": true,
+        "depcheck>resolve": true,
         "eslint-import-resolver-node>debug": true
       }
     },
@@ -2536,8 +2363,8 @@
         "process.cwd": true
       },
       "packages": {
-        "brfs>resolve": true,
         "del>is-glob": true,
+        "depcheck>resolve": true,
         "eslint-plugin-import>tsconfig-paths": true,
         "nock>debug": true,
         "nyc>glob": true
@@ -2852,7 +2679,7 @@
         "process.cwd": true
       },
       "packages": {
-        "brfs>resolve": true,
+        "depcheck>resolve": true,
         "eslint-plugin-node>eslint-plugin-es": true,
         "eslint-plugin-node>eslint-utils": true,
         "eslint-plugin-node>semver": true,
@@ -3015,8 +2842,8 @@
         "process.versions.pnp": true
       },
       "packages": {
-        "brfs>resolve>path-parse": true,
-        "depcheck>is-core-module": true
+        "depcheck>is-core-module": true,
+        "depcheck>resolve>path-parse": true
       }
     },
     "eslint-plugin-react>semver": {
@@ -6133,7 +5960,7 @@
         "path.relative": true
       },
       "packages": {
-        "brfs>resolve": true
+        "depcheck>resolve": true
       }
     },
     "lavamoat>lavamoat-core>merge-deep": {
@@ -7611,7 +7438,6 @@
     },
     "string.prototype.matchall>es-abstract": {
       "packages": {
-        "brfs>static-module>object-inspect": true,
         "browserify>has": true,
         "eslint-plugin-react>array-includes>is-string": true,
         "string.prototype.matchall>call-bind": true,
@@ -7622,6 +7448,7 @@
         "string.prototype.matchall>es-abstract>has-proto": true,
         "string.prototype.matchall>es-abstract>is-callable": true,
         "string.prototype.matchall>es-abstract>is-regex": true,
+        "string.prototype.matchall>es-abstract>object-inspect": true,
         "string.prototype.matchall>es-abstract>safe-regex-test": true,
         "string.prototype.matchall>es-abstract>string.prototype.trim": true,
         "string.prototype.matchall>get-intrinsic": true,
@@ -7667,6 +7494,15 @@
       "packages": {
         "koa>is-generator-function>has-tostringtag": true,
         "string.prototype.matchall>call-bind": true
+      }
+    },
+    "string.prototype.matchall>es-abstract>object-inspect": {
+      "builtin": {
+        "util.inspect": true
+      },
+      "globals": {
+        "HTMLElement": true,
+        "WeakRef": true
       }
     },
     "string.prototype.matchall>es-abstract>safe-regex-test": {
@@ -7720,8 +7556,8 @@
     },
     "string.prototype.matchall>side-channel": {
       "packages": {
-        "brfs>static-module>object-inspect": true,
         "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>es-abstract>object-inspect": true,
         "string.prototype.matchall>get-intrinsic": true
       }
     },
