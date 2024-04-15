@@ -1936,14 +1936,32 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
+    const clearPendingConfirmations = () => {
+      this.encryptionPublicKeyController.clearUnapproved();
+      this.decryptMessageController.clearUnapproved();
+      this.signatureController.clearUnapproved();
+      this.approvalController.clear(ethErrors.provider.userRejectedRequest());
+    };
+
     // clear unapproved transactions and messages when the network will change
     networkControllerMessenger.subscribe(
       'NetworkController:networkWillChange',
-      () => {
-        this.encryptionPublicKeyController.clearUnapproved();
-        this.decryptMessageController.clearUnapproved();
-        this.signatureController.clearUnapproved();
-        this.approvalController.clear(ethErrors.provider.userRejectedRequest());
+      clearPendingConfirmations.bind(this),
+    );
+
+    this.messagingSystem.subscribe(
+      'PermissionController:stateChange',
+      (_, patches) => {
+        patches.forEach(({ op, path }) => {
+          const isChangingSubject =
+                path[0] === 'subjects' && path[1] !== undefined;
+          if (isChangingSubject && typeof path[1] === 'string') {
+            const domain = path[1];
+            if (op === 'remove' && this.controllerMessenger.call('QueuedRequestController:getOriginOfCurrentBatch') === domain) {
+              clearPendingConfirmations();
+            }
+          }
+        });
       },
     );
 
