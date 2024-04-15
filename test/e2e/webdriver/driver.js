@@ -157,8 +157,11 @@ class Driver {
    * buildLocator function enhances element matching capabilities by introducing support for inline locators,
    * offering an alternative to the traditional use of Selenium's By abstraction.
    *
-   * To locate an element by its class using a CSS selector, prepend the class name with a dot (.) symbol.
+   * @param {string | object} locator - this could be 'css' or 'xpath' and value to use with the locator strategy.
+   * @returns {object} By object that can be used to locate elements.
+   * @throws {Error} Will throw an error if an invalid locator strategy is provided.
    *
+   * To locate an element by its class using a CSS selector, prepend the class name with a dot (.) symbol.
    * @example <caption>Example to locate the amount text box using its class on the send transaction screen</caption>
    *        await driver.findElement('.unit-input__input’);
    *
@@ -174,9 +177,6 @@ class Driver {
    * To locate an element by XPath locator strategy
    * @example <caption>Example to locate 'Confirm' button on the send transaction page</caption>
    *        await driver.findClickableElement({ text: 'Confirm', tag: 'button' });
-   * @param {string | object} locator - this could be 'css' or 'xpath' and value to use with the locator strategy.
-   * @returns {object} By object that can be used to locate elements.
-   * @throws {Error} Will throw an error if an invalid locator strategy is provided.
    */
   buildLocator(locator) {
     if (typeof locator === 'string') {
@@ -233,6 +233,11 @@ class Driver {
    * @param {string | object} rawLocator - element locator to fill.
    * @param {string} input - The value to fill the element with.
    * @returns {Promise<WebElement>} Promise resolving to the filled element
+   *
+   * @example <caption>Example to fill address in the send transaction screen</caption>
+   *          await driver.fill(
+   *                'input[data-testid="ens-input"]',
+   *                '0xc427D562164062a23a5cFf596A4a3208e72Acd28');
    */
   async fill(rawLocator, input) {
     const element = await this.findElement(rawLocator);
@@ -263,7 +268,13 @@ class Driver {
    * Function to wait for a specific condition to be met within a given timeout period,
    * with an option to catch and handle any errors that occur during the wait.
    *
-   *  @example <caption>Example wait until a condition occurs</caption>
+   * @param {Function} condition - Function or a condition that the method waits to be fulfilled or to return true.
+   * @param {number} timeout - Optional parameter specifies the maximum milliseconds to wait.
+   * @param catchError - Optional parameter that determines whether errors during the wait should be caught and handled within the method
+   * @returns {Promise} A promise that will be fulfilled after the specified number of milliseconds.
+   * @throws {Error} Will throw an error if the condition is not met within the timeout period.
+   *
+   * @example <caption>Example wait until a condition occurs</caption>
    *            await driver.wait(async () => {
    *              let info = await getBackupJson();
    *              return info !== null;
@@ -280,11 +291,6 @@ class Driver {
    *              const isPending = await mockedEndpoint.isPending();
    *              return isPending === false;
    *           }, 3000);
-   * @param {Function} condition - Function or a condition that the method waits to be fulfilled or to return true.
-   * @param {number} timeout - Optional parameter specifies the maximum milliseconds to wait.
-   * @param catchError - Optional parameter that determines whether errors during the wait should be caught and handled within the method
-   * @returns {Promise} A promise that will be fulfilled after the specified number of milliseconds.
-   * @throws {Error} Will throw an error if the condition is not met within the timeout period.
    */
   async wait(condition, timeout = this.timeout, catchError = false) {
     try {
@@ -411,14 +417,6 @@ class Driver {
   async quit() {
     await this.driver.quit();
   }
-
-  /**
-   * Element Interactions:
-   *
-   * Finding web elements is a fundamental task in web automation and testing.
-   * This allows scripts to interact with various components of a web page,
-   * such as input fields, buttons, links, and more.
-   */
 
   /**
    * Finds an element on the page using the given locator
@@ -598,23 +596,6 @@ class Driver {
   }
 
   /**
-   * Assertion is a statement that checks if a specified condition is true.
-   * If the condition is true, the program continues to execute.
-   * If the condition is false, throws an error or fails.
-   *
-   * Below are the assertions that can be used in the E2E test driver:-
-   * 1. assertElementNotPresent
-   * 2. isElementPresent
-   * 3. isElementPresentAndVisible
-   *
-   * When do we use assertions?
-   *    - Checking if a variable has the expected value.
-   *    - Verifying that an object is not null.
-   *    - Ensuring that a web element is visible, contains specific text, or is enabled/disabled.
-   *    - Verify that a certain condition holds at a specific point in the program or test case.
-   */
-
-  /**
    * Checks if an element that matches the given locator is present on the page.
    *
    * @param {string | object} rawLocator - Element locator
@@ -664,7 +645,7 @@ class Driver {
     await this.fill(rawLocator, Key.chord(this.Key.MODIFIER, 'v'));
   }
 
-  // Navigation refers to the process of moving through web pages within a browser session
+  // Navigation
 
   /**
    * Navigates to the specified page within a browser session.
