@@ -109,7 +109,6 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
 
         // Dapp one send tx
         await driver.switchToWindowWithUrl(DAPP_URL);
-        await driver.executeScript(`window.location.reload()`);
         await driver.delay(largeDelayMs);
         await driver.clickElement('#sendButton');
 
@@ -117,7 +116,6 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
 
         // Dapp two send tx
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
-        await driver.executeScript(`window.location.reload()`);
         await driver.delay(largeDelayMs);
         await driver.clickElement('#sendButton');
 

@@ -2125,8 +2125,16 @@
     },
     "@metamask/selected-network-controller": {
       "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/network-controller>@metamask/swappable-obj-proxy": true
+        "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
+        "@metamask/selected-network-controller>@metamask/base-controller": true
+      }
+    },
+    "@metamask/selected-network-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/signature-controller": {
@@ -3187,15 +3195,6 @@
     "bowser": {
       "globals": {
         "define": true
-      }
-    },
-    "brfs>static-module>object-inspect": {
-      "globals": {
-        "HTMLElement": true,
-        "WeakRef": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
       }
     },
     "browserify>assert": {
@@ -4972,6 +4971,15 @@
         "string.prototype.matchall>call-bind": true
       }
     },
+    "string.prototype.matchall>es-abstract>object-inspect": {
+      "globals": {
+        "HTMLElement": true,
+        "WeakRef": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
+      }
+    },
     "string.prototype.matchall>get-intrinsic": {
       "globals": {
         "AggregateError": true,
@@ -5009,8 +5017,8 @@
     },
     "string.prototype.matchall>side-channel": {
       "packages": {
-        "brfs>static-module>object-inspect": true,
         "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>es-abstract>object-inspect": true,
         "string.prototype.matchall>get-intrinsic": true
       }
     },
