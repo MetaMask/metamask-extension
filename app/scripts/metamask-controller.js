@@ -1404,21 +1404,21 @@ export default class MetamaskController extends EventEmitter {
       state: initState.AuthenticationController,
       messenger: this.controllerMessenger.getRestricted({
         name: 'AuthenticationController',
-        allowedActions: [`${this.snapController.name}:handleRequest`],
+        allowedActions: ['SnapController:handleRequest'],
       }),
     });
     this.userStorageController = new UserStorageController({
+      state: initState.UserStorageController,
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserStorageController',
-        allowedActions: [`${this.snapController.name}:handleRequest`],
+        allowedActions: [
+          'SnapController:handleRequest',
+          'AuthenticationController:getBearerToken',
+          'AuthenticationController:getSessionProfile',
+          'AuthenticationController:isSignedIn',
+          'AuthenticationController:performSignIn',
+        ],
       }),
-      auth: {
-        getBearerToken: () => this.authenticationController.getBearerToken(),
-        getSessionIdentifier: async () =>
-          (await this.authenticationController.getSessionProfile())?.profileId,
-        isAuthEnabled: () => this.authenticationController.state.isSignedIn,
-        signIn: () => this.authenticationController.performSignIn(),
-      },
     });
 
     // account tracker watches balances, nonces, and any code at their address

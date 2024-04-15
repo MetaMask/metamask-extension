@@ -4,6 +4,12 @@ import {
   StateMetadata,
 } from '@metamask/base-controller';
 import { HandleSnapRequest } from '@metamask/snaps-controllers';
+import {
+  AuthenticationControllerGetBearerToken,
+  AuthenticationControllerGetSessionProfile,
+  AuthenticationControllerIsSignedIn,
+  AuthenticationControllerPerformSignIn,
+} from '../authentication/authentication-controller';
 import { createSnapSignMessageRequest } from './auth-snap-requests';
 import { getUserStorage, upsertUserStorage } from './services';
 import { UserStorageEntryKeys } from './schema';
@@ -54,7 +60,14 @@ export type UserStorageControllerDisableProfileSyncing =
   ActionsObj['disableProfileSyncing'];
 
 // Allowed Actions
-type AllowedActions = HandleSnapRequest;
+export type AllowedActions =
+  // Snap Requests
+  | HandleSnapRequest
+  // Auth Requests
+  | AuthenticationControllerGetBearerToken
+  | AuthenticationControllerGetSessionProfile
+  | AuthenticationControllerPerformSignIn
+  | AuthenticationControllerIsSignedIn;
 
 // Messenger
 export type UserStorageControllerMessenger = RestrictedControllerMessenger<
@@ -64,13 +77,6 @@ export type UserStorageControllerMessenger = RestrictedControllerMessenger<
   AllowedActions['type'],
   never
 >;
-
-export type AuthParams = {
-  getBearerToken: () => Promise<string>;
-  getSessionIdentifier: () => Promise<string | null>;
-  signIn: () => Promise<void>;
-  isAuthEnabled: () => boolean;
-};
 
 /**
  * Reusable controller that allows any team to store synchronized data for a given user.
@@ -85,12 +91,31 @@ export default class UserStorageController extends BaseController<
   UserStorageControllerState,
   UserStorageControllerMessenger
 > {
-  #auth: AuthParams;
+  #auth = {
+    getBearerToken: async () => {
+      return await this.messagingSystem.call(
+        'AuthenticationController:getBearerToken',
+      );
+    },
+    getProfileId: async () => {
+      const sessionProfile = await this.messagingSystem.call(
+        'AuthenticationController:getSessionProfile',
+      );
+      return sessionProfile?.profileId;
+    },
+    isAuthEnabled: () => {
+      return this.messagingSystem.call('AuthenticationController:isSignedIn');
+    },
+    signIn: async () => {
+      return await this.messagingSystem.call(
+        'AuthenticationController:performSignIn',
+      );
+    },
+  };
 
   constructor(params: {
     messenger: UserStorageControllerMessenger;
     state?: UserStorageControllerState;
-    auth: AuthParams;
   }) {
     super({
       messenger: params.messenger,
@@ -98,8 +123,6 @@ export default class UserStorageController extends BaseController<
       name: controllerName,
       state: { ...defaultState, ...params.state },
     });
-
-    this.#auth = params.auth;
   }
 
   public async enableProfileSyncing(): Promise<void> {
@@ -222,7 +245,7 @@ export default class UserStorageController extends BaseController<
    * @returns the storage key
    */
   async #createStorageKey(): Promise<string> {
-    const id = await this.#auth.getSessionIdentifier();
+    const id = await this.#auth.getProfileId();
     if (!id) {
       throw new Error('UserStorageController - unable to create storage key');
     }
