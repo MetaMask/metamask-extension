@@ -37,7 +37,7 @@ export const isValidScopeObject = (scopeString: string, scopeObject: ScopeObject
     return false
   }
 
-  const {scopes, methods, notifications, accounts} = scopeObject
+  const {scopes, methods, notifications, accounts, rpcDocuments, rpcEndpoints, ...restScopeObject} = scopeObject
 
   // These assume that the namespace has a notion of chainIds
   if(isChainScoped && scopes) {
@@ -67,6 +67,13 @@ export const isValidScopeObject = (scopeString: string, scopeObject: ScopeObject
 
   const areNotificationsValid = notifications.every((notification) => typeof notification === 'string' && notification !== '')
   if (!areNotificationsValid) {
+    return false
+  }
+
+  // not validating rpcDocuments or rpcEndpoints currently
+
+  // unexpected properties found on scopeObject
+  if (Object.keys(restScopeObject)) {
     return false
   }
 
