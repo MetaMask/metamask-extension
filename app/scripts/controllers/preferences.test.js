@@ -24,6 +24,7 @@ const NETWORK_CONFIGURATION_DATA = {
 describe('preferences controller', () => {
   let preferencesController;
   let tokenListController;
+  let onKeyringStateChangeListener;
 
   beforeEach(() => {
     const tokenListMessenger = new ControllerMessenger().getRestricted({
@@ -41,6 +42,9 @@ describe('preferences controller', () => {
       initLangCode: 'en_US',
       tokenListController,
       networkConfigurations: NETWORK_CONFIGURATION_DATA,
+      onKeyringStateChange: (listener) => {
+        onKeyringStateChangeListener = listener;
+      },
     });
   });
 
@@ -195,6 +199,23 @@ describe('preferences controller', () => {
     });
   });
 
+  describe('dismissOpenSeaToBlockaidBanner', () => {
+    it('hasDismissedOpenSeaToBlockaidBanner should default to false', () => {
+      expect(
+        preferencesController.store.getState()
+          .hasDismissedOpenSeaToBlockaidBanner,
+      ).toStrictEqual(false);
+    });
+
+    it('should set the hasDismissedOpenSeaToBlockaidBanner property in state', () => {
+      preferencesController.dismissOpenSeaToBlockaidBanner();
+      expect(
+        preferencesController.store.getState()
+          .hasDismissedOpenSeaToBlockaidBanner,
+      ).toStrictEqual(true);
+    });
+  });
+
   describe('setUseSafeChainsListValidation', function () {
     it('should default to true', function () {
       const state = preferencesController.store.getState();
@@ -343,6 +364,7 @@ describe('preferences controller', () => {
         [CHAIN_IDS.GOERLI]: true,
         [CHAIN_IDS.SEPOLIA]: true,
         [CHAIN_IDS.LINEA_GOERLI]: true,
+        [CHAIN_IDS.LINEA_SEPOLIA]: true,
       });
     });
 
@@ -360,7 +382,26 @@ describe('preferences controller', () => {
         [CHAIN_IDS.GOERLI]: true,
         [CHAIN_IDS.SEPOLIA]: true,
         [CHAIN_IDS.LINEA_GOERLI]: true,
+        [CHAIN_IDS.LINEA_SEPOLIA]: true,
       });
+    });
+  });
+
+  describe('onKeyringStateChange', () => {
+    it('should sync the identities with the keyring', () => {
+      const mockKeyringControllerState = {
+        keyrings: [
+          {
+            accounts: ['0x1', '0x2', '0x3', '0x4'],
+          },
+        ],
+      };
+
+      onKeyringStateChangeListener(mockKeyringControllerState);
+
+      expect(
+        Object.keys(preferencesController.store.getState().identities),
+      ).toStrictEqual(mockKeyringControllerState.keyrings[0].accounts);
     });
   });
 
@@ -380,4 +421,19 @@ describe('preferences controller', () => {
     });
   });
   ///: END:ONLY_INCLUDE_IF
+
+  describe('setUseTransactionSimulations', () => {
+    it('should default to true', () => {
+      expect(
+        preferencesController.store.getState().useExternalNameSources,
+      ).toStrictEqual(true);
+    });
+
+    it('should set the setUseTransactionSimulations property in state', () => {
+      preferencesController.setUseTransactionSimulations(false);
+      expect(
+        preferencesController.store.getState().useTransactionSimulations,
+      ).toStrictEqual(false);
+    });
+  });
 });

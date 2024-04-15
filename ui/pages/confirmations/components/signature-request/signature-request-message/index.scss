@@ -1,0 +1,26 @@
+@use "design-system";
+
+.signature-request-message {
+  flex: 1 60%;
+  max-height: 231px;
+  position: relative;
+
+  &__root {
+    flex: 1 100%;
+    overflow: auto;
+
+    @include design-system.screen-sm-min {
+      width: auto;
+    }
+  }
+
+  &__scroll-button {
+    position: absolute;
+    right: 28px;
+    bottom: 12px;
+    border-radius: 50%;
+    height: 24px;
+    width: 24px;
+    cursor: pointer;
+  }
+}

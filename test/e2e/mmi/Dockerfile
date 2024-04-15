@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/playwright:v1.41.0-focal AS build
+FROM mcr.microsoft.com/playwright:v1.42.1-focal AS build
 
 WORKDIR '/usr/src/app'
 

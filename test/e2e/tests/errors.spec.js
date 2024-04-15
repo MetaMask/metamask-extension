@@ -1,7 +1,7 @@
 const { resolve } = require('path');
 const { promises: fs } = require('fs');
 const { strict: assert } = require('assert');
-const { get, has, set, unset } = require('lodash');
+const { get, has, set, unset, cloneDeep } = require('lodash');
 const { Browser } = require('selenium-webdriver');
 const { format } = require('prettier');
 const { isObject } = require('@metamask/utils');
@@ -57,17 +57,18 @@ const removedUiFields = removedBackgroundFields.map(backgroundToUiField);
  * @param {unknown} data - The data to transform
  */
 function transformBackgroundState(data) {
+  const clonedData = cloneDeep(data);
   for (const field of maskedBackgroundFields) {
-    if (has(data, field)) {
-      set(data, field, typeof get(data, field));
+    if (has(clonedData, field)) {
+      set(clonedData, field, typeof get(clonedData, field));
     }
   }
   for (const field of removedBackgroundFields) {
-    if (has(data, field)) {
-      unset(data, field);
+    if (has(clonedData, field)) {
+      unset(clonedData, field);
     }
   }
-  return data;
+  return clonedData;
 }
 
 /**
@@ -226,7 +227,6 @@ describe('Sentry errors', function () {
           },
           ganacheOptions,
           title: this.test.fullTitle(),
-          failOnConsoleError: false,
           testSpecificMock: mockSentryMigratorError,
         },
         async ({ driver, mockedEndpoint }) => {
@@ -254,7 +254,6 @@ describe('Sentry errors', function () {
             .build(),
           ganacheOptions,
           title: this.test.fullTitle(),
-          failOnConsoleError: false,
           testSpecificMock: mockSentryTestError,
         },
         async ({ driver, mockedEndpoint }) => {
@@ -293,7 +292,6 @@ describe('Sentry errors', function () {
           },
           ganacheOptions,
           title: this.test.fullTitle(),
-          failOnConsoleError: false,
           testSpecificMock: mockSentryMigratorError,
         },
         async ({ driver, mockedEndpoint }) => {
@@ -333,7 +331,6 @@ describe('Sentry errors', function () {
           },
           ganacheOptions,
           title: this.test.fullTitle(),
-          failOnConsoleError: false,
           testSpecificMock: mockSentryMigratorError,
         },
         async ({ driver, mockedEndpoint }) => {
@@ -391,7 +388,6 @@ describe('Sentry errors', function () {
           },
           ganacheOptions,
           title: this.test.fullTitle(),
-          failOnConsoleError: false,
           testSpecificMock: mockSentryInvariantMigrationError,
         },
         async ({ driver, mockedEndpoint }) => {
@@ -437,7 +433,6 @@ describe('Sentry errors', function () {
             .build(),
           ganacheOptions,
           title: this.test.fullTitle(),
-          failOnConsoleError: false,
           testSpecificMock: mockSentryTestError,
         },
         async ({ driver, mockedEndpoint }) => {
@@ -480,7 +475,6 @@ describe('Sentry errors', function () {
             .build(),
           ganacheOptions,
           title: this.test.fullTitle(),
-          failOnConsoleError: false,
           testSpecificMock: mockSentryTestError,
         },
         async ({ driver, mockedEndpoint }) => {
@@ -542,7 +536,6 @@ describe('Sentry errors', function () {
             .build(),
           ganacheOptions,
           title: this.test.fullTitle(),
-          failOnConsoleError: false,
           testSpecificMock: mockSentryTestError,
         },
         async ({ driver, mockedEndpoint }) => {
@@ -575,7 +568,6 @@ describe('Sentry errors', function () {
             .build(),
           ganacheOptions,
           title: this.test.fullTitle(),
-          failOnConsoleError: false,
           testSpecificMock: mockSentryTestError,
         },
         async ({ driver, mockedEndpoint }) => {
@@ -608,7 +600,6 @@ describe('Sentry errors', function () {
             .build(),
           ganacheOptions,
           title: this.test.fullTitle(),
-          failOnConsoleError: false,
           testSpecificMock: mockSentryTestError,
         },
         async ({ driver, mockedEndpoint }) => {
@@ -652,7 +643,6 @@ describe('Sentry errors', function () {
             .build(),
           ganacheOptions,
           title: this.test.fullTitle(),
-          failOnConsoleError: false,
           testSpecificMock: mockSentryTestError,
         },
         async ({ driver, mockedEndpoint }) => {
@@ -707,7 +697,6 @@ describe('Sentry errors', function () {
             .build(),
           ganacheOptions,
           title: this.test.fullTitle(),
-          failOnConsoleError: false,
           testSpecificMock: mockSentryTestError,
         },
         async ({ driver, mockedEndpoint }) => {
@@ -748,7 +737,6 @@ describe('Sentry errors', function () {
             .build(),
           ganacheOptions,
           title: this.test.fullTitle(),
-          failOnConsoleError: false,
           testSpecificMock: mockSentryTestError,
         },
         async ({ driver, mockedEndpoint }) => {
@@ -840,6 +828,10 @@ describe('Sentry errors', function () {
       // This can get erased due to a bug in the app state controller's
       // preferences state change handler
       timeoutMinutes: true,
+      // MMI properties
+      opts: true,
+      store: true,
+      configurationClient: true,
     };
     await withFixtures(
       {

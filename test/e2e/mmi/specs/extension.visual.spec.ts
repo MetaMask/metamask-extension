@@ -7,6 +7,7 @@ import { MMISignUpPage } from '../pageObjects/mmi-signup-page';
 import { MMISaturnUIPage } from '../pageObjects/mmi-saturn-ui-page';
 import { CustodianTestClient } from '../custodian-hooks/hooks';
 import { MMIAccountMenuPage } from '../pageObjects/mmi-accountMenu-page';
+import { SEPOLIA_DISPLAY_NAME } from '../helpers/utils';
 
 test.describe('MMI extension', () => {
   test('Interactive token replacement', async ({ page, context }) => {
@@ -31,6 +32,8 @@ test.describe('MMI extension', () => {
     // Setup testnetwork in settings
     const mainMenuPage = new MMIMainMenuPage(page, extensionId as string);
     await mainMenuPage.goto();
+    await mainMenuPage.fillPassword();
+    await mainMenuPage.finishOnboarding();
     await mainMenuPage.selectMenuOption('settings');
     await mainMenuPage.selectSettings('Advance');
     await mainMenuPage.switchTestNetwork();
@@ -40,7 +43,7 @@ test.describe('MMI extension', () => {
     // Check network
     const networkPage = new MMINetworkPage(page);
     await networkPage.open();
-    await networkPage.selectNetwork('Goerli');
+    await networkPage.selectNetwork(SEPOLIA_DISPLAY_NAME);
 
     // get token to access saturn
     const client = new CustodianTestClient();
@@ -91,6 +94,16 @@ test.describe('MMI extension', () => {
       'Custody Account H',
       'Custody Account I',
       'Custody Account J',
+      'Custody Account K',
+      'Custody Account L',
+      'Custody Account M',
+      'Custody Account N',
+      'Custody Account O',
+      'Custody Account P',
+      'Custody Account Q',
+      'Custody Account R',
+      'Custody Account S',
+      'Custody Account T',
     ];
 
     // Getting extension id of MMI
@@ -113,6 +126,8 @@ test.describe('MMI extension', () => {
     // Setup testnetwork in settings
     const mainMenuPage = new MMIMainMenuPage(page, extensionId as string);
     await mainMenuPage.goto();
+    await mainMenuPage.fillPassword();
+    await mainMenuPage.finishOnboarding();
     await mainMenuPage.selectMenuOption('settings');
     await mainMenuPage.selectSettings('Advance');
     await mainMenuPage.switchTestNetwork();
@@ -122,7 +137,7 @@ test.describe('MMI extension', () => {
     // Check network
     const networkPage = new MMINetworkPage(page);
     await networkPage.open();
-    await networkPage.selectNetwork('Goerli');
+    await networkPage.selectNetwork(SEPOLIA_DISPLAY_NAME);
 
     // get token to access saturn
     const client = new CustodianTestClient();
@@ -135,9 +150,8 @@ test.describe('MMI extension', () => {
       process.env.MMI_E2E_CUSTODIAN_NAME as string,
     );
 
-    await mainMenuPage.closeDeprecatedNetworksBanner();
-
     const accountNamesWithCustodian = await accountsPopup.getAccountNames();
+
     expect(
       JSON.stringify(accountNamesWithCustodian) ===
         JSON.stringify(arrayWithCustodianAccounts),

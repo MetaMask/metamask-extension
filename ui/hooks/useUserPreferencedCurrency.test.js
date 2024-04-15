@@ -14,6 +14,7 @@ const tests = [
       useNativeCurrencyAsPrimaryCurrency: true,
       nativeCurrency: 'ETH',
       showFiat: true,
+      currentCurrency: 'usd',
     },
     params: {
       type: 'PRIMARY',

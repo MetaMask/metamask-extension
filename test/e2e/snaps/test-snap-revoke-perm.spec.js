@@ -14,7 +14,6 @@ describe('Test Snap revoke permission', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
-        failOnConsoleError: false,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -22,14 +21,19 @@ describe('Test Snap revoke permission', function () {
 
         // navigate to test snaps page and connect to ethereum-provider snap
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
-        await driver.delay(1000);
+
+        // wait for page to load
+        await driver.waitForSelector({
+          text: 'Installed Snaps',
+          tag: 'h2',
+        });
+
         const snapButton = await driver.findElement(
           '#connectethereum-provider',
         );
         await driver.scrollToElement(snapButton);
         await driver.delay(1000);
         await driver.clickElement('#connectethereum-provider');
-        await driver.delay(1000);
 
         // switch to metamask extension and click connect
         await switchToNotificationWindow(driver, 3);

@@ -7,12 +7,31 @@ import Name from './name';
 
 const addressNoSavedNameMock = '0xc0ffee254729296a45a3885639ac7e10f9d54978';
 const addressSavedNameMock = '0xc0ffee254729296a45a3885639ac7e10f9d54977';
+const addressSavedTokenMock = '0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d';
+const addressUnsavedTokenMock = '0x0a5e677a6a24b2f1a2bf4f3bffc443231d2fdec8';
 const chainIdMock = '0x1';
 
 const storeMock = configureStore({
   metamask: {
     providerConfig: {
       chainId: chainIdMock,
+    },
+    useTokenDetection: true,
+    tokenList: {
+      '0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d': {
+        address: '0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d',
+        symbol: 'IUSD',
+        name: 'iZUMi Bond USD',
+        iconUrl:
+          'https://static.metafi.codefi.network/api/v1/tokenIcons/1/0x0a3bb08b3a15a19b4de82f8acfc862606fb69a2d.png',
+      },
+      '0x0a5e677a6a24b2f1a2bf4f3bffc443231d2fdec8': {
+        address: '0x0a5e677a6a24b2f1a2bf4f3bffc443231d2fdec8',
+        symbol: 'USX',
+        name: 'dForce USD',
+        iconUrl:
+          'https://static.metafi.codefi.network/api/v1/tokenIcons/1/0x0a5e677a6a24b2f1a2bf4f3bffc443231d2fdec8.png',
+      },
     },
     names: {
       [NameType.ETHEREUM_ADDRESS]: {
@@ -67,6 +86,13 @@ const storeMock = configureStore({
               },
             },
             name: 'Test Token',
+            sourceId: 'token',
+          },
+        },
+        [addressSavedTokenMock]: {
+          [chainIdMock]: {
+            proposedNames: {},
+            name: 'Saved Token Name',
             sourceId: 'token',
           },
         },
@@ -135,6 +161,30 @@ export const SavedNameStory = () => {
 };
 
 SavedNameStory.storyName = 'Saved Name';
+
+/**
+ * No name was previously saved for this recognized token.<br/><br/>
+ * The component will still display a modal when clicked to edit the name.
+ */
+export const UnsavedTokenNameStory = () => {
+  return (
+    <Name value={addressUnsavedTokenMock} type={NameType.ETHEREUM_ADDRESS} />
+  );
+};
+
+UnsavedTokenNameStory.storyName = 'Unsaved Token Name';
+
+/**
+ * A name was previously saved for this recognized token.<br/><br/>
+ * The component will still display a modal when clicked to edit the name.
+ */
+export const SavedTokenNameStory = () => {
+  return (
+    <Name value={addressSavedTokenMock} type={NameType.ETHEREUM_ADDRESS} />
+  );
+};
+
+SavedTokenNameStory.storyName = 'Saved Token Name';
 
 /**
  * Clicking the component will not display a modal to edit the name.

@@ -10,6 +10,7 @@ import {
   nonceSortedCompletedTransactionsSelector,
   submittedPendingTransactionsSelector,
   hasTransactionPendingApprovals,
+  getApprovedAndSignedTransactions,
 } from './transactions';
 
 describe('Transaction Selectors', () => {
@@ -543,5 +544,51 @@ describe('Transaction Selectors', () => {
         expect(result).toBe(true);
       },
     );
+  });
+
+  describe('getApprovedAndSignedTransactions', () => {
+    it('returns transactions with status of approved or signed on current network', () => {
+      const state = {
+        metamask: {
+          providerConfig: {
+            chainId: CHAIN_IDS.MAINNET,
+          },
+          transactions: [
+            {
+              id: 0,
+              chainId: CHAIN_IDS.MAINNET,
+              status: TransactionStatus.approved,
+            },
+            {
+              id: 1,
+              chainId: CHAIN_IDS.MAINNET,
+              status: TransactionStatus.submitted,
+            },
+            {
+              id: 2,
+              chainId: CHAIN_IDS.MAINNET,
+              status: TransactionStatus.unapproved,
+            },
+            {
+              id: 3,
+              chainId: CHAIN_IDS.MAINNET,
+              status: TransactionStatus.signed,
+            },
+            {
+              id: 4,
+              chainId: CHAIN_IDS.GOERLI,
+              status: TransactionStatus.signed,
+            },
+          ],
+        },
+      };
+
+      const results = getApprovedAndSignedTransactions(state);
+
+      expect(results).toStrictEqual([
+        state.metamask.transactions[0],
+        state.metamask.transactions[3],
+      ]);
+    });
   });
 });

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { getTransactionOriginCaveat } from '@metamask/snaps-controllers';
+import { getTransactionOriginCaveat } from '@metamask/snaps-rpc-methods';
 import { handleSnapRequest } from '../../store/actions';
 import { getPermissionSubjectsDeepEqual } from '../../selectors';
 
@@ -90,7 +90,7 @@ export function useTransactionInsightSnaps({
         ///: END:ONLY_INCLUDE_IF
       }
     }
-    if (transaction) {
+    if (transaction && Object.keys(transaction).length > 0) {
       fetchInsight();
     }
     return () => {

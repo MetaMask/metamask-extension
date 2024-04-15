@@ -34,15 +34,20 @@ describe('TermsOfUsePopup', () => {
   });
 
   it('scrolls down when handleScrollDownClick is called', () => {
-    render();
     const mockScrollIntoView = jest.fn();
+    const originalScrollIntoView = window.HTMLElement.prototype.scrollIntoView;
     window.HTMLElement.prototype.scrollIntoView = mockScrollIntoView;
+
+    render();
     const button = document.querySelector(
       "[data-testid='popover-scroll-button']",
     );
+
     fireEvent.click(button);
     expect(mockScrollIntoView).toHaveBeenCalledWith({
       behavior: 'smooth',
     });
+
+    window.HTMLElement.prototype.scrollIntoView = originalScrollIntoView;
   });
 });

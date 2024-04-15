@@ -941,58 +941,6 @@
   "notEnoughGas": {
     "message": "Hindi Sapat ang Gas"
   },
-  "notifications1Description": {
-    "message": "Puwede na ngayong i-swap ng mga user ng MetaMask Mobile ang mga token sa kanilang mobile wallet. I-scan ang QR code para kunin ang mobile app at magsimulang mag-swap.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the swapping on mobile feature."
-  },
-  "notifications1Title": {
-    "message": "Narito na ang pag-swap sa mobile!",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that they can now use MetaMask Swaps on Mobile."
-  },
-  "notifications3ActionText": {
-    "message": "Magbasa pa",
-    "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a page about security on the metamask support website."
-  },
-  "notifications3Description": {
-    "message": "Manatiling up to date tungkol sa pinakamahuhusay na kagawian sa seguridad ng MetaMask at kunin ang mga pinakabagong tip sa seguridad mula sa opisyal na suporta ng MetaMask.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the information they can get on security from the linked support page."
-  },
-  "notifications3Title": {
-    "message": "Manatiling secure",
-    "description": "Title for a notification in the 'See What's New' popup. Encourages users to consider security."
-  },
-  "notifications4ActionText": {
-    "message": "Simulang mag-swap",
-    "description": "The 'call to action' on the button, or link, of the 'Swap on Binance Smart Chain!' notification. Upon clicking, users will be taken to a page where then can swap tokens on Binance Smart Chain."
-  },
-  "notifications4Description": {
-    "message": "Kunin ang pinakamura sa mga pag-swap ng token sa mismong wallet mo. Kinokonekta ka na ngayon ng MetaMask sa maraming naka-decentralize na aggregator sa pagpapalit at propesyonal na market maker sa Binance Smart Chain.",
-    "description": "Description of a notification in the 'See What's New' popup."
-  },
-  "notifications4Title": {
-    "message": "Mag-swap sa Binance Smart Chain",
-    "description": "Title for a notification in the 'See What's New' popup. Encourages users to do swaps on Binance Smart Chain."
-  },
-  "notifications5Description": {
-    "message": "Tinatawag na ngayong \"Secret Recovery Phrase\" mo ang iyong \"Seed Phrase.\"",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the seed phrase wording update."
-  },
-  "notifications6DescriptionOne": {
-    "message": "Simula sa Chrome version 91, hindi na susuportahan ng API na nag-enable sa aming Ledger support (U2F) ang mga hardware wallet. Nagpatupad ang MetaMask ng bagong Ledger Live support na nagbibigay-daan sa iyong patuloy na ikonekta ang Ledger device mo sa pamamagitan ng Ledger Live desktop app.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6DescriptionThree": {
-    "message": "Kapag ginagamit ang iyong Ledger account sa MetaMask, may bagong tab na magbubukas at hihilingin sa iyong buksan ang Ledger Live app.  Kapag nagbukas ang app, hihilingin sa iyong payagan ang isang koneksyon ng WebSocket sa MetaMask account mo.  Iyon lang!",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6DescriptionTwo": {
-    "message": "Puwede mong i-enable ang Ledger Live support sa pamamagitan ng pag-click sa Mga Setting > Advanced > Gamitin ang Ledger Live.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
-  },
-  "notifications6Title": {
-    "message": "Update sa Ledger Support para sa Mga Chrome User",
-    "description": "Title for a notification in the 'See What's New' popup. Lets users know about the Ledger support update"
-  },
   "ofTextNofM": {
     "message": "ng"
   },

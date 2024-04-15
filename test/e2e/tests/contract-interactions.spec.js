@@ -2,16 +2,18 @@ const {
   defaultGanacheOptions,
   withFixtures,
   openDapp,
-  locateAccountBalanceDOM,
   unlockWallet,
   largeDelayMs,
   WINDOW_TITLES,
+  locateAccountBalanceDOM,
 } = require('../helpers');
+
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Deploy contract and call contract methods', function () {
   const smartContract = SMART_CONTRACTS.PIGGYBANK;
+
   it('should display the correct account balance after contract interactions', async function () {
     await withFixtures(
       {

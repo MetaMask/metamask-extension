@@ -7,6 +7,7 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { SmartTransaction } from '@metamask/smart-transactions-controller/dist/types';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import {
   determineTransactionAssetType,
@@ -25,6 +26,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventFragment,
   MetaMetricsEventName,
+  MetaMetricsEventUiCustomization,
   MetaMetricsPageObject,
   MetaMetricsReferrerObject,
 } from '../../../../shared/constants/metametrics';
@@ -35,12 +37,9 @@ import {
   TRANSACTION_ENVELOPE_TYPE_NAMES,
 } from '../../../../shared/lib/transactions-controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-import {
-  BlockaidReason,
-  BlockaidResultType,
-} from '../../../../shared/constants/security-provider';
-import { getBlockaidMetricsParams } from '../../../../ui/helpers/utils/metrics';
+import { getBlockaidMetricsProps } from '../../../../ui/helpers/utils/metrics';
 ///: END:ONLY_INCLUDE_IF
+import { getSmartTransactionMetricsProperties } from '../../../../shared/modules/metametrics';
 import {
   getSnapAndHardwareInfoForMetrics,
   type SnapAndHardwareMessenger,
@@ -72,6 +71,8 @@ export type TransactionMetricsRequest = {
   // According to the type GasFeeState returned from getEIP1559GasFeeEstimates
   // doesn't include some properties used in buildEventFragmentProperties,
   // hence returning any here to avoid type errors.
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getEIP1559GasFeeEstimates(options?: FetchGasFeeEstimateOptions): Promise<any>;
   getParticipateInMetrics: () => boolean;
   getSelectedAddress: () => string;
@@ -84,7 +85,13 @@ export type TransactionMetricsRequest = {
   getTransaction: (transactionId: string) => TransactionMeta;
   provider: Provider;
   snapAndHardwareMessenger: SnapAndHardwareMessenger;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   trackEvent: (payload: any) => void;
+  getIsSmartTransaction: () => boolean;
+  getSmartTransactionByMinedTxHash: (
+    txhash: string | undefined,
+  ) => SmartTransaction;
 };
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
@@ -164,6 +171,8 @@ export const handleTransactionFailed = async (
     return;
   }
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const extraParams = {} as Record<string, any>;
   if (transactionEventPayload.error) {
     // This is a failed transaction
@@ -194,6 +203,8 @@ export const handleTransactionConfirmed = async (
     return;
   }
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const extraParams = {} as Record<string, any>;
   const { transactionMeta } = transactionEventPayload;
   const { txReceipt } = transactionMeta;
@@ -315,10 +326,10 @@ export const createTransactionEventFragmentWithTxId = async (
     actionId: string;
   },
 ) => {
-  const transactionMeta =
-    transactionMetricsRequest.getTransaction(transactionId);
-
-  transactionMeta.actionId = actionId;
+  const transactionMeta = {
+    ...transactionMetricsRequest.getTransaction(transactionId),
+    actionId,
+  };
 
   const { properties, sensitiveProperties } =
     await buildEventFragmentProperties({
@@ -487,6 +498,8 @@ function createTransactionEventFragment({
   eventName: TransactionMetaMetricsEvent;
   transactionEventPayload: TransactionEventPayload;
   transactionMetricsRequest: TransactionMetricsRequest;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   payload: any;
 }) {
   if (
@@ -600,6 +613,8 @@ function updateTransactionEventFragment({
   eventName: TransactionMetaMetricsEvent;
   transactionEventPayload: TransactionEventPayload;
   transactionMetricsRequest: TransactionMetricsRequest;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   payload: any;
 }) {
   const uniqueId = getUniqueId(eventName, transactionMeta.id);
@@ -669,6 +684,8 @@ async function createUpdateFinalizeTransactionEventFragment({
   eventName: TransactionMetaMetricsEvent;
   transactionEventPayload: TransactionEventPayload;
   transactionMetricsRequest: TransactionMetricsRequest;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   extraParams?: Record<string, any>;
 }) {
   const { properties, sensitiveProperties } =
@@ -706,6 +723,8 @@ async function createUpdateFinalizeTransactionEventFragment({
 }
 
 function hasFragment(
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getEventFragmentById: (arg0: string) => any,
   eventName: TransactionMetaMetricsEvent,
   transactionMeta: TransactionMeta,
@@ -719,12 +738,11 @@ function getUniqueId(
   eventName: TransactionMetaMetricsEvent,
   transactionId: string,
 ) {
-  const isSubmitted = [
-    TransactionMetaMetricsEvent.finalized,
-    TransactionMetaMetricsEvent.submitted,
-  ].includes(eventName);
+  const isFinalizedOrSubmitted =
+    eventName === TransactionMetaMetricsEvent.finalized ||
+    eventName === TransactionMetaMetricsEvent.submitted;
   const uniqueIdentifier = `transaction-${
-    isSubmitted ? 'submitted' : 'added'
+    isFinalizedOrSubmitted ? 'submitted' : 'added'
   }-${transactionId}`;
 
   return uniqueIdentifier;
@@ -735,6 +753,8 @@ async function buildEventFragmentProperties({
   transactionMetricsRequest,
   extraParams = {},
 }: {
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   extraParams?: Record<string, any>;
   transactionEventPayload: TransactionEventPayload;
   transactionMetricsRequest: TransactionMetricsRequest;
@@ -763,9 +783,6 @@ async function buildEventFragmentProperties({
     finalApprovalAmount,
     contractMethodName,
     securityProviderResponse,
-    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-    securityAlertResponse,
-    ///: END:ONLY_INCLUDE_IF
     simulationFails,
   } = transactionMeta;
   const query = new EthQuery(transactionMetricsRequest.provider);
@@ -777,6 +794,8 @@ async function buildEventFragmentProperties({
     transactionMetricsRequest.getTokenStandardAndDetails,
   );
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const gasParams = {} as Record<string, any>;
 
   if (isEIP1559Transaction(transactionMeta)) {
@@ -851,11 +870,11 @@ async function buildEventFragmentProperties({
     [
       TransactionType.contractInteraction,
       TransactionType.tokenMethodApprove,
+      TransactionType.tokenMethodIncreaseAllowance,
       TransactionType.tokenMethodSafeTransferFrom,
       TransactionType.tokenMethodSetApprovalForAll,
       TransactionType.tokenMethodTransfer,
       TransactionType.tokenMethodTransferFrom,
-      TransactionType.smart,
       TransactionType.swap,
       TransactionType.swapApproval,
     ].includes(type);
@@ -928,37 +947,38 @@ async function buildEventFragmentProperties({
     }
   }
 
-  let uiCustomizations;
-  let additionalBlockaidParams;
+  const uiCustomizations = [];
 
+  /** securityProviderResponse is used by the OpenSea <> Blockaid provider */
   // eslint-disable-next-line no-lonely-if
   if (securityProviderResponse?.flagAsDangerous === 1) {
-    uiCustomizations = ['flagged_as_malicious'];
+    uiCustomizations.push(MetaMetricsEventUiCustomization.FlaggedAsMalicious);
   } else if (securityProviderResponse?.flagAsDangerous === 2) {
-    uiCustomizations = ['flagged_as_safety_unknown'];
-  } else {
-    uiCustomizations = null;
+    uiCustomizations.push(
+      MetaMetricsEventUiCustomization.FlaggedAsSafetyUnknown,
+    );
   }
 
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  if (securityAlertResponse?.result_type === BlockaidResultType.Failed) {
-    uiCustomizations = ['security_alert_failed'];
-  } else {
-    additionalBlockaidParams = getBlockaidMetricsParams(
-      securityAlertResponse as any,
-    );
-    uiCustomizations = additionalBlockaidParams?.ui_customizations ?? null;
-  }
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const blockaidProperties: any = getBlockaidMetricsProps(transactionMeta);
 
+  if (blockaidProperties?.ui_customizations?.length > 0) {
+    uiCustomizations.push(...blockaidProperties.ui_customizations);
+  }
   ///: END:ONLY_INCLUDE_IF
 
   if (simulationFails) {
-    if (uiCustomizations === null) {
-      uiCustomizations = ['gas_estimation_failed'];
-    } else {
-      uiCustomizations.push('gas_estimation_failed');
-    }
+    uiCustomizations.push(MetaMetricsEventUiCustomization.GasEstimationFailed);
   }
+
+  const smartTransactionMetricsProperties =
+    getSmartTransactionMetricsProperties(
+      transactionMetricsRequest,
+      transactionMeta,
+    );
+
   /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
   let properties = {
     chain_id: chainId,
@@ -969,6 +989,7 @@ async function buildEventFragmentProperties({
     eip_1559_version: eip1559Version,
     gas_edit_type: 'none',
     gas_edit_attempted: 'none',
+    gas_estimation_failed: Boolean(simulationFails),
     account_type: await transactionMetricsRequest.getAccountType(
       transactionMetricsRequest.getSelectedAddress(),
     ),
@@ -979,15 +1000,14 @@ async function buildEventFragmentProperties({
     token_standard: tokenStandard,
     transaction_type: transactionType,
     transaction_speed_up: type === TransactionType.retry,
-    ...additionalBlockaidParams,
-    ui_customizations: uiCustomizations?.length > 0 ? uiCustomizations : null,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-    security_alert_response:
-      securityAlertResponse?.result_type ?? BlockaidResultType.NotApplicable,
-    security_alert_reason:
-      securityAlertResponse?.reason ?? BlockaidReason.notApplicable,
+    ...blockaidProperties,
     ///: END:ONLY_INCLUDE_IF
-    gas_estimation_failed: Boolean(simulationFails),
+    // ui_customizations must come after ...blockaidProperties
+    ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
+    ...smartTransactionMetricsProperties,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as Record<string, any>;
 
   const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
@@ -1014,6 +1034,8 @@ async function buildEventFragmentProperties({
     transaction_replaced: transactionReplaced,
     ...extraParams,
     ...gasParamsInGwei,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as Record<string, any>;
 
   if (transactionContractMethod === contractMethodNames.APPROVE) {
@@ -1029,7 +1051,11 @@ async function buildEventFragmentProperties({
   return { properties, sensitiveProperties };
 }
 
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getGasValuesInGWEI(gasParams: Record<string, any>) {
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const gasValuesInGwei = {} as Record<string, any>;
   for (const param in gasParams) {
     if (isHexString(gasParams[param])) {

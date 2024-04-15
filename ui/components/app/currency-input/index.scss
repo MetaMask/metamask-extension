@@ -1,6 +1,8 @@
+@use "design-system";
+
 .currency-input {
   &__conversion-component {
-    @include H7;
+    @include design-system.H7;
 
     padding-left: 1px;
   }

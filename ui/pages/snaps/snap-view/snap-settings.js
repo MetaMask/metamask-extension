@@ -6,10 +6,6 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import {
-  SnapCaveatType,
-  WALLET_SNAP_PERMISSION_KEY,
-} from '@metamask/snaps-rpc-methods';
 import { useHistory } from 'react-router-dom';
 import semver from 'semver';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -30,8 +26,7 @@ import KeyringSnapRemovalWarning from '../../../components/app/snaps/keyring-sna
 ///: END:ONLY_INCLUDE_IF
 import {
   removeSnap,
-  removePermissionsFor,
-  updateCaveat,
+  disconnectOriginFromSnap,
   updateSnap,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   showKeyringSnapRemovalModal,
@@ -42,14 +37,12 @@ import {
   getSnaps,
   getSubjectsWithSnapPermission,
   getPermissions,
-  getPermissionSubjects,
-  getTargetSubjectMetadata,
   getSnapLatestVersion,
+  getSnapMetadata,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getMemoizedMetaMaskIdentities,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
-import { getSnapName } from '../../../helpers/utils/util';
 import {
   Box,
   Button,
@@ -93,14 +86,14 @@ function SnapSettings({ snapId }) {
   const permissions = useSelector(
     (state) => snap && getPermissions(state, snap.id),
   );
-  const subjects = useSelector((state) => getPermissionSubjects(state));
-  const targetSubjectMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, snap?.id),
+
+  const { name: snapName, description } = useSelector((state) =>
+    getSnapMetadata(state, snapId),
   );
 
   let isKeyringSnap = false;
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  isKeyringSnap = Boolean(subjects[snap?.id]?.permissions?.snap_manageAccounts);
+  isKeyringSnap = Boolean(permissions?.snap_manageAccounts);
 
   useEffect(() => {
     if (isKeyringSnap) {
@@ -116,30 +109,8 @@ function SnapSettings({ snapId }) {
   ///: END:ONLY_INCLUDE_IF
 
   const onDisconnect = (connectedOrigin) => {
-    const caveatValue =
-      subjects[connectedOrigin].permissions[WALLET_SNAP_PERMISSION_KEY]
-        .caveats[0].value;
-    const newCaveatValue = { ...caveatValue };
-    delete newCaveatValue[snapId];
-    if (Object.keys(newCaveatValue).length > 0) {
-      dispatch(
-        updateCaveat(
-          connectedOrigin,
-          WALLET_SNAP_PERMISSION_KEY,
-          SnapCaveatType.SnapIds,
-          newCaveatValue,
-        ),
-      );
-    } else {
-      dispatch(
-        removePermissionsFor({
-          [connectedOrigin]: [WALLET_SNAP_PERMISSION_KEY],
-        }),
-      );
-    }
+    dispatch(disconnectOriginFromSnap(connectedOrigin, snap.id));
   };
-
-  const snapName = getSnapName(snap.id, targetSubjectMetadata);
 
   const latestRegistryVersion = useSelector((state) =>
     snap ? getSnapLatestVersion(state, snap?.id) : null,
@@ -175,7 +146,7 @@ function SnapSettings({ snapId }) {
       <Box className="snap-view__content__description" marginTop={[4, 7]}>
         <SnapDelineator type={DelineatorType.Description} snapName={snapName}>
           <ShowMore buttonBackground={BackgroundColor.backgroundDefault}>
-            <Text>{snap?.manifest.description}</Text>
+            <Text>{description}</Text>
           </ShowMore>
         </SnapDelineator>
       </Box>
@@ -183,8 +154,8 @@ function SnapSettings({ snapId }) {
         <Text variant={TextVariant.bodyLgMedium}>{t('permissions')}</Text>
         <SnapPermissionsList
           snapId={snapId}
+          snapName={snapName}
           permissions={permissions ?? {}}
-          targetSubjectMetadata={targetSubjectMetadata}
           showOptions
         />
       </Box>

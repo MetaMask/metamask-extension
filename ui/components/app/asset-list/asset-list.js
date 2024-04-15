@@ -11,9 +11,10 @@ import {
   getDetectedTokensInCurrentNetwork,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   getShouldHideZeroBalanceTokens,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getIsBuyableChain,
-  getCurrentChainId,
-  getSwapsDefaultToken,
+  ///: END:ONLY_INCLUDE_IF
+  getCurrentNetwork,
   getSelectedAccount,
   getPreferences,
   getIsMainnet,
@@ -23,7 +24,6 @@ import {
   getProviderConfig,
 } from '../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
-import Box from '../../ui/box/box';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -34,29 +34,28 @@ import {
   DetectedTokensBanner,
   TokenListItem,
   ImportTokenLink,
-  BalanceOverview,
-  AssetListConversionButton,
+  ReceiveTokenLink,
 } from '../../multichain';
-
-import useRamps from '../../../hooks/experiences/useRamps';
-import { Display } from '../../../helpers/constants/design-system';
-
-import { ReceiveModal } from '../../multichain/receive-modal';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
-import { ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES } from '../../multichain/asset-list-conversion-button/asset-list-conversion-button';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import {
   showPrimaryCurrency,
   showSecondaryCurrency,
 } from '../../../../shared/modules/currency-display.utils';
 import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../helpers/utils/util';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import {
+  RAMPS_CARD_VARIANT_TYPES,
+  RampsCard,
+} from '../../multichain/ramps-card/ramps-card';
+///: END:ONLY_INCLUDE_IF
 
 const AssetList = ({ onClickAsset }) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
   const selectedAccountBalance = useSelector(getSelectedAccountCachedBalance);
   const nativeCurrency = useSelector(getNativeCurrency);
   const showFiat = useSelector(getShouldShowFiat);
-  const chainId = useSelector(getCurrentChainId);
+  const { chainId } = useSelector(getCurrentNetwork);
   const isMainnet = useSelector(getIsMainnet);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const { ticker, type } = useSelector(getProviderConfig);
@@ -73,8 +72,6 @@ const AssetList = ({ onClickAsset }) => {
     getShouldHideZeroBalanceTokens,
   );
 
-  const [showReceiveModal, setShowReceiveModal] = useState(false);
-
   const {
     currency: primaryCurrency,
     numberOfDecimals: primaryNumberOfDecimals,
@@ -84,13 +81,11 @@ const AssetList = ({ onClickAsset }) => {
     numberOfDecimals: secondaryNumberOfDecimals,
   } = useUserPreferencedCurrency(SECONDARY, { ethNumberOfDecimals: 4 });
 
-  const [, primaryCurrencyProperties] = useCurrencyDisplay(
-    selectedAccountBalance,
-    {
+  const [primaryCurrencyDisplay, primaryCurrencyProperties] =
+    useCurrencyDisplay(selectedAccountBalance, {
       numberOfDecimals: primaryNumberOfDecimals,
       currency: primaryCurrency,
-    },
-  );
+    });
 
   const [secondaryCurrencyDisplay, secondaryCurrencyProperties] =
     useCurrencyDisplay(selectedAccountBalance, {
@@ -104,30 +99,25 @@ const AssetList = ({ onClickAsset }) => {
     getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   );
 
-  const { tokensWithBalances, totalFiatBalance, totalWeiBalance, loading } =
+  const { tokensWithBalances, totalFiatBalance, loading } =
     useAccountTotalFiatBalance(selectedAddress, shouldHideZeroBalanceTokens);
   tokensWithBalances.forEach((token) => {
     // token.string is the balance displayed in the TokenList UI
     token.string = roundToDecimalPlacesRemovingExtraZeroes(token.string, 5);
   });
   const balanceIsZero = Number(totalFiatBalance) === 0;
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBuyableChain = useSelector(getIsBuyableChain);
   const shouldShowBuy = isBuyableChain && balanceIsZero;
-  const shouldShowReceive = balanceIsZero;
-  const { openBuyCryptoInPdapp } = useRamps();
-  const defaultSwapsToken = useSelector(getSwapsDefaultToken);
+  ///: END:ONLY_INCLUDE_IF
 
   let isStakeable = isMainnet;
-
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   isStakeable = false;
   ///: END:ONLY_INCLUDE_IF
 
   return (
     <>
-      {process.env.MULTICHAIN ? (
-        <BalanceOverview balance={totalWeiBalance} loading={loading} />
-      ) : null}
       {detectedTokens.length > 0 &&
         !isTokenDetectionInactiveOnNonMainnetSupportedNetwork && (
           <DetectedTokensBanner
@@ -135,72 +125,38 @@ const AssetList = ({ onClickAsset }) => {
             margin={4}
           />
         )}
-      {shouldShowBuy || shouldShowReceive ? (
-        <Box
-          paddingInlineStart={4}
-          paddingInlineEnd={4}
-          display={Display.Flex}
-          gap={2}
-        >
-          {shouldShowBuy ? (
-            <AssetListConversionButton
-              variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.BUY}
-              onClick={() => {
-                openBuyCryptoInPdapp();
-                trackEvent({
-                  event: MetaMetricsEventName.NavBuyButtonClicked,
-                  category: MetaMetricsEventCategory.Navigation,
-                  properties: {
-                    location: 'Home',
-                    text: 'Buy',
-                    chain_id: chainId,
-                    token_symbol: defaultSwapsToken,
-                  },
-                });
-              }}
-            />
-          ) : null}
-          {shouldShowReceive ? (
-            <AssetListConversionButton
-              variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.RECEIVE}
-              onClick={() => setShowReceiveModal(true)}
-            />
-          ) : null}
-          {showReceiveModal ? (
-            <ReceiveModal
-              address={selectedAddress}
-              onClose={() => setShowReceiveModal(false)}
-            />
-          ) : null}
-        </Box>
-      ) : null}
+      {
+        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+        shouldShowBuy ? (
+          <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.TOKEN} />
+        ) : null
+        ///: END:ONLY_INCLUDE_IF
+      }
       <TokenListItem
         onClick={() => onClickAsset(nativeCurrency)}
         title={nativeCurrency}
+        // The primary and secondary currencies are subject to change based on the user's settings
+        // TODO: rename this primary/secondary concept here to be more intuitive, regardless of setting
         primary={
-          showPrimaryCurrency(
-            isOriginalNativeSymbol,
-            useNativeCurrencyAsPrimaryCurrency,
-          )
-            ? primaryCurrencyProperties.value ??
-              secondaryCurrencyProperties.value
-            : null
-        }
-        tokenSymbol={
-          showPrimaryCurrency(
-            isOriginalNativeSymbol,
-            useNativeCurrencyAsPrimaryCurrency,
-          )
-            ? primaryCurrencyProperties.suffix
-            : null
-        }
-        secondary={
-          showFiat &&
           showSecondaryCurrency(
             isOriginalNativeSymbol,
             useNativeCurrencyAsPrimaryCurrency,
           )
             ? secondaryCurrencyDisplay
+            : undefined
+        }
+        tokenSymbol={
+          useNativeCurrencyAsPrimaryCurrency
+            ? primaryCurrencyProperties.suffix
+            : secondaryCurrencyProperties.suffix
+        }
+        secondary={
+          showFiat &&
+          showPrimaryCurrency(
+            isOriginalNativeSymbol,
+            useNativeCurrencyAsPrimaryCurrency,
+          )
+            ? primaryCurrencyDisplay
             : undefined
         }
         tokenImage={balanceIsLoading ? null : primaryTokenImage}
@@ -223,9 +179,18 @@ const AssetList = ({ onClickAsset }) => {
           });
         }}
       />
-      <Box marginTop={detectedTokens.length > 0 ? 0 : 4}>
-        <ImportTokenLink margin={4} marginBottom={2} />
-      </Box>
+      {balanceIsZero && (
+        <ReceiveTokenLink
+          margin={4}
+          marginBottom={0}
+          marginTop={detectedTokens.length > 0 ? 0 : 4}
+        />
+      )}
+      <ImportTokenLink
+        margin={4}
+        marginBottom={2}
+        marginTop={detectedTokens.length > 0 && !balanceIsZero ? 0 : 2}
+      />
       {showDetectedTokens && (
         <DetectedToken setShowDetectedTokens={setShowDetectedTokens} />
       )}

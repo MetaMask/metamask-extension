@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import {
   BannerAlert,
   BannerAlertSeverity,
@@ -7,24 +8,18 @@ import {
 } from '../../../../component-library';
 import { getSendHexDataFeatureFlagState } from '../../../../../ducks/metamask/metamask';
 import {
-  GAS_INPUT_MODES,
   acknowledgeRecipientWarning,
-  getGasInputMode,
-  getGasLimit,
-  getGasPrice,
-  getIsBalanceInsufficient,
-  getMinimumGasLimitForSend,
+  getCurrentDraftTransaction,
   getSendAsset,
+  updateSendAmount,
+  updateSendAsset,
 } from '../../../../../ducks/send';
-import AdvancedGasInputs from '../../../../app/advanced-gas-inputs';
-import { ConfirmGasDisplay } from '../../../../app/confirm-gas-display';
-import { AssetType } from '../../../../../../shared/constants/transaction';
-import { hexToDecimal } from '../../../../../../shared/modules/conversion.utils';
 import {
-  setCustomGasLimit,
-  setCustomGasPrice,
-} from '../../../../../ducks/gas/gas.duck';
+  AssetType,
+  TokenStandard,
+} from '../../../../../../shared/constants/transaction';
 import { CONTRACT_ADDRESS_LINK } from '../../../../../helpers/constants/common';
+import { SEND_ROUTE } from '../../../../../helpers/constants/routes';
 import { Display } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AssetPickerAmount } from '../../..';
@@ -37,6 +32,8 @@ export const SendPageContent = ({
 }) => {
   const t = useI18nContext();
 
+  const history = useHistory();
+
   // Hex data
   const showHexDataFlag = useSelector(getSendHexDataFeatureFlagState);
   const asset = useSelector(getSendAsset);
@@ -46,24 +43,37 @@ export const SendPageContent = ({
     asset.type !== AssetType.token &&
     asset.type !== AssetType.NFT;
 
+  const { asset: transactionAsset, amount } = useSelector(
+    getCurrentDraftTransaction,
+  );
+
   // Gas data
   const dispatch = useDispatch();
-  const gasPrice = useSelector(getGasPrice);
-  const gasLimit = useSelector(getGasLimit);
-  const minimumGasLimitForSend = useSelector(getMinimumGasLimitForSend);
-  const minimumGasLimit = hexToDecimal(minimumGasLimitForSend);
 
-  const gasInputMode = useSelector(getGasInputMode);
-  const insufficientBalance = useSelector(getIsBalanceInsufficient);
-
-  const updateGasPrice = (newGasPrice: string) => {
-    dispatch(updateGasPrice(newGasPrice));
-    dispatch(setCustomGasPrice(newGasPrice));
-  };
-
-  const updateGasLimit = (newLimit: string) => {
-    dispatch(updateGasLimit(newLimit));
-    dispatch(setCustomGasLimit(newLimit));
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleSelectToken = async (token: any) => {
+    if (token.type === AssetType.native) {
+      dispatch(
+        updateSendAsset({
+          type: token.type,
+          details: token,
+          skipComputeEstimatedGasLimit: true,
+        }),
+      );
+    } else {
+      dispatch(
+        updateSendAsset({
+          type: token.type ?? AssetType.token,
+          details: {
+            ...token,
+            standard: token.standard ?? TokenStandard.ERC20,
+          },
+          skipComputeEstimatedGasLimit: true,
+        }),
+      );
+    }
+    history.push(SEND_ROUTE);
   };
 
   return (
@@ -94,26 +104,16 @@ export const SendPageContent = ({
         </SendPageRow>
       ) : null}
       <SendPageRow>
-        <AssetPickerAmount />
+        <AssetPickerAmount
+          asset={transactionAsset}
+          onAssetChange={handleSelectToken}
+          amount={amount}
+          onAmountChange={(newAmount: string) =>
+            dispatch(updateSendAmount(newAmount))
+          }
+        />
       </SendPageRow>
       {showHexData ? <SendHexData /> : null}
-      {gasInputMode === GAS_INPUT_MODES.INLINE ? (
-        <SendPageRow>
-          <AdvancedGasInputs
-            updateCustomGasPrice={updateGasPrice}
-            updateCustomGasLimit={updateGasLimit}
-            customGasPrice={gasPrice}
-            customGasLimit={gasLimit}
-            insufficientBalance={insufficientBalance}
-            minimumGasLimit={minimumGasLimit}
-            customPriceIsSafe
-            isSpeedUp={false}
-          />
-        </SendPageRow>
-      ) : null}
-      <SendPageRow>
-        <ConfirmGasDisplay />
-      </SendPageRow>
     </Box>
   );
 };

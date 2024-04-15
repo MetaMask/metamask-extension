@@ -19,13 +19,15 @@ import { NetworkType } from '@metamask/controller-utils';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { LoggingController, LogType } from '@metamask/logging-controller';
 import { TransactionController } from '@metamask/transaction-controller';
+import { TokenListController } from '@metamask/assets-controllers';
 import { NETWORK_TYPES } from '../../shared/constants/network';
 import { createTestProviderTools } from '../../test/stub/provider';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import { LOG_EVENT } from '../../shared/constants/logs';
 import mockEncryptor from '../../test/lib/mock-encryptor';
-import * as tokenUtils from '../../shared/lib/token-util.ts';
+import * as tokenUtils from '../../shared/lib/token-util';
+import { flushPromises } from '../../test/lib/timer-helpers';
 import { deferredPromise } from './lib/util';
 import MetaMaskController from './metamask-controller';
 
@@ -294,6 +296,14 @@ describe('MetaMaskController', () => {
   describe('MetaMaskController Behaviour', () => {
     let metamaskController;
 
+    async function simulatePreferencesChange(preferences) {
+      metamaskController.preferencesController.store.subscribe.mock.lastCall[0](
+        preferences,
+      );
+
+      await flushPromises();
+    }
+
     beforeEach(() => {
       jest.spyOn(MetaMaskController.prototype, 'resetStates');
 
@@ -316,6 +326,9 @@ describe('MetaMaskController', () => {
         .mockReturnValue();
 
       jest.spyOn(ControllerMessenger.prototype, 'subscribe');
+      jest.spyOn(TokenListController.prototype, 'start');
+      jest.spyOn(TokenListController.prototype, 'stop');
+      jest.spyOn(TokenListController.prototype, 'clearingTokenListData');
 
       metamaskController = new MetaMaskController({
         showUserConfirmation: noop,
@@ -952,7 +965,7 @@ describe('MetaMaskController', () => {
       it('should call keyringController.getAccounts', async () => {
         expect(
           metamaskController.keyringController.getAccounts,
-        ).toHaveBeenCalledTimes(2);
+        ).toHaveBeenCalledTimes(3);
       });
 
       it('should call preferencesController.setAddresses', async () => {
@@ -1084,6 +1097,9 @@ describe('MetaMaskController', () => {
 
       beforeEach(() => {
         initializeMockMiddlewareLog();
+        metamaskController.preferencesController.setSecurityAlertsEnabled(
+          false,
+        );
       });
 
       afterAll(() => {
@@ -1776,13 +1792,11 @@ describe('MetaMaskController', () => {
           TransactionController.prototype.startIncomingTransactionPolling,
         ).not.toHaveBeenCalled();
 
-        await metamaskController.preferencesController.store.subscribe.mock.lastCall[0](
-          {
-            incomingTransactionsPreferences: {
-              [MAINNET_CHAIN_ID]: true,
-            },
+        await simulatePreferencesChange({
+          incomingTransactionsPreferences: {
+            [MAINNET_CHAIN_ID]: true,
           },
-        );
+        });
 
         expect(
           TransactionController.prototype.startIncomingTransactionPolling,
@@ -1794,13 +1808,11 @@ describe('MetaMaskController', () => {
           TransactionController.prototype.stopIncomingTransactionPolling,
         ).not.toHaveBeenCalled();
 
-        await metamaskController.preferencesController.store.subscribe.mock.lastCall[0](
-          {
-            incomingTransactionsPreferences: {
-              [MAINNET_CHAIN_ID]: false,
-            },
+        await simulatePreferencesChange({
+          incomingTransactionsPreferences: {
+            [MAINNET_CHAIN_ID]: false,
           },
-        );
+        });
 
         expect(
           TransactionController.prototype.stopIncomingTransactionPolling,
@@ -1834,6 +1846,115 @@ describe('MetaMaskController', () => {
         expect(
           TransactionController.prototype.updateIncomingTransactions,
         ).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('token list controller', () => {
+      it('stops polling if petnames, simulations, and token detection disabled', async () => {
+        expect(TokenListController.prototype.stop).not.toHaveBeenCalled();
+
+        expect(
+          TokenListController.prototype.clearingTokenListData,
+        ).not.toHaveBeenCalled();
+
+        await simulatePreferencesChange({
+          useTransactionSimulations: false,
+          useTokenDetection: false,
+          preferences: {
+            petnamesEnabled: false,
+          },
+        });
+
+        expect(TokenListController.prototype.stop).toHaveBeenCalledTimes(1);
+
+        expect(
+          TokenListController.prototype.clearingTokenListData,
+        ).toHaveBeenCalledTimes(1);
+      });
+
+      it.each([
+        [
+          'petnames',
+          {
+            preferences: { petnamesEnabled: false },
+            useTokenDetection: true,
+            useTransactionSimulations: true,
+          },
+        ],
+        [
+          'simulations',
+          {
+            preferences: { petnamesEnabled: true },
+            useTokenDetection: true,
+            useTransactionSimulations: false,
+          },
+        ],
+        [
+          'token detection',
+          {
+            preferences: { petnamesEnabled: true },
+            useTokenDetection: false,
+            useTransactionSimulations: true,
+          },
+        ],
+      ])(
+        'does not stop polling if only %s disabled',
+        async (_, preferences) => {
+          expect(TokenListController.prototype.stop).not.toHaveBeenCalled();
+
+          expect(
+            TokenListController.prototype.clearingTokenListData,
+          ).not.toHaveBeenCalled();
+
+          await simulatePreferencesChange(preferences);
+
+          expect(TokenListController.prototype.stop).not.toHaveBeenCalled();
+
+          expect(
+            TokenListController.prototype.clearingTokenListData,
+          ).not.toHaveBeenCalled();
+        },
+      );
+
+      it.each([
+        [
+          'petnames',
+          {
+            preferences: { petnamesEnabled: true },
+            useTokenDetection: false,
+            useTransactionSimulations: false,
+          },
+        ],
+        [
+          'simulations',
+          {
+            preferences: { petnamesEnabled: false },
+            useTokenDetection: false,
+            useTransactionSimulations: true,
+          },
+        ],
+        [
+          'token detection',
+          {
+            preferences: { petnamesEnabled: false },
+            useTokenDetection: true,
+            useTransactionSimulations: false,
+          },
+        ],
+      ])('starts polling if only %s enabled', async (_, preferences) => {
+        expect(TokenListController.prototype.start).not.toHaveBeenCalled();
+
+        await simulatePreferencesChange({
+          useTransactionSimulations: false,
+          useTokenDetection: false,
+          preferences: {
+            petnamesEnabled: false,
+          },
+        });
+
+        await simulatePreferencesChange(preferences);
+
+        expect(TokenListController.prototype.start).toHaveBeenCalledTimes(1);
       });
     });
   });

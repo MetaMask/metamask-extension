@@ -3,12 +3,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import Button from '../../ui/button';
 import { getMaximumGasTotalInHexWei } from '../../../../shared/modules/gas.utils';
 import { getConversionRate } from '../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useIncrementedGasFees } from '../../../hooks/useIncrementedGasFees';
-import { isBalanceSufficient } from '../../../pages/send/send.utils';
+import { useIncrementedGasFees } from '../../../pages/confirmations/hooks/useIncrementedGasFees';
+import { isBalanceSufficient } from '../../../pages/confirmations/send/send.utils';
 import { getSelectedAccount } from '../../../selectors';
 
 export default function CancelButton({
@@ -17,18 +18,20 @@ export default function CancelButton({
   detailsModal,
 }) {
   const t = useI18nContext();
-
+  const { status } = transaction;
   const customCancelGasSettings = useIncrementedGasFees(transaction);
-
   const selectedAccount = useSelector(getSelectedAccount);
   const conversionRate = useSelector(getConversionRate);
 
-  const hasEnoughCancelGas = isBalanceSufficient({
-    amount: '0x0',
-    gasTotal: getMaximumGasTotalInHexWei(customCancelGasSettings),
-    balance: selectedAccount.balance,
-    conversionRate,
-  });
+  const isDisabled =
+    status === TransactionStatus.approved
+      ? false
+      : !isBalanceSufficient({
+          amount: '0x0',
+          gasTotal: getMaximumGasTotalInHexWei(customCancelGasSettings),
+          balance: selectedAccount.balance,
+          conversionRate,
+        });
 
   const btn = (
     <Button
@@ -39,15 +42,13 @@ export default function CancelButton({
         'transaction-list-item-details__header-button-rounded-button':
           detailsModal,
       })}
-      disabled={!hasEnoughCancelGas}
+      disabled={isDisabled}
       data-testid="cancel-button"
     >
       {t('cancel')}
     </Button>
   );
-  return hasEnoughCancelGas ? (
-    btn
-  ) : (
+  return isDisabled ? (
     <Tooltip
       title={t('notEnoughGas')}
       data-testid="not-enough-gas__tooltip"
@@ -55,6 +56,8 @@ export default function CancelButton({
     >
       <div>{btn}</div>
     </Tooltip>
+  ) : (
+    btn
   );
 }
 

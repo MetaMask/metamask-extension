@@ -26,6 +26,7 @@ const BaseReader = ({
   const [ready, setReady] = useState(READY_STATE.ACCESSING_CAMERA);
   const [error, setError] = useState(null);
   const [urDecoder, setURDecoder] = useState(new URDecoder());
+  const [progress, setProgress] = useState(0);
 
   let permissionChecker = null;
   const mounted = useRef(false);
@@ -34,6 +35,7 @@ const BaseReader = ({
     setReady(READY_STATE.ACCESSING_CAMERA);
     setError(null);
     setURDecoder(new URDecoder());
+    setProgress(0);
   };
 
   const checkEnvironment = async () => {
@@ -86,6 +88,7 @@ const BaseReader = ({
         return;
       }
       urDecoder.receivePart(data);
+      setProgress(urDecoder.estimatedPercentComplete());
       if (urDecoder.isComplete()) {
         const result = urDecoder.resultUR();
         handleSuccess(result).catch(setError);
@@ -165,7 +168,9 @@ const BaseReader = ({
           <img src="images/webcam.svg" width="70" height="70" alt="" />
         </div>
         {title ? <div className="qr-scanner__title">{title}</div> : null}
-        <div className="qr-scanner__error">{msg}</div>
+        <div className="qr-scanner__error" data-testid="qr-scanner__error">
+          {msg}
+        </div>
         <PageContainerFooter
           onCancel={() => {
             setErrorTitle('');
@@ -197,6 +202,13 @@ const BaseReader = ({
         <div className="qr-scanner__content">
           <EnhancedReader handleScan={handleScan} />
         </div>
+        {progress > 0 && (
+          <div
+            className="qr-scanner__progress"
+            data-testid="qr-reader-progress-bar"
+            style={{ '--progress': `${Math.floor(progress * 100)}%` }}
+          ></div>
+        )}
         {message && <div className="qr-scanner__status">{message}</div>}
       </>
     );

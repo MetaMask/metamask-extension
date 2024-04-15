@@ -1,0 +1,714 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ConfirmApproveContent Component should render Confirm approve page correctly and display fallback copy for when we are able to retrieve a erc721 or erc1155 name in the setApprovalForAll screen and when giving a setApprovalForAll allowance 1`] = `
+<div>
+  <div
+    class="confirm-approve-content"
+  >
+    <div
+      class="mm-box confirm-approve-content__icon-display-content mm-box--display-flex"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
+      >
+        <div
+          class=""
+        >
+          <img
+            alt="https://metamask.github.io/test-dapp/"
+            class="url-icon confirm-approve-content__siteimage-identicon"
+            src="https://metamask.github.io/test-dapp/metamask-fox.svg"
+          />
+        </div>
+        <h6
+          class="mm-box mm-text mm-text--body-sm mm-box--margin-left-1 mm-box--color-text-alternative"
+        >
+          https://metamask.github.io/test-dapp/
+        </h6>
+      </div>
+    </div>
+    <div
+      class="confirm-approve-content__title"
+      data-testid="confirm-approve-title"
+    >
+      <span>
+         
+        Allow access to and transfer of all your 
+        <span
+          class="confirm-approve-content__approval-asset-title"
+        >
+          ZenAcademy
+        </span>
+        
+        ?
+         
+      </span>
+    </div>
+    <div
+      class="confirm-approve-content__description"
+    >
+      This allows a third party to access and transfer the following NFTs without further notice until you revoke its access.
+    </div>
+    <div
+      class="mm-box mm-box--margin-top-2 mm-box--margin-bottom-4"
+    >
+      <a
+        class="button btn-link confirm-approve-content__verify-contract-details"
+        role="button"
+        tabindex="0"
+      >
+        Verify third-party details
+      </a>
+    </div>
+    <div
+      class="confirm-approve-content__card-wrapper"
+    >
+      <div
+        class="confirm-approve-content__card--no-border"
+      >
+        <div
+          class="confirm-approve-content__card-header"
+        >
+          <div
+            class="confirm-approve-content__card-header__symbol"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/tag.svg');"
+            />
+          </div>
+          <div
+            class="confirm-approve-content__card-header__title"
+          >
+            Transaction fee
+          </div>
+        </div>
+        <div
+          class="confirm-approve-content__card-content"
+        >
+          <div
+            class="confirm-approve-content__transaction-details-content"
+          >
+            <div
+              class="confirm-approve-content__small-text"
+            >
+              A fee is associated with this request.
+            </div>
+            <div
+              class="confirm-approve-content__transaction-details-content__fee"
+            >
+              <div
+                class="confirm-approve-content__transaction-details-content__primary-fee"
+              >
+                $10.00
+              </div>
+              <div
+                class="confirm-approve-content__transaction-details-content__secondary-fee"
+              >
+                20 ETH
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--margin-bottom-4"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
+          />
+        </div>
+      </div>
+      <div
+        class="confirm-approve-content__card--no-border"
+      >
+        <div
+          class="confirm-approve-content__card-content"
+        >
+          <div
+            class="mm-box custom-nonce__content mm-box--margin-bottom-4 mm-box--padding-top-3 mm-box--padding-right-3 mm-box--padding-bottom-4 mm-box--padding-left-3 mm-box--display-flex mm-box--align-items-center mm-box--rounded-md"
+          >
+            <div
+              class="mm-box custom-nonce__header mm-box--display-inline-flex mm-box--justify-content-flex-start mm-box--align-items-center"
+            >
+              <h6
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+              >
+                Nonce
+              </h6>
+              <button
+                class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-left-3 mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+              >
+                Edit
+              </button>
+            </div>
+            <h6
+              class="mm-box mm-text custom-nonce__value mm-text--body-sm-bold mm-box--color-text-default"
+            >
+              2
+            </h6>
+          </div>
+        </div>
+        <div
+          class="confirm-approve-content__view-full-tx-button-wrapper"
+        >
+          <div
+            class="confirm-approve-content__view-full-tx-button cursor-pointer"
+          >
+            <div
+              class="confirm-approve-content__small-blue-text"
+            >
+              View full transaction details
+            </div>
+            <i
+              class="fa fa-caret-down"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ConfirmApproveContent Component should render Confirm approve page correctly and display fallback copy for when we are able to retrieve a erc721 or erc1155 name in the setApprovalForAll screen and when revoking a setApprovalForAll allowance 1`] = `
+<div>
+  <div
+    class="confirm-approve-content"
+  >
+    <div
+      class="mm-box confirm-approve-content__icon-display-content mm-box--display-flex"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
+      >
+        <div
+          class=""
+        >
+          <img
+            alt="https://metamask.github.io/test-dapp/"
+            class="url-icon confirm-approve-content__siteimage-identicon"
+            src="https://metamask.github.io/test-dapp/metamask-fox.svg"
+          />
+        </div>
+        <h6
+          class="mm-box mm-text mm-text--body-sm mm-box--margin-left-1 mm-box--color-text-alternative"
+        >
+          https://metamask.github.io/test-dapp/
+        </h6>
+      </div>
+    </div>
+    <div
+      class="confirm-approve-content__title"
+      data-testid="confirm-approve-title"
+    >
+      <span>
+         
+        Revoke permission to access and transfer all of your 
+        <span
+          class="confirm-approve-content__approval-asset-title"
+        >
+          ZenAcademy
+        </span>
+        
+        ?
+         
+      </span>
+    </div>
+    <div
+      class="confirm-approve-content__description"
+    >
+      <span>
+         
+        This revokes the permission for a third party to access and transfer all of your 
+        <span
+          class="confirm-approve-content__approval-asset-title"
+        >
+          ZenAcademy
+        </span>
+        
+         without further notice.
+         
+      </span>
+    </div>
+    <div
+      class="mm-box mm-box--margin-top-2 mm-box--margin-bottom-4"
+    >
+      <a
+        class="button btn-link confirm-approve-content__verify-contract-details"
+        role="button"
+        tabindex="0"
+      >
+        Verify third-party details
+      </a>
+    </div>
+    <div
+      class="confirm-approve-content__card-wrapper"
+    >
+      <div
+        class="confirm-approve-content__card--no-border"
+      >
+        <div
+          class="confirm-approve-content__card-header"
+        >
+          <div
+            class="confirm-approve-content__card-header__symbol"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/tag.svg');"
+            />
+          </div>
+          <div
+            class="confirm-approve-content__card-header__title"
+          >
+            Transaction fee
+          </div>
+        </div>
+        <div
+          class="confirm-approve-content__card-content"
+        >
+          <div
+            class="confirm-approve-content__transaction-details-content"
+          >
+            <div
+              class="confirm-approve-content__small-text"
+            >
+              A fee is associated with this request.
+            </div>
+            <div
+              class="confirm-approve-content__transaction-details-content__fee"
+            >
+              <div
+                class="confirm-approve-content__transaction-details-content__primary-fee"
+              >
+                $10.00
+              </div>
+              <div
+                class="confirm-approve-content__transaction-details-content__secondary-fee"
+              >
+                20 ETH
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--margin-bottom-4"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
+          />
+        </div>
+      </div>
+      <div
+        class="confirm-approve-content__card--no-border"
+      >
+        <div
+          class="confirm-approve-content__card-content"
+        >
+          <div
+            class="mm-box custom-nonce__content mm-box--margin-bottom-4 mm-box--padding-top-3 mm-box--padding-right-3 mm-box--padding-bottom-4 mm-box--padding-left-3 mm-box--display-flex mm-box--align-items-center mm-box--rounded-md"
+          >
+            <div
+              class="mm-box custom-nonce__header mm-box--display-inline-flex mm-box--justify-content-flex-start mm-box--align-items-center"
+            >
+              <h6
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+              >
+                Nonce
+              </h6>
+              <button
+                class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-left-3 mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+              >
+                Edit
+              </button>
+            </div>
+            <h6
+              class="mm-box mm-text custom-nonce__value mm-text--body-sm-bold mm-box--color-text-default"
+            >
+              2
+            </h6>
+          </div>
+        </div>
+        <div
+          class="confirm-approve-content__view-full-tx-button-wrapper"
+        >
+          <div
+            class="confirm-approve-content__view-full-tx-button cursor-pointer"
+          >
+            <div
+              class="confirm-approve-content__small-blue-text"
+            >
+              View full transaction details
+            </div>
+            <i
+              class="fa fa-caret-down"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ConfirmApproveContent Component should render Confirm approve page correctly and display fallback copy for when we are not able to retrieve a erc721 or erc1155 name in the setApprovalForAll screen and when giving a setApprovalForAll allowance 1`] = `
+<div>
+  <div
+    class="confirm-approve-content"
+  >
+    <div
+      class="mm-box confirm-approve-content__icon-display-content mm-box--display-flex"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
+      >
+        <div
+          class=""
+        >
+          <img
+            alt="https://metamask.github.io/test-dapp/"
+            class="url-icon confirm-approve-content__siteimage-identicon"
+            src="https://metamask.github.io/test-dapp/metamask-fox.svg"
+          />
+        </div>
+        <h6
+          class="mm-box mm-text mm-text--body-sm mm-box--margin-left-1 mm-box--color-text-alternative"
+        >
+          https://metamask.github.io/test-dapp/
+        </h6>
+      </div>
+    </div>
+    <div
+      class="confirm-approve-content__title"
+      data-testid="confirm-approve-title"
+    >
+      <span>
+         
+        Allow access to and transfer all of your NFTs from 
+        <span
+          class="confirm-approve-content__approval-asset-title"
+        >
+          this collection
+        </span>
+        
+        ?
+         
+      </span>
+    </div>
+    <div
+      class="confirm-approve-content__description"
+    >
+      <span>
+         
+        This allows a third party to access and transfer all of your NFTs from 
+        <span
+          class="confirm-approve-content__approval-asset-title"
+        >
+          this collection
+        </span>
+        
+         without further notice until you revoke its access.
+         
+      </span>
+    </div>
+    <div
+      class="mm-box mm-box--margin-top-2 mm-box--margin-bottom-4"
+    >
+      <a
+        class="button btn-link confirm-approve-content__verify-contract-details"
+        role="button"
+        tabindex="0"
+      >
+        Verify third-party details
+      </a>
+    </div>
+    <div
+      class="confirm-approve-content__card-wrapper"
+    >
+      <div
+        class="confirm-approve-content__card--no-border"
+      >
+        <div
+          class="confirm-approve-content__card-header"
+        >
+          <div
+            class="confirm-approve-content__card-header__symbol"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/tag.svg');"
+            />
+          </div>
+          <div
+            class="confirm-approve-content__card-header__title"
+          >
+            Transaction fee
+          </div>
+        </div>
+        <div
+          class="confirm-approve-content__card-content"
+        >
+          <div
+            class="confirm-approve-content__transaction-details-content"
+          >
+            <div
+              class="confirm-approve-content__small-text"
+            >
+              A fee is associated with this request.
+            </div>
+            <div
+              class="confirm-approve-content__transaction-details-content__fee"
+            >
+              <div
+                class="confirm-approve-content__transaction-details-content__primary-fee"
+              >
+                $10.00
+              </div>
+              <div
+                class="confirm-approve-content__transaction-details-content__secondary-fee"
+              >
+                20 ETH
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--margin-bottom-4"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
+          />
+        </div>
+      </div>
+      <div
+        class="confirm-approve-content__card--no-border"
+      >
+        <div
+          class="confirm-approve-content__card-content"
+        >
+          <div
+            class="mm-box custom-nonce__content mm-box--margin-bottom-4 mm-box--padding-top-3 mm-box--padding-right-3 mm-box--padding-bottom-4 mm-box--padding-left-3 mm-box--display-flex mm-box--align-items-center mm-box--rounded-md"
+          >
+            <div
+              class="mm-box custom-nonce__header mm-box--display-inline-flex mm-box--justify-content-flex-start mm-box--align-items-center"
+            >
+              <h6
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+              >
+                Nonce
+              </h6>
+              <button
+                class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-left-3 mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+              >
+                Edit
+              </button>
+            </div>
+            <h6
+              class="mm-box mm-text custom-nonce__value mm-text--body-sm-bold mm-box--color-text-default"
+            >
+              2
+            </h6>
+          </div>
+        </div>
+        <div
+          class="confirm-approve-content__view-full-tx-button-wrapper"
+        >
+          <div
+            class="confirm-approve-content__view-full-tx-button cursor-pointer"
+          >
+            <div
+              class="confirm-approve-content__small-blue-text"
+            >
+              View full transaction details
+            </div>
+            <i
+              class="fa fa-caret-down"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ConfirmApproveContent Component should render Confirm approve page correctly and display fallback copy for when we are not able to retrieve a erc721 or erc1155 name in the setApprovalForAll screen and when revoking a setApprovalForAll allowance 1`] = `
+<div>
+  <div
+    class="confirm-approve-content"
+  >
+    <div
+      class="mm-box confirm-approve-content__icon-display-content mm-box--display-flex"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
+      >
+        <div
+          class=""
+        >
+          <img
+            alt="https://metamask.github.io/test-dapp/"
+            class="url-icon confirm-approve-content__siteimage-identicon"
+            src="https://metamask.github.io/test-dapp/metamask-fox.svg"
+          />
+        </div>
+        <h6
+          class="mm-box mm-text mm-text--body-sm mm-box--margin-left-1 mm-box--color-text-alternative"
+        >
+          https://metamask.github.io/test-dapp/
+        </h6>
+      </div>
+    </div>
+    <div
+      class="confirm-approve-content__title"
+      data-testid="confirm-approve-title"
+    >
+      <span>
+         
+        Revoke permission to access and transfer all of your NFTs from 
+        <span
+          class="confirm-approve-content__approval-asset-title"
+        >
+          this collection
+        </span>
+        
+        ?
+         
+      </span>
+    </div>
+    <div
+      class="confirm-approve-content__description"
+    >
+      <span>
+         
+        This revokes the permission for a third party to access and transfer all of your NFTs from 
+        <span
+          class="confirm-approve-content__approval-asset-title"
+        >
+          this collection
+        </span>
+        
+         without further notice.
+         
+      </span>
+    </div>
+    <div
+      class="mm-box mm-box--margin-top-2 mm-box--margin-bottom-4"
+    >
+      <a
+        class="button btn-link confirm-approve-content__verify-contract-details"
+        role="button"
+        tabindex="0"
+      >
+        Verify third-party details
+      </a>
+    </div>
+    <div
+      class="confirm-approve-content__card-wrapper"
+    >
+      <div
+        class="confirm-approve-content__card--no-border"
+      >
+        <div
+          class="confirm-approve-content__card-header"
+        >
+          <div
+            class="confirm-approve-content__card-header__symbol"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/tag.svg');"
+            />
+          </div>
+          <div
+            class="confirm-approve-content__card-header__title"
+          >
+            Transaction fee
+          </div>
+        </div>
+        <div
+          class="confirm-approve-content__card-content"
+        >
+          <div
+            class="confirm-approve-content__transaction-details-content"
+          >
+            <div
+              class="confirm-approve-content__small-text"
+            >
+              A fee is associated with this request.
+            </div>
+            <div
+              class="confirm-approve-content__transaction-details-content__fee"
+            >
+              <div
+                class="confirm-approve-content__transaction-details-content__primary-fee"
+              >
+                $10.00
+              </div>
+              <div
+                class="confirm-approve-content__transaction-details-content__secondary-fee"
+              >
+                20 ETH
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--margin-bottom-4"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
+          />
+        </div>
+      </div>
+      <div
+        class="confirm-approve-content__card--no-border"
+      >
+        <div
+          class="confirm-approve-content__card-content"
+        >
+          <div
+            class="mm-box custom-nonce__content mm-box--margin-bottom-4 mm-box--padding-top-3 mm-box--padding-right-3 mm-box--padding-bottom-4 mm-box--padding-left-3 mm-box--display-flex mm-box--align-items-center mm-box--rounded-md"
+          >
+            <div
+              class="mm-box custom-nonce__header mm-box--display-inline-flex mm-box--justify-content-flex-start mm-box--align-items-center"
+            >
+              <h6
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+              >
+                Nonce
+              </h6>
+              <button
+                class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-left-3 mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+              >
+                Edit
+              </button>
+            </div>
+            <h6
+              class="mm-box mm-text custom-nonce__value mm-text--body-sm-bold mm-box--color-text-default"
+            >
+              2
+            </h6>
+          </div>
+        </div>
+        <div
+          class="confirm-approve-content__view-full-tx-button-wrapper"
+        >
+          <div
+            class="confirm-approve-content__view-full-tx-button cursor-pointer"
+          >
+            <div
+              class="confirm-approve-content__small-blue-text"
+            >
+              View full transaction details
+            </div>
+            <i
+              class="fa fa-caret-down"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

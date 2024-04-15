@@ -21,6 +21,7 @@ const initialState = {
   hexTransactionFee: '',
   hexTransactionTotal: '',
   nonce: '',
+  maxValueMode: {},
 };
 
 const UPDATE_TX_DATA = 'metamask/confirm-transaction/UPDATE_TX_DATA';
@@ -34,6 +35,7 @@ const UPDATE_TRANSACTION_TOTALS =
 const UPDATE_NONCE = 'metamask/confirm-transaction/UPDATE_NONCE';
 const CLEAR_CONFIRM_TRANSACTION =
   'metamask/confirm-transaction/CLEAR_CONFIRM_TRANSACTION';
+const SET_MAX_VALUE_MODE = 'metamask/confirm-transaction/SET_MAX_VALUE_MODE';
 
 describe('Confirm Transaction Duck', () => {
   describe('State changes', () => {
@@ -54,6 +56,9 @@ describe('Confirm Transaction Duck', () => {
       hexTransactionFee: '0x1319718a5000',
       hexTransactionTotal: '',
       nonce: '0x0',
+      maxValueMode: {
+        '123abc': true,
+      },
     };
 
     it('should initialize state', () => {
@@ -171,12 +176,39 @@ describe('Confirm Transaction Duck', () => {
       });
     });
 
+    it("shouldn't clear maxValueMode when receiving a CLEAR_CONFIRM_TRANSACTION action", () => {
+      expect(
+        ConfirmTransactionReducer(mockState, {
+          type: CLEAR_CONFIRM_TRANSACTION,
+        }),
+      ).toStrictEqual({
+        ...initialState,
+        maxValueMode: mockState.maxValueMode,
+      });
+    });
+
+    it('should set max value mode', () => {
+      const mockId = '123abc';
+      expect(
+        ConfirmTransactionReducer(mockState, {
+          type: SET_MAX_VALUE_MODE,
+          payload: {
+            transactionId: mockId,
+            enabled: false,
+          },
+        }).maxValueMode[mockId],
+      ).toBe(false);
+    });
+
     it('should clear confirmTransaction when receiving a FETCH_DATA_END action', () => {
       expect(
         ConfirmTransactionReducer(mockState, {
           type: CLEAR_CONFIRM_TRANSACTION,
         }),
-      ).toStrictEqual(initialState);
+      ).toStrictEqual({
+        ...initialState,
+        maxValueMode: mockState.maxValueMode,
+      });
     });
   });
 

@@ -8,7 +8,12 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import mockState from '../../../../test/data/mock-state.json';
 import { tEn } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { getIsSecurityAlertsEnabled } from '../../../selectors';
 import SecurityTab from './security-tab.container';
+
+const mockSetSecurityAlertsEnabled = jest
+  .fn()
+  .mockImplementation(() => () => undefined);
 
 jest.mock('../../../../app/scripts/lib/util', () => {
   const originalModule = jest.requireActual('../../../../app/scripts/lib/util');
@@ -18,6 +23,16 @@ jest.mock('../../../../app/scripts/lib/util', () => {
     getEnvironmentType: jest.fn(),
   };
 });
+
+jest.mock('../../../selectors', () => ({
+  ...jest.requireActual('../../../selectors'),
+  getIsSecurityAlertsEnabled: jest.fn(),
+}));
+
+jest.mock('../../../store/actions', () => ({
+  ...jest.requireActual('../../../store/actions'),
+  setSecurityAlertsEnabled: (val) => mockSetSecurityAlertsEnabled(val),
+}));
 
 describe('Security Tab', () => {
   mockState.appState.warning = 'warning'; // This tests an otherwise untested render branch
@@ -196,5 +211,17 @@ describe('Security Tab', () => {
 
     await user.click(screen.getByText(tEn('addCustomNetwork')));
     expect(global.platform.openExtensionInBrowser).toHaveBeenCalled();
+  });
+
+  describe('Blockaid', () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('invokes method setSecurityAlertsEnabled when blockaid is enabled', async () => {
+      getIsSecurityAlertsEnabled.mockReturnValue(false);
+      expect(await toggleCheckbox('securityAlert', false)).toBe(true);
+      expect(mockSetSecurityAlertsEnabled).toHaveBeenCalledWith(true);
+    });
   });
 });

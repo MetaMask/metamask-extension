@@ -83,10 +83,11 @@ export const useAccountTotalFiatBalance = (
   });
 
   // Create an object with native token info. NOTE: Native token info is fetched from a separate controller
-  const nativeTokenValues = {};
-  nativeTokenValues.iconUrl = primaryTokenImage;
-  nativeTokenValues.symbol = nativeCurrency;
-  nativeTokenValues.fiatBalance = nativeFiat;
+  const nativeTokenValues = {
+    iconUrl: primaryTokenImage,
+    symbol: nativeCurrency,
+    fiatBalance: nativeFiat,
+  };
 
   // To match the list of detected tokens with the entire token list to find the image for tokens
   const findMatchingTokens = (array1, array2) => {

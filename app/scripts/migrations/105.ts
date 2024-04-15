@@ -12,11 +12,11 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-interface Identity {
+type Identity = {
   name: string;
   address: string;
   lastSelected?: number;
-}
+};
 
 export const version = 105;
 
@@ -48,6 +48,8 @@ function migrateData(state: Record<string, unknown>): void {
   createSelectedAccountForAccountsController(state);
 }
 
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function createDefaultAccountsController(state: Record<string, any>) {
   state.AccountsController = {
     internalAccounts: {
@@ -58,6 +60,8 @@ function createDefaultAccountsController(state: Record<string, any>) {
 }
 
 function createInternalAccountsForAccountsController(
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   state: Record<string, any>,
 ) {
   const identities: {
@@ -98,9 +102,19 @@ function createInternalAccountsForAccountsController(
 }
 
 function createSelectedAccountForAccountsController(
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   state: Record<string, any>,
 ) {
   const selectedAddress = state.PreferencesController?.selectedAddress;
+
+  if (typeof selectedAddress !== 'string') {
+    global.sentry?.captureException?.(
+      new Error(
+        `state.PreferencesController?.selectedAddress is ${selectedAddress}`,
+      ),
+    );
+  }
 
   const selectedAccount = Object.values<InternalAccount>(
     state.AccountsController.internalAccounts.accounts,

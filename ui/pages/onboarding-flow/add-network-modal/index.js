@@ -35,6 +35,7 @@ export default function AddNetworkModal() {
       <NetworksForm
         addNewNetwork
         restrictHeight
+        setActiveOnSubmit
         networksToRender={[]}
         cancelCallback={closeCallback}
         submitCallback={closeCallback}

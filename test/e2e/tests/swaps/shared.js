@@ -18,12 +18,7 @@ const withFixturesOptions = {
 };
 
 const buildQuote = async (driver, options) => {
-  if (process.env.MULTICHAIN) {
-    await driver.clickElement('[data-testid="app-footer-actions-button"]');
-    await driver.clickElement('[data-testid="select-action-modal-item-swap"]');
-  } else {
-    await driver.clickElement('[data-testid="token-overview-button-swap"]');
-  }
+  await driver.clickElement('[data-testid="token-overview-button-swap"]');
   await driver.fill(
     'input[data-testid="prepare-swap-page-from-token-amount"]',
     options.amount,

@@ -1,0 +1,141 @@
+@use "design-system";
+
+.request-signature {
+  &__container {
+    width: 380px;
+    border-radius: 8px;
+    background-color: var(--color-background-default);
+    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+    display: flex;
+    flex-flow: column nowrap;
+    z-index: 25;
+    align-items: center;
+    position: relative;
+    height: 100%;
+    margin-left: auto;
+    margin-right: auto;
+
+    @include design-system.screen-sm-max {
+      width: 100%;
+      top: 0;
+      box-shadow: none;
+    }
+
+    @include design-system.screen-sm-min {
+      height: 650px;
+    }
+
+    &__reject {
+      padding-bottom: 20px;
+    }
+  }
+
+  &__typed-container {
+    padding: 17px;
+
+    h1 {
+      font-weight: 900;
+      margin-bottom: 5px;
+    }
+
+    * {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    > div {
+      margin-bottom: 10px;
+    }
+  }
+
+  &__content__title {
+    @include design-system.H3;
+
+    display: flex;
+    justify-content: center;
+    color: var(--color-default-text);
+    z-index: 3;
+  }
+
+  &__account,
+  &__navigation {
+    width: 100%;
+  }
+
+  &__body {
+    display: flex;
+    flex-flow: column;
+    flex: 1 1 0;
+    min-height: 0;
+    max-width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    > * {
+      flex: 0 0 auto;
+      min-height: 0;
+    }
+  }
+
+  &__origin {
+    display: flex;
+    justify-content: center;
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
+
+  &__notice,
+  &__warning {
+    @include design-system.H6;
+
+    text-align: center;
+    margin-top: 21px;
+    margin-bottom: 11px;
+    width: 100%;
+  }
+
+  &__notice {
+    color: var(--color-text-alternative);
+    padding: 0 10px;
+  }
+
+  &__rows {
+    border-top: 1px solid var(--color-border-default);
+    display: flex;
+    flex-flow: column;
+  }
+
+  &__row {
+    display: flex;
+    flex-flow: column;
+  }
+
+  &__row-title {
+    @include design-system.H5;
+
+    width: 80px;
+    color: var(--color-text-alternative);
+    margin-top: 12px;
+    margin-left: 18px;
+    width: 100%;
+  }
+
+  &__row-value {
+    @include design-system.H6;
+
+    color: var(--color-text-alternative);
+    width: 100%;
+    overflow-wrap: break-word;
+    border-bottom: 1px solid var(--color-border-default);
+    padding: 6px 18px 15px;
+    white-space: pre-wrap;
+  }
+
+  &__help-link {
+    cursor: pointer;
+    text-decoration: underline;
+    color: var(--color-primary-default);
+    margin-inline-start: 3px;
+  }
+}

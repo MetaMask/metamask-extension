@@ -6,6 +6,7 @@ import { MMISignUpPage } from '../pageObjects/mmi-signup-page';
 import { CustodianTestClient } from '../custodian-hooks/hooks';
 import { MMIAccountMenuPage } from '../pageObjects/mmi-accountMenu-page';
 import { MMIMainPage } from '../pageObjects/mmi-main-page';
+import { SEPOLIA_DISPLAY_NAME } from '../helpers/utils';
 
 test.describe('MMI visual', () => {
   test('Full visual e2e', async ({ page, context }) => {
@@ -29,6 +30,8 @@ test.describe('MMI visual', () => {
     // Setup testnetwork in settings
     const mainMenuPage = new MMIMainMenuPage(page, extensionId as string);
     await mainMenuPage.goto();
+    await mainMenuPage.fillPassword();
+    await mainMenuPage.finishOnboarding();
     await mainMenuPage.selectMenuOption('settings');
     await mainMenuPage.selectSettings('Advance');
     await mainMenuPage.switchTestNetwork();
@@ -37,7 +40,7 @@ test.describe('MMI visual', () => {
     // Check network
     const networkPage = new MMINetworkPage(page);
     await networkPage.open();
-    await networkPage.selectNetwork('Goerli');
+    await networkPage.selectNetwork(SEPOLIA_DISPLAY_NAME);
 
     // get token to access saturn
     const client = new CustodianTestClient();
@@ -47,13 +50,10 @@ test.describe('MMI visual', () => {
     const accounts = await client.getSelectedAccounts();
     const accountA = accounts[0];
 
-    await mainMenuPage.closeDeprecatedNetworksBanner();
-
     const accountsPopup = new MMIAccountMenuPage(page);
 
     await accountsPopup.accountsMenu();
-    await accountsPopup.closeBanner();
-    await accountsPopup.accountMenuScreenshot('connect_custodian.png');
+    // await accountsPopup.accountMenuScreenshot('connect_custodian.png');
     await accountsPopup.connectCustodian(
       process.env.MMI_E2E_CUSTODIAN_NAME as string,
       true,
@@ -61,13 +61,10 @@ test.describe('MMI visual', () => {
 
     // Check accounts added from Custodian
     await accountsPopup.accountsMenu();
-    await accountsPopup.accountMenuScreenshot('custody_accounts_selection.png');
+    // await accountsPopup.accountMenuScreenshot('custody_accounts_selection.png');
 
     // Check remove custodian token screen (aborted before removed)
-    await accountsPopup.removeTokenScreenshot(
-      'Custody Account A',
-      'custodian_remove_token.png',
-    );
+    await accountsPopup.removeTokenScreenshot('Custody Account A');
 
     // Select custodian accounts
     await accountsPopup.selectCustodyAccount(accountA);

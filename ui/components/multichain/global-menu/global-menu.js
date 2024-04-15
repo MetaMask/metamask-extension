@@ -9,6 +9,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   NOTIFICATIONS_ROUTE,
   SNAPS_ROUTE,
+  PERMISSIONS,
   ///: END:ONLY_INCLUDE_IF(snaps)
 } from '../../../helpers/constants/routes';
 import { lockMetamask } from '../../../store/actions';
@@ -180,6 +181,25 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
       >
         {t('connectedSites')}
       </MenuItem>
+      {process.env.MULTICHAIN ? (
+        <MenuItem
+          iconName={IconName.SecurityTick}
+          onClick={() => {
+            history.push(PERMISSIONS);
+            trackEvent({
+              event: MetaMetricsEventName.NavPermissionsOpened,
+              category: MetaMetricsEventCategory.Navigation,
+              properties: {
+                location: METRICS_LOCATION,
+              },
+            });
+            closeMenu();
+          }}
+          data-testid="global-menu-connected-sites"
+        >
+          {t('allPermissions')}
+        </MenuItem>
+      ) : null}
 
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)

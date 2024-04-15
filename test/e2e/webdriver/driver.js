@@ -3,7 +3,6 @@ const { strict: assert } = require('assert');
 const {
   By,
   Condition,
-  error: webdriverError,
   Key,
   until,
   ThenableWebDriver, // eslint-disable-line no-unused-vars -- this is imported for JSDoc
@@ -67,6 +66,36 @@ function wrapElementWithAPI(element, driver) {
     const locator = driver.buildLocator(rawLocator);
     const newElement = await element.findElement(locator);
     return wrapElementWithAPI(newElement, driver);
+  };
+
+  // We need to hold a pointer to the original click() method so that we can call it in the replaced click() method
+  if (!element.originalClick) {
+    element.originalClick = element.click;
+  }
+
+  // This special click() method waits for the loading overlay to disappear before clicking
+  element.click = async () => {
+    try {
+      await element.originalClick();
+    } catch (e) {
+      if (e.name === 'ElementClickInterceptedError') {
+        if (e.message.includes('<div class="mm-box loading-overlay">')) {
+          // Wait for the loading overlay to disappear and try again
+          await driver.wait(
+            until.elementIsNotPresent(By.css('.loading-overlay')),
+          );
+        }
+        if (e.message.includes('<div class="modal__backdrop">')) {
+          // Wait for the modal to disappear and try again
+          await driver.wait(
+            until.elementIsNotPresent(By.css('.modal__backdrop')),
+          );
+        }
+        await element.originalClick();
+      } else {
+        throw e; // If the error is not related to the loading overlay or modal backdrop, throw it
+      }
+    }
   };
 
   return element;
@@ -229,9 +258,56 @@ class Driver {
     }, this.timeout);
   }
 
-  async waitForElementNotPresent(rawLocator) {
+  /**
+   * Wait until an element is absent.
+   *
+   * This function MUST have a guard to prevent a race condition. For example,
+   * when the previous step is to click a button that loads a new page, then of course
+   * during page load, the rawLocator element will be absent, even though it will appear
+   * a half-second later.
+   *
+   * The first choice for the guard is to use the findElementGuard, which executes before
+   * the search for the rawLocator element.
+   *
+   * The second choice for the guard is to use the waitAtLeastGuard parameter.
+   *
+   * @param {string | object} rawLocator
+   * @param {object} guards
+   * @param {string | object} [guards.findElementGuard] - A rawLocator to perform a findElement and act as a guard
+   * @param {number} [guards.waitAtLeastGuard] - The minimum milliseconds to wait before passing
+   * @param {number} [guards.timeout] - The maximum milliseconds to wait before failing
+   */
+  async assertElementNotPresent(
+    rawLocator,
+    {
+      findElementGuard = '',
+      waitAtLeastGuard = 0,
+      timeout = this.timeout,
+    } = {},
+  ) {
+    assert(timeout > waitAtLeastGuard);
+    if (waitAtLeastGuard > 0) {
+      await this.delay(waitAtLeastGuard);
+    }
+
+    if (findElementGuard) {
+      await this.findElement(findElementGuard);
+    }
+
     const locator = this.buildLocator(rawLocator);
-    return await this.driver.wait(until.elementIsNotPresent(locator));
+
+    try {
+      await this.driver.wait(
+        until.elementIsNotPresent(locator),
+        timeout - waitAtLeastGuard,
+      );
+    } catch (err) {
+      throw new Error(
+        `Found element ${JSON.stringify(
+          rawLocator,
+        )} that should not be present`,
+      );
+    }
   }
 
   async quit() {
@@ -302,11 +378,18 @@ class Driver {
    * without causing a test failure, but provide a console log of why.
    *
    * @param rawLocator
+   * @param timeout
    */
-  async clickElementSafe(rawLocator) {
+  async clickElementSafe(rawLocator, timeout = 1000) {
     try {
-      const element = await this.findClickableElement(rawLocator);
-      await element.click();
+      const locator = this.buildLocator(rawLocator);
+
+      const elements = await this.driver.wait(
+        until.elementsLocated(locator),
+        timeout,
+      );
+
+      await elements[0].click();
     } catch (e) {
       console.log(`Element ${rawLocator} not found (${e})`);
     }
@@ -355,19 +438,6 @@ class Driver {
     );
   }
 
-  async assertElementNotPresent(rawLocator) {
-    let dataTab;
-    try {
-      dataTab = await this.findElement(rawLocator);
-    } catch (err) {
-      assert(
-        err instanceof webdriverError.NoSuchElementError ||
-          err instanceof webdriverError.TimeoutError,
-      );
-    }
-    assert.ok(!dataTab, 'Found element that should not be present');
-  }
-
   async isElementPresent(rawLocator) {
     try {
       await this.findElement(rawLocator);
@@ -410,7 +480,7 @@ class Driver {
 
   async navigate(page = PAGES.HOME) {
     const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
-    // Wait for asyncronous JavaScript to load
+    // Wait for asynchronous JavaScript to load
     await this.driver.wait(
       until.elementLocated(this.buildLocator('.metamask-loaded')),
       10 * 1000,
@@ -516,6 +586,43 @@ class Driver {
     throw new Error(`No window with title: ${title}`);
   }
 
+  async switchToWindowWithUrl(
+    url,
+    initialWindowHandles,
+    delayStep = 1000,
+    timeout = this.timeout,
+    { retries = 8, retryDelay = 2500 } = {},
+  ) {
+    let windowHandles =
+      initialWindowHandles || (await this.driver.getAllWindowHandles());
+    let timeElapsed = 0;
+
+    while (timeElapsed <= timeout) {
+      for (const handle of windowHandles) {
+        const handleUrl = await retry(
+          {
+            retries,
+            delay: retryDelay,
+          },
+          async () => {
+            await this.driver.switchTo().window(handle);
+            return await this.driver.getCurrentUrl();
+          },
+        );
+
+        if (handleUrl === `${url}/`) {
+          return handle;
+        }
+      }
+      await this.delay(delayStep);
+      timeElapsed += delayStep;
+      // refresh the window handles
+      windowHandles = await this.driver.getAllWindowHandles();
+    }
+
+    throw new Error(`No window with url: ${url}`);
+  }
+
   async closeWindow() {
     await this.driver.close();
   }
@@ -554,20 +661,17 @@ class Driver {
   // Error handling
 
   async verboseReportOnFailure(title, error) {
-    if (process.env.CIRCLECI) {
-      console.error(
-        `Failure in ${title}, for more information see the artifacts tab in CI\n`,
-      );
-    } else {
-      console.error(
-        `Failure in ${title}, for more information see the test-artifacts folder\n`,
-      );
-    }
+    console.error(
+      `Failure on testcase: '${title}', for more information see the ${
+        process.env.CIRCLECI ? 'artifacts tab in CI' : 'test-artifacts folder'
+      }\n`,
+    );
     console.error(`${error}\n`);
+
     const artifactDir = `./test-artifacts/${this.browser}/${title}`;
     const filepathBase = `${artifactDir}/test-failure`;
     await fs.mkdir(artifactDir, { recursive: true });
-    // On occassion there may be a bug in the offscreen document which does
+    // On occasion there may be a bug in the offscreen document which does
     // not render visibly to the user and therefore no screenshot can be
     // taken. In this case we skip the screenshot and log the error.
     try {
@@ -605,68 +709,102 @@ class Driver {
     return browserLogs;
   }
 
-  async checkBrowserForExceptions(failOnConsoleError) {
-    const { exceptions } = this;
+  async checkBrowserForExceptions(ignoredConsoleErrors) {
     const cdpConnection = await this.driver.createCDPConnection('page');
-    await this.driver.onLogException(cdpConnection, (exception) => {
+
+    this.driver.onLogException(cdpConnection, (exception) => {
       const { description } = exception.exceptionDetails.exception;
-      exceptions.push(description);
-      logBrowserError(failOnConsoleError, description);
+
+      const ignored = logBrowserError(ignoredConsoleErrors, description);
+      if (!ignored) {
+        this.exceptions.push(description);
+      }
     });
   }
 
-  async checkBrowserForConsoleErrors(failOnConsoleError) {
-    const ignoredErrorMessages = [
+  async checkBrowserForConsoleErrors(_ignoredConsoleErrors) {
+    const ignoredConsoleErrors = _ignoredConsoleErrors.concat([
       // Third-party Favicon 404s show up as errors
       'favicon.ico - Failed to load resource: the server responded with a status of 404',
       // Sentry rate limiting
       'Failed to load resource: the server responded with a status of 429',
       // 4Byte
       'Failed to load resource: the server responded with a status of 502 (Bad Gateway)',
-    ];
+    ]);
 
-    const { errors } = this;
     const cdpConnection = await this.driver.createCDPConnection('page');
-    await this.driver.onLogEvent(cdpConnection, (event) => {
+
+    this.driver.onLogEvent(cdpConnection, (event) => {
       if (event.type === 'error') {
         const eventDescriptions = event.args.filter(
           (err) => err.description !== undefined,
         );
 
-        // If we received an SES_UNHANDLED_REJECTION from Chrome, eventDescriptions.length will be nonzero
         if (eventDescriptions.length !== 0) {
+          // If we received an SES_UNHANDLED_REJECTION from Chrome, eventDescriptions.length will be nonzero
+          // Update: as of January 2024, this code path may never happen
           const [eventDescription] = eventDescriptions;
-          const ignore = ignoredErrorMessages.some((message) =>
-            eventDescription?.description.includes(message),
+          const ignored = logBrowserError(
+            ignoredConsoleErrors,
+            eventDescription?.description,
           );
-          if (!ignore) {
-            errors.push(eventDescription?.description);
-            logBrowserError(failOnConsoleError, eventDescription?.description);
+
+          if (!ignored) {
+            this.errors.push(eventDescription?.description);
           }
         } else if (event.args.length !== 0) {
-          // Extract the values from the array
-          const values = event.args.map((a) => a.value);
+          const newError = this.#getErrorFromEvent(event);
 
-          // The values are in the "printf" form of [message, ...substitutions]
-          // so use sprintf to parse
-          logBrowserError(failOnConsoleError, sprintf(...values));
+          const ignored = logBrowserError(ignoredConsoleErrors, newError);
+
+          if (!ignored) {
+            this.errors.push(newError);
+          }
         }
       }
     });
   }
+
+  #getErrorFromEvent(event) {
+    // Extract the values from the array
+    const values = event.args.map((a) => a.value);
+
+    if (values[0].includes('%s')) {
+      // The values are in the "printf" form of [message, ...substitutions]
+      // so use sprintf to parse
+      return sprintf(...values);
+    }
+
+    return values.join(' ');
+  }
+
+  summarizeErrorsAndExceptions() {
+    return this.errors.concat(this.exceptions).join('\n');
+  }
 }
 
-function logBrowserError(failOnConsoleError, errorMessage) {
-  console.error('\n----Received an error from Chrome----');
-  console.error(errorMessage);
-  console.error('---------End of Chrome error---------');
+function logBrowserError(ignoredConsoleErrors, errorMessage) {
+  let ignored = false;
 
-  if (failOnConsoleError) {
-    console.error('-----failOnConsoleError is true------\n');
-    throw new Error(errorMessage);
-  } else {
-    console.error('-----failOnConsoleError is false-----\n');
+  console.error('\n-----Received an error from Chrome-----');
+  console.error(errorMessage);
+  console.error('----------End of Chrome error----------');
+
+  if (errorMessage.startsWith('Warning:')) {
+    console.error("-----We will ignore this 'Warning'-----");
+    ignored = true;
+  } else if (isInIgnoreList(errorMessage, ignoredConsoleErrors)) {
+    console.error('---This error is on the ignore list----');
+    ignored = true;
   }
+
+  console.error('\n');
+
+  return ignored;
+}
+
+function isInIgnoreList(errorMessage, ignoreList) {
+  return ignoreList.some((ignore) => errorMessage.includes(ignore));
 }
 
 function collectMetrics() {

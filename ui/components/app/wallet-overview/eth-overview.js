@@ -9,6 +9,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from 'react-router-dom';
 
+import { EthMethod } from '@metamask/keyring-api';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import {
   getMmiPortfolioEnabled,
@@ -29,9 +30,10 @@ import {
   isBalanceCached,
   getShouldShowFiat,
   getIsSwapsChain,
-  getSelectedAccountCachedBalance,
   getCurrentChainId,
   getPreferences,
+  getSelectedInternalAccount,
+  getSelectedAccountCachedBalance,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
   getCurrentKeyring,
@@ -86,14 +88,53 @@ const EthOverview = ({ className, showAddress }) => {
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const chainId = useSelector(getCurrentChainId);
   const { ticker, type } = useSelector(getProviderConfig);
+  const balance = useSelector(getSelectedAccountCachedBalance);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
     chainId,
     ticker,
     type,
   );
 
-  const balance = useSelector(getSelectedAccountCachedBalance);
+  const account = useSelector(getSelectedInternalAccount);
   const isSwapsChain = useSelector(getIsSwapsChain);
+  const isSigningEnabled =
+    account.methods.includes(EthMethod.SignTransaction) ||
+    account.methods.includes(EthMethod.SignUserOperation);
+
+  const buttonTooltips = {
+    buyButton: [
+      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+      { condition: !isBuyableChain, message: '' },
+      ///: END:ONLY_INCLUDE_IF
+      { condition: !isSigningEnabled, message: 'methodNotSupported' },
+    ],
+    sendButton: [
+      { condition: !isSigningEnabled, message: 'methodNotSupported' },
+    ],
+    swapButton: [
+      { condition: !isSwapsChain, message: 'currentlyUnavailable' },
+      { condition: !isSigningEnabled, message: 'methodNotSupported' },
+    ],
+    bridgeButton: [
+      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+      { condition: !isBridgeChain, message: 'currentlyUnavailable' },
+      ///: END:ONLY_INCLUDE_IF
+      { condition: !isSigningEnabled, message: 'methodNotSupported' },
+    ],
+  };
+
+  const generateTooltip = (buttonKey, contents) => {
+    const conditions = buttonTooltips[buttonKey];
+    const tooltipInfo = conditions.find(({ condition }) => condition);
+    if (tooltipInfo && tooltipInfo.message) {
+      return (
+        <Tooltip title={t(tooltipInfo.message)} position="bottom">
+          {contents}
+        </Tooltip>
+      );
+    }
+    return contents;
+  };
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
@@ -219,7 +260,7 @@ const EthOverview = ({ className, showAddress }) => {
                   color={IconColor.primaryInverse}
                 />
               }
-              disabled={!isBuyableChain}
+              disabled={!isBuyableChain || !isSigningEnabled}
               data-testid="eth-overview-buy"
               label={t('buyAndSell')}
               onClick={() => {
@@ -235,6 +276,9 @@ const EthOverview = ({ className, showAddress }) => {
                   },
                 });
               }}
+              tooltipRender={(contents) =>
+                generateTooltip('buyButton', contents)
+              }
             />
             ///: END:ONLY_INCLUDE_IF
           }
@@ -254,6 +298,7 @@ const EthOverview = ({ className, showAddress }) => {
                 color={IconColor.primaryInverse}
               />
             }
+            disabled={!isSigningEnabled}
             label={t('send')}
             onClick={() => {
               trackEvent({
@@ -272,10 +317,13 @@ const EthOverview = ({ className, showAddress }) => {
                 history.push(SEND_ROUTE);
               });
             }}
+            tooltipRender={(contents) =>
+              generateTooltip('sendButton', contents)
+            }
           />
           <IconButton
             className="eth-overview__button"
-            disabled={!isSwapsChain}
+            disabled={!isSwapsChain || !isSigningEnabled}
             Icon={
               <Icon
                 name={IconName.SwapHorizontal}
@@ -312,24 +360,15 @@ const EthOverview = ({ className, showAddress }) => {
             }}
             label={t('swap')}
             data-testid="token-overview-button-swap"
-            tooltipRender={
-              isSwapsChain
-                ? null
-                : (contents) => (
-                    <Tooltip
-                      title={t('currentlyUnavailable')}
-                      position="bottom"
-                    >
-                      {contents}
-                    </Tooltip>
-                  )
+            tooltipRender={(contents) =>
+              generateTooltip('swapButton', contents)
             }
           />
           {
             ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
             <IconButton
               className="eth-overview__button"
-              disabled={!isBridgeChain}
+              disabled={!isBridgeChain || !isSigningEnabled}
               data-testid="eth-overview-bridge"
               Icon={
                 <Icon name={IconName.Bridge} color={IconColor.primaryInverse} />
@@ -359,17 +398,8 @@ const EthOverview = ({ className, showAddress }) => {
                   });
                 }
               }}
-              tooltipRender={
-                isBridgeChain
-                  ? null
-                  : (contents) => (
-                      <Tooltip
-                        title={t('currentlyUnavailable')}
-                        position="bottom"
-                      >
-                        {contents}
-                      </Tooltip>
-                    )
+              tooltipRender={(contents) =>
+                generateTooltip('bridgeButton', contents)
               }
             />
             ///: END:ONLY_INCLUDE_IF

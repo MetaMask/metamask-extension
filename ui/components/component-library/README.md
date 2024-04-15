@@ -38,7 +38,10 @@ We understand some customization to styles or access to children components is n
 
 #### Styles
 
-> Note: If you are seeing a disparity between styles in Figma and code that's a red flag and could mean there is bug between design system Figma and code component. We recommend posting it on our slack channel [#metamask-design-system](https://consensys.slack.com/archives/C0354T27M5M) so we can support you on it
+> Note:
+>
+> - If you are seeing a disparity between styles in Figma and code that's a red flag and could mean there is bug between design system Figma and code component. We recommend posting it on our slack channel [#metamask-design-system](https://consensys.slack.com/archives/C0354T27M5M) so we can support you on it
+> - If you come across the warning `Unexpected hex color` when using a hex value in a stylesheet, it is there to encourage the use of [MetaMask's design-tokens](https://github.com/MetaMask/design-tokens/) color variables instead of hardcoding hex values. This helps maintain consistency and makes updating colors across the app easier.
 
 We try to utilize the `Box` component style utility props as much as possible in our components. Style utility prop overrides should be your first option. This allows you to change styles right inside of the component and reduces the amount of CSS in the codebase. If there are no style utility props for the customization required you can attach a class name to the component using the `className` prop and add styling using CSS.
 

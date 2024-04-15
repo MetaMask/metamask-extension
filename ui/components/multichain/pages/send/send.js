@@ -27,7 +27,7 @@ import {
 } from '../../../../ducks/send';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { INSUFFICIENT_FUNDS_ERROR } from '../../../../pages/send/send.constants';
+import { INSUFFICIENT_FUNDS_ERROR } from '../../../../pages/confirmations/send/send.constants';
 import { cancelTx, showQrScanner } from '../../../../store/actions';
 import {
   CONFIRM_TRANSACTION_ROUTE,
@@ -38,7 +38,6 @@ import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
 import {
   SendPageAccountPicker,
   SendPageContent,
-  SendPageNetworkPicker,
   SendPageRecipient,
   SendPageRecipientInput,
 } from './components';
@@ -158,7 +157,6 @@ export const SendPage = () => {
         {t('sendAToken')}
       </Header>
       <Content>
-        <SendPageNetworkPicker />
         <SendPageAccountPicker />
         <SendPageRecipientInput />
         {draftTransactionExists &&

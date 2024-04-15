@@ -1,15 +1,5 @@
 {
   "resources": {
-    "browserify>browser-resolve": {
-      "packages": {
-        "ethjs-query>babel-runtime>core-js": true
-      }
-    },
-    "ethjs-query>babel-runtime": {
-      "packages": {
-        "@babel/runtime": true
-      }
-    },
     "@metamask/controllers>web3-provider-engine>eth-json-rpc-middleware>node-fetch": {
       "globals": {
         "fetch": true

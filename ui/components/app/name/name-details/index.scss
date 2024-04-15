@@ -7,4 +7,9 @@
   &__address .mm-text-field {
     padding-right: 5px;
   }
+
+  &__modal-body {
+    // Allows the name suggestion combobox dropdown to overflow the modal body.
+    overflow-y: visible;
+  }
 }

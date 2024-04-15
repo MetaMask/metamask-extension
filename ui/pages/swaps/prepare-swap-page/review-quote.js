@@ -19,7 +19,7 @@ import SelectQuotePopover from '../select-quote-popover';
 import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import { usePrevious } from '../../../hooks/usePrevious';
-import { useGasFeeInputs } from '../../../hooks/gasFeeInput/useGasFeeInputs';
+import { useGasFeeInputs } from '../../confirmations/hooks/useGasFeeInputs';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   FALLBACK_GAS_MULTIPLIER,
@@ -41,10 +41,8 @@ import {
   getBackgroundSwapRouteState,
   swapsQuoteSelected,
   getReviewSwapClickedTimestamp,
-  getSmartTransactionsOptInStatus,
   signAndSendSwapsSmartTransaction,
   getSwapsNetworkConfig,
-  getSmartTransactionsEnabled,
   getSmartTransactionsError,
   getCurrentSmartTransactionsError,
   getSwapsSTXLoading,
@@ -65,6 +63,10 @@ import {
   getUSDConversionRate,
   getIsMultiLayerFeeNetwork,
 } from '../../../selectors';
+import {
+  getSmartTransactionsOptInStatus,
+  getSmartTransactionsEnabled,
+} from '../../../../shared/modules/selectors';
 import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
 import {
   setCustomApproveTxData,
@@ -85,7 +87,7 @@ import {
   decWEIToDecETH,
   sumHexes,
 } from '../../../../shared/modules/conversion.utils';
-import { getCustomTxParamsData } from '../../confirm-approve/confirm-approve.util';
+import { getCustomTxParamsData } from '../../confirmations/confirm-approve/confirm-approve.util';
 import {
   quotesToRenderableData,
   getRenderableNetworkFeesForQuote,
@@ -264,6 +266,8 @@ export default function ReviewQuote({ setReceiveToAmount }) {
         return t('networkNameZkSyncEra');
       case CHAIN_IDS.LINEA_MAINNET:
         return t('networkNameLinea');
+      case CHAIN_IDS.BASE:
+        return t('networkNameBase');
       default:
         throw new Error('This network is not supported for token swaps');
     }
@@ -295,16 +299,19 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     usedQuote?.gasEstimateWithRefund ||
     `0x${decimalToHex(usedQuote?.averageGas || 0)}`;
 
-  const gasLimitForMax = usedQuote?.gasEstimate || `0x0`;
-
-  const usedGasLimitWithMultiplier = new BigNumber(gasLimitForMax, 16)
-    .times(usedQuote?.gasMultiplier || FALLBACK_GAS_MULTIPLIER, 10)
-    .round(0)
-    .toString(16);
+  const estimatedGasLimit = new BigNumber(
+    usedQuote?.gasEstimate || 0,
+    16,
+  ).toString(16);
 
   const nonCustomMaxGasLimit = usedQuote?.gasEstimate
-    ? usedGasLimitWithMultiplier
-    : `0x${decimalToHex(usedQuote?.maxGas || 0)}`;
+    ? `0x${estimatedGasLimit}`
+    : `0x${decimalToHex(
+        new BigNumber(usedQuote?.maxGas)
+          .mul(usedQuote?.gasMultiplier || FALLBACK_GAS_MULTIPLIER)
+          .toString() || 0,
+      )}`;
+
   const maxGasLimit = customMaxGas || nonCustomMaxGasLimit;
 
   let maxFeePerGas;
@@ -316,7 +323,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     const {
       maxFeePerGas: suggestedMaxFeePerGas,
       maxPriorityFeePerGas: suggestedMaxPriorityFeePerGas,
-      gasFeeEstimates: { estimatedBaseFee = '0' },
+      gasFeeEstimates: { estimatedBaseFee = '0' } = {},
     } = gasFeeInputs;
     maxFeePerGas = customMaxFeePerGas || decGWEIToHexWEI(suggestedMaxFeePerGas);
     maxPriorityFeePerGas =
@@ -988,13 +995,12 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       try {
         let l1ApprovalFeeTotal = '0x0';
         if (approveTxParams) {
-          l1ApprovalFeeTotal = await fetchEstimatedL1Fee({
+          l1ApprovalFeeTotal = await fetchEstimatedL1Fee(chainId, {
             txParams: {
               ...approveTxParams,
               gasPrice: addHexPrefix(approveTxParams.gasPrice),
               value: '0x0', // For approval txs we need to use "0x0" here.
             },
-            chainId,
           });
           setMultiLayerL1ApprovalFeeTotal(l1ApprovalFeeTotal);
         }

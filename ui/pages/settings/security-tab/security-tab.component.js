@@ -18,6 +18,8 @@ import {
   CONSENSYS_PRIVACY_LINK,
   CRYPTOCOMPARE_LINK,
   PRIVACY_POLICY_LINK,
+  SECURITY_ALERTS_LEARN_MORE_LINK,
+  TRANSACTION_SIMULATIONS_LEARN_MORE_LINK,
 } from '../../../../shared/lib/ui-utils';
 import SRPQuiz from '../../../components/app/srp-quiz-modal/SRPQuiz';
 import {
@@ -37,7 +39,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
 import {
-  getNumberOfSettingsInSection,
+  getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 
@@ -68,6 +70,7 @@ export default class SecurityTab extends PureComponent {
     useTokenDetection: PropTypes.bool.isRequired,
     setUseTokenDetection: PropTypes.func.isRequired,
     setIpfsGateway: PropTypes.func.isRequired,
+    setIsIpfsGatewayEnabled: PropTypes.func.isRequired,
     ipfsGateway: PropTypes.string.isRequired,
     useMultiAccountBalanceChecker: PropTypes.bool.isRequired,
     setUseMultiAccountBalanceChecker: PropTypes.func.isRequired,
@@ -77,9 +80,14 @@ export default class SecurityTab extends PureComponent {
     setUseCurrencyRateCheck: PropTypes.func.isRequired,
     useAddressBarEnsResolution: PropTypes.bool.isRequired,
     setUseAddressBarEnsResolution: PropTypes.func.isRequired,
-    ///: BEGIN:ONLY_INCLUDE_IF(petnames)
     useExternalNameSources: PropTypes.bool.isRequired,
     setUseExternalNameSources: PropTypes.func.isRequired,
+    setUseTransactionSimulations: PropTypes.func.isRequired,
+    useTransactionSimulations: PropTypes.bool.isRequired,
+    petnamesEnabled: PropTypes.bool.isRequired,
+    securityAlertsEnabled: PropTypes.bool,
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+    setSecurityAlertsEnabled: PropTypes.func,
     ///: END:ONLY_INCLUDE_IF
   };
 
@@ -93,7 +101,7 @@ export default class SecurityTab extends PureComponent {
   settingsRefCounter = 0;
 
   settingsRefs = Array(
-    getNumberOfSettingsInSection(
+    getNumberOfSettingRoutesInTab(
       this.context.t,
       this.context.t('securityAndPrivacy'),
     ),
@@ -172,6 +180,57 @@ export default class SecurityTab extends PureComponent {
               onClose={this.hideSrpQuizModal}
             />
           )}
+        </div>
+      </>
+    );
+  }
+
+  renderSecurityAlertsToggle() {
+    const { t } = this.context;
+    const { securityAlertsEnabled } = this.props;
+
+    return (
+      <>
+        <div ref={this.settingsRefs[15]}>
+          <span className="settings-page__security-tab-sub-header">
+            {t('securityAlerts')}
+          </span>
+        </div>
+        <div className="settings-page__content-padded">
+          <Box
+            ref={this.settingsRefs[2]}
+            className="settings-page__content-row"
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            justifyContent={JustifyContent.spaceBetween}
+            gap={4}
+          >
+            <div className="settings-page__content-item">
+              <div className="settings-page__content-description">
+                {t('securityAlertsDescription', [
+                  <a
+                    key="learn_more_link"
+                    href={SECURITY_ALERTS_LEARN_MORE_LINK}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    {t('learnMoreUpperCase')}
+                  </a>,
+                ])}
+              </div>
+            </div>
+            <div
+              className="settings-page__content-item-col"
+              data-testid="securityAlert"
+            >
+              <ToggleButton
+                value={securityAlertsEnabled}
+                onToggle={this.toggleSecurityAlert.bind(this)}
+                offLabel={t('off')}
+                onLabel={t('on')}
+              />
+            </div>
+          </Box>
         </div>
       </>
     );
@@ -304,7 +363,6 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[5]}
         className="settings-page__content-row"
         data-testid="advanced-setting-choose-your-network"
         display={Display.Flex}
@@ -357,7 +415,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[2]}
+        ref={this.settingsRefs[13]}
         className="settings-page__content-row"
         data-testid="setting-safe-chains-validation"
         display={Display.Flex}
@@ -465,9 +523,11 @@ export default class SecurityTab extends PureComponent {
               onToggle={(value) => {
                 if (value) {
                   // turning from true to false
+                  this.props.setIsIpfsGatewayEnabled(false);
                   this.props.setIpfsGateway('');
                 } else {
                   // turning from false to true
+                  this.props.setIsIpfsGatewayEnabled(true);
                   handleIpfsGatewayChange(this.state.ipfsGateway);
                 }
 
@@ -818,14 +878,13 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(petnames)
   renderExternalNameSourcesToggle() {
     const { t } = this.context;
     const { useExternalNameSources, setUseExternalNameSources } = this.props;
 
     return (
       <Box
-        ref={this.settingsRefs[13]}
+        ref={this.settingsRefs[14]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -853,10 +912,74 @@ export default class SecurityTab extends PureComponent {
       </Box>
     );
   }
+
+  renderSimulationsToggle() {
+    const { t } = this.context;
+    const { useTransactionSimulations, setUseTransactionSimulations } =
+      this.props;
+
+    return (
+      <Box
+        ref={this.settingsRefs[18]}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
+        <div className="settings-page__content-item">
+          <span>{t('simulationsSettingSubHeader')}</span>
+          <div className="settings-page__content-description">
+            {t('simulationsSettingDescription', [
+              <a
+                key="learn_more_link"
+                href={TRANSACTION_SIMULATIONS_LEARN_MORE_LINK}
+                rel="noreferrer"
+                target="_blank"
+              >
+                {t('learnMoreUpperCase')}
+              </a>,
+            ])}
+          </div>
+        </div>
+
+        <div
+          className="settings-page__content-item-col"
+          data-testid="useTransactionSimulations"
+        >
+          <ToggleButton
+            value={useTransactionSimulations}
+            onToggle={(value) => setUseTransactionSimulations(!value)}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
+        </div>
+      </Box>
+    );
+  }
+
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  /**
+   * toggleSecurityAlert
+   *
+   * @param {boolean} oldValue - the current securityAlertEnabled value.
+   */
+  toggleSecurityAlert(oldValue) {
+    const newValue = !oldValue;
+    const { setSecurityAlertsEnabled } = this.props;
+    this.context.trackEvent({
+      category: MetaMetricsEventCategory.Settings,
+      event: MetaMetricsEventName.SettingsUpdated,
+      properties: {
+        blockaid_alerts_enabled: newValue,
+      },
+    });
+    setSecurityAlertsEnabled(newValue);
+  }
   ///: END:ONLY_INCLUDE_IF
 
   render() {
-    const { warning } = this.props;
+    const { warning, petnamesEnabled } = this.props;
 
     return (
       <div className="settings-page__body">
@@ -865,6 +988,9 @@ export default class SecurityTab extends PureComponent {
           {this.context.t('security')}
         </span>
         {this.renderSeedWords()}
+        {/* ///: BEGIN:ONLY_INCLUDE_IF(blockaid) */}
+        {this.renderSecurityAlertsToggle()}
+        {/* ///: END:ONLY_INCLUDE_IF */}
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}
         </span>
@@ -893,9 +1019,13 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-padded">
           {this.renderCurrencyRateCheckToggle()}
           {this.renderIncomingTransactionsOptIn()}
+          {this.renderSimulationsToggle()}
         </div>
 
-        <span className="settings-page__security-tab-sub-header">
+        <span
+          className="settings-page__security-tab-sub-header"
+          ref={this.settingsRefs[5]}
+        >
           {this.context.t('networkProvider')}
         </span>
         <div className="settings-page__content-padded">
@@ -914,18 +1044,16 @@ export default class SecurityTab extends PureComponent {
           {this.renderNftDetectionToggle()}
         </div>
 
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(petnames)
-        }
-        <span className="settings-page__security-tab-sub-header">
-          {this.context.t('settingsSubHeadingSignatures')}
-        </span>
-        <div className="settings-page__content-padded">
-          {this.renderExternalNameSourcesToggle()}
-        </div>
-        {
-          ///: END:ONLY_INCLUDE_IF
-        }
+        {petnamesEnabled && (
+          <>
+            <span className="settings-page__security-tab-sub-header">
+              {this.context.t('settingsSubHeadingSignaturesAndTransactions')}
+            </span>
+            <div className="settings-page__content-padded">
+              {this.renderExternalNameSourcesToggle()}
+            </div>
+          </>
+        )}
 
         <span className="settings-page__security-tab-sub-header">
           {this.context.t('metrics')}

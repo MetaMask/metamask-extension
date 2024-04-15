@@ -1,4 +1,5 @@
 const { strict: assert } = require('assert');
+const { LavaDomeDebug } = require('@lavamoat/lavadome-core');
 const {
   defaultGanacheOptions,
   withFixtures,
@@ -40,7 +41,7 @@ describe('Show account details', function () {
       '[data-testid="account-details-key"]',
     );
     const key = await keyContainer.getText();
-    return key;
+    return LavaDomeDebug.stripDistractionFromText(key);
   }
 
   it('should show the QR code for the account', async function () {
@@ -104,7 +105,7 @@ describe('Show account details', function () {
         );
         await driver.fill('[placeholder="Account 2"]', '2nd account');
         await driver.clickElement({ text: tEn('create'), tag: 'button' });
-        await driver.waitForElementNotPresent({
+        await driver.assertElementNotPresent({
           text: tEn('create'),
           tag: 'button',
         });
@@ -157,7 +158,7 @@ describe('Show account details', function () {
         );
         await driver.fill('[placeholder="Account 2"]', '2nd account');
         await driver.clickElement({ text: tEn('create'), tag: 'button' });
-        await driver.waitForElementNotPresent({
+        await driver.assertElementNotPresent({
           text: tEn('create'),
           tag: 'button',
         });
@@ -176,7 +177,7 @@ describe('Show account details', function () {
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test.fullTitle(),
-        failOnConsoleError: false,
+        ignoredConsoleErrors: ['Error in verifying password'],
       },
       async ({ driver }) => {
         await unlockWallet(driver);

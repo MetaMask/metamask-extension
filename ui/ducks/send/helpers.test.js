@@ -11,7 +11,7 @@ import {
   generateERC1155TransferData,
   generateERC20TransferData,
   generateERC721TransferData,
-} from '../../pages/send/send.utils';
+} from '../../pages/confirmations/send/send.utils';
 import { generateTransactionParams } from './helpers';
 
 describe('Send Slice Helpers', () => {

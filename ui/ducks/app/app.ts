@@ -6,13 +6,15 @@ import {
 } from '../../../shared/constants/hardware-wallets';
 import * as actionConstants from '../../store/actionConstants';
 
-interface AppState {
+type AppState = {
   shouldClose: boolean;
   menuOpen: boolean;
   modal: {
     open: boolean;
     modalState: {
       name: string | null;
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       props: Record<string, any>;
     };
     previousModalState: {
@@ -39,7 +41,7 @@ interface AppState {
   };
   showKeyringRemovalSnapModal: boolean;
   importTokensModalOpen: boolean;
-  showSelectActionModal: boolean;
+  deprecatedNetworkModalOpen: boolean;
   accountDetail: {
     subview?: string;
     accountExport?: string;
@@ -49,6 +51,8 @@ interface AppState {
   loadingMessage: string | null;
   scrollToBottom: boolean;
   warning: string | null | undefined;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   buyView: Record<string, any>;
   defaultHdPaths: {
     trezor: string;
@@ -58,6 +62,8 @@ interface AppState {
   networksTabSelectedRpcUrl: string | null;
   requestAccountTabs: Record<string, number>; // [url.origin]: tab.id
   openMetaMaskTabs: Record<string, boolean>; // openMetamaskTabsIDs[tab.id]): true/false
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   currentWindowTab: Record<string, any>; // tabs.tab https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
   showWhatsNewPopup: boolean;
   showTermsOfUsePopup: boolean;
@@ -84,11 +90,11 @@ interface AppState {
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   snapsInstallPrivacyWarningShown: boolean;
   ///: END:ONLY_INCLUDE_IF
-}
+};
 
-interface AppSliceState {
+type AppSliceState = {
   appState: AppState;
-}
+};
 
 // default state
 const initialState: AppState = {
@@ -116,7 +122,7 @@ const initialState: AppState = {
   },
   showKeyringRemovalSnapModal: false,
   importTokensModalOpen: false,
-  showSelectActionModal: false,
+  deprecatedNetworkModalOpen: false,
   accountDetail: {
     privateKey: '',
   },
@@ -227,16 +233,16 @@ export default function reduceApp(
         importTokensModalOpen: false,
       };
 
-    case actionConstants.SELECT_ACTION_MODAL_OPEN:
+    case actionConstants.DEPRECATED_NETWORK_POPOVER_OPEN:
       return {
         ...appState,
-        showSelectActionModal: true,
+        deprecatedNetworkModalOpen: true,
       };
 
-    case actionConstants.SELECT_ACTION_MODAL_CLOSE:
+    case actionConstants.DEPRECATED_NETWORK_POPOVER_CLOSE:
       return {
         ...appState,
-        showSelectActionModal: false,
+        deprecatedNetworkModalOpen: false,
       };
 
     // alert methods
@@ -375,6 +381,8 @@ export default function reduceApp(
 
     case actionConstants.SET_HARDWARE_WALLET_DEFAULT_HD_PATH: {
       const { device, path } = action.payload;
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const newDefaults = { ...appState.defaultHdPaths } as any;
       newDefaults[device] = path;
 

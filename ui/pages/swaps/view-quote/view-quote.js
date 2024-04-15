@@ -18,7 +18,7 @@ import SelectQuotePopover from '../select-quote-popover';
 import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import { usePrevious } from '../../../hooks/usePrevious';
-import { useGasFeeInputs } from '../../../hooks/gasFeeInput/useGasFeeInputs';
+import { useGasFeeInputs } from '../../confirmations/hooks/useGasFeeInputs';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import FeeCard from '../fee-card';
 import {
@@ -42,10 +42,8 @@ import {
   swapsQuoteSelected,
   getSwapsQuoteRefreshTime,
   getReviewSwapClickedTimestamp,
-  getSmartTransactionsOptInStatus,
   signAndSendSwapsSmartTransaction,
   getSwapsNetworkConfig,
-  getSmartTransactionsEnabled,
   getSmartTransactionsError,
   getCurrentSmartTransactionsError,
   getSwapsSTXLoading,
@@ -66,6 +64,10 @@ import {
   getUSDConversionRate,
   getIsMultiLayerFeeNetwork,
 } from '../../../selectors';
+import {
+  getSmartTransactionsOptInStatus,
+  getSmartTransactionsEnabled,
+} from '../../../../shared/modules/selectors';
 import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
 import {
   safeRefetchQuotes,
@@ -83,7 +85,7 @@ import {
   AWAITING_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 import MainQuoteSummary from '../main-quote-summary';
-import { getCustomTxParamsData } from '../../confirm-approve/confirm-approve.util';
+import { getCustomTxParamsData } from '../../confirmations/confirm-approve/confirm-approve.util';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import {
   quotesToRenderableData,

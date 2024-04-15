@@ -1,3 +1,5 @@
+@use "design-system";
+
 .popover {
   &-wrap {
     ::-webkit-scrollbar {
@@ -31,8 +33,7 @@
   &-bg {
     width: 100%;
     height: 100%;
-    background: var(--color-overlay-alternative);
-    opacity: 0.2;
+    background: var(--color-overlay-default);
   }
 
   &-content {
@@ -51,7 +52,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: $modal-z-index;
+    z-index: design-system.$modal-z-index;
   }
 
   &-footer {

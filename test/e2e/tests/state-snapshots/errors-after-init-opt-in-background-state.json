@@ -33,6 +33,7 @@
     "nftsDetectionNoticeDismissed": false,
     "showTestnetMessageInDropdown": true,
     "showBetaHeader": false,
+    "showPermissionsTour": true,
     "showProductTour": true,
     "showNetworkBanner": true,
     "showAccountBanner": true,
@@ -43,7 +44,11 @@
     "qrHardware": {},
     "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
     "snapsInstallPrivacyWarningShown": true,
-    "surveyLinkLastClickedOrClosed": "object"
+    "surveyLinkLastClickedOrClosed": "object",
+    "signatureSecurityAlertResponses": "object",
+    "switchedNetworkDetails": "object",
+    "switchedNetworkNeverShowMessage": "boolean",
+    "currentExtensionPopupId": "number"
   },
   "ApprovalController": {
     "pendingApprovals": "object",
@@ -69,7 +74,10 @@
     "unapprovedEncryptionPublicKeyMsgs": "object",
     "unapprovedEncryptionPublicKeyMsgCount": 0
   },
-  "EnsController": { "ensResolutionsByAddress": "object" },
+  "EnsController": {
+    "ensEntries": "object",
+    "ensResolutionsByAddress": "object"
+  },
   "GasFeeController": {
     "gasFeeEstimatesByChainId": {},
     "gasFeeEstimates": {},
@@ -91,6 +99,7 @@
     "fragments": "object",
     "segmentApiCalls": "object"
   },
+  "NameController": { "names": "object", "nameSources": "object" },
   "NetworkController": {
     "selectedNetworkClientId": "string",
     "providerConfig": {
@@ -111,7 +120,7 @@
     "networkConfigurations": "object"
   },
   "NetworkOrderController": {
-    "orderedNetworkList": { "0": "string", "1": "string", "2": "string" }
+    "orderedNetworkList": { "0": "object", "1": "object", "2": "object" }
   },
   "NftController": {
     "allNftContracts": "object",
@@ -125,13 +134,7 @@
     "completedOnboarding": true,
     "onboardingTabs": "object"
   },
-  "PPOMController": {
-    "storageMetadata": {},
-    "chainStatus": {
-      "0x539": { "chainId": "0x539", "versionInfo": [] }
-    },
-    "versionFileETag": "string"
-  },
+  "PPOMController": { "storageMetadata": {}, "versionFileETag": "string" },
   "PermissionController": { "subjects": "object" },
   "PermissionLogController": {
     "permissionHistory": "object",
@@ -155,6 +158,7 @@
     "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
     "featureFlags": {},
+    "hasDismissedOpenSeaToBlockaidBanner": false,
     "incomingTransactionsPreferences": {},
     "knownMethodData": "object",
     "currentLocale": "en",
@@ -166,22 +170,22 @@
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": false,
-      "useNativeCurrencyAsPrimaryCurrency": true
+      "smartTransactionsOptInStatus": false,
+      "useNativeCurrencyAsPrimaryCurrency": true,
+      "petnamesEnabled": true
     },
     "ipfsGateway": "string",
+    "isIpfsGatewayEnabled": "boolean",
     "useAddressBarEnsResolution": true,
     "ledgerTransportType": "webhid",
     "snapRegistryList": "object",
-    "transactionSecurityCheckEnabled": false,
     "theme": "light",
     "snapsAddSnapAccountModalDismissed": "boolean",
-    "isLineaMainnetReleased": true,
+    "useExternalNameSources": "boolean",
+    "useTransactionSimulations": true,
     "selectedAddress": "string"
   },
-  "SelectedNetworkController": {
-    "domains": { "metamask": "networkConfigurationId" },
-    "perDomainNetwork": "boolean"
-  },
+  "SelectedNetworkController": { "domains": "object" },
   "SignatureController": {
     "unapprovedMsgs": "object",
     "unapprovedPersonalMsgs": "object",
@@ -202,7 +206,12 @@
     "snapStates": "object",
     "unencryptedSnapStates": "object"
   },
-  "SnapsRegistry": { "database": "object", "lastUpdated": "object" },
+  "SnapInterfaceController": "object",
+  "SnapsRegistry": {
+    "database": "object",
+    "lastUpdated": "object",
+    "databaseUnavailable": "boolean"
+  },
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SwapsController": {
     "swapsState": {

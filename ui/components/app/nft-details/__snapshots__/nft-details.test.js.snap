@@ -183,7 +183,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
       <h6
         class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
       >
-        Disclaimer: MetaMask pulls the media file from the source url. This url sometimes is changed by the marketplace the NFT was minted on.
+        Disclaimer: MetaMask pulls the media file from the source url. This url sometimes gets changed by the marketplace on which the NFT was minted.
       </h6>
     </div>
   </div>

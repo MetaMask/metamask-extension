@@ -1,3 +1,5 @@
+@use "design-system";
+
 .experimental-area {
   color: var(--color-flask-default);
   margin: auto;
@@ -10,21 +12,21 @@
     padding: 16px 8px 0;
     line-height: 0.625em;
     font-family: monospace;
-    font-size: $font-size-h8;
+    font-size: design-system.$font-size-h8;
     margin-bottom: 32px;
   }
 
   .experimental-text {
     padding: 16px 8px 0;
     font-family: monospace;
-    font-size: $font-size-h5;
+    font-size: design-system.$font-size-h5;
     margin: auto;
     line-height: 0.875em;
     margin-bottom: 32px;
   }
 
   .text {
-    @include H5;
+    @include design-system.H5;
 
     padding: 16px;
     max-width: 670px;

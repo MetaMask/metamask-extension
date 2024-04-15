@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import browser from 'webextension-polyfill';
 import { useDispatch, useSelector } from 'react-redux';
 import { matchPath, useHistory } from 'react-router-dom';
-import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -14,6 +13,7 @@ import {
   BUILD_QUOTE_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
+  CONNECTIONS,
   DEFAULT_ROUTE,
   SWAPS_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -22,17 +22,25 @@ import {
   AlignItems,
   BackgroundColor,
   BlockSize,
+  BorderRadius,
   Display,
+  FlexDirection,
   FontWeight,
+  IconColor,
   JustifyContent,
+  Size,
+  TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
   Box,
+  ButtonBase,
+  ButtonBaseSize,
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  IconSize,
   PickerNetwork,
+  Text,
 } from '../../component-library';
 import {
   getCurrentChainId,
@@ -67,6 +75,8 @@ import { SEND_STAGES, getSendStage } from '../../../ducks/send';
 import Tooltip from '../../ui/tooltip';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
+import { shortenAddress } from '../../../helpers/utils/util';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 
 export const AppHeader = ({ location }) => {
   const trackEvent = useContext(MetaMetricsContext);
@@ -82,6 +92,9 @@ export const AppHeader = ({ location }) => {
 
   // Used for account picker
   const internalAccount = useSelector(getSelectedInternalAccount);
+  const shortenedAddress =
+    internalAccount &&
+    shortenAddress(toChecksumHexAddress(internalAccount.address));
   const dispatch = useDispatch();
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
@@ -104,10 +117,9 @@ export const AppHeader = ({ location }) => {
 
   const popupStatus = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
   const showConnectedStatus =
-    process.env.MULTICHAIN ||
-    (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
-      origin &&
-      origin !== browser.runtime.id);
+    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
+    origin &&
+    origin !== browser.runtime.id;
   const showProductTour =
     completedOnboarding && !onboardedInThisUISession && showProductTourPopup;
   const productTourDirection = document
@@ -162,6 +174,9 @@ export const AppHeader = ({ location }) => {
     });
   }, [chainId, dispatch, trackEvent]);
 
+  const handleConnectionsRoute = () => {
+    history.push(`${CONNECTIONS}/${encodeURIComponent(origin)}`);
+  };
   // This is required to ensure send and confirmation screens
   // look as desired
   const headerBottomMargin = !popupStatus && disableNetworkPicker ? 4 : 0;
@@ -220,13 +235,16 @@ export const AppHeader = ({ location }) => {
                     <PickerNetwork
                       avatarNetworkProps={{
                         backgroundColor: testNetworkBackgroundColor,
+                        role: 'img',
                       }}
                       className="multichain-app-header__contents--avatar-network"
                       ref={menuRef}
                       as="button"
                       src={currentNetwork?.rpcPrefs?.imageUrl}
                       label={currentNetwork?.nickname}
-                      aria-label={t('networkMenu')}
+                      aria-label={`${t('networkMenu')} ${
+                        currentNetwork?.nickname
+                      }`}
                       labelProps={{
                         display: Display.None,
                       }}
@@ -245,8 +263,12 @@ export const AppHeader = ({ location }) => {
                   <PickerNetwork
                     avatarNetworkProps={{
                       backgroundColor: testNetworkBackgroundColor,
+                      role: 'img',
                     }}
                     margin={2}
+                    aria-label={`${t('networkMenu')} ${
+                      currentNetwork?.nickname
+                    }`}
                     label={currentNetwork?.nickname}
                     src={currentNetwork?.rpcPrefs?.imageUrl}
                     onClick={(e) => {
@@ -281,24 +303,67 @@ export const AppHeader = ({ location }) => {
               ) : null}
 
               {internalAccount ? (
-                <AccountPicker
-                  address={internalAccount.address}
-                  name={internalAccount.metadata.name}
-                  onClick={() => {
-                    dispatch(toggleAccountMenu());
+                <Text
+                  as="div"
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Column}
+                  alignItems={AlignItems.center}
+                  ellipsis
+                >
+                  <AccountPicker
+                    address={internalAccount.address}
+                    name={internalAccount.metadata.name}
+                    onClick={() => {
+                      dispatch(toggleAccountMenu());
 
-                    trackEvent({
-                      event: MetaMetricsEventName.NavAccountMenuOpened,
-                      category: MetaMetricsEventCategory.Navigation,
-                      properties: {
-                        location: 'Home',
-                      },
-                    });
-                  }}
-                  disabled={disableAccountPicker}
-                  showAddress={Boolean(process.env.MULTICHAIN)}
-                  labelProps={{ fontWeight: FontWeight.Bold }}
-                />
+                      trackEvent({
+                        event: MetaMetricsEventName.NavAccountMenuOpened,
+                        category: MetaMetricsEventCategory.Navigation,
+                        properties: {
+                          location: 'Home',
+                        },
+                      });
+                    }}
+                    disabled={disableAccountPicker}
+                    labelProps={{ fontWeight: FontWeight.Bold }}
+                  />
+                  <Tooltip
+                    position="left"
+                    title={copied ? t('addressCopied') : t('copyToClipboard')}
+                  >
+                    <ButtonBase
+                      className="multichain-app-header__address-copy-button"
+                      onClick={() => handleCopy(checksummedCurrentAddress)}
+                      size={ButtonBaseSize.Sm}
+                      backgroundColor={BackgroundColor.transparent}
+                      borderRadius={BorderRadius.LG}
+                      endIconName={
+                        copied ? IconName.CopySuccess : IconName.Copy
+                      }
+                      endIconProps={{
+                        color: IconColor.iconAlternative,
+                        size: Size.SM,
+                      }}
+                      ellipsis
+                      textProps={{
+                        display: Display.Flex,
+                        alignItems: AlignItems.center,
+                        gap: 2,
+                      }}
+                      style={{ height: 'auto' }} // ButtonBase doesn't have auto size
+                      data-testid="app-header-copy-button"
+                    >
+                      <Text
+                        color={TextColor.textAlternative}
+                        variant={TextVariant.bodySm}
+                        ellipsis
+                        as="span"
+                      >
+                        {shortenedAddress}
+                      </Text>
+                    </ButtonBase>
+                  </Tooltip>
+                </Text>
               ) : null}
               <Box
                 display={Display.Flex}
@@ -306,35 +371,24 @@ export const AppHeader = ({ location }) => {
                 justifyContent={JustifyContent.flexEnd}
               >
                 <Box display={Display.Flex} gap={4}>
-                  {showConnectedStatus &&
-                    (process.env.MULTICHAIN ? (
-                      <Tooltip
-                        position="left"
-                        title={copied ? t('addressCopied') : null}
-                      >
-                        <ButtonIcon
-                          onClick={() => handleCopy(checksummedCurrentAddress)}
-                          iconName={
-                            copied ? IconName.CopySuccess : IconName.Copy
-                          }
-                          size={IconSize.Sm}
-                          data-testid="app-header-copy-button"
-                        />
-                      </Tooltip>
-                    ) : (
-                      <Box ref={menuRef}>
-                        <ConnectedStatusIndicator
-                          onClick={() => {
+                  {showConnectedStatus ? (
+                    <Box ref={menuRef}>
+                      <ConnectedStatusIndicator
+                        onClick={() => {
+                          if (process.env.MULTICHAIN) {
+                            handleConnectionsRoute();
+                          } else {
                             history.push(CONNECTED_ACCOUNTS_ROUTE);
                             trackEvent({
                               event:
                                 MetaMetricsEventName.NavConnectedSitesOpened,
                               category: MetaMetricsEventCategory.Navigation,
                             });
-                          }}
-                        />
-                      </Box>
-                    ))}{' '}
+                          }
+                        }}
+                      />
+                    </Box>
+                  ) : null}{' '}
                   {popupStatus && multichainProductTourStep === 2 ? (
                     <ProductTour
                       className="multichain-app-header__product-tour"
@@ -433,7 +487,9 @@ export const AppHeader = ({ location }) => {
                 <PickerNetwork
                   avatarNetworkProps={{
                     backgroundColor: testNetworkBackgroundColor,
+                    role: 'img',
                   }}
+                  aria-label={`${t('networkMenu')} ${currentNetwork?.nickname}`}
                   label={currentNetwork?.nickname}
                   src={currentNetwork?.rpcPrefs?.imageUrl}
                   onClick={(e) => {

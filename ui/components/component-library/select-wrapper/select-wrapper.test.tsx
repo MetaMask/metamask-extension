@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { render, fireEvent, act } from '@testing-library/react';
-import { Button } from '..';
+import { Button, type ButtonProps } from '..';
 import { SelectButton } from '../select-button';
 import { SelectOption } from '../select-option';
 import { SelectWrapper, useSelectContext } from '.';
@@ -252,7 +252,7 @@ describe('SelectWrapper', () => {
     expect(queryByTestId('content')).not.toBeInTheDocument();
   });
 
-  const UseContextCloseButton = (props) => {
+  const UseContextCloseButton = (props: ButtonProps<'button' | 'a'>) => {
     const { toggleUncontrolledOpen } = useSelectContext();
 
     return (

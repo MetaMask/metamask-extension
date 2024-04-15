@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import TransactionStatusLabel from '.';
 
@@ -46,25 +47,10 @@ describe('TransactionStatusLabel Component', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should render PENDING properly when status is APPROVED', () => {
-    const props = {
-      status: 'approved',
-      isEarliestNonce: true,
-      error: { message: 'test-title' },
-    };
-
-    const { container } = renderWithProvider(
-      <TransactionStatusLabel {...props} />,
-      store,
-    );
-
-    expect(container).toMatchSnapshot();
-  });
-
   it('should render PENDING properly', () => {
     const props = {
       date: 'June 1',
-      status: 'submitted',
+      status: TransactionStatus.submitted,
       isEarliestNonce: true,
     };
 
@@ -78,7 +64,8 @@ describe('TransactionStatusLabel Component', () => {
 
   it('should render QUEUED properly', () => {
     const props = {
-      status: 'queued',
+      status: TransactionStatus.submitted,
+      isEarliestNonce: false,
     };
 
     const { container } = renderWithProvider(
@@ -91,7 +78,20 @@ describe('TransactionStatusLabel Component', () => {
 
   it('should render UNAPPROVED properly', () => {
     const props = {
-      status: 'unapproved',
+      status: TransactionStatus.unapproved,
+    };
+
+    const { container } = renderWithProvider(
+      <TransactionStatusLabel {...props} />,
+      store,
+    );
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should render SIGNING if status is approved', () => {
+    const props = {
+      status: TransactionStatus.approved,
     };
 
     const { container } = renderWithProvider(

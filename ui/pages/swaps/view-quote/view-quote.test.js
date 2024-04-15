@@ -10,6 +10,7 @@ import {
   createSwapsMockStore,
   MOCKS,
 } from '../../../../test/jest';
+
 import ViewQuote from '.';
 
 jest.mock(
@@ -17,7 +18,7 @@ jest.mock(
   () => () => '<InfoTooltipIcon />',
 );
 
-jest.mock('../../../hooks/gasFeeInput/useGasFeeInputs', () => {
+jest.mock('../../confirmations/hooks/useGasFeeInputs', () => {
   return {
     useGasFeeInputs: () => {
       return {

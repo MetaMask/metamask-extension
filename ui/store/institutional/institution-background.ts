@@ -29,6 +29,8 @@ export function showInteractiveReplacementTokenBanner({
           oldRefreshToken,
         },
       ]);
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       if (err) {
         dispatch(displayWarning(err.message));
@@ -38,11 +40,28 @@ export function showInteractiveReplacementTokenBanner({
   };
 }
 
+export function setCustodianDeepLink({
+  fromAddress,
+  custodyId,
+}: {
+  fromAddress: string;
+  custodyId: string;
+}) {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('setCustodianDeepLink', [
+      { fromAddress, custodyId },
+    ]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 export function setTypedMessageInProgress(msgId: string) {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     try {
       await submitRequestToBackground('setTypedMessageInProgress', [msgId]);
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       log.error(error);
       dispatch(displayWarning(error.message));
@@ -58,6 +77,8 @@ export function setPersonalMessageInProgress(msgId: string) {
     dispatch(showLoadingIndication());
     try {
       await submitRequestToBackground('setPersonalMessageInProgress', [msgId]);
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       log.error(error);
       dispatch(displayWarning(error.message));
@@ -77,11 +98,17 @@ export function setPersonalMessageInProgress(msgId: string) {
 export function mmiActionsFactory() {
   function createAsyncAction(
     name: string,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     params: any,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     useForceUpdateMetamaskState?: any,
     loadingText?: string,
   ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
     log.debug(`background.${name}`);
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return async (dispatch: any) => {
       if (loadingText) {
         dispatch(showLoadingIndication(loadingText));
@@ -108,6 +135,8 @@ export function mmiActionsFactory() {
     };
   }
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function createAction(name: string, payload: any) {
     return () => {
       callBackgroundMethod(name, [payload], (err) => {
@@ -132,25 +161,26 @@ export function mmiActionsFactory() {
       ),
     getCustodianAccounts: (
       token: string,
-      apiUrl: string,
+      envName: string,
       custody: string,
       getNonImportedAccounts: boolean,
     ) =>
       createAsyncAction(
         'getCustodianAccounts',
-        [token, apiUrl, custody, getNonImportedAccounts],
+        [token, envName, custody, getNonImportedAccounts],
         forceUpdateMetamaskState,
         'Getting custodian accounts...',
       ),
+    // TODO (Bernardo) - It doesn't look like this is being used
     getCustodianAccountsByAddress: (
       jwt: string,
-      apiUrl: string,
+      envName: string,
       address: string,
       custody: string,
     ) =>
       createAsyncAction(
         'getCustodianAccountsByAddress',
-        [jwt, apiUrl, address, custody],
+        [jwt, envName, address, custody],
         forceUpdateMetamaskState,
         'Getting custodian accounts...',
       ),
@@ -191,30 +221,18 @@ export function mmiActionsFactory() {
       ),
     removeAddTokenConnectRequest: ({
       origin,
-      apiUrl,
+      environment,
       token,
     }: {
       origin: string;
-      apiUrl: string;
+      environment: string;
       token: string;
     }) =>
-      createAction('removeAddTokenConnectRequest', { origin, apiUrl, token }),
-    setCustodianConnectRequest: ({
-      token,
-      apiUrl,
-      custodianType,
-      custodianName,
-    }: {
-      token: string;
-      apiUrl: string;
-      custodianType: string;
-      custodianName: string;
-    }) =>
-      createAsyncAction('setCustodianConnectRequest', [
-        { token, apiUrl, custodianType, custodianName },
-      ]),
-    getCustodianConnectRequest: () =>
-      createAsyncAction('getCustodianConnectRequest', []),
+      createAction('removeAddTokenConnectRequest', {
+        origin,
+        environment,
+        token,
+      }),
     getMmiConfiguration: () => createAsyncAction('getMmiConfiguration', []),
     getAllCustodianAccountsWithToken: (custodyType: string, token: string) =>
       createAsyncAction('getAllCustodianAccountsWithToken', [
@@ -223,19 +241,13 @@ export function mmiActionsFactory() {
       ]),
     setCustodianNewRefreshToken: ({
       address,
-      oldAuthDetails,
-      oldApiUrl,
-      newAuthDetails,
-      newApiUrl,
+      refreshToken,
     }: {
       address: string;
-      oldAuthDetails: string;
-      oldApiUrl: string;
-      newAuthDetails: string;
-      newApiUrl: string;
+      refreshToken: string;
     }) =>
       createAsyncAction('setCustodianNewRefreshToken', [
-        { address, oldAuthDetails, oldApiUrl, newAuthDetails, newApiUrl },
+        { address, refreshToken },
       ]),
   };
 }

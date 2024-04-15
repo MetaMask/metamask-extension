@@ -8,6 +8,7 @@ import {
 import { UserOperationController } from '@metamask/user-operation-controller';
 import { cloneDeep } from 'lodash';
 import { PPOMController } from '@metamask/ppom-validator';
+import { normalizePPOMRequest } from '../ppom/ppom-util';
 import {
   AddDappTransactionRequest,
   AddTransactionOptions,
@@ -15,6 +16,17 @@ import {
   addDappTransaction,
   addTransaction,
 } from './util';
+
+jest.mock('../ppom/ppom-util');
+
+jest.mock('uuid', () => {
+  const actual = jest.requireActual('uuid');
+
+  return {
+    ...actual,
+    v4: jest.fn(),
+  };
+});
 
 const TRANSACTION_PARAMS_MOCK: TransactionParams = {
   from: '0x1',
@@ -79,6 +91,7 @@ async function flushPromises() {
 }
 
 describe('Transaction Utils', () => {
+  const normalizePPOMRequestMock = jest.mocked(normalizePPOMRequest);
   let request: AddTransactionRequest;
   let dappRequest: AddDappTransactionRequest;
   let transactionController: jest.Mocked<TransactionController>;
@@ -130,10 +143,26 @@ describe('Transaction Utils', () => {
         ).toHaveBeenCalledTimes(1);
         expect(
           request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(
-          TRANSACTION_PARAMS_MOCK,
-          TRANSACTION_OPTIONS_MOCK,
-        );
+        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
+          ...TRANSACTION_OPTIONS_MOCK,
+        });
+      });
+
+      it('adds transaction with networkClientId if process.env.TRANSACTION_MULTICHAIN is set', async () => {
+        process.env.TRANSACTION_MULTICHAIN = '1';
+
+        await addTransaction(request);
+
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
+          ...TRANSACTION_OPTIONS_MOCK,
+          networkClientId: 'mockNetworkClientId',
+        });
+        process.env.TRANSACTION_MULTICHAIN = '';
       });
 
       it('returns transaction meta', async () => {
@@ -195,7 +224,8 @@ describe('Transaction Utils', () => {
 
         expect(completed).toBe(false);
 
-        resultResolve(TRANSACTION_META_MOCK.hash);
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        resultResolve!(TRANSACTION_META_MOCK.hash);
 
         await flushPromises();
 
@@ -282,7 +312,8 @@ describe('Transaction Utils', () => {
 
         expect(completed).toBe(false);
 
-        transactionHashResolve(TRANSACTION_META_MOCK.hash);
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        transactionHashResolve!(TRANSACTION_META_MOCK.hash);
 
         await flushPromises();
 
@@ -380,8 +411,8 @@ describe('Transaction Utils', () => {
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           ...TRANSACTION_OPTIONS_MOCK,
           securityAlertResponse: {
-            reason: 'testReason',
-            result_type: 'testResultType',
+            reason: 'loading',
+            result_type: 'validation_in_progress',
           },
         });
 
@@ -409,12 +440,92 @@ describe('Transaction Utils', () => {
         ).toHaveBeenCalledTimes(1);
         expect(
           request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(
-          TRANSACTION_PARAMS_MOCK,
-          TRANSACTION_OPTIONS_MOCK,
-        );
+        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
+          ...TRANSACTION_OPTIONS_MOCK,
+        });
 
         expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(0);
+      });
+
+      it('does not validate if blockaid is enabled and chain id is supported, but transaction type is swap', async () => {
+        const swapRequest = { ...request };
+        swapRequest.transactionOptions.type = TransactionType.swap;
+        await addTransaction({
+          ...swapRequest,
+          securityAlertsEnabled: true,
+          chainId: '0x1',
+        });
+
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
+          ...TRANSACTION_OPTIONS_MOCK,
+          type: TransactionType.swap,
+        });
+
+        expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(0);
+      });
+
+      it('does not validate if blockaid is enabled and chain id is supported, but transaction type is swapApproval', async () => {
+        const swapRequest = { ...request };
+        swapRequest.transactionOptions.type = TransactionType.swapApproval;
+        await addTransaction({
+          ...swapRequest,
+          securityAlertsEnabled: true,
+          chainId: '0x1',
+        });
+
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
+          ...TRANSACTION_OPTIONS_MOCK,
+          type: TransactionType.swapApproval,
+        });
+
+        expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(0);
+      });
+
+      it('normalizes transaction requests before validation', async () => {
+        const ppomRequestMock = {
+          method: 'eth_sendTransaction',
+          id: 'mockActionId',
+          origin: 'mockOrigin',
+          params: [TRANSACTION_PARAMS_MOCK],
+        };
+
+        const ppomRequestNormalizedMock = {
+          ...ppomRequestMock,
+          id: 'mockActionId2',
+          origin: 'mockOrigin2',
+        };
+
+        const validateMock = jest.fn();
+
+        const ppomMock = {
+          validateJsonRpc: validateMock,
+        };
+
+        normalizePPOMRequestMock.mockReturnValue(ppomRequestNormalizedMock);
+
+        request.securityAlertsEnabled = true;
+        request.chainId = '0x1';
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        request.ppomController.usePPOM = (callback: any) => callback(ppomMock);
+
+        await addTransaction(request);
+
+        expect(validateMock).toHaveBeenCalledTimes(1);
+        expect(validateMock).toHaveBeenCalledWith(ppomRequestNormalizedMock);
+
+        expect(normalizePPOMRequest).toHaveBeenCalledTimes(1);
+        expect(normalizePPOMRequest).toHaveBeenCalledWith(ppomRequestMock);
       });
     });
 
@@ -431,10 +542,9 @@ describe('Transaction Utils', () => {
         ).toHaveBeenCalledTimes(1);
         expect(
           request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(
-          TRANSACTION_PARAMS_MOCK,
-          TRANSACTION_OPTIONS_MOCK,
-        );
+        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
+          ...TRANSACTION_OPTIONS_MOCK,
+        });
 
         expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(0);
       });
@@ -451,10 +561,9 @@ describe('Transaction Utils', () => {
         ).toHaveBeenCalledTimes(1);
         expect(
           request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(
-          TRANSACTION_PARAMS_MOCK,
-          TRANSACTION_OPTIONS_MOCK,
-        );
+        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
+          ...TRANSACTION_OPTIONS_MOCK,
+        });
 
         expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(0);
       });
@@ -478,6 +587,27 @@ describe('Transaction Utils', () => {
           securityAlertResponse: DAPP_REQUEST_MOCK.securityAlertResponse,
           type: undefined,
         });
+      });
+
+      it('adds transaction with networkClientId if process.env.TRANSACTION_MULTICHAIN is set', async () => {
+        process.env.TRANSACTION_MULTICHAIN = '1';
+
+        await addDappTransaction(dappRequest);
+
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
+          ...TRANSACTION_OPTIONS_MOCK,
+          networkClientId: 'mockNetworkClientId',
+          method: DAPP_REQUEST_MOCK.method,
+          requireApproval: true,
+          securityAlertResponse: DAPP_REQUEST_MOCK.securityAlertResponse,
+          type: undefined,
+        });
+        process.env.TRANSACTION_MULTICHAIN = '';
       });
 
       it('returns transaction hash', async () => {

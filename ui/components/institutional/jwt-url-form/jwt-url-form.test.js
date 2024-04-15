@@ -20,8 +20,6 @@ describe('JwtUrlForm', function () {
     currentJwt: 'jwt1',
     onJwtChange: jest.fn(),
     jwtInputText: 'input text',
-    apiUrl: 'url',
-    urlInputText: '',
     onUrlChange: jest.fn(),
   };
 
@@ -40,23 +38,6 @@ describe('JwtUrlForm', function () {
     const btn = getAllByTestId('addNewToken-btn')[0];
     fireEvent.click(btn);
     expect(screen.getByText('input text')).toBeInTheDocument();
-  });
-
-  it('calls onUrlChange when API URL input value changes', () => {
-    const { getByTestId } = renderWithProvider(
-      <JwtUrlForm {...props} />,
-      store,
-    );
-
-    const apiUrlinput = getByTestId('jwt-api-url-input');
-
-    fireEvent.change(apiUrlinput, { target: { value: 'url' } });
-
-    fireEvent.change(apiUrlinput, {
-      target: { value: 'new url' },
-    });
-
-    expect(props.onUrlChange).toHaveBeenCalled();
   });
 
   it('shows JWT text area when no jwt token exists', () => {

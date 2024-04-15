@@ -60,6 +60,15 @@ describe('Connected Site Menu', () => {
     metamask: {
       internalAccounts,
       accounts,
+      subjectMetadata: {
+        'https://uniswap.org/': {
+          iconUrl: 'https://uniswap.org/favicon.ico',
+          name: 'Uniswap',
+        },
+      },
+    },
+    activeTab: {
+      origin: 'https://uniswap.org/',
     },
   };
   it('should render the site menu in connected state', () => {

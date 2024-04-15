@@ -4,6 +4,7 @@ exports[`Confirm Delete Network should match snapshot 1`] = `
 <div>
   <div
     class="modal-container"
+    data-testid="confirm-delete-network-modal"
   >
     <div
       class="modal-container__content"

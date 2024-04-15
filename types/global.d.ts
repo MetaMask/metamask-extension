@@ -38,12 +38,12 @@ declare class MessageSender {
   url?: string;
 }
 
-export interface LedgerIframeMissingResponse {
+export type LedgerIframeMissingResponse = {
   success: false;
   payload: {
     error: Error;
   };
-}
+};
 
 type ResponseType =
   | Unsuccessful
@@ -60,7 +60,7 @@ type ResponseType =
  * input values so that the correct type can be inferred in the callback
  * method
  */
-interface sendMessage {
+type sendMessage = {
   (
     extensionId: string,
     message: Record<string, unknown>,
@@ -68,6 +68,8 @@ interface sendMessage {
     callback?: (response: Record<string, unknown>) => void,
   ): void;
   (
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     message: any,
     options?: Record<string, unknown>,
     callback?: (response: Record<string, unknown>) => void,
@@ -190,18 +192,22 @@ interface sendMessage {
         url: string;
       };
     },
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     callback: (response: { result: any; error?: Error }) => void,
   );
   (
     message: Record<string, unknown>,
     callback?: (response: ResponseType) => void,
   ): void;
-}
+};
 
 declare class Runtime {
   onMessage: {
     addListener: (
       callback: (
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         message: any,
         sender: MessageSender,
         sendResponse: (response?: ResponseType) => void,
@@ -237,9 +243,16 @@ export declare global {
   var chrome: Chrome;
 
   namespace jest {
+    // The interface is being used for declaration merging, which is an acceptable exception to this rule.
+    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
     interface Matchers<R> {
       toBeFulfilled(): Promise<R>;
       toNeverResolve(): Promise<R>;
     }
   }
+
+  /**
+   * Unions T with U; U's properties will override T's properties
+   */
+  type OverridingUnion<T, U> = Omit<T, keyof U> & U;
 }

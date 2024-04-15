@@ -36,7 +36,7 @@ export default function RevealSRPModal({
   );
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} data-testid="reveal-srp-modal">
       <ModalOverlay />
       <ModalContent>
         <ModalHeader onClose={onClose}>{t('revealSeedWords')}</ModalHeader>

@@ -41,8 +41,8 @@
       "currencyRates": {
         "ETH": {
           "conversionDate": "number",
-          "conversionRate": 1300,
-          "usdConversionRate": 1300
+          "conversionRate": 1700,
+          "usdConversionRate": 1700
         }
       }
     },
@@ -99,7 +99,9 @@
         "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
         "showTestNetworks": false,
-        "useNativeCurrencyAsPrimaryCurrency": true
+        "smartTransactionsOptInStatus": false,
+        "useNativeCurrencyAsPrimaryCurrency": true,
+        "petnamesEnabled": true
       },
       "selectedAddress": "string",
       "theme": "light",
@@ -111,6 +113,9 @@
       "useCurrencyRateCheck": true,
       "useMultiAccountBalanceChecker": true,
       "useRequestQueue": false
+    },
+    "SelectedNetworkController": {
+      "domains": "object"
     },
     "SmartTransactionsController": {
       "smartTransactionsState": {

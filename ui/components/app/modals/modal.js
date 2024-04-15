@@ -33,6 +33,7 @@ import EthSignModal from './eth-sign-modal/eth-sign-modal';
 import FadeModal from './fade-modal';
 import NewAccountModal from './new-account-modal';
 import RejectTransactions from './reject-transactions';
+import TransactionAlreadyConfirmed from './transaction-already-confirmed';
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -113,6 +114,7 @@ const custodyConfirmModalStyle = {
 const MODALS = {
   ONBOARDING_ADD_NETWORK: {
     contents: <AddNetworkModal />,
+    testId: 'add-network-modal',
     ...accountModalStyle,
   },
   NEW_ACCOUNT: {
@@ -144,6 +146,7 @@ const MODALS = {
 
   HIDE_TOKEN_CONFIRMATION: {
     contents: <HideTokenConfirmationModal />,
+    testId: 'hide-token-confirmation-modal',
     mobileModalStyle: {
       width: '95%',
       top: getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
@@ -262,8 +265,20 @@ const MODALS = {
     },
   },
 
+  TRANSACTION_ALREADY_CONFIRMED: {
+    disableBackdropClick: true,
+    contents: <TransactionAlreadyConfirmed />,
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+  },
+
   QR_SCANNER: {
     contents: <QRScanner />,
+    testId: 'qr-scanner-modal',
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },
@@ -423,7 +438,7 @@ class Modal extends Component {
 
   render() {
     const modal = MODALS[this.props.modalState.name || 'DEFAULT'];
-    const { contents: children, disableBackdropClick = false } = modal;
+    const { contents: children, disableBackdropClick = false, testId } = modal;
     const modalStyle =
       modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle'];
     const contentStyle = modal.contentStyle || {};
@@ -451,6 +466,7 @@ class Modal extends Component {
         contentStyle={contentStyle}
         backdropStyle={BACKDROPSTYLE}
         closeOnClick={!disableBackdropClick}
+        testId={testId}
       >
         {children}
       </FadeModal>

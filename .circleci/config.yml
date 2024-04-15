@@ -1,35 +1,37 @@
 version: 2.1
 
 executors:
-  node-browsers:
+  node-browsers-small:
     docker:
-      - image: cimg/node:18.18-browsers
+      - image: cimg/node:20.11-browsers
+    resource_class: small
+    environment:
+      NODE_OPTIONS: --max_old_space_size=2048
+  node-browsers-medium:
+    docker:
+      - image: cimg/node:20.11-browsers
+    resource_class: medium
     environment:
       NODE_OPTIONS: --max_old_space_size=3072
   node-browsers-medium-plus:
     docker:
-      - image: cimg/node:18.18-browsers
+      - image: cimg/node:20.11-browsers
     resource_class: medium+
-    environment:
-      NODE_OPTIONS: --max_old_space_size=4096
-  node-browsers-large:
-    docker:
-      - image: cimg/node:18.18-browsers
-    resource_class: large
     environment:
       NODE_OPTIONS: --max_old_space_size=4096
   shellcheck:
     docker:
       - image: koalaman/shellcheck-alpine@sha256:dfaf08fab58c158549d3be64fb101c626abc5f16f341b569092577ae207db199
+    resource_class: small
   playwright:
     docker:
-      - image: mcr.microsoft.com/playwright:v1.39.0-jammy
+      - image: mcr.microsoft.com/playwright:v1.42.1-focal
+    resource_class: medium
 
 orbs:
   gh: circleci/github-cli@2.0
   codecov: codecov/codecov@3.2.2
   slack: circleci/slack@4.12.5
-
 
 rc_branch_only: &rc_branch_only
   filters:
@@ -65,6 +67,18 @@ aliases:
         git checkout -B "$CIRCLE_BRANCH" "$CIRCLE_SHA1"
       fi
 
+  # Check if MMI Optional tests should run
+  - &check-mmi-optional
+    name: Check if MMI Optional tests should run
+    command: |
+      RUN_MMI_OPTIONAL=$(cat ./RUN_MMI_OPTIONAL)
+      if [[ "${CIRCLE_BRANCH}" == "develop" || "${RUN_MMI_OPTIONAL}" == "true" ]]; then
+        echo "Running MMI Optional tests"
+      else
+        echo "Skipping MMI Optional tests"
+        circleci step halt
+      fi
+
 workflows:
   test_and_release:
     jobs:
@@ -75,6 +89,7 @@ workflows:
       - trigger-beta-build:
           requires:
             - prep-deps
+      - check-pr-tag
       - prep-deps
       - test-deps-audit:
           requires:
@@ -106,7 +121,7 @@ workflows:
       - prep-build-desktop:
           filters:
             branches:
-              ignore: master
+              only: develop
           requires:
             - prep-deps
       - prep-build-flask:
@@ -130,6 +145,7 @@ workflows:
       - prep-build-test-mmi-playwright:
           requires:
             - prep-deps
+            - check-pr-tag
       - prep-build-storybook:
           requires:
             - prep-deps
@@ -217,7 +233,7 @@ workflows:
       - validate-source-maps-desktop:
           filters:
             branches:
-              ignore: master
+              only: develop
           requires:
             - prep-build-desktop
       - validate-source-maps-mmi:
@@ -233,7 +249,7 @@ workflows:
       - test-mozilla-lint-desktop:
           filters:
             branches:
-              ignore: master
+              only: develop
           requires:
             - prep-deps
             - prep-build-desktop
@@ -324,7 +340,7 @@ workflows:
 
 jobs:
   trigger-beta-build:
-    executor: node-browsers-medium-plus
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -353,7 +369,7 @@ jobs:
                   - builds-beta
 
   create_release_pull_request:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -371,8 +387,70 @@ jobs:
           name: Create GitHub Pull Request for version
           command: .circleci/scripts/release-create-release-pr.sh
 
+  check-pr-tag:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - run:
+          name: Check for MMI Team Tag
+          command: |
+            #!/bin/bash
+
+            # GitHub Personal Access Token for API Authentication
+            GITHUB_TOKEN="${GITHUB_TOKEN}"
+            BRANCH="${CIRCLE_BRANCH}"
+
+            # Fetch the PRs associated with the current branch and check the response
+            PR_RESPONSE=$(curl -s -H "Authorization: token ${GITHUB_TOKEN}" \
+              "https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls?state=open&head=${CIRCLE_PROJECT_USERNAME}:${BRANCH}")
+            echo "https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls?state=open&head=${CIRCLE_PROJECT_USERNAME}:${BRANCH}"
+
+            # Check if the response contains valid JSON
+            if ! echo "$PR_RESPONSE" | jq empty; then
+                echo "Failed to parse JSON response."
+                echo "$PR_RESPONSE"
+                exit 1
+            fi
+
+            # Check if we received an array of PRs
+            if ! echo "$PR_RESPONSE" | jq -e '. | type == "array"'; then
+                echo "$PR_RESPONSE"
+                echo "Expected an array of PRs, got something else."
+                exit 1
+            fi
+
+            # Check if the array of PRs is empty
+            PR_COUNT=$(echo "$PR_RESPONSE" | jq '. | length')
+
+            # If no PRs are found, exit gracefully
+            if [ "$PR_COUNT" -eq 0 ]; then
+              echo "No open PRs found. Exiting."
+              echo "false" > ./RUN_MMI_OPTIONAL
+              exit 0
+            fi
+
+            # Extract label names from the PR_RESPONSE
+            LABEL_NAMES=$(echo "$PR_RESPONSE" | jq -r '.[0].labels[].name')
+
+            echo "Labels found: $LABEL_NAMES"
+
+            # Check if "team-mmi" label is present
+            if echo "$LABEL_NAMES" | grep -qw "team-mmi"; then
+              echo "team-mmi tag found."
+              # assign the RUN_MMI_OPTIONAL variable to true
+              echo "true" > ./RUN_MMI_OPTIONAL
+            else
+              echo "team-mmi tag not found."
+              # assign the RUN_MMI_OPTIONAL variable to false
+              echo "false" > ./RUN_MMI_OPTIONAL
+            fi
+      - persist_to_workspace:
+          root: .
+          paths:
+            - RUN_MMI_OPTIONAL
+
   prep-deps:
-    executor: node-browsers
+    executor: node-browsers-medium
     steps:
       - run: *shallow-git-clone
       - run:
@@ -406,7 +484,7 @@ jobs:
             - build-artifacts
 
   validate-lavamoat-allow-scripts:
-    executor: node-browsers-medium-plus
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -419,7 +497,7 @@ jobs:
           command: .circleci/scripts/check-working-tree.sh
 
   validate-lavamoat-policy-build:
-    executor: node-browsers-medium-plus
+    executor: node-browsers-medium
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -475,6 +553,8 @@ jobs:
       - run:
           name: build:debug
           command: find dist/ -type f -exec md5sum {} \; | sort -k 2
+      - store_artifacts:
+          path: builds
       - persist_to_workspace:
           root: .
           paths:
@@ -636,6 +716,7 @@ jobs:
       - run: *shallow-git-clone
       - attach_workspace:
           at: .
+      - run: *check-mmi-optional
       - run:
           name: Build MMI extension for Playwright e2e
           command: |
@@ -650,6 +731,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
+            - RUN_MMI_OPTIONAL
             - dist-test-mmi-playwright
             - builds-test-mmi-playwright
       - store_artifacts:
@@ -692,6 +774,8 @@ jobs:
       - run:
           name: Move test zips to 'builds-test' to avoid conflict with production build
           command: mv ./builds ./builds-test
+      - store_artifacts:
+          path: builds-test
       - persist_to_workspace:
           root: .
           paths:
@@ -720,7 +804,7 @@ jobs:
             - builds-test-multichain
 
   prep-build-storybook:
-    executor: node-browsers-large
+    executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -734,7 +818,7 @@ jobs:
             - storybook-build
 
   prep-build-ts-migration-dashboard:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -748,7 +832,7 @@ jobs:
             - development/ts-migration-dashboard/build/final
 
   test-yarn-dedupe:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -758,7 +842,7 @@ jobs:
           command: yarn dedupe --check
 
   test-lint:
-    executor: node-browsers
+    executor: node-browsers-medium
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -771,7 +855,7 @@ jobs:
           command: yarn verify-locales --quiet
 
   test-storybook:
-    executor: node-browsers-large
+    executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -793,7 +877,7 @@ jobs:
           command: ./development/shellcheck.sh
 
   test-lint-lockfile:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -806,7 +890,7 @@ jobs:
           command: yarn --check-resolutions
 
   test-lint-changelog:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -832,7 +916,7 @@ jobs:
                 command: .circleci/scripts/validate-changelog-in-rc.sh
 
   test-deps-audit:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -842,7 +926,7 @@ jobs:
           command: yarn audit
 
   test-deps-depcheck:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -852,8 +936,8 @@ jobs:
           command: yarn depcheck
 
   test-e2e-chrome:
-    executor: node-browsers-large
-    parallelism: 24
+    executor: node-browsers-medium-plus
+    parallelism: 20
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -869,7 +953,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:chrome --retries 2 --debug
+              timeout 20m yarn test:e2e:chrome --retries 2
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -879,8 +963,8 @@ jobs:
           path: test/test-results/e2e
 
   test-e2e-chrome-multichain:
-    executor: node-browsers-large
-    parallelism: 24
+    executor: node-browsers-medium-plus
+    parallelism: 20
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -896,7 +980,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:chrome --retries 2 --debug
+              timeout 20m yarn test:e2e:chrome --retries 2
             fi
           no_output_timeout: 5m
           environment:
@@ -908,8 +992,8 @@ jobs:
           path: test/test-results/e2e
 
   test-e2e-chrome-mv3:
-    executor: node-browsers-large
-    parallelism: 24
+    executor: node-browsers-medium-plus
+    parallelism: 16
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -925,7 +1009,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:chrome --retries 2 --debug || echo "Temporarily suppressing MV3 e2e test failures"
+              timeout 20m yarn test:e2e:chrome --retries 2 || echo "Temporarily suppressing MV3 e2e test failures"
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -933,7 +1017,7 @@ jobs:
           destination: test-artifacts
 
   test-e2e-chrome-rpc:
-    executor: node-browsers
+    executor: node-browsers-medium
     parallelism: 1
     steps:
       - run: *shallow-git-clone
@@ -960,7 +1044,7 @@ jobs:
           path: test/test-results/e2e
 
   test-e2e-chrome-multiple-providers:
-    executor: node-browsers
+    executor: node-browsers-small
     parallelism: 1
     steps:
       - run: *shallow-git-clone
@@ -987,7 +1071,7 @@ jobs:
           path: test/test-results/e2e
 
   test-e2e-chrome-rpc-mmi:
-    executor: node-browsers
+    executor: node-browsers-medium
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1003,7 +1087,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:chrome:rpc --retries 2 --debug --build-type=mmi
+              timeout 20m yarn test:e2e:chrome:rpc --retries 2 --build-type=mmi
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -1013,7 +1097,7 @@ jobs:
           path: test/test-results/e2e
 
   test-e2e-chrome-vault-decryption:
-    executor: node-browsers-large
+    executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1023,13 +1107,13 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.js --browser chrome --retries 2 --debug
+              yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.js --browser chrome --retries 2
             fi
           no_output_timeout: 5m
 
   test-e2e-firefox-flask:
-    executor: node-browsers-large
-    parallelism: 16
+    executor: node-browsers-medium-plus
+    parallelism: 10
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1045,7 +1129,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:firefox:flask --retries 2 --debug
+              timeout 20m yarn test:e2e:firefox:flask --retries 2
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -1055,8 +1139,8 @@ jobs:
           path: test/test-results/e2e
 
   test-e2e-chrome-flask:
-    executor: node-browsers-large
-    parallelism: 16
+    executor: node-browsers-medium-plus
+    parallelism: 8
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1072,7 +1156,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:chrome:flask --retries 2 --debug
+              timeout 20m yarn test:e2e:chrome:flask --retries 2
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -1082,8 +1166,8 @@ jobs:
           path: test/test-results/e2e
 
   test-e2e-chrome-mmi:
-    executor: node-browsers-large
-    parallelism: 16
+    executor: node-browsers-medium-plus
+    parallelism: 12
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1099,7 +1183,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:chrome:mmi --retries 2 --debug --build-type=mmi
+              timeout 20m yarn test:e2e:chrome:mmi --retries 2 --build-type=mmi
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -1115,6 +1199,7 @@ jobs:
       - run: *shallow-git-clone
       - attach_workspace:
           at: .
+      - run: *check-mmi-optional
       - run:
           name: Move test build to dist
           command: mv ./dist-test-mmi-playwright ./dist
@@ -1149,7 +1234,7 @@ jobs:
           path: public/playwright/playwright-reports/junit/test-results.xml
 
   test-e2e-firefox:
-    executor: node-browsers-large
+    executor: node-browsers-medium-plus
     parallelism: 24
     steps:
       - run: *shallow-git-clone
@@ -1166,7 +1251,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:firefox --retries 2 --debug
+              timeout 20m yarn test:e2e:firefox --retries 2
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -1176,7 +1261,7 @@ jobs:
           path: test/test-results/e2e
 
   benchmark:
-    executor: node-browsers-medium-plus
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1199,7 +1284,7 @@ jobs:
             - test-artifacts
 
   user-actions-benchmark:
-    executor: node-browsers-medium-plus
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1222,7 +1307,7 @@ jobs:
             - test-artifacts
 
   stats-module-load-init:
-    executor: node-browsers-medium-plus
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1259,7 +1344,7 @@ jobs:
             - test-artifacts
 
   job-publish-prerelease:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - checkout
       - attach_workspace:
@@ -1301,9 +1386,11 @@ jobs:
       # important: generate lavamoat viz AFTER uploading builds as artifacts
       # Temporarily disabled until we can update to a version of `sesify` with
       # this fix included: https://github.com/LavaMoat/LavaMoat/pull/121
-      - run:
-          name: build:lavamoat-viz
-          command: ./.circleci/scripts/create-lavamoat-viz.sh
+      # Disabled 2024-03-25 due to flakiness.
+      #   - see: https://github.com/MetaMask/metamask-extension/issues/23704
+      #- run:
+      #    name: build:lavamoat-viz
+      #    command: ./.circleci/scripts/create-lavamoat-viz.sh
       - store_artifacts:
           path: build-artifacts
           destination: build-artifacts
@@ -1323,7 +1410,7 @@ jobs:
           command: ./development/metamaskbot-build-announce.js
 
   job-publish-release:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1343,7 +1430,7 @@ jobs:
             .circleci/scripts/release-create-gh-release.sh
 
   job-publish-storybook:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - add_ssh_keys:
           fingerprints:
@@ -1358,7 +1445,7 @@ jobs:
             yarn storybook:deploy
 
   job-publish-ts-migration-dashboard:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - add_ssh_keys:
           fingerprints:
@@ -1375,7 +1462,7 @@ jobs:
             yarn ts-migration:dashboard:deploy
 
   test-unit-mocha:
-    executor: node-browsers-medium-plus
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1390,7 +1477,7 @@ jobs:
             - coverage
 
   test-unit-jest-development:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1407,7 +1494,7 @@ jobs:
 
   test-unit-jest-main:
     executor: node-browsers-medium-plus
-    parallelism: 12
+    parallelism: 8
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1423,7 +1510,7 @@ jobs:
           path: test/test-results/junit.xml
 
   upload-and-validate-coverage:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1438,7 +1525,7 @@ jobs:
             - coverage
 
   test-unit-global:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1448,7 +1535,7 @@ jobs:
           command: yarn test:unit:global
 
   validate-source-maps:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1458,7 +1545,7 @@ jobs:
           command: yarn validate-source-maps
 
   validate-source-maps-beta:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1469,7 +1556,7 @@ jobs:
             .circleci/scripts/validate-source-maps-beta.sh
 
   validate-source-maps-desktop:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1485,7 +1572,7 @@ jobs:
           command: yarn validate-source-maps
 
   validate-source-maps-mmi:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1501,7 +1588,7 @@ jobs:
           command: yarn validate-source-maps
 
   validate-source-maps-flask:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1517,17 +1604,17 @@ jobs:
           command: yarn validate-source-maps
 
   test-mozilla-lint:
-    executor: node-browsers
+    executor: node-browsers-medium
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
           name: test:mozilla-lint
-          command: NODE_OPTIONS=--max_old_space_size=4096 yarn mozilla-lint
+          command: yarn mozilla-lint
 
   test-mozilla-lint-desktop:
-    executor: node-browsers
+    executor: node-browsers-medium
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1540,10 +1627,10 @@ jobs:
           command: mv ./builds-desktop ./builds
       - run:
           name: test:mozilla-lint
-          command: NODE_OPTIONS=--max_old_space_size=4096 yarn mozilla-lint
+          command: yarn mozilla-lint
 
   test-mozilla-lint-flask:
-    executor: node-browsers
+    executor: node-browsers-medium
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1556,11 +1643,11 @@ jobs:
           command: mv ./builds-flask ./builds
       - run:
           name: test:mozilla-lint
-          command: NODE_OPTIONS=--max_old_space_size=4096 yarn mozilla-lint
+          command: yarn mozilla-lint
 
   all-tests-pass:
-    executor: node-browsers
+    executor: node-browsers-small
     steps:
       - run:
           name: All Tests Passed
-          command: echo 'weew - everything passed!'
+          command: echo 'whew - everything passed!'

@@ -3,7 +3,7 @@ import { screen, act, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CHAIN_IDS, NETWORK_TYPES } from '../../../../shared/constants/network';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import { getTokenSymbol } from '../../../store/actions';
 import AssetList from './asset-list';
@@ -20,32 +20,34 @@ const USDC_CONTRACT = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
 const LINK_CONTRACT = '0x514910771AF9Ca656af840dff83E8264EcF986CA';
 const WBTC_CONTRACT = '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599';
 
+let mockTokens = [
+  {
+    address: USDC_CONTRACT,
+    decimals: 6,
+    symbol: 'USDC',
+    string: USDC_BALANCE, // $199.36
+  },
+  {
+    address: LINK_CONTRACT,
+    aggregators: [],
+    decimals: 18,
+    symbol: 'LINK',
+    string: LINK_BALANCE, // $824.78
+  },
+  {
+    address: WBTC_CONTRACT,
+    aggregators: [],
+    decimals: 8,
+    symbol: 'WBTC',
+    string: WBTC_BALANCE, // $63,381.02
+  },
+];
+
 jest.mock('../../../hooks/useTokenTracker', () => {
   return {
     useTokenTracker: () => ({
       loading: false,
-      tokensWithBalances: [
-        {
-          address: USDC_CONTRACT,
-          decimals: 6,
-          symbol: 'USDC',
-          string: USDC_BALANCE, // $199.36
-        },
-        {
-          address: LINK_CONTRACT,
-          aggregators: [],
-          decimals: 18,
-          symbol: 'LINK',
-          string: LINK_BALANCE, // $824.78
-        },
-        {
-          address: WBTC_CONTRACT,
-          aggregators: [],
-          decimals: 8,
-          symbol: 'WBTC',
-          string: WBTC_BALANCE, // $63,381.02
-        },
-      ],
+      tokensWithBalances: mockTokens,
       error: null,
     }),
   };
@@ -72,7 +74,7 @@ const render = (
     ...mockState,
     metamask: {
       ...mockState.metamask,
-      providerConfig: { chainId, ticker: 'ETH' },
+      providerConfig: { chainId, ticker: 'ETH', type: NETWORK_TYPES.MAINNET },
       currencyRates: {
         ETH: {
           conversionRate: CONVERSION_RATE,
@@ -124,17 +126,14 @@ describe('AssetList', () => {
     });
   });
 
-  describe('token fiat value calculations', () => {
-    it('calculates the correct fiat account total', async () => {
-      process.env.MULTICHAIN = 1;
-      await act(async () => {
-        render();
-      });
+  it('shows the receive button when the user balance is zero', async () => {
+    mockTokens = [];
 
-      await waitFor(() => {
-        expect(screen.getByText('$63,356.88 USD')).toBeInTheDocument();
-        jest.resetModules();
-      });
+    await act(async () => {
+      render(mockState.metamask.selectedAddress, '0x0', CHAIN_IDS.MAINNET);
+    });
+    await waitFor(() => {
+      expect(screen.getByText('Receive tokens')).toBeInTheDocument();
     });
   });
 });

@@ -56,6 +56,19 @@ export const getUnapprovedTransactions = createDeepEqualSelector(
   (transactions) => transactions,
 );
 
+export const getApprovedAndSignedTransactions = createDeepEqualSelector(
+  (state) => {
+    const currentNetworkTransactions = getCurrentNetworkTransactions(state);
+
+    return currentNetworkTransactions.filter((transaction) =>
+      [TransactionStatus.approved, TransactionStatus.signed].includes(
+        transaction.status,
+      ),
+    );
+  },
+  (transactions) => transactions,
+);
+
 export const incomingTxListSelector = createDeepEqualSelector(
   (state) => {
     const { incomingTransactionsPreferences } = state.metamask;
@@ -84,18 +97,23 @@ export const unapprovedEncryptionPublicKeyMsgsSelector = (state) =>
 export const unapprovedTypedMessagesSelector = (state) =>
   state.metamask.unapprovedTypedMessages;
 
-export const smartTransactionsListSelector = (state) =>
-  state.metamask.smartTransactionsState?.smartTransactions?.[
+export const smartTransactionsListSelector = (state) => {
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
+  return state.metamask.smartTransactionsState?.smartTransactions?.[
     getCurrentChainId(state)
   ]
-    ?.filter((stx) => !stx.confirmed)
+    ?.filter((stx) => {
+      const { txParams } = stx;
+      return txParams?.from === selectedAddress && !stx.confirmed;
+    })
     .map((stx) => ({
       ...stx,
-      transactionType: TransactionType.smart,
+      isSmartTransaction: true,
       status: stx.status?.startsWith('cancelled')
         ? SmartTransactionStatus.cancelled
         : stx.status,
     }));
+};
 
 export const selectedAddressTxListSelector = createSelector(
   getSelectedInternalAccount,

@@ -110,8 +110,11 @@ export const ProductTour = ({
             paddingTop={2}
             color={TextColor.infoInverse}
             variant={TextVariant.bodyMd}
+            data-testid="multichain-product-tour-menu-popover-step-counter"
           >
-            {currentStep}/{totalSteps}
+            {currentStep && totalSteps
+              ? `${currentStep} / ${totalSteps}`
+              : null}
           </Text>
           <ButtonBase
             backgroundColor={BackgroundColor.primaryInverse}

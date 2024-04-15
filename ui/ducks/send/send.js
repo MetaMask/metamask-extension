@@ -21,16 +21,14 @@ import {
   INVALID_RECIPIENT_ADDRESS_ERROR,
   INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR,
   KNOWN_RECIPIENT_ADDRESS_WARNING,
-  NEGATIVE_ETH_ERROR,
-  NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR,
   RECIPIENT_TYPES,
-} from '../../pages/send/send.constants';
+} from '../../pages/confirmations/send/send.constants';
 
 import {
   isBalanceSufficient,
   isERC1155BalanceSufficient,
   isTokenBalanceSufficient,
-} from '../../pages/send/send.utils';
+} from '../../pages/confirmations/send/send.utils';
 import {
   getAdvancedInlineGasShown,
   getCurrentChainId,
@@ -80,6 +78,7 @@ import {
   getTokenIdParam,
 } from '../../helpers/utils/token-util';
 import {
+  IS_FLASK,
   checkExistingAddresses,
   isDefaultMetaMaskChain,
   isOriginContractAddress,
@@ -114,11 +113,13 @@ import {
 } from '../../../shared/lib/transactions-controller-utils';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
+import { setMaxValueMode } from '../confirm-transaction/confirm-transaction.duck';
 import {
   estimateGasLimitForSend,
   generateTransactionParams,
   getRoundedGasPrice,
 } from './helpers';
+
 // typedef import statements
 /**
  * @typedef {(
@@ -411,7 +412,7 @@ export const draftTransactionInitialState = {
  *  clean up AND during initialization. When a transaction is edited a new UUID
  *  is generated for it and the state of that transaction is copied into a new
  *  entry in the draftTransactions object.
- * @property {Object<string, DraftTransaction>} draftTransactions - An object keyed
+ * @property {{[key: string]: DraftTransaction}} draftTransactions - An object keyed
  *  by UUID with draftTransactions as the values.
  * @property {boolean} eip1559support - tracks whether the current network
  *  supports EIP 1559 transactions.
@@ -1300,16 +1301,10 @@ const slice = createSlice({
         case draftTransaction.asset.type === AssetType.NFT &&
           draftTransaction.asset.details.standard === TokenStandard.ERC1155 &&
           !isERC1155BalanceSufficient({
-            tokenBalance: draftTransaction.asset.details.balance ?? '0x0',
+            tokenBalance: draftTransaction.asset.balance ?? '0x0',
             amount: draftTransaction.amount.value,
           }):
           draftTransaction.amount.error = INSUFFICIENT_FUNDS_ERROR;
-          break;
-        // if the amount of tokens is negative or equal to zero, set error to NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR
-        case amountValue.lessThanOrEqualTo() &&
-          draftTransaction.asset.type === AssetType.NFT &&
-          draftTransaction.asset.details.standard === TokenStandard.ERC1155:
-          draftTransaction.amount.error = NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR;
           break;
 
         // if the amount of tokens is a float, set error to FLOAT_TOKENS_ERROR
@@ -1317,11 +1312,6 @@ const slice = createSlice({
           draftTransaction.asset.type === AssetType.NFT &&
           draftTransaction.asset.details.standard === TokenStandard.ERC1155:
           draftTransaction.amount.error = FLOAT_TOKENS_ERROR;
-          break;
-        // if the amount is negative, set error to NEGATIVE_ETH_ERROR
-        // TODO: change this to NEGATIVE_ERROR and remove the currency bias.
-        case amountValue.isNegative():
-          draftTransaction.amount.error = NEGATIVE_ETH_ERROR;
           break;
         // If none of the above are true, set error to null
         default:
@@ -1381,6 +1371,7 @@ const slice = createSlice({
             (!isValidHexAddress(state.recipientInput, {
               mixedCaseUseChecksum: true,
             }) &&
+              !IS_FLASK &&
               !isValidDomainName(state.recipientInput))
           ) {
             draftTransaction.recipient.error = isDefaultMetaMaskChain(chainId)
@@ -2177,7 +2168,9 @@ export function updateSendAsset(
 
           if (isCurrentOwner) {
             asset.error = null;
-            asset.balance = '0x1';
+            asset.balance = details.balance
+              ? addHexPrefix(decimalToHex(details.balance))
+              : '0x1';
           } else {
             throw new Error(
               'Send slice initialized as NFT send with an NFT not currently owned by the select account',
@@ -2307,10 +2300,11 @@ export function resetSendState() {
 export function signTransaction() {
   return async (dispatch, getState) => {
     const state = getState();
-    const { stage, eip1559support } = state[name];
+    const { stage, eip1559support, amountMode } = state[name];
     const txParams = generateTransactionParams(state[name]);
     const draftTransaction =
       state[name].draftTransactions[state[name].currentTransactionUUID];
+
     if (stage === SEND_STAGES.EDIT) {
       // When dealing with the edit flow there is already a transaction in
       // state that we must update, this branch is responsible for that logic.
@@ -2381,11 +2375,19 @@ export function signTransaction() {
         ),
       );
 
-      dispatch(
+      const { id: transactionId } = await dispatch(
         addTransactionAndRouteToConfirmationPage(txParams, {
           sendFlowHistory: draftTransaction.history,
           type: transactionType,
         }),
+      );
+
+      await dispatch(
+        setMaxValueMode(
+          transactionId,
+          amountMode === AMOUNT_MODES.MAX &&
+            draftTransaction.asset.type === AssetType.native,
+        ),
       );
     }
   };

@@ -14,7 +14,7 @@ import {
 } from '..';
 import { PolymorphicRef } from '../box';
 import type { BoxProps } from '../box';
-import type { TextFieldProps } from '../text-field/text-field.types';
+import { TextFieldProps } from '../text-field/text-field.types';
 import {
   FormTextFieldSize,
   FormTextFieldProps,
@@ -70,6 +70,8 @@ export const FormTextField: FormTextFieldComponent = React.forwardRef(
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         ref={ref}
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         {...(props as BoxProps<any>)}
       >
         {label && (

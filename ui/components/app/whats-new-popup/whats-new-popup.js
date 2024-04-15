@@ -12,24 +12,19 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   NOTIFICATION_BLOCKAID_DEFAULT,
   ///: END:ONLY_INCLUDE_IF
-  NOTIFICATION_BUY_SELL_BUTTON,
   NOTIFICATION_DROP_LEDGER_FIREFOX,
-  NOTIFICATION_OPEN_BETA_SNAPS,
+  NOTIFICATION_PETNAMES,
   NOTIFICATION_U2F_LEDGER_LIVE,
   getTranslatedUINotifications,
   NOTIFICATION_STAKING_PORTFOLIO,
+  NOTIFICATION_PORTFOLIO_V2,
+  NOTIFICATION_SIMULATIONS,
 } from '../../../../shared/notifications';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
 import { TextVariant } from '../../../helpers/constants/design-system';
-import {
-  ADVANCED_ROUTE,
-  BUILD_QUOTE_ROUTE,
-  EXPERIMENTAL_ROUTE,
-  PREPARE_SWAP_ROUTE,
-  SECURITY_ROUTE,
-} from '../../../helpers/constants/routes';
+import { ADVANCED_ROUTE } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
@@ -42,55 +37,9 @@ import Popover from '../../ui/popover';
 
 function getActionFunctionById(id, history) {
   const actionFunctions = {
-    2: () => {
-      global.platform.openTab({
-        url: 'https://survey.alchemer.com/s3/6173069/MetaMask-Extension-NPS-January-2021',
-      });
-    },
-    3: () => {
-      global.platform.openTab({
-        url: 'https://community.metamask.io/t/about-the-security-category/72',
-      });
-    },
-    4: () => {
-      updateViewedNotifications({ 4: true });
-      history.push(BUILD_QUOTE_ROUTE);
-    },
-    5: () => {
-      updateViewedNotifications({ 5: true });
-      global.platform.openTab({
-        url: ZENDESK_URLS.SECRET_RECOVERY_PHRASE,
-      });
-    },
     8: () => {
       updateViewedNotifications({ 8: true });
       history.push(ADVANCED_ROUTE);
-    },
-    10: () => {
-      updateViewedNotifications({ 10: true });
-      history.push(`${SECURITY_ROUTE}#token-description`);
-    },
-    12: () => {
-      updateViewedNotifications({ 12: true });
-      history.push(EXPERIMENTAL_ROUTE);
-    },
-    14: () => {
-      updateViewedNotifications({ 14: true });
-      history.push(`${ADVANCED_ROUTE}#backup-userdata`);
-    },
-    16: () => {
-      updateViewedNotifications({ 16: true });
-    },
-    17: () => {
-      updateViewedNotifications({ 17: true });
-    },
-    18: () => {
-      updateViewedNotifications({ 18: true });
-      history.push(`${EXPERIMENTAL_ROUTE}#security-alerts`);
-    },
-    19: () => {
-      updateViewedNotifications({ 19: true });
-      history.push(`${EXPERIMENTAL_ROUTE}#autodetect-nfts`);
     },
     20: () => {
       updateViewedNotifications({ 20: true });
@@ -98,36 +47,11 @@ function getActionFunctionById(id, history) {
         url: ZENDESK_URLS.LEDGER_FIREFOX_U2F_GUIDE,
       });
     },
-    21: () => {
-      updateViewedNotifications({ 21: true });
-      history.push(PREPARE_SWAP_ROUTE);
-    },
-    22: () => {
-      updateViewedNotifications({ 22: true });
-    },
-    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-    23: () => {
-      updateViewedNotifications({ 23: true });
-      history.push(`${EXPERIMENTAL_ROUTE}#security-alerts`);
-    },
-    ///: END:ONLY_INCLUDE_IF
     24: () => {
       updateViewedNotifications({ 24: true });
     },
     [NOTIFICATION_DROP_LEDGER_FIREFOX]: () => {
       updateViewedNotifications({ [NOTIFICATION_DROP_LEDGER_FIREFOX]: true });
-    },
-    [NOTIFICATION_OPEN_BETA_SNAPS]: () => {
-      updateViewedNotifications({ [NOTIFICATION_OPEN_BETA_SNAPS]: true });
-      global.platform.openTab({
-        url: 'https://metamask.io/snaps/',
-      });
-    },
-    [NOTIFICATION_BUY_SELL_BUTTON]: () => {
-      updateViewedNotifications({ [NOTIFICATION_BUY_SELL_BUTTON]: true });
-      global.platform.openTab({
-        url: 'https://portfolio.metamask.io/sell/build-quote',
-      });
     },
     [NOTIFICATION_U2F_LEDGER_LIVE]: () => {
       updateViewedNotifications({ [NOTIFICATION_U2F_LEDGER_LIVE]: true });
@@ -140,6 +64,18 @@ function getActionFunctionById(id, history) {
       updateViewedNotifications({ [NOTIFICATION_BLOCKAID_DEFAULT]: true });
     },
     ///: END:ONLY_INCLUDE_IF
+    [NOTIFICATION_PETNAMES]: () => {
+      updateViewedNotifications({ [NOTIFICATION_PETNAMES]: true });
+    },
+    [NOTIFICATION_PORTFOLIO_V2]: () => {
+      updateViewedNotifications({ [NOTIFICATION_PORTFOLIO_V2]: true });
+      global.platform.openTab({
+        url: 'https://portfolio.metamask.io/',
+      });
+    },
+    [NOTIFICATION_SIMULATIONS]: () => {
+      updateViewedNotifications({ [NOTIFICATION_SIMULATIONS]: true });
+    },
   };
 
   return actionFunctions[id];
@@ -353,28 +289,19 @@ export default function WhatsNewPopup({ onClose }) {
     };
   }, [idRefMap, setSeenNotifications]);
 
-  // Display the swaps notification with full image
-  // Displays the NFTs & OpenSea notifications 18,19 with full image
+  // Display notifications with full image
   const notificationRenderers = {
-    0: renderFirstNotification,
-    1: renderFirstNotification,
-    18: renderFirstNotification,
-    19: renderFirstNotification,
-    21: renderFirstNotification,
-    22: renderFirstNotification,
-    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-    23: renderFirstNotification,
-    ///: END:ONLY_INCLUDE_IF
     24: renderFirstNotification,
     // This syntax is unusual, but very helpful here.  It's equivalent to `notificationRenderers[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
     [NOTIFICATION_DROP_LEDGER_FIREFOX]: renderFirstNotification,
-    [NOTIFICATION_OPEN_BETA_SNAPS]: renderFirstNotification,
-    [NOTIFICATION_BUY_SELL_BUTTON]: renderFirstNotification,
     [NOTIFICATION_U2F_LEDGER_LIVE]: renderFirstNotification,
     [NOTIFICATION_STAKING_PORTFOLIO]: renderFirstNotification,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     [NOTIFICATION_BLOCKAID_DEFAULT]: renderFirstNotification,
     ///: END:ONLY_INCLUDE_IF
+    [NOTIFICATION_PETNAMES]: renderFirstNotification,
+    [NOTIFICATION_PORTFOLIO_V2]: renderFirstNotification,
+    [NOTIFICATION_SIMULATIONS]: renderFirstNotification,
   };
 
   return (

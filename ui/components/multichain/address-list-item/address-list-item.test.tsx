@@ -24,15 +24,16 @@ const render = () => {
 
 describe('AddressListItem', () => {
   it('renders the address and label', () => {
-    const { getByText } = render();
+    const { getByText, container } = render();
+    expect(container).toMatchSnapshot();
 
     expect(getByText(shortenAddress(SAMPLE_ADDRESS))).toBeInTheDocument();
-    expect(getByText(SAMPLE_LABEL)).toBeInTheDocument();
   });
 
   it('fires onClick when the item is clicked', () => {
     render();
-    fireEvent.click(document.querySelector('button'));
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    fireEvent.click(document.querySelector('button')!);
 
     expect(mockOnClick).toHaveBeenCalled();
   });

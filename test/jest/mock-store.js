@@ -1,10 +1,10 @@
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
-import { CHAIN_IDS } from '../../shared/constants/network';
+import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../shared/constants/network';
 import { KeyringType } from '../../shared/constants/keyring';
 
-const createGetSmartTransactionFeesApiResponse = () => {
+export const createGetSmartTransactionFeesApiResponse = () => {
   return {
     tradeTxFees: {
       // Approval tx.
@@ -150,6 +150,7 @@ export const createSwapsMockStore = () => {
       },
       preferences: {
         showFiatInTestnets: true,
+        smartTransactionsOptInStatus: true,
       },
       transactions: [
         {
@@ -303,6 +304,23 @@ export const createSwapsMockStore = () => {
             methods: [...Object.values(EthMethod)],
             type: EthAccountType.Eoa,
           },
+          '36eb02e0-7925-47f0-859f-076608f09b69': {
+            address: '0x95222290DD7278Aa3Ddd389Cc1E1d165CC4BAfe6',
+            id: '36eb02e0-7925-47f0-859f-076608f09b69',
+            metadata: {
+              name: 'Snap Account 1',
+              keyring: {
+                type: 'Snap Keyring',
+              },
+              snap: {
+                id: 'snap-id',
+                name: 'snap name',
+              },
+            },
+            options: {},
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
+          },
         },
         selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       },
@@ -344,7 +362,13 @@ export const createSwapsMockStore = () => {
           accounts: ['0xd85a4b6a394794842887b8284293d69163007bbb'],
         },
       ],
-      networkConfigurations: {},
+      networkConfigurations: {
+        'network-configuration-id-1': {
+          chainId: CHAIN_IDS.MAINNET,
+          ticker: CURRENCY_SYMBOLS.ETH,
+          rpcUrl: 'https://mainnet.infura.io/v3/',
+        },
+      },
       tokens: [
         {
           erc20: true,
@@ -361,6 +385,15 @@ export const createSwapsMockStore = () => {
       ],
       swapsState: {
         swapsFeatureFlags: {
+          ethereum: {
+            extensionActive: true,
+            mobileActive: false,
+            smartTransactions: {
+              expectedDeadline: 45,
+              maxDeadline: 150,
+              returnTxHashAsap: false,
+            },
+          },
           smartTransactions: {
             mobileActive: true,
             extensionActive: true,

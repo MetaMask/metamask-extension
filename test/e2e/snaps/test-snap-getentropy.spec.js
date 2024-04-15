@@ -13,7 +13,6 @@ describe('Test Snap getEntropy', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
-        failOnConsoleError: false,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -21,12 +20,17 @@ describe('Test Snap getEntropy', function () {
 
         // navigate to test snaps page and connect to get-entropy snap
         await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
-        await driver.delay(1000);
+
+        // wait for page to load
+        await driver.waitForSelector({
+          text: 'Installed Snaps',
+          tag: 'h2',
+        });
+
         const snapButton = await driver.findElement('#connectGetEntropySnap');
         await driver.scrollToElement(snapButton);
         await driver.delay(1000);
         await driver.clickElement('#connectGetEntropySnap');
-        await driver.delay(1000);
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
@@ -70,7 +74,6 @@ describe('Test Snap getEntropy', function () {
 
         // find and click on send test
         await driver.pasteIntoField('#entropyMessage', '1234');
-        await driver.delay(500);
         const snapButton2 = await driver.findElement('#signEntropyMessage');
         await driver.scrollToElement(snapButton2);
         await driver.delay(500);

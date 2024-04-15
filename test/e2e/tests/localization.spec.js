@@ -26,13 +26,9 @@ describe('Localization', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        const secondaryBalance = process.env.MULTICHAIN
-          ? await driver.findElement(
-              '[data-testid="multichain-token-list-item-secondary-value"]',
-            )
-          : await driver.findElement(
-              '[data-testid="eth-overview__secondary-currency"]',
-            );
+        const secondaryBalance = await driver.findElement(
+          '[data-testid="eth-overview__secondary-currency"]',
+        );
         const secondaryBalanceText = await secondaryBalance.getText();
         const [fiatAmount, fiatUnit] = secondaryBalanceText
           .trim()

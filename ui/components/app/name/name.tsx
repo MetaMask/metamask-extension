@@ -4,16 +4,17 @@ import classnames from 'classnames';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { Icon, IconName, IconSize, Text } from '../../component-library';
 import { shortenAddress } from '../../../helpers/utils/util';
-import { useName } from '../../../hooks/useName';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { TextVariant } from '../../../helpers/constants/design-system';
+import { useDisplayName } from '../../../hooks/useDisplayName';
+import Identicon from '../../ui/identicon';
 import NameDetails from './name-details/name-details';
 
-export interface NameProps {
+export type NameProps = {
   /** Whether to prevent the modal from opening when the component is clicked. */
   disableEdit?: boolean;
 
@@ -25,7 +26,13 @@ export interface NameProps {
 
   /** The raw value to display the name of. */
   value: string;
-}
+
+  /**
+   * Applies to recognized contracts with no petname saved:
+   * If true the contract symbol (e.g. WBTC) will be used instead of the contract name.
+   */
+  preferContractSymbol?: boolean;
+};
 
 function formatValue(value: string, type: NameType): string {
   switch (type) {
@@ -42,11 +49,16 @@ export default function Name({
   type,
   disableEdit,
   internal,
+  preferContractSymbol = false,
 }: NameProps) {
   const [modalOpen, setModalOpen] = useState(false);
   const trackEvent = useContext(MetaMetricsContext);
 
-  const { name } = useName(value, type);
+  const { name, hasPetname } = useDisplayName(
+    value,
+    type,
+    preferContractSymbol,
+  );
 
   useEffect(() => {
     if (internal) {
@@ -72,8 +84,7 @@ export default function Name({
   }, [setModalOpen]);
 
   const formattedValue = formatValue(value, type);
-  const hasName = Boolean(name);
-  const iconName = hasName ? IconName.Save : IconName.Warning;
+  const hasDisplayName = Boolean(name);
 
   return (
     <div>
@@ -83,13 +94,22 @@ export default function Name({
       <div
         className={classnames({
           name: true,
-          name__saved: hasName,
-          name__missing: !hasName,
+          name__saved: hasPetname,
+          name__recognized_unsaved: !hasPetname && hasDisplayName,
+          name__missing: !hasDisplayName,
         })}
         onClick={handleClick}
       >
-        <Icon name={iconName} className="name__icon" size={IconSize.Lg} />
-        {hasName ? (
+        {hasDisplayName ? (
+          <Identicon address={value} diameter={16} />
+        ) : (
+          <Icon
+            name={IconName.Question}
+            className="name__icon"
+            size={IconSize.Md}
+          />
+        )}
+        {hasDisplayName ? (
           <Text className="name__name" variant={TextVariant.bodyMd}>
             {name}
           </Text>

@@ -14,6 +14,7 @@ import {
   showModal,
   toggleNetworkMenu,
   updateNetworksList,
+  setNetworkClientIdForDomain,
 } from '../../../store/actions';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
 import {
@@ -25,6 +26,8 @@ import {
   getOrderedNetworksList,
   getOnboardedInThisUISession,
   getShowNetworkBanner,
+  getOriginOfCurrentTab,
+  getUseRequestQueue,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -45,6 +48,7 @@ import {
   ModalOverlay,
   Text,
   BannerBase,
+  IconName,
 } from '../../component-library';
 import { ModalContent } from '../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../component-library/modal-header/deprecated';
@@ -60,7 +64,6 @@ import {
 import {
   getCompletedOnboarding,
   getIsUnlocked,
-  isLineaMainnetNetworkReleased,
 } from '../../../ducks/metamask/metamask';
 
 export const NetworkListMenu = ({ onClose }) => {
@@ -70,6 +73,9 @@ export const NetworkListMenu = ({ onClose }) => {
   const testNetworks = useSelector(getTestNetworks);
   const showTestNetworks = useSelector(getShowTestNetworks);
   const currentChainId = useSelector(getCurrentChainId);
+
+  const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
+  const useRequestQueue = useSelector(getUseRequestQueue);
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -83,8 +89,6 @@ export const NetworkListMenu = ({ onClose }) => {
 
   const completedOnboarding = useSelector(getCompletedOnboarding);
 
-  const lineaMainnetReleased = useSelector(isLineaMainnetNetworkReleased);
-
   const isUnlocked = useSelector(getIsUnlocked);
 
   const showSearch = nonTestNetworks.length > 3;
@@ -96,18 +100,25 @@ export const NetworkListMenu = ({ onClose }) => {
       return nonTestNetworks;
     }
 
-    // Reorder nonTestNetworks based on the order of chainIds in orderedNetworksList
-    const sortedNetworkList = orderedNetworksList
-      .map((chainId) =>
-        nonTestNetworks.find((network) => network.chainId === chainId),
-      )
-      .filter(Boolean);
+    // Create a mapping of chainId to index in orderedNetworksList
+    const orderedIndexMap = {};
+    orderedNetworksList.forEach((network, index) => {
+      orderedIndexMap[`${network.networkId}_${network.networkRpcUrl}`] = index;
+    });
 
-    return sortedNetworkList;
+    // Sort nonTestNetworks based on the order in orderedNetworksList
+    const sortedNonTestNetworks = nonTestNetworks.sort((a, b) => {
+      const keyA = `${a.chainId}_${a.rpcUrl}`;
+      const keyB = `${b.chainId}_${b.rpcUrl}`;
+      return orderedIndexMap[keyA] - orderedIndexMap[keyB];
+    });
+
+    return sortedNonTestNetworks;
   };
 
   const networksList = newOrderNetworks();
   const [items, setItems] = useState([...networksList]);
+
   useEffect(() => {
     if (currentlyOnTestNetwork) {
       dispatch(setShowTestNetworks(currentlyOnTestNetwork));
@@ -124,13 +135,20 @@ export const NetworkListMenu = ({ onClose }) => {
     if (!result.destination) {
       return;
     }
+
     const newItems = [...items];
     const [removed] = newItems.splice(result.source.index, 1);
     newItems.splice(result.destination.index, 0, removed);
-    setItems(newItems);
-    const orderedArray = newItems.map((obj) => obj.chainId);
+
+    // Convert the updated array back to NetworksInfo format
+    const orderedArray = newItems.map((obj) => ({
+      networkId: obj.chainId, // Assuming chainId is the networkId
+      networkRpcUrl: obj.rpcUrl,
+    }));
 
     dispatch(updateNetworksList(orderedArray));
+
+    setItems(newItems);
   };
 
   let searchResults =
@@ -157,11 +175,9 @@ export const NetworkListMenu = ({ onClose }) => {
 
   const generateMenuItems = (desiredNetworks) => {
     return desiredNetworks.map((network) => {
-      if (!lineaMainnetReleased && network.providerType === 'linea-mainnet') {
-        return null;
-      }
-
-      const isCurrentNetwork = currentNetwork.id === network.id;
+      const isCurrentNetwork =
+        currentNetwork.id === network.id &&
+        currentNetwork.rpcUrl === network.rpcUrl;
 
       const canDeleteNetwork =
         isUnlocked && !isCurrentNetwork && network.removable;
@@ -309,13 +325,6 @@ export const NetworkListMenu = ({ onClose }) => {
                       ref={provided.innerRef}
                     >
                       {searchResults.map((network, index) => {
-                        if (
-                          !lineaMainnetReleased &&
-                          network.providerType === 'linea-mainnet'
-                        ) {
-                          return null;
-                        }
-
                         const isCurrentNetwork =
                           currentNetwork.id === network.id;
 
@@ -349,6 +358,21 @@ export const NetworkListMenu = ({ onClose }) => {
                                     } else {
                                       dispatch(setActiveNetwork(network.id));
                                     }
+
+                                    // If presently on a dapp, communicate a change to
+                                    // the dapp via silent switchEthereumChain that the
+                                    // network has changed due to user action
+                                    if (
+                                      process.env.MULTICHAIN &&
+                                      useRequestQueue &&
+                                      selectedTabOrigin
+                                    ) {
+                                      setNetworkClientIdForDomain(
+                                        selectedTabOrigin,
+                                        network.id,
+                                      );
+                                    }
+
                                     trackEvent({
                                       event:
                                         MetaMetricsEventName.NavNetworkSwitched,
@@ -397,7 +421,7 @@ export const NetworkListMenu = ({ onClose }) => {
             <Text>{t('showTestnetNetworks')}</Text>
             <ToggleButton
               value={showTestNetworks}
-              disabled={currentlyOnTestNetwork || !isUnlocked}
+              disabled={currentlyOnTestNetwork}
               onToggle={handleToggle}
             />
           </Box>
@@ -409,7 +433,7 @@ export const NetworkListMenu = ({ onClose }) => {
           <Box padding={4}>
             <ButtonSecondary
               size={ButtonSecondarySize.Lg}
-              disabled={!isUnlocked}
+              startIconName={IconName.Add}
               block
               onClick={() => {
                 if (isFullScreen) {

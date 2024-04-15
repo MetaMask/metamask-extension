@@ -1,0 +1,18 @@
+@use "design-system";
+
+.advanced-gas-fee-popover {
+  .form-field__heading-title > h6 {
+    font-size: design-system.$font-size-h7;
+  }
+
+  .popover-header {
+    border-radius: 0;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom: 1px solid var(--color-border-muted);
+  }
+
+  .popover-footer {
+    border-top: none;
+  }
+}

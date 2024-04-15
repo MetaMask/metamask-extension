@@ -17,19 +17,17 @@ const { exitWithError } = require('../../../development/lib/exit-with-error');
  */
 
 const backgroundFiles = [
-  'runtime-lavamoat.js',
-  'lockdown-more.js',
-  'globalthis.js',
-  'sentry-install.js',
-  'policy-load.js',
+  'scripts/runtime-lavamoat.js',
+  'scripts/lockdown-more.js',
+  'scripts/sentry-install.js',
+  'scripts/policy-load.js',
 ];
 
 const uiFiles = [
-  'globalthis.js',
-  'sentry-install.js',
-  'runtime-lavamoat.js',
-  'lockdown-more.js',
-  'policy-load.js',
+  'scripts/sentry-install.js',
+  'scripts/runtime-lavamoat.js',
+  'scripts/lockdown-more.js',
+  'scripts/policy-load.js',
 ];
 
 const BackgroundFileRegex = /background-[0-9]*.js/u;
