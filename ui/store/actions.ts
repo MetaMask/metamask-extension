@@ -84,7 +84,6 @@ import {
   LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
 import {
-  MetaMetricsEventCategory,
   MetaMetricsEventFragment,
   MetaMetricsEventOptions,
   MetaMetricsEventPayload,
@@ -2083,7 +2082,7 @@ export function addNftVerifyOwnership(
 export function removeAndIgnoreNft(
   address: string,
   tokenID: string,
-  dontShowLoadingIndicator: boolean,
+  shouldShowLoadingIndicator?: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     if (!address) {
@@ -2092,7 +2091,7 @@ export function removeAndIgnoreNft(
     if (!tokenID) {
       throw new Error('MetaMask - Cannot ignore NFT without tokenID');
     }
-    if (!dontShowLoadingIndicator) {
+    if (!shouldShowLoadingIndicator) {
       dispatch(showLoadingIndication());
     }
     try {
@@ -2100,6 +2099,7 @@ export function removeAndIgnoreNft(
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning(error));
+      throw error;
     } finally {
       await forceUpdateMetamaskState(dispatch);
       dispatch(hideLoadingIndication());
@@ -2244,6 +2244,21 @@ export function clearSwitchedNetworkDetails(): ThunkAction<
   };
 }
 
+/**
+ * Update the currentPopupid generated when the user opened the popup
+ *
+ * @param id - The Snap interface ID.
+ * @returns Promise Resolved on successfully submitted background request.
+ */
+export function setCurrentExtensionPopupId(
+  id: number,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground<void>('setCurrentExtensionPopupId', [id]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 export function abortTransactionSigning(
   transactionId: string,
   // TODO: Replace `any` with type
@@ -2258,6 +2273,23 @@ export function abortTransactionSigning(
       dispatch(displayWarning(error));
     }
   };
+}
+
+export function getLayer1GasFee({
+  chainId,
+  networkClientId,
+  transactionParams,
+}: {
+  chainId?: Hex;
+  networkClientId?: NetworkClientId;
+  transactionParams: TransactionParams;
+}): // TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ThunkAction<Promise<void>, MetaMaskReduxState, any, AnyAction> {
+  return async () =>
+    await submitRequestToBackground('getLayer1GasFee', [
+      { chainId, networkClientId, transactionParams },
+    ]);
 }
 
 export function createCancelTransaction(
@@ -3064,6 +3096,10 @@ export function setFeatureNotificationsEnabled(value: boolean) {
 
 export function setShowExtensionInFullSizeView(value: boolean) {
   return setPreference('showExtensionInFullSizeView', value);
+}
+
+export function setSmartTransactionsOptInStatus(value: boolean) {
+  return setPreference('smartTransactionsOptInStatus', value);
 }
 
 export function setAutoLockTimeLimit(value: boolean) {
@@ -4531,26 +4567,6 @@ export async function setWeb3ShimUsageAlertDismissed(origin: string) {
 }
 
 // Smart Transactions Controller
-export async function setSmartTransactionsOptInStatus(
-  optInState: boolean,
-  prevOptInState: boolean,
-) {
-  trackMetaMetricsEvent({
-    actionId: generateActionId(),
-    event: 'STX OptIn',
-    category: MetaMetricsEventCategory.Swaps,
-    sensitiveProperties: {
-      stx_enabled: true,
-      current_stx_enabled: true,
-      stx_user_opt_in: optInState,
-      stx_prev_user_opt_in: prevOptInState,
-    },
-  });
-  await submitRequestToBackground('setSmartTransactionsOptInStatus', [
-    optInState,
-  ]);
-}
-
 export function clearSmartTransactionFees() {
   submitRequestToBackground('clearSmartTransactionFees');
 }
@@ -4772,6 +4788,22 @@ export function hideNetworkBanner() {
 export function neverShowSwitchedNetworkMessage() {
   return submitRequestToBackground('setSwitchedNetworkNeverShowMessage', [
     true,
+  ]);
+}
+
+/**
+ * Sends the background state the networkClientId and domain upon network switch
+ *
+ * @param selectedTabOrigin - The origin to set the new networkClientId for
+ * @param networkClientId - The new networkClientId
+ */
+export function setNetworkClientIdForDomain(
+  selectedTabOrigin: string,
+  networkClientId: string,
+): Promise<void> {
+  return submitRequestToBackground('setNetworkClientIdForDomain', [
+    selectedTabOrigin,
+    networkClientId,
   ]);
 }
 
