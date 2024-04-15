@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { act, fireEvent } from '@testing-library/react';
-
+import thunk from 'redux-thunk';
 import { SEND_STAGES } from '../../ducks/send';
 import { renderWithProvider } from '../../../test/jest';
 import mockSendState from '../../../test/data/mock-send-state.json';
@@ -12,6 +12,8 @@ import {
 } from '../../../shared/constants/network';
 import { useIsOriginalNativeTokenSymbol } from '../../hooks/useIsOriginalNativeTokenSymbol';
 import Routes from '.';
+
+const middlewares = [thunk];
 
 const mockShowNetworkDropdown = jest.fn();
 const mockHideNetworkDropdown = jest.fn();
@@ -27,6 +29,7 @@ jest.mock('webextension-polyfill', () => ({
 }));
 
 jest.mock('../../store/actions', () => ({
+  ...jest.requireActual('../../store/actions'),
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
   gasFeeStartPollingByNetworkClientId: jest
     .fn()
@@ -68,7 +71,7 @@ jest.mock(
 );
 
 const render = async (route, state) => {
-  const store = configureMockStore()({
+  const store = configureMockStore(middlewares)({
     ...mockSendState,
     ...state,
   });
