@@ -11,12 +11,11 @@ import {
 } from '../../../../shared/constants/gas';
 import { decGWEIToHexWEI } from '../../../../shared/modules/conversion.utils';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
+import { getSelectedInternalAccountFromMockState } from '../../../../test/jest/mocks';
 import CancelSpeedupPopover from './cancel-speedup-popover';
 
 const mockSelectedInternalAccount =
-  mockState.metamask.internalAccounts.accounts[
-    mockState.metamask.internalAccounts.selectedAccount
-  ];
+  getSelectedInternalAccountFromMockState(mockState);
 
 const store = configureStore({
   metamask: {

@@ -1,5 +1,6 @@
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { CHAIN_IDS } from '../../shared/constants/network';
+import { createMockInternalAccount } from '../../test/jest/mocks';
 import {
   getConnectedSubjectsForSelectedAddress,
   getLastConnectedInfo,
@@ -94,32 +95,18 @@ describe('selectors', () => {
     });
 
     it('should return the list of connected subjects when there are 2 connected accounts', () => {
+      const mockInternalAccount = createMockInternalAccount({
+        name: 'Test Account',
+        id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        address: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
+      });
       const mockState = {
         metamask: {
           internalAccounts: {
             accounts: {
-              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-                address: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
-                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-                metadata: {
-                  name: 'Test Account',
-                  keyring: {
-                    type: 'HD Key Tree',
-                  },
-                },
-                options: {},
-                methods: [
-                  'personal_sign',
-                  'eth_sign',
-                  'eth_signTransaction',
-                  'eth_signTypedData_v1',
-                  'eth_signTypedData_v3',
-                  'eth_signTypedData_v4',
-                ],
-                type: 'eip155:eoa',
-              },
+              [mockInternalAccount.id]: mockInternalAccount,
             },
-            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            selectedAccount: mockInternalAccount.id,
           },
           subjectMetadata: {
             'peepeth.com': {

@@ -597,7 +597,7 @@ const CustodyPage = () => {
               const selectedCustodian = custodians.find(
                 (custodian) => custodian.envName === selectedCustodianName,
               );
-              const firstAccountKey = Object.keys(selectedAccounts).shift();
+              const firstAccountId = Object.keys(selectedAccounts).shift();
 
               await dispatch(
                 mmiActions.connectCustodyAddresses(
@@ -607,9 +607,7 @@ const CustodyPage = () => {
                 ),
               );
 
-              dispatch(
-                setSelectedInternalAccount(firstAccountKey.toLowerCase()),
-              );
+              dispatch(setSelectedInternalAccount(firstAccountId));
 
               trackEvent({
                 category: MetaMetricsEventCategory.MMI,

@@ -1,6 +1,7 @@
 import { toChecksumAddress } from 'ethereumjs-util';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { toHex } from '@metamask/controller-utils';
+import { createMockInternalAccount } from '../../../test/jest/mocks';
 import {
   getConfiguredCustodians,
   getCustodianIconForAddress,
@@ -567,29 +568,11 @@ describe('Institutional selectors', () => {
   });
 
   describe('getMMIAddressFromModalOrAddress', () => {
-    const mockInternalAccount = {
+    const mockInternalAccount = createMockInternalAccount({
       id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-      metadata: {
-        name: 'Custody Account A',
-        keyring: {
-          type: 'Custody',
-        },
-      },
-      options: {},
-      methods: [
-        EthMethod.PersonalSign,
-        EthMethod.Sign,
-        EthMethod.SignTransaction,
-        EthMethod.SignTypedDataV1,
-        EthMethod.SignTypedDataV3,
-        EthMethod.SignTypedDataV4,
-      ],
-      type: EthAccountType.Eoa,
-      code: '0x',
-      balance: '0x47c9d71831c76efe',
-      nonce: '0x1b',
-      address: '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275',
-    };
+      name: 'Custody Account A',
+      keyringType: 'Custody',
+    });
 
     it('returns modalAddress if it exists', () => {
       const state = {
