@@ -34,7 +34,6 @@ const TransactionAlerts = ({
   tokenSymbol,
   txData,
   isUsingPaymaster,
-  renderSimulationFailureWarning,
 }) => {
   const { estimateUsed, hasSimulationError, supportsEIP1559, isNetworkBusy } =
     useGasFeeContext();
@@ -81,14 +80,12 @@ const TransactionAlerts = ({
         />
       )}
 
-      {supportsEIP1559 &&
-        hasSimulationError &&
-        !renderSimulationFailureWarning && (
-          <SimulationErrorMessage
-            userAcknowledgedGasMissing={userAcknowledgedGasMissing}
-            setUserAcknowledgedGasMissing={setUserAcknowledgedGasMissing}
-          />
-        )}
+      {supportsEIP1559 && hasSimulationError && (
+        <SimulationErrorMessage
+          userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+          setUserAcknowledgedGasMissing={setUserAcknowledgedGasMissing}
+        />
+      )}
 
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -152,7 +149,6 @@ TransactionAlerts.propTypes = {
   tokenSymbol: PropTypes.string,
   txData: PropTypes.object,
   isUsingPaymaster: PropTypes.bool,
-  renderSimulationFailureWarning: PropTypes.bool,
 };
 
 export default TransactionAlerts;
