@@ -33,6 +33,9 @@ In web automation testing, locators are crucial commands that guide the framewor
 
 @throws {Error} Will throw an error if an invalid locator strategy is provided.
 
+<details><summary><b>Read more about locating elements</b></summary>
+<br/>
+
 ## Locate element by CSS
 
 CSS Selectors in Selenium are string patterns used to identify an element based on a combination of HTML tag, id, class, and attributes.
@@ -114,7 +117,7 @@ Syntax for locating the links
 await driver.findElement({ text: 'Delete contact', tag: 'a' });
 ```
 
-## Locate e**lement by XPath**
+## **Locate element by XPath**
 
 
 To locate an element by XPath, use a path expression to navigate through elements and attributes in the HTML document.
@@ -150,4 +153,140 @@ Our framework syntax
 
 ```tsx
 await driver.fill('#password', 'password123');
+```
+
+</details>
+
+## Elements
+
+## Finding web elements
+
+Finding web elements is a fundamental task in web automation and testing, allowing scripts to interact with various components of a web page, such as input fields, buttons, links, and more. One of the element identification methods listed below combines with the use [locators](#locators) to uniquely identify an element on the page.
+
+<b>[findElement](#findelement)</br>
+<b>[findElements](#findelements)</br>
+<b>[findVisibleElement](#findVisibleElement)</br>
+<b>[findClickableElement](#findClickableElement)</br>
+<b>[findClickableElements](#findClickableElements)</br>
+
+## **findElement**
+
+**`findElement`** method is called on the driver instance, it returns a reference to the first element in the DOM that matches with the provided locator. This value can be stored and used for future element actions.
+
+[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L323)
+
+**Arguments**
+
+@param {string} rawLocator - element locator
+
+**Returns**
+
+@return {Promise<WebElement>} A promise that resolves to the WebElement.
+
+**Example - Evaluating entire DOM**
+
+```jsx
+await driver.findElement('[data-testid="account-menu-icon"]');
+```
+
+Example - **Evaluating a subset of the DOM**
+
+```jsx
+await driver.findElement({
+          css: '[data-testid="network-display"]',
+          text: 'Localhost 8545',
+        });
+```
+
+## **findElements**
+
+
+**`findElements`** method return a collection of element references. If there are no matches, an empty list is returned.
+
+[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L347)
+
+**Arguments**
+
+@param {string} rawLocator - element locator
+
+**Returns**
+
+@returns elements.map((element)
+
+**Example for all matching FindElements**
+
+```jsx
+let assets = await driver.findElements('.multichain-token-list-item');
+```
+
+Example of FindElements with getText()
+
+```jsx
+const warnings = await driver.findElements('.import-srp__banner-alert-text');
+const warning = warnings[1];
+warningText = await warning.getText()
+```
+
+## **findVisibleElement**
+
+**`findVisibleElement`** method is used to track (or) find DOM element which is visible
+
+[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L332)
+
+**Arguments**
+
+@param {string} rawLocator - element locator
+
+**Returns**
+
+@return {Promise<WebElement>} A promise that resolves to the WebElement.
+
+**Example for all matching** findVisibleElement
+
+```jsx
+await driver.findVisibleElement(
+          '[data-testid="confirm-delete-network-modal"]',);
+```
+
+## findClickableElement
+
+**`findClickableElement`** method is used to track (or) find DOM element which is clickable
+
+[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L338)
+
+**Arguments**
+
+rawLocator - Element locator
+
+**Returns**
+
+@return {Promise<WebElement>} A promise that resolves to the WebElement.
+
+**Example for f**indClickableElement
+
+```jsx
+await driver.findClickableElement('#depositButton');
+```
+
+## findClickableElements
+
+**`findClickableElements`** method is used to track (or) find DOM elements which are clickable
+
+[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L356)
+
+**Arguments**
+
+rawLocator - Element locator
+
+**Returns**
+
+@return {Promise<WebElement>} A promise that resolves to the WebElement.
+
+**Example**
+
+```jsx
+const domains = await driver.findClickableElements(
+          '.connected-sites-list__subject-name',
+        );
+assert.equal(domains.length, 1);
 ```
