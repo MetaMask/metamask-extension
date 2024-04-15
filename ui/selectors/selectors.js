@@ -2008,13 +2008,14 @@ export function getIsNetworkSupportedByBlockaid(state) {
   return isSupported;
 }
 
-export function getAllEnabledNetworks(state) {
-  const nonTestNetworks = getNonTestNetworks(state);
-  const allNetworks = getAllNetworks(state);
-  const showTestnetNetworks = getShowTestNetworks(state);
-
-  return showTestnetNetworks ? allNetworks : nonTestNetworks;
-}
+export const getAllEnabledNetworks = createDeepEqualSelector(
+  getNonTestNetworks,
+  getAllNetworks,
+  getShowTestNetworks,
+  (nonTestNetworks, allNetworks, showTestnetNetworks) => {
+    return showTestnetNetworks ? allNetworks : nonTestNetworks;
+  },
+);
 
 export function getIsOptimism(state) {
   return (
