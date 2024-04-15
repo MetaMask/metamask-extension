@@ -3340,7 +3340,7 @@
     "message": "Operation Failed"
   },
   "optimismFees": {
-    "message": "Optimism fees"
+    "message": "Layer 2 fees"
   },
   "optional": {
     "message": "Optional"
