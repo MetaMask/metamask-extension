@@ -463,7 +463,8 @@
         "@ngraveio/bc-ur": true,
         "@trezor/connect-web>tslib": true,
         "browserify>buffer": true,
-        "ethereumjs-util>ethereum-cryptography>bs58check": true
+        "ethereumjs-util>ethereum-cryptography>bs58check": true,
+        "ganache>abstract-level>buffer": true
       }
     },
     "@keystonehq/metamask-airgapped-keyring": {
