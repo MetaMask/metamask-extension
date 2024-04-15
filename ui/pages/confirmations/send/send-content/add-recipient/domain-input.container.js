@@ -10,7 +10,7 @@ import DomainInput from './domain-input.component';
 
 // Trigger onChange when chainId changes using MapStateToProps
 function mapStateToProps(state) {
-  return { isBlockie: getUseBlockie(state) };
+  return { useBlockie: getUseBlockie(state) };
 }
 
 function mapDispatchToProps(dispatch) {

@@ -30,7 +30,7 @@ export default class DomainInput extends Component {
 
   static propTypes = {
     className: PropTypes.string,
-    isBlockie: PropTypes.boolean,
+    useBlockie: PropTypes.boolean,
     selectedAddress: PropTypes.string,
     selectedName: PropTypes.string,
     scanQrCode: PropTypes.func,
@@ -97,7 +97,7 @@ export default class DomainInput extends Component {
 
   render() {
     const { t } = this.context;
-    const { className, selectedAddress, selectedName, userInput, isBlockie } =
+    const { className, selectedAddress, selectedName, userInput, useBlockie } =
       this.props;
 
     const hasSelectedAddress = Boolean(selectedAddress);
@@ -116,7 +116,7 @@ export default class DomainInput extends Component {
               <div className="ens-input__wrapper__input ens-input__wrapper__input--selected">
                 <AvatarAccount
                   variant={
-                    isBlockie
+                    useBlockie
                       ? AvatarAccountVariant.Blockies
                       : AvatarAccountVariant.Jazzicon
                   }
