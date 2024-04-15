@@ -39,8 +39,6 @@ import SetApproveForAllWarning from '../set-approval-for-all-warning';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import useTransactionInsights from '../../../../hooks/useTransactionInsights';
-///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
 ///: END:ONLY_INCLUDE_IF
 import {
@@ -120,7 +118,7 @@ const ConfirmPageContainer = (props) => {
   const trackEvent = useContext(MetaMetricsContext);
   ///: END:ONLY_INCLUDE_IF
   const [collectionBalance, setCollectionBalance] = useState('0');
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   const [isShowingTxInsightWarnings, setIsShowingTxInsightWarnings] =
     useState(false);
   ///: END:ONLY_INCLUDE_IF
@@ -173,7 +171,7 @@ const ConfirmPageContainer = (props) => {
 
   // TODO: Better name
   const topLevelHandleSubmit = () => {
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     if (insightObject?.warnings?.length > 0) {
       return setIsShowingTxInsightWarnings(true);
     }
@@ -376,7 +374,7 @@ const ConfirmPageContainer = (props) => {
           </>
         )}
         {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
         }
         {isShowingTxInsightWarnings && (
           <InsightWarnings
