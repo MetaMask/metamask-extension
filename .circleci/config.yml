@@ -1110,6 +1110,11 @@ jobs:
               yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.js --browser chrome --retries 2
             fi
           no_output_timeout: 5m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e
 
   test-e2e-firefox-flask:
     executor: node-browsers-medium-plus
