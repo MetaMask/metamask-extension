@@ -223,8 +223,8 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
     );
   }
 
-  const outgoing = balanceChanges.filter((change) => change.amount.isNegative);
-  const incoming = balanceChanges.filter((change) => !change.amount.isNegative);
+  const outgoing = balanceChanges.filter((bc) => bc.amount.isNegative());
+  const incoming = balanceChanges.filter((bc) => !bc.amount.isNegative());
   return (
     <SimulationDetailsLayout>
       <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={3}>

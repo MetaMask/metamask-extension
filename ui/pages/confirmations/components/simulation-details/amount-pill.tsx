@@ -1,4 +1,6 @@
 import React from 'react';
+import { BigNumber } from 'bignumber.js';
+import { useSelector } from 'react-redux';
 import { Box, Text } from '../../../../components/component-library';
 import {
   AlignItems,
@@ -16,13 +18,14 @@ import {
   MIN_DISPLAY_AMOUNT,
 } from '../../../../hooks/useCurrencyDisplay';
 import Tooltip from '../../../../components/ui/tooltip';
-import { Amount, AssetIdentifier } from './types';
+import { getCurrentLocale } from '../../../../ducks/locale/locale';
+import { AssetIdentifier } from './types';
 
 // Format an amount for display.
-const formatAmount = (amount: Amount): string => {
-  const displayAmount = amount.numeric.abs().round(DEFAULT_PRECISION_DECIMALS);
+const formatAmount = (amount: BigNumber): string => {
+  const displayAmount = amount.abs().round(DEFAULT_PRECISION_DECIMALS);
 
-  return displayAmount.isZero() && !amount.numeric.isZero()
+  return displayAmount.isZero() && !amount.isZero()
     ? MIN_DISPLAY_AMOUNT
     : displayAmount.toString();
 };
@@ -37,23 +40,27 @@ const formatAmount = (amount: Amount): string => {
  */
 export const AmountPill: React.FC<{
   asset: AssetIdentifier;
-  amount: Amount;
+  amount: BigNumber;
 }> = ({ asset, amount }) => {
-  const backgroundColor = amount.isNegative
+  const locale = useSelector(getCurrentLocale);
+
+  const backgroundColor = amount.isNegative()
     ? BackgroundColor.errorMuted
     : BackgroundColor.successMuted;
 
-  const color = amount.isNegative
+  const color = amount.isNegative()
     ? TextColor.errorAlternative
     : TextColor.successDefault;
 
-  const amountParts: string[] = [amount.isNegative ? '-' : '+'];
+  const amountParts: string[] = [amount.isNegative() ? '-' : '+'];
   const tooltipParts: string[] = [];
 
-  // ERC721 amounts are always 1 are not displayed.
+  // ERC721 amounts are always 1 and are not displayed.
   if (asset.standard !== TokenStandard.ERC721) {
     const formattedAmount = formatAmount(amount);
-    const fullPrecisionAmount = amount.numeric.abs().toString();
+    const fullPrecisionAmount = new Intl.NumberFormat(locale, {
+      minimumSignificantDigits: 1,
+    }).format(amount.abs().toNumber());
 
     amountParts.push(formattedAmount);
     tooltipParts.push(fullPrecisionAmount);
