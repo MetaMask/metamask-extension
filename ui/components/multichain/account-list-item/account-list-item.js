@@ -11,7 +11,6 @@ import { ConnectedAccountsMenu } from '../connected-accounts-menu';
 import {
   AvatarAccount,
   AvatarAccountVariant,
-  AvatarFavicon,
   AvatarToken,
   AvatarTokenSize,
   Box,
@@ -70,7 +69,6 @@ export const AccountListItem = ({
   closeMenu,
   accountsCount,
   connectedAvatar,
-  connectedAvatarName,
   isPinned = false,
   menuType = AccountListItemMenuTypes.None,
   isHidden = false,
@@ -427,10 +425,6 @@ AccountListItem.propTypes = {
    * File location of the avatar icon
    */
   connectedAvatar: PropTypes.string,
-  /**
-   * Text used as the avatar alt text
-   */
-  connectedAvatarName: PropTypes.string,
   /**
    * Represents the type of menu to be rendered
    */
