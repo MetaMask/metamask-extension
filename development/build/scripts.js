@@ -13,7 +13,7 @@ const log = require('fancy-log');
 const browserify = require('browserify');
 const watchify = require('watchify');
 const babelify = require('babelify');
-const brfs = require('brfs');
+
 const envify = require('loose-envify/custom');
 const sourcemaps = require('gulp-sourcemaps');
 const applySourceMap = require('vinyl-sourcemaps-apply');
@@ -886,8 +886,6 @@ function setupBundlerDefaults(
           extensions,
         },
       ],
-      // Inline `fs.readFileSync` files
-      brfs,
     ],
     // Look for TypeScript files when walking the dependency tree
     extensions,
