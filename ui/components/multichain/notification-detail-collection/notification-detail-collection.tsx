@@ -19,16 +19,16 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 
-interface IconProps {
+type IconProps = {
   src: string;
   badgeSrc: string;
-}
+};
 
-export interface NotificationDetailCollectionProps {
+export type NotificationDetailCollectionProps = {
   icon: IconProps;
   label: string;
   collection: string;
-}
+};
 
 export const NotificationDetailCollection: FC<
   NotificationDetailCollectionProps

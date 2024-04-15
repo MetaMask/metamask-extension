@@ -126,6 +126,7 @@ import { ThemeType } from '../../../shared/constants/preferences';
 import {
   AvatarAccount,
   AvatarAccountSize,
+  AvatarNetwork,
   Box,
 } from '../../components/component-library';
 import { ToggleIpfsModal } from '../../components/app/nft-default-image/toggle-ipfs-modal';
@@ -189,6 +190,15 @@ export default class Routes extends Component {
     isDeprecatedNetworkModalOpen: PropTypes.bool.isRequired,
     hideDeprecatedNetworkModal: PropTypes.func.isRequired,
     addPermittedAccount: PropTypes.func.isRequired,
+    switchedNetworkDetails: PropTypes.object,
+    clearSwitchedNetworkDetails: PropTypes.func.isRequired,
+    setSwitchedNetworkNeverShowMessage: PropTypes.func.isRequired,
+    networkToAutomaticallySwitchTo: PropTypes.object,
+    neverShowSwitchedNetworkMessage: PropTypes.bool.isRequired,
+    automaticallySwitchNetwork: PropTypes.func.isRequired,
+    unapprovedTransactions: PropTypes.number.isRequired,
+    currentExtensionPopupId: PropTypes.number,
+    useRequestQueue: PropTypes.bool,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal: PropTypes.bool.isRequired,
     hideShowKeyringSnapRemovalResultModal: PropTypes.func.isRequired,
@@ -238,14 +248,50 @@ export default class Routes extends Component {
   ///: END:ONLY_INCLUDE_IF
 
   componentDidUpdate(prevProps) {
-    const { theme, account } = this.props;
-
+    const {
+      theme,
+      account,
+      networkToAutomaticallySwitchTo,
+      activeTabOrigin,
+      unapprovedTransactions,
+      isUnlocked,
+      useRequestQueue,
+      currentExtensionPopupId,
+    } = this.props;
     if (theme !== prevProps.theme) {
       this.setTheme();
     }
 
     if (prevProps.account?.address !== account?.address) {
       this.setState({ hideConnectAccountToast: false });
+    }
+
+    // Automatically switch the network if the user
+    // no longer has unapprovedTransactions and they
+    // should be on a different network for the
+    // currently active tab's dapp
+    if (
+      networkToAutomaticallySwitchTo &&
+      unapprovedTransactions === 0 &&
+      (prevProps.unapprovedTransactions > 0 ||
+        (prevProps.isUnlocked === false && isUnlocked))
+    ) {
+      this.props.automaticallySwitchNetwork(
+        networkToAutomaticallySwitchTo,
+        activeTabOrigin,
+      );
+    }
+
+    // Terminate the popup when another popup is opened
+    // if the user is using RPC queueing
+    if (
+      useRequestQueue &&
+      process.env.MULTICHAIN &&
+      currentExtensionPopupId !== undefined &&
+      global.metamask.id !== undefined &&
+      currentExtensionPopupId !== global.metamask.id
+    ) {
+      window.close();
     }
   }
 
@@ -347,7 +393,7 @@ export default class Routes extends Component {
           exact
         />
         <Authenticated
-          path={CONFIRMATION_V_NEXT_ROUTE}
+          path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}
           component={ConfirmationPage}
         />
         {
@@ -465,6 +511,11 @@ export default class Routes extends Component {
     return Boolean(
       matchPath(location.pathname, { path: BUILD_QUOTE_ROUTE, exact: false }),
     );
+  }
+
+  onHomeScreen() {
+    const { location } = this.props;
+    return location.pathname === DEFAULT_ROUTE;
   }
 
   hideAppHeader() {
@@ -606,6 +657,10 @@ export default class Routes extends Component {
       hideImportTokensModal,
       hideDeprecatedNetworkModal,
       addPermittedAccount,
+      switchedNetworkDetails,
+      clearSwitchedNetworkDetails,
+      setSwitchedNetworkNeverShowMessage,
+      neverShowSwitchedNetworkMessage,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       isShowKeyringSnapRemovalResultModal,
       hideShowKeyringSnapRemovalResultModal,
@@ -631,7 +686,8 @@ export default class Routes extends Component {
       !isNetworkUsed &&
       !isCurrentProviderCustom &&
       completedOnboarding &&
-      allAccountsOnNetworkAreEmpty;
+      allAccountsOnNetworkAreEmpty &&
+      switchedNetworkDetails === null;
 
     const windowType = getEnvironmentType();
 
@@ -640,17 +696,21 @@ export default class Routes extends Component {
       isUnlocked &&
       !shouldShowSeedPhraseReminder;
 
-    let isLoadingShown = isLoading;
+    let isLoadingShown = isLoading && completedOnboarding;
 
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isLoadingShown =
       isLoading &&
+      completedOnboarding &&
       !pendingConfirmations.some(
         (confirmation) =>
           confirmation.type ===
           SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
       );
     ///: END:ONLY_INCLUDE_IF
+
+    const showAutoNetworkSwitchToast =
+      switchedNetworkDetails && !neverShowSwitchedNetworkMessage;
 
     return (
       <div
@@ -659,6 +719,11 @@ export default class Routes extends Component {
           [`browser-${browser}`]: browser,
         })}
         dir={textDirection}
+        onMouseUp={
+          showAutoNetworkSwitchToast
+            ? () => clearSwitchedNetworkDetails()
+            : undefined
+        }
       >
         {shouldShowNetworkDeprecationWarning ? <DeprecatedNetworks /> : null}
         {shouldShowNetworkInfo && <NewNetworkInfo />}
@@ -707,13 +772,18 @@ export default class Routes extends Component {
         }
         <Box className="main-container-wrapper">
           {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}
-          {!isLoading && isNetworkLoading ? <LoadingNetwork /> : null}
+          {!isLoading && isNetworkLoading && completedOnboarding ? (
+            <LoadingNetwork />
+          ) : null}
           {this.renderRoutes()}
         </Box>
         {isUnlocked ? <Alerts history={this.props.history} /> : null}
         <ToastContainer>
-          {showConnectAccountToast && !this.state.hideConnectAccountToast ? (
+          {showConnectAccountToast &&
+          this.onHomeScreen() &&
+          !this.state.hideConnectAccountToast ? (
             <Toast
+              key="connect-account-toast"
               startAdornment={
                 <AvatarAccount
                   address={account.address}
@@ -742,6 +812,25 @@ export default class Routes extends Component {
                 }, 250 * MILLISECOND);
               }}
               onClose={() => this.setState({ hideConnectAccountToast: true })}
+            />
+          ) : null}
+          {showAutoNetworkSwitchToast ? (
+            <Toast
+              key="switched-network-toast"
+              startAdornment={
+                <AvatarNetwork
+                  size={AvatarAccountSize.Md}
+                  borderColor={BorderColor.transparent}
+                  src={switchedNetworkDetails?.imageUrl}
+                />
+              }
+              text={this.context.t('switchedNetworkToastMessage', [
+                switchedNetworkDetails.nickname,
+                getURLHost(switchedNetworkDetails.origin),
+              ])}
+              actionText={this.context.t('switchedNetworkToastDecline')}
+              onActionClick={() => setSwitchedNetworkNeverShowMessage()}
+              onClose={() => clearSwitchedNetworkDetails()}
             />
           ) : null}
         </ToastContainer>
@@ -779,6 +868,8 @@ export default class Routes extends Component {
         return t('connectingToSepolia');
       case NETWORK_TYPES.LINEA_GOERLI:
         return t('connectingToLineaGoerli');
+      case NETWORK_TYPES.LINEA_SEPOLIA:
+        return t('connectingToLineaSepolia');
       case NETWORK_TYPES.LINEA_MAINNET:
         return t('connectingToLineaMainnet');
       default:

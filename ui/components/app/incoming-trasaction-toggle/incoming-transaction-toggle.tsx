@@ -13,15 +13,19 @@ import { PolymorphicRef } from '../../component-library/box';
 import { TEST_CHAINS } from '../../../../shared/constants/network';
 import NetworkToggle from './network-toggle';
 
-interface IncomingTransactionToggleProps {
+type IncomingTransactionToggleProps = {
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   wrapperRef?: PolymorphicRef<any>;
   incomingTransactionsPreferences: Record<string, boolean>;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   allNetworks: Record<string, any>[];
   setIncomingTransactionsPreferences: (
     chainId: string,
     isAllEnabledValue: boolean,
   ) => void;
-}
+};
 
 const IncomingTransactionToggle = ({
   wrapperRef,
@@ -82,8 +86,14 @@ IncomingTransactionToggle.propTypes = {
 
 function generateIncomingNetworkPreferences(
   incomingTransactionsPreferences: Record<string, boolean>,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   allNetworks: Record<string, any>,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Record<string, any> {
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const incomingTxnPreferences: Record<string, any> = {};
 
   Object.keys(allNetworks).forEach((id) => {

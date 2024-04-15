@@ -21,8 +21,6 @@ import {
   INVALID_RECIPIENT_ADDRESS_ERROR,
   INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR,
   KNOWN_RECIPIENT_ADDRESS_WARNING,
-  NEGATIVE_ETH_ERROR,
-  NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR,
   RECIPIENT_TYPES,
 } from '../../pages/confirmations/send/send.constants';
 
@@ -65,6 +63,7 @@ import {
   addTransactionAndRouteToConfirmationPage,
   updateTransactionSendFlowHistory,
   getCurrentNetworkEIP1559Compatibility,
+  getLayer1GasFee,
 } from '../../store/actions';
 import { setCustomGasLimit } from '../gas/gas.duck';
 import {
@@ -80,6 +79,7 @@ import {
   getTokenIdParam,
 } from '../../helpers/utils/token-util';
 import {
+  IS_FLASK,
   checkExistingAddresses,
   isDefaultMetaMaskChain,
   isOriginContractAddress,
@@ -98,7 +98,6 @@ import {
   toChecksumHexAddress,
 } from '../../../shared/modules/hexstring-utils';
 import { isSmartContractAddress } from '../../helpers/utils/transactions.util';
-import fetchEstimatedL1Fee from '../../helpers/utils/optimism/fetchEstimatedL1Fee';
 
 import {
   AssetType,
@@ -516,20 +515,23 @@ export const computeEstimatedGasLimit = createAsyncThunk(
 
     let gasTotalForLayer1;
     if (isMultiLayerFeeNetwork) {
-      gasTotalForLayer1 = await fetchEstimatedL1Fee(chainId, {
-        txParams: {
-          gasPrice: draftTransaction.gas.gasPrice,
-          gas: draftTransaction.gas.gasLimit,
-          to: draftTransaction.recipient.address?.toLowerCase(),
-          value:
-            send.amountMode === AMOUNT_MODES.MAX
-              ? send.selectedAccount.balance
-              : draftTransaction.amount.value,
-          from: send.selectedAccount.address,
-          data: draftTransaction.userInputHexData,
-          type: '0x0',
-        },
-      });
+      gasTotalForLayer1 = await thunkApi.dispatch(
+        getLayer1GasFee({
+          transactionParams: {
+            gasPrice: draftTransaction.gas.gasPrice,
+            gas: draftTransaction.gas.gasLimit,
+            to: draftTransaction.recipient.address?.toLowerCase(),
+            value:
+              send.amountMode === AMOUNT_MODES.MAX
+                ? send.selectedAccount.balance
+                : draftTransaction.amount.value,
+            from: send.selectedAccount.address,
+            data: draftTransaction.userInputHexData,
+            type: '0x0',
+          },
+          chainId,
+        }),
+      );
     }
 
     if (
@@ -1302,16 +1304,10 @@ const slice = createSlice({
         case draftTransaction.asset.type === AssetType.NFT &&
           draftTransaction.asset.details.standard === TokenStandard.ERC1155 &&
           !isERC1155BalanceSufficient({
-            tokenBalance: draftTransaction.asset.details.balance ?? '0x0',
+            tokenBalance: draftTransaction.asset.balance ?? '0x0',
             amount: draftTransaction.amount.value,
           }):
           draftTransaction.amount.error = INSUFFICIENT_FUNDS_ERROR;
-          break;
-        // if the amount of tokens is negative or equal to zero, set error to NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR
-        case amountValue.lessThanOrEqualTo() &&
-          draftTransaction.asset.type === AssetType.NFT &&
-          draftTransaction.asset.details.standard === TokenStandard.ERC1155:
-          draftTransaction.amount.error = NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR;
           break;
 
         // if the amount of tokens is a float, set error to FLOAT_TOKENS_ERROR
@@ -1319,11 +1315,6 @@ const slice = createSlice({
           draftTransaction.asset.type === AssetType.NFT &&
           draftTransaction.asset.details.standard === TokenStandard.ERC1155:
           draftTransaction.amount.error = FLOAT_TOKENS_ERROR;
-          break;
-        // if the amount is negative, set error to NEGATIVE_ETH_ERROR
-        // TODO: change this to NEGATIVE_ERROR and remove the currency bias.
-        case amountValue.isNegative():
-          draftTransaction.amount.error = NEGATIVE_ETH_ERROR;
           break;
         // If none of the above are true, set error to null
         default:
@@ -1383,6 +1374,7 @@ const slice = createSlice({
             (!isValidHexAddress(state.recipientInput, {
               mixedCaseUseChecksum: true,
             }) &&
+              !IS_FLASK &&
               !isValidDomainName(state.recipientInput))
           ) {
             draftTransaction.recipient.error = isDefaultMetaMaskChain(chainId)
@@ -2179,7 +2171,9 @@ export function updateSendAsset(
 
           if (isCurrentOwner) {
             asset.error = null;
-            asset.balance = '0x1';
+            asset.balance = details.balance
+              ? addHexPrefix(decimalToHex(details.balance))
+              : '0x1';
           } else {
             throw new Error(
               'Send slice initialized as NFT send with an NFT not currently owned by the select account',

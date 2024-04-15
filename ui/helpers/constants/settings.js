@@ -80,6 +80,13 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('advanced'),
+    sectionMessage: (t) => t('smartTransactions'),
+    descriptionMessage: (t) => t('stxOptInDescription'),
+    route: `${ADVANCED_ROUTE}#smart-transactions`,
+    icon: 'fas fa-upload',
+  },
+  {
+    tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('showHexData'),
     descriptionMessage: (t) => t('showHexDataDescription'),
     route: `${ADVANCED_ROUTE}#show-hexdata`,
@@ -279,12 +286,12 @@ export const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#security-alerts-blockaid`,
     icon: 'fa fa-lock',
   },
-  // securityAndPrivacy settingsRefs[17]
+  // securityAndPrivacy settingsRefs[18]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
-    sectionMessage: (t) => t('openSeaLabel'),
-    descriptionMessage: (t) => t('openSeaMessage'),
-    route: `${SECURITY_ROUTE}#security-alerts-opensea`,
+    sectionMessage: (t) => t('simulationsSettingSubHeader'),
+    descriptionMessage: (t) => t('simulationsSettingDescription'),
+    route: `${SECURITY_ROUTE}#transaction-simulations`,
     icon: 'fa fa-lock',
   },
   {
@@ -334,6 +341,13 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('lineaGoerli'),
     descriptionMessage: (t) => t('lineaGoerli'),
     route: `${NETWORKS_ROUTE}#networks-linea-goerli`,
+    icon: 'fa fa-plug',
+  },
+  {
+    tabMessage: (t) => t('networks'),
+    sectionMessage: (t) => t('lineaSepolia'),
+    descriptionMessage: (t) => t('lineaSepolia'),
+    route: `${NETWORKS_ROUTE}#networks-linea-sepolia`,
     icon: 'fa fa-plug',
   },
   {
@@ -430,6 +444,13 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('petnamesEnabledToggle'),
     descriptionMessage: (t) => t('petnamesEnabledToggleDescription'),
     route: `${EXPERIMENTAL_ROUTE}#nicknames`,
+    icon: 'fas fa-flask',
+  },
+  {
+    tabMessage: (t) => t('experimental'),
+    sectionMessage: (t) => t('notificationsFeatureToggle'),
+    descriptionMessage: (t) => t('notificationsFeatureToggleDescription'),
+    route: `${EXPERIMENTAL_ROUTE}#notifications`,
     icon: 'fas fa-flask',
   },
 

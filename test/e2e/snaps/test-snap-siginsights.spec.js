@@ -77,16 +77,6 @@ describe('Test Snap Signature Insights', function () {
           windowHandles,
         );
 
-        // wait for and click use flask
-        await driver.waitForSelector({
-          text: 'Use MetaMask Flask',
-          tag: 'button',
-        });
-        await driver.clickElement({
-          text: 'Use MetaMask Flask',
-          tag: 'button',
-        });
-
         // find and scroll to basic actions and click connect
         const connectButton1 = await driver.findElement('#connectButton');
         await driver.scrollToElement(connectButton1);

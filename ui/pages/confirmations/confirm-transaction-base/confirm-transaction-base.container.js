@@ -24,6 +24,10 @@ import {
   setDefaultHomeActiveTabName,
   addToAddressBook,
   updateTransaction,
+  updateEditableParams,
+  dismissOpenSeaToBlockaidBanner,
+  setSwapsFeatureFlags,
+  fetchSmartTransactionsLiveness,
 } from '../../../store/actions';
 import { isBalanceSufficient } from '../send/send.utils';
 import { shortenAddress, valuesFor } from '../../../helpers/utils/util';
@@ -51,7 +55,14 @@ import {
   getUnapprovedTransactions,
   getInternalAccountByAddress,
   getApprovedAndSignedTransactions,
+  getHasDismissedOpenSeaToBlockaidBanner,
+  getHasMigratedFromOpenSeaToBlockaid,
+  getIsNetworkSupportedByBlockaid,
 } from '../../../selectors';
+import {
+  getCurrentChainSupportsSmartTransactions,
+  getSmartTransactionsOptInStatus,
+} from '../../../../shared/modules/selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
   isAddressLedger,
@@ -154,6 +165,9 @@ const mapStateToProps = (state, ownProps) => {
     data,
   } = (transaction && transaction.txParams) || txParams;
   const accounts = getMetaMaskAccounts(state);
+  const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(state);
+  const currentChainSupportsSmartTransactions =
+    getCurrentChainSupportsSmartTransactions(state);
 
   const transactionData = parseStandardTokenTransactionData(data);
   const tokenToAddress = getTokenAddressParam(transactionData);
@@ -268,6 +282,12 @@ const mapStateToProps = (state, ownProps) => {
   const isUserOpContractDeployError =
     fullTxData.isUserOperation && type === TransactionType.deployContract;
 
+  const hasMigratedFromOpenSeaToBlockaid =
+    getHasMigratedFromOpenSeaToBlockaid(state);
+  const hasDismissedOpenSeaToBlockaidBanner =
+    getHasDismissedOpenSeaToBlockaidBanner(state);
+  const isNetworkSupportedByBlockaid = getIsNetworkSupportedByBlockaid(state);
+
   return {
     balance,
     fromAddress,
@@ -327,6 +347,8 @@ const mapStateToProps = (state, ownProps) => {
     isUserOpContractDeployError,
     useMaxValue,
     maxValue,
+    smartTransactionsOptInStatus,
+    currentChainSupportsSmartTransactions,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     accountType,
     isNoteToTraderSupported,
@@ -334,6 +356,9 @@ const mapStateToProps = (state, ownProps) => {
     custodianPublishesTransaction,
     rpcUrl,
     ///: END:ONLY_INCLUDE_IF
+    hasMigratedFromOpenSeaToBlockaid,
+    hasDismissedOpenSeaToBlockaidBanner,
+    isNetworkSupportedByBlockaid,
   };
 };
 
@@ -378,6 +403,15 @@ export const mapDispatchToProps = (dispatch) => {
     updateTransaction: (txMeta) => {
       dispatch(updateTransaction(txMeta, true));
     },
+    updateTransactionValue: (id, value) => {
+      dispatch(updateEditableParams(id, { value }));
+    },
+    setSwapsFeatureFlags: (swapsFeatureFlags) => {
+      dispatch(setSwapsFeatureFlags(swapsFeatureFlags));
+    },
+    fetchSmartTransactionsLiveness: () => {
+      dispatch(fetchSmartTransactionsLiveness());
+    },
     getNextNonce: () => dispatch(getNextNonce()),
     setDefaultHomeActiveTabName: (tabName) =>
       dispatch(setDefaultHomeActiveTabName(tabName)),
@@ -421,6 +455,8 @@ export const mapDispatchToProps = (dispatch) => {
     setWaitForConfirmDeepLinkDialog: (wait) =>
       dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
     ///: END:ONLY_INCLUDE_IF
+    dismissOpenSeaToBlockaidBanner: () =>
+      dispatch(dismissOpenSeaToBlockaidBanner()),
   };
 };
 

@@ -21,7 +21,7 @@ declare module 'react-tippy' {
   export type Size = 'small' | 'regular' | 'big';
   export type Theme = 'dark' | 'light' | 'transparent';
 
-  export interface TooltipProps {
+  export type TooltipProps = {
     title?: string;
     disabled?: boolean;
     open?: boolean;
@@ -47,7 +47,11 @@ declare module 'react-tippy' {
     followCursor?: boolean;
     inertia?: boolean;
     transitionFlip?: boolean;
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     popperOptions?: any;
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     html?: React.ReactElement<any>;
     unmountHTMLWhenHide?: boolean;
     size?: Size;
@@ -60,7 +64,7 @@ declare module 'react-tippy' {
     theme?: Theme;
     className?: string;
     style?: React.CSSProperties;
-  }
+  };
 
   export class Tooltip extends React.Component<TooltipProps> {}
 
