@@ -1344,7 +1344,7 @@ jobs:
             - test-artifacts
 
   job-publish-prerelease:
-    executor: node-browsers-small
+    executor: node-browsers-medium
     steps:
       - checkout
       - attach_workspace:
