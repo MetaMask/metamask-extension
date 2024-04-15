@@ -13,22 +13,10 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
-import {
-  DEFAULT_PRECISION_DECIMALS,
-  MIN_DISPLAY_AMOUNT,
-} from '../../../../hooks/useCurrencyDisplay';
 import Tooltip from '../../../../components/ui/tooltip';
 import { getCurrentLocale } from '../../../../ducks/locale/locale';
 import { AssetIdentifier } from './types';
-
-// Format an amount for display.
-const formatAmount = (amount: BigNumber): string => {
-  const displayAmount = amount.abs().round(DEFAULT_PRECISION_DECIMALS);
-
-  return displayAmount.isZero() && !amount.isZero()
-    ? MIN_DISPLAY_AMOUNT
-    : displayAmount.toString();
-};
+import { formatAmount, formatAmountMaxPrecision } from './formatAmount';
 
 /**
  * Displays a pill with an amount and a background color indicating whether the amount
@@ -57,10 +45,11 @@ export const AmountPill: React.FC<{
 
   // ERC721 amounts are always 1 and are not displayed.
   if (asset.standard !== TokenStandard.ERC721) {
-    const formattedAmount = formatAmount(amount);
-    const fullPrecisionAmount = new Intl.NumberFormat(locale, {
-      minimumSignificantDigits: 1,
-    }).format(amount.abs().toNumber());
+    const formattedAmount = formatAmount(locale, amount.abs());
+    const fullPrecisionAmount = formatAmountMaxPrecision(
+      locale,
+      amount.abs().toNumber(),
+    );
 
     amountParts.push(formattedAmount);
     tooltipParts.push(fullPrecisionAmount);

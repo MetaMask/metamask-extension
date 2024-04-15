@@ -62,15 +62,15 @@ describe('AmountPill', () => {
     {
       amount: new BigNumber(-123.1234567),
       expected: {
-        text: '- 123.123457',
+        text: '- 123.1',
         tooltip: '123.1234567',
       },
     },
     {
-      amount: new BigNumber(789.012),
+      amount: new BigNumber(789.412),
       expected: {
-        text: '+ 789.012',
-        tooltip: '789.012',
+        text: '+ 789.4',
+        tooltip: '789.412',
       },
     },
     {
