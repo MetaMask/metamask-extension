@@ -2562,21 +2562,6 @@
   "notificationsMarkAllAsRead": {
     "message": "将所有标记为已读"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "了解详情"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "🎉 我们很高兴宣布推出 MetaMask Snaps 公开测试版！"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "使用开发者社群构建的 snap，个性化您的钱包！"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "Snaps 可以帮助您利用 MetaMask 做更多事情，例如连接到更多网络、查看交易见解，以及获取自定义通知。"
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "介绍 MetaMask Snaps"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "在此账户中找到$1枚新代币",
     "description": "$1 is the number of new tokens detected"
@@ -3267,6 +3252,10 @@
   "securityAndPrivacy": {
     "message": "安全和隐私"
   },
+  "securityProviderPoweredBy": {
+    "message": "由 $1 提供支持",
+    "description": "The security provider that is providing data"
+  },
   "seeDetails": {
     "message": "查看详情"
   },
@@ -3490,12 +3479,6 @@
   },
   "smartContracts": {
     "message": "智能合约"
-  },
-  "smartSwapsAreHere": {
-    "message": "智能兑换已推出！"
-  },
-  "smartSwapsDescription": {
-    "message": "MetaMask Swaps 变得更加智能！启用智能兑换使得 MetaMask 在编程方面让您的兑换体验更加优化，有助于："
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "没有足够的资金进行智能兑换。"
@@ -3775,18 +3758,6 @@
   },
   "strong": {
     "message": "强"
-  },
-  "stxBenefit1": {
-    "message": "将交易成本减至最低"
-  },
-  "stxBenefit2": {
-    "message": "减少交易失败"
-  },
-  "stxBenefit3": {
-    "message": "消除卡住的交易"
-  },
-  "stxBenefit4": {
-    "message": "防止抢先交易"
   },
   "stxCancelled": {
     "message": "交换就会失败"
@@ -4718,7 +4689,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "在 $2 上查看 $1",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "在 Etherscan 上查看 $1",
