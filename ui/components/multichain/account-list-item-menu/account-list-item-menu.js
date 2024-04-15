@@ -12,7 +12,6 @@ import {
   getAccountTypeForKeyring,
   getPinnedAccountsList,
   getHiddenAccountsList,
-  getOriginOfCurrentTab,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getMetaMaskAccountsOrdered,
   ///: END:ONLY_INCLUDE_IF
@@ -22,7 +21,6 @@ import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils
 ///: END:ONLY_INCLUDE_IF
 import { MenuItem } from '../../ui/menu';
 import {
-  Box,
   IconName,
   ModalFocus,
   Popover,
@@ -35,12 +33,11 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
-  addPermittedAccount,
   showModal,
   updateAccountsList,
   updateHiddenAccountsList,
 } from '../../../store/actions';
-import { Display, TextVariant } from '../../../helpers/constants/design-system';
+import { TextVariant } from '../../../helpers/constants/design-system';
 import { formatAccountType } from '../../../helpers/utils/metrics';
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '..';
 
@@ -158,8 +155,6 @@ export const AccountListItemMenu = ({
     );
     dispatch(updateHiddenAccountsList(updatedHiddenAccountList));
   };
-
-  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
 
   return (
     <Popover
