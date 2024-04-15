@@ -8,7 +8,7 @@ type NFTInputProps = {
   className?: string;
 };
 
-const NUMBERS_REGEX = /[0-9]/u;
+const NUMBERS_REGEX = /^[0-9]*$/u;
 
 export function NFTInput({ integerValue, onChange, className }: NFTInputProps) {
   const handleChange = (newValueAsString: number) => {

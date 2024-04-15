@@ -65,6 +65,10 @@ import SnapAccountTransactionLoadingScreen from '../../snap-account-transaction-
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import FeeDetailsComponent from '../components/fee-details-component/fee-details-component';
 import { SimulationDetails } from '../components/simulation-details';
+import { BannerAlert } from '../../../components/component-library';
+import { Severity } from '../../../helpers/constants/design-system';
+
+import { fetchSwapsFeatureFlags } from '../../swaps/swaps.util';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -162,12 +166,21 @@ export default class ConfirmTransactionBase extends Component {
     tokenSymbol: PropTypes.string,
     updateTransaction: PropTypes.func,
     updateTransactionValue: PropTypes.func,
+    setSwapsFeatureFlags: PropTypes.func,
+    fetchSmartTransactionsLiveness: PropTypes.func,
     isUsingPaymaster: PropTypes.bool,
     isSigningOrSubmitting: PropTypes.bool,
     isUserOpContractDeployError: PropTypes.bool,
     useMaxValue: PropTypes.bool,
     maxValue: PropTypes.string,
     isMultiLayerFeeNetwork: PropTypes.bool,
+    hasMigratedFromOpenSeaToBlockaid: PropTypes.bool,
+    hasDismissedOpenSeaToBlockaidBanner: PropTypes.bool,
+    dismissOpenSeaToBlockaidBanner: PropTypes.func,
+    isNetworkSupportedByBlockaid: PropTypes.bool,
+    isSmartTransaction: PropTypes.bool,
+    smartTransactionsOptInStatus: PropTypes.bool,
+    currentChainSupportsSmartTransactions: PropTypes.bool,
   };
 
   state = {
@@ -393,6 +406,10 @@ export default class ConfirmTransactionBase extends Component {
       tokenSymbol,
       isUsingPaymaster,
       isMultiLayerFeeNetwork,
+      hasMigratedFromOpenSeaToBlockaid,
+      hasDismissedOpenSeaToBlockaidBanner,
+      dismissOpenSeaToBlockaidBanner,
+      isNetworkSupportedByBlockaid,
     } = this.props;
 
     const { t } = this.context;
@@ -509,15 +526,44 @@ export default class ConfirmTransactionBase extends Component {
       </div>
     );
 
+    const { simulationData } = txData;
+
     const simulationDetails = (
       <SimulationDetails
-        simulationData={txData.simulationData}
+        simulationData={simulationData}
         transactionId={txData.id}
       />
     );
 
+    const showOpenSeaToBlockaidBannerAlert =
+      hasMigratedFromOpenSeaToBlockaid &&
+      !isNetworkSupportedByBlockaid &&
+      !hasDismissedOpenSeaToBlockaidBanner;
+    const handleCloseOpenSeaToBlockaidBannerAlert = () => {
+      dismissOpenSeaToBlockaidBanner();
+    };
+
+    const showTotals = Boolean(simulationData?.error);
+
     return (
       <div className="confirm-page-container-content__details">
+        {showOpenSeaToBlockaidBannerAlert ? (
+          <BannerAlert
+            severity={Severity.Info}
+            title={t('openSeaToBlockaidTitle')}
+            description={t('openSeaToBlockaidDescription')}
+            actionButtonLabel={t('openSeaToBlockaidBtnLabel')}
+            actionButtonProps={{
+              href: 'https://snaps.metamask.io/transaction-insights',
+              externalLink: true,
+            }}
+            marginBottom={4}
+            marginLeft={4}
+            marginTop={4}
+            marginRight={4}
+            onClose={handleCloseOpenSeaToBlockaidBannerAlert}
+          />
+        ) : null}
         <TransactionAlerts
           txData={txData}
           setUserAcknowledgedGasMissing={() =>
@@ -554,33 +600,36 @@ export default class ConfirmTransactionBase extends Component {
             ),
           ]}
         />
-        <TransactionDetail
-          disableEditGasFeeButton
-          disabled={isDisabled()}
-          userAcknowledgedGasMissing={userAcknowledgedGasMissing}
-          rows={[
-            <TransactionDetailItem
-              key="confirm-transaction-base-total-item"
-              detailTitle={t('total')}
-              detailText={
-                useCurrencyRateCheck && renderTotalDetailText(getTotalAmount())
-              }
-              detailTotal={renderTotalMaxAmount(false)}
-              subTitle={t('transactionDetailGasTotalSubtitle')}
-              subText={
-                <div className="confirm-page-container-content__total-amount">
-                  <LoadingHeartBeat
-                    estimateUsed={this.props.txData?.userFeeLevel}
-                  />
-                  <strong key="editGasSubTextAmountLabel">
-                    {t('editGasSubTextAmountLabel')}
-                  </strong>{' '}
-                  {renderTotalMaxAmount(true)}
-                </div>
-              }
-            />,
-          ]}
-        />
+        {showTotals && (
+          <TransactionDetail
+            disableEditGasFeeButton
+            disabled={isDisabled()}
+            userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+            rows={[
+              <TransactionDetailItem
+                key="confirm-transaction-base-total-item"
+                detailTitle={t('total')}
+                detailText={
+                  useCurrencyRateCheck &&
+                  renderTotalDetailText(getTotalAmount())
+                }
+                detailTotal={renderTotalMaxAmount(false)}
+                subTitle={t('transactionDetailGasTotalSubtitle')}
+                subText={
+                  <div className="confirm-page-container-content__total-amount">
+                    <LoadingHeartBeat
+                      estimateUsed={this.props.txData?.userFeeLevel}
+                    />
+                    <strong key="editGasSubTextAmountLabel">
+                      {t('editGasSubTextAmountLabel')}
+                    </strong>{' '}
+                    {renderTotalMaxAmount(true)}
+                  </div>
+                }
+              />,
+            ]}
+          />
+        )}
         {nonceField}
         {showLedgerSteps ? (
           <LedgerInstructionField
@@ -702,7 +751,10 @@ export default class ConfirmTransactionBase extends Component {
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       fromInternalAccount,
       ///: END:ONLY_INCLUDE_IF
+      isSmartTransaction,
     } = this.props;
+
+    const hideLoadingIndicator = isSmartTransaction;
 
     let loadingIndicatorMessage;
 
@@ -749,11 +801,7 @@ export default class ConfirmTransactionBase extends Component {
       () => {
         this._removeBeforeUnload();
 
-        sendTransaction(
-          txData,
-          false, // hideLoadingIndicator
-          loadingIndicatorMessage, // loadingIndicatorMessage
-        )
+        sendTransaction(txData, hideLoadingIndicator, loadingIndicatorMessage)
           .then(() => {
             if (!this._isMounted) {
               return;
@@ -955,13 +1003,17 @@ export default class ConfirmTransactionBase extends Component {
     window.removeEventListener('beforeunload', this._beforeUnloadForGasPolling);
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     this._isMounted = true;
     const {
       toAddress,
       txData: { origin } = {},
       getNextNonce,
       tryReverseResolveAddress,
+      smartTransactionsOptInStatus,
+      currentChainSupportsSmartTransactions,
+      setSwapsFeatureFlags,
+      fetchSmartTransactionsLiveness,
     } = this.props;
     const { trackEvent } = this.context;
     trackEvent({
@@ -997,6 +1049,16 @@ export default class ConfirmTransactionBase extends Component {
     });
 
     window.addEventListener('beforeunload', this._beforeUnloadForGasPolling);
+
+    if (smartTransactionsOptInStatus && currentChainSupportsSmartTransactions) {
+      // TODO: Fetching swaps feature flags, which include feature flags for smart transactions, is only a short-term solution.
+      // Long-term, we want to have a new proxy service specifically for feature flags.
+      const [swapsFeatureFlags] = await Promise.all([
+        fetchSwapsFeatureFlags(),
+        fetchSmartTransactionsLiveness(),
+      ]);
+      await setSwapsFeatureFlags(swapsFeatureFlags);
+    }
   }
 
   componentWillUnmount() {
@@ -1066,8 +1128,8 @@ export default class ConfirmTransactionBase extends Component {
     // as this component is made functional, useTransactionFunctionType can be used to get functionType
     const isTokenApproval =
       txData.type === TransactionType.tokenMethodSetApprovalForAll ||
-      txData.type === TransactionType.tokenMethodApprove;
-
+      txData.type === TransactionType.tokenMethodApprove ||
+      txData.type === TransactionType.tokenMethodIncreaseAllowance;
     const isContractInteraction =
       txData.type === TransactionType.contractInteraction;
 

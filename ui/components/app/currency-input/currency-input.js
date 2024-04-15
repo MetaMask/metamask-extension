@@ -22,7 +22,6 @@ import useProcessNewDecimalValue from './hooks/useProcessNewDecimalValue';
 
 const NATIVE_CURRENCY_DECIMALS = 18;
 const LARGE_SYMBOL_LENGTH = 7;
-const DECIMAL_INPUT_REGEX = /^\d*(\.|,)?\d*$/u;
 
 /**
  * Component that allows user to enter currency values as a number, and props receive a converted
@@ -112,29 +111,31 @@ export default function CurrencyInput({
     );
   };
 
-  // reset form when token is changed
+  // align input to upstream value
   useEffect(() => {
-    setTokenDecimalValue('0');
-    setFiatDecimalValue('0');
-  }, [asset?.address]);
-
-  useEffect(() => {
-    // do not override the input when it is using fiat, since it is imprecise
-    if (!isTokenPrimary) {
-      return;
-    }
-
     const decimalizedHexValue = new Numeric(hexValue, 16)
       .toBase(10)
       .shiftedBy(assetDecimals)
       .toString();
 
+    if (Number(decimalizedHexValue) === Number(tokenDecimalValue)) {
+      return;
+    }
+
     const { newTokenDecimalValue, newFiatDecimalValue } =
-      processNewDecimalValue(decimalizedHexValue);
+      processNewDecimalValue(decimalizedHexValue, true);
 
     setTokenDecimalValue(newTokenDecimalValue);
     setFiatDecimalValue(newFiatDecimalValue);
-  }, [hexValue, assetDecimals, processNewDecimalValue, isTokenPrimary]);
+    // tokenDecimalValue does not need to be in here, since this side effect is only for upstream updates
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    hexValue,
+    asset?.address,
+    processNewDecimalValue,
+    isTokenPrimary,
+    assetDecimals,
+  ]);
 
   const renderSwapButton = () => {
     if (swapIcon) {
@@ -206,7 +207,6 @@ export default function CurrencyInput({
           ? renderSwapButton()
           : undefined
       }
-      keyPressRegex={DECIMAL_INPUT_REGEX}
     >
       {renderConversionComponent()}
     </UnitInput>

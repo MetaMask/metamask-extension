@@ -20,11 +20,10 @@ import {
   Amount,
   BalanceChange,
   FIAT_UNAVAILABLE,
-  NativeAssetIdentifier,
+  NATIVE_ASSET_IDENTIFIER,
   TokenAssetIdentifier,
 } from './types';
 
-const NATIVE_ASSET: NativeAssetIdentifier = { standard: TokenStandard.none };
 const NATIVE_DECIMALS = 18;
 const ERC20_DEFAULT_DECIMALS = 18;
 const EMPTY_TOKEN_BALANCE_CHANGES: SimulationTokenBalanceChange[] = [];
@@ -83,7 +82,7 @@ function getNativeBalanceChange(
   if (!nativeBalanceChange) {
     return undefined;
   }
-  const asset = NATIVE_ASSET;
+  const asset = NATIVE_ASSET_IDENTIFIER;
   const amount = getAssetAmount(nativeBalanceChange, NATIVE_DECIMALS);
   const fiatAmount = amount.numeric
     .applyConversionRate(nativeFiatRate)

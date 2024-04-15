@@ -1,4 +1,7 @@
-import { SimulationData } from '@metamask/transaction-controller';
+import {
+  SimulationData,
+  SimulationErrorCode,
+} from '@metamask/transaction-controller';
 import { useContext, useEffect, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { useTransactionEventFragment } from '../../hooks/useTransactionEventFragment';
@@ -110,9 +113,23 @@ export function useSimulationMetrics({
 
   const params = { properties, sensitiveProperties };
 
+  const shouldSkipMetrics = [
+    SimulationErrorCode.ChainNotSupported,
+    SimulationErrorCode.Disabled,
+  ].includes(simulationData?.error?.code as SimulationErrorCode);
+
   useEffect(() => {
+    if (shouldSkipMetrics) {
+      return;
+    }
+
     updateTransactionEventFragment(params, transactionId);
-  }, [transactionId, JSON.stringify(params)]);
+  }, [
+    shouldSkipMetrics,
+    updateTransactionEventFragment,
+    transactionId,
+    JSON.stringify(params),
+  ]);
 }
 
 function useIncompleteAssetEvent(
@@ -189,6 +206,8 @@ function getSensitiveProperties(changes: BalanceChange[], prefix: string) {
   return getPrefixProperties({ total_value: totalValue }, prefix);
 }
 
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getPrefixProperties(properties: Record<string, any>, prefix: string) {
   return Object.entries(properties).reduce(
     (acc, [key, value]) => ({
@@ -238,7 +257,7 @@ function getSimulationResponseType(
     return SimulationResponseType.InProgress;
   }
 
-  if (simulationData.error?.isReverted) {
+  if (simulationData.error?.code === SimulationErrorCode.Reverted) {
     return SimulationResponseType.Reverted;
   }
 
