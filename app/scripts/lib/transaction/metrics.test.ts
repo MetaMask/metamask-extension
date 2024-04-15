@@ -68,8 +68,12 @@ const mockTransactionMetricsRequest = {
   getTokenStandardAndDetails: jest.fn(),
   getTransaction: jest.fn(),
   provider: provider as Provider,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   snapAndHardwareMessenger: jest.fn() as any,
   trackEvent: jest.fn(),
+  getIsSmartTransaction: jest.fn(),
+  getSmartTransactionByMinedTxHash: jest.fn(),
 } as TransactionMetricsRequest;
 
 describe('Transaction metrics', () => {
@@ -77,9 +81,17 @@ describe('Transaction metrics', () => {
     mockChainId,
     mockNetworkId,
     mockTransactionMeta: TransactionMeta,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockTransactionMetaWithBlockaid: any,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expectedProperties: any,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expectedSensitiveProperties: any,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockActionId: any;
 
   beforeEach(() => {
@@ -160,6 +172,8 @@ describe('Transaction metrics', () => {
 
   describe('handleTransactionAdded', () => {
     it('should return if transaction meta is not defined', async () => {
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await handleTransactionAdded(mockTransactionMetricsRequest, {} as any);
       expect(
         mockTransactionMetricsRequest.createEventFragment,
@@ -168,6 +182,8 @@ describe('Transaction metrics', () => {
 
     it('should create event fragment', async () => {
       await handleTransactionAdded(mockTransactionMetricsRequest, {
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         transactionMeta: mockTransactionMeta as any,
         actionId: mockActionId,
       });
@@ -195,6 +211,8 @@ describe('Transaction metrics', () => {
       };
 
       await handleTransactionAdded(mockTransactionMetricsRequest, {
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         transactionMeta: mockTransactionMeta as any,
         actionId: mockActionId,
       });
@@ -221,6 +239,8 @@ describe('Transaction metrics', () => {
 
     it('should create event fragment with blockaid', async () => {
       await handleTransactionAdded(mockTransactionMetricsRequest, {
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         transactionMeta: mockTransactionMetaWithBlockaid as any,
         actionId: mockActionId,
       });
@@ -251,6 +271,8 @@ describe('Transaction metrics', () => {
 
   describe('handleTransactionApproved', () => {
     it('should return if transaction meta is not defined', async () => {
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await handleTransactionApproved(mockTransactionMetricsRequest, {} as any);
       expect(
         mockTransactionMetricsRequest.createEventFragment,
@@ -265,6 +287,8 @@ describe('Transaction metrics', () => {
 
     it('should create, update, finalize event fragment', async () => {
       await handleTransactionApproved(mockTransactionMetricsRequest, {
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         transactionMeta: mockTransactionMeta as any,
         actionId: mockActionId,
       });
@@ -306,6 +330,8 @@ describe('Transaction metrics', () => {
 
     it('should create, update, finalize event fragment with blockaid', async () => {
       await handleTransactionApproved(mockTransactionMetricsRequest, {
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         transactionMeta: mockTransactionMetaWithBlockaid as any,
         actionId: mockActionId,
       });
@@ -362,6 +388,8 @@ describe('Transaction metrics', () => {
 
   describe('handleTransactionFailed', () => {
     it('should return if transaction meta is not defined', async () => {
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await handleTransactionFailed(mockTransactionMetricsRequest, {} as any);
       expect(
         mockTransactionMetricsRequest.createEventFragment,
@@ -386,6 +414,8 @@ describe('Transaction metrics', () => {
         transactionMeta: mockTransactionMeta,
         actionId: mockActionId,
         error: mockErrorMessage,
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
       const expectedUniqueId = 'transaction-submitted-1';
@@ -440,6 +470,8 @@ describe('Transaction metrics', () => {
         transactionMeta: mockTransactionMetaWithBlockaid,
         actionId: mockActionId,
         error: mockErrorMessage,
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
       const expectedUniqueId = 'transaction-submitted-1';
@@ -503,6 +535,8 @@ describe('Transaction metrics', () => {
         transactionMeta: mockTransactionMeta,
         actionId: mockActionId,
         error: mockErrorMessage,
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
       const expectedUniqueId = 'transaction-submitted-1';
@@ -550,6 +584,8 @@ describe('Transaction metrics', () => {
     it('should return if transaction meta is not defined', async () => {
       await handleTransactionConfirmed(
         mockTransactionMetricsRequest,
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         {} as any,
       );
       expect(
@@ -573,6 +609,8 @@ describe('Transaction metrics', () => {
       await handleTransactionConfirmed(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMeta,
         actionId: mockActionId,
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
       const expectedUniqueId = 'transaction-submitted-1';
@@ -629,6 +667,8 @@ describe('Transaction metrics', () => {
       await handleTransactionConfirmed(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMetaWithBlockaid,
         actionId: mockActionId,
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
       const expectedUniqueId = 'transaction-submitted-1';
@@ -692,6 +732,8 @@ describe('Transaction metrics', () => {
 
   describe('handleTransactionDropped', () => {
     it('should return if transaction meta is not defined', async () => {
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await handleTransactionDropped(mockTransactionMetricsRequest, {} as any);
       expect(
         mockTransactionMetricsRequest.createEventFragment,
@@ -708,6 +750,8 @@ describe('Transaction metrics', () => {
       await handleTransactionDropped(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMeta,
         actionId: mockActionId,
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
       const expectedUniqueId = 'transaction-submitted-1';
@@ -756,6 +800,8 @@ describe('Transaction metrics', () => {
       await handleTransactionDropped(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMetaWithBlockaid,
         actionId: mockActionId,
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
       const expectedUniqueId = 'transaction-submitted-1';
@@ -817,6 +863,8 @@ describe('Transaction metrics', () => {
 
   describe('handleTransactionRejected', () => {
     it('should return if transaction meta is not defined', async () => {
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await handleTransactionRejected(mockTransactionMetricsRequest, {} as any);
       expect(
         mockTransactionMetricsRequest.createEventFragment,
@@ -833,6 +881,8 @@ describe('Transaction metrics', () => {
       await handleTransactionRejected(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMeta,
         actionId: mockActionId,
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
       const expectedUniqueId = 'transaction-added-1';
@@ -876,6 +926,8 @@ describe('Transaction metrics', () => {
       await handleTransactionRejected(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMetaWithBlockaid,
         actionId: mockActionId,
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any);
 
       const expectedUniqueId = 'transaction-added-1';
@@ -934,6 +986,8 @@ describe('Transaction metrics', () => {
     it('should return if transaction meta is not defined', async () => {
       await handleTransactionSubmitted(
         mockTransactionMetricsRequest,
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         {} as any,
       );
       expect(
@@ -943,6 +997,8 @@ describe('Transaction metrics', () => {
 
     it('should only create event fragment', async () => {
       await handleTransactionSubmitted(mockTransactionMetricsRequest, {
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         transactionMeta: mockTransactionMeta as any,
         actionId: mockActionId,
       });

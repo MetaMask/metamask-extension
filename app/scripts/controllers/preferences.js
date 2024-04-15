@@ -53,6 +53,7 @@ export default class PreferencesController {
         eth_sign: false,
       },
       useMultiAccountBalanceChecker: true,
+      hasDismissedOpenSeaToBlockaidBanner: false,
       useSafeChainsListValidation: true,
       // set to true means the dynamic list from the API is being used
       // set to false will be using the static list from contract-metadata
@@ -90,9 +91,11 @@ export default class PreferencesController {
         showExtensionInFullSizeView: false,
         showFiatInTestnets: false,
         showTestNetworks: false,
+        smartTransactionsOptInStatus: null, // null means we will show the Smart Transactions opt-in modal to a user if they are eligible
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
+        featureNotificationsEnabled: false,
       },
       // ENS decentralized website resolution
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
@@ -117,7 +120,6 @@ export default class PreferencesController {
 
     this.store = new ObservableStore(initState);
     this.store.setMaxListeners(13);
-    this.tokenListController = opts.tokenListController;
 
     opts.onKeyringStateChange((state) => {
       const accounts = new Set();
@@ -193,6 +195,14 @@ export default class PreferencesController {
   }
 
   /**
+   * Setter for the `dismissOpenSeaToBlockaidBanner` property
+   *
+   */
+  dismissOpenSeaToBlockaidBanner() {
+    this.store.updateState({ hasDismissedOpenSeaToBlockaidBanner: true });
+  }
+
+  /**
    * Setter for the `useSafeChainsListValidation` property
    *
    * @param {boolean} val - Whether or not the user prefers to turn off/on validation for manually adding networks
@@ -208,13 +218,6 @@ export default class PreferencesController {
    */
   setUseTokenDetection(val) {
     this.store.updateState({ useTokenDetection: val });
-    this.tokenListController.updatePreventPollingOnNetworkRestart(!val);
-    if (val) {
-      this.tokenListController.start();
-    } else {
-      this.tokenListController.clearingTokenListData();
-      this.tokenListController.stop();
-    }
   }
 
   /**

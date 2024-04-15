@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { NonEmptyArray } from '@metamask/utils';
 import {
   AlignItems,
@@ -22,8 +22,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getConnectedSitesList,
   getInternalAccounts,
-  getOrderedConnectedAccountsForActiveTab,
-  getOriginOfCurrentTab,
+  getOrderedConnectedAccountsForConnectedDapp,
   getPermissionSubjects,
   getPermittedAccountsByOrigin,
   getSelectedAccount,
@@ -45,8 +44,6 @@ import {
   IconSize,
   Text,
 } from '../../../component-library';
-import { Tab } from '../../../ui/tabs';
-import Tabs from '../../../ui/tabs/tabs.component';
 import { mergeAccounts } from '../../account-list-menu/account-list-menu';
 import {
   AccountListItem,
@@ -89,18 +86,26 @@ export const Connections = () => {
     setShowDisconnectedAllAccountsUpdatedToast,
   ] = useState(false);
 
-  const CONNECTED_ACCOUNTS_TAB_KEY = 'connected-accounts';
-  const activeTabOrigin: string = useSelector(getOriginOfCurrentTab);
+  const urlParams: { origin: string } = useParams();
+  const securedOrigin = decodeURIComponent(urlParams.origin);
+
+  const activeTabOrigin: string = securedOrigin;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const subjectMetadata: { [key: string]: any } = useSelector(
     getConnectedSitesList,
   );
   const siteMetadata = useSelector(getSubjectMetadata);
   const connectedSiteMetadata = siteMetadata[activeTabOrigin];
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { openMetaMaskTabs } = useSelector((state: any) => state.appState);
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { id } = useSelector((state: any) => state.activeTab);
 
-  const connectedAccounts = useSelector(
-    getOrderedConnectedAccountsForActiveTab,
+  const connectedAccounts = useSelector((state) =>
+    getOrderedConnectedAccountsForConnectedDapp(state, activeTabOrigin),
   );
   const selectedAccount = useSelector(getSelectedAccount);
   const internalAccounts = useSelector(getInternalAccounts);
@@ -108,10 +113,14 @@ export const Connections = () => {
 
   const permittedAccountsByOrigin = useSelector(
     getPermittedAccountsByOrigin,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ) as { [key: string]: any[] };
   const subjects = useSelector(getPermissionSubjects);
   const currentTabHasNoAccounts =
     !permittedAccountsByOrigin[activeTabOrigin]?.length;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let tabToConnect: { origin: any } = { origin: null };
   if (activeTabOrigin && currentTabHasNoAccounts && !openMetaMaskTabs[id]) {
     tabToConnect = {
@@ -153,6 +162,8 @@ export const Connections = () => {
 
   // In the mergeAccounts, we need the lastSelected value to determine which connectedAccount was last selected.
   const latestSelected = mergedAccounts.findIndex(
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (_account: any, index: any) => {
       return (
         index ===
@@ -160,6 +171,8 @@ export const Connections = () => {
           (
             acc: string | number,
             cur: { metadata: { lastSelected: number } },
+            // TODO: Replace `any` with type
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             i: any,
           ) =>
             cur.metadata.lastSelected >
@@ -213,55 +226,47 @@ export const Connections = () => {
             textAlign={TextAlign.Center}
             ellipsis
           >
-            {getURLHost(activeTabOrigin)}
+            {getURLHost(securedOrigin)}
           </Text>
         </Box>
       </Header>
       <Content padding={0}>
         {connectedSubjectsMetadata && mergeAccounts.length > 0 ? (
-          <Tabs defaultActiveTabKey="connections">
-            {
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              <Tab
-                tabKey={CONNECTED_ACCOUNTS_TAB_KEY}
-                name={t('connectedaccountsTabKey')}
-                padding={4}
-              >
-                {mergedAccounts.map((account: AccountType, index: any) => {
-                  const connectedSites: ConnectedSites = {};
-                  const connectedSite = connectedSites[account.address]?.find(
-                    ({ origin }) => origin === activeTabOrigin,
-                  );
-                  const isSelectedAccount =
-                    selectedAccount.address === account.address;
-                  // Match the index of latestSelected Account with the index of all the accounts and set the active status
-                  let mergedAccountsProps;
-                  if (index === latestSelected) {
-                    mergedAccountsProps = { ...account, isAccountActive: true };
-                  } else {
-                    mergedAccountsProps = { ...account };
+          <Box>
+            {/* TODO: Replace `any` with type */}
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+            {mergedAccounts.map((account: AccountType, index: any) => {
+              const connectedSites: ConnectedSites = {};
+              const connectedSite = connectedSites[account.address]?.find(
+                ({ origin }) => origin === activeTabOrigin,
+              );
+              const isSelectedAccount =
+                selectedAccount.address === account.address;
+              // Match the index of latestSelected Account with the index of all the accounts and set the active status
+              let mergedAccountsProps;
+              if (index === latestSelected) {
+                mergedAccountsProps = { ...account, isAccountActive: true };
+              } else {
+                mergedAccountsProps = { ...account };
+              }
+              return (
+                <AccountListItem
+                  identity={mergedAccountsProps}
+                  key={account.address}
+                  accountsCount={mergedAccounts.length}
+                  selected={isSelectedAccount}
+                  connectedAvatar={connectedSite?.iconUrl}
+                  connectedAvatarName={connectedSite?.name}
+                  menuType={AccountListItemMenuTypes.Connection}
+                  currentTabOrigin={activeTabOrigin}
+                  isActive={
+                    mergedAccountsProps.isAccountActive ? t('active') : null
                   }
-                  return (
-                    <AccountListItem
-                      identity={mergedAccountsProps}
-                      key={account.address}
-                      accountsCount={mergedAccounts.length}
-                      selected={isSelectedAccount}
-                      connectedAvatar={connectedSite?.iconUrl}
-                      connectedAvatarName={connectedSite?.name}
-                      menuType={AccountListItemMenuTypes.Connection}
-                      currentTabOrigin={activeTabOrigin}
-                      isActive={
-                        mergedAccountsProps.isAccountActive ? t('active') : null
-                      }
-                      onActionClick={setShowAccountDisconnectedToast}
-                    />
-                  );
-                })}
-              </Tab>
-            }
-          </Tabs>
+                  onActionClick={setShowAccountDisconnectedToast}
+                />
+              );
+            })}
+          </Box>
         ) : (
           <NoConnectionContent />
         )}
@@ -269,6 +274,7 @@ export const Connections = () => {
           <ConnectAccountsModal
             onClose={() => setShowConnectAccountsModal(false)}
             onAccountsUpdate={() => setShowConnectedAccountsUpdatedToast(true)}
+            activeTabOrigin={activeTabOrigin}
           />
         ) : null}
         {showDisconnectAllModal ? (
