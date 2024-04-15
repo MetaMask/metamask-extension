@@ -1,8 +1,8 @@
+import { useSelector } from 'react-redux';
 import { toHex } from '@metamask/controller-utils';
 import { CHAIN_IDS } from '../../../../../../../../shared/constants/network';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { getCurrentChainId } from '../../../../../../../selectors';
-import { useSelector } from 'react-redux';
 
 export default function useTranslatedNetworkName() {
   const chainId = useSelector(getCurrentChainId);
@@ -32,6 +32,6 @@ export default function useTranslatedNetworkName() {
     case CHAIN_IDS.BASE:
       return t('networkNameBase');
     default:
-      throw new Error('This network is not supported for token swaps');
+      return undefined;
   }
 }
