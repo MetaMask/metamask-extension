@@ -10,7 +10,7 @@ import {
   AuthenticationControllerIsSignedIn,
   AuthenticationControllerPerformSignIn,
 } from '../authentication/authentication-controller';
-import { createSnapSignMessageRequest } from './auth-snap-requests';
+import { createSnapSignMessageRequest } from '../authentication/auth-snap-requests';
 import { getUserStorage, upsertUserStorage } from './services';
 import { UserStorageEntryKeys } from './schema';
 import { createSHA256Hash } from './encryption';
@@ -123,6 +123,39 @@ export default class UserStorageController extends BaseController<
       name: controllerName,
       state: { ...defaultState, ...params.state },
     });
+
+    this.#registerMessageHandlers();
+  }
+
+  /**
+   * Constructor helper for registering this controller's messaging system
+   * actions.
+   */
+  #registerMessageHandlers(): void {
+    this.messagingSystem.registerActionHandler(
+      'UserStorageController:performGetStorage',
+      this.performGetStorage.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      'UserStorageController:performSetStorage',
+      this.performSetStorage.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      'UserStorageController:getStorageKey',
+      this.getStorageKey.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      'UserStorageController:enableProfileSyncing',
+      this.enableProfileSyncing.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      'UserStorageController:disableProfileSyncing',
+      this.disableProfileSyncing.bind(this),
+    );
   }
 
   public async enableProfileSyncing(): Promise<void> {
