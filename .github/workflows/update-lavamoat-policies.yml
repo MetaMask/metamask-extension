@@ -107,6 +107,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - prepare
+      - update-lavamoat-build-policy
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -122,6 +123,12 @@ jobs:
           cache: 'yarn'
       - name: Install dependencies from cache
         run: yarn --immutable --immutable-cache
+      - name: Restore build policy
+        uses: actions/cache/restore@v3
+        with:
+          path: lavamoat/build-system
+          key: cache-build-${{ needs.prepare.outputs.COMMIT_SHA }}
+          fail-on-cache-miss: true
       - name: Update LavaMoat ${{ matrix.build-type }} policy
         run: yarn lavamoat:webapp:auto:ci '--build-types=${{ matrix.build-type }}'
         env:

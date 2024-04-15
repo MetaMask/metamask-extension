@@ -3,6 +3,7 @@ import {
   decWEIToDecETH,
   getValueFromWeiHex,
   getWeiHexFromDecimalValue,
+  sumDecimals,
 } from './conversion.utils';
 
 describe('conversion utils', () => {
@@ -15,6 +16,23 @@ describe('conversion utils', () => {
     it('converts 9358749494527040 WEI to ETH', () => {
       const ethDec = decWEIToDecETH('9358749494527040');
       expect('0.009358749').toStrictEqual(ethDec);
+    });
+  });
+
+  describe('sumDecimals', () => {
+    it('properly sums one value', () => {
+      const sum = sumDecimals('0.01').toString(10);
+
+      expect('0.01').toStrictEqual(sum);
+    });
+
+    it('properly sums an array of decimals', () => {
+      const sum = sumDecimals(
+        '0.01',
+        ...['0.10', '1.00', '10.00', '100.00', '1000.00'],
+      ).toString(10);
+
+      expect('1111.11').toStrictEqual(sum);
     });
   });
 

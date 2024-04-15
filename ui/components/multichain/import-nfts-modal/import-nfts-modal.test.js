@@ -24,11 +24,6 @@ jest.mock('react-router-dom', () => ({
   useHistory: jest.fn(
     jest.fn().mockReturnValue({
       push: jest.fn(),
-      location: {
-        state: {
-          tokenAddress: '0xTokenAddress',
-        },
-      },
     }),
   ),
 }));
@@ -48,7 +43,7 @@ jest.mock('../../../store/actions.ts', () => ({
 }));
 
 describe('ImportNftsModal', () => {
-  const store = configureMockStore([thunk])(mockState);
+  let store = configureMockStore([thunk])(mockState);
 
   beforeEach(() => {
     jest.restoreAllMocks();
@@ -56,7 +51,7 @@ describe('ImportNftsModal', () => {
 
   it('should enable the "Import" button when valid entries are input into both Address and TokenId fields', () => {
     const { getByText, getByPlaceholderText } = renderWithProvider(
-      <ImportNftsModal />,
+      <ImportNftsModal onClose={jest.fn()} />,
       store,
     );
     expect(getByText('Import')).not.toBeEnabled();
@@ -73,7 +68,7 @@ describe('ImportNftsModal', () => {
 
   it('should not enable the "Import" button when an invalid entry is input into one or both Address and TokenId fields', () => {
     const { getByText, getByPlaceholderText } = renderWithProvider(
-      <ImportNftsModal />,
+      <ImportNftsModal onClose={jest.fn()} />,
       store,
     );
     expect(getByText('Import')).not.toBeEnabled();
@@ -97,6 +92,11 @@ describe('ImportNftsModal', () => {
   });
 
   it('should call addNftVerifyOwnership, updateNftDropDownState, setNewNftAddedMessage, and ignoreTokens action with correct values (tokenId should not be in scientific notation)', async () => {
+    store = configureMockStore([thunk])({
+      ...mockState,
+      appState: { importNftsModal: { ignoreErc20Token: true } },
+    });
+
     const onClose = jest.fn();
     const { getByPlaceholderText, getByText } = renderWithProvider(
       <ImportNftsModal onClose={onClose} />,
@@ -133,7 +133,7 @@ describe('ImportNftsModal', () => {
 
       expect(ignoreTokens).toHaveBeenCalledWith({
         dontShowLoadingIndicator: true,
-        tokensToIgnore: '0xTokenAddress',
+        tokensToIgnore: VALID_ADDRESS,
       });
     });
   });
@@ -144,7 +144,7 @@ describe('ImportNftsModal', () => {
     );
 
     const { getByTestId, getByText, getByPlaceholderText } = renderWithProvider(
-      <ImportNftsModal />,
+      <ImportNftsModal onClose={jest.fn()} />,
       store,
     );
     const addressInput = getByPlaceholderText('0x...');
@@ -188,5 +188,21 @@ describe('ImportNftsModal', () => {
     fireEvent.click(document.querySelector('button[aria-label="Close"]'));
 
     expect(useHistory().push).toHaveBeenCalledWith(DEFAULT_ROUTE);
+  });
+
+  it('should set error message when address invalid', () => {
+    const onClose = jest.fn();
+    const { getByText, getByPlaceholderText } = renderWithProvider(
+      <ImportNftsModal onClose={onClose} />,
+      store,
+    );
+
+    const addressInput = getByPlaceholderText('0x...');
+    fireEvent.change(addressInput, {
+      target: { value: INVALID_ADDRESS },
+    });
+
+    const errorMessage = getByText('Invalid address');
+    expect(errorMessage).toBeInTheDocument();
   });
 });

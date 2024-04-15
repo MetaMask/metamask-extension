@@ -1,8 +1,10 @@
 import React from 'react';
 import type { ButtonIconProps } from '../button-icon/button-icon.types';
-import type { HeaderBaseProps } from '../header-base';
+import type { HeaderBaseStyleUtilityProps } from '../header-base';
 
-export interface PopoverHeaderProps extends HeaderBaseProps {
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export interface PopoverHeaderProps extends HeaderBaseStyleUtilityProps {
   /**
    * The contents within the PopoverHeader positioned middle (popular for title use case)
    */
@@ -19,7 +21,7 @@ export interface PopoverHeaderProps extends HeaderBaseProps {
   /**
    * The props to pass to the back `ButtonIcon`
    */
-  backButtonProps?: ButtonIconProps;
+  backButtonProps?: ButtonIconProps<'button'>;
   /**
    * The start (left) content area of PopoverHeader
    * Default to have the back `ButtonIcon` when `onBack` is passed, but passing a  `startAccessory` will override this
@@ -33,7 +35,7 @@ export interface PopoverHeaderProps extends HeaderBaseProps {
   /**
    * The props to pass to the close `ButtonIcon`
    */
-  closeButtonProps?: ButtonIconProps;
+  closeButtonProps?: ButtonIconProps<'button'>;
   /**
    * The end (right) content area of PopoverHeader
    * Default to have the close `ButtonIcon` when `onClose` is passed, but passing a  `endAccessory` will override this

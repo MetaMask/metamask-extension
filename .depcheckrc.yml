@@ -11,14 +11,6 @@ ignores:
   - 'punycode'
 
   #
-  # snaps flask deps
-  #
-  - '@metamask/rpc-methods-flask'
-  - '@metamask/snaps-controllers-flask'
-  - '@metamask/snaps-ui-flask'
-  - '@metamask/snaps-utils-flask'
-
-  #
   # dev deps
   #
 
@@ -32,7 +24,7 @@ ignores:
   - '@metamask/phishing-warning' # statically hosted as part of some e2e tests
   - '@metamask/test-dapp'
   - '@metamask/design-tokens' # Only imported in index.css
-  - '@tsconfig/node16' # required dynamically by TS, used in tsconfig.json
+  - '@tsconfig/node20' # required dynamically by TS, used in tsconfig.json
   - '@sentry/cli' # invoked as `sentry-cli`
   - 'chromedriver'
   - 'depcheck' # ooo meta
@@ -40,16 +32,19 @@ ignores:
   - 'geckodriver'
   - 'jest'
   - 'lavamoat-viz'
+  - 'mocha-junit-reporter'
   - 'prettier-plugin-sort-json' # automatically imported by prettier
   - 'source-map-explorer'
   - 'playwright'
   - 'wait-on'
+  - 'tsx' # used in .devcontainer
+  - 'prettier-eslint' # used by the Prettier ESLint VSCode extension
   # development tool
-  - 'improved-yarn-audit'
   - 'nyc'
   # storybook
   - '@storybook/cli'
   - '@storybook/core'
+  - '@storybook/addon-designs'
   - '@storybook/addon-essentials'
   - '@storybook/addon-a11y'
   - '@storybook/addon-mdx-gfm'
@@ -65,6 +60,8 @@ ignores:
   - 'resolve-url-loader'
   # jest environments
   - 'jest-environment-jsdom'
+  # babel
+  - '@babel/plugin-transform-logical-assignment-operators'
 
 # files depcheck should not parse
 ignorePatterns:

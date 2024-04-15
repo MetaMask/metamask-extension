@@ -99,10 +99,10 @@ describe('ButtonIcon', () => {
       </>,
     );
     expect(getByTestId(IconColor.iconDefault)).toHaveClass(
-      `box--color-${IconColor.iconDefault}`,
+      `mm-box--color-${IconColor.iconDefault}`,
     );
     expect(getByTestId(IconColor.errorDefault)).toHaveClass(
-      `box--color-${IconColor.errorDefault}`,
+      `mm-box--color-${IconColor.errorDefault}`,
     );
   });
 

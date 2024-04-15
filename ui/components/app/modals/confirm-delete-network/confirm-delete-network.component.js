@@ -8,21 +8,22 @@ export default class ConfirmDeleteNetwork extends PureComponent {
     removeNetworkConfiguration: PropTypes.func.isRequired,
     onConfirm: PropTypes.func.isRequired,
     target: PropTypes.string.isRequired,
+    networkNickname: PropTypes.string.isRequired,
   };
 
   static contextTypes = {
     t: PropTypes.func,
   };
 
-  handleDelete = () => {
-    this.props.removeNetworkConfiguration(this.props.target).then(() => {
-      this.props.onConfirm();
-      this.props.hideModal();
-    });
+  handleDelete = async () => {
+    await this.props.removeNetworkConfiguration(this.props.target);
+    this.props.onConfirm();
+    this.props.hideModal();
   };
 
   render() {
     const { t } = this.context;
+    const { networkNickname } = this.props;
 
     return (
       <Modal
@@ -31,10 +32,11 @@ export default class ConfirmDeleteNetwork extends PureComponent {
         submitText={t('delete')}
         cancelText={t('cancel')}
         submitType="danger-primary"
+        testId="confirm-delete-network-modal"
       >
         <ModalContent
-          title={t('deleteNetwork')}
-          description={t('deleteNetworkDescription')}
+          title={t('deleteNetworkTitle', [networkNickname])}
+          description={t('deleteNetworkIntro')}
         />
       </Modal>
     );

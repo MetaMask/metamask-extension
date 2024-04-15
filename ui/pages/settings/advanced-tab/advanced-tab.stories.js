@@ -18,7 +18,7 @@ export default {
     },
     setShowTestNetworks: { action: 'setShowTestNetworks' },
     setIpfsGateway: { action: 'setIpfsGateway' },
-    setLedgerTransportPreference: { action: 'setLedgerTransportPreference' },
+    setIsIpfsGatewayEnabled: { action: 'setIsIpfsGatewayEnabled' },
     setDismissSeedBackUpReminder: { action: 'setDismissSeedBackUpReminder' },
     setUseNonceField: { action: 'setUseNonceField' },
     setHexDataFeatureFlag: { action: 'setHexDataFeatureFlag' },

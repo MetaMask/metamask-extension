@@ -1,3 +1,5 @@
+@use "design-system";
+
 .modal-content {
   flex: 1;
   display: flex;
@@ -6,7 +8,7 @@
   padding: 16px 0;
 
   &__title {
-    @include H3;
+    @include design-system.H3;
 
     font-weight: 500;
     padding: 16px 0;
@@ -14,7 +16,7 @@
   }
 
   &__description {
-    @include H6;
+    @include design-system.H6;
 
     text-align: center;
   }

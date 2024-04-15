@@ -6,39 +6,36 @@ import { ButtonPrimary } from './button-primary';
 
 The `ButtonPrimary` is an extension of `ButtonBase` to support primary styles.
 
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
 <Canvas>
   <Story id="components-componentlibrary-buttonprimary--default-story" />
 </Canvas>
 
 ## Props
 
-The `ButtonPrimary` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) and [ButtonBase](/docs/components-componentlibrary-buttonbase--default-story#props) component props
-
 <ArgsTable of={ButtonPrimary} />
 
 ### Size
 
-Use the `size` prop and the `Size` object from `./ui/helpers/constants/design-system.js` to change the size of `ButtonPrimary`. Defaults to `Size.MD`
-
-Optional: `BUTTON_SIZES` from `./button-base` object can be used instead of `Size`.
+Use the `size` prop and the `ButtonPrimarySize` enum from `./ui/components/component-library` to change the size of `ButtonPrimary`. Defaults to `ButtonPrimarySize.Md`
 
 Possible sizes include:
 
-- `Size.SM` 32px
-- `Size.MD` 40px
-- `Size.LG` 48px
+- `ButtonPrimarySize.Sm` 32px
+- `ButtonPrimarySize.Md` 40px
+- `ButtonPrimarySize.Lg` 48px
 
 <Canvas>
   <Story id="components-componentlibrary-buttonprimary--size-story" />
 </Canvas>
 
 ```jsx
-import { Size } from '../../../helpers/constants/design-system';
-import { ButtonPrimary } from '../../component-library';
+import { ButtonPrimary, ButtonPrimarySize } from '../../component-library';
 
-<ButtonPrimary size={Size.SM} />
-<ButtonPrimary size={Size.MD} />
-<ButtonPrimary size={Size.LG} />
+<ButtonPrimary size={ButtonPrimarySize.Sm} />
+<ButtonPrimary size={ButtonPrimarySize.Md} />
+<ButtonPrimary size={ButtonPrimarySize.Lg} />
 ```
 
 ### Danger

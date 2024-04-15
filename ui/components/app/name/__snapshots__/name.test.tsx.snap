@@ -1,0 +1,81 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Name renders address with no saved name 1`] = `
+<div>
+  <div>
+    <div
+      class="name name__missing"
+    >
+      <span
+        class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+        style="mask-image: url('./images/icons/question.svg');"
+      />
+      <p
+        class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+      >
+        0xC0ffe...54977
+      </p>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Name renders address with saved name 1`] = `
+<div>
+  <div>
+    <div
+      class="name name__saved"
+    >
+      <div
+        class=""
+      >
+        <div
+          class="identicon"
+          style="height: 16px; width: 16px; border-radius: 8px;"
+        >
+          <div
+            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(245, 196, 0);"
+          >
+            <svg
+              height="16"
+              width="16"
+              x="0"
+              y="0"
+            >
+              <rect
+                fill="#C8144D"
+                height="16"
+                transform="translate(-0.8205726313476182 -2.375300755278998) rotate(408.5 8 8)"
+                width="16"
+                x="0"
+                y="0"
+              />
+              <rect
+                fill="#FB1860"
+                height="16"
+                transform="translate(7.733089412585649 -1.3465466417019656) rotate(402.6 8 8)"
+                width="16"
+                x="0"
+                y="0"
+              />
+              <rect
+                fill="#03505E"
+                height="16"
+                transform="translate(1.1000464230208766 -13.147318085284851) rotate(308.0 8 8)"
+                width="16"
+                x="0"
+                y="0"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+      <p
+        class="mm-box mm-text name__name mm-text--body-md mm-box--color-text-default"
+      >
+        TestName
+      </p>
+    </div>
+  </div>
+</div>
+`;

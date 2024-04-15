@@ -6,13 +6,13 @@ import { ModalContent } from './modal-content';
 
 `ModalContent` is the container for the modal dialog's content. It uses context supplied by the `Modal` component and cannot be used without it.
 
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
 <Canvas>
   <Story id="components-componentlibrary-modalcontent--default-story" />
 </Canvas>
 
 ## Props
-
-The `ModalContent` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props
 
 <ArgsTable of={ModalContent} />
 
@@ -26,106 +26,95 @@ Use the `children` prop to render the content of `ModalContent`. The `ModalConte
 
 ```jsx
 import React, { useState } from 'react';
-import { Modal, ModalContent, ModalHeader, Text, Button, BUTTON_VARIANT } from '../../component-library';
+import { Modal, ModalContent, ModalHeader, ModalBody, Text, Button, ButtonVariant } from '../../component-library';
 
 const [show, setShow] = useState(false);
 const handleOnClick = () => {
   setShow(!show);
 };
 
-<Button variant={BUTTON_VARIANT.PRIMARY} onClick={handleOnClick}>
+<Button variant={ButtonVariant.Primary} onClick={handleOnClick}>
   Open
 </Button>
 <Modal isOpen={show} onClose={handleOnClick}>
   <ModalContent {...args}>
     <ModalHeader marginBottom={4}>Modal Header</ModalHeader>
-    <Text marginBottom={4}>Modal Content</Text>
-    <Button variant={BUTTON_VARIANT.PRIMARY} onClick={handleOnClick}>
-      Close
-    </Button>
-    <LoremIpsum />
-    <LoremIpsum />
-    <LoremIpsum />
-    <LoremIpsum />
-    <LoremIpsum />
+    <ModalBody>
+      <Text marginBottom={4}>Modal Content</Text>
+      <Button variant={ButtonVariant.Primary} onClick={handleOnClick}>
+        Close
+      </Button>
+      <LoremIpsum />
+      <LoremIpsum />
+      <LoremIpsum />
+      <LoremIpsum />
+      <LoremIpsum />
+    </ModalBody>
   </ModalContent>
 </Modal>
 ```
 
 ### Size
 
-Currently the `ModalContent` supports a single size, this decision was made after we ran an audit on all modal sizes in the extension codebase and found that all modals could be made to fit the `ModalContentSize.Sm`(360px) size.
+Use the `size` prop to set the size of the `ModalContent`
 
-If you do require a larger modal size you can use the `modalDialogProps` to add a className to override the default size.
+- `ModalContentSize.Sm` (360px)
+- `ModalContentSize.Md` (480px)
+- `ModalContentSize.Lg` (720px)
+
+To set a custom size, use the `modalDialogProps` prop and pass in a `className` with a max width.
 
 <Canvas>
   <Story id="components-componentlibrary-modalcontent--size" />
 </Canvas>
 
 ```jsx
-import { DISPLAY } from '../../../helpers/constants/design-system';
+import {
+  ModalContent,
+  ModalContentSize,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from '../../component-library';
 
-import Box from '../../ui/box';
+<ModalContent size={ModalContentSize.Sm}>
+  <ModalHeader marginBottom={4}>
+    This ModalContent is using size: sm
+  </ModalHeader>
+  <ModalBody>
+    <Text marginBottom={4}>This ModalContent is using size: sm</Text>
+  </ModalBody>
+  <ModalFooter onSubmit={handleOnClose}>
+</ModalContent>;
 
-import { Modal, ModalContent, Text, Button, BUTTON_VARIANT } from '../../component-library';
+<ModalContent size={ModalContentSize.Md}>
+  <ModalHeader marginBottom={4}>
+    This ModalContent is using size: md
+  </ModalHeader>
+  <Text marginBottom={4}>This ModalContent is using size: md</Text>
+</ModalContent>;
 
-enum ModalContentSizeStoryOption {
-  Sm = 'sm',
-  ClassName = 'className',
-}
+<ModalContent size={ModalContentSize.Lg}>
+  <ModalHeader marginBottom={4}>
+    This ModalContent is using size: lg
+  </ModalHeader>
+  <Text marginBottom={4}>This ModalContent is using size: lg</Text>
+  <ModalFooter onSubmit={handleOnClose}>
+</ModalContent>;
 
-const [show, setShow] = useState({
-  sm: false,
-  className: false,
-});
-const handleOnClick = (size: ModalContentSizeStoryOption) => {
-  setShow({ ...show, [size]: !show[size] });
-};
-
-<Box display={DISPLAY.FLEX} gap={4}>
-  <Button
-    variant={BUTTON_VARIANT.SECONDARY}
-    onClick={() => handleOnClick(ModalContentSizeStoryOption.Sm)}
-  >
-    Show sm size
-  </Button>
-  <Button
-    variant={BUTTON_VARIANT.SECONDARY}
-    onClick={() => handleOnClick(ModalContentSizeStoryOption.ClassName)}
-  >
-    Show className
-  </Button>
-</Box>
-
-<Modal
-  isOpen={show.sm}
-  onClose={() => handleOnClick(ModalContentSizeStoryOption.Sm)}
->
-  <ModalContent {...args}>
-    <Text marginBottom={4}>
-      ModalContentSize.Sm default and only size 360px max-width
-    </Text>
-    <Button onClick={() => setShow({ ...show, sm: false })}>Close</Button>
-  </ModalContent>
-</Modal>
-
-<Modal
-  isOpen={show.className}
-  onClose={() => handleOnClick(ModalContentSizeStoryOption.ClassName)}
->
-  <ModalContent
-    {...args}
-    modalDialogProps={{
-      style: { maxWidth: 800 },
-    }}
-  >
-    <Text marginBottom={4}>
-      Using modalDialogProps and adding a className setting a max width
-      (max-width: 800px)
-    </Text>
-    <Button onClick={() => setShow({ ...show, className: false })}>
-      Close
-    </Button>
-  </ModalContent>
-</Modal>
+/* Using a className
+  .max-width-800 {
+    max-width: 800px;
+  }
+*/
+<ModalContent modalDialogProps={{ className: 'max-width-800' }}>
+  <ModalHeader marginBottom={4}>
+    This ModalContent is using size: className
+  </ModalHeader>
+  <Text marginBottom={4}>
+    This ModalContent has size set using modalDialogProps and adding a className
+    setting a max width (max-width: 800px)
+  </Text>
+  <ModalFooter onSubmit={handleOnClose}>
+</ModalContent>;
 ```

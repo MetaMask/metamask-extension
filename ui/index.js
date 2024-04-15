@@ -8,15 +8,21 @@ import browser from 'webextension-polyfill';
 import { getEnvironmentType } from '../app/scripts/lib/util';
 import { AlertTypes } from '../shared/constants/alerts';
 import { maskObject } from '../shared/modules/object.utils';
-import { SENTRY_STATE } from '../app/scripts/lib/setupSentry';
+import { SENTRY_UI_STATE } from '../app/scripts/lib/setupSentry';
 import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
+import { COPY_OPTIONS } from '../shared/constants/copy';
 import switchDirection from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
+  getOriginOfCurrentTab,
   getPermittedAccountsForCurrentTab,
-  getSelectedAddress,
+  getSelectedInternalAccount,
+  getUnapprovedTransactions,
+  getNetworkToAutomaticallySwitchTo,
+  getSwitchedNetworkDetails,
+  getUseRequestQueue,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
@@ -25,9 +31,9 @@ import {
 } from './ducks/metamask/metamask';
 import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
-import { _setBackgroundConnection } from './store/action-queue';
+import { setBackgroundConnection } from './store/background-connection';
 
-log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn');
+log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
 let reduxStore;
 
@@ -37,7 +43,7 @@ let reduxStore;
  * @param backgroundConnection - connection object to background
  */
 export const updateBackgroundConnection = (backgroundConnection) => {
-  _setBackgroundConnection(backgroundConnection);
+  setBackgroundConnection(backgroundConnection);
   backgroundConnection.onNotification((data) => {
     if (data.method === 'sendUpdate') {
       reduxStore.dispatch(actions.updateMetamaskState(data.params[0]));
@@ -53,7 +59,7 @@ export const updateBackgroundConnection = (backgroundConnection) => {
 
 export default function launchMetamaskUi(opts, cb) {
   const { backgroundConnection } = opts;
-  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
   let desktopEnabled = false;
 
   backgroundConnection.getDesktopEnabled(function (err, result) {
@@ -63,7 +69,7 @@ export default function launchMetamaskUi(opts, cb) {
 
     desktopEnabled = result;
   });
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   // check if we are unlocked first
   backgroundConnection.getState(function (err, metamaskState) {
@@ -72,22 +78,22 @@ export default function launchMetamaskUi(opts, cb) {
         err,
         {
           ...metamaskState,
-          ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+          ///: BEGIN:ONLY_INCLUDE_IF(desktop)
           desktopEnabled,
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
         },
         backgroundConnection,
       );
       return;
     }
     startApp(metamaskState, backgroundConnection, opts).then((store) => {
-      setupDebuggingHelpers(store);
+      setupStateHooks(store);
       cb(
         null,
         store,
-        ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+        ///: BEGIN:ONLY_INCLUDE_IF(desktop)
         backgroundConnection,
-        ///: END:ONLY_INCLUDE_IN
+        ///: END:ONLY_INCLUDE_IF
       );
     });
   });
@@ -104,7 +110,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
   );
 
   if (metamaskState.textDirection === 'rtl') {
-    await switchDirection('rtl');
+    switchDirection('rtl');
   }
 
   const draftInitialState = {
@@ -129,7 +135,8 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     const { origin } = draftInitialState.activeTab;
     const permittedAccountsForCurrentTab =
       getPermittedAccountsForCurrentTab(draftInitialState);
-    const selectedAddress = getSelectedAddress(draftInitialState);
+    const selectedAddress =
+      getSelectedInternalAccount(draftInitialState)?.address ?? '';
     const unconnectedAccountAlertShownOrigins =
       getUnconnectedAccountAlertShown(draftInitialState);
     const unconnectedAccountAlertIsEnabled =
@@ -152,9 +159,11 @@ async function startApp(metamaskState, backgroundConnection, opts) {
   const store = configureStore(draftInitialState);
   reduxStore = store;
 
+  const unapprovedTxs = getUnapprovedTransactions(metamaskState);
+
   // if unconfirmed txs, start on txConf page
   const unapprovedTxsAll = txHelper(
-    metamaskState.unapprovedTxs,
+    unapprovedTxs,
     metamaskState.unapprovedMsgs,
     metamaskState.unapprovedPersonalMsgs,
     metamaskState.unapprovedDecryptMsgs,
@@ -185,22 +194,79 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     },
   };
 
+  if (process.env.MULTICHAIN) {
+    // This block autoswitches chains based on the last chain used
+    // for a given dapp, when there are no pending confimrations
+    // This allows the user to be connected on one chain
+    // for one dapp, and automatically change for another
+    const state = store.getState();
+    const networkIdToSwitchTo = getNetworkToAutomaticallySwitchTo(state);
+    if (networkIdToSwitchTo) {
+      await store.dispatch(
+        actions.automaticallySwitchNetwork(
+          networkIdToSwitchTo,
+          getOriginOfCurrentTab(state),
+        ),
+      );
+    } else if (getSwitchedNetworkDetails(state)) {
+      // It's possible that old details could exist if the user
+      // opened the toast but then didn't close it
+      // Clear out any existing switchedNetworkDetails
+      // if the user didn't just change the dapp network
+      await store.dispatch(actions.clearSwitchedNetworkDetails());
+    }
+
+    // Register this window as the current popup
+    // and set in background state
+    if (
+      getUseRequestQueue(state) &&
+      getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+    ) {
+      const thisPopupId = Date.now();
+      global.metamask.id = thisPopupId;
+      await store.dispatch(actions.setCurrentExtensionPopupId(thisPopupId));
+    }
+  }
+
   // start app
   render(<Root store={store} />, opts.container);
 
   return store;
 }
 
-function setupDebuggingHelpers(store) {
-  /**
-   * The following stateHook is a method intended to throw an error, used in
-   * our E2E test to ensure that errors are attempted to be sent to sentry.
-   */
-  window.stateHooks.throwTestError = async function () {
-    const error = new Error('Test Error');
-    error.name = 'TestError';
-    throw error;
-  };
+/**
+ * Setup functions on `window.stateHooks`. Some of these support
+ * application features, and some are just for debugging or testing.
+ *
+ * @param {object} store - The Redux store.
+ */
+function setupStateHooks(store) {
+  if (process.env.METAMASK_DEBUG || process.env.IN_TEST) {
+    /**
+     * The following stateHook is a method intended to throw an error, used in
+     * our E2E test to ensure that errors are attempted to be sent to sentry.
+     *
+     * @param {string} [msg] - The error message to throw, defaults to 'Test Error'
+     */
+    window.stateHooks.throwTestError = async function (msg = 'Test Error') {
+      const error = new Error(msg);
+      error.name = 'TestError';
+      throw error;
+    };
+    /**
+     * The following stateHook is a method intended to throw an error in the
+     * background, used in our E2E test to ensure that errors are attempted to be
+     * sent to sentry.
+     *
+     * @param {string} [msg] - The error message to throw, defaults to 'Test Error'
+     */
+    window.stateHooks.throwTestBackgroundError = async function (
+      msg = 'Test Error',
+    ) {
+      store.dispatch(actions.throwTestBackgroundError(msg));
+    };
+  }
+
   window.stateHooks.getCleanAppState = async function () {
     const state = clone(store.getState());
     state.version = global.platform.getVersion();
@@ -210,23 +276,31 @@ function setupDebuggingHelpers(store) {
     });
     return state;
   };
-  window.stateHooks.getSentryState = function () {
-    const fullState = store.getState();
-    const debugState = maskObject(fullState, SENTRY_STATE);
-    return {
-      browser: window.navigator.userAgent,
-      store: debugState,
-      version: global.platform.getVersion(),
-    };
+  window.stateHooks.getSentryAppState = function () {
+    const reduxState = store.getState();
+    return maskObject(reduxState, SENTRY_UI_STATE);
+  };
+  window.stateHooks.getLogs = function () {
+    // These logs are logged by LoggingController
+    const reduxState = store.getState();
+    const { logs } = reduxState.metamask;
+
+    const logsArray = Object.values(logs).sort((a, b) => {
+      return a.timestamp - b.timestamp;
+    });
+
+    return logsArray;
   };
 }
 
 window.logStateString = async function (cb) {
   const state = await window.stateHooks.getCleanAppState();
+  const logs = window.stateHooks.getLogs();
   browser.runtime
     .getPlatformInfo()
     .then((platform) => {
       state.platform = platform;
+      state.logs = logs;
       const stateString = JSON.stringify(state, null, 2);
       cb(null, stateString);
     })
@@ -240,7 +314,7 @@ window.logState = function (toClipboard) {
     if (err) {
       console.error(err.message);
     } else if (toClipboard) {
-      copyToClipboard(result);
+      copyToClipboard(result, COPY_OPTIONS);
       console.log('State log copied');
     } else {
       console.log(result);

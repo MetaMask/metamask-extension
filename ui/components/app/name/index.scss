@@ -1,0 +1,48 @@
+.name {
+  border-radius: 36px;
+  padding: 1px 8px 1px 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  max-width: 100%;
+
+  &__missing {
+    background-color: var(--color-background-alternative);
+
+    .name__value {
+      color: var(--color-text-default);
+    }
+  }
+
+  &__saved {
+    background-color: var(--color-info-muted);
+
+    .name__name {
+      color: var(--color-info-default);
+    }
+  }
+
+  &__recognized_unsaved {
+    background-color: var(--color-background-alternative);
+
+    .name__name {
+      color: var(--color-text-default);
+    }
+  }
+
+  &__missing &__icon {
+    color: var(--color-text-default);
+  }
+
+  &__saved &__icon {
+    color: var(--color-info-default);
+  }
+
+  &__value,
+  &__name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

@@ -1,0 +1,384 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { SelectButton } from './select-button';
+
+# SelectButton
+
+The trigger for the `Select` component
+
+When using `SelectButton` you can use the supplied props or use the object prop shape recommendation below for `placeholder`, `defaultValue`, and `value`.
+
+Prop Shape Recommendation Example:
+
+```js
+{
+  label: 'Label',
+  description: 'Description',
+  startAccessory: <AvatarAccount address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1" size={AvatarAccountSize.Sm} />,
+  endAccessory: <AvatarAccount address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1" size={AvatarAccountSize.Sm} />,
+}
+```
+
+<Canvas>
+  <Story id="components-componentlibrary-selectbutton--default-story" />
+</Canvas>
+
+## Props
+
+<ArgsTable of={SelectButton} />
+
+### Size
+
+Use the `size` prop and the `SelectButtonSize` enum from `./ui/components/component-library` to change the size of `SelectButton`. Defaults to `SelectButtonSize.Md`
+
+Please be sure to take note of the size used for the `startAccessory` and `endAccessory` components based on the design.
+
+<Canvas>
+  <Story id="components-componentlibrary-selectbutton--size" />
+</Canvas>
+
+```jsx
+import {
+  SelectButton,
+  SelectButtonSize,
+} from '../../component-library';
+
+<SelectButton size={SelectButtonSize.Sm} label={SelectButtonSize.Sm} />
+<SelectButton size={SelectButtonSize.Md} label={SelectButtonSize.Md} />
+<SelectButton size={SelectButtonSize.Lg} label={SelectButtonSize.Lg} />
+```
+
+### isBlock
+
+Use the `isBlock` boolean prop to make the `SelectButton` component full width. Defaults to `false`
+
+<Canvas>
+  <Story id="components-componentlibrary-selectbutton--is-block" />
+</Canvas>
+
+```jsx
+import { SelectButton } from '../../component-library';
+
+<SelectButton size={SelectButtonSize.Sm} isBlock={true} />;
+```
+
+### isDanger
+
+Use the `isDanger` boolean prop to make the `SelectButton` component danger/error. Defaults to `false`
+
+<Canvas>
+  <Story id="components-componentlibrary-selectbutton--is-danger" />
+</Canvas>
+
+```jsx
+import { SelectButton } from '../../component-library';
+
+<SelectButton size={SelectButtonSize.Sm} isDanger={true} />;
+```
+
+### isDisabled
+
+Use the `isDisabled` boolean prop to make the `SelectButton` component disabled. Defaults to `false`
+
+<Canvas>
+  <Story id="components-componentlibrary-selectbutton--is-disabled" />
+</Canvas>
+
+```jsx
+import { SelectButton } from '../../component-library';
+
+<SelectButton size={SelectButtonSize.Sm} isDisabled={true} />;
+```
+
+### Label
+
+Use the `label` prop to add a label to the `SelectButton` component.
+
+<Canvas>
+  <Story id="components-componentlibrary-selectbutton--label" />
+</Canvas>
+
+```jsx
+import { SelectButton } from '../../component-library';
+
+<SelectButton size={SelectButtonSize.Sm} label="This is the label" />;
+```
+
+### Description
+
+Use the `description` prop to add a description to the `SelectButton` component.
+
+<Canvas>
+  <Story id="components-componentlibrary-selectbutton--description" />
+</Canvas>
+
+```jsx
+import { SelectButton } from '../../component-library';
+
+<SelectButton description="This is a demo of description" />;
+```
+
+### StartAccessory
+
+Use the `startAccessory` prop to add a component to the start of the `SelectButton` component.
+
+<Canvas>
+  <Story id="components-componentlibrary-selectbutton--start-accessory" />
+</Canvas>
+
+```jsx
+import {
+  SelectButton,
+  AvatarAccount,
+  AvatarAccountSize,
+} from '../../component-library';
+
+<SelectButton
+  startAccessory={
+    <AvatarAccount
+      address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
+      size={AvatarAccountSize.Sm}
+    />
+  }
+/>;
+```
+
+### EndAccessory
+
+Use the `endAccessory` prop to add a component to the start of the `SelectButton` component.
+
+<Canvas>
+  <Story id="components-componentlibrary-selectbutton--end-accessory" />
+</Canvas>
+
+```jsx
+import {
+  SelectButton,
+  AvatarAccount,
+  AvatarAccountSize,
+} from '../../component-library';
+
+<SelectButton
+  endAccessory={
+    <AvatarAccount
+      address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
+      size={AvatarAccountSize.Sm}
+    />
+  }
+/>;
+```
+
+### Children
+
+Any children passed to the `SelectButton` component will render in the same content area as the `label` and `description`. This does not interfere with the usage of `startAccessory` and `endAccessory`, which can still be utilized as needed.
+
+<Canvas>
+  <Story id="components-componentlibrary-selectbutton--children" />
+</Canvas>
+
+```jsx
+import {
+  SelectButton,
+  Text,
+  TextVariant,
+  TextColor,
+} from '../../component-library';
+
+<SelectButton>
+  <Text variant={TextVariant.bodySm} color={TextColor.sepolia}>
+    Children demo text
+  </Text>
+</SelectButton>;
+```
+
+### Placeholder
+
+Use the `placeholder` prop to add a placeholder to the `SelectButton` component.
+Recommended to use the object prop shape recommendation when using `placeholder` so that it will align with the `value` and `defaultValue` prop shape recommendation.
+
+Example Prop Shape Recommendation:
+
+```js
+{
+  label: 'Label',
+  description: 'Description',
+  startAccessory: <AvatarAccount address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1" size={AvatarAccountSize.Sm} />,
+  endAccessory: <AvatarAccount address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1" size={AvatarAccountSize.Sm} />,
+}
+```
+
+<Canvas>
+  <Story id="components-componentlibrary-selectbutton--placeholder" />
+</Canvas>
+
+```jsx
+import { SelectButton } from '../../component-library';
+
+<SelectButton placeholder="Placeholder as simple string" />
+<SelectButton
+  placeholder={{
+    label: 'Placeholder label',
+    description: 'Placeholder example using prop shape recommendation',
+  }}
+/>
+```
+
+### Value
+
+Use the `value` prop to add a value to the `SelectButton` component.
+
+Recommended to use the object prop shape recommendation when using `value` so that it will align with the `placeholder` and `defaultValue` prop shape recommendation.
+Example Prop Shape Recommendation:
+
+```js
+{
+  label: 'Label',
+  description: 'Description',
+  startAccessory: <AvatarAccount address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1" size={AvatarAccountSize.Sm} />,
+  endAccessory: <AvatarAccount address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1" size={AvatarAccountSize.Sm} />,
+}
+```
+
+<Canvas>
+  <Story id="components-componentlibrary-selectbutton--value" />
+</Canvas>
+
+```jsx
+import {
+  AvatarAccount,
+  AvatarAccountSize,
+  SelectButton,
+} from '../../component-library';
+
+<SelectButton
+  value={{
+    startAccessory: (
+      <AvatarAccount
+        address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
+        size={AvatarAccountSize.Sm}
+      />
+    ),
+    label: 'Option 1',
+    description: 'Option 1 using prop shape recommendation',
+  }}
+/>;
+```
+
+### Default Value
+
+Use the `defaultValue` prop to add a default value to the `SelectButton` component.
+Recommend using the object prop shape recommendation when using `defaultValue` so that it will align with the `placeholder` and `value` prop shape recommendation.
+Example Prop Shape Recommendation:
+
+```js
+{
+  label: 'Label',
+  description: 'Description',
+  startAccessory: <AvatarAccount address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1" size={AvatarAccountSize.Sm} />,
+  endAccessory: <AvatarAccount address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1" size={AvatarAccountSize.Sm} />,
+}
+```
+
+<Canvas>
+  <Story id="components-componentlibrary-selectbutton--default-value" />
+</Canvas>
+
+```jsx
+import {
+  AvatarAccount,
+  AvatarAccountSize,
+  SelectButton,
+} from '../../component-library';
+
+<SelectButton
+  defaultValue={{
+    startAccessory: (
+      <AvatarAccount
+        address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
+        size={AvatarAccountSize.Sm}
+      />
+    ),
+    label: 'Option 1',
+    description: 'Option 1 using prop shape recommendation',
+  }}
+/>;
+```
+
+### Use SelectWrapper
+
+`SelectButton` is built to work as a triggerComponent for `SelectWrapper` and will work with the `placeholder`, `defaultValue`, and `value` prop shape recommendation when set at the `SelectWrapper` level.
+Example Prop Shape Recommendation:
+
+```js
+{
+  label: 'Label',
+  description: 'Description',
+  startAccessory: <AvatarAccount address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1" size={AvatarAccountSize.Sm} />,
+  endAccessory: <AvatarAccount address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1" size={AvatarAccountSize.Sm} />,
+}
+```
+
+<Canvas>
+  <Story id="components-componentlibrary-selectbutton--use-select-wrapper" />
+</Canvas>
+
+```jsx
+import {
+  AvatarAccount,
+  AvatarAccountSize,
+  SelectButton,
+  SelectWrapper,
+} from '../../component-library';
+
+<SelectWrapper
+  placeholder={{
+    label: 'Please select an option',
+    description:
+      'This demo is using SelectWrapper and utilizing the prop shape recommendation',
+  }}
+  triggerComponent={<SelectButton />}
+>
+  <SelectOption
+    value={{
+      startAccessory: (
+        <AvatarAccount
+          address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
+          size={AvatarAccountSize.Sm}
+        />
+      ),
+      label: 'Option 1',
+      description: 'You have selected option 1',
+    }}
+  >
+    Option 1
+  </SelectOption>
+  <SelectOption
+    value={{
+      startAccessory: (
+        <AvatarAccount
+          address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
+          size={AvatarAccountSize.Sm}
+        />
+      ),
+      label: 'Option 2',
+      description: 'You have selected option 2',
+    }}
+  >
+    Option 2
+  </SelectOption>
+  <SelectOption
+    value={{
+      startAccessory: (
+        <AvatarAccount
+          address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
+          size={AvatarAccountSize.Sm}
+        />
+      ),
+      label: 'Option 3',
+      description: 'You have selected option 3',
+    }}
+  >
+    Option 3
+  </SelectOption>
+</SelectWrapper>;
+```

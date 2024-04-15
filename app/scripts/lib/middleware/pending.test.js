@@ -1,5 +1,5 @@
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { GAS_LIMITS } from '../../../../shared/constants/gas';
-import { TransactionEnvelopeType } from '../../../../shared/constants/transaction';
 import { txMetaStub } from '../../../../test/stub/tx-meta-stub';
 import {
   createPendingNonceMiddleware,

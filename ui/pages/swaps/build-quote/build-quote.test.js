@@ -1,11 +1,10 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-
+import { setBackgroundConnection } from '../../../store/background-connection';
 import {
   renderWithProvider,
   createSwapsMockStore,
-  setBackgroundConnection,
   fireEvent,
 } from '../../../../test/jest';
 import { createTestProviderTools } from '../../../../test/stub/provider';
@@ -29,6 +28,7 @@ const createProps = (customProps = {}) => {
 
 setBackgroundConnection({
   resetPostFetchState: jest.fn(),
+  ignoreTokens: jest.fn(),
   setBackgroundSwapRouteState: jest.fn(),
   clearSwapsQuotes: jest.fn(),
   stopPollingForQuotes: jest.fn(),

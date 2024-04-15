@@ -29,37 +29,11 @@ describe('SlippageButtons', () => {
     expect(
       document.querySelector('.slippage-buttons__button-group'),
     ).toMatchSnapshot();
-    expect(queryByText('Smart swap')).not.toBeInTheDocument();
+    expect(queryByText('Smart Swaps')).not.toBeInTheDocument();
     expect(getByTestId('button-group__button1')).toHaveAttribute(
       'aria-checked',
       'true',
     );
-  });
-
-  it('renders the component with the smart transaction opt-in button available, opt into STX', () => {
-    const setSmartTransactionsOptInStatus = jest.fn();
-    const { getByText } = renderWithProvider(
-      <SlippageButtons
-        {...createProps({
-          smartTransactionsEnabled: true,
-          setSmartTransactionsOptInStatus,
-        })}
-      />,
-    );
-    expect(getByText('2%')).toBeInTheDocument();
-    expect(getByText('3%')).toBeInTheDocument();
-    expect(getByText('custom')).toBeInTheDocument();
-    expect(getByText('Advanced options')).toBeInTheDocument();
-    expect(
-      document.querySelector('.slippage-buttons__header'),
-    ).toMatchSnapshot();
-    expect(
-      document.querySelector('.slippage-buttons__button-group'),
-    ).toMatchSnapshot();
-    expect(getByText('Smart swap')).toBeInTheDocument();
-    expect(document.querySelector('.toggle-button--off')).toBeInTheDocument();
-    fireEvent.click(document.querySelector('.toggle-button'));
-    expect(setSmartTransactionsOptInStatus).toHaveBeenCalledWith(true, false);
   });
 
   it('renders slippage with a custom value', () => {

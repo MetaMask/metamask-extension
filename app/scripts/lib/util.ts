@@ -1,24 +1,24 @@
+import urlLib from 'url';
+import { AccessList } from '@ethereumjs/tx';
 import BN from 'bn.js';
 import { memoize } from 'lodash';
-import { AccessList } from '@ethereumjs/tx';
-import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
-
-import {
-  ENVIRONMENT_TYPE_POPUP,
-  ENVIRONMENT_TYPE_NOTIFICATION,
-  ENVIRONMENT_TYPE_FULLSCREEN,
-  ENVIRONMENT_TYPE_BACKGROUND,
-  PLATFORM_FIREFOX,
-  PLATFORM_OPERA,
-  PLATFORM_CHROME,
-  PLATFORM_EDGE,
-  PLATFORM_BRAVE,
-} from '../../../shared/constants/app';
-import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 import {
   TransactionEnvelopeType,
   TransactionMeta,
-} from '../../../shared/constants/transaction';
+} from '@metamask/transaction-controller';
+import {
+  ENVIRONMENT_TYPE_BACKGROUND,
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
+  PLATFORM_BRAVE,
+  PLATFORM_CHROME,
+  PLATFORM_EDGE,
+  PLATFORM_FIREFOX,
+  PLATFORM_OPERA,
+} from '../../../shared/constants/app';
+import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
+import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 
 /**
  * @see {@link getEnvironmentType}
@@ -143,13 +143,13 @@ function checkAlarmExists(alarmList: { name: string }[], alarmName: string) {
 }
 
 export {
-  getPlatform,
-  getEnvironmentType,
-  hexToBn,
   BnMultiplyByFraction,
   addHexPrefix,
-  getChainType,
   checkAlarmExists,
+  getChainType,
+  getEnvironmentType,
+  getPlatform,
+  hexToBn,
 };
 
 // Taken from https://stackoverflow.com/a/1349426/3696652
@@ -180,11 +180,13 @@ export const isValidDate = (d: Date | number) => {
  * @property {() => void} reject - A function that rejects the Promise.
  */
 
-interface DeferredPromise {
+type DeferredPromise = {
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   promise: Promise<any>;
   resolve?: () => void;
   reject?: () => void;
-}
+};
 
 /**
  * Create a defered Promise.
@@ -235,32 +237,65 @@ export function previousValueComparator<A>(
 }
 
 export function addUrlProtocolPrefix(urlString: string) {
-  if (!urlString.match(/(^http:\/\/)|(^https:\/\/)/u)) {
-    return `https://${urlString}`;
+  let trimmed = urlString.trim();
+
+  if (trimmed.length && !urlLib.parse(trimmed).protocol) {
+    trimmed = `https://${trimmed}`;
   }
-  return urlString;
+
+  if (getValidUrl(trimmed) !== null) {
+    return trimmed;
+  }
+
+  return null;
 }
 
-interface FormattedTransactionMeta {
+export function getValidUrl(urlString: string): URL | null {
+  try {
+    const url = new URL(urlString);
+
+    if (url.hostname.length === 0 || url.pathname.length === 0) {
+      return null;
+    }
+
+    if (url.hostname !== decodeURIComponent(url.hostname)) {
+      return null; // will happen if there's a %, a space, or other invalid character in the hostname
+    }
+
+    return url;
+  } catch (error) {
+    return null;
+  }
+}
+
+export function isWebUrl(urlString: string): boolean {
+  const url = getValidUrl(urlString);
+
+  return (
+    url !== null && (url.protocol === 'https:' || url.protocol === 'http:')
+  );
+}
+
+type FormattedTransactionMeta = {
   blockHash: string | null;
   blockNumber: string | null;
   from: string;
-  to: string;
-  hash: string;
+  to?: string;
+  hash?: string;
   nonce: string;
   input: string;
   v?: string;
   r?: string;
   s?: string;
   value: string;
-  gas: string;
+  gas?: string;
   gasPrice?: string;
   maxFeePerGas?: string;
   maxPriorityFeePerGas?: string;
   type: TransactionEnvelopeType;
   accessList: AccessList | null;
   transactionIndex: string | null;
-}
+};
 
 export function formatTxMetaForRpcResult(
   txMeta: TransactionMeta,

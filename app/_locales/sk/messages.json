@@ -169,9 +169,6 @@
   "copyAddress": {
     "message": "Kopírovať adresu do schránky"
   },
-  "copyPrivateKey": {
-    "message": "Toto je váš privátní klíč (kliknutím zkopírujte)"
-  },
   "copyToClipboard": {
     "message": "Kopírovat do schránky"
   },
@@ -208,9 +205,6 @@
   "deleteNetwork": {
     "message": "Odstrániť sieť?"
   },
-  "deleteNetworkDescription": {
-    "message": "Naozaj chcete túto sieť odstrániť?"
-  },
   "details": {
     "message": "Podrobnosti"
   },
@@ -232,14 +226,8 @@
   "editContact": {
     "message": "Upraviť kontakt"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Názov ENS sa nenašiel v aktuálnej sieti. Skúste sa prepnúť na hlavnú sieť Ethereum."
-  },
   "ensRegistrationError": {
     "message": "Chyba pri registrácii názvu ENS"
-  },
-  "enterPassword": {
-    "message": "Zadejte heslo"
   },
   "enterPasswordContinue": {
     "message": "Pokračujte zadaním hesla"
@@ -252,9 +240,6 @@
   },
   "expandView": {
     "message": "Rozbaliť zobrazenie"
-  },
-  "exportPrivateKey": {
-    "message": "Exportovat privátní klíč"
   },
   "failed": {
     "message": "Neúspěšné"
@@ -596,12 +581,6 @@
   "search": {
     "message": "Hledat"
   },
-  "searchResults": {
-    "message": "Výsledky vyhľadávania"
-  },
-  "searchTokens": {
-    "message": "Hledat tokeny"
-  },
   "securityAndPrivacy": {
     "message": "Bezpečnosť a súkromie"
   },
@@ -640,9 +619,6 @@
   },
   "showHexDataDescription": {
     "message": "Vyberte toto, ak chcete, aby sa na obrazovke odosielania zobrazilo hex dátové pole"
-  },
-  "showPrivateKeys": {
-    "message": "Zobrazit privátní klíče"
   },
   "sigRequest": {
     "message": "Požadavek podpisu"
@@ -758,9 +734,6 @@
   "tryAgain": {
     "message": "Skúsiť znova"
   },
-  "typePassword": {
-    "message": "Zadejte své heslo"
-  },
   "unapproved": {
     "message": "Neschváleno"
   },
@@ -769,12 +742,6 @@
   },
   "unknown": {
     "message": "Neznámé"
-  },
-  "unknownCameraError": {
-    "message": "Pri pokuse o prístup k fotoaparátu sa vyskytla chyba. Skúste znova..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Och! Niečo zlyhalo..."
   },
   "unknownNetwork": {
     "message": "Neznámá soukromá síť"

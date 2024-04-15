@@ -1,22 +1,17 @@
-@import 'account-details-modal/index';
-@import 'account-modal-container/index';
 @import 'cancel-transaction/index';
 @import 'confirm-remove-account/index';
 @import 'edit-approval-permission/index';
-@import 'export-private-key-modal/index';
 @import 'hide-token-confirmation-modal/index';
 @import 'new-account-modal/index';
 @import 'qr-scanner/index';
 @import 'transaction-confirmed/index';
 @import 'customize-nonce/index';
 @import 'convert-token-to-nft-modal/index';
-@import 'contract-details-modal/index';
-@import 'hold-to-reveal-modal/index';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 @import '../../institutional/confirm-remove-jwt-modal/index';
 @import '../../institutional/custody-confirm-link-modal/index';
 @import '../../institutional/transaction-failed-modal/index';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 @import 'eth-sign-modal/index';
 
 .modal {

@@ -11,26 +11,39 @@ import {
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { IPFS_DEFAULT_GATEWAY_URL } from '../../../../shared/constants/network';
 import {
   AUTO_DETECT_TOKEN_LEARN_MORE_LINK,
   COINGECKO_LINK,
   CONSENSYS_PRIVACY_LINK,
   CRYPTOCOMPARE_LINK,
-  ETHERSCAN_PRIVACY_LINK,
   PRIVACY_POLICY_LINK,
+  SECURITY_ALERTS_LEARN_MORE_LINK,
+  TRANSACTION_SIMULATIONS_LEARN_MORE_LINK,
 } from '../../../../shared/lib/ui-utils';
 import SRPQuiz from '../../../components/app/srp-quiz-modal/SRPQuiz';
 import {
-  BUTTON_SIZES,
   Button,
-} from '../../../components/component-library/button';
+  BUTTON_SIZES,
+  Box,
+  Text,
+} from '../../../components/component-library';
 import TextField from '../../../components/ui/text-field';
 import ToggleButton from '../../../components/ui/toggle-button';
+import {
+  Display,
+  FlexDirection,
+  JustifyContent,
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
 import {
-  getNumberOfSettingsInSection,
+  getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
+
+import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
 
 export default class SecurityTab extends PureComponent {
   static contextTypes = {
@@ -41,32 +54,54 @@ export default class SecurityTab extends PureComponent {
   static propTypes = {
     warning: PropTypes.string,
     history: PropTypes.object,
+    openSeaEnabled: PropTypes.bool,
+    setOpenSeaEnabled: PropTypes.func,
+    useNftDetection: PropTypes.bool,
+    setUseNftDetection: PropTypes.func,
     participateInMetaMetrics: PropTypes.bool.isRequired,
     setParticipateInMetaMetrics: PropTypes.func.isRequired,
-    showIncomingTransactions: PropTypes.bool.isRequired,
-    setShowIncomingTransactionsFeatureFlag: PropTypes.func.isRequired,
+    incomingTransactionsPreferences: PropTypes.object.isRequired,
+    allNetworks: PropTypes.array.isRequired,
+    setIncomingTransactionsPreferences: PropTypes.func.isRequired,
     setUsePhishDetect: PropTypes.func.isRequired,
     usePhishDetect: PropTypes.bool.isRequired,
+    setUse4ByteResolution: PropTypes.func.isRequired,
+    use4ByteResolution: PropTypes.bool.isRequired,
     useTokenDetection: PropTypes.bool.isRequired,
     setUseTokenDetection: PropTypes.func.isRequired,
     setIpfsGateway: PropTypes.func.isRequired,
+    setIsIpfsGatewayEnabled: PropTypes.func.isRequired,
     ipfsGateway: PropTypes.string.isRequired,
     useMultiAccountBalanceChecker: PropTypes.bool.isRequired,
     setUseMultiAccountBalanceChecker: PropTypes.func.isRequired,
+    useSafeChainsListValidation: PropTypes.bool.isRequired,
+    setUseSafeChainsListValidation: PropTypes.func.isRequired,
     useCurrencyRateCheck: PropTypes.bool.isRequired,
     setUseCurrencyRateCheck: PropTypes.func.isRequired,
+    useAddressBarEnsResolution: PropTypes.bool.isRequired,
+    setUseAddressBarEnsResolution: PropTypes.func.isRequired,
+    useExternalNameSources: PropTypes.bool.isRequired,
+    setUseExternalNameSources: PropTypes.func.isRequired,
+    setUseTransactionSimulations: PropTypes.func.isRequired,
+    useTransactionSimulations: PropTypes.bool.isRequired,
+    petnamesEnabled: PropTypes.bool.isRequired,
+    securityAlertsEnabled: PropTypes.bool,
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+    setSecurityAlertsEnabled: PropTypes.func,
+    ///: END:ONLY_INCLUDE_IF
   };
 
   state = {
-    ipfsGateway: this.props.ipfsGateway,
+    ipfsGateway: this.props.ipfsGateway || IPFS_DEFAULT_GATEWAY_URL,
     ipfsGatewayError: '',
     srpQuizModalVisible: false,
+    ipfsToggle: this.props.ipfsGateway.length > 0,
   };
 
   settingsRefCounter = 0;
 
   settingsRefs = Array(
-    getNumberOfSettingsInSection(
+    getNumberOfSettingRoutesInTab(
       this.context.t,
       this.context.t('securityAndPrivacy'),
     ),
@@ -150,54 +185,71 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
-  renderIncomingTransactionsOptIn() {
+  renderSecurityAlertsToggle() {
     const { t } = this.context;
-    const { showIncomingTransactions, setShowIncomingTransactionsFeatureFlag } =
-      this.props;
+    const { securityAlertsEnabled } = this.props;
 
     return (
-      <div ref={this.settingsRefs[1]} className="settings-page__content-row">
-        <div className="settings-page__content-item">
-          <span>{t('showIncomingTransactions')}</span>
-          <div className="settings-page__content-description">
-            {t('showIncomingTransactionsDescription', [
-              // TODO: Update to use real link
-              <a
-                href={ETHERSCAN_PRIVACY_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
-                key="etherscan-privacy-link"
-              >
-                {t('etherscan')}
-              </a>,
-              // TODO: Update to use real link
-              <a
-                href={CONSENSYS_PRIVACY_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
-                key="ic-consensys-privacy-link"
-              >
-                {t('privacyMsg')}
-              </a>,
-            ])}
-          </div>
+      <>
+        <div ref={this.settingsRefs[15]}>
+          <span className="settings-page__security-tab-sub-header">
+            {t('securityAlerts')}
+          </span>
         </div>
-        <div className="settings-page__content-item">
-          <div
-            className="settings-page__content-item-col"
-            data-testid="showIncomingTransactions"
+        <div className="settings-page__content-padded">
+          <Box
+            ref={this.settingsRefs[2]}
+            className="settings-page__content-row"
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            justifyContent={JustifyContent.spaceBetween}
+            gap={4}
           >
-            <ToggleButton
-              value={showIncomingTransactions}
-              onToggle={(value) =>
-                setShowIncomingTransactionsFeatureFlag(!value)
-              }
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
-          </div>
+            <div className="settings-page__content-item">
+              <div className="settings-page__content-description">
+                {t('securityAlertsDescription', [
+                  <a
+                    key="learn_more_link"
+                    href={SECURITY_ALERTS_LEARN_MORE_LINK}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    {t('learnMoreUpperCase')}
+                  </a>,
+                ])}
+              </div>
+            </div>
+            <div
+              className="settings-page__content-item-col"
+              data-testid="securityAlert"
+            >
+              <ToggleButton
+                value={securityAlertsEnabled}
+                onToggle={this.toggleSecurityAlert.bind(this)}
+                offLabel={t('off')}
+                onLabel={t('on')}
+              />
+            </div>
+          </Box>
         </div>
-      </div>
+      </>
+    );
+  }
+
+  renderIncomingTransactionsOptIn() {
+    const {
+      incomingTransactionsPreferences,
+      allNetworks,
+      setIncomingTransactionsPreferences,
+    } = this.props;
+
+    return (
+      <IncomingTransactionToggle
+        wrapperRef={this.settingsRefs[1]}
+        allNetworks={allNetworks}
+        setIncomingTransactionsPreferences={setIncomingTransactionsPreferences}
+        incomingTransactionsPreferences={incomingTransactionsPreferences}
+      />
     );
   }
 
@@ -206,27 +258,67 @@ export default class SecurityTab extends PureComponent {
     const { usePhishDetect, setUsePhishDetect } = this.props;
 
     return (
-      <div ref={this.settingsRefs[2]} className="settings-page__content-row">
+      <Box
+        ref={this.settingsRefs[2]}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
         <div className="settings-page__content-item">
           <span>{t('usePhishingDetection')}</span>
           <div className="settings-page__content-description">
             {t('usePhishingDetectionDescription')}
           </div>
         </div>
+
+        <div
+          className="settings-page__content-item-col"
+          data-testid="usePhishingDetection"
+        >
+          <ToggleButton
+            value={usePhishDetect}
+            onToggle={(value) => setUsePhishDetect(!value)}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
+        </div>
+      </Box>
+    );
+  }
+
+  renderUse4ByteResolutionToggle() {
+    const { t } = this.context;
+    const { use4ByteResolution, setUse4ByteResolution } = this.props;
+    return (
+      <Box
+        ref={this.settingsRefs[3]}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
         <div className="settings-page__content-item">
-          <div
-            className="settings-page__content-item-col"
-            data-testid="usePhishingDetection"
-          >
-            <ToggleButton
-              value={usePhishDetect}
-              onToggle={(value) => setUsePhishDetect(!value)}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
+          <span>{t('use4ByteResolution')}</span>
+          <div className="settings-page__content-description">
+            {t('use4ByteResolutionDescription')}
           </div>
         </div>
-      </div>
+
+        <div
+          className="settings-page__content-item-col"
+          data-testid="4byte-resolution-container"
+        >
+          <ToggleButton
+            value={use4ByteResolution}
+            onToggle={(value) => setUse4ByteResolution(!value)}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
+        </div>
+      </Box>
     );
   }
 
@@ -236,27 +328,33 @@ export default class SecurityTab extends PureComponent {
       this.props;
 
     return (
-      <div ref={this.settingsRefs[3]} className="settings-page__content-row">
+      <Box
+        ref={this.settingsRefs[4]}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
         <div className="settings-page__content-item">
           <span>{t('participateInMetaMetrics')}</span>
           <div className="settings-page__content-description">
             <span>{t('participateInMetaMetricsDescription')}</span>
           </div>
         </div>
-        <div className="settings-page__content-item">
-          <div
-            className="settings-page__content-item-col"
-            data-testid="participateInMetaMetrics"
-          >
-            <ToggleButton
-              value={participateInMetaMetrics}
-              onToggle={(value) => setParticipateInMetaMetrics(!value)}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
-          </div>
+
+        <div
+          className="settings-page__content-item-col"
+          data-testid="participateInMetaMetrics"
+        >
+          <ToggleButton
+            value={participateInMetaMetrics}
+            onToggle={(value) => setParticipateInMetaMetrics(!value)}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
         </div>
-      </div>
+      </Box>
     );
   }
 
@@ -264,10 +362,12 @@ export default class SecurityTab extends PureComponent {
     const { t } = this.context;
 
     return (
-      <div
-        ref={this.settingsRefs[4]}
+      <Box
         className="settings-page__content-row"
         data-testid="advanced-setting-choose-your-network"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        gap={4}
       >
         <div className="settings-page__content-item">
           <span>{t('chooseYourNetwork')}</span>
@@ -285,92 +385,233 @@ export default class SecurityTab extends PureComponent {
             ])}
           </div>
         </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <Button
-              type="secondary"
-              className="settings-page__button"
-              onClick={() => {
-                getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-                  ? global.platform.openExtensionInBrowser(
-                      ADD_POPULAR_CUSTOM_NETWORK,
-                    )
-                  : this.props.history.push(ADD_POPULAR_CUSTOM_NETWORK);
-              }}
-            >
-              {t('addCustomNetwork')}
-            </Button>
-          </div>
+        <div className="settings-page__content-item-col">
+          <Button
+            type="secondary"
+            className="settings-page__button"
+            onClick={() => {
+              getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+                ? global.platform.openExtensionInBrowser(
+                    ADD_POPULAR_CUSTOM_NETWORK,
+                  )
+                : this.props.history.push(ADD_POPULAR_CUSTOM_NETWORK);
+            }}
+          >
+            {t('addCustomNetwork')}
+          </Button>
         </div>
-      </div>
+      </Box>
+    );
+  }
+
+  renderSafeChainsListValidationToggle() {
+    const { t } = this.context;
+    const { useSafeChainsListValidation, setUseSafeChainsListValidation } =
+      this.props;
+
+    const useSafeChainsListValidationWebsite = t(
+      'useSafeChainsListValidationWebsite',
+    );
+
+    return (
+      <Box
+        ref={this.settingsRefs[13]}
+        className="settings-page__content-row"
+        data-testid="setting-safe-chains-validation"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        gap={4}
+      >
+        <Box
+          className="settings-page__content-row"
+          gap={4}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          justifyContent={JustifyContent.spaceBetween}
+        >
+          <div className="settings-page__content-item">
+            <span>{t('useSafeChainsListValidation')}</span>
+            <div className="settings-page__content-description">
+              {t('useSafeChainsListValidationDescription', [
+                <b key="safechain-list-validation-website">
+                  {useSafeChainsListValidationWebsite}
+                </b>,
+              ])}
+            </div>
+          </div>
+
+          <div
+            className="settings-page__content-item-col"
+            data-testid="useSafeChainsListValidation"
+          >
+            <ToggleButton
+              value={useSafeChainsListValidation}
+              onToggle={(value) => setUseSafeChainsListValidation(!value)}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </Box>
+      </Box>
     );
   }
 
   renderIpfsGatewayControl() {
     const { t } = this.context;
-    const { ipfsGatewayError } = this.state;
-
-    const handleIpfsGatewaySave = (gateway) => {
-      const url = new URL(addUrlProtocolPrefix(gateway));
-      const { host } = url;
-
-      this.props.setIpfsGateway(host);
-    };
+    let ipfsError = '';
 
     const handleIpfsGatewayChange = (url) => {
-      this.setState(() => {
-        let ipfsError = '';
-
+      if (url.length > 0) {
         try {
-          const urlObj = new URL(addUrlProtocolPrefix(url));
-          if (!urlObj.host) {
-            throw new Error();
+          const validUrl = addUrlProtocolPrefix(url);
+
+          if (!validUrl) {
+            ipfsError = t('invalidIpfsGateway');
           }
+
+          const urlObj = new URL(validUrl);
 
           // don't allow the use of this gateway
           if (urlObj.host === 'gateway.ipfs.io') {
-            throw new Error('Forbidden gateway');
+            ipfsError = t('forbiddenIpfsGateway');
+          }
+
+          if (ipfsError.length === 0) {
+            this.props.setIpfsGateway(urlObj.host);
           }
         } catch (error) {
-          ipfsError =
-            error.message === 'Forbidden gateway'
-              ? t('forbiddenIpfsGateway')
-              : t('invalidIpfsGateway');
+          ipfsError = t('invalidIpfsGateway');
         }
+      } else {
+        ipfsError = t('invalidIpfsGateway');
+      }
 
-        handleIpfsGatewaySave(url);
-        return {
-          ipfsGateway: url,
-          ipfsGatewayError: ipfsError,
-        };
+      this.setState({
+        ipfsGateway: url,
+        ipfsGatewayError: ipfsError,
       });
     };
 
     return (
-      <div
-        ref={this.settingsRefs[5]}
+      <Box
+        ref={this.settingsRefs[6]}
         className="settings-page__content-row"
         data-testid="setting-ipfs-gateway"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        gap={4}
       >
-        <div className="settings-page__content-item">
-          <span>{t('addCustomIPFSGateway')}</span>
-          <div className="settings-page__content-description">
-            {t('addCustomIPFSGatewayDescription')}
+        <Box
+          className="settings-page__content-row"
+          gap={4}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          justifyContent={JustifyContent.spaceBetween}
+        >
+          <div className="settings-page__content-item">
+            <span>{t('ipfsGateway')}</span>
+            <div className="settings-page__content-description">
+              {t('ipfsGatewayDescription')}
+            </div>
           </div>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <TextField
-              type="text"
-              value={this.state.ipfsGateway}
-              onChange={(e) => handleIpfsGatewayChange(e.target.value)}
-              error={ipfsGatewayError}
-              fullWidth
-              margin="dense"
+          <div
+            className="settings-page__content-item-col"
+            data-testid="ipfsToggle"
+          >
+            <ToggleButton
+              value={this.state.ipfsToggle}
+              onToggle={(value) => {
+                if (value) {
+                  // turning from true to false
+                  this.props.setIsIpfsGatewayEnabled(false);
+                  this.props.setIpfsGateway('');
+                } else {
+                  // turning from false to true
+                  this.props.setIsIpfsGatewayEnabled(true);
+                  handleIpfsGatewayChange(this.state.ipfsGateway);
+                }
+
+                this.setState({ ipfsToggle: !value });
+              }}
+              offLabel={t('off')}
+              onLabel={t('on')}
             />
           </div>
-        </div>
-      </div>
+        </Box>
+        {this.state.ipfsToggle && (
+          <div className="settings-page__content-item">
+            <span>{t('addIPFSGateway')}</span>
+            <div className="settings-page__content-item-col">
+              <TextField
+                type="text"
+                value={this.state.ipfsGateway}
+                onChange={(e) => handleIpfsGatewayChange(e.target.value)}
+                error={this.state.ipfsGatewayError}
+                fullWidth
+                margin="dense"
+              />
+            </div>
+          </div>
+        )}
+        <Box
+          className="settings-page__content-row"
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          justifyContent={JustifyContent.spaceBetween}
+          gap={4}
+          ref={this.settingsRefs[10]}
+          marginTop={3}
+          id="ens-domains"
+        >
+          <div>
+            {t('ensDomainsSettingTitle')}
+            <div className="settings-page__content-description">
+              <Text color={TextColor.inherit} variant={TextVariant.inherit}>
+                {t('ensDomainsSettingDescriptionIntroduction')}
+              </Text>
+              <Box
+                as="ul"
+                marginTop={4}
+                marginBottom={4}
+                paddingInlineStart={4}
+                style={{ listStyleType: 'circle' }}
+              >
+                <Text
+                  as="li"
+                  color={TextColor.inherit}
+                  variant={TextVariant.inherit}
+                >
+                  {t('ensDomainsSettingDescriptionPart1')}
+                </Text>
+                <Text
+                  as="li"
+                  color={TextColor.inherit}
+                  variant={TextVariant.inherit}
+                >
+                  {t('ensDomainsSettingDescriptionPart2')}
+                </Text>
+              </Box>
+              <Text color={TextColor.inherit} variant={TextVariant.inherit}>
+                {t('ensDomainsSettingDescriptionOutroduction')}
+              </Text>
+            </div>
+          </div>
+
+          <div
+            className="settings-page__content-item-col"
+            data-testid="ipfs-gateway-resolution-container"
+          >
+            <ToggleButton
+              value={this.props.useAddressBarEnsResolution}
+              onToggle={(value) =>
+                this.props.setUseAddressBarEnsResolution(!value)
+              }
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </Box>
+      </Box>
     );
   }
 
@@ -379,10 +620,15 @@ export default class SecurityTab extends PureComponent {
     const { useTokenDetection, setUseTokenDetection } = this.props;
 
     return (
-      <div
-        ref={this.settingsRefs[6]}
+      <Box
+        ref={this.settingsRefs[7]}
         className="settings-page__content-row"
         data-testid="advanced-setting-gas-fee-estimation"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+        id="advanced-settings-autodetect-tokens"
       >
         <div className="settings-page__content-item">
           <span>{t('autoDetectTokens')}</span>
@@ -400,27 +646,26 @@ export default class SecurityTab extends PureComponent {
             ])}
           </div>
         </div>
-        <div className="settings-page__content-item">
-          <div
-            className="settings-page__content-item-col"
-            data-testid="autoDetectTokens"
-          >
-            <ToggleButton
-              value={useTokenDetection}
-              onToggle={(value) => {
-                this.toggleSetting(
-                  value,
-                  MetaMetricsEventName.KeyAutoDetectTokens,
-                  MetaMetricsEventName.KeyAutoDetectTokens,
-                  setUseTokenDetection,
-                );
-              }}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
-          </div>
+
+        <div
+          className="settings-page__content-item-col"
+          data-testid="autoDetectTokens"
+        >
+          <ToggleButton
+            value={useTokenDetection}
+            onToggle={(value) => {
+              this.toggleSetting(
+                value,
+                MetaMetricsEventName.KeyAutoDetectTokens,
+                MetaMetricsEventName.KeyAutoDetectTokens,
+                setUseTokenDetection,
+              );
+            }}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
         </div>
-      </div>
+      </Box>
     );
   }
 
@@ -430,34 +675,40 @@ export default class SecurityTab extends PureComponent {
       this.props;
 
     return (
-      <div ref={this.settingsRefs[7]} className="settings-page__content-row">
+      <Box
+        ref={this.settingsRefs[8]}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
         <div className="settings-page__content-item">
           <span>{t('useMultiAccountBalanceChecker')}</span>
           <div className="settings-page__content-description">
-            {t('useMultiAccountBalanceCheckerDescription')}
+            {t('useMultiAccountBalanceCheckerSettingDescription')}
           </div>
         </div>
-        <div className="settings-page__content-item">
-          <div
-            className="settings-page__content-item-col"
-            data-testid="useMultiAccountBalanceChecker"
-          >
-            <ToggleButton
-              value={useMultiAccountBalanceChecker}
-              onToggle={(value) => {
-                this.toggleSetting(
-                  value,
-                  MetaMetricsEventName.KeyBatchAccountBalanceRequests,
-                  MetaMetricsEventName.KeyBatchAccountBalanceRequests,
-                  setUseMultiAccountBalanceChecker,
-                );
-              }}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
-          </div>
+
+        <div
+          className="settings-page__content-item-col"
+          data-testid="useMultiAccountBalanceChecker"
+        >
+          <ToggleButton
+            value={useMultiAccountBalanceChecker}
+            onToggle={(value) => {
+              this.toggleSetting(
+                value,
+                MetaMetricsEventName.KeyBatchAccountBalanceRequests,
+                MetaMetricsEventName.KeyBatchAccountBalanceRequests,
+                setUseMultiAccountBalanceChecker,
+              );
+            }}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
         </div>
-      </div>
+      </Box>
     );
   }
 
@@ -466,7 +717,14 @@ export default class SecurityTab extends PureComponent {
     const { useCurrencyRateCheck, setUseCurrencyRateCheck } = this.props;
 
     return (
-      <div ref={this.settingsRefs[8]} className="settings-page__content-row">
+      <Box
+        ref={this.settingsRefs[9]}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
         <div className="settings-page__content-item">
           <span>{t('currencyRateCheckToggle')}</span>
           <div className="settings-page__content-description">
@@ -498,25 +756,230 @@ export default class SecurityTab extends PureComponent {
             ])}
           </div>
         </div>
-        <div className="settings-page__content-item">
-          <div
-            className="settings-page__content-item-col"
-            data-testid="currencyRateCheckToggle"
-          >
-            <ToggleButton
-              value={useCurrencyRateCheck}
-              onToggle={(value) => setUseCurrencyRateCheck(!value)}
-              offLabel={t('off')}
-              onLabel={t('on')}
-            />
-          </div>
+
+        <div
+          className="settings-page__content-item-col"
+          data-testid="currencyRateCheckToggle"
+        >
+          <ToggleButton
+            value={useCurrencyRateCheck}
+            onToggle={(value) => setUseCurrencyRateCheck(!value)}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
         </div>
-      </div>
+      </Box>
     );
   }
 
+  renderDisplayNftMediaToggle() {
+    const { t } = this.context;
+    const {
+      openSeaEnabled,
+      setOpenSeaEnabled,
+      useNftDetection,
+      setUseNftDetection,
+    } = this.props;
+
+    return (
+      <Box
+        ref={this.settingsRefs[11]}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+        id="display-nft-media"
+      >
+        <div className="settings-page__content-item">
+          <span>{t('displayNftMedia')}</span>
+          <div className="settings-page__content-description">
+            {t('displayNftMediaDescription')}
+          </div>
+        </div>
+        <div
+          className="settings-page__content-item-col"
+          data-testid="displayNftMedia"
+        >
+          <ToggleButton
+            value={openSeaEnabled}
+            onToggle={(value) => {
+              this.context.trackEvent({
+                category: MetaMetricsEventCategory.Settings,
+                event: 'Enabled/Disable OpenSea',
+                properties: {
+                  action: 'Enabled/Disable OpenSea',
+                  legacy_event: true,
+                },
+              });
+              // value is positive when being toggled off
+              if (value && useNftDetection) {
+                setUseNftDetection(false);
+              }
+              setOpenSeaEnabled(!value);
+            }}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
+        </div>
+      </Box>
+    );
+  }
+
+  renderNftDetectionToggle() {
+    const { t } = this.context;
+    const {
+      openSeaEnabled,
+      setOpenSeaEnabled,
+      useNftDetection,
+      setUseNftDetection,
+    } = this.props;
+    return (
+      <Box
+        ref={this.settingsRefs[12]}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
+        <div className="settings-page__content-item">
+          <span>{t('useNftDetection')}</span>
+          <div className="settings-page__content-description">
+            {t('useNftDetectionDescriptionText')}
+          </div>
+        </div>
+
+        <div
+          className="settings-page__content-item-col"
+          data-testid="useNftDetection"
+        >
+          <ToggleButton
+            value={useNftDetection}
+            onToggle={(value) => {
+              this.context.trackEvent({
+                category: MetaMetricsEventCategory.Settings,
+                event: 'NFT Detected',
+                properties: {
+                  action: 'NFT Detected',
+                  legacy_event: true,
+                },
+              });
+              if (!value && !openSeaEnabled) {
+                setOpenSeaEnabled(!value);
+              }
+              setUseNftDetection(!value);
+            }}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
+        </div>
+      </Box>
+    );
+  }
+
+  renderExternalNameSourcesToggle() {
+    const { t } = this.context;
+    const { useExternalNameSources, setUseExternalNameSources } = this.props;
+
+    return (
+      <Box
+        ref={this.settingsRefs[14]}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
+        <div className="settings-page__content-item">
+          <span>{t('externalNameSourcesSetting')}</span>
+          <div className="settings-page__content-description">
+            {t('externalNameSourcesSettingDescription')}
+          </div>
+        </div>
+
+        <div
+          className="settings-page__content-item-col"
+          data-testid="useExternalNameSources"
+        >
+          <ToggleButton
+            value={useExternalNameSources}
+            onToggle={(value) => setUseExternalNameSources(!value)}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
+        </div>
+      </Box>
+    );
+  }
+
+  renderSimulationsToggle() {
+    const { t } = this.context;
+    const { useTransactionSimulations, setUseTransactionSimulations } =
+      this.props;
+
+    return (
+      <Box
+        ref={this.settingsRefs[18]}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
+        <div className="settings-page__content-item">
+          <span>{t('simulationsSettingSubHeader')}</span>
+          <div className="settings-page__content-description">
+            {t('simulationsSettingDescription', [
+              <a
+                key="learn_more_link"
+                href={TRANSACTION_SIMULATIONS_LEARN_MORE_LINK}
+                rel="noreferrer"
+                target="_blank"
+              >
+                {t('learnMoreUpperCase')}
+              </a>,
+            ])}
+          </div>
+        </div>
+
+        <div
+          className="settings-page__content-item-col"
+          data-testid="useTransactionSimulations"
+        >
+          <ToggleButton
+            value={useTransactionSimulations}
+            onToggle={(value) => setUseTransactionSimulations(!value)}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
+        </div>
+      </Box>
+    );
+  }
+
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  /**
+   * toggleSecurityAlert
+   *
+   * @param {boolean} oldValue - the current securityAlertEnabled value.
+   */
+  toggleSecurityAlert(oldValue) {
+    const newValue = !oldValue;
+    const { setSecurityAlertsEnabled } = this.props;
+    this.context.trackEvent({
+      category: MetaMetricsEventCategory.Settings,
+      event: MetaMetricsEventName.SettingsUpdated,
+      properties: {
+        blockaid_alerts_enabled: newValue,
+      },
+    });
+    setSecurityAlertsEnabled(newValue);
+  }
+  ///: END:ONLY_INCLUDE_IF
+
   render() {
-    const { warning } = this.props;
+    const { warning, petnamesEnabled } = this.props;
 
     return (
       <div className="settings-page__body">
@@ -525,14 +988,29 @@ export default class SecurityTab extends PureComponent {
           {this.context.t('security')}
         </span>
         {this.renderSeedWords()}
+        {/* ///: BEGIN:ONLY_INCLUDE_IF(blockaid) */}
+        {this.renderSecurityAlertsToggle()}
+        {/* ///: END:ONLY_INCLUDE_IF */}
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}
         </span>
+
         <div>
-          <span className="settings-page__security-tab-sub-header">Alerts</span>
+          <span className="settings-page__security-tab-sub-header">
+            {this.context.t('alerts')}
+          </span>
         </div>
         <div className="settings-page__content-padded">
           {this.renderPhishingDetectionToggle()}
+        </div>
+
+        <div>
+          <span className="settings-page__security-tab-sub-header">
+            {this.context.t('smartContracts')}
+          </span>
+        </div>
+        <div className="settings-page__content-padded">
+          {this.renderUse4ByteResolutionToggle()}
         </div>
 
         <span className="settings-page__security-tab-sub-header">
@@ -541,21 +1019,42 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-padded">
           {this.renderCurrencyRateCheckToggle()}
           {this.renderIncomingTransactionsOptIn()}
+          {this.renderSimulationsToggle()}
         </div>
-        <span className="settings-page__security-tab-sub-header">
+
+        <span
+          className="settings-page__security-tab-sub-header"
+          ref={this.settingsRefs[5]}
+        >
           {this.context.t('networkProvider')}
         </span>
         <div className="settings-page__content-padded">
           {this.renderChooseYourNetworkButton()}
+          {this.renderSafeChainsListValidationToggle()}
           {this.renderIpfsGatewayControl()}
         </div>
+
         <span className="settings-page__security-tab-sub-header">
           {this.context.t('tokenAutoDetection')}
         </span>
         <div className="settings-page__content-padded">
           {this.renderAutoDetectTokensToggle()}
           {this.renderBatchAccountBalanceRequestsToggle()}
+          {this.renderDisplayNftMediaToggle()}
+          {this.renderNftDetectionToggle()}
         </div>
+
+        {petnamesEnabled && (
+          <>
+            <span className="settings-page__security-tab-sub-header">
+              {this.context.t('settingsSubHeadingSignaturesAndTransactions')}
+            </span>
+            <div className="settings-page__content-padded">
+              {this.renderExternalNameSourcesToggle()}
+            </div>
+          </>
+        )}
+
         <span className="settings-page__security-tab-sub-header">
           {this.context.t('metrics')}
         </span>

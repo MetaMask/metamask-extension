@@ -1,16 +1,27 @@
-import { errorCodes } from 'eth-rpc-errors';
 import { detectSIWE } from '@metamask/controller-utils';
+import { errorCodes } from 'eth-rpc-errors';
 import { isValidAddress } from 'ethereumjs-util';
-
 import { MESSAGE_TYPE, ORIGIN_METAMASK } from '../../../shared/constants/app';
-import { TransactionStatus } from '../../../shared/constants/transaction';
-import { SECOND } from '../../../shared/constants/time';
-
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsEventUiCustomization,
 } from '../../../shared/constants/metametrics';
+import { SECOND } from '../../../shared/constants/time';
+
+import {
+  BlockaidResultType,
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  BlockaidReason,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../shared/constants/security-provider';
+
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+import { SIGNING_METHODS } from '../../../shared/constants/transaction';
+
+import { getBlockaidMetricsProps } from '../../../ui/helpers/utils/metrics';
+///: END:ONLY_INCLUDE_IF
+import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 
 /**
  * These types determine how the method tracking middleware handles incoming
@@ -98,6 +109,7 @@ const EVENT_NAME_MAP = {
 
 const rateLimitTimeouts = {};
 
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 /**
  * Returns a middleware that tracks inpage_provider usage using sampling for
  * each type of event except those that require user interaction, such as
@@ -110,14 +122,24 @@ const rateLimitTimeouts = {};
  *  MetaMetricsController
  * @param {number} [opts.rateLimitSeconds] - number of seconds to wait before
  *  allowing another set of events to be tracked.
- * @param opts.securityProviderRequest
+ * @param {Function} opts.getAccountType
+ * @param {Function} opts.getDeviceModel
+ * @param {RestrictedControllerMessenger} opts.snapAndHardwareMessenger
+ * @param {AppStateController} opts.appStateController
  * @returns {Function}
  */
+///: END:ONLY_INCLUDE_IF
+
 export default function createRPCMethodTrackingMiddleware({
   trackEvent,
   getMetricsState,
   rateLimitSeconds = 60 * 5,
-  securityProviderRequest,
+  getAccountType,
+  getDeviceModel,
+  snapAndHardwareMessenger,
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  appStateController,
+  ///: END:ONLY_INCLUDE_IF
 }) {
   return async function rpcMethodTrackingMiddleware(
     /** @type {any} */ req,
@@ -173,43 +195,45 @@ export default function createRPCMethodTrackingMiddleware({
         // In personal messages the first param is data while in typed messages second param is data
         // if condition below is added to ensure that the right params are captured as data and address.
         let data;
-        let from;
         if (isValidAddress(req?.params?.[1])) {
           data = req?.params?.[0];
-          from = req?.params?.[1];
         } else {
           data = req?.params?.[1];
-          from = req?.params?.[0];
         }
-        const paramsExamplePassword = req?.params?.[2];
 
-        const msgData = {
-          msgParams: {
-            ...paramsExamplePassword,
-            from,
-            data,
-            origin,
-          },
-          status: TransactionStatus.unapproved,
-          type: req.method,
-        };
+        ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+        if (req.securityAlertResponse?.providerRequestsCount) {
+          Object.keys(req.securityAlertResponse.providerRequestsCount).forEach(
+            (key) => {
+              const metricKey = `ppom_${key}_count`;
+              eventProperties[metricKey] =
+                req.securityAlertResponse.providerRequestsCount[key];
+            },
+          );
+        }
+
+        eventProperties.security_alert_response =
+          req.securityAlertResponse?.result_type ??
+          BlockaidResultType.NotApplicable;
+        eventProperties.security_alert_reason =
+          req.securityAlertResponse?.reason ?? BlockaidReason.notApplicable;
+
+        if (req.securityAlertResponse?.description) {
+          eventProperties.security_alert_description =
+            req.securityAlertResponse.description;
+        }
+        ///: END:ONLY_INCLUDE_IF
+
+        const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
+          getAccountType,
+          getDeviceModel,
+          snapAndHardwareMessenger,
+        );
+
+        // merge the snapAndHardwareInfo into eventProperties
+        Object.assign(eventProperties, snapAndHardwareInfo);
 
         try {
-          const securityProviderResponse = await securityProviderRequest(
-            msgData,
-            req.method,
-          );
-
-          if (securityProviderResponse?.flagAsDangerous === 1) {
-            eventProperties.ui_customizations = [
-              MetaMetricsEventUiCustomization.FlaggedAsMalicious,
-            ];
-          } else if (securityProviderResponse?.flagAsDangerous === 2) {
-            eventProperties.ui_customizations = [
-              MetaMetricsEventUiCustomization.FlaggedAsSafetyUnknown,
-            ];
-          }
-
           if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
             const { isSIWEMessage } = detectSIWE({ data });
             if (isSIWEMessage) {
@@ -219,9 +243,7 @@ export default function createRPCMethodTrackingMiddleware({
             }
           }
         } catch (e) {
-          console.warn(
-            `createRPCMethodTrackingMiddleware: Error calling securityProviderRequest - ${e}`,
-          );
+          console.warn(`createRPCMethodTrackingMiddleware: Errored - ${e}`);
         }
       } else {
         eventProperties.method = method;
@@ -259,9 +281,44 @@ export default function createRPCMethodTrackingMiddleware({
         eventProperties.error = res.error;
       } else if (res.error?.code === errorCodes.provider.userRejectedRequest) {
         event = eventType.REJECTED;
+      } else if (
+        res.error?.code === errorCodes.rpc.internal &&
+        res.error?.message === 'Request rejected by user or snap.'
+      ) {
+        // The signature was approved in MetaMask but rejected in the snap
+        event = eventType.REJECTED;
+        eventProperties.status = res.error.message;
       } else {
         event = eventType.APPROVED;
       }
+
+      let blockaidMetricProps = {};
+
+      ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+      if (!isDisabledRPCMethod) {
+        if (SIGNING_METHODS.includes(method)) {
+          const securityAlertResponse =
+            appStateController.getSignatureSecurityAlertResponse(
+              req.securityAlertResponse?.securityAlertId,
+            );
+
+          blockaidMetricProps = getBlockaidMetricsProps({
+            securityAlertResponse,
+          });
+        }
+      }
+      ///: END:ONLY_INCLUDE_IF
+
+      const properties = {
+        ...eventProperties,
+        ...blockaidMetricProps,
+        // if security_alert_response from blockaidMetricProps is Benign, force set security_alert_reason to empty string
+        security_alert_reason:
+          blockaidMetricProps.security_alert_response ===
+          BlockaidResultType.Benign
+            ? ''
+            : blockaidMetricProps.security_alert_reason,
+      };
 
       trackEvent({
         event,
@@ -269,7 +326,7 @@ export default function createRPCMethodTrackingMiddleware({
         referrer: {
           url: origin,
         },
-        properties: eventProperties,
+        properties,
       });
 
       return callback();

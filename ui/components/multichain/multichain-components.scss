@@ -4,18 +4,32 @@
 * This will help improve specificity and reduce the chance of
 * unintended overrides.
 **/
-@import 'address-copy-button/index';
-@import 'import-nfts-modal/index';
-@import 'account-list-item/index';
-@import 'account-list-item-menu/index';
-@import 'account-list-menu/index';
-@import 'account-picker/index';
-@import 'activity-list-item/index';
-@import 'app-header/app-header';
-@import 'connected-site-menu/index';
-@import 'account-list-menu/';
-@import 'token-list-item/token-list-item';
-@import 'network-list-item/';
-@import 'network-list-menu/';
-@import 'product-tour-popover/product-tour-popover';
-@import 'nft-item/nft-item';
+@import 'pages';
+@import 'address-copy-button';
+@import 'address-list-item';
+@import 'import-nfts-modal';
+@import 'account-list-item';
+@import 'account-list-item-menu';
+@import 'account-list-menu';
+@import 'account-picker';
+@import 'activity-list-item';
+@import 'app-header';
+@import 'connected-accounts-menu';
+@import 'connected-site-menu';
+@import 'token-list-item';
+@import 'network-list-item';
+@import 'network-list-menu';
+@import 'product-tour-popover';
+@import 'nft-item';
+@import 'badge-status';
+@import 'import-tokens-modal';
+@import 'asset-picker-amount';
+@import 'asset-picker-amount/asset-picker';
+@import 'asset-picker-amount/asset-picker-modal';
+@import 'notification-detail';
+@import 'notification-detail-collection';
+@import 'notification-detail-nft';
+@import 'notification-list-item-icon';
+@import 'notification-list-item';
+@import 'toast';
+@import "ramps-card";

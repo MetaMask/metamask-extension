@@ -1,0 +1,1543 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Signature Request Component render should match snapshot when we are using eth 1`] = `
+<div>
+  <div
+    class="signature-request"
+  >
+    <div
+      class="confirm-page-container-navigation"
+      style="display: none;"
+    >
+      <div
+        class="confirm-page-container-navigation__container"
+        data-testid="navigation-container"
+        style="visibility: hidden;"
+      >
+        <button
+          class="confirm-page-container-navigation__arrow"
+          data-testid="first-page"
+        >
+          <i
+            class="fa fa-angle-double-left fa-2x"
+          />
+        </button>
+        <button
+          class="confirm-page-container-navigation__arrow"
+          data-testid="previous-page"
+        >
+          <i
+            class="fa fa-angle-left fa-2x"
+          />
+        </button>
+      </div>
+      <div
+        class="confirm-page-container-navigation__textcontainer"
+      >
+        <div
+          class="confirm-page-container-navigation__navtext"
+        >
+          0
+           
+          of
+           
+          0
+        </div>
+        <div
+          class="confirm-page-container-navigation__longtext"
+        >
+          requests waiting to be acknowledged
+        </div>
+      </div>
+      <div
+        class="confirm-page-container-navigation__container"
+        style="visibility: hidden;"
+      >
+        <button
+          class="confirm-page-container-navigation__arrow"
+          data-testid="next-page"
+        >
+          <i
+            class="fa fa-angle-right fa-2x"
+          />
+        </button>
+        <button
+          class="confirm-page-container-navigation__arrow"
+          data-testid="last-page"
+        >
+          <i
+            class="fa fa-angle-double-right fa-2x"
+          />
+        </button>
+      </div>
+    </div>
+    <div
+      class="request-signature__account"
+      data-testid="request-signature-account"
+    >
+      <div
+        class="box network-account-balance-header box--padding-4 box--display-flex box--flex-direction-row box--justify-content-space-between box--align-items-center"
+      >
+        <div
+          class="box box--display-flex box--gap-2 box--flex-direction-row box--align-items-center"
+        >
+          <div
+            class="box box--display-flex box--flex-direction-row box--align-items-center"
+          >
+            <div
+              class=""
+            >
+              <div
+                class="identicon"
+                style="height: 32px; width: 32px; border-radius: 16px;"
+              >
+                <div
+                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 151, 242);"
+                >
+                  <svg
+                    height="32"
+                    width="32"
+                    x="0"
+                    y="0"
+                  >
+                    <rect
+                      fill="#FA7900"
+                      height="32"
+                      transform="translate(-0.4291965340260923 -4.589212785086649) rotate(266.5 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                    <rect
+                      fill="#F2A202"
+                      height="32"
+                      transform="translate(2.4067447047270143 13.767950912205709) rotate(242.5 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                    <rect
+                      fill="#C8144A"
+                      height="32"
+                      transform="translate(-19.808734531871874 -18.328897166120687) rotate(396.2 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div
+              class="network-account-balance-header__network-account__ident-icon-ethereum--gray"
+            >
+              <span
+                class="icon-with-fallback__fallback"
+              >
+                L
+              </span>
+            </div>
+          </div>
+          <div
+            class="box box--display-flex box--flex-direction-column box--align-items-flex-start"
+          >
+            <h6
+              class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+            >
+              Localhost 8545
+            </h6>
+            <h6
+              class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
+            >
+              John Doe
+            </h6>
+          </div>
+        </div>
+        <div
+          class="box box--display-flex box--flex-direction-column box--align-items-flex-end"
+        >
+          <h6
+            class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+          >
+            Balance
+          </h6>
+          <h6
+            align="end"
+            class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
+          >
+            0
+             
+            ETH
+          </h6>
+        </div>
+      </div>
+    </div>
+    <div
+      class="signature-request-content"
+    >
+      <div
+        class="signature-request__origin"
+      >
+        <div
+          class="mm-box mm-tag-url mm-box--padding-right-4 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+        >
+          <div
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-favicon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-default"
+              style="mask-image: url('./images/icons/global.svg');"
+            />
+          </div>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-alternative"
+          >
+            test
+          </p>
+        </div>
+      </div>
+      <h2
+        class="mm-box mm-text signature-request__content__title mm-text--heading-lg mm-box--margin-top-4 mm-box--color-text-default"
+      >
+        Signature request
+      </h2>
+      <h6
+        class="mm-box mm-text request-signature__content__subtitle mm-text--body-sm mm-text--text-align-center mm-box--margin-top-4 mm-box--margin-right-12 mm-box--margin-left-12 mm-box--color-text-alternative"
+      >
+        Only sign this message if you fully understand the content and trust the requesting site.
+      </h6>
+      <div>
+        <button
+          class="mm-box mm-text mm-button-base signature-request-content__verify-contract-details mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+          data-testid="verify-contract-details"
+        >
+          <span
+            class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
+          >
+            <h6
+              class="mm-box mm-text mm-text--body-sm mm-box--color-primary-default"
+            >
+              Verify third-party details
+            </h6>
+          </span>
+        </button>
+      </div>
+    </div>
+    <div
+      class="box signature-request-message box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box signature-request-message__root box--margin-2 box--padding-top-3 box--padding-right-3 box--padding-bottom-3 box--flex-direction-row box--background-color-background-default box--rounded-xl box--border-color-border-muted box--border-style-solid box--border-width-1"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--margin-left-4 mm-box--color-text-default"
+        >
+          Mail
+        </p>
+        <ul
+          class="mm-box signature-request-data__node"
+        >
+          <li
+            class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2 mm-box--display-flex"
+          >
+            <div
+              class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-box--margin-left-4 mm-box--color-text-default"
+            >
+              Contents
+              :
+               
+            </div>
+            <div
+              class="mm-box mm-text signature-request-data__node__value mm-text--body-md mm-box--margin-left-4 mm-box--color-text-default"
+            >
+              Hello, Bob!
+            </div>
+          </li>
+          <li
+            class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2"
+          >
+            <div
+              class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--margin-left-4 mm-box--color-text-default"
+            >
+              From
+              :
+               
+            </div>
+            <ul
+              class="mm-box signature-request-data__node"
+            >
+              <li
+                class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2 mm-box--display-flex"
+              >
+                <div
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-box--margin-left-4 mm-box--color-text-default"
+                >
+                  Name
+                  :
+                   
+                </div>
+                <div
+                  class="mm-box mm-text signature-request-data__node__value mm-text--body-md mm-box--margin-left-4 mm-box--color-text-default"
+                >
+                  Cow
+                </div>
+              </li>
+              <li
+                class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2"
+              >
+                <div
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--margin-left-4 mm-box--color-text-default"
+                >
+                  Wallets
+                  :
+                   
+                </div>
+                <ul
+                  class="mm-box signature-request-data__node"
+                >
+                  <li
+                    class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2 mm-box--display-flex"
+                  >
+                    <div
+                      class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-box--margin-left-4 mm-box--color-text-default"
+                    >
+                      0
+                      :
+                       
+                    </div>
+                    <div
+                      class="mm-box mm-text signature-request-data__node__value mm-text--body-md mm-box--margin-left-4 mm-box--color-text-default"
+                    >
+                      <div
+                        class="mm-box mm-text signature-request-data__node__value__address mm-text--body-sm mm-box--color-info-default"
+                      >
+                        <div
+                          class="tx-insight tx-insight-component tx-insight-component-address"
+                        >
+                          <div
+                            class="tx-insight-component-address__sender-icon"
+                          >
+                            <div
+                              class=""
+                            >
+                              <div
+                                class="identicon"
+                                style="height: 18px; width: 18px; border-radius: 9px;"
+                              >
+                                <div
+                                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 18px; height: 18px; display: inline-block; background: rgb(35, 98, 225);"
+                                >
+                                  <svg
+                                    height="18"
+                                    width="18"
+                                    x="0"
+                                    y="0"
+                                  >
+                                    <rect
+                                      fill="#FA7900"
+                                      height="18"
+                                      transform="translate(-0.14083532437501936 -0.20904741369718938) rotate(237.8 9 9)"
+                                      width="18"
+                                      x="0"
+                                      y="0"
+                                    />
+                                    <rect
+                                      fill="#034F5E"
+                                      height="18"
+                                      transform="translate(6.169600998273832 -6.532671139783782) rotate(321.2 9 9)"
+                                      width="18"
+                                      x="0"
+                                      y="0"
+                                    />
+                                    <rect
+                                      fill="#FB185C"
+                                      height="18"
+                                      transform="translate(4.879852199205555 12.185539790934872) rotate(190.8 9 9)"
+                                      width="18"
+                                      x="0"
+                                      y="0"
+                                    />
+                                  </svg>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="tx-insight-component-address__name"
+                          >
+                            0xCD2a3...DD826
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  <li
+                    class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2 mm-box--display-flex"
+                  >
+                    <div
+                      class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-box--margin-left-4 mm-box--color-text-default"
+                    >
+                      1
+                      :
+                       
+                    </div>
+                    <div
+                      class="mm-box mm-text signature-request-data__node__value mm-text--body-md mm-box--margin-left-4 mm-box--color-text-default"
+                    >
+                      <div
+                        class="mm-box mm-text signature-request-data__node__value__address mm-text--body-sm mm-box--color-info-default"
+                      >
+                        <div
+                          class="tx-insight tx-insight-component tx-insight-component-address"
+                        >
+                          <div
+                            class="tx-insight-component-address__sender-icon"
+                          >
+                            <div
+                              class=""
+                            >
+                              <div
+                                class="identicon"
+                                style="height: 18px; width: 18px; border-radius: 9px;"
+                              >
+                                <div
+                                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 18px; height: 18px; display: inline-block; background: rgb(24, 183, 242);"
+                                >
+                                  <svg
+                                    height="18"
+                                    width="18"
+                                    x="0"
+                                    y="0"
+                                  >
+                                    <rect
+                                      fill="#F91E01"
+                                      height="18"
+                                      transform="translate(-3.4105516295169465 1.6271792765749349) rotate(179.5 9 9)"
+                                      width="18"
+                                      x="0"
+                                      y="0"
+                                    />
+                                    <rect
+                                      fill="#FA5300"
+                                      height="18"
+                                      transform="translate(0.0011267744354920284 -8.541150536104556) rotate(370.7 9 9)"
+                                      width="18"
+                                      x="0"
+                                      y="0"
+                                    />
+                                    <rect
+                                      fill="#F5A300"
+                                      height="18"
+                                      transform="translate(-10.876212949280989 11.550571889611607) rotate(298.9 9 9)"
+                                      width="18"
+                                      x="0"
+                                      y="0"
+                                    />
+                                  </svg>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="tx-insight-component-address__name"
+                          >
+                            0xDeaDb...DbeeF
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li
+            class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2"
+          >
+            <div
+              class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--margin-left-4 mm-box--color-text-default"
+            >
+              To
+              :
+               
+            </div>
+            <ul
+              class="mm-box signature-request-data__node"
+            >
+              <li
+                class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2"
+              >
+                <div
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--margin-left-4 mm-box--color-text-default"
+                >
+                  0
+                  :
+                   
+                </div>
+                <ul
+                  class="mm-box signature-request-data__node"
+                >
+                  <li
+                    class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2 mm-box--display-flex"
+                  >
+                    <div
+                      class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-box--margin-left-4 mm-box--color-text-default"
+                    >
+                      Name
+                      :
+                       
+                    </div>
+                    <div
+                      class="mm-box mm-text signature-request-data__node__value mm-text--body-md mm-box--margin-left-4 mm-box--color-text-default"
+                    >
+                      Bob
+                    </div>
+                  </li>
+                  <li
+                    class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2"
+                  >
+                    <div
+                      class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--margin-left-4 mm-box--color-text-default"
+                    >
+                      Wallets
+                      :
+                       
+                    </div>
+                    <ul
+                      class="mm-box signature-request-data__node"
+                    >
+                      <li
+                        class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2 mm-box--display-flex"
+                      >
+                        <div
+                          class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-box--margin-left-4 mm-box--color-text-default"
+                        >
+                          0
+                          :
+                           
+                        </div>
+                        <div
+                          class="mm-box mm-text signature-request-data__node__value mm-text--body-md mm-box--margin-left-4 mm-box--color-text-default"
+                        >
+                          <div
+                            class="mm-box mm-text signature-request-data__node__value__address mm-text--body-sm mm-box--color-info-default"
+                          >
+                            <div
+                              class="tx-insight tx-insight-component tx-insight-component-address"
+                            >
+                              <div
+                                class="tx-insight-component-address__sender-icon"
+                              >
+                                <div
+                                  class=""
+                                >
+                                  <div
+                                    class="identicon"
+                                    style="height: 18px; width: 18px; border-radius: 9px;"
+                                  >
+                                    <div
+                                      style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 18px; height: 18px; display: inline-block; background: rgb(242, 162, 2);"
+                                    >
+                                      <svg
+                                        height="18"
+                                        width="18"
+                                        x="0"
+                                        y="0"
+                                      >
+                                        <rect
+                                          fill="#C8144A"
+                                          height="18"
+                                          transform="translate(3.793157784878341 -1.7274880587885135) rotate(359.3 9 9)"
+                                          width="18"
+                                          x="0"
+                                          y="0"
+                                        />
+                                        <rect
+                                          fill="#01878E"
+                                          height="18"
+                                          transform="translate(-5.130298485812891 -4.633613065334895) rotate(335.8 9 9)"
+                                          width="18"
+                                          x="0"
+                                          y="0"
+                                        />
+                                        <rect
+                                          fill="#1897F2"
+                                          height="18"
+                                          transform="translate(-14.252066920284053 2.4659095087310536) rotate(275.0 9 9)"
+                                          width="18"
+                                          x="0"
+                                          y="0"
+                                        />
+                                      </svg>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="tx-insight-component-address__name"
+                              >
+                                0xbBbBB...bBBbB
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                      <li
+                        class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2 mm-box--display-flex"
+                      >
+                        <div
+                          class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-box--margin-left-4 mm-box--color-text-default"
+                        >
+                          1
+                          :
+                           
+                        </div>
+                        <div
+                          class="mm-box mm-text signature-request-data__node__value mm-text--body-md mm-box--margin-left-4 mm-box--color-text-default"
+                        >
+                          <div
+                            class="mm-box mm-text signature-request-data__node__value__address mm-text--body-sm mm-box--color-info-default"
+                          >
+                            <div
+                              class="tx-insight tx-insight-component tx-insight-component-address"
+                            >
+                              <div
+                                class="tx-insight-component-address__sender-icon"
+                              >
+                                <div
+                                  class=""
+                                >
+                                  <div
+                                    class="identicon"
+                                    style="height: 18px; width: 18px; border-radius: 9px;"
+                                  >
+                                    <div
+                                      style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 18px; height: 18px; display: inline-block; background: rgb(250, 54, 0);"
+                                    >
+                                      <svg
+                                        height="18"
+                                        width="18"
+                                        x="0"
+                                        y="0"
+                                      >
+                                        <rect
+                                          fill="#2395E1"
+                                          height="18"
+                                          transform="translate(-1.952228683702902 0.5755351329028624) rotate(191.9 9 9)"
+                                          width="18"
+                                          x="0"
+                                          y="0"
+                                        />
+                                        <rect
+                                          fill="#F90101"
+                                          height="18"
+                                          transform="translate(1.931538686012753 -10.436305366725303) rotate(319.8 9 9)"
+                                          width="18"
+                                          x="0"
+                                          y="0"
+                                        />
+                                        <rect
+                                          fill="#F58700"
+                                          height="18"
+                                          transform="translate(11.15341577077021 5.782185845756665) rotate(180.7 9 9)"
+                                          width="18"
+                                          x="0"
+                                          y="0"
+                                        />
+                                      </svg>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="tx-insight-component-address__name"
+                              >
+                                0xB0Bda...bEa57
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                      <li
+                        class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2 mm-box--display-flex"
+                      >
+                        <div
+                          class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-box--margin-left-4 mm-box--color-text-default"
+                        >
+                          2
+                          :
+                           
+                        </div>
+                        <div
+                          class="mm-box mm-text signature-request-data__node__value mm-text--body-md mm-box--margin-left-4 mm-box--color-text-default"
+                        >
+                          <div
+                            class="mm-box mm-text signature-request-data__node__value__address mm-text--body-sm mm-box--color-info-default"
+                          >
+                            <div
+                              class="tx-insight tx-insight-component tx-insight-component-address"
+                            >
+                              <div
+                                class="tx-insight-component-address__sender-icon"
+                              >
+                                <div
+                                  class=""
+                                >
+                                  <div
+                                    class="identicon"
+                                    style="height: 18px; width: 18px; border-radius: 9px;"
+                                  >
+                                    <div
+                                      style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 18px; height: 18px; display: inline-block; background: rgb(200, 20, 86);"
+                                    >
+                                      <svg
+                                        height="18"
+                                        width="18"
+                                        x="0"
+                                        y="0"
+                                      >
+                                        <rect
+                                          fill="#018E8C"
+                                          height="18"
+                                          transform="translate(4.486584319523849 0.3999308067724887) rotate(177.8 9 9)"
+                                          width="18"
+                                          x="0"
+                                          y="0"
+                                        />
+                                        <rect
+                                          fill="#F29202"
+                                          height="18"
+                                          transform="translate(-8.123544749536274 -2.791525003061714) rotate(334.6 9 9)"
+                                          width="18"
+                                          x="0"
+                                          y="0"
+                                        />
+                                        <rect
+                                          fill="#236FE1"
+                                          height="18"
+                                          transform="translate(16.44948962669253 -7.0677741181270815) rotate(456.1 9 9)"
+                                          width="18"
+                                          x="0"
+                                          y="0"
+                                        />
+                                      </svg>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="tx-insight-component-address__name"
+                              >
+                                0xB0B0b...00000
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div
+      class="page-container__footer"
+    >
+      <footer>
+        <button
+          class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
+          data-testid="page-container-footer-cancel"
+        >
+          Reject
+        </button>
+        <button
+          class="button btn--rounded btn-primary page-container__footer-button"
+          data-testid="page-container-footer-next"
+        >
+          Sign
+        </button>
+      </footer>
+    </div>
+    <button
+      class="mm-box mm-text mm-button-base signature-request__reject-all-button mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+      data-testid="signature-request-reject-all"
+    >
+      Reject 2 requests
+    </button>
+  </div>
+</div>
+`;
+
+exports[`Signature Request Component render should match snapshot when we want to switch to fiat 1`] = `
+<div>
+  <div
+    class="signature-request"
+  >
+    <div
+      class="confirm-page-container-navigation"
+      style="display: none;"
+    >
+      <div
+        class="confirm-page-container-navigation__container"
+        data-testid="navigation-container"
+        style="visibility: hidden;"
+      >
+        <button
+          class="confirm-page-container-navigation__arrow"
+          data-testid="first-page"
+        >
+          <i
+            class="fa fa-angle-double-left fa-2x"
+          />
+        </button>
+        <button
+          class="confirm-page-container-navigation__arrow"
+          data-testid="previous-page"
+        >
+          <i
+            class="fa fa-angle-left fa-2x"
+          />
+        </button>
+      </div>
+      <div
+        class="confirm-page-container-navigation__textcontainer"
+      >
+        <div
+          class="confirm-page-container-navigation__navtext"
+        >
+          0
+           
+          of
+           
+          0
+        </div>
+        <div
+          class="confirm-page-container-navigation__longtext"
+        >
+          requests waiting to be acknowledged
+        </div>
+      </div>
+      <div
+        class="confirm-page-container-navigation__container"
+        style="visibility: hidden;"
+      >
+        <button
+          class="confirm-page-container-navigation__arrow"
+          data-testid="next-page"
+        >
+          <i
+            class="fa fa-angle-right fa-2x"
+          />
+        </button>
+        <button
+          class="confirm-page-container-navigation__arrow"
+          data-testid="last-page"
+        >
+          <i
+            class="fa fa-angle-double-right fa-2x"
+          />
+        </button>
+      </div>
+    </div>
+    <div
+      class="request-signature__account"
+      data-testid="request-signature-account"
+    >
+      <div
+        class="box network-account-balance-header box--padding-4 box--display-flex box--flex-direction-row box--justify-content-space-between box--align-items-center"
+      >
+        <div
+          class="box box--display-flex box--gap-2 box--flex-direction-row box--align-items-center"
+        >
+          <div
+            class="box box--display-flex box--flex-direction-row box--align-items-center"
+          >
+            <div
+              class=""
+            >
+              <div
+                class="identicon"
+                style="height: 32px; width: 32px; border-radius: 16px;"
+              >
+                <div
+                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 151, 242);"
+                >
+                  <svg
+                    height="32"
+                    width="32"
+                    x="0"
+                    y="0"
+                  >
+                    <rect
+                      fill="#FA7900"
+                      height="32"
+                      transform="translate(-0.4291965340260923 -4.589212785086649) rotate(266.5 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                    <rect
+                      fill="#F2A202"
+                      height="32"
+                      transform="translate(2.4067447047270143 13.767950912205709) rotate(242.5 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                    <rect
+                      fill="#C8144A"
+                      height="32"
+                      transform="translate(-19.808734531871874 -18.328897166120687) rotate(396.2 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div
+              class="network-account-balance-header__network-account__ident-icon-ethereum--gray"
+            >
+              <span
+                class="icon-with-fallback__fallback"
+              >
+                L
+              </span>
+            </div>
+          </div>
+          <div
+            class="box box--display-flex box--flex-direction-column box--align-items-flex-start"
+          >
+            <h6
+              class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+            >
+              Localhost 8545
+            </h6>
+            <h6
+              class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
+            >
+              John Doe
+            </h6>
+          </div>
+        </div>
+        <div
+          class="box box--display-flex box--flex-direction-column box--align-items-flex-end"
+        >
+          <h6
+            class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+          >
+            Balance
+          </h6>
+          <h6
+            align="end"
+            class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
+          >
+            0
+             
+            ETH
+          </h6>
+        </div>
+      </div>
+    </div>
+    <div
+      class="signature-request-content"
+    >
+      <div
+        class="signature-request__origin"
+      >
+        <div
+          class="mm-box mm-tag-url mm-box--padding-right-4 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+        >
+          <div
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-favicon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-default"
+              style="mask-image: url('./images/icons/global.svg');"
+            />
+          </div>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-alternative"
+          >
+            test
+          </p>
+        </div>
+      </div>
+      <h2
+        class="mm-box mm-text signature-request__content__title mm-text--heading-lg mm-box--margin-top-4 mm-box--color-text-default"
+      >
+        Signature request
+      </h2>
+      <h6
+        class="mm-box mm-text request-signature__content__subtitle mm-text--body-sm mm-text--text-align-center mm-box--margin-top-4 mm-box--margin-right-12 mm-box--margin-left-12 mm-box--color-text-alternative"
+      >
+        Only sign this message if you fully understand the content and trust the requesting site.
+      </h6>
+      <div>
+        <button
+          class="mm-box mm-text mm-button-base signature-request-content__verify-contract-details mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+          data-testid="verify-contract-details"
+        >
+          <span
+            class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
+          >
+            <h6
+              class="mm-box mm-text mm-text--body-sm mm-box--color-primary-default"
+            >
+              Verify third-party details
+            </h6>
+          </span>
+        </button>
+      </div>
+    </div>
+    <div
+      class="box signature-request-message box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box signature-request-message__root box--margin-2 box--padding-top-3 box--padding-right-3 box--padding-bottom-3 box--flex-direction-row box--background-color-background-default box--rounded-xl box--border-color-border-muted box--border-style-solid box--border-width-1"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--margin-left-4 mm-box--color-text-default"
+        >
+          Mail
+        </p>
+        <ul
+          class="mm-box signature-request-data__node"
+        >
+          <li
+            class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2 mm-box--display-flex"
+          >
+            <div
+              class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-box--margin-left-4 mm-box--color-text-default"
+            >
+              Contents
+              :
+               
+            </div>
+            <div
+              class="mm-box mm-text signature-request-data__node__value mm-text--body-md mm-box--margin-left-4 mm-box--color-text-default"
+            >
+              Hello, Bob!
+            </div>
+          </li>
+          <li
+            class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2"
+          >
+            <div
+              class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--margin-left-4 mm-box--color-text-default"
+            >
+              From
+              :
+               
+            </div>
+            <ul
+              class="mm-box signature-request-data__node"
+            >
+              <li
+                class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2 mm-box--display-flex"
+              >
+                <div
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-box--margin-left-4 mm-box--color-text-default"
+                >
+                  Name
+                  :
+                   
+                </div>
+                <div
+                  class="mm-box mm-text signature-request-data__node__value mm-text--body-md mm-box--margin-left-4 mm-box--color-text-default"
+                >
+                  Cow
+                </div>
+              </li>
+              <li
+                class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2"
+              >
+                <div
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--margin-left-4 mm-box--color-text-default"
+                >
+                  Wallets
+                  :
+                   
+                </div>
+                <ul
+                  class="mm-box signature-request-data__node"
+                >
+                  <li
+                    class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2 mm-box--display-flex"
+                  >
+                    <div
+                      class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-box--margin-left-4 mm-box--color-text-default"
+                    >
+                      0
+                      :
+                       
+                    </div>
+                    <div
+                      class="mm-box mm-text signature-request-data__node__value mm-text--body-md mm-box--margin-left-4 mm-box--color-text-default"
+                    >
+                      <div
+                        class="mm-box mm-text signature-request-data__node__value__address mm-text--body-sm mm-box--color-info-default"
+                      >
+                        <div
+                          class="tx-insight tx-insight-component tx-insight-component-address"
+                        >
+                          <div
+                            class="tx-insight-component-address__sender-icon"
+                          >
+                            <div
+                              class=""
+                            >
+                              <div
+                                class="identicon"
+                                style="height: 18px; width: 18px; border-radius: 9px;"
+                              >
+                                <div
+                                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 18px; height: 18px; display: inline-block; background: rgb(35, 98, 225);"
+                                >
+                                  <svg
+                                    height="18"
+                                    width="18"
+                                    x="0"
+                                    y="0"
+                                  >
+                                    <rect
+                                      fill="#FA7900"
+                                      height="18"
+                                      transform="translate(-0.14083532437501936 -0.20904741369718938) rotate(237.8 9 9)"
+                                      width="18"
+                                      x="0"
+                                      y="0"
+                                    />
+                                    <rect
+                                      fill="#034F5E"
+                                      height="18"
+                                      transform="translate(6.169600998273832 -6.532671139783782) rotate(321.2 9 9)"
+                                      width="18"
+                                      x="0"
+                                      y="0"
+                                    />
+                                    <rect
+                                      fill="#FB185C"
+                                      height="18"
+                                      transform="translate(4.879852199205555 12.185539790934872) rotate(190.8 9 9)"
+                                      width="18"
+                                      x="0"
+                                      y="0"
+                                    />
+                                  </svg>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="tx-insight-component-address__name"
+                          >
+                            0xCD2a3...DD826
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  <li
+                    class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2 mm-box--display-flex"
+                  >
+                    <div
+                      class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-box--margin-left-4 mm-box--color-text-default"
+                    >
+                      1
+                      :
+                       
+                    </div>
+                    <div
+                      class="mm-box mm-text signature-request-data__node__value mm-text--body-md mm-box--margin-left-4 mm-box--color-text-default"
+                    >
+                      <div
+                        class="mm-box mm-text signature-request-data__node__value__address mm-text--body-sm mm-box--color-info-default"
+                      >
+                        <div
+                          class="tx-insight tx-insight-component tx-insight-component-address"
+                        >
+                          <div
+                            class="tx-insight-component-address__sender-icon"
+                          >
+                            <div
+                              class=""
+                            >
+                              <div
+                                class="identicon"
+                                style="height: 18px; width: 18px; border-radius: 9px;"
+                              >
+                                <div
+                                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 18px; height: 18px; display: inline-block; background: rgb(24, 183, 242);"
+                                >
+                                  <svg
+                                    height="18"
+                                    width="18"
+                                    x="0"
+                                    y="0"
+                                  >
+                                    <rect
+                                      fill="#F91E01"
+                                      height="18"
+                                      transform="translate(-3.4105516295169465 1.6271792765749349) rotate(179.5 9 9)"
+                                      width="18"
+                                      x="0"
+                                      y="0"
+                                    />
+                                    <rect
+                                      fill="#FA5300"
+                                      height="18"
+                                      transform="translate(0.0011267744354920284 -8.541150536104556) rotate(370.7 9 9)"
+                                      width="18"
+                                      x="0"
+                                      y="0"
+                                    />
+                                    <rect
+                                      fill="#F5A300"
+                                      height="18"
+                                      transform="translate(-10.876212949280989 11.550571889611607) rotate(298.9 9 9)"
+                                      width="18"
+                                      x="0"
+                                      y="0"
+                                    />
+                                  </svg>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="tx-insight-component-address__name"
+                          >
+                            0xDeaDb...DbeeF
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li
+            class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2"
+          >
+            <div
+              class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--margin-left-4 mm-box--color-text-default"
+            >
+              To
+              :
+               
+            </div>
+            <ul
+              class="mm-box signature-request-data__node"
+            >
+              <li
+                class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2"
+              >
+                <div
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--margin-left-4 mm-box--color-text-default"
+                >
+                  0
+                  :
+                   
+                </div>
+                <ul
+                  class="mm-box signature-request-data__node"
+                >
+                  <li
+                    class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2 mm-box--display-flex"
+                  >
+                    <div
+                      class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-box--margin-left-4 mm-box--color-text-default"
+                    >
+                      Name
+                      :
+                       
+                    </div>
+                    <div
+                      class="mm-box mm-text signature-request-data__node__value mm-text--body-md mm-box--margin-left-4 mm-box--color-text-default"
+                    >
+                      Bob
+                    </div>
+                  </li>
+                  <li
+                    class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2"
+                  >
+                    <div
+                      class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--margin-left-4 mm-box--color-text-default"
+                    >
+                      Wallets
+                      :
+                       
+                    </div>
+                    <ul
+                      class="mm-box signature-request-data__node"
+                    >
+                      <li
+                        class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2 mm-box--display-flex"
+                      >
+                        <div
+                          class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-box--margin-left-4 mm-box--color-text-default"
+                        >
+                          0
+                          :
+                           
+                        </div>
+                        <div
+                          class="mm-box mm-text signature-request-data__node__value mm-text--body-md mm-box--margin-left-4 mm-box--color-text-default"
+                        >
+                          <div
+                            class="mm-box mm-text signature-request-data__node__value__address mm-text--body-sm mm-box--color-info-default"
+                          >
+                            <div
+                              class="tx-insight tx-insight-component tx-insight-component-address"
+                            >
+                              <div
+                                class="tx-insight-component-address__sender-icon"
+                              >
+                                <div
+                                  class=""
+                                >
+                                  <div
+                                    class="identicon"
+                                    style="height: 18px; width: 18px; border-radius: 9px;"
+                                  >
+                                    <div
+                                      style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 18px; height: 18px; display: inline-block; background: rgb(242, 162, 2);"
+                                    >
+                                      <svg
+                                        height="18"
+                                        width="18"
+                                        x="0"
+                                        y="0"
+                                      >
+                                        <rect
+                                          fill="#C8144A"
+                                          height="18"
+                                          transform="translate(3.793157784878341 -1.7274880587885135) rotate(359.3 9 9)"
+                                          width="18"
+                                          x="0"
+                                          y="0"
+                                        />
+                                        <rect
+                                          fill="#01878E"
+                                          height="18"
+                                          transform="translate(-5.130298485812891 -4.633613065334895) rotate(335.8 9 9)"
+                                          width="18"
+                                          x="0"
+                                          y="0"
+                                        />
+                                        <rect
+                                          fill="#1897F2"
+                                          height="18"
+                                          transform="translate(-14.252066920284053 2.4659095087310536) rotate(275.0 9 9)"
+                                          width="18"
+                                          x="0"
+                                          y="0"
+                                        />
+                                      </svg>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="tx-insight-component-address__name"
+                              >
+                                0xbBbBB...bBBbB
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                      <li
+                        class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2 mm-box--display-flex"
+                      >
+                        <div
+                          class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-box--margin-left-4 mm-box--color-text-default"
+                        >
+                          1
+                          :
+                           
+                        </div>
+                        <div
+                          class="mm-box mm-text signature-request-data__node__value mm-text--body-md mm-box--margin-left-4 mm-box--color-text-default"
+                        >
+                          <div
+                            class="mm-box mm-text signature-request-data__node__value__address mm-text--body-sm mm-box--color-info-default"
+                          >
+                            <div
+                              class="tx-insight tx-insight-component tx-insight-component-address"
+                            >
+                              <div
+                                class="tx-insight-component-address__sender-icon"
+                              >
+                                <div
+                                  class=""
+                                >
+                                  <div
+                                    class="identicon"
+                                    style="height: 18px; width: 18px; border-radius: 9px;"
+                                  >
+                                    <div
+                                      style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 18px; height: 18px; display: inline-block; background: rgb(250, 54, 0);"
+                                    >
+                                      <svg
+                                        height="18"
+                                        width="18"
+                                        x="0"
+                                        y="0"
+                                      >
+                                        <rect
+                                          fill="#2395E1"
+                                          height="18"
+                                          transform="translate(-1.952228683702902 0.5755351329028624) rotate(191.9 9 9)"
+                                          width="18"
+                                          x="0"
+                                          y="0"
+                                        />
+                                        <rect
+                                          fill="#F90101"
+                                          height="18"
+                                          transform="translate(1.931538686012753 -10.436305366725303) rotate(319.8 9 9)"
+                                          width="18"
+                                          x="0"
+                                          y="0"
+                                        />
+                                        <rect
+                                          fill="#F58700"
+                                          height="18"
+                                          transform="translate(11.15341577077021 5.782185845756665) rotate(180.7 9 9)"
+                                          width="18"
+                                          x="0"
+                                          y="0"
+                                        />
+                                      </svg>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="tx-insight-component-address__name"
+                              >
+                                0xB0Bda...bEa57
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                      <li
+                        class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2 mm-box--display-flex"
+                      >
+                        <div
+                          class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-box--margin-left-4 mm-box--color-text-default"
+                        >
+                          2
+                          :
+                           
+                        </div>
+                        <div
+                          class="mm-box mm-text signature-request-data__node__value mm-text--body-md mm-box--margin-left-4 mm-box--color-text-default"
+                        >
+                          <div
+                            class="mm-box mm-text signature-request-data__node__value__address mm-text--body-sm mm-box--color-info-default"
+                          >
+                            <div
+                              class="tx-insight tx-insight-component tx-insight-component-address"
+                            >
+                              <div
+                                class="tx-insight-component-address__sender-icon"
+                              >
+                                <div
+                                  class=""
+                                >
+                                  <div
+                                    class="identicon"
+                                    style="height: 18px; width: 18px; border-radius: 9px;"
+                                  >
+                                    <div
+                                      style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 18px; height: 18px; display: inline-block; background: rgb(200, 20, 86);"
+                                    >
+                                      <svg
+                                        height="18"
+                                        width="18"
+                                        x="0"
+                                        y="0"
+                                      >
+                                        <rect
+                                          fill="#018E8C"
+                                          height="18"
+                                          transform="translate(4.486584319523849 0.3999308067724887) rotate(177.8 9 9)"
+                                          width="18"
+                                          x="0"
+                                          y="0"
+                                        />
+                                        <rect
+                                          fill="#F29202"
+                                          height="18"
+                                          transform="translate(-8.123544749536274 -2.791525003061714) rotate(334.6 9 9)"
+                                          width="18"
+                                          x="0"
+                                          y="0"
+                                        />
+                                        <rect
+                                          fill="#236FE1"
+                                          height="18"
+                                          transform="translate(16.44948962669253 -7.0677741181270815) rotate(456.1 9 9)"
+                                          width="18"
+                                          x="0"
+                                          y="0"
+                                        />
+                                      </svg>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="tx-insight-component-address__name"
+                              >
+                                0xB0B0b...00000
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div
+      class="page-container__footer"
+    >
+      <footer>
+        <button
+          class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
+          data-testid="page-container-footer-cancel"
+        >
+          Reject
+        </button>
+        <button
+          class="button btn--rounded btn-primary page-container__footer-button"
+          data-testid="page-container-footer-next"
+        >
+          Sign
+        </button>
+      </footer>
+    </div>
+    <button
+      class="mm-box mm-text mm-button-base signature-request__reject-all-button mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+      data-testid="signature-request-reject-all"
+    >
+      Reject 2 requests
+    </button>
+  </div>
+</div>
+`;

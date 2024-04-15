@@ -39,15 +39,13 @@ import {
   setFromTokenError,
   setMaxSlippage,
   setReviewSwapClickedTimestamp,
-  getSmartTransactionsOptInStatus,
-  getSmartTransactionsEnabled,
   getCurrentSmartTransactionsEnabled,
   getFromTokenInputValue,
   getFromTokenError,
   getMaxSlippage,
   getIsFeatureFlagLoaded,
-  getCurrentSmartTransactionsError,
   getSmartTransactionFees,
+  getLatestAddedTokenTo,
 } from '../../../ducks/swaps/swaps';
 import {
   getSwapsDefaultToken,
@@ -60,6 +58,10 @@ import {
   getHardwareWalletType,
   getUseCurrencyRateCheck,
 } from '../../../selectors';
+import {
+  getSmartTransactionsOptInStatus,
+  getSmartTransactionsEnabled,
+} from '../../../../shared/modules/selectors';
 
 import { getURLHostName } from '../../../helpers/utils/util';
 import { usePrevious } from '../../../hooks/usePrevious';
@@ -80,35 +82,33 @@ import {
   SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   TokenBucketPriority,
+  MAX_ALLOWED_SLIPPAGE,
 } from '../../../../shared/constants/swaps';
 
 import {
   resetSwapsPostFetchState,
+  ignoreTokens,
   setBackgroundSwapRouteState,
   clearSwapsQuotes,
   stopPollingForQuotes,
-  setSmartTransactionsOptInStatus,
   clearSmartTransactionFees,
 } from '../../../store/actions';
 import { countDecimals, fetchTokenPrice } from '../swaps.util';
 import SwapsFooter from '../swaps-footer';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
-import { fetchTokenBalance } from '../../../../shared/lib/token-util.ts';
+import { fetchTokenBalance } from '../../../../shared/lib/token-util';
 import { shouldEnableDirectWrapping } from '../../../../shared/lib/swaps-utils';
 import {
   getValueFromWeiHex,
   hexToDecimal,
 } from '../../../../shared/modules/conversion.utils';
-import SmartTransactionsPopover from '../prepare-swap-page/smart-transactions-popover';
 
 const fuseSearchKeys = [
   { name: 'name', weight: 0.499 },
   { name: 'symbol', weight: 0.499 },
   { name: 'address', weight: 0.002 },
 ];
-
-const MAX_ALLOWED_SLIPPAGE = 15;
 
 let timeoutIdForQuotesPrefetching;
 
@@ -144,6 +144,7 @@ export default function BuildQuote({
   const tokenList = useSelector(getTokenList, isEqual);
   const quotes = useSelector(getQuotes, isEqual);
   const areQuotesPresent = Object.keys(quotes).length > 0;
+  const latestAddedTokenTo = useSelector(getLatestAddedTokenTo, isEqual);
 
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const conversionRate = useSelector(getConversionRate);
@@ -158,23 +159,7 @@ export default function BuildQuote({
     getCurrentSmartTransactionsEnabled,
   );
   const smartTransactionFees = useSelector(getSmartTransactionFees);
-  const smartTransactionsOptInPopoverDisplayed =
-    smartTransactionsOptInStatus !== undefined;
-  const currentSmartTransactionsError = useSelector(
-    getCurrentSmartTransactionsError,
-  );
   const currentCurrency = useSelector(getCurrentCurrency);
-
-  const showSmartTransactionsOptInPopover =
-    smartTransactionsEnabled && !smartTransactionsOptInPopoverDisplayed;
-
-  const onCloseSmartTransactionsOptInPopover = (e) => {
-    e?.preventDefault();
-    setSmartTransactionsOptInStatus(false, smartTransactionsOptInStatus);
-  };
-
-  const onEnableSmartTransactionsClick = () =>
-    setSmartTransactionsOptInStatus(true, smartTransactionsOptInStatus);
 
   const fetchParamsFromToken = isSwapsDefaultTokenSymbol(
     sourceTokenInfo?.symbol,
@@ -183,7 +168,7 @@ export default function BuildQuote({
     ? defaultSwapsToken
     : sourceTokenInfo;
 
-  const { loading, tokensWithBalances } = useTokenTracker(tokens);
+  const { loading, tokensWithBalances } = useTokenTracker({ tokens });
 
   // If the fromToken was set in a call to `onFromSelect` (see below), and that from token has a balance
   // but is not in tokensWithBalances or tokens, then we want to add it to the usersTokens array so that
@@ -347,12 +332,21 @@ export default function BuildQuote({
     ? getURLHostName(blockExplorerTokenLink)
     : t('etherscan');
 
+  const { address: toAddress } = toToken || {};
   const onToSelect = useCallback(
     (token) => {
+      if (latestAddedTokenTo && token.address !== toAddress) {
+        dispatch(
+          ignoreTokens({
+            tokensToIgnore: toAddress,
+            dontShowLoadingIndicator: true,
+          }),
+        );
+      }
       dispatch(setSwapToToken(token));
       setVerificationClicked(false);
     },
-    [dispatch],
+    [dispatch, latestAddedTokenTo, toAddress],
   );
 
   const hideDropdownItemIf = useCallback(
@@ -563,14 +557,6 @@ export default function BuildQuote({
   return (
     <div className="build-quote">
       <div className="build-quote__content">
-        {showSmartTransactionsOptInPopover && (
-          <SmartTransactionsPopover
-            onEnableSmartTransactionsClick={onEnableSmartTransactionsClick}
-            onCloseSmartTransactionsOptInPopover={
-              onCloseSmartTransactionsOptInPopover
-            }
-          />
-        )}
         <div className="build-quote__dropdown-input-pair-header">
           <div className="build-quote__input-label">{t('swapSwapFrom')}</div>
           {!isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId) && (
@@ -757,8 +743,7 @@ export default function BuildQuote({
               )}
             </div>
           ))}
-        {(smartTransactionsEnabled ||
-          (!smartTransactionsEnabled && !isDirectWrappingEnabled)) && (
+        {!isDirectWrappingEnabled && (
           <div className="build-quote__slippage-buttons-container">
             <SlippageButtons
               onSelect={(newSlippage) => {
@@ -766,10 +751,6 @@ export default function BuildQuote({
               }}
               maxAllowedSlippage={MAX_ALLOWED_SLIPPAGE}
               currentSlippage={maxSlippage}
-              smartTransactionsEnabled={smartTransactionsEnabled}
-              smartTransactionsOptInStatus={smartTransactionsOptInStatus}
-              setSmartTransactionsOptInStatus={setSmartTransactionsOptInStatus}
-              currentSmartTransactionsError={currentSmartTransactionsError}
               isDirectWrappingEnabled={isDirectWrappingEnabled}
             />
           </div>

@@ -7,7 +7,6 @@ import { I18nContext } from '../../../contexts/i18n';
 import ButtonGroup from '../../../components/ui/button-group';
 import Button from '../../../components/ui/button';
 import InfoTooltip from '../../../components/ui/info-tooltip';
-import ToggleButton from '../../../components/ui/toggle-button';
 import Box from '../../../components/ui/box';
 import Typography from '../../../components/ui/typography';
 import {
@@ -18,20 +17,19 @@ import {
   SEVERITIES,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
-import { getTranslatedStxErrorMessage } from '../swaps.util';
 import {
   Slippage,
-  SLIPPAGE_OVER_LIMIT_ERROR,
+  SLIPPAGE_VERY_HIGH_ERROR,
   SLIPPAGE_NEGATIVE_ERROR,
 } from '../../../../shared/constants/swaps';
 import {
   BannerAlert,
   Modal,
   ModalOverlay,
-  ModalContent,
-  ModalHeader,
   ButtonPrimary,
 } from '../../../components/component-library';
+import { ModalContent } from '../../../components/component-library/modal-content/deprecated';
+import { ModalHeader } from '../../../components/component-library/modal-header/deprecated';
 import { setSwapsErrorKey } from '../../../store/actions';
 import { getSwapsErrorKey } from '../../../ducks/swaps/swaps';
 
@@ -40,10 +38,6 @@ export default function TransactionSettings({
   onModalClose,
   maxAllowedSlippage,
   currentSlippage,
-  smartTransactionsEnabled,
-  smartTransactionsOptInStatus,
-  setSmartTransactionsOptInStatus,
-  currentSmartTransactionsError,
   isDirectWrappingEnabled,
 }) {
   const t = useContext(I18nContext);
@@ -71,19 +65,12 @@ export default function TransactionSettings({
   });
   const [inputRef, setInputRef] = useState(null);
   const [newSlippage, setNewSlippage] = useState(currentSlippage);
-  const [newSmartTransactionsOptInStatus, setNewSmartTransactionsOptInStatus] =
-    useState(smartTransactionsOptInStatus);
 
-  const didFormChange =
-    newSlippage !== currentSlippage ||
-    newSmartTransactionsOptInStatus !== smartTransactionsOptInStatus;
+  const didFormChange = newSlippage !== currentSlippage;
 
   const updateTransactionSettings = () => {
     if (newSlippage !== currentSlippage) {
       onSelect(newSlippage);
-    }
-    if (newSmartTransactionsOptInStatus !== smartTransactionsOptInStatus) {
-      setSmartTransactionsOptInStatus(newSmartTransactionsOptInStatus);
     }
   };
 
@@ -101,20 +88,20 @@ export default function TransactionSettings({
       // We will not show this warning for 0% slippage, because we will only
       // return non-slippage quotes from off-chain makers.
       notificationSeverity = SEVERITIES.WARNING;
-      notificationText = t('swapSlippageTooLowDescription');
-      notificationTitle = t('swapSlippageTooLowTitle');
+      notificationText = t('swapSlippageLowDescription', [newSlippage]);
+      notificationTitle = t('swapSlippageLowTitle');
     } else if (
       Number(customValue) >= 5 &&
       Number(customValue) <= maxAllowedSlippage
     ) {
       notificationSeverity = SEVERITIES.WARNING;
-      notificationText = t('swapSlippageVeryHighDescription');
-      notificationTitle = t('swapSlippageVeryHighTitle');
+      notificationText = t('swapSlippageHighDescription', [newSlippage]);
+      notificationTitle = t('swapSlippageHighTitle');
     } else if (Number(customValue) > maxAllowedSlippage) {
       notificationSeverity = SEVERITIES.DANGER;
       notificationText = t('swapSlippageOverLimitDescription');
       notificationTitle = t('swapSlippageOverLimitTitle');
-      dispatch(setSwapsErrorKey(SLIPPAGE_OVER_LIMIT_ERROR));
+      dispatch(setSwapsErrorKey(SLIPPAGE_VERY_HIGH_ERROR));
     } else if (Number(customValue) === 0) {
       notificationSeverity = SEVERITIES.INFO;
       notificationText = t('swapSlippageZeroDescription');
@@ -148,7 +135,7 @@ export default function TransactionSettings({
     <Modal
       onClose={onModalClose}
       isOpen
-      isClosedOnOutsideClick
+      isClosedOnOutsideClick={false}
       isClosedOnEscapeKey
       className="mm-modal__custom-scrollbar"
     >
@@ -166,52 +153,6 @@ export default function TransactionSettings({
         >
           <Box marginTop={7} marginBottom={5}>
             <>
-              {smartTransactionsEnabled && (
-                <Box
-                  marginTop={2}
-                  marginBottom={6}
-                  display={DISPLAY.FLEX}
-                  justifyContent={JustifyContent.spaceBetween}
-                >
-                  <Box
-                    display={DISPLAY.FLEX}
-                    alignItems={AlignItems.center}
-                    paddingRight={3}
-                  >
-                    <Typography
-                      variant={TypographyVariant.H6}
-                      boxProps={{ paddingRight: 2 }}
-                    >
-                      {t('smartSwap')}
-                    </Typography>
-                    {currentSmartTransactionsError ? (
-                      <InfoTooltip
-                        position="top"
-                        iconFillColor="var(--color-icon-muted)"
-                        contentText={getTranslatedStxErrorMessage(
-                          currentSmartTransactionsError,
-                          t,
-                        )}
-                      />
-                    ) : (
-                      <InfoTooltip
-                        position="top"
-                        contentText={t('stxTooltip')}
-                        iconFillColor="var(--color-icon-muted)"
-                      />
-                    )}
-                  </Box>
-                  <ToggleButton
-                    value={newSmartTransactionsOptInStatus}
-                    onToggle={(value) => {
-                      setNewSmartTransactionsOptInStatus(!value, value);
-                    }}
-                    offLabel={t('off')}
-                    onLabel={t('on')}
-                    disabled={Boolean(currentSmartTransactionsError)}
-                  />
-                </Box>
-              )}
               {!isDirectWrappingEnabled && (
                 <>
                   <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
@@ -221,22 +162,11 @@ export default function TransactionSettings({
                     >
                       {t('swapsMaxSlippage')}
                     </Typography>
-                    {currentSmartTransactionsError ? (
-                      <InfoTooltip
-                        position="top"
-                        iconFillColor="var(--color-icon-muted)"
-                        contentText={getTranslatedStxErrorMessage(
-                          currentSmartTransactionsError,
-                          t,
-                        )}
-                      />
-                    ) : (
-                      <InfoTooltip
-                        position="top"
-                        iconFillColor="var(--color-icon-muted)"
-                        contentText={t('swapSlippageTooltip')}
-                      />
-                    )}
+                    <InfoTooltip
+                      position="top"
+                      iconFillColor="var(--color-icon-muted)"
+                      contentText={t('swapSlippageTooltip')}
+                    />
                   </Box>
                   <Box display={DISPLAY.FLEX}>
                     <ButtonGroup
@@ -337,6 +267,7 @@ export default function TransactionSettings({
                 <BannerAlert
                   severity={notificationSeverity}
                   title={notificationTitle}
+                  titleProps={{ 'data-testid': 'swaps-banner-title' }}
                 >
                   <Typography
                     variant={TypographyVariant.H6}
@@ -372,9 +303,5 @@ TransactionSettings.propTypes = {
   onModalClose: PropTypes.func.isRequired,
   maxAllowedSlippage: PropTypes.number.isRequired,
   currentSlippage: PropTypes.number,
-  smartTransactionsEnabled: PropTypes.bool.isRequired,
-  smartTransactionsOptInStatus: PropTypes.bool,
-  setSmartTransactionsOptInStatus: PropTypes.func,
-  currentSmartTransactionsError: PropTypes.string,
   isDirectWrappingEnabled: PropTypes.bool,
 };

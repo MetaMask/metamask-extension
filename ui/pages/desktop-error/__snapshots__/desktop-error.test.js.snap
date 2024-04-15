@@ -32,8 +32,6 @@ exports[`Desktop Error page should render connection lost page 1`] = `
       <button
         class="button btn--rounded btn-primary"
         id="desktop-error-button-open-or-download-mmd"
-        role="button"
-        tabindex="0"
       >
         Open MetaMask Desktop
       </button>
@@ -44,8 +42,6 @@ exports[`Desktop Error page should render connection lost page 1`] = `
       <button
         class="button btn--rounded btn-primary"
         id="desktop-error-button-disable-mmd"
-        role="button"
-        tabindex="0"
       >
         Disable MetaMask Desktop
       </button>
@@ -86,8 +82,6 @@ exports[`Desktop Error page should render critical error page 1`] = `
       <button
         class="button btn--rounded btn-primary"
         id="desktop-error-button-restart-mm"
-        role="button"
-        tabindex="0"
       >
         Restart MetaMask
       </button>
@@ -98,8 +92,6 @@ exports[`Desktop Error page should render critical error page 1`] = `
       <button
         class="button btn--rounded btn-primary"
         id="desktop-error-button-disable-mmd"
-        role="button"
-        tabindex="0"
       >
         Disable MetaMask Desktop
       </button>
@@ -140,8 +132,6 @@ exports[`Desktop Error page should render default error page 1`] = `
       <button
         class="button btn--rounded btn-primary"
         id="desktop-error-button-return-mm-home"
-        role="button"
-        tabindex="0"
       >
         Return MetaMask Home
       </button>
@@ -182,8 +172,6 @@ exports[`Desktop Error page should render desktop app outdated page 1`] = `
       <button
         class="button btn--rounded btn-primary"
         id="desktop-error-button-update-mmd"
-        role="button"
-        tabindex="0"
       >
         Update MetaMask Desktop
       </button>
@@ -224,8 +212,6 @@ exports[`Desktop Error page should render extension outdated page 1`] = `
       <button
         class="button btn--rounded btn-primary"
         id="desktop-error-button-update-extension"
-        role="button"
-        tabindex="0"
       >
         Update MetaMask Extension
       </button>
@@ -271,8 +257,6 @@ exports[`Desktop Error page should render not found page 1`] = `
       <button
         class="button btn--rounded btn-primary"
         id="desktop-error-button-download-mmd"
-        role="button"
-        tabindex="0"
       >
         Download MetaMask Desktop
       </button>
@@ -320,8 +304,6 @@ exports[`Desktop Error page should render pairing key not match page 1`] = `
       <button
         class="button btn--rounded btn-primary"
         id="desktop-error-button-navigate-settings"
-        role="button"
-        tabindex="0"
       >
         Return to Settings Page
       </button>
@@ -362,8 +344,6 @@ exports[`Desktop Error page should render route not found page 1`] = `
       <button
         class="button btn--rounded btn-primary"
         id="desktop-error-button-navigate-settings"
-        role="button"
-        tabindex="0"
       >
         Return to Settings Page
       </button>

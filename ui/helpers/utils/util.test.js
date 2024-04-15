@@ -1,5 +1,5 @@
 import Bowser from 'bowser';
-import { BN } from 'ethereumjs-util';
+import { BN, toChecksumAddress } from 'ethereumjs-util';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { addHexPrefixToObjectValues } from '../../../shared/lib/swaps-utils';
 import { toPrecisionWithoutTrailingZeros } from '../../../shared/lib/transactions-controller-utils';
@@ -927,6 +927,111 @@ describe('util', () => {
     });
     it('should return empty string if teh providerConfig.type is rpc', () => {
       expect(util.getNetworkNameFromProviderType('rpc')).toStrictEqual('');
+    });
+  });
+
+  describe('checkTokenIdExists()', () => {
+    const data = {
+      '0x2df920B180c58766951395c26ecF1EC2063490Fa': {
+        collectionName: 'Numbers',
+        nfts: [
+          {
+            address: '0x2df920B180c58766951395c26ecF1EC2063490Fa',
+            description: 'Numbers',
+            favorite: false,
+            name: 'Numbers #132',
+            tokenId: '132',
+          },
+        ],
+      },
+      '0x2dF920B180C58766951395C26ecF1Ec206343334': {
+        collectionName: 'toto',
+        nfts: [
+          {
+            address: '0x2dF920B180C58766951395C26ecF1Ec206343334',
+            description: 'toto',
+            favorite: false,
+            name: 'toto#3453',
+            tokenId: '3453',
+          },
+        ],
+      },
+      '0xf4910C763eD4e47A585E2D34baA9A4b611aE448C': {
+        collectionName: 'foo',
+        nfts: [
+          {
+            address: '0xf4910C763eD4e47A585E2D34baA9A4b611aE448C',
+            description: 'foo',
+            favorite: false,
+            name: 'toto#111486581076844052489180254627234340268504869259922513413248833349282110111749',
+            tokenId:
+              '111486581076844052489180254627234340268504869259922513413248833349282110111749',
+          },
+        ],
+      },
+    };
+    it('should return true if it exists regardless if the entered value is checksum address or not', () => {
+      const adr = '0x2df920B180c58766951395c26ecF1EC206343334';
+      const checksumAdre = toChecksumAddress(adr);
+      expect(util.checkTokenIdExists(adr, '3453', data)).toBeTruthy();
+      expect(util.checkTokenIdExists(checksumAdre, '3453', data)).toBeTruthy();
+    });
+
+    it('should return true if it exists in decimal format', () => {
+      expect(
+        util.checkTokenIdExists(
+          '0x2df920B180c58766951395c26ecF1EC206343334',
+          '0xD7D',
+          data,
+        ),
+      ).toBeTruthy();
+    });
+
+    it('should return true if is exists but input is not decimal nor hex', () => {
+      expect(
+        util.checkTokenIdExists(
+          '0xf4910C763eD4e47A585E2D34baA9A4b611aE448C',
+          '111486581076844052489180254627234340268504869259922513413248833349282110111749',
+          data,
+        ),
+      ).toBeTruthy();
+    });
+
+    it('should return false if it does not exists', () => {
+      expect(
+        util.checkTokenIdExists(
+          '0x2df920B180c58766951395c26ecF1EC206343334',
+          '1122',
+          data,
+        ),
+      ).toBeFalsy();
+    });
+
+    it('should return false if it address does not exists', () => {
+      expect(
+        util.checkTokenIdExists(
+          '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
+          '1122',
+          data,
+        ),
+      ).toBeFalsy();
+    });
+  });
+
+  describe('hexToText', () => {
+    const hexValue =
+      '0x4578616d706c652060706572736f6e616c5f7369676e60206d657373616765';
+    it('return correct string value for hex data passed', () => {
+      expect(util.hexToText(hexValue)).toBe('Example `personal_sign` message');
+    });
+    it('return no value if hex is not defined', () => {
+      expect(util.hexToText()).toBe(undefined);
+    });
+    it('return the hex vale unchanged in case an exception occurs', () => {
+      jest.spyOn(Buffer, 'from').mockImplementation(() => {
+        throw new Error('some error');
+      });
+      expect(util.hexToText(hexValue)).toBe(hexValue);
     });
   });
 });

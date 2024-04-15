@@ -65,6 +65,9 @@ export enum IconName {
   Data = 'data',
   Diagram = 'diagram',
   DocumentCode = 'document-code',
+  DragDrop = 'drag-drop',
+  DraggingAnimation = 'dragging-animation',
+  PinningAnimation = 'pinning-animation',
   Edit = 'edit',
   Eraser = 'eraser',
   Ethereum = 'ethereum',
@@ -112,8 +115,8 @@ export enum IconName {
   Notification = 'notification',
   PasswordCheck = 'password-check',
   People = 'people',
+  Pin = 'pin',
   ProgrammingArrows = 'programming-arrows',
-  MmmiPortfolioDashboard = 'portfolio-dashboard',
   Custody = 'custody',
   Question = 'question',
   Received = 'received',
@@ -153,6 +156,8 @@ export enum IconName {
   TrendDown = 'trend-down',
   TrendUp = 'trend-up',
   UserCircleAdd = 'user-circle-add',
+  UserCircleLink = 'user-circle-link',
+  UserCircleRemove = 'user-circle-remove',
   UserCircle = 'user-circle',
   User = 'user',
   WalletCard = 'wallet-card',
@@ -162,11 +167,12 @@ export enum IconName {
   Twitter = 'twitter',
   QrCode = 'qr-code',
   UserCheck = 'user-check',
+  Unpin = 'unpin',
   Ban = 'ban',
   Bold = 'bold',
   CircleX = 'circle-x',
   Download = 'download',
-  File = 'file',
+  FileIcon = 'file',
   Flask = 'flask',
   Plug = 'plug',
   Share = 'share',
@@ -175,8 +181,11 @@ export enum IconName {
   Upload = 'upload',
   Usb = 'usb',
   Wifi = 'wifi',
+  PlusMinus = 'plus-minus',
 }
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface IconStyleUtilityProps extends StyleUtilityProps {
   /**
    * The name of the icon to display. Use the IconName enum

@@ -22,6 +22,10 @@ import {
   getHardwareWalletType,
   getFullTxData,
 } from '../../../selectors';
+import {
+  getSmartTransactionsOptInStatus,
+  getSmartTransactionsEnabled,
+} from '../../../../shared/modules/selectors';
 
 import {
   getUsedQuote,
@@ -32,8 +36,6 @@ import {
   navigateBackToBuildQuote,
   prepareForRetryGetQuotes,
   prepareToLeaveSwaps,
-  getSmartTransactionsOptInStatus,
-  getSmartTransactionsEnabled,
   getCurrentSmartTransactionsEnabled,
   getFromTokenInputValue,
   getMaxSlippage,
@@ -346,5 +348,5 @@ AwaitingSwap.propTypes = {
     CONTRACT_DATA_DISABLED_ERROR,
   ]),
   submittingSwap: PropTypes.bool,
-  txId: PropTypes.number,
+  txId: PropTypes.string,
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import ConfirmAddCustodianToken from './confirm-add-custodian-token';
@@ -36,7 +36,7 @@ describe('Confirm Add Custodian Token', () => {
             token: 'testToken',
             feature: 'custodian',
             service: 'Jupiter',
-            apiUrl: 'https://',
+            environment: 'jupiter',
             chainId: 1,
           },
         ],
@@ -49,23 +49,6 @@ describe('Confirm Add Custodian Token', () => {
   };
 
   const store = configureMockStore()(mockStore);
-
-  it('opens confirm add custodian token with correct token', () => {
-    renderWithProvider(<ConfirmAddCustodianToken />, store);
-
-    const tokenContainer = screen.getByText('...testToken');
-    expect(tokenContainer).toBeInTheDocument();
-  });
-
-  it('shows the custodian on cancel click', () => {
-    renderWithProvider(<ConfirmAddCustodianToken />, store);
-
-    const cancelButton = screen.getByTestId('cancel-btn');
-
-    fireEvent.click(cancelButton);
-
-    expect(screen.getByText('Custodian')).toBeInTheDocument();
-  });
 
   it('tries to connect to custodian with empty token', async () => {
     const customMockedStore = {
@@ -89,7 +72,7 @@ describe('Confirm Add Custodian Token', () => {
               token: '',
               feature: 'custodian',
               service: 'Jupiter',
-              apiUrl: 'https://',
+              environment: 'jupiter',
               chainId: 1,
             },
           ],
@@ -119,7 +102,7 @@ describe('Confirm Add Custodian Token', () => {
     const confirmButton = screen.getByTestId('confirm-btn');
     fireEvent.click(confirmButton);
 
-    expect(screen.getByText('test')).toBeInTheDocument();
+    expect(screen.getByText('Confirm connection to test')).toBeInTheDocument();
   });
 
   it('shows the error area', () => {
@@ -130,5 +113,20 @@ describe('Confirm Add Custodian Token', () => {
     fireEvent.click(confirmButton);
 
     expect(screen.getByTestId('error-message')).toBeVisible();
+  });
+
+  it('clicks the cancel button and removes the connect request', async () => {
+    renderWithProvider(<ConfirmAddCustodianToken />, store);
+
+    const cancelButton = screen.getByTestId('cancel-btn');
+    fireEvent.click(cancelButton);
+
+    await waitFor(() => {
+      expect(mockedRemoveAddTokenConnectRequest).toHaveBeenCalledWith({
+        origin: 'origin',
+        environment: 'jupiter',
+        token: 'testToken',
+      });
+    });
   });
 });

@@ -16,17 +16,30 @@ body:
    id: what-happened
    attributes:
      label: Describe the bug
-     description: What happened? What did you expect to happen? Please include screenshots if applicable!
-     placeholder: Tell us what you see!
+     description: What happened?
+     placeholder: A clear and concise description of what the bug is
    validations:
      required: true
+ - type: textarea
+   id: expected-behavior
+   attributes:
+     label: Expected behavior
+     description: What did you expect to happen?
+ - type: textarea
+   id: screenshot-recording
+   attributes:
+     label: Screenshots/Recordings
+     description: Please include screenshots/recordings if applicable! (https://recordit.co/ is recommended)
  - type: textarea
    id: reproduce
    attributes:
      label: Steps to reproduce
-     description: List all steps needed to reproduce the problem
-     value: |
-       1.
+     description: "List all steps needed to reproduce the problem:"
+     placeholder: |
+       1. Go to '...'
+       2. Click on '...'
+       3. Scroll down to '...'
+       4. See error
    validations:
      required: true
  - type: textarea
@@ -40,6 +53,7 @@ body:
    attributes:
      label: Version
      description: What version of MetaMask are you running? You can find the version in "Settings" > "About"
+     placeholder: "7.1.0"
    validations:
      required: true
  - type: dropdown
@@ -90,9 +104,21 @@ body:
        - Keystone
        - GridPlus Lattice1
        - AirGap Vault
+       - imToken
        - Other (please elaborate in the "Additional Context" section)
  - type: textarea
    id: additional
    attributes:
      label: Additional context
      description: Add any other context about the problem here, e.g. related issues, additional error messages or logs, or any potentially relevant details about the environment or situation the bug occurred in.
+ - type: textarea
+   id: severity
+   attributes:
+     label: Severity
+     description: |
+       To be added after bug submission by internal support / PM:
+     placeholder: |
+       - How critical is the impact of this bug on a user?
+       - Add stats if available on % of customers impacted
+       - Is this visible to all users?
+       - Is this tech debt?

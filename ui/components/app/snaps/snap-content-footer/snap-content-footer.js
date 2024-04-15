@@ -3,20 +3,26 @@ import PropTypes from 'prop-types';
 
 import { useHistory } from 'react-router-dom';
 
-import Typography from '../../../ui/typography/typography';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { SNAPS_VIEW_ROUTE } from '../../../../helpers/constants/routes';
 import {
-  TypographyVariant,
+  TextVariant,
   JustifyContent,
   AlignItems,
   TextColor,
   Size,
   IconColor,
+  Display,
 } from '../../../../helpers/constants/design-system';
-import Button from '../../../ui/button';
-import Box from '../../../ui/box/box';
-import { Icon, IconName } from '../../../component-library';
+import {
+  BUTTON_SIZES,
+  BUTTON_VARIANT,
+  Box,
+  Button,
+  Icon,
+  IconName,
+  Text,
+} from '../../../component-library';
+import { getSnapRoute } from '../../../../helpers/utils/util';
 
 export default function SnapContentFooter({ snapName, snapId }) {
   const t = useI18nContext();
@@ -24,11 +30,12 @@ export default function SnapContentFooter({ snapName, snapId }) {
 
   const handleNameClick = (e) => {
     e.stopPropagation();
-    history.push(`${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snapId)}`);
+    history.push(getSnapRoute(snapId));
   };
-  // TODO: add truncation to the snap name, need to pick a character length at which to cut off
+
   return (
     <Box
+      display={Display.Flex}
       justifyContent={JustifyContent.center}
       alignItems={AlignItems.center}
       paddingTop={4}
@@ -39,15 +46,25 @@ export default function SnapContentFooter({ snapName, snapId }) {
         name={IconName.Warning}
         size={Size.SM}
         color={IconColor.iconMuted}
-        paddingRight={1}
+        marginRight={1}
       />
-      <Typography color={TextColor.textMuted} variant={TypographyVariant.H7}>
+      <Text
+        color={TextColor.textMuted}
+        variant={TextVariant.bodyXs}
+        className="snap-content-footer__description"
+      >
         {t('snapContent', [
-          <Button type="inline" onClick={handleNameClick} key="button">
+          <Button
+            variant={BUTTON_VARIANT.LINK}
+            size={BUTTON_SIZES.INHERIT}
+            onClick={handleNameClick}
+            key="button"
+            ellipsis
+          >
             {snapName}
           </Button>,
         ])}
-      </Typography>
+      </Text>
     </Box>
   );
 }

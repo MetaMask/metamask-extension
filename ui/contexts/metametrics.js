@@ -37,7 +37,7 @@ import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
 /**
  * @typedef {(
  *  payload: UIMetricsEventPayload,
- *  options: MetaMetricsEventOptions
+ *  options?: MetaMetricsEventOptions
  * ) => Promise<void>} UITrackEventMethod
  */
 
@@ -59,19 +59,22 @@ export function MetaMetricsProvider({ children }) {
   const context = useSegmentContext();
 
   // Sometimes we want to track context properties inside the event's "properties" object.
-  const addContextPropsIntoEventProperties = (payload, options) => {
-    const fields = options?.contextPropsIntoEventProperties;
-    if (!fields || fields.length === 0) {
-      return;
-    }
-    if (!payload.properties) {
-      payload.properties = {};
-    }
-    if (fields.includes(MetaMetricsContextProp.PageTitle)) {
-      payload.properties[MetaMetricsContextProp.PageTitle] =
-        context.page?.title;
-    }
-  };
+  const addContextPropsIntoEventProperties = useCallback(
+    (payload, options) => {
+      const fields = options?.contextPropsIntoEventProperties;
+      if (!fields || fields.length === 0) {
+        return;
+      }
+      if (!payload.properties) {
+        payload.properties = {};
+      }
+      if (fields.includes(MetaMetricsContextProp.PageTitle)) {
+        payload.properties[MetaMetricsContextProp.PageTitle] =
+          context.page?.title;
+      }
+    },
+    [context.page?.title],
+  );
 
   /**
    * @type {UITrackEventMethod}
@@ -88,7 +91,7 @@ export function MetaMetricsProvider({ children }) {
         options,
       );
     },
-    [context],
+    [addContextPropsIntoEventProperties, context],
   );
 
   // Used to prevent double tracking page calls

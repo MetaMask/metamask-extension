@@ -1,22 +1,13 @@
 const {
-  convertToHexValue,
+  defaultGanacheOptions,
   withFixtures,
   openDapp,
   DAPP_ONE_URL,
+  unlockWallet,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('eth_subscribe', function () {
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
-
   it('only broadcasts subscription notifications on the page that registered the subscription', async function () {
     await withFixtures(
       {
@@ -24,14 +15,12 @@ describe('eth_subscribe', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         dappOptions: { numberOfDapps: 2 },
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await openDapp(driver);
 
@@ -73,9 +62,9 @@ describe('eth_subscribe', function () {
         // Setup the same subscription listener as on the first dapp, but without registering a new subscription
         await driver.executeScript(setupSubscriptionListener);
 
-        // Verify that the new block is not seen on the second dapp
         await driver.assertElementNotPresent(
           '[data-testid="eth-subscribe-response"]',
+          { waitAtLeastGuard: 1000 }, // A waitAtLeastGuard of 1000ms is the best choice here
         );
       },
     );

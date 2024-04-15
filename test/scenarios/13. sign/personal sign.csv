@@ -1,0 +1,13 @@
+Steps,Test Steps,Test Data,Expected Result,Notes
+1,Open the extension.,,The Welcome Back screen is shown.,
+2,Proceed to Unlock the wallet.,password (8 characters min).,"The Ether balance is shown on the overview.
+The wallet address is shown on the overview.
+The selected network is Ethereum Mainnet.",
+3,Switch networks to a test network.,e.g. Sepolia.,"The Sepolia balance is shown on the overview.
+The wallet address is shown on the overview.
+The selected network is Sepolia.",
+4,Open the test dapp in another tab.,https://metamask.github.io/test-dapp/,,
+5,Proceed to Connect with MetaMask.,,,
+6,Connect with the current account.,,,
+7,"Sign ""Personal Sign"" message",,The message is in plain text format.,
+8,Verify signed hash.,,The signed address is verified.,

@@ -9,10 +9,19 @@ describe('View Price Quote Difference', () => {
   const mockState = {
     metamask: {
       tokens: [],
-      providerConfig: { type: NETWORK_TYPES.RPC, nickname: '', rpcUrl: '' },
+      providerConfig: {
+        type: NETWORK_TYPES.RPC,
+        nickname: '',
+        rpcUrl: '',
+        ticker: 'ETH',
+      },
       preferences: { showFiatInTestnets: true },
       currentCurrency: 'usd',
-      conversionRate: 600.0,
+      currencyRates: {
+        ETH: {
+          conversionRate: 600.0,
+        },
+      },
     },
   };
 
@@ -55,7 +64,7 @@ describe('View Price Quote Difference', () => {
         name: 'Ether',
         address: '0x0000000000000000000000000000000000000000',
         decimals: 18,
-        iconUrl: 'images/black-eth-logo.svg',
+        iconUrl: 'images/black-eth-logo.png',
       },
       destinationTokenInfo: {
         address: '0x514910771af9ca656af840dff83e8264ecf986ca',

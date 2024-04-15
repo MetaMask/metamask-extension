@@ -1,25 +1,32 @@
 import { createSlice } from '@reduxjs/toolkit';
 import log from 'loglevel';
-import networkMap from 'ethereum-ens-network-map';
+import ensNetworkMap from 'ethereum-ens-network-map';
 import { isConfusing } from 'unicode-confusables';
 import { isHexString } from 'ethereumjs-util';
 import { Web3Provider } from '@ethersproject/providers';
 
-import { getCurrentChainId } from '../selectors';
+import { getChainIdsCaveat } from '@metamask/snaps-rpc-methods';
 import {
-  CHAIN_ID_TO_NETWORK_ID_MAP,
-  NETWORK_IDS,
-  NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP,
+  getCurrentChainId,
+  getNameLookupSnapsIds,
+  getPermissionSubjects,
+  getSnapMetadata,
+} from '../selectors';
+import { handleSnapRequest } from '../store/actions';
+import {
+  CHAIN_IDS,
+  CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP,
 } from '../../shared/constants/network';
 import {
   CONFUSING_ENS_ERROR,
   ENS_ILLEGAL_CHARACTER,
   ENS_NOT_FOUND_ON_NETWORK,
-  ENS_NOT_SUPPORTED_ON_NETWORK,
+  DOMAIN_NOT_SUPPORTED_ON_NETWORK,
   ENS_NO_ADDRESS_FOR_NAME,
   ENS_REGISTRATION_ERROR,
   ENS_UNKNOWN_ERROR,
-} from '../pages/send/send.constants';
+  NO_RESOLUTION_FOR_DOMAIN,
+} from '../pages/confirmations/send/send.constants';
 import { isValidDomainName } from '../helpers/utils/util';
 import { CHAIN_CHANGED } from '../store/actionConstants';
 import {
@@ -37,9 +44,11 @@ const initialState = {
   resolution: null,
   error: null,
   warning: null,
-  network: null,
+  chainId: null,
   domainType: null,
   domainName: null,
+  // TODO: This should be resolvingSnaps in the future when we allow for conflict resolution
+  resolvingSnap: null,
 };
 
 export const domainInitialState = initialState;
@@ -52,12 +61,20 @@ const slice = createSlice({
   name,
   initialState,
   reducers: {
-    domainLookup: (state, action) => {
+    lookupStart: (state, action) => {
+      state.domainName = action.payload;
+    },
+    lookupEnd: (state, action) => {
       // first clear out the previous state
       state.resolution = null;
       state.error = null;
       state.warning = null;
-      const { address, error, network, domainType, domainName } =
+      state.domainType = null;
+      state.domainName = null;
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      state.resolvingSnap = null;
+      ///: END:ONLY_INCLUDE_IF
+      const { address, error, chainId, domainType, domainName, resolvingSnap } =
         action.payload;
       state.domainType = domainType;
       if (state.domainType === ENS) {
@@ -67,7 +84,7 @@ const slice = createSlice({
             error.message === 'ENS name not defined.'
           ) {
             state.error =
-              network === NETWORK_IDS.MAINNET
+              chainId === CHAIN_IDS.MAINNET
                 ? ENS_NO_ADDRESS_FOR_NAME
                 : ENS_NOT_FOUND_ON_NETWORK;
           } else if (error.message === 'Illegal character for ENS.') {
@@ -90,6 +107,11 @@ const slice = createSlice({
         } else {
           state.error = ENS_NO_ADDRESS_FOR_NAME;
         }
+      } else if (address) {
+        state.resolution = address;
+        state.resolvingSnap = resolvingSnap;
+      } else if (domainName.length > 0) {
+        state.error = NO_RESOLUTION_FOR_DOMAIN;
       }
     },
     enableDomainLookup: (state, action) => {
@@ -97,29 +119,33 @@ const slice = createSlice({
       state.error = null;
       state.resolution = null;
       state.warning = null;
-      state.network = action.payload;
+      state.chainId = action.payload;
     },
     disableDomainLookup: (state) => {
       state.stage = 'NO_NETWORK_SUPPORT';
       state.error = null;
       state.warning = null;
       state.resolution = null;
-      state.network = null;
+      state.chainId = null;
     },
-    ensNotSupported: (state) => {
+    domainNotSupported: (state) => {
       state.resolution = null;
       state.warning = null;
-      state.error = ENS_NOT_SUPPORTED_ON_NETWORK;
+      state.error = DOMAIN_NOT_SUPPORTED_ON_NETWORK;
     },
     resetDomainResolution: (state) => {
       state.resolution = null;
       state.warning = null;
       state.error = null;
+      state.domainType = null;
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      state.resolvingSnap = null;
+      ///: END:ONLY_INCLUDE_IF
     },
   },
   extraReducers: (builder) => {
     builder.addCase(CHAIN_CHANGED, (state, action) => {
-      if (action.payload !== state.currentChainId) {
+      if (action.payload !== state.chainId) {
         state.stage = 'UNINITIALIZED';
         web3Provider = null;
       }
@@ -131,10 +157,10 @@ const { reducer, actions } = slice;
 export default reducer;
 
 const {
-  disableDomainLookup,
-  domainLookup,
+  lookupStart,
+  lookupEnd,
   enableDomainLookup,
-  ensNotSupported,
+  domainNotSupported,
   resetDomainResolution,
 } = actions;
 export { resetDomainResolution };
@@ -143,25 +169,81 @@ export function initializeDomainSlice() {
   return (dispatch, getState) => {
     const state = getState();
     const chainId = getCurrentChainId(state);
-    const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
-    const networkName = NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP[network];
-    const ensAddress = networkMap[network];
+    const networkName = CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP[chainId];
+    const chainIdInt = parseInt(chainId, 16);
+    const ensAddress = ensNetworkMap[chainIdInt.toString()];
     const networkIsSupported = Boolean(ensAddress);
     if (networkIsSupported) {
       web3Provider = new Web3Provider(global.ethereumProvider, {
-        chainId: parseInt(network, 10),
+        chainId: chainIdInt,
         name: networkName,
         ensAddress,
       });
-      dispatch(enableDomainLookup(network));
     } else {
       web3Provider = null;
-      dispatch(disableDomainLookup());
     }
+    dispatch(enableDomainLookup(chainId));
   };
 }
 
-export function lookupEnsName(domainName) {
+export async function fetchResolutions({ domain, chainId, state }) {
+  const NAME_LOOKUP_PERMISSION = 'endowment:name-lookup';
+  const subjects = getPermissionSubjects(state);
+  const nameLookupSnaps = getNameLookupSnapsIds(state);
+
+  const filteredNameLookupSnapsIds = nameLookupSnaps.filter((snapId) => {
+    const permission = subjects[snapId]?.permissions[NAME_LOOKUP_PERMISSION];
+    const chainIdCaveat = getChainIdsCaveat(permission);
+    return chainIdCaveat?.includes(chainId) ?? true;
+  });
+
+  // previous logic would switch request args based on the domain property to determine
+  // if this should have been a domain request or a reverse resolution request
+  // since reverse resolution is not supported in the send screen flow,
+  // the logic was changed to cancel the request, because otherwise a snap can erroneously
+  // check for the domain property without checking domain length and return faulty results.
+  if (domain.length === 0) {
+    return [];
+  }
+
+  const results = await Promise.allSettled(
+    filteredNameLookupSnapsIds.map((snapId) => {
+      return handleSnapRequest({
+        snapId,
+        origin: '',
+        handler: 'onNameLookup',
+        request: {
+          jsonrpc: '2.0',
+          method: ' ',
+          params: {
+            domain,
+            chainId,
+          },
+        },
+      });
+    }),
+  );
+
+  const filteredResults = results.reduce(
+    (successfulResolutions, result, idx) => {
+      if (result.status !== 'rejected' && result.value !== null) {
+        const resolutions = result.value.resolvedAddresses.map(
+          (resolution) => ({
+            ...resolution,
+            snapId: filteredNameLookupSnapsIds[idx],
+          }),
+        );
+        return successfulResolutions.concat(resolutions);
+      }
+      return successfulResolutions;
+    },
+    [],
+  );
+
+  return filteredResults;
+}
+
+export function lookupDomainName(domainName) {
   return async (dispatch, getState) => {
     const trimmedDomainName = domainName.trim();
     let state = getState();
@@ -177,27 +259,58 @@ export function lookupEnsName(domainName) {
       ) &&
       !isHexString(trimmedDomainName)
     ) {
-      await dispatch(ensNotSupported());
+      await dispatch(domainNotSupported());
     } else {
-      log.info(`ENS attempting to resolve name: ${trimmedDomainName}`);
+      await dispatch(lookupStart(trimmedDomainName));
+      log.info(`Resolvers attempting to resolve name: ${trimmedDomainName}`);
       let address;
+      let fetchedResolutions;
+      let hasSnapResolution = false;
       let error;
       try {
-        address = await web3Provider.resolveName(trimmedDomainName);
+        address = await web3Provider?.resolveName(trimmedDomainName);
       } catch (err) {
         error = err;
       }
       const chainId = getCurrentChainId(state);
-      const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
+      const chainIdInt = parseInt(chainId, 16);
+      if (!address) {
+        // TODO: allow for conflict resolution in future iterations, we don't have designs
+        // for this currently, so just displaying the first result.
+        fetchedResolutions = await fetchResolutions({
+          domain: trimmedDomainName,
+          chainId: `eip155:${chainIdInt}`,
+          state,
+        });
+        const resolvedAddress = fetchedResolutions[0]?.resolvedAddress;
+        hasSnapResolution = Boolean(resolvedAddress);
+        if (hasSnapResolution) {
+          address = resolvedAddress;
+        }
+      }
+
+      const snapId = fetchedResolutions?.[0]?.snapId;
+      const snapName = getSnapMetadata(state, snapId)?.name;
+
+      // Due to the asynchronous nature of looking up domains, we could reach this point
+      // while a new lookup has started, if so we don't use the found result.
+      state = getState();
+      if (trimmedDomainName !== state[name].domainName) {
+        return;
+      }
 
       await dispatch(
-        domainLookup({
+        lookupEnd({
           address,
           error,
           chainId,
-          network,
-          domainType: ENS,
+          network: chainIdInt,
+          domainType:
+            hasSnapResolution || (!hasSnapResolution && !address)
+              ? 'Other'
+              : ENS,
           domainName: trimmedDomainName,
+          ...(hasSnapResolution ? { resolvingSnap: snapName } : {}),
         }),
       );
     }
@@ -208,10 +321,18 @@ export function getDomainResolution(state) {
   return state[name].resolution;
 }
 
+export function getResolvingSnap(state) {
+  return state[name].resolvingSnap;
+}
+
 export function getDomainError(state) {
   return state[name].error;
 }
 
 export function getDomainWarning(state) {
   return state[name].warning;
+}
+
+export function getDomainType(state) {
+  return state[name].domainType;
 }

@@ -13,22 +13,22 @@ import {
   BackgroundColor,
   BorderColor,
   Color,
+  TextColor,
   BorderRadius,
 } from '../../../helpers/constants/design-system';
 
 import {
   ButtonIcon,
   ButtonLink,
+  ButtonLinkSize,
   Label,
   Text,
   TextField,
+  TextFieldSize,
   TextFieldSearch,
-  TEXT_FIELD_SIZES,
   ButtonIconSize,
-  BUTTON_LINK_SIZES,
   Box,
 } from '..';
-
 import { Icon } from './icon';
 import { IconName, IconSize } from './icon.types';
 
@@ -121,7 +121,7 @@ export const DefaultStory: StoryFn<typeof Icon> = (args) => {
                   placeholder={item}
                   value={item}
                   readOnly
-                  size={TEXT_FIELD_SIZES.SM}
+                  size={TextFieldSize.Sm}
                   inputProps={{
                     variant: TextVariant.bodyXs,
                     textAlign: TextAlign.Center,
@@ -153,8 +153,8 @@ export const DefaultStory: StoryFn<typeof Icon> = (args) => {
         <Text>
           No matches. Please try again or ask in the{' '}
           <ButtonLink
-            size={BUTTON_LINK_SIZES.INHERIT}
-            color={Color.primaryDefault}
+            size={ButtonLinkSize.Inherit}
+            color={TextColor.primaryDefault}
             href="https://consensys.slack.com/archives/C0354T27M5M"
             target="_blank"
           >

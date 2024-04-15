@@ -1,0 +1,12 @@
+.connections-page {
+  .tabs__list {
+    display: flex;
+    justify-content: center;
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+
+  &__no-site-connected-content {
+    height: 100%; //Box Props doesn't have height as a utility prop
+  }
+}

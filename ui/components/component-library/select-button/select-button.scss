@@ -1,0 +1,50 @@
+.mm-select-button {
+  --select-button-height: var(--size, 40px);
+
+  position: relative;
+  cursor: pointer;
+  text-align: start;
+  height: min-content;
+  min-height: var(--select-button-height);
+  overflow: hidden;
+  max-width: 100%;
+
+  &--size-sm {
+    --size: 32px;
+  }
+
+  &--size-md {
+    --size: 40px;
+  }
+
+  &--size-lg {
+    --size: 48px;
+  }
+
+  &:hover:not(&--disabled) {
+    background-color: var(--color-background-hover);
+  }
+
+  &:active:not(&--disabled) {
+    background-color: var(--color-background-pressed);
+  }
+
+  &:active:not(&--disabled),
+  &:focus:not(&--disabled) {
+    border-color: var(--color-primary-default);
+    box-shadow: inset 0 0 0 1px var(--color-primary-default);
+  }
+
+  &--type-danger {
+    border-color: var(--color-error-default);
+    box-shadow: inset 0 0 0 1px var(--color-error-default);
+  }
+
+  &__content {
+    overflow: auto;
+  }
+}
+
+.mm-select-wrapper:has(.mm-select-button--block) {
+  width: 100%;
+}

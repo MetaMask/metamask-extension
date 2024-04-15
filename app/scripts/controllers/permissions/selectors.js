@@ -25,7 +25,9 @@ export const getPermittedAccountsByOrigin = createSelector(
   getSubjects,
   (subjects) => {
     return Object.values(subjects).reduce((originToAccountsMap, subject) => {
-      const caveat = subject.permissions?.eth_accounts?.caveats.find(
+      const caveats = subject.permissions?.eth_accounts?.caveats || [];
+
+      const caveat = caveats.find(
         ({ type }) => type === CaveatTypes.restrictReturnedAccounts,
       );
 

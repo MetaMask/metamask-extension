@@ -1,0 +1,140 @@
+@use "design-system";
+
+.import-tokens-modal {
+  $self: &;
+
+
+  .tabs {
+    ul {
+      border-bottom: 0;
+    }
+
+    li {
+      width: 50%;
+    }
+  }
+
+  &__body::-webkit-scrollbar {
+    display: none;
+  }
+
+  &__body {
+    overflow-y: auto;
+  }
+
+  &__confirmation-list {
+    overflow-y: scroll;
+    overflow: auto;
+    height: 332px;
+
+    @include design-system.screen-sm-max {
+      height: 320px;
+    }
+  }
+
+  &__tabs {
+    padding-left: 16px;
+    padding-right: 16px;
+    justify-content: center;
+  }
+
+  &__modal-dialog-content {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    padding-top: 16px !important;
+  }
+
+
+  &__autodetect {
+    vertical-align: unset;
+  }
+
+  &__search-list {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    overflow-y: scroll;
+    max-width: 100%;
+    overflow: auto;
+    max-height: 400px;
+  }
+
+  &__button-link {
+    font-size: 12px;
+  }
+
+  &__active-tab {
+    color: var(--color-primary-default);
+  }
+
+  &__button-tab {
+    font-weight: 500;
+  }
+
+  &__button-search {
+    outline-color: var(--color-primary-default);
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+
+  &__custom-token-form {
+    &__container {
+      overflow: auto;
+      height: 384px;
+
+      @include design-system.screen-sm-max {
+        height: 370px;
+      }
+    }
+
+    &__text-outline-success {
+      outline-color: var(--color-primary-default);
+    }
+
+    &__text-outline-error {
+      outline-color: var(--color-error-default);
+    }
+
+    input[type='number']::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      display: none;
+    }
+
+    input[type='number']:hover::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      display: none;
+    }
+    & #{$self}__decimal-warning {
+      margin-top: 5px;
+    }
+  }
+
+  &__token-name {
+    flex: 1;
+  }
+
+  &__token-balance {
+    flex: 0 0 30%;
+  }
+
+  &__confirm-token-list {
+    flex-flow: column nowrap;
+
+    &-item {
+      flex-flow: row nowrap;
+
+      &-wrapper {
+        flex-grow: 1;
+
+        &__text {
+          max-width: 130px;
+        }
+      }
+    }
+  }
+
+  &__nft-address-error-link {
+    display: contents;
+    font-size: inherit;
+  }
+}

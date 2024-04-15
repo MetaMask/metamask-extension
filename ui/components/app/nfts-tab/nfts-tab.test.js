@@ -1,11 +1,15 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import reactRouterDom from 'react-router-dom';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import configureStore from '../../../store/store';
-import { renderWithProvider } from '../../../../test/jest/rendering';
-import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
-import { setBackgroundConnection } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/jest';
+import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
+import { setBackgroundConnection } from '../../../store/background-connection';
+import { CHAIN_IDS, NETWORK_TYPES } from '../../../../shared/constants/network';
 import NftsTab from '.';
+
+const ETH_BALANCE = '0x16345785d8a0000'; // 0.1 ETH
 
 const NFTS = [
   {
@@ -150,6 +154,7 @@ const render = ({
   selectedAddress,
   chainId = '0x1',
   useNftDetection,
+  balance = ETH_BALANCE,
 }) => {
   const store = configureStore({
     metamask: {
@@ -163,8 +168,38 @@ const render = ({
           [chainId]: nftContracts,
         },
       },
-      providerConfig: { chainId },
+      providerConfig: { chainId, type: NETWORK_TYPES.MAINNET },
       selectedAddress,
+      accounts: {
+        [selectedAddress]: {
+          address: selectedAddress,
+        },
+      },
+      accountsByChainId: {
+        [CHAIN_IDS.MAINNET]: {
+          [selectedAddress]: { balance },
+        },
+      },
+      internalAccounts: {
+        accounts: {
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+            address: selectedAddress,
+            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            metadata: {
+              name: 'Test Account',
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
+          },
+        },
+        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      },
+      currentCurrency: 'usd',
+      tokenList: {},
       useNftDetection,
       nftsDropdownState,
     },
@@ -201,14 +236,14 @@ describe('NFT Items', () => {
         selectedAddress: ACCOUNT_2,
         nfts: NFTS,
       });
-      expect(screen.queryByText('New! NFT detection')).toBeInTheDocument();
+      expect(screen.queryByText('NFT autodetection')).toBeInTheDocument();
     });
     it('should not render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has NFTs', () => {
       render({
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,
       });
-      expect(screen.queryByText('New! NFT detection')).not.toBeInTheDocument();
+      expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
     });
     it('should take user to the experimental settings tab in settings when user clicks "Turn on NFT detection in Settings"', () => {
       render({
@@ -218,7 +253,7 @@ describe('NFT Items', () => {
       fireEvent.click(screen.queryByText('Turn on NFT detection in Settings'));
       expect(historyPushMock).toHaveBeenCalledTimes(1);
       expect(historyPushMock).toHaveBeenCalledWith(
-        `${EXPERIMENTAL_ROUTE}#autodetect-nfts`,
+        `${SECURITY_ROUTE}#autodetect-nfts`,
       );
     });
     it('should not render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has no NFTs but use NFT autodetection preference is set to true', () => {
@@ -227,14 +262,14 @@ describe('NFT Items', () => {
         nfts: NFTS,
         useNftDetection: true,
       });
-      expect(screen.queryByText('New! NFT detection')).not.toBeInTheDocument();
+      expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
     });
     it('should not render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has no NFTs but user has dismissed the notice before', () => {
       render({
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,
       });
-      expect(screen.queryByText('New! NFT detection')).not.toBeInTheDocument();
+      expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
     });
   });
 
@@ -258,6 +293,7 @@ describe('NFT Items', () => {
       expect(screen.queryByText('Munks (3)')).not.toBeInTheDocument();
     });
   });
+
   describe('NFTs options', () => {
     it('should render a link "Refresh list" when some NFTs are present on mainnet and NFT auto-detection preference is set to true, which, when clicked calls methods DetectNFTs and checkAndUpdateNftsOwnershipStatus', () => {
       render({
@@ -292,7 +328,25 @@ describe('NFT Items', () => {
       expect(historyPushMock).toHaveBeenCalledTimes(0);
       fireEvent.click(screen.queryByText('Enable autodetect'));
       expect(historyPushMock).toHaveBeenCalledTimes(1);
-      expect(historyPushMock).toHaveBeenCalledWith(EXPERIMENTAL_ROUTE);
+      expect(historyPushMock).toHaveBeenCalledWith(SECURITY_ROUTE);
+    });
+  });
+
+  describe('NFT Tab Ramps Card', () => {
+    it('shows the ramp card when user balance is zero', () => {
+      const { queryByText } = render({
+        selectedAddress: ACCOUNT_1,
+        balance: '0x0',
+      });
+      expect(queryByText('Get ETH to buy NFTs')).toBeInTheDocument();
+    });
+
+    it('does not show the ramp card when the account has a balance', () => {
+      const { queryByText } = render({
+        selectedAddress: ACCOUNT_1,
+        balance: ETH_BALANCE,
+      });
+      expect(queryByText('Get ETH to buy NFTs')).not.toBeInTheDocument();
     });
   });
 });

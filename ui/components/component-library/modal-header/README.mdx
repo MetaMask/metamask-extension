@@ -5,6 +5,8 @@ import { ModalHeader } from './modal-header';
 
 `ModalHeader` handles the title, close button and back button for all Modal components. It is built on top of the [HeaderBase](/docs/components-componentlibrary-headerbase--default-story) component
 
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
 <Canvas>
   <Story id="components-componentlibrary-modalheader--default-story" />
 </Canvas>
@@ -99,9 +101,9 @@ Use the `startAccessory` prop to render a component in the startAccessory positi
 </Canvas>
 
 ```jsx
-import { ModalHeader, Button, BUTTON_SIZES } from '../../component-library';
+import { ModalHeader, Button, ButtonSize } from '../../component-library';
 
-<ModalHeader startAccessory={<Button size={BUTTON_SIZES.SM}>Demo</Button>}>
+<ModalHeader startAccessory={<Button size={ButtonSize.Sm}>Demo</Button>}>
   StartAccessory
 </ModalHeader>;
 ```
@@ -115,9 +117,9 @@ Use the `endAccessory` prop to render a component in the endAccessory position. 
 </Canvas>
 
 ```jsx
-import { ModalHeader, Button, BUTTON_SIZES } from '../../component-library';
+import { ModalHeader, Button, ButtonSize } from '../../component-library';
 
-<ModalHeader endAccessory={<Button size={BUTTON_SIZES.SM}>Demo</Button>}>
+<ModalHeader endAccessory={<Button size={ButtonSize.Sm}>Demo</Button>}>
   EndAccessory
 </ModalHeader>;
 ```

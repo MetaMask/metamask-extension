@@ -2,6 +2,15 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
+/**
+ * @deprecated The `<IconWithFallback />` component has been deprecated in favor of the new `<AvatarNetwork />` or `<AvatarFavicon />` component from the component-library.
+ * Please update your code to use the new `<AvatarNetwork />` or `<AvatarFavicon />` component instead, which can be found at ui/components/component-library.
+ * You can find documentation for the new `AvatarNetwork` or `AvatarFavicon` component in the MetaMask Storybook:
+ * {@link https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-avatarnetwork--docs}
+ * {@link https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-avatarfavicon--docs}
+ * If you would like to help with the replacement of the old `IconWithFallback` component, please submit a pull request
+ */
+
 const IconWithFallback = ({
   name = '',
   icon = null,

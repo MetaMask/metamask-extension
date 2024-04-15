@@ -22,6 +22,7 @@ export default {
     imageBorder: { control: 'boolean' },
     useTokenDetection: { control: 'boolean' },
     tokenList: { control: 'object' },
+    watchedNftContracts: { control: 'object' },
   },
 };
 
@@ -40,7 +41,7 @@ WithImage.args = {
   addBorder: false,
   diameter: 32,
   useBlockie: false,
-  image: './images/eth_logo.png',
+  image: './images/eth_logo.svg',
   alt: 'Ethereum',
   imageBorder: true,
 };

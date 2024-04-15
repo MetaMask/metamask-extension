@@ -1,6 +1,16 @@
 import { migrate } from './084';
 
+const sentryCaptureExceptionMock = jest.fn();
+
+global.sentry = {
+  captureException: sentryCaptureExceptionMock,
+};
+
 describe('migration #84', () => {
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
   it('updates the version metadata', async () => {
     const originalVersionedData = buildOriginalVersionedData({
       meta: {
@@ -27,6 +37,21 @@ describe('migration #84', () => {
     expect(newVersionedData.data).toStrictEqual(originalVersionedData.data);
   });
 
+  it('captures an exception if the network controller state does not exist', async () => {
+    const originalVersionedData = buildOriginalVersionedData({
+      data: {
+        test: '123',
+      },
+    });
+
+    await migrate(originalVersionedData);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error(`typeof state.NetworkController is undefined`),
+    );
+  });
+
   const nonObjects = [undefined, null, 'test', 1, ['test']];
   for (const invalidState of nonObjects) {
     it(`does not change the state if the network controller state is ${invalidState}`, async () => {
@@ -39,6 +64,21 @@ describe('migration #84', () => {
       const newVersionedData = await migrate(originalVersionedData);
 
       expect(newVersionedData.data).toStrictEqual(originalVersionedData.data);
+    });
+
+    it(`captures an exception if the network controller state is ${invalidState}`, async () => {
+      const originalVersionedData = buildOriginalVersionedData({
+        data: {
+          NetworkController: invalidState,
+        },
+      });
+
+      await migrate(originalVersionedData);
+
+      expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
+      expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+        new Error(`typeof state.NetworkController is ${typeof invalidState}`),
+      );
     });
   }
 
@@ -54,6 +94,38 @@ describe('migration #84', () => {
     const newVersionedData = await migrate(originalVersionedData);
 
     expect(newVersionedData.data).toStrictEqual(originalVersionedData.data);
+  });
+
+  it('captures an exception if the network controller state does not include "network" and does not include "networkId"', async () => {
+    const originalVersionedData = buildOriginalVersionedData({
+      data: {
+        NetworkController: {
+          test: '123',
+        },
+      },
+    });
+
+    await migrate(originalVersionedData);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error(`typeof state.NetworkController.network is undefined`),
+    );
+  });
+
+  it('does not capture an exception if the network controller state does not include "network" but does include "networkId"', async () => {
+    const originalVersionedData = buildOriginalVersionedData({
+      data: {
+        NetworkController: {
+          test: '123',
+          networkId: 'foobar',
+        },
+      },
+    });
+
+    await migrate(originalVersionedData);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(0);
   });
 
   it('replaces "network" in the network controller state with "networkId": null, "networkStatus": "unknown" if it is "loading"', async () => {

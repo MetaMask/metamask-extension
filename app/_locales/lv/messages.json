@@ -175,9 +175,6 @@
   "copyAddress": {
     "message": "Iekopēt adresi starpliktuvē"
   },
-  "copyPrivateKey": {
-    "message": "Šī ir jūsu privātā atslēga (noklikšķiniet, lai nokopētu)"
-  },
   "copyToClipboard": {
     "message": "Kopēt starpliktuvē"
   },
@@ -214,9 +211,6 @@
   "deleteNetwork": {
     "message": "Dzēst tīklu?"
   },
-  "deleteNetworkDescription": {
-    "message": "Vai tiešām vēlaties dzēst šo tīklu?"
-  },
   "details": {
     "message": "Informācija"
   },
@@ -238,14 +232,8 @@
   "editContact": {
     "message": "Rediģēt līgumu"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Šajā tīklā ENS nosaukums nav atrasts. Pamēģiniet pārslēgties uz galveno Ethereum tīklu."
-  },
   "ensRegistrationError": {
     "message": "Kļūda ENS vārda reģistrācijā"
-  },
-  "enterPassword": {
-    "message": "Ievadiet paroli"
   },
   "enterPasswordContinue": {
     "message": "Ievadiet paroli, lai turpinātu"
@@ -258,9 +246,6 @@
   },
   "expandView": {
     "message": "Izvērst skatījumu"
-  },
-  "exportPrivateKey": {
-    "message": "Eksportēt privāto atslēgu"
   },
   "failed": {
     "message": "Neizdevās"
@@ -620,12 +605,6 @@
   "search": {
     "message": "Meklēt"
   },
-  "searchResults": {
-    "message": "Meklēšanas rezultāti"
-  },
-  "searchTokens": {
-    "message": "Meklēt marķierus"
-  },
   "securityAndPrivacy": {
     "message": "Drošība un konfidencialitāte"
   },
@@ -664,9 +643,6 @@
   },
   "showHexDataDescription": {
     "message": "Atlasiet šo, lai atvērtu hex datus sūtīšanas ekrānā"
-  },
-  "showPrivateKeys": {
-    "message": "Rādīt privātās atslēgas"
   },
   "sigRequest": {
     "message": "Paraksta pieprasījums"
@@ -788,9 +764,6 @@
   "tryAgain": {
     "message": "Mēģināt vēlreiz"
   },
-  "typePassword": {
-    "message": "Ievadiet savu MetaMask paroli"
-  },
   "unapproved": {
     "message": "Nav apstiprināts"
   },
@@ -799,12 +772,6 @@
   },
   "unknown": {
     "message": "Nezināma"
-  },
-  "unknownCameraError": {
-    "message": "Mēģinot piekļūt kamerai, radās kļūda. Lūdzu, mēģiniet vēlreiz..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ak vai! Radās problēma..."
   },
   "unknownNetwork": {
     "message": "Nezināms privātais tīkls"

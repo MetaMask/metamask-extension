@@ -8,7 +8,7 @@ import {
   CONTACT_VIEW_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
-  getNumberOfSettingsInSection,
+  getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 import {
@@ -39,7 +39,7 @@ export default class ContactListTab extends Component {
   };
 
   settingsRefs = Array(
-    getNumberOfSettingsInSection(this.context.t, this.context.t('contacts')),
+    getNumberOfSettingRoutesInTab(this.context.t, this.context.t('contacts')),
   )
     .fill(undefined)
     .map(() => {

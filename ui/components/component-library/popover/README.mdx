@@ -5,13 +5,13 @@ import { Popover } from './popover';
 
 Popover is an overlay that appears by the trigger used for menus, additional contents, and contains at least one focusable element.
 
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
 <Canvas>
   <Story id="components-componentlibrary-popover--default-story" />
 </Canvas>
 
 ## Props
-
-The `Popover` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
 
 <ArgsTable of={Popover} />
 
@@ -21,7 +21,8 @@ The `referenceElement` prop is required and used to position the popover relativ
 
 ```jsx
 import { useState } from 'react';
-import { Popover } from '../../ui/component-library';
+import { BackgroundColor } from '../../../helpers/constants/design-system'
+import { Popover, Box } from '../../component-library';
 
 const [referenceElement, setReferenceElement] = useState();
 
@@ -29,8 +30,12 @@ const setBoxRef = (ref) => {
 setReferenceElement(ref);
 };
 
-<Box ref={setBoxRef}></Box>
-<Popover referenceElement={referenceElement}>Reference Element</Popover>
+<Box
+  ref={setBoxRef}
+  backgroundColor={BackgroundColor.primaryDefault}
+  style={{ width: 200, height: 200 }}
+/>
+<Popover referenceElement={referenceElement}>Reference element</Popover>
 ```
 
 ### Children
@@ -44,7 +49,7 @@ import {
   Icon,
   IconSize,
   IconName,
-} from '../../ui/component-library';
+} from '../../component-library';
 
 <Popover>
   <Text>
@@ -61,7 +66,7 @@ Use the `position` prop with the `PopoverPosition` enum to set the position of t
 Default is `PopoverPosition.Auto`
 
 ```jsx
-import { Popover, PopoverPosition } from '../../ui/component-library';
+import { Popover, PopoverPosition } from '../../component-library';
 
 <Popover position={PopoverPosition.Auto}>Auto</Popover>
 <Popover position={PopoverPosition.AutoStart}>AutoStart</Popover>
@@ -86,7 +91,7 @@ The `isPortal` prop is a boolean that when set to true, causes the Popover to be
 Default `false`
 
 ```jsx
-import { Popover } from '../../ui/component-library';
+import { Popover } from '../../component-library';
 
 <Popover isPortal={true}>Popover using create portal</Popover>;
 ```
@@ -96,7 +101,7 @@ import { Popover } from '../../ui/component-library';
 Use the `hasArrow` boolean to add an arrow to the popover.
 
 ```jsx
-import { Popover } from '../../ui/component-library';
+import { Popover } from '../../component-library';
 
 <Popover hasArrow>Popover with arrow</Popover>;
 ```
@@ -106,7 +111,7 @@ import { Popover } from '../../ui/component-library';
 Use the `isOpen` boolean to control the visibility of the popover.
 
 ```jsx
-import { Popover } from '../../ui/component-library';
+import { Popover } from '../../component-library';
 
 <Popover isOpen={true}>Popover with arrow</Popover>;
 ```
@@ -117,7 +122,7 @@ Use the `flip` boolean to flip the popover to the opposite side of the reference
 For `PopoverPosition.Auto` this will become true.
 
 ```jsx
-import { Popover } from '../../ui/component-library';
+import { Popover } from '../../component-library';
 
 <Popover flip={true}>Flip demo</Popover>;
 ```
@@ -128,7 +133,7 @@ Use the `preventOverflow` boolean to prevent the popover from overflowing the vi
 For `PopoverPosition.Auto` this will become true.
 
 ```jsx
-import { Popover } from '../../ui/component-library';
+import { Popover } from '../../component-library';
 
 <Popover preventOverflow={true}>Prevent overflow demo</Popover>;
 ```
@@ -138,7 +143,7 @@ import { Popover } from '../../ui/component-library';
 Use the `referenceHidden` boolean to hide the Popover when the reference element is no longer visible in the viewport.
 
 ```jsx
-import { Popover } from '../../ui/component-library';
+import { Popover } from '../../component-library';
 
 <Popover referenceHidden={true}>Reference hidden demo</Popover>;
 ```
@@ -148,7 +153,7 @@ import { Popover } from '../../ui/component-library';
 Use the `matchWidth` boolean to match the width of the popover to the reference element.
 
 ```jsx
-import { Popover } from '../../ui/component-library';
+import { Popover } from '../../component-library';
 
 <Popover matchWidth={true}>Match width demo</Popover>;
 ```
@@ -161,7 +166,7 @@ Use the `role` prop with `PopoverRole` enum to set the role of the popover.
 Default: `PopoverRole.Tooltip`
 
 ```jsx
-import { Popover, PopoverRole } from '../../ui/component-library';
+import { Popover, PopoverRole } from '../../component-library';
 
 <Popover role={PopoverRole.Tooltip}>PopoverRole.Tooltip</Popover>;
 <Popover role={PopoverRole.Dialog}>PopoverRole.Dialog</Popover>;
@@ -174,7 +179,7 @@ Default is `[0, 8]`
 First number controls the skidding offset and the second number controls the distance offset.
 
 ```jsx
-import { Popover } from '../../ui/component-library';
+import { Popover } from '../../component-library';
 
 <Popover offset={[0, 32]}>offset override to [0,32]</Popover>;
 ```
@@ -184,7 +189,7 @@ import { Popover } from '../../ui/component-library';
 `onPressEscKey` is a callback function that is invoked when the 'Escape' key is pressed within the `Popover` component
 
 ```jsx
-import { Popover } from '../../ui/component-library';
+import { Popover } from '../../component-library';
 
 const [isOpen, setIsOpen] = useState(false);
 
@@ -197,12 +202,30 @@ const handleClick = () => {
 </Popover>;
 ```
 
+### onClickOutside
+
+`onClickOutside` is a callback function that is invoked when the user clicks outside of the `Popover` component
+
+```jsx
+import { Popover } from '../../component-library';
+
+const [isOpen, setIsOpen] = useState(false);
+
+const handleClick = () => {
+  setIsOpen(!isOpen);
+};
+
+<Popover onClickOutside={() => setIsOpen(false)}>
+  Press esc key to close
+</Popover>;
+```
+
 ### With PopoverHeader
 
 Using the `PopoverHeader` component to add a header to the `Popover` component. The `PopoverHeader` is used to show common elements such as title, back button, and close button.
 
 ```jsx
-import { Popover } from '../../ui/component-library';
+import { Popover } from '../../component-library';
 
 <Popover>
   <PopoverHeader
@@ -220,7 +243,7 @@ import { Popover } from '../../ui/component-library';
 Not built into the `Popover` component, but a demo of `onMouseEnter` and `onMouseLeave` events on the reference element to control the visibility of the popover
 
 ```jsx
-import { Popover } from '../../ui/component-library';
+import { Popover } from '../../component-library';
 
 const [isOpen, setIsOpen] = useState(false);
 
@@ -245,7 +268,7 @@ const handleMouseLeave = () => {
 Not built into the `Popover` component, but a demo of `onFocus` and `onBlur` events on the reference element to control the visibility of the popover
 
 ```jsx
-import { Popover } from '../../ui/component-library';
+import { Popover } from '../../component-library';
 
 const [isOpen, setIsOpen] = useState(false);
 

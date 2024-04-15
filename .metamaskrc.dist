@@ -5,10 +5,20 @@
 INFURA_PROJECT_ID=00000000000
 
 ;PASSWORD=METAMASK PASSWORD
-,SEGMENT_WRITE_KEY=
+;SEGMENT_WRITE_KEY=
 ;SWAPS_USE_DEV_APIS=
 ;PORTFOLIO_URL=
 ;TRANSACTION_SECURITY_PROVIDER=
 
 ; Set this to test changes to the phishing warning page.
 ;PHISHING_WARNING_PAGE_URL=
+BLOCKAID_FILE_CDN=
+BLOCKAID_PUBLIC_KEY=
+
+; Change this to override built-in intercepting https proxy for e2e tests
+; SELENIUM_HTTPS_PROXY='http://127.0.0.1:8000'
+; Set this to 1 to make e2e tests run browser in headless mode
+; SELENIUM_HEADLESS=
+; Set this to 1 to make chrome e2e tests disable DoH/DoT and use system DNS
+; SELENIUM_USE_SYSTEM_DNS=
+ENABLE_CONFIRMATION_REDESIGN=

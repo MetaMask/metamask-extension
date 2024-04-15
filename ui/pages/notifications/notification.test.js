@@ -19,26 +19,33 @@ describe('Notifications', () => {
         notifications: {
           test: {
             id: 'test',
-            origin: 'test',
+            origin: 'npm:@metamask/notifications-example-snap',
             createdDate: 1652967897732,
             readDate: null,
             message: 'foo',
           },
           test2: {
             id: 'test2',
-            origin: 'test',
+            origin: 'npm:@metamask/notifications-example-snap',
             createdDate: 1652967897732,
             readDate: null,
             message: 'bar',
           },
         },
+        subjectMetadata: {
+          'npm:@metamask/notifications-example-snap': {
+            name: 'Notifications Example Snap',
+            version: '1.2.3',
+            subjectType: 'snap',
+          },
+        },
         snaps: {
-          test: {
-            enabled: true,
-            id: 'test',
+          'npm:@metamask/notifications-example-snap': {
+            id: 'npm:@metamask/notifications-example-snap',
+            version: '1.2.3',
             manifest: {
-              proposedName: 'Notification Example Snap',
-              description: 'A notification example snap.',
+              proposedName: 'Notifications Example Snap',
+              description: 'A snap',
             },
           },
         },
@@ -66,35 +73,57 @@ describe('Notifications', () => {
 
     const { getByText, getByRole } = render(mockStore);
 
-    expect(getByText('Nothing to see here.')).toBeDefined();
+    expect(
+      getByText(
+        'This is where you can find notifications from your installed snaps.',
+      ),
+    ).toBeDefined();
     expect(getByRole('button', { name: 'Mark all as read' })).toBeDisabled();
   });
 });
 
 describe('NotificationItem', () => {
-  const render = (props) => renderWithProvider(<NotificationItem {...props} />);
+  const render = (params, props) => {
+    const store = configureStore({
+      ...params,
+    });
+
+    return renderWithProvider(<NotificationItem {...props} />, store);
+  };
+
   it('can render notification item', () => {
+    const mockStore = {
+      metamask: {
+        subjectMetadata: {
+          'npm:@metamask/notifications-example-snap': {
+            name: 'Notifications Example Snap',
+            version: '1.2.3',
+            subjectType: 'snap',
+          },
+        },
+        snaps: {
+          'npm:@metamask/notifications-example-snap': {
+            id: 'npm:@metamask/notifications-example-snap',
+            version: '1.2.3',
+            manifest: {
+              proposedName: 'Notifications Example Snap',
+              description: 'A snap',
+            },
+          },
+        },
+      },
+    };
     const props = {
       notification: {
         id: 'test',
-        origin: 'test',
+        origin: 'npm:@metamask/notifications-example-snap',
         createdDate: 1652967897732,
         readDate: null,
         message: 'Hello, http://localhost:8086!',
       },
-      snaps: [
-        {
-          id: 'test',
-          tabMessage: () => 'test snap name',
-          descriptionMessage: () => 'test description',
-          sectionMessage: () => 'test section Message',
-          route: '/test',
-          icon: 'test',
-        },
-      ],
       onItemClick: jest.fn(),
     };
-    const { getByText } = render(props);
+    const { getByText } = render(mockStore, props);
 
     expect(getByText(props.notification.message)).toBeDefined();
   });

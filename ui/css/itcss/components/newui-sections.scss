@@ -1,3 +1,5 @@
+@use "design-system";
+
 /*
   NewUI Container Elements
  */
@@ -30,7 +32,7 @@
 
 // Main container
 .main-container {
-  z-index: $main-container-z-index;
+  z-index: design-system.$main-container-z-index;
 }
 
 .main-container::-webkit-scrollbar {
@@ -47,7 +49,7 @@
 
 // main-container media queries
 
-@include screen-sm-min {
+@include design-system.screen-sm-min {
   .lap-visible {
     display: flex;
   }
@@ -58,13 +60,12 @@
 
   .main-container {
     width: 85vw;
-    margin-bottom: 10vh;
     min-height: 90vh;
     box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
   }
 }
 
-@include screen-md-min {
+@include design-system.screen-md-min {
   .main-container {
     width: 80vw;
     min-height: 82vh;
@@ -72,7 +73,7 @@
   }
 }
 
-@include screen-lg-min {
+@include design-system.screen-lg-min {
   .main-container {
     width: 62vw;
     min-height: 82vh;
@@ -80,7 +81,7 @@
   }
 }
 
-@include screen-sm-max {
+@include design-system.screen-sm-max {
   .lap-visible {
     display: none;
   }
@@ -114,25 +115,25 @@
   flex-direction: row-reverse;
   justify-content: space-between;
 
-  @include screen-sm-max {
+  @include design-system.screen-sm-max {
     height: 100%;
   }
 
-  @include screen-sm-min {
+  @include design-system.screen-sm-min {
     width: 85vw;
   }
 
-  @include screen-md-min {
+  @include design-system.screen-md-min {
     width: 80vw;
   }
 
-  @include screen-lg-min {
+  @include design-system.screen-lg-min {
     width: 62vw;
   }
 }
 
 .unlock-screen-container {
-  z-index: $main-container-z-index;
+  z-index: design-system.$main-container-z-index;
   display: flex;
   justify-content: center;
   align-items: center;

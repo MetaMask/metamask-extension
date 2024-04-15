@@ -3,9 +3,9 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   ONBOARDING_EXPERIMENTAL_AREA,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   ONBOARDING_CREATE_PASSWORD_ROUTE,
   ONBOARDING_REVIEW_SRP_ROUTE,
   ONBOARDING_CONFIRM_SRP_ROUTE,
@@ -19,7 +19,7 @@ import {
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_METAMETRICS,
 } from '../../helpers/constants/routes';
-import { NETWORK_TYPES } from '../../../shared/constants/network';
+import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
 import {
   createNewVaultAndGetSeedPhrase,
   unlockAndGetSeedPhrase,
@@ -30,16 +30,25 @@ jest.mock('../../store/actions', () => ({
   createNewVaultAndGetSeedPhrase: jest.fn().mockResolvedValue(null),
   unlockAndGetSeedPhrase: jest.fn().mockResolvedValue(null),
   createNewVaultAndRestore: jest.fn(),
-  verifySeedPhrase: jest.fn(),
 }));
 
 describe('Onboarding Flow', () => {
   const mockState = {
     metamask: {
       identities: {},
+      internalAccounts: {
+        accounts: {},
+        selectedAccount: '',
+      },
       providerConfig: {
         type: NETWORK_TYPES.GOERLI,
         chainId: '0x0',
+      },
+      incomingTransactionsPreferences: {
+        [CHAIN_IDS.MAINNET]: true,
+      },
+      preferences: {
+        petnamesEnabled: true,
       },
     },
     localeMessages: {

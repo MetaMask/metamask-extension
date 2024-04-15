@@ -1,4 +1,4 @@
-
+@use "design-system";
 
 * {
   box-sizing: border-box;
@@ -17,15 +17,29 @@ body {
 
 html {
   min-height: 500px;
-}
 
-.mouse-user-styles {
-  button:focus,
-  input:focus,
-  textarea:focus,
-  .unit-input__input,
-  .currency-display__input {
-    outline: none;
+  @include design-system.screen-sm-max {
+    &:not([data-theme]) {
+      background-color: var(--color-background-default);
+    }
+  }
+
+  /*
+    Until we get the user's preference from React state,
+    assume the user is in dark mode, because the default
+    theme is system preference
+  */
+  @media (prefers-color-scheme: dark) {
+    &:not([data-theme]) {
+      color: var(--brand-colors-white-white000);
+      background-color: var(--brand-colors-grey-grey900);
+    }
+
+    @include design-system.screen-sm-max {
+      &:not([data-theme]) {
+        background-color: var(--brand-colors-grey-grey800);
+      }
+    }
   }
 }
 
@@ -47,10 +61,15 @@ html {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: var(--color-background-alternative);
 
-  @include screen-sm-max {
-    background-color: var(--color-background-default);
+  html[data-theme] & {
+    background: var(--color-background-alternative);
+  }
+
+  @include design-system.screen-sm-max {
+    html[data-theme] & {
+      background-color: var(--color-background-default);
+    }
   }
 }
 /* stylelint-enable */
@@ -62,19 +81,6 @@ a {
 
 a:hover {
   color: var(--color-primary-alternative);
-}
-
-input.large-input,
-textarea.large-input {
-  padding: 8px;
-}
-
-input.large-input {
-  height: 36px;
-}
-
-.allcaps {
-  text-transform: uppercase;
 }
 
 .input-label {
@@ -120,5 +126,5 @@ input.form-control {
 
 /** Default Typography on base elements **/
 * {
-  font-family: $font-family;
+  font-family: design-system.$font-family;
 }

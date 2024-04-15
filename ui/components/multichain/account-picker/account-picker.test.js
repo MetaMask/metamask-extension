@@ -37,12 +37,18 @@ describe('AccountPicker', () => {
 
   it('displays a blockie per the setting', () => {
     const { container } = render({}, { useBlockie: true });
-    expect(container.querySelector('canvas')).toBeDefined();
-    expect(container.querySelector('img')).toBeDefined();
+    const img = container.querySelector('img');
+    expect(img).toBeDefined();
+    expect(img.src.startsWith('data:image/svg+xml')).toBe(true);
   });
 
   it('displays a jazzicon per the setting', () => {
     const { container } = render({}, { useBlockie: false });
     expect(container.querySelector('svg')).toBeDefined();
+  });
+
+  it('should allow for an additional class name via className prop', () => {
+    const { container } = render({ className: 'test-class' });
+    expect(container.querySelector('.test-class')).toBeInTheDocument();
   });
 });

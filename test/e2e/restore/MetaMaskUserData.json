@@ -16,9 +16,7 @@
     "advancedGasFee": null,
     "currentLocale": "en",
     "dismissSeedBackUpReminder": true,
-    "featureFlags": {
-      "showIncomingTransactions": true
-    },
+    "featureFlags": {},
     "forgottenPassword": false,
     "frequentRpcListDetail": [
       {
@@ -29,19 +27,21 @@
         "ticker": "ETH"
       }
     ],
-    "infuraBlocked": false,
     "ipfsGateway": "dweb.link",
     "knownMethodData": {},
     "ledgerTransportType": "webhid",
     "openSeaEnabled": false,
     "preferences": {
       "hideZeroBalanceTokens": false,
+      "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": false,
+      "smartTransactionsOptInStatus": false,
       "useNativeCurrencyAsPrimaryCurrency": true
     },
     "theme": "light",
     "useBlockie": false,
+    "useRequestQueue": false,
     "useNftDetection": false,
     "useNonceField": false,
     "usePhishDetect": true,

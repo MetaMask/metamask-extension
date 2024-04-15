@@ -16,6 +16,7 @@ export default class ExtensionStore {
     // once data persistence fails once and it flips true we don't send further
     // data persistence errors to sentry
     this.dataPersistenceFailing = false;
+    this.mostRecentRetrievedState = null;
   }
 
   setMetadata(initMetaData) {
@@ -66,8 +67,10 @@ export default class ExtensionStore {
     // extension.storage.local always returns an obj
     // if the object is empty, treat it as undefined
     if (isEmpty(result)) {
+      this.mostRecentRetrievedState = null;
       return undefined;
     }
+    this.mostRecentRetrievedState = result;
     return result;
   }
 

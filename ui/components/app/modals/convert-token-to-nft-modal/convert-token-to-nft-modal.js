@@ -36,7 +36,9 @@ const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
             pathname: `${ASSET_ROUTE}/${tokenAddress}/${tokenId}`,
           });
         } else {
-          dispatch(showImportNftsModal());
+          dispatch(
+            showImportNftsModal({ tokenAddress, ignoreErc20Token: true }),
+          );
         }
         hideModal();
       }}

@@ -9,9 +9,15 @@
 
 *                                    @MetaMask/extension-devs
 **/snaps/**                          @MetaMask/snaps-devs
-**/flask/**                          @MetaMask/snaps-devs
 development/                         @MetaMask/extension-devs @kumavis
 lavamoat/                            @MetaMask/extension-devs @MetaMask/supply-chain @MetaMask/snaps-devs
+
+# The offscreen.ts script file that is included in the offscreedocument html
+# file is responsible, at present, for loading the snaps execution environment
+# for MV3. Any changes to this file should require at least one member of the
+# snaps development team to review and approve the changes.
+offscreen/scripts/offscreen.ts       @MetaMask/snaps-devs
+
 
 # The .circleci/ folder instructs Circle CI on the process by which it
 # should test, build and publish releases of our application. Due to the
@@ -24,9 +30,27 @@ lavamoat/                            @MetaMask/extension-devs @MetaMask/supply-c
 # should be brought to the attention of engineering leadership for
 # discussion
 .circleci/                           @MetaMask/library-admins @kumavis @brad-decker
+
+# The privacy-snapshot.json file includes a list of all hosts that the
+# extension communicates with during the E2E test suite runs. It is not a
+# complete list of all hosts that the extension communicates with until the E2E
+# test suite has full coverage. Anytime the privacy-snapshot file changes,
+# extra scrutiny should be applied to the pull request to confirm that it does
+# not broaden the number of hosts the extension communicates with without also
+# providing a path for users to avoid that communication. MetaMask strives to
+# make all such communication opt IN versus opt OUT.
+privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
+
 # The CODEOWNERS file constitutes an agreement amongst organization
 # admins and maintainers to restrict approval capabilities to a subset
 # of contributors. Modifications to this file result in a modification of
 # that agreement and can only be approved by those with the knowledge
 # and responsibility to publish libraries under the MetaMask name.
 .github/CODEOWNERS                   @MetaMask/library-admins @kumavis
+
+# For now, restricting approvals inside the .devcontainer folder to devs
+# who were involved with the Codespaces project.
+.devcontainer/                       @MetaMask/library-admins @HowardBraham @plasmacorral @brad-decker
+
+# Confirmations UX team to own code for confirmations on UI.
+ui/pages/confirmations               @MetaMask/confirmations-ux @MetaMask/confirmations-system-team

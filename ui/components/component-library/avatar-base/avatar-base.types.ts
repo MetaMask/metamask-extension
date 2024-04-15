@@ -14,6 +14,8 @@ export enum AvatarBaseSize {
   Xl = 'xl',
 }
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface AvatarBaseStyleUtilityProps extends TextStyleUtilityProps {
   /**
    * The size of the AvatarBase.
@@ -25,7 +27,7 @@ export interface AvatarBaseStyleUtilityProps extends TextStyleUtilityProps {
   /**
    * The children to be rendered inside the AvatarBase
    */
-  children: React.ReactNode;
+  children?: React.ReactNode;
   /**
    * The background color of the AvatarBase
    * Defaults to Color.backgroundAlternative

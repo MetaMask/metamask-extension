@@ -2,8 +2,7 @@ import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TextField from '../../ui/text-field';
-import CheckBox from '../../ui/check-box';
-import { BUTTON_VARIANT, Button, Text } from '../../component-library';
+import { ButtonVariant, Button, Checkbox } from '../../component-library';
 import SrpInput from '../srp-input';
 import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
 
@@ -126,24 +125,19 @@ export default function CreateNewVault({
       </div>
       {includeTerms ? (
         <div className="create-new-vault__terms">
-          <CheckBox
-            id="create-new-vault__terms-checkbox"
-            dataTestId="create-new-vault__terms-checkbox"
-            checked={termsChecked}
-            onClick={toggleTermsCheck}
+          <Checkbox
+            id="create-new-vault-terms-checkbox"
+            data-testid="create-new-vault-terms-checkbox"
+            isChecked={termsChecked}
+            onChange={toggleTermsCheck}
+            label={termsOfUse}
           />
-          <label
-            className="create-new-vault__terms-label"
-            htmlFor="create-new-vault__terms-checkbox"
-          >
-            <Text as="span">{termsOfUse}</Text>
-          </label>
         </div>
       ) : null}
       <Button
         data-testid="create-new-vault-submit-button"
         className="create-new-vault__submit-button"
-        variant={BUTTON_VARIANT.PRIMARY}
+        variant={ButtonVariant.Primary}
         disabled={!isValid}
         type="submit"
       >

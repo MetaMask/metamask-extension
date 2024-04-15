@@ -1,0 +1,92 @@
+@use 'sass:meta';
+
+// the build process *might* inject a function, `fontPath`, that returns the
+// path to where the font awesome font files will be once the app is built.
+// the webpack version doesn't need an explicit font path.
+$fa-font-path: if(meta.function-exists('-mm-fa-path'), -mm-fa-path(), null);
+// our own fonts are relative to this file AND the built css file, so we don't
+// need to get fancy with our own fonts like we do with font awesome's
+$font-path: './fonts';
+
+@forward '@fortawesome/fontawesome-free/scss/fontawesome' with (
+  $fa-font-path: $fa-font-path
+);
+@forward '@fortawesome/fontawesome-free/scss/brands' as fabrand-* with (
+  $fa-font-path: $fa-font-path
+);
+@forward '@fortawesome/fontawesome-free/scss/solid' as fasolid-* with (
+  $fa-font-path: $fa-font-path
+);
+@forward '@fortawesome/fontawesome-free/scss/regular' as faregular-* with (
+  $fa-font-path: $fa-font-path
+);
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 100;
+  src: local('Roboto Thin'), local('Roboto-Thin'), url('#{$font-path}/Roboto/Roboto-Thin.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Roboto Light'), local('Roboto-Light'), url('#{$font-path}/Roboto/Roboto-Light.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Roboto'), local('Roboto-Regular'), url('#{$font-path}/Roboto/Roboto-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  src: local('Roboto Medium'), local('Roboto-Medium'), url('#{$font-path}/Roboto/Roboto-Medium.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Roboto Bold'), local('Roboto-Bold'), url('#{$font-path}/Roboto/Roboto-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 900;
+  src: local('Roboto Black'), local('Roboto-Black'), url('#{$font-path}/Roboto/Roboto-Black.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Euclid Circular B';
+  font-style: normal;
+  font-weight: 400;
+  src: url('#{$font-path}/Euclid/EuclidCircularB-Regular-WebXL.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Euclid Circular B';
+  font-style: italic;
+  font-weight: 400;
+  src: url('#{$font-path}/Euclid/EuclidCircularB-RegularItalic-WebXL.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Euclid Circular B';
+  font-style: normal;
+  font-weight: 500;
+  src: url('#{$font-path}/Euclid/EuclidCircularB-Medium.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Euclid Circular B';
+  font-style: normal;
+  font-weight: 700;
+  src: url('#{$font-path}/Euclid/EuclidCircularB-Bold-WebXL.ttf') format('truetype');
+}

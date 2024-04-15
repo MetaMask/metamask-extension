@@ -17,8 +17,6 @@ export function setupMultiplex(connectionStream) {
    * https://github.com/MetaMask/object-multiplex/blob/280385401de84f57ef57054d92cfeb8361ef2680/src/ObjectMultiplex.ts#L63
    */
   mux.ignoreStream(EXTENSION_MESSAGES.CONNECTION_READY);
-  mux.ignoreStream('ACK_KEEP_ALIVE_MESSAGE');
-  mux.ignoreStream('WORKER_KEEP_ALIVE_MESSAGE');
   pump(connectionStream, mux, connectionStream, (err) => {
     if (err) {
       console.error(err);

@@ -75,7 +75,7 @@ const IconItem = ({ Component }) => {
       backgroundColor={BackgroundColor.backgroundDefault}
     >
       <Box marginBottom={2}>{Component}</Box>
-      <code>{`${Component.type.__docgenInfo.displayName}`}</code>
+      <code>{`${Component.type.name}`}</code>
     </Card>
   );
 };

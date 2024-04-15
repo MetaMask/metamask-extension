@@ -1,0 +1,16 @@
+Steps,Test Steps,Test Data,Expected Result,Notes
+1,Open the extension.,,The Welcome Back screen is shown.,
+2,Proceed to Unlock the wallet.,password (8 characters min).,"The Ether balance is shown on the overview.
+The wallet address is shown on the overview.
+The selected network is Ethereum Mainnet.",
+3,Switch networks to a test network.,e.g. Sepolia.,"The Sepolia balance is shown on the overview.
+The wallet address is shown on the overview.
+The selected network is Sepolia.",
+4,Open the test dapp in another tab.,https://metamask.github.io/test-dapp/,,
+5,Proceed to Connect with MetaMask.,,,
+6,Connect with the current account.,,,
+7,"On testdapp, click ""Get encryption key"".",,Request encryption public key notification screen is shown.,
+8,Proceed to confirm get encryption key in notification window.,,The encryption key is displayed on testdapp page.,
+9,"On testdapp, in encrypt/decrypt section, enter a message in input field and click ""Encrypt"".",e.g. Hello,The encrypted message is displayed in ciphertext format.,Make a copy of the encrypted message.
+10,"On testdapp, paste the copied message in previous step in the input field, then click ""Decrypt"". ",,Decrypt request notification screen is shown.,
+11,Proceed to confirm decrypt message in notification.,e.g. Hello,"The decrypted message is displayed, and the value is the same as the previously entered one.",

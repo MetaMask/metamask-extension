@@ -1,51 +1,64 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import Typography from '../../../ui/typography/typography';
-import { TypographyVariant } from '../../../../helpers/constants/design-system';
-import Box from '../../../ui/box/box';
-import Popover from '../../../ui/popover';
-import Button from '../../../ui/button';
+import {
+  Text,
+  Box,
+  Button,
+  Modal,
+  ModalOverlay,
+  BUTTON_VARIANT,
+  BUTTON_SIZES,
+} from '../../../component-library';
+import { ModalContent } from '../../../component-library/modal-content/deprecated';
+import { ModalHeader } from '../../../component-library/modal-header/deprecated';
 
-export default function SnapRemoveWarning({ onCancel, onSubmit, snapName }) {
+import {
+  BlockSize,
+  Display,
+  FlexDirection,
+} from '../../../../helpers/constants/design-system';
+
+export default function SnapRemoveWarning({
+  isOpen,
+  onCancel,
+  onSubmit,
+  snapName,
+}) {
   const t = useI18nContext();
-
-  const SnapRemoveWarningFooter = () => {
-    return (
-      <>
-        <Button
-          className="snap-remove-warning__footer-button"
-          type="default"
-          onClick={onCancel}
-        >
-          {t('nevermind')}
-        </Button>
-        <Button
-          id="popoverRemoveSnapButton"
-          className="snap-remove-warning__footer-button"
-          type="danger-primary"
-          onClick={onSubmit}
-        >
-          {t('removeSnap')}
-        </Button>
-      </>
-    );
-  };
-
   return (
-    <Popover
-      className="snap-remove-warning"
-      title={t('pleaseConfirm')}
-      footer={<SnapRemoveWarningFooter />}
-      onClose={onCancel}
-      headerProps={{ padding: [6, 4, 0, 6] }}
-    >
-      <Box paddingRight={4} paddingBottom={4} paddingLeft={6}>
-        <Typography variant={TypographyVariant.H4}>
-          {t('removeSnapConfirmation', [snapName])}
-        </Typography>
-      </Box>
-    </Popover>
+    <Modal isOpen={isOpen} onClose={onCancel}>
+      <ModalOverlay />
+      <ModalContent
+        modalDialogProps={{
+          display: Display.Flex,
+          flexDirection: FlexDirection.Column,
+          gap: 4,
+        }}
+      >
+        <ModalHeader onClose={onCancel}>{t('pleaseConfirm')}</ModalHeader>
+        <Text>{t('removeSnapConfirmation', [snapName])}</Text>
+        <Box width={BlockSize.Full} display={Display.Flex} gap={4}>
+          <Button
+            block
+            variant={BUTTON_VARIANT.SECONDARY}
+            size={BUTTON_SIZES.LG}
+            onClick={onCancel}
+          >
+            {t('cancel')}
+          </Button>
+          <Button
+            block
+            size={BUTTON_SIZES.LG}
+            id="popoverRemoveSnapButton"
+            danger
+            onClick={onSubmit}
+          >
+            {t('removeSnap')}
+          </Button>
+        </Box>
+      </ModalContent>
+    </Modal>
   );
 }
 
@@ -62,4 +75,8 @@ SnapRemoveWarning.propTypes = {
    * Name of snap
    */
   snapName: PropTypes.string,
+  /**
+   * Whether the modal is open
+   */
+  isOpen: PropTypes.bool,
 };

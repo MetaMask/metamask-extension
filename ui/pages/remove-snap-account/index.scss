@@ -1,0 +1,37 @@
+@use "design-system";
+
+.remove-snap-account-page {
+  $width-screen-sm-min: 85vw;
+  $width-screen-md-min: 80vw;
+  $width-screen-lg-min: 62vw;
+
+  @include design-system.screen-sm-min {
+    width: $width-screen-sm-min;
+  }
+
+  @include design-system.screen-md-min {
+    width: $width-screen-md-min;
+  }
+
+  @include design-system.screen-lg-min {
+    width: $width-screen-lg-min;
+  }
+}
+
+.snap-account-card {
+  .multichain-account-list-item {
+    pointer-events: none;
+  }
+}
+
+.snap-account-card-remove {
+  .multichain-account-list-item {
+    background-color: var(--color-transparent);
+    pointer-events: none;
+
+    &__selected-indicator {
+      background-color: var(--color-error-default);
+    }
+  }
+}
+

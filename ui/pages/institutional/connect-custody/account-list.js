@@ -23,8 +23,8 @@ import {
   IconName,
   IconSize,
   ButtonLink,
-  BUTTON_VARIANT,
-  BUTTON_SIZES,
+  ButtonSize,
+  ButtonVariant,
   Text,
 } from '../../../components/component-library';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
@@ -42,6 +42,7 @@ export default function CustodyAccountList({
   onCancel,
   onAddAccounts,
   custody,
+  children,
 }) {
   const t = useI18nContext();
   const [copied, handleCopy] = useCopyToClipboard();
@@ -52,6 +53,7 @@ export default function CustodyAccountList({
   return (
     <Box className="page-container">
       <Box padding={4} className="page-container__content">
+        {children}
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
@@ -59,118 +61,123 @@ export default function CustodyAccountList({
           className="custody-account-list"
           data-testid="custody-account-list"
         >
-          {accounts.map((account, idx) => (
-            <Box
-              display={Display.Flex}
-              className="custody-account-list__item"
-              key={account.address}
-            >
+          {accounts
+            .sort((a, b) =>
+              a.name
+                .toLocaleLowerCase()
+                .localeCompare(b.name.toLocaleLowerCase()),
+            )
+            .map((account, idx) => (
               <Box
                 display={Display.Flex}
-                alignItems={AlignItems.flexStart}
-                data-testid="custody-account-list-item-radio-button"
+                className="custody-account-list__item"
+                key={account.address}
               >
-                {!rawList && (
-                  <input
-                    type="checkbox"
-                    name="selectedAccount"
-                    id={`address-${idx}`}
-                    onChange={() =>
-                      onAccountChange({
-                        name: account.name,
-                        address: account.address,
-                        custodianDetails: account.custodianDetails,
-                        labels: account.labels,
-                        chainId: account.chainId,
-                      })
-                    }
-                    checked={selectedAccounts[account.address] || false}
-                  />
-                )}
-              </Box>
-              <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                marginLeft={2}
-                width={BlockSize.Full}
-              >
-                <Label
-                  display={Display.Flex}
-                  marginTop={2}
-                  marginLeft={2}
-                  htmlFor={`address-${idx}`}
-                  className="custody-account-list__item__title"
-                >
-                  <Text
-                    as="span"
-                    variant={TextVariant.inherit}
-                    size={TextVariant.bodySm}
-                    paddingRight={1}
-                    className="custody-account-list__item__name"
-                  >
-                    {account.name}
-                  </Text>
-                </Label>
-                <Label
-                  display={Display.Flex}
-                  size={TextVariant.bodySm}
-                  marginTop={2}
-                  marginLeft={2}
-                  marginRight={3}
-                  htmlFor={`address-${idx}`}
-                >
-                  <Text
-                    as="span"
-                    variant={TextVariant.bodyMd}
-                    display={Display.Flex}
-                    className="custody-account-list__item"
-                  >
-                    <ButtonLink
-                      href={getButtonLinkHref(account)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {shortenAddress(account.address)}
-                      <Icon
-                        name={IconSize.EXPORT}
-                        size={IconName.SM}
-                        color={IconColor.primaryDefault}
-                        marginLeft={1}
-                      />
-                    </ButtonLink>
-                    <Tooltip
-                      position="bottom"
-                      title={tooltipText}
-                      style={{ backgroundColor: 'transparent' }}
-                    >
-                      <button
-                        className="custody-account-list__item__clipboard"
-                        onClick={() => handleCopy(account.address)}
-                      >
-                        <Icon
-                          name={IconSize.COPY}
-                          size={IconName.XS}
-                          color={IconColor.iconMuted}
-                        />
-                      </button>
-                    </Tooltip>
-                  </Text>
-                </Label>
                 <Box
                   display={Display.Flex}
-                  justifyContent={JustifyContent.spaceBetween}
+                  alignItems={AlignItems.flexStart}
+                  data-testid="custody-account-list-item-radio-button"
                 >
-                  {account.labels && (
-                    <CustodyLabels
-                      labels={account.labels}
-                      index={idx.toString()}
-                      hideNetwork
+                  {!rawList && (
+                    <input
+                      type="checkbox"
+                      name="selectedAccount"
+                      id={`address-${idx}`}
+                      onChange={() =>
+                        onAccountChange({
+                          name: account.name,
+                          address: account.address,
+                          custodianDetails: account.custodianDetails,
+                          labels: account.labels,
+                          chainId: account.chainId,
+                        })
+                      }
+                      checked={selectedAccounts[account.address] || false}
                     />
                   )}
                 </Box>
+                <Box
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Column}
+                  marginLeft={2}
+                  width={BlockSize.Full}
+                >
+                  <Label
+                    display={Display.Flex}
+                    marginTop={2}
+                    htmlFor={`address-${idx}`}
+                    className="custody-account-list__item__title"
+                  >
+                    <Text
+                      as="span"
+                      variant={TextVariant.inherit}
+                      size={TextVariant.bodySm}
+                      paddingRight={1}
+                      className="custody-account-list__item__name"
+                    >
+                      {account.name}
+                    </Text>
+                  </Label>
+                  <Label
+                    display={Display.Flex}
+                    size={TextVariant.bodySm}
+                    marginTop={2}
+                    marginLeft={2}
+                    marginRight={3}
+                    htmlFor={`address-${idx}`}
+                  >
+                    <Text
+                      as="span"
+                      variant={TextVariant.bodyMd}
+                      display={Display.Flex}
+                      className="custody-account-list__item"
+                    >
+                      <ButtonLink
+                        href={getButtonLinkHref(account)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {shortenAddress(account.address)}
+                        <Icon
+                          name={IconSize.EXPORT}
+                          size={IconName.SM}
+                          color={IconColor.primaryDefault}
+                          marginLeft={1}
+                        />
+                      </ButtonLink>
+                      <Tooltip
+                        position="bottom"
+                        title={tooltipText}
+                        style={{ backgroundColor: 'transparent' }}
+                      >
+                        <button
+                          className="custody-account-list__item__clipboard"
+                          onClick={() => handleCopy(account.address)}
+                        >
+                          <Icon
+                            name={IconSize.COPY}
+                            size={IconName.XS}
+                            color={IconColor.iconMuted}
+                          />
+                        </button>
+                      </Tooltip>
+                    </Text>
+                  </Label>
+                  <Box
+                    display={Display.Flex}
+                    justifyContent={JustifyContent.spaceBetween}
+                  >
+                    {account.labels && (
+                      <CustodyLabels
+                        labels={account.labels}
+                        index={idx.toString()}
+                        hideNetwork
+                      />
+                    )}
+                  </Box>
+                </Box>
               </Box>
-            </Box>
-          ))}
+            ))}
         </Box>
       </Box>
       {!rawList && (
@@ -179,8 +186,8 @@ export default function CustodyAccountList({
             <Button
               data-testid="custody-account-cancel-button"
               block
-              variant={BUTTON_VARIANT.SECONDARY}
-              size={BUTTON_SIZES.LG}
+              variant={ButtonVariant.Secondary}
+              size={ButtonSize.Lg}
               className="custody-account-list__button"
               onClick={onCancel}
             >
@@ -189,8 +196,8 @@ export default function CustodyAccountList({
             <Button
               data-testid="custody-account-connect-button"
               block
-              variant={BUTTON_VARIANT.PRIMARY}
-              size={BUTTON_SIZES.LG}
+              variant={ButtonVariant.Primary}
+              size={ButtonSize.Lg}
               className="custody-account-list__button"
               disabled={disabled}
               onClick={() => onAddAccounts(custody)}
@@ -212,4 +219,5 @@ CustodyAccountList.propTypes = {
   onAddAccounts: PropTypes.func,
   onCancel: PropTypes.func,
   rawList: PropTypes.bool,
+  children: PropTypes.node,
 };

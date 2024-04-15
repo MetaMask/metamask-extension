@@ -7,7 +7,7 @@ import {
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
 } from '../../../helpers/constants/routes';
-import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import CreatePassword from './create-password';
 
 const mockHistoryPush = jest.fn();
@@ -26,6 +26,11 @@ describe('Onboarding Create Password', () => {
     metamask: {
       identities: {},
       selectedAddress: '',
+      internalAccounts: {
+        accounts: {},
+        selectedAccount: '',
+      },
+      metaMetricsId: '0x00000000',
     },
   };
 
@@ -50,7 +55,7 @@ describe('Onboarding Create Password', () => {
         ...initializedMockState,
         metamask: {
           ...initializedMockState.metamask,
-          firstTimeFlowType: 'import',
+          firstTimeFlowType: FirstTimeFlowType.import,
         },
       };
       const mockStore = configureMockStore()(importFirstTimeFlowState);
@@ -333,7 +338,7 @@ describe('Onboarding Create Password', () => {
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        firstTimeFlowType: FIRST_TIME_FLOW_TYPES.IMPORT,
+        firstTimeFlowType: FirstTimeFlowType.import,
       },
     };
 
@@ -390,6 +395,40 @@ describe('Onboarding Create Password', () => {
           ONBOARDING_COMPLETION_ROUTE,
         );
       });
+    });
+  });
+
+  describe('Analytics IFrame', () => {
+    it('should inject iframe when participating in metametrics', () => {
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          participateInMetaMetrics: true,
+        },
+      };
+      const mockStore = configureMockStore()(state);
+      const { queryByTestId } = renderWithProvider(
+        <CreatePassword />,
+        mockStore,
+      );
+      expect(queryByTestId('create-password-iframe')).toBeInTheDocument();
+    });
+
+    it('should not inject iframe when participating in metametrics', () => {
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          participateInMetaMetrics: false,
+        },
+      };
+      const mockStore = configureMockStore()(state);
+      const { queryByTestId } = renderWithProvider(
+        <CreatePassword />,
+        mockStore,
+      );
+      expect(queryByTestId('create-password-iframe')).not.toBeInTheDocument();
     });
   });
 });

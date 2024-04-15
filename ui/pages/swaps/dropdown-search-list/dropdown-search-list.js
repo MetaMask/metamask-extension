@@ -26,13 +26,13 @@ import {
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
 } from '../../../selectors/selectors';
-import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
-import { getURLHostName } from '../../../helpers/utils/util';
 import {
   getSmartTransactionsOptInStatus,
   getSmartTransactionsEnabled,
-  getCurrentSmartTransactionsEnabled,
-} from '../../../ducks/swaps/swaps';
+} from '../../../../shared/modules/selectors';
+import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
+import { getURLHostName } from '../../../helpers/utils/util';
+import { getCurrentSmartTransactionsEnabled } from '../../../ducks/swaps/swaps';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 
@@ -179,7 +179,7 @@ export default function DropdownSearchList({
       tabIndex="0"
     >
       {tokenForImport && isImportTokenModalOpen && (
-        <ImportToken {...importTokenProps} />
+        <ImportToken isOpen {...importTokenProps} />
       )}
       {!isOpen && (
         <div

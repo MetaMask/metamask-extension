@@ -55,6 +55,7 @@ export const PermissionCellOptions = ({
         iconName={IconName.MoreVertical}
         ariaLabel={t('options')}
         onClick={handleOpen}
+        data-testid={permissionName}
       />
       {showOptions && (
         <Menu anchorElement={ref.current} onHide={handleClose}>

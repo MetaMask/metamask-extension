@@ -96,6 +96,31 @@ const tests = [
       displayValue: '0.000000001',
     },
   },
+  {
+    input: {
+      value: '0x105cb88',
+      currency: 'ETH',
+      numberOfDecimals: 100,
+    },
+    result: {
+      value: '<0.000001',
+      suffix: 'ETH',
+      displayValue: '<0.000001 ETH',
+    },
+  },
+  {
+    input: {
+      value: '0x105cb88',
+      currency: 'ETH',
+      numberOfDecimals: 100,
+      hideLabel: true,
+    },
+    result: {
+      value: '<0.000001',
+      suffix: undefined,
+      displayValue: '<0.000001',
+    },
+  },
 ];
 
 describe('useCurrencyDisplay', () => {

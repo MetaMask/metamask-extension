@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import copyToClipboard from 'copy-to-clipboard';
 import { MINUTE } from '../../shared/constants/time';
+import { COPY_OPTIONS } from '../../shared/constants/copy';
 import { useTimeout } from './useTimeout';
 
 /**
@@ -15,7 +16,7 @@ export function useCopyToClipboard(delay = DEFAULT_DELAY) {
   const [copied, setCopied] = useState(false);
   const startTimeout = useTimeout(
     () => {
-      copyToClipboard(' ');
+      copyToClipboard(' ', COPY_OPTIONS);
       setCopied(false);
     },
     delay,
@@ -26,7 +27,7 @@ export function useCopyToClipboard(delay = DEFAULT_DELAY) {
     (text) => {
       setCopied(true);
       startTimeout();
-      copyToClipboard(text);
+      copyToClipboard(text, COPY_OPTIONS);
     },
     [startTimeout],
   );

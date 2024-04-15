@@ -51,42 +51,40 @@ class HideTokenConfirmationModal extends Component {
     const { symbol, address, image } = token;
 
     return (
-      <div className="hide-token-confirmation">
-        <div className="hide-token-confirmation__container">
-          <div className="hide-token-confirmation__title">
-            {this.context.t('hideTokenPrompt')}
-          </div>
-          <Identicon
-            className="hide-token-confirmation__identicon"
-            diameter={45}
-            address={address}
-            image={image}
-          />
-          <div className="hide-token-confirmation__symbol">{symbol}</div>
-          <div className="hide-token-confirmation__copy">
-            {this.context.t('readdToken')}
-          </div>
-          <div className="hide-token-confirmation__buttons">
-            <Button
-              type="secondary"
-              className="hide-token-confirmation__button"
-              data-testid="hide-token-confirmation__cancel"
-              onClick={() => hideModal()}
-            >
-              {this.context.t('cancel')}
-            </Button>
-            <Button
-              type="primary"
-              className="hide-token-confirmation__button"
-              data-testid="hide-token-confirmation__hide"
-              onClick={() => {
-                hideToken(address);
-                history.push(DEFAULT_ROUTE);
-              }}
-            >
-              {this.context.t('hide')}
-            </Button>
-          </div>
+      <div className="hide-token-confirmation__container">
+        <div className="hide-token-confirmation__title">
+          {this.context.t('hideTokenPrompt')}
+        </div>
+        <Identicon
+          className="hide-token-confirmation__identicon"
+          diameter={45}
+          address={address}
+          image={image}
+        />
+        <div className="hide-token-confirmation__symbol">{symbol}</div>
+        <div className="hide-token-confirmation__copy">
+          {this.context.t('readdToken')}
+        </div>
+        <div className="hide-token-confirmation__buttons">
+          <Button
+            type="secondary"
+            className="hide-token-confirmation__button"
+            data-testid="hide-token-confirmation__cancel"
+            onClick={() => hideModal()}
+          >
+            {this.context.t('cancel')}
+          </Button>
+          <Button
+            type="primary"
+            className="hide-token-confirmation__button"
+            data-testid="hide-token-confirmation__hide"
+            onClick={() => {
+              hideToken(address);
+              history.push(DEFAULT_ROUTE);
+            }}
+          >
+            {this.context.t('hide')}
+          </Button>
         </div>
       </div>
     );

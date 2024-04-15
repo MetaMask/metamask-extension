@@ -1,0 +1,13 @@
+Step,Test Steps,Test Data,Expected Result,Notes
+1,Open the extension.,,The Welcome Back screen is shown,
+2,Proceed to Unlock the wallet.,password (8 characters min),,
+3,Click on the right corner setting(three dots) and click on the Settings from menu.,,Settings page appears,
+4,Click on the Advanced tab.,,Advanced settings page appears,
+5,Validate that the 'Show hex data' is default to off.,,The toggle is off by default,
+6,Toggle the Hex Data switch.,,The switch is turned on as expected,
+7,Click on the MetaMask logo,,Home page appears,
+7,Navigate to the Send transaction in the home menu.,,Send transaction appears,
+8,"Enter an address ",0x56F2e03c8D30649818c022a9759CF43B240D08B3,Address is entered and the Hex Data text box is shown as expected,
+9,"Enter the amount and hex data ",amount 0.1 and hex data '0xabc',Amount and hex data are entered as expected,
+10,Click on the next page button.,,The next page is shown,
+11," Validate that the hex data is shown in the tab.",,The hex data  is shown as expected,

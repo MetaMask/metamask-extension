@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/browser';
 import { Dedupe, ExtraErrorData } from '@sentry/integrations';
 
+import { AllProperties } from '../../../shared/modules/object.utils';
 import { FilterEvents } from './sentry-filter-events';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 
@@ -23,57 +24,437 @@ export const ERROR_URL_ALLOWLIST = {
   SEGMENT: 'segment.io',
 };
 
-// This describes the subset of Redux state attached to errors sent to Sentry
-// These properties have some potential to be useful for debugging, and they do
-// not contain any identifiable information.
-export const SENTRY_STATE = {
-  gas: true,
-  history: true,
-  metamask: {
-    alertEnabledness: true,
-    completedOnboarding: true,
-    connectedStatusPopoverHasBeenShown: true,
-    conversionDate: true,
-    conversionRate: true,
+export const MMI_SENTRY_BACKGROUND_STATE = {
+  MMIController: {
+    opts: true,
+  },
+  CustodyController: {
+    store: true,
+  },
+  MmiConfigurationController: {
+    store: true,
+    configurationClient: true,
+  },
+};
+
+// This describes the subset of background controller state attached to errors
+// sent to Sentry These properties have some potential to be useful for
+// debugging, and they do not contain any identifiable information.
+export const SENTRY_BACKGROUND_STATE = {
+  AccountsController: {
+    internalAccounts: {
+      accounts: false,
+      selectedAccount: false,
+    },
+  },
+  AccountTracker: {
+    accounts: false,
+    accountsByChainId: false,
     currentBlockGasLimit: true,
-    currentCurrency: true,
-    currentLocale: true,
-    customNonceValue: true,
+    currentBlockGasLimitByChainId: true,
+  },
+  AddressBookController: {
+    addressBook: false,
+  },
+  AlertController: {
+    alertEnabledness: true,
+    unconnectedAccountAlertShownOrigins: false,
+    web3ShimUsageOrigins: false,
+  },
+  AnnouncementController: {
+    announcements: false,
+  },
+  NetworkOrderController: {
+    orderedNetworkList: [],
+  },
+  AccountOrderController: {
+    pinnedAccountList: [],
+    hiddenAccountList: [],
+  },
+  AppMetadataController: {
+    currentAppVersion: true,
+    currentMigrationVersion: true,
+    previousAppVersion: true,
+    previousMigrationVersion: true,
+  },
+  ApprovalController: {
+    approvalFlows: false,
+    pendingApprovals: false,
+    pendingApprovalCount: false,
+  },
+  AppStateController: {
+    browserEnvironment: true,
+    connectedStatusPopoverHasBeenShown: true,
+    currentPopupId: false,
+    currentExtensionPopupId: false,
     defaultHomeActiveTabName: true,
-    desktopEnabled: true,
-    featureFlags: true,
-    firstTimeFlowType: true,
-    forgottenPassword: true,
-    incomingTxLastFetchedBlockByChainId: true,
-    ipfsGateway: true,
-    isAccountMenuOpen: true,
-    isInitialized: true,
+    fullScreenGasPollTokens: true,
+    hadAdvancedGasFeesSetPriorToMigration92_3: true,
+    nftsDetectionNoticeDismissed: true,
+    nftsDropdownState: true,
+    notificationGasPollTokens: true,
+    outdatedBrowserWarningLastShown: true,
+    popupGasPollTokens: true,
+    qrHardware: true,
+    recoveryPhraseReminderHasBeenShown: true,
+    recoveryPhraseReminderLastShown: true,
+    showBetaHeader: true,
+    showPermissionsTour: true,
+    showProductTour: true,
+    showNetworkBanner: true,
+    showAccountBanner: true,
+    switchedNetworkDetails: false,
+    switchedNetworkNeverShowMessage: false,
+    showTestnetMessageInDropdown: true,
+    surveyLinkLastClickedOrClosed: true,
+    snapsInstallPrivacyWarningShown: true,
+    termsOfUseLastAgreed: true,
+    timeoutMinutes: true,
+    trezorModel: true,
+    usedNetworks: true,
+  },
+  CronjobController: {
+    jobs: false,
+  },
+  CurrencyController: {
+    currentCurrency: true,
+    currencyRates: true,
+  },
+  DecryptMessageController: {
+    unapprovedDecryptMsgs: false,
+    unapprovedDecryptMsgCount: true,
+  },
+  EncryptionPublicKeyController: {
+    unapprovedEncryptionPublicKeyMsgs: false,
+    unapprovedEncryptionPublicKeyMsgCount: true,
+  },
+  EnsController: {
+    ensResolutionsByAddress: false,
+    ensEntries: false,
+  },
+  GasFeeController: {
+    estimatedGasFeeTimeBounds: true,
+    gasEstimateType: true,
+    gasFeeEstimates: true,
+    gasFeeEstimatesByChainId: true,
+  },
+  KeyringController: {
     isUnlocked: true,
+    keyrings: false,
+  },
+  LoggingController: {
+    logs: false,
+  },
+  MetaMetricsController: {
+    eventsBeforeMetricsOptIn: false,
+    fragments: false,
     metaMetricsId: true,
-    nativeCurrency: true,
-    networkId: true,
-    networkStatus: true,
-    nextNonce: true,
     participateInMetaMetrics: true,
-    preferences: true,
+    previousUserTraits: false,
+    segmentApiCalls: false,
+    traits: false,
+  },
+  NameController: {
+    names: false,
+    nameSources: false,
+    useExternalNameSources: false,
+  },
+  NetworkController: {
+    networkConfigurations: false,
+    networksMetadata: true,
     providerConfig: {
+      chainId: true,
+      id: true,
       nickname: true,
+      rpcPrefs: false,
+      rpcUrl: false,
       ticker: true,
       type: true,
     },
+    selectedNetworkClientId: false,
+  },
+  NftController: {
+    allNftContracts: false,
+    allNfts: false,
+    ignoredNfts: false,
+  },
+  NotificationController: {
+    notifications: false,
+  },
+  OnboardingController: {
+    completedOnboarding: true,
+    firstTimeFlowType: true,
+    onboardingTabs: false,
     seedPhraseBackedUp: true,
-    unapprovedDecryptMsgCount: true,
-    unapprovedEncryptionPublicKeyMsgCount: true,
-    unapprovedMsgCount: true,
-    unapprovedPersonalMsgCount: true,
-    unapprovedTypedMessagesCount: true,
+  },
+  PPOMController: {
+    securityAlertsEnabled: false,
+    storageMetadata: [],
+    versionFileETag: false,
+    versionInfo: [],
+  },
+  PermissionController: {
+    subjects: false,
+  },
+  PermissionLogController: {
+    permissionActivityLog: false,
+    permissionHistory: false,
+  },
+  PhishingController: {},
+  PreferencesController: {
+    advancedGasFee: true,
+    currentLocale: true,
+    disabledRpcMethodPreferences: true,
+    dismissSeedBackUpReminder: true,
+    featureFlags: true,
+    forgottenPassword: true,
+    identities: false,
+    incomingTransactionsPreferences: true,
+    isIpfsGatewayEnabled: false,
+    ipfsGateway: false,
+    knownMethodData: false,
+    ledgerTransportType: true,
+    lostIdentities: false,
+    openSeaEnabled: true,
+    preferences: {
+      autoLockTimeLimit: true,
+      hideZeroBalanceTokens: true,
+      showExtensionInFullSizeView: true,
+      showFiatInTestnets: true,
+      showTestNetworks: true,
+      smartTransactionsOptInStatus: true,
+      useNativeCurrencyAsPrimaryCurrency: true,
+      petnamesEnabled: true,
+    },
+    selectedAddress: false,
+    snapRegistryList: false,
+    theme: true,
+    signatureSecurityAlertResponses: false,
+    use4ByteResolution: true,
+    useAddressBarEnsResolution: true,
     useBlockie: true,
+    useCurrencyRateCheck: true,
+    useMultiAccountBalanceChecker: true,
+    useNftDetection: true,
     useNonceField: true,
     usePhishDetect: true,
+    useTokenDetection: true,
+    useRequestQueue: true,
+    useTransactionSimulations: true,
+    hasDismissedOpenSeaToBlockaidBanner: true,
+  },
+  SelectedNetworkController: { domains: false },
+  SignatureController: {
+    unapprovedMsgCount: true,
+    unapprovedMsgs: false,
+    unapprovedPersonalMsgCount: true,
+    unapprovedPersonalMsgs: false,
+    unapprovedTypedMessages: false,
+    unapprovedTypedMessagesCount: true,
+  },
+  SmartTransactionsController: {
+    smartTransactionsState: {
+      fees: {
+        approvalTxFees: true,
+        tradeTxFees: true,
+      },
+      liveness: true,
+      smartTransactions: false,
+      userOptIn: true,
+      userOptInV2: true,
+    },
+  },
+  SnapController: {
+    unencryptedSnapStates: false,
+    snapStates: false,
+    snaps: false,
+  },
+  SnapInterface: {
+    interfaces: false,
+  },
+  SnapsRegistry: {
+    database: false,
+    lastUpdated: false,
+    databaseUnavailable: false,
+  },
+  SubjectMetadataController: {
+    subjectMetadata: false,
+  },
+  SwapsController: {
+    swapsState: {
+      approveTxId: false,
+      customApproveTxData: false,
+      customGasPrice: true,
+      customMaxFeePerGas: true,
+      customMaxGas: true,
+      customMaxPriorityFeePerGas: true,
+      errorKey: true,
+      fetchParams: true,
+      quotes: false,
+      quotesLastFetched: true,
+      quotesPollingLimitEnabled: true,
+      routeState: true,
+      saveFetchedQuotes: true,
+      selectedAggId: true,
+      swapsFeatureFlags: true,
+      swapsFeatureIsLive: true,
+      swapsQuotePrefetchingRefreshTime: true,
+      swapsQuoteRefreshTime: true,
+      swapsStxBatchStatusRefreshTime: true,
+      swapsStxGetTransactionsRefreshTime: true,
+      swapsStxMaxFeeMultiplier: true,
+      swapsUserFeeLevel: true,
+      tokens: false,
+      topAggId: false,
+      tradeTxId: false,
+    },
+  },
+  TokenDetectionController: {
+    [AllProperties]: false,
+  },
+  TokenListController: {
+    preventPollingOnNetworkRestart: true,
+    tokenList: false,
+    tokensChainsCache: {
+      [AllProperties]: false,
+    },
+  },
+  TokenRatesController: {
+    contractExchangeRates: false,
+    contractExchangeRatesByChainId: false,
+  },
+  TokensController: {
+    allDetectedTokens: {
+      [AllProperties]: false,
+    },
+    allIgnoredTokens: {
+      [AllProperties]: false,
+    },
+    allTokens: {
+      [AllProperties]: false,
+    },
+    detectedTokens: false,
+    ignoredTokens: false,
+    tokens: false,
+  },
+  TransactionController: {
+    transactions: false,
+    lastFetchedBlockNumbers: false,
+    methodData: false,
+  },
+  TxController: {
+    transactions: false,
+  },
+  UserOperationController: {
+    userOperations: false,
+  },
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  ...MMI_SENTRY_BACKGROUND_STATE,
+  ///: END:ONLY_INCLUDE_IF
+};
+
+const flattenedBackgroundStateMask = Object.values(
+  SENTRY_BACKGROUND_STATE,
+).reduce((partialBackgroundState, controllerState) => {
+  return {
+    ...partialBackgroundState,
+    ...controllerState,
+  };
+}, {});
+
+// This describes the subset of Redux state attached to errors sent to Sentry
+// These properties have some potential to be useful for debugging, and they do
+// not contain any identifiable information.
+export const SENTRY_UI_STATE = {
+  gas: true,
+  history: true,
+  metamask: {
+    ...flattenedBackgroundStateMask,
+    // This property comes from the background but isn't in controller state
+    isInitialized: true,
+    // These properties are in the `metamask` slice but not in the background state
+    customNonceValue: true,
+    isAccountMenuOpen: true,
+    isNetworkMenuOpen: true,
+    nextNonce: true,
+    pendingTokens: false,
     welcomeScreenSeen: true,
+    confirmationExchangeRates: true,
+    useSafeChainsListValidation: true,
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+    addSnapAccountEnabled: false,
+    snapsAddSnapAccountModalDismissed: false,
+    ///: END:ONLY_INCLUDE_IF
+    switchedNetworkDetails: false,
+    switchedNetworkNeverShowMessage: false,
   },
   unconnectedAccount: true,
 };
+
+/**
+ * Returns whether MetaMetrics is enabled, given the application state.
+ *
+ * @param {{ state: unknown} | { persistedState: unknown }} appState - Application state
+ * @returns `true` if MetaMask's state has been initialized, and MetaMetrics
+ * is enabled, `false` otherwise.
+ */
+function getMetaMetricsEnabledFromAppState(appState) {
+  // during initialization after loading persisted state
+  if (appState.persistedState) {
+    return getMetaMetricsEnabledFromPersistedState(appState.persistedState);
+    // After initialization
+  } else if (appState.state) {
+    // UI
+    if (appState.state.metamask) {
+      return Boolean(appState.state.metamask.participateInMetaMetrics);
+    }
+    // background
+    return Boolean(
+      appState.state.MetaMetricsController?.participateInMetaMetrics,
+    );
+  }
+  // during initialization, before first persisted state is read
+  return false;
+}
+
+/**
+ * Returns whether MetaMetrics is enabled, given the persisted state.
+ *
+ * @param {unknown} persistedState - Application state
+ * @returns `true` if MetaMask's state has been initialized, and MetaMetrics
+ * is enabled, `false` otherwise.
+ */
+function getMetaMetricsEnabledFromPersistedState(persistedState) {
+  return Boolean(
+    persistedState?.data?.MetaMetricsController?.participateInMetaMetrics,
+  );
+}
+
+/**
+ * Returns whether onboarding has completed, given the application state.
+ *
+ * @param {Record<string, unknown>} appState - Application state
+ * @returns `true` if MetaMask's state has been initialized, and MetaMetrics
+ * is enabled, `false` otherwise.
+ */
+function getOnboardingCompleteFromAppState(appState) {
+  // during initialization after loading persisted state
+  if (appState.persistedState) {
+    return Boolean(
+      appState.persistedState.data?.OnboardingController?.completedOnboarding,
+    );
+    // After initialization
+  } else if (appState.state) {
+    // UI
+    if (appState.state.metamask) {
+      return Boolean(appState.state.metamask.completedOnboarding);
+    }
+    // background
+    return Boolean(appState.state.OnboardingController?.completedOnboarding);
+  }
+  // during initialization, before first persisted state is read
+  return false;
+}
 
 export default function setupSentry({ release, getState }) {
   if (!release) {
@@ -112,29 +493,69 @@ export default function setupSentry({ release, getState }) {
   }
 
   /**
-   * A function that returns whether MetaMetrics is enabled. This should also
-   * return `false` if state has not yet been initialzed.
+   * Returns whether MetaMetrics is enabled. If the application hasn't yet
+   * been initialized, the persisted state will be used (if any).
    *
-   * @returns `true` if MetaMask's state has been initialized, and MetaMetrics
-   * is enabled, `false` otherwise.
+   * @returns `true` if MetaMetrics is enabled, `false` otherwise.
    */
-  function getMetaMetricsEnabled() {
-    if (getState) {
-      const appState = getState();
-      if (!appState?.store?.metamask?.participateInMetaMetrics) {
-        return false;
-      }
-    } else {
+  async function getMetaMetricsEnabled() {
+    const appState = getState();
+    if (appState.state || appState.persistedState) {
+      return getMetaMetricsEnabledFromAppState(appState);
+    }
+    // If we reach here, it means the error was thrown before initialization
+    // completed, and before we loaded the persisted state for the first time.
+    try {
+      const persistedState = await globalThis.stateHooks.getPersistedState();
+      return getMetaMetricsEnabledFromPersistedState(persistedState);
+    } catch (error) {
+      console.error(error);
       return false;
     }
-    return true;
   }
 
   Sentry.init({
     dsn: sentryTarget,
     debug: METAMASK_DEBUG,
+    /**
+     * autoSessionTracking defaults to true and operates by sending a session
+     * packet to sentry. This session packet does not appear to be filtered out
+     * via our beforeSend or FilterEvents integration. To avoid sending a
+     * request before we have the state tree and can validate the users
+     * preferences, we initiate this to false. Later, in startSession and
+     * endSession we modify this option and start the session or end the
+     * session manually.
+     *
+     * In sentry-install we call toggleSession after the page loads and state
+     * is available, this handles initiating the session for a user who has
+     * opted into MetaMetrics. This script is ran in both the background and UI
+     * so it should be effective at starting the session in both places.
+     *
+     * In the MetaMetricsController the session is manually started or stopped
+     * when the user opts in or out of MetaMetrics. This occurs in the
+     * setParticipateInMetaMetrics function which is exposed to the UI via the
+     * MetaMaskController.
+     *
+     * In actions.ts, after sending the updated participateInMetaMetrics flag
+     * to the background, we call toggleSession to ensure sentry is kept in
+     * sync with the user's preference.
+     *
+     * Types for the global Sentry object, and the new methods added as part of
+     * this effort were added to global.d.ts in the types folder.
+     */
+    autoSessionTracking: false,
     environment,
     integrations: [
+      /**
+       * Filtering of events must happen in this FilterEvents custom
+       * integration instead of in the beforeSend handler because the Dedupe
+       * integration is unaware of the beforeSend functionality. If an event is
+       * queued in the sentry context, additional events of the same name will
+       * be filtered out by Dedupe even if the original event was not sent due
+       * to the beforeSend method returning null.
+       *
+       * @see https://github.com/MetaMask/metamask-extension/pull/15677
+       */
       new FilterEvents({ getMetaMetricsEnabled }),
       new Dedupe(),
       new ExtraErrorData(),
@@ -144,7 +565,64 @@ export default function setupSentry({ release, getState }) {
     beforeBreadcrumb: beforeBreadcrumb(getState),
   });
 
-  return Sentry;
+  /**
+   * As long as a reference to the Sentry Hub can be found, and the user has
+   * opted into MetaMetrics, change the autoSessionTracking option and start
+   * a new sentry session.
+   */
+  const startSession = async () => {
+    const hub = Sentry.getCurrentHub?.();
+    const options = hub.getClient?.().getOptions?.() ?? {};
+    if (hub && (await getMetaMetricsEnabled()) === true) {
+      options.autoSessionTracking = true;
+      hub.startSession();
+    }
+  };
+
+  /**
+   * As long as a reference to the Sentry Hub can be found, and the user has
+   * opted out of MetaMetrics, change the autoSessionTracking option and end
+   * the current sentry session.
+   */
+  const endSession = async () => {
+    const hub = Sentry.getCurrentHub?.();
+    const options = hub.getClient?.().getOptions?.() ?? {};
+    if (hub && (await getMetaMetricsEnabled()) === false) {
+      options.autoSessionTracking = false;
+      hub.endSession();
+    }
+  };
+
+  /**
+   * Call the appropriate method (either startSession or endSession) depending
+   * on the state of metaMetrics optin and the state of autoSessionTracking on
+   * the Sentry client.
+   */
+  const toggleSession = async () => {
+    const hub = Sentry.getCurrentHub?.();
+    const options = hub.getClient?.().getOptions?.() ?? {
+      autoSessionTracking: false,
+    };
+    const isMetaMetricsEnabled = await getMetaMetricsEnabled();
+    if (
+      isMetaMetricsEnabled === true &&
+      options.autoSessionTracking === false
+    ) {
+      await startSession();
+    } else if (
+      isMetaMetricsEnabled === false &&
+      options.autoSessionTracking === true
+    ) {
+      await endSession();
+    }
+  };
+
+  return {
+    ...Sentry,
+    startSession,
+    endSession,
+    toggleSession,
+  };
 }
 
 /**
@@ -171,17 +649,15 @@ function hideUrlIfNotInternal(url) {
  */
 export function beforeBreadcrumb(getState) {
   return (breadcrumb) => {
-    if (getState) {
-      const appState = getState();
-      if (
-        Object.values(appState).length &&
-        (!appState?.store?.metamask?.participateInMetaMetrics ||
-          !appState?.store?.metamask?.completedOnboarding ||
-          breadcrumb?.category === 'ui.input')
-      ) {
-        return null;
-      }
-    } else {
+    if (!getState) {
+      return null;
+    }
+    const appState = getState();
+    if (
+      !getMetaMetricsEnabledFromAppState(appState) ||
+      !getOnboardingCompleteFromAppState(appState) ||
+      breadcrumb?.category === 'ui.input'
+    ) {
       return null;
     }
     const newBreadcrumb = removeUrlsFromBreadCrumb(breadcrumb);

@@ -2,16 +2,29 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import CurrencyInput from '.';
 
+jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {
+  return {
+    useIsOriginalNativeTokenSymbol: jest.fn(),
+  };
+});
+
 describe('CurrencyInput Component', () => {
+  useIsOriginalNativeTokenSymbol.mockReturnValue(true);
+
   const mockStore = {
     metamask: {
-      nativeCurrency: 'ETH',
       currentCurrency: 'usd',
-      conversionRate: 231.06,
+      currencyRates: {
+        ETH: {
+          conversionRate: 231.06,
+        },
+      },
       providerConfig: {
         chainId: '0x5',
+        ticker: 'ETH',
       },
       preferences: {
         showFiatInTestnets: true,
@@ -48,8 +61,8 @@ describe('CurrencyInput Component', () => {
 
       const props = {
         onChange: jest.fn(),
-        hexValue: 'f602f2234d0ea',
-        featureSecondary: true,
+        hexValue: '0xf602f2234d0ea',
+        isFiatPreferred: true,
       };
 
       const { container } = renderWithProvider(
@@ -75,8 +88,8 @@ describe('CurrencyInput Component', () => {
 
       const props = {
         onChange: jest.fn(),
-        hexValue: 'f602f2234d0ea',
-        featureSecondary: true,
+        hexValue: '0xf602f2234d0ea',
+        isFiatPreferred: true,
       };
 
       const { container } = renderWithProvider(
@@ -86,6 +99,25 @@ describe('CurrencyInput Component', () => {
 
       expect(container).toMatchSnapshot();
     });
+
+    it('should render small number properly', () => {
+      const store = configureMockStore()(mockStore);
+
+      const props = {
+        onChange: jest.fn(),
+        hexValue: '174876e800',
+        isFiatPreferred: false,
+      };
+
+      const { getByTestId } = renderWithProvider(
+        <CurrencyInput {...props} />,
+        store,
+      );
+
+      const { value } = getByTestId('currency-input');
+
+      expect(value).toStrictEqual('0.0000001');
+    });
   });
 
   describe('handling actions', () => {
@@ -94,20 +126,22 @@ describe('CurrencyInput Component', () => {
 
       const props = {
         onChange: jest.fn(),
-        hexValue: 'f602f2234d0ea',
+        hexValue: '0xf602f2234d0ea',
       };
 
-      const { queryByTestId, queryByTitle } = renderWithProvider(
+      const { queryByTestId, queryByTitle, rerender } = renderWithProvider(
         <CurrencyInput {...props} />,
         store,
       );
 
       const currencyInput = queryByTestId('currency-input');
-
       fireEvent.change(currencyInput, { target: { value: 1 } });
 
-      expect(props.onChange).toHaveBeenCalledWith('de0b6b3a7640000');
-      expect(queryByTitle('$231.06 USD')).toBeInTheDocument();
+      expect(props.onChange).toHaveBeenCalledWith('0xde0b6b3a7640000');
+      // assume the onChange function updates the hexValue
+      rerender(<CurrencyInput {...props} hexValue="0xde0b6b3a7640000" />);
+
+      expect(queryByTitle('$231.06')).toBeInTheDocument();
     });
 
     it('should call onChange on input changes with the hex value for fiat', () => {
@@ -115,8 +149,8 @@ describe('CurrencyInput Component', () => {
 
       const props = {
         onChange: jest.fn(),
-        hexValue: 'f602f2234d0ea',
-        featureSecondary: true,
+        hexValue: '0xf602f2234d0ea',
+        isFiatPreferred: true,
       };
 
       const { queryByTestId, queryByTitle } = renderWithProvider(
@@ -128,8 +162,8 @@ describe('CurrencyInput Component', () => {
 
       fireEvent.change(currencyInput, { target: { value: 1 } });
 
-      expect(props.onChange).toHaveBeenCalledWith('f602f2234d0ea');
-      expect(queryByTitle('0.00432788 ETH')).toBeInTheDocument();
+      expect(props.onChange).toHaveBeenCalledWith('0xf604b06968000');
+      expect(queryByTitle('0.004328 ETH')).toBeInTheDocument();
     });
 
     it('should swap selected currency when swap icon is clicked', async () => {
@@ -137,10 +171,11 @@ describe('CurrencyInput Component', () => {
       const props = {
         onChange: jest.fn(),
         onPreferenceToggle: jest.fn(),
-        featureSecondary: true,
+        hexValue: '0xf602f2234d0ea',
+        isFiatPreferred: true,
       };
 
-      const { queryByTestId, queryByTitle } = renderWithProvider(
+      const { queryByTestId, queryByTitle, rerender } = renderWithProvider(
         <CurrencyInput {...props} />,
         store,
       );
@@ -148,13 +183,16 @@ describe('CurrencyInput Component', () => {
       const currencyInput = queryByTestId('currency-input');
       fireEvent.change(currencyInput, { target: { value: 1 } });
 
-      expect(queryByTitle('0.00432788 ETH')).toBeInTheDocument();
+      expect(queryByTitle('0.004328 ETH')).toBeInTheDocument();
 
       const currencySwap = queryByTestId('currency-swap');
       fireEvent.click(currencySwap);
 
+      // expect isFiatPreferred to update
+      rerender(<CurrencyInput {...props} isFiatPreferred={false} />);
+
       await waitFor(() => {
-        expect(queryByTitle('$1.00 USD')).toBeInTheDocument();
+        expect(queryByTitle('$1.00')).toBeInTheDocument();
       });
     });
   });

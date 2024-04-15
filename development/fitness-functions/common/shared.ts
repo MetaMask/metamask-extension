@@ -32,6 +32,14 @@ function filterDiffByFilePath(diff: string, regex: string): string {
   return filteredDiff;
 }
 
+// This function returns all lines that are additions to files that are being
+// modified but that previously already existed. Example:
+// diff --git a/test.js b/test.js
+// index 0000000000..872e0d8293
+// --- /dev/null
+// +++ b/test.js
+// @@ -0,0 +1 @@
+// +new line change to a previously existing file
 function filterDiffLineAdditions(diff: string): string {
   const diffLines = diff.split('\n');
 
@@ -44,6 +52,15 @@ function filterDiffLineAdditions(diff: string): string {
   return diffAdditionLines.join('/n');
 }
 
+// This function returns all lines that are additions to new files that are being
+// created. Example:
+// diff --git a/test.js b/test.js
+// new file mode 100644
+// index 0000000000..872e0d8293
+// --- /dev/null
+// +++ b/test.js
+// @@ -0,0 +1 @@
+// +new line change as the new file is created
 function filterDiffFileCreations(diff: string): string {
   // split by `diff --git` and remove the first element which is empty
   const diffBlocks = diff.split(`diff --git`).slice(1);
@@ -91,7 +108,7 @@ function hasNumberOfCodeBlocksIncreased(
 
 export {
   filterDiffByFilePath,
-  filterDiffLineAdditions,
   filterDiffFileCreations,
+  filterDiffLineAdditions,
   hasNumberOfCodeBlocksIncreased,
 };

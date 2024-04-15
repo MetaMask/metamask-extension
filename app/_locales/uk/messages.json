@@ -175,9 +175,6 @@
   "copyAddress": {
     "message": "Копіювати адресу в буфер обміну"
   },
-  "copyPrivateKey": {
-    "message": "Це ваш закритий ключ (натисніть, щоб скопіювати)"
-  },
   "copyToClipboard": {
     "message": "Копіювати в буфер"
   },
@@ -214,9 +211,6 @@
   "deleteNetwork": {
     "message": "Видалити мережу?"
   },
-  "deleteNetworkDescription": {
-    "message": "Ви впевнені, що хочете видалити цю мережу?"
-  },
   "details": {
     "message": "Деталі"
   },
@@ -238,14 +232,8 @@
   "editContact": {
     "message": "Редагувати контракт"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Ім'я ENS не знайдено у даній мережі. Спробуйте перейти у Ethereum Mainnet."
-  },
   "ensRegistrationError": {
     "message": "Помилка у реєстрації ENS ім'я"
-  },
-  "enterPassword": {
-    "message": "Введіть пароль"
   },
   "enterPasswordContinue": {
     "message": "Введіть пароль, щоб продовжити"
@@ -258,9 +246,6 @@
   },
   "expandView": {
     "message": "Розгорнути подання"
-  },
-  "exportPrivateKey": {
-    "message": "Експортувати приватний ключ"
   },
   "failed": {
     "message": "Помилка"
@@ -624,12 +609,6 @@
   "search": {
     "message": "Пошук"
   },
-  "searchResults": {
-    "message": "Результати пошуку"
-  },
-  "searchTokens": {
-    "message": "Шукати токени"
-  },
   "securityAndPrivacy": {
     "message": "Безпека й конфіденційність"
   },
@@ -668,9 +647,6 @@
   },
   "showHexDataDescription": {
     "message": "Оберіть це, щоб показати поле для шістнадцятирикових даних на екрані надсилання"
-  },
-  "showPrivateKeys": {
-    "message": "Показати приватні ключі"
   },
   "sigRequest": {
     "message": "Запит підпису"
@@ -792,9 +768,6 @@
   "tryAgain": {
     "message": "Повторити"
   },
-  "typePassword": {
-    "message": "Введіть ваш пароль MetaMask"
-  },
   "unapproved": {
     "message": "Не затверджено"
   },
@@ -803,12 +776,6 @@
   },
   "unknown": {
     "message": "невідомо"
-  },
-  "unknownCameraError": {
-    "message": "Виникла помилка при спробі отримати доступ до вашої камери. Будь ласка, спробуйте знову..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Отакої! Щось пішло не так..."
   },
   "unknownNetwork": {
     "message": "Незнайома приватна мережа"

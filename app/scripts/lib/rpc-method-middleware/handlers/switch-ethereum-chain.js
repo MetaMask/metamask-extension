@@ -20,11 +20,17 @@ const switchEthereumChain = {
   hookNames: {
     getCurrentChainId: true,
     findNetworkConfigurationBy: true,
+    findNetworkClientIdByChainId: true,
+    setNetworkClientIdForDomain: true,
     setProviderType: true,
     setActiveNetwork: true,
     requestUserApproval: true,
+    getNetworkConfigurations: true,
+    getProviderConfig: true,
+    hasPermissions: true,
   },
 };
+
 export default switchEthereumChain;
 
 function findExistingNetwork(chainId, findNetworkConfigurationBy) {
@@ -53,9 +59,13 @@ async function switchEthereumChainHandler(
   {
     getCurrentChainId,
     findNetworkConfigurationBy,
+    findNetworkClientIdByChainId,
+    setNetworkClientIdForDomain,
     setProviderType,
     setActiveNetwork,
     requestUserApproval,
+    getProviderConfig,
+    hasPermissions,
   },
 ) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
@@ -100,13 +110,30 @@ async function switchEthereumChainHandler(
     );
   }
 
-  const requestData = findExistingNetwork(_chainId, findNetworkConfigurationBy);
-  if (requestData) {
+  const requestData = {
+    toNetworkConfiguration: findExistingNetwork(
+      _chainId,
+      findNetworkConfigurationBy,
+    ),
+  };
+
+  requestData.fromNetworkConfiguration = getProviderConfig();
+
+  if (requestData.toNetworkConfiguration) {
     const currentChainId = getCurrentChainId();
+
+    // we might want to change all this so that it displays the network you are switching from -> to (in a way that is domain - specific)
+
+    const networkClientId = findNetworkClientIdByChainId(_chainId);
+
     if (currentChainId === _chainId) {
+      if (hasPermissions(req.origin)) {
+        setNetworkClientIdForDomain(req.origin, networkClientId);
+      }
       res.result = null;
       return end();
     }
+
     try {
       const approvedRequestData = await requestUserApproval({
         origin,
@@ -122,12 +149,16 @@ async function switchEthereumChainHandler(
       } else {
         await setActiveNetwork(approvedRequestData.id);
       }
+      if (hasPermissions(req.origin)) {
+        setNetworkClientIdForDomain(req.origin, networkClientId);
+      }
       res.result = null;
     } catch (error) {
       return end(error);
     }
     return end();
   }
+
   return end(
     ethErrors.provider.custom({
       code: 4902, // To-be-standardized "unrecognized chain ID" error

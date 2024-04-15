@@ -35,10 +35,6 @@ const DetectedTokenSelectionPopover = ({
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
   const { selected: selectedTokens = [] } =
     sortingBasedOnTokenSelection(tokensListDetected);
-  const numOfTokensImporting =
-    selectedTokens.length === detectedTokens.length
-      ? `All`
-      : `(${selectedTokens.length})`;
 
   const onClose = () => {
     setShowDetectedTokens(false);
@@ -71,7 +67,7 @@ const DetectedTokenSelectionPopover = ({
         onClick={onImport}
         disabled={selectedTokens.length === 0}
       >
-        {t('importWithCount', [numOfTokensImporting])}
+        {t('importWithCount', [`(${selectedTokens.length})`])}
       </Button>
     </>
   );

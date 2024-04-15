@@ -1,37 +1,21 @@
 <!doctype html>
-<html>
+<html dir="ltr">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1 user-scalable=no">
-    <title>MetaMask</title>
-    {{@if(it.isMMI)}}
+    <% if (it.isMMI && !it.isTest) { %>
     <title>MetaMask Institutional</title>
-    {{/if}}
-    <link rel="stylesheet" type="text/css" href="./index.css" title="ltr">
-    <link rel="stylesheet" type="text/css" href="./index-rtl.css" title="rtl" disabled>
+    <% } else { %>
+    <title>MetaMask</title>
+    <% } %>
+    <link rel="stylesheet" href="./index.css">
   </head>
   <body>
     <div id="app-content">
-      <img class="loading-logo" src="./images/logo/metamask-fox.svg" alt="" />
-      <img class="loading-spinner" src="./images/spinner.gif" alt="" />
+      <img class="loading-logo" src="./images/logo/metamask-fox.svg" alt="" loading="lazy" />
+      <img class="loading-spinner" src="./images/spinner.gif" alt="" loading="lazy" />
     </div>
     <div id="popover-content"></div>
-    <script src="./snow.js" type="text/javascript" charset="utf-8"></script>
-    <script src="./use-snow.js" type="text/javascript" charset="utf-8"></script>
-    <script src="./globalthis.js" type="text/javascript" charset="utf-8"></script>
-    <script src="./sentry-install.js" type="text/javascript" charset="utf-8"></script>
-    {{@if(it.applyLavaMoat)}}
-      <script src="./runtime-lavamoat.js" type="text/javascript" charset="utf-8"></script>
-      <script src="./lockdown-more.js" type="text/javascript" charset="utf-8"></script>
-      <script src="./policy-load.js" type="text/javascript" charset="utf-8"></script>
-    {{#else}}
-      <script src="./lockdown-install.js" type="text/javascript" charset="utf-8"></script>
-      <script src="./lockdown-run.js" type="text/javascript" charset="utf-8"></script>
-      <script src="./lockdown-more.js" type="text/javascript" charset="utf-8"></script>
-      <script src="./runtime-cjs.js" type="text/javascript" charset="utf-8"></script>
-    {{/if}}
-    {{@each(it.jsBundles) => val}}
-      <script src="{{val}}" type="text/javascript" charset="utf-8"></script>
-    {{/each}}
+    <script src="./load-app.js" async></script>
   </body>
 </html>

@@ -11,6 +11,14 @@
 function exitWithError(errorMessage) {
   console.error(errorMessage);
   process.exitCode = 1;
+  if (process.env.CI) {
+    // For some reason, the CI environment does not exit when process.exitCode
+    // is set, or at least doesn't terminate immediately. Something may be
+    // keeping the event loop from ending. The result is that sometimes jobs
+    // fail because of timeout even though none of the individual tests fail.
+    // This is a workaround.
+    process.exit();
+  }
 }
 
 module.exports = { exitWithError };

@@ -1,3 +1,5 @@
+@use "design-system";
+
 .home-notification-wrapper--show-all,
 .home-notification-wrapper--show-first {
   display: flex;
@@ -8,7 +10,7 @@
   right: 0;
   margin: 8px;
 
-  @include screen-sm-max {
+  @include design-system.screen-sm-max {
     width: 340px;
   }
 
@@ -27,7 +29,7 @@
       visibility: visible;
 
       &:hover {
-        @include H4;
+        @include design-system.H4;
       }
     }
   }
@@ -57,6 +59,11 @@
     bottom: 8px;
     right: 8px;
     visibility: hidden;
+  }
+
+  /* accommodates for the home "Wallet" / "Connections" footer */
+  &.home-notification-wrapper--multichain > div {
+    bottom: 88px;
   }
 
   > div:first-of-type {

@@ -1,6 +1,12 @@
 import { v4 } from 'uuid';
 import { migrate, version } from './083';
 
+const sentryCaptureExceptionMock = jest.fn();
+
+global.sentry = {
+  captureException: sentryCaptureExceptionMock,
+};
+
 jest.mock('uuid', () => {
   const actual = jest.requireActual('uuid');
 
@@ -14,7 +20,6 @@ describe('migration #83', () => {
   beforeEach(() => {
     v4.mockImplementationOnce(() => 'network-configuration-id-1')
       .mockImplementationOnce(() => 'network-configuration-id-2')
-      .mockImplementationOnce(() => 'network-configuration-id-3')
       .mockImplementationOnce(() => 'network-configuration-id-4');
   });
 
@@ -60,16 +65,6 @@ describe('migration #83', () => {
                 'https://arbitrum-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
               ticker: 'ETH',
             },
-            'network-configuration-id-3': {
-              chainId: '0x4e454152',
-              nickname: 'Aurora Mainnet',
-              rpcPrefs: {
-                blockExplorerUrl: 'https://aurorascan.dev/',
-              },
-              rpcUrl:
-                'https://aurora-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
-              ticker: 'Aurora ETH',
-            },
             'network-configuration-id-4': {
               chainId: '0x38',
               nickname:
@@ -113,17 +108,6 @@ describe('migration #83', () => {
               ticker: 'ETH',
               id: 'network-configuration-id-2',
             },
-            'network-configuration-id-3': {
-              chainId: '0x4e454152',
-              nickname: 'Aurora Mainnet',
-              rpcPrefs: {
-                blockExplorerUrl: 'https://aurorascan.dev/',
-              },
-              rpcUrl:
-                'https://aurora-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
-              ticker: 'Aurora ETH',
-              id: 'network-configuration-id-3',
-            },
             'network-configuration-id-4': {
               chainId: '0x38',
               nickname:
@@ -165,6 +149,24 @@ describe('migration #83', () => {
     expect(newStorage).toStrictEqual(expectedNewStorage);
   });
 
+  it('should capture an exception if state.NetworkController is undefined', async () => {
+    const oldStorage = {
+      meta: {
+        version,
+      },
+      data: {
+        testProperty: 'testValue',
+      },
+    };
+
+    await migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error(`typeof state.NetworkController is undefined`),
+    );
+  });
+
   it('should not modify state if state.NetworkController is not an object', async () => {
     const oldStorage = {
       meta: {
@@ -188,6 +190,25 @@ describe('migration #83', () => {
       },
     };
     expect(newStorage).toStrictEqual(expectedNewStorage);
+  });
+
+  it('should capture an exception if state.NetworkController is not an object', async () => {
+    const oldStorage = {
+      meta: {
+        version,
+      },
+      data: {
+        NetworkController: false,
+        testProperty: 'testValue',
+      },
+    };
+
+    await migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error(`typeof state.NetworkController is boolean`),
+    );
   });
 
   it('should not modify state if state.NetworkController.networkConfigurations is undefined', async () => {
@@ -219,6 +240,28 @@ describe('migration #83', () => {
       },
     };
     expect(newStorage).toStrictEqual(expectedNewStorage);
+  });
+
+  it('should capture an exception if state.NetworkController.networkConfigurations is undefined', async () => {
+    const oldStorage = {
+      meta: {
+        version,
+      },
+      data: {
+        NetworkController: {
+          testNetworkControllerProperty: 'testNetworkControllerValue',
+          networkConfigurations: undefined,
+        },
+        testProperty: 'testValue',
+      },
+    };
+
+    await migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error(`typeof NetworkController.networkConfigurations is undefined`),
+    );
   });
 
   it('should not modify state if state.NetworkController.networkConfigurations is an empty object', async () => {

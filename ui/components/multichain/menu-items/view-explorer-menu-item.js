@@ -21,6 +21,7 @@ import {
 } from '../../../selectors';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 
 export const ViewExplorerMenuItem = ({
   metricsLocation,
@@ -34,7 +35,11 @@ export const ViewExplorerMenuItem = ({
 
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
-  const addressLink = getAccountLink(address, chainId, rpcPrefs);
+  const addressLink = getAccountLink(
+    toChecksumHexAddress(address),
+    chainId,
+    rpcPrefs,
+  );
 
   const { blockExplorerUrl } = rpcPrefs;
   const blockExplorerUrlSubTitle = getURLHostName(blockExplorerUrl);
@@ -90,8 +95,20 @@ export const ViewExplorerMenuItem = ({
 };
 
 ViewExplorerMenuItem.propTypes = {
+  /**
+   * Represents the "location" property of the metrics event
+   */
   metricsLocation: PropTypes.string.isRequired,
+  /**
+   * Closes the menu
+   */
   closeMenu: PropTypes.func,
-  textProps: PropTypes.object,
+  /**
+   * Address to show account details for
+   */
   address: PropTypes.string.isRequired,
+  /**
+   * Custom properties for the menu item text
+   */
+  textProps: PropTypes.object,
 };

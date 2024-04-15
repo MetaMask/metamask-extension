@@ -1,4 +1,5 @@
-import { Size } from '../../../helpers/constants/design-system';
+import type { PolymorphicComponentPropWithRef } from '../box';
+import { AvatarBaseStyleUtilityProps } from '../avatar-base/avatar-base.types';
 
 export enum AvatarAccountVariant {
   Jazzicon = 'jazzicon',
@@ -6,17 +7,52 @@ export enum AvatarAccountVariant {
 }
 
 export enum AvatarAccountSize {
-  Xs = Size.XS,
-  Sm = Size.SM,
-  Md = Size.MD,
-  Lg = Size.LG,
-  Xl = Size.XL,
+  Xs = 'xs',
+  Sm = 'sm',
+  Md = 'md',
+  Lg = 'lg',
+  Xl = 'xl',
 }
 
-export const AvatarAccountDiameter = {
+export const AvatarAccountDiameter: Record<AvatarAccountSize, number> = {
   [AvatarAccountSize.Xs]: 16,
   [AvatarAccountSize.Sm]: 24,
   [AvatarAccountSize.Md]: 32,
   [AvatarAccountSize.Lg]: 40,
   [AvatarAccountSize.Xl]: 48,
-} as const;
+};
+
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export interface AvatarAccountStyleUtilityProps
+  extends Omit<AvatarBaseStyleUtilityProps, 'size' | 'variant' | 'children'> {
+  /**
+   * The size of the AvatarAccount.
+   * Possible values could be 'AvatarAccountSize.Xs', 'AvatarAccountSize.Sm', 'AvatarAccountSize.Md', 'AvatarAccountSize.Lg', 'AvatarAccountSize.Xl'
+   * Defaults to AvatarAccountSize.Md
+   */
+  size?: AvatarAccountSize;
+  /**
+   * The variant of the avatar to be rendered, it can render either a AvatarAccountVariant.Jazzicon or a AvatarAccountVariant.Blockie
+   */
+  variant?: AvatarAccountVariant;
+  /**
+   * Address used for generating random image
+   */
+  address: string;
+  /**
+   * Add custom css class
+   */
+  className?: string;
+  /**
+   * AvatarAccount also accepts all Box props including but not limited to
+   * className, as(change root element of HTML element) and margin props
+   */
+}
+
+export type AvatarAccountProps<C extends React.ElementType> =
+  PolymorphicComponentPropWithRef<C, AvatarAccountStyleUtilityProps>;
+
+export type AvatarAccountComponent = <C extends React.ElementType = 'div'>(
+  props: AvatarAccountProps<C>,
+) => React.ReactElement | null;

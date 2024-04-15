@@ -1,0 +1,41 @@
+@use "design-system";
+
+.token-list {
+  &__empty-list {
+    height: 214.5px;
+
+    @include design-system.screen-sm-max {
+      height: 207.5px;
+    }
+  }
+
+  &__tokens-container {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    max-height: 214.5px;
+
+    @include design-system.screen-sm-max {
+      max-height: 207.5px;
+    }
+  }
+
+  &__token_component {
+    display: flex;
+    flex-flow: row nowrap;
+    padding: 16px;
+    align-items: center;
+    cursor: pointer;
+
+    &--selected {
+      background-color: var(--color-primary-muted);
+    }
+
+    &--disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+  }
+}
+
+

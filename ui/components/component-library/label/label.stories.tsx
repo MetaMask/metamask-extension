@@ -7,10 +7,7 @@ import {
   IconColor,
 } from '../../../helpers/constants/design-system';
 
-import Box from '../../ui/box';
-
-import { TextField, Icon, IconName, IconSize } from '..';
-
+import { Box, Icon, IconName, IconSize, TextField } from '..';
 import { Label } from './label';
 
 import README from './README.mdx';

@@ -1,42 +1,32 @@
-import React, { useCallback, useReducer } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { produce } from 'immer';
-import classnames from 'classnames';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import CheckBox from '../../../ui/check-box/check-box.component';
-
 import {
   BackgroundColor,
   IconColor,
   TextVariant,
   TextAlign,
-  Size,
   JustifyContent,
   FontWeight,
+  Display,
+  AlignItems,
+  BorderRadius,
+  TextColor,
 } from '../../../../helpers/constants/design-system';
-import Popover from '../../../ui/popover';
-import Button from '../../../ui/button';
-import { AvatarIcon, IconName, Text } from '../../../component-library';
-import Box from '../../../ui/box/box';
-
-/**
- * a very simple reducer using produce from Immer to keep checkboxes state manipulation
- * immutable and painless.
- */
-const checkboxStateReducer = produce((state, action) => {
-  switch (action.type) {
-    case 'check':
-      state[action.checkboxId] = state[action.checkboxId]
-        ? !state[action.checkboxId]
-        : true;
-
-      break;
-    default:
-      throw new Error(
-        'You must provide a type when dispatching an action for checkboxState',
-      );
-  }
-});
+import {
+  AvatarIcon,
+  AvatarIconSize,
+  Checkbox,
+  Box,
+  IconName,
+  Text,
+  Modal,
+  ModalFooter,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+} from '../../../component-library';
+import PermissionCell from '../../permission-cell';
 
 export default function SnapInstallWarning({
   onCancel,
@@ -45,71 +35,185 @@ export default function SnapInstallWarning({
   snapName,
 }) {
   const t = useI18nContext();
-  const [checkboxState, dispatch] = useReducer(checkboxStateReducer, {});
+  const [userAgree, setUserAgree] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
-  const isAllChecked = warnings.every((warning) => checkboxState[warning.id]);
+  function onConfirm() {
+    setIsOpen(false);
+    onSubmit();
+  }
 
-  const onCheckboxClicked = useCallback((checkboxId) => {
-    dispatch({ type: 'check', checkboxId });
-  }, []);
-
-  const SnapInstallWarningFooter = () => {
-    return (
-      <div className="snap-install-warning__footer">
-        <Button
-          className="snap-install-warning__footer-button"
-          type="primary"
-          disabled={!isAllChecked}
-          onClick={onSubmit}
+  function constructWarningElementComponentArray(permissionWarnings) {
+    if (permissionWarnings.length === 1) {
+      return [
+        <Text
+          fontWeight={FontWeight.Medium}
+          as="span"
+          key="warningMessageSubject"
         >
-          {t('confirm')}
-        </Button>
-      </div>
-    );
-  };
+          {permissionWarnings[0].warningMessageSubject}
+        </Text>,
+      ];
+    }
 
-  return (
-    <Popover
-      className="snap-install-warning"
-      footer={<SnapInstallWarningFooter />}
-      headerProps={{ padding: [6, 6, 0] }}
-      contentProps={{
-        paddingLeft: [6, 4],
-        paddingRight: [6, 4],
-        paddingTop: 0,
-        paddingBottom: [6, 4],
-      }}
-      footerProps={{ padding: [4, 6] }}
-      onClose={onCancel}
-    >
-      <Box justifyContent={JustifyContent.center} marginBottom={6}>
-        <AvatarIcon
-          iconName={IconName.Danger}
-          backgroundColor={BackgroundColor.warningMuted}
-          color={IconColor.warningDefault}
-          size={Size.XL}
+    if (permissionWarnings.length === 2) {
+      const firstWarningSubject = permissionWarnings[0].warningMessageSubject;
+      const secondWarningSubject = permissionWarnings[1].warningMessageSubject;
+      return [
+        <Text
+          fontWeight={FontWeight.Normal}
+          as="span"
+          key="warningMessageSubject"
+        >
+          {t('andForTwoItems', [
+            <Text
+              fontWeight={FontWeight.Medium}
+              variant={TextVariant.inherit}
+              key={`${firstWarningSubject}_and_first`}
+            >
+              {firstWarningSubject}
+            </Text>,
+            <Text
+              fontWeight={FontWeight.Medium}
+              variant={TextVariant.inherit}
+              key={`${secondWarningSubject}_and_second`}
+            >
+              {secondWarningSubject}
+            </Text>,
+          ])}
+        </Text>,
+      ];
+    }
+
+    return permissionWarnings.map((warning, index) => {
+      if (permissionWarnings.length - 1 === index) {
+        return [];
+      }
+      // Handle last two elements
+      if (permissionWarnings.length - 2 === index) {
+        return [
+          <Text
+            fontWeight={FontWeight.Normal}
+            as="span"
+            key={`${warning.permissionName}_and_${index}`}
+          >
+            {t('andForListItems', [
+              <Text
+                fontWeight={FontWeight.Medium}
+                variant={TextVariant.inherit}
+                key={`${warning.permissionName}_and_first_${index}`}
+              >
+                {warning.warningMessageSubject}
+              </Text>,
+              <Text
+                fontWeight={FontWeight.Medium}
+                variant={TextVariant.inherit}
+                key={`${warning.permissionName}_and_second_first_${index}`}
+              >
+                {
+                  permissionWarnings[permissionWarnings.length - 1]
+                    .warningMessageSubject
+                }
+              </Text>,
+            ])}
+          </Text>,
+        ];
+      }
+
+      return [
+        <span key={`${warning.permissionName}_${index}`}>
+          <Text fontWeight={FontWeight.Medium} as="span">
+            {warning.warningMessageSubject}
+            {', '}
+          </Text>
+        </span>,
+      ];
+    });
+  }
+
+  function constructWarningPermissionCell(permissionWarnings, permission) {
+    const warningElementComponentArray =
+      constructWarningElementComponentArray(permissionWarnings);
+    return (
+      <Box as="span" marginBottom={4}>
+        <PermissionCell
+          permissionName={
+            <Text>{t(permission.name, [warningElementComponentArray])}</Text>
+          }
+          title={
+            <Text>{t(permission.title, [warningElementComponentArray])}</Text>
+          }
+          description={t(permission.description, [
+            <Text
+              color={TextColor.inherit}
+              variant={TextVariant.inherit}
+              fontWeight={FontWeight.Medium}
+              key="1"
+            >
+              {snapName}
+            </Text>,
+          ])}
+          weight={1}
+          avatarIcon={IconName.Key}
+          key={`snapInstallWarningPermissionCellKeyEntropy_${permission.permissionName}`}
+          hideStatus
+          margin={0}
         />
       </Box>
-      <Text
-        paddingBottom={6}
-        textAlign={TextAlign.Center}
-        variant={TextVariant.headingMd}
-        as="h2"
-      >
-        {t('snapInstallWarningHeading')}
-      </Text>
-      <Text paddingBottom={6} textAlign={TextAlign.Center}>
-        {warnings.length > 1
-          ? t('snapInstallWarningCheckPlural', [
-              <Text
-                key="snapNameInWarningDescription"
-                fontWeight={FontWeight.Medium}
-                as="span"
-              >
-                {snapName}
-              </Text>,
-            ])
-          : t('snapInstallWarningCheck', [
+    );
+  }
+
+  const criticalPermissions = {
+    publicKey: {
+      name: 'snapInstallWarningPermissionNameForViewPublicKey',
+      title: 'snapInstallWarningPermissionNameForViewPublicKey',
+      description: 'snapInstallWarningPermissionDescriptionForBip32View',
+    },
+    entropy: {
+      name: 'snapInstallWarningPermissionNameForEntropy',
+      title: 'snapInstallWarningPermissionNameForEntropy',
+      description: 'snapInstallWarningPermissionDescriptionForEntropy',
+    },
+  };
+
+  // Filter and group warnings based on permission name
+  const bip32PublicKeyPermissionWarnings = warnings.filter(
+    (warning) => warning.permissionName === 'snap_getBip32PublicKey',
+  );
+  const bip32bip44EntropyPermissionWarnings = warnings.filter(
+    (warning) =>
+      warning.permissionName === 'snap_getBip32Entropy' ||
+      warning.permissionName === 'snap_getBip44Entropy',
+  );
+
+  return (
+    <Modal onClose={onCancel} isOpen={isOpen} className="snap-install-warning">
+      <ModalContent>
+        <ModalHeader onClose={onCancel}>
+          <Box
+            display={Display.Flex}
+            justifyContent={JustifyContent.center}
+            marginBottom={4}
+          >
+            <AvatarIcon
+              iconName={IconName.Danger}
+              backgroundColor={BackgroundColor.warningMuted}
+              color={IconColor.warningDefault}
+              size={AvatarIconSize.Xl}
+            />
+          </Box>
+        </ModalHeader>
+        <ModalBody>
+          <Text
+            paddingBottom={4}
+            textAlign={TextAlign.Center}
+            variant={TextVariant.headingMd}
+            as="h2"
+          >
+            {t('snapInstallWarningHeading')}
+          </Text>
+          <Text paddingBottom={4} textAlign={TextAlign.Left}>
+            {t('snapInstallWarningCheck', [
               <Text
                 key="snapNameInWarningDescription"
                 fontWeight={FontWeight.Medium}
@@ -118,25 +222,51 @@ export default function SnapInstallWarning({
                 {snapName}
               </Text>,
             ])}
-      </Text>
-      {warnings.map((warning, i) => (
-        <div
-          className={classnames('checkbox-label', {
-            'checkbox-label--first': i === 0,
-          })}
-          key={warning.id}
-        >
-          <CheckBox
-            checked={checkboxState[warning.id] ?? false}
-            id={warning.id}
-            onClick={() => onCheckboxClicked(warning.id)}
-          />
-          <label htmlFor={warning.id}>
-            <Text variant={TextVariant.bodyMd}>{warning.message}</Text>
-          </label>
-        </div>
-      ))}
-    </Popover>
+          </Text>
+          {bip32bip44EntropyPermissionWarnings.length > 0 &&
+            constructWarningPermissionCell(
+              bip32bip44EntropyPermissionWarnings,
+              criticalPermissions.entropy,
+            )}
+          {bip32PublicKeyPermissionWarnings.length > 0 &&
+            constructWarningPermissionCell(
+              bip32PublicKeyPermissionWarnings,
+              criticalPermissions.publicKey,
+            )}
+          <Box
+            display={Display.Flex}
+            justifyContent={JustifyContent.flexStart}
+            alignItems={AlignItems.center}
+            marginTop={4}
+            padding={4}
+            borderRadius={BorderRadius.SM}
+            backgroundColor={
+              userAgree
+                ? BackgroundColor.infoMuted
+                : BackgroundColor.backgroundAlternative
+            }
+          >
+            <Checkbox
+              isRequired
+              onChange={() => setUserAgree((state) => !state)}
+              isChecked={userAgree}
+              label={
+                <Text as="span">
+                  Install{' '}
+                  <Text as="span" fontWeight={FontWeight.Medium}>
+                    {snapName}
+                  </Text>
+                </Text>
+              }
+            />
+          </Box>
+        </ModalBody>
+        <ModalFooter
+          onSubmit={onConfirm}
+          submitButtonProps={{ children: t('confirm'), disabled: !userAgree }}
+        />
+      </ModalContent>
+    </Modal>
   );
 }
 
@@ -153,8 +283,12 @@ SnapInstallWarning.propTypes = {
    * warnings list
    */
   warnings: PropTypes.arrayOf({
-    message: PropTypes.node,
     id: PropTypes.string,
+    permissionName: PropTypes.string,
+    warningMessageSubject: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.element,
+    ]),
   }),
   /**
    * Snap name

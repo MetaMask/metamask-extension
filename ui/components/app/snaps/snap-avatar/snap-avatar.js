@@ -6,11 +6,10 @@ import {
   TextColor,
   IconColor,
   AlignItems,
-  DISPLAY,
+  Display,
   JustifyContent,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
-import { getSnapName } from '../../../../helpers/utils/util';
 import {
   AvatarFavicon,
   BadgeWrapper,
@@ -20,7 +19,10 @@ import {
   IconName,
   IconSize,
 } from '../../../component-library';
-import { getTargetSubjectMetadata } from '../../../../selectors';
+import {
+  getSnapMetadata,
+  getTargetSubjectMetadata,
+} from '../../../../selectors';
 
 const SnapAvatar = ({
   snapId,
@@ -33,11 +35,14 @@ const SnapAvatar = ({
     getTargetSubjectMetadata(state, snapId),
   );
 
-  const friendlyName = snapId && getSnapName(snapId, subjectMetadata);
+  const { name: snapName } = useSelector((state) =>
+    getSnapMetadata(state, snapId),
+  );
 
   const iconUrl = subjectMetadata?.iconUrl;
 
-  const fallbackIcon = friendlyName && friendlyName[0] ? friendlyName[0] : '?';
+  // We choose the first non-symbol char as the fallback icon.
+  const fallbackIcon = snapName?.match(/[a-z0-9]/iu)?.[0] ?? '?';
 
   return (
     <BadgeWrapper
@@ -50,7 +55,6 @@ const SnapAvatar = ({
           borderColor={BackgroundColor.backgroundDefault}
           borderWidth={borderWidth}
           iconProps={{
-            size: badgeSize,
             color: IconColor.infoInverse,
           }}
         />
@@ -58,15 +62,21 @@ const SnapAvatar = ({
       position={BadgeWrapperPosition.bottomRight}
     >
       {iconUrl ? (
-        <AvatarFavicon size={avatarSize} src={iconUrl} name={friendlyName} />
+        <AvatarFavicon
+          backgroundColor={BackgroundColor.backgroundAlternative}
+          size={avatarSize}
+          src={iconUrl}
+          name={snapName}
+        />
       ) : (
         <AvatarBase
           size={avatarSize}
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.center}
           color={TextColor.textAlternative}
           style={{ borderWidth: '0px' }}
+          backgroundColor={BackgroundColor.backgroundAlternative}
         >
           {fallbackIcon}
         </AvatarBase>

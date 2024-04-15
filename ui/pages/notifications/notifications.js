@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { formatDate } from '../../helpers/utils/util';
+import { SnapUIMarkdown } from '../../components/app/snaps/snap-ui-markdown';
+import { formatDate, getSnapRoute } from '../../helpers/utils/util';
 import {
   getNotifications,
-  getSnapsRouteObjects,
+  getSnapMetadata,
   getUnreadNotifications,
 } from '../../selectors';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
@@ -23,18 +24,17 @@ import {
 } from '../../components/component-library';
 import { Color } from '../../helpers/constants/design-system';
 
-export function NotificationItem({ notification, snaps, onItemClick }) {
+export function NotificationItem({ notification, onItemClick }) {
   const { message, origin, createdDate, readDate } = notification;
   const history = useHistory();
   const t = useI18nContext();
-
-  const snap = snaps.find(({ id: snapId }) => {
-    return snapId === origin;
-  });
+  const { name: snapName } = useSelector((state) =>
+    getSnapMetadata(state, origin),
+  );
 
   const handleNameClick = (e) => {
     e.stopPropagation();
-    history.push(snap.route);
+    history.push(getSnapRoute(origin));
   };
 
   const handleItemClick = () => onItemClick(notification);
@@ -48,12 +48,14 @@ export function NotificationItem({ notification, snaps, onItemClick }) {
         )}
       />
       <div className="notifications__item__details">
-        <p className="notifications__item__details__message">{message}</p>
+        <div className="notifications__item__details__message">
+          <SnapUIMarkdown markdown>{message}</SnapUIMarkdown>
+        </div>
         <p className="notifications__item__details__infos">
           {t('notificationsInfos', [
             formatDate(createdDate, "LLLL d',' yyyy 'at' t"),
             <Button type="inline" onClick={handleNameClick} key="button">
-              {snap.tabMessage()}
+              {snapName}
             </Button>,
           ])}
         </p>
@@ -67,7 +69,6 @@ export default function Notifications() {
   const dispatch = useDispatch();
   const t = useI18nContext();
   const notifications = useSelector(getNotifications);
-  const snapsRouteObject = useSelector(getSnapsRouteObjects);
   const unreadNotifications = useSelector(getUnreadNotifications);
 
   const markAllAsRead = () => {
@@ -119,7 +120,6 @@ export default function Notifications() {
           notifications.map((notification, id) => (
             <NotificationItem
               notification={notification}
-              snaps={snapsRouteObject}
               key={id}
               onItemClick={markAsRead}
             />
@@ -142,6 +142,5 @@ NotificationItem.propTypes = {
     createdDate: PropTypes.number.isRequired,
     readDate: PropTypes.number,
   }),
-  snaps: PropTypes.array.isRequired,
   onItemClick: PropTypes.func.isRequired,
 };

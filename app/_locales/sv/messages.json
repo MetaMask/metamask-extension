@@ -169,9 +169,6 @@
   "copyAddress": {
     "message": "Kopiera adress till urklipp"
   },
-  "copyPrivateKey": {
-    "message": "Det här är din privata nyckel (klicka för att kopiera)"
-  },
   "copyToClipboard": {
     "message": "Kopiera till Urklipp"
   },
@@ -208,9 +205,6 @@
   "deleteNetwork": {
     "message": "Radera nätverk?"
   },
-  "deleteNetworkDescription": {
-    "message": "Är du säker på att du vill ta bort detta nätverk?"
-  },
   "details": {
     "message": "Info"
   },
@@ -232,14 +226,8 @@
   "editContact": {
     "message": "Redigera kontakt"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS-namnet hittades inte i det aktuella nätverket. Prova att byta till Ethereum Mainnet."
-  },
   "ensRegistrationError": {
     "message": "Fel i ENS-namnregistrering"
-  },
-  "enterPassword": {
-    "message": "Ange lösenord"
   },
   "enterPasswordContinue": {
     "message": "Ange lösenord för att fortsätta"
@@ -252,9 +240,6 @@
   },
   "expandView": {
     "message": "Expandera vy"
-  },
-  "exportPrivateKey": {
-    "message": "Exportera privat nyckel"
   },
   "failed": {
     "message": "Misslyckades"
@@ -608,12 +593,6 @@
   "search": {
     "message": "Sök"
   },
-  "searchResults": {
-    "message": "Sökresultat"
-  },
-  "searchTokens": {
-    "message": "Sök tokens"
-  },
   "securityAndPrivacy": {
     "message": "Säkerhet och integritet"
   },
@@ -652,9 +631,6 @@
   },
   "showHexDataDescription": {
     "message": "Välj detta för att visa hex-datafältet på sändarskärmen"
-  },
-  "showPrivateKeys": {
-    "message": "Visa privata nycklar"
   },
   "sigRequest": {
     "message": "Signaturförfrågan"
@@ -767,9 +743,6 @@
   "tryAgain": {
     "message": "Försök igen"
   },
-  "typePassword": {
-    "message": "Ange ditt MetaMask-lösenord"
-  },
   "unapproved": {
     "message": "Inte godkänd"
   },
@@ -778,12 +751,6 @@
   },
   "unknown": {
     "message": "okänt"
-  },
-  "unknownCameraError": {
-    "message": "Ett fel inträffade när din kamera försökte användas. Försök igen..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Hoppsan! Något gick fel..."
   },
   "unknownNetwork": {
     "message": "Okänt privatnätverk"

@@ -19,8 +19,7 @@ describe('Reveal SRP through settings', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        title: this.test.title,
-        failOnConsoleError: false,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await passwordUnlockOpenSRPRevealQuiz(driver);
@@ -40,7 +39,7 @@ describe('Reveal SRP through settings', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await passwordUnlockOpenSRPRevealQuiz(driver);
@@ -78,7 +77,7 @@ describe('Reveal SRP through settings', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await passwordUnlockOpenSRPRevealQuiz(driver);

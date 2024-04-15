@@ -28,15 +28,11 @@ exports[`Confirm Reset Account should match snapshot 1`] = `
     >
       <button
         class="button btn--rounded btn-secondary modal-container__footer-button"
-        role="button"
-        tabindex="0"
       >
         [nevermind]
       </button>
       <button
         class="button btn--rounded btn-danger-primary modal-container__footer-button"
-        role="button"
-        tabindex="0"
       >
         [clear]
       </button>

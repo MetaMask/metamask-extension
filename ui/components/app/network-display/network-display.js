@@ -22,6 +22,15 @@ import { Icon, IconName, IconSize } from '../../component-library';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { getNetworkLabelKey } from '../../../helpers/utils/i18n-helper';
 
+/**
+ * @deprecated The `<NetworkDisplay />` component has been deprecated in favor of the new `<PickerNetwork>` component from the component-library.
+ * Please update your code to use the new `<PickerNetwork>` component instead, which can be found at ui/components/component-library/picker-network/picker-network.tsx.
+ * You can find documentation for the new `PickerNetwork` component in the MetaMask Storybook:
+ * {@link https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-pickernetwork--docs}
+ * If you would like to help with the replacement of the old `NetworkDisplay` component, please submit a pull request against this GitHub issue:
+ * {@link https://github.com/MetaMask/metamask-extension/issues/20485}
+ */
+
 export default function NetworkDisplay({
   indicatorSize,
   disabled,

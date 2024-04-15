@@ -1,7 +1,8 @@
 import React from 'react';
+import { SETTINGS_CONSTANTS } from '../constants/settings';
 import {
   getSettingsRoutes,
-  getNumberOfSettingsInSection,
+  getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
 } from './settings-search';
 
@@ -35,6 +36,8 @@ const t = (key) => {
       return 'Select this to show gas price and limit controls directly on the send and confirm screens.';
     case 'showHexData':
       return 'Show hex data';
+    case 'smartTransactions':
+      return 'Smart transactions';
     case 'showHexDataDescription':
       return 'Select this to show the hex data field on the send screen';
     case 'showFiatConversionInTestnets':
@@ -57,8 +60,6 @@ const t = (key) => {
       return 'IPFS Gateway';
     case 'ipfsGatewayDescription':
       return 'Enter the URL of the IPFS CID gateway to use for ENS content resolution.';
-    case 'preferredLedgerConnectionType':
-      return 'Preferred ledger connection type';
     case 'dismissReminderField':
       return 'Dismiss Secret Recovery Phrase backup reminder';
     case 'dismissReminderDescriptionField':
@@ -71,8 +72,6 @@ const t = (key) => {
       return 'Reveal Secret Recovery Phrase';
     case 'showIncomingTransactions':
       return 'Show incoming transactions';
-    case 'showIncomingTransactionsDescription':
-      return 'Select this to use Etherscan to show incoming transactions in the transactions list';
     case 'usePhishingDetection':
       return 'Use phishing detection';
     case 'usePhishingDetectionDescription':
@@ -103,13 +102,13 @@ const t = (key) => {
       return 'Autodetect tokens';
     case 'autoDetectTokensDescription':
       return 'We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want the app to pull data from those services.';
-    case 'enableOpenSeaAPI':
-      return 'Enable OpenSea API';
-    case 'enableOpenSeaAPIDescription':
-      return "Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off.";
+    case 'displayNftMedia':
+      return 'Display NFT media';
+    case 'displayNftMediaDescription':
+      return "Displaying NFT media and data exposes your IP address to OpenSea or other third parties. This can allow attackers to associate your IP address with your Ethereum address. NFT autodetection relies on this setting, and won't be available when this is turned off.";
     case 'useNftDetection':
       return 'Autodetect NFTs';
-    case 'useNftDetectionDescription':
+    case 'useNftDetectionDescriptionText':
       return 'Displaying NFTs media & data may expose your IP address to centralized servers. Third-party APIs (like OpenSea) are used to detect NFTs in your wallet. This exposes your account address with those services. Leave this disabled if you don’t want the app to pull data from those those services.';
     case 'about':
       return 'About';
@@ -143,54 +142,54 @@ const t = (key) => {
 };
 
 describe('Settings Search Utils', () => {
-  describe('settingsRoutes', () => {
+  describe('getSettingsRoutes', () => {
     it('should be an array of settings routes objects', () => {
-      expect(getSettingsRoutes().length).toBeGreaterThan(0);
+      expect(getSettingsRoutes()).toHaveLength(SETTINGS_CONSTANTS.length);
     });
   });
 
-  describe('getNumberOfSettingsInSection', () => {
-    it('should get good general section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('general'))).toStrictEqual(6);
+  describe('getNumberOfSettingRoutesInTab', () => {
+    it('returns "General" section count', () => {
+      expect(getNumberOfSettingRoutesInTab(t, t('general'))).toStrictEqual(6);
     });
 
-    it('should get good advanced section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('advanced'))).toStrictEqual(12);
+    it('returns "Advanced" section count', () => {
+      expect(getNumberOfSettingRoutesInTab(t, t('advanced'))).toStrictEqual(13);
     });
 
-    it('should get good contact section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('contacts'))).toStrictEqual(1);
+    it('returns "Contact" section count', () => {
+      expect(getNumberOfSettingRoutesInTab(t, t('contacts'))).toStrictEqual(1);
     });
 
-    it('should get good security & privacy section number', () => {
+    it('returns "Security & privacy" section count', () => {
       expect(
-        getNumberOfSettingsInSection(t, t('securityAndPrivacy')),
-      ).toStrictEqual(9);
+        getNumberOfSettingRoutesInTab(t, t('securityAndPrivacy')),
+      ).toStrictEqual(18);
     });
 
-    it('should get good alerts section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('alerts'))).toStrictEqual(2);
+    it('returns "Alerts" section count', () => {
+      expect(getNumberOfSettingRoutesInTab(t, t('alerts'))).toStrictEqual(2);
     });
 
-    it('should get good network section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('networks'))).toStrictEqual(6);
+    it('returns "Network" section count', () => {
+      expect(getNumberOfSettingRoutesInTab(t, t('networks'))).toStrictEqual(7);
     });
 
-    it('should get good experimental section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('experimental'))).toStrictEqual(
+    it('returns "Experimental" section count', () => {
+      expect(getNumberOfSettingRoutesInTab(t, t('experimental'))).toStrictEqual(
         3,
       );
     });
 
-    it('should get good about section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('about'))).toStrictEqual(9);
+    it('returns "About" section count', () => {
+      expect(getNumberOfSettingRoutesInTab(t, t('about'))).toStrictEqual(9);
     });
   });
 
   // Can't be tested without DOM element
   describe('handleSettingsRefs', () => {
     it('should handle general refs', () => {
-      const settingsRefs = Array(getNumberOfSettingsInSection(t, t('general')))
+      const settingsRefs = Array(getNumberOfSettingRoutesInTab(t, t('general')))
         .fill(undefined)
         .map(() => {
           return React.createRef();

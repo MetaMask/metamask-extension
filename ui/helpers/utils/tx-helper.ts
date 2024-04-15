@@ -1,16 +1,28 @@
 import log from 'loglevel';
-import { transactionMatchesNetwork } from '../../../shared/modules/transaction.utils';
 import { valuesFor } from './util';
 
 export default function txHelper(
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   unapprovedTxs: Record<string, any> | null,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   unapprovedMsgs: Record<string, any> | null,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   personalMsgs: Record<string, any> | null,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   decryptMsgs: Record<string, any> | null,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   encryptionPublicKeyMsgs: Record<string, any> | null,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   typedMessages: Record<string, any> | null,
-  networkId?: string | null,
   chainId?: string,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Record<string, any> {
   log.debug('tx-helper called with params:');
   log.debug({
@@ -20,14 +32,11 @@ export default function txHelper(
     decryptMsgs,
     encryptionPublicKeyMsgs,
     typedMessages,
-    networkId,
     chainId,
   });
 
-  const txValues = networkId
-    ? valuesFor(unapprovedTxs).filter((txMeta) =>
-        transactionMatchesNetwork(txMeta, chainId, networkId),
-      )
+  const txValues = chainId
+    ? valuesFor(unapprovedTxs).filter((txMeta) => txMeta.chainId === chainId)
     : valuesFor(unapprovedTxs);
 
   const msgValues = valuesFor(unapprovedMsgs);

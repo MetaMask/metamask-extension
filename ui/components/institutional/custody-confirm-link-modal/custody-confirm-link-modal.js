@@ -11,7 +11,7 @@ import withModalProps from '../../../helpers/higher-order-components/with-modal-
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 import { setSelectedAddress } from '../../../store/actions';
-import { getMetaMaskAccountsRaw } from '../../../selectors';
+import { getInternalAccounts } from '../../../selectors';
 import {
   getMMIAddressFromModalOrAddress,
   getCustodyAccountDetails,
@@ -30,27 +30,26 @@ import {
   Button,
   BUTTON_VARIANT,
   Modal,
-  ModalHeader,
-  ModalContent,
   ModalOverlay,
   Text,
   Box,
 } from '../../component-library';
+import { ModalContent } from '../../component-library/modal-content/deprecated';
+import { ModalHeader } from '../../component-library/modal-header/deprecated';
 
 const CustodyConfirmLink = ({ hideModal }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const mmiActions = mmiActionsFactory();
   const trackEvent = useContext(MetaMetricsContext);
-  const mmiAccounts = useSelector(getMetaMaskAccountsRaw);
+  const mmiAccounts = useSelector(getInternalAccounts);
   const address = useSelector(getMMIAddressFromModalOrAddress);
   const custodyAccountDetails = useSelector(getCustodyAccountDetails);
   const { custodians } = useSelector(getMMIConfiguration);
   const { custodianName } =
     custodyAccountDetails[toChecksumHexAddress(address)] || {};
-  const { displayName, iconUrl } = custodians.find(
-    (item) => item.name === custodianName || {},
-  );
+  const { displayName, iconUrl } =
+    custodians.find((item) => item.envName === custodianName) || {};
   const { url, ethereum, text, action } = useSelector(
     (state) => state.appState.modal.modalState.props.link || {},
   );
@@ -61,9 +60,9 @@ const CustodyConfirmLink = ({ hideModal }) => {
     }
 
     if (ethereum) {
-      const ethAccount = Object.keys(mmiAccounts).find((account) =>
-        ethereum.accounts.includes(account.toLowerCase()),
-      );
+      const ethAccount = Object.values(mmiAccounts)
+        .map((internalAccount) => internalAccount.address)
+        .find((account) => ethereum.accounts.includes(account.toLowerCase()));
 
       ethAccount && dispatch(setSelectedAddress(ethAccount.toLowerCase()));
     }

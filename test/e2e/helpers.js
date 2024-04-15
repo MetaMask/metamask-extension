@@ -1,17 +1,22 @@
 const { strict: assert } = require('assert');
 const path = require('path');
-const { promises: fs } = require('fs');
+const { promises: fs, writeFileSync, readFileSync } = require('fs');
 const BigNumber = require('bignumber.js');
 const mockttp = require('mockttp');
+const detectPort = require('detect-port');
+const { difference } = require('lodash');
 const createStaticServer = require('../../development/create-static-server');
 const { tEn } = require('../lib/i18n-helpers');
 const { setupMocking } = require('./mock-e2e');
-const Ganache = require('./ganache');
+const { Ganache } = require('./ganache');
 const FixtureServer = require('./fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
 const { PAGES } = require('./webdriver/driver');
 const GanacheSeeder = require('./seeder/ganache-seeder');
+const { Bundler } = require('./bundler');
+const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
+const { ERC_4337_ACCOUNT } = require('./constants');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -26,6 +31,8 @@ const createDownloadFolder = async (downloadsFolder) => {
 
 const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
 
+const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
+
 async function withFixtures(options, testSuite) {
   const {
     dapp,
@@ -35,18 +42,22 @@ async function withFixtures(options, testSuite) {
     driverOptions,
     dappOptions,
     title,
-    failOnConsoleError = true,
+    ignoredConsoleErrors = [],
     dappPath = undefined,
     dappPaths,
     testSpecificMock = function () {
       // do nothing.
     },
+    useBundler,
+    usePaymaster,
   } = options;
+
   const fixtureServer = new FixtureServer();
   const ganacheServer = new Ganache();
+  const bundlerServer = new Bundler();
   const https = await mockttp.generateCACertificate();
   const mockServer = mockttp.getLocal({ https, cors: true });
-  let secondaryGanacheServer;
+  const secondaryGanacheServer = [];
   let numberOfDapps = dapp ? 1 : 0;
   const dappServer = [];
   const phishingPageServer = new PhishingWarningPageServer();
@@ -65,16 +76,24 @@ async function withFixtures(options, testSuite) {
     }
 
     if (ganacheOptions?.concurrent) {
-      const { port, chainId, ganacheOptions2 } = ganacheOptions.concurrent;
-      secondaryGanacheServer = new Ganache();
-      await secondaryGanacheServer.start({
-        blockTime: 2,
-        chain: { chainId },
-        port,
-        vmErrorsOnRPCResponse: false,
-        ...ganacheOptions2,
+      ganacheOptions.concurrent.forEach(async (ganacheSettings) => {
+        const { port, chainId, ganacheOptions2 } = ganacheSettings;
+        const server = new Ganache();
+        secondaryGanacheServer.push(server);
+        await server.start({
+          blockTime: 2,
+          chain: { chainId },
+          port,
+          vmErrorsOnRPCResponse: false,
+          ...ganacheOptions2,
+        });
       });
     }
+
+    if (useBundler) {
+      await initBundler(bundlerServer, ganacheServer, usePaymaster);
+    }
+
     await fixtureServer.start();
     fixtureServer.loadJsonState(fixtures, contractRegistry);
     await phishingPageServer.start();
@@ -105,17 +124,26 @@ async function withFixtures(options, testSuite) {
         });
       }
     }
-    const mockedEndpoint = await setupMocking(mockServer, testSpecificMock, {
-      chainId: ganacheOptions?.chainId || 1337,
-    });
+    const { mockedEndpoint, getPrivacyReport } = await setupMocking(
+      mockServer,
+      testSpecificMock,
+      {
+        chainId: ganacheOptions?.chainId || 1337,
+      },
+    );
+    if ((await detectPort(8000)) !== 8000) {
+      throw new Error(
+        'Failed to set up mock server, something else may be running on port 8000.',
+      );
+    }
     await mockServer.start(8000);
 
     driver = (await buildWebDriver(driverOptions)).driver;
     webDriver = driver.driver;
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {
-      await driver.checkBrowserForExceptions(failOnConsoleError);
-      await driver.checkBrowserForConsoleErrors(failOnConsoleError);
+      await driver.checkBrowserForExceptions(ignoredConsoleErrors);
+      await driver.checkBrowserForConsoleErrors(ignoredConsoleErrors);
     }
 
     let driverProxy;
@@ -128,7 +156,7 @@ async function withFixtures(options, testSuite) {
               console.log(
                 `[driver] Called '${prop}' with arguments ${JSON.stringify(
                   args,
-                )}`,
+                ).slice(0, 200)}`, // limit the length of the log entry to 200 characters
               );
               return originalProperty.bind(target)(...args);
             };
@@ -138,22 +166,77 @@ async function withFixtures(options, testSuite) {
       });
     }
 
+    console.log(`\nExecuting testcase: '${title}'\n`);
+
     await testSuite({
       driver: driverProxy ?? driver,
       contractRegistry,
       ganacheServer,
       secondaryGanacheServer,
       mockedEndpoint,
+      bundlerServer,
+      mockServer,
     });
+
+    const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
+    if (errorsAndExceptions) {
+      throw new Error(errorsAndExceptions);
+    }
+
+    // At this point the suite has executed successfully, so we can log out a success message
+    // (Note: a Chrome browser error will unfortunately pop up after this success message)
+    console.log(`\nSuccess on testcase: '${title}'\n`);
+
+    // Evaluate whether any new hosts received network requests during E2E test
+    // suite execution. If so, fail the test unless the
+    // --update-privacy-snapshot was specified. In that case, update the
+    // snapshot file.
+    const privacySnapshotRaw = readFileSync('./privacy-snapshot.json');
+    const privacySnapshot = JSON.parse(privacySnapshotRaw);
+    const privacyReport = getPrivacyReport();
+
+    // We must add to our privacyReport all of the known hosts that are
+    // included in the privacySnapshot. If no new hosts were requested during
+    // this test suite execution, then the mergedReport and the privacySnapshot
+    // should be identical.
+    const mergedReport = [
+      ...new Set([...privacyReport, ...privacySnapshot]),
+    ].sort();
+
+    // To determine if a new host was requested, we use the lodash difference
+    // method to generate an array of the items included in the first argument
+    // but not in the second
+    const newHosts = difference(mergedReport, privacySnapshot);
+
+    if (newHosts.length > 0) {
+      if (process.env.UPDATE_PRIVACY_SNAPSHOT === 'true') {
+        writeFileSync(
+          './privacy-snapshot.json',
+          JSON.stringify(mergedReport, null, 2),
+        );
+      } else {
+        throw new Error(
+          `A new host not contained in the privacy-snapshot received a network
+           request during test execution. Please update the privacy-snapshot
+           file by passing the --update-privacy-snapshot option to the test
+           command or add the new hosts to the snapshot manually.
+
+           New hosts found: ${newHosts}.`,
+        );
+      }
+    }
   } catch (error) {
     failed = true;
     if (webDriver) {
       try {
-        await driver.verboseReportOnFailure(title);
+        await driver.verboseReportOnFailure(title, error);
       } catch (verboseReportError) {
         console.error(verboseReportError);
       }
-      if (driver.errors.length > 0 || driver.exceptions.length > 0) {
+      if (
+        process.env.E2E_LEAVE_RUNNING !== 'true' &&
+        (driver.errors.length > 0 || driver.exceptions.length > 0)
+      ) {
         /**
          * Navigate to the background
          * forcing background exceptions to be captured
@@ -162,14 +245,28 @@ async function withFixtures(options, testSuite) {
         await driver.navigate(PAGES.BACKGROUND);
       }
     }
+
+    // Add information to the end of the error message that should surface in the "Tests" tab of CircleCI
+    if (process.env.CIRCLE_NODE_INDEX) {
+      error.message += `\n  (Ran on CircleCI Node ${process.env.CIRCLE_NODE_INDEX} of ${process.env.CIRCLE_NODE_TOTAL}, Job ${process.env.CIRCLE_JOB})`;
+    }
+
     throw error;
   } finally {
     if (!failed || process.env.E2E_LEAVE_RUNNING !== 'true') {
       await fixtureServer.stop();
       await ganacheServer.quit();
+
       if (ganacheOptions?.concurrent) {
-        await secondaryGanacheServer.quit();
+        secondaryGanacheServer.forEach(async (server) => {
+          await server.quit();
+        });
       }
+
+      if (useBundler) {
+        await bundlerServer.stop();
+      }
+
       if (webDriver) {
         await driver.quit();
       }
@@ -190,18 +287,37 @@ async function withFixtures(options, testSuite) {
       if (phishingPageServer.isRunning()) {
         await phishingPageServer.quit();
       }
-      await mockServer.stop();
+
+      // Since mockServer could be stop'd at another location,
+      // use a try/catch to avoid an error
+      try {
+        await mockServer.stop();
+      } catch (e) {
+        console.log('mockServer already stopped');
+      }
     }
   }
 }
 
+const WINDOW_TITLES = Object.freeze({
+  ExtensionInFullScreenView: 'MetaMask',
+  InstalledExtensions: 'Extensions',
+  Dialog: 'MetaMask Dialog',
+  Phishing: 'MetaMask Phishing Detection',
+  ServiceWorkerSettings: 'Inspect with Chrome Developer Tools',
+  SnapSimpleKeyringDapp: 'SSK - Simple Snap Keyring',
+  TestDApp: 'E2E Test Dapp',
+  TestSnaps: 'Test Snaps',
+  ERC4337Snap: 'Account Abstraction Snap',
+});
+
 /**
- * @param {*} driver - selinium driver
+ * @param {*} driver - Selenium driver
  * @param {*} handlesCount - total count of windows that should be loaded
  * @returns handles - an object with window handles, properties in object represent windows:
- *            1. extension: metamask extension window
+ *            1. extension: MetaMask extension window
  *            2. dapp: test-app window
- *            3. popup: metsmask extension popup window
+ *            3. popup: MetaMask extension popup window
  */
 const getWindowHandles = async (driver, handlesCount) => {
   await driver.waitUntilXWindowHandles(handlesCount);
@@ -209,7 +325,7 @@ const getWindowHandles = async (driver, handlesCount) => {
 
   const extension = windowHandles[0];
   const dapp = await driver.switchToWindowWithTitle(
-    'E2E Test Dapp',
+    WINDOW_TITLES.TestDApp,
     windowHandles,
   );
   const popup = windowHandles.find(
@@ -241,6 +357,7 @@ const importSRPOnboardingFlow = async (driver, seedPhrase, password) => {
   await driver.fill('[data-testid="create-password-confirm"]', password);
   await driver.clickElement('[data-testid="create-password-terms"]');
   await driver.clickElement('[data-testid="create-password-import"]');
+  await driver.assertElementNotPresent('.loading-overlay');
 };
 
 const completeImportSRPOnboardingFlow = async (
@@ -287,6 +404,9 @@ const completeImportSRPOnboardingFlowWordByWord = async (
   await driver.fill('[data-testid="create-password-confirm"]', password);
   await driver.clickElement('[data-testid="create-password-terms"]');
   await driver.clickElement('[data-testid="create-password-import"]');
+
+  // wait for loading to complete
+  await driver.assertElementNotPresent('.loading-overlay');
 
   // complete
   await driver.clickElement('[data-testid="onboarding-complete-done"]');
@@ -382,6 +502,20 @@ const onboardingCompleteWalletCreation = async (driver) => {
   await driver.clickElement('[data-testid="onboarding-complete-done"]');
 };
 
+const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
+  // wait for h2 to appear
+  await driver.findElement({ text: 'Wallet creation successful', tag: 'h2' });
+  // opt-out from third party API
+  await driver.clickElement({ text: 'Advanced configuration', tag: 'a' });
+  await Promise.all(
+    (
+      await driver.findClickableElements('.toggle-button.toggle-button--on')
+    ).map((toggle) => toggle.click()),
+  );
+  // complete onboarding
+  await driver.clickElement({ text: 'Done', tag: 'button' });
+};
+
 /**
  * Move through the steps of pinning extension after successful onboarding
  *
@@ -391,6 +525,17 @@ const onboardingPinExtension = async (driver) => {
   // pin extension
   await driver.clickElement('[data-testid="pin-extension-next"]');
   await driver.clickElement('[data-testid="pin-extension-done"]');
+};
+
+const completeCreateNewWalletOnboardingFlowWithOptOut = async (
+  driver,
+  password,
+) => {
+  await onboardingBeginCreateNewWallet(driver);
+  await onboardingChooseMetametricsOption(driver, false);
+  await onboardingCreatePassword(driver, password);
+  await onboardingRevealAndConfirmSRP(driver);
+  await onboardingCompleteWalletCreationWithOptOut(driver);
 };
 
 const completeCreateNewWalletOnboardingFlow = async (driver, password) => {
@@ -419,7 +564,7 @@ const importWrongSRPOnboardingFlow = async (driver, seedPhrase) => {
   );
 
   const warningText = 'Invalid Secret Recovery Phrase';
-  const warnings = await driver.findElements('.actionable-message__message');
+  const warnings = await driver.findElements('.import-srp__banner-alert-text');
   const warning = warnings[1];
 
   assert.equal(await warning.getText(), warningText);
@@ -441,16 +586,17 @@ const testSRPDropdownIterations = async (options, driver, iterations) => {
   }
 };
 
-const passwordUnlockOpenSRPRevealQuiz = async (driver) => {
-  await driver.navigate();
-  await driver.fill('#password', 'correct horse battery staple');
-  await driver.press('#password', driver.Key.ENTER);
-
+const openSRPRevealQuiz = async (driver) => {
   // navigate settings to reveal SRP
   await driver.clickElement('[data-testid="account-options-menu-button"]');
   await driver.clickElement({ text: 'Settings', tag: 'div' });
   await driver.clickElement({ text: 'Security & privacy', tag: 'div' });
   await driver.clickElement('[data-testid="reveal-seed-words"]');
+};
+
+const passwordUnlockOpenSRPRevealQuiz = async (driver) => {
+  await unlockWallet(driver);
+  await openSRPRevealQuiz(driver);
 };
 
 const completeSRPRevealQuiz = async (driver) => {
@@ -499,105 +645,187 @@ const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
     ? await driver.openNewPage(`${dappURL}/?contract=${contract}`)
     : await driver.openNewPage(dappURL);
 };
-const STALELIST_URL =
-  'https://static.metafi.codefi.network/api/v1/lists/stalelist.json';
 
-const emptyHtmlPage = `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>title</title>
-  </head>
-  <body>
-    Empty page
-  </body>
-</html>`;
+const createDappTransaction = async (driver, transaction) => {
+  await openDapp(
+    driver,
+    null,
+    `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([
+      transaction,
+    ])}`,
+  );
+};
 
-/**
- * Setup fetch mocks for the phishing detection feature.
- *
- * The mock configuration will show that "127.0.0.1" is blocked. The dynamic lookup on the warning
- * page can be customized, so that we can test both the MetaMask and PhishFort block cases.
- *
- * @param {import('mockttp').Mockttp} mockServer - The mock server.
- * @param {object} metamaskPhishingConfigResponse - The response for the dynamic phishing
- * configuration lookup performed by the warning page.
- */
-async function setupPhishingDetectionMocks(
-  mockServer,
-  metamaskPhishingConfigResponse,
-) {
-  await mockServer.forGet(STALELIST_URL).thenCallback(() => {
-    return {
-      statusCode: 200,
-      json: {
-        version: 2,
-        tolerance: 2,
-        fuzzylist: [],
-        allowlist: [],
-        blocklist: ['127.0.0.1'],
-        lastUpdated: 0,
-      },
-    };
+const switchToOrOpenDapp = async (
+  driver,
+  contract = null,
+  dappURL = DAPP_URL,
+) => {
+  try {
+    // Do an unusually fast switchToWindowWithTitle, just 1 second
+    await driver.switchToWindowWithTitle(
+      WINDOW_TITLES.TestDApp,
+      null,
+      1000,
+      1000,
+    );
+  } catch {
+    await openDapp(driver, contract, dappURL);
+  }
+};
+
+const connectToDapp = async (driver) => {
+  await openDapp(driver);
+  // Connect to dapp
+  await driver.clickElement({
+    text: 'Connect',
+    tag: 'button',
   });
 
-  await mockServer
-    .forGet('https://github.com/MetaMask/eth-phishing-detect/issues/new')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        body: emptyHtmlPage,
-      };
-    });
-  await mockServer
-    .forGet('https://github.com/phishfort/phishfort-lists/issues/new')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        body: emptyHtmlPage,
-      };
-    });
-
-  await mockServer
-    .forGet(
-      'https://raw.githubusercontent.com/MetaMask/eth-phishing-detect/master/src/config.json',
-    )
-    .thenCallback(() => metamaskPhishingConfigResponse);
-}
-
-function mockPhishingDetection(mockServer) {
-  setupPhishingDetectionMocks(mockServer, {
-    statusCode: 200,
-    json: {
-      version: 2,
-      tolerance: 2,
-      fuzzylist: [],
-      whitelist: [],
-      blacklist: ['127.0.0.1'],
-      lastUpdated: 0,
-    },
+  await switchToNotificationWindow(driver);
+  await driver.clickElement({
+    text: 'Next',
+    tag: 'button',
   });
-}
+  await driver.clickElement({
+    text: 'Connect',
+    tag: 'button',
+  });
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+};
 
 const PRIVATE_KEY =
   '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
 
-const generateETHBalance = (eth) => convertToHexValue(eth * 10 ** 18);
+const PRIVATE_KEY_TWO =
+  '0xa444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8';
+
+const ACCOUNT_1 = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
+const ACCOUNT_2 = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
+
 const defaultGanacheOptions = {
-  accounts: [{ secretKey: PRIVATE_KEY, balance: generateETHBalance(25) }],
+  accounts: [{ secretKey: PRIVATE_KEY, balance: convertETHToHexGwei(25) }],
 };
 
-const SERVICE_WORKER_URL = 'chrome://inspect/#service-workers';
+const multipleGanacheOptions = {
+  accounts: [
+    {
+      secretKey: PRIVATE_KEY,
+      balance: convertETHToHexGwei(25),
+    },
+    {
+      secretKey: PRIVATE_KEY_TWO,
+      balance: convertETHToHexGwei(25),
+    },
+  ],
+};
 
-const sendTransaction = async (driver, recipientAddress, quantity) => {
+const generateGanacheOptions = ({
+  secretKey = PRIVATE_KEY,
+  balance = convertETHToHexGwei(25),
+  ...otherProps
+}) => {
+  const accounts = [
+    {
+      secretKey,
+      balance,
+    },
+  ];
+
+  return {
+    accounts,
+    ...otherProps, // eg: hardfork
+  };
+};
+
+// Edit priority gas fee form
+const editGasFeeForm = async (driver, gasLimit, gasPrice) => {
+  const inputs = await driver.findElements('input[type="number"]');
+  const gasLimitInput = inputs[0];
+  const gasPriceInput = inputs[1];
+  await gasLimitInput.fill(gasLimit);
+  await gasPriceInput.fill(gasPrice);
+  await driver.clickElement({ text: 'Save', tag: 'button' });
+};
+
+const openActionMenuAndStartSendFlow = async (driver) => {
   await driver.clickElement('[data-testid="eth-overview-send"]');
+};
+
+const sendScreenToConfirmScreen = async (
+  driver,
+  recipientAddress,
+  quantity,
+) => {
+  await openActionMenuAndStartSendFlow(driver);
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
   await driver.fill('.unit-input__input', quantity);
-  await driver.clickElement('[data-testid="page-container-footer-next"]');
-  await driver.clickElement('[data-testid="page-container-footer-next"]');
-  await driver.clickElement('[data-testid="home__activity-tab"]');
-  await driver.waitForElementNotPresent('.transaction-list-item--unconfirmed');
-  await driver.findElement('.transaction-list-item');
+  if (process.env.MULTICHAIN) {
+    // check if element exists and click it
+    await driver
+      .findElement({
+        text: 'I understand',
+        tag: 'button',
+      })
+      .then(
+        (_found) => {
+          driver.clickElement({
+            text: 'I understand',
+            tag: 'button',
+          });
+        },
+        (error) => {
+          console.error('Element not found.', error);
+        },
+      );
+
+    await driver.clickElement({
+      text: 'Continue',
+      tag: 'button',
+    });
+  } else {
+    await driver.clickElement({
+      text: 'Next',
+      tag: 'button',
+      css: '[data-testid="page-container-footer-next"]',
+    });
+  }
+};
+
+const sendTransaction = async (
+  driver,
+  recipientAddress,
+  quantity,
+  isAsyncFlow = false,
+) => {
+  // TODO: Update Test when Multichain Send Flow is added
+  if (process.env.MULTICHAIN) {
+    return;
+  }
+  await openActionMenuAndStartSendFlow(driver);
+  await driver.fill('[data-testid="ens-input"]', recipientAddress);
+  await driver.fill('.unit-input__input', quantity);
+
+  // We need to wait for the text "Max Fee: 0.000xxxx ETH" before continuing
+  await driver.findElement({ text: '0.000', tag: 'span' });
+
+  await driver.clickElement({
+    text: 'Next',
+    tag: 'button',
+    css: '[data-testid="page-container-footer-next"]',
+  });
+  await driver.clickElement({
+    text: 'Confirm',
+    tag: 'button',
+    css: '[data-testid="page-container-footer-next"]',
+  });
+
+  // the default is to do this block, but if we're testing an async flow, it would get stuck here
+  if (!isAsyncFlow) {
+    await driver.clickElement('[data-testid="home__activity-tab"]');
+    await driver.assertElementNotPresent('.transaction-list-item--unconfirmed');
+    await driver.findElement('.transaction-list-item');
+  }
 };
 
 const findAnotherAccountFromAccountList = async (
@@ -622,62 +850,53 @@ const TEST_SEED_PHRASE =
 const TEST_SEED_PHRASE_TWO =
   'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
 
-// Usually happens when onboarded to make sure the state is retrieved from metamaskState properly
-const assertAccountBalanceForDOM = async (driver, ganacheServer) => {
-  const balance = await ganacheServer.getBalance();
-  const balanceElement = await driver.findElement(
-    '[data-testid="eth-overview__primary-currency"]',
-  );
-  assert.equal(`${balance}\nETH`, await balanceElement.getText());
-};
-
-// Usually happens after txn is made
+// Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or after txn is made
 const locateAccountBalanceDOM = async (driver, ganacheServer) => {
   const balance = await ganacheServer.getBalance();
-  await driver.waitForSelector({
+
+  await driver.findElement({
     css: '[data-testid="eth-overview__primary-currency"]',
     text: `${balance} ETH`,
   });
 };
-const DEFAULT_PRIVATE_KEY =
-  '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
+
 const WALLET_PASSWORD = 'correct horse battery staple';
 
-const DEFAULT_GANACHE_OPTIONS = {
-  accounts: [
-    {
-      secretKey: DEFAULT_PRIVATE_KEY,
-      balance: generateETHBalance(25),
-    },
-  ],
-};
-
-const generateGanacheOptions = (overrides) => ({
-  ...DEFAULT_GANACHE_OPTIONS,
-  ...overrides,
-});
-
 async function waitForAccountRendered(driver) {
-  await driver.waitForSelector(
-    '[data-testid="eth-overview__primary-currency"]',
-  );
+  await driver.findElement('[data-testid="eth-overview__primary-currency"]');
 }
-const WINDOW_TITLES = Object.freeze({
-  ExtensionInFullScreenView: 'MetaMask',
-  TestDApp: 'E2E Test Dapp',
-  Notification: 'MetaMask Notification',
-  ServiceWorkerSettings: 'Inspect with Chrome Developer Tools',
-  InstalledExtensions: 'Extensions',
-});
 
-const unlockWallet = async (driver) => {
-  await driver.fill('#password', 'correct horse battery staple');
+/**
+ * Unlock the wallet with the default password.
+ *
+ * @param {WebDriver} driver - The webdriver instance
+ * @param {object} options - Options for unlocking the wallet
+ * @param {boolean} options.navigate - Whether to navigate to the root page prior to unlocking. Defaults to true.
+ * @param {boolean} options.waitLoginSuccess - Whether to wait for the login to succeed. Defaults to true.
+ */
+async function unlockWallet(
+  driver,
+  options = {
+    navigate: true,
+    waitLoginSuccess: true,
+  },
+) {
+  if (options.navigate !== false) {
+    await driver.navigate();
+  }
+
+  await driver.fill('#password', WALLET_PASSWORD);
   await driver.press('#password', driver.Key.ENTER);
-};
+
+  if (options.waitLoginSuccess !== false) {
+    // No guard is necessary here, because it goes from present to absent
+    await driver.assertElementNotPresent('[data-testid="unlock-page"]');
+  }
+}
 
 const logInWithBalanceValidation = async (driver, ganacheServer) => {
   await unlockWallet(driver);
-  await assertAccountBalanceForDOM(driver, ganacheServer);
+  await locateAccountBalanceDOM(driver, ganacheServer);
 };
 
 function roundToXDecimalPlaces(number, decimalPlaces) {
@@ -692,36 +911,66 @@ function generateRandNumBetween(x, y) {
   return randomNumber;
 }
 
-async function sleepSeconds(sec) {
-  return new Promise((resolve) => setTimeout(resolve, sec * 1000));
-}
-
-async function terminateServiceWorker(driver) {
-  await driver.openNewPage(SERVICE_WORKER_URL);
-
-  await driver.waitForSelector({
-    text: 'Service workers',
-    tag: 'button',
-  });
-  await driver.clickElement({
-    text: 'Service workers',
-    tag: 'button',
-  });
-
-  await driver.delay(tinyDelayMs);
-  const serviceWorkerElements = await driver.findClickableElements({
-    text: 'terminate',
-    tag: 'span',
-  });
-
-  // 1st one is app-init.js; while 2nd one is service-worker.js
-  await serviceWorkerElements[serviceWorkerElements.length - 1].click();
-
-  const serviceWorkerTab = await driver.switchToWindowWithTitle(
-    WINDOW_TITLES.ServiceWorkerSettings,
+function genRandInitBal(minETHBal = 10, maxETHBal = 100, decimalPlaces = 4) {
+  const initialBalance = roundToXDecimalPlaces(
+    generateRandNumBetween(minETHBal, maxETHBal),
+    decimalPlaces,
   );
 
-  await driver.closeWindowHandle(serviceWorkerTab);
+  const initialBalanceInHex = convertETHToHexGwei(initialBalance);
+
+  return { initialBalance, initialBalanceInHex };
+}
+
+/**
+ * This method handles clicking the sign button on signature confirmation
+ * screen.
+ *
+ * @param {WebDriver} driver
+ * @param {number} numHandles
+ * @param {string} locatorID
+ */
+async function clickSignOnSignatureConfirmation(
+  driver,
+  numHandles = 2, // eslint-disable-line no-unused-vars
+  locatorID = null,
+) {
+  await driver.clickElement({ text: 'Sign', tag: 'button' });
+
+  // #ethSign has a second Sign confirmation button that says "Your funds may be at risk"
+  if (locatorID === '#ethSign') {
+    await driver.clickElement({
+      text: 'Sign',
+      tag: 'button',
+      css: '[data-testid="signature-warning-sign-button"]',
+    });
+  }
+}
+
+/**
+ * Some signing methods have extra security that requires the user to click a
+ * button to validate that they have verified the details. This method handles
+ * performing the necessary steps to click that button.
+ *
+ * @param {WebDriver} driver
+ */
+async function validateContractDetails(driver) {
+  const verifyContractDetailsButton = await driver.findElement(
+    '.signature-request-content__verify-contract-details',
+  );
+
+  verifyContractDetailsButton.click();
+  await driver.clickElement({ text: 'Got it', tag: 'button' });
+
+  // Approve signing typed data
+  try {
+    await driver.clickElement(
+      '[data-testid="signature-request-scroll-button"]',
+    );
+  } catch (error) {
+    // Ignore error if scroll button is not present
+  }
+  await driver.delay(regularDelayMs);
 }
 
 /**
@@ -730,11 +979,12 @@ async function terminateServiceWorker(driver) {
  * switches to the new window.
  *
  * @param {WebDriver} driver
+ * @param numHandles
  */
-async function switchToNotificationWindow(driver) {
-  await driver.waitUntilXWindowHandles(3);
-  const windowHandles = await driver.getAllWindowHandles();
-  await driver.switchToWindowWithTitle('MetaMask Notification', windowHandles);
+async function switchToNotificationWindow(driver, numHandles = 3) {
+  const windowHandles = await driver.waitUntilXWindowHandles(numHandles);
+
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog, windowHandles);
 }
 
 /**
@@ -748,28 +998,108 @@ async function switchToNotificationWindow(driver) {
  * @returns {import('mockttp/dist/pluggable-admin').MockttpClientResponse[]}
  */
 async function getEventPayloads(driver, mockedEndpoints, hasRequest = true) {
-  await driver.wait(async () => {
-    let isPending = true;
-    for (const mockedEndpoint of mockedEndpoints) {
-      isPending = await mockedEndpoint.isPending();
-    }
+  await driver.wait(
+    async () => {
+      let isPending = true;
 
-    return isPending === !hasRequest;
-  }, 10000);
+      for (const mockedEndpoint of mockedEndpoints) {
+        isPending = await mockedEndpoint.isPending();
+      }
+
+      return isPending === !hasRequest;
+    },
+    driver.timeout,
+    true,
+  );
   const mockedRequests = [];
   for (const mockedEndpoint of mockedEndpoints) {
     mockedRequests.push(...(await mockedEndpoint.getSeenRequests()));
   }
-  return mockedRequests.map((req) => req.body.json.batch).flat();
+
+  return (
+    await Promise.all(
+      mockedRequests.map(async (req) => {
+        return (await req.body?.getJson())?.batch;
+      }),
+    )
+  ).flat();
+}
+
+// Asserts that  each request passes all assertions in one group of assertions, and the order does not matter.
+function assertInAnyOrder(requests, assertions) {
+  // Clone the array to avoid mutating the original
+  const assertionsClone = [...assertions];
+
+  return (
+    requests.every((request) => {
+      for (let a = 0; a < assertionsClone.length; a++) {
+        const assertionArray = assertionsClone[a];
+
+        const passed = assertionArray.reduce(
+          (acc, currAssertionFn) => currAssertionFn(request) && acc,
+          true,
+        );
+
+        if (passed) {
+          // Remove the used assertion array
+          assertionsClone.splice(a, 1);
+          // Exit the loop early since we found a matching assertion
+          return true;
+        }
+      }
+
+      // No matching assertion found for this request
+      return false;
+    }) &&
+    // Ensure all assertions were used
+    assertionsClone.length === 0
+  );
+}
+
+async function getCleanAppState(driver) {
+  return await driver.executeScript(
+    () =>
+      window.stateHooks?.getCleanAppState &&
+      window.stateHooks.getCleanAppState(),
+  );
+}
+
+async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
+  try {
+    const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
+
+    await ganacheSeeder.deploySmartContract(SMART_CONTRACTS.ENTRYPOINT);
+
+    await ganacheSeeder.deploySmartContract(
+      SMART_CONTRACTS.SIMPLE_ACCOUNT_FACTORY,
+    );
+
+    if (usePaymaster) {
+      await ganacheSeeder.deploySmartContract(
+        SMART_CONTRACTS.VERIFYING_PAYMASTER,
+      );
+
+      await ganacheSeeder.paymasterDeposit(convertETHToHexGwei(1));
+    }
+
+    await ganacheSeeder.transfer(ERC_4337_ACCOUNT, convertETHToHexGwei(10));
+
+    await bundlerServer.start();
+  } catch (error) {
+    console.log('Failed to initialize bundler', error);
+    throw error;
+  }
 }
 
 module.exports = {
   DAPP_URL,
   DAPP_ONE_URL,
-  SERVICE_WORKER_URL,
   TEST_SEED_PHRASE,
   TEST_SEED_PHRASE_TWO,
   PRIVATE_KEY,
+  PRIVATE_KEY_TWO,
+  ACCOUNT_1,
+  ACCOUNT_2,
   getWindowHandles,
   convertToHexValue,
   tinyDelayMs,
@@ -781,6 +1111,8 @@ module.exports = {
   completeImportSRPOnboardingFlow,
   completeImportSRPOnboardingFlowWordByWord,
   completeCreateNewWalletOnboardingFlow,
+  completeCreateNewWalletOnboardingFlowWithOptOut,
+  openSRPRevealQuiz,
   passwordUnlockOpenSRPRevealQuiz,
   completeSRPRevealQuiz,
   closeSRPReveal,
@@ -789,25 +1121,26 @@ module.exports = {
   importWrongSRPOnboardingFlow,
   testSRPDropdownIterations,
   openDapp,
-  mockPhishingDetection,
-  setupPhishingDetectionMocks,
+  createDappTransaction,
+  switchToOrOpenDapp,
+  connectToDapp,
+  multipleGanacheOptions,
   defaultGanacheOptions,
   sendTransaction,
+  sendScreenToConfirmScreen,
   findAnotherAccountFromAccountList,
   unlockWallet,
   logInWithBalanceValidation,
-  assertAccountBalanceForDOM,
   locateAccountBalanceDOM,
   waitForAccountRendered,
   generateGanacheOptions,
   WALLET_PASSWORD,
   WINDOW_TITLES,
-  DEFAULT_GANACHE_OPTIONS,
-  generateETHBalance,
+  convertETHToHexGwei,
   roundToXDecimalPlaces,
   generateRandNumBetween,
-  sleepSeconds,
-  terminateServiceWorker,
+  clickSignOnSignatureConfirmation,
+  validateContractDetails,
   switchToNotificationWindow,
   getEventPayloads,
   onboardingBeginCreateNewWallet,
@@ -816,4 +1149,9 @@ module.exports = {
   onboardingRevealAndConfirmSRP,
   onboardingCompleteWalletCreation,
   onboardingPinExtension,
+  assertInAnyOrder,
+  genRandInitBal,
+  openActionMenuAndStartSendFlow,
+  getCleanAppState,
+  editGasFeeForm,
 };

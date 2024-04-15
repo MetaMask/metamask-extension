@@ -78,9 +78,6 @@
   "copiedExclamation": {
     "message": "คัดลอกแล้ว!"
   },
-  "copyPrivateKey": {
-    "message": "นี่คือคีย์ส่วนตัวของคุณ(กดเพื่อคัดลอก)"
-  },
   "copyToClipboard": {
     "message": "คัดลอกไปคลิปบอร์ด"
   },
@@ -117,17 +114,11 @@
   "editContact": {
     "message": "แก้ไขผู้ติดต่อ"
   },
-  "enterPassword": {
-    "message": "ใส่รหัสผ่าน"
-  },
   "etherscanView": {
     "message": "ดูบัญชีบน Etherscan"
   },
   "expandView": {
     "message": "ขยายมุมมอง"
-  },
-  "exportPrivateKey": {
-    "message": "ส่งออกคีย์ส่วนตัว"
   },
   "failed": {
     "message": "ล้มเหลว"
@@ -338,9 +329,6 @@
   "settings": {
     "message": "การตั้งค่า"
   },
-  "showPrivateKeys": {
-    "message": "แสดงคีย์ส่วนตัว"
-  },
   "sigRequest": {
     "message": "ขอลายเซ็น"
   },
@@ -391,9 +379,6 @@
   },
   "transactionDropped": {
     "message": "ธุรกรรมถูกยกเลิกเมื่อ $2"
-  },
-  "typePassword": {
-    "message": "พิมพ์รหัสผ่านของคุณ"
   },
   "unknown": {
     "message": "ไม่รู้จัก"

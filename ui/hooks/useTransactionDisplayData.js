@@ -1,5 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import {
   getDetectedTokensInCurrentNetwork,
   getKnownMethodData,
@@ -27,11 +31,7 @@ import {
   TOKEN_CATEGORY_HASH,
 } from '../helpers/constants/transactions';
 import { getNfts, getTokens } from '../ducks/metamask/metamask';
-import {
-  TransactionType,
-  TransactionGroupCategory,
-  TransactionStatus,
-} from '../../shared/constants/transaction';
+import { TransactionGroupCategory } from '../../shared/constants/transaction';
 import { captureSingleException } from '../store/actions';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
@@ -117,6 +117,7 @@ export function useTransactionDisplayData(transactionGroup) {
   const displayedStatusKey = getStatusKey(primaryTransaction);
   const isPending = displayedStatusKey in PENDING_STATUS_HASH;
   const isSubmitted = displayedStatusKey === TransactionStatus.submitted;
+  const mounted = useRef(true);
 
   const primaryValue = primaryTransaction.txParams?.value;
   const date = formatDateWithYearContext(initialTransaction.time);
@@ -149,6 +150,11 @@ export function useTransactionDisplayData(transactionGroup) {
       tokenList[recipientAddress.toLowerCase()];
   }
   useEffect(() => {
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+  useEffect(() => {
     async function getAndSetAssetDetails() {
       if (isTokenCategory && !token) {
         const assetDetails = await getAssetDetails(
@@ -157,7 +163,9 @@ export function useTransactionDisplayData(transactionGroup) {
           initialTransaction?.txParams?.data,
           knownNfts,
         );
-        setCurrentAssetDetails(assetDetails);
+        if (mounted.current === true) {
+          setCurrentAssetDetails(assetDetails);
+        }
       }
     }
     getAndSetAssetDetails();
@@ -169,6 +177,7 @@ export function useTransactionDisplayData(transactionGroup) {
     initialTransaction?.txParams?.data,
     knownNfts,
     to,
+    mounted,
   ]);
   if (currentAssetDetails) {
     token = {
@@ -198,7 +207,7 @@ export function useTransactionDisplayData(transactionGroup) {
     );
 
   const tokenDisplayValue = useTokenDisplayValue(
-    initialTransaction?.txParams?.data,
+    primaryTransaction?.txParams?.data,
     token,
     isTokenCategory,
   );
@@ -275,6 +284,12 @@ export function useTransactionDisplayData(transactionGroup) {
     category = TransactionGroupCategory.approval;
     prefix = '';
     title = t('setApprovalForAllTitle', [token?.symbol || t('token')]);
+    subtitle = origin;
+    subtitleContainsOrigin = true;
+  } else if (type === TransactionType.tokenMethodIncreaseAllowance) {
+    category = TransactionGroupCategory.approval;
+    prefix = '';
+    title = t('approveIncreaseAllowance', [token?.symbol || t('token')]);
     subtitle = origin;
     subtitleContainsOrigin = true;
   } else if (type === TransactionType.contractInteraction) {

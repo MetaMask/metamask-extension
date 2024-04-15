@@ -2,8 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { Icon, IconSize, Text } from '../../component-library';
-import { TextVariant } from '../../../helpers/constants/design-system';
+import {
+  BadgeWrapper,
+  BadgeWrapperAnchorElementShape,
+  BadgeWrapperPosition,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+} from '../../component-library';
+import {
+  Display,
+  IconColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 
 const MenuItem = React.forwardRef(
   (
@@ -12,9 +24,11 @@ const MenuItem = React.forwardRef(
       className,
       'data-testid': dataTestId,
       iconName,
+      iconColor,
       onClick,
       subtitle,
       disabled = false,
+      showInfoDot,
     },
     ref,
   ) => (
@@ -25,9 +39,32 @@ const MenuItem = React.forwardRef(
       ref={ref}
       disabled={disabled}
     >
-      {iconName ? (
-        <Icon name={iconName} size={IconSize.Sm} marginRight={2} />
-      ) : null}
+      {iconName && showInfoDot && (
+        <BadgeWrapper
+          anchorElementShape={BadgeWrapperAnchorElementShape.circular}
+          display={Display.Block}
+          position={BadgeWrapperPosition.topRight}
+          positionObj={{ top: -6, right: 4 }}
+          badge={
+            <Icon
+              name={IconName.FullCircle}
+              size={IconSize.Xs}
+              color={IconColor.primaryDefault}
+              style={{ '--size': '10px' }}
+            />
+          }
+        >
+          <Icon name={iconName} size={IconSize.Sm} marginRight={2} />
+        </BadgeWrapper>
+      )}
+      {iconName && !showInfoDot && (
+        <Icon
+          name={iconName}
+          size={IconSize.Sm}
+          marginRight={2}
+          color={iconColor}
+        />
+      )}
       <div>
         <div>{children}</div>
         {subtitle ? <Text variant={TextVariant.bodyXs}>{subtitle}</Text> : null}
@@ -44,6 +81,8 @@ MenuItem.propTypes = {
   onClick: PropTypes.func,
   subtitle: PropTypes.node,
   disabled: PropTypes.bool,
+  showInfoDot: PropTypes.bool,
+  iconColor: PropTypes.string,
 };
 
 MenuItem.displayName = 'MenuItem';

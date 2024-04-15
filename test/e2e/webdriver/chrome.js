@@ -1,20 +1,36 @@
 const { Builder } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
-const proxy = require('selenium-webdriver/proxy');
+const { ThenableWebDriver } = require('selenium-webdriver'); // eslint-disable-line no-unused-vars -- this is imported for JSDoc
 
 /**
  * Proxy host to use for HTTPS requests
  *
  * @type {string}
  */
-const HTTPS_PROXY_HOST = '127.0.0.1:8000';
+const HTTPS_PROXY_HOST = `${
+  process.env.SELENIUM_HTTPS_PROXY || '127.0.0.1:8000'
+}`;
 
 /**
  * A wrapper around a {@code WebDriver} instance exposing Chrome-specific functionality
  */
 class ChromeDriver {
   static async build({ openDevToolsForTabs, port }) {
-    const args = [`load-extension=dist/chrome`];
+    const args = [
+      `--proxy-server=${HTTPS_PROXY_HOST}`, // Set proxy in the way that doesn't interfere with Selenium Manager
+      '--disable-features=OptimizationGuideModelDownloading,OptimizationHintsFetching,OptimizationTargetPrediction,OptimizationHints,NetworkTimeServiceQuerying', // Stop chrome from calling home so much (auto-downloads of AI models; time sync)
+      '--disable-component-update', // Stop chrome from calling home so much (auto-update)
+      '--disable-dev-shm-usage',
+    ];
+
+    if (process.env.MULTIPROVIDER) {
+      args.push(
+        `load-extension=${process.cwd()}/dist/chrome,${process.cwd()}/dist/chrome2`,
+      );
+    } else {
+      args.push(`load-extension=${process.cwd()}/dist/chrome`);
+    }
+
     if (openDevToolsForTabs) {
       args.push('--auto-open-devtools-for-tabs');
     }
@@ -26,12 +42,33 @@ class ChromeDriver {
     } else {
       args.push('--log-level=3');
     }
+
+    if (process.env.CI || process.env.CODESPACES) {
+      args.push('--disable-gpu');
+    }
+
+    if (process.env.SELENIUM_HEADLESS) {
+      // TODO: Remove notice and consider non-experimental when results are consistent
+      console.warn(
+        '*** Running e2e tests in headless mode is experimental and some tests are known to fail for unknown reasons',
+      );
+      args.push('--headless=new');
+    }
+
     const options = new chrome.Options().addArguments(args);
-    options.setProxy(proxy.manual({ https: HTTPS_PROXY_HOST }));
     options.setAcceptInsecureCerts(true);
     options.setUserPreferences({
       'download.default_directory': `${process.cwd()}/test-artifacts/downloads`,
     });
+
+    // Allow disabling DoT local testing
+    if (process.env.SELENIUM_USE_SYSTEM_DN) {
+      options.setLocalState({
+        'dns_over_https.mode': 'off',
+        'dns_over_https.templates': '',
+      });
+    }
+
     const builder = new Builder()
       .forBrowser('chrome')
       .setChromeOptions(options);
@@ -43,9 +80,11 @@ class ChromeDriver {
     if (process.env.ENABLE_CHROME_LOGGING !== 'false') {
       service.setStdio('inherit').enableChromeLogging();
     }
+
     if (port) {
       service.setPort(port);
     }
+
     builder.setChromeService(service);
     const driver = builder.build();
     const chromeDriver = new ChromeDriver(driver);

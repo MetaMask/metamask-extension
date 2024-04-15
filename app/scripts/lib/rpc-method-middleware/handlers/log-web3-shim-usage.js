@@ -1,18 +1,15 @@
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import { MetaMetricsEventCategory } from '../../../../../shared/constants/metametrics';
 
 /**
  * This RPC method is called by the inpage provider whenever it detects the
- * accessing of a non-existent property on our window.web3 shim.
- * We collect this data to understand which sites are breaking due to the
- * removal of our window.web3.
+ * accessing of a non-existent property on our window.web3 shim. We use this
+ * to alert the user that they are using a legacy dapp, and will have to take
+ * further steps to be able to use it.
  */
-
 const logWeb3ShimUsage = {
   methodNames: [MESSAGE_TYPE.LOG_WEB3_SHIM_USAGE],
   implementation: logWeb3ShimUsageHandler,
   hookNames: {
-    sendMetrics: true,
     getWeb3ShimUsageState: true,
     setWeb3ShimUsageRecorded: true,
   },
@@ -21,7 +18,6 @@ export default logWeb3ShimUsage;
 
 /**
  * @typedef {object} LogWeb3ShimUsageOptions
- * @property {Function} sendMetrics - A function that registers a metrics event.
  * @property {Function} getWeb3ShimUsageState - A function that gets web3 shim
  * usage state for the given origin.
  * @property {Function} setWeb3ShimUsageRecorded - A function that records web3 shim
@@ -40,24 +36,11 @@ function logWeb3ShimUsageHandler(
   res,
   _next,
   end,
-  { sendMetrics, getWeb3ShimUsageState, setWeb3ShimUsageRecorded },
+  { getWeb3ShimUsageState, setWeb3ShimUsageRecorded },
 ) {
   const { origin } = req;
   if (getWeb3ShimUsageState(origin) === undefined) {
     setWeb3ShimUsageRecorded(origin);
-
-    sendMetrics(
-      {
-        event: `Website Accessed window.web3 Shim`,
-        category: MetaMetricsEventCategory.InpageProvider,
-        referrer: {
-          url: origin,
-        },
-      },
-      {
-        excludeMetaMetricsId: true,
-      },
-    );
   }
 
   res.result = true;

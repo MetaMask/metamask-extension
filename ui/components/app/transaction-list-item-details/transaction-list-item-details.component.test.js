@@ -1,8 +1,8 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { waitFor } from '@testing-library/react';
-import { TransactionStatus } from '../../../../shared/constants/transaction';
+import { act, waitFor } from '@testing-library/react';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import { GAS_LIMITS } from '../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
@@ -10,8 +10,13 @@ import TransactionListItemDetails from '.';
 
 jest.mock('../../../store/actions.ts', () => ({
   tryReverseResolveAddress: () => jest.fn(),
-  getGasFeeEstimatesAndStartPolling: jest.fn().mockResolvedValue(),
-  addPollingTokenToAppState: jest.fn(),
+  gasFeeStartPollingByNetworkClientId: jest
+    .fn()
+    .mockResolvedValue('pollingToken'),
+  gasFeeStopPollingByPollingToken: jest.fn(),
+  getNetworkConfigurationByNetworkClientId: jest
+    .fn()
+    .mockResolvedValue({ chainId: '0x5' }),
 }));
 
 let mockGetCustodianTransactionDeepLink = jest.fn();
@@ -22,34 +27,34 @@ jest.mock('../../../store/institutional/institution-background', () => ({
   }),
 }));
 
-describe('TransactionListItemDetails Component', () => {
-  const transaction = {
-    history: [],
-    id: 1,
-    status: TransactionStatus.confirmed,
-    txParams: {
-      from: '0x1',
-      gas: GAS_LIMITS.SIMPLE,
-      gasPrice: '0x3b9aca00',
-      nonce: '0xa4',
-      to: '0x2',
-      value: '0x2386f26fc10000',
-    },
-    metadata: {
-      note: 'some note',
-    },
-    custodyId: '1',
-  };
-
-  const transactionGroup = {
-    transactions: [transaction],
-    primaryTransaction: transaction,
-    initialTransaction: transaction,
+const transaction = {
+  history: [],
+  id: 1,
+  status: TransactionStatus.confirmed,
+  txParams: {
+    from: '0x1',
+    gas: GAS_LIMITS.SIMPLE,
+    gasPrice: '0x3b9aca00',
     nonce: '0xa4',
-    hasRetried: false,
-    hasCancelled: false,
-  };
+    to: '0x2',
+    value: '0x2386f26fc10000',
+  },
+  metadata: {
+    note: 'some note',
+  },
+  custodyId: '1',
+};
 
+const transactionGroup = {
+  transactions: [transaction],
+  primaryTransaction: transaction,
+  initialTransaction: transaction,
+  nonce: '0xa4',
+  hasRetried: false,
+  hasCancelled: false,
+};
+
+const render = async (overrideProps) => {
   const rpcPrefs = {
     blockExplorerUrl: 'https://customblockexplorer.com/',
   };
@@ -69,70 +74,52 @@ describe('TransactionListItemDetails Component', () => {
     transactionStatus: () => <div></div>,
     blockExplorerLinkText,
     rpcPrefs,
+    ...overrideProps,
   };
 
-  it('should render title with title prop', async () => {
-    const mockStore = configureMockStore([thunk])(mockState);
+  const mockStore = configureMockStore([thunk])(mockState);
 
-    const { queryByText } = renderWithProvider(
-      <TransactionListItemDetails {...props} />,
-      mockStore,
-    );
+  let result;
+
+  await act(
+    async () =>
+      (result = renderWithProvider(
+        <TransactionListItemDetails {...props} />,
+        mockStore,
+      )),
+  );
+
+  return result;
+};
+
+describe('TransactionListItemDetails Component', () => {
+  it('should render title with title prop', async () => {
+    const { queryByText } = await render();
 
     await waitFor(() => {
-      expect(queryByText(props.title)).toBeInTheDocument();
+      expect(queryByText('Test Transaction Details')).toBeInTheDocument();
     });
   });
 
   describe('Retry button', () => {
-    it('should render retry button with showRetry prop', () => {
-      const retryProps = {
-        ...props,
-        showRetry: true,
-      };
-
-      const mockStore = configureMockStore([thunk])(mockState);
-
-      const { queryByTestId } = renderWithProvider(
-        <TransactionListItemDetails {...retryProps} />,
-        mockStore,
-      );
+    it('should render retry button with showRetry prop', async () => {
+      const { queryByTestId } = await render({ showRetry: true });
 
       expect(queryByTestId('rety-button')).toBeInTheDocument();
     });
   });
 
   describe('Cancel button', () => {
-    it('should render cancel button with showCancel prop', () => {
-      const retryProps = {
-        ...props,
-        showCancel: true,
-      };
-
-      const mockStore = configureMockStore([thunk])(mockState);
-
-      const { queryByTestId } = renderWithProvider(
-        <TransactionListItemDetails {...retryProps} />,
-        mockStore,
-      );
+    it('should render cancel button with showCancel prop', async () => {
+      const { queryByTestId } = await render({ showCancel: true });
 
       expect(queryByTestId('cancel-button')).toBeInTheDocument();
     });
   });
 
   describe('Speedup button', () => {
-    it('should render speedup button with showSpeedUp prop', () => {
-      const retryProps = {
-        ...props,
-        showSpeedUp: true,
-      };
-
-      const mockStore = configureMockStore([thunk])(mockState);
-
-      const { queryByTestId } = renderWithProvider(
-        <TransactionListItemDetails {...retryProps} />,
-        mockStore,
-      );
+    it('should render speedup button with showSpeedUp prop', async () => {
+      const { queryByTestId } = await render({ showSpeedUp: true });
 
       expect(queryByTestId('speedup-button')).toBeInTheDocument();
     });
@@ -144,9 +131,7 @@ describe('TransactionListItemDetails Component', () => {
         .fn()
         .mockReturnValue({ url: 'https://url.com' });
 
-      const mockStore = configureMockStore([thunk])(mockState);
-
-      renderWithProvider(<TransactionListItemDetails {...props} />, mockStore);
+      await render({ showCancel: true });
 
       await waitFor(() => {
         const custodianViewButton = document.querySelector(
@@ -173,15 +158,10 @@ describe('TransactionListItemDetails Component', () => {
         primaryTransaction: newTransaction,
         initialTransaction: newTransaction,
       };
-      const mockStore = configureMockStore([thunk])(mockState);
 
-      const { queryByText } = renderWithProvider(
-        <TransactionListItemDetails
-          {...props}
-          transactionGroup={newTransactionGroup}
-        />,
-        mockStore,
-      );
+      const { queryByText } = await render({
+        transactionGroup: newTransactionGroup,
+      });
 
       await waitFor(() => {
         expect(queryByText('some note')).toBeInTheDocument();

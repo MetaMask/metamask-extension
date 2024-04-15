@@ -2,10 +2,11 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
+import { NetworkType } from '@metamask/controller-utils';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import {
   renderWithProvider,
   createSwapsMockStore,
-  setBackgroundConnection,
   MOCKS,
 } from '../../../../test/jest';
 import ReviewQuote from './review-quote';
@@ -15,7 +16,7 @@ jest.mock(
   () => () => '<InfoTooltipIcon />',
 );
 
-jest.mock('../../../hooks/gasFeeInput/useGasFeeInputs', () => {
+jest.mock('../../confirmations/hooks/useGasFeeInputs', () => {
   return {
     useGasFeeInputs: () => {
       return {
@@ -62,9 +63,11 @@ describe('ReviewQuote', () => {
 
   it('renders the component with EIP-1559 enabled', () => {
     const state = createSwapsMockStore();
-    state.metamask.networkDetails = {
-      EIPS: {
-        1559: true,
+    state.metamask.selectedNetworkClientId = NetworkType.mainnet;
+    state.metamask.networksMetadata = {
+      [NetworkType.mainnet]: {
+        EIPS: {},
+        status: 'available',
       },
     };
     const store = configureMockStore(middleware)(state);

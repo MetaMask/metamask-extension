@@ -7,7 +7,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { ButtonLink, Label, Box, Text } from '../../component-library';
+import { Box, ButtonLink, Label, Text } from '../../component-library';
 import Dropdown from '../../ui/dropdown';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -79,7 +79,7 @@ export const ImportAccount = ({ onActionComplete }) => {
   }
 
   function getLoadingMessage(strategy) {
-    if (strategy === 'JSON File') {
+    if (strategy === 'json') {
       return (
         <>
           <Text width={BlockSize.ThreeFourths} fontWeight={FontWeight.Bold}>
@@ -96,7 +96,7 @@ export const ImportAccount = ({ onActionComplete }) => {
   }
 
   /**
-   * @param {string} message - an Error/Warning message caught in importAccount()
+   * @param message - an Error/Warning message caught in importAccount()
    * This function receives a message that is a string like:
    * `t('importAccountErrorNotHexadecimal')`
    * `t('importAccountErrorIsSRP')`
@@ -161,5 +161,8 @@ export const ImportAccount = ({ onActionComplete }) => {
 };
 
 ImportAccount.propTypes = {
+  /**
+   * Executes when the key is imported
+   */
   onActionComplete: PropTypes.func.isRequired,
 };

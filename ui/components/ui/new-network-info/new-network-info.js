@@ -1,236 +1,258 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { I18nContext } from '../../../contexts/i18n';
-import Popover from '../popover';
-import Button from '../button';
-import Identicon from '../identicon';
-import Box from '../box';
-import {
-  AlignItems,
-  Color,
-  DISPLAY,
-  FontWeight,
-  TextAlign,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
 import { TOKEN_API_METASWAP_CODEFI_URL } from '../../../../shared/constants/tokens';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
+import { I18nContext } from '../../../contexts/i18n';
+import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import {
-  getNativeCurrencyImage,
+  AlignItems,
+  BackgroundColor,
+  BorderColor,
+  Color,
+  Display,
+  FlexDirection,
+  TextAlign,
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
+import {
+  getCurrentNetwork,
+  getIsBridgeChain,
+  getMetaMetricsId,
   getUseTokenDetection,
 } from '../../../selectors';
-import { getProviderConfig } from '../../../ducks/metamask/metamask';
-import { IMPORT_TOKEN_ROUTE } from '../../../helpers/constants/routes';
-import Chip from '../chip/chip';
 import { setFirstTimeUsedNetwork } from '../../../store/actions';
-import { NETWORK_TYPES } from '../../../../shared/constants/network';
-import { Icon, IconName, Text } from '../../component-library';
-import { getNetworkLabelKey } from '../../../helpers/utils/i18n-helper';
+import {
+  PickerNetwork,
+  Text,
+  Box,
+  Button,
+  Icon,
+  IconName,
+  ButtonPrimarySize,
+  IconSize,
+  AvatarNetworkSize,
+} from '../../component-library';
+import Popover from '../popover';
+import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
-const NewNetworkInfo = () => {
+export default function NewNetworkInfo() {
   const t = useContext(I18nContext);
-  const history = useHistory();
   const [tokenDetectionSupported, setTokenDetectionSupported] = useState(false);
   const [showPopup, setShowPopup] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const autoDetectToken = useSelector(getUseTokenDetection);
-  const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const providerConfig = useSelector(getProviderConfig);
+  const currentNetwork = useSelector(getCurrentNetwork);
+  const metaMetricsId = useSelector(getMetaMetricsId);
+  const isBridgeChain = useSelector(getIsBridgeChain);
 
   const onCloseClick = () => {
     setShowPopup(false);
     setFirstTimeUsedNetwork(providerConfig.chainId);
   };
 
-  const addTokenManually = () => {
-    history.push(IMPORT_TOKEN_ROUTE);
-    setShowPopup(false);
-    setFirstTimeUsedNetwork(providerConfig.chainId);
-  };
-
-  const getIsTokenDetectionSupported = async () => {
-    const fetchedTokenData = await fetchWithCache(
-      `${TOKEN_API_METASWAP_CODEFI_URL}${providerConfig.chainId}`,
-    );
-
-    return !fetchedTokenData.error;
-  };
-
-  const checkTokenDetection = async () => {
-    const fetchedData = await getIsTokenDetectionSupported();
-
-    setTokenDetectionSupported(fetchedData);
-  };
+  const checkTokenDetection = useCallback(async () => {
+    setIsLoading(true);
+    const fetchedTokenData = await fetchWithCache({
+      url: `${TOKEN_API_METASWAP_CODEFI_URL}${providerConfig.chainId}`,
+      functionName: 'getIsTokenDetectionSupported',
+    });
+    const isTokenDetectionSupported = !fetchedTokenData?.error;
+    setTokenDetectionSupported(isTokenDetectionSupported);
+    setIsLoading(false);
+  }, [providerConfig.chainId]);
 
   useEffect(() => {
     checkTokenDetection();
-  });
-
-  if (!showPopup) {
-    return null;
-  }
+    // we want to only fetch once
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
-    <Popover
-      onClose={onCloseClick}
-      className="new-network-info__wrapper"
-      footer={
-        <Button type="primary" onClick={onCloseClick}>
-          {t('recoveryPhraseReminderConfirm')}
-        </Button>
-      }
-    >
-      <Text
-        variant={TextVariant.headingSm}
-        as="h4"
-        color={Color.textDefault}
-        fontWeight={FontWeight.Bold}
-        align={TextAlign.Center}
-      >
-        {t('switchedTo')}
-      </Text>
-      <Chip
-        className="new-network-info__token-box"
-        backgroundColor={Color.backgroundAlternative}
-        maxContent={false}
-        label={
-          providerConfig.type === NETWORK_TYPES.RPC
-            ? providerConfig.nickname ?? t('privateNetwork')
-            : t(getNetworkLabelKey(providerConfig.type))
-        }
-        labelProps={{
-          color: Color.textDefault,
-        }}
-        leftIcon={
-          primaryTokenImage ? (
-            <Identicon image={primaryTokenImage} diameter={14} />
-          ) : (
-            <Icon
-              className="question"
-              name={IconName.Question}
-              color={Color.iconDefault}
-            />
-          )
-        }
-      />
-      <Text
-        variant={TextVariant.bodySmBold}
-        as="h6"
-        color={Color.textDefault}
-        align={TextAlign.Center}
-        margin={[8, 0, 0, 0]}
-      >
-        {t('thingsToKeep')}
-      </Text>
-      <Box marginRight={4} marginLeft={5} marginTop={6}>
-        {providerConfig.ticker ? (
-          <Box
-            display={DISPLAY.FLEX}
-            alignItems={AlignItems.center}
-            marginBottom={2}
-            paddingBottom={2}
-            className="new-network-info__bullet-paragraph"
-          >
-            <Box marginRight={4} color={Color.textDefault}>
-              &bull;
-            </Box>
-            <Text
-              variant={TextVariant.bodySm}
-              as="h6"
-              color={Color.textDefault}
-              display={DISPLAY.INLINE_BLOCK}
-              key="nativeTokenInfo"
+    !isLoading &&
+    showPopup && (
+      <Popover
+        title={t('switchedTo')}
+        centerTitle
+        onClose={onCloseClick}
+        className="new-network-info__wrapper"
+        headerProps={{ marginLeft: 6 }}
+        footer={
+          <>
+            <Button
+              variant="secondary"
+              href={ZENDESK_URLS.USER_GUIDE_CUSTOM_NETWORKS}
+              externalLink
+              rel="noreferrer"
+              size={ButtonPrimarySize.Md}
+              className="footer__button"
             >
-              {t('nativeToken', [
-                <Text
-                  variant={TextVariant.bodySmBold}
-                  as="h6"
-                  display={DISPLAY.INLINE_BLOCK}
-                  key="ticker"
-                >
-                  {providerConfig.ticker}
-                </Text>,
-              ])}
-            </Text>
-          </Box>
-        ) : null}
+              <Text variant={TextVariant.bodySm} as="h6" color={Color.inherit}>
+                {t('learnToBridge')}
+              </Text>
+            </Button>
+            <Button
+              variant="primary"
+              onClick={onCloseClick}
+              size={ButtonPrimarySize.Md}
+              className="footer__button"
+            >
+              <Text variant={TextVariant.bodySm} as="h6" color={Color.inherit}>
+                {t('recoveryPhraseReminderConfirm')}
+              </Text>
+            </Button>
+          </>
+        }
+      >
         <Box
-          display={DISPLAY.FLEX}
-          alignItems={AlignItems.center}
-          marginBottom={2}
-          paddingBottom={2}
-          className={
-            !autoDetectToken || !tokenDetectionSupported
-              ? 'new-network-info__bullet-paragraph'
-              : null
-          }
+          data-testid="new-network-info__wrapper"
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
         >
-          <Box marginRight={4} color={Color.textDefault}>
-            &bull;
-          </Box>
+          <PickerNetwork
+            label={currentNetwork?.nickname}
+            src={currentNetwork?.rpcPrefs?.imageUrl}
+            marginLeft="auto"
+            marginRight="auto"
+            marginBottom={4}
+            iconProps={{ display: 'none' }} // do not show the dropdown icon
+            avatarNetworkProps={{ size: AvatarNetworkSize.Sm }}
+            as="div" // do not render as a button
+            backgroundColor={BackgroundColor.transparent}
+            borderWidth={1}
+            borderColor={BorderColor.borderMuted}
+          />
           <Text
             variant={TextVariant.bodySm}
             as="h6"
             color={Color.textDefault}
-            display={DISPLAY.INLINE_BLOCK}
-            className="new-network-info__bullet-paragraph__text"
+            align={TextAlign.Start}
+            marginLeft={4}
+            marginTop={2}
           >
-            {t('attemptSendingAssets')}{' '}
-            <a
-              href="https://metamask.zendesk.com/hc/en-us/articles/4404424659995"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <Text
-                variant={TextVariant.bodySm}
-                as="h6"
-                color={Color.infoDefault}
-                display={DISPLAY.INLINE_BLOCK}
-              >
-                {t('learnMoreUpperCase')}
-              </Text>
-            </a>
+            {t('thingsToKeep')}
           </Text>
-        </Box>
-        {!autoDetectToken || !tokenDetectionSupported ? (
-          <Box
-            display={DISPLAY.FLEX}
-            alignItems={AlignItems.center}
-            marginBottom={2}
-            paddingBottom={2}
-          >
-            <Box marginRight={4} color={Color.textDefault}>
-              &bull;
-            </Box>
-            <Box>
-              <Text
-                variant={TextVariant.bodySm}
-                as="h6"
-                color={Color.textDefault}
-                className="new-network-info__token-show-up"
+          <Box marginRight={4} marginLeft={4} marginTop={5}>
+            {providerConfig.ticker && (
+              <Box
+                display={Display.Flex}
+                alignItems={AlignItems.flexStart}
+                marginBottom={2}
+                paddingBottom={2}
+                data-testid="new-network-info__bullet-paragraph"
+                gap={3}
               >
-                {t('tokenShowUp')}{' '}
-                <Button
-                  type="link"
-                  onClick={addTokenManually}
-                  className="new-network-info__button"
-                >
+                <Box className="new-network-info__bullet-icon-container">
+                  <Icon name={IconName.Gas} size={IconSize.Sm} />
+                </Box>
+                <Box flexDirection={FlexDirection.Column}>
+                  <Text
+                    variant={TextVariant.bodySmBold}
+                    as="h6"
+                    color={TextColor.textDefault}
+                  >
+                    {t('gasIsETH', [providerConfig.ticker])}
+                  </Text>
                   <Text
                     variant={TextVariant.bodySm}
                     as="h6"
-                    color={Color.infoDefault}
-                    className="new-network-info__manually-add-tokens"
+                    color={TextColor.textDefault}
+                    display={Display.InlineBlock}
+                    key="nativeTokenInfo"
                   >
+                    {t('nativeToken', [providerConfig.ticker])}
+                  </Text>
+                </Box>
+              </Box>
+            )}
+            <Box
+              display={Display.Flex}
+              alignItems={AlignItems.flexStart}
+              marginBottom={2}
+              paddingBottom={2}
+              gap={3}
+            >
+              <Box className="new-network-info__bullet-icon-container">
+                <Icon name={IconName.Bridge} size={IconSize.Sm} />
+              </Box>
+              <Box flexDirection={FlexDirection.Column}>
+                <Text
+                  variant={TextVariant.bodySmBold}
+                  as="h6"
+                  color={TextColor.textDefault}
+                >
+                  {t('bridgeDontSend')}
+                </Text>
+                <Text
+                  variant={TextVariant.bodySm}
+                  as="h6"
+                  color={TextColor.textDefault}
+                  display={Display.InlineBlock}
+                >
+                  {isBridgeChain
+                    ? t('attemptSendingAssetsWithPortfolio', [
+                        <a
+                          href={`${getPortfolioUrl(
+                            'bridge',
+                            'ext_bridge_new_network_info_link',
+                            metaMetricsId,
+                          )}&destChain=${currentNetwork?.chainId}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          key="bridge-link"
+                        >
+                          <Text
+                            variant={TextVariant.bodySm}
+                            as="h6"
+                            color={TextColor.infoDefault}
+                            className="new-network-info__button"
+                          >
+                            {t('metamaskPortfolio')}
+                          </Text>
+                        </a>,
+                      ])
+                    : t('attemptSendingAssets')}
+                </Text>
+              </Box>
+            </Box>
+
+            {!autoDetectToken || !tokenDetectionSupported ? (
+              <Box
+                display={Display.Flex}
+                alignItems={AlignItems.flexStart}
+                marginBottom={2}
+                paddingBottom={2}
+                data-testid="new-network-info__add-token-manually"
+                gap={3}
+              >
+                <Box className="new-network-info__bullet-icon-container">
+                  <Icon name={IconName.Coin} size={IconSize.Sm} />
+                </Box>
+                <Box flexDirection={FlexDirection.Column}>
+                  <Text
+                    variant={TextVariant.bodySmBold}
+                    as="h6"
+                    color={TextColor.textDefault}
+                  >
+                    {t('addingTokens')}
+                  </Text>
+                  <Text
+                    variant={TextVariant.bodySm}
+                    as="h6"
+                    color={Color.textDefault}
+                    display={Display.InlineBlock}
+                  >
+                    {t('tokenShowUp')}
                     {t('clickToManuallyAdd')}
                   </Text>
-                </Button>
-              </Text>
-            </Box>
+                </Box>
+              </Box>
+            ) : null}
           </Box>
-        ) : null}
-      </Box>
-    </Popover>
+        </Box>
+      </Popover>
+    )
   );
-};
-
-export default NewNetworkInfo;
+}

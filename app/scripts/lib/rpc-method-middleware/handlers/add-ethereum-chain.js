@@ -1,16 +1,16 @@
-import { ethErrors, errorCodes } from 'eth-rpc-errors';
-import validUrl from 'valid-url';
-import { omit } from 'lodash';
 import { ApprovalType } from '@metamask/controller-utils';
+import { errorCodes, ethErrors } from 'eth-rpc-errors';
+import { omit } from 'lodash';
 import {
   MESSAGE_TYPE,
   UNKNOWN_TICKER_SYMBOL,
 } from '../../../../../shared/constants/app';
+import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/metametrics';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
-import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/metametrics';
+import { getValidUrl } from '../../util';
 
 const addEthereumChain = {
   methodNames: [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN],
@@ -20,10 +20,13 @@ const addEthereumChain = {
     getCurrentChainId: true,
     getCurrentRpcUrl: true,
     findNetworkConfigurationBy: true,
+    setNetworkClientIdForDomain: true,
     setActiveNetwork: true,
     requestUserApproval: true,
     startApprovalFlow: true,
     endApprovalFlow: true,
+    getProviderConfig: true,
+    hasPermissions: true,
   },
 };
 export default addEthereumChain;
@@ -38,10 +41,13 @@ async function addEthereumChainHandler(
     getCurrentChainId,
     getCurrentRpcUrl,
     findNetworkConfigurationBy,
+    setNetworkClientIdForDomain,
     setActiveNetwork,
     requestUserApproval,
     startApprovalFlow,
     endApprovalFlow,
+    getProviderConfig,
+    hasPermissions,
   },
 ) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
@@ -83,27 +89,25 @@ async function addEthereumChainHandler(
     );
   }
 
-  const isLocalhost = (strUrl) => {
-    try {
-      const url = new URL(strUrl);
-      return url.hostname === 'localhost' || url.hostname === '127.0.0.1';
-    } catch (error) {
-      return false;
-    }
-  };
+  function isLocalhostOrHttps(urlString) {
+    const url = getValidUrl(urlString);
+
+    return (
+      url !== null &&
+      (url.hostname === 'localhost' ||
+        url.hostname === '127.0.0.1' ||
+        url.protocol === 'https:')
+    );
+  }
 
   const firstValidRPCUrl = Array.isArray(rpcUrls)
-    ? rpcUrls.find(
-        (rpcUrl) => isLocalhost(rpcUrl) || validUrl.isHttpsUri(rpcUrl),
-      )
+    ? rpcUrls.find((rpcUrl) => isLocalhostOrHttps(rpcUrl))
     : null;
 
   const firstValidBlockExplorerUrl =
     blockExplorerUrls !== null && Array.isArray(blockExplorerUrls)
-      ? blockExplorerUrls.find(
-          (blockExplorerUrl) =>
-            isLocalhost(blockExplorerUrl) ||
-            validUrl.isHttpsUri(blockExplorerUrl),
+      ? blockExplorerUrls.find((blockExplorerUrl) =>
+          isLocalhostOrHttps(blockExplorerUrl),
         )
       : null;
 
@@ -165,10 +169,8 @@ async function addEthereumChainHandler(
         origin,
         type: ApprovalType.SwitchEthereumChain,
         requestData: {
-          rpcUrl: existingNetwork.rpcUrl,
-          chainId: existingNetwork.chainId,
-          nickname: existingNetwork.nickname,
-          ticker: existingNetwork.ticker,
+          toNetworkConfiguration: existingNetwork,
+          fromNetworkConfiguration: getProviderConfig(),
         },
       });
 
@@ -286,13 +288,19 @@ async function addEthereumChainHandler(
       origin,
       type: ApprovalType.SwitchEthereumChain,
       requestData: {
-        rpcUrl: firstValidRPCUrl,
-        chainId: _chainId,
-        nickname: _chainName,
-        ticker,
-        networkConfigurationId,
+        toNetworkConfiguration: {
+          rpcUrl: firstValidRPCUrl,
+          chainId: _chainId,
+          nickname: _chainName,
+          ticker,
+          networkConfigurationId,
+        },
+        fromNetworkConfiguration: getProviderConfig(),
       },
     });
+    if (hasPermissions(req.origin)) {
+      setNetworkClientIdForDomain(req.origin, networkConfigurationId);
+    }
   } catch (error) {
     // For the purposes of this method, it does not matter if the user
     // declines to switch the selected network. However, other errors indicate

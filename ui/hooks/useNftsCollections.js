@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
 import { getNfts, getNftContracts } from '../ducks/metamask/metamask';
-import { getCurrentChainId, getSelectedAddress } from '../selectors';
+import { getCurrentChainId, getSelectedInternalAccount } from '../selectors';
 import { usePrevious } from './usePrevious';
 import { useI18nContext } from './useI18nContext';
 
@@ -18,7 +18,7 @@ export function useNftsCollections() {
   });
   const nfts = useSelector(getNfts);
   const [nftsLoading, setNftsLoading] = useState(() => nfts?.length >= 0);
-  const selectedAddress = useSelector(getSelectedAddress);
+  const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
   const chainId = useSelector(getCurrentChainId);
   const nftContracts = useSelector(getNftContracts);
   const prevNfts = usePrevious(nfts);
@@ -74,6 +74,8 @@ export function useNftsCollections() {
     prevChainId,
     selectedAddress,
     prevSelectedAddress,
+    previouslyOwnedText,
+    unknownCollectionText,
   ]);
 
   return { nftsLoading, collections, previouslyOwnedCollection };

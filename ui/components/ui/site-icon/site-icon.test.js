@@ -6,7 +6,7 @@ describe('SiteIcon', () => {
   const args = {
     size: 32,
     name: 'Snap name',
-    icon: './images/eth_logo.png',
+    icon: './images/eth_logo.svg',
     className: 'classname-test',
     fallbackClassName: 'fallback-classname-test',
   };

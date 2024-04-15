@@ -12,6 +12,10 @@ import { TEST_NETWORK_TICKER_MAP } from '../../shared/constants/network';
 import { Numeric } from '../../shared/modules/Numeric';
 import { EtherDenomination } from '../../shared/constants/common';
 
+export const MIN_DISPLAY_AMOUNT = '<0.000001';
+
+export const DEFAULT_PRECISION_DECIMALS = 6;
+
 /**
  * Defines the shape of the options parameter for useCurrencyDisplay
  *
@@ -60,11 +64,15 @@ export function useCurrencyDisplay(
       currency === nativeCurrency ||
       (!isUserPreferredCurrency && !nativeCurrency)
     ) {
-      return new Numeric(inputValue, 16, EtherDenomination.WEI)
+      const ethDisplayValue = new Numeric(inputValue, 16, EtherDenomination.WEI)
         .toDenomination(denomination || EtherDenomination.ETH)
-        .round(numberOfDecimals || 2)
+        .round(numberOfDecimals || DEFAULT_PRECISION_DECIMALS)
         .toBase(10)
         .toString();
+
+      return ethDisplayValue === '0' && inputValue && Number(inputValue) !== 0
+        ? MIN_DISPLAY_AMOUNT
+        : ethDisplayValue;
     } else if (isUserPreferredCurrency && conversionRate) {
       return formatCurrency(
         getValueFromWeiHex({

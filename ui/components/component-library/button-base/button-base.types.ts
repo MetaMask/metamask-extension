@@ -1,11 +1,9 @@
 import { ReactNode } from 'react';
-import type {
-  StyleUtilityProps,
-  PolymorphicComponentPropWithRef,
-} from '../box';
+import type { PolymorphicComponentPropWithRef } from '../box';
 import { IconColor } from '../../../helpers/constants/design-system';
-import { TextDirection, TextProps } from '../text';
-import { IconName, IconProps } from '../icon';
+import { TextDirection, TextProps, TextStyleUtilityProps } from '../text';
+import { IconName } from '../icon';
+import type { IconProps } from '../icon';
 
 export enum ButtonBaseSize {
   Sm = 'sm',
@@ -14,7 +12,11 @@ export enum ButtonBaseSize {
 }
 
 export type ValidButtonTagType = 'button' | 'a';
-export interface ButtonBaseStyleUtilityProps extends StyleUtilityProps {
+
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export interface ButtonBaseStyleUtilityProps
+  extends Omit<TextStyleUtilityProps, 'as' | 'children' | 'ellipsis'> {
   /**
    * The polymorphic `as` prop allows you to change the root HTML element of the Button component between `button` and `a` tag
    *
@@ -52,7 +54,7 @@ export interface ButtonBaseStyleUtilityProps extends StyleUtilityProps {
   /**
    * iconProps accepts all the props from Icon
    */
-  startIconProps?: IconProps;
+  startIconProps?: Partial<IconProps<'span'>>;
   /**
    * Add icon to end (right side) of button text passing icon name
    * The name of the icon to display. Should be one of IconName
@@ -61,11 +63,11 @@ export interface ButtonBaseStyleUtilityProps extends StyleUtilityProps {
   /**
    * iconProps accepts all the props from Icon
    */
-  endIconProps?: IconProps;
+  endIconProps?: Partial<IconProps<'span'>>;
   /**
    * iconLoadingProps accepts all the props from Icon
    */
-  iconLoadingProps?: IconProps;
+  iconLoadingProps?: Partial<IconProps<'span'>>;
   /**
    * Boolean to show loading spinner in button
    */

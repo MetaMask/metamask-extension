@@ -8,10 +8,13 @@ import {
   NETWORK_TYPES,
   getRpcUrl,
 } from '../../../../../shared/constants/network';
+import * as fetchWithCacheModule from '../../../../../shared/lib/fetch-with-cache';
 import NetworksForm from '.';
 
 const renderComponent = (props) => {
-  const store = configureMockStore([])({ metamask: {} });
+  const store = configureMockStore([])({
+    metamask: { useSafeChainsListValidation: true },
+  });
   return renderWithProvider(<NetworksForm {...props} />, store);
 };
 
@@ -196,9 +199,7 @@ describe('NetworkForm Component', () => {
     renderComponent(propNewNetwork);
     const chainIdField = screen.getByRole('textbox', { name: 'Chain ID' });
     const rpcUrlField = screen.getByRole('textbox', { name: 'New RPC URL' });
-    const currencySymbolField = screen.getByRole('textbox', {
-      name: 'Currency symbol',
-    });
+    const currencySymbolField = screen.getByTestId('network-form-ticker-input');
 
     fireEvent.change(chainIdField, {
       target: { value: '1' },
@@ -254,10 +255,9 @@ describe('NetworkForm Component', () => {
 
   it('should validate currency symbol field correctly', async () => {
     renderComponent(propNewNetwork);
+
     const chainIdField = screen.getByRole('textbox', { name: 'Chain ID' });
-    const currencySymbolField = screen.getByRole('textbox', {
-      name: 'Currency symbol',
-    });
+    const currencySymbolField = screen.getByTestId('network-form-ticker-input');
 
     fireEvent.change(chainIdField, {
       target: { value: '1234' },
@@ -274,9 +274,9 @@ describe('NetworkForm Component', () => {
     fireEvent.change(chainIdField, {
       target: { value: '137' },
     });
-    const secondExpectedWarning =
-      'The network with chain ID 137 may use a different currency symbol (MATIC) than the one you have entered. Please verify before continuing.';
-    expect(await screen.findByText(secondExpectedWarning)).toBeInTheDocument();
+    expect(
+      await screen.findByTestId('network-form-ticker-warning'),
+    ).toBeInTheDocument();
   });
 
   it('should validate block explorer URL field correctly', async () => {
@@ -292,5 +292,49 @@ describe('NetworkForm Component', () => {
         'URLs require the appropriate HTTP/HTTPS prefix.',
       ),
     ).toBeInTheDocument();
+  });
+
+  it('should not show suggested ticker and duplicating the exact symbol', async () => {
+    const safeChainsList = [
+      {
+        chainId: 42161,
+        nativeCurrency: {
+          symbol: 'ETH',
+        },
+      },
+    ];
+
+    // Mock the fetchWithCache function to return the safeChainsList
+    jest
+      .spyOn(fetchWithCacheModule, 'default')
+      .mockResolvedValue(safeChainsList);
+
+    renderComponent(propNewNetwork);
+
+    const chainIdField = screen.getByRole('textbox', { name: 'Chain ID' });
+    const currencySymbolField = screen.getByTestId('network-form-ticker-input');
+
+    fireEvent.change(chainIdField, {
+      target: { value: '42161' },
+    });
+
+    fireEvent.change(currencySymbolField, {
+      target: { value: 'abcd' },
+    });
+
+    const expectedSymbolWarning = 'Suggested ticker symbol:';
+    expect(await screen.findByText(expectedSymbolWarning)).toBeInTheDocument();
+
+    expect(
+      await screen.findByTestId('network-form-ticker-warning'),
+    ).toBeInTheDocument();
+
+    fireEvent.change(currencySymbolField, {
+      target: { value: 'ETH' },
+    });
+
+    expect(
+      await screen.findByTestId('network-form-ticker-warning'),
+    ).not.toBeInTheDocument();
   });
 });

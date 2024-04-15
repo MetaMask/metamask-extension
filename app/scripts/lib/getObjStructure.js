@@ -6,9 +6,14 @@ import { cloneDeep } from 'lodash';
 // {
 //   "data": {
 //     "CurrencyController": {
-//       "conversionDate": "number",
-//       "conversionRate": "number",
 //       "currentCurrency": "string"
+//       "currencyRates": {
+//         "ETH": {
+//           "conversionDate": "number",
+//           "conversionRate": "number",
+//           "usdConversionRate": "number",
+//         }
+//       },
 //     }
 // }
 

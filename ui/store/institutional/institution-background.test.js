@@ -1,4 +1,31 @@
-import { mmiActionsFactory } from './institution-background';
+import {
+  hideLoadingIndication,
+  showLoadingIndication,
+  forceUpdateMetamaskState,
+} from '../actions';
+import { submitRequestToBackground } from '../background-connection';
+import {
+  mmiActionsFactory,
+  showInteractiveReplacementTokenBanner,
+  setCustodianDeepLink,
+  setTypedMessageInProgress,
+  setPersonalMessageInProgress,
+} from './institution-background';
+
+jest.mock('../actions', () => ({
+  displayWarning: jest.fn(),
+  showLoadingIndication: jest.fn(),
+  hideLoadingIndication: jest.fn(),
+  forceUpdateMetamaskState: jest.fn(),
+}));
+
+jest.mock('../background-connection', () => ({
+  submitRequestToBackground: jest.fn(),
+}));
+
+jest.mock('../../../shared/modules/error', () => ({
+  isErrorWithMessage: jest.fn(),
+}));
 
 describe('Institution Actions', () => {
   describe('#mmiActionsFactory', () => {
@@ -13,8 +40,6 @@ describe('Institution Actions', () => {
         getCustodianToken: jest.fn(),
         getCustodianJWTList: jest.fn(),
         removeAddTokenConnectRequest: jest.fn(),
-        setCustodianConnectRequest: jest.fn(),
-        getCustodianConnectRequest: jest.fn(),
         getMmiConfiguration: jest.fn(),
         getAllCustodianAccountsWithToken: jest.fn(),
         setWaitForConfirmDeepLinkDialog: jest.fn(),
@@ -37,14 +62,14 @@ describe('Institution Actions', () => {
       );
       mmiActions.getCustodianAccounts(
         'token',
-        'apiUrl',
+        'envName',
         'custody',
         'getNonImportedAccounts',
         {},
       );
       mmiActions.getCustodianAccountsByAddress(
         'jwt',
-        'apiUrl',
+        'envName',
         'address',
         'custody',
         {},
@@ -58,12 +83,6 @@ describe('Institution Actions', () => {
         custodians: [],
       });
       mmiActions.getCustodianToken({});
-      mmiActions.getCustodianConnectRequest({
-        token: 'token',
-        custodianType: 'custodianType',
-        custodianName: 'custodianname',
-        apiUrl: undefined,
-      });
       mmiActions.getCustodianTransactionDeepLink('0xAddress', 'txId');
       mmiActions.getCustodianConfirmDeepLink('txId');
       mmiActions.getCustodianSignMessageDeepLink('0xAddress', 'custodyTxId');
@@ -74,27 +93,79 @@ describe('Institution Actions', () => {
       });
       mmiActions.removeAddTokenConnectRequest({
         origin: 'origin',
-        apiUrl: 'https://jupiter-custody.codefi.network',
         token: 'token',
-      });
-      mmiActions.setCustodianConnectRequest({
-        token: 'token',
-        apiUrl: 'https://jupiter-custody.codefi.network',
-        custodianType: 'custodianType',
-        custodianName: 'custodianname',
+        environment: 'jupiter',
       });
       const setWaitForConfirmDeepLinkDialog =
         mmiActions.setWaitForConfirmDeepLinkDialog(true);
-      mmiActions.setCustodianNewRefreshToken(
-        'address',
-        'oldAuthDetails',
-        'oldApiUrl',
-        'newAuthDetails',
-        'newApiUrl',
-      );
+      mmiActions.setCustodianNewRefreshToken('address', 'refreshToken');
       connectCustodyAddresses(jest.fn());
       expect(connectCustodyAddresses).toBeDefined();
       expect(setWaitForConfirmDeepLinkDialog).toBeDefined();
+    });
+  });
+
+  describe('#showInteractiveReplacementTokenBanner', () => {
+    it('should test showInteractiveReplacementTokenBanner action', async () => {
+      const dispatch = jest.fn();
+
+      await showInteractiveReplacementTokenBanner({
+        url: 'testUrl',
+        oldRefreshToken: 'testToken',
+      })(dispatch);
+
+      expect(submitRequestToBackground).toHaveBeenCalledWith(
+        'showInteractiveReplacementTokenBanner',
+        [{ url: 'testUrl', oldRefreshToken: 'testToken' }],
+      );
+    });
+  });
+
+  describe('#setCustodianDeepLink', () => {
+    it('should test setCustodianDeepLink action', async () => {
+      const dispatch = jest.fn();
+
+      await setCustodianDeepLink({
+        fromAddress: '0x',
+        custodyId: 'custodyId',
+      })(dispatch);
+
+      expect(submitRequestToBackground).toHaveBeenCalledWith(
+        'setCustodianDeepLink',
+        [{ fromAddress: '0x', custodyId: 'custodyId' }],
+      );
+    });
+  });
+
+  describe('#setTypedMessageInProgress', () => {
+    it('should test setTypedMessageInProgress action', async () => {
+      const dispatch = jest.fn();
+
+      await setTypedMessageInProgress('testMsgId')(dispatch);
+
+      expect(showLoadingIndication).toHaveBeenCalled();
+      expect(submitRequestToBackground).toHaveBeenCalledWith(
+        'setTypedMessageInProgress',
+        ['testMsgId'],
+      );
+      expect(forceUpdateMetamaskState).toHaveBeenCalledWith(dispatch);
+      expect(hideLoadingIndication).toHaveBeenCalled();
+    });
+  });
+
+  describe('#setPersonalMessageInProgress', () => {
+    it('should test setPersonalMessageInProgress action', async () => {
+      const dispatch = jest.fn();
+
+      await setPersonalMessageInProgress('testMsgId')(dispatch);
+
+      expect(showLoadingIndication).toHaveBeenCalled();
+      expect(submitRequestToBackground).toHaveBeenCalledWith(
+        'setPersonalMessageInProgress',
+        ['testMsgId'],
+      );
+      expect(forceUpdateMetamaskState).toHaveBeenCalledWith(dispatch);
+      expect(hideLoadingIndication).toHaveBeenCalled();
     });
   });
 });

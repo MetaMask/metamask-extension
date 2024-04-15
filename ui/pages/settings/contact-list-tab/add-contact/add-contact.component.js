@@ -5,13 +5,13 @@ import Identicon from '../../../../components/ui/identicon';
 import TextField from '../../../../components/ui/text-field';
 import { CONTACT_LIST_ROUTE } from '../../../../helpers/constants/routes';
 import { isValidDomainName } from '../../../../helpers/utils/util';
-import DomainInput from '../../../send/send-content/add-recipient/domain-input';
+import DomainInput from '../../../confirmations/send/send-content/add-recipient/domain-input';
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer';
 import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../../../../shared/modules/hexstring-utils';
-import { INVALID_RECIPIENT_ADDRESS_ERROR } from '../../../send/send.constants';
+import { INVALID_RECIPIENT_ADDRESS_ERROR } from '../../../confirmations/send/send.constants';
 
 export default class AddContact extends PureComponent {
   static contextTypes = {

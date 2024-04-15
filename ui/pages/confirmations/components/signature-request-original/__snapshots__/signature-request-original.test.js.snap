@@ -1,0 +1,264 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SignatureRequestOriginal should match snapshot 1`] = `
+<div>
+  <div
+    class="request-signature__container"
+  >
+    <div
+      class="request-signature__navigation"
+    >
+      <div
+        class="confirm-page-container-navigation"
+        style="display: none;"
+      >
+        <div
+          class="confirm-page-container-navigation__container"
+          data-testid="navigation-container"
+          style="visibility: hidden;"
+        >
+          <button
+            class="confirm-page-container-navigation__arrow"
+            data-testid="first-page"
+          >
+            <i
+              class="fa fa-angle-double-left fa-2x"
+            />
+          </button>
+          <button
+            class="confirm-page-container-navigation__arrow"
+            data-testid="previous-page"
+          >
+            <i
+              class="fa fa-angle-left fa-2x"
+            />
+          </button>
+        </div>
+        <div
+          class="confirm-page-container-navigation__textcontainer"
+        >
+          <div
+            class="confirm-page-container-navigation__navtext"
+          >
+            0
+             
+            of
+             
+            1
+          </div>
+          <div
+            class="confirm-page-container-navigation__longtext"
+          >
+            requests waiting to be acknowledged
+          </div>
+        </div>
+        <div
+          class="confirm-page-container-navigation__container"
+          style="visibility: initial;"
+        >
+          <button
+            class="confirm-page-container-navigation__arrow"
+            data-testid="next-page"
+          >
+            <i
+              class="fa fa-angle-right fa-2x"
+            />
+          </button>
+          <button
+            class="confirm-page-container-navigation__arrow"
+            data-testid="last-page"
+          >
+            <i
+              class="fa fa-angle-double-right fa-2x"
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="request-signature__account"
+    >
+      <div
+        class="box network-account-balance-header box--padding-4 box--display-flex box--flex-direction-row box--justify-content-space-between box--align-items-center"
+      >
+        <div
+          class="box box--display-flex box--gap-2 box--flex-direction-row box--align-items-center"
+        >
+          <div
+            class="box box--display-flex box--flex-direction-row box--align-items-center"
+          >
+            <div
+              class=""
+            >
+              <div
+                class="identicon"
+                style="height: 32px; width: 32px; border-radius: 16px;"
+              >
+                <div
+                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
+                >
+                  <svg
+                    height="32"
+                    width="32"
+                    x="0"
+                    y="0"
+                  >
+                    <rect
+                      fill="#18CDF2"
+                      height="32"
+                      transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                    <rect
+                      fill="#035E56"
+                      height="32"
+                      transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                    <rect
+                      fill="#F26602"
+                      height="32"
+                      transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div
+              class="network-account-balance-header__network-account__ident-icon-ethereum--gray"
+            >
+              <span
+                class="icon-with-fallback__fallback"
+              >
+                G
+              </span>
+            </div>
+          </div>
+          <div
+            class="box box--display-flex box--flex-direction-column box--align-items-flex-start"
+          >
+            <h6
+              class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+            >
+              goerli
+            </h6>
+            <h6
+              class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
+            >
+              Test Account
+            </h6>
+          </div>
+        </div>
+        <div
+          class="box box--display-flex box--flex-direction-column box--align-items-flex-end"
+        >
+          <h6
+            class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+          >
+            Balance
+          </h6>
+          <h6
+            align="end"
+            class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
+          >
+            966.987986
+             
+            ETH
+          </h6>
+        </div>
+      </div>
+    </div>
+    <div
+      class="request-signature__body"
+    >
+      <div
+        class="request-signature__origin"
+      >
+        <div
+          class="site-origin"
+          title="https://happydapp.website/governance?futarchy=true"
+        >
+          <div
+            class="chip chip--with-left-icon chip--border-color-border-muted chip--background-color-undefined"
+          >
+            <div
+              class="chip__left-icon"
+            >
+              <div
+                class=""
+              >
+                <span
+                  class="icon-with-fallback__fallback"
+                />
+              </div>
+            </div>
+            <span
+              class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography chip__label typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
+            >
+              https://happydapp.website/governance?futarchy=true
+            </span>
+          </div>
+        </div>
+      </div>
+      <h3
+        class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography request-signature__content__title typography--h3 typography--weight-bold typography--style-normal typography--color-text-default"
+      >
+        Signature request
+      </h3>
+      <h6
+        class="box box--margin-12 box--margin-top-3 box--margin-bottom-1 box--flex-direction-row typography request-signature__content__subtitle typography--h7 typography--weight-normal typography--style-normal typography--align-center typography--color-text-alternative"
+      >
+        Only sign this message if you fully understand the content and trust the requesting site.
+      </h6>
+      <div
+        class="request-signature__notice"
+      >
+        You are signing:
+      </div>
+      <div
+        class="request-signature__rows"
+      >
+        <div
+          class="request-signature__row"
+        >
+          <div
+            class="request-signature__row-title"
+          >
+            Message:
+          </div>
+          <div
+            class="request-signature__row-value"
+          >
+            {"domain":{"name":"happydapp.website"},"message":{"string":"haay wuurl","number":42},"primaryType":"Mail","types":{"EIP712Domain":[{"name":"name","type":"string"},{"name":"version","type":"string"},{"name":"chainId","type":"uint256"},{"name":"verifyingContract","type":"address"}],"Group":[{"name":"name","type":"string"},{"name":"members","type":"Person[]"}],"Mail":[{"name":"from","type":"Person"},{"name":"to","type":"Person[]"},{"name":"contents","type":"string"}],"Person":[{"name":"name","type":"string"},{"name":"wallets","type":"address[]"}]}}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="page-container__footer"
+    >
+      <footer>
+        <button
+          class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
+          data-testid="page-container-footer-cancel"
+        >
+          Reject
+        </button>
+        <button
+          class="button btn--rounded btn-primary page-container__footer-button"
+          data-testid="page-container-footer-next"
+        >
+          Sign
+        </button>
+      </footer>
+    </div>
+  </div>
+</div>
+`;

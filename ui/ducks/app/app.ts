@@ -6,13 +6,15 @@ import {
 } from '../../../shared/constants/hardware-wallets';
 import * as actionConstants from '../../store/actionConstants';
 
-interface AppState {
+type AppState = {
   shouldClose: boolean;
   menuOpen: boolean;
   modal: {
     open: boolean;
     modalState: {
       name: string | null;
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       props: Record<string, any>;
     };
     previousModalState: {
@@ -26,7 +28,20 @@ interface AppState {
     values?: { address?: string | null };
   } | null;
   networkDropdownOpen: boolean;
-  importNftsModalOpen: boolean;
+  importNftsModal: {
+    open: boolean;
+    tokenAddress?: string;
+    tokenId?: string;
+    ignoreErc20Token?: boolean;
+  };
+  showIpfsModalOpen: boolean;
+  keyringRemovalSnapModal: {
+    snapName: string;
+    result: 'success' | 'failure' | 'none';
+  };
+  showKeyringRemovalSnapModal: boolean;
+  importTokensModalOpen: boolean;
+  deprecatedNetworkModalOpen: boolean;
   accountDetail: {
     subview?: string;
     accountExport?: string;
@@ -36,8 +51,9 @@ interface AppState {
   loadingMessage: string | null;
   scrollToBottom: boolean;
   warning: string | null | undefined;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   buyView: Record<string, any>;
-  isMouseUser: boolean;
   defaultHdPaths: {
     trezor: string;
     ledger: string;
@@ -46,6 +62,8 @@ interface AppState {
   networksTabSelectedRpcUrl: string | null;
   requestAccountTabs: Record<string, number>; // [url.origin]: tab.id
   openMetaMaskTabs: Record<string, boolean>; // openMetamaskTabsIDs[tab.id]): true/false
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   currentWindowTab: Record<string, any>; // tabs.tab https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
   showWhatsNewPopup: boolean;
   showTermsOfUsePopup: boolean;
@@ -64,18 +82,19 @@ interface AppState {
   selectedNetworkConfigurationId: string;
   sendInputCurrencySwitched: boolean;
   newTokensImported: string;
+  newTokensImportedError: string;
   onboardedInThisUISession: boolean;
   customTokenAmount: string;
-  txId: number | null;
+  txId: string | null;
   accountDetailsAddress: string;
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   snapsInstallPrivacyWarningShown: boolean;
-  ///: END:ONLY_INCLUDE_IN
-}
+  ///: END:ONLY_INCLUDE_IF
+};
 
-interface AppSliceState {
+type AppSliceState = {
   appState: AppState;
-}
+};
 
 // default state
 const initialState: AppState = {
@@ -95,7 +114,15 @@ const initialState: AppState = {
   alertMessage: null,
   qrCodeData: null,
   networkDropdownOpen: false,
-  importNftsModalOpen: false,
+  importNftsModal: { open: false },
+  showIpfsModalOpen: false,
+  keyringRemovalSnapModal: {
+    snapName: '',
+    result: 'none',
+  },
+  showKeyringRemovalSnapModal: false,
+  importTokensModalOpen: false,
+  deprecatedNetworkModalOpen: false,
   accountDetail: {
     privateKey: '',
   },
@@ -105,7 +132,6 @@ const initialState: AppState = {
   // Used to display error text
   warning: null,
   buyView: {},
-  isMouseUser: false,
   defaultHdPaths: {
     trezor: `m/44'/60'/0'/0`,
     ledger: `m/44'/60'/0'/0/0`,
@@ -132,14 +158,15 @@ const initialState: AppState = {
   selectedNetworkConfigurationId: '',
   sendInputCurrencySwitched: false,
   newTokensImported: '',
+  newTokensImportedError: '',
   onboardedInThisUISession: false,
   customTokenAmount: '',
   scrollToBottom: true,
   txId: null,
   accountDetailsAddress: '',
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   snapsInstallPrivacyWarningShown: false,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 };
 
 export default function reduceApp(
@@ -168,14 +195,56 @@ export default function reduceApp(
     case actionConstants.IMPORT_NFTS_MODAL_OPEN:
       return {
         ...appState,
-        importNftsModalOpen: true,
+        importNftsModal: {
+          open: true,
+          ...action.payload,
+        },
       };
 
     case actionConstants.IMPORT_NFTS_MODAL_CLOSE:
       return {
         ...appState,
-        importNftsModalOpen: false,
+        importNftsModal: {
+          open: false,
+        },
       };
+
+    case actionConstants.SHOW_IPFS_MODAL_OPEN:
+      return {
+        ...appState,
+        showIpfsModalOpen: true,
+      };
+
+    case actionConstants.SHOW_IPFS_MODAL_CLOSE:
+      return {
+        ...appState,
+        showIpfsModalOpen: false,
+      };
+
+    case actionConstants.IMPORT_TOKENS_POPOVER_OPEN:
+      return {
+        ...appState,
+        importTokensModalOpen: true,
+      };
+
+    case actionConstants.IMPORT_TOKENS_POPOVER_CLOSE:
+      return {
+        ...appState,
+        importTokensModalOpen: false,
+      };
+
+    case actionConstants.DEPRECATED_NETWORK_POPOVER_OPEN:
+      return {
+        ...appState,
+        deprecatedNetworkModalOpen: true,
+      };
+
+    case actionConstants.DEPRECATED_NETWORK_POPOVER_CLOSE:
+      return {
+        ...appState,
+        deprecatedNetworkModalOpen: false,
+      };
+
     // alert methods
     case actionConstants.ALERT_OPEN:
       return {
@@ -312,6 +381,8 @@ export default function reduceApp(
 
     case actionConstants.SET_HARDWARE_WALLET_DEFAULT_HD_PATH: {
       const { device, path } = action.payload;
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const newDefaults = { ...appState.defaultHdPaths } as any;
       newDefaults[device] = path;
 
@@ -355,12 +426,6 @@ export default function reduceApp(
         },
       };
 
-    case actionConstants.SET_MOUSE_USER_STATE:
-      return {
-        ...appState,
-        isMouseUser: action.payload,
-      };
-
     case actionConstants.SET_SELECTED_NETWORK_CONFIGURATION_ID:
       return {
         ...appState,
@@ -379,6 +444,12 @@ export default function reduceApp(
       return {
         ...appState,
         newTokensImported: action.payload,
+      };
+
+    case actionConstants.SET_NEW_TOKENS_IMPORTED_ERROR:
+      return {
+        ...appState,
+        newTokensImportedError: action.payload,
       };
 
     case actionConstants.SET_NEW_NFT_ADDED_MESSAGE:
@@ -452,6 +523,26 @@ export default function reduceApp(
         ...appState,
         customTokenAmount: action.payload,
       };
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+    case actionConstants.SHOW_KEYRING_SNAP_REMOVAL_RESULT:
+      return {
+        ...appState,
+        showKeyringRemovalSnapModal: true,
+        keyringRemovalSnapModal: {
+          ...action.payload,
+        },
+      };
+    case actionConstants.HIDE_KEYRING_SNAP_REMOVAL_RESULT:
+      return {
+        ...appState,
+        showKeyringRemovalSnapModal: false,
+        keyringRemovalSnapModal: {
+          snapName: '',
+          result: 'none',
+        },
+      };
+    ///: END:ONLY_INCLUDE_IF
+
     default:
       return appState;
   }

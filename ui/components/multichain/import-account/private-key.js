@@ -3,16 +3,13 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   FormTextField,
-  TEXT_FIELD_SIZES,
-  TEXT_FIELD_TYPES,
+  TextFieldSize,
+  TextFieldType,
 } from '../../component-library';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import BottomButtons from './bottom-buttons';
 
-PrivateKeyImportView.propTypes = {
-  importAccountFunc: PropTypes.func.isRequired,
-  onActionComplete: PropTypes.func.isRequired,
-};
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import ShowHideToggle from '../../ui/show-hide-toggle';
+import BottomButtons from './bottom-buttons';
 
 export default function PrivateKeyImportView({
   importAccountFunc,
@@ -20,6 +17,7 @@ export default function PrivateKeyImportView({
 }) {
   const t = useI18nContext();
   const [privateKey, setPrivateKey] = useState('');
+  const [showPrivateKey, setShowPrivateKey] = useState(false);
 
   const warning = useSelector((state) => state.appState.warning);
 
@@ -31,16 +29,15 @@ export default function PrivateKeyImportView({
   }
 
   function _importAccountFunc() {
-    importAccountFunc('Private Key', [privateKey]);
+    importAccountFunc('privateKey', [privateKey]);
   }
 
   return (
     <>
       <FormTextField
         id="private-key-box"
-        size={TEXT_FIELD_SIZES.LARGE}
+        size={TextFieldSize.Lg}
         autoFocus
-        type={TEXT_FIELD_TYPES.PASSWORD}
         helpText={warning}
         error
         label={t('pastePrivateKey')}
@@ -50,6 +47,19 @@ export default function PrivateKeyImportView({
           onKeyPress: handleKeyPress,
         }}
         marginBottom={4}
+        type={showPrivateKey ? TextFieldType.Text : TextFieldType.Password}
+        textFieldProps={{
+          endAccessory: (
+            <ShowHideToggle
+              shown={showPrivateKey}
+              id="show-hide-private-key"
+              title={t('privateKeyShow')}
+              ariaLabelShown={t('privateKeyShown')}
+              ariaLabelHidden={t('privateKeyHidden')}
+              onChange={() => setShowPrivateKey(!showPrivateKey)}
+            />
+          ),
+        }}
       />
 
       <BottomButtons
@@ -60,3 +70,14 @@ export default function PrivateKeyImportView({
     </>
   );
 }
+
+PrivateKeyImportView.propTypes = {
+  /**
+   * Function to import the account
+   */
+  importAccountFunc: PropTypes.func.isRequired,
+  /**
+   * Executes when the key is imported
+   */
+  onActionComplete: PropTypes.func.isRequired,
+};

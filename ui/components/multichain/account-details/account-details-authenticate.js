@@ -1,24 +1,28 @@
+import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 import {
   Display,
   FontWeight,
   Severity,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  BannerAlert,
-  ButtonPrimary,
-  ButtonSecondary,
-  FormTextField,
-  Box,
-} from '../../component-library';
-
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { exportAccount, hideWarning } from '../../../store/actions';
+import {
+  BannerAlert,
+  Box,
+  ButtonPrimary,
+  ButtonSecondary,
+} from '../../component-library';
+import { FormTextField } from '../../component-library/form-text-field/deprecated';
 
-export const AccountDetailsAuthenticate = ({ address, onCancel }) => {
+export const AccountDetailsAuthenticate = ({
+  address,
+  onCancel,
+  setPrivateKey,
+  setShowHoldToReveal,
+}) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
@@ -28,11 +32,17 @@ export const AccountDetailsAuthenticate = ({ address, onCancel }) => {
   const warning = useSelector((state) => state.appState.warning);
 
   const onSubmit = useCallback(() => {
-    dispatch(exportAccount(password, address)).then((res) => {
-      dispatch(hideWarning());
-      return res;
-    });
-  }, [dispatch, password, address]);
+    dispatch(
+      exportAccount(password, address, setPrivateKey, setShowHoldToReveal),
+    )
+      .then((res) => {
+        dispatch(hideWarning());
+        return res;
+      })
+      .catch(() => {
+        // No need to do anything more with the caught error here, we already logged the error
+      });
+  }, [dispatch, password, address, setPrivateKey, setShowHoldToReveal]);
 
   const handleKeyPress = useCallback(
     (e) => {
@@ -50,7 +60,7 @@ export const AccountDetailsAuthenticate = ({ address, onCancel }) => {
         id="account-details-authenticate"
         label={t('enterYourPassword')}
         placeholder={t('password')}
-        error={warning}
+        error={Boolean(warning)}
         helpText={warning}
         onChange={(e) => setPassword(e.target.value)}
         value={password}
@@ -78,6 +88,20 @@ export const AccountDetailsAuthenticate = ({ address, onCancel }) => {
 };
 
 AccountDetailsAuthenticate.propTypes = {
+  /**
+   * The account address
+   */
   address: PropTypes.string.isRequired,
+  /**
+   * Executes upon Cancel button click
+   */
   onCancel: PropTypes.func.isRequired,
+  /**
+   * Private key setter
+   */
+  setPrivateKey: PropTypes.func.isRequired,
+  /**
+   * showHoldToReveal setter
+   */
+  setShowHoldToReveal: PropTypes.func.isRequired,
 };

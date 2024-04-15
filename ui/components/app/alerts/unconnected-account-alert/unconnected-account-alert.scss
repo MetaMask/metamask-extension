@@ -1,6 +1,8 @@
+@use "design-system";
+
 .unconnected-account-alert {
   &__content {
-    border-radius: 0;
+    border-radius: 0 !important; // To override the box border radius because of popover
   }
 
   &__footer {
@@ -25,7 +27,7 @@
   }
 
   &__error {
-    @include H6;
+    @include design-system.H6;
 
     margin-bottom: 16px;
     padding: 16px;
@@ -43,16 +45,17 @@
 
   &__checkbox {
     margin-right: 8px;
-    padding-top: 1px; // better alignment with rest of content
+    margin-top: -2px;
   }
 
   &__checkbox-label {
-    @include H7;
+    @include design-system.H7;
 
     display: flex;
     margin-top: auto;
     margin-bottom: auto;
     color: var(--color-text-alternative);
+    align-items: center;
   }
 
   &__checkbox-label-tooltip {

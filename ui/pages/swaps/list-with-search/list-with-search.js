@@ -13,7 +13,8 @@ import {
   TextVariant,
   BlockSize,
 } from '../../../helpers/constants/design-system';
-import { TextFieldSearch, Text } from '../../../components/component-library';
+import { Text } from '../../../components/component-library';
+import { TextFieldSearch } from '../../../components/component-library/text-field-search/deprecated';
 import ItemList from '../searchable-item-list/item-list';
 import { isValidHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { I18nContext } from '../../../contexts/i18n';

@@ -1,9 +1,11 @@
+@use "design-system";
+
 .send-screen-wrapper {
   display: flex;
   flex-flow: column nowrap;
   z-index: 25;
 
-  @include screen-sm-max {
+  @include design-system.screen-sm-max {
     width: 100%;
     overflow-y: auto;
   }
@@ -24,7 +26,7 @@
   width: 498px;
   flex: 1 0 auto;
 
-  @include screen-sm-max {
+  @include design-system.screen-sm-max {
     top: 0;
     width: 100%;
     box-shadow: none;
@@ -39,7 +41,7 @@
 }
 
 .send-screen input {
-  @include H7;
+  @include design-system.H7;
 
   width: 100%;
 }
@@ -56,7 +58,7 @@
   padding: 4px;
   background-color: var(--color-background-default);
 
-  @include screen-sm-max {
+  @include design-system.screen-sm-max {
     position: relative;
     top: 0;
   }
@@ -68,14 +70,6 @@
 
   .fa-bolt {
     padding-right: 4px;
-  }
-
-  .large-input {
-    @include Paragraph;
-
-    border: 1px solid var(--color-border-default);
-    border-radius: 4px;
-    margin: 4px 0 20px;
   }
 
   .send-screen-gas-input {
@@ -93,7 +87,7 @@
     }
 
     .send-screen-input-wrapper__error-message {
-      @include H7;
+      @include design-system.H7;
 
       display: block;
       position: absolute;
@@ -104,7 +98,7 @@
   }
 
   .send-screen-input-wrapper__error-message {
-    @include H7;
+    @include design-system.H7;
 
     display: block;
     position: absolute;
@@ -119,7 +113,7 @@
 }
 
 .send-screen-gas-input {
-  @include Paragraph;
+  @include design-system.Paragraph;
 
   width: 100%;
   height: 41px;
@@ -160,7 +154,7 @@
 }
 
 .send-screen-gas-input-customize {
-  @include H7;
+  @include design-system.H7;
 
   color: var(--color-primary-default);
   cursor: pointer;
@@ -193,7 +187,7 @@
 }
 
 .gas-tooltip-label {
-  @include Paragraph;
+  @include design-system.Paragraph;
 
   color: var(--color-text-alternative);
 }
@@ -212,7 +206,7 @@
 }
 
 .gas-tooltip-input-detail {
-  @include H7;
+  @include design-system.H7;
 
   position: absolute;
   top: 4px;
@@ -221,7 +215,7 @@
 }
 
 .gas-tooltip-input-arrows {
-  @include H6;
+  @include design-system.H6;
 
   position: absolute;
   top: 0;
@@ -250,13 +244,13 @@
 
 .send-screen {
   &__title {
-    @include H4;
+    @include design-system.H4;
 
     color: var(--color-text-alternative);
   }
 
   &__subtitle {
-    @include H6;
+    @include design-system.H6;
 
     margin: 10px 0 20px;
   }
@@ -290,7 +284,7 @@
     flex-flow: column nowrap;
     flex: 1 0 auto;
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       top: 0;
       width: 100%;
       box-shadow: none;
@@ -303,7 +297,7 @@
     top: -35px;
     z-index: 25;
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       position: relative;
       top: 0;
       flex: 0 0 auto;
@@ -311,7 +305,7 @@
   }
 
   &__title {
-    @include H4;
+    @include design-system.H4;
 
     color: var(--color-text-alternative);
   }
@@ -319,14 +313,14 @@
   &__description,
   &__balance-text,
   &__token-symbol {
-    @include H6;
+    @include design-system.H6;
 
     margin-top: 10px;
     text-align: center;
   }
 
   &__token-balance {
-    @include H1;
+    @include design-system.H1;
 
     margin-top: 13px;
 
@@ -341,7 +335,7 @@
     align-items: center;
     flex: 0 0 auto;
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       margin-top: 24px;
     }
 
@@ -369,7 +363,7 @@
     align-items: center;
     position: relative;
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       width: 100%;
       top: 0;
       box-shadow: none;
@@ -380,7 +374,7 @@
   &__send-header-icon-container {
     z-index: 25;
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       position: relative;
       top: 0;
     }
@@ -406,7 +400,7 @@
     border-radius: 50%;
     z-index: 100;
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       top: 36px;
     }
   }
@@ -420,7 +414,7 @@
     justify-content: center;
     align-items: center;
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       height: 59px;
       width: 100vw;
     }
@@ -435,7 +429,7 @@
     left: 178px;
     top: 75px;
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       top: 46px;
       left: 0;
       right: 0;
@@ -444,7 +438,7 @@
   }
 
   &__title {
-    @include H3;
+    @include design-system.H3;
 
     color: var(--color-text-alternative);
     text-align: center;
@@ -452,7 +446,7 @@
   }
 
   &__copy {
-    @include H6;
+    @include design-system.H6;
 
     color: var(--color-text-alternative);
     text-align: center;
@@ -461,7 +455,7 @@
   }
 
   &__error {
-    @include H7;
+    @include design-system.H7;
 
     left: 8px;
     color: var(--color-error-default);
@@ -472,7 +466,7 @@
   }
 
   &__warning {
-    @include H7;
+    @include design-system.H7;
 
     left: 8px;
     color: var(--color-warning-default);
@@ -483,7 +477,7 @@
   }
 
   &__form {
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       margin: 0;
       flex: 1 1 auto;
     }
@@ -538,7 +532,7 @@
   }
 
   &__form-label {
-    @include Paragraph;
+    @include design-system.Paragraph;
 
     color: var(--color-text-alternative);
     width: 95px;
@@ -547,7 +541,7 @@
 
   &__from-dropdown,
   &__asset-dropdown {
-    @include H7;
+    @include design-system.H7;
 
     width: 100%;
     border: 1px solid var(--color-border-muted);
@@ -629,14 +623,14 @@
       overflow: hidden;
     }
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       &__asset-data {
         width: 60%;
       }
     }
 
     &__symbol {
-      @include Paragraph;
+      @include design-system.Paragraph;
 
       margin-bottom: 2px;
       overflow: hidden;
@@ -645,7 +639,7 @@
     }
 
     &__name {
-      @include H7;
+      @include design-system.H7;
 
       /* Prevents the token balance or NFT title from wrapping or silently truncating */
       display: flex;
@@ -704,7 +698,7 @@
     }
 
     &__input {
-      @include Paragraph;
+      @include design-system.Paragraph;
 
       z-index: 1025;
       position: relative;
@@ -721,7 +715,7 @@
   &__memo-text-area,
   &__hex-data {
     &__input {
-      @include Paragraph;
+      @include design-system.Paragraph;
 
       z-index: 1025;
       position: relative;
@@ -736,7 +730,7 @@
   }
 
   &__amount-max {
-    @include H7;
+    @include design-system.H7;
 
     position: relative;
     display: inline-block;
@@ -782,7 +776,7 @@
   }
 
   &__sliders-icon-container {
-    @include Paragraph;
+    @include design-system.Paragraph;
 
     display: flex;
     align-items: center;
@@ -834,7 +828,7 @@
     padding-left: 20px;
 
     &__title {
-      @include H4;
+      @include design-system.H4;
 
       height: 26px;
       color: var(--color-text-alternative);
@@ -842,7 +836,7 @@
     }
 
     &__copy {
-      @include Paragraph;
+      @include design-system.Paragraph;
 
       height: 38px;
       width: 314px;
@@ -851,7 +845,7 @@
     }
 
     .gas-tooltip-input-arrows {
-      @include H4;
+      @include design-system.H4;
 
       width: 32px;
       height: 54px;
@@ -886,7 +880,7 @@
 }
 
 .advanced-gas-options-btn {
-  @include H6;
+  @include design-system.H6;
 
   display: flex;
   justify-content: flex-end;
@@ -896,7 +890,7 @@
 }
 
 .sliders-icon-container {
-  @include Paragraph;
+  @include design-system.Paragraph;
 
   display: flex;
   align-items: center;
@@ -913,7 +907,7 @@
 }
 
 .gas-fee-reset {
-  @include H6;
+  @include design-system.H6;
 
   display: flex;
   align-items: center;

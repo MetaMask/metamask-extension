@@ -60,9 +60,7 @@ exports[`Unlock Page should match snapshot 1`] = `
         class="button btn--rounded btn-default"
         data-testid="unlock-submit"
         disabled=""
-        role="button"
         style="margin-top: 20px; height: 60px; font-weight: 400; box-shadow: none; border-radius: 100px;"
-        tabindex="0"
         variant="contained"
       >
         Unlock

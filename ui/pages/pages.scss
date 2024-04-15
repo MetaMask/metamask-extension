@@ -1,12 +1,10 @@
 /** Please import your files in alphabetical order **/
 @import 'asset/asset';
-@import 'confirm-import-token/index';
-@import 'confirm-add-suggested-token/index';
+@import 'confirmations/index';
 @import 'confirm-add-suggested-nft/index';
-@import 'confirm-approve/index';
+@import 'confirm-add-suggested-token/index';
 @import 'confirm-decrypt-message/confirm-decrypt-message';
 @import 'confirm-encryption-public-key/confirm-encryption-public-key';
-@import 'confirmation/confirmation';
 @import 'connected-sites/index';
 @import 'connected-accounts/index';
 @import 'connected-sites/index';
@@ -15,25 +13,20 @@
 @import 'desktop-pairing/index';
 @import 'error/index';
 @import 'home/index';
-@import 'import-token/index';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 @import "institutional/connect-custody/index";
 @import "institutional/institutional-entity-done-page/index";
 @import "institutional/confirm-add-custodian-token/index";
 @import "institutional/interactive-replacement-token-page/index";
-///: END:ONLY_INCLUDE_IN
-@import 'send/gas-display/index';
 @import 'keychains/index';
-@import 'keyring-snaps/index';
 @import 'notifications/index';
 @import 'onboarding-flow/index';
 @import 'permissions-connect/index';
-@import 'send/send';
 @import 'settings/index';
+@import 'snaps/snaps-list/index';
+@import 'snaps/snap-view/index';
+@import 'create-snap-account/index';
+@import 'smart-transactions/smart-transaction-status-page/index';
+@import 'remove-snap-account/index';
 @import 'swaps/index';
-@import 'token-allowance/index';
 @import 'token-details/index';
 @import 'unlock-page/index';
-
-
-

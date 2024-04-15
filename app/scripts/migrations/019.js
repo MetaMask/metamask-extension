@@ -5,8 +5,8 @@ whos nonce is too high
 
 */
 
+import { TransactionStatus } from '@metamask/transaction-controller';
 import { cloneDeep } from 'lodash';
-import { TransactionStatus } from '../../../shared/constants/transaction';
 
 const version = 19;
 

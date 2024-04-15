@@ -1,23 +1,23 @@
-import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { compose } from 'redux';
+import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
+import { getPreferences } from '../../../selectors';
 import {
+  backupUserData,
   displayWarning,
+  restoreUserData,
+  setAutoLockTimeLimit,
+  setDisabledRpcMethodPreference,
+  setDismissSeedBackUpReminder,
   setFeatureFlag,
-  showModal,
+  setShowExtensionInFullSizeView,
   setShowFiatConversionOnTestnetsPreference,
   setShowTestNetworks,
-  setAutoLockTimeLimit,
+  setSmartTransactionsOptInStatus,
   setUseNonceField,
-  setLedgerTransportPreference,
-  setDismissSeedBackUpReminder,
-  setDisabledRpcMethodPreference,
-  backupUserData,
-  restoreUserData,
+  showModal,
 } from '../../../store/actions';
-import { getPreferences } from '../../../selectors';
-import { doesUserHaveALedgerAccount } from '../../../ducks/metamask/metamask';
-import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
 import AdvancedTab from './advanced-tab.component';
 
 export const mapStateToProps = (state) => {
@@ -29,34 +29,27 @@ export const mapStateToProps = (state) => {
     featureFlags: { sendHexData } = {},
     disabledRpcMethodPreferences,
     useNonceField,
-    ledgerTransportType,
     dismissSeedBackUpReminder,
-    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
-    desktopEnabled,
-    ///: END:ONLY_INCLUDE_IN
   } = metamask;
   const {
     showFiatInTestnets,
     showTestNetworks,
+    showExtensionInFullSizeView,
+    smartTransactionsOptInStatus,
     autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT,
   } = getPreferences(state);
-
-  const userHasALedgerAccount = doesUserHaveALedgerAccount(state);
 
   return {
     warning,
     sendHexData,
     showFiatInTestnets,
     showTestNetworks,
+    showExtensionInFullSizeView,
+    smartTransactionsOptInStatus,
     autoLockTimeLimit,
     useNonceField,
-    ledgerTransportType,
     dismissSeedBackUpReminder,
-    userHasALedgerAccount,
     disabledRpcMethodPreferences,
-    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
-    desktopEnabled,
-    ///: END:ONLY_INCLUDE_IN
   };
 };
 
@@ -77,11 +70,14 @@ export const mapDispatchToProps = (dispatch) => {
     setShowTestNetworks: (value) => {
       return dispatch(setShowTestNetworks(value));
     },
+    setShowExtensionInFullSizeView: (value) => {
+      return dispatch(setShowExtensionInFullSizeView(value));
+    },
+    setSmartTransactionsOptInStatus: (value) => {
+      return dispatch(setSmartTransactionsOptInStatus(value));
+    },
     setAutoLockTimeLimit: (value) => {
       return dispatch(setAutoLockTimeLimit(value));
-    },
-    setLedgerTransportPreference: (value) => {
-      return dispatch(setLedgerTransportPreference(value));
     },
     setDismissSeedBackUpReminder: (value) => {
       return dispatch(setDismissSeedBackUpReminder(value));

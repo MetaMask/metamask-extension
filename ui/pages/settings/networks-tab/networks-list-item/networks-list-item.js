@@ -101,17 +101,20 @@ const NetworksListItem = ({
           />
         )
       )}
-      {network.isATestNetwork && network.chainId !== CHAIN_IDS.LINEA_GOERLI && (
-        <UrlIcon
-          name={label || getNetworkLabelKey(labelKey)}
-          fallbackClassName={classnames(
-            'networks-tab__content__icon-with-fallback',
-            {
-              [`networks-tab__content__icon-with-fallback--color-${labelKey}`]: true,
-            },
-          )}
-        />
-      )}
+      {network.isATestNetwork &&
+        ![CHAIN_IDS.LINEA_GOERLI, CHAIN_IDS.LINEA_SEPOLIA].includes(
+          network.chainId,
+        ) && (
+          <UrlIcon
+            name={label || getNetworkLabelKey(labelKey)}
+            fallbackClassName={classnames(
+              'networks-tab__content__icon-with-fallback',
+              {
+                [`networks-tab__content__icon-with-fallback--color-${labelKey}`]: true,
+              },
+            )}
+          />
+        )}
       <div
         className={classnames('networks-tab__networks-list-name', {
           'networks-tab__networks-list-name--selected':

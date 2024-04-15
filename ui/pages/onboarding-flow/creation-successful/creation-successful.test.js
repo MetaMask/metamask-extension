@@ -6,10 +6,8 @@ import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   ONBOARDING_PIN_EXTENSION_ROUTE,
 } from '../../../helpers/constants/routes';
-import {
-  renderWithProvider,
-  setBackgroundConnection,
-} from '../../../../test/jest';
+import { setBackgroundConnection } from '../../../store/background-connection';
+import { renderWithProvider } from '../../../../test/jest';
 import CreationSuccessful from './creation-successful';
 
 const mockHistoryPush = jest.fn();
@@ -51,7 +49,7 @@ describe('Creation Successful Onboarding View', () => {
 
   it('should route to pin extension route when "Got it" button is clicked', () => {
     const { getByText } = renderWithProvider(<CreationSuccessful />, store);
-    const gotItButton = getByText('Got it!');
+    const gotItButton = getByText('Got it');
     fireEvent.click(gotItButton);
     expect(mockHistoryPush).toHaveBeenCalledWith(
       ONBOARDING_PIN_EXTENSION_ROUTE,

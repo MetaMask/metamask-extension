@@ -1,3 +1,5 @@
+@use "design-system";
+
 .searchable-item-list {
   background: var(--color-background-default);
   width: 100%;
@@ -12,7 +14,7 @@
       font-size: 12px;
 
       input {
-        @include H6;
+        @include design-system.H6;
 
         color: var(--color-text-default);
         line-height: 100%;
@@ -77,7 +79,7 @@
 
     &--disabled {
       opacity: 0.4;
-      pointer-events: none;
+      cursor: auto;
     }
 
     &--add-token {
@@ -106,7 +108,7 @@
     }
 
     .btn-primary {
-      @include H7;
+      @include design-system.H7;
 
       width: auto;
       padding: 7px 11px;
@@ -123,7 +125,7 @@
     align-items: center;
     min-width: 0;
 
-    @include H6;
+    @include design-system.H6;
 
     line-height: 100%;
     font-weight: bold;
@@ -166,7 +168,7 @@
 
   &__secondary-label,
   &__right-primary-label {
-    @include H7;
+    @include design-system.H7;
 
     line-height: 100%;
     color: var(--color-text-alternative);
@@ -181,7 +183,7 @@
   }
 
   &__right-secondary-label {
-    @include H7;
+    @include design-system.H7;
 
     line-height: 100%;
     color: var(--color-text-alternative);

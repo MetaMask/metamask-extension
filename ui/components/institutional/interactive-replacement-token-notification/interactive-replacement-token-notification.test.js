@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { screen, fireEvent } from '@testing-library/react';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { act } from 'react-dom/test-utils';
 import { sha256 } from '../../../../shared/modules/hash.utils';
 import { KeyringType } from '../../../../shared/constants/keyring';
@@ -38,22 +39,31 @@ jest.mock('../../../store/institutional/institution-actions', () => ({
 }));
 
 describe('Interactive Replacement Token Notification', () => {
-  const selectedAddress = '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281';
-
-  const identities = {
-    '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281': {
-      address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
-      name: 'Custodian A',
-    },
-  };
+  const selectedAccount = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
 
   const mockStore = {
     metamask: {
       providerConfig: {
         type: 'test',
       },
-      selectedAddress,
-      identities,
+      internalAccounts: {
+        accounts: {
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+            address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
+            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            metadata: {
+              name: 'Test Account',
+              keyring: {
+                type: 'Custody',
+              },
+            },
+            options: {},
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
+          },
+        },
+        selectedAccount,
+      },
       isUnlocked: false,
       interactiveReplacementToken: { oldRefreshToken: 'abc' },
       preferences: {

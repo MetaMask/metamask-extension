@@ -1,0 +1,88 @@
+@use "design-system";
+
+.asset-picker-amount {
+  // balance text elements
+  &__balance > *,
+  &__balance > div > * {
+    font-size: design-system.$font-size-h7;
+    padding: 0;
+  }
+
+  // input for NFTs
+  &__input-nft {
+    // the input element itself
+    & > div > div > input {
+      text-overflow: hidden;
+      margin: auto;
+      text-align: center;
+      max-width: 5ch;
+    }
+
+    // 48 padding + 18 line height
+    height: 66px;
+    aspect-ratio: 1/1;
+
+    // 4 padding + 1 border
+    margin: -5px -5px -5px 0;
+    box-sizing: border-box;
+    border-color: inherit;
+    border-width: 1px;
+    border-radius: 0 8px 8px 0;
+  }
+
+  // input for tokens
+  &__input {
+    .unit-input__inputs {
+      // primary (i.e., input) and secondary (i.e., subtext) input sections
+      & > div {
+        max-width: 125px;
+        white-space: nowrap;
+        overflow: scroll;
+        text-overflow: ellipsis;
+      }
+
+      // primary field elements (e.g., input field, symbols)
+      & > .currency-input__conversion-component > span {
+        color: var(--color-text-alternative);
+        font-size: design-system.$font-size-h6;
+      }
+
+      // converted (secondary) value
+      & > div.currency-input__conversion-component {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        display: inline;
+      }
+
+      // secondary field elements (e.g., value, symbols)
+      & > div.unit-input__input-container > * {
+        color: var(--color-text-default);
+        font-size: design-system.$font-size-h6;
+      }
+    }
+
+    // input section (e.g., primary input field, secondary field, symbols)
+    & > .unit-input__inputs > div {
+      // input field
+      & > input {
+        text-align: right;
+      }
+
+      margin-left: auto;
+    }
+
+    // swap button
+    &__swap {
+      margin-left: 4px;
+    }
+
+    float: right;
+    flex-grow: 1;
+    border: none;
+  }
+}
+
+// max button
+button.asset-picker-amount__max-clear:hover:not(.--disabled) {
+  text-decoration: none;
+}

@@ -1,0 +1,23 @@
+diff --git a/dist/SignatureController.js b/dist/SignatureController.js
+index 8ac1b2158ff4564fe2f942ca955bd337d78a94ef..c6552d874d830e610fcff791eb0f87f51fae1770 100644
+--- a/dist/SignatureController.js
++++ b/dist/SignatureController.js
+@@ -278,6 +278,9 @@ _SignatureController_isEthSignEnabled = new WeakMap(), _SignatureController_getA
+             const messageParamsWithId = Object.assign(Object.assign(Object.assign({}, messageParams), { metamaskId: messageId }), (version && { version }));
+             const signaturePromise = messageManager.waitForFinishStatus(messageParamsWithId, messageName);
+             try {
++                signaturePromise.catch(() => {
++                    // Expecting reject error but throwing manually rather than waiting
++                });
+                 // Signature request is proposed to the user
+                 __classPrivateFieldGet(this, _SignatureController_instances, "m", _SignatureController_addLog).call(this, signTypeForLogger, logging_controller_1.SigningStage.Proposed, messageParamsWithId);
+                 const acceptResult = yield __classPrivateFieldGet(this, _SignatureController_instances, "m", _SignatureController_requestApproval).call(this, messageParamsWithId, approvalType);
+@@ -287,7 +290,7 @@ _SignatureController_isEthSignEnabled = new WeakMap(), _SignatureController_getA
+                 // User rejected the signature request
+                 __classPrivateFieldGet(this, _SignatureController_instances, "m", _SignatureController_addLog).call(this, signTypeForLogger, logging_controller_1.SigningStage.Rejected, messageParamsWithId);
+                 __classPrivateFieldGet(this, _SignatureController_instances, "m", _SignatureController_cancelAbstractMessage).call(this, messageManager, messageId);
+-                throw eth_rpc_errors_1.ethErrors.provider.userRejectedRequest('User rejected the request.');
++                throw eth_rpc_errors_1.ethErrors.provider.userRejectedRequest(`MetaMask ${messageName} Signature: User denied message signature.`);
+             }
+             yield signMessage(messageParamsWithId, signingOpts);
+             const signatureResult = yield signaturePromise;

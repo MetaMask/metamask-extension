@@ -1,0 +1,178 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FormComboField renders with no options 1`] = `
+<body>
+  <div
+    id="popover-content"
+  />
+  <div>
+    <div
+      class="form-combo-field"
+    >
+      <div>
+        <div
+          class="box mm-form-text-field form-combo-field__value form-combo-field__value-dropdown-visible box--display-flex box--flex-direction-column"
+        >
+          <div
+            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+          >
+            <input
+              autocomplete="off"
+              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+              focused="true"
+              placeholder="TestPlaceholder"
+              type="text"
+              value="TestValue"
+            />
+            <button
+              aria-label="[clear]"
+              class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                style="mask-image: url('./images/icons/close.svg');"
+              />
+            </button>
+          </div>
+        </div>
+      </div>
+      <div
+        class="form-combo-field__dropdown"
+        style="width: 0px; max-height: 179px;"
+      >
+        <div
+          class="form-combo-field__option"
+          tabindex="0"
+        >
+          <span
+            class="form-combo-field__option-primary"
+          >
+            TestNoOptionsText
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+`;
+
+exports[`FormComboField renders with options 1`] = `
+<body>
+  <div
+    id="popover-content"
+  />
+  <div>
+    <div
+      class="form-combo-field"
+    >
+      <div>
+        <div
+          class="box mm-form-text-field form-combo-field__value form-combo-field__value-dropdown-visible box--display-flex box--flex-direction-column"
+        >
+          <div
+            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+          >
+            <input
+              autocomplete="off"
+              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+              focused="true"
+              placeholder="TestPlaceholder"
+              type="text"
+              value="TestValue"
+            />
+            <button
+              aria-label="[clear]"
+              class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                style="mask-image: url('./images/icons/close.svg');"
+              />
+            </button>
+          </div>
+        </div>
+      </div>
+      <div
+        class="form-combo-field__dropdown"
+        style="width: 0px; max-height: 179px;"
+      >
+        <div
+          class="form-combo-field__option"
+          tabindex="0"
+        >
+          <span
+            class="form-combo-field__option-primary"
+          >
+            TestPrimaryLabel
+          </span>
+          <span
+            class="form-combo-field__option-secondary"
+          >
+            TestSecondaryLabel
+          </span>
+        </div>
+        <div
+          class="form-combo-field__option"
+          tabindex="0"
+        >
+          <span
+            class="form-combo-field__option-primary"
+          >
+            TestPrimaryLabel2
+          </span>
+          <span
+            class="form-combo-field__option-secondary"
+          >
+            TestSecondaryLabel2
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+`;
+
+exports[`FormComboField should not render "no options" if hideDropdownIfNoOptions is specified 1`] = `
+<body>
+  <div
+    id="popover-content"
+  />
+  <div>
+    <div
+      class="form-combo-field"
+    >
+      <div>
+        <div
+          class="box mm-form-text-field form-combo-field__value form-combo-field__value-dropdown-visible box--display-flex box--flex-direction-column"
+        >
+          <div
+            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+          >
+            <input
+              autocomplete="off"
+              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+              focused="true"
+              placeholder="TestPlaceholder"
+              type="text"
+              value="TestValue"
+            />
+            <button
+              aria-label="[clear]"
+              class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                style="mask-image: url('./images/icons/close.svg');"
+              />
+            </button>
+          </div>
+        </div>
+      </div>
+      <div
+        class="form-combo-field__dropdown"
+        style="width: 0px; max-height: 179px;"
+      />
+    </div>
+  </div>
+</body>
+`;

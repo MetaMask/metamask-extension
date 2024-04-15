@@ -31,6 +31,7 @@ import {
 } from '../../../components/component-library';
 
 import Box from '../../../components/ui/box/box';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 
 export default function OnboardingMetametrics() {
   const t = useI18nContext();
@@ -51,7 +52,7 @@ export default function OnboardingMetametrics() {
           event: MetaMetricsEventName.WalletSetupStarted,
           properties: {
             account_type:
-              firstTimeFlowType === 'create'
+              firstTimeFlowType === FirstTimeFlowType.create
                 ? MetaMetricsEventAccountType.Default
                 : MetaMetricsEventAccountType.Imported,
           },
@@ -188,7 +189,7 @@ export default function OnboardingMetametrics() {
       >
         {t('onboardingMetametricsInfuraTerms', [
           <a
-            href="https://consensys.net/blog/news/consensys-data-retention-update/"
+            href="https://consensys.io/blog/consensys-data-retention-update"
             target="_blank"
             rel="noopener noreferrer"
             key="retention-link"

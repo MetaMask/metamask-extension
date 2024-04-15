@@ -2,6 +2,8 @@ const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
+const WALLET_PASSWORD = 'correct horse battery staple';
+
 describe('Incremental Security', function () {
   const ganacheOptions = {
     accounts: [
@@ -17,14 +19,14 @@ describe('Incremental Security', function () {
       },
     ],
   };
-  it('Back up Secret Recovery Phrase from backup reminder', async function () {
+
+  it('Back up Secret Recovery Phrase from backup reminder @no-mmi', async function () {
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions,
-        title: this.test.title,
-        failOnConsoleError: false,
+        title: this.test.fullTitle(),
         dappPath: 'send-eth-with-private-key-test',
       },
       async ({ driver }) => {
@@ -78,11 +80,15 @@ describe('Incremental Security', function () {
         const publicAddress = await address.getText();
 
         // wait for account modal to be visible
-        const accountModal = await driver.findVisibleElement('.mm-modal');
-        await driver.clickElement('.mm-modal button[aria-label="Close"]');
+        await driver.findVisibleElement(
+          '[data-testid="account-details-modal"]',
+        );
+        await driver.clickElement('button[aria-label="Close"]');
 
         // wait for account modal to be removed from DOM
-        await accountModal.waitForElementState('hidden');
+        await driver.assertElementNotPresent(
+          '[data-testid="account-details-modal"]',
+        );
 
         // send to current account from dapp with different provider
         const windowHandles = await driver.getAllWindowHandles();
@@ -115,7 +121,7 @@ describe('Incremental Security', function () {
         // should show a backup reminder
         const backupReminder = await driver.findElements({
           xpath:
-            "//div[contains(@class, 'home-notification__text') and contains(text(), 'Backup your Secret Recovery Phrase to keep your wallet and funds secure')]",
+            "//div[contains(@class, 'home-notification__text') and contains(text(), 'Back up your Secret Recovery Phrase to keep your wallet and funds secure')]",
         });
         assert.equal(backupReminder.length, 1);
 
@@ -124,7 +130,19 @@ describe('Incremental Security', function () {
 
         // reveals the Secret Recovery Phrase
         await driver.clickElement('[data-testid="secure-wallet-recommended"]');
-        await driver.clickElement('[data-testid="recovery-phrase-reveal"]');
+
+        await driver.fill('[placeholder="Password"]', WALLET_PASSWORD);
+
+        await driver.clickElement({ text: 'Confirm', tag: 'button' });
+        await driver.assertElementNotPresent(
+          '[data-testid="reveal-srp-modal"]',
+        );
+
+        const recoveryPhraseRevealButton = await driver.findClickableElement(
+          '[data-testid="recovery-phrase-reveal"]',
+        );
+        await recoveryPhraseRevealButton.click();
+
         const chipTwo = await (
           await driver.findElement('[data-testid="recovery-phrase-chip-2"]')
         ).getText();
@@ -151,7 +169,7 @@ describe('Incremental Security', function () {
 
         assert.strictEqual(balance, '1');
 
-        // should not show a backup reminder
+        // The previous currencyDisplay wait already serves as the guard here for the assertElementNotPresent
         await driver.assertElementNotPresent('.backup-notification');
       },
     );

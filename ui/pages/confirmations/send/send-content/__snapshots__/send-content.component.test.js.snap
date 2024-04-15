@@ -1,0 +1,285 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SendContent Component render should match snapshot 1`] = `
+<div>
+  <div
+    class="page-container__content"
+  >
+    <div
+      class="send-v2__form"
+    >
+      <div
+        class="send-v2__form-row"
+      >
+        <div
+          class="send-v2__form-label"
+        >
+          Asset:
+        </div>
+        <div
+          class="send-v2__form-field"
+        >
+          <div
+            class="send-v2__asset-dropdown"
+          >
+            <div
+              class="send-v2__asset-dropdown__input-wrapper"
+            >
+              <div
+                class="send-v2__asset-dropdown__asset"
+              >
+                <div
+                  class="send-v2__asset-dropdown__asset-icon"
+                >
+                  <div
+                    class="identicon__image-border"
+                    style="height: 36px; width: 36px; border-radius: 18px;"
+                  />
+                </div>
+                <div
+                  class="send-v2__asset-dropdown__asset-data"
+                >
+                  <div
+                    class="send-v2__asset-dropdown__symbol"
+                  />
+                  <div
+                    class="send-v2__asset-dropdown__name"
+                  >
+                    <span
+                      class="send-v2__asset-dropdown__name__label"
+                    >
+                      Balance:
+                    </span>
+                    <div
+                      class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                      title="0 ETH"
+                    >
+                      <span
+                        class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                      >
+                        0
+                      </span>
+                      <span
+                        class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+                      >
+                        ETH
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <i
+                  class="fa fa-caret-down fa-lg send-v2__asset-dropdown__caret"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="send-v2__form-row"
+      >
+        <div
+          class="send-v2__form-label"
+        >
+          Amount:
+          <button
+            class="send-v2__amount-max"
+          >
+            <input
+              readonly=""
+              type="checkbox"
+            />
+            <div
+              class="send-v2__amount-max__button"
+            >
+              Max
+            </div>
+          </button>
+        </div>
+        <div
+          class="send-v2__form-field-container"
+        >
+          <div
+            class="send-v2__form-field"
+          >
+            <div
+              class="unit-input"
+            >
+              <div
+                class="unit-input__inputs"
+              >
+                <div
+                  class="unit-input__input-container"
+                  style="display: inherit;"
+                  title="1"
+                >
+                  <input
+                    class="unit-input__input"
+                    data-testid="currency-input"
+                    dir="ltr"
+                    min="0"
+                    placeholder="0"
+                    step="any"
+                    style="width: 1.5ch;"
+                    type="number"
+                    value="0"
+                  />
+                  <div
+                    class="unit-input__suffix"
+                  >
+                    ETH
+                  </div>
+                </div>
+                <div
+                  class="currency-input__conversion-component"
+                >
+                  No conversion rate available
+                </div>
+              </div>
+            </div>
+          </div>
+          <div />
+        </div>
+      </div>
+      <div
+        class="send-v2__form-row"
+      >
+        <div
+          class="send-v2__form-label"
+        >
+          Hex data:
+        </div>
+        <div
+          class="send-v2__form-field-container"
+        >
+          <div
+            class="send-v2__form-field"
+          >
+            <textarea
+              class="send-v2__hex-data__input"
+              placeholder="Optional"
+            />
+          </div>
+          <div />
+        </div>
+      </div>
+      <div
+        class="box gas-display box--flex-direction-row"
+      >
+        <div
+          class="transaction-detail"
+        >
+          <div
+            class="transaction-detail-rows"
+          >
+            <div
+              class="transaction-detail-item"
+              data-testid="confirm-gas-display"
+            >
+              <div
+                class="transaction-detail-item__row"
+              >
+                <h6
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--display-flex mm-box--flex-wrap-nowrap mm-box--align-items-center mm-box--color-text-default"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                  >
+                    Estimated fee
+                  </p>
+                </h6>
+                <div
+                  class="transaction-detail-item__detail-values"
+                >
+                  <h6
+                    class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--text-align-right mm-box--margin-left-1 mm-box--color-text-default"
+                  >
+                    <div
+                      class="gas-details-item__currency-container"
+                    >
+                      <div
+                        class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                        title="0.0000315 ETH"
+                      >
+                        <span
+                          class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                        >
+                          0.0000315
+                        </span>
+                        <span
+                          class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+                        >
+                          ETH
+                        </span>
+                      </div>
+                    </div>
+                  </h6>
+                </div>
+              </div>
+              <div
+                class="transaction-detail-item__row"
+              >
+                <div>
+                  <div
+                    class="mm-box mm-box--display-flex"
+                  >
+                    <p
+                      class="mm-box mm-text mm-text--body-xs mm-box--color-text-muted"
+                    >
+                      Unknown processing time
+                    </p>
+                    <p
+                      class="mm-box mm-text mm-text--body-xs mm-box--margin-left-1 mm-box--color-error-default"
+                    >
+                      <span
+                        data-testid="gas-timing-time"
+                      >
+                        ~
+                        
+                      </span>
+                    </p>
+                  </div>
+                </div>
+                <h6
+                  class="mm-box mm-text transaction-detail-item__row-subText mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
+                >
+                  <div
+                    class="box gas-details-item__gasfee-label box--display-inline-flex box--flex-direction-row"
+                  >
+                    <div
+                      class="box box--margin-right-1 box--flex-direction-row"
+                    >
+                      <strong>
+                        Max fee:
+                      </strong>
+                    </div>
+                    <div
+                      class="gas-details-item__currency-container"
+                    >
+                      <div
+                        class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+                        title="0.0000315 ETH"
+                      >
+                        <span
+                          class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                        >
+                          0.0000315
+                        </span>
+                        <span
+                          class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+                        >
+                          ETH
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </h6>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

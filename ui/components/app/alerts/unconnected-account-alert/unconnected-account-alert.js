@@ -12,8 +12,8 @@ import {
 import {
   getOriginOfCurrentTab,
   getOrderedConnectedAccountsForActiveTab,
-  getSelectedAddress,
-  getSelectedIdentity,
+  getSelectedInternalAccount,
+  getInternalAccounts,
 } from '../../../../selectors';
 import { isExtensionUrl, getURLHost } from '../../../../helpers/utils/util';
 import Popover from '../../../ui/popover';
@@ -22,7 +22,7 @@ import Checkbox from '../../../ui/check-box';
 import Tooltip from '../../../ui/tooltip';
 import ConnectedAccountsList from '../../connected-accounts-list';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Icon, IconName } from '../../../component-library';
+import { Icon, IconName, Text } from '../../../component-library';
 
 const { ERROR, LOADING } = ALERT_STATE;
 
@@ -33,9 +33,20 @@ const UnconnectedAccountAlert = () => {
   const connectedAccounts = useSelector(
     getOrderedConnectedAccountsForActiveTab,
   );
+  const internalAccounts = useSelector(getInternalAccounts);
+  // Temporary fix until https://github.com/MetaMask/metamask-extension/pull/21553
+  const internalAccountsMap = new Map(
+    internalAccounts.map((acc) => [acc.address, acc]),
+  );
+
+  const connectedAccountsWithName = connectedAccounts.map((account) => ({
+    ...account,
+    name: internalAccountsMap.get(account.address)?.metadata.name,
+  }));
+
   const origin = useSelector(getOriginOfCurrentTab);
-  const selectedIdentity = useSelector(getSelectedIdentity);
-  const selectedAddress = useSelector(getSelectedAddress);
+  const account = useSelector(getSelectedInternalAccount);
+  const { address: selectedAddress } = account;
   const [dontShowThisAgain, setDontShowThisAgain] = useState(false);
 
   const onClose = async () => {
@@ -63,7 +74,7 @@ const UnconnectedAccountAlert = () => {
             className="unconnected-account-alert__checkbox-label"
             htmlFor="unconnectedAccount_dontShowThisAgain"
           >
-            {t('dontShowThisAgain')}
+            <Text>{t('dontShowThisAgain')}</Text>
             <Tooltip
               position="top"
               title={t('alertDisableTooltip')}
@@ -98,11 +109,16 @@ const UnconnectedAccountAlert = () => {
       footer={footer}
     >
       <ConnectedAccountsList
-        accountToConnect={selectedIdentity}
+        accountToConnect={account}
         connectAccount={() => dispatch(connectAccount(selectedAddress))}
-        connectedAccounts={connectedAccounts}
+        connectedAccounts={connectedAccountsWithName}
         selectedAddress={selectedAddress}
-        setSelectedAddress={(address) => dispatch(switchToAccount(address))}
+        setSelectedAddress={(address) => {
+          const { id: accountId } = internalAccounts.find(
+            (internalAccount) => internalAccount.address === address,
+          );
+          dispatch(switchToAccount(accountId));
+        }}
         shouldRenderListOptions={false}
       />
     </Popover>

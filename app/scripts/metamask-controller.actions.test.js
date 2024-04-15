@@ -1,12 +1,20 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
-
+import {
+  ListNames,
+  METAMASK_STALELIST_URL,
+  METAMASK_HOTLIST_DIFF_URL,
+  PHISHING_CONFIG_BASE_URL,
+  METAMASK_STALELIST_FILE,
+  METAMASK_HOTLIST_DIFF_FILE,
+} from '@metamask/phishing-controller';
 import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
 import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
 import nock from 'nock';
+import mockEncryptor from '../../test/lib/mock-encryptor';
 
-const Ganache = require('../../test/e2e/ganache');
+const { Ganache } = require('../../test/e2e/ganache');
 
 const ganacheServer = new Ganache();
 
@@ -59,21 +67,28 @@ describe('MetaMaskController', function () {
   });
 
   beforeEach(function () {
-    nock('https://static.metafi.codefi.network')
+    nock(PHISHING_CONFIG_BASE_URL)
       .persist()
-      .get('/api/v1/lists/stalelist.json')
+      .get(METAMASK_STALELIST_FILE)
       .reply(
         200,
         JSON.stringify({
           version: 2,
           tolerance: 2,
-          fuzzylist: [],
-          allowlist: [],
-          blocklist: ['127.0.0.1'],
-          lastUpdated: 0,
+          lastUpdated: 1,
+          eth_phishing_detect_config: {
+            fuzzylist: [],
+            allowlist: [],
+            blocklist: ['127.0.0.1'],
+            name: ListNames.MetaMask,
+          },
+          phishfort_hotlist: {
+            blocklist: [],
+            name: ListNames.Phishfort,
+          },
         }),
       )
-      .get('/api/v1/lists/hotlist.json')
+      .get(METAMASK_HOTLIST_DIFF_FILE)
       .reply(
         200,
         JSON.stringify([
@@ -82,15 +97,7 @@ describe('MetaMaskController', function () {
       );
     metamaskController = new MetaMaskController({
       showUserConfirmation: noop,
-      encryptor: {
-        encrypt(_, object) {
-          this.object = object;
-          return Promise.resolve('mock-encrypted');
-        },
-        decrypt() {
-          return Promise.resolve(this.object);
-        },
-      },
+      encryptor: mockEncryptor,
       initLangCode: 'en_US',
       platform: {
         showTransactionNotification: () => undefined,
@@ -110,6 +117,20 @@ describe('MetaMaskController', function () {
     await ganacheServer.quit();
   });
 
+  describe('Phishing Detection Mock', function () {
+    it('should be updated to use v1 of the API', function () {
+      // Update the fixture above if this test fails
+      assert.equal(
+        METAMASK_STALELIST_URL,
+        'https://phishing-detection.metafi.codefi.network/v1/stalelist',
+      );
+      assert.equal(
+        METAMASK_HOTLIST_DIFF_URL,
+        'https://phishing-detection.metafi.codefi.network/v1/diffsSince',
+      );
+    });
+  });
+
   describe('#addNewAccount', function () {
     it('two parallel calls with same accountCount give same result', async function () {
       await metamaskController.createNewVaultAndKeychain('test@123');
@@ -117,27 +138,21 @@ describe('MetaMaskController', function () {
         metamaskController.addNewAccount(1),
         metamaskController.addNewAccount(1),
       ]);
-      assert.deepEqual(
-        Object.keys(addNewAccountResult1.identities),
-        Object.keys(addNewAccountResult2.identities),
-      );
+      assert.equal(addNewAccountResult1, addNewAccountResult2);
     });
 
     it('two successive calls with same accountCount give same result', async function () {
       await metamaskController.createNewVaultAndKeychain('test@123');
       const addNewAccountResult1 = await metamaskController.addNewAccount(1);
       const addNewAccountResult2 = await metamaskController.addNewAccount(1);
-      assert.deepEqual(
-        Object.keys(addNewAccountResult1.identities),
-        Object.keys(addNewAccountResult2.identities),
-      );
+      assert.equal(addNewAccountResult1, addNewAccountResult2);
     });
 
     it('two successive calls with different accountCount give different results', async function () {
       await metamaskController.createNewVaultAndKeychain('test@123');
       const addNewAccountResult1 = await metamaskController.addNewAccount(1);
       const addNewAccountResult2 = await metamaskController.addNewAccount(2);
-      assert.notDeepEqual(addNewAccountResult1, addNewAccountResult2);
+      assert.notEqual(addNewAccountResult1, addNewAccountResult2);
     });
   });
 
@@ -150,20 +165,20 @@ describe('MetaMaskController', function () {
 
       await metamaskController.createNewVaultAndKeychain('test@123');
       await Promise.all([
-        metamaskController.importAccountWithStrategy('Private Key', [
+        metamaskController.importAccountWithStrategy('privateKey', [
           importPrivkey,
         ]),
         Promise.resolve(1).then(() => {
           keyringControllerState1 = JSON.stringify(
-            metamaskController.keyringController.memStore.getState(),
+            metamaskController.keyringController.state,
           );
-          metamaskController.importAccountWithStrategy('Private Key', [
+          metamaskController.importAccountWithStrategy('privateKey', [
             importPrivkey,
           ]);
         }),
         Promise.resolve(2).then(() => {
           keyringControllerState2 = JSON.stringify(
-            metamaskController.keyringController.memStore.getState(),
+            metamaskController.keyringController.state,
           );
         }),
       ]);
@@ -198,6 +213,14 @@ describe('MetaMaskController', function () {
     });
   });
 
+  describe('#setLocked', function () {
+    it('should lock the wallet', async function () {
+      const { isUnlocked, keyrings } = await metamaskController.setLocked();
+      assert(!isUnlocked);
+      assert.deepEqual(keyrings, []);
+    });
+  });
+
   describe('#addToken', function () {
     const address = '0x514910771af9ca656af840dff83e8264ecf986ca';
     const symbol = 'LINK';
@@ -214,10 +237,39 @@ describe('MetaMaskController', function () {
         );
 
       const [token1, token2] = await Promise.all([
-        metamaskController.getApi().addToken(address, symbol, decimals),
-        metamaskController.getApi().addToken(address, symbol, decimals),
+        metamaskController.getApi().addToken({ address, symbol, decimals }),
+        metamaskController.getApi().addToken({ address, symbol, decimals }),
       ]);
       assert.deepEqual(token1, token2);
+    });
+
+    it('networkClientId is used when provided', async function () {
+      const supportsInterfaceStub = sinon
+        .stub()
+        .returns(Promise.resolve(false));
+      sinon
+        .stub(metamaskController.tokensController, '_createEthersContract')
+        .callsFake(() =>
+          Promise.resolve({ supportsInterface: supportsInterfaceStub }),
+        );
+      sinon
+        .stub(metamaskController.controllerMessenger, 'call')
+        .callsFake(() => ({
+          configuration: {
+            chainId: '0xa',
+          },
+        }));
+
+      await metamaskController.getApi().addToken({
+        address,
+        symbol,
+        decimals,
+        networkClientId: 'networkClientId1',
+      });
+      assert.deepStrictEqual(
+        metamaskController.controllerMessenger.call.getCall(0).args,
+        ['NetworkController:getNetworkClientById', 'networkClientId1'],
+      );
     });
   });
 

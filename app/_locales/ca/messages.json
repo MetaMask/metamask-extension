@@ -172,9 +172,6 @@
   "copyAddress": {
     "message": "Copiar adreça al porta-retalls"
   },
-  "copyPrivateKey": {
-    "message": "Aquesta és la teva clau privada (fes clic per a copiar)"
-  },
   "copyToClipboard": {
     "message": "Copia al porta-retalls"
   },
@@ -211,9 +208,6 @@
   "deleteNetwork": {
     "message": "Esborrar Xarxa?"
   },
-  "deleteNetworkDescription": {
-    "message": "Estàs segur que vols eliminar aquesta xarxa?"
-  },
   "details": {
     "message": "Detalls"
   },
@@ -235,14 +229,8 @@
   "editContact": {
     "message": "Editar Contacte"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "El nom ENS no s'ha trovat a la xarxa actual. Prova a cambiar a la xarxa principal d'Ethereum."
-  },
   "ensRegistrationError": {
     "message": "Error al registre de nom ENS"
-  },
-  "enterPassword": {
-    "message": "Introdueix contrasenya"
   },
   "enterPasswordContinue": {
     "message": "Introdueix la contrasenya per continuar"
@@ -255,9 +243,6 @@
   },
   "expandView": {
     "message": "Eixamplar Vista"
-  },
-  "exportPrivateKey": {
-    "message": "Exportar Clau Privada."
   },
   "failed": {
     "message": "Fallit"
@@ -605,12 +590,6 @@
   "search": {
     "message": "Cerca"
   },
-  "searchResults": {
-    "message": "Resultats de Cerca"
-  },
-  "searchTokens": {
-    "message": "Tokens per cercar"
-  },
   "securityAndPrivacy": {
     "message": "Seguretat i privacitat"
   },
@@ -649,9 +628,6 @@
   },
   "showHexDataDescription": {
     "message": "Selecciona això per a mostrar el camp de dades Hex a la pantalla d'enviament"
-  },
-  "showPrivateKeys": {
-    "message": "Mostrar Claus Privades"
   },
   "sigRequest": {
     "message": "Sol·licitud de Signatura"
@@ -767,9 +743,6 @@
   "tryAgain": {
     "message": "Torna-ho a provar"
   },
-  "typePassword": {
-    "message": "Tecleja la teva contrasenya de MetaMask"
-  },
   "unapproved": {
     "message": "Pendent d'aprovació"
   },
@@ -778,12 +751,6 @@
   },
   "unknown": {
     "message": "Desconegut"
-  },
-  "unknownCameraError": {
-    "message": "Hi ha hagut un error mentre intentaves accedir a la teva càmera"
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ups! Hi ha alguna cosa que no ha funcionat..."
   },
   "unknownNetwork": {
     "message": "Xarxa privada desconeguda"

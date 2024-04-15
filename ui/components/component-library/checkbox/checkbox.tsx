@@ -9,8 +9,8 @@ import {
   Display,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-import type { PolymorphicRef } from '../box';
 
+import type { PolymorphicRef, TextProps } from '..';
 import { Box, Icon, IconName, Text } from '..';
 
 import { CheckboxProps, CheckboxComponent } from './checkbox.types';
@@ -56,7 +56,7 @@ export const Checkbox: CheckboxComponent = React.forwardRef(
         alignItems={AlignItems.center}
         ref={ref}
         htmlFor={id}
-        {...props} // TODO: There is a typing issue with spreading props to the Box component. It still works but TypeScript complains.
+        {...(props as TextProps<C>)}
       >
         <span className="mm-checkbox__input-wrapper">
           <Box

@@ -1,4 +1,4 @@
-import { SubjectType } from '@metamask/subject-metadata-controller';
+import { SubjectType } from '@metamask/permission-controller';
 import { cloneDeep } from 'lodash';
 
 const version = 69;

@@ -47,8 +47,20 @@ export const AccountDetailsMenuItem = ({
 };
 
 AccountDetailsMenuItem.propTypes = {
+  /**
+   * Represents the "location" property of the metrics event
+   */
   metricsLocation: PropTypes.string.isRequired,
+  /**
+   * Closes the menu
+   */
   closeMenu: PropTypes.func,
+  /**
+   * Address to show account details for
+   */
   address: PropTypes.string.isRequired,
+  /**
+   * Custom properties for the menu item text
+   */
   textProps: PropTypes.object,
 };

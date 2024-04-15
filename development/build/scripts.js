@@ -2,9 +2,8 @@
 
 const { callbackify } = require('util');
 const path = require('path');
-const { writeFileSync, readFileSync } = require('fs');
+const { writeFileSync, readFileSync, unlinkSync } = require('fs');
 const EventEmitter = require('events');
-const assert = require('assert');
 const gulp = require('gulp');
 const watch = require('gulp-watch');
 const Vinyl = require('vinyl');
@@ -23,17 +22,16 @@ const through = require('through2');
 const endOfStream = pify(require('end-of-stream'));
 const labeledStreamSplicer = require('labeled-stream-splicer').obj;
 const wrapInStream = require('pumpify').obj;
-const Sqrl = require('squirrelly');
+const { Eta } = require('eta');
 const lavapack = require('@lavamoat/lavapack');
 const lavamoatBrowserify = require('lavamoat-browserify');
 const terser = require('terser');
-const moduleResolver = require('babel-plugin-module-resolver');
 
 const bifyModuleGroups = require('bify-module-groups');
 
-const phishingWarningManifest = require('@metamask/phishing-warning/package.json');
 const { streamFlatMap } = require('../stream-flat-map');
-const { BUILD_TARGETS, ENVIRONMENT } = require('./constants');
+const { setEnvironmentVariables } = require('./set-environment-variables');
+const { BUILD_TARGETS } = require('./constants');
 const { getConfig } = require('./config');
 const {
   isDevBuild,
@@ -41,6 +39,8 @@ const {
   getEnvironment,
   logError,
   wrapAgainstScuttling,
+  getBuildName,
+  makeSelfInjecting,
 } = require('./utils');
 
 const {
@@ -55,7 +55,7 @@ const {
 
 // map dist files to bag of needed native APIs against LM scuttling
 const scuttlingConfigBase = {
-  'sentry-install.js': {
+  'scripts/sentry-install.js': {
     // globals sentry need to function
     window: '',
     navigator: '',
@@ -93,127 +93,11 @@ const mv3ScuttlingConfig = { ...scuttlingConfigBase };
 
 const standardScuttlingConfig = {
   ...scuttlingConfigBase,
-  'sentry-install.js': {
-    ...scuttlingConfigBase['sentry-install.js'],
+  'scripts/sentry-install.js': {
+    ...scuttlingConfigBase['scripts/sentry-install.js'],
     document: '',
   },
 };
-
-/**
- * Get the appropriate Infura project ID.
- *
- * @param {object} options - The Infura project ID options.
- * @param {string} options.buildType - The current build type.
- * @param {ENVIRONMENT[keyof ENVIRONMENT]} options.environment - The build environment.
- * @param {boolean} options.testing - Whether this is a test build or not.
- * @param options.variables
- * @returns {string} The Infura project ID.
- */
-function getInfuraProjectId({ buildType, variables, environment, testing }) {
-  const EMPTY_PROJECT_ID = '00000000000000000000000000000000';
-  if (testing) {
-    return EMPTY_PROJECT_ID;
-  } else if (environment !== ENVIRONMENT.PRODUCTION) {
-    // Skip validation because this is unset on PRs from forks.
-    // For forks, return empty project ID if we don't have one.
-    if (
-      !variables.isDefined('INFURA_PROJECT_ID') &&
-      environment === ENVIRONMENT.PULL_REQUEST
-    ) {
-      return EMPTY_PROJECT_ID;
-    }
-    return variables.get('INFURA_PROJECT_ID');
-  }
-  /** @type {string|undefined} */
-  const infuraKeyReference = variables.get('INFURA_ENV_KEY_REF');
-  assert(
-    typeof infuraKeyReference === 'string' && infuraKeyReference.length > 0,
-    `Build type "${buildType}" has improperly set INFURA_ENV_KEY_REF in builds.yml. Current value: "${infuraKeyReference}"`,
-  );
-  /** @type {string|undefined} */
-  const infuraProjectId = variables.get(infuraKeyReference);
-  assert(
-    typeof infuraProjectId === 'string' && infuraProjectId.length > 0,
-    `Infura Project ID environmental variable "${infuraKeyReference}" is set improperly.`,
-  );
-  return infuraProjectId;
-}
-
-/**
- * Get the appropriate Segment write key.
- *
- * @param {object} options - The Segment write key options.
- * @param {string} options.buildType - The current build type.
- * @param {keyof ENVIRONMENT} options.environment - The current build environment.
- * @param {import('../lib/variables').Variables} options.variables - Object containing all variables that modify the build pipeline
- * @returns {string} The Segment write key.
- */
-function getSegmentWriteKey({ buildType, variables, environment }) {
-  if (environment !== ENVIRONMENT.PRODUCTION) {
-    // Skip validation because this is unset on PRs from forks, and isn't necessary for development builds.
-    return variables.get('SEGMENT_WRITE_KEY');
-  }
-
-  const segmentKeyReference = variables.get('SEGMENT_WRITE_KEY_REF');
-  assert(
-    typeof segmentKeyReference === 'string' && segmentKeyReference.length > 0,
-    `Build type "${buildType}" has improperly set SEGMENT_WRITE_KEY_REF in builds.yml. Current value: "${segmentKeyReference}"`,
-  );
-
-  const segmentWriteKey = variables.get(segmentKeyReference);
-  assert(
-    typeof segmentWriteKey === 'string' && segmentWriteKey.length > 0,
-    `Segment Write Key environmental variable "${segmentKeyReference}" is set improperly.`,
-  );
-  return segmentWriteKey;
-}
-
-/**
- * Get the URL for the phishing warning page, if it has been set.
- *
- * @param {object} options - The phishing warning page options.
- * @param {boolean} options.testing - Whether this is a test build or not.
- * @param {import('../lib/variables').Variables} options.variables - Object containing all variables that modify the build pipeline
- * @returns {string} The URL for the phishing warning page, or `undefined` if no URL is set.
- */
-function getPhishingWarningPageUrl({ variables, testing }) {
-  let phishingWarningPageUrl = variables.get('PHISHING_WARNING_PAGE_URL');
-
-  assert(
-    phishingWarningPageUrl === null ||
-      typeof phishingWarningPageUrl === 'string',
-  );
-  if (phishingWarningPageUrl === null) {
-    phishingWarningPageUrl = testing
-      ? 'http://localhost:9999/'
-      : `https://metamask.github.io/phishing-warning/v${phishingWarningManifest.version}/`;
-  }
-
-  // We add a hash/fragment to the URL dynamically, so we need to ensure it
-  // has a valid pathname to append a hash to.
-  const normalizedUrl = phishingWarningPageUrl.endsWith('/')
-    ? phishingWarningPageUrl
-    : `${phishingWarningPageUrl}/`;
-
-  let phishingWarningPageUrlObject;
-  try {
-    // eslint-disable-next-line no-new
-    phishingWarningPageUrlObject = new URL(normalizedUrl);
-  } catch (error) {
-    throw new Error(
-      `Invalid phishing warning page URL: '${normalizedUrl}'`,
-      error,
-    );
-  }
-  if (phishingWarningPageUrlObject.hash) {
-    // The URL fragment must be set dynamically
-    throw new Error(
-      `URL fragment not allowed in phishing warning page URL: '${normalizedUrl}'`,
-    );
-  }
-
-  return normalizedUrl;
-}
 
 const noopWriteStream = through.obj((_file, _fileEncoding, callback) =>
   callback(),
@@ -299,6 +183,13 @@ function createScriptTasks({
    */
   function createTasksForScriptBundles({ buildTarget, taskPrefix }) {
     const standardEntryPoints = ['background', 'ui', 'content-script'];
+
+    // In MV3 we will need to build our offscreen entry point bundle and any
+    // entry points for iframes that we want to lockdown with LavaMoat.
+    if (process.env.ENABLE_MV3 === 'true') {
+      standardEntryPoints.push('offscreen');
+    }
+
     const standardSubtask = createTask(
       `${taskPrefix}:standardEntryPoints`,
       createFactoredBuild({
@@ -307,10 +198,14 @@ function createScriptTasks({
         buildTarget,
         buildType,
         entryFiles: standardEntryPoints.map((label) => {
-          if (label === 'content-script') {
-            return './app/vendor/trezor/content-script.js';
+          switch (label) {
+            case 'content-script':
+              return './app/vendor/trezor/content-script.js';
+            case 'offscreen':
+              return './offscreen/scripts/offscreen.ts';
+            default:
+              return `./app/scripts/${label}.js`;
           }
-          return `./app/scripts/${label}.js`;
         }),
         ignoredFiles,
         policyOnly,
@@ -386,7 +281,7 @@ function createScriptTasks({
       browserPlatforms,
       buildTarget,
       buildType,
-      destFilepath: `${label}.js`,
+      destFilepath: `scripts/${label}.js`,
       entryFilepath: `./app/scripts/${label}.js`,
       ignoredFiles,
       label,
@@ -410,7 +305,7 @@ function createScriptTasks({
       browserPlatforms,
       buildTarget,
       buildType,
-      destFilepath: `${label}.js`,
+      destFilepath: `scripts/${label}.js`,
       entryFilepath: `./app/scripts/${label}.js`,
       ignoredFiles,
       label,
@@ -438,7 +333,7 @@ function createScriptTasks({
         buildTarget,
         buildType,
         browserPlatforms,
-        destFilepath: `${inpage}.js`,
+        destFilepath: `scripts/${inpage}.js`,
         entryFilepath: `./app/scripts/${inpage}.js`,
         label: inpage,
         ignoredFiles,
@@ -447,11 +342,35 @@ function createScriptTasks({
         version,
         applyLavaMoat,
       }),
+      () => {
+        // MV3 injects inpage into the tab's main world, but in MV2 we need
+        // to do it manually:
+        if (process.env.ENABLE_MV3) {
+          return;
+        }
+        // stringify scripts/inpage.js into itself, and then make it inject itself into the page
+        browserPlatforms.forEach((browser) => {
+          makeSelfInjecting(
+            path.join(__dirname, `../../dist/${browser}/scripts/${inpage}.js`),
+          );
+        });
+        // delete the scripts/inpage.js source map, as it no longer represents
+        // scripts/inpage.js and so `yarn source-map-explorer` can't handle it.
+        // It's also not useful anyway, as scripts/inpage.js is injected as a
+        // `script.textContent`, and not tracked in Sentry or browsers devtools
+        // anyway.
+        unlinkSync(
+          path.join(
+            __dirname,
+            `../../dist/sourcemaps/scripts/${inpage}.js.map`,
+          ),
+        );
+      },
       createNormalBundle({
         buildTarget,
         buildType,
         browserPlatforms,
-        destFilepath: `${contentscript}.js`,
+        destFilepath: `scripts/${contentscript}.js`,
         entryFilepath: `./app/scripts/${contentscript}.js`,
         label: contentscript,
         ignoredFiles,
@@ -525,7 +444,7 @@ async function createManifestV3AppInitializationBundle({
     browserPlatforms: mv3BrowserPlatforms,
     buildTarget,
     buildType,
-    destFilepath: 'app-init.js',
+    destFilepath: 'scripts/app-init.js',
     entryFilepath: './app/scripts/app-init.js',
     extraEnvironmentVariables,
     ignoredFiles,
@@ -601,12 +520,16 @@ function createFactoredBuild({
     const environment = getEnvironment({ buildTarget });
     const config = await getConfig(buildType, environment);
     const { variables, activeBuild } = config;
-    await setEnvironmentVariables({
-      buildTarget,
+    setEnvironmentVariables({
+      isDevBuild: reloadOnChange,
+      isTestBuild: isTestBuild(buildTarget),
+      buildName: getBuildName({
+        environment,
+        buildType,
+      }),
       buildType,
       environment,
       variables,
-      activeBuild,
       version,
     });
     const features = {
@@ -684,7 +607,7 @@ function createFactoredBuild({
       // add lavamoat policy loader file to packer output
       moduleGroupPackerStream.push(
         new Vinyl({
-          path: 'policy-load.js',
+          path: 'scripts/policy-load.js',
           contents: lavapack.makePolicyLoaderStream(lavamoatOpts),
         }),
       );
@@ -710,30 +633,36 @@ function createFactoredBuild({
           continue;
         }
 
+        const isTest =
+          buildTarget === BUILD_TARGETS.TEST ||
+          buildTarget === BUILD_TARGETS.TEST_DEV;
         switch (groupLabel) {
           case 'ui': {
             renderHtmlFile({
               htmlName: 'popup',
-              groupSet,
-              commonSet,
               browserPlatforms,
               applyLavaMoat,
             });
             renderHtmlFile({
               htmlName: 'notification',
-              groupSet,
-              commonSet,
               browserPlatforms,
               applyLavaMoat,
               isMMI: buildType === 'mmi',
+              isTest,
             });
             renderHtmlFile({
               htmlName: 'home',
+              browserPlatforms,
+              applyLavaMoat,
+              isMMI: buildType === 'mmi',
+              isTest,
+            });
+            renderJavaScriptLoader({
               groupSet,
               commonSet,
               browserPlatforms,
               applyLavaMoat,
-              isMMI: buildType === 'mmi',
+              destinationFileName: 'load-app.js',
             });
             break;
           }
@@ -744,6 +673,13 @@ function createFactoredBuild({
               commonSet,
               browserPlatforms,
               applyLavaMoat,
+            });
+            renderJavaScriptLoader({
+              groupSet,
+              commonSet,
+              browserPlatforms,
+              applyLavaMoat,
+              destinationFileName: 'load-background.js',
             });
             if (process.env.ENABLE_MV3) {
               const jsBundles = [
@@ -771,6 +707,16 @@ function createFactoredBuild({
               commonSet,
               browserPlatforms,
               applyLavaMoat: false,
+            });
+            break;
+          }
+          case 'offscreen': {
+            renderJavaScriptLoader({
+              groupSet,
+              commonSet,
+              browserPlatforms,
+              applyLavaMoat,
+              destinationFileName: 'load-offscreen.js',
             });
             break;
           }
@@ -843,12 +789,16 @@ function createNormalBundle({
     const environment = getEnvironment({ buildTarget });
     const config = await getConfig(buildType, environment);
     const { activeBuild, variables } = config;
-    await setEnvironmentVariables({
-      buildTarget,
+    setEnvironmentVariables({
+      buildName: getBuildName({
+        environment,
+        buildType,
+      }),
+      isDevBuild: devMode,
+      isTestBuild: isTestBuild(buildTarget),
       buildType,
       variables,
       environment,
-      activeBuild,
       version,
     });
     Object.entries(extraEnvironmentVariables ?? {}).forEach(([key, value]) =>
@@ -923,9 +873,6 @@ function setupBundlerDefaults(
   const { bundlerOpts } = buildConfiguration;
   const extensions = ['.js', '.ts', '.tsx'];
 
-  const isSnapsFlask =
-    features.active.has('snaps') && features.active.has('build-flask');
-
   Object.assign(bundlerOpts, {
     // Source transforms
     transform: [
@@ -937,22 +884,6 @@ function setupBundlerDefaults(
         // Run TypeScript files through Babel
         {
           extensions,
-          plugins: isSnapsFlask
-            ? [
-                [
-                  moduleResolver,
-                  {
-                    alias: {
-                      '@metamask/snaps-controllers':
-                        '@metamask/snaps-controllers-flask',
-                      '@metamask/snaps-ui': '@metamask/snaps-ui-flask',
-                      '@metamask/snaps-utils': '@metamask/snaps-utils-flask',
-                      '@metamask/rpc-methods': '@metamask/rpc-methods-flask',
-                    },
-                  },
-                ],
-              ]
-            : [],
         },
       ],
       // Inline `fs.readFileSync` files
@@ -1160,63 +1091,64 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
   }
 }
 
-/**
- * Sets environment variables to inject in the current build.
- *
- * @param {object} options - Build options.
- * @param {BUILD_TARGETS} options.buildTarget - The current build target.
- * @param {string} options.buildType - The current build type (e.g. "main",
- * "flask", etc.).
- * @param {string} options.version - The current version of the extension.
- * @param options.activeBuild
- * @param options.variables
- * @param options.environment
- */
-async function setEnvironmentVariables({
-  buildTarget,
-  buildType,
-  activeBuild,
-  environment,
-  variables,
-  version,
+function renderJavaScriptLoader({
+  groupSet,
+  commonSet,
+  browserPlatforms,
+  applyLavaMoat,
+  destinationFileName,
 }) {
-  const devMode = isDevBuild(buildTarget);
-  const testing = isTestBuild(buildTarget);
+  if (applyLavaMoat === undefined) {
+    throw new Error(
+      'build/scripts/renderHtmlFile - must specify "applyLavaMoat" option',
+    );
+  }
 
-  variables.set({
-    IN_TEST: testing,
-    INFURA_PROJECT_ID: getInfuraProjectId({
-      buildType,
-      activeBuild,
-      variables,
-      environment,
-      testing,
-    }),
-    METAMASK_DEBUG: devMode || variables.getMaybe('METAMASK_DEBUG') === true,
-    METAMASK_ENVIRONMENT: environment,
-    METAMASK_VERSION: version,
-    METAMASK_BUILD_TYPE: buildType,
-    NODE_ENV: devMode ? ENVIRONMENT.DEVELOPMENT : ENVIRONMENT.PRODUCTION,
-    PHISHING_WARNING_PAGE_URL: getPhishingWarningPageUrl({
-      variables,
-      testing,
-    }),
-    SEGMENT_WRITE_KEY: getSegmentWriteKey({
-      buildType,
-      activeBuild,
-      variables,
-      environment,
-    }),
+  const jsBundles = [...commonSet.values(), ...groupSet.values()].map(
+    (label) => `./${label}.js`,
+  );
+
+  const securityScripts = applyLavaMoat
+    ? [
+        './scripts/runtime-lavamoat.js',
+        './scripts/lockdown-more.js',
+        './scripts/policy-load.js',
+      ]
+    : [
+        './scripts/lockdown-install.js',
+        './scripts/lockdown-run.js',
+        './scripts/lockdown-more.js',
+        './scripts/runtime-cjs.js',
+      ];
+
+  const requiredScripts = [
+    './scripts/snow.js',
+    './scripts/use-snow.js',
+    './scripts/sentry-install.js',
+    ...securityScripts,
+    ...jsBundles,
+  ];
+
+  browserPlatforms.forEach((platform) => {
+    const appLoadFilePath = './app/scripts/load-app.js';
+    const appLoadContents = readFileSync(appLoadFilePath, 'utf8');
+
+    const scriptDest = `./dist/${platform}/${destinationFileName}`;
+    const scriptOutput = appLoadContents.replace(
+      '/* SCRIPTS */',
+      `...${JSON.stringify(requiredScripts)}`,
+    );
+
+    writeFileSync(scriptDest, scriptOutput);
   });
 }
 
 function renderHtmlFile({
   htmlName,
-  groupSet,
-  commonSet,
   browserPlatforms,
   applyLavaMoat,
   isMMI,
+  isTest,
 }) {
   if (applyLavaMoat === undefined) {
     throw new Error(
@@ -1225,14 +1157,9 @@ function renderHtmlFile({
   }
   const htmlFilePath = `./app/${htmlName}.html`;
   const htmlTemplate = readFileSync(htmlFilePath, 'utf8');
-  const jsBundles = [...commonSet.values(), ...groupSet.values()].map(
-    (label) => `./${label}.js`,
-  );
-  const htmlOutput = Sqrl.render(htmlTemplate, {
-    jsBundles,
-    applyLavaMoat,
-    isMMI,
-  });
+
+  const eta = new Eta();
+  const htmlOutput = eta.renderString(htmlTemplate, { isMMI, isTest });
   browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm

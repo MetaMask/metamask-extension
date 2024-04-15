@@ -15,7 +15,7 @@ const checkboxOptions = {
 };
 
 export default {
-  title: 'Components/UI/Check Box',
+  title: 'Components/UI/Check Box(Deprecated)',
 
   component: CheckBox,
   parameters: {

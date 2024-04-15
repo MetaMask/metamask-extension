@@ -1,6 +1,6 @@
-import type { BoxProps } from '../../ui/box/box.d';
 import { IconName, IconProps } from '../icon';
 import { IconColor } from '../../../helpers/constants/design-system';
+import { PolymorphicComponentPropWithRef, StyleUtilityProps } from '../box';
 
 export enum ButtonIconSize {
   Sm = 'sm',
@@ -8,7 +8,17 @@ export enum ButtonIconSize {
   Lg = 'lg',
 }
 
-export interface ButtonIconProps extends BoxProps {
+/**
+ * Makes all props optional so that if a prop object is used not ALL required props need to be passed
+ * TODO: Move to appropriate place in app as this will be highly reusable
+ */
+type MakePropsOptional<T> = {
+  [K in keyof T]?: T[K];
+};
+
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export interface ButtonIconStyleUtilityProps extends StyleUtilityProps {
   /**
    * String that adds an accessible name for ButtonIcon
    */
@@ -41,10 +51,17 @@ export interface ButtonIconProps extends BoxProps {
   /**
    * iconProps accepts all the props from Icon
    */
-  iconProps?: IconProps<'span'>;
+  iconProps?: MakePropsOptional<IconProps<'span'>>;
   /**
    * The size of the ButtonIcon.
    * Possible values could be 'ButtonIconSize.Sm' 24px, 'ButtonIconSize.Lg' 32px,
    */
   size?: ButtonIconSize;
 }
+
+export type ButtonIconProps<C extends React.ElementType> =
+  PolymorphicComponentPropWithRef<C, ButtonIconStyleUtilityProps>;
+
+export type ButtonIconComponent = <C extends React.ElementType = 'button'>(
+  props: ButtonIconProps<C>,
+) => React.ReactElement | null;

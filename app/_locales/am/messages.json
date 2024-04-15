@@ -169,9 +169,6 @@
   "copyAddress": {
     "message": "አድራሻን ወደ ቅንጥብ ሰሌዳ ቅዳ"
   },
-  "copyPrivateKey": {
-    "message": "የግል ቁልፍዎ ይህ ነው (ለመቅዳት ጠቅ ያድርጉ)"
-  },
   "copyToClipboard": {
     "message": "ወደ ቅንጥብ ሰሌዳ ገልብጥ"
   },
@@ -205,9 +202,6 @@
   "deleteNetwork": {
     "message": "አውታረ መረብ ይሰረዝ?"
   },
-  "deleteNetworkDescription": {
-    "message": "ይህን አውታረ መረብ ለመሰረዝ እንደሚፈልጉ እርግጠኛ ነዎት?"
-  },
   "details": {
     "message": "ዝርዝሮች"
   },
@@ -229,14 +223,8 @@
   "editContact": {
     "message": "ዕውቂያን አርትዕ"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "የ ENS ስም በአሁኑ ኔትወርክ ላይ አልተገኘም። ወደ ዋናው የ Ethereum አውታረ መረብ ለመቀየር ይሞክሩ።"
-  },
   "ensRegistrationError": {
     "message": "በ ENS የስም ምዝገባ ላይ የተፈጠረ ስህተት"
-  },
-  "enterPassword": {
-    "message": "የይለፍ ቃል ያስገቡ"
   },
   "enterPasswordContinue": {
     "message": "ለመቀጠል የይለፍ ቃል ያስገቡ"
@@ -249,9 +237,6 @@
   },
   "expandView": {
     "message": "እይታን ዘርጋ"
-  },
-  "exportPrivateKey": {
-    "message": "የግል ቁልፍን ላክ"
   },
   "failed": {
     "message": "አልተሳካም"
@@ -609,12 +594,6 @@
   "search": {
     "message": "ፍለጋ"
   },
-  "searchResults": {
-    "message": "ውጤቶችን ፈልግ"
-  },
-  "searchTokens": {
-    "message": "ተለዋጭ ስሞችን ፈልግ"
-  },
   "securityAndPrivacy": {
     "message": "ደህንነት እና ግላዊነት"
   },
@@ -653,9 +632,6 @@
   },
   "showHexDataDescription": {
     "message": "በመላኪያ ማያ ላይ የ hex ውሂብ መስክን ለማሳየት ይህን ይምረጡ"
-  },
-  "showPrivateKeys": {
-    "message": "የግል ቁልፎችን አሳይ"
   },
   "sigRequest": {
     "message": "የፊርማ ጥያቄ"
@@ -777,9 +753,6 @@
   "tryAgain": {
     "message": "እንደገና ሞክር"
   },
-  "typePassword": {
-    "message": "የ MetaMask የይለፍ ቃልዎን ይጻፉ"
-  },
   "unapproved": {
     "message": "ያልተፈቀደ"
   },
@@ -788,12 +761,6 @@
   },
   "unknown": {
     "message": "ያልታወቀ"
-  },
-  "unknownCameraError": {
-    "message": "ወደ ስልክዎ ለመድረስ ሲሞከር የተፈጠረ ስህተት አለ። እባክዎ እንደገና ይሞክሩ..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "ኤጭ! የሆነ ችግር ተፈጥሯል..."
   },
   "unknownNetwork": {
     "message": "የማይታወቅ የግል አውታረ መረብ"

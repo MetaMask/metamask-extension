@@ -80,7 +80,10 @@ const QuoteDetails = ({
       <div className="quote-details__row">
         <div className="quote-details__detail-header">
           {t('swapSource')}
-          <InfoTooltip position="bottom" contentText={t('swapSourceInfo')} />
+          <InfoTooltip
+            position="bottom"
+            contentText={t('swapLiquiditySourceInfo')}
+          />
         </div>
         <div className="quote-details__detail-content">
           {t(liquiditySourceKey)}

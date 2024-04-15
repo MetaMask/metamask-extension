@@ -1,0 +1,15 @@
+Step,Test steps,Preconditions,Test data,Expected result,Notes
+1,Open the extension.,,,The Welcome Back screen is shown.,
+2,Proceed to Unlock the wallet.,,password (8 characters min).,"The Ether balance is shown on the overview. The wallet address is shown on the overview. The selected network is Ethereum Mainnet.  ",
+3,"Keep the selected network as Ethereum Mainnet. Click ""Swap"" button on MetaMask home screen.","Have funds on mainnet. (We can only test smart swap with real money on Ethereum Mainnet) ",,Swap screen is shown. Default swap from currency is ETH. Settings button is shown.,
+4,Click on settings button on swap screen. Turn on the smart swap toggle in settings.,The smart swap toggle initially was set to OFF.,,"Slippage tolerance section is displayed. User can choose between 2%, 3%, or enter a custom value.",
+5,"In custom field, enter a percentage equals or higher than 5%.",,e.g. 8%,High slippage warning message is shown.,
+6,"Click ""Update"" in settings.",,,Settings modal is closed.,
+7,"On swap screen, enter a value for ETH that user wants to swap, then select a token to swap to.",,"e.g.  0.1 ETH to swap, and choose DAI to swap to",The amount for selected token user will obtain is displayed. Swap quote rate is shown. Estimated gas fee and max fee are shown. Included MetaMask fee is shown.,Take a note for the amount of selected token that user will obtain.
+8,"Proceed to confirm swap. ",,,High slippage warning notification is shown.,
+9,"Click ""Swap anyway"" to continue swap.",,,"After processing, transaction complete screen is shown.",
+10,"Close the transaction complete screen. Go to tokens tab. ",,,The token we selected to swap to is displayed with the expected amount on tokens list.,
+11,Go to MetaMask activity tab.,,,Swap transaction appears in the activity list. The swapped amount is shown in the activity list item.,
+12,Open the activity list item.,,,"The status, recipient's address, nonce, amount, gas and total are shown in the item details.",
+13,Expand the activity log for the transaction.,,,"The created, submitted and confirmed activities are shown in the activity log.",
+14,Proceed to view the transaction on the block explorer.,,,The block explorer opens in a new tab.,

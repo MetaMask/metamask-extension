@@ -129,9 +129,11 @@ class FadeModal extends Component {
     onShow: PropTypes.func,
     onHide: PropTypes.func,
     children: PropTypes.node,
+    testId: PropTypes.string,
   };
 
   static defaultProps = {
+    testId: '',
     onShow: () => undefined,
     onHide: () => undefined,
     keyboard: true,
@@ -177,7 +179,7 @@ class FadeModal extends Component {
     }
 
     const { willHide } = this.state;
-    const { modalStyle } = this.props;
+    const { modalStyle, testId } = this.props;
     const backdropStyle = {
       animationName: willHide
         ? animation.hideBackdropAnimation
@@ -211,7 +213,7 @@ class FadeModal extends Component {
 
     return (
       <span>
-        <div className="modal" style={modalStyle}>
+        <div className="modal" style={modalStyle} data-testid={testId}>
           <div
             className="modal__content"
             ref={(el) => (this.content = el)}

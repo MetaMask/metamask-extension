@@ -8,7 +8,16 @@
     &__text {
       white-space: nowrap;
       text-overflow: ellipsis;
+      width: calc(100% - 16px);
       overflow: hidden;
     }
+
+    &__container {
+      width: calc(100% - 16px);
+    }
+  }
+
+  &__expansion-icon {
+    cursor: pointer;
   }
 }

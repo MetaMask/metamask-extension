@@ -2,12 +2,12 @@
 
 exports[`ModalContent should match snapshot 1`] = `
 <div
-  class="box mm-modal-content box--padding-4 box--display-flex box--flex-direction-row box--justify-content-center box--align-items-flex-start box--width-screen box--height-screen"
+  class="mm-box mm-modal-content mm-box--padding-top-4 mm-box--sm:padding-top-8 mm-box--md:padding-top-12 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--sm:padding-bottom-8 mm-box--md:padding-bottom-12 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-flex-start mm-box--width-screen mm-box--height-screen"
   data-testid="test"
 >
   <section
     aria-modal="true"
-    class="box mm-modal-content__dialog mm-modal-content__dialog--size-sm box--margin-top-12 box--margin-bottom-12 box--padding-4 box--flex-direction-row box--width-full box--background-color-background-default box--rounded-lg"
+    class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
     role="dialog"
   >
     test

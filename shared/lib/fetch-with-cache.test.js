@@ -21,9 +21,11 @@ describe('Fetch with cache', () => {
       .get('/price')
       .reply(200, '{"average": 1}');
 
-    const response = await fetchWithCache(
-      'https://fetchwithcache.metamask.io/price',
-    );
+    const response = await fetchWithCache({
+      url: 'https://fetchwithcache.metamask.io/price',
+      functionName: 'fetchPrice',
+    });
+
     expect(response).toStrictEqual({
       average: 1,
     });
@@ -39,9 +41,10 @@ describe('Fetch with cache', () => {
       cachedTime: Date.now(),
     });
 
-    const response = await fetchWithCache(
-      'https://fetchwithcache.metamask.io/price',
-    );
+    const response = await fetchWithCache({
+      url: 'https://fetchwithcache.metamask.io/price',
+      functionName: 'fetchPrice',
+    });
     expect(response).toStrictEqual({
       average: 1,
     });
@@ -57,11 +60,11 @@ describe('Fetch with cache', () => {
       cachedTime: Date.now() - 1000,
     });
 
-    const response = await fetchWithCache(
-      'https://fetchwithcache.metamask.io/price',
-      {},
-      { cacheRefreshTime: 123 },
-    );
+    const response = await fetchWithCache({
+      url: 'https://fetchwithcache.metamask.io/price',
+      cacheOptions: { cacheRefreshTime: 123 },
+      functionName: 'fetchPrice',
+    });
     expect(response).toStrictEqual({
       average: 3,
     });
@@ -74,11 +77,11 @@ describe('Fetch with cache', () => {
       .reply(200, '{"average": 4}');
 
     await expect(() =>
-      fetchWithCache(
-        'https://fetchwithcache.metamask.io/price',
-        {},
-        { timeout: 20 },
-      ),
+      fetchWithCache({
+        url: 'https://fetchwithcache.metamask.io/price',
+        cacheOptions: { timeout: 20 },
+        functionName: 'fetchPrice',
+      }),
     ).rejects.toThrow({
       name: 'AbortError',
       message: 'The user aborted a request.',
@@ -91,7 +94,10 @@ describe('Fetch with cache', () => {
       .reply(500, '{"average": 6}');
 
     await expect(() =>
-      fetchWithCache('https://fetchwithcache.metamask.io/price'),
+      fetchWithCache({
+        url: 'https://fetchwithcache.metamask.io/price',
+        functionName: 'fetchPrice',
+      }),
     ).rejects.toThrow('');
   });
 
@@ -101,8 +107,10 @@ describe('Fetch with cache', () => {
       .reply(200, '{"average": 7}');
 
     await expect(() =>
-      fetchWithCache('https://fetchwithcache.metamask.io/price', {
-        method: 'POST',
+      fetchWithCache({
+        url: 'https://fetchwithcache.metamask.io/price',
+        fetchOptions: { method: 'POST' },
+        functionName: 'fetchPrice',
       }),
     ).rejects.toThrow('');
   });
@@ -113,7 +121,11 @@ describe('Fetch with cache', () => {
       .reply(200, '{"average": 8}');
 
     await expect(() =>
-      fetchWithCache('https://fetchwithcache.metamask.io/price', { body: 1 }),
+      fetchWithCache({
+        url: 'https://fetchwithcache.metamask.io/price',
+        fetchOptions: { body: 1 },
+        functionName: 'fetchPrice',
+      }),
     ).rejects.toThrow('');
   });
 
@@ -123,8 +135,10 @@ describe('Fetch with cache', () => {
       .reply(200, '{"average": 9}');
 
     await expect(() =>
-      fetchWithCache('https://fetchwithcache.metamask.io/price', {
-        headers: { 'Content-Type': 'text/plain' },
+      fetchWithCache({
+        url: 'https://fetchwithcache.metamask.io/price',
+        fetchOptions: { headers: { 'Content-Type': 'text/plain' } },
+        functionName: 'fetchPrice',
       }),
     ).rejects.toThrow({
       message: 'fetchWithCache only supports JSON responses',
@@ -147,16 +161,16 @@ describe('Fetch with cache', () => {
     });
 
     await Promise.all([
-      fetchWithCache(
-        'https://fetchwithcache.metamask.io/foo',
-        {},
-        { cacheRefreshTime: 123 },
-      ),
-      fetchWithCache(
-        'https://fetchwithcache.metamask.io/bar',
-        {},
-        { cacheRefreshTime: 123 },
-      ),
+      fetchWithCache({
+        url: 'https://fetchwithcache.metamask.io/foo',
+        cacheOptions: { cacheRefreshTime: 123 },
+        functionName: 'fetchFoo',
+      }),
+      fetchWithCache({
+        url: 'https://fetchwithcache.metamask.io/bar',
+        cacheOptions: { cacheRefreshTime: 123 },
+        functionName: 'fetchFoo',
+      }),
     ]);
 
     expect(

@@ -1,5 +1,9 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import { getApprovalFlows, hasPendingApprovals } from './approvals';
+import {
+  getApprovalFlows,
+  getPendingApprovals,
+  hasPendingApprovals,
+} from './approvals';
 
 describe('approval selectors', () => {
   const mockedState = {
@@ -40,16 +44,17 @@ describe('approval selectors', () => {
 
   describe('hasPendingApprovals', () => {
     it('should return true if there is a pending approval request', () => {
-      const result = hasPendingApprovals(mockedState, ApprovalType.WatchAsset);
+      const result = hasPendingApprovals(mockedState, [
+        ApprovalType.WatchAsset,
+      ]);
 
       expect(result).toBe(true);
     });
 
     it('should return false if there is no pending approval request', () => {
-      const result = hasPendingApprovals(
-        mockedState,
+      const result = hasPendingApprovals(mockedState, [
         ApprovalType.SnapDialogPrompt,
-      );
+      ]);
 
       expect(result).toBe(false);
     });
@@ -60,6 +65,16 @@ describe('approval selectors', () => {
       const result = getApprovalFlows(mockedState);
 
       expect(result).toStrictEqual(mockedState.metamask.approvalFlows);
+    });
+  });
+
+  describe('getPendingApprovals', () => {
+    it('should return all pending approvals', () => {
+      const result = getPendingApprovals(mockedState);
+
+      expect(result).toStrictEqual(
+        Object.values(mockedState.metamask.pendingApprovals),
+      );
     });
   });
 });

@@ -13,6 +13,7 @@ import {
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
 } from '../../../helpers/constants/routes';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import OnboardingWelcome from './welcome';
 
 const mockHistoryReplace = jest.fn();
@@ -25,6 +26,11 @@ jest.mock('../../../store/actions.ts', () => ({
     }),
   ),
   setTermsOfUseLastAgreed: jest.fn().mockReturnValue(
+    jest.fn((type) => {
+      return type;
+    }),
+  ),
+  setParticipateInMetaMetrics: jest.fn().mockReturnValue(
     jest.fn((type) => {
       return type;
     }),
@@ -42,8 +48,10 @@ jest.mock('react-router-dom', () => ({
 describe('Onboarding Welcome Component', () => {
   const mockState = {
     metamask: {
-      identities: {},
-      selectedAddress: '',
+      internalAccounts: {
+        accounts: {},
+        selectedAccount: '',
+      },
     },
   };
 
@@ -66,7 +74,7 @@ describe('Onboarding Welcome Component', () => {
         ...initializedMockState,
         metamask: {
           ...initializedMockState.metamask,
-          firstTimeFlowType: 'import',
+          firstTimeFlowType: FirstTimeFlowType.import,
         },
       };
       const mockStore = configureMockStore([thunk])(importFirstTimeFlowState);
@@ -95,7 +103,9 @@ describe('Onboarding Welcome Component', () => {
       fireEvent.click(createWallet);
 
       expect(setTermsOfUseLastAgreed).toHaveBeenCalled();
-      expect(setFirstTimeFlowType).toHaveBeenCalledWith('create');
+      expect(setFirstTimeFlowType).toHaveBeenCalledWith(
+        FirstTimeFlowType.create,
+      );
     });
 
     it('should set first time flow to import and route to metametrics', () => {

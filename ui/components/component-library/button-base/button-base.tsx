@@ -58,6 +58,7 @@ export const ButtonBase: ButtonBaseComponent = React.forwardRef(
         {...(href && externalLink
           ? { target: '_blank', rel: 'noopener noreferrer' }
           : {})}
+        padding={0}
         paddingLeft={4}
         paddingRight={4}
         ellipsis={ellipsis}

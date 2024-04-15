@@ -175,9 +175,6 @@
   "copyAddress": {
     "message": "Másolja a címet a vágólapra"
   },
-  "copyPrivateKey": {
-    "message": "Ez a saját titkos kulcsod (kattints rá a másoláshoz)"
-  },
   "copyToClipboard": {
     "message": "Másolás a vágólapra"
   },
@@ -214,9 +211,6 @@
   "deleteNetwork": {
     "message": "Törli a hálózatot?"
   },
-  "deleteNetworkDescription": {
-    "message": "Biztosan törli ezt a hálózatot?"
-  },
   "details": {
     "message": "Részletek"
   },
@@ -238,14 +232,8 @@
   "editContact": {
     "message": "Kapcsolatok szerkesztése"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS név nem található a jelenlegi hálózaton. Próbálj váltani Ethereum főhálózatra."
-  },
   "ensRegistrationError": {
     "message": "Hiba történt az ENS név regisztrációjakor"
-  },
-  "enterPassword": {
-    "message": "Adja meg a jelszót"
   },
   "enterPasswordContinue": {
     "message": "A folytatáshoz adja meg a jelszót"
@@ -258,9 +246,6 @@
   },
   "expandView": {
     "message": "Nézet nagyítása"
-  },
-  "exportPrivateKey": {
-    "message": "Privát kulcs exportálása"
   },
   "failed": {
     "message": "Sikertelen"
@@ -617,12 +602,6 @@
   "search": {
     "message": "Keresés"
   },
-  "searchResults": {
-    "message": "Keresési eredmények"
-  },
-  "searchTokens": {
-    "message": "Keresés a tokenek között"
-  },
   "securityAndPrivacy": {
     "message": "Biztonság és adatvédelem"
   },
@@ -661,9 +640,6 @@
   },
   "showHexDataDescription": {
     "message": "Válassza ezt, ha a hex adatmezőt a küldő képernyőn szeretné megnézni"
-  },
-  "showPrivateKeys": {
-    "message": "Mutassa a privát kulcsokat"
   },
   "sigRequest": {
     "message": "Aláírás kérése"
@@ -782,9 +758,6 @@
   "tryAgain": {
     "message": "Újra"
   },
-  "typePassword": {
-    "message": "Írd be MetaMask jelszavadat"
-  },
   "unapproved": {
     "message": "Jóvá nem hagyott"
   },
@@ -793,12 +766,6 @@
   },
   "unknown": {
     "message": "Ismeretlen"
-  },
-  "unknownCameraError": {
-    "message": "Hiba történt a kamerához való hozzáférés közben. Kérjük, próbálja újra..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Hoppá! Valami hiba történt..."
   },
   "unknownNetwork": {
     "message": "Ismeretlen magánhálózat"

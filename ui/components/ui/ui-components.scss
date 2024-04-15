@@ -12,7 +12,6 @@
 @import 'chip/chip';
 @import 'color-indicator/color-indicator';
 @import 'confusable/index';
-@import 'currency-display/index';
 @import 'definition-list/definition-list';
 @import 'dialog/dialog';
 @import 'dropdown/dropdown';
@@ -37,15 +36,15 @@
 @import 'page-container/index';
 @import 'popover/index';
 @import 'pulse-loader/index';
-@import 'qr-code/index';
+@import 'qr-code-view/index';
 @import 'radio-group/index';
-@import 'review-spending-cap/index';
 @import 'sender-to-recipient/index';
 @import 'show-hide-toggle/index.scss';
 @import 'snackbar/index';
 @import 'site-origin/index';
 @import 'slider/index';
 @import 'tabs/index';
+@import 'tabs/snaps/dropdown-tab/index.scss';
 @import 'text-field/index';
 @import 'toggle-button/index';
 @import 'token-balance/index';
@@ -57,8 +56,8 @@
 @import 'url-icon/index';
 @import 'update-nickname-popover/index';
 @import 'disclosure/disclosure';
-@import 'deprecated-test-networks/index.scss';
-@import 'nft-info/index.scss';
+@import 'deprecated-networks/index.scss';
 @import 'nft-collection-image/index';
 @import '../institutional/custody-labels/index';
 @import '../institutional/note-to-trader/index';
+@import 'form-combo-field/index';

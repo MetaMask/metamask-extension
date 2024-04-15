@@ -9,23 +9,25 @@ const fetchWithTimeout = getFetchWithTimeout();
 // and in i18n lib, the translated message is an object (I18NMessage) with message & description -
 // message is the string that will replace the translationKey, and that message may contain replacement variables such as $1, $2, etc.
 // Description is key describing the usage of the message.
-export interface I18NMessage {
+export type I18NMessage = {
   message: string;
   description?: string;
-}
+};
 
 // The overall translation file is made of same entries
 // translationKey (string) and the I18NMessage as the value.
-export interface I18NMessageDict {
+export type I18NMessageDict = {
   [translationKey: string]: I18NMessage;
-}
+};
 
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type I18NSubstitution = string | (() => any) | object;
 
 // A parameterized type (or generic type) of maps that use the same structure (translationKey) key
-interface I18NMessageDictMap<R> {
+type I18NMessageDictMap<R> = {
   [translationKey: string]: R;
-}
+};
 
 export const FALLBACK_LOCALE = 'en';
 
@@ -104,10 +106,14 @@ export async function loadRelativeTimeFormatLocaleData(
   const languageTag = localeCode.split('_')[0];
   if (
     Intl.RelativeTimeFormat &&
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     typeof (Intl.RelativeTimeFormat as any).__addLocaleData === 'function' &&
     !relativeTimeFormatLocaleData.has(languageTag)
   ) {
     const localeData = await fetchRelativeTimeFormatData(languageTag);
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (Intl.RelativeTimeFormat as any).__addLocaleData(localeData);
     relativeTimeFormatLocaleData.add(languageTag);
   }

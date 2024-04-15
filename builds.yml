@@ -16,14 +16,24 @@ buildTypes:
   main:
     features:
       - build-main
+      - snaps
+      - keyring-snaps
+      - blockaid
     # Additional env variables that are specific to this build
     env:
       - INFURA_PROD_PROJECT_ID
       - SEGMENT_PROD_WRITE_KEY
       - INFURA_ENV_KEY_REF: INFURA_PROD_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_PROD_WRITE_KEY
+      - ALLOW_LOCAL_SNAPS: false
+      - REQUIRE_SNAPS_ALLOWLIST: true
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/5.0.4/index.html
+      - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
     # Main build uses the default browser manifest
     manifestOverrides: false
+    # Build name used in multiple user-readable places
+    # eg. eip6963
+    buildNameOverride: MetaMask
 
   beta:
     features:
@@ -38,6 +48,7 @@ buildTypes:
     isPrerelease: true
     # Folder which contains overrides to browser manifests
     manifestOverrides: ./app/build-types/beta/manifest/
+    buildNameOverride: MetaMask Beta
 
   flask:
     # Code surrounded using code fences for that feature
@@ -47,18 +58,21 @@ buildTypes:
       - desktop
       - build-flask
       - keyring-snaps
+      - blockaid
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/0.37.1-flask.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/5.0.4/index.html
       - SUPPORT_LINK: https://metamask-flask.zendesk.com/hc
       - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
+      - ACCOUNT_SNAPS_DIRECTORY_URL: https://metamask.github.io/snaps-directory-staging/main/account-management
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
+    buildNameOverride: MetaMask Flask
 
   desktop:
     features:
@@ -71,29 +85,39 @@ buildTypes:
       - SEGMENT_FLASK_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/0.37.1-flask.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/5.0.4/index.html
       - SUPPORT_LINK: https://metamask-flask.zendesk.com/hc
       - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
+      - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
     isPrerelease: true
     manifestOverrides: ./app/build-types/desktop/manifest/
+    buildNameOverride: false
 
   mmi:
     features:
       - build-mmi
+      - snaps
+      - blockaid
     env:
       - INFURA_MMI_PROJECT_ID
       - SEGMENT_MMI_WRITE_KEY
+      - SENTRY_MMI_DSN
       - INFURA_ENV_KEY_REF: INFURA_MMI_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_MMI_WRITE_KEY
-      - MMI_CONFIGURATION_SERVICE_URL: https://configuration.metamask-institutional.io/v1/configuration/default
-      - SUPPORT_LINK: https://mmi-support.zendesk.com/hc/en-us
-      - SUPPORT_REQUEST_LINK: https://mmi-support.zendesk.com/hc/en-us/requests/new
+      - ALLOW_LOCAL_SNAPS: false
+      - REQUIRE_SNAPS_ALLOWLIST: true
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/5.0.4/index.html
+      - MMI_CONFIGURATION_SERVICE_URL: https://configuration.metamask-institutional.io/v2/configuration/default
+      - SUPPORT_LINK: https://mmi-support.metamask.io/hc/en-us
+      - SUPPORT_REQUEST_LINK: https://mmi-support.metamask.io/hc/en-us/requests/new
+      - SENTRY_DSN: SENTRY_MMI_DSN
     # For some reason, MMI uses this type of versioning
     # Leaving it on for backwards compatibility
     isPrerelease: true
     manifestOverrides: ./app/build-types/mmi/manifest/
+    buildNameOverride: MetaMask Institutional
 
 # Build types are composed of a set of features.
 # Each feature can have code fences that add new code
@@ -117,7 +141,9 @@ features:
       - SKIP_OTP_PAIRING_FLOW: false
       - WEB_SOCKET_PORT: null
   blockaid:
-
+    env:
+      - BLOCKAID_FILE_CDN: static.cx.metamask.io/api/v1/confirmations/ppom
+      - BLOCKAID_PUBLIC_KEY: 066ad3e8af5583385e312c156d238055215d5f25247c1e91055afa756cb98a88
   ###
   # Build Type code extensions. Things like different support links, warning pages, banners
   ###
@@ -142,8 +168,6 @@ features:
         dest: images
       - ./{app,shared,ui}/**/flask/**
   keyring-snaps:
-    env:
-      - KEYRING_SNAPS_REGISTRY_URL: https://metamask.github.io/keyring-snaps-registry/prod/registry.json
     assets:
       - ./{app,shared,ui}/**/keyring-snaps/**
 
@@ -166,13 +190,20 @@ env:
 
   # TODO(ritave): Move ManifestV3 into a feature?
   - ENABLE_MV3: false
-  - HARDWARE_WALLETS_MV3: false
   # These are exclusively used for MV3
   - APPLY_LAVAMOAT
   - FILE_NAMES
 
   # This variable is read by Trezor's source and breaks build if not included
   - ASSET_PREFIX: null
+
+  ###
+  # Notifications Feature
+  ###
+  - AUTH_API: https://authentication.api.cx.metamask.io
+  - OIDC_API: https://oidc.api.cx.metamask.io
+  - OIDC_CLIENT_ID: 1132f10a-b4e5-4390-a5f2-d9c6022db564
+  - OIDC_GRANT_TYPE: urn:ietf:params:oauth:grant-type:jwt-bearer
 
   ###
   # API keys to 3rd party services
@@ -217,6 +248,12 @@ env:
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   - METAMASK_BUILD_TYPE
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
+  - METAMASK_BUILD_NAME
+  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
+  - METAMASK_BUILD_APP_ID
+  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
+  - METAMASK_BUILD_ICON
+  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   - NODE_ENV
   # Defined by node itself
   # For the purposes of the build system we define it as empty below
@@ -225,6 +262,20 @@ env:
   - NODE_DEBUG: ''
   # Used by react-devtools-core
   - EDITOR_URL: ''
+  # CDN for blockaid files
+  - BLOCKAID_FILE_CDN
+  # Blockaid public key for verifying signatures of data files downloaded from CDN
+  - BLOCKAID_PUBLIC_KEY
+  # Determines if feature flagged Multichain UI should be used
+  - MULTICHAIN: ''
+  # Determines if feature flagged Multichain Transactions should be used
+  - TRANSACTION_MULTICHAIN: ''
+
+  # Used to enable confirmation redesigned pages
+  - ENABLE_CONFIRMATION_REDESIGN: ''
+
+    # Enables the notifications feature within the build:
+  - NOTIFICATIONS: ''
 
   ###
   # Meta variables
@@ -232,3 +283,9 @@ env:
 
   # Uses yaml anchors to DRY - https://juju.is/docs/sdk/yaml-anchors-and-aliases
   - METAMASK_BUILD_TYPE_DEFAULT: *default
+
+  ###
+  # Account Abstraction (EIP-4337)
+  ###
+
+  - EIP_4337_ENTRYPOINT: null

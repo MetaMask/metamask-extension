@@ -47,7 +47,7 @@ export const Input: InputComponent = React.forwardRef(
         },
         className,
       )}
-      aria-invalid={error}
+      {...(error && { 'aria-invalid': error })}
       as="input"
       autoComplete={autoComplete ? 'on' : 'off'}
       autoFocus={autoFocus}

@@ -5,20 +5,19 @@ import { I18nContext } from '../../../contexts/i18n';
 import Popover from '../../ui/popover';
 import {
   AlignItems,
-  FLEX_DIRECTION,
   TextVariant,
   Color,
   TextColor,
+  FlexDirection,
 } from '../../../helpers/constants/design-system';
 import {
+  Box,
   Button,
   BUTTON_VARIANT,
   ButtonLink,
-  Label,
+  Checkbox,
   Text,
 } from '../../component-library';
-import Box from '../../ui/box';
-import CheckBox from '../../ui/check-box/check-box.component';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -72,7 +71,7 @@ export default function TermsOfUsePopup({ onAccept }) {
       onScrollDownButtonClick={handleScrollDownClick}
       footerProps={{
         justifyContent: AlignItems.center,
-        flexDirection: FLEX_DIRECTION.COLUMN,
+        flexDirection: FlexDirection.Column,
       }}
       footer={
         <>
@@ -114,7 +113,7 @@ export default function TermsOfUsePopup({ onAccept }) {
             utilizing decentralized technologies, such as Ethereum, our software
             is powering a revolution in commerce and finance and helping to
             optimize business processes. ConsenSys hosts a top level domain
-            website, www.consensys.net, that serves information regarding
+            website, www.consensys.io, that serves information regarding
             ConsenSys and our Offerings, as defined below, as well as
             sub-domains for our products or services (the top level domain with
             the sub-domains collectively referred to as the “Site”), which
@@ -138,7 +137,7 @@ export default function TermsOfUsePopup({ onAccept }) {
             collection, use, disclosure and other handling of information as
             described in our{' '}
             <ButtonLink
-              href="https://consensys.net/privacy-policy/"
+              href="https://consensys.io/privacy-policy/"
               target="_blank"
               rel="noopener noreferrer"
               color={Color.primaryDefault}
@@ -1120,13 +1119,13 @@ export default function TermsOfUsePopup({ onAccept }) {
           <Text variant={TextVariant.bodySm} marginBottom={4}>
             “Privacy Policy” means the privacy policy located at{' '}
             <ButtonLink
-              href="https://consensys.net/privacy-policy"
+              href="https://consensys.io/privacy-policy"
               target="_blank"
               rel="noopener noreferrer"
               color={Color.primaryDefault}
               variant={TextVariant.bodySm}
             >
-              https://consensys.net/privacy-policy
+              https://consensys.io/privacy-policy
             </ButtonLink>{' '}
             (and any successor or related locations designated by us), as it may
             be updated by us from time to time.
@@ -1162,26 +1161,23 @@ export default function TermsOfUsePopup({ onAccept }) {
             processing.&nbsp;
           </Text>
           <Box
-            flexDirection={FLEX_DIRECTION.ROW}
+            flexDirection={FlexDirection.Row}
             alignItems={AlignItems.flexStart}
             marginLeft={3}
             marginRight={3}
             gap={2}
           >
-            <CheckBox
+            <Checkbox
               id="terms-of-use__checkbox"
               className="terms-of-use__checkbox"
-              dataTestId="terms-of-use-checkbox"
-              checked={isTermsOfUseChecked}
-              onClick={() => {
+              data-testid="terms-of-use-checkbox"
+              isChecked={isTermsOfUseChecked}
+              onChange={() => {
                 setIsTermsOfUseChecked(!isTermsOfUseChecked);
               }}
+              label={t('termsOfUseAgreeText')}
+              ref={bottomRef}
             />
-            <Label htmlFor="terms-of-use__checkbox">
-              <Text variant={TextVariant.bodyMdBold} as="span" ref={bottomRef}>
-                {t('termsOfUseAgreeText')}
-              </Text>
-            </Label>
           </Box>
         </Box>
       </Box>

@@ -7,13 +7,13 @@ import { AvatarIcon } from './avatar-icon';
 
 The `AvatarIcon` is an avatar component that renders only an icon inside and is built off the [AvatarBase](/docs/components-componentlibrary-avatarbase--default-story)) component
 
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
 <Canvas>
   <Story id="components-componentlibrary-avataricon--default-story" />
 </Canvas>
 
 ## Props
-
-The `AvatarIcon` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props
 
 <ArgsTable of={AvatarIcon} />
 
@@ -24,33 +24,30 @@ component props
 
 ### Size
 
-Use the `size` prop and the `Size` object from `./ui/helpers/constants/design-system.js` to change the size of `AvatarIcon`
-
-Optional: `AVATAR_ICON_SIZES` from `./ui/components/component-library` object can be used instead of `Size`
+Use the `size` prop and the `AvatarIconSize` enum to change the size of `AvatarIcon`
 
 Possible sizes include:
 
-- `Size.XS` 16px
-- `Size.SM` 24px
-- `Size.MD` 32px
-- `Size.LG` 40px
-- `Size.XL` 48px
+- `AvatarIconSize.Xs` 16px
+- `AvatarIconSize.Sm` 24px
+- `AvatarIconSize.Md` 32px
+- `AvatarIconSize.Lg` 40px
+- `AvatarIconSize.Xl` 48px
 
-Defaults to `Size.MD`
+Defaults to `AvatarIconSize.Md`
 
 <Canvas>
   <Story id="components-componentlibrary-avataricon--size-story" />
 </Canvas>
 
 ```jsx
-import { Size } from '../../../helpers/constants/design-system';
-import { AvatarIcon, IconName } from '../ui/component-library';
+import { AvatarIcon, AvatarIconSize } from '../../component-library';
 
-    <AvatarIcon {...args} size={Size.XS} />
-    <AvatarIcon {...args} size={Size.SM} />
-    <AvatarIcon {...args} size={Size.MD} />
-    <AvatarIcon {...args} size={Size.LG} />
-    <AvatarIcon {...args} size={Size.XL} />
+    <AvatarIcon {...args} size={AvatarIconSize.Xs} />
+    <AvatarIcon {...args} size={AvatarIconSize.Sm} />
+    <AvatarIcon {...args} size={AvatarIconSize.Md} />
+    <AvatarIcon {...args} size={AvatarIconSize.Lg} />
+    <AvatarIcon {...args} size={AvatarIconSize.Xl} />
 ```
 
 ### Icon Name<span style={{ color: 'red' }}>\*</span>
@@ -64,7 +61,7 @@ Use the [IconSearch](/story/components-componentlibrary-icon--default-story) sto
 </Canvas>
 
 ```jsx
-import { AvatarIcon, IconName } from '../ui/component-library';
+import { AvatarIcon, IconName } from '../../component-library';
 
 <AvatarIcon iconName={IconName.SwapHorizontal} />
 <AvatarIcon iconName={IconName.Confirmation} />
@@ -86,7 +83,7 @@ Use the `color` and `backgroundColor` props with the `IconColor` and `Background
 
 ```jsx
 import { BackgroundColor, IconColor } from '../../../helpers/constants/design-system';
-import { AvatarIcon } from '../ui/component-library';
+import { AvatarIcon } from '../../component-library';
 
 <AvatarIcon color={IconColor.primaryDefault} backgroundColor={BackgroundColor.primaryMuted} />
 <AvatarIcon color={IconColor.primaryInverse} backgroundColor={BackgroundColor.primaryDefault} />

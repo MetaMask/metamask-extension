@@ -43,7 +43,7 @@ const MetaMaskTemplateRenderer = ({ sections }) => {
   return (
     <>
       {sections.reduce((allChildren, child) => {
-        if (child?.hide === true) {
+        if (child === undefined || child?.hide === true) {
           return allChildren;
         }
         if (typeof child === 'string') {

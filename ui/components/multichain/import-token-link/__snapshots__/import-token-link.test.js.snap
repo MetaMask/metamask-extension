@@ -9,7 +9,7 @@ exports[`Import Token Link should match snapshot for goerli chainId 1`] = `
       class="mm-box mm-box--display-flex mm-box--align-items-center"
     >
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-link mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+        class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
         data-testid="import-token-button"
       >
         <span
@@ -23,7 +23,7 @@ exports[`Import Token Link should match snapshot for goerli chainId 1`] = `
       class="mm-box mm-box--padding-top-2 mm-box--display-flex mm-box--align-items-center"
     >
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-link mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+        class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
         data-testid="refresh-list-button"
       >
         <span
@@ -46,7 +46,7 @@ exports[`Import Token Link should match snapshot for mainnet chainId 1`] = `
       class="mm-box mm-box--display-flex mm-box--align-items-center"
     >
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-link mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+        class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
         data-testid="import-token-button"
       >
         <span
@@ -60,7 +60,7 @@ exports[`Import Token Link should match snapshot for mainnet chainId 1`] = `
       class="mm-box mm-box--padding-top-2 mm-box--display-flex mm-box--align-items-center"
     >
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-link mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+        class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
         data-testid="refresh-list-button"
       >
         <span

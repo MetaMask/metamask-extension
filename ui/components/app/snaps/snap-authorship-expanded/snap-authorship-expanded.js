@@ -1,39 +1,35 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import { getSnapPrefix, stripSnapPrefix } from '@metamask/snaps-utils';
 import classnames from 'classnames';
-import { getSnapPrefix } from '@metamask/snaps-utils';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Box from '../../../ui/box';
 import {
-  BackgroundColor,
-  TextColor,
-  FLEX_DIRECTION,
-  TextVariant,
-  BorderColor,
   AlignItems,
-  DISPLAY,
-  BLOCK_SIZES,
-  JustifyContent,
+  BackgroundColor,
+  BlockSize,
+  BorderColor,
+  BorderRadius,
   BorderStyle,
   Color,
-  BorderRadius,
+  Display,
+  FlexDirection,
   FontWeight,
+  JustifyContent,
+  OverflowWrap,
+  TextColor,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
-import {
-  formatDate,
-  getSnapName,
-  removeSnapIdPrefix,
-} from '../../../../helpers/utils/util';
-
-import { ButtonLink, Text } from '../../../component-library';
-import { getTargetSubjectMetadata } from '../../../../selectors';
-import SnapAvatar from '../snap-avatar';
+import { formatDate } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import Tooltip from '../../../ui/tooltip/tooltip';
-import ToggleButton from '../../../ui/toggle-button';
-import { disableSnap, enableSnap } from '../../../../store/actions';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
-import SnapVersion from '../snap-version/snap-version';
+import { getSnapRegistryData, getSnapMetadata } from '../../../../selectors';
+import { disableSnap, enableSnap } from '../../../../store/actions';
+import { Box, ButtonLink, Text } from '../../../component-library';
+import ToggleButton from '../../../ui/toggle-button';
+import Tooltip from '../../../ui/tooltip/tooltip';
+import SnapAvatar from '../snap-avatar';
+import SnapExternalPill from '../snap-version/snap-external-pill';
+import { useSafeWebsite } from '../../../../hooks/snaps/useSafeWebsite';
 
 const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
   const t = useI18nContext();
@@ -44,17 +40,24 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
   // update request is rejected because the reference comes from the request itself and not subject metadata
   // like it is done with snap install
   const snapPrefix = snapId && getSnapPrefix(snapId);
-  const packageName = snapId && removeSnapIdPrefix(snapId);
+  const packageName = snapId && stripSnapPrefix(snapId);
   const isNPM = snapPrefix === 'npm:';
+
+  const versionPath = snap?.version ? `/v/${snap?.version}` : '';
   const url = isNPM
-    ? `https://www.npmjs.com/package/${packageName}`
+    ? `https://www.npmjs.com/package/${packageName}${versionPath}`
     : packageName;
 
-  const subjectMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, snapId),
+  const snapRegistryData = useSelector((state) =>
+    getSnapRegistryData(state, snapId),
   );
 
-  const friendlyName = snapId && getSnapName(snapId, subjectMetadata);
+  const { name: snapName } = useSelector((state) =>
+    getSnapMetadata(state, snapId),
+  );
+
+  const { website = undefined } = snapRegistryData?.metadata ?? {};
+  const safeWebsite = useSafeWebsite(website);
 
   const versionHistory = snap?.versionHistory ?? [];
   const installInfo = versionHistory.length
@@ -76,13 +79,13 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
       backgroundColor={BackgroundColor.backgroundDefault}
       borderColor={BorderColor.borderDefault}
       borderWidth={1}
-      width={BLOCK_SIZES.FULL}
+      width={BlockSize.Full}
       borderRadius={BorderRadius.LG}
     >
       <Box
         alignItems={AlignItems.center}
-        display={DISPLAY.FLEX}
-        width={BLOCK_SIZES.FULL}
+        display={Display.Flex}
+        width={BlockSize.Full}
         paddingLeft={4}
         paddingRight={4}
         paddingTop={3}
@@ -94,12 +97,12 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
         <Box
           marginLeft={4}
           marginRight={0}
-          display={DISPLAY.FLEX}
-          flexDirection={FLEX_DIRECTION.COLUMN}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
           style={{ overflow: 'hidden' }}
         >
           <Text ellipsis fontWeight={FontWeight.Medium}>
-            {friendlyName}
+            {snapName}
           </Text>
           <Text
             ellipsis
@@ -110,69 +113,92 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
           </Text>
         </Box>
       </Box>
-      <Box flexDirection={FLEX_DIRECTION.COLUMN} width={BLOCK_SIZES.FULL}>
-        <Box
-          flexDirection={FLEX_DIRECTION.ROW}
-          justifyContent={JustifyContent.spaceBetween}
-          paddingLeft={4}
-          paddingTop={4}
-          paddingBottom={4}
-          borderColor={BorderColor.borderDefault}
-          width={BLOCK_SIZES.FULL}
-          style={{
-            borderLeft: BorderStyle.none,
-            borderRight: BorderStyle.none,
-          }}
-        >
-          <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
-            {t('enabled')}
-          </Text>
-          <Box style={{ maxWidth: '52px' }}>
-            <Tooltip interactive position="left" html={t('snapsToggle')}>
-              <ToggleButton value={snap?.enabled} onToggle={onToggle} />
-            </Tooltip>
-          </Box>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        paddingLeft={4}
+        paddingTop={4}
+        paddingBottom={4}
+        borderColor={BorderColor.borderDefault}
+        width={BlockSize.Full}
+        style={{
+          borderLeft: BorderStyle.none,
+          borderRight: BorderStyle.none,
+        }}
+      >
+        <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
+          {t('enabled')}
+        </Text>
+        <Box style={{ maxWidth: '52px' }}>
+          <Tooltip interactive position="left" html={t('snapsToggle')}>
+            <ToggleButton value={snap?.enabled} onToggle={onToggle} />
+          </Tooltip>
         </Box>
-        <Box
-          flexDirection={FLEX_DIRECTION.COLUMN}
-          padding={4}
-          width={BLOCK_SIZES.FULL}
-        >
-          {installOrigin && installInfo && (
-            <Box
-              flexDirection={FLEX_DIRECTION.ROW}
-              justifyContent={JustifyContent.spaceBetween}
-              width={BLOCK_SIZES.FULL}
-            >
-              <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
-                {t('installOrigin')}
-              </Text>
-              <Box
-                flexDirection={FLEX_DIRECTION.COLUMN}
-                alignItems={AlignItems.flexEnd}
-              >
-                <ButtonLink href={installOrigin.origin} target="_blank">
-                  {installOrigin.host}
-                </ButtonLink>
-                <Text color={Color.textMuted}>
-                  {t('installedOn', [
-                    formatDate(installInfo.date, 'dd MMM yyyy'),
-                  ])}
-                </Text>
-              </Box>
-            </Box>
-          )}
+      </Box>
+      <Box padding={4} width={BlockSize.Full}>
+        {safeWebsite && (
           <Box
-            flexDirection={FLEX_DIRECTION.ROW}
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
             justifyContent={JustifyContent.spaceBetween}
-            alignItems={AlignItems.center}
-            marginTop={4}
+            width={BlockSize.Full}
+            marginBottom={4}
           >
             <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
-              {t('version')}
+              {t('snapDetailWebsite')}
             </Text>
-            <SnapVersion version={snap?.version} url={url} />
+            <Box
+              paddingLeft={8}
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              alignItems={AlignItems.flexEnd}
+            >
+              <ButtonLink
+                href={safeWebsite.toString()}
+                target="_blank"
+                overflowWrap={OverflowWrap.Anywhere}
+              >
+                {safeWebsite.host}
+              </ButtonLink>
+            </Box>
           </Box>
+        )}
+        {installOrigin && installInfo && (
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            justifyContent={JustifyContent.spaceBetween}
+            width={BlockSize.Full}
+          >
+            <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
+              {t('installOrigin')}
+            </Text>
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              alignItems={AlignItems.flexEnd}
+            >
+              <Text>{installOrigin.host}</Text>
+              <Text color={Color.textMuted}>
+                {t('installedOn', [
+                  formatDate(installInfo.date, 'dd MMM yyyy'),
+                ])}
+              </Text>
+            </Box>
+          </Box>
+        )}
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          justifyContent={JustifyContent.spaceBetween}
+          alignItems={AlignItems.center}
+          marginTop={4}
+        >
+          <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
+            {t('version')}
+          </Text>
+          <SnapExternalPill value={snap?.version} url={url} />
         </Box>
       </Box>
     </Box>

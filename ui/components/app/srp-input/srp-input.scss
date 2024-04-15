@@ -1,3 +1,5 @@
+@use "design-system";
+
 .import-srp {
   &__container {
     display: grid;
@@ -9,7 +11,7 @@
       'too-many-words-error too-many-words-error';
   }
 
-  @include screen-md-max {
+  @include design-system.screen-md-max {
     &__container {
       grid-template-areas:
         'title'
@@ -44,7 +46,7 @@
     grid-area: input;
   }
 
-  @include screen-md-max {
+  @include design-system.screen-md-max {
     &__srp {
       grid-template-columns: 1fr;
     }

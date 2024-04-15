@@ -1,4 +1,9 @@
-import type { BoxProps } from '../../ui/box/box.d';
+import React from 'react';
+import type {
+  StyleUtilityProps,
+  PolymorphicComponentPropWithRef,
+  BoxProps,
+} from '../box';
 
 export enum PopoverPosition {
   Auto = 'auto',
@@ -21,7 +26,9 @@ export enum PopoverRole {
   Dialog = 'dialog',
 }
 
-export interface PopoverProps extends BoxProps {
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export interface PopoverStyleUtilityProps extends StyleUtilityProps {
   /**
    * The contents within the Popover
    */
@@ -46,7 +53,7 @@ export interface PopoverProps extends BoxProps {
   /**
    * Pass any `BoxProps` to the Popover arrow
    */
-  arrowProps?: BoxProps;
+  arrowProps?: BoxProps<'div'>;
   /**
    * Boolean to control the width of the Popover to match the width of the reference element
    * Default: false
@@ -91,4 +98,15 @@ export interface PopoverProps extends BoxProps {
    * Pass a close function for the escape key callback to close the Popover
    */
   onPressEscKey?: () => void;
+  /**
+   * On click outside callback to close the Popover
+   */
+  onClickOutside?: () => void;
 }
+
+export type PopoverProps<C extends React.ElementType> =
+  PolymorphicComponentPropWithRef<C, PopoverStyleUtilityProps>;
+
+export type PopoverComponent = <C extends React.ElementType = 'div'>(
+  props: PopoverProps<C>,
+) => React.ReactElement | null;

@@ -1,0 +1,81 @@
+@use "design-system";
+
+.asset-picker-modal {
+  $self: &;
+
+  &__search-list {
+    max-width: 100%;
+    overflow: auto;
+    max-height: 200px;
+
+    &:hover {
+      border-color: var(--color-primary-default);
+    }
+  }
+
+  &__autodetect {
+    vertical-align: unset;
+  }
+
+  .multichain-asset-picker-list-item {
+    position: relative;
+    cursor: pointer;
+    overflow-y: auto;
+    max-height: 564px;
+
+    &:not(.multichain-asset-picker-list-item--selected) {
+      &:hover,
+      &:focus-within {
+        background: var(--color-background-default-hover);
+      }
+    }
+
+    &__selected-indicator {
+      width: 4px;
+      height: calc(100% - 8px);
+      position: absolute;
+      top: 4px;
+      left: 4px;
+    }
+  }
+
+  .tokens-main-view-modal {
+    max-height: 564px;
+    overflow: auto;
+  }
+
+  .modal-tab {
+    &__main-view {
+      flex: 1 1 66.5%;
+      max-height: 564px;
+      background: var(--color-background-default);
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: auto;
+    }
+
+    &__main-view &__tab {
+      @include design-system.H6;
+
+      flex-grow: 1;
+      color: var(--color-icon-default);
+      font-weight: 500;
+    }
+
+    &__main-view &__tab--active {
+      color: var(--color-primary-default);
+    }
+
+    &__main-view &__tab button {
+      padding: 8px;
+    }
+
+    &__tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 0;
+      padding: 16px;
+    }
+  }
+}

@@ -1,0 +1,28 @@
+.signature-request-data {
+  &__node {
+    align-items: center;
+
+    &__value {
+      white-space: pre-line;
+      overflow: hidden;
+      word-wrap: break-word;
+
+      &__address {
+        [dir='rtl'] & {
+          /*rtl:ignore*/
+          direction: ltr;
+
+          /*rtl:ignore*/
+          text-align: right;
+
+          span {
+            display: block;
+
+            /*rtl:ignore*/
+            direction: rtl;
+          }
+        }
+      }
+    }
+  }
+}

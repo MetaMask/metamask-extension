@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
 import InfoTooltip from '../../../components/ui/info-tooltip';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import TransactionDetail from '../../../components/app/transaction-detail/transaction-detail.component';
-import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
+import TransactionDetail from '../../confirmations/components/transaction-detail/transaction-detail.component';
+import TransactionDetailItem from '../../confirmations/components/transaction-detail-item/transaction-detail-item.component';
 import {
   TextColor,
   TextVariant,
@@ -49,9 +49,15 @@ export default function FeeCard({
       case CHAIN_IDS.AVALANCHE:
         return t('networkNameAvalanche');
       case CHAIN_IDS.OPTIMISM:
-        return t('networkNameOptimism');
+        return t('networkNameOpMainnet');
       case CHAIN_IDS.ARBITRUM:
         return t('networkNameArbitrum');
+      case CHAIN_IDS.ZKSYNC_ERA:
+        return t('networkNameZkSyncEra');
+      case CHAIN_IDS.LINEA_MAINNET:
+        return t('networkNameLinea');
+      case CHAIN_IDS.BASE:
+        return t('networkNameBase');
       default:
         throw new Error('This network is not supported for token swaps');
     }

@@ -6,9 +6,14 @@ import * as actionConstants from '../../store/actionConstants';
 import {
   addPermittedAccount,
   setAlertEnabledness,
-  setSelectedAddress,
+  setSelectedAccount,
+  setSelectedInternalAccount,
 } from '../../store/actions';
-import { getOriginOfCurrentTab, getSelectedAddress } from '../../selectors';
+import {
+  getInternalAccount,
+  getOriginOfCurrentTab,
+  getSelectedInternalAccount,
+} from '../../selectors';
 import { ALERT_STATE } from './enums';
 
 // Constants
@@ -111,11 +116,14 @@ export const dismissAndDisableAlert = () => {
   };
 };
 
-export const switchToAccount = (address) => {
-  return async (dispatch) => {
+export const switchToAccount = (accountId) => {
+  return async (dispatch, getState) => {
+    const state = getState();
     try {
       await dispatch(switchAccountRequested());
-      await dispatch(setSelectedAddress(address));
+      await dispatch(setSelectedInternalAccount(accountId));
+      const internalAccount = getInternalAccount(state, accountId);
+      await dispatch(setSelectedAccount(internalAccount.address));
       await dispatch(switchAccountSucceeded());
     } catch (error) {
       console.error(error);
@@ -128,7 +136,7 @@ export const switchToAccount = (address) => {
 export const connectAccount = () => {
   return async (dispatch, getState) => {
     const state = getState();
-    const selectedAddress = getSelectedAddress(state);
+    const { address: selectedAddress } = getSelectedInternalAccount(state);
     const origin = getOriginOfCurrentTab(state);
     try {
       await dispatch(connectAccountRequested());

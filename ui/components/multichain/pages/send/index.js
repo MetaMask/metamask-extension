@@ -1,0 +1,1 @@
+export { SendPage } from './send';

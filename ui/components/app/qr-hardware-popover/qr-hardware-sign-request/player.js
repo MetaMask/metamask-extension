@@ -15,7 +15,8 @@ import { Text, Box } from '../../../component-library';
 const Player = ({ type, cbor, cancelQRHardwareSignRequest, toRead }) => {
   const t = useI18nContext();
   const urEncoder = useMemo(
-    () => new UREncoder(new UR(Buffer.from(cbor, 'hex'), type), 400),
+    // For NGRAVE ZERO support please keep to a maximum fragment size of 200
+    () => new UREncoder(new UR(Buffer.from(cbor, 'hex'), type), 200),
     [cbor, type],
   );
   const [currentQRCode, setCurrentQRCode] = useState(urEncoder.nextPart());

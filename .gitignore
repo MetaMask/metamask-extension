@@ -30,7 +30,7 @@ storybook-build/
 coverage/
 jest-coverage/
 dist
-builds/
+builds*/
 builds.zip
 development/ts-migration-dashboard/build
 
@@ -49,9 +49,6 @@ notes.txt
 .metamaskrc
 .metamaskprodrc
 
-# TypeScript
-tsout/
-
 # Test results
 test-results/
 
@@ -65,3 +62,11 @@ test-results/
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# MMI Playwright
+public/playwright
+test/e2e/mmi/.env
+test/e2e/mmi/playwright.config.ts
+test/e2e/mmi/specs/**/*-darwin.png
+test/e2e/mmi/dist/
+

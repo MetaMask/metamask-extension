@@ -1,3 +1,5 @@
+@use "design-system";
+
 .qr-scanner {
   width: 100%;
   height: 100%;
@@ -7,7 +9,7 @@
   border-radius: 8px;
 
   &__title {
-    @include H3;
+    @include design-system.H3;
 
     font-weight: 500;
     padding: 16px 0;
@@ -34,15 +36,32 @@
     }
   }
 
+  &__progress {
+    width: 110px;
+    height: 4px;
+    border-radius: 2px;
+    overflow: hidden;
+    background-color: var(--color-border-muted);
+    margin: 6px auto 0;
+
+    &::before {
+      content: "";
+      display: block;
+      height: 100%;
+      width: var(--progress);
+      background-color: var(--color-primary-default);
+    }
+  }
+
   &__status {
-    @include H6;
+    @include design-system.H6;
 
     text-align: center;
     padding: 15px;
   }
 
   &__image {
-    @include H3;
+    @include design-system.H3;
 
     font-weight: 500;
     padding: 16px 0 0;
@@ -50,7 +69,7 @@
   }
 
   &__error {
-    @include Paragraph;
+    @include design-system.Paragraph;
 
     text-align: center;
     padding: 15px;

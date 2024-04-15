@@ -3,7 +3,17 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 import { EtherDenomination } from '../../../../shared/constants/common';
+import { Text, Box } from '../../component-library';
+import {
+  AlignItems,
+  Display,
+  FlexWrap,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 
+/* eslint-disable jsdoc/require-param-name */
+// eslint-disable-next-line jsdoc/require-param
+/** @param {PropTypes.InferProps<typeof CurrencyDisplayPropTypes>>} */
 export default function CurrencyDisplay({
   value,
   displayValue,
@@ -18,6 +28,10 @@ export default function CurrencyDisplay({
   denomination,
   currency,
   suffix,
+  prefixComponentWrapperProps = {},
+  textProps = {},
+  suffixProps = {},
+  ...props
 }) {
   const [title, parts] = useCurrencyDisplay(value, {
     displayValue,
@@ -28,30 +42,54 @@ export default function CurrencyDisplay({
     currency,
     suffix,
   });
+
   return (
-    <div
+    <Box
       className={classnames('currency-display-component', className)}
       data-testid={dataTestId}
       style={style}
       title={(!hideTitle && title) || null}
+      display={Display.Flex}
+      alignItems={AlignItems.center}
+      flexWrap={FlexWrap.Wrap}
+      {...props}
     >
-      <span className="currency-display-component__prefix">
-        {prefixComponent}
-      </span>
-      <span className="currency-display-component__text">
+      {prefixComponent ? (
+        <Box
+          className="currency-display-component__prefix"
+          marginInlineEnd={1}
+          variant={TextVariant.inherit}
+          {...prefixComponentWrapperProps}
+        >
+          {prefixComponent}
+        </Box>
+      ) : null}
+      <Text
+        as="span"
+        className="currency-display-component__text"
+        ellipsis
+        variant={TextVariant.inherit}
+        {...textProps}
+      >
         {parts.prefix}
         {parts.value}
-      </span>
-      {parts.suffix && (
-        <span className="currency-display-component__suffix">
+      </Text>
+      {parts.suffix ? (
+        <Text
+          as="span"
+          className="currency-display-component__suffix"
+          marginInlineStart={1}
+          variant={TextVariant.inherit}
+          {...suffixProps}
+        >
           {parts.suffix}
-        </span>
-      )}
-    </div>
+        </Text>
+      ) : null}
+    </Box>
   );
 }
 
-CurrencyDisplay.propTypes = {
+const CurrencyDisplayPropTypes = {
   className: PropTypes.string,
   currency: PropTypes.string,
   'data-testid': PropTypes.string,
@@ -68,4 +106,9 @@ CurrencyDisplay.propTypes = {
   style: PropTypes.object,
   suffix: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   value: PropTypes.string,
+  prefixComponentWrapperProps: PropTypes.object,
+  textProps: PropTypes.object,
+  suffixProps: PropTypes.object,
 };
+
+CurrencyDisplay.propTypes = CurrencyDisplayPropTypes;

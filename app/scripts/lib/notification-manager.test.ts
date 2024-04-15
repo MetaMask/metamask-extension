@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck types are very broken
 import browser from 'webextension-polyfill';
 import NotificationManager from './notification-manager';
 
@@ -35,6 +37,7 @@ jest.mock('webextension-polyfill', () => {
       getAll: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
+      getLastFocused: jest.fn(),
     },
   };
 });
@@ -43,7 +46,7 @@ describe('Notification Manager', () => {
   let notificationManager: NotificationManager,
     setCurrentPopupIdSpy: (a: number) => void,
     focusWindowSpy: () => void,
-    currentPopupId: number;
+    currentPopupId: number | undefined;
 
   beforeEach(() => {
     notificationManager = new NotificationManager();
@@ -64,8 +67,34 @@ describe('Notification Manager', () => {
     browser.windows.getAll.mockReturnValue([]);
     browser.windows.create.mockReturnValue(newPopupWindow);
     currentPopupId = undefined;
-    await notificationManager.showPopup(setCurrentPopupIdSpy, currentPopupId);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    await notificationManager.showPopup(setCurrentPopupIdSpy, currentPopupId!);
     expect(setCurrentPopupIdSpy).toHaveBeenCalledTimes(1);
     expect(setCurrentPopupIdSpy).toHaveBeenCalledWith(newPopupWindow.id);
+  });
+
+  it('should not pass negative left value for extension window created from last focused window', async () => {
+    const newPopupWindow = generateMockWindow();
+    setCurrentPopupIdSpy = jest.fn();
+    const createSpy = jest.fn().mockReturnValue(newPopupWindow);
+    browser.windows.getAll.mockReturnValue([]);
+    browser.windows.create = createSpy;
+    browser.windows.getLastFocused.mockReturnValue({
+      top: 0,
+      left: 0,
+      width: 120, // make sure this is smalled than NOTIFICATION_WIDTH
+    });
+    currentPopupId = undefined;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    await notificationManager.showPopup(setCurrentPopupIdSpy, currentPopupId!);
+    expect(createSpy).toHaveBeenCalledTimes(1);
+    expect(createSpy).toHaveBeenCalledWith({
+      height: 620,
+      left: 0, // this is critical, means error related to polyfill is not triggered
+      top: 0,
+      type: 'popup',
+      url: 'notification.html',
+      width: 360,
+    });
   });
 });

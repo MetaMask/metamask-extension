@@ -2,8 +2,18 @@
   "DNS": {
     "resolution": null
   },
+  "activeTab": {
+    "id": 113,
+    "title": "E2E Test Dapp",
+    "origin": "https://metamask.github.io",
+    "protocol": "https:",
+    "url": "https://metamask.github.io/test-dapp/"
+  },
   "appState": {
     "networkDropdownOpen": false,
+    "importNftsModal": {
+      "open": false
+    },
     "gasIsLoading": false,
     "isLoading": false,
     "modal": {
@@ -19,10 +29,23 @@
     "warning": null,
     "customTokenAmount": "10"
   },
+  "confirm": {},
+  "confirmTransaction": {
+    "txData": {
+      "txParams": {
+        "gas": "0x153e2",
+        "value": "0x0"
+      }
+    }
+  },
   "history": {
     "mostRecentOverviewPage": "/mostRecentOverviewPage"
   },
+  "localeMessages": {
+    "currentLocale": "en"
+  },
   "metamask": {
+    "use4ByteResolution": true,
     "ipfsGateway": "dweb.link",
     "dismissSeedBackUpReminder": false,
     "usePhishDetect": true,
@@ -30,6 +53,39 @@
     "participateInMetaMetrics": false,
     "gasEstimateType": "fee-market",
     "showBetaHeader": false,
+    "gasFeeEstimatesByChainId": {
+      "0x5": {
+        "gasEstimateType": "fee-market",
+        "gasFeeEstimates": {
+          "low": {
+            "minWaitTimeEstimate": 180000,
+            "maxWaitTimeEstimate": 300000,
+            "suggestedMaxPriorityFeePerGas": "3",
+            "suggestedMaxFeePerGas": "53"
+          },
+          "medium": {
+            "minWaitTimeEstimate": 15000,
+            "maxWaitTimeEstimate": 60000,
+            "suggestedMaxPriorityFeePerGas": "7",
+            "suggestedMaxFeePerGas": "70"
+          },
+          "high": {
+            "minWaitTimeEstimate": 0,
+            "maxWaitTimeEstimate": 15000,
+            "suggestedMaxPriorityFeePerGas": "10",
+            "suggestedMaxFeePerGas": "100"
+          },
+          "estimatedBaseFee": "50",
+          "historicalBaseFeeRange": ["28.533098435", "70.351148354"],
+          "baseFeeTrend": "up",
+          "latestPriorityFeeRange": ["1", "40"],
+          "historicalPriorityFeeRange": ["0.1458417", "700.156384646"],
+          "priorityFeeTrend": "down",
+          "networkCongestion": 0.90625
+        }
+      }
+    },
+    "permissionHistory": {},
     "gasFeeEstimates": {
       "low": {
         "minWaitTimeEstimate": 180000,
@@ -92,13 +148,226 @@
             "version": "5.1.2"
           }
         ]
+      },
+      "npm:@metamask/test-snap-bip32": {
+        "id": "npm:@metamask/test-snap-bip32",
+        "origin": "npm:@metamask/test-snap-bip32",
+        "version": "5.1.2",
+        "iconUrl": null,
+        "initialPermissions": {
+          "endowment:ethereum-provider": {}
+        },
+        "manifest": {
+          "description": "An example Snap that signs messages using BLS.",
+          "proposedName": "BIP-32 Test Snap",
+          "repository": {
+            "type": "git",
+            "url": "https://github.com/MetaMask/test-snaps.git"
+          },
+          "source": {
+            "location": {
+              "npm": {
+                "filePath": "dist/bundle.js",
+                "packageName": "@metamask/test-snap-bip32",
+                "registry": "https://registry.npmjs.org"
+              }
+            },
+            "shasum": "L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+          },
+          "version": "5.1.2"
+        },
+        "versionHistory": [
+          {
+            "date": 1680686075921,
+            "origin": "https://metamask.github.io",
+            "version": "5.1.2"
+          }
+        ]
+      },
+      "npm:@metamask/test-snap-getEntropy": {
+        "id": "npm:@metamask/test-snap-getEntropy",
+        "origin": "npm:@metamask/test-snap-getEntropy",
+        "version": "5.1.2",
+        "iconUrl": null,
+        "initialPermissions": {
+          "endowment:ethereum-provider": {}
+        },
+        "manifest": {
+          "description": "An example Snap that can derive snap specific entropy.",
+          "proposedName": "Get Entropy Test Snap",
+          "repository": {
+            "type": "git",
+            "url": "https://github.com/MetaMask/test-snaps.git"
+          },
+          "source": {
+            "location": {
+              "npm": {
+                "filePath": "dist/bundle.js",
+                "packageName": "@metamask/test-snap-getEntropy",
+                "registry": "https://registry.npmjs.org"
+              }
+            },
+            "shasum": "L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+          },
+          "version": "5.1.2"
+        },
+        "versionHistory": [
+          {
+            "date": 1680686075921,
+            "origin": "https://metamask.github.io",
+            "version": "5.1.2"
+          }
+        ]
+      },
+      "npm:@metamask/test-snap-networkAccess": {
+        "id": "npm:@metamask/test-snap-networkAccess",
+        "origin": "npm:@metamask/test-snap-networkAccess",
+        "version": "5.1.2",
+        "iconUrl": null,
+        "initialPermissions": {
+          "endowment:ethereum-provider": {}
+        },
+        "manifest": {
+          "description": "An example Snap that has network access.",
+          "proposedName": "Network Access Test Snap",
+          "repository": {
+            "type": "git",
+            "url": "https://github.com/MetaMask/test-snaps.git"
+          },
+          "source": {
+            "location": {
+              "npm": {
+                "filePath": "dist/bundle.js",
+                "packageName": "@metamask/test-snap-networkAccess",
+                "registry": "https://registry.npmjs.org"
+              }
+            },
+            "shasum": "L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+          },
+          "version": "5.1.2"
+        },
+        "versionHistory": [
+          {
+            "date": 1680686075921,
+            "origin": "https://metamask.github.io",
+            "version": "5.1.2"
+          }
+        ]
+      },
+      "npm:@metamask/test-snap-wasm": {
+        "id": "npm:@metamask/test-snap-wasm",
+        "origin": "npm:@metamask/test-snap-wasm",
+        "version": "5.1.2",
+        "iconUrl": null,
+        "initialPermissions": {
+          "endowment:ethereum-provider": {}
+        },
+        "manifest": {
+          "description": "An example Snap that has WASM access.",
+          "proposedName": "WASM Test Snap",
+          "repository": {
+            "type": "git",
+            "url": "https://github.com/MetaMask/test-snaps.git"
+          },
+          "source": {
+            "location": {
+              "npm": {
+                "filePath": "dist/bundle.js",
+                "packageName": "@metamask/test-snap-wasm",
+                "registry": "https://registry.npmjs.org"
+              }
+            },
+            "shasum": "L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+          },
+          "version": "5.1.2"
+        },
+        "versionHistory": [
+          {
+            "date": 1680686075921,
+            "origin": "https://metamask.github.io",
+            "version": "5.1.2"
+          }
+        ]
+      },
+      "npm:@metamask/test-snap-notify": {
+        "id": "npm:@metamask/test-snap-notify",
+        "origin": "npm:@metamask/test-snap-notify",
+        "version": "5.1.2",
+        "iconUrl": null,
+        "initialPermissions": {
+          "endowment:ethereum-provider": {}
+        },
+        "manifest": {
+          "description": "An example Snap that can send notifications.",
+          "proposedName": "Notification Test Snap",
+          "repository": {
+            "type": "git",
+            "url": "https://github.com/MetaMask/test-snaps.git"
+          },
+          "source": {
+            "location": {
+              "npm": {
+                "filePath": "dist/bundle.js",
+                "packageName": "@metamask/test-snap-notify",
+                "registry": "https://registry.npmjs.org"
+              }
+            },
+            "shasum": "L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+          },
+          "version": "5.1.2"
+        },
+        "versionHistory": [
+          {
+            "date": 1680686075921,
+            "origin": "https://metamask.github.io",
+            "version": "5.1.2"
+          }
+        ]
+      },
+      "npm:@metamask/test-snap-dialog": {
+        "id": "npm:@metamask/test-snap-dialog",
+        "origin": "npm:@metamask/test-snap-dialog",
+        "version": "5.1.2",
+        "iconUrl": null,
+        "initialPermissions": {
+          "endowment:ethereum-provider": {}
+        },
+        "manifest": {
+          "description": "An example Snap that can send dialog prompts.",
+          "proposedName": "Dialog Test Snap",
+          "repository": {
+            "type": "git",
+            "url": "https://github.com/MetaMask/test-snaps.git"
+          },
+          "source": {
+            "location": {
+              "npm": {
+                "filePath": "dist/bundle.js",
+                "packageName": "@metamask/test-snap-dialog",
+                "registry": "https://registry.npmjs.org"
+              }
+            },
+            "shasum": "L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+          },
+          "version": "5.1.2"
+        },
+        "versionHistory": [
+          {
+            "date": 1680686075921,
+            "origin": "https://metamask.github.io",
+            "version": "5.1.2"
+          }
+        ]
       }
     },
     "preferences": {
       "hideZeroBalanceTokens": false,
+      "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": true,
-      "useNativeCurrencyAsPrimaryCurrency": true
+      "smartTransactionsOptInStatus": false,
+      "useNativeCurrencyAsPrimaryCurrency": true,
+      "petnamesEnabled": false
     },
     "ensResolutionsByAddress": {},
     "isAccountMenuOpen": false,
@@ -106,13 +375,10 @@
     "alertEnabledness": {
       "unconnectedAccount": true
     },
-    "featureFlags": {
-      "showIncomingTransactions": true
-    },
-    "networkId": "5",
-    "networkStatus": "available",
+    "featureFlags": {},
     "providerConfig": {
       "type": "rpc",
+      "nickname": "goerli",
       "chainId": "0x5",
       "ticker": "ETH",
       "id": "chain5"
@@ -133,6 +399,135 @@
         "id": "chain5"
       }
     },
+    "internalAccounts": {
+      "accounts": {
+        "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3": {
+          "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+          "id": "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3",
+          "metadata": {
+            "name": "Test Account",
+            "keyring": {
+              "type": "HD Key Tree"
+            }
+          },
+          "options": {},
+          "methods": [
+            "personal_sign",
+            "eth_sign",
+            "eth_signTransaction",
+            "eth_signTypedData_v1",
+            "eth_signTypedData_v3",
+            "eth_signTypedData_v4"
+          ],
+          "type": "eip155:eoa"
+        },
+        "07c2cfec-36c9-46c4-8115-3836d3ac9047": {
+          "address": "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b",
+          "id": "07c2cfec-36c9-46c4-8115-3836d3ac9047",
+          "metadata": {
+            "name": "Test Account 2",
+            "keyring": {
+              "type": "HD Key Tree"
+            }
+          },
+          "options": {},
+          "methods": [
+            "personal_sign",
+            "eth_sign",
+            "eth_signTransaction",
+            "eth_signTypedData_v1",
+            "eth_signTypedData_v3",
+            "eth_signTypedData_v4"
+          ],
+          "type": "eip155:eoa"
+        },
+        "15e69915-2a1a-4019-93b3-916e11fd432f": {
+          "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+          "id": "15e69915-2a1a-4019-93b3-916e11fd432f",
+          "metadata": {
+            "name": "Ledger Hardware 2",
+            "keyring": {
+              "type": "Ledger Hardware"
+            }
+          },
+          "options": {},
+          "methods": [
+            "personal_sign",
+            "eth_sign",
+            "eth_signTransaction",
+            "eth_signTypedData_v1",
+            "eth_signTypedData_v3",
+            "eth_signTypedData_v4"
+          ],
+          "type": "eip155:eoa"
+        },
+        "784225f4-d30b-4e77-a900-c8bbce735b88": {
+          "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823",
+          "id": "784225f4-d30b-4e77-a900-c8bbce735b88",
+          "metadata": {
+            "name": "Test Account 3",
+            "keyring": {
+              "type": "HD Key Tree"
+            }
+          },
+          "options": {},
+          "methods": [
+            "personal_sign",
+            "eth_sign",
+            "eth_signTransaction",
+            "eth_signTypedData_v1",
+            "eth_signTypedData_v3",
+            "eth_signTypedData_v4"
+          ],
+          "type": "eip155:eoa"
+        },
+        "694225f4-d30b-4e77-a900-c8bbce735b42": {
+          "address": "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281",
+          "id": "694225f4-d30b-4e77-a900-c8bbce735b42",
+          "metadata": {
+            "name": "Test Account 4",
+            "keyring": {
+              "type": "Custody test"
+            }
+          },
+          "options": {},
+          "methods": [
+            "personal_sign",
+            "eth_sign",
+            "eth_signTransaction",
+            "eth_signTypedData_v1",
+            "eth_signTypedData_v3",
+            "eth_signTypedData_v4"
+          ],
+          "type": "eip155:eoa"
+        },
+        "c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3": {
+          "address": "0xb552685e3d2790efd64a175b00d51f02cdafee5d",
+          "id": "c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3",
+          "metadata": {
+            "name": "Snap Account 1",
+            "keyring": {
+              "type": "Snap Keyring"
+            },
+            "snap": {
+              "id": "snap-id",
+              "name": "snap-name"
+            }
+          },
+          "options": {},
+          "methods": [
+            "personal_sign",
+            "eth_sign",
+            "eth_signTransaction",
+            "eth_signTypedData_v1",
+            "eth_signTypedData_v3",
+            "eth_signTypedData_v4"
+          ],
+          "type": "eip155:eoa"
+        }
+      },
+      "selectedAccount": "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3"
+    },
     "keyrings": [
       {
         "type": "HD Key Tree",
@@ -152,6 +547,10 @@
       {
         "type": "Snap Keyring",
         "accounts": ["0xb552685e3d2790efd64a175b00d51f02cdafee5d"]
+      },
+      {
+        "type": "Custody test",
+        "accounts": ["0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281"]
       }
     ],
     "identities": {
@@ -170,11 +569,19 @@
       "0xeb9e64b93097bc15f01f13eae97015c57ab64823": {
         "name": "Test Account 3",
         "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823"
+      },
+      "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281": {
+        "name": "Custody test",
+        "address": "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281"
       }
     },
-    "networkDetails": {
-      "EIPS": {
-        "1559": true
+    "selectedNetworkClientId": "goerli",
+    "networksMetadata": {
+      "goerli": {
+        "EIPS": {
+          "1559": true
+        },
+        "status": "available"
       }
     },
     "frequentRpcListDetail": [],
@@ -195,7 +602,7 @@
         "snapDescription": "A simple private key is a randomly generated string of characters that is used to sign transactions. This private key is stored securely within this snap.",
         "tags": ["EOA"],
         "developer": "Metamask",
-        "website": "https://www.consensys.net/",
+        "website": "https://www.consensys.io/",
         "auditUrls": ["auditUrl1", "auditUrl2"],
         "version": "1.0.0",
         "lastUpdated": "April 20, 2023"
@@ -217,59 +624,20 @@
         "message": "Hello, http://localhost:8086!"
       }
     },
-    "cachedBalances": {},
-    "incomingTransactions": {},
-    "unapprovedTxs": {
-      "8393540981007587": {
-        "chainId": "0x5",
-        "id": 8393540981007587,
-        "time": 1536268017676,
-        "status": "unapproved",
-        "metamaskNetworkId": "4",
-        "loadingDefaults": false,
-        "txParams": {
-          "data": "0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000",
-          "from": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
-          "to": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
-          "value": "0x0",
-          "gas": "0x5208",
-          "gasPrice": "0x3b9aca00"
-        },
-        "history": [
-          {
-            "id": 8393540981007587,
-            "time": 1536268017676,
-            "status": "unapproved",
-            "metamaskNetworkId": "4",
-            "loadingDefaults": true,
-            "txParams": {
-              "from": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
-              "to": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
-              "value": "0x0",
-              "gas": "0x5208",
-              "gasPrice": "0x3b9aca00"
-            }
-          },
-          [
-            {
-              "op": "replace",
-              "path": "/loadingDefaults",
-              "value": false,
-              "timestamp": 1536268017685
-            }
-          ],
-          [
-            {
-              "op": "add",
-              "path": "/origin",
-              "value": "MetaMask",
-              "note": "#newUnapprovedTransaction - adding the origin",
-              "timestamp": 1536268017686
-            }
-          ]
-        ],
-        "origin": "metamask"
+    "accountsByChainId": {
+      "0x5": {
+        "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+          "balance": "0x15f6f0b9d4f8d000"
+        }
       }
+    },
+    "incomingTransactionsPreferences": {
+      "0x1": true,
+      "0xe708": false,
+      "0xfa": true,
+      "0x5": false,
+      "0xaa36a7": true,
+      "0xe704": true
     },
     "selectedAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
     "accounts": {
@@ -287,6 +655,14 @@
       },
       "0xeb9e64b93097bc15f01f13eae97015c57ab64823": {
         "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823",
+        "balance": "0x0"
+      },
+      "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281": {
+        "address": "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281",
+        "balance": "0x0"
+      },
+      "0xb552685e3d2790efd64a175b00d51f02cdafee5d": {
+        "address": "0xb552685e3d2790efd64a175b00d51f02cdafee5d",
         "balance": "0x0"
       }
     },
@@ -309,12 +685,17 @@
     ],
     "contractExchangeRates": {
       "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d": 0.00039345803819379796,
-      "0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5": 0.00008189274407698049
+      "0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5": 0.00008189274407698049,
+      "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599": 0.0017123,
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": 0.0000000018
     },
     "ticker": "ETH",
     "currentCurrency": "usd",
-    "nativeCurrency": "ETH",
-    "conversionRate": 556.12,
+    "currencyRates": {
+      "ETH": {
+        "conversionRate": 556.12
+      }
+    },
     "addressBook": {
       "0x5": {
         "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
@@ -338,9 +719,16 @@
     "unapprovedTypedMessagesCount": 0,
     "useTokenDetection": true,
     "useCurrencyRateCheck": true,
+    "useNftDetection": true,
+    "openSeaEnabled": true,
+    "orderedNetworkList": [],
+    "pinnedAccountList": [],
+    "hiddenAccountList": [],
     "advancedGasFee": {
-      "maxBaseFee": "75",
-      "priorityFee": "2"
+      "0x5": {
+        "maxBaseFee": "75",
+        "priorityFee": "2"
+      }
     },
     "nftsDropdownState": {
       "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
@@ -630,12 +1018,61 @@
         "occurrences": 12
       }
     },
-    "currentNetworkTxList": [
+    "transactions": [
+      {
+        "chainId": "0x5",
+        "id": 8393540981007587,
+        "time": 1536268017676,
+        "status": "unapproved",
+        "loadingDefaults": false,
+        "txParams": {
+          "data": "0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000",
+          "from": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+          "to": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+          "value": "0x0",
+          "gas": "0x5208",
+          "gasPrice": "0x3b9aca00"
+        },
+        "history": [
+          {
+            "id": 8393540981007587,
+            "time": 1536268017676,
+            "status": "unapproved",
+            "chainId": "0x5",
+            "loadingDefaults": true,
+            "txParams": {
+              "from": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+              "to": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+              "value": "0x0",
+              "gas": "0x5208",
+              "gasPrice": "0x3b9aca00"
+            }
+          },
+          [
+            {
+              "op": "replace",
+              "path": "/loadingDefaults",
+              "value": false,
+              "timestamp": 1536268017685
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/origin",
+              "value": "MetaMask",
+              "note": "#newUnapprovedTransaction - adding the origin",
+              "timestamp": 1536268017686
+            }
+          ]
+        ],
+        "origin": "metamask"
+      },
       {
         "id": 3387511061307736,
         "time": 1528133130531,
         "status": "confirmed",
-        "metamaskNetworkId": "4",
+        "chainId": "0x5",
         "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -650,7 +1087,7 @@
             "id": 3387511061307736,
             "time": 1528133130531,
             "status": "unapproved",
-            "metamaskNetworkId": "4",
+            "chainId": "0x5",
             "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -694,32 +1131,6 @@
               "value": "0xb5",
               "note": "transactions#approveTransaction",
               "timestamp": 1528133131806
-            },
-            {
-              "op": "add",
-              "path": "/nonceDetails",
-              "value": {
-                "params": {
-                  "highestLocallyConfirmed": 0,
-                  "highestSuggested": 181,
-                  "nextNetworkNonce": 181
-                },
-                "local": {
-                  "name": "local",
-                  "nonce": 181,
-                  "details": {
-                    "startPoint": 181,
-                    "highest": 181
-                  }
-                },
-                "network": {
-                  "name": "network",
-                  "nonce": 181,
-                  "details": {
-                    "baseCount": 181
-                  }
-                }
-              }
             }
           ],
           [
@@ -784,28 +1195,6 @@
           ]
         ],
         "origin": "MetaMask",
-        "nonceDetails": {
-          "params": {
-            "highestLocallyConfirmed": 0,
-            "highestSuggested": 181,
-            "nextNetworkNonce": 181
-          },
-          "local": {
-            "name": "local",
-            "nonce": 181,
-            "details": {
-              "startPoint": 181,
-              "highest": 181
-            }
-          },
-          "network": {
-            "name": "network",
-            "nonce": 181,
-            "details": {
-              "baseCount": 181
-            }
-          }
-        },
         "rawTx": "0xf86c81b5843b9aca0082cf089492e659448c48fc926ec942d0da1459260d36bb33881bc16d674ec80000802ba03f879cd33a31180da38545d0f809822e00ddf35954d8b0ece83bacf22347ce54a06ad050487978e425ca6a014ed55ea8e9a190069863ed96a0eefa88d729ea1eda",
         "hash": "0x516b77569173a04c76fdb6545cf279ebd0c75f5d25d6e4ce019925205f0e3709",
         "submittedTime": 1528133131951,
@@ -815,7 +1204,7 @@
         "id": 3387511061307737,
         "time": 1528133149983,
         "status": "confirmed",
-        "metamaskNetworkId": "4",
+        "chainId": "0x5",
         "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -830,7 +1219,7 @@
             "id": 3387511061307737,
             "time": 1528133149983,
             "status": "unapproved",
-            "metamaskNetworkId": "4",
+            "chainId": "0x5",
             "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -874,32 +1263,6 @@
               "value": "0xb6",
               "note": "transactions#approveTransaction",
               "timestamp": 1528133151189
-            },
-            {
-              "op": "add",
-              "path": "/nonceDetails",
-              "value": {
-                "params": {
-                  "highestLocallyConfirmed": 0,
-                  "highestSuggested": 181,
-                  "nextNetworkNonce": 181
-                },
-                "local": {
-                  "name": "local",
-                  "nonce": 182,
-                  "details": {
-                    "startPoint": 181,
-                    "highest": 182
-                  }
-                },
-                "network": {
-                  "name": "network",
-                  "nonce": 181,
-                  "details": {
-                    "baseCount": 181
-                  }
-                }
-              }
             }
           ],
           [
@@ -964,28 +1327,6 @@
           ]
         ],
         "origin": "MetaMask",
-        "nonceDetails": {
-          "params": {
-            "highestLocallyConfirmed": 0,
-            "highestSuggested": 181,
-            "nextNetworkNonce": 181
-          },
-          "local": {
-            "name": "local",
-            "nonce": 182,
-            "details": {
-              "startPoint": 181,
-              "highest": 182
-            }
-          },
-          "network": {
-            "name": "network",
-            "nonce": 181,
-            "details": {
-              "baseCount": 181
-            }
-          }
-        },
         "rawTx": "0xf86c81b6843b9aca0082cf089492e659448c48fc926ec942d0da1459260d36bb33881bc16d674ec80000802ba0692deaabf0d79544d41e7c475ad43760679a4f25d0fee908b1da308db1a291a7a0384db85fc6c843ea25986a0760f3c50ab6504fc559fc71fc7f23f60950eb316d",
         "hash": "0x9271b266d05022cfa841362fae43763ebafcee540d84278b0157ef4a68d4e26f",
         "submittedTime": 1528133151347,
@@ -995,7 +1336,7 @@
         "id": 3387511061307738,
         "time": 1528133180635,
         "status": "confirmed",
-        "metamaskNetworkId": "4",
+        "chainId": "0x5",
         "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1010,7 +1351,7 @@
             "id": 3387511061307738,
             "time": 1528133180635,
             "status": "unapproved",
-            "metamaskNetworkId": "4",
+            "chainId": "0x5",
             "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1054,32 +1395,6 @@
               "value": "0xb7",
               "note": "transactions#approveTransaction",
               "timestamp": 1528133181726
-            },
-            {
-              "op": "add",
-              "path": "/nonceDetails",
-              "value": {
-                "params": {
-                  "highestLocallyConfirmed": 182,
-                  "highestSuggested": 182,
-                  "nextNetworkNonce": 182
-                },
-                "local": {
-                  "name": "local",
-                  "nonce": 183,
-                  "details": {
-                    "startPoint": 182,
-                    "highest": 183
-                  }
-                },
-                "network": {
-                  "name": "network",
-                  "nonce": 182,
-                  "details": {
-                    "baseCount": 182
-                  }
-                }
-              }
             }
           ],
           [
@@ -1144,28 +1459,6 @@
           ]
         ],
         "origin": "MetaMask",
-        "nonceDetails": {
-          "params": {
-            "highestLocallyConfirmed": 182,
-            "highestSuggested": 182,
-            "nextNetworkNonce": 182
-          },
-          "local": {
-            "name": "local",
-            "nonce": 183,
-            "details": {
-              "startPoint": 182,
-              "highest": 183
-            }
-          },
-          "network": {
-            "name": "network",
-            "nonce": 182,
-            "details": {
-              "baseCount": 182
-            }
-          }
-        },
         "rawTx": "0xf86d81b785012a05f20082cf089492e659448c48fc926ec942d0da1459260d36bb33881bc16d674ec80000802ba086f9846798be6988c39a5cf85f0dbe267e59ca0b96a6a7077e92cba33e10a258a064ffa52ac90c238ce21e6f085283216191b185a1eccd7daae6e2ab66ba26ada0",
         "hash": "0x4e061e977c099735bc9e5203e717f7d9dccb3fcb2f82031a12a3ed326f95d43b",
         "submittedTime": 1528133181885,
@@ -1175,7 +1468,7 @@
         "id": 3387511061307739,
         "time": 1528133223918,
         "status": "confirmed",
-        "metamaskNetworkId": "4",
+        "chainId": "0x5",
         "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1191,7 +1484,7 @@
             "id": 3387511061307739,
             "time": 1528133223918,
             "status": "unapproved",
-            "metamaskNetworkId": "4",
+            "chainId": "0x5",
             "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1239,32 +1532,6 @@
               "value": "0xb8",
               "note": "transactions#approveTransaction",
               "timestamp": 1528133227374
-            },
-            {
-              "op": "add",
-              "path": "/nonceDetails",
-              "value": {
-                "params": {
-                  "highestLocallyConfirmed": 184,
-                  "highestSuggested": 184,
-                  "nextNetworkNonce": 184
-                },
-                "local": {
-                  "name": "local",
-                  "nonce": 184,
-                  "details": {
-                    "startPoint": 184,
-                    "highest": 184
-                  }
-                },
-                "network": {
-                  "name": "network",
-                  "nonce": 184,
-                  "details": {
-                    "baseCount": 184
-                  }
-                }
-              }
             }
           ],
           [
@@ -1329,28 +1596,6 @@
           ]
         ],
         "origin": "crypko.ai",
-        "nonceDetails": {
-          "params": {
-            "highestLocallyConfirmed": 184,
-            "highestSuggested": 184,
-            "nextNetworkNonce": 184
-          },
-          "local": {
-            "name": "local",
-            "nonce": 184,
-            "details": {
-              "startPoint": 184,
-              "highest": 184
-            }
-          },
-          "network": {
-            "name": "network",
-            "nonce": 184,
-            "details": {
-              "baseCount": 184
-            }
-          }
-        },
         "rawTx": "0xf8b181b8843b9aca008306169e94fe2149773b3513703e79ad23d05a778a185016ee870aa87bee538000b844ea94496b000000000000000000000000000000000000000000000000000000000001e1eb000000000000000000000000000000000000000000000000000000000001de332ca07bb2efbb8529d67606f9f89e7934c594a31d50c7d24a3286c20a2944a3b8c2a9a07b55ebd8aa28728ce0e38dd3b3503b78fccedae80053626d8649c68346c7c49c",
         "hash": "0x466ae7d4b7c270121f0a8d68fbc6c9091ffc4aa976a553a5bfa56a79cf9f63dd",
         "submittedTime": 1528133227538,
@@ -1360,7 +1605,7 @@
         "id": 3387511061307740,
         "time": 1528133291381,
         "status": "confirmed",
-        "metamaskNetworkId": "4",
+        "chainId": "0x5",
         "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1376,7 +1621,7 @@
             "id": 3387511061307740,
             "time": 1528133291381,
             "status": "unapproved",
-            "metamaskNetworkId": "4",
+            "chainId": "0x5",
             "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1421,32 +1666,6 @@
               "value": "0xb9",
               "note": "transactions#approveTransaction",
               "timestamp": 1528133293706
-            },
-            {
-              "op": "add",
-              "path": "/nonceDetails",
-              "value": {
-                "params": {
-                  "highestLocallyConfirmed": 185,
-                  "highestSuggested": 185,
-                  "nextNetworkNonce": 185
-                },
-                "local": {
-                  "name": "local",
-                  "nonce": 185,
-                  "details": {
-                    "startPoint": 185,
-                    "highest": 185
-                  }
-                },
-                "network": {
-                  "name": "network",
-                  "nonce": 185,
-                  "details": {
-                    "baseCount": 185
-                  }
-                }
-              }
             }
           ],
           [
@@ -1511,28 +1730,6 @@
           ]
         ],
         "origin": "MetaMask",
-        "nonceDetails": {
-          "params": {
-            "highestLocallyConfirmed": 185,
-            "highestSuggested": 185,
-            "nextNetworkNonce": 185
-          },
-          "local": {
-            "name": "local",
-            "nonce": 185,
-            "details": {
-              "startPoint": 185,
-              "highest": 185
-            }
-          },
-          "network": {
-            "name": "network",
-            "nonce": 185,
-            "details": {
-              "baseCount": 185
-            }
-          }
-        },
         "rawTx": "0xf8a981b9843b9aca0082d50894108cf70c7d384c552f42c07c41c0e1e46d77ea0d80b844a9059cbb00000000000000000000000092e659448c48fc926ec942d0da1459260d36bb3300000000000000000000000000000000000000000000000000000000000000022ca04f05310490d3e3a9a159ae25f52cec9afb0a69527d30be832aaae12e64ff056ea075f81a5220bed481e764bab8830c57169c59fe528ca9cf3442f47f7618a9b4a9",
         "hash": "0x3680dc9815cd05b620b6dd0017d949604ca7d92f051d5542fc8a5ecaa876af09",
         "submittedTime": 1528133293859,
@@ -1542,7 +1739,7 @@
         "id": 3387511061307741,
         "time": 1528133318440,
         "status": "rejected",
-        "metamaskNetworkId": "4",
+        "chainId": "0x5",
         "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1556,7 +1753,7 @@
             "id": 3387511061307741,
             "time": 1528133318440,
             "status": "unapproved",
-            "metamaskNetworkId": "4",
+            "chainId": "0x5",
             "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1609,17 +1806,70 @@
       }
     ],
     "desktopEnabled": false,
+    "addSnapAccountEnabled": false,
     "pendingApprovals": {
       "testApprovalId": {
         "id": "testApprovalId",
         "time": 1528133319641,
         "origin": "metamask",
         "type": "transaction",
-        "requestData": { "txId": "testTransactionId" },
-        "requestState": { "test": "value" }
+        "requestData": {
+          "txId": "testTransactionId"
+        },
+        "requestState": {
+          "test": "value"
+        }
       }
     },
-    "pendingApprovalCount": 1
+    "pendingApprovalCount": 1,
+    "database": {
+      "verifiedSnaps": {
+        "npm:@metamask/test-snap-bip44": {
+          "id": "npm:@metamask/test-snap-bip44",
+          "metadata": {
+            "name": "BIP-44",
+            "author": {
+              "name": "Consensys",
+              "website": "https://consensys.io/"
+            },
+            "website": "https://snaps.consensys.io/",
+            "summary": "An example Snap that signs messages using BLS.",
+            "description": "An example Snap that signs messages using BLS.",
+            "audits": [
+              {
+                "auditor": "Consensys Diligence",
+                "report": "https://consensys.io/diligence/audits/"
+              }
+            ],
+            "category": "interoperability",
+            "support": {
+              "contact": "https://github.com/MetaMask"
+            },
+            "sourceCode": "https://github.com/MetaMask/test-snaps"
+          },
+          "versions": {
+            "5.1.2": {
+              "checksum": "L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+            },
+            "5.1.3": {
+              "checksum": "21k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+            },
+            "6.0.0": {
+              "checksum": "31k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+            }
+          }
+        }
+      }
+    },
+    "permissionHistory": {
+      "https://metamask.github.io": {
+        "eth_accounts": {
+          "accounts": {
+            "0dcd5d886577d5081b0c52e242ef29e70be3e7bc": 1709225290848
+          }
+        }
+      }
+    }
   },
   "send": {
     "amountMode": "INPUT",

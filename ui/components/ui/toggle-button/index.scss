@@ -1,11 +1,12 @@
+@use "design-system";
+
 .toggle-button {
   display: flex;
   cursor: pointer;
-
   $self: &;
 
   &__status {
-    @include Paragraph;
+    @include design-system.Paragraph;
 
     display: flex;
     align-items: center;

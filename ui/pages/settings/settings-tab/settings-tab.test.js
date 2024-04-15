@@ -63,6 +63,14 @@ describe('Settings Tab', () => {
     ).toHaveBeenCalled();
   });
 
+  it('should display currency symbol for native token', async () => {
+    const { getByText } = renderWithProvider(<SettingsTab />, mockStore);
+
+    const textElement = getByText('ETH');
+
+    expect(textElement).toBeInTheDocument();
+  });
+
   it('clicks jazzicon', () => {
     const { queryByTestId } = renderWithProvider(<SettingsTab />, mockStore);
 

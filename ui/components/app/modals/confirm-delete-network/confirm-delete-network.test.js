@@ -10,7 +10,7 @@ describe('Confirm Delete Network', () => {
     hideModal: jest.fn(),
     onConfirm: jest.fn(),
     removeNetworkConfiguration: jest.fn().mockResolvedValue(),
-    target: 'target',
+    target: 'testNetworkConfigurationId',
   };
 
   it('should match snapshot', () => {
@@ -21,6 +21,17 @@ describe('Confirm Delete Network', () => {
     );
 
     expect(container).toMatchSnapshot();
+  });
+
+  it('should mention network name in modal', () => {
+    const mockStore = configureMockStore()(mockState);
+    const { getByText } = renderWithProvider(
+      <ConfirmDeleteNetwork {...props} />,
+      mockStore,
+    );
+    const expectedTitle = 'Delete Custom Mainnet RPC network?';
+
+    expect(getByText(expectedTitle)).toBeInTheDocument();
   });
 
   it('clicks cancel to hide modal', async () => {

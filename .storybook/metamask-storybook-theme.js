@@ -1,12 +1,6 @@
-// .storybook/YourTheme.js
-
-import { create } from '@storybook/theming';
-
-export default create({
-  base: 'light',
+// MetaMask Storybook Theme
+export const metamaskStorybookTheme = {
   brandTitle: 'MetaMask Storybook',
-
   // Typography
   fontBase: 'Euclid Circular B, Roboto, Helvetica, Arial, sans-serif',
-  fontCode: 'Inconsolata, monospace',
-});
+};

@@ -175,9 +175,6 @@
   "copyAddress": {
     "message": "کاپی آدرس به کلیپ بورد"
   },
-  "copyPrivateKey": {
-    "message": "این کلید خصوصی شما است (برای کاپی نمودن کلیک کنید)"
-  },
   "copyToClipboard": {
     "message": "کپی در بریده‌دان"
   },
@@ -214,9 +211,6 @@
   "deleteNetwork": {
     "message": "شبکه حذف شود؟"
   },
-  "deleteNetworkDescription": {
-    "message": "آیا مطمئن هستید که این شبکه حذف شود؟"
-  },
   "details": {
     "message": "جزئیات"
   },
@@ -238,14 +232,8 @@
   "editContact": {
     "message": "ویرایش تماس"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "نام ENS در شبکه کنونی دریافت نشد. به تبدیل آن به شبکه اصلی ایتریم تلاش نمایید."
-  },
   "ensRegistrationError": {
     "message": "خطا در ثبت نام ENS"
-  },
-  "enterPassword": {
-    "message": "رمز عبور را وارد کنید"
   },
   "enterPasswordContinue": {
     "message": "برای ادامه رمز عبور را وارد کنید"
@@ -258,9 +246,6 @@
   },
   "expandView": {
     "message": "توسعه ساحه دید"
-  },
-  "exportPrivateKey": {
-    "message": "صدور کلید شخصی"
   },
   "failed": {
     "message": "ناموفق شد"
@@ -624,12 +609,6 @@
   "search": {
     "message": "جستجو"
   },
-  "searchResults": {
-    "message": "نتایج جستجو"
-  },
-  "searchTokens": {
-    "message": "رمزیاب های جستجو"
-  },
   "securityAndPrivacy": {
     "message": "امنیت و حریم خصوصی"
   },
@@ -668,9 +647,6 @@
   },
   "showHexDataDescription": {
     "message": "برای نمایش بخش اطلاعات hex در صفحه ارسال این را انتخاب نمایید"
-  },
-  "showPrivateKeys": {
-    "message": "نمایش کلید های شخصی"
   },
   "sigRequest": {
     "message": "درخواست امضاء"
@@ -792,9 +768,6 @@
   "tryAgain": {
     "message": "امتحان مجدد"
   },
-  "typePassword": {
-    "message": "رمز عبور MetaMask تان را تایپ نمایید"
-  },
   "unapproved": {
     "message": "تصدیق ناشده"
   },
@@ -803,12 +776,6 @@
   },
   "unknown": {
     "message": "ناشناس"
-  },
-  "unknownCameraError": {
-    "message": "هنگام تلاش برای دسترسی به کمره شما خطایی به وجود آمد. لطفًا دوباره تلاش کنید..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "اوه! مشکلی ایجاد شد"
   },
   "unknownNetwork": {
     "message": "شبکه خصوصی ناشناخته"

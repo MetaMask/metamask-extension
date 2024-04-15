@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { TransactionType } from '../../../shared/constants/transaction';
+import { TransactionType } from '@metamask/transaction-controller';
 
 const version = 53;
 

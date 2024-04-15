@@ -1,4 +1,4 @@
-import { TransactionType } from '../constants/transaction';
+import { TransactionType } from '@metamask/transaction-controller';
 
 export default function updateTxData({
   txData,

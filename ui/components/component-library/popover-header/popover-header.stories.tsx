@@ -10,7 +10,7 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 
-import { AvatarAccount, BUTTON_SIZES, Button, Text } from '..';
+import { AvatarAccount, ButtonSize, Button, Text } from '..';
 
 import { PopoverHeader } from './popover-header';
 import README from './README.mdx';
@@ -76,11 +76,11 @@ OnClose.args = {
 export const StartAccessory = Template.bind({});
 StartAccessory.args = {
   children: 'StartAccessory demo',
-  startAccessory: <Button size={BUTTON_SIZES.SM}>Demo</Button>,
+  startAccessory: <Button size={ButtonSize.Sm}>Demo</Button>,
 };
 
 export const EndAccessory = Template.bind({});
 EndAccessory.args = {
   children: 'EndAccessory demo',
-  endAccessory: <Button size={BUTTON_SIZES.SM}>Demo</Button>,
+  endAccessory: <Button size={ButtonSize.Sm}>Demo</Button>,
 };

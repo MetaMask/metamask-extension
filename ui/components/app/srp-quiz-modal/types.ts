@@ -1,3 +1,5 @@
+import { ButtonSize, ButtonVariant } from '../../component-library';
+
 export enum QuizStage {
   introduction = 'introduction',
   questionOne = 'question_one',
@@ -8,10 +10,12 @@ export enum QuizStage {
   rightAnswerQuestionTwo = 'right_answer_question_two',
 }
 
-export interface IQuizInformationProps {
+export type IQuizInformationProps = {
   /**
    * The icon to display in the modal should use <Icon /> component
    */
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   icon?: any;
   /**
    * The image to display in the modal
@@ -31,10 +35,10 @@ export interface IQuizInformationProps {
   buttons: {
     onClick: () => void;
     label: string;
-    variant: string;
-    size?: string;
+    variant: ButtonVariant;
+    size?: ButtonSize;
     'data-testid'?: string;
   }[];
-}
+};
 
 export type JSXDict = { [key: string]: () => JSX.Element };

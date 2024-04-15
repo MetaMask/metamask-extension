@@ -1,3 +1,5 @@
+@use "design-system";
+
 .connected-sites-list {
   &__content-rows {
     display: flex;
@@ -11,11 +13,10 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    border-top: 1px solid var(--color-border-muted);
     padding: 16px 24px;
 
     & &-link-button {
-      @include H7;
+      @include design-system.H7;
 
       padding: 0;
       width: auto;
@@ -24,7 +25,7 @@
   }
 
   &__subject-info {
-    @include H7;
+    @include design-system.H7;
 
     display: flex;
     flex-direction: row;

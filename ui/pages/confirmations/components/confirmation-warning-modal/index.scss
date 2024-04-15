@@ -1,0 +1,13 @@
+.confirmation-warning-modal {
+  &__content {
+    ul {
+      padding-inline-start: 1rem;
+      margin-block-start: 0;
+      list-style: disc outside;
+    }
+
+    li {
+      display: list-item;
+    }
+  }
+}

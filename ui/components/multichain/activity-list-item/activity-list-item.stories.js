@@ -30,9 +30,7 @@ const Template = (args) => <ActivityListItem {...args} />;
 export const DefaultStory = Template.bind({});
 DefaultStory.args = {
   'data-testid': 'activity-list-item',
-  onClick: () => {
-    console.log('clicked list item');
-  },
+  onClick: () => undefined,
   className: 'custom-class',
   title: 'Activity Title',
   icon: (
@@ -46,7 +44,7 @@ DefaultStory.args = {
           data-testid="activity-tx-network-badge"
           size={AvatarNetworkSize.Xs}
           name="Network Name"
-          src="./images/eth_logo.png"
+          src="./images/eth_logo.svg"
           borderWidth={1}
           borderColor={BackgroundColor.backgroundDefault}
         />

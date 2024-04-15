@@ -8,11 +8,19 @@ import {
   NETWORKS_ROUTE,
   CONTACT_LIST_ROUTE,
   EXPERIMENTAL_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  SNAPS_LIST_ROUTE,
-  ///: END:ONLY_INCLUDE_IN
 } from './routes';
 
+/**
+ * @typedef SettingRouteConfig
+ * # @param {Function} tabMessage
+ * # @param {Function} sectionMessage
+ * # @param {Function} descriptionMessage
+ * # @param {string} route tab route with appended arbitrary, unique anchor tag / hash route
+ * # @param {string} iconName
+ * # @param {string} featureFlag ENV variable name. If the ENV value exists, the route will be searchable; else, route will not be searchable.
+ */
+
+/** @type {SettingRouteConfig[]} */
 export const SETTINGS_CONSTANTS = [
   {
     tabMessage: (t) => t('general'),
@@ -72,6 +80,13 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('advanced'),
+    sectionMessage: (t) => t('smartTransactions'),
+    descriptionMessage: (t) => t('stxOptInDescription'),
+    route: `${ADVANCED_ROUTE}#smart-transactions`,
+    icon: 'fas fa-upload',
+  },
+  {
+    tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('showHexData'),
     descriptionMessage: (t) => t('showHexDataDescription'),
     route: `${ADVANCED_ROUTE}#show-hexdata`,
@@ -107,9 +122,9 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('advanced'),
-    sectionMessage: (t) => t('preferredLedgerConnectionType'),
-    descriptionMessage: (t) => t('preferredLedgerConnectionType'),
-    route: `${ADVANCED_ROUTE}#ledger-connection`,
+    sectionMessage: (t) => t('showExtensionInFullSizeView'),
+    descriptionMessage: (t) => t('showExtensionInFullSizeViewDescription'),
+    route: `${ADVANCED_ROUTE}#extension-full-size-view`,
     icon: 'fas fa-sliders-h',
   },
   {
@@ -133,15 +148,7 @@ export const SETTINGS_CONSTANTS = [
     route: CONTACT_LIST_ROUTE,
     iconName: IconName.Book,
   },
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  {
-    tabMessage: (t) => t('snaps'),
-    sectionMessage: (t) => t('snaps'),
-    descriptionMessage: (t) => t('snaps'),
-    route: SNAPS_LIST_ROUTE,
-    iconName: IconName.Snaps,
-  },
-  ///: END:ONLY_INCLUDE_IN
+  // securityAndPrivacy settingsRefs[0]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('revealSeedWords'),
@@ -149,6 +156,7 @@ export const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#reveal-secretrecovery`,
     icon: 'fa fa-lock',
   },
+  // securityAndPrivacy settingsRefs[1]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('showIncomingTransactions'),
@@ -156,6 +164,7 @@ export const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#incoming-transaction`,
     icon: 'fa fa-lock',
   },
+  // securityAndPrivacy settingsRefs[2]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('usePhishingDetection'),
@@ -163,6 +172,15 @@ export const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#phishing-detection`,
     icon: 'fa fa-lock',
   },
+  // securityAndPrivacy settingsRefs[3]
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('use4ByteResolution'),
+    descriptionMessage: (t) => t('use4ByteResolutionDescription'),
+    route: `${SECURITY_ROUTE}#decode-smart-contracts`,
+    icon: 'fa fa-lock',
+  },
+  // securityAndPrivacy settingsRefs[4]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('participateInMetaMetrics'),
@@ -170,20 +188,24 @@ export const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#metametrics`,
     icon: 'fa fa-lock',
   },
+  // securityAndPrivacy settingsRefs[5]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
-    sectionMessage: (t) => t('chooseYourNetwork'),
-    descriptionMessage: (t) => t('chooseYourNetworkDescription'),
-    route: `${SECURITY_ROUTE}#choose-your-network`,
+    sectionMessage: (t) => t('networkProvider'),
+    descriptionMessage: (t) =>
+      `${t('chooseYourNetwork')} ${t('chooseYourNetworkDescription')}`,
+    route: `${SECURITY_ROUTE}#network-provider`,
     icon: 'fa fa-lock',
   },
+  // securityAndPrivacy settingsRefs[6]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
-    sectionMessage: (t) => t('addCustomIPFSGateway'),
-    descriptionMessage: (t) => t('addCustomIPFSGatewayDescription'),
+    sectionMessage: (t) => t('ipfsGateway'),
+    descriptionMessage: (t) => t('ipfsGatewayDescription'),
     route: `${SECURITY_ROUTE}#add-custom-ipfs-gateway`,
     icon: 'fa fa-lock',
   },
+  // securityAndPrivacy settingsRefs[7]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('autoDetectTokens'),
@@ -191,18 +213,85 @@ export const SETTINGS_CONSTANTS = [
     route: `${SECURITY_ROUTE}#auto-detect-tokens`,
     icon: 'fa fa-lock',
   },
+  // securityAndPrivacy settingsRefs[8]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('useMultiAccountBalanceChecker'),
-    descriptionMessage: (t) => t('useMultiAccountBalanceCheckerDescription'),
-    route: `${SECURITY_ROUTE}#use-multi-account-balance-checker`,
+    descriptionMessage: (t) =>
+      t('useMultiAccountBalanceCheckerSettingDescription'),
+    route: `${SECURITY_ROUTE}#batch-account-balance-requests`,
     icon: 'fa fa-lock',
   },
+  // securityAndPrivacy settingsRefs[9]
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('currencyRateCheckToggle'),
     descriptionMessage: (t) => t('currencyRateCheckToggleDescription'),
     route: `${SECURITY_ROUTE}#price-checker`,
+    icon: 'fa fa-lock',
+  },
+  // securityAndPrivacy settingsRefs[10]
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('ensDomainsSettingTitle'),
+    descriptionMessage: (t) => t('ensDomainsSettingDescriptionIntroduction'),
+    route: `${SECURITY_ROUTE}#ens-domains`,
+    icon: 'fa fa-lock',
+  },
+  // securityAndPrivacy settingsRefs[11]
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('displayNftMedia'),
+    descriptionMessage: (t) => t('displayNftMediaDescription'),
+    route: `${SECURITY_ROUTE}#display-nft-media`,
+    icon: 'fa fa-lock',
+  },
+  // securityAndPrivacy settingsRefs[12]
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('useNftDetection'),
+    descriptionMessage: (t) => t('useNftDetectionDescriptionText'),
+    route: `${SECURITY_ROUTE}#autodetect-nfts`,
+    icon: 'fa fa-lock',
+  },
+  // securityAndPrivacy settingsRefs[13]
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('useSafeChainsListValidation'),
+    descriptionMessage: (t) => t('useSafeChainsListValidationDescription'),
+    route: `${SECURITY_ROUTE}#network-details-check`,
+    icon: 'fa fa-lock',
+  },
+  // securityAndPrivacy settingsRefs[14]
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('externalNameSourcesSetting'),
+    descriptionMessage: (t) => t('externalNameSourcesSettingDescription'),
+    route: `${SECURITY_ROUTE}#proposed-nicknames`,
+    icon: 'fa fa-lock',
+  },
+  // securityAndPrivacy settingsRefs[15]
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('securityAlerts'),
+    descriptionMessage: (t) => t('securityAlertsDescription'),
+    route: `${SECURITY_ROUTE}#security-alerts`,
+    icon: 'fa fa-lock',
+  },
+  // securityAndPrivacy settingsRefs[16]
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('blockaid'),
+    descriptionMessage: (t) => t('blockaidMessage'),
+    route: `${SECURITY_ROUTE}#security-alerts-blockaid`,
+    icon: 'fa fa-lock',
+  },
+  // securityAndPrivacy settingsRefs[18]
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('simulationsSettingSubHeader'),
+    descriptionMessage: (t) => t('simulationsSettingDescription'),
+    route: `${SECURITY_ROUTE}#transaction-simulations`,
     icon: 'fa fa-lock',
   },
   {
@@ -252,6 +341,13 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('lineaGoerli'),
     descriptionMessage: (t) => t('lineaGoerli'),
     route: `${NETWORKS_ROUTE}#networks-linea-goerli`,
+    icon: 'fa fa-plug',
+  },
+  {
+    tabMessage: (t) => t('networks'),
+    sectionMessage: (t) => t('lineaSepolia'),
+    descriptionMessage: (t) => t('lineaSepolia'),
+    route: `${NETWORKS_ROUTE}#networks-linea-sepolia`,
     icon: 'fa fa-plug',
   },
   {
@@ -329,20 +425,6 @@ export const SETTINGS_CONSTANTS = [
     iconName: IconName.Info,
   },
   {
-    tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('enableOpenSeaAPI'),
-    descriptionMessage: (t) => t('enableOpenSeaAPIDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#opensea-api`,
-    icon: 'fa fa-flask',
-  },
-  {
-    tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('useNftDetection'),
-    descriptionMessage: (t) => t('useNftDetectionDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#autodetect-nfts`,
-    icon: 'fa fa-flask',
-  },
-  {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('backupUserData'),
     descriptionMessage: (t) => t('backupUserDataDescription'),
@@ -356,11 +438,31 @@ export const SETTINGS_CONSTANTS = [
     route: `${ADVANCED_ROUTE}#restore-userdata`,
     icon: 'fas fa-upload',
   },
+  // experimental settingsRefs[0]
   {
     tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('transactionSecurityCheck'),
-    descriptionMessage: (t) => t('transactionSecurityCheckDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#transaction-security-check`,
-    icon: 'fa fa-flask',
+    sectionMessage: (t) => t('petnamesEnabledToggle'),
+    descriptionMessage: (t) => t('petnamesEnabledToggleDescription'),
+    route: `${EXPERIMENTAL_ROUTE}#nicknames`,
+    icon: 'fas fa-flask',
   },
+  {
+    tabMessage: (t) => t('experimental'),
+    sectionMessage: (t) => t('notificationsFeatureToggle'),
+    descriptionMessage: (t) => t('notificationsFeatureToggleDescription'),
+    route: `${EXPERIMENTAL_ROUTE}#notifications`,
+    icon: 'fas fa-flask',
+  },
+
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  // since this route is only included with keyring-snaps feature flag, this needs to be the last settingsRef for the experimental tab
+  // experimental settingsRefs[1]
+  {
+    tabMessage: (t) => t('experimental'),
+    sectionMessage: (t) => t('snaps'),
+    descriptionMessage: (t) => t('addSnapAccountToggle'),
+    route: `${EXPERIMENTAL_ROUTE}#snaps`,
+    icon: 'fas fa-flask',
+  },
+  ///: END:ONLY_INCLUDE_IF
 ];

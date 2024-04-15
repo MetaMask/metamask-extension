@@ -1,27 +1,70 @@
 const path = require('path');
-const { promises: fs } = require('fs');
+const fs = require('fs');
+const { execSync } = require('child_process');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 const { runInShell } = require('../../development/lib/run-command');
 const { exitWithError } = require('../../development/lib/exit-with-error');
+const { loadBuildTypesConfig } = require('../../development/lib/build-type');
+
+// These tests should only be run on Flask for now.
+const FLASK_ONLY_TESTS = [
+  'test-snap-txinsights-v2.spec.js',
+  'test-snap-namelookup.spec.js',
+  'test-snap-siginsights.spec.js',
+];
 
 const getTestPathsForTestDir = async (testDir) => {
-  const testFilenames = await fs.readdir(testDir);
-  const testPaths = testFilenames.map((filename) =>
-    path.join(testDir, filename),
-  );
+  const testFilenames = await fs.promises.readdir(testDir, {
+    withFileTypes: true,
+  });
+  const testPaths = [];
+
+  for (const itemInDirectory of testFilenames) {
+    const fullPath = path.join(testDir, itemInDirectory.name);
+
+    if (itemInDirectory.isDirectory()) {
+      const subDirPaths = await getTestPathsForTestDir(fullPath);
+      testPaths.push(...subDirPaths);
+    } else if (fullPath.endsWith('.spec.js') || fullPath.endsWith('.spec.ts')) {
+      testPaths.push(fullPath);
+    }
+  }
+
   return testPaths;
 };
 
-// Heavily inspired by: https://stackoverflow.com/a/51514813
-// Splits the array into totalChunks chunks with a decent spread of items in each chunk
-function chunk(array, totalChunks) {
-  const copyArray = [...array];
-  const result = [];
-  for (let chunkIndex = totalChunks; chunkIndex > 0; chunkIndex--) {
-    result.push(copyArray.splice(0, Math.ceil(copyArray.length / chunkIndex)));
+// For running E2Es in parallel in CI
+function runningOnCircleCI(testPaths) {
+  const fullTestList = testPaths.join('\n');
+  console.log('Full test list:', fullTestList);
+  fs.writeFileSync('test/test-results/fullTestList.txt', fullTestList);
+
+  // Use `circleci tests run` on `testList.txt` to do two things:
+  // 1. split the test files into chunks based on how long they take to run
+  // 2. support "Rerun failed tests" on CircleCI
+  const result = execSync(
+    'circleci tests run --command=">test/test-results/myTestList.txt xargs echo" --split-by=timings --timings-type=filename --time-default=30s < test/test-results/fullTestList.txt',
+  ).toString('utf8');
+
+  // Report if no tests found, exit gracefully
+  if (result.indexOf('There were no tests found') !== -1) {
+    console.log(`run-all.js info: Skipping this node because "${result}"`);
+    return [];
   }
-  return result;
+
+  // If there's no text file, it means this node has no tests, so exit gracefully
+  if (!fs.existsSync('test/test-results/myTestList.txt')) {
+    console.log(
+      'run-all.js info: Skipping this node because there is no myTestList.txt',
+    );
+    return [];
+  }
+
+  // take the space-delimited result and split into an array
+  return fs
+    .readFileSync('test/test-results/myTestList.txt', { encoding: 'utf8' })
+    .split(' ');
 }
 
 async function main() {
@@ -37,50 +80,107 @@ async function main() {
             choices: ['chrome', 'firefox'],
           })
           .option('debug', {
-            default: process.env.E2E_DEBUG === 'true',
+            default: true,
             description:
               'Run tests in debug mode, logging each driver interaction',
             type: 'boolean',
           })
-          .option('snaps', {
-            description: `run snaps e2e tests`,
+          .option('mmi', {
+            description: `Run only mmi related tests`,
             type: 'boolean',
           })
-          .option('mv3', {
-            description: `run mv3 specific e2e tests`,
+          .option('rpc', {
+            description: `run json-rpc specific e2e tests`,
             type: 'boolean',
+          })
+          .option('multi-provider', {
+            description: `run multi injected provider e2e tests`,
+            type: 'boolean',
+          })
+          .option('build-type', {
+            description: `Sets the build-type to test for. This may filter out tests.`,
+            type: 'string',
+            choices: Object.keys(loadBuildTypesConfig().buildTypes),
           })
           .option('retries', {
             description:
               'Set how many times the test should be retried upon failure.',
             type: 'number',
+          })
+          .option('update-snapshot', {
+            alias: 'u',
+            default: false,
+            description: 'Update E2E snapshots',
+            type: 'boolean',
+          })
+          .option('update-privacy-snapshot', {
+            default: false,
+            description:
+              'Update the privacy snapshot to include new hosts and paths',
+            type: 'boolean',
           }),
     )
     .strict()
     .help('help');
 
-  const { browser, debug, retries, snaps, mv3 } = argv;
+  const {
+    browser,
+    debug,
+    retries,
+    mmi,
+    rpc,
+    buildType,
+    updateSnapshot,
+    updatePrivacySnapshot,
+    multiProvider,
+  } = argv;
 
   let testPaths;
 
-  if (snaps) {
-    const testDir = path.join(__dirname, 'snaps');
+  // These test paths should be run against both flask and main builds.
+  // Eventually we should move all features to this array and test them all
+  // on every build type in which they are running to avoid regressions across
+  // builds.
+  const featureTestsOnMain = [
+    ...(await getTestPathsForTestDir(path.join(__dirname, 'accounts'))),
+    ...(await getTestPathsForTestDir(path.join(__dirname, 'snaps'))),
+  ];
+
+  if (buildType === 'flask') {
+    testPaths = [
+      ...(await getTestPathsForTestDir(path.join(__dirname, 'flask'))),
+      ...featureTestsOnMain,
+    ];
+  } else if (rpc) {
+    const testDir = path.join(__dirname, 'json-rpc');
     testPaths = await getTestPathsForTestDir(testDir);
+  } else if (multiProvider) {
+    // Copy dist/ to folder
+    fs.cp(
+      path.resolve('dist/chrome'),
+      path.resolve('dist/chrome2'),
+      { recursive: true },
+      (err) => {
+        if (err) {
+          throw err;
+        }
+      },
+    );
+
+    const testDir = path.join(__dirname, 'multi-injected-provider');
+    testPaths = await getTestPathsForTestDir(testDir);
+  } else if (buildType === 'mmi') {
+    const testDir = path.join(__dirname, 'tests');
+    testPaths = [...(await getTestPathsForTestDir(testDir))];
   } else {
     const testDir = path.join(__dirname, 'tests');
+    const filteredFlaskAndMainTests = featureTestsOnMain.filter((p) =>
+      FLASK_ONLY_TESTS.every((filteredTest) => !p.endsWith(filteredTest)),
+    );
     testPaths = [
       ...(await getTestPathsForTestDir(testDir)),
-      ...(await getTestPathsForTestDir(path.join(__dirname, 'swaps'))),
-      ...(await getTestPathsForTestDir(path.join(__dirname, 'nft'))),
-      ...(await getTestPathsForTestDir(path.join(__dirname, 'metrics'))),
-      path.join(__dirname, 'metamask-ui.spec.js'),
+      ...filteredFlaskAndMainTests,
     ];
-
-    if (mv3) {
-      testPaths.push(
-        ...(await getTestPathsForTestDir(path.join(__dirname, 'mv3'))),
-      );
-    }
   }
 
   const runE2eTestPath = path.join(__dirname, 'run-e2e-test.js');
@@ -92,20 +192,37 @@ async function main() {
   if (retries) {
     args.push('--retries', retries);
   }
-  if (debug) {
-    args.push('--debug');
+  if (!debug) {
+    args.push('--debug=false');
+  }
+  if (updateSnapshot) {
+    args.push('--update-snapshot');
+  }
+  if (updatePrivacySnapshot) {
+    args.push('--update-privacy-snapshot');
+  }
+  if (mmi) {
+    args.push('--mmi');
   }
 
-  // For running E2Es in parallel in CI
-  const currentChunkIndex = process.env.CIRCLE_NODE_INDEX ?? 0;
-  const totalChunks = process.env.CIRCLE_NODE_TOTAL ?? 1;
-  const chunks = chunk(testPaths, totalChunks);
-  const currentChunk = chunks[currentChunkIndex];
+  await fs.promises.mkdir('test/test-results/e2e', { recursive: true });
 
-  for (const testPath of currentChunk) {
-    const dir = 'test/test-results/e2e';
-    fs.mkdir(dir, { recursive: true });
-    await runInShell('node', [...args, testPath]);
+  let myTestList;
+  if (process.env.CIRCLECI) {
+    myTestList = runningOnCircleCI(testPaths);
+  } else {
+    myTestList = testPaths;
+  }
+
+  console.log('My test list:', myTestList);
+
+  // spawn `run-e2e-test.js` for each test in myTestList
+  for (let testPath of myTestList) {
+    if (testPath !== '') {
+      testPath = testPath.replace('\n', ''); // sometimes there's a newline at the end of the testPath
+      console.log(`\nExecuting testPath: ${testPath}\n`);
+      await runInShell('node', [...args, testPath]);
+    }
   }
 }
 

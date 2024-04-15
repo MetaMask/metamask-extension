@@ -7,7 +7,7 @@ export default {
 
   component: SnapContentFooter,
   args: {
-    snapName: 'Test Snap',
+    snapName: 'Really Long Test Snap Name',
     snapId: 'local:test-snap',
   },
 };

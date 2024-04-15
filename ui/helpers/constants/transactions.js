@@ -1,13 +1,12 @@
 import {
-  TransactionType,
   TransactionStatus,
-} from '../../../shared/constants/transaction';
+  TransactionType,
+} from '@metamask/transaction-controller';
 
 export const PENDING_STATUS_HASH = {
   [TransactionStatus.unapproved]: true,
   [TransactionStatus.approved]: true,
   [TransactionStatus.submitted]: true,
-  [TransactionStatus.pending]: true,
 };
 
 export const PRIORITY_STATUS_HASH = {
@@ -20,4 +19,5 @@ export const TOKEN_CATEGORY_HASH = {
   [TransactionType.tokenMethodSetApprovalForAll]: true,
   [TransactionType.tokenMethodTransfer]: true,
   [TransactionType.tokenMethodTransferFrom]: true,
+  [TransactionType.tokenMethodIncreaseAllowance]: true,
 };

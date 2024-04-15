@@ -1,0 +1,1 @@
+export { ConfirmInfo } from './info';

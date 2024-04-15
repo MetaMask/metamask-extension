@@ -1,0 +1,21 @@
+Step,Test Steps,Test Data,Expected Result,Notes
+1,Open the extension.,,The Welcome Back screen is shown.,
+2,Proceed to Unlock the wallet.,password (8 characters min).,"The Ether balance is shown on the overview.
+The wallet address is shown on the overview.
+The selected network is Ethereum Mainnet.",
+3,Switch networks to a test network.,e.g. Sepolia.,"The Sepolia balance is shown on the overview.
+The wallet address is shown on the overview.
+The selected network is Sepolia.",
+4,Proceed to the Send flow.,,,
+5,Enter a public address.,e.g. 0x56F2e03c8D30649818c022a9759CF43B240D08B3.,,
+6,Enter an amount.,e.g. 0.1.,,
+7,Proceed to the confirmation screen.,,"The recipient's hexadecimal address is shown.
+The specified amount is shown.
+The estimated gas details are shown.
+The total amount is shown.",
+8,Confirm the transaction.,,"The transaction appears in the activity list.
+The recipient's hexadecimal address is shown in the activity list item.
+The amount is shown in the activity list item.",
+9,Open the activity list item.,,"The transaction status, recipient's address, nonce, amount, gas and total are shown in the item details.",
+10,Expand the Activity log.,,"The created, submitted and confirmed activity is shown in the activity log.",
+11,Proceed to view the transaction on the block explorer.,,The block explorer opens in a new tab.,

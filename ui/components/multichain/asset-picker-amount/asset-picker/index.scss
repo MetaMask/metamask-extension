@@ -1,0 +1,23 @@
+.asset-picker {
+  min-width: 80px;
+  height: 30px;
+  flex-grow: 1;
+  text-align: left;
+
+  &:hover:not(&--disabled),
+  &:active {
+    box-shadow: none;
+    background-color: transparent;
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &__symbol {
+    text-overflow: ellipsis;
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+}

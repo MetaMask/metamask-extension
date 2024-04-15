@@ -6,7 +6,7 @@ all unapproved transactions
 */
 
 import { cloneDeep } from 'lodash';
-import { TransactionStatus } from '../../../shared/constants/transaction';
+import { TransactionStatus } from '@metamask/transaction-controller';
 
 const version = 24;
 

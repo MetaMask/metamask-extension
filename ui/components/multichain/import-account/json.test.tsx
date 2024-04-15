@@ -63,7 +63,7 @@ describe('Json', () => {
     fireEvent.click(importButton);
 
     await waitFor(() => {
-      expect(mockImportFunc).toHaveBeenCalledWith('JSON File', ['0', '']);
+      expect(mockImportFunc).toHaveBeenCalledWith('json', ['0', '']);
     });
   });
 
@@ -102,10 +102,7 @@ describe('Json', () => {
     fireEvent.click(importButton);
 
     await waitFor(() => {
-      expect(mockImportFunc).toHaveBeenCalledWith('JSON File', [
-        '0',
-        'password',
-      ]);
+      expect(mockImportFunc).toHaveBeenCalledWith('json', ['0', 'password']);
     });
   });
 });

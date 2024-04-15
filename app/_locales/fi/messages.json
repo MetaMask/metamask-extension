@@ -175,9 +175,6 @@
   "copyAddress": {
     "message": "Kopioi osoite leikepöydälle"
   },
-  "copyPrivateKey": {
-    "message": "Tämä on yksityinen avaimesi (kopioi napsauttamalla)"
-  },
   "copyToClipboard": {
     "message": "Kopioi leikepöydälle"
   },
@@ -214,9 +211,6 @@
   "deleteNetwork": {
     "message": "Poistetaanko verkko?"
   },
-  "deleteNetworkDescription": {
-    "message": "Haluatko varmasti poistaa tämän verkon?"
-  },
   "details": {
     "message": "Tiedot"
   },
@@ -238,14 +232,8 @@
   "editContact": {
     "message": "Muokkaa yhteystietoa"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS-nimeä ei löytynyt nykyisestä verkosta. Koeta vaihtaa Ethereumin pääverkkoon."
-  },
   "ensRegistrationError": {
     "message": "Virhe ENS-nimen rekisteröinnissä"
-  },
-  "enterPassword": {
-    "message": "Kirjoita salasana"
   },
   "enterPasswordContinue": {
     "message": "Syötä salasana voidaksesi jatkaa"
@@ -258,9 +246,6 @@
   },
   "expandView": {
     "message": "Laajenna näkymää"
-  },
-  "exportPrivateKey": {
-    "message": "Vie yksityinen avain"
   },
   "failed": {
     "message": "Epäonnistui"
@@ -621,12 +606,6 @@
   "search": {
     "message": "Haku"
   },
-  "searchResults": {
-    "message": "Hakutulokset"
-  },
-  "searchTokens": {
-    "message": "Hae tietueita"
-  },
   "securityAndPrivacy": {
     "message": "Turva & yksityisyys"
   },
@@ -665,9 +644,6 @@
   },
   "showHexDataDescription": {
     "message": "Näytä hex-tietokenttä lähetysnäytössä valitsemalla tämän"
-  },
-  "showPrivateKeys": {
-    "message": "Näytä yksityiset avaimet"
   },
   "sigRequest": {
     "message": "Allekirjoitus pyydetään"
@@ -789,9 +765,6 @@
   "tryAgain": {
     "message": "Yritä uudelleen"
   },
-  "typePassword": {
-    "message": "Kirjoita MetaMask-salasanasi"
-  },
   "unapproved": {
     "message": "Ei hyväksytty"
   },
@@ -800,12 +773,6 @@
   },
   "unknown": {
     "message": "Tuntematon"
-  },
-  "unknownCameraError": {
-    "message": "Tapahtui virhe yritettäessä käyttää kameraasi. Ole hyvä ja yritä uudestaan..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Oho! Jokin meni vikaan..."
   },
   "unknownNetwork": {
     "message": "Tuntematon yksityinen verkko"

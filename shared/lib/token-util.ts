@@ -1,4 +1,4 @@
-import { abiERC20 } from '@metamask/metamask-eth-abis';
+import { abiERC20, abiERC1155 } from '@metamask/metamask-eth-abis';
 import { Contract } from '@ethersproject/contracts';
 import { Web3Provider } from '@ethersproject/providers';
 
@@ -17,6 +17,8 @@ import { Web3Provider } from '@ethersproject/providers';
  * @param tokenData - ethers Interface token data.
  * @returns A decimal string value.
  */
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getTokenIdParam(tokenData: any = {}): string | undefined {
   return (
     tokenData?.args?._tokenId?.toString() ?? tokenData?.args?.id?.toString()
@@ -26,12 +28,37 @@ export function getTokenIdParam(tokenData: any = {}): string | undefined {
 export async function fetchTokenBalance(
   address: string,
   userAddress: string,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   provider: any,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
   const ethersProvider = new Web3Provider(provider);
   const tokenContract = new Contract(address, abiERC20, ethersProvider);
   const tokenBalancePromise = tokenContract
     ? tokenContract.balanceOf(userAddress)
+    : Promise.resolve();
+  return await tokenBalancePromise;
+}
+
+export async function fetchERC1155Balance(
+  address: string,
+  userAddress: string,
+  tokenId: string,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  provider: any,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+): Promise<any> {
+  if (!userAddress || !tokenId) {
+    return null;
+  }
+  const ethersProvider = new Web3Provider(provider);
+  const tokenContract = new Contract(address, abiERC1155, ethersProvider);
+  const tokenBalancePromise = tokenContract
+    ? tokenContract.balanceOf(userAddress, tokenId)
     : Promise.resolve();
   return await tokenBalancePromise;
 }

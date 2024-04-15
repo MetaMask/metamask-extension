@@ -1,0 +1,19 @@
+Step,Test Steps,Test Data,Expected Result,Notes
+1,Open the extension.,,The Welcome Back screen is shown.,
+2,Proceed to Unlock the wallet.,password (8 characters min).,"The Ether balance is shown on the overview.
+The wallet address is shown on the overview.
+The selected network is Ethereum Mainnet.",
+3,Switch networks to a test network.,e.g. Sepolia.,"The Sepolia balance is shown on the overview.
+The wallet address is shown on the overview.
+The selected network is Sepolia.",
+4,Proceed to the Send flow.,,,
+5,Enter an ENS address.,e.g. peteryinusa.eth.,"A matching result appears in the recipient list.
+The ENS address is shown in the list item.
+The hexadecimal address is shown in the list item.",
+6,Select the matching recipient.,,"The send screen is shown.
+The ENS address is shown in the recipient field.
+The hexadecimal address is shown in the recipient field.",
+7,Enter an amount.,e.g. 0.1.,,
+8,Proceed to the confirmation screen.,,The recipient's ENS address is shown.,
+9,Confirm the transaction.,,"The transaction appears in the activity list.",
+10,Open the activity list item.,,The recipient's ENS address is shown in the item details.,

@@ -13,6 +13,7 @@
 
     &:hover:not(:disabled) {
       background-color: var(--color-background-default-hover);
+      cursor: pointer;
     }
 
     &:focus {
@@ -42,6 +43,7 @@
 
   &--disabled {
     opacity: var(--opacity-disabled);
+    cursor: not-allowed;
   }
 
   &__icon {

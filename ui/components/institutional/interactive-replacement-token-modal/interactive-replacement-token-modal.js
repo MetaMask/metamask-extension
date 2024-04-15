@@ -3,17 +3,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { hideModal } from '../../../store/actions';
-import { getSelectedAddress } from '../../../selectors/selectors';
+import { getSelectedInternalAccount } from '../../../selectors/selectors';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import {
   Box,
   Button,
   Modal,
-  ModalContent,
-  ModalHeader,
   ModalOverlay,
   Text,
 } from '../../component-library';
+import { ModalContent } from '../../component-library/modal-content/deprecated';
+import { ModalHeader } from '../../component-library/modal-header/deprecated';
 
 import {
   BlockSize,
@@ -43,7 +43,7 @@ const InteractiveReplacementTokenModal = () => {
   const { custodians } = useSelector(
     (state) => state.metamask.mmiConfiguration,
   );
-  const address = useSelector(getSelectedAddress);
+  const { address } = useSelector(getSelectedInternalAccount);
   const custodyAccountDetails = useSelector(
     (state) =>
       state.metamask.custodyAccountDetails[toChecksumHexAddress(address)],
@@ -51,7 +51,7 @@ const InteractiveReplacementTokenModal = () => {
 
   const custodianName = custodyAccountDetails?.custodianName;
   const custodian =
-    custodians.find((item) => item.name === custodianName) || {};
+    custodians.find((item) => item.envName === custodianName) || {};
 
   const handleSubmit = () => {
     global.platform.openTab({
