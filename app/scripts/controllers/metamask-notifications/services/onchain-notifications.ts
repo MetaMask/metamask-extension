@@ -1,12 +1,12 @@
-/* eslint-disable guard-for-in */
-/* eslint-disable camelcase */
 import log from 'loglevel';
 import type { UserStorage } from '../types/user-storage/user-storage';
 import { createSHA256Hash } from '../encryption/encryption';
 import type { OnChainRawNotification } from '../types/on-chain-notification/on-chain-notification';
 import { MetamaskNotificationsUtils } from '../utils/utils';
-import type { TRIGGER_TYPES } from '../../../../../shared/constants/metamask-notifications';
+import type { TRIGGER_TYPES } from '../constants/notification-schema';
 import type { components } from '../types/on-chain-notification/schema';
+
+const utils = new MetamaskNotificationsUtils();
 
 export type NotificationTrigger = {
   id: string;
@@ -15,18 +15,15 @@ export type NotificationTrigger = {
   address: string;
 };
 
+export const TRIGGER_API = process.env.TRIGGERS_SERVICE_URL;
+export const NOTIFICATION_API = process.env.NOTIFICATIONS_SERVICE_URL;
+export const TRIGGER_API_BATCH_ENDPOINT = `${TRIGGER_API}/api/v1/triggers/batch`;
+export const NOTIFICATION_API_LIST_ENDPOINT = `${NOTIFICATION_API}/api/v1/notifications`;
+export const NOTIFICATION_API_LIST_ENDPOINT_PAGE_QUERY = (page: number) =>
+  `${NOTIFICATION_API_LIST_ENDPOINT}?page=${page}&per_page=100`;
+export const NOTIFICATION_API_MARK_ALL_AS_READ_ENDPOINT = `${NOTIFICATION_API}/api/v1/notifications/mark-as-read`;
+
 export class OnChainNotificationsService {
-  private TRIGGER_API = process.env.TRIGGERS_SERVICE_URL;
-
-  private NOTIFICATION_API = process.env.NOTIFICATIONS_SERVICE_URL;
-
-  private BATCH_ENDPOINT = `${this.TRIGGER_API}/api/v1/triggers/batch`;
-
-  private LIST_NOTIFICATIONS_ENDPOINT = (page: number) =>
-    `${this.NOTIFICATION_API}/api/v1/notifications?page=${page}&per_page=100`;
-
-  private MARK_ALL_AS_READ_ENDPOINT = `${this.NOTIFICATION_API}/api/v1/notifications/mark-as-read`;
-
   /**
    * Creates on-chain triggers based on the provided notification triggers.
    * This method generates a unique token for each trigger using the trigger ID and storage key,
@@ -71,7 +68,7 @@ export class OnChainNotificationsService {
 
     const response = await MetamaskNotificationsUtils.makeApiCall(
       bearerToken,
-      this.BATCH_ENDPOINT,
+      TRIGGER_API_BATCH_ENDPOINT,
       'POST',
       triggersToCreate,
     );
@@ -79,7 +76,7 @@ export class OnChainNotificationsService {
     if (!response.ok) {
       const errorData = await response.json().catch(() => undefined);
       log.error('Error creating triggers:', errorData);
-      throw new Error();
+      throw new Error('OnChain Notifications - unable to create triggers');
     }
 
     // If the trigger creation was fine
@@ -121,23 +118,27 @@ export class OnChainNotificationsService {
     try {
       const response = await MetamaskNotificationsUtils.makeApiCall(
         bearerToken,
-        this.BATCH_ENDPOINT,
+        TRIGGER_API_BATCH_ENDPOINT,
         'DELETE',
         triggersToDelete,
       );
 
       if (!response.ok) {
         throw new Error(
-          `Failed to delete HAL notifications for uuids ${uuids.join(', ')}`,
+          `Failed to delete on-chain notifications for uuids ${uuids.join(
+            ', ',
+          )}`,
         );
       }
 
       // Update the state of the deleted trigger to false
       for (const uuid of uuids) {
         for (const address in userStorage) {
-          for (const chain_id in userStorage[address]) {
-            if (userStorage?.[address]?.[chain_id]?.[uuid]) {
-              delete userStorage[address][chain_id][uuid];
+          if (Object.hasOwn(userStorage, address)) {
+            for (const chainId in userStorage[address]) {
+              if (userStorage?.[address]?.[chainId]?.[uuid]) {
+                delete userStorage[address][chainId][uuid];
+              }
             }
           }
         }
@@ -146,21 +147,23 @@ export class OnChainNotificationsService {
       // Follow-up cleanup, if an address had no triggers whatsoever, then we can delete the address
       const isEmpty = (obj = {}) => Object.keys(obj).length === 0;
       for (const address in userStorage) {
-        for (const chain_id in userStorage[address]) {
-          // Chain isEmpty Check
-          if (isEmpty(userStorage?.[address]?.[chain_id])) {
-            delete userStorage[address][chain_id];
+        if (Object.hasOwn(userStorage, address)) {
+          for (const chainId in userStorage[address]) {
+            // Chain isEmpty Check
+            if (isEmpty(userStorage?.[address]?.[chainId])) {
+              delete userStorage[address][chainId];
+            }
           }
-        }
 
-        // Address isEmpty Check
-        if (isEmpty(userStorage?.[address])) {
-          delete userStorage[address];
+          // Address isEmpty Check
+          if (isEmpty(userStorage?.[address])) {
+            delete userStorage[address];
+          }
         }
       }
     } catch (err) {
-      console.error(
-        `Error deleting HAL notifications for uuids ${uuids.join(', ')}:`,
+      log.error(
+        `Error deleting on-chain notifications for uuids ${uuids.join(', ')}:`,
         err,
       );
       throw err;
@@ -183,21 +186,14 @@ export class OnChainNotificationsService {
     userStorage: UserStorage,
     bearerToken: string,
   ): Promise<OnChainRawNotification[]> {
-    const triggerIds = [];
-
-    for (const address in userStorage) {
-      if (address !== 'v') {
-        for (const chain_id in userStorage[address]) {
-          for (const uuid in userStorage[address][chain_id]) {
-            const trigger = userStorage[address][chain_id][uuid];
-            const isEnabled = trigger.e;
-            if (isEnabled) {
-              triggerIds.push(uuid);
-            }
-          }
+    const triggerIds = utils.traverseUserStorageTriggers(userStorage, {
+      mapTrigger: (t) => {
+        if (!t.enabled) {
+          return undefined;
         }
-      }
-    }
+        return t.id;
+      },
+    });
 
     if (triggerIds.length === 0) {
       return [];
@@ -209,7 +205,7 @@ export class OnChainNotificationsService {
       try {
         const response = await MetamaskNotificationsUtils.makeApiCall(
           bearerToken,
-          this.LIST_NOTIFICATIONS_ENDPOINT(page),
+          NOTIFICATION_API_LIST_ENDPOINT_PAGE_QUERY(page),
           'POST',
           { trigger_ids: triggerIds },
         );
@@ -244,7 +240,7 @@ export class OnChainNotificationsService {
         }
       } catch (err) {
         log.error(
-          `Error fetching HAL notifications for trigger IDs ${triggerIds.join(
+          `Error fetching on-chain notifications for trigger IDs ${triggerIds.join(
             ', ',
           )}:`,
           err,
@@ -276,7 +272,7 @@ export class OnChainNotificationsService {
     try {
       const response = await MetamaskNotificationsUtils.makeApiCall(
         bearerToken,
-        this.MARK_ALL_AS_READ_ENDPOINT,
+        NOTIFICATION_API_MARK_ALL_AS_READ_ENDPOINT,
         'POST',
         { ids: notificationIds },
       );
@@ -288,7 +284,7 @@ export class OnChainNotificationsService {
         );
       }
     } catch (err) {
-      console.error('Error marking notifications as read:', err);
+      log.error('Error marking notifications as read:', err);
       throw err;
     }
   }

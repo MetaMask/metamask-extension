@@ -14,8 +14,8 @@ import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
   TRIGGER_TYPES,
   TRIGGER_TYPES_GROUPS,
-} from '../../../../shared/constants/metamask-notifications';
-import { USER_STORAGE_VERSION_KEY } from '../../../../shared/constants/user-storage';
+} from './constants/notification-schema';
+import { USER_STORAGE_VERSION_KEY } from './constants/constants';
 import type {
   UserStorage,
   UserStorageEntryKeys,
@@ -596,7 +596,7 @@ export class MetamaskNotificationsController extends BaseController<
       // All the triggers created are set
       // as not enabled
       if (userStorage?.[USER_STORAGE_VERSION_KEY] === undefined) {
-        userStorage = this.metamaskNotificationUtils.buildUserStorage(
+        userStorage = this.metamaskNotificationUtils.initializeUserStorage(
           accounts.map((account) => ({ address: account })),
           false,
         );
@@ -929,11 +929,6 @@ export class MetamaskNotificationsController extends BaseController<
    * @throws {Error} If there's an issue fetching the notifications or if required credentials are missing.
    */
   public async fetchAndUpdateMetamaskNotifications() {
-    if (!this.state.isMetamaskNotificationsEnabled) {
-      log.info('Metamask Notifications are not enabled.');
-      return;
-    }
-
     try {
       // Check if userStorage already exists
       const storageKey = this.getStorageKey();
@@ -947,14 +942,11 @@ export class MetamaskNotificationsController extends BaseController<
         throw new Error();
       }
 
-      // Fetch Feature Announcement Notifications
-      let rawFeatureAnnouncementNotifications: FeatureAnnouncementRawNotification[] = [];
-      if (this.state.isFeatureAnnouncementsEnabled) {
-        rawFeatureAnnouncementNotifications =
-          await this.featureAnnouncementsService
-            .getFeatureAnnouncementNotifications()
-            .catch(() => []);
-      }
+      // Fetch Feature Announcement Notifications regardless of authentication
+      const rawFeatureAnnouncementNotifications =
+        await this.featureAnnouncementsService
+          .getFeatureAnnouncementNotifications()
+          .catch(() => []);
 
       let rawOnChainNotifications: OnChainRawNotification[] = [];
       if (bearerToken && storageKey) {

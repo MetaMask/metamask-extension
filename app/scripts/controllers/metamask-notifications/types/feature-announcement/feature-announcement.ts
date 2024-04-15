@@ -1,4 +1,4 @@
-import type { TRIGGER_TYPES } from '../../../../../../shared/constants/metamask-notifications';
+import type { TRIGGER_TYPES } from '../../constants/notification-schema';
 import type { TypeFeatureAnnouncement } from './type-feature-announcement';
 
 export type { TypeFeatureAnnouncement };

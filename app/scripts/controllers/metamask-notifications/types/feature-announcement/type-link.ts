@@ -1,12 +1,12 @@
-import type { Entry, EntryFieldTypes } from 'contentful';
+import type { Entry } from 'contentful';
 
-export interface TypeLinkFields {
+export type TypeLinkFields = {
   fields: {
-    linkText: EntryFieldTypes.Text;
-    linkUrl: EntryFieldTypes.Text;
-    isExternal: EntryFieldTypes.Boolean;
+    linkText: string;
+    linkUrl: string;
+    isExternal: boolean;
   };
   contentTypeId: 'link';
-}
+};
 
 export type TypeLink = Entry<TypeLinkFields, 'WITHOUT_UNRESOLVABLE_LINKS'>;

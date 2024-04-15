@@ -1,12 +1,12 @@
-import type { Entry, EntryFieldTypes } from 'contentful';
+import type { Entry } from 'contentful';
 
-export interface TypeActionFields {
+export type TypeActionFields = {
   fields: {
-    actionText: EntryFieldTypes.Text;
-    actionUrl: EntryFieldTypes.Text;
-    isExternal: EntryFieldTypes.Boolean;
+    actionText: string;
+    actionUrl: string;
+    isExternal: boolean;
   };
   contentTypeId: 'action';
-}
+};
 
 export type TypeAction = Entry<TypeActionFields, 'WITHOUT_UNRESOLVABLE_LINKS'>;

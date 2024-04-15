@@ -1,11 +1,11 @@
 import type {
   SUPPORTED_CHAINS,
   TRIGGER_TYPES,
-} from '../../../../../../shared/constants/metamask-notifications';
+} from '../../constants/notification-schema';
 import type {
   USER_STORAGE_VERSION_KEY,
   USER_STORAGE_VERSION,
-} from '../../../../../../shared/constants/user-storage';
+} from '../../constants/constants';
 
 export type UserStorage = {
   /**

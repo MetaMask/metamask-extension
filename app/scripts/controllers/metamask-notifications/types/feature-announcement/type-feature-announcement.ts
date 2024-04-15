@@ -2,11 +2,11 @@ import type { Entry, EntryFieldTypes } from 'contentful';
 import type { TypeActionFields } from './type-action';
 import type { TypeLinkFields } from './type-link';
 
-interface ImageFields {
+export type ImageFields = {
   fields: {
-    title?: EntryFieldTypes.Text;
-    description?: EntryFieldTypes.Text;
-    file?: EntryFieldTypes.Object<{
+    title?: string;
+    description?: string;
+    file?: {
       url: string;
       fileName: string;
       contentType: string;
@@ -17,12 +17,12 @@ interface ImageFields {
           height: number;
         };
       };
-    }>;
+    };
   };
   contentTypeId: 'Image';
-}
+};
 
-export interface TypeFeatureAnnouncementFields {
+export type TypeFeatureAnnouncementFields = {
   fields: {
     title: EntryFieldTypes.Text;
     id: EntryFieldTypes.Symbol;
@@ -34,7 +34,7 @@ export interface TypeFeatureAnnouncementFields {
     action?: EntryFieldTypes.EntryLink<TypeActionFields>;
   };
   contentTypeId: 'productAnnouncement';
-}
+};
 
 export type TypeFeatureAnnouncement = Entry<
   TypeFeatureAnnouncementFields,

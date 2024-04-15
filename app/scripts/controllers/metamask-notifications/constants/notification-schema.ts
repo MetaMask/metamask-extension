@@ -1,5 +1,3 @@
-import { CHAIN_IDS } from './network';
-
 export enum TRIGGER_TYPES {
   FEATURES_ANNOUNCEMENT = 'features_announcement',
   METAMASK_SWAP_COMPLETED = 'metamask_swap_completed',
@@ -26,13 +24,13 @@ export enum TRIGGER_TYPES_GROUPS {
 }
 
 const chains = {
-  ETHEREUM: `${parseInt(CHAIN_IDS.MAINNET, 16)}`,
-  OPTIMISM: `${parseInt(CHAIN_IDS.OPTIMISM, 16)}`,
-  BSC: `${parseInt(CHAIN_IDS.BSC, 16)}`,
-  POLYGON: `${parseInt(CHAIN_IDS.POLYGON, 16)}`,
-  ARBITRUM: `${parseInt(CHAIN_IDS.ARBITRUM, 16)}`,
-  AVALANCHE: `${parseInt(CHAIN_IDS.AVALANCHE, 16)}`,
-  LINEA: `${parseInt(CHAIN_IDS.LINEA_MAINNET, 16)}`,
+  ETHEREUM: '1',
+  OPTIMISM: '10',
+  BSC: '56',
+  POLYGON: '137',
+  ARBITRUM: '42161',
+  AVALANCHE: '43114',
+  LINEA: '59144',
 };
 
 export const SUPPORTED_CHAINS = [
@@ -45,11 +43,16 @@ export const SUPPORTED_CHAINS = [
   chains.LINEA,
 ];
 
-export interface Trigger {
+export type Trigger = {
   supported_chains: (typeof SUPPORTED_CHAINS)[number][];
-}
+};
 
-export const TRIGGERS: Partial<Record<TRIGGER_TYPES, Trigger>> = {
+type OnChainTriggerTypes = Exclude<
+  TRIGGER_TYPES,
+  TRIGGER_TYPES.FEATURES_ANNOUNCEMENT
+>;
+
+export const TRIGGERS: Record<OnChainTriggerTypes, Trigger> = {
   [TRIGGER_TYPES.METAMASK_SWAP_COMPLETED]: {
     supported_chains: [
       chains.ETHEREUM,
@@ -129,6 +132,9 @@ export const TRIGGERS: Partial<Record<TRIGGER_TYPES, Trigger>> = {
     supported_chains: [chains.ETHEREUM],
   },
   [TRIGGER_TYPES.LIDO_WITHDRAWAL_COMPLETED]: {
+    supported_chains: [chains.ETHEREUM],
+  },
+  [TRIGGER_TYPES.LIDO_STAKE_READY_TO_BE_WITHDRAWN]: {
     supported_chains: [chains.ETHEREUM],
   },
 };

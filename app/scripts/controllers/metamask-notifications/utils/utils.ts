@@ -1,22 +1,22 @@
-/* eslint-disable camelcase */
 import log from 'loglevel';
 import { v4 as uuidv4 } from 'uuid';
 import type { UserStorage } from '../types/user-storage/user-storage';
 import {
   USER_STORAGE_VERSION_KEY,
   USER_STORAGE_VERSION,
-} from '../../../../../shared/constants/user-storage';
+} from '../constants/constants';
 import {
   TRIGGER_TYPES,
   TRIGGER_TYPES_GROUPS,
   TRIGGERS,
-} from '../../../../../shared/constants/metamask-notifications';
+} from '../constants/notification-schema';
 
 export type NotificationTrigger = {
   id: string;
   chainId: string;
   kind: string;
   address: string;
+  enabled: boolean;
 };
 
 type MapTriggerFn<Result> = (
@@ -88,17 +88,20 @@ export class MetamaskNotificationsUtils {
   };
 
   /**
-   * Builds and returns a user storage object for the given accounts and state.
+   * Create a completely new user storage object with the given accounts and state.
    * This method initializes the user storage with a version key and iterates over each account to populate it with triggers.
    * Each trigger is associated with supported chains, and for each chain, a unique identifier (UUID) is generated.
    * The trigger object contains a kind (`k`) indicating the type of trigger and an enabled state (`e`).
    * The kind and enabled state are stored with abbreviated keys to reduce the JSON size.
    *
+   * This is used primarily for creating a new user storage (e.g. when first signing in/enabling notification profile syncing),
+   * caution is needed in case you need to remove triggers that you don't want (due to notification setting filters)
+   *
    * @param accounts - An array of account objects, each optionally containing an address.
    * @param state - A boolean indicating the initial enabled state for all triggers in the user storage.
    * @returns A `UserStorage` object populated with triggers for each account and chain.
    */
-  public buildUserStorage = (
+  public initializeUserStorage = (
     accounts: { address?: string }[],
     state: boolean,
   ): UserStorage => {
@@ -115,18 +118,20 @@ export class MetamaskNotificationsUtils {
         userStorage[address] = {};
       }
 
-      Object.entries(TRIGGERS).forEach(([trigger, { supported_chains }]) => {
-        supported_chains.forEach((chain) => {
-          if (!userStorage[address]?.[chain]) {
-            userStorage[address][chain] = {};
-          }
+      Object.entries(TRIGGERS).forEach(
+        ([trigger, { supported_chains: supportedChains }]) => {
+          supportedChains.forEach((chain) => {
+            if (!userStorage[address]?.[chain]) {
+              userStorage[address][chain] = {};
+            }
 
-          userStorage[address][chain][uuidv4()] = {
-            k: trigger as TRIGGER_TYPES, // use 'k' instead of 'kind' to reduce the json weigh
-            e: state, // use 'e' instead of 'enabled' to reduce the json weigh
-          };
-        });
-      });
+            userStorage[address][chain][uuidv4()] = {
+              k: trigger as TRIGGER_TYPES, // use 'k' instead of 'kind' to reduce the json weight
+              e: state, // use 'e' instead of 'enabled' to reduce the json weight
+            };
+          });
+        },
+      );
     });
 
     return userStorage;
@@ -158,18 +163,21 @@ export class MetamaskNotificationsUtils {
       if (options?.address && address !== options.address) {
         continue;
       }
-      // eslint-disable-next-line guard-for-in
-      for (const chain_id in userStorage[address]) {
-        for (const uuid in userStorage[address]?.[chain_id]) {
-          if (uuid) {
-            const mappedTrigger = mapTrigger({
-              id: uuid,
-              kind: userStorage[address]?.[chain_id]?.[uuid]?.k,
-              chainId: chain_id,
-              address,
-            });
-            if (mappedTrigger) {
-              triggers.push(mappedTrigger);
+
+      for (const chainId in userStorage[address]) {
+        if (Object.hasOwn(userStorage[address], chainId)) {
+          for (const uuid in userStorage[address][chainId]) {
+            if (uuid) {
+              const mappedTrigger = mapTrigger({
+                id: uuid,
+                kind: userStorage[address]?.[chainId]?.[uuid]?.k,
+                chainId,
+                address,
+                enabled: userStorage[address]?.[chainId]?.[uuid]?.e ?? false,
+              });
+              if (mappedTrigger) {
+                triggers.push(mappedTrigger);
+              }
             }
           }
         }
@@ -415,22 +423,24 @@ export class MetamaskNotificationsUtils {
    * This method ensures that each supported trigger type exists for each chain associated with the account.
    * If a trigger type does not exist for a chain, it creates a new trigger with a unique UUID.
    *
-   * @param account - The account address for which to upsert triggers. The address is normalized to lowercase.
+   * @param _account - The account address for which to upsert triggers. The address is normalized to lowercase.
    * @param userStorage - The user storage object to be updated with new or existing triggers.
    * @returns The updated user storage object with upserted triggers for the specified account.
    */
   public upsertAddressTriggers(
-    account: string,
+    _account: string,
     userStorage: UserStorage,
   ): UserStorage {
     // Ensure the account exists in userStorage
-    // eslint-disable-next-line no-param-reassign
-    account = account.toLowerCase();
+    const account = _account.toLowerCase();
     userStorage[account] = userStorage[account] || {};
 
     // Iterate over each trigger and its supported chains
-    for (const [trigger, { supported_chains }] of Object.entries(TRIGGERS)) {
-      for (const chain of supported_chains) {
+    for (const [
+      trigger,
+      { supported_chains: supportedChains },
+    ] of Object.entries(TRIGGERS)) {
+      for (const chain of supportedChains) {
         // Ensure the chain exists for the account
         userStorage[account][chain] = userStorage[account][chain] || {};
 
@@ -494,7 +504,7 @@ export class MetamaskNotificationsUtils {
    *
    * @param userStorage - The user storage object.
    * @param address - The user's address.
-   * @param chain_id - The chain ID.
+   * @param chainId - The chain ID.
    * @param uuid - The unique identifier for the trigger.
    * @param enabled - The new enabled status.
    * @returns The updated user storage object.
@@ -502,12 +512,12 @@ export class MetamaskNotificationsUtils {
   static toggleUserStorageTriggerStatus(
     userStorage: UserStorage,
     address: string,
-    chain_id: string,
+    chainId: string,
     uuid: string,
     enabled: boolean,
   ): UserStorage {
-    if (userStorage?.[address]?.[chain_id]?.[uuid]) {
-      userStorage[address][chain_id][uuid].e = enabled;
+    if (userStorage?.[address]?.[chainId]?.[uuid]) {
+      userStorage[address][chainId][uuid].e = enabled;
     }
 
     return userStorage;
