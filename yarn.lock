@@ -6970,9 +6970,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@open-rpc/test-coverage@npm:^1.3.0":
-  version: 1.3.0
-  resolution: "@open-rpc/test-coverage@npm:1.3.0"
+"@open-rpc/test-coverage@portal:/Users/shanejonas/code/open-rpc/test-coverage::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@open-rpc/test-coverage@portal:/Users/shanejonas/code/open-rpc/test-coverage::locator=metamask-crx%40workspace%3A."
   dependencies:
     "@open-rpc/schema-utils-js": "npm:^1.16.2"
     "@types/isomorphic-fetch": "npm:0.0.35"
@@ -6984,10 +6984,9 @@ __metadata:
     json-schema-faker: "npm:^0.5.0-rcv.29"
     lodash: "npm:^4.17.20"
   bin:
-    open-rpc-test-coverage: bin/cli.js
-  checksum: c619bf53ad1d750febf7923a8a6eb6e62193518df20b4b1cd60af55e2d8f95ee06a8e732c1ad183916ae43c811aa1beb334e1a899af8f15a16bcc26d8614ef3c
+    open-rpc-test-coverage: ./bin/cli.js
   languageName: node
-  linkType: hard
+  linkType: soft
 
 "@pkgjs/parseargs@npm:^0.11.0":
   version: 0.11.0
