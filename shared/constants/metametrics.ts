@@ -614,8 +614,6 @@ export enum MetaMetricsEventName {
   TokenHidden = 'Token Hidden',
   TokenImportCanceled = 'Token Import Canceled',
   TokenImportClicked = 'Token Import Clicked',
-  NumberImportedTokens = 'Number Imported Token',
-  NumberHiddenAutoDetectedTokens = 'Number Hidden Auto Detected Tokens',
   UseNativeCurrencyAsPrimaryCurrency = 'Use Native Currency as Primary Currency',
   WalletSetupStarted = 'Wallet Setup Selected',
   WalletSetupCanceled = 'Wallet Setup Canceled',

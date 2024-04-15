@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import TokenList from '../token-list';
@@ -126,41 +126,7 @@ const AssetList = ({ onClickAsset }) => {
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
   ///: END:ONLY_INCLUDE_IF
 
-  const trackDetectedTokens = useCallback(() => {
-    if (detectedTokens.length > 0) {
-      trackEvent({
-        event: MetaMetricsEventName.NumberHiddenAutoDetectedTokens,
-        category: MetaMetricsEventCategory.Navigation,
-        properties: {
-          chain_id: chainId,
-          locale: currentLocale,
-          network: nickname,
-          referrer: ORIGIN_METAMASK,
-          number: detectedTokens.length,
-        },
-      });
-    }
-  }, [detectedTokens, chainId, currentLocale, nickname, trackEvent]);
-
-  const trackImportedTokensWithBalance = useCallback(() => {
-    if (tokensWithBalances.length > 0) {
-      trackEvent({
-        event: MetaMetricsEventName.NumberImportedTokens,
-        category: MetaMetricsEventCategory.Navigation,
-        properties: {
-          chain_id: chainId,
-          locale: currentLocale,
-          network: nickname,
-          referrer: ORIGIN_METAMASK,
-          number: tokensWithBalances.length,
-        },
-      });
-    }
-  }, [tokensWithBalances, chainId, currentLocale, nickname, trackEvent]);
-
   useEffect(() => {
-    trackDetectedTokens();
-    trackImportedTokensWithBalance();
     if (shouldShowBuy) {
       trackEvent({
         event: MetaMetricsEventName.EmptyBuyBannerDisplayed,
