@@ -171,6 +171,7 @@ import {
   TEST_NETWORK_TICKER_MAP,
   NetworkStatus,
 } from '../../shared/constants/network';
+import { ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS } from '../../shared/constants/smartTransactions';
 import {
   HardwareDeviceNames,
   LedgerTransportTypes,
@@ -212,6 +213,12 @@ import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { convertNetworkId } from '../../shared/modules/network.utils';
 import {
+  getIsSmartTransaction,
+  getFeatureFlagsByChainId,
+  getSmartTransactionsOptInStatus,
+  getCurrentChainSupportsSmartTransactions,
+} from '../../shared/modules/selectors';
+import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
   ///: END:ONLY_INCLUDE_IF
@@ -234,6 +241,7 @@ import {
   getAdditionalSignArguments as getAdditionalSignArgumentsMMI,
 } from './lib/transaction/mmi-hooks';
 ///: END:ONLY_INCLUDE_IF
+import { submitSmartTransactionHook } from './lib/transaction/smart-transactions';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/keyring-snaps-permissions';
 ///: END:ONLY_INCLUDE_IF
@@ -516,7 +524,6 @@ export default class MetamaskController extends EventEmitter {
       initState: initState.PreferencesController,
       initLangCode: opts.initLangCode,
       messenger: preferencesMessenger,
-      tokenListController: this.tokenListController,
       provider: this.provider,
       networkConfigurations: this.networkController.state.networkConfigurations,
       onKeyringStateChange: (listener) =>
@@ -1604,6 +1611,15 @@ export default class MetamaskController extends EventEmitter {
           () => listener(),
         );
       },
+      pendingTransactions: {
+        isResubmitEnabled: () => {
+          const state = this._getMetaMaskState();
+          return !(
+            getSmartTransactionsOptInStatus(state) &&
+            getCurrentChainSupportsSmartTransactions(state)
+          );
+        },
+      },
       provider: this.provider,
       hooks: {
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -1621,6 +1637,7 @@ export default class MetamaskController extends EventEmitter {
         beforePublish: beforeTransactionPublishMMI.bind(this),
         getAdditionalSignArguments: getAdditionalSignArgumentsMMI.bind(this),
         ///: END:ONLY_INCLUDE_IF
+        publish: this._publishSmartTransactionHook.bind(this),
       },
       sign: (...args) => this.keyringController.signTransaction(...args),
       state: initState.TransactionController,
@@ -1794,6 +1811,11 @@ export default class MetamaskController extends EventEmitter {
           this.gasFeeController.fetchGasFeeEstimates.bind(
             this.gasFeeController,
           ),
+        getLayer1GasFee: this.txController.getLayer1GasFee.bind(
+          this.txController,
+        ),
+        getNetworkClientId: () =>
+          this.networkController.state.selectedNetworkClientId,
         trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),
@@ -1809,18 +1831,19 @@ export default class MetamaskController extends EventEmitter {
           networkControllerMessenger,
           'NetworkController:stateChange',
         ),
-        getNonceLock: this.txController.nonceTracker.getNonceLock.bind(
-          this.txController.nonceTracker,
-        ),
+        getNonceLock: this.txController.getNonceLock.bind(this.txController),
         confirmExternalTransaction:
           this.txController.confirmExternalTransaction.bind(this.txController),
+        getTransactions: this.txController.getTransactions.bind(
+          this.txController,
+        ),
         provider: this.provider,
         trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),
       },
       {
-        supportedChainIds: [CHAIN_IDS.MAINNET, CHAIN_IDS.GOERLI],
+        supportedChainIds: ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS,
       },
       initState.SmartTransactionsController,
     );
@@ -2218,12 +2241,19 @@ export default class MetamaskController extends EventEmitter {
     this.accountTracker.start();
     this.txController.startIncomingTransactionPolling();
     this.tokenDetectionController.enable();
-    if (this.preferencesController.store.getState().useCurrencyRateCheck) {
+
+    const preferencesControllerState =
+      this.preferencesController.store.getState();
+
+    const { useCurrencyRateCheck } = preferencesControllerState;
+
+    if (useCurrencyRateCheck) {
       this.currencyRateController.startPollingByNetworkClientId(
         this.networkController.state.selectedNetworkClientId,
       );
     }
-    if (this.preferencesController.store.getState().useTokenDetection) {
+
+    if (this.#isTokenListPollingRequired(preferencesControllerState)) {
       this.tokenListController.start();
     }
   }
@@ -2232,10 +2262,17 @@ export default class MetamaskController extends EventEmitter {
     this.accountTracker.stop();
     this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
-    if (this.preferencesController.store.getState().useCurrencyRateCheck) {
+
+    const preferencesControllerState =
+      this.preferencesController.store.getState();
+
+    const { useCurrencyRateCheck } = preferencesControllerState;
+
+    if (useCurrencyRateCheck) {
       this.currencyRateController.stopAllPolling();
     }
-    if (this.preferencesController.store.getState().useTokenDetection) {
+
+    if (this.#isTokenListPollingRequired(preferencesControllerState)) {
       this.tokenListController.stop();
       this.tokenRatesController.stop();
     }
@@ -2496,25 +2533,11 @@ export default class MetamaskController extends EventEmitter {
   setupControllerEventSubscriptions() {
     let lastSelectedAddress;
 
-    this.preferencesController.store.subscribe(async (state) => {
-      const { currentLocale } = state;
-
-      const { chainId } = this.networkController.state.providerConfig;
-      await updateCurrentLocale(currentLocale);
-
-      if (state.incomingTransactionsPreferences?.[chainId]) {
-        this.txController.startIncomingTransactionPolling();
-      } else {
-        this.txController.stopIncomingTransactionPolling();
-      }
-
-      // TODO: Remove once the preferences controller has been replaced with the core monorepo implementation
-      this.controllerMessenger.publish(
-        'PreferencesController:stateChange',
-        state,
-        [],
-      );
-    });
+    this.preferencesController.store.subscribe(
+      previousValueComparator((prevState, currState) => {
+        this.#onPreferencesControllerStateChange(currState, prevState);
+      }, this.preferencesController.store.getState()),
+    );
 
     this.controllerMessenger.subscribe(
       `${this.accountsController.name}:selectedAccountChange`,
@@ -2987,6 +3010,12 @@ export default class MetamaskController extends EventEmitter {
       setActiveNetwork: (networkConfigurationId) => {
         return this.networkController.setActiveNetwork(networkConfigurationId);
       },
+      setNetworkClientIdForDomain: (origin, networkClientId) => {
+        return this.selectedNetworkController.setNetworkClientIdForDomain(
+          origin,
+          networkClientId,
+        );
+      },
       rollbackToPreviousProvider:
         networkController.rollbackToPreviousProvider.bind(networkController),
       removeNetworkConfiguration:
@@ -3102,6 +3131,8 @@ export default class MetamaskController extends EventEmitter {
       // AppStateController
       setLastActiveTime:
         appStateController.setLastActiveTime.bind(appStateController),
+      setCurrentExtensionPopupId:
+        appStateController.setCurrentExtensionPopupId.bind(appStateController),
       setDefaultHomeActiveTabName:
         appStateController.setDefaultHomeActiveTabName.bind(appStateController),
       setConnectedStatusPopoverHasBeenShown:
@@ -3217,6 +3248,7 @@ export default class MetamaskController extends EventEmitter {
         txController.updatePreviousGasParams.bind(txController),
       abortTransactionSigning:
         txController.abortTransactionSigning.bind(txController),
+      getLayer1GasFee: txController.getLayer1GasFee.bind(txController),
 
       // decryptMessageController
       decryptMessage: this.decryptMessageController.decryptMessage.bind(
@@ -3427,10 +3459,6 @@ export default class MetamaskController extends EventEmitter {
         swapsController.setSwapsQuotesPollingLimitEnabled.bind(swapsController),
 
       // Smart Transactions
-      setSmartTransactionsOptInStatus:
-        smartTransactionsController.setOptInState.bind(
-          smartTransactionsController,
-        ),
       fetchSmartTransactionFees: smartTransactionsController.getFees.bind(
         smartTransactionsController,
       ),
@@ -5566,6 +5594,14 @@ export default class MetamaskController extends EventEmitter {
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
       getTransaction: (id) =>
         this.txController.state.transactions.find((tx) => tx.id === id),
+      getIsSmartTransaction: () => {
+        return getIsSmartTransaction(this._getMetaMaskState());
+      },
+      getSmartTransactionByMinedTxHash: (txHash) => {
+        return this.smartTransactionsController.getSmartTransactionByMinedTxHash(
+          txHash,
+        );
+      },
     };
     return {
       ...controllerActions,
@@ -6012,5 +6048,80 @@ export default class MetamaskController extends EventEmitter {
       'TransactionController:transactionStatusUpdated',
       { updatedTransactionMeta },
     );
+  }
+
+  _publishSmartTransactionHook(transactionMeta) {
+    const state = this._getMetaMaskState();
+    const isSmartTransaction = getIsSmartTransaction(state);
+    if (!isSmartTransaction) {
+      // Will cause TransactionController to publish to the RPC provider as normal.
+      return { transactionHash: undefined };
+    }
+    const featureFlags = getFeatureFlagsByChainId(state);
+    return submitSmartTransactionHook({
+      transactionMeta,
+      transactionController: this.txController,
+      smartTransactionsController: this.smartTransactionsController,
+      controllerMessenger: this.controllerMessenger,
+      isSmartTransaction,
+      featureFlags,
+    });
+  }
+
+  _getMetaMaskState() {
+    return {
+      metamask: this.getState(),
+    };
+  }
+
+  async #onPreferencesControllerStateChange(currentState, previousState) {
+    const { currentLocale } = currentState;
+    const { chainId } = this.networkController.state.providerConfig;
+
+    await updateCurrentLocale(currentLocale);
+
+    if (currentState.incomingTransactionsPreferences?.[chainId]) {
+      this.txController.startIncomingTransactionPolling();
+    } else {
+      this.txController.stopIncomingTransactionPolling();
+    }
+
+    this.#checkTokenListPolling(currentState, previousState);
+
+    // TODO: Remove once the preferences controller has been replaced with the core monorepo implementation
+    this.controllerMessenger.publish(
+      'PreferencesController:stateChange',
+      currentState,
+      [],
+    );
+  }
+
+  #checkTokenListPolling(currentState, previousState) {
+    const previousEnabled = this.#isTokenListPollingRequired(previousState);
+    const newEnabled = this.#isTokenListPollingRequired(currentState);
+
+    if (previousEnabled === newEnabled) {
+      return;
+    }
+
+    this.tokenListController.updatePreventPollingOnNetworkRestart(!newEnabled);
+
+    if (newEnabled) {
+      log.debug('Started token list controller polling');
+      this.tokenListController.start();
+    } else {
+      log.debug('Stopped token list controller polling');
+      this.tokenListController.clearingTokenListData();
+      this.tokenListController.stop();
+    }
+  }
+
+  #isTokenListPollingRequired(preferencesControllerState) {
+    const { useTokenDetection, useTransactionSimulations, preferences } =
+      preferencesControllerState ?? {};
+
+    const { petnamesEnabled } = preferences ?? {};
+
+    return useTokenDetection || petnamesEnabled || useTransactionSimulations;
   }
 }
