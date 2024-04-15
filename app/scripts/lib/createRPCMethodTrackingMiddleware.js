@@ -24,8 +24,7 @@ import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 
 /**
  * These types determine how the method tracking middleware handles incoming
- * requests based on the method name. There are three options right now but
- * the types could be expanded to cover other options in the future.
+ * requests based on the method name.
  */
 const RATE_LIMIT_TYPES = {
   TIMEOUT: 'timeout',
@@ -53,6 +52,7 @@ const RATE_LIMIT_MAP = {
   [MESSAGE_TYPE.ETH_CHAIN_ID]: RATE_LIMIT_TYPES.BLOCKED,
   [MESSAGE_TYPE.ETH_ACCOUNTS]: RATE_LIMIT_TYPES.BLOCKED,
   [MESSAGE_TYPE.LOG_WEB3_SHIM_USAGE]: RATE_LIMIT_TYPES.BLOCKED,
+  [MESSAGE_TYPE.GET_PROVIDER_STATE]: RATE_LIMIT_TYPES.BLOCKED,
 };
 
 /**
