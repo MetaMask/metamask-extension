@@ -522,6 +522,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: getLeftIcon(IconName.Search),
     weight: 4,
   }),
+  ///: END:ONLY_INCLUDE_IF
   [EndowmentPermissions['endowment:signature-insight']]: ({
     t,
     permissionValue,
@@ -560,7 +561,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
 
     return result;
   },
-  ///: END:ONLY_INCLUDE_IF
+
   [UNKNOWN_PERMISSION]: ({ t, permissionName }) => ({
     label: t('permission_unknown', [permissionName ?? 'undefined']),
     leftIcon: getLeftIcon(IconName.Question),

@@ -59,7 +59,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: 'yarn'
@@ -83,7 +83,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: 'yarn'
@@ -117,7 +117,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: 'yarn'
