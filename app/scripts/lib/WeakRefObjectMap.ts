@@ -1,5 +1,5 @@
-type WeakRefObject<T extends Record<string, object>> = {
-  [P in keyof T]: WeakRef<T[P]>;
+type WeakRefObject<RecordType extends Record<string, object>> = {
+  [P in keyof RecordType]: WeakRef<RecordType[P]>;
 };
 
 /**
@@ -18,13 +18,13 @@ type WeakRefObject<T extends Record<string, object>> = {
  * referenced so that they can be garbage collected if/when a dapp connection ends without effective cleanup.
  */
 
-export class WeakRefObjectMap<T extends Record<string, object>>
-  implements Map<string, T>
+export class WeakRefObjectMap<RecordType extends Record<string, object>>
+  implements Map<string, RecordType>
 {
   /**
    * Internal map to store keys and their corresponding weakly referenced object values.
    */
-  private map: Map<string, WeakRefObject<T>>;
+  private map: Map<string, WeakRefObject<RecordType>>;
 
   constructor() {
     this.map = new Map();
@@ -38,24 +38,24 @@ export class WeakRefObjectMap<T extends Record<string, object>>
    * @param value - The value to store under the specified key. Must be an object.
    * @returns The `WeakRefObjectMap` instance.
    */
-  set(key: string, value: T): this {
-    const weakRefValue: WeakRefObject<T> = {} as WeakRefObject<T>;
+  set(key: string, value: RecordType): this {
+    const weakRefValue: Partial<WeakRefObject<RecordType>> = {};
     for (const keyValue in value) {
       if (!Object.hasOwn(value, keyValue)) {
         continue;
       }
-      const item: T[typeof keyValue] = value[keyValue];
+      const item: RecordType[typeof keyValue] = value[keyValue];
       if (typeof item === 'object' && item !== null) {
         weakRefValue[keyValue] = new WeakRef(item);
       } else {
-        console.warn(
+        throw new Error(
           `Property ${String(
             keyValue,
           )} is not an object and cannot be weakly referenced.`,
         );
       }
     }
-    this.map.set(key, weakRefValue);
+    this.map.set(key, weakRefValue as WeakRefObject<RecordType>);
     return this;
   }
 
@@ -66,13 +66,13 @@ export class WeakRefObjectMap<T extends Record<string, object>>
    * @param key - The key whose associated value is to be returned.
    * @returns The dereferenced value associated with the key, or `undefined`.
    */
-  get(key: string): T | undefined {
+  get(key: string): RecordType | undefined {
     const weakRefValue = this.map.get(key);
     if (!weakRefValue) {
       return undefined;
     }
 
-    const deRefValue: T = {} as T;
+    const deRefValue: RecordType = {} as RecordType;
     for (const keyValue in weakRefValue) {
       if (!Object.hasOwn(weakRefValue, keyValue)) {
         continue;
@@ -130,8 +130,8 @@ export class WeakRefObjectMap<T extends Record<string, object>>
    * Returns a new iterator object that contains an array of `[key, value]` for each element in the map.
    * The values are dereferenced before being returned.
    */
-  entries(): IterableIterator<[string, T]> {
-    const entries: [string, T][] = [];
+  entries(): IterableIterator<[string, RecordType]> {
+    const entries: [string, RecordType][] = [];
     this.map.forEach((_, key) => {
       const derefValue = this.get(key);
       if (derefValue !== undefined) {
@@ -152,8 +152,8 @@ export class WeakRefObjectMap<T extends Record<string, object>>
    * Returns a new iterator object that contains the values for each element in the map.
    * The values are dereferenced before being returned.
    */
-  values(): IterableIterator<T> {
-    const values: T[] = [];
+  values(): IterableIterator<RecordType> {
+    const values: RecordType[] = [];
     this.map.forEach((_, key) => {
       const derefValue = this.get(key);
       if (derefValue !== undefined) {
@@ -167,7 +167,7 @@ export class WeakRefObjectMap<T extends Record<string, object>>
    * Returns a new iterator object that contains an array of `[key, value]` for each element in the map,
    * making the map itself iterable.
    */
-  [Symbol.iterator](): IterableIterator<[string, T]> {
+  [Symbol.iterator](): IterableIterator<[string, RecordType]> {
     return this.entries();
   }
 
@@ -193,7 +193,11 @@ export class WeakRefObjectMap<T extends Record<string, object>>
    * @param thisArg - Optional. Value to use as `this` when executing `callback`.
    */
   forEach(
-    callback: (value: T, key: string, map: Map<string, T>) => void,
+    callback: (
+      value: RecordType,
+      key: string,
+      map: Map<string, RecordType>,
+    ) => void,
     // this is an unbound method, so the this value is unknown.
     // Also the Map type this is based on uses any for this parameter as well.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
