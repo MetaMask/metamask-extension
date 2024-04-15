@@ -1468,7 +1468,8 @@ export const getConnectedSitesListWithNetworkInfo = createDeepEqualSelector(
         (network) => network.id === domains[siteKey],
       );
       // For the testnets, if we do not have an image, we will have a fallback string
-      sitesList[siteKey].networkIconUrl = connectedNetwork.rpcPrefs?.imageUrl || ''
+      sitesList[siteKey].networkIconUrl =
+        connectedNetwork.rpcPrefs?.imageUrl || '';
       sitesList[siteKey].networkName = connectedNetwork.nickname;
     });
     return sitesList;
