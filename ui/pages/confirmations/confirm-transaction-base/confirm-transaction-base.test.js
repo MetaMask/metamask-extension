@@ -576,6 +576,7 @@ describe('Confirm Transaction Base', () => {
 
   it('handleMMISubmit calls sendTransaction correctly and then showCustodianDeepLink', async () => {
     const state = {
+      ...baseStore,
       appState: {
         ...baseStore.appState,
         gasLoadingAnimationIsShowing: false,
