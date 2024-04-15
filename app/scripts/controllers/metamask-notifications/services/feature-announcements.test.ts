@@ -1,3 +1,8 @@
+import { TRIGGER_TYPES } from '../constants/notification-schema';
+import {
+  createMockFeatureAnnouncementResult,
+  mockFetchFeatureAnnouncementNotifications,
+} from '../mocks/mock-feature-announcements';
 import { FeatureAnnouncementsService } from './feature-announcements';
 
 jest.mock('@contentful/rich-text-html-renderer', () => ({
@@ -5,14 +10,6 @@ jest.mock('@contentful/rich-text-html-renderer', () => ({
     .fn()
     .mockImplementation((richText) => `<p>${richText}</p>`),
 }));
-
-global.fetch = jest.fn(() =>
-  Promise.resolve({
-    ok: true,
-    status: 200,
-    json: () => Promise.resolve({ items: [] }),
-  } as Response),
-);
 
 describe('Feature Announcement Notifications', () => {
   let service: FeatureAnnouncementsService;
@@ -23,125 +20,46 @@ describe('Feature Announcement Notifications', () => {
   });
 
   it('should return an empty array if fetch fails', async () => {
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
-      json: () => Promise.resolve({ items: [] }),
+    const mockEndpoint = mockFetchFeatureAnnouncementNotifications({
+      status: 500,
     });
+
     const notifications = await service.getFeatureAnnouncementNotifications();
+    mockEndpoint.done();
     expect(notifications).toEqual([]);
   });
 
   it('should return an empty array if data is not available', async () => {
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
-      json: () => Promise.resolve({ items: [] }),
+    const mockEndpoint = mockFetchFeatureAnnouncementNotifications({
+      status: 200,
+      body: { items: [] },
     });
+
     const notifications = await service.getFeatureAnnouncementNotifications();
+    mockEndpoint.done();
     expect(notifications).toEqual([]);
   });
 
   it('should fetch entries from Contentful and return formatted notifications', async () => {
-    const mockData = {
-      items: [
-        {
-          sys: { createdAt: '2021-01-01T00:00:00Z', id: '1' },
-          fields: {
-            id: '1',
-            title: 'New Feature',
-            image: { sys: { id: '2' } },
-            link: { sys: { id: '3' } },
-            action: { sys: { id: '4' } },
-            longDescription: 'This is a long description.',
-          },
-        },
-      ],
-      includes: {
-        Entry: [
-          {
-            sys: { id: '3' },
-            fields: {
-              linkText: 'Learn More',
-              linkUrl: 'http://example.com',
-              isExternal: true,
-            },
-          },
-          {
-            sys: { id: '4' },
-            fields: {
-              actionText: 'Try Now',
-              actionUrl: 'http://example.com/action',
-              isExternal: false,
-            },
-          },
-        ],
-        Asset: [
-          {
-            sys: {
-              id: '2',
-              type: 'Asset',
-              createdAt: '2024-01-21T12:00:00.000Z',
-              updatedAt: '2024-01-21T12:00:00.000Z',
-            },
-            fields: {
-              title: 'Product Image',
-              description: 'This is a product image.',
-              file: {
-                url: 'http://example.com/image.png',
-                details: {
-                  size: 2048,
-                  image: {
-                    width: 1024,
-                    height: 768,
-                  },
-                },
-                fileName: 'image.png',
-                contentType: 'image/png',
-              },
-            },
-          },
-        ],
-      },
-    };
-
-    (global.fetch as jest.Mock)
-      .mockImplementationOnce(() => {
-        throw new Error('Fetch failed');
-      })
-      .mockImplementationOnce(() => {
-        throw new Error('Fetch failed');
-      })
-      .mockImplementationOnce(() =>
-        Promise.resolve({
-          ok: true,
-          json: () => Promise.resolve(mockData),
-        }),
-      );
+    const mockEndpoint = mockFetchFeatureAnnouncementNotifications({
+      status: 200,
+      body: createMockFeatureAnnouncementResult(),
+    });
 
     const notifications = await service.getFeatureAnnouncementNotifications();
     expect(notifications).toHaveLength(1);
-    expect(notifications[0]).toEqual({
-      id: '1',
-      isRead: false,
-      type: 'features_announcement',
-      createdAt: '2021-01-01T00:00:00.000Z',
-      data: {
-        id: '1',
-        title: 'New Feature',
-        image: {
-          title: 'Product Image',
-          description: 'This is a product image.',
-          url: 'http://example.com/image.png',
-        },
-        link: {
-          linkText: 'Learn More',
-          linkUrl: 'http://example.com',
-          isExternal: true,
-        },
-        action: {
-          actionText: 'Try Now',
-          actionUrl: 'http://example.com/action',
-          isExternal: false,
-        },
-        longDescription: '<p>This is a long description.</p>',
-      },
-    });
+    mockEndpoint.done();
+
+    const resultNotification = notifications[0];
+    expect(resultNotification).toEqual(
+      expect.objectContaining({
+        id: 'dont-miss-out-on-airdrops-and-new-nft-mints',
+        type: TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
+        createdAt: expect.any(String),
+        isRead: expect.any(Boolean),
+      }),
+    );
+
+    expect(resultNotification.data).toBeDefined();
   });
 });

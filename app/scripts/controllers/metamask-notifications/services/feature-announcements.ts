@@ -1,6 +1,6 @@
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
 import log from 'loglevel';
-import type { Entry } from 'contentful';
+import type { Entry, Asset } from 'contentful';
 import type {
   FeatureAnnouncementRawNotification,
   TypeFeatureAnnouncement,
@@ -16,10 +16,10 @@ const spaceId = process.env.CONTENTFUL_ACCESS_SPACE_ID || '';
 const accessToken = process.env.CONTENTFUL_ACCESS_TOKEN || '';
 export const FEATURE_ANNOUNCEMENT_URL = `https://cdn.contentful.com/spaces/${spaceId}/environments/master/entries?access_token=${accessToken}&content_type=productAnnouncement&include=10`;
 
-type ContentfulResult = {
+export type ContentfulResult = {
   includes?: {
     Entry?: Entry[];
-    Asset?: Entry[];
+    Asset?: Asset[];
   };
   items?: TypeFeatureAnnouncement[];
 };
@@ -67,7 +67,7 @@ export class FeatureAnnouncementsService {
     const findIncludedItem = (sysId: string) => {
       const item =
         data?.includes?.Entry?.find((i: Entry) => i?.sys?.id === sysId) ||
-        data?.includes?.Asset?.find((i: Entry) => i?.sys?.id === sysId);
+        data?.includes?.Asset?.find((i: Asset) => i?.sys?.id === sysId);
       return item ? item?.fields : null;
     };
 
