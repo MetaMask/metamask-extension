@@ -1,9 +1,9 @@
 import { createSelector } from 'reselect';
 
-interface AppState {
+type AppState = {
   isSignedIn: boolean;
   metametricsId: string;
-}
+};
 
 export const getMetametricsId = createSelector(
   [(state: AppState) => state.metametricsId],

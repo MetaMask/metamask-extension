@@ -1,8 +1,8 @@
 import { createSelector } from 'reselect';
 
-interface AppState {
+type AppState = {
   isProfileSyncingEnabled: boolean;
-}
+};
 
 export const selectIsProfileSyncingEnabled = createSelector(
   [(state: AppState) => state.isProfileSyncingEnabled],
