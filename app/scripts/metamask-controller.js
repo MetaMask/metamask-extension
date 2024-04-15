@@ -2237,6 +2237,9 @@ export default class MetamaskController extends EventEmitter {
     this.txController.startIncomingTransactionPolling();
     this.tokenDetectionController.enable();
 
+    // trigger start detecting nfts
+    this.nftDetectionController.start();
+
     const preferencesControllerState =
       this.preferencesController.store.getState();
 
@@ -2257,6 +2260,9 @@ export default class MetamaskController extends EventEmitter {
     this.accountTracker.stop();
     this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
+
+    // stop nftdetection controller from polling
+    this.nftDetectionController.stop();
 
     const preferencesControllerState =
       this.preferencesController.store.getState();
