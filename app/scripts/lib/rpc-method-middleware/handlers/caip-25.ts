@@ -1,3 +1,5 @@
+import { CaipChainId, isCaipChainId, isCaipNamespace, parseCaipChainId } from "@metamask/utils"
+
 // {scopeString} (conditional) = EITHER a namespace identifier string registered in the CASA namespaces registry to authorize multiple chains with identical properties OR a single, valid [CAIP-2][] identifier, i.e., a specific chain_id within a namespace.
 // scopes (conditional) = An array of 0 or more [CAIP-2][] chainIds. For each entry in scopes, all the other properties of the scopeObject apply, but in some cases, such as when members of accounts are specific to 1 or more chains in scopes, they may be ignored or filtered where inapplicable; namespace-specific rules for organizing or interpreting properties in multi-scope MAY be specified in a namespace-specific profile of this specification.
   // This property MUST NOT be present if the object is already scoped to a single chainId in the string value above.
@@ -11,8 +13,14 @@
 // rpcEndpoints (optional) = An array of URLs that each dereference to an RPC endpoints for routing requests within this scope.
 // These are ordered from most authoritative to least, i.e. priority SHOULD be given to endpoints in the order given, as per the CAIP-211 profile for that namespace, if one has been specified.
 
+//     "eip155": {
+//       "scopes": ["eip155:1", "eip155:137"],
+//       "methods": ["eth_sendTransaction", "eth_signTransaction", "eth_sign", "get_balance", "personal_sign"],
+//       "notifications": ["accountsChanged", "chainChanged"]
+//     },
+
 export interface ScopeObject {
-  scopes?: string[] // CaipChainId[]
+  scopes?: CaipChainId[] // CaipChainId[]
   methods: string[]
   notifications: string[]
   accounts?: string[] //CaipAccountId
@@ -21,6 +29,46 @@ export interface ScopeObject {
 }
 
 // Make this an assert
-export const isValidScopeObject = (scopeString: string, scopeObject: ScopeObject) => Boolean {
+export const isValidScopeObject = (scopeString: string, scopeObject: ScopeObject): boolean => {
+  const isNamespaceScoped = isCaipNamespace(scopeString)
+  const isChainScoped = isCaipChainId(scopeString)
 
+  if(!isNamespaceScoped && !isChainScoped) {
+    return false
+  }
+
+  const {scopes, methods, notifications, accounts} = scopeObject
+
+  // These assume that the namespace has a notion of chainIds
+  if(isChainScoped && scopes) {
+    return false
+  }
+  if(isNamespaceScoped && scopes) {
+    const namespace = scopeString
+    const areScopesValid = scopes.every((scope) => {
+      try {
+        return parseCaipChainId(scope).namespace === namespace
+      } catch (e) {
+        // parsing caipChainId failed
+        console.log(e)
+        return false
+      }
+    })
+
+    if (!areScopesValid) {
+      return false
+    }
+  }
+
+  const areMethodsValid = methods.every((method) => typeof method === 'string' && method !== '')
+  if (!areMethodsValid) {
+    return false
+  }
+
+  const areNotificationsValid = notifications.every((notification) => typeof notification === 'string' && notification !== '')
+  if (!areNotificationsValid) {
+    return false
+  }
+
+  return true
 }
