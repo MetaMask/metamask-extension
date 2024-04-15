@@ -131,8 +131,10 @@ let globalRateLimitCount = 0;
  * @param {Function} opts.getDeviceModel
  * @param {RestrictedControllerMessenger} opts.snapAndHardwareMessenger
  * @param {AppStateController} opts.appStateController
- * @param opts.globalRateLimitTimeout
- * @param opts.globalRateLimitMaxAmount
+ * @param {number} [opts.globalRateLimitTimeout] - time, in milliseconds, of the sliding
+ * time window that should limit the number of method calls tracked to globalRateLimitMaxAmount.
+ * @param {number} [opts.globalRateLimitMaxAmount] - max number of method calls that should
+ * tracked within the globalRateLimitTimeout time window.
  * @returns {Function}
  */
 ///: END:ONLY_INCLUDE_IF
