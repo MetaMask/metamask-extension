@@ -276,14 +276,6 @@ export const AccountListItem = ({
           justifyContent={JustifyContent.spaceBetween}
         >
           <Box display={Display.Flex} alignItems={AlignItems.center}>
-            {connectedAvatar ? (
-              <AvatarFavicon
-                size={Size.XS}
-                src={connectedAvatar}
-                name={connectedAvatarName}
-                className="multichain-account-list-item__avatar"
-              />
-            ) : null}
             <Text variant={TextVariant.bodySm} color={Color.textAlternative}>
               {shortenAddress(toChecksumHexAddress(identity.address))}
             </Text>
