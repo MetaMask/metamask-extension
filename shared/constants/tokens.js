@@ -51,7 +51,4 @@ export const NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX =
   /^[0-9]{1,}([,.][0-9]{1,})?$/u;
 export const DECIMAL_REGEX = /\.(\d*)/u;
 
-export const VALID_SYMBOL_LENGTH = {
-  min: 1,
-  max: 100,
-};
+export const MAX_SYMBOL_LENGTH = 100;

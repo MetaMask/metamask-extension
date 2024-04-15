@@ -76,7 +76,7 @@ import {
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import {
   STATIC_MAINNET_TOKEN_LIST,
-  VALID_SYMBOL_LENGTH,
+  MAX_SYMBOL_LENGTH,
 } from '../../../../shared/constants/tokens';
 import {
   AssetType,
@@ -256,8 +256,8 @@ export const ImportTokensModal = ({ onClose }) => {
     const symbolLength = symbol.length;
     let symbolError = null;
 
-    if (symbolLength < VALID_SYMBOL_LENGTH.min || symbolLength > VALID_SYMBOL_LENGTH.max) {
-      symbolError = t('invalidSymbolLength').replace('$1', VALID_SYMBOL_LENGTH.max);
+    if (symbolLength < 1 || symbolLength > MAX_SYMBOL_LENGTH) {
+      symbolError = t('invalidSymbolLength').replace('$1', MAX_SYMBOL_LENGTH);
     }
 
     setCustomSymbol(symbol);
