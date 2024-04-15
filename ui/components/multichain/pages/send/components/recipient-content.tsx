@@ -19,6 +19,7 @@ import { Display } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AssetPickerAmount } from '../../..';
 import { decimalToHex } from '../../../../../../shared/modules/conversion.utils';
+import { getIsSwapsChain } from '../../../../../selectors';
 import { SendHexData, SendPageRow, QuoteCard } from '.';
 
 export const SendPageRecipientContent = ({
@@ -46,9 +47,10 @@ export const SendPageRecipientContent = ({
     isSwapQuoteLoading,
   } = useSelector(getCurrentDraftTransaction);
 
-  const isSendingToken = [AssetType.token, AssetType.native].includes(
-    sendAsset.type,
-  );
+  const isSwapsChain = useSelector(getIsSwapsChain);
+  const isSwapAllowed =
+    isSwapsChain &&
+    [AssetType.token, AssetType.native].includes(sendAsset.type);
 
   const bestQuote = useSelector(getBestQuote);
 
@@ -106,11 +108,11 @@ export const SendPageRecipientContent = ({
       ) : null}
       <SendPageRow>
         <AssetPickerAmount
-          asset={isSendingToken ? receiveAsset : sendAsset}
-          sendingAsset={isSendingToken ? sendAsset : undefined}
+          asset={isSwapAllowed ? receiveAsset : sendAsset}
+          sendingAsset={isSwapAllowed ? sendAsset : undefined}
           onAssetChange={useCallback(
-            (newAsset) => onAssetChange(newAsset, isSendingToken),
-            [onAssetChange, isSendingToken],
+            (newAsset) => onAssetChange(newAsset, isSwapAllowed),
+            [onAssetChange, isSwapAllowed],
           )}
           isAmountLoading={isLoadingInitialQuotes}
           amount={amount}
