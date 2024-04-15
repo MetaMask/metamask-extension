@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import { useSelector } from 'react-redux';
-import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../helpers/utils/util';
 
@@ -58,6 +57,7 @@ import {
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { TEST_NETWORKS } from '../../../../shared/constants/network';
 import { ConnectedStatus } from '../connected-status/connected-status';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -76,6 +76,8 @@ export const AccountListItem = ({
   isHidden = false,
   currentTabOrigin,
   isActive = false,
+  startAccessory,
+  onActionClick,
 }) => {
   const t = useI18nContext();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
@@ -93,7 +95,9 @@ export const AccountListItem = ({
   const { totalWeiBalance, orderedTokenList } = useAccountTotalFiatBalance(
     identity.address,
   );
-
+  const mappedOrderedTokenList = orderedTokenList.map((item) => ({
+    avatarValue: item.iconUrl,
+  }));
   let balanceToTranslate = totalWeiBalance;
   if (showFiat) {
     balanceToTranslate = identity.balance;
@@ -129,6 +133,7 @@ export const AccountListItem = ({
       className={classnames('multichain-account-list-item', {
         'multichain-account-list-item--selected': selected,
         'multichain-account-list-item--connected': Boolean(connectedAvatar),
+        'multichain-account-list-item--clickable': Boolean(onClick),
       })}
       ref={itemRef}
       onClick={() => {
@@ -139,6 +144,11 @@ export const AccountListItem = ({
         }
       }}
     >
+      {startAccessory ? (
+        <Box marginInlineEnd={2} marginTop={1}>
+          {startAccessory}
+        </Box>
+      ) : null}
       {selected && (
         <Box
           className="multichain-account-list-item__selected-indicator"
@@ -278,8 +288,8 @@ export const AccountListItem = ({
               {shortenAddress(toChecksumHexAddress(identity.address))}
             </Text>
           </Box>
-          {orderedTokenList.length > 1 ? (
-            <AvatarGroup members={orderedTokenList} limit={4} />
+          {mappedOrderedTokenList.length > 1 ? (
+            <AvatarGroup members={mappedOrderedTokenList} limit={4} />
           ) : (
             <Box
               display={Display.Flex}
@@ -369,6 +379,8 @@ export const AccountListItem = ({
           closeMenu={closeMenu}
           disableAccountSwitcher={isSingleAccount}
           isOpen={accountOptionsMenuOpen}
+          onActionClick={onActionClick}
+          activeTabOrigin={currentTabOrigin}
         />
       )}
     </Box>
@@ -416,6 +428,10 @@ AccountListItem.propTypes = {
    */
   closeMenu: PropTypes.func,
   /**
+   * Function to set account name to show disconnect toast when an account is disconnected
+   */
+  onActionClick: PropTypes.func,
+  /**
    * File location of the avatar icon
    */
   connectedAvatar: PropTypes.string,
@@ -443,6 +459,10 @@ AccountListItem.propTypes = {
    * Represents active accounts
    */
   isActive: PropTypes.bool,
+  /**
+   * Represents start accessory
+   */
+  startAccessory: PropTypes.node,
 };
 
 AccountListItem.displayName = 'AccountListItem';

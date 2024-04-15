@@ -47,8 +47,10 @@ const initialState = {
     showExtensionInFullSizeView: false,
     showFiatInTestnets: false,
     showTestNetworks: false,
+    smartTransactionsOptInStatus: false,
     useNativeCurrencyAsPrimaryCurrency: true,
     petnamesEnabled: true,
+    featureNotificationsEnabled: false,
   },
   firstTimeFlowType: null,
   completedOnboarding: false,
@@ -353,12 +355,14 @@ export function isNotEIP1559Network(state) {
  * Function returns true if network details are fetched and it is found to support EIP-1559
  *
  * @param state
+ * @param networkClientId - The optional network client ID to check for EIP-1559 support. Defaults to the currently selected network.
  */
-export function isEIP1559Network(state) {
+export function isEIP1559Network(state, networkClientId) {
   const selectedNetworkClientId = getSelectedNetworkClientId(state);
   return (
-    state.metamask.networksMetadata?.[selectedNetworkClientId].EIPS[1559] ===
-    true
+    state.metamask.networksMetadata?.[
+      networkClientId ?? selectedNetworkClientId
+    ].EIPS[1559] === true
   );
 }
 
@@ -400,6 +404,19 @@ export function getEstimatedGasFeeTimeBounds(state) {
   return state.metamask.estimatedGasFeeTimeBounds;
 }
 
+export function getGasEstimateTypeByChainId(state, chainId) {
+  return state.metamask.gasFeeEstimatesByChainId?.[chainId]?.gasEstimateType;
+}
+
+export function getGasFeeEstimatesByChainId(state, chainId) {
+  return state.metamask.gasFeeEstimatesByChainId?.[chainId]?.gasFeeEstimates;
+}
+
+export function getEstimatedGasFeeTimeBoundsByChainId(state, chainId) {
+  return state.metamask.gasFeeEstimatesByChainId?.[chainId]
+    ?.estimatedGasFeeTimeBounds;
+}
+
 export function getIsGasEstimatesLoading(state) {
   const networkAndAccountSupports1559 =
     checkNetworkAndAccountSupports1559(state);
@@ -420,8 +437,38 @@ export function getIsGasEstimatesLoading(state) {
   return isGasEstimatesLoading;
 }
 
+export function getIsGasEstimatesLoadingByChainId(
+  state,
+  { chainId, networkClientId },
+) {
+  const networkAndAccountSupports1559 = checkNetworkAndAccountSupports1559(
+    state,
+    networkClientId,
+  );
+  const gasEstimateType = getGasEstimateTypeByChainId(state, chainId);
+
+  // We consider the gas estimate to be loading if the gasEstimateType is
+  // 'NONE' or if the current gasEstimateType cannot be supported by the current
+  // network
+  const isEIP1559TolerableEstimateType =
+    gasEstimateType === GasEstimateTypes.feeMarket ||
+    gasEstimateType === GasEstimateTypes.ethGasPrice;
+  const isGasEstimatesLoading =
+    gasEstimateType === GasEstimateTypes.none ||
+    (networkAndAccountSupports1559 && !isEIP1559TolerableEstimateType) ||
+    (!networkAndAccountSupports1559 &&
+      gasEstimateType === GasEstimateTypes.feeMarket);
+
+  return isGasEstimatesLoading;
+}
+
 export function getIsNetworkBusy(state) {
   const gasFeeEstimates = getGasFeeEstimates(state);
+  return gasFeeEstimates?.networkCongestion >= NetworkCongestionThresholds.busy;
+}
+
+export function getIsNetworkBusyByChainId(state, chainId) {
+  const gasFeeEstimates = getGasFeeEstimatesByChainId(state, chainId);
   return gasFeeEstimates?.networkCongestion >= NetworkCongestionThresholds.busy;
 }
 
@@ -494,8 +541,4 @@ export function doesUserHaveALedgerAccount(state) {
   return state.metamask.keyrings.some((kr) => {
     return kr.type === KeyringType.ledger;
   });
-}
-
-export function isLineaMainnetNetworkReleased(state) {
-  return state.metamask.isLineaMainnetReleased;
 }

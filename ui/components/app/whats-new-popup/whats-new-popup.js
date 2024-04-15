@@ -12,13 +12,13 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   NOTIFICATION_BLOCKAID_DEFAULT,
   ///: END:ONLY_INCLUDE_IF
-  NOTIFICATION_BUY_SELL_BUTTON,
   NOTIFICATION_DROP_LEDGER_FIREFOX,
-  NOTIFICATION_OPEN_BETA_SNAPS,
   NOTIFICATION_PETNAMES,
   NOTIFICATION_U2F_LEDGER_LIVE,
   getTranslatedUINotifications,
   NOTIFICATION_STAKING_PORTFOLIO,
+  NOTIFICATION_PORTFOLIO_V2,
+  NOTIFICATION_SIMULATIONS,
 } from '../../../../shared/notifications';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -53,18 +53,6 @@ function getActionFunctionById(id, history) {
     [NOTIFICATION_DROP_LEDGER_FIREFOX]: () => {
       updateViewedNotifications({ [NOTIFICATION_DROP_LEDGER_FIREFOX]: true });
     },
-    [NOTIFICATION_OPEN_BETA_SNAPS]: () => {
-      updateViewedNotifications({ [NOTIFICATION_OPEN_BETA_SNAPS]: true });
-      global.platform.openTab({
-        url: 'https://metamask.io/snaps/',
-      });
-    },
-    [NOTIFICATION_BUY_SELL_BUTTON]: () => {
-      updateViewedNotifications({ [NOTIFICATION_BUY_SELL_BUTTON]: true });
-      global.platform.openTab({
-        url: 'https://portfolio.metamask.io/sell/build-quote',
-      });
-    },
     [NOTIFICATION_U2F_LEDGER_LIVE]: () => {
       updateViewedNotifications({ [NOTIFICATION_U2F_LEDGER_LIVE]: true });
     },
@@ -78,6 +66,15 @@ function getActionFunctionById(id, history) {
     ///: END:ONLY_INCLUDE_IF
     [NOTIFICATION_PETNAMES]: () => {
       updateViewedNotifications({ [NOTIFICATION_PETNAMES]: true });
+    },
+    [NOTIFICATION_PORTFOLIO_V2]: () => {
+      updateViewedNotifications({ [NOTIFICATION_PORTFOLIO_V2]: true });
+      global.platform.openTab({
+        url: 'https://portfolio.metamask.io/',
+      });
+    },
+    [NOTIFICATION_SIMULATIONS]: () => {
+      updateViewedNotifications({ [NOTIFICATION_SIMULATIONS]: true });
     },
   };
 
@@ -297,14 +294,14 @@ export default function WhatsNewPopup({ onClose }) {
     24: renderFirstNotification,
     // This syntax is unusual, but very helpful here.  It's equivalent to `notificationRenderers[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
     [NOTIFICATION_DROP_LEDGER_FIREFOX]: renderFirstNotification,
-    [NOTIFICATION_OPEN_BETA_SNAPS]: renderFirstNotification,
-    [NOTIFICATION_BUY_SELL_BUTTON]: renderFirstNotification,
     [NOTIFICATION_U2F_LEDGER_LIVE]: renderFirstNotification,
     [NOTIFICATION_STAKING_PORTFOLIO]: renderFirstNotification,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     [NOTIFICATION_BLOCKAID_DEFAULT]: renderFirstNotification,
     ///: END:ONLY_INCLUDE_IF
     [NOTIFICATION_PETNAMES]: renderFirstNotification,
+    [NOTIFICATION_PORTFOLIO_V2]: renderFirstNotification,
+    [NOTIFICATION_SIMULATIONS]: renderFirstNotification,
   };
 
   return (

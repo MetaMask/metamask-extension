@@ -7,7 +7,9 @@
         "github.copilot",
         "github.copilot-chat",
         "ms-azuretools.vscode-docker",
-        "rvest.vs-code-prettier-eslint"
+        "rvest.vs-code-prettier-eslint",
+        "streetsidesoftware.code-spell-checker",
+        "DigitalBrainstem.javascript-ejs-support"
       ],
       "settings": {
         "editor.formatOnSave": true,

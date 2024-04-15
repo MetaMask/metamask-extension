@@ -112,10 +112,10 @@ describe('Incremental Security', function () {
         // should have the correct amount of eth
         let currencyDisplay = await driver.waitForSelector({
           css: '.currency-display-component__text',
-          text: '$1,700.00',
+          text: '1',
         });
         let balance = await currencyDisplay.getText();
-        assert.strictEqual(balance, '$1,700.00');
+        assert.strictEqual(balance, '1');
 
         // backs up the Secret Recovery Phrase
         // should show a backup reminder
@@ -163,11 +163,11 @@ describe('Incremental Security', function () {
         // should have the correct amount of eth
         currencyDisplay = await driver.waitForSelector({
           css: '.currency-display-component__text',
-          text: '$1,700.00',
+          text: '1',
         });
         balance = await currencyDisplay.getText();
 
-        assert.strictEqual(balance, '$1,700.00');
+        assert.strictEqual(balance, '1');
 
         // The previous currencyDisplay wait already serves as the guard here for the assertElementNotPresent
         await driver.assertElementNotPresent('.backup-notification');

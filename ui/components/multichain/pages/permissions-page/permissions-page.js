@@ -29,12 +29,11 @@ import {
 import {
   getOnboardedInThisUISession,
   getShowPermissionsTour,
-  getConnectedSitesList,
+  getConnectedSitesListWithNetworkInfo,
   getConnectedSnapsList,
 } from '../../../../selectors';
 import { Tab, Tabs } from '../../../ui/tabs';
 import { ProductTour } from '../../product-tour-popover';
-import { getURLHost } from '../../../../helpers/utils/util';
 import { hidePermissionsTour } from '../../../../store/actions';
 import { ConnectionListItem } from './connection-list-item';
 
@@ -45,7 +44,9 @@ export const PermissionsPage = () => {
   const history = useHistory();
   const headerRef = useRef();
   const [totalConnections, setTotalConnections] = useState(0);
-  const sitesConnectionsList = useSelector(getConnectedSitesList);
+  const sitesConnectionsList = useSelector(
+    getConnectedSitesListWithNetworkInfo,
+  );
   const snapsConnectionsList = useSelector(getConnectedSnapsList);
   const showPermissionsTour = useSelector(getShowPermissionsTour);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
@@ -66,7 +67,7 @@ export const PermissionsPage = () => {
   }, [totalConnections, sitesConnectionsList, snapsConnectionsList]);
 
   const handleConnectionClick = (connection) => {
-    const hostName = getURLHost(connection.origin);
+    const hostName = connection.origin;
     const safeEncodedHost = encodeURIComponent(hostName);
     history.push(`${CONNECTIONS}/${safeEncodedHost}`);
   };

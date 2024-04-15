@@ -135,6 +135,7 @@ module.exports = {
         path.resolve(__dirname, '.eslintrc.typescript-compat.js'),
       ],
       rules: {
+        '@typescript-eslint/no-explicit-any': 'error',
         // this rule is new, but we didn't use it before, so it's off now
         '@typescript-eslint/no-duplicate-enum-values': 'off',
         '@typescript-eslint/no-shadow': [
@@ -162,9 +163,9 @@ module.exports = {
         'import/namespace': 'off',
         'import/default': 'off',
         'import/no-named-as-default-member': 'off',
-        // Disabled due to incompatibility with Record<string, unknown>.
+        // Set to ban interfaces due to their incompatibility with Record<string, unknown>.
         // See: <https://github.com/Microsoft/TypeScript/issues/15300#issuecomment-702872440>
-        '@typescript-eslint/consistent-type-definitions': 'off',
+        '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
         // Modified to include the 'ignoreRestSiblings' option.
         // TODO: Migrate this rule change back into `@metamask/eslint-config`
         '@typescript-eslint/no-unused-vars': [
@@ -264,7 +265,6 @@ module.exports = {
       excludedFiles: [
         'app/scripts/controllers/app-state.test.js',
         'app/scripts/controllers/mmi-controller.test.js',
-        'app/scripts/controllers/detect-tokens.test.js',
         'app/scripts/controllers/permissions/**/*.test.js',
         'app/scripts/controllers/preferences.test.js',
         'app/scripts/lib/**/*.test.js',
@@ -295,11 +295,10 @@ module.exports = {
       files: [
         '**/__snapshots__/*.snap',
         'app/scripts/controllers/app-state.test.js',
-        'app/scripts/controllers/mmi-controller.test.js',
+        'app/scripts/controllers/mmi-controller.test.ts',
         'app/scripts/controllers/permissions/**/*.test.js',
         'app/scripts/controllers/preferences.test.js',
         'app/scripts/lib/**/*.test.js',
-        'app/scripts/controllers/detect-tokens.test.js',
         'app/scripts/metamask-controller.test.js',
         'app/scripts/migrations/*.test.js',
         'app/scripts/platforms/*.test.js',
