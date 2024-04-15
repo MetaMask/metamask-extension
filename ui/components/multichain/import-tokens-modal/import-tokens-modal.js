@@ -256,7 +256,7 @@ export const ImportTokensModal = ({ onClose }) => {
     const symbolLength = symbol.length;
     let symbolError = null;
 
-    if (symbolLength < VALID_SYMBOL_LENGTH.min || symbolLength >= VALID_SYMBOL_LENGTH.max) {
+    if (symbolLength < VALID_SYMBOL_LENGTH.min || symbolLength > VALID_SYMBOL_LENGTH.max) {
       symbolError = t('invalidSymbolLength').replace('$1', VALID_SYMBOL_LENGTH.max);
     }
 
