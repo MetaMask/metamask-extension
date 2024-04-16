@@ -233,7 +233,6 @@ class Driver {
    * @param {string | object} rawLocator - element locator to fill.
    * @param {string} input - The value to fill the element with.
    * @returns {Promise<WebElement>} Promise resolving to the filled element
-   *
    * @example <caption>Example to fill address in the send transaction screen</caption>
    *          await driver.fill(
    *                'input[data-testid="ens-input"]',
@@ -273,7 +272,6 @@ class Driver {
    * @param catchError - Optional parameter that determines whether errors during the wait should be caught and handled within the method
    * @returns {Promise} A promise that will be fulfilled after the specified number of milliseconds.
    * @throws {Error} Will throw an error if the condition is not met within the timeout period.
-   *
    * @example <caption>Example wait until a condition occurs</caption>
    *            await driver.wait(async () => {
    *              let info = await getBackupJson();
