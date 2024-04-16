@@ -27,6 +27,7 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
+import { defaultBuyableChains } from '../../../ducks/ramps/constants';
 import ConfirmTransactionBase from './confirm-transaction-base.container';
 
 jest.mock('../components/simulation-details/useSimulationMetrics');
@@ -209,6 +210,9 @@ const baseStore = {
   },
   appState: {
     sendInputCurrencySwitched: false,
+  },
+  ramps: {
+    buyableChains: defaultBuyableChains,
   },
 };
 
@@ -572,6 +576,7 @@ describe('Confirm Transaction Base', () => {
 
   it('handleMMISubmit calls sendTransaction correctly and then showCustodianDeepLink', async () => {
     const state = {
+      ...baseStore,
       appState: {
         ...baseStore.appState,
         gasLoadingAnimationIsShowing: false,

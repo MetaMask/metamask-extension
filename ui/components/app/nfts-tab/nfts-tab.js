@@ -17,7 +17,6 @@ import { useNftsCollections } from '../../../hooks/useNftsCollections';
 import {
   getCurrentNetwork,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  getIsBuyableChain,
   getShouldHideZeroBalanceTokens,
   getSelectedAccount,
   ///: END:ONLY_INCLUDE_IF
@@ -48,6 +47,7 @@ import {
   RampsCard,
 } from '../../multichain/ramps-card/ramps-card';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
+import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF
 
 export default function NftsTab() {
@@ -68,7 +68,7 @@ export default function NftsTab() {
     shouldHideZeroBalanceTokens,
   );
   const balanceIsZero = Number(totalFiatBalance) === 0;
-  const isBuyableChain = useSelector(getIsBuyableChain);
+  const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const showRampsCard = isBuyableChain && balanceIsZero;
   ///: END:ONLY_INCLUDE_IF
 

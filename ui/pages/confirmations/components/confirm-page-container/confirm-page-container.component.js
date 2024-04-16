@@ -45,12 +45,11 @@ import {
   getAccountName,
   getAddressBookEntry,
   getInternalAccounts,
-  getIsBuyableChain,
   getMetadataContractName,
   getNetworkIdentifier,
   getSwapsDefaultToken,
 } from '../../../../selectors';
-import useRamps from '../../../../hooks/experiences/useRamps';
+import useRamps from '../../../../hooks/useRamps/useRamps';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
@@ -60,6 +59,7 @@ import {
 ///: END:ONLY_INCLUDE_IF
 
 import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
+import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
@@ -122,7 +122,7 @@ const ConfirmPageContainer = (props) => {
   const [isShowingTxInsightWarnings, setIsShowingTxInsightWarnings] =
     useState(false);
   ///: END:ONLY_INCLUDE_IF
-  const isBuyableChain = useSelector(getIsBuyableChain);
+  const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const contact = useSelector((state) => getAddressBookEntry(state, toAddress));
   const networkIdentifier = useSelector(getNetworkIdentifier);
   const defaultToken = useSelector(getSwapsDefaultToken);
@@ -135,10 +135,6 @@ const ConfirmPageContainer = (props) => {
     getMetadataContractName(state, toAddress),
   );
 
-  // TODO: Move useRamps hook to the confirm-transaction-base parent component.
-  // TODO: openBuyCryptoInPdapp should be passed to this component as a custom prop.
-  // We try to keep this component for layout purpose only, we need to move this hook to the confirm-transaction-base parent
-  // component once it is converted to a functional component
   const { openBuyCryptoInPdapp } = useRamps();
 
   const isSetApproveForAll =

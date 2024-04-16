@@ -277,6 +277,8 @@ env:
     # Enables the notifications feature within the build:
   - NOTIFICATIONS: ''
 
+  - METAMASK_RAMP_API_BASE_URL: https://on-ramp-content.metaswap.codefi.network
+
   ###
   # Meta variables
   ###

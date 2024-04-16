@@ -16,9 +16,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import useRamps, {
-  RampsMetaMaskEntry,
-} from '../../../hooks/experiences/useRamps';
+import useRamps, { RampsMetaMaskEntry } from '../../../hooks/useRamps/useRamps';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
 

@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { Provider } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
 import configureStore from '../../store/store';
-import useRamps, { RampsMetaMaskEntry } from '../useRamps/useRamps';
+import useRamps, { RampsMetaMaskEntry } from './useRamps';
 
 const mockedMetametricsId = '0xtestMetaMetricsId';
 
@@ -15,17 +15,18 @@ let mockStoreState = {
   },
 };
 
-const wrapper = ({ children }) => (
+const wrapper: FC = ({ children }) => (
   <Provider store={configureStore(mockStoreState)}>{children}</Provider>
 );
 
 describe('useRamps', () => {
-  beforeEach(() => {
-    global.platform = { openTab: jest.fn() };
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
+  // mock the openTab function to test if it is called with the correct URL when opening the Pdapp
+  beforeAll(() => {
+    Object.defineProperty(global, 'platform', {
+      value: {
+        openTab: jest.fn(),
+      },
+    });
   });
 
   it('should default the metamask entry param when opening the buy crypto URL', () => {
