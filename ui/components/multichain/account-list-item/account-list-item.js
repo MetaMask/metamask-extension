@@ -11,7 +11,6 @@ import { ConnectedAccountsMenu } from '../connected-accounts-menu';
 import {
   AvatarAccount,
   AvatarAccountVariant,
-  AvatarFavicon,
   AvatarToken,
   AvatarTokenSize,
   Box,
@@ -70,7 +69,6 @@ export const AccountListItem = ({
   closeMenu,
   accountsCount,
   connectedAvatar,
-  connectedAvatarName,
   isPinned = false,
   menuType = AccountListItemMenuTypes.None,
   isHidden = false,
@@ -276,14 +274,6 @@ export const AccountListItem = ({
           justifyContent={JustifyContent.spaceBetween}
         >
           <Box display={Display.Flex} alignItems={AlignItems.center}>
-            {connectedAvatar ? (
-              <AvatarFavicon
-                size={Size.XS}
-                src={connectedAvatar}
-                name={connectedAvatarName}
-                className="multichain-account-list-item__avatar"
-              />
-            ) : null}
             <Text variant={TextVariant.bodySm} color={Color.textAlternative}>
               {shortenAddress(toChecksumHexAddress(identity.address))}
             </Text>
@@ -435,10 +425,6 @@ AccountListItem.propTypes = {
    * File location of the avatar icon
    */
   connectedAvatar: PropTypes.string,
-  /**
-   * Text used as the avatar alt text
-   */
-  connectedAvatarName: PropTypes.string,
   /**
    * Represents the type of menu to be rendered
    */
