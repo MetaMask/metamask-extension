@@ -4,10 +4,15 @@ import classnames from 'classnames';
 
 import { isHexString } from '@metamask/utils';
 import { addHexPrefix } from '../../../../../../app/scripts/lib/util';
-import { IS_FLASK, isValidDomainName } from '../../../../../helpers/utils/util';
+import {
+  IS_FLASK,
+  isValidDomainName,
+  shortenAddress,
+} from '../../../../../helpers/utils/util';
 import {
   isBurnAddress,
   isValidHexAddress,
+  toChecksumHexAddress,
 } from '../../../../../../shared/modules/hexstring-utils';
 import {
   ButtonIcon,
@@ -15,11 +20,14 @@ import {
   IconSize,
   AvatarAccount,
   AvatarAccountVariant,
+  Text,
 } from '../../../../../components/component-library';
 import {
   IconColor,
   Size,
   BackgroundColor,
+  TextColor,
+  TextVariant,
 } from '../../../../../helpers/constants/design-system';
 
 export default class DomainInput extends Component {
@@ -102,6 +110,11 @@ export default class DomainInput extends Component {
 
     const hasSelectedAddress = Boolean(selectedAddress);
 
+    const shortenedAddress =
+      selectedName && selectedAddress
+        ? shortenAddress(toChecksumHexAddress(selectedAddress))
+        : undefined;
+
     return (
       <div className={classnames('ens-input', className)}>
         <div
@@ -126,6 +139,15 @@ export default class DomainInput extends Component {
                 />
                 <div className="ens-input__selected-input__title">
                   {selectedName || selectedAddress}
+                  {shortenedAddress ? (
+                    <Text
+                      color={TextColor.textAlternative}
+                      variant={TextVariant.bodySm}
+                      ellipsis
+                    >
+                      {shortenedAddress}
+                    </Text>
+                  ) : null}
                 </div>
               </div>
               <ButtonIcon
