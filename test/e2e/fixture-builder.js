@@ -176,6 +176,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           showExtensionInFullSizeView: false,
           showFiatInTestnets: false,
           showTestNetworks: false,
+          smartTransactionsOptInStatus: false,
           useNativeCurrencyAsPrimaryCurrency: true,
           petnamesEnabled: true,
         },
@@ -302,6 +303,7 @@ function onboardingFixture() {
           showExtensionInFullSizeView: false,
           showFiatInTestnets: false,
           showTestNetworks: false,
+          smartTransactionsOptInStatus: false,
           useNativeCurrencyAsPrimaryCurrency: true,
           petnamesEnabled: true,
         },
@@ -345,6 +347,13 @@ function onboardingFixture() {
 }
 
 class FixtureBuilder {
+  /**
+   * Constructs a new instance of the FixtureBuilder class.
+   *
+   * @param {object} [options] - The options for the constructor.
+   * @param {boolean} [options.onboarding] - Indicates if onboarding is enabled.
+   * @param {string} [options.inputChainId] - The input chain ID.
+   */
   constructor({ onboarding = false, inputChainId = CHAIN_IDS.LOCALHOST } = {}) {
     this.fixture =
       onboarding === true ? onboardingFixture() : defaultFixture(inputChainId);

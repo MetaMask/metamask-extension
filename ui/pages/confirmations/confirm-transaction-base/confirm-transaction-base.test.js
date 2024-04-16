@@ -29,6 +29,8 @@ import {
 } from '../../../../shared/constants/security-provider';
 import ConfirmTransactionBase from './confirm-transaction-base.container';
 
+jest.mock('../components/simulation-details/useSimulationMetrics');
+
 const middleware = [thunk];
 
 setBackgroundConnection({
@@ -90,6 +92,7 @@ const baseStore = {
         chainId: '0x5',
         txParams: { ...mockTxParams },
         status: 'unapproved',
+        simulationData: {},
       },
     ],
     gasEstimateType: GasEstimateTypes.legacy,
@@ -287,6 +290,15 @@ describe('Confirm Transaction Base', () => {
         ...baseStore.send,
         hasSimulationError: true,
       },
+      metamask: {
+        ...baseStore.metamask,
+        transactions: [
+          {
+            ...baseStore.metamask.transactions[0],
+            simulationData: { error: {} },
+          },
+        ],
+      },
     };
 
     const { queryByText } = await render({ state });
@@ -466,12 +478,14 @@ describe('Confirm Transaction Base', () => {
       .fn()
       .mockResolvedValue(state.confirmTransaction.txData);
     const updateTransaction = jest.fn().mockResolvedValue();
+    const updateTransactionValue = jest.fn().mockResolvedValue();
     const showCustodianDeepLink = jest.fn();
     const setWaitForConfirmDeepLinkDialog = jest.fn();
 
     const props = {
       sendTransaction,
       updateTransaction,
+      updateTransactionValue,
       showCustodianDeepLink,
       setWaitForConfirmDeepLinkDialog,
       toAddress: mockPropsToAddress,

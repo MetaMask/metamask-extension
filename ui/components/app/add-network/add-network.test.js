@@ -27,6 +27,13 @@ jest.mock('../../../selectors', () => ({
   getTheme: () => 'light',
 }));
 
+jest.mock(
+  '../../../pages/confirmations/components/simulation-details/useBalanceChanges',
+  () => ({
+    useBalanceChanges: jest.fn(),
+  }),
+);
+
 const render = () => {
   const store = configureStore({
     metamask: {

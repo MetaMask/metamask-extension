@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { isValidAddress } from 'ethereumjs-util';
 
 import {
   ConfirmInfoRow,
@@ -23,7 +24,9 @@ const TypedSignInfo: React.FC = () => {
     return null;
   }
 
-  const { domain = {} } = JSON.parse(currentConfirmation?.msgParams?.data);
+  const { domain = {} } = JSON.parse(
+    currentConfirmation.msgParams.data as string,
+  );
 
   return (
     <>
@@ -34,11 +37,13 @@ const TypedSignInfo: React.FC = () => {
         marginBottom={4}
       >
         <ConfirmInfoRow label={t('requestFrom')} tooltip={t('requestFromInfo')}>
-          <ConfirmInfoRowUrl url={currentConfirmation?.msgParams?.origin} />
+          <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
         </ConfirmInfoRow>
-        <ConfirmInfoRow label={t('interactingWith')}>
-          <ConfirmInfoRowAddress address={domain.verifyingContract} />
-        </ConfirmInfoRow>
+        {isValidAddress(domain.verifyingContract) && (
+          <ConfirmInfoRow label={t('interactingWith')}>
+            <ConfirmInfoRowAddress address={domain.verifyingContract} />
+          </ConfirmInfoRow>
+        )}
       </Box>
       <Box
         backgroundColor={BackgroundColor.backgroundDefault}
@@ -48,7 +53,7 @@ const TypedSignInfo: React.FC = () => {
       >
         <ConfirmInfoRow label={t('message')}>
           <ConfirmInfoRowTypedSignData
-            data={currentConfirmation.msgParams?.data}
+            data={currentConfirmation.msgParams?.data as string}
           />
         </ConfirmInfoRow>
       </Box>

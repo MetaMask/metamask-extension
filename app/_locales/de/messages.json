@@ -2562,21 +2562,6 @@
   "notificationsMarkAllAsRead": {
     "message": "Alle als gelesen markieren"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "Mehr erfahren"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "🎉 Wir freuen uns sehr, die Open-Beta-Version von MetaMask Snaps zu präsentieren!"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "Personalisieren Sie Ihre Wallet mit Snaps, die von der Entwickler-Community erstellt wurden!"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "Snaps helfen Ihnen dabei, mehr aus MetaMask zu machen – wie z. B. Verbindungen mit anderen Netzwerken herzustellen, Transaktionseinblicke zu erlangen und benutzerdefinierte Benachrichtigungen zu erhalten."
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "Wir stellen vor: MetaMask Snaps"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 neue Tokens in diesem Konto gefunden.",
     "description": "$1 is the number of new tokens detected"
@@ -3495,12 +3480,6 @@
   "smartContracts": {
     "message": "Smart Contracts"
   },
-  "smartSwapsAreHere": {
-    "message": "Die Smart Swaps sind da!"
-  },
-  "smartSwapsDescription": {
-    "message": "MetaMask Swaps ist jetzt wesentlich intelligenter! Die Aktivierung von Smart Swaps wird es MetaMask erlauben, Ihre Swaps programmatisch zu optimieren, um zu helfen:"
-  },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Nicht genügend Gelder für einen Smart Swap."
   },
@@ -3779,18 +3758,6 @@
   },
   "strong": {
     "message": "Stark"
-  },
-  "stxBenefit1": {
-    "message": "Transaktionskosten minimieren"
-  },
-  "stxBenefit2": {
-    "message": "Transaktionsausfälle reduzieren"
-  },
-  "stxBenefit3": {
-    "message": "Steckengebliebene Transaktionen eliminieren"
-  },
-  "stxBenefit4": {
-    "message": "Front-Running verhindern"
   },
   "stxCancelled": {
     "message": "Swap wäre gescheitert"
@@ -4722,7 +4689,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "Zeige $1 bei $2",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "$1 auf Etherscan anzeigen",

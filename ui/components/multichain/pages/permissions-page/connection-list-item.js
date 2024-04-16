@@ -16,6 +16,8 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   AvatarFavicon,
+  AvatarNetwork,
+  AvatarNetworkSize,
   BadgeWrapper,
   Box,
   Icon,
@@ -25,6 +27,7 @@ import {
 } from '../../../component-library';
 import { getURLHost } from '../../../../helpers/utils/util';
 import SnapAvatar from '../../../app/snaps/snap-avatar/snap-avatar';
+import { getAvatarNetworkColor } from '../../../../helpers/utils/accounts';
 import { ConnectionListTooltip } from './connection-list-tooltip/connection-list-tooltip';
 
 export const ConnectionListItem = ({ connection, onClick }) => {
@@ -60,11 +63,14 @@ export const ConnectionListItem = ({ connection, onClick }) => {
         ) : (
           <BadgeWrapper
             badge={
-              <Icon
-                name={IconName.Global}
-                color={IconColor.iconDefault}
-                size={IconSize.Xs}
+              <AvatarNetwork
+                data-testid="connection-list-item__avatar-network-badge"
+                size={AvatarNetworkSize.Xs}
+                name={connection.networkName}
+                src={connection.networkIconUrl}
+                borderWidth={1}
                 borderColor={BackgroundColor.backgroundDefault}
+                backgroundColor={getAvatarNetworkColor(connection.networkName)}
               />
             }
           >

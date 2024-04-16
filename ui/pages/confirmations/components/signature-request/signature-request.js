@@ -13,11 +13,15 @@ import {
   resolvePendingApproval,
   completedTx,
   rejectPendingApproval,
+  dismissOpenSeaToBlockaidBanner,
 } from '../../../../store/actions';
 import {
   doesAddressRequireLedgerHidConnection,
   getSubjectMetadata,
   getTotalUnapprovedMessagesCount,
+  getHasDismissedOpenSeaToBlockaidBanner,
+  getIsNetworkSupportedByBlockaid,
+  getHasMigratedFromOpenSeaToBlockaid,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   accountsWithSendEtherInfoSelector,
   getSelectedAccount,
@@ -55,6 +59,7 @@ import {
   TextColor,
   TextVariant,
   Size,
+  Severity,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   IconColor,
   BackgroundColor,
@@ -68,6 +73,7 @@ import {
   ButtonLink,
   TagUrl,
   Text,
+  BannerAlert,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   Icon,
   IconName,
@@ -82,7 +88,7 @@ import { useMMICustodySignMessage } from '../../../../hooks/useMMICustodySignMes
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
 ///: END:ONLY_INCLUDE_IF
 
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
 ///: END:ONLY_INCLUDE_IF
 import Message from './signature-request-message';
@@ -90,7 +96,7 @@ import Footer from './signature-request-footer';
 
 const SignatureRequest = ({
   txData,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   warnings,
   ///: END:ONLY_INCLUDE_IF
 }) => {
@@ -132,7 +138,7 @@ const SignatureRequest = ({
   const { custodySignFn } = useMMICustodySignMessage();
   ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   const [isShowingSigInsightWarnings, setIsShowingSigInsightWarnings] =
     useState(false);
   ///: END:ONLY_INCLUDE_IF
@@ -208,6 +214,25 @@ const SignatureRequest = ({
     primaryType,
   } = parseMessage(data);
 
+  const hasMigratedFromOpenSeaToBlockaid = useSelector(
+    getHasMigratedFromOpenSeaToBlockaid,
+  );
+  const isNetworkSupportedByBlockaid = useSelector(
+    getIsNetworkSupportedByBlockaid,
+  );
+  const hasDismissedOpenSeaToBlockaidBanner = useSelector(
+    getHasDismissedOpenSeaToBlockaidBanner,
+  );
+
+  const showOpenSeaToBlockaidBannerAlert =
+    hasMigratedFromOpenSeaToBlockaid &&
+    !isNetworkSupportedByBlockaid &&
+    !hasDismissedOpenSeaToBlockaidBanner;
+
+  const handleCloseOpenSeaToBlockaidBannerAlert = () => {
+    dispatch(dismissOpenSeaToBlockaidBanner());
+  };
+
   return (
     <>
       <div className="signature-request">
@@ -229,6 +254,23 @@ const SignatureRequest = ({
             />
             ///: END:ONLY_INCLUDE_IF
           }
+          {showOpenSeaToBlockaidBannerAlert ? (
+            <BannerAlert
+              severity={Severity.Info}
+              title={t('openSeaToBlockaidTitle')}
+              description={t('openSeaToBlockaidDescription')}
+              actionButtonLabel={t('openSeaToBlockaidBtnLabel')}
+              actionButtonProps={{
+                href: 'https://snaps.metamask.io/transaction-insights',
+                externalLink: true,
+              }}
+              marginBottom={4}
+              marginLeft={4}
+              marginTop={4}
+              marginRight={4}
+              onClose={handleCloseOpenSeaToBlockaidBannerAlert}
+            />
+          ) : null}
           {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
             txData?.securityProviderResponse?.flagAsDangerous !==
               SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS) ||
@@ -331,7 +373,7 @@ const SignatureRequest = ({
         <Footer
           cancelAction={onCancel}
           signAction={() => {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+            ///: BEGIN:ONLY_INCLUDE_IF(snaps)
             if (warnings?.length >= 1) {
               return setIsShowingSigInsightWarnings(true);
             }
@@ -368,7 +410,7 @@ const SignatureRequest = ({
         ) : null}
       </div>
       {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+        ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       }
       {isShowingSigInsightWarnings && (
         <InsightWarnings
@@ -391,7 +433,7 @@ const SignatureRequest = ({
 
 SignatureRequest.propTypes = {
   txData: PropTypes.object,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   warnings: PropTypes.array,
   ///: END:ONLY_INCLUDE_IF
 };

@@ -2562,21 +2562,6 @@
   "notificationsMarkAllAsRead": {
     "message": "Επισήμανση όλων ως αναγνωσμένων"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "Μάθετε περισσότερα"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "🎉 Είμαστε ενθουσιασμένοι που ανακοινώνουμε την δοκιμαστική έναρξη του MetaMask Snaps!"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "Εξατομικεύστε το πορτοφόλι σας με snaps που δημιουργήθηκαν από την κοινότητα προγραμματιστών!"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "Τα Snaps σάς βοηθούν να κάνετε περισσότερα με το MetaMask — όπως τη σύνδεση σε περισσότερα δίκτυα, τη προβολή πληροφοριών συναλλαγών και τη λήψη προσαρμοσμένων ειδοποιήσεων."
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "Παρουσιάζουμε τα MetaMask Snaps"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 νέα tokens βρέθηκαν σε αυτόν τον λογαριασμό",
     "description": "$1 is the number of new tokens detected"
@@ -3495,12 +3480,6 @@
   "smartContracts": {
     "message": "Έξυπνα συμβόλαια"
   },
-  "smartSwapsAreHere": {
-    "message": "Οι Έξυπνες Ανταλλαγές είναι εδώ!"
-  },
-  "smartSwapsDescription": {
-    "message": "Οι Ανταλλαγές στο MetaMask μόλις έγιναν πολύ πιο έξυπνες! Η ενεργοποίηση των Έξυπνων Ανταλλαγών θα επιτρέψει στο MetaMask να βελτιστοποιήσει προγραμματιστικά τις Ανταλλαγές σας, ώστε να σας βοηθήσει:"
-  },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Δεν υπάρχουν αρκετά κεφάλαια για έξυπνες ανταλλαγές."
   },
@@ -3779,18 +3758,6 @@
   },
   "strong": {
     "message": "Ισχυρό"
-  },
-  "stxBenefit1": {
-    "message": "Ελαχιστοποίηση του κόστους συναλλαγών"
-  },
-  "stxBenefit2": {
-    "message": "Μείωση των αποτυχημένων συναλλαγών"
-  },
-  "stxBenefit3": {
-    "message": "Εξάλειψη των εμπλοκών στις συναλλαγές"
-  },
-  "stxBenefit4": {
-    "message": "Αποτροπή των προπορευόμενων συναλλαγών (front-running)"
   },
   "stxCancelled": {
     "message": "Η ανταλλαγή θα είχε αποτύχει"
@@ -4722,7 +4689,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "Προβολή $1 στο $2",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "Προβολή $1 στο Etherscan",
