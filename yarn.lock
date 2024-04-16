@@ -8676,15 +8676,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/test-runner@npm:^0.16.0":
-  version: 0.16.0
-  resolution: "@storybook/test-runner@npm:0.16.0"
+"@storybook/test-runner@npm:^0.15.2":
+  version: 0.15.2
+  resolution: "@storybook/test-runner@npm:0.15.2"
   dependencies:
     "@babel/core": "npm:^7.22.5"
     "@babel/generator": "npm:^7.22.5"
     "@babel/template": "npm:^7.22.5"
     "@babel/types": "npm:^7.22.5"
-    "@jest/types": "npm:^29.6.3"
     "@storybook/core-common": "npm:^7.0.0-beta.0 || ^7.0.0-rc.0 || ^7.0.0"
     "@storybook/csf": "npm:^0.1.1"
     "@storybook/csf-tools": "npm:^7.0.0-beta.0 || ^7.0.0-rc.0 || ^7.0.0"
@@ -8699,7 +8698,7 @@ __metadata:
     jest-circus: "npm:^29.6.4"
     jest-environment-node: "npm:^29.6.4"
     jest-junit: "npm:^16.0.0"
-    jest-playwright-preset: "npm:^4.0.0"
+    jest-playwright-preset: "npm:^3.0.1"
     jest-runner: "npm:^29.6.4"
     jest-serializer-html: "npm:^7.1.0"
     jest-watch-typeahead: "npm:^2.0.0"
@@ -8710,7 +8709,7 @@ __metadata:
     ts-dedent: "npm:^2.0.0"
   bin:
     test-storybook: dist/test-storybook.js
-  checksum: 8e73882d3484899e4b964f4cd48afeb5aadd28b8f67f03c0c494294c84ae55dd1f7c0bc164a7ad3478b88e78eff74d4ac4183e603fdba6ddc1e9df2215887b6f
+  checksum: 4a77bd2795ac28a0154bf36e79c185e6f273ece7840f45709294a4395e90cad6134f4719e1b742484d08e5aaaf5eab6c06d11d41ad8c36c171fa2c2f6a906941
   languageName: node
   linkType: hard
 
@@ -12200,6 +12199,15 @@ __metadata:
   version: 4.3.3
   resolution: "axe-core@npm:4.3.3"
   checksum: f987c3e7ec3c1dc38686e6ced47b2e73008d999adc8a306d63dcc527c5f31dd82b09006b3ae7d7f3910cd1f0f5a232394bce6b12aaf370486d9e1a00a61267f8
+  languageName: node
+  linkType: hard
+
+"axios@npm:^0.21.1":
+  version: 0.21.4
+  resolution: "axios@npm:0.21.4"
+  dependencies:
+    follow-redirects: "npm:^1.14.0"
+  checksum: da644592cb6f8f9f8c64fdabd7e1396d6769d7a4c1ea5f8ae8beb5c2eb90a823e3a574352b0b934ac62edc762c0f52647753dc54f7d07279127a7e5c4cd20272
   languageName: node
   linkType: hard
 
@@ -18613,7 +18621,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.15.6":
+"follow-redirects@npm:^1.14.0, follow-redirects@npm:^1.15.6":
   version: 1.15.6
   resolution: "follow-redirects@npm:1.15.6"
   peerDependenciesMeta:
@@ -22289,12 +22297,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-playwright-preset@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "jest-playwright-preset@npm:4.0.0"
+"jest-playwright-preset@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "jest-playwright-preset@npm:3.0.1"
   dependencies:
     expect-playwright: "npm:^0.8.0"
-    jest-process-manager: "npm:^0.4.0"
+    jest-process-manager: "npm:^0.3.1"
     nyc: "npm:^15.1.0"
     playwright-core: "npm:>=1.2.0"
     rimraf: "npm:^3.0.2"
@@ -22304,7 +22312,7 @@ __metadata:
     jest-circus: ^29.3.1
     jest-environment-node: ^29.3.1
     jest-runner: ^29.3.1
-  checksum: ad8b92b4eac452042d71666f6fa7ce56abd590ec12732ec7c08926ff48351f72ea07a3babb4843db9e2e5e0c3a01f0d22da6acb1eaadf9a43c84c368ba188127
+  checksum: 66282d2eed8e49f6b66dbf2559a83a5b1e0b8e2b150444503f5aa87ee13744e9cdbf533d56d73a02acc1d407b57babf6c3bf31c490fa169607b01f926371c8de
   languageName: node
   linkType: hard
 
@@ -22320,9 +22328,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-process-manager@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "jest-process-manager@npm:0.4.0"
+"jest-process-manager@npm:^0.3.1":
+  version: 0.3.1
+  resolution: "jest-process-manager@npm:0.3.1"
   dependencies:
     "@types/wait-on": "npm:^5.2.0"
     chalk: "npm:^4.1.0"
@@ -22333,8 +22341,8 @@ __metadata:
     signal-exit: "npm:^3.0.3"
     spawnd: "npm:^5.0.0"
     tree-kill: "npm:^1.2.2"
-    wait-on: "npm:^7.0.0"
-  checksum: 5d69465a497d1ba0afe7a8241c4819a6f88dfbc22355b89d8ca0a6a39fbe8c4f57dbfff5697f1875f05b117276261e2eb8cc3bbf3395e911646199dae46cdb31
+    wait-on: "npm:^5.3.0"
+  checksum: c6b575ea698932a742191007625615e604a1e4f58d9b3f70c91a83c9ea69dd1ad184166d9d81ade6af2f3061e9cbd9e0e3d035e80a86aa6af913205a1e11005a
   languageName: node
   linkType: hard
 
@@ -22571,7 +22579,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"joi@npm:^17.11.0":
+"joi@npm:^17.11.0, joi@npm:^17.3.0":
   version: 17.13.1
   resolution: "joi@npm:17.13.1"
   dependencies:
@@ -24805,7 +24813,7 @@ __metadata:
     "@storybook/react": "npm:^7.6.19"
     "@storybook/react-webpack5": "npm:^7.6.19"
     "@storybook/storybook-deployer": "npm:^2.8.16"
-    "@storybook/test-runner": "npm:^0.16.0"
+    "@storybook/test-runner": "npm:^0.15.2"
     "@storybook/theming": "npm:^7.6.19"
     "@testing-library/jest-dom": "npm:^5.11.10"
     "@testing-library/react": "npm:^10.4.8"
@@ -30559,6 +30567,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"rxjs@npm:^6.6.3":
+  version: 6.6.7
+  resolution: "rxjs@npm:6.6.7"
+  dependencies:
+    tslib: "npm:^1.9.0"
+  checksum: c8263ebb20da80dd7a91c452b9e96a178331f402344bbb40bc772b56340fcd48d13d1f545a1e3d8e464893008c5e306cc42a1552afe0d562b1a6d4e1e6262b03
+  languageName: node
+  linkType: hard
+
 "rxjs@npm:^7.4.0, rxjs@npm:^7.8.1":
   version: 7.8.1
   resolution: "rxjs@npm:7.8.1"
@@ -34665,7 +34682,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"wait-on@npm:^7.0.0, wait-on@npm:^7.0.1":
+"wait-on@npm:^5.3.0":
+  version: 5.3.0
+  resolution: "wait-on@npm:5.3.0"
+  dependencies:
+    axios: "npm:^0.21.1"
+    joi: "npm:^17.3.0"
+    lodash: "npm:^4.17.21"
+    minimist: "npm:^1.2.5"
+    rxjs: "npm:^6.6.3"
+  bin:
+    wait-on: bin/wait-on
+  checksum: ba5614aefb07c2b28e2625df2bc74b448c163c75ab86d5c8e9efd5d247d7af8f84822717e5f50460d582ed474ecf92a677e7a1fb0880dd7a74a45243095efef2
+  languageName: node
+  linkType: hard
+
+"wait-on@npm:^7.0.1":
   version: 7.2.0
   resolution: "wait-on@npm:7.2.0"
   dependencies:
