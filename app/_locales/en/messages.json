@@ -3681,6 +3681,12 @@
   "petnamesEnabledToggleDescription": {
     "message": "This lets you assign a nickname to any address. We’ll suggest names for addresses that you interact with when possible."
   },
+  "redesignedConfirmationsEnabledToggle": {
+    "message": "Redesigned confirmations"
+  },
+  "redesignedConfirmationsToggleDescription": {
+    "message": "Turn this on to see re-designed confirmations whenever you receive signature requests."
+  },
   "pinExtensionDescription": {
     "message": "Navigate to the extension menu and pin MetaMask Institutional for seamless access."
   },
