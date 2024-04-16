@@ -3964,12 +3964,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/announcement-controller@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "@metamask/announcement-controller@npm:5.0.1"
+"@metamask/announcement-controller@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "@metamask/announcement-controller@npm:6.1.0"
   dependencies:
-    "@metamask/base-controller": "npm:^4.0.1"
-  checksum: 25198a8e8a4feddb984269dad516fc20aa458cdeb183fe0c3b0dbc9973cbaf753cdaf4b97b54ce0b3c4456b0d1c65b18e750248131127792cb5f7327ed0b56de
+    "@metamask/base-controller": "npm:^5.0.1"
+  checksum: 036bbbfbda9366a41ab94ab424eb25567d0503a723a2e4e24ed14b8576de46be093470a29457c1fb50faeabcc5c70a4cb8c3a49029298cba7f9b3ce28fa117ed
   languageName: node
   linkType: hard
 
@@ -24709,7 +24709,7 @@ __metadata:
     "@metamask/abi-utils": "npm:^2.0.2"
     "@metamask/accounts-controller": "npm:^11.0.0"
     "@metamask/address-book-controller": "npm:^3.1.7"
-    "@metamask/announcement-controller": "npm:^5.0.1"
+    "@metamask/announcement-controller": "npm:^6.1.0"
     "@metamask/approval-controller": "npm:^6.0.0"
     "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A26.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-26.0.0-17c0e9432c.patch"
     "@metamask/auto-changelog": "npm:^2.1.0"

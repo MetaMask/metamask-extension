@@ -57,6 +57,9 @@ import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBa
 import { TEST_NETWORKS } from '../../../../shared/constants/network';
 import { ConnectedStatus } from '../connected-status/connected-status';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
+///: END:ONLY_INCLUDE_IF
 import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -100,6 +103,12 @@ export const AccountListItem = ({
   if (showFiat) {
     balanceToTranslate = identity.balance;
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  const custodianIcon = useSelector((state) =>
+    getCustodianIconForAddress(state, identity.address),
+  );
+  ///: END:ONLY_INCLUDE_IF
 
   // If this is the selected item in the Account menu,
   // scroll the item into view
@@ -163,6 +172,52 @@ export const AccountListItem = ({
             <ConnectedStatus address={identity.address} isActive={isActive} />
           </Box>
           <Box display={[Display.None, Display.Flex]}>
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+              <AvatarAccount
+                borderColor={BorderColor.transparent}
+                size={Size.MD}
+                address={identity.address}
+                variant={
+                  useBlockie
+                    ? AvatarAccountVariant.Blockies
+                    : AvatarAccountVariant.Jazzicon
+                }
+                marginInlineEnd={2}
+              />
+              ///: END:ONLY_INCLUDE_IF
+            }
+
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+              custodianIcon ? (
+                <img
+                  src={custodianIcon}
+                  data-testid="custody-logo"
+                  className="custody-logo"
+                  alt="custody logo"
+                />
+              ) : (
+                <AvatarAccount
+                  borderColor={BorderColor.transparent}
+                  size={Size.MD}
+                  address={identity.address}
+                  variant={
+                    useBlockie
+                      ? AvatarAccountVariant.Blockies
+                      : AvatarAccountVariant.Jazzicon
+                  }
+                  marginInlineEnd={2}
+                />
+              )
+              ///: END:ONLY_INCLUDE_IF
+            }
+          </Box>
+        </>
+      ) : (
+        <>
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
             <AvatarAccount
               borderColor={BorderColor.transparent}
               size={Size.MD}
@@ -174,20 +229,33 @@ export const AccountListItem = ({
               }
               marginInlineEnd={2}
             />
-          </Box>
-        </>
-      ) : (
-        <AvatarAccount
-          borderColor={BorderColor.transparent}
-          size={Size.MD}
-          address={identity.address}
-          variant={
-            useBlockie
-              ? AvatarAccountVariant.Blockies
-              : AvatarAccountVariant.Jazzicon
+            ///: END:ONLY_INCLUDE_IF
           }
-          marginInlineEnd={2}
-        />
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+            custodianIcon ? (
+              <img
+                src={custodianIcon}
+                data-testid="custody-logo"
+                className="list-item-custody-logo"
+                alt="custody logo"
+              />
+            ) : (
+              <AvatarAccount
+                borderColor={BorderColor.transparent}
+                size={Size.MD}
+                address={identity.address}
+                variant={
+                  useBlockie
+                    ? AvatarAccountVariant.Blockies
+                    : AvatarAccountVariant.Jazzicon
+                }
+                marginInlineEnd={2}
+              />
+            )
+            ///: END:ONLY_INCLUDE_IF
+          }
+        </>
       )}
       <Box
         display={Display.Flex}
