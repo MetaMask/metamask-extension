@@ -55,20 +55,13 @@ import {
 } from '../../../selectors';
 import { AccountPicker, GlobalMenu } from '..';
 
-import {
-  hideProductTour,
-  toggleAccountMenu,
-  toggleNetworkMenu,
-} from '../../../store/actions';
+import { toggleAccountMenu, toggleNetworkMenu } from '../../../store/actions';
 import MetafoxLogo from '../../ui/metafox-logo';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import ConnectedStatusIndicator from '../../app/connected-status-indicator';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  getCompletedOnboarding,
-  getIsUnlocked,
-} from '../../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../../ducks/metamask/metamask';
 import { SEND_STAGES, getSendStage } from '../../../ducks/send';
 import Tooltip from '../../ui/tooltip';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
@@ -271,7 +264,6 @@ export const AppHeader = ({ location }) => {
                   />
                 </div>
               )}
-
 
               {internalAccount ? (
                 <Text
