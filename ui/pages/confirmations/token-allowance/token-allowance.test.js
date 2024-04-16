@@ -138,15 +138,12 @@ const mockShowModal = jest.fn();
 const mockedState = jest.mocked(state);
 
 jest.mock('../../../store/actions', () => ({
-  disconnectGasFeeEstimatePoller: jest.fn(),
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
   gasFeeStartPollingByNetworkClientId: jest
     .fn()
     .mockResolvedValue('pollingToken'),
   gasFeeStopPollingByPollingToken: jest.fn(),
-  getGasFeeEstimatesAndStartPolling: jest
-    .fn()
-    .mockImplementation(() => Promise.resolve()),
+
   addPollingTokenToAppState: jest.fn(),
   removePollingTokenFromAppState: jest.fn(),
   getNetworkConfigurationByNetworkClientId: jest.fn().mockImplementation(() =>

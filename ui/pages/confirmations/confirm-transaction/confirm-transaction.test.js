@@ -43,9 +43,8 @@ const mockState = {
 
 setBackgroundConnection({
   addPollingTokenToAppState: jest.fn(),
-  disconnectGasFeeEstimatePoller: jest.fn(),
   getContractMethodData: jest.fn(),
-  getGasFeeEstimatesAndStartPolling: jest.fn(),
+
   removePollingTokenFromAppState: jest.fn(),
   setDefaultHomeActiveTabName: jest.fn(),
 });
