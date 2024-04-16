@@ -17,7 +17,7 @@ import {
 import { getCurrentNetwork, getSelectedAccount } from '../../../selectors';
 import { ReceiveModal } from '../receive-modal';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
-import { getCurrentLocale } from '../../../ducks/locale/locale';
+import { getLocaleNotSafeForIntl } from '../../../ducks/locale/locale';
 
 export const ReceiveTokenLink: React.FC<BoxProps<'div'>> = ({
   ...props
@@ -25,7 +25,7 @@ export const ReceiveTokenLink: React.FC<BoxProps<'div'>> = ({
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
   const currentNetwork = useSelector(getCurrentNetwork);
-  const currentLocale = useSelector(getCurrentLocale);
+  const currentLocale = useSelector(getLocaleNotSafeForIntl);
   const { address: selectedAddress } = useSelector(getSelectedAccount);
 
   const [showReceiveModal, setShowReceiveModal] = useState(false);

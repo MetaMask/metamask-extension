@@ -41,7 +41,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { getCurrentLocale } from '../../../ducks/locale/locale';
+import { getLocaleNotSafeForIntl } from '../../../ducks/locale/locale';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import {
   RAMPS_CARD_VARIANT_TYPES,
@@ -89,7 +89,7 @@ export default function NftsTab() {
   const hasAnyNfts = Object.keys(collections).length > 0;
   const showNftBanner = hasAnyNfts === false;
   const { chainId, nickname } = useSelector(getCurrentNetwork);
-  const currentLocale = useSelector(getCurrentLocale);
+  const currentLocale = useSelector(getLocaleNotSafeForIntl);
 
   useEffect(() => {
     if (!showNftBanner) {

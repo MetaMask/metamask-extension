@@ -22,7 +22,7 @@ import {
 } from '../../../../shared/notifications';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { getCurrentLocale } from '../../../ducks/locale/locale';
+import { getLocaleNotSafeForIntl } from '../../../ducks/locale/locale';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { ADVANCED_ROUTE } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
@@ -211,7 +211,7 @@ export default function WhatsNewPopup({ onClose }) {
   const history = useHistory();
 
   const notifications = useSelector(getSortedAnnouncementsToShow);
-  const locale = useSelector(getCurrentLocale);
+  const locale = useSelector(getLocaleNotSafeForIntl);
 
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   const theme = useTheme();
