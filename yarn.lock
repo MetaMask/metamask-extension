@@ -5646,9 +5646,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-sdk@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "@metamask/snaps-sdk@npm:4.0.0"
+"@metamask/snaps-sdk@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "@metamask/snaps-sdk@npm:4.0.1"
   dependencies:
     "@metamask/key-tree": "npm:^9.0.0"
     "@metamask/providers": "npm:^16.0.0"
@@ -5656,7 +5656,7 @@ __metadata:
     "@metamask/utils": "npm:^8.3.0"
     fast-xml-parser: "npm:^4.3.4"
     superstruct: "npm:^1.0.3"
-  checksum: 501292e402a8ac534e0c490abf611b580c1fb8de377772bd6b6a343c7093e5261372103779a7917b1a3bba725560e6c02290274cc12eb699e99770f882af366b
+  checksum: e6a80b3017c738d2399fe566bb77a87eee94a28b0071fbf172a917cfaf1355a096971609fafc957c3729b65c96f2e385f5f06d88d76c2a02eb2354a0868cb9f7
   languageName: node
   linkType: hard
 
@@ -24927,7 +24927,7 @@ __metadata:
     "@metamask/snaps-controllers": "npm:^7.0.1"
     "@metamask/snaps-execution-environments": "npm:^6.0.0"
     "@metamask/snaps-rpc-methods": "npm:^8.0.0"
-    "@metamask/snaps-sdk": "npm:^4.0.0"
+    "@metamask/snaps-sdk": "npm:^4.0.1"
     "@metamask/snaps-utils": "npm:^7.1.0"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:^8.4.0"
