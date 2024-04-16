@@ -51,6 +51,7 @@ export default function TokenAsset({ token }) {
           <AssetOptions
             onRemove={() =>
               dispatch(
+                // todo metric for hide?
                 showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token, history }),
               )
             }

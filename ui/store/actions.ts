@@ -4481,6 +4481,7 @@ export function trackMetaMetricsEvent(
   payload: MetaMetricsEventPayload,
   options?: MetaMetricsEventOptions,
 ) {
+  console.log(payload);
   return submitRequestToBackground('trackMetaMetricsEvent', [
     { ...payload, actionId: generateActionId() },
     options,
