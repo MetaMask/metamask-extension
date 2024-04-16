@@ -93,7 +93,7 @@ export const isValidScope = (
   // not validating rpcDocuments or rpcEndpoints currently
 
   // unexpected properties found on scopeObject
-  if (Object.keys(restScopeObject)) {
+  if (Object.keys(restScopeObject).length !== 0) {
     return false;
   }
 

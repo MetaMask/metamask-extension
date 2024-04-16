@@ -81,7 +81,7 @@ async function providerAuthorizeHandler(_req, res, _next, end, _hooks) {
       randomSessionProperties[key] = value;
     }
   }
-  if (sessionProperties && Object.key(sessionProperties).length === 0) {
+  if (sessionProperties && Object.keys(sessionProperties).length === 0) {
     throw new Error(
       '`sessionProperties` object MUST contain 1 or more properties if present',
     );
