@@ -188,10 +188,11 @@ export class MetamaskNotificationsUtils {
   }
 
   /**
+   * @deprecated - This needs rework for it to be feasible. Currently this is a half-baked solution, as it fails once we add new triggers (introspection for filters is difficult).
+   *
    * Checks for the complete presence of trigger types by group across all addresses in the user storage.
    * This method ensures that each address has at least one trigger of each type expected for every group.
    * It leverages `traverseUserStorageTriggers` to iterate over triggers and check their presence.
-   *
    * @param userStorage - The user storage object containing notification triggers.
    * @returns A record indicating whether all expected trigger types for each group are present for every address.
    */

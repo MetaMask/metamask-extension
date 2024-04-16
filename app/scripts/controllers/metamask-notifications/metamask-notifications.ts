@@ -417,10 +417,11 @@ export class MetamaskNotificationsController extends BaseController<
   }
 
   /**
+   * @deprecated - This needs rework for it to be feasible. Currently this is a half-baked solution, as it fails once we add new triggers (introspection for filters is difficult).
+   *
    * Checks for the complete presence of trigger types by group across all addresses in user storage.
    *
    * This method retrieves the user storage and uses `MetamaskNotificationsUtils` to verify if all expected trigger types for each group are present for every address.
-   *
    * @returns A record indicating whether all expected trigger types for each group are present for every address.
    * @throws {Error} If user storage does not exist.
    */
