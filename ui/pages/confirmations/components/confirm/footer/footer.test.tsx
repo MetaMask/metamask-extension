@@ -9,6 +9,7 @@ import {
 } from '../../../../../../shared/constants/hardware-wallets';
 import * as MMIConfirmations from '../../../../../hooks/useMMIConfirmations';
 
+import { Severity } from '../../../../../helpers/constants/design-system';
 import Footer from './footer';
 
 jest.mock('react-redux', () => ({
@@ -119,5 +120,53 @@ describe('ConfirmFooter', () => {
     const submitButton = getAllByRole('button')[1];
     fireEvent.click(submitButton);
     expect(mockFn).toHaveBeenCalledTimes(1);
+  });
+
+  describe('AlertReviewButton', () => {
+    const OWNER_ID_MOCK = '123';
+    const KEY_ALERT_KEY_MOCK = 'Key';
+    const ALERT_MESSAGE_MOCK = 'Alert 1';
+    const alertsMock = [
+      {
+        key: KEY_ALERT_KEY_MOCK,
+        field: KEY_ALERT_KEY_MOCK,
+        severity: Severity.Warning,
+        message: ALERT_MESSAGE_MOCK,
+        reason: 'Reason 1',
+        alertDetails: ['Detail 1', 'Detail 2'],
+      },
+    ];
+    const stateWithAlertsMock = {
+      ...mockState,
+      confirmAlerts: {
+        alerts: { [OWNER_ID_MOCK]: alertsMock },
+        confirmed: {
+          [OWNER_ID_MOCK]: { [KEY_ALERT_KEY_MOCK]: false },
+        },
+      },
+      confirm: {
+        currentConfirmation: {
+          id: OWNER_ID_MOCK,
+          msgParams: {
+            from: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+          },
+        },
+      },
+    };
+    it('renders the ReviewAlertButton when there are unconfirmed alerts', () => {
+      const { getByTestId } = render(stateWithAlertsMock);
+      expect(getByTestId('review-alert-button')).toBeDefined();
+    });
+
+    it('does not render the ReviewAlertButton when there are no unconfirmed alerts', () => {
+      const { queryByTestId } = render();
+      expect(queryByTestId('review-alert-button')).toBeNull();
+    });
+
+    it('sets the alert modal visible when the ReviewAlertButton is clicked', () => {
+      const { getByTestId } = render(stateWithAlertsMock);
+      fireEvent.click(getByTestId('review-alert-button'));
+      expect(getByTestId('alert-modal-button')).toBeDefined();
+    });
   });
 });

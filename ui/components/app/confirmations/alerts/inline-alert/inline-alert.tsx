@@ -9,7 +9,6 @@ import {
 } from '../../../../component-library';
 import {
   AlignItems,
-  BackgroundColor,
   BorderRadius,
   Display,
   Severity,
@@ -17,6 +16,7 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { getSeverityBackground } from '../alert-utils';
 
 export type InlineAlertProps = {
   /** The onClick handler for the inline alerts */
@@ -24,18 +24,6 @@ export type InlineAlertProps = {
   /** The severity of the alert, e.g. Severity.Warning */
   severity?: Severity;
 };
-
-function getSeverityBackground(severity: Severity): BackgroundColor {
-  switch (severity) {
-    case Severity.Danger:
-      return BackgroundColor.errorMuted;
-    case Severity.Warning:
-      return BackgroundColor.warningMuted;
-    // Defaults to Severity.Info
-    default:
-      return BackgroundColor.primaryMuted;
-  }
-}
 
 export default function InlineAlert({
   onClick,

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 
@@ -6,6 +6,7 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
+  IconName,
 } from '../../../../../components/component-library';
 import { Footer as PageFooter } from '../../../../../components/multichain/pages/page';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -18,6 +19,87 @@ import {
   resolvePendingApproval,
 } from '../../../../../store/actions';
 import { confirmSelector } from '../../../selectors';
+import useAlerts from '../../../../../hooks/useAlerts';
+import { MultipleAlertModal } from '../../../../../components/app/confirmations/alerts/multiple-alert-modal';
+import {
+  BackgroundColor,
+  Severity,
+} from '../../../../../helpers/constants/design-system';
+import { getSeverityBackground } from '../../../../../components/app/confirmations/alerts/alert-utils';
+import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+
+function ReviewAlertButton({
+  backgroundColor,
+  setAlertModalVisible,
+}: {
+  backgroundColor: BackgroundColor;
+  setAlertModalVisible: (visible: boolean) => void;
+}) {
+  const t = useI18nContext();
+  return (
+    <Button
+      block
+      backgroundColor={backgroundColor}
+      onClick={() => setAlertModalVisible(true)}
+      startIconName={IconName.SecuritySearch}
+      size={ButtonSize.Lg}
+      data-testid="review-alert-button"
+    >
+      {t('reviewAlerts')}
+    </Button>
+  );
+}
+
+function ConfirmFooterButton({
+  hasUnconfirmedAlerts,
+  unconfirmedAlerts,
+  setAlertModalVisible,
+  onSubmit,
+  disabled,
+}: {
+  hasUnconfirmedAlerts: boolean;
+  unconfirmedAlerts: Alert[];
+  setAlertModalVisible: (visible: boolean) => void;
+  onSubmit: () => void;
+  disabled: boolean;
+}) {
+  const t = useI18nContext();
+
+  function severityStyle() {
+    let severity = Severity.Info;
+    unconfirmedAlerts.forEach((alert) => {
+      if (alert.severity === Severity.Danger) {
+        severity = Severity.Danger;
+      } else if (
+        alert.severity === Severity.Warning &&
+        severity !== Severity.Danger
+      ) {
+        severity = Severity.Warning;
+      }
+    });
+    return getSeverityBackground(severity);
+  }
+
+  return hasUnconfirmedAlerts ? (
+    <ReviewAlertButton
+      backgroundColor={severityStyle()}
+      setAlertModalVisible={setAlertModalVisible}
+    />
+  ) : (
+    <Button
+      block
+      data-testid="confirm-footer-confirm-button"
+      onClick={onSubmit}
+      backgroundColor={
+        hasUnconfirmedAlerts ? severityStyle() : BackgroundColor.primaryDefault
+      }
+      size={ButtonSize.Lg}
+      disabled={disabled}
+    >
+      {t('confirm')}
+    </Button>
+  );
+}
 
 const Footer = () => {
   const t = useI18nContext();
@@ -39,6 +121,18 @@ const Footer = () => {
     return false;
   });
 
+  const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
+  const alertOwnerId = currentConfirmation?.id as string;
+  const { alerts, isAlertConfirmed } = useAlerts(alertOwnerId);
+  const unconfirmedAlerts = alerts.filter(
+    (alert) => alert.field && !isAlertConfirmed(alert.key),
+  );
+  const hasUnconfirmedAlerts = unconfirmedAlerts.length > 0;
+
+  const handleCloseModal = useCallback(() => {
+    setAlertModalVisible(false);
+  }, []);
+
   const dispatch = useDispatch();
 
   const onCancel = useCallback(() => {
@@ -57,6 +151,7 @@ const Footer = () => {
     if (!currentConfirmation) {
       return;
     }
+
     dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     mmiOnSignCallback();
@@ -73,11 +168,19 @@ const Footer = () => {
       >
         {t('cancel')}
       </Button>
-      <Button
-        block
-        data-testid="confirm-footer-confirm-button"
-        onClick={onSubmit}
-        size={ButtonSize.Lg}
+      {alertModalVisible ? (
+        <MultipleAlertModal
+          alertKey={unconfirmedAlerts[0]?.key}
+          ownerId={alertOwnerId}
+          onFinalAcknowledgeClick={handleCloseModal}
+          onClose={handleCloseModal}
+        />
+      ) : null}
+      <ConfirmFooterButton
+        hasUnconfirmedAlerts={hasUnconfirmedAlerts}
+        unconfirmedAlerts={unconfirmedAlerts}
+        setAlertModalVisible={setAlertModalVisible}
+        onSubmit={onSubmit}
         disabled={
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           mmiSubmitDisabled ||
@@ -85,9 +188,7 @@ const Footer = () => {
           isScrollToBottomNeeded ||
           hardwareWalletRequiresConnection
         }
-      >
-        {t('confirm')}
-      </Button>
+      />
     </PageFooter>
   );
 };

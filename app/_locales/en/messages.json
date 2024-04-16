@@ -4034,6 +4034,9 @@
   "revealTheSeedPhrase": {
     "message": "Reveal seed phrase"
   },
+  "reviewAlerts": {
+    "message": "Review alerts"
+  },
   "revokeAllTokensTitle": {
     "message": "Revoke permission to access and transfer all of your $1?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -5124,9 +5127,6 @@
   },
   "swapReviewSwap": {
     "message": "Review swap"
-  },
-  "swapSearchNameOrAddress": {
-    "message": "Search name or paste address"
   },
   "swapSelect": {
     "message": "Select"
