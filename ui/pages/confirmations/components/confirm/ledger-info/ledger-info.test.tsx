@@ -68,7 +68,7 @@ describe('LedgerInfo', () => {
     ).toBeInTheDocument();
   });
 
-  it('display button to connect ledger is not already connected', () => {
+  it('display button to connect ledger if not already connected', () => {
     const state = {
       ...mockState,
       metamask: {

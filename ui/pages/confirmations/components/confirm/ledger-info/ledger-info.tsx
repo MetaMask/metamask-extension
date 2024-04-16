@@ -49,7 +49,7 @@ const LedgerInfo: React.FC = () => {
   const usingWebHID = ledgerTransportType === LedgerTransportTypes.webhid;
 
   return (
-    <BannerAlert severity={BannerAlertSeverity.Info}>
+    <BannerAlert severity={BannerAlertSeverity.Info} style={{ marginTop: 16 }}>
       <Text variant={TextVariant.headingSm} fontWeight={FontWeight.Medium}>
         {t('ledgerConnectionInstructionHeader')}
       </Text>
