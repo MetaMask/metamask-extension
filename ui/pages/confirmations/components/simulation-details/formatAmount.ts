@@ -15,7 +15,7 @@ export const formatAmountMaxPrecision = (
 ): string =>
   new Intl.NumberFormat(locale, {
     minimumSignificantDigits: 1,
-  }).format(new BigNumber(num).toNumber());
+  }).format(new BigNumber(num.toString()).toNumber());
 
 /**
  * Formats the a token amount with variable precision and significant
