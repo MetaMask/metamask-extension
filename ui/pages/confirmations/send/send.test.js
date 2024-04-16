@@ -47,7 +47,6 @@ jest.mock('react-router-dom', () => {
 
 setBackgroundConnection({
   getGasFeeTimeEstimate: jest.fn(),
-
   promisifiedBackground: jest.fn(),
 });
 

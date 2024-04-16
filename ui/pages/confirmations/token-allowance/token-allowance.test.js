@@ -143,7 +143,6 @@ jest.mock('../../../store/actions', () => ({
     .fn()
     .mockResolvedValue('pollingToken'),
   gasFeeStopPollingByPollingToken: jest.fn(),
-
   addPollingTokenToAppState: jest.fn(),
   removePollingTokenFromAppState: jest.fn(),
   getNetworkConfigurationByNetworkClientId: jest.fn().mockImplementation(() =>

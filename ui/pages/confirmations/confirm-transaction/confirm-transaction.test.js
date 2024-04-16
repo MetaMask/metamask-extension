@@ -44,7 +44,6 @@ const mockState = {
 setBackgroundConnection({
   addPollingTokenToAppState: jest.fn(),
   getContractMethodData: jest.fn(),
-
   removePollingTokenFromAppState: jest.fn(),
   setDefaultHomeActiveTabName: jest.fn(),
 });
