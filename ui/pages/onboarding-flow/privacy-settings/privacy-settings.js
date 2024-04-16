@@ -10,6 +10,7 @@ import {
   COINGECKO_LINK,
   CRYPTOCOMPARE_LINK,
   PRIVACY_POLICY_LINK,
+  TRANSACTION_SIMULATIONS_LEARN_MORE_LINK,
 } from '../../../../shared/lib/ui-utils';
 import {
   Box,
@@ -28,7 +29,11 @@ import {
 } from '../../../helpers/constants/design-system';
 import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getAllNetworks, getCurrentNetwork } from '../../../selectors';
+import {
+  getAllNetworks,
+  getCurrentNetwork,
+  getPetnamesEnabled,
+} from '../../../selectors';
 import {
   setCompletedOnboarding,
   setIpfsGateway,
@@ -42,6 +47,7 @@ import {
   toggleNetworkMenu,
   setIncomingTransactionsPreferences,
   setUseTransactionSimulations,
+  setPetnamesEnabled,
 } from '../../../store/actions';
 import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
 import { Setting } from './setting';
@@ -63,6 +69,7 @@ export default function PrivacySettings() {
     useAddressBarEnsResolution,
     useTransactionSimulations,
   } = defaultState;
+  const petnamesEnabled = useSelector(getPetnamesEnabled);
 
   const [usePhishingDetection, setUsePhishingDetection] =
     useState(usePhishDetect);
@@ -84,6 +91,7 @@ export default function PrivacySettings() {
   const [addressBarResolution, setAddressBarResolution] = useState(
     useAddressBarEnsResolution,
   );
+  const [turnOnPetnames, setTurnOnPetnames] = useState(petnamesEnabled);
 
   const trackEvent = useContext(MetaMetricsContext);
   const currentNetwork = useSelector(getCurrentNetwork);
@@ -100,6 +108,7 @@ export default function PrivacySettings() {
     dispatch(setCompletedOnboarding());
     dispatch(setUseAddressBarEnsResolution(addressBarResolution));
     setUseTransactionSimulations(isTransactionSimulationsEnabled);
+    dispatch(setPetnamesEnabled(turnOnPetnames));
 
     if (ipfsURL && !ipfsError) {
       const { host } = new URL(addUrlProtocolPrefix(ipfsURL));
@@ -272,7 +281,16 @@ export default function PrivacySettings() {
             value={isTransactionSimulationsEnabled}
             setValue={setTransactionSimulationsEnabled}
             title={t('simulationsSettingSubHeader')}
-            description={t('simulationsSettingDescription')}
+            description={t('simulationsSettingDescription', [
+              <a
+                key="learn_more_link"
+                href={TRANSACTION_SIMULATIONS_LEARN_MORE_LINK}
+                rel="noreferrer"
+                target="_blank"
+              >
+                {t('learnMoreUpperCase')}
+              </a>,
+            ])}
           />
           <Setting
             value={addressBarResolution}
@@ -333,6 +351,12 @@ export default function PrivacySettings() {
                 {t('privacyMsg')}
               </a>,
             ])}
+          />
+          <Setting
+            value={turnOnPetnames}
+            setValue={setTurnOnPetnames}
+            title={t('petnamesEnabledToggle')}
+            description={t('petnamesEnabledToggleDescription')}
           />
           <ButtonPrimary
             size={ButtonPrimarySize.Lg}
