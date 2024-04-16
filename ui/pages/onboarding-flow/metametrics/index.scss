@@ -8,6 +8,10 @@
     align-items: center;
   }
 
+  p {
+    align-self: baseline;
+  }
+
   ul {
     margin: 24px 0 0 0;
     width: 100%;
@@ -16,7 +20,7 @@
       padding-bottom: 20px;
       display: flex;
 
-      > span {
+      >span {
         width: 90%;
       }
     }

@@ -3215,51 +3215,45 @@
   "onboardingMetametricsAgree": {
     "message": "I agree"
   },
-  "onboardingMetametricsAllowOptOut": {
-    "message": "Always allow you to opt-out via Settings"
-  },
-  "onboardingMetametricsDataTerms": {
-    "message": "This data is aggregated and is therefore anonymous for the purposes of General Data Protection Regulation (EU) 2016/679."
-  },
   "onboardingMetametricsDescription": {
-    "message": "MetaMask would like to gather usage data to better understand how our users interact with MetaMask. This data will be used to provide the service, which includes improving the service based on your use."
+    "message": "We’d like to gather basic usage data to improve MetaMask. Know that we never sell the data you provide here."
   },
   "onboardingMetametricsDescription2": {
-    "message": "MetaMask will..."
+    "message": "When we gather metrics, it will always be..."
   },
   "onboardingMetametricsDisagree": {
     "message": "No thanks"
   },
   "onboardingMetametricsInfuraTerms": {
-    "message": "* When you use Infura as your default RPC provider in MetaMask, Infura will collect your IP address and your Ethereum wallet address when you send a transaction. We don’t store this information in a way that allows our systems to associate those two pieces of data. For more information on how MetaMask and Infura interact from a data collection perspective, see our update $1. For more information on our privacy practices in general, see our $2.",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
+    "message": "We’ll let you know if we decide to use this data for other purposes. You can review our $1 for more information.",
+    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
   "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "Privacy Policy here"
-  },
-  "onboardingMetametricsInfuraTermsPolicyLink": {
-    "message": "here"
+    "message": "Privacy Policy"
   },
   "onboardingMetametricsModalTitle": {
     "message": "Add custom network"
   },
   "onboardingMetametricsNeverCollect": {
-    "message": "$1 collect information we don’t need to provide the service (such as keys, addresses, transaction hashes, or balances)",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
+    "message": "$1 clicks and views on the app are stored, but other details (like your public address) are not.",
+    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
+  },
+  "onboardingMetametricsNeverCollectEmphasis": {
+    "message": "Private:"
   },
   "onboardingMetametricsNeverCollectIP": {
-    "message": "$1 collect your full IP address*",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
+    "message": "$1 we temporarily use your IP address to detect a general location (like your country or region), but it's never stored.",
+    "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
   },
-  "onboardingMetametricsNeverEmphasis": {
-    "message": "Never"
+  "onboardingMetametricsNeverCollectIPEmphasis": {
+    "message": "General:"
   },
   "onboardingMetametricsNeverSellData": {
-    "message": "$1 sell data.  Ever!",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
+    "message": "$1 you decide if you want to share or delete your usage data via settings any time.",
+    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
   },
-  "onboardingMetametricsSendAnonymize": {
-    "message": "Send anonymized click and pageview events"
+  "onboardingMetametricsNeverSellDataEmphasis": {
+    "message": "Optional:"
   },
   "onboardingMetametricsTitle": {
     "message": "Help us improve MetaMask"

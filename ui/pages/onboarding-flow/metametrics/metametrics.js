@@ -87,40 +87,24 @@ export default function OnboardingMetametrics() {
       </Typography>
       <Typography
         className="onboarding-metametrics__desc"
-        align={TEXT_ALIGN.CENTER}
+        align={TEXT_ALIGN.LEFT}
       >
         {t('onboardingMetametricsDescription')}
       </Typography>
       <Typography
         className="onboarding-metametrics__desc"
-        align={TEXT_ALIGN.CENTER}
+        align={TEXT_ALIGN.LEFT}
       >
         {t('onboardingMetametricsDescription2')}
       </Typography>
       <ul>
         <li>
-          <Icon
-            name={IconName.Check}
-            color={IconColor.successDefault}
-            marginInlineEnd={3}
-          />
-          {t('onboardingMetametricsAllowOptOut')}
-        </li>
-        <li>
-          <Icon
-            name={IconName.Check}
-            color={IconColor.successDefault}
-            marginInlineEnd={3}
-          />
-          {t('onboardingMetametricsSendAnonymize')}
-        </li>
-        <li>
           <Box>
             <Icon
               marginInlineEnd={2}
-              name={IconName.Close}
+              name={IconName.Check}
               size={IconSize.Sm}
-              color={IconColor.errorDefault}
+              color={IconColor.successDefault}
             />
             {t('onboardingMetametricsNeverCollect', [
               <Typography
@@ -129,7 +113,7 @@ export default function OnboardingMetametrics() {
                 fontWeight={FONT_WEIGHT.BOLD}
                 marginTop={0}
               >
-                {t('onboardingMetametricsNeverEmphasis')}
+                {t('onboardingMetametricsNeverCollectEmphasis')}
               </Typography>,
             ])}
           </Box>
@@ -138,9 +122,9 @@ export default function OnboardingMetametrics() {
           <Box>
             <Icon
               marginInlineEnd={2}
-              name={IconName.Close}
+              name={IconName.Check}
               size={IconSize.Sm}
-              color={IconColor.errorDefault}
+              color={IconColor.successDefault}
             />
             {t('onboardingMetametricsNeverCollectIP', [
               <Typography
@@ -148,7 +132,7 @@ export default function OnboardingMetametrics() {
                 key="never-collect"
                 fontWeight={FONT_WEIGHT.BOLD}
               >
-                {t('onboardingMetametricsNeverEmphasis')}
+                {t('onboardingMetametricsNeverCollectIPEmphasis')}
               </Typography>,
             ])}
           </Box>
@@ -157,9 +141,9 @@ export default function OnboardingMetametrics() {
           <Box>
             <Icon
               marginInlineEnd={2}
-              name={IconName.Close}
+              name={IconName.Check}
               size={IconSize.Sm}
-              color={IconColor.errorDefault}
+              color={IconColor.successDefault}
             />
             {t('onboardingMetametricsNeverSellData', [
               <Typography
@@ -167,7 +151,7 @@ export default function OnboardingMetametrics() {
                 key="never-sell"
                 fontWeight={FONT_WEIGHT.BOLD}
               >
-                {t('onboardingMetametricsNeverEmphasis')}
+                {t('onboardingMetametricsNeverSellDataEmphasis')}
               </Typography>,
             ])}
           </Box>{' '}
@@ -175,27 +159,11 @@ export default function OnboardingMetametrics() {
       </ul>
       <Typography
         color={TextColor.textAlternative}
-        align={TEXT_ALIGN.CENTER}
-        variant={TypographyVariant.H6}
-        className="onboarding-metametrics__terms"
-      >
-        {t('onboardingMetametricsDataTerms')}
-      </Typography>
-      <Typography
-        color={TextColor.textAlternative}
-        align={TEXT_ALIGN.CENTER}
+        align={TEXT_ALIGN.LEFT}
         variant={TypographyVariant.H6}
         className="onboarding-metametrics__terms"
       >
         {t('onboardingMetametricsInfuraTerms', [
-          <a
-            href="https://consensys.io/blog/consensys-data-retention-update"
-            target="_blank"
-            rel="noopener noreferrer"
-            key="retention-link"
-          >
-            {t('onboardingMetametricsInfuraTermsPolicyLink')}
-          </a>,
           <a
             href="https://metamask.io/privacy.html"
             target="_blank"
