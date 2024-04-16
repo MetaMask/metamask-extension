@@ -790,7 +790,6 @@ function createFactoredBuild({
               commonSet,
               browserPlatforms,
               applyLavaMoat,
-              overrideSnow: true,
               destinationFileName: 'load-background.js',
             });
             if (process.env.ENABLE_MV3) {
@@ -828,6 +827,7 @@ function createFactoredBuild({
               commonSet,
               browserPlatforms,
               applyLavaMoat,
+              overrideSnow: true,
               destinationFileName: 'load-offscreen.js',
             });
             break;
@@ -1297,7 +1297,7 @@ function renderJavaScriptLoader({
   }
 
   const requiredScripts = [
-    ...(overrideSnow ? [] : ['./snow.js', './use-snow.js']),
+    ...(overrideSnow ? ['./use-snow.js'] : ['./snow.js', './use-snow.js']),
     ...securityScripts,
     // './sentry-install.js',
     ...jsBundles,
