@@ -3148,6 +3148,28 @@ export function completeOnboarding() {
   };
 }
 
+export function resetOnboarding(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch) => {
+    try {
+      await dispatch(setSeedPhraseBackedUp(false));
+      dispatch(resetOnboardingAction());
+    } catch (err) {
+      console.error(err);
+    }
+  };
+}
+
+export function resetOnboardingAction() {
+  return {
+    type: actionConstants.RESET_ONBOARDING,
+  };
+}
+
 export async function forceUpdateMetamaskState(
   dispatch: MetaMaskReduxDispatch,
 ) {
@@ -4538,6 +4560,10 @@ export function trackMetaMetricsPage(
     { ...payload, actionId: generateActionId() },
     options,
   ]);
+}
+
+export function resetViewedNotifications() {
+  return submitRequestToBackground('resetViewedNotifications');
 }
 
 export function updateViewedNotifications(notificationIdViewedStatusMap: {
