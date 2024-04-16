@@ -23,7 +23,7 @@ export enum TRIGGER_TYPES_GROUPS {
   DEFI = 'defi',
 }
 
-const chains = {
+export const NOTIFICATION_CHAINS = {
   ETHEREUM: '1',
   OPTIMISM: '10',
   BSC: '56',
@@ -34,13 +34,13 @@ const chains = {
 };
 
 export const SUPPORTED_CHAINS = [
-  chains.ETHEREUM,
-  chains.OPTIMISM,
-  chains.BSC,
-  chains.POLYGON,
-  chains.ARBITRUM,
-  chains.AVALANCHE,
-  chains.LINEA,
+  NOTIFICATION_CHAINS.ETHEREUM,
+  NOTIFICATION_CHAINS.OPTIMISM,
+  NOTIFICATION_CHAINS.BSC,
+  NOTIFICATION_CHAINS.POLYGON,
+  NOTIFICATION_CHAINS.ARBITRUM,
+  NOTIFICATION_CHAINS.AVALANCHE,
+  NOTIFICATION_CHAINS.LINEA,
 ];
 
 export type Trigger = {
@@ -55,87 +55,99 @@ type OnChainTriggerTypes = Exclude<
 export const TRIGGERS: Record<OnChainTriggerTypes, Trigger> = {
   [TRIGGER_TYPES.METAMASK_SWAP_COMPLETED]: {
     supported_chains: [
-      chains.ETHEREUM,
-      chains.OPTIMISM,
-      chains.BSC,
-      chains.POLYGON,
-      chains.ARBITRUM,
-      chains.AVALANCHE,
+      NOTIFICATION_CHAINS.ETHEREUM,
+      NOTIFICATION_CHAINS.OPTIMISM,
+      NOTIFICATION_CHAINS.BSC,
+      NOTIFICATION_CHAINS.POLYGON,
+      NOTIFICATION_CHAINS.ARBITRUM,
+      NOTIFICATION_CHAINS.AVALANCHE,
     ],
   },
   [TRIGGER_TYPES.ERC20_SENT]: {
     supported_chains: [
-      chains.ETHEREUM,
-      chains.OPTIMISM,
-      chains.BSC,
-      chains.POLYGON,
-      chains.ARBITRUM,
-      chains.AVALANCHE,
-      chains.LINEA,
+      NOTIFICATION_CHAINS.ETHEREUM,
+      NOTIFICATION_CHAINS.OPTIMISM,
+      NOTIFICATION_CHAINS.BSC,
+      NOTIFICATION_CHAINS.POLYGON,
+      NOTIFICATION_CHAINS.ARBITRUM,
+      NOTIFICATION_CHAINS.AVALANCHE,
+      NOTIFICATION_CHAINS.LINEA,
     ],
   },
   [TRIGGER_TYPES.ERC20_RECEIVED]: {
     supported_chains: [
-      chains.ETHEREUM,
-      chains.OPTIMISM,
-      chains.BSC,
-      chains.POLYGON,
-      chains.ARBITRUM,
-      chains.AVALANCHE,
-      chains.LINEA,
+      NOTIFICATION_CHAINS.ETHEREUM,
+      NOTIFICATION_CHAINS.OPTIMISM,
+      NOTIFICATION_CHAINS.BSC,
+      NOTIFICATION_CHAINS.POLYGON,
+      NOTIFICATION_CHAINS.ARBITRUM,
+      NOTIFICATION_CHAINS.AVALANCHE,
+      NOTIFICATION_CHAINS.LINEA,
     ],
   },
   [TRIGGER_TYPES.ERC721_SENT]: {
-    supported_chains: [chains.ETHEREUM, chains.POLYGON],
+    supported_chains: [
+      NOTIFICATION_CHAINS.ETHEREUM,
+      NOTIFICATION_CHAINS.POLYGON,
+    ],
   },
   [TRIGGER_TYPES.ERC721_RECEIVED]: {
-    supported_chains: [chains.ETHEREUM, chains.POLYGON],
+    supported_chains: [
+      NOTIFICATION_CHAINS.ETHEREUM,
+      NOTIFICATION_CHAINS.POLYGON,
+    ],
   },
   [TRIGGER_TYPES.ERC1155_SENT]: {
-    supported_chains: [chains.ETHEREUM, chains.POLYGON],
+    supported_chains: [
+      NOTIFICATION_CHAINS.ETHEREUM,
+      NOTIFICATION_CHAINS.POLYGON,
+    ],
   },
   [TRIGGER_TYPES.ERC1155_RECEIVED]: {
-    supported_chains: [chains.ETHEREUM, chains.POLYGON],
+    supported_chains: [
+      NOTIFICATION_CHAINS.ETHEREUM,
+      NOTIFICATION_CHAINS.POLYGON,
+    ],
   },
   [TRIGGER_TYPES.ETH_SENT]: {
     supported_chains: [
-      chains.ETHEREUM,
-      chains.OPTIMISM,
-      chains.BSC,
-      chains.POLYGON,
-      chains.ARBITRUM,
-      chains.AVALANCHE,
-      chains.LINEA,
+      NOTIFICATION_CHAINS.ETHEREUM,
+      NOTIFICATION_CHAINS.OPTIMISM,
+      NOTIFICATION_CHAINS.BSC,
+      NOTIFICATION_CHAINS.POLYGON,
+      NOTIFICATION_CHAINS.ARBITRUM,
+      NOTIFICATION_CHAINS.AVALANCHE,
+      NOTIFICATION_CHAINS.LINEA,
     ],
   },
   [TRIGGER_TYPES.ETH_RECEIVED]: {
     supported_chains: [
-      chains.ETHEREUM,
-      chains.OPTIMISM,
-      chains.BSC,
-      chains.POLYGON,
-      chains.ARBITRUM,
-      chains.AVALANCHE,
-      chains.LINEA,
+      NOTIFICATION_CHAINS.ETHEREUM,
+      NOTIFICATION_CHAINS.OPTIMISM,
+      NOTIFICATION_CHAINS.BSC,
+      NOTIFICATION_CHAINS.POLYGON,
+      NOTIFICATION_CHAINS.ARBITRUM,
+      NOTIFICATION_CHAINS.AVALANCHE,
+      NOTIFICATION_CHAINS.LINEA,
     ],
   },
   [TRIGGER_TYPES.ROCKETPOOL_STAKE_COMPLETED]: {
-    supported_chains: [chains.ETHEREUM],
+    supported_chains: [NOTIFICATION_CHAINS.ETHEREUM],
   },
   [TRIGGER_TYPES.ROCKETPOOL_UNSTAKE_COMPLETED]: {
-    supported_chains: [chains.ETHEREUM],
+    supported_chains: [NOTIFICATION_CHAINS.ETHEREUM],
   },
   [TRIGGER_TYPES.LIDO_STAKE_COMPLETED]: {
-    supported_chains: [chains.ETHEREUM],
+    supported_chains: [NOTIFICATION_CHAINS.ETHEREUM],
   },
   [TRIGGER_TYPES.LIDO_WITHDRAWAL_REQUESTED]: {
-    supported_chains: [chains.ETHEREUM],
+    supported_chains: [NOTIFICATION_CHAINS.ETHEREUM],
   },
   [TRIGGER_TYPES.LIDO_WITHDRAWAL_COMPLETED]: {
-    supported_chains: [chains.ETHEREUM],
+    supported_chains: [NOTIFICATION_CHAINS.ETHEREUM],
   },
   [TRIGGER_TYPES.LIDO_STAKE_READY_TO_BE_WITHDRAWN]: {
-    supported_chains: [chains.ETHEREUM],
+    supported_chains: [NOTIFICATION_CHAINS.ETHEREUM],
   },
 };
 

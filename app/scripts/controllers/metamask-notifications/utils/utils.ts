@@ -37,7 +37,7 @@ export class MetamaskNotificationsUtils {
    * @param trigger - The notification trigger from which the ID is extracted.
    * @returns The ID of the provided notification trigger.
    */
-  private triggerToId = (trigger: NotificationTrigger) => trigger.id;
+  private triggerToId = (trigger: NotificationTrigger): string => trigger.id;
 
   /**
    * A utility function that returns the input trigger without any transformation.
@@ -47,7 +47,9 @@ export class MetamaskNotificationsUtils {
    * @param trigger - The notification trigger to be returned as is.
    * @returns The same notification trigger that was passed in.
    */
-  private triggerIdentity = (trigger: NotificationTrigger) => trigger;
+  private triggerIdentity = (
+    trigger: NotificationTrigger,
+  ): NotificationTrigger => trigger;
 
   /**
    * Maps a given trigger type to its corresponding trigger group.
@@ -150,7 +152,7 @@ export class MetamaskNotificationsUtils {
   public traverseUserStorageTriggers<ResultTriggers = NotificationTrigger>(
     userStorage: UserStorage,
     options?: TraverseTriggerOpts<ResultTriggers>,
-  ) {
+  ): ResultTriggers[] {
     const triggers: ResultTriggers[] = [];
     const mapTrigger =
       options?.mapTrigger ??
@@ -294,32 +296,47 @@ export class MetamaskNotificationsUtils {
 
     // Initialize presence record for all accounts as false
     accounts.forEach((account) => {
-      presenceRecord[account.toLowerCase()] = false;
-    });
-
-    // Use traverseUserStorageTriggers to check presence of accounts and chains
-    this.traverseUserStorageTriggers(userStorage, {
-      mapTrigger: (trigger) => {
-        if (accounts.includes(trigger.address.toLowerCase())) {
-          // Mark account as present
-          presenceRecord[trigger.address.toLowerCase()] = true;
-        }
-        return undefined; // No need to transform the trigger
-      },
-    });
-
-    // After traversing, check if all accounts have been marked as present
-    Object.keys(presenceRecord).forEach((account) => {
-      // For each account, verify if all supported chains are present
-      const allChainsPresent = Object.values(TRIGGERS).some((trigger) =>
-        trigger.supported_chains.every((chain) =>
-          Object.prototype.hasOwnProperty.call(userStorage[account], chain),
-        ),
+      presenceRecord[account.toLowerCase()] = this.#isAccountEnabled(
+        account,
+        userStorage,
       );
-      presenceRecord[account] = presenceRecord[account] && allChainsPresent;
     });
 
     return presenceRecord;
+  }
+
+  #isAccountEnabled(accountAddress: string, userStorage: UserStorage): boolean {
+    const accountObject = userStorage[accountAddress?.toLowerCase()];
+
+    // If the account address is not present in the userStorage, return true
+    if (!accountObject) {
+      return false;
+    }
+
+    // Check if all available chains are present
+    for (const [triggerKind, triggerConfig] of Object.entries(TRIGGERS)) {
+      for (const chain of triggerConfig.supported_chains) {
+        if (!accountObject[chain]) {
+          return false;
+        }
+
+        const triggerExists = Object.values(accountObject[chain]).some(
+          (obj) => obj.k === triggerKind,
+        );
+        if (!triggerExists) {
+          return false;
+        }
+
+        // Check if any trigger is disabled
+        for (const uuid in accountObject[chain]) {
+          if (!accountObject[chain][uuid].e) {
+            return false;
+          }
+        }
+      }
+    }
+
+    return true;
   }
 
   /**
@@ -329,17 +346,16 @@ export class MetamaskNotificationsUtils {
    * @param userStorage - The user storage object containing notification triggers.
    * @returns An array of trigger kinds (`TRIGGER_TYPES`) that are enabled in the user storage.
    */
-  public inferEnabledKinds(userStorage: UserStorage) {
-    const kindsCountObj: Record<string, number> = {};
+  public inferEnabledKinds(userStorage: UserStorage): TRIGGER_TYPES[] {
+    const allSupportedKinds = new Set<TRIGGER_TYPES>();
 
     this.traverseUserStorageTriggers(userStorage, {
       mapTrigger: (t) => {
-        kindsCountObj[t.kind] ??= 0;
-        kindsCountObj[t.kind] += 1;
+        allSupportedKinds.add(t.kind as TRIGGER_TYPES);
       },
     });
 
-    return Object.keys(kindsCountObj) as TRIGGER_TYPES[];
+    return Array.from(allSupportedKinds);
   }
 
   /**
@@ -384,7 +400,10 @@ export class MetamaskNotificationsUtils {
    * @param allowedKinds - An array of kinds (as strings) to filter the triggers by.
    * @returns An array of UUID strings for triggers that match the allowed kinds.
    */
-  public getUUIDsForKinds(userStorage: UserStorage, allowedKinds: string[]) {
+  public getUUIDsForKinds(
+    userStorage: UserStorage,
+    allowedKinds: string[],
+  ): string[] {
     const kindsSet = new Set(allowedKinds);
 
     return this.traverseUserStorageTriggers(userStorage, {
@@ -479,6 +498,10 @@ export class MetamaskNotificationsUtils {
   ): UserStorage {
     // Iterate over each account in userStorage
     Object.entries(userStorage).forEach(([account, chains]) => {
+      if (account === (USER_STORAGE_VERSION_KEY as unknown as string)) {
+        return;
+      }
+
       // Iterate over each chain for the account
       Object.entries(chains).forEach(([chain, triggers]) => {
         // Check if the trigger type exists for the chain
