@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 import {
   MIN_AMOUNT,
-  MIN_AMOUNT_DECIMALS,
+  DEFAULT_PRECISION,
 } from '../../../../hooks/useCurrencyDisplay';
 
 // The number of significant decimals places to show for amounts less than 1.
@@ -9,13 +9,14 @@ const MAX_SIGNIFICANT_DECIMAL_PLACES = 3;
 
 const ZERO_DISPLAY = '0';
 
-export const formatAmountMaxPrecision = (
+export function formatAmountMaxPrecision(
   locale: string,
   num: number | BigNumber,
-): string =>
-  new Intl.NumberFormat(locale, {
+): string {
+  return new Intl.NumberFormat(locale, {
     minimumSignificantDigits: 1,
   }).format(new BigNumber(num.toString()).toNumber());
+}
 
 /**
  * Formats the a token amount with variable precision and significant
@@ -65,7 +66,7 @@ export function formatAmount(locale: string, amount: BigNumber): string {
     return new Intl.NumberFormat(locale, {
       maximumSignificantDigits: MAX_SIGNIFICANT_DECIMAL_PLACES,
     } as Intl.NumberFormatOptions).format(
-      amount.round(MIN_AMOUNT_DECIMALS).toNumber(),
+      amount.round(DEFAULT_PRECISION).toNumber(),
     );
   }
 

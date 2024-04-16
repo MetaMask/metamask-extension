@@ -22,7 +22,7 @@ const MIN_AMOUNT_DISPLAY = `<${MIN_AMOUNT}`;
 
 // The default precision for displaying currency values.
 // It set to the number of decimal places in the minimum amount.
-export const MIN_AMOUNT_DECIMALS = new BigNumber(MIN_AMOUNT).decimalPlaces();
+export const DEFAULT_PRECISION = new BigNumber(MIN_AMOUNT).decimalPlaces();
 
 /**
  * Defines the shape of the options parameter for useCurrencyDisplay
@@ -74,7 +74,7 @@ export function useCurrencyDisplay(
     ) {
       const ethDisplayValue = new Numeric(inputValue, 16, EtherDenomination.WEI)
         .toDenomination(denomination || EtherDenomination.ETH)
-        .round(numberOfDecimals || MIN_AMOUNT_DECIMALS)
+        .round(numberOfDecimals || DEFAULT_PRECISION)
         .toBase(10)
         .toString();
 

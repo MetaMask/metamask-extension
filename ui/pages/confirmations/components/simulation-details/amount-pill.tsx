@@ -46,10 +46,7 @@ export const AmountPill: React.FC<{
   // ERC721 amounts are always 1 and are not displayed.
   if (asset.standard !== TokenStandard.ERC721) {
     const formattedAmount = formatAmount(locale, amount.abs());
-    const fullPrecisionAmount = formatAmountMaxPrecision(
-      locale,
-      amount.abs().toNumber(),
-    );
+    const fullPrecisionAmount = formatAmountMaxPrecision(locale, amount.abs());
 
     amountParts.push(formattedAmount);
     tooltipParts.push(fullPrecisionAmount);
