@@ -931,6 +931,7 @@ export function getCustomNonceValue(state) {
 }
 
 export function getSubjectMetadata(state) {
+  console.log('getSubjectMetadata', state.metamask.subjectMetadata)
   return state.metamask.subjectMetadata;
 }
 

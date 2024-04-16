@@ -445,7 +445,6 @@ function logStreamDisconnectWarning(remoteLabel, error) {
 function extensionStreamMessageListener(msg) {
   if (
     METAMASK_EXTENSION_CONNECT_SENT &&
-    isManifestV3 &&
     msg.data.method === 'metamask_chainChanged'
   ) {
     METAMASK_EXTENSION_CONNECT_SENT = false;
