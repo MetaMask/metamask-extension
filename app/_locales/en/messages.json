@@ -5128,6 +5128,9 @@
   "swapReviewSwap": {
     "message": "Review swap"
   },
+  "swapSearchNameOrAddress": {
+    "message": "Search name or paste address"
+  },
   "swapSelect": {
     "message": "Select"
   },
