@@ -34,7 +34,7 @@ export default class SendContent extends Component {
     recipient: PropTypes.object,
     acknowledgeRecipientWarning: PropTypes.func,
     recipientWarningAcknowledged: PropTypes.bool,
-    hasLayer1GasFee: PropTypes.string,
+    hasLayer1GasFee: PropTypes.bool,
   };
 
   render() {

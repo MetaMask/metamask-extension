@@ -58,11 +58,19 @@ const GasDetailsItem = ({
 
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const getTransactionFeeTotal = useMemo(() => {
-    return sumHexes(hexMinimumTransactionFee, layer1GasFee || 0);
+    if (layer1GasFee) {
+      return sumHexes(hexMinimumTransactionFee, layer1GasFee);
+    }
+
+    return hexMinimumTransactionFee;
   }, [hexMinimumTransactionFee, layer1GasFee]);
 
   const getMaxTransactionFeeTotal = useMemo(() => {
-    return sumHexes(hexMaximumTransactionFee, layer1GasFee || 0);
+    if (layer1GasFee) {
+      return sumHexes(hexMaximumTransactionFee, layer1GasFee);
+    }
+
+    return hexMaximumTransactionFee;
   }, [hexMaximumTransactionFee, layer1GasFee]);
 
   if (hasSimulationError && !userAcknowledgedGasMissing) {
