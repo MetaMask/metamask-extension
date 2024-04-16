@@ -25,7 +25,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
-import { MMI_ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
+import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
 import RecoveryPhraseChips from '../../onboarding-flow/recovery-phrase/recovery-phrase-chips';
 
 /**
@@ -122,7 +122,7 @@ export const RemindSRP: React.FC<{ secretRecoveryPhrase: string }> = ({
           type="primary"
           large
           onClick={() => {
-            history.replace(MMI_ONBOARDING_COMPLETION_ROUTE);
+            history.replace(ONBOARDING_PIN_EXTENSION_ROUTE);
           }}
         >
           {t('continue')}
