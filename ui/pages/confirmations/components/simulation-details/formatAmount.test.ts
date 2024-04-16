@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 import { formatAmount } from './formatAmount';
 
-describe('formatAbsoluteAmount', () => {
+describe('formatAmount', () => {
   const locale = 'en-US';
 
   it('returns "0" for zero amount', () => {
@@ -33,7 +33,8 @@ describe('formatAbsoluteAmount', () => {
     [121.456, '121.5'],
     [1034.123, '1,034'],
     [47361034.006, '47,361,034'],
-    [12130982923409.5, '12,130,982,923,410'],
+    ['12130982923409.5', '12,130,982,923,410'],
+    ['1213098292340944.5', '1,213,098,292,340,945'],
   ])(
     'formats amount greater than or equal to 1 with appropriate decimal precision (%s => %s)',
     (amount, expected) => {
