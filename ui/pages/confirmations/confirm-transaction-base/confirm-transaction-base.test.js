@@ -44,7 +44,6 @@ setBackgroundConnection({
     }),
   ),
   getGasFeeTimeEstimate: jest.fn(),
-
   promisifiedBackground: jest.fn(),
   tryReverseResolveAddress: jest.fn(),
   getNextNonce: jest.fn(),

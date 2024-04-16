@@ -58,7 +58,6 @@ jest.mock('../../../store/actions', () => ({
     }),
   ),
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
-
   addPollingTokenToAppState: jest.fn(),
   removePollingTokenFromAppState: jest.fn(),
   updateTransactionGasFees: () => ({ type: 'UPDATE_TRANSACTION_PARAMS' }),
