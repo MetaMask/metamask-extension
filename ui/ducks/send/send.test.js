@@ -129,7 +129,7 @@ describe('Send Slice', () => {
     jest
       .spyOn(Actions, 'estimateGas')
       .mockImplementation(() => Promise.resolve('0x0'));
-      jest
+    jest
       .spyOn(Actions, 'gasFeeStartPollingByNetworkClientId')
       .mockImplementation(() => Promise.resolve('pollToken'));
     jest
