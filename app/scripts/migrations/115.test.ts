@@ -179,7 +179,6 @@ describe('migration #115', () => {
         providerType: NETWORK_TYPES.LINEA_SEPOLIA,
         ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_SEPOLIA],
         id: NETWORK_TYPES.LINEA_SEPOLIA,
-        removable: false,
       },
       selectedNetworkClientId: 'linea-sepolia',
     };
