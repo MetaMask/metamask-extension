@@ -38,10 +38,10 @@ import TransactionDetailItem from '../components/transaction-detail-item/transac
 import LoadingHeartBeat from '../../../components/ui/loading-heartbeat';
 import LedgerInstructionField from '../components/ledger-instruction-field';
 import {
-  disconnectGasFeeEstimatePoller,
-  getGasFeeEstimatesAndStartPolling,
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
+  gasFeeStartPollingByNetworkClientId,
+  gasFeeStopPollingByPollingToken,
 } from '../../../store/actions';
 
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
@@ -180,6 +180,7 @@ export default class ConfirmTransactionBase extends Component {
     isSmartTransaction: PropTypes.bool,
     smartTransactionsOptInStatus: PropTypes.bool,
     currentChainSupportsSmartTransactions: PropTypes.bool,
+    selectedNetworkClientId: PropTypes.string,
   };
 
   state = {
@@ -981,7 +982,7 @@ export default class ConfirmTransactionBase extends Component {
   _beforeUnloadForGasPolling = () => {
     this._isMounted = false;
     if (this.state.pollingToken) {
-      disconnectGasFeeEstimatePoller(this.state.pollingToken);
+      gasFeeStopPollingByPollingToken(this.state.pollingToken);
       removePollingTokenFromAppState(this.state.pollingToken);
     }
   };
@@ -1022,15 +1023,17 @@ export default class ConfirmTransactionBase extends Component {
      * This makes a request to get estimates and begin polling, keeping track of the poll
      * token in component state.
      * It then disconnects polling upon componentWillUnmount. If the hook is unmounted
-     * while waiting for `getGasFeeEstimatesAndStartPolling` to resolve, the `_isMounted`
+     * while waiting for `gasFeeStartPollingByNetworkClientId` to resolve, the `_isMounted`
      * flag ensures that a call to disconnect happens after promise resolution.
      */
-    getGasFeeEstimatesAndStartPolling().then((pollingToken) => {
+    gasFeeStartPollingByNetworkClientId(
+      this.props.selectedNetworkClientId,
+    ).then((pollingToken) => {
       if (this._isMounted) {
         addPollingTokenToAppState(pollingToken);
         this.setState({ pollingToken });
       } else {
-        disconnectGasFeeEstimatePoller(pollingToken);
+        gasFeeStopPollingByPollingToken(pollingToken);
         removePollingTokenFromAppState(this.state.pollingToken);
       }
     });

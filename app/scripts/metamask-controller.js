@@ -3524,14 +3524,6 @@ export default class MetamaskController extends EventEmitter {
       gasFeeStopPollingByPollingToken:
         gasFeeController.stopPollingByPollingToken.bind(gasFeeController),
 
-      getGasFeeEstimatesAndStartPolling:
-        gasFeeController.getGasFeeEstimatesAndStartPolling.bind(
-          gasFeeController,
-        ),
-
-      disconnectGasFeeEstimatePoller:
-        gasFeeController.disconnectPoller.bind(gasFeeController),
-
       getGasFeeTimeEstimate:
         gasFeeController.getTimeEstimate.bind(gasFeeController),
 
