@@ -790,6 +790,7 @@ function createFactoredBuild({
               commonSet,
               browserPlatforms,
               applyLavaMoat,
+              overrideSnow: true,
               destinationFileName: 'load-background.js',
             });
             if (process.env.ENABLE_MV3) {
@@ -1268,6 +1269,8 @@ function renderJavaScriptLoader({
   browserPlatforms,
   applyLavaMoat,
   destinationFileName,
+  overrideLavamoatRuntime = false,
+  overrideSnow = false,
 }) {
   if (applyLavaMoat === undefined) {
     throw new Error(
@@ -1279,20 +1282,24 @@ function renderJavaScriptLoader({
     (label) => `./${label}.js`,
   );
 
-  const securityScripts = applyLavaMoat
-    ? ['./runtime-lavamoat.js', './lockdown-more.js', './policy-load.js']
-    : [
-        './lockdown-install.js',
-        './lockdown-run.js',
-        './lockdown-more.js',
-        './runtime-cjs.js',
-      ];
+  let securityScripts = [
+    './lockdown-install.js',
+    './lockdown-run.js',
+    './lockdown-more.js',
+    './runtime-cjs.js',
+  ];
+
+  if (applyLavaMoat) {
+    securityScripts = ['./lockdown-more.js', './policy-load.js'];
+    if (overrideLavamoatRuntime === false) {
+      securityScripts.unshift('./runtime-lavamoat.js');
+    }
+  }
 
   const requiredScripts = [
-    './snow.js',
-    './use-snow.js',
-    './sentry-install.js',
+    ...(overrideSnow ? [] : ['./snow.js', './use-snow.js']),
     ...securityScripts,
+    // './sentry-install.js',
     ...jsBundles,
   ];
 
