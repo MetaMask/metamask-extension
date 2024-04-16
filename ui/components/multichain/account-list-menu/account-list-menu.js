@@ -396,7 +396,6 @@ export const AccountListMenu = ({
                       selected={selectedAccount.address === account.address}
                       closeMenu={onClose}
                       connectedAvatar={connectedSite?.iconUrl}
-                      connectedAvatarName={connectedSite?.name}
                       menuType={AccountListItemMenuTypes.Account}
                       isPinned={Boolean(account.pinned)}
                       isHidden={Boolean(account.hidden)}

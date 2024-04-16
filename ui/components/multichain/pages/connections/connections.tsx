@@ -258,7 +258,6 @@ export const Connections = () => {
                   accountsCount={mergedAccounts.length}
                   selected={isSelectedAccount}
                   connectedAvatar={connectedSite?.iconUrl}
-                  connectedAvatarName={connectedSite?.name}
                   menuType={AccountListItemMenuTypes.Connection}
                   currentTabOrigin={activeTabOrigin}
                   isActive={
