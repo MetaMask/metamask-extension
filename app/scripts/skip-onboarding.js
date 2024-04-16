@@ -4,6 +4,7 @@ import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { defaultFixture } from '../../test/e2e/default-fixture';
 import { encryptorFactory } from './lib/encryptor-factory';
+import { networkConfigurations as additionalConfigurations } from '../../test/e2e/fixture-data-with-networks';
 
 const E2E_SRP =
   'spread raise short crane omit tent fringe mandate neglect detail suspect cradle';
@@ -72,6 +73,7 @@ function generateNetworkControllerState() {
       type: 'sepolia',
     },
     networkConfigurations: {
+      ...additionalConfigurations,
       networkConfigurationId: {
         chainId: '0xaa36a7',
         nickname: 'Sepolia',
