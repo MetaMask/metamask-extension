@@ -561,18 +561,15 @@ export default class ConfirmTransactionBase extends Component {
           isBuyableChain={isBuyableChain}
           tokenSymbol={tokenSymbol}
           isUsingPaymaster={isUsingPaymaster}
-          renderSimulationFailureWarning={renderSimulationFailureWarning}
         />
         {simulationDetails}
-        <TransactionDetail
-          disableEditGasFeeButton
-          disabled={isDisabled()}
-          userAcknowledgedGasMissing={userAcknowledgedGasMissing}
-          onEdit={
-            renderSimulationFailureWarning ? null : () => this.handleEditGas()
-          }
-          rows={[
-            !renderSimulationFailureWarning && (
+        {!renderSimulationFailureWarning && (
+          <TransactionDetail
+            disableEditGasFeeButton
+            disabled={isDisabled()}
+            userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+            onEdit={() => this.handleEditGas()}
+            rows={[
               <div key="confirm-transaction-base_confirm-gas-display">
                 <ConfirmGasDisplay
                   userAcknowledgedGasMissing={userAcknowledgedGasMissing}
@@ -581,10 +578,10 @@ export default class ConfirmTransactionBase extends Component {
                   useCurrencyRateCheck={useCurrencyRateCheck}
                   txData={txData}
                 />
-              </div>
-            ),
-          ]}
-        />
+              </div>,
+            ]}
+          />
+        )}
         {showTotals && (
           <TransactionDetail
             disableEditGasFeeButton
