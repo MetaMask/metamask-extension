@@ -5679,7 +5679,6 @@ export default class MetamaskController extends EventEmitter {
    */
   onClientClosed() {
     try {
-      this.gasFeeController.stopPolling();
       this.gasFeeController.stopAllPolling();
       this.appStateController.clearPollingTokens();
     } catch (error) {
@@ -5699,7 +5698,6 @@ export default class MetamaskController extends EventEmitter {
     const pollingTokensToDisconnect =
       this.appStateController.store.getState()[appStatePollingTokenType];
     pollingTokensToDisconnect.forEach((pollingToken) => {
-      this.gasFeeController.disconnectPoller(pollingToken);
       this.gasFeeController.stopPollingByPollingToken(pollingToken);
       this.appStateController.removePollingToken(
         pollingToken,
