@@ -690,7 +690,7 @@ function createFactoredBuild({
               const jsBundles = [
                 ...commonSet.values(),
                 ...groupSet.values(),
-              ].map((label) => `./${label}.js`);
+              ].map((label) => `../${label}.js`);
               await createManifestV3AppInitializationBundle({
                 applyLavaMoat,
                 browserPlatforms,
