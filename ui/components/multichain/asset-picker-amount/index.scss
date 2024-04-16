@@ -42,14 +42,12 @@
         text-overflow: ellipsis;
       }
 
-      // primary field elements (e.g., input field, symbols)
-      & > .currency-input__conversion-component > span {
-        color: var(--color-text-alternative);
-        font-size: design-system.$font-size-h6;
-      }
-
       // converted (secondary) value
       & > div.currency-input__conversion-component {
+        & > span{
+          color: var(--color-text-alternative);
+        }
+        @include design-system.H7;
         text-overflow: ellipsis;
         overflow: hidden;
         display: inline;
