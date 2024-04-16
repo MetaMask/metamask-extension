@@ -24,9 +24,9 @@ import {
   ModalContent,
   ButtonLink,
   ButtonLinkSize,
-  AvatarIcon,
+  Icon,
   IconName,
-  AvatarIconSize,
+  IconSize,
 } from '../../component-library';
 import { setSmartTransactionsOptInStatus } from '../../../store/actions';
 import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../shared/constants/smartTransactions';
@@ -119,9 +119,9 @@ const Benefit = ({ text, iconName }: { text: string; iconName: IconName }) => {
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.flexStart}
     >
-      <AvatarIcon
-        iconName={iconName}
-        size={AvatarIconSize.Md}
+      <Icon
+        name={iconName}
+        size={IconSize.Xl}
         color={IconColor.primaryDefault}
       />
       <Text
@@ -143,6 +143,8 @@ const Benefits = () => {
       flexDirection={FlexDirection.Row}
       justifyContent={JustifyContent.center}
       marginTop={4}
+      paddingLeft={5}
+      paddingRight={5}
     >
       <Benefit
         text={t('smartTransactionsBenefit1')}
