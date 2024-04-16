@@ -1,6 +1,6 @@
 import { TRIGGER_TYPES } from '../constants/notification-schema';
 import {
-  createMockFeatureAnnouncementResult,
+  createMockFeatureAnnouncementAPIResult,
   mockFetchFeatureAnnouncementNotifications,
 } from '../mocks/mock-feature-announcements';
 import { FeatureAnnouncementsService } from './feature-announcements';
@@ -43,7 +43,7 @@ describe('Feature Announcement Notifications', () => {
   it('should fetch entries from Contentful and return formatted notifications', async () => {
     const mockEndpoint = mockFetchFeatureAnnouncementNotifications({
       status: 200,
-      body: createMockFeatureAnnouncementResult(),
+      body: createMockFeatureAnnouncementAPIResult(),
     });
 
     const notifications = await service.getFeatureAnnouncementNotifications();
