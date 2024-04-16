@@ -25,6 +25,7 @@ import {
   getOrderedConnectedAccountsForConnectedDapp,
   getPermissionSubjects,
   getPermittedAccountsByOrigin,
+  getPermittedAccountsForCurrentTab,
   getSelectedAccount,
   getSubjectMetadata,
 } from '../../../../selectors';
@@ -134,6 +135,7 @@ export const Connections = () => {
     history.push(`${CONNECT_ROUTE}/${requestId}`);
   };
   const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
+  const permittedAccounts = useSelector(getPermittedAccountsForCurrentTab);
 
   const disconnectAllAccounts = () => {
     const subject = (subjects as SubjectsType)[activeTabOrigin];
@@ -231,7 +233,7 @@ export const Connections = () => {
         </Box>
       </Header>
       <Content padding={0}>
-        {connectedSubjectsMetadata && mergeAccounts.length > 0 ? (
+        {permittedAccounts.length > 0 && mergeAccounts.length > 0 ? (
           <Box>
             {/* TODO: Replace `any` with type */}
             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
@@ -300,9 +302,9 @@ export const Connections = () => {
                 onClose={() => setShowConnectedAccountsUpdatedToast(false)}
                 startAdornment={
                   <AvatarFavicon
-                    name={connectedSubjectsMetadata.name}
+                    name={connectedSubjectsMetadata?.name}
                     size={AvatarFaviconSize.Sm}
-                    src={connectedSubjectsMetadata.iconUrl}
+                    src={connectedSubjectsMetadata?.iconUrl}
                   />
                 }
               />
@@ -319,9 +321,9 @@ export const Connections = () => {
                 }
                 startAdornment={
                   <AvatarFavicon
-                    name={connectedSiteMetadata.name}
+                    name={connectedSiteMetadata?.name}
                     size={AvatarFaviconSize.Sm}
-                    src={connectedSiteMetadata.iconUrl}
+                    src={connectedSiteMetadata?.iconUrl}
                   />
                 }
               />
@@ -337,15 +339,15 @@ export const Connections = () => {
                 onClose={() => setShowAccountDisconnectedToast('')}
                 startAdornment={
                   <AvatarFavicon
-                    name={connectedSubjectsMetadata.name}
+                    name={connectedSiteMetadata?.name}
                     size={AvatarFaviconSize.Sm}
-                    src={connectedSubjectsMetadata.iconUrl}
+                    src={connectedSiteMetadata?.iconUrl}
                   />
                 }
               />
             </ToastContainer>
           ) : null}
-          {connectedSubjectsMetadata && mergeAccounts.length > 0 ? (
+          {permittedAccounts.length > 0 && mergeAccounts.length > 0 ? (
             <Box
               display={Display.Flex}
               gap={2}
