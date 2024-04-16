@@ -150,6 +150,7 @@ export const CHAIN_IDS = {
   TEST_ETH: '0x539',
   ARBITRUM_GOERLI: '0x66eed',
   BLAST: '0x13e31',
+  FILECOIN: '0x13a',
 } as const;
 
 const CHAINLIST_CHAIN_IDS_MAP = {
@@ -203,6 +204,7 @@ const CHAINLIST_CHAIN_IDS_MAP = {
   VELAS_EVM_MAINNET: '0x6a',
   ZKATANA: '0x133e40',
   ZORA_MAINNET: '0x76adf1',
+  FILECOIN: '0x13a',
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
@@ -419,6 +421,7 @@ export const TENET_MAINNET_IMAGE_URL = './images/tenet.svg';
 export const VELAS_EVM_MAINNET_IMAGE_URL = './images/velas.svg';
 export const ZKATANA_MAINNET_IMAGE_URL = './images/zkatana.png';
 export const ZORA_MAINNET_IMAGE_URL = './images/zora.svg';
+export const FILECOIN_MAINNET_IMAGE_URL = './images/filecoin.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -726,6 +729,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.VELAS_EVM_MAINNET]: VELAS_EVM_MAINNET_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.ZKATANA]: ZKATANA_MAINNET_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.ZORA_MAINNET]: ZORA_MAINNET_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.FILECOIN]: FILECOIN_MAINNET_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -747,6 +751,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.CELO]: CELO_TOKEN_IMAGE_URL,
   [CHAIN_IDS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
   [CHAIN_IDS.FANTOM]: FTM_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.FILECOIN]: FILECOIN_MAINNET_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
@@ -887,6 +892,7 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.AURORA
     | typeof CHAIN_IDS.ARBITRUM_GOERLI
     | typeof CHAIN_IDS.BLAST
+    | typeof CHAIN_IDS.FILECOIN
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {

@@ -2275,6 +2275,23 @@ export function abortTransactionSigning(
   };
 }
 
+export function getLayer1GasFee({
+  chainId,
+  networkClientId,
+  transactionParams,
+}: {
+  chainId?: Hex;
+  networkClientId?: NetworkClientId;
+  transactionParams: TransactionParams;
+}): // TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ThunkAction<Promise<void>, MetaMaskReduxState, any, AnyAction> {
+  return async () =>
+    await submitRequestToBackground('getLayer1GasFee', [
+      { chainId, networkClientId, transactionParams },
+    ]);
+}
+
 export function createCancelTransaction(
   txId: string,
   customGasSettings: CustomGasSettings,
@@ -3132,6 +3149,28 @@ export function setCompletedOnboarding(): ThunkAction<
 export function completeOnboarding() {
   return {
     type: actionConstants.COMPLETE_ONBOARDING,
+  };
+}
+
+export function resetOnboarding(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch) => {
+    try {
+      await dispatch(setSeedPhraseBackedUp(false));
+      dispatch(resetOnboardingAction());
+    } catch (err) {
+      console.error(err);
+    }
+  };
+}
+
+export function resetOnboardingAction() {
+  return {
+    type: actionConstants.RESET_ONBOARDING,
   };
 }
 
@@ -4525,6 +4564,10 @@ export function trackMetaMetricsPage(
     { ...payload, actionId: generateActionId() },
     options,
   ]);
+}
+
+export function resetViewedNotifications() {
+  return submitRequestToBackground('resetViewedNotifications');
 }
 
 export function updateViewedNotifications(notificationIdViewedStatusMap: {
