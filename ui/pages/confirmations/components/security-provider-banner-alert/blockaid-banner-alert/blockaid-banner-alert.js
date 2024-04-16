@@ -33,7 +33,7 @@ const REASON_TO_DESCRIPTION_TKEY = Object.freeze({
 
   [BlockaidReason.blurFarming]: 'blockaidDescriptionBlurFarming',
 
-  [BlockaidReason.errored]: 'blockaidDescriptionErrored',
+  [BlockaidReason.errored]: 'blockaidDescriptionErrored', // TODO: change in i8n
 
   [BlockaidReason.seaportFarming]: 'blockaidDescriptionSeaportFarming',
 
