@@ -220,8 +220,6 @@ export function AssetPickerModal({
                         <img src="./images/no-nfts.svg" />
                       </Box>
                       <Box
-                        marginTop={4}
-                        marginBottom={12}
                         display={Display.Flex}
                         justifyContent={JustifyContent.center}
                         alignItems={AlignItems.center}
