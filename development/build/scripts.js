@@ -559,12 +559,17 @@ function createFactoredBuild({
         __dirname,
         `../../lavamoat/browserify/${buildType}/policy.json`,
       ),
+      policyDebug: path.resolve(
+        __dirname,
+        `../../lavamoat/browserify/${buildType}/policy-debug.json`,
+      ),
       policyName: buildType,
       policyOverride: path.resolve(
         __dirname,
         `../../lavamoat/browserify/policy-override.json`,
       ),
       writeAutoPolicy: process.env.WRITE_AUTO_POLICY,
+      writeAutoPolicyDebug: process.env.WRITE_AUTO_POLICY_DEBUG,
     };
     Object.assign(bundlerOpts, lavamoatBrowserify.args);
     bundlerOpts.plugin.push([lavamoatBrowserify, lavamoatOpts]);
