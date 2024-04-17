@@ -56,12 +56,12 @@ const HeaderInfo = () => {
 
   function trackAccountModalOpened() {
     trackEvent({
-      event: MetaMetricsEventName.AccountDetailsOpened,
       category: MetaMetricsEventCategory.Transactions,
+      event: MetaMetricsEventName.AccountDetailsOpened,
       properties: {
         action: 'Confirm Screen',
-        signature_type: currentConfirmation?.type,
         location: MetaMetricsEventLocation.SignatureConfirmation,
+        signature_type: currentConfirmation?.type,
       },
     });
   }
