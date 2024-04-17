@@ -113,7 +113,9 @@ describe('Privacy Settings Onboarding View', () => {
     // toggle to false
     fireEvent.click(toggles[0]); // toggleExternalServicesStub
     fireEvent.click(toggles[1]); // setIncomingTransactionsPreferencesStub
-    fireEvent.click(toggles[4]); // setIncomingTransactionsPreferencesStub (2)
+    fireEvent.click(toggles[2]); // setIncomingTransactionsPreferencesStub (2)
+    fireEvent.click(toggles[3]); // setIncomingTransactionsPreferencesStub (3)
+    fireEvent.click(toggles[4]); // setIncomingTransactionsPreferencesStub (4)
     fireEvent.click(toggles[5]); // setUsePhishDetectStub
     fireEvent.click(toggles[6]); // setUse4ByteResolutionStub
     fireEvent.click(toggles[7]); // setUseTokenDetectionStub
@@ -127,7 +129,7 @@ describe('Privacy Settings Onboarding View', () => {
     fireEvent.click(submitButton);
 
     expect(toggleExternalServicesStub).toHaveBeenCalledTimes(1);
-    expect(setIncomingTransactionsPreferencesStub).toHaveBeenCalledTimes(2);
+    expect(setIncomingTransactionsPreferencesStub).toHaveBeenCalledTimes(4);
     expect(setUsePhishDetectStub).toHaveBeenCalledTimes(1);
     expect(setUse4ByteResolutionStub).toHaveBeenCalledTimes(1);
     expect(setUseTokenDetectionStub).toHaveBeenCalledTimes(1);
