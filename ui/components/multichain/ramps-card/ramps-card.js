@@ -20,7 +20,7 @@ import useRamps, {
   RampsMetaMaskEntry,
 } from '../../../hooks/experiences/useRamps';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
-import { getLocaleNotSafeForIntl } from '../../../ducks/locale/locale';
+import { getCurrentLocale } from '../../../ducks/locale/locale';
 
 const darkenGradient =
   'linear-gradient(rgba(0, 0, 0, 0.12),rgba(0, 0, 0, 0.12))';
@@ -67,7 +67,7 @@ export const RampsCard = ({ variant }) => {
     RAMPS_CARD_VARIANTS[variant];
   const { openBuyCryptoInPdapp } = useRamps(metamaskEntryMap[variant]);
   const trackEvent = useContext(MetaMetricsContext);
-  const currentLocale = useSelector(getLocaleNotSafeForIntl);
+  const currentLocale = useSelector(getCurrentLocale);
   const { chainId, nickname } = useSelector(getCurrentNetwork);
   const { symbol = 'ETH' } = useSelector(getSwapsDefaultToken);
 

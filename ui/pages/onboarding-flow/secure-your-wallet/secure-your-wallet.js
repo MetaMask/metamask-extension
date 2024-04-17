@@ -20,7 +20,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../helpers/constants/routes';
-import { getLocaleNotSafeForIntl } from '../../../ducks/locale/locale';
+import { getCurrentLocale } from '../../../ducks/locale/locale';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -38,7 +38,7 @@ export default function SecureYourWallet() {
   const history = useHistory();
   const t = useI18nContext();
   const { search } = useLocation();
-  const currentLocale = useSelector(getLocaleNotSafeForIntl);
+  const currentLocale = useSelector(getCurrentLocale);
   const [showSkipSRPBackupPopover, setShowSkipSRPBackupPopover] =
     useState(false);
   const searchParams = new URLSearchParams(search);
