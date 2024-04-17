@@ -454,7 +454,8 @@ export const SmartTransactionStatusPage = ({
   }, []);
 
   const canShowSimulationDetails =
-    fullTxData.simulationData?.tokenBalanceChanges?.length > 0;
+    fullTxData.simulationData?.tokenBalanceChanges?.length > 0 ||
+    fullTxData.simulationData?.nativeBalanceChange;
   const uuid = smartTransaction?.uuid;
   const portfolioSmartTransactionStatusUrl =
     uuid && chainId
