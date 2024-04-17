@@ -5330,9 +5330,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/queued-request-controller@npm:^0.8.0":
-  version: 0.8.0
-  resolution: "@metamask/queued-request-controller@npm:0.8.0"
+"@metamask/queued-request-controller@npm:^0.9.0":
+  version: 0.9.0
+  resolution: "@metamask/queued-request-controller@npm:0.9.0"
   dependencies:
     "@metamask/base-controller": "npm:^5.0.1"
     "@metamask/controller-utils": "npm:^9.1.0"
@@ -5342,8 +5342,8 @@ __metadata:
     "@metamask/utils": "npm:^8.3.0"
   peerDependencies:
     "@metamask/network-controller": ^18.0.0
-    "@metamask/selected-network-controller": ^11.0.0
-  checksum: dc30430a6055ca44ee3d70342d75d5604bdcc2d0dde55108f38a4fc16117bc709d6e2f47458b7ca82c9c6423c3116ff3c752f8c65a654718fdbcacf7a325d1b8
+    "@metamask/selected-network-controller": ^12.0.0
+  checksum: 44ce97a9ff375787f3b96b420a8a2132218559c92282d2f2ba3940117400b3fa340606378e9f221a698e8f5d2f91ac4f9a94f3d3aded577ca47f89e7514bd9bc
   languageName: node
   linkType: hard
 
@@ -5392,9 +5392,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/selected-network-controller@npm:^11.0.0":
-  version: 11.0.0
-  resolution: "@metamask/selected-network-controller@npm:11.0.0"
+"@metamask/selected-network-controller@npm:^12.0.0":
+  version: 12.0.0
+  resolution: "@metamask/selected-network-controller@npm:12.0.0"
   dependencies:
     "@metamask/base-controller": "npm:^5.0.1"
     "@metamask/json-rpc-engine": "npm:^8.0.1"
@@ -5405,7 +5405,7 @@ __metadata:
   peerDependencies:
     "@metamask/network-controller": ^18.0.0
     "@metamask/permission-controller": ^9.0.0
-  checksum: d674d36deff984da679d22e65b3b3827a9e667f8f39ce87e4ae327210609f7ae57fca57c1127b34c880361e188302c94c87bb75ab08db15b6b52341b976961a0
+  checksum: 849c2aff4b6b6b6f715f22ddd4b1b4554438eded0c1d0215756654823e1aae678ff8f887723f3aabb1d892cc033162431a4e18911f437d991c1deda8388b456e
   languageName: node
   linkType: hard
 
@@ -24802,11 +24802,11 @@ __metadata:
     "@metamask/post-message-stream": "npm:^8.0.0"
     "@metamask/ppom-validator": "npm:^0.29.0"
     "@metamask/providers": "npm:^14.0.2"
-    "@metamask/queued-request-controller": "npm:^0.8.0"
+    "@metamask/queued-request-controller": "npm:^0.9.0"
     "@metamask/rate-limit-controller": "npm:^3.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
-    "@metamask/selected-network-controller": "npm:^11.0.0"
+    "@metamask/selected-network-controller": "npm:^12.0.0"
     "@metamask/signature-controller": "npm:^12.0.0"
     "@metamask/smart-transactions-controller": "npm:^8.1.0"
     "@metamask/snaps-controllers": "npm:^7.0.1"
