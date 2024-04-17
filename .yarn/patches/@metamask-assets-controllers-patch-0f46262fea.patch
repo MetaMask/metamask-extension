@@ -1,0 +1,36 @@
+diff --git a/dist/NftDetectionController.js b/dist/NftDetectionController.js
+index 24373e328d3600d1168914a3dc0bbbd905b19ebe..eb8b52237cb53cd9d5ffb880255600a307fc4e95 100644
+--- a/dist/NftDetectionController.js
++++ b/dist/NftDetectionController.js
+@@ -36,7 +36,7 @@ class NftDetectionController extends polling_controller_1.StaticIntervalPollingC
+      * @param config - Initial options used to configure this controller.
+      * @param state - Initial state to set on this controller.
+      */
+-    constructor({ chainId: initialChainId, getNetworkClientById, onPreferencesStateChange, onNetworkStateChange, getOpenSeaApiKey, addNft, getNftApi, getNftState, }, config, state) {
++    constructor({ chainId: initialChainId, getNetworkClientById, onPreferencesStateChange, onNetworkStateChange, getOpenSeaApiKey, addNft, getNftApi, getNftState, disabled: initialDisabled, }, config, state) {
+         super(config, state);
+         /**
+          * Name of this controller used during composition
+@@ -55,16 +55,18 @@ class NftDetectionController extends polling_controller_1.StaticIntervalPollingC
+             interval: DEFAULT_INTERVAL,
+             chainId: initialChainId,
+             selectedAddress: '',
+-            disabled: true,
++            disabled: initialDisabled,
+         };
+         this.initialize();
+         this.getNftState = getNftState;
+         this.getNetworkClientById = getNetworkClientById;
+         onPreferencesStateChange(({ selectedAddress, useNftDetection }) => {
+             const { selectedAddress: previouslySelectedAddress, disabled } = this.config;
+-            if (selectedAddress !== previouslySelectedAddress ||
+-                !useNftDetection !== disabled) {
+-                this.configure({ selectedAddress, disabled: !useNftDetection });
++            if(selectedAddress !== previouslySelectedAddress){
++                this.configure({ selectedAddress });
++            }
++            if (!useNftDetection !== disabled) {
++                this.configure({ disabled: !useNftDetection });
+                 if (useNftDetection) {
+                     this.start();
+                 }
