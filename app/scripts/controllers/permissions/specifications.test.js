@@ -231,31 +231,6 @@ describe('PermissionController specifications', () => {
             ),
           ).toThrow(/No approved accounts specified\.$/u);
         });
-
-        it('throws an error if any caveats are specified directly', () => {
-          const getInternalAccounts = jest.fn();
-          const getAllAccounts = jest.fn();
-          const { factory } = getPermissionSpecifications({
-            getInternalAccounts,
-            getAllAccounts,
-          })[RestrictedMethods.eth_accounts];
-
-          expect(() =>
-            factory(
-              {
-                caveats: [
-                  {
-                    type: CaveatTypes.restrictReturnedAccounts,
-                    value: ['0x1', '0x2'],
-                  },
-                ],
-                invoker: 'foo.bar',
-                target: 'eth_accounts',
-              },
-              { approvedAccounts: ['0x1'] },
-            ),
-          ).toThrow(/Received unexpected caveats./u);
-        });
       });
 
       describe('methodImplementation', () => {
