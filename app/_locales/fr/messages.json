@@ -2565,21 +2565,6 @@
   "notificationsMarkAllAsRead": {
     "message": "Marquer tout comme lu"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "En savoir plus"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "🎉 Nous sommes ravis d’annoncer le lancement de la version bêta publique de MetaMask Snaps !"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "Personnalisez votre portefeuille avec des snaps conçus par la communauté de développeurs !"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "Les snaps vous aident à profiter pleinement de MetaMask, par exemple vous connecter à plus de réseaux, voir un aperçu des transactions et recevoir des notifications personnalisées."
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "Présentation de MetaMask Snaps"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 nouveaux jetons trouvés dans ce compte",
     "description": "$1 is the number of new tokens detected"
@@ -3270,6 +3255,10 @@
   "securityAndPrivacy": {
     "message": "Sécurité et confidentialité"
   },
+  "securityProviderPoweredBy": {
+    "message": "Service fourni par $1",
+    "description": "The security provider that is providing data"
+  },
   "seeDetails": {
     "message": "Voir les détails"
   },
@@ -3493,12 +3482,6 @@
   },
   "smartContracts": {
     "message": "Contrats intelligents"
-  },
-  "smartSwapsAreHere": {
-    "message": "Les contrats de swap intelligents sont enfin arrivés !"
-  },
-  "smartSwapsDescription": {
-    "message": "Les swaps sont devenus beaucoup plus intelligents sur MetaMask ! L’activation des contrats de swap intelligents permettra à MetaMask d’optimiser programmatiquement le processus contractuel pour vous aider à :"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Fonds insuffisants pour souscrire un contrat de swap intelligent."
@@ -3778,18 +3761,6 @@
   },
   "strong": {
     "message": "Robuste"
-  },
-  "stxBenefit1": {
-    "message": "Minimise les frais de transaction"
-  },
-  "stxBenefit2": {
-    "message": "Réduit les échecs de transaction"
-  },
-  "stxBenefit3": {
-    "message": "Élimine les blocages de transaction"
-  },
-  "stxBenefit4": {
-    "message": "Empêcher le favoritisme"
   },
   "stxCancelled": {
     "message": "Le swap aurait échoué"
@@ -4721,7 +4692,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "Afficher $1 à $2",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "Afficher $1 sur Etherscan",

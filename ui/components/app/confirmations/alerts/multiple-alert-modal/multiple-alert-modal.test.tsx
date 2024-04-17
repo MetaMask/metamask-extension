@@ -69,7 +69,7 @@ describe('MultipleAlertModal', () => {
 
     fireEvent.click(getByTestId('alert-modal-button'));
 
-    expect(getByText(alertsMock[1].message)).toBeInTheDocument();
+    expect(getByText(alertsMock[0].message)).toBeInTheDocument();
   });
 
   describe('Navigation', () => {

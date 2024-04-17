@@ -47,6 +47,7 @@ const initialState = {
     showExtensionInFullSizeView: false,
     showFiatInTestnets: false,
     showTestNetworks: false,
+    smartTransactionsOptInStatus: false,
     useNativeCurrencyAsPrimaryCurrency: true,
     petnamesEnabled: true,
     featureNotificationsEnabled: false,
@@ -188,6 +189,19 @@ export default function reduceMetamask(state = initialState, action) {
       return {
         ...metamaskState,
         completedOnboarding: true,
+      };
+    }
+
+    case actionConstants.RESET_ONBOARDING: {
+      return {
+        ...metamaskState,
+        completedOnboarding: false,
+        firstTimeFlowType: null,
+        isInitialized: false,
+        isUnlocked: false,
+        onboardingTabs: {},
+        seedPhraseBackedUp: null,
+        welcomeScreenSeen: false,
       };
     }
 
