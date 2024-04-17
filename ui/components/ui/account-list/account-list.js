@@ -26,7 +26,9 @@ const AccountList = ({
   const selectedAccountScrollRef = useRef(null);
   useLayoutEffect(() => {
     selectedAccountScrollRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [selectedAccounts]);
+  }, []);
+
+  const [firstSelectedAccount] = selectedAccounts;
 
   const Header = () => {
     let checked;
@@ -83,8 +85,9 @@ const AccountList = ({
     );
   };
 
-  const List = () => {
-    return (
+  return (
+    <div className="choose-account-list">
+      <Header />
       <div className="choose-account-list__wrapper">
         <div className="choose-account-list__list">
           {accounts.map((account, index) => {
@@ -95,7 +98,11 @@ const AccountList = ({
                 key={`choose-account-list-${index}`}
                 onClick={() => handleAccountClick(address)}
                 className="choose-account-list__account"
-                ref={isSelectedAccount ? selectedAccountScrollRef : null}
+                ref={
+                  isSelectedAccount && address === firstSelectedAccount
+                    ? selectedAccountScrollRef
+                    : null
+                }
               >
                 <div className="choose-account-list__account-info-wrapper">
                   <CheckBox
@@ -135,13 +142,6 @@ const AccountList = ({
           })}
         </div>
       </div>
-    );
-  };
-
-  return (
-    <div className="choose-account-list">
-      <Header />
-      <List />
     </div>
   );
 };
