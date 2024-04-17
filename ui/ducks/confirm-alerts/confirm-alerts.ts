@@ -40,7 +40,7 @@ export type Alert = {
  */
 export type ConfirmAlertsState = {
   /**
-   * The alerts owned by a confirmation, where the confirmation ID is the key.
+   * The current alerts, grouped by the ID of an abstract owner. For example, a confirmation ID.
    */
   alerts: { [ownerId: string]: Alert[] };
 
