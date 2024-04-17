@@ -74,11 +74,6 @@ export type MetamaskNotificationsControllerState = {
   metamaskNotificationsReadList: string[];
 
   /**
-   * List of unread metamask notifications
-   */
-  metamaskNotificationsUnreadList: string[];
-
-  /**
    * List of addresses to be used to create the onChain triggers
    */
   metamaskNotificationsAddressRegistry: string[];
@@ -109,50 +104,45 @@ const metadata: StateMetadata<MetamaskNotificationsControllerState> = {
     persist: true,
     anonymous: true,
   },
-  metamaskNotificationsUnreadList: {
-    persist: true,
-    anonymous: true,
-  },
   metamaskNotificationsAddressRegistry: {
     persist: true,
     anonymous: true,
   },
 };
-const defaultState: MetamaskNotificationsControllerState = {
+export const defaultState: MetamaskNotificationsControllerState = {
   isMetamaskNotificationsFeatureSeen: false,
   isMetamaskNotificationsEnabled: false,
   isFeatureAnnouncementsEnabled: false,
   isSnapNotificationsEnabled: false,
   metamaskNotificationsList: [],
   metamaskNotificationsReadList: [],
-  metamaskNotificationsUnreadList: [],
   metamaskNotificationsAddressRegistry: [],
 };
 
 // TODO - Mock Storage Controller Actions, added in a separate PR.
-type UserStorageControllerGetStorageKey = {
+export type UserStorageControllerGetStorageKey = {
   type: 'UserStorageController:getStorageKey';
   handler: () => Promise<string>;
 };
-type UserStorageControllerPerformGetStorage = {
+export type UserStorageControllerPerformGetStorage = {
   type: 'UserStorageController:performGetStorage';
   handler: (entryKey: UserStorageEntryKeys) => Promise<string | null>;
 };
-type UserStorageControllerPerformSetStorage = {
+export type UserStorageControllerPerformSetStorage = {
   type: 'UserStorageController:performSetStorage';
   handler: (entryKey: UserStorageEntryKeys, value: string) => Promise<void>;
 };
 
 // TODO - Mock Push Notification Controller Actions, added in a separate PR.
-type PushNotificationsControllerEnablePushNotifications = {
+export type PushNotificationsControllerEnablePushNotifications = {
   type: 'PushPlatformNotificationsController:enablePushNotifications';
   handler: (UUIDs: string[]) => Promise<void>;
 };
-type PushNotificationsControllerDisablePushNotifications = {
+export type PushNotificationsControllerDisablePushNotifications = {
   type: 'PushPlatformNotificationsController:disablePushNotifications';
   handler: (UUIDs: string[]) => Promise<void>;
 };
-type PushNotificationsControllerUpdateTriggerPushNotifications = {
+export type PushNotificationsControllerUpdateTriggerPushNotifications = {
   type: 'PushPlatformNotificationsController:updateTriggerPushNotifications';
   handler: (UUIDs: string[]) => Promise<void>;
 };
@@ -164,7 +154,7 @@ export type Actions = ControllerGetStateAction<
 >;
 
 // Allowed Actions
-type AllowedActions =
+export type AllowedActions =
   // Accounts Controller Requests
   | AccountsControllerListAccountsAction
   // Auth Controller Requests
@@ -179,14 +169,15 @@ type AllowedActions =
   | PushNotificationsControllerDisablePushNotifications
   | PushNotificationsControllerUpdateTriggerPushNotifications;
 
-// Allowed Events
+// Events
 export type MetamaskNotificationsControllerMessengerEvents =
   ControllerStateChangeEvent<
     typeof controllerName,
     MetamaskNotificationsControllerState
   >;
 
-type AllowedEvents = AccountsControllerSelectedAccountChangeEvent;
+// Allowed Events
+export type AllowedEvents = AccountsControllerSelectedAccountChangeEvent;
 
 // Type for the messenger of MetamaskNotificationsController
 export type MetamaskNotificationsControllerMessenger =
@@ -293,6 +284,7 @@ export class MetamaskNotificationsController extends BaseController<
 
     /**
      * Subscribes to account selection changes to update on-chain triggers and the address registry.
+     * This works as when new addresses are added they will be automatically switched & will invoke this event.
      *
      * This method listens for changes in the selected account from the AccountsController.
      * When an account change is detected, it performs the following actions:
@@ -306,7 +298,8 @@ export class MetamaskNotificationsController extends BaseController<
      */
     messenger.subscribe(
       'AccountsController:selectedAccountChange',
-      async ({ address }) => {
+      async ({ address }: { address: string }) => {
+        console.log('CALLED');
         const checksumAddress = toChecksumHexAddress(address);
         if (
           this.state.metamaskNotificationsAddressRegistry.includes(
@@ -317,40 +310,15 @@ export class MetamaskNotificationsController extends BaseController<
         }
 
         await this.updateOnChainTriggersByAccount(checksumAddress);
-        this.#updateStateProperty(
-          'metamaskNotificationsAddressRegistry',
-          (currentRegistry) => {
-            return [...new Set([...currentRegistry, checksumAddress])];
-          },
-        );
+        this.update((s) => {
+          const currentRegistry = s.metamaskNotificationsAddressRegistry;
+          const uniqueAddresses = [
+            ...new Set([...currentRegistry, checksumAddress]),
+          ];
+          s.metamaskNotificationsAddressRegistry = uniqueAddresses;
+        });
       },
     );
-  }
-
-  /**
-   * Generic method to update a specific state property.
-   * This method ensures the integrity of the state by updating the property based on the provided value or updater function.
-   *
-   * @param propertyName - The name of the property in the state to update.
-   * @param valueOrUpdater - The new value for the property or an updater function that defines how to update the property.
-   */
-  #updateStateProperty<T extends keyof MetamaskNotificationsControllerState>(
-    propertyName: T,
-    valueOrUpdater:
-      | MetamaskNotificationsControllerState[T]
-      | ((
-          currentValue: MetamaskNotificationsControllerState[T],
-        ) => MetamaskNotificationsControllerState[T]),
-  ) {
-    this.update((state) => {
-      const currentValue = state[propertyName];
-      const newValue =
-        typeof valueOrUpdater === 'function'
-          ? valueOrUpdater(currentValue)
-          : valueOrUpdater;
-      state[propertyName] = newValue;
-      return state;
-    });
   }
 
   /**
@@ -364,27 +332,22 @@ export class MetamaskNotificationsController extends BaseController<
     ) as InternalAccount[];
 
     // Extract addresses and convert them to checksum addresses to ensure case sensitivity is not an issue
-    const addresses = accounts.map((account) =>
-      toChecksumHexAddress(account.address as string),
-    );
+    const addresses = accounts.map((account) => {
+      return toChecksumHexAddress(account.address as string);
+    });
 
     // Update the state with unique addresses, avoiding duplicates
-    this.#updateStateProperty(
-      'metamaskNotificationsAddressRegistry',
-      (currentRegistry) => {
-        const uniqueAddresses = [
-          ...new Set([...currentRegistry, ...addresses]),
-        ];
-        return uniqueAddresses;
-      },
-    );
+    this.update((s) => {
+      const currentRegistry = s.metamaskNotificationsAddressRegistry;
+      const uniqueAddresses = [...new Set([...currentRegistry, ...addresses])];
+      s.metamaskNotificationsAddressRegistry = uniqueAddresses;
+    });
   }
 
   #assertAuthEnabled() {
     if (!this.#auth.isSignedIn()) {
-      this.update((state) => {
-        state.isMetamaskNotificationsEnabled = false;
-        return state;
+      this.update((s) => {
+        s.isMetamaskNotificationsEnabled = false;
       });
       throw new Error('User is not signed in.');
     }
@@ -409,18 +372,6 @@ export class MetamaskNotificationsController extends BaseController<
     if (!storage) {
       throw new Error('User Storage does not exist');
     }
-  }
-
-  /**
-   * Updates the accounts list in the state with the provided list of accounts.
-   *
-   * @param metamaskNotificationsList - The list of the notifications to update in the state.
-   */
-  #updateMetamaskNotificationsList(metamaskNotificationsList: Notification[]) {
-    this.update((state) => {
-      state.metamaskNotificationsList = metamaskNotificationsList;
-      return state;
-    });
   }
 
   /**
@@ -507,10 +458,8 @@ export class MetamaskNotificationsController extends BaseController<
     try {
       this.#assertAuthEnabled();
 
-      this.update((state) => {
-        state.isMetamaskNotificationsEnabled =
-          !state.isMetamaskNotificationsEnabled;
-        return state;
+      this.update((s) => {
+        s.isMetamaskNotificationsEnabled = !s.isMetamaskNotificationsEnabled;
       });
     } catch (e) {
       log.error('Unable to toggle notifications', e);
@@ -532,10 +481,8 @@ export class MetamaskNotificationsController extends BaseController<
     try {
       this.#assertAuthEnabled();
 
-      this.update((state) => {
-        // Imposta il valore su true indipendentemente dallo stato precedente
-        state.isMetamaskNotificationsFeatureSeen = true;
-        return state;
+      this.update((s) => {
+        s.isMetamaskNotificationsFeatureSeen = true;
       });
     } catch (e) {
       log.error('Unable to declare feature/CTA was seen', e);
@@ -556,10 +503,8 @@ export class MetamaskNotificationsController extends BaseController<
     try {
       this.#assertAuthEnabled();
 
-      this.update((state) => {
-        state.isFeatureAnnouncementsEnabled =
-          !state.isFeatureAnnouncementsEnabled;
-        return state;
+      this.update((s) => {
+        s.isFeatureAnnouncementsEnabled = !s.isFeatureAnnouncementsEnabled;
       });
     } catch (e) {
       log.error('Unable to toggle feature announcements', e);
@@ -580,9 +525,8 @@ export class MetamaskNotificationsController extends BaseController<
     try {
       this.#assertAuthEnabled();
 
-      this.update((state) => {
-        state.isSnapNotificationsEnabled = !state.isSnapNotificationsEnabled;
-        return state;
+      this.update((s) => {
+        s.isSnapNotificationsEnabled = !s.isSnapNotificationsEnabled;
       });
     } catch (e) {
       log.error('Unable to toggle snap notifications', e);
@@ -966,7 +910,9 @@ export class MetamaskNotificationsController extends BaseController<
       );
 
       // Update State
-      this.#updateMetamaskNotificationsList(metamaskNotifications);
+      this.update((s) => {
+        s.metamaskNotificationsList = metamaskNotifications;
+      });
     } catch (err) {
       log.error('Failed to fetch notifications', err);
       throw new Error('Failed to fetch notifications');
@@ -1034,16 +980,16 @@ export class MetamaskNotificationsController extends BaseController<
       }
 
       // Update the state (state is also used on counter & badge)
-      this.#updateStateProperty(
-        'metamaskNotificationsReadList',
-        (currentReadList) => {
-          const newReadIds = [
-            ...onchainNotificationIds,
-            ...featureAnnouncementNotificationIds,
-          ];
-          return [...new Set([...currentReadList, ...newReadIds])];
-        },
-      );
+      this.update((s) => {
+        const currentReadList = s.metamaskNotificationsReadList;
+        const newReadIds = [
+          ...onchainNotificationIds,
+          ...featureAnnouncementNotificationIds,
+        ];
+        s.metamaskNotificationsReadList = [
+          ...new Set([...currentReadList, ...newReadIds]),
+        ];
+      });
     } catch (err) {
       log.error('Failed to mark notification as read', err);
       throw new Error('Failed to mark notification as read');
