@@ -1225,44 +1225,6 @@
         "string.prototype.matchall>call-bind": true
       }
     },
-    "@lavamoat/lavapack>lavamoat-core": {
-      "builtin": {
-        "events": true,
-        "fs.readFileSync": true,
-        "node:fs/promises.readFile": true,
-        "node:fs/promises.writeFile": true,
-        "path.extname": true,
-        "path.join": true
-      },
-      "globals": {
-        "__dirname": true,
-        "ast": true,
-        "console.error": true,
-        "console.warn": true,
-        "content": true,
-        "define": true,
-        "file": true,
-        "importMap": true,
-        "moduleInitializer": true,
-        "packageName": true,
-        "specifier": true,
-        "type": true
-      },
-      "packages": {
-        "@lavamoat/lavapack>json-stable-stringify": true,
-        "@lavamoat/lavapack>lavamoat-core>lavamoat-tofu": true,
-        "lavamoat>lavamoat-core>merge-deep": true
-      }
-    },
-    "@lavamoat/lavapack>lavamoat-core>lavamoat-tofu": {
-      "globals": {
-        "console.log": true
-      },
-      "packages": {
-        "@lavamoat/lavapack>lavamoat-core>lavamoat-tofu>@babel/parser": true,
-        "depcheck>@babel/traverse": true
-      }
-    },
     "@lavamoat/lavapack>readable-stream": {
       "builtin": {
         "buffer.Buffer": true,
@@ -5977,8 +5939,8 @@
         "console.log": true
       },
       "packages": {
-        "@babel/core>@babel/parser": true,
-        "depcheck>@babel/traverse": true
+        "depcheck>@babel/traverse": true,
+        "lavamoat-viz>lavamoat-core>lavamoat-tofu>@babel/parser": true
       }
     },
     "lavamoat>@lavamoat/aa": {
