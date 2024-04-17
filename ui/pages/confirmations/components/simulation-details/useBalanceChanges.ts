@@ -69,6 +69,25 @@ const fetchErc20Decimals = async (
   );
 };
 
+const fetchTokenFiatRates = async (
+  fiatCurrency: string,
+  erc20TokenAddresses: Hex[],
+  chainId: Hex,
+) => {
+  const tokenRates = await fetchTokenExchangeRates(
+    fiatCurrency,
+    erc20TokenAddresses,
+    chainId,
+  );
+
+  return Object.fromEntries(
+    Object.entries(tokenRates).map(([address, rate]) => [
+      address.toLowerCase(),
+      rate,
+    ]),
+  );
+};
+
 // Compiles the balance change for the native asset
 function getNativeBalanceChange(
   nativeBalanceChange: SimulationBalanceChange | undefined,
@@ -129,7 +148,7 @@ export const useBalanceChanges = (
   );
 
   const erc20FiatRates = useAsyncResultOrThrow(
-    () => fetchTokenExchangeRates(fiatCurrency, erc20TokenAddresses, chainId),
+    () => fetchTokenFiatRates(fiatCurrency, erc20TokenAddresses, chainId),
     [JSON.stringify(erc20TokenAddresses), fiatCurrency],
   );
 
