@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import {
   AvatarAccount,
@@ -27,19 +27,44 @@ import { AddressCopyButton } from '../../../../../components/multichain';
 import Tooltip from '../../../../../components/ui/tooltip/tooltip';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
-import { getUseBlockie } from '../../../../../selectors';
+
+import {
+  currentConfirmationSelector,
+  getUseBlockie,
+} from '../../../../../selectors';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventLocation,
+  MetaMetricsEventName,
+} from '../../../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import { ConfirmInfoRowCurrency } from '../../../../../components/app/confirm/info/row/currency';
 import { useBalance } from '../../../hooks/useBalance';
 
 const HeaderInfo = () => {
   const useBlockie = useSelector(getUseBlockie);
   const [showAccountInfo, setShowAccountInfo] = React.useState(false);
+
+  const currentConfirmation = useSelector(currentConfirmationSelector);
   const { recipientAddress: fromAddress, recipientName: fromName } =
     useConfirmationRecipientInfo();
 
   const t = useI18nContext();
+  const trackEvent = useContext(MetaMetricsContext);
 
   const { balance: balanceToUse } = useBalance(fromAddress);
+
+  function trackAccountModalOpened() {
+    trackEvent({
+      event: MetaMetricsEventName.AccountDetailsOpened,
+      category: MetaMetricsEventCategory.Transactions,
+      properties: {
+        action: 'Confirm Screen',
+        signature_type: currentConfirmation?.type,
+        location: MetaMetricsEventLocation.SignatureConfirmation,
+      },
+    });
+  }
 
   return (
     <>
@@ -55,7 +80,10 @@ const HeaderInfo = () => {
             ariaLabel={t('accountDetails')}
             iconName={IconName.Info}
             size={ButtonIconSize.Md}
-            onClick={() => setShowAccountInfo(true)}
+            onClick={() => {
+              trackAccountModalOpened();
+              setShowAccountInfo(true);
+            }}
           />
         </Tooltip>
       </Box>
