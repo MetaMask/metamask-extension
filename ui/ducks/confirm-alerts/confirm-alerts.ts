@@ -1,7 +1,7 @@
 import { Severity } from '../../helpers/constants/design-system';
 
 /**
- * Represents an alert object.
+ * A confirmable alert to be displayed in the UI.
  */
 export type Alert = {
   /**
