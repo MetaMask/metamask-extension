@@ -15,6 +15,10 @@ import { Box } from '../../components/component-library';
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header/snap-authorship-header';
 ///: END:ONLY_INCLUDE_IF
 import PermissionConnectHeader from '../../components/app/permission-connect-header';
+import {
+  CaveatTypes,
+  RestrictedMethods,
+} from '../../../shared/constants/permissions';
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -23,10 +27,6 @@ import SnapInstall from './snaps/snap-install';
 import SnapUpdate from './snaps/snap-update';
 import SnapResult from './snaps/snap-result';
 ///: END:ONLY_INCLUDE_IF
-import {
-  CaveatTypes,
-  RestrictedMethods,
-} from '../../../shared/constants/permissions';
 
 const APPROVE_TIMEOUT = MILLISECOND * 1200;
 
