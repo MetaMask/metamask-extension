@@ -481,10 +481,19 @@ export default function setupSentry({ release, getState }) {
         `Missing SENTRY_DSN environment variable in production environment`,
       );
     }
-    console.log(
-      `Setting up Sentry Remote Error Reporting for '${environment}': SENTRY_DSN`,
-    );
-    sentryTarget = process.env.SENTRY_DSN;
+
+    if (METAMASK_BUILD_TYPE === 'mmi') {
+      console.log(
+        `Setting up Sentry Remote Error Reporting for '${environment}': SENTRY_MMI_DSN`,
+      );
+      sentryTarget = process.env.SENTRY_MMI_DSN;
+    } else {
+      console.log(
+        `Setting up Sentry Remote Error Reporting for '${environment}': SENTRY_DSN`,
+      );
+      sentryTarget = process.env.SENTRY_DSN;
+    }
+
   } else {
     console.log(
       `Setting up Sentry Remote Error Reporting for '${environment}': SENTRY_DSN_DEV`,
@@ -499,6 +508,12 @@ export default function setupSentry({ release, getState }) {
    * @returns `true` if MetaMetrics is enabled, `false` otherwise.
    */
   async function getMetaMetricsEnabled() {
+
+    // For MMI we have MetaMetrics OFF by default, but want to keep Sentry logging
+    if (METAMASK_BUILD_TYPE === 'mmi') {
+      return true;
+    }
+
     const appState = getState();
     if (appState.state || appState.persistedState) {
       return getMetaMetricsEnabledFromAppState(appState);
