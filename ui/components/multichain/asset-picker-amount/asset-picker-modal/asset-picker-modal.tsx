@@ -218,6 +218,30 @@ export function AssetPickerModal({
 
     return (
       <Box className="tokens-main-view-modal">
+        <Box padding={1} paddingLeft={4} paddingRight={4}>
+          <TextFieldSearch
+            borderRadius={BorderRadius.LG}
+            placeholder={t('searchTokenOrNFT')}
+            value={searchQuery}
+            onChange={(e) => handleSearch(e.target.value)}
+            error={false}
+            autoFocus
+            autoComplete={false}
+            width={BlockSize.Full}
+            clearButtonOnClick={() => setSearchQuery('')}
+            clearButtonProps={{
+              size: ButtonIconSize.Sm,
+            }}
+            showClearButton={true}
+            className="asset-picker-modal__search-list"
+            inputProps={{
+              'data-testid': 'asset-picker-modal-search-input',
+            }}
+            endAccessory={null}
+            size={TextFieldSearchSize.Lg}
+            marginBottom={1}
+          />
+        </Box>
         {tokensData.map((token) => {
           return (
             <Box
@@ -324,33 +348,7 @@ export function AssetPickerModal({
             </Text>
           </Box>
         )}
-        <Box padding={1} paddingLeft={4} paddingRight={4}>
-          <TextFieldSearch
-            borderRadius={BorderRadius.LG}
-            placeholder={t('searchTokenOrNFT')}
-            value={searchQuery}
-            // TODO: Replace `any` with type
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            onChange={(e: any) => handleSearch(e.target.value)}
-            error={false}
-            autoFocus
-            autoComplete={false}
-            width={BlockSize.Full}
-            clearButtonOnClick={() => setSearchQuery('')}
-            clearButtonProps={{
-              size: ButtonIconSize.Sm,
-            }}
-            showClearButton={true}
-            className="asset-picker-modal__search-list"
-            inputProps={{
-              'data-testid': 'asset-picker-modal-search-input',
-            }}
-            endAccessory={null}
-            size={TextFieldSearchSize.Lg}
-            marginBottom={1}
-          />
-        </Box>
-        <Box style={{ flexGrow: '1' }}>
+        <Box className="modal-tab__wrapper">
           {isDest ? (
             <AssetList />
           ) : (
