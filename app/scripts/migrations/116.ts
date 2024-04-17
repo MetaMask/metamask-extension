@@ -9,6 +9,8 @@ export const version = 116;
 
 /**
  * As we have removed Product tour from Home Page so this migration is to remove showProductTour from AppState
+ *
+ * @param originalVersionedData
  */
 export async function migrate(
   originalVersionedData: VersionedData,
@@ -19,7 +21,9 @@ export async function migrate(
   return versionedData;
 }
 
-function transformState(state: Record<string, any>) {
+function transformState(state: {
+  AppStateController?: { showProductTour?: boolean };
+}) {
   if (state?.AppStateController?.showProductTour !== undefined) {
     delete state.AppStateController.showProductTour;
   }
