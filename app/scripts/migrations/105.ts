@@ -122,12 +122,23 @@ function createInternalAccountsForAccountsController(
   state.AccountsController.internalAccounts.accounts = accounts;
 }
 
+function getFirstAddress(
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  state: Record<string, any>,
+) {
+  const [firstAddress] = Object.keys(
+    state.PreferencesController?.identities || {},
+  );
+  return firstAddress;
+}
+
 function createSelectedAccountForAccountsController(
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   state: Record<string, any>,
 ) {
-  const selectedAddress = state.PreferencesController?.selectedAddress;
+  let selectedAddress = state.PreferencesController?.selectedAddress;
 
   if (typeof selectedAddress !== 'string') {
     global.sentry?.captureException?.(
@@ -137,20 +148,13 @@ function createSelectedAccountForAccountsController(
     );
 
     // Get the first account if selectedAddress is not a string
-    const [firstAddress] = Object.keys(
-      state.PreferencesController?.identities || {},
-    );
-    const internalAccount = findInternalAccountByAddress(state, firstAddress);
-    if (internalAccount) {
-      state.AccountsController.internalAccounts.selectedAccount =
-        internalAccount.id;
-      state.PreferencesController.selectedAddress = internalAccount.address;
-    }
-    return;
+    selectedAddress = getFirstAddress(state);
   }
 
   const selectedAccount = findInternalAccountByAddress(state, selectedAddress);
   if (selectedAccount) {
+    // Required in case there was no address selected
+    state.PreferencesController.selectedAddress = selectedAccount.address;
     state.AccountsController.internalAccounts = {
       ...state.AccountsController.internalAccounts,
       selectedAccount: selectedAccount.id,
