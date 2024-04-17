@@ -452,7 +452,7 @@
         "@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry": true,
         "@metamask/eth-trezor-keyring>hdkey": true,
         "browserify>buffer": true,
-        "mockttp>uuid": true
+        "uuid": true
       }
     },
     "@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry": {
@@ -475,7 +475,7 @@
         "@keystonehq/metamask-airgapped-keyring>@metamask/obs-store": true,
         "@keystonehq/metamask-airgapped-keyring>rlp": true,
         "browserify>buffer": true,
-        "mockttp>uuid": true,
+        "uuid": true,
         "webpack>events": true
       }
     },
@@ -487,7 +487,7 @@
         "@metamask/eth-trezor-keyring>hdkey": true,
         "browserify>buffer": true,
         "eth-lattice-keyring>rlp": true,
-        "mockttp>uuid": true
+        "uuid": true
       }
     },
     "@keystonehq/metamask-airgapped-keyring>@metamask/obs-store": {
@@ -862,7 +862,7 @@
         "@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
-        "mockttp>uuid": true
+        "uuid": true
       }
     },
     "@metamask/address-book-controller": {
@@ -956,8 +956,8 @@
         "@metamask/utils": true,
         "bn.js": true,
         "lodash": true,
-        "mockttp>uuid": true,
         "single-call-balance-checker-abi": true,
+        "uuid": true,
         "webpack>events": true
       }
     },
@@ -988,7 +988,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
-        "mockttp>uuid": true
+        "uuid": true
       }
     },
     "@metamask/assets-controllers>cockatiel": {
@@ -1093,9 +1093,9 @@
         "@ethersproject/providers": true,
         "@metamask/base-controller": true,
         "@metamask/ens-controller>@metamask/controller-utils": true,
-        "@metamask/ens-controller>punycode": true,
         "@metamask/utils": true,
-        "ethereum-ens-network-map": true
+        "ethereum-ens-network-map": true,
+        "punycode": true
       }
     },
     "@metamask/ens-controller>@metamask/controller-utils": {
@@ -1554,7 +1554,7 @@
         "@metamask/ethjs>@metamask/ethjs-unit": true,
         "@metamask/gas-fee-controller>@metamask/polling-controller": true,
         "bn.js": true,
-        "mockttp>uuid": true
+        "uuid": true
       }
     },
     "@metamask/gas-fee-controller>@metamask/base-controller": {
@@ -1574,7 +1574,7 @@
       "packages": {
         "@metamask/gas-fee-controller>@metamask/base-controller": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
-        "mockttp>uuid": true
+        "uuid": true
       }
     },
     "@metamask/jazzicon": {
@@ -1668,7 +1668,7 @@
         "ethereumjs-util>ethereum-cryptography>bs58check": true,
         "ethereumjs-util>ethereum-cryptography>scrypt-js": true,
         "mocha>serialize-javascript>randombytes": true,
-        "mockttp>uuid": true
+        "uuid": true
       }
     },
     "@metamask/keyring-controller>ethereumjs-wallet>ethereum-cryptography": {
@@ -1704,7 +1704,7 @@
     "@metamask/logging-controller": {
       "packages": {
         "@metamask/base-controller": true,
-        "mockttp>uuid": true
+        "uuid": true
       }
     },
     "@metamask/logo": {
@@ -1729,7 +1729,7 @@
         "@metamask/message-manager>jsonschema": true,
         "@metamask/utils": true,
         "browserify>buffer": true,
-        "mockttp>uuid": true,
+        "uuid": true,
         "webpack>events": true
       }
     },
@@ -1802,7 +1802,7 @@
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "browserify>assert": true,
-        "mockttp>uuid": true
+        "uuid": true
       }
     },
     "@metamask/network-controller>@metamask/base-controller": {
@@ -1822,7 +1822,7 @@
         "@metamask/providers>@metamask/json-rpc-engine": true,
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/utils": true,
-        "@sentry/cli>node-fetch": true
+        "node-fetch": true
       }
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-provider": {
@@ -1940,9 +1940,9 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/ens-controller>punycode": true,
         "@metamask/phishing-controller>@metamask/controller-utils": true,
-        "@metamask/phishing-warning>eth-phishing-detect": true
+        "@metamask/phishing-warning>eth-phishing-detect": true,
+        "punycode": true
       }
     },
     "@metamask/phishing-controller>@metamask/controller-utils": {
@@ -2354,7 +2354,7 @@
         "bn.js": true,
         "fast-json-patch": true,
         "lodash": true,
-        "mockttp>uuid": true,
+        "uuid": true,
         "webpack>events": true
       }
     },
@@ -2780,7 +2780,7 @@
         "eth-method-registry": true,
         "fast-json-patch": true,
         "lodash": true,
-        "mockttp>uuid": true,
+        "uuid": true,
         "webpack>events": true
       }
     },
@@ -2824,8 +2824,8 @@
         "@metamask/utils": true,
         "bn.js": true,
         "lodash": true,
-        "mockttp>uuid": true,
         "superstruct": true,
+        "uuid": true,
         "webpack>events": true
       }
     },
@@ -2846,7 +2846,7 @@
       "packages": {
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "@metamask/user-operation-controller>@metamask/base-controller": true,
-        "mockttp>uuid": true
+        "uuid": true
       }
     },
     "@metamask/utils": {
@@ -3089,6 +3089,11 @@
         "react-markdown>unist-util-visit": true
       }
     },
+    "@storybook/addon-knobs>qs": {
+      "packages": {
+        "string.prototype.matchall>side-channel": true
+      }
+    },
     "@trezor/connect-web": {
       "globals": {
         "URLSearchParams": true,
@@ -3270,7 +3275,7 @@
         "console": true
       },
       "packages": {
-        "browserify>buffer>base64-js": true,
+        "base64-js": true,
         "browserify>buffer>ieee754": true
       }
     },
@@ -4066,6 +4071,11 @@
         "webpack>events": true
       }
     },
+    "extension-port-stream>readable-stream>abort-controller": {
+      "globals": {
+        "AbortController": true
+      }
+    },
     "fast-json-patch": {
       "globals": {
         "addEventListener": true,
@@ -4085,7 +4095,7 @@
         "console": true
       },
       "packages": {
-        "browserify>buffer>base64-js": true,
+        "base64-js": true,
         "browserify>buffer>ieee754": true
       }
     },
@@ -4229,12 +4239,6 @@
         "koa>content-disposition>safe-buffer": true
       }
     },
-    "mockttp>uuid": {
-      "globals": {
-        "crypto": true,
-        "msCrypto": true
-      }
-    },
     "nanoid": {
       "globals": {
         "crypto": true,
@@ -4252,7 +4256,7 @@
       },
       "packages": {
         "browserify>process": true,
-        "mocha>ms": true
+        "nock>debug>ms": true
       }
     },
     "node-fetch": {
