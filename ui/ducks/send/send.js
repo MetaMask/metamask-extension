@@ -63,6 +63,7 @@ import {
   addTransactionAndRouteToConfirmationPage,
   updateTransactionSendFlowHistory,
   getCurrentNetworkEIP1559Compatibility,
+  getLayer1GasFee,
 } from '../../store/actions';
 import { setCustomGasLimit } from '../gas/gas.duck';
 import {
@@ -97,7 +98,6 @@ import {
   toChecksumHexAddress,
 } from '../../../shared/modules/hexstring-utils';
 import { isSmartContractAddress } from '../../helpers/utils/transactions.util';
-import fetchEstimatedL1Fee from '../../helpers/utils/optimism/fetchEstimatedL1Fee';
 
 import {
   AssetType,
@@ -515,20 +515,23 @@ export const computeEstimatedGasLimit = createAsyncThunk(
 
     let gasTotalForLayer1;
     if (isMultiLayerFeeNetwork) {
-      gasTotalForLayer1 = await fetchEstimatedL1Fee(chainId, {
-        txParams: {
-          gasPrice: draftTransaction.gas.gasPrice,
-          gas: draftTransaction.gas.gasLimit,
-          to: draftTransaction.recipient.address?.toLowerCase(),
-          value:
-            send.amountMode === AMOUNT_MODES.MAX
-              ? send.selectedAccount.balance
-              : draftTransaction.amount.value,
-          from: send.selectedAccount.address,
-          data: draftTransaction.userInputHexData,
-          type: '0x0',
-        },
-      });
+      gasTotalForLayer1 = await thunkApi.dispatch(
+        getLayer1GasFee({
+          transactionParams: {
+            gasPrice: draftTransaction.gas.gasPrice,
+            gas: draftTransaction.gas.gasLimit,
+            to: draftTransaction.recipient.address?.toLowerCase(),
+            value:
+              send.amountMode === AMOUNT_MODES.MAX
+                ? send.selectedAccount.balance
+                : draftTransaction.amount.value,
+            from: send.selectedAccount.address,
+            data: draftTransaction.userInputHexData,
+            type: '0x0',
+          },
+          chainId,
+        }),
+      );
     }
 
     if (

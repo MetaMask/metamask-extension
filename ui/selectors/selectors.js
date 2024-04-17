@@ -31,7 +31,6 @@ import {
   LINEA_GOERLI_DISPLAY_NAME,
   CURRENCY_SYMBOLS,
   TEST_NETWORK_TICKER_MAP,
-  LINEA_GOERLI_TOKEN_IMAGE_URL,
   LINEA_MAINNET_DISPLAY_NAME,
   LINEA_MAINNET_TOKEN_IMAGE_URL,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -698,18 +697,6 @@ export const getTestNetworks = createDeepEqualSelector(
         removable: false,
       },
       {
-        chainId: CHAIN_IDS.LINEA_GOERLI,
-        nickname: LINEA_GOERLI_DISPLAY_NAME,
-        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_GOERLI],
-        rpcPrefs: {
-          imageUrl: LINEA_GOERLI_TOKEN_IMAGE_URL,
-        },
-        providerType: NETWORK_TYPES.LINEA_GOERLI,
-        ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_GOERLI],
-        id: NETWORK_TYPES.LINEA_GOERLI,
-        removable: false,
-      },
-      {
         chainId: CHAIN_IDS.LINEA_SEPOLIA,
         nickname: LINEA_SEPOLIA_DISPLAY_NAME,
         rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_SEPOLIA],
@@ -1321,8 +1308,17 @@ export const getMemoizedAddressBook = createDeepEqualSelector(
   (addressBook) => addressBook,
 );
 
+/**
+ * Returns a memoized selector that gets contract info.
+ *
+ * @param state - The Redux store state.
+ * @param addresses - An array of contract addresses.
+ * @param forceRemoteTokenList - Whether to force the use of the remote token list.
+ * @returns {Array} A map of contract info, keyed by address.
+ */
 export const getMemoizedMetadataContracts = createDeepEqualSelector(
-  getTokenList,
+  (state, _addresses, forceRemoteTokenList) =>
+    getTokenList(state, forceRemoteTokenList),
   (_tokenList, addresses) => addresses,
   (tokenList, addresses) => {
     return addresses.map((address) =>
@@ -1458,7 +1454,9 @@ export const getConnectedSitesListWithNetworkInfo = createDeepEqualSelector(
       const connectedNetwork = networks.find(
         (network) => network.id === domains[siteKey],
       );
-      sitesList[siteKey].networkIconUrl = connectedNetwork.rpcPrefs.imageUrl;
+      // For the testnets, if we do not have an image, we will have a fallback string
+      sitesList[siteKey].networkIconUrl =
+        connectedNetwork.rpcPrefs?.imageUrl || '';
       sitesList[siteKey].networkName = connectedNetwork.nickname;
     });
     return sitesList;
@@ -1948,15 +1946,18 @@ export function getTheme(state) {
  * from the tokens controller if token detection is enabled, or the static list if not.
  *
  * @param {*} state
+ * @param {boolean} forceRemote - Whether to force the use of the remote token list regardless of the user preference. Defaults to false.
  * @returns {object}
  */
-export function getTokenList(state) {
+export function getTokenList(state, forceRemote = false) {
   const isTokenDetectionInactiveOnMainnet =
     getIsTokenDetectionInactiveOnMainnet(state);
-  const caseInSensitiveTokenList = isTokenDetectionInactiveOnMainnet
-    ? STATIC_MAINNET_TOKEN_LIST
-    : state.metamask.tokenList;
-  return caseInSensitiveTokenList;
+
+  if (isTokenDetectionInactiveOnMainnet && !forceRemote) {
+    return STATIC_MAINNET_TOKEN_LIST;
+  }
+
+  return state.metamask.tokenList;
 }
 
 export function doesAddressRequireLedgerHidConnection(state, address) {
