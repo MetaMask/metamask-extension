@@ -10,7 +10,7 @@ export function useIsOriginalTokenSymbol(tokenAddress, tokenSymbol) {
       setIsOriginalNativeSymbol(symbol === tokenSymbol);
     }
     getTokenSymbolForToken(tokenAddress);
-  }, [isOriginalNativeSymbol, tokenAddress, tokenSymbol]);
+  }, [tokenAddress, tokenSymbol]);
 
   return isOriginalNativeSymbol;
 }
