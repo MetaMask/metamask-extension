@@ -112,6 +112,12 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
     return undefined;
   }, [isSwapQuoteLoading, bestQuote, timeLeft]);
 
+  const isContent = Boolean(infoText || bestQuote);
+
+  if (!isContent) {
+    return null;
+  }
+
   return (
     <Box
       display={Display.Flex}
