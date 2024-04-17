@@ -96,15 +96,39 @@ describe('selectors', () => {
 
     it('should return the list of connected subjects when there are 2 connected accounts', () => {
       const mockInternalAccount = createMockInternalAccount({
-        name: 'Test Account',
+        name: 'Really Long Name That Should Be Truncated',
         id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         address: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
+      });
+      const mockInternalAccount2 = createMockInternalAccount({
+        name: 'Account 1',
+        id: 'ee414e10-a203-4b65-83c2-b5308e45af8e',
+        address: '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
+      });
+      const mockInternalAccount3 = createMockInternalAccount({
+        name: 'Account 2',
+        id: '0402ace6-1ca7-406f-905a-ffb32cc8c18d',
+        address: '0xb3958fb96c8201486ae20be1d5c9f58083df343a',
+      });
+      const mockInternalAccount4 = createMockInternalAccount({
+        name: 'Account 3',
+        id: '9d9488b5-5957-4523-8fd9-03a3715a93c2',
+        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      });
+      const mockInternalAccount5 = createMockInternalAccount({
+        name: 'Account 4',
+        id: '317c0f71-5e3f-4039-8929-4caded1c9e44',
+        address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
       });
       const mockState = {
         metamask: {
           internalAccounts: {
             accounts: {
               [mockInternalAccount.id]: mockInternalAccount,
+              [mockInternalAccount2.id]: mockInternalAccount2,
+              [mockInternalAccount3.id]: mockInternalAccount3,
+              [mockInternalAccount4.id]: mockInternalAccount4,
+              [mockInternalAccount5.id]: mockInternalAccount5,
             },
             selectedAccount: mockInternalAccount.id,
           },
