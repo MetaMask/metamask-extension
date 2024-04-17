@@ -5,8 +5,11 @@ import {
   BLOCK_SIZES,
   DISPLAY,
   TextAlign,
+  TextColor,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import Box from '../../box';
+import { Text } from '../../../component-library';
 
 const Tab = (props) => {
   const {
@@ -43,7 +46,9 @@ const Tab = (props) => {
         width={BLOCK_SIZES.FULL}
         className={buttonClassName}
       >
-        {name}
+        <Text variant={TextVariant.bodyMd} color={TextColor.inherit}>
+          {name}
+        </Text>
       </Box>
     </Box>
   );
