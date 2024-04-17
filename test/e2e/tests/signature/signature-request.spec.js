@@ -304,13 +304,13 @@ describe('Sign Typed Data Signature Request', function () {
           );
           await driver.waitUntilXWindowHandles(2);
 
-          // switch to the Dapp and verify the signed address for each request
+          // switch to the Dapp and verify the rejection was successful
           await driver.switchToWindowWithTitle('E2E Test Dapp');
-          const recoveredAddress = await driver.findElement(
+          const rejectionResult = await driver.findElement(
             data.verifyRejectionResultId,
           );
           assert.equal(
-            await recoveredAddress.getText(),
+            await rejectionResult.getText(),
             data.rejectSignatureMessage,
           );
         },
