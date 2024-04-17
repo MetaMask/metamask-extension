@@ -7,7 +7,11 @@ import {
   Text,
 } from '../../../../component-library';
 import {
+  AlignItems,
+  BackgroundColor,
+  BorderRadius,
   Display,
+  IconColor,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
@@ -27,6 +31,83 @@ export type MultipleAlertModalProps = {
   ownerId: string;
 };
 
+function PreviousButton({
+  selectedIndex,
+  onBackButtonClick,
+}: {
+  selectedIndex: number;
+  onBackButtonClick: () => void;
+}) {
+  const t = useI18nContext();
+  const showPreviousButton = selectedIndex + 1 > 1;
+  if (!showPreviousButton) {
+    return null;
+  }
+
+  return (
+    <ButtonIcon
+      iconName={IconName.ArrowLeft}
+      ariaLabel={t('back')}
+      size={ButtonIconSize.Sm}
+      onClick={onBackButtonClick}
+      className={'confirm_nav__left_btn'}
+      data-testid="alert-modal-back-button"
+      borderRadius={BorderRadius.full}
+      color={IconColor.iconAlternative}
+      backgroundColor={BackgroundColor.backgroundAlternative}
+    />
+  );
+}
+
+function NextButton({
+  selectedIndex,
+  alertsLength,
+  onNextButtonClick,
+}: {
+  selectedIndex: number;
+  alertsLength: number;
+  onNextButtonClick: () => void;
+}) {
+  const t = useI18nContext();
+  const showNextButton = selectedIndex + 1 < alertsLength;
+  if (!showNextButton) {
+    return null;
+  }
+
+  return (
+    <ButtonIcon
+      iconName={IconName.ArrowRight}
+      ariaLabel={t('next')}
+      size={ButtonIconSize.Sm}
+      onClick={onNextButtonClick}
+      className={'confirm_nav__right_btn'}
+      data-testid="alert-modal-next-button"
+      borderRadius={BorderRadius.full}
+      color={IconColor.iconAlternative}
+      backgroundColor={BackgroundColor.backgroundAlternative}
+    />
+  );
+}
+
+function PageNumber({
+  selectedIndex,
+  alertsLength,
+}: {
+  selectedIndex: number;
+  alertsLength: number;
+}) {
+  const t = useI18nContext();
+  return (
+    <Text
+      variant={TextVariant.bodySm}
+      color={TextColor.textAlternative}
+      marginInline={2}
+    >
+      {`${selectedIndex + 1} ${t('ofTextNofM')} ${alertsLength}`}
+    </Text>
+  );
+}
+
 function PageNavigation({
   alerts,
   onBackButtonClick,
@@ -38,61 +119,21 @@ function PageNavigation({
   onNextButtonClick: () => void;
   selectedIndex: number;
 }) {
-  const t = useI18nContext();
-  const showPreviousButton = selectedIndex + 1 > 1;
-  const showNextButton = selectedIndex + 1 < alerts.length;
-
-  function PreviousButton() {
-    if (!showPreviousButton) {
-      return null;
-    }
-
-    return (
-      <ButtonIcon
-        iconName={IconName.ArrowLeft}
-        ariaLabel={t('back')}
-        size={ButtonIconSize.Sm}
-        onClick={onBackButtonClick}
-        className={'multiple-alert-modal__arrow-buttons'}
-        data-testid="alert-modal-back-button"
-      />
-    );
+  if (alerts.length <= 1) {
+    return null;
   }
-
-  function NextButton() {
-    if (!showNextButton) {
-      return null;
-    }
-
-    return (
-      <ButtonIcon
-        iconName={IconName.ArrowRight}
-        ariaLabel={t('next')}
-        size={ButtonIconSize.Sm}
-        onClick={onNextButtonClick}
-        className={'multiple-alert-modal__arrow-buttons'}
-        data-testid="alert-modal-next-button"
-      />
-    );
-  }
-
-  function PageNumber() {
-    return (
-      <Text
-        variant={TextVariant.bodySm}
-        color={TextColor.textAlternative}
-        className={'multiple-alert-modal__text'}
-      >
-        {`${selectedIndex + 1} ${t('ofTextNofM')} ${alerts.length}`}
-      </Text>
-    );
-  }
-
   return (
-    <Box display={Display.Flex}>
-      <PreviousButton />
-      <PageNumber />
-      <NextButton />
+    <Box display={Display.Flex} alignItems={AlignItems.center}>
+      <PreviousButton
+        selectedIndex={selectedIndex}
+        onBackButtonClick={onBackButtonClick}
+      />
+      <PageNumber selectedIndex={selectedIndex} alertsLength={alerts.length} />
+      <NextButton
+        selectedIndex={selectedIndex}
+        alertsLength={alerts.length}
+        onNextButtonClick={onNextButtonClick}
+      />
     </Box>
   );
 }
@@ -109,21 +150,17 @@ export function MultipleAlertModal({
     alerts.findIndex((alert) => alert.key === alertKey),
   );
 
-  const selectedAlert = useMemo(
-    () => alerts[selectedIndex],
-    [alerts, selectedIndex],
-  );
-  const onBackButtonClick = useCallback(() => {
+  const selectedAlert = alerts[selectedIndex];
+
+  const handleBackButtonClick = useCallback(() => {
     setSelectedIndex((prevIndex) =>
       prevIndex > 0 ? prevIndex - 1 : prevIndex,
     );
   }, []);
 
-  const onNextButtonClick = useCallback(() => {
-    setSelectedIndex((prevIndex) =>
-      prevIndex < alerts.length - 1 ? prevIndex + 1 : prevIndex,
-    );
-  }, [alerts.length]);
+  const handleNextButtonClick = useCallback(() => {
+    setSelectedIndex((prevIndex) => prevIndex + 1);
+  }, []);
 
   const handleAcknowledgeClick = useCallback(() => {
     if (selectedIndex + 1 === alerts.length) {
@@ -131,23 +168,8 @@ export function MultipleAlertModal({
       return;
     }
 
-    onNextButtonClick();
-  }, [onFinalAcknowledgeClick, onNextButtonClick, selectedIndex, alerts]);
-
-  const renderPageNavigation = () => {
-    if (alerts.length <= 1) {
-      return null;
-    }
-
-    return (
-      <PageNavigation
-        alerts={alerts}
-        onBackButtonClick={onBackButtonClick}
-        onNextButtonClick={onNextButtonClick}
-        selectedIndex={selectedIndex}
-      />
-    );
-  };
+    handleBackButtonClick();
+  }, [onFinalAcknowledgeClick, handleBackButtonClick, selectedIndex, alerts]);
 
   return (
     <AlertModal
@@ -155,7 +177,14 @@ export function MultipleAlertModal({
       onAcknowledgeClick={handleAcknowledgeClick}
       alertKey={selectedAlert.key}
       onClose={onClose}
-      headerStartAccessory={renderPageNavigation()}
+      headerStartAccessory={
+        <PageNavigation
+          alerts={alerts}
+          onBackButtonClick={handleBackButtonClick}
+          onNextButtonClick={handleNextButtonClick}
+          selectedIndex={selectedIndex}
+        />
+      }
     />
   );
 }
