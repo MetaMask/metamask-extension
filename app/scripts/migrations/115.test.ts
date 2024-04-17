@@ -8,7 +8,7 @@ import {
 } from '../../../shared/constants/network';
 import { migrate, version } from './115';
 
-const oldVersion = 114w;
+const oldVersion = 114;
 
 const ethereumProviderConfig = {
   chainId: '0x1',
