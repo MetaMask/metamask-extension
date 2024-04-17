@@ -25,7 +25,7 @@ import {
   getOrderedConnectedAccountsForConnectedDapp,
   getPermissionSubjects,
   getPermittedAccountsByOrigin,
-  getPermittedAccountsForCurrentTab,
+  getPermittedAccountsForSelectedTab,
   getSelectedAccount,
   getSubjectMetadata,
 } from '../../../../selectors';
@@ -135,7 +135,10 @@ export const Connections = () => {
     history.push(`${CONNECT_ROUTE}/${requestId}`);
   };
   const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
-  const permittedAccounts = useSelector(getPermittedAccountsForCurrentTab);
+
+  const permittedAccounts = useSelector((state) =>
+    getPermittedAccountsForSelectedTab(state, activeTabOrigin),
+  );
 
   const disconnectAllAccounts = () => {
     const subject = (subjects as SubjectsType)[activeTabOrigin];
