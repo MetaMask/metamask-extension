@@ -11,6 +11,14 @@ import {
   TokenAssetIdentifier,
 } from './types';
 
+jest.mock('react-redux', () => ({
+  useSelector: jest.fn((selector) => selector()),
+}));
+
+jest.mock('../../../../ducks/locale/locale', () => ({
+  getIntlLocale: jest.fn(() => 'en-US'),
+}));
+
 jest.mock('../../../../components/ui/tooltip', () => ({
   __esModule: true,
   default: jest.fn(({ children }) => children),
