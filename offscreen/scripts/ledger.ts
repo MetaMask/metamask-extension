@@ -18,7 +18,6 @@ const callbackProcessor = new CallbackProcessor();
 
 export default function init() {
   const iframe = document.createElement('iframe');
-  iframe.style.display = 'none';
   iframe.src = 'https://metamask.github.io/eth-ledger-bridge-keyring';
   iframe.allow = 'hid';
   document.body.appendChild(iframe);
