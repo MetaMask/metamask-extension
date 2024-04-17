@@ -6,6 +6,7 @@ import {
   SimulationTokenBalanceChange,
   SimulationTokenStandard,
 } from '@metamask/transaction-controller';
+import { ContractExchangeRates } from '@metamask/assets-controllers';
 import { useAsyncResultOrThrow } from '../../../../hooks/useAsyncResult';
 import { getTokenStandardAndDetails } from '../../../../store/actions';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
@@ -73,7 +74,7 @@ const fetchTokenFiatRates = async (
   fiatCurrency: string,
   erc20TokenAddresses: Hex[],
   chainId: Hex,
-) => {
+): Promise<ContractExchangeRates> => {
   const tokenRates = await fetchTokenExchangeRates(
     fiatCurrency,
     erc20TokenAddresses,
@@ -138,7 +139,10 @@ export const useBalanceChanges = (
   const fiatCurrency = useSelector(getCurrentCurrency);
   const nativeFiatRate = useSelector(getConversionRate);
 
-  const erc20TokenAddresses = (simulationData?.tokenBalanceChanges ?? [])
+  const { nativeBalanceChange, tokenBalanceChanges = [] } =
+    simulationData ?? {};
+
+  const erc20TokenAddresses = tokenBalanceChanges
     .filter((tbc) => tbc.standard === SimulationTokenStandard.erc20)
     .map((tbc) => tbc.address);
 
@@ -157,11 +161,11 @@ export const useBalanceChanges = (
   }
 
   const nativeChange = getNativeBalanceChange(
-    simulationData.nativeBalanceChange,
+    nativeBalanceChange,
     nativeFiatRate,
   );
   const tokenChanges = getTokenBalanceChanges(
-    simulationData.tokenBalanceChanges,
+    tokenBalanceChanges,
     erc20Decimals.value,
     erc20FiatRates.value,
   );
