@@ -388,8 +388,6 @@ Each of these actions requires first [locating](#locators) the web element you w
 >    };
 >```
 >>
-</details>
-
 </details><br>
 <details><summary><b>getText</b></summary>
 <br>
@@ -408,5 +406,311 @@ Each of these actions requires first [locating](#locators) the web element you w
 >const pageTitle = await driver.findElement('.unlock-page__title');
 >assert.equal(await pageTitle.getText(), 'Welcome back!');
 >```
+>>
+</details>
+
+## Waits
+
+Selenium provides several mechanisms for managing waits, crucial for handling the asynchronous nature of web applications where elements may load at different times. These waits help avoid errors in test scripts that occur when trying to interact with elements that are not yet available on the web page
+
+## When do we need to wait?
+
+- **Before Locating the Element:**
+    - Ensure that the page or relevant components have fully loaded.
+    - You can use explicit waits to wait for certain conditions, like the visibility of an element or the presence of an element in the DOM.
+- **CSS Selector and Element Existence:**
+    - Ensure that the CSS selector is correct and that the element you're trying to locate actually exists in the DOM at the time you're trying to find it.
+    - It's possible the element is dynamically loaded or changed due to a recent update in the application.
+- **Context Switching:**
+    - Consider switching the context to that iframe or modal before attempting to locate the element.
+- **Recent Changes:**
+    - If the issue started occurring recently, review any changes made to the application that could affect the visibility or availability of the element.
+- **Timeout Period:**
+    - If the default timeout is too short for the page or element to load, consider increasing the timeout period. This is especially useful for pages that take longer to load due to network latency or heavy JavaScript use.
+
+This organization helps provide a clear structure for understanding the various situations in which waiting may be necessary when working with web elements.
+
+<details><summary><b>wait</b></summary>
+<br>
+
+>**`wait`** method is an asynchronous function to wait for a specific condition to be met within a given timeout period, with an option to catch and handle any errors that occur during the wait.
+>
+>[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L215)
+>
+>**Arguments**<br>
+>@param {Function} condition - Function or a condition that the method waits to be fulfilled or to return true.<br>
+>@param {number} timeout - Optional parameter specifies the maximum milliseconds to wait.<br>
+>@param catchError - Optional parameter that determines whether errors during the wait should be caught and handled within the method
+>
+>**Returns**<br>
+>@returns {Promise} A promise that will be fulfilled after the specified number of milliseconds.<br>
+>@throws {Error} Will throw an error if the condition is not met within the timeout period.
+>
+>**Example wait until a condition occurs**
+>
+>```jsx
+>await driver.wait(async () => {
+>  info = await getBackupJson();
+>  return info !== null;
+>}, 10000);
+>```
+>
+>**Example wait until the condition for finding the elements is met and ensuring that the length validation is also satisfied.**
+>
+>```jsx
+>await driver.wait(async () => {
+>        const confirmedTxes = await driver.findElements(
+>          '.transaction-list__completed-transactions .transaction-list-item',
+>        );
+>        return confirmedTxes.length === 1;
+>      }, 10000);
+>```
+>
+>**Example wait until a mock condition occurs**
+>
+>```jsx
+>
+>await driver.wait(async () => {
+>      const isPending = await mockedEndpoint.isPending();
+>      return isPending === false;
+>     }, 3000);
+>```
+>>
+</details><br>
+<details><summary><b>waitForSelector</b></summary>
+<br>
+
+>**`waitForSelector`** method allows for flexible handling of element visibility and detachment from the DOM, making it useful for ensuring that web interactions occur only when the page is in the desired state. This method can be used in scenarios where you need to wait for an element to appear or disappear before performing further actions, such as:
+>
+>- Ensuring a modal dialog is visible before attempting to close it.
+>- Verifying that an item has been removed from the page after a delete action.
+>
+>[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L227)
+>
+>**Arguments**
+>
+>@param {string | object} rawLocator - Element locator<br>
+>@param {number} timeout - optional parameter that specifies the maximum amount of time (in milliseconds) to wait for the condition to be met and desired state of the element to wait for.<br>
+>It defaults to 'visible', indicating that the method will wait until the element is visible on the page.<br>
+>The other supported state is 'detached', which means waiting until the element is removed from the DOM.
+>
+>**Returns**<br>
+>@returns {Promise} A promise that will be fulfilled when the element reaches the specified state or the timeout expires.<br>
+>@throws {Error} Will throw an error if the element does not reach the specified state within the timeout period.
+>
+>**Example** wait for element to load
+>
+>```jsx
+>await driver.waitForSelector('.import-srp__actions');
+>```
+>>
+</details><br>
+<details><summary><b>waitForNonEmptyElement</b></summary>
+<br>
+
+>**`waitForNonEmptyElement`** method is an asynchronous function designed to wait until a specified web element contains some text, i.e., it's not empty. This can be particularly useful in scenarios where the content of an element is dynamically loaded or updated, and you need to ensure the element has content before proceeding with further actions. This method is useful when you need to wait for a message, label, or any piece of information to appear in a UI element before performing further actions, such as:
+>
+>- Waiting for a success message after submitting a form.
+>- Ensuring that a dynamically loaded piece of text, like a user's name or a search result, is displayed before proceeding.
+>
+>[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L253)
+>
+>**Arguments**<br>
+>@param {string | object} element - Element locator
+>
+>**Returns**<br>
+>@returns {Promise} A promise that will be fulfilled when the element becomes non-empty or the timeout expires.<br>
+>@throws {Error} Will throw an error if the element does not become non-empty within the timeout period.
+>
+>**Example**
+>
+>```jsx
+>const revealedSeedPhrase = await driver.findElement(
+>          '.reveal-seed-phrase__secret-words',
+>        );
+>await driver.waitForNonEmptyElement(revealedSeedPhrase)
+>```
+>>
+</details><br>
+<details><summary><b>waitForElementState</b></summary>
+<br>
+
+>**`waitForElementState`** method waits for a specific state of an element.
+>
+>[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L54)
+>
+>**Arguments**<br>
+>@param {WebElement} element - Element locator<br>
+>@param {string} state - state to wait for could be 'visible', 'hidden', 'enabled', 'disabled'
+>@param {number} [timeout=5000] - amount of time in milliseconds to wait before timing out
+>
+>**Returns**<br>
+>@returns {Promise<void>} A promise that resolves when the element is in the specified state. <br>
+>@throws {Error} Will throw an error if the element does not reach the specified state within the timeout period.
+>
+>**Example**
+>
+>```jsx
+>const networkSelectionModal = await driver.findVisibleElement(
+>          '.mm-modal',);
+>// Wait for network to change and token list to load from state
+>await networkSelectionModal.waitForElementState('hidden');
+>```
+>>
+</details><br>
+
+## assertElementNotPresent
+
+## **** NOTE - No Delay ****
+
+**`delay`** method is hard-coded wait may be longer than needed, resulting in slower test execution. Please avoid using this method.
+
+## Actions
+
+These interactions include keyboard and mouse actions.
+
+### Keyboard
+---
+
+Selenium can simulate keyboard shortcuts by sending combinations of keys.
+
+
+<details><summary><b>sendKeys</b></summary>
+<br>
+
+```jsx
+const approveInput = await driver.findElement('#approveTokenInput');
+await approveInput.sendKeys('1');
+```
+</details>
+
+<details><summary><b>clear</b></summary>
+<br>
+
+```jsx
+const approveInput = await driver.findElement('#approveTokenInput');
+await approveInput.clear();
+```
+</details>
+
+<details><summary><b>pasteIntoField</b></summary>
+<br>
+
+>**`pasteIntoField`** function simulates the pasting of content into a specified field, employing a unique approach to managing the clipboard.
+>
+>[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L465)
+>
+>**Arguments**<br>
+>@param {string | object} rawLocator - Element locator
+>
+>@param {string} contentToPaste -  content to paste.
+>
+>**Returns**<br>
+>@return {Promise<WebElement>} A promise that resolves to the WebElement.
+>
+>**Example**
+>
+>```jsx
+>await driver.pasteIntoField('#bip44Message', '1234');
+>```
+>>
+</details>
+
+### Mouse
+---
+
+A representation of any pointer device for interacting with a web page.
+
+<details><summary><b>clickElementUsingMouseMove</b></summary>
+<br>
+
+>**`clickElementUsingMouseMove`** function by simulating a more natural mouse movement towards the element before initiating a click. This is essential for web pages with buttons that only respond correctly to user interactions when the mouse physically moves to the button before clicking, as opposed to executing a direct click command.
+>
+>[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L403)
+>
+>**Arguments**<br>
+>@param {string | object} rawLocator - Element locator
+>
+>**Returns**<br>
+>@returns {Promise} A promise that will be fulfilled when the click command has completed.
+>
+>**Example**
+>
+>```jsx
+>await driver.clickElementUsingMouseMove({
+>      text: 'Reject request',
+>      tag: 'div',
+>    });
+>```
+>>
+</details>
+
+<details><summary><b>scrollToElement</b></summary>
+<br>
+
+>**`scrollToElement`** function scrolls the web page until the specified element comes into view.
+>
+>[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L434)
+>
+>**Arguments**<br>
+>@param {string | object} element - The web element to scroll to.
+>
+>**Returns**<br>
+>@returns {Promise} A promise that will be fulfilled when the scroll has completed.
+>
+>**Example**
+>
+>```jsx
+>const removeButton = await driver.findElement(
+>          '[data-testid="remove-snap-button"]',
+>        );
+>await driver.scrollToElement(removeButton);
+>await driver.clickElement('[data-testid="remove-snap-button"]');
+>```
+>>
+</details>
+
+<details><summary><b>holdMouseDownOnElement</b></summary>
+<br>
+
+>**`holdMouseDownOnElement`** function simulates the action of pressing and holding down the mouse button on a specific element for a specified duration.
+>
+>[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L422)
+>
+>**Arguments**<br>
+>@param {string | object} rawLocator - Element locator<br>
+>@param {int} ms - duration (in milliseconds) for which the mouse button should be held down on the element.
+>
+>**Returns**<br>
+>@returns {Promise} A promise that will be fulfilled when the mouse down command has completed.
+>
+>**Example**
+>
+>```jsx
+>await driver.holdMouseDownOnElement(
+>      {
+>        text: tEn('holdToRevealPrivateKey'),
+>        tag: 'span',
+>      },
+>      2000,
+>    );
+>```
+>>
+</details>
+
+<details><summary><b>clickPoint</b></summary>
+<br>
+
+>**`clickPoint`** function is designed to click on a specific point, determined by the x and y coordinates
+>
+>[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L413)
+>
+>**Arguments**<br>
+>@param {string | object} rawLocator - Element locator<br>
+>@param {number} x - The x coordinate to click at.<br>
+>@param {number} y - The y coordinate to click at.<br>
+>
+>**Returns**<br>
+>@returns {Promise} A promise that will be fulfilled when the click command has completed.
 >>
 </details>

@@ -628,6 +628,7 @@ class Driver {
    *
    * @param {string} rawLocator - Element locator
    * @param {string} contentToPaste - The content to paste.
+   * @return {Promise<WebElement>} A promise that resolves to the WebElement.
    */
   async pasteIntoField(rawLocator, contentToPaste) {
     // Throw if double-quote is present in content to paste
