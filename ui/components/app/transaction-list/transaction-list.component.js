@@ -6,7 +6,14 @@ import {
   nonceSortedCompletedTransactionsSelector,
   nonceSortedPendingTransactionsSelector,
 } from '../../../selectors/transactions';
-import { getCurrentChainId, getSelectedAccount } from '../../../selectors';
+import {
+  getCurrentChainId,
+  getSelectedAccount,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  getIsBuyableChain,
+  getShouldHideZeroBalanceTokens,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TransactionListItem from '../transaction-list-item';
 import SmartTransactionListItem from '../transaction-list-item/smart-transaction-list-item.component';
@@ -20,6 +27,13 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
+import {
+  RAMPS_CARD_VARIANT_TYPES,
+  RampsCard,
+} from '../../multichain/ramps-card/ramps-card';
+///: END:ONLY_INCLUDE_IF
 
 const PAGE_INCREMENT = 10;
 
@@ -114,6 +128,21 @@ export default function TransactionList({
   );
   const chainId = useSelector(getCurrentChainId);
   const { address: selectedAddress } = useSelector(getSelectedAccount);
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  const shouldHideZeroBalanceTokens = useSelector(
+    getShouldHideZeroBalanceTokens,
+  );
+  const { totalFiatBalance } = useAccountTotalFiatBalance(
+    selectedAddress,
+    shouldHideZeroBalanceTokens,
+  );
+  const balanceIsZero = Number(totalFiatBalance) === 0;
+  const isBuyableChain = useSelector(getIsBuyableChain);
+
+  const showRampsCard = isBuyableChain && balanceIsZero;
+  ///: END:ONLY_INCLUDE_IF
+
   const renderDateStamp = (index, dateGroup) => {
     return index === 0 ? (
       <Text
@@ -205,98 +234,108 @@ export default function TransactionList({
     dateGroup.transactionGroups.length > 0;
 
   return (
-    <Box className="transaction-list" paddingTop={4}>
-      <Box className="transaction-list__transactions">
-        {pendingTransactions.length > 0 && (
-          <Box className="transaction-list__pending-transactions">
-            {pendingTransactions.map((dateGroup) => {
-              return dateGroup.transactionGroups.map(
-                (transactionGroup, index) => {
-                  if (
-                    transactionGroup.initialTransaction.transactionType ===
-                    TransactionType.smart
-                  ) {
+    <>
+      {
+        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+        showRampsCard ? (
+          <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.ACTIVITY} />
+        ) : null
+        ///: END:ONLY_INCLUDE_IF
+      }
+      <Box className="transaction-list" paddingTop={4}>
+        <Box className="transaction-list__transactions">
+          {pendingTransactions.length > 0 && (
+            <Box className="transaction-list__pending-transactions">
+              {pendingTransactions.map((dateGroup) => {
+                return dateGroup.transactionGroups.map(
+                  (transactionGroup, index) => {
+                    if (
+                      transactionGroup.initialTransaction?.isSmartTransaction
+                    ) {
+                      return (
+                        <Fragment key={`${transactionGroup.nonce}:${index}`}>
+                          {renderDateStamp(index, dateGroup)}
+                          <SmartTransactionListItem
+                            isEarliestNonce={index === 0}
+                            smartTransaction={
+                              transactionGroup.initialTransaction
+                            }
+                            transactionGroup={transactionGroup}
+                          />
+                        </Fragment>
+                      );
+                    }
                     return (
                       <Fragment key={`${transactionGroup.nonce}:${index}`}>
                         {renderDateStamp(index, dateGroup)}
-                        <SmartTransactionListItem
+                        <TransactionListItem
                           isEarliestNonce={index === 0}
-                          smartTransaction={transactionGroup.initialTransaction}
                           transactionGroup={transactionGroup}
                         />
                       </Fragment>
                     );
-                  }
-                  return (
-                    <Fragment key={`${transactionGroup.nonce}:${index}`}>
-                      {renderDateStamp(index, dateGroup)}
-                      <TransactionListItem
-                        isEarliestNonce={index === 0}
-                        transactionGroup={transactionGroup}
-                      />
-                    </Fragment>
-                  );
-                },
-              );
-            })}
-          </Box>
-        )}
-        <Box className="transaction-list__completed-transactions">
-          {completedTransactions.length > 0 ? (
-            completedTransactions
-              .map(removeIncomingTxsButToAnotherAddress)
-              .map(removeTxGroupsWithNoTx)
-              .filter(dateGroupsWithTransactionGroups)
-              .slice(0, limit)
-              .map((dateGroup) => {
-                return dateGroup.transactionGroups.map(
-                  (transactionGroup, index) => {
-                    return (
-                      <Fragment
-                        key={`${transactionGroup.nonce}:${
-                          transactionGroup.initialTransaction
-                            ? index
-                            : limit + index - 10
-                        }`}
-                      >
-                        {renderDateStamp(index, dateGroup)}
-                        {transactionGroup.initialTransaction
-                          ?.transactionType === TransactionType.smart ? (
-                          <SmartTransactionListItem
-                            transactionGroup={transactionGroup}
-                            smartTransaction={
-                              transactionGroup.initialTransaction
-                            }
-                          />
-                        ) : (
-                          <TransactionListItem
-                            transactionGroup={transactionGroup}
-                          />
-                        )}
-                      </Fragment>
-                    );
                   },
                 );
-              })
-          ) : (
-            <Box className="transaction-list__empty">
-              <Box className="transaction-list__empty-text">
-                {t('noTransactions')}
-              </Box>
+              })}
             </Box>
           )}
-          {completedTransactions.length > limit && (
-            <Button
-              className="transaction-list__view-more"
-              type="secondary"
-              onClick={viewMore}
-            >
-              {t('viewMore')}
-            </Button>
-          )}
+          <Box className="transaction-list__completed-transactions">
+            {completedTransactions.length > 0 ? (
+              completedTransactions
+                .map(removeIncomingTxsButToAnotherAddress)
+                .map(removeTxGroupsWithNoTx)
+                .filter(dateGroupsWithTransactionGroups)
+                .slice(0, limit)
+                .map((dateGroup) => {
+                  return dateGroup.transactionGroups.map(
+                    (transactionGroup, index) => {
+                      return (
+                        <Fragment
+                          key={`${transactionGroup.nonce}:${
+                            transactionGroup.initialTransaction
+                              ? index
+                              : limit + index - 10
+                          }`}
+                        >
+                          {renderDateStamp(index, dateGroup)}
+                          {transactionGroup.initialTransaction
+                            ?.isSmartTransaction ? (
+                            <SmartTransactionListItem
+                              transactionGroup={transactionGroup}
+                              smartTransaction={
+                                transactionGroup.initialTransaction
+                              }
+                            />
+                          ) : (
+                            <TransactionListItem
+                              transactionGroup={transactionGroup}
+                            />
+                          )}
+                        </Fragment>
+                      );
+                    },
+                  );
+                })
+            ) : (
+              <Box className="transaction-list__empty">
+                <Box className="transaction-list__empty-text">
+                  {t('noTransactions')}
+                </Box>
+              </Box>
+            )}
+            {completedTransactions.length > limit && (
+              <Button
+                className="transaction-list__view-more"
+                type="secondary"
+                onClick={viewMore}
+              >
+                {t('viewMore')}
+              </Button>
+            )}
+          </Box>
         </Box>
       </Box>
-    </Box>
+    </>
   );
 }
 

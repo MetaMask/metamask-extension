@@ -1076,7 +1076,6 @@
   "ui/helpers/utils/metrics.js",
   "ui/helpers/utils/optimism/buildUnserializedTransaction.js",
   "ui/helpers/utils/optimism/buildUnserializedTransaction.test.js",
-  "ui/helpers/utils/optimism/fetchEstimatedL1Fee.js",
   "ui/helpers/utils/permission.js",
   "ui/helpers/utils/settings-search.js",
   "ui/helpers/utils/settings-search.test.js",
