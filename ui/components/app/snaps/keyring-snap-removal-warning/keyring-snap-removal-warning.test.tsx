@@ -104,7 +104,7 @@ describe('Keyring Snap Remove Warning', () => {
     });
   });
 
-  it('prevents pasting of the snap name to remove the snap.', async () => {
+  it('prevents pasting of the snap name to remove the snap', async () => {
     const { getByText, getByTestId } = renderWithProvider(
       <KeyringSnapRemovalWarning {...defaultArgs} />,
       store,
