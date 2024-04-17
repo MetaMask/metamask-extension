@@ -156,19 +156,13 @@ export const getInitialSendStateWithExistingTxState = (draftTxState) => ({
   },
 });
 
-export function createMockInternalAccount(
-  {
-    address = MOCK_DEFAULT_ADDRESS,
-    name,
-    is4337 = false,
-    keyringType = KeyringTypes.hd,
-    snapOptions,
-  } = {
-    address: MOCK_DEFAULT_ADDRESS,
-    is4337: false,
-    keyringType: KeyringTypes.hd,
-  },
-) {
+export function createMockInternalAccount({
+  address = MOCK_DEFAULT_ADDRESS,
+  name,
+  is4337 = false,
+  keyringType = KeyringTypes.hd,
+  snapOptions,
+} = {}) {
   return {
     address,
     id: uuidv4(),
