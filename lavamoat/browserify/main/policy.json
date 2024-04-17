@@ -1829,13 +1829,6 @@
         "eslint>optionator>fast-levenshtein": true
       }
     },
-    "@metamask/snaps-execution-environments": {
-      "packages": {
-        "@metamask/post-message-stream": true,
-        "@metamask/snaps-utils": true,
-        "@metamask/utils": true
-      }
-    },
     "@metamask/post-message-stream": {
       "globals": {
         "MessageEvent.prototype": true,
@@ -2472,6 +2465,13 @@
     "@metamask/snaps-controllers>tar-stream>streamx>queue-tick": {
       "globals": {
         "queueMicrotask": true
+      }
+    },
+    "@metamask/snaps-execution-environments": {
+      "packages": {
+        "@metamask/post-message-stream": true,
+        "@metamask/snaps-utils": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/snaps-rpc-methods": {
