@@ -15,7 +15,7 @@ jest.mock('react-redux', () => ({
 }));
 
 jest.mock('../../../../ducks/locale/locale', () => ({
-  getCurrentLocale: jest.fn(() => 'en-US'),
+  getIntlLocale: jest.fn(() => 'en-US'),
 }));
 
 jest.mock('../../../../components/ui/tooltip', () => ({

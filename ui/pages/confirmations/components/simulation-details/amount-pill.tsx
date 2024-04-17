@@ -14,7 +14,7 @@ import {
 import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import Tooltip from '../../../../components/ui/tooltip';
-import { getCurrentLocale } from '../../../../ducks/locale/locale';
+import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { AssetIdentifier } from './types';
 import { formatAmount, formatAmountMaxPrecision } from './formatAmount';
 
@@ -30,7 +30,7 @@ export const AmountPill: React.FC<{
   asset: AssetIdentifier;
   amount: BigNumber;
 }> = ({ asset, amount }) => {
-  const locale = useSelector(getCurrentLocale);
+  const locale = useSelector(getIntlLocale);
 
   const backgroundColor = amount.isNegative()
     ? BackgroundColor.errorMuted
