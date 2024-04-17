@@ -493,7 +493,6 @@ export default function setupSentry({ release, getState }) {
       );
       sentryTarget = process.env.SENTRY_DSN;
     }
-
   } else {
     console.log(
       `Setting up Sentry Remote Error Reporting for '${environment}': SENTRY_DSN_DEV`,
@@ -508,8 +507,7 @@ export default function setupSentry({ release, getState }) {
    * @returns `true` if MetaMetrics is enabled, `false` otherwise.
    */
   async function getMetaMetricsEnabled() {
-
-    // For MMI we have MetaMetrics OFF by default, but want to keep Sentry logging
+    // For MMI we have set MetaMetrics OFF by default, but want to keep Sentry logging
     if (METAMASK_BUILD_TYPE === 'mmi') {
       return true;
     }
