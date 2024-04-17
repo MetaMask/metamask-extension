@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getCurrentChainId } from '../../selectors';
-import RampAPI from '../../hooks/useRamps/rampAPI';
+import RampAPI from '../../helpers/ramps/rampApi/rampAPI';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { defaultBuyableChains } from './constants';
 import { AggregatorNetwork } from './types';

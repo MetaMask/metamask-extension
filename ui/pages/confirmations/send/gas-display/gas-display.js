@@ -45,7 +45,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import useRamps from '../../../../hooks/useRamps/useRamps';
+import useRamps from '../../../../hooks/ramps/useRamps/useRamps';
 import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
 
 export default function GasDisplay({ gasError }) {

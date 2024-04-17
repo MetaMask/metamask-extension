@@ -60,7 +60,7 @@ import { AssetType } from '../../../../shared/constants/transaction';
 import { Icon, IconName } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import useRamps from '../../../hooks/useRamps/useRamps';
+import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 ///: END:ONLY_INCLUDE_IF

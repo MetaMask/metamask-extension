@@ -1,6 +1,6 @@
-import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
-import { AggregatorNetwork } from '../../ducks/ramps/types';
-import { defaultBuyableChains } from '../../ducks/ramps/constants';
+import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
+import { AggregatorNetwork } from '../../../ducks/ramps/types';
+import { defaultBuyableChains } from '../../../ducks/ramps/constants';
 
 const fetchWithTimeout = getFetchWithTimeout();
 

@@ -1,5 +1,5 @@
 import { configureStore, Store } from '@reduxjs/toolkit';
-import RampAPI from '../../hooks/useRamps/rampAPI';
+import RampAPI from '../../helpers/ramps/rampApi/rampAPI';
 import { getCurrentChainId } from '../../selectors';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import rampsReducer, {
@@ -9,7 +9,7 @@ import rampsReducer, {
 } from './ramps';
 import { defaultBuyableChains } from './constants';
 
-jest.mock('../../hooks/useRamps/rampAPI');
+jest.mock('../../helpers/ramps/rampApi/rampAPI');
 
 jest.mock('../../selectors', () => ({
   getCurrentChainId: jest.fn(),
