@@ -96,6 +96,8 @@ const CustodyPage = () => {
   const connectRequest = connectRequests ? connectRequests[0] : undefined;
   const isCheckBoxSelected =
     accounts && Object.keys(selectedAccounts).length === accounts.length;
+  const custodianURL =
+    matchedCustodian?.onboardingUrl || matchedCustodian?.website;
 
   let searchResults = accounts;
 
@@ -745,9 +747,7 @@ const CustodyPage = () => {
         <ConfirmConnectCustodianModal
           onModalClose={() => setIsConfirmConnectCustodianModalVisible(false)}
           custodianName={selectedCustodianDisplayName}
-          custodianURL={
-            matchedCustodian?.onboardingUrl || matchedCustodian?.website
-          }
+          custodianURL={custodianURL}
         />
       )}
 
@@ -757,6 +757,7 @@ const CustodyPage = () => {
             setShowQRCodeModal(false);
           }}
           custodianName={selectedCustodianDisplayName}
+          custodianURL={custodianURL}
         />
       )}
     </Box>

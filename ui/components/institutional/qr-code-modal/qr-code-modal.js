@@ -19,7 +19,11 @@ import {
 } from '../../../ducks/institutional/institutional';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 
-export default function QRCodeModal({ onClose, custodianName }) {
+export default function QRCodeModal({
+  onClose,
+  custodianName = 'custodian',
+  custodianURL,
+}) {
   const t = useContext(I18nContext);
   const history = useHistory();
   const [publicKey, setPublicKey] = useState(null);
@@ -131,23 +135,24 @@ export default function QRCodeModal({ onClose, custodianName }) {
     }
   }, [decryptedMessage, dispatch, handleClose, history, mmiActions]);
 
+  const supportLink = (
+    <a
+      target="_blank"
+      key="metamaskSupportLink"
+      rel="noopener noreferrer"
+      href={custodianURL}
+    >
+      <span className="error-page__link-text">{custodianName}</span>
+    </a>
+  );
+
   return (
     <Modal isOpen onClose={handleClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader onClose={onClose}>
-          {t('connectCustodianAccounts', [custodianName || 'custodian'])}
+          {t('connectCustodianAccounts', [custodianName])}
         </ModalHeader>
-        <Text
-          as="p"
-          paddingRight={10}
-          paddingLeft={10}
-          paddingBottom={4}
-          color={TextColor.textDefault}
-          variant={TextVariant.bodySm}
-        >
-          {t('custodianQRCodeScan')}
-        </Text>
         {error && <Text color={TextColor.error}>{error}</Text>}
         {qrCodeValue === null ? (
           <Spinner color="var(--color-warning-default)" />
@@ -164,6 +169,27 @@ export default function QRCodeModal({ onClose, custodianName }) {
             <QRCode value={qrCodeValue} size={270} />
           </Box>
         )}
+        <Text
+          as="p"
+          paddingRight={10}
+          paddingLeft={10}
+          paddingBottom={4}
+          color={TextColor.textDefault}
+          variant={TextVariant.bodySm}
+        >
+          {t('custodianQRCodeScan', [custodianName])}
+        </Text>
+        <Text
+          as="p"
+          paddingRight={10}
+          paddingLeft={10}
+          paddingBottom={4}
+          color={TextColor.textDefault}
+          variant={TextVariant.bodySm}
+        >
+          {t('custodianQRCodeScanDescription', [supportLink])}
+        </Text>
+        {error && <Text color={TextColor.error}>{error}</Text>}
         {process.env.IN_TEST && (
           <span
             className="hidden"
@@ -179,4 +205,5 @@ export default function QRCodeModal({ onClose, custodianName }) {
 QRCodeModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   custodianName: PropTypes.string.isRequired,
+  custodianURL: PropTypes.string.isRequired,
 };
