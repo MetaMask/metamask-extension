@@ -1,14 +1,16 @@
 import * as React from 'react';
-import { BlockaidUnavailableBannerAlert } from './blockaid-unavailable-banner-alert';
+import mockState from '../../../../../test/data/mock-state.json';
 import configureStore from '../../../../store/store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import mockState from '../../../../../test/data/mock-state.json';
+import { BlockaidUnavailableBannerAlert } from './blockaid-unavailable-banner-alert';
 
 describe('<BlockaidUnavailableBannerAlert />', () => {
   beforeEach(() => {
     jest.resetAllMocks();
   });
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const render = (storeOverrides: Record<string, any> = {}) => {
     const store = configureStore({
       ...mockState.metamask,

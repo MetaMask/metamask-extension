@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`BlockaidUnavailableBannerAlert should not render if user hasn't been migrated to blockaid 1`] = `<div />`;
+exports[`<BlockaidUnavailableBannerAlert /> should not render if user hasn't been migrated to blockaid 1`] = `<div />`;
 
-exports[`BlockaidUnavailableBannerAlert should render if user has been migrated to blockaid 1`] = `
+exports[`<BlockaidUnavailableBannerAlert /> should render if user has been migrated to blockaid 1`] = `
 <div>
   <div
     class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-info mm-box--margin-4 mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-primary-muted mm-box--rounded-sm"

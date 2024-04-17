@@ -57,8 +57,8 @@ import SnapLegacyAuthorshipHeader from '../../../../components/app/snaps/snap-le
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
 ///: END:ONLY_INCLUDE_IF
 import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
-import SignatureRequestOriginalWarning from './signature-request-original-warning';
 import { BlockaidUnavailableBannerAlert } from '../blockaid-unavailable-banner-alert/blockaid-unavailable-banner-alert';
+import SignatureRequestOriginalWarning from './signature-request-original-warning';
 
 export default class SignatureRequestOriginal extends Component {
   static contextTypes = {
@@ -128,8 +128,6 @@ export default class SignatureRequestOriginal extends Component {
   };
 
   renderBody = () => {
-    const { t } = this.context;
-
     let rows;
     const notice = `${this.context.t('youSign')}:`;
 
