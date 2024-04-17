@@ -154,7 +154,6 @@ export default function KeyringRemovalSnapWarning({
                   }}
                   onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
                     e.preventDefault();
-                    return false;
                   }}
                   error={error}
                   inputProps={{
