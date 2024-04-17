@@ -20,7 +20,7 @@ export type Alert = {
   severity: Severity.Danger | Severity.Warning | Severity.Info;
 
   /**
-   * The message describing what may happen if an alert is ignored.
+   * The message is a summary of the alert details.
    */
   message: string;
 

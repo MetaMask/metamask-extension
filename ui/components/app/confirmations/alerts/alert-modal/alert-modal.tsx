@@ -35,11 +35,11 @@ import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 export type AlertModalProps = {
   /** The owner ID of the relevant alert from the `confirmAlerts` reducer. */
   ownerId: string;
-  /** The unique key representing the specific alert field */
+  /** The unique key representing the specific alert field. */
   alertKey: string;
-  /** The key of the specific alert to display from the `confirmAlerts` reducer.  */
+  /** The function invoked when the user acknowledges the alert. */
   onAcknowledgeClick: () => void;
-  /** The function to be executed when the modal needs to be closed */
+  /** The function to be executed when the modal needs to be closed. */
   onClose: () => void;
 };
 
@@ -109,7 +109,7 @@ function AlertDetails({ selectedAlert }: { selectedAlert: Alert }) {
       borderRadius={BorderRadius.SM}
     >
       <Text variant={TextVariant.bodySm}>{selectedAlert.message}</Text>
-      {selectedAlert.alertDetails && selectedAlert.alertDetails?.length > 0 ? (
+      {(selectedAlert.alertDetails?.length ?? 0) > 0 ? (
         <Text variant={TextVariant.bodySmBold} marginTop={1}>
           {t('alertModalDetails')}
         </Text>
@@ -128,11 +128,11 @@ function AlertDetails({ selectedAlert }: { selectedAlert: Alert }) {
 
 function AcknowledgeCheckbox({
   selectedAlert,
-  handleAcknowledgeClick,
+  onHandleAcknowledgeClick,
   isConfirmed,
 }: {
   selectedAlert: Alert;
-  handleAcknowledgeClick: (
+  onHandleAcknowledgeClick: (
     selectedAlertKey: string,
     isConfirmed: boolean,
   ) => void;
@@ -154,7 +154,7 @@ function AcknowledgeCheckbox({
         label={t('alertModalAcknowledge')}
         data-testid="alert-modal-acknowledge-checkbox"
         isChecked={isConfirmed}
-        onClick={() => handleAcknowledgeClick(selectedAlert.key, isConfirmed)}
+        onClick={() => onHandleAcknowledgeClick(selectedAlert.key, isConfirmed)}
         alignItems={AlignItems.flexStart}
         className={'alert-modal__acknowledge-checkbox'}
       />
@@ -225,7 +225,7 @@ export function AlertModal({
           <AlertDetails selectedAlert={selectedAlert} />
           <AcknowledgeCheckbox
             selectedAlert={selectedAlert}
-            handleAcknowledgeClick={handleAcknowledgeClick}
+            onHandleAcknowledgeClick={handleAcknowledgeClick}
             isConfirmed={isConfirmed}
           />
         </ModalBody>
