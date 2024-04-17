@@ -72,7 +72,6 @@ import { NoConnectionContent } from './components/no-connection';
 
 export const Connections = () => {
   const t = useI18nContext();
-  const unconnectedAccounts = useSelector(getUnconnectedAccounts);
   const dispatch = useDispatch();
   const history = useHistory();
   const [showConnectAccountsModal, setShowConnectAccountsModal] =
@@ -106,7 +105,9 @@ export const Connections = () => {
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { id } = useSelector((state: any) => state.activeTab);
-
+  const unconnectedAccounts = useSelector((state) =>
+    getUnconnectedAccounts(state, activeTabOrigin),
+  );
   const connectedAccounts = useSelector((state) =>
     getOrderedConnectedAccountsForConnectedDapp(state, activeTabOrigin),
   );
