@@ -264,7 +264,7 @@
     "@metamask-institutional/extension": "^0.3.20",
     "@metamask-institutional/institutional-features": "^1.2.15",
     "@metamask-institutional/portfolio-dashboard": "^1.4.0",
-    "@metamask-institutional/rpc-allowlist": "^1.0.2",
+    "@metamask-institutional/rpc-allowlist": "1.0.3",
     "@metamask-institutional/sdk": "^0.1.25",
     "@metamask-institutional/transaction-update": "^0.1.38",
     "@metamask/abi-utils": "^2.0.2",
