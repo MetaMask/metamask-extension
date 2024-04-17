@@ -28,6 +28,7 @@ import {
   getPermittedAccountsForCurrentTab,
   getSelectedAccount,
   getSubjectMetadata,
+  getUnconnectedAccounts,
 } from '../../../../selectors';
 import {
   AvatarFavicon,
@@ -71,6 +72,7 @@ import { NoConnectionContent } from './components/no-connection';
 
 export const Connections = () => {
   const t = useI18nContext();
+  const unconnectedAccounts = useSelector(getUnconnectedAccounts);
   const dispatch = useDispatch();
   const history = useHistory();
   const [showConnectAccountsModal, setShowConnectAccountsModal] =
@@ -358,6 +360,7 @@ export const Connections = () => {
                 size={ButtonSize.Lg}
                 block
                 variant={ButtonVariant.Secondary}
+                disabled={unconnectedAccounts.length === 0}
                 startIconName={IconName.Add}
                 onClick={() => setShowConnectAccountsModal(true)}
               >
