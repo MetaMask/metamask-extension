@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`RemindSRP renders appropriately with PetNames enabled 1`] = `
+exports[`RemindSRP should match snapshot 1`] = `
 <div>
   <div
     class="mm-box"
