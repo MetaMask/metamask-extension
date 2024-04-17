@@ -194,7 +194,8 @@ export const Connections = () => {
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
             color={IconColor.iconDefault}
-            onClick={() => history.goBack()}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            onClick={() => (history as any).goBack()}
             size={ButtonIconSize.Sm}
           />
         }
