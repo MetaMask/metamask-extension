@@ -7,7 +7,6 @@ import {
 import ConfirmPageContainer from '../components/confirm-page-container';
 import { isBalanceSufficient } from '../send/send.utils';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import fetchEstimatedL1Fee from '../../../helpers/utils/optimism/fetchEstimatedL1Fee';
 
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
@@ -21,7 +20,6 @@ import UserPreferencedCurrencyDisplay from '../../../components/app/user-prefere
 
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import TextField from '../../../components/ui/text-field';
-import SimulationErrorMessage from '../components/simulation-error-message';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { getMethodName } from '../../../helpers/utils/metrics';
 import {
@@ -191,7 +189,6 @@ export default class ConfirmTransactionBase extends Component {
     editingGas: false,
     userAcknowledgedGasMissing: false,
     showWarningModal: false,
-    estimatedL1Fees: 0,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     noteText: '',
     ///: END:ONLY_INCLUDE_IF
@@ -211,7 +208,6 @@ export default class ConfirmTransactionBase extends Component {
       setDefaultHomeActiveTabName,
       hexMaximumTransactionFee,
       useMaxValue,
-      txData,
     } = this.props;
     const {
       customNonceValue: prevCustomNonceValue,
@@ -266,21 +262,11 @@ export default class ConfirmTransactionBase extends Component {
       }
     }
 
-    if (hexMaximumTransactionFee !== prevHexMaximumTransactionFee) {
-      fetchEstimatedL1Fee(txData?.chainId, txData)
-        .then((result) => {
-          this.setState({
-            estimatedL1Fees: result,
-          });
-        })
-        .catch((_err) => {
-          this.setState({
-            estimatedL1Fees: 0,
-          });
-        });
-      if (useMaxValue) {
-        this.updateValueToMax();
-      }
+    if (
+      hexMaximumTransactionFee !== prevHexMaximumTransactionFee &&
+      useMaxValue
+    ) {
+      this.updateValueToMax();
     }
   }
 
@@ -413,7 +399,7 @@ export default class ConfirmTransactionBase extends Component {
     } = this.props;
 
     const { t } = this.context;
-    const { userAcknowledgedGasMissing, estimatedL1Fees } = this.state;
+    const { userAcknowledgedGasMissing } = this.state;
 
     const { valid } = this.getErrorKey();
     const isDisabled = () => {
@@ -430,7 +416,7 @@ export default class ConfirmTransactionBase extends Component {
       return sumHexes(
         txData.txParams.value,
         useMaxFee ? hexMaximumTransactionFee : hexMinimumTransactionFee,
-        isMultiLayerFeeNetwork ? estimatedL1Fees : 0,
+        isMultiLayerFeeNetwork ? txData.layer1GasFee : 0,
       );
     };
 
@@ -512,20 +498,6 @@ export default class ConfirmTransactionBase extends Component {
       </div>
     ) : null;
 
-    const simulationFailureWarning = () => (
-      <div
-        className="confirm-page-container-content__error-container"
-        key="confirm-transaction-base_simulation-error-container"
-      >
-        <SimulationErrorMessage
-          userAcknowledgedGasMissing={userAcknowledgedGasMissing}
-          setUserAcknowledgedGasMissing={() =>
-            this.setUserAcknowledgedGasMissing()
-          }
-        />
-      </div>
-    );
-
     const { simulationData } = txData;
 
     const simulationDetails = (
@@ -578,16 +550,13 @@ export default class ConfirmTransactionBase extends Component {
           isUsingPaymaster={isUsingPaymaster}
         />
         {simulationDetails}
-        <TransactionDetail
-          disableEditGasFeeButton
-          disabled={isDisabled()}
-          userAcknowledgedGasMissing={userAcknowledgedGasMissing}
-          onEdit={
-            renderSimulationFailureWarning ? null : () => this.handleEditGas()
-          }
-          rows={[
-            renderSimulationFailureWarning && simulationFailureWarning(),
-            !renderSimulationFailureWarning && (
+        {!renderSimulationFailureWarning && (
+          <TransactionDetail
+            disableEditGasFeeButton
+            disabled={isDisabled()}
+            userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+            onEdit={() => this.handleEditGas()}
+            rows={[
               <div key="confirm-transaction-base_confirm-gas-display">
                 <ConfirmGasDisplay
                   userAcknowledgedGasMissing={userAcknowledgedGasMissing}
@@ -596,10 +565,10 @@ export default class ConfirmTransactionBase extends Component {
                   useCurrencyRateCheck={useCurrencyRateCheck}
                   txData={txData}
                 />
-              </div>
-            ),
-          ]}
-        />
+              </div>,
+            ]}
+          />
+        )}
         {showTotals && (
           <TransactionDetail
             disableEditGasFeeButton
