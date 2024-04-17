@@ -24,7 +24,7 @@ const render = () => {
         },
       },
     ],
-    selectedAccounts: new Set(['0x64a845a5b02460acf8a3d84503b0d68d028b4bb4'])
+    selectedAccounts: new Set(['0x64a845a5b02460acf8a3d84503b0d68d028b4bb4']),
     addressLastConnectedMap: {
       '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': 'Feb-22-2022',
     },
