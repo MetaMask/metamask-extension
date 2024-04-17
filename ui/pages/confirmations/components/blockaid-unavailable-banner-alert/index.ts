@@ -1,1 +1,1 @@
-export { default } from './blockaid-unavailable-banner-alert';
+export { BlockaidUnavailableBannerAlert } from './blockaid-unavailable-banner-alert';
