@@ -114,7 +114,10 @@ async function mockedSnapUpdateRejected(mockServer) {
 describe('Test Snap Metrics', function () {
   it('tests snap install metric', async function () {
     async function mockSegment(mockServer) {
-      return [await mockedSnapInstall(mockServer)];
+      return [
+        await mockedSnapInstallStarted(mockServer),
+        await mockedSnapInstall(mockServer),
+      ];
     }
 
     await withFixtures(
@@ -179,7 +182,17 @@ describe('Test Snap Metrics', function () {
 
         // check that snap installed event metrics have been sent
         const events = await getEventPayloads(driver, mockedEndpoints);
+        assert.deepStrictEqual(events[0].event, 'Snap Install Started');
         assert.deepStrictEqual(events[0].properties, {
+          snap_id: 'npm:@metamask/notification-example-snap',
+          origin: 'https://metamask.github.io',
+          category: 'Snaps',
+          locale: 'en',
+          chain_id: '0x539',
+          environment_type: 'background',
+        });
+        assert.deepStrictEqual(events[1].event, 'Snap Installed');
+        assert.deepStrictEqual(events[1].properties, {
           snap_id: 'npm:@metamask/notification-example-snap',
           origin: 'https://metamask.github.io',
           version: '2.1.1',
@@ -192,88 +205,12 @@ describe('Test Snap Metrics', function () {
     );
   });
 
-  it('tests snap install started metric', async function () {
-    async function mockSegment(mockServer) {
-      return [await mockedSnapInstallStarted(mockServer)];
-    }
-
-    await withFixtures(
-      {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
-            participateInMetaMetrics: true,
-          })
-          .build(),
-        title: this.test.fullTitle(),
-        testSpecificMock: mockSegment,
-      },
-
-      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await unlockWallet(driver);
-
-        // open a new tab and navigate to test snaps page and connect
-        await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
-
-        // wait for page to load
-        await driver.waitForSelector({
-          text: 'Installed Snaps',
-          tag: 'h2',
-        });
-
-        // find and scroll to the notifications card and click first
-        const snapButton = await driver.findElement('#connectnotifications');
-        await driver.scrollToElement(snapButton);
-        await driver.delay(1000);
-        await driver.clickElement('#connectnotifications');
-
-        // switch to metamask extension and click connect
-        const windowHandles = await driver.waitUntilXWindowHandles(
-          3,
-          1000,
-          10000,
-        );
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
-        await driver.clickElement({
-          text: 'Connect',
-          tag: 'button',
-        });
-
-        await driver.waitForSelector({ text: 'Install' });
-
-        await driver.clickElement({
-          text: 'Install',
-          tag: 'button',
-        });
-
-        await driver.waitForSelector({ text: 'OK' });
-
-        await driver.clickElement({
-          text: 'OK',
-          tag: 'button',
-        });
-
-        // check that snap installed event metrics have been sent
-        const events = await getEventPayloads(driver, mockedEndpoints);
-        assert.deepStrictEqual(events[0].properties, {
-          snap_id: 'npm:@metamask/notification-example-snap',
-          origin: 'https://metamask.github.io',
-          category: 'Snaps',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'background',
-        });
-      },
-    );
-  });
-
   it('tests snap install rejected metric', async function () {
     async function mockSegment(mockServer) {
-      return [await mockedSnapInstallRejected(mockServer)];
+      return [
+        await mockedSnapInstallStarted(mockServer),
+        await mockedSnapInstallRejected(mockServer),
+      ];
     }
 
     await withFixtures(
@@ -331,7 +268,17 @@ describe('Test Snap Metrics', function () {
 
         // check that snap installed event metrics have been sent
         const events = await getEventPayloads(driver, mockedEndpoints);
+        assert.deepStrictEqual(events[0].event, 'Snap Install Started');
         assert.deepStrictEqual(events[0].properties, {
+          snap_id: 'npm:@metamask/notification-example-snap',
+          origin: 'https://metamask.github.io',
+          category: 'Snaps',
+          locale: 'en',
+          chain_id: '0x539',
+          environment_type: 'background',
+        });
+        assert.deepStrictEqual(events[1].event, 'Snap Install Rejected');
+        assert.deepStrictEqual(events[1].properties, {
           snap_id: 'npm:@metamask/notification-example-snap',
           origin: 'https://metamask.github.io',
           category: 'Snaps',
@@ -469,7 +416,10 @@ describe('Test Snap Metrics', function () {
 
   it('test snap update metric', async function () {
     async function mockSegment(mockServer) {
-      return [await mockedSnapUpdated(mockServer)];
+      return [
+        await mockedSnapUpdateStarted(mockServer),
+        await mockedSnapUpdated(mockServer),
+      ];
     }
     await withFixtures(
       {
@@ -582,7 +532,17 @@ describe('Test Snap Metrics', function () {
 
         // check that snap updated event metrics have been sent
         const events = await getEventPayloads(driver, mockedEndpoints);
+        assert.deepStrictEqual(events[0].event, 'Snap Update Started');
         assert.deepStrictEqual(events[0].properties, {
+          snap_id: 'npm:@metamask/bip32-example-snap',
+          origin: 'https://metamask.github.io',
+          category: 'Snaps',
+          locale: 'en',
+          chain_id: '0x539',
+          environment_type: 'background',
+        });
+        assert.deepStrictEqual(events[1].event, 'Snap Updated');
+        assert.deepStrictEqual(events[1].properties, {
           snap_id: 'npm:@metamask/bip32-example-snap',
           new_version: '0.35.2-flask.1',
           old_version: '0.35.0-flask.1',
@@ -596,136 +556,12 @@ describe('Test Snap Metrics', function () {
     );
   });
 
-  it('test snap update started metric', async function () {
-    async function mockSegment(mockServer) {
-      return [await mockedSnapUpdateStarted(mockServer)];
-    }
-    await withFixtures(
-      {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
-            participateInMetaMetrics: true,
-          })
-          .build(),
-        title: this.test.fullTitle(),
-        testSpecificMock: mockSegment,
-      },
-      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await unlockWallet(driver);
-
-        // open a new tab and navigate to test snaps page and connect
-        await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
-
-        // wait for page to load
-        await driver.waitForSelector({
-          text: 'Installed Snaps',
-          tag: 'h2',
-        });
-
-        // find and scroll to the correct card and connect to update snap
-        const snapButton = await driver.findElement('#connectUpdate');
-        await driver.scrollToElement(snapButton);
-        await driver.delay(1000);
-        await driver.clickElement('#connectUpdate');
-
-        // switch to metamask extension and click connect
-        await switchToNotificationWindow(driver, 2);
-        await driver.clickElement({
-          text: 'Connect',
-          tag: 'button',
-        });
-
-        await driver.waitForSelector({ text: 'Install' });
-
-        await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
-
-        await driver.clickElement({
-          text: 'Install',
-          tag: 'button',
-        });
-
-        // wait for permissions popover, click checkboxes and confirm
-        await driver.delay(500);
-        await driver.clickElement('.mm-checkbox__input');
-        await driver.clickElement({
-          text: 'Confirm',
-          tag: 'button',
-        });
-
-        await driver.waitForSelector({ text: 'OK' });
-
-        await driver.clickElement({
-          text: 'OK',
-          tag: 'button',
-        });
-
-        // navigate to test snap page
-        const windowHandles = await driver.waitUntilXWindowHandles(
-          1,
-          1000,
-          10000,
-        );
-        await driver.switchToWindow(windowHandles[0]);
-
-        // wait for npm installation success
-        await driver.waitForSelector({
-          css: '#connectUpdate',
-          text: 'Reconnect to Update Snap',
-        });
-
-        // find and scroll to the correct card and click first
-        const snapButton2 = await driver.findElement('#connectUpdateNew');
-        await driver.scrollToElement(snapButton2);
-        await driver.delay(1000);
-        await driver.clickElement('#connectUpdateNew');
-
-        // switch to metamask extension and update
-        await switchToNotificationWindow(driver, 2);
-
-        await driver.waitForSelector({ text: 'Update' });
-
-        await driver.clickElementSafe('[data-testid="snap-update-scroll"]');
-
-        await driver.clickElement({
-          text: 'Update',
-          tag: 'button',
-        });
-
-        await driver.waitForSelector({ text: 'OK' });
-
-        await driver.clickElement({
-          text: 'OK',
-          tag: 'button',
-        });
-
-        // navigate to test snap page
-        await driver.switchToWindow(windowHandles[0]);
-
-        // look for the correct version text
-        await driver.waitForSelector({
-          css: '#updateSnapVersion',
-          text: '"0.35.2-flask.1"',
-        });
-
-        // check that snap updated event metrics have been sent
-        const events = await getEventPayloads(driver, mockedEndpoints);
-        assert.deepStrictEqual(events[0].properties, {
-          snap_id: 'npm:@metamask/bip32-example-snap',
-          origin: 'https://metamask.github.io',
-          category: 'Snaps',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'background',
-        });
-      },
-    );
-  });
-
   it('test snap update rejected metric', async function () {
     async function mockSegment(mockServer) {
-      return [await mockedSnapUpdateRejected(mockServer)];
+      return [
+        await mockedSnapUpdateStarted(mockServer),
+        await mockedSnapUpdateRejected(mockServer),
+      ];
     }
     await withFixtures(
       {
@@ -824,7 +660,17 @@ describe('Test Snap Metrics', function () {
 
         // check that snap updated event metrics have been sent
         const events = await getEventPayloads(driver, mockedEndpoints);
+        assert.deepStrictEqual(events[0].event, 'Snap Update Started');
         assert.deepStrictEqual(events[0].properties, {
+          snap_id: 'npm:@metamask/bip32-example-snap',
+          origin: 'https://metamask.github.io',
+          category: 'Snaps',
+          locale: 'en',
+          chain_id: '0x539',
+          environment_type: 'background',
+        });
+        assert.deepStrictEqual(events[1].event, 'Snap Update Rejected');
+        assert.deepStrictEqual(events[1].properties, {
           snap_id: 'npm:@metamask/bip32-example-snap',
           origin: 'https://metamask.github.io',
           category: 'Snaps',
