@@ -622,7 +622,7 @@
     "message": "If you approve this request, someone can steal your assets listed on Blur."
   },
   "blockaidDescriptionErrored": {
-    "message": "Because of an error, this request was not verified by the security provider. Proceed with caution."
+    "message": "Because of an error, we couldn't check for security alerts. Only continue if you trust every address involved."
   },
   "blockaidDescriptionMaliciousDomain": {
     "message": "You're interacting with a malicious domain. If you approve this request, you might lose your assets."
@@ -643,7 +643,7 @@
     "message": "This is a deceptive request"
   },
   "blockaidTitleMayNotBeSafe": {
-    "message": "Request may not be safe"
+    "message": "Be careful"
   },
   "blockaidTitleSuspicious": {
     "message": "This is a suspicious request"
@@ -4471,7 +4471,7 @@
     "description": "$1 is remaining time in seconds"
   },
   "smartTransactions": {
-    "message": "Smart transactions"
+    "message": "Smart Transactions"
   },
   "smartTransactionsBenefit1": {
     "message": "82% fewer failed transactions"
@@ -4486,7 +4486,7 @@
     "message": "Unlock the safest, most reliable, and easiest transaction experience - a smarter way to navigate web3."
   },
   "smartTransactionsDescription2": {
-    "message": "Millions of dollars are lost every month due to failed transactions & frontrunning. Smart transactions fixes this."
+    "message": "Millions of dollars are lost every month due to failed transactions & frontrunning. Smart Transactions fixes this."
   },
   "smartTransactionsDescription3": {
     "message": "Right now, Smart Transactions are only available on ETH Mainnet. You can turn them off at any time in settings. $1",
@@ -4890,7 +4890,7 @@
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
   "stxOptInDescription": {
-    "message": "Turn on smart transactions for more reliable and secure transactions, and adjustable fees on ETH Mainnet. $1"
+    "message": "Turn on Smart Transactions for more reliable and secure transactions, and adjustable fees on ETH Mainnet. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Privately submitting your Swap..."
