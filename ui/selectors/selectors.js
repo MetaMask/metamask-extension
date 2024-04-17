@@ -2319,7 +2319,10 @@ export function getCustomTokenAmount(state) {
 
 export function getUnconnectedAccounts(state, activeTab) {
   const accounts = getMetaMaskAccountsOrdered(state);
-  const connectedAccounts = getOrderedConnectedAccountsForConnectedDapp(state, activeTab);
+  const connectedAccounts = getOrderedConnectedAccountsForConnectedDapp(
+    state,
+    activeTab,
+  );
   const unConnectedAccounts = accounts.filter((account) => {
     return !connectedAccounts.some(
       (connectedAccount) => connectedAccount.address === account.address,
