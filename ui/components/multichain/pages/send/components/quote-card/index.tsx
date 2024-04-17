@@ -98,11 +98,16 @@ export function QuoteCard() {
     return undefined;
   }, [isSwapQuoteLoading, bestQuote, timeLeft]);
 
+  const isContent = Boolean(infoText || bestQuote);
+
+  if (!isContent) {
+    return null;
+  }
+
   return (
     <Box
       ref={scrollRef}
       display={Display.Flex}
-      paddingBottom={4}
       flexDirection={FlexDirection.Column}
       alignItems={isSwapQuoteLoading ? AlignItems.center : AlignItems.flexStart}
       gap={3}

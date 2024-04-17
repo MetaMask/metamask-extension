@@ -95,7 +95,6 @@ export const AssetPickerAmount = ({
         borderColor={borderColor}
         borderStyle={BorderStyle.solid}
         borderWidth={1}
-        marginTop={1}
         marginBottom={1}
         padding={1}
         // apply extra padding if there isn't an input component to apply it
