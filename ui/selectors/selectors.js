@@ -540,8 +540,8 @@ export function getAccountName(accounts, accountAddress) {
 
 export function getMetadataContractName(state, address) {
   const tokenList = getTokenList(state);
-  const entry = Object.values(tokenList).find((internalAccount) =>
-    isEqualCaseInsensitive(internalAccount.address, address),
+  const entry = Object.values(tokenList).find((token) =>
+    isEqualCaseInsensitive(token.address, address),
   );
   return entry && entry.name !== '' ? entry.name : '';
 }
@@ -1405,11 +1405,8 @@ export const getConnectedSitesList = createDeepEqualSelector(
       connectedSubjectsForAllAddresses[connectedAddress].forEach((app) => {
         const siteKey = app.origin;
 
-        const lowerCaseConnectedAddress = connectedAddress.toLowerCase();
-
-        const internalAccount = internalAccounts.find(
-          (account) =>
-            account.address.toLowerCase() === lowerCaseConnectedAddress,
+        const internalAccount = internalAccounts.find((account) =>
+          isEqualCaseInsensitive(account.address, connectedAddress),
         );
 
         if (sitesList[siteKey]) {
