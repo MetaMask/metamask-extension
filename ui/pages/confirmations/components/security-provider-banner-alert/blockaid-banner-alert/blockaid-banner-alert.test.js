@@ -154,7 +154,7 @@ describe('Blockaid Banner Alert', () => {
       configureStore(),
     );
 
-    expect(getByText('Request may not be safe')).toBeInTheDocument();
+    expect(getByText('Be careful')).toBeInTheDocument();
   });
 
   it(`should render title, "This is a suspicious request", when the reason is "${BlockaidReason.rawSignatureFarming}"`, () => {
@@ -278,7 +278,7 @@ describe('Blockaid Banner Alert', () => {
       [BlockaidReason.blurFarming]:
         'If you approve this request, someone can steal your assets listed on Blur.',
       [BlockaidReason.errored]:
-        'Because of an error, this request was not verified by the security provider. Proceed with caution.',
+        "Because of an error, we couldn't check for security alerts. Only continue if you trust every address involved.",
       [BlockaidReason.maliciousDomain]:
         "You're interacting with a malicious domain. If you approve this request, you might lose your assets.",
       [BlockaidReason.other]:
