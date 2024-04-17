@@ -6,15 +6,13 @@ import {
   SimulationTokenBalanceChange,
   SimulationTokenStandard,
 } from '@metamask/transaction-controller';
-import { CodefiTokenPricesServiceV2 } from '@metamask/assets-controllers';
-import { AbstractTokenPricesService } from '@metamask/assets-controllers/dist/token-prices-service';
-import { TokenPricesByTokenAddress } from '@metamask/assets-controllers/dist/token-prices-service/abstract-token-prices-service';
 import { useAsyncResultOrThrow } from '../../../../hooks/useAsyncResult';
 import { getTokenStandardAndDetails } from '../../../../store/actions';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { Numeric } from '../../../../../shared/modules/Numeric';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import { getCurrentChainId, getCurrentCurrency } from '../../../../selectors';
+import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
 import {
   Amount,
   BalanceChange,
@@ -26,9 +24,6 @@ import {
 const NATIVE_DECIMALS = 18;
 
 const ERC20_DEFAULT_DECIMALS = 18;
-
-const tokenPricesService: AbstractTokenPricesService =
-  new CodefiTokenPricesServiceV2();
 
 // Converts a SimulationTokenStandard to a TokenStandard
 const convertStandard = (standard: SimulationTokenStandard) => {
@@ -94,7 +89,7 @@ function getNativeBalanceChange(
 function getTokenBalanceChanges(
   tokenBalanceChanges: SimulationTokenBalanceChange[],
   erc20Decimals: Record<Hex, number>,
-  erc20FiatRates: Partial<TokenPricesByTokenAddress<Hex, string>>,
+  erc20FiatRates: Partial<Record<Hex, number>>,
 ): BalanceChange[] {
   return tokenBalanceChanges.map((tokenBc) => {
     const asset: TokenAssetIdentifier = {
@@ -109,7 +104,7 @@ function getTokenBalanceChanges(
 
     const fiatRate = erc20FiatRates[tokenBc.address];
     const fiatAmount = fiatRate
-      ? amount.numeric.applyConversionRate(fiatRate.value).toNumber()
+      ? amount.numeric.applyConversionRate(fiatRate).toNumber()
       : FIAT_UNAVAILABLE;
 
     return { asset, amount, fiatAmount };
@@ -134,12 +129,7 @@ export const useBalanceChanges = (
   );
 
   const erc20FiatRates = useAsyncResultOrThrow(
-    () =>
-      tokenPricesService.fetchTokenPrices({
-        chainId,
-        tokenAddresses: erc20TokenAddresses,
-        currency: fiatCurrency,
-      }),
+    () => fetchTokenExchangeRates(fiatCurrency, erc20TokenAddresses, chainId),
     [JSON.stringify(erc20TokenAddresses), fiatCurrency],
   );
 
