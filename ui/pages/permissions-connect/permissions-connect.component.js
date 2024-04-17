@@ -23,8 +23,26 @@ import SnapInstall from './snaps/snap-install';
 import SnapUpdate from './snaps/snap-update';
 import SnapResult from './snaps/snap-result';
 ///: END:ONLY_INCLUDE_IF
+import {
+  CaveatTypes,
+  RestrictedMethods,
+} from '../../../shared/constants/permissions';
 
 const APPROVE_TIMEOUT = MILLISECOND * 1200;
+
+function getDefaultSelectedAccounts(currentAddress, permissionsRequest) {
+  const permission =
+    permissionsRequest.permissions[RestrictedMethods.eth_accounts];
+  const accountsCaveat = permission?.caveats?.find(
+    (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
+  )?.value;
+
+  if (accountsCaveat) {
+    return new Set(accountsCaveat.map((address) => address.toLowerCase()));
+  }
+
+  return new Set([currentAddress]);
+}
 
 export default class PermissionConnect extends Component {
   static propTypes = {
@@ -99,7 +117,10 @@ export default class PermissionConnect extends Component {
 
   state = {
     redirecting: false,
-    selectedAccountAddresses: new Set([this.props.currentAddress]),
+    selectedAccountAddresses: getDefaultSelectedAccounts(
+      this.props.currentAddress,
+      this.props.permissionsRequest,
+    ),
     permissionsApproved: null,
     origin: this.props.origin,
     targetSubjectMetadata: this.props.targetSubjectMetadata || {},
