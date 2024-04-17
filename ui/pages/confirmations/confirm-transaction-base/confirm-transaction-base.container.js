@@ -56,6 +56,7 @@ import {
   getHasDismissedOpenSeaToBlockaidBanner,
   getHasMigratedFromOpenSeaToBlockaid,
   getIsNetworkSupportedByBlockaid,
+  getSelectedNetworkClientId,
 } from '../../../selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
@@ -132,6 +133,7 @@ const mapStateToProps = (state, ownProps) => {
   } = ownProps;
   const { id: paramsTransactionId } = params;
   const isMainnet = getIsMainnet(state);
+  const selectedNetworkClientId = getSelectedNetworkClientId(state);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const envType = getEnvironmentType();
@@ -313,6 +315,7 @@ const mapStateToProps = (state, ownProps) => {
     nextNonce,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     isMainnet,
+    selectedNetworkClientId,
     isEthGasPrice,
     noGasPrice,
     supportsEIP1559,
