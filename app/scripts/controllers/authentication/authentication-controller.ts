@@ -63,7 +63,11 @@ type CreateActionsObj<T extends keyof AuthenticationController> = {
   };
 };
 type ActionsObj = CreateActionsObj<
-  'performSignIn' | 'performSignOut' | 'getBearerToken' | 'getSessionProfile'
+  | 'performSignIn'
+  | 'performSignOut'
+  | 'getBearerToken'
+  | 'getSessionProfile'
+  | 'isSignedIn'
 >;
 export type Actions = ActionsObj[keyof ActionsObj];
 export type AuthenticationControllerPerformSignIn = ActionsObj['performSignIn'];
@@ -73,6 +77,7 @@ export type AuthenticationControllerGetBearerToken =
   ActionsObj['getBearerToken'];
 export type AuthenticationControllerGetSessionProfile =
   ActionsObj['getSessionProfile'];
+export type AuthenticationControllerIsSignedIn = ActionsObj['isSignedIn'];
 
 // Allowed Actions
 type AllowedActions = HandleSnapRequest;
@@ -150,6 +155,10 @@ export default class AuthenticationController extends BaseController<
 
     const { profile } = await this.#performAuthenticationFlow();
     return profile;
+  }
+
+  public isSignedIn(): boolean {
+    return this.state.isSignedIn;
   }
 
   #assertLoggedIn(): void {
