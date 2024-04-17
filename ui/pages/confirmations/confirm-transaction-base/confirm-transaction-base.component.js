@@ -20,7 +20,6 @@ import UserPreferencedCurrencyDisplay from '../../../components/app/user-prefere
 
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import TextField from '../../../components/ui/text-field';
-import SimulationErrorMessage from '../components/simulation-error-message';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { getMethodName } from '../../../helpers/utils/metrics';
 import {
@@ -499,20 +498,6 @@ export default class ConfirmTransactionBase extends Component {
       </div>
     ) : null;
 
-    const simulationFailureWarning = () => (
-      <div
-        className="confirm-page-container-content__error-container"
-        key="confirm-transaction-base_simulation-error-container"
-      >
-        <SimulationErrorMessage
-          userAcknowledgedGasMissing={userAcknowledgedGasMissing}
-          setUserAcknowledgedGasMissing={() =>
-            this.setUserAcknowledgedGasMissing()
-          }
-        />
-      </div>
-    );
-
     const { simulationData } = txData;
 
     const simulationDetails = (
@@ -565,16 +550,13 @@ export default class ConfirmTransactionBase extends Component {
           isUsingPaymaster={isUsingPaymaster}
         />
         {simulationDetails}
-        <TransactionDetail
-          disableEditGasFeeButton
-          disabled={isDisabled()}
-          userAcknowledgedGasMissing={userAcknowledgedGasMissing}
-          onEdit={
-            renderSimulationFailureWarning ? null : () => this.handleEditGas()
-          }
-          rows={[
-            renderSimulationFailureWarning && simulationFailureWarning(),
-            !renderSimulationFailureWarning && (
+        {!renderSimulationFailureWarning && (
+          <TransactionDetail
+            disableEditGasFeeButton
+            disabled={isDisabled()}
+            userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+            onEdit={() => this.handleEditGas()}
+            rows={[
               <div key="confirm-transaction-base_confirm-gas-display">
                 <ConfirmGasDisplay
                   userAcknowledgedGasMissing={userAcknowledgedGasMissing}
@@ -583,10 +565,10 @@ export default class ConfirmTransactionBase extends Component {
                   useCurrencyRateCheck={useCurrencyRateCheck}
                   txData={txData}
                 />
-              </div>
-            ),
-          ]}
-        />
+              </div>,
+            ]}
+          />
+        )}
         {showTotals && (
           <TransactionDetail
             disableEditGasFeeButton
