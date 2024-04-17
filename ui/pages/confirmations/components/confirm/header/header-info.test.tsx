@@ -33,22 +33,16 @@ describe('Header', () => {
     const { getByLabelText } = render();
     expect(getByLabelText('Account details')).toBeInTheDocument();
   });
-  it('shows modal when account info icon is clicked', async () => {
-    const { getByLabelText, queryByTestId } = render();
-    expect(queryByTestId('account-details-modal')).not.toBeInTheDocument();
-    const accountInfoIcon = getByLabelText('Account details');
-    fireEvent.click(accountInfoIcon);
-    await waitFor(() => {
-      expect(queryByTestId('account-details-modal')).toBeInTheDocument();
-    });
-  });
-  it('shows account info modal with address', async () => {
-    const { getByLabelText, getByText, queryByTestId } = render();
-    const accountInfoIcon = getByLabelText('Account details');
-    fireEvent.click(accountInfoIcon);
-    await waitFor(() => {
-      expect(queryByTestId('account-details-modal')).toBeInTheDocument();
-      expect(getByText('0x0DCD5...3E7bc')).toBeInTheDocument();
+
+  describe('when account info icon is clicked', () => {
+    it('shows account info modal with address', async () => {
+      const { getByLabelText, getByText, queryByTestId } = render();
+      const accountInfoIcon = getByLabelText('Account details');
+      fireEvent.click(accountInfoIcon);
+      await waitFor(() => {
+        expect(queryByTestId('account-details-modal')).toBeInTheDocument();
+        expect(getByText('0x0DCD5...3E7bc')).toBeInTheDocument();
+      });
     });
   });
 });
