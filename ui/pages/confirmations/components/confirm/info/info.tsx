@@ -7,15 +7,20 @@ import { currentConfirmationSelector } from '../../../../../selectors';
 import PersonalSignInfo from './personal-sign/personal-sign';
 import TypedSignInfo from './typed-sign/typed-sign';
 import TypedSignV1Info from './typed-sign-v1/typed-sign-v1';
+import ContractInteraction from './contract-interaction/contract-interaction';
+import { SignatureRequestType } from '../../../types/confirm';
 
 const Info: React.FC = () => {
   const currentConfirmation = useSelector(currentConfirmationSelector);
+  console.log('inside info', { currentConfirmation });
 
   const ConfirmationInfoComponentMap = useMemo(
     () => ({
+      [TransactionType.contractInteraction]: () => ContractInteraction,
       [TransactionType.personalSign]: () => PersonalSignInfo,
       [TransactionType.signTypedData]: () => {
-        const { version } = currentConfirmation?.msgParams ?? {};
+        const { version } =
+          (currentConfirmation as SignatureRequestType)?.msgParams ?? {};
         if (version === 'V1') {
           return TypedSignV1Info;
         }

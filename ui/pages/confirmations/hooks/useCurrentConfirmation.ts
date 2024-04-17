@@ -11,6 +11,7 @@ import {
   pendingConfirmationsSelector,
   unconfirmedTransactionsHashSelector,
 } from '../../../selectors';
+import { TransactionType } from '@metamask/transaction-controller';
 
 type Approval = ApprovalRequest<Record<string, Json>>;
 
@@ -57,7 +58,8 @@ const useCurrentConfirmation = () => {
       }
       if (
         pendingConfirmation.type !== ApprovalType.PersonalSign &&
-        pendingConfirmation.type !== ApprovalType.EthSignTypedData
+        pendingConfirmation.type !== ApprovalType.EthSignTypedData &&
+        unconfirmedTransaction.type !== TransactionType.contractInteraction
       ) {
         setCurrentConfirmation(undefined);
         return;

@@ -1,5 +1,8 @@
 import { ApprovalControllerState } from '@metamask/approval-controller';
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  SimulationData,
+  TransactionType,
+} from '@metamask/transaction-controller';
 
 export type TypedSignDataV1Type = {
   name: string;
@@ -29,7 +32,27 @@ export type SignatureRequestType = {
   securityAlertResponse?: SecurityAlertResponse;
 };
 
-export type Confirmation = SignatureRequestType;
+export type TransactionRequestType = {
+  chainId?: string;
+  actionId: number;
+  id: string;
+  txParams?: {
+    data: string;
+    from: string;
+    gas: string;
+    maxFeePerGas: string;
+    maxPriorityFeePerGas: string;
+    to: string;
+    value: string;
+  };
+  type: TransactionType;
+  custodyId?: string;
+  securityAlertResponse?: SecurityAlertResponse;
+  origin: string;
+  simulationData: SimulationData;
+};
+
+export type Confirmation = SignatureRequestType | TransactionRequestType;
 
 export type ConfirmMetamaskState = {
   confirm: {
