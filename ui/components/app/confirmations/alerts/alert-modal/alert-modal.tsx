@@ -36,8 +36,8 @@ export type AlertModalProps = {
   /** The unique key representing the specific alert field. */
   alertKey: string;
   /**
-   * The navigation component passed when more exists more than one alert.
-   * It override `startAccessory` of ModalHeaderDefault and by default no navigation button is present.
+   * The start (left) content area of ModalHeader.
+   * It override `startAccessory` of ModalHeaderDefault and by default no content is present.
    */
   headerStartAccessory?: React.ReactNode;
   /** The owner ID of the relevant alert from the `confirmAlerts` reducer. */
