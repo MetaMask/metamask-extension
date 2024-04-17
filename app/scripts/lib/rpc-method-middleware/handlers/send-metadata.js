@@ -39,7 +39,6 @@ function sendMetadataHandler(
   { addSubjectMetadata, subjectType },
 ) {
   const { origin, params } = req;
-  console.log({params})
   if (params && typeof params === 'object' && !Array.isArray(params)) {
     const { icon = null, name = null, ...remainingParams } = params;
 
