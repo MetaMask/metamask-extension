@@ -32,8 +32,8 @@ export function findLabel(
   name: string;
 } | undefined {
   // Check if label is present on labelable
-  return labelable?.labels?.find(
-    (label) => label.name === labelToFind?.name,
+  return labelable.labels.find(
+    (label) => label.name === labelToFind.name,
   );
 }
 
