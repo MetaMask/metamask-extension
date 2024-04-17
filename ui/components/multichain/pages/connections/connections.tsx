@@ -13,10 +13,7 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import {
-  CONNECT_ROUTE,
-  DEFAULT_ROUTE,
-} from '../../../../helpers/constants/routes';
+import { CONNECT_ROUTE } from '../../../../helpers/constants/routes';
 import { getURLHost } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -197,7 +194,7 @@ export const Connections = () => {
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
             color={IconColor.iconDefault}
-            onClick={() => history.push(DEFAULT_ROUTE)}
+            onClick={() => history.goBack()}
             size={ButtonIconSize.Sm}
           />
         }
