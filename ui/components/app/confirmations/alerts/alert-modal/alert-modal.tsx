@@ -33,7 +33,7 @@ import useAlerts from '../../../../../hooks/useAlerts';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 
 export type AlertModalProps = {
-  /** The unique key representing the specific alert field */
+  /** The unique key representing the specific alert field. */
   alertKey: string;
   /**
    * The navigation component passed when more exists more than one alert.
@@ -42,9 +42,9 @@ export type AlertModalProps = {
   headerStartAccessory?: React.ReactNode;
   /** The owner ID of the relevant alert from the `confirmAlerts` reducer. */
   ownerId: string;
-  /** The key of the specific alert to display from the `confirmAlerts` reducer.  */
+  /** The function invoked when the user acknowledges the alert. */
   onAcknowledgeClick: () => void;
-  /** The function to be executed when the modal needs to be closed */
+  /** The function to be executed when the modal needs to be closed. */
   onClose: () => void;
 };
 
@@ -116,7 +116,7 @@ function AlertDetails({ selectedAlert }: { selectedAlert: Alert }) {
       borderRadius={BorderRadius.SM}
     >
       <Text variant={TextVariant.bodySm}>{selectedAlert.message}</Text>
-      {selectedAlert.alertDetails && selectedAlert.alertDetails?.length > 0 ? (
+      {(selectedAlert.alertDetails?.length ?? 0) > 0 ? (
         <Text variant={TextVariant.bodySmBold} marginTop={1}>
           {t('alertModalDetails')}
         </Text>

@@ -1,7 +1,7 @@
 import { Severity } from '../../helpers/constants/design-system';
 
 /**
- * Represents an alert object.
+ * A confirmable alert to be displayed in the UI.
  */
 export type Alert = {
   /**
@@ -20,7 +20,7 @@ export type Alert = {
   severity: Severity.Danger | Severity.Warning | Severity.Info;
 
   /**
-   * The message describing what may happen if an alert is ignored.
+   * The message is a summary of the alert details.
    */
   message: string;
 
@@ -40,12 +40,12 @@ export type Alert = {
  */
 export type ConfirmAlertsState = {
   /**
-   * The alerts owned by a confirmation, where the confirmation ID is the key.
+   * The current alerts, grouped by the ID of an abstract owner. For example, a confirmation ID.
    */
   alerts: { [ownerId: string]: Alert[] };
 
   /**
-   * The acknowledgement status of alerts owned by a confirmation, where the confirmation ID is the key
+   * The acknowledgement status of the alerts, grouped first by alert key, then owner ID.
    * and the alert key is the nested key.
    */
   confirmed: { [ownerId: string]: { [alertKey: string]: boolean } };
