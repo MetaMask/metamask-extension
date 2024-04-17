@@ -45,7 +45,7 @@ export type ConfirmAlertsState = {
   alerts: { [ownerId: string]: Alert[] };
 
   /**
-   * The acknowledgement status of alerts owned by a confirmation, where the confirmation ID is the key
+   * The acknowledgement status of the alerts, grouped first by alert key, then owner ID.
    * and the alert key is the nested key.
    */
   confirmed: { [ownerId: string]: { [alertKey: string]: boolean } };
