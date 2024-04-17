@@ -249,7 +249,6 @@ export const TokenListItem = ({
                 </Text>
               )}
               <Text
-                fontWeight={FontWeight.Medium}
                 variant={TextVariant.bodyMd}
                 color={TextColor.textAlternative}
                 data-testid="multichain-token-list-item-token-name" //
@@ -294,7 +293,6 @@ export const TokenListItem = ({
                   <Text
                     data-testid="multichain-token-list-item-value"
                     color={TextColor.textAlternative}
-                    fontWeight={FontWeight.Medium}
                     variant={TextVariant.bodyMd}
                     textAlign={TextAlign.End}
                   >
@@ -322,7 +320,6 @@ export const TokenListItem = ({
                 <Text
                   data-testid="multichain-token-list-item-value"
                   color={TextColor.textAlternative}
-                  fontWeight={FontWeight.Medium}
                   variant={TextVariant.bodyMd}
                   textAlign={TextAlign.End}
                 >
