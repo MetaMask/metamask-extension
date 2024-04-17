@@ -12,7 +12,6 @@ import {
   getAccountTypeForKeyring,
   getPinnedAccountsList,
   getHiddenAccountsList,
-  getOriginOfCurrentTab,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getMetaMaskAccountsOrdered,
   ///: END:ONLY_INCLUDE_IF
@@ -22,7 +21,6 @@ import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils
 ///: END:ONLY_INCLUDE_IF
 import { MenuItem } from '../../ui/menu';
 import {
-  Box,
   IconName,
   ModalFocus,
   Popover,
@@ -35,12 +33,11 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
-  addPermittedAccount,
   showModal,
   updateAccountsList,
   updateHiddenAccountsList,
 } from '../../../store/actions';
-import { Display, TextVariant } from '../../../helpers/constants/design-system';
+import { TextVariant } from '../../../helpers/constants/design-system';
 import { formatAccountType } from '../../../helpers/utils/metrics';
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '..';
 
@@ -55,7 +52,6 @@ export const AccountListItemMenu = ({
   isOpen,
   isPinned,
   isHidden,
-  isConnected,
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -70,7 +66,6 @@ export const AccountListItemMenu = ({
 
   const pinnedAccountList = useSelector(getPinnedAccountsList);
   const hiddenAccountList = useSelector(getHiddenAccountsList);
-  const shouldRenderConnectAccount = process.env.MULTICHAIN && !isConnected;
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const isCustodial = keyring?.type ? /Custody/u.test(keyring.type) : false;
@@ -161,8 +156,6 @@ export const AccountListItemMenu = ({
     dispatch(updateHiddenAccountsList(updatedHiddenAccountList));
   };
 
-  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
-
   return (
     <Popover
       className="multichain-account-list-item-menu__popover"
@@ -178,22 +171,6 @@ export const AccountListItemMenu = ({
     >
       <ModalFocus restoreFocus initialFocusRef={anchorElement}>
         <div onKeyDown={handleKeyDown} ref={popoverDialogRef}>
-          {shouldRenderConnectAccount ? (
-            <Box display={[Display.Flex, Display.None]}>
-              <MenuItem
-                data-testid="account-list-menu-connect-account"
-                onClick={() => {
-                  dispatch(
-                    addPermittedAccount(activeTabOrigin, account.address),
-                  );
-                  onClose();
-                }}
-                iconName={IconName.UserCircleLink}
-              >
-                <Text variant={TextVariant.bodySm}>{t('connectAccount')}</Text>
-              </MenuItem>
-            </Box>
-          ) : null}
           <AccountDetailsMenuItem
             metricsLocation={METRICS_LOCATION}
             closeMenu={closeMenu}
@@ -338,10 +315,6 @@ AccountListItemMenu.propTypes = {
    * Represents hidden accounts
    */
   isHidden: PropTypes.bool,
-  /**
-   * Represents connected status
-   */
-  isConnected: PropTypes.bool,
   /**
    * An account object that has name, address, and balance data
    */

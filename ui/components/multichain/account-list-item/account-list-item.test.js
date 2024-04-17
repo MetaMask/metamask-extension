@@ -107,16 +107,6 @@ describe('AccountListItem', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders connected site icon', () => {
-    const connectedAvatarName = 'Uniswap';
-    const { getByAltText } = render({
-      connectedAvatar: 'https://uniswap.org/favicon.ico',
-      connectedAvatarName,
-    });
-
-    expect(getByAltText(`${connectedAvatarName} logo`)).toBeInTheDocument();
-  });
-
   it('does not render a tag for a null label', () => {
     const { container } = render({
       account: {
