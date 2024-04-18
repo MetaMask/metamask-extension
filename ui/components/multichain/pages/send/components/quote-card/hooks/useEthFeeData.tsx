@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { useEffect, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Numeric } from '../../../../../../../../shared/modules/Numeric';
 import {
   getConversionRate,
@@ -10,12 +10,18 @@ import { EtherDenomination } from '../../../../../../../../shared/constants/comm
 import {
   getCurrentCurrency,
   checkNetworkAndAccountSupports1559,
+  getCurrentChainId,
+  getIsSwapsChain,
 } from '../../../../../../../selectors/selectors';
-import { getUsedSwapsGasPrice } from '../../../../../../../ducks/swaps/swaps';
+import {
+  fetchAndSetSwapsGasPriceInfo,
+  getUsedSwapsGasPrice,
+} from '../../../../../../../ducks/swaps/swaps';
 import { formatCurrency } from '../../../../../../../helpers/utils/confirm-tx.util';
 import { toFixedNoTrailingZeros } from './utils';
 
 export default function useEthFeeData(gasLimit = 0) {
+  const dispatch = useDispatch();
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
 
   const selectedNativeConversionRate = useSelector(getConversionRate);
@@ -25,8 +31,21 @@ export default function useEthFeeData(gasLimit = 0) {
   const networkAndAccountSupports1559 = useSelector(
     checkNetworkAndAccountSupports1559,
   );
-  const gasPrice = useSelector(getUsedSwapsGasPrice);
   const { medium } = useSelector(getGasFeeEstimates);
+
+  const chainId = useSelector(getCurrentChainId);
+  const isSwapsChain = useSelector(getIsSwapsChain);
+
+  const gasPrice = useSelector(getUsedSwapsGasPrice);
+  useEffect(() => {
+    if (!isSwapsChain) {
+      return;
+    }
+
+    if (!networkAndAccountSupports1559) {
+      dispatch(fetchAndSetSwapsGasPriceInfo());
+    }
+  }, [dispatch, chainId, networkAndAccountSupports1559, isSwapsChain]);
 
   const { formattedEthGasFee, formattedFiatGasFee } = useMemo(() => {
     const ethGasFee = new Numeric(
