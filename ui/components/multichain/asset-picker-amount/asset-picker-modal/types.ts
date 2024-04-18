@@ -24,7 +24,6 @@ export type Token = {
   balance: string;
   string: string;
   type: AssetType;
-  isSelected: boolean;
 };
 
 export type Collection = {

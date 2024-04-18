@@ -77,39 +77,28 @@ export default function AssetList({
       currency: secondaryCurrency,
     });
 
-  const tokenList = tokensWithBalances.map((token: Token) => {
-    token.isSelected =
-      token.address?.toLowerCase() === selectedToken?.toLowerCase();
-    return token;
-  });
-
-  tokenList.push({
-    address: null,
-    symbol: nativeCurrency,
-    decimals: 18,
-    image: nativeCurrencyImage,
-    balance: balanceValue,
-    string: primaryCurrencyProperties.value,
-    type: AssetType.native,
-    isSelected: !selectedToken,
-  });
-
-  tokenList.sort((a, b) => {
-    if (a.type === AssetType.native) {
-      return -1;
-    } else if (b.type === AssetType.native) {
-      return 1;
-    }
-    return 0;
-  });
-
-  const tokensData = tokenList.filter((token) =>
+  const tokenList: Token[] = [...tokensWithBalances].filter((token: Token) =>
     token.symbol?.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
+  // prepend native currency to token list if it matches search query
+  if (nativeCurrency?.toLowerCase().includes(searchQuery.toLowerCase())) {
+    tokenList.unshift({
+      address: null,
+      symbol: nativeCurrency,
+      decimals: 18,
+      image: nativeCurrencyImage,
+      balance: balanceValue,
+      string: primaryCurrencyProperties.value,
+      type: AssetType.native,
+    });
+  }
+
   return (
     <Box className="tokens-main-view-modal">
-      {tokensData.map((token) => {
+      {tokenList.map((token) => {
+        const isSelected =
+          token.address?.toLowerCase() === selectedToken?.toLowerCase();
         return (
           <Box
             padding={0}
@@ -117,16 +106,16 @@ export default function AssetList({
             margin={0}
             key={token.symbol}
             backgroundColor={
-              token.isSelected
+              isSelected
                 ? BackgroundColor.primaryMuted
                 : BackgroundColor.transparent
             }
             className={classnames('multichain-asset-picker-list-item', {
-              'multichain-asset-picker-list-item--selected': token.isSelected,
+              'multichain-asset-picker-list-item--selected': isSelected,
             })}
             onClick={handleAssetChange(token)}
           >
-            {token.isSelected ? (
+            {isSelected ? (
               <Box
                 className="multichain-asset-picker-list-item__selected-indicator"
                 borderRadius={BorderRadius.pill}
