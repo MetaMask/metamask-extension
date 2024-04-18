@@ -38,7 +38,7 @@ export default function useEthFeeData(gasLimit = 0) {
       .toDenomination(EtherDenomination.ETH);
 
     const fiatGasFee = ethGasFee
-      .times(selectedNativeConversionRate, 10)
+      .applyConversionRate(selectedNativeConversionRate)
       .toNumber();
 
     const formattedFiatGasFee = formatCurrency(
