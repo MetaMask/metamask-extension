@@ -159,10 +159,6 @@ const props = {
 };
 
 jest.mock('../../../../store/actions', () => ({
-  disconnectGasFeeEstimatePoller: jest.fn(),
-  getGasFeeEstimatesAndStartPolling: jest
-    .fn()
-    .mockImplementation(() => Promise.resolve()),
   getNetworkConfigurationByNetworkClientId: jest.fn().mockImplementation(() => {
     return Promise.resolve({ chainId: '0x5' });
   }),
