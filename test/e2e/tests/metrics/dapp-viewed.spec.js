@@ -280,7 +280,6 @@ describe('Dapp viewed Event @no-mmi', function () {
         await mockedDappViewedEndpoint(mockServer),
       ];
     }
-
     await withFixtures(
       {
         dapp: true,
@@ -299,7 +298,6 @@ describe('Dapp viewed Event @no-mmi', function () {
         await waitForAccountRendered(driver);
         await connectToDapp(driver);
         await waitForDappConnected(driver);
-
         // close test dapp window to avoid future confusion
         const windowHandles = await driver.getAllWindowHandles();
         await driver.closeWindowHandle(windowHandles[1]);
@@ -310,26 +308,51 @@ describe('Dapp viewed Event @no-mmi', function () {
         await driver.clickElement(
           '[data-testid ="account-options-menu-button"]',
         );
-        await driver.clickElement({ text: 'Connected sites', tag: 'div' });
-        await driver.findElement({
-          text: DAPP_URL,
-          tag: 'bdi',
-        });
-        await driver.clickElement({ text: 'Disconnect', tag: 'a' });
-        await driver.clickElement({
-          text: `Disconnect ${DAPP_URL}`,
-          tag: 'h2',
-        });
-        await driver.clickElement({ text: 'Disconnect', tag: 'button' });
-        // validate dapp is not connected
-        await driver.clickElement(
-          '[data-testid ="account-options-menu-button"]',
-        );
-        await driver.clickElement({ text: 'Connected sites', tag: 'div' });
-        await driver.findElement({
-          text: 'Account 1 is not connected to any sites.',
-          tag: 'p',
-        });
+        if (process.env.MULTICHAIN) {
+          await driver.clickElement({ text: 'All Permissions', tag: 'div' });
+          await driver.clickElement({ text: 'Got it', tag: 'button' });
+          await driver.clickElement({
+            text: '127.0.0.1:8080',
+            tag: 'p',
+          });
+          await driver.clickElement(
+            '[data-testid ="account-list-item-menu-button"]',
+          );
+          await driver.clickElement({ text: 'Disconnect', tag: 'button' });
+          await driver.clickElement('[data-testid ="disconnect-all"]');
+          await driver.clickElement('button[aria-label="Back"]');
+          await driver.clickElement('button[aria-label="Back"]');
+          // validate dapp is not connected
+          await driver.clickElement(
+            '[data-testid ="account-options-menu-button"]',
+          );
+          await driver.clickElement({ text: 'All Permissions', tag: 'div' });
+          await driver.findElement({
+            text: 'Nothing to see here',
+            tag: 'p',
+          });
+        } else {
+          await driver.clickElement({ text: 'Connected sites', tag: 'div' });
+          await driver.findElement({
+            text: DAPP_URL,
+            tag: 'bdi',
+          });
+          await driver.clickElement({ text: 'Disconnect', tag: 'a' });
+          await driver.clickElement({
+            text: `Disconnect ${DAPP_URL}`,
+            tag: 'h2',
+          });
+          await driver.clickElement({ text: 'Disconnect', tag: 'button' });
+          // validate dapp is not connected
+          await driver.clickElement(
+            '[data-testid ="account-options-menu-button"]',
+          );
+          await driver.clickElement({ text: 'Connected sites', tag: 'div' });
+          await driver.findElement({
+            text: 'Account 1 is not connected to any sites.',
+            tag: 'p',
+          });
+        }
         // reconnect again
         await connectToDapp(driver);
         const events = await getEventPayloads(driver, mockedEndpoints);
