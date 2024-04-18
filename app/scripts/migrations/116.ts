@@ -21,7 +21,7 @@ export async function migrate(
   transformState(versionedData.data);
   return versionedData;
 }
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function transformState(state: Record<string, any>) {
   const AppStateController = state?.AppStateController || {};
 
