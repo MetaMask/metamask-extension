@@ -13,10 +13,7 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import {
-  CONNECT_ROUTE,
-  DEFAULT_ROUTE,
-} from '../../../../helpers/constants/routes';
+import { CONNECT_ROUTE } from '../../../../helpers/constants/routes';
 import { getURLHost } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -25,6 +22,7 @@ import {
   getOrderedConnectedAccountsForConnectedDapp,
   getPermissionSubjects,
   getPermittedAccountsByOrigin,
+  getPermittedAccountsForSelectedTab,
   getSelectedAccount,
   getSubjectMetadata,
 } from '../../../../selectors';
@@ -135,6 +133,10 @@ export const Connections = () => {
   };
   const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
 
+  const permittedAccounts = useSelector((state) =>
+    getPermittedAccountsForSelectedTab(state, activeTabOrigin),
+  );
+
   const disconnectAllAccounts = () => {
     const subject = (subjects as SubjectsType)[activeTabOrigin];
 
@@ -195,7 +197,8 @@ export const Connections = () => {
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
             color={IconColor.iconDefault}
-            onClick={() => history.push(DEFAULT_ROUTE)}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            onClick={() => (history as any).goBack()}
             size={ButtonIconSize.Sm}
           />
         }
@@ -231,7 +234,7 @@ export const Connections = () => {
         </Box>
       </Header>
       <Content padding={0}>
-        {connectedSubjectsMetadata && mergeAccounts.length > 0 ? (
+        {permittedAccounts.length > 0 && mergeAccounts.length > 0 ? (
           <Box>
             {/* TODO: Replace `any` with type */}
             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
@@ -256,7 +259,6 @@ export const Connections = () => {
                   accountsCount={mergedAccounts.length}
                   selected={isSelectedAccount}
                   connectedAvatar={connectedSite?.iconUrl}
-                  connectedAvatarName={connectedSite?.name}
                   menuType={AccountListItemMenuTypes.Connection}
                   currentTabOrigin={activeTabOrigin}
                   isActive={
@@ -300,9 +302,9 @@ export const Connections = () => {
                 onClose={() => setShowConnectedAccountsUpdatedToast(false)}
                 startAdornment={
                   <AvatarFavicon
-                    name={connectedSubjectsMetadata.name}
+                    name={connectedSubjectsMetadata?.name}
                     size={AvatarFaviconSize.Sm}
-                    src={connectedSubjectsMetadata.iconUrl}
+                    src={connectedSubjectsMetadata?.iconUrl}
                   />
                 }
               />
@@ -319,9 +321,9 @@ export const Connections = () => {
                 }
                 startAdornment={
                   <AvatarFavicon
-                    name={connectedSiteMetadata.name}
+                    name={connectedSiteMetadata?.name}
                     size={AvatarFaviconSize.Sm}
-                    src={connectedSiteMetadata.iconUrl}
+                    src={connectedSiteMetadata?.iconUrl}
                   />
                 }
               />
@@ -337,15 +339,15 @@ export const Connections = () => {
                 onClose={() => setShowAccountDisconnectedToast('')}
                 startAdornment={
                   <AvatarFavicon
-                    name={connectedSiteMetadata.name}
+                    name={connectedSiteMetadata?.name}
                     size={AvatarFaviconSize.Sm}
-                    src={connectedSiteMetadata.iconUrl}
+                    src={connectedSiteMetadata?.iconUrl}
                   />
                 }
               />
             </ToastContainer>
           ) : null}
-          {connectedSubjectsMetadata && mergeAccounts.length > 0 ? (
+          {permittedAccounts.length > 0 && mergeAccounts.length > 0 ? (
             <Box
               display={Display.Flex}
               gap={2}
