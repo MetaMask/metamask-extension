@@ -12,7 +12,6 @@ import {
   getAccountTypeForKeyring,
   getPinnedAccountsList,
   getHiddenAccountsList,
-  getOriginOfCurrentTab,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getMetaMaskAccountsOrdered,
   ///: END:ONLY_INCLUDE_IF
@@ -22,7 +21,6 @@ import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils
 ///: END:ONLY_INCLUDE_IF
 import { MenuItem } from '../../ui/menu';
 import {
-  Box,
   IconName,
   ModalFocus,
   Popover,
@@ -35,12 +33,11 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
-  addPermittedAccount,
   showModal,
   updateAccountsList,
   updateHiddenAccountsList,
 } from '../../../store/actions';
-import { Display, TextVariant } from '../../../helpers/constants/design-system';
+import { TextVariant } from '../../../helpers/constants/design-system';
 import { formatAccountType } from '../../../helpers/utils/metrics';
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '..';
 
@@ -51,11 +48,10 @@ export const AccountListItemMenu = ({
   onClose,
   closeMenu,
   isRemovable,
-  identity,
+  account,
   isOpen,
   isPinned,
   isHidden,
-  isConnected,
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -65,12 +61,11 @@ export const AccountListItemMenu = ({
 
   const deviceName = useSelector(getHardwareWalletType);
 
-  const { keyring } = identity.metadata;
+  const { keyring } = account.metadata;
   const accountType = formatAccountType(getAccountTypeForKeyring(keyring));
 
   const pinnedAccountList = useSelector(getPinnedAccountsList);
   const hiddenAccountList = useSelector(getHiddenAccountsList);
-  const shouldRenderConnectAccount = process.env.MULTICHAIN && !isConnected;
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const isCustodial = keyring?.type ? /Custody/u.test(keyring.type) : false;
@@ -161,8 +156,6 @@ export const AccountListItemMenu = ({
     dispatch(updateHiddenAccountsList(updatedHiddenAccountList));
   };
 
-  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
-
   return (
     <Popover
       className="multichain-account-list-item-menu__popover"
@@ -178,41 +171,25 @@ export const AccountListItemMenu = ({
     >
       <ModalFocus restoreFocus initialFocusRef={anchorElement}>
         <div onKeyDown={handleKeyDown} ref={popoverDialogRef}>
-          {shouldRenderConnectAccount ? (
-            <Box display={[Display.Flex, Display.None]}>
-              <MenuItem
-                data-testid="account-list-menu-connect-account"
-                onClick={() => {
-                  dispatch(
-                    addPermittedAccount(activeTabOrigin, identity.address),
-                  );
-                  onClose();
-                }}
-                iconName={IconName.UserCircleLink}
-              >
-                <Text variant={TextVariant.bodySm}>{t('connectAccount')}</Text>
-              </MenuItem>
-            </Box>
-          ) : null}
           <AccountDetailsMenuItem
             metricsLocation={METRICS_LOCATION}
             closeMenu={closeMenu}
-            address={identity.address}
+            address={account.address}
             textProps={{ variant: TextVariant.bodySm }}
           />
           <ViewExplorerMenuItem
             metricsLocation={METRICS_LOCATION}
             closeMenu={closeMenu}
             textProps={{ variant: TextVariant.bodySm }}
-            address={identity.address}
+            address={account.address}
           />
           {isHidden ? null : (
             <MenuItem
               data-testid="account-list-menu-pin"
               onClick={() => {
                 isPinned
-                  ? handleUnpinning(identity.address)
-                  : handlePinning(identity.address);
+                  ? handleUnpinning(account.address)
+                  : handlePinning(account.address);
                 onClose();
               }}
               iconName={isPinned ? IconName.Unpin : IconName.Pin}
@@ -226,8 +203,8 @@ export const AccountListItemMenu = ({
             data-testid="account-list-menu-hide"
             onClick={() => {
               isHidden
-                ? handleUnhidding(identity.address)
-                : handleHidding(identity.address);
+                ? handleUnhidding(account.address)
+                : handleHidding(account.address);
               onClose();
             }}
             iconName={isHidden ? IconName.Eye : IconName.EyeSlash}
@@ -244,7 +221,7 @@ export const AccountListItemMenu = ({
                 dispatch(
                   showModal({
                     name: 'CONFIRM_REMOVE_ACCOUNT',
-                    identity,
+                    account,
                   }),
                 );
                 trackEvent({
@@ -272,7 +249,7 @@ export const AccountListItemMenu = ({
                 data-testid="account-options-menu__remove-jwt"
                 onClick={async () => {
                   const token = await dispatch(
-                    mmiActions.getCustodianToken(identity.address),
+                    mmiActions.getCustodianToken(account.address),
                   );
 
                   const custodyAccountDetails = await dispatch(
@@ -288,7 +265,7 @@ export const AccountListItemMenu = ({
                       token,
                       custodyAccountDetails,
                       accounts,
-                      selectedAddress: toChecksumHexAddress(identity.address),
+                      selectedAddress: toChecksumHexAddress(account.address),
                     }),
                   );
                   onClose();
@@ -339,13 +316,9 @@ AccountListItemMenu.propTypes = {
    */
   isHidden: PropTypes.bool,
   /**
-   * Represents connected status
-   */
-  isConnected: PropTypes.bool,
-  /**
    * An account object that has name, address, and balance data
    */
-  identity: PropTypes.shape({
+  account: PropTypes.shape({
     id: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
     balance: PropTypes.string.isRequired,

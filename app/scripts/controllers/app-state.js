@@ -48,7 +48,6 @@ export default class AppStateController extends EventEmitter {
       showTestnetMessageInDropdown: true,
       showBetaHeader: isBeta(),
       showPermissionsTour: true,
-      showProductTour: true,
       showNetworkBanner: true,
       showAccountBanner: true,
       trezorModel: null,
@@ -376,15 +375,6 @@ export default class AppStateController extends EventEmitter {
    */
   setShowPermissionsTour(showPermissionsTour) {
     this.store.updateState({ showPermissionsTour });
-  }
-
-  /**
-   * Sets whether the product tour should be shown
-   *
-   * @param showProductTour
-   */
-  setShowProductTour(showProductTour) {
-    this.store.updateState({ showProductTour });
   }
 
   /**
