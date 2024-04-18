@@ -4410,30 +4410,6 @@ export async function updateTokenType(
   return undefined;
 }
 
-/**
- * initiates polling for gas fee estimates.
- *
- * @returns a unique identify of the polling request that can be used
- * to remove that request from consideration of whether polling needs to
- * continue.
- */
-export function getGasFeeEstimatesAndStartPolling(): Promise<string> {
-  return submitRequestToBackground('getGasFeeEstimatesAndStartPolling');
-}
-
-/**
- * Informs the GasFeeController that a specific token is no longer requiring
- * gas fee estimates. If all tokens unsubscribe the controller stops polling.
- *
- * @param pollToken - Poll token received from calling
- * `getGasFeeEstimatesAndStartPolling`.
- */
-export function disconnectGasFeeEstimatePoller(pollToken: string) {
-  return submitRequestToBackground('disconnectGasFeeEstimatePoller', [
-    pollToken,
-  ]);
-}
-
 export async function addPollingTokenToAppState(pollingToken: string) {
   return submitRequestToBackground('addPollingTokenToAppState', [
     pollingToken,
@@ -4797,10 +4773,6 @@ export function hideBetaHeader() {
 
 export function hidePermissionsTour() {
   return submitRequestToBackground('setShowPermissionsTour', [false]);
-}
-
-export function hideProductTour() {
-  return submitRequestToBackground('setShowProductTour', [false]);
 }
 
 export function hideAccountBanner() {

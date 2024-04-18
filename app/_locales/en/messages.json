@@ -1954,12 +1954,6 @@
     "message": "Get started with NFTs by adding some $1 to your wallet.",
     "description": "$1 is the token symbol"
   },
-  "globalTitle": {
-    "message": "Global menu"
-  },
-  "globalTourDescription": {
-    "message": "View settings, contact support, lock wallet, and more"
-  },
   "goBack": {
     "message": "Go back"
   },
@@ -3687,12 +3681,6 @@
   "permissionsPageTourTitle": {
     "message": "Connected sites are now permissions"
   },
-  "permissionsTitle": {
-    "message": "Permissions"
-  },
-  "permissionsTourDescription": {
-    "message": "Find your connected accounts and manage permissions here"
-  },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
@@ -5389,12 +5377,6 @@
   },
   "switchedTo": {
     "message": "You're now using"
-  },
-  "switcherTitle": {
-    "message": "Network switcher"
-  },
-  "switcherTourDescription": {
-    "message": "Click the icon to switch networks or add a new network"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Switching networks will cancel all pending confirmations"
