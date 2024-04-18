@@ -4,12 +4,20 @@ import PropTypes from 'prop-types';
 import QRCode from 'qrcode.react';
 import { v4 as uuid } from 'uuid';
 import { useHistory } from 'react-router-dom';
-import { Modal, ModalOverlay, Text, Box } from '../../component-library';
+import {
+  Modal,
+  ModalOverlay,
+  Text,
+  Box,
+  ButtonLink,
+} from '../../component-library';
 import { ModalContent } from '../../component-library/modal-content/modal-content';
 import { ModalHeader } from '../../component-library/modal-header/modal-header';
 import {
+  TextAlign,
   TextColor,
   TextVariant,
+  FontWeight,
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
 import Spinner from '../../ui/spinner';
@@ -83,7 +91,7 @@ export default function QRCodeModal({
         console.log('Decrypted JSON object:', jsonObject);
       } catch (e) {
         console.error('Failed to parse JSON:', e);
-        // Handle the error if the decrypted message is not valid JSON
+        setError('Failed to parse JSON:', e);
       }
     },
     [privateKey, setDecryptedMessage],
@@ -135,14 +143,20 @@ export default function QRCodeModal({
     }
   }, [decryptedMessage, dispatch, handleClose, history, mmiActions]);
 
-  const supportLink = (
+  const custodianLink = (
     <a
       target="_blank"
-      key="metamaskSupportLink"
+      key="custodianUrl"
       rel="noopener noreferrer"
       href={custodianURL}
     >
-      <span className="error-page__link-text">{custodianName}</span>
+      <Text
+        as="span"
+        color={TextColor.primaryDefault}
+        variant={TextVariant.bodySm}
+      >
+        {custodianName}
+      </Text>
     </a>
   );
 
@@ -169,13 +183,15 @@ export default function QRCodeModal({
             <QRCode value={qrCodeValue} size={270} />
           </Box>
         )}
+        {error && <Text color={TextColor.error}>{error}</Text>}
         <Text
           as="p"
           paddingRight={10}
           paddingLeft={10}
           paddingBottom={4}
           color={TextColor.textDefault}
-          variant={TextVariant.bodySm}
+          textAlign={TextAlign.Center}
+          fontWeight={FontWeight.bodySmBold}
         >
           {t('custodianQRCodeScan', [custodianName])}
         </Text>
@@ -186,10 +202,22 @@ export default function QRCodeModal({
           paddingBottom={4}
           color={TextColor.textDefault}
           variant={TextVariant.bodySm}
+          textAlign={TextAlign.Center}
         >
-          {t('custodianQRCodeScanDescription', [supportLink])}
+          {t('custodianQRCodeScanDescription', [custodianLink])}
         </Text>
-        {error && <Text color={TextColor.error}>{error}</Text>}
+        <ButtonLink
+          as="p"
+          paddingRight={10}
+          paddingLeft={10}
+          paddingBottom={4}
+          variant={TextVariant.bodySm}
+          textAlign={TextAlign.Center}
+          onClick={handleClose}
+          color={TextColor.primaryDefault}
+        >
+          {t('cancel')}
+        </ButtonLink>
         {process.env.IN_TEST && (
           <span
             className="hidden"
