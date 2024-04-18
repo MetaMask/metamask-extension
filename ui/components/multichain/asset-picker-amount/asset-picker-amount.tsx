@@ -79,7 +79,7 @@ export const AssetPickerAmount = ({
     }
   } else if (amount.error) {
     borderColor = BorderColor.errorDefault;
-  } else if (isFocused && !isDisabled) {
+  } else if (isFocused) {
     borderColor = BorderColor.primaryDefault;
   }
 
