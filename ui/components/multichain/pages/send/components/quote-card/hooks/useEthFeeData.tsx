@@ -50,7 +50,7 @@ export default function useEthFeeData(gasLimit = 0) {
       ethGasFee.toNumber(),
     )} ${nativeCurrencySymbol}`;
 
-    return { ethGasFee, fiatGasFee, formattedFiatGasFee, formattedEthGasFee };
+    return { formattedFiatGasFee, formattedEthGasFee };
   }, [
     networkAndAccountSupports1559,
     medium?.suggestedMaxFeePerGas,
