@@ -26,7 +26,6 @@ import {
   TextAlign,
   TextColor,
   Size,
-  Severity,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   IconColor,
   Display,
@@ -37,7 +36,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 import {
   ButtonLink,
-  BannerAlert,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   Box,
   Icon,
@@ -56,11 +54,10 @@ import SecurityProviderBannerMessage from '../security-provider-banner-message/s
 import SignatureRequestHeader from '../signature-request-header';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import SnapLegacyAuthorshipHeader from '../../../../components/app/snaps/snap-legacy-authorship-header';
-///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
 ///: END:ONLY_INCLUDE_IF
 import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
+import { BlockaidUnavailableBannerAlert } from '../blockaid-unavailable-banner-alert/blockaid-unavailable-banner-alert';
 import SignatureRequestOriginalWarning from './signature-request-original-warning';
 
 export default class SignatureRequestOriginal extends Component {
@@ -87,24 +84,20 @@ export default class SignatureRequestOriginal extends Component {
     mostRecentOverviewPage: PropTypes.string.isRequired,
     resolvePendingApproval: PropTypes.func.isRequired,
     completedTx: PropTypes.func.isRequired,
-    hasMigratedFromOpenSeaToBlockaid: PropTypes.bool.isRequired,
-    isNetworkSupportedByBlockaid: PropTypes.bool.isRequired,
-    hasDismissedOpenSeaToBlockaidBanner: PropTypes.bool.isRequired,
-    dismissOpenSeaToBlockaidBanner: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     // Used to show a warning if the signing account is not the selected account
     // Largely relevant for contract wallet custodians
     selectedAccount: PropTypes.object,
     mmiOnSignCallback: PropTypes.func,
     ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     warnings: PropTypes.array,
     ///: END:ONLY_INCLUDE_IF
   };
 
   state = {
     showSignatureRequestWarning: false,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     showSignatureInsights: false,
     ///: END:ONLY_INCLUDE_IF
   };
@@ -135,8 +128,6 @@ export default class SignatureRequestOriginal extends Component {
   };
 
   renderBody = () => {
-    const { t } = this.context;
-
     let rows;
     const notice = `${this.context.t('youSign')}:`;
 
@@ -158,25 +149,16 @@ export default class SignatureRequestOriginal extends Component {
       ? subjectMetadata?.[txData.msgParams.origin]
       : null;
 
-    const {
-      hasMigratedFromOpenSeaToBlockaid,
-      isNetworkSupportedByBlockaid,
-      hasDismissedOpenSeaToBlockaidBanner,
-      dismissOpenSeaToBlockaidBanner,
-    } = this.props;
-    const showOpenSeaToBlockaidBannerAlert =
-      hasMigratedFromOpenSeaToBlockaid &&
-      !isNetworkSupportedByBlockaid &&
-      !hasDismissedOpenSeaToBlockaidBanner;
-    const handleCloseOpenSeaToBlockaidBannerAlert = () => {
-      dismissOpenSeaToBlockaidBanner();
-    };
-
     return (
       <div className="request-signature__body">
         {
           ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-          <BlockaidBannerAlert txData={txData} margin={[4, 4, 0, 4]} />
+          <BlockaidBannerAlert
+            txData={txData}
+            marginTop={4}
+            marginLeft={4}
+            marginRight={4}
+          />
           ///: END:ONLY_INCLUDE_IF
         }
         {isSuspiciousResponse(txData?.securityProviderResponse) && (
@@ -184,23 +166,7 @@ export default class SignatureRequestOriginal extends Component {
             securityProviderResponse={txData.securityProviderResponse}
           />
         )}
-        {showOpenSeaToBlockaidBannerAlert ? (
-          <BannerAlert
-            severity={Severity.Info}
-            title={t('openSeaToBlockaidTitle')}
-            description={t('openSeaToBlockaidDescription')}
-            actionButtonLabel={t('openSeaToBlockaidBtnLabel')}
-            actionButtonProps={{
-              href: 'https://snaps.metamask.io/transaction-insights',
-              externalLink: true,
-            }}
-            marginBottom={4}
-            marginLeft={4}
-            marginTop={4}
-            marginRight={4}
-            onClose={handleCloseOpenSeaToBlockaidBannerAlert}
-          />
-        ) : null}
+        <BlockaidUnavailableBannerAlert />
         {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           this.props.selectedAccount.address ===
@@ -345,7 +311,7 @@ export default class SignatureRequestOriginal extends Component {
       txData,
       hardwareWalletRequiresConnection,
       rejectPendingApproval,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       warnings,
       ///: END:ONLY_INCLUDE_IF
     } = this.props;
@@ -371,7 +337,7 @@ export default class SignatureRequestOriginal extends Component {
           if (txData.type === MESSAGE_TYPE.ETH_SIGN) {
             return this.setState({ showSignatureRequestWarning: true });
           }
-          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
           if (warnings?.length >= 1) {
             return this.setState({ showSignatureInsights: true });
           }
@@ -415,7 +381,7 @@ export default class SignatureRequestOriginal extends Component {
       messagesCount,
       fromAccount: { address, name },
       txData,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       warnings,
       ///: END:ONLY_INCLUDE_IF
     } = this.props;
@@ -443,7 +409,7 @@ export default class SignatureRequestOriginal extends Component {
             senderAddress={address}
             name={name}
             onSubmit={async () => {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+              ///: BEGIN:ONLY_INCLUDE_IF(snaps)
               if (warnings?.length >= 1) {
                 return this.setState({
                   showSignatureInsights: true,
@@ -457,7 +423,7 @@ export default class SignatureRequestOriginal extends Component {
           />
         )}
         {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
         }
         {this.state.showSignatureInsights && (
           <InsightWarnings

@@ -2,6 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { Numeric } from '../../../../../shared/modules/Numeric';
+import Tooltip from '../../../../components/ui/tooltip';
 import { AmountPill } from './amount-pill';
 import {
   Amount,
@@ -9,6 +10,11 @@ import {
   NATIVE_ASSET_IDENTIFIER,
   TokenAssetIdentifier,
 } from './types';
+
+jest.mock('../../../../components/ui/tooltip', () => ({
+  __esModule: true,
+  default: jest.fn(({ children }) => children),
+}));
 
 const TOKEN_ID_MOCK = '0xabc';
 
@@ -27,54 +33,76 @@ const ERC1155_ASSET_MOCK: TokenAssetIdentifier = {
   tokenId: TOKEN_ID_MOCK,
 };
 
-const renderAndExpectText = (
+const renderAndExpect = (
   asset: AssetIdentifier,
   amount: Amount,
-  expectedText: string,
+  expected: { text: string; tooltip: string },
 ): void => {
   const { getByText } = render(<AmountPill asset={asset} amount={amount} />);
-  expect(getByText(expectedText)).toBeInTheDocument();
+  expect(getByText(expected.text)).toBeInTheDocument();
+  expect(Tooltip).toHaveBeenCalledWith(
+    expect.objectContaining({ title: expected.tooltip }),
+    {},
+  );
 };
 
 describe('AmountPill', () => {
   const nativeAndErc20Cases = [
     {
       isNegative: true,
-      numeric: new Numeric(-123.456, 10),
-      expected: '- 123.456',
+      numeric: new Numeric(-123.1234567, 10),
+      expected: {
+        text: '- 123.123457',
+        tooltip: '123.1234567',
+      },
     },
     {
       isNegative: false,
       numeric: new Numeric(789.012, 10),
-      expected: '+ 789.012',
+      expected: {
+        text: '+ 789.012',
+        tooltip: '789.012',
+      },
     },
     {
       isNegative: true,
       numeric: new Numeric(-0.000000001, 10),
-      expected: '- <0.000001',
+      expected: {
+        text: '- <0.000001',
+        tooltip: '0.000000001',
+      },
     },
     {
       isNegative: false,
       numeric: new Numeric(0.000000001, 10),
-      expected: '+ <0.000001',
+      expected: {
+        text: '+ <0.000001',
+        tooltip: '0.000000001',
+      },
     },
     {
       isNegative: true,
       numeric: new Numeric(0, 10),
-      expected: '- 0',
+      expected: {
+        text: '- 0',
+        tooltip: '0',
+      },
     },
     {
       isNegative: false,
       numeric: new Numeric(0, 10),
-      expected: '+ 0',
+      expected: {
+        text: '+ 0',
+        tooltip: '0',
+      },
     },
   ];
 
   describe('Native', () => {
     it.each(nativeAndErc20Cases)(
-      'renders the correct sign and amount for $expected',
+      'renders the correct sign and amount for $numeric.value',
       ({ isNegative, numeric, expected }) => {
-        renderAndExpectText(
+        renderAndExpect(
           NATIVE_ASSET_IDENTIFIER,
           { isNegative, numeric } as Amount,
           expected,
@@ -85,9 +113,9 @@ describe('AmountPill', () => {
 
   describe('ERC20', () => {
     it.each(nativeAndErc20Cases)(
-      'renders the correct sign and amount for $expected',
+      'renders the correct sign and amount for $numeric.value',
       ({ isNegative, numeric, expected }) => {
-        renderAndExpectText(
+        renderAndExpect(
           ERC20_ASSET_MOCK,
           { isNegative, numeric } as Amount,
           expected,
@@ -101,19 +129,25 @@ describe('AmountPill', () => {
       {
         isNegative: true,
         numeric: new Numeric(-1, 10),
-        expected: '- #2748',
+        expected: {
+          text: '- #2748',
+          tooltip: '#2748',
+        },
       },
       {
         isNegative: false,
         numeric: new Numeric(1, 10),
-        expected: '+ #2748',
+        expected: {
+          text: '+ #2748',
+          tooltip: '#2748',
+        },
       },
     ];
 
     it.each(cases)(
-      'renders the token ID with just a plus or minus for $expected',
+      'renders the token ID with just a plus or minus for $expected.text',
       ({ isNegative, numeric, expected }) => {
-        renderAndExpectText(
+        renderAndExpect(
           ERC721_ASSET_MOCK,
           { isNegative, numeric } as Amount,
           expected,
@@ -127,24 +161,33 @@ describe('AmountPill', () => {
       {
         isNegative: true,
         numeric: new Numeric(-3, 10),
-        expected: '- 3 #2748',
+        expected: {
+          text: '- 3 #2748',
+          tooltip: '3 #2748',
+        },
       },
       {
         isNegative: false,
         numeric: new Numeric(8, 10),
-        expected: '+ 8 #2748',
+        expected: {
+          text: '+ 8 #2748',
+          tooltip: '8 #2748',
+        },
       },
       {
         isNegative: true,
         numeric: new Numeric(-12, 10),
-        expected: '- 12 #2748',
+        expected: {
+          text: '- 12 #2748',
+          tooltip: '12 #2748',
+        },
       },
     ];
 
     it.each(cases)(
-      'renders the correct sign, amount, and token ID for $expected',
+      'renders the correct sign, amount, and token ID for $expected.text',
       ({ isNegative, numeric, expected }) => {
-        renderAndExpectText(
+        renderAndExpect(
           ERC1155_ASSET_MOCK,
           { isNegative, numeric } as Amount,
           expected,
