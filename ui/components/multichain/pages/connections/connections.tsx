@@ -25,6 +25,7 @@ import {
   getPermittedAccountsForSelectedTab,
   getSelectedAccount,
   getSubjectMetadata,
+  getUnconnectedAccounts,
 } from '../../../../selectors';
 import {
   AvatarFavicon,
@@ -101,7 +102,9 @@ export const Connections = () => {
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { id } = useSelector((state: any) => state.activeTab);
-
+  const unconnectedAccounts = useSelector((state) =>
+    getUnconnectedAccounts(state, activeTabOrigin),
+  );
   const connectedAccounts = useSelector((state) =>
     getOrderedConnectedAccountsForConnectedDapp(state, activeTabOrigin),
   );
@@ -359,6 +362,7 @@ export const Connections = () => {
                 size={ButtonSize.Lg}
                 block
                 variant={ButtonVariant.Secondary}
+                disabled={unconnectedAccounts.length === 0}
                 startIconName={IconName.Add}
                 onClick={() => setShowConnectAccountsModal(true)}
               >
