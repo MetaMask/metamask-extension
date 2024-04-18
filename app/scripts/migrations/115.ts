@@ -30,37 +30,17 @@ export async function migrate(
 
 // TODO: Replace `any` with type
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
+const STUCK_STATES = [TransactionStatus.approved, TransactionStatus.signed];
+
 function transformState(state: Record<string, any>) {
-  const transactionControllerState = state?.TransactionController || {};
-  const transactions = transactionControllerState?.transactions || {};
-
-  if (isEmpty(transactions)) {
-    return;
+  const transactions = state?.TransactionController?.transactions ?? {};
+  
+  for (const tx of Object.values(transactions)) {
+    if (
+      tx.time < TARGET_DATE &&
+      STUCK_STATES.includes(tx.status)
+    ) {
+      tx.status = TransactionStatus.failed;
+    }
   }
-
-  const newTxs = Object.keys(transactions).reduce(
-    (txs: { [key: string]: TransactionMeta }, id) => {
-      const transaction = cloneDeep(transactions[id]);
-      const transactionDate = transaction.time;
-
-      if (
-        transactionDate < TARGET_DATE &&
-        (transaction.status === TransactionStatus.approved ||
-          transaction.status === TransactionStatus.signed)
-      ) {
-        transaction.status = TransactionStatus.failed;
-      }
-
-      return {
-        ...txs,
-        [id]: transaction,
-      };
-    },
-    {},
-  );
-
-  state.TransactionController = {
-    ...transactionControllerState,
-    transactions: newTxs,
-  };
 }
