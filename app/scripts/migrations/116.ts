@@ -1,4 +1,5 @@
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isObject } from 'lodash';
+import { hasProperty } from '@metamask/utils';
 
 type VersionedData = {
   meta: { version: number };
@@ -21,11 +22,20 @@ export async function migrate(
   return versionedData;
 }
 
-function transformState(state: {
-  AppStateController?: { showProductTour?: boolean };
-}) {
-  if (state?.AppStateController?.showProductTour !== undefined) {
-    delete state.AppStateController.showProductTour;
+function transformState(state: Record<string, any>) {
+  const AppStateController = state?.AppStateController || {};
+
+  if (
+    hasProperty(state, 'AppStateController') &&
+    isObject(state.AppStateController) &&
+    hasProperty(state.AppStateController, 'showProductTour') &&
+    state.AppStateController.showProductTour !== undefined
+  ) {
+    delete AppStateController.showProductTour;
   }
-  return state;
+
+  return {
+    ...state,
+    AppStateController,
+  };
 }
