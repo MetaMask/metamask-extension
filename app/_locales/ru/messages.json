@@ -1650,12 +1650,6 @@
   "general": {
     "message": "Общие"
   },
-  "globalTitle": {
-    "message": "Глобальное меню"
-  },
-  "globalTourDescription": {
-    "message": "Просматривайте свой Portfolio, подключенные сайты, настройки и многое другое"
-  },
   "goBack": {
     "message": "Назад"
   },
@@ -2562,21 +2556,6 @@
   "notificationsMarkAllAsRead": {
     "message": "Отметить все как прочитанные"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "Подробнее"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "🎉 Мы рады объявить об открытой бета-версии MetaMask Snaps!"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "Персонализируйте свой кошелек с помощью snaps, созданных сообществом разработчиков!"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "Snaps помогают вам делать больше с MetaMask — например, подключаться к большему количеству сетей, просматривать статистику транзакций и получать настраиваемые уведомления."
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "Представляем MetaMask Snaps"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 новых токена(-ов) найдены в этом счете",
     "description": "$1 is the number of new tokens detected"
@@ -2902,12 +2881,6 @@
   },
   "permissions": {
     "message": "Разрешения"
-  },
-  "permissionsTitle": {
-    "message": "Разрешения"
-  },
-  "permissionsTourDescription": {
-    "message": "Найдите свои подключенные счета и управляйте разрешениями здесь"
   },
   "personalAddressDetected": {
     "message": "Обнаружен личный адрес. Введите адрес контракта токена."
@@ -3267,6 +3240,10 @@
   "securityAndPrivacy": {
     "message": "Безопасность и конфиденциальность"
   },
+  "securityProviderPoweredBy": {
+    "message": "На основе $1",
+    "description": "The security provider that is providing data"
+  },
   "seeDetails": {
     "message": "См. подробности"
   },
@@ -3490,12 +3467,6 @@
   },
   "smartContracts": {
     "message": "Смарт-контракты"
-  },
-  "smartSwapsAreHere": {
-    "message": "Появились смарт-свопы!"
-  },
-  "smartSwapsDescription": {
-    "message": "Свопы MetaMask стали намного умнее! Включение смарт-свопов позволит MetaMask программно оптимизировать ваш своп, чтобы помочь:"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Недостаточно средств для смарт-свопа."
@@ -3775,18 +3746,6 @@
   },
   "strong": {
     "message": "Сильный"
-  },
-  "stxBenefit1": {
-    "message": "Минимизируйте транзакционные издержки"
-  },
-  "stxBenefit2": {
-    "message": "Уменьшите количество сбоев транзакций"
-  },
-  "stxBenefit3": {
-    "message": "Устраните зависание транзакций"
-  },
-  "stxBenefit4": {
-    "message": "Предотвратите опережение"
   },
   "stxCancelled": {
     "message": "Своп бы не удался"
@@ -4277,12 +4236,6 @@
   "switchedTo": {
     "message": "Вы переключились на"
   },
-  "switcherTitle": {
-    "message": "Переключатель сети"
-  },
-  "switcherTourDescription": {
-    "message": "Нажмите на значок для переключения сетей или добавления новой сети"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "В случае смены сетей все ожидающие подтверждения будут отменены"
   },
@@ -4718,7 +4671,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "Смотреть $1 в $2",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "Смотреть 1$ на Etherscan",

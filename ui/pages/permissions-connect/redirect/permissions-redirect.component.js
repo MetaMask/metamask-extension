@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import SiteIcon from '../../../components/ui/site-icon';
 import Box from '../../../components/ui/box';
@@ -18,6 +18,16 @@ import {
 
 export default function PermissionsRedirect({ subjectMetadata }) {
   const t = useContext(I18nContext);
+  const [cachedSubjectMetadata, setCachedSubjectMetadata] =
+    useState(subjectMetadata);
+
+  // While this redirecting screen is showing, the subject metadata will become invalidated
+  // for that reason we cache the last seen valid subject metadata and show that.
+  useEffect(() => {
+    if (subjectMetadata && subjectMetadata.origin) {
+      setCachedSubjectMetadata(subjectMetadata);
+    }
+  }, [subjectMetadata]);
 
   return (
     <div className="permissions-redirect">
@@ -30,8 +40,8 @@ export default function PermissionsRedirect({ subjectMetadata }) {
         </Typography>
         <div className="permissions-redirect__icons">
           <SiteIcon
-            icon={subjectMetadata.iconUrl}
-            name={subjectMetadata.name}
+            icon={cachedSubjectMetadata.iconUrl}
+            name={cachedSubjectMetadata.name}
             size={64}
             className="permissions-redirect__site-icon"
           />

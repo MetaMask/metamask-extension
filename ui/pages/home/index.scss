@@ -200,8 +200,7 @@
     }
 
     &-icon {
-      @include design-system.H3;
-
+      font-size: 24px;
       margin-inline-end: 12px;
       color: var(--color-success-default);
     }

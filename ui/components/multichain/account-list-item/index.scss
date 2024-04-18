@@ -1,9 +1,21 @@
 .multichain-account-list-item {
   position: relative;
   width: 100%;
-  cursor: pointer;
 
-  &:not(.account-list-item--selected) {
+  &--clickable {
+    cursor: pointer;
+  }
+
+  &:not(.multichain-account-list-item--clickable) {
+    cursor: default;
+
+    .multichain-account-list-item__account-name__button,
+    .multichain-badge-status {
+      cursor: default;
+    }
+  }
+
+  &:not(.multichain-account-list-item--selected) {
     &:hover,
     &:focus-within {
       background: var(--color-background-default-hover);
@@ -70,4 +82,11 @@
       font-size: 12px !important;
     }
   }
+}
+
+.list-item-custody-logo {
+  height: 32px;
+  padding: 1px;
+  margin-right: 8px;
+  margin-top: 5px;
 }
