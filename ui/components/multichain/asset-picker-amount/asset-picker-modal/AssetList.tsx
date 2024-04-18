@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import isEqual from 'lodash/isEqual';
@@ -77,22 +77,26 @@ export default function AssetList({
       currency: secondaryCurrency,
     });
 
-  const tokenList: Token[] = [...tokensWithBalances].filter((token: Token) =>
-    token.symbol?.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  const tokenList = useMemo(() => {
+    const filteredTokens: Token[] = tokensWithBalances.filter((token: Token) =>
+      token.symbol?.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
 
-  // prepend native currency to token list if it matches search query
-  if (nativeCurrency?.toLowerCase().includes(searchQuery.toLowerCase())) {
-    tokenList.unshift({
-      address: null,
-      symbol: nativeCurrency,
-      decimals: 18,
-      image: nativeCurrencyImage,
-      balance: balanceValue,
-      string: primaryCurrencyProperties.value,
-      type: AssetType.native,
-    });
-  }
+    // prepend native currency to token list if it matches search query
+    if (nativeCurrency?.toLowerCase().includes(searchQuery.toLowerCase())) {
+      filteredTokens.unshift({
+        address: null,
+        symbol: nativeCurrency,
+        decimals: 18,
+        image: nativeCurrencyImage,
+        balance: balanceValue,
+        string: primaryCurrencyProperties.value,
+        type: AssetType.native,
+      });
+    }
+
+    return filteredTokens;
+  }, [tokensWithBalances, searchQuery]);
 
   return (
     <Box className="tokens-main-view-modal">
