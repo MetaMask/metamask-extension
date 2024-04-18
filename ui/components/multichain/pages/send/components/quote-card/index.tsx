@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Box, Text } from '../../../../../component-library';
 import {
   AlignItems,
@@ -10,7 +11,6 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../../helpers/constants/design-system';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   getCurrentDraftTransaction,
   getBestQuote,
@@ -19,20 +19,19 @@ import {
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { SECOND } from '../../../../../../../shared/constants/time';
 import { Quote } from '../../../../../../ducks/send/swap-and-send-utils';
-import useEthFeeData from './hooks/useEthFeeData';
 import Tooltip from '../../../../../ui/tooltip';
 import InfoTooltipIcon from '../../../../../ui/info-tooltip/info-tooltip-icon';
-import useTranslatedNetworkName from './hooks/useTranslatedNetworkName';
 import { MetaMetricsEventCategory } from '../../../../../../../shared/constants/metametrics';
 import { GAS_FEES_LEARN_MORE_URL } from '../../../../../../../shared/lib/ui-utils';
 import { MetaMetricsContext } from '../../../../../../contexts/metametrics';
+import useEthFeeData from './hooks/useEthFeeData';
+import useTranslatedNetworkName from './hooks/useTranslatedNetworkName';
 import useGetConversionRate from './hooks/useGetConversionRate';
 
 const REFRESH_INTERVAL = 30;
 
 /**
  * All the info about the current quote; handles polling and displaying the best quote
- * @returns
  */
 export function QuoteCard() {
   const t = useI18nContext();
@@ -86,10 +85,11 @@ export function QuoteCard() {
     }
 
     const timeout = setTimeout(() => setTimeLeft(timeLeft - 1), SECOND);
+    // eslint-disable-next-line consistent-return
     return () => clearTimeout(timeout);
   }, [timeLeft]);
 
-  let infoText = useMemo(() => {
+  const infoText = useMemo(() => {
     if (isSwapQuoteLoading) {
       return t('swapFetchingQuotes');
     } else if (bestQuote) {
