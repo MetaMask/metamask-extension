@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
   getBestQuote,
@@ -27,27 +28,36 @@ export default function useGetConversionRate() {
       ? nativeCurrencySymbol
       : receiveAsset.details?.symbol;
 
-  let formattedConversionRate;
+  const formattedConversionRate = useMemo(() => {
+    if (bestQuote) {
+      const primaryTokenAmount = calcTokenAmount(
+        bestQuote.sourceAmount,
+        sendAsset.details?.decimals || NATIVE_CURRENCY_DECIMALS,
+      );
+      const secondaryTokenAmount = calcTokenAmount(
+        bestQuote.destinationAmount,
+        receiveAsset.details?.decimals || NATIVE_CURRENCY_DECIMALS,
+      );
 
-  if (bestQuote) {
-    const primaryTokenAmount = calcTokenAmount(
-      bestQuote.sourceAmount,
-      sendAsset.details?.decimals || NATIVE_CURRENCY_DECIMALS,
-    );
-    const secondaryTokenAmount = calcTokenAmount(
-      bestQuote.destinationAmount,
-      receiveAsset.details?.decimals || NATIVE_CURRENCY_DECIMALS,
-    );
+      const conversionRateFromPrimaryToSecondary = new Numeric(
+        secondaryTokenAmount,
+      )
+        .divide(primaryTokenAmount)
+        .round(9)
+        .toNumber();
 
-    const conversionRateFromPrimaryToSecondary = new Numeric(
-      secondaryTokenAmount,
-    )
-      .divide(primaryTokenAmount)
-      .round(9)
-      .toNumber();
+      return `1 ${sourceTokenSymbol} = ${conversionRateFromPrimaryToSecondary} ${destinationTokenSymbol}`;
+    }
 
-    formattedConversionRate = `1 ${sourceTokenSymbol} = ${conversionRateFromPrimaryToSecondary} ${destinationTokenSymbol}`;
-  }
+    return undefined;
+  }, [
+    bestQuote?.sourceAmount,
+    bestQuote?.destinationAmount,
+    sendAsset.details?.decimals,
+    receiveAsset.details?.decimals,
+    sourceTokenSymbol,
+    destinationTokenSymbol,
+  ]);
 
   return formattedConversionRate;
 }
