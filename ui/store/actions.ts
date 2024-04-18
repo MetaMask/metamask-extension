@@ -4775,10 +4775,6 @@ export function hidePermissionsTour() {
   return submitRequestToBackground('setShowPermissionsTour', [false]);
 }
 
-export function hideProductTour() {
-  return submitRequestToBackground('setShowProductTour', [false]);
-}
-
 export function hideAccountBanner() {
   return submitRequestToBackground('setShowAccountBanner', [false]);
 }
