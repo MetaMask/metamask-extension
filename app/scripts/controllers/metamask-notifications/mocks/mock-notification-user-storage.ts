@@ -1,7 +1,7 @@
 import { TRIGGER_TYPES } from '../constants/notification-schema';
 import { USER_STORAGE_VERSION_KEY } from '../constants/constants';
 import { UserStorage } from '../types/user-storage/user-storage';
-import { MetamaskNotificationsUtils } from '../utils/utils';
+import { initializeUserStorage } from '../utils/utils';
 
 export const MOCK_USER_STORAGE_ACCOUNT =
   '0x0000000000000000000000000000000000000000';
@@ -27,8 +27,6 @@ export function createMockUserStorage(
     ...override,
   };
 }
-
-const utils = new MetamaskNotificationsUtils();
 
 export function createMockUserStorageWithTriggers(
   triggers: string[] | { id: string; e: boolean; k?: TRIGGER_TYPES }[],
@@ -67,7 +65,7 @@ export function createMockUserStorageWithTriggers(
 export function createMockFullUserStorage(
   props: { triggersEnabled?: boolean } = {},
 ): UserStorage {
-  return utils.initializeUserStorage(
+  return initializeUserStorage(
     [{ address: MOCK_USER_STORAGE_ACCOUNT }],
     props.triggersEnabled ?? true,
   );

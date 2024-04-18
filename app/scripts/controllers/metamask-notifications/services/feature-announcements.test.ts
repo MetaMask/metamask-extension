@@ -3,7 +3,7 @@ import {
   createMockFeatureAnnouncementAPIResult,
   mockFetchFeatureAnnouncementNotifications,
 } from '../mocks/mock-feature-announcements';
-import { FeatureAnnouncementsService } from './feature-announcements';
+import { getFeatureAnnouncementNotifications } from './feature-announcements';
 
 jest.mock('@contentful/rich-text-html-renderer', () => ({
   documentToHtmlString: jest
@@ -12,11 +12,8 @@ jest.mock('@contentful/rich-text-html-renderer', () => ({
 }));
 
 describe('Feature Announcement Notifications', () => {
-  let service: FeatureAnnouncementsService;
-
   beforeEach(() => {
     jest.clearAllMocks();
-    service = new FeatureAnnouncementsService();
   });
 
   it('should return an empty array if fetch fails', async () => {
@@ -24,7 +21,7 @@ describe('Feature Announcement Notifications', () => {
       status: 500,
     });
 
-    const notifications = await service.getFeatureAnnouncementNotifications();
+    const notifications = await getFeatureAnnouncementNotifications();
     mockEndpoint.done();
     expect(notifications).toEqual([]);
   });
@@ -35,7 +32,7 @@ describe('Feature Announcement Notifications', () => {
       body: { items: [] },
     });
 
-    const notifications = await service.getFeatureAnnouncementNotifications();
+    const notifications = await getFeatureAnnouncementNotifications();
     mockEndpoint.done();
     expect(notifications).toEqual([]);
   });
@@ -46,7 +43,7 @@ describe('Feature Announcement Notifications', () => {
       body: createMockFeatureAnnouncementAPIResult(),
     });
 
-    const notifications = await service.getFeatureAnnouncementNotifications();
+    const notifications = await getFeatureAnnouncementNotifications();
     expect(notifications).toHaveLength(1);
     mockEndpoint.done();
 

@@ -24,108 +24,106 @@ export type ContentfulResult = {
   items?: TypeFeatureAnnouncement[];
 };
 
-export class FeatureAnnouncementsService {
-  private async fetchFromContentful(
-    url: string,
-    retries = 3,
-    retryDelay = 1000,
-  ): Promise<ContentfulResult | null> {
-    let lastError: Error | null = null;
+async function fetchFromContentful(
+  url: string,
+  retries = 3,
+  retryDelay = 1000,
+): Promise<ContentfulResult | null> {
+  let lastError: Error | null = null;
 
-    for (let i = 0; i < retries; i++) {
-      try {
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error(`Fetch failed with status: ${response.status}`);
-        }
-        return await response.json();
-      } catch (error) {
-        if (error instanceof Error) {
-          lastError = error;
-        }
-        if (i < retries - 1) {
-          await new Promise((resolve) => setTimeout(resolve, retryDelay));
-        }
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Fetch failed with status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      if (error instanceof Error) {
+        lastError = error;
+      }
+      if (i < retries - 1) {
+        await new Promise((resolve) => setTimeout(resolve, retryDelay));
       }
     }
-
-    log.error(
-      `Error fetching from Contentful after ${retries} retries: ${lastError}`,
-    );
-    return null;
   }
 
-  private async fetchFeatureAnnouncementNotifications(): Promise<
-    FeatureAnnouncementRawNotification[]
-  > {
-    const data = await this.fetchFromContentful(FEATURE_ANNOUNCEMENT_URL);
+  log.error(
+    `Error fetching from Contentful after ${retries} retries: ${lastError}`,
+  );
+  return null;
+}
 
-    if (!data) {
-      return [];
-    }
+async function fetchFeatureAnnouncementNotifications(): Promise<
+  FeatureAnnouncementRawNotification[]
+> {
+  const data = await fetchFromContentful(FEATURE_ANNOUNCEMENT_URL);
 
-    const findIncludedItem = (sysId: string) => {
-      const item =
-        data?.includes?.Entry?.find((i: Entry) => i?.sys?.id === sysId) ||
-        data?.includes?.Asset?.find((i: Asset) => i?.sys?.id === sysId);
-      return item ? item?.fields : null;
-    };
+  if (!data) {
+    return [];
+  }
 
-    const contentfulNotifications = data?.items ?? [];
-    const rawNotifications: FeatureAnnouncementRawNotification[] =
-      contentfulNotifications.map((n: TypeFeatureAnnouncement) => {
-        const { fields } = n;
-        const imageFields = fields.image
-          ? (findIncludedItem(fields.image.sys.id) as ImageFields['fields'])
-          : undefined;
-        const actionFields = fields.action
-          ? (findIncludedItem(
-              fields.action.sys.id,
-            ) as TypeActionFields['fields'])
-          : undefined;
-        const linkFields = fields.link
-          ? (findIncludedItem(fields.link.sys.id) as TypeLinkFields['fields'])
-          : undefined;
+  const findIncludedItem = (sysId: string) => {
+    const item =
+      data?.includes?.Entry?.find((i: Entry) => i?.sys?.id === sysId) ||
+      data?.includes?.Asset?.find((i: Asset) => i?.sys?.id === sysId);
+    return item ? item?.fields : null;
+  };
 
-        const notification: FeatureAnnouncementRawNotification = {
-          type: TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
-          createdAt: new Date(n.sys.createdAt).toString(),
-          data: {
-            id: fields.id,
-            category: fields.category,
-            title: fields.title,
-            longDescription: documentToHtmlString(fields.longDescription),
-            shortDescription: fields.shortDescription,
-            image: {
-              title: imageFields?.title,
-              description: imageFields?.description,
-              url: imageFields?.file?.url ?? '',
-            },
-            link: linkFields && {
-              linkText: linkFields?.linkText,
-              linkUrl: linkFields?.linkUrl,
-              isExternal: linkFields?.isExternal,
-            },
-            action: actionFields && {
-              actionText: actionFields?.actionText,
-              actionUrl: actionFields?.actionUrl,
-              isExternal: actionFields?.isExternal,
-            },
+  const contentfulNotifications = data?.items ?? [];
+  const rawNotifications: FeatureAnnouncementRawNotification[] =
+    contentfulNotifications.map((n: TypeFeatureAnnouncement) => {
+      const { fields } = n;
+      const imageFields = fields.image
+        ? (findIncludedItem(fields.image.sys.id) as ImageFields['fields'])
+        : undefined;
+      const actionFields = fields.action
+        ? (findIncludedItem(fields.action.sys.id) as TypeActionFields['fields'])
+        : undefined;
+      const linkFields = fields.link
+        ? (findIncludedItem(fields.link.sys.id) as TypeLinkFields['fields'])
+        : undefined;
+
+      const notification: FeatureAnnouncementRawNotification = {
+        type: TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
+        createdAt: new Date(n.sys.createdAt).toString(),
+        data: {
+          id: fields.id,
+          category: fields.category,
+          title: fields.title,
+          longDescription: documentToHtmlString(fields.longDescription),
+          shortDescription: fields.shortDescription,
+          image: {
+            title: imageFields?.title,
+            description: imageFields?.description,
+            url: imageFields?.file?.url ?? '',
           },
-        };
+          link: linkFields && {
+            linkText: linkFields?.linkText,
+            linkUrl: linkFields?.linkUrl,
+            isExternal: linkFields?.isExternal,
+          },
+          action: actionFields && {
+            actionText: actionFields?.actionText,
+            actionUrl: actionFields?.actionUrl,
+            isExternal: actionFields?.isExternal,
+          },
+        },
+      };
 
-        return notification;
-      });
+      return notification;
+    });
 
-    return rawNotifications;
-  }
+  return rawNotifications;
+}
 
-  async getFeatureAnnouncementNotifications(): Promise<Notification[]> {
-    const rawNotifications = await this.fetchFeatureAnnouncementNotifications();
-    const notifications = rawNotifications.map((notification) =>
-      processFeatureAnnouncement(notification),
-    );
+export async function getFeatureAnnouncementNotifications(): Promise<
+  Notification[]
+> {
+  const rawNotifications = await fetchFeatureAnnouncementNotifications();
+  const notifications = rawNotifications.map((notification) =>
+    processFeatureAnnouncement(notification),
+  );
 
-    return notifications;
-  }
+  return notifications;
 }

@@ -25,8 +25,8 @@ import type {
   UserStorage,
   UserStorageEntryKeys,
 } from './types/user-storage/user-storage';
-import { FeatureAnnouncementsService } from './services/feature-announcements';
-import { OnChainNotificationsService } from './services/onchain-notifications';
+import * as FeatureNotifications from './services/feature-announcements';
+import * as OnChainNotifications from './services/onchain-notifications';
 import type {
   Notification,
   MarkAsReadNotificationsParam,
@@ -34,7 +34,7 @@ import type {
 import { OnChainRawNotification } from './types/on-chain-notification/on-chain-notification';
 import { FeatureAnnouncementRawNotification } from './types/feature-announcement/feature-announcement';
 import { processNotification } from './processors/process-notifications';
-import { MetamaskNotificationsUtils } from './utils/utils';
+import * as MetamaskNotificationsUtils from './utils/utils';
 
 // Unique name for the controller
 const controllerName = 'MetamaskNotificationsController';
@@ -199,12 +199,6 @@ export class MetamaskNotificationsController extends BaseController<
   MetamaskNotificationsControllerState,
   MetamaskNotificationsControllerMessenger
 > {
-  #featureAnnouncementsService: FeatureAnnouncementsService;
-
-  #onChainNotificationsService: OnChainNotificationsService;
-
-  #metamaskNotificationUtils: MetamaskNotificationsUtils;
-
   #auth = {
     getBearerToken: async () => {
       return await this.messagingSystem.call(
@@ -277,9 +271,6 @@ export class MetamaskNotificationsController extends BaseController<
       name: controllerName,
       state: { ...defaultState, ...state },
     });
-    this.#featureAnnouncementsService = new FeatureAnnouncementsService();
-    this.#onChainNotificationsService = new OnChainNotificationsService();
-    this.#metamaskNotificationUtils = new MetamaskNotificationsUtils();
     this.#initializeAddressRegistry();
 
     /**
@@ -299,7 +290,6 @@ export class MetamaskNotificationsController extends BaseController<
     messenger.subscribe(
       'AccountsController:selectedAccountChange',
       async ({ address }: { address: string }) => {
-        console.log('CALLED');
         const checksumAddress = toChecksumHexAddress(address);
         if (
           this.state.metamaskNotificationsAddressRegistry.includes(
@@ -416,9 +406,7 @@ export class MetamaskNotificationsController extends BaseController<
     this.#assertUserStorage(userStorage);
 
     // Use MetamaskNotificationsUtils to check the presence of triggers
-    return this.#metamaskNotificationUtils.checkTriggersPresenceByGroup(
-      userStorage,
-    );
+    return MetamaskNotificationsUtils.checkTriggersPresenceByGroup(userStorage);
   }
 
   /**
@@ -438,7 +426,7 @@ export class MetamaskNotificationsController extends BaseController<
     this.#assertUserStorage(userStorage);
 
     // Use MetamaskNotificationsUtils to check the presence of accounts
-    return this.#metamaskNotificationUtils.checkAccountsPresence(
+    return MetamaskNotificationsUtils.checkAccountsPresence(
       userStorage,
       accounts,
     );
@@ -553,7 +541,7 @@ export class MetamaskNotificationsController extends BaseController<
       // All the triggers created are set
       // as not enabled
       if (userStorage?.[USER_STORAGE_VERSION_KEY] === undefined) {
-        userStorage = this.#metamaskNotificationUtils.initializeUserStorage(
+        userStorage = MetamaskNotificationsUtils.initializeUserStorage(
           accounts.map((account) => ({ address: account })),
           false,
         );
@@ -564,10 +552,8 @@ export class MetamaskNotificationsController extends BaseController<
 
       // Create the triggers
       const triggers =
-        this.#metamaskNotificationUtils.traverseUserStorageTriggers(
-          userStorage,
-        );
-      await this.#onChainNotificationsService.createOnChainTriggers(
+        MetamaskNotificationsUtils.traverseUserStorageTriggers(userStorage);
+      await OnChainNotifications.createOnChainTriggers(
         userStorage,
         storageKey,
         bearerToken,
@@ -575,7 +561,7 @@ export class MetamaskNotificationsController extends BaseController<
       );
 
       // Create push notifications triggers
-      const allUUIDS = this.#metamaskNotificationUtils.getAllUUIDs(userStorage);
+      const allUUIDS = MetamaskNotificationsUtils.getAllUUIDs(userStorage);
       await this.#pushNotifications.enablePushNotifications(allUUIDS);
 
       // Write the new userStorage
@@ -614,7 +600,7 @@ export class MetamaskNotificationsController extends BaseController<
       this.#assertUserStorage(userStorage);
 
       // Get the UUIDs to delete
-      const UUIDs = this.#metamaskNotificationUtils.getUUIDsForAccount(
+      const UUIDs = MetamaskNotificationsUtils.getUUIDsForAccount(
         userStorage,
         account,
       );
@@ -623,7 +609,7 @@ export class MetamaskNotificationsController extends BaseController<
       }
 
       // Delete these UUIDs (Mutates User Storage)
-      await this.#onChainNotificationsService.deleteOnChainTriggers(
+      await OnChainNotifications.deleteOnChainTriggers(
         userStorage,
         storageKey,
         bearerToken,
@@ -669,16 +655,15 @@ export class MetamaskNotificationsController extends BaseController<
       this.#assertUserStorage(userStorage);
 
       // Get the UUIDs to delete
-      const UUIDs = this.#metamaskNotificationUtils.getUUIDsForKinds(
-        userStorage,
-        [triggerType],
-      );
+      const UUIDs = MetamaskNotificationsUtils.getUUIDsForKinds(userStorage, [
+        triggerType,
+      ]);
       if (UUIDs.length === 0) {
         return userStorage;
       }
 
       // Delete these UUIDs (Mutates User Storage)
-      await this.#onChainNotificationsService.deleteOnChainTriggers(
+      await OnChainNotifications.deleteOnChainTriggers(
         userStorage,
         storageKey,
         bearerToken,
@@ -727,10 +712,7 @@ export class MetamaskNotificationsController extends BaseController<
 
       // Check if the address has related UUIDs
       const updatedUserStorage =
-        this.#metamaskNotificationUtils.upsertAddressTriggers(
-          account,
-          userStorage,
-        );
+        MetamaskNotificationsUtils.upsertAddressTriggers(account, userStorage);
 
       // Write te updated userStorage
       await this.#storage.setNotificationStorage(
@@ -739,16 +721,15 @@ export class MetamaskNotificationsController extends BaseController<
 
       // Check if the address has related UUIDs
       const allowedKinds =
-        this.#metamaskNotificationUtils.inferEnabledKinds(updatedUserStorage);
+        MetamaskNotificationsUtils.inferEnabledKinds(updatedUserStorage);
 
       // Create the triggers
-      const triggers =
-        this.#metamaskNotificationUtils.getUUIDsForAccountByKinds(
-          updatedUserStorage,
-          account,
-          allowedKinds,
-        );
-      await this.#onChainNotificationsService.createOnChainTriggers(
+      const triggers = MetamaskNotificationsUtils.getUUIDsForAccountByKinds(
+        updatedUserStorage,
+        account,
+        allowedKinds,
+      );
+      await OnChainNotifications.createOnChainTriggers(
         updatedUserStorage,
         storageKey,
         bearerToken,
@@ -756,8 +737,7 @@ export class MetamaskNotificationsController extends BaseController<
       );
 
       // Update Push Notifications Triggers
-      const UUIDs =
-        this.#metamaskNotificationUtils.getAllUUIDs(updatedUserStorage);
+      const UUIDs = MetamaskNotificationsUtils.getAllUUIDs(updatedUserStorage);
       await this.#pushNotifications.updatePushNotifications(UUIDs);
 
       // Update the userStorage
@@ -800,7 +780,7 @@ export class MetamaskNotificationsController extends BaseController<
 
       // Check if the address has related UUIDs
       const updatedUserStorage =
-        this.#metamaskNotificationUtils.upsertTriggerTypeTriggers(
+        MetamaskNotificationsUtils.upsertTriggerTypeTriggers(
           triggerType,
           userStorage,
         );
@@ -812,10 +792,10 @@ export class MetamaskNotificationsController extends BaseController<
 
       // Create the triggers
       const triggers =
-        this.#metamaskNotificationUtils.traverseUserStorageTriggers(
+        MetamaskNotificationsUtils.traverseUserStorageTriggers(
           updatedUserStorage,
         );
-      await this.#onChainNotificationsService.createOnChainTriggers(
+      await OnChainNotifications.createOnChainTriggers(
         updatedUserStorage,
         storageKey,
         bearerToken,
@@ -823,8 +803,7 @@ export class MetamaskNotificationsController extends BaseController<
       );
 
       // Update Push Notifications Triggers
-      const UUIDs =
-        this.#metamaskNotificationUtils.getAllUUIDs(updatedUserStorage);
+      const UUIDs = MetamaskNotificationsUtils.getAllUUIDs(updatedUserStorage);
       await this.#pushNotifications.updatePushNotifications(UUIDs);
 
       // Update the userStorage
@@ -859,9 +838,9 @@ export class MetamaskNotificationsController extends BaseController<
     try {
       // Raw Feature Notifications
       const rawFeatureAnnouncementNotifications =
-        await this.#featureAnnouncementsService
-          .getFeatureAnnouncementNotifications()
-          .catch(() => []);
+        await FeatureNotifications.getFeatureAnnouncementNotifications().catch(
+          () => [],
+        );
 
       // Raw On Chain Notifications
       const rawOnChainNotifications: OnChainRawNotification[] = [];
@@ -871,9 +850,11 @@ export class MetamaskNotificationsController extends BaseController<
         .catch(() => null);
       const bearerToken = await this.#auth.getBearerToken().catch(() => null);
       if (userStorage && bearerToken) {
-        const notifications = await this.#onChainNotificationsService
-          .getOnChainNotifications(userStorage, bearerToken)
-          .catch(() => []);
+        const notifications =
+          await OnChainNotifications.getOnChainNotifications(
+            userStorage,
+            bearerToken,
+          ).catch(() => []);
         rawOnChainNotifications.concat(notifications);
       }
 
@@ -964,7 +945,7 @@ export class MetamaskNotificationsController extends BaseController<
           onchainNotificationIds = onChainNotifications.map(
             (notification) => notification.id,
           );
-          await this.#onChainNotificationsService.markNotificationsAsRead(
+          await OnChainNotifications.markNotificationsAsRead(
             bearerToken,
             onchainNotificationIds,
           );

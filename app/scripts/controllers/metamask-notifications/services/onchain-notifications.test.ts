@@ -11,11 +11,8 @@ import {
   createMockUserStorageWithTriggers,
 } from '../mocks/mock-notification-user-storage';
 import { UserStorage } from '../types/user-storage/user-storage';
-import { MetamaskNotificationsUtils } from '../utils/utils';
-import { OnChainNotificationsService } from './onchain-notifications';
-
-const utils = new MetamaskNotificationsUtils();
-const service = new OnChainNotificationsService();
+import * as MetamaskNotificationsUtils from '../utils/utils';
+import * as OnChainNotifications from './onchain-notifications';
 
 const MOCK_STORAGE_KEY = 'MOCK_USER_STORAGE_KEY';
 const MOCK_BEARER_TOKEN = 'MOCK_BEARER_TOKEN';
@@ -28,7 +25,7 @@ describe('On Chain Notifications - createOnChainTriggers()', () => {
     // The initial trigger to create should not be enabled
     assertUserStorageTriggerStatus(mocks.mockUserStorage, false);
 
-    await service.createOnChainTriggers(
+    await OnChainNotifications.createOnChainTriggers(
       mocks.mockUserStorage,
       MOCK_STORAGE_KEY,
       MOCK_BEARER_TOKEN,
@@ -43,7 +40,7 @@ describe('On Chain Notifications - createOnChainTriggers()', () => {
 
   test('Does not call endpoint if there are no triggers to create', async () => {
     const mocks = arrangeMocks();
-    await service.createOnChainTriggers(
+    await OnChainNotifications.createOnChainTriggers(
       mocks.mockUserStorage,
       MOCK_STORAGE_KEY,
       MOCK_BEARER_TOKEN,
@@ -57,7 +54,8 @@ describe('On Chain Notifications - createOnChainTriggers()', () => {
     const mockUserStorage = createMockUserStorageWithTriggers([
       { id: MOCK_TRIGGER_ID, k: TRIGGER_TYPES.ETH_SENT, e: false },
     ]);
-    const triggers = utils.traverseUserStorageTriggers(mockUserStorage);
+    const triggers =
+      MetamaskNotificationsUtils.traverseUserStorageTriggers(mockUserStorage);
     const mockBadEndpoint = mockBatchCreateTriggers({
       status: 500,
       body: { error: 'mock api failure' },
@@ -67,7 +65,7 @@ describe('On Chain Notifications - createOnChainTriggers()', () => {
     assertUserStorageTriggerStatus(mockUserStorage, false);
 
     await expect(
-      service.createOnChainTriggers(
+      OnChainNotifications.createOnChainTriggers(
         mockUserStorage,
         MOCK_STORAGE_KEY,
         MOCK_BEARER_TOKEN,
@@ -96,7 +94,8 @@ describe('On Chain Notifications - createOnChainTriggers()', () => {
     const mockUserStorage = createMockUserStorageWithTriggers([
       { id: MOCK_TRIGGER_ID, k: TRIGGER_TYPES.ETH_SENT, e: false },
     ]);
-    const triggers = utils.traverseUserStorageTriggers(mockUserStorage);
+    const triggers =
+      MetamaskNotificationsUtils.traverseUserStorageTriggers(mockUserStorage);
     const mockEndpoint = mockBatchCreateTriggers();
 
     return {
@@ -117,7 +116,7 @@ describe('On Chain Notifications - deleteOnChainTriggers()', () => {
       expect(getTriggerFromUserStorage(mockUserStorage, t)).toBeDefined();
     });
 
-    await service.deleteOnChainTriggers(
+    await OnChainNotifications.deleteOnChainTriggers(
       mockUserStorage,
       MOCK_STORAGE_KEY,
       MOCK_BEARER_TOKEN,
@@ -139,7 +138,7 @@ describe('On Chain Notifications - deleteOnChainTriggers()', () => {
     const { mockUserStorage, triggerId1, triggerId2 } = arrangeUserStorage();
     const mockEndpoint = mockBatchDeleteTriggers();
 
-    await service.deleteOnChainTriggers(
+    await OnChainNotifications.deleteOnChainTriggers(
       mockUserStorage,
       MOCK_STORAGE_KEY,
       MOCK_BEARER_TOKEN,
@@ -160,7 +159,7 @@ describe('On Chain Notifications - deleteOnChainTriggers()', () => {
     });
 
     await expect(
-      service.deleteOnChainTriggers(
+      OnChainNotifications.deleteOnChainTriggers(
         mockUserStorage,
         MOCK_STORAGE_KEY,
         MOCK_BEARER_TOKEN,
@@ -209,7 +208,7 @@ describe('On Chain Notifications - getOnChainNotifications()', () => {
       'trigger_2',
     ]);
 
-    const result = await service.getOnChainNotifications(
+    const result = await OnChainNotifications.getOnChainNotifications(
       mockUserStorage,
       MOCK_BEARER_TOKEN,
     );
@@ -222,7 +221,7 @@ describe('On Chain Notifications - getOnChainNotifications()', () => {
     const mockEndpoint = mockListNotifications();
     const mockUserStorage = createMockUserStorageWithTriggers([]); // no triggers
 
-    const result = await service.getOnChainNotifications(
+    const result = await OnChainNotifications.getOnChainNotifications(
       mockUserStorage,
       MOCK_BEARER_TOKEN,
     );
@@ -241,7 +240,7 @@ describe('On Chain Notifications - getOnChainNotifications()', () => {
       'trigger_2',
     ]);
 
-    const result = await service.getOnChainNotifications(
+    const result = await OnChainNotifications.getOnChainNotifications(
       mockUserStorage,
       MOCK_BEARER_TOKEN,
     );
@@ -254,7 +253,7 @@ describe('On Chain Notifications - getOnChainNotifications()', () => {
 describe('On Chain Notifications - markNotificationsAsRead()', () => {
   test('Should successfully call endpoint to mark notifications as read', async () => {
     const mockEndpoint = mockMarkNotificationsAsRead();
-    await service.markNotificationsAsRead(MOCK_BEARER_TOKEN, [
+    await OnChainNotifications.markNotificationsAsRead(MOCK_BEARER_TOKEN, [
       'notification_1',
       'notification_2',
     ]);
@@ -268,7 +267,7 @@ describe('On Chain Notifications - markNotificationsAsRead()', () => {
       body: { error: 'mock api failure' },
     });
     await expect(
-      service.markNotificationsAsRead(MOCK_BEARER_TOKEN, [
+      OnChainNotifications.markNotificationsAsRead(MOCK_BEARER_TOKEN, [
         'notification_1',
         'notification_2',
       ]),
