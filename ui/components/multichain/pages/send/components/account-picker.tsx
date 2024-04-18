@@ -12,6 +12,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { I18nContext } from '../../../../../contexts/i18n';
 import { AccountListMenu } from '../../..';
+import { SEND_STAGES, getSendStage } from '../../../../../ducks/send';
 import { SendPageRow } from '.';
 
 export const SendPageAccountPicker = () => {
@@ -19,6 +20,9 @@ export const SendPageAccountPicker = () => {
   const internalAccount = useSelector(getSelectedInternalAccount);
 
   const [showAccountPicker, setShowAccountPicker] = useState(false);
+
+  const sendStage = useSelector(getSendStage);
+  const disabled = SEND_STAGES.EDIT === sendStage;
 
   return (
     <SendPageRow>
@@ -48,6 +52,7 @@ export const SendPageAccountPicker = () => {
           width: BlockSize.Full,
         }}
         width={BlockSize.Full}
+        disabled={disabled}
         data-testid="send-page-account-picker"
       />
       {showAccountPicker ? (
