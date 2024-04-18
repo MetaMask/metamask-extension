@@ -15,7 +15,7 @@ export const version = 115;
 export const TARGET_DATE = new Date('2023-12-08T00:00:00Z').getTime();
 
 /**
- * This migration updates the status of transactions that were approved or signed before December 8, 2023 to failed.
+ * This migration sets the `status` to `failed` for all transactions created before December 8, 2023 that are still `approved` or `signed`.
  *
  * @param originalVersionedData
  */
