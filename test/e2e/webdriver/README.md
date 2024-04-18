@@ -5,8 +5,8 @@ Driver is a custom class designed for handling web automation interactions, serv
 ## Driver key features:
 
 - Locator strategy that utilizes the buildLocator function, supporting inline locators as an alternative to the traditional use of Selenium's By abstraction.
-- The finding element calls the wrapElementWithAPI method which mirrors the Playwright API, facilitating tool migration.
-- A comprehensive suite of methods for element, interacting with them, and performing actions using keyboard and mouse.
+- The finding element calls the wrapElementWithAPI function which mirrors the Playwright API, facilitating tool migration.
+- A comprehensive suite of functions for element, interacting with them, and performing actions using keyboard and mouse.
 - Appropriate waiting strategies for elements to appear within a time period or condition is met.
 - Management of browser windows, tabs, alerts, and frames with appropriate navigation, switching, and closing capabilities.
 - Validation of the application with assertion statements to check expected values and conditions.
@@ -102,7 +102,6 @@ In web automation testing, locators are crucial commands that guide the framewor
 >```
 >>
 </details>
-<br>
 
 <details><summary><b>Locate element by XPath</b></summary>
 
@@ -124,7 +123,6 @@ In web automation testing, locators are crucial commands that guide the framewor
 >```
 >>
 </details>
-<br>
 
 <details><summary><b>**** Note - locators ****</b></summary>
 
@@ -148,12 +146,12 @@ In web automation testing, locators are crucial commands that guide the framewor
 
 ## Elements
 
-Finding web elements is a fundamental task in web automation and testing, allowing scripts to interact with various components of a web page, such as input fields, buttons, links, and more. One of the element identification methods listed below combines with the use [locators](#locators) to uniquely identify an element on the page.
+Finding web elements is a fundamental task in web automation and testing, allowing scripts to interact with various components of a web page, such as input fields, buttons, links, and more. One of the element identification functions listed below combines with the use [locators](#locators) to uniquely identify an element on the page.
 
 <details><summary><b>findElement</b></summary>
 <br>
 
->**`findElement`** method is called on the driver instance, it returns a reference to the first element in the DOM that matches with the provided locator. This value can be stored and used for future element actions.
+>**`findElement`** function is called on the driver instance, it returns a reference to the first element in the DOM that matches with the provided locator. This value can be stored and used for future element actions.
 >
 >[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L323)
 >
@@ -179,11 +177,11 @@ Finding web elements is a fundamental task in web automation and testing, allowi
 >```
 >>
 </details>
-<br>
+
 <details><summary><b>findElements</b></summary>
 <br>
 
->**`findElements`** method return a collection of element references. If there are no matches, an empty list is returned.
+>**`findElements`** function return a collection of element references. If there are no matches, an empty list is returned.
 >
 >[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L347)
 >
@@ -208,12 +206,11 @@ Finding web elements is a fundamental task in web automation and testing, allowi
 >```
 >>
 </details>
-<br>
 
 <details><summary><b>findVisibleElement</b></summary>
 <br>
 
->**`findVisibleElement`** method is used to track (or) find DOM element which is visible
+>**`findVisibleElement`** function is used to track (or) find DOM element which is visible
 >
 >[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L332)
 >
@@ -231,12 +228,11 @@ Finding web elements is a fundamental task in web automation and testing, allowi
 >```
 >>
 </details>
-<br>
 
 <details><summary><b>findClickableElement</b></summary>
 <br>
 
->**`findClickableElement`** method is used to track (or) find DOM element which is clickable
+>**`findClickableElement`** function is used to track (or) find DOM element which is clickable
 >
 >[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L338)
 >
@@ -253,11 +249,10 @@ Finding web elements is a fundamental task in web automation and testing, allowi
 >```
 >>
 </details>
-<br>
 <details><summary><b>findClickableElements</b></summary>
 <br>
 
->**`findClickableElements`** method is used to track (or) find DOM elements which are clickable
+>**`findClickableElements`** function is used to track (or) find DOM elements which are clickable
 >
 >[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L356)
 >
@@ -293,7 +288,7 @@ Each of these actions requires first [locating](#locators) the web element you w
 <details><summary><b>fill</b></summary>
 <br>
 
->**`fill`** method is designed to locate a web element on the page and input a specified text value into it. This method is particularly useful for automating interactions with text fields, such as username or password inputs, search boxes, or any editable text areas within a web application.
+>**`fill`** function is designed to locate a web element on the page and input a specified text value into it. This function is particularly useful for automating interactions with text fields, such as username or password inputs, search boxes, or any editable text areas within a web application.
 >
 >[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L199)
 >
@@ -312,11 +307,11 @@ Each of these actions requires first [locating](#locators) the web element you w
 >                '0xc427D562164062a23a5cFf596A4a3208e72Acd28');
 >```
 >>
-</details><br>
+</details>
 <details><summary><b>clickElementSafe</b></summary>
 <br>
 
->**`clickElementSafe`** method is an asynchronous function designed to click on a web element. It is particularly useful in instances where an element requires scrolling, but the scroll button does not appear due to rendering differences. In such cases, the method proceeds to the next step without causing a test failure and logs the action in the console.
+>**`clickElementSafe`** function is an asynchronous function designed to click on a web element. It is particularly useful in instances where an element requires scrolling, but the scroll button does not appear due to rendering differences. In such cases, the function proceeds to the next step without causing a test failure and logs the action in the console.
 >
 >[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L382)
 >
@@ -333,11 +328,11 @@ Each of these actions requires first [locating](#locators) the web element you w
 >await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 >```
 >>
-</details><br>
+</details>
 <details><summary><b>clickElement</b></summary>
 <br>
 
->**`clickElement`** method is an asynchronous function that aims to simulate a click action on a specified web element within a web page. This method is commonly used to interact with clickable elements such as buttons, links, checkboxes, or any other elements that respond to click events.
+>**`clickElement`** function is an asynchronous function that aims to simulate a click action on a specified web element within a web page. This function is commonly used to interact with clickable elements such as buttons, links, checkboxes, or any other elements that respond to click events.
 >
 >[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L370)
 >
@@ -345,7 +340,7 @@ Each of these actions requires first [locating](#locators) the web element you w
 >@param {string | object} rawLocator - Element locator
 >
 >**Return**<br>
->@returns {Promise} A promise that will be fulfilled when the click command has completed.
+>@returns {Promise<WebElement>} - promise that resolves to the WebElement
 >
 >**Example**
 >
@@ -354,17 +349,17 @@ Each of these actions requires first [locating](#locators) the web element you w
 >await driver.clickElement(nextPageButton);
 >```
 >>
-</details><br>
+</details>
 <details><summary><b>press</b></summary>
 <br>
 
->**`press`** method enables the simulation of keyboard actions on a specified web element. This can include typing characters into a text field, activating keyboard shortcuts, or any other keyboard-related interactions within a web page.
+>**`press`** function enables the simulation of keyboard actions on a specified web element. This can include typing characters into a text field, activating keyboard shortcuts, or any other keyboard-related interactions within a web page.
 >
 >[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L205)
 >
 >**Arguments**<br>
 >@param {string | object} rawLocator - Element locator
->@param {string} keys - The key to press.
+>@param {string} keys - The key to press
 >
 >**Return**<br>
 > @returns {Promise<WebElement>} promise resolving to the filled element
@@ -388,11 +383,11 @@ Each of these actions requires first [locating](#locators) the web element you w
 >    };
 >```
 >>
-</details><br>
+</details>
 <details><summary><b>getText</b></summary>
 <br>
 
->**`getText`** method in Selenium is used to retrieve the visible text of a web element.
+>**`getText`** function in Selenium is used to retrieve the visible text of a web element.
 >
 >**Arguments**<br>
 >@param {string | object} rawLocator - Element locator
@@ -433,17 +428,17 @@ This organization helps provide a clear structure for understanding the various 
 <details><summary><b>wait</b></summary>
 <br>
 
->**`wait`** method is an asynchronous function to wait for a specific condition to be met within a given timeout period, with an option to catch and handle any errors that occur during the wait.
+>**`wait`** function is an asynchronous function to wait for a specific condition to be met within a given timeout period, with an option to catch and handle any errors that occur during the wait.
 >
 >[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L215)
 >
 >**Arguments**<br>
->@param {Function} condition - Function or a condition that the method waits to be fulfilled or to return true.<br>
+>@param {Function} condition - condition or function the method awaits to become true.<br>
 >@param {number} timeout - Optional parameter specifies the maximum milliseconds to wait.<br>
->@param catchError - Optional parameter that determines whether errors during the wait should be caught and handled within the method
+>@param catchError - Optional parameter that determines whether errors during the wait should be caught and handled within the function
 >
 >**Returns**<br>
->@returns {Promise} A promise that will be fulfilled after the specified number of milliseconds.<br>
+>@returns {Promise} - promise resolving with a delay.<br>
 >@throws {Error} Will throw an error if the condition is not met within the timeout period.
 >
 >**Example wait until a condition occurs**
@@ -476,11 +471,11 @@ This organization helps provide a clear structure for understanding the various 
 >     }, 3000);
 >```
 >>
-</details><br>
+</details>
 <details><summary><b>waitForSelector</b></summary>
 <br>
 
->**`waitForSelector`** method allows for flexible handling of element visibility and detachment from the DOM, making it useful for ensuring that web interactions occur only when the page is in the desired state. This method can be used in scenarios where you need to wait for an element to appear or disappear before performing further actions, such as:
+>**`waitForSelector`** function allows for flexible handling of element visibility and detachment from the DOM, making it useful for ensuring that web interactions occur only when the page is in the desired state. This function can be used in scenarios where you need to wait for an element to appear or disappear before performing further actions, such as:
 >
 >- Ensuring a modal dialog is visible before attempting to close it.
 >- Verifying that an item has been removed from the page after a delete action.
@@ -491,11 +486,11 @@ This organization helps provide a clear structure for understanding the various 
 >
 >@param {string | object} rawLocator - Element locator<br>
 >@param {number} timeout - optional parameter that specifies the maximum amount of time (in milliseconds) to wait for the condition to be met and desired state of the element to wait for.<br>
->It defaults to 'visible', indicating that the method will wait until the element is visible on the page.<br>
+>It defaults to 'visible', indicating that the function will wait until the element is visible on the page.<br>
 >The other supported state is 'detached', which means waiting until the element is removed from the DOM.
 >
 >**Returns**<br>
->@returns {Promise} A promise that will be fulfilled when the element reaches the specified state or the timeout expires.<br>
+>@returns {Promise} promise resolving when the element meets the state or timeout occurs.<br>
 >@throws {Error} Will throw an error if the element does not reach the specified state within the timeout period.
 >
 >**Example** wait for element to load
@@ -504,11 +499,11 @@ This organization helps provide a clear structure for understanding the various 
 >await driver.waitForSelector('.import-srp__actions');
 >```
 >>
-</details><br>
+</details>
 <details><summary><b>waitForNonEmptyElement</b></summary>
 <br>
 
->**`waitForNonEmptyElement`** method is an asynchronous function designed to wait until a specified web element contains some text, i.e., it's not empty. This can be particularly useful in scenarios where the content of an element is dynamically loaded or updated, and you need to ensure the element has content before proceeding with further actions. This method is useful when you need to wait for a message, label, or any piece of information to appear in a UI element before performing further actions, such as:
+>**`waitForNonEmptyElement`** function is an asynchronous function designed to wait until a specified web element contains some text, i.e., it's not empty. This can be particularly useful in scenarios where the content of an element is dynamically loaded or updated, and you need to ensure the element has content before proceeding with further actions. This function is useful when you need to wait for a message, label, or any piece of information to appear in a UI element before performing further actions, such as:
 >
 >- Waiting for a success message after submitting a form.
 >- Ensuring that a dynamically loaded piece of text, like a user's name or a search result, is displayed before proceeding.
@@ -519,7 +514,7 @@ This organization helps provide a clear structure for understanding the various 
 >@param {string | object} element - Element locator
 >
 >**Returns**<br>
->@returns {Promise} A promise that will be fulfilled when the element becomes non-empty or the timeout expires.<br>
+>@returns {Promise} promise resolving once the element fills or timeout hits.<br>
 >@throws {Error} Will throw an error if the element does not become non-empty within the timeout period.
 >
 >**Example**
@@ -531,11 +526,11 @@ This organization helps provide a clear structure for understanding the various 
 >await driver.waitForNonEmptyElement(revealedSeedPhrase)
 >```
 >>
-</details><br>
+</details>
 <details><summary><b>waitForElementState</b></summary>
 <br>
 
->**`waitForElementState`** method waits for a specific state of an element.
+>**`waitForElementState`** function waits for a specific state of an element.
 >
 >[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L54)
 >
@@ -557,19 +552,43 @@ This organization helps provide a clear structure for understanding the various 
 >await networkSelectionModal.waitForElementState('hidden');
 >```
 >>
-</details><br>
+</details>
 
-## assertElementNotPresent
+<details><summary><b>waitUntilXWindowHandles</b></summary>
+<br>
+<a id="waitX"></a>
 
-## **** NOTE - No Delay ****
+>**`waitUntilXWindowHandles`** function waits until the specified number of window handles are present.
+>
+>[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L532)
+>
+>**Arguments**<br>
+>@param {number} x - The number of window handles to wait for<br>
+>@param {number} [timeout=5000] - The amount of time in milliseconds to wait before timing out<br>
+>
+>**Returns**<br>
+>@returns {Promise<void>} promise resolving when the target window handle count is met<br>
+>@throws {Error} - throws an error if the target number of window handles isn't met by the timeout
+>
+>**Example**
+>
+>```jsx
+>windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
+>```
+</details>
 
-**`delay`** method is hard-coded wait may be longer than needed, resulting in slower test execution. Please avoid using this method.
+#### [assertElementNotPresent](#here)
+
+### **** NOTE - Delay ****
+
+**`delay`** function is hard-coded wait may be longer than needed, resulting in slower test execution. Please avoid using this function.
 
 ## Actions
 
 These interactions include keyboard and mouse actions.
 
 ### Keyboard
+
 ---
 
 Selenium can simulate keyboard shortcuts by sending combinations of keys.
@@ -617,6 +636,7 @@ await approveInput.clear();
 </details>
 
 ### Mouse
+
 ---
 
 A representation of any pointer device for interacting with a web page.
@@ -653,10 +673,10 @@ A representation of any pointer device for interacting with a web page.
 >[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L434)
 >
 >**Arguments**<br>
->@param {string | object} element - The web element to scroll to.
+>@param {string | object} element - Element locator
 >
 >**Returns**<br>
->@returns {Promise} A promise that will be fulfilled when the scroll has completed.
+>@returns {Promise} - promise resolving after scrolling
 >
 >**Example**
 >
@@ -679,10 +699,10 @@ A representation of any pointer device for interacting with a web page.
 >
 >**Arguments**<br>
 >@param {string | object} rawLocator - Element locator<br>
->@param {int} ms - duration (in milliseconds) for which the mouse button should be held down on the element.
+>@param {int} ms - The number of milliseconds to hold the mouse button down
 >
 >**Returns**<br>
->@returns {Promise} A promise that will be fulfilled when the mouse down command has completed.
+>@returns {Promise} - promise resolving after mouse down completed
 >
 >**Example**
 >
@@ -707,10 +727,503 @@ A representation of any pointer device for interacting with a web page.
 >
 >**Arguments**<br>
 >@param {string | object} rawLocator - Element locator<br>
->@param {number} x - The x coordinate to click at.<br>
->@param {number} y - The y coordinate to click at.<br>
+>@param {number} x - x coordinate to click at<br>
+>@param {number} y - y coordinate to click at<br>
 >
 >**Returns**<br>
->@returns {Promise} A promise that will be fulfilled when the click command has completed.
+>@returns {Promise} - promise resolving after a click
 >>
+</details>
+
+## Navigation
+
+Navigation refers to the process of moving through web pages within a browser session. This involves tasks such as:
+
+- **Going to a URL**: This is the starting point of navigation, where you direct the browser to load a specific web page by providing its URL.
+- **Refreshing the Page**: Refreshes the current page to update content or re-execute certain actions.
+- **Handling Redirects**: Web pages might redirect to different URLs automatically. Automation scripts needs to handle these redirects gracefully, ensuring they can continue to interact with the correct page elements after the redirect.
+
+<details><summary><b>navigate</b></summary>
+<br>
+
+>**`navigate`** function is an asynchronous function designed for navigating to different pages within a web application.
+>
+>[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L481)
+>
+>**Arguments**<br>
+> @param {string} [page] - its optional parameter to specify the page you want to navigate. Defaults to home if no other page is specified.
+>
+>**Returns**<br>
+> @returns {Promise} promise resolves when the page has finished loading<br>
+> @throws {Error} Will throw an error if the navigation fails or the page does not load within the timeout period.
+>
+>**Example - navigate to the home page by default without passing parameter.**
+>
+>```jsx
+>await driver.navigate();
+>```
+>
+>**Example - navigate to the home page**
+>
+>```jsx
+>await driver.navigate(PAGES.HOME);
+>```
+>
+>**Example - navigate to the background page**
+>
+>```jsx
+>await driver.navigate(PAGES.BACKGROUND);
+>```
+>>
+</details>
+
+<details><summary><b>getCurrentUrl</b></summary>
+<br>
+
+>**`getCurrentUrl`** function to retrieve the current URL of the browser session.
+>
+>[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L491)
+>
+>**Returns**<br>
+>@returns {Promise<string>} promise resolves upon retrieving the text.
+>
+>**Example**
+>
+>```jsx
+>const currentUrl = await driver.getCurrentUrl();
+>```
+>>
+</details>
+
+<details><summary><b>refresh</b></summary>
+<br>
+
+>**`refresh`** function to refresh the current page in the browser.
+>
+>[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L512)
+>
+>**Returns**
+>
+>@returns {Promise} promise resolves page is loaded
+>
+>**Example**
+>
+>```jsx
+>await driver.refresh();
+>```
+>>
+</details>
+
+## Window and Tabs
+
+Web browsers can have multiple windows or tabs open at the same time. In web automation:
+
+- **Switching Between Windows/Tabs**: Automation scripts often need to switch the context from one window or tab to another. This is done by obtaining a handle or identifier for each window/tab and then instructing the automation tool to switch contexts.
+- **Opening and Closing Windows/Tabs**: Scripts can open new windows or tabs and close them as needed, just like a user might do manually.
+
+<details><summary><b>openNewPage</b></summary>
+<br>
+
+>**`openNewPage`** function to open a new browser tab or window and navigate to a specified URL.
+>
+>[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L506)
+>
+>**Arguments**<br>
+>@param {string} url - The URL to navigate to in the new window tab.
+>
+>**Returns**<br>
+>@returns {newHandle} The handle of the new window tab. This handle can be used later to switch between different tab windows during the test.
+>
+>**Example**
+>
+>```jsx
+>await driver.openNewPage('http://127.0.0.1:8080');
+>```
+</details>
+
+<details><summary><b>openNewURL</b></summary>
+<br>
+
+>**`openNewURL`** function to open a new URL in the browser window controlled by the driver.
+>
+>[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L506)
+>
+>**Arguments**<br>
+>@param {string} url - Any URL
+>
+>**Returns**<br>
+>@returns {Promise} promise resolves when the URL page has finished loading
+>
+>**Example**
+>
+>```jsx
+>await driver.openNewURL('http://127.0.0.1:8080');
+>```
+</details>
+
+<details><summary><b>switchToNewWindow</b></summary>
+<br>
+
+>**`switchToNewWindow`** function to open a new browser window and switch the WebDriver's context to this new window.
+>
+>[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L520)
+>
+>**Returns**<br>
+>@returns {Promise} A promise resolves after switching to the new window.
+>
+>**Example**
+>
+>```jsx
+>await driver.switchToNewWindow();
+>```
+</details>
+
+### Get window handle
+
+<details><summary><b>getAllWindowHandles</b></summary>
+<br>
+
+>**`getAllWindowHandles`** function retrieves all window handles that are currently open in the WebDriver session.
+>
+>[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L528)
+>
+>**Returns**<br>
+>@returns {int} - number of windows<br>
+>@return {Promise<Array<string>>} A promise that will be resolved with an array of window handles.
+>
+>**Example**
+>
+>```jsx
+>const windowHandles = await driver.getAllWindowHandles();
+>```
+</details>
+
+<details><summary><b>getWindowTitleByHandlerId</b></summary>
+<br>
+
+>**`getWindowTitleByHandlerId`** function changes to a specific window tab using its ID and gets its title.
+>
+>[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L547)
+>
+>**Arguments**<br>
+>@param {int} handlerId - unique ID for the tab whose title is needed
+>
+>**Returns**<br>
+>@returns {Promise<string>} promise resolving to the window tab title after command completion
+>
+>**Example**
+>
+>```jsx
+>const fullScreenWindowTitle = await driver.getWindowTitleByHandlerId(
+>          windowHandles[0],
+>        );
+>```
+</details>
+
+### Switching windows or tabs
+
+<details><summary><b>switchToWindow</b></summary>
+<br>
+
+>**`switchToWindow`** function designed to switch the context of the browser session to the window or tab with the given handle.
+>
+>[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L516)
+>
+>**Arguments**<br>
+>@param {int} handle - unique ID for the tab to which you want to switch.
+>
+>**Returns**<br>
+>@returns {Promise<void>} promise that resolves once the switch is complete
+>
+>**Example**
+>
+>```jsx
+>await driver.switchToWindow(windowHandles[0]);
+>```
+</details>
+
+<details><summary><b>switchToWindowWithUrl</b></summary>
+<br>
+
+>**`switchToWindowWithUrl`** function is intended switches the context of the browser session to the window tab with the given URL.
+>
+>[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L589)
+>
+>**Arguments**<br>
+>@param {string} url - The URL of the window tab to switch<br>
+>@param {string} [initialWindowHandles] - optional array of window handles to search through<br>
+>If not provided, the function fetches all current window handles.<br>
+>@param {int} delayStep - optional defaults to 1000 milliseconds<br>
+>@param {int} timeout - optional set to the defaults to 1000 milliseconds in the file<br>
+>@param {int} retries - optional for retrying the URL fetch operation, defaults to starting at 8 ms<br>
+>@param {int} retryDelay - optional for retrying the URL fetch operation, with defaults max 2500 ms<br>
+>
+>**Returns**<br>
+>@returns {Promise<void>} - promise that resolves once the switch is complete<br>
+>@throws {Error} - throws an error if no window with the specified url is found
+>
+>**Example**
+>
+>```jsx
+>const DAPP_URL = 'http://127.0.0.1:8080';
+>await driver.switchToWindowWithUrl(DAPP_URL);
+>```
+</details>
+
+<details><summary><b>switchToWindowWithTitle</b></summary>
+<br>
+
+>**`switchToWindowWithTitle`** function is intended for use in web automation testing and aims to switch the testing framework's context to a window or tab that matches a specific title. This functionality is especially valuable in complex testing scenarios involving multiple windows or tabs, allowing for interaction with a particular window or tab based on its title.
+>
+>[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L552)
+>
+>**Arguments**<br>
+>@param {string} title - The title of the window tab to switch<br>
+>@param {string} [initialWindowHandles] - optional array of window handles to search through<br>
+>If not provided, the function fetches all current window handles<br>
+>@param {int} delayStep - optional defaults to 1000 milliseconds<br>
+>@param {int} timeout - optional set to the defaults to 1000 milliseconds in the file<br>
+>@param {int} retries - optional for retrying the title fetch operation, defaults to starting at 8 ms<br>
+>@param {int} retryDelay - optional for retrying the title fetch operation, with defaults max 2500 ms<br>
+>
+>**Returns**<br>
+>@returns {Promise<void>} promise that resolves once the switch is complete<br>
+>@throws {Error} throws an error if no window with the specified title is found.
+>
+>**Example**
+>
+>```jsx
+>windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
+>await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+>```
+</details>
+
+###  [Waits for window handles](#waitX)
+
+### Closing windows or tabs
+
+
+<details><summary><b>closeWindow</b></summary>
+<br>
+
+>**`closeWindow`** function loses the current window tab in the browser session. This is particularly useful for cleaning up after a test or when switching between different window tabs.
+>
+>[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L626)
+>
+>**Returns**<br>
+>@returns {Promise<void>} promise resolving after closing the current window
+>
+>**Example**
+>
+>```jsx
+>await driver.closeWindow();
+>```
+</details>
+
+<details><summary><b>closeWindowHandle</b></summary>
+<br>
+
+>**`closeWindowHandle`** function closes a specific browser window or tab identified by its window handle.
+>
+>[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L630)
+>
+>**Arguments**<br>
+>@param {string} windowHandle - representing the unique identifier of the browser window to be closed.
+>
+>**Returns**<br>
+>@returns {Promise<void>} - promise resolving after closing the specified window
+>
+>**Example**
+>
+>```jsx
+>const serviceWorkerTab = await switchToWindow(
+>    driver,
+>    WINDOW_TITLES.ServiceWorkerSettings,
+>  );
+>await driver.closeWindowHandle(serviceWorkerTab);
+>```
+</details>
+
+<details><summary><b>closeAllWindowHandlesExcept</b></summary>
+<br>
+
+>**`closeAllWindowHandlesExcept`** function close all browser windows or tabs except for those specified in a list of exceptions.
+>
+>[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L647)
+>
+>**Arguments**<br>
+>@param {Array<string>} exceptions - list of window handle exceptions<br>
+>@param {Array} [windowHandles] - full list of window handles
+>
+>**Returns**<br>
+>@returns {Promise<void>}- promise resolving after closing the specified window
+</details>
+
+<details><summary><b>quit</b></summary>
+<br>
+
+>**`quit`** function quits driver and closing every associated window.
+>
+>[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L313)
+>
+>**Returns**<br>
+>@returns {Promise<void>} - promise resolving after quitting
+>
+>**Example**
+>
+>```jsx
+>await driver.quit();
+>```
+</details>
+
+### Alerts
+
+Alerts are pop-up messages that appear
+
+- **Handling Alerts**: Scripts must be able to detect when an alert has appeared, read its message, and interact with it by accepting, dismissing, or providing input (in the case of prompt alerts).
+
+<details><summary><b>closeAlertPopup</b></summary>
+<br>
+
+>**`closeAlertPopup` is method to handle and close alert popups in a web browser.**
+>
+>[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L636)
+>
+>**Returns**<br>
+>@returns {Promise} promise resolving when the alert is closed
+>
+>**Example**
+>
+>```jsx
+>await driver.closeAlertPopup();
+>```
+</details>
+
+### Frames and iFrames
+
+Web pages can be segmented into frames or IFrames, which are essentially documents within documents. Handling frames involves:
+
+- **Switching to a Frame**: To interact with elements inside a frame, the automation script must first switch its context to that frame.
+- **Default Content**: After interacting with a frame, the script often needs to switch back to the main page or another frame, commonly referred to as switching back to the default content.
+
+<details><summary><b>switchToFrame</b></summary>
+<br>
+
+>**`switchToFrame`** is function to switch the WebDriver's context to a specified iframe or frame within a web page.
+>
+>[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L524)
+>
+>**Arguments**<br>
+>@param {string | object} rawLocator - Element locator
+>
+>**Returns**<br>
+>@returns {Promise<void>} promise that resolves once the switch is complete
+>
+>**Example**
+>
+>```jsx
+>const iframe = await driver.findElement('iframe');
+>await driver.switchToFrame(iframe);
+>```
+</details>
+
+## Assertions
+
+Assertion is a statement that checks if a specified condition is true. If the condition is true, the program continues to execute. If the condition is false, throws an error or fails.
+
+# When do we need Assertions?
+
+They are used to verify that the application under test behaves as expected under various conditions. Common assertions include:
+
+- Checking if a variable has the expected value.
+- Verifying that an object is not null.
+- Ensuring that a web element is visible, contains specific text, or is enabled/disabled.
+- Verify that a certain condition holds at a specific point in the program or test case.
+
+# key points to remember
+
+- When writing assertions, provide clear and informative error messages. This helps in quickly understanding what went wrong when an assertion fails.
+- While assertions are powerful, overusing them can clutter the code and make tests harder to maintain. Use them to check critical conditions.
+- Race condition: Sometimes, we might check something too quickly before everything is set up properly. This can lead to getting the wrong information, which might not match what we finally see or use.
+
+<details><summary><b>isElementPresent</b></summary>
+<br>
+
+>**`isElementPresent`** function to check if a specific web element, exists on the web page.
+>
+>[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L441)
+>
+>**Arguments**<br>
+>@param {string | object} rawLocator -  Element locator
+>
+>**Returns**<br>
+>@returns {Promise<boolean>} - promise that resolves to a boolean indicating whether the element is present.
+>
+>**Example**
+>
+>```jsx
+>const tooltipText = '[data-original-title="Copiar al Portapapeles"]',
+>const isHeaderTooltipPresent = await driver.isElementPresent(
+>          tooltipText,);
+>assert.equal(
+>          isHeaderTooltipPresent,
+>          true,
+>          'Language changes is not reflected on the toolTip',
+>        );
+>```
+</details>
+
+<details><summary><b>isElementPresentAndVisible</b></summary>
+<br>
+
+>**`isElementPresentAndVisible`** function to check not only if a specific web element, exists on the web page but also if it is visible to the user.
+>
+>[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L450)
+>
+>**Arguments**<br>
+>@param {string | object} rawLocator -  Element locator
+>
+>**Returns**<br>
+>@returns {Promise<Boolean>} - promise that resolves to a boolean indicating whether the element is present and visible.
+>
+>**Example**
+>
+>```jsx
+>const nftImageIsStillDisplayed =
+>          await driver.isElementPresentAndVisible('.nft-item__container');
+>assert.equal(
+>          nftIsStillDisplayed,
+>          true,
+>          'Nft is no longer displayed after adding an account and switching back to account 1',
+>        );
+>```
+</details>
+
+<details><summary><b>assertElementNotPresent</b></summary>
+<br>
+<a id="here"></a>
+
+>**`assertElementNotPresent`** function wait until an element is absent. This function MUST have a guard to prevent a race condition. For example, when the previous step is to click a button that loads a new page, then of course during page load, the rawLocator element will be absent, even though it will appear a half-second later. The first choice for the guard is to use the findElementGuard, which executes before the search for the rawLocator element. The second choice for the guard is to use the waitAtLeastGuard parameter.
+>
+>[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L280)
+>
+>**Arguments**<br>
+>@param {string | object} rawLocator -  Element locator
+>@param {object} guards
+>@param {string | object} [guards.findElementGuard] - A rawLocator to perform a findElement and act as a guard
+>@param {number} [guards.waitAtLeastGuard] - The minimum milliseconds to wait before passing
+>@param {number} [guards.timeout] - The maximum milliseconds to wait before failing
+>
+>**Example**
+>
+>```jsx
+>await driver.assertElementNotPresent('.loading-overlay');
+>```
+>
+>```jsx
+>const pinnedIconSelector = '.account-pinned-icon';
+>await driver.assertElementNotPresent(pinnedIconSelector, {
+>          waitAtLeastGuard: 200, // A waitAtLeastGuard of 200ms is the best choice here
+>        });
+>```
 </details>

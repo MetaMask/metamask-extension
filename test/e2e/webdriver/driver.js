@@ -230,7 +230,7 @@ class Driver {
    * This method is particularly useful for automating interactions with text fields,
    * such as username or password inputs, search boxes, or any editable text areas.
    *
-   * @param {string | object} rawLocator - element locator to fill.
+   * @param {string | object} rawLocator - element locator
    * @param {string} input - The value to fill the element with.
    * @returns {Promise<WebElement>} Promise resolving to the filled element
    * @example <caption>Example to fill address in the send transaction screen</caption>
@@ -249,7 +249,7 @@ class Driver {
    * This can include typing characters into a text field,
    * activating keyboard shortcuts, or any other keyboard-related interactions
    *
-   * @param {string | object} rawLocator - element locator to press the key on.
+   * @param {string | object} rawLocator - element locator
    * @param {string} keys - The key to press.
    * @returns {Promise<WebElement>} promise resolving to the filled element
    */
@@ -267,10 +267,10 @@ class Driver {
    * Function to wait for a specific condition to be met within a given timeout period,
    * with an option to catch and handle any errors that occur during the wait.
    *
-   * @param {Function} condition - Function or a condition that the method waits to be fulfilled or to return true.
+   * @param {Function} condition - condition or function the method awaits to become true
    * @param {number} timeout - Optional parameter specifies the maximum milliseconds to wait.
    * @param catchError - Optional parameter that determines whether errors during the wait should be caught and handled within the method
-   * @returns {Promise} A promise that will be fulfilled after the specified number of milliseconds.
+   * @returns {Promise} - promise resolving with a delay
    * @throws {Error} Will throw an error if the condition is not met within the timeout period.
    * @example <caption>Example wait until a condition occurs</caption>
    *            await driver.wait(async () => {
@@ -310,7 +310,7 @@ class Driver {
    * to wait for the condition to be met and desired state of the element to wait for.
    * It defaults to 'visible', indicating that the method will wait until the element is visible on the page.
    * The other supported state is 'detached', which means waiting until the element is removed from the DOM.
-   * @returns {Promise} A promise that will be fulfilled when the element reaches the specified state or the timeout expires.
+   * @returns {Promise<WebElement>} promise resolving when the element meets the state or timeout occurs.
    * @throws {Error} Will throw an error if the element does not reach the specified state within the timeout period.
    */
   async waitForSelector(
@@ -344,8 +344,8 @@ class Driver {
    * This is particularly useful for waiting for elements that are dynamically populated with content.
    *
    * @param {string | object} element - Element locator
-   * @returns {Promise} A promise that will be fulfilled when the element becomes non-empty or the timeout expires.
-   * @throws {Error} Will throw an error if the element does not become non-empty within the timeout period.
+   * @returns {Promise} - promise resolving once the element fills or timeout hits
+   * @throws {Error} - throws an error if the element does not become non-empty within the timeout period.
    */
   async waitForNonEmptyElement(element) {
     await this.driver.wait(async () => {
@@ -410,7 +410,7 @@ class Driver {
   /**
    * Quits the browser session, closing all windows and tabs.
    *
-   * @returns {Promise} A promise that will be fulfilled when the quit command has completed.
+   * @returns {Promise} promise resolving after quitting
    */
   async quit() {
     await this.driver.quit();
@@ -499,7 +499,7 @@ class Driver {
    * Function that aims to simulate a click action on a specified web element within a web page
    *
    * @param {string | object} rawLocator - Element locator
-   * @returns {Promise} A promise that will be fulfilled when the click command has completed.
+   * @returns {Promise} promise that resolves to the WebElement
    */
   async clickElement(rawLocator) {
     const element = await this.findClickableElement(rawLocator);
@@ -548,9 +548,9 @@ class Driver {
    * Simulates a click at the given x and y coordinates.
    *
    * @param rawLocator - Element locator
-   * @param {number} x - The x coordinate to click at.
-   * @param {number} y - The y coordinate to click at.
-   * @returns {Promise} A promise that will be fulfilled when the click command has completed.
+   * @param {number} x - x coordinate to click at
+   * @param {number} y - y coordinate to click at
+   * @returns {Promise<void>} - promise resolving after a click
    */
   async clickPoint(rawLocator, x, y) {
     const element = await this.findElement(rawLocator);
@@ -565,8 +565,8 @@ class Driver {
    * Simulates holding the mouse button down on the given web element.
    *
    * @param {string | object} rawLocator - Element locator
-   * @param {number} ms - The number of milliseconds to hold the mouse button down.
-   * @returns {Promise} A promise that will be fulfilled when the mouse down command has completed.
+   * @param {number} ms - The number of milliseconds to hold the mouse button down
+   * @returns {Promise<void>} - promise resolving after mouse down completed
    */
   async holdMouseDownOnElement(rawLocator, ms) {
     const locator = this.buildLocator(rawLocator);
@@ -583,8 +583,8 @@ class Driver {
   /**
    * Scrolls the page until the given web element is in view.
    *
-   * @param {string | object} element - The web element to scroll to.
-   * @returns {Promise} A promise that will be fulfilled when the scroll command has completed.
+   * @param {string | object} element - Element locator
+   * @returns {Promise<void>} - promise resolving after scrolling
    */
   async scrollToElement(element) {
     await this.driver.executeScript(
@@ -597,7 +597,7 @@ class Driver {
    * Checks if an element that matches the given locator is present on the page.
    *
    * @param {string | object} rawLocator - Element locator
-   * @returns {Promise<boolean>} A promise that will be fulfilled with a boolean indicating whether the element is present.
+   * @returns {Promise<boolean>} - promise that resolves to a boolean indicating whether the element is present.
    */
   async isElementPresent(rawLocator) {
     try {
@@ -612,7 +612,7 @@ class Driver {
    * Checks if an element that matches the given locator is present and visible on the page.
    *
    * @param {string | object} rawLocator - Element locator
-   * @returns {Promise<boolean>} A promise that will be fulfilled with a boolean indicating whether the element is present and visible.
+   * @returns {Promise<boolean>} - promise that resolves to a boolean indicating whether the element is present and visible.
    */
   async isElementPresentAndVisible(rawLocator) {
     try {
@@ -651,7 +651,7 @@ class Driver {
    *
    * @param {string} [page] - its optional parameter to specify the page you want to navigate.
    * Defaults to home if no other page is specified.
-   * @returns {Promise} A promise that will be fulfilled when the navigation command has completed and the page has loaded.
+   * @returns {Promise} promise resolves when the page has finished loading
    * @throws {Error} Will throw an error if the navigation fails or the page does not load within the timeout period.
    */
   async navigate(page = PAGES.HOME) {
@@ -667,7 +667,7 @@ class Driver {
   /**
    * Retrieves the current URL of the browser session.
    *
-   * @returns {Promise<string>} A promise that will be fulfilled with the current URL when the command has completed.
+   * @returns {Promise<string>} promise resolves upon retrieving the URL text.
    */
   async getCurrentUrl() {
     return await this.driver.getCurrentUrl();
@@ -685,6 +685,7 @@ class Driver {
    * Opens a new URL in the browser window controlled by the driver
    *
    * @param {string} url - Any URL
+   * @returns {Promise<void>} promise resolves when the URL page has finished loading
    */
   async openNewURL(url) {
     await this.driver.get(url);
@@ -693,9 +694,9 @@ class Driver {
   /**
    * Opens a new window or tab in the browser session and navigates to the given URL.
    *
-   * @param {string} url - The URL to navigate to in the new window or tab.
-   * @returns {newHandle} The handle of the new window or tab. This handle can be used later to switch between different windows/tabs during the test.
-   * @returns {Promise<string>} A promise that will be fulfilled with the handle of the new window or tab when the command has completed.
+   * @param {string} url - The URL to navigate to in the new window tab.
+   * @returns {newHandle} The handle of the new window or tab.
+   * This handle can be used later to switch between different tabs in window during the test.
    */
   async openNewPage(url) {
     const newHandle = await this.driver.switchTo().newWindow();
@@ -706,7 +707,7 @@ class Driver {
   /**
    * Refreshes the current page in the browser session.
    *
-   * @returns {Promise} A promise that will be fulfilled when the refresh command has completed and the page has reloaded.
+   * @returns {Promise<void>} promise resolves page is loaded
    */
   async refresh() {
     await this.driver.navigate().refresh();
@@ -716,7 +717,7 @@ class Driver {
    * Switches the context of the browser session to the window or tab with the given handle.
    *
    * @param {int} handle - unique identifier (window handle) of the browser window or tab to which you want to switch.
-   * @returns {Promise} A promise that will be fulfilled when the switch command has completed.
+   * @returns {Promise<void>} promise that resolves once the switch is complete
    */
   async switchToWindow(handle) {
     await this.driver.switchTo().window(handle);
@@ -725,8 +726,7 @@ class Driver {
   /**
    * Opens a new browser window and switch the WebDriver's context to this new window.
    *
-   * @returns {Promise} A promise that will be fulfilled when the command has completed
-   * and the WebDriver's context has switched to the new window.
+   * @returns {Promise<void>} A promise resolves after switching to the new window.
    */
   async switchToNewWindow() {
     await this.driver.switchTo().newWindow('window');
@@ -736,31 +736,31 @@ class Driver {
    * Switches the WebDriver's context to a specified iframe or frame within a web page.
    *
    * @param {string} element - The iframe or frame element to switch to.
-   * @returns {Promise} A promise that will be fulfilled when the switch command has completed.
+   * @returns {Promise<void>} promise that resolves once the switch is complete
    */
   async switchToFrame(element) {
     await this.driver.switchTo().frame(element);
   }
 
   /**
-   * Retrieves the handles of all open windows or tabs in the browser session.
+   * Retrieves the handles of all open window tabs in the browser session.
    *
-   * @returns {int} number of windows or tabs open in the browser session.
-   * @returns {Promise<Array<string>>} A promise that will be fulfilled with an array
-   * of window handles when the command has completed.
+   * @returns {int} number of window tabs open in the browser session.
+   * @return {Promise<Array<string>>} A promise that will
+   *     be resolved with an array of window handles.
    */
   async getAllWindowHandles() {
     return await this.driver.getAllWindowHandles();
   }
 
   /**
-   * Waits until the specified number of windows or tabs are open in the browser session.
+   * Waits until the specified number of window handles are present.
    *
-   * @param {number} x - The number of windows or tabs to wait for.
-   * @param delayStep
+   * @param {number} x - The number of window handles to wait for
+   * @param delayStep - defaults to 1000 milliseconds
    * @param {number} [timeout] - The amount of time in milliseconds to wait before timing out.
-   * @returns {Promise} A promise that will be fulfilled when the specified number of windows or tabs are open.
-   * @throws {Error} Will throw an error if the specified number of windows or tabs are not open within the timeout period.
+   * @returns {Promise} promise resolving when the target window handle count is met
+   * @throws {Error} throws an error if the target number of window handles isn't met by the timeout.
    */
   async waitUntilXWindowHandles(x, delayStep = 1000, timeout = this.timeout) {
     let timeElapsed = 0;
@@ -778,11 +778,10 @@ class Driver {
   }
 
   /**
-   * Retrieves the title of the window or tab with the given handle ID.
+   * Retrieves the title of the window tab with the given handle ID.
    *
-   * @param {int} handlerId - representing the unique identifier (handler) of the browser window or tab
-   *  whose title you want to retrieve.
-   * @returns {Promise<string>} A promise that will be fulfilled with the title of the window or tab when the command has completed.
+   * @param {int} handlerId - unique ID for the tab whose title is needed.
+   * @returns {Promise<string>} promise resolving to the tab title after command completion
    */
   async getWindowTitleByHandlerId(handlerId) {
     await this.driver.switchTo().window(handlerId);
@@ -790,18 +789,19 @@ class Driver {
   }
 
   /**
-   * Switches the context of the browser session to the window or tab with the given title.
-   * This functionality is especially valuable in complex testing scenarios involving multiple windows or tabs,
+   * Switches the context of the browser session to the window tab with the given title.
+   * This functionality is especially valuable in complex testing scenarios involving multiple window tabs,
    * allowing for interaction with a particular window or tab based on its title
    *
    * @param {string} title - The title of the window or tab to switch to.
    * @param {string} [initialWindowHandles] - optional array of window handles to search through.
    * If not provided, the function fetches all current window handles.
-   * @param {int} delayStep -optional defaults to 1000 milliseconds
-   * @param {int} timeout -optional set to the defaults to 1000 milliseconds in the file
-   * @param {int} retries, - retryDelay -options for retrying the title fetch operation, with defaults 8 and 2500 milliseconds respectively.
-   * @returns {Promise} A promise that will be fulfilled when the switch command has completed.
-   * @throws {Error} Will throw an error if the switch fails or the window or tab with the given title does not exist.
+   * @param {int} delayStep - optional defaults to 1000 milliseconds
+   * @param {int} timeout - optional set to the defaults to 1000 milliseconds in the file
+   * @param {int} retries - optional for retrying the title fetch operation, defaults to starting at 8 ms
+   * @param {int} retryDelay - optional for retrying the title fetch operation, with defaults max 2500 ms
+   * @returns {Promise<void>} promise that resolves once the switch is complete
+   * @throws {Error} throws an error if no window with the specified title is found
    */
   async switchToWindowWithTitle(
     title,
@@ -839,7 +839,19 @@ class Driver {
 
     throw new Error(`No window with title: ${title}`);
   }
-
+  /**
+   * Switches the context of the browser session to the window tab with the given URL.
+   *
+   * @param {string} url - The URL of the window tab to switch to.
+   * @param {string} [initialWindowHandles] - optional array of window handles to search through.
+   * If not provided, the function fetches all current window handles.
+   * @param {int} delayStep - optional defaults to 1000 milliseconds
+   * @param {int} timeout - optional set to the defaults to 1000 milliseconds in the file
+   * @param {int} retries - optional for retrying the URL fetch operation, defaults to starting at 8 ms
+   * @param {int} retryDelay - optional for retrying the URL fetch operation, with defaults max 2500 ms
+   * @returns {Promise<void>} - promise that resolves once the switch is complete
+   * @throws {Error} - throws an error if no window with the specified url is found
+   */
   async switchToWindowWithUrl(
     url,
     initialWindowHandles,
@@ -878,19 +890,19 @@ class Driver {
   }
 
   /**
-   * Closes the current window or tab in the browser session.
+   * Closes the current window tab in the browser session
    *
-   *  @returns {Promise} A promise that will be fulfilled when the close command has completed.
+   *  @returns {Promise<void>} promise resolving after closing the current window
    */
   async closeWindow() {
     await this.driver.close();
   }
 
   /**
-   * Closes specific window or tab identified by its window handle.
+   * Closes specific window tab identified by its window handle.
    *
-   * @param {string} windowHandle - representing the unique identifier of the browser window or tab to be closed.
-   * @returns {Promise} A promise that will be fulfilled when the close command has completed.
+   * @param {string} windowHandle - representing the unique identifier of the browser window to be closed.
+   * @returns {Promise<void>} promise resolving after closing the specified window
    */
   async closeWindowHandle(windowHandle) {
     await this.driver.switchTo().window(windowHandle);
@@ -901,7 +913,7 @@ class Driver {
   /**
    * Close the alert popup that is currently open in the browser session.
    *
-   * @returns {Promise} A promise that will be fulfilled when the alert popup is closed.
+   * @returns {Promise} promise resolving when the alert is closed
    */
   async closeAlertPopup() {
     return await this.driver.switchTo().alert().accept();
