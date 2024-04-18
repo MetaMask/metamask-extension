@@ -32,7 +32,7 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
 
   const isHTTP = urlObject?.protocol === 'http:';
 
-  const urlWithoutProtocol = url.replace(/https?:\/\//u, '');
+  const urlWithoutProtocol = url?.replace(/https?:\/\//u, '');
 
   return (
     <Box
