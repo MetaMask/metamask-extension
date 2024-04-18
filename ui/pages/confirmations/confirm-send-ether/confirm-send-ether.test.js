@@ -1,10 +1,13 @@
 import React from 'react';
 
+import { act } from 'react-dom/test-utils';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import ConfirmSendEther from './confirm-send-ether';
+
+jest.mock('../components/simulation-details/useSimulationMetrics');
 
 setBackgroundConnection({
   gasFeeStartPollingByNetworkClientId: jest
@@ -17,7 +20,6 @@ setBackgroundConnection({
     }),
   ),
   getGasFeeTimeEstimate: jest.fn(),
-  getGasFeeEstimatesAndStartPolling: jest.fn(),
   promisifiedBackground: jest.fn(),
   tryReverseResolveAddress: jest.fn(),
   getNextNonce: jest.fn(),
@@ -67,8 +69,9 @@ mockState.confirmTransaction = {
 const store = configureStore(mockState);
 
 describe('ConfirmSendEther', () => {
-  it('should render correct information for for confirm send ether', () => {
+  it('should render correct information for for confirm send ether', async () => {
     const { getAllByTestId } = renderWithProvider(<ConfirmSendEther />, store);
     expect(getAllByTestId('page-container')).toMatchSnapshot();
+    await act(async () => 0);
   });
 });

@@ -197,9 +197,6 @@ describe('TransactionAlerts', () => {
     describe('if hasSimulationError from useGasFeeContext is falsy', () => {
       it('does not inform the user that a simulation of the transaction failed', () => {
         const { queryByText } = render({
-          useGasFeeContextValue: {
-            supportsEIP1559: true,
-          },
           componentProps: {
             txData: {
               txParams: {
@@ -386,7 +383,7 @@ describe('TransactionAlerts', () => {
 
   describe('when supportsEIP1559 from useGasFeeContext is falsy', () => {
     describe('if hasSimulationError from useGasFeeContext is true', () => {
-      it('does not inform the user that a simulation of the transaction failed', () => {
+      it('does inform the user that a simulation of the transaction failed', () => {
         const { queryByText } = render({
           useGasFeeContextValue: {
             supportsEIP1559: false,
@@ -405,7 +402,7 @@ describe('TransactionAlerts', () => {
           queryByText(
             'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.',
           ),
-        ).not.toBeInTheDocument();
+        ).toBeInTheDocument();
       });
     });
 

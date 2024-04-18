@@ -6,7 +6,7 @@ const {
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
   unlockWallet,
-  editGasfeeForm,
+  editGasFeeForm,
   WINDOW_TITLES,
   defaultGanacheOptions,
 } = require('../../helpers');
@@ -35,7 +35,11 @@ describe('Send ETH', function () {
           );
 
           const inputAmount = await driver.findElement('.unit-input__input');
-          await inputAmount.fill('1000');
+
+          await inputAmount.press('1');
+          await inputAmount.press('0');
+          await inputAmount.press('0');
+          await inputAmount.press('0');
 
           await driver.findElement({
             css: '.send-v2__error-amount',
@@ -113,7 +117,7 @@ describe('Send ETH', function () {
           );
 
           const inputAmount = await driver.findElement('.unit-input__input');
-          await inputAmount.fill('1');
+          await inputAmount.press('1');
 
           const inputValue = await inputAmount.getProperty('value');
           assert.equal(inputValue, '1');
@@ -170,7 +174,7 @@ describe('Send ETH', function () {
           );
 
           const inputAmount = await driver.findElement('.unit-input__input');
-          await inputAmount.fill('1');
+          await inputAmount.press('1');
 
           if (!process.env.MULTICHAIN) {
             // We need to wait for the text "Max Fee: 0.000xxxx ETH" before continuing
@@ -187,10 +191,10 @@ describe('Send ETH', function () {
           await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
           // Go back to home screen to check txn
-          await driver.findElement({
-            css: '[data-testid="eth-overview__primary-currency"]',
-            text: '$42,496.38',
-          });
+          const balance = await driver.findElement(
+            '[data-testid="eth-overview__primary-currency"]',
+          );
+          assert.ok(/^[\d.]+\sETH$/u.test(await balance.getText()));
           await driver.clickElement('[data-testid="home__activity-tab"]');
 
           await driver.findElement(
@@ -219,10 +223,10 @@ describe('Send ETH', function () {
           await unlockWallet(driver);
 
           await driver.assertElementNotPresent('.loading-overlay__spinner');
-          await driver.findElement({
-            css: '[data-testid="eth-overview__primary-currency"]',
-            text: '$42,500.00',
-          });
+          const balance = await driver.findElement(
+            '[data-testid="eth-overview__primary-currency"]',
+          );
+          assert.ok(/^[\d.]+\sETH$/u.test(await balance.getText()));
 
           await openActionMenuAndStartSendFlow(driver);
           // choose to scan via QR code
@@ -280,10 +284,10 @@ describe('Send ETH', function () {
               tag: 'button',
             });
             await driver.waitForSelector({
-              text: '0.00021 ETH',
-              tag: 'h1',
+              text: 'Edit priority',
+              tag: 'header',
             });
-            await editGasfeeForm(driver, '21000', '100');
+            await editGasFeeForm(driver, '21000', '100');
             await driver.waitForSelector({
               css: '.transaction-detail-item:nth-of-type(1) h6:nth-of-type(2)',
               text: '0.0021 ETH',
@@ -435,10 +439,10 @@ describe('Send ETH', function () {
             await unlockWallet(driver);
 
             await driver.assertElementNotPresent('.loading-overlay__spinner');
-            await driver.findElement({
-              css: '[data-testid="eth-overview__primary-currency"]',
-              text: '$42,500.00',
-            });
+            const balance = await driver.findElement(
+              '[data-testid="eth-overview__primary-currency"]',
+            );
+            assert.ok(/^[\d.]+\sETH$/u.test(await balance.getText()));
 
             await openActionMenuAndStartSendFlow(driver);
             await driver.fill(

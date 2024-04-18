@@ -1650,12 +1650,6 @@
   "general": {
     "message": "Chung"
   },
-  "globalTitle": {
-    "message": "Trình đơn chung"
-  },
-  "globalTourDescription": {
-    "message": "Xem danh mục đầu tư, trang web đã kết nối, cài đặt, v.v... của bạn"
-  },
   "goBack": {
     "message": "Quay Lại"
   },
@@ -2562,21 +2556,6 @@
   "notificationsMarkAllAsRead": {
     "message": "Đánh dấu đã đọc tất cả"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "Tìm hiểu thêm"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "Chúng tôi vui mừng thông báo về phiên bản Open Beta của MetaMask Snaps!"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "Cá nhân hóa ví của bạn bằng các snap do cộng đồng nhà lập trình xây dựng!"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "Snap giúp bạn làm được nhiều việc hơn với MetaMask — chẳng hạn như kết nối với nhiều mạng hơn, xem thông tin chuyên sâu về giao dịch và nhận thông báo tùy chỉnh."
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "Giới thiệu MetaMask Snaps"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "Tìm thấy $1 token mới trong tài khoản này",
     "description": "$1 is the number of new tokens detected"
@@ -2902,12 +2881,6 @@
   },
   "permissions": {
     "message": "Quyền"
-  },
-  "permissionsTitle": {
-    "message": "Quyền"
-  },
-  "permissionsTourDescription": {
-    "message": "Tìm tài khoản đã kết nối của bạn và quản lý quyền tại đây"
   },
   "personalAddressDetected": {
     "message": "Đã tìm thấy địa chỉ cá nhân. Nhập địa chỉ hợp đồng token."
@@ -3264,9 +3237,6 @@
   "securityAlerts": {
     "message": "Cảnh báo bảo mật"
   },
-  "securityAlertsDescription": {
-    "message": "Tính năng này sẽ cảnh báo cho bạn khi có hoạt động độc hại trên Ethereum Mainnet bằng cách chủ động xem xét các yêu cầu giao dịch và chữ ký trong khi vẫn bảo vệ quyền riêng tư của bạn. Dữ liệu của bạn sẽ không được chia sẻ với bên thứ ba cung cấp dịch vụ này. Luôn tự thẩm định trước khi chấp thuận bất kỳ yêu cầu nào. Không có gì đảm bảo rằng tính năng này sẽ phát hiện được tất cả các hoạt động độc hại."
-  },
   "securityAndPrivacy": {
     "message": "Bảo mật và quyền riêng tư"
   },
@@ -3497,12 +3467,6 @@
   },
   "smartContracts": {
     "message": "Hợp đồng thông minh"
-  },
-  "smartSwapsAreHere": {
-    "message": "Hoán đổi thông minh đã ra mắt!"
-  },
-  "smartSwapsDescription": {
-    "message": "Tính năng Hoán đổi của MetaMask nay đã thông minh hơn rất nhiều! Kích hoạt Hoán đổi thông minh sẽ cho phép MetaMask tối ưu quy trình Hoán đổi để giúp bạn:"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Không có đủ tiền để thực hiện hoán đổi thông minh."
@@ -3782,18 +3746,6 @@
   },
   "strong": {
     "message": "Mạnh"
-  },
-  "stxBenefit1": {
-    "message": "Giảm thiểu chi phí giao dịch"
-  },
-  "stxBenefit2": {
-    "message": "Giảm tỷ lệ thất bại khi giao dịch"
-  },
-  "stxBenefit3": {
-    "message": "Loại bỏ các giao dịch bị mắc kẹt"
-  },
-  "stxBenefit4": {
-    "message": "Ngăn chặn giao dịch chạy trước"
   },
   "stxCancelled": {
     "message": "Hoán đổi sẽ thất bại"
@@ -4284,12 +4236,6 @@
   "switchedTo": {
     "message": "Bạn đã chuyển sang"
   },
-  "switcherTitle": {
-    "message": "Trình chuyển mạng"
-  },
-  "switcherTourDescription": {
-    "message": "Nhấp vào biểu tượng để chuyển mạng hoặc thêm mạng mới"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Khi bạn chuyển mạng, mọi xác nhận đang chờ xử lý sẽ bị hủy"
   },
@@ -4725,7 +4671,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "Xem $1 tại $2",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "Xem $1 trên Etherscan",

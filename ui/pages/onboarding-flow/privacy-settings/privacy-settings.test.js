@@ -11,6 +11,9 @@ describe('Privacy Settings Onboarding View', () => {
   const mockStore = {
     metamask: {
       networkConfigurations: {},
+      preferences: {
+        petnamesEnabled: true,
+      },
       providerConfig: {
         type: 'test',
       },
@@ -19,6 +22,7 @@ describe('Privacy Settings Onboarding View', () => {
         [CHAIN_IDS.LINEA_MAINNET]: false,
         [CHAIN_IDS.SEPOLIA]: false,
         [CHAIN_IDS.LINEA_GOERLI]: true,
+        [CHAIN_IDS.LINEA_SEPOLIA]: true,
       },
       usePhishDetect: true,
       use4ByteResolution: true,
@@ -27,6 +31,7 @@ describe('Privacy Settings Onboarding View', () => {
       useMultiAccountBalanceChecker: true,
       ipfsGateway: 'test.link',
       useAddressBarEnsResolution: true,
+      useTransactionSimulations: true,
     },
   };
 
@@ -43,6 +48,8 @@ describe('Privacy Settings Onboarding View', () => {
   const setUseMultiAccountBalanceCheckerStub = jest.fn();
   const setUseAddressBarEnsResolutionStub = jest.fn();
   const setIncomingTransactionsPreferencesStub = jest.fn();
+  const setUseTransactionSimulationsStub = jest.fn();
+  const setPreferenceStub = jest.fn();
 
   setBackgroundConnection({
     setFeatureFlag: setFeatureFlagStub,
@@ -55,6 +62,8 @@ describe('Privacy Settings Onboarding View', () => {
     setUseMultiAccountBalanceChecker: setUseMultiAccountBalanceCheckerStub,
     setUseAddressBarEnsResolution: setUseAddressBarEnsResolutionStub,
     setIncomingTransactionsPreferences: setIncomingTransactionsPreferencesStub,
+    setUseTransactionSimulations: setUseTransactionSimulationsStub,
+    setPreference: setPreferenceStub,
   });
 
   it('should update preferences', () => {
@@ -70,11 +79,14 @@ describe('Privacy Settings Onboarding View', () => {
     expect(setUseCurrencyRateCheckStub).toHaveBeenCalledTimes(0);
     expect(setUseAddressBarEnsResolutionStub).toHaveBeenCalledTimes(0);
     expect(setIncomingTransactionsPreferencesStub).toHaveBeenCalledTimes(0);
+    expect(setUseTransactionSimulationsStub).toHaveBeenCalledTimes(0);
+    expect(setPreferenceStub).toHaveBeenCalledTimes(0);
 
     const toggles = container.querySelectorAll('input[type=checkbox]');
     const submitButton = getByText('Done');
     // toggle to false
     fireEvent.click(toggles[0]);
+    fireEvent.click(toggles[3]);
     fireEvent.click(toggles[4]);
     fireEvent.click(toggles[5]);
     fireEvent.click(toggles[6]);
@@ -84,13 +96,15 @@ describe('Privacy Settings Onboarding View', () => {
 
     fireEvent.click(submitButton);
 
-    expect(setIncomingTransactionsPreferencesStub).toHaveBeenCalledTimes(1);
+    expect(setIncomingTransactionsPreferencesStub).toHaveBeenCalledTimes(2);
     expect(setUsePhishDetectStub).toHaveBeenCalledTimes(1);
     expect(setUse4ByteResolutionStub).toHaveBeenCalledTimes(1);
     expect(setUseTokenDetectionStub).toHaveBeenCalledTimes(1);
     expect(setUseMultiAccountBalanceCheckerStub).toHaveBeenCalledTimes(1);
     expect(setUseCurrencyRateCheckStub).toHaveBeenCalledTimes(1);
     expect(setUseAddressBarEnsResolutionStub).toHaveBeenCalledTimes(1);
+    expect(setUseTransactionSimulationsStub).toHaveBeenCalledTimes(1);
+    expect(setPreferenceStub).toHaveBeenCalledTimes(1);
 
     expect(setIncomingTransactionsPreferencesStub).toHaveBeenCalledWith(
       CHAIN_IDS.MAINNET,
@@ -104,8 +118,15 @@ describe('Privacy Settings Onboarding View', () => {
     expect(setUseMultiAccountBalanceCheckerStub.mock.calls[0][0]).toStrictEqual(
       false,
     );
-    expect(setUseCurrencyRateCheckStub.mock.calls[0][0]).toStrictEqual(false);
+    expect(setUseCurrencyRateCheckStub.mock.calls[0][0]).toStrictEqual(true);
     expect(setUseAddressBarEnsResolutionStub.mock.calls[0][0]).toStrictEqual(
+      false,
+    );
+    expect(setUseTransactionSimulationsStub.mock.calls[0][0]).toStrictEqual(
+      false,
+    );
+    expect(setPreferenceStub.mock.calls[0][0]).toStrictEqual(
+      'petnamesEnabled',
       false,
     );
   });
