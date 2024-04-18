@@ -1885,10 +1885,6 @@ export function getShowPermissionsTour(state) {
   return state.metamask.showPermissionsTour;
 }
 
-export function getShowProductTour(state) {
-  return state.metamask.showProductTour;
-}
-
 export function getShowNetworkBanner(state) {
   return state.metamask.showNetworkBanner;
 }
