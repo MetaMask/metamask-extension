@@ -3193,8 +3193,6 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setShowBetaHeader.bind(appStateController),
       setShowPermissionsTour:
         appStateController.setShowPermissionsTour.bind(appStateController),
-      setShowProductTour:
-        appStateController.setShowProductTour.bind(appStateController),
       setShowAccountBanner:
         appStateController.setShowAccountBanner.bind(appStateController),
       setShowNetworkBanner:

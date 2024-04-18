@@ -100,7 +100,6 @@ export const SENTRY_BACKGROUND_STATE = {
     recoveryPhraseReminderLastShown: true,
     showBetaHeader: true,
     showPermissionsTour: true,
-    showProductTour: true,
     showNetworkBanner: true,
     showAccountBanner: true,
     switchedNetworkDetails: false,
