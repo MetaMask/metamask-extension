@@ -35,12 +35,13 @@ const TransactionAlerts = ({
   txData,
   isUsingPaymaster,
 }) => {
-  const { estimateUsed, hasSimulationError,
+  const {
+    estimateUsed,
+    hasSimulationError,
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    supportsEIP1559
+    supportsEIP1559,
     ///: END:ONLY_INCLUDE_IF
-  } =
-    useGasFeeContext();
+  } = useGasFeeContext();
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const pendingTransactions = useSelector(submittedPendingTransactionsSelector);
@@ -100,8 +101,8 @@ const TransactionAlerts = ({
                 {pendingTransactions?.length === 1
                   ? t('pendingTransactionSingle', [pendingTransactions?.length])
                   : t('pendingTransactionMultiple', [
-                    pendingTransactions?.length,
-                  ])}
+                      pendingTransactions?.length,
+                    ])}
               </strong>{' '}
               {t('pendingTransactionInfo')}
               {t('learnCancelSpeeedup', [
