@@ -1839,6 +1839,7 @@
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/queued-request-controller>@metamask/base-controller": true,
         "@metamask/queued-request-controller>@metamask/json-rpc-engine": true,
+        "@metamask/selected-network-controller": true,
         "@metamask/utils": true
       }
     },
