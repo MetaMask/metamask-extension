@@ -1,7 +1,5 @@
-import React, { useCallback, useState } from 'react';
-import { useSelector } from 'react-redux';
-import classnames from 'classnames';
-import { isEqual } from 'lodash';
+import React, { useState } from 'react';
+
 import { Tab, Tabs } from '../../../ui/tabs';
 import NftsItems from '../../../app/nfts-items/nfts-items';
 import {
@@ -22,7 +20,6 @@ import {
 import {
   BlockSize,
   BorderRadius,
-  BackgroundColor,
   TextColor,
   TextVariant,
   TextAlign,
@@ -30,33 +27,15 @@ import {
   JustifyContent,
   AlignItems,
   FlexDirection,
-  FlexWrap,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  getNativeCurrencyImage,
-  getSelectedAccountCachedBalance,
-  getSelectedInternalAccount,
-  getShouldHideZeroBalanceTokens,
-} from '../../../../selectors';
 
-import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
-import {
-  getNativeCurrency,
-  getTokens,
-} from '../../../../ducks/metamask/metamask';
-import {
-  AssetType,
-  TokenStandard,
-} from '../../../../../shared/constants/transaction';
-import { useTokenTracker } from '../../../../hooks/useTokenTracker';
-import { type Asset } from '../../../../ducks/send';
-import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
-import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
-import TokenCell from '../../../app/token-cell';
-import { TokenListItem } from '../../token-list-item';
+import { AssetType } from '../../../../../shared/constants/transaction';
+
 import { useNftsCollections } from '../../../../hooks/useNftsCollections';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
+import { Asset, Collection, Token } from './types';
+import AssetList from './AssetList';
 
 type AssetPickerModalProps = {
   isOpen: boolean;
@@ -65,35 +44,6 @@ type AssetPickerModalProps = {
   onAssetChange: (asset: Asset) => void;
   sendingAssetImage?: string;
   sendingAssetSymbol?: string;
-};
-
-type NFT = {
-  address: string;
-  description: string | null;
-  favorite: boolean;
-  image: string | null;
-  isCurrentlyOwned: boolean;
-  name: string | null;
-  standard: TokenStandard;
-  tokenId: string;
-  tokenURI?: string;
-};
-
-type Token = {
-  address: string | null;
-  symbol: string;
-  decimals: number;
-  image: string;
-  balance: string;
-  string: string;
-  type: AssetType;
-  isSelected: boolean;
-};
-
-type Collection = {
-  collectionName: string;
-  collectionImage: string | null;
-  nfts: NFT[];
 };
 
 export function AssetPickerModal({
@@ -105,48 +55,12 @@ export function AssetPickerModal({
   sendingAssetSymbol,
 }: AssetPickerModalProps) {
   const t = useI18nContext();
-  const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
-  const selectedToken = asset.details?.address;
 
   const [searchQuery, setSearchQuery] = useState('');
-
-  const nativeCurrencyImage = useSelector(getNativeCurrencyImage);
-  const nativeCurrency = useSelector(getNativeCurrency);
-  const shouldHideZeroBalanceTokens = useSelector(
-    getShouldHideZeroBalanceTokens,
-  );
-  const balanceValue = useSelector(getSelectedAccountCachedBalance);
-  const tokens = useSelector(getTokens, isEqual);
-  const { tokensWithBalances } = useTokenTracker({
-    tokens,
-    address: selectedAddress,
-    hideZeroBalanceTokens: Boolean(shouldHideZeroBalanceTokens),
-  });
 
   const { collections, previouslyOwnedCollection } = useNftsCollections();
 
   const hasAnyNfts = Object.keys(collections).length > 0;
-
-  const {
-    currency: primaryCurrency,
-    numberOfDecimals: primaryNumberOfDecimals,
-  } = useUserPreferencedCurrency(PRIMARY, { ethNumberOfDecimals: 4 });
-
-  const {
-    currency: secondaryCurrency,
-    numberOfDecimals: secondaryNumberOfDecimals,
-  } = useUserPreferencedCurrency(SECONDARY, { ethNumberOfDecimals: 4 });
-
-  const [, primaryCurrencyProperties] = useCurrencyDisplay(balanceValue, {
-    numberOfDecimals: primaryNumberOfDecimals,
-    currency: primaryCurrency,
-  });
-
-  const [secondaryCurrencyDisplay, secondaryCurrencyProperties] =
-    useCurrencyDisplay(balanceValue, {
-      numberOfDecimals: secondaryNumberOfDecimals,
-      currency: secondaryCurrency,
-    });
 
   const collectionsKeys = Object.keys(collections);
 
@@ -181,108 +95,6 @@ export function AssetPickerModal({
   };
 
   const defaultActiveTabKey = asset?.type === AssetType.NFT ? 'nfts' : 'tokens';
-
-  const AssetList = useCallback(() => {
-    const tokenList = tokensWithBalances.map((token: Token) => {
-      token.isSelected =
-        token.address?.toLowerCase() === selectedToken?.toLowerCase();
-      return token;
-    });
-
-    tokenList.push({
-      address: null,
-      symbol: nativeCurrency,
-      decimals: 18,
-      image: nativeCurrencyImage,
-      balance: balanceValue,
-      string: primaryCurrencyProperties.value,
-      type: AssetType.native,
-      isSelected: !selectedToken,
-    });
-
-    tokenList.sort((a, b) => {
-      if (a.type === AssetType.native) {
-        return -1;
-      } else if (b.type === AssetType.native) {
-        return 1;
-      }
-      return 0;
-    });
-
-    const tokensData = tokenList.filter((token) =>
-      token.symbol?.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
-
-    return (
-      <Box className="tokens-main-view-modal">
-        {tokensData.map((token) => {
-          return (
-            <Box
-              padding={0}
-              gap={0}
-              margin={0}
-              key={token.symbol}
-              backgroundColor={
-                token.isSelected
-                  ? BackgroundColor.primaryMuted
-                  : BackgroundColor.transparent
-              }
-              className={classnames('multichain-asset-picker-list-item', {
-                'multichain-asset-picker-list-item--selected': token.isSelected,
-              })}
-              onClick={handleAssetChange(token)}
-            >
-              {token.isSelected ? (
-                <Box
-                  className="multichain-asset-picker-list-item__selected-indicator"
-                  borderRadius={BorderRadius.pill}
-                  backgroundColor={BackgroundColor.primaryDefault}
-                />
-              ) : null}
-              <Box
-                key={token.address}
-                padding={0}
-                display={Display.Block}
-                flexWrap={FlexWrap.NoWrap}
-                alignItems={AlignItems.center}
-                style={{ cursor: 'pointer' }}
-              >
-                <Box marginInlineStart={2}>
-                  {token.type === AssetType.native ? (
-                    <TokenListItem
-                      title={nativeCurrency}
-                      primary={
-                        primaryCurrencyProperties.value ??
-                        secondaryCurrencyProperties.value
-                      }
-                      tokenSymbol={primaryCurrencyProperties.suffix}
-                      secondary={secondaryCurrencyDisplay}
-                      tokenImage={token.image}
-                    />
-                  ) : (
-                    <TokenCell
-                      key={token.address}
-                      {...token}
-                      onClick={handleAssetChange(token)}
-                    />
-                  )}
-                </Box>
-              </Box>
-            </Box>
-          );
-        })}
-      </Box>
-    );
-  }, [
-    tokensWithBalances,
-    balanceValue,
-    nativeCurrency,
-    nativeCurrencyImage,
-    selectedToken,
-    primaryCurrencyProperties.value,
-    primaryCurrencyProperties.suffix,
-    secondaryCurrencyProperties.value,
-  ]);
 
   const isDest = sendingAssetImage && sendingAssetSymbol;
 
@@ -346,7 +158,11 @@ export function AssetPickerModal({
         </Box>
         <Box style={{ flexGrow: '1' }}>
           {isDest ? (
-            <AssetList />
+            <AssetList
+              handleAssetChange={handleAssetChange}
+              searchQuery={searchQuery}
+              asset={asset}
+            />
           ) : (
             <Tabs
               defaultActiveTabKey={defaultActiveTabKey}
@@ -361,7 +177,11 @@ export function AssetPickerModal({
                   name={t('tokens')}
                   tabKey="tokens"
                 >
-                  <AssetList />
+                  <AssetList
+                    handleAssetChange={handleAssetChange}
+                    searchQuery={searchQuery}
+                    asset={asset}
+                  />
                 </Tab>
               }
 
