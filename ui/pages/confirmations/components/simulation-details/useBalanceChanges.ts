@@ -140,7 +140,7 @@ function getTokenBalanceChanges(
 
 // Compiles a list of balance changes from simulation data
 export const useBalanceChanges = (
-  simulationData: SimulationData | undefined,
+  simulationData?: Partial<SimulationData>,
 ): { pending: boolean; value: BalanceChange[] } => {
   const chainId = useSelector(getCurrentChainId);
   const fiatCurrency = useSelector(getCurrentCurrency);
