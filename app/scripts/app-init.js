@@ -1,10 +1,9 @@
-/* global chrome */
 // This file is used only for manifest version 3
 
 // Represents if importAllScripts has been run
 // eslint-disable-next-line
 let scriptsLoadInitiated = false;
-
+const { chrome } = globalThis;
 const testMode = process.env.IN_TEST;
 
 const loadTimeLogs = [];

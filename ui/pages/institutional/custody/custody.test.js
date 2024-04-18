@@ -81,6 +81,71 @@ describe('CustodyPage', function () {
       history: {
         mostRecentOverviewPage: '/',
       },
+      internalAccounts: {
+        accounts: {
+          '694225f4-d30b-4e77-a900-c8bbce735b42': {
+            address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
+            id: '694225f4-d30b-4e77-a900-c8bbce735b42',
+            metadata: {
+              name: 'Custody 1',
+              keyring: {
+                type: 'Custody test',
+              },
+            },
+            options: {},
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+          },
+          '2d4193b2-e10d-412c-ae33-c0b689e6ddd8': {
+            address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
+            id: '2d4193b2-e10d-412c-ae33-c0b689e6ddd8',
+            metadata: {
+              name: 'Custody 2',
+              keyring: {
+                type: 'Custody test',
+              },
+            },
+            options: {},
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+          },
+          '434621b7-23e6-4568-962d-b576a5e2ec43': {
+            address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
+            id: '434621b7-23e6-4568-962d-b576a5e2ec43',
+            metadata: {
+              name: 'Custody 3',
+              keyring: {
+                type: 'Custody test',
+              },
+            },
+            options: {},
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+          },
+        },
+        selectedAccount: '694225f4-d30b-4e77-a900-c8bbce735b42',
+      },
     },
   };
 

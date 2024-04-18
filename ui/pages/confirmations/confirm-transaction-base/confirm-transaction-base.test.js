@@ -45,7 +45,6 @@ setBackgroundConnection({
     }),
   ),
   getGasFeeTimeEstimate: jest.fn(),
-  getGasFeeEstimatesAndStartPolling: jest.fn(),
   promisifiedBackground: jest.fn(),
   tryReverseResolveAddress: jest.fn(),
   getNextNonce: jest.fn(),
@@ -102,7 +101,6 @@ const baseStore = {
       medium: '1',
       fast: '2',
     },
-    selectedAddress: mockTxParamsFromAddress,
     keyrings: [
       {
         type: KeyringType.hdKeyTree,
@@ -140,12 +138,6 @@ const baseStore = {
       [mockTxParamsFromAddress]: {
         balance: '0x0',
         address: mockTxParamsFromAddress,
-      },
-    },
-    identities: {
-      [mockTxParamsFromAddress]: { address: mockTxParamsFromAddress },
-      [mockTxParamsToAddress]: {
-        name: 'Test Address 1',
       },
     },
     internalAccounts: {
