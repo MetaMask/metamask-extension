@@ -1650,12 +1650,6 @@
   "general": {
     "message": "Pangkalahatan"
   },
-  "globalTitle": {
-    "message": "Global menu"
-  },
-  "globalTourDescription": {
-    "message": "Tingnan ang iyong portfolio, mga nakakonektang site, setting at marami pang iba"
-  },
   "goBack": {
     "message": "Bumalik"
   },
@@ -2562,21 +2556,6 @@
   "notificationsMarkAllAsRead": {
     "message": "Markahan ang lahat bilang nabasa na"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "Matuto pa"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "🎉 Nasasabik kaming ianunsiyo ang Open Beta ng MetaMask Snaps!"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "Ipersonalisa ang iyong wallet gamit ang mga snap na binuo ng developer community!"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "Ang Snaps ay makakatulong sa iyo na maraming magawa sa MetaMask -- tulad ng kumonekta sa maraming network, tingnan ang mga insight sa transaksyon, at makakuha ng custom na notipikasyon."
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "Ipinakikilala ang MetaMask Snaps"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 (na) bagong token ang nakita sa account na ito",
     "description": "$1 is the number of new tokens detected"
@@ -2902,12 +2881,6 @@
   },
   "permissions": {
     "message": "Mga Pahintulot"
-  },
-  "permissionsTitle": {
-    "message": "Mga Pahintulot"
-  },
-  "permissionsTourDescription": {
-    "message": "Hanapin ang mga nakakonekta mong account at pamahalaan ang mga pahintulot dito"
   },
   "personalAddressDetected": {
     "message": "Natukoy ang personal na address. Ilagay ang address ng kontrata ng token."
@@ -3267,6 +3240,10 @@
   "securityAndPrivacy": {
     "message": "Seguridad at pagkapribado"
   },
+  "securityProviderPoweredBy": {
+    "message": "Pinapagana ng $1",
+    "description": "The security provider that is providing data"
+  },
   "seeDetails": {
     "message": "Tingnan ang mga detalye"
   },
@@ -3490,12 +3467,6 @@
   },
   "smartContracts": {
     "message": "Mga smart na kontrata"
-  },
-  "smartSwapsAreHere": {
-    "message": "Nandito na ang mga Smart Swap!"
-  },
-  "smartSwapsDescription": {
-    "message": "Mas humusay pa ang mga MetaMask Swap! Ang pag-enable sa mga Smart Swap ay magbibigay-daan sa MetaMask na i-optimize ang iyong Swap gamit ang program para makatulong na:"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Hindi sapat ang pondo para sa smart swap."
@@ -3775,18 +3746,6 @@
   },
   "strong": {
     "message": "Mahirap"
-  },
-  "stxBenefit1": {
-    "message": "Bawasan ang mga gastos sa transaksyon"
-  },
-  "stxBenefit2": {
-    "message": "Bawasan ang mga nabigong transaksyon"
-  },
-  "stxBenefit3": {
-    "message": "Alisin ang mga hindi umuusad na transaksyon"
-  },
-  "stxBenefit4": {
-    "message": "Pigilan ang front-running"
   },
   "stxCancelled": {
     "message": "Nabigo sana ang pag-swap kung"
@@ -4277,12 +4236,6 @@
   "switchedTo": {
     "message": "Lumipat ka sa"
   },
-  "switcherTitle": {
-    "message": "Network switcher"
-  },
-  "switcherTourDescription": {
-    "message": "I-click ang icon para lumipat ng network o magdagdag ng bagong network"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Ang paglipat ng network ay magkakansela ng lahat ng nakabinbing kumpirmasyon"
   },
@@ -4718,7 +4671,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "Tingnan ang $1 sa $2",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "Tingnan ang $1 sa Etherscan",

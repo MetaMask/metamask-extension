@@ -1650,12 +1650,6 @@
   "general": {
     "message": "General"
   },
-  "globalTitle": {
-    "message": "Menú global"
-  },
-  "globalTourDescription": {
-    "message": "Vea su portafolio, sitios conectados, configuraciones y más"
-  },
   "goBack": {
     "message": "Volver"
   },
@@ -2562,21 +2556,6 @@
   "notificationsMarkAllAsRead": {
     "message": "Marcar todo como leído"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "Conozca más"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "🎉 ¡Nos complace anunciar la versión Beta abierta de MetaMask Snaps!"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "¡Personalice su monedero con snaps creados por la comunidad de desarrolladores!"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "Los snaps lo ayudan a hacer más con MetaMask, como conectarlo a más redes, ver información sobre transacciones y recibir notificaciones personalizadas."
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "Presentamos MetaMask Snaps"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 nuevos tokens encontrados en esta cuenta",
     "description": "$1 is the number of new tokens detected"
@@ -2902,12 +2881,6 @@
   },
   "permissions": {
     "message": "Permisos"
-  },
-  "permissionsTitle": {
-    "message": "Permisos"
-  },
-  "permissionsTourDescription": {
-    "message": "Encuentre sus cuentas conectadas y administre los permisos aquí"
   },
   "personalAddressDetected": {
     "message": "Se detectó una dirección personal. Ingrese la dirección de contrato del token."
@@ -3267,6 +3240,10 @@
   "securityAndPrivacy": {
     "message": "Seguridad y privacidad"
   },
+  "securityProviderPoweredBy": {
+    "message": "Impulsado por $1",
+    "description": "The security provider that is providing data"
+  },
   "seeDetails": {
     "message": "Ver detalles"
   },
@@ -3490,12 +3467,6 @@
   },
   "smartContracts": {
     "message": "Contratos inteligentes"
-  },
-  "smartSwapsAreHere": {
-    "message": "¡Los intercambios inteligentes ya están aquí!"
-  },
-  "smartSwapsDescription": {
-    "message": "¡La función Intercambios de MetaMask ahora es mucho más inteligente! Habilitar Intercambios inteligentes permitirá que MetaMask optimice mediante programación su intercambio para ayudar a:"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "No hay suficientes fondos para un intercambio inteligente."
@@ -3775,18 +3746,6 @@
   },
   "strong": {
     "message": "Fuerte"
-  },
-  "stxBenefit1": {
-    "message": "Minimizar los costos de transacción"
-  },
-  "stxBenefit2": {
-    "message": "Reducir las fallas en las transacciones"
-  },
-  "stxBenefit3": {
-    "message": "Eliminar las transacciones atascadas"
-  },
-  "stxBenefit4": {
-    "message": "Prevenir la inversión ventajista"
   },
   "stxCancelled": {
     "message": "El intercambio habría fallado"
@@ -4277,12 +4236,6 @@
   "switchedTo": {
     "message": "Ha cambiado a"
   },
-  "switcherTitle": {
-    "message": "Selector de red"
-  },
-  "switcherTourDescription": {
-    "message": "Haga clic en el icono para cambiar de red o agregar una nueva red"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Cambiar de red cancelará todas las confirmaciones pendientes"
   },
@@ -4718,7 +4671,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "Ver $1 en $2",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "Ver $1 en Etherscan",

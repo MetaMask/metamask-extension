@@ -8,6 +8,7 @@ import {
   NETWORKS_ROUTE,
   CONTACT_LIST_ROUTE,
   EXPERIMENTAL_ROUTE,
+  DEVELOPER_OPTIONS_ROUTE,
 } from './routes';
 
 /**
@@ -21,7 +22,7 @@ import {
  */
 
 /** @type {SettingRouteConfig[]} */
-export const SETTINGS_CONSTANTS = [
+const SETTINGS_CONSTANTS = [
   {
     tabMessage: (t) => t('general'),
     sectionMessage: (t) => t('currencyConversion'),
@@ -77,6 +78,13 @@ export const SETTINGS_CONSTANTS = [
     descriptionMessage: (t) => t('clearActivityDescription'),
     route: `${ADVANCED_ROUTE}#clear-activity`,
     icon: 'fas fa-sliders-h',
+  },
+  {
+    tabMessage: (t) => t('advanced'),
+    sectionMessage: (t) => t('smartTransactions'),
+    descriptionMessage: (t) => t('stxOptInDescription'),
+    route: `${ADVANCED_ROUTE}#smart-transactions`,
+    icon: 'fas fa-upload',
   },
   {
     tabMessage: (t) => t('advanced'),
@@ -458,4 +466,35 @@ export const SETTINGS_CONSTANTS = [
     icon: 'fas fa-flask',
   },
   ///: END:ONLY_INCLUDE_IF
+
+  // developerOptions settingsRefs[0]
+  {
+    featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
+    tabMessage: (t) => t('developerOptions'),
+    sectionMessage: (t) => t('resetStates'),
+    descriptionMessage: (t) => t('resetStates'),
+    route: `${DEVELOPER_OPTIONS_ROUTE}#reset-states`,
+    icon: IconName.CodeCircle,
+  },
+  // developerOptions settingsRefs[1]
+  {
+    featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
+    tabMessage: (t) => t('developerOptions'),
+    sectionMessage: (t) => t('announcements'),
+    descriptionMessage: (t) =>
+      t('developerOptionsResetStatesAnnouncementsDescription'),
+    route: `${DEVELOPER_OPTIONS_ROUTE}#reset-states-announcements`,
+    icon: IconName.CodeCircle,
+  },
+  // developerOptions settingsRefs[2]
+  {
+    featureFlag: 'ENABLE_SETTINGS_PAGE_DEV_OPTIONS',
+    tabMessage: (t) => t('developerOptions'),
+    sectionMessage: (t) => t('onboarding'),
+    descriptionMessage: (t) => t('developerOptionsResetStatesOnboarding'),
+    route: `${DEVELOPER_OPTIONS_ROUTE}#reset-states-onboarding`,
+    icon: IconName.CodeCircle,
+  },
 ];
+
+export default SETTINGS_CONSTANTS;
