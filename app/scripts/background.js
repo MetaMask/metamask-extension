@@ -454,6 +454,24 @@ export async function loadStateFromPersistence() {
 }
 
 /**
+ * Determines whether to emit a MetaMetrics event for a given metaMetricsId.
+ * Relies on the last 4 characters of the metametricsId. Assumes the IDs are evenly distributed.
+ *
+ * @param {*} metaMetricsId - The metametricsId to use for the event.
+ * @returns
+ */
+function shouldEmitEvent(metaMetricsId) {
+  const lastPart = metaMetricsId.slice(-4);
+
+  // Convert the last part from hexadecimal to an integer.
+  const numericValue = parseInt(lastPart, 16);
+
+  // Check if numericValue modulo 100 equals 0.
+  // This condition will be true for approximately 1 out of every 100 metametricsIds
+  return numericValue % 100 === 0;
+}
+
+/**
  * Emit event of DappViewed,
  * which should only be tracked only after a user opts into metrics and connected to the dapp
  *
@@ -466,6 +484,10 @@ function emitDappViewedMetricEvent(
   connectSitePermissions,
   preferencesController,
 ) {
+  if (!shouldEmitEvent(controller.metaMetricsController.state.metaMetricsId)) {
+    return;
+  }
+
   // A dapp may have other permissions than eth_accounts.
   // Since we are only interested in dapps that use Ethereum accounts, we bail out otherwise.
   if (!hasProperty(connectSitePermissions.permissions, 'eth_accounts')) {
