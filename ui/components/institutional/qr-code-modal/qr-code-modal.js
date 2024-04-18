@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import QRCode from 'qrcode.react';
 import { v4 as uuid } from 'uuid';
-import { useHistory } from 'react-router-dom';
 import {
   Modal,
   ModalOverlay,
@@ -33,91 +32,98 @@ export default function QRCodeModal({
   custodianURL,
 }) {
   const t = useContext(I18nContext);
-  const history = useHistory();
+  const dispatch = useDispatch();
+  const channelId = useSelector(getChannelId);
+  const connectionRequest = useSelector(getConnectionRequest);
   const [publicKey, setPublicKey] = useState(null);
   const [privateKey, setPrivateKey] = useState(null);
   const [decryptedMessage, setDecryptedMessage] = useState(null);
   const [qrCodeValue, setQrCodeValue] = useState(null);
   const [error, setError] = useState('');
-  const channelId = useSelector(getChannelId);
-  const connectionRequest = useSelector(getConnectionRequest);
   const [traceId] = useState(uuid());
   const mmiActions = mmiActionsFactory();
-  const dispatch = useDispatch();
 
   const handleClose = useCallback(async () => {
     await dispatch(mmiActions.setConnectionRequest(null));
     onClose();
   }, [dispatch, mmiActions, onClose]);
 
-  const generateKeys = async () => {
-    const keyPair = await window.crypto.subtle.generateKey(
-      {
-        name: 'RSA-OAEP',
-        modulusLength: 4096,
-        publicExponent: new Uint8Array([1, 0, 1]),
-        hash: { name: 'SHA-256' },
-      },
-      true,
-      ['encrypt', 'decrypt'],
-    );
-    const exportedPublicKey = await window.crypto.subtle.exportKey(
-      'spki',
-      keyPair.publicKey,
-    );
-    const publicKeyBase64 = btoa(
-      String.fromCharCode(...new Uint8Array(exportedPublicKey)),
-    );
+  const handleError = useCallback((message, e) => {
+    const errorMessage = `${message} Please try again or contact support if the problem persists.`;
+    console.error(message, e);
+    setError(errorMessage);
+  }, []);
 
-    setPublicKey(publicKeyBase64);
-    setPrivateKey(keyPair.privateKey);
-  };
+  const generateKeyPair = useCallback(async () => {
+    try {
+      const keyPair = await window.crypto.subtle.generateKey(
+        {
+          name: 'RSA-OAEP',
+          modulusLength: 4096,
+          publicExponent: new Uint8Array([1, 0, 1]),
+          hash: { name: 'SHA-256' },
+        },
+        true,
+        ['encrypt', 'decrypt'],
+      );
 
-  const decryptMessage = useCallback(
-    async (payload) => {
-      const encryptedBuffer = Uint8Array.from(atob(payload), (c) =>
-        c.charCodeAt(0),
+      const exportedPublicKey = await window.crypto.subtle.exportKey(
+        'spki',
+        keyPair.publicKey,
       );
-      const decrypted = await window.crypto.subtle.decrypt(
-        { name: 'RSA-OAEP' },
-        privateKey,
-        encryptedBuffer,
+
+      setPublicKey(
+        btoa(String.fromCharCode(...new Uint8Array(exportedPublicKey))),
       );
-      const dec = new TextDecoder();
-      const decryptedStringMessage = dec.decode(decrypted);
+
+      setPrivateKey(keyPair.privateKey);
+    } catch (e) {
+      handleError('An error occurred while generating cryptographic keys.', e);
+    }
+  }, [handleError]);
+
+  const decrypt = useCallback(
+    async (_privateKey, encryptedData) => {
       try {
-        const jsonObject = JSON.parse(decryptedStringMessage);
-        setDecryptedMessage(jsonObject);
-        console.log('Decrypted JSON object:', jsonObject);
+        const encryptedBuffer = Uint8Array.from(atob(encryptedData), (c) =>
+          c.charCodeAt(0),
+        );
+        const decrypted = await window.crypto.subtle.decrypt(
+          { name: 'RSA-OAEP' },
+          _privateKey,
+          encryptedBuffer,
+        );
+        const decryptedString = new TextDecoder().decode(decrypted);
+        return JSON.parse(decryptedString);
       } catch (e) {
-        console.error('Failed to parse JSON:', e);
-        setError('Failed to parse JSON:', e);
+        handleError('An error occurred while decrypting data.', e);
+        throw e; // Throw to catch it in the caller
       }
     },
-    [privateKey, setDecryptedMessage],
+    [handleError],
   );
 
   useEffect(() => {
-    generateKeys();
-  }, []);
+    generateKeyPair();
+  }, [generateKeyPair]);
 
   useEffect(() => {
     const decryptAndProcessData = async () => {
       if (connectionRequest && privateKey) {
-        const { payload } = connectionRequest;
         try {
-          const decryptedPayload = await decryptMessage(payload);
-          console.log('Decrypted Payload:', decryptedPayload);
-          // Handle the decrypted data as needed
+          const decryptedPayload = await decrypt(
+            privateKey,
+            connectionRequest.payload,
+          );
+          setDecryptedMessage(decryptedPayload);
         } catch (e) {
-          console.error('Error decrypting data:', e);
-          setError('Failed to decrypt data.');
+          // Error handling is managed by the decrypt function
         }
       }
     };
 
     decryptAndProcessData();
-  }, [connectionRequest, decryptMessage, privateKey]);
+  }, [connectionRequest, privateKey, decrypt]);
 
   useEffect(() => {
     if (publicKey && channelId) {
@@ -127,21 +133,24 @@ export default function QRCodeModal({
         channelId,
         traceId,
       });
-      console.log('qrCodeValue: ', value);
       setQrCodeValue(value);
     }
   }, [publicKey, channelId, traceId]);
 
   useEffect(() => {
-    async function setConnectRequests() {
-      console.log('Decrypted Message:', decryptedMessage);
-      await dispatch(mmiActions.setConnectRequests(decryptedMessage));
-      await handleClose();
-    }
+    const updateConnectRequests = async () => {
+      try {
+        await dispatch(mmiActions.setConnectRequests(decryptedMessage));
+        handleClose();
+      } catch (e) {
+        handleError('An error occurred while updating connection requests.', e);
+      }
+    };
+
     if (decryptedMessage) {
-      setConnectRequests();
+      updateConnectRequests();
     }
-  }, [decryptedMessage, dispatch, handleClose, history, mmiActions]);
+  }, [decryptedMessage, dispatch, mmiActions, handleClose, handleError]);
 
   const custodianLink = (
     <a
@@ -164,14 +173,13 @@ export default function QRCodeModal({
     <Modal isOpen onClose={handleClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader onClose={onClose}>
+        <ModalHeader onClose={handleClose}>
           {t('connectCustodianAccounts', [custodianName])}
         </ModalHeader>
         {error && <Text color={TextColor.error}>{error}</Text>}
-        {qrCodeValue === null ? (
-          <Spinner color="var(--color-warning-default)" />
-        ) : (
+        {qrCodeValue ? (
           <Box
+            data-testid="qr-code-visible"
             style={{
               padding: 20,
               backgroundColor: 'var(--qr-code-white-background)',
@@ -182,8 +190,9 @@ export default function QRCodeModal({
           >
             <QRCode value={qrCodeValue} size={270} />
           </Box>
+        ) : (
+          <Spinner color="var(--color-warning-default)" />
         )}
-        {error && <Text color={TextColor.error}>{error}</Text>}
         <Text
           as="p"
           paddingRight={10}
@@ -213,16 +222,17 @@ export default function QRCodeModal({
           paddingBottom={4}
           variant={TextVariant.bodySm}
           textAlign={TextAlign.Center}
-          onClick={handleClose}
           color={TextColor.primaryDefault}
+          onClick={handleClose}
+          data-testid="cancel-btn"
         >
           {t('cancel')}
         </ButtonLink>
         {process.env.IN_TEST && (
           <span
             className="hidden"
-            data-channelId={channelId}
-            data-publicKey={publicKey}
+            data-channelid={channelId}
+            data-publickey={publicKey}
           />
         )}
       </ModalContent>
