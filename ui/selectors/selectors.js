@@ -118,6 +118,7 @@ import {
   getConnectedSubjectsForAllAddresses,
   ///: END:ONLY_INCLUDE_IF
   getOrderedConnectedAccountsForActiveTab,
+  getOrderedConnectedAccountsForConnectedDapp,
 } from './permissions';
 import { createDeepEqualSelector } from './util';
 
@@ -1850,10 +1851,6 @@ export function getShowPermissionsTour(state) {
   return state.metamask.showPermissionsTour;
 }
 
-export function getShowProductTour(state) {
-  return state.metamask.showProductTour;
-}
-
 export function getShowNetworkBanner(state) {
   return state.metamask.showNetworkBanner;
 }
@@ -2286,9 +2283,12 @@ export function getCustomTokenAmount(state) {
   return state.appState.customTokenAmount;
 }
 
-export function getUnconnectedAccounts(state) {
+export function getUnconnectedAccounts(state, activeTab) {
   const accounts = getMetaMaskAccountsOrdered(state);
-  const connectedAccounts = getOrderedConnectedAccountsForActiveTab(state);
+  const connectedAccounts = getOrderedConnectedAccountsForConnectedDapp(
+    state,
+    activeTab,
+  );
   const unConnectedAccounts = accounts.filter((account) => {
     return !connectedAccounts.some(
       (connectedAccount) => connectedAccount.address === account.address,
