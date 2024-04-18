@@ -458,9 +458,12 @@ async function createManifestV3AppInitializationBundle({
   // Code below is used to set statsMode to true when testing in MV3
   // This is used to capture module initialisation stats using lavamoat.
   if (isTestBuild(buildTarget)) {
-    const content = readFileSync('./dist/chrome/runtime-lavamoat.js', 'utf8');
+    const content = readFileSync(
+      './dist/chrome/scripts/runtime-lavamoat.js',
+      'utf8',
+    );
     const fileOutput = content.replace('statsMode = false', 'statsMode = true');
-    writeFileSync('./dist/chrome/runtime-lavamoat.js', fileOutput);
+    writeFileSync('./dist/chrome/scripts/runtime-lavamoat.js', fileOutput);
   }
 
   console.log(`Bundle end: service worker app-init.js`);
@@ -690,7 +693,7 @@ function createFactoredBuild({
               const jsBundles = [
                 ...commonSet.values(),
                 ...groupSet.values(),
-              ].map((label) => `./${label}.js`);
+              ].map((label) => `../${label}.js`);
               await createManifestV3AppInitializationBundle({
                 applyLavaMoat,
                 browserPlatforms,
