@@ -159,7 +159,7 @@ Finding web elements is a fundamental task in web automation and testing, allowi
 >@param {string} rawLocator - element locator
 >
 >**Returns**<br>
->@return {Promise<WebElement>} A promise that resolves to the WebElement.
+>@return `{Promise<WebElement>}` A promise that resolves to the WebElement.
 >
 >**Example - Evaluating entire DOM**
 >
@@ -189,7 +189,7 @@ Finding web elements is a fundamental task in web automation and testing, allowi
 >@param {string | object} rawLocator - Element locator
 >
 >**Returns**<br>
->@returns {Promise<Array<WebElement>>} A promise that resolves to an array of found elements.
+>@returns `{Promise<Array<WebElement>>} `A promise that resolves to an array of found elements.
 >
 >**Example for all matching FindElements**
 >
@@ -218,7 +218,7 @@ Finding web elements is a fundamental task in web automation and testing, allowi
 >@param {string | object} rawLocator - Element locator
 >
 >**Returns**<br>
->@return {Promise<WebElement>} A promise that resolves to the WebElement.
+>@return `{Promise<WebElement>}` A promise that resolves to the WebElement.
 >
 >**Example for all matching** findVisibleElement
 >
@@ -240,7 +240,7 @@ Finding web elements is a fundamental task in web automation and testing, allowi
 >@param {string | object} rawLocator - Element locator
 >
 >**Returns**<br>
->@return {Promise<WebElement>} A promise that resolves to the WebElement.
+>@return `{Promise<WebElement>}` A promise that resolves to the WebElement.
 >
 >**Example for f**indClickableElement
 >
@@ -260,7 +260,7 @@ Finding web elements is a fundamental task in web automation and testing, allowi
 >@param {string | object} rawLocator - Element locator
 >
 >**Returns**<br>
->@return {Promise<WebElement>} A promise that resolves to the WebElement.
+>@return `{Promise<WebElement>}` A promise that resolves to the WebElement.
 >
 >**Example**
 >
@@ -294,10 +294,10 @@ Each of these actions requires first [locating](#locators) the web element you w
 >
 >**Arguments**<br>
 >@param {string | object} rawLocator - Element locator
->@param {string} input - The value to fill the element with
+>@param {string} input - The value to fill the element
 >
 >**Returns**<br>
->@returns {Promise<WebElement>} Promise resolving to the filled element
+>@returns `{Promise<WebElement>}` Promise resolving to the filled element
 >
 >**Example**
 >
@@ -320,7 +320,7 @@ Each of these actions requires first [locating](#locators) the web element you w
 >
 >**Returns**<br>
 >
->@return {Promise<WebElement>} A promise that resolves to the WebElement.
+>@return `{Promise<WebElement>}` A promise that resolves to the WebElement.
 >
 >**Example**
 >
@@ -340,7 +340,7 @@ Each of these actions requires first [locating](#locators) the web element you w
 >@param {string | object} rawLocator - Element locator
 >
 >**Return**<br>
->@returns {Promise<WebElement>} - promise that resolves to the WebElement
+>@returns `{Promise<WebElement>}` - promise that resolves to the WebElement
 >
 >**Example**
 >
@@ -362,7 +362,7 @@ Each of these actions requires first [locating](#locators) the web element you w
 >@param {string} keys - The key to press
 >
 >**Return**<br>
-> @returns {Promise<WebElement>} promise resolving to the filled element
+> @returns `{Promise<WebElement>}` promise resolving to the filled element
 >**Example**
 >
 >```jsx
@@ -490,7 +490,7 @@ This organization helps provide a clear structure for understanding the various 
 >The other supported state is 'detached', which means waiting until the element is removed from the DOM.
 >
 >**Returns**<br>
->@returns {Promise} promise resolving when the element meets the state or timeout occurs.<br>
+>@returns `{Promise<WebElement>}` promise resolving when the element meets the state or timeout occurs.<br>
 >@throws {Error} Will throw an error if the element does not reach the specified state within the timeout period.
 >
 >**Example** wait for element to load
@@ -514,7 +514,7 @@ This organization helps provide a clear structure for understanding the various 
 >@param {string | object} element - Element locator
 >
 >**Returns**<br>
->@returns {Promise} promise resolving once the element fills or timeout hits.<br>
+>@returns `{Promise<WebElement>}` promise resolving once the element fills or timeout hits.<br>
 >@throws {Error} Will throw an error if the element does not become non-empty within the timeout period.
 >
 >**Example**
@@ -540,7 +540,7 @@ This organization helps provide a clear structure for understanding the various 
 >@param {number} [timeout=5000] - amount of time in milliseconds to wait before timing out
 >
 >**Returns**<br>
->@returns {Promise<void>} A promise that resolves when the element is in the specified state. <br>
+>@returns `'{Promise<void>}'` A promise that resolves when the element is in the specified state. <br>
 >@throws {Error} Will throw an error if the element does not reach the specified state within the timeout period.
 >
 >**Example**
@@ -554,9 +554,10 @@ This organization helps provide a clear structure for understanding the various 
 >>
 </details>
 
+<a id="waitX"></a>
 <details><summary><b>waitUntilXWindowHandles</b></summary>
 <br>
-<a id="waitX"></a>
+
 
 >**`waitUntilXWindowHandles`** function waits until the specified number of window handles are present.
 >
@@ -567,7 +568,7 @@ This organization helps provide a clear structure for understanding the various 
 >@param {number} [timeout=5000] - The amount of time in milliseconds to wait before timing out<br>
 >
 >**Returns**<br>
->@returns {Promise<void>} promise resolving when the target window handle count is met<br>
+>@returns `{Promise<void>}` promise resolving when the target window handle count is met<br>
 >@throws {Error} - throws an error if the target number of window handles isn't met by the timeout
 >
 >**Example**
@@ -578,6 +579,7 @@ This organization helps provide a clear structure for understanding the various 
 </details>
 
 #### [assertElementNotPresent](#here)
+
 
 ### **** NOTE - Delay ****
 
@@ -625,7 +627,7 @@ await approveInput.clear();
 >@param {string} contentToPaste -  content to paste.
 >
 >**Returns**<br>
->@return {Promise<WebElement>} A promise that resolves to the WebElement.
+>@return `{Promise<WebElement>}` A promise that resolves to the WebElement.
 >
 >**Example**
 >
@@ -652,7 +654,7 @@ A representation of any pointer device for interacting with a web page.
 >@param {string | object} rawLocator - Element locator
 >
 >**Returns**<br>
->@returns {Promise} A promise that will be fulfilled when the click command has completed.
+>@returns `{Promise<void>}` promise that will be fulfilled when the click command has completed.
 >
 >**Example**
 >
@@ -676,7 +678,7 @@ A representation of any pointer device for interacting with a web page.
 >@param {string | object} element - Element locator
 >
 >**Returns**<br>
->@returns {Promise} - promise resolving after scrolling
+>@returns  `{Promise<void>}` - promise resolving after scrolling
 >
 >**Example**
 >
@@ -702,7 +704,7 @@ A representation of any pointer device for interacting with a web page.
 >@param {int} ms - The number of milliseconds to hold the mouse button down
 >
 >**Returns**<br>
->@returns {Promise} - promise resolving after mouse down completed
+>@returns `{Promise<void>}` - promise resolving after mouse down completed
 >
 >**Example**
 >
@@ -731,7 +733,7 @@ A representation of any pointer device for interacting with a web page.
 >@param {number} y - y coordinate to click at<br>
 >
 >**Returns**<br>
->@returns {Promise} - promise resolving after a click
+>@returns `{Promise<void>}` - promise resolving after a click
 >>
 </details>
 
@@ -785,7 +787,7 @@ Navigation refers to the process of moving through web pages within a browser se
 >[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L491)
 >
 >**Returns**<br>
->@returns {Promise<string>} promise resolves upon retrieving the text.
+>@returns `{Promise<string>}` promise resolves upon retrieving the text.
 >
 >**Example**
 >
@@ -804,7 +806,7 @@ Navigation refers to the process of moving through web pages within a browser se
 >
 >**Returns**
 >
->@returns {Promise} promise resolves page is loaded
+>@returns `{Promise<void>}` promise resolves page is loaded
 >
 >**Example**
 >
@@ -852,7 +854,7 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 >@param {string} url - Any URL
 >
 >**Returns**<br>
->@returns {Promise} promise resolves when the URL page has finished loading
+>@returns `{Promise<void>}` promise resolves when the URL page has finished loading
 >
 >**Example**
 >
@@ -869,7 +871,7 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 >[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L520)
 >
 >**Returns**<br>
->@returns {Promise} A promise resolves after switching to the new window.
+>@returns `{Promise<void>}` A promise resolves after switching to the new window.
 >
 >**Example**
 >
@@ -889,7 +891,7 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 >
 >**Returns**<br>
 >@returns {int} - number of windows<br>
->@return {Promise<Array<string>>} A promise that will be resolved with an array of window handles.
+>@return `{Promise<Array<string>>}` A promise that will be resolved with an array of window handles.
 >
 >**Example**
 >
@@ -909,7 +911,7 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 >@param {int} handlerId - unique ID for the tab whose title is needed
 >
 >**Returns**<br>
->@returns {Promise<string>} promise resolving to the window tab title after command completion
+>@returns `{Promise<string>} `promise resolving to the window tab title after command completion
 >
 >**Example**
 >
@@ -933,7 +935,7 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 >@param {int} handle - unique ID for the tab to which you want to switch.
 >
 >**Returns**<br>
->@returns {Promise<void>} promise that resolves once the switch is complete
+>@returns `{Promise<void>}` promise that resolves once the switch is complete
 >
 >**Example**
 >
@@ -959,7 +961,7 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 >@param {int} retryDelay - optional for retrying the URL fetch operation, with defaults max 2500 ms<br>
 >
 >**Returns**<br>
->@returns {Promise<void>} - promise that resolves once the switch is complete<br>
+>@returns `{Promise<void>} `- promise that resolves once the switch is complete<br>
 >@throws {Error} - throws an error if no window with the specified url is found
 >
 >**Example**
@@ -987,7 +989,7 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 >@param {int} retryDelay - optional for retrying the title fetch operation, with defaults max 2500 ms<br>
 >
 >**Returns**<br>
->@returns {Promise<void>} promise that resolves once the switch is complete<br>
+>@returns `{Promise<void>}` promise that resolves once the switch is complete<br>
 >@throws {Error} throws an error if no window with the specified title is found.
 >
 >**Example**
@@ -1011,7 +1013,7 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 >[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L626)
 >
 >**Returns**<br>
->@returns {Promise<void>} promise resolving after closing the current window
+>@returns `{Promise<void>}` promise resolving after closing the current window
 >
 >**Example**
 >
@@ -1031,7 +1033,7 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 >@param {string} windowHandle - representing the unique identifier of the browser window to be closed.
 >
 >**Returns**<br>
->@returns {Promise<void>} - promise resolving after closing the specified window
+>@returns `{Promise<void>} `- promise resolving after closing the specified window
 >
 >**Example**
 >
@@ -1056,7 +1058,7 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 >@param {Array} [windowHandles] - full list of window handles
 >
 >**Returns**<br>
->@returns {Promise<void>}- promise resolving after closing the specified window
+>@returns `{Promise<void>}`- promise resolving after closing the specified window
 </details>
 
 <details><summary><b>quit</b></summary>
@@ -1067,7 +1069,7 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 >[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L313)
 >
 >**Returns**<br>
->@returns {Promise<void>} - promise resolving after quitting
+>@returns `{Promise<void>}` - promise resolving after quitting
 >
 >**Example**
 >
@@ -1090,7 +1092,7 @@ Alerts are pop-up messages that appear
 >[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L636)
 >
 >**Returns**<br>
->@returns {Promise} promise resolving when the alert is closed
+>@returns `{Promise<void>}` promise resolving when the alert is closed
 >
 >**Example**
 >
@@ -1117,7 +1119,7 @@ Web pages can be segmented into frames or IFrames, which are essentially documen
 >@param {string | object} rawLocator - Element locator
 >
 >**Returns**<br>
->@returns {Promise<void>} promise that resolves once the switch is complete
+>@returns `{Promise<void>}` promise that resolves once the switch is complete
 >
 >**Example**
 >
@@ -1157,7 +1159,7 @@ They are used to verify that the application under test behaves as expected unde
 >@param {string | object} rawLocator -  Element locator
 >
 >**Returns**<br>
->@returns {Promise<boolean>} - promise that resolves to a boolean indicating whether the element is present.
+>@returns `{Promise<boolean>}` - promise that resolves to a boolean indicating whether the element is present.
 >
 >**Example**
 >
@@ -1184,7 +1186,7 @@ They are used to verify that the application under test behaves as expected unde
 >@param {string | object} rawLocator -  Element locator
 >
 >**Returns**<br>
->@returns {Promise<Boolean>} - promise that resolves to a boolean indicating whether the element is present and visible.
+>@returns `{Promise<Boolean>}`- promise that resolves to a boolean indicating whether the element is present and visible.
 >
 >**Example**
 >
@@ -1198,10 +1200,10 @@ They are used to verify that the application under test behaves as expected unde
 >        );
 >```
 </details>
-
+<a id="here"></a>
 <details><summary><b>assertElementNotPresent</b></summary>
 <br>
-<a id="here"></a>
+
 
 >**`assertElementNotPresent`** function wait until an element is absent. This function MUST have a guard to prevent a race condition. For example, when the previous step is to click a button that loads a new page, then of course during page load, the rawLocator element will be absent, even though it will appear a half-second later. The first choice for the guard is to use the findElementGuard, which executes before the search for the rawLocator element. The second choice for the guard is to use the waitAtLeastGuard parameter.
 >
@@ -1214,6 +1216,9 @@ They are used to verify that the application under test behaves as expected unde
 >@param {number} [guards.waitAtLeastGuard] - The minimum milliseconds to wait before passing
 >@param {number} [guards.timeout] - The maximum milliseconds to wait before failing
 >
+>**Return**<br>
+>@returns `{Promise<void>}` - promise resolving after the element is not present
+>@throws {Error} - throws an error if the element is present
 >**Example**
 >
 >```jsx

@@ -373,6 +373,8 @@ class Driver {
    * @param {string | object} [guards.findElementGuard] - A rawLocator to perform a findElement and act as a guard
    * @param {number} [guards.waitAtLeastGuard] - The minimum milliseconds to wait before passing
    * @param {number} [guards.timeout] - The maximum milliseconds to wait before failing
+   * @returns {Promise<void>} - promise resolving after the element is not present
+   * @throws {Error} - throws an error if the element is present
    */
   async assertElementNotPresent(
     rawLocator,
