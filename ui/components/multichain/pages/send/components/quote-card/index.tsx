@@ -24,7 +24,7 @@ import Tooltip from '../../../../../ui/tooltip';
 import InfoTooltipIcon from '../../../../../ui/info-tooltip/info-tooltip-icon';
 import useTranslatedNetworkName from './hooks/useTranslatedNetworkName';
 import { MetaMetricsEventCategory } from '../../../../../../../shared/constants/metametrics';
-import { GAS_FEES_LEARN_MORE_URL } from '../../../../../../pages/swaps/prepare-swap-page/review-quote';
+import { GAS_FEES_LEARN_MORE_URL } from '../../../../../../../shared/lib/ui-utils';
 import { MetaMetricsContext } from '../../../../../../contexts/metametrics';
 import useGetConversionRate from './hooks/useGetConversionRate';
 
