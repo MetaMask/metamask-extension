@@ -491,7 +491,11 @@ export default function setupSentry({ release, getState }) {
       console.log(
         `Setting up Sentry Remote Error Reporting for '${environment}': SENTRY_DSN`,
       );
-      sentryTarget = process.env.SENTRY_DSN;
+const sentryDsn = METAMASK_BUILD_TYPE === 'mmi' ? process.env.SENTRY_MMI_DSN : process.env.SENTRY_DSN;
+console.log(
+        `Setting up Sentry Remote Error Reporting for '${environment}': sentryDsn`,
+      );
+sentryTarget = sentryDsn
     }
   } else {
     console.log(
