@@ -497,4 +497,14 @@ const SETTINGS_CONSTANTS = [
   },
 ];
 
+if (process.env.ENABLE_CONFIRMATION_REDESIGN) {
+  SETTINGS_CONSTANTS.push({
+    tabMessage: (t) => t('experimental'),
+    sectionMessage: (t) => t('redesignedConfirmationsEnabledToggle'),
+    descriptionMessage: (t) => t('redesignedConfirmationsToggleDescription'),
+    route: `${EXPERIMENTAL_ROUTE}#redesigned-confirmations`,
+    icon: 'fas fa-flask',
+  });
+}
+
 export default SETTINGS_CONSTANTS;
