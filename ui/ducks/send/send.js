@@ -46,11 +46,10 @@ import {
   getSelectedInternalAccount,
   getSelectedInternalAccountWithBalance,
   getUnapprovedTransactions,
+  getSelectedNetworkClientId,
 } from '../../selectors';
 import {
-  disconnectGasFeeEstimatePoller,
   displayWarning,
-  getGasFeeEstimatesAndStartPolling,
   hideLoadingIndication,
   showLoadingIndication,
   updateEditableParams,
@@ -64,6 +63,8 @@ import {
   updateTransactionSendFlowHistory,
   getCurrentNetworkEIP1559Compatibility,
   getLayer1GasFee,
+  gasFeeStopPollingByPollingToken,
+  gasFeeStartPollingByNetworkClientId,
 } from '../../store/actions';
 import { setCustomGasLimit } from '../gas/gas.duck';
 import {
@@ -601,6 +602,7 @@ export const initializeSendState = createAsyncThunk(
      */
     const state = thunkApi.getState();
     const isNonStandardEthChain = getIsNonStandardEthChain(state);
+    const selectedNetworkClientId = getSelectedNetworkClientId(state);
     const chainId = getCurrentChainId(state);
     let eip1559support = checkNetworkAndAccountSupports1559(state);
     if (eip1559support === undefined) {
@@ -632,7 +634,9 @@ export const initializeSendState = createAsyncThunk(
     let gasEstimatePollToken = null;
 
     // Instruct the background process that polling for gas prices should begin
-    gasEstimatePollToken = await getGasFeeEstimatesAndStartPolling();
+    gasEstimatePollToken = await gasFeeStartPollingByNetworkClientId(
+      selectedNetworkClientId,
+    );
 
     addPollingTokenToAppState(gasEstimatePollToken);
 
@@ -2284,7 +2288,7 @@ export function resetSendState() {
     dispatch(actions.resetSendState());
 
     if (state[name].gasEstimatePollToken) {
-      await disconnectGasFeeEstimatePoller(state[name].gasEstimatePollToken);
+      await gasFeeStopPollingByPollingToken(state[name].gasEstimatePollToken);
       removePollingTokenFromAppState(state[name].gasEstimatePollToken);
     }
   };
