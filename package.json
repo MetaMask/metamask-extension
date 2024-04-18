@@ -275,7 +275,7 @@
     "@metamask/base-controller": "^4.1.0",
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/contract-metadata": "^2.5.0",
-    "@metamask/controller-utils": "^9.0.2",
+    "@metamask/controller-utils": "^9.1.0",
     "@metamask/design-tokens": "^2.1.1",
     "@metamask/desktop": "^0.3.0",
     "@metamask/ens-controller": "^9.0.0",
