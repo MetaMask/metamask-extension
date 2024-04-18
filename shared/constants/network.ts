@@ -654,11 +654,21 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
     CHAINLIST_CURRENCY_SYMBOLS_MAP.ACALA_NETWORK,
 } as const;
 
+/**
+ * A mapping for networks with chain ID collisions to their currencies symbols.
+ * Useful for networks not listed on https://chainid.network/chains.json due to ID conflicts.
+ */
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP_NETWORK_COLLISION = {
-  [CHAINLIST_CHAIN_IDS_MAP.WETHIO]:
-    CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION.WETHIO,
-  [CHAINLIST_CHAIN_IDS_MAP.CHZ]:
-    CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION.CHZ,
+  [CHAINLIST_CHAIN_IDS_MAP.CHZ]: [
+    {
+      currencySymbol: CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION.CHZ,
+    },
+  ],
+  [CHAINLIST_CHAIN_IDS_MAP.WETHIO]: [
+    {
+      currencySymbol: CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION.WETHIO,
+    },
+  ],
 };
 
 export const CHAIN_ID_TO_TYPE_MAP = {

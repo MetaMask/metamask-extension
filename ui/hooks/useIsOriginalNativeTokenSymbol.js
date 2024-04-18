@@ -52,7 +52,13 @@ export function useIsOriginalNativeTokenSymbol(
         const mappedAsNetworkCollision =
           CHAIN_ID_TO_CURRENCY_SYMBOL_MAP_NETWORK_COLLISION[chainId];
 
-        if (mappedAsNetworkCollision && mappedAsNetworkCollision === ticker) {
+        const isMappedCollision =
+          mappedAsNetworkCollision &&
+          mappedAsNetworkCollision.some(
+            (network) => network.currencySymbol === ticker,
+          );
+
+        if (isMappedCollision) {
           setIsOriginalNativeSymbol(true);
           return;
         }
