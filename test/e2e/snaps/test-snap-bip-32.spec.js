@@ -57,10 +57,12 @@ describe('Test Snap bip-32', function () {
         // wait for permissions popover, click checkboxes and confirm
         await driver.waitForSelector('.mm-checkbox__input');
         await driver.clickElement('.mm-checkbox__input');
-        await driver.clickElement({
-          text: 'Confirm',
-          tag: 'button',
-        });
+        await driver.waitForSelector(
+          '[data-testid="snap-install-warning-modal-confirm"]',
+        );
+        await driver.clickElement(
+          '[data-testid="snap-install-warning-modal-confirm"]',
+        );
 
         await driver.waitForSelector({ text: 'OK' });
         await driver.clickElement({
