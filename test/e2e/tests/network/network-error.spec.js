@@ -72,7 +72,9 @@ describe('Gas API fallback', function () {
 
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
-        const error = await driver.isElementPresent('[data-testid="network-busy-tooltip"]');
+        const error = await driver.isElementPresent(
+          '[data-testid="network-busy-tooltip"]',
+        );
 
         assert.equal(error, true, 'Network error is present');
       },
