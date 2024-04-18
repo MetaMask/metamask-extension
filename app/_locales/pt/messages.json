@@ -1650,12 +1650,6 @@
   "general": {
     "message": "Geral"
   },
-  "globalTitle": {
-    "message": "Menu global"
-  },
-  "globalTourDescription": {
-    "message": "Veja seu portfólio, sites conectados, configurações e mais"
-  },
   "goBack": {
     "message": "Voltar"
   },
@@ -2891,12 +2885,6 @@
   },
   "permissions": {
     "message": "Permissões"
-  },
-  "permissionsTitle": {
-    "message": "Permissões"
-  },
-  "permissionsTourDescription": {
-    "message": "Encontre suas contas conectadas e gerencie permissões aqui"
   },
   "personalAddressDetected": {
     "message": "Endereço pessoal detectado. Insira o endereço de contrato do token."
@@ -4251,12 +4239,6 @@
   },
   "switchedTo": {
     "message": "Você alternou para"
-  },
-  "switcherTitle": {
-    "message": "Alternador de redes"
-  },
-  "switcherTourDescription": {
-    "message": "Clique no ícone para alternar as redes ou adicionar uma nova"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "A alternância de redes cancelará todas as confirmações pendentes"

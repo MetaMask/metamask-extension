@@ -1650,12 +1650,6 @@
   "general": {
     "message": "General"
   },
-  "globalTitle": {
-    "message": "Menú global"
-  },
-  "globalTourDescription": {
-    "message": "Vea su portafolio, sitios conectados, configuraciones y más"
-  },
   "goBack": {
     "message": "Volver"
   },
@@ -2887,12 +2881,6 @@
   },
   "permissions": {
     "message": "Permisos"
-  },
-  "permissionsTitle": {
-    "message": "Permisos"
-  },
-  "permissionsTourDescription": {
-    "message": "Encuentre sus cuentas conectadas y administre los permisos aquí"
   },
   "personalAddressDetected": {
     "message": "Se detectó una dirección personal. Ingrese la dirección de contrato del token."
@@ -4247,12 +4235,6 @@
   },
   "switchedTo": {
     "message": "Ha cambiado a"
-  },
-  "switcherTitle": {
-    "message": "Selector de red"
-  },
-  "switcherTourDescription": {
-    "message": "Haga clic en el icono para cambiar de red o agregar una nueva red"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Cambiar de red cancelará todas las confirmaciones pendientes"
