@@ -1,5 +1,5 @@
 /* eslint-disable require-unicode-regexp */
-import { SETTINGS_CONSTANTS } from '../constants/settings';
+import SETTINGS_CONSTANTS from '../constants/settings';
 
 let settingsRoutes;
 
