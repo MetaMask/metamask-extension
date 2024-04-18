@@ -35,7 +35,7 @@ const TransactionAlerts = ({
   txData,
   isUsingPaymaster,
 }) => {
-  const { estimateUsed, hasSimulationError, supportsEIP1559, isNetworkBusy } =
+  const { estimateUsed, hasSimulationError, supportsEIP1559 } =
     useGasFeeContext();
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -124,11 +124,6 @@ const TransactionAlerts = ({
           {t('lowPriorityMessage')}
         </BannerAlert>
       )}
-      {supportsEIP1559 && isNetworkBusy ? (
-        <BannerAlert severity={SEVERITIES.WARNING}>
-          {t('networkIsBusy')}
-        </BannerAlert>
-      ) : null}
       {isSendingZero && (
         <BannerAlert severity={SEVERITIES.WARNING}>
           {t('sendingZeroAmount', [currentTokenSymbol])}
