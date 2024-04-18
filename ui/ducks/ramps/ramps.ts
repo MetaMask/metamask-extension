@@ -28,7 +28,7 @@ const rampsSlice = createSlice({
       .addCase(fetchBuyableChains.fulfilled, (state, action) => {
         const networks = action.payload;
         if (networks && networks.length > 0) {
-          state.buyableChains = action.payload;
+          state.buyableChains = networks;
         } else {
           state.buyableChains = defaultBuyableChains;
         }

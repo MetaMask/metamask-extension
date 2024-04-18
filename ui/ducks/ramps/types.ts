@@ -3,4 +3,5 @@ export type AggregatorNetwork = {
   chainId: number;
   chainName: string;
   nativeTokenSupported: boolean;
+  shortName: string;
 };
