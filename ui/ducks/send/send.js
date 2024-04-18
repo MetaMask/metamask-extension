@@ -1654,10 +1654,9 @@ const slice = createSlice({
             state.draftTransactions[state.currentTransactionUUID];
           if (
             draftTransaction &&
-            draftTransaction.fromAccount &&
-            draftTransaction.fromAccount.address ===
-              action.payload.account.address
+            draftTransaction.fromAccount
           ) {
+            draftTransaction.fromAccount.address = action.payload.account.address;
             draftTransaction.fromAccount.balance =
               action.payload.account.balance;
             // We need to update the asset balance if the asset is the native
