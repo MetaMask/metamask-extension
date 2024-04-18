@@ -22,17 +22,6 @@ const state = {
       },
     },
     gasEstimateType: 'none',
-    selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-    identities: {
-      '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        name: 'Account 1',
-      },
-      '0xc42edfcc21ed14dda456aa0756c153f7985d8813': {
-        address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-        name: 'Account 2',
-      },
-    },
     internalAccounts: {
       accounts: {
         'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -534,7 +523,6 @@ describe('TokenAllowancePage', () => {
       ...state,
       metamask: {
         ...state.metamask,
-        selectedAddress: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
       },
     };
     const newStore = configureMockStore([thunk])(newState);
