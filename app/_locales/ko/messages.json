@@ -1650,12 +1650,6 @@
   "general": {
     "message": "일반"
   },
-  "globalTitle": {
-    "message": "글로벌 메뉴"
-  },
-  "globalTourDescription": {
-    "message": "포트폴리오, 연결된 사이트, 설정 등을 확인하세요"
-  },
   "goBack": {
     "message": "뒤로 가기"
   },
@@ -2887,12 +2881,6 @@
   },
   "permissions": {
     "message": "권한"
-  },
-  "permissionsTitle": {
-    "message": "권한"
-  },
-  "permissionsTourDescription": {
-    "message": "연결된 계정을 찾아 여기서 권한을 관리하세요"
   },
   "personalAddressDetected": {
     "message": "개인 주소가 발견되었습니다. 토큰 계약 주소를 입력하세요."
@@ -4247,12 +4235,6 @@
   },
   "switchedTo": {
     "message": "다음으로 변경했습니다:"
-  },
-  "switcherTitle": {
-    "message": "네트워크 전환기"
-  },
-  "switcherTourDescription": {
-    "message": "아이콘을 클릭하면 네트워크가 변경되거나 새로운 네트워크가 추가됩니다"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "네트워크를 전환하면 대기 중인 모든 컨펌 작업이 취소됩니다."

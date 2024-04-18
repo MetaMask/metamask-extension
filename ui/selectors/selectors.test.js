@@ -11,6 +11,7 @@ import {
   OPTIMISM_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import { SURVEY_DATE, SURVEY_GMT } from '../helpers/constants/survey';
+import { createMockInternalAccount } from '../../test/jest/mocks';
 import * as selectors from './selectors';
 
 jest.mock('../../app/scripts/lib/util', () => ({
@@ -38,14 +39,25 @@ const modifyStateWithHWKeyring = (keyring) => {
 describe('Selectors', () => {
   describe('#getSelectedAddress', () => {
     it('returns undefined if selectedAddress is undefined', () => {
-      expect(selectors.getSelectedAddress({ metamask: {} })).toBeUndefined();
+      expect(
+        selectors.getSelectedAddress({
+          metamask: { internalAccounts: { accounts: {}, selectedAccount: '' } },
+        }),
+      ).toBeUndefined();
     });
 
     it('returns selectedAddress', () => {
-      const selectedAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+      const mockInternalAccount = createMockInternalAccount();
+      const internalAccounts = {
+        accounts: {
+          [mockInternalAccount.id]: mockInternalAccount,
+        },
+        selectedAccount: mockInternalAccount.id,
+      };
+
       expect(
-        selectors.getSelectedAddress({ metamask: { selectedAddress } }),
-      ).toStrictEqual(selectedAddress);
+        selectors.getSelectedAddress({ metamask: { internalAccounts } }),
+      ).toStrictEqual(mockInternalAccount.address);
     });
   });
 
@@ -786,10 +798,26 @@ describe('Selectors', () => {
     });
   });
 
-  it('returns selected identity', () => {
-    expect(selectors.getSelectedIdentity(mockState)).toStrictEqual({
+  it('returns selected internalAccount', () => {
+    expect(selectors.getSelectedInternalAccount(mockState)).toStrictEqual({
       address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-      name: 'Test Account',
+      id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      metadata: {
+        name: 'Test Account',
+        keyring: {
+          type: 'HD Key Tree',
+        },
+      },
+      options: {},
+      methods: [
+        'personal_sign',
+        'eth_sign',
+        'eth_signTransaction',
+        'eth_signTypedData_v1',
+        'eth_signTypedData_v3',
+        'eth_signTypedData_v4',
+      ],
+      type: 'eip155:eoa',
     });
   });
 
@@ -1593,12 +1621,12 @@ describe('#getConnectedSitesListWithNetworkInfo', () => {
 describe('#getConnectedSitesList', () => {
   it('returns an empty object if there are no connected addresses', () => {
     const connectedSubjectsForAllAddresses = {};
-    const identities = {};
+    const internalAccounts = [];
     const connectedAddresses = [];
 
     const result = selectors.getConnectedSitesList.resultFunc(
       connectedSubjectsForAllAddresses,
-      identities,
+      internalAccounts,
       connectedAddresses,
     );
 
@@ -1616,15 +1644,23 @@ describe('#getConnectedSitesList', () => {
         { origin: 'site3', name: 'Site 3' },
       ],
     };
-    const identities = {
-      '0x123': { name: 'John Doe' },
-      '0x456': { name: 'Jane Smith' },
-    };
+
+    const mockInternalAccount1 = createMockInternalAccount({
+      address: '0x123',
+      name: 'John Doe',
+    });
+    const mockInternalAccount2 = createMockInternalAccount({
+      address: '0x456',
+      name: 'Jane Smith',
+    });
+
+    const internalAccounts = [mockInternalAccount1, mockInternalAccount2];
+
     const connectedAddresses = ['0x123', '0x456'];
 
     const result = selectors.getConnectedSitesList.resultFunc(
       connectedSubjectsForAllAddresses,
-      identities,
+      internalAccounts,
       connectedAddresses,
     );
 
