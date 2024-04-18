@@ -4412,10 +4412,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-institutional/rpc-allowlist@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "@metamask-institutional/rpc-allowlist@npm:1.0.2"
-  checksum: 34939415457c5856c49c01330de976e276d5525b9ca4bdf5eca55570ccb47be77a809bf3a6eb05f817bd91c981e8614b573385e0b9ed7b218233d4b559e58b75
+"@metamask-institutional/rpc-allowlist@npm:1.0.3":
+  version: 1.0.3
+  resolution: "@metamask-institutional/rpc-allowlist@npm:1.0.3"
+  checksum: caed69a7855328d3261f7499bc024c772fc61f050c574c9e76a0dc565779e9d842a89ed01af33eaf268ac6b3b3624be7b7a8183329f734d08751ee98d5c18472
   languageName: node
   linkType: hard
 
@@ -5840,12 +5840,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/queued-request-controller@npm:^0.7.0":
-  version: 0.7.0
-  resolution: "@metamask/queued-request-controller@npm:0.7.0"
+"@metamask/queued-request-controller@npm:^0.8.0":
+  version: 0.8.0
+  resolution: "@metamask/queued-request-controller@npm:0.8.0"
   dependencies:
     "@metamask/base-controller": "npm:^5.0.1"
-    "@metamask/controller-utils": "npm:^9.0.2"
+    "@metamask/controller-utils": "npm:^9.1.0"
     "@metamask/json-rpc-engine": "npm:^8.0.1"
     "@metamask/rpc-errors": "npm:^6.2.1"
     "@metamask/swappable-obj-proxy": "npm:^2.2.0"
@@ -5853,7 +5853,7 @@ __metadata:
   peerDependencies:
     "@metamask/network-controller": ^18.0.0
     "@metamask/selected-network-controller": ^11.0.0
-  checksum: 7dcacf5386de7cd3bd5216f86ff3775b0c746d206ada80d523531be77d4304978923ec2983c0c699a9684c230a06d91652ed8ee22967ccc4f19ba4ef479dbab0
+  checksum: dc30430a6055ca44ee3d70342d75d5604bdcc2d0dde55108f38a4fc16117bc709d6e2f47458b7ca82c9c6423c3116ff3c752f8c65a654718fdbcacf7a325d1b8
   languageName: node
   linkType: hard
 
@@ -7749,8 +7749,8 @@ __metadata:
   linkType: hard
 
 "@solana/web3.js@npm:^1.87.6":
-  version: 1.90.1
-  resolution: "@solana/web3.js@npm:1.90.1"
+  version: 1.91.6
+  resolution: "@solana/web3.js@npm:1.91.6"
   dependencies:
     "@babel/runtime": "npm:^7.23.4"
     "@noble/curves": "npm:^1.2.0"
@@ -7767,7 +7767,7 @@ __metadata:
     node-fetch: "npm:^2.7.0"
     rpc-websockets: "npm:^7.5.1"
     superstruct: "npm:^0.14.2"
-  checksum: 0b99f30f0fd5aba8315405b8148f72acc1c60bef40c19b8b54efc68aa60520a880261af319c592c1a64dc20a9152bf4e65058d2c3fa9710d85e05411c06459f0
+  checksum: 99c233c46983c90b367d104b4f015254306259c65302041770c655f0443c0a0dd3149959f9d7c9aeaf49371e8f637848877b7cfcf6e03a9740c020843cb120e6
   languageName: node
   linkType: hard
 
@@ -25305,7 +25305,7 @@ __metadata:
     "@metamask-institutional/extension": "npm:^0.3.20"
     "@metamask-institutional/institutional-features": "npm:^1.2.15"
     "@metamask-institutional/portfolio-dashboard": "npm:^1.4.0"
-    "@metamask-institutional/rpc-allowlist": "npm:^1.0.2"
+    "@metamask-institutional/rpc-allowlist": "npm:1.0.3"
     "@metamask-institutional/sdk": "npm:^0.1.25"
     "@metamask-institutional/transaction-update": "npm:^0.1.38"
     "@metamask/abi-utils": "npm:^2.0.2"
@@ -25362,7 +25362,7 @@ __metadata:
     "@metamask/post-message-stream": "npm:^8.0.0"
     "@metamask/ppom-validator": "npm:^0.29.0"
     "@metamask/providers": "npm:^14.0.2"
-    "@metamask/queued-request-controller": "npm:^0.7.0"
+    "@metamask/queued-request-controller": "npm:^0.8.0"
     "@metamask/rate-limit-controller": "npm:^3.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"

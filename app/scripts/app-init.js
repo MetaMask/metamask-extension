@@ -8,7 +8,6 @@ let scriptsLoadInitiated = false;
 const testMode = process.env.IN_TEST;
 
 const loadTimeLogs = [];
-
 // eslint-disable-next-line import/unambiguous
 function tryImport(...fileNames) {
   try {
@@ -57,27 +56,27 @@ function importAllScripts() {
     throw new Error('Missing APPLY_LAVAMOAT environment variable');
   }
 
-  loadFile('./scripts/sentry-install.js');
+  loadFile('../scripts/sentry-install.js');
 
   // eslint-disable-next-line no-undef
   const isWorker = !self.document;
   if (!isWorker) {
-    loadFile('./scripts/snow.js');
+    loadFile('../scripts/snow.js');
   }
 
-  loadFile('./scripts/use-snow.js');
+  loadFile('../scripts/use-snow.js');
 
   // Always apply LavaMoat in e2e test builds, so that we can capture initialization stats
   if (testMode || applyLavaMoat) {
-    loadFile('./scripts/runtime-lavamoat.js');
-    loadFile('./scripts/lockdown-more.js');
-    loadFile('./scripts/policy-load.js');
+    loadFile('../scripts/runtime-lavamoat.js');
+    loadFile('../scripts/lockdown-more.js');
+    loadFile('../scripts/policy-load.js');
   } else {
-    loadFile('./scripts/init-globals.js');
-    loadFile('./scripts/lockdown-install.js');
-    loadFile('./scripts/lockdown-run.js');
-    loadFile('./scripts/lockdown-more.js');
-    loadFile('./scripts/runtime-cjs.js');
+    loadFile('../scripts/init-globals.js');
+    loadFile('../scripts/lockdown-install.js');
+    loadFile('../scripts/lockdown-run.js');
+    loadFile('../scripts/lockdown-more.js');
+    loadFile('../scripts/runtime-cjs.js');
   }
 
   // This environment variable is set to a string of comma-separated relative file paths.
