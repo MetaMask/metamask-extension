@@ -1,8 +1,27 @@
 diff --git a/dist/KeyringController.js b/dist/KeyringController.js
-index fc649ea6fc97b905d811b236de638172fb10b548..beab676ab85e5e372eda7846e98b7d34af6317f5 100644
+index fc649ea6fc97b905d811b236de638172fb10b548..bb288fda7e2ef970ceefe2ac22bcf653a6a55b8a 100644
 --- a/dist/KeyringController.js
 +++ b/dist/KeyringController.js
-@@ -1092,9 +1092,13 @@ _KeyringController_keyringBuilders = new WeakMap(), _KeyringController_keyrings
+@@ -576,6 +576,18 @@ class KeyringController extends base_controller_1.BaseController {
+                 return { type, data };
+             })));
+             serializedKeyrings.push(...__classPrivateFieldGet(this, _KeyringController_unsupportedKeyrings, "f"));
++            /**
++             * ============================== PATCH INFORMATION ==============================
++             * The HD keyring is the default keyring for all wallets if this keyring is missing
++             * for some reason we should avoid saving the keyrings
++             *
++             * The upstream fix is here: https://github.com/MetaMask/core/pull/4168
++             *
++             * This patch can be found on the core branch `extension-keyring-controller-v13-patch`
++             */
++            if (!serializedKeyrings.some((keyring) => keyring.type === KeyringTypes.hd)) {
++                throw new Error(constants_1.KeyringControllerError.NoHdKeyring);
++            }
+             let vault;
+             let newEncryptionKey;
+             if (__classPrivateFieldGet(this, _KeyringController_cacheEncryptionKey, "f")) {
+@@ -1092,9 +1104,16 @@ _KeyringController_keyringBuilders = new WeakMap(), _KeyringController_keyrings
  }, _KeyringController_addQRKeyring = function _KeyringController_addQRKeyring() {
      return __awaiter(this, void 0, void 0, function* () {
          // QRKeyring is not yet compatible with Keyring type from @metamask/utils
@@ -10,12 +29,41 @@ index fc649ea6fc97b905d811b236de638172fb10b548..beab676ab85e5e372eda7846e98b7d34
 -            accounts: [],
 -        }));
 +        /**
-+         *  Patch for @metamask/keyring-controller v13.0.0
-+         *  Below code change will fix the issue 23804, The intial code added a empty accounts as argument when creating a new QR keyring.
-+         *  cause the new Keystone MetamaskKeyring default properties all are undefined during deserialise() process.
-+         *  Please refer to PR 23903 for detail.
++         * Patch for @metamask/keyring-controller v13.0.0
++         * Below code change will fix the issue 23804, The intial code added a empty accounts as argument when creating a new QR keyring.
++         * cause the new Keystone MetamaskKeyring default properties all are undefined during deserialise() process.
++         * Please refer to PR 23903 for detail.
++         *
++         * This patch can be found on the core branch `extension-keyring-controller-v13-patch`
 +         */
++        // @ts-expect-error See patch note
 +        const qrKeyring = (yield __classPrivateFieldGet(this, _KeyringController_instances, "m", _KeyringController_newKeyring).call(this, KeyringTypes.qr));
          const accounts = yield qrKeyring.getAccounts();
          yield __classPrivateFieldGet(this, _KeyringController_instances, "m", _KeyringController_checkForDuplicate).call(this, KeyringTypes.qr, accounts);
          __classPrivateFieldGet(this, _KeyringController_keyrings, "f").push(qrKeyring);
+diff --git a/dist/constants.d.ts b/dist/constants.d.ts
+index 0c02177576b840c8412bd5c047010439927cf4af..805c0d5f78578efdda95a6da6d66dce13c9003c6 100644
+--- a/dist/constants.d.ts
++++ b/dist/constants.d.ts
+@@ -25,6 +25,7 @@ export declare enum KeyringControllerError {
+     MissingVaultData = "KeyringController - Cannot persist vault without vault information",
+     ExpiredCredentials = "KeyringController - Encryption key and salt provided are expired",
+     NoKeyringBuilder = "KeyringController - No keyringBuilder found for keyring",
+-    DataType = "KeyringController - Incorrect data type provided"
++    DataType = "KeyringController - Incorrect data type provided",
++    NoHdKeyring = "KeyringController - No HD Keyring found"
+ }
+ //# sourceMappingURL=constants.d.ts.map
+\ No newline at end of file
+diff --git a/dist/constants.js b/dist/constants.js
+index 58b3a15b796396de78b9dc252baf23d5bd40ae0a..10768a8a6ad111c1f6552ba43ce8eca3c570c8eb 100644
+--- a/dist/constants.js
++++ b/dist/constants.js
+@@ -30,5 +30,6 @@ var KeyringControllerError;
+     KeyringControllerError["ExpiredCredentials"] = "KeyringController - Encryption key and salt provided are expired";
+     KeyringControllerError["NoKeyringBuilder"] = "KeyringController - No keyringBuilder found for keyring";
+     KeyringControllerError["DataType"] = "KeyringController - Incorrect data type provided";
++    KeyringControllerError["NoHdKeyring"] = "KeyringController - No HD Keyring found";
+ })(KeyringControllerError = exports.KeyringControllerError || (exports.KeyringControllerError = {}));
+ //# sourceMappingURL=constants.js.map
+\ No newline at end of file
