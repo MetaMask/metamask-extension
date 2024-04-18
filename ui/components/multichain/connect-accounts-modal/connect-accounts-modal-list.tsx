@@ -71,11 +71,17 @@ export const ConnectAccountsModalList: React.FC<ConnectAccountsListProps> = ({
               display={Display.Flex}
             >
               <Tooltip
+                distance={75}
                 html={t('connectedAccountsListTooltip', [
                   <strong>{getURLHost(activeTabOrigin)}</strong>,
                 ])}
+                position="top"
               >
-                <Icon name={IconName.Info} color={IconColor.iconMuted} />
+                <Icon
+                  name={IconName.Info}
+                  color={IconColor.iconMuted}
+                  marginInlineEnd={1}
+                />
               </Tooltip>
               {t('permissions')}
             </Text>
