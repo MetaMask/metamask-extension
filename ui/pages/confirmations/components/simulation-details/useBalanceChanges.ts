@@ -27,7 +27,7 @@ const NATIVE_DECIMALS = 18;
 const ERC20_DEFAULT_DECIMALS = 18;
 
 // Converts a SimulationTokenStandard to a TokenStandard
-const convertStandard = (standard: SimulationTokenStandard) => {
+function convertStandard(standard: SimulationTokenStandard) {
   switch (standard) {
     case SimulationTokenStandard.erc20:
       return TokenStandard.ERC20;
@@ -38,24 +38,24 @@ const convertStandard = (standard: SimulationTokenStandard) => {
     default:
       throw new Error(`Unknown token standard: ${standard}`);
   }
-};
+}
 
 // Calculates the asset amount based on the balance change and decimals
-const getAssetAmount = (
+function getAssetAmount(
   { isDecrease: isNegative, difference: quantity }: SimulationBalanceChange,
   decimals: number,
-): Amount => {
+): Amount {
   const numeric = Numeric.from(quantity, 16)
     .times(isNegative ? -1 : 1, 10)
     .toBase(10)
     .shiftedBy(decimals);
   return { isNegative, quantity, decimals, numeric };
-};
+}
 
 // Fetches token details for all the token addresses in the SimulationTokenBalanceChanges
-const fetchErc20Decimals = async (
+async function fetchErc20Decimals(
   addresses: Hex[],
-): Promise<Record<Hex, number>> => {
+): Promise<Record<Hex, number>> {
   const uniqueAddresses = [
     ...new Set(addresses.map((address) => address.toLowerCase())),
   ];
@@ -68,13 +68,13 @@ const fetchErc20Decimals = async (
       decimals ? parseInt(decimals, 10) : ERC20_DEFAULT_DECIMALS,
     ]),
   );
-};
+}
 
-const fetchTokenFiatRates = async (
+async function fetchTokenFiatRates(
   fiatCurrency: string,
   erc20TokenAddresses: Hex[],
   chainId: Hex,
-): Promise<ContractExchangeRates> => {
+): Promise<ContractExchangeRates> {
   const tokenRates = await fetchTokenExchangeRates(
     fiatCurrency,
     erc20TokenAddresses,
@@ -87,7 +87,7 @@ const fetchTokenFiatRates = async (
       rate,
     ]),
   );
-};
+}
 
 // Compiles the balance change for the native asset
 function getNativeBalanceChange(
@@ -153,7 +153,7 @@ export const useBalanceChanges = (
 
   const erc20FiatRates = useAsyncResultOrThrow(
     () => fetchTokenFiatRates(fiatCurrency, erc20TokenAddresses, chainId),
-    [JSON.stringify(erc20TokenAddresses), fiatCurrency],
+    [JSON.stringify(erc20TokenAddresses), chainId, fiatCurrency],
   );
 
   if (erc20Decimals.pending || erc20FiatRates.pending || !simulationData) {

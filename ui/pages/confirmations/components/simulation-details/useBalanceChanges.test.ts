@@ -59,7 +59,7 @@ const dummyBalanceChange = {
   newBalance: '0xIGNORE' as Hex,
 };
 
-const pendingImpl = () =>
+const PENDING_PROMISE = () =>
   new Promise(() => {
     /* unresolved promise */
   });
@@ -93,7 +93,7 @@ describe('useBalanceChanges', () => {
     });
 
     it('returns pending=true while fetching token decimals', async () => {
-      mockGetTokenStandardAndDetails.mockImplementation(pendingImpl);
+      mockGetTokenStandardAndDetails.mockImplementation(PENDING_PROMISE);
       const simulationData: SimulationData = {
         nativeBalanceChange: undefined,
         tokenBalanceChanges: [
@@ -117,7 +117,7 @@ describe('useBalanceChanges', () => {
     });
 
     it('returns pending=true while fetching token fiat rates', async () => {
-      mockFetchTokenExchangeRates.mockImplementation(pendingImpl);
+      mockFetchTokenExchangeRates.mockImplementation(PENDING_PROMISE);
       const simulationData: SimulationData = {
         nativeBalanceChange: undefined,
         tokenBalanceChanges: [
