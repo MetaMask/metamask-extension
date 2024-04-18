@@ -25,7 +25,6 @@ import {
   addToAddressBook,
   updateTransaction,
   updateEditableParams,
-  dismissOpenSeaToBlockaidBanner,
   setSwapsFeatureFlags,
   fetchSmartTransactionsLiveness,
 } from '../../../store/actions';
@@ -54,9 +53,7 @@ import {
   getUnapprovedTransactions,
   getInternalAccountByAddress,
   getApprovedAndSignedTransactions,
-  getHasDismissedOpenSeaToBlockaidBanner,
-  getHasMigratedFromOpenSeaToBlockaid,
-  getIsNetworkSupportedByBlockaid,
+  getSelectedNetworkClientId,
 } from '../../../selectors';
 import {
   getCurrentChainSupportsSmartTransactions,
@@ -137,6 +134,7 @@ const mapStateToProps = (state, ownProps) => {
   } = ownProps;
   const { id: paramsTransactionId } = params;
   const isMainnet = getIsMainnet(state);
+  const selectedNetworkClientId = getSelectedNetworkClientId(state);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const envType = getEnvironmentType();
@@ -280,12 +278,6 @@ const mapStateToProps = (state, ownProps) => {
   const isUserOpContractDeployError =
     fullTxData.isUserOperation && type === TransactionType.deployContract;
 
-  const hasMigratedFromOpenSeaToBlockaid =
-    getHasMigratedFromOpenSeaToBlockaid(state);
-  const hasDismissedOpenSeaToBlockaidBanner =
-    getHasDismissedOpenSeaToBlockaidBanner(state);
-  const isNetworkSupportedByBlockaid = getIsNetworkSupportedByBlockaid(state);
-
   return {
     balance,
     fromAddress,
@@ -320,6 +312,7 @@ const mapStateToProps = (state, ownProps) => {
     nextNonce,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     isMainnet,
+    selectedNetworkClientId,
     isEthGasPrice,
     noGasPrice,
     supportsEIP1559,
@@ -353,9 +346,6 @@ const mapStateToProps = (state, ownProps) => {
     custodianPublishesTransaction,
     rpcUrl,
     ///: END:ONLY_INCLUDE_IF
-    hasMigratedFromOpenSeaToBlockaid,
-    hasDismissedOpenSeaToBlockaidBanner,
-    isNetworkSupportedByBlockaid,
   };
 };
 
@@ -452,8 +442,6 @@ export const mapDispatchToProps = (dispatch) => {
     setWaitForConfirmDeepLinkDialog: (wait) =>
       dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
     ///: END:ONLY_INCLUDE_IF
-    dismissOpenSeaToBlockaidBanner: () =>
-      dispatch(dismissOpenSeaToBlockaidBanner()),
   };
 };
 

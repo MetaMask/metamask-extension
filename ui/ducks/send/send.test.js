@@ -130,8 +130,8 @@ describe('Send Slice', () => {
       .spyOn(Actions, 'estimateGas')
       .mockImplementation(() => Promise.resolve('0x0'));
     jest
-      .spyOn(Actions, 'getGasFeeEstimatesAndStartPolling')
-      .mockImplementation(() => Promise.resolve());
+      .spyOn(Actions, 'gasFeeStartPollingByNetworkClientId')
+      .mockImplementation(() => Promise.resolve('pollToken'));
     jest
       .spyOn(Actions, 'updateTokenType')
       .mockImplementation(() => Promise.resolve({ isERC721: false }));
