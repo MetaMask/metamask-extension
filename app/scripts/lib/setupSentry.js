@@ -528,13 +528,11 @@ export default function setupSentry({ release, getState }) {
    * whether MetaMetrics is on or off for all build types except mmi
    */
   async function getSentryEnabled() {
-
     // For MMI we want Sentry always logging, doesn't depend on MetaMetrics being on or off
     if (METAMASK_BUILD_TYPE === 'mmi') {
       return true;
-    } else {
-      getMetaMetricsEnabled();
     }
+    return getMetaMetricsEnabled();
   }
 
   Sentry.init({
