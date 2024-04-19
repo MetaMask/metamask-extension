@@ -3078,12 +3078,23 @@
         "eslint-plugin-prettier": true,
         "eslint-plugin-react": true,
         "eslint-plugin-react-hooks": true,
-        "eslint>ajv": true,
+        "eslint>@eslint/eslintrc>ajv": true,
         "eslint>globals": true,
         "eslint>ignore": true,
         "eslint>minimatch": true,
         "mocha>strip-json-comments": true,
         "nock>debug": true
+      }
+    },
+    "eslint>@eslint/eslintrc>ajv": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "eslint>@eslint/eslintrc>ajv>json-schema-traverse": true,
+        "eslint>ajv>uri-js": true,
+        "eslint>fast-deep-equal": true
       }
     },
     "eslint>@eslint/eslintrc>import-fresh": {
@@ -8852,10 +8863,15 @@
         "process.stdout.write": true
       },
       "packages": {
-        "eslint>ajv": true,
         "lodash": true,
+        "stylelint>table>ajv": true,
         "stylelint>table>slice-ansi": true,
         "stylelint>table>string-width": true
+      }
+    },
+    "stylelint>table>ajv": {
+      "packages": {
+        "eslint>fast-deep-equal": true
       }
     },
     "stylelint>table>slice-ansi": {
