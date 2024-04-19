@@ -683,7 +683,8 @@
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>tiny-secp256k1": false,
       "@storybook/test-runner>@swc/core": false,
       "@lavamoat/lavadome-react>@lavamoat/preinstall-always-fail": false,
-      "tsx>esbuild": false
+      "tsx>esbuild": false,
+      "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": false
     }
   },
   "packageManager": "yarn@4.0.2"
