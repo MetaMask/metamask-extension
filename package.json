@@ -121,6 +121,7 @@
     "update-mock-cdn": "node test/e2e/mock-cdn/update-mock-cdn-files.js"
   },
   "resolutions": {
+    "@trezor/connect-web": "^9.2.2",
     "simple-update-notifier@^1.0.0": "^2.0.0",
     "@babel/core": "patch:@babel/core@npm%3A7.23.2#~/.yarn/patches/@babel-core-npm-7.23.2-b93f586907.patch",
     "@types/react": "^16.9.53",
@@ -339,7 +340,7 @@
     "@sentry/integrations": "^7.53.0",
     "@sentry/types": "^7.53.0",
     "@sentry/utils": "^7.53.0",
-    "@trezor/connect-web": "^9.2.1",
+    "@trezor/connect-web": "^9.2.2",
     "@zxing/browser": "^0.1.4",
     "@zxing/library": "0.20.0",
     "await-semaphore": "^0.1.1",
