@@ -29,4 +29,5 @@ gh pr create \
   --draft \
   --title "${PR_TITLE}" \
   --body "${PR_BODY}" \
-  --head "${BASE_PR_BRANCH_NAME}"
+  --head "${PR_BRANCH_NAME}" \
+  --base "${BASE_PR_BRANCH_NAME}"
