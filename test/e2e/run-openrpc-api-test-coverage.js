@@ -1,3 +1,4 @@
+const fs = require('fs');
 const testCoverage = require('@open-rpc/test-coverage').default;
 const { parseOpenRPCDocument } = require('@open-rpc/schema-utils-js');
 const mockServer = require('@open-rpc/mock-server/build/index').default;
@@ -11,7 +12,7 @@ const { v4 } = require('uuid');
 
 const uuid = v4;
 
-const FixtureBuilder = require('../fixture-builder');
+const FixtureBuilder = require('./fixture-builder');
 const {
   withFixtures,
   openDapp,
@@ -19,9 +20,9 @@ const {
   DAPP_URL,
   WINDOW_TITLES,
   switchToOrOpenDapp,
-} = require('../helpers');
+} = require('./helpers');
 
-const { PAGES } = require('../webdriver/driver');
+const { PAGES } = require('./webdriver/driver');
 
 const pollForResult = async (driver, generatedKey) => {
   let result = await driver.executeScript(`return window['${generatedKey}'];`);
@@ -105,6 +106,12 @@ class ConfirmationsRejectRule {
       await this.driver.executeScript(
         `window.ethereum.request(${requestPermissionsRequest})`,
       );
+      const screenshot = await this.driver.driver.takeScreenshot();
+      call.attachments = call.attachments || [];
+      call.attachments.push({
+        type: 'image',
+        data: `data:image/png;base64,${screenshot.toString('base64')}`,
+      });
 
       await this.driver.waitUntilXWindowHandles(3);
       await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -112,6 +119,12 @@ class ConfirmationsRejectRule {
       await this.driver.findClickableElements({
         text: 'Next',
         tag: 'button',
+      });
+
+      const screenshotTwo = await this.driver.driver.takeScreenshot();
+      call.attachments.push({
+        type: 'image',
+        data: `data:image/png;base64,${screenshotTwo.toString('base64')}`,
       });
 
       await this.driver.clickElement({
@@ -137,19 +150,27 @@ class ConfirmationsRejectRule {
     await this.driver.waitUntilXWindowHandles(3);
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
+
+    let text = 'Cancel';
     if (this.rejectButtonInsteadOfCancel.includes(call.methodName)) {
       await this.driver.findClickableElements({
         text: 'Reject',
         tag: 'button',
       });
-      await this.driver.clickElement({ text: 'Reject', tag: 'button' });
+      text = 'Reject';
     } else {
       await this.driver.findClickableElements({
         text: 'Cancel',
         tag: 'button',
       });
-      await this.driver.clickElement({ text: 'Cancel', tag: 'button' });
     }
+    const screenshot = await this.driver.driver.takeScreenshot();
+    call.attachments = call.attachments || [];
+    call.attachments.push({
+      type: 'image',
+      data: `data:image/png;base64,${screenshot.toString('base64')}`,
+    });
+    await this.driver.clickElement({ text, tag: 'button' });
     // make sure to switch back to the dapp or else the next test will fail on the wrong window
     await switchToOrOpenDapp(this.driver);
   }
@@ -208,6 +229,9 @@ class ConfirmationsRejectRule {
 
   validateCall(call) {
     call.valid = call.error.code === 4001;
+    if (!call.valid) {
+      call.reason = `Expected error code 4001, got ${call.error.code}`;
+    }
     return call;
   }
 }
@@ -409,7 +433,7 @@ async function main() {
         'wallet_addEthereumChain',
         'eth_signTypedData_v4', // requires permissions for eth_accounts
         'wallet_switchEthereumChain',
-        // 'eth_getEncryptionPublicKey', // requires permissions for eth_accounts
+        'eth_getEncryptionPublicKey', // requires permissions for eth_accounts
       ];
 
       const filteredMethods = openrpcDocument.methods
@@ -429,12 +453,12 @@ async function main() {
       await testCoverage({
         openrpcDocument,
         transport,
-        reporters: ['console-rule'],
+        reporters: ['console-streaming', 'html'],
         // only: ['eth_newFilter'],
         rules: [
           new JsonSchemaFakerRule({
             skip: filteredMethods,
-            numCalls: 1,
+            numCalls: 2,
           }),
           new ExamplesRule({
             skip: filteredMethods,
