@@ -7,7 +7,9 @@ import ContractInteractionInfo from './contract-interaction';
 
 const store = configureStore({
   metamask: { ...mockState.metamask },
-  confirm: { currentConfirmation: genUnapprovedContractInteractionConfirmation() },
+  confirm: {
+    currentConfirmation: genUnapprovedContractInteractionConfirmation(),
+  },
 });
 
 const Story = {

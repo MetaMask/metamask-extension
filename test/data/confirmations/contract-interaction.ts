@@ -1,10 +1,14 @@
-import { TransactionStatus, TransactionType } from "@metamask/transaction-controller";
-import { Confirmation } from "../../../ui/pages/confirmations/types/confirm";
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import { Confirmation } from '../../../ui/pages/confirmations/types/confirm';
 
-export const CONTRACT_INTERACTION_SENDER_ADDRESS = '0x2e0d7e8c45221fca00d74a3609a0f7097035d09b';
+export const CONTRACT_INTERACTION_SENDER_ADDRESS =
+  '0x2e0d7e8c45221fca00d74a3609a0f7097035d09b';
 
 export const genUnapprovedContractInteractionConfirmation = (
-  { address } = { address: CONTRACT_INTERACTION_SENDER_ADDRESS }
+  { address } = { address: CONTRACT_INTERACTION_SENDER_ADDRESS },
 ): Confirmation => ({
   actionId: String(400855682),
   chainId: '0xaa36a7',

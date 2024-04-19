@@ -13,6 +13,8 @@ const setCurrentConfirmation = () => {
   const dispatch = useDispatch();
   const { currentConfirmation } = useCurrentConfirmation();
 
+  console.log({ currentConfirmation });
+
   useEffect(() => {
     if (currentConfirmation) {
       dispatch(updateCurrentConfirmation(currentConfirmation));
