@@ -178,7 +178,7 @@ exports[`Confirm matches snapshot for personal signature type 1`] = `
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
                 >
-                  https://metamask.github.io
+                  metamask.github.io
                 </p>
               </div>
             </div>
@@ -410,7 +410,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
                 >
-                  https://metamask.github.io
+                  metamask.github.io
                 </p>
               </div>
             </div>
