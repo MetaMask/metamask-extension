@@ -22,7 +22,7 @@ export const defaultBuyableChains: AggregatorNetwork[] = [
     shortName: 'Cronos',
     nativeTokenSupported: true,
   },
-
+  {
     active: true,
     chainId: 56,
     chainName: 'BNB Chain Mainnet',
