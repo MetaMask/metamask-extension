@@ -33,6 +33,7 @@ describe('Create Snap Account', function (this: Suite) {
         });
 
         // scroll to the bottom of the page
+        await driver.waitForSelector({ text: 'Confirm' });
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
         // click the install button to install the snap
@@ -111,6 +112,7 @@ describe('Create Snap Account', function (this: Suite) {
         });
 
         // scroll to the bottom of the page
+        await driver.waitForSelector({ text: 'Confirm' });
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
         // click the install button to install the snap
@@ -202,6 +204,7 @@ describe('Create Snap Account', function (this: Suite) {
         });
 
         // scroll to the bottom of the page
+        await driver.waitForSelector({ text: 'Confirm' });
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
         // click the install button to install the snap
