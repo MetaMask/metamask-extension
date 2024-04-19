@@ -1,10 +1,11 @@
 import testCoverage from '@open-rpc/test-coverage';
 import { parseOpenRPCDocument } from '@open-rpc/schema-utils-js';
 const mockServer = require('@open-rpc/mock-server/build/index').default;
+import HtmlReporter from '@open-rpc/test-coverage/build/reporters/html-reporter';
 import ExamplesRule from '@open-rpc/test-coverage/build/rules/examples-rule';
 import JsonSchemaFakerRule from '@open-rpc/test-coverage/build/rules/json-schema-faker-rule';
 import paramsToObj from '@open-rpc/test-coverage/build/utils/params-to-obj';
-import { ContentDescriptorObject, ExampleObject, ExamplePairingObject, MethodObject, OpenrpcDocument } from '@open-rpc/meta-schema';
+import { ContentDescriptorObject, ExampleObject, ExamplePairingObject, MethodObject } from '@open-rpc/meta-schema';
 const { v4 } = require('uuid');
 
 declare let window: any;
@@ -464,10 +465,10 @@ async function main() {
         )
         .map((m) => (m as MethodObject).name);
 
-      await testCoverage({
+      const testCoverageResults = await testCoverage({
         openrpcDocument: openrpcDocument as any,
         transport,
-        reporters: ['console-streaming', 'html'],
+        reporters: ['console-streaming', new HtmlReporter({autoOpen: !process.env.CI})],
         // only: ['eth_newFilter'],
         rules: [
           new JsonSchemaFakerRule({
@@ -485,6 +486,15 @@ async function main() {
           }),
         ],
       });
+
+      await driver.quit();
+
+      // if any of the tests failed, exit with a non-zero code
+      if (testCoverageResults.every((r) => r.valid)) {
+        process.exit(0);
+      } else {
+        process.exit(1);
+      }
     },
   );
 }
