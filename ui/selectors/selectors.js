@@ -849,6 +849,11 @@ export function getPetnamesEnabled(state) {
   return petnamesEnabled;
 }
 
+export function getRedesignedConfirmationsEnabled(state) {
+  const { redesignedConfirmations } = getPreferences(state);
+  return redesignedConfirmations;
+}
+
 export function getFeatureNotificationsEnabled(state) {
   const { featureNotificationsEnabled = false } = getPreferences(state);
   return featureNotificationsEnabled;
