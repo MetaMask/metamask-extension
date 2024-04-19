@@ -1,5 +1,6 @@
 name: Run API Spec Tests
 on: [pull_request]
+
 jobs:
   api-spec-test:
     runs-on: ubuntu-latest
