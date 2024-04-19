@@ -849,6 +849,11 @@ export function getPetnamesEnabled(state) {
   return petnamesEnabled;
 }
 
+export function getRedesignedConfirmationsEnabled(state) {
+  const { redesignedConfirmations } = getPreferences(state);
+  return redesignedConfirmations;
+}
+
 export function getFeatureNotificationsEnabled(state) {
   const { featureNotificationsEnabled = false } = getPreferences(state);
   return featureNotificationsEnabled;
@@ -1985,36 +1990,6 @@ export const getAllEnabledNetworks = createDeepEqualSelector(
     return showTestnetNetworks ? allNetworks : nonTestNetworks;
   },
 );
-
-export function getIsOptimism(state) {
-  return (
-    getCurrentChainId(state) === CHAIN_IDS.OPTIMISM ||
-    getCurrentChainId(state) === CHAIN_IDS.OPTIMISM_TESTNET ||
-    getCurrentChainId(state) === CHAIN_IDS.OPTIMISM_GOERLI
-  );
-}
-
-export function getIsBase(state) {
-  return (
-    getCurrentChainId(state) === CHAIN_IDS.BASE ||
-    getCurrentChainId(state) === CHAIN_IDS.BASE_TESTNET
-  );
-}
-
-export function getIsOpbnb(state) {
-  return (
-    getCurrentChainId(state) === CHAIN_IDS.OPBNB ||
-    getCurrentChainId(state) === CHAIN_IDS.OPBNB_TESTNET
-  );
-}
-
-export function getIsOpStack(state) {
-  return getIsOptimism(state) || getIsBase(state) || getIsOpbnb(state);
-}
-
-export function getIsMultiLayerFeeNetwork(state) {
-  return getIsOpStack(state);
-}
 
 /**
  *  To retrieve the maxBaseFee and priorityFee the user has set as default
