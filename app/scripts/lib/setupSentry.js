@@ -624,14 +624,14 @@ export default function setupSentry({ release, getState }) {
     const options = hub.getClient?.().getOptions?.() ?? {
       autoSessionTracking: false,
     };
-    const isMetaMetricsEnabled = await getSentryEnabled();
+    const isSentryEnabled = await getSentryEnabled();
     if (
-      isMetaMetricsEnabled === true &&
+      isSentryEnabled === true &&
       options.autoSessionTracking === false
     ) {
       await startSession();
     } else if (
-      isMetaMetricsEnabled === false &&
+      isSentryEnabled === false &&
       options.autoSessionTracking === true
     ) {
       await endSession();
