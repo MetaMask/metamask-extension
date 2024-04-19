@@ -71,7 +71,6 @@
     "showTestnetMessageInDropdown": true,
     "showBetaHeader": false,
     "showPermissionsTour": true,
-    "showProductTour": true,
     "showNetworkBanner": true,
     "showAccountBanner": true,
     "trezorModel": null,
