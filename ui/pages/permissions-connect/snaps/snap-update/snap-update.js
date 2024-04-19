@@ -114,9 +114,9 @@ export default function SnapUpdate({
       >
         {!isLoading && !hasError && (
           <Text
-            paddingBottom={4}
             paddingTop={4}
-            variant={TextVariant.headingLg}
+            paddingBottom={2}
+            variant={TextVariant.headingMd}
             textAlign="center"
           >
             {t('updateRequest')}

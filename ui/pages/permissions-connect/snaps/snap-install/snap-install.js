@@ -162,7 +162,7 @@ export default function SnapInstall({
         {!hasError && !isLoading && (
           <>
             <Text
-              variant={TextVariant.headingLg}
+              variant={TextVariant.headingMd}
               paddingTop={4}
               paddingBottom={2}
               textAlign="center"
