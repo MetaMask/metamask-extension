@@ -1650,12 +1650,6 @@
   "general": {
     "message": "Allgemein"
   },
-  "globalTitle": {
-    "message": "Globales Menü"
-  },
-  "globalTourDescription": {
-    "message": "Sehen Sie Ihr Portfolio, verbundene Seiten, Einstellungen und mehr."
-  },
   "goBack": {
     "message": "Zurück"
   },
@@ -2887,12 +2881,6 @@
   },
   "permissions": {
     "message": "Genehmigungen"
-  },
-  "permissionsTitle": {
-    "message": "Genehmigungen"
-  },
-  "permissionsTourDescription": {
-    "message": "Hier können Sie Ihre verbundenen Konten finden und Berechtigungen verwalten."
   },
   "personalAddressDetected": {
     "message": "Personalisierte Adresse identifiziert. Bitte füge die Token-Contract-Adresse ein."
@@ -4247,12 +4235,6 @@
   },
   "switchedTo": {
     "message": "Sie haben gewechselt zu"
-  },
-  "switcherTitle": {
-    "message": "Netzwerkwechsler"
-  },
-  "switcherTourDescription": {
-    "message": "Klicken Sie auf das Symbol, um das Netzwerk zu wechseln oder ein neues Netzwerk hinzuzufügen."
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Das Wechseln der Netzwerke wird alle ausstehenden Bestätigungen stornieren."

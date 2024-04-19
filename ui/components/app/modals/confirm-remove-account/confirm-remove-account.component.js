@@ -11,7 +11,7 @@ export default class ConfirmRemoveAccount extends Component {
   static propTypes = {
     hideModal: PropTypes.func.isRequired,
     removeAccount: PropTypes.func.isRequired,
-    identity: PropTypes.shape({
+    account: PropTypes.shape({
       id: PropTypes.string.isRequired,
       address: PropTypes.string.isRequired,
       metadata: PropTypes.shape({
@@ -37,7 +37,7 @@ export default class ConfirmRemoveAccount extends Component {
 
   handleRemove = () => {
     this.props
-      .removeAccount(this.props.identity.address)
+      .removeAccount(this.props.account.address)
       .then(() => this.props.hideModal());
   };
 
@@ -47,31 +47,31 @@ export default class ConfirmRemoveAccount extends Component {
 
   renderSelectedAccount() {
     const { t } = this.context;
-    const { identity, rpcPrefs, chainId } = this.props;
+    const { account, rpcPrefs, chainId } = this.props;
     return (
       <div className="confirm-remove-account__account">
         <div className="confirm-remove-account__account__identicon">
-          <Identicon address={identity.address} diameter={32} />
+          <Identicon address={account.address} diameter={32} />
         </div>
         <div className="confirm-remove-account__account__name">
           <span className="confirm-remove-account__account__label">
             {t('name')}
           </span>
-          <span className="account_value">{identity.metadata.name}</span>
+          <span className="account_value">{account.metadata.name}</span>
         </div>
         <div className="confirm-remove-account__account__address">
           <span className="confirm-remove-account__account__label">
             {t('publicAddress')}
           </span>
           <span className="account_value">
-            {addressSummary(identity.address, 4, 4)}
+            {addressSummary(account.address, 4, 4)}
           </span>
         </div>
         <div className="confirm-remove-account__account__link">
           <a
             onClick={() => {
               const accountLink = getAccountLink(
-                identity.address,
+                account.address,
                 chainId,
                 rpcPrefs,
               );

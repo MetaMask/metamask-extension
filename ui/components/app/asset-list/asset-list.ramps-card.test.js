@@ -4,6 +4,7 @@ import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { CHAIN_IDS, NETWORK_TYPES } from '../../../../shared/constants/network';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
+import { getSelectedInternalAccountFromMockState } from '../../../../test/jest/mocks';
 import AssetList from './asset-list';
 
 // Specific to just the ETH FIAT conversion
@@ -15,8 +16,11 @@ jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {
   };
 });
 
+const mockSelectedInternalAccount =
+  getSelectedInternalAccountFromMockState(mockState);
+
 const render = (
-  selectedAddress = mockState.metamask.selectedAddress,
+  selectedInternalAccount = mockSelectedInternalAccount,
   balance = ETH_BALANCE,
   chainId = CHAIN_IDS.MAINNET,
 ) => {
@@ -27,10 +31,9 @@ const render = (
       providerConfig: { chainId, ticker: 'ETH', type: NETWORK_TYPES.MAINNET },
       accountsByChainId: {
         [CHAIN_IDS.MAINNET]: {
-          [selectedAddress]: { balance },
+          [selectedInternalAccount.address]: { balance },
         },
       },
-      selectedAddress,
     },
   };
   const store = configureStore(state);
@@ -40,31 +43,19 @@ const render = (
   );
 };
 
-describe('AssetList Buy/Receive', () => {
+describe('AssetList Ramps Card', () => {
   useIsOriginalNativeTokenSymbol.mockReturnValue(true);
 
-  it('shows Buy and Receive when the account is empty', () => {
+  it('shows the ramp card when the account is empty', () => {
     const { queryByText } = render(
       '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
       '0x0',
     );
-    expect(queryByText('Buy')).toBeInTheDocument();
-    expect(queryByText('Receive')).toBeInTheDocument();
+    expect(queryByText('Fund your wallet')).toBeInTheDocument();
   });
 
-  it('shows only Receive when chainId is not buyable', () => {
-    const { queryByText } = render(
-      '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-      '0x0',
-      '0x8675309', // Custom chain ID that isn't buyable
-    );
-    expect(queryByText('Buy')).not.toBeInTheDocument();
-    expect(queryByText('Receive')).toBeInTheDocument();
-  });
-
-  it('shows neither when the account has a balance', () => {
+  it('does not show the ramp card when the account has a balance', () => {
     const { queryByText } = render();
-    expect(queryByText('Buy')).not.toBeInTheDocument();
-    expect(queryByText('Receive')).not.toBeInTheDocument();
+    expect(queryByText('Fund your wallet')).not.toBeInTheDocument();
   });
 });

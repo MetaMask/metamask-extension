@@ -409,6 +409,9 @@
     "message": "$1 and $2",
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
   },
+  "announcements": {
+    "message": "Announcements"
+  },
   "appDescription": {
     "message": "An Ethereum Wallet in your Browser",
     "description": "The description of the application"
@@ -619,7 +622,7 @@
     "message": "If you approve this request, someone can steal your assets listed on Blur."
   },
   "blockaidDescriptionErrored": {
-    "message": "Because of an error, this request was not verified by the security provider. Proceed with caution."
+    "message": "Because of an error, we couldn't check for security alerts. Only continue if you trust every address involved."
   },
   "blockaidDescriptionMaliciousDomain": {
     "message": "You're interacting with a malicious domain. If you approve this request, you might lose your assets."
@@ -640,7 +643,7 @@
     "message": "This is a deceptive request"
   },
   "blockaidTitleMayNotBeSafe": {
-    "message": "Request may not be safe"
+    "message": "Be careful"
   },
   "blockaidTitleSuspicious": {
     "message": "This is a suspicious request"
@@ -666,9 +669,6 @@
   "busy": {
     "message": "Busy"
   },
-  "buy": {
-    "message": "Buy"
-  },
   "buyAndSell": {
     "message": "Buy & Sell"
   },
@@ -682,6 +682,10 @@
   },
   "buyNow": {
     "message": "Buy Now"
+  },
+  "buyToken": {
+    "message": "Buy $1",
+    "description": "$1 is the token symbol"
   },
   "bytes": {
     "message": "Bytes"
@@ -1389,6 +1393,15 @@
   "details": {
     "message": "Details"
   },
+  "developerOptions": {
+    "message": "Developer Options"
+  },
+  "developerOptionsResetStatesAnnouncementsDescription": {
+    "message": "Resets isShown boolean to false for all announcements. Announcements are the notifications shown in the What's New popup modal."
+  },
+  "developerOptionsResetStatesOnboarding": {
+    "message": "Resets various states related to onboarding and redirects to the \"Secure Your Wallet\" onboarding page."
+  },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” is disabled because it does not meet the minimum of a 10% increase from the original gas fee.",
     "description": "$1 is gas estimate type which can be market or aggressive"
@@ -1837,6 +1850,13 @@
   "functionType": {
     "message": "Function type"
   },
+  "fundYourWallet": {
+    "message": "Fund your wallet"
+  },
+  "fundYourWalletDescription": {
+    "message": "Get started by adding some $1 to your wallet.",
+    "description": "$1 is the token symbol"
+  },
   "gas": {
     "message": "Gas"
   },
@@ -1920,11 +1940,13 @@
   "genericExplorerView": {
     "message": "View account on $1"
   },
-  "globalTitle": {
-    "message": "Global menu"
+  "getStartedWithNFTs": {
+    "message": "Get $1 to buy NFTs",
+    "description": "$1 is the token symbol"
   },
-  "globalTourDescription": {
-    "message": "See your portfolio, connected sites, settings, and more"
+  "getStartedWithNFTsDescription": {
+    "message": "Get started with NFTs by adding some $1 to your wallet.",
+    "description": "$1 is the token symbol"
   },
   "goBack": {
     "message": "Go back"
@@ -2891,9 +2913,6 @@
   "nftDisclaimer": {
     "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes gets changed by the marketplace on which the NFT was minted."
   },
-  "nftLearnMore": {
-    "message": "Learn more about NFTs"
-  },
   "nftOptions": {
     "message": "NFT Options"
   },
@@ -2958,6 +2977,9 @@
   },
   "noWebcamFoundTitle": {
     "message": "Webcam not found"
+  },
+  "nonCustodialAccounts": {
+    "message": "MetaMask Institutional allows you to use non-custodial accounts, if you plan to use these accounts backup the Secret Recovery Phrase."
   },
   "nonce": {
     "message": "Nonce"
@@ -3171,6 +3193,9 @@
   },
   "on": {
     "message": "On"
+  },
+  "onboarding": {
+    "message": "Onboarding"
   },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "The IPFS gateway makes it possible to access and view data hosted by third parties. You can add a custom IPFS gateway or continue using the default."
@@ -3653,12 +3678,6 @@
   "permissionsPageTourTitle": {
     "message": "Connected sites are now permissions"
   },
-  "permissionsTitle": {
-    "message": "Permissions"
-  },
-  "permissionsTourDescription": {
-    "message": "Find your connected accounts and manage permissions here"
-  },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
@@ -3780,6 +3799,9 @@
   "receive": {
     "message": "Receive"
   },
+  "receiveTokensCamelCase": {
+    "message": "Receive tokens"
+  },
   "recipientAddressPlaceholder": {
     "message": "Enter public address (0x) or ENS name"
   },
@@ -3812,6 +3834,12 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Protect your funds"
+  },
+  "redesignedConfirmationsEnabledToggle": {
+    "message": "Redesigned confirmations"
+  },
+  "redesignedConfirmationsToggleDescription": {
+    "message": "Turn this on to see re-designed confirmations whenever you receive signature requests."
   },
   "refreshList": {
     "message": "Refresh list"
@@ -3924,6 +3952,9 @@
   },
   "reset": {
     "message": "Reset"
+  },
+  "resetStates": {
+    "message": "Reset States"
   },
   "resetWallet": {
     "message": "Reset wallet"
@@ -4431,7 +4462,7 @@
     "description": "$1 is remaining time in seconds"
   },
   "smartTransactions": {
-    "message": "Smart transactions"
+    "message": "Smart Transactions"
   },
   "smartTransactionsBenefit1": {
     "message": "82% fewer failed transactions"
@@ -4446,7 +4477,7 @@
     "message": "Unlock the safest, most reliable, and easiest transaction experience - a smarter way to navigate web3."
   },
   "smartTransactionsDescription2": {
-    "message": "Millions of dollars are lost every month due to failed transactions & frontrunning. Smart transactions fixes this."
+    "message": "Millions of dollars are lost every month due to failed transactions & frontrunning. Smart Transactions fixes this."
   },
   "smartTransactionsDescription3": {
     "message": "Right now, Smart Transactions are only available on ETH Mainnet. You can turn them off at any time in settings. $1",
@@ -4763,6 +4794,14 @@
   "stake": {
     "message": "Stake"
   },
+  "startYourJourney": {
+    "message": "Start your journey with $1",
+    "description": "$1 is the token symbol"
+  },
+  "startYourJourneyDescription": {
+    "message": "Get started with web3 by adding some $1 to your wallet.",
+    "description": "$1 is the token symbol"
+  },
   "stateLogError": {
     "message": "Error in retrieving state logs."
   },
@@ -4774,6 +4813,9 @@
   },
   "stateLogsDescription": {
     "message": "State logs contain your public account addresses and sent transactions."
+  },
+  "states": {
+    "message": "States"
   },
   "status": {
     "message": "Status"
@@ -4839,7 +4881,7 @@
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
   "stxOptInDescription": {
-    "message": "Turn on smart transactions for more reliable and secure transactions, and adjustable fees on ETH Mainnet. $1"
+    "message": "Turn on Smart Transactions for more reliable and secure transactions, and adjustable fees on ETH Mainnet. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Privately submitting your Swap..."
@@ -5338,12 +5380,6 @@
   },
   "switchedTo": {
     "message": "You're now using"
-  },
-  "switcherTitle": {
-    "message": "Network switcher"
-  },
-  "switcherTourDescription": {
-    "message": "Click the icon to switch networks or add a new network"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Switching networks will cancel all pending confirmations"
