@@ -1464,8 +1464,14 @@ export default class MetamaskController extends EventEmitter {
         const { completedOnboarding: prevCompletedOnboarding } = prevState;
         const { completedOnboarding: currCompletedOnboarding } = currState;
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
+          const { address } = this.accountsController.getSelectedAccount();
+
           this.postOnboardingInitialization();
           this.triggerNetworkrequests();
+          // execute once the token detection on the post-onboarding
+          await this.tokenDetectionController.detectTokens({
+            selectedAddress: address,
+          });
         }
       }, this.onboardingController.store.getState()),
     );
@@ -3179,8 +3185,6 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setShowBetaHeader.bind(appStateController),
       setShowPermissionsTour:
         appStateController.setShowPermissionsTour.bind(appStateController),
-      setShowProductTour:
-        appStateController.setShowProductTour.bind(appStateController),
       setShowAccountBanner:
         appStateController.setShowAccountBanner.bind(appStateController),
       setShowNetworkBanner:
