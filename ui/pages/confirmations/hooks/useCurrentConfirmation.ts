@@ -11,7 +11,6 @@ import {
   pendingConfirmationsSelector,
   unconfirmedTransactionsHashSelector,
 } from '../../../selectors';
-import { TransactionType } from '@metamask/transaction-controller';
 
 type Approval = ApprovalRequest<Record<string, Json>>;
 
