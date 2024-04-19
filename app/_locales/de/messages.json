@@ -1650,12 +1650,6 @@
   "general": {
     "message": "Allgemein"
   },
-  "globalTitle": {
-    "message": "Globales Menü"
-  },
-  "globalTourDescription": {
-    "message": "Sehen Sie Ihr Portfolio, verbundene Seiten, Einstellungen und mehr."
-  },
   "goBack": {
     "message": "Zurück"
   },
@@ -2562,21 +2556,6 @@
   "notificationsMarkAllAsRead": {
     "message": "Alle als gelesen markieren"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "Mehr erfahren"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "🎉 Wir freuen uns sehr, die Open-Beta-Version von MetaMask Snaps zu präsentieren!"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "Personalisieren Sie Ihre Wallet mit Snaps, die von der Entwickler-Community erstellt wurden!"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "Snaps helfen Ihnen dabei, mehr aus MetaMask zu machen – wie z. B. Verbindungen mit anderen Netzwerken herzustellen, Transaktionseinblicke zu erlangen und benutzerdefinierte Benachrichtigungen zu erhalten."
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "Wir stellen vor: MetaMask Snaps"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 neue Tokens in diesem Konto gefunden.",
     "description": "$1 is the number of new tokens detected"
@@ -2902,12 +2881,6 @@
   },
   "permissions": {
     "message": "Genehmigungen"
-  },
-  "permissionsTitle": {
-    "message": "Genehmigungen"
-  },
-  "permissionsTourDescription": {
-    "message": "Hier können Sie Ihre verbundenen Konten finden und Berechtigungen verwalten."
   },
   "personalAddressDetected": {
     "message": "Personalisierte Adresse identifiziert. Bitte füge die Token-Contract-Adresse ein."
@@ -4262,12 +4235,6 @@
   },
   "switchedTo": {
     "message": "Sie haben gewechselt zu"
-  },
-  "switcherTitle": {
-    "message": "Netzwerkwechsler"
-  },
-  "switcherTourDescription": {
-    "message": "Klicken Sie auf das Symbol, um das Netzwerk zu wechseln oder ein neues Netzwerk hinzuzufügen."
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Das Wechseln der Netzwerke wird alle ausstehenden Bestätigungen stornieren."

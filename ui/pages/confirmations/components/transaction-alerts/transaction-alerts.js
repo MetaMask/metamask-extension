@@ -80,7 +80,7 @@ const TransactionAlerts = ({
         />
       )}
 
-      {supportsEIP1559 && hasSimulationError && (
+      {hasSimulationError && (
         <SimulationErrorMessage
           userAcknowledgedGasMissing={userAcknowledgedGasMissing}
           setUserAcknowledgedGasMissing={setUserAcknowledgedGasMissing}

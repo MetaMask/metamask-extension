@@ -72,6 +72,7 @@ import {
   setCustomApproveTxData,
   showModal,
   setSwapsQuotesPollingLimitEnabled,
+  getLayer1GasFee,
 } from '../../../store/actions';
 import {
   ASSET_ROUTE,
@@ -136,7 +137,6 @@ import {
 } from '../../../../shared/lib/transactions-controller-utils';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
-import fetchEstimatedL1Fee from '../../../helpers/utils/optimism/fetchEstimatedL1Fee';
 import ExchangeRateDisplay from '../exchange-rate-display';
 import InfoTooltip from '../../../components/ui/info-tooltip';
 import useRamps from '../../../hooks/experiences/useRamps';
@@ -995,13 +995,16 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       try {
         let l1ApprovalFeeTotal = '0x0';
         if (approveTxParams) {
-          l1ApprovalFeeTotal = await fetchEstimatedL1Fee(chainId, {
-            txParams: {
-              ...approveTxParams,
-              gasPrice: addHexPrefix(approveTxParams.gasPrice),
-              value: '0x0', // For approval txs we need to use "0x0" here.
-            },
-          });
+          l1ApprovalFeeTotal = await dispatch(
+            getLayer1GasFee({
+              transactionParams: {
+                ...approveTxParams,
+                gasPrice: addHexPrefix(approveTxParams.gasPrice),
+                value: '0x0', // For approval txs we need to use "0x0" here.
+              },
+              chainId,
+            }),
+          );
           setMultiLayerL1ApprovalFeeTotal(l1ApprovalFeeTotal);
         }
         const l1FeeTotal = sumHexes(

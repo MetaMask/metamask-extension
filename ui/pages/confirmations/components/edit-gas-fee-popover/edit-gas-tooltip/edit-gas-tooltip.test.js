@@ -50,10 +50,6 @@ const render = async (componentProps) => {
           balance: '0x176e5b6f173ebe66',
         },
       },
-      identities: {
-        '0xAddress': {},
-      },
-      selectedAddress: '0xAddress',
       internalAccounts: {
         accounts: {
           mockId: {

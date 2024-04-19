@@ -23,4 +23,12 @@
   &__countdown {
     width: 25px;
   }
+
+  // Slightly overwrite the default SimulationDetails layout to look better on the Smart Transaction status page.
+  .simulation-details-layout {
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+    text-align: left;
+  }
 }

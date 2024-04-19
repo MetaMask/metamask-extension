@@ -29,7 +29,7 @@ import {
   TextAlign,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentChainId } from '../../../selectors';
+import { getCurrentChainId, getFullTxData } from '../../../selectors';
 import { getFeatureFlagsByChainId } from '../../../../shared/modules/selectors';
 import { BaseUrl } from '../../../../shared/constants/urls';
 import {
@@ -38,10 +38,12 @@ import {
 } from '../../../../shared/constants/smartTransactions';
 import { hideLoadingIndication } from '../../../store/actions';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
+import { SimulationDetails } from '../../confirmations/components/simulation-details';
 
 type RequestState = {
   smartTransaction?: SmartTransaction;
   isDapp: boolean;
+  txId?: string;
 };
 
 export type SmartTransactionStatusPageProps = {
@@ -390,7 +392,7 @@ export const SmartTransactionStatusPage = ({
 }: SmartTransactionStatusPageProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const { smartTransaction, isDapp } = requestState;
+  const { smartTransaction, isDapp, txId } = requestState;
   const isSmartTransactionPending =
     !smartTransaction ||
     smartTransaction.status === SmartTransactionStatuses.PENDING;
@@ -422,6 +424,9 @@ export const SmartTransactionStatusPage = ({
     stxEstimatedDeadline,
   });
   const chainId: string = useSelector(getCurrentChainId);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore: This same selector is used in the awaiting-swap component.
+  const fullTxData = useSelector((state) => getFullTxData(state, txId)) || {};
 
   const countdown = isSmartTransactionPending ? (
     <Text
@@ -448,6 +453,9 @@ export const SmartTransactionStatusPage = ({
     dispatch(hideLoadingIndication());
   }, []);
 
+  const canShowSimulationDetails =
+    fullTxData.simulationData?.tokenBalanceChanges?.length > 0 ||
+    fullTxData.simulationData?.nativeBalanceChange;
   const uuid = smartTransaction?.uuid;
   const portfolioSmartTransactionStatusUrl =
     uuid && chainId
@@ -472,34 +480,43 @@ export const SmartTransactionStatusPage = ({
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
-        paddingLeft={10}
-        paddingRight={10}
+        paddingLeft={4}
+        paddingRight={4}
+        width={BlockSize.Full}
         style={{ flexGrow: 1 }}
       >
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
           alignItems={AlignItems.center}
+          paddingLeft={6}
+          paddingRight={6}
         >
           <SmartTransactionsStatusIcon
             iconName={iconName}
             iconColor={iconColor}
           />
           <Title title={title} />
+          <Deadline
+            isSmartTransactionPending={isSmartTransactionPending}
+            stxDeadline={stxDeadline}
+            timeLeftForPendingStxInSec={timeLeftForPendingStxInSec}
+          />
+          <Description description={description} />
+          <PortfolioSmartTransactionStatusUrl
+            portfolioSmartTransactionStatusUrl={
+              portfolioSmartTransactionStatusUrl
+            }
+            isSmartTransactionPending={isSmartTransactionPending}
+            onCloseExtension={onCloseExtension}
+          />
         </Box>
-        <Deadline
-          isSmartTransactionPending={isSmartTransactionPending}
-          stxDeadline={stxDeadline}
-          timeLeftForPendingStxInSec={timeLeftForPendingStxInSec}
-        />
-        <Description description={description} />
-        <PortfolioSmartTransactionStatusUrl
-          portfolioSmartTransactionStatusUrl={
-            portfolioSmartTransactionStatusUrl
-          }
-          isSmartTransactionPending={isSmartTransactionPending}
-          onCloseExtension={onCloseExtension}
-        />
+        {canShowSimulationDetails && (
+          <SimulationDetails
+            simulationData={fullTxData.simulationData}
+            transactionId={fullTxData.id}
+          />
+        )}
       </Box>
       <SmartTransactionsStatusPageFooter
         isDapp={isDapp}

@@ -1650,12 +1650,6 @@
   "general": {
     "message": "General"
   },
-  "globalTitle": {
-    "message": "Menú global"
-  },
-  "globalTourDescription": {
-    "message": "Vea su portafolio, sitios conectados, configuraciones y más"
-  },
   "goBack": {
     "message": "Volver"
   },
@@ -2562,21 +2556,6 @@
   "notificationsMarkAllAsRead": {
     "message": "Marcar todo como leído"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "Conozca más"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "🎉 ¡Nos complace anunciar la versión Beta abierta de MetaMask Snaps!"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "¡Personalice su monedero con snaps creados por la comunidad de desarrolladores!"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "Los snaps lo ayudan a hacer más con MetaMask, como conectarlo a más redes, ver información sobre transacciones y recibir notificaciones personalizadas."
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "Presentamos MetaMask Snaps"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 nuevos tokens encontrados en esta cuenta",
     "description": "$1 is the number of new tokens detected"
@@ -2902,12 +2881,6 @@
   },
   "permissions": {
     "message": "Permisos"
-  },
-  "permissionsTitle": {
-    "message": "Permisos"
-  },
-  "permissionsTourDescription": {
-    "message": "Encuentre sus cuentas conectadas y administre los permisos aquí"
   },
   "personalAddressDetected": {
     "message": "Se detectó una dirección personal. Ingrese la dirección de contrato del token."
@@ -4262,12 +4235,6 @@
   },
   "switchedTo": {
     "message": "Ha cambiado a"
-  },
-  "switcherTitle": {
-    "message": "Selector de red"
-  },
-  "switcherTourDescription": {
-    "message": "Haga clic en el icono para cambiar de red o agregar una nueva red"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Cambiar de red cancelará todas las confirmaciones pendientes"

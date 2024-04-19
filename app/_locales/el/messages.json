@@ -1650,12 +1650,6 @@
   "general": {
     "message": "Γενικά"
   },
-  "globalTitle": {
-    "message": "Γενικό μενού"
-  },
-  "globalTourDescription": {
-    "message": "Δείτε το χαρτοφυλάκιό σας, τις συνδεδεμένες ιστοσελίδες, τις ρυθμίσεις και πολλά άλλα"
-  },
   "goBack": {
     "message": "Πηγαίνετε πίσω"
   },
@@ -2562,21 +2556,6 @@
   "notificationsMarkAllAsRead": {
     "message": "Επισήμανση όλων ως αναγνωσμένων"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "Μάθετε περισσότερα"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "🎉 Είμαστε ενθουσιασμένοι που ανακοινώνουμε την δοκιμαστική έναρξη του MetaMask Snaps!"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "Εξατομικεύστε το πορτοφόλι σας με snaps που δημιουργήθηκαν από την κοινότητα προγραμματιστών!"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "Τα Snaps σάς βοηθούν να κάνετε περισσότερα με το MetaMask — όπως τη σύνδεση σε περισσότερα δίκτυα, τη προβολή πληροφοριών συναλλαγών και τη λήψη προσαρμοσμένων ειδοποιήσεων."
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "Παρουσιάζουμε τα MetaMask Snaps"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 νέα tokens βρέθηκαν σε αυτόν τον λογαριασμό",
     "description": "$1 is the number of new tokens detected"
@@ -2902,12 +2881,6 @@
   },
   "permissions": {
     "message": "Άδειες"
-  },
-  "permissionsTitle": {
-    "message": "Άδειες"
-  },
-  "permissionsTourDescription": {
-    "message": "Βρείτε τους συνδεδεμένους λογαριασμούς σας και διαχειριστείτε τις άδειες εδώ"
   },
   "personalAddressDetected": {
     "message": "Η προσωπική διεύθυνση εντοπίστηκε. Καταχωρίστε τη διεύθυνση συμβολαίου του token."
@@ -4262,12 +4235,6 @@
   },
   "switchedTo": {
     "message": "Έχετε αλλάξει σε"
-  },
-  "switcherTitle": {
-    "message": "Επιλογέας δικτύου"
-  },
-  "switcherTourDescription": {
-    "message": "Κάντε κλικ στο εικονίδιο για να αλλάξετε δίκτυο ή να προσθέσετε ένα νέο δίκτυο"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Η αλλαγή δικτύων θα ακυρώσει όλες τις εκκρεμείς επιβεβαιώσεις"

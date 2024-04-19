@@ -1650,12 +1650,6 @@
   "general": {
     "message": "Geral"
   },
-  "globalTitle": {
-    "message": "Menu global"
-  },
-  "globalTourDescription": {
-    "message": "Veja seu portfólio, sites conectados, configurações e mais"
-  },
   "goBack": {
     "message": "Voltar"
   },
@@ -2562,21 +2556,6 @@
   "notificationsMarkAllAsRead": {
     "message": "Marcar todas como lidas"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "Saiba mais"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "🎉 Estamos empolgados de anunciar o Beta Aberto do MetaMask Snaps!"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "Personalize sua carteira com snaps criados pela comunidade de desenvolvedores!"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "Os snaps ajudam a fazer mais com a MetaMask, como conectar-se a mais redes, ver insights de transações e receber notificações personalizadas."
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "Apresentamos o MetaMask Snaps"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 novos tokens encontrados nesta conta",
     "description": "$1 is the number of new tokens detected"
@@ -2906,12 +2885,6 @@
   },
   "permissions": {
     "message": "Permissões"
-  },
-  "permissionsTitle": {
-    "message": "Permissões"
-  },
-  "permissionsTourDescription": {
-    "message": "Encontre suas contas conectadas e gerencie permissões aqui"
   },
   "personalAddressDetected": {
     "message": "Endereço pessoal detectado. Insira o endereço de contrato do token."
@@ -4266,12 +4239,6 @@
   },
   "switchedTo": {
     "message": "Você alternou para"
-  },
-  "switcherTitle": {
-    "message": "Alternador de redes"
-  },
-  "switcherTourDescription": {
-    "message": "Clique no ícone para alternar as redes ou adicionar uma nova"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "A alternância de redes cancelará todas as confirmações pendentes"

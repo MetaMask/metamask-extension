@@ -130,8 +130,8 @@ describe('Send Slice', () => {
       .spyOn(Actions, 'estimateGas')
       .mockImplementation(() => Promise.resolve('0x0'));
     jest
-      .spyOn(Actions, 'getGasFeeEstimatesAndStartPolling')
-      .mockImplementation(() => Promise.resolve());
+      .spyOn(Actions, 'gasFeeStartPollingByNetworkClientId')
+      .mockImplementation(() => Promise.resolve('pollToken'));
     jest
       .spyOn(Actions, 'updateTokenType')
       .mockImplementation(() => Promise.resolve({ isERC721: false }));
@@ -1393,8 +1393,6 @@ describe('Send Slice', () => {
                 status: NetworkStatus.Available,
               },
             },
-            selectedAddress: mockAddress1,
-            identities: { [mockAddress1]: { address: mockAddress1 } },
             internalAccounts: {
               accounts: {
                 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -1562,7 +1560,6 @@ describe('Send Slice', () => {
         const sendState = {
           metamask: {
             blockGasLimit: '',
-            selectedAddress: '',
             internalAccounts: {
               accounts: {
                 'mock-id': {
@@ -1637,7 +1634,6 @@ describe('Send Slice', () => {
         const sendState = {
           metamask: {
             blockGasLimit: '',
-            selectedAddress: '',
             internalAccounts: {
               accounts: {
                 'mock-id': {
@@ -1714,7 +1710,6 @@ describe('Send Slice', () => {
         const sendState = {
           metamask: {
             blockGasLimit: '',
-            selectedAddress: '',
             internalAccounts: {
               accounts: {
                 'mock-id': {
@@ -1788,7 +1783,6 @@ describe('Send Slice', () => {
         const tokenAssetTypeSendState = {
           metamask: {
             blockGasLimit: '',
-            selectedAddress: '',
             internalAccounts: {
               accounts: {
                 'mock-id': {
@@ -1855,7 +1849,6 @@ describe('Send Slice', () => {
       const defaultSendAssetState = {
         metamask: {
           blockGasLimit: '',
-          selectedAddress: '',
           internalAccounts: {
             accounts: {
               'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -1886,9 +1879,6 @@ describe('Send Slice', () => {
             [mockAddress1]: {
               address: '0x0',
             },
-          },
-          identities: {
-            [mockAddress1]: {},
           },
         },
         send: {
@@ -2207,7 +2197,6 @@ describe('Send Slice', () => {
         const updateRecipientState = {
           metamask: {
             addressBook: {},
-            identities: {},
             internalAccounts: {
               accounts: {},
               selectedAccount: '',
@@ -2319,13 +2308,11 @@ describe('Send Slice', () => {
         const tokenState = {
           metamask: {
             addressBook: {},
-            identities: {},
             internalAccounts: {
               accounts: {},
               selectedAccount: '',
             },
             blockGasLimit: '',
-            selectedAddress: '',
             providerConfig: {
               chainId: '0x1',
             },
@@ -2373,7 +2360,6 @@ describe('Send Slice', () => {
         const updateRecipientState = {
           metamask: {
             addressBook: {},
-            identities: {},
             providerConfig: {
               chainId: '',
             },
@@ -2767,9 +2753,6 @@ describe('Send Slice', () => {
             addressBook: {
               [CHAIN_IDS.GOERLI]: {},
             },
-            identities: {
-              [mockAddress1]: {},
-            },
             internalAccounts: {
               accounts: {
                 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -2926,16 +2909,12 @@ describe('Send Slice', () => {
         const editTransactionState = {
           metamask: {
             blockGasLimit: '0x3a98',
-            selectedAddress: '',
             providerConfig: {
               chainId: CHAIN_IDS.GOERLI,
             },
             tokens: [],
             addressBook: {
               [CHAIN_IDS.GOERLI]: {},
-            },
-            identities: {
-              [mockAddress1]: {},
             },
             accounts: {
               [mockAddress1]: {
@@ -3130,7 +3109,6 @@ describe('Send Slice', () => {
       const editTransactionState = {
         metamask: {
           blockGasLimit: '0x3a98',
-          selectedAddress: '',
           internalAccounts: {
             accounts: {
               'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -3166,9 +3144,6 @@ describe('Send Slice', () => {
           },
           addressBook: {
             [CHAIN_IDS.GOERLI]: {},
-          },
-          identities: {
-            [mockAddress1]: {},
           },
           accounts: {
             [mockAddress1]: {
@@ -3598,7 +3573,6 @@ describe('Send Slice', () => {
             send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
             metamask: {
               ensResolutionsByAddress: {},
-              identities: {},
               internalAccounts: {
                 accounts: {},
                 selectedAccount: '',
@@ -3618,7 +3592,6 @@ describe('Send Slice', () => {
             metamask: {
               ensResolutionsByAddress: {},
               addressBook: {},
-              identities: {},
               internalAccounts: {
                 accounts: {},
                 selectedAccount: '',
@@ -3669,7 +3642,6 @@ describe('Send Slice', () => {
             send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
             metamask: {
               ensResolutionsByAddress: {},
-              identities: {},
               internalAccounts: {
                 accounts: {},
                 selectedAccount: '',
