@@ -31,29 +31,25 @@ In web automation testing, locators are crucial commands that guide the framewor
 @throws {Error} Will throw an error if an invalid locator strategy is provided.
 
 <details><summary><b>Locate element by CSS</b></summary>
+<br>
+CSS Selectors in Selenium are string patterns used to identify an element based on a combination of HTML tag, id, class, and attributes.<br>
+<br>
 
+> <details><summary><b>Class - CSS Selector</b></summary>
 ><br>
-> CSS Selectors in Selenium are string patterns used to identify an element based on a combination of HTML tag, id, class, and attributes.
->
->#### **Class - CSS Selector**
->
->---
->
->To locate an element by its class using a CSS selector, prepend the class name with a dot (.) symbol.
+>To locate an element by its class using a CSS selector, prepend the class name with a dot (.) symbol.<br>
 >
 >![Screenshot displays the send transaction screen of MetaMask, highlighting how to locate the amount text box using its class.](image/classSelector.png)
->
 >
 >Syntax for locating by Class
 >
 >```jsx
 >await driver.findElement('.unit-input__input’);
 >```
->
->#### **ID - CSS selector**
->---
->
->To locate an element by its ID using a CSS selector, prepend the ID with a hash sign (#).
+></details>
+> <details><summary><b>ID - CSS selector</b></summary>
+><br>
+>To locate an element by its ID using a CSS selector, prepend the ID with a hash sign (#).<br>
 >
 >![Screenshot displays the login screen of MetaMask, highlighting how to locate the password text box using its ID.](image/idSelector.png)
 >
@@ -62,11 +58,10 @@ In web automation testing, locators are crucial commands that guide the framewor
 >```tsx
 >await driver.findElement('#password');
 >```
->
->#### **Attribute - CSS selector**
->---
->
->To target an element based on its attribute using a CSS selector, use square brackets ([]) to specify the attribute name and its value.
+></details>
+> <details><summary><b>Attribute - CSS selector</b></summary>
+><br>
+>To target an element based on its attribute using a CSS selector, use square brackets ([]) to specify the attribute name and its value.<br>
 >
 >![Screenshot displays the overview screen of MetaMask, highlighting how to locate the button ‘Buy & Sell’ using its unique attribute **data-testid and its value**.](image/attributeSelector.png)
 >
@@ -75,11 +70,10 @@ In web automation testing, locators are crucial commands that guide the framewor
 >```tsx
 >await driver.findElement('[data-testid="eth-overview-buy"]');
 >```
->
->#### **Attribute and tag - CSS  Selector**
->---
->
->Tag and attribute selectors provide a powerful way to precisely target and style HTML elements based on their type and characteristics.
+></details>
+> <details><summary><b>Attribute and tag - CSS  Selector</b></summary>
+><br>
+>Tag and attribute selectors provide a powerful way to precisely target and style HTML elements based on their type and characteristics.<br>
 >
 >![Screenshot displays the onboarding - Add custom network screen of MetaMask, highlighting how to locate the input field using the tag name and attribute type text.](image/attributeTagSelector.png)
 >
@@ -88,10 +82,10 @@ In web automation testing, locators are crucial commands that guide the framewor
 >```tsx
 >await driver.findElements('input[type="text"]')
 >```
->
->#### **Locate element by link text**
->---
->This type of CSS locator applies only to hyperlink texts with the anchor tags.
+></details>
+> <details><summary><b>Locate element by link text</b></summary>
+><br>
+>This type of CSS locator applies only to hyperlink texts with the anchor tags.<br>
 >
 >![Screenshot displays the contacts screen of MetaMask, highlighting how to locate the ‘Delete contact’ link using its type as Anchor(a).](image/linkTextSelector.png)
 >
@@ -102,7 +96,7 @@ In web automation testing, locators are crucial commands that guide the framewor
 >```
 >>
 </details>
-
+</details>
 <details><summary><b>Locate element by XPath</b></summary>
 
 >
