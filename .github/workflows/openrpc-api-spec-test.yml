@@ -1,9 +1,7 @@
-name: Run Tests
+name: Run API Spec Tests
 
 on:
   pull_request:
-    branches:
-      - develop
 
 jobs:
   api-spec-test:
