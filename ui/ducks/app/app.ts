@@ -305,6 +305,8 @@ export default function reduceApp(
     }
 
     case actionConstants.MODAL_CLOSE:
+      // TODO pnf: Fix edit nonce modal close
+      console.log('MODAL CLOSE', { modalState: appState.modal.modalState });
       return {
         ...appState,
         modal: Object.assign(

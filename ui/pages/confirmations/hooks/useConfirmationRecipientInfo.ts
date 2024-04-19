@@ -5,6 +5,8 @@ import {
   currentConfirmationSelector,
 } from '../../../selectors';
 import { getAccountByAddress } from '../../../helpers/utils/util';
+import { SignatureRequestType } from '../types/confirm';
+import { TransactionMeta } from '@metamask/transaction-controller';
 
 function useConfirmationRecipientInfo() {
   const currentConfirmation = useSelector(currentConfirmationSelector);
@@ -14,10 +16,15 @@ function useConfirmationRecipientInfo() {
   let recipientName = '';
 
   if (currentConfirmation) {
-    const { msgParams } = currentConfirmation;
+    const { msgParams } = currentConfirmation as SignatureRequestType;
+    const { txParams } = currentConfirmation as TransactionMeta;
     // url for all signature requests
     if (msgParams) {
       recipientAddress = msgParams.from;
+      const fromAccount = getAccountByAddress(allAccounts, recipientAddress);
+      recipientName = fromAccount?.metadata?.name;
+    } else if (txParams) {
+      recipientAddress = txParams.from;
       const fromAccount = getAccountByAddress(allAccounts, recipientAddress);
       recipientName = fromAccount?.metadata?.name;
     }

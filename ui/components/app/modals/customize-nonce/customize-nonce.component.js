@@ -38,7 +38,9 @@ const CustomizeNonce = ({
         } else {
           updateCustomNonce(customNonce);
         }
+
         getNextNonce();
+
         hideModal();
       }}
       submitText={t('save')}

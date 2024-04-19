@@ -21,6 +21,7 @@ import UserPreferencedCurrencyDisplay from '../../../../../components/app/user-p
 import EditGasToolTip from '../edit-gas-tooltip/edit-gas-tooltip';
 
 import { useGasItemFeeDetails } from './useGasItemFeeDetails';
+import { hexWEIToDecGWEI } from '../../../../../../shared/modules/conversion.utils';
 
 const getTitleAndIcon = (priorityLevel, editGasMode) => {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)

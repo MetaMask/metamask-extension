@@ -38,6 +38,7 @@ export const useGasItemFeeDetails = (priorityLevel) => {
   let minWaitTime;
 
   const { dappSuggestedGasFees } = transaction;
+  console.log('transaction inside useGasItemFeeDetails', { transaction });
 
   if (gasFeeEstimates?.[priorityLevel]) {
     maxFeePerGas = gasFeeEstimates[priorityLevel].suggestedMaxFeePerGas;

@@ -12,7 +12,6 @@ import { SignatureRequestType } from '../../../types/confirm';
 
 const Info: React.FC = () => {
   const currentConfirmation = useSelector(currentConfirmationSelector);
-  console.log('inside info', { currentConfirmation });
 
   const ConfirmationInfoComponentMap = useMemo(
     () => ({

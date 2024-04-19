@@ -27,8 +27,10 @@ const ConfirmGasDisplay = ({ userAcknowledgedGasMissing = false }) => {
   const networkAndAccountSupports1559 = useSelector(
     checkNetworkAndAccountSupports1559,
   );
-  const supportsEIP1559 = networkAndAccountSupports1559 && !isLegacyTxn;
+  let supportsEIP1559 = networkAndAccountSupports1559 && !isLegacyTxn;
   const dataTestId = 'confirm-gas-display';
+
+  supportsEIP1559 = false;
 
   return supportsEIP1559 ? (
     <GasDetailsItem

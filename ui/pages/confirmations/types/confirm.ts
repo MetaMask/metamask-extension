@@ -1,6 +1,8 @@
 import { ApprovalControllerState } from '@metamask/approval-controller';
 import {
   SimulationData,
+  TransactionEnvelopeType,
+  TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
 
@@ -32,27 +34,7 @@ export type SignatureRequestType = {
   securityAlertResponse?: SecurityAlertResponse;
 };
 
-export type TransactionRequestType = {
-  chainId?: string;
-  actionId: number;
-  id: string;
-  txParams?: {
-    data: string;
-    from: string;
-    gas: string;
-    maxFeePerGas: string;
-    maxPriorityFeePerGas: string;
-    to: string;
-    value: string;
-  };
-  type: TransactionType;
-  custodyId?: string;
-  securityAlertResponse?: SecurityAlertResponse;
-  origin: string;
-  simulationData: SimulationData;
-};
-
-export type Confirmation = SignatureRequestType | TransactionRequestType;
+export type Confirmation = SignatureRequestType | TransactionMeta;
 
 export type ConfirmMetamaskState = {
   confirm: {

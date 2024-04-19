@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 
 import { ApprovalRequest } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import { Json } from '@metamask/utils';
 
+import { TransactionType } from '@metamask/transaction-controller';
 import {
   latestPendingConfirmationSelector,
   pendingConfirmationsSelector,
   unconfirmedTransactionsHashSelector,
 } from '../../../selectors';
-import { TransactionType } from '@metamask/transaction-controller';
 
 type Approval = ApprovalRequest<Record<string, Json>>;
 
@@ -35,12 +35,24 @@ const useCurrentConfirmation = () => {
     }
     let pendingConfirmation: Approval | undefined;
     if (paramsTransactionId) {
-      if (paramsTransactionId === currentConfirmation?.id) {
-        return;
-      }
+      // if gas prediction has changed, change the current confirmation
       pendingConfirmation = pendingConfirmations.find(
         ({ id: confirmId }) => confirmId === paramsTransactionId,
       );
+      const unconfirmedTransaction =
+        pendingConfirmation && unconfirmedTransactions[pendingConfirmation.id];
+      if (paramsTransactionId === currentConfirmation?.id) {
+        const gasHasChanged =
+          unconfirmedTransaction?.txParams &&
+          currentConfirmation?.txParams &&
+          JSON.stringify(unconfirmedTransaction.txParams) !==
+            JSON.stringify(currentConfirmation.txParams);
+        if (gasHasChanged) {
+          setCurrentConfirmation(unconfirmedTransaction);
+        }
+
+        return;
+      }
     }
     if (!pendingConfirmation) {
       if (!latestPendingConfirmation) {
@@ -52,6 +64,7 @@ const useCurrentConfirmation = () => {
     if (pendingConfirmation.id !== currentConfirmation?.id) {
       const unconfirmedTransaction =
         unconfirmedTransactions[pendingConfirmation.id];
+
       if (!unconfirmedTransactions) {
         setCurrentConfirmation(undefined);
         return;
