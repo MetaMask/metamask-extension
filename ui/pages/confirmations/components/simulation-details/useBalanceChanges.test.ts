@@ -72,9 +72,12 @@ describe('useBalanceChanges', () => {
         [ERC20_TOKEN_ADDRESS_1_MOCK]: ERC20_DECIMALS_1_MOCK,
         [ERC20_TOKEN_ADDRESS_2_MOCK]: ERC20_DECIMALS_2_MOCK,
       };
-      return Promise.resolve({
-        decimals: decimalMap[address]?.toString() ?? undefined,
-      });
+      if (decimalMap[address]) {
+        return Promise.resolve({
+          decimals: decimalMap[address]?.toString() ?? undefined,
+        });
+      }
+      return Promise.reject(new Error('Unable to determine token standard'));
     });
     mockGetConversionRate.mockReturnValue(ETH_TO_FIAT_RATE);
     mockFetchTokenExchangeRates.mockResolvedValue({

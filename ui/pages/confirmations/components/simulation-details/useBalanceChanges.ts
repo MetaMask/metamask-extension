@@ -52,21 +52,28 @@ function getAssetAmount(
   return { isNegative, quantity, decimals, numeric };
 }
 
+// Fetches the decimals for the given token address.
+async function fetchErc20Decimals(address: Hex): Promise<number> {
+  try {
+    const { decimals } = await getTokenStandardAndDetails(address);
+    return decimals ? parseInt(decimals, 10) : ERC20_DEFAULT_DECIMALS;
+  } catch {
+    return ERC20_DEFAULT_DECIMALS;
+  }
+}
+
 // Fetches token details for all the token addresses in the SimulationTokenBalanceChanges
-async function fetchErc20Decimals(
+async function fetchAllErc20Decimals(
   addresses: Hex[],
 ): Promise<Record<Hex, number>> {
   const uniqueAddresses = [
-    ...new Set(addresses.map((address) => address.toLowerCase())),
+    ...new Set(addresses.map((address) => address.toLowerCase() as Hex)),
   ];
-  const tokenInfos = await Promise.all(
-    uniqueAddresses.map((address) => getTokenStandardAndDetails(address)),
+  const allDecimals = await Promise.all(
+    uniqueAddresses.map(fetchErc20Decimals),
   );
   return Object.fromEntries(
-    tokenInfos.map(({ decimals }, index) => [
-      uniqueAddresses[index],
-      decimals ? parseInt(decimals, 10) : ERC20_DEFAULT_DECIMALS,
-    ]),
+    allDecimals.map((decimals, i) => [uniqueAddresses[i], decimals]),
   );
 }
 
@@ -133,7 +140,7 @@ function getTokenBalanceChanges(
 
 // Compiles a list of balance changes from simulation data
 export const useBalanceChanges = (
-  simulationData: SimulationData | undefined,
+  simulationData?: Partial<SimulationData>,
 ): { pending: boolean; value: BalanceChange[] } => {
   const chainId = useSelector(getCurrentChainId);
   const fiatCurrency = useSelector(getCurrentCurrency);
@@ -147,7 +154,7 @@ export const useBalanceChanges = (
     .map((tbc) => tbc.address);
 
   const erc20Decimals = useAsyncResultOrThrow(
-    () => fetchErc20Decimals(erc20TokenAddresses),
+    () => fetchAllErc20Decimals(erc20TokenAddresses),
     [JSON.stringify(erc20TokenAddresses)],
   );
 
