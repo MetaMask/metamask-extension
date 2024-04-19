@@ -37,10 +37,10 @@ import TransactionDetailItem from '../components/transaction-detail-item/transac
 import LoadingHeartBeat from '../../../components/ui/loading-heartbeat';
 import LedgerInstructionField from '../components/ledger-instruction-field';
 import {
-  disconnectGasFeeEstimatePoller,
-  getGasFeeEstimatesAndStartPolling,
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
+  gasFeeStartPollingByNetworkClientId,
+  gasFeeStopPollingByPollingToken,
 } from '../../../store/actions';
 
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
@@ -63,10 +63,8 @@ import SnapAccountTransactionLoadingScreen from '../../snap-account-transaction-
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import FeeDetailsComponent from '../components/fee-details-component/fee-details-component';
 import { SimulationDetails } from '../components/simulation-details';
-import { BannerAlert } from '../../../components/component-library';
-import { Severity } from '../../../helpers/constants/design-system';
-
 import { fetchSwapsFeatureFlags } from '../../swaps/swaps.util';
+import { BlockaidUnavailableBannerAlert } from '../components/blockaid-unavailable-banner-alert/blockaid-unavailable-banner-alert';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -172,13 +170,10 @@ export default class ConfirmTransactionBase extends Component {
     useMaxValue: PropTypes.bool,
     maxValue: PropTypes.string,
     isMultiLayerFeeNetwork: PropTypes.bool,
-    hasMigratedFromOpenSeaToBlockaid: PropTypes.bool,
-    hasDismissedOpenSeaToBlockaidBanner: PropTypes.bool,
-    dismissOpenSeaToBlockaidBanner: PropTypes.func,
-    isNetworkSupportedByBlockaid: PropTypes.bool,
     isSmartTransaction: PropTypes.bool,
     smartTransactionsOptInStatus: PropTypes.bool,
     currentChainSupportsSmartTransactions: PropTypes.bool,
+    selectedNetworkClientId: PropTypes.string,
   };
 
   state = {
@@ -392,10 +387,6 @@ export default class ConfirmTransactionBase extends Component {
       tokenSymbol,
       isUsingPaymaster,
       isMultiLayerFeeNetwork,
-      hasMigratedFromOpenSeaToBlockaid,
-      hasDismissedOpenSeaToBlockaidBanner,
-      dismissOpenSeaToBlockaidBanner,
-      isNetworkSupportedByBlockaid,
     } = this.props;
 
     const { t } = this.context;
@@ -507,35 +498,11 @@ export default class ConfirmTransactionBase extends Component {
       />
     );
 
-    const showOpenSeaToBlockaidBannerAlert =
-      hasMigratedFromOpenSeaToBlockaid &&
-      !isNetworkSupportedByBlockaid &&
-      !hasDismissedOpenSeaToBlockaidBanner;
-    const handleCloseOpenSeaToBlockaidBannerAlert = () => {
-      dismissOpenSeaToBlockaidBanner();
-    };
-
     const showTotals = Boolean(simulationData?.error);
 
     return (
       <div className="confirm-page-container-content__details">
-        {showOpenSeaToBlockaidBannerAlert ? (
-          <BannerAlert
-            severity={Severity.Info}
-            title={t('openSeaToBlockaidTitle')}
-            description={t('openSeaToBlockaidDescription')}
-            actionButtonLabel={t('openSeaToBlockaidBtnLabel')}
-            actionButtonProps={{
-              href: 'https://snaps.metamask.io/transaction-insights',
-              externalLink: true,
-            }}
-            marginBottom={4}
-            marginLeft={4}
-            marginTop={4}
-            marginRight={4}
-            onClose={handleCloseOpenSeaToBlockaidBannerAlert}
-          />
-        ) : null}
+        <BlockaidUnavailableBannerAlert />
         <TransactionAlerts
           txData={txData}
           setUserAcknowledgedGasMissing={() =>
@@ -963,7 +930,7 @@ export default class ConfirmTransactionBase extends Component {
   _beforeUnloadForGasPolling = () => {
     this._isMounted = false;
     if (this.state.pollingToken) {
-      disconnectGasFeeEstimatePoller(this.state.pollingToken);
+      gasFeeStopPollingByPollingToken(this.state.pollingToken);
       removePollingTokenFromAppState(this.state.pollingToken);
     }
   };
@@ -1004,15 +971,17 @@ export default class ConfirmTransactionBase extends Component {
      * This makes a request to get estimates and begin polling, keeping track of the poll
      * token in component state.
      * It then disconnects polling upon componentWillUnmount. If the hook is unmounted
-     * while waiting for `getGasFeeEstimatesAndStartPolling` to resolve, the `_isMounted`
+     * while waiting for `gasFeeStartPollingByNetworkClientId` to resolve, the `_isMounted`
      * flag ensures that a call to disconnect happens after promise resolution.
      */
-    getGasFeeEstimatesAndStartPolling().then((pollingToken) => {
+    gasFeeStartPollingByNetworkClientId(
+      this.props.selectedNetworkClientId,
+    ).then((pollingToken) => {
       if (this._isMounted) {
         addPollingTokenToAppState(pollingToken);
         this.setState({ pollingToken });
       } else {
-        disconnectGasFeeEstimatePoller(pollingToken);
+        gasFeeStopPollingByPollingToken(pollingToken);
         removePollingTokenFromAppState(this.state.pollingToken);
       }
     });
