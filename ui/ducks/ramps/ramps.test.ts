@@ -67,6 +67,7 @@ describe('rampsSlice', () => {
           chainId: 1,
           chainName: 'Ethereum Mainnet',
           nativeTokenSupported: true,
+          shortName: 'Ethereum',
         },
       ];
       jest.spyOn(RampAPI, 'getNetworks').mockResolvedValue(mockBuyableChains);
