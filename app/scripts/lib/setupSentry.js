@@ -504,11 +504,6 @@ export default function setupSentry({ release, getState }) {
    * @returns `true` if MetaMetrics is enabled, `false` otherwise.
    */
   async function getMetaMetricsEnabled() {
-    // For MMI we have set MetaMetrics OFF by default, but want to keep Sentry logging
-    if (METAMASK_BUILD_TYPE === 'mmi') {
-      return true;
-    }
-
     const appState = getState();
     if (appState.state || appState.persistedState) {
       return getMetaMetricsEnabledFromAppState(appState);
@@ -521,6 +516,24 @@ export default function setupSentry({ release, getState }) {
     } catch (error) {
       console.error(error);
       return false;
+    }
+  }
+
+  /**
+   * Returns whether Sentry should be enabled or not. If the build type is mmi
+   * it will always be enabled, if it's main it will first check for MetaMetrics
+   * value before returning true or false
+   *
+   * @returns `true` if Sentry should be enabled, depends on the build type and
+   * whether MetaMetrics is on or off for all build types except mmi
+   */
+  async function getSentryEnabled() {
+
+    // For MMI we want Sentry always logging, doesn't depend on MetaMetrics being on or off
+    if (METAMASK_BUILD_TYPE === 'mmi') {
+      return true;
+    } else {
+      getMetaMetricsEnabled();
     }
   }
 
@@ -583,7 +596,7 @@ export default function setupSentry({ release, getState }) {
   const startSession = async () => {
     const hub = Sentry.getCurrentHub?.();
     const options = hub.getClient?.().getOptions?.() ?? {};
-    if (hub && (await getMetaMetricsEnabled()) === true) {
+    if (hub && (await getSentryEnabled()) === true) {
       options.autoSessionTracking = true;
       hub.startSession();
     }
