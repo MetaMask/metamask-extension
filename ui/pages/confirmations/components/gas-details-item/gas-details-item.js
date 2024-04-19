@@ -8,7 +8,6 @@ import { TextColor } from '../../../../helpers/constants/design-system';
 import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
 import { PriorityLevels } from '../../../../../shared/constants/gas';
 import {
-  getIsMultiLayerFeeNetwork,
   getPreferences,
   getTxData,
   getUseCurrencyRateCheck,
@@ -36,7 +35,6 @@ const GasDetailsItem = ({
 }) => {
   const t = useI18nContext();
 
-  const isMultiLayerFeeNetwork = useSelector(getIsMultiLayerFeeNetwork);
   const txData = useSelector(getTxData);
   const { layer1GasFee } = txData;
 
@@ -60,20 +58,20 @@ const GasDetailsItem = ({
 
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const getTransactionFeeTotal = useMemo(() => {
-    if (isMultiLayerFeeNetwork) {
-      return sumHexes(hexMinimumTransactionFee, layer1GasFee || 0);
+    if (layer1GasFee) {
+      return sumHexes(hexMinimumTransactionFee, layer1GasFee);
     }
 
     return hexMinimumTransactionFee;
-  }, [isMultiLayerFeeNetwork, hexMinimumTransactionFee, layer1GasFee]);
+  }, [hexMinimumTransactionFee, layer1GasFee]);
 
   const getMaxTransactionFeeTotal = useMemo(() => {
-    if (isMultiLayerFeeNetwork) {
-      return sumHexes(hexMaximumTransactionFee, layer1GasFee || 0);
+    if (layer1GasFee) {
+      return sumHexes(hexMaximumTransactionFee, layer1GasFee);
     }
 
     return hexMaximumTransactionFee;
-  }, [isMultiLayerFeeNetwork, hexMaximumTransactionFee, layer1GasFee]);
+  }, [hexMaximumTransactionFee, layer1GasFee]);
 
   if (hasSimulationError && !userAcknowledgedGasMissing) {
     return null;
