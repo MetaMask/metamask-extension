@@ -13,7 +13,7 @@ import semver from 'semver';
 import { createSelector } from 'reselect';
 import { NameType } from '@metamask/name-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import { addHexPrefix } from '../../app/scripts/lib/util';
+import { addHexPrefix, getEnvironmentType } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
   BUYABLE_CHAINS_MAP,
@@ -31,7 +31,6 @@ import {
   LINEA_GOERLI_DISPLAY_NAME,
   CURRENCY_SYMBOLS,
   TEST_NETWORK_TICKER_MAP,
-  LINEA_GOERLI_TOKEN_IMAGE_URL,
   LINEA_MAINNET_DISPLAY_NAME,
   LINEA_MAINNET_TOKEN_IMAGE_URL,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -40,6 +39,8 @@ import {
   BASE_DISPLAY_NAME,
   ZK_SYNC_ERA_DISPLAY_NAME,
   CHAIN_ID_TOKEN_IMAGE_MAP,
+  LINEA_SEPOLIA_TOKEN_IMAGE_URL,
+  LINEA_SEPOLIA_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -47,6 +48,7 @@ import {
   HardwareTransportStates,
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
+import { getIsSmartTransaction } from '../../shared/modules/selectors';
 
 import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
 
@@ -75,6 +77,7 @@ import {
   isEIP1559Network,
   getLedgerTransportType,
   isAddressLedger,
+  getIsUnlocked,
 } from '../ducks/metamask/metamask';
 import {
   getLedgerWebHidConnectedStatus,
@@ -90,9 +93,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   NOTIFICATION_BLOCKAID_DEFAULT,
   ///: END:ONLY_INCLUDE_IF
-  NOTIFICATION_BUY_SELL_BUTTON,
   NOTIFICATION_DROP_LEDGER_FIREFOX,
-  NOTIFICATION_OPEN_BETA_SNAPS,
   NOTIFICATION_PETNAMES,
   NOTIFICATION_U2F_LEDGER_LIVE,
   NOTIFICATION_STAKING_PORTFOLIO,
@@ -104,6 +105,8 @@ import {
   SURVEY_END_TIME,
   SURVEY_START_TIME,
 } from '../helpers/constants/survey';
+import { SUPPORTED_CHAIN_IDS } from '../../app/scripts/lib/ppom/ppom-middleware';
+import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
 import {
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
@@ -115,6 +118,7 @@ import {
   getConnectedSubjectsForAllAddresses,
   ///: END:ONLY_INCLUDE_IF
   getOrderedConnectedAccountsForActiveTab,
+  getOrderedConnectedAccountsForConnectedDapp,
 } from './permissions';
 import { createDeepEqualSelector } from './util';
 
@@ -307,28 +311,14 @@ export const getMetaMaskAccounts = createSelector(
       };
     }, {}),
 );
-
 /**
- * Returns the selected address from the Metamask state.
+ * Returns the address of the selected InternalAccount from the Metamask state.
  *
  * @param state - The Metamask state object.
  * @returns {string} The selected address.
  */
 export function getSelectedAddress(state) {
-  return state.metamask.selectedAddress;
-}
-
-/**
- * Returns the selected identity from the Metamask state.
- *
- * @param state - The Metamask state object.
- * @returns The selected identity object.
- */
-export function getSelectedIdentity(state) {
-  const selectedAddress = getSelectedAddress(state);
-  const { identities } = state.metamask;
-
-  return identities[selectedAddress];
+  return getSelectedInternalAccount(state)?.address;
 }
 
 export function getInternalAccountByAddress(state, address) {
@@ -400,16 +390,6 @@ export function getMetaMaskKeyrings(state) {
 }
 
 /**
- * Get identity state.
- *
- * @param {object} state - Redux state
- * @returns {object} A map of account addresses to identities (which includes the account name)
- */
-export function getMetaMaskIdentities(state) {
-  return state.metamask.identities;
-}
-
-/**
  * Get account balances state.
  *
  * @param {object} state - Redux state
@@ -435,7 +415,7 @@ export function getMetaMaskCachedBalances(state) {
 }
 
 /**
- * Get ordered (by keyrings) accounts with identity and balance
+ * Get ordered (by keyrings) accounts with InternalAccount and balance
  */
 export const getMetaMaskAccountsOrdered = createSelector(
   getInternalAccountsSortedByKeyring,
@@ -474,6 +454,12 @@ export function getAllTokens(state) {
   return state.metamask.allTokens;
 }
 
+/**
+ * Selector to return an origin to network ID map
+ *
+ * @param state - Redux state object.
+ * @returns Object - Installed Snaps.
+ */
 export function getAllDomains(state) {
   return state.metamask.domains;
 }
@@ -554,8 +540,8 @@ export function getAccountName(accounts, accountAddress) {
 
 export function getMetadataContractName(state, address) {
   const tokenList = getTokenList(state);
-  const entry = Object.values(tokenList).find((identity) =>
-    isEqualCaseInsensitive(identity.address, address),
+  const entry = Object.values(tokenList).find((token) =>
+    isEqualCaseInsensitive(token.address, address),
   );
   return entry && entry.name !== '' ? entry.name : '';
 }
@@ -614,6 +600,134 @@ export function getCurrentEthBalance(state) {
 
 export function getGasIsLoading(state) {
   return state.appState.gasIsLoading;
+}
+
+/**
+ * Retrieves user preference to never see the "Switched Network" toast
+ *
+ * @param state - Redux state object.
+ * @returns Boolean preference value
+ */
+export function getNeverShowSwitchedNetworkMessage(state) {
+  return state.metamask.switchedNetworkNeverShowMessage;
+}
+
+export const getNonTestNetworks = createDeepEqualSelector(
+  getNetworkConfigurations,
+  (networkConfigurations = {}) => {
+    return [
+      // Mainnet always first
+      {
+        chainId: CHAIN_IDS.MAINNET,
+        nickname: MAINNET_DISPLAY_NAME,
+        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.MAINNET],
+        rpcPrefs: {
+          imageUrl: ETH_TOKEN_IMAGE_URL,
+        },
+        providerType: NETWORK_TYPES.MAINNET,
+        ticker: CURRENCY_SYMBOLS.ETH,
+        id: NETWORK_TYPES.MAINNET,
+        removable: false,
+      },
+      {
+        chainId: CHAIN_IDS.LINEA_MAINNET,
+        nickname: LINEA_MAINNET_DISPLAY_NAME,
+        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_MAINNET],
+        rpcPrefs: {
+          imageUrl: LINEA_MAINNET_TOKEN_IMAGE_URL,
+        },
+        providerType: NETWORK_TYPES.LINEA_MAINNET,
+        ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_MAINNET],
+        id: NETWORK_TYPES.LINEA_MAINNET,
+        removable: false,
+      },
+      // Custom networks added by the user
+      ...Object.values(networkConfigurations)
+        .filter(({ chainId }) => ![CHAIN_IDS.LOCALHOST].includes(chainId))
+        .map((network) => ({
+          ...network,
+          rpcPrefs: {
+            ...network.rpcPrefs,
+            // Provide an image based on chainID if a network
+            // has been added without an image
+            imageUrl:
+              network?.rpcPrefs?.imageUrl ??
+              CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId],
+          },
+          removable: true,
+        })),
+    ];
+  },
+);
+
+export const getTestNetworks = createDeepEqualSelector(
+  getNetworkConfigurations,
+  (networkConfigurations = {}) => {
+    return [
+      {
+        chainId: CHAIN_IDS.SEPOLIA,
+        nickname: SEPOLIA_DISPLAY_NAME,
+        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
+        providerType: NETWORK_TYPES.SEPOLIA,
+        ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
+        id: NETWORK_TYPES.SEPOLIA,
+        removable: false,
+      },
+      {
+        chainId: CHAIN_IDS.LINEA_SEPOLIA,
+        nickname: LINEA_SEPOLIA_DISPLAY_NAME,
+        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_SEPOLIA],
+        rpcPrefs: {
+          imageUrl: LINEA_SEPOLIA_TOKEN_IMAGE_URL,
+        },
+        providerType: NETWORK_TYPES.LINEA_SEPOLIA,
+        ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_SEPOLIA],
+        id: NETWORK_TYPES.LINEA_SEPOLIA,
+        removable: false,
+      },
+      // Localhosts
+      ...Object.values(networkConfigurations)
+        .filter(({ chainId }) => chainId === CHAIN_IDS.LOCALHOST)
+        .map((network) => ({ ...network, removable: true })),
+    ];
+  },
+);
+
+export const getAllNetworks = createDeepEqualSelector(
+  getNonTestNetworks,
+  getTestNetworks,
+  (nonTestNetworks, testNetworks) => {
+    return [
+      // Mainnet and custom networks
+      ...nonTestNetworks,
+      // Test networks
+      ...testNetworks,
+    ];
+  },
+);
+
+/**
+ * Provides information about the last network change if present
+ *
+ * @param state - Redux state object.
+ * @returns An object with information about the network with the given networkClientId
+ */
+export function getSwitchedNetworkDetails(state) {
+  const { switchedNetworkDetails } = state.metamask;
+  const allNetworks = getAllNetworks(state);
+
+  if (switchedNetworkDetails) {
+    const switchedNetwork = allNetworks.find(
+      ({ id }) => switchedNetworkDetails.networkClientId === id,
+    );
+    return {
+      nickname: switchedNetwork?.nickname,
+      imageUrl: switchedNetwork?.rpcPrefs?.imageUrl,
+      origin: switchedNetworkDetails?.origin,
+    };
+  }
+
+  return null;
 }
 
 export function getAppIsLoading(state) {
@@ -735,6 +849,16 @@ export function getPetnamesEnabled(state) {
   return petnamesEnabled;
 }
 
+export function getRedesignedConfirmationsEnabled(state) {
+  const { redesignedConfirmations } = getPreferences(state);
+  return redesignedConfirmations;
+}
+
+export function getFeatureNotificationsEnabled(state) {
+  const { featureNotificationsEnabled = false } = getPreferences(state);
+  return featureNotificationsEnabled;
+}
+
 export function getShowExtensionInFullSizeView(state) {
   const { showExtensionInFullSizeView } = getPreferences(state);
   return Boolean(showExtensionInFullSizeView);
@@ -780,7 +904,8 @@ export function getAdvancedInlineGasShown(state) {
 }
 
 export function getUseNonceField(state) {
-  return Boolean(state.metamask.useNonceField);
+  const isSmartTransaction = getIsSmartTransaction(state);
+  return Boolean(!isSmartTransaction && state.metamask.useNonceField);
 }
 
 export function getCustomNonceValue(state) {
@@ -1139,17 +1264,6 @@ export function getShowWhatsNewPopup(state) {
 }
 
 /**
- * Returns a memoized version of the MetaMask identities.
- *
- * @param state - The Redux state.
- * @returns {Array} An array of MetaMask identities.
- */
-export const getMemoizedMetaMaskIdentities = createDeepEqualSelector(
-  getMetaMaskIdentities,
-  (identities) => identities,
-);
-
-/**
  * Returns a memoized selector that gets the internal accounts from the Redux store.
  *
  * @param state - The Redux store state.
@@ -1165,8 +1279,17 @@ export const getMemoizedAddressBook = createDeepEqualSelector(
   (addressBook) => addressBook,
 );
 
+/**
+ * Returns a memoized selector that gets contract info.
+ *
+ * @param state - The Redux store state.
+ * @param addresses - An array of contract addresses.
+ * @param forceRemoteTokenList - Whether to force the use of the remote token list.
+ * @returns {Array} A map of contract info, keyed by address.
+ */
 export const getMemoizedMetadataContracts = createDeepEqualSelector(
-  getTokenList,
+  (state, _addresses, forceRemoteTokenList) =>
+    getTokenList(state, forceRemoteTokenList),
   (_tokenList, addresses) => addresses,
   (tokenList, addresses) => {
     return addresses.map((address) =>
@@ -1267,23 +1390,28 @@ export const getAllConnectedAccounts = createDeepEqualSelector(
 );
 export const getConnectedSitesList = createDeepEqualSelector(
   getConnectedSubjectsForAllAddresses,
-  getMetaMaskIdentities,
+  getInternalAccounts,
   getAllConnectedAccounts,
-  (connectedSubjectsForAllAddresses, identities, connectedAddresses) => {
+  (connectedSubjectsForAllAddresses, internalAccounts, connectedAddresses) => {
     const sitesList = {};
     connectedAddresses.forEach((connectedAddress) => {
       connectedSubjectsForAllAddresses[connectedAddress].forEach((app) => {
         const siteKey = app.origin;
+
+        const internalAccount = internalAccounts.find((account) =>
+          isEqualCaseInsensitive(account.address, connectedAddress),
+        );
+
         if (sitesList[siteKey]) {
           sitesList[siteKey].addresses.push(connectedAddress);
           sitesList[siteKey].addressToNameMap[connectedAddress] =
-            identities[connectedAddress].name; // Map address to name
+            internalAccount.metadata.name; // Map address to name
         } else {
           sitesList[siteKey] = {
             ...app,
             addresses: [connectedAddress],
             addressToNameMap: {
-              [connectedAddress]: identities[connectedAddress].name,
+              [connectedAddress]: internalAccount.metadata.name,
             },
           };
         }
@@ -1302,7 +1430,9 @@ export const getConnectedSitesListWithNetworkInfo = createDeepEqualSelector(
       const connectedNetwork = networks.find(
         (network) => network.id === domains[siteKey],
       );
-      sitesList[siteKey].networkIconUrl = connectedNetwork.rpcPrefs.imageUrl;
+      // For the testnets, if we do not have an image, we will have a fallback string
+      sitesList[siteKey].networkIconUrl =
+        connectedNetwork.rpcPrefs?.imageUrl || '';
       sitesList[siteKey].networkName = connectedNetwork.nickname;
     });
     return sitesList;
@@ -1550,8 +1680,6 @@ function getAllowedAnnouncementIds(state) {
     24: state.metamask.hadAdvancedGasFeesSetPriorToMigration92_3 === true,
     // This syntax is unusual, but very helpful here.  It's equivalent to `unnamedObject[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
     [NOTIFICATION_DROP_LEDGER_FIREFOX]: currentKeyringIsLedger && isFirefox,
-    [NOTIFICATION_OPEN_BETA_SNAPS]: true,
-    [NOTIFICATION_BUY_SELL_BUTTON]: true,
     [NOTIFICATION_U2F_LEDGER_LIVE]: currentKeyringIsLedger && !isFirefox,
     [NOTIFICATION_STAKING_PORTFOLIO]: true,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
@@ -1618,6 +1746,79 @@ export function getShowRecoveryPhraseReminder(state) {
   return currentTime - recoveryPhraseReminderLastShown >= frequency;
 }
 
+/**
+ * Retrieves the number of unapproved transactions and messages
+ *
+ * @param state - Redux state object.
+ * @returns Number of unapproved transactions
+ */
+export function getNumberOfAllUnapprovedTransactionsAndMessages(state) {
+  const unapprovedTxs = getUnapprovedTransactions(state);
+  const allUnapprovedMessages = {
+    ...unapprovedTxs,
+    ...state.metamask.unapprovedMsgs,
+    ...state.metamask.unapprovedDecryptMsgs,
+    ...state.metamask.unapprovedPersonalMsgs,
+    ...state.metamask.unapprovedEncryptionPublicKeyMsgs,
+    ...state.metamask.unapprovedTypedMessages,
+  };
+  const numUnapprovedMessages = Object.keys(allUnapprovedMessages).length;
+  return numUnapprovedMessages;
+}
+
+export const getCurrentNetwork = createDeepEqualSelector(
+  getAllNetworks,
+  getProviderConfig,
+  (allNetworks, providerConfig) => {
+    const filter =
+      providerConfig.type === 'rpc'
+        ? (network) => network.id === providerConfig.id
+        : (network) => network.id === providerConfig.type;
+    return allNetworks.find(filter);
+  },
+);
+
+/**
+ * Returns the network client ID of the network that should be auto-switched to
+ * based on the current tab origin and its last network connected to
+ *
+ * @param state - Redux state object.
+ * @returns Network ID to switch to
+ */
+export function getNetworkToAutomaticallySwitchTo(state) {
+  const numberOfUnapprovedTx =
+    getNumberOfAllUnapprovedTransactionsAndMessages(state);
+
+  // This block autoswitches chains based on the last chain used
+  // for a given dapp, when there are no pending confimrations
+  // This allows the user to be connected on one chain
+  // for one dapp, and automatically change for another
+  const selectedTabOrigin = getOriginOfCurrentTab(state);
+  const useRequestQueue = getUseRequestQueue(state);
+  if (
+    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
+    getIsUnlocked(state) &&
+    useRequestQueue &&
+    selectedTabOrigin &&
+    numberOfUnapprovedTx === 0 &&
+    process.env.MULTICHAIN
+  ) {
+    const domainNetworks = getAllDomains(state);
+    const networkIdForThisDomain = domainNetworks[selectedTabOrigin];
+    const currentNetwork = getCurrentNetwork(state);
+
+    // If we have a match, "silently" switch networks if the network differs
+    // from the current network
+    if (
+      networkIdForThisDomain &&
+      currentNetwork.id !== networkIdForThisDomain
+    ) {
+      return networkIdForThisDomain;
+    }
+  }
+  return null;
+}
+
 export function getShowTermsOfUse(state) {
   const { termsOfUseLastAgreed } = state.metamask;
 
@@ -1653,10 +1854,6 @@ export function getShowBetaHeader(state) {
 
 export function getShowPermissionsTour(state) {
   return state.metamask.showPermissionsTour;
-}
-
-export function getShowProductTour(state) {
-  return state.metamask.showProductTour;
 }
 
 export function getShowNetworkBanner(state) {
@@ -1721,15 +1918,18 @@ export function getTheme(state) {
  * from the tokens controller if token detection is enabled, or the static list if not.
  *
  * @param {*} state
+ * @param {boolean} forceRemote - Whether to force the use of the remote token list regardless of the user preference. Defaults to false.
  * @returns {object}
  */
-export function getTokenList(state) {
+export function getTokenList(state, forceRemote = false) {
   const isTokenDetectionInactiveOnMainnet =
     getIsTokenDetectionInactiveOnMainnet(state);
-  const caseInSensitiveTokenList = isTokenDetectionInactiveOnMainnet
-    ? STATIC_MAINNET_TOKEN_LIST
-    : state.metamask.tokenList;
-  return caseInSensitiveTokenList;
+
+  if (isTokenDetectionInactiveOnMainnet && !forceRemote) {
+    return STATIC_MAINNET_TOKEN_LIST;
+  }
+
+  return state.metamask.tokenList;
 }
 
 export function doesAddressRequireLedgerHidConnection(state, address) {
@@ -1775,114 +1975,21 @@ export function getNetworkConfigurations(state) {
   return state.metamask.networkConfigurations;
 }
 
-export function getCurrentNetwork(state) {
-  const allNetworks = getAllNetworks(state);
-  const providerConfig = getProviderConfig(state);
+export function getIsNetworkSupportedByBlockaid(state) {
+  const currentChainId = getCurrentChainId(state);
+  const isSupported = SUPPORTED_CHAIN_IDS.includes(currentChainId);
 
-  const filter =
-    providerConfig.type === 'rpc'
-      ? (network) => network.id === providerConfig.id
-      : (network) => network.id === providerConfig.type;
-  return allNetworks.find(filter);
+  return isSupported;
 }
 
-export function getAllEnabledNetworks(state) {
-  const nonTestNetworks = getNonTestNetworks(state);
-  const allNetworks = getAllNetworks(state);
-  const showTestnetNetworks = getShowTestNetworks(state);
-
-  return showTestnetNetworks ? allNetworks : nonTestNetworks;
-}
-
-export function getTestNetworks(state) {
-  const networkConfigurations = getNetworkConfigurations(state) || {};
-
-  return [
-    {
-      chainId: CHAIN_IDS.SEPOLIA,
-      nickname: SEPOLIA_DISPLAY_NAME,
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
-      providerType: NETWORK_TYPES.SEPOLIA,
-      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
-      id: NETWORK_TYPES.SEPOLIA,
-      removable: false,
-    },
-    {
-      chainId: CHAIN_IDS.LINEA_GOERLI,
-      nickname: LINEA_GOERLI_DISPLAY_NAME,
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_GOERLI],
-      rpcPrefs: {
-        imageUrl: LINEA_GOERLI_TOKEN_IMAGE_URL,
-      },
-      providerType: NETWORK_TYPES.LINEA_GOERLI,
-      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_GOERLI],
-      id: NETWORK_TYPES.LINEA_GOERLI,
-      removable: false,
-    },
-    // Localhosts
-    ...Object.values(networkConfigurations)
-      .filter(({ chainId }) => chainId === CHAIN_IDS.LOCALHOST)
-      .map((network) => ({ ...network, removable: true })),
-  ];
-}
-
-export function getNonTestNetworks(state) {
-  const networkConfigurations = getNetworkConfigurations(state) || {};
-
-  return [
-    // Mainnet always first
-    {
-      chainId: CHAIN_IDS.MAINNET,
-      nickname: MAINNET_DISPLAY_NAME,
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.MAINNET],
-      rpcPrefs: {
-        imageUrl: ETH_TOKEN_IMAGE_URL,
-      },
-      providerType: NETWORK_TYPES.MAINNET,
-      ticker: CURRENCY_SYMBOLS.ETH,
-      id: NETWORK_TYPES.MAINNET,
-      removable: false,
-    },
-    {
-      chainId: CHAIN_IDS.LINEA_MAINNET,
-      nickname: LINEA_MAINNET_DISPLAY_NAME,
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_MAINNET],
-      rpcPrefs: {
-        imageUrl: LINEA_MAINNET_TOKEN_IMAGE_URL,
-      },
-      providerType: NETWORK_TYPES.LINEA_MAINNET,
-      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_MAINNET],
-      id: NETWORK_TYPES.LINEA_MAINNET,
-      removable: false,
-    },
-    // Custom networks added by the user
-    ...Object.values(networkConfigurations)
-      .filter(({ chainId }) => ![CHAIN_IDS.LOCALHOST].includes(chainId))
-      .map((network) => ({
-        ...network,
-        rpcPrefs: {
-          ...network.rpcPrefs,
-          // Provide an image based on chainID if a network
-          // has been added without an image
-          imageUrl:
-            network?.rpcPrefs?.imageUrl ??
-            CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId],
-        },
-        removable: true,
-      })),
-  ];
-}
-
-export function getAllNetworks(state) {
-  const networks = [
-    // Mainnet and custom networks
-    ...getNonTestNetworks(state),
-    // Test networks
-    ...getTestNetworks(state),
-  ];
-
-  return networks;
-}
+export const getAllEnabledNetworks = createDeepEqualSelector(
+  getNonTestNetworks,
+  getAllNetworks,
+  getShowTestNetworks,
+  (nonTestNetworks, allNetworks, showTestnetNetworks) => {
+    return showTestnetNetworks ? allNetworks : nonTestNetworks;
+  },
+);
 
 export function getIsOptimism(state) {
   return (
@@ -1968,6 +2075,8 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
       return AVALANCHE_DISPLAY_NAME;
     case CHAIN_IDS.LINEA_GOERLI:
       return LINEA_GOERLI_DISPLAY_NAME;
+    case CHAIN_IDS.LINEA_SEPOLIA:
+      return LINEA_SEPOLIA_DISPLAY_NAME;
     case CHAIN_IDS.LINEA_MAINNET:
       return LINEA_MAINNET_DISPLAY_NAME;
     case CHAIN_IDS.ARBITRUM:
@@ -1998,6 +2107,7 @@ export function getIsDynamicTokenListAvailable(state) {
     CHAIN_IDS.POLYGON,
     CHAIN_IDS.AVALANCHE,
     CHAIN_IDS.LINEA_GOERLI,
+    CHAIN_IDS.LINEA_SEPOLIA,
     CHAIN_IDS.LINEA_MAINNET,
     CHAIN_IDS.ARBITRUM,
     CHAIN_IDS.OPTIMISM,
@@ -2187,9 +2297,12 @@ export function getCustomTokenAmount(state) {
   return state.appState.customTokenAmount;
 }
 
-export function getUnconnectedAccounts(state) {
+export function getUnconnectedAccounts(state, activeTab) {
   const accounts = getMetaMaskAccountsOrdered(state);
-  const connectedAccounts = getOrderedConnectedAccountsForActiveTab(state);
+  const connectedAccounts = getOrderedConnectedAccountsForConnectedDapp(
+    state,
+    activeTab,
+  );
   const unConnectedAccounts = accounts.filter((account) => {
     return !connectedAccounts.some(
       (connectedAccount) => connectedAccount.address === account.address,
@@ -2204,17 +2317,37 @@ export function getUpdatedAndSortedAccounts(state) {
   const hiddenAddresses = getHiddenAccountsList(state);
   const connectedAccounts = getOrderedConnectedAccountsForActiveTab(state);
 
+  connectedAccounts.forEach((connection) => {
+    // Find if the connection exists in accounts
+    const matchingAccount = accounts.find(
+      (account) => account.id === connection.id,
+    );
+
+    // If a matching account is found and the connection has metadata, add the connections property to true and lastSelected timestamp from metadata
+    if (matchingAccount && connection.metadata) {
+      matchingAccount.connections = true;
+      matchingAccount.lastSelected = connection.metadata.lastSelected;
+    }
+  });
+
+  // Find the account with the most recent lastSelected timestamp among accounts with metadata
+  const accountsWithLastSelected = accounts.filter(
+    (account) => account.connections && account.lastSelected,
+  );
+
+  const mostRecentAccount =
+    accountsWithLastSelected.length > 0
+      ? accountsWithLastSelected.reduce((prev, current) => {
+          return prev.lastSelected > current.lastSelected ? prev : current;
+        })
+      : null;
+
   accounts.forEach((account) => {
     account.pinned = Boolean(pinnedAddresses.includes(account.address));
     account.hidden = Boolean(hiddenAddresses.includes(account.address));
-    if (
-      connectedAccounts.length > 0 &&
-      account.address === connectedAccounts[0].address
-    ) {
-      // Update the active property of the matched account to true
+    if (mostRecentAccount && account.id === mostRecentAccount.id) {
       account.active = true;
     } else {
-      // If not the first element or no match found, set active to false
       account.active = false;
     }
   });
@@ -2259,6 +2392,14 @@ export const useSafeChainsListValidationSelector = (state) => {
 export function getShowFiatInTestnets(state) {
   const { showFiatInTestnets } = getPreferences(state);
   return showFiatInTestnets;
+}
+
+export function getHasMigratedFromOpenSeaToBlockaid(state) {
+  return Boolean(state.metamask.hasMigratedFromOpenSeaToBlockaid);
+}
+
+export function getHasDismissedOpenSeaToBlockaidBanner(state) {
+  return Boolean(state.metamask.hasDismissedOpenSeaToBlockaidBanner);
 }
 
 /**

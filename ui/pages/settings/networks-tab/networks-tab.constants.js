@@ -32,16 +32,16 @@ const defaultNetworksData = [
     blockExplorerUrl: 'https://sepolia.etherscan.io',
   },
   {
-    labelKey: NETWORK_TYPES.LINEA_GOERLI,
+    labelKey: NETWORK_TYPES.LINEA_SEPOLIA,
     iconColor: '#61dfff',
-    providerType: NETWORK_TYPES.LINEA_GOERLI,
+    providerType: NETWORK_TYPES.LINEA_SEPOLIA,
     rpcUrl: getRpcUrl({
-      network: NETWORK_TYPES.LINEA_GOERLI,
+      network: NETWORK_TYPES.LINEA_SEPOLIA,
       excludeProjectId: true,
     }),
-    chainId: CHAIN_IDS.LINEA_GOERLI,
-    ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_GOERLI],
-    blockExplorerUrl: 'https://goerli.lineascan.build',
+    chainId: CHAIN_IDS.LINEA_SEPOLIA,
+    ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_SEPOLIA],
+    blockExplorerUrl: 'https://sepolia.lineascan.build',
   },
   {
     labelKey: NETWORK_TYPES.LINEA_MAINNET,

@@ -23,9 +23,11 @@ export const SendPageYourAccounts = () => {
 
   return (
     <SendPageRow>
+      {/* TODO: Replace `any` with type */}
+      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
       {mergedAccounts.map((account: any) => (
         <AccountListItem
-          identity={account}
+          account={account}
           key={account.address}
           isPinned={Boolean(account.pinned)}
           onClick={() => {

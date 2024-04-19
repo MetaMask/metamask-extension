@@ -97,6 +97,49 @@ exports[`SendPage render and initialization should render correctly even when a 
                   </div>
                 </div>
               </div>
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+              >
+                <div
+                  class="mm-avatar-account__jazzicon"
+                >
+                  <div
+                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(24, 151, 242);"
+                  >
+                    <svg
+                      height="16"
+                      width="16"
+                      x="0"
+                      y="0"
+                    >
+                      <rect
+                        fill="#2362E1"
+                        height="16"
+                        transform="translate(1.7946650923962586 -2.667155311616761) rotate(458.4 8 8)"
+                        width="16"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#F94301"
+                        height="16"
+                        transform="translate(-7.681729644825104 3.9961758177433153) rotate(268.8 8 8)"
+                        width="16"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#FA7900"
+                        height="16"
+                        transform="translate(-4.538127039650711 14.740007940341687) rotate(117.3 8 8)"
+                        width="16"
+                        x="0"
+                        y="0"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
               <span
                 class="mm-box mm-text multichain-account-picker__label mm-text--body-md mm-text--ellipsis mm-box--padding-inline-start-2 mm-box--color-text-default"
                 style="flex-grow: 1; text-align: start;"
@@ -182,8 +225,51 @@ exports[`SendPage render and initialization should render correctly even when a 
                 class="mm-box mm-box--padding-bottom-6 mm-box--display-flex mm-box--flex-direction-column"
               >
                 <div
-                  class="mm-box multichain-account-list-item mm-box--padding-4 mm-box--display-flex mm-box--background-color-transparent"
+                  class="mm-box multichain-account-list-item multichain-account-list-item--clickable mm-box--padding-4 mm-box--display-flex mm-box--background-color-transparent"
                 >
+                  <div
+                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                  >
+                    <div
+                      class="mm-avatar-account__jazzicon"
+                    >
+                      <div
+                        style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 151, 242);"
+                      >
+                        <svg
+                          height="32"
+                          width="32"
+                          x="0"
+                          y="0"
+                        >
+                          <rect
+                            fill="#2362E1"
+                            height="32"
+                            transform="translate(3.589330184792517 -5.334310623233522) rotate(458.4 16 16)"
+                            width="32"
+                            x="0"
+                            y="0"
+                          />
+                          <rect
+                            fill="#F94301"
+                            height="32"
+                            transform="translate(-15.363459289650208 7.992351635486631) rotate(268.8 16 16)"
+                            width="32"
+                            x="0"
+                            y="0"
+                          />
+                          <rect
+                            fill="#FA7900"
+                            height="32"
+                            transform="translate(-9.076254079301423 29.480015880683375) rotate(117.3 16 16)"
+                            width="32"
+                            x="0"
+                            y="0"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
                   <div
                     class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
                   >

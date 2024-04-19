@@ -1,0 +1,34 @@
+
+.smart-transaction-status-page {
+  text-align: center;
+
+  &__loading-bar-container {
+    width: 100%;
+    height: 3px;
+    background: var(--color-background-alternative);
+    display: flex;
+    margin-top: 16px;
+  }
+
+  &__loading-bar {
+    height: 3px;
+    background: var(--color-primary-default);
+    transition: width 0.5s linear;
+  }
+
+  &__footer {
+    grid-area: footer;
+  }
+
+  &__countdown {
+    width: 25px;
+  }
+
+  // Slightly overwrite the default SimulationDetails layout to look better on the Smart Transaction status page.
+  .simulation-details-layout {
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+    text-align: left;
+  }
+}

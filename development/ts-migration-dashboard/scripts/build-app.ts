@@ -67,8 +67,6 @@ async function compileScripts(src: string, dest: string) {
   bundler.add(src);
   // Run TypeScript files through Babel
   bundler.transform('babelify', { extensions });
-  // Inline `fs.readFileSync` files
-  bundler.transform('brfs');
 
   const bundleStream = bundler.bundle();
   bundleStream.pipe(fs.createWriteStream(dest));

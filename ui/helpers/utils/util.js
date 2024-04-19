@@ -70,6 +70,7 @@ export function isDefaultMetaMaskChain(chainId) {
     chainId === CHAIN_IDS.GOERLI ||
     chainId === CHAIN_IDS.SEPOLIA ||
     chainId === CHAIN_IDS.LINEA_GOERLI ||
+    chainId === CHAIN_IDS.LINEA_SEPOLIA ||
     chainId === CHAIN_IDS.LOCALHOST
   ) {
     return true;
@@ -443,8 +444,8 @@ const SOLIDITY_TYPES = solidityTypes();
 const stripArrayType = (potentialArrayType) =>
   potentialArrayType.replace(/\[[[0-9]*\]*/gu, '');
 
-const stripOneLayerofNesting = (potentialArrayType) =>
-  potentialArrayType.replace(/\[[[0-9]*\]/u, '');
+export const stripOneLayerofNesting = (potentialArrayType) =>
+  potentialArrayType.replace(/\[(\d*)\]/u, '');
 
 const isArrayType = (potentialArrayType) =>
   potentialArrayType.match(/\[[[0-9]*\]*/u) !== null;

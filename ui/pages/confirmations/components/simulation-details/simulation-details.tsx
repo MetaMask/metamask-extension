@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
   SimulationData,
   SimulationError,
+  SimulationErrorCode,
 } from '@metamask/transaction-controller';
 import {
   Box,
@@ -31,12 +32,6 @@ export type SimulationDetailsProps = {
   transactionId: string;
 };
 
-/** Error messages that will cause the simulation details to be hidden. */
-const HIDE_SIMULATION_ERRORS = [
-  'Chain is not supported',
-  'Simulation disabled',
-];
-
 /**
  * Displayed while loading the simulation preview.
  *
@@ -60,13 +55,9 @@ const ErrorContent: React.FC<{ error: SimulationError }> = ({ error }) => {
   const t = useI18nContext();
 
   function getMessage() {
-    if (
-      error.isReverted ||
-      error.message?.includes('insufficient funds for gas')
-    ) {
-      return t('simulationDetailsTransactionReverted');
-    }
-    return t('simulationDetailsFailed');
+    return error.code === SimulationErrorCode.Reverted
+      ? t('simulationDetailsTransactionReverted')
+      : t('simulationDetailsFailed');
   }
 
   return (
@@ -88,12 +79,7 @@ const ErrorContent: React.FC<{ error: SimulationError }> = ({ error }) => {
 const EmptyContent: React.FC = () => {
   const t = useI18nContext();
   return (
-    <Text
-      color={TextColor.textAlternative}
-      variant={TextVariant.bodySm}
-      display={Display.Flex}
-      alignItems={AlignItems.flexStart}
-    >
+    <Text color={TextColor.textAlternative} variant={TextVariant.bodyMd}>
       {t('simulationDetailsNoBalanceChanges')}
     </Text>
   );
@@ -146,6 +132,7 @@ const SimulationDetailsLayout: React.FC<{
 }> = ({ inHeader, children }) => (
   <Box
     data-testid="simulation-details-layout"
+    className="simulation-details-layout"
     display={Display.Flex}
     flexDirection={FlexDirection.Column}
     borderRadius={BorderRadius.MD}
@@ -188,10 +175,12 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   const balanceChangesResult = useBalanceChanges(simulationData);
   const loading = !simulationData || balanceChangesResult.pending;
 
+  console.log('SimulationDetails', simulationData);
+
   useSimulationMetrics({
     balanceChanges: balanceChangesResult.value,
     loadingTime,
-    simulationData: simulationData as SimulationData,
+    simulationData,
     transactionId,
   });
 
@@ -206,10 +195,18 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   setLoadingComplete();
 
   const { error } = simulationData;
+
+  if (
+    [
+      SimulationErrorCode.ChainNotSupported,
+      SimulationErrorCode.Disabled,
+    ].includes(error?.code as SimulationErrorCode)
+  ) {
+    return null;
+  }
+
   if (error) {
-    return HIDE_SIMULATION_ERRORS.some((errorMessage) =>
-      error?.message?.includes(errorMessage),
-    ) ? null : (
+    return (
       <SimulationDetailsLayout>
         <ErrorContent error={error} />
       </SimulationDetailsLayout>

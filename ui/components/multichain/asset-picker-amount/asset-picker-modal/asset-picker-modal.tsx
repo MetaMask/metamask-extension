@@ -34,7 +34,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
-  getSelectedAddress,
+  getSelectedInternalAccount,
   getShouldHideZeroBalanceTokens,
 } from '../../../../selectors';
 
@@ -99,7 +99,7 @@ export function AssetPickerModal({
   onAssetChange,
 }: AssetPickerModalProps) {
   const t = useI18nContext();
-  const selectedAddress = useSelector(getSelectedAddress);
+  const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedToken, setSelectedToken] = useState(
@@ -177,6 +177,8 @@ export function AssetPickerModal({
   const collectionsKeys = Object.keys(collections);
 
   const collectionsData = collectionsKeys.reduce((acc: unknown[], key) => {
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const collection = (collections as any)[key];
 
     const isMatchingQuery = collection.collectionName
@@ -244,6 +246,8 @@ export function AssetPickerModal({
                   <TextFieldSearch
                     placeholder={t('searchTokenOrNFT')}
                     value={searchQuery}
+                    // TODO: Replace `any` with type
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     onChange={(e: any) => handleSearch(e.target.value)}
                     error={false}
                     autoFocus
@@ -340,6 +344,8 @@ export function AssetPickerModal({
                   <TextFieldSearch
                     placeholder={t('searchTokenOrNFT')}
                     value={searchQuery}
+                    // TODO: Replace `any` with type
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     onChange={(e: any) => handleSearch(e.target.value)}
                     error={false}
                     autoFocus

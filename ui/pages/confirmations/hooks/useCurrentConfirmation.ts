@@ -7,6 +7,7 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { Json } from '@metamask/utils';
 
 import {
+  getRedesignedConfirmationsEnabled,
   latestPendingConfirmationSelector,
   pendingConfirmationsSelector,
   unconfirmedTransactionsHashSelector,
@@ -27,8 +28,17 @@ const useCurrentConfirmation = () => {
   );
   const [currentConfirmation, setCurrentConfirmation] =
     useState<Record<string, unknown>>();
+  const redesignedConfirmationsEnabled = useSelector(
+    getRedesignedConfirmationsEnabled,
+  );
 
   useEffect(() => {
+    if (
+      !process.env.ENABLE_CONFIRMATION_REDESIGN ||
+      !redesignedConfirmationsEnabled
+    ) {
+      return;
+    }
     let pendingConfirmation: Approval | undefined;
     if (paramsTransactionId) {
       if (paramsTransactionId === currentConfirmation?.id) {
@@ -56,18 +66,12 @@ const useCurrentConfirmation = () => {
         pendingConfirmation.type !== ApprovalType.PersonalSign &&
         pendingConfirmation.type !== ApprovalType.EthSignTypedData
       ) {
+        setCurrentConfirmation(undefined);
         return;
       }
       if (pendingConfirmation.type === ApprovalType.PersonalSign) {
         const { siwe } = unconfirmedTransaction.msgParams;
         if (siwe?.isSIWEMessage) {
-          setCurrentConfirmation(undefined);
-          return;
-        }
-      }
-      if (pendingConfirmation.type === ApprovalType.EthSignTypedData) {
-        const { version } = unconfirmedTransaction.msgParams;
-        if (version !== 'V3' && version !== 'V4') {
           setCurrentConfirmation(undefined);
           return;
         }
