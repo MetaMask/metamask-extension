@@ -293,7 +293,7 @@ Each of these actions requires first [locating](#locators) the web element you w
 >[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L199)
 >
 >**Arguments**<br>
->@param {string | object} rawLocator - Element locator
+>@param {string | object} rawLocator - Element locator<br>
 >@param {string} input - The value to fill the element
 >
 >**Returns**<br>
@@ -358,7 +358,7 @@ Each of these actions requires first [locating](#locators) the web element you w
 >[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L205)
 >
 >**Arguments**<br>
->@param {string | object} rawLocator - Element locator
+>@param {string | object} rawLocator - Element locator<br>
 >@param {string} keys - The key to press
 >
 >**Return**<br>
@@ -1210,14 +1210,14 @@ They are used to verify that the application under test behaves as expected unde
 >[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L280)
 >
 >**Arguments**<br>
->@param {string | object} rawLocator -  Element locator
->@param {object} guards
->@param {string | object} [guards.findElementGuard] - A rawLocator to perform a findElement and act as a guard
->@param {number} [guards.waitAtLeastGuard] - The minimum milliseconds to wait before passing
->@param {number} [guards.timeout] - The maximum milliseconds to wait before failing
+>@param {string | object} rawLocator -  Element locator<br>
+>@param {object} guards<br>
+>@param {string | object} [guards.findElementGuard] - A rawLocator to perform a findElement and act as a guard<br>
+>@param {number} [guards.waitAtLeastGuard] - The minimum milliseconds to wait before passing<br>
+>@param {number} [guards.timeout] - The maximum milliseconds to wait before failing<br>
 >
 >**Return**<br>
->@returns `{Promise<void>}` - promise resolving after the element is not present
+>@returns `{Promise<void>}` - promise resolving after the element is not present<br>
 >@throws {Error} - throws an error if the element is present
 >**Example**
 >
