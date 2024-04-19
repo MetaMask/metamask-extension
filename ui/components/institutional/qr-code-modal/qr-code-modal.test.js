@@ -15,7 +15,7 @@ const props = {
 };
 
 describe('QRCodeModal', () => {
-  beforeAll(() => {
+  beforeEach(() => {
     const mockCrypto = {
       subtle: {
         generateKey: jest.fn(() =>
@@ -42,8 +42,9 @@ describe('QRCodeModal', () => {
     });
   });
 
-  beforeEach(() => {
+  afterEach(() => {
     jest.clearAllMocks();
+    jest.restoreAllMocks();
   });
 
   it('should display the QR code when qrCodeValue is set', async () => {
@@ -53,7 +54,6 @@ describe('QRCodeModal', () => {
           channelId: 'channel123',
         },
       },
-      qrCodeValue: 'example-qr-code-value',
     });
 
     const { getByTestId } = render(
@@ -72,10 +72,9 @@ describe('QRCodeModal', () => {
       metamask: {
         institutionalFeatures: {
           channelId: 'channel123',
-          connectionRequest: { payload: btoa('encrypted payload') }, // Mimic real encrypted data
+          connectionRequest: { payload: btoa('encrypted payload') },
         },
       },
-      qrCodeValue: 'example-qr-code-value',
     });
 
     const { getByTestId } = render(
@@ -113,6 +112,34 @@ describe('QRCodeModal', () => {
     });
   });
 
+  it('displays an error message when decryption fails', async () => {
+    const initialState = {
+      metamask: {
+        institutionalFeatures: {
+          channelId: 'channel123',
+          connectionRequest: { payload: 'encrypted-payload' },
+        },
+      },
+    };
+    const localStore = mockStore(initialState);
+
+    jest
+      .spyOn(window.crypto.subtle, 'decrypt')
+      .mockImplementation(() => Promise.reject(new Error('Decryption failed')));
+
+    const { getByText } = render(
+      <Provider store={localStore}>
+        <QRCodeModal {...props} />
+      </Provider>,
+    );
+
+    await waitFor(() => {
+      expect(
+        getByText(/An error occurred while decrypting data/u),
+      ).toBeInTheDocument();
+    });
+  });
+
   it('displays an error message when key generation fails', async () => {
     const store = mockStore({
       metamask: {
@@ -137,35 +164,6 @@ describe('QRCodeModal', () => {
     await waitFor(() => {
       expect(
         getByText(/An error occurred while generating cryptographic keys/u),
-      ).toBeInTheDocument();
-    });
-  });
-
-  it('displays an error message when decryption fails', async () => {
-    const initialState = {
-      metamask: {
-        institutionalFeatures: {
-          channelId: 'channel123',
-          connectionRequest: { payload: 'encrypted-payload' },
-        },
-      },
-      qrCodeValue: 'example-qr-code-value',
-    };
-    const localStore = mockStore(initialState);
-
-    jest
-      .spyOn(window.crypto.subtle, 'decrypt')
-      .mockImplementation(() => Promise.reject(new Error('Decryption failed')));
-
-    const { getByText } = render(
-      <Provider store={localStore}>
-        <QRCodeModal {...props} />
-      </Provider>,
-    );
-
-    await waitFor(() => {
-      expect(
-        getByText(/An error occurred while decrypting data/u),
       ).toBeInTheDocument();
     });
   });
