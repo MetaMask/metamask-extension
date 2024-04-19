@@ -1,0 +1,26 @@
+name: Run Tests
+
+on:
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  api-spec-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+
+    - name: Install dependencies
+      run: yarn install
+
+    - name: Build test
+      run: yarn build:test
+
+    - name: Run API Specs Tests
+      run: yarn test:api-specs
