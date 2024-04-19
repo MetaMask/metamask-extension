@@ -741,27 +741,12 @@
       },
       "packages": {
         "@ethereumjs/tx": true,
-        "@metamask/accounts-controller>@metamask/eth-snap-keyring>@metamask/utils": true,
         "@metamask/accounts-controller>@metamask/eth-snap-keyring>uuid": true,
         "@metamask/accounts-controller>@metamask/keyring-api": true,
         "@metamask/eth-sig-util": true,
+        "@metamask/utils": true,
         "superstruct": true,
         "webpack>events": true
-      }
-    },
-    "@metamask/accounts-controller>@metamask/eth-snap-keyring>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@scure/base": true,
-        "@metamask/utils>pony-cause": true,
-        "@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true,
-        "superstruct": true
       }
     },
     "@metamask/accounts-controller>@metamask/eth-snap-keyring>uuid": {
