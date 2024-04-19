@@ -211,7 +211,7 @@ export default function CurrencyInput({
   };
 
   return isSkeleton ? (
-    <Box className="currency-input__skeleton-container">
+    <Box paddingRight={4} className="currency-input__skeleton-container">
       <Box width={BlockSize.Half} className="currency-input__pulsing-bar" />
       <Box width={BlockSize.OneThird} className="currency-input__pulsing-bar" />
     </Box>

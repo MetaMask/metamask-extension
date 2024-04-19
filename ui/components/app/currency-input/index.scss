@@ -20,7 +20,7 @@
 
   &__pulsing-bar {
     height: 4px;
-    background: #d9d9d9;
+    background: var(--color-icon-muted);
     animation: pulse 2s infinite;
     -webkit-animation: pulse 2s infinite;
   }
@@ -39,7 +39,7 @@
 @keyframes pulse {
   0%,
   100% {
-    background: #d9d9d9;
+    background: var(--color-icon-muted);
   }
   50% {
     background: var(--color-background-alternative);
@@ -49,7 +49,7 @@
 @-webkit-keyframes pulse {
   0%,
   100% {
-    background: #d9d9d9;
+    background: var(--color-icon-muted);
   }
   50% {
     background: var(--color-background-alternative);
