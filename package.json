@@ -267,7 +267,7 @@
     "@metamask-institutional/sdk": "^0.1.25",
     "@metamask-institutional/transaction-update": "^0.1.38",
     "@metamask/abi-utils": "^2.0.2",
-    "@metamask/accounts-controller": "^11.0.0",
+    "@metamask/accounts-controller": "npm:@metamask-previews/accounts-controller@13.0.0-preview-11ae513",
     "@metamask/address-book-controller": "^3.1.7",
     "@metamask/announcement-controller": "^6.1.0",
     "@metamask/approval-controller": "^6.0.0",
