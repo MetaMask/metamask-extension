@@ -47,6 +47,12 @@ describe('Test Snap Get Locale', function () {
           tag: 'button',
         });
 
+        // look for the snap name
+        await driver.waitForSelector({
+          text: 'Localization Example Snap',
+          tag: 'p',
+        });
+
         await driver.waitForSelector({ text: 'Install' });
 
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
@@ -114,6 +120,20 @@ describe('Test Snap Get Locale', function () {
 
         // try to select dansk from the list
         await driver.clickElement({ text: 'Dansk', tag: 'option' });
+
+        // click on the global action menu
+        await driver.waitForSelector(
+          '[data-testid="account-options-menu-button"]',
+        );
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
+
+        // try to click on snaps
+        await driver.clickElement({ text: 'Snaps', tag: 'div' });
+
+        // check for localized snap title
+        await driver.waitForSelector({ text: 'Oversættelses Eksempel Snap' });
 
         // switch back to test snaps tab
         windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
