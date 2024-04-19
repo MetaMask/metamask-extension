@@ -11,8 +11,8 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '>= 20'
-    - uses: browser-actions/setup-chrome@v1
-    - run: chrome --version
+    - name: Install Chrome
+      run: ./development/chrome-install.sh
     - name: Install dependencies
       run: yarn install
     - name: Build test
