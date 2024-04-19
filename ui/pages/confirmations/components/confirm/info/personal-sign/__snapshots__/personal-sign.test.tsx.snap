@@ -39,7 +39,7 @@ exports[`PersonalSignInfo handle reverse string properly 1`] = `
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
         >
-          https://metamask.github.io
+          metamask.github.io
         </p>
       </div>
     </div>
@@ -113,7 +113,7 @@ exports[`PersonalSignInfo renders correctly for personal sign request 1`] = `
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
         >
-          https://metamask.github.io
+          metamask.github.io
         </p>
       </div>
     </div>
