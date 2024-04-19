@@ -707,6 +707,9 @@ export function setupController(
     } else {
       // this is triggered when a new tab is opened, or origin(url) is changed
       if (remotePort.sender && remotePort.sender.tab && remotePort.sender.url) {
+        console.log(`delaying connection to ${remotePort.sender.url} for 5s`);
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+
         const tabId = remotePort.sender.tab.id;
         const url = new URL(remotePort.sender.url);
         const { origin } = url;
