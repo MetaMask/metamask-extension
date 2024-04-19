@@ -1650,12 +1650,6 @@
   "general": {
     "message": "सामान्य"
   },
-  "globalTitle": {
-    "message": "वैश्विक मेन्यू"
-  },
-  "globalTourDescription": {
-    "message": "अपना पोर्टफ़ोलियो, जुड़ी हुई साइटें, सेटिंग्स आदि देखें"
-  },
   "goBack": {
     "message": "वापस जाएं"
   },
@@ -2887,12 +2881,6 @@
   },
   "permissions": {
     "message": "अनुमतियाँ"
-  },
-  "permissionsTitle": {
-    "message": "अनुमतियां"
-  },
-  "permissionsTourDescription": {
-    "message": "अपने जुड़े हुए अकाउंट ढूंढें और अनुमतियां यहां प्रबंधित करें"
   },
   "personalAddressDetected": {
     "message": "व्यक्तिगत एड्रेस का एड्रेस चला। टोकन कॉन्ट्रैक्ट एड्रेस डालें।"
@@ -4247,12 +4235,6 @@
   },
   "switchedTo": {
     "message": "आपने स्विच कर लिया है"
-  },
-  "switcherTitle": {
-    "message": "नेटवर्क स्विचर"
-  },
-  "switcherTourDescription": {
-    "message": "नेटवर्क स्विच करने या नया नेटवर्क जोड़ने के लिए आइकन पर क्लिक करें"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "नेटवर्क स्विच करने से सभी लंबित कन्फर्मेशन कैंसिल हो जाएंगे"

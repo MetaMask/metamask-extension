@@ -13,15 +13,11 @@ import {
   resolvePendingApproval,
   completedTx,
   rejectPendingApproval,
-  dismissOpenSeaToBlockaidBanner,
 } from '../../../../store/actions';
 import {
   doesAddressRequireLedgerHidConnection,
   getSubjectMetadata,
   getTotalUnapprovedMessagesCount,
-  getHasDismissedOpenSeaToBlockaidBanner,
-  getIsNetworkSupportedByBlockaid,
-  getHasMigratedFromOpenSeaToBlockaid,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   accountsWithSendEtherInfoSelector,
   getSelectedAccount,
@@ -41,7 +37,6 @@ import {
 } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useRejectTransactionModal } from '../../hooks/useRejectTransactionModal';
-
 import { ConfirmPageContainerNavigation } from '../confirm-page-container';
 import SignatureRequestHeader from '../signature-request-header/signature-request-header';
 import SecurityProviderBannerMessage from '../security-provider-banner-message';
@@ -53,13 +48,11 @@ import {
   BlockaidResultType,
   SECURITY_PROVIDER_MESSAGE_SEVERITY,
 } from '../../../../../shared/constants/security-provider';
-
 import {
   TextAlign,
   TextColor,
   TextVariant,
   Size,
-  Severity,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   IconColor,
   BackgroundColor,
@@ -73,7 +66,6 @@ import {
   ButtonLink,
   TagUrl,
   Text,
-  BannerAlert,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   Icon,
   IconName,
@@ -91,6 +83,7 @@ import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-bann
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
 ///: END:ONLY_INCLUDE_IF
+import { BlockaidUnavailableBannerAlert } from '../blockaid-unavailable-banner-alert/blockaid-unavailable-banner-alert';
 import Message from './signature-request-message';
 import Footer from './signature-request-footer';
 
@@ -214,25 +207,6 @@ const SignatureRequest = ({
     primaryType,
   } = parseMessage(data);
 
-  const hasMigratedFromOpenSeaToBlockaid = useSelector(
-    getHasMigratedFromOpenSeaToBlockaid,
-  );
-  const isNetworkSupportedByBlockaid = useSelector(
-    getIsNetworkSupportedByBlockaid,
-  );
-  const hasDismissedOpenSeaToBlockaidBanner = useSelector(
-    getHasDismissedOpenSeaToBlockaidBanner,
-  );
-
-  const showOpenSeaToBlockaidBannerAlert =
-    hasMigratedFromOpenSeaToBlockaid &&
-    !isNetworkSupportedByBlockaid &&
-    !hasDismissedOpenSeaToBlockaidBanner;
-
-  const handleCloseOpenSeaToBlockaidBannerAlert = () => {
-    dispatch(dismissOpenSeaToBlockaidBanner());
-  };
-
   return (
     <>
       <div className="signature-request">
@@ -254,23 +228,7 @@ const SignatureRequest = ({
             />
             ///: END:ONLY_INCLUDE_IF
           }
-          {showOpenSeaToBlockaidBannerAlert ? (
-            <BannerAlert
-              severity={Severity.Info}
-              title={t('openSeaToBlockaidTitle')}
-              description={t('openSeaToBlockaidDescription')}
-              actionButtonLabel={t('openSeaToBlockaidBtnLabel')}
-              actionButtonProps={{
-                href: 'https://snaps.metamask.io/transaction-insights',
-                externalLink: true,
-              }}
-              marginBottom={4}
-              marginLeft={4}
-              marginTop={4}
-              marginRight={4}
-              onClose={handleCloseOpenSeaToBlockaidBannerAlert}
-            />
-          ) : null}
+          <BlockaidUnavailableBannerAlert />
           {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
             txData?.securityProviderResponse?.flagAsDangerous !==
               SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS) ||
