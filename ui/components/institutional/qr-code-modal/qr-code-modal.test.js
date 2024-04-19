@@ -1,29 +1,11 @@
 import React from 'react';
 import { fireEvent, render, waitFor } from '@testing-library/react';
+import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { Provider } from 'react-redux';
 import QRCodeModal from './qr-code-modal';
 
-// Mocking the Redux store
 const mockStore = configureMockStore([thunk]);
-const store = mockStore({
-  metamask: {
-    institutionalFeatures: {
-      channelId: 'channel123',
-    },
-  },
-});
-
-const mockGenerateKey = jest.fn();
-const mockDecrypt = jest.fn();
-window.crypto = {
-  subtle: {
-    generateKey: mockGenerateKey,
-    decrypt: mockDecrypt,
-    exportKey: jest.fn(() => Promise.resolve(new ArrayBuffer(8))),
-  },
-};
 
 const mockHandleClose = jest.fn();
 const props = {
@@ -36,18 +18,22 @@ describe('QRCodeModal', () => {
   beforeAll(() => {
     const mockCrypto = {
       subtle: {
-        async generateKey() {
-          return {
-            publicKey: 'publicKey',
-            privateKey: 'privateKey',
-          };
-        },
-        async exportKey() {
-          return new Uint8Array([1, 2, 3, 4]).buffer;
-        },
-        async decrypt() {
-          return new TextEncoder().encode('decrypted message');
-        },
+        generateKey: jest.fn(() =>
+          Promise.resolve({
+            publicKey: { fake: 'publicKey' },
+            privateKey: { fake: 'privateKey' },
+          }),
+        ),
+        exportKey: jest.fn(() =>
+          Promise.resolve(new Uint8Array([1, 2, 3, 4]).buffer),
+        ),
+        decrypt: jest.fn(() =>
+          Promise.resolve(
+            new TextEncoder().encode(
+              JSON.stringify({ data: 'decrypted data' }),
+            ),
+          ),
+        ),
       },
     };
 
@@ -60,8 +46,8 @@ describe('QRCodeModal', () => {
     jest.clearAllMocks();
   });
 
-  it('displays the QR code when qrCodeValue is provided', async () => {
-    const mockedStore = mockStore({
+  it('should display the QR code when qrCodeValue is set', async () => {
+    const store = mockStore({
       metamask: {
         institutionalFeatures: {
           channelId: 'channel123',
@@ -71,18 +57,48 @@ describe('QRCodeModal', () => {
     });
 
     const { getByTestId } = render(
-      <Provider store={mockedStore}>
+      <Provider store={store}>
         <QRCodeModal {...props} />
       </Provider>,
     );
 
     await waitFor(() => {
-      const qrCodeElement = getByTestId('qr-code-visible');
-      expect(qrCodeElement).toBeInTheDocument();
+      expect(getByTestId('qr-code-visible')).toBeInTheDocument();
     });
   });
 
-  it('handles onClose when the close button is clicked', async () => {
+  it('should process and display decrypted data correctly', async () => {
+    const store = mockStore({
+      metamask: {
+        institutionalFeatures: {
+          channelId: 'channel123',
+          connectionRequest: { payload: btoa('encrypted payload') }, // Mimic real encrypted data
+        },
+      },
+      qrCodeValue: 'example-qr-code-value',
+    });
+
+    const { getByTestId } = render(
+      <Provider store={store}>
+        <QRCodeModal {...props} />
+      </Provider>,
+    );
+
+    await waitFor(() => {
+      expect(window.crypto.subtle.decrypt).toHaveBeenCalled();
+      expect(getByTestId('qr-code-visible')).toBeInTheDocument();
+    });
+  });
+
+  it('should call onClose when the close button is clicked', async () => {
+    const store = mockStore({
+      metamask: {
+        institutionalFeatures: {
+          channelId: 'channel123',
+        },
+      },
+    });
+
     const { getByTestId } = render(
       <Provider store={store}>
         <QRCodeModal {...props} />
@@ -94,6 +110,63 @@ describe('QRCodeModal', () => {
 
     await waitFor(() => {
       expect(mockHandleClose).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('displays an error message when key generation fails', async () => {
+    const store = mockStore({
+      metamask: {
+        institutionalFeatures: {
+          channelId: 'channel123',
+        },
+      },
+    });
+
+    jest
+      .spyOn(window.crypto.subtle, 'generateKey')
+      .mockImplementation(() =>
+        Promise.reject(new Error('Key generation failed')),
+      );
+
+    const { getByText } = render(
+      <Provider store={store}>
+        <QRCodeModal {...props} />
+      </Provider>,
+    );
+
+    await waitFor(() => {
+      expect(
+        getByText(/An error occurred while generating cryptographic keys/u),
+      ).toBeInTheDocument();
+    });
+  });
+
+  it('displays an error message when decryption fails', async () => {
+    const initialState = {
+      metamask: {
+        institutionalFeatures: {
+          channelId: 'channel123',
+          connectionRequest: { payload: 'encrypted-payload' },
+        },
+      },
+      qrCodeValue: 'example-qr-code-value',
+    };
+    const localStore = mockStore(initialState);
+
+    jest
+      .spyOn(window.crypto.subtle, 'decrypt')
+      .mockImplementation(() => Promise.reject(new Error('Decryption failed')));
+
+    const { getByText } = render(
+      <Provider store={localStore}>
+        <QRCodeModal {...props} />
+      </Provider>,
+    );
+
+    await waitFor(() => {
+      expect(
+        getByText(/An error occurred while decrypting data/u),
+      ).toBeInTheDocument();
     });
   });
 });
