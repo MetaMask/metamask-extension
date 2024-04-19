@@ -625,10 +625,7 @@ export default function setupSentry({ release, getState }) {
       autoSessionTracking: false,
     };
     const isSentryEnabled = await getSentryEnabled();
-    if (
-      isSentryEnabled === true &&
-      options.autoSessionTracking === false
-    ) {
+    if (isSentryEnabled === true && options.autoSessionTracking === false) {
       await startSession();
     } else if (
       isSentryEnabled === false &&
