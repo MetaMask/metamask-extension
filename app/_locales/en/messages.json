@@ -2393,6 +2393,9 @@
   "layer1Fees": {
     "message": "Layer 1 fees"
   },
+  "layer2Fees": {
+    "message": "Layer 2 fees"
+  },
   "learnCancelSpeeedup": {
     "message": "Learn how to $1",
     "description": "$1 is link to cancel or speed up transactions"
@@ -3347,9 +3350,6 @@
   },
   "operationFailed": {
     "message": "Operation Failed"
-  },
-  "optimismFees": {
-    "message": "Layer 2 fees"
   },
   "optional": {
     "message": "Optional"

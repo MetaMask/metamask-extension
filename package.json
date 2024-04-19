@@ -240,8 +240,7 @@
     "@metamask/network-controller@npm:^18.0.1": "patch:@metamask/network-controller@npm%3A18.1.0#~/.yarn/patches/@metamask-network-controller-npm-18.1.0-680908c29a.patch",
     "@metamask/network-controller@npm:^17.2.1": "patch:@metamask/network-controller@npm%3A18.1.0#~/.yarn/patches/@metamask-network-controller-npm-18.1.0-680908c29a.patch",
     "@metamask/network-controller@npm:^18.1.0": "patch:@metamask/network-controller@npm%3A18.1.0#~/.yarn/patches/@metamask-network-controller-npm-18.1.0-680908c29a.patch",
-    "@metamask/keyring-controller@npm:^13.0.0": "patch:@metamask/keyring-controller@npm%3A13.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-13.0.0-d94816a680.patch",
-    "@metamask/transaction-controller@npm:^25.1.0": "patch:@metamask/transaction-controller@npm%3A28.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-28.0.0-81366984b9.patch"
+    "@metamask/keyring-controller@npm:^13.0.0": "patch:@metamask/keyring-controller@npm%3A13.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-13.0.0-d94816a680.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
@@ -324,7 +323,7 @@
     "@metamask/snaps-rpc-methods": "^8.0.0",
     "@metamask/snaps-sdk": "^4.0.1",
     "@metamask/snaps-utils": "^7.1.0",
-    "@metamask/transaction-controller": "patch:@metamask/transaction-controller@npm%3A28.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-28.0.0-81366984b9.patch",
+    "@metamask/transaction-controller": "^28.1.0",
     "@metamask/user-operation-controller": "^6.0.0",
     "@metamask/utils": "^8.2.1",
     "@ngraveio/bc-ur": "^1.1.12",

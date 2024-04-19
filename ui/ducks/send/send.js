@@ -459,7 +459,7 @@ export const initialState = {
   gasIsSetInModal: false,
   gasPriceEstimate: '0x0',
   gasLimitMinimum: GAS_LIMITS.SIMPLE,
-  gasTotalForLayer1: '0x0',
+  gasTotalForLayer1: null,
   recipientMode: RECIPIENT_SEARCH_MODES.CONTACT_LIST,
   recipientInput: '',
   selectedAccount: {
@@ -929,7 +929,7 @@ const slice = createSlice({
         const _gasTotal = new Numeric(
           draftTransaction.gas.gasTotal || '0x0',
           16,
-        ).add(new Numeric(state.gasTotalForLayer1 || '0x0', 16));
+        ).add(new Numeric(state.gasTotalForLayer1 ?? '0x0', 16));
 
         amount = new Numeric(draftTransaction.asset.balance, 16)
           .minus(_gasTotal)
@@ -2780,5 +2780,5 @@ export function getSendStage(state) {
 }
 
 export function hasSendLayer1GasFee(state) {
-  return state[name].gasTotalForLayer1 !== '0x0';
+  return state[name].gasTotalForLayer1 !== null;
 }

@@ -121,7 +121,7 @@ export default function FeeDetailsComponent({
         <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
           {hasLayer1GasFee && (
             <TransactionDetailItem
-              detailTitle={t('optimismFees')}
+              detailTitle={t('layer2Fees')}
               detailText={
                 useCurrencyRateCheck &&
                 renderTotalDetailText(hexMinimumTransactionFee)
