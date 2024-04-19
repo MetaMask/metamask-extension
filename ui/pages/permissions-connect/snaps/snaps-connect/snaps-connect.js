@@ -22,13 +22,10 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import SnapConnectCell from '../../../../components/app/snaps/snap-connect-cell/snap-connect-cell';
-import { getDedupedSnaps, getSnapName } from '../../../../helpers/utils/util';
+import { getDedupedSnaps } from '../../../../helpers/utils/util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import SnapPrivacyWarning from '../../../../components/app/snaps/snap-privacy-warning/snap-privacy-warning';
-import {
-  getPermissions,
-  getTargetSubjectMetadata,
-} from '../../../../selectors';
+import { getPermissions, getSnapMetadata } from '../../../../selectors';
 import SnapAvatar from '../../../../components/app/snaps/snap-avatar/snap-avatar';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 
@@ -64,12 +61,14 @@ export default function SnapsConnect({
 
   const snaps = getDedupedSnaps(request, currentPermissions);
 
-  const singularConnectSnapMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, snaps?.[0]),
-  );
-
   const SnapsConnectContent = () => {
     const { hostname: trimmedOrigin } = useOriginMetadata(origin) || {};
+
+    const snapId = snaps[0];
+    const { name: snapName } = useSelector((state) =>
+      getSnapMetadata(state, snapId),
+    );
+
     if (isLoading) {
       return (
         <Box
@@ -82,6 +81,7 @@ export default function SnapsConnect({
         </Box>
       );
     }
+
     if (snaps?.length > 1) {
       return (
         <Box
@@ -138,8 +138,6 @@ export default function SnapsConnect({
         </Box>
       );
     } else if (snaps?.length === 1) {
-      const snapId = snaps[0];
-      const snapName = getSnapName(snapId, singularConnectSnapMetadata);
       return (
         <Box
           className="snaps-connect__content"

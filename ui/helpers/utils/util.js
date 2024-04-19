@@ -11,8 +11,8 @@ import {
 import * as lodash from 'lodash';
 import bowser from 'bowser';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-import { stripSnapPrefix } from '@metamask/snaps-utils';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
+import { stripSnapPrefix } from '@metamask/snaps-utils';
 // eslint-disable-next-line import/no-duplicates
 import { isObject } from '@metamask/utils';
 ///: END:ONLY_INCLUDE_IF
@@ -31,9 +31,6 @@ import {
 } from '../../../shared/constants/labels';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
-import { SNAPS_METADATA } from '../../../shared/constants/snaps';
-///: END:ONLY_INCLUDE_IF
 // formatData :: ( date: <Unix Timestamp> ) -> String
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
@@ -73,6 +70,7 @@ export function isDefaultMetaMaskChain(chainId) {
     chainId === CHAIN_IDS.GOERLI ||
     chainId === CHAIN_IDS.SEPOLIA ||
     chainId === CHAIN_IDS.LINEA_GOERLI ||
+    chainId === CHAIN_IDS.LINEA_SEPOLIA ||
     chainId === CHAIN_IDS.LOCALHOST
   ) {
     return true;
@@ -446,8 +444,8 @@ const SOLIDITY_TYPES = solidityTypes();
 const stripArrayType = (potentialArrayType) =>
   potentialArrayType.replace(/\[[[0-9]*\]*/gu, '');
 
-const stripOneLayerofNesting = (potentialArrayType) =>
-  potentialArrayType.replace(/\[[[0-9]*\]/u, '');
+export const stripOneLayerofNesting = (potentialArrayType) =>
+  potentialArrayType.replace(/\[(\d*)\]/u, '');
 
 const isArrayType = (potentialArrayType) =>
   potentialArrayType.match(/\[[[0-9]*\]*/u) !== null;
@@ -565,21 +563,10 @@ export function isNullish(value) {
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-export const getSnapName = (snapId, subjectMetadata) => {
-  if (SNAPS_METADATA[snapId]?.name) {
-    return SNAPS_METADATA[snapId].name;
-  }
-
-  if (subjectMetadata) {
-    return subjectMetadata.name;
-  }
-
-  // Mirrors a legacy behaviour of stripSnapPrefix
-  if (!snapId) {
-    return null;
-  }
-
-  return stripSnapPrefix(snapId);
+export const getSnapName = (snapsMetadata) => {
+  return (snapId) => {
+    return snapsMetadata[snapId]?.name ?? stripSnapPrefix(snapId);
+  };
 };
 
 export const getSnapRoute = (snapId) => {

@@ -10,11 +10,18 @@ export function getCustomTxParamsData(
 ) {
   const tokenData = parseStandardTokenTransactionData(data);
 
+  const customSpendingCapMethods = [
+    TransactionType.tokenMethodApprove,
+    TransactionType.tokenMethodIncreaseAllowance,
+  ];
+
   if (!tokenData) {
     throw new Error('Invalid data');
-  } else if (tokenData.name !== TransactionType.tokenMethodApprove) {
+  } else if (!customSpendingCapMethods.includes(tokenData.name)) {
     throw new Error(
-      `Invalid data; should be 'approve' method, but instead is '${tokenData.name}'`,
+      `Invalid data; should be ${customSpendingCapMethods
+        .map((m) => `'${m}'`)
+        .join(' or ')} method, but instead is '${tokenData.name}'`,
     );
   }
   let spender = getTokenAddressParam(tokenData);

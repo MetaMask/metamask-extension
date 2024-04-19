@@ -16,6 +16,8 @@ export const SendHexData = () => {
     <SendPageRow>
       <Label>{t('hexData')}</Label>
       <Textarea
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onInput={(event: any) => {
           const newData = event.target.value.replace(/\n/gu, '') || null;
           dispatch(updateSendHexData(newData ?? ''));

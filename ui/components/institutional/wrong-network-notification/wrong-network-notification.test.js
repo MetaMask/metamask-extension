@@ -17,7 +17,6 @@ describe('Wrong Network Notification', function () {
         type: 'test',
         chainId: toHex(3),
       },
-      selectedAddress: '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275',
       accountsByChainId: {
         [toHex(1)]: {
           '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': { balance: '0x0' },
@@ -27,12 +26,6 @@ describe('Wrong Network Notification', function () {
         '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': {
           supportedChains: ['1', '2'],
           custodianName: 'saturn',
-        },
-      },
-      identities: {
-        '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': {
-          name: 'Custody Account A',
-          address: '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275',
         },
       },
       internalAccounts: {

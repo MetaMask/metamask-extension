@@ -14,7 +14,7 @@ const spawn = require('cross-spawn');
  *
  * @param {string} command - The command to run
  * @param {Array<string>} [args] - The arguments to pass to the command
- * @returns {Array<string>} Lines of output received via STDOUT
+ * @returns {Promise<Array<string>>} Lines of output received via STDOUT
  */
 async function runCommand(command, args) {
   const output = [];
