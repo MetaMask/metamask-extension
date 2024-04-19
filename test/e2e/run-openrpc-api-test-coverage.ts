@@ -1,14 +1,13 @@
-const fs = require('fs');
-const testCoverage = require('@open-rpc/test-coverage').default;
-const { parseOpenRPCDocument } = require('@open-rpc/schema-utils-js');
+import testCoverage from '@open-rpc/test-coverage';
+import { parseOpenRPCDocument } from '@open-rpc/schema-utils-js';
 const mockServer = require('@open-rpc/mock-server/build/index').default;
-const ExamplesRule =
-  require('@open-rpc/test-coverage/build/rules/examples-rule').default;
-const JsonSchemaFakerRule =
-  require('@open-rpc/test-coverage/build/rules/json-schema-faker-rule').default;
-const paramsToObj =
-  require('@open-rpc/test-coverage/build/utils/params-to-obj').default;
+import ExamplesRule from '@open-rpc/test-coverage/build/rules/examples-rule';
+import JsonSchemaFakerRule from '@open-rpc/test-coverage/build/rules/json-schema-faker-rule';
+import paramsToObj from '@open-rpc/test-coverage/build/utils/params-to-obj';
+import { ContentDescriptorObject, ExampleObject, ExamplePairingObject, MethodObject, OpenrpcDocument } from '@open-rpc/meta-schema';
 const { v4 } = require('uuid');
+
+declare let window: any;
 
 const uuid = v4;
 
@@ -22,9 +21,11 @@ const {
   switchToOrOpenDapp,
 } = require('./helpers');
 
-const { PAGES } = require('./webdriver/driver');
+import { Driver, PAGES } from './webdriver/driver';
+import Rule from '@open-rpc/test-coverage/build/rules/rule';
+import { Call } from '@open-rpc/test-coverage/build/coverage';
 
-const pollForResult = async (driver, generatedKey) => {
+const pollForResult = async (driver: Driver, generatedKey: string) => {
   let result = await driver.executeScript(`return window['${generatedKey}'];`);
 
   while (result === null) {
@@ -39,22 +40,22 @@ const pollForResult = async (driver, generatedKey) => {
   return result;
 };
 
-const createDriverTransport = (driver) => {
-  return async (_, method, params) => {
+const createDriverTransport = (driver: Driver) => {
+  return async (_: string, method: string, params: any[] | Record<string, any>) => {
     const generatedKey = uuid();
     // don't wait for executeScript to finish window.ethereum promise
     // we need this because if we wait for the promise to resolve it
     // will hang in selenium since it can only do one thing at a time.
     // the workaround is to put the response on window.asyncResult and poll for it.
     driver.executeScript(
-      ([m, p, g]) => {
+      ([m, p, g]: any) => {
         window[g] = null;
         window.ethereum
           .request({ method: m, params: p })
-          .then((r) => {
+          .then((r: any) => {
             window[g] = { result: r };
           })
-          .catch((e) => {
+          .catch((e: any) => {
             window[g] = {
               error: {
                 code: e.code,
@@ -73,11 +74,20 @@ const createDriverTransport = (driver) => {
   };
 };
 
+interface ConfirmationsRejectRuleOptions {
+  driver: Driver;
+  only: string[];
+}
 // this rule makes sure that all confirmation requests are rejected.
 // it also validates that the JSON-RPC response is an error with
 // error code 4001 (user rejected request)
-class ConfirmationsRejectRule {
-  constructor(options) {
+class ConfirmationsRejectRule implements Rule {
+  private driver: any;
+  private only: string[];
+  private rejectButtonInsteadOfCancel: string[];
+  private requiresEthAccountsPermission: string[];
+
+  constructor(options: ConfirmationsRejectRuleOptions) {
     this.driver = options.driver;
     this.only = options.only;
     this.rejectButtonInsteadOfCancel = [
@@ -95,7 +105,7 @@ class ConfirmationsRejectRule {
     return 'Confirmations Rejection Rule';
   }
 
-  async beforeRequest(_, call) {
+  async beforeRequest(_: any, call: Call) {
     if (this.requiresEthAccountsPermission.includes(call.methodName)) {
       const requestPermissionsRequest = JSON.stringify({
         jsonrpc: '2.0',
@@ -146,10 +156,9 @@ class ConfirmationsRejectRule {
     }
   }
 
-  async afterRequest(_, call) {
+  async afterRequest(_: any, call: Call) {
     await this.driver.waitUntilXWindowHandles(3);
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
 
     let text = 'Cancel';
     if (this.rejectButtonInsteadOfCancel.includes(call.methodName)) {
@@ -176,28 +185,30 @@ class ConfirmationsRejectRule {
   }
 
   // get all the confirmation calls to make and expect to pass
-  getCalls(_, method) {
-    const calls = [];
+  getCalls(_: any, method: MethodObject) {
+    const calls: Call[] = [];
     const isMethodAllowed = this.only ? this.only.includes(method.name) : true;
     if (isMethodAllowed) {
       if (method.examples) {
         // pull the first example
-        const ex = method.examples[0];
+        const e = method.examples[0];
+        const ex = e as ExamplePairingObject;
+
         if (!ex.result) {
           return calls;
         }
-        const p = ex.params.map((e) => e.value);
+        const p = ex.params.map((e) => (e as ExampleObject).value);
         const params =
           method.paramStructure === 'by-name'
-            ? paramsToObj(p, method.params)
+            ? paramsToObj(p, method.params as ContentDescriptorObject[])
             : p;
         calls.push({
           title: `${this.getTitle()} - with example ${ex.name}`,
           methodName: method.name,
           params,
           url: '',
-          resultSchema: method.result.schema,
-          expectedResult: ex.result.value,
+          resultSchema: (method.result as ContentDescriptorObject).schema,
+          expectedResult: (ex.result as ExampleObject).value,
         });
       } else {
         // naively call the method with no params
@@ -206,14 +217,14 @@ class ConfirmationsRejectRule {
           methodName: method.name,
           params: [],
           url: '',
-          resultSchema: method.result.schema,
+          resultSchema: (method.result as ContentDescriptorObject).schema,
         });
       }
     }
     return calls;
   }
 
-  async afterResponse(_, call) {
+  async afterResponse(_: any, call: Call) {
     if (this.requiresEthAccountsPermission.includes(call.methodName)) {
       const revokePermissionsRequest = JSON.stringify({
         jsonrpc: '2.0',
@@ -227,12 +238,15 @@ class ConfirmationsRejectRule {
     }
   }
 
-  validateCall(call) {
-    call.valid = call.error.code === 4001;
-    if (!call.valid) {
-      call.reason = `Expected error code 4001, got ${call.error.code}`;
+  validateCall(call: Call) {
+    if (call.error) {
+      call.valid = call.error.code === 4001;
+      if (!call.valid) {
+        call.reason = `Expected error code 4001, got ${call.error.code}`;
+      }
     }
     return call;
+
   }
 }
 
@@ -246,7 +260,7 @@ async function main() {
       disableGanache: true,
       title: 'api-specs coverage',
     },
-    async ({ driver }) => {
+    async ({ driver }: {driver: Driver}) => {
       await unlockWallet(driver);
 
       // Navigate to extension home screen
@@ -262,9 +276,9 @@ async function main() {
       );
 
       const chainIdMethod = openrpcDocument.methods.find(
-        (m) => m.name === 'eth_chainId',
+        (m) => (m as any).name === 'eth_chainId',
       );
-      chainIdMethod.examples = [
+      (chainIdMethod as MethodObject)!.examples = [
         {
           name: 'chainIdExample',
           description: 'Example of a chainId request',
@@ -277,10 +291,10 @@ async function main() {
       ];
 
       const getBalanceMethod = openrpcDocument.methods.find(
-        (m) => m.name === 'eth_getBalance',
+        (m) => (m as MethodObject).name === 'eth_getBalance',
       );
 
-      getBalanceMethod.examples = [
+      (getBalanceMethod as MethodObject).examples = [
         {
           name: 'getBalanceExample',
           description: 'Example of a getBalance request',
@@ -302,10 +316,10 @@ async function main() {
       ];
 
       const blockNumber = openrpcDocument.methods.find(
-        (m) => m.name === 'eth_blockNumber',
+        (m) => (m as MethodObject).name === 'eth_blockNumber',
       );
 
-      blockNumber.examples = [
+      (blockNumber as MethodObject).examples = [
         {
           name: 'blockNumberExample',
           description: 'Example of a blockNumber request',
@@ -318,10 +332,10 @@ async function main() {
       ];
 
       const personalSign = openrpcDocument.methods.find(
-        (m) => m.name === 'personal_sign',
+        (m) => (m as MethodObject).name === 'personal_sign',
       );
 
-      personalSign.examples = [
+      (personalSign as MethodObject).examples = [
         {
           name: 'personalSignExample',
           description: 'Example of a personalSign request',
@@ -343,9 +357,9 @@ async function main() {
       ];
 
       const switchEthereumChain = openrpcDocument.methods.find(
-        (m) => m.name === 'wallet_switchEthereumChain',
+        (m) => (m as MethodObject).name === 'wallet_switchEthereumChain',
       );
-      switchEthereumChain.examples = [
+      (switchEthereumChain as MethodObject).examples = [
         {
           name: 'wallet_switchEthereumChain',
           description:
@@ -366,15 +380,15 @@ async function main() {
       ];
 
       const signTypedData4 = openrpcDocument.methods.find(
-        (m) => m.name === 'eth_signTypedData_v4',
+        (m) => (m as MethodObject).name === 'eth_signTypedData_v4',
       );
 
       // just update address for signTypedData
-      signTypedData4.examples[0].params[0].value =
+      (signTypedData4 as any).examples[0].params[0].value =
         '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 
       // update chainId for signTypedData
-      signTypedData4.examples[0].params[1].value.domain.chainId = 1337;
+      (signTypedData4 as any).examples[0].params[1].value.domain.chainId = 1337;
 
       // add net_version
       openrpcDocument.methods.push({
@@ -402,10 +416,10 @@ async function main() {
       });
 
       const getEncryptionPublicKey = openrpcDocument.methods.find(
-        (m) => m.name === 'eth_getEncryptionPublicKey',
+        (m) => (m as MethodObject).name === 'eth_getEncryptionPublicKey',
       );
 
-      getEncryptionPublicKey.examples = [
+      (getEncryptionPublicKey as MethodObject).examples = [
         {
           name: 'getEncryptionPublicKeyExample',
           description: 'Example of a getEncryptionPublicKey request',
@@ -438,7 +452,7 @@ async function main() {
 
       const filteredMethods = openrpcDocument.methods
         .filter(
-          (m) =>
+          (m: any) =>
             m.name.includes('snap') ||
             m.name.includes('Snap') ||
             m.name.toLowerCase().includes('account') ||
@@ -448,19 +462,21 @@ async function main() {
             m.name.startsWith('wallet_scanQRCode') ||
             methodsWithConfirmations.includes(m.name),
         )
-        .map((m) => m.name);
+        .map((m) => (m as MethodObject).name);
 
       await testCoverage({
-        openrpcDocument,
+        openrpcDocument: openrpcDocument as any,
         transport,
         reporters: ['console-streaming', 'html'],
         // only: ['eth_newFilter'],
         rules: [
           new JsonSchemaFakerRule({
+            only: [],
             skip: filteredMethods,
             numCalls: 2,
           }),
           new ExamplesRule({
+            only: [],
             skip: filteredMethods,
           }),
           new ConfirmationsRejectRule({

@@ -6948,6 +6948,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@open-rpc/meta-schema@npm:^1.14.6":
+  version: 1.14.6
+  resolution: "@open-rpc/meta-schema@npm:1.14.6"
+  checksum: 7cb672ea42c143c3fcb177ad04b935d56c38cb28fc7ede0a0bb50293e0e49dee81046c2d43bc57c8bbf9efbbb76356d60b4a8e408a03ecc8fa5952ef3e342316
+  languageName: node
+  linkType: hard
+
 "@open-rpc/mock-server@npm:^1.7.5":
   version: 1.7.5
   resolution: "@open-rpc/mock-server@npm:1.7.5"
