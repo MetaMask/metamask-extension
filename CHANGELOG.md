@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.14.1]
+### Fixed
+- Fix crashes on transaction screens for some users with es_419, pt_BR, pt_PT, zh_CN, zh_TW locales ([#24068](https://github.com/MetaMask/metamask-extension/pull/24068))
+
 ## [11.14.0]
 ### Added
 - Transaction Simulations
@@ -4606,7 +4610,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.14.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.14.1...HEAD
+[11.14.1]: https://github.com/MetaMask/metamask-extension/compare/v11.14.0...v11.14.1
 [11.14.0]: https://github.com/MetaMask/metamask-extension/compare/v11.13.3...v11.14.0
 [11.13.3]: https://github.com/MetaMask/metamask-extension/compare/v11.13.2...v11.13.3
 [11.13.2]: https://github.com/MetaMask/metamask-extension/compare/v11.13.1...v11.13.2
