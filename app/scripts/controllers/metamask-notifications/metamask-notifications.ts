@@ -72,11 +72,6 @@ export type MetamaskNotificationsControllerState = {
    * List of read metamask notifications
    */
   metamaskNotificationsReadList: string[];
-
-  /**
-   * List of addresses to be used to create the onChain triggers
-   */
-  metamaskNotificationsAddressRegistry: string[];
 };
 
 const metadata: StateMetadata<MetamaskNotificationsControllerState> = {
@@ -104,10 +99,6 @@ const metadata: StateMetadata<MetamaskNotificationsControllerState> = {
     persist: true,
     anonymous: true,
   },
-  metamaskNotificationsAddressRegistry: {
-    persist: true,
-    anonymous: true,
-  },
 };
 export const defaultState: MetamaskNotificationsControllerState = {
   isMetamaskNotificationsFeatureSeen: false,
@@ -116,7 +107,6 @@ export const defaultState: MetamaskNotificationsControllerState = {
   isSnapNotificationsEnabled: false,
   metamaskNotificationsList: [],
   metamaskNotificationsReadList: [],
-  metamaskNotificationsAddressRegistry: [],
 };
 
 // TODO - Mock Storage Controller Actions, added in a separate PR.
@@ -250,6 +240,53 @@ export class MetamaskNotificationsController extends BaseController<
     },
   };
 
+  #accountsCache = new Set<string>();
+
+  #accounts = {
+    listAccounts: () => {
+      // Fetch the list of accounts
+      const accounts = this.messagingSystem.call(
+        'AccountsController:listAccounts',
+      ) as InternalAccount[];
+
+      // Extract addresses and convert them to checksum addresses to ensure case sensitivity is not an issue
+      const addresses = accounts.map((account) => {
+        return toChecksumHexAddress(account.address as string);
+      });
+
+      this.#accountsCache = new Set([...this.#accountsCache, ...addresses]);
+      return [...this.#accountsCache];
+    },
+
+    // This ensures that our cache is up-to-date when constructor is called.
+    initialize: () => {
+      this.#accounts.listAccounts();
+    },
+
+    // Subscription when an new account is changed
+    // The initial cache should already have addresses already have in wallet,
+    // so any new account switched to (that is not in cache) We can assume it is new.
+    createNewNotificationsOnNewAccountChange: () => {
+      this.messagingSystem.subscribe(
+        'AccountsController:selectedAccountChange',
+        async ({ address }: { address: string }) => {
+          if (!this.state.isMetamaskNotificationsEnabled || !address) {
+            return;
+          }
+
+          const checksumAddress = toChecksumHexAddress(address);
+          if (this.#accountsCache.has(checksumAddress)) {
+            return;
+          }
+
+          // An actual new address! We can create triggers/notifications for this.
+          this.#accountsCache.add(checksumAddress);
+          await this.updateOnChainTriggersByAccount(checksumAddress);
+        },
+      );
+    },
+  };
+
   /**
    * Creates a MetamaskNotificationsController instance.
    *
@@ -271,67 +308,9 @@ export class MetamaskNotificationsController extends BaseController<
       name: controllerName,
       state: { ...defaultState, ...state },
     });
-    this.#initializeAddressRegistry();
 
-    /**
-     * Subscribes to account selection changes to update on-chain triggers and the address registry.
-     * This works as when new addresses are added they will be automatically switched & will invoke this event.
-     *
-     * This method listens for changes in the selected account from the AccountsController.
-     * When an account change is detected, it performs the following actions:
-     * 1. Converts the account address to a checksum address for consistency.
-     * 2. Checks if the checksum address is already present in the `metamaskNotificationsAddressRegistry`.
-     * - If it is, the function exits early to avoid unnecessary updates.
-     * 3. If the address is not in the registry, it calls `updateOnChainTriggersByAccount` to update on-chain triggers for the new address.
-     * 4. Finally, it updates the `metamaskNotificationsAddressRegistry` state property to include the new address, ensuring no duplicates.
-     *
-     * @listens AccountsController:selectedAccountChange - Event indicating a change in the selected account.
-     */
-    messenger.subscribe(
-      'AccountsController:selectedAccountChange',
-      async ({ address }: { address: string }) => {
-        const checksumAddress = toChecksumHexAddress(address);
-        if (
-          this.state.metamaskNotificationsAddressRegistry.includes(
-            checksumAddress,
-          )
-        ) {
-          return;
-        }
-
-        await this.updateOnChainTriggersByAccount(checksumAddress);
-        this.update((s) => {
-          const currentRegistry = s.metamaskNotificationsAddressRegistry;
-          const uniqueAddresses = [
-            ...new Set([...currentRegistry, checksumAddress]),
-          ];
-          s.metamaskNotificationsAddressRegistry = uniqueAddresses;
-        });
-      },
-    );
-  }
-
-  /**
-   * Initializes the metamaskNotificationsAddressRegistry with unique account addresses.
-   * This method is called automatically when the class instance is created.
-   */
-  #initializeAddressRegistry() {
-    // Fetch the list of accounts
-    const accounts = this.messagingSystem.call(
-      'AccountsController:listAccounts',
-    ) as InternalAccount[];
-
-    // Extract addresses and convert them to checksum addresses to ensure case sensitivity is not an issue
-    const addresses = accounts.map((account) => {
-      return toChecksumHexAddress(account.address as string);
-    });
-
-    // Update the state with unique addresses, avoiding duplicates
-    this.update((s) => {
-      const currentRegistry = s.metamaskNotificationsAddressRegistry;
-      const uniqueAddresses = [...new Set([...currentRegistry, ...addresses])];
-      s.metamaskNotificationsAddressRegistry = uniqueAddresses;
-    });
+    this.#accounts.initialize();
+    this.#accounts.createNewNotificationsOnNewAccountChange();
   }
 
   #assertAuthEnabled() {
@@ -533,7 +512,7 @@ export class MetamaskNotificationsController extends BaseController<
     try {
       const { bearerToken, storageKey } =
         await this.#getValidStorageKeyAndBearerToken();
-      const accounts = this.state.metamaskNotificationsAddressRegistry;
+      const accounts = await this.#accounts.listAccounts();
 
       let userStorage = await this.#getUserStorage();
 
@@ -685,6 +664,8 @@ export class MetamaskNotificationsController extends BaseController<
 
   /**
    * Updates on-chain triggers for a specific account.
+   * This is for when we add a new account.
+   *
    * This method performs several key operations:
    * 1. Validates the presence of a BearerToken token and a user storage key. If either is missing, an error is thrown.
    * 2. Retrieves and validates the current user storage. If the user storage does not exist, an error is thrown.
@@ -719,15 +700,10 @@ export class MetamaskNotificationsController extends BaseController<
         JSON.stringify(updatedUserStorage),
       );
 
-      // Check if the address has related UUIDs
-      const allowedKinds =
-        MetamaskNotificationsUtils.inferEnabledKinds(updatedUserStorage);
-
       // Create the triggers
-      const triggers = MetamaskNotificationsUtils.getUUIDsForAccountByKinds(
+      const triggers = MetamaskNotificationsUtils.traverseUserStorageTriggers(
         updatedUserStorage,
-        account,
-        allowedKinds,
+        { address: account },
       );
       await OnChainNotifications.createOnChainTriggers(
         updatedUserStorage,
