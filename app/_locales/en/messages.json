@@ -2978,6 +2978,9 @@
   "noWebcamFoundTitle": {
     "message": "Webcam not found"
   },
+  "nonCustodialAccounts": {
+    "message": "MetaMask Institutional allows you to use non-custodial accounts, if you plan to use these accounts backup the Secret Recovery Phrase."
+  },
   "nonce": {
     "message": "Nonce"
   },
@@ -3897,6 +3900,12 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Protect your funds"
+  },
+  "redesignedConfirmationsEnabledToggle": {
+    "message": "Redesigned confirmations"
+  },
+  "redesignedConfirmationsToggleDescription": {
+    "message": "Turn this on to see re-designed confirmations whenever you receive signature requests."
   },
   "refreshList": {
     "message": "Refresh list"
