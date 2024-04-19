@@ -350,6 +350,7 @@ describe('Confirm Transaction Base', () => {
         txData: {
           ...baseStore.confirmTransaction.txData,
           chainId: CHAIN_IDS.OPTIMISM,
+          layer1GasFee: '0x1',
         },
       },
     };
