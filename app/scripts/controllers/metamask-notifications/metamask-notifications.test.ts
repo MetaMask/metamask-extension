@@ -1,4 +1,11 @@
+import { AccountsControllerListAccountsAction } from '@metamask/accounts-controller';
 import { ControllerMessenger } from '@metamask/base-controller';
+import * as ControllerUtils from '@metamask/controller-utils';
+import {
+  AuthenticationControllerGetBearerToken,
+  AuthenticationControllerIsSignedIn,
+} from '../authentication/authentication-controller';
+import { MOCK_ACCESS_TOKEN } from '../authentication/mocks/mockServices';
 import {
   AllowedActions,
   AllowedEvents,
@@ -11,37 +18,27 @@ import {
   UserStorageControllerPerformSetStorage,
   defaultState,
 } from './metamask-notifications';
-import { AccountsControllerListAccountsAction } from '@metamask/accounts-controller';
 import {
-  AuthenticationControllerGetBearerToken,
-  AuthenticationControllerIsSignedIn,
-} from '../authentication/authentication-controller';
-import { MOCK_ACCESS_TOKEN } from '../authentication/mocks/mockServices';
+  createMockFeatureAnnouncementAPIResult,
+  createMockFeatureAnnouncementRaw,
+  mockFetchFeatureAnnouncementNotifications,
+} from './mocks/mock-feature-announcements';
 import {
   MOCK_USER_STORAGE_ACCOUNT,
   createMockFullUserStorage,
   createMockUserStorageWithTriggers,
 } from './mocks/mock-notification-user-storage';
-import * as ControllerUtils from '@metamask/controller-utils';
-import { UserStorage } from './types/user-storage/user-storage';
-import * as OnChainNotifications from './services/onchain-notifications';
-import * as MetamaskNotificationsUtils from './utils/utils';
 import {
   mockBatchCreateTriggers,
   mockBatchDeleteTriggers,
   mockListNotifications,
   mockMarkNotificationsAsRead,
 } from './mocks/mock-onchain-notifications';
-import {
-  createMockFeatureAnnouncementAPIResult,
-  createMockFeatureAnnouncementRaw,
-  mockFetchFeatureAnnouncementNotifications,
-} from './mocks/mock-feature-announcements';
-import { ContentfulResult } from './services/feature-announcements';
-import { OnChainRawNotification } from './types/on-chain-notification/on-chain-notification';
 import { createMockNotificationEthSent } from './mocks/mock-raw-notifications';
-import { processFeatureAnnouncement } from './processors/process-feature-announcement';
 import { processNotification } from './processors/process-notifications';
+import * as OnChainNotifications from './services/onchain-notifications';
+import { UserStorage } from './types/user-storage/user-storage';
+import * as MetamaskNotificationsUtils from './utils/utils';
 
 describe('metamask-notifications - constructor()', () => {
   test('initializes state & override state', () => {
@@ -331,11 +328,7 @@ describe('metamask-notifications - deleteOnChainTriggersByAccount', () => {
   });
 
   test('Does nothing if account does not exist in storage', async () => {
-    const {
-      messenger,
-      nockMockDeleteTriggersAPI,
-      mockDisablePushNotifications,
-    } = arrangeMocks();
+    const { messenger, mockDisablePushNotifications } = arrangeMocks();
     const controller = new MetamaskNotificationsController({ messenger });
     const result = await controller.deleteOnChainTriggersByAccount(
       'UNKNOWN_ACCOUNT',
@@ -470,10 +463,7 @@ describe('metamask-notifications - fetchAndUpdateMetamaskNotifications()', () =>
     expect(controller.state.metamaskNotificationsList.length).toBe(1);
   });
 
-  function arrangeMocks(options?: {
-    featureAnnouncements?: ContentfulResult;
-    onChainNotifications: OnChainRawNotification[];
-  }) {
+  function arrangeMocks() {
     const messengerMocks = mockNotificationMessenger();
 
     const mockFeatureAnnouncementAPIResult =
@@ -542,6 +532,9 @@ describe('metamask-notifications - markMetamaskNotificationsAsRead()', () => {
   }
 });
 
+// TypeFoo - we are extracting args and parameters from a generic type utility
+// Thus this `AnyFunc` can be used to help constrain the generic parameters correctly
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyFunc = (...args: any[]) => any;
 const typedMockAction = <Action extends { handler: AnyFunc }>() =>
   jest.fn<ReturnType<Action['handler']>, Parameters<Action['handler']>>();
@@ -603,7 +596,10 @@ function mockNotificationMessenger() {
 
   jest.spyOn(messenger, 'call').mockImplementation((...args) => {
     const [actionType] = args;
-    const [_, ...params]: any[] = args;
+
+    // This mock implementation does not have a nice discriminate union where types/parameters can be correctly inferred
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [, ...params]: any[] = args;
 
     if (actionType === 'AccountsController:listAccounts') {
       return mockListAccounts();
