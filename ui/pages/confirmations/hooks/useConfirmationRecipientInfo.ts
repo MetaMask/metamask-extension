@@ -5,16 +5,20 @@ import {
   currentConfirmationSelector,
 } from '../../../selectors';
 import { getAccountByAddress } from '../../../helpers/utils/util';
+import { SignatureRequestType } from '../types/confirm';
 
 function useConfirmationRecipientInfo() {
-  const currentConfirmation = useSelector(currentConfirmationSelector);
+  const currentConfirmation = useSelector(
+    currentConfirmationSelector,
+  ) as SignatureRequestType;
   const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
 
   let recipientAddress = '';
   let recipientName = '';
 
   if (currentConfirmation) {
-    const { msgParams } = currentConfirmation;
+    const msgParams = currentConfirmation?.msgParams;
+
     // url for all signature requests
     if (msgParams) {
       recipientAddress = msgParams.from;
