@@ -183,6 +183,9 @@ workflows:
       - test-e2e-chrome-rpc:
           requires:
             - prep-build-test
+      - test-api-specs:
+          requires:
+            - prep-build-test
       - test-e2e-chrome-multiple-providers:
           requires:
             - prep-build-test
@@ -1034,6 +1037,28 @@ jobs:
       - run:
           name: depcheck
           command: yarn depcheck
+
+    test-api-specs:
+      executor: node-browsers-medium-plus
+      parallelism: 20
+      steps:
+        - run: *shallow-git-clone
+        - attach_workspace:
+            at: .
+        - run:
+            name: Move test build to dist
+            command: mv ./dist-test ./dist
+        - run:
+            name: Move test zips to builds
+            command: mv ./builds-test ./builds
+        - run:
+            name: test:api-specs
+            command: |
+              timeout 20m yarn test:api-specs --retries 2
+            no_output_timeout: 5m
+        - store_artifacts:
+            path: html-report
+            destination: html-report
 
   test-e2e-chrome:
     executor: node-browsers-medium-plus
