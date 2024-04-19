@@ -581,7 +581,7 @@ export function createMockNotificationLidoReadyToBeWithdrawn() {
   return mockNotification;
 }
 
-export function createMockRawOnChainNotifications() {
+export function createMockRawOnChainNotifications(): OnChainRawNotification[] {
   return [1, 2, 3].map((id) => {
     const notification = createMockNotificationEthSent();
     notification.id += `-${id}`;

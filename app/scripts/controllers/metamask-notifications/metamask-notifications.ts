@@ -810,7 +810,7 @@ export class MetamaskNotificationsController extends BaseController<
    * @async
    * @throws {Error} If there's an issue fetching the notifications or if required credentials are missing.
    */
-  public async fetchAndUpdateMetamaskNotifications() {
+  public async fetchAndUpdateMetamaskNotifications(): Promise<Notification[]> {
     try {
       // Raw Feature Notifications
       const rawFeatureAnnouncementNotifications =
@@ -831,7 +831,8 @@ export class MetamaskNotificationsController extends BaseController<
             userStorage,
             bearerToken,
           ).catch(() => []);
-        rawOnChainNotifications.concat(notifications);
+
+        rawOnChainNotifications.push(...notifications);
       }
 
       const readIds = this.state.metamaskNotificationsReadList;
@@ -857,7 +858,7 @@ export class MetamaskNotificationsController extends BaseController<
       );
       const onChainNotifications = processAndFilter(rawOnChainNotifications);
 
-      const metamaskNotifications = [
+      const metamaskNotifications: Notification[] = [
         ...featureAnnouncementNotifications,
         ...onChainNotifications,
       ];
@@ -870,6 +871,8 @@ export class MetamaskNotificationsController extends BaseController<
       this.update((s) => {
         s.metamaskNotificationsList = metamaskNotifications;
       });
+
+      return metamaskNotifications;
     } catch (err) {
       log.error('Failed to fetch notifications', err);
       throw new Error('Failed to fetch notifications');
@@ -886,12 +889,14 @@ export class MetamaskNotificationsController extends BaseController<
    * can accurately display read/unread notifications.
    *
    * @param notifications - An array of notifications to be marked as read. Each notification should include its type and read status.
-   * @throws {Error} Throws an error if marking on-chain notifications as read fails due to missing BearerToken token or any other issue.
    * @returns A promise that resolves when the operation is complete.
    */
   public async markMetamaskNotificationsAsRead(
     notifications: MarkAsReadNotificationsParam,
   ): Promise<void> {
+    let onchainNotificationIds: string[] = [];
+    let featureAnnouncementNotificationIds: string[] = [];
+
     try {
       // Filter unread on/off chain notifications
       const onChainNotifications = notifications.filter(
@@ -906,17 +911,10 @@ export class MetamaskNotificationsController extends BaseController<
           !notification.isRead,
       );
 
-      let onchainNotificationIds: string[] = [];
-      let featureAnnouncementNotificationIds: string[] = [];
-
       // Mark On-Chain Notifications as Read
       if (onChainNotifications.length > 0) {
         const bearerToken = await this.#auth.getBearerToken();
-        if (!bearerToken) {
-          throw new Error('Metamask Notifications - Missing BearerToken');
-        }
 
-        // 2. If a BearerToken token is available, mark the onchain notifications as read
         if (bearerToken) {
           onchainNotificationIds = onChainNotifications.map(
             (notification) => notification.id,
@@ -924,32 +922,34 @@ export class MetamaskNotificationsController extends BaseController<
           await OnChainNotifications.markNotificationsAsRead(
             bearerToken,
             onchainNotificationIds,
-          );
+          ).catch(() => {
+            onchainNotificationIds = [];
+            log.warn('Unable to mark onchain notifications as read');
+          });
         }
       }
 
-      // Mark Off-Chain notifications as Read (don't need to do anything)
+      // Mark Off-Chain notifications as Read
       if (featureAnnouncementNotifications.length > 0) {
         featureAnnouncementNotificationIds =
           featureAnnouncementNotifications.map(
             (notification) => notification.id,
           );
       }
-
-      // Update the state (state is also used on counter & badge)
-      this.update((s) => {
-        const currentReadList = s.metamaskNotificationsReadList;
-        const newReadIds = [
-          ...onchainNotificationIds,
-          ...featureAnnouncementNotificationIds,
-        ];
-        s.metamaskNotificationsReadList = [
-          ...new Set([...currentReadList, ...newReadIds]),
-        ];
-      });
     } catch (err) {
-      log.error('Failed to mark notification as read', err);
-      throw new Error('Failed to mark notification as read');
+      log.warn('Something failed when marking notifications as read', err);
     }
+
+    // Update the state (state is also used on counter & badge)
+    this.update((s) => {
+      const currentReadList = s.metamaskNotificationsReadList;
+      const newReadIds = [
+        ...onchainNotificationIds,
+        ...featureAnnouncementNotificationIds,
+      ];
+      s.metamaskNotificationsReadList = [
+        ...new Set([...currentReadList, ...newReadIds]),
+      ];
+    });
   }
 }

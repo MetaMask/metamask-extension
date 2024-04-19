@@ -29,7 +29,19 @@ import * as MetamaskNotificationsUtils from './utils/utils';
 import {
   mockBatchCreateTriggers,
   mockBatchDeleteTriggers,
+  mockListNotifications,
+  mockMarkNotificationsAsRead,
 } from './mocks/mock-onchain-notifications';
+import {
+  createMockFeatureAnnouncementAPIResult,
+  createMockFeatureAnnouncementRaw,
+  mockFetchFeatureAnnouncementNotifications,
+} from './mocks/mock-feature-announcements';
+import { ContentfulResult } from './services/feature-announcements';
+import { OnChainRawNotification } from './types/on-chain-notification/on-chain-notification';
+import { createMockNotificationEthSent } from './mocks/mock-raw-notifications';
+import { processFeatureAnnouncement } from './processors/process-feature-announcement';
+import { processNotification } from './processors/process-notifications';
 
 describe('metamask-notifications - constructor()', () => {
   test('initializes state & override state', () => {
@@ -409,6 +421,124 @@ describe('metamask-notifications - updateOnChainTriggersByAccount()', () => {
     const messengerMocks = mockNotificationMessenger();
     const mockBatchTriggersAPI = mockBatchCreateTriggers();
     return { ...messengerMocks, mockBatchTriggersAPI };
+  }
+});
+
+describe('metamask-notifications - fetchAndUpdateMetamaskNotifications()', () => {
+  test('Processes and shows feature announcements and wallet notifications', async () => {
+    const {
+      messenger,
+      mockFeatureAnnouncementAPIResult,
+      mockListNotificationsAPIResult,
+    } = arrangeMocks();
+    const controller = new MetamaskNotificationsController({ messenger });
+
+    const result = await controller.fetchAndUpdateMetamaskNotifications();
+
+    // Should have 1 feature announcement and 1 wallet notification
+    expect(result.length).toBe(2);
+    expect(
+      result.find(
+        (n) => n.id === mockFeatureAnnouncementAPIResult.items?.[0].fields.id,
+      ),
+    ).toBeDefined();
+    expect(result.find((n) => n.id === mockListNotificationsAPIResult[0].id));
+
+    // State is also updated
+    expect(controller.state.metamaskNotificationsList.length).toBe(2);
+  });
+
+  test('Only fetches and processes feature announcements if not authenticated', async () => {
+    const { messenger, mockGetBearerToken, mockFeatureAnnouncementAPIResult } =
+      arrangeMocks();
+    mockGetBearerToken.mockRejectedValue(
+      new Error('MOCK - failed to get access token'),
+    );
+
+    const controller = new MetamaskNotificationsController({ messenger });
+
+    // Should only have feature announcement
+    const result = await controller.fetchAndUpdateMetamaskNotifications();
+    expect(result.length).toBe(1);
+    expect(
+      result.find(
+        (n) => n.id === mockFeatureAnnouncementAPIResult.items?.[0].fields.id,
+      ),
+    ).toBeDefined();
+
+    // State is also updated
+    expect(controller.state.metamaskNotificationsList.length).toBe(1);
+  });
+
+  function arrangeMocks(options?: {
+    featureAnnouncements?: ContentfulResult;
+    onChainNotifications: OnChainRawNotification[];
+  }) {
+    const messengerMocks = mockNotificationMessenger();
+
+    const mockFeatureAnnouncementAPIResult =
+      createMockFeatureAnnouncementAPIResult();
+    const mockFeatureAnnouncementsAPI =
+      mockFetchFeatureAnnouncementNotifications({
+        status: 200,
+        body: mockFeatureAnnouncementAPIResult,
+      });
+
+    const mockListNotificationsAPIResult = [createMockNotificationEthSent()];
+    const mockListNotificationsAPI = mockListNotifications({
+      status: 200,
+      body: mockListNotificationsAPIResult,
+    });
+    return {
+      ...messengerMocks,
+      mockFeatureAnnouncementAPIResult,
+      mockFeatureAnnouncementsAPI,
+      mockListNotificationsAPIResult,
+      mockListNotificationsAPI,
+    };
+  }
+});
+
+describe('metamask-notifications - markMetamaskNotificationsAsRead()', () => {
+  test('updates feature announcements and wallet notifications as read', async () => {
+    const { messenger } = arrangeMocks();
+    const controller = new MetamaskNotificationsController({ messenger });
+
+    await controller.markMetamaskNotificationsAsRead([
+      processNotification(createMockFeatureAnnouncementRaw()),
+      processNotification(createMockNotificationEthSent()),
+    ]);
+
+    // Should see 2 items in controller read state
+    expect(controller.state.metamaskNotificationsReadList.length).toBe(2);
+  });
+
+  test('should at least mark feature announcements locally if external updates fail', async () => {
+    const { messenger } = arrangeMocks({ onChainMarkAsReadFails: true });
+    const controller = new MetamaskNotificationsController({ messenger });
+
+    await controller.markMetamaskNotificationsAsRead([
+      processNotification(createMockFeatureAnnouncementRaw()),
+      processNotification(createMockNotificationEthSent()),
+    ]);
+
+    // Should see 1 item in controller read state.
+    // This is because on-chain failed.
+    // We can debate & change implementation if it makes sense to mark as read locally if external APIs fail.
+    expect(controller.state.metamaskNotificationsReadList.length).toBe(1);
+  });
+
+  function arrangeMocks(options?: { onChainMarkAsReadFails: boolean }) {
+    const messengerMocks = mockNotificationMessenger();
+
+    const mockMarkAsReadAPI = mockMarkNotificationsAsRead({
+      status: options?.onChainMarkAsReadFails ? 500 : 200,
+    });
+
+    return {
+      ...messengerMocks,
+      mockMarkAsReadAPI,
+    };
   }
 });
 
