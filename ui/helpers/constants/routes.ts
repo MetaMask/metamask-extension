@@ -34,6 +34,7 @@ const CUSTODY_ACCOUNT_DONE_ROUTE = '/new-account/custody/done';
 const CONFIRM_ADD_CUSTODIAN_TOKEN = '/confirm-add-custodian-token';
 const INTERACTIVE_REPLACEMENT_TOKEN_PAGE =
   '/interactive-replacement-token-page';
+const SRP_REMINDER = '/onboarding/remind-srp';
 ///: END:ONLY_INCLUDE_IF
 const SEND_ROUTE = '/send';
 const CONNECTIONS = '/connections';
@@ -152,6 +153,7 @@ const PATH_NAME_MAP = {
   [CUSTODY_ACCOUNT_DONE_ROUTE]: 'Connect Custody Account done',
   [CONFIRM_ADD_CUSTODIAN_TOKEN]: 'Confirm Add Custodian Token',
   [INTERACTIVE_REPLACEMENT_TOKEN_PAGE]: 'Interactive replacement token page',
+  [SRP_REMINDER]: 'Secret Recovery Phrase Reminder',
   ///: END:ONLY_INCLUDE_IF
   [SEND_ROUTE]: 'Send Page',
   [CONNECTIONS]: 'Connections',
@@ -249,6 +251,7 @@ export {
   INSTITUTIONAL_FEATURES_DONE_ROUTE,
   CONFIRM_ADD_CUSTODIAN_TOKEN,
   INTERACTIVE_REPLACEMENT_TOKEN_PAGE,
+  SRP_REMINDER,
   ///: END:ONLY_INCLUDE_IF
   NETWORKS_ROUTE,
   NETWORKS_FORM_ROUTE,
