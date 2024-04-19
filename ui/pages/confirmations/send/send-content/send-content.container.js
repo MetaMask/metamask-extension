@@ -3,7 +3,6 @@ import {
   getIsEthGasPriceFetched,
   getNoGasPriceFetched,
   checkNetworkOrAccountNotSupports1559,
-  getIsMultiLayerFeeNetwork,
 } from '../../../../selectors';
 import {
   getIsBalanceInsufficient,
@@ -12,6 +11,7 @@ import {
   getRecipient,
   acknowledgeRecipientWarning,
   getRecipientWarningAcknowledgement,
+  hasSendLayer1GasFee,
 } from '../../../../ducks/send';
 import SendContent from './send-content.component';
 
@@ -30,7 +30,7 @@ function mapStateToProps(state) {
     assetError: getAssetError(state),
     recipient,
     recipientWarningAcknowledged,
-    isMultiLayerFeeNetwork: getIsMultiLayerFeeNetwork(state),
+    hasLayer1GasFee: hasSendLayer1GasFee(state),
   };
 }
 
