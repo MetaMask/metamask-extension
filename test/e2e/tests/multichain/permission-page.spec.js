@@ -17,6 +17,9 @@ describe('Permissions Page', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
+        if (!process.env.MULTICHAIN) {
+          return true;
+        }
         await driver.navigate();
         await unlockWallet(driver);
         await waitForAccountRendered(driver);
@@ -51,6 +54,9 @@ describe('Permissions Page', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
+        if (!process.env.MULTICHAIN) {
+          return true;
+        }
         await driver.navigate();
         await unlockWallet(driver);
         await waitForAccountRendered(driver);
