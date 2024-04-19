@@ -1618,6 +1618,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/runtime@npm:^7.20.13":
+  version: 7.24.4
+  resolution: "@babel/runtime@npm:7.24.4"
+  dependencies:
+    regenerator-runtime: "npm:^0.14.0"
+  checksum: 8ec8ce2c145bc7e31dd39ab66df124f357f65c11489aefacb30f431bae913b9aaa66aa5efe5321ea2bf8878af3fcee338c87e7599519a952e3a6f83aa1b03308
+  languageName: node
+  linkType: hard
+
 "@babel/runtime@patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch":
   version: 7.24.0
   resolution: "@babel/runtime@patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch::version=7.24.0&hash=cce522"
@@ -4188,9 +4197,9 @@ __metadata:
   linkType: hard
 
 "@json-schema-tools/meta-schema@npm:^1.6.10":
-  version: 1.7.0
-  resolution: "@json-schema-tools/meta-schema@npm:1.7.0"
-  checksum: b152affec355d7f0c6096018091c8015dd7a3c280752f016c7d203b98e7a7b6cebfe0032f49d5ccade782b1d3f1a4a732be02b0fae5c2133d0c3e243bad6e906
+  version: 1.7.4
+  resolution: "@json-schema-tools/meta-schema@npm:1.7.4"
+  checksum: 6a688260eaac550d372325a39e7d4f44db7904a3fcaa3d3e0bf318b259007326592b53e511025ff35010ba0e0314dba338fd169338c5ea090328663f3e7cbd46
   languageName: node
   linkType: hard
 
@@ -6926,9 +6935,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@open-rpc/html-reporter-react@npm:^0.0.3":
-  version: 0.0.3
-  resolution: "@open-rpc/html-reporter-react@npm:0.0.3"
+"@open-rpc/html-reporter-react@npm:^0.0.4":
+  version: 0.0.4
+  resolution: "@open-rpc/html-reporter-react@npm:0.0.4"
   dependencies:
     "@mantine/core": "npm:^7.8.0"
     "@mantine/hooks": "npm:^7.8.0"
@@ -6937,7 +6946,7 @@ __metadata:
     react-dom: "npm:^18.2.0"
     react18-json-view: "npm:^0.2.8"
     wouter: "npm:^3.1.2"
-  checksum: bf9da1cd69f478589593218e443a1e8df00e4a813d64473a4d4fe5bbcb0a43a6d70fa788578c8304de39da382b61ddb72ac879c7a4629bb17483b800bfc8f9a2
+  checksum: 4576f7217405eae19c832b1f76450734f05b38ef586560baa391e12e2ba36477cbebb84ea456d17eabe12b77d5e43269cbbe8201fe384e92ec815947d787d05f
   languageName: node
   linkType: hard
 
@@ -7040,11 +7049,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@open-rpc/test-coverage@npm:^2.2.0":
-  version: 2.2.0
-  resolution: "@open-rpc/test-coverage@npm:2.2.0"
+"@open-rpc/test-coverage@npm:^2.2.1":
+  version: 2.2.1
+  resolution: "@open-rpc/test-coverage@npm:2.2.1"
   dependencies:
-    "@open-rpc/html-reporter-react": "npm:^0.0.3"
+    "@open-rpc/html-reporter-react": "npm:^0.0.4"
     "@open-rpc/schema-utils-js": "npm:^1.16.2"
     "@types/isomorphic-fetch": "npm:0.0.35"
     "@types/lodash": "npm:^4.14.162"
@@ -7056,7 +7065,7 @@ __metadata:
     lodash: "npm:^4.17.20"
   bin:
     open-rpc-test-coverage: bin/cli.js
-  checksum: 5546f2b38a79edace4f9a9b5bb48fd12a725219800fde98c836dbd9c2c1e3c21cf8264422227f090a6f20958cdbd5465b97db53f15b48468ebf086345e702d46
+  checksum: e95d7b20a7e95439bc5915f591c5a04ceb20fdb2a3f640b1028f9ac06a6c0094e9161591561351b613e07689eb2e5fc2320ea3c8b8803a90407d8a49e1b2f88e
   languageName: node
   linkType: hard
 
@@ -13253,7 +13262,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"body-parser@npm:1.20.2, body-parser@npm:^1.15.2, body-parser@npm:^1.20.0":
+"body-parser@npm:1.20.2, body-parser@npm:^1.15.2, body-parser@npm:^1.19.0, body-parser@npm:^1.20.0":
   version: 1.20.2
   resolution: "body-parser@npm:1.20.2"
   dependencies:
@@ -25471,6 +25480,10 @@ __metadata:
     "@noble/ciphers": "npm:^0.5.2"
     "@noble/hashes": "npm:^1.3.3"
     "@octokit/core": "npm:^3.6.0"
+    "@open-rpc/meta-schema": "npm:^1.14.6"
+    "@open-rpc/mock-server": "npm:^1.7.5"
+    "@open-rpc/schema-utils-js": "npm:^1.16.2"
+    "@open-rpc/test-coverage": "npm:^2.2.1"
     "@playwright/test": "npm:^1.39.0"
     "@popperjs/core": "npm:^2.4.0"
     "@reduxjs/toolkit": "patch:@reduxjs/toolkit@npm%3A1.9.7#~/.yarn/patches/@reduxjs-toolkit-npm-1.9.7-b14925495c.patch"
@@ -27640,6 +27653,15 @@ __metadata:
   version: 0.0.2
   resolution: "only@npm:0.0.2"
   checksum: 10/e2ad03e486534dc6bfb983393be83125a4669052b4a19a353eb00475b46971fb238a18223f2b609fe0d1bcb61ff8373964ccac64d05cbf970865299f655ed0ba
+  languageName: node
+  linkType: hard
+
+"ono@npm:^4.0.11":
+  version: 4.0.11
+  resolution: "ono@npm:4.0.11"
+  dependencies:
+    format-util: "npm:^1.0.3"
+  checksum: f7ba5f597ae62f9b02bb0c00de3af786ebfb02459223e81d39f714a9404fade2065b830102a1d25c4fa216f17a407d6b721add197c710f8afce9e851cfb12984
   languageName: node
   linkType: hard
 
