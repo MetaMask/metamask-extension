@@ -4919,6 +4919,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/logging-controller@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "@metamask/logging-controller@npm:3.0.1"
+  dependencies:
+    "@metamask/base-controller": "npm:^5.0.1"
+    "@metamask/controller-utils": "npm:^9.0.1"
+    uuid: "npm:^8.3.2"
+  checksum: 42380ec003a455ea923ea413f6f98474a6ad457beff332f98a5964426dd7ceef7ea2d3a746aec4bd23c34efaa192ba47e99fdf65eb4e22def1ad52aa642e114b
+  languageName: node
+  linkType: hard
+
 "@metamask/logo@npm:^3.1.2":
   version: 3.1.2
   resolution: "@metamask/logo@npm:3.1.2"
@@ -24786,7 +24797,7 @@ __metadata:
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/keyring-api": "npm:^3.0.0"
     "@metamask/keyring-controller": "patch:@metamask/keyring-controller@npm%3A13.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-13.0.0-d94816a680.patch"
-    "@metamask/logging-controller": "npm:^2.0.2"
+    "@metamask/logging-controller": "npm:^3.0.1"
     "@metamask/logo": "npm:^3.1.2"
     "@metamask/message-manager": "npm:^7.3.0"
     "@metamask/message-signing-snap": "npm:^0.3.3"
