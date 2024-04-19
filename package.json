@@ -315,7 +315,7 @@
     "@metamask/rate-limit-controller": "^3.0.0",
     "@metamask/safe-event-emitter": "^3.1.1",
     "@metamask/scure-bip39": "^2.0.3",
-    "@metamask/selected-network-controller": "^12.0.0",
+    "@metamask/selected-network-controller": "^12.0.1",
     "@metamask/signature-controller": "^12.0.0",
     "@metamask/smart-transactions-controller": "^8.1.0",
     "@metamask/snaps-controllers": "^7.0.1",
