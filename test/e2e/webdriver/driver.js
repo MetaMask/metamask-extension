@@ -270,7 +270,7 @@ class Driver {
    * @param {Function} condition - condition or function the method awaits to become true
    * @param {number} timeout - Optional parameter specifies the maximum milliseconds to wait.
    * @param catchError - Optional parameter that determines whether errors during the wait should be caught and handled within the method
-   * @returns {Promise} - promise resolving with a delay
+   * @returns {Promise}  promise resolving with a delay
    * @throws {Error} Will throw an error if the condition is not met within the timeout period.
    * @example <caption>Example wait until a condition occurs</caption>
    *            await driver.wait(async () => {
@@ -344,8 +344,8 @@ class Driver {
    * This is particularly useful for waiting for elements that are dynamically populated with content.
    *
    * @param {string | object} element - Element locator
-   * @returns {Promise} - promise resolving once the element fills or timeout hits
-   * @throws {Error} - throws an error if the element does not become non-empty within the timeout period.
+   * @returns {Promise}  promise resolving once the element fills or timeout hits
+   * @throws {Error} throws an error if the element does not become non-empty within the timeout period.
    */
   async waitForNonEmptyElement(element) {
     await this.driver.wait(async () => {
@@ -368,13 +368,13 @@ class Driver {
    *
    * The second choice for the guard is to use the waitAtLeastGuard parameter.
    *
-   * @param {string | object} rawLocator
+   * @param {string | object} rawLocator - element locator
    * @param {object} guards
-   * @param {string | object} [guards.findElementGuard] - A rawLocator to perform a findElement and act as a guard
-   * @param {number} [guards.waitAtLeastGuard] - The minimum milliseconds to wait before passing
-   * @param {number} [guards.timeout] - The maximum milliseconds to wait before failing
-   * @returns {Promise<void>} - promise resolving after the element is not present
-   * @throws {Error} - throws an error if the element is present
+   * @param {string | object} [guards.findElementGuard] - rawLocator to perform a findElement and act as a guard
+   * @param {number} [guards.waitAtLeastGuard] - minimum milliseconds to wait before passing
+   * @param {number} [guards.timeout]  - maximum milliseconds to wait before failing
+   * @returns {Promise<void>}  promise resolving after the element is not present
+   * @throws {Error}  throws an error if the element is present
    */
   async assertElementNotPresent(
     rawLocator,
@@ -550,9 +550,9 @@ class Driver {
    * Simulates a click at the given x and y coordinates.
    *
    * @param rawLocator - Element locator
-   * @param {number} x - x coordinate to click at
-   * @param {number} y - y coordinate to click at
-   * @returns {Promise<void>} - promise resolving after a click
+   * @param {number} x  - coordinate to click at x
+   * @param {number} y - coordinate to click at y
+   * @returns {Promise<void>} promise resolving after a click
    */
   async clickPoint(rawLocator, x, y) {
     const element = await this.findElement(rawLocator);
@@ -567,8 +567,8 @@ class Driver {
    * Simulates holding the mouse button down on the given web element.
    *
    * @param {string | object} rawLocator - Element locator
-   * @param {number} ms - The number of milliseconds to hold the mouse button down
-   * @returns {Promise<void>} - promise resolving after mouse down completed
+   * @param {number} ms - number of milliseconds to hold the mouse button down
+   * @returns {Promise<void>} promise resolving after mouse down completed
    */
   async holdMouseDownOnElement(rawLocator, ms) {
     const locator = this.buildLocator(rawLocator);
@@ -586,7 +586,7 @@ class Driver {
    * Scrolls the page until the given web element is in view.
    *
    * @param {string | object} element - Element locator
-   * @returns {Promise<void>} - promise resolving after scrolling
+   * @returns {Promise<void>} promise resolving after scrolling
    */
   async scrollToElement(element) {
     await this.driver.executeScript(
@@ -599,7 +599,7 @@ class Driver {
    * Checks if an element that matches the given locator is present on the page.
    *
    * @param {string | object} rawLocator - Element locator
-   * @returns {Promise<boolean>} - promise that resolves to a boolean indicating whether the element is present.
+   * @returns {Promise<boolean>} promise that resolves to a boolean indicating whether the element is present.
    */
   async isElementPresent(rawLocator) {
     try {
@@ -614,7 +614,7 @@ class Driver {
    * Checks if an element that matches the given locator is present and visible on the page.
    *
    * @param {string | object} rawLocator - Element locator
-   * @returns {Promise<boolean>} - promise that resolves to a boolean indicating whether the element is present and visible.
+   * @returns {Promise<boolean>} promise that resolves to a boolean indicating whether the element is present and visible.
    */
   async isElementPresentAndVisible(rawLocator) {
     try {
@@ -628,9 +628,9 @@ class Driver {
   /**
    * Paste a string into a field.
    *
-   * @param {string} rawLocator - Element locator
-   * @param {string} contentToPaste - The content to paste.
-   * @return {Promise<WebElement>} A promise that resolves to the WebElement.
+   * @param {string} rawLocator  - Element locator
+   * @param {string} contentToPaste - content to paste
+   * @returns {Promise<WebElement>}  promise that resolves to the WebElement
    */
   async pasteIntoField(rawLocator, contentToPaste) {
     // Throw if double-quote is present in content to paste
@@ -747,8 +747,7 @@ class Driver {
   /**
    * Retrieves the handles of all open window tabs in the browser session.
    *
-   * @returns {int} number of window tabs open in the browser session.
-   * @return {Promise<Array<string>>} A promise that will
+   * @returns {Promise<Array<string>>} A promise that will
    *     be resolved with an array of window handles.
    */
   async getAllWindowHandles() {
@@ -800,8 +799,7 @@ class Driver {
    * If not provided, the function fetches all current window handles.
    * @param {int} delayStep - optional defaults to 1000 milliseconds
    * @param {int} timeout - optional set to the defaults to 1000 milliseconds in the file
-   * @param {int} retries - optional for retrying the title fetch operation, defaults to starting at 8 ms
-   * @param {int} retryDelay - optional for retrying the title fetch operation, with defaults max 2500 ms
+   * @param {int} retries,retryDelay - optional for retrying the title fetch operation, ranging 8 ms to 2500 ms
    * @returns {Promise<void>} promise that resolves once the switch is complete
    * @throws {Error} throws an error if no window with the specified title is found
    */
@@ -841,18 +839,18 @@ class Driver {
 
     throw new Error(`No window with title: ${title}`);
   }
+
   /**
    * Switches the context of the browser session to the window tab with the given URL.
    *
-   * @param {string} url - The URL of the window tab to switch to.
+   * @param {string} url - Window URL to switch
    * @param {string} [initialWindowHandles] - optional array of window handles to search through.
    * If not provided, the function fetches all current window handles.
    * @param {int} delayStep - optional defaults to 1000 milliseconds
    * @param {int} timeout - optional set to the defaults to 1000 milliseconds in the file
-   * @param {int} retries - optional for retrying the URL fetch operation, defaults to starting at 8 ms
-   * @param {int} retryDelay - optional for retrying the URL fetch operation, with defaults max 2500 ms
-   * @returns {Promise<void>} - promise that resolves once the switch is complete
-   * @throws {Error} - throws an error if no window with the specified url is found
+   * @param {int} retries,retryDelay - optional for retrying the URL fetch operation, defaults to starting at 8 ms to 2500 ms
+   * @returns {Promise<void>}  promise that resolves once the switch is complete
+   * @throws {Error} throws an error if no window with the specified url is found
    */
   async switchToWindowWithUrl(
     url,
