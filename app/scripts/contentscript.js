@@ -6,7 +6,6 @@ import { obj as createThoughStream } from 'through2';
 import browser from 'webextension-polyfill';
 import { EXTENSION_MESSAGES } from '../../shared/constants/app';
 import { checkForLastError } from '../../shared/modules/browser-runtime.utils';
-import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
 
 // contexts
@@ -445,7 +444,6 @@ function logStreamDisconnectWarning(remoteLabel, error) {
 function extensionStreamMessageListener(msg) {
   if (
     METAMASK_EXTENSION_CONNECT_SENT &&
-    isManifestV3 &&
     msg.data.method === 'metamask_chainChanged'
   ) {
     METAMASK_EXTENSION_CONNECT_SENT = false;
