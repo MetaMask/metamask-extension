@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
-
+// import { TransactionMeta } from '@metamask/transaction-controller';
 import {
   Button,
   ButtonSize,
@@ -18,6 +18,7 @@ import {
   resolvePendingApproval,
 } from '../../../../../store/actions';
 import { confirmSelector } from '../../../selectors';
+import { SignatureRequestType } from '../../../types/confirm';
 
 const Footer = () => {
   const t = useI18nContext();
@@ -27,10 +28,13 @@ const Footer = () => {
   const { mmiOnSignCallback, mmiSubmitDisabled } = useMMIConfirmations();
   ///: END:ONLY_INCLUDE_IF
 
+  const msgParams = (currentConfirmation as SignatureRequestType)?.msgParams;
+  // const { txParams } = currentConfirmation as TransactionMeta;
+
   let from: string | undefined;
   // todo: extend to other confirmation types
-  if (currentConfirmation?.msgParams) {
-    from = currentConfirmation.msgParams.from;
+  if (msgParams) {
+    from = msgParams.from;
   }
   const hardwareWalletRequiresConnection = useSelector((state) => {
     if (from) {

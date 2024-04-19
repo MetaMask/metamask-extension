@@ -1,18 +1,16 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-
 import { ApprovalRequest } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
+import { TransactionType } from '@metamask/transaction-controller';
 import { Json } from '@metamask/utils';
-
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import {
   getRedesignedConfirmationsEnabled,
   latestPendingConfirmationSelector,
   pendingConfirmationsSelector,
   unconfirmedTransactionsHashSelector,
 } from '../../../selectors';
-import { TransactionType } from '@metamask/transaction-controller';
 
 type Approval = ApprovalRequest<Record<string, Json>>;
 
