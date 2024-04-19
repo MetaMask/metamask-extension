@@ -15,13 +15,3 @@ export type Notification = Compute<
     isRead: boolean;
   }
 >;
-
-// NFT
-export type NFT = {
-  token_id: string;
-  image: string;
-  collection?: {
-    name: string;
-    image: string;
-  };
-};

@@ -264,7 +264,7 @@ export class MetamaskNotificationsController extends BaseController<
     },
 
     // Subscription when an new account is changed
-    // The initial cache should already have addresses already have in wallet,
+    // The initial cache should already have the addresses in wallet,
     // so any new account switched to (that is not in cache) We can assume it is new.
     createNewNotificationsOnNewAccountChange: () => {
       this.messagingSystem.subscribe(
@@ -301,7 +301,6 @@ export class MetamaskNotificationsController extends BaseController<
     messenger: MetamaskNotificationsControllerMessenger;
     state?: MetamaskNotificationsControllerState;
   }) {
-    // Call the constructor of BaseControllerV2
     super({
       messenger,
       metadata,

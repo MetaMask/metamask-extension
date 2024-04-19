@@ -26,7 +26,7 @@ export function processNotification(
     const n = processFeatureAnnouncement(
       notification as FeatureAnnouncementRawNotification,
     );
-    n.isRead = isFeatureAnnouncementRead(n.id, readNotifications);
+    n.isRead = isFeatureAnnouncementRead(n, readNotifications);
     return n;
   }
 

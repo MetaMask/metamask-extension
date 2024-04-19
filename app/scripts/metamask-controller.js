@@ -217,7 +217,6 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { convertNetworkId } from '../../shared/modules/network.utils';
-
 import {
   getIsSmartTransaction,
   getFeatureFlagsByChainId,
@@ -2114,7 +2113,6 @@ export default class MetamaskController extends EventEmitter {
       NotificationController: this.notificationController,
       SnapInterfaceController: this.snapInterfaceController,
       ///: END:ONLY_INCLUDE_IF
-
       ///: BEGIN:ONLY_INCLUDE_IF(desktop)
       DesktopController: this.desktopController.store,
       ///: END:ONLY_INCLUDE_IF
@@ -2167,7 +2165,6 @@ export default class MetamaskController extends EventEmitter {
         NotificationController: this.notificationController,
         SnapInterfaceController: this.snapInterfaceController,
         ///: END:ONLY_INCLUDE_IF
-
         ///: BEGIN:ONLY_INCLUDE_IF(desktop)
         DesktopController: this.desktopController.store,
         ///: END:ONLY_INCLUDE_IF
@@ -2714,6 +2711,7 @@ export default class MetamaskController extends EventEmitter {
         });
       },
     );
+
     ///: END:ONLY_INCLUDE_IF
   }
 

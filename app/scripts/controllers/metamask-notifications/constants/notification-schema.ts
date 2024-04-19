@@ -150,14 +150,3 @@ export const TRIGGERS: Record<OnChainTriggerTypes, Trigger> = {
     supported_chains: [NOTIFICATION_CHAINS.ETHEREUM],
   },
 };
-
-export enum TRIGGER_DATA_TYPES {
-  DATA_FEATURE_ANNOUNCEMENT = 'data_feature_announcement',
-  DATA_METAMASK_SWAP_COMPLETED = 'data_metamask_swap_completed',
-  DATA_STAKE = 'data_stake',
-  DATA_LIDO_STAKE_READY_TO_BE_WITHDRAWN = 'data_lido_stake_ready_to_be_withdrawn',
-  DATA_ETH = 'data_eth',
-  DATA_ERC20 = 'data_erc20',
-  DATA_ERC721 = 'data_erc721',
-  DATA_ERC1155 = 'data_erc1155',
-}

@@ -29,12 +29,6 @@ buildTypes:
       - REQUIRE_SNAPS_ALLOWLIST: true
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.0.1/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
-      - CONTENTFUL_ACCESS_SPACE_ID: null
-      - CONTENTFUL_ACCESS_TOKEN: null
-      - AUTH_LOGIN_ENDPOINT: null
-      - USER_STORAGE_ENDPOINT: null
-      - NOTIFICATIONS_SERVICE_URL: null
-      - TRIGGERS_SERVICE_URL: null
     # Main build uses the default browser manifest
     manifestOverrides: false
     # Build name used in multiple user-readable places
@@ -211,6 +205,10 @@ env:
   - OIDC_API: https://oidc.api.cx.metamask.io
   - OIDC_CLIENT_ID: 1132f10a-b4e5-4390-a5f2-d9c6022db564
   - OIDC_GRANT_TYPE: urn:ietf:params:oauth:grant-type:jwt-bearer
+  - CONTENTFUL_ACCESS_SPACE_ID: null
+  - CONTENTFUL_ACCESS_TOKEN: null
+  - NOTIFICATIONS_SERVICE_URL: https://notification.api.cx.metamask.io
+  - TRIGGERS_SERVICE_URL: https://trigger.api.cx.metamask.io
 
   ###
   # API keys to 3rd party services

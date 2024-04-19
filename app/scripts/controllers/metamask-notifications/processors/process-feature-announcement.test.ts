@@ -6,20 +6,36 @@ import {
 } from './process-feature-announcement';
 
 describe('process-feature-announcement - isFeatureAnnouncementRead()', () => {
+  const MOCK_NOTIFICATION_ID = 'MOCK_NOTIFICATION_ID';
+
   test('Returns true if a given notificationId is within list of read platform notifications', () => {
-    const MOCK_NOTIFICATION_ID = 'MOCK_NOTIFICATION_ID';
-    const result1 = isFeatureAnnouncementRead(MOCK_NOTIFICATION_ID, [
+    const notification = {
+      id: MOCK_NOTIFICATION_ID,
+      createdAt: new Date().toString(),
+    };
+
+    const result1 = isFeatureAnnouncementRead(notification, [
       'id-1',
       'id-2',
       MOCK_NOTIFICATION_ID,
     ]);
     expect(result1).toBe(true);
 
-    const result2 = isFeatureAnnouncementRead(MOCK_NOTIFICATION_ID, [
-      'id-1',
-      'id-2',
-    ]);
+    const result2 = isFeatureAnnouncementRead(notification, ['id-1', 'id-2']);
     expect(result2).toBe(false);
+  });
+
+  test('Returns false if notification is older than 30 days', () => {
+    const mockDate = new Date();
+    mockDate.setDate(mockDate.getDate() - 30);
+
+    const notification = {
+      id: MOCK_NOTIFICATION_ID,
+      createdAt: mockDate.toString(),
+    };
+
+    const result = isFeatureAnnouncementRead(notification, []);
+    expect(result).toBe(false);
   });
 });
 

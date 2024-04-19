@@ -1,11 +1,22 @@
 import type { FeatureAnnouncementRawNotification } from '../types/feature-announcement/feature-announcement';
 import type { Notification } from '../types/notification/notification';
 
+const ONE_DAY_MS = 1000 * 60 * 60 * 24;
+
+function isThirtyDaysOld(oldDate: Date) {
+  const differenceInTime = Date.now() - oldDate.getTime();
+  const differenceInDays = differenceInTime / ONE_DAY_MS;
+  return differenceInDays >= 30;
+}
+
 export function isFeatureAnnouncementRead(
-  notificationId: string,
+  notification: Pick<Notification, 'id' | 'createdAt'>,
   readPlatformNotificationsList: string[],
 ): boolean {
-  return readPlatformNotificationsList.includes(notificationId);
+  if (readPlatformNotificationsList.includes(notification.id)) {
+    return true;
+  }
+  return isThirtyDaysOld(new Date(notification.createdAt));
 }
 
 export function processFeatureAnnouncement(
