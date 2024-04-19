@@ -3835,6 +3835,12 @@
   "recoveryPhraseReminderTitle": {
     "message": "Protect your funds"
   },
+  "redesignedConfirmationsEnabledToggle": {
+    "message": "Redesigned confirmations"
+  },
+  "redesignedConfirmationsToggleDescription": {
+    "message": "Turn this on to see re-designed confirmations whenever you receive signature requests."
+  },
   "refreshList": {
     "message": "Refresh list"
   },

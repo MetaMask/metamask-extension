@@ -5,15 +5,19 @@ import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/jest';
 import configureStore from '../../../../../store/store';
 
+import { getSelectedInternalAccountFromMockState } from '../../../../../../test/jest/mocks';
 import ConfirmLegacyGasDisplay from './confirm-legacy-gas-display';
+
+const mockSelectedInternalAccount =
+  getSelectedInternalAccountFromMockState(mockState);
 
 const mmState = {
   ...mockState,
   metamask: {
     ...mockState.metamask,
     accounts: {
-      [mockState.metamask.selectedAddress]: {
-        address: mockState.metamask.selectedAddress,
+      [mockSelectedInternalAccount.address]: {
+        address: mockSelectedInternalAccount.address,
         balance: '0x1F4',
       },
     },
