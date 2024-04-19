@@ -1405,13 +1405,13 @@ export const getConnectedSitesList = createDeepEqualSelector(
         if (sitesList[siteKey]) {
           sitesList[siteKey].addresses.push(connectedAddress);
           sitesList[siteKey].addressToNameMap[connectedAddress] =
-            internalAccount.metadata.name; // Map address to name
+            internalAccount?.metadata.name || '';// Map address to name
         } else {
           sitesList[siteKey] = {
             ...app,
             addresses: [connectedAddress],
             addressToNameMap: {
-              [connectedAddress]: internalAccount.metadata.name,
+              [connectedAddress]: internalAccount?.metadata.name  || '',
             },
           };
         }
