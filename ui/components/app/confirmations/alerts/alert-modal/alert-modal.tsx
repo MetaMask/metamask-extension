@@ -109,7 +109,7 @@ function AlertDetails({ selectedAlert }: { selectedAlert: Alert }) {
       borderRadius={BorderRadius.SM}
     >
       <Text variant={TextVariant.bodySm}>{selectedAlert.message}</Text>
-      {(selectedAlert.alertDetails?.length ?? 0) > 0 ? (
+      {selectedAlert.alertDetails?.length ? (
         <Text variant={TextVariant.bodySmBold} marginTop={1}>
           {t('alertModalDetails')}
         </Text>
