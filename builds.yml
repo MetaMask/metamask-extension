@@ -100,6 +100,7 @@ buildTypes:
       - FIREBASE_APP_ID
       - FIREBASE_MEASUREMENT_ID
       - __FIREBASE_DEFAULTS__: null
+      - EIP_4337_ENTRYPOINT: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789'
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
     buildNameOverride: MetaMask Flask
