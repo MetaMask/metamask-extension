@@ -10,6 +10,7 @@ export const CaveatMutatorFactories = {
   [CaveatTypes.restrictReturnedAccounts]: {
     removeAccount,
   },
+  [CaveatTypes.restrictNetworkSwitching]: {},
 };
 
 /**
