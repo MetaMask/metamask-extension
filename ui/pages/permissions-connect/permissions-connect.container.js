@@ -16,6 +16,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getRequestType,
   getTargetSubjectMetadata,
+  getAllNetworks
 } from '../../selectors';
 import { getNativeCurrency } from '../../ducks/metamask/metamask';
 
@@ -65,6 +66,10 @@ const mapStateToProps = (state, ownProps) => {
 
   const isRequestingAccounts = Boolean(
     permissionsRequest?.permissions?.eth_accounts,
+  );
+
+  const isRequestingSwitchEthereumChain = Boolean(
+    permissionsRequest?.permissions?.wallet_switchEthereumChain,
   );
 
   const { metadata = {} } = permissionsRequest || {};
@@ -121,13 +126,14 @@ const mapStateToProps = (state, ownProps) => {
     pathname === snapResultPath;
   ///: END:ONLY_INCLUDE_IF
 
-  let totalPages = 1 + isRequestingAccounts;
+  let totalPages = 1 + isRequestingAccounts + isRequestingSwitchEthereumChain;
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   totalPages += isSnapInstallOrUpdateOrResult;
   ///: END:ONLY_INCLUDE_IF
   totalPages = totalPages.toString();
 
   let page = '';
+  console.log('PATH NAME WAS: ', pathname);
   if (pathname === connectPath) {
     page = '1';
   } else if (pathname === confirmPermissionPath) {
@@ -142,8 +148,18 @@ const mapStateToProps = (state, ownProps) => {
     throw new Error('Incorrect path for permissions-connect component');
   }
 
+  console.log('PERMISSIONS REQUEST: ', permissionsRequest);
+  let networkConfigurationsMatchingChainIdRequested;
+  if (isRequestingSwitchEthereumChain) {
+    networkConfigurationsMatchingChainIdRequested = getAllNetworks(state)
+          .filter(({chainId}) => Object.keys(permissionsRequest.permissions['wallet_switchEthereumChain']).includes(chainId));
+  }
+
+  console.log('networks matching request: ', networkConfigurationsMatchingChainIdRequested);
+
   return {
     isRequestingAccounts,
+    isRequestingSwitchEthereumChain,
     requestType,
     ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     snapsConnectPath,
@@ -168,6 +184,7 @@ const mapStateToProps = (state, ownProps) => {
     totalPages,
     page,
     targetSubjectMetadata,
+    networkConfigurations: networkConfigurationsMatchingChainIdRequested,
   };
 };
 

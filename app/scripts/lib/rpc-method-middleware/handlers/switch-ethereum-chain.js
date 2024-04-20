@@ -28,6 +28,8 @@ const switchEthereumChain = {
     getNetworkConfigurations: true,
     getProviderConfig: true,
     hasPermissions: true,
+    hasPermission: true,
+    requestSwitchNetworkPermission: true
   },
 };
 
@@ -66,6 +68,8 @@ async function switchEthereumChainHandler(
     requestUserApproval,
     getProviderConfig,
     hasPermissions,
+    hasPermission, // singular form checks the specific permission..
+    requestSwitchNetworkPermission
   },
 ) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
@@ -110,59 +114,71 @@ async function switchEthereumChainHandler(
     );
   }
 
-  const requestData = {
-    toNetworkConfiguration: findExistingNetwork(
-      _chainId,
-      findNetworkConfigurationBy,
-    ),
-  };
-
-  requestData.fromNetworkConfiguration = getProviderConfig();
-
-  if (requestData.toNetworkConfiguration) {
-    const currentChainId = getCurrentChainId();
-
-    // we might want to change all this so that it displays the network you are switching from -> to (in a way that is domain - specific)
-
-    const networkClientId = findNetworkClientIdByChainId(_chainId);
-
-    if (currentChainId === _chainId) {
-      if (hasPermissions(req.origin)) {
-        setNetworkClientIdForDomain(req.origin, networkClientId);
-      }
-      res.result = null;
+  if (hasPermission('wallet_switchEthereumChain') === false) {
+    debugger;
+    try {
+      await requestSwitchNetworkPermission(chainId);
+    } catch (err) {
+      res.error = err;
       return end();
     }
-
-    try {
-      const approvedRequestData = await requestUserApproval({
-        origin,
-        type: ApprovalType.SwitchEthereumChain,
-        requestData,
-      });
-      if (
-        Object.values(BUILT_IN_INFURA_NETWORKS)
-          .map(({ chainId: id }) => id)
-          .includes(_chainId)
-      ) {
-        await setProviderType(approvedRequestData.type);
-      } else {
-        await setActiveNetwork(approvedRequestData.id);
-      }
-      if (hasPermissions(req.origin)) {
-        setNetworkClientIdForDomain(req.origin, networkClientId);
-      }
-      res.result = null;
-    } catch (error) {
-      return end(error);
-    }
-    return end();
+    debugger;
   }
 
-  return end(
-    ethErrors.provider.custom({
-      code: 4902, // To-be-standardized "unrecognized chain ID" error
-      message: `Unrecognized chain ID "${chainId}". Try adding the chain using ${MESSAGE_TYPE.ADD_ETHEREUM_CHAIN} first.`,
-    }),
-  );
+
+  // const requestData = {
+  //   toNetworkConfiguration: findExistingNetwork(
+  //     _chainId,
+  //     findNetworkConfigurationBy,
+  //   ),
+  // };
+
+  // requestData.fromNetworkConfiguration = getProviderConfig();
+
+  // if (requestData.toNetworkConfiguration) {
+  //   const currentChainId = getCurrentChainId();
+
+  //   // we might want to change all this so that it displays the network you are switching from -> to (in a way that is domain - specific)
+
+  //   const networkClientId = findNetworkClientIdByChainId(_chainId);
+
+  //   if (currentChainId === _chainId) {
+  //     if (hasPermissions(req.origin)) {
+  //       setNetworkClientIdForDomain(req.origin, networkClientId);
+  //     }
+  //     res.result = null;
+  //     return end();
+  //   }
+
+  //   try {
+  //     const approvedRequestData = await requestUserApproval({
+  //       origin,
+  //       type: ApprovalType.SwitchEthereumChain,
+  //       requestData,
+  //     });
+  //     if (
+  //       Object.values(BUILT_IN_INFURA_NETWORKS)
+  //         .map(({ chainId: id }) => id)
+  //         .includes(_chainId)
+  //     ) {
+  //       await setProviderType(approvedRequestData.type);
+  //     } else {
+  //       await setActiveNetwork(approvedRequestData.id);
+  //     }
+  //     if (hasPermissions(req.origin)) {
+  //       setNetworkClientIdForDomain(req.origin, networkClientId);
+  //     }
+  //     res.result = null;
+  //   } catch (error) {
+  //     return end(error);
+  //   }
+  //   return end();
+  // }
+
+  // return end(
+  //   ethErrors.provider.custom({
+  //     code: 4902, // To-be-standardized "unrecognized chain ID" error
+  //     message: `Unrecognized chain ID "${chainId}". Try adding the chain using ${MESSAGE_TYPE.ADD_ETHEREUM_CHAIN} first.`,
+  //   }),
+  // );
 }

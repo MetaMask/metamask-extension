@@ -3503,6 +3503,10 @@
     "message": "See address, account balance, activity and suggest transactions to approve",
     "description": "The description for the `eth_accounts` permission"
   },
+  "permission_walletSwitchEthereumChain": {
+    "message": "Switch ethereum networks",
+    "description": "The label for the `wallet_switchEthereumChain` permission"
+  },
   "permission_ethereumProvider": {
     "message": "Access the Ethereum provider.",
     "description": "The description for the `endowment:ethereum-provider` permission"
@@ -4191,6 +4195,9 @@
   },
   "selectAccounts": {
     "message": "Select the account(s) to use on this site"
+  },
+  "selectNetwork": {
+    "message": "Select the networks(s) to use on this site"
   },
   "selectAccountsForSnap": {
     "message": "Select the account(s) to use with this snap"

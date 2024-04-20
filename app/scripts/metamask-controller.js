@@ -1141,6 +1141,7 @@ export default class MetamaskController extends EventEmitter {
         getInternalAccounts: this.accountsController.listAccounts.bind(
           this.accountsController,
         ),
+        findNetworkClientIdByChainId: (...args) => this.controllerMessenger.call('findNetworkClientIdByChainId', ...args)
       }),
       permissionSpecifications: {
         ...getPermissionSpecifications({
@@ -5011,6 +5012,10 @@ export default class MetamaskController extends EventEmitter {
             { origin },
             { eth_accounts: {} },
           ),
+        requestSwitchNetworkPermission: (chainId) => this.permissionController.requestPermissions(
+          { origin },
+          { wallet_switchEthereumChain: { [chainId]: true } },
+        ),
         requestPermissionsForOrigin:
           this.permissionController.requestPermissions.bind(
             this.permissionController,
@@ -5807,6 +5812,7 @@ export default class MetamaskController extends EventEmitter {
   };
 
   acceptPermissionsRequest = (request) => {
+    debugger;
     try {
       this.permissionController.acceptPermissionsRequest(request);
     } catch (exp) {
