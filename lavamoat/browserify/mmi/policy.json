@@ -891,10 +891,13 @@
     },
     "@metamask/announcement-controller": {
       "packages": {
-        "@metamask/base-controller": true
+        "@metamask/announcement-controller>@metamask/base-controller": true
       }
     },
     "@metamask/announcement-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
       "packages": {
         "immer": true
       }
@@ -2109,6 +2112,7 @@
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/queued-request-controller>@metamask/base-controller": true,
         "@metamask/queued-request-controller>@metamask/json-rpc-engine": true,
+        "@metamask/selected-network-controller": true,
         "@metamask/utils": true
       }
     },
@@ -2603,6 +2607,13 @@
         "queueMicrotask": true
       }
     },
+    "@metamask/snaps-execution-environments": {
+      "packages": {
+        "@metamask/post-message-stream": true,
+        "@metamask/snaps-utils": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/snaps-rpc-methods": {
       "packages": {
         "@metamask/permission-controller": true,
@@ -2715,24 +2726,9 @@
     },
     "@metamask/snaps-utils>marked": {
       "globals": {
-        "Hooks": true,
-        "Lexer": true,
-        "Parser": true,
-        "Renderer": true,
-        "TextRenderer": true,
-        "Tokenizer": true,
         "console.error": true,
         "console.warn": true,
-        "defaults": true,
-        "define": true,
-        "inlineQueue": true,
-        "passThroughHooks": true,
-        "renderer": true,
-        "rules": true,
-        "state": true,
-        "textRenderer": true,
-        "tokenizer": true,
-        "tokens": true
+        "define": true
       }
     },
     "@metamask/snaps-utils>rfdc": {
@@ -2789,6 +2785,7 @@
         "@metamask/transaction-controller>nonce-tracker": true,
         "@metamask/utils": true,
         "bn.js": true,
+        "browserify>buffer": true,
         "eth-method-registry": true,
         "fast-json-patch": true,
         "lodash": true,

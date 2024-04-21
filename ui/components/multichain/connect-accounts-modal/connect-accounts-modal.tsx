@@ -12,7 +12,9 @@ export const ConnectAccountsModal = ({
   onAccountsUpdate: () => void;
   activeTabOrigin: string;
 }) => {
-  const accounts = useSelector(getUnconnectedAccounts);
+  const accounts = useSelector((state) =>
+    getUnconnectedAccounts(state, activeTabOrigin),
+  );
   const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]);
 
   const handleAccountClick = (address: string) => {
