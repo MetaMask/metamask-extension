@@ -96,7 +96,14 @@ export default function AssetList({
     }
 
     return filteredTokens;
-  }, [tokensWithBalances, searchQuery]);
+  }, [
+    tokensWithBalances,
+    searchQuery,
+    nativeCurrency,
+    nativeCurrencyImage,
+    balanceValue,
+    primaryCurrencyProperties.value,
+  ]);
 
   return (
     <Box className="tokens-main-view-modal">
