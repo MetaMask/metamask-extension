@@ -1,0 +1,16 @@
+diff --git a/dist/Standards/NftStandards/ERC721/ERC721Standard.js b/dist/Standards/NftStandards/ERC721/ERC721Standard.js
+index d9286b0c0e607d2857f3ee7dad40d13a6c11d7d7..4e12e4b590b1f34a66602d63035f1905917f8c93 100644
+--- a/dist/Standards/NftStandards/ERC721/ERC721Standard.js
++++ b/dist/Standards/NftStandards/ERC721/ERC721Standard.js
+@@ -66,7 +66,10 @@ class ERC721Standard {
+             const contract = new contracts_1.Contract(address, metamask_eth_abis_1.abiERC721, this.provider);
+             const supportsMetadata = yield this.contractSupportsMetadataInterface(address);
+             if (!supportsMetadata) {
+-                throw new Error('Contract does not support ERC721 metadata interface.');
++                // Do not throw error here, supporting Metadata interface is optional even though majority of ERC721 nfts do support it.
++                // This change is made because of instances of NFTs that are ERC404( mixed ERC20 / ERC721 implementation).
++                // As of today, ERC404 is unofficial but some people use it, the contract does not support Metadata interface, but it has the tokenURI() fct.
++                console.error('Contract does not support ERC721 metadata interface.');
+             }
+             return contract.tokenURI(tokenId);
+         });

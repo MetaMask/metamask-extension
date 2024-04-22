@@ -71,6 +71,7 @@ export default class EditableLabel extends Component {
         <ButtonIcon
           iconName={IconName.Check}
           onClick={() => this.handleSubmit(isValidAccountName)}
+          data-testid="save-account-label-input"
         />
       </Box>
     );
