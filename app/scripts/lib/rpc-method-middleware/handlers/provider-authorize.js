@@ -1,6 +1,6 @@
 import { ethErrors } from 'eth-rpc-errors';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import { isKnownScopeString, isValidScope } from './caip-25';
+import { isKnownScopeString, isSupportedNotification, isValidScope } from './caip-25';
 
 // {
 //   "requiredScopes": {
@@ -149,15 +149,30 @@ async function providerAuthorizeHandler(_req, res, _next, end, _hooks) {
   // When provider evaluates requested methods to not be supported
   //   code = 5101
   //   message = "Requested methods are not supported"
-  // When provider evaluates requested notifications to not be supported
-  //   code = 5102
-  //   message = "Requested notifications are not supported"
+
   // When provider does not recognize one or more requested method(s)
   //   code = 5201
   //   message = "Unknown method(s) requested"
-  // When provider does not recognize one or more requested notification(s)
-  //   code = 5202
-  //   message = "Unknown notification(s) requested"
+
+
+  for (const [_, scopeObject] of Object.entries(validScopes)) {
+    if (!scopeObject.notifications) {
+      continue
+    }
+    if (!scopeObject.notifications.every(isSupportedNotification)) {
+      // not sure which one of these to use
+      // When provider evaluates requested notifications to not be supported
+      //   code = 5102
+      //   message = "Requested notifications are not supported"
+      // When provider does not recognize one or more requested notification(s)
+      //   code = 5202
+      //   message = "Unknown notification(s) requested"
+      return end(ethErrors.provider.custom({
+        code: 5102,
+        message:  "Requested notifications are not supported",
+      }))
+    }
+  }
 
   res.result = {
     sessionId,

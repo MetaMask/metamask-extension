@@ -108,7 +108,7 @@ export const isValidScope = (
 };
 
 
-export const isKnownScopeString = (scopeString: string) => {
+export const isSupportedScopeString = (scopeString: string) => {
   const isNamespaceScoped = isCaipNamespace(scopeString);
   const isChainScoped = isCaipChainId(scopeString);
 
@@ -132,4 +132,9 @@ const isKnownCaipNamespace = (namespace: string): namespace is KnownCaipNamespac
 export enum KnownCaipNamespace {
   /** EIP-155 compatible chains. */
   Eip155 = 'eip155',
+}
+
+// This doesn't belong here
+export const isSupportedNotification = (notification: string): boolean => {
+  return ['accountsChanged', 'chainChanged'].includes(notification)
 }
