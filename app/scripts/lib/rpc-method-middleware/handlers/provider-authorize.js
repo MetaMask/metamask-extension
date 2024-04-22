@@ -1,6 +1,10 @@
 import { ethErrors } from 'eth-rpc-errors';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import { isKnownScopeString, isSupportedNotification, isValidScope } from './caip-25';
+import {
+  isSupportedScopeString,
+  isSupportedNotification,
+  isValidScope,
+} from './caip-25';
 
 // {
 //   "requiredScopes": {
@@ -42,13 +46,16 @@ const providerAuthorize = {
 export default providerAuthorize;
 
 async function providerAuthorizeHandler(_req, res, _next, end, _hooks) {
-  const { requiredScopes, optionalScopes, sessionProperties, ...restParams } = _req.params;
+  const { requiredScopes, optionalScopes, sessionProperties, ...restParams } =
+    _req.params;
 
   if (Object.keys(restParams).length !== 0) {
-    return end(ethErrors.provider.custom({
-      code: 5301,
-      message: "Session Properties can only be optional and global",
-    }))
+    return end(
+      ethErrors.provider.custom({
+        code: 5301,
+        message: 'Session Properties can only be optional and global',
+      }),
+    );
   }
 
   const sessionId = '0xdeadbeef';
@@ -90,17 +97,19 @@ async function providerAuthorizeHandler(_req, res, _next, end, _hooks) {
     }
   }
   if (sessionProperties && Object.keys(sessionProperties).length === 0) {
-    return end(ethErrors.provider.custom({
-      code: 5300,
-      message: "Invalid Session Properties requested",
-    }))
+    return end(
+      ethErrors.provider.custom({
+        code: 5300,
+        message: 'Invalid Session Properties requested',
+      }),
+    );
   }
 
   const validScopes = {
     // what happens if these keys collide?
     ...validRequiredScopes,
     ...validOptionalScopes,
-  }
+  };
 
   // Unless the dapp is known and trusted, give generic error messages for
   // - the user denies consent for exposing accounts that match the requested and approved chains,
@@ -114,10 +123,12 @@ async function providerAuthorizeHandler(_req, res, _next, end, _hooks) {
   //     "message": "Unknown error"
 
   if (Object.keys(validScopes).length === 0) {
-    return end(ethErrors.provider.custom({
-      code: 5000,
-      message: "Unknown error with request",
-    }))
+    return end(
+      ethErrors.provider.custom({
+        code: 5000,
+        message: 'Unknown error with request',
+      }),
+    );
   }
 
   // When user disapproves accepting calls with the request methods
@@ -128,7 +139,7 @@ async function providerAuthorizeHandler(_req, res, _next, end, _hooks) {
   //   message = "User disapproved requested notifications"
 
   for (const [scopeString] of Object.entries(validScopes)) {
-    if (!isKnownScopeString(scopeString)) {
+    if (!isSupportedScopeString(scopeString)) {
       // A little awkward. What is considered validation? Currently isValidScope only
       // verifies that the shape of a scopeString and scopeObject is correct, not if it
       // is supported by MetaMask and not if the scopes themselves (the chainId part) are well formed.
@@ -139,10 +150,12 @@ async function providerAuthorizeHandler(_req, res, _next, end, _hooks) {
       // Finally, I'm unsure if this is also meant to handle the case where namespaces are not
       // supported by the wallet.
 
-      return end(ethErrors.provider.custom({
-        code: 5100,
-        message:  "Requested chains are not supported",
-      }))
+      return end(
+        ethErrors.provider.custom({
+          code: 5100,
+          message: 'Requested chains are not supported',
+        }),
+      );
     }
   }
 
@@ -154,10 +167,9 @@ async function providerAuthorizeHandler(_req, res, _next, end, _hooks) {
   //   code = 5201
   //   message = "Unknown method(s) requested"
 
-
-  for (const [_, scopeObject] of Object.entries(validScopes)) {
+  for (const [, scopeObject] of Object.entries(validScopes)) {
     if (!scopeObject.notifications) {
-      continue
+      continue;
     }
     if (!scopeObject.notifications.every(isSupportedNotification)) {
       // not sure which one of these to use
@@ -167,10 +179,12 @@ async function providerAuthorizeHandler(_req, res, _next, end, _hooks) {
       // When provider does not recognize one or more requested notification(s)
       //   code = 5202
       //   message = "Unknown notification(s) requested"
-      return end(ethErrors.provider.custom({
-        code: 5102,
-        message:  "Requested notifications are not supported",
-      }))
+      return end(
+        ethErrors.provider.custom({
+          code: 5102,
+          message: 'Requested notifications are not supported',
+        }),
+      );
     }
   }
 

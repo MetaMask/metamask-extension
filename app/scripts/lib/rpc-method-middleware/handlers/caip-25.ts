@@ -3,7 +3,6 @@ import {
   isCaipChainId,
   isCaipNamespace,
   parseCaipChainId,
-  Kno
 } from '@metamask/utils';
 
 // {scopeString} (conditional) = EITHER a namespace identifier string registered in the CASA namespaces registry to authorize multiple chains with identical properties OR a single, valid [CAIP-2][] identifier, i.e., a specific chain_id within a namespace.
@@ -107,6 +106,24 @@ export const isValidScope = (
   return true;
 };
 
+// This doesn't belong here
+export const isSupportedNotification = (notification: string): boolean => {
+  return ['accountsChanged', 'chainChanged'].includes(notification);
+};
+
+// TODO: Remove this after bumping utils
+enum KnownCaipNamespace {
+  /** EIP-155 compatible chains. */
+  Eip155 = 'eip155',
+}
+
+const isKnownCaipNamespace = (
+  namespace: string,
+): namespace is KnownCaipNamespace => {
+  return Object.values(KnownCaipNamespace).includes(
+    namespace as KnownCaipNamespace,
+  );
+};
 
 export const isSupportedScopeString = (scopeString: string) => {
   const isNamespaceScoped = isCaipNamespace(scopeString);
@@ -121,20 +138,4 @@ export const isSupportedScopeString = (scopeString: string) => {
   }
 
   return false;
-}
-
-const isKnownCaipNamespace = (namespace: string): namespace is KnownCaipNamespace => {
-  return Object.values(KnownCaipNamespace).includes(namespace as KnownCaipNamespace)
-}
-
-// TODO: Remove this after bumping utils
-/** Known CAIP namespaces. */
-export enum KnownCaipNamespace {
-  /** EIP-155 compatible chains. */
-  Eip155 = 'eip155',
-}
-
-// This doesn't belong here
-export const isSupportedNotification = (notification: string): boolean => {
-  return ['accountsChanged', 'chainChanged'].includes(notification)
-}
+};
