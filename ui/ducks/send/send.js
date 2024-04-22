@@ -119,6 +119,7 @@ import {
 } from '../../../shared/lib/transactions-controller-utils';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
+import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
 import { setMaxValueMode } from '../confirm-transaction/confirm-transaction.duck';
 import { getSwapAndSendQuotes } from './swap-and-send-utils';
 import {
@@ -793,10 +794,10 @@ export const fetchSwapAndSendQuotes = createAsyncThunk(
       sourceAmount,
       sourceToken:
         draftTransaction.sendAsset?.details?.address ||
-        '0x0000000000000000000000000000000000000000',
+        SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].address,
       destinationToken:
         draftTransaction.receiveAsset?.details?.address ||
-        '0x0000000000000000000000000000000000000000',
+        SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].address,
       sender,
       recipient: draftTransaction.recipient.address,
       slippage: '5', // TODO: update when solution is available
