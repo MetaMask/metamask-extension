@@ -39,7 +39,9 @@ const useCurrentConfirmation = () => {
     ) {
       return;
     }
+
     let pendingConfirmation: Approval | undefined;
+
     if (paramsTransactionId) {
       if (paramsTransactionId === currentConfirmation?.id) {
         return;
@@ -48,6 +50,7 @@ const useCurrentConfirmation = () => {
         ({ id: confirmId }) => confirmId === paramsTransactionId,
       );
     }
+
     if (!pendingConfirmation) {
       if (!latestPendingConfirmation) {
         setCurrentConfirmation(undefined);
@@ -55,6 +58,7 @@ const useCurrentConfirmation = () => {
       }
       pendingConfirmation = latestPendingConfirmation;
     }
+
     if (pendingConfirmation.id !== currentConfirmation?.id) {
       const unconfirmedTransaction =
         unconfirmedTransactions[pendingConfirmation.id];
@@ -62,6 +66,7 @@ const useCurrentConfirmation = () => {
         setCurrentConfirmation(undefined);
         return;
       }
+
       if (
         pendingConfirmation.type !== ApprovalType.PersonalSign &&
         pendingConfirmation.type !== ApprovalType.EthSignTypedData
@@ -69,6 +74,7 @@ const useCurrentConfirmation = () => {
         setCurrentConfirmation(undefined);
         return;
       }
+
       if (pendingConfirmation.type === ApprovalType.PersonalSign) {
         const { siwe } = unconfirmedTransaction.msgParams;
         if (siwe?.isSIWEMessage) {
