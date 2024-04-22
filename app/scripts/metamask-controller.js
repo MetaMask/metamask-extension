@@ -1118,12 +1118,15 @@ export default class MetamaskController extends EventEmitter {
       ),
     });
 
-    this.controllerMessenger.subscribe('KeyringController:unlock', () =>
-      this._onUnlock(),
-    );
-    this.controllerMessenger.subscribe('KeyringController:lock', () =>
-      this._onLock(),
-    );
+    this.controllerMessenger.subscribe('KeyringController:unlock', () => {
+      this._onUnlock();
+      this.nftDetectionController.start();
+    });
+    this.controllerMessenger.subscribe('KeyringController:lock', () => {
+      this._onLock();
+      this.nftDetectionController.stop();
+    });
+
     this.controllerMessenger.subscribe(
       'KeyringController:stateChange',
       (state) => {
