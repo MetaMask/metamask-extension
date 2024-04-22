@@ -66,7 +66,7 @@ describe('Test Snap update', function () {
 
         // navigate to test snap page
         let windowHandles = await driver.waitUntilXWindowHandles(
-          1,
+          1 + 1,
           1000,
           10000,
         );
@@ -104,7 +104,11 @@ describe('Test Snap update', function () {
         });
 
         // navigate to test snap page
-        windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
+        windowHandles = await driver.waitUntilXWindowHandles(
+          1 + 1,
+          1000,
+          10000,
+        );
         await driver.switchToWindow(windowHandles[0]);
 
         // look for the correct version text

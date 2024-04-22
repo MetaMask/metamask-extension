@@ -30,7 +30,7 @@ describe('Test Snap UI Links', function () {
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
-          3,
+          1 + 3,
           1000,
           10000,
         );
@@ -71,7 +71,11 @@ describe('Test Snap UI Links', function () {
         await driver.delay(500);
 
         // switch to dialog popup
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
+        windowHandles = await driver.waitUntilXWindowHandles(
+          1 + 3,
+          1000,
+          10000,
+        );
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.Dialog,
           windowHandles,
@@ -105,7 +109,11 @@ describe('Test Snap UI Links', function () {
         });
 
         // switch to new tab
-        windowHandles = await driver.waitUntilXWindowHandles(4, 1000, 10000);
+        windowHandles = await driver.waitUntilXWindowHandles(
+          1 + 4,
+          1000,
+          10000,
+        );
         await driver.switchToWindowWithTitle(
           'MetaMask Snaps Directory',
           windowHandles,
@@ -118,7 +126,11 @@ describe('Test Snap UI Links', function () {
         });
 
         // switch back to metamask window
-        windowHandles = await driver.waitUntilXWindowHandles(4, 1000, 10000);
+        windowHandles = await driver.waitUntilXWindowHandles(
+          1 + 4,
+          1000,
+          10000,
+        );
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.Dialog,
           windowHandles,
@@ -135,7 +147,11 @@ describe('Test Snap UI Links', function () {
         });
 
         // switch back to test snaps tab
-        windowHandles = await driver.waitUntilXWindowHandles(4, 1000, 10000);
+        windowHandles = await driver.waitUntilXWindowHandles(
+          1 + 4,
+          1000,
+          10000,
+        );
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // check for false result

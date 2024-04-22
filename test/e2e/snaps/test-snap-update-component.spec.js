@@ -74,7 +74,7 @@ describe('Test Snap update via snaps component', function () {
 
         // navigate to test snap page
         const windowHandles = await driver.waitUntilXWindowHandles(
-          2,
+          1 + 2,
           1000,
           10000,
         );
