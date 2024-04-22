@@ -1,5 +1,6 @@
+import { ethErrors } from 'eth-rpc-errors';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import { isValidScope } from './caip-25';
+import { isKnownScopeString, isValidScope } from './caip-25';
 
 // {
 //   "requiredScopes": {
@@ -41,7 +42,14 @@ const providerAuthorize = {
 export default providerAuthorize;
 
 async function providerAuthorizeHandler(_req, res, _next, end, _hooks) {
-  const { requiredScopes, optionalScopes, sessionProperties } = _req.params;
+  const { requiredScopes, optionalScopes, sessionProperties, ...restParams } = _req.params;
+
+  if (Object.keys(restParams).length !== 0) {
+    return end(ethErrors.provider.custom({
+      code: 5301,
+      message: "Session Properties can only be optional and global",
+    }))
+  }
 
   const sessionId = '0xdeadbeef';
 
@@ -82,18 +90,78 @@ async function providerAuthorizeHandler(_req, res, _next, end, _hooks) {
     }
   }
   if (sessionProperties && Object.keys(sessionProperties).length === 0) {
-    throw new Error(
-      '`sessionProperties` object MUST contain 1 or more properties if present',
-    );
+    return end(ethErrors.provider.custom({
+      code: 5300,
+      message: "Invalid Session Properties requested",
+    }))
   }
+
+  const validScopes = {
+    // what happens if these keys collide?
+    ...validRequiredScopes,
+    ...validOptionalScopes,
+  }
+
+  // Unless the dapp is known and trusted, give generic error messages for
+  // - the user denies consent for exposing accounts that match the requested and approved chains,
+  // - the user denies consent for requested methods,
+  // - the user denies all requested or any required scope objects,
+  // - the wallet cannot support all requested or any required scope objects,
+  // - the requested chains are not supported by the wallet, or
+  // - the requested methods are not supported by the wallet
+  // return
+  //     "code": 0,
+  //     "message": "Unknown error"
+
+  if (Object.keys(validScopes).length === 0) {
+    return end(ethErrors.provider.custom({
+      code: 5000,
+      message: "Unknown error with request",
+    }))
+  }
+
+  // When user disapproves accepting calls with the request methods
+  //   code = 5001
+  //   message = "User disapproved requested methods"
+  // When user disapproves accepting calls with the request notifications
+  //   code = 5002
+  //   message = "User disapproved requested notifications"
+
+  for (const [scopeString] of Object.entries(validScopes)) {
+    if (!isKnownScopeString(scopeString)) {
+      // A little awkward. What is considered validation? Currently isValidScope only
+      // verifies that the shape of a scopeString and scopeObject is correct, not if it
+      // is supported by MetaMask and not if the scopes themselves (the chainId part) are well formed.
+
+      // Additionally, still need to handle adding chains to the NetworkController and verifying
+      // that a network client exists to handle the chainId
+
+      // Finally, I'm unsure if this is also meant to handle the case where namespaces are not
+      // supported by the wallet.
+
+      return end(ethErrors.provider.custom({
+        code: 5100,
+        message:  "Requested chains are not supported",
+      }))
+    }
+  }
+
+  // When provider evaluates requested methods to not be supported
+  //   code = 5101
+  //   message = "Requested methods are not supported"
+  // When provider evaluates requested notifications to not be supported
+  //   code = 5102
+  //   message = "Requested notifications are not supported"
+  // When provider does not recognize one or more requested method(s)
+  //   code = 5201
+  //   message = "Unknown method(s) requested"
+  // When provider does not recognize one or more requested notification(s)
+  //   code = 5202
+  //   message = "Unknown notification(s) requested"
 
   res.result = {
     sessionId,
-    sessionScopes: {
-      // what happens if these keys collide?
-      ...validRequiredScopes,
-      ...validOptionalScopes,
-    },
+    sessionScopes: validScopes,
     sessionProperties: {
       expiry: '2022-11-31T17:07:31+00:00',
     },

@@ -3,6 +3,7 @@ import {
   isCaipChainId,
   isCaipNamespace,
   parseCaipChainId,
+  Kno
 } from '@metamask/utils';
 
 // {scopeString} (conditional) = EITHER a namespace identifier string registered in the CASA namespaces registry to authorize multiple chains with identical properties OR a single, valid [CAIP-2][] identifier, i.e., a specific chain_id within a namespace.
@@ -57,6 +58,12 @@ export const isValidScope = (
 
   // These assume that the namespace has a notion of chainIds
   if (isChainScoped && scopes) {
+    // When a badly-formed request includes a chainId mismatched to scope
+    //   code = 5203
+    //   message = "Scope/chain mismatch"
+    // When a badly-formed request defines one chainId two ways
+    //  code = 5204
+    //  message = "ChainId defined in two different scopes"
     return false;
   }
   if (isNamespaceScoped && scopes) {
@@ -99,3 +106,30 @@ export const isValidScope = (
 
   return true;
 };
+
+
+export const isKnownScopeString = (scopeString: string) => {
+  const isNamespaceScoped = isCaipNamespace(scopeString);
+  const isChainScoped = isCaipChainId(scopeString);
+
+  if (isNamespaceScoped) {
+    return isKnownCaipNamespace(scopeString);
+  }
+
+  if (isChainScoped) {
+    return isKnownCaipNamespace(parseCaipChainId(scopeString).namespace);
+  }
+
+  return false;
+}
+
+const isKnownCaipNamespace = (namespace: string): namespace is KnownCaipNamespace => {
+  return Object.values(KnownCaipNamespace).includes(namespace as KnownCaipNamespace)
+}
+
+// TODO: Remove this after bumping utils
+/** Known CAIP namespaces. */
+export enum KnownCaipNamespace {
+  /** EIP-155 compatible chains. */
+  Eip155 = 'eip155',
+}
