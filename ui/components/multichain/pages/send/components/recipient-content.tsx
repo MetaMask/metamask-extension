@@ -11,7 +11,6 @@ import {
   acknowledgeRecipientWarning,
   getCurrentDraftTransaction,
   getSendAsset,
-  updateSendAmount,
   updateSendAsset,
 } from '../../../../../ducks/send';
 import {
@@ -25,7 +24,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AssetPickerAmount } from '../../..';
 import { SendHexData, SendPageRow } from '.';
 
-export const SendPageContent = ({
+export const SendPageRecipientContent = ({
   requireContractAddressAcknowledgement,
 }: {
   requireContractAddressAcknowledgement: boolean;
@@ -52,6 +51,7 @@ export const SendPageContent = ({
 
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // TODO: replace this with dest logic, then abstract both usages to a util
   const handleSelectToken = async (token: any) => {
     if (token.type === AssetType.native) {
       dispatch(
@@ -78,17 +78,17 @@ export const SendPageContent = ({
 
   // FIXME: these should all be resolved before marking the PR as ready
   // TODO: SWAP+SEND impl steps (all but step 6 correlate to a PR in the merge train):
-  // TODO: 1. add disabled (i.e., only 1-to-1) destination swap button to send page; update layout/designs (split as needed)
-  // TODO: 2. begin design review + revisions
+  // TODO: 1. create/add data flows for swap+send
+  // TODO: 2. enable destination swap button (i.e., allow 1-to-any swaps) on send page; integrate data flows; update modals and swaps flow
+  // TODO: 3. add error states
+  // TODO: 4. begin design review + revisions
   //          - fix modal scroll behavior
   //          - remove background for 721/1155 images
   //          - double border weight for dropdowns
-  // TODO: 3. create/add data flows for swap+send
-  // TODO: 4. enable destination swap button (i.e., allow 1-to-any swaps) on send page; integrate data flows
-  // TODO: 5 add error states
-  // TODO: 6. add analytics
-  //       - use transaction lifecycle events
-  // TODO: 8. final design and technical review + revisions
+  //          - ensure all NFTs show up in modal
+  // TODO: 5. add analytics + e2e tests
+  //       - use transaction lifecycle events once
+  // TODO: 6. final design and technical review + revisions
   return (
     <Box>
       {requireContractAddressAcknowledgement ? (
@@ -121,9 +121,6 @@ export const SendPageContent = ({
           asset={transactionAsset}
           onAssetChange={handleSelectToken}
           amount={amount}
-          onAmountChange={(newAmount: string) =>
-            dispatch(updateSendAmount(newAmount))
-          }
         />
       </SendPageRow>
       {showHexData ? <SendHexData /> : null}
