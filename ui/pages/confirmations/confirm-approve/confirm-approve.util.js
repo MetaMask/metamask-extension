@@ -31,6 +31,8 @@ export function getCustomTxParamsData(
   const [signature, rest] = data.split(spender);
   if (!signature || !rest) {
     throw new Error('Invalid data');
+  } else if (rest.length < 64) {
+    throw new Error('Invalid value; must be at least 64 hex digits long');
   }
 
   const tokenValue = rest.substring(0, 64);
