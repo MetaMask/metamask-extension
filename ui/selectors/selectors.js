@@ -1405,13 +1405,13 @@ export const getConnectedSitesList = createDeepEqualSelector(
         if (sitesList[siteKey]) {
           sitesList[siteKey].addresses.push(connectedAddress);
           sitesList[siteKey].addressToNameMap[connectedAddress] =
-            internalAccount.metadata.name; // Map address to name
+            internalAccount?.metadata.name || ''; // Map address to name
         } else {
           sitesList[siteKey] = {
             ...app,
             addresses: [connectedAddress],
             addressToNameMap: {
-              [connectedAddress]: internalAccount.metadata.name,
+              [connectedAddress]: internalAccount?.metadata.name || '',
             },
           };
         }
@@ -1990,36 +1990,6 @@ export const getAllEnabledNetworks = createDeepEqualSelector(
     return showTestnetNetworks ? allNetworks : nonTestNetworks;
   },
 );
-
-export function getIsOptimism(state) {
-  return (
-    getCurrentChainId(state) === CHAIN_IDS.OPTIMISM ||
-    getCurrentChainId(state) === CHAIN_IDS.OPTIMISM_TESTNET ||
-    getCurrentChainId(state) === CHAIN_IDS.OPTIMISM_GOERLI
-  );
-}
-
-export function getIsBase(state) {
-  return (
-    getCurrentChainId(state) === CHAIN_IDS.BASE ||
-    getCurrentChainId(state) === CHAIN_IDS.BASE_TESTNET
-  );
-}
-
-export function getIsOpbnb(state) {
-  return (
-    getCurrentChainId(state) === CHAIN_IDS.OPBNB ||
-    getCurrentChainId(state) === CHAIN_IDS.OPBNB_TESTNET
-  );
-}
-
-export function getIsOpStack(state) {
-  return getIsOptimism(state) || getIsBase(state) || getIsOpbnb(state);
-}
-
-export function getIsMultiLayerFeeNetwork(state) {
-  return getIsOpStack(state);
-}
 
 /**
  *  To retrieve the maxBaseFee and priorityFee the user has set as default
