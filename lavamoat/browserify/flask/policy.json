@@ -2867,6 +2867,13 @@
         "define": true
       }
     },
+    "@noble/ciphers": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
     "@noble/hashes": {
       "globals": {
         "TextEncoder": true,
