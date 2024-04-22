@@ -22,6 +22,7 @@ import {
   unconfirmedTransactionsHashSelector,
   getAccountType,
   getMemoizedMetaMaskInternalAccounts,
+  getSelectedInternalAccount,
 } from '../../../../selectors';
 import SignatureRequest from './signature-request';
 
@@ -52,7 +53,6 @@ const mockStore = {
         name: 'John Doe',
       },
     },
-    selectedAddress: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
     internalAccounts: {
       accounts: {
         'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -65,7 +65,14 @@ const mockStore = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: [
+            EthMethod.PersonalSign,
+            EthMethod.Sign,
+            EthMethod.SignTransaction,
+            EthMethod.SignTypedDataV1,
+            EthMethod.SignTypedDataV3,
+            EthMethod.SignTypedDataV4,
+          ],
           type: EthAccountType.Eoa,
         },
       },
@@ -102,6 +109,8 @@ jest.mock('../../../../hooks/useMMICustodySignMessage', () => ({
 jest.mock('@metamask-institutional/extension');
 
 const generateUseSelectorRouter = (opts) => (selector) => {
+  const mockSelectedInternalAccount = getSelectedInternalAccount(opts);
+
   switch (selector) {
     case getProviderConfig:
       return opts.metamask.providerConfig;
@@ -117,7 +126,7 @@ const generateUseSelectorRouter = (opts) => (selector) => {
       return opts.metamask.currencyRates[opts.metamask.providerConfig.ticker]
         ?.conversionRate;
     case getSelectedAccount:
-      return opts.metamask.accounts[opts.metamask.selectedAddress];
+      return mockSelectedInternalAccount;
     case getInternalAccounts:
       return Object.values(opts.metamask.internalAccounts.accounts);
     case getMemoizedMetaMaskInternalAccounts:
@@ -473,7 +482,6 @@ describe('Signature Request Component', () => {
           ...mockStore,
           metamask: {
             ...mockStore.metamask,
-            selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
             accounts: {
               ...mockStore.metamask.accounts,
               '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {

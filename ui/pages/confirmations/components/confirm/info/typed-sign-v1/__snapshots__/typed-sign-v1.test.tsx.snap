@@ -39,7 +39,7 @@ exports[`TypedSignInfo correctly renders typed sign data request 1`] = `
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
         >
-          https://metamask.github.io
+          metamask.github.io
         </p>
       </div>
     </div>

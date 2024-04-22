@@ -5,6 +5,8 @@ const ASSET_ROUTE = '/asset';
 const SETTINGS_ROUTE = '/settings';
 const GENERAL_ROUTE = '/settings/general';
 const ADVANCED_ROUTE = '/settings/advanced';
+
+const DEVELOPER_OPTIONS_ROUTE = '/settings/developer-options';
 const EXPERIMENTAL_ROUTE = '/settings/experimental';
 const SECURITY_ROUTE = '/settings/security';
 const ABOUT_US_ROUTE = '/settings/about-us';
@@ -34,6 +36,7 @@ const CUSTODY_ACCOUNT_DONE_ROUTE = '/new-account/custody/done';
 const CONFIRM_ADD_CUSTODIAN_TOKEN = '/confirm-add-custodian-token';
 const INTERACTIVE_REPLACEMENT_TOKEN_PAGE =
   '/interactive-replacement-token-page';
+const SRP_REMINDER = '/onboarding/remind-srp';
 ///: END:ONLY_INCLUDE_IF
 const SEND_ROUTE = '/send';
 const CONNECTIONS = '/connections';
@@ -114,6 +117,8 @@ const PATH_NAME_MAP = {
   [SETTINGS_ROUTE]: 'Settings Page',
   [GENERAL_ROUTE]: 'General Settings Page',
   [ADVANCED_ROUTE]: 'Advanced Settings Page',
+  // DEVELOPER_OPTIONS_ROUTE not included because we're not tracking analytics for this page
+  // [DEVELOPER_OPTIONS_ROUTE]: 'Experimental Settings Page',
   [EXPERIMENTAL_ROUTE]: 'Experimental Settings Page',
   [SECURITY_ROUTE]: 'Security Settings Page',
   [ABOUT_US_ROUTE]: 'About Us Page',
@@ -152,6 +157,7 @@ const PATH_NAME_MAP = {
   [CUSTODY_ACCOUNT_DONE_ROUTE]: 'Connect Custody Account done',
   [CONFIRM_ADD_CUSTODIAN_TOKEN]: 'Confirm Add Custodian Token',
   [INTERACTIVE_REPLACEMENT_TOKEN_PAGE]: 'Interactive replacement token page',
+  [SRP_REMINDER]: 'Secret Recovery Phrase Reminder',
   ///: END:ONLY_INCLUDE_IF
   [SEND_ROUTE]: 'Send Page',
   [CONNECTIONS]: 'Connections',
@@ -235,6 +241,7 @@ export {
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
   CONFIRMATION_V_NEXT_ROUTE,
   ADVANCED_ROUTE,
+  DEVELOPER_OPTIONS_ROUTE,
   EXPERIMENTAL_ROUTE,
   SECURITY_ROUTE,
   GENERAL_ROUTE,
@@ -249,6 +256,7 @@ export {
   INSTITUTIONAL_FEATURES_DONE_ROUTE,
   CONFIRM_ADD_CUSTODIAN_TOKEN,
   INTERACTIVE_REPLACEMENT_TOKEN_PAGE,
+  SRP_REMINDER,
   ///: END:ONLY_INCLUDE_IF
   NETWORKS_ROUTE,
   NETWORKS_FORM_ROUTE,

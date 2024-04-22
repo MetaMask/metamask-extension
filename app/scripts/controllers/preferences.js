@@ -15,7 +15,6 @@ const mainNetworks = {
 const testNetworks = {
   [CHAIN_IDS.GOERLI]: true,
   [CHAIN_IDS.SEPOLIA]: true,
-  [CHAIN_IDS.LINEA_GOERLI]: true,
   [CHAIN_IDS.LINEA_SEPOLIA]: true,
 };
 
@@ -57,7 +56,7 @@ export default class PreferencesController {
       useSafeChainsListValidation: true,
       // set to true means the dynamic list from the API is being used
       // set to false will be using the static list from contract-metadata
-      useTokenDetection: false,
+      useTokenDetection: opts?.initState?.useTokenDetection ?? true,
       useNftDetection: false,
       use4ByteResolution: true,
       useCurrencyRateCheck: true,
@@ -95,6 +94,7 @@ export default class PreferencesController {
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
+        redesignedConfirmationsEnabled: false,
         featureNotificationsEnabled: false,
       },
       // ENS decentralized website resolution
