@@ -444,8 +444,8 @@ const SOLIDITY_TYPES = solidityTypes();
 const stripArrayType = (potentialArrayType) =>
   potentialArrayType.replace(/\[[[0-9]*\]*/gu, '');
 
-const stripOneLayerofNesting = (potentialArrayType) =>
-  potentialArrayType.replace(/\[[[0-9]*\]/u, '');
+export const stripOneLayerofNesting = (potentialArrayType) =>
+  potentialArrayType.replace(/\[(\d*)\]/u, '');
 
 const isArrayType = (potentialArrayType) =>
   potentialArrayType.match(/\[[[0-9]*\]*/u) !== null;

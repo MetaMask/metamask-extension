@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   getIsMainnet,
-  getIsMultiLayerFeeNetwork,
   getPreferences,
   getUnapprovedTransactions,
   getUseCurrencyRateCheck,
@@ -40,7 +39,6 @@ const ConfirmLegacyGasDisplay = ({ 'data-testid': dataTestId } = {}) => {
 
   // state selectors
   const isMainnet = useSelector(getIsMainnet);
-  const isMultiLayerFeeNetwork = useSelector(getIsMultiLayerFeeNetwork);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const nativeCurrency = useSelector(getNativeCurrency);
@@ -54,8 +52,10 @@ const ConfirmLegacyGasDisplay = ({ 'data-testid': dataTestId } = {}) => {
   const { hexMinimumTransactionFee, hexMaximumTransactionFee } = useSelector(
     (state) => transactionFeeSelector(state, transaction),
   );
+  const { layer1GasFee } = txData;
+  const hasLayer1GasFee = layer1GasFee !== undefined;
 
-  if (isMultiLayerFeeNetwork) {
+  if (hasLayer1GasFee) {
     return [
       <TransactionDetailItem
         key="legacy-total-item"

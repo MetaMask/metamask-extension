@@ -90,7 +90,6 @@ export default function TokenAllowance({
   hexTransactionTotal,
   hexMinimumTransactionFee,
   txData,
-  isMultiLayerFeeNetwork,
   supportsEIP1559,
   userAddress,
   tokenAddress,
@@ -531,7 +530,6 @@ export default function TokenAllowance({
             renderTransactionDetailsContent
             noBorder={useNonceField || !showFullTxDetails}
             supportsEIP1559={supportsEIP1559}
-            isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
             ethTransactionTotal={ethTransactionTotal}
             nativeCurrency={nativeCurrency}
             fullTxData={fullTxData}
@@ -706,10 +704,6 @@ TokenAllowance.propTypes = {
    * Current transaction
    */
   txData: PropTypes.object,
-  /**
-   * Is multi-layer fee network or not
-   */
-  isMultiLayerFeeNetwork: PropTypes.bool,
   /**
    * Is the enhanced gas fee enabled or not
    */

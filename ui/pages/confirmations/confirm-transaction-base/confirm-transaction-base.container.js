@@ -45,7 +45,6 @@ import {
   getPreferences,
   doesAddressRequireLedgerHidConnection,
   getTokenList,
-  getIsMultiLayerFeeNetwork,
   getIsBuyableChain,
   getEnsResolutionByAddress,
   getUnapprovedTransaction,
@@ -54,6 +53,7 @@ import {
   getUnapprovedTransactions,
   getInternalAccountByAddress,
   getApprovedAndSignedTransactions,
+  getSelectedNetworkClientId,
 } from '../../../selectors';
 import {
   getCurrentChainSupportsSmartTransactions,
@@ -134,6 +134,7 @@ const mapStateToProps = (state, ownProps) => {
   } = ownProps;
   const { id: paramsTransactionId } = params;
   const isMainnet = getIsMainnet(state);
+  const selectedNetworkClientId = getSelectedNetworkClientId(state);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const envType = getEnvironmentType();
@@ -264,7 +265,6 @@ const mapStateToProps = (state, ownProps) => {
   const hardwareWalletRequiresConnection =
     doesAddressRequireLedgerHidConnection(state, fromAddress);
 
-  const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
   const isUsingPaymaster = getIsUsingPaymaster(state);
 
   let isSigningOrSubmitting = Boolean(
@@ -312,6 +312,7 @@ const mapStateToProps = (state, ownProps) => {
     nextNonce,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     isMainnet,
+    selectedNetworkClientId,
     isEthGasPrice,
     noGasPrice,
     supportsEIP1559,
@@ -324,7 +325,6 @@ const mapStateToProps = (state, ownProps) => {
     showLedgerSteps: fromAddressIsLedger,
     nativeCurrency,
     hardwareWalletRequiresConnection,
-    isMultiLayerFeeNetwork,
     chainId,
     isBuyableChain,
     useCurrencyRateCheck: getUseCurrencyRateCheck(state),

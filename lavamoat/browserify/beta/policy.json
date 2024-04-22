@@ -1839,6 +1839,7 @@
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/queued-request-controller>@metamask/base-controller": true,
         "@metamask/queued-request-controller>@metamask/json-rpc-engine": true,
+        "@metamask/selected-network-controller": true,
         "@metamask/utils": true
       }
     },
@@ -2195,6 +2196,13 @@
         "crypto.getRandomValues": true
       }
     },
+    "@metamask/snaps-execution-environments": {
+      "packages": {
+        "@metamask/post-message-stream": true,
+        "@metamask/snaps-utils": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/snaps-rpc-methods": {
       "packages": {
         "@metamask/permission-controller": true,
@@ -2358,6 +2366,7 @@
         "@metamask/transaction-controller>nonce-tracker": true,
         "@metamask/utils": true,
         "bn.js": true,
+        "browserify>buffer": true,
         "eth-method-registry": true,
         "fast-json-patch": true,
         "lodash": true,
@@ -2491,6 +2500,13 @@
     "@ngraveio/bc-ur>jsbi": {
       "globals": {
         "define": true
+      }
+    },
+    "@noble/ciphers": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "crypto": true
       }
     },
     "@noble/hashes": {
