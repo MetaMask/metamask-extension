@@ -3,10 +3,11 @@ import configureMockStore from 'redux-mock-store';
 import { Text } from '../../../../component-library';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { ConfirmInfoRow } from './row';
+import { AlertRow } from './alert-row';
 
-describe('ConfirmInfoRow', () => {
+describe('AlertRow', () => {
   const OWNER_ID_MOCK = '123';
+  const OWNER_ID_NO_ALERT_MOCK = '000';
   const KEY_ALERT_KEY_MOCK = 'Key';
   const ALERT_MESSAGE_MOCK = 'Alert 1';
   const alertsMock = [
@@ -38,20 +39,22 @@ describe('ConfirmInfoRow', () => {
   };
   const mockStore = configureMockStore([])(STATE_MOCK);
 
-  it('should match snapshot', () => {
+  it('should match snapshot with no alert', () => {
     const { container } = renderWithProvider(
-      <ConfirmInfoRow
+      <AlertRow
         label={KEY_ALERT_KEY_MOCK}
         children={<Text>value</Text>}
+        alertKey={KEY_ALERT_KEY_MOCK}
+        alertOwnerId={OWNER_ID_NO_ALERT_MOCK}
       />,
       mockStore,
     );
     expect(container).toMatchSnapshot();
   });
 
-  it('renders row with alert', () => {
+  it('renders alert row with alert', () => {
     const { getAllByTestId } = renderWithProvider(
-      <ConfirmInfoRow
+      <AlertRow
         label={KEY_ALERT_KEY_MOCK}
         children={<Text>value</Text>}
         alertKey={KEY_ALERT_KEY_MOCK}

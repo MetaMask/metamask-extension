@@ -1,4 +1,4 @@
-import React, { createContext } from 'react';
+import React, { createContext, useContext } from 'react';
 import Tooltip from '../../../../ui/tooltip/tooltip';
 import { Box, Icon, IconName, Text } from '../../../../component-library';
 import {
@@ -12,12 +12,10 @@ import {
   IconColor,
   JustifyContent,
   OverflowWrap,
-  Severity,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import InlineAlert from '../../../confirmations/alerts/inline-alert/inline-alert';
-import useAlerts from '../../../../../hooks/useAlerts';
+import { InlineAlertContext } from './alert-row';
 
 export enum ConfirmInfoRowVariant {
   Default = 'default',
@@ -26,8 +24,6 @@ export enum ConfirmInfoRowVariant {
 }
 
 export type ConfirmInfoRowProps = {
-  alertKey?: string;
-  alertOwnerId?: string;
   label: string;
   children: React.ReactNode | string;
   tooltip?: string;
@@ -59,71 +55,19 @@ const TOOLTIP_ICON_COLORS = {
   [ConfirmInfoRowVariant.Warning]: Color.warningAlternative,
 };
 
-const SEVERITY_ALERTS = {
-  [ConfirmInfoRowVariant.Default]: Severity.Info,
-  [ConfirmInfoRowVariant.Critical]: Severity.Danger,
-  [ConfirmInfoRowVariant.Warning]: Severity.Warning,
-};
-
 export const ConfirmInfoRowContext = createContext({
   variant: ConfirmInfoRowVariant.Default,
 });
 
-function getAlertTextColors(variant: ConfirmInfoRowVariant) {
-  switch (variant) {
-    case ConfirmInfoRowVariant.Critical:
-      return Color.errorDefault;
-    case ConfirmInfoRowVariant.Warning:
-      return Color.warningDefault;
-    default:
-      return Color.infoDefault;
-  }
-}
-
-function RowAlert({
-  alertKey,
-  alertOwnerId,
-  severity,
-}: {
-  alertKey: string | undefined;
-  alertOwnerId?: string;
-  severity?: Severity;
-}) {
-  if (!alertOwnerId) {
-    return null;
-  }
-
-  const { getFieldAlerts } = useAlerts(alertOwnerId);
-  const hasFieldAlert = getFieldAlerts(alertKey).length > 0;
-
-  if (!hasFieldAlert) {
-    return null;
-  }
-
-  return (
-    <>
-      <InlineAlert
-        onClick={() => {
-          // intentionally empty
-        }}
-        severity={severity}
-      />
-    </>
-  );
-}
-
 export const ConfirmInfoRow = ({
-  alertKey,
-  alertOwnerId,
   label,
   children,
   variant = ConfirmInfoRowVariant.Default,
   tooltip,
   style,
 }: ConfirmInfoRowProps) => {
-  const textColor = alertKey
-    ? getAlertTextColors(variant)
-    : TEXT_COLORS[variant];
+  const inlineAlert = useContext(InlineAlertContext);
+
   return (
     <ConfirmInfoRowContext.Provider value={{ variant }}>
       <Box
@@ -132,17 +76,13 @@ export const ConfirmInfoRow = ({
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
         flexWrap={FlexWrap.Wrap}
+        backgroundColor={BACKGROUND_COLORS[variant]}
         borderRadius={BorderRadius.LG}
-        backgroundColor={
-          alertKey
-            ? BACKGROUND_COLORS[ConfirmInfoRowVariant.Default]
-            : BACKGROUND_COLORS[variant]
-        }
         marginTop={2}
         marginBottom={2}
         paddingLeft={2}
         paddingRight={2}
-        color={textColor as TextColor}
+        color={TEXT_COLORS[variant] as TextColor}
         style={{
           overflowWrap: OverflowWrap.Anywhere,
           minHeight: '24px',
@@ -154,16 +94,11 @@ export const ConfirmInfoRow = ({
           flexDirection={FlexDirection.Row}
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
-          gap={1}
         >
           <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
             {label}
           </Text>
-          <RowAlert
-            alertKey={alertKey}
-            alertOwnerId={alertOwnerId}
-            severity={SEVERITY_ALERTS[variant]}
-          />
+          {inlineAlert}
           {tooltip && tooltip.length > 0 && (
             <Tooltip title={tooltip} style={{ display: 'flex' }}>
               <Icon
@@ -174,7 +109,11 @@ export const ConfirmInfoRow = ({
             </Tooltip>
           )}
         </Box>
-        {typeof children === 'string' ? <Text>{children}</Text> : children}
+        {typeof children === 'string' ? (
+          <Text color={TextColor.inherit}>{children}</Text>
+        ) : (
+          children
+        )}
       </Box>
     </ConfirmInfoRowContext.Provider>
   );

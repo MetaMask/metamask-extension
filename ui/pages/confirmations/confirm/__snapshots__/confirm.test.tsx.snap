@@ -149,7 +149,7 @@ exports[`Confirm matches snapshot for personal signature type 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -191,7 +191,7 @@ exports[`Confirm matches snapshot for personal signature type 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -381,7 +381,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -419,7 +419,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -494,7 +494,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -510,7 +510,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                   style="overflow-wrap: anywhere; min-height: 24px; padding-left: 0px; padding-right: 0px;"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -540,7 +540,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -563,7 +563,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -579,7 +579,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                           style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
                         >
                           <div
-                            class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
                           >
                             <p
                               class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -602,7 +602,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                           style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
                         >
                           <div
-                            class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
                           >
                             <p
                               class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -618,7 +618,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                               style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
                             >
                               <div
-                                class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
                               >
                                 <p
                                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -689,7 +689,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                               style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
                             >
                               <div
-                                class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
                               >
                                 <p
                                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -760,7 +760,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                               style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
                             >
                               <div
-                                class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
                               >
                                 <p
                                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -835,7 +835,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -851,7 +851,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                           style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
                         >
                           <div
-                            class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
                           >
                             <p
                               class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -867,7 +867,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                               style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
                             >
                               <div
-                                class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
                               >
                                 <p
                                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -890,7 +890,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                               style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
                             >
                               <div
-                                class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
                               >
                                 <p
                                   class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -906,7 +906,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                                   style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
                                 >
                                   <div
-                                    class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
                                   >
                                     <p
                                       class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -977,7 +977,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                                   style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
                                 >
                                   <div
-                                    class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
                                   >
                                     <p
                                       class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1048,7 +1048,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                                   style="overflow-wrap: anywhere; min-height: 24px; padding-right: 0px;"
                                 >
                                   <div
-                                    class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
+                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
                                   >
                                     <p
                                       class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
