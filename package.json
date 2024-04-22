@@ -298,7 +298,7 @@
     "@metamask/keyring-controller": "patch:@metamask/keyring-controller@npm%3A13.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-13.0.0-d94816a680.patch",
     "@metamask/logging-controller": "^2.0.2",
     "@metamask/logo": "^3.1.2",
-    "@metamask/message-manager": "^8.0.1",
+    "@metamask/message-manager": "^7.3.0",
     "@metamask/message-signing-snap": "^0.3.3",
     "@metamask/metamask-eth-abis": "^3.1.1",
     "@metamask/name-controller": "^4.2.0",
