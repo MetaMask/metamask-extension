@@ -1,5 +1,5 @@
 import { TransactionStatus } from '@metamask/transaction-controller';
-import { migrate, version, transactionError, TARGET_DATE } from './117';
+import { migrate, version, StuckTransactionError, TARGET_DATE } from './117';
 
 const oldVersion = 116;
 
@@ -79,16 +79,21 @@ describe('migration #117', () => {
     const newStorage = await migrate(oldStorage);
 
     // Expected modifications to the transactions based on the migration logic
-    const expectedTransactions = TRANSACTIONS_MOCK.map((tx) => {
-      if (tx.id === 'tx1' || tx.id === 'tx3') {
-        return {
-          ...tx,
-          status: TransactionStatus.failed,
-          error: transactionError,
-        };
-      }
-      return tx;
-    });
+    const expectedTransactions = [
+      {
+        ...TRANSACTIONS_MOCK[0], // Assuming tx1 is the first element
+        status: TransactionStatus.failed,
+        error: StuckTransactionError,
+      },
+      TRANSACTIONS_MOCK[1], // Assuming tx2 remains unchanged
+      {
+        ...TRANSACTIONS_MOCK[2], // Assuming tx3 is the third element
+        status: TransactionStatus.failed,
+        error: StuckTransactionError,
+      },
+      TRANSACTIONS_MOCK[3], // Assuming tx4 and any others remain unchanged
+      // Add more transactions if there are more than four in TRANSACTIONS_MOCK
+    ];
 
     expect(newStorage.data).toEqual({
       TransactionController: {

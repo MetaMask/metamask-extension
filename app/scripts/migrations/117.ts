@@ -17,7 +17,12 @@ export const TARGET_DATE = new Date('2023-12-08T00:00:00Z').getTime();
 
 const STUCK_STATES = [TransactionStatus.approved, TransactionStatus.signed];
 
-export const transactionError = {
+type FailedTransactionMeta = TransactionMeta & {
+  status: TransactionStatus.failed;
+  error: TransactionError;
+};
+
+export const StuckTransactionError = {
   name: 'StuckTransactionDueToStatus',
   message: 'Transaction is stuck due to status - migration 116',
 };
@@ -49,12 +54,9 @@ function transformState(state: Record<string, any>) {
     ) {
       transaction.status = TransactionStatus.failed;
 
-      const failedTransaction = transaction as TransactionMeta & {
-        status: TransactionStatus.failed;
-        error: TransactionError;
-      };
+      const failedTransaction = transaction as FailedTransactionMeta;
 
-      failedTransaction.error = transactionError;
+      failedTransaction.error = StuckTransactionError;
     }
   }
 }
