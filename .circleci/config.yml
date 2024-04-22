@@ -1055,14 +1055,14 @@ jobs:
           command: |
             timeout 20m yarn test:api-specs --retries 2
           no_output_timeout: 5m
-      - store_artifacts:
-          path: html-report
-          destination: html-report
       - run:
           name: Comment on PR
           command: |
             gh pr comment "${PR_NUMBER}" --body 'View API Spec Test Report [here](https://output.circle-artifacts.com/output/job/<< pipeline.id >>/artifacts/0/html-report/index.html)
           no_output_timeout: 5m
+      - store_artifacts:
+          path: html-report
+          destination: html-report
 
   test-e2e-chrome:
     executor: node-browsers-medium-plus
