@@ -2227,7 +2227,7 @@
     "message": "Install origin"
   },
   "installRequest": {
-    "message": "Installation request"
+    "message": "Add to MetaMask"
   },
   "installedOn": {
     "message": "Installed on $1",
