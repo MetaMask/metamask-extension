@@ -815,6 +815,8 @@ jobs:
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e
 
   test-e2e-chrome-rpc:
     executor: node-browsers-medium
