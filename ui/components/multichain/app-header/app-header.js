@@ -289,6 +289,8 @@ export const AppHeader = ({ location }) => {
                     }}
                     disabled={disableAccountPicker}
                     labelProps={{ fontWeight: FontWeight.Bold }}
+                    paddingLeft={2}
+                    paddingRight={2}
                   />
                   <Tooltip
                     position="left"
@@ -332,6 +334,7 @@ export const AppHeader = ({ location }) => {
                 display={Display.Flex}
                 alignItems={AlignItems.center}
                 justifyContent={JustifyContent.flexEnd}
+                style={{ marginLeft: 'auto' }}
               >
                 <Box display={Display.Flex} gap={4}>
                   {showConnectedStatus ? (
