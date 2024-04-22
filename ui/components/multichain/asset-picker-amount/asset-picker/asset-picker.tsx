@@ -84,7 +84,7 @@ export function AssetPicker({ asset, onAssetChange }: AssetPickerProps) {
         className="asset-picker"
         display={Display.Flex}
         alignItems={AlignItems.center}
-        gap={3}
+        gap={2}
         padding={2}
         paddingLeft={2}
         paddingRight={2}
@@ -92,7 +92,7 @@ export function AssetPicker({ asset, onAssetChange }: AssetPickerProps) {
         backgroundColor={BackgroundColor.transparent}
         onClick={() => setShowAssetPickerModal(true)}
         endIconName={IconName.ArrowDown}
-        endIconProps={{ color: IconColor.iconDefault }}
+        endIconProps={{ color: IconColor.iconDefault, marginInlineStart: 0 }}
       >
         <Box display={Display.Flex} alignItems={AlignItems.center} gap={3}>
           <AvatarToken

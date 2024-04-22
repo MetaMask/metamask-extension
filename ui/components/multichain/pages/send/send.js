@@ -10,10 +10,12 @@ import {
   ButtonSecondary,
   ButtonSecondarySize,
   IconName,
+  Box,
 } from '../../../component-library';
 import { Content, Footer, Header, Page } from '../page';
 import {
   SEND_STAGES,
+  getCurrentDraftTransaction,
   getDraftTransactionExists,
   getDraftTransactionID,
   getRecipient,
@@ -24,20 +26,27 @@ import {
   resetSendState,
   signTransaction,
   startNewDraftTransaction,
+  updateSendAmount,
+  updateSendAsset,
 } from '../../../../ducks/send';
-import { AssetType } from '../../../../../shared/constants/transaction';
+import {
+  TokenStandard,
+  AssetType,
+} from '../../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { INSUFFICIENT_FUNDS_ERROR } from '../../../../pages/confirmations/send/send.constants';
 import { cancelTx, showQrScanner } from '../../../../store/actions';
 import {
   CONFIRM_TRANSACTION_ROUTE,
   DEFAULT_ROUTE,
+  SEND_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { MetaMetricsEventCategory } from '../../../../../shared/constants/metametrics';
 import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
+import { AssetPickerAmount } from '../..';
 import {
   SendPageAccountPicker,
-  SendPageContent,
+  SendPageRecipientContent,
   SendPageRecipient,
   SendPageRecipientInput,
 } from './components';
@@ -48,6 +57,10 @@ export const SendPage = () => {
 
   const startedNewDraftTransaction = useRef(false);
   const draftTransactionExists = useSelector(getDraftTransactionExists);
+
+  const { asset: transactionAsset, amount } = useSelector(
+    getCurrentDraftTransaction,
+  );
   const draftTransactionID = useSelector(getDraftTransactionID);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const sendStage = useSelector(getSendStage);
@@ -55,6 +68,30 @@ export const SendPage = () => {
   const history = useHistory();
   const location = useLocation();
   const trackEvent = useContext(MetaMetricsContext);
+
+  const handleSelectToken = async (token) => {
+    if (token.type === AssetType.native) {
+      dispatch(
+        updateSendAsset({
+          type: token.type,
+          details: token,
+          skipComputeEstimatedGasLimit: true,
+        }),
+      );
+    } else {
+      dispatch(
+        updateSendAsset({
+          type: token.type ?? AssetType.token,
+          details: {
+            ...token,
+            standard: token.standard ?? TokenStandard.ERC20,
+          },
+          skipComputeEstimatedGasLimit: true,
+        }),
+      );
+    }
+    history.push(SEND_ROUTE);
+  };
 
   const cleanup = useCallback(() => {
     dispatch(resetSendState());
@@ -142,6 +179,10 @@ export const SendPage = () => {
     (isInvalidSendForm && sendErrors.gasFee !== INSUFFICIENT_FUNDS_ERROR) ||
     requireContractAddressAcknowledgement;
 
+  const isSendFormShown =
+    draftTransactionExists &&
+    [SEND_STAGES.EDIT, SEND_STAGES.DRAFT].includes(sendStage);
+
   return (
     <Page className="multichain-send-page">
       <Header
@@ -158,17 +199,29 @@ export const SendPage = () => {
       </Header>
       <Content>
         <SendPageAccountPicker />
-        <SendPageRecipientInput />
-        {draftTransactionExists &&
-        [SEND_STAGES.EDIT, SEND_STAGES.DRAFT].includes(sendStage) ? (
-          <SendPageContent
-            requireContractAddressAcknowledgement={
-              requireContractAddressAcknowledgement
+        {isSendFormShown && (
+          <AssetPickerAmount
+            asset={transactionAsset}
+            // TODO: update to dest asset
+            amount={amount}
+            onAssetChange={handleSelectToken}
+            onAmountChange={(newAmount) =>
+              dispatch(updateSendAmount(newAmount))
             }
           />
-        ) : (
-          <SendPageRecipient />
         )}
+        <Box marginTop={6}>
+          <SendPageRecipientInput />
+          {isSendFormShown ? (
+            <SendPageRecipientContent
+              requireContractAddressAcknowledgement={
+                requireContractAddressAcknowledgement
+              }
+            />
+          ) : (
+            <SendPageRecipient />
+          )}
+        </Box>
       </Content>
       <Footer>
         <ButtonSecondary onClick={onCancel} size={ButtonSecondarySize.Lg} block>

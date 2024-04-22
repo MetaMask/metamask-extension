@@ -61,7 +61,7 @@ export const AddressListItem = ({
     >
       <AvatarAccount
         borderColor={BorderColor.transparent}
-        size={AvatarAccountSize.Sm}
+        size={AvatarAccountSize.Md}
         address={address}
         variant={
           useBlockie
