@@ -36,14 +36,42 @@ describe('rampsSlice', () => {
     });
   });
 
-  it('should update the buyableChains state when setBuyableChains is dispatched', () => {
-    const mockBuyableChains = [{ chainId: '0x1' }];
-    store.dispatch({
-      type: 'ramps/setBuyableChains',
-      payload: mockBuyableChains,
+  describe('setBuyableChains', () => {
+    it('should update the buyableChains state when setBuyableChains is dispatched', () => {
+      const mockBuyableChains = [{ chainId: '0x1' }];
+      store.dispatch({
+        type: 'ramps/setBuyableChains',
+        payload: mockBuyableChains,
+      });
+      const { ramps: rampsState } = store.getState();
+      expect(rampsState.buyableChains).toEqual(mockBuyableChains);
     });
-    const { ramps: rampsState } = store.getState();
-    expect(rampsState.buyableChains).toEqual(mockBuyableChains);
+    it('should disregard invalid array and set buyableChains to default', () => {
+      store.dispatch({
+        type: 'ramps/setBuyableChains',
+        payload: 'Invalid array',
+      });
+      const { ramps: rampsState } = store.getState();
+      expect(rampsState.buyableChains).toEqual(defaultBuyableChains);
+    });
+
+    it('should disregard empty array and set buyableChains to default', () => {
+      store.dispatch({
+        type: 'ramps/setBuyableChains',
+        payload: [],
+      });
+      const { ramps: rampsState } = store.getState();
+      expect(rampsState.buyableChains).toEqual(defaultBuyableChains);
+    });
+
+    it('should disregard array with invalid elements and set buyableChains to default', () => {
+      store.dispatch({
+        type: 'ramps/setBuyableChains',
+        payload: ['some invalid', 'element'],
+      });
+      const { ramps: rampsState } = store.getState();
+      expect(rampsState.buyableChains).toEqual(defaultBuyableChains);
+    });
   });
 
   describe('getBuyableChains', () => {
@@ -121,6 +149,22 @@ describe('rampsSlice', () => {
       getCurrentChainIdMock.mockReturnValue(CHAIN_IDS.GOERLI);
       const state = store.getState();
       expect(getIsNativeTokenBuyable(state)).toEqual(false);
+    });
+
+    it('should return false when current chain is not a valid hex string', () => {
+      getCurrentChainIdMock.mockReturnValue('0x');
+      const state = store.getState();
+      expect(getIsNativeTokenBuyable(state)).toEqual(false);
+    });
+
+    it('should return false when buyable chains is a corrupted array', () => {
+      const mockState = {
+        ramps: {
+          buyableChains: [null, null, null],
+        },
+      };
+      getCurrentChainIdMock.mockReturnValue(CHAIN_IDS.MAINNET);
+      expect(getIsNativeTokenBuyable(mockState)).toEqual(false);
     });
   });
 });

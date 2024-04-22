@@ -20,7 +20,15 @@ const rampsSlice = createSlice({
   },
   reducers: {
     setBuyableChains: (state, action) => {
-      state.buyableChains = action.payload;
+      if (
+        Array.isArray(action.payload) &&
+        action.payload.length > 0 &&
+        action.payload.every((network) => network?.chainId)
+      ) {
+        state.buyableChains = action.payload;
+      } else {
+        state.buyableChains = defaultBuyableChains;
+      }
     },
   },
   extraReducers: (builder) => {
@@ -43,15 +51,22 @@ const { reducer } = rampsSlice;
 
 // Can be typed to RootState if/when the interface is defined
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const getBuyableChains = (state: any) => state.ramps.buyableChains;
+export const getBuyableChains = (state: any) =>
+  state.ramps?.buyableChains ?? defaultBuyableChains;
 
 export const getIsNativeTokenBuyable = createSelector(
   [getCurrentChainId, getBuyableChains],
   (currentChainId, buyableChains) => {
-    return buyableChains.some(
-      (network: AggregatorNetwork) =>
-        String(network.chainId) === hexToDecimal(currentChainId),
-    );
+    try {
+      return buyableChains
+        .filter(Boolean)
+        .some(
+          (network: AggregatorNetwork) =>
+            String(network.chainId) === hexToDecimal(currentChainId),
+        );
+    } catch (e) {
+      return false;
+    }
   },
 );
 
