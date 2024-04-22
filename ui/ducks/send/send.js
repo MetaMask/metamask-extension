@@ -27,6 +27,7 @@ import {
   INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR,
   KNOWN_RECIPIENT_ADDRESS_WARNING,
   RECIPIENT_TYPES,
+  SWAPS_NO_QUOTES,
   SWAPS_QUOTES_ERROR,
 } from '../../pages/confirmations/send/send.constants';
 
@@ -801,10 +802,12 @@ export const fetchSwapAndSendQuotes = createAsyncThunk(
       sender,
       recipient: draftTransaction.recipient.address,
       slippage: '5', // TODO: update when solution is available
+    }).catch(() => {
+      throw new Error(SWAPS_QUOTES_ERROR);
     });
 
     if (!Object.keys(quotes).length) {
-      throw new Error(SWAPS_QUOTES_ERROR);
+      throw new Error(SWAPS_NO_QUOTES);
     }
 
     return { quotes };
