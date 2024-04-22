@@ -806,6 +806,9 @@
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
   },
+  "confirmTitleDescContractInteractionTransaction": {
+    "message": "Only confirm this transaction if you fully understand the content and trust the requesting site."
+  },
   "confirmTitleDescPersonalSignature": {
     "message": "Only sign this message if you fully understand the content and trust the requesting site"
   },
@@ -814,6 +817,10 @@
   },
   "confirmTitleSignature": {
     "message": "Signature request"
+  },
+
+  "confirmTitleTransaction": {
+    "message": "Transaction request"
   },
   "confirmed": {
     "message": "Confirmed"
