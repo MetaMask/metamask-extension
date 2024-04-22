@@ -2357,14 +2357,34 @@ export function updateSendAsset(
       }
     } else {
       await dispatch(showLoadingIndication());
-      const details = {
-        ...providedDetails,
-        ...(await getTokenStandardAndDetails(
-          providedDetails.address,
-          sendingAddress,
-          providedDetails.tokenId,
-        )),
+
+      const STANDARD_TO_REQUIRED_PROPERTIES = {
+        [TokenStandard.ERC20]: ['address', 'symbol', 'decimals', 'balance'],
+        [TokenStandard.ERC721]: ['address', 'symbol', 'tokenId'],
+        [TokenStandard.ERC1155]: ['address', 'symbol', 'tokenId'],
       };
+
+      let details;
+      // if standard exists with all required properties, do not call getTokenStandardAndDetails
+      if (
+        providedDetails.standard &&
+        !STANDARD_TO_REQUIRED_PROPERTIES[providedDetails.standard].find(
+          (property) => providedDetails[property] === undefined,
+        )
+      ) {
+        details = {
+          ...providedDetails,
+        };
+      } else {
+        details = {
+          ...providedDetails,
+          ...(await getTokenStandardAndDetails(
+            providedDetails.address,
+            sendingAddress,
+            providedDetails.tokenId,
+          )),
+        };
+      }
 
       await dispatch(hideLoadingIndication());
 
