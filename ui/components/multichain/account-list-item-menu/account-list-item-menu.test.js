@@ -26,7 +26,7 @@ const account = {
 };
 
 const DEFAULT_PROPS = {
-  identity: account,
+  account,
   onClose: jest.fn(),
   onHide: jest.fn(),
   isRemovable: false,
@@ -72,7 +72,7 @@ describe('AccountListItem', () => {
       balance: '0x152387ad22c3f0',
     };
 
-    const { getByTestId } = render({ identity: newAccount });
+    const { getByTestId } = render({ account: newAccount });
 
     const removeJWTButton = getByTestId('account-options-menu__remove-jwt');
 

@@ -72,11 +72,9 @@ describe('Gas API fallback', function () {
 
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
-        await driver.findElement('.transaction-alerts');
-
-        const error = await driver.isElementPresent({
-          text: 'Network is busy. Gas prices are high and estimates are less accurate.',
-        });
+        const error = await driver.isElementPresent(
+          '[data-testid="network-busy-tooltip"]',
+        );
 
         assert.equal(error, true, 'Network error is present');
       },
