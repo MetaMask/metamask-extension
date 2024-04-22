@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Box, Label } from '../../component-library';
+import { Box } from '../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -8,13 +8,11 @@ import {
   BorderRadius,
   BorderStyle,
   Display,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { getSelectedInternalAccount } from '../../../selectors';
 
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import type { Amount, Asset } from '../../../ducks/send';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import MaxClearButton from './max-clear-button';
 import {
   AssetPicker,
@@ -30,7 +28,10 @@ type AssetPickerAmountProps = OverridingUnion<
     // all of these props should be explicitly received
     asset: Asset;
     amount: Amount;
-    onAmountChange: (newAmount: string) => void;
+    /**
+     * Callback for when the amount changes; disables the input when undefined
+     */
+    onAmountChange?: (newAmount: string) => void;
   }
 >;
 
@@ -41,8 +42,6 @@ export const AssetPickerAmount = ({
   onAmountChange,
   ...assetPickerProps
 }: AssetPickerAmountProps) => {
-  const t = useI18nContext();
-
   const selectedAccount = useSelector(getSelectedInternalAccount);
 
   const isFiatPrimary = useSelector(getIsFiatPrimary);
@@ -67,11 +66,6 @@ export const AssetPickerAmount = ({
 
   return (
     <Box className="asset-picker-amount">
-      <Box display={Display.Flex}>
-        <Label variant={TextVariant.bodyMdMedium}>{t('amount')}</Label>
-        {/* The fiat value will always leave dust and is often inaccurate anyways */}
-        {!isFiatPrimary && <MaxClearButton asset={asset} />}
-      </Box>
       <Box
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
@@ -97,7 +91,11 @@ export const AssetPickerAmount = ({
           amount={amount}
         />
       </Box>
-      <AssetBalance asset={asset} error={error} />
+      <Box display={Display.Flex}>
+        {/* The fiat value will always leave dust and is often inaccurate anyways */}
+        <AssetBalance asset={asset} error={error} />
+        {!isFiatPrimary && onAmountChange && <MaxClearButton asset={asset} />}
+      </Box>
     </Box>
   );
 };
