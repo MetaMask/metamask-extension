@@ -1,7 +1,7 @@
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { migrate, version, transactionError, TARGET_DATE } from './117';
 
-const oldVersion = 114;
+const oldVersion = 116;
 
 const TRANSACTIONS_MOCK = [
   { id: 'tx1', time: TARGET_DATE - 1000, status: 'approved' }, // Before target date, should be marked as failed
