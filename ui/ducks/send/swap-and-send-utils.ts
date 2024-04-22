@@ -15,16 +15,16 @@ import {
 import { decimalToHex } from '../../../shared/modules/conversion.utils';
 import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
 
-type ADDRESS = `0x${string}`;
+type Address = `0x${string}`;
 
 type Request = {
   chainId: number; // chain ID as decimal
   sourceAmount: string; // big number string
-  sourceToken: ADDRESS;
-  destinationToken: ADDRESS;
-  sender: ADDRESS;
-  recipient: ADDRESS;
-  slippage: string; // slippage as a percentage; e.g. '1.0' for 1%
+  sourceToken: Address;
+  destinationToken: Address;
+  sender: Address;
+  recipient: Address;
+  slippage: Address; // slippage as a percentage; e.g. '1.0' for 1%
 };
 
 type Quote = {
