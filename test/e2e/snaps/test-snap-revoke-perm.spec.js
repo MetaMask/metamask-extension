@@ -18,7 +18,7 @@ describe('Test Snap revoke permission', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
-
+        await driver.delay(3000);
         // navigate to test snaps page and connect to ethereum-provider snap
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
 
@@ -36,7 +36,7 @@ describe('Test Snap revoke permission', function () {
         await driver.clickElement('#connectethereum-provider');
 
         // switch to metamask extension and click connect
-        await switchToNotificationWindow(driver, 3);
+        await switchToNotificationWindow(driver, 4);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -57,6 +57,7 @@ describe('Test Snap revoke permission', function () {
         });
 
         // switch to test snap page
+        await driver.delay(500);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // wait for npm installation success
@@ -74,7 +75,7 @@ describe('Test Snap revoke permission', function () {
         await driver.clickElement('#sendEthproviderAccounts');
 
         // switch to metamask window and click through confirmations
-        await switchToNotificationWindow(driver, 3);
+        await switchToNotificationWindow(driver, 4);
         await driver.clickElement({
           text: 'Next',
           tag: 'button',
@@ -139,7 +140,7 @@ describe('Test Snap revoke permission', function () {
 
         // switch to metamask window and click through confirmations
         await driver.delay(500);
-        await switchToNotificationWindow(driver, 3);
+        await switchToNotificationWindow(driver, 4);
         await driver.clickElement({
           text: 'Next',
           tag: 'button',
