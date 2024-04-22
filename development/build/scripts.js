@@ -1047,6 +1047,13 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
   // forward update event (used by watchify)
   bundler.on('update', () => performBundle());
 
+  // trezor requires `ts-mixer`, but it pulls in the ESM version for some
+  // reason. ESM doesn't work with our build system.. uh, because ESM sucks and
+  // I hope the author lives a life of pain and agony, but I digress. This
+  // work around makes browserify (which also sucks) always use the CJS version.
+  // How? Magic (I don't know).
+  bundler.require(require.resolve("ts-mixer"), { expose: "ts-mixer" });
+
   console.log(`Bundle start: "${label}"`);
   await performBundle();
   console.log(`Bundle end: "${label}"`);
