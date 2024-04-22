@@ -5,7 +5,7 @@ const fetchWithTimeout = getFetchWithTimeout();
 
 const isProdEnv = process.env.NODE_ENV === 'production';
 const PROD_RAMP_API_BASE_URL = 'https://on-ramp-content.api.cx.metamask.io';
-const UAT_RAMP_API_BASE_URL = 'https://on-ramp-content.uat-api.cx.metamask.io/';
+const UAT_RAMP_API_BASE_URL = 'https://on-ramp-content.uat-api.cx.metamask.io';
 
 const rampApiBaseUrl =
   process.env.METAMASK_RAMP_API_CONTENT_BASE_URL ||

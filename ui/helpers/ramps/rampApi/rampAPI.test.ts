@@ -12,12 +12,12 @@ describe('rampAPI', () => {
   });
 
   it('should fetch networks', async () => {
-    nock('https://on-ramp-content.api.cx.metamask.io')
+    nock('https://on-ramp-content.uat-api.cx.metamask.io')
       .get('/regions/networks')
       .query(true)
       .reply(200, mockedResponse);
 
     const result = await rampAPI.getNetworks();
-    expect(result).toEqual(mockedResponse.networks);
+    expect(result).toStrictEqual(mockedResponse.networks);
   });
 });
