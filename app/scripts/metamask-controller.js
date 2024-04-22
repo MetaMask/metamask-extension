@@ -321,6 +321,7 @@ import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscree
 import PREINSTALLED_SNAPS from './snaps/preinstalled-snaps';
 ///: END:ONLY_INCLUDE_IF
 import AuthenticationController from './controllers/authentication/authentication-controller';
+import UserStorageController from './controllers/user-storage/user-storage-controller';
 import { WeakRefObjectMap } from './lib/WeakRefObjectMap';
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -1419,7 +1420,20 @@ export default class MetamaskController extends EventEmitter {
       state: initState.AuthenticationController,
       messenger: this.controllerMessenger.getRestricted({
         name: 'AuthenticationController',
-        allowedActions: [`${this.snapController.name}:handleRequest`],
+        allowedActions: ['SnapController:handleRequest'],
+      }),
+    });
+    this.userStorageController = new UserStorageController({
+      state: initState.UserStorageController,
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'UserStorageController',
+        allowedActions: [
+          'SnapController:handleRequest',
+          'AuthenticationController:getBearerToken',
+          'AuthenticationController:getSessionProfile',
+          'AuthenticationController:isSignedIn',
+          'AuthenticationController:performSignIn',
+        ],
       }),
     });
 
