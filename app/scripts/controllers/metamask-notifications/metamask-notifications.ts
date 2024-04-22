@@ -421,7 +421,7 @@ export class MetamaskNotificationsController extends BaseController<
 
   /**
    * Toggles the enabled state of metamask notifications.
-   * Ensures that auth is enabled before enabling.
+   * Ensures that auth is enabled before toggling notifications.
    *
    * **Action** - Used to Enable/Disable notifications
    *
