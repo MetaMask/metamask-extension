@@ -705,6 +705,14 @@ export default class MetamaskController extends EventEmitter {
       addNft: this.nftController.addNft.bind(this.nftController),
       getNftApi: this.nftController.getNftApi.bind(this.nftController),
       getNftState: () => this.nftController.state,
+      // added this to track previous value of useNftDetection, should be true on very first initializing of controller[]
+      disabled:
+        this.preferencesController.store.getState().useNftDetection ===
+        undefined
+          ? true
+          : !this.preferencesController.store.getState().useNftDetection,
+      selectedAddress:
+        this.preferencesController.store.getState().selectedAddress,
     });
 
     this.metaMetricsController = new MetaMetricsController({
@@ -2262,7 +2270,12 @@ export default class MetamaskController extends EventEmitter {
     const preferencesControllerState =
       this.preferencesController.store.getState();
 
-    const { useCurrencyRateCheck } = preferencesControllerState;
+    const { useCurrencyRateCheck, useNftDetection } =
+      preferencesControllerState;
+
+    if (useNftDetection) {
+      this.nftDetectionController.start();
+    }
 
     if (useCurrencyRateCheck) {
       this.currencyRateController.startPollingByNetworkClientId(
@@ -2280,6 +2293,7 @@ export default class MetamaskController extends EventEmitter {
     this.accountTracker.stop();
     this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
+    this.nftDetectionController.stop();
 
     const preferencesControllerState =
       this.preferencesController.store.getState();
