@@ -2,11 +2,13 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import isEqual from 'lodash/isEqual';
+import { shuffle } from 'lodash';
 import {
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
   getSelectedInternalAccount,
   getShouldHideZeroBalanceTokens,
+  getTokenList,
 } from '../../../../selectors';
 import {
   getNativeCurrency,
@@ -18,7 +20,6 @@ import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { Box } from '../../../component-library';
-import TokenCell from '../../../app/token-cell';
 import {
   AlignItems,
   BackgroundColor,
@@ -27,7 +28,13 @@ import {
   FlexWrap,
 } from '../../../../helpers/constants/design-system';
 import { TokenListItem } from '../..';
+import { getTopAssets } from '../../../../ducks/swaps/swaps';
+import { TokenBucketPriority } from '../../../../../shared/constants/swaps';
+import { useTokensToSearch } from '../../../../hooks/useTokensToSearch';
 import { Asset, Token } from './types';
+import AssetComponent from './Asset';
+
+const MAX_TOKENS_RENDERED = 30;
 
 type AssetListProps = {
   handleAssetChange: (token: Token) => void;
@@ -75,12 +82,35 @@ export default function AssetList({
     useCurrencyDisplay(balanceValue, {
       numberOfDecimals: secondaryNumberOfDecimals,
       currency: secondaryCurrency,
+      hideLabel: true,
     });
 
-  const tokenList = useMemo(() => {
-    const filteredTokens: Token[] = tokensWithBalances.filter((token: Token) =>
-      token.symbol?.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
+  // Swaps token list
+  const tokenList = useSelector(getTokenList, isEqual);
+  const shuffledTokensList = useMemo(
+    () => shuffle(Object.values(tokenList)),
+    [tokenList],
+  );
+  const topTokens = useSelector(getTopAssets, isEqual);
+  const usersTokens = useMemo(
+    () => [...tokens, ...tokensWithBalances],
+    [tokens, tokensWithBalances],
+  );
+
+  const swapsTokenList = useTokensToSearch({
+    usersTokens,
+    topTokens,
+    shuffledTokensList,
+    tokenBucketPriority: TokenBucketPriority.owned,
+  });
+
+  const filteredTokenList = useMemo(() => {
+    const filteredTokens: Token[] = swapsTokenList.filter((token: Token) => {
+      return (
+        token.symbol?.toLowerCase().includes(searchQuery.toLowerCase()) &&
+        token.symbol !== nativeCurrency
+      );
+    });
 
     // prepend native currency to token list if it matches search query
     if (nativeCurrency?.toLowerCase().includes(searchQuery.toLowerCase())) {
@@ -97,7 +127,7 @@ export default function AssetList({
 
     return filteredTokens;
   }, [
-    tokensWithBalances,
+    swapsTokenList,
     searchQuery,
     nativeCurrency,
     nativeCurrencyImage,
@@ -107,7 +137,7 @@ export default function AssetList({
 
   return (
     <Box className="tokens-main-view-modal">
-      {tokenList.map((token) => {
+      {filteredTokenList.slice(0, MAX_TOKENS_RENDERED).map((token) => {
         const isSelected =
           token.address?.toLowerCase() === selectedToken?.toLowerCase();
         return (
@@ -154,9 +184,10 @@ export default function AssetList({
                     tokenImage={token.image}
                   />
                 ) : (
-                  <TokenCell
+                  <AssetComponent
                     key={token.address}
                     {...token}
+                    decimalTokenAmount={token.string}
                     onClick={() => handleAssetChange(token)}
                   />
                 )}
