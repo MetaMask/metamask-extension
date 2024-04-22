@@ -110,7 +110,7 @@ describe('Test Snap bip-32', function () {
 
         // switch back to the test-snaps window
         let windowHandles = await driver.waitUntilXWindowHandles(
-          1,
+          1 + 1,
           1000,
           10000,
         );
@@ -138,7 +138,11 @@ describe('Test Snap bip-32', function () {
           tag: 'button',
         });
 
-        windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
+        windowHandles = await driver.waitUntilXWindowHandles(
+          1 + 1,
+          1000,
+          10000,
+        );
         await driver.switchToWindow(windowHandles[0]);
 
         // check results of ed25519 signature with waitForSelector

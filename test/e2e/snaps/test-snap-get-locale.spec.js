@@ -34,7 +34,7 @@ describe('Test Snap Get Locale', function () {
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
-          3,
+          1 + 3,
           1000,
           10000,
         );
@@ -136,7 +136,11 @@ describe('Test Snap Get Locale', function () {
         await driver.waitForSelector({ text: 'Oversættelses Eksempel Snap' });
 
         // switch back to test snaps tab
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
+        windowHandles = await driver.waitUntilXWindowHandles(
+          1 + 2,
+          1000,
+          10000,
+        );
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // click on alert dialog

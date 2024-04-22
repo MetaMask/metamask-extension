@@ -34,7 +34,7 @@ describe('Test Snap Client Status', function () {
 
         // switch to metamask extension and click connect
         const windowHandles = await driver.waitUntilXWindowHandles(
-          3,
+          1 + 3,
           1000,
           10000,
         );

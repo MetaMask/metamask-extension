@@ -96,7 +96,7 @@ describe('Test Snap bip-44', function () {
 
         // switch back to test-snaps page
         const windowHandles = await driver.waitUntilXWindowHandles(
-          1,
+          1 + 1,
           1000,
           10000,
         );

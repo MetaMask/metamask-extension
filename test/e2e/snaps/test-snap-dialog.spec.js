@@ -34,7 +34,7 @@ describe('Test Snap Dialog', function () {
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
-          3,
+          1 + 3,
           1000,
           10000,
         );
@@ -74,7 +74,11 @@ describe('Test Snap Dialog', function () {
         await driver.clickElement('#sendAlertButton');
 
         // switch to dialog popup
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
+        windowHandles = await driver.waitUntilXWindowHandles(
+          1 + 3,
+          1000,
+          10000,
+        );
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.Dialog,
           windowHandles,
@@ -95,7 +99,11 @@ describe('Test Snap Dialog', function () {
         });
 
         // switch back to test snaps tab
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
+        windowHandles = await driver.waitUntilXWindowHandles(
+          1 + 2,
+          1000,
+          10000,
+        );
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // check result is null
@@ -108,7 +116,11 @@ describe('Test Snap Dialog', function () {
         await driver.clickElement('#sendConfirmationButton');
 
         // switch to dialog popup
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
+        windowHandles = await driver.waitUntilXWindowHandles(
+          1 + 3,
+          1000,
+          10000,
+        );
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.Dialog,
           windowHandles,
@@ -121,7 +133,11 @@ describe('Test Snap Dialog', function () {
         });
 
         // switch back to test snaps tab
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
+        windowHandles = await driver.waitUntilXWindowHandles(
+          1 + 2,
+          1000,
+          10000,
+        );
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // check for false result
@@ -134,7 +150,11 @@ describe('Test Snap Dialog', function () {
         await driver.clickElement('#sendConfirmationButton');
 
         // switch to dialog popup
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
+        windowHandles = await driver.waitUntilXWindowHandles(
+          1 + 3,
+          1000,
+          10000,
+        );
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.Dialog,
           windowHandles,
@@ -147,7 +167,11 @@ describe('Test Snap Dialog', function () {
         });
 
         // switch back to test snaps tab
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
+        windowHandles = await driver.waitUntilXWindowHandles(
+          1 + 2,
+          1000,
+          10000,
+        );
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // check for true result
@@ -160,7 +184,11 @@ describe('Test Snap Dialog', function () {
         await driver.clickElement('#sendPromptButton');
 
         // switch to dialog popup
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
+        windowHandles = await driver.waitUntilXWindowHandles(
+          1 + 3,
+          1000,
+          10000,
+        );
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.Dialog,
           windowHandles,
@@ -173,7 +201,11 @@ describe('Test Snap Dialog', function () {
         });
 
         // switch back to test snaps tab
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
+        windowHandles = await driver.waitUntilXWindowHandles(
+          1 + 2,
+          1000,
+          10000,
+        );
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // check result is equal to 'null'
@@ -186,7 +218,11 @@ describe('Test Snap Dialog', function () {
         await driver.clickElement('#sendPromptButton');
 
         // switch to dialog popup
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
+        windowHandles = await driver.waitUntilXWindowHandles(
+          1 + 3,
+          1000,
+          10000,
+        );
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.Dialog,
           windowHandles,
@@ -202,7 +238,11 @@ describe('Test Snap Dialog', function () {
         });
 
         // switch back to test snaps tab
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
+        windowHandles = await driver.waitUntilXWindowHandles(
+          1 + 2,
+          1000,
+          10000,
+        );
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // check result is equal to '2323'

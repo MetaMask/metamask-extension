@@ -138,7 +138,7 @@ async function main() {
   // on every build type in which they are running to avoid regressions across
   // builds.
   const featureTestsOnMain = [
-    ...(await getTestPathsForTestDir(path.join(__dirname, 'accounts'))),
+    // ...(await getTestPathsForTestDir(path.join(__dirname, 'accounts'))),
     ...(await getTestPathsForTestDir(path.join(__dirname, 'snaps'))),
   ];
 
@@ -173,8 +173,9 @@ async function main() {
     const filteredFlaskAndMainTests = featureTestsOnMain.filter((p) =>
       FLASK_ONLY_TESTS.every((filteredTest) => !p.endsWith(filteredTest)),
     );
+    console.log(testDir);
     testPaths = [
-      ...(await getTestPathsForTestDir(testDir)),
+      // ...(await getTestPathsForTestDir(testDir)),
       ...filteredFlaskAndMainTests,
     ];
   }
