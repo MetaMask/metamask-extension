@@ -4,7 +4,7 @@ import { Numeric } from '../../../../../shared/modules/Numeric';
 
 type NFTInputProps = {
   integerValue: number;
-  onChange: (newHexValue: string) => void;
+  onChange?: (newHexValue: string) => void;
   className?: string;
 };
 
@@ -12,6 +12,10 @@ const NUMBERS_REGEX = /^[0-9]*$/u;
 
 export function NFTInput({ integerValue, onChange, className }: NFTInputProps) {
   const handleChange = (newValueAsString: number) => {
+    if (!onChange) {
+      return;
+    }
+
     const newValue = new Numeric(newValueAsString, 10);
 
     if (!Number.isInteger(newValue.toNumber())) {
@@ -23,6 +27,7 @@ export function NFTInput({ integerValue, onChange, className }: NFTInputProps) {
 
   return (
     <UnitInput
+      isDisabled={!onChange}
       type="number"
       step={1}
       min={0}
