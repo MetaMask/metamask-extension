@@ -9,9 +9,8 @@
   width: 90%;
   flex-direction: column;
   max-width: 600px;
-  overflow-wrap: break-word;
 }
 
 .toast-text {
-  overflow-wrap: break-word;
+  word-break: break-word;
 }
