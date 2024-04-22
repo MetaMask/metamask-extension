@@ -80,7 +80,7 @@ export type AuthenticationControllerGetSessionProfile =
 export type AuthenticationControllerIsSignedIn = ActionsObj['isSignedIn'];
 
 // Allowed Actions
-type AllowedActions = HandleSnapRequest;
+export type AllowedActions = HandleSnapRequest;
 
 // Messenger
 export type AuthenticationControllerMessenger = RestrictedControllerMessenger<
@@ -113,6 +113,39 @@ export default class AuthenticationController extends BaseController<
       name: controllerName,
       state: { ...defaultState, ...state },
     });
+
+    this.#registerMessageHandlers();
+  }
+
+  /**
+   * Constructor helper for registering this controller's messaging system
+   * actions.
+   */
+  #registerMessageHandlers(): void {
+    this.messagingSystem.registerActionHandler(
+      'AuthenticationController:getBearerToken',
+      this.getBearerToken.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      'AuthenticationController:getSessionProfile',
+      this.getSessionProfile.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      'AuthenticationController:isSignedIn',
+      this.isSignedIn.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      'AuthenticationController:performSignIn',
+      this.performSignIn.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      'AuthenticationController:performSignOut',
+      this.performSignOut.bind(this),
+    );
   }
 
   public async performSignIn(): Promise<string> {
