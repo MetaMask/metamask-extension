@@ -503,6 +503,10 @@ export default function setupSentry({ release, getState }) {
    * @returns `true` if MetaMetrics is enabled, `false` otherwise.
    */
   async function getMetaMetricsEnabled() {
+    if (METAMASK_BUILD_TYPE === 'mmi') {
+      return true;
+    }
+
     const appState = getState();
     if (appState.state || appState.persistedState) {
       return getMetaMetricsEnabledFromAppState(appState);
