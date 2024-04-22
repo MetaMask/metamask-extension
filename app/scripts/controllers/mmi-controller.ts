@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 import log from 'loglevel';
-import { captureException, captureMessage } from '@sentry/browser';
+import { captureException } from '@sentry/browser';
 import {
   CUSTODIAN_TYPES,
   CustodyKeyring,
@@ -254,13 +254,9 @@ export default class MMIController extends EventEmitter {
   }
 
   async onSubmitPassword() {
-
-    captureMessage('new and final test for sentry events');
-
     // Create a keyring for each custodian type
     let addresses: string[] = [];
     const custodyTypes = this.custodyController.getAllCustodyTypes();
-    throw new Error('New Sentry error inside custody page');
 
     for (const type of custodyTypes) {
       try {
