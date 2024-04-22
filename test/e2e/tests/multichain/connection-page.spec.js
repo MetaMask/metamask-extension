@@ -5,8 +5,8 @@ const {
   WINDOW_TITLES,
   waitForAccountRendered,
   connectToDapp,
-} = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+} = require('../../helpers');
+const FixtureBuilder = require('../../fixture-builder');
 
 const anotherAccountLabel = '2nd custom name';
 
