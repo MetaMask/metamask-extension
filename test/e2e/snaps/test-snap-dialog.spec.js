@@ -34,7 +34,7 @@ describe('Test Snap Dialog', function () {
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 3,
+          process.env.ENABLE_MV3 ? 4 : 3,
           1000,
           10000,
         );
@@ -75,7 +75,7 @@ describe('Test Snap Dialog', function () {
 
         // switch to dialog popup
         windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 3,
+          process.env.ENABLE_MV3 ? 4 : 3,
           1000,
           10000,
         );
@@ -100,7 +100,7 @@ describe('Test Snap Dialog', function () {
 
         // switch back to test snaps tab
         windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 2,
+          process.env.ENABLE_MV3 ? 3 : 2,
           1000,
           10000,
         );
@@ -117,7 +117,7 @@ describe('Test Snap Dialog', function () {
 
         // switch to dialog popup
         windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 3,
+          process.env.ENABLE_MV3 ? 4 : 3,
           1000,
           10000,
         );
@@ -134,7 +134,7 @@ describe('Test Snap Dialog', function () {
 
         // switch back to test snaps tab
         windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 2,
+          process.env.ENABLE_MV3 ? 3 : 2,
           1000,
           10000,
         );
@@ -151,7 +151,7 @@ describe('Test Snap Dialog', function () {
 
         // switch to dialog popup
         windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 3,
+          process.env.ENABLE_MV3 ? 4 : 3,
           1000,
           10000,
         );
@@ -168,7 +168,7 @@ describe('Test Snap Dialog', function () {
 
         // switch back to test snaps tab
         windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 2,
+          process.env.ENABLE_MV3 ? 3 : 2,
           1000,
           10000,
         );
@@ -185,7 +185,7 @@ describe('Test Snap Dialog', function () {
 
         // switch to dialog popup
         windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 3,
+          process.env.ENABLE_MV3 ? 4 : 3,
           1000,
           10000,
         );
@@ -202,7 +202,7 @@ describe('Test Snap Dialog', function () {
 
         // switch back to test snaps tab
         windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 2,
+          process.env.ENABLE_MV3 ? 3 : 2,
           1000,
           10000,
         );
@@ -219,7 +219,7 @@ describe('Test Snap Dialog', function () {
 
         // switch to dialog popup
         windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 3,
+          process.env.ENABLE_MV3 ? 4 : 3,
           1000,
           10000,
         );
@@ -239,7 +239,7 @@ describe('Test Snap Dialog', function () {
 
         // switch back to test snaps tab
         windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 2,
+          process.env.ENABLE_MV3 ? 3 : 2,
           1000,
           10000,
         );

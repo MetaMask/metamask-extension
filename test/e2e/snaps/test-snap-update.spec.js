@@ -66,7 +66,7 @@ describe('Test Snap update', function () {
 
         // navigate to test snap page
         let windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 1,
+          process.env.ENABLE_MV3 ? 2 : 1,
           1000,
           10000,
         );
@@ -105,7 +105,7 @@ describe('Test Snap update', function () {
 
         // navigate to test snap page
         windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 1,
+          process.env.ENABLE_MV3 ? 2 : 1,
           1000,
           10000,
         );

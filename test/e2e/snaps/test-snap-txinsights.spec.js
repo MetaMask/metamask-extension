@@ -37,7 +37,7 @@ describe('Test Snap TxInsights', function () {
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 2,
+          process.env.ENABLE_MV3 ? 3 : 2,
           1000,
           10000,
         );
@@ -70,7 +70,7 @@ describe('Test Snap TxInsights', function () {
 
         // switch back to MetaMask window and deal with dialogs
         windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 2,
+          process.env.ENABLE_MV3 ? 3 : 2,
           1000,
           10000,
         );
@@ -93,7 +93,7 @@ describe('Test Snap TxInsights', function () {
 
         // switch to test-snaps page and send tx
         windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 1,
+          process.env.ENABLE_MV3 ? 2 : 1,
           1000,
           10000,
         );
@@ -102,7 +102,7 @@ describe('Test Snap TxInsights', function () {
 
         // switch back to MetaMask window and switch to tx insights pane
         windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 2,
+          process.env.ENABLE_MV3 ? 3 : 2,
           1000,
           10000,
         );

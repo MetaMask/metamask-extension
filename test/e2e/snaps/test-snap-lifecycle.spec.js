@@ -34,7 +34,7 @@ describe('Test Snap Lifecycle Hooks', function () {
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 3,
+          process.env.ENABLE_MV3 ? 4 : 3,
           1000,
           10000,
         );
@@ -72,7 +72,7 @@ describe('Test Snap Lifecycle Hooks', function () {
 
         // switch to dialog popup
         windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 3,
+          process.env.ENABLE_MV3 ? 4 : 3,
           1000,
           10000,
         );

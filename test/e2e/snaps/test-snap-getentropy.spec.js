@@ -34,7 +34,7 @@ describe('Test Snap getEntropy', function () {
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 2,
+          process.env.ENABLE_MV3 ? 3 : 2,
           1000,
           10000,
         );
@@ -81,7 +81,7 @@ describe('Test Snap getEntropy', function () {
 
         // Switch to approve signature message window and approve
         windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 2,
+          process.env.ENABLE_MV3 ? 3 : 2,
           1000,
           10000,
         );
@@ -96,7 +96,7 @@ describe('Test Snap getEntropy', function () {
 
         // switch back to test-snaps page
         windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 1,
+          process.env.ENABLE_MV3 ? 2 : 1,
           1000,
           10000,
         );

@@ -37,7 +37,7 @@ describe('Test Snap Signature Insights', function () {
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 3,
+          process.env.ENABLE_MV3 ? 4 : 3,
           1000,
           10000,
         );
@@ -72,7 +72,7 @@ describe('Test Snap Signature Insights', function () {
 
         // poll windowHandles and switch to test-dapp
         windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 3,
+          process.env.ENABLE_MV3 ? 4 : 3,
           1000,
           10000,
         );
@@ -88,7 +88,7 @@ describe('Test Snap Signature Insights', function () {
 
         // switch back to MetaMask window and deal with dialogs
         windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 4,
+          process.env.ENABLE_MV3 ? 5 : 4,
           1000,
           10000,
         );
@@ -108,7 +108,7 @@ describe('Test Snap Signature Insights', function () {
 
         // switch to test-dapp page and send tx
         windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 3,
+          process.env.ENABLE_MV3 ? 4 : 3,
           1000,
           10000,
         );
@@ -125,7 +125,7 @@ describe('Test Snap Signature Insights', function () {
 
         // switch back to MetaMask window and switch to tx insights pane
         windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 4,
+          process.env.ENABLE_MV3 ? 5 : 4,
           1000,
           10000,
         );
@@ -176,7 +176,7 @@ describe('Test Snap Signature Insights', function () {
 
         // switch back to MetaMask window and switch to tx insights pane
         windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 4,
+          process.env.ENABLE_MV3 ? 5 : 4,
           1000,
           10000,
         );
@@ -227,7 +227,7 @@ describe('Test Snap Signature Insights', function () {
 
         // switch back to MetaMask window and switch to tx insights pane
         windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 4,
+          process.env.ENABLE_MV3 ? 5 : 4,
           1000,
           10000,
         );
@@ -282,7 +282,7 @@ describe('Test Snap Signature Insights', function () {
 
         // switch back to MetaMask window and switch to tx insights pane
         windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 4,
+          process.env.ENABLE_MV3 ? 5 : 4,
           1000,
           10000,
         );
@@ -391,7 +391,7 @@ describe('Test Snap Signature Insights', function () {
 
         // switch back to MetaMask window and switch to tx insights pane
         windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 4,
+          process.env.ENABLE_MV3 ? 5 : 4,
           1000,
           10000,
         );

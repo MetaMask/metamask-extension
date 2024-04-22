@@ -30,7 +30,7 @@ describe('Test Snap UI Links', function () {
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 3,
+          process.env.ENABLE_MV3 ? 4 : 3,
           1000,
           10000,
         );
@@ -72,7 +72,7 @@ describe('Test Snap UI Links', function () {
 
         // switch to dialog popup
         windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 3,
+          process.env.ENABLE_MV3 ? 4 : 3,
           1000,
           10000,
         );
@@ -110,7 +110,7 @@ describe('Test Snap UI Links', function () {
 
         // switch to new tab
         windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 4,
+          process.env.ENABLE_MV3 ? 5 : 4,
           1000,
           10000,
         );
@@ -127,7 +127,7 @@ describe('Test Snap UI Links', function () {
 
         // switch back to metamask window
         windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 4,
+          process.env.ENABLE_MV3 ? 5 : 4,
           1000,
           10000,
         );
@@ -148,7 +148,7 @@ describe('Test Snap UI Links', function () {
 
         // switch back to test snaps tab
         windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 4,
+          process.env.ENABLE_MV3 ? 5 : 4,
           1000,
           10000,
         );

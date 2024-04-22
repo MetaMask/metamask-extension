@@ -110,7 +110,7 @@ describe('Test Snap bip-32', function () {
 
         // switch back to the test-snaps window
         let windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 1,
+          process.env.ENABLE_MV3 ? 2 : 1,
           1000,
           10000,
         );
@@ -139,7 +139,7 @@ describe('Test Snap bip-32', function () {
         });
 
         windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 1,
+          process.env.ENABLE_MV3 ? 2 : 1,
           1000,
           10000,
         );

@@ -36,7 +36,7 @@ describe('Test Snap ethereum_provider', function () {
 
         // switch to metamask extension and click connect
         const windowHandles = await driver.waitUntilXWindowHandles(
-          1 + 2,
+          process.env.ENABLE_MV3 ? 3 : 2,
           1000,
           10000,
         );
@@ -94,7 +94,7 @@ describe('Test Snap ethereum_provider', function () {
 
         // switch to metamask window and click through confirmations
         const windowHandles2 = await driver.waitUntilXWindowHandles(
-          1 + 2,
+          process.env.ENABLE_MV3 ? 3 : 2,
           1000,
           10000,
         );
