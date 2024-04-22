@@ -899,9 +899,6 @@
   "currentLanguage": {
     "message": "当前语言"
   },
-  "currentRpcUrlDeprecated": {
-    "message": "此网络的当前 RPC URL 已被弃用。"
-  },
   "currentTitle": {
     "message": "当前："
   },
@@ -2290,10 +2287,6 @@
   "networkStatusStabilityFeeTooltip": {
     "message": "相对过去72小时，燃料费用为 $1。",
     "description": "$1 is networks stability value - stable, low, high"
-  },
-  "networkSwitchConnectionError": {
-    "message": "我们无法连接到 $1",
-    "description": "$1 represents the network name"
   },
   "networkURL": {
     "message": "网络 URL"
@@ -4186,9 +4179,6 @@
     "message": "允许此网站切换网络？"
   },
   "switchNetwork": {
-    "message": "切换网络"
-  },
-  "switchNetworks": {
     "message": "切换网络"
   },
   "switchToNetwork": {

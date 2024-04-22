@@ -899,9 +899,6 @@
   "currentLanguage": {
     "message": "현재 언어"
   },
-  "currentRpcUrlDeprecated": {
-    "message": "해당 네트워크의 현재 rpc url의 지원이 중단되었습니다."
-  },
   "currentTitle": {
     "message": "현재:"
   },
@@ -2290,10 +2287,6 @@
   "networkStatusStabilityFeeTooltip": {
     "message": "가스비가 지난 72시간에 비해 $1 상태입니다.",
     "description": "$1 is networks stability value - stable, low, high"
-  },
-  "networkSwitchConnectionError": {
-    "message": "$1 연결이 불가능합니다",
-    "description": "$1 represents the network name"
   },
   "networkURL": {
     "message": "네트워크 URL"
@@ -4186,9 +4179,6 @@
     "message": "이 사이트가 네트워크를 전환하도록 허용하시겠습니까?"
   },
   "switchNetwork": {
-    "message": "네트워크 전환"
-  },
-  "switchNetworks": {
     "message": "네트워크 전환"
   },
   "switchToNetwork": {

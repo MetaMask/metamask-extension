@@ -899,9 +899,6 @@
   "currentLanguage": {
     "message": "現在の言語"
   },
-  "currentRpcUrlDeprecated": {
-    "message": "このネットワークの現在のRPC URLは非推奨となりました。"
-  },
   "currentTitle": {
     "message": "現在:"
   },
@@ -2290,10 +2287,6 @@
   "networkStatusStabilityFeeTooltip": {
     "message": "ガス代は過去72時間と比較して$1です。",
     "description": "$1 is networks stability value - stable, low, high"
-  },
-  "networkSwitchConnectionError": {
-    "message": "$1に接続できません",
-    "description": "$1 represents the network name"
   },
   "networkURL": {
     "message": "ネットワークURL"
@@ -4186,9 +4179,6 @@
     "message": "このサイトによるネットワークの切り替えを許可しますか？"
   },
   "switchNetwork": {
-    "message": "ネットワークを切り替える"
-  },
-  "switchNetworks": {
     "message": "ネットワークを切り替える"
   },
   "switchToNetwork": {

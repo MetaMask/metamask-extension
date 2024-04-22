@@ -899,9 +899,6 @@
   "currentLanguage": {
     "message": "Aktuelle Sprache"
   },
-  "currentRpcUrlDeprecated": {
-    "message": "Die aktuelle RPC-URL für dieses Netzwerk ist veraltet."
-  },
   "currentTitle": {
     "message": "Aktuell:"
   },
@@ -2290,10 +2287,6 @@
   "networkStatusStabilityFeeTooltip": {
     "message": "Die Gas-Gebühren betragen $1 bezogen auf die letzten 72 Stunden.",
     "description": "$1 is networks stability value - stable, low, high"
-  },
-  "networkSwitchConnectionError": {
-    "message": "Wir können keine Verbindung zu $1 aufbauen.",
-    "description": "$1 represents the network name"
   },
   "networkURL": {
     "message": "Netzwerk-URL"
@@ -4186,9 +4179,6 @@
     "message": "Dieser Seite das Wechseln eines Netzwerks erlauben?"
   },
   "switchNetwork": {
-    "message": "Netzwerk wechseln"
-  },
-  "switchNetworks": {
     "message": "Netzwerk wechseln"
   },
   "switchToNetwork": {

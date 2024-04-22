@@ -899,9 +899,6 @@
   "currentLanguage": {
     "message": "Ngôn ngữ hiện tại"
   },
-  "currentRpcUrlDeprecated": {
-    "message": "Đường dẫn URL RPC hiện tại cho mạng này không còn được dùng nữa."
-  },
   "currentTitle": {
     "message": "Hiện tại:"
   },
@@ -2290,10 +2287,6 @@
   "networkStatusStabilityFeeTooltip": {
     "message": "Phí gas tương đối $1 so với 72 giờ qua.",
     "description": "$1 is networks stability value - stable, low, high"
-  },
-  "networkSwitchConnectionError": {
-    "message": "Chúng tôi không thể kết nối với $1",
-    "description": "$1 represents the network name"
   },
   "networkURL": {
     "message": "URL mạng"
@@ -4186,9 +4179,6 @@
     "message": "Cho phép trang web này chuyển mạng?"
   },
   "switchNetwork": {
-    "message": "Chuyển mạng"
-  },
-  "switchNetworks": {
     "message": "Chuyển mạng"
   },
   "switchToNetwork": {

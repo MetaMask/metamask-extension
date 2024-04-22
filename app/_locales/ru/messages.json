@@ -899,9 +899,6 @@
   "currentLanguage": {
     "message": "Текущий язык"
   },
-  "currentRpcUrlDeprecated": {
-    "message": "Текущий URL rpc для этой сети устарел."
-  },
   "currentTitle": {
     "message": "Текущий:"
   },
@@ -2290,10 +2287,6 @@
   "networkStatusStabilityFeeTooltip": {
     "message": "Относительная плата за газ составляет $1 за последние 72 часа.",
     "description": "$1 is networks stability value - stable, low, high"
-  },
-  "networkSwitchConnectionError": {
-    "message": "Нам не удается подключиться к $1",
-    "description": "$1 represents the network name"
   },
   "networkURL": {
     "message": "URL сети"
@@ -4187,9 +4180,6 @@
   },
   "switchNetwork": {
     "message": "Сменить сеть"
-  },
-  "switchNetworks": {
-    "message": "Сменить сети"
   },
   "switchToNetwork": {
     "message": "Сменить на $1",

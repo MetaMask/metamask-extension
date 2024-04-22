@@ -2263,9 +2263,6 @@
   "switchNetwork": {
     "message": "Cambiar red"
   },
-  "switchNetworks": {
-    "message": "Cambiar redes"
-  },
   "switchToThisAccount": {
     "message": "Cambiar a esta cuenta"
   },

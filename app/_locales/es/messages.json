@@ -899,9 +899,6 @@
   "currentLanguage": {
     "message": "Idioma actual"
   },
-  "currentRpcUrlDeprecated": {
-    "message": "La URL de rpc actual para esta red ha quedado obsoleta."
-  },
   "currentTitle": {
     "message": "Actual:"
   },
@@ -2290,10 +2287,6 @@
   "networkStatusStabilityFeeTooltip": {
     "message": "Las tarifas de gas son de $1 en relación con las últimas 72 horas.",
     "description": "$1 is networks stability value - stable, low, high"
-  },
-  "networkSwitchConnectionError": {
-    "message": "No podemos conectar a $1",
-    "description": "$1 represents the network name"
   },
   "networkURL": {
     "message": "Dirección URL de la red"
@@ -4187,9 +4180,6 @@
   },
   "switchNetwork": {
     "message": "Cambiar red"
-  },
-  "switchNetworks": {
-    "message": "Cambiar redes"
   },
   "switchToNetwork": {
     "message": "Cambiar a $1",
