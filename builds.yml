@@ -198,6 +198,9 @@ env:
   # This variable is read by Trezor's source and breaks build if not included
   - ASSET_PREFIX: null
 
+  # This variable is needed for MMI to have it's specific Sentry Key
+  - SENTRY_MMI_DSN
+
   ###
   # Notifications Feature
   ###
