@@ -1773,6 +1773,7 @@ const slice = createSlice({
 
         if (draftTransaction) {
           draftTransaction.isSwapQuoteLoading = false;
+          draftTransaction.swapQuotesError = null;
           if (action.payload) {
             draftTransaction.quotes = action.payload.quotes;
           }
