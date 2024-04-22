@@ -1,29 +1,15 @@
-import { cloneDeep } from 'lodash';
-import {
-  TransactionMeta,
-  TransactionStatus,
-  TransactionError,
-} from '@metamask/transaction-controller';
+import { cloneDeep, isObject } from 'lodash';
+import { hasProperty } from '@metamask/utils';
 
 type VersionedData = {
   meta: { version: number };
   data: Record<string, unknown>;
 };
 
-export const version = 115;
-
-// Target date is December 8, 2023 - 00:00:00 UTC
-export const TARGET_DATE = new Date('2023-12-08T00:00:00Z').getTime();
-
-const STUCK_STATES = [TransactionStatus.approved, TransactionStatus.signed];
-
-export const transactionError = {
-  name: 'StuckTransactionDueToStatus',
-  message: 'Transaction is stuck due to status - migration 116',
-};
+export const version = 116;
 
 /**
- * This migration sets the `status` to `failed` for all transactions created before December 8, 2023 that are still `approved` or `signed`.
+ * As we have removed Product tour from Home Page so this migration is to remove showProductTour from AppState
  *
  * @param originalVersionedData
  */
@@ -35,26 +21,21 @@ export async function migrate(
   transformState(versionedData.data);
   return versionedData;
 }
-
-// TODO: Replace `any` with type
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function transformState(state: Record<string, any>) {
-  const transactions: TransactionMeta[] =
-    state?.TransactionController?.transactions ?? [];
+  const AppStateController = state?.AppStateController || {};
 
-  for (const transaction of transactions) {
-    if (
-      transaction.time < TARGET_DATE &&
-      STUCK_STATES.includes(transaction.status)
-    ) {
-      transaction.status = TransactionStatus.failed;
-
-      const failedTransaction = transaction as TransactionMeta & {
-        status: TransactionStatus.failed;
-        error: TransactionError;
-      };
-
-      failedTransaction.error = transactionError;
-    }
+  if (
+    hasProperty(state, 'AppStateController') &&
+    isObject(state.AppStateController) &&
+    hasProperty(state.AppStateController, 'showProductTour') &&
+    state.AppStateController.showProductTour !== undefined
+  ) {
+    delete AppStateController.showProductTour;
   }
+
+  return {
+    ...state,
+    AppStateController,
+  };
 }

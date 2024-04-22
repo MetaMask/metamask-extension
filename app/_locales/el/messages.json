@@ -1650,12 +1650,6 @@
   "general": {
     "message": "Γενικά"
   },
-  "globalTitle": {
-    "message": "Γενικό μενού"
-  },
-  "globalTourDescription": {
-    "message": "Δείτε το χαρτοφυλάκιό σας, τις συνδεδεμένες ιστοσελίδες, τις ρυθμίσεις και πολλά άλλα"
-  },
   "goBack": {
     "message": "Πηγαίνετε πίσω"
   },
@@ -2887,12 +2881,6 @@
   },
   "permissions": {
     "message": "Άδειες"
-  },
-  "permissionsTitle": {
-    "message": "Άδειες"
-  },
-  "permissionsTourDescription": {
-    "message": "Βρείτε τους συνδεδεμένους λογαριασμούς σας και διαχειριστείτε τις άδειες εδώ"
   },
   "personalAddressDetected": {
     "message": "Η προσωπική διεύθυνση εντοπίστηκε. Καταχωρίστε τη διεύθυνση συμβολαίου του token."
@@ -4247,12 +4235,6 @@
   },
   "switchedTo": {
     "message": "Έχετε αλλάξει σε"
-  },
-  "switcherTitle": {
-    "message": "Επιλογέας δικτύου"
-  },
-  "switcherTourDescription": {
-    "message": "Κάντε κλικ στο εικονίδιο για να αλλάξετε δίκτυο ή να προσθέσετε ένα νέο δίκτυο"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Η αλλαγή δικτύων θα ακυρώσει όλες τις εκκρεμείς επιβεβαιώσεις"

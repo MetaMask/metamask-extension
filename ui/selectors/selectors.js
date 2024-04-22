@@ -118,6 +118,7 @@ import {
   getConnectedSubjectsForAllAddresses,
   ///: END:ONLY_INCLUDE_IF
   getOrderedConnectedAccountsForActiveTab,
+  getOrderedConnectedAccountsForConnectedDapp,
 } from './permissions';
 import { createDeepEqualSelector } from './util';
 
@@ -310,28 +311,14 @@ export const getMetaMaskAccounts = createSelector(
       };
     }, {}),
 );
-
 /**
- * Returns the selected address from the Metamask state.
+ * Returns the address of the selected InternalAccount from the Metamask state.
  *
  * @param state - The Metamask state object.
  * @returns {string} The selected address.
  */
 export function getSelectedAddress(state) {
-  return state.metamask.selectedAddress;
-}
-
-/**
- * Returns the selected identity from the Metamask state.
- *
- * @param state - The Metamask state object.
- * @returns The selected identity object.
- */
-export function getSelectedIdentity(state) {
-  const selectedAddress = getSelectedAddress(state);
-  const { identities } = state.metamask;
-
-  return identities[selectedAddress];
+  return getSelectedInternalAccount(state)?.address;
 }
 
 export function getInternalAccountByAddress(state, address) {
@@ -403,16 +390,6 @@ export function getMetaMaskKeyrings(state) {
 }
 
 /**
- * Get identity state.
- *
- * @param {object} state - Redux state
- * @returns {object} A map of account addresses to identities (which includes the account name)
- */
-export function getMetaMaskIdentities(state) {
-  return state.metamask.identities;
-}
-
-/**
  * Get account balances state.
  *
  * @param {object} state - Redux state
@@ -438,7 +415,7 @@ export function getMetaMaskCachedBalances(state) {
 }
 
 /**
- * Get ordered (by keyrings) accounts with identity and balance
+ * Get ordered (by keyrings) accounts with InternalAccount and balance
  */
 export const getMetaMaskAccountsOrdered = createSelector(
   getInternalAccountsSortedByKeyring,
@@ -563,8 +540,8 @@ export function getAccountName(accounts, accountAddress) {
 
 export function getMetadataContractName(state, address) {
   const tokenList = getTokenList(state);
-  const entry = Object.values(tokenList).find((identity) =>
-    isEqualCaseInsensitive(identity.address, address),
+  const entry = Object.values(tokenList).find((token) =>
+    isEqualCaseInsensitive(token.address, address),
   );
   return entry && entry.name !== '' ? entry.name : '';
 }
@@ -870,6 +847,11 @@ export function getShowTestNetworks(state) {
 export function getPetnamesEnabled(state) {
   const { petnamesEnabled = true } = getPreferences(state);
   return petnamesEnabled;
+}
+
+export function getRedesignedConfirmationsEnabled(state) {
+  const { redesignedConfirmations } = getPreferences(state);
+  return redesignedConfirmations;
 }
 
 export function getFeatureNotificationsEnabled(state) {
@@ -1282,17 +1264,6 @@ export function getShowWhatsNewPopup(state) {
 }
 
 /**
- * Returns a memoized version of the MetaMask identities.
- *
- * @param state - The Redux state.
- * @returns {Array} An array of MetaMask identities.
- */
-export const getMemoizedMetaMaskIdentities = createDeepEqualSelector(
-  getMetaMaskIdentities,
-  (identities) => identities,
-);
-
-/**
  * Returns a memoized selector that gets the internal accounts from the Redux store.
  *
  * @param state - The Redux store state.
@@ -1419,23 +1390,28 @@ export const getAllConnectedAccounts = createDeepEqualSelector(
 );
 export const getConnectedSitesList = createDeepEqualSelector(
   getConnectedSubjectsForAllAddresses,
-  getMetaMaskIdentities,
+  getInternalAccounts,
   getAllConnectedAccounts,
-  (connectedSubjectsForAllAddresses, identities, connectedAddresses) => {
+  (connectedSubjectsForAllAddresses, internalAccounts, connectedAddresses) => {
     const sitesList = {};
     connectedAddresses.forEach((connectedAddress) => {
       connectedSubjectsForAllAddresses[connectedAddress].forEach((app) => {
         const siteKey = app.origin;
+
+        const internalAccount = internalAccounts.find((account) =>
+          isEqualCaseInsensitive(account.address, connectedAddress),
+        );
+
         if (sitesList[siteKey]) {
           sitesList[siteKey].addresses.push(connectedAddress);
           sitesList[siteKey].addressToNameMap[connectedAddress] =
-            identities[connectedAddress].name; // Map address to name
+            internalAccount.metadata.name; // Map address to name
         } else {
           sitesList[siteKey] = {
             ...app,
             addresses: [connectedAddress],
             addressToNameMap: {
-              [connectedAddress]: identities[connectedAddress].name,
+              [connectedAddress]: internalAccount.metadata.name,
             },
           };
         }
@@ -1880,10 +1856,6 @@ export function getShowPermissionsTour(state) {
   return state.metamask.showPermissionsTour;
 }
 
-export function getShowProductTour(state) {
-  return state.metamask.showProductTour;
-}
-
 export function getShowNetworkBanner(state) {
   return state.metamask.showNetworkBanner;
 }
@@ -2018,36 +1990,6 @@ export const getAllEnabledNetworks = createDeepEqualSelector(
     return showTestnetNetworks ? allNetworks : nonTestNetworks;
   },
 );
-
-export function getIsOptimism(state) {
-  return (
-    getCurrentChainId(state) === CHAIN_IDS.OPTIMISM ||
-    getCurrentChainId(state) === CHAIN_IDS.OPTIMISM_TESTNET ||
-    getCurrentChainId(state) === CHAIN_IDS.OPTIMISM_GOERLI
-  );
-}
-
-export function getIsBase(state) {
-  return (
-    getCurrentChainId(state) === CHAIN_IDS.BASE ||
-    getCurrentChainId(state) === CHAIN_IDS.BASE_TESTNET
-  );
-}
-
-export function getIsOpbnb(state) {
-  return (
-    getCurrentChainId(state) === CHAIN_IDS.OPBNB ||
-    getCurrentChainId(state) === CHAIN_IDS.OPBNB_TESTNET
-  );
-}
-
-export function getIsOpStack(state) {
-  return getIsOptimism(state) || getIsBase(state) || getIsOpbnb(state);
-}
-
-export function getIsMultiLayerFeeNetwork(state) {
-  return getIsOpStack(state);
-}
 
 /**
  *  To retrieve the maxBaseFee and priorityFee the user has set as default
@@ -2316,9 +2258,12 @@ export function getCustomTokenAmount(state) {
   return state.appState.customTokenAmount;
 }
 
-export function getUnconnectedAccounts(state) {
+export function getUnconnectedAccounts(state, activeTab) {
   const accounts = getMetaMaskAccountsOrdered(state);
-  const connectedAccounts = getOrderedConnectedAccountsForActiveTab(state);
+  const connectedAccounts = getOrderedConnectedAccountsForConnectedDapp(
+    state,
+    activeTab,
+  );
   const unConnectedAccounts = accounts.filter((account) => {
     return !connectedAccounts.some(
       (connectedAccount) => connectedAccount.address === account.address,
