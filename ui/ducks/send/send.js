@@ -40,17 +40,15 @@ import {
   getUseTokenDetection,
   getTokenList,
   getAddressBookEntryOrAccountName,
-  getIsMultiLayerFeeNetwork,
   getEnsResolutionByAddress,
   getSelectedAccount,
   getSelectedInternalAccount,
   getSelectedInternalAccountWithBalance,
   getUnapprovedTransactions,
+  getSelectedNetworkClientId,
 } from '../../selectors';
 import {
-  disconnectGasFeeEstimatePoller,
   displayWarning,
-  getGasFeeEstimatesAndStartPolling,
   hideLoadingIndication,
   showLoadingIndication,
   updateEditableParams,
@@ -64,6 +62,8 @@ import {
   updateTransactionSendFlowHistory,
   getCurrentNetworkEIP1559Compatibility,
   getLayer1GasFee,
+  gasFeeStopPollingByPollingToken,
+  gasFeeStartPollingByNetworkClientId,
 } from '../../store/actions';
 import { setCustomGasLimit } from '../gas/gas.duck';
 import {
@@ -459,7 +459,7 @@ export const initialState = {
   gasIsSetInModal: false,
   gasPriceEstimate: '0x0',
   gasLimitMinimum: GAS_LIMITS.SIMPLE,
-  gasTotalForLayer1: '0x0',
+  gasTotalForLayer1: null,
   recipientMode: RECIPIENT_SEARCH_MODES.CONTACT_LIST,
   recipientInput: '',
   selectedAccount: {
@@ -507,32 +507,28 @@ export const computeEstimatedGasLimit = createAsyncThunk(
     const draftTransaction =
       send.draftTransactions[send.currentTransactionUUID];
     const unapprovedTxs = getUnapprovedTransactions(state);
-    const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
     const transaction = unapprovedTxs[draftTransaction.id];
     const isNonStandardEthChain = getIsNonStandardEthChain(state);
     const chainId = getCurrentChainId(state);
     const selectedAccount = getSelectedInternalAccountWithBalance(state);
 
-    let gasTotalForLayer1;
-    if (isMultiLayerFeeNetwork) {
-      gasTotalForLayer1 = await thunkApi.dispatch(
-        getLayer1GasFee({
-          transactionParams: {
-            gasPrice: draftTransaction.gas.gasPrice,
-            gas: draftTransaction.gas.gasLimit,
-            to: draftTransaction.recipient.address?.toLowerCase(),
-            value:
-              send.amountMode === AMOUNT_MODES.MAX
-                ? send.selectedAccount.balance
-                : draftTransaction.amount.value,
-            from: send.selectedAccount.address,
-            data: draftTransaction.userInputHexData,
-            type: '0x0',
-          },
-          chainId,
-        }),
-      );
-    }
+    const gasTotalForLayer1 = await thunkApi.dispatch(
+      getLayer1GasFee({
+        transactionParams: {
+          gasPrice: draftTransaction.gas.gasPrice,
+          gas: draftTransaction.gas.gasLimit,
+          to: draftTransaction.recipient.address?.toLowerCase(),
+          value:
+            send.amountMode === AMOUNT_MODES.MAX
+              ? send.selectedAccount.balance
+              : draftTransaction.amount.value,
+          from: send.selectedAccount.address,
+          data: draftTransaction.userInputHexData,
+          type: '0x0',
+        },
+        chainId,
+      }),
+    );
 
     if (
       send.stage !== SEND_STAGES.EDIT ||
@@ -601,6 +597,7 @@ export const initializeSendState = createAsyncThunk(
      */
     const state = thunkApi.getState();
     const isNonStandardEthChain = getIsNonStandardEthChain(state);
+    const selectedNetworkClientId = getSelectedNetworkClientId(state);
     const chainId = getCurrentChainId(state);
     let eip1559support = checkNetworkAndAccountSupports1559(state);
     if (eip1559support === undefined) {
@@ -632,7 +629,9 @@ export const initializeSendState = createAsyncThunk(
     let gasEstimatePollToken = null;
 
     // Instruct the background process that polling for gas prices should begin
-    gasEstimatePollToken = await getGasFeeEstimatesAndStartPolling();
+    gasEstimatePollToken = await gasFeeStartPollingByNetworkClientId(
+      selectedNetworkClientId,
+    );
 
     addPollingTokenToAppState(gasEstimatePollToken);
 
@@ -930,7 +929,7 @@ const slice = createSlice({
         const _gasTotal = new Numeric(
           draftTransaction.gas.gasTotal || '0x0',
           16,
-        ).add(new Numeric(state.gasTotalForLayer1 || '0x0', 16));
+        ).add(new Numeric(state.gasTotalForLayer1 ?? '0x0', 16));
 
         amount = new Numeric(draftTransaction.asset.balance, 16)
           .minus(_gasTotal)
@@ -2284,7 +2283,7 @@ export function resetSendState() {
     dispatch(actions.resetSendState());
 
     if (state[name].gasEstimatePollToken) {
-      await disconnectGasFeeEstimatePoller(state[name].gasEstimatePollToken);
+      await gasFeeStopPollingByPollingToken(state[name].gasEstimatePollToken);
       removePollingTokenFromAppState(state[name].gasEstimatePollToken);
     }
   };
@@ -2778,4 +2777,8 @@ export function isSendFormInvalid(state) {
  */
 export function getSendStage(state) {
   return state[name].stage;
+}
+
+export function hasSendLayer1GasFee(state) {
+  return state[name].gasTotalForLayer1 !== null;
 }

@@ -1650,12 +1650,6 @@
   "general": {
     "message": "Umum"
   },
-  "globalTitle": {
-    "message": "Menu global"
-  },
-  "globalTourDescription": {
-    "message": "Lihat portofolio, situs terhubung, pengaturan, dan lainnya"
-  },
   "goBack": {
     "message": "Kembali"
   },
@@ -2887,12 +2881,6 @@
   },
   "permissions": {
     "message": "Izin"
-  },
-  "permissionsTitle": {
-    "message": "Izin"
-  },
-  "permissionsTourDescription": {
-    "message": "Temukan akun yang terhubung dan kelola izin di sini"
   },
   "personalAddressDetected": {
     "message": "Alamat pribadi terdeteksi. Masukkan alamat kontrak token."
@@ -4247,12 +4235,6 @@
   },
   "switchedTo": {
     "message": "Anda telah beralih ke"
-  },
-  "switcherTitle": {
-    "message": "Pengalih jaringan"
-  },
-  "switcherTourDescription": {
-    "message": "Klik ikon untuk beralih jaringan atau menambahkan jaringan baru"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Mengalihkan jaringan akan membatalkan semua konfirmasi yang berstatus menunggu"

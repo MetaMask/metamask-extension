@@ -1,5 +1,6 @@
 import mockState from '../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
+import { getInternalAccountByAddress } from '../../../selectors';
 import useConfirmationRecipientInfo from './useConfirmationRecipientInfo';
 
 const RecipientAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
@@ -20,10 +21,13 @@ describe('useConfirmationRecipientInfo', () => {
         },
       );
 
-      expect(result.current.recipientAddress).toBe(RecipientAddress);
-      expect(result.current.recipientName).toBe(
-        mockState.metamask.identities[RecipientAddress].name,
+      const expectedAccount = getInternalAccountByAddress(
+        mockState,
+        RecipientAddress,
       );
+
+      expect(result.current.recipientAddress).toBe(RecipientAddress);
+      expect(result.current.recipientName).toBe(expectedAccount.metadata.name);
     });
   });
 
