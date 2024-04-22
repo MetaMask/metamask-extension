@@ -13,18 +13,26 @@ import { NetworkListMenu } from '.';
 const mockSetShowTestNetworks = jest.fn();
 const mockSetProviderType = jest.fn();
 const mockToggleNetworkMenu = jest.fn();
+
+let numberOfSetNetworkClientIdForDomainCalls = 0;
+
 jest.mock('../../../store/actions.ts', () => ({
   setShowTestNetworks: () => mockSetShowTestNetworks,
   setProviderType: () => mockSetProviderType,
   toggleNetworkMenu: () => mockToggleNetworkMenu,
+  // This should no be a nested function
+  setNetworkClientIdForDomain: () => {
+    numberOfSetNetworkClientIdForDomainCalls += 1;
+  },
 }));
 
-const render = (
+const render = ({
   showTestNetworks = false,
   currentChainId = '0x5',
   providerConfigId = 'chain5',
   isUnlocked = true,
-) => {
+  origin = 'https://portfolio.metamask.io',
+} = {}) => {
   const state = {
     metamask: {
       ...mockState.metamask,
@@ -37,6 +45,10 @@ const render = (
       preferences: {
         showTestNetworks,
       },
+      useRequestQueue: true,
+    },
+    activeTab: {
+      origin,
     },
   };
 
@@ -59,7 +71,7 @@ describe('NetworkListMenu', () => {
   });
 
   it('renders test networks when it should', () => {
-    const { getByText } = render(true);
+    const { getByText } = render({ showTestNetworks: true });
     expect(getByText(SEPOLIA_DISPLAY_NAME)).toBeInTheDocument();
   });
 
@@ -71,7 +83,7 @@ describe('NetworkListMenu', () => {
   });
 
   it('disables toggle when on test network', () => {
-    render(false, CHAIN_IDS.GOERLI);
+    render(false, { currentChainId: CHAIN_IDS.GOERLI });
     expect(document.querySelector('.toggle-button--disabled')).toBeDefined();
   });
 
@@ -82,9 +94,27 @@ describe('NetworkListMenu', () => {
     expect(mockSetProviderType).toHaveBeenCalled();
   });
 
+  it('does not signal to the SelectedNetworkController when the user switches networks manually', () => {
+    const { getByText } = render({ origin: undefined });
+    fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
+    expect(numberOfSetNetworkClientIdForDomainCalls).toBe(0);
+  });
+
+  it('signals to the SelectedNetworkController when the user switches networks manually', () => {
+    process.env.MULTICHAIN = 1;
+    const { getByText } = render();
+    fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
+    expect(numberOfSetNetworkClientIdForDomainCalls).toBe(1);
+    delete process.env.MULTICHAIN;
+  });
+
   it('shows the correct selected network when networks share the same chain ID', () => {
     // Mainnet and Custom Mainnet RPC both use chain ID 0x1
-    render(false, CHAIN_IDS.MAINNET, 'testNetworkConfigurationId');
+    render({
+      showTestNetworks: false,
+      currentChainId: CHAIN_IDS.MAINNET,
+      providerConfigId: 'testNetworkConfigurationId',
+    });
 
     // Contains Mainnet, Linea Mainnet and the two custom networks
     const networkItems = document.querySelectorAll(
@@ -115,17 +145,17 @@ describe('NetworkListMenu', () => {
   });
 
   it('enables the "Add Network" button when MetaMask is locked', () => {
-    const { queryByText } = render(false, '0x5', 'chain5', false);
+    const { queryByText } = render({ isUnlocked: false });
     expect(queryByText('Add network')).toBeEnabled();
   });
 
   it('enables the "Add Network" button when MetaMask is true', () => {
-    const { queryByText } = render(false, '0x5', 'chain5', true);
+    const { queryByText } = render({ isUnlocked: true });
     expect(queryByText('Add network')).toBeEnabled();
   });
 
   it('does not allow deleting networks when locked', () => {
-    render(false, '0x5', 'chain5', false);
+    render({ isUnlocked: false });
     expect(
       document.querySelectorAll('multichain-network-list-item__delete'),
     ).toHaveLength(0);

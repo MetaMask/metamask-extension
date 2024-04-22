@@ -2543,7 +2543,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "Ver $1 en $2",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "Ver $1 en Etherscan",

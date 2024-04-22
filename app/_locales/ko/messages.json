@@ -1650,12 +1650,6 @@
   "general": {
     "message": "일반"
   },
-  "globalTitle": {
-    "message": "글로벌 메뉴"
-  },
-  "globalTourDescription": {
-    "message": "포트폴리오, 연결된 사이트, 설정 등을 확인하세요"
-  },
   "goBack": {
     "message": "뒤로 가기"
   },
@@ -2562,21 +2556,6 @@
   "notificationsMarkAllAsRead": {
     "message": "모두 읽음으로 표시"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "자세히 알아보기"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "🎉 MetaMask Snaps의 오픈 베타가 시작되었습니다!"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "개발자 커뮤니티가 구축한 스냅으로 지갑을 개별 맞춤하세요!"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "스냅은 추가 네트워크 연결, 트랜잭션 인사이트 확인, 커스텀 알림 받기 등 사용자가 MetaMask에서 더욱 다양한 기능을 사용할 수 있도록 합니다."
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "MetaMask Snaps 소개"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "계정에서 $1개의 새로운 토큰이 발견됨",
     "description": "$1 is the number of new tokens detected"
@@ -2902,12 +2881,6 @@
   },
   "permissions": {
     "message": "권한"
-  },
-  "permissionsTitle": {
-    "message": "권한"
-  },
-  "permissionsTourDescription": {
-    "message": "연결된 계정을 찾아 여기서 권한을 관리하세요"
   },
   "personalAddressDetected": {
     "message": "개인 주소가 발견되었습니다. 토큰 계약 주소를 입력하세요."
@@ -3267,6 +3240,10 @@
   "securityAndPrivacy": {
     "message": "보안 및 프라이버시"
   },
+  "securityProviderPoweredBy": {
+    "message": "$1 제공",
+    "description": "The security provider that is providing data"
+  },
   "seeDetails": {
     "message": "세부 정보 보기"
   },
@@ -3490,12 +3467,6 @@
   },
   "smartContracts": {
     "message": "스마트 계약"
-  },
-  "smartSwapsAreHere": {
-    "message": "스마트 스왑이 시작되었습니다!"
-  },
-  "smartSwapsDescription": {
-    "message": "MetaMask 스왑이 더욱 스마트해졌습니다! 스마트 스왑을 활성화하면 MetaMask가 프로그램을 통해 스왑을 최적화하여 다음과 같은 활동에 도움을 드립니다."
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "스마트 스왑 자금 부족"
@@ -3775,18 +3746,6 @@
   },
   "strong": {
     "message": "강함"
-  },
-  "stxBenefit1": {
-    "message": "트랜잭션 비용 최소화하기"
-  },
-  "stxBenefit2": {
-    "message": "트랜잭션 실패 줄이기"
-  },
-  "stxBenefit3": {
-    "message": "중단된 트랜잭션 제거하기"
-  },
-  "stxBenefit4": {
-    "message": "프런트 러닝 방지"
   },
   "stxCancelled": {
     "message": "스왑이 실패했을 것입니다"
@@ -4277,12 +4236,6 @@
   "switchedTo": {
     "message": "다음으로 변경했습니다:"
   },
-  "switcherTitle": {
-    "message": "네트워크 전환기"
-  },
-  "switcherTourDescription": {
-    "message": "아이콘을 클릭하면 네트워크가 변경되거나 새로운 네트워크가 추가됩니다"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "네트워크를 전환하면 대기 중인 모든 컨펌 작업이 취소됩니다."
   },
@@ -4718,7 +4671,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "$2에서 $1 보기",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "Etherscan에서 $1 보기",

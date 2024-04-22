@@ -48,7 +48,6 @@ export default class AppStateController extends EventEmitter {
       showTestnetMessageInDropdown: true,
       showBetaHeader: isBeta(),
       showPermissionsTour: true,
-      showProductTour: true,
       showNetworkBanner: true,
       showAccountBanner: true,
       trezorModel: null,
@@ -72,6 +71,7 @@ export default class AppStateController extends EventEmitter {
       // States used for displaying the changed network toast
       switchedNetworkDetails: null,
       switchedNetworkNeverShowMessage: false,
+      currentExtensionPopupId: 0,
     });
     this.timer = null;
 
@@ -392,15 +392,6 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
-   * Sets whether the product tour should be shown
-   *
-   * @param showProductTour
-   */
-  setShowProductTour(showProductTour) {
-    this.store.updateState({ showProductTour });
-  }
-
-  /**
    * Sets whether the Network Banner should be shown
    *
    * @param showNetworkBanner
@@ -419,7 +410,17 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
-   * Track which network MetaMask has just automatically switched to, or call this with `null` to clear that state.
+   * Sets a unique ID for the current extension popup
+   *
+   * @param currentExtensionPopupId
+   */
+  setCurrentExtensionPopupId(currentExtensionPopupId) {
+    this.store.updateState({ currentExtensionPopupId });
+  }
+
+  /**
+   * Sets an object with networkName and appName
+   * or `null` if the message is meant to be cleared
    *
    * @param {{ origin: string, networkClientId: string } | null} switchedNetworkDetails - Details about the network that MetaMask just switched to.
    */

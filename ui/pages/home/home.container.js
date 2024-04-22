@@ -47,10 +47,12 @@ import {
   getShowPrivacyPolicyToast,
   getNewTokensImportedError,
   hasPendingApprovals,
+  getSelectedInternalAccount,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getAccountType,
   ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
+import { getIsSmartTransactionsOptInModalAvailable } from '../../../shared/modules/selectors';
 
 import {
   closeNotificationPopup,
@@ -95,13 +97,13 @@ const mapStateToProps = (state) => {
   const { metamask, appState } = state;
   const {
     seedPhraseBackedUp,
-    selectedAddress,
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
     swapsState,
     firstTimeFlowType,
     completedOnboarding,
   } = metamask;
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
   const { forgottenPassword } = metamask;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
   const swapsEnabled = getSwapsFeatureIsLive(state);
@@ -199,6 +201,8 @@ const mapStateToProps = (state) => {
     custodianDeepLink: getCustodianDeepLink(state),
     accountType: getAccountType(state),
     ///: END:ONLY_INCLUDE_IF
+    isSmartTransactionsOptInModalAvailable:
+      getIsSmartTransactionsOptInModalAvailable(state),
   };
 };
 

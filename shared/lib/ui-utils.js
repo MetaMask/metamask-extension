@@ -16,3 +16,6 @@ export const CONSENSYS_TERMS_OF_USE = 'https://consensys.io/terms-of-use';
 
 export const SECURITY_ALERTS_LEARN_MORE_LINK =
   'https://support.metamask.io/hc/en-us/articles/19878220833947';
+
+export const TRANSACTION_SIMULATIONS_LEARN_MORE_LINK =
+  'https://support.metamask.io/transactions-and-gas/transactions/simulations/';

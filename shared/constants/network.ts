@@ -150,6 +150,9 @@ export const CHAIN_IDS = {
   TEST_ETH: '0x539',
   ARBITRUM_GOERLI: '0x66eed',
   BLAST: '0x13e31',
+  FILECOIN: '0x13a',
+  SCROLL: '0x82750',
+  SCROLL_SEPOLIA: '0x8274f',
 } as const;
 
 const CHAINLIST_CHAIN_IDS_MAP = {
@@ -203,6 +206,7 @@ const CHAINLIST_CHAIN_IDS_MAP = {
   VELAS_EVM_MAINNET: '0x6a',
   ZKATANA: '0x133e40',
   ZORA_MAINNET: '0x76adf1',
+  FILECOIN: '0x13a',
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
@@ -244,6 +248,8 @@ export const GNOSIS_DISPLAY_NAME = 'Gnosis';
 export const ZK_SYNC_ERA_DISPLAY_NAME = 'zkSync Era Mainnet';
 export const BASE_DISPLAY_NAME = 'Base Mainnet';
 export const AURORA_ETH_DISPLAY_NAME = 'Aurora';
+export const SCROLL_DISPLAY_NAME = 'Scroll';
+export const SCROLL_SEPOLIA_DISPLAY_NAME = 'Scroll Sepolia';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -419,18 +425,18 @@ export const TENET_MAINNET_IMAGE_URL = './images/tenet.svg';
 export const VELAS_EVM_MAINNET_IMAGE_URL = './images/velas.svg';
 export const ZKATANA_MAINNET_IMAGE_URL = './images/zkatana.png';
 export const ZORA_MAINNET_IMAGE_URL = './images/zora.svg';
+export const FILECOIN_MAINNET_IMAGE_URL = './images/filecoin.svg';
+export const SCROLL_IMAGE_URL = './images/scroll.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
   NETWORK_TYPES.SEPOLIA,
-  NETWORK_TYPES.LINEA_GOERLI,
   NETWORK_TYPES.LINEA_SEPOLIA,
   NETWORK_TYPES.LINEA_MAINNET,
 ] as const;
 
 export const TEST_CHAINS = [
   CHAIN_IDS.SEPOLIA,
-  CHAIN_IDS.LINEA_GOERLI,
   CHAIN_IDS.LINEA_SEPOLIA,
   CHAIN_IDS.LOCALHOST,
 ];
@@ -467,11 +473,6 @@ export const BUILT_IN_NETWORKS = {
     chainId: CHAIN_IDS.SEPOLIA,
     ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
     blockExplorerUrl: `https://${NETWORK_TYPES.SEPOLIA}.etherscan.io`,
-  },
-  [NETWORK_TYPES.LINEA_GOERLI]: {
-    chainId: CHAIN_IDS.LINEA_GOERLI,
-    ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_GOERLI],
-    blockExplorerUrl: 'https://goerli.lineascan.build',
   },
   [NETWORK_TYPES.LINEA_SEPOLIA]: {
     chainId: CHAIN_IDS.LINEA_SEPOLIA,
@@ -527,6 +528,8 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.LOCALHOST]: LOCALHOST_DISPLAY_NAME,
   [CHAIN_IDS.OPTIMISM]: OPTIMISM_DISPLAY_NAME,
   [CHAIN_IDS.POLYGON]: POLYGON_DISPLAY_NAME,
+  [CHAIN_IDS.SCROLL]: SCROLL_DISPLAY_NAME,
+  [CHAIN_IDS.SCROLL_SEPOLIA]: SCROLL_SEPOLIA_DISPLAY_NAME,
   [CHAIN_IDS.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
 } as const;
 
@@ -726,6 +729,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.VELAS_EVM_MAINNET]: VELAS_EVM_MAINNET_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.ZKATANA]: ZKATANA_MAINNET_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.ZORA_MAINNET]: ZORA_MAINNET_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.FILECOIN]: FILECOIN_MAINNET_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -747,6 +751,9 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.CELO]: CELO_TOKEN_IMAGE_URL,
   [CHAIN_IDS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
   [CHAIN_IDS.FANTOM]: FTM_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.FILECOIN]: FILECOIN_MAINNET_IMAGE_URL,
+  [CHAIN_IDS.SCROLL]: SCROLL_IMAGE_URL,
+  [CHAIN_IDS.SCROLL_SEPOLIA]: SCROLL_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
@@ -887,6 +894,9 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.AURORA
     | typeof CHAIN_IDS.ARBITRUM_GOERLI
     | typeof CHAIN_IDS.BLAST
+    | typeof CHAIN_IDS.FILECOIN
+    | typeof CHAIN_IDS.SCROLL
+    | typeof CHAIN_IDS.SCROLL_SEPOLIA
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {
@@ -1004,26 +1014,6 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     rpcPrefs: {
       blockExplorerUrl: 'https://polygonscan.com/',
       imageUrl: MATIC_TOKEN_IMAGE_URL,
-    },
-  },
-  {
-    chainId: CHAIN_IDS.CELO,
-    nickname: CELO_DISPLAY_NAME,
-    rpcUrl: `https://celo-mainnet.infura.io/v3/${infuraProjectId}`,
-    ticker: CURRENCY_SYMBOLS.CELO,
-    rpcPrefs: {
-      blockExplorerUrl: 'https://celoscan.io',
-      imageUrl: CELO_TOKEN_IMAGE_URL,
-    },
-  },
-  {
-    chainId: CHAIN_IDS.GNOSIS,
-    nickname: GNOSIS_DISPLAY_NAME,
-    rpcUrl: `https://rpc.gnosischain.com`,
-    ticker: CURRENCY_SYMBOLS.GNOSIS,
-    rpcPrefs: {
-      blockExplorerUrl: 'https://gnosisscan.io',
-      imageUrl: GNOSIS_TOKEN_IMAGE_URL,
     },
   },
   {

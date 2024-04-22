@@ -1650,12 +1650,6 @@
   "general": {
     "message": "一般"
   },
-  "globalTitle": {
-    "message": "グローバルメニュー"
-  },
-  "globalTourDescription": {
-    "message": "ポートフォリオ、接続されたサイト、設定などを確認できます"
-  },
   "goBack": {
     "message": "戻る"
   },
@@ -2562,21 +2556,6 @@
   "notificationsMarkAllAsRead": {
     "message": "すべて既読にする"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "詳細"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "🎉 MetaMask Snapsのオープンベータについてお知らせします！"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "開発者コミュニティによって開発されたsnapで、ウォレットをカスタマイズできます！"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "Snapsを使えば、他のネットワークへの接続やトランザクションインサイトの表示、カスタム通知の取得など、MetaMaskでより多くのことができるようになります。"
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "MetaMask Snapsのご紹介"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1種類の新しいトークンがこのアカウントで見つかりました",
     "description": "$1 is the number of new tokens detected"
@@ -2902,12 +2881,6 @@
   },
   "permissions": {
     "message": "許可"
-  },
-  "permissionsTitle": {
-    "message": "許可"
-  },
-  "permissionsTourDescription": {
-    "message": "ここで接続されたアカウントを見つけて許可の管理を行います"
   },
   "personalAddressDetected": {
     "message": "個人アドレスが検出されました。トークンコントラクトアドレスを入力してください。"
@@ -3267,6 +3240,10 @@
   "securityAndPrivacy": {
     "message": "セキュリティとプライバシー"
   },
+  "securityProviderPoweredBy": {
+    "message": "データソース: $1",
+    "description": "The security provider that is providing data"
+  },
   "seeDetails": {
     "message": "詳細を表示"
   },
@@ -3490,12 +3467,6 @@
   },
   "smartContracts": {
     "message": "スマートコントラクト"
-  },
-  "smartSwapsAreHere": {
-    "message": "スマートスワップの登場です！"
-  },
-  "smartSwapsDescription": {
-    "message": "MetaMask Swapsがはるかに賢くなりました！スマートスワップを有効にすると、MetaMaskがプログラムに従ってスワップを最適化できるようになるため、以下のようなメリットがあります。"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "スマートスワップに必要な資金が不足しています。"
@@ -3775,18 +3746,6 @@
   },
   "strong": {
     "message": "強"
-  },
-  "stxBenefit1": {
-    "message": "トランザクションコストを最小化"
-  },
-  "stxBenefit2": {
-    "message": "トランザクションの失敗数を低減"
-  },
-  "stxBenefit3": {
-    "message": "トランザクションの停滞を解消"
-  },
-  "stxBenefit4": {
-    "message": "フロントランニングを防止"
   },
   "stxCancelled": {
     "message": "スワップが失敗するところでした"
@@ -4277,12 +4236,6 @@
   "switchedTo": {
     "message": "次に切り替えました:"
   },
-  "switcherTitle": {
-    "message": "ネットワークスイッチャー"
-  },
-  "switcherTourDescription": {
-    "message": "アイコンをクリックしてネットワークを切り替えるか、新しいネットワークを追加します"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "ネットワークを切り替えると、保留中の承認がすべてキャンセルされます"
   },
@@ -4718,7 +4671,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "$1を$2で表示",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "$1をEtherscanで表示",

@@ -15,7 +15,6 @@ const mainNetworks = {
 const testNetworks = {
   [CHAIN_IDS.GOERLI]: true,
   [CHAIN_IDS.SEPOLIA]: true,
-  [CHAIN_IDS.LINEA_GOERLI]: true,
   [CHAIN_IDS.LINEA_SEPOLIA]: true,
 };
 
@@ -57,7 +56,7 @@ export default class PreferencesController {
       useSafeChainsListValidation: true,
       // set to true means the dynamic list from the API is being used
       // set to false will be using the static list from contract-metadata
-      useTokenDetection: false,
+      useTokenDetection: opts?.initState?.useTokenDetection ?? true,
       useNftDetection: false,
       use4ByteResolution: true,
       useCurrencyRateCheck: true,
@@ -91,9 +90,11 @@ export default class PreferencesController {
         showExtensionInFullSizeView: false,
         showFiatInTestnets: false,
         showTestNetworks: false,
+        smartTransactionsOptInStatus: null, // null means we will show the Smart Transactions opt-in modal to a user if they are eligible
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
+        redesignedConfirmationsEnabled: false,
         featureNotificationsEnabled: false,
       },
       // ENS decentralized website resolution
@@ -119,7 +120,6 @@ export default class PreferencesController {
 
     this.store = new ObservableStore(initState);
     this.store.setMaxListeners(13);
-    this.tokenListController = opts.tokenListController;
 
     opts.onKeyringStateChange((state) => {
       const accounts = new Set();
@@ -218,13 +218,6 @@ export default class PreferencesController {
    */
   setUseTokenDetection(val) {
     this.store.updateState({ useTokenDetection: val });
-    this.tokenListController.updatePreventPollingOnNetworkRestart(!val);
-    if (val) {
-      this.tokenListController.start();
-    } else {
-      this.tokenListController.clearingTokenListData();
-      this.tokenListController.stop();
-    }
   }
 
   /**
