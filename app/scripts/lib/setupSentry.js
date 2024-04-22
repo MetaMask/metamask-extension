@@ -481,14 +481,18 @@ export default function setupSentry({ release, getState }) {
       );
     }
 
-    const sentryDsn =
-      METAMASK_BUILD_TYPE === 'mmi'
-        ? process.env.SENTRY_MMI_DSN
-        : process.env.SENTRY_DSN;
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    sentryTarget = process.env.SENTRY_MMI_DSN
+    ///: END:ONLY_INCLUDE_IF
+
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+    sentryTarget = process.env.SENTRY_DSN
+    ///: END:ONLY_INCLUDE_IF
+
+
     console.log(
       `Setting up Sentry Remote Error Reporting for '${environment}': SENTRY_DSN`,
     );
-    sentryTarget = sentryDsn;
   } else {
     console.log(
       `Setting up Sentry Remote Error Reporting for '${environment}': SENTRY_DSN_DEV`,
