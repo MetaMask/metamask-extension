@@ -482,13 +482,12 @@ export default function setupSentry({ release, getState }) {
     }
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    sentryTarget = process.env.SENTRY_MMI_DSN
+    sentryTarget = process.env.SENTRY_MMI_DSN;
     ///: END:ONLY_INCLUDE_IF
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    sentryTarget = process.env.SENTRY_DSN
+    sentryTarget = process.env.SENTRY_DSN;
     ///: END:ONLY_INCLUDE_IF
-
 
     console.log(
       `Setting up Sentry Remote Error Reporting for '${environment}': SENTRY_DSN`,
