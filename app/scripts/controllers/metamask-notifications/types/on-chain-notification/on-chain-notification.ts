@@ -30,7 +30,7 @@ type ConvertToEnum<Kind> = {
 }[TRIGGER_TYPES];
 
 /**
- * Type-Foo.
+ * Type-Computation.
  * 1. Adds a `type` field to the notification, it converts the schema type into the ENUM we use.
  * 2. It ensures that the `data` field is the correct Notification data for this `type`
  * - The `Compute` utility merges the intersections (`&`) for a prettier type.

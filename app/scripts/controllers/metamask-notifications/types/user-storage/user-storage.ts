@@ -30,18 +30,3 @@ export type UserStorage = {
     };
   };
 };
-
-type UserStorageEntry = { path: string; entryName: string };
-
-/**
- * The User Storage Endpoint requires a path and an entry name.
- * Developers can provide additional paths by extending this variable below
- */
-export const USER_STORAGE_ENTRIES = {
-  notification_settings: {
-    path: 'notifications',
-    entryName: 'notification_settings',
-  },
-} satisfies Record<string, UserStorageEntry>;
-
-export type UserStorageEntryKeys = keyof typeof USER_STORAGE_ENTRIES;

@@ -1,11 +1,20 @@
-import { AccountsControllerListAccountsAction } from '@metamask/accounts-controller';
 import { ControllerMessenger } from '@metamask/base-controller';
 import * as ControllerUtils from '@metamask/controller-utils';
+import {
+  KeyringControllerGetAccountsAction,
+  KeyringControllerState,
+  KeyringControllerStateChangeEvent,
+} from '@metamask/keyring-controller';
 import {
   AuthenticationControllerGetBearerToken,
   AuthenticationControllerIsSignedIn,
 } from '../authentication/authentication-controller';
 import { MOCK_ACCESS_TOKEN } from '../authentication/mocks/mockServices';
+import {
+  UserStorageControllerGetStorageKey,
+  UserStorageControllerPerformGetStorage,
+  UserStorageControllerPerformSetStorage,
+} from '../user-storage/user-storage-controller';
 import {
   AllowedActions,
   AllowedEvents,
@@ -13,9 +22,6 @@ import {
   PushNotificationsControllerDisablePushNotifications,
   PushNotificationsControllerEnablePushNotifications,
   PushNotificationsControllerUpdateTriggerPushNotifications,
-  UserStorageControllerGetStorageKey,
-  UserStorageControllerPerformGetStorage,
-  UserStorageControllerPerformSetStorage,
   defaultState,
 } from './metamask-notifications';
 import {
@@ -59,50 +65,78 @@ describe('metamask-notifications - constructor()', () => {
     expect(controller2.state.isMetamaskNotificationsEnabled).toBe(true);
   });
 
-  test('Account Switch to new account will add new triggers', async () => {
-    const ADDRESS_1 = '0x465357FAd4FF8e216cac51661b18BA7619fF9fC3';
-    const ADDRESS_2 = '0x465357FAd4FF8e216cac51661b18BA7619fF9fC4';
-
+  test('Keyring Change Event but feature not enabled will not add or remove triggers', async () => {
     const { messenger, globalMessenger, mockListAccounts } = arrangeMocks();
 
-    // Initial Accounts
-    mockListAccounts.mockReturnValue([{ address: ADDRESS_1 }]);
+    // initialize controller with 1 address
+    mockListAccounts.mockResolvedValueOnce(['addr1']);
+    const controller = new MetamaskNotificationsController({ messenger });
 
-    const controller = new MetamaskNotificationsController({
-      messenger,
-    });
-    const mockUpdateOnChainTriggersByAccount = jest
+    const mockUpdate = jest
       .spyOn(controller, 'updateOnChainTriggersByAccount')
       .mockResolvedValue({} as UserStorage);
+    const mockDelete = jest
+      .spyOn(controller, 'deleteOnChainTriggersByAccount')
+      .mockResolvedValue({} as UserStorage);
 
-    // Since the controller has not enabled notifications, trigger creation not called
-    await globalMessenger.publish('AccountsController:selectedAccountChange', {
-      address: ADDRESS_2,
-    });
-    expect(mockUpdateOnChainTriggersByAccount).not.toBeCalled();
-    mockUpdateOnChainTriggersByAccount.mockClear();
+    // listAccounts has a new address
+    mockListAccounts.mockResolvedValueOnce(['addr1', 'addr2']);
+    await actPublishKeyringStateChange(globalMessenger);
 
-    // Switching to an account that we have already initialized means we don't need to invoke trigger creation
+    expect(mockUpdate).not.toBeCalled();
+    expect(mockDelete).not.toBeCalled();
+  });
+
+  test('Keying Change Event with new triggers', async () => {
+    const { messenger, globalMessenger, mockListAccounts } = arrangeMocks();
+
+    // initialize controller with 1 address
+    mockListAccounts.mockResolvedValueOnce(['addr1']);
+    const controller = new MetamaskNotificationsController({ messenger });
     controller.state.isMetamaskNotificationsEnabled = true;
-    await globalMessenger.publish('AccountsController:selectedAccountChange', {
-      address: ADDRESS_1,
-    });
-    expect(mockUpdateOnChainTriggersByAccount).not.toBeCalled();
-    mockUpdateOnChainTriggersByAccount.mockClear();
 
-    // Switching to a new account will invoke trigger creation
-    await globalMessenger.publish('AccountsController:selectedAccountChange', {
-      address: ADDRESS_2,
-    });
-    expect(mockUpdateOnChainTriggersByAccount).toBeCalled();
-    mockUpdateOnChainTriggersByAccount.mockClear();
+    const mockUpdate = jest
+      .spyOn(controller, 'updateOnChainTriggersByAccount')
+      .mockResolvedValue({} as UserStorage);
+    const mockDelete = jest
+      .spyOn(controller, 'deleteOnChainTriggersByAccount')
+      .mockResolvedValue({} as UserStorage);
 
-    // Switching to the same account again will not invoke trigger creation
-    await globalMessenger.publish('AccountsController:selectedAccountChange', {
-      address: ADDRESS_2,
+    async function act(
+      addresses: string[],
+      assertion: () => Promise<void> | void,
+    ) {
+      mockListAccounts.mockResolvedValueOnce(addresses);
+      await actPublishKeyringStateChange(globalMessenger);
+      await assertion();
+
+      // Clear mocks for next act/assert
+      mockUpdate.mockClear();
+      mockDelete.mockClear();
+    }
+
+    await act(['addr2'], () => {
+      expect(mockUpdate).toBeCalled();
+      expect(mockDelete).toBeCalled();
     });
-    expect(mockUpdateOnChainTriggersByAccount).not.toBeCalled();
-    mockUpdateOnChainTriggersByAccount.mockClear();
+
+    // Act - new accounts were added
+    await act(['addr1', 'addr2'], () => {
+      expect(mockUpdate).toBeCalled();
+      expect(mockDelete).not.toBeCalled();
+    });
+
+    // Act - an account was removed
+    await act(['addr1'], () => {
+      expect(mockUpdate).not.toBeCalled();
+      expect(mockDelete).toBeCalled();
+    });
+
+    // Act - an account was added and removed
+    await act(['addr2'], () => {
+      expect(mockUpdate).toBeCalled();
+      expect(mockDelete).toBeCalled();
+    });
   });
 
   function arrangeMocks() {
@@ -112,6 +146,16 @@ describe('metamask-notifications - constructor()', () => {
       .mockImplementation((x) => x);
 
     return messengerMocks;
+  }
+
+  async function actPublishKeyringStateChange(
+    messenger: ControllerMessenger<never, KeyringControllerStateChangeEvent>,
+  ) {
+    await messenger.publish(
+      'KeyringController:stateChange',
+      {} as KeyringControllerState,
+      [],
+    );
   }
 });
 
@@ -175,7 +219,9 @@ describe('metamask-notifications - setMetamaskNotificationsFeatureSeen()', () =>
       state: { ...defaultState, isMetamaskNotificationsFeatureSeen: false },
     });
 
-    await controller.setMetamaskNotificationsFeatureSeen();
+    await expect(() =>
+      controller.setMetamaskNotificationsFeatureSeen(),
+    ).rejects.toThrow();
 
     expect(controller.state.isMetamaskNotificationsFeatureSeen).toBe(false); // this flag was never flipped
   });
@@ -205,8 +251,9 @@ describe('metamask-notifications - toggleFeatureAnnouncementsEnabled()', () => {
       state: { ...defaultState, isFeatureAnnouncementsEnabled: false },
     });
 
-    await controller.toggleFeatureAnnouncementsEnabled();
-
+    await expect(() =>
+      controller.toggleFeatureAnnouncementsEnabled(),
+    ).rejects.toThrow();
     expect(controller.state.isFeatureAnnouncementsEnabled).toBe(false); // this flag was never flipped
   });
 });
@@ -310,16 +357,16 @@ describe('metamask-notifications - createOnChainTriggers()', () => {
 });
 
 describe('metamask-notifications - deleteOnChainTriggersByAccount', () => {
-  test('Deletes and disabled push notifications for a given account', async () => {
+  test('Deletes and disables push notifications for a given account', async () => {
     const {
       messenger,
       nockMockDeleteTriggersAPI,
       mockDisablePushNotifications,
     } = arrangeMocks();
     const controller = new MetamaskNotificationsController({ messenger });
-    const result = await controller.deleteOnChainTriggersByAccount(
+    const result = await controller.deleteOnChainTriggersByAccount([
       MOCK_USER_STORAGE_ACCOUNT,
-    );
+    ]);
     expect(
       MetamaskNotificationsUtils.traverseUserStorageTriggers(result).length,
     ).toBe(0);
@@ -330,9 +377,9 @@ describe('metamask-notifications - deleteOnChainTriggersByAccount', () => {
   test('Does nothing if account does not exist in storage', async () => {
     const { messenger, mockDisablePushNotifications } = arrangeMocks();
     const controller = new MetamaskNotificationsController({ messenger });
-    const result = await controller.deleteOnChainTriggersByAccount(
+    const result = await controller.deleteOnChainTriggersByAccount([
       'UNKNOWN_ACCOUNT',
-    );
+    ]);
     expect(
       MetamaskNotificationsUtils.traverseUserStorageTriggers(result).length,
     ).not.toBe(0);
@@ -355,7 +402,7 @@ describe('metamask-notifications - deleteOnChainTriggersByAccount', () => {
     for (const mockFailureAction of Object.values(testScenarios)) {
       mockFailureAction();
       await expect(
-        controller.deleteOnChainTriggersByAccount(MOCK_USER_STORAGE_ACCOUNT),
+        controller.deleteOnChainTriggersByAccount([MOCK_USER_STORAGE_ACCOUNT]),
       ).rejects.toThrow();
     }
   });
@@ -377,9 +424,9 @@ describe('metamask-notifications - updateOnChainTriggersByAccount()', () => {
     const MOCK_ACCOUNT = 'MOCK_ACCOUNT2';
     const controller = new MetamaskNotificationsController({ messenger });
 
-    const result = await controller.updateOnChainTriggersByAccount(
+    const result = await controller.updateOnChainTriggersByAccount([
       MOCK_ACCOUNT,
-    );
+    ]);
     expect(
       MetamaskNotificationsUtils.traverseUserStorageTriggers(result, {
         address: MOCK_ACCOUNT.toLowerCase(),
@@ -405,7 +452,7 @@ describe('metamask-notifications - updateOnChainTriggersByAccount()', () => {
     for (const mockFailureAction of Object.values(testScenarios)) {
       mockFailureAction();
       await expect(
-        controller.deleteOnChainTriggersByAccount(MOCK_USER_STORAGE_ACCOUNT),
+        controller.deleteOnChainTriggersByAccount([MOCK_USER_STORAGE_ACCOUNT]),
       ).rejects.toThrow();
     }
   });
@@ -532,7 +579,7 @@ describe('metamask-notifications - markMetamaskNotificationsAsRead()', () => {
   }
 });
 
-// TypeFoo - we are extracting args and parameters from a generic type utility
+// Type-Computation - we are extracting args and parameters from a generic type utility
 // Thus this `AnyFunc` can be used to help constrain the generic parameters correctly
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyFunc = (...args: any[]) => any;
@@ -548,7 +595,7 @@ function mockNotificationMessenger() {
   const messenger = globalMessenger.getRestricted({
     name: 'MetamaskNotificationsController',
     allowedActions: [
-      'AccountsController:listAccounts',
+      'KeyringController:getAccounts',
       'AuthenticationController:getBearerToken',
       'AuthenticationController:isSignedIn',
       'PushPlatformNotificationsController:disablePushNotifications',
@@ -558,11 +605,11 @@ function mockNotificationMessenger() {
       'UserStorageController:performGetStorage',
       'UserStorageController:performSetStorage',
     ],
-    allowedEvents: ['AccountsController:selectedAccountChange'],
+    allowedEvents: ['KeyringController:stateChange'],
   });
 
   const mockListAccounts =
-    typedMockAction<AccountsControllerListAccountsAction>().mockReturnValue([]);
+    typedMockAction<KeyringControllerGetAccountsAction>().mockResolvedValue([]);
 
   const mockGetBearerToken =
     typedMockAction<AuthenticationControllerGetBearerToken>().mockResolvedValue(
@@ -601,7 +648,7 @@ function mockNotificationMessenger() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [, ...params]: any[] = args;
 
-    if (actionType === 'AccountsController:listAccounts') {
+    if (actionType === 'KeyringController:getAccounts') {
       return mockListAccounts();
     }
 

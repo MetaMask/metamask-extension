@@ -1,6 +1,5 @@
 import log from 'loglevel';
 import type { UserStorage } from '../types/user-storage/user-storage';
-import { createSHA256Hash } from '../encryption/encryption';
 import type { OnChainRawNotification } from '../types/on-chain-notification/on-chain-notification';
 import {
   traverseUserStorageTriggers,
@@ -9,6 +8,7 @@ import {
 } from '../utils/utils';
 import type { TRIGGER_TYPES } from '../constants/notification-schema';
 import type { components } from '../types/on-chain-notification/schema';
+import { createSHA256Hash } from '../../user-storage/encryption';
 
 export type NotificationTrigger = {
   id: string;
