@@ -277,15 +277,4 @@
       line-height: 140.62%;
     }
   }
-
-  &__overlay-banners {
-    z-index: 9999;
-    position: fixed;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    bottom: 8px;
-    left: 8px;
-    right: 8px;
-  }
 }

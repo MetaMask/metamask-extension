@@ -42,9 +42,6 @@ import {
   getSuggestedTokens,
   getSuggestedNfts,
   getApprovalFlows,
-  getShowSurveyToast,
-  getNewPrivacyPolicyToastShownDate,
-  getShowPrivacyPolicyToast,
   getNewTokensImportedError,
   hasPendingApprovals,
   getSelectedInternalAccount,
@@ -69,9 +66,6 @@ import {
   setRemoveNftMessage,
   setNewTokensImported,
   setActiveNetwork,
-  setSurveyLinkLastClickedOrClosed,
-  setNewPrivacyPolicyToastShownDate,
-  setNewPrivacyPolicyToastClickedOrClosed,
   setNewTokensImportedError,
 } from '../../store/actions';
 import { hideWhatsNewPopup } from '../../ducks/app/app';
@@ -187,9 +181,6 @@ const mapStateToProps = (state) => {
     newTokensImportedError: getNewTokensImportedError(state),
     newNetworkAddedConfigurationId: appState.newNetworkAddedConfigurationId,
     onboardedInThisUISession: appState.onboardedInThisUISession,
-    showSurveyToast: getShowSurveyToast(state),
-    newPrivacyPolicyToastShownDate: getNewPrivacyPolicyToastShownDate(state),
-    showPrivacyPolicyToast: getShowPrivacyPolicyToast(state),
     hasAllowedPopupRedirectApprovals,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     waitForConfirmDeepLinkDialog: getWaitForConfirmDeepLinkDialog(state),
@@ -279,12 +270,6 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setCustodianDeepLink({}));
     },
     ///: END:ONLY_INCLUDE_IF
-    setSurveyLinkLastClickedOrClosed: (time) =>
-      dispatch(setSurveyLinkLastClickedOrClosed(time)),
-    setNewPrivacyPolicyToastClickedOrClosed: () =>
-      dispatch(setNewPrivacyPolicyToastClickedOrClosed()),
-    setNewPrivacyPolicyToastShownDate: (date) =>
-      dispatch(setNewPrivacyPolicyToastShownDate(date)),
   };
 };
 

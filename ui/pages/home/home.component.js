@@ -10,7 +10,6 @@ import {
 } from '../../../shared/constants/metametrics';
 import AssetList from '../../components/app/asset-list';
 import NftsTab from '../../components/app/nfts-tab';
-import { ThemeType } from '../../../shared/constants/preferences';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
@@ -40,8 +39,6 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi)
   JustifyContent,
   ///: END:ONLY_INCLUDE_IF
-  IconColor,
-  BackgroundColor,
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
 import {
@@ -53,7 +50,6 @@ import {
   ButtonLink,
   ///: END:ONLY_INCLUDE_IF
   Text,
-  BannerBase,
   Icon,
 } from '../../components/component-library';
 import {
@@ -82,8 +78,6 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   SUPPORT_LINK,
   ///: END:ONLY_INCLUDE_IF
-  SURVEY_LINK,
-  PRIVACY_POLICY_LINK,
 } from '../../../shared/lib/ui-utils';
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
@@ -198,12 +192,6 @@ export default class Home extends PureComponent {
     setNewTokensImportedError: PropTypes.func.isRequired,
     clearNewNetworkAdded: PropTypes.func,
     setActiveNetwork: PropTypes.func,
-    showSurveyToast: PropTypes.bool.isRequired,
-    showPrivacyPolicyToast: PropTypes.bool.isRequired,
-    newPrivacyPolicyToastShownDate: PropTypes.number.isRequired,
-    setSurveyLinkLastClickedOrClosed: PropTypes.func.isRequired,
-    setNewPrivacyPolicyToastShownDate: PropTypes.func.isRequired,
-    setNewPrivacyPolicyToastClickedOrClosed: PropTypes.func.isRequired,
     hasAllowedPopupRedirectApprovals: PropTypes.bool.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     institutionalConnectRequests: PropTypes.arrayOf(PropTypes.object),
@@ -346,7 +334,6 @@ export default class Home extends PureComponent {
 
   componentDidMount() {
     this.checkStatusAndNavigate();
-    this.updateNewPrivacyPolicyToastDate();
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     const { setWaitForConfirmDeepLinkDialog } = this.props;
@@ -356,18 +343,6 @@ export default class Home extends PureComponent {
       setWaitForConfirmDeepLinkDialog(false);
     });
     ///: END:ONLY_INCLUDE_IF
-  }
-
-  updateNewPrivacyPolicyToastDate() {
-    const {
-      showPrivacyPolicyToast,
-      newPrivacyPolicyToastShownDate,
-      setNewPrivacyPolicyToastShownDate,
-    } = this.props;
-
-    if (showPrivacyPolicyToast && !newPrivacyPolicyToastShownDate) {
-      setNewPrivacyPolicyToastShownDate(Date.now());
-    }
   }
 
   static getDerivedStateFromProps(props) {
@@ -823,80 +798,6 @@ export default class Home extends PureComponent {
     );
   };
 
-  getIsPrivacyToastRecent() {
-    const { newPrivacyPolicyToastShownDate } = this.props;
-
-    const currentDate = new Date();
-    const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
-    const newPrivacyPolicyToastShownDateObj = new Date(
-      newPrivacyPolicyToastShownDate,
-    );
-    const toastWasShownLessThanADayAgo =
-      currentDate - newPrivacyPolicyToastShownDateObj < oneDayInMilliseconds;
-
-    return toastWasShownLessThanADayAgo;
-  }
-
-  renderToasts() {
-    const { t } = this.context;
-    const {
-      showSurveyToast,
-      showPrivacyPolicyToast,
-      setSurveyLinkLastClickedOrClosed,
-      setNewPrivacyPolicyToastClickedOrClosed,
-    } = this.props;
-    const { theme } = document.documentElement.dataset;
-    const inverseTheme =
-      theme === ThemeType.light ? ThemeType.dark : ThemeType.light;
-
-    const isPrivacyToastRecent = this.getIsPrivacyToastRecent();
-
-    return showSurveyToast || showPrivacyPolicyToast ? (
-      <Box className="home__overlay-banners">
-        {showSurveyToast && (
-          <BannerBase
-            data-theme={inverseTheme}
-            backgroundColor={BackgroundColor.backgroundAlternative}
-            startAccessory={
-              <Icon name={IconName.Heart} color={IconColor.errorDefault} />
-            }
-            title={t('surveyTitle')}
-            actionButtonLabel={t('surveyConversion')}
-            actionButtonOnClick={() => {
-              global.platform.openTab({
-                url: SURVEY_LINK,
-              });
-              setSurveyLinkLastClickedOrClosed(Date.now());
-            }}
-            onClose={() => {
-              setSurveyLinkLastClickedOrClosed(Date.now());
-            }}
-          />
-        )}
-        {showPrivacyPolicyToast && isPrivacyToastRecent && (
-          <BannerBase
-            data-theme={inverseTheme}
-            backgroundColor={BackgroundColor.backgroundAlternative}
-            startAccessory={
-              <Icon name={IconName.Info} color={IconColor.iconDefault} />
-            }
-            title={t('newPrivacyPolicyTitle')}
-            actionButtonLabel={t('newPrivacyPolicyActionButton')}
-            actionButtonOnClick={() => {
-              global.platform.openTab({
-                url: PRIVACY_POLICY_LINK,
-              });
-              setNewPrivacyPolicyToastClickedOrClosed();
-            }}
-            onClose={() => {
-              setNewPrivacyPolicyToastClickedOrClosed();
-            }}
-          />
-        )}
-      </Box>
-    ) : null;
-  }
-
   render() {
     const { t } = this.context;
     const {
@@ -1153,7 +1054,6 @@ export default class Home extends PureComponent {
             }
           </div>
           {this.renderNotifications()}
-          {this.renderToasts()}
         </div>
       </div>
     );

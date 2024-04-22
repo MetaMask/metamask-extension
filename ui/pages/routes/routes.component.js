@@ -30,6 +30,7 @@ import Loading from '../../components/ui/loading-screen';
 import LoadingNetwork from '../../components/app/loading-network-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
+import { SURVEY_LINK, PRIVACY_POLICY_LINK } from '../../../shared/lib/ui-utils';
 import {
   AppHeader,
   AccountListMenu,
@@ -128,6 +129,8 @@ import {
   AvatarAccountSize,
   AvatarNetwork,
   Box,
+  Icon,
+  IconName,
 } from '../../components/component-library';
 import { ToggleIpfsModal } from '../../components/app/nft-default-image/toggle-ipfs-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -137,7 +140,7 @@ import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-r
 import { SendPage } from '../../components/multichain/pages/send';
 import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/DeprecatedNetworkModal';
 import { getURLHost } from '../../helpers/utils/util';
-import { BorderColor } from '../../helpers/constants/design-system';
+import { BorderColor, IconColor } from '../../helpers/constants/design-system';
 import { MILLISECOND } from '../../../shared/constants/time';
 
 export default class Routes extends Component {
@@ -199,6 +202,12 @@ export default class Routes extends Component {
     unapprovedTransactions: PropTypes.number.isRequired,
     currentExtensionPopupId: PropTypes.number,
     useRequestQueue: PropTypes.bool,
+    showSurveyToast: PropTypes.bool.isRequired,
+    showPrivacyPolicyToast: PropTypes.bool.isRequired,
+    newPrivacyPolicyToastShownDate: PropTypes.number,
+    setSurveyLinkLastClickedOrClosed: PropTypes.func.isRequired,
+    setNewPrivacyPolicyToastShownDate: PropTypes.func.isRequired,
+    setNewPrivacyPolicyToastClickedOrClosed: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal: PropTypes.bool.isRequired,
     hideShowKeyringSnapRemovalResultModal: PropTypes.func.isRequired,
@@ -231,14 +240,18 @@ export default class Routes extends Component {
     document.documentElement.setAttribute('data-theme', theme);
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
   componentDidMount() {
+    this.updateNewPrivacyPolicyToastDate();
+
+    ///: BEGIN:ONLY_INCLUDE_IF(desktop)
     const { history } = this.props;
     browserAPI.runtime.onMessage.addListener(
       registerOnDesktopDisconnect(history),
     );
+    ///: END:ONLY_INCLUDE_IF
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
   componentWillUnmount() {
     const { history } = this.props;
     browserAPI.runtime.onMessage.removeListener(
@@ -622,6 +635,90 @@ export default class Routes extends Component {
     }
   };
 
+  renderToasts() {
+    const { t } = this.context;
+    const {
+      showSurveyToast,
+      showPrivacyPolicyToast,
+      newPrivacyPolicyToastShownDate,
+      setSurveyLinkLastClickedOrClosed,
+      setNewPrivacyPolicyToastClickedOrClosed,
+    } = this.props;
+
+    const isPrivacyToastRecent = this.getIsPrivacyToastRecent();
+    const isPrivacyToastNotShown = !newPrivacyPolicyToastShownDate;
+
+    return showSurveyToast || showPrivacyPolicyToast ? (
+      <>
+        {showSurveyToast && (
+          <Toast
+            key="survey-toast"
+            startAdornment={
+              <Icon name={IconName.Heart} color={IconColor.errorDefault} />
+            }
+            text={t('surveyTitle')}
+            actionText={t('surveyConversion')}
+            onActionClick={() => {
+              global.platform.openTab({
+                url: SURVEY_LINK,
+              });
+              setSurveyLinkLastClickedOrClosed(Date.now());
+            }}
+            onClose={() => {
+              setSurveyLinkLastClickedOrClosed(Date.now());
+            }}
+          />
+        )}
+        {showPrivacyPolicyToast &&
+          (isPrivacyToastRecent || isPrivacyToastNotShown) && (
+            <Toast
+              key="privacy-policy-toast"
+              startAdornment={
+                <Icon name={IconName.Info} color={IconColor.iconDefault} />
+              }
+              text={t('newPrivacyPolicyTitle')}
+              actionText={t('newPrivacyPolicyActionButton')}
+              onActionClick={() => {
+                global.platform.openTab({
+                  url: PRIVACY_POLICY_LINK,
+                });
+                setNewPrivacyPolicyToastClickedOrClosed();
+              }}
+              onClose={() => {
+                setNewPrivacyPolicyToastClickedOrClosed();
+              }}
+            />
+          )}
+      </>
+    ) : null;
+  }
+
+  updateNewPrivacyPolicyToastDate() {
+    const {
+      showPrivacyPolicyToast,
+      newPrivacyPolicyToastShownDate,
+      setNewPrivacyPolicyToastShownDate,
+    } = this.props;
+
+    if (showPrivacyPolicyToast && !newPrivacyPolicyToastShownDate) {
+      setNewPrivacyPolicyToastShownDate(Date.now());
+    }
+  }
+
+  getIsPrivacyToastRecent() {
+    const { newPrivacyPolicyToastShownDate } = this.props;
+
+    const currentDate = new Date();
+    const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+    const newPrivacyPolicyToastShownDateObj = new Date(
+      newPrivacyPolicyToastShownDate,
+    );
+    const toastWasShownLessThanADayAgo =
+      currentDate - newPrivacyPolicyToastShownDateObj < oneDayInMilliseconds;
+
+    return toastWasShownLessThanADayAgo;
+  }
+
   render() {
     const {
       account,
@@ -814,6 +911,7 @@ export default class Routes extends Component {
               onClose={() => this.setState({ hideConnectAccountToast: true })}
             />
           ) : null}
+          {this.renderToasts()}
           {showAutoNetworkSwitchToast ? (
             <Toast
               key="switched-network-toast"
