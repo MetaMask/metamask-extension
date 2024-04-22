@@ -638,18 +638,61 @@ export default class Routes extends Component {
   renderToasts() {
     const { t } = this.context;
     const {
+      account,
+      activeTabOrigin,
+      addPermittedAccount,
       showSurveyToast,
+      showConnectAccountToast,
       showPrivacyPolicyToast,
       newPrivacyPolicyToastShownDate,
+      clearSwitchedNetworkDetails,
       setSurveyLinkLastClickedOrClosed,
       setNewPrivacyPolicyToastClickedOrClosed,
+      setSwitchedNetworkNeverShowMessage,
+      switchedNetworkDetails,
     } = this.props;
 
+    const showAutoNetworkSwitchToast = this.getShowAutoNetworkSwitchTest();
     const isPrivacyToastRecent = this.getIsPrivacyToastRecent();
     const isPrivacyToastNotShown = !newPrivacyPolicyToastShownDate;
 
-    return showSurveyToast || showPrivacyPolicyToast ? (
-      <>
+    return (
+      <ToastContainer>
+        {showConnectAccountToast &&
+        this.onHomeScreen() &&
+        !this.state.hideConnectAccountToast ? (
+          <Toast
+            key="connect-account-toast"
+            startAdornment={
+              <AvatarAccount
+                address={account.address}
+                size={AvatarAccountSize.Md}
+                borderColor={BorderColor.transparent}
+              />
+            }
+            text={this.context.t('accountIsntConnectedToastText', [
+              account?.metadata?.name,
+              getURLHost(activeTabOrigin),
+            ])}
+            actionText={this.context.t('connectAccount')}
+            onActionClick={() => {
+              // Connect this account
+              addPermittedAccount(activeTabOrigin, account.address);
+              // Use setTimeout to prevent React re-render from
+              // hiding the tooltip
+              setTimeout(() => {
+                // Trigger a mouseenter on the header's connection icon
+                // to display the informative connection tooltip
+                document
+                  .querySelector(
+                    '[data-testid="connection-menu"] [data-tooltipped]',
+                  )
+                  ?.dispatchEvent(new CustomEvent('mouseenter', {}));
+              }, 250 * MILLISECOND);
+            }}
+            onClose={() => this.setState({ hideConnectAccountToast: true })}
+          />
+        ) : null}
         {showSurveyToast && (
           <Toast
             key="survey-toast"
@@ -689,8 +732,27 @@ export default class Routes extends Component {
               }}
             />
           )}
-      </>
-    ) : null;
+        {showAutoNetworkSwitchToast ? (
+          <Toast
+            key="switched-network-toast"
+            startAdornment={
+              <AvatarNetwork
+                size={AvatarAccountSize.Md}
+                borderColor={BorderColor.transparent}
+                src={switchedNetworkDetails?.imageUrl}
+              />
+            }
+            text={this.context.t('switchedNetworkToastMessage', [
+              switchedNetworkDetails.nickname,
+              getURLHost(switchedNetworkDetails.origin),
+            ])}
+            actionText={this.context.t('switchedNetworkToastDecline')}
+            onActionClick={() => setSwitchedNetworkNeverShowMessage()}
+            onClose={() => clearSwitchedNetworkDetails()}
+          />
+        ) : null}
+      </ToastContainer>
+    );
   }
 
   updateNewPrivacyPolicyToastDate() {
@@ -719,11 +781,15 @@ export default class Routes extends Component {
     return toastWasShownLessThanADayAgo;
   }
 
+  getShowAutoNetworkSwitchTest() {
+    return (
+      this.props.switchedNetworkDetails &&
+      !this.props.neverShowSwitchedNetworkMessage
+    );
+  }
+
   render() {
     const {
-      account,
-      activeTabOrigin,
-      showConnectAccountToast,
       isLoading,
       isUnlocked,
       alertMessage,
@@ -753,10 +819,8 @@ export default class Routes extends Component {
       hideIpfsModal,
       hideImportTokensModal,
       hideDeprecatedNetworkModal,
-      addPermittedAccount,
       switchedNetworkDetails,
       clearSwitchedNetworkDetails,
-      setSwitchedNetworkNeverShowMessage,
       neverShowSwitchedNetworkMessage,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       isShowKeyringSnapRemovalResultModal,
@@ -806,8 +870,7 @@ export default class Routes extends Component {
       );
     ///: END:ONLY_INCLUDE_IF
 
-    const showAutoNetworkSwitchToast =
-      switchedNetworkDetails && !neverShowSwitchedNetworkMessage;
+    const showAutoNetworkSwitchToast = this.getShowAutoNetworkSwitchTest();
 
     return (
       <div
@@ -875,63 +938,7 @@ export default class Routes extends Component {
           {this.renderRoutes()}
         </Box>
         {isUnlocked ? <Alerts history={this.props.history} /> : null}
-        <ToastContainer>
-          {showConnectAccountToast &&
-          this.onHomeScreen() &&
-          !this.state.hideConnectAccountToast ? (
-            <Toast
-              key="connect-account-toast"
-              startAdornment={
-                <AvatarAccount
-                  address={account.address}
-                  size={AvatarAccountSize.Md}
-                  borderColor={BorderColor.transparent}
-                />
-              }
-              text={this.context.t('accountIsntConnectedToastText', [
-                account?.metadata?.name,
-                getURLHost(activeTabOrigin),
-              ])}
-              actionText={this.context.t('connectAccount')}
-              onActionClick={() => {
-                // Connect this account
-                addPermittedAccount(activeTabOrigin, account.address);
-                // Use setTimeout to prevent React re-render from
-                // hiding the tooltip
-                setTimeout(() => {
-                  // Trigger a mouseenter on the header's connection icon
-                  // to display the informative connection tooltip
-                  document
-                    .querySelector(
-                      '[data-testid="connection-menu"] [data-tooltipped]',
-                    )
-                    ?.dispatchEvent(new CustomEvent('mouseenter', {}));
-                }, 250 * MILLISECOND);
-              }}
-              onClose={() => this.setState({ hideConnectAccountToast: true })}
-            />
-          ) : null}
-          {this.renderToasts()}
-          {showAutoNetworkSwitchToast ? (
-            <Toast
-              key="switched-network-toast"
-              startAdornment={
-                <AvatarNetwork
-                  size={AvatarAccountSize.Md}
-                  borderColor={BorderColor.transparent}
-                  src={switchedNetworkDetails?.imageUrl}
-                />
-              }
-              text={this.context.t('switchedNetworkToastMessage', [
-                switchedNetworkDetails.nickname,
-                getURLHost(switchedNetworkDetails.origin),
-              ])}
-              actionText={this.context.t('switchedNetworkToastDecline')}
-              onActionClick={() => setSwitchedNetworkNeverShowMessage()}
-              onClose={() => clearSwitchedNetworkDetails()}
-            />
-          ) : null}
-        </ToastContainer>
+        {this.renderToasts()}
       </div>
     );
   }
