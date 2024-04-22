@@ -1040,7 +1040,6 @@ jobs:
 
   test-api-specs:
     executor: node-browsers-medium-plus
-    parallelism: 1
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
@@ -1059,6 +1058,11 @@ jobs:
       - store_artifacts:
           path: html-report
           destination: html-report
+      - run:
+          name: Comment on PR
+          command: |
+            gh pr comment "${PR_NUMBER}" --body 'View API Spec Test Report [here](https://output.circle-artifacts.com/output/job/<< pipeline.id >>/artifacts/0/html-report/index.html)
+          no_output_timeout: 5m
 
   test-e2e-chrome:
     executor: node-browsers-medium-plus
