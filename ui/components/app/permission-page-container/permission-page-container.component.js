@@ -131,7 +131,6 @@ export default class PermissionPageContainer extends Component {
       selectedAccounts,
       selectedNetworkConfiguration,
     } = this.props;
-    debugger;
 
     const request = {
       ..._request,
@@ -142,7 +141,6 @@ export default class PermissionPageContainer extends Component {
       approvedNetworkConfiguration: selectedNetworkConfiguration,
     };
 
-    debugger;
     if (Object.keys(request.permissions).length > 0) {
       approvePermissionsRequest(request);
     } else {

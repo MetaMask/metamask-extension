@@ -29,6 +29,7 @@ const switchEthereumChain = {
     getProviderConfig: true,
     hasPermissions: true,
     hasPermission: true,
+    getPermission: true,
     requestSwitchNetworkPermission: true
   },
 };
@@ -69,6 +70,7 @@ async function switchEthereumChainHandler(
     getProviderConfig,
     hasPermissions,
     hasPermission, // singular form checks the specific permission..
+    getPermission,
     requestSwitchNetworkPermission
   },
 ) {
@@ -84,20 +86,9 @@ async function switchEthereumChainHandler(
 
   const { origin } = req;
 
+  // setup chainId
   const { chainId } = req.params[0];
-
-  const otherKeys = Object.keys(omit(req.params[0], ['chainId']));
-
-  if (otherKeys.length > 0) {
-    return end(
-      ethErrors.rpc.invalidParams({
-        message: `Received unexpected keys on object parameter. Unsupported keys:\n${otherKeys}`,
-      }),
-    );
-  }
-
   const _chainId = typeof chainId === 'string' && chainId.toLowerCase();
-
   if (!isPrefixedFormattedHexString(_chainId)) {
     return end(
       ethErrors.rpc.invalidParams({
@@ -105,7 +96,6 @@ async function switchEthereumChainHandler(
       }),
     );
   }
-
   if (!isSafeChainId(parseInt(_chainId, 16))) {
     return end(
       ethErrors.rpc.invalidParams({
@@ -114,71 +104,35 @@ async function switchEthereumChainHandler(
     );
   }
 
-  if (hasPermission('wallet_switchEthereumChain') === false) {
-    debugger;
+  // setup otherkeys
+  const otherKeys = Object.keys(omit(req.params[0], ['chainId']));
+  if (otherKeys.length > 0) {
+    return end(
+      ethErrors.rpc.invalidParams({
+        message: `Received unexpected keys on object parameter. Unsupported keys:\n${otherKeys}`,
+      }),
+    );
+  }
+
+  let permission = getPermission('wallet_switchEthereumChain');
+  if (!permission) {
     try {
-      await requestSwitchNetworkPermission(chainId);
+      [permission] = await requestSwitchNetworkPermission(chainId);
     } catch (err) {
       res.error = err;
       return end();
     }
-    debugger;
   }
 
-
-  // const requestData = {
-  //   toNetworkConfiguration: findExistingNetwork(
-  //     _chainId,
-  //     findNetworkConfigurationBy,
-  //   ),
-  // };
-
-  // requestData.fromNetworkConfiguration = getProviderConfig();
-
-  // if (requestData.toNetworkConfiguration) {
-  //   const currentChainId = getCurrentChainId();
-
-  //   // we might want to change all this so that it displays the network you are switching from -> to (in a way that is domain - specific)
-
-  //   const networkClientId = findNetworkClientIdByChainId(_chainId);
-
-  //   if (currentChainId === _chainId) {
-  //     if (hasPermissions(req.origin)) {
-  //       setNetworkClientIdForDomain(req.origin, networkClientId);
-  //     }
-  //     res.result = null;
-  //     return end();
-  //   }
-
-  //   try {
-  //     const approvedRequestData = await requestUserApproval({
-  //       origin,
-  //       type: ApprovalType.SwitchEthereumChain,
-  //       requestData,
-  //     });
-  //     if (
-  //       Object.values(BUILT_IN_INFURA_NETWORKS)
-  //         .map(({ chainId: id }) => id)
-  //         .includes(_chainId)
-  //     ) {
-  //       await setProviderType(approvedRequestData.type);
-  //     } else {
-  //       await setActiveNetwork(approvedRequestData.id);
-  //     }
-  //     if (hasPermissions(req.origin)) {
-  //       setNetworkClientIdForDomain(req.origin, networkClientId);
-  //     }
-  //     res.result = null;
-  //   } catch (error) {
-  //     return end(error);
-  //   }
-  //   return end();
-  // }
-
-  // return end(
-  //   ethErrors.provider.custom({
-  //     code: 4902, // To-be-standardized "unrecognized chain ID" error
-  //     message: `Unrecognized chain ID "${chainId}". Try adding the chain using ${MESSAGE_TYPE.ADD_ETHEREUM_CHAIN} first.`,
-  //   }),
-  // );
+  const networkClientId = permission.wallet_switchEthereumChain.caveats[0].value.id;
+  try {
+    await setActiveNetwork(networkClientId);
+    if (hasPermissions(req.origin)) {
+      setNetworkClientIdForDomain(req.origin, networkClientId);
+    }
+    res.result = null;
+  } catch (error) {
+    return end(error);
+  }
+  return end();
 }

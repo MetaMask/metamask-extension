@@ -213,7 +213,6 @@ export const getPermissionSpecifications = ({
           );
         }
 
-        debugger;
         // This value will be further validated as part of the caveat.
         if (!requestData.approvedNetworkConfiguration) {
           throw new Error(
@@ -224,8 +223,6 @@ export const getPermissionSpecifications = ({
         const caveat = CaveatFactories[CaveatTypes.restrictNetworkSwitching](
           requestData.approvedNetworkConfiguration,
         );
-
-        debugger;
 
         return constructPermission({
           ...permissionOptions,
@@ -305,23 +302,24 @@ function validateCaveatAccounts(accounts, getInternalAccounts) {
  * @param {() => string} findNetworkClientIdByChainId - method to throw error if network is unknown
  *
  */
-function validateCaveatNetworks(chainId, findNetworkClientIdByChainId) {
-  console.log("validateCaveatNetworks called: ", chainId, findNetworkClientId);
-  if (typeof chainId !== 'string') { // lets put better validation here tho
+function validateCaveatNetworks(networkConfiguration, findNetworkClientIdByChainId) {
+  const chainIdForCaveat = networkConfiguration.chainId;
+  console.log("validateCaveatNetworks called: ", chainIdForCaveat, findNetworkClientIdByChainId);
+  if (typeof chainIdForCaveat !== 'string') { // lets put better validation here tho
     throw new Error(
-      `${PermissionNames.eth_accounts} error: Expected non-empty array of Ethereum addresses.`,
+      `${PermissionNames.wallet_switchEthereumChain} error: Expected chainId to be a string.`,
     );
   }
 
-  const chainIdForCaveat = caveat.value;
   // I think we want to check that this chainId exists in the set of possible chainIds
   // in other words, we need to check if theres a networkConfiguration for this chainId
   // We could use a similar pattern to getInternalAccounts, where we pass another method in that will get the required info from the network controller.
   try {
     findNetworkClientIdByChainId(chainIdForCaveat);
   } catch (e) {
+    console.error(e);
     throw new Error(
-      `${PermissionNames.wallet_switchEthereumChain} error: Received unrecognized chainId: "${chainId}". Please try adding the network first via wallet_addEthereumChain.`,
+      `${PermissionNames.wallet_switchEthereumChain} error: Received unrecognized chainId: "${chainIdForCaveat}". Please try adding the network first via wallet_addEthereumChain.`,
     );
   }
 }

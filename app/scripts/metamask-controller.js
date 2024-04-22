@@ -1141,7 +1141,9 @@ export default class MetamaskController extends EventEmitter {
         getInternalAccounts: this.accountsController.listAccounts.bind(
           this.accountsController,
         ),
-        findNetworkClientIdByChainId: (...args) => this.controllerMessenger.call('findNetworkClientIdByChainId', ...args)
+        findNetworkClientIdByChainId: this.networkController.findNetworkClientIdByChainId.bind(
+          this.networkController
+        )
       }),
       permissionSpecifications: {
         ...getPermissionSpecifications({
@@ -5006,6 +5008,10 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController,
           origin,
         ),
+        getPermission: this.permissionController.getPermissions.bind(
+          this.permissionController,
+          origin,
+        ),
         requestAccountsPermission:
           this.permissionController.requestPermissions.bind(
             this.permissionController,
@@ -5812,7 +5818,6 @@ export default class MetamaskController extends EventEmitter {
   };
 
   acceptPermissionsRequest = (request) => {
-    debugger;
     try {
       this.permissionController.acceptPermissionsRequest(request);
     } catch (exp) {

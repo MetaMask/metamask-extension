@@ -44,7 +44,9 @@ const ChooseNetwork = ({
         />
         {networkConfigurations.map((networkConfiguration) => (
           <div onClick={() => handleNetworkClick(networkConfiguration)}>
-            ChainId: {networkConfiguration.chainId}
+            {selectedNetwork && networkConfiguration.id === selectedNetwork.id ? "THIS IS A CHECK BOX OKAY?" : "NOT SELECTED" }
+            <div>Name: {networkConfiguration.name}</div>
+            <div>Chain Id: {networkConfiguration.chainId}</div>
           </div>
         ))}
       </div>
