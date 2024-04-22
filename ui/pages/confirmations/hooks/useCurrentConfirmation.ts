@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { ApprovalRequest } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import { Json } from '@metamask/utils';
+import { ConfirmationRedesignTypes } from '../utils/confirm';
 
 import {
   getRedesignedConfirmationsEnabled,
@@ -67,10 +68,7 @@ const useCurrentConfirmation = () => {
         return;
       }
 
-      if (
-        pendingConfirmation.type !== ApprovalType.PersonalSign &&
-        pendingConfirmation.type !== ApprovalType.EthSignTypedData
-      ) {
+      if (!ConfirmationRedesignTypes.includes(pendingConfirmation.type)) {
         setCurrentConfirmation(undefined);
         return;
       }
