@@ -1,0 +1,6 @@
+ - permission should save chain id only
+ - permission request should be single step and pick the first networkclick out of the bunch
+ - permission structure should be a set of chain ids not just 1
+ - add ethereum chain should set permission as well
+ - manual clearing of permissions should clear switch permission
+ - Make a ticket to investiage the idea of overloading addEthereumChain to save the network client as a dapp selection
