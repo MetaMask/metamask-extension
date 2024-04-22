@@ -17,6 +17,7 @@ import {
 
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { SIGNING_METHODS } from '../../../shared/constants/transaction';
+import { ConfirmationRedesignTypes } from '../../../ui/pages/confirmations/utils/confirm';
 
 import { getBlockaidMetricsProps } from '../../../ui/helpers/utils/metrics';
 ///: END:ONLY_INCLUDE_IF
@@ -129,6 +130,7 @@ let globalRateLimitCount = 0;
  *  that should be tracked for methods rate limited by random sample.
  * @param {Function} opts.getAccountType
  * @param {Function} opts.getDeviceModel
+ * @param {PreferencesController} opts.preferencesController
  * @param {RestrictedControllerMessenger} opts.snapAndHardwareMessenger
  * @param {AppStateController} opts.appStateController
  * @param {number} [opts.globalRateLimitTimeout] - time, in milliseconds, of the sliding
@@ -148,6 +150,7 @@ export default function createRPCMethodTrackingMiddleware({
   globalRateLimitMaxAmount = 10, // max of events in the globalRateLimitTimeout window. pass 0 for no global rate limit
   getAccountType,
   getDeviceModel,
+  preferencesController,
   snapAndHardwareMessenger,
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   appStateController,
@@ -251,6 +254,18 @@ export default function createRPCMethodTrackingMiddleware({
             req.securityAlertResponse.description;
         }
         ///: END:ONLY_INCLUDE_IF
+
+        const isRedesignedConfirmation =
+          process.env.ENABLE_CONFIRMATION_REDESIGN &&
+          preferencesController.store.getState().preferences
+            .redesignedConfirmations &&
+          ConfirmationRedesignTypes.includes(method);
+
+        if (isRedesignedConfirmation) {
+          eventProperties.ui_customizations = (
+            eventProperties.ui_customizations || []
+          ).concat(MetaMetricsEventUiCustomization.RedesignedConfirmation);
+        }
 
         const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
           getAccountType,
