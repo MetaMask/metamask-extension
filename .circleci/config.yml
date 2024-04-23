@@ -1060,8 +1060,8 @@ jobs:
           name: Comment on PR
           command: |
             sudo apt install gh -y
-            gh pr comment "${CIRCLE_PR_NUMBER}" --body "View API Spec Test Report [here](https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/${CIRCLE_NODE_INDEX}/html-report/index.html)"
-          when: always
+            gh pr comment "${CIRCLE_PR_NUMBER}" --body ":x: API Spec Test Failed.\n:blue_book: View the html report [here](https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/${CIRCLE_NODE_INDEX}/html-report/index.html)."
+          when: on_fail
       - store_artifacts:
           path: html-report
           destination: html-report
