@@ -24,6 +24,7 @@ describe('NFT detection', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
         await driver.clickElement('[data-testid="home__nfts-tab"]');
+        await driver.delay(1000);
         const collection = await driver.findElement(
           '[data-testid="collection-expander-button"]',
         );
