@@ -529,7 +529,9 @@ class Driver {
     return await this.driver.getAllWindowHandles();
   }
 
-  async waitUntilXWindowHandles(x, delayStep = 1000, timeout = this.timeout) {
+  async waitUntilXWindowHandles(_x, delayStep = 1000, timeout = this.timeout) {
+    console.log('process.ENV.ENABLE_MV3', process.ENV.ENABLE_MV3);
+    const x = process.ENV.ENABLE_MV3 ? _x + 1 : _x;
     let timeElapsed = 0;
     let windowHandles = [];
     while (timeElapsed <= timeout) {
@@ -551,11 +553,14 @@ class Driver {
 
   async switchToWindowWithTitle(
     title,
-    initialWindowHandles,
+    _initialWindowHandles,
     delayStep = 1000,
     timeout = this.timeout,
     { retries = 8, retryDelay = 2500 } = {},
   ) {
+    const initialWindowHandles = process.ENV.ENABLE_MV3
+      ? _initialWindowHandles + 1
+      : _initialWindowHandles;
     let windowHandles =
       initialWindowHandles || (await this.driver.getAllWindowHandles());
     let timeElapsed = 0;
@@ -588,11 +593,14 @@ class Driver {
 
   async switchToWindowWithUrl(
     url,
-    initialWindowHandles,
+    _initialWindowHandles,
     delayStep = 1000,
     timeout = this.timeout,
     { retries = 8, retryDelay = 2500 } = {},
   ) {
+    const initialWindowHandles = process.ENV.ENABLE_MV3
+      ? _initialWindowHandles + 1
+      : _initialWindowHandles;
     let windowHandles =
       initialWindowHandles || (await this.driver.getAllWindowHandles());
     let timeElapsed = 0;
