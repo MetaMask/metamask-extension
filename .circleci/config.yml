@@ -1050,12 +1050,12 @@ jobs:
       - run:
           name: Move test zips to builds
           command: mv ./builds-test ./builds
+      - gh/install
       - run:
           name: test:api-specs
           command: |
             timeout 20m yarn test:api-specs --retries 2
           no_output_timeout: 5m
-      - gh/install
       - run:
           name: Comment on PR
           command: |
