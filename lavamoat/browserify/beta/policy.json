@@ -2758,11 +2758,6 @@
         "browserify>process": true
       }
     },
-    "@storybook/addon-knobs>qs": {
-      "packages": {
-        "string.prototype.matchall>side-channel": true
-      }
-    },
     "@trezor/connect-web": {
       "globals": {
         "URLSearchParams": true,
@@ -3165,8 +3160,13 @@
     },
     "browserify>url": {
       "packages": {
-        "@storybook/addon-knobs>qs": true,
-        "browserify>punycode": true
+        "browserify>punycode": true,
+        "browserify>url>qs": true
+      }
+    },
+    "browserify>url>qs": {
+      "packages": {
+        "string.prototype.matchall>side-channel": true
       }
     },
     "browserify>util": {

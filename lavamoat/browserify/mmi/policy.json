@@ -2585,7 +2585,6 @@
         "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-middleware-stream": true,
         "@metamask/snaps-controllers>@xstate/fsm": true,
-        "@metamask/snaps-controllers>concat-stream": true,
         "@metamask/snaps-controllers>get-npm-tarball-url": true,
         "@metamask/snaps-controllers>nanoid": true,
         "@metamask/snaps-controllers>readable-stream": true,
@@ -2596,7 +2595,8 @@
         "@metamask/snaps-utils": true,
         "@metamask/snaps-utils>@metamask/snaps-registry": true,
         "@metamask/utils": true,
-        "browserify>browserify-zlib": true
+        "browserify>browserify-zlib": true,
+        "lavamoat-browserify>concat-stream": true
       }
     },
     "@metamask/snaps-controllers-flask>nanoid": {
@@ -2627,15 +2627,6 @@
       "packages": {
         "@metamask/safe-event-emitter": true,
         "@metamask/snaps-controllers>readable-stream": true
-      }
-    },
-    "@metamask/snaps-controllers>concat-stream": {
-      "packages": {
-        "@metamask/snaps-controllers>readable-stream": true,
-        "browserify>buffer": true,
-        "browserify>concat-stream>typedarray": true,
-        "pumpify>inherits": true,
-        "terser>source-map-support>buffer-from": true
       }
     },
     "@metamask/snaps-controllers>nanoid": {
@@ -3177,16 +3168,6 @@
         "browserify>process": true
       }
     },
-    "@storybook/addon-docs>remark-external-links>mdast-util-definitions": {
-      "packages": {
-        "react-markdown>unist-util-visit": true
-      }
-    },
-    "@storybook/addon-knobs>qs": {
-      "packages": {
-        "string.prototype.matchall>side-channel": true
-      }
-    },
     "@trezor/connect-web": {
       "globals": {
         "URLSearchParams": true,
@@ -3594,8 +3575,13 @@
     },
     "browserify>url": {
       "packages": {
-        "@storybook/addon-knobs>qs": true,
-        "browserify>punycode": true
+        "browserify>punycode": true,
+        "browserify>url>qs": true
+      }
+    },
+    "browserify>url>qs": {
+      "packages": {
+        "string.prototype.matchall>side-channel": true
       }
     },
     "browserify>util": {
@@ -4272,6 +4258,26 @@
         "string.prototype.matchall>has-symbols": true
       }
     },
+    "lavamoat-browserify>concat-stream": {
+      "packages": {
+        "browserify>buffer": true,
+        "browserify>concat-stream>typedarray": true,
+        "lavamoat-browserify>concat-stream>readable-stream": true,
+        "pumpify>inherits": true,
+        "terser>source-map-support>buffer-from": true
+      }
+    },
+    "lavamoat-browserify>concat-stream>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "browserify>process": true,
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true,
+        "webpack>events": true
+      }
+    },
     "localforage": {
       "globals": {
         "Blob": true,
@@ -4681,11 +4687,16 @@
         "console.warn": true
       },
       "packages": {
-        "@storybook/addon-docs>remark-external-links>mdast-util-definitions": true,
+        "react-markdown>remark-rehype>mdast-util-to-hast>mdast-util-definitions": true,
         "react-markdown>remark-rehype>mdast-util-to-hast>mdurl": true,
         "react-markdown>remark-rehype>mdast-util-to-hast>unist-builder": true,
         "react-markdown>remark-rehype>mdast-util-to-hast>unist-util-generated": true,
         "react-markdown>remark-rehype>mdast-util-to-hast>unist-util-position": true,
+        "react-markdown>unist-util-visit": true
+      }
+    },
+    "react-markdown>remark-rehype>mdast-util-to-hast>mdast-util-definitions": {
+      "packages": {
         "react-markdown>unist-util-visit": true
       }
     },
