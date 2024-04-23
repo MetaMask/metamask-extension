@@ -269,7 +269,7 @@
     "@metamask-institutional/transaction-update": "^0.1.38",
     "@metamask/abi-utils": "^2.0.2",
     "@metamask/accounts-controller": "^11.0.0",
-    "@metamask/address-book-controller": "^3.1.7",
+    "@metamask/address-book-controller": "^4.0.1",
     "@metamask/announcement-controller": "^6.1.0",
     "@metamask/approval-controller": "^6.0.0",
     "@metamask/assets-controllers": "patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A26.0.0%23~/.yarn/patches/@metamask-assets-controllers-npm-26.0.0-17c0e9432c.patch%3A%3Aversion=26.0.0&hash=cf1d54#~/.yarn/patches/@metamask-assets-controllers-patch-0f46262fea.patch",
