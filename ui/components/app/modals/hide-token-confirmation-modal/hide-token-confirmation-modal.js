@@ -5,7 +5,10 @@ import * as actions from '../../../../store/actions';
 import Identicon from '../../../ui/identicon';
 import Button from '../../../ui/button';
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
-import { MetaMetricsEventCategory, MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
 import { getCurrentChainId } from '../../../../selectors';
 
 function mapStateToProps(state) {
