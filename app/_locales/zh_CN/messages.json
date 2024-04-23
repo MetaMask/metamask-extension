@@ -3485,10 +3485,6 @@
   "snapDetailWebsite": {
     "message": "网站"
   },
-  "snapInstallRequest": {
-    "message": "安装$1，将向其授予以下权限。只有在您信任$1的情况下才能继续。",
-    "description": "$1 is the snap name."
-  },
   "snapInstallSuccess": {
     "message": "安装完成"
   },
