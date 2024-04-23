@@ -140,8 +140,6 @@ export function useSimulationMetrics({
     updateTransactionEventFragment,
     transactionId,
     JSON.stringify(params),
-    loading,
-    setLoadingComplete,
   ]);
 }
 
