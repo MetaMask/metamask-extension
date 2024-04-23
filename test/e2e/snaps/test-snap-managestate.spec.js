@@ -35,7 +35,7 @@ describe('Test Snap manageState', function () {
 
         // switch to metamask extension and click connect
         const windowHandles = await driver.waitUntilXWindowHandles(
-          process.env.ENABLE_MV3 ? 3 : 2,
+          2,
           1000,
           10000,
         );

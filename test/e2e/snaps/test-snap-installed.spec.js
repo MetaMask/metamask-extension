@@ -68,7 +68,7 @@ describe('Test Snap Installed', function () {
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
-          process.env.ENABLE_MV3 ? 4 : 3,
+          3,
           1000,
           10000,
         );
@@ -123,11 +123,7 @@ describe('Test Snap Installed', function () {
         await driver.clickElement('#connecterrors');
 
         // switch to metamask extension and click connect
-        windowHandles = await driver.waitUntilXWindowHandles(
-          process.env.ENABLE_MV3 ? 4 : 3,
-          1000,
-          10000,
-        );
+        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.Dialog,
           windowHandles,

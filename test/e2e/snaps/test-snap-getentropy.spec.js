@@ -34,7 +34,7 @@ describe('Test Snap getEntropy', function () {
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
-          process.env.ENABLE_MV3 ? 3 : 2,
+          2,
           1000,
           10000,
         );
@@ -80,11 +80,7 @@ describe('Test Snap getEntropy', function () {
         await driver.clickElement('#signEntropyMessage');
 
         // Switch to approve signature message window and approve
-        windowHandles = await driver.waitUntilXWindowHandles(
-          process.env.ENABLE_MV3 ? 3 : 2,
-          1000,
-          10000,
-        );
+        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.Dialog,
           windowHandles,
@@ -95,11 +91,7 @@ describe('Test Snap getEntropy', function () {
         });
 
         // switch back to test-snaps page
-        windowHandles = await driver.waitUntilXWindowHandles(
-          process.env.ENABLE_MV3 ? 2 : 1,
-          1000,
-          10000,
-        );
+        windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // check the results of the message signature using waitForSelector

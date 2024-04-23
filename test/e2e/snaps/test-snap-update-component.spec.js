@@ -42,10 +42,7 @@ describe('Test Snap update via snaps component', function () {
         await driver.clickElement('#connectUpdate');
 
         // switch to metamask extension and click connect
-        await switchToNotificationWindow(
-          driver,
-          process.env.ENABLE_MV3 ? 4 : 3,
-        );
+        await switchToNotificationWindow(driver, 3);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -80,7 +77,7 @@ describe('Test Snap update via snaps component', function () {
 
         // navigate to test snap page
         const windowHandles = await driver.waitUntilXWindowHandles(
-          process.env.ENABLE_MV3 ? 3 : 2,
+          2,
           1000,
           10000,
         );

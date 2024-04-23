@@ -881,8 +881,6 @@ async function unlockWallet(
     waitLoginSuccess: true,
   },
 ) {
-  console.log('process.env.ENABLE_MV3', process.env.ENABLE_MV3);
-
   if (options.navigate !== false) {
     await driver.navigate();
   }

@@ -38,7 +38,7 @@ describe('Test Snap TxInsights-v2', function () {
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
-          process.env.ENABLE_MV3 ? 4 : 3,
+          3,
           1000,
           10000,
         );
@@ -70,11 +70,7 @@ describe('Test Snap TxInsights-v2', function () {
         await driver.clickElement('#getAccounts');
 
         // switch back to MetaMask window and deal with dialogs
-        windowHandles = await driver.waitUntilXWindowHandles(
-          process.env.ENABLE_MV3 ? 4 : 3,
-          1000,
-          10000,
-        );
+        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.Dialog,
           windowHandles,
@@ -93,20 +89,12 @@ describe('Test Snap TxInsights-v2', function () {
         });
 
         // switch to test-snaps page and send tx
-        windowHandles = await driver.waitUntilXWindowHandles(
-          process.env.ENABLE_MV3 ? 3 : 2,
-          1000,
-          10000,
-        );
+        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
         await driver.clickElement('#sendInsights');
 
         // switch back to MetaMask window and switch to tx insights pane
-        windowHandles = await driver.waitUntilXWindowHandles(
-          process.env.ENABLE_MV3 ? 4 : 3,
-          1000,
-          10000,
-        );
+        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.Dialog,
           windowHandles,
@@ -161,11 +149,7 @@ describe('Test Snap TxInsights-v2', function () {
         });
 
         // switch back to MetaMask tab and switch to activity pane
-        windowHandles = await driver.waitUntilXWindowHandles(
-          process.env.ENABLE_MV3 ? 3 : 2,
-          1000,
-          10000,
-        );
+        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle('MetaMask', windowHandles);
         await driver.clickElement({
           tag: 'button',

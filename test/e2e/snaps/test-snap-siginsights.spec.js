@@ -37,7 +37,7 @@ describe('Test Snap Signature Insights', function () {
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
-          process.env.ENABLE_MV3 ? 4 : 3,
+          3,
           1000,
           10000,
         );
@@ -71,11 +71,7 @@ describe('Test Snap Signature Insights', function () {
         await openDapp(driver);
 
         // poll windowHandles and switch to test-dapp
-        windowHandles = await driver.waitUntilXWindowHandles(
-          process.env.ENABLE_MV3 ? 4 : 3,
-          1000,
-          10000,
-        );
+        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.TestDApp,
           windowHandles,
@@ -87,11 +83,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#connectButton');
 
         // switch back to MetaMask window and deal with dialogs
-        windowHandles = await driver.waitUntilXWindowHandles(
-          process.env.ENABLE_MV3 ? 5 : 4,
-          1000,
-          10000,
-        );
+        windowHandles = await driver.waitUntilXWindowHandles(4, 1000, 10000);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.Dialog,
           windowHandles,
@@ -107,11 +99,7 @@ describe('Test Snap Signature Insights', function () {
         });
 
         // switch to test-dapp page and send tx
-        windowHandles = await driver.waitUntilXWindowHandles(
-          process.env.ENABLE_MV3 ? 4 : 3,
-          1000,
-          10000,
-        );
+        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.TestDApp,
           windowHandles,
@@ -124,11 +112,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#personalSign');
 
         // switch back to MetaMask window and switch to tx insights pane
-        windowHandles = await driver.waitUntilXWindowHandles(
-          process.env.ENABLE_MV3 ? 5 : 4,
-          1000,
-          10000,
-        );
+        windowHandles = await driver.waitUntilXWindowHandles(4, 1000, 10000);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.Dialog,
           windowHandles,
@@ -175,11 +159,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#signTypedData');
 
         // switch back to MetaMask window and switch to tx insights pane
-        windowHandles = await driver.waitUntilXWindowHandles(
-          process.env.ENABLE_MV3 ? 5 : 4,
-          1000,
-          10000,
-        );
+        windowHandles = await driver.waitUntilXWindowHandles(4, 1000, 10000);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.Dialog,
           windowHandles,
@@ -226,11 +206,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#signTypedDataV3');
 
         // switch back to MetaMask window and switch to tx insights pane
-        windowHandles = await driver.waitUntilXWindowHandles(
-          process.env.ENABLE_MV3 ? 5 : 4,
-          1000,
-          10000,
-        );
+        windowHandles = await driver.waitUntilXWindowHandles(4, 1000, 10000);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.Dialog,
           windowHandles,
@@ -281,11 +257,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#signTypedDataV4');
 
         // switch back to MetaMask window and switch to tx insights pane
-        windowHandles = await driver.waitUntilXWindowHandles(
-          process.env.ENABLE_MV3 ? 5 : 4,
-          1000,
-          10000,
-        );
+        windowHandles = await driver.waitUntilXWindowHandles(4, 1000, 10000);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.Dialog,
           windowHandles,
@@ -390,11 +362,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#ethSign');
 
         // switch back to MetaMask window and switch to tx insights pane
-        windowHandles = await driver.waitUntilXWindowHandles(
-          process.env.ENABLE_MV3 ? 5 : 4,
-          1000,
-          10000,
-        );
+        windowHandles = await driver.waitUntilXWindowHandles(4, 1000, 10000);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.Dialog,
           windowHandles,

@@ -35,7 +35,7 @@ describe('Test Snap Management', function () {
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
-          process.env.ENABLE_MV3 ? 4 : 3,
+          3,
           1000,
           10000,
         );
@@ -92,11 +92,7 @@ describe('Test Snap Management', function () {
         await driver.clickElement('.toggle-button > div');
 
         // switch back to test-snaps window
-        windowHandles = await driver.waitUntilXWindowHandles(
-          process.env.ENABLE_MV3 ? 3 : 2,
-          1000,
-          10000,
-        );
+        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // wait then try the notification test

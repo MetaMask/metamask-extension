@@ -20,8 +20,7 @@ describe('Create Snap Account', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
-        console.log('process.env.ENABLE_MV3', process.env.ENABLE_MV3)
-        
+
         // navigate to test Snaps page and connect
         await driver.openNewPage(TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL);
         await driver.clickElement('#connectButton');

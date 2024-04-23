@@ -35,7 +35,7 @@ describe('Test Snap Notification', function () {
 
         // switch to metamask extension and click connect
         const windowHandles = await driver.waitUntilXWindowHandles(
-          process.env.ENABLE_MV3 ? 4 : 3,
+          3,
           1000,
           10000,
         );
