@@ -48,23 +48,26 @@ describe('Test Snap update via snaps component', function () {
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Install' });
+        await driver.waitForSelector({ text: 'Confirm' });
 
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
 
         // wait for permissions popover, click checkboxes and confirm
         await driver.waitForSelector('.mm-checkbox__input');
         await driver.clickElement('.mm-checkbox__input');
-        await driver.clickElement({
-          text: 'Confirm',
-          tag: 'button',
-        });
+        await driver.waitForSelector(
+          '[data-testid="snap-install-warning-modal-confirm"]',
+        );
+        await driver.clickElement(
+          '[data-testid="snap-install-warning-modal-confirm"]',
+        );
 
+        // deal with OK button
         await driver.waitForSelector({ text: 'OK' });
 
         await driver.clickElement({
@@ -127,7 +130,7 @@ describe('Test Snap update via snaps component', function () {
         await driver.clickElementSafe('[data-testid="snap-update-scroll"]');
 
         await driver.clickElement({
-          text: 'Update',
+          text: 'Confirm',
           tag: 'button',
         });
 

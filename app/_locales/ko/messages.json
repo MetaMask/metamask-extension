@@ -3485,10 +3485,6 @@
   "snapDetailWebsite": {
     "message": "웹사이트"
   },
-  "snapInstallRequest": {
-    "message": "$1 설치는 다음과 같은 권한을 허용합니다. $1 스냅을 신뢰하는 경우에만 계속 진행하세요.",
-    "description": "$1 is the snap name."
-  },
   "snapInstallSuccess": {
     "message": "설치 완료"
   },
