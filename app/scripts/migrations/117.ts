@@ -11,7 +11,7 @@ type VersionedData = {
 export const version = 117;
 
 /**
- * As we have removed Product tour from Home Page so this migration is to remove showProductTour from AppState
+ * Add a default value for importTime in the InternalAccount
  *
  * @param originalVersionedData
  */
