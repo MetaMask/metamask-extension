@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-import { useArgs } from '@storybook/client-api';
 
 import { BUTTON_VARIANT, Button } from '../../../components/component-library';
 import { SLIPPAGE_HIGH_ERROR } from '../../../../shared/constants/swaps';
@@ -17,8 +16,8 @@ export default {
 } as Meta<typeof SlippageNotificationModal>;
 
 export const DefaultStory: StoryFn<typeof SlippageNotificationModal> = () => {
-  const [{ isShowingModal }, updateArgs] = useArgs();
-  const toggleModal = () => updateArgs({ isShowingModal: !isShowingModal });
+  const [isShowingModal, setIsShowingModal] = useState(false);
+  const toggleModal = () => setIsShowingModal(!isShowingModal);
 
   return (
     <>

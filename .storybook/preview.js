@@ -1,8 +1,3 @@
-/*
-  * The addParameters and addDecorator APIs to add global decorators and parameters, exported by the various frameworks (e.g. @storybook/react) and @storybook/client were deprecated in 6.0 and have been removed in 7.0.
-
-Instead, use export const parameters = {}; and export const decorators = []; in your .storybook/preview.js. Addon authors similarly should use such an export in a preview entry file (see Preview entries).
-  * */
 import React, { useEffect } from 'react';
 import { action } from '@storybook/addon-actions';
 import { Provider } from 'react-redux';
@@ -18,7 +13,6 @@ import { createBrowserHistory } from 'history';
 import { setBackgroundConnection } from '../ui/store/background-connection';
 import { metamaskStorybookTheme } from './metamask-storybook-theme';
 import { DocsContainer } from '@storybook/addon-docs';
-import { useDarkMode } from 'storybook-dark-mode';
 import { themes } from '@storybook/theming';
 
 export const parameters = {
@@ -28,25 +22,6 @@ export const parameters = {
       { name: 'default', value: 'var(--color-background-default)' },
       { name: 'alternative', value: 'var(--color-background-alternative)' },
     ],
-  },
-  docs: {
-    container: (context) => {
-      const isDark = useDarkMode();
-
-      const props = {
-        ...context,
-        theme: isDark
-          ? { ...themes.dark, ...metamaskStorybookTheme }
-          : { ...themes.light, ...metamaskStorybookTheme },
-        'data-theme': isDark ? 'dark' : 'light',
-      };
-
-      return (
-        <div data-theme={isDark ? 'dark' : 'light'}>
-          <DocsContainer {...props} />
-        </div>
-      );
-    },
   },
   options: {
     storySort: {

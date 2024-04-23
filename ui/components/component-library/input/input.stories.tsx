@@ -1,6 +1,5 @@
 import React, { useRef } from 'react';
 import { Meta } from '@storybook/react';
-import { useArgs } from '@storybook/client-api';
 
 import {
   Display,
@@ -129,11 +128,7 @@ export default {
 } as Meta<typeof Input>;
 
 const Template = (args) => {
-  const [{ value }, updateArgs] = useArgs();
-  const handleOnChange = (e) => {
-    updateArgs({ value: e.target.value });
-  };
-  return <Input {...args} value={value} onChange={handleOnChange} />;
+  return <Input {...args} />;
 };
 
 export const DefaultStory = Template.bind({});
@@ -157,17 +152,14 @@ Type.args = {
 };
 
 export const Ref = (args) => {
-  const [{ value }, updateArgs] = useArgs();
   const inputRef = useRef<HTMLInputElement>(null);
   const handleOnClick = () => {
     inputRef.current?.focus();
   };
-  const handleOnChange = (e) => {
-    updateArgs({ value: e.target.value });
-  };
+
   return (
     <Box display={Display.Flex}>
-      <Input {...args} ref={inputRef} value={value} onChange={handleOnChange} />
+      <Input {...args} ref={inputRef} />
       <Button
         variant={ButtonVariant.Primary}
         marginLeft={1}
@@ -215,76 +207,22 @@ DisableStateStyles.args = {
 };
 
 export const TextVariantStory = (args) => {
-  const [{ value }, updateArgs] = useArgs();
-  const handleOnChange = (e) => {
-    updateArgs({ value: e.target.value });
-  };
   return (
     <Box
       display={Display.InlineFlex}
       flexDirection={FlexDirection.Column}
       gap={4}
     >
-      <Input
-        {...args}
-        value={value}
-        onChange={handleOnChange}
-        textVariant={TextVariant.displayMd}
-      />
-      <Input
-        {...args}
-        value={value}
-        onChange={handleOnChange}
-        textVariant={TextVariant.headingLg}
-      />
-      <Input
-        {...args}
-        value={value}
-        onChange={handleOnChange}
-        textVariant={TextVariant.headingMd}
-      />
-      <Input
-        {...args}
-        value={value}
-        onChange={handleOnChange}
-        textVariant={TextVariant.headingSm}
-      />
-      <Input
-        {...args}
-        value={value}
-        onChange={handleOnChange}
-        textVariant={TextVariant.bodyLgMedium}
-      />
-      <Input
-        {...args}
-        value={value}
-        onChange={handleOnChange}
-        textVariant={TextVariant.bodyMdBold}
-      />
-      <Input
-        {...args}
-        value={value}
-        onChange={handleOnChange}
-        textVariant={TextVariant.bodyMd}
-      />
-      <Input
-        {...args}
-        value={value}
-        onChange={handleOnChange}
-        textVariant={TextVariant.bodySm}
-      />
-      <Input
-        {...args}
-        value={value}
-        onChange={handleOnChange}
-        textVariant={TextVariant.bodySmBold}
-      />
-      <Input
-        {...args}
-        value={value}
-        onChange={handleOnChange}
-        textVariant={TextVariant.bodyXs}
-      />
+      <Input {...args} textVariant={TextVariant.displayMd} />
+      <Input {...args} textVariant={TextVariant.headingLg} />
+      <Input {...args} textVariant={TextVariant.headingMd} />
+      <Input {...args} textVariant={TextVariant.headingSm} />
+      <Input {...args} textVariant={TextVariant.bodyLgMedium} />
+      <Input {...args} textVariant={TextVariant.bodyMdBold} />
+      <Input {...args} textVariant={TextVariant.bodyMd} />
+      <Input {...args} textVariant={TextVariant.bodySm} />
+      <Input {...args} textVariant={TextVariant.bodySmBold} />
+      <Input {...args} textVariant={TextVariant.bodyXs} />
     </Box>
   );
 };

@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react';
-import { text } from '@storybook/addon-knobs';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { updateMetamaskState } from '../../../store/actions';
@@ -19,7 +18,7 @@ export default {
 const txId = 7900715443136469;
 
 const PageSet = ({ children }) => {
-  const origin = text('Origin', 'https://metamask.github.io');
+  const origin = 'https://metamask.github.io';
   const subjectIconUrl = text(
     'Icon URL',
     'https://metamask.github.io/test-dapp/metamask-fox.svg',

@@ -1,5 +1,4 @@
 import React from 'react';
-import { useArgs } from '@storybook/client-api';
 import README from './README.mdx';
 import ToggleButton from './toggle-button.component';
 
@@ -22,11 +21,7 @@ export default {
 };
 
 export const DefaultStory = (args) => {
-  const [{ value }, updateArgs] = useArgs();
-  const handleOnToggle = () => {
-    updateArgs({ value: !value });
-  };
-  return <ToggleButton {...args} value={value} onToggle={handleOnToggle} />;
+  return <ToggleButton {...args} />;
 };
 
 DefaultStory.storyName = 'Default';

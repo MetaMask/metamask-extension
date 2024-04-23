@@ -1,5 +1,4 @@
 import React from 'react';
-import { useArgs } from '@storybook/client-api';
 import ShowHideToggle from '.';
 
 export default {
@@ -34,11 +33,7 @@ export default {
 };
 
 export const DefaultStory = (args) => {
-  const [{ shown }, updateArgs] = useArgs();
-  const handleOnToggle = () => {
-    updateArgs({ shown: !shown });
-  };
-  return <ShowHideToggle {...args} shown={shown} onChange={handleOnToggle} />;
+  return <ShowHideToggle {...args} />;
 };
 
 DefaultStory.args = {
