@@ -5,9 +5,15 @@ import * as actions from '../../../../store/actions';
 import Identicon from '../../../ui/identicon';
 import Button from '../../../ui/button';
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
+import { getCurrentChainId } from '../../../../selectors';
 
 function mapStateToProps(state) {
   return {
+    chainId: getCurrentChainId(state),
     token: state.appState.modal.modalState.props.token,
     history: state.appState.modal.modalState.props.history,
   };
@@ -31,11 +37,13 @@ function mapDispatchToProps(dispatch) {
 class HideTokenConfirmationModal extends Component {
   static contextTypes = {
     t: PropTypes.func,
+    trackEvent: PropTypes.func,
   };
 
   static propTypes = {
     hideToken: PropTypes.func.isRequired,
     hideModal: PropTypes.func.isRequired,
+    chainId: PropTypes.string.isRequired,
     token: PropTypes.shape({
       symbol: PropTypes.string,
       address: PropTypes.string,
@@ -47,7 +55,7 @@ class HideTokenConfirmationModal extends Component {
   state = {};
 
   render() {
-    const { token, hideToken, hideModal, history } = this.props;
+    const { chainId, token, hideToken, hideModal, history } = this.props;
     const { symbol, address, image } = token;
 
     return (
@@ -79,6 +87,15 @@ class HideTokenConfirmationModal extends Component {
             className="hide-token-confirmation__button"
             data-testid="hide-token-confirmation__hide"
             onClick={() => {
+              this.context.trackEvent({
+                event: MetaMetricsEventName.TokenRemoved,
+                category: MetaMetricsEventCategory.Tokens,
+                sensitiveProperties: {
+                  chain_id: chainId,
+                  token_contract_address: address,
+                  token_symbol: symbol,
+                },
+              });
               hideToken(address);
               history.push(DEFAULT_ROUTE);
             }}

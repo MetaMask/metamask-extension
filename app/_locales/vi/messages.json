@@ -3485,10 +3485,6 @@
   "snapDetailWebsite": {
     "message": "Trang web"
   },
-  "snapInstallRequest": {
-    "message": "Cài đặt $1 để được cấp các quyền sau. Chỉ tiếp tục nếu bạn tin tưởng $1.",
-    "description": "$1 is the snap name."
-  },
   "snapInstallSuccess": {
     "message": "Cài đặt hoàn tất"
   },
