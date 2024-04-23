@@ -25,9 +25,9 @@ describe('process-feature-announcement - isFeatureAnnouncementRead()', () => {
     expect(result2).toBe(false);
   });
 
-  test('Returns false if notification is older than 30 days', () => {
+  test('Returns isRead if notification is older than 30 days', () => {
     const mockDate = new Date();
-    mockDate.setDate(mockDate.getDate() - 30);
+    mockDate.setDate(mockDate.getDate() - 31);
 
     const notification = {
       id: MOCK_NOTIFICATION_ID,
@@ -35,7 +35,7 @@ describe('process-feature-announcement - isFeatureAnnouncementRead()', () => {
     };
 
     const result = isFeatureAnnouncementRead(notification, []);
-    expect(result).toBe(false);
+    expect(result).toBe(true);
   });
 });
 
