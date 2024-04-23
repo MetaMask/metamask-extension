@@ -3485,10 +3485,6 @@
   "snapDetailWebsite": {
     "message": "Ιστότοπος"
   },
-  "snapInstallRequest": {
-    "message": "Με την εγκατάσταση, εκχωρούνται στο $1 οι ακόλουθες άδειες. Συνεχίστε μόνο αν εμπιστεύεστε το $1.",
-    "description": "$1 is the snap name."
-  },
   "snapInstallSuccess": {
     "message": "Η εγκατάσταση ολοκληρώθηκε"
   },
