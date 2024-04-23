@@ -1,13 +1,13 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { unapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import configureStore from '../../../../../../store/store';
 import ContractInteractionInfo from './contract-interaction';
 
 const store = configureStore({
   metamask: { ...mockState.metamask },
-  confirm: { currentConfirmation: unapprovedContractInteractionConfirmation },
+  confirm: { currentConfirmation: genUnapprovedContractInteractionConfirmation() },
 });
 
 const Story = {

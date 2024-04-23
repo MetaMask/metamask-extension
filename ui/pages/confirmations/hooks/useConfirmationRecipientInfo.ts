@@ -16,7 +16,7 @@ function useConfirmationRecipientInfo() {
   if (currentConfirmation) {
     const { from } = getConfirmationSender(currentConfirmation);
     const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
-    const fromAccount = getAccountByAddress(allAccounts, senderAddress);
+    const fromAccount = getAccountByAddress(allAccounts, from);
 
     senderAddress = from;
     senderName = fromAccount?.metadata?.name;
