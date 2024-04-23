@@ -274,6 +274,15 @@ function saveTimestamp() {
  */
 async function initialize() {
   try {
+    browser.privacy.network.networkPredictionEnabled.set({
+      value: true,
+      scope: 'regular',
+    });
+  } catch (err) {
+    console.error('failed to disable browser preloading', err);
+  }
+
+  try {
     const initData = await loadStateFromPersistence();
     const initState = initData.data;
     const initLangCode = await getFirstPreferredLangCode();
