@@ -5237,7 +5237,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/gas-fee-controller@npm:^14.0.0, @metamask/gas-fee-controller@npm:^14.0.1":
+"@metamask/gas-fee-controller@npm:^14.0.1":
   version: 14.0.1
   resolution: "@metamask/gas-fee-controller@npm:14.0.1"
   dependencies:
@@ -6500,7 +6500,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/ciphers@npm:^0.5.1":
+"@noble/ciphers@npm:^0.5.1, @noble/ciphers@npm:^0.5.2":
   version: 0.5.2
   resolution: "@noble/ciphers@npm:0.5.2"
   checksum: 47a5958954249d5edb49aff48ae6fbfff4d4e5a6bb221c010ebc8e7470c410e9208a2f3f6bf8b7eca83057277478f4ccbdbdcf1bfd324608b334b9f9d28a9fbb
@@ -25384,7 +25384,7 @@ __metadata:
     "@metamask/ethjs-contract": "npm:^0.4.1"
     "@metamask/ethjs-query": "npm:^0.7.1"
     "@metamask/forwarder": "npm:^1.1.0"
-    "@metamask/gas-fee-controller": "npm:^14.0.0"
+    "@metamask/gas-fee-controller": "npm:^15.0.0"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/keyring-api": "npm:^3.0.0"
     "@metamask/keyring-controller": "patch:@metamask/keyring-controller@npm%3A13.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-13.0.0-d94816a680.patch"
@@ -25422,6 +25422,7 @@ __metadata:
     "@metamask/user-operation-controller": "npm:^6.0.0"
     "@metamask/utils": "npm:^8.2.1"
     "@ngraveio/bc-ur": "npm:^1.1.12"
+    "@noble/ciphers": "npm:^0.5.2"
     "@noble/hashes": "npm:^1.3.3"
     "@octokit/core": "npm:^3.6.0"
     "@playwright/test": "npm:^1.39.0"
