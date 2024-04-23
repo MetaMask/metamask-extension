@@ -1007,10 +1007,10 @@ jobs:
       - run:
           name: test:e2e:chrome
           command: |
-            if .circleci/scripts/test-run-e2e.sh
-            then
-              timeout 20m yarn test:e2e:chrome --retries 2
-            fi
+            ENABLE_MV3=true
+              if .circleci/scripts/test-run-e2e.sh; then
+                  timeout 20m yarn test:e2e:chrome --retries 2
+              fi
           no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
@@ -1036,7 +1036,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:chrome:rpc --retries 2
+             timeout 20m yarn test:e2e:chrome:rpc --retries 2
             fi
           no_output_timeout: 5m
       - store_artifacts:
