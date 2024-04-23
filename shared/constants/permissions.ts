@@ -22,5 +22,11 @@ export const RestrictedMethods = Object.freeze({
 } as const);
 
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+export const ConnectionPermission = Object.freeze({
+  connection_permission: 'connection_permission',
+});
+///: END:ONLY_INCLUDE_IF
+
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 export * from './snaps/permissions';
 ///: END:ONLY_INCLUDE_IF

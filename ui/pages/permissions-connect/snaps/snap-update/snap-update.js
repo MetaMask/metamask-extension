@@ -66,6 +66,9 @@ export default function SnapUpdate({
   const approvedPermissions = requestState.approvedPermissions ?? {};
   const revokedPermissions = requestState.unusedPermissions ?? {};
   const newPermissions = requestState.newPermissions ?? {};
+  const approvedConnections = requestState.approvedConnections ?? {};
+  const revokedConnections = requestState.unusedConnections ?? {};
+  const newConnections = requestState.newConnections ?? {};
   const { newVersion } = requestState;
 
   const isLoading = requestState.loading;
@@ -186,7 +189,11 @@ export default function SnapUpdate({
                 approvedPermissions={approvedPermissions}
                 revokedPermissions={revokedPermissions}
                 newPermissions={newPermissions}
+                approvedConnections={approvedConnections}
+                revokedConnections={revokedConnections}
+                newConnections={newConnections}
                 targetSubjectMetadata={targetSubjectMetadata}
+                connections={requestState.connections || {}}
               />
             </Box>
             {isScrollable && !isScrolledToBottom ? (

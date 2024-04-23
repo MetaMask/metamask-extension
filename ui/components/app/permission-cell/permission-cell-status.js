@@ -31,9 +31,15 @@ import { formatDate } from '../../../helpers/utils/util';
  * @param props.revoked - Boolean value to identify if permission is being revoked.
  * @param props.dateApproved - Timestamp when permission is approved.
  * @param props.accounts - List of accounts for which permission is requested, approved or revoked.
+ * @param props.approved - Boolean value in case a permission has been approved, but there is no date to show.
  * @returns React element rendering permission status with or without account icons displayed as AvatarGroup.
  */
-export const PermissionCellStatus = ({ revoked, dateApproved, accounts }) => {
+export const PermissionCellStatus = ({
+  revoked,
+  approved,
+  dateApproved,
+  accounts,
+}) => {
   const t = useI18nContext();
 
   const renderAccountsGroup = () => (
@@ -95,13 +101,14 @@ export const PermissionCellStatus = ({ revoked, dateApproved, accounts }) => {
     </Box>
   );
 
-  const statusApproved =
+  const statusApprovedOn =
     accounts && accounts.length
       ? t('approvedOnForAccounts', [
           formatDate(dateApproved, 'yyyy-MM-dd'),
           renderAccountsGroup(),
         ])
       : t('approvedOn', [formatDate(dateApproved, 'yyyy-MM-dd')]);
+  const statusApproved = t('approved');
   const statusRevoked =
     accounts && accounts.length
       ? t('permissionRevokedForAccounts', [renderAccountsGroup()])
@@ -111,6 +118,18 @@ export const PermissionCellStatus = ({ revoked, dateApproved, accounts }) => {
       ? t('permissionRequestedForAccounts', [renderAccountsGroup()])
       : t('permissionRequested');
 
+  let statusToShow;
+
+  if (revoked) {
+    statusToShow = statusRevoked;
+  } else if (dateApproved) {
+    statusToShow = statusApprovedOn;
+  } else if (approved) {
+    statusToShow = statusApproved;
+  } else {
+    statusToShow = statusRequestedNow;
+  }
+
   return (
     <Text
       as="div"
@@ -119,14 +138,14 @@ export const PermissionCellStatus = ({ revoked, dateApproved, accounts }) => {
       color={TextColor.textAlternative}
       display={Display.Flex}
     >
-      {!revoked && (dateApproved ? statusApproved : statusRequestedNow)}
-      {revoked ? statusRevoked : ''}
+      {statusToShow}
     </Text>
   );
 };
 
 PermissionCellStatus.propTypes = {
   revoked: PropTypes.bool,
+  approved: PropTypes.bool,
   dateApproved: PropTypes.number,
   accounts: PropTypes.array,
 };

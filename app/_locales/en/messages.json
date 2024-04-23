@@ -4864,6 +4864,14 @@
   "snapAccountsDescription": {
     "message": "Accounts controlled by third-party Snaps."
   },
+  "snapConnectTo": {
+    "message": "Connect to $1",
+    "description": "$1 is the website URL or a Snap name. Used for Snaps pre-approved connections."
+  },
+  "snapConnectionPermissionDescription": {
+    "message": "Let $1 automatically connect to $2 without your approval.",
+    "description": "Used for Snap pre-approved connections. $1 is the Snap name, $2 is a website URL."
+  },
   "snapConnectionWarning": {
     "message": "$1 wants to use $2",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
