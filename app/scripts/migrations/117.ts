@@ -32,7 +32,8 @@ function transformState(state: Record<string, any>) {
     isObject(state.AccountsController) &&
     hasProperty(state.AccountsController, 'internalAccounts') &&
     hasProperty(
-      state.AccountsController.internalAccounts as Object,
+      state.AccountsController
+        .internalAccounts as AccountsControllerState['internalAccounts'],
       'accounts',
     ) &&
     Object.values(

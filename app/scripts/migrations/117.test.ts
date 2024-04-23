@@ -1,4 +1,3 @@
-import { mock } from 'node:test';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import { migrate, version } from './117';
 
