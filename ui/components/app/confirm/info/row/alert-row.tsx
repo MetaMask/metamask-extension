@@ -1,14 +1,15 @@
-import React, { createContext } from 'react';
+import React, { createContext, useState } from 'react';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import InlineAlert from '../../../confirmations/alerts/inline-alert/inline-alert';
 import useAlerts from '../../../../../hooks/useAlerts';
+import { MultipleAlertModal } from '../../../confirmations/alerts/multiple-alert-modal';
 import { ConfirmInfoRow, ConfirmInfoRowVariant } from './row';
 
 export type AlertRowProps = {
   alertKey: string;
-  alertOwnerId: string;
   children?: React.ReactNode;
   label: string;
+  ownerId: string;
   severity?: Severity;
   tooltip?: string;
   variant?: ConfirmInfoRowVariant;
@@ -40,26 +41,42 @@ export const InlineAlertContext = createContext<React.ReactNode | null>(null);
 
 export const AlertRow = ({
   alertKey,
-  alertOwnerId,
   children,
   label,
+  ownerId,
   tooltip,
   variant = ConfirmInfoRowVariant.Default,
 }: AlertRowProps) => {
-  const { getFieldAlerts } = useAlerts(alertOwnerId);
+  const { getFieldAlerts } = useAlerts(ownerId);
   const hasFieldAlert = getFieldAlerts(alertKey).length > 0;
+
+  const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
+
+  const handleCloseModal = () => {
+    setAlertModalVisible(false);
+  };
+
+  const handleOpenModal = () => {
+    setAlertModalVisible(true);
+  };
 
   const inlineAlert = hasFieldAlert ? (
     <InlineAlert
-      onClick={() => {
-        // intentionally empty
-      }}
+      onClick={handleOpenModal}
       severity={getSeverityAlerts(variant)}
     />
   ) : null;
 
   return (
     <InlineAlertContext.Provider value={inlineAlert}>
+      {alertModalVisible && (
+        <MultipleAlertModal
+          alertKey={alertKey}
+          ownerId={ownerId}
+          onFinalAcknowledgeClick={handleCloseModal}
+          onClose={handleCloseModal}
+        />
+      )}
       <ConfirmInfoRow
         label={label}
         variant={variant}

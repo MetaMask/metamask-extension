@@ -1,6 +1,6 @@
 import React from 'react';
-import { ConfirmInfoRow, ConfirmInfoRowVariant } from './row';
-import { AlertRow, AlertRowProps } from './alert-row';
+import { ConfirmInfoRowVariant } from './row';
+import { AlertRow } from './alert-row';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import configureStore from '../../../../../store/store';
@@ -21,6 +21,8 @@ const alertsMock: Alert[] = [
       'Operator is untrusted according to previous activity',
     ],
   },
+  { key: 'Data', field: 'Data', severity: Severity.Warning, message: 'Alert 2', alertDetails:['detail 1 warning', 'detail 2 warning'] },
+  { key: 'Contract', field: 'Contract', severity: Severity.Info, message: 'Alert Info', alertDetails:['detail 1 info', 'detail info'] },
 ];
 const OWNER_ID_MOCK = '123';
 const storeMock = configureStore({
