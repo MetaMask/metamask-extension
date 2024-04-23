@@ -1058,8 +1058,8 @@ jobs:
       - run:
           name: Comment on PR
           command: |
-            gh pr comment "${PR_NUMBER}" --body 'View API Spec Test Report [here](https://output.circle-artifacts.com/output/job/<< pipeline.id >>/artifacts/0/html-report/index.html)'
-          no_output_timeout: 5m
+            sudo apt install gh -y
+            gh pr comment "${CIRCLE_PR_NUMBER}" --body "View API Spec Test Report [here](https://output.circle-artifacts.com/output/job/<< pipeline.id >>/artifacts/0/html-report/index.html)"
       - store_artifacts:
           path: html-report
           destination: html-report
