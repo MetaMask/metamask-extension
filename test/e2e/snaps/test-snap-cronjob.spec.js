@@ -34,7 +34,7 @@ describe('Test Snap Cronjob', function () {
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
-          3,
+          process.env.ENABLE_MV3 ? 4 : 3,
           1000,
           10000,
         );
@@ -71,7 +71,11 @@ describe('Test Snap Cronjob', function () {
         });
 
         // switch to dialog popup, wait for a maximum of 65 seconds
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 65000);
+        windowHandles = await driver.waitUntilXWindowHandles(
+          process.env.ENABLE_MV3 ? 4 : 3,
+          1000,
+          65000,
+        );
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.Dialog,
           windowHandles,

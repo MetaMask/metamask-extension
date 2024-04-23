@@ -36,7 +36,7 @@ describe('Test Snap Name Lookup', function () {
 
         // switch to metamask extension and click connect
         const windowHandles = await driver.waitUntilXWindowHandles(
-          3,
+          process.env.ENABLE_MV3 ? 4 : 3,
           1000,
           10000,
         );
