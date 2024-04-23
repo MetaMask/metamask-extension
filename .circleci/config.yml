@@ -1055,6 +1055,7 @@ jobs:
           command: |
             timeout 20m yarn test:api-specs --retries 2
           no_output_timeout: 5m
+      - gh/install
       - run:
           name: Comment on PR
           command: |
