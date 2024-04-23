@@ -1,0 +1,125 @@
+Date,Commit Hash,Commit Message,Author,Team,PR Link
+2024-03-25T17:09:48-02:30,dc36a46262,Merge pull request #23368 from MetaMask/Version-v11.13.0,Dan J Miller,Extension Platform,
+2024-03-25T11:09:50-02:30,e68079735d,V11.13.0 changelog (#23581),Marina Boboc,Extension Platform,https://github.com/MetaMask/metamask-extension/pull/23581
+2024-03-25T09:15:01-02:30,e538b408c5,Merge branch 'master' into Version-v11.13.0,Dan J Miller,Extension Platform,
+2024-03-20T20:07:47-02:30,6d3dc017d2,Merge pull request #23616 from MetaMask/Version-v11.12.4,Dan J Miller,Extension Platform,
+2024-03-20T17:49:36-02:30,a76ae4a9d3,v11.12.4,Dan J Miller,Extension Platform,
+2024-03-19T07:39:46-02:30,a06fd11da0,Merge pull request #23547 from MetaMask/Version-v11.12.3,Dan J Miller,Extension Platform,
+2024-03-18T08:26:57-02:30,8c9ef75935,Merge pull request #23510 from MetaMask/Version-v11.12.2,Dan J Miller,Extension Platform,
+2024-03-15T08:00:07-02:30,7d36bbf3fd,v11.12.2,Dan J Miller,Extension Platform,
+2024-03-15T07:57:42-02:30,16a12080e4,fix: Fix confirmation tx totals on layer 2 networks and for erc20 transfers (#23511),Dan J Miller,Extension Platform,https://github.com/MetaMask/metamask-extension/pull/23511
+2024-03-14T17:38:03-02:30,2aa60b9295,Merge pull request #23489 from MetaMask/Version-v11.12.1,Dan J Miller,Extension Platform,
+2024-03-14T15:43:17+01:00,5480be43d8,cherry-pick feat: update style of missing petnames (#23490),chloeYue,Extension Platform,https://github.com/MetaMask/metamask-extension/pull/23490
+2024-03-07T14:54:50+02:00,2193ddacf4,v11.13.0,Marina Boboc,Extension Platform,
+2024-03-04T12:04:48-05:00,ffdf69075e,build: replace `squirrelly` with `eta` (#23215),David Murdoch,Extension Platform,https://github.com/MetaMask/metamask-extension/pull/23215
+2024-03-01T17:21:42-05:00,c3ca74b8fd,fix: remove duplicate html `<title>` tag in `home.html` (#23218) (#23250),David Murdoch,Extension Platform,https://github.com/MetaMask/metamask-extension/pull/23250
+2024-03-01T16:00:50-05:00,7fea26df05,chore: add spellchecker extension recommendation for VSCode developers; add lavamoat & blockaid to workspace dictionary (#23210),David Murdoch,Extension Platform,https://github.com/MetaMask/metamask-extension/pull/23210
+2024-03-01T15:59:21-05:00,481b335f56,chore: document our `package.json` via JSON Schema – for contributors using VSCode (#23209),David Murdoch,Extension Platform,https://github.com/MetaMask/metamask-extension/pull/23209
+2024-03-01T14:33:55-05:00,63fb3d45f2,refactor: align variable use in `fonts.scss` to use same format as elsewhere (#23229),David Murdoch,Extension Platform,https://github.com/MetaMask/metamask-extension/pull/23229
+2024-03-01T19:03:26+00:00,3278f2d181,fix(22937): fix frozen wallet when switching network locally (#23259),Danica Shen,Extension Platform,https://github.com/MetaMask/metamask-extension/pull/23259
+2024-02-27T15:20:17-06:00,610f4a1455,Feat(MV3): Support Snaps in MV3 (#22732),Brad Decker,Extension Platform,https://github.com/MetaMask/metamask-extension/pull/22732
+2024-02-27T16:56:47+00:00,14181de9f7,fix(23198): fix send eth e2e tests for multichain (#23205),Danica Shen,Extension Platform,https://github.com/MetaMask/metamask-extension/pull/23205
+2024-02-27T07:59:40-03:30,3ca675f977,Capture error in migration 105 if selectedAddress is not a string (#23194),Dan J Miller,Extension Platform,https://github.com/MetaMask/metamask-extension/pull/23194
+2024-02-23T13:52:52-05:00,05e267b08a,test: Writing new test about metamask section links  (#22911),Harika Jetpoluru,Extension Platform,https://github.com/MetaMask/metamask-extension/pull/22911
+2024-02-23T11:23:14-05:00,5fd2b7fc25,chore: update `sass` to v1.71.0 (#22531),David Murdoch,Extension Platform,https://github.com/MetaMask/metamask-extension/pull/22531
+2024-02-23T11:17:16-05:00,9f13517bca,test: update tests with types include tests in linting (#23136),David Murdoch,Extension Platform,https://github.com/MetaMask/metamask-extension/pull/23136
+2024-03-21T17:08:08+01:00,9cead27ce4,chore: bump snaps-utils in RC (#23628),Frederik Bolding,Snaps,https://github.com/MetaMask/metamask-extension/pull/23628
+2024-03-20T19:42:35-02:30,cda3bdd534,fix: fix typo in snap install rejected metric (#23618),Bowen Sanders,Snaps,https://github.com/MetaMask/metamask-extension/pull/23618
+2024-03-07T10:24:49+01:00,be87264b02,test: [Snaps E2E] Create test for Signature Insights (#23133),Bowen Sanders,Snaps,https://github.com/MetaMask/metamask-extension/pull/23133
+2024-03-06T13:12:52+01:00,c49e1877fb,refactor(replace deprecated components) Refactor usage of design-system components in Snaps features (#23087),David Drazic,Snaps,https://github.com/MetaMask/metamask-extension/pull/23087
+2024-03-06T11:20:19+01:00,83884c707c,feat: bump snaps packages and support `InputChangeEvent` for dynamic UI (#23311),Frederik Bolding,Snaps,https://github.com/MetaMask/metamask-extension/pull/23311
+2024-03-04T13:25:33+01:00,9765c4bcab,fix: SnapUIRenderer rendering an empty delineator when loading (#23267),Frederik Bolding,Snaps,https://github.com/MetaMask/metamask-extension/pull/23267
+2024-02-29T12:58:55+01:00,654cc29797,fix: increase PBKDF2 iterations for Snaps state encryption (#23243),Frederik Bolding,Snaps,https://github.com/MetaMask/metamask-extension/pull/23243
+2024-02-28T17:14:17-07:00,28666d78e8,test: [Snaps E2E] Create test for Client Status (#22930),Bowen Sanders,Snaps,https://github.com/MetaMask/metamask-extension/pull/22930
+2024-02-28T12:34:42+01:00,5d0d60e523,Snap authorship modal (#22163),Guillaume Roux,Snaps,https://github.com/MetaMask/metamask-extension/pull/22163
+2024-02-28T11:32:34+01:00,193ee93a11,chore: bump snaps packages (#23168),Frederik Bolding,Snaps,https://github.com/MetaMask/metamask-extension/pull/23168
+2024-02-26T11:50:49+01:00,329c773f9b,fix: hide preinstalled Snaps from the list view (#23167),Frederik Bolding,Snaps,https://github.com/MetaMask/metamask-extension/pull/23167
+2024-02-23T16:08:29+01:00,a8112c83ac,fix(Snaps): Add label prop to Snap UI input (#23153),Guillaume Roux,Snaps,https://github.com/MetaMask/metamask-extension/pull/23153
+2024-02-23T10:51:23+01:00,2e91b544a9,fix: Properly remove `setInputState` from confirmation template (#23147),Frederik Bolding,Snaps,https://github.com/MetaMask/metamask-extension/pull/23147
+2024-02-23T10:31:14+01:00,1511ca9343,fix: duplicate React keys in dynamic UI causing artifacts (#23139),Frederik Bolding,Snaps,https://github.com/MetaMask/metamask-extension/pull/23139
+2024-03-20T19:42:29-02:30,6b1e892d7b,fix: test for v11.12.4 release (#23619),Brian Bergeron,Accounts,https://github.com/MetaMask/metamask-extension/pull/23619
+2024-03-20T18:07:25-02:30,177ec59564,fix: revert aggregated fiat balance on home page (#23614) (#23617),Brian Bergeron,Accounts,https://github.com/MetaMask/metamask-extension/pull/23617
+2024-03-07T04:03:38-03:30,1d4ac4612c,feat: support bulk balance checks on blast (#23358),Brian Bergeron,Accounts,https://github.com/MetaMask/metamask-extension/pull/23358
+2024-03-06T21:39:21+08:00,30759ce1ce,fix: removal of account permissions when removing account (#23247),Monte Lai,Accounts,https://github.com/MetaMask/metamask-extension/pull/23247
+2024-03-05T14:09:26-05:00,9dcd9f5e1c,fix: disable UI buttons for accounts that cannot sign (#23178),Kate Johnson,Accounts,https://github.com/MetaMask/metamask-extension/pull/23178
+2024-03-05T09:34:52-08:00,36eef7f707,fix: Can't call setApprovalForAll on certain NFTs (#22822),Brian Bergeron,Accounts,https://github.com/MetaMask/metamask-extension/pull/22822
+2024-03-05T23:00:13+08:00,7e68fbf747,chore: update comments and variable name (#23320),Monte Lai,Accounts,https://github.com/MetaMask/metamask-extension/pull/23320
+2024-03-05T22:13:40+08:00,54749ccce2,feat: replace use of `getMetaMaskIdentities` with `getInternalAccounts` (#21709),Monte Lai,Accounts,https://github.com/MetaMask/metamask-extension/pull/21709
+2024-03-04T19:15:33-08:00,98f0527d9f,fix: flaky "Send ETH from inside MetaMask finds the transaction..." (#23300),Howard Braham,Accounts,https://github.com/MetaMask/metamask-extension/pull/23300
+2024-03-05T01:06:01+08:00,0495d5b395,Fix: PetNamesBridge to use InternalAccounts (#23046),Monte Lai,Accounts,https://github.com/MetaMask/metamask-extension/pull/23046
+2024-03-01T20:09:31+00:00,7f5595e9c2,fix: `log.warning` -> `log.warn` (#23261),Brian Bergeron,Accounts,https://github.com/MetaMask/metamask-extension/pull/23261
+2024-02-28T12:58:08-08:00,07b4c74ed7,fix: remove waitForElementNotPresent and improve assertElementNotPresent (#23108),Howard Braham,Accounts,https://github.com/MetaMask/metamask-extension/pull/23108
+2024-02-23T09:34:11-08:00,7a8e35c2b6,fix: download-builds improvements (#23104),Howard Braham,Accounts,https://github.com/MetaMask/metamask-extension/pull/23104
+2024-02-23T08:44:24-08:00,e0704deda5,fix: Prettier ESLint VSCode extension (#23106),Howard Braham,Accounts,https://github.com/MetaMask/metamask-extension/pull/23106
+2024-02-23T06:41:34-08:00,bb634d52c1,fix: missing network images (#23140),Brian Bergeron,Accounts,https://github.com/MetaMask/metamask-extension/pull/23140
+2024-03-18T12:38:04+00:00,55f21f7e6b,chore: updates changelog and package json,Antonio Regadas,Other/Unknown,
+2024-03-14T15:31:07+01:00,bb087b7891,v11.12.1,Chloe Gao,Other/Unknown,
+2024-03-06T13:44:02+09:00,f561faab80,refactor: Refactor provider injection blocklist to avoid using regex (#23134),Nicholas Ellul,Other/Unknown,https://github.com/MetaMask/metamask-extension/pull/23134
+2024-03-05T16:10:50-06:00,8f02bcbff3,fix: update stake image (#23324),martahj,Other/Unknown,https://github.com/MetaMask/metamask-extension/pull/23324
+2024-03-01T16:02:08-05:00,5850ee67af,test: add scenario set custom spending cap for custom token (#23238),sleepytanya,Other/Unknown,https://github.com/MetaMask/metamask-extension/pull/23238
+2024-03-01T15:26:05+01:00,d120d63433,refactor(snap-keyring): refactor confirmation dialogs (#23007),Charly Chevalier,Other/Unknown,https://github.com/MetaMask/metamask-extension/pull/23007
+2024-03-01T15:25:27+01:00,dc56083ff1,feat: replace EnsController with core implementation (#23224),cryptodev-2s,Other/Unknown,https://github.com/MetaMask/metamask-extension/pull/23224
+2024-03-01T14:48:38+01:00,61a79e0942,feat: remove PermissionLogController in favor of core implementation (#23182),cryptodev-2s,Other/Unknown,https://github.com/MetaMask/metamask-extension/pull/23182
+2024-02-29T15:03:41+00:00,a9d34716ba,feat: Add ConnectedAccountsMenu Component (#23228),Jony Bursztyn,Other/Unknown,https://github.com/MetaMask/metamask-extension/pull/23228
+2024-02-28T15:01:44+01:00,0f1ba879bc,fix(20481): update QR wallet bottom illustration (#23105),Sébastien Van Eyck,Other/Unknown,https://github.com/MetaMask/metamask-extension/pull/23105
+2024-02-27T15:15:49+00:00,309640489e,Enabling the MetaMask Security Code Scanner (#22916),witmicko,Other/Unknown,https://github.com/MetaMask/metamask-extension/pull/22916
+2024-03-18T12:33:20+00:00,ae36b1675e,chore: adds a needed code fence and blockaid to MMI build (#23516),António Regadas,MMI,https://github.com/MetaMask/metamask-extension/pull/23516
+2024-03-18T12:33:06+00:00,f604c73735,chore: MMI adds fallback property when environment key doesnt exist (#23494),António Regadas,MMI,https://github.com/MetaMask/metamask-extension/pull/23494
+2024-03-18T06:49:55-02:30,6473a90ccc,chore: MMI adds fallback property (#23540),António Regadas,MMI,https://github.com/MetaMask/metamask-extension/pull/23540
+2024-03-04T09:08:03+00:00,4fa31ba044,chore: [MMI] Adds mmi controllers to MM state object (Sentry) (#23266),António Regadas,MMI,https://github.com/MetaMask/metamask-extension/pull/23266
+2024-02-29T14:58:36+00:00,054a47f6f4,chore: MMI update mmi e2e tests (#23202),António Regadas,MMI,https://github.com/MetaMask/metamask-extension/pull/23202
+2024-02-29T13:55:51+01:00,2f54a99372,fix: hide buy / sell / nft buttons for mmi (#23199),Albert Olivé,MMI,https://github.com/MetaMask/metamask-extension/pull/23199
+2024-02-26T10:09:18+00:00,28f75a7c73,chore: MMI replace goerli test network with sepolia (#23166),António Regadas,MMI,https://github.com/MetaMask/metamask-extension/pull/23166
+2024-02-23T11:34:52+00:00,e86995e844,MMI - updates snapshots (#23128),António Regadas,MMI,https://github.com/MetaMask/metamask-extension/pull/23128
+2024-03-15T15:52:46-02:30,339f24a76d,fix: Gas display fixes on confirmation screen (#23524),Jyoti Puri,Confirmation UX,https://github.com/MetaMask/metamask-extension/pull/23524
+2024-03-14T22:00:27-02:30,5478b5c294,fix: Transaction Confirmation incorrectly showing max instead of estimated fees and total (#23203),Olusegun Akintayo,Confirmation UX,https://github.com/MetaMask/metamask-extension/pull/23203
+2024-03-06T21:24:25+05:30,b8f922d1f3,fix: update PPOM to v1.4.4 (#23345),Jyoti Puri,Confirmation UX,https://github.com/MetaMask/metamask-extension/pull/23345
+2024-03-06T20:34:08+05:30,75a91b0e27,Confirmation redesign: add message section to personal sign page (#22766),Jyoti Puri,Confirmation UX,https://github.com/MetaMask/metamask-extension/pull/22766
+2024-03-06T20:18:46+05:30,bf6a7a9530,feat: adding currency value component (#23260),Jyoti Puri,Confirmation UX,https://github.com/MetaMask/metamask-extension/pull/23260
+2024-03-06T15:32:27+05:30,23b1dda53a,fix: update PPOM CDN (#23240),Jyoti Puri,Confirmation UX,https://github.com/MetaMask/metamask-extension/pull/23240
+2024-03-05T10:34:18+05:30,4c6bba18d0,feat: Add sepolia and update ppom (#23298),Olusegun Akintayo,Confirmation UX,https://github.com/MetaMask/metamask-extension/pull/23298
+2024-02-28T20:40:47+05:30,02cbc94a8c,feat: update PPOM dependency to 1.4.2 (#23219),Jyoti Puri,Confirmation UX,https://github.com/MetaMask/metamask-extension/pull/23219
+2024-02-27T16:55:55+01:00,1fd64e57a5,fix: PPOM - Report False Positives - missing Chain Name (#23195),Olusegun Akintayo,Confirmation UX,https://github.com/MetaMask/metamask-extension/pull/23195
+2024-02-23T14:19:12+01:00,d878047f62,fix: ppom errors PR code refactor (#23119),Olusegun Akintayo,Confirmation UX,https://github.com/MetaMask/metamask-extension/pull/23119
+2024-03-06T18:22:29-06:00,d980602ee9,fix: Fix #23255 - Prevent NewNetworkInfo popover from displaying during send flow (#23274),David Walsh,Extension UX,https://github.com/MetaMask/metamask-extension/pull/23274
+2024-03-06T14:36:29-05:00,ca90ddedfb,fix: Token Cell Setting and Token Symbol in cell (#23348),Victor Thomas,Extension UX,https://github.com/MetaMask/metamask-extension/pull/23348
+2024-03-04T10:09:42-06:00,5915234a6a,feat: UX: Multichain: Show 'connect account' toast when current account isn't connected (#22966),David Walsh,Extension UX,https://github.com/MetaMask/metamask-extension/pull/22966
+2024-03-04T13:57:58+05:30,f262054fd0,feat: Added footer button (#23241),Nidhi Kumari,Extension UX,https://github.com/MetaMask/metamask-extension/pull/23241
+2024-03-04T13:40:36+05:30,118c3354bc,feat: added menu types to render in account list item (#23232),Nidhi Kumari,Extension UX,https://github.com/MetaMask/metamask-extension/pull/23232
+2024-03-01T13:34:22+01:00,d77cf02c01,fix: Fix broken Multichain send jest tests (#23249),David Walsh,Extension UX,https://github.com/MetaMask/metamask-extension/pull/23249
+2024-03-01T15:25:00+05:30,c8b7442a70,fix: Updated avatar for non multichain fix (#23265),Nidhi Kumari,Extension UX,https://github.com/MetaMask/metamask-extension/pull/23265
+2024-02-29T09:24:05-06:00,001227a540,fix: UX: Multichain: Sendflow: Show pinned accounts in send flow (#23176),David Walsh,Extension UX,https://github.com/MetaMask/metamask-extension/pull/23176
+2024-02-29T11:07:03+05:30,572a7aa1b1,fix: Connections Page - When account is connected (#23125),Nidhi Kumari,Extension UX,https://github.com/MetaMask/metamask-extension/pull/23125
+2024-02-27T09:16:39-08:00,62af0c664b,fix: lint fix for no connections (#23204),Nidhi Kumari,Extension UX,https://github.com/MetaMask/metamask-extension/pull/23204
+2024-02-27T20:20:56+05:30,c45edacad0,UX Multichain: Added connections page (#23070),Nidhi Kumari,Extension UX,https://github.com/MetaMask/metamask-extension/pull/23070
+2024-02-27T14:27:07+05:30,da7721b021,UX: added badge status in account list (#23006),Nidhi Kumari,Extension UX,https://github.com/MetaMask/metamask-extension/pull/23006
+2024-02-26T13:17:48-06:00,dcf585f0f2,fix: Update avatarType prop to be optional (#23184),Victor Thomas,Extension UX,https://github.com/MetaMask/metamask-extension/pull/23184
+2024-02-26T10:52:53-05:00,cb36096c6f,MCv1 Permissions: Site Connections (#23080),Victor Thomas,Extension UX,https://github.com/MetaMask/metamask-extension/pull/23080
+2024-03-06T13:28:12-08:00,915016a864,test: Wait for connection dialog to close (#23354),Thomas Huang,Devex,https://github.com/MetaMask/metamask-extension/pull/23354
+2024-03-06T08:36:38-08:00,7a12483a60,test: improve request queuing e2e methods (#23301),Thomas Huang,Devex,https://github.com/MetaMask/metamask-extension/pull/23301
+2024-03-05T14:06:53-06:00,3134b86485,bump selected network controller to 9.0.0 (#23277),Zachary Belford,Devex,https://github.com/MetaMask/metamask-extension/pull/23277
+2024-03-04T12:57:12-06:00,0cd76e5b6a,test: Add dapp interaction of wallet_revokePermissions for eth_accounts (#22103),Thomas Huang,Devex,https://github.com/MetaMask/metamask-extension/pull/22103
+2024-03-01T14:53:07-06:00,53b4c5d1d1,fix: removes extra domains from `SelectedNetworkController` domain state (#23130),Alex Donesky,Devex,https://github.com/MetaMask/metamask-extension/pull/23130
+2024-02-27T16:25:18-08:00,7a94202f9c,Bump test dapp to v8.2.0 (#23029),Thomas Huang,Devex,https://github.com/MetaMask/metamask-extension/pull/23029
+2024-02-23T09:26:09-06:00,ff7a70d535,E2e request queuing (#22818),Thomas Huang,Devex,https://github.com/MetaMask/metamask-extension/pull/22818
+2024-03-06T13:53:56+00:00,800ba22437,fix: set isSigningOrSubmitting to false for MMI (#23342),Derek Brans,Confirmation Systems,https://github.com/MetaMask/metamask-extension/pull/23342
+2024-03-01T08:07:18-05:00,8d6f356576,fix: support user operations from any authorized account (#23269),Derek Brans,Confirmation Systems,https://github.com/MetaMask/metamask-extension/pull/23269
+2024-03-01T13:02:43+01:00,c756dee5ae,fix: Add missing scss file in `pages.scss` (#23221),OGPoyraz,Confirmation Systems,https://github.com/MetaMask/metamask-extension/pull/23221
+2024-02-29T15:22:47+00:00,9472bd117c,Add user operation E2E tests (#22475),Matthew Walsh,Confirmation Systems,https://github.com/MetaMask/metamask-extension/pull/22475
+2024-02-28T12:11:05-05:00,5fdb69cdd1,feat: add option to hide submit button in the confirmation template (#23085),Vinicius Stevam,Confirmation Systems,https://github.com/MetaMask/metamask-extension/pull/23085
+2024-02-27T09:04:06+00:00,bb93634b7f,Support updated Linea gas fee estimation (#22918),Matthew Walsh,Confirmation Systems,https://github.com/MetaMask/metamask-extension/pull/22918
+2024-02-26T07:29:41-05:00,40f281b92c,chore: update @metamask/user-operation-controller to v4 (#23160),Derek Brans,Confirmation Systems,https://github.com/MetaMask/metamask-extension/pull/23160
+2024-02-23T17:08:25+01:00,37227c4240,Show modal when user tries to cancel confirmed transaction (#22943),OGPoyraz,Confirmation Systems,https://github.com/MetaMask/metamask-extension/pull/22943
+2024-02-22T17:11:52-05:00,c9ccde4f62,feat: add useFirstPartyContractName hook and use it in useDisplayName (#23092),Derek Brans,Confirmation Systems,https://github.com/MetaMask/metamask-extension/pull/23092
+2024-03-06T12:24:41+02:00,c249bd87b3,Introduce LavaDome latest addressing React security concern (#22902),weizman,lavamoat,https://github.com/MetaMask/metamask-extension/pull/22902
+2024-03-02T08:02:52+09:00,7a50af4918,chore(deps): replace ethereumjs-abi with @metamask/abi-utils (#23122),legobeat,lavamoat,https://github.com/MetaMask/metamask-extension/pull/23122
+2024-02-23T21:07:28+09:00,d7423efa76,fix(deps): socks@2.8.0->2.8.1 (#23143),legobeat,lavamoat,https://github.com/MetaMask/metamask-extension/pull/23143
+2024-03-05T10:21:38+01:00,f893b45f47,feat: enable erc1155 multichain (#23297),salimtb,Assets,https://github.com/MetaMask/metamask-extension/pull/23297
+2024-03-01T19:20:10+01:00,e171b0b140,feat: add palm svg icon (#23191),salimtb,Assets,https://github.com/MetaMask/metamask-extension/pull/23191
+2024-02-29T21:30:12+01:00,a4277964dc,fix: send erc1155 send amount (#23151),salimtb,Assets,https://github.com/MetaMask/metamask-extension/pull/23151
+2024-02-29T14:10:16+01:00,16968550a4,fix: update to OP sepolia (#23170),sahar-fehri,Assets,https://github.com/MetaMask/metamask-extension/pull/23170
+2024-02-27T10:56:20+01:00,c25575348b,fix: suggested symbol is duplicated (#23169),salimtb,Assets,https://github.com/MetaMask/metamask-extension/pull/23169
+2024-02-23T16:40:09+01:00,d17c277bc3,feat: deprecate goerli network (#22995),sahar-fehri,Assets,https://github.com/MetaMask/metamask-extension/pull/22995
+2024-03-04T06:32:14-08:00,9571059d36,Fix: remove top styling for icon inherit (#23214),Garrett Bear,Design Systems,https://github.com/MetaMask/metamask-extension/pull/23214
+2024-02-27T16:31:13-08:00,688e06f18a,Fix: Use hex code for highlight text color (#23188),Garrett Bear,Design Systems,https://github.com/MetaMask/metamask-extension/pull/23188
+2024-02-23T12:15:40+01:00,2923f5df0c,`PreferencesController` reacts to `KeyringController` state changes (#22949),Michele Esposito,Shared Libraries,https://github.com/MetaMask/metamask-extension/pull/22949

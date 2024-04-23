@@ -103,6 +103,7 @@ async function filterCommitsByTeam(branchA, branchB) {
         hash: '%H',
         author: '%an',
         message: '%s',
+        date: '%cI'
       },
     };
 
@@ -113,8 +114,9 @@ async function filterCommitsByTeam(branchA, branchB) {
 
     const MAX_COMMITS = 500; // Limit the number of commits to process
 
+    console.log('Generation of the CSV file "commits.csv" is in progress...');
     for (const commit of log.all) {
-      const { author, message, hash } = commit;
+      const { author, message, hash, date } = commit;
       if (commitsByTeam.length >= MAX_COMMITS) {
         break;
       }
@@ -141,6 +143,7 @@ async function filterCommitsByTeam(branchA, branchB) {
           message,
           author,
           hash: hash.substring(0, 10),
+          date,
           prLink,
         });
       }
@@ -158,8 +161,9 @@ function formatAsCSV(commitsByTeam) {
   for (const [team, commits] of Object.entries(commitsByTeam)) {
     commits.forEach((commit) => {
       const row = [
+        commit.date,
         commit.hash,
-        commit.message,
+        commit.message.replace(/,/g, ""),
         commit.author,
         team,
         commit.prLink,
@@ -167,7 +171,7 @@ function formatAsCSV(commitsByTeam) {
       csvContent.push(row.join(','));
     });
   }
-  csvContent.unshift('Commit Hash,Commit Message,Author,Team,PR Link');
+  csvContent.unshift('Date,Commit Hash,Commit Message,Author,Team,PR Link');
 
   return csvContent;
 }

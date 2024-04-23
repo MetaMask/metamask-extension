@@ -1,0 +1,6 @@
+Datetime,Commit Hash,Commit Message,Author,Team,PR Link,PR Created At,Ready for Review At,First Review Left At,Two Approvals At,PR Merged At,Approver 1,Approver 2
+2024-03-01T17:21:42-05:00,c3ca74b8fd,fix: remove duplicate html `<title>` tag in `home.html` (#23218) (#23250),David Murdoch,Extension Platform,https://github.com/MetaMask/metamask-extension/pull/23250,,,,,,brad-decker,WalletAPI
+2024-03-04T12:04:48-05:00,ffdf69075e,build: replace `squirrelly` with `eta` (#23215),David Murdoch,Extension Platform,https://github.com/MetaMask/metamask-extension/pull/23215,,,,,,lavamoat,Snaps
+2024-03-14T15:43:17+01:00,5480be43d8,cherry-pick feat: update style of missing petnames (#23490),chloeYue,Extension Platform,https://github.com/MetaMask/metamask-extension/pull/23490,,,,,,,
+2024-03-15T07:57:42-02:30,16a12080e4,fix: Fix confirmation tx totals on layer 2 networks and for erc20 transfers (#23511),Dan J Miller,Extension Platform,https://github.com/MetaMask/metamask-extension/pull/23511,,,,,,digiwand,segun
+2024-03-25T11:09:50-02:30,e68079735d,V11.13.0 changelog (#23581),Marina Boboc,Extension Platform,https://github.com/MetaMask/metamask-extension/pull/23581,,,,,,,
