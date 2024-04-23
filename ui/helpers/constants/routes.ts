@@ -107,6 +107,9 @@ const DECRYPT_MESSAGE_REQUEST_PATH = '/decrypt-message-request';
 const ENCRYPTION_PUBLIC_KEY_REQUEST_PATH = '/encryption-public-key-request';
 const CONFIRMATION_V_NEXT_ROUTE = '/confirmation';
 
+// TODO Remove this test page
+const TEST_ROUTE = '/test';
+
 // Used to pull a convenient name for analytics tracking events. The key must
 // be react-router ready path, and can include params such as :id for popup windows
 const PATH_NAME_MAP = {
@@ -204,6 +207,7 @@ const PATH_NAME_MAP = {
   [LOADING_QUOTES_ROUTE]: 'Swaps Loading Quotes Page',
   [AWAITING_SWAP_ROUTE]: 'Swaps Awaiting Swaps Page',
   [SWAPS_ERROR_ROUTE]: 'Swaps Error Page',
+  [TEST_ROUTE]: 'Test Page',
 };
 
 export {
@@ -307,4 +311,5 @@ export {
   DESKTOP_ERROR_ROUTE,
   DESKTOP_PAIRING_ROUTE,
   ///: END:ONLY_INCLUDE_IF
+  TEST_ROUTE,
 };

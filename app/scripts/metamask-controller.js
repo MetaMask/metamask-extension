@@ -2087,6 +2087,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.store.updateStructure({
       AccountsController: this.accountsController,
+      AuthenticationController: this.authenticationController,
       AppStateController: this.appStateController.store,
       AppMetadataController: this.appMetadataController.store,
       TransactionController: this.txController,
@@ -2142,6 +2143,7 @@ export default class MetamaskController extends EventEmitter {
         AccountsController: this.accountsController,
         AppStateController: this.appStateController.store,
         AppMetadataController: this.appMetadataController.store,
+        AuthenticationController: this.authenticationController,
         NetworkController: this.networkController,
         KeyringController: this.keyringController,
         PreferencesController: this.preferencesController.store,
@@ -2864,6 +2866,7 @@ export default class MetamaskController extends EventEmitter {
       addressBookController,
       alertController,
       appStateController,
+      authenticationController,
       keyringController,
       nftController,
       nftDetectionController,
@@ -2875,6 +2878,8 @@ export default class MetamaskController extends EventEmitter {
       networkController,
       announcementController,
       onboardingController,
+      performSignIn,
+      performSignOut,
       permissionController,
       preferencesController,
       swapsController,
@@ -3573,6 +3578,11 @@ export default class MetamaskController extends EventEmitter {
         assetsContractController.getBalancesInSingleCall.bind(
           assetsContractController,
         ),
+
+      // Authentication Controller
+      performSignIn: authenticationController.performSignIn.bind(performSignIn),
+      performSignOut:
+        authenticationController.performSignOut.bind(performSignOut),
 
       // E2E testing
       throwTestError: this.throwTestError.bind(this),

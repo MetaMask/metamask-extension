@@ -63,6 +63,8 @@ import InteractiveReplacementTokenPage from '../institutional/interactive-replac
 import CustodyPage from '../institutional/custody';
 ///: END:ONLY_INCLUDE_IF
 
+import TestPage from '../test/test';
+
 import {
   ASSET_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
@@ -101,6 +103,7 @@ import {
   DESKTOP_PAIRING_ROUTE,
   DESKTOP_ERROR_ROUTE,
   ///: END:ONLY_INCLUDE_IF
+  TEST_ROUTE,
 } from '../../helpers/constants/routes';
 
 ///: BEGIN:ONLY_INCLUDE_IF(desktop)
@@ -357,6 +360,7 @@ export default class Routes extends Component {
           <Authenticated path={NOTIFICATIONS_ROUTE} component={Notifications} />
           ///: END:ONLY_INCLUDE_IF
         }
+        <Authenticated path={TEST_ROUTE} component={TestPage} />
         {
           ///: BEGIN:ONLY_INCLUDE_IF(snaps)
           <Authenticated exact path={SNAPS_ROUTE} component={SnapList} />

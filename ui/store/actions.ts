@@ -5063,3 +5063,103 @@ export async function setSnapsAddSnapAccountModalDismissed() {
   ]);
 }
 ///: END:ONLY_INCLUDE_IF
+
+/**
+ * Initiates the sign-in process.
+ *
+ * This function dispatches a request to the background script to perform the sign-in operation.
+ * If the operation fails, it logs the error message and rethrows the error.
+ *
+ * @returns A thunk action that performs the sign-in operation.
+ */
+export function performSignIn(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      await submitRequestToBackground('performSignIn');
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : 'Unknown error occurred during sign-in.';
+      logErrorWithMessage(errorMessage);
+      throw error;
+    }
+  };
+}
+
+/**
+ * Initiates the sign-out process.
+ *
+ * This function dispatches a request to the background script to perform the sign-out operation.
+ * If the operation fails, it logs the error message and rethrows the error.
+ *
+ * @returns A thunk action that performs the sign-out operation.
+ */
+export function performSignOut(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      await submitRequestToBackground('performSignOut');
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
+/**
+ * Enables profile syncing.
+ *
+ * This function sends a request to the background script to enable profile syncing across devices.
+ * If the operation encounters an error, it logs the error message and rethrows the error to be handled by the caller.
+ *
+ * @returns A thunk action that, when dispatched, attempts to enable profile syncing.
+ */
+export function enableProfileSyncing(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      await submitRequestToBackground('enableProfileSyncing');
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}
+
+/**
+ * Disables profile syncing.
+ *
+ * This function sends a request to the background script to disable profile syncing across devices.
+ * If the operation fails, it logs the error message and rethrows the error to ensure it is handled appropriately.
+ *
+ * @returns A thunk action that, when dispatched, attempts to disable profile syncing.
+ */
+export function disableProfileSyncing(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      await submitRequestToBackground('disableProfileSyncing');
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    }
+  };
+}

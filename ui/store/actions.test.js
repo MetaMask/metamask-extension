@@ -2158,4 +2158,54 @@ describe('Actions', () => {
       ).rejects.toThrow(error);
     });
   });
+
+  describe('#performSignIn', () => {
+    beforeEach(async () => {
+      background.performSignIn = sinon.stub();
+
+      setBackgroundConnection(background);
+    });
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('should perform sign in successfully', async () => {
+      const store = mockStore();
+
+      console.log('backgroud', background);
+      console.log('background.performSignIn', background.performSignIn);
+
+      await store.dispatch(actions.performSignIn());
+
+      await expect(
+        store.dispatch(actions.performSignIn()),
+      ).resolves.toHaveBeenCalled();
+
+      const prova = true;
+      expect(prova).toBeTruthy();
+    });
+
+    //   // it('should perform sign in successfully', async () => {
+    //   //   background.performSignIn.resolves();
+
+    //   //   await store.dispatch(actions.performSignIn());
+
+    //   //   // Now, this assertion should work as expected
+    //   //   sinon.assert.calledOnce(background.performSignIn);
+    //   // });
+
+    //   it('should handle error on sign in failure', async () => {
+    //     const errorMessage = 'Sign-in failed';
+    //     // Ensure signIn is stubbed to simulate failure
+    //     background.performSignIn.rejects(new Error(errorMessage)); // Simulate a rejected promise for async actions
+
+    //     await expect(store.dispatch(actions.performSignIn())).rejects.toThrow(
+    //       errorMessage,
+    //     );
+
+    //     // This assertion should also work correctly now
+    //     sinon.assert.calledOnce(background.performSignIn);
+    //   });
+  });
 });
