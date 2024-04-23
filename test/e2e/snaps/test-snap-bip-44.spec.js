@@ -99,6 +99,8 @@ describe('Test Snap bip-44', function () {
         });
 
         // switch back to test-snaps page
+        console.log('process.env.ENABLE_MV3', process.env.ENABLE_MV3);
+
         const windowHandles = await driver.waitUntilXWindowHandles(
           process.env.ENABLE_MV3 ? 2 : 1,
           1000,

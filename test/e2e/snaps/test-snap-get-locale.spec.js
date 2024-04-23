@@ -33,6 +33,8 @@ describe('Test Snap Get Locale', function () {
         await driver.clickElement('#connectgetlocale');
 
         // switch to metamask extension and click connect
+        console.log('process.env.ENABLE_MV3', process.env.ENABLE_MV3);
+
         let windowHandles = await driver.waitUntilXWindowHandles(
           process.env.ENABLE_MV3 ? 4 : 3,
           1000,
