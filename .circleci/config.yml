@@ -412,21 +412,15 @@ jobs:
             echo $CIRCLE_PULL_REQUESTS | sed 's/,/\n/g'
 
             # See if any associated PRs have matching label
-            MATCHING_PR_COUNT=$(echo $CIRCLE_PULL_REQUESTS \
+            HAS_MATCHING_PR=$(echo $CIRCLE_PULL_REQUESTS \
               | sed -e 's#,#\n#g' -e 's#/github.com/#/api.github.com/repos/#g' -e 's#/pull/#/pulls/#g' \
               | xargs -n1 curl -s \
-              | jq -s "map((.labels|map(select(.name==\"${GH_LABEL}\"))))|flatten|length")
+              | jq -s "map((.labels|map(select(.name==\"${GH_LABEL}\"))))|flatten|length > 0")
 
-            if [ "${MATCHING_PR_COUNT}" -eq "0" ]; then
-              echo "team-mmi tag not found."
-              # assign the RUN_MMI_OPTIONAL variable to false
-              echo "false" > ./RUN_MMI_OPTIONAL
-              exit 0
-            fi
+            echo "${GH_LABEL} tag presence: ${HAS_MATCHING_PR}"
 
-            echo "team-mmi tag found."
-            # assign the RUN_MMI_OPTIONAL variable to true
-            echo "true" > ./RUN_MMI_OPTIONAL
+            # assign the RUN_MMI_OPTIONAL variable
+            echo "${HAS_MATCHING_PR}" > ./RUN_MMI_OPTIONAL
       - persist_to_workspace:
           root: .
           paths:
