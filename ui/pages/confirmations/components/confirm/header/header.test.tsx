@@ -19,7 +19,7 @@ const render = (storeOverrides = {}) => {
         },
       },
     },
-    ...storeOverrides
+    ...storeOverrides,
   });
 
   return renderWithProvider(<Header />, store);
@@ -27,13 +27,21 @@ const render = (storeOverrides = {}) => {
 
 describe('Header', () => {
   it('should match snapshot with signature confirmation', () => {
-    const { container } = render({ confirm: { currentConfirmation: unapprovedPersonalSignMsg } });
+    const { container } = render({
+      confirm: { currentConfirmation: unapprovedPersonalSignMsg },
+    });
 
     expect(container).toMatchSnapshot();
   });
 
   it('should match snapshot with transaction confirmation', () => {
-    const { container } = render({ confirm: { currentConfirmation: genUnapprovedContractInteractionConfirmation({ address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' }) } });
+    const { container } = render({
+      confirm: {
+        currentConfirmation: genUnapprovedContractInteractionConfirmation({
+          address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        }),
+      },
+    });
 
     expect(container).toMatchSnapshot();
   });

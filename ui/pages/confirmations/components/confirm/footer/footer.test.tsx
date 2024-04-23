@@ -42,7 +42,7 @@ describe('ConfirmFooter', () => {
       confirm: {
         currentConfirmation: unapprovedPersonalSignMsg,
         isScrollToBottomNeeded: false,
-      }
+      },
     });
     expect(container).toMatchSnapshot();
   });
@@ -52,7 +52,7 @@ describe('ConfirmFooter', () => {
       confirm: {
         currentConfirmation: genUnapprovedContractInteractionConfirmation(),
         isScrollToBottomNeeded: false,
-      }
+      },
     });
     expect(container).toMatchSnapshot();
   });

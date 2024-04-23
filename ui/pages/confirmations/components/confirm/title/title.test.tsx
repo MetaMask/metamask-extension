@@ -9,14 +9,16 @@ const genMockState = (confirmationOverride: Partial<Confirmation> = {}) => ({
   confirm: {
     currentConfirmation: {
       type: TransactionType.personalSign,
-      ...confirmationOverride
+      ...confirmationOverride,
     },
   },
 });
 
 describe('ConfirmTitle', () => {
   it('should render the title and description for a personal signature', () => {
-    const mockStore = configureMockStore([])(genMockState({ type: TransactionType.personalSign }));
+    const mockStore = configureMockStore([])(
+      genMockState({ type: TransactionType.personalSign }),
+    );
     const { getByText } = renderWithProvider(<ConfirmTitle />, mockStore);
 
     expect(getByText('Signature request')).toBeInTheDocument();
@@ -28,7 +30,9 @@ describe('ConfirmTitle', () => {
   });
 
   it('should render the title and description for typed signature', () => {
-    const mockStore = configureMockStore([])(genMockState({ type: TransactionType.signTypedData }));
+    const mockStore = configureMockStore([])(
+      genMockState({ type: TransactionType.signTypedData }),
+    );
     const { getByText } = renderWithProvider(<ConfirmTitle />, mockStore);
 
     expect(getByText('Signature request')).toBeInTheDocument();
@@ -40,7 +44,9 @@ describe('ConfirmTitle', () => {
   });
 
   it('should render the title and description for a contract interaction transaction', () => {
-    const mockStore = configureMockStore([])(genMockState({ type: TransactionType.contractInteraction }));
+    const mockStore = configureMockStore([])(
+      genMockState({ type: TransactionType.contractInteraction }),
+    );
     const { getByText } = renderWithProvider(<ConfirmTitle />, mockStore);
 
     expect(getByText('Transaction request')).toBeInTheDocument();
