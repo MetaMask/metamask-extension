@@ -36,6 +36,7 @@ import {
   NetworkConfiguration,
 } from '@metamask/network-controller';
 import { InterfaceState } from '@metamask/snaps-sdk';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
@@ -454,7 +455,10 @@ export function addNewAccount(): ThunkAction<
 > {
   log.debug(`background.addNewAccount`);
   return async (dispatch, getState) => {
-    const oldAccounts = getInternalAccounts(getState());
+    const oldAccounts = getInternalAccounts(getState()).filter(
+      (internalAccount) =>
+        internalAccount.metadata.keyring.type === KeyringTypes.hd,
+    );
     dispatch(showLoadingIndication());
 
     let addedAccountAddress;
