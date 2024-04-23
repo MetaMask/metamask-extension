@@ -7,6 +7,7 @@ import {
   Display,
   JustifyContent,
   TextColor,
+  TextVariant,
 } from '../../../../../helpers/constants/design-system';
 
 import Identicon from '../../../../../components/ui/identicon';
@@ -16,6 +17,7 @@ import {
   Box,
   Text,
 } from '../../../../../components/component-library';
+import { getAvatarNetworkColor } from '../../../../../helpers/utils/accounts';
 import HeaderInfo from './header-info';
 
 const Header = () => {
@@ -37,11 +39,17 @@ const Header = () => {
             src={networkImageUrl}
             name={networkDisplayName}
             size={AvatarNetworkSize.Xs}
+            backgroundColor={getAvatarNetworkColor(networkDisplayName)}
             className="confirm_header__avatar-network"
           />
         </Box>
         <Box marginInlineStart={4}>
-          <Text>{fromName}</Text>
+          <Text
+            color={TextColor.textDefault}
+            variant={TextVariant.bodyMdMedium}
+          >
+            {fromName}
+          </Text>
           <Text color={TextColor.textAlternative}>{networkDisplayName}</Text>
         </Box>
       </Box>
