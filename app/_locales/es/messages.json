@@ -3485,10 +3485,6 @@
   "snapDetailWebsite": {
     "message": "Sitio web"
   },
-  "snapInstallRequest": {
-    "message": "La instalación de $1 otorga los siguientes permisos. Solo continúe si confía en $1.",
-    "description": "$1 is the snap name."
-  },
   "snapInstallSuccess": {
     "message": "Instalación completa"
   },

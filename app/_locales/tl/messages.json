@@ -3485,10 +3485,6 @@
   "snapDetailWebsite": {
     "message": "Website"
   },
-  "snapInstallRequest": {
-    "message": "Ang pag-install ng $1 ay nagbibigay dito ng mga sumusunod na pahintulot. Magpatuloy lang kung pinagkakatiwalaan mo ang $1.",
-    "description": "$1 is the snap name."
-  },
   "snapInstallSuccess": {
     "message": "Tapos na ang pag-install"
   },
