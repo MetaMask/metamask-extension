@@ -407,54 +407,26 @@ jobs:
           command: |
             #!/bin/bash
 
-            # GitHub Personal Access Token for API Authentication
-            GITHUB_TOKEN="${GITHUB_TOKEN}"
-            BRANCH="${CIRCLE_BRANCH}"
+            GH_LABEL=team-mmi
 
-            # Fetch the PRs associated with the current branch and check the response
-            PR_RESPONSE=$(curl -s -H "Authorization: token ${GITHUB_TOKEN}" \
-              "https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls?state=open&head=${CIRCLE_PROJECT_USERNAME}:${BRANCH}")
-            echo "https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls?state=open&head=${CIRCLE_PROJECT_USERNAME}:${BRANCH}"
+            echo $CIRCLE_PULL_REQUESTS | sed 's/,/\n/g'
 
-            # Check if the response contains valid JSON
-            if ! echo "$PR_RESPONSE" | jq empty; then
-                echo "Failed to parse JSON response."
-                echo "$PR_RESPONSE"
-                exit 1
-            fi
+            # See if any associated PRs have matching label
+            MATCHING_PR_COUNT=$(echo $CIRCLE_PULL_REQUESTS \
+              | sed -e 's#,#\n#g' -e 's#/github.com/#/api.github.com/repos/#g' -e 's#/pull/#/pulls/#g' \
+              | xargs -n1 curl -s \
+              | jq -s "map((.labels|map(select(.name==\"${GH_LABEL}\"))))|flatten|length")
 
-            # Check if we received an array of PRs
-            if ! echo "$PR_RESPONSE" | jq -e '. | type == "array"'; then
-                echo "$PR_RESPONSE"
-                echo "Expected an array of PRs, got something else."
-                exit 1
-            fi
-
-            # Check if the array of PRs is empty
-            PR_COUNT=$(echo "$PR_RESPONSE" | jq '. | length')
-
-            # If no PRs are found, exit gracefully
-            if [ "$PR_COUNT" -eq 0 ]; then
-              echo "No open PRs found. Exiting."
+            if [ "${MATCHING_PR_COUNT}" -eq "0" ]; then
+              echo "team-mmi tag not found."
+              # assign the RUN_MMI_OPTIONAL variable to false
               echo "false" > ./RUN_MMI_OPTIONAL
               exit 0
             fi
 
-            # Extract label names from the PR_RESPONSE
-            LABEL_NAMES=$(echo "$PR_RESPONSE" | jq -r '.[0].labels[].name')
-
-            echo "Labels found: $LABEL_NAMES"
-
-            # Check if "team-mmi" label is present
-            if echo "$LABEL_NAMES" | grep -qw "team-mmi"; then
-              echo "team-mmi tag found."
-              # assign the RUN_MMI_OPTIONAL variable to true
-              echo "true" > ./RUN_MMI_OPTIONAL
-            else
-              echo "team-mmi tag not found."
-              # assign the RUN_MMI_OPTIONAL variable to false
-              echo "false" > ./RUN_MMI_OPTIONAL
-            fi
+            echo "team-mmi tag found."
+            # assign the RUN_MMI_OPTIONAL variable to true
+            echo "true" > ./RUN_MMI_OPTIONAL
       - persist_to_workspace:
           root: .
           paths:
