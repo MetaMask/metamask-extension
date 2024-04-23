@@ -465,6 +465,14 @@ describe('util', () => {
       };
     });
 
+    it('should not be vulnerable to ReDoS when stripping nesting', () => {
+      const startTime = Date.now();
+      util.stripOneLayerofNesting(`${'['.repeat(90000)}|[]`);
+      const endTime = Date.now();
+      const executionTime = endTime - startTime;
+      expect(executionTime).toBeLessThan(3000);
+    });
+
     it('should throw an error if types is undefined', () => {
       expect(() =>
         util.sanitizeMessage(message, primaryType, undefined),

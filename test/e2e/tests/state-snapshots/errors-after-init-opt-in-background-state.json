@@ -34,7 +34,6 @@
     "showTestnetMessageInDropdown": true,
     "showBetaHeader": false,
     "showPermissionsTour": true,
-    "showProductTour": true,
     "showNetworkBanner": true,
     "showAccountBanner": true,
     "trezorModel": null,
@@ -47,7 +46,8 @@
     "surveyLinkLastClickedOrClosed": "object",
     "signatureSecurityAlertResponses": "object",
     "switchedNetworkDetails": "object",
-    "switchedNetworkNeverShowMessage": "boolean"
+    "switchedNetworkNeverShowMessage": "boolean",
+    "currentExtensionPopupId": "number"
   },
   "ApprovalController": {
     "pendingApprovals": "object",
@@ -169,6 +169,7 @@
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": false,
+      "smartTransactionsOptInStatus": false,
       "useNativeCurrencyAsPrimaryCurrency": true,
       "petnamesEnabled": true
     },

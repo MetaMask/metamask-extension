@@ -6,11 +6,15 @@ import { ConnectAccountsModalList } from './connect-accounts-modal-list';
 export const ConnectAccountsModal = ({
   onClose,
   onAccountsUpdate,
+  activeTabOrigin,
 }: {
   onClose: () => void;
   onAccountsUpdate: () => void;
+  activeTabOrigin: string;
 }) => {
-  const accounts = useSelector(getUnconnectedAccounts);
+  const accounts = useSelector((state) =>
+    getUnconnectedAccounts(state, activeTabOrigin),
+  );
   const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]);
 
   const handleAccountClick = (address: string) => {
@@ -65,6 +69,7 @@ export const ConnectAccountsModal = ({
       isIndeterminate={isIndeterminate}
       onClose={onClose}
       onAccountsUpdate={onAccountsUpdate}
+      activeTabOrigin={activeTabOrigin}
     />
   );
 };

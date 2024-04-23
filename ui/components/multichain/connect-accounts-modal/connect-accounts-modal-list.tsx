@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   Box,
   ButtonPrimary,
@@ -24,7 +24,6 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import Tooltip from '../../ui/tooltip/tooltip';
-import { getOriginOfCurrentTab } from '../../../selectors/selectors';
 import { getURLHost } from '../../../helpers/utils/util';
 import { addMorePermittedAccounts } from '../../../store/actions';
 import { ConnectAccountsListProps } from './connect-account-modal.types';
@@ -40,9 +39,9 @@ export const ConnectAccountsModalList: React.FC<ConnectAccountsListProps> = ({
   checked,
   isIndeterminate,
   onAccountsUpdate,
+  activeTabOrigin,
 }) => {
   const t = useI18nContext();
-  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const dispatch = useDispatch();
   return (
     <Modal isOpen onClose={onClose} data-testid="connect-more-accounts">
@@ -88,7 +87,7 @@ export const ConnectAccountsModalList: React.FC<ConnectAccountsListProps> = ({
             return (
               <AccountListItem
                 onClick={() => handleAccountClick(account.address)}
-                identity={account}
+                account={account}
                 key={account.address}
                 closeMenu={onClose}
                 startAccessory={<Checkbox isChecked={isSelectedAccount} />}
