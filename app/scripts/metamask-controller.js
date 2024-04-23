@@ -1443,8 +1443,6 @@ export default class MetamaskController extends EventEmitter {
         state: initState.PushPlatformNotificationsController,
       });
 
-    this.pushPlatformNotificationsController.enablePushNotifications();
-
     // account tracker watches balances, nonces, and any code at their address
     this.accountTracker = new AccountTracker({
       provider: this.provider,
