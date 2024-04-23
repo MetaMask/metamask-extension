@@ -279,7 +279,7 @@ async function initialize() {
     // script <=> background connection for prerendered pages.
     // eslint-disable-next-line no-undef
     chrome?.privacy.network.networkPredictionEnabled.set({
-      value: true,
+      value: false,
       scope: 'regular',
     });
   } catch (err) {
