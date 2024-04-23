@@ -274,7 +274,10 @@ function saveTimestamp() {
  */
 async function initialize() {
   try {
-    browser.privacy.network.networkPredictionEnabled.set({
+    // https://bugs.chromium.org/p/chromium/issues/detail?id=1457040
+    // Temporary workaround for chromium bug that breaks the content
+    // script <=> background connection for prerendered pages.
+    chrome?.privacy.network.networkPredictionEnabled.set({
       value: true,
       scope: 'regular',
     });
