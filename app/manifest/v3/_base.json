@@ -40,8 +40,8 @@
       "all_frames": true
     },
     {
-      "matches": ["*://connect.trezor.io/*/popup.html"],
-      "js": ["vendor/trezor/content-script.js"]
+      "matches": ["*://connect.trezor.io/9/*"],
+      "js": ["vendor/trezor/content-script-new.js"]
     }
   ],
   "default_locale": "en",

@@ -10,7 +10,7 @@ import type {
   EthereumSignedTx,
   PROTO,
   EthereumSignTypedHash,
-} from '@trezor/connect-web';
+} from '@trezor/connect-webextension';
 import {
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,

@@ -12,7 +12,7 @@ import {
   EthereumSignTypedHash,
   EthereumSignMessage,
   EthereumSignTypedDataTypes,
-} from '@trezor/connect-web';
+} from '@trezor/connect-webextension';
 import {
   OffscreenCommunicationTarget,
   TrezorAction,

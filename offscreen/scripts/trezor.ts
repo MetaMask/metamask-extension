@@ -1,4 +1,7 @@
-import TrezorConnectSDK, { DEVICE, DEVICE_EVENT } from '@trezor/connect-web';
+import TrezorConnectSDK, {
+  DEVICE,
+  DEVICE_EVENT,
+} from '@trezor/connect-webextension';
 import {
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
