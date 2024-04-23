@@ -81,11 +81,11 @@ export function useSimulationMetrics({
   useIncompleteAssetEvent(balanceChanges, displayNamesByAddress);
 
   const receivingAssets = balanceChanges.filter(
-    (change) => !change.amount.isNegative,
+    (change) => !change.amount.isNegative(),
   );
 
-  const sendingAssets = balanceChanges.filter(
-    (change) => change.amount.isNegative,
+  const sendingAssets = balanceChanges.filter((change) =>
+    change.amount.isNegative(),
   );
 
   const simulationResponse = getSimulationResponseType(simulationData);
