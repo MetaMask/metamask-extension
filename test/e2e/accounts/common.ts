@@ -65,7 +65,7 @@ export async function installSnapSimpleKeyring(
     tag: 'button',
   });
 
-  await driver.findElement({ text: 'Installation request', tag: 'h3' });
+  await driver.findElement({ text: 'Add to MetaMask', tag: 'h3' });
 
   await driver.clickElementSafe('[data-testid="snap-install-scroll"]', 200);
 
