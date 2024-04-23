@@ -6,16 +6,15 @@ import {
   SimulationTokenBalanceChange,
   SimulationTokenStandard,
 } from '@metamask/transaction-controller';
+import { BigNumber } from 'bignumber.js';
 import { ContractExchangeRates } from '@metamask/assets-controllers';
 import { useAsyncResultOrThrow } from '../../../../hooks/useAsyncResult';
 import { getTokenStandardAndDetails } from '../../../../store/actions';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
-import { Numeric } from '../../../../../shared/modules/Numeric';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import { getCurrentChainId, getCurrentCurrency } from '../../../../selectors';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
 import {
-  Amount,
   BalanceChange,
   FIAT_UNAVAILABLE,
   NATIVE_ASSET_IDENTIFIER,
@@ -44,12 +43,13 @@ function convertStandard(standard: SimulationTokenStandard) {
 function getAssetAmount(
   { isDecrease: isNegative, difference: quantity }: SimulationBalanceChange,
   decimals: number,
-): Amount {
-  const numeric = Numeric.from(quantity, 16)
-    .times(isNegative ? -1 : 1, 10)
-    .toBase(10)
-    .shiftedBy(decimals);
-  return { isNegative, quantity, decimals, numeric };
+): BigNumber {
+  return (
+    new BigNumber(quantity, 16)
+      .times(isNegative ? -1 : 1)
+      // Shift the decimal point to the left by the number of decimals.
+      .shift(-decimals)
+  );
 }
 
 // Fetches the decimals for the given token address.
@@ -106,9 +106,7 @@ function getNativeBalanceChange(
   }
   const asset = NATIVE_ASSET_IDENTIFIER;
   const amount = getAssetAmount(nativeBalanceChange, NATIVE_DECIMALS);
-  const fiatAmount = amount.numeric
-    .applyConversionRate(nativeFiatRate)
-    .toNumber();
+  const fiatAmount = amount.times(nativeFiatRate).toNumber();
   return { asset, amount, fiatAmount };
 }
 
@@ -131,7 +129,7 @@ function getTokenBalanceChanges(
 
     const fiatRate = erc20FiatRates[tokenBc.address];
     const fiatAmount = fiatRate
-      ? amount.numeric.applyConversionRate(fiatRate).toNumber()
+      ? amount.times(fiatRate).toNumber()
       : FIAT_UNAVAILABLE;
 
     return { asset, amount, fiatAmount };

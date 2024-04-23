@@ -3,6 +3,7 @@ import {
   SimulationData,
   SimulationErrorCode,
 } from '@metamask/transaction-controller';
+import { BigNumber } from 'bignumber.js';
 import { useTransactionEventFragment } from '../../hooks/useTransactionEventFragment';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import {
@@ -44,7 +45,7 @@ const SYMBOL_MOCK = 'TST';
 
 const BALANCE_CHANGE_MOCK = {
   asset: { address: ADDRESS_MOCK, standard: TokenStandard.ERC20 },
-  amount: { isNegative: true, quantity: '0x1', decimals: 18 },
+  amount: new BigNumber(-1),
   fiatAmount: 1.23,
 } as unknown as BalanceChange;
 
@@ -178,7 +179,7 @@ describe('useSimulationMetrics', () => {
     ])('with asset quantity if %s', (_, isNegative, property) => {
       const balanceChange = {
         ...BALANCE_CHANGE_MOCK,
-        amount: { ...BALANCE_CHANGE_MOCK.amount, isNegative },
+        amount: new BigNumber(isNegative ? -1 : 1),
       };
 
       expectUpdateTransactionEventFragmentCalled(
@@ -257,7 +258,7 @@ describe('useSimulationMetrics', () => {
             {
               ...BALANCE_CHANGE_MOCK,
               asset: { ...BALANCE_CHANGE_MOCK.asset, standard },
-              amount: { ...BALANCE_CHANGE_MOCK.amount, isNegative },
+              amount: new BigNumber(isNegative ? -1 : 1),
             } as BalanceChange,
           ],
         },
@@ -303,10 +304,7 @@ describe('useSimulationMetrics', () => {
       (_, fiatAmount, isNegative, property, expected) => {
         const balanceChange = {
           ...BALANCE_CHANGE_MOCK,
-          amount: {
-            ...BALANCE_CHANGE_MOCK.amount,
-            isNegative,
-          },
+          amount: new BigNumber(isNegative ? -1 : 1),
           fiatAmount,
         };
 
@@ -397,10 +395,7 @@ describe('useSimulationMetrics', () => {
 
         const balanceChange = {
           ...BALANCE_CHANGE_MOCK,
-          amount: {
-            ...BALANCE_CHANGE_MOCK.amount,
-            isNegative,
-          },
+          amount: new BigNumber(isNegative ? -1 : 1),
           asset: { ...BALANCE_CHANGE_MOCK.asset, standard },
         };
 
@@ -423,10 +418,7 @@ describe('useSimulationMetrics', () => {
     ])('with asset total value if %s', (_, isNegative, property) => {
       const balanceChange1 = {
         ...BALANCE_CHANGE_MOCK,
-        amount: {
-          ...BALANCE_CHANGE_MOCK.amount,
-          isNegative,
-        },
+        amount: new BigNumber(isNegative ? -1 : 1),
         fiatAmount: 1.23,
       };
 
