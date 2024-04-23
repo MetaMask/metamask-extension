@@ -18,7 +18,6 @@ module.exports = {
     '@storybook/addon-essentials',
     '@storybook/addon-actions',
     '@storybook/addon-a11y',
-    '@storybook/addon-mdx-gfm',
     '@storybook/addon-webpack5-compiler-swc',
     '@chromatic-com/storybook',
   ],

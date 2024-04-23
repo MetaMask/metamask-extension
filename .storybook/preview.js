@@ -74,23 +74,8 @@ const proxiedBackground = new Proxy(
 setBackgroundConnection(proxiedBackground);
 
 const metamaskDecorator = (story, context) => {
-  const isDark = useDarkMode();
   const currentLocale = context.globals.locale;
   const current = allLocales[currentLocale];
-
-  useEffect(() => {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-
-    if (!currentTheme)
-      document.documentElement.setAttribute('data-theme', 'light');
-
-    if (currentTheme === 'light' && isDark) {
-      document.documentElement.setAttribute('data-theme', 'dark');
-    } else if (currentTheme === 'dark' && !isDark) {
-      document.documentElement.setAttribute('data-theme', 'light');
-    }
-  }, [isDark]);
-
   return (
     <Provider store={store}>
       <Router history={history}>

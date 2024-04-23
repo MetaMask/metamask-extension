@@ -446,7 +446,6 @@
     "@storybook/addon-actions": "^8.0.9",
     "@storybook/addon-docs": "^8.0.9",
     "@storybook/addon-essentials": "^8.0.9",
-    "@storybook/addon-mdx-gfm": "^8.0.9",
     "@storybook/addon-webpack5-compiler-swc": "^1.0.2",
     "@storybook/components": "^8.0.9",
     "@storybook/core-events": "^8.0.9",
