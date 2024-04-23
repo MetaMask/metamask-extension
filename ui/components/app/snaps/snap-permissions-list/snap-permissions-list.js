@@ -18,7 +18,7 @@ export default function SnapPermissionsList({
   const snapsMetadata = useSelector(getSnapsMetadata);
 
   return (
-    <Box paddingTop={1} paddingBottom={1} className="snap-permissions-list">
+    <Box className="snap-permissions-list">
       {getWeightedPermissions({
         t,
         permissions,
