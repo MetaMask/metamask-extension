@@ -113,19 +113,17 @@ describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function () {
         );
 
         // Confirm all 3 tokens are present as suggested token list
-        assert.equal(multipleSuggestedtokens.length, 2);
-
-        // Cancel watchAsset
-        await driver.findClickableElement({ text: 'Cancel', tag: 'button' });
-        await driver.clickElement(
-          '[data-testid="page-container-footer-cancel"]',
-        );
+        assert.equal(multipleSuggestedtokens.length, 1);
 
         await switchToNotificationWindow(driver);
 
         await driver.clickElement({ text: 'Switch network', tag: 'button' });
 
         await driver.waitUntilXWindowHandles(2);
+
+        /**
+         * Confirm 2nd watchAsset confirmation doesn't pop section
+         */
       },
     );
   });
