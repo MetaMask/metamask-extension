@@ -172,7 +172,8 @@ import {
   TEST_NETWORK_TICKER_MAP,
   NetworkStatus,
 } from '../../shared/constants/network';
-import { ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS } from '../../shared/constants/smartTransactions';
+import { getAllowedSmartTransactionsChainIds } from '../../shared/constants/smartTransactions';
+
 import {
   HardwareDeviceNames,
   LedgerTransportTypes,
@@ -1871,7 +1872,7 @@ export default class MetamaskController extends EventEmitter {
         ),
       },
       {
-        supportedChainIds: ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS,
+        supportedChainIds: getAllowedSmartTransactionsChainIds(),
       },
       initState.SmartTransactionsController,
     );
@@ -4317,6 +4318,10 @@ export default class MetamaskController extends EventEmitter {
     const selectedAddress =
       this.accountsController.getSelectedAccount().address;
     this.txController.wipeTransactions(true, selectedAddress);
+    this.smartTransactionsController.wipeSmartTransactions({
+      address: selectedAddress,
+      ignoreNetwork: false,
+    });
     this.networkController.resetConnection();
 
     return selectedAddress;
