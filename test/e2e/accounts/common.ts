@@ -223,7 +223,7 @@ export async function approveOrRejectRequest(driver: Driver, flowType: string) {
   // get the JSON from the screen
   const requestJSON = await (
     await driver.findElement({
-      text: '"scope": "",',
+      text: '"scope": "eip:155:1337",',
       tag: 'div',
     })
   ).getText();
