@@ -279,7 +279,7 @@
     "@metamask/controller-utils": "^9.1.0",
     "@metamask/design-tokens": "^2.1.1",
     "@metamask/desktop": "^0.3.0",
-    "@metamask/ens-controller": "^9.0.0",
+    "@metamask/ens-controller": "^10.0.1",
     "@metamask/eth-json-rpc-filters": "^7.0.0",
     "@metamask/eth-json-rpc-middleware": "^12.1.0",
     "@metamask/eth-keyring-controller": "^16.0.0",
