@@ -12,7 +12,7 @@ const {
 } = require('../../helpers');
 
 describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function () {
-  it('should batch subsequent watchAsset token into first watchAsset confirmation with a switchChain in the middle', async function () {
+  it('should not batch subsequent watchAsset token into first watchAsset confirmation with a switchChain in the middle', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
