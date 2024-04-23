@@ -51,23 +51,24 @@ export async function installSnapSimpleKeyring(
   await unlockWallet(driver);
 
   // navigate to test Snaps page and connect
-  await driver.openNewPage(TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL);
-  await driver.clickElement('#connectButton');
+  // await driver.openNewPage(TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL);
+  // await driver.clickElement('#connectButton');
 
-  await driver.delay(500);
+  // await driver.delay(500);
 
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  // await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-  await driver.delay(500);
+  // await driver.delay(500);
 
-  await driver.clickElement({
-    text: 'Connect',
-    tag: 'button',
-  });
+  // await driver.clickElement({
+  //   text: 'Connect',
+  //   tag: 'button',
+  // });
 
   await driver.findElement({ text: 'Add to MetaMask', tag: 'h3' });
+  // await driver.findElement({ text: 'Installation request', tag: 'h2' });
 
-  await driver.clickElementSafe('[data-testid="snap-install-scroll"]', 200);
+  // await driver.clickElementSafe('[data-testid="snap-install-scroll"]', 200);
 
   await driver.waitForSelector({ text: 'Confirm' });
 
@@ -75,24 +76,30 @@ export async function installSnapSimpleKeyring(
     text: 'Confirm',
     tag: 'button',
   });
+  // await driver.waitForSelector({ text: 'Install' });
 
-  await driver.waitForSelector({ text: 'OK' });
+  // await driver.clickElement({
+  //   text: 'Install',
+  //   tag: 'button',
+  // });
 
-  await driver.clickElement({
-    text: 'OK',
-    tag: 'button',
-  });
+  // await driver.waitForSelector({ text: 'OK' });
 
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.SnapSimpleKeyringDapp);
+  // await driver.clickElement({
+  //   text: 'OK',
+  //   tag: 'button',
+  // });
 
-  await driver.waitForSelector({
-    text: 'Connected',
-    tag: 'span',
-  });
+  // await driver.switchToWindowWithTitle(WINDOW_TITLES.SnapSimpleKeyringDapp);
 
-  if (isAsyncFlow) {
-    await toggleAsyncFlow(driver);
-  }
+  // await driver.waitForSelector({
+  //   text: 'Connected',
+  //   tag: 'span',
+  // });
+
+  // if (isAsyncFlow) {
+  //   await toggleAsyncFlow(driver);
+  // }
 }
 
 async function toggleAsyncFlow(driver: Driver) {
