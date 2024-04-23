@@ -5939,6 +5939,7 @@
         "console.log": true
       },
       "packages": {
+        "@babel/core>@babel/parser": true,
         "depcheck>@babel/traverse": true,
         "lavamoat-viz>lavamoat-core>lavamoat-tofu>@babel/parser": true
       }
