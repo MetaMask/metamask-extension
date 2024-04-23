@@ -197,6 +197,10 @@ env:
 
   # This variable is read by Trezor's source and breaks build if not included
   - ASSET_PREFIX: null
+  - SUITE_TYPE: null
+  - COMMITHASH: null
+  - VERSION: null
+  - IS_CODESIGN_BUILD: null
 
   - SENTRY_MMI_DSN: ''
 

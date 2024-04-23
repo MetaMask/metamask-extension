@@ -1047,6 +1047,10 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
   // forward update event (used by watchify)
   bundler.on('update', () => performBundle());
 
+  // WIP: Please see https://github.com/MetaMask/metamask-extension/pull/23763/files
+  // eslint-disable-next-line node/no-extraneous-require
+  bundler.require(require.resolve('ts-mixer'), { expose: 'ts-mixer' });
+
   console.log(`Bundle start: "${label}"`);
   await performBundle();
   console.log(`Bundle end: "${label}"`);
