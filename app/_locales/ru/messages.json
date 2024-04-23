@@ -1650,12 +1650,6 @@
   "general": {
     "message": "Общие"
   },
-  "globalTitle": {
-    "message": "Глобальное меню"
-  },
-  "globalTourDescription": {
-    "message": "Просматривайте свой Portfolio, подключенные сайты, настройки и многое другое"
-  },
   "goBack": {
     "message": "Назад"
   },
@@ -2888,12 +2882,6 @@
   "permissions": {
     "message": "Разрешения"
   },
-  "permissionsTitle": {
-    "message": "Разрешения"
-  },
-  "permissionsTourDescription": {
-    "message": "Найдите свои подключенные счета и управляйте разрешениями здесь"
-  },
   "personalAddressDetected": {
     "message": "Обнаружен личный адрес. Введите адрес контракта токена."
   },
@@ -3496,10 +3484,6 @@
   },
   "snapDetailWebsite": {
     "message": "Веб-сайт"
-  },
-  "snapInstallRequest": {
-    "message": "Установка $1 дает ему следующие разрешения. Продолжайте, только если доверяете $1.",
-    "description": "$1 is the snap name."
   },
   "snapInstallSuccess": {
     "message": "Установка завершена"
@@ -4247,12 +4231,6 @@
   },
   "switchedTo": {
     "message": "Вы переключились на"
-  },
-  "switcherTitle": {
-    "message": "Переключатель сети"
-  },
-  "switcherTourDescription": {
-    "message": "Нажмите на значок для переключения сетей или добавления новой сети"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "В случае смены сетей все ожидающие подтверждения будут отменены"

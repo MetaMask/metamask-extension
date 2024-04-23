@@ -1650,12 +1650,6 @@
   "general": {
     "message": "Pangkalahatan"
   },
-  "globalTitle": {
-    "message": "Global menu"
-  },
-  "globalTourDescription": {
-    "message": "Tingnan ang iyong portfolio, mga nakakonektang site, setting at marami pang iba"
-  },
   "goBack": {
     "message": "Bumalik"
   },
@@ -2888,12 +2882,6 @@
   "permissions": {
     "message": "Mga Pahintulot"
   },
-  "permissionsTitle": {
-    "message": "Mga Pahintulot"
-  },
-  "permissionsTourDescription": {
-    "message": "Hanapin ang mga nakakonekta mong account at pamahalaan ang mga pahintulot dito"
-  },
   "personalAddressDetected": {
     "message": "Natukoy ang personal na address. Ilagay ang address ng kontrata ng token."
   },
@@ -3496,10 +3484,6 @@
   },
   "snapDetailWebsite": {
     "message": "Website"
-  },
-  "snapInstallRequest": {
-    "message": "Ang pag-install ng $1 ay nagbibigay dito ng mga sumusunod na pahintulot. Magpatuloy lang kung pinagkakatiwalaan mo ang $1.",
-    "description": "$1 is the snap name."
   },
   "snapInstallSuccess": {
     "message": "Tapos na ang pag-install"
@@ -4247,12 +4231,6 @@
   },
   "switchedTo": {
     "message": "Lumipat ka sa"
-  },
-  "switcherTitle": {
-    "message": "Network switcher"
-  },
-  "switcherTourDescription": {
-    "message": "I-click ang icon para lumipat ng network o magdagdag ng bagong network"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Ang paglipat ng network ay magkakansela ng lahat ng nakabinbing kumpirmasyon"

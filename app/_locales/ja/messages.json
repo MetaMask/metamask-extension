@@ -1650,12 +1650,6 @@
   "general": {
     "message": "一般"
   },
-  "globalTitle": {
-    "message": "グローバルメニュー"
-  },
-  "globalTourDescription": {
-    "message": "ポートフォリオ、接続されたサイト、設定などを確認できます"
-  },
   "goBack": {
     "message": "戻る"
   },
@@ -2888,12 +2882,6 @@
   "permissions": {
     "message": "許可"
   },
-  "permissionsTitle": {
-    "message": "許可"
-  },
-  "permissionsTourDescription": {
-    "message": "ここで接続されたアカウントを見つけて許可の管理を行います"
-  },
   "personalAddressDetected": {
     "message": "個人アドレスが検出されました。トークンコントラクトアドレスを入力してください。"
   },
@@ -3496,10 +3484,6 @@
   },
   "snapDetailWebsite": {
     "message": "Webサイト"
-  },
-  "snapInstallRequest": {
-    "message": "$1をインストールすることで、次のアクセス許可が付与されます。$1を信頼できる場合にのみ続行してください。",
-    "description": "$1 is the snap name."
   },
   "snapInstallSuccess": {
     "message": "インストール完了"
@@ -4247,12 +4231,6 @@
   },
   "switchedTo": {
     "message": "次に切り替えました:"
-  },
-  "switcherTitle": {
-    "message": "ネットワークスイッチャー"
-  },
-  "switcherTourDescription": {
-    "message": "アイコンをクリックしてネットワークを切り替えるか、新しいネットワークを追加します"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "ネットワークを切り替えると、保留中の承認がすべてキャンセルされます"

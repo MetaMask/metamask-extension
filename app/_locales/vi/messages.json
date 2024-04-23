@@ -1650,12 +1650,6 @@
   "general": {
     "message": "Chung"
   },
-  "globalTitle": {
-    "message": "Trình đơn chung"
-  },
-  "globalTourDescription": {
-    "message": "Xem danh mục đầu tư, trang web đã kết nối, cài đặt, v.v... của bạn"
-  },
   "goBack": {
     "message": "Quay Lại"
   },
@@ -2888,12 +2882,6 @@
   "permissions": {
     "message": "Quyền"
   },
-  "permissionsTitle": {
-    "message": "Quyền"
-  },
-  "permissionsTourDescription": {
-    "message": "Tìm tài khoản đã kết nối của bạn và quản lý quyền tại đây"
-  },
   "personalAddressDetected": {
     "message": "Đã tìm thấy địa chỉ cá nhân. Nhập địa chỉ hợp đồng token."
   },
@@ -3496,10 +3484,6 @@
   },
   "snapDetailWebsite": {
     "message": "Trang web"
-  },
-  "snapInstallRequest": {
-    "message": "Cài đặt $1 để được cấp các quyền sau. Chỉ tiếp tục nếu bạn tin tưởng $1.",
-    "description": "$1 is the snap name."
   },
   "snapInstallSuccess": {
     "message": "Cài đặt hoàn tất"
@@ -4247,12 +4231,6 @@
   },
   "switchedTo": {
     "message": "Bạn đã chuyển sang"
-  },
-  "switcherTitle": {
-    "message": "Trình chuyển mạng"
-  },
-  "switcherTourDescription": {
-    "message": "Nhấp vào biểu tượng để chuyển mạng hoặc thêm mạng mới"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Khi bạn chuyển mạng, mọi xác nhận đang chờ xử lý sẽ bị hủy"

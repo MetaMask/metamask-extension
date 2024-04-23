@@ -1653,12 +1653,6 @@
   "genericExplorerView": {
     "message": "Afficher le compte sur $1"
   },
-  "globalTitle": {
-    "message": "Menu global"
-  },
-  "globalTourDescription": {
-    "message": "Voyez votre portfolio, vos sites connectés, vos paramètres, et bien plus encore"
-  },
   "goBack": {
     "message": "Retour"
   },
@@ -2891,12 +2885,6 @@
   "permissions": {
     "message": "Autorisations"
   },
-  "permissionsTitle": {
-    "message": "Autorisations"
-  },
-  "permissionsTourDescription": {
-    "message": "Trouvez vos comptes connectés et gérez les autorisations ici"
-  },
   "personalAddressDetected": {
     "message": "Votre adresse personnelle a été détectée. Veuillez saisir à la place l’adresse du contrat du jeton."
   },
@@ -3499,10 +3487,6 @@
   },
   "snapDetailWebsite": {
     "message": "Site web"
-  },
-  "snapInstallRequest": {
-    "message": "L’installation de $1 lui donne les autorisations suivantes. Ne continuez que si vous faites confiance à $1.",
-    "description": "$1 is the snap name."
   },
   "snapInstallSuccess": {
     "message": "Installation terminée"
@@ -4250,12 +4234,6 @@
   },
   "switchedTo": {
     "message": "Vous êtes passé à"
-  },
-  "switcherTitle": {
-    "message": "Commutateur réseau"
-  },
-  "switcherTourDescription": {
-    "message": "Cliquez sur l’icône pour changer de réseau ou ajouter un nouveau réseau"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Le changement de réseau annulera toutes les confirmations en attente"
