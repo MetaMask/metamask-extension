@@ -53,12 +53,12 @@ describe('Test Snap Get Locale', function () {
           tag: 'p',
         });
 
-        await driver.waitForSelector({ text: 'Install' });
+        await driver.waitForSelector({ text: 'Confirm' });
 
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
 

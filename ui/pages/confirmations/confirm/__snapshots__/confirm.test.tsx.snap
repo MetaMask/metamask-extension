@@ -71,7 +71,7 @@ exports[`Confirm matches snapshot for personal signature type 1`] = `
             class="mm-box mm-box--margin-inline-start-4"
           >
             <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
             />
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
@@ -166,7 +166,7 @@ exports[`Confirm matches snapshot for personal signature type 1`] = `
                     tabindex="0"
                   >
                     <span
-                      class="mm-box mm-icon mm-icon--size-md mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
                       style="mask-image: url('./images/icons/question.svg');"
                     />
                   </div>
@@ -303,7 +303,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
             class="mm-box mm-box--margin-inline-start-4"
           >
             <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
             />
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
@@ -398,7 +398,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                     tabindex="0"
                   >
                     <span
-                      class="mm-box mm-icon mm-icon--size-md mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
                       style="mask-image: url('./images/icons/question.svg');"
                     />
                   </div>

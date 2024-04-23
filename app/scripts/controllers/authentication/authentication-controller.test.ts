@@ -1,7 +1,6 @@
 import { ControllerMessenger } from '@metamask/base-controller';
-import type { HandleSnapRequest } from '@metamask/snaps-controllers';
 import AuthenticationController, {
-  AuthenticationControllerMessenger,
+  AllowedActions,
   AuthenticationControllerState,
 } from './authentication-controller';
 import {
@@ -233,11 +232,11 @@ describe('authentication/authentication-controller - getSessionProfile() tests',
 });
 
 function createAuthenticationMessenger() {
-  const messenger = new ControllerMessenger<HandleSnapRequest, never>();
+  const messenger = new ControllerMessenger<AllowedActions, never>();
   return messenger.getRestricted({
     name: 'AuthenticationController',
     allowedActions: [`SnapController:handleRequest`],
-  }) as AuthenticationControllerMessenger;
+  });
 }
 
 function createMockAuthenticationMessenger() {
@@ -247,25 +246,29 @@ function createMockAuthenticationMessenger() {
   const mockSnapSignMessage = jest
     .fn()
     .mockResolvedValue('MOCK_SIGNED_MESSAGE');
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  mockCall.mockImplementation(((actionType: any, params: any) => {
-    if (
-      actionType === 'SnapController:handleRequest' &&
-      params?.request.method === 'getPublicKey'
-    ) {
-      return mockSnapGetPublicKey();
+
+  mockCall.mockImplementation((...args) => {
+    const [actionType, params] = args;
+    if (actionType === 'SnapController:handleRequest') {
+      if (params?.request.method === 'getPublicKey') {
+        return mockSnapGetPublicKey();
+      }
+
+      if (params?.request.method === 'signMessage') {
+        return mockSnapSignMessage();
+      }
+
+      throw new Error(
+        `MOCK_FAIL - unsupported SnapController:handleRequest call: ${params?.request.method}`,
+      );
     }
 
-    if (
-      actionType === 'SnapController:handleRequest' &&
-      params?.request.method === 'signMessage'
-    ) {
-      return mockSnapSignMessage();
+    function exhaustedMessengerMocks(action: never) {
+      throw new Error(`MOCK_FAIL - unsupported messenger call: ${action}`);
     }
 
-    return '';
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  }) as any);
+    return exhaustedMessengerMocks(actionType);
+  });
 
   return { messenger, mockSnapGetPublicKey, mockSnapSignMessage };
 }
