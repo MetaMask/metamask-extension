@@ -3485,10 +3485,6 @@
   "snapDetailWebsite": {
     "message": "वेबसाइट"
   },
-  "snapInstallRequest": {
-    "message": "$1 इंस्टॉल करने से इसे निम्नलिखित अनुमतियां मिलती हैं। अगर आप $1 पर भरोसा करते हैं तो ही जारी रखें।",
-    "description": "$1 is the snap name."
-  },
   "snapInstallSuccess": {
     "message": "इंस्टॉलेशन समाप्त"
   },
