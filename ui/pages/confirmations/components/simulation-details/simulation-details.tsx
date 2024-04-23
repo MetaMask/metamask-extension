@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   SimulationData,
   SimulationError,
@@ -30,6 +30,7 @@ import { useSimulationMetrics } from './useSimulationMetrics';
 export type SimulationDetailsProps = {
   simulationData?: SimulationData;
   transactionId: string;
+  enableMetrics?: boolean;
 };
 
 /**
@@ -146,38 +147,27 @@ const SimulationDetailsLayout: React.FC<{
   </Box>
 );
 
-function useLoadingTime() {
-  const [loadingStart] = useState(Date.now());
-  const [loadingTime, setLoadingTime] = useState<number | undefined>();
-
-  const setLoadingComplete = () => {
-    if (loadingTime === undefined) {
-      setLoadingTime((Date.now() - loadingStart) / 1000);
-    }
-  };
-
-  return { loadingTime, setLoadingComplete };
-}
-
 /**
  * Preview of a transaction's effects using simulation data.
  *
  * @param props
  * @param props.simulationData - The simulation data to display.
  * @param props.transactionId - The ID of the transaction being simulated.
+ * @param props.enableMetrics - Whether to enable simulation metrics.
  */
 export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   simulationData,
   transactionId,
+  enableMetrics = false,
 }: SimulationDetailsProps) => {
   const t = useI18nContext();
-  const { loadingTime, setLoadingComplete } = useLoadingTime();
   const balanceChangesResult = useBalanceChanges(simulationData);
   const loading = !simulationData || balanceChangesResult.pending;
 
   useSimulationMetrics({
+    enableMetrics,
     balanceChanges: balanceChangesResult.value,
-    loadingTime,
+    loading,
     simulationData,
     transactionId,
   });
@@ -189,8 +179,6 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
       ></SimulationDetailsLayout>
     );
   }
-
-  setLoadingComplete();
 
   const { error } = simulationData;
 
