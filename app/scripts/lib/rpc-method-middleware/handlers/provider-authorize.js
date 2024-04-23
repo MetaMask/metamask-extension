@@ -1,4 +1,4 @@
-import { ethErrors } from 'eth-rpc-errors';
+import { EthereumRpcError } from 'eth-rpc-errors';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   isSupportedScopeString,
@@ -51,10 +51,10 @@ async function providerAuthorizeHandler(_req, res, _next, end, _hooks) {
 
   if (Object.keys(restParams).length !== 0) {
     return end(
-      ethErrors.provider.custom({
-        code: 5301,
-        message: 'Session Properties can only be optional and global',
-      }),
+      new EthereumRpcError(
+        5301,
+        'Session Properties can only be optional and global',
+      ),
     );
   }
 
@@ -70,6 +70,7 @@ async function providerAuthorizeHandler(_req, res, _next, end, _hooks) {
     }
   }
   if (requiredScopes && Object.keys(validRequiredScopes).length === 0) {
+    // What error code and message here?
     throw new Error(
       '`requiredScopes` object MUST contain 1 more `scopeObjects`, if present',
     );
@@ -85,6 +86,7 @@ async function providerAuthorizeHandler(_req, res, _next, end, _hooks) {
     }
   }
   if (optionalScopes && Object.keys(validOptionalScopes).length === 0) {
+    // What error code and message here?
     throw new Error(
       '`optionalScopes` object MUST contain 1 more `scopeObjects`, if present',
     );
@@ -98,10 +100,7 @@ async function providerAuthorizeHandler(_req, res, _next, end, _hooks) {
   }
   if (sessionProperties && Object.keys(sessionProperties).length === 0) {
     return end(
-      ethErrors.provider.custom({
-        code: 5300,
-        message: 'Invalid Session Properties requested',
-      }),
+      new EthereumRpcError(5300, 'Invalid Session Properties requested'),
     );
   }
 
@@ -111,6 +110,7 @@ async function providerAuthorizeHandler(_req, res, _next, end, _hooks) {
     ...validOptionalScopes,
   };
 
+  // TODO:
   // Unless the dapp is known and trusted, give generic error messages for
   // - the user denies consent for exposing accounts that match the requested and approved chains,
   // - the user denies consent for requested methods,
@@ -123,14 +123,10 @@ async function providerAuthorizeHandler(_req, res, _next, end, _hooks) {
   //     "message": "Unknown error"
 
   if (Object.keys(validScopes).length === 0) {
-    return end(
-      ethErrors.provider.custom({
-        code: 5000,
-        message: 'Unknown error with request',
-      }),
-    );
+    return end(new EthereumRpcError(5000, 'Unknown error with request'));
   }
 
+  // TODO:
   // When user disapproves accepting calls with the request methods
   //   code = 5001
   //   message = "User disapproved requested methods"
@@ -151,18 +147,15 @@ async function providerAuthorizeHandler(_req, res, _next, end, _hooks) {
       // supported by the wallet.
 
       return end(
-        ethErrors.provider.custom({
-          code: 5100,
-          message: 'Requested chains are not supported',
-        }),
+        new EthereumRpcError(5100, 'Requested chains are not supported'),
       );
     }
   }
 
+  // TODO:
   // When provider evaluates requested methods to not be supported
   //   code = 5101
   //   message = "Requested methods are not supported"
-
   // When provider does not recognize one or more requested method(s)
   //   code = 5201
   //   message = "Unknown method(s) requested"
@@ -180,10 +173,7 @@ async function providerAuthorizeHandler(_req, res, _next, end, _hooks) {
       //   code = 5202
       //   message = "Unknown notification(s) requested"
       return end(
-        ethErrors.provider.custom({
-          code: 5102,
-          message: 'Requested notifications are not supported',
-        }),
+        new EthereumRpcError(5102, 'Requested notifications are not supported'),
       );
     }
   }
@@ -191,9 +181,7 @@ async function providerAuthorizeHandler(_req, res, _next, end, _hooks) {
   res.result = {
     sessionId,
     sessionScopes: validScopes,
-    sessionProperties: {
-      expiry: '2022-11-31T17:07:31+00:00',
-    },
+    sessionProperties: randomSessionProperties,
   };
   return end();
 }

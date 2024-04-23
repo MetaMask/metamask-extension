@@ -57,6 +57,7 @@ export const isValidScope = (
 
   // These assume that the namespace has a notion of chainIds
   if (isChainScoped && scopes) {
+    // TODO: Probably requires refactoring this helper a bit
     // When a badly-formed request includes a chainId mismatched to scope
     //   code = 5203
     //   message = "Scope/chain mismatch"
@@ -115,6 +116,7 @@ export const isSupportedNotification = (notification: string): boolean => {
 enum KnownCaipNamespace {
   /** EIP-155 compatible chains. */
   Eip155 = 'eip155',
+  Wallet = 'wallet', // Needs to be added to utils
 }
 
 const isKnownCaipNamespace = (
