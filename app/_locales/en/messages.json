@@ -2227,7 +2227,7 @@
     "message": "Install origin"
   },
   "installRequest": {
-    "message": "Installation request"
+    "message": "Add to MetaMask"
   },
   "installedOn": {
     "message": "Installed on $1",
@@ -4536,7 +4536,7 @@
     "message": "Website"
   },
   "snapInstallRequest": {
-    "message": "Installing $1 gives it the following permissions. Only continue if you trust $1.",
+    "message": "Installing $1 gives it the following permissions.",
     "description": "$1 is the snap name."
   },
   "snapInstallSuccess": {
@@ -4598,8 +4598,8 @@
     "description": "Error title used when snap update fails."
   },
   "snapUpdateRequest": {
-    "message": "Updating $1 to $2 gives it the following permissions. Only continue if you trust $1.",
-    "description": "$1 is the snap name and $2 is the snap version."
+    "message": "Updating $1 gives it the following permissions.",
+    "description": "$1 is the Snap name."
   },
   "snapUpdateSuccess": {
     "message": "Update complete"

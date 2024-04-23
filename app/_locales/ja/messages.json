@@ -3485,10 +3485,6 @@
   "snapDetailWebsite": {
     "message": "Webサイト"
   },
-  "snapInstallRequest": {
-    "message": "$1をインストールすることで、次のアクセス許可が付与されます。$1を信頼できる場合にのみ続行してください。",
-    "description": "$1 is the snap name."
-  },
   "snapInstallSuccess": {
     "message": "インストール完了"
   },
