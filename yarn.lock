@@ -1747,6 +1747,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@contentful/rich-text-html-renderer@npm:^16.3.5":
+  version: 16.3.5
+  resolution: "@contentful/rich-text-html-renderer@npm:16.3.5"
+  dependencies:
+    "@contentful/rich-text-types": "npm:^16.3.5"
+    escape-html: "npm:^1.0.3"
+  checksum: 560ea4a5e8f7b34409c97732c7393f7e3b054a9a4ba9e32a0921cba347759ee5678b4579a1c0bcf538b97bbe033689e98bd13fba827f8dfbc7c54ee99499a423
+  languageName: node
+  linkType: hard
+
+"@contentful/rich-text-types@npm:^16.0.2, @contentful/rich-text-types@npm:^16.3.5":
+  version: 16.3.5
+  resolution: "@contentful/rich-text-types@npm:16.3.5"
+  checksum: ce06c18b6e9c6353f820784a4ff81b757df905204fea97952708c63ca6be53f98e6982a36fee1a443d7f200f4a534c70a7cc32679d4e7de1b5aa618dc241500b
+  languageName: node
+  linkType: hard
+
 "@cspotcode/source-map-support@npm:^0.8.0":
   version: 0.8.1
   resolution: "@cspotcode/source-map-support@npm:0.8.1"
@@ -4685,7 +4702,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/gas-fee-controller@npm:^14.0.0, @metamask/gas-fee-controller@npm:^14.0.1":
+"@metamask/gas-fee-controller@npm:^14.0.1":
   version: 14.0.1
   resolution: "@metamask/gas-fee-controller@npm:14.0.1"
   dependencies:
@@ -5330,9 +5347,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/queued-request-controller@npm:^0.8.0":
-  version: 0.8.0
-  resolution: "@metamask/queued-request-controller@npm:0.8.0"
+"@metamask/queued-request-controller@npm:^0.9.0":
+  version: 0.9.0
+  resolution: "@metamask/queued-request-controller@npm:0.9.0"
   dependencies:
     "@metamask/base-controller": "npm:^5.0.1"
     "@metamask/controller-utils": "npm:^9.1.0"
@@ -5342,8 +5359,8 @@ __metadata:
     "@metamask/utils": "npm:^8.3.0"
   peerDependencies:
     "@metamask/network-controller": ^18.0.0
-    "@metamask/selected-network-controller": ^11.0.0
-  checksum: dc30430a6055ca44ee3d70342d75d5604bdcc2d0dde55108f38a4fc16117bc709d6e2f47458b7ca82c9c6423c3116ff3c752f8c65a654718fdbcacf7a325d1b8
+    "@metamask/selected-network-controller": ^12.0.0
+  checksum: 44ce97a9ff375787f3b96b420a8a2132218559c92282d2f2ba3940117400b3fa340606378e9f221a698e8f5d2f91ac4f9a94f3d3aded577ca47f89e7514bd9bc
   languageName: node
   linkType: hard
 
@@ -5392,9 +5409,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/selected-network-controller@npm:^11.0.0":
-  version: 11.0.0
-  resolution: "@metamask/selected-network-controller@npm:11.0.0"
+"@metamask/selected-network-controller@npm:^12.0.1":
+  version: 12.0.1
+  resolution: "@metamask/selected-network-controller@npm:12.0.1"
   dependencies:
     "@metamask/base-controller": "npm:^5.0.1"
     "@metamask/json-rpc-engine": "npm:^8.0.1"
@@ -5405,7 +5422,7 @@ __metadata:
   peerDependencies:
     "@metamask/network-controller": ^18.0.0
     "@metamask/permission-controller": ^9.0.0
-  checksum: d674d36deff984da679d22e65b3b3827a9e667f8f39ce87e4ae327210609f7ae57fca57c1127b34c880361e188302c94c87bb75ab08db15b6b52341b976961a0
+  checksum: a0ff5119cd9382cb7b30036bca018452bfe26e8a9bfec4f2a34e66b4f72f251839c063a903fb8edf05c88cf1e85ba1282fe2be2e85c3182eb617c1440508b17f
   languageName: node
   linkType: hard
 
@@ -12199,14 +12216,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.1.3":
-  version: 1.6.2
-  resolution: "axios@npm:1.6.2"
+"axios@npm:^1.1.3, axios@npm:^1.6.7":
+  version: 1.6.8
+  resolution: "axios@npm:1.6.8"
   dependencies:
-    follow-redirects: "npm:^1.15.0"
+    follow-redirects: "npm:^1.15.6"
     form-data: "npm:^4.0.0"
     proxy-from-env: "npm:^1.1.0"
-  checksum: 612bc93f8f738a518e7c5f9de9cc782bcd36aac6bae279160ef6a10260378e21c1786520eab3336898e3d66e0839ebdf739f327fb6d0431baa4d3235703a7652
+  checksum: 3f9a79eaf1d159544fca9576261ff867cbbff64ed30017848e4210e49f3b01e97cf416390150e6fdf6633f336cd43dc1151f890bbd09c3c01ad60bb0891eee63
   languageName: node
   linkType: hard
 
@@ -14520,6 +14537,42 @@ __metadata:
   version: 1.0.5
   resolution: "content-type@npm:1.0.5"
   checksum: 585847d98dc7fb8035c02ae2cb76c7a9bd7b25f84c447e5ed55c45c2175e83617c8813871b4ee22f368126af6b2b167df655829007b21aa10302873ea9c62662
+  languageName: node
+  linkType: hard
+
+"contentful-resolve-response@npm:^1.8.1":
+  version: 1.8.1
+  resolution: "contentful-resolve-response@npm:1.8.1"
+  dependencies:
+    fast-copy: "npm:^2.1.7"
+  checksum: 6023824e98843d47c900501d2252336dd1dfebe8d868cb81b650252f5946963063cbe2b466e8e2238d41634a779dbfe4a43ba6c7996ca77124824c2554f66cab
+  languageName: node
+  linkType: hard
+
+"contentful-sdk-core@npm:^8.1.0":
+  version: 8.1.2
+  resolution: "contentful-sdk-core@npm:8.1.2"
+  dependencies:
+    fast-copy: "npm:^2.1.7"
+    lodash.isplainobject: "npm:^4.0.6"
+    lodash.isstring: "npm:^4.0.1"
+    p-throttle: "npm:^4.1.1"
+    qs: "npm:^6.11.2"
+  checksum: 9e5b6dc1b2a1a91a9c4a01b0f24aff23606d0a6f7b56b7ca5930d57f4c29503886874e2ac653d924b742e9445da31b862c651b2d98e1f74ec35f6f0a3afdb912
+  languageName: node
+  linkType: hard
+
+"contentful@npm:^10.8.7":
+  version: 10.8.7
+  resolution: "contentful@npm:10.8.7"
+  dependencies:
+    "@contentful/rich-text-types": "npm:^16.0.2"
+    axios: "npm:^1.6.7"
+    contentful-resolve-response: "npm:^1.8.1"
+    contentful-sdk-core: "npm:^8.1.0"
+    json-stringify-safe: "npm:^5.0.1"
+    type-fest: "npm:^4.0.0"
+  checksum: db0bf6342ed9fdc577c583bc627626ea95ee2af3a0b47600fae48dbb1354f64bc226174c4d98dfd224d4f991391d1bfa367a5a01bad9ea44fbc5f9f424de6798
   languageName: node
   linkType: hard
 
@@ -18045,6 +18098,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fast-copy@npm:^2.1.7":
+  version: 2.1.7
+  resolution: "fast-copy@npm:2.1.7"
+  checksum: 0651a334d42e567f48e6efa9595202f3613353d7b46a1c4e6e055e3ab508583e4819f1bc06722588bd121680722923ba26bcfa6100661e8171a914893fb77e62
+  languageName: node
+  linkType: hard
+
 "fast-deep-equal@npm:^3.1.1, fast-deep-equal@npm:^3.1.3":
   version: 3.1.3
   resolution: "fast-deep-equal@npm:3.1.3"
@@ -18611,13 +18671,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.14.0, follow-redirects@npm:^1.14.9, follow-redirects@npm:^1.15.0":
-  version: 1.15.3
-  resolution: "follow-redirects@npm:1.15.3"
+"follow-redirects@npm:^1.14.0, follow-redirects@npm:^1.14.9, follow-redirects@npm:^1.15.6":
+  version: 1.15.6
+  resolution: "follow-redirects@npm:1.15.6"
   peerDependenciesMeta:
     debug:
       optional: true
-  checksum: 60d98693f4976892f8c654b16ef6d1803887a951898857ab0cdc009570b1c06314ad499505b7a040ac5b98144939f8597766e5e6a6859c0945d157b473aa6f5f
+  checksum: 70c7612c4cab18e546e36b991bbf8009a1a41cf85354afe04b113d1117569abf760269409cb3eb842d9f7b03d62826687086b081c566ea7b1e6613cf29030bf7
   languageName: node
   linkType: hard
 
@@ -23914,6 +23974,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash.isstring@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "lodash.isstring@npm:4.0.1"
+  checksum: eaac87ae9636848af08021083d796e2eea3d02e80082ab8a9955309569cb3a463ce97fd281d7dc119e402b2e7d8c54a23914b15d2fc7fff56461511dc8937ba0
+  languageName: node
+  linkType: hard
+
 "lodash.memoize@npm:~3.0.3":
   version: 3.0.4
   resolution: "lodash.memoize@npm:3.0.4"
@@ -24723,6 +24790,7 @@ __metadata:
     "@babel/register": "npm:^7.22.15"
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch"
     "@blockaid/ppom_release": "npm:^1.4.5"
+    "@contentful/rich-text-html-renderer": "npm:^16.3.5"
     "@ensdomains/content-hash": "npm:^2.5.7"
     "@ethereumjs/tx": "npm:^4.1.1"
     "@ethersproject/abi": "npm:^5.6.4"
@@ -24782,7 +24850,7 @@ __metadata:
     "@metamask/ethjs-contract": "npm:^0.4.1"
     "@metamask/ethjs-query": "npm:^0.7.1"
     "@metamask/forwarder": "npm:^1.1.0"
-    "@metamask/gas-fee-controller": "npm:^14.0.0"
+    "@metamask/gas-fee-controller": "npm:^15.0.0"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/keyring-api": "npm:^3.0.0"
     "@metamask/keyring-controller": "patch:@metamask/keyring-controller@npm%3A13.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-13.0.0-d94816a680.patch"
@@ -24802,11 +24870,11 @@ __metadata:
     "@metamask/post-message-stream": "npm:^8.0.0"
     "@metamask/ppom-validator": "npm:^0.29.0"
     "@metamask/providers": "npm:^14.0.2"
-    "@metamask/queued-request-controller": "npm:^0.8.0"
+    "@metamask/queued-request-controller": "npm:^0.9.0"
     "@metamask/rate-limit-controller": "npm:^3.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
-    "@metamask/selected-network-controller": "npm:^11.0.0"
+    "@metamask/selected-network-controller": "npm:^12.0.1"
     "@metamask/signature-controller": "npm:^12.0.0"
     "@metamask/smart-transactions-controller": "npm:^8.1.0"
     "@metamask/snaps-controllers": "npm:^7.0.1"
@@ -24906,6 +24974,7 @@ __metadata:
     chokidar: "npm:^3.5.3"
     classnames: "npm:^2.2.6"
     concurrently: "npm:^8.2.2"
+    contentful: "npm:^10.8.7"
     copy-to-clipboard: "npm:^3.3.3"
     copy-webpack-plugin: "npm:^12.0.2"
     cross-spawn: "npm:^7.0.3"
@@ -25072,7 +25141,7 @@ __metadata:
     vinyl-sourcemaps-apply: "npm:^0.2.1"
     wait-on: "npm:^7.0.1"
     watchify: "npm:^4.0.0"
-    web3-stream-provider: "npm:^4.0.0"
+    web3-stream-provider: "npm:^5.0.0"
     webextension-polyfill: "npm:^0.8.0"
     webpack: "npm:^5.91.0"
     yaml: "npm:^2.4.1"
@@ -27224,6 +27293,13 @@ __metadata:
   dependencies:
     aggregate-error: "npm:^3.0.0"
   checksum: 7ba4a2b1e24c05e1fc14bbaea0fc6d85cf005ae7e9c9425d4575550f37e2e584b1af97bcde78eacd7559208f20995988d52881334db16cf77bc1bcf68e48ed7c
+  languageName: node
+  linkType: hard
+
+"p-throttle@npm:^4.1.1":
+  version: 4.1.1
+  resolution: "p-throttle@npm:4.1.1"
+  checksum: fe8709f3c3b1da7c033479375c2c302e80c1a5d86449013afa7cd46d1dc210bc824a7e4a9d088e66d31987d00878c2b5491bb2fe76246d4d2fc9a1636f5f8298
   languageName: node
   linkType: hard
 
@@ -33632,6 +33708,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"type-fest@npm:^4.0.0":
+  version: 4.15.0
+  resolution: "type-fest@npm:4.15.0"
+  checksum: 8f897551877daa0df7bb17a21b6acd8a21ac5a0bdb14dbfd353b16013fed99f23c6d9c12a2c7685c8dededb4739ec8bfb120a914330f8b11a478a89758a11acc
+  languageName: node
+  linkType: hard
+
 "type-is@npm:^1.6.16, type-is@npm:~1.6.18":
   version: 1.6.18
   resolution: "type-is@npm:1.6.18"
@@ -34973,13 +35056,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"web3-stream-provider@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "web3-stream-provider@npm:4.0.0"
+"web3-stream-provider@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "web3-stream-provider@npm:5.0.0"
   dependencies:
-    readable-stream: "npm:^2.0.5"
-    uuid: "npm:^3.3.3"
-  checksum: 89e00b55d9253dfe2f18185ede9af5af170d49ff50638750c2bacd9ebc14b94d62c9a601271cb790034139ff7393e72d08229340f31495c018594913d074e21a
+    readable-stream: "npm:^3.6.2"
+    uuid: "npm:^9.0.0"
+  checksum: 33f9fc359b381dbe20818027018de281cc0be452cb86ebf09eae80c0bfac18e4149498033f44ee7bfaf8d9017335621d9c9db42186c0f60872a0f76df9f50657
   languageName: node
   linkType: hard
 
