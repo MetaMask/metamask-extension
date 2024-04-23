@@ -7,6 +7,7 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { Json } from '@metamask/utils';
 
 import {
+  getRedesignedConfirmationsEnabled,
   latestPendingConfirmationSelector,
   pendingConfirmationsSelector,
   unconfirmedTransactionsHashSelector,
@@ -27,9 +28,15 @@ const useCurrentConfirmation = () => {
   );
   const [currentConfirmation, setCurrentConfirmation] =
     useState<Record<string, unknown>>();
+  const redesignedConfirmationsEnabled = useSelector(
+    getRedesignedConfirmationsEnabled,
+  );
 
   useEffect(() => {
-    if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
+    if (
+      !process.env.ENABLE_CONFIRMATION_REDESIGN ||
+      !redesignedConfirmationsEnabled
+    ) {
       return;
     }
     let pendingConfirmation: Approval | undefined;

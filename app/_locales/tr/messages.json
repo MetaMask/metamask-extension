@@ -1650,12 +1650,6 @@
   "general": {
     "message": "Genel"
   },
-  "globalTitle": {
-    "message": "Genel menü"
-  },
-  "globalTourDescription": {
-    "message": "Portföyünüze, bağlı sitelere, ayarlara ve daha fazlasına bakın"
-  },
   "goBack": {
     "message": "Geri git"
   },
@@ -2888,12 +2882,6 @@
   "permissions": {
     "message": "İzinler"
   },
-  "permissionsTitle": {
-    "message": "İzinler"
-  },
-  "permissionsTourDescription": {
-    "message": "Burada bağlı hesaplarınızı bulun ve izinleri yönetin"
-  },
   "personalAddressDetected": {
     "message": "Kişisel adres algılandı. Token sözleşme adresini girin."
   },
@@ -3496,10 +3484,6 @@
   },
   "snapDetailWebsite": {
     "message": "Web Sitesi"
-  },
-  "snapInstallRequest": {
-    "message": "$1 yüklendiğinde aşağıdaki izinler verilir. Sadece $1 adlı snape güveniyorsanız devam edin.",
-    "description": "$1 is the snap name."
   },
   "snapInstallSuccess": {
     "message": "Yükleme tamamlandı"
@@ -4247,12 +4231,6 @@
   },
   "switchedTo": {
     "message": "Şuna geçiş yaptınız:"
-  },
-  "switcherTitle": {
-    "message": "Ağ değiştirici"
-  },
-  "switcherTourDescription": {
-    "message": "Ağ değiştirmek veya yeni bir ağ eklemek için simgeye tıklayın"
   },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Ağ değiştirmek bekleyen tüm onayları iptal eder"
