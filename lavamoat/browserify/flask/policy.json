@@ -720,8 +720,8 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/accounts-controller>@metamask/base-controller": true,
-        "@metamask/eth-snap-keyring": true,
-        "@metamask/keyring-api": true,
+        "@metamask/accounts-controller>@metamask/eth-snap-keyring": true,
+        "@metamask/accounts-controller>@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
         "uuid": true
       }
@@ -732,6 +732,41 @@
       },
       "packages": {
         "immer": true
+      }
+    },
+    "@metamask/accounts-controller>@metamask/eth-snap-keyring": {
+      "globals": {
+        "URL": true,
+        "console.error": true
+      },
+      "packages": {
+        "@ethereumjs/tx": true,
+        "@metamask/accounts-controller>@metamask/eth-snap-keyring>uuid": true,
+        "@metamask/accounts-controller>@metamask/keyring-api": true,
+        "@metamask/eth-sig-util": true,
+        "@metamask/utils": true,
+        "superstruct": true,
+        "webpack>events": true
+      }
+    },
+    "@metamask/accounts-controller>@metamask/eth-snap-keyring>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/accounts-controller>@metamask/keyring-api": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "@metamask/accounts-controller>@metamask/keyring-api>uuid": true,
+        "@metamask/utils": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/accounts-controller>@metamask/keyring-api>uuid": {
+      "globals": {
+        "crypto": true
       }
     },
     "@metamask/address-book-controller": {
@@ -1575,14 +1610,22 @@
     "@metamask/keyring-controller": {
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/base-controller": true,
         "@metamask/browser-passworder": true,
         "@metamask/eth-sig-util": true,
+        "@metamask/keyring-controller>@metamask/base-controller": true,
         "@metamask/keyring-controller>@metamask/eth-hd-keyring": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
         "@metamask/name-controller>async-mutex": true,
         "@metamask/utils": true
+      }
+    },
+    "@metamask/keyring-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/keyring-controller>@metamask/eth-hd-keyring": {
@@ -2488,7 +2531,18 @@
       },
       "packages": {
         "@metamask/safe-event-emitter": true,
-        "@metamask/snaps-controllers>readable-stream": true
+        "@metamask/snaps-controllers>@metamask/json-rpc-middleware-stream>readable-stream": true
+      }
+    },
+    "@metamask/snaps-controllers>@metamask/json-rpc-middleware-stream>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "browserify>process": true,
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true,
+        "webpack>events": true
       }
     },
     "@metamask/snaps-controllers>concat-stream": {
