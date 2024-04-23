@@ -33,23 +33,29 @@ describe('NFT detection', function () {
           WALLET_PASSWORD,
         );
 
-        const homePage = await driver.findElement('.home__main-view');
-        const homePageDisplayed = await homePage.isDisplayed();
+        const homePageDisplayed = await (
+          await driver.findElement('.home__main-view')
+        ).isDisplayed();
 
         assert.equal(homePageDisplayed, true);
 
         await driver.clickElement('[data-testid="home__nfts-tab"]');
         await driver.delay(1000);
-        const collection = await driver.findElement(
-          '[data-testid="collection-expander-button"]',
-        );
-        const nftImage = await driver.findElement('[data-testid="nft-item"]');
 
         assert.equal(
-          await collection.getText(),
+          await (
+            await driver.findElement(
+              '[data-testid="collection-expander-button"]',
+            )
+          ).getText(),
           'ENS: Ethereum Name Service (1)',
         );
-        assert.equal(await nftImage.isDisplayed(), true);
+        assert.equal(
+          await (
+            await driver.findElement('[data-testid="nft-item"]')
+          ).isDisplayed(),
+          true,
+        );
       },
     );
   });
