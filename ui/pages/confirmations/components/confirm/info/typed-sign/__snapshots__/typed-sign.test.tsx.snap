@@ -41,7 +41,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
         >
-          https://metamask.github.io
+          metamask.github.io
         </p>
       </div>
     </div>
@@ -460,7 +460,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
         >
-          https://metamask.github.io
+          metamask.github.io
         </p>
       </div>
     </div>
@@ -879,7 +879,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
         >
-          https://metamask.github.io
+          metamask.github.io
         </p>
       </div>
     </div>
