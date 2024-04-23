@@ -1,9 +1,10 @@
 // eslint-disable-next-line spaced-comment
-/// <reference lib="WebWorker" />
-import { CHAIN_SYMBOLS } from '../../../../../../shared/constants/platform-notifications';
-import type { TRIGGER_TYPES } from '../../../../../../shared/constants/platform-notifications';
-import type { OnChainRawNotification } from '../../types/on-chain-notification/on-chain-notification';
-import { t } from '../../../../translate';
+/// <reference lib="webworker" />
+
+import { CHAIN_SYMBOLS } from '../../../../../shared/constants/platform-notifications';
+import type { TRIGGER_TYPES } from '../../../../../shared/constants/platform-notifications';
+import type { OnChainRawNotification } from '../types/on-chain-notification/on-chain-notification';
+import { t } from '../../../translate';
 import { getAmount, formatAmount } from './get-notification-data';
 
 type PushNotificationMessage = {

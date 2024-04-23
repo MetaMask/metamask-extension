@@ -1430,12 +1430,15 @@ export default class MetamaskController extends EventEmitter {
     const pushPlatformNotificationsMessenger =
       this.controllerMessenger.getRestricted({
         name: 'PushPlatformNotificationsController',
+        allowedActions: ['AuthenticationController:getBearerToken'],
       });
     this.pushPlatformNotificationsController =
       new PushPlatformNotificationsController({
         messenger: pushPlatformNotificationsMessenger,
         state: initState.PushPlatformNotificationsController,
       });
+
+    this.pushPlatformNotificationsController.enablePushNotifications();
 
     // account tracker watches balances, nonces, and any code at their address
     this.accountTracker = new AccountTracker({

@@ -1,7 +1,5 @@
-// eslint-disable-next-line spaced-comment
-/// <reference lib="WebWorker" />
-
 import { BigNumber } from 'bignumber.js';
+import { calcTokenAmount } from '../../../../../shared/lib/transactions-controller-utils';
 
 type FormatOptions = {
   decimalPlaces?: number;
@@ -10,22 +8,6 @@ type FormatOptions = {
 const defaultFormatOptions = {
   decimalPlaces: 4,
 };
-
-/**
- * calcTokenAmount is duplicated here specifically for use within the Service Worker context.
- * This duplication is intentional to avoid importing the entire transactions-controller-utils module,
- * which could potentially increase the size of the Service Worker script and impact its load time and performance.
- *
- * The original function can be found in the transactions-controller-utils module shared/lib/transactions-controller-utils.js
- *
- * @param value - The token amount in its smallest unit (e.g., wei for Ethereum).
- * @param decimals - The number of decimals the token uses.
- * @returns The token amount adjusted for its decimal places as a BigNumber.
- */
-export function calcTokenAmount(value: string, decimals: string) {
-  const multiplier = Math.pow(10, Number(decimals || 0));
-  return new BigNumber(String(value)).div(multiplier);
-}
 
 /**
  * Calculates the number of leading zeros in the fractional part of a number.
@@ -99,7 +81,10 @@ export const getAmount = (
     return '';
   }
 
-  const numericAmount = calcTokenAmount(amount, decimals).toNumber();
+  const numericAmount = calcTokenAmount(
+    amount,
+    parseFloat(decimals),
+  ).toNumber();
 
   return formatAmount(numericAmount, options);
 };
