@@ -205,6 +205,7 @@ env:
   - OIDC_API: https://oidc.api.cx.metamask.io
   - OIDC_CLIENT_ID: 1132f10a-b4e5-4390-a5f2-d9c6022db564
   - OIDC_GRANT_TYPE: urn:ietf:params:oauth:grant-type:jwt-bearer
+  - USER_STORAGE_API: https://user-storage.api.cx.metamask.io
 
   ###
   # API keys to 3rd party services
