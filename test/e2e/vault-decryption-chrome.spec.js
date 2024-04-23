@@ -52,11 +52,8 @@ async function closePopoverIfPresent(driver) {
   const popoverButtonSelector = '[data-testid="popover-close"]';
   const linkNotRightNow = { text: 'Not right now', tag: 'button' };
   try {
-    if (await driver.isElementPresent(popoverButtonSelector)) {
-      await driver.clickElement(popoverButtonSelector);
-    } else if (await driver.isElementPresent(linkNotRightNow)) {
-      await driver.clickElement(linkNotRightNow);
-    }
+    await driver.clickElementSafe(popoverButtonSelector);
+    await driver.clickElementSafe(linkNotRightNow);
   } catch (_err) {
     // No popover
   }
