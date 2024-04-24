@@ -7,11 +7,11 @@ The `Box` is a utility component that accepts many helper props to make styling 
 
 [MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
 
-{/* <Canvas of={BoxStories.BoxDefaultStory} /> */}
+<Canvas of={BoxStories.DefaultStory} />
 
 ## Props
 
-{/* <Controls of={BoxStories.DefaultStory} /> */}
+<Controls of={BoxStories.DefaultStory} />
 
 ## Usage
 
@@ -23,7 +23,7 @@ The margin props `margin`, `marginTop`, `marginRight`, `marginBottom`, `marginLe
 
 Accepted props are: `0, 1, 2, 4, 6, 8, 9, 10, 12, 'auto` or array of these values
 
-{/* <Canvas of={BoxStories.Margin} /> */}
+<Canvas of={BoxStories.Margin} />
 
 ```jsx
 <Box margin={4} />
@@ -52,7 +52,7 @@ The padding props work very similarly to margin. The padding props `padding`, `p
 
 Accepted props are: `0, 1, 2, 4, 6, 8, 9, 10, 12` or array of these values
 
-{/* <Canvas of={BoxStories.Padding} /> */}
+<Canvas of={BoxStories.Padding} />
 
 ```jsx
 <Box padding={4} />
@@ -104,7 +104,7 @@ import Box from '../ui/box';
 
 The `color` prop can be used to set the color of the content in Box component. The `color` prop accepts [responsive props](#responsive-props) in the form of array props. Defaults to `Color.textDefault`.
 
-{/* <Canvas of={BoxStories.ColorStory} /> */}
+<Canvas of={BoxStories.ColorStory} />
 
 Example of importing `TextColor` object with `Box` component
 
@@ -119,7 +119,7 @@ import Box from '../ui/box';
 
 Use the `backgroundColor` prop along with the `Color` or `BackgroundColor` object from `ui/helpers/constants/design-system.js` to change background color. The `backgroundColor` prop accepts [responsive props](#responsive-props) in the form of array props.
 
-{/* <Canvas of={BoxStories.BackgroundColorStory} /> */}
+<Canvas of={BoxStories.BackgroundColorStory} />
 
 Example of importing `BackgroundColor` object with `Box` component
 
@@ -141,7 +141,7 @@ import Box from '../ui/box';
 
 Use the `borderColor` prop along with the `Color` or `BorderColor` object from `ui/helpers/constants/design-system.js` to change border color. The `borderColor` prop accepts [responsive props](#responsive-props) in the form of array props.
 
-{/* <Canvas of={BoxStories.BorderColorStory} /> */}
+<Canvas of={BoxStories.BorderColorStory} />
 
 Example of importing `BorderColor` object with `Box` component
 
@@ -167,7 +167,7 @@ import Box from '../ui/box';
 
 Use the `borderRadius` prop along with the `BorderRadius` object from `ui/helpers/constants/design-system.js` to change border radius. The `borderRadius` prop accepts [responsive props](#responsive-props) in the form of array props.
 
-{/* <Canvas of={BoxStories.BorderRadiusStory} /> */}
+<Canvas of={BoxStories.BorderRadiusStory} />
 
 Example of importing `BorderRadius` object with `Box` component
 
@@ -206,7 +206,7 @@ The box component provides a responsive props api in the form of array props. Ar
 }
 ```
 
-{/* <Canvas of={BoxStories.ResponsiveProps} /> */}
+<Canvas of={BoxStories.ResponsiveProps} />
 
 ```jsx
 import {
@@ -250,7 +250,7 @@ import Box from '../ui/box';
 
 The polymorphic `as` prop allows you to change the root HTML element of the Box component. Defaults to `'div'`
 
-{/* <Canvas of={BoxStories.As} /> */}
+<Canvas of={BoxStories.As} />
 
 ```jsx
 import Box from '../../ui/box';
@@ -275,7 +275,7 @@ Example: [BlockSize.Half, BlockSize.ThreeFourths, BlockSize.OneFifth, BlockSize.
 - BlockSize.OneFifth is the width for `medium screen size (768px)` and up
 - BlockSize.ThreeSixths is the width for `large screen size (1280px)` and up
 
-{/* <Canvas of={BoxStories.Width} /> */}
+<Canvas of={BoxStories.Width} />
 
 ```jsx
 import {
