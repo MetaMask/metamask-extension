@@ -11,11 +11,6 @@ const FixtureBuilder = require('../../fixture-builder');
 const accountLabel2 = '2nd custom name';
 const accountLabel3 = '3rd custom name';
 
-async function getSpanText(driver) {
-  const spanElement = await driver.findElement('#accounts');
-  return await spanElement.getText();
-}
-
 describe('Connections page', function () {
   it('should disconnect when click on Disconnect button in connections page', async function () {
     await withFixtures(
@@ -174,7 +169,7 @@ describe('Connections page', function () {
         });
 
         assert.ok(newAccountConnected, 'Connected More Account Successfully');
-        //Switch back to Dapp
+        // Switch back to Dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         // Find the span element that contains the account addresses
         const accounts = await driver.findElement('#accounts');
