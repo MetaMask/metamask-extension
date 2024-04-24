@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import {
   AvatarAccount,
@@ -20,26 +20,54 @@ import {
   Display,
   FlexDirection,
   FontWeight,
+  IconColor,
   JustifyContent,
+  TextColor,
+  TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { ConfirmInfoRow } from '../../../../../components/app/confirm/info/row';
 import { AddressCopyButton } from '../../../../../components/multichain';
 import Tooltip from '../../../../../components/ui/tooltip/tooltip';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
-import { getUseBlockie } from '../../../../../selectors';
+
+import {
+  currentConfirmationSelector,
+  getUseBlockie,
+} from '../../../../../selectors';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventLocation,
+  MetaMetricsEventName,
+} from '../../../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import { ConfirmInfoRowCurrency } from '../../../../../components/app/confirm/info/row/currency';
 import { useBalance } from '../../../hooks/useBalance';
 
 const HeaderInfo = () => {
   const useBlockie = useSelector(getUseBlockie);
   const [showAccountInfo, setShowAccountInfo] = React.useState(false);
+
+  const currentConfirmation = useSelector(currentConfirmationSelector);
   const { recipientAddress: fromAddress, recipientName: fromName } =
     useConfirmationRecipientInfo();
 
   const t = useI18nContext();
+  const trackEvent = useContext(MetaMetricsContext);
 
   const { balance: balanceToUse } = useBalance(fromAddress);
+
+  function trackAccountModalOpened() {
+    trackEvent({
+      category: MetaMetricsEventCategory.Transactions,
+      event: MetaMetricsEventName.AccountDetailsOpened,
+      properties: {
+        action: 'Confirm Screen',
+        location: MetaMetricsEventLocation.SignatureConfirmation,
+        signature_type: currentConfirmation?.type,
+      },
+    });
+  }
 
   return (
     <>
@@ -53,9 +81,13 @@ const HeaderInfo = () => {
         <Tooltip position="bottom" title={t('accountDetails')} interactive>
           <ButtonIcon
             ariaLabel={t('accountDetails')}
+            color={IconColor.iconDefault}
             iconName={IconName.Info}
             size={ButtonIconSize.Md}
-            onClick={() => setShowAccountInfo(true)}
+            onClick={() => {
+              trackAccountModalOpened();
+              setShowAccountInfo(true);
+            }}
           />
         </Tooltip>
       </Box>
@@ -69,7 +101,11 @@ const HeaderInfo = () => {
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>
-            <Box display={Display.Flex} justifyContent={JustifyContent.center}>
+            <Box
+              display={Display.Flex}
+              justifyContent={JustifyContent.center}
+              style={{ position: 'relative' }}
+            >
               <Box
                 style={{ margin: '0 auto' }}
                 display={Display.Flex}
@@ -86,14 +122,16 @@ const HeaderInfo = () => {
                   address={fromAddress}
                   size={AvatarAccountSize.Lg}
                 />
-                <Text fontWeight={FontWeight.Bold} marginTop={2}>
+                <Text
+                  fontWeight={FontWeight.Bold}
+                  variant={TextVariant.bodyMd}
+                  color={TextColor.textDefault}
+                  marginTop={2}
+                >
                   {fromName}
                 </Text>
               </Box>
-              <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.flexEnd}
-              >
+              <Box style={{ position: 'absolute', right: 0 }}>
                 <ButtonIcon
                   ariaLabel={t('close')}
                   iconName={IconName.Close}

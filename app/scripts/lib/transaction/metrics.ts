@@ -7,6 +7,7 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { SmartTransaction } from '@metamask/smart-transactions-controller/dist/types';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import {
   determineTransactionAssetType,
@@ -38,6 +39,7 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { getBlockaidMetricsProps } from '../../../../ui/helpers/utils/metrics';
 ///: END:ONLY_INCLUDE_IF
+import { getSmartTransactionMetricsProperties } from '../../../../shared/modules/metametrics';
 import {
   getSnapAndHardwareInfoForMetrics,
   type SnapAndHardwareMessenger,
@@ -86,6 +88,10 @@ export type TransactionMetricsRequest = {
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   trackEvent: (payload: any) => void;
+  getIsSmartTransaction: () => boolean;
+  getSmartTransactionByMinedTxHash: (
+    txhash: string | undefined,
+  ) => SmartTransaction;
 };
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
@@ -869,7 +875,6 @@ async function buildEventFragmentProperties({
       TransactionType.tokenMethodSetApprovalForAll,
       TransactionType.tokenMethodTransfer,
       TransactionType.tokenMethodTransferFrom,
-      TransactionType.smart,
       TransactionType.swap,
       TransactionType.swapApproval,
     ].includes(type);
@@ -968,6 +973,12 @@ async function buildEventFragmentProperties({
     uiCustomizations.push(MetaMetricsEventUiCustomization.GasEstimationFailed);
   }
 
+  const smartTransactionMetricsProperties =
+    getSmartTransactionMetricsProperties(
+      transactionMetricsRequest,
+      transactionMeta,
+    );
+
   /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
   let properties = {
     chain_id: chainId,
@@ -994,6 +1005,7 @@ async function buildEventFragmentProperties({
     ///: END:ONLY_INCLUDE_IF
     // ui_customizations must come after ...blockaidProperties
     ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
+    ...smartTransactionMetricsProperties,
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as Record<string, any>;

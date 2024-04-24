@@ -4,27 +4,24 @@ import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
+import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { ConnectedAccountsMenu } from '.';
+
+const mockInternalAccount = createMockInternalAccount();
 
 const DEFAULT_PROPS = {
   isOpen: true,
   onClose: jest.fn(),
-  identity: {
-    address: 'mockAddress',
-    balance: 'mockBalance',
-    id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-    metadata: {
-      name: 'mockName',
-      keyring: {
-        type: 'HD Key Tree',
-      },
-    },
-    label: '',
+  account: {
+    ...mockInternalAccount,
+    balance: '0x123',
+    label: mockInternalAccount.metadata.name,
   },
   anchorElement: null,
   disableAccountSwitcher: false,
   closeMenu: jest.fn(),
   onActionClick: jest.fn(),
+  activeTabOrigin: 'metamask.github.io',
 };
 
 const renderComponent = (props = {}, stateChanges = {}) => {

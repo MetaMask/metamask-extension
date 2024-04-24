@@ -7,6 +7,7 @@ import testData from '../../../../../.storybook/test-data';
 import { Box } from '../../../../components/component-library';
 
 const STORE_MOCK = {
+  ...testData,
   metamask: {
     approvalFlows: [],
     currentCurrency: 'USD',
@@ -41,7 +42,6 @@ const STORE_MOCK = {
     },
     tokenList: {},
     accounts: testData.metamask.accounts,
-    identities: testData.metamask.identities,
     internalAccounts: testData.metamask.internalAccounts,
     accountsByChainId: testData.metamask.accountsByChainId,
     snaps: {
