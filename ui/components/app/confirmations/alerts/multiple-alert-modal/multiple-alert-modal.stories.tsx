@@ -6,9 +6,10 @@ import { Provider } from 'react-redux';
 import { baseAlertsMock } from '../alert-modal/alert-modal.stories';
 
 const OWNER_ID_MOCK = '123';
+
 const storeMock = configureStore({ confirmAlerts: {
   alerts: {[OWNER_ID_MOCK]: baseAlertsMock},
-  confirmed: {[OWNER_ID_MOCK]: {'from': false, 'data': false, 'contract': false}},
+  confirmed: {[OWNER_ID_MOCK]: {'From': false, 'Data': false, 'Contract': false}},
   } });
 
 export default {
@@ -45,7 +46,7 @@ export default {
 } as Meta<typeof MultipleAlertModal>;
 
 export const TemplateStory = (args) => {
-  return <MultipleAlertModal alertKey={'from'} {...args} />;
+  return <MultipleAlertModal alertKey={'From'} {...args} />;
 };
 TemplateStory.storyName = 'Multiple Critical Alert Modal';
 
@@ -55,14 +56,14 @@ TemplateStory.storyName = 'Multiple Critical Alert Modal';
 export const SingleCriticalAlertModal = TemplateStory.bind({});
 SingleCriticalAlertModal.storyName = 'Single Critical Alert Modal';
 SingleCriticalAlertModal.args = {
-  alertKey: 'from',
+  alertKey: 'From',
 };
 SingleCriticalAlertModal.decorators = [
   (story) => {
     const singleAlertStore = configureStore({
       confirmAlerts: {
         alerts: { [OWNER_ID_MOCK]: [baseAlertsMock[0]] },
-        confirmed: { [OWNER_ID_MOCK]: { 'from': false } },
+        confirmed: { [OWNER_ID_MOCK]: { 'From': false } },
       }
     });
     return <Provider store={singleAlertStore}>{story()}</Provider>
@@ -76,7 +77,7 @@ export const MultipleWarningAlertModal = TemplateStory.bind({});
 
 MultipleWarningAlertModal.storyName = 'Multiple Warning Alert Modal';
 MultipleWarningAlertModal.args = {
-  alertKey: 'data',
+  alertKey: 'Data',
 };
 
 /**
@@ -85,7 +86,7 @@ MultipleWarningAlertModal.args = {
 export const MultipleInfoAlertModal = TemplateStory.bind({});
 MultipleInfoAlertModal.storyName = 'Multiple Info Alert Modal';
 MultipleInfoAlertModal.args = {
-  alertKey: 'contract',
+  alertKey: 'Contract',
 };
 
 /**
@@ -94,5 +95,5 @@ MultipleInfoAlertModal.args = {
 export const MultipleCriticalAlertModal = TemplateStory.bind({});
 MultipleCriticalAlertModal.storyName = 'Multiple Critical Alert Modal';
 MultipleCriticalAlertModal.args = {
-  alertKey: 'from',
+  alertKey: 'From',
 };

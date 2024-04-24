@@ -1,16 +1,16 @@
+import { ApprovalType } from '@metamask/controller-utils';
+import { useHistory } from 'react-router-dom';
 import { SWAPS_ROUTE } from '../../../../helpers/constants/routes';
+import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import mockState from '../../../../../test/data/mock-state.json';
 import {
   usePersonalSignAlertActions,
   PersonalSignAlertAction,
 } from './PersonalSignAlertAction';
-import { ApprovalType } from '@metamask/controller-utils';
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
-import mockState from '../../../../../test/data/mock-state.json';
-import { useHistory } from 'react-router';
 
 // Mock useHistory
-jest.mock('react-router', () => ({
-  ...jest.requireActual('react-router'),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useHistory: jest.fn(),
 }));
 

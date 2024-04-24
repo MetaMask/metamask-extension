@@ -17,7 +17,7 @@ export const baseAlertsMock: Alert[] = [
 const ownerIdMock = '123';
 const storeMock = configureStore({ confirmAlerts: {
   alerts: {[ownerIdMock]: baseAlertsMock},
-  confirmed: {[ownerIdMock]: {'from': false, 'data': false, 'contract': false}},
+  confirmed: {[ownerIdMock]: {'From': false, 'Data': false, 'Contract': false}},
   } });
 
 export default {
@@ -50,7 +50,7 @@ export default {
 } as Meta<typeof AlertModal>;
 
 export const DefaultStory = (args) => {
-  return <AlertModal alertKey={'from'} {...args} />;
+  return <AlertModal alertKey={'From'} {...args} />;
 };
 
 DefaultStory.storyName = 'Critical Alert';
