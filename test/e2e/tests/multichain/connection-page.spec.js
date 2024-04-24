@@ -8,10 +8,16 @@ const {
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
-const anotherAccountLabel = '2nd custom name';
+const accountLabel2 = '2nd custom name';
+const accountLabel3 = '3rd custom name';
 
-describe('Connections Page', function () {
-  it('should disconnect when click on Disconnect button in connections Page', async function () {
+async function getSpanText(driver) {
+  const spanElement = await driver.findElement('#accounts');
+  return await spanElement.getText();
+}
+
+describe('Connections page', function () {
+  it('should disconnect when click on Disconnect button in connections page', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -19,18 +25,22 @@ describe('Connections Page', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await unlockWallet(driver);
         if (!process.env.MULTICHAIN) {
           return;
         }
+        await driver.navigate();
+        await unlockWallet(driver);
         await waitForAccountRendered(driver);
         await connectToDapp(driver);
 
-        // close test dapp window to avoid future confusion
-        const windowHandles = await driver.getAllWindowHandles();
-        await driver.closeWindowHandle(windowHandles[1]);
-        // disconnect dapp in fullscreen view
+        // It should render connected status for button if dapp is connected
+        const getConnectedStatus = await driver.waitForSelector({
+          css: '#connectButton',
+          text: 'Connected',
+        });
+        assert.ok(getConnectedStatus, 'Account is connected to Dapp');
+
+        // Switch to extension Tab
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
@@ -69,10 +79,24 @@ describe('Connections Page', function () {
           noAccountConnected,
           'Account disconected from connections page',
         );
+
+        // Switch back to Dapp
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
+        // Button should show Connect text if dapp is not connected
+
+        const getConnectStatus = await driver.waitForSelector({
+          css: '#connectButton',
+          text: 'Connect',
+        });
+
+        assert.ok(
+          getConnectStatus,
+          'Account is not connected to Dapp and button has text connect',
+        );
       },
     );
   });
-
   it('should connect more accounts when already connected to a dapp', async function () {
     await withFixtures(
       {
@@ -81,23 +105,28 @@ describe('Connections Page', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await unlockWallet(driver);
         if (!process.env.MULTICHAIN) {
           return;
         }
+        await driver.navigate();
+        await unlockWallet(driver);
         await waitForAccountRendered(driver);
         await connectToDapp(driver);
 
-        // close test dapp window to avoid future confusion
-        const windowHandles = await driver.getAllWindowHandles();
-        await driver.closeWindowHandle(windowHandles[1]);
+        const account = await driver.findElement('#accounts');
+        const accountAddress = await account.getText();
+
+        // Dapp should contain single connected account address
+        assert.strictEqual(
+          accountAddress,
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+        );
         // disconnect dapp in fullscreen view
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        // Add new account with custom label
+        // Add two new accounts with custom label
         await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-action-button"]',
@@ -105,7 +134,16 @@ describe('Connections Page', function () {
         await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-add-account"]',
         );
-        await driver.fill('[placeholder="Account 2"]', anotherAccountLabel);
+        await driver.fill('[placeholder="Account 2"]', accountLabel2);
+        await driver.clickElement({ text: 'Create', tag: 'button' });
+        await driver.clickElement('[data-testid="account-menu-icon"]');
+        await driver.clickElement(
+          '[data-testid="multichain-account-menu-popover-action-button"]',
+        );
+        await driver.clickElement(
+          '[data-testid="multichain-account-menu-popover-add-account"]',
+        );
+        await driver.fill('[placeholder="Account 3"]', accountLabel3);
         await driver.clickElement({ text: 'Create', tag: 'button' });
         await waitForAccountRendered(driver);
         await driver.clickElement(
@@ -118,6 +156,7 @@ describe('Connections Page', function () {
           tag: 'p',
         });
 
+        // Connect only second account and keep third account unconnected
         await driver.clickElement({
           text: 'Connect more accounts',
           tag: 'button',
@@ -135,6 +174,17 @@ describe('Connections Page', function () {
         });
 
         assert.ok(newAccountConnected, 'Connected More Account Successfully');
+        //Switch back to Dapp
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        // Find the span element that contains the account addresses
+        const accounts = await driver.findElement('#accounts');
+        const accountAddresses = await accounts.getText();
+
+        // Dapp should contain both the connected account addresses
+        assert.strictEqual(
+          accountAddresses,
+          '0x09781764c08de8ca82e156bbf156a3ca217c7950,0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+        );
       },
     );
   });
