@@ -2914,6 +2914,7 @@
         "XMLHttpRequest": true,
         "__SENTRY_DEBUG__": true,
         "__SENTRY_RELEASE__": true,
+        "console.log": true,
         "indexedDB.open": true,
         "setTimeout": true
       },
@@ -2986,6 +2987,7 @@
         "__rrMutationObserver": true,
         "clearTimeout": true,
         "console.error": true,
+        "console.log": true,
         "console.warn": true,
         "document": true,
         "innerHeight": true,
@@ -3031,6 +3033,7 @@
         "__SENTRY_DEBUG__": true,
         "clearTimeout": true,
         "console.error": true,
+        "console.log": true,
         "document": true,
         "setTimeout": true
       },
