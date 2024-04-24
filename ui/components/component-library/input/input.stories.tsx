@@ -157,7 +157,7 @@ export const Disabled: StoryObj<typeof Input> = {
 
 export const ErrorStory: StoryObj<typeof Input> = {
   args: { error: true },
-  storyName: 'Error',
+  name: 'Error',
 };
 
 export const MaxLength: StoryObj<typeof Input> = {
@@ -170,7 +170,7 @@ export const ReadOnly: StoryObj<typeof Input> = {
 
 export const RequiredStory: StoryObj<typeof Input> = {
   args: { required: true, placeholder: 'Required' },
-  storyName: 'Required',
+  name: 'Required',
 };
 
 export const DisableStateStyles: StoryObj<typeof Input> = {
@@ -198,5 +198,5 @@ export const TextVariantStory: StoryObj<typeof Input> = {
       <Input {...args} textVariant={TextVariant.bodyXs} />
     </Box>
   ),
-  storyName: 'Text Variant',
+  name: 'Text Variant',
 };
