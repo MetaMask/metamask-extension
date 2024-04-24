@@ -1,7 +1,10 @@
 import React from 'react';
 import InfoTooltip from '../../../../components/ui/info-tooltip/info-tooltip';
 
-import { TextColor } from '../../../../helpers/constants/design-system';
+import {
+  FontWeight,
+  TextColor,
+} from '../../../../helpers/constants/design-system';
 
 import { Icon, IconName } from '../../../../components/component-library';
 import README from './README.mdx';
@@ -22,6 +25,12 @@ export default {
         type: 'select',
       },
       options: Object.values(TextColor),
+    },
+    headingFontWeight: {
+      control: {
+        type: 'select',
+      },
+      options: Object.values(FontWeight),
     },
     detailText: { control: 'text' },
     detailTotal: { control: 'text' },
@@ -52,7 +61,7 @@ DefaultStory.args = {
   detailText: '16565.30',
   detailTotal: '0.0089 ETH',
   subTitle: 'Likely in < 30 seconds',
-  boldHeadings: true,
+  headingFontWeight: FontWeight.Bold,
   flexWidthValues: false,
   subText: (
     <span>

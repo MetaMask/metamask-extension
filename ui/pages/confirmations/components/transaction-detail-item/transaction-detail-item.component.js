@@ -13,6 +13,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { Text } from '../../../../components/component-library';
 
+// todo: can we remove detailTitleColor and headerFontWeight? Verify design after changes
 export default function TransactionDetailItem({
   'data-testid': dataTestId,
   detailTitle = '',
@@ -21,7 +22,7 @@ export default function TransactionDetailItem({
   detailTotal = '',
   subTitle = '',
   subText = '',
-  boldHeadings = true,
+  headingFontWeight = FontWeight.Medium,
   flexWidthValues = false,
 }) {
   return (
@@ -30,7 +31,7 @@ export default function TransactionDetailItem({
         <Text
           as="h6"
           color={detailTitleColor}
-          fontWeight={boldHeadings ? FontWeight.Bold : FontWeight.Normal}
+          fontWeight={headingFontWeight}
           display={Display.Flex}
           flexWrap={FlexWrap.NoWrap}
           alignItems={AlignItems.center}
@@ -51,7 +52,7 @@ export default function TransactionDetailItem({
           <Text
             as="h6"
             color={Color.textDefault}
-            fontWeight={boldHeadings ? FontWeight.Bold : FontWeight.Normal}
+            fontWeight={headingFontWeight}
             marginLeft={1}
             textAlign={TextAlign.Right}
           >
@@ -104,7 +105,7 @@ TransactionDetailItem.propTypes = {
    */
   detailText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   /**
-   * Total amount to show. Wrapped in Typography component. Will be bold if boldHeadings is true
+   * Total amount to show. Wrapped in Typography component. Will use font-weight of headingFontWeight
    */
   detailTotal: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   /**
@@ -116,9 +117,9 @@ TransactionDetailItem.propTypes = {
    */
   subText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   /**
-   * Whether detailTotal is bold or not. Defaults to true
+   * Font-weight of detailTitle and detailTotal. Defaults to FontWeight.Medium
    */
-  boldHeadings: PropTypes.bool,
+  headingFontWeight: PropTypes.string,
   /**
    * Changes width to auto for transaction-detail-item__detail-values
    */

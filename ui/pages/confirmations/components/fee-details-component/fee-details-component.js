@@ -127,7 +127,6 @@ export default function FeeDetailsComponent({
                 renderTotalDetailText(hexMinimumTransactionFee)
               }
               detailTotal={renderTotalDetailValue(hexMinimumTransactionFee)}
-              boldHeadings={false}
             />
           )}
           {layer1GasFee && (
@@ -137,7 +136,6 @@ export default function FeeDetailsComponent({
                 useCurrencyRateCheck && renderTotalDetailText(layer1GasFee)
               }
               detailTotal={renderTotalDetailValue(layer1GasFee)}
-              boldHeadings={false}
             />
           )}
           <TransactionDetailItem
