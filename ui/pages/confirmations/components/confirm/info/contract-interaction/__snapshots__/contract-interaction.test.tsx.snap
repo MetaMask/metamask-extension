@@ -29,7 +29,7 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
             tabindex="0"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
               style="mask-image: url('./images/icons/question.svg');"
             />
           </div>
