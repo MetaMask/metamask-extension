@@ -36,7 +36,7 @@ const updateImports = (content) => {
 // Update Story references within the content
 const updateStoryReferences = (content, storiesName) => {
   return content.replace(
-    /<Canvas>\s*<Story id="([\w-]+--[\w-]+)" \/>/g,
+    /<Canvas>\s*<Story id="([\w-]+--[\w-]+)" \/>\s*<\/Canvas>/g,
     (match, storyId) => {
       const formattedReference = formatStoryName(storiesName, storyId);
       return `<Canvas of={${formattedReference}} />`;
