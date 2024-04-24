@@ -139,7 +139,6 @@
     },
     "@ethereumjs/tx>@ethereumjs/util": {
       "globals": {
-        "console.log": true,
         "console.warn": true
       },
       "packages": {
@@ -2241,7 +2240,6 @@
     },
     "@metamask/smart-transactions-controller>@metamask/controller-utils>@ethereumjs/util": {
       "globals": {
-        "console.log": true,
         "console.warn": true
       },
       "packages": {
@@ -2312,7 +2310,6 @@
     },
     "@metamask/smart-transactions-controller>@metamask/transaction-controller>@ethereumjs/util": {
       "globals": {
-        "console.log": true,
         "console.warn": true
       },
       "packages": {
@@ -2393,7 +2390,6 @@
     },
     "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/gas-fee-controller>@metamask/controller-utils>@ethereumjs/util": {
       "globals": {
-        "console.log": true,
         "console.warn": true
       },
       "packages": {
