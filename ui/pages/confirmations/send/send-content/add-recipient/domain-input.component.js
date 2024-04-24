@@ -30,7 +30,7 @@ export default class DomainInput extends Component {
 
   static propTypes = {
     className: PropTypes.string,
-    useBlockie: PropTypes.boolean,
+    useBlockie: PropTypes.bool,
     selectedAddress: PropTypes.string,
     selectedName: PropTypes.string,
     scanQrCode: PropTypes.func,
