@@ -1,4 +1,3 @@
-/* eslint-disable @metamask/design-tokens/color-no-hex*/
 import React from 'react';
 
 import { NetworkCongestionThresholds } from '../../../../../../../shared/constants/gas';
