@@ -60,9 +60,8 @@ import {
 import PulseLoader from '../../../components/ui/pulse-loader/pulse-loader';
 import ConfirmConnectCustodianModal from '../confirm-connect-custodian-modal';
 import { findCustodianByEnvName } from '../../../helpers/utils/institutional/find-by-custodian-name';
-import { setSelectedAddress } from '../../../store/actions';
-import QRCodeModal from '../../../components/institutional/qr-code-modal/qr-code-modal';
 import { setSelectedInternalAccount } from '../../../store/actions';
+import QRCodeModal from '../../../components/institutional/qr-code-modal/qr-code-modal';
 
 const CustodyPage = () => {
   const t = useI18nContext();
