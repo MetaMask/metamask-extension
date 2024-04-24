@@ -163,29 +163,31 @@ export async function activatePushNotifications(
 
   const messaging = await getFirebaseMessaging();
 
-  onBackgroundMessage(messaging, (payload: MessagePayload) => {
-    const typedPayload = payload;
+  onBackgroundMessage(
+    messaging,
+    async (payload: MessagePayload): Promise<void> => {
+      const typedPayload = payload;
 
-    // if the payload does not contain data, do nothing
-    try {
-      const notificationData = typedPayload?.data?.data
-        ? JSON.parse(typedPayload?.data?.data)
-        : undefined;
-      if (!notificationData) {
-        return;
+      // if the payload does not contain data, do nothing
+      try {
+        const notificationData = typedPayload?.data?.data
+          ? JSON.parse(typedPayload?.data?.data)
+          : undefined;
+        if (!notificationData) {
+          return;
+        }
+
+        await onPushNotification(notificationData);
+      } catch (error) {
+        // Do Nothing, cannot parse a bad notification
+        log.error('Unable to send push notification:', {
+          notification: payload?.data?.data,
+          error,
+        });
+        throw new Error('Unable to send push notification');
       }
-
-      // eslint-disable-next-line consistent-return
-      return onPushNotification(notificationData);
-    } catch (error) {
-      // Do Nothing, cannot parse a bad notification
-      log.error('Unable to send push notification:', {
-        notification: payload?.data?.data,
-        error,
-      });
-      throw new Error();
-    }
-  });
+    },
+  );
 
   const newRegTokens = new Set(notificationLinks.registration_tokens);
   newRegTokens.add(regToken);

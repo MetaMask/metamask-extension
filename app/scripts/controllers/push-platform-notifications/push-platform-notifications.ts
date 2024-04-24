@@ -2,7 +2,6 @@ import {
   BaseController,
   RestrictedControllerMessenger,
   ControllerGetStateAction,
-  ControllerStateChangeEvent,
 } from '@metamask/base-controller';
 import log from 'loglevel';
 

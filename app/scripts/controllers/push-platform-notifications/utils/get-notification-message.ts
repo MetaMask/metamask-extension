@@ -1,3 +1,4 @@
+// We are defining that this file uses a webworker global scope.
 // eslint-disable-next-line spaced-comment
 /// <reference lib="webworker" />
 
@@ -32,7 +33,7 @@ function getChainSymbol(chainId: number) {
   return CHAIN_SYMBOLS[chainId] ?? null;
 }
 
-export async function onPushNotification(notification: unknown) {
+export async function onPushNotification(notification: unknown): Promise<void> {
   if (!notification) {
     return;
   }
@@ -50,10 +51,7 @@ export async function onPushNotification(notification: unknown) {
     return;
   }
 
-  // const iconUrl = await browser.runtime.getURL('../../images/icon-64.png');
-
-  // eslint-disable-next-line consistent-return
-  return registration.showNotification(notificationMessage.title, {
+  await registration.showNotification(notificationMessage.title, {
     body: notificationMessage.description,
     icon: './images/icon-64.png',
     tag: notification?.id,
