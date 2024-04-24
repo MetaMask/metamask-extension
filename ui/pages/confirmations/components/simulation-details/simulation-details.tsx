@@ -31,6 +31,7 @@ export type SimulationDetailsProps = {
   simulationData?: SimulationData;
   transactionId: string;
   enableMetrics?: boolean;
+  isTransactionsRedesign?: boolean;
 };
 
 /**
@@ -130,16 +131,21 @@ const HeaderLayout: React.FC = ({ children }) => {
  */
 const SimulationDetailsLayout: React.FC<{
   inHeader?: React.ReactNode;
-}> = ({ inHeader, children }) => (
+  isTransactionsRedesign: boolean;
+}> = ({ inHeader, isTransactionsRedesign, children }) => (
   <Box
     data-testid="simulation-details-layout"
     className="simulation-details-layout"
     display={Display.Flex}
     flexDirection={FlexDirection.Column}
     borderRadius={BorderRadius.MD}
-    borderColor={BorderColor.borderDefault}
+    borderColor={
+      isTransactionsRedesign
+        ? BorderColor.transparent
+        : BorderColor.borderDefault
+    }
     padding={3}
-    margin={4}
+    margin={isTransactionsRedesign ? null : 4}
     gap={3}
   >
     <HeaderLayout>{inHeader}</HeaderLayout>
@@ -159,6 +165,7 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   simulationData,
   transactionId,
   enableMetrics = false,
+  isTransactionsRedesign = false,
 }: SimulationDetailsProps) => {
   const t = useI18nContext();
   const balanceChangesResult = useBalanceChanges(simulationData);
@@ -176,6 +183,7 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
     return (
       <SimulationDetailsLayout
         inHeader={<LoadingIndicator />}
+        isTransactionsRedesign={isTransactionsRedesign}
       ></SimulationDetailsLayout>
     );
   }
@@ -193,7 +201,7 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
 
   if (error) {
     return (
-      <SimulationDetailsLayout>
+      <SimulationDetailsLayout isTransactionsRedesign={isTransactionsRedesign}>
         <ErrorContent error={error} />
       </SimulationDetailsLayout>
     );
@@ -203,7 +211,7 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   const empty = balanceChanges.length === 0;
   if (empty) {
     return (
-      <SimulationDetailsLayout>
+      <SimulationDetailsLayout isTransactionsRedesign={isTransactionsRedesign}>
         <EmptyContent />
       </SimulationDetailsLayout>
     );
@@ -212,7 +220,7 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   const outgoing = balanceChanges.filter((bc) => bc.amount.isNegative());
   const incoming = balanceChanges.filter((bc) => !bc.amount.isNegative());
   return (
-    <SimulationDetailsLayout>
+    <SimulationDetailsLayout isTransactionsRedesign={isTransactionsRedesign}>
       <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={3}>
         <BalanceChangeList
           heading={t('simulationDetailsOutgoingHeading')}
