@@ -179,7 +179,6 @@ const ConfirmLegacyGasDisplay = ({ 'data-testid': dataTestId } = {}) => {
           {dappSuggestedGasFees && (
             <Text
               variant={TextVariant.bodySm}
-              fontStyle={FONT_STYLE.ITALIC}
               color={TextColor.textAlternative}
               as="h6"
             >
