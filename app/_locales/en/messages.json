@@ -378,21 +378,12 @@
   "allow": {
     "message": "Allow"
   },
-  "allowExternalExtensionTo": {
-    "message": "Allow this external extension to:"
-  },
   "allowMmiToConnectToCustodian": {
     "message": "This will allow MMI to connect to $1 to import your accounts."
   },
   "allowSpendToken": {
     "message": "Give permission to access your $1?",
     "description": "$1 is the symbol of the token that are requesting to spend"
-  },
-  "allowThisSiteTo": {
-    "message": "Allow this site to:"
-  },
-  "allowThisSnapTo": {
-    "message": "Allow this snap to:"
   },
   "allowWithdrawAndSpend": {
     "message": "Allow $1 to withdraw and spend up to the following amount:",
@@ -861,26 +852,6 @@
     "message": "Connect $1",
     "description": "$1 is the snap for which a connection is being requested."
   },
-  "connectTo": {
-    "message": "Connect to $1",
-    "description": "$1 is the name/origin of a web3 site/application that the user can connect to metamask"
-  },
-  "connectToAll": {
-    "message": "Connect to all your $1",
-    "description": "$1 will be replaced by the translation of connectToAllAccounts"
-  },
-  "connectToAllAccounts": {
-    "message": "accounts",
-    "description": "will replace $1 in connectToAll, completing the sentence 'connect to all of your accounts', will be text that shows list of accounts on hover"
-  },
-  "connectToMultiple": {
-    "message": "Connect to $1",
-    "description": "$1 will be replaced by the translation of connectToMultipleNumberOfAccounts"
-  },
-  "connectToMultipleNumberOfAccounts": {
-    "message": "$1 accounts",
-    "description": "$1 is the number of accounts to which the web3 site/application is asking to connect; this will substitute $1 in connectToMultiple"
-  },
   "connectWithMetaMask": {
     "message": "Connect with MetaMask"
   },
@@ -922,7 +893,7 @@
     "message": "Connected with"
   },
   "connecting": {
-    "message": "Connecting..."
+    "message": "Connecting"
   },
   "connectingTo": {
     "message": "Connecting to $1"
@@ -2656,7 +2627,7 @@
     "message": "more"
   },
   "multipleSnapConnectionWarning": {
-    "message": "$1 wants to connect with $2 snaps. Only proceed if you trust this website.",
+    "message": "$1 wants to use $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
   "mustSelectOne": {
@@ -2720,6 +2691,10 @@
   "nameSetPlaceholder": {
     "message": "Choose a nickname...",
     "description": "Placeholder text for name input field in name component modal."
+  },
+  "nativePermissionRequestDescription": {
+    "message": "Do you want this site to do the following?",
+    "description": "Description below header used on Permission Connect screen for native permissions."
   },
   "nativeToken": {
     "message": "The native token on this network is $1. It is the token used for gas fees. ",
@@ -3326,7 +3301,8 @@
     "message": "A malicious network provider can lie about the state of the blockchain and record your network activity. Only add custom networks you trust."
   },
   "onlyConnectTrust": {
-    "message": "Only connect with sites you trust."
+    "message": "Only connect with sites you trust. $1",
+    "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
   "openCustodianApp": {
     "message": "Open $1 app",
@@ -3444,9 +3420,6 @@
     "message": "Permission details"
   },
   "permissionRequest": {
-    "message": "Permission request"
-  },
-  "permissionRequestCapitalized": {
     "message": "Permission request"
   },
   "permissionRequested": {
@@ -4522,7 +4495,7 @@
     "message": "Accounts controlled by third-party Snaps."
   },
   "snapConnectionWarning": {
-    "message": "$1 wants to connect to $2. Only continue if you trust this website.",
+    "message": "$1 wants to use $2",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
   },
   "snapConnections": {
@@ -5973,10 +5946,6 @@
   },
   "whatsThis": {
     "message": "What's this?"
-  },
-  "xOfY": {
-    "message": "$1 of $2",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total, and $1 is a count towards that total"
   },
   "xOfYPending": {
     "message": "$1 of $2 pending",
