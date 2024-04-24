@@ -1328,6 +1328,11 @@
         "process.platform": true
       }
     },
+    "@storybook/addon-knobs>qs": {
+      "packages": {
+        "string.prototype.matchall>side-channel": true
+      }
+    },
     "@storybook/core>@storybook/core-server>x-default-browser>default-browser-id>untildify>os-homedir": {
       "builtin": {
         "os.homedir": true
@@ -6198,6 +6203,7 @@
     "nock>debug": {
       "builtin": {
         "tty.isatty": true,
+        "util.deprecate": true,
         "util.format": true,
         "util.inspect": true
       },
@@ -6209,8 +6215,8 @@
         "process": true
       },
       "packages": {
-        "mocha>ms": true,
-        "mocha>supports-color": true
+        "mocha>supports-color": true,
+        "nock>debug>ms": true
       }
     },
     "node-sass": {

@@ -277,13 +277,16 @@ const CustodyPage = () => {
   );
 
   const removeConnectRequest = async () => {
-    await dispatch(
-      mmiActions.removeAddTokenConnectRequest({
-        origin: connectRequest.origin,
-        environment: connectRequest.environment,
-        token: connectRequest.token,
-      }),
-    );
+    // @NOTICE: connectRequest is empty here at some point hence the check if it exists
+    if (connectRequest) {
+      await dispatch(
+        mmiActions.removeAddTokenConnectRequest({
+          origin: connectRequest.origin,
+          environment: connectRequest.environment,
+          token: connectRequest.token,
+        }),
+      );
+    }
   };
 
   useEffect(() => {
@@ -337,7 +340,7 @@ const CustodyPage = () => {
 
     handleFetchConnectRequest();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connectRequest]);
+  }, []); // @NOTICE: It was throwing error in PW having the connectRequest in here
 
   useEffect(() => {
     async function handleNetworkChange() {
