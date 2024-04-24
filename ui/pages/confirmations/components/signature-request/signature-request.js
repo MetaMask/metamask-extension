@@ -37,7 +37,6 @@ import {
 } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useRejectTransactionModal } from '../../hooks/useRejectTransactionModal';
-
 import { ConfirmPageContainerNavigation } from '../confirm-page-container';
 import SignatureRequestHeader from '../signature-request-header/signature-request-header';
 import SecurityProviderBannerMessage from '../security-provider-banner-message';
@@ -49,7 +48,6 @@ import {
   BlockaidResultType,
   SECURITY_PROVIDER_MESSAGE_SEVERITY,
 } from '../../../../../shared/constants/security-provider';
-
 import {
   TextAlign,
   TextColor,
@@ -82,15 +80,16 @@ import { useMMICustodySignMessage } from '../../../../hooks/useMMICustodySignMes
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
 ///: END:ONLY_INCLUDE_IF
 
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
 ///: END:ONLY_INCLUDE_IF
+import { BlockaidUnavailableBannerAlert } from '../blockaid-unavailable-banner-alert/blockaid-unavailable-banner-alert';
 import Message from './signature-request-message';
 import Footer from './signature-request-footer';
 
 const SignatureRequest = ({
   txData,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   warnings,
   ///: END:ONLY_INCLUDE_IF
 }) => {
@@ -132,7 +131,7 @@ const SignatureRequest = ({
   const { custodySignFn } = useMMICustodySignMessage();
   ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   const [isShowingSigInsightWarnings, setIsShowingSigInsightWarnings] =
     useState(false);
   ///: END:ONLY_INCLUDE_IF
@@ -229,6 +228,7 @@ const SignatureRequest = ({
             />
             ///: END:ONLY_INCLUDE_IF
           }
+          <BlockaidUnavailableBannerAlert />
           {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
             txData?.securityProviderResponse?.flagAsDangerous !==
               SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS) ||
@@ -331,7 +331,7 @@ const SignatureRequest = ({
         <Footer
           cancelAction={onCancel}
           signAction={() => {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+            ///: BEGIN:ONLY_INCLUDE_IF(snaps)
             if (warnings?.length >= 1) {
               return setIsShowingSigInsightWarnings(true);
             }
@@ -368,7 +368,7 @@ const SignatureRequest = ({
         ) : null}
       </div>
       {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+        ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       }
       {isShowingSigInsightWarnings && (
         <InsightWarnings
@@ -391,7 +391,7 @@ const SignatureRequest = ({
 
 SignatureRequest.propTypes = {
   txData: PropTypes.object,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   warnings: PropTypes.array,
   ///: END:ONLY_INCLUDE_IF
 };

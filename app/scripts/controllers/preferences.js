@@ -1,12 +1,11 @@
 import { ObservableStore } from '@metamask/obs-store';
-import { normalize as normalizeAddress } from 'eth-sig-util';
+import { normalize as normalizeAddress } from '@metamask/eth-sig-util';
 import {
   CHAIN_IDS,
   IPFS_DEFAULT_GATEWAY_URL,
 } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
-import { shouldShowLineaMainnet } from '../../../shared/modules/network.utils';
 
 const mainNetworks = {
   [CHAIN_IDS.MAINNET]: true,
@@ -16,7 +15,7 @@ const mainNetworks = {
 const testNetworks = {
   [CHAIN_IDS.GOERLI]: true,
   [CHAIN_IDS.SEPOLIA]: true,
-  [CHAIN_IDS.LINEA_GOERLI]: true,
+  [CHAIN_IDS.LINEA_SEPOLIA]: true,
 };
 
 export default class PreferencesController {
@@ -24,6 +23,7 @@ export default class PreferencesController {
    *
    * @typedef {object} PreferencesController
    * @param {object} opts - Overrides the defaults for the initial state of this.store
+   * @property {object} messenger - The controller messenger
    * @property {object} store The stored object containing a users preferences, stored in local storage
    * @property {boolean} store.useBlockie The users preference for blockie identicons within the UI
    * @property {boolean} store.useNonceField The users preference for nonce field within the UI
@@ -52,10 +52,11 @@ export default class PreferencesController {
         eth_sign: false,
       },
       useMultiAccountBalanceChecker: true,
+      hasDismissedOpenSeaToBlockaidBanner: false,
       useSafeChainsListValidation: true,
       // set to true means the dynamic list from the API is being used
       // set to false will be using the static list from contract-metadata
-      useTokenDetection: false,
+      useTokenDetection: opts?.initState?.useTokenDetection ?? true,
       useNftDetection: false,
       use4ByteResolution: true,
       useCurrencyRateCheck: true,
@@ -89,9 +90,12 @@ export default class PreferencesController {
         showExtensionInFullSizeView: false,
         showFiatInTestnets: false,
         showTestNetworks: false,
+        smartTransactionsOptInStatus: null, // null means we will show the Smart Transactions opt-in modal to a user if they are eligible
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
+        redesignedConfirmationsEnabled: false,
+        featureNotificationsEnabled: false,
       },
       // ENS decentralized website resolution
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
@@ -103,13 +107,12 @@ export default class PreferencesController {
         ? LedgerTransportTypes.webhid
         : LedgerTransportTypes.u2f,
       snapRegistryList: {},
-      transactionSecurityCheckEnabled: false,
       theme: ThemeType.os,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       snapsAddSnapAccountModalDismissed: false,
       ///: END:ONLY_INCLUDE_IF
-      isLineaMainnetReleased: false,
       useExternalNameSources: true,
+      useTransactionSimulations: true,
       ...opts.initState,
     };
 
@@ -117,7 +120,6 @@ export default class PreferencesController {
 
     this.store = new ObservableStore(initState);
     this.store.setMaxListeners(13);
-    this.tokenListController = opts.tokenListController;
 
     opts.onKeyringStateChange((state) => {
       const accounts = new Set();
@@ -131,11 +133,19 @@ export default class PreferencesController {
       }
     });
 
+    this.messagingSystem = opts.messenger;
+    this.messagingSystem?.registerActionHandler(
+      `PreferencesController:getState`,
+      () => this.store.getState(),
+    );
+    this.messagingSystem?.registerInitialEventPayload({
+      eventType: `PreferencesController:stateChange`,
+      getPayload: () => [this.store.getState(), []],
+    });
+
     global.setPreference = (key, value) => {
       return this.setFeatureFlag(key, value);
     };
-
-    this._showShouldLineaMainnetNetwork();
   }
   // PUBLIC METHODS
 
@@ -185,6 +195,14 @@ export default class PreferencesController {
   }
 
   /**
+   * Setter for the `dismissOpenSeaToBlockaidBanner` property
+   *
+   */
+  dismissOpenSeaToBlockaidBanner() {
+    this.store.updateState({ hasDismissedOpenSeaToBlockaidBanner: true });
+  }
+
+  /**
    * Setter for the `useSafeChainsListValidation` property
    *
    * @param {boolean} val - Whether or not the user prefers to turn off/on validation for manually adding networks
@@ -200,13 +218,6 @@ export default class PreferencesController {
    */
   setUseTokenDetection(val) {
     this.store.updateState({ useTokenDetection: val });
-    this.tokenListController.updatePreventPollingOnNetworkRestart(!val);
-    if (val) {
-      this.tokenListController.start();
-    } else {
-      this.tokenListController.clearingTokenListData();
-      this.tokenListController.stop();
-    }
   }
 
   /**
@@ -295,6 +306,17 @@ export default class PreferencesController {
   }
 
   /**
+   * Setter for the `useTransactionSimulations` property
+   *
+   * @param {boolean} useTransactionSimulations - Whether or not to use simulations in the transaction confirmations.
+   */
+  setUseTransactionSimulations(useTransactionSimulations) {
+    this.store.updateState({
+      useTransactionSimulations,
+    });
+  }
+
+  /**
    * Setter for the `advancedGasFee` property
    *
    * @param {object} options
@@ -318,17 +340,6 @@ export default class PreferencesController {
    */
   setTheme(val) {
     this.store.updateState({ theme: val });
-  }
-
-  /**
-   * Setter for the `transactionSecurityCheckEnabled` property
-   *
-   * @param transactionSecurityCheckEnabled
-   */
-  setTransactionSecurityCheckEnabled(transactionSecurityCheckEnabled) {
-    this.store.updateState({
-      transactionSecurityCheckEnabled,
-    });
   }
 
   /**
@@ -672,12 +683,4 @@ export default class PreferencesController {
     this.store.updateState({ snapsAddSnapAccountModalDismissed: value });
   }
   ///: END:ONLY_INCLUDE_IF
-
-  /**
-   * A method to check is the linea mainnet network should be displayed
-   */
-  _showShouldLineaMainnetNetwork() {
-    const showLineaMainnet = shouldShowLineaMainnet();
-    this.store.updateState({ isLineaMainnetReleased: showLineaMainnet });
-  }
 }

@@ -17,7 +17,7 @@ import type { NetworkStatus } from '../../shared/constants/network';
  *
  * TODO: Replace this
  */
-export interface TemporaryMessageDataType {
+export type TemporaryMessageDataType = {
   id: string;
   type: string;
   msgParams: {
@@ -30,11 +30,11 @@ export interface TemporaryMessageDataType {
   };
   status?: string;
   ///: END:ONLY_INCLUDE_IF
-}
+};
 
-export interface MessagesIndexedById {
+export type MessagesIndexedById = {
   [id: string]: TemporaryMessageDataType;
-}
+};
 
 /**
  * This interface is a temporary interface to describe the state tree that is
@@ -45,7 +45,7 @@ export interface MessagesIndexedById {
  * state received from the background takes precedence over anything in the
  * metamask reducer.
  */
-interface TemporaryBackgroundState {
+type TemporaryBackgroundState = {
   addressBook: {
     [chainId: string]: {
       name: string;
@@ -55,12 +55,6 @@ interface TemporaryBackgroundState {
     chainId: string;
   };
   transactions: TransactionMeta[];
-  selectedAddress: string;
-  identities: {
-    [address: string]: {
-      balance: string;
-    };
-  };
   ledgerTransportType: LedgerTransportTypes;
   unapprovedDecryptMsgs: MessagesIndexedById;
   unapprovedMsgs: MessagesIndexedById;
@@ -81,6 +75,8 @@ interface TemporaryBackgroundState {
   gasFeeEstimates: GasFeeEstimates;
   gasEstimateType: GasEstimateType;
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   custodyAccountDetails?: { [key: string]: any };
   ///: END:ONLY_INCLUDE_IF
   internalAccounts: {
@@ -89,7 +85,7 @@ interface TemporaryBackgroundState {
     };
     selectedAccount: string;
   };
-}
+};
 
 type RootReducerReturnType = ReturnType<typeof rootReducer>;
 
@@ -100,6 +96,8 @@ export type CombinedBackgroundAndReduxState = RootReducerReturnType & {
   metamask: RootReducerReturnType['metamask'] & TemporaryBackgroundState;
 };
 
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function configureStore(preloadedState: any) {
   const debugModeEnabled = Boolean(process.env.METAMASK_DEBUG);
   const isDev = debugModeEnabled && !process.env.IN_TEST;

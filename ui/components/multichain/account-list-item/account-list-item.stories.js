@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 
 import testData from '../../../../.storybook/test-data';
 import configureStore from '../../../store/store';
+import { Checkbox } from '../../component-library';
 import { AccountListItem, AccountListItemMenuTypes } from '.';
 
 const store = configureStore(testData);
@@ -51,7 +52,7 @@ const CHAOS_ACCOUNT = {
   balance: '0x152387ad22c3f0',
 };
 
-const SNAP_IDENTITY = {
+const SNAP_ACCOUNT = {
   ...testData.metamask.internalAccounts.accounts[
     '784225f4-d30b-4e77-a900-c8bbce735b88'
   ],
@@ -87,7 +88,7 @@ export default {
   title: 'Components/Multichain/AccountListItem',
   component: AccountListItem,
   argTypes: {
-    identity: {
+    account: {
       control: 'object',
     },
     selected: {
@@ -110,7 +111,7 @@ export default {
     },
   },
   args: {
-    identity: SIMPLE_ACCOUNT,
+    account: SIMPLE_ACCOUNT,
     onClick,
     menuType: AccountListItemMenuTypes.Account,
   },
@@ -135,7 +136,7 @@ export const HardwareItem = (args) => (
     <AccountListItem {...args} />
   </div>
 );
-HardwareItem.args = { identity: HARDWARE_ACCOUNT };
+HardwareItem.args = { account: HARDWARE_ACCOUNT };
 HardwareItem.decorators = [
   (story) => <Provider store={store}>{story()}</Provider>,
 ];
@@ -145,7 +146,7 @@ export const SelectedHardwareItem = (args) => (
     <AccountListItem {...args} />
   </div>
 );
-SelectedHardwareItem.args = { identity: HARDWARE_ACCOUNT, selected: true };
+SelectedHardwareItem.args = { account: HARDWARE_ACCOUNT, selected: true };
 SelectedHardwareItem.decorators = [
   (story) => <Provider store={store}>{story()}</Provider>,
 ];
@@ -155,7 +156,7 @@ export const ChaosDataItem = (args) => (
     <AccountListItem {...args} />
   </div>
 );
-ChaosDataItem.args = { identity: CHAOS_ACCOUNT };
+ChaosDataItem.args = { account: CHAOS_ACCOUNT };
 
 export const ConnectedSiteItem = (args) => (
   <div {...CONTAINER_STYLES}>
@@ -173,9 +174,19 @@ export const ConnectedSiteChaosItem = (args) => (
   </div>
 );
 ConnectedSiteChaosItem.args = {
-  identity: CHAOS_ACCOUNT,
+  account: CHAOS_ACCOUNT,
   connectedAvatar: 'https://uniswap.org/favicon.ico',
   connectedAvatarName: 'Uniswap',
+};
+
+export const ChaosStartAccessoryDataItem = (args) => (
+  <div {...CONTAINER_STYLES}>
+    <AccountListItem {...args} />
+  </div>
+);
+ChaosStartAccessoryDataItem.args = {
+  account: CHAOS_ACCOUNT,
+  startAccessory: <Checkbox />,
 };
 
 export const SnapItem = (args) => (
@@ -183,7 +194,7 @@ export const SnapItem = (args) => (
     <AccountListItem {...args} />
   </div>
 );
-SnapItem.args = { identity: SNAP_IDENTITY };
+SnapItem.args = { account: SNAP_ACCOUNT };
 SnapItem.decorators = [(story) => <Provider store={store}>{story()}</Provider>];
 
 DefaultStory.storyName = 'Default';

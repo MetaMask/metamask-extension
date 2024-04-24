@@ -42,22 +42,26 @@ import MetaMetricsController from './metametrics';
 import { getPermissionBackgroundApiMethods } from './permissions';
 import { PreferencesController } from './preferences';
 
-interface UpdateCustodianTransactionsParameters {
+type UpdateCustodianTransactionsParameters = {
   keyring: CustodyKeyring;
   type: string;
   txList: string[];
   custodyController: CustodyController;
   transactionUpdateController: TransactionUpdateController;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   txStateManager: any;
   getPendingNonce: (address: string) => Promise<number>;
   setTxHash: (txId: string, txHash: string) => void;
-}
+};
 
 export default class MMIController extends EventEmitter {
   public opts: MMIControllerOptions;
 
   public mmiConfigurationController: MmiConfigurationController;
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public keyringController: any;
 
   public preferencesController: PreferencesController;
@@ -68,8 +72,12 @@ export default class MMIController extends EventEmitter {
 
   private custodyController: CustodyController;
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private getState: () => any;
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private getPendingNonce: (address: string) => Promise<any>;
 
   private accountTracker: AccountTracker;
@@ -78,28 +86,42 @@ export default class MMIController extends EventEmitter {
 
   private networkController: NetworkController;
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private permissionController: any;
 
   private signatureController: SignatureController;
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private messenger: any;
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private platform: any;
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private extension: any;
 
   private updateTransactionHash: (txId: string, txHash: string) => void;
 
   public trackTransactionEvents: (
     args: { transactionMeta: TransactionMeta },
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     event: any,
   ) => void;
 
   private txStateManager: {
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getTransactions: (query?: any, opts?: any, fullTx?: boolean) => any[];
     setTxStatusSigned: (txId: string) => void;
     setTxStatusSubmitted: (txId: string) => void;
     setTxStatusFailed: (txId: string) => void;
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     updateTransaction: (txMeta: any) => void;
   };
 
@@ -171,6 +193,8 @@ export default class MMIController extends EventEmitter {
 
   async trackTransactionEventFromCustodianEvent(
     txMeta: TransactionMeta,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     event: any,
   ) {
     // transactionMetricsRequest parameter is already bound in the constructor
@@ -322,6 +346,8 @@ export default class MMIController extends EventEmitter {
       string,
       {
         name: string;
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         custodianDetails: any;
         labels: Label[];
         token: string;
@@ -806,7 +832,6 @@ export default class MMIController extends EventEmitter {
       });
     }
 
-    // @ts-expect-error not relevant
     this.signatureController.setMessageMetadata(messageId, signature);
 
     return this.getState();

@@ -199,6 +199,23 @@ describe('preferences controller', () => {
     });
   });
 
+  describe('dismissOpenSeaToBlockaidBanner', () => {
+    it('hasDismissedOpenSeaToBlockaidBanner should default to false', () => {
+      expect(
+        preferencesController.store.getState()
+          .hasDismissedOpenSeaToBlockaidBanner,
+      ).toStrictEqual(false);
+    });
+
+    it('should set the hasDismissedOpenSeaToBlockaidBanner property in state', () => {
+      preferencesController.dismissOpenSeaToBlockaidBanner();
+      expect(
+        preferencesController.store.getState()
+          .hasDismissedOpenSeaToBlockaidBanner,
+      ).toStrictEqual(true);
+    });
+  });
+
   describe('setUseSafeChainsListValidation', function () {
     it('should default to true', function () {
       const state = preferencesController.store.getState();
@@ -220,10 +237,10 @@ describe('preferences controller', () => {
   });
 
   describe('setUseTokenDetection', function () {
-    it('should default to false', function () {
+    it('should default to true for new users', function () {
       const state = preferencesController.store.getState();
 
-      expect(state.useTokenDetection).toStrictEqual(false);
+      expect(state.useTokenDetection).toStrictEqual(true);
     });
 
     it('should set the useTokenDetection property in state', () => {
@@ -231,6 +248,22 @@ describe('preferences controller', () => {
       expect(
         preferencesController.store.getState().useTokenDetection,
       ).toStrictEqual(true);
+    });
+
+    it('should keep initial value of useTokenDetection for existing users', function () {
+      const preferencesControllerExistingUser = new PreferencesController({
+        initLangCode: 'en_US',
+        tokenListController,
+        initState: {
+          useTokenDetection: false,
+        },
+        networkConfigurations: NETWORK_CONFIGURATION_DATA,
+        onKeyringStateChange: (listener) => {
+          onKeyringStateChangeListener = listener;
+        },
+      });
+      const state = preferencesControllerExistingUser.store.getState();
+      expect(state.useTokenDetection).toStrictEqual(false);
     });
   });
 
@@ -346,7 +379,7 @@ describe('preferences controller', () => {
         [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[1]].chainId]: true,
         [CHAIN_IDS.GOERLI]: true,
         [CHAIN_IDS.SEPOLIA]: true,
-        [CHAIN_IDS.LINEA_GOERLI]: true,
+        [CHAIN_IDS.LINEA_SEPOLIA]: true,
       });
     });
 
@@ -363,7 +396,7 @@ describe('preferences controller', () => {
         [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[1]].chainId]: true,
         [CHAIN_IDS.GOERLI]: true,
         [CHAIN_IDS.SEPOLIA]: true,
-        [CHAIN_IDS.LINEA_GOERLI]: true,
+        [CHAIN_IDS.LINEA_SEPOLIA]: true,
       });
     });
   });
@@ -402,4 +435,19 @@ describe('preferences controller', () => {
     });
   });
   ///: END:ONLY_INCLUDE_IF
+
+  describe('setUseTransactionSimulations', () => {
+    it('should default to true', () => {
+      expect(
+        preferencesController.store.getState().useExternalNameSources,
+      ).toStrictEqual(true);
+    });
+
+    it('should set the setUseTransactionSimulations property in state', () => {
+      preferencesController.setUseTransactionSimulations(false);
+      expect(
+        preferencesController.store.getState().useTransactionSimulations,
+      ).toStrictEqual(false);
+    });
+  });
 });
