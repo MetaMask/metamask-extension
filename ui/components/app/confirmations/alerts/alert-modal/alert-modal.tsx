@@ -227,6 +227,7 @@ function ActionButton({
 export function AlertModal({
   ownerId,
   onAcknowledgeClick,
+  onActionClick,
   alertKey,
   onClose,
   headerStartAccessory,
@@ -276,7 +277,7 @@ export function AlertModal({
               <ActionButton
                 key={action.key}
                 action={action}
-                onActionClick={onAcknowledgeClick}
+                onActionClick={onActionClick}
               />
             ))}
           </Box>
