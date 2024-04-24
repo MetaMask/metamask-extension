@@ -505,15 +505,6 @@ export default class MetamaskController extends EventEmitter {
       allowedEvents: ['NetworkController:stateChange'],
     });
 
-    this.tokenListController = new TokenListController({
-      chainId: this.networkController.state.providerConfig.chainId,
-      preventPollingOnNetworkRestart: initState.TokenListController
-        ? initState.TokenListController.preventPollingOnNetworkRestart
-        : true,
-      messenger: tokenListMessenger,
-      state: initState.TokenListController,
-    });
-
     const preferencesMessenger = this.controllerMessenger.getRestricted({
       name: 'PreferencesController',
       allowedActions: [],
@@ -531,6 +522,15 @@ export default class MetamaskController extends EventEmitter {
           'KeyringController:stateChange',
           listener,
         ),
+    });
+
+    this.tokenListController = new TokenListController({
+      chainId: this.networkController.state.providerConfig.chainId,
+      preventPollingOnNetworkRestart: !this.#isTokenListPollingRequired(
+        this.preferencesController.store.getState(),
+      ),
+      messenger: tokenListMessenger,
+      state: initState.TokenListController,
     });
 
     this.assetsContractController = new AssetsContractController(
