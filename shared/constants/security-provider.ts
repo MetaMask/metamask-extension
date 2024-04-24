@@ -7,7 +7,7 @@ type SecurityProviderConfig = Record<
   {
     /** translation key for security provider name */
     readonly tKeyName: string;
-    /** URL to securty provider website */
+    /** URL to security provider website */
     readonly url: string;
   }
 >;
@@ -25,7 +25,7 @@ export enum BlockaidReason {
   approvalFarming = 'approval_farming',
   /** Malicious signature on Blur order  */
   blurFarming = 'blur_farming',
-  /** A known malicous site invoked that transaction  */
+  /** A known malicious site invoked that transaction  */
   maliciousDomain = 'malicious_domain',
   /** Malicious signature on a Permit order  */
   permitFarming = 'permit_farming',

@@ -233,7 +233,7 @@ type SentryObject = Sentry & {
   // sentry instance to NOT track sessions and ends the current session.
   endSession: () => void;
 
-  // Calls either startSession or endSession based on optin status
+  // Calls either startSession or endSession based on option status
   toggleSession: () => void;
 };
 
