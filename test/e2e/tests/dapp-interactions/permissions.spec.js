@@ -40,7 +40,7 @@ describe('Permissions', function () {
           tag: 'button',
         });
         await driver.clickElement({
-          text: 'Connect',
+          text: 'Confirm',
           tag: 'button',
         });
 
