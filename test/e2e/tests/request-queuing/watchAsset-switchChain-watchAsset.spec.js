@@ -12,7 +12,8 @@ const {
 } = require('../../helpers');
 
 describe('Request Queue WatchAsset -> SwitchChain -> WatchAsset', function () {
-  test.failing(
+  // todo: reenable this test once this issue is resolved: https://github.com/MetaMask/MetaMask-planning/issues/2406
+  it.failing(
     'should not batch subsequent watchAsset token into first watchAsset confirmation with a switchChain in the middle',
     async function () {
       const port = 8546;
