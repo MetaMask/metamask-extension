@@ -136,7 +136,7 @@ const SimulationDetailsLayout: React.FC<{
     className="simulation-details-layout"
     display={Display.Flex}
     flexDirection={FlexDirection.Column}
-    borderRadius={BorderRadius.MD}
+    borderRadius={BorderRadius.LG}
     borderColor={BorderColor.borderDefault}
     padding={3}
     margin={4}
