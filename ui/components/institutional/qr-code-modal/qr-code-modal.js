@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import QRCode from 'qrcode.react';
 import { v4 as uuid } from 'uuid';
+import { captureException } from '@sentry/browser';
 import {
   Modal,
   ModalOverlay,
@@ -52,6 +53,7 @@ export default function QRCodeModal({
     const errorMessage = `${message} Please try again or contact support if the problem persists.`;
     console.error(message, e);
     setError(errorMessage);
+    captureException(e);
   }, []);
 
   const generateKeyPair = useCallback(async () => {
@@ -97,7 +99,7 @@ export default function QRCodeModal({
         return JSON.parse(decryptedString);
       } catch (e) {
         handleError('An error occurred while decrypting data.', e);
-        throw e; // Throw to catch it in the caller
+        throw e;
       }
     },
     [handleError],
@@ -115,6 +117,7 @@ export default function QRCodeModal({
             privateKey,
             connectionRequest.payload,
           );
+
           setDecryptedMessage(decryptedPayload);
         } catch (e) {
           // Error handling is managed by the decrypt function
@@ -133,6 +136,7 @@ export default function QRCodeModal({
         channelId,
         traceId,
       });
+
       setQrCodeValue(value);
     }
   }, [publicKey, channelId, traceId]);
