@@ -139,6 +139,7 @@
     },
     "@ethereumjs/tx>@ethereumjs/util": {
       "globals": {
+        "console.log": true,
         "console.warn": true
       },
       "packages": {
@@ -741,8 +742,8 @@
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
         "@metamask/ethjs>@metamask/ethjs-unit": true,
-        "@metamask/ppom-validator>@metamask/controller-utils>@spruceid/siwe-parser": true,
         "@metamask/utils": true,
         "bn.js": true,
         "browserify>buffer": true,
@@ -831,8 +832,8 @@
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
         "@metamask/ethjs>@metamask/ethjs-unit": true,
-        "@metamask/ppom-validator>@metamask/controller-utils>@spruceid/siwe-parser": true,
         "@metamask/utils": true,
         "bn.js": true,
         "browserify>buffer": true,
@@ -1584,8 +1585,8 @@
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
         "@metamask/ethjs>@metamask/ethjs-unit": true,
-        "@metamask/ppom-validator>@metamask/controller-utils>@spruceid/siwe-parser": true,
         "@metamask/utils": true,
         "bn.js": true,
         "browserify>buffer": true,
@@ -1761,8 +1762,8 @@
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
         "@metamask/ethjs>@metamask/ethjs-unit": true,
-        "@metamask/ppom-validator>@metamask/controller-utils>@spruceid/siwe-parser": true,
         "@metamask/utils": true,
         "bn.js": true,
         "browserify>buffer": true,
@@ -1773,15 +1774,6 @@
     "@metamask/phishing-warning>eth-phishing-detect": {
       "packages": {
         "eslint>optionator>fast-levenshtein": true
-      }
-    },
-    "@metamask/ppom-validator>@metamask/controller-utils>@spruceid/siwe-parser": {
-      "globals": {
-        "console.error": true,
-        "console.log": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@spruceid/siwe-parser>apg-js": true
       }
     },
     "@metamask/ppom-validator>elliptic": {
@@ -1920,8 +1912,8 @@
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
         "@metamask/ethjs>@metamask/ethjs-unit": true,
-        "@metamask/ppom-validator>@metamask/controller-utils>@spruceid/siwe-parser": true,
         "@metamask/utils": true,
         "bn.js": true,
         "browserify>buffer": true,
@@ -2001,8 +1993,8 @@
         "setTimeout": true
       },
       "packages": {
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
         "@metamask/ethjs>@metamask/ethjs-unit": true,
-        "@metamask/ppom-validator>@metamask/controller-utils>@spruceid/siwe-parser": true,
         "@metamask/smart-transactions-controller>@metamask/controller-utils>@ethereumjs/util": true,
         "@metamask/utils": true,
         "bn.js": true,
@@ -2013,6 +2005,7 @@
     },
     "@metamask/smart-transactions-controller>@metamask/controller-utils>@ethereumjs/util": {
       "globals": {
+        "console.log": true,
         "console.warn": true
       },
       "packages": {
@@ -2083,6 +2076,7 @@
     },
     "@metamask/smart-transactions-controller>@metamask/transaction-controller>@ethereumjs/util": {
       "globals": {
+        "console.log": true,
         "console.warn": true
       },
       "packages": {
@@ -2110,24 +2104,14 @@
         "setTimeout": true
       },
       "packages": {
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
         "@metamask/ethjs>@metamask/ethjs-unit": true,
         "@metamask/smart-transactions-controller>@metamask/transaction-controller>@ethereumjs/util": true,
-        "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/controller-utils>@spruceid/siwe-parser": true,
         "@metamask/utils": true,
         "bn.js": true,
         "browserify>buffer": true,
         "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true
-      }
-    },
-    "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/controller-utils>@spruceid/siwe-parser": {
-      "globals": {
-        "console.error": true,
-        "console.log": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@spruceid/siwe-parser>apg-js": true,
-        "@noble/hashes": true
       }
     },
     "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/gas-fee-controller": {
@@ -2161,9 +2145,9 @@
         "setTimeout": true
       },
       "packages": {
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
         "@metamask/ethjs>@metamask/ethjs-unit": true,
         "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/gas-fee-controller>@metamask/controller-utils>@ethereumjs/util": true,
-        "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/gas-fee-controller>@metamask/controller-utils>@spruceid/siwe-parser": true,
         "@metamask/utils": true,
         "bn.js": true,
         "browserify>buffer": true,
@@ -2173,6 +2157,7 @@
     },
     "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/gas-fee-controller>@metamask/controller-utils>@ethereumjs/util": {
       "globals": {
+        "console.log": true,
         "console.warn": true
       },
       "packages": {
@@ -2182,16 +2167,6 @@
         "browserify>buffer": true,
         "browserify>insert-module-globals>is-buffer": true,
         "webpack>events": true
-      }
-    },
-    "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/gas-fee-controller>@metamask/controller-utils>@spruceid/siwe-parser": {
-      "globals": {
-        "console.error": true,
-        "console.log": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@spruceid/siwe-parser>apg-js": true,
-        "@noble/hashes": true
       }
     },
     "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/gas-fee-controller>@metamask/polling-controller": {
