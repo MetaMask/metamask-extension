@@ -23,10 +23,12 @@ import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 export type MultipleAlertModalProps = {
   /** The key of the initial alert to display. */
   alertKey: string;
-  /** The function to be executed when the modal needs to be closed. */
-  onClose: () => void;
+  /** The function to execute a determinate action based on the action key. */
+  onActionClick?: (actionKey: string) => void;
   /** The function to be executed when the button in the alert modal is clicked. */
   onFinalAcknowledgeClick: () => void;
+  /** The function to be executed when the modal needs to be closed. */
+  onClose: () => void;
   /** The unique identifier of the entity that owns the alert. */
   ownerId: string;
 };
@@ -140,6 +142,7 @@ function PageNavigation({
 
 export function MultipleAlertModal({
   alertKey,
+  onActionClick,
   onClose,
   onFinalAcknowledgeClick,
   ownerId,
@@ -175,6 +178,7 @@ export function MultipleAlertModal({
     <AlertModal
       ownerId={ownerId}
       onAcknowledgeClick={handleAcknowledgeClick}
+      onActionClick={onActionClick}
       alertKey={selectedAlert.key}
       onClose={onClose}
       headerStartAccessory={

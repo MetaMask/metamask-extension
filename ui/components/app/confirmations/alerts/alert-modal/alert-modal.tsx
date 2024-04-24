@@ -22,6 +22,7 @@ import {
   BlockSize,
   BorderRadius,
   Display,
+  FlexDirection,
   IconColor,
   Severity,
   TextAlign,
@@ -40,12 +41,14 @@ export type AlertModalProps = {
    * It override `startAccessory` of ModalHeaderDefault and by default no content is present.
    */
   headerStartAccessory?: React.ReactNode;
-  /** The owner ID of the relevant alert from the `confirmAlerts` reducer. */
-  ownerId: string;
   /** The function invoked when the user acknowledges the alert. */
   onAcknowledgeClick: () => void;
+  /** The function to execute a determinate action based on the action key. */
+  onActionClick?: (actionKey: string) => void;
   /** The function to be executed when the modal needs to be closed. */
   onClose: () => void;
+  /** The owner ID of the relevant alert from the `confirmAlerts` reducer. */
+  ownerId: string;
 };
 
 function getSeverityStyle(severity: Severity) {
@@ -191,6 +194,36 @@ function AcknowledgeButton({
   );
 }
 
+function ActionButton({
+  action,
+  onActionClick,
+}: {
+  action?: { key: string; label: string };
+  onActionClick?: (actionKey: string) => void;
+}) {
+  if (!onActionClick || !action) {
+    return null;
+  }
+
+  const handleActionClick = (key: string) => {
+    onActionClick(key);
+  };
+
+  const { key, label } = action;
+
+  return (
+    <Button
+      key={key}
+      variant={ButtonVariant.Secondary}
+      width={BlockSize.Full}
+      size={ButtonSize.Lg}
+      onClick={() => handleActionClick(key)}
+    >
+      {label}
+    </Button>
+  );
+}
+
 export function AlertModal({
   ownerId,
   onAcknowledgeClick,
@@ -232,7 +265,21 @@ export function AlertModal({
           />
         </ModalBody>
         <ModalFooter>
-          <AcknowledgeButton onAcknowledgeClick={onAcknowledgeClick} />
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            gap={3}
+            width={BlockSize.Full}
+          >
+            <AcknowledgeButton onAcknowledgeClick={onAcknowledgeClick} />
+            {(selectedAlert.actions ?? []).map((action) => (
+              <ActionButton
+                key={action.key}
+                action={action}
+                onActionClick={onAcknowledgeClick}
+              />
+            ))}
+          </Box>
         </ModalFooter>
       </ModalContent>
     </Modal>

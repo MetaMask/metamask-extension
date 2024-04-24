@@ -6,7 +6,7 @@ import useConfirmationRecipientInfo from './useConfirmationRecipientInfo';
 const RecipientAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 
 describe('useConfirmationRecipientInfo', () => {
-  describe('when the current confirimation is a signature', () => {
+  describe('when the current confirmation is a signature', () => {
     it('returns the account name of the from address as the recipient name', () => {
       const { result } = renderHookWithProvider(
         () => useConfirmationRecipientInfo(),

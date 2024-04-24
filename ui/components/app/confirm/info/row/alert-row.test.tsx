@@ -4,6 +4,7 @@ import { fireEvent } from '@testing-library/react';
 import { Text } from '../../../../component-library';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import { Severity } from '../../../../../helpers/constants/design-system';
+import mockState from '../../../../../../test/data/mock-state.json';
 import { AlertRow, AlertRowProps } from './alert-row';
 
 describe('AlertRow', () => {
@@ -27,6 +28,7 @@ describe('AlertRow', () => {
     ];
 
     const STATE_MOCK = {
+      ...mockState,
       ...state,
       confirmAlerts: {
         alerts: { [OWNER_ID_MOCK]: alertsMock },
@@ -39,7 +41,7 @@ describe('AlertRow', () => {
           id: OWNER_ID_MOCK,
           status: 'unapproved',
           time: new Date().getTime(),
-          type: 'json_request',
+          type: 'personal_sign',
         },
       },
     };

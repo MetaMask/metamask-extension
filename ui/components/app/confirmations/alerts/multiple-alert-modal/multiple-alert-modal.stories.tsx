@@ -1,21 +1,13 @@
 import React from 'react';
 import { MultipleAlertModal } from './multiple-alert-modal';
-import { Severity } from '../../../../../helpers/constants/design-system';
 import { Meta } from '@storybook/react';
 import configureStore from '../../../../../store/store';
 import { Provider } from 'react-redux';
-import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import { baseAlertsMock } from '../alert-modal/alert-modal.stories';
 
-const ALERTS_MOCK: Alert[] = [
-  { key: 'from', severity: Severity.Danger, message: 'Description of what may happen if this alert was ignored', reason: 'Reason for the alert 1', alertDetails: ['We found the contract Petname 0xEqT3b9773b1763efa556f55ccbeb20441962d82x to be malicious',
-  'Operator is an externally owned account (EOA) ',
-  'Operator is untrusted according to previous activity',]},
-  { key: 'data', severity: Severity.Warning, message: 'Alert 2', alertDetails:['detail 1 warning', 'detail 2 warning'] },
-  { key: 'contract', severity: Severity.Info, message: 'Alert Info', alertDetails:['detail 1 info', 'detail  info'] },
-];
 const OWNER_ID_MOCK = '123';
 const storeMock = configureStore({ confirmAlerts: {
-  alerts: {[OWNER_ID_MOCK]: ALERTS_MOCK},
+  alerts: {[OWNER_ID_MOCK]: baseAlertsMock},
   confirmed: {[OWNER_ID_MOCK]: {'from': false, 'data': false, 'contract': false}},
   } });
 
@@ -26,6 +18,10 @@ export default {
     alertKey: {
       control: 'text',
       description: 'The unique key representing the specific alert field .',
+    },
+    onActionClick: {
+      action: 'onClick',
+      description: 'The function to execute a determinate action based on the action key.',
     },
     onAcknowledgeClick: {
       action: 'onClick',
@@ -65,7 +61,7 @@ SingleCriticalAlertModal.decorators = [
   (story) => {
     const singleAlertStore = configureStore({
       confirmAlerts: {
-        alerts: { [OWNER_ID_MOCK]: [ALERTS_MOCK[0]] },
+        alerts: { [OWNER_ID_MOCK]: [baseAlertsMock[0]] },
         confirmed: { [OWNER_ID_MOCK]: { 'from': false } },
       }
     });

@@ -3,6 +3,7 @@ import { Severity } from '../../../../../helpers/constants/design-system';
 import InlineAlert from '../../../confirmations/alerts/inline-alert/inline-alert';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { MultipleAlertModal } from '../../../confirmations/alerts/multiple-alert-modal';
+import useConfirmationAlertActions from '../../../../../pages/confirmations/hooks/useConfirmationAlertActions';
 import { ConfirmInfoRow, ConfirmInfoRowVariant } from './row';
 
 export type AlertRowProps = {
@@ -47,6 +48,7 @@ export const AlertRow = ({
   tooltip,
   variant = ConfirmInfoRowVariant.Default,
 }: AlertRowProps) => {
+  const processAlertAction = useConfirmationAlertActions();
   const { getFieldAlerts } = useAlerts(ownerId);
   const hasFieldAlert = getFieldAlerts(alertKey).length > 0;
 
@@ -72,9 +74,12 @@ export const AlertRow = ({
       {alertModalVisible && (
         <MultipleAlertModal
           alertKey={alertKey}
-          ownerId={ownerId}
-          onFinalAcknowledgeClick={handleCloseModal}
+          onActionClick={(actionKey) => {
+            processAlertAction(actionKey);
+          }}
           onClose={handleCloseModal}
+          onFinalAcknowledgeClick={handleCloseModal}
+          ownerId={ownerId}
         />
       )}
       <ConfirmInfoRow
