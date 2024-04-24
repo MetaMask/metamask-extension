@@ -2864,9 +2864,6 @@ export default class MetamaskController extends EventEmitter {
     // The vault should not be exposed to the UI
     delete flatState.vault;
 
-    // The FCM should not be exposed to the UI
-    delete flatState.fcmToken;
-
     return {
       isInitialized,
       ...flatState,
