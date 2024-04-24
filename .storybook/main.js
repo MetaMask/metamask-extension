@@ -11,7 +11,7 @@ module.exports = {
   stories: [
     '../ui/**/*.stories.js',
     '../ui/**/*.stories.tsx',
-    '../ui/**/*.mdx',
+    '../ui/components/component-library/COMPONENT-LIBRARY.mdx',
     './*.mdx',
   ],
   addons: [

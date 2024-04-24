@@ -44,6 +44,17 @@ const updateStoryReferences = (content, storiesName) => {
   );
 };
 
+// Function to replace <ArgTypes> with <Controls>
+const updateControlsReferences = (content) => {
+  return content.replace(
+    /<ArgTypes of={([^}]+)} \/>/g,
+    (match, componentName) => {
+      // Assuming DefaultStory is applicable universally as mentioned
+      return `<Controls of={${componentName}Stories.DefaultStory} />`;
+    },
+  );
+};
+
 // Process MDX files found by the glob pattern
 const processMDXFiles = (pattern) => {
   glob(pattern, (err, files) => {
@@ -59,7 +70,7 @@ const processMDXFiles = (pattern) => {
           return;
         }
 
-        const { updatedContent: updatedImportsContent, componentStoriesName } =
+        let { updatedContent: updatedImportsContent, componentStoriesName } =
           updateImports(data);
         if (!componentStoriesName) {
           console.error(
@@ -68,12 +79,13 @@ const processMDXFiles = (pattern) => {
           return;
         }
 
-        const finalUpdatedContent = updateStoryReferences(
+        updatedImportsContent = updateStoryReferences(
           updatedImportsContent,
           componentStoriesName,
         );
+        updatedImportsContent = updateControlsReferences(updatedImportsContent);
 
-        fs.writeFile(file, finalUpdatedContent, 'utf8', (err) => {
+        fs.writeFile(file, updatedImportsContent, 'utf8', (err) => {
           if (err) {
             console.error(`Error writing file ${file}:`, err);
             return;
