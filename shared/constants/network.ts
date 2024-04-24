@@ -151,6 +151,7 @@ export const CHAIN_IDS = {
   ARBITRUM_GOERLI: '0x66eed',
   BLAST: '0x13e31',
   FILECOIN: '0x13a',
+  POLYGON_ZKEVM: '0x44d',
   SCROLL: '0x82750',
   SCROLL_SEPOLIA: '0x8274f',
 } as const;
@@ -194,7 +195,6 @@ const CHAINLIST_CHAIN_IDS_MAP = {
   OASYS_MAINNET: '0xf8',
   OKXCHAIN_MAINNET: '0x42',
   PGN_PUBLIC_GOODS_NETWORK: '0x1a8',
-  POLYGON_ZKEVM: '0x44d',
   PULSECHAIN_MAINNET: '0x171',
   SHARDEUM_LIBERTY_2X: '0x1f91',
   SHARDEUM_SPHINX_1X: '0x1f92',
@@ -248,6 +248,10 @@ export const GNOSIS_DISPLAY_NAME = 'Gnosis';
 export const ZK_SYNC_ERA_DISPLAY_NAME = 'zkSync Era Mainnet';
 export const BASE_DISPLAY_NAME = 'Base Mainnet';
 export const AURORA_ETH_DISPLAY_NAME = 'Aurora';
+export const CRONOS_DISPLAY_NAME = 'Cronos';
+export const POLYGON_ZKEVM_DISPLAY_NAME = 'Polygon zkEVM';
+export const MOONBEAM_DISPLAY_NAME = 'Moonbeam';
+export const MOONRIVER_DISPLAY_NAME = 'Moonriver';
 export const SCROLL_DISPLAY_NAME = 'Scroll';
 export const SCROLL_SEPOLIA_DISPLAY_NAME = 'Scroll Sepolia';
 
@@ -895,6 +899,7 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.ARBITRUM_GOERLI
     | typeof CHAIN_IDS.BLAST
     | typeof CHAIN_IDS.FILECOIN
+    | typeof CHAIN_IDS.POLYGON_ZKEVM
     | typeof CHAIN_IDS.SCROLL
     | typeof CHAIN_IDS.SCROLL_SEPOLIA
   >]: BuyableChainSettings;

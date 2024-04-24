@@ -240,7 +240,9 @@
     "@metamask/network-controller@npm:^18.0.1": "patch:@metamask/network-controller@npm%3A18.1.0#~/.yarn/patches/@metamask-network-controller-npm-18.1.0-680908c29a.patch",
     "@metamask/network-controller@npm:^17.2.1": "patch:@metamask/network-controller@npm%3A18.1.0#~/.yarn/patches/@metamask-network-controller-npm-18.1.0-680908c29a.patch",
     "@metamask/network-controller@npm:^18.1.0": "patch:@metamask/network-controller@npm%3A18.1.0#~/.yarn/patches/@metamask-network-controller-npm-18.1.0-680908c29a.patch",
-    "@metamask/keyring-controller@npm:^13.0.0": "patch:@metamask/keyring-controller@npm%3A13.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-13.0.0-d94816a680.patch"
+    "@metamask/keyring-controller@npm:^13.0.0": "patch:@metamask/keyring-controller@npm%3A13.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-13.0.0-d94816a680.patch",
+    "@spruceid/siwe-parser@npm:1.1.3": "patch:@spruceid/siwe-parser@npm%3A2.1.0#~/.yarn/patches/@spruceid-siwe-parser-npm-2.1.0-060b7ede7a.patch",
+    "@spruceid/siwe-parser@npm:2.1.0": "patch:@spruceid/siwe-parser@npm%3A2.1.0#~/.yarn/patches/@spruceid-siwe-parser-npm-2.1.0-060b7ede7a.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
@@ -272,7 +274,7 @@
     "@metamask/address-book-controller": "^3.1.7",
     "@metamask/announcement-controller": "^6.1.0",
     "@metamask/approval-controller": "^6.0.1",
-    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A26.0.0%23~/.yarn/patches/@metamask-assets-controllers-npm-26.0.0-17c0e9432c.patch%3A%3Aversion=26.0.0&hash=cf1d54#~/.yarn/patches/@metamask-assets-controllers-patch-0f46262fea.patch",
+    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@patch%253A@metamask/assets-controllers@npm%25253A26.0.0%2523~/.yarn/patches/@metamask-assets-controllers-npm-26.0.0-17c0e9432c.patch%253A%253Aversion=26.0.0&hash=cf1d54%23~/.yarn/patches/@metamask-assets-controllers-patch-0f46262fea.patch%3A%3Aversion=26.0.0&hash=5c145e#~/.yarn/patches/@metamask-assets-controllers-patch-7616cc1669.patch",
     "@metamask/base-controller": "^4.1.0",
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/contract-metadata": "^2.5.0",
