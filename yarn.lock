@@ -1708,10 +1708,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blockaid/ppom_release@npm:^1.4.5":
-  version: 1.4.5
-  resolution: "@blockaid/ppom_release@npm:1.4.5"
-  checksum: 653b75922951f0b73b0c9a1e3621a29d5a8d7569fbfc9e9ac89b0e14161eacc712dfe8a656107df2453b37ce1b40e59cd287dfcb6bdc73982771e3b90dfa5cca
+"@blockaid/ppom_release@npm:^1.4.6":
+  version: 1.4.6
+  resolution: "@blockaid/ppom_release@npm:1.4.6"
+  checksum: 53b9774f97ba24d98dee4a66653c83223afd2db8598d8b631ee4851731b1f68a99d05a8a2b68584d7b9a8e71370a09e79aba024d171af8a823c1053371009756
   languageName: node
   linkType: hard
 
@@ -4652,7 +4652,7 @@ __metadata:
 
 "@metamask/assets-controllers@patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A26.0.0%23~/.yarn/patches/@metamask-assets-controllers-npm-26.0.0-17c0e9432c.patch%3A%3Aversion=26.0.0&hash=cf1d54#~/.yarn/patches/@metamask-assets-controllers-patch-0f46262fea.patch":
   version: 26.0.0
-  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A26.0.0%23~/.yarn/patches/@metamask-assets-controllers-npm-26.0.0-17c0e9432c.patch%3A%3Aversion=26.0.0&hash=cf1d54#~/.yarn/patches/@metamask-assets-controllers-patch-0f46262fea.patch::version=26.0.0&hash=8a466a"
+  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A26.0.0%23~/.yarn/patches/@metamask-assets-controllers-npm-26.0.0-17c0e9432c.patch%3A%3Aversion=26.0.0&hash=cf1d54#~/.yarn/patches/@metamask-assets-controllers-patch-0f46262fea.patch::version=26.0.0&hash=5c145e"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@ethersproject/address": "npm:^5.7.0"
@@ -4688,7 +4688,7 @@ __metadata:
     "@metamask/keyring-controller": ^13.0.0
     "@metamask/network-controller": ^17.2.0
     "@metamask/preferences-controller": ^8.0.0
-  checksum: 411bdcfbda7368c1fdcaea8406597e9e34655b9c62811ce68b7a3acfa94db2d77fdc586f6d6fd65a0b91cb3ff92a8805b7f12556c1c5aaf8f1f815ed49cc18b3
+  checksum: 4ffddf66427d5a00e489289b3e86ceafa1dfb1a4964113e63f8be7428735cd78000a19a14e0ad1131f7f40e99013510d1fad9952255add55d96a2437931997cb
   languageName: node
   linkType: hard
 
@@ -25391,7 +25391,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.23.2"
     "@babel/register": "npm:^7.22.15"
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch"
-    "@blockaid/ppom_release": "npm:^1.4.5"
+    "@blockaid/ppom_release": "npm:^1.4.6"
     "@contentful/rich-text-html-renderer": "npm:^16.3.5"
     "@ensdomains/content-hash": "npm:^2.5.7"
     "@ethereumjs/tx": "npm:^4.1.1"

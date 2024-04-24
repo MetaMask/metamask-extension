@@ -20,7 +20,10 @@ import {
   Display,
   FlexDirection,
   FontWeight,
+  IconColor,
   JustifyContent,
+  TextColor,
+  TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { ConfirmInfoRow } from '../../../../../components/app/confirm/info/row';
 import { AddressCopyButton } from '../../../../../components/multichain';
@@ -78,6 +81,7 @@ const HeaderInfo = () => {
         <Tooltip position="bottom" title={t('accountDetails')} interactive>
           <ButtonIcon
             ariaLabel={t('accountDetails')}
+            color={IconColor.iconDefault}
             iconName={IconName.Info}
             size={ButtonIconSize.Md}
             onClick={() => {
@@ -97,7 +101,11 @@ const HeaderInfo = () => {
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>
-            <Box display={Display.Flex} justifyContent={JustifyContent.center}>
+            <Box
+              display={Display.Flex}
+              justifyContent={JustifyContent.center}
+              style={{ position: 'relative' }}
+            >
               <Box
                 style={{ margin: '0 auto' }}
                 display={Display.Flex}
@@ -114,14 +122,16 @@ const HeaderInfo = () => {
                   address={fromAddress}
                   size={AvatarAccountSize.Lg}
                 />
-                <Text fontWeight={FontWeight.Bold} marginTop={2}>
+                <Text
+                  fontWeight={FontWeight.Bold}
+                  variant={TextVariant.bodyMd}
+                  color={TextColor.textDefault}
+                  marginTop={2}
+                >
                   {fromName}
                 </Text>
               </Box>
-              <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.flexEnd}
-              >
+              <Box style={{ position: 'absolute', right: 0 }}>
                 <ButtonIcon
                   ariaLabel={t('close')}
                   iconName={IconName.Close}
