@@ -270,7 +270,7 @@
     "@metamask/address-book-controller": "^3.1.7",
     "@metamask/announcement-controller": "^5.0.1",
     "@metamask/approval-controller": "^6.0.0",
-    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A26.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-26.0.0-17c0e9432c.patch",
+    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A26.0.0%23~/.yarn/patches/@metamask-assets-controllers-npm-26.0.0-17c0e9432c.patch%3A%3Aversion=26.0.0&hash=cf1d54#~/.yarn/patches/@metamask-assets-controllers-patch-0f46262fea.patch",
     "@metamask/base-controller": "^4.1.0",
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/contract-metadata": "^2.5.0",
