@@ -10021,6 +10021,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/pixelmatch@npm:^5":
+  version: 5.2.6
+  resolution: "@types/pixelmatch@npm:5.2.6"
+  dependencies:
+    "@types/node": "npm:*"
+  checksum: 8299207286913414bfd95ac980418342f58e7bc93dc78befbd48ccab110b0341b400712f89fea2b0f0a3a4ad0b1aed18e98e26100b529abe60d4bcc14e11d2e3
+  languageName: node
+  linkType: hard
+
 "@types/prettier@npm:^2.7.2":
   version: 2.7.2
   resolution: "@types/prettier@npm:2.7.2"
@@ -24867,6 +24876,7 @@ __metadata:
     "@types/mocha": "npm:^10.0.3"
     "@types/node": "npm:^20"
     "@types/pify": "npm:^5.0.1"
+    "@types/pixelmatch": "npm:^5"
     "@types/pump": "npm:^1.1.1"
     "@types/react": "npm:^16.9.53"
     "@types/react-beautiful-dnd": "npm:^13"
@@ -24997,6 +25007,8 @@ __metadata:
     nyc: "npm:^15.1.0"
     obj-multiplex: "npm:^1.0.0"
     pify: "npm:^5.0.0"
+    pixelmatch: "npm:^5.3.0"
+    pngjs: "npm:^7.0.0"
     polyfill-crypto.getrandomvalues: "npm:^1.0.0"
     postcss: "npm:^8.4.32"
     postcss-rtlcss: "npm:^4.0.9"
@@ -27833,6 +27845,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pixelmatch@npm:^5.3.0":
+  version: 5.3.0
+  resolution: "pixelmatch@npm:5.3.0"
+  dependencies:
+    pngjs: "npm:^6.0.0"
+  bin:
+    pixelmatch: bin/pixelmatch
+  checksum: 10778aaa432211253ab0ae9160233d8aa56769ab6312b6bf8375100b67aaa126821626a0c3b433fb2a977864a8d2d145d754d4afa9ac14b84fcb1a0bdf98a4ae
+  languageName: node
+  linkType: hard
+
 "pkg-dir@npm:^3.0.0":
   version: 3.0.0
   resolution: "pkg-dir@npm:3.0.0"
@@ -27921,6 +27944,20 @@ __metadata:
   version: 8.0.0
   resolution: "pluralize@npm:8.0.0"
   checksum: 17877fdfdb7ddb3639ce257ad73a7c51a30a966091e40f56ea9f2f545b5727ce548d4928f8cb3ce38e7dc0c5150407d318af6a4ed0ea5265d378473b4c2c61ec
+  languageName: node
+  linkType: hard
+
+"pngjs@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "pngjs@npm:6.0.0"
+  checksum: 692751ccd5e762623103900922caac982caa90258d9c6c04a6e2bc3397b1dedbaf9db826fc0fa068a29d607cad3df1d1eded0dec2ee35a0015c65cb5ef33ad18
+  languageName: node
+  linkType: hard
+
+"pngjs@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "pngjs@npm:7.0.0"
+  checksum: e843ebbb0df092ee0f3a3e7dbd91ff87a239a4e4c4198fff202916bfb33b67622f4b83b3c29f3ccae94fcb97180c289df06068624554f61686fe6b9a4811f7db
   languageName: node
   linkType: hard
 

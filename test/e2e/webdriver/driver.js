@@ -1,5 +1,7 @@
 const { promises: fs } = require('fs');
 const { strict: assert } = require('assert');
+const pixelmatch = require('pixelmatch');
+const { PNG } = require('pngjs');
 const {
   By,
   Condition,
@@ -656,6 +658,51 @@ class Driver {
         await this.delay(1000);
       }
     }
+  }
+
+  async takeBaselineScreenshot(filePath, fileName) {
+    const filepathBase = `${filePath}/${fileName}`;
+    await fs.mkdir(filePath, { recursive: true });
+
+    const encodedString = await this.driver.takeScreenshot();
+    await fs.writeFile(`${filepathBase}-screenshot.png`, encodedString, {
+      encoding: 'base64',
+    });
+  }
+
+  async matchBaselineScreenshot(baselineImagePath, title) {
+    const artifactDir = `./test-artifacts/${this.browser}/${title}`;
+    const filepathBase = `${artifactDir}/currentScreen`;
+    await fs.mkdir(artifactDir, { recursive: true });
+
+    const encodedString = await this.driver.takeScreenshot();
+    await fs.writeFile(`${filepathBase}-screenshot.png`, encodedString, {
+      encoding: 'base64',
+    });
+
+    const baselineImage = PNG.sync.read(
+      await fs.readFile(`${baselineImagePath}.png`),
+    );
+    const currentImage = PNG.sync.read(
+      await fs.readFile(`${filepathBase}-screenshot.png`),
+    );
+    const { width, height } = baselineImage;
+    const difference = new PNG({ width, height });
+
+    const pixelDifference = pixelmatch(
+      baselineImage.data,
+      currentImage.data,
+      difference.data,
+      width,
+      height,
+      {
+        threshold: 0.1,
+      },
+    );
+
+    const differencePercent = (pixelDifference / (width * height)) * 100;
+    assert(differencePercent < 20);
+    await fs.writeFile(`${filepathBase}-diff.png`, PNG.sync.write(difference));
   }
 
   // Error handling

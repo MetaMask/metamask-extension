@@ -1,4 +1,5 @@
 const { strict: assert } = require('assert');
+const path = require('path');
 const {
   withFixtures,
   regularDelayMs,
@@ -70,6 +71,7 @@ describe('Sign Typed Data Signature Request', function () {
         async ({ driver, ganacheServer }) => {
           const addresses = await ganacheServer.getAccounts();
           const publicAddress = addresses[0];
+          const baselinePath = path.resolve(__dirname, 'baselines');
           await unlockWallet(driver);
 
           await openDapp(driver);
@@ -82,6 +84,14 @@ describe('Sign Typed Data Signature Request', function () {
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.Dialog,
             windowHandles,
+          );
+
+          // await driver.takeBaselineScreenshot(baselinePath, data.type); To take baselines
+
+          // Verify against baseline
+          await driver.matchBaselineScreenshot(
+            `${baselinePath}/${data.type}-screenshot`,
+            `${this.test.fullTitle()}`,
           );
 
           await verifyAndAssertSignTypedData(
