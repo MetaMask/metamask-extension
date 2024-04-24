@@ -304,7 +304,7 @@
     "@metamask/message-manager": "^7.3.0",
     "@metamask/message-signing-snap": "^0.3.3",
     "@metamask/metamask-eth-abis": "^3.1.1",
-    "@metamask/name-controller": "^4.2.0",
+    "@metamask/name-controller": "^6.0.1",
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A18.1.0#~/.yarn/patches/@metamask-network-controller-npm-18.1.0-680908c29a.patch",
     "@metamask/notification-controller": "^3.0.0",
     "@metamask/obs-store": "^8.1.0",
