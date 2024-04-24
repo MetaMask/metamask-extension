@@ -9,10 +9,7 @@ import {
   IconSize,
   Text,
 } from '../../../../components/component-library';
-import {
-  IconColor,
-  TextColor,
-} from '../../../../helpers/constants/design-system';
+import { IconColor } from '../../../../helpers/constants/design-system';
 import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
 import { PriorityLevels } from '../../../../../shared/constants/gas';
 import {
@@ -123,7 +120,6 @@ const GasDetailsItem = ({
       key="gas-details-item"
       data-testid={dataTestId}
       detailTitle={detailTitle()}
-      detailTitleColor={TextColor.textDefault}
       detailText={
         Object.keys(draftTransaction).length === 0 && (
           <div className="gas-details-item__currency-container">

@@ -17,7 +17,7 @@ export default function TransactionDetailItem({
   'data-testid': dataTestId,
   detailTitle = '',
   detailText,
-  detailTitleColor = Color.textDefault,
+  detailTitleColor = Color.textAlternative,
   detailTotal = '',
   subTitle = '',
   subText = '',
