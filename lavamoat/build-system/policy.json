@@ -7269,6 +7269,16 @@
         "define": true
       }
     },
+    "react-markdown>unified": {
+      "packages": {
+        "mocha>yargs-unparser>is-plain-obj": true,
+        "react-markdown>unified>bail": true,
+        "react-markdown>unified>extend": true,
+        "react-markdown>unified>is-buffer": true,
+        "react-markdown>unified>trough": true,
+        "react-markdown>vfile": true
+      }
+    },
     "react-markdown>unist-util-visit": {
       "packages": {
         "react-markdown>unist-util-visit>unist-util-visit-parents": true
@@ -7774,9 +7784,9 @@
     },
     "stylelint>@stylelint/postcss-markdown>remark": {
       "packages": {
+        "react-markdown>unified": true,
         "stylelint>@stylelint/postcss-markdown>remark>remark-parse": true,
-        "stylelint>@stylelint/postcss-markdown>remark>remark-stringify": true,
-        "stylelint>@stylelint/postcss-markdown>remark>unified": true
+        "stylelint>@stylelint/postcss-markdown>remark>remark-stringify": true
       }
     },
     "stylelint>@stylelint/postcss-markdown>remark>remark-parse": {
@@ -7847,19 +7857,9 @@
         "stylelint>@stylelint/postcss-markdown>remark>remark-stringify>stringify-entities>character-entities-html4": true
       }
     },
-    "stylelint>@stylelint/postcss-markdown>remark>unified": {
-      "packages": {
-        "mocha>yargs-unparser>is-plain-obj": true,
-        "react-markdown>unified>extend": true,
-        "react-markdown>vfile": true,
-        "stylelint>@stylelint/postcss-markdown>remark>unified>bail": true,
-        "stylelint>@stylelint/postcss-markdown>remark>unified>is-buffer": true,
-        "stylelint>@stylelint/postcss-markdown>remark>unified>trough": true
-      }
-    },
     "stylelint>@stylelint/postcss-markdown>unist-util-find-all-after": {
       "packages": {
-        "stylelint>@stylelint/postcss-markdown>unist-util-find-all-after>unist-util-is": true
+        "react-markdown>unist-util-visit>unist-util-is": true
       }
     },
     "stylelint>autoprefixer": {
