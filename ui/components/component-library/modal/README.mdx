@@ -1,6 +1,5 @@
-import { Story, Canvas, ArgTypes } from '@storybook/addon-docs';
-
-import { Modal } from './modal';
+import { Controls, Canvas } from '@storybook/addon-docs';
+import * as ModalStories from './modal.stories';
 
 # Modal
 
@@ -8,13 +7,11 @@ The `Modal` focuses the user's attention exclusively on information via a window
 
 [MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
 
-<Canvas>
-  <Story id="components-componentlibrary-modal--default-story" />
-</Canvas>
+<Canvas of={ModalStories.DefaultStory} />
 
 ## Props
 
-<ArgTypes of={Modal} />
+<Controls of={ModalStories.DefaultStory} />
 
 ### Usage
 
@@ -27,9 +24,7 @@ When the modal opens:
 - Use the `isOpen` prop to control whether the modal is open or closed.
 - Use the `onClose` prop to fire a callback when the modal is closed. This is used for the `isClosedOnOutsideClick` prop and the `isClosedOnEscapeKey`.
 
-<Canvas>
-  <Story id="components-componentlibrary-modal--usage" />
-</Canvas>
+<Canvas of={ModalStories.Usage} />
 
 ```jsx
 import React, { useState, useRef } from 'react';
@@ -69,9 +64,7 @@ Use the `isClosedOnOutsideClick` prop to control whether the modal should close 
 
 Defaults to `true`.
 
-<Canvas>
-  <Story id="components-componentlibrary-modal--is-closed-on-outside-click" />
-</Canvas>
+<Canvas of={ModalStories.IsClosedOnOutsideClick} />
 
 ```jsx
 import { Modal } from '../../component-library';
@@ -85,9 +78,7 @@ Use the `isClosedOnEscapeKey` prop to control whether the modal should close whe
 
 Defaults to `true`.
 
-<Canvas>
-  <Story id="components-componentlibrary-modal--is-closed-on-escape-key" />
-</Canvas>
+<Canvas of={ModalStories.IsClosedOnEscapeKey} />
 
 ```jsx
 import { Modal } from '../../component-library';
@@ -99,9 +90,7 @@ import { Modal } from '../../component-library';
 
 Use the `initialFocusRef` to set the `ref` of the element to receive focus initially. This is useful for input elements that should receive focus when the modal opens.
 
-<Canvas>
-  <Story id="components-componentlibrary-modal--initial-focus-ref" />
-</Canvas>
+<Canvas of={ModalStories.InitialFocusRef} />
 
 ```jsx
 import React, { useState, useRef } from 'react';
@@ -151,9 +140,7 @@ const handleOnClose = () => {
 
 Use the `finalFocusRef` to set the `ref` of the element to receive focus when the modal closes.
 
-<Canvas>
-  <Story id="components-componentlibrary-modal--final-focus-ref" />
-</Canvas>
+<Canvas of={ModalStories.FinalFocusRef} />
 
 ```jsx
 import React, { useState, useRef } from 'react';
@@ -203,9 +190,7 @@ Use the `restoreFocus` prop to restore focus to the element that triggered the `
 
 Defaults to `false`
 
-<Canvas>
-  <Story id="components-componentlibrary-modal--restore-focus" />
-</Canvas>
+<Canvas of={ModalStories.RestoreFocus} />
 
 ```jsx
 import { Modal } from '../../component-library';
@@ -219,9 +204,7 @@ If `true`, the first focusable element within the `children` will auto-focused o
 
 Defaults to `true`
 
-<Canvas>
-  <Story id="components-componentlibrary-modal--auto-focus" />
-</Canvas>
+<Canvas of={ModalStories.AutoFocus} />
 
 ```jsx
 import { Modal } from '../../component-library';
