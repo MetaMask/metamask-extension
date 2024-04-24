@@ -1,6 +1,5 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import {
   BannerAlert,
   BannerAlertSeverity,
@@ -8,30 +7,28 @@ import {
 } from '../../../../component-library';
 import { getSendHexDataFeatureFlagState } from '../../../../../ducks/metamask/metamask';
 import {
+  Asset,
   acknowledgeRecipientWarning,
+  getBestQuote,
   getCurrentDraftTransaction,
   getSendAsset,
-  updateSendAsset,
 } from '../../../../../ducks/send';
-import {
-  AssetType,
-  TokenStandard,
-} from '../../../../../../shared/constants/transaction';
+import { AssetType } from '../../../../../../shared/constants/transaction';
 import { CONTRACT_ADDRESS_LINK } from '../../../../../helpers/constants/common';
-import { SEND_ROUTE } from '../../../../../helpers/constants/routes';
 import { Display } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AssetPickerAmount } from '../../..';
 import { SendHexData, SendPageRow } from '.';
+import { decimalToHex } from '../../../../../../shared/modules/conversion.utils';
 
 export const SendPageRecipientContent = ({
   requireContractAddressAcknowledgement,
+  onAssetChange,
 }: {
   requireContractAddressAcknowledgement: boolean;
+  onAssetChange: (newAsset: Asset) => void;
 }) => {
   const t = useI18nContext();
-
-  const history = useHistory();
 
   // Hex data
   const showHexDataFlag = useSelector(getSendHexDataFeatureFlagState);
@@ -42,53 +39,37 @@ export const SendPageRecipientContent = ({
     asset.type !== AssetType.token &&
     asset.type !== AssetType.NFT;
 
-  const { asset: transactionAsset, amount } = useSelector(
-    getCurrentDraftTransaction,
-  );
+  const {
+    receiveAsset,
+    sendAsset,
+    amount: sendAmount,
+  } = useSelector(getCurrentDraftTransaction);
+
+  const bestQuote = useSelector(getBestQuote);
+
+  const amount =
+    receiveAsset.details?.address === sendAsset.details?.address
+      ? sendAmount
+      : { value: decimalToHex(bestQuote?.destinationAmount || '0') };
 
   // Gas data
   const dispatch = useDispatch();
 
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // TODO: replace this with dest logic, then abstract both usages to a util
-  const handleSelectToken = async (token: any) => {
-    if (token.type === AssetType.native) {
-      dispatch(
-        updateSendAsset({
-          type: token.type,
-          details: token,
-          skipComputeEstimatedGasLimit: false,
-        }),
-      );
-    } else {
-      dispatch(
-        updateSendAsset({
-          type: token.type ?? AssetType.token,
-          details: {
-            ...token,
-            standard: token.standard ?? TokenStandard.ERC20,
-          },
-          skipComputeEstimatedGasLimit: false,
-        }),
-      );
-    }
-    history.push(SEND_ROUTE);
-  };
-
   // FIXME: these should all be resolved before marking the PR as ready
-  // TODO: SWAP+SEND impl steps (all but step 6 correlate to a PR in the merge train):
-  // TODO: 1. create/add data flows for swap+send
-  // TODO: 2. enable destination swap button (i.e., allow 1-to-any swaps) on send page; integrate data flows; update modals and swaps flow
-  // TODO: 3. add error states
-  // TODO: 4. begin design review + revisions
+  // TODO: SWAP+SEND impl steps (all but step 4 correlate to a PR in the merge train):
+  // TODO: 1. update modals and swaps flow; add error states; handle transactions
+  // TODO: 2. begin design review + revisions
   //          - fix modal scroll behavior
   //          - remove background for 721/1155 images
   //          - double border weight for dropdowns
   //          - ensure all NFTs show up in modal
-  // TODO: 5. add analytics + e2e tests
+  //          - ensure selected token in modal is correct
+  //          - limit dest options
+  //          - add delay and polling
+  //          - tooltips showing after upstream change
+  // TODO: 3. add analytics + e2e tests
   //       - use transaction lifecycle events once
-  // TODO: 6. final design and technical review + revisions
+  // TODO: 4. final design and technical review + revisions
   return (
     <Box>
       {requireContractAddressAcknowledgement ? (
@@ -118,9 +99,9 @@ export const SendPageRecipientContent = ({
       ) : null}
       <SendPageRow>
         <AssetPickerAmount
-          asset={transactionAsset}
-          onAssetChange={handleSelectToken}
-          amount={amount}
+          asset={receiveAsset}
+          onAssetChange={onAssetChange}
+          amount={amount} // TODO - this should be the amount of the asset being sent
         />
       </SendPageRow>
       {showHexData ? <SendHexData /> : null}
