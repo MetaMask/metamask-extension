@@ -12,6 +12,8 @@ describe('AlertRow', () => {
   const OWNER_ID_NO_ALERT_MOCK = '000';
   const KEY_ALERT_KEY_MOCK = 'Key';
   const ALERT_MESSAGE_MOCK = 'Alert 1';
+  const ACTION_KEY_MOCK = 'key-mock';
+  const ACTION_LABEL_MOCK = 'Label Mock';
   const renderAlertRow = (
     props?: Partial<AlertRowProps>,
     state?: Record<string, unknown>,
@@ -24,6 +26,7 @@ describe('AlertRow', () => {
         message: ALERT_MESSAGE_MOCK,
         reason: 'Reason 1',
         alertDetails: ['Detail 1', 'Detail 2'],
+        actions: [{ key: ACTION_KEY_MOCK, label: ACTION_LABEL_MOCK }],
       },
     ];
 
@@ -96,6 +99,28 @@ describe('AlertRow', () => {
         fireEvent.click(getByTestId('inline-alert'));
         fireEvent.click(getByTestId('alert-modal-button'));
         expect(queryByTestId('alert-modal-button')).toBeNull();
+      });
+    });
+
+    describe('processAlertAction', () => {
+      it('renders dynamic action button', () => {
+        const { getByTestId, getByText } = renderAlertRow({
+          alertKey: KEY_ALERT_KEY_MOCK,
+          ownerId: OWNER_ID_MOCK,
+        });
+        fireEvent.click(getByTestId('inline-alert'));
+        expect(getByText(ACTION_LABEL_MOCK)).toBeDefined();
+      });
+
+      it('executes action when clicked', () => {
+        const { getByTestId, getByText } = renderAlertRow({
+          alertKey: KEY_ALERT_KEY_MOCK,
+          ownerId: OWNER_ID_MOCK,
+        });
+        fireEvent.click(getByTestId('inline-alert'));
+        expect(getByText(ACTION_LABEL_MOCK)).toBeDefined();
+        fireEvent.click(getByText(ACTION_LABEL_MOCK));
+        expect(getByTestId('inline-alert')).toBeDefined();
       });
     });
   });
