@@ -2,8 +2,8 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { TransactionType } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
-import ConfirmTitle from './title';
 import { Confirmation } from '../../../types/confirm';
+import ConfirmTitle from './title';
 
 const genMockState = (confirmationOverride: Partial<Confirmation> = {}) => ({
   confirm: {
