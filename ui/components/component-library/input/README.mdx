@@ -7,11 +7,11 @@ import * as InputStories from './input.stories';
 
 [MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
 
-<Canvas of={InputStories.DefaultStory} />
+{/* <Canvas of={InputStories.DefaultStory} /> */}
 
 ## Props
 
-<Controls of={InputStories.DefaultStory} />
+{/* <Controls of={InputStories.DefaultStory} /> */}
 
 ### Type
 
@@ -26,7 +26,7 @@ Possible types include:
 
 Defaults to `InputType.Text`.
 
-<Canvas of={InputStories.Type} />
+{/* <Canvas of={InputStories.Type} /> */}
 
 ```jsx
 import { Input, InputType } from '../../component-library';
@@ -41,7 +41,7 @@ import { Input, InputType } from '../../component-library';
 
 Use the `ref` prop to access the ref of the `<input />` html element of `Input`. This is useful for focusing the input from a button or other component.
 
-<Canvas of={InputStories.Ref} />
+{/* <Canvas of={InputStories.Ref} /> */}
 
 ```jsx
 import { Button, Input } from '../../component-library';
@@ -69,7 +69,7 @@ const handleOnChange = (e) => {
 
 Use the `autoComplete` prop to set the autocomplete html attribute. It allows the browser to predict the value based on earlier typed values.
 
-<Canvas of={InputStories.AutoComplete} />
+{/* <Canvas of={InputStories.AutoComplete} /> */}
 
 ```jsx
 import { Input, InputType } from '../../component-library';
@@ -93,7 +93,7 @@ import { Input } from '../../component-library';
 
 Use the `defaultValue` prop to set the default value of the `Input`. Used for uncontrolled inputs.
 
-<Canvas of={InputStories.DefaultValue} />
+{/* <Canvas of={InputStories.DefaultValue} /> */}
 
 ```jsx
 import { Input } from '../../component-library';
@@ -105,7 +105,7 @@ import { Input } from '../../component-library';
 
 Use the `disabled` prop to set the disabled state of the `Input`
 
-<Canvas of={InputStories.Disabled} />
+{/* <Canvas of={InputStories.Disabled} /> */}
 
 ```jsx
 import { Input } from '../../component-library';
@@ -117,7 +117,7 @@ import { Input } from '../../component-library';
 
 Use the `error` prop to set `aria-invalid="true"`. This helps with screen readers for accessibility. There is no visual indicator for `error` this should be handled in the parent component.
 
-<Canvas of={InputStories.ErrorStory} />
+{/* <Canvas of={InputStories.ErrorStory} /> */}
 
 ```jsx
 import { Input } from '../../component-library';
@@ -129,7 +129,7 @@ import { Input } from '../../component-library';
 
 Use the `maxLength` prop to set the maximum allowed input characters for the `Input`
 
-<Canvas of={InputStories.MaxLength} />
+{/* <Canvas of={InputStories.MaxLength} /> */}
 
 ```jsx
 import { Input } from '../../component-library';
@@ -141,7 +141,7 @@ import { Input } from '../../component-library';
 
 Use the `readOnly` prop to set the `Input` to read only
 
-<Canvas of={InputStories.ReadOnly} />
+{/* <Canvas of={InputStories.ReadOnly} /> */}
 
 ```jsx
 import { Input } from '../../component-library';
@@ -153,7 +153,7 @@ import { Input } from '../../component-library';
 
 Use the `required` prop to set the html `required` attribute used by the browser api. There is no visual indicator for `required` this should be handled in the parent component.
 
-<Canvas of={InputStories.Required} />
+{/* <Canvas of={InputStories.Required} /> */}
 
 ```jsx
 import { Input } from '../../component-library';
@@ -170,7 +170,7 @@ Use the `disableStyleStates` to remove disabled and focus styles
 
 This sets the CSS to `outline: none` so ensure there is a proper fallback to enable accessibility for keyboard only and vision impaired users. Check `TextField` source code to see how it is done properly.
 
-<Canvas of={InputStories.DisableStateStyles} />
+{/* <Canvas of={InputStories.DisableStateStyles} /> */}
 
 ```jsx
 import { Input } from '../../component-library';
@@ -186,7 +186,7 @@ Use the `textVariant` and `TextVariant` enum to change the font size and style o
 
 This should RARELY be used but it is available for custom inputs that require larger text
 
-<Canvas of={InputStories.TextVariantStory} />
+{/* <Canvas of={InputStories.TextVariantStory} /> */}
 
 ```jsx
 import { TextVariant } from '../../../helpers/constants/design-system';
