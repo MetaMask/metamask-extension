@@ -192,12 +192,12 @@ export default function GasTiming({
 
   return (
     <Box display={Display.Flex}>
-      <Text color={TextColor.textMuted} variant={TextVariant.bodyXs}>
+      <Text color={TextColor.textMuted} variant={TextVariant.bodySm}>
         {text}
       </Text>
 
       <Text
-        variant={TextVariant.bodyXs}
+        variant={TextVariant.bodySm}
         marginLeft={1}
         color={getColorFromAttitude()}
       >

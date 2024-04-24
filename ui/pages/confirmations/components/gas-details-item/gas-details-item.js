@@ -99,7 +99,7 @@ const GasDetailsItem = ({
     if (supportsEIP1559 && isNetworkBusy) {
       return (
         <>
-          <Text>{t('estimatedFee')}</Text>
+          {t('estimatedFee')}
           <Tooltip interactive position="top" html={t('networkIsBusy')}>
             &nbsp;&nbsp;
             <Icon
@@ -113,7 +113,7 @@ const GasDetailsItem = ({
         </>
       );
     }
-    return <Text>{t('estimatedFee')}</Text>;
+    return <>{t('estimatedFee')}</>;
   };
   return (
     <TransactionDetailItem
