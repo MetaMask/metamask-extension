@@ -3485,10 +3485,6 @@
   "snapDetailWebsite": {
     "message": "Веб-сайт"
   },
-  "snapInstallRequest": {
-    "message": "Установка $1 дает ему следующие разрешения. Продолжайте, только если доверяете $1.",
-    "description": "$1 is the snap name."
-  },
   "snapInstallSuccess": {
     "message": "Установка завершена"
   },
