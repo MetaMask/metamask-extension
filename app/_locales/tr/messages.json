@@ -3485,10 +3485,6 @@
   "snapDetailWebsite": {
     "message": "Web Sitesi"
   },
-  "snapInstallRequest": {
-    "message": "$1 yüklendiğinde aşağıdaki izinler verilir. Sadece $1 adlı snape güveniyorsanız devam edin.",
-    "description": "$1 is the snap name."
-  },
   "snapInstallSuccess": {
     "message": "Yükleme tamamlandı"
   },

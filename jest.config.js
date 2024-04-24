@@ -52,6 +52,8 @@ module.exports = {
     '<rootDir>/app/scripts/controllers/sign.test.ts',
     '<rootDir>/app/scripts/controllers/decrypt-message.test.ts',
     '<rootDir>/app/scripts/controllers/authentication/**/*.test.ts',
+    '<rootDir>/app/scripts/controllers/user-storage/**/*.test.ts',
+    '<rootDir>/app/scripts/controllers/metamask-notifications/**/*.test.ts',
     '<rootDir>/app/scripts/flask/**/*.test.js',
     '<rootDir>/app/scripts/lib/**/*.test.(js|ts)',
     '<rootDir>/app/scripts/lib/createRPCMethodTrackingMiddleware.test.js',

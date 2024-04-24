@@ -2233,7 +2233,7 @@
     "message": "Install origin"
   },
   "installRequest": {
-    "message": "Installation request"
+    "message": "Add to MetaMask"
   },
   "installedOn": {
     "message": "Installed on $1",
@@ -2398,6 +2398,9 @@
   },
   "layer1Fees": {
     "message": "Layer 1 fees"
+  },
+  "layer2Fees": {
+    "message": "Layer 2 fees"
   },
   "learnCancelSpeeedup": {
     "message": "Learn how to $1",
@@ -2984,6 +2987,9 @@
   "noWebcamFoundTitle": {
     "message": "Webcam not found"
   },
+  "nonCustodialAccounts": {
+    "message": "MetaMask Institutional allows you to use non-custodial accounts, if you plan to use these accounts backup the Secret Recovery Phrase."
+  },
   "nonce": {
     "message": "Nonce"
   },
@@ -3353,9 +3359,6 @@
   },
   "operationFailed": {
     "message": "Operation Failed"
-  },
-  "optimismFees": {
-    "message": "Optimism fees"
   },
   "optional": {
     "message": "Optional"
@@ -3837,6 +3840,12 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Protect your funds"
+  },
+  "redesignedConfirmationsEnabledToggle": {
+    "message": "Redesigned confirmations"
+  },
+  "redesignedConfirmationsToggleDescription": {
+    "message": "Turn this on to see re-designed confirmations whenever you receive signature requests."
   },
   "refreshList": {
     "message": "Refresh list"
@@ -4533,7 +4542,7 @@
     "message": "Website"
   },
   "snapInstallRequest": {
-    "message": "Installing $1 gives it the following permissions. Only continue if you trust $1.",
+    "message": "Installing $1 gives it the following permissions.",
     "description": "$1 is the snap name."
   },
   "snapInstallSuccess": {
@@ -4595,8 +4604,8 @@
     "description": "Error title used when snap update fails."
   },
   "snapUpdateRequest": {
-    "message": "Updating $1 to $2 gives it the following permissions. Only continue if you trust $1.",
-    "description": "$1 is the snap name and $2 is the snap version."
+    "message": "Updating $1 gives it the following permissions.",
+    "description": "$1 is the Snap name."
   },
   "snapUpdateSuccess": {
     "message": "Update complete"

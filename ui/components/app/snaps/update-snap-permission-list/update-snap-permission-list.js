@@ -24,7 +24,7 @@ export default function UpdateSnapPermissionList({
   const snapsNameGetter = getSnapName(snapsMetadata);
 
   return (
-    <Box paddingTop={1}>
+    <Box>
       {getWeightedPermissions({
         t,
         permissions: newPermissions,

@@ -117,7 +117,7 @@ export const TemplateStory = () => {
                 name: 'AccountListItem',
                 key: 'accountListItem',
                 properties: {
-                  identity: {
+                  account: {
                     id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
                     metadata: {
                       name: 'Test Account',
@@ -194,7 +194,7 @@ export const TemplateOnlyStory = () => {
           name: 'AccountListItem',
           key: 'accountListItem',
           properties: {
-            identity: {
+            account: {
               id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
               metadata: {
                 name: 'Test Account',

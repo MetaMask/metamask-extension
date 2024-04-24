@@ -165,11 +165,7 @@ import {
   TokenStandard,
   SIGNING_METHODS,
 } from '../../shared/constants/transaction';
-import {
-  GAS_API_BASE_URL,
-  GAS_DEV_API_BASE_URL,
-  SWAPS_CLIENT_ID,
-} from '../../shared/constants/swaps';
+import { SWAPS_CLIENT_ID } from '../../shared/constants/swaps';
 import {
   CHAIN_IDS,
   NETWORK_TYPES,
@@ -321,6 +317,7 @@ import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscree
 import PREINSTALLED_SNAPS from './snaps/preinstalled-snaps';
 ///: END:ONLY_INCLUDE_IF
 import AuthenticationController from './controllers/authentication/authentication-controller';
+import UserStorageController from './controllers/user-storage/user-storage-controller';
 import { WeakRefObjectMap } from './lib/WeakRefObjectMap';
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -705,6 +702,14 @@ export default class MetamaskController extends EventEmitter {
       addNft: this.nftController.addNft.bind(this.nftController),
       getNftApi: this.nftController.getNftApi.bind(this.nftController),
       getNftState: () => this.nftController.state,
+      // added this to track previous value of useNftDetection, should be true on very first initializing of controller[]
+      disabled:
+        this.preferencesController.store.getState().useNftDetection ===
+        undefined
+          ? true
+          : !this.preferencesController.store.getState().useNftDetection,
+      selectedAddress:
+        this.preferencesController.store.getState().selectedAddress,
     });
 
     this.metaMetricsController = new MetaMetricsController({
@@ -741,10 +746,6 @@ export default class MetamaskController extends EventEmitter {
       allowedEvents: ['NetworkController:stateChange'],
     });
 
-    const gasApiBaseUrl = process.env.SWAPS_USE_DEV_APIS
-      ? GAS_DEV_API_BASE_URL
-      : GAS_API_BASE_URL;
-
     this.gasFeeController = new GasFeeController({
       state: initState.GasFeeController,
       interval: 10000,
@@ -764,13 +765,12 @@ export default class MetamaskController extends EventEmitter {
         ),
       getCurrentAccountEIP1559Compatibility:
         this.getCurrentAccountEIP1559Compatibility.bind(this),
-      legacyAPIEndpoint: `${gasApiBaseUrl}/networks/<chain_id>/gasPrices`,
-      EIP1559APIEndpoint: `${gasApiBaseUrl}/networks/<chain_id>/suggestedGasFees`,
       getCurrentNetworkLegacyGasAPICompatibility: () => {
         const { chainId } = this.networkController.state.providerConfig;
         return chainId === CHAIN_IDS.BSC;
       },
       getChainId: () => this.networkController.state.providerConfig.chainId,
+      infuraAPIKey: opts.infuraProjectId,
     });
 
     this.appStateController = new AppStateController({
@@ -1116,6 +1116,7 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe('KeyringController:lock', () =>
       this._onLock(),
     );
+
     this.controllerMessenger.subscribe(
       'KeyringController:stateChange',
       (state) => {
@@ -1202,9 +1203,10 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
       state: initState.SelectedNetworkController,
-      getUseRequestQueue: this.preferencesController.getUseRequestQueue.bind(
-        this.preferencesController,
-      ),
+      useRequestQueuePreference:
+        this.preferencesController.store.getState().useRequestQueue,
+      onPreferencesStateChange: (listener) =>
+        this.preferencesController.store.subscribe(listener),
       domainProxyMap: new WeakRefObjectMap(),
     });
 
@@ -1419,7 +1421,20 @@ export default class MetamaskController extends EventEmitter {
       state: initState.AuthenticationController,
       messenger: this.controllerMessenger.getRestricted({
         name: 'AuthenticationController',
-        allowedActions: [`${this.snapController.name}:handleRequest`],
+        allowedActions: ['SnapController:handleRequest'],
+      }),
+    });
+    this.userStorageController = new UserStorageController({
+      state: initState.UserStorageController,
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'UserStorageController',
+        allowedActions: [
+          'SnapController:handleRequest',
+          'AuthenticationController:getBearerToken',
+          'AuthenticationController:getSessionProfile',
+          'AuthenticationController:isSignedIn',
+          'AuthenticationController:performSignIn',
+        ],
       }),
     });
 
@@ -1464,8 +1479,14 @@ export default class MetamaskController extends EventEmitter {
         const { completedOnboarding: prevCompletedOnboarding } = prevState;
         const { completedOnboarding: currCompletedOnboarding } = currState;
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
+          const { address } = this.accountsController.getSelectedAccount();
+
           this.postOnboardingInitialization();
           this.triggerNetworkrequests();
+          // execute once the token detection on the post-onboarding
+          await this.tokenDetectionController.detectTokens({
+            selectedAddress: address,
+          });
         }
       }, this.onboardingController.store.getState()),
     );
@@ -2260,7 +2281,12 @@ export default class MetamaskController extends EventEmitter {
     const preferencesControllerState =
       this.preferencesController.store.getState();
 
-    const { useCurrencyRateCheck } = preferencesControllerState;
+    const { useCurrencyRateCheck, useNftDetection } =
+      preferencesControllerState;
+
+    if (useNftDetection) {
+      this.nftDetectionController.start();
+    }
 
     if (useCurrencyRateCheck) {
       this.currencyRateController.startPollingByNetworkClientId(
@@ -2278,6 +2304,7 @@ export default class MetamaskController extends EventEmitter {
     this.accountTracker.stop();
     this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
+    this.nftDetectionController.stop();
 
     const preferencesControllerState =
       this.preferencesController.store.getState();

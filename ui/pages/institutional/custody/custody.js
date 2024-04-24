@@ -45,7 +45,10 @@ import {
   CUSTODY_ACCOUNT_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
-import { getCurrentChainId, getSelectedAddress } from '../../../selectors';
+import {
+  getCurrentChainId,
+  getSelectedInternalAccount,
+} from '../../../selectors';
 import { getMMIConfiguration } from '../../../selectors/institutional/selectors';
 import { getInstitutionalConnectRequests } from '../../../ducks/institutional/institutional';
 import CustodyAccountList from '../connect-custody/account-list';
@@ -59,6 +62,7 @@ import ConfirmConnectCustodianModal from '../confirm-connect-custodian-modal';
 import { findCustodianByEnvName } from '../../../helpers/utils/institutional/find-by-custodian-name';
 import { setSelectedAddress } from '../../../store/actions';
 import QRCodeModal from '../../../components/institutional/qr-code-modal/qr-code-modal';
+import { setSelectedInternalAccount } from '../../../store/actions';
 
 const CustodyPage = () => {
   const t = useI18nContext();
@@ -92,7 +96,7 @@ const CustodyPage = () => {
   const [showQRCodeModal, setShowQRCodeModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const connectRequests = useSelector(getInstitutionalConnectRequests, isEqual);
-  const address = useSelector(getSelectedAddress);
+  const { address } = useSelector(getSelectedInternalAccount);
   const connectRequest = connectRequests ? connectRequests[0] : undefined;
   const isCheckBoxSelected =
     accounts && Object.keys(selectedAccounts).length === accounts.length;
@@ -606,7 +610,7 @@ const CustodyPage = () => {
               const selectedCustodian = custodians.find(
                 (custodian) => custodian.envName === selectedCustodianName,
               );
-              const firstAccountKey = Object.keys(selectedAccounts).shift();
+              const firstAccountId = Object.keys(selectedAccounts).shift();
 
               await dispatch(
                 mmiActions.connectCustodyAddresses(
@@ -616,7 +620,7 @@ const CustodyPage = () => {
                 ),
               );
 
-              dispatch(setSelectedAddress(firstAccountKey.toLowerCase()));
+              dispatch(setSelectedInternalAccount(firstAccountId));
 
               trackEvent({
                 category: MetaMetricsEventCategory.MMI,

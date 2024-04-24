@@ -70,6 +70,7 @@ buildTypes:
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://metamask.github.io/snaps-directory-staging/main/account-management
+      - EIP_4337_ENTRYPOINT: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789'
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
     buildNameOverride: MetaMask Flask
@@ -197,6 +198,8 @@ env:
   # This variable is read by Trezor's source and breaks build if not included
   - ASSET_PREFIX: null
 
+  - SENTRY_MMI_DSN: ''
+
   ###
   # Notifications Feature
   ###
@@ -204,6 +207,11 @@ env:
   - OIDC_API: https://oidc.api.cx.metamask.io
   - OIDC_CLIENT_ID: 1132f10a-b4e5-4390-a5f2-d9c6022db564
   - OIDC_GRANT_TYPE: urn:ietf:params:oauth:grant-type:jwt-bearer
+  - USER_STORAGE_API: https://user-storage.api.cx.metamask.io
+  - CONTENTFUL_ACCESS_SPACE_ID: null
+  - CONTENTFUL_ACCESS_TOKEN: null
+  - NOTIFICATIONS_SERVICE_URL: https://notification.api.cx.metamask.io
+  - TRIGGERS_SERVICE_URL: https://trigger.api.cx.metamask.io
 
   ###
   # API keys to 3rd party services
