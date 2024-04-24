@@ -1439,17 +1439,12 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
     });
-
-    // Initialize the PushPlatformNotificationsController with restricted access via the controllerMessenger.
-    // This controller is responsible for managing push notifications within the platform.
-    const pushPlatformNotificationsMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'PushPlatformNotificationsController',
-        allowedActions: ['AuthenticationController:getBearerToken'],
-      });
     this.pushPlatformNotificationsController =
       new PushPlatformNotificationsController({
-        messenger: pushPlatformNotificationsMessenger,
+        messenger: this.controllerMessenger.getRestricted({
+          name: 'PushPlatformNotificationsController',
+          allowedActions: ['AuthenticationController:getBearerToken'],
+        }),
         state: initState.PushPlatformNotificationsController,
       });
 
