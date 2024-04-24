@@ -2,40 +2,48 @@ const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
 
-const updateImports = (content) => {
-  // Replace the Storybook docs imports
-  content = content.replace(
-    /import { Story, Canvas, ArgTypes } from '@storybook\/addon-docs';/g,
-    "import { Controls, Canvas } from '@storybook/addon-docs';",
-  );
+// Function to convert kebab-case to CamelCase
+const toCamelCase = (str) => {
+  return str.replace(/-./g, (x) => x[1].toUpperCase());
+};
 
-  // Find component imports and convert to Stories import
+// Function to format story names from story ID
+const formatStoryName = (storyId) => {
+  const [componentPath, storyName] = storyId.split('--');
+  const componentName = componentPath.split('-').map(toCamelCase).join('');
+  const formattedStoryName =
+    storyName.charAt(0).toUpperCase() +
+    storyName.slice(1).replace(/-\w/g, (m) => m[1].toUpperCase());
+  return `${componentName}Stories.${formattedStoryName}`;
+};
+
+// Update the import statements in the content
+const updateImports = (content) => {
+  // Adjust imports for Stories
   content = content.replace(
-    /import { ([\w, ]+) } from '(\.\/[\w-]+)';/g,
+    /import { Story, Canvas, ArgTypes } from '@storybook\/addon-docs';\s*import { ([\w, ]+) } from '(\.\/[\w-]+)';/g,
     (match, components, path) => {
-      // Create a modified import statement for the stories
+      const componentName = components.split(', ')[0]; // Assuming the first import is the main component
+      const storiesName = `${toCamelCase(componentName)}Stories`;
       const storiesPath = `${path}.stories`;
-      return `import * as ${components.trim()}Stories from '${storiesPath}';`;
+      return `import { Controls, Canvas } from '@storybook/addon-docs';\nimport * as ${storiesName} from '${storiesPath}';`;
     },
   );
-
   return content;
 };
 
+// Update Story references within the content
 const updateStoryReferences = (content) => {
-  const storyRegex = /<Canvas>\s*<Story id="([\w-]+)" \/\>\s*<\/Canvas>/g;
-  return content.replace(storyRegex, (_, id) => {
-    const parts = id.split('--');
-    const storyComponent =
-      parts[0].split('-').map(capitalize).join('') + 'Stories';
-    const storyName =
-      parts[1].charAt(0).toUpperCase() + parts[1].slice(1) + 'Story';
-    return `<Canvas of={${storyComponent}.${storyName}} />`;
-  });
+  return content.replace(
+    /<Canvas>\s*<Story id="([\w-]+--[\w-]+)" \/>/g,
+    (match, storyId) => {
+      const formattedReference = formatStoryName(storyId);
+      return `<Canvas of={${formattedReference}} />`;
+    },
+  );
 };
 
-const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
-
+// Process MDX files found by the glob pattern
 const processMDXFiles = (pattern) => {
   glob(pattern, (err, files) => {
     if (err) {
@@ -65,6 +73,6 @@ const processMDXFiles = (pattern) => {
   });
 };
 
-// Update the directory path as needed
+// Define the pattern to find MDX files
 const mdxFilesPattern = path.join(__dirname, 'ui', '**', '*.mdx');
 processMDXFiles(mdxFilesPattern);
