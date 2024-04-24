@@ -97,18 +97,33 @@ export const unapprovedEncryptionPublicKeyMsgsSelector = (state) =>
 export const unapprovedTypedMessagesSelector = (state) =>
   state.metamask.unapprovedTypedMessages;
 
-export const smartTransactionsListSelector = (state) =>
-  state.metamask.smartTransactionsState?.smartTransactions?.[
+export const smartTransactionsListSelector = (state) => {
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
+  return state.metamask.smartTransactionsState?.smartTransactions?.[
     getCurrentChainId(state)
   ]
-    ?.filter((stx) => !stx.confirmed)
+    ?.filter((stx) => {
+      const isCancelledSmartTransaction = stx.status?.startsWith('cancelled');
+      return (
+        stx.txParams?.from === selectedAddress &&
+        !stx.confirmed &&
+        (!isCancelledSmartTransaction ||
+          // We only want to show cancelled Smart Transactions for Swaps in Activity,
+          // since other transaction types will show the "Failed" status in Activity instead,
+          // because they are mostly processed via the TransactionController. In the future, we
+          // should have the same behavior for Swaps as well, so all transaction types
+          // would be handled the same way for Smart Transactions.
+          (isCancelledSmartTransaction && stx.type === TransactionType.swap))
+      );
+    })
     .map((stx) => ({
       ...stx,
-      transactionType: TransactionType.smart,
+      isSmartTransaction: true,
       status: stx.status?.startsWith('cancelled')
         ? SmartTransactionStatus.cancelled
         : stx.status,
     }));
+};
 
 export const selectedAddressTxListSelector = createSelector(
   getSelectedInternalAccount,

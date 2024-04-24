@@ -17,7 +17,7 @@ describe('Custom RPC history', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: generateGanacheOptions({
-          concurrent: { port, chainId },
+          concurrent: [{ port, chainId }],
         }),
         title: this.test.fullTitle(),
       },
