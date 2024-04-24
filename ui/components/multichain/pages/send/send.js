@@ -58,7 +58,7 @@ export const SendPage = () => {
   const startedNewDraftTransaction = useRef(false);
   const draftTransactionExists = useSelector(getDraftTransactionExists);
 
-  const { asset: transactionAsset, amount } = useSelector(
+  const { sendAsset: transactionAsset, amount } = useSelector(
     getCurrentDraftTransaction,
   );
   const draftTransactionID = useSelector(getDraftTransactionID);
@@ -69,13 +69,14 @@ export const SendPage = () => {
   const location = useLocation();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const handleSelectToken = async (token) => {
+  const handleSelectToken = (isReceived) => async (token) => {
     if (token.type === AssetType.native) {
       dispatch(
         updateSendAsset({
           type: token.type,
           details: token,
           skipComputeEstimatedGasLimit: true,
+          isReceived,
         }),
       );
     } else {
@@ -87,6 +88,7 @@ export const SendPage = () => {
             standard: token.standard ?? TokenStandard.ERC20,
           },
           skipComputeEstimatedGasLimit: true,
+          isReceived,
         }),
       );
     }
@@ -202,9 +204,8 @@ export const SendPage = () => {
         {isSendFormShown && (
           <AssetPickerAmount
             asset={transactionAsset}
-            // TODO: update to dest asset
             amount={amount}
-            onAssetChange={handleSelectToken}
+            onAssetChange={handleSelectToken(false)}
             onAmountChange={(newAmount) =>
               dispatch(updateSendAmount(newAmount))
             }
@@ -217,6 +218,7 @@ export const SendPage = () => {
               requireContractAddressAcknowledgement={
                 requireContractAddressAcknowledgement
               }
+              onAssetChange={handleSelectToken(true)}
             />
           ) : (
             <SendPageRecipient />

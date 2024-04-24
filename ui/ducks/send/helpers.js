@@ -170,6 +170,7 @@ export async function estimateGasLimitForSend({
  * @returns {import('@metamask/transaction-controller').TransactionParams} A txParams object that can be used to create a transaction or
  *  update an existing transaction.
  */
+// TODO: update this
 export function generateTransactionParams(sendState) {
   const draftTransaction =
     sendState.draftTransactions[sendState.currentTransactionUUID];
@@ -185,18 +186,18 @@ export function generateTransactionParams(sendState) {
     gas: draftTransaction.gas.gasLimit,
   };
 
-  switch (draftTransaction.asset.type) {
+  switch (draftTransaction.sendAsset.type) {
     case AssetType.token:
       // When sending a token the to address is the contract address of
       // the token being sent. The value is set to '0x0' and the data
       // is generated from the recipient address, token being sent and
       // amount.
-      txParams.to = draftTransaction.asset.details.address;
+      txParams.to = draftTransaction.sendAsset.details.address;
       txParams.value = '0x0';
       txParams.data = generateERC20TransferData({
         toAddress: draftTransaction.recipient.address,
         amount: draftTransaction.amount.value,
-        sendToken: draftTransaction.asset.details,
+        sendToken: draftTransaction.sendAsset.details,
       });
       break;
 
@@ -205,23 +206,23 @@ export function generateTransactionParams(sendState) {
       // the token being sent. The value is set to '0x0' and the data
       // is generated from the recipient address, token being sent and
       // amount.
-      txParams.to = draftTransaction.asset.details.address;
+      txParams.to = draftTransaction.sendAsset.details.address;
       txParams.value = '0x0';
       txParams.data =
-        draftTransaction.asset.details?.standard === TokenStandard.ERC721
+        draftTransaction.sendAsset.details?.standard === TokenStandard.ERC721
           ? generateERC721TransferData({
               toAddress: draftTransaction.recipient.address,
               fromAddress:
                 draftTransaction.fromAccount?.address ??
                 sendState.selectedAccount.address,
-              tokenId: draftTransaction.asset.details.tokenId,
+              tokenId: draftTransaction.sendAsset.details.tokenId,
             })
           : generateERC1155TransferData({
               toAddress: draftTransaction.recipient.address,
               fromAddress:
                 draftTransaction.fromAccount?.address ??
                 sendState.selectedAccount.address,
-              tokenId: draftTransaction.asset.details.tokenId,
+              tokenId: draftTransaction.sendAsset.details.tokenId,
               amount: draftTransaction.amount.value,
             });
       break;
