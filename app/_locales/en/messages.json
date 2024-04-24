@@ -3784,11 +3784,17 @@
   "pushPlatformNotificationsFundsReceivedDescription": {
     "message": "You received $1 $2"
   },
+  "pushPlatformNotificationsFundsReceivedDescriptionDefault": {
+    "message": "You received some tokens"
+  },
   "pushPlatformNotificationsFundsReceivedTitle": {
     "message": "Funds received"
   },
   "pushPlatformNotificationsFundsSentDescription": {
     "message": "You successfully sent $1 $2"
+  },
+  "pushPlatformNotificationsFundsSentDescriptionDefault": {
+    "message": "You successfully sent some tokens"
   },
   "pushPlatformNotificationsFundsSentTitle": {
     "message": "Funds sent"

@@ -1,19 +1,15 @@
 // eslint-disable-next-line spaced-comment
 /// <reference lib="webworker" />
 
-import { CHAIN_SYMBOLS } from '../../../../../shared/constants/platform-notifications';
-import type { TRIGGER_TYPES } from '../../../../../shared/constants/platform-notifications';
-import type { OnChainRawNotification } from '../types/on-chain-notification/on-chain-notification';
+import { CHAIN_SYMBOLS } from '../../metamask-notifications/constants/notification-schema';
+import type { TRIGGER_TYPES } from '../../metamask-notifications/constants/notification-schema';
+import type { OnChainRawNotification } from '../../metamask-notifications/types/on-chain-notification/on-chain-notification';
 import { t } from '../../../translate';
 import { getAmount, formatAmount } from './get-notification-data';
 
 type PushNotificationMessage = {
   title: string;
   description: string;
-};
-
-type ChainSymbols = {
-  [key: string]: string;
 };
 
 type NotificationMessage<
@@ -33,8 +29,7 @@ type NotificationMessageDict = {
 const sw = self as unknown as ServiceWorkerGlobalScope;
 
 function getChainSymbol(chainId: number) {
-  const hexChainId = `0x${chainId.toString(16)}`;
-  return (CHAIN_SYMBOLS as ChainSymbols)[hexChainId] ?? null;
+  return CHAIN_SYMBOLS[chainId] ?? null;
 }
 
 export async function onPushNotification(notification: unknown) {
@@ -82,7 +77,9 @@ function isOnChainNotification(n: unknown): n is OnChainRawNotification {
 const notificationMessageDict: NotificationMessageDict = {
   erc20_sent: {
     title: t('pushPlatformNotificationsFundsSentTitle'),
-    defaultDescription: t('pushPlatformNotificationsFundsSentDescription'),
+    defaultDescription: t(
+      'pushPlatformNotificationsFundsSentDescriptionDefault',
+    ),
     getDescription: (n) => {
       const symbol = n?.data?.token?.symbol;
       const tokenAmount = n?.data?.token?.amount;
@@ -99,7 +96,9 @@ const notificationMessageDict: NotificationMessageDict = {
   },
   eth_sent: {
     title: t('pushPlatformNotificationsFundsSentTitle'),
-    defaultDescription: t('pushPlatformNotificationsFundsSentDescription'),
+    defaultDescription: t(
+      'pushPlatformNotificationsFundsSentDescriptionDefault',
+    ),
     getDescription: (n) => {
       const symbol = getChainSymbol(n?.chain_id);
       const tokenAmount = n?.data?.amount?.eth;
@@ -115,7 +114,9 @@ const notificationMessageDict: NotificationMessageDict = {
   },
   erc20_received: {
     title: t('pushPlatformNotificationsFundsReceivedTitle'),
-    defaultDescription: t('pushPlatformNotificationsFundsReceivedDescription'),
+    defaultDescription: t(
+      'pushPlatformNotificationsFundsReceivedDescriptionDefault',
+    ),
     getDescription: (n) => {
       const symbol = n?.data?.token?.symbol;
       const tokenAmount = n?.data?.token?.amount;
@@ -136,7 +137,9 @@ const notificationMessageDict: NotificationMessageDict = {
   },
   eth_received: {
     title: t('pushPlatformNotificationsFundsReceivedTitle'),
-    defaultDescription: t('pushPlatformNotificationsFundsReceivedDescription'),
+    defaultDescription: t(
+      'pushPlatformNotificationsFundsReceivedDescriptionDefault',
+    ),
     getDescription: (n) => {
       const symbol = getChainSymbol(n?.chain_id);
       const tokenAmount = n?.data?.amount?.eth;
@@ -234,7 +237,7 @@ export function createNotificationMessage(
       notificationMessage?.getDescription?.(n) ??
       notificationMessage.defaultDescription ??
       null;
-  } catch {
+  } catch (e) {
     description = notificationMessage.defaultDescription ?? null;
   }
 

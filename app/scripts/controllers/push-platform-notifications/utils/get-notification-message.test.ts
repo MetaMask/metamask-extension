@@ -14,7 +14,7 @@ import {
   createMockNotificationMetaMaskSwapsCompleted,
   createMockNotificationRocketPoolStakeCompleted,
   createMockNotificationRocketPoolUnStakeCompleted,
-} from '../types/__mocks__/mockedHalNotifications';
+} from '../../metamask-notifications/mocks/mock-raw-notifications';
 import { createNotificationMessage } from './get-notification-message';
 
 describe('notification-message tests', () => {

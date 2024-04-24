@@ -19,13 +19,12 @@ describe('PushPlatformNotificationsController', () => {
     });
 
     it('should update the state with the fcmToken', async () => {
-      await withController(async ({ controller }) => {
+      await withController(async ({ controller, messenger }) => {
+        mockAuthBearerTokenCall(messenger);
         jest
-          .spyOn(controller, 'enablePushNotifications')
-          .mockImplementation(async () => {
-            controller.state.fcmToken = MOCK_FCM_TOKEN;
-            return Promise.resolve();
-          });
+          .spyOn(services, 'activatePushNotifications')
+          .mockResolvedValue(MOCK_FCM_TOKEN);
+
         await controller.enablePushNotifications(MOCK_TRIGGERS);
         expect(controller.state.fcmToken).toBe(MOCK_FCM_TOKEN);
       });
@@ -33,17 +32,9 @@ describe('PushPlatformNotificationsController', () => {
 
     it('should fail if a jwt token is not provided', async () => {
       await withController(async ({ messenger, controller }) => {
-        jest
-          .spyOn(messenger, 'call')
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          .mockImplementation(async (...args: any[]) => {
-            const [action] = args;
-            if (action === 'AuthenticationController:getBearerToken') {
-              return undefined;
-            }
-            return Promise.resolve(null);
-          });
-
+        mockAuthBearerTokenCall(messenger).mockResolvedValue(
+          null as unknown as string,
+        );
         await expect(controller.enablePushNotifications([])).rejects.toThrow();
       });
     });
@@ -56,17 +47,7 @@ describe('PushPlatformNotificationsController', () => {
 
     it('should update the state removing the fcmToken', async () => {
       await withController(async ({ messenger, controller }) => {
-        jest
-          .spyOn(messenger, 'call')
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          .mockImplementation(async (...args: any[]) => {
-            const [action] = args;
-            if (action === 'AuthenticationController:getBearerToken') {
-              return MOCK_JWT;
-            }
-            return Promise.resolve(null);
-          });
-
+        mockAuthBearerTokenCall(messenger);
         await controller.disablePushNotifications(MOCK_TRIGGERS);
         expect(controller.state.fcmToken).toBe('');
       });
@@ -74,17 +55,9 @@ describe('PushPlatformNotificationsController', () => {
 
     it('should fail if a jwt token is not provided', async () => {
       await withController(async ({ messenger, controller }) => {
-        jest
-          .spyOn(messenger, 'call')
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          .mockImplementation(async (...args: any[]) => {
-            const [action] = args;
-            if (action === 'AuthenticationController:getBearerToken') {
-              return undefined;
-            }
-            return Promise.resolve(null);
-          });
-
+        mockAuthBearerTokenCall(messenger).mockResolvedValue(
+          null as unknown as string,
+        );
         await expect(controller.disablePushNotifications([])).rejects.toThrow();
       });
     });
@@ -97,17 +70,7 @@ describe('PushPlatformNotificationsController', () => {
 
     it('should call updateTriggerPushNotifications with the correct parameters', async () => {
       await withController(async ({ messenger, controller }) => {
-        jest
-          .spyOn(messenger, 'call')
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          .mockImplementation(async (...args: any[]) => {
-            const [action] = args;
-            if (action === 'AuthenticationController:getBearerToken') {
-              return MOCK_JWT;
-            }
-            return Promise.resolve(null);
-          });
-
+        mockAuthBearerTokenCall(messenger);
         const spy = jest
           .spyOn(services, 'updateTriggerPushNotifications')
           .mockResolvedValue(true);
@@ -166,4 +129,24 @@ async function withController<ReturnValue>(
     initialState: controller.state,
     messenger,
   });
+}
+
+function mockAuthBearerTokenCall(
+  messenger: PushPlatformNotificationsControllerMessenger,
+) {
+  type Fn = AuthenticationControllerGetBearerToken['handler'];
+  const mockAuthGetBearerToken = jest
+    .fn<ReturnType<Fn>, Parameters<Fn>>()
+    .mockResolvedValue(MOCK_JWT);
+
+  jest.spyOn(messenger, 'call').mockImplementation((...args) => {
+    const [actionType] = args;
+    if (actionType === 'AuthenticationController:getBearerToken') {
+      return mockAuthGetBearerToken();
+    }
+
+    throw new Error('MOCK - unsupported messenger call mock');
+  });
+
+  return mockAuthGetBearerToken;
 }
