@@ -75,7 +75,7 @@ describe('Dapp viewed Event @no-mmi', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: 'fake-metrics-id-fd20', // 1% sample rate for dapp viewed event
             participateInMetaMetrics: true,
           })
           .build(),
@@ -111,7 +111,7 @@ describe('Dapp viewed Event @no-mmi', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: 'fake-metrics-id-fd20',
             participateInMetaMetrics: true,
           })
           .build(),
@@ -150,7 +150,7 @@ describe('Dapp viewed Event @no-mmi', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: 'fake-metrics-id-fd20',
             participateInMetaMetrics: true,
           })
           .build(),
@@ -194,7 +194,7 @@ describe('Dapp viewed Event @no-mmi', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: 'fake-metrics-id-fd20',
             participateInMetaMetrics: true,
           })
           .build(),
@@ -232,7 +232,7 @@ describe('Dapp viewed Event @no-mmi', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: 'fake-metrics-id-fd20',
             participateInMetaMetrics: true,
           })
           .build(),
@@ -286,7 +286,7 @@ describe('Dapp viewed Event @no-mmi', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: 'fake-metrics-id-fd20',
             participateInMetaMetrics: true,
           })
           .build(),

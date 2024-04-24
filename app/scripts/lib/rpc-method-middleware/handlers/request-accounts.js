@@ -105,27 +105,33 @@ async function requestEthereumAccountsHandler(
   const accounts = await getAccounts();
   /* istanbul ignore else: too hard to induce, see below comment */
   if (accounts.length > 0) {
-    res.result = accounts;
-    const numberOfConnectedAccounts =
-      getPermissionsForOrigin(origin).eth_accounts.caveats[0].value.length;
-    // first time connection to dapp will lead to no log in the permissionHistory
-    // and if user has connected to dapp before, the dapp origin will be included in the permissionHistory state
-    // we will leverage that to identify `is_first_visit` for metrics
-    const isFirstVisit = !Object.keys(metamaskState.permissionHistory).includes(
-      origin,
-    );
-    sendMetrics({
-      event: MetaMetricsEventName.DappViewed,
-      category: MetaMetricsEventCategory.InpageProvider,
-      referrer: {
-        url: origin,
-      },
-      properties: {
-        is_first_visit: isFirstVisit,
-        number_of_accounts: Object.keys(metamaskState.accounts).length,
-        number_of_accounts_connected: numberOfConnectedAccounts,
-      },
-    });
+    // We are using the last 4 characters of the metametricsId to determine if the event should be emitted
+    // If metaMetricsIds are distributed evenly, this should be a 1% sample rate
+    const shouldEmitEvent =
+      parseInt(metamaskState.metaMetricsId.slice(-4), 16) % 100 === 0;
+    if (shouldEmitEvent) {
+      res.result = accounts;
+      const numberOfConnectedAccounts =
+        getPermissionsForOrigin(origin).eth_accounts.caveats[0].value.length;
+      // first time connection to dapp will lead to no log in the permissionHistory
+      // and if user has connected to dapp before, the dapp origin will be included in the permissionHistory state
+      // we will leverage that to identify `is_first_visit` for metrics
+      const isFirstVisit = !Object.keys(
+        metamaskState.permissionHistory,
+      ).includes(origin);
+      sendMetrics({
+        event: MetaMetricsEventName.DappViewed,
+        category: MetaMetricsEventCategory.InpageProvider,
+        referrer: {
+          url: origin,
+        },
+        properties: {
+          is_first_visit: isFirstVisit,
+          number_of_accounts: Object.keys(metamaskState.accounts).length,
+          number_of_accounts_connected: numberOfConnectedAccounts,
+        },
+      });
+    }
   } else {
     // This should never happen, because it should be caught in the
     // above catch clause

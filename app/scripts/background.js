@@ -461,6 +461,11 @@ export async function loadStateFromPersistence() {
  * @returns
  */
 function shouldEmitEvent(metaMetricsId) {
+  // If the metametricsId is not set, we should not emit the event.
+  if (!metaMetricsId) {
+    return false;
+  }
+
   const lastPart = metaMetricsId.slice(-4);
 
   // Convert the last part from hexadecimal to an integer.
