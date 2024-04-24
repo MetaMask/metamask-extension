@@ -51,24 +51,23 @@ export async function installSnapSimpleKeyring(
   await unlockWallet(driver);
 
   // navigate to test Snaps page and connect
-  // await driver.openNewPage(TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL);
-  // await driver.clickElement('#connectButton');
+  await driver.openNewPage(TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL);
+  await driver.clickElement('#connectButton');
 
-  // await driver.delay(500);
+  await driver.delay(500);
 
-  // await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-  // await driver.delay(500);
+  await driver.delay(500);
 
-  // await driver.clickElement({
-  //   text: 'Connect',
-  //   tag: 'button',
-  // });
+  await driver.clickElement({
+    text: 'Connect',
+    tag: 'button',
+  });
 
   await driver.findElement({ text: 'Add to MetaMask', tag: 'h3' });
-  // await driver.findElement({ text: 'Installation request', tag: 'h2' });
 
-  // await driver.clickElementSafe('[data-testid="snap-install-scroll"]', 200);
+  await driver.clickElementSafe('[data-testid="snap-install-scroll"]', 200);
 
   await driver.waitForSelector({ text: 'Confirm' });
 
@@ -76,30 +75,24 @@ export async function installSnapSimpleKeyring(
     text: 'Confirm',
     tag: 'button',
   });
-  // await driver.waitForSelector({ text: 'Install' });
 
-  // await driver.clickElement({
-  //   text: 'Install',
-  //   tag: 'button',
-  // });
+  await driver.waitForSelector({ text: 'OK' });
 
-  // await driver.waitForSelector({ text: 'OK' });
+  await driver.clickElement({
+    text: 'OK',
+    tag: 'button',
+  });
 
-  // await driver.clickElement({
-  //   text: 'OK',
-  //   tag: 'button',
-  // });
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.SnapSimpleKeyringDapp);
 
-  // await driver.switchToWindowWithTitle(WINDOW_TITLES.SnapSimpleKeyringDapp);
+  await driver.waitForSelector({
+    text: 'Connected',
+    tag: 'span',
+  });
 
-  // await driver.waitForSelector({
-  //   text: 'Connected',
-  //   tag: 'span',
-  // });
-
-  // if (isAsyncFlow) {
-  //   await toggleAsyncFlow(driver);
-  // }
+  if (isAsyncFlow) {
+    await toggleAsyncFlow(driver);
+  }
 }
 
 async function toggleAsyncFlow(driver: Driver) {
@@ -209,9 +202,35 @@ export async function connectAccountToTestDapp(driver: Driver) {
 export async function disconnectFromTestDapp(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
   await driver.clickElement('[data-testid="account-options-menu-button"]');
-  await driver.clickElement('[data-testid="global-menu-connected-sites"]');
-  await driver.clickElement({ text: 'Disconnect', tag: 'a' });
-  await driver.clickElement({ text: 'Disconnect', tag: 'button' });
+
+  if (process.env.MULTICHAIN) {
+    await driver.clickElement({ text: 'All Permissions', tag: 'div' });
+    await driver.clickElement({ text: 'Got it', tag: 'button' });
+    await driver.clickElement({
+      text: '127.0.0.1:8080',
+      tag: 'p',
+    });
+    await driver.clickElement('[data-testid="account-list-item-menu-button"]');
+    await driver.clickElement({ text: 'Disconnect', tag: 'button' });
+    await driver.clickElement('[data-testid="disconnect-all"]');
+    await driver.clickElement('button[aria-label="Back"]');
+    await driver.clickElement('button[aria-label="Back"]');
+    // Validate dapp is not connected
+    await driver.clickElement('[data-testid="account-options-menu-button"]');
+    await driver.clickElement({ text: 'All Permissions', tag: 'div' });
+    await driver.assertElementNotPresent('p[data-testid="sites-connections"]');
+  } else {
+    await driver.clickElement('[data-testid="global-menu-connected-sites"]');
+    await driver.clickElement({ text: 'Disconnect', tag: 'a' });
+    await driver.clickElement({ text: 'Disconnect', tag: 'button' });
+    // Validate dapp is not connected
+    await driver.clickElement('[data-testid="account-options-menu-button"]');
+    await driver.clickElement('[data-testid="global-menu-connected-sites"]');
+    await driver.findElement({
+      text: 'Account 1 is not connected to any sites.',
+      tag: 'p',
+    });
+  }
 }
 
 export async function approveOrRejectRequest(driver: Driver, flowType: string) {

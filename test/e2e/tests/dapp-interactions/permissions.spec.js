@@ -50,20 +50,33 @@ describe('Permissions', function () {
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
-        await driver.clickElement('.menu-item:nth-of-type(3)');
 
-        await driver.findElement({
-          text: 'Connected sites',
-          tag: 'h2',
-        });
-        await driver.waitForSelector({
-          css: '.connected-sites-list__subject-name',
-          text: '127.0.0.1:8080',
-        });
-        const domains = await driver.findClickableElements(
-          '.connected-sites-list__subject-name',
-        );
-        assert.equal(domains.length, 1);
+        if (process.env.MULTICHAIN) {
+          await driver.clickElement({ text: 'All Permissions', tag: 'div' });
+          await driver.clickElement({ text: 'Got it', tag: 'button' });
+          await driver.waitForSelector({
+            text: '127.0.0.1:8080',
+            tag: 'p',
+          });
+          const domains = await driver.findClickableElements(
+            '[data-testid="connection-list-item"]',
+          );
+          assert.equal(domains.length, 1);
+        } else {
+          await driver.clickElement('.menu-item:nth-of-type(3)');
+          await driver.findElement({
+            text: 'Connected sites',
+            tag: 'h2',
+          });
+          await driver.waitForSelector({
+            css: '.connected-sites-list__subject-name',
+            text: '127.0.0.1:8080',
+          });
+          const domains = await driver.findClickableElements(
+            '.connected-sites-list__subject-name',
+          );
+          assert.equal(domains.length, 1);
+        }
 
         // can get accounts within the dapp
         await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);

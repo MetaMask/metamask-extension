@@ -84,16 +84,37 @@ describe('Dapp interactions', function () {
           '[data-testid ="account-options-menu-button"]',
         );
 
-        await driver.clickElement({ text: 'Connected sites', tag: 'div' });
+        let connectedDapp1, connectedDapp2;
+        if (process.env.MULTICHAIN) {
+          // needs to go back to the first dapp, otherwise dapp is not listed
+          await openDapp(driver);
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
 
-        const connectedDapp1 = await driver.isElementPresent({
-          text: DAPP_URL,
-          tag: 'bdi',
-        });
-        const connectedDapp2 = await driver.isElementPresent({
-          text: DAPP_ONE_URL,
-          tag: 'bdi',
-        });
+          await driver.clickElement({ text: 'All Permissions', tag: 'div' });
+          await driver.clickElement({ text: 'Got it', tag: 'button' });
+
+          connectedDapp1 = await driver.isElementPresent({
+            text: '127.0.0.1:8080',
+            tag: 'p',
+          });
+          connectedDapp2 = await driver.isElementPresent({
+            text: '127.0.0.1:8081',
+            tag: 'p',
+          });
+        } else {
+          await driver.clickElement({ text: 'Connected sites', tag: 'div' });
+
+          connectedDapp1 = await driver.isElementPresent({
+            text: DAPP_URL,
+            tag: 'bdi',
+          });
+          connectedDapp2 = await driver.isElementPresent({
+            text: DAPP_ONE_URL,
+            tag: 'bdi',
+          });
+        }
 
         assert.ok(connectedDapp1, 'Account not connected to Dapp1');
         assert.ok(connectedDapp2, 'Account not connected to Dapp2');
