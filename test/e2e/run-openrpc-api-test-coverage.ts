@@ -5,7 +5,13 @@ import HtmlReporter from '@open-rpc/test-coverage/build/reporters/html-reporter'
 import ExamplesRule from '@open-rpc/test-coverage/build/rules/examples-rule';
 import JsonSchemaFakerRule from '@open-rpc/test-coverage/build/rules/json-schema-faker-rule';
 import paramsToObj from '@open-rpc/test-coverage/build/utils/params-to-obj';
-import { ContentDescriptorObject, ExampleObject, ExamplePairingObject, MethodObject } from '@open-rpc/meta-schema';
+import {
+  ContentDescriptorObject,
+  ExampleObject,
+  ExamplePairingObject,
+  MethodObject,
+  OpenrpcDocument,
+} from '@open-rpc/meta-schema';
 const { v4 } = require('uuid');
 
 declare let window: any;
@@ -42,7 +48,11 @@ const pollForResult = async (driver: Driver, generatedKey: string) => {
 };
 
 const createDriverTransport = (driver: Driver) => {
-  return async (_: string, method: string, params: any[] | Record<string, any>) => {
+  return async (
+    _: string,
+    method: string,
+    params: any[] | Record<string, any>,
+  ) => {
     const generatedKey = uuid();
     // don't wait for executeScript to finish window.ethereum promise
     // we need this because if we wait for the promise to resolve it
@@ -247,7 +257,6 @@ class ConfirmationsRejectRule implements Rule {
       }
     }
     return call;
-
   }
 }
 
@@ -261,7 +270,7 @@ async function main() {
       disableGanache: true,
       title: 'api-specs coverage',
     },
-    async ({ driver }: {driver: Driver}) => {
+    async ({ driver }: { driver: Driver }) => {
       await unlockWallet(driver);
 
       // Navigate to extension home screen
@@ -272,9 +281,15 @@ async function main() {
 
       const transport = createDriverTransport(driver);
 
-      const openrpcDocument = await parseOpenRPCDocument(
-        'https://metamask.github.io/api-specs/latest/openrpc.json',
-      );
+      const openrpcDocument: OpenrpcDocument = await (
+        await fetch('https://metamask.github.io/api-specs/latest/openrpc.json')
+      ).json();
+
+      const transaction = openrpcDocument.components?.schemas?.TransactionInfo?.allOf?.[0];
+
+      if (transaction) {
+        delete transaction.unevaluatedProperties;
+      }
 
       const chainIdMethod = openrpcDocument.methods.find(
         (m) => (m as any).name === 'eth_chainId',
@@ -440,6 +455,7 @@ async function main() {
       const server = mockServer(port, openrpcDocument);
       server.start();
 
+      // TODO: move these to a "Confirmation" tag in api-specs
       const methodsWithConfirmations = [
         'wallet_requestPermissions',
         'eth_requestAccounts',
@@ -448,7 +464,10 @@ async function main() {
         'wallet_addEthereumChain',
         'eth_signTypedData_v4', // requires permissions for eth_accounts
         'wallet_switchEthereumChain',
-        'eth_getEncryptionPublicKey', // requires permissions for eth_accounts
+
+        // commented out because its not returning 4001 error.
+        // see here https://github.com/MetaMask/metamask-extension/issues/24227
+        // 'eth_getEncryptionPublicKey', // requires permissions for eth_accounts
       ];
 
       const filteredMethods = openrpcDocument.methods
@@ -461,14 +480,30 @@ async function main() {
             m.name.includes('blob') ||
             m.name.includes('sendTransaction') ||
             m.name.startsWith('wallet_scanQRCode') ||
-            methodsWithConfirmations.includes(m.name),
+            methodsWithConfirmations.includes(m.name) ||
+            // filters are currently 0 prefixed for odd length on
+            // extension which doesn't pass spec
+            // see here: https://github.com/MetaMask/eth-json-rpc-filters/issues/152
+            m.name.includes('filter') ||
+            m.name.includes('Filter'),
         )
         .map((m) => (m as MethodObject).name);
 
       const testCoverageResults = await testCoverage({
-        openrpcDocument: openrpcDocument as any,
+        openrpcDocument: await parseOpenRPCDocument(openrpcDocument as any) as any,
         transport,
-        reporters: ['console-streaming', new HtmlReporter({autoOpen: !process.env.CI})],
+        reporters: [
+          'console-streaming',
+          new HtmlReporter({ autoOpen: !process.env.CI }),
+        ],
+        skip: [
+          'eth_coinbase',
+          // these 2 methods below are not supported by MetaMask extension yet and
+          // don't get passed through. See here: https://github.com/MetaMask/metamask-extension/issues/24225
+          'eth_getBlockReceipts',
+          'eth_maxPriorityFeePerGas',
+        ],
+            // these 2 method
         // only: ['eth_newFilter'],
         rules: [
           new JsonSchemaFakerRule({

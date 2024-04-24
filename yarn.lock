@@ -7049,9 +7049,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@open-rpc/test-coverage@npm:^2.2.1":
-  version: 2.2.1
-  resolution: "@open-rpc/test-coverage@npm:2.2.1"
+"@open-rpc/test-coverage@npm:^2.2.2":
+  version: 2.2.2
+  resolution: "@open-rpc/test-coverage@npm:2.2.2"
   dependencies:
     "@open-rpc/html-reporter-react": "npm:^0.0.4"
     "@open-rpc/schema-utils-js": "npm:^1.16.2"
@@ -7065,7 +7065,7 @@ __metadata:
     lodash: "npm:^4.17.20"
   bin:
     open-rpc-test-coverage: bin/cli.js
-  checksum: e95d7b20a7e95439bc5915f591c5a04ceb20fdb2a3f640b1028f9ac06a6c0094e9161591561351b613e07689eb2e5fc2320ea3c8b8803a90407d8a49e1b2f88e
+  checksum: fc764031d8395dca73187684143f07cd2f6be854bedbd943b086e46f94e5c4207942bf87f1d4ac66f4220f209d6d4a7d50b0eb70d4586e2d07a4e086f0e344b1
   languageName: node
   linkType: hard
 
@@ -25483,7 +25483,7 @@ __metadata:
     "@open-rpc/meta-schema": "npm:^1.14.6"
     "@open-rpc/mock-server": "npm:^1.7.5"
     "@open-rpc/schema-utils-js": "npm:^1.16.2"
-    "@open-rpc/test-coverage": "npm:^2.2.1"
+    "@open-rpc/test-coverage": "npm:^2.2.2"
     "@playwright/test": "npm:^1.39.0"
     "@popperjs/core": "npm:^2.4.0"
     "@reduxjs/toolkit": "patch:@reduxjs/toolkit@npm%3A1.9.7#~/.yarn/patches/@reduxjs-toolkit-npm-1.9.7-b14925495c.patch"
