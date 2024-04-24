@@ -1,5 +1,12 @@
-export const unapprovedContractInteractionConfirmation = {
-  actionId: 400855682,
+import { TransactionStatus, TransactionType } from "@metamask/transaction-controller";
+import { Confirmation } from "../../../ui/pages/confirmations/types/confirm";
+
+export const CONTRACT_INTERACTION_SENDER_ADDRESS = '0x2e0d7e8c45221fca00d74a3609a0f7097035d09b';
+
+export const genUnapprovedContractInteractionConfirmation = (
+  { address } = { address: CONTRACT_INTERACTION_SENDER_ADDRESS }
+): Confirmation => ({
+  actionId: String(400855682),
   chainId: '0xaa36a7',
   dappSuggestedGasFees: {
     gas: '0xab77',
@@ -13,7 +20,7 @@ export const unapprovedContractInteractionConfirmation = {
   gasFeeEstimatesLoaded: true,
   history: [
     {
-      actionId: 400855682,
+      actionId: String(400855682),
       chainId: '0xaa36a7',
       dappSuggestedGasFees: {
         gas: '0xab77',
@@ -29,21 +36,20 @@ export const unapprovedContractInteractionConfirmation = {
       securityAlertResponse: {
         reason: 'loading',
         result_type: 'validation_in_progress',
-        securityAlertId: '3435e60e-3252-4372-8b33-00b673adf0b1',
       },
       sendFlowHistory: [],
-      status: 'unapproved',
+      status: TransactionStatus.unapproved,
       time: 1713534772044,
       txParams: {
         data: '0xd0e30db0',
-        from: '0x2e0d7e8c45221fca00d74a3609a0f7097035d09b',
+        from: address,
         gas: '0xab77',
         maxFeePerGas: '0xaa350353',
         maxPriorityFeePerGas: '0x59682f00',
         to: '0x88aa6343307ec9a652ccddda3646e62b2f1a5125',
         value: '0x3782dace9d900000',
       },
-      type: 'contractInteraction',
+      type: TransactionType.contractInteraction,
       userEditedGasLimit: false,
       userFeeLevel: 'medium',
       verifiedOnBlockchain: false,
@@ -103,12 +109,9 @@ export const unapprovedContractInteractionConfirmation = {
   id: '1d7c08c0-fe54-11ee-9243-91b1e533746a',
   origin: 'https://metamask.github.io',
   securityAlertResponse: {
-    block: 5732063,
-    description: '',
     features: [],
     reason: '',
     result_type: 'Benign',
-    securityAlertId: '3435e60e-3252-4372-8b33-00b673adf0b1',
   },
   sendFlowHistory: [],
   simulationData: {
@@ -120,19 +123,19 @@ export const unapprovedContractInteractionConfirmation = {
     },
     tokenBalanceChanges: [],
   },
-  status: 'unapproved',
+  status: TransactionStatus.unapproved,
   time: 1713534772044,
   txParams: {
     data: '0xd0e30db0',
-    from: '0x2e0d7e8c45221fca00d74a3609a0f7097035d09b',
+    from: address,
     gas: '0xab77',
     maxFeePerGas: '0xaa350353',
     maxPriorityFeePerGas: '0x59682f00',
     to: '0x88aa6343307ec9a652ccddda3646e62b2f1a5125',
     value: '0x3782dace9d900000',
   },
-  type: 'contractInteraction',
+  type: TransactionType.contractInteraction,
   userEditedGasLimit: false,
   userFeeLevel: 'medium',
   verifiedOnBlockchain: false,
-};
+});

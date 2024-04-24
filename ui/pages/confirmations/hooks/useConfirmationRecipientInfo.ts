@@ -1,37 +1,30 @@
 import { useSelector } from 'react-redux';
-
+import { getAccountByAddress } from '../../../helpers/utils/util';
 import {
   accountsWithSendEtherInfoSelector,
   currentConfirmationSelector,
 } from '../../../selectors';
-import { getAccountByAddress } from '../../../helpers/utils/util';
-import { SignatureRequestType } from '../types/confirm';
+import { getConfirmationSender } from '../components/confirm/utils';
+import { Confirmation } from '../types/confirm';
 
 function useConfirmationRecipientInfo() {
   const currentConfirmation = useSelector(
     currentConfirmationSelector,
-  ) as SignatureRequestType;
-  const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
+  ) as Confirmation;
 
-  let recipientAddress = '';
-  let recipientName = '';
-
+  let senderAddress, senderName;
   if (currentConfirmation) {
-    const msgParams = currentConfirmation?.msgParams;
+    const { from } = getConfirmationSender(currentConfirmation);
+    const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
+    const fromAccount = getAccountByAddress(allAccounts, from);
 
-    // url for all signature requests
-    if (msgParams) {
-      recipientAddress = msgParams.from;
-      const fromAccount = getAccountByAddress(allAccounts, recipientAddress);
-      recipientName = fromAccount?.metadata?.name;
-    }
-    // TODO: as we add support for more transaction code to find recipient address for different
-    // transaction types will come here
+    senderAddress = from;
+    senderName = fromAccount?.metadata?.name;
   }
 
   return {
-    recipientAddress,
-    recipientName,
+    senderAddress: senderAddress || '',
+    senderName: senderName || '',
   };
 }
 
