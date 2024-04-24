@@ -2,7 +2,7 @@ import { ApprovalRequest } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import { Json } from '@metamask/utils';
 
-export const ConfirmationRedesignTypes = [
+export const ConfirmationRedesignTypes: (ApprovalType | string)[] = [
   ApprovalType.PersonalSign,
   ApprovalType.EthSignTypedData,
 ];
