@@ -370,7 +370,7 @@ export const RECIPIENT_SEARCH_MODES = {
  * @property {Recipient} recipient - An object that describes the intended
  *  recipient of the transaction.
  * @property {string} [swapQuotesError] - error message for swap quotes
- * @property {number} [swapQuotesLatestRequestTimestamp] - error message for swap quotes
+ * @property {number} [swapQuotesLatestRequestTimestamp] - timestamp of most recent swap quotes request
  * @property {MapValuesToUnion<DraftTxStatus>} status - Describes the
  *  validity of the draft transaction, which will be either 'VALID' or
  *  'INVALID', depending on our ability to generate a valid txParams object for
