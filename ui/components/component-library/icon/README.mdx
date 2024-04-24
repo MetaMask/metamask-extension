@@ -1,6 +1,5 @@
-import { Story, Canvas, ArgTypes } from '@storybook/addon-docs';
-
-import { Icon } from './icon';
+import { Controls, Canvas } from '@storybook/addon-docs';
+import * as IconStories from './icon.stories';
 
 # Icon
 
@@ -8,13 +7,11 @@ The `Icon` component in conjunction with `IconName` can be used for all icons in
 
 [MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
 
-<Canvas>
-  <Story id="components-componentlibrary-icon--default-story" />
-</Canvas>
+<Canvas of={IconStories.DefaultStory} />
 
 ## Props
 
-<ArgTypes of={Icon} />
+<Controls of={IconStories.DefaultStory} />
 
 ### Name
 
@@ -22,9 +19,7 @@ Use the `name` prop and the `IconName` enum to change the icon.
 
 Use the [IconSearch](/story/components-componentlibrary-icon--default-story) story to find the icon you want to use.
 
-<Canvas>
-  <Story id="components-componentlibrary-icon--name" />
-</Canvas>
+<Canvas of={IconStories.Name} />
 
 ```jsx
 import { Icon, IconName } from '../../component-library';
@@ -49,9 +44,7 @@ Possible sizes include:
 - `IconSize.Xl` 32px
 - `IconSize.Inherit` inherits the font-size from parent element. This is useful for inline icons in text.
 
-<Canvas>
-  <Story id="components-componentlibrary-icon--size-story" />
-</Canvas>
+<Canvas of={IconStories.SizeStory} />
 
 ```jsx
 import { TextVariant } from '../../../helpers/constants/design-system';
@@ -72,9 +65,7 @@ import { Icon, IconName, IconSize, Text } from '../../component-library';
 
 Use the `color` prop and the `IconColor` enum from `./ui/helpers/constants/design-system.js` to change the color of `Icon`. Defaults to `IconColor.inherit` which will use the text color of the parent element. This is useful for inline icons.
 
-<Canvas>
-  <Story id="components-componentlibrary-icon--color-story" />
-</Canvas>
+<Canvas of={IconStories.ColorStory} />
 
 ```jsx
 import { IconColor } from '../../../helpers/constants/design-system';
@@ -103,9 +94,7 @@ The `Icon` component accepts all [Box](/docs/components-ui-box--default-story#pr
 
 Some examples of `Icon` with `Text` using [Box](/docs/components-ui-box--default-story#props) component props
 
-<Canvas>
-  <Story id="components-componentlibrary-icon--layout-and-spacing" />
-</Canvas>
+<Canvas of={IconStories.LayoutAndSpacing} />
 
 ```jsx
 import {

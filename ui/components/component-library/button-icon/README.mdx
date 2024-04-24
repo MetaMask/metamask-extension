@@ -1,5 +1,5 @@
-import { Story, Canvas, ArgTypes } from '@storybook/addon-docs';
-import { ButtonIcon } from './button-icon';
+import { Controls, Canvas } from '@storybook/addon-docs';
+import * as ButtonIconStories from './button-icon.stories';
 
 # ButtonIcon
 
@@ -7,13 +7,11 @@ The `ButtonIcon` is used for icons associated with a user action.
 
 [MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
 
-<Canvas>
-  <Story id="components-componentlibrary-buttonicon--default-story" />
-</Canvas>
+<Canvas of={ButtonIconStories.DefaultStory} />
 
 ## Props
 
-<ArgTypes of={ButtonIcon} />
+<Controls of={ButtonIconStories.DefaultStory} />
 
 ### Icon Name<span style={{ color: 'red' }}>\*</span>
 
@@ -21,9 +19,7 @@ Use the required `iconName` prop with `IconName` enum from `./ui/components/comp
 
 Use the [IconSearch](/story/components-componentlibrary-icon--default-story) story to find the icon you want to use.
 
-<Canvas>
-  <Story id="components-componentlibrary-buttonicon--icon-name-story" />
-</Canvas>
+<Canvas of={ButtonIconStories.IconNameStory} />
 
 ```jsx
 import { ButtonIcon, IconName } from '../../component-library';
@@ -40,9 +36,7 @@ Possible sizes include:
 - `ButtonIconSize.Sm` 24px
 - `ButtonIconSize.Lg` 32px
 
-<Canvas>
-  <Story id="components-componentlibrary-buttonicon--size-story" />
-</Canvas>
+<Canvas of={ButtonIconStories.SizeStory} />
 
 ```jsx
 
@@ -56,9 +50,7 @@ import { ButtonIcon, ButtonIconSize, IconName } from '../../component-library';
 
 Use the `ariaLabel` prop to set the name of the ButtonIcon for proper accessibility
 
-<Canvas>
-  <Story id="components-componentlibrary-buttonicon--aria-label" />
-</Canvas>
+<Canvas of={ButtonIconStories.AriaLabel} />
 
 ```jsx
 import { IconColor } from '../../../helpers/constants/design-system';
@@ -78,9 +70,7 @@ Button `as` options:
 - `button`
 - `a`
 
-<Canvas>
-  <Story id="components-componentlibrary-buttonicon--as" />
-</Canvas>
+<Canvas of={ButtonIconStories.As} />
 
 ```jsx
 import { IconColor } from '../../../helpers/constants/design-system';
@@ -95,9 +85,7 @@ import { ButtonIcon, IconName } from '../../component-library';
 
 When an `href` prop is passed it will change the element to an anchor(`a`) tag.
 
-<Canvas>
-  <Story id="components-componentlibrary-buttonicon--href" />
-</Canvas>
+<Canvas of={ButtonIconStories.Href} />
 
 ```jsx
 import { IconColor } from '../../../helpers/constants/design-system';
@@ -116,9 +104,7 @@ import { ButtonIcon, IconName } from '../../component-library';
 
 Use the `color` prop and the `Color` object to change the color of the `ButtonIcon`. Defaults to `Color.iconDefault`.
 
-<Canvas>
-  <Story id="components-componentlibrary-buttonicon--color-story" />
-</Canvas>
+<Canvas of={ButtonIconStories.ColorStory} />
 
 ```jsx
 import { IconColor } from '../../../helpers/constants/design-system';
@@ -135,9 +121,7 @@ import { ButtonIcon, IconName } from '../../component-library';
 
 Use the boolean `disabled` prop to disable button
 
-<Canvas>
-  <Story id="components-componentlibrary-buttonicon--disabled" />
-</Canvas>
+<Canvas of={ButtonIconStories.Disabled} />
 
 ```jsx
 import { ButtonIcon, IconName } from '../../component-library';

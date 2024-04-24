@@ -1,6 +1,5 @@
-import { Story, Canvas, ArgTypes } from '@storybook/addon-docs';
-
-import { ModalContent } from './modal-content';
+import { Controls, Canvas } from '@storybook/addon-docs';
+import * as ModalContentStories from './modal-content.stories';
 
 # ModalContent
 
@@ -8,21 +7,17 @@ import { ModalContent } from './modal-content';
 
 [MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
 
-<Canvas>
-  <Story id="components-componentlibrary-modalcontent--default-story" />
-</Canvas>
+<Canvas of={ModalContentStories.DefaultStory} />
 
 ## Props
 
-<ArgTypes of={ModalContent} />
+<Controls of={ModalContentStories.DefaultStory} />
 
 ### Children
 
 Use the `children` prop to render the content of `ModalContent`. The `ModalContent` should generally be used with the `ModalHeader` component.
 
-<Canvas>
-  <Story id="components-componentlibrary-modalcontent--children" />
-</Canvas>
+<Canvas of={ModalContentStories.Children} />
 
 ```jsx
 import React, { useState } from 'react';
@@ -64,9 +59,7 @@ Use the `size` prop to set the size of the `ModalContent`
 
 To set a custom size, use the `modalDialogProps` prop and pass in a `className` with a max width.
 
-<Canvas>
-  <Story id="components-componentlibrary-modalcontent--size" />
-</Canvas>
+<Canvas of={ModalContentStories.Size} />
 
 ```jsx
 import {

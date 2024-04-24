@@ -1,6 +1,5 @@
-import { Story, Canvas, ArgTypes } from '@storybook/addon-docs';
-
-import { ButtonSecondary } from './button-secondary';
+import { Controls, Canvas } from '@storybook/addon-docs';
+import * as ButtonSecondaryStories from './button-secondary.stories';
 
 # ButtonSecondary
 
@@ -8,13 +7,11 @@ The `ButtonSecondary` is an extension of `ButtonBase` to support secondary style
 
 [MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
 
-<Canvas>
-  <Story id="components-componentlibrary-buttonsecondary--default-story" />
-</Canvas>
+<Canvas of={ButtonSecondaryStories.DefaultStory} />
 
 ## Props
 
-<ArgTypes of={ButtonSecondary} />
+<Controls of={ButtonSecondaryStories.DefaultStory} />
 
 ### Size
 
@@ -26,9 +23,7 @@ Possible sizes include:
 - `ButtonSecondarySize.Md` 40px
 - `ButtonSecondarySize.Lg` 48px
 
-<Canvas>
-  <Story id="components-componentlibrary-buttonsecondary--size-story" />
-</Canvas>
+<Canvas of={ButtonSecondaryStories.SizeStory} />
 
 ```jsx
 import { ButtonSecondary, ButtonSecondarySize } from  '../../component-library';
@@ -42,9 +37,7 @@ import { ButtonSecondary, ButtonSecondarySize } from  '../../component-library';
 
 Use the `danger` boolean prop to change the `ButtonSecondary` to danger color.
 
-<Canvas>
-  <Story id="components-componentlibrary-buttonsecondary--danger" />
-</Canvas>
+<Canvas of={ButtonSecondaryStories.Danger} />
 
 ```jsx
 import { ButtonSecondary } from  '../../component-library';

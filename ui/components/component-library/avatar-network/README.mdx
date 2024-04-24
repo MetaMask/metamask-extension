@@ -1,6 +1,5 @@
-import { Story, Canvas, ArgTypes } from '@storybook/addon-docs';
-
-import { AvatarNetwork } from './avatar-network';
+import { Controls, Canvas } from '@storybook/addon-docs';
+import * as AvatarNetworkStories from './avatar-network.stories';
 
 # AvatarNetwork
 
@@ -8,13 +7,11 @@ The `AvatarNetwork` is a component responsible for display of the image of a giv
 
 [MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
 
-<Canvas>
-  <Story id="components-componentlibrary-avatarnetwork--default-story" />
-</Canvas>
+<Canvas of={AvatarNetworkStories.DefaultStory} />
 
 ## Props
 
-<ArgTypes of={AvatarNetwork} />
+<Controls of={AvatarNetworkStories.DefaultStory} />
 
 ### Size
 
@@ -32,9 +29,7 @@ Defaults to `md`
 
 The fallback display of the `AvatarNetwork` is a circle with the initial letter of the network name. The size of the initial letter is calculated based on the size of the `AvatarNetwork` component.
 
-<Canvas>
-  <Story id="components-componentlibrary-avatarnetwork--size-story" />
-</Canvas>
+<Canvas of={AvatarNetworkStories.SizeStory} />
 
 ```jsx
 import { AvatarNetwork, AvatarNetworkSize } from '../../component-library';
@@ -52,9 +47,7 @@ Use the `name` prop to set the initial letter of the `AvatarNetwork`. This will 
 
 Use `Text` component props to change the `variant`, `font-weight`, `font-family`, etc.
 
-<Canvas>
-  <Story id="components-componentlibrary-avatarnetwork--name" />
-</Canvas>
+<Canvas of={AvatarNetworkStories.Name} />
 
 ```jsx
 import { AvatarNetwork } from '../../component-library';
@@ -65,9 +58,7 @@ import { AvatarNetwork } from '../../component-library';
 
 Use the `src` prop to set the image to be rendered of the `AvatarNetwork`.
 
-<Canvas>
-  <Story id="components-componentlibrary-avatarnetwork--src" />
-</Canvas>
+<Canvas of={AvatarNetworkStories.Src} />
 
 ```jsx
 import { AvatarNetwork } from '../../component-library';
@@ -85,9 +76,7 @@ import { AvatarNetwork } from '../../component-library';
 
 Use the `showHalo` prop to display the component with halo effect. Only works if an image url is supplied to `src`
 
-<Canvas>
-  <Story id="components-componentlibrary-avatarnetwork--show-halo" />
-</Canvas>
+<Canvas of={AvatarNetworkStories.ShowHalo} />
 
 ```jsx
 import { AvatarNetwork } from '../../component-library';
@@ -98,9 +87,7 @@ import { AvatarNetwork } from '../../component-library';
 
 Use the `color`, `backgroundColor` and `borderColor` props to set the text color, background-color and border-color of the `AvatarNetwork`.
 
-<Canvas>
-  <Story id="components-componentlibrary-avatarnetwork--color-background-color-and-border-color" />
-</Canvas>
+<Canvas of={AvatarNetworkStories.ColorBackgroundColorAndBorderColor} />
 
 ```jsx
 import { TextColor,

@@ -1,6 +1,5 @@
-import { Story, Canvas, ArgTypes } from '@storybook/addon-docs';
-
-import { SelectButton } from './select-button';
+import { Controls, Canvas } from '@storybook/addon-docs';
+import * as SelectButtonStories from './select-button.stories';
 
 # SelectButton
 
@@ -19,13 +18,11 @@ Prop Shape Recommendation Example:
 }
 ```
 
-<Canvas>
-  <Story id="components-componentlibrary-selectbutton--default-story" />
-</Canvas>
+<Canvas of={SelectButtonStories.DefaultStory} />
 
 ## Props
 
-<ArgTypes of={SelectButton} />
+<Controls of={SelectButtonStories.DefaultStory} />
 
 ### Size
 
@@ -33,9 +30,7 @@ Use the `size` prop and the `SelectButtonSize` enum from `./ui/components/compon
 
 Please be sure to take note of the size used for the `startAccessory` and `endAccessory` components based on the design.
 
-<Canvas>
-  <Story id="components-componentlibrary-selectbutton--size" />
-</Canvas>
+<Canvas of={SelectButtonStories.Size} />
 
 ```jsx
 import {
@@ -52,9 +47,7 @@ import {
 
 Use the `isBlock` boolean prop to make the `SelectButton` component full width. Defaults to `false`
 
-<Canvas>
-  <Story id="components-componentlibrary-selectbutton--is-block" />
-</Canvas>
+<Canvas of={SelectButtonStories.IsBlock} />
 
 ```jsx
 import { SelectButton } from '../../component-library';
@@ -66,9 +59,7 @@ import { SelectButton } from '../../component-library';
 
 Use the `isDanger` boolean prop to make the `SelectButton` component danger/error. Defaults to `false`
 
-<Canvas>
-  <Story id="components-componentlibrary-selectbutton--is-danger" />
-</Canvas>
+<Canvas of={SelectButtonStories.IsDanger} />
 
 ```jsx
 import { SelectButton } from '../../component-library';
@@ -80,9 +71,7 @@ import { SelectButton } from '../../component-library';
 
 Use the `isDisabled` boolean prop to make the `SelectButton` component disabled. Defaults to `false`
 
-<Canvas>
-  <Story id="components-componentlibrary-selectbutton--is-disabled" />
-</Canvas>
+<Canvas of={SelectButtonStories.IsDisabled} />
 
 ```jsx
 import { SelectButton } from '../../component-library';
@@ -94,9 +83,7 @@ import { SelectButton } from '../../component-library';
 
 Use the `label` prop to add a label to the `SelectButton` component.
 
-<Canvas>
-  <Story id="components-componentlibrary-selectbutton--label" />
-</Canvas>
+<Canvas of={SelectButtonStories.Label} />
 
 ```jsx
 import { SelectButton } from '../../component-library';
@@ -108,9 +95,7 @@ import { SelectButton } from '../../component-library';
 
 Use the `description` prop to add a description to the `SelectButton` component.
 
-<Canvas>
-  <Story id="components-componentlibrary-selectbutton--description" />
-</Canvas>
+<Canvas of={SelectButtonStories.Description} />
 
 ```jsx
 import { SelectButton } from '../../component-library';
@@ -122,9 +107,7 @@ import { SelectButton } from '../../component-library';
 
 Use the `startAccessory` prop to add a component to the start of the `SelectButton` component.
 
-<Canvas>
-  <Story id="components-componentlibrary-selectbutton--start-accessory" />
-</Canvas>
+<Canvas of={SelectButtonStories.StartAccessory} />
 
 ```jsx
 import {
@@ -147,9 +130,7 @@ import {
 
 Use the `endAccessory` prop to add a component to the start of the `SelectButton` component.
 
-<Canvas>
-  <Story id="components-componentlibrary-selectbutton--end-accessory" />
-</Canvas>
+<Canvas of={SelectButtonStories.EndAccessory} />
 
 ```jsx
 import {
@@ -172,9 +153,7 @@ import {
 
 Any children passed to the `SelectButton` component will render in the same content area as the `label` and `description`. This does not interfere with the usage of `startAccessory` and `endAccessory`, which can still be utilized as needed.
 
-<Canvas>
-  <Story id="components-componentlibrary-selectbutton--children" />
-</Canvas>
+<Canvas of={SelectButtonStories.Children} />
 
 ```jsx
 import {
@@ -207,9 +186,7 @@ Example Prop Shape Recommendation:
 }
 ```
 
-<Canvas>
-  <Story id="components-componentlibrary-selectbutton--placeholder" />
-</Canvas>
+<Canvas of={SelectButtonStories.Placeholder} />
 
 ```jsx
 import { SelectButton } from '../../component-library';
@@ -239,9 +216,7 @@ Example Prop Shape Recommendation:
 }
 ```
 
-<Canvas>
-  <Story id="components-componentlibrary-selectbutton--value" />
-</Canvas>
+<Canvas of={SelectButtonStories.Value} />
 
 ```jsx
 import {
@@ -279,9 +254,7 @@ Example Prop Shape Recommendation:
 }
 ```
 
-<Canvas>
-  <Story id="components-componentlibrary-selectbutton--default-value" />
-</Canvas>
+<Canvas of={SelectButtonStories.DefaultValue} />
 
 ```jsx
 import {
@@ -318,9 +291,7 @@ Example Prop Shape Recommendation:
 }
 ```
 
-<Canvas>
-  <Story id="components-componentlibrary-selectbutton--use-select-wrapper" />
-</Canvas>
+<Canvas of={SelectButtonStories.UseSelectWrapper} />
 
 ```jsx
 import {

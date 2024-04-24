@@ -1,5 +1,5 @@
-import { Story, Canvas, ArgTypes } from '@storybook/addon-docs';
-import { Popover } from './popover';
+import { Controls, Canvas } from '@storybook/addon-docs';
+import * as PopoverStories from './popover.stories';
 
 # Popover
 
@@ -7,13 +7,11 @@ Popover is an overlay that appears by the trigger used for menus, additional con
 
 [MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
 
-<Canvas>
-  <Story id="components-componentlibrary-popover--default-story" />
-</Canvas>
+<Canvas of={PopoverStories.DefaultStory} />
 
 ## Props
 
-<ArgTypes of={Popover} />
+<Controls of={PopoverStories.DefaultStory} />
 
 ### Reference Element
 

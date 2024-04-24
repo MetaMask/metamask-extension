@@ -1,6 +1,5 @@
-import { Story, Canvas, ArgTypes } from '@storybook/addon-docs';
-
-import { ModalFocus } from './modal-focus';
+import { Controls, Canvas } from '@storybook/addon-docs';
+import * as ModalFocusStories from './modal-focus.stories';
 
 # ModalFocus
 
@@ -8,23 +7,19 @@ import { ModalFocus } from './modal-focus';
 
 [MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
 
-<Canvas>
-  <Story id="components-componentlibrary-modalfocus--default-story" />
-</Canvas>
+<Canvas of={ModalFocusStories.DefaultStory} />
 
 ## Props
 
 The `ModalFocus` is built with [react-focus-lock](https://github.com/theKashey/react-focus-lock) and accepts all of the props from that library.
 
-<ArgTypes of={ModalFocus} />
+<Controls of={ModalFocusStories.DefaultStory} />
 
 ### Children
 
 Use the `children` prop to render the component to lock focus to
 
-<Canvas>
-  <Story id="components-componentlibrary-modalfocus--children" />
-</Canvas>
+<Canvas of={ModalFocusStories.Children} />
 
 ```jsx
 import React from 'react';
@@ -71,9 +66,7 @@ const [open, setOpen] = React.useState(false);
 
 Use the `initialFocusRef` to pass the `ref` of the element to receive focus initially
 
-<Canvas>
-  <Story id="components-componentlibrary-modalfocus--initial-focus-ref" />
-</Canvas>
+<Canvas of={ModalFocusStories.InitialFocusRef} />
 
 ```jsx
 import React from 'react';
@@ -119,9 +112,7 @@ const ref = React.useRef < HTMLButtonElement > null;
 
 Use the `finalFocusRef` to pass the `ref` of the element to return focus to when `ModalFocus` unmounts
 
-<Canvas>
-  <Story id="components-componentlibrary-modalfocus--final-focus-ref" />
-</Canvas>
+<Canvas of={ModalFocusStories.FinalFocusRef} />
 
 ```jsx
 import React from 'react';
@@ -165,9 +156,7 @@ const ref = React.useRef < HTMLInputElement > null;
 
 Use the `restoreFocus` to restore focus to the element that triggered the `ModalFocus` once it unmounts
 
-<Canvas>
-  <Story id="components-componentlibrary-modalfocus--restore-focus" />
-</Canvas>
+<Canvas of={ModalFocusStories.RestoreFocus} />
 
 ```jsx
 import React from 'react';
@@ -210,9 +199,7 @@ Use the `autoFocus` to auto focus to the first focusable element within the `Mod
 
 Defaults to `true`
 
-<Canvas>
-  <Story id="components-componentlibrary-modalfocus--auto-focus" />
-</Canvas>
+<Canvas of={ModalFocusStories.AutoFocus} />
 
 ```jsx
 import React from 'react';

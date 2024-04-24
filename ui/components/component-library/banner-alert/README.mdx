@@ -1,5 +1,5 @@
-import { Story, Canvas, ArgTypes } from '@storybook/addon-docs';
-import { BannerAlert } from './banner-alert';
+import { Controls, Canvas } from '@storybook/addon-docs';
+import * as BannerAlertStories from './banner-alert.stories';
 import { BannerBase } from '..';
 
 # BannerAlert
@@ -8,13 +8,11 @@ import { BannerBase } from '..';
 
 [MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
 
-<Canvas>
-  <Story id="components-componentlibrary-banneralert--default-story" />
-</Canvas>
+<Canvas of={BannerAlertStories.DefaultStory} />
 
 ## Props
 
-<ArgTypes of={BannerAlert} />
+<Controls of={BannerAlertStories.DefaultStory} />
 
 ### Severity
 
@@ -27,9 +25,7 @@ Possible options:
 - `BannerAlertSeverity.Danger`
 - `BannerAlertSeverity.Success`
 
-<Canvas>
-  <Story id="components-componentlibrary-banneralert--severity-story" />
-</Canvas>
+<Canvas of={BannerAlertStories.SeverityStory} />
 
 ```jsx
 import { BannerAlert, BannerAlertSeverity } from '../../component-library';
@@ -52,9 +48,7 @@ import { BannerAlert, BannerAlertSeverity } from '../../component-library';
 
 Use the `title` prop to pass a string that is sentence case no period. Use the `titleProps` prop to pass additional props to the `Text` component.
 
-<Canvas>
-  <Story id="components-componentlibrary-banneralert--title" />
-</Canvas>
+<Canvas of={BannerAlertStories.Title} />
 
 ```jsx
 import { BannerAlert } from '../../component-library';
@@ -70,9 +64,7 @@ The `description` is the content area of the `BannerAlert` that must be a string
 
 If content requires more than a string, see `children` prop below.
 
-<Canvas>
-  <Story id="components-componentlibrary-banneralert--description" />
-</Canvas>
+<Canvas of={BannerAlertStories.Description} />
 
 ```jsx
 import { BannerAlert } from '../../component-library';
@@ -86,9 +78,7 @@ import { BannerAlert } from '../../component-library';
 
 The `children` prop is an alternative to `description` for `BannerAlert` when more than a string is needed. Children content shouldn't repeat title and only 1-3 lines.
 
-<Canvas>
-  <Story id="components-componentlibrary-banneralert--children" />
-</Canvas>
+<Canvas of={BannerAlertStories.Children} />
 
 ```jsx
 import { BannerAlert, ButtonLinkSize } from '../../component-library';
@@ -109,9 +99,7 @@ import { BannerAlert, ButtonLinkSize } from '../../component-library';
 
 Use the `actionButtonLabel` prop to pass text, `actionButtonOnClick` prop to pass an onClick handler, and `actionButtonProps` prop to pass an object of [ButtonLink props](/docs/components-componentlibrary-buttonlink--default-story) for the action
 
-<Canvas>
-  <Story id="components-componentlibrary-banneralert--action-button" />
-</Canvas>
+<Canvas of={BannerAlertStories.ActionButton} />
 
 ```jsx
 import { BannerAlert, IconName } from '../../component-library';
@@ -136,9 +124,7 @@ Use the `onClose` prop to pass a function to the close button. The close button 
 
 Additional props can be passed to the close button with `closeButtonProps`
 
-<Canvas>
-  <Story id="components-componentlibrary-banneralert--on-close" />
-</Canvas>
+<Canvas of={BannerAlertStories.OnClose} />
 
 ```jsx
 import { BannerAlert } from '../../component-library';

@@ -1,5 +1,5 @@
-import { Story, Canvas, ArgTypes } from '@storybook/addon-docs';
-import { BannerTip } from './banner-tip';
+import { Controls, Canvas } from '@storybook/addon-docs';
+import * as BannerTipStories from './banner-tip.stories';
 import { BannerBase } from '..';
 
 # BannerTip
@@ -8,13 +8,11 @@ import { BannerBase } from '..';
 
 [MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
 
-<Canvas>
-  <Story id="components-componentlibrary-bannertip--default-story" />
-</Canvas>
+<Canvas of={BannerTipStories.DefaultStory} />
 
 ## Props
 
-<ArgTypes of={BannerTip} />
+<Controls of={BannerTipStories.DefaultStory} />
 
 ### Logo Type
 
@@ -25,9 +23,7 @@ Possible options:
 - `BannerTipLogoType.Greeting` Default
 - `BannerTipLogoType.Chat`
 
-<Canvas>
-  <Story id="components-componentlibrary-bannertip--logo-type" />
-</Canvas>
+<Canvas of={BannerTipStories.LogoType} />
 
 ```jsx
 import { BannerTip } from '../../component-library';
@@ -44,9 +40,7 @@ import { BannerTip } from '../../component-library';
 
 Use the `title` prop to pass a string that is sentence case no period. Use the `titleProps` prop to pass additional props to the `Text` component.
 
-<Canvas>
-  <Story id="components-componentlibrary-bannertip--title" />
-</Canvas>
+<Canvas of={BannerTipStories.Title} />
 
 ```jsx
 import { BannerTip } from '../../component-library';
@@ -62,9 +56,7 @@ The `description` is the content area of the `BannerTip` that must be a string. 
 
 If content requires more than a string, see `children` prop below.
 
-<Canvas>
-  <Story id="components-componentlibrary-bannertip--description" />
-</Canvas>
+<Canvas of={BannerTipStories.Description} />
 
 ```jsx
 import { BannerTip } from '../../component-library';
@@ -78,9 +70,7 @@ import { BannerTip } from '../../component-library';
 
 The `children` prop is an alternative to `description` for `BannerTip` when more than a string is needed. Children content shouldn't repeat title and only 1-3 lines.
 
-<Canvas>
-  <Story id="components-componentlibrary-bannertip--children" />
-</Canvas>
+<Canvas of={BannerTipStories.Children} />
 
 ```jsx
 import { BannerTip, ButtonLinkSize } from '../../component-library';
@@ -101,9 +91,7 @@ import { BannerTip, ButtonLinkSize } from '../../component-library';
 
 Use the `actionButtonLabel` prop to pass text, `actionButtonOnClick` prop to pass an onClick handler, and `actionButtonProps` prop to pass an object of [ButtonLink props](/docs/components-componentlibrary-buttonlink--default-story) for the action
 
-<Canvas>
-  <Story id="components-componentlibrary-bannertip--action-button" />
-</Canvas>
+<Canvas of={BannerTipStories.ActionButton} />
 
 ```jsx
 import { BannerTip, IconName } from '../../component-library';
@@ -128,9 +116,7 @@ Use the `onClose` prop to pass a function to the close button. The close button 
 
 Additional props can be passed to the close button with `closeButtonProps`
 
-<Canvas>
-  <Story id="components-componentlibrary-bannertip--on-close" />
-</Canvas>
+<Canvas of={BannerTipStories.OnClose} />
 
 ```jsx
 import { BannerTip } from '../../component-library';
@@ -147,9 +133,7 @@ import { BannerTip } from '../../component-library';
 
 Use the `startAccessory` prop to pass a ReactNode to the start of the `BannerTip`. This is useful for overriding the defaults defined by `BannerTip`.
 
-<Canvas>
-  <Story id="components-componentlibrary-bannertip--start-accessory" />
-</Canvas>
+<Canvas of={BannerTipStories.StartAccessory} />
 
 ```jsx
 import { BannerTip } from '../../component-library';

@@ -1,6 +1,5 @@
-import { Story, Canvas, ArgTypes } from '@storybook/addon-docs';
-
-import { Box } from './box';
+import { Controls, Canvas } from '@storybook/addon-docs';
+import * as BoxStories from './box.stories';
 
 # Box
 
@@ -8,13 +7,11 @@ The `Box` is a utility component that accepts many helper props to make styling 
 
 [MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
 
-<Canvas>
-  <Story id="components-componentlibrary-box--box-default-story" />
-</Canvas>
+<Canvas of={BoxStories.BoxDefaultStory} />
 
 ## Props
 
-<ArgTypes of={Box} />
+<Controls of={BoxStories.DefaultStory} />
 
 ## Usage
 
@@ -26,9 +23,7 @@ The margin props `margin`, `marginTop`, `marginRight`, `marginBottom`, `marginLe
 
 Accepted props are: `0, 1, 2, 4, 6, 8, 9, 10, 12, 'auto` or array of these values
 
-<Canvas>
-  <Story id="components-componentlibrary-box--margin" />
-</Canvas>
+<Canvas of={BoxStories.Margin} />
 
 ```jsx
 <Box margin={4} />
@@ -57,9 +52,7 @@ The padding props work very similarly to margin. The padding props `padding`, `p
 
 Accepted props are: `0, 1, 2, 4, 6, 8, 9, 10, 12` or array of these values
 
-<Canvas>
-  <Story id="components-componentlibrary-box--padding" />
-</Canvas>
+<Canvas of={BoxStories.Padding} />
 
 ```jsx
 <Box padding={4} />
@@ -111,9 +104,7 @@ import Box from '../ui/box';
 
 The `color` prop can be used to set the color of the content in Box component. The `color` prop accepts [responsive props](#responsive-props) in the form of array props. Defaults to `Color.textDefault`.
 
-<Canvas>
-  <Story id="components-componentlibrary-box--color-story" />
-</Canvas>
+<Canvas of={BoxStories.ColorStory} />
 
 Example of importing `TextColor` object with `Box` component
 
@@ -128,9 +119,7 @@ import Box from '../ui/box';
 
 Use the `backgroundColor` prop along with the `Color` or `BackgroundColor` object from `ui/helpers/constants/design-system.js` to change background color. The `backgroundColor` prop accepts [responsive props](#responsive-props) in the form of array props.
 
-<Canvas>
-  <Story id="components-componentlibrary-box--background-color-story" />
-</Canvas>
+<Canvas of={BoxStories.BackgroundColorStory} />
 
 Example of importing `BackgroundColor` object with `Box` component
 
@@ -152,9 +141,7 @@ import Box from '../ui/box';
 
 Use the `borderColor` prop along with the `Color` or `BorderColor` object from `ui/helpers/constants/design-system.js` to change border color. The `borderColor` prop accepts [responsive props](#responsive-props) in the form of array props.
 
-<Canvas>
-  <Story id="components-componentlibrary-box--border-color-story" />
-</Canvas>
+<Canvas of={BoxStories.BorderColorStory} />
 
 Example of importing `BorderColor` object with `Box` component
 
@@ -180,9 +167,7 @@ import Box from '../ui/box';
 
 Use the `borderRadius` prop along with the `BorderRadius` object from `ui/helpers/constants/design-system.js` to change border radius. The `borderRadius` prop accepts [responsive props](#responsive-props) in the form of array props.
 
-<Canvas>
-  <Story id="components-componentlibrary-box--border-radius-story" />
-</Canvas>
+<Canvas of={BoxStories.BorderRadiusStory} />
 
 Example of importing `BorderRadius` object with `Box` component
 
@@ -221,9 +206,7 @@ The box component provides a responsive props api in the form of array props. Ar
 }
 ```
 
-<Canvas>
-  <Story id="components-componentlibrary-box--responsive-props" />
-</Canvas>
+<Canvas of={BoxStories.ResponsiveProps} />
 
 ```jsx
 import {
@@ -267,9 +250,7 @@ import Box from '../ui/box';
 
 The polymorphic `as` prop allows you to change the root HTML element of the Box component. Defaults to `'div'`
 
-<Canvas>
-  <Story id="components-componentlibrary-box--as" />
-</Canvas>
+<Canvas of={BoxStories.As} />
 
 ```jsx
 import Box from '../../ui/box';
@@ -294,9 +275,7 @@ Example: [BlockSize.Half, BlockSize.ThreeFourths, BlockSize.OneFifth, BlockSize.
 - BlockSize.OneFifth is the width for `medium screen size (768px)` and up
 - BlockSize.ThreeSixths is the width for `large screen size (1280px)` and up
 
-<Canvas>
-  <Story id="components-componentlibrary-box--width" />
-</Canvas>
+<Canvas of={BoxStories.Width} />
 
 ```jsx
 import {

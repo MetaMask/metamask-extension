@@ -1,5 +1,5 @@
-import { Story, Canvas, ArgTypes } from '@storybook/addon-docs';
-import { PopoverHeader } from './popover-header';
+import { Controls, Canvas } from '@storybook/addon-docs';
+import * as PopoverHeaderStories from './popover-header.stories';
 
 # PopoverHeader
 
@@ -7,23 +7,19 @@ import { PopoverHeader } from './popover-header';
 
 [MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
 
-<Canvas>
-  <Story id="components-componentlibrary-popoverheader--default-story" />
-</Canvas>
+<Canvas of={PopoverHeaderStories.DefaultStory} />
 
 ## Props
 
 The `PopoverHeader` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
 
-<ArgTypes of={PopoverHeader} />
+<Controls of={PopoverHeaderStories.DefaultStory} />
 
 ### Children
 
 The title of the `PopoverHeader` component. Passing a `string` will render the content inside of a `Text` component. Passing any other type will render the content as is.
 
-<Canvas>
-  <Story id="components-componentlibrary-popoverheader--children" />
-</Canvas>
+<Canvas of={PopoverHeaderStories.Children} />
 
 ```jsx
 import {
@@ -62,9 +58,7 @@ Use the onClick handler `onBack` prop to render the `ButtonIcon` back button in 
 
 Use the `backButtonProps` prop to pass additional props to the `ButtonIcon` back button.
 
-<Canvas>
-  <Story id="components-componentlibrary-popoverheader--on-back" />
-</Canvas>
+<Canvas of={PopoverHeaderStories.OnBack} />
 
 ```jsx
 import { PopoverHeader } from '../../component-library';
@@ -80,9 +74,7 @@ Use the onClick handler `onClose` prop to render the `ButtonIcon` back button in
 
 Use the `backButtonProps` prop to pass additional props to the `ButtonIcon` back button.
 
-<Canvas>
-  <Story id="components-componentlibrary-popoverheader--on-close" />
-</Canvas>
+<Canvas of={PopoverHeaderStories.OnClose} />
 
 ```jsx
 import { PopoverHeader } from '../../component-library';
@@ -96,9 +88,7 @@ import { PopoverHeader } from '../../component-library';
 
 Use the `startAccessory` prop to render a component in the startAccessory position. This will override the default back `ButtonIcon`.
 
-<Canvas>
-  <Story id="components-componentlibrary-popoverheader--start-accessory" />
-</Canvas>
+<Canvas of={PopoverHeaderStories.StartAccessory} />
 
 ```jsx
 import { PopoverHeader, Button, ButtonSize } from '../../component-library';
@@ -112,9 +102,7 @@ import { PopoverHeader, Button, ButtonSize } from '../../component-library';
 
 Use the `endAccessory` prop to render a component in the endAccessory position. This will override the default close `ButtonIcon`.
 
-<Canvas>
-  <Story id="components-componentlibrary-popoverheader--end-accessory" />
-</Canvas>
+<Canvas of={PopoverHeaderStories.EndAccessory} />
 
 ```jsx
 import { PopoverHeader, Button, ButtonSize } from '../../component-library';

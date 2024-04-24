@@ -1,6 +1,5 @@
-import { Story, Canvas, ArgTypes } from '@storybook/addon-docs';
-
-import { ButtonPrimary } from './button-primary';
+import { Controls, Canvas } from '@storybook/addon-docs';
+import * as ButtonPrimaryStories from './button-primary.stories';
 
 # ButtonPrimary
 
@@ -8,13 +7,11 @@ The `ButtonPrimary` is an extension of `ButtonBase` to support primary styles.
 
 [MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
 
-<Canvas>
-  <Story id="components-componentlibrary-buttonprimary--default-story" />
-</Canvas>
+<Canvas of={ButtonPrimaryStories.DefaultStory} />
 
 ## Props
 
-<ArgTypes of={ButtonPrimary} />
+<Controls of={ButtonPrimaryStories.DefaultStory} />
 
 ### Size
 
@@ -26,9 +23,7 @@ Possible sizes include:
 - `ButtonPrimarySize.Md` 40px
 - `ButtonPrimarySize.Lg` 48px
 
-<Canvas>
-  <Story id="components-componentlibrary-buttonprimary--size-story" />
-</Canvas>
+<Canvas of={ButtonPrimaryStories.SizeStory} />
 
 ```jsx
 import { ButtonPrimary, ButtonPrimarySize } from '../../component-library';
@@ -42,9 +37,7 @@ import { ButtonPrimary, ButtonPrimarySize } from '../../component-library';
 
 Use the `danger` boolean prop to change the `ButtonPrimary` to danger color.
 
-<Canvas>
-  <Story id="components-componentlibrary-buttonprimary--danger" />
-</Canvas>
+<Canvas of={ButtonPrimaryStories.Danger} />
 
 ```jsx
 import { ButtonPrimary } from '../../component-library';

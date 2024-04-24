@@ -1,6 +1,5 @@
-import { Story, Canvas, ArgTypes } from '@storybook/addon-docs';
-
-import { TagUrl } from './tag-url';
+import { Controls, Canvas } from '@storybook/addon-docs';
+import * as TagUrlStories from './tag-url.stories';
 
 # Tag Url
 
@@ -8,21 +7,17 @@ The `TagUrl` is a component used to display dApp information
 
 [MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
 
-<Canvas>
-  <Story id="components-componentlibrary-tagurl--default-story" />
-</Canvas>
+<Canvas of={TagUrlStories.DefaultStory} />
 
 ## Props
 
-<ArgTypes of={TagUrl} />
+<Controls of={TagUrlStories.DefaultStory} />
 
 ### Action Button Label
 
 Use the `actionButtonLabel` to add a `ButtonLink` inside of `TagUrl`. Use the `actionButtonProps` prop object to add the necessary `href` or `onClick`.
 
-<Canvas>
-  <Story id="components-componentlibrary-tagurl--action-button-label" />
-</Canvas>
+<Canvas of={TagUrlStories.ActionButtonLabel} />
 
 ```jsx
 import { TagUrl } from '../../ui/component-library/tag-url';
@@ -67,9 +62,7 @@ Use the `showLockIcon` prop to render a lock icon next to the `label`. It's inte
 
 Props for the lock icon can be changed using the `lockIconProps`
 
-<Canvas>
-  <Story id="components-componentlibrary-tagurl--show-lock-icon" />
-</Canvas>
+<Canvas of={TagUrlStories.ShowLockIcon} />
 
 ```jsx
 import { TagUrl } from '../../ui/component-library';
@@ -88,9 +81,7 @@ import { TagUrl } from '../../ui/component-library';
 
 Use the `src` prop with an image url to render the `AvatarFavicon`.
 
-<Canvas>
-  <Story id="components-componentlibrary-tagurl--src" />
-</Canvas>
+<Canvas of={TagUrlStories.Src} />
 
 ```jsx
 import { TagUrl } from '../../ui/component-library/tag-url';
@@ -119,9 +110,7 @@ Use the `label` prop for the text content of the `TagUrl` component
 
 Note: `TagUrl` doesn't not contain string manipulation logic to detect `https` or `http` it will display whatever is passed to `label`
 
-<Canvas>
-  <Story id="components-componentlibrary-tagurl--label" />
-</Canvas>
+<Canvas of={TagUrlStories.Label} />
 
 ```jsx
 import { TagUrl } from '../../ui/component-library/tag-url';

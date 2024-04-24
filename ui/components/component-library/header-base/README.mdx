@@ -1,5 +1,5 @@
-import { Story, Canvas, ArgTypes } from '@storybook/addon-docs';
-import { HeaderBase } from './header-base';
+import { Controls, Canvas } from '@storybook/addon-docs';
+import * as HeaderBaseStories from './header-base.stories';
 
 ### This is a base component. It should not be used in your feature code directly but as a "base" for other UI components
 
@@ -9,13 +9,11 @@ The `HeaderBase` component is a reusable UI component for displaying a header wi
 
 [MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
 
-<Canvas>
-  <Story id="components-componentlibrary-headerbase--default-story" />
-</Canvas>
+<Canvas of={HeaderBaseStories.DefaultStory} />
 
 ## Props
 
-<ArgTypes of={HeaderBase} />
+<Controls of={HeaderBaseStories.DefaultStory} />
 
 ### Children
 
@@ -23,9 +21,7 @@ Wrapping content in the `HeaderBase` component will be rendered in the center of
 
 Use the `childrenWrapperProps` prop to customize the wrapper element around the `children` content.
 
-<Canvas>
-  <Story id="components-componentlibrary-headerbase--children" />
-</Canvas>
+<Canvas of={HeaderBaseStories.Children} />
 
 ```jsx
 import { HeaderBase, Text } from '../../component-library';
@@ -47,9 +43,7 @@ Using the `startAccessory` prop will render the content in the start (left) side
 
 Use the `startAccessoryWrapperProps` prop to customize the wrapper element around the `startAccessory` content.
 
-<Canvas>
-  <Story id="components-componentlibrary-headerbase--start-accessory" />
-</Canvas>
+<Canvas of={HeaderBaseStories.StartAccessory} />
 
 ```jsx
 import {
@@ -85,9 +79,7 @@ Using the `endAccessory` prop will render the content in the end (right) side of
 
 Use the `endAccessoryWrapperProps` prop to customize the wrapper element around the `endAccessory` content.
 
-<Canvas>
-  <Story id="components-componentlibrary-headerbase--end-accessory" />
-</Canvas>
+<Canvas of={HeaderBaseStories.EndAccessory} />
 
 ```jsx
 import {
@@ -121,6 +113,4 @@ import {
 
 Some examples of how the `HeaderBase` component can be used in various use cases with background colors set for visual aid.
 
-<Canvas>
-  <Story id="components-componentlibrary-headerbase--use-case-demos" />
-</Canvas>
+<Canvas of={HeaderBaseStories.UseCaseDemos} />

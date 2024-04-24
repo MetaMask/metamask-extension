@@ -1,6 +1,5 @@
-import { Story, Canvas, ArgTypes } from '@storybook/addon-docs';
-
-import { PickerNetwork } from './picker-network';
+import { Controls, Canvas } from '@storybook/addon-docs';
+import * as PickerNetworkStories from './picker-network.stories';
 
 # PickerNetwork
 
@@ -8,21 +7,17 @@ The `PickerNetwork` is used for the action of changing a network.
 
 [MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
 
-<Canvas>
-  <Story id="components-componentlibrary-pickernetwork--default-story" />
-</Canvas>
+<Canvas of={PickerNetworkStories.DefaultStory} />
 
 ## Props
 
-<ArgTypes of={PickerNetwork} />
+<Controls of={PickerNetworkStories.DefaultStory} />
 
 ### Label
 
 Use the `label` prop for the text content of the `PickerNetwork` component. For long labels set a `max-width` using a `className` and the text will truncate showing an ellipsis. If the `src` prop is not set, the `label` prop will be used to generate fallback initial for `AvatarNetwork`.
 
-<Canvas>
-  <Story id="components-componentlibrary-pickernetwork--label" />
-</Canvas>
+<Canvas of={PickerNetworkStories.Label} />
 
 ```jsx
 import { PickerNetwork } from '../../ui/component-library';
@@ -37,9 +32,7 @@ import { PickerNetwork } from '../../ui/component-library';
 
 Use the `src` prop with an image url to render the `AvatarNetwork`. Use the `avatarNetworkProps` to pass additional props to the `AvatarNetwork` component. If the `src` prop is not set, the `label` prop will be used to generate fallback initial for `AvatarNetwork`.
 
-<Canvas>
-  <Story id="components-componentlibrary-pickernetwork--src" />
-</Canvas>
+<Canvas of={PickerNetworkStories.Src} />
 
 ```jsx
 import { PickerNetwork } from '../../ui/component-library';
@@ -52,9 +45,7 @@ import { PickerNetwork } from '../../ui/component-library';
 
 The width of the `PickerNetwork` is set to auto by default. Use the style utility `width` prop with the `BlockSize` enum to set the width of the `PickerNetwork` component.
 
-<Canvas>
-  <Story id="components-componentlibrary-pickernetwork--width" />
-</Canvas>
+<Canvas of={PickerNetworkStories.Width} />
 
 ```jsx
 import { PickerNetwork } from '../../ui/component-library';

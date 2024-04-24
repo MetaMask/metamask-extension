@@ -1,6 +1,5 @@
-import { Story, Canvas, ArgTypes } from '@storybook/addon-docs';
-
-import { AvatarToken } from './avatar-token';
+import { Controls, Canvas } from '@storybook/addon-docs';
+import * as AvatarTokenStories from './avatar-token.stories';
 
 # AvatarToken
 
@@ -8,13 +7,11 @@ The `AvatarToken` is a component responsible for display of the image of a given
 
 [MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
 
-<Canvas>
-  <Story id="components-componentlibrary-avatartoken--default-story" />
-</Canvas>
+<Canvas of={AvatarTokenStories.DefaultStory} />
 
 ## Props
 
-<ArgTypes of={AvatarToken} />
+<Controls of={AvatarTokenStories.DefaultStory} />
 
 ### Size
 
@@ -32,9 +29,7 @@ Defaults to `AvatarTokenSize.Md`
 
 The fallback display of the `AvatarToken` is a circle with the initial letter of the network name. The size of the initial letter is calculated based on the size of the `AvatarToken` component.
 
-<Canvas>
-  <Story id="components-componentlibrary-avatartoken--size-story" />
-</Canvas>
+<Canvas of={AvatarTokenStories.SizeStory} />
 
 ```jsx
 import { AvatarToken, AvatarTokenSize } from '../../component-library';
@@ -52,9 +47,7 @@ Use the `name` prop to set the initial letter of the `AvatarToken`. This will be
 
 Use `Text` component props to change the `variant`, `font-weight`, `font-family`, etc.
 
-<Canvas>
-  <Story id="components-componentlibrary-avatartoken--name" />
-</Canvas>
+<Canvas of={AvatarTokenStories.Name} />
 
 ```jsx
 import { AvatarToken } from '../../component-library';
@@ -65,9 +58,7 @@ import { AvatarToken } from '../../component-library';
 
 Use the `src` prop to set the image to be rendered of the `AvatarToken`.
 
-<Canvas>
-  <Story id="components-componentlibrary-avatartoken--src" />
-</Canvas>
+<Canvas of={AvatarTokenStories.Src} />
 
 ```jsx
 import { AvatarToken } from '../../component-library';
@@ -85,9 +76,7 @@ import { AvatarToken } from '../../component-library';
 
 Use the `showHalo` prop to display the component with halo effect. Only works if an image url is supplied to `src`
 
-<Canvas>
-  <Story id="components-componentlibrary-avatartoken--show-halo" />
-</Canvas>
+<Canvas of={AvatarTokenStories.ShowHalo} />
 
 ```jsx
 import { AvatarToken } from '../../component-library';
@@ -99,9 +88,7 @@ import { AvatarToken } from '../../component-library';
 
 Use the `color`, `backgroundColor` and `borderColor` props to set the text color, background-color and border-color of the `AvatarToken`.
 
-<Canvas>
-  <Story id="components-componentlibrary-avatartoken--color-background-color-and-border-color" />
-</Canvas>
+<Canvas of={AvatarTokenStories.ColorBackgroundColorAndBorderColor} />
 
 ```jsx
 import { TextColor, BackgroundColor, BorderColor, } from '../../../helpers/constants/design-system';

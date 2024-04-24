@@ -1,6 +1,5 @@
-import { Story, Canvas, ArgTypes } from '@storybook/addon-docs';
-
-import { BadgeWrapper } from './badge-wrapper';
+import { Controls, Canvas } from '@storybook/addon-docs';
+import * as BadgeWrapperStories from './badge-wrapper.stories';
 
 # BadgeWrapper
 
@@ -8,21 +7,17 @@ The `BadgeWrapper` positions a badge on top of another component
 
 [MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
 
-<Canvas>
-  <Story id="components-componentlibrary-badgewrapper--default-story" />
-</Canvas>
+<Canvas of={BadgeWrapperStories.DefaultStory} />
 
 ## Props
 
-<ArgTypes of={BadgeWrapper} />
+<Controls of={BadgeWrapperStories.DefaultStory} />
 
 ### Children
 
 Use the `children` prop to define the element to be wrapped by the `BadgeWrapper`. This element will be what the badge is positioned on top of.
 
-<Canvas>
-  <Story id="components-componentlibrary-badgewrapper--children" />
-</Canvas>
+<Canvas of={BadgeWrapperStories.Children} />
 
 ```jsx
 import { Color, Size } from '../../../helpers/constants/design-system';
@@ -94,9 +89,7 @@ Use the `badge` prop to define the badge component to be rendered on top of the 
 
 To access the component containing the badge, use the `badgeContainerProps` prop. The wrapping component is a `Box` and accepts all box props.
 
-<Canvas>
-  <Story id="components-componentlibrary-badgewrapper--badge" />
-</Canvas>
+<Canvas of={BadgeWrapperStories.Badge} />
 
 ```jsx
 
@@ -195,9 +188,7 @@ Use the `position` prop and the `BadgeWrapperPosition` enum to set the position 
 
 If you require a custom position, you can use the `positionObj` prop see [Position Obj](/docs/components-componentlibrary-badgewrapper--position-obj#position-obj) for more details.
 
-<Canvas>
-  <Story id="components-componentlibrary-badgewrapper--position" />
-</Canvas>
+<Canvas of={BadgeWrapperStories.Position} />
 
 ```jsx
 import { BorderColor Size } from '../../../helpers/constants/design-system';
@@ -272,9 +263,7 @@ Use the `positionObj` prop to set a custom position for the badge. The `position
 - `bottom` - the bottom position of the badge
 - `left` - the left position of the badge
 
-<Canvas>
-  <Story id="components-componentlibrary-badgewrapper--position-obj" />
-</Canvas>
+<Canvas of={BadgeWrapperStories.PositionObj} />
 
 ```jsx
 import { BorderColor Size } from '../../../helpers/constants/design-system';
@@ -309,9 +298,7 @@ Use the `anchorElementShape` prop and the `BadgeWrapperAnchorElementShape` enum 
 - circular `BadgeWrapperAnchorElementShape.circular`
 - rectangular `BadgeWrapperAnchorElementShape.rectangular`
 
-<Canvas>
-  <Story id="components-componentlibrary-badgewrapper--anchor-element-shape" />
-</Canvas>
+<Canvas of={BadgeWrapperStories.AnchorElementShape} />
 
 ```jsx
 import Box from '../../ui/box/box';

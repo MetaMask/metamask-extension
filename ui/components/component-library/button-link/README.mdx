@@ -1,6 +1,5 @@
-import { Story, Canvas, ArgTypes } from '@storybook/addon-docs';
-
-import { ButtonLink } from './button-link';
+import { Controls, Canvas } from '@storybook/addon-docs';
+import * as ButtonLinkStories from './button-link.stories';
 import { ButtonBase } from '../button-base';
 
 # ButtonLink
@@ -9,13 +8,11 @@ The `ButtonLink` is an extension of `ButtonBase` to support link styles
 
 [MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
 
-<Canvas>
-  <Story id="components-componentlibrary-buttonlink--default-story" />
-</Canvas>
+<Canvas of={ButtonLinkStories.DefaultStory} />
 
 ## Props
 
-<ArgTypes of={ButtonLink} />
+<Controls of={ButtonLinkStories.DefaultStory} />
 
 ### Size
 
@@ -29,9 +26,7 @@ Possible sizes include:
 - `ButtonLinkSize.Lg` 48px
 - `ButtonLinkSize.Inherit` inherits the font-size of the parent element. Used for inline links in paragraphs.
 
-<Canvas>
-  <Story id="components-componentlibrary-buttonlink--size-story" />
-</Canvas>
+<Canvas of={ButtonLinkStories.SizeStory} />
 
 ```jsx
 import { ButtonLink, ButtonLinkSize, Text, TextVariant } from '../../component-library';
@@ -69,9 +64,7 @@ import { ButtonLink, ButtonLinkSize, Text, TextVariant } from '../../component-l
 
 Use the `danger` boolean prop to change the `ButtonLink` to danger color.
 
-<Canvas>
-  <Story id="components-componentlibrary-buttonlink--danger" />
-</Canvas>
+<Canvas of={ButtonLinkStories.Danger} />
 
 ```jsx
 import { ButtonLink } from '../../component-library';
@@ -84,9 +77,7 @@ import { ButtonLink } from '../../component-library';
 
 When an `href` prop is passed it will change the element to an anchor(`a`) tag.
 
-<Canvas>
-  <Story id="components-componentlibrary-buttonlink--href" />
-</Canvas>
+<Canvas of={ButtonLinkStories.Href} />
 
 ```jsx
 import { ButtonLink } from '../../component-library';
@@ -100,9 +91,7 @@ When an `externalLink` prop is passed it adds the `target="_blank"` and `rel="no
 
 `rel="noreferrer noopener"` is used in links to prevent security vulnerabilities that can be exploited by malicious websites. It disables the window.opener property and prevents the new page from sending the referrer information, providing an additional layer of security.
 
-<Canvas>
-  <Story id="components-componentlibrary-buttonlink--external-link" />
-</Canvas>
+<Canvas of={ButtonLinkStories.ExternalLink} />
 
 ```jsx
 import { ButtonLink } from '../../component-library';
@@ -116,9 +105,7 @@ import { ButtonLink } from '../../component-library';
 
 The default hit area for `ButtonLink` is the width of the text and height based on the `size` prop which is set to `ButtonLinkSize.Auto` by default. There may be times when you want to increase the hit area of the `ButtonLink`. To do this you can use the `Box` props `paddingLeft` and `paddingRight`. Or alternatively you can use the `block` prop which sets the width to 100%.
 
-<Canvas>
-  <Story id="components-componentlibrary-buttonlink--hit-area" />
-</Canvas>
+<Canvas of={ButtonLinkStories.HitArea} />
 
 ```jsx
 import { ButtonLink, ButtonLinkSize } from '../../component-library';

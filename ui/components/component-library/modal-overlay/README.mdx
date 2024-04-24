@@ -1,6 +1,5 @@
-import { Story, Canvas, ArgTypes } from '@storybook/addon-docs';
-
-import { ModalOverlay } from './modal-overlay';
+import { Controls, Canvas } from '@storybook/addon-docs';
+import * as ModalOverlayStories from './modal-overlay.stories';
 
 # ModalOverlay
 
@@ -8,21 +7,17 @@ import { ModalOverlay } from './modal-overlay';
 
 [MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
 
-<Canvas>
-  <Story id="components-componentlibrary-modaloverlay--default-story" />
-</Canvas>
+<Canvas of={ModalOverlayStories.DefaultStory} />
 
 ## Props
 
-<ArgTypes of={ModalOverlay} />
+<Controls of={ModalOverlayStories.DefaultStory} />
 
 ### On Click
 
 Use the `onClick` prop to handle clicks on the overlay
 
-<Canvas>
-  <Story id="components-componentlibrary-modaloverlay--on-click" />
-</Canvas>
+<Canvas of={ModalOverlayStories.OnClick} />
 
 ```jsx
 import React, { useState } from 'react';

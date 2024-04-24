@@ -1,6 +1,5 @@
-import { Story, Canvas, ArgTypes } from '@storybook/addon-docs';
-
-import { AvatarAccount } from './avatar-account';
+import { Controls, Canvas } from '@storybook/addon-docs';
+import * as AvatarAccountStories from './avatar-account.stories';
 import { AvatarBase } from '../';
 
 # AvatarAccount
@@ -9,13 +8,11 @@ The `AvatarAccount` is a type of avatar reserved for representing accounts.
 
 [MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
 
-<Canvas>
-  <Story id="components-componentlibrary-avataraccount--default-story" />
-</Canvas>
+<Canvas of={AvatarAccountStories.DefaultStory} />
 
 ## Props
 
-<ArgTypes of={AvatarAccount} />
+<Controls of={AvatarAccountStories.DefaultStory} />
 
 ### Size
 
@@ -31,9 +28,7 @@ Possible sizes include:
 
 Defaults to `AvatarAccountSize.MD`
 
-<Canvas>
-  <Story id="components-componentlibrary-avataraccount--size" />
-</Canvas>
+<Canvas of={AvatarAccountStories.Size} />
 
 ```jsx
 import { AvatarAccount, AvatarAccountSize } from '../../component-library';
@@ -49,9 +44,7 @@ import { AvatarAccount, AvatarAccountSize } from '../../component-library';
 
 Use the `variant` prop and the `AvatarAccountVariant` enum from `../../component-library` to change between jazzicon and blockies variants.
 
-<Canvas>
-  <Story id="components-componentlibrary-avataraccount--variant" />
-</Canvas>
+<Canvas of={AvatarAccountStories.Variant} />
 
 ```jsx
 import { AvatarAccount, AvatarAccountVariant } from '../../component-library';
@@ -64,9 +57,7 @@ import { AvatarAccount, AvatarAccountVariant } from '../../component-library';
 
 Use the required `address` for generating images
 
-<Canvas>
-  <Story id="components-componentlibrary-avataraccount--address" />
-</Canvas>
+<Canvas of={AvatarAccountStories.Address} />
 
 ```jsx
 import { AvatarAccount, AvatarAccountVariant } from '../../component-library';
