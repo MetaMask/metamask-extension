@@ -1,4 +1,9 @@
+@use "design-system";
+
 .confirm_wrapper {
-  max-width: 719px;
   box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
+
+  @media screen and (min-width: design-system.$break-small) {
+    max-width: 62%;
+  }
 }
