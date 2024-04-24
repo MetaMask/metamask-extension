@@ -61,7 +61,11 @@ import rawFirstTimeState from './first-time-state';
 import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
-import { deferredPromise, getPlatform } from './lib/util';
+import {
+  deferredPromise,
+  getPlatform,
+  shouldEmitDappViewedEvent,
+} from './lib/util';
 
 /* eslint-enable import/first */
 
@@ -454,29 +458,6 @@ export async function loadStateFromPersistence() {
 }
 
 /**
- * Determines whether to emit a MetaMetrics event for a given metaMetricsId.
- * Relies on the last 4 characters of the metametricsId. Assumes the IDs are evenly distributed.
- *
- * @param {*} metaMetricsId - The metametricsId to use for the event.
- * @returns
- */
-function shouldEmitEvent(metaMetricsId) {
-  // If the metametricsId is not set, we should not emit the event.
-  if (!metaMetricsId) {
-    return false;
-  }
-
-  const lastPart = metaMetricsId.slice(-4);
-
-  // Convert the last part from hexadecimal to an integer.
-  const numericValue = parseInt(lastPart, 16);
-
-  // Check if numericValue modulo 100 equals 0.
-  // This condition will be true for approximately 1 out of every 100 metametricsIds
-  return numericValue % 100 === 0;
-}
-
-/**
  * Emit event of DappViewed,
  * which should only be tracked only after a user opts into metrics and connected to the dapp
  *
@@ -489,7 +470,8 @@ function emitDappViewedMetricEvent(
   connectSitePermissions,
   preferencesController,
 ) {
-  if (!shouldEmitEvent(controller.metaMetricsController.state.metaMetricsId)) {
+  const { metaMetricsId } = controller.metaMetricsController.state;
+  if (!shouldEmitDappViewedEvent(metaMetricsId)) {
     return;
   }
 

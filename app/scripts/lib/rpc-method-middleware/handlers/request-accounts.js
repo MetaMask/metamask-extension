@@ -4,6 +4,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
 } from '../../../../../shared/constants/metametrics';
+import { shouldEmitDappViewedEvent } from '../../util';
 
 /**
  * This method attempts to retrieve the Ethereum accounts available to the
@@ -105,20 +106,16 @@ async function requestEthereumAccountsHandler(
   const accounts = await getAccounts();
   /* istanbul ignore else: too hard to induce, see below comment */
   if (accounts.length > 0) {
-    // We are using the last 4 characters of the metametricsId to determine if the event should be emitted
-    // If metaMetricsIds are distributed evenly, this should be a 1% sample rate
-    const shouldEmitEvent =
-      parseInt(metamaskState.metaMetricsId.slice(-4), 16) % 100 === 0;
-    if (shouldEmitEvent) {
-      res.result = accounts;
-      const numberOfConnectedAccounts =
-        getPermissionsForOrigin(origin).eth_accounts.caveats[0].value.length;
-      // first time connection to dapp will lead to no log in the permissionHistory
-      // and if user has connected to dapp before, the dapp origin will be included in the permissionHistory state
-      // we will leverage that to identify `is_first_visit` for metrics
-      const isFirstVisit = !Object.keys(
-        metamaskState.permissionHistory,
-      ).includes(origin);
+    res.result = accounts;
+    const numberOfConnectedAccounts =
+      getPermissionsForOrigin(origin).eth_accounts.caveats[0].value.length;
+    // first time connection to dapp will lead to no log in the permissionHistory
+    // and if user has connected to dapp before, the dapp origin will be included in the permissionHistory state
+    // we will leverage that to identify `is_first_visit` for metrics
+    const isFirstVisit = !Object.keys(metamaskState.permissionHistory).includes(
+      origin,
+    );
+    if (shouldEmitDappViewedEvent(metamaskState.metaMetricsId)) {
       sendMetrics({
         event: MetaMetricsEventName.DappViewed,
         category: MetaMetricsEventCategory.InpageProvider,
