@@ -7830,15 +7830,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@spruceid/siwe-parser@npm:1.1.3":
-  version: 1.1.3
-  resolution: "@spruceid/siwe-parser@npm:1.1.3"
-  dependencies:
-    apg-js: "npm:^4.1.1"
-  checksum: c953fa1e79c633a92f030b68a44225b28c71396553dc5eb8d4d5b263e8b2e5b988131720170df2eaf202ee5251d4369ccff99c130b691a1accca2a1ff93b1111
-  languageName: node
-  linkType: hard
-
 "@spruceid/siwe-parser@npm:2.1.0":
   version: 2.1.0
   resolution: "@spruceid/siwe-parser@npm:2.1.0"
@@ -7848,6 +7839,18 @@ __metadata:
     uri-js: "npm:^4.4.1"
     valid-url: "npm:^1.0.9"
   checksum: 12198f613f15000b5ec2e2f59c4c3c34918c88d48e0c2e2cfdb34ce926b89a13b6f18e7612777ffb8fa25ca2c226577e47c72592e76823b03770b67c54f78d38
+  languageName: node
+  linkType: hard
+
+"@spruceid/siwe-parser@patch:@spruceid/siwe-parser@npm%3A2.1.0#~/.yarn/patches/@spruceid-siwe-parser-npm-2.1.0-060b7ede7a.patch":
+  version: 2.1.0
+  resolution: "@spruceid/siwe-parser@patch:@spruceid/siwe-parser@npm%3A2.1.0#~/.yarn/patches/@spruceid-siwe-parser-npm-2.1.0-060b7ede7a.patch::version=2.1.0&hash=22ff08"
+  dependencies:
+    "@noble/hashes": "npm:^1.1.2"
+    apg-js: "npm:^4.1.1"
+    uri-js: "npm:^4.4.1"
+    valid-url: "npm:^1.0.9"
+  checksum: 6a6f7fbf7a43a63a3e9cf7fadd4ef2bc700d3933ed65db1b5d57262cc1b502bb2d00e741b3b315c705897c34dcf6b9031c4963e6e72e8608d593f1bfdaf32169
   languageName: node
   linkType: hard
 
