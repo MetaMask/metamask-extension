@@ -86,12 +86,6 @@ describe('Dapp interactions', function () {
 
         let connectedDapp1, connectedDapp2;
         if (process.env.MULTICHAIN) {
-          // needs to go back to the first dapp, otherwise dapp is not listed
-          await openDapp(driver);
-          await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.ExtensionInFullScreenView,
-          );
-
           await driver.clickElement({ text: 'All Permissions', tag: 'div' });
           await driver.clickElement({ text: 'Got it', tag: 'button' });
 

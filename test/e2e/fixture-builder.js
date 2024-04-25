@@ -587,6 +587,16 @@ class FixtureBuilder {
           },
         },
       },
+    }).withSubjectMetadataController({
+      subjectMetadata: {
+        [DAPP_URL]: {
+          extensionId: null,
+          iconUrl: `${DAPP_URL}/metamask-fox.svg`,
+          name: 'E2E Test Dapp',
+          origin: DAPP_URL,
+          subjectType: 'website',
+        },
+      },
     });
   }
 
