@@ -688,7 +688,7 @@ const connectToDapp = async (driver) => {
     tag: 'button',
   });
   await driver.clickElement({
-    text: 'Connect',
+    text: 'Confirm',
     tag: 'button',
   });
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
