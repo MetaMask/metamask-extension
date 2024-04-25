@@ -4,7 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [11.14.2]
+### Fixed
+- Ensure gas estimates always reflect the correct network ([#24253] https://github.com/MetaMask/metamask-extension/pull/24253)
 
 ## [11.14.1]
 ### Fixed
@@ -4610,7 +4612,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.14.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.14.2...HEAD
+[11.14.2]: https://github.com/MetaMask/metamask-extension/compare/v11.14.1...v11.14.2
 [11.14.1]: https://github.com/MetaMask/metamask-extension/compare/v11.14.0...v11.14.1
 [11.14.0]: https://github.com/MetaMask/metamask-extension/compare/v11.13.3...v11.14.0
 [11.13.3]: https://github.com/MetaMask/metamask-extension/compare/v11.13.2...v11.13.3
