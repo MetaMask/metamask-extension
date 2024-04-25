@@ -96,7 +96,9 @@ function getProviderLabel(
   if (LOCALIZED_PROVIDERS.includes(sourceId)) {
     // Use intermediate variable to avoid "Forbidden use of template strings
     // in 't' function" error.
-    const messageKey = `nameProvider_${sourceId}`;
+    const messageKey = `nameProvider_${
+      sourceId as 'ens' | 'etherscan' | 'lens' | 'token'
+    }` as const;
     return t(messageKey);
   }
   return nameSources[sourceId]?.label ?? sourceId;

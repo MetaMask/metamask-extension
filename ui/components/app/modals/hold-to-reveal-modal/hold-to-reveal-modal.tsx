@@ -48,14 +48,14 @@ export default function HoldToRevealModal({
       : 'holdToRevealContentPrivateKey';
 
   // If this is done inline, verify-locales will output `Forbidden use of template strings in 't' function`
-  const holdToRevealContent1 = `${holdToRevealContent}1`;
-  const holdToRevealContent2 = `${holdToRevealContent}2`;
+  const holdToRevealContent1 = `${holdToRevealContent}1` as const;
+  const holdToRevealContent2 = `${holdToRevealContent}2` as const;
 
   // This is here to stop yarn verify-locales from removing these strings
-  t('holdToRevealContentPrivateKey1');
-  t('holdToRevealContentPrivateKey2');
-  t('holdToRevealContent1');
-  t('holdToRevealContent2');
+  // t('holdToRevealContentPrivateKey1');
+  // t('holdToRevealContentPrivateKey2');
+  // t('holdToRevealContent1');
+  // t('holdToRevealContent2');
 
   const MainContent = () => {
     return (

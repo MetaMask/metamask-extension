@@ -101,7 +101,7 @@ const getDisplayValues = ({
   } else if (isSmartTransactionCancelled) {
     return {
       title: t('smartTransactionCancelled'),
-      description: t('smartTransactionCancelledDescription', [countdown]),
+      description: t('smartTransactionCancelledDescription'),
       iconName: IconName.Danger,
       iconColor: IconColor.errorDefault,
     };
