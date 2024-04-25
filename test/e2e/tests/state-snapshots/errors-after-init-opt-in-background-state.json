@@ -244,7 +244,7 @@
   "TokenListController": {
     "tokenList": "object",
     "tokensChainsCache": {},
-    "preventPollingOnNetworkRestart": true
+    "preventPollingOnNetworkRestart": false
   },
   "TokenRatesController": {
     "contractExchangeRates": "object",
