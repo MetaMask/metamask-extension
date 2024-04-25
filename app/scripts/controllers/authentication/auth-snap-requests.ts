@@ -17,9 +17,7 @@ export function createSnapPublicKeyRequest(): SnapRPCRequest {
   };
 }
 
-export function createSnapSignMessageRequest(
-  message: `metamask:${string}`,
-): SnapRPCRequest {
+export function createSnapSignMessageRequest(message: string): SnapRPCRequest {
   return {
     snapId,
     origin: '',

@@ -5,43 +5,28 @@ import {
 } from '@metamask/base-controller';
 import { HandleSnapRequest } from '@metamask/snaps-controllers';
 import {
+  AccessToken,
+  AuthType,
+  JwtBearerAuth,
+  LoginResponse,
+  UserProfile,
+} from '../profile-sync-sdk/authentication';
+import { Env } from '../profile-sync-sdk/env';
+import {
   createSnapPublicKeyRequest,
   createSnapSignMessageRequest,
 } from './auth-snap-requests';
-import {
-  createLoginRawMessage,
-  getAccessToken,
-  getNonce,
-  login,
-} from './services';
-
-const THIRTY_MIN_MS = 1000 * 60 * 30;
 
 const controllerName = 'AuthenticationController';
 
 // State
-type SessionProfile = {
-  identifierId: string;
-  profileId: string;
-  metametricsId: string;
-};
-
-type SessionData = {
-  /** profile - anonymous profile data for the given logged in user */
-  profile: SessionProfile;
-  /** accessToken - used to make requests authorized endpoints */
-  accessToken: string;
-  /** expiresIn - string date to determine if new access token is required  */
-  expiresIn: string;
-};
-
 export type AuthenticationControllerState = {
   /**
    * Global isSignedIn state.
    * Can be used to determine if "Profile Syncing" is enabled.
    */
   isSignedIn: boolean;
-  sessionData?: SessionData;
+  loginResponseSession?: LoginResponse;
 };
 const defaultState: AuthenticationControllerState = { isSignedIn: false };
 const metadata: StateMetadata<AuthenticationControllerState> = {
@@ -49,7 +34,7 @@ const metadata: StateMetadata<AuthenticationControllerState> = {
     persist: true,
     anonymous: true,
   },
-  sessionData: {
+  loginResponseSession: {
     persist: true,
     anonymous: false,
   },
@@ -100,6 +85,28 @@ export default class AuthenticationController extends BaseController<
   AuthenticationControllerState,
   AuthenticationControllerMessenger
 > {
+  // Declare Auth SDK
+  #authSDK = new JwtBearerAuth(
+    {
+      env: Env.PRD,
+      type: AuthType.SRP,
+    },
+    {
+      signing: {
+        getIdentifier: () => this.#snapGetPublicKey(),
+        signMessage: (m) => this.#snapSignMessage(m),
+      },
+      storage: {
+        getLoginResponse: async () => this.state.loginResponseSession ?? null,
+        setLoginResponse: async (res) => {
+          this.update((s) => {
+            s.loginResponseSession = res;
+          });
+        },
+      },
+    },
+  );
+
   constructor({
     messenger,
     state,
@@ -149,7 +156,7 @@ export default class AuthenticationController extends BaseController<
   }
 
   public async performSignIn(): Promise<string> {
-    const { accessToken } = await this.#performAuthenticationFlow();
+    const { accessToken } = await this.#authSDK.getAccessToken();
     return accessToken;
   }
 
@@ -158,19 +165,16 @@ export default class AuthenticationController extends BaseController<
 
     this.update((state) => {
       state.isSignedIn = false;
-      state.sessionData = undefined;
+      state.loginResponseSession = undefined;
     });
   }
 
-  public async getBearerToken(): Promise<string> {
+  public async getBearerToken(): Promise<AccessToken> {
     this.#assertLoggedIn();
 
-    if (this.#hasValidSession(this.state.sessionData)) {
-      return this.state.sessionData.accessToken;
-    }
-
-    const { accessToken } = await this.#performAuthenticationFlow();
-    return accessToken;
+    // Hmm I don't know if this is leaky...
+    // We should either return a string, or the access token shape.
+    return await this.#authSDK.getAccessToken();
   }
 
   /**
@@ -179,14 +183,11 @@ export default class AuthenticationController extends BaseController<
    *
    * @returns profile for the session.
    */
-  public async getSessionProfile(): Promise<SessionProfile> {
+  public async getSessionProfile(): Promise<UserProfile> {
     this.#assertLoggedIn();
 
-    if (this.#hasValidSession(this.state.sessionData)) {
-      return this.state.sessionData.profile;
-    }
-
-    const { profile } = await this.#performAuthenticationFlow();
+    // I think the lib handles the valid auth profile
+    const profile = await this.#authSDK.getUserProfile();
     return profile;
   }
 
@@ -200,81 +201,6 @@ export default class AuthenticationController extends BaseController<
         `${controllerName}: Unable to call method, user is not authenticated`,
       );
     }
-  }
-
-  async #performAuthenticationFlow(): Promise<{
-    profile: SessionProfile;
-    accessToken: string;
-  }> {
-    try {
-      // 1. Nonce
-      const publicKey = await this.#snapGetPublicKey();
-      const nonce = await getNonce(publicKey);
-      if (!nonce) {
-        throw new Error(`Unable to get nonce`);
-      }
-
-      // 2. Login
-      const rawMessage = createLoginRawMessage(nonce, publicKey);
-      const signature = await this.#snapSignMessage(rawMessage);
-      const loginResponse = await login(rawMessage, signature);
-      if (!loginResponse?.token) {
-        throw new Error(`Unable to login`);
-      }
-
-      const profile: SessionProfile = {
-        identifierId: loginResponse.profile.identifier_id,
-        profileId: loginResponse.profile.profile_id,
-        metametricsId: loginResponse.profile.metametrics_id,
-      };
-
-      // 3. Trade for Access Token
-      const accessToken = await getAccessToken(loginResponse.token);
-      if (!accessToken) {
-        throw new Error(`Unable to get Access Token`);
-      }
-
-      // Update Internal State
-      this.update((state) => {
-        state.isSignedIn = true;
-        const expiresIn = new Date();
-        expiresIn.setTime(expiresIn.getTime() + THIRTY_MIN_MS);
-        state.sessionData = {
-          profile,
-          accessToken,
-          expiresIn: expiresIn.toString(),
-        };
-      });
-
-      return {
-        profile,
-        accessToken,
-      };
-    } catch (e) {
-      const errorMessage =
-        e instanceof Error ? e.message : JSON.stringify(e ?? '');
-      throw new Error(
-        `${controllerName}: Failed to authenticate - ${errorMessage}`,
-      );
-    }
-  }
-
-  #hasValidSession(
-    sessionData: SessionData | undefined,
-  ): sessionData is SessionData {
-    if (!sessionData) {
-      return false;
-    }
-
-    const prevDate = Date.parse(sessionData.expiresIn);
-    if (isNaN(prevDate)) {
-      return false;
-    }
-
-    const currentDate = new Date();
-    const diffMs = Math.abs(currentDate.getTime() - prevDate);
-
-    return THIRTY_MIN_MS > diffMs;
   }
 
   /**
@@ -295,7 +221,7 @@ export default class AuthenticationController extends BaseController<
    * @param message - A specific tagged message to sign.
    * @returns A Signature created by the snap.
    */
-  #snapSignMessage(message: `metamask:${string}`): Promise<string> {
+  #snapSignMessage(message: string): Promise<string> {
     return this.messagingSystem.call(
       'SnapController:handleRequest',
       createSnapSignMessageRequest(message),

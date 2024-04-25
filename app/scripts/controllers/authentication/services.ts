@@ -108,6 +108,7 @@ export async function getAccessToken(jwtToken: string): Promise<string | null> {
   }
 }
 
+// Can we get the SDK to export this?
 export function createLoginRawMessage(
   nonce: string,
   publicKey: string,

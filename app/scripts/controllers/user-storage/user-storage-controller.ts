@@ -10,10 +10,10 @@ import {
   AuthenticationControllerIsSignedIn,
   AuthenticationControllerPerformSignIn,
 } from '../authentication/authentication-controller';
+import { UserStorage } from '../profile-sync-sdk/user-storage';
+import { Env } from '../profile-sync-sdk/env';
 import { createSnapSignMessageRequest } from '../authentication/auth-snap-requests';
-import { getUserStorage, upsertUserStorage } from './services';
-import { UserStorageEntryKeys } from './schema';
-import { createSHA256Hash } from './encryption';
+import { USER_STORAGE_ENTRIES, UserStorageEntryKeys } from './schema';
 
 const controllerName = 'UserStorageController';
 
@@ -23,6 +23,12 @@ export type UserStorageControllerState = {
    * Condition used by UI and to determine if we can use some of the User Storage methods.
    */
   isProfileSyncingEnabled: boolean;
+
+  /**
+   * Would be cool if storage was optional, since inside MM Wallet and Mobile we could generate the storage key on the fly.
+   * Not a big deal.
+   */
+  storageKey?: string;
 };
 const defaultState: UserStorageControllerState = {
   isProfileSyncingEnabled: true,
@@ -30,6 +36,10 @@ const defaultState: UserStorageControllerState = {
 const metadata: StateMetadata<UserStorageControllerState> = {
   isProfileSyncingEnabled: {
     persist: true,
+    anonymous: true,
+  },
+  storageKey: {
+    persist: false,
     anonymous: true,
   },
 };
@@ -97,11 +107,11 @@ export default class UserStorageController extends BaseController<
         'AuthenticationController:getBearerToken',
       );
     },
-    getProfileId: async () => {
+    getUserProfile: async () => {
       const sessionProfile = await this.messagingSystem.call(
         'AuthenticationController:getSessionProfile',
       );
-      return sessionProfile?.profileId;
+      return sessionProfile;
     },
     isAuthEnabled: () => {
       return this.messagingSystem.call('AuthenticationController:isSignedIn');
@@ -112,6 +122,30 @@ export default class UserStorageController extends BaseController<
       );
     },
   };
+
+  #userStorageSDK = new UserStorage(
+    {
+      env: Env.PRD,
+
+      // See I would like this to be compatible/agnostic - not strictly tied to Auth SDK.
+      // Instead we can pass in methods the SDK requires from auth...
+      auth: {
+        getAccessToken: async () => this.#auth.getBearerToken(),
+        getUserProfile: async () => this.#auth.getUserProfile(),
+        signMessage: (m) => this.#snapSignMessage(m),
+      },
+    },
+    {
+      storage: {
+        getStorageKey: async () => this.state.storageKey ?? null,
+        setStorageKey: async (newStorageKey) => {
+          this.update((s) => {
+            s.storageKey = newStorageKey;
+          });
+        },
+      },
+    },
+  );
 
   constructor(params: {
     messenger: UserStorageControllerMessenger;
@@ -203,13 +237,12 @@ export default class UserStorageController extends BaseController<
     entryKey: UserStorageEntryKeys,
   ): Promise<string | null> {
     this.#assertProfileSyncingEnabled();
-    const { bearerToken, storageKey } =
-      await this.#getStorageKeyAndBearerToken();
-    const result = await getUserStorage({
-      entryKey,
-      bearerToken,
-      storageKey,
-    });
+    const entry = USER_STORAGE_ENTRIES[entryKey];
+
+    const result = await this.#userStorageSDK.getItem(
+      entry.path,
+      entry.entryName,
+    );
 
     return result;
   }
@@ -227,14 +260,9 @@ export default class UserStorageController extends BaseController<
     value: string,
   ): Promise<void> {
     this.#assertProfileSyncingEnabled();
-    const { bearerToken, storageKey } =
-      await this.#getStorageKeyAndBearerToken();
+    const entry = USER_STORAGE_ENTRIES[entryKey];
 
-    await upsertUserStorage(value, {
-      entryKey,
-      bearerToken,
-      storageKey,
-    });
+    await this.#userStorageSDK.setItem(entry.path, entry.entryName, value);
   }
 
   /**
@@ -244,8 +272,15 @@ export default class UserStorageController extends BaseController<
    */
   public async getStorageKey(): Promise<string> {
     this.#assertProfileSyncingEnabled();
-    const storageKey = await this.#createStorageKey();
-    return storageKey;
+
+    // NOTE - I think it would be nicer if the SDK returns the storage key,
+    // This way the client does not need to store the key and we can guarantee a valid storage key
+    // Not a potentially stale key
+    if (!this.state.storageKey) {
+      throw new Error('No Storage Key Defined');
+    }
+
+    return this.state.storageKey;
   }
 
   #assertProfileSyncingEnabled(): void {
@@ -257,44 +292,12 @@ export default class UserStorageController extends BaseController<
   }
 
   /**
-   * Utility to get the bearer token and storage key
-   */
-  async #getStorageKeyAndBearerToken(): Promise<{
-    bearerToken: string;
-    storageKey: string;
-  }> {
-    const bearerToken = await this.#auth.getBearerToken();
-    if (!bearerToken) {
-      throw new Error('UserStorageController - unable to get bearer token');
-    }
-    const storageKey = await this.#createStorageKey();
-
-    return { bearerToken, storageKey };
-  }
-
-  /**
-   * Rather than storing the storage key, we can compute the storage key when needed.
-   *
-   * @returns the storage key
-   */
-  async #createStorageKey(): Promise<string> {
-    const id = await this.#auth.getProfileId();
-    if (!id) {
-      throw new Error('UserStorageController - unable to create storage key');
-    }
-
-    const storageKeySignature = await this.#snapSignMessage(`metamask:${id}`);
-    const storageKey = createSHA256Hash(storageKeySignature);
-    return storageKey;
-  }
-
-  /**
    * Signs a specific message using an underlying auth snap.
    *
    * @param message - A specific tagged message to sign.
    * @returns A Signature created by the snap.
    */
-  #snapSignMessage(message: `metamask:${string}`): Promise<string> {
+  #snapSignMessage(message: string): Promise<string> {
     return this.messagingSystem.call(
       'SnapController:handleRequest',
       createSnapSignMessageRequest(message),
