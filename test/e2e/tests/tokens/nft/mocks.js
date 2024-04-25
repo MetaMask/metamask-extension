@@ -1,4 +1,7 @@
-function setupAutoDetectMocking(server) {
+function setupAutoDetectMocking(
+  server,
+  testAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+) {
   const nfts = {
     nfts: [
       {
@@ -57,7 +60,7 @@ function setupAutoDetectMocking(server) {
   // Get assets for account
   server
     .forGet(
-      'https://proxy.metafi.codefi.network/opensea/v1/api/v2/chain/ethereum/account/0x5cfe73b6021e818b776b421b1c4db2474086a7e1/nfts',
+      `https://proxy.metafi.codefi.network/opensea/v1/api/v2/chain/ethereum/account/${testAddress}/nfts`,
     )
     .withQuery({ limit: 200, next: '' })
     .thenCallback(() => {

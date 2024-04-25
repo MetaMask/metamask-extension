@@ -260,7 +260,7 @@ describe('Dapp viewed Event @no-mmi', function () {
           tag: 'button',
         });
         await driver.clickElement({
-          text: 'Connect',
+          text: 'Confirm',
           tag: 'button',
         });
 
