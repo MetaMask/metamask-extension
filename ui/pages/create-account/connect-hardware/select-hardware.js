@@ -51,18 +51,26 @@ export default class SelectHardware extends Component {
 
   state = {
     selectedDevice: null,
+    trezorRequestDevicePending: false,
   };
 
   connect = async () => {
     if (this.state.selectedDevice) {
       if (this.state.selectedDevice === 'trezor') {
-        await window.navigator.usb.requestDevice({
-          filters: [
-            { vendorId: 0x534c, productId: 0x0001 },
-            { vendorId: 0x1209, productId: 0x53c0 },
-            { vendorId: 0x1209, productId: 0x53c1 },
-          ],
-        });
+        this.setState({ trezorRequestDevicePending: true });
+        try {
+          await window.navigator.usb.requestDevice({
+            filters: [
+              { vendorId: 0x534c, productId: 0x0001 },
+              { vendorId: 0x1209, productId: 0x53c0 },
+              { vendorId: 0x1209, productId: 0x53c1 },
+            ],
+          });
+          this.setState({ trezorRequestDevicePending: false });
+        } catch (e) {
+          this.setState({ trezorRequestDevicePending: false });
+          throw e;
+        }
       }
 
       this.props.connectToHardwareWallet(this.state.selectedDevice);
@@ -155,7 +163,9 @@ export default class SelectHardware extends Component {
         size={BUTTON_SIZES.LG}
         className="hw-connect__connect-btn"
         onClick={this.connect}
-        disabled={!this.state.selectedDevice}
+        disabled={
+          !this.state.selectedDevice || this.state.trezorRequestDevicePending
+        }
       >
         {this.context.t('continue')}
       </Button>
