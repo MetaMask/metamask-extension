@@ -340,7 +340,7 @@ const CustodyPage = () => {
 
     handleFetchConnectRequest();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // @NOTICE: It was throwing error in PW having the connectRequest in here
+  }, [connectRequest]);
 
   useEffect(() => {
     async function handleNetworkChange() {
