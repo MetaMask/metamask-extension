@@ -8,10 +8,11 @@ const {
   WINDOW_TITLES,
   switchToNotificationWindow,
   defaultGanacheOptions,
+  largeDelayMs,
 } = require('../../helpers');
 
 describe('Request Queue SwitchChain -> WatchAsset', function () {
-  it('should clear subsequent watchAsset after switching chain ', async function () {
+  it('should clear subsequent watchAsset after switching chain', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
@@ -86,6 +87,10 @@ describe('Request Queue SwitchChain -> WatchAsset', function () {
         await driver.clickElement('#switchEthereumChain');
 
         await driver.waitUntilXWindowHandles(3);
+
+        // Delay needed here for firefox, not loading page of switchEthereumChain before clicking the watchAsset button
+        // will result in watchAsset being front ran in the window.
+        await driver.delay(largeDelayMs);
 
         // Switch back to test dapp
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
