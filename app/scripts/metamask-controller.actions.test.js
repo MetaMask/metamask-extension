@@ -14,7 +14,7 @@ import { PermissionsRequestNotFoundError } from '@metamask/permission-controller
 import nock from 'nock';
 import mockEncryptor from '../../test/lib/mock-encryptor';
 
-const { Ganache } = require('../../test/e2e/ganache');
+const { Ganache } = require('../../test/e2e/seeder/ganache');
 
 const ganacheServer = new Ganache();
 
