@@ -35,6 +35,7 @@ export default function TransactionDetailItem({
           display={Display.Flex}
           flexWrap={FlexWrap.NoWrap}
           alignItems={AlignItems.center}
+          variant={TextVariant.bodyMdMedium}
         >
           {detailTitle}
         </Text>
