@@ -4,7 +4,6 @@ import classnames from 'classnames';
 
 import {
   Color,
-  FontWeight,
   AlignItems,
   TextAlign,
   TextVariant,
@@ -13,7 +12,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { Text } from '../../../../components/component-library';
 
-// todo: can we remove detailTitleColor and headerFontWeight? Verify design after changes
+// todo: can we remove detailTitleColor? Verify design after changes
 export default function TransactionDetailItem({
   'data-testid': dataTestId,
   detailTitle = '',
@@ -22,7 +21,6 @@ export default function TransactionDetailItem({
   detailTotal = '',
   subTitle = '',
   subText = '',
-  headingFontWeight = FontWeight.Medium,
   flexWidthValues = false,
 }) {
   return (
@@ -31,7 +29,6 @@ export default function TransactionDetailItem({
         <Text
           as="h6"
           color={detailTitleColor}
-          fontWeight={headingFontWeight}
           display={Display.Flex}
           flexWrap={FlexWrap.NoWrap}
           alignItems={AlignItems.center}
@@ -53,9 +50,9 @@ export default function TransactionDetailItem({
           <Text
             as="h6"
             color={Color.textDefault}
-            fontWeight={headingFontWeight}
             marginLeft={1}
             textAlign={TextAlign.Right}
+            variant={TextVariant.bodyMd}
           >
             {detailTotal}
           </Text>
@@ -106,7 +103,7 @@ TransactionDetailItem.propTypes = {
    */
   detailText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   /**
-   * Total amount to show. Wrapped in Typography component. Will use font-weight of headingFontWeight
+   * Total amount to show. Wrapped in Typography component.
    */
   detailTotal: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   /**
@@ -117,10 +114,6 @@ TransactionDetailItem.propTypes = {
    * Text to show under detailTotal. Wrapped in Typography component.
    */
   subText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-  /**
-   * Font-weight of detailTitle and detailTotal. Defaults to FontWeight.Medium
-   */
-  headingFontWeight: PropTypes.string,
   /**
    * Changes width to auto for transaction-detail-item__detail-values
    */
