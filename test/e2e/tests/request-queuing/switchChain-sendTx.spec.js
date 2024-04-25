@@ -54,7 +54,7 @@ describe('Request Queuing SwitchChain -> SendTx', function () {
         });
 
         await driver.clickElement({
-          text: 'Connect',
+          text: 'Confirm',
           tag: 'button',
           css: '[data-testid="page-container-footer-next"]',
         });

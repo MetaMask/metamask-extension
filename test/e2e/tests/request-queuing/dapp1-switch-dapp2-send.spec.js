@@ -62,7 +62,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         });
 
         await driver.clickElement({
-          text: 'Connect',
+          text: 'Confirm',
           tag: 'button',
           css: '[data-testid="page-container-footer-next"]',
         });
@@ -102,7 +102,7 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         });
 
         await driver.clickElement({
-          text: 'Connect',
+          text: 'Confirm',
           tag: 'button',
           css: '[data-testid="page-container-footer-next"]',
         });
