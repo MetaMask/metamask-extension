@@ -3145,8 +3145,8 @@
       },
       "packages": {
         "@trezor/connect-web>@trezor/connect>@trezor/schema-utils>@sinclair/typebox": true,
-        "@trezor/connect-web>@trezor/connect>@trezor/schema-utils>ts-mixer": true,
-        "browserify>buffer": true
+        "browserify>buffer": true,
+        "ts-mixer": true
       }
     },
     "@trezor/connect-web>@trezor/utils": {

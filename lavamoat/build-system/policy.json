@@ -11,10 +11,14 @@
       }
     },
     "@babel/code-frame>@babel/highlight": {
+      "globals": {
+        "process": true
+      },
       "packages": {
         "@babel/code-frame>@babel/highlight>chalk": true,
         "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
-        "loose-envify>js-tokens": true
+        "loose-envify>js-tokens": true,
+        "postcss>picocolors": true
       }
     },
     "@babel/code-frame>@babel/highlight>chalk": {
