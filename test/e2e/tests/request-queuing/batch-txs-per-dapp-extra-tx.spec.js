@@ -10,6 +10,7 @@ const {
   WINDOW_TITLES,
   defaultGanacheOptions,
   largeDelayMs,
+  veryLargeDelayMs,
   switchToNotificationWindow,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
@@ -150,10 +151,9 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
 
         await driver.clickElement({ text: 'Reject all', tag: 'button' }); // TODO: Do we want to confirm here?
 
-        // Wait for confirmation to close
-        await driver.waitUntilXWindowHandles(3);
-
-        // TODO: Breaking here where the confirmation screen is spam opening/closing
+        // Wait for confirmations to close and transactions from the second dapp to open
+        await driver.delay(veryLargeDelayMs);
+        await driver.delay(veryLargeDelayMs);
 
         // Wait for new confirmations queued from second dapp to open
         await switchToNotificationWindow(driver, 4);
