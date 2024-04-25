@@ -1,3 +1,4 @@
+/* eslint-disable @metamask/design-tokens/color-no-hex*/
 const TOKENS_API_MOCK_RESULT = [
   {
     name: 'Ethereum',

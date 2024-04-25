@@ -1,3 +1,4 @@
+/* eslint-disable @metamask/design-tokens/color-no-hex*/
 export const storiesMetadata = {
   totle: {
     color: '#283B4C',
