@@ -114,7 +114,9 @@ describe('Phishing Detection', function () {
           });
         },
         dapp: true,
-        dappPaths: ['./tests/phishing-controller/mock-page-with-disallowed-iframe'],
+        dappPaths: [
+          './tests/phishing-controller/mock-page-with-disallowed-iframe',
+        ],
         dappOptions: {
           numberOfDapps: 2,
         },
@@ -263,7 +265,9 @@ describe('Phishing Detection', function () {
           });
         },
         dapp: true,
-        dappPaths: ['./tests/phishing-controller/mock-page-with-disallowed-iframe'],
+        dappPaths: [
+          './tests/phishing-controller/mock-page-with-disallowed-iframe',
+        ],
         dappOptions: {
           numberOfDapps: 2,
         },
