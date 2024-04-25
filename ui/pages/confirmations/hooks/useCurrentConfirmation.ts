@@ -68,7 +68,7 @@ const useCurrentConfirmation = () => {
         return;
       }
 
-      if (!ConfirmationRedesignTypes.includes(pendingConfirmation.type)) {
+      if (!ConfirmationRedesignTypes.find((type) => type === pendingConfirmation.type)) {
         setCurrentConfirmation(undefined);
         return;
       }
