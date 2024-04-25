@@ -32,7 +32,9 @@ export function getCustomTxParamsData(
   if (!signature || !rest) {
     throw new Error('Invalid data');
   } else if (rest.length < 64) {
-    throw new Error('Invalid calldata value; must be at least 64 hex digits long');
+    throw new Error(
+      'Invalid calldata value; must be at least 64 hex digits long',
+    );
   }
 
   const tokenValue = rest.substring(0, 64);
