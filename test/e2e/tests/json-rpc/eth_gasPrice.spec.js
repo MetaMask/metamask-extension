@@ -3,8 +3,8 @@ const {
   withFixtures,
   defaultGanacheOptions,
   unlockWallet,
-} = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+} = require('../../helpers');
+const FixtureBuilder = require('../../fixture-builder');
 
 describe('eth_gasPrice', function () {
   it('executes gas price json rpc call', async function () {

@@ -1,11 +1,11 @@
 const { strict: assert } = require('assert');
-const FixtureBuilder = require('../fixture-builder');
+const FixtureBuilder = require('../../fixture-builder');
 const {
   defaultGanacheOptions,
   withFixtures,
   openDapp,
   unlockWallet,
-} = require('../helpers');
+} = require('../../helpers');
 
 // https://github.com/thenativeweb/uuidv4/blob/bdcf3a3138bef4fb7c51f389a170666f9012c478/lib/uuidv4.ts#L5
 const UUID_V4_REGEX =

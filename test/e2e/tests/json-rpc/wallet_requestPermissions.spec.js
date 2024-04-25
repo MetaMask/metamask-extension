@@ -5,8 +5,8 @@ const {
   switchToNotificationWindow,
   switchToOrOpenDapp,
   unlockWallet,
-} = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+} = require('../../helpers');
+const FixtureBuilder = require('../../fixture-builder');
 
 describe('wallet_requestPermissions', function () {
   it('executes a request permissions on eth_accounts event', async function () {

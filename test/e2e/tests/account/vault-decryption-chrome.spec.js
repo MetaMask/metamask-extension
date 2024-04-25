@@ -8,7 +8,7 @@ const {
   completeSRPRevealQuiz,
   tapAndHoldToRevealSRP,
   completeCreateNewWalletOnboardingFlowWithOptOut,
-} = require('./helpers');
+} = require('../../helpers');
 
 const VAULT_DECRYPTOR_PAGE = 'https://metamask.github.io/vault-decryptor';
 

@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+const { convertToHexValue, withFixtures, openDapp } = require('../../helpers');
+const FixtureBuilder = require('../../fixture-builder');
 
 const WALLET_PASSWORD = 'correct horse battery staple';
 
