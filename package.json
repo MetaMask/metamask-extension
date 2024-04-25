@@ -409,6 +409,7 @@
     "ses": "^1.1.0",
     "simple-git": "^3.20.0",
     "single-call-balance-checker-abi": "^1.0.0",
+    "ts-mixer": "^6.0.4",
     "unicode-confusables": "^0.1.1",
     "uuid": "^8.3.2",
     "web3-stream-provider": "^5.0.0",
