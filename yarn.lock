@@ -4392,6 +4392,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/eslint-plugin-design-tokens@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@metamask/eslint-plugin-design-tokens@npm:1.1.0"
+  checksum: 21ee903ed25eb1edb3b6f4fc4e426dc48bde0ad5d338618b5b820a11dc5f33a2706527063dca8b50e9049d3c6743781c5ae33d5860088deabc1f250659815a94
+  languageName: node
+  linkType: hard
+
 "@metamask/eth-hd-keyring@npm:^7.0.1":
   version: 7.0.1
   resolution: "@metamask/eth-hd-keyring@npm:7.0.1"
@@ -24882,6 +24889,7 @@ __metadata:
     "@metamask/eslint-config-mocha": "npm:^9.0.0"
     "@metamask/eslint-config-nodejs": "npm:^9.0.0"
     "@metamask/eslint-config-typescript": "npm:^9.0.1"
+    "@metamask/eslint-plugin-design-tokens": "npm:^1.1.0"
     "@metamask/eth-json-rpc-filters": "npm:^7.0.0"
     "@metamask/eth-json-rpc-middleware": "npm:^12.1.0"
     "@metamask/eth-keyring-controller": "npm:^16.0.0"
