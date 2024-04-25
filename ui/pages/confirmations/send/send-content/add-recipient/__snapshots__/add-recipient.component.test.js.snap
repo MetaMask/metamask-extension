@@ -71,18 +71,7 @@ exports[`Add Recipient Component Domain Resolution should match snapshot 1`] = `
             class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
             data-testid="address-list-item-label"
           >
-            T
-            e
-            s
-            t
-             
-            A
-            c
-            c
-            o
-            u
-            n
-            t
+            Test Account
           </p>
           <div
             class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
@@ -90,7 +79,7 @@ exports[`Add Recipient Component Domain Resolution should match snapshot 1`] = `
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-10"
+                aria-describedby="tippy-tooltip-8"
                 class=""
                 data-original-title="0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
                 data-tooltipped=""
@@ -157,20 +146,7 @@ exports[`Add Recipient Component Domain Resolution should match snapshot 1`] = `
             class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
             data-testid="address-list-item-label"
           >
-            T
-            e
-            s
-            t
-             
-            A
-            c
-            c
-            o
-            u
-            n
-            t
-             
-            2
+            Test Account 2
           </p>
           <div
             class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
@@ -178,7 +154,7 @@ exports[`Add Recipient Component Domain Resolution should match snapshot 1`] = `
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-11"
+                aria-describedby="tippy-tooltip-9"
                 class=""
                 data-original-title="0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b"
                 data-tooltipped=""
@@ -245,23 +221,7 @@ exports[`Add Recipient Component Domain Resolution should match snapshot 1`] = `
             class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
             data-testid="address-list-item-label"
           >
-            L
-            e
-            d
-            g
-            e
-            r
-             
-            H
-            a
-            r
-            d
-            w
-            a
-            r
-            e
-             
-            2
+            Ledger Hardware 2
           </p>
           <div
             class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
@@ -269,7 +229,7 @@ exports[`Add Recipient Component Domain Resolution should match snapshot 1`] = `
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-12"
+                aria-describedby="tippy-tooltip-10"
                 class=""
                 data-original-title="0xc42edfcc21ed14dda456aa0756c153f7985d8813"
                 data-tooltipped=""
@@ -336,20 +296,7 @@ exports[`Add Recipient Component Domain Resolution should match snapshot 1`] = `
             class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
             data-testid="address-list-item-label"
           >
-            T
-            e
-            s
-            t
-             
-            A
-            c
-            c
-            o
-            u
-            n
-            t
-             
-            3
+            Test Account 3
           </p>
           <div
             class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
@@ -357,7 +304,7 @@ exports[`Add Recipient Component Domain Resolution should match snapshot 1`] = `
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-13"
+                aria-describedby="tippy-tooltip-11"
                 class=""
                 data-original-title="0xeb9e64b93097bc15f01f13eae97015c57ab64823"
                 data-tooltipped=""
@@ -424,35 +371,7 @@ exports[`Add Recipient Component Domain Resolution should match snapshot 1`] = `
             class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
             data-testid="address-list-item-label"
           >
-            S
-            n
-            a
-            p
-             
-            A
-            c
-            c
-            o
-            u
-            n
-            t
-             
-            <span>
-              <div
-                aria-describedby="tippy-tooltip-14"
-                class=""
-                data-original-title="'1' is similar to 'l'."
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <span
-                  class="confusable__point"
-                >
-                  1
-                </span>
-              </div>
-            </span>
+            Snap Account 1
           </p>
           <div
             class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
@@ -460,7 +379,7 @@ exports[`Add Recipient Component Domain Resolution should match snapshot 1`] = `
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-15"
+                aria-describedby="tippy-tooltip-12"
                 class=""
                 data-original-title="0xb552685e3d2790efd64a175b00d51f02cdafee5d"
                 data-tooltipped=""
@@ -527,20 +446,7 @@ exports[`Add Recipient Component Domain Resolution should match snapshot 1`] = `
             class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
             data-testid="address-list-item-label"
           >
-            T
-            e
-            s
-            t
-             
-            A
-            c
-            c
-            o
-            u
-            n
-            t
-             
-            4
+            Test Account 4
           </p>
           <div
             class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
@@ -548,7 +454,7 @@ exports[`Add Recipient Component Domain Resolution should match snapshot 1`] = `
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-16"
+                aria-describedby="tippy-tooltip-13"
                 class=""
                 data-original-title="0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281"
                 data-tooltipped=""
@@ -794,18 +700,7 @@ exports[`Add Recipient Component render should match snapshot 1`] = `
             class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
             data-testid="address-list-item-label"
           >
-            T
-            e
-            s
-            t
-             
-            A
-            c
-            c
-            o
-            u
-            n
-            t
+            Test Account
           </p>
           <div
             class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
@@ -880,20 +775,7 @@ exports[`Add Recipient Component render should match snapshot 1`] = `
             class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
             data-testid="address-list-item-label"
           >
-            T
-            e
-            s
-            t
-             
-            A
-            c
-            c
-            o
-            u
-            n
-            t
-             
-            2
+            Test Account 2
           </p>
           <div
             class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
@@ -968,23 +850,7 @@ exports[`Add Recipient Component render should match snapshot 1`] = `
             class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
             data-testid="address-list-item-label"
           >
-            L
-            e
-            d
-            g
-            e
-            r
-             
-            H
-            a
-            r
-            d
-            w
-            a
-            r
-            e
-             
-            2
+            Ledger Hardware 2
           </p>
           <div
             class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
@@ -1059,20 +925,7 @@ exports[`Add Recipient Component render should match snapshot 1`] = `
             class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
             data-testid="address-list-item-label"
           >
-            T
-            e
-            s
-            t
-             
-            A
-            c
-            c
-            o
-            u
-            n
-            t
-             
-            3
+            Test Account 3
           </p>
           <div
             class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
@@ -1147,35 +1000,7 @@ exports[`Add Recipient Component render should match snapshot 1`] = `
             class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
             data-testid="address-list-item-label"
           >
-            S
-            n
-            a
-            p
-             
-            A
-            c
-            c
-            o
-            u
-            n
-            t
-             
-            <span>
-              <div
-                aria-describedby="tippy-tooltip-5"
-                class=""
-                data-original-title="'1' is similar to 'l'."
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <span
-                  class="confusable__point"
-                >
-                  1
-                </span>
-              </div>
-            </span>
+            Snap Account 1
           </p>
           <div
             class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
@@ -1183,7 +1008,7 @@ exports[`Add Recipient Component render should match snapshot 1`] = `
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-6"
+                aria-describedby="tippy-tooltip-5"
                 class=""
                 data-original-title="0xb552685e3d2790efd64a175b00d51f02cdafee5d"
                 data-tooltipped=""
@@ -1250,20 +1075,7 @@ exports[`Add Recipient Component render should match snapshot 1`] = `
             class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
             data-testid="address-list-item-label"
           >
-            T
-            e
-            s
-            t
-             
-            A
-            c
-            c
-            o
-            u
-            n
-            t
-             
-            4
+            Test Account 4
           </p>
           <div
             class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
@@ -1271,7 +1083,7 @@ exports[`Add Recipient Component render should match snapshot 1`] = `
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-7"
+                aria-describedby="tippy-tooltip-6"
                 class=""
                 data-original-title="0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281"
                 data-tooltipped=""
@@ -1357,43 +1169,7 @@ exports[`Add Recipient Component render should match snapshot 1`] = `
               class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
               data-testid="address-list-item-label"
             >
-              A
-              d
-              d
-              r
-              e
-              s
-              s
-               
-              B
-              o
-              o
-              k
-               
-              A
-              c
-              c
-              o
-              u
-              n
-              t
-               
-              <span>
-                <div
-                  aria-describedby="tippy-tooltip-8"
-                  class=""
-                  data-original-title="'1' is similar to 'l'."
-                  data-tooltipped=""
-                  style="display: inline;"
-                  tabindex="0"
-                >
-                  <span
-                    class="confusable__point"
-                  >
-                    1
-                  </span>
-                </div>
-              </span>
+              Address Book Account 1
             </p>
             <div
               class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
@@ -1401,7 +1177,7 @@ exports[`Add Recipient Component render should match snapshot 1`] = `
             >
               <div>
                 <div
-                  aria-describedby="tippy-tooltip-9"
+                  aria-describedby="tippy-tooltip-7"
                   class=""
                   data-original-title="0xc42edfcc21ed14dda456aa0756c153f7985d8813"
                   data-tooltipped=""
