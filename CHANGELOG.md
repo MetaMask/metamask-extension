@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [11.14.2]
 ### Fixed
-- Ensure gas estimates always reflect the correct network ([#24253] https://github.com/MetaMask/metamask-extension/pull/24253)
+- Ensure gas estimates always reflect the correct network ([#24253](https://github.com/MetaMask/metamask-extension/pull/24253))
 
 ## [11.14.1]
 ### Fixed
