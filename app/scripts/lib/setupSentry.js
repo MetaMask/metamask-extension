@@ -240,6 +240,7 @@ export const SENTRY_BACKGROUND_STATE = {
       smartTransactionsOptInStatus: true,
       useNativeCurrencyAsPrimaryCurrency: true,
       petnamesEnabled: true,
+      showTokenAutodetectModal: false,
     },
     useExternalServices: false,
     selectedAddress: false,

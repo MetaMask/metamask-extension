@@ -50,6 +50,7 @@ const initialState = {
     useNativeCurrencyAsPrimaryCurrency: true,
     petnamesEnabled: true,
     featureNotificationsEnabled: false,
+    showTokenAutodetectModal: false,
   },
   firstTimeFlowType: null,
   completedOnboarding: false,
@@ -525,6 +526,7 @@ export function getIsNetworkBusyByChainId(state, chainId) {
 export function getCompletedOnboarding(state) {
   return state.metamask.completedOnboarding;
 }
+
 export function getIsInitialized(state) {
   return state.metamask.isInitialized;
 }

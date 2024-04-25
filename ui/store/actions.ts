@@ -3115,6 +3115,10 @@ export function setSmartTransactionsOptInStatus(
   };
 }
 
+export function setShowTokenAutodetectModal(value: boolean) {
+  return setPreference('showTokenAutodetectModal', value);
+}
+
 export function setAutoLockTimeLimit(value: boolean) {
   return setPreference('autoLockTimeLimit', value);
 }
