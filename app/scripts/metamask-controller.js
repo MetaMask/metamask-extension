@@ -2976,6 +2976,10 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setIncomingTransactionsPreferences.bind(
           preferencesController,
         ),
+      setServiceWorkerKeepAlivePreference:
+        preferencesController.setServiceWorkerKeepAlivePreference.bind(
+          preferencesController,
+        ),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
       getRequestAccountTabIds: this.getRequestAccountTabIds,

@@ -3151,6 +3151,24 @@ export function resetOnboardingAction() {
   };
 }
 
+export function setServiceWorkerKeepAlivePreference(
+  value: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setServiceWorkerKeepAlivePreference`);
+    try {
+      await submitRequestToBackground('setServiceWorkerKeepAlivePreference', [
+        value,
+      ]);
+    } catch (error) {
+      dispatch(displayWarning(error));
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
 export async function forceUpdateMetamaskState(
   dispatch: MetaMaskReduxDispatch,
 ) {
