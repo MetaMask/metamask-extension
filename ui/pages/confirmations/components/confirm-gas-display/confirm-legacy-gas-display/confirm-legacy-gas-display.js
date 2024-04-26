@@ -18,7 +18,6 @@ import UserPreferencedCurrencyDisplay from '../../../../../components/app/user-p
 import InfoTooltip from '../../../../../components/ui/info-tooltip';
 import LoadingHeartBeat from '../../../../../components/ui/loading-heartbeat';
 import {
-  FONT_STYLE,
   TextVariant,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
