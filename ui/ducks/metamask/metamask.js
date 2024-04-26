@@ -379,18 +379,21 @@ export function getGasEstimateType(state) {
   return state.metamask.gasEstimateType;
 }
 
-export function getGasFeeControllerEstimates(state) {
-  return state.metamask.gasFeeEstimates;
+function getGasFeeControllerEstimatesByChainId(state, _chainId) {
+  const globalChainId = getProviderConfig(state).chainId;
+  const chainId = _chainId || globalChainId;
+
+  return state.metamask.gasFeeEstimatesByChainId?.[chainId]?.gasFeeEstimates;
 }
 
-export function getTransactionGasFeeEstimates(state) {
+function getTransactionGasFeeEstimates(state) {
   const transactionMetadata = state.confirmTransaction?.txData;
   return transactionMetadata?.gasFeeEstimates;
 }
 
-export const getGasFeeEstimates = createSelector(
+export const getGasFeeEstimatesByChainId = createSelector(
   getGasEstimateType,
-  getGasFeeControllerEstimates,
+  getGasFeeControllerEstimatesByChainId,
   getTransactionGasFeeEstimates,
   (
     gasFeeControllerEstimateType,
@@ -409,16 +412,16 @@ export const getGasFeeEstimates = createSelector(
   },
 );
 
+export function getGasFeeEstimates(state) {
+  return getGasFeeEstimatesByChainId(state, undefined);
+}
+
 export function getEstimatedGasFeeTimeBounds(state) {
   return state.metamask.estimatedGasFeeTimeBounds;
 }
 
 export function getGasEstimateTypeByChainId(state, chainId) {
   return state.metamask.gasFeeEstimatesByChainId?.[chainId]?.gasEstimateType;
-}
-
-export function getGasFeeEstimatesByChainId(state, chainId) {
-  return state.metamask.gasFeeEstimatesByChainId?.[chainId]?.gasFeeEstimates;
 }
 
 export function getEstimatedGasFeeTimeBoundsByChainId(state, chainId) {
@@ -469,11 +472,6 @@ export function getIsGasEstimatesLoadingByChainId(
       gasEstimateType === GasEstimateTypes.feeMarket);
 
   return isGasEstimatesLoading;
-}
-
-export function getIsNetworkBusy(state) {
-  const gasFeeEstimates = getGasFeeEstimates(state);
-  return gasFeeEstimates?.networkCongestion >= NetworkCongestionThresholds.busy;
 }
 
 export function getIsNetworkBusyByChainId(state, chainId) {

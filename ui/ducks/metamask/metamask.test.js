@@ -5,18 +5,16 @@ import {
   TransactionStatus,
   mergeGasFeeEstimates,
 } from '@metamask/transaction-controller';
-import { GAS_ESTIMATE_TYPES } from '@metamask/gas-fee-controller';
 import * as actionConstants from '../../store/actionConstants';
 import reduceMetamask, {
   getBlockGasLimit,
   getConversionRate,
-  getGasFeeControllerEstimates,
   getGasFeeEstimates,
-  getIsNetworkBusy,
+  getGasFeeEstimatesByChainId,
+  getIsNetworkBusyByChainId,
   getNativeCurrency,
   getSendHexDataFeatureFlagState,
   getSendToAccounts,
-  getTransactionGasFeeEstimates,
   isNotEIP1559Network,
 } from './metamask';
 
@@ -231,6 +229,10 @@ describe('MetaMask Reducers', () => {
       {},
     ),
   };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
   it('init state', () => {
     const initState = reduceMetamask(undefined, {});
@@ -532,71 +534,83 @@ describe('MetaMask Reducers', () => {
     });
   });
 
-  describe('getIsNetworkBusy', () => {
-    it('should return true if state.metamask.gasFeeEstimates.networkCongestion is over the "busy" threshold', () => {
+  describe('getIsNetworkBusyByChainId', () => {
+    it('should return true if networkCongestion is over the "busy" threshold', () => {
       expect(
-        getIsNetworkBusy({
-          metamask: { gasFeeEstimates: { networkCongestion: 0.67 } },
-        }),
+        getIsNetworkBusyByChainId(
+          {
+            metamask: {
+              providerConfig: {
+                chainId: '0x2',
+              },
+              gasFeeEstimatesByChainId: {
+                '0x1': {
+                  gasFeeEstimates: { networkCongestion: 0.67 },
+                },
+              },
+            },
+          },
+          '0x1',
+        ),
       ).toBe(true);
     });
 
-    it('should return true if state.metamask.gasFeeEstimates.networkCongestion is right at the "busy" threshold', () => {
+    it('should return true if networkCongestion is right at the "busy" threshold', () => {
       expect(
-        getIsNetworkBusy({
-          metamask: { gasFeeEstimates: { networkCongestion: 0.66 } },
-        }),
+        getIsNetworkBusyByChainId(
+          {
+            metamask: {
+              providerConfig: {
+                chainId: '0x2',
+              },
+              gasFeeEstimatesByChainId: {
+                '0x1': {
+                  gasFeeEstimates: { networkCongestion: 0.66 },
+                },
+              },
+            },
+          },
+          '0x1',
+        ),
       ).toBe(true);
     });
 
-    it('should return false if state.metamask.gasFeeEstimates.networkCongestion is not over the "busy" threshold', () => {
+    it('should return false if networkCongestion is not over the "busy" threshold', () => {
       expect(
-        getIsNetworkBusy({
-          metamask: { gasFeeEstimates: { networkCongestion: 0.65 } },
-        }),
+        getIsNetworkBusyByChainId(
+          {
+            metamask: {
+              providerConfig: {
+                chainId: '0x2',
+              },
+              gasFeeEstimatesByChainId: {
+                '0x1': {
+                  gasFeeEstimates: { networkCongestion: 0.65 },
+                },
+              },
+            },
+          },
+          '0x1',
+        ),
       ).toBe(false);
     });
   });
 
-  describe('getGasFeeControllerEstimates', () => {
-    it('returns estimates from GasFeeController state', () => {
-      const state = {
-        metamask: {
-          gasFeeEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
-        },
-      };
-
-      expect(getGasFeeControllerEstimates(state)).toStrictEqual(
-        GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
-      );
-    });
-  });
-
-  describe('getTransactionGasFeeEstimates', () => {
-    it('returns estimates from transaction', () => {
-      const state = {
-        confirmTransaction: {
-          txData: {
-            gasFeeEstimates: TRANSACTION_ESTIMATES_MOCK,
-          },
-        },
-      };
-
-      expect(getTransactionGasFeeEstimates(state)).toStrictEqual(
-        TRANSACTION_ESTIMATES_MOCK,
-      );
-    });
-
-    it('returns undefined if no confirm transaction', () => {
-      expect(getTransactionGasFeeEstimates({})).toBeUndefined();
-    });
-  });
-
   describe('getGasFeeEstimates', () => {
-    it('returns GasFeeController estimates if no transaction estimates', () => {
+    it('returns GasFeeController estimates for current chain if no transaction estimates', () => {
       const state = {
         metamask: {
-          gasFeeEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
+          providerConfig: {
+            chainId: '0x1',
+          },
+          gasFeeEstimatesByChainId: {
+            '0x1': {
+              gasFeeEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
+            },
+            '0x2': {
+              gasFeeEstimates: {},
+            },
+          },
         },
       };
 
@@ -605,7 +619,7 @@ describe('MetaMask Reducers', () => {
       );
     });
 
-    it('returns merged transaction estimates if transaction estimates and GasFeeController estimates', () => {
+    it('returns merged transaction estimates if transaction estimates exist', () => {
       const state = {
         confirmTransaction: {
           txData: {
@@ -613,8 +627,15 @@ describe('MetaMask Reducers', () => {
           },
         },
         metamask: {
-          gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
-          gasFeeEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
+          providerConfig: {
+            chainId: '0x1',
+          },
+          gasFeeEstimatesByChainId: {
+            '0x1': {
+              gasFeeEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
+            },
+            '0x2': {},
+          },
         },
       };
 
@@ -626,7 +647,85 @@ describe('MetaMask Reducers', () => {
 
       expect(mergeGasFeeEstimatesMock).toHaveBeenCalledTimes(1);
       expect(mergeGasFeeEstimatesMock).toHaveBeenCalledWith({
-        gasFeeControllerEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
+        gasFeeControllerEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
+        transactionGasFeeEstimates: TRANSACTION_ESTIMATES_MOCK,
+      });
+    });
+  });
+
+  describe('getGasFeeEstimatesByChainId', () => {
+    it('returns GasFeeController estimates for specified chain if no transaction estimates', () => {
+      const state = {
+        metamask: {
+          providerConfig: {
+            chainId: '0x2',
+          },
+          gasFeeEstimatesByChainId: {
+            '0x1': {
+              gasFeeEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
+            },
+            '0x2': {
+              gasFeeEstimates: {},
+            },
+          },
+        },
+      };
+
+      expect(getGasFeeEstimatesByChainId(state, '0x1')).toStrictEqual(
+        GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
+      );
+    });
+
+    it('returns GasFeeController estimates for current chain if no chain specified and no transaction estimates', () => {
+      const state = {
+        metamask: {
+          providerConfig: {
+            chainId: '0x1',
+          },
+          gasFeeEstimatesByChainId: {
+            '0x1': {
+              gasFeeEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
+            },
+            '0x2': {
+              gasFeeEstimates: {},
+            },
+          },
+        },
+      };
+
+      expect(getGasFeeEstimatesByChainId(state, undefined)).toStrictEqual(
+        GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
+      );
+    });
+
+    it('returns merged transaction estimates if transaction estimates exist', () => {
+      const state = {
+        confirmTransaction: {
+          txData: {
+            gasFeeEstimates: TRANSACTION_ESTIMATES_MOCK,
+          },
+        },
+        metamask: {
+          providerConfig: {
+            chainId: '0x2',
+          },
+          gasFeeEstimatesByChainId: {
+            '0x1': {
+              gasFeeEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
+            },
+            '0x2': {},
+          },
+        },
+      };
+
+      mergeGasFeeEstimatesMock.mockReturnValue(TRANSACTION_ESTIMATES_MOCK);
+
+      expect(getGasFeeEstimatesByChainId(state, '0x1')).toStrictEqual(
+        TRANSACTION_ESTIMATES_MOCK,
+      );
+
+      expect(mergeGasFeeEstimatesMock).toHaveBeenCalledTimes(1);
+      expect(mergeGasFeeEstimatesMock).toHaveBeenCalledWith({
         gasFeeControllerEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
         transactionGasFeeEstimates: TRANSACTION_ESTIMATES_MOCK,
       });

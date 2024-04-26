@@ -282,6 +282,8 @@ env:
   - MULTICHAIN: ''
   # Determines if feature flagged Multichain Transactions should be used
   - TRANSACTION_MULTICHAIN: ''
+  # Enables use of test gas fee flow to debug gas fee estimation
+  - TEST_GAS_FEE_FLOWS: false
 
     # Enables the notifications feature within the build:
   - NOTIFICATIONS: ''

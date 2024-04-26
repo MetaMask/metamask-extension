@@ -1654,6 +1654,7 @@ export default class MetamaskController extends EventEmitter {
         },
       },
       provider: this.provider,
+      testGasFeeFlows: process.env.TEST_GAS_FEE_FLOWS,
       hooks: {
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         afterSign: (txMeta, signedEthTx) =>
