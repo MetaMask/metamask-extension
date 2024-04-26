@@ -123,8 +123,7 @@ async function switchEthereumChainHandler(
       return end();
     }
   }
-
-  const networkClientId = permission.wallet_switchEthereumChain.caveats[0].value.id;
+  const networkClientId = findNetworkClientIdByChainId(permission.wallet_switchEthereumChain.caveats[0].value);
   try {
     await setActiveNetwork(networkClientId);
     if (hasPermissions(req.origin)) {

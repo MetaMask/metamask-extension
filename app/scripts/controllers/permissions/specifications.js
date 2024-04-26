@@ -208,14 +208,14 @@ export const getPermissionSpecifications = ({
         }
 
         // This value will be further validated as part of the caveat.
-        if (!requestData.approvedNetworkConfiguration) {
+        if (!requestData.approvedChainId) {
           throw new Error(
             `${PermissionNames.wallet_switchEthereumChain} error: No approved networks specified.`,
           );
         }
 
         const caveat = CaveatFactories[CaveatTypes.restrictNetworkSwitching](
-          requestData.approvedNetworkConfiguration,
+          requestData.approvedChainId,
         );
 
         return constructPermission({
@@ -296,8 +296,7 @@ function validateCaveatAccounts(accounts, getInternalAccounts) {
  * @param {() => string} findNetworkClientIdByChainId - method to throw error if network is unknown
  *
  */
-function validateCaveatNetworks(networkConfiguration, findNetworkClientIdByChainId) {
-  const chainIdForCaveat = networkConfiguration.chainId;
+function validateCaveatNetworks(chainIdForCaveat, findNetworkClientIdByChainId) {
   console.log("validateCaveatNetworks called: ", chainIdForCaveat, findNetworkClientIdByChainId);
   if (typeof chainIdForCaveat !== 'string') { // lets put better validation here tho
     throw new Error(
