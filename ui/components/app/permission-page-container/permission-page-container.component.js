@@ -138,7 +138,7 @@ export default class PermissionPageContainer extends Component {
       approvedAccounts: selectedAccounts.map(
         (selectedAccount) => selectedAccount.address,
       ),
-      approvedNetworkConfiguration: selectedNetworkConfiguration,
+      approvedChainId: Object.keys(_request.permissions.wallet_switchEthereumChain)[0]
     };
 
     if (Object.keys(request.permissions).length > 0) {

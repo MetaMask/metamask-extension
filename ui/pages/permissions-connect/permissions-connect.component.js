@@ -20,7 +20,6 @@ import {
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header/snap-authorship-header';
 ///: END:ONLY_INCLUDE_IF
 import ChooseAccount from './choose-account';
-import ChooseNetwork from './choose-network';
 import PermissionsRedirect from './redirect';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import SnapsConnect from './snaps/snaps-connect';
@@ -107,7 +106,6 @@ export default class PermissionConnect extends Component {
   state = {
     redirecting: false,
     selectedAccountAddresses: new Set([this.props.currentAddress]),
-    selectedNetworkConfiguration: this.props.selectedNetworkConfiguration, // maybe this should be the 'currently selected network configuration' instead
     permissionsApproved: null,
     origin: this.props.origin,
     targetSubjectMetadata: this.props.targetSubjectMetadata || {},
@@ -147,7 +145,6 @@ export default class PermissionConnect extends Component {
       permissionsRequest,
       history,
       isRequestingAccounts,
-      isRequestingSwitchEthereumChain,
     } = this.props;
     getRequestAccountTabIds();
 
@@ -161,7 +158,7 @@ export default class PermissionConnect extends Component {
       window.addEventListener('beforeunload', this.beforeUnload);
     }
 
-    if (history.location.pathname === connectPath && !(isRequestingAccounts || isRequestingSwitchEthereumChain)) {
+    if (history.location.pathname === connectPath && !isRequestingAccounts) {
       ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 
       switch (requestType) {
@@ -201,44 +198,6 @@ export default class PermissionConnect extends Component {
       this.redirect(approved);
     }
   }
-
-  selectNetworkConfiguration = (networkConfiguration) => {
-    const {
-      confirmPermissionPath,
-      requestType,
-      ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-      snapsConnectPath,
-      snapInstallPath,
-      snapUpdatePath,
-      snapResultPath,
-      ///: END:ONLY_INCLUDE_IF
-    } = this.props;
-    this.setState(
-      {
-        selectedNetworkConfiguration: networkConfiguration,
-      },
-      () => {
-        switch (requestType) {
-          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-          case 'wallet_installSnap':
-            this.props.history.push(snapInstallPath);
-            break;
-          case 'wallet_updateSnap':
-            this.props.history.push(snapUpdatePath);
-            break;
-          case 'wallet_installSnapResult':
-            this.props.history.push(snapResultPath);
-            break;
-          case 'wallet_connectSnaps':
-            this.props.history.replace(snapsConnectPath);
-            break;
-          ///: END:ONLY_INCLUDE_IF
-          default:
-            this.props.history.push(confirmPermissionPath);
-        }
-      },
-    );
-  };
 
   selectAccounts = (addresses) => {
     const {
@@ -330,7 +289,7 @@ export default class PermissionConnect extends Component {
       targetSubjectMetadata,
       ///: END:ONLY_INCLUDE_IF
     } = this.state;
-    const { page, isRequestingAccounts, totalPages, isRequestingSwitchEthereumChain  } = this.props;
+    const { page, isRequestingAccounts, totalPages } = this.props;
     const { t } = this.context;
     return redirecting ? null : (
       <Box
@@ -345,7 +304,7 @@ export default class PermissionConnect extends Component {
         }}
       >
         <div className="permissions-connect__top-bar">
-          {page === '2' && (isRequestingAccounts || isRequestingSwitchEthereumChain) ? (
+          {page === '2' && isRequestingAccounts ? (
             <div
               className="permissions-connect__back"
               onClick={() => this.goBack()}
@@ -358,7 +317,7 @@ export default class PermissionConnect extends Component {
               {t('back')}
             </div>
           ) : null}
-          {isRequestingAccounts || isRequestingSwitchEthereumChain ? (
+          {isRequestingAccounts ? (
             <div className="permissions-connect__page-count">
               {t('xOfY', [page, totalPages])}
             </div>
@@ -392,8 +351,6 @@ export default class PermissionConnect extends Component {
       confirmPermissionPath,
       hideTopBar,
       targetSubjectMetadata,
-      isRequestingSwitchEthereumChain,
-      networkConfigurations,
       ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       snapsConnectPath,
       snapInstallPath,
@@ -407,7 +364,6 @@ export default class PermissionConnect extends Component {
     } = this.props;
     const {
       selectedAccountAddresses,
-      selectedNetworkConfiguration,
       permissionsApproved,
       redirecting,
       ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -415,7 +371,6 @@ export default class PermissionConnect extends Component {
       ///: END:ONLY_INCLUDE_IF
     } = this.state;
 
-    console.log('networkConfigs: ', networkConfigurations);
     return (
       <div className="permissions-connect">
         {!hideTopBar && this.renderTopBar()}
@@ -427,36 +382,25 @@ export default class PermissionConnect extends Component {
               path={connectPath}
               exact
               render={() => (
-                isRequestingSwitchEthereumChain ?
-                  <ChooseNetwork
-                    networkConfigurations={networkConfigurations}
-                    selectedNetworkConfiguration={selectedNetworkConfiguration}
-                    selectNetworkConfiguration={this.selectNetworkConfiguration.bind(this)}
-                    cancelPermissionsRequest={(requestId) =>
-                      this.cancelPermissionsRequest(requestId)
-                    }
-                    permissionsRequestId={permissionsRequestId}
-                    targetSubjectMetadata={targetSubjectMetadata}
-                  />
-                : <ChooseAccount
-                    accounts={accounts}
-                    nativeCurrency={nativeCurrency}
-                    selectAccounts={(addresses) => this.selectAccounts(addresses)}
-                    selectNewAccountViaModal={(handleAccountClick) => {
-                      showNewAccountModal({
-                        onCreateNewAccount: (address) =>
+                <ChooseAccount
+                  accounts={accounts}
+                  nativeCurrency={nativeCurrency}
+                  selectAccounts={(addresses) => this.selectAccounts(addresses)}
+                  selectNewAccountViaModal={(handleAccountClick) => {
+                    showNewAccountModal({
+                      onCreateNewAccount: (address) =>
                         handleAccountClick(address),
-                        newAccountNumber,
-                      });
-                    }}
-                    addressLastConnectedMap={addressLastConnectedMap}
-                    cancelPermissionsRequest={(requestId) =>
-                      this.cancelPermissionsRequest(requestId)
-                    }
-                    permissionsRequestId={permissionsRequestId}
-                    selectedAccountAddresses={selectedAccountAddresses}
-                    targetSubjectMetadata={targetSubjectMetadata}
-                  />
+                      newAccountNumber,
+                    });
+                  }}
+                  addressLastConnectedMap={addressLastConnectedMap}
+                  cancelPermissionsRequest={(requestId) =>
+                    this.cancelPermissionsRequest(requestId)
+                  }
+                  permissionsRequestId={permissionsRequestId}
+                  selectedAccountAddresses={selectedAccountAddresses}
+                  targetSubjectMetadata={targetSubjectMetadata}
+                />
               )}
             />
             <Route
@@ -475,7 +419,6 @@ export default class PermissionConnect extends Component {
                   selectedAccounts={accounts.filter((account) =>
                     selectedAccountAddresses.has(account.address),
                   )}
-                  selectedNetworkConfiguration={selectedNetworkConfiguration}
                   targetSubjectMetadata={targetSubjectMetadata}
                   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
                   snapsInstallPrivacyWarningShown={
