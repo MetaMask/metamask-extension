@@ -54,7 +54,10 @@ import { ButtonIcon, IconName, Text } from '../../component-library';
 import Tooltip from '../../ui/tooltip';
 import { decWEIToDecETH } from '../../../../shared/modules/conversion.utils';
 import { NftItem } from '../../multichain/nft-item';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventName,
+  MetaMetricsEventCategory,
+} from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export default function NftDetails({ nft }) {
@@ -96,6 +99,17 @@ export default function NftDetails({ nft }) {
     new Date(lastSale?.event_timestamp).getTime(),
     'M/d/y',
   );
+
+  const { chainId } = currentChain;
+  useEffect(() => {
+    trackEvent({
+      event: MetaMetricsEventName.NftDetailsOpened,
+      category: MetaMetricsEventCategory.Tokens,
+      properties: {
+        chain_id: chainId,
+      },
+    });
+  }, [trackEvent, chainId]);
 
   const onRemove = async () => {
     let isSuccessfulEvent = false;

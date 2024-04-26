@@ -240,7 +240,9 @@
     "@metamask/network-controller@npm:^18.0.1": "patch:@metamask/network-controller@npm%3A18.1.0#~/.yarn/patches/@metamask-network-controller-npm-18.1.0-680908c29a.patch",
     "@metamask/network-controller@npm:^17.2.1": "patch:@metamask/network-controller@npm%3A18.1.0#~/.yarn/patches/@metamask-network-controller-npm-18.1.0-680908c29a.patch",
     "@metamask/network-controller@npm:^18.1.0": "patch:@metamask/network-controller@npm%3A18.1.0#~/.yarn/patches/@metamask-network-controller-npm-18.1.0-680908c29a.patch",
-    "@metamask/keyring-controller@npm:^13.0.0": "patch:@metamask/keyring-controller@npm%3A13.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-13.0.0-d94816a680.patch"
+    "@metamask/keyring-controller@npm:^13.0.0": "patch:@metamask/keyring-controller@npm%3A13.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-13.0.0-d94816a680.patch",
+    "@spruceid/siwe-parser@npm:1.1.3": "patch:@spruceid/siwe-parser@npm%3A2.1.0#~/.yarn/patches/@spruceid-siwe-parser-npm-2.1.0-060b7ede7a.patch",
+    "@spruceid/siwe-parser@npm:2.1.0": "patch:@spruceid/siwe-parser@npm%3A2.1.0#~/.yarn/patches/@spruceid-siwe-parser-npm-2.1.0-060b7ede7a.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
@@ -272,7 +274,7 @@
     "@metamask/address-book-controller": "^3.1.7",
     "@metamask/announcement-controller": "^6.1.0",
     "@metamask/approval-controller": "^6.0.0",
-    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A26.0.0%23~/.yarn/patches/@metamask-assets-controllers-npm-26.0.0-17c0e9432c.patch%3A%3Aversion=26.0.0&hash=cf1d54#~/.yarn/patches/@metamask-assets-controllers-patch-0f46262fea.patch",
+    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@patch%253A@metamask/assets-controllers@npm%25253A26.0.0%2523~/.yarn/patches/@metamask-assets-controllers-npm-26.0.0-17c0e9432c.patch%253A%253Aversion=26.0.0&hash=cf1d54%23~/.yarn/patches/@metamask-assets-controllers-patch-0f46262fea.patch%3A%3Aversion=26.0.0&hash=5c145e#~/.yarn/patches/@metamask-assets-controllers-patch-7616cc1669.patch",
     "@metamask/base-controller": "^4.1.0",
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/contract-metadata": "^2.5.0",
@@ -319,11 +321,11 @@
     "@metamask/selected-network-controller": "^12.0.1",
     "@metamask/signature-controller": "^12.0.0",
     "@metamask/smart-transactions-controller": "^8.1.0",
-    "@metamask/snaps-controllers": "^7.0.1",
-    "@metamask/snaps-execution-environments": "^6.0.1",
+    "@metamask/snaps-controllers": "^8.0.0",
+    "@metamask/snaps-execution-environments": "^6.0.2",
     "@metamask/snaps-rpc-methods": "^8.0.0",
     "@metamask/snaps-sdk": "^4.0.1",
-    "@metamask/snaps-utils": "^7.1.0",
+    "@metamask/snaps-utils": "^7.1.1",
     "@metamask/transaction-controller": "^28.1.0",
     "@metamask/user-operation-controller": "^6.0.0",
     "@metamask/utils": "^8.2.1",
@@ -362,6 +364,7 @@
     "ethereumjs-util": "^7.0.10",
     "extension-port-stream": "^3.0.0",
     "fast-json-patch": "^3.1.1",
+    "firebase": "^10.11.0",
     "fuse.js": "^3.2.0",
     "human-standard-token-abi": "^2.0.0",
     "immer": "^9.0.6",
@@ -434,6 +437,7 @@
     "@metamask/eslint-config-mocha": "^9.0.0",
     "@metamask/eslint-config-nodejs": "^9.0.0",
     "@metamask/eslint-config-typescript": "^9.0.1",
+    "@metamask/eslint-plugin-design-tokens": "^1.1.0",
     "@metamask/forwarder": "^1.1.0",
     "@metamask/phishing-warning": "^3.0.3",
     "@metamask/test-bundler": "^1.0.0",
@@ -680,7 +684,8 @@
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>tiny-secp256k1": false,
       "@storybook/test-runner>@swc/core": false,
       "@lavamoat/lavadome-react>@lavamoat/preinstall-always-fail": false,
-      "tsx>esbuild": false
+      "tsx>esbuild": false,
+      "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs": false
     }
   },
   "packageManager": "yarn@4.0.2"
