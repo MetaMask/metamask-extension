@@ -348,18 +348,9 @@
     "message": "Tous vos NFT via $1",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
-  "allowExternalExtensionTo": {
-    "message": "Autoriser cette extension externe à :"
-  },
   "allowSpendToken": {
     "message": "Donner l’autorisation d’accéder à votre $1 ?",
     "description": "$1 is the symbol of the token that are requesting to spend"
-  },
-  "allowThisSiteTo": {
-    "message": "Autoriser ce site à :"
-  },
-  "allowThisSnapTo": {
-    "message": "Autoriser ce snap à :"
   },
   "allowWithdrawAndSpend": {
     "message": "Permettre à $1 de retirer et de dépenser jusqu’au montant suivant :",
@@ -742,26 +733,6 @@
   "connectSnap": {
     "message": "Connecter $1",
     "description": "$1 is the snap for which a connection is being requested."
-  },
-  "connectTo": {
-    "message": "Connectez-vous à $1",
-    "description": "$1 is the name/origin of a web3 site/application that the user can connect to metamask"
-  },
-  "connectToAll": {
-    "message": "Connectez-vous à vos $1",
-    "description": "$1 will be replaced by the translation of connectToAllAccounts"
-  },
-  "connectToAllAccounts": {
-    "message": "comptes",
-    "description": "will replace $1 in connectToAll, completing the sentence 'connect to all of your accounts', will be text that shows list of accounts on hover"
-  },
-  "connectToMultiple": {
-    "message": "Connectez-vous à $1",
-    "description": "$1 will be replaced by the translation of connectToMultipleNumberOfAccounts"
-  },
-  "connectToMultipleNumberOfAccounts": {
-    "message": "$1 comptes",
-    "description": "$1 is the number of accounts to which the web3 site/application is asking to connect; this will substitute $1 in connectToMultiple"
   },
   "connectWithMetaMask": {
     "message": "Connectez-vous avec MetaMask"
@@ -2704,7 +2675,8 @@
     "message": "Un fournisseur de réseau malveillant peut mentir quant à l’état de la blockchain et enregistrer votre activité réseau. N’ajoutez que des réseaux personnalisés auxquels vous faites confiance."
   },
   "onlyConnectTrust": {
-    "message": "Ne vous connectez qu’aux sites auxquels vous faites confiance."
+    "message": "Ne vous connectez qu’aux sites auxquels vous faites confiance.",
+    "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
   "openFullScreenForLedgerWebHid": {
     "message": "Passez en plein écran pour connecter votre Ledger.",
@@ -2799,9 +2771,6 @@
     "description": "$1 is count of pending transactions"
   },
   "permissionRequest": {
-    "message": "Demande d’autorisation"
-  },
-  "permissionRequestCapitalized": {
     "message": "Demande d’autorisation"
   },
   "permissionRequested": {
@@ -4773,10 +4742,6 @@
   },
   "whatsThis": {
     "message": "Qu’est-ce que c’est ?"
-  },
-  "xOfY": {
-    "message": "$1 sur $2",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total, and $1 is a count towards that total"
   },
   "xOfYPending": {
     "message": "$1 sur $2 en attente",

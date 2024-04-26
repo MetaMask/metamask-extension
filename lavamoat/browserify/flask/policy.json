@@ -2513,7 +2513,8 @@
         "@metamask/snaps-utils": true,
         "@metamask/snaps-utils>@metamask/snaps-registry": true,
         "@metamask/utils": true,
-        "browserify>browserify-zlib": true
+        "browserify>browserify-zlib": true,
+        "eslint>fast-deep-equal": true
       }
     },
     "@metamask/snaps-controllers-flask>nanoid": {
@@ -2688,6 +2689,7 @@
         "File": true,
         "FileReader": true,
         "TextDecoder": true,
+        "TextEncoder": true,
         "URL": true,
         "console.error": true,
         "console.log": true,

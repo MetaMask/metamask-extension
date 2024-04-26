@@ -29,11 +29,11 @@ import {
 } from '../../../../components/component-library';
 import SnapPermissionsList from '../../../../components/app/snaps/snap-permissions-list';
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';
-import SiteOrigin from '../../../../components/ui/site-origin/site-origin';
 import InstallError from '../../../../components/app/snaps/install-error/install-error';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import { getSnapMetadata, getSnapsMetadata } from '../../../../selectors';
 import { getSnapName } from '../../../../helpers/utils/util';
+import PermissionConnectHeader from '../../../../components/app/permission-connect-header';
 
 export default function SnapInstall({
   request,
@@ -44,7 +44,7 @@ export default function SnapInstall({
 }) {
   const t = useI18nContext();
   const siteMetadata = useOriginMetadata(request?.metadata?.dappOrigin) || {};
-  const { origin, iconUrl, name } = siteMetadata;
+  const { origin, iconUrl } = siteMetadata;
   const [isShowingWarning, setIsShowingWarning] = useState(false);
   const snapsMetadata = useSelector(getSnapsMetadata);
 
@@ -107,21 +107,7 @@ export default function SnapInstall({
       backgroundColor={BackgroundColor.backgroundAlternative}
     >
       {isLoading || hasError ? (
-        <Box
-          display={Display.Flex}
-          width="full"
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.center}
-          paddingTop={4}
-        >
-          <SiteOrigin
-            chip
-            siteOrigin={origin}
-            title={origin}
-            iconSrc={iconUrl}
-            iconName={name}
-          />
-        </Box>
+        <PermissionConnectHeader origin={origin} iconUrl={iconUrl} />
       ) : (
         <SnapAuthorshipHeader snapId={targetSubjectMetadata.origin} />
       )}

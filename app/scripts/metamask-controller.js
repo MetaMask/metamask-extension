@@ -519,15 +519,6 @@ export default class MetamaskController extends EventEmitter {
       allowedEvents: ['NetworkController:stateChange'],
     });
 
-    this.tokenListController = new TokenListController({
-      chainId: this.networkController.state.providerConfig.chainId,
-      preventPollingOnNetworkRestart: initState.TokenListController
-        ? initState.TokenListController.preventPollingOnNetworkRestart
-        : true,
-      messenger: tokenListMessenger,
-      state: initState.TokenListController,
-    });
-
     const preferencesMessenger = this.controllerMessenger.getRestricted({
       name: 'PreferencesController',
       allowedActions: [],
@@ -545,6 +536,15 @@ export default class MetamaskController extends EventEmitter {
           'KeyringController:stateChange',
           listener,
         ),
+    });
+
+    this.tokenListController = new TokenListController({
+      chainId: this.networkController.state.providerConfig.chainId,
+      preventPollingOnNetworkRestart: !this.#isTokenListPollingRequired(
+        this.preferencesController.store.getState(),
+      ),
+      messenger: tokenListMessenger,
+      state: initState.TokenListController,
     });
 
     this.assetsContractController = new AssetsContractController(
@@ -927,12 +927,8 @@ export default class MetamaskController extends EventEmitter {
         const { useCurrencyRateCheck: prevUseCurrencyRateCheck } = prevState;
         const { useCurrencyRateCheck: currUseCurrencyRateCheck } = currState;
         if (currUseCurrencyRateCheck && !prevUseCurrencyRateCheck) {
-          this.currencyRateController.startPollingByNetworkClientId(
-            this.networkController.state.selectedNetworkClientId,
-          );
           this.tokenRatesController.start();
         } else if (!currUseCurrencyRateCheck && prevUseCurrencyRateCheck) {
-          this.currencyRateController.stopAllPolling();
           this.tokenRatesController.stop();
         }
       }, this.preferencesController.store.getState()),
@@ -1692,25 +1688,6 @@ export default class MetamaskController extends EventEmitter {
 
     this._addTransactionControllerListeners();
 
-    networkControllerMessenger.subscribe(
-      'NetworkController:networkDidChange',
-      async () => {
-        try {
-          if (
-            this.preferencesController.store.getState().useCurrencyRateCheck
-          ) {
-            await this.currencyRateController.stopAllPolling();
-            this.currencyRateController.startPollingByNetworkClientId(
-              this.networkController.state.selectedNetworkClientId,
-            );
-          }
-        } catch (error) {
-          // TODO: Handle failure to get conversion rate more gracefully
-          console.error(error);
-        }
-      },
-    );
-
     this.decryptMessageController = new DecryptMessageController({
       getState: this.getState.bind(this),
       messenger: this.controllerMessenger.getRestricted({
@@ -2295,9 +2272,6 @@ export default class MetamaskController extends EventEmitter {
     }
 
     if (useCurrencyRateCheck) {
-      this.currencyRateController.startPollingByNetworkClientId(
-        this.networkController.state.selectedNetworkClientId,
-      );
       this.tokenRatesController.start();
     }
 
@@ -2318,7 +2292,6 @@ export default class MetamaskController extends EventEmitter {
     const { useCurrencyRateCheck } = preferencesControllerState;
 
     if (useCurrencyRateCheck) {
-      this.currencyRateController.stopAllPolling();
       this.tokenRatesController.stop();
     }
 
@@ -3559,6 +3532,16 @@ export default class MetamaskController extends EventEmitter {
       updateViewedNotifications: announcementController.updateViewed.bind(
         announcementController,
       ),
+
+      // CurrencyRateController
+      currencyRateStartPollingByNetworkClientId:
+        currencyRateController.startPollingByNetworkClientId.bind(
+          currencyRateController,
+        ),
+      currencyRateStopPollingByPollingToken:
+        currencyRateController.stopPollingByPollingToken.bind(
+          currencyRateController,
+        ),
 
       // GasFeeController
       gasFeeStartPollingByNetworkClientId:
@@ -5725,6 +5708,7 @@ export default class MetamaskController extends EventEmitter {
   onClientClosed() {
     try {
       this.gasFeeController.stopAllPolling();
+      this.currencyRateController.stopAllPolling();
       this.appStateController.clearPollingTokens();
     } catch (error) {
       console.error(error);
@@ -5744,6 +5728,7 @@ export default class MetamaskController extends EventEmitter {
       this.appStateController.store.getState()[appStatePollingTokenType];
     pollingTokensToDisconnect.forEach((pollingToken) => {
       this.gasFeeController.stopPollingByPollingToken(pollingToken);
+      this.currencyRateController.stopPollingByPollingToken(pollingToken);
       this.appStateController.removePollingToken(
         pollingToken,
         appStatePollingTokenType,

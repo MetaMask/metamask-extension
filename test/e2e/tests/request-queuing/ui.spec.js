@@ -32,7 +32,7 @@ async function openDappAndSwitchChain(driver, dappUrl, chainId) {
     css: '[data-testid="page-container-footer-next"]',
   });
   await driver.clickElement({
-    text: 'Connect',
+    text: 'Confirm',
     tag: 'button',
     css: '[data-testid="page-container-footer-next"]',
   });
