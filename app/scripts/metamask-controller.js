@@ -538,6 +538,32 @@ export default class MetamaskController extends EventEmitter {
         ),
     });
 
+    const accountsControllerMessenger = this.controllerMessenger.getRestricted({
+      name: 'AccountsController',
+      allowedEvents: [
+        'SnapController:stateChange',
+        'KeyringController:accountRemoved',
+        'KeyringController:stateChange',
+        'AccountsController:selectedAccountChange',
+      ],
+      allowedActions: [
+        'AccountsController:setCurrentAccount',
+        'AccountsController:setAccountName',
+        'AccountsController:listAccounts',
+        'AccountsController:getSelectedAccount',
+        'AccountsController:getAccountByAddress',
+        'AccountsController:updateAccounts',
+        'KeyringController:getAccounts',
+        'KeyringController:getKeyringsByType',
+        'KeyringController:getKeyringForAccount',
+      ],
+    });
+
+    this.accountsController = new AccountsController({
+      messenger: accountsControllerMessenger,
+      state: initState.AccountsController,
+    });
+
     this.tokenListController = new TokenListController({
       chainId: this.networkController.state.providerConfig.chainId,
       preventPollingOnNetworkRestart: !this.#isTokenListPollingRequired(
@@ -627,7 +653,11 @@ export default class MetamaskController extends EventEmitter {
 
     const nftControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'NftController',
-      allowedActions: [`${this.approvalController.name}:addRequest`],
+      allowedActions: [
+        `${this.approvalController.name}:addRequest`,
+        `${this.accountsController.name}:getAccount`,
+      ],
+      allowedEvents: [`${this.accountsController.name}:selectedAccountChange`],
     });
     this.nftController = new NftController(
       {
@@ -696,6 +726,10 @@ export default class MetamaskController extends EventEmitter {
         networkControllerMessenger,
         'NetworkController:stateChange',
       ),
+      onSelectedAccountChange: this.accountsController.subscribe.bind(
+        this.accountsController,
+        'AccountsController:selectedAccountChanged',
+      ),
       getOpenSeaApiKey: () => this.nftController.openSeaApiKey,
       getBalancesInSingleCall:
         this.assetsContractController.getBalancesInSingleCall.bind(
@@ -704,14 +738,18 @@ export default class MetamaskController extends EventEmitter {
       addNft: this.nftController.addNft.bind(this.nftController),
       getNftApi: this.nftController.getNftApi.bind(this.nftController),
       getNftState: () => this.nftController.state,
+      selectedAccountId: this.accountsController.getSelectedAccount.bind(
+        this.accountsController,
+      ).address,
+      getInternalAccount: this.accountsController.getAccount.bind(
+        this.accountsController,
+      ),
       // added this to track previous value of useNftDetection, should be true on very first initializing of controller[]
       disabled:
         this.preferencesController.store.getState().useNftDetection ===
         undefined
           ? true
           : !this.preferencesController.store.getState().useNftDetection,
-      selectedAddress:
-        this.preferencesController.store.getState().selectedAddress,
     });
 
     this.metaMetricsController = new MetaMetricsController({
@@ -861,32 +899,6 @@ export default class MetamaskController extends EventEmitter {
     this.accountOrderController = new AccountOrderController({
       messenger: accountOrderMessenger,
       state: initState.AccountOrderController,
-    });
-
-    const accountsControllerMessenger = this.controllerMessenger.getRestricted({
-      name: 'AccountsController',
-      allowedEvents: [
-        'SnapController:stateChange',
-        'KeyringController:accountRemoved',
-        'KeyringController:stateChange',
-        'AccountsController:selectedAccountChange',
-      ],
-      allowedActions: [
-        'AccountsController:setCurrentAccount',
-        'AccountsController:setAccountName',
-        'AccountsController:listAccounts',
-        'AccountsController:getSelectedAccount',
-        'AccountsController:getAccountByAddress',
-        'AccountsController:updateAccounts',
-        'KeyringController:getAccounts',
-        'KeyringController:getKeyringsByType',
-        'KeyringController:getKeyringForAccount',
-      ],
-    });
-
-    this.accountsController = new AccountsController({
-      messenger: accountsControllerMessenger,
-      state: initState.AccountsController,
     });
 
     // token exchange rate tracker
