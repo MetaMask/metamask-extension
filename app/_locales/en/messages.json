@@ -4457,12 +4457,6 @@
   "simulationsSettingSubHeader": {
     "message": "Estimate balance changes"
   },
-  "siteConnections": {
-    "message": "Site Connections"
-  },
-  "sites": {
-    "message": "Sites"
-  },
   "skip": {
     "message": "Skip"
   },
@@ -4569,9 +4563,6 @@
   "snapConnectionWarning": {
     "message": "$1 wants to use $2",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
-  },
-  "snapConnections": {
-    "message": "Snap Connections"
   },
   "snapContent": {
     "message": "This content is coming from $1",
