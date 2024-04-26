@@ -311,24 +311,35 @@ describe('CustodyPage', function () {
     expect(screen.getByTestId('custody-accounts-empty')).toBeDefined();
   });
 
-  // @NOTICE what test is this? I dont get it
-  // it('renders the list of custodians in mmiController when the user clicks on cancel button', async () => {
-  //   act(() => {
-  //     renderWithProvider(<CustodyPage />, store);
-  //   });
+  it('renders the list of custodians when the user clicks on cancel button', async () => {
+    const newMockStore = {
+      ...mockStore,
+      metamask: {
+        ...mockStore.metamask,
+        institutionalFeatures: {
+          connectRequests: [],
+        },
+      },
+    };
 
-  //   await waitFor(() => {
-  //     const custodyBtns = screen.getAllByTestId('custody-connect-button');
-  //     fireEvent.click(custodyBtns[0]);
-  //   });
+    const newStore = configureMockStore([thunk])(newMockStore);
 
-  //   act(() => {
-  //     const custodyCancelBtn = screen.getAllByTestId('custody-cancel-button');
-  //     fireEvent.click(custodyCancelBtn[0]);
-  //   });
+    await act(async () => {
+      renderWithProvider(<CustodyPage />, newStore);
+    });
 
-  //   expect(screen.getByTestId('connect-custodial-account')).toBeDefined();
-  // });
+    await waitFor(() => {
+      const custodyBtns = screen.getAllByTestId('custody-connect-button');
+      fireEvent.click(custodyBtns[0]);
+    });
+
+    await act(async () => {
+      const custodyCancelBtn = screen.getAllByTestId('custody-cancel-button');
+      fireEvent.click(custodyCancelBtn[0]);
+    });
+
+    expect(screen.getByTestId('connect-custodial-account')).toBeDefined();
+  });
 
   it('should select all accounts when "Select All Accounts" checkbox is clicked', async () => {
     // Mock the accounts

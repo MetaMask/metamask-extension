@@ -31,6 +31,7 @@ export default function QRCodeModal({
   onClose,
   custodianName = 'custodian',
   custodianURL,
+  setQrConnectionRequest,
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -144,7 +145,7 @@ export default function QRCodeModal({
   useEffect(() => {
     const updateConnectRequests = async () => {
       try {
-        await dispatch(mmiActions.setConnectRequests(decryptedMessage));
+        setQrConnectionRequest(decryptedMessage);
         handleClose();
       } catch (e) {
         handleError('An error occurred while updating connection requests.', e);
@@ -154,7 +155,14 @@ export default function QRCodeModal({
     if (decryptedMessage) {
       updateConnectRequests();
     }
-  }, [decryptedMessage, dispatch, mmiActions, handleClose, handleError]);
+  }, [
+    decryptedMessage,
+    dispatch,
+    mmiActions,
+    handleClose,
+    handleError,
+    setQrConnectionRequest,
+  ]);
 
   const custodianLink = (
     <a
@@ -232,13 +240,7 @@ export default function QRCodeModal({
         >
           {t('cancel')}
         </ButtonLink>
-        {process.env.IN_TEST && (
-          <span
-            className="hidden"
-            data-channelid={channelId}
-            data-publickey={publicKey}
-          />
-        )}
+        <span className="hidden" data-value={qrCodeValue} />
       </ModalContent>
     </Modal>
   );
@@ -248,4 +250,5 @@ QRCodeModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   custodianName: PropTypes.string.isRequired,
   custodianURL: PropTypes.string.isRequired,
+  setQrConnectionRequest: PropTypes.func.isRequired,
 };

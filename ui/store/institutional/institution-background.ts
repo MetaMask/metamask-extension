@@ -13,10 +13,7 @@ import {
 } from '../background-connection';
 import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../store';
 import { isErrorWithMessage } from '../../../shared/modules/error';
-import {
-  ConnectionRequest,
-  ConnectRequest,
-} from '../../../shared/constants/mmi-controller';
+import { ConnectionRequest } from '../../../shared/constants/mmi-controller';
 
 export function showInteractiveReplacementTokenBanner({
   url,
@@ -253,8 +250,6 @@ export function mmiActionsFactory() {
       createAsyncAction('setCustodianNewRefreshToken', [
         { address, refreshToken },
       ]),
-    setConnectRequests: (payload: ConnectRequest) =>
-      createAsyncAction('setConnectRequests', [payload]),
     setConnectionRequest: (payload: ConnectionRequest) =>
       createAsyncAction('setConnectionRequest', [payload]),
   };

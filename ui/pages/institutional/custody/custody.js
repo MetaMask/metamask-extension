@@ -93,6 +93,7 @@ const CustodyPage = () => {
   const [chainId, setChainId] = useState(parseInt(currentChainId, 16));
   const [accounts, setAccounts] = useState();
   const [showQRCodeModal, setShowQRCodeModal] = useState(false);
+  const [qrConnectionRequest, setQrConnectionRequest] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const connectRequests = useSelector(getInstitutionalConnectRequests, isEqual);
   const { address } = useSelector(getSelectedInternalAccount);
@@ -277,7 +278,6 @@ const CustodyPage = () => {
   );
 
   const removeConnectRequest = async () => {
-    // @NOTICE: connectRequest is empty here at some point hence the check if it exists
     if (connectRequest) {
       await dispatch(
         mmiActions.removeAddTokenConnectRequest({
@@ -289,15 +289,15 @@ const CustodyPage = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchConnectRequest = async () => {
+  const fetchConnectRequest = useCallback(
+    async (connectionRequest) => {
       try {
-        if (connectRequest && Object.keys(connectRequest).length) {
+        if (connectionRequest && Object.keys(connectionRequest).length) {
           const {
             token,
             environment: custodianName, // this is the env name
             service: custodianType,
-          } = connectRequest;
+          } = connectionRequest;
 
           const custodianToken =
             token || (await dispatch(mmiActions.getCustodianToken(address)));
@@ -306,6 +306,7 @@ const CustodyPage = () => {
           setSelectedCustodianType(custodianType);
           setSelectedCustodianName(custodianName || custodianType);
           setConnectError('');
+          setQrConnectionRequest(null);
 
           const accountsValue = await dispatch(
             mmiActions.getCustodianAccounts(
@@ -331,16 +332,26 @@ const CustodyPage = () => {
         console.error(error);
         handleConnectError(error);
       }
-    };
+    },
+    [
+      address,
+      connectRequest,
+      dispatch,
+      handleConnectError,
+      mmiActions,
+      trackEvent,
+    ],
+  );
 
+  useEffect(() => {
     const handleFetchConnectRequest = () => {
       setLoading(true);
-      fetchConnectRequest().finally(() => setLoading(false));
+      fetchConnectRequest(connectRequest).finally(() => setLoading(false));
     };
 
     handleFetchConnectRequest();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connectRequest]);
+  }, []);
 
   useEffect(() => {
     async function handleNetworkChange() {
@@ -369,6 +380,13 @@ const CustodyPage = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentChainId]);
+
+  useEffect(() => {
+    if (qrConnectionRequest) {
+      setLoading(true);
+      fetchConnectRequest(qrConnectionRequest).finally(() => setLoading(false));
+    }
+  }, [fetchConnectRequest, qrConnectionRequest]);
 
   const cancelConnectCustodianToken = async () => {
     await removeConnectRequest();
@@ -764,6 +782,7 @@ const CustodyPage = () => {
           }}
           custodianName={selectedCustodianDisplayName}
           custodianURL={custodianURL}
+          setQrConnectionRequest={setQrConnectionRequest}
         />
       )}
     </Box>

@@ -97,12 +97,3 @@ export type ConnectionRequest = {
   traceId: string;
   channelId: string;
 };
-
-export type ConnectRequest = {
-  channelId: string;
-  traceId: string;
-  token: string;
-  environment: string;
-  feature: string;
-  service: string;
-};

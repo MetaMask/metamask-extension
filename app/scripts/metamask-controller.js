@@ -3377,10 +3377,6 @@ export default class MetamaskController extends EventEmitter {
         this.institutionalFeaturesController.removeAddTokenConnectRequest.bind(
           this.institutionalFeaturesController,
         ),
-      setConnectRequests:
-        this.institutionalFeaturesController.setConnectRequests.bind(
-          this.institutionalFeaturesController,
-        ),
       setConnectionRequest:
         this.institutionalFeaturesController.setConnectionRequest.bind(
           this.institutionalFeaturesController,

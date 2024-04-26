@@ -1,6 +1,7 @@
 import { type Locator, type Page, test, expect } from '@playwright/test';
 import { getCustodianInfoByName } from '../helpers/custodian-helper';
 import { MMISaturnUIPage } from './mmi-saturn-ui-page';
+import { CustodianTestClient } from '../custodian-hooks/hooks';
 
 export class MMIAccountMenuPage {
   readonly page: Page;
@@ -46,7 +47,7 @@ export class MMIAccountMenuPage {
       .filter({ hasText: 'Select an account' });
   }
 
-  async connectCustodian(name: string, visual?: boolean) {
+  async connectCustodian(name: string, visual?: boolean, qrCode?: boolean) {
     await this.page
       .getByRole('button', { name: /Add account or hardware wallet/iu })
       .click();
@@ -69,24 +70,45 @@ export class MMIAccountMenuPage {
       .getByTestId('custody-connect-button')
       .click();
 
-    await expect(
-      this.page.getByText(/connect saturn custody accounts/iu),
-    ).toBeVisible();
-    if (visual) {
-      await test.expect
-        .soft(this.page)
-        .toHaveScreenshot('custodian_connection_info.png', { fullPage: true });
+    if (qrCode) {
+      const spanElement = await this.page.$('span.hidden');
+
+      if (spanElement) {
+        let data = await spanElement.getAttribute('data-value');
+
+        while (!data) {
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          data = await spanElement.getAttribute('data-value');
+        }
+
+        const client = new CustodianTestClient();
+        await client.setup();
+        await client.postConnectionRequest(data);
+        await this.page.getByTestId('select-all-accounts-selected-false').click();
+        await this.page.getByRole('button', { name: /connect/iu }).click();
+        await this.page.getByRole('button', { name: /close/iu }).first().click();
+      }
+    } else {
+      await expect(
+        this.page.getByText(/connect saturn custody accounts/iu),
+      ).toBeVisible();
+      if (visual) {
+        await test.expect
+          .soft(this.page)
+          .toHaveScreenshot('custodian_connection_info.png', { fullPage: true });
+      }
+
+      const pagePromise = this.page.context().waitForEvent('page');
+      await this.page.getByRole('button', { name: /continue/iu }).click();
+      const saturnUI = await pagePromise;
+      await saturnUI.waitForLoadState();
+
+      const saturnUIPage = new MMISaturnUIPage(saturnUI);
+      await saturnUIPage.connectMMI();
+      await this.page.getByRole('button', { name: /cancel/iu }).click();
+      await this.page.getByRole('button', { name: /back/iu }).click();
     }
 
-    const pagePromise = this.page.context().waitForEvent('page');
-    await this.page.getByRole('button', { name: /continue/iu }).click();
-    const saturnUI = await pagePromise;
-    await saturnUI.waitForLoadState();
-
-    const saturnUIPage = new MMISaturnUIPage(saturnUI);
-    await saturnUIPage.connectMMI();
-    await this.page.getByRole('button', { name: /cancel/iu }).click();
-    await this.page.getByRole('button', { name: /back/iu }).click();
   }
 
   async selectCustodyAccount(account: string) {
