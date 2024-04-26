@@ -1,8 +1,17 @@
 name: Cherry Pick Commit
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      branch_name:
+        description: 'Branch name you want the cherry-pick branch to be based from'
+        required: true
+      commit_hash:
+        description: 'Commit Hash'
+        required: true
+      PR_number:
+        description: 'PR # Associated with Cherry Pick'
+        required: true
 
 jobs:
   cherry-pick:
@@ -28,4 +37,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ./.github/scripts/create-cherry-pick-pr.sh Version-v11.14.2 378bb27 24171
+          ./.github/scripts/create-cherry-pick-pr.sh ${{ github.event.inputs.branch_name }} ${{ github.event.inputs.commit_hash }} ${{ github.event.inputs.PR_number }}
