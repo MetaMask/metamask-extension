@@ -282,7 +282,7 @@ async function main() {
       const transport = createDriverTransport(driver);
 
       const openrpcDocument: OpenrpcDocument = await (
-        await fetch('https://metamask.github.io/api-specs/latest/openrpc.json')
+        await fetch('https://metamask.github.io/api-specs/0.9.0/openrpc.json')
       ).json();
 
       const transaction = openrpcDocument.components?.schemas?.TransactionInfo?.allOf?.[0];
