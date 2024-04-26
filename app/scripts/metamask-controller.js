@@ -726,10 +726,13 @@ export default class MetamaskController extends EventEmitter {
         networkControllerMessenger,
         'NetworkController:stateChange',
       ),
-      onSelectedAccountChange: this.accountsController.subscribe.bind(
-        this.accountsController,
-        'AccountsController:selectedAccountChanged',
-      ),
+      onSelectedAccountChange: (listener) =>
+        this.controllerMessenger.subscribe(
+          `AccountsController:selectedAccountChange`,
+          (newlySelectedInternalAccount) => {
+            listener(newlySelectedInternalAccount);
+          },
+        ),
       getOpenSeaApiKey: () => this.nftController.openSeaApiKey,
       getBalancesInSingleCall:
         this.assetsContractController.getBalancesInSingleCall.bind(
