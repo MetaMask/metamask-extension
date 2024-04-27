@@ -59,7 +59,7 @@ export default function ConfirmTokenTransactionBase({
 
   const ethTransactionTotalMaxAmount = Number(
     hexWEIToDecETH(hexMaximumTransactionFee),
-  );
+  ).toFixed(8);
 
   const getTitleTokenDescription = (renderType) => {
     const useBlockExplorer =
