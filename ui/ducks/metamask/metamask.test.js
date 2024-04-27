@@ -597,20 +597,10 @@ describe('MetaMask Reducers', () => {
   });
 
   describe('getGasFeeEstimates', () => {
-    it('returns GasFeeController estimates for current chain if no transaction estimates', () => {
+    it('returns GasFeeController estimates if no transaction estimates', () => {
       const state = {
         metamask: {
-          providerConfig: {
-            chainId: '0x1',
-          },
-          gasFeeEstimatesByChainId: {
-            '0x1': {
-              gasFeeEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
-            },
-            '0x2': {
-              gasFeeEstimates: {},
-            },
-          },
+          gasFeeEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
         },
       };
 
@@ -627,15 +617,7 @@ describe('MetaMask Reducers', () => {
           },
         },
         metamask: {
-          providerConfig: {
-            chainId: '0x1',
-          },
-          gasFeeEstimatesByChainId: {
-            '0x1': {
-              gasFeeEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
-            },
-            '0x2': {},
-          },
+          gasFeeEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
         },
       };
 
@@ -657,9 +639,6 @@ describe('MetaMask Reducers', () => {
     it('returns GasFeeController estimates for specified chain if no transaction estimates', () => {
       const state = {
         metamask: {
-          providerConfig: {
-            chainId: '0x2',
-          },
           gasFeeEstimatesByChainId: {
             '0x1': {
               gasFeeEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
@@ -672,28 +651,6 @@ describe('MetaMask Reducers', () => {
       };
 
       expect(getGasFeeEstimatesByChainId(state, '0x1')).toStrictEqual(
-        GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
-      );
-    });
-
-    it('returns GasFeeController estimates for current chain if no chain specified and no transaction estimates', () => {
-      const state = {
-        metamask: {
-          providerConfig: {
-            chainId: '0x1',
-          },
-          gasFeeEstimatesByChainId: {
-            '0x1': {
-              gasFeeEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
-            },
-            '0x2': {
-              gasFeeEstimates: {},
-            },
-          },
-        },
-      };
-
-      expect(getGasFeeEstimatesByChainId(state, undefined)).toStrictEqual(
         GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
       );
     });
