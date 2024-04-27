@@ -2,13 +2,17 @@ import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import {
+  GasFeeEstimateType,
   TransactionStatus,
   mergeGasFeeEstimates,
 } from '@metamask/transaction-controller';
+import { GAS_ESTIMATE_TYPES } from '@metamask/gas-fee-controller';
 import * as actionConstants from '../../store/actionConstants';
 import reduceMetamask, {
   getBlockGasLimit,
   getConversionRate,
+  getGasEstimateType,
+  getGasEstimateTypeByChainId,
   getGasFeeEstimates,
   getGasFeeEstimatesByChainId,
   getIsNetworkBusyByChainId,
@@ -643,9 +647,6 @@ describe('MetaMask Reducers', () => {
             '0x1': {
               gasFeeEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
             },
-            '0x2': {
-              gasFeeEstimates: {},
-            },
           },
         },
       };
@@ -659,18 +660,15 @@ describe('MetaMask Reducers', () => {
       const state = {
         confirmTransaction: {
           txData: {
+            chainId: '0x1',
             gasFeeEstimates: TRANSACTION_ESTIMATES_MOCK,
           },
         },
         metamask: {
-          providerConfig: {
-            chainId: '0x2',
-          },
           gasFeeEstimatesByChainId: {
             '0x1': {
               gasFeeEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
             },
-            '0x2': {},
           },
         },
       };
@@ -686,6 +684,127 @@ describe('MetaMask Reducers', () => {
         gasFeeControllerEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
         transactionGasFeeEstimates: TRANSACTION_ESTIMATES_MOCK,
       });
+    });
+
+    it('returns GasFeeController estimates for specified chain if transaction chain does not match', () => {
+      const state = {
+        confirmTransaction: {
+          txData: {
+            chainId: '0x2',
+            gasFeeEstimates: TRANSACTION_ESTIMATES_MOCK,
+          },
+        },
+        metamask: {
+          gasFeeEstimatesByChainId: {
+            '0x1': {
+              gasFeeEstimates: GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
+            },
+          },
+        },
+      };
+
+      expect(getGasFeeEstimatesByChainId(state, '0x1')).toStrictEqual(
+        GAS_FEE_CONTROLLER_ESTIMATES_MOCK,
+      );
+    });
+  });
+
+  describe('getGasEstimateType', () => {
+    it('return GasFeeController type if no transaction estimates', () => {
+      const state = {
+        metamask: {
+          gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
+        },
+      };
+
+      expect(getGasEstimateType(state)).toStrictEqual(
+        GAS_ESTIMATE_TYPES.FEE_MARKET,
+      );
+    });
+
+    it('return transaction type if transaction estimates exist', () => {
+      const state = {
+        metamask: {
+          gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
+        },
+        confirmTransaction: {
+          txData: {
+            gasFeeEstimates: {
+              type: GasFeeEstimateType.Legacy,
+            },
+          },
+        },
+      };
+
+      expect(getGasEstimateType(state)).toStrictEqual(
+        GAS_ESTIMATE_TYPES.LEGACY,
+      );
+    });
+  });
+
+  describe('getGasEstimateTypeByChainId', () => {
+    it('return GasFeeController type for specified chain if no transaction estimates', () => {
+      const state = {
+        metamask: {
+          gasFeeEstimatesByChainId: {
+            '0x1': {
+              gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
+            },
+          },
+        },
+      };
+
+      expect(getGasEstimateTypeByChainId(state, '0x1')).toStrictEqual(
+        GAS_ESTIMATE_TYPES.FEE_MARKET,
+      );
+    });
+
+    it('return transaction type if transaction estimates exist', () => {
+      const state = {
+        metamask: {
+          gasFeeEstimatesByChainId: {
+            '0x1': {
+              gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
+            },
+          },
+        },
+        confirmTransaction: {
+          txData: {
+            chainId: '0x1',
+            gasFeeEstimates: {
+              type: GasFeeEstimateType.Legacy,
+            },
+          },
+        },
+      };
+
+      expect(getGasEstimateTypeByChainId(state, '0x1')).toStrictEqual(
+        GAS_ESTIMATE_TYPES.LEGACY,
+      );
+    });
+
+    it('return GasFeeController type if transaction chain does not match', () => {
+      const state = {
+        metamask: {
+          gasFeeEstimatesByChainId: {
+            '0x1': {
+              gasEstimateType: GAS_ESTIMATE_TYPES.FEE_MARKET,
+            },
+          },
+        },
+        confirmTransaction: {
+          txData: {
+            chainId: '0x2',
+            gasFeeEstimates: {
+              type: GasFeeEstimateType.Legacy,
+            },
+          },
+        },
+      };
+
+      expect(getGasEstimateTypeByChainId(state, '0x1')).toStrictEqual(
+        GAS_ESTIMATE_TYPES.FEE_MARKET,
+      );
     });
   });
 });

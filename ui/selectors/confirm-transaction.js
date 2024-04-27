@@ -266,6 +266,9 @@ export const transactionFeeSelector = function (state, txData) {
           txData.txParams?.gasPrice ?? getAveragePriceEstimateInHexWEI(state);
         break;
       case GasEstimateTypes.feeMarket:
+        gasEstimationObject.gasPrice =
+          txData.txParams?.gasPrice ??
+          decGWEIToHexWEI(gasFeeEstimates?.medium?.maxFeePerGas);
         break;
       default:
         break;
