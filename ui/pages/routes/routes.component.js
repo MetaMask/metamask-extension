@@ -139,6 +139,7 @@ import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/Dep
 import { getURLHost } from '../../helpers/utils/util';
 import { BorderColor } from '../../helpers/constants/design-system';
 import { MILLISECOND } from '../../../shared/constants/time';
+import { MetaFoxLogo } from '../../components/multichain/app-header/meta-fox-logo';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -698,6 +699,13 @@ export default class Routes extends Component {
 
     let isLoadingShown = isLoading && completedOnboarding;
 
+    const isConfirmation = Boolean(
+      matchPath(location.pathname, {
+        path: CONFIRM_TRANSACTION_ROUTE,
+        exact: false,
+      }),
+    );
+
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isLoadingShown =
       isLoading &&
@@ -730,7 +738,10 @@ export default class Routes extends Component {
         <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
-        {!this.hideAppHeader() && <AppHeader location={location} />}
+        {!isConfirmation && !this.hideAppHeader() && (
+          <AppHeader location={location} />
+        )}
+        {isConfirmation && <MetaFoxLogo />}
         {this.showOnboardingHeader() && <OnboardingAppHeader />}
         {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)

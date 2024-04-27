@@ -49,9 +49,6 @@ import {
   getTestNetworkBackgroundColor,
   getSelectedInternalAccount,
   getUnapprovedTransactions,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  getTheme,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { AccountPicker, GlobalMenu } from '..';
 
@@ -68,6 +65,7 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { MetaFoxLogo } from './meta-fox-logo';
 
 export const AppHeader = ({ location }) => {
   const trackEvent = useContext(MetaMetricsContext);
@@ -85,10 +83,6 @@ export const AppHeader = ({ location }) => {
     internalAccount &&
     shortenAddress(toChecksumHexAddress(internalAccount.address));
   const dispatch = useDispatch();
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const theme = useSelector((state) => getTheme(state));
-  ///: END:ONLY_INCLUDE_IF
 
   // Used for network icon / dropdown
   const currentNetwork = useSelector(getCurrentNetwork);
@@ -164,24 +158,7 @@ export const AppHeader = ({ location }) => {
 
   return (
     <>
-      {isUnlocked && !popupStatus ? (
-        <Box
-          display={[Display.None, Display.Flex]}
-          alignItems={AlignItems.center}
-          margin={2}
-          className="multichain-app-header-logo"
-          data-testid="app-header-logo"
-          justifyContent={JustifyContent.center}
-        >
-          <MetafoxLogo
-            unsetIconHeight
-            onClick={async () => history.push(DEFAULT_ROUTE)}
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-            theme={theme}
-            ///: END:ONLY_INCLUDE_IF
-          />
-        </Box>
-      ) : null}
+      {isUnlocked && !popupStatus ? <MetaFoxLogo /> : null}
       <Box
         display={Display.Flex}
         className={classnames('multichain-app-header', {
