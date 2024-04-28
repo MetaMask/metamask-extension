@@ -561,7 +561,8 @@ class Driver {
     let windowHandles =
       initialWindowHandles || (await this.driver.getAllWindowHandles());
     let timeElapsed = 0;
-
+    console.log('----');
+    console.log(`${title} windowHandles`, windowHandles);
     while (timeElapsed <= timeout) {
       for (const handle of windowHandles) {
         const handleTitle = await retry(
@@ -574,7 +575,7 @@ class Driver {
             return await this.driver.getTitle();
           },
         );
-
+        console.log('handleTitle', handleTitle);
         if (handleTitle === title) {
           return handle;
         }
