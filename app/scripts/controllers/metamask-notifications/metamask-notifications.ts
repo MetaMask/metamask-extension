@@ -428,12 +428,12 @@ export class MetamaskNotificationsController extends BaseController<
    * @async
    * @throws {Error} If updating the state fails.
    */
-  public async toggleMetamaskNotificationsEnabled() {
+  public async setMetamaskNotificationsEnabled(state: boolean) {
     try {
       this.#assertAuthEnabled();
 
       this.update((s) => {
-        s.isMetamaskNotificationsEnabled = !s.isMetamaskNotificationsEnabled;
+        s.isMetamaskNotificationsEnabled = state;
       });
     } catch (e) {
       log.error('Unable to toggle notifications', e);
@@ -470,12 +470,12 @@ export class MetamaskNotificationsController extends BaseController<
    * @async
    * @throws {Error} If the BearerToken token or storage key is missing.
    */
-  public async toggleFeatureAnnouncementsEnabled() {
+  public async setFeatureAnnouncementsEnabled(state: boolean) {
     try {
       this.#assertAuthEnabled();
 
       this.update((s) => {
-        s.isFeatureAnnouncementsEnabled = !s.isFeatureAnnouncementsEnabled;
+        s.isFeatureAnnouncementsEnabled = state;
       });
     } catch (e) {
       log.error('Unable to toggle feature announcements', e);
@@ -491,12 +491,12 @@ export class MetamaskNotificationsController extends BaseController<
    * @async
    * @throws {Error} If the BearerToken token or storage key is missing.
    */
-  public async toggleSnapNotificationsEnabled() {
+  public async setSnapNotificationsEnabled(state: boolean) {
     try {
       this.#assertAuthEnabled();
 
       this.update((s) => {
-        s.isSnapNotificationsEnabled = !s.isSnapNotificationsEnabled;
+        s.isSnapNotificationsEnabled = state;
       });
     } catch (e) {
       log.error('Unable to toggle snap notifications', e);
@@ -547,6 +547,11 @@ export class MetamaskNotificationsController extends BaseController<
 
       // Write the new userStorage (triggers are now "enabled")
       await this.#storage.setNotificationStorage(JSON.stringify(userStorage));
+
+      // Update the state of the controller
+      this.setFeatureAnnouncementsEnabled(true);
+      this.setMetamaskNotificationsEnabled(true);
+      this.setSnapNotificationsEnabled(true);
 
       return userStorage;
     } catch (err) {
