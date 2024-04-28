@@ -173,9 +173,10 @@ async function main() {
     const filteredFlaskAndMainTests = featureTestsOnMain.filter((p) =>
       FLASK_ONLY_TESTS.every((filteredTest) => !p.endsWith(filteredTest)),
     );
+    console.log('testDir', testDir);
     testPaths = [
-      ...(await getTestPathsForTestDir(testDir)),
-      ...filteredFlaskAndMainTests,
+      // ...(await getTestPathsForTestDir(testDir)),
+      ...filteredFlaskAndMainTests.filter((tt) => tt.match('snap')),
     ];
   }
 

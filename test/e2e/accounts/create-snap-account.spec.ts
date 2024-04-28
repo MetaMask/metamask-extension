@@ -22,7 +22,6 @@ describe('Create Snap Account', function (this: Suite) {
         await unlockWallet(driver);
 
         // navigate to test Snaps page and connect
-        await driver.delay(1200);
         await driver.openNewPage(TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL);
         await driver.clickElement('#connectButton');
 
