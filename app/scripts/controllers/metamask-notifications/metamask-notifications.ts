@@ -420,13 +420,14 @@ export class MetamaskNotificationsController extends BaseController<
   }
 
   /**
-   * Toggles the enabled state of metamask notifications.
-   * Ensures that auth is enabled before toggling notifications.
+   * Sets the enabled state of MetaMask notifications.
+   * This method first checks if the user is authenticated before attempting to toggle the notification settings.
    *
-   * **Action** - Used to Enable/Disable notifications
+   * **Action** - This method is used to enable or disable MetaMask notifications based on the provided state.
    *
+   * @param state - A boolean value indicating the desired enabled state of the notifications.
    * @async
-   * @throws {Error} If updating the state fails.
+   * @throws {Error} If the user is not authenticated or if there is an error updating the state.
    */
   public async setMetamaskNotificationsEnabled(state: boolean) {
     try {
@@ -463,10 +464,11 @@ export class MetamaskNotificationsController extends BaseController<
   }
 
   /**
-   * Toggles the enabled state of feature announcements.
+   * Sets the enabled state of feature announcements.
    *
    * **Action** - used in the notification settings to enable/disable feature announcements.
    *
+   * @param state - A boolean value indicating the desired enabled state of the feature announcements.
    * @async
    * @throws {Error} If the BearerToken token or storage key is missing.
    */
@@ -484,10 +486,11 @@ export class MetamaskNotificationsController extends BaseController<
   }
 
   /**
-   * Toggles the enabled state of Snap notifications.
+   * Sets the enabled state of Snap notifications.
    *
    * **Action** - used in the notifications settings page to enable/disable snap notifications.
    *
+   * @param state - A boolean value indicating the desired enabled state of the snap notifications.
    * @async
    * @throws {Error} If the BearerToken token or storage key is missing.
    */
