@@ -1,5 +1,8 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 
+import { useSelector } from 'react-redux';
+import isEqual from 'lodash/isEqual';
+import { uniqBy } from 'lodash';
 import { Tab, Tabs } from '../../../ui/tabs';
 import NftsItems from '../../../app/nfts-items/nfts-items';
 import {
@@ -34,8 +37,19 @@ import { AssetType } from '../../../../../shared/constants/transaction';
 
 import { useNftsCollections } from '../../../../hooks/useNftsCollections';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
-import { Asset, Collection, Token } from './types';
+import {
+  getSelectedInternalAccount,
+  getShouldHideZeroBalanceTokens,
+  getTokenList,
+} from '../../../../selectors';
+import { getTokens } from '../../../../ducks/metamask/metamask';
+import { useTokenTracker } from '../../../../hooks/useTokenTracker';
+import { getTopAssets } from '../../../../ducks/swaps/swaps';
+import { useEqualityCheck } from '../../../../hooks/useEqualityCheck';
+import { useTokensToSearch } from '../../../../hooks/useTokensToSearch';
+import { TokenBucketPriority } from '../../../../../shared/constants/swaps';
 import AssetList from './AssetList';
+import { Asset, Collection, Token } from './types';
 
 type AssetPickerModalProps = {
   isOpen: boolean;
@@ -96,6 +110,43 @@ export function AssetPickerModal({
   const defaultActiveTabKey = asset?.type === AssetType.NFT ? 'nfts' : 'tokens';
 
   const isDest = sendingAssetImage && sendingAssetSymbol;
+
+  const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
+  const shouldHideZeroBalanceTokens = useSelector(
+    getShouldHideZeroBalanceTokens,
+  );
+  const tokens = useSelector(getTokens, isEqual);
+  const { tokensWithBalances } = useTokenTracker({
+    tokens,
+    address: selectedAddress,
+    hideZeroBalanceTokens: Boolean(shouldHideZeroBalanceTokens),
+  });
+
+  // Swaps token list
+  const tokenList = useSelector(getTokenList, isEqual);
+  const shuffledTokensList = useMemo(
+    () => Object.values(tokenList),
+    [tokenList],
+  );
+  const topTokens = useSelector(getTopAssets, isEqual);
+
+  const usersTokens = uniqBy([...tokensWithBalances, ...tokens], 'address');
+
+  const memoizedUsersTokens = useEqualityCheck(usersTokens);
+
+  const fromTokenList = useTokensToSearch({
+    usersTokens: memoizedUsersTokens,
+    topTokens,
+    shuffledTokensList,
+    tokenBucketPriority: TokenBucketPriority.owned,
+  });
+
+  const toTokenList = useTokensToSearch({
+    usersTokens: memoizedUsersTokens,
+    topTokens,
+    shuffledTokensList,
+    tokenBucketPriority: TokenBucketPriority.top,
+  });
 
   const Search = useCallback(
     () => (
@@ -167,6 +218,7 @@ export function AssetPickerModal({
                 handleAssetChange={handleAssetChange}
                 searchQuery={searchQuery}
                 asset={asset}
+                tokenList={fromTokenList}
               />
             </>
           ) : (
@@ -188,6 +240,7 @@ export function AssetPickerModal({
                     handleAssetChange={handleAssetChange}
                     searchQuery={searchQuery}
                     asset={asset}
+                    tokenList={toTokenList}
                   />
                 </Tab>
               }

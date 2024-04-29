@@ -1,20 +1,11 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
-import isEqual from 'lodash/isEqual';
-import { shuffle } from 'lodash';
 import {
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
-  getSelectedInternalAccount,
-  getShouldHideZeroBalanceTokens,
-  getTokenList,
 } from '../../../../selectors';
-import {
-  getNativeCurrency,
-  getTokens,
-} from '../../../../ducks/metamask/metamask';
-import { useTokenTracker } from '../../../../hooks/useTokenTracker';
+import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
 import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
@@ -28,40 +19,30 @@ import {
   FlexWrap,
 } from '../../../../helpers/constants/design-system';
 import { TokenListItem } from '../..';
-import { getTopAssets } from '../../../../ducks/swaps/swaps';
-import { TokenBucketPriority } from '../../../../../shared/constants/swaps';
-import { useTokensToSearch } from '../../../../hooks/useTokensToSearch';
 import { Asset, Token } from './types';
 import AssetComponent from './Asset';
 
-const MAX_TOKENS_RENDERED = 30;
+const MAX_UNOWNED_TOKENS_RENDERED = 30;
 
 type AssetListProps = {
   handleAssetChange: (token: Token) => void;
   asset: Asset;
+  tokenList: Token[];
+  // searchQuery and all attached logic (e.g., filteredTokenList) could be pulled up if appropriate for a future refactor
   searchQuery: string;
 };
 
 export default function AssetList({
   handleAssetChange,
   asset,
+  tokenList,
   searchQuery,
 }: AssetListProps) {
-  const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
   const selectedToken = asset.details?.address;
 
   const nativeCurrencyImage = useSelector(getNativeCurrencyImage);
   const nativeCurrency = useSelector(getNativeCurrency);
-  const shouldHideZeroBalanceTokens = useSelector(
-    getShouldHideZeroBalanceTokens,
-  );
   const balanceValue = useSelector(getSelectedAccountCachedBalance);
-  const tokens = useSelector(getTokens, isEqual);
-  const { tokensWithBalances } = useTokenTracker({
-    tokens,
-    address: selectedAddress,
-    hideZeroBalanceTokens: Boolean(shouldHideZeroBalanceTokens),
-  });
 
   const {
     currency: primaryCurrency,
@@ -85,32 +66,22 @@ export default function AssetList({
       hideLabel: true,
     });
 
-  // Swaps token list
-  const tokenList = useSelector(getTokenList, isEqual);
-  const shuffledTokensList = useMemo(
-    () => shuffle(Object.values(tokenList)),
-    [tokenList],
-  );
-  const topTokens = useSelector(getTopAssets, isEqual);
-  const usersTokens = useMemo(
-    () => [...tokens, ...tokensWithBalances],
-    [tokens, tokensWithBalances],
-  );
-
-  const swapsTokenList = useTokensToSearch({
-    usersTokens,
-    topTokens,
-    shuffledTokensList,
-    tokenBucketPriority: TokenBucketPriority.owned,
-  });
-
   const filteredTokenList = useMemo(() => {
-    const filteredTokens: Token[] = swapsTokenList.filter((token: Token) => {
-      return (
+    const filteredTokens: Token[] = [];
+
+    let token: Token;
+    for (token of tokenList) {
+      if (
         token.symbol?.toLowerCase().includes(searchQuery.toLowerCase()) &&
         token.symbol !== nativeCurrency
-      );
-    });
+      ) {
+        filteredTokens.push(token);
+      }
+
+      if (filteredTokens.length > MAX_UNOWNED_TOKENS_RENDERED) {
+        break;
+      }
+    }
 
     // prepend native currency to token list if it matches search query
     if (nativeCurrency?.toLowerCase().includes(searchQuery.toLowerCase())) {
@@ -127,7 +98,7 @@ export default function AssetList({
 
     return filteredTokens;
   }, [
-    swapsTokenList,
+    tokenList,
     searchQuery,
     nativeCurrency,
     nativeCurrencyImage,
@@ -137,7 +108,7 @@ export default function AssetList({
 
   return (
     <Box className="tokens-main-view-modal">
-      {filteredTokenList.slice(0, MAX_TOKENS_RENDERED).map((token) => {
+      {filteredTokenList.map((token) => {
         const isSelected =
           token.address?.toLowerCase() === selectedToken?.toLowerCase();
         return (
