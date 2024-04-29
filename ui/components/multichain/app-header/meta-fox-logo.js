@@ -1,5 +1,7 @@
 import React from 'react';
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { useSelector } from 'react-redux';
+///: END:ONLY_INCLUDE_IF
 import { useHistory } from 'react-router-dom';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
