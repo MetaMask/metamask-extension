@@ -24,9 +24,9 @@
     "connectedStatusPopoverHasBeenShown": true,
     "defaultHomeActiveTabName": null,
     "browserEnvironment": { "os": "string", "browser": "string" },
-    "popupGasPollTokens": [],
-    "notificationGasPollTokens": [],
-    "fullScreenGasPollTokens": [],
+    "popupGasPollTokens": "object",
+    "notificationGasPollTokens": "object",
+    "fullScreenGasPollTokens": "object",
     "recoveryPhraseReminderHasBeenShown": true,
     "recoveryPhraseReminderLastShown": "number",
     "outdatedBrowserWarningLastShown": "number",
@@ -243,7 +243,7 @@
   "TokenListController": {
     "tokenList": "object",
     "tokensChainsCache": {},
-    "preventPollingOnNetworkRestart": true
+    "preventPollingOnNetworkRestart": false
   },
   "TokenRatesController": {
     "contractExchangeRates": "object",

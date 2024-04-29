@@ -348,18 +348,9 @@
     "message": "Tất cả NFT của bạn từ $1",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
-  "allowExternalExtensionTo": {
-    "message": "Cho phép tiện ích mở rộng bên ngoài này:"
-  },
   "allowSpendToken": {
     "message": "Cấp quyền truy cập vào $1 của bạn?",
     "description": "$1 is the symbol of the token that are requesting to spend"
-  },
-  "allowThisSiteTo": {
-    "message": "Cho phép trang web này:"
-  },
-  "allowThisSnapTo": {
-    "message": "Cho phép Snap này:"
   },
   "allowWithdrawAndSpend": {
     "message": "Cho phép $1 rút và chi tiêu tối đa số tiền sau đây:",
@@ -742,26 +733,6 @@
   "connectSnap": {
     "message": "Kết nối $1",
     "description": "$1 is the snap for which a connection is being requested."
-  },
-  "connectTo": {
-    "message": "Kết nối với $1",
-    "description": "$1 is the name/origin of a web3 site/application that the user can connect to metamask"
-  },
-  "connectToAll": {
-    "message": "Kết nối với tất cả các $1 của bạn",
-    "description": "$1 will be replaced by the translation of connectToAllAccounts"
-  },
-  "connectToAllAccounts": {
-    "message": "tài khoản",
-    "description": "will replace $1 in connectToAll, completing the sentence 'connect to all of your accounts', will be text that shows list of accounts on hover"
-  },
-  "connectToMultiple": {
-    "message": "Kết nối với $1",
-    "description": "$1 will be replaced by the translation of connectToMultipleNumberOfAccounts"
-  },
-  "connectToMultipleNumberOfAccounts": {
-    "message": "$1 tài khoản",
-    "description": "$1 is the number of accounts to which the web3 site/application is asking to connect; this will substitute $1 in connectToMultiple"
   },
   "connectWithMetaMask": {
     "message": "Kết nối với MetaMask"
@@ -2701,7 +2672,8 @@
     "message": "Một nhà cung cấp mạng độc hại có thể nói dối về trạng thái của chuỗi khối và ghi lại hoạt động của bạn trên mạng. Chỉ thêm các mạng tùy chỉnh mà bạn tin tưởng."
   },
   "onlyConnectTrust": {
-    "message": "Chỉ kết nối với các trang web mà bạn tin tưởng."
+    "message": "Chỉ kết nối với các trang web mà bạn tin tưởng.",
+    "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
   "openFullScreenForLedgerWebHid": {
     "message": "Bật toàn màn hình để kết nối với thiết bị Ledger của bạn.",
@@ -2796,9 +2768,6 @@
     "description": "$1 is count of pending transactions"
   },
   "permissionRequest": {
-    "message": "Yêu cầu cấp quyền"
-  },
-  "permissionRequestCapitalized": {
     "message": "Yêu cầu cấp quyền"
   },
   "permissionRequested": {
@@ -3484,10 +3453,6 @@
   },
   "snapDetailWebsite": {
     "message": "Trang web"
-  },
-  "snapInstallRequest": {
-    "message": "Cài đặt $1 để được cấp các quyền sau. Chỉ tiếp tục nếu bạn tin tưởng $1.",
-    "description": "$1 is the snap name."
   },
   "snapInstallSuccess": {
     "message": "Cài đặt hoàn tất"
@@ -4774,10 +4739,6 @@
   },
   "whatsThis": {
     "message": "Đây là gì?"
-  },
-  "xOfY": {
-    "message": "$1/$2",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total, and $1 is a count towards that total"
   },
   "xOfYPending": {
     "message": "$1/$2 đang chờ xử lý",

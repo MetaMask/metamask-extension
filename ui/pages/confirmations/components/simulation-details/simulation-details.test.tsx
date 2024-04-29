@@ -5,6 +5,7 @@ import {
   SimulationData,
   SimulationErrorCode,
 } from '@metamask/transaction-controller';
+import { BigNumber } from 'bignumber.js';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import { SimulationDetails } from './simulation-details';
@@ -35,6 +36,7 @@ const renderSimulationDetails = (simulationData?: Partial<SimulationData>) =>
 
 describe('SimulationDetails', () => {
   beforeEach(() => {
+    jest.clearAllMocks();
     (useBalanceChanges as jest.Mock).mockReturnValue({
       pending: false,
       value: [],
@@ -97,8 +99,8 @@ describe('SimulationDetails', () => {
 
   it('passes the correct properties to BalanceChangeList components', () => {
     const balanceChangesMock = [
-      { amount: { isNegative: true } },
-      { amount: { isNegative: false } },
+      { amount: new BigNumber(-123) },
+      { amount: new BigNumber(456) },
     ] as BalanceChange[];
 
     (useBalanceChanges as jest.Mock).mockReturnValue({

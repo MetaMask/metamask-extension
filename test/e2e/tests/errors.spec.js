@@ -24,7 +24,6 @@ function backgroundToUiField(backgroundField) {
 }
 
 const maskedBackgroundFields = [
-  'CurrencyController.currencyRates.ETH.conversionDate', // This is a timestamp that changes each run
   // App metadata is masked so that we don't have to update the snapshot as
   // part of the release process
   'AppMetadataController.currentAppVersion',
@@ -35,6 +34,11 @@ const maskedBackgroundFields = [
   'AppStateController.surveyLinkLastClickedOrClosed',
   'AppStateController.recoveryPhraseReminderLastShown',
   'AppStateController.termsOfUseLastAgreed',
+  // The value in these properties may change each run
+  'AppStateController.fullScreenGasPollTokens',
+  'AppStateController.notificationGasPollTokens',
+  'AppStateController.popupGasPollTokens',
+  'CurrencyController.currencyRates.ETH.conversionDate',
 ];
 const maskedUiFields = maskedBackgroundFields.map(backgroundToUiField);
 
