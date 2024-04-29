@@ -216,6 +216,16 @@ env:
   - CONTENTFUL_ACCESS_TOKEN: null
   - NOTIFICATIONS_SERVICE_URL: https://notification.api.cx.metamask.io
   - TRIGGERS_SERVICE_URL: https://trigger.api.cx.metamask.io
+  - PUSH_NOTIFICATIONS_SERVICE_URL: https://push.api.cx.metamask.io
+  - VAPID_KEY: null
+  - FIREBASE_API_KEY: null
+  - FIREBASE_AUTH_DOMAIN: null
+  - FIREBASE_STORAGE_BUCKET: null
+  - FIREBASE_PROJECT_ID: null
+  - FIREBASE_MESSAGING_SENDER_ID: null
+  - FIREBASE_APP_ID: null
+  - FIREBASE_MEASUREMENT_ID: null
+  - __FIREBASE_DEFAULTS__: null
 
   ###
   # API keys to 3rd party services
