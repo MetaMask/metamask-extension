@@ -62,3 +62,27 @@ export const mapToTemplate = (params: MapToTemplateParams) => {
   const mapped = COMPONENT_MAPPING[type](params as any);
   return { ...mapped, key: indexKey };
 };
+
+export const mapTextToTemplate = (
+  elements: unknown[],
+  params: Pick<MapToTemplateParams, 'map'>,
+) => {
+  const isStringArray = elements.every(
+    (element) => typeof element === 'string',
+  );
+  if (isStringArray) {
+    return elements;
+  }
+
+  return elements.map((element) => {
+    // With the introduction of JSX elements here can be strings.
+    if (typeof element === 'string') {
+      return mapToTemplate({
+        ...params,
+        element: { type: 'Span', props: { children: element } },
+      });
+    }
+
+    return mapToTemplate({ ...params, element });
+  });
+};

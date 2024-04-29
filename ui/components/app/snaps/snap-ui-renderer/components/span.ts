@@ -9,13 +9,11 @@ import {
   Display,
 } from '../../../../../helpers/constants/design-system';
 
-export const text: UIComponentFactory<TextElement> = ({ element, ...params  }) => ({
-  element: 'Text',
+// This is not actually exposed to Snaps, but used as a utility to construct UIs
+export const span: UIComponentFactory<TextElement> = ({
+  element,
+  ...params
+}) => ({
+  element: 'span',
   children: mapTextToTemplate(getJsxChildren(element), params),
-  props: {
-    variant: TextVariant.bodyMd,
-    overflowWrap: OverflowWrap.Anywhere,
-    color: TextColor.inherit,
-    className: 'snap-ui-renderer__text',
-  },
 });

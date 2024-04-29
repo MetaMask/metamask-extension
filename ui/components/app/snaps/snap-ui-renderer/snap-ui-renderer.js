@@ -1,6 +1,6 @@
 import React, { memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { isComponent } from '@metamask/snaps-sdk';
+import { isJSXElement } from '@metamask/snaps-sdk/jsx';
 import { useSelector } from 'react-redux';
 
 import { isEqual } from 'lodash';
@@ -44,17 +44,15 @@ const SnapUIRendererComponent = ({
     getMemoizedInterfaceContent(state, interfaceId),
   );
 
-  const isValidComponent = content && isComponent(content);
-
   // sections are memoized to avoid useless re-renders if one of the parents element re-renders.
   const sections = useMemo(
     () =>
-      isValidComponent &&
+      content &&
       mapToTemplate({
         map: {},
         element: content,
       }),
-    [content, isValidComponent],
+    [content],
   );
 
   if (isLoading || !content) {
@@ -68,24 +66,6 @@ const SnapUIRendererComponent = ({
         boxProps={boxProps}
         isLoading
       />
-    );
-  }
-
-  if (!isValidComponent) {
-    return (
-      <SnapDelineator
-        isCollapsable={isCollapsable}
-        isCollapsed={isCollapsed}
-        snapName={snapName}
-        type={DelineatorType.Error}
-        onClick={onClick}
-        boxProps={boxProps}
-      >
-        <Text variant={TextVariant.bodySm} marginBottom={4}>
-          {t('snapsUIError', [<b key="0">{snapName}</b>])}
-        </Text>
-        <Copyable text={t('snapsInvalidUIError')} />
-      </SnapDelineator>
     );
   }
 
