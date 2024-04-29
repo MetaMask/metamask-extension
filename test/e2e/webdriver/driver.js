@@ -19,12 +19,6 @@ const PAGES = {
   POPUP: 'popup',
 };
 
-const allowedHandles = {
-  ['MetaMask']: true,
-  ['SSK - Simple Snap Keyring']: true,
-  ['MetaMask Dialog']: true,
-};
-
 /**
  * Temporary workaround to patch selenium's element handle API with methods
  * that match the playwright API for Elements
@@ -548,12 +542,14 @@ class Driver {
     await this.driver.switchTo().frame(element);
   }
 
-  async getAllWindowHandles() {
+  async getAllWindowHandles(removeIgnored = true) {
     let windowHandles = await this.driver.getAllWindowHandles();
     console.log('--- windowHandles A', windowHandles);
-    windowHandles = windowHandles.filter((h) => {
-      return allowedHandles[h];
-    });
+    if (removeIgnored) {
+      windowHandles = windowHandles.filter((h) => {
+        return !this.ignoredHandleList[h];
+      });
+    }
     console.log('--- windowHandles B', windowHandles);
     return windowHandles;
   }
@@ -597,7 +593,7 @@ class Driver {
   ) {
     let windowHandles =
       initialWindowHandles || (await this.driver.getAllWindowHandles());
-    windowHandles = windowHandles.filter((h) => allowedHandles[h]);
+    windowHandles = windowHandles.filter((h) => !this.ignoredHandleList[h]);
     let timeElapsed = 0;
 
     while (timeElapsed <= timeout) {
@@ -714,14 +710,19 @@ class Driver {
     // On occasion there may be a bug in the offscreen document which does
     // not render visibly to the user and therefore no screenshot can be
     // taken. In this case we skip the screenshot and log the error.
-    try {
-      const screenshot = await this.driver.takeScreenshot();
-      await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, {
-        encoding: 'base64',
-      });
-    } catch (e) {
-      console.error('Failed to take screenshot', e);
-    }
+    const wh = this.driver.getAllWindowHandles(false);
+    wh.forEach(async (h) => {
+      try {
+        await this.driver.switchTo().window(h);
+        await this.delay(200);
+        const screenshot = await this.driver.takeScreenshot();
+        await fs.writeFile(`${filepathBase}-${h}-screenshot.png`, screenshot, {
+          encoding: 'base64',
+        });
+      } catch (e) {
+        console.error(`Failed to take screenshot${h}`, e);
+      }
+    });
     const htmlSource = await this.driver.getPageSource();
     await fs.writeFile(`${filepathBase}-dom.html`, htmlSource);
     const uiState = await this.driver.executeScript(

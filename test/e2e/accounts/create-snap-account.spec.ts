@@ -38,10 +38,19 @@ describe('Create Snap Account', function (this: Suite) {
         await unlockWallet(driver);
         const title1 = await driver.getTitle();
 
-        await driver.switchToWindowWithTitle('MetaMask Offscreen Page');
-        const offScreenWindowHandle = await driver.getWindowHandle();
-        driver.addToIgnoredHandleList(offScreenWindowHandle);
+        const allWindowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('MetaMask');
+        const metamaskWindowHandle = await driver.getWindowHandle();
+        allWindowHandles.forEach(h => {
+          if (h !== metamaskWindowHandle) {
+            driver.addToIgnoredHandleList(h);
+          }
+        })
+
+        // await driver.switchToWindowWithTitle('MetaMask Offscreen Page');
+        // const offScreenWindowHandle = await driver.getWindowHandle();
+        // driver.addToIgnoredHandleList(offScreenWindowHandle);
+        // await driver.switchToWindowWithTitle('MetaMask');
 
 
         // navigate to test Snaps page and connect
