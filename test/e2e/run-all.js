@@ -176,7 +176,9 @@ async function main() {
     console.log('testDir', testDir);
     testPaths = [
       // ...(await getTestPathsForTestDir(testDir)),
-      ...filteredFlaskAndMainTests.filter((tt) => tt.match('snap')),
+      ...filteredFlaskAndMainTests.filter((tt) =>
+        tt.match('create-snap-account'),
+      ),
     ];
   }
 

@@ -33,6 +33,13 @@ describe('Create Snap Account', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
+        const title1 = await driver.getTitle();
+
+        await driver.switchToWindowWithTitle('MetaMask Offscreen Page');
+        const offScreenWindowHandle = await driver.getWindowHandle();
+        driver.addToIgnoredHandleList(offScreenWindowHandle);
+        await driver.switchToWindowWithTitle('MetaMask');
+
 
         // navigate to test Snaps page and connect
         await driver.openNewPage(TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL);
@@ -123,6 +130,11 @@ describe('Create Snap Account', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
+
+        await driver.switchToWindowWithTitle('MetaMask Offscreen Page');
+        const offScreenWindowHandle = await driver.getWindowHandle();
+        driver.addToIgnoredHandleList(offScreenWindowHandle);
+        await driver.switchToWindowWithTitle('MetaMask');
 
         // navigate to test Snaps page and connect
         await driver.openNewPage(TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL);
@@ -224,6 +236,12 @@ describe('Create Snap Account', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
+
+        await driver.switchToWindowWithTitle('MetaMask Offscreen Page');
+        const offScreenWindowHandle = await driver.getWindowHandle();
+        driver.addToIgnoredHandleList(offScreenWindowHandle);
+        await driver.switchToWindowWithTitle('MetaMask');
+
         // navigate to test Snaps page and connect
         await driver.openNewPage(TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL);
         // await tS(0, driver, this.test?.fullTitle());
