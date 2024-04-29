@@ -20,11 +20,10 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
-          ref: ${{ vars.GITHUB_REF }}
           fetch-depth: 0
-          token: ${{ secrets.BUG_REPORT_TOKEN }}
       - name: Get Node.js version
         id: nvm
         run: echo "NODE_VERSION=$(cat .nvmrc)" >> "$GITHUB_OUTPUT"
