@@ -149,6 +149,10 @@ class Driver {
     return this.driver.executeScript(script, args);
   }
 
+  async takeScreenshot() {
+    return this.driver.takeScreenshot();
+  }
+
   buildLocator(locator) {
     if (typeof locator === 'string') {
       // If locator is a string we assume its a css selector
