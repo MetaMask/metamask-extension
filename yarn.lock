@@ -5445,6 +5445,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/keyring-api@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "@metamask/keyring-api@npm:5.1.0"
+  dependencies:
+    "@metamask/snaps-sdk": "npm:^3.1.1"
+    "@metamask/utils": "npm:^8.3.0"
+    "@types/uuid": "npm:^9.0.1"
+    superstruct: "npm:^1.0.3"
+    uuid: "npm:^9.0.0"
+  peerDependencies:
+    "@metamask/providers": ">=15 <17"
+  checksum: f1c7ddfabd1d2ef45f8b05d1a1b3c71ce3bb4d8111e53d00acc71f68a18473c0e5f90583644c72ee85e52021857d9f9de3fc9aaec9819209b849408539909eca
+  languageName: node
+  linkType: hard
+
 "@metamask/keyring-controller@npm:13.0.0":
   version: 13.0.0
   resolution: "@metamask/keyring-controller@npm:13.0.0"
@@ -5484,9 +5499,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:^14.0.1":
-  version: 14.0.1
-  resolution: "@metamask/keyring-controller@npm:14.0.1"
+"@metamask/keyring-controller@npm:^15.0.0":
+  version: 15.0.0
+  resolution: "@metamask/keyring-controller@npm:15.0.0"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.13.1"
@@ -5495,13 +5510,13 @@ __metadata:
     "@metamask/eth-hd-keyring": "npm:^7.0.1"
     "@metamask/eth-sig-util": "npm:^7.0.1"
     "@metamask/eth-simple-keyring": "npm:^6.0.1"
-    "@metamask/keyring-api": "npm:^3.0.0"
+    "@metamask/keyring-api": "npm:^5.1.0"
     "@metamask/message-manager": "npm:^8.0.1"
     "@metamask/utils": "npm:^8.3.0"
     async-mutex: "npm:^0.2.6"
     ethereumjs-wallet: "npm:^1.0.1"
     immer: "npm:^9.0.6"
-  checksum: 060411df9e93f6a71deea47b2beb3c058530f1f99f525d7a5773a24cd76e22f21c1f8fc30810ff72f4092ec31410a337915a3dadd77d513caa5ad194a034b11f
+  checksum: ae6c378ba68ee8e37fbf273a68f1ce0e5439e3f8c9b38a338fb9f9bd0fd6b12f9927e9c5f33a2ead87dd76e7665a71073187d744e7b810aecf24e2964b6af7a7
   languageName: node
   linkType: hard
 
@@ -6445,20 +6460,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/user-operation-controller@npm:^6.0.0":
-  version: 6.0.1
-  resolution: "@metamask/user-operation-controller@npm:6.0.1"
+"@metamask/user-operation-controller@npm:^8.0.1":
+  version: 8.0.1
+  resolution: "@metamask/user-operation-controller@npm:8.0.1"
   dependencies:
     "@metamask/approval-controller": "npm:^6.0.1"
     "@metamask/base-controller": "npm:^5.0.1"
-    "@metamask/controller-utils": "npm:^9.0.1"
+    "@metamask/controller-utils": "npm:^9.1.0"
     "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/gas-fee-controller": "npm:^14.0.1"
-    "@metamask/keyring-controller": "npm:^14.0.1"
-    "@metamask/network-controller": "npm:^18.0.1"
+    "@metamask/gas-fee-controller": "npm:^15.0.0"
+    "@metamask/keyring-controller": "npm:^15.0.0"
+    "@metamask/network-controller": "npm:^18.1.0"
     "@metamask/polling-controller": "npm:^6.0.1"
     "@metamask/rpc-errors": "npm:^6.2.1"
-    "@metamask/transaction-controller": "npm:^25.1.0"
+    "@metamask/transaction-controller": "npm:^28.1.0"
     "@metamask/utils": "npm:^8.3.0"
     bn.js: "npm:^5.2.1"
     immer: "npm:^9.0.6"
@@ -6467,11 +6482,11 @@ __metadata:
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@metamask/approval-controller": ^6.0.0
-    "@metamask/gas-fee-controller": ^14.0.0
-    "@metamask/keyring-controller": ^14.0.0
+    "@metamask/gas-fee-controller": ^15.0.0
+    "@metamask/keyring-controller": ^15.0.0
     "@metamask/network-controller": ^18.0.0
-    "@metamask/transaction-controller": ^25.0.0
-  checksum: 3cf59251bf88e15fb6ab8115cddff8628cb0bf425031e10821a5e09a94ac04d44ebc13743caeb6eac8e6e9b1cfb701c62a69818b55f66aa209d9f4249a89d974
+    "@metamask/transaction-controller": ^28.0.0
+  checksum: b489706430c526a795d408e0d719f2a0d7f79586ea5f556f1a737c61eb61319022e168b65527e5be061bb7bb9a3fa56a58ff50d78fce8eab89ba8663c6877ab0
   languageName: node
   linkType: hard
 
@@ -25541,7 +25556,7 @@ __metadata:
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:^8.4.0"
     "@metamask/transaction-controller": "npm:^28.1.0"
-    "@metamask/user-operation-controller": "npm:^6.0.0"
+    "@metamask/user-operation-controller": "npm:^8.0.1"
     "@metamask/utils": "npm:^8.2.1"
     "@ngraveio/bc-ur": "npm:^1.1.12"
     "@noble/ciphers": "npm:^0.5.2"
