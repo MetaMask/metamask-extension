@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.14.3]
+### Fixed
+- Fixed getMinimumGasTotalInHexWei error by updating the "fee_market" gasEstimateType logic ([#24287](https://github.com/MetaMask/metamask-extension/pull/24287))
+
 ## [11.14.2]
 ### Changed
 - Update Blockaid to ensure user's have the latest protections ([#24171](https://github.com/MetaMask/metamask-extension/pull/24171))
