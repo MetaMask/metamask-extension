@@ -1,6 +1,12 @@
 import React, { createContext, useContext } from 'react';
 import Tooltip from '../../../../ui/tooltip/tooltip';
-import { Box, Icon, IconName, Text } from '../../../../component-library';
+import {
+  Box,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+} from '../../../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -100,11 +106,16 @@ export const ConfirmInfoRow = ({
           </Text>
           {inlineAlert}
           {tooltip && tooltip.length > 0 && (
-            <Tooltip title={tooltip} style={{ display: 'flex' }}>
+            <Tooltip
+              position="bottom"
+              title={tooltip}
+              style={{ display: 'flex' }}
+            >
               <Icon
                 name={TOOLTIP_ICONS[variant]}
                 marginLeft={1}
                 color={TOOLTIP_ICON_COLORS[variant] as unknown as IconColor}
+                size={IconSize.Sm}
               />
             </Tooltip>
           )}

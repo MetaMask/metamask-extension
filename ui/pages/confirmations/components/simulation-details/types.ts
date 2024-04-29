@@ -1,6 +1,6 @@
 import { Hex } from '@metamask/utils';
+import { BigNumber } from 'bignumber.js';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
-import { Numeric } from '../../../../../shared/modules/Numeric';
 
 export const NATIVE_ASSET_IDENTIFIER: NativeAssetIdentifier = {
   standard: TokenStandard.none,
@@ -36,57 +36,28 @@ export type AssetIdentifier = Readonly<
 >;
 
 /**
- * Represents an amount of an asset, including its magnitude and sign.
- */
-export type Amount = Readonly<{
-  /**
-   * Indicates whether the amount is negative (e.g., a decrease in balance).
-   */
-  isNegative: boolean;
-
-  /**
-   * The quantity of the smallest denomination of the asset (base units),
-   * represented as a hexadecimal string.
-   * For example: In the case of ETH, this would be the number of wei.
-   */
-  quantity: Hex;
-
-  /**
-   * The number of decimal places the associated asset supports.
-   *
-   * This value is the negation of the exponent used when converting
-   * the quantity to the decimal amount of a token.
-   *
-   * To calculate the token amount in decimal form, use the formula:
-   * `tokenAmount = hexToDecimal(quantity) / (10 ^ decimals)`
-   *
-   * Example: If the asset is ETH, the quantity is expressed in wei
-   * (the smallest unit of ETH) and decimals would be 18. The amount
-   * of ETH tokens would be: `ethAmount = quantity / (10 ^ 18)`
-   */
-  decimals: number;
-
-  /**
-   * The numeric representation of the amount, taking into account the
-   * sign, quantity and decimals.
-   */
-  numeric: Numeric;
-}>;
-
-/**
  * Describes a change in an asset's balance to a user's wallet.
  */
-export type BalanceChange = {
+export type BalanceChange = Readonly<{
   /**
    * The asset identifier for the balance change.
    */
   asset: AssetIdentifier;
+
   /**
-   * The amount of the asset that changed.
+   * The quantity of asset tokens, expressed as a decimal value.
+   *
+   * This property represents the amount of tokens, taking into account the
+   * number of decimals supported by the asset. The value can be positive
+   * (increase) or negative (decrease).
+   *
+   * Example: If an asset supports 18 decimals, an `amount` of 1.5 represents
+   * 1.5 tokens, or more precisely, 1.5 * 10^18 of the smallest divisible unit.
    */
-  amount: Amount;
+  amount: BigNumber;
+
   /**
    * The amount of fiat currency that corresponds to the asset amount.
    */
   fiatAmount: FiatAmount;
-};
+}>;

@@ -169,7 +169,6 @@ export default class ConfirmTransactionBase extends Component {
     isUserOpContractDeployError: PropTypes.bool,
     useMaxValue: PropTypes.bool,
     maxValue: PropTypes.string,
-    isMultiLayerFeeNetwork: PropTypes.bool,
     isSmartTransaction: PropTypes.bool,
     smartTransactionsOptInStatus: PropTypes.bool,
     currentChainSupportsSmartTransactions: PropTypes.bool,
@@ -386,7 +385,6 @@ export default class ConfirmTransactionBase extends Component {
       useCurrencyRateCheck,
       tokenSymbol,
       isUsingPaymaster,
-      isMultiLayerFeeNetwork,
     } = this.props;
 
     const { t } = this.context;
@@ -407,7 +405,7 @@ export default class ConfirmTransactionBase extends Component {
       return sumHexes(
         txData.txParams.value,
         useMaxFee ? hexMaximumTransactionFee : hexMinimumTransactionFee,
-        isMultiLayerFeeNetwork ? txData.layer1GasFee : 0,
+        txData.layer1GasFee ?? 0,
       );
     };
 
@@ -495,6 +493,7 @@ export default class ConfirmTransactionBase extends Component {
       <SimulationDetails
         simulationData={simulationData}
         transactionId={txData.id}
+        enableMetrics
       />
     );
 

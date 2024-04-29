@@ -1,3 +1,4 @@
+import { lightTheme } from '@metamask/design-tokens';
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
 
 export const TRADES_BASE_PROD_URL =
@@ -161,12 +162,12 @@ export const MOCK_TRADE_RESPONSE_2 = MOCK_TRADE_RESPONSE_1.map((trade) => ({
 
 export const AGGREGATOR_METADATA = {
   agg1: {
-    color: '#283B4C',
+    color: lightTheme.colors.text.default,
     title: 'agg1',
     icon: 'data:image/png;base64,iVBORw0KGgoAAA',
   },
   agg2: {
-    color: '#283B4C',
+    color: lightTheme.colors.text.default,
     title: 'agg2',
     icon: 'data:image/png;base64,iVBORw0KGgoAAA',
   },
