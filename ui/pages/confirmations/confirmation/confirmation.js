@@ -17,6 +17,10 @@ import { ApprovalType } from '@metamask/controller-utils';
 ///: END:ONLY_INCLUDE_IF
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import Box from '../../../components/ui/box';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import MetaMaskTemplateRenderer from '../../../components/app/metamask-template-renderer';
 import ConfirmationWarningModal from '../components/confirmation-warning-modal';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
@@ -465,6 +469,21 @@ export default function ConfirmationPage({
       // submit result is an array of errors or empty on success
       const submitResult = await templatedValues.onSubmit(inputState);
       handleSubmitResult(submitResult);
+
+      this.context.trackEvent({
+        category: MetaMetricsEventCategory.Network,
+        event: MetaMetricsEventName.NavNetworkSwitched,
+        properties: {
+          location: 'Switch Modal',
+          from_network:
+            pendingConfirmation.requestData.fromNetworkConfiguration.chainId,
+          to_network:
+            pendingConfirmation.requestData.toNetworkConfiguration.chainId,
+          referrer: {
+            url: window.location.origin,
+          },
+        },
+      });
     }
   };
 
