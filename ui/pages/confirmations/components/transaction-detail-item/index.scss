@@ -21,7 +21,8 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
-    width: 52%;
+    flex: 0 0 62%;
+    width: 62%;
 
     &--flex-width {
       width: auto;
@@ -38,7 +39,14 @@
   }
 
   .currency-display-component {
-    display: inline;
+    justify-content: end;
+    min-width: 0;
+
+    &__text {
+      max-width: 100%;
+      overflow-wrap: break-word;
+      text-align: end;
+    }
   }
 
   &:first-of-type {

@@ -4,7 +4,6 @@ import classnames from 'classnames';
 
 import {
   Color,
-  AlignItems,
   TextAlign,
   TextVariant,
   Display,
@@ -17,7 +16,7 @@ export default function TransactionDetailItem({
   'data-testid': dataTestId,
   detailTitle = '',
   detailText,
-  detailTitleColor = Color.textAlternative,
+  detailTitleColor = Color.textAlternative, // todo remove
   detailTotal = '',
   subTitle = '',
   subText = '',
@@ -31,7 +30,6 @@ export default function TransactionDetailItem({
           color={detailTitleColor}
           display={Display.Flex}
           flexWrap={FlexWrap.NoWrap}
-          alignItems={AlignItems.center}
           variant={TextVariant.bodyMdMedium}
         >
           {detailTitle}
@@ -66,6 +64,7 @@ export default function TransactionDetailItem({
             as="h6"
             variant={TextVariant.bodySm}
             color={Color.textAlternative}
+            style={{ whitespace: 'nowrap' }}
           >
             {subTitle}
           </Text>

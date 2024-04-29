@@ -174,7 +174,7 @@ const GasDetailsItem = ({
             })}
           >
             <LoadingHeartBeat estimateUsed={estimateUsed} />
-            <Box marginRight={1}>
+            <Box>
               <Text
                 color={TextColor.textAlternative}
                 variant={TextVariant.bodySmMedium}
@@ -188,6 +188,7 @@ const GasDetailsItem = ({
             <div
               key="editGasSubTextFeeValue"
               className="gas-details-item__currency-container"
+              paddingStart={1}
             >
               <LoadingHeartBeat estimateUsed={estimateUsed} />
               <UserPreferencedCurrencyDisplay

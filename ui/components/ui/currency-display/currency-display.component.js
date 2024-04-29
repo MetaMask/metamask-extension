@@ -50,7 +50,6 @@ export default function CurrencyDisplay({
       style={style}
       title={(!hideTitle && title) || null}
       display={Display.Flex}
-      alignItems={AlignItems.center}
       flexWrap={FlexWrap.Wrap}
       {...props}
     >
@@ -67,7 +66,6 @@ export default function CurrencyDisplay({
       <Text
         as="span"
         className="currency-display-component__text"
-        ellipsis
         variant={TextVariant.inherit}
         {...textProps}
       >
