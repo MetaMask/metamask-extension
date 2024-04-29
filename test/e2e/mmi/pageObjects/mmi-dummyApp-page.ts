@@ -38,7 +38,7 @@ export class DummyAppPage {
     await popup1.locator('.check-box__indeterminate');
     // await popup1.locator('text=Custody Ac... (0x8b2...b3ad)').click()
     await popup1.locator('button:has-text("Next")').click();
-    await popup1.locator('button:has-text("Connect")').click();
+    await popup1.locator('button:has-text("Confirm")').click();
     await popup1.close();
   }
 
