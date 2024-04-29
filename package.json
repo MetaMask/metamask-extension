@@ -242,7 +242,10 @@
     "@metamask/network-controller@npm:^18.1.0": "patch:@metamask/network-controller@npm%3A18.1.0#~/.yarn/patches/@metamask-network-controller-npm-18.1.0-680908c29a.patch",
     "@metamask/keyring-controller@npm:^13.0.0": "patch:@metamask/keyring-controller@npm%3A13.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-13.0.0-d94816a680.patch",
     "@spruceid/siwe-parser@npm:1.1.3": "patch:@spruceid/siwe-parser@npm%3A2.1.0#~/.yarn/patches/@spruceid-siwe-parser-npm-2.1.0-060b7ede7a.patch",
-    "@spruceid/siwe-parser@npm:2.1.0": "patch:@spruceid/siwe-parser@npm%3A2.1.0#~/.yarn/patches/@spruceid-siwe-parser-npm-2.1.0-060b7ede7a.patch"
+    "@spruceid/siwe-parser@npm:2.1.0": "patch:@spruceid/siwe-parser@npm%3A2.1.0#~/.yarn/patches/@spruceid-siwe-parser-npm-2.1.0-060b7ede7a.patch",
+    "@metamask/permission-controller@npm:^9.0.2": "patch:@metamask/permission-controller@npm%3A9.0.2#~/.yarn/patches/@metamask-permission-controller-npm-9.0.2-86e1610a71.patch",
+    "@metamask/permission-controller@npm:^7.1.0": "patch:@metamask/permission-controller@npm%3A9.0.2#~/.yarn/patches/@metamask-permission-controller-npm-9.0.2-86e1610a71.patch",
+    "@metamask/permission-controller@npm:^7.0.0": "patch:@metamask/permission-controller@npm%3A9.0.2#~/.yarn/patches/@metamask-permission-controller-npm-9.0.2-86e1610a71.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
@@ -308,7 +311,7 @@
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A18.1.0#~/.yarn/patches/@metamask-network-controller-npm-18.1.0-680908c29a.patch",
     "@metamask/notification-controller": "^3.0.0",
     "@metamask/obs-store": "^8.1.0",
-    "@metamask/permission-controller": "^9.0.1",
+    "@metamask/permission-controller": "patch:@metamask/permission-controller@npm%3A9.0.2#~/.yarn/patches/@metamask-permission-controller-npm-9.0.2-86e1610a71.patch",
     "@metamask/permission-log-controller": "^1.0.0",
     "@metamask/phishing-controller": "^8.0.2",
     "@metamask/post-message-stream": "^8.0.0",

@@ -4758,7 +4758,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^4.0.0, @metamask/base-controller@npm:^4.0.1, @metamask/base-controller@npm:^4.1.0, @metamask/base-controller@npm:^4.1.1":
+"@metamask/base-controller@npm:^4.0.0, @metamask/base-controller@npm:^4.1.0, @metamask/base-controller@npm:^4.1.1":
   version: 4.1.1
   resolution: "@metamask/base-controller@npm:4.1.1"
   dependencies:
@@ -5734,26 +5734,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/permission-controller@npm:^7.0.0, @metamask/permission-controller@npm:^7.1.0":
-  version: 7.1.0
-  resolution: "@metamask/permission-controller@npm:7.1.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^4.0.1"
-    "@metamask/controller-utils": "npm:^8.0.1"
-    "@metamask/json-rpc-engine": "npm:^7.3.1"
-    "@metamask/rpc-errors": "npm:^6.1.0"
-    "@metamask/utils": "npm:^8.2.0"
-    "@types/deep-freeze-strict": "npm:^1.1.0"
-    deep-freeze-strict: "npm:^1.1.1"
-    immer: "npm:^9.0.6"
-    nanoid: "npm:^3.1.31"
-  peerDependencies:
-    "@metamask/approval-controller": ^5.1.1
-  checksum: c438048533512e52083171fc81fe364fd108e8219250a43409a085e960ecb0241c649824c1f05a2272b10ef0ea44fc4df283c0fa32acf2df73db6a0b1cae6487
-  languageName: node
-  linkType: hard
-
-"@metamask/permission-controller@npm:^9.0.1, @metamask/permission-controller@npm:^9.0.2":
+"@metamask/permission-controller@npm:9.0.2":
   version: 9.0.2
   resolution: "@metamask/permission-controller@npm:9.0.2"
   dependencies:
@@ -5769,6 +5750,25 @@ __metadata:
   peerDependencies:
     "@metamask/approval-controller": ^6.0.0
   checksum: 8af8b2949f19ace5b2c2580b5291a5ee5745fad4d24b333f53477d9c5daddf2d53aeb05d15eb23338f60c78ad96a8033fcebf4e1d6d3e6a26640fd65dfce0660
+  languageName: node
+  linkType: hard
+
+"@metamask/permission-controller@patch:@metamask/permission-controller@npm%3A9.0.2#~/.yarn/patches/@metamask-permission-controller-npm-9.0.2-86e1610a71.patch":
+  version: 9.0.2
+  resolution: "@metamask/permission-controller@patch:@metamask/permission-controller@npm%3A9.0.2#~/.yarn/patches/@metamask-permission-controller-npm-9.0.2-86e1610a71.patch::version=9.0.2&hash=a470be"
+  dependencies:
+    "@metamask/base-controller": "npm:^5.0.1"
+    "@metamask/controller-utils": "npm:^9.0.1"
+    "@metamask/json-rpc-engine": "npm:^8.0.1"
+    "@metamask/rpc-errors": "npm:^6.2.1"
+    "@metamask/utils": "npm:^8.3.0"
+    "@types/deep-freeze-strict": "npm:^1.1.0"
+    deep-freeze-strict: "npm:^1.1.1"
+    immer: "npm:^9.0.6"
+    nanoid: "npm:^3.1.31"
+  peerDependencies:
+    "@metamask/approval-controller": ^6.0.0
+  checksum: 6f0478d1bf6cf04b086f67f8263352a072528a0b0b9618b7b060d5d4bee1fa5d9a46546b03dfca8dd336bed37ffad7ab3c3b5d67c49152421b18c57fd33ae121
   languageName: node
   linkType: hard
 
@@ -25519,7 +25519,7 @@ __metadata:
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A18.1.0#~/.yarn/patches/@metamask-network-controller-npm-18.1.0-680908c29a.patch"
     "@metamask/notification-controller": "npm:^3.0.0"
     "@metamask/obs-store": "npm:^8.1.0"
-    "@metamask/permission-controller": "npm:^9.0.1"
+    "@metamask/permission-controller": "patch:@metamask/permission-controller@npm%3A9.0.2#~/.yarn/patches/@metamask-permission-controller-npm-9.0.2-86e1610a71.patch"
     "@metamask/permission-log-controller": "npm:^1.0.0"
     "@metamask/phishing-controller": "npm:^8.0.2"
     "@metamask/phishing-warning": "npm:^3.0.3"

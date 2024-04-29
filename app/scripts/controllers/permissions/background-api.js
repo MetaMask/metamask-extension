@@ -5,49 +5,22 @@ import {
 } from '../../../../shared/constants/permissions';
 
 export function getPermissionBackgroundApiMethods(permissionController) {
+  const addMoreAccounts = (origin, accountOrAccounts) =>
+    permissionController.updateCaveatIncremental(
+      origin,
+      RestrictedMethods.eth_accounts,
+      CaveatTypes.restrictReturnedAccounts,
+      Array.isArray(accountOrAccounts)
+        ? accountOrAccounts
+        : [accountOrAccounts],
+    );
+
   return {
-    addPermittedAccount: (origin, account) => {
-      const { value: existingAccounts } = permissionController.getCaveat(
-        origin,
-        RestrictedMethods.eth_accounts,
-        CaveatTypes.restrictReturnedAccounts,
-      );
-
-      if (existingAccounts.includes(account)) {
-        return;
-      }
-
-      permissionController.updateCaveat(
-        origin,
-        RestrictedMethods.eth_accounts,
-        CaveatTypes.restrictReturnedAccounts,
-        [...existingAccounts, account],
-      );
-    },
+    addPermittedAccount: (origin, account) => addMoreAccounts(origin, account),
 
     // To add more than one account when already connected to the dapp
-    addMorePermittedAccounts: (origin, accounts) => {
-      const { value: existingAccounts } = permissionController.getCaveat(
-        origin,
-        RestrictedMethods.eth_accounts,
-        CaveatTypes.restrictReturnedAccounts,
-      );
-
-      const updatedAccounts = Array.from(
-        new Set([...existingAccounts, ...accounts]),
-      );
-
-      if (updatedAccounts.length === existingAccounts.length) {
-        return;
-      }
-
-      permissionController.updateCaveat(
-        origin,
-        RestrictedMethods.eth_accounts,
-        CaveatTypes.restrictReturnedAccounts,
-        updatedAccounts,
-      );
-    },
+    addMorePermittedAccounts: (origin, accounts) =>
+      addMoreAccounts(origin, accounts),
 
     removePermittedAccount: (origin, account) => {
       const { value: existingAccounts } = permissionController.getCaveat(

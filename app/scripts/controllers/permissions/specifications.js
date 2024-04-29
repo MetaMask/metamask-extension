@@ -59,6 +59,9 @@ export const getCaveatSpecifications = ({ getInternalAccounts }) => {
 
       validator: (caveat, _origin, _target) =>
         validateCaveatAccounts(caveat.value, getInternalAccounts),
+
+      merger: (leftValue, rightValue) =>
+        Array.from(new Set([...leftValue, ...rightValue])),
     },
 
     ///: BEGIN:ONLY_INCLUDE_IF(snaps)
