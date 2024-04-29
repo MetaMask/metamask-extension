@@ -153,7 +153,7 @@
     "useNftDetection": false,
     "use4ByteResolution": true,
     "useCurrencyRateCheck": true,
-    "useRequestQueue": false,
+    "useRequestQueue": true,
     "openSeaEnabled": false,
     "securityAlertsEnabled": "boolean",
     "addSnapAccountEnabled": "boolean",
