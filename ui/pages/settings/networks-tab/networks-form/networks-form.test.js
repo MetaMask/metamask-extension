@@ -337,4 +337,60 @@ describe('NetworkForm Component', () => {
       await screen.findByTestId('network-form-ticker-warning'),
     ).not.toBeInTheDocument();
   });
+
+  it('should validate currency symbol field for ZYN network', async () => {
+    const safeChainsList = [
+      {
+        chainId: 78,
+        nativeCurrency: {
+          symbol: 'PETH',
+        },
+      },
+    ];
+
+    // Mock the fetchWithCache function to return the safeChainsList
+    jest
+      .spyOn(fetchWithCacheModule, 'default')
+      .mockResolvedValue(safeChainsList);
+
+    renderComponent(propNewNetwork);
+
+    const chainIdField = screen.getByRole('textbox', { name: 'Chain ID' });
+    const currencySymbolField = screen.getByTestId('network-form-ticker-input');
+
+    fireEvent.change(chainIdField, {
+      target: { value: '78' },
+    });
+
+    fireEvent.change(currencySymbolField, {
+      target: { value: 'ZYN' },
+    });
+
+    expect(
+      await screen.queryByTestId('network-form-ticker-suggestion'),
+    ).not.toBeInTheDocument();
+
+    fireEvent.change(currencySymbolField, {
+      target: { value: 'ETH' },
+    });
+
+    expect(
+      await screen.queryByTestId('network-form-ticker-suggestion'),
+    ).toBeInTheDocument();
+
+    const expectedSymbolWarning = 'Suggested ticker symbol:';
+    expect(await screen.findByText(expectedSymbolWarning)).toBeInTheDocument();
+
+    fireEvent.change(currencySymbolField, {
+      target: { value: 'PETH' },
+    });
+
+    expect(
+      await screen.queryByTestId('network-form-ticker-suggestion'),
+    ).not.toBeInTheDocument();
+
+    expect(
+      await screen.queryByText(expectedSymbolWarning),
+    ).not.toBeInTheDocument();
+  });
 });

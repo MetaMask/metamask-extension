@@ -179,7 +179,6 @@ describe('TokenAllowancePage', () => {
     ethTransactionTotal: '0.0012',
     fiatTransactionTotal: '1.6',
     hexTransactionTotal: '0x44364c5bb0000',
-    isMultiLayerFeeNetwork: false,
     supportsEIP1559: true,
     userAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     tokenAddress: '0x55797717b9947b31306f4aac7ad1365c6e3923bd',

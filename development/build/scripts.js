@@ -894,6 +894,14 @@ function setupBundlerDefaults(
           extensions,
         },
       ],
+      // We are transpelling the firebase package to be compatible with the lavaMoat restrictions
+      [
+        babelify,
+        {
+          only: ['./**/node_modules/firebase', './**/node_modules/@firebase'],
+          global: true,
+        },
+      ],
     ],
     // Look for TypeScript files when walking the dependency tree
     extensions,

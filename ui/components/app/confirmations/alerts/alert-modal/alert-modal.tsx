@@ -161,7 +161,7 @@ function AcknowledgeCheckbox({
         label={t('alertModalAcknowledge')}
         data-testid="alert-modal-acknowledge-checkbox"
         isChecked={isConfirmed}
-        onClick={handleCheckboxClick}
+        onChange={handleCheckboxClick}
         alignItems={AlignItems.flexStart}
         className={'alert-modal__acknowledge-checkbox'}
       />
@@ -170,9 +170,13 @@ function AcknowledgeCheckbox({
 }
 
 function AcknowledgeButton({
+  selectedAlertKey,
   onAcknowledgeClick,
+  isAlertConfirmed,
 }: {
+  selectedAlertKey: string;
   onAcknowledgeClick: () => void;
+  isAlertConfirmed: (alertKey: string) => boolean;
 }) {
   const t = useI18nContext();
 
@@ -184,6 +188,7 @@ function AcknowledgeButton({
         onClick={onAcknowledgeClick}
         size={ButtonSize.Lg}
         data-testid="alert-modal-button"
+        disabled={!isAlertConfirmed(selectedAlertKey)}
       >
         {t('gotIt')}
       </Button>
@@ -232,7 +237,11 @@ export function AlertModal({
           />
         </ModalBody>
         <ModalFooter>
-          <AcknowledgeButton onAcknowledgeClick={onAcknowledgeClick} />
+          <AcknowledgeButton
+            selectedAlertKey={selectedAlert.key}
+            onAcknowledgeClick={onAcknowledgeClick}
+            isAlertConfirmed={isAlertConfirmed}
+          />
         </ModalFooter>
       </ModalContent>
     </Modal>
