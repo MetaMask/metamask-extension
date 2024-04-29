@@ -50,6 +50,7 @@ export default function CurrencyDisplay({
       style={style}
       title={(!hideTitle && title) || null}
       display={Display.Flex}
+      alignItems={AlignItems.center}
       flexWrap={FlexWrap.Wrap}
       {...props}
     >
