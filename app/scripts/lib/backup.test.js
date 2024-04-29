@@ -169,7 +169,7 @@ const jsonData = JSON.stringify({
     theme: 'light',
     customNetworkListEnabled: false,
     textDirection: 'auto',
-    useRequestQueue: false,
+    useRequestQueue: true,
   },
   internalAccounts: {
     accounts: {
