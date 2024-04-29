@@ -1,3 +1,4 @@
+/* eslint-disable @metamask/design-tokens/color-no-hex*/
 import EventEmitter from 'events';
 import React, { useRef } from 'react';
 

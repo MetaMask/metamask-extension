@@ -442,7 +442,8 @@ export default class PreferencesController {
    */
   syncAddresses(addresses) {
     if (!Array.isArray(addresses) || addresses.length === 0) {
-      throw new Error('Expected non-empty array of addresses. Error #11201');
+      // eslint-disable-next-line @metamask/design-tokens/color-no-hex
+      throw new Error('Expected non-empty array of addresses. Error #11201'); // not a hex color value
     }
 
     const { identities, lostIdentities } = this.store.getState();
