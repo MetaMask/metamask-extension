@@ -320,6 +320,8 @@ import AuthenticationController from './controllers/authentication/authenticatio
 import UserStorageController from './controllers/user-storage/user-storage-controller';
 import { WeakRefObjectMap } from './lib/WeakRefObjectMap';
 
+import { PushPlatformNotificationsController } from './controllers/push-platform-notifications/push-platform-notifications';
+
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
   // The process of updating the badge happens in app/scripts/background.js.
@@ -1433,6 +1435,14 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
     });
+    this.pushPlatformNotificationsController =
+      new PushPlatformNotificationsController({
+        messenger: this.controllerMessenger.getRestricted({
+          name: 'PushPlatformNotificationsController',
+          allowedActions: ['AuthenticationController:getBearerToken'],
+        }),
+        state: initState.PushPlatformNotificationsController,
+      });
 
     // account tracker watches balances, nonces, and any code at their address
     this.accountTracker = new AccountTracker({
