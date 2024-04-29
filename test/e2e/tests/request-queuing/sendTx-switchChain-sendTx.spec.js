@@ -12,6 +12,7 @@ const {
 
 describe('Request Queuing Send Tx -> SwitchChain -> SendTx', function () {
   // todo: reenable this test once this issue is resolved: https://github.com/MetaMask/MetaMask-planning/issues/2406
+  // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('should not be able to navigate batch send txs with a switch chain in the middle', async function () {
     const port = 8546;
     const chainId = 1338;
