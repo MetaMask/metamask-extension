@@ -6,6 +6,7 @@ import { ApprovalType } from '@metamask/controller-utils';
 import {
   stripSnapPrefix,
   getLocalizedSnapManifest,
+  SnapStatus,
 } from '@metamask/snaps-utils';
 import { memoize } from 'lodash';
 import semver from 'semver';
@@ -31,7 +32,6 @@ import {
   LINEA_GOERLI_DISPLAY_NAME,
   CURRENCY_SYMBOLS,
   TEST_NETWORK_TICKER_MAP,
-  LINEA_GOERLI_TOKEN_IMAGE_URL,
   LINEA_MAINNET_DISPLAY_NAME,
   LINEA_MAINNET_TOKEN_IMAGE_URL,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -42,6 +42,13 @@ import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
   LINEA_SEPOLIA_TOKEN_IMAGE_URL,
   LINEA_SEPOLIA_DISPLAY_NAME,
+  CRONOS_DISPLAY_NAME,
+  CELO_DISPLAY_NAME,
+  GNOSIS_DISPLAY_NAME,
+  FANTOM_DISPLAY_NAME,
+  POLYGON_ZKEVM_DISPLAY_NAME,
+  MOONBEAM_DISPLAY_NAME,
+  MOONRIVER_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -119,6 +126,7 @@ import {
   getConnectedSubjectsForAllAddresses,
   ///: END:ONLY_INCLUDE_IF
   getOrderedConnectedAccountsForActiveTab,
+  getOrderedConnectedAccountsForConnectedDapp,
 } from './permissions';
 import { createDeepEqualSelector } from './util';
 
@@ -311,28 +319,14 @@ export const getMetaMaskAccounts = createSelector(
       };
     }, {}),
 );
-
 /**
- * Returns the selected address from the Metamask state.
+ * Returns the address of the selected InternalAccount from the Metamask state.
  *
  * @param state - The Metamask state object.
  * @returns {string} The selected address.
  */
 export function getSelectedAddress(state) {
-  return state.metamask.selectedAddress;
-}
-
-/**
- * Returns the selected identity from the Metamask state.
- *
- * @param state - The Metamask state object.
- * @returns The selected identity object.
- */
-export function getSelectedIdentity(state) {
-  const selectedAddress = getSelectedAddress(state);
-  const { identities } = state.metamask;
-
-  return identities[selectedAddress];
+  return getSelectedInternalAccount(state)?.address;
 }
 
 export function getInternalAccountByAddress(state, address) {
@@ -404,16 +398,6 @@ export function getMetaMaskKeyrings(state) {
 }
 
 /**
- * Get identity state.
- *
- * @param {object} state - Redux state
- * @returns {object} A map of account addresses to identities (which includes the account name)
- */
-export function getMetaMaskIdentities(state) {
-  return state.metamask.identities;
-}
-
-/**
  * Get account balances state.
  *
  * @param {object} state - Redux state
@@ -439,7 +423,7 @@ export function getMetaMaskCachedBalances(state) {
 }
 
 /**
- * Get ordered (by keyrings) accounts with identity and balance
+ * Get ordered (by keyrings) accounts with InternalAccount and balance
  */
 export const getMetaMaskAccountsOrdered = createSelector(
   getInternalAccountsSortedByKeyring,
@@ -564,8 +548,8 @@ export function getAccountName(accounts, accountAddress) {
 
 export function getMetadataContractName(state, address) {
   const tokenList = getTokenList(state);
-  const entry = Object.values(tokenList).find((identity) =>
-    isEqualCaseInsensitive(identity.address, address),
+  const entry = Object.values(tokenList).find((token) =>
+    isEqualCaseInsensitive(token.address, address),
   );
   return entry && entry.name !== '' ? entry.name : '';
 }
@@ -695,18 +679,6 @@ export const getTestNetworks = createDeepEqualSelector(
         providerType: NETWORK_TYPES.SEPOLIA,
         ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
         id: NETWORK_TYPES.SEPOLIA,
-        removable: false,
-      },
-      {
-        chainId: CHAIN_IDS.LINEA_GOERLI,
-        nickname: LINEA_GOERLI_DISPLAY_NAME,
-        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_GOERLI],
-        rpcPrefs: {
-          imageUrl: LINEA_GOERLI_TOKEN_IMAGE_URL,
-        },
-        providerType: NETWORK_TYPES.LINEA_GOERLI,
-        ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_GOERLI],
-        id: NETWORK_TYPES.LINEA_GOERLI,
         removable: false,
       },
       {
@@ -883,6 +855,11 @@ export function getShowTestNetworks(state) {
 export function getPetnamesEnabled(state) {
   const { petnamesEnabled = true } = getPreferences(state);
   return petnamesEnabled;
+}
+
+export function getRedesignedConfirmationsEnabled(state) {
+  const { redesignedConfirmations } = getPreferences(state);
+  return redesignedConfirmations;
 }
 
 export function getFeatureNotificationsEnabled(state) {
@@ -1295,17 +1272,6 @@ export function getShowWhatsNewPopup(state) {
 }
 
 /**
- * Returns a memoized version of the MetaMask identities.
- *
- * @param state - The Redux state.
- * @returns {Array} An array of MetaMask identities.
- */
-export const getMemoizedMetaMaskIdentities = createDeepEqualSelector(
-  getMetaMaskIdentities,
-  (identities) => identities,
-);
-
-/**
  * Returns a memoized selector that gets the internal accounts from the Redux store.
  *
  * @param state - The Redux store state.
@@ -1432,23 +1398,28 @@ export const getAllConnectedAccounts = createDeepEqualSelector(
 );
 export const getConnectedSitesList = createDeepEqualSelector(
   getConnectedSubjectsForAllAddresses,
-  getMetaMaskIdentities,
+  getInternalAccounts,
   getAllConnectedAccounts,
-  (connectedSubjectsForAllAddresses, identities, connectedAddresses) => {
+  (connectedSubjectsForAllAddresses, internalAccounts, connectedAddresses) => {
     const sitesList = {};
     connectedAddresses.forEach((connectedAddress) => {
       connectedSubjectsForAllAddresses[connectedAddress].forEach((app) => {
         const siteKey = app.origin;
+
+        const internalAccount = internalAccounts.find((account) =>
+          isEqualCaseInsensitive(account.address, connectedAddress),
+        );
+
         if (sitesList[siteKey]) {
           sitesList[siteKey].addresses.push(connectedAddress);
           sitesList[siteKey].addressToNameMap[connectedAddress] =
-            identities[connectedAddress].name; // Map address to name
+            internalAccount?.metadata.name || ''; // Map address to name
         } else {
           sitesList[siteKey] = {
             ...app,
             addresses: [connectedAddress],
             addressToNameMap: {
-              [connectedAddress]: identities[connectedAddress].name,
+              [connectedAddress]: internalAccount?.metadata.name || '',
             },
           };
         }
@@ -1467,7 +1438,9 @@ export const getConnectedSitesListWithNetworkInfo = createDeepEqualSelector(
       const connectedNetwork = networks.find(
         (network) => network.id === domains[siteKey],
       );
-      sitesList[siteKey].networkIconUrl = connectedNetwork.rpcPrefs.imageUrl;
+      // For the testnets, if we do not have an image, we will have a fallback string
+      sitesList[siteKey].networkIconUrl =
+        connectedNetwork.rpcPrefs?.imageUrl || '';
       sitesList[siteKey].networkName = connectedNetwork.nickname;
     });
     return sitesList;
@@ -1891,10 +1864,6 @@ export function getShowPermissionsTour(state) {
   return state.metamask.showPermissionsTour;
 }
 
-export function getShowProductTour(state) {
-  return state.metamask.showProductTour;
-}
-
 export function getShowNetworkBanner(state) {
   return state.metamask.showNetworkBanner;
 }
@@ -2030,36 +1999,6 @@ export const getAllEnabledNetworks = createDeepEqualSelector(
   },
 );
 
-export function getIsOptimism(state) {
-  return (
-    getCurrentChainId(state) === CHAIN_IDS.OPTIMISM ||
-    getCurrentChainId(state) === CHAIN_IDS.OPTIMISM_TESTNET ||
-    getCurrentChainId(state) === CHAIN_IDS.OPTIMISM_GOERLI
-  );
-}
-
-export function getIsBase(state) {
-  return (
-    getCurrentChainId(state) === CHAIN_IDS.BASE ||
-    getCurrentChainId(state) === CHAIN_IDS.BASE_TESTNET
-  );
-}
-
-export function getIsOpbnb(state) {
-  return (
-    getCurrentChainId(state) === CHAIN_IDS.OPBNB ||
-    getCurrentChainId(state) === CHAIN_IDS.OPBNB_TESTNET
-  );
-}
-
-export function getIsOpStack(state) {
-  return getIsOptimism(state) || getIsBase(state) || getIsOpbnb(state);
-}
-
-export function getIsMultiLayerFeeNetwork(state) {
-  return getIsOpStack(state);
-}
-
 /**
  *  To retrieve the maxBaseFee and priorityFee the user has set as default
  *
@@ -2117,14 +2056,26 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
       return BASE_DISPLAY_NAME;
     case CHAIN_IDS.ZKSYNC_ERA:
       return ZK_SYNC_ERA_DISPLAY_NAME;
+    case CHAIN_IDS.CRONOS:
+      return CRONOS_DISPLAY_NAME;
+    case CHAIN_IDS.CELO:
+      return CELO_DISPLAY_NAME;
+    case CHAIN_IDS.GNOSIS:
+      return GNOSIS_DISPLAY_NAME;
+    case CHAIN_IDS.FANTOM:
+      return FANTOM_DISPLAY_NAME;
+    case CHAIN_IDS.POLYGON_ZKEVM:
+      return POLYGON_ZKEVM_DISPLAY_NAME;
+    case CHAIN_IDS.MOONBEAM:
+      return MOONBEAM_DISPLAY_NAME;
+    case CHAIN_IDS.MOONRIVER:
+      return MOONRIVER_DISPLAY_NAME;
     default:
       return '';
   }
 };
 /**
- * To check if the chainId supports token detection,
- * currently it returns true for Ethereum Mainnet, BSC, Polygon,
- * Avalanche, Linea, Arbitrum, Optimism, Base, and zkSync
+ * Returns true if a token list is available for the current network.
  *
  * @param {*} state
  * @returns Boolean
@@ -2143,6 +2094,13 @@ export function getIsDynamicTokenListAvailable(state) {
     CHAIN_IDS.OPTIMISM,
     CHAIN_IDS.BASE,
     CHAIN_IDS.ZKSYNC_ERA,
+    CHAIN_IDS.CRONOS,
+    CHAIN_IDS.CELO,
+    CHAIN_IDS.GNOSIS,
+    CHAIN_IDS.FANTOM,
+    CHAIN_IDS.POLYGON_ZKEVM,
+    CHAIN_IDS.MOONBEAM,
+    CHAIN_IDS.MOONRIVER,
   ].includes(chainId);
 }
 
@@ -2327,9 +2285,12 @@ export function getCustomTokenAmount(state) {
   return state.appState.customTokenAmount;
 }
 
-export function getUnconnectedAccounts(state) {
+export function getUnconnectedAccounts(state, activeTab) {
   const accounts = getMetaMaskAccountsOrdered(state);
-  const connectedAccounts = getOrderedConnectedAccountsForActiveTab(state);
+  const connectedAccounts = getOrderedConnectedAccountsForConnectedDapp(
+    state,
+    activeTab,
+  );
   const unConnectedAccounts = accounts.filter((account) => {
     return !connectedAccounts.some(
       (connectedAccount) => connectedAccount.address === account.address,
@@ -2473,7 +2434,10 @@ export function getIsDesktopEnabled(state) {
 export function getSnapsList(state) {
   const snaps = getSnaps(state);
   return Object.entries(snaps)
-    .filter(([_key, snap]) => !snap.preinstalled)
+    .filter(
+      ([_key, snap]) =>
+        !snap.preinstalled && snap.status !== SnapStatus.Installing,
+    )
     .map(([key, snap]) => {
       const targetSubjectMetadata = getTargetSubjectMetadata(state, snap?.id);
       return {

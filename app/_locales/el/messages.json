@@ -348,18 +348,9 @@
     "message": "Όλα τα NFT σας από το $1",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
-  "allowExternalExtensionTo": {
-    "message": "Επιτρέψτε σε αυτή την εξωτερική επέκταση να:"
-  },
   "allowSpendToken": {
     "message": "Δίνετε άδεια για να αποκτήσετε πρόσβαση στο $1;",
     "description": "$1 is the symbol of the token that are requesting to spend"
-  },
-  "allowThisSiteTo": {
-    "message": "Επιτρέψτε σε αυτόν τον ιστότοπο να:"
-  },
-  "allowThisSnapTo": {
-    "message": "Επιτρέψτε αυτό το snap να:"
   },
   "allowWithdrawAndSpend": {
     "message": "Επιτρέψτε στο $1 να κάνει ανάληψη και να ξοδέψει μέχρι το ακόλουθο ποσό:",
@@ -742,26 +733,6 @@
   "connectSnap": {
     "message": "Σύνδεση $1",
     "description": "$1 is the snap for which a connection is being requested."
-  },
-  "connectTo": {
-    "message": "Σύνδεση με $1",
-    "description": "$1 is the name/origin of a web3 site/application that the user can connect to metamask"
-  },
-  "connectToAll": {
-    "message": "Συνδεθείτε σε όλα τα $1 σας",
-    "description": "$1 will be replaced by the translation of connectToAllAccounts"
-  },
-  "connectToAllAccounts": {
-    "message": "λογαριασμοί",
-    "description": "will replace $1 in connectToAll, completing the sentence 'connect to all of your accounts', will be text that shows list of accounts on hover"
-  },
-  "connectToMultiple": {
-    "message": "Σύνδεση με $1",
-    "description": "$1 will be replaced by the translation of connectToMultipleNumberOfAccounts"
-  },
-  "connectToMultipleNumberOfAccounts": {
-    "message": "$1 λογαριασμοί",
-    "description": "$1 is the number of accounts to which the web3 site/application is asking to connect; this will substitute $1 in connectToMultiple"
   },
   "connectWithMetaMask": {
     "message": "Σύνδεση με το MetaMask"
@@ -1649,12 +1620,6 @@
   },
   "general": {
     "message": "Γενικά"
-  },
-  "globalTitle": {
-    "message": "Γενικό μενού"
-  },
-  "globalTourDescription": {
-    "message": "Δείτε το χαρτοφυλάκιό σας, τις συνδεδεμένες ιστοσελίδες, τις ρυθμίσεις και πολλά άλλα"
   },
   "goBack": {
     "message": "Πηγαίνετε πίσω"
@@ -2710,7 +2675,8 @@
     "message": "Ένας κακόβουλος πάροχος δικτύου μπορεί να πει ψέματα σχετικά με την κατάσταση του blockchain και να καταγράψει τη δραστηριότητα του δικτύου σας. Προσθέστε μόνο προσαρμοσμένα δίκτυα που εμπιστεύεστε."
   },
   "onlyConnectTrust": {
-    "message": "Συνδεθείτε μόνο με ιστότοπους που εμπιστεύεστε."
+    "message": "Συνδεθείτε μόνο με ιστότοπους που εμπιστεύεστε.",
+    "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
   "openFullScreenForLedgerWebHid": {
     "message": "Μεταβείτε σε πλήρη οθόνη για να συνδέσετε το Ledger σας.",
@@ -2807,9 +2773,6 @@
   "permissionRequest": {
     "message": "Αίτημα άδειας"
   },
-  "permissionRequestCapitalized": {
-    "message": "Αίτημα άδειας"
-  },
   "permissionRequested": {
     "message": "Ζητήθηκε τώρα"
   },
@@ -2890,12 +2853,6 @@
   },
   "permissions": {
     "message": "Άδειες"
-  },
-  "permissionsTitle": {
-    "message": "Άδειες"
-  },
-  "permissionsTourDescription": {
-    "message": "Βρείτε τους συνδεδεμένους λογαριασμούς σας και διαχειριστείτε τις άδειες εδώ"
   },
   "personalAddressDetected": {
     "message": "Η προσωπική διεύθυνση εντοπίστηκε. Καταχωρίστε τη διεύθυνση συμβολαίου του token."
@@ -3499,10 +3456,6 @@
   },
   "snapDetailWebsite": {
     "message": "Ιστότοπος"
-  },
-  "snapInstallRequest": {
-    "message": "Με την εγκατάσταση, εκχωρούνται στο $1 οι ακόλουθες άδειες. Συνεχίστε μόνο αν εμπιστεύεστε το $1.",
-    "description": "$1 is the snap name."
   },
   "snapInstallSuccess": {
     "message": "Η εγκατάσταση ολοκληρώθηκε"
@@ -4251,12 +4204,6 @@
   "switchedTo": {
     "message": "Έχετε αλλάξει σε"
   },
-  "switcherTitle": {
-    "message": "Επιλογέας δικτύου"
-  },
-  "switcherTourDescription": {
-    "message": "Κάντε κλικ στο εικονίδιο για να αλλάξετε δίκτυο ή να προσθέσετε ένα νέο δίκτυο"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Η αλλαγή δικτύων θα ακυρώσει όλες τις εκκρεμείς επιβεβαιώσεις"
   },
@@ -4792,10 +4739,6 @@
   },
   "whatsThis": {
     "message": "Τι είναι αυτό;"
-  },
-  "xOfY": {
-    "message": "$1 από $2",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total, and $1 is a count towards that total"
   },
   "xOfYPending": {
     "message": "$1 από $2 σε εκκρεμότητα",
