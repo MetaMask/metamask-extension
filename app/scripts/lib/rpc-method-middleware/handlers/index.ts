@@ -1,3 +1,4 @@
+import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import addEthereumChain from './add-ethereum-chain';
 import ethAccounts from './eth-accounts';
 import getProviderState from './get-provider-state';
@@ -16,7 +17,15 @@ import mmiSetAccountAndNetwork from './institutional/mmi-set-account-and-network
 import mmiOpenAddHardwareWallet from './institutional/mmi-open-add-hardware-wallet';
 ///: END:ONLY_INCLUDE_IF
 
-const handlers = [
+type MessageType = (typeof MESSAGE_TYPE)[keyof typeof MESSAGE_TYPE];
+
+type HandlerInterface = {
+  methodNames: MessageType[];
+  implementation: unknown;
+  hookNames?: { [key: string]: boolean };
+};
+
+const handlers: HandlerInterface[] = [
   addEthereumChain,
   ethAccounts,
   getProviderState,
@@ -34,4 +43,5 @@ const handlers = [
   mmiOpenAddHardwareWallet,
   ///: END:ONLY_INCLUDE_IF
 ];
+
 export default handlers;

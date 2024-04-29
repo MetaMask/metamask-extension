@@ -80,11 +80,11 @@ describe('Test Snap TxInsights-v2', function () {
           tag: 'button',
         });
         await driver.waitForSelector({
-          text: 'Connect',
+          text: 'Confirm',
           tag: 'button',
         });
         await driver.clickElement({
-          text: 'Connect',
+          text: 'Confirm',
           tag: 'button',
         });
 

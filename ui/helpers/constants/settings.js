@@ -1,3 +1,4 @@
+/* eslint-disable @metamask/design-tokens/color-no-hex*/
 import { IconName } from '../../components/component-library';
 import {
   ALERTS_ROUTE,
