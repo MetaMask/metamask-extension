@@ -24,7 +24,7 @@ type Request = {
   destinationToken: Address;
   sender: Address;
   recipient: Address;
-  slippage: Address; // slippage as a percentage; e.g. '1.0' for 1%
+  slippage: string; // slippage as a percentage; e.g. '1.0' for 1%
 };
 
 export type Quote = {
