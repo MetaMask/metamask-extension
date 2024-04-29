@@ -154,7 +154,7 @@ function AcknowledgeCheckbox({
         label={t('alertModalAcknowledge')}
         data-testid="alert-modal-acknowledge-checkbox"
         isChecked={isConfirmed}
-        onClick={() => onHandleAcknowledgeClick(selectedAlert.key, isConfirmed)}
+        onChange={() => onHandleAcknowledgeClick(selectedAlert.key, isConfirmed)}
         alignItems={AlignItems.flexStart}
         className={'alert-modal__acknowledge-checkbox'}
       />
