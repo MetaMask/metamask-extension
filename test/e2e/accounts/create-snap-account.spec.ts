@@ -13,8 +13,10 @@ import {
 import { Driver } from '../webdriver/driver';
 import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../constants';
 
-async function tS (n) {
-  const screenshot = await this.driver.takeScreenshot();
+async function tS (n, driver) {
+  const artifactDir = `./test-artifacts/chrome/CreateSnapAccount`;
+  const filepathBase = `${artifactDir}/test-failure`;
+  const screenshot = await driver.takeScreenshot();
   await fs.writeFile(`${filepathBase}-special-${n}-screenshot.png`, screenshot, {
     encoding: 'base64',
   });
@@ -34,15 +36,15 @@ describe('Create Snap Account', function (this: Suite) {
 
         // navigate to test Snaps page and connect
         await driver.openNewPage(TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL);
-        await tS(0)
+        await tS(0, driver);
         await driver.clickElement('#connectButton');
 
-        await tS(1)
+        await tS(1, driver);
 
         // switch to metamask extension and click connect to start installing the snap
         await switchToNotificationWindow(driver);
 
-        await tS(2)
+        await tS(2, driver);
 
         await driver.clickElement({
           text: 'Connect',
@@ -65,14 +67,14 @@ describe('Create Snap Account', function (this: Suite) {
           tag: 'button',
         });
 
-        await tS(3)
+        await tS(3, driver);
 
         // move back to the Snap window to test the create account flow
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.SnapSimpleKeyringDapp,
         );
 
-        await tS(4)
+        await tS(4, driver);
 
 
         // check the dapp connection status
@@ -124,14 +126,14 @@ describe('Create Snap Account', function (this: Suite) {
 
         // navigate to test Snaps page and connect
         await driver.openNewPage(TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL);
-        await tS(0)
+        await tS(0, driver);
 
         await driver.clickElement('#connectButton');
-        await tS(1)
+        await tS(1, driver);
 
         // switch to metamask extension and click connect to start installing the snap
         await switchToNotificationWindow(driver);
-        await tS(2)
+        await tS(2, driver);
 
         await driver.clickElement({
           text: 'Connect',
@@ -153,13 +155,13 @@ describe('Create Snap Account', function (this: Suite) {
           text: 'OK',
           tag: 'button',
         });
-        await tS(3)
+        await tS(3, driver);
 
         // move back to the Snap window to test the create account flow
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.SnapSimpleKeyringDapp,
         );
-        await tS(4)
+        await tS(4, driver);
 
 
         // check the dapp connection status
@@ -224,14 +226,14 @@ describe('Create Snap Account', function (this: Suite) {
         await unlockWallet(driver);
         // navigate to test Snaps page and connect
         await driver.openNewPage(TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL);
-        await tS(0)
+        await tS(0, driver);
 
         await driver.clickElement('#connectButton');
-        await tS(1)
+        await tS(1, driver);
 
         // switch to metamask extension and click connect to start installing the snap
         await switchToNotificationWindow(driver);
-        await tS(2)
+        await tS(2, driver);
 
         await driver.clickElement({
           text: 'Connect',
@@ -253,13 +255,13 @@ describe('Create Snap Account', function (this: Suite) {
           text: 'OK',
           tag: 'button',
         });
-        await tS(3)
+        await tS(3, driver);
 
         // move back to the Snap window to test the create account flow
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.SnapSimpleKeyringDapp,
         );
-        await tS(4)
+        await tS(4, driver);
 
         // check the dapp connection status
         await driver.waitForSelector({
