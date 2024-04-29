@@ -327,7 +327,7 @@
     "@metamask/snaps-sdk": "^4.0.1",
     "@metamask/snaps-utils": "^7.1.1",
     "@metamask/transaction-controller": "^28.1.0",
-    "@metamask/user-operation-controller": "^6.0.0",
+    "@metamask/user-operation-controller": "^8.0.1",
     "@metamask/utils": "^8.2.1",
     "@ngraveio/bc-ur": "^1.1.12",
     "@noble/ciphers": "^0.5.2",
