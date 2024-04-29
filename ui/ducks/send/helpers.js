@@ -232,7 +232,7 @@ export function generateTransactionParams(sendState) {
       // populated with the user input provided in hex field.
       txParams.to = draftTransaction.recipient.address;
       txParams.value = draftTransaction.amount.value;
-      txParams.data = draftTransaction.userInputHexData ?? undefined;
+      txParams.data = draftTransaction.userInputHexData || '0x';
   }
 
   // We need to make sure that we only include the right gas fee fields
