@@ -153,8 +153,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
 
         // Wait for confirmations to close and transactions from the second dapp to open
         // Two very large delays to wait for confirmation spam opening/closing bug.
-        await driver.delay(veryLargeDelayMs);
-        await driver.delay(veryLargeDelayMs);
+        await driver.delay(5000);
 
         // Wait for new confirmations queued from second dapp to open
         await switchToNotificationWindow(driver, 4);
