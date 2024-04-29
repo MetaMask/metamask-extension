@@ -44,6 +44,7 @@ import {
 import { MetaMetricsEventCategory } from '../../../../../shared/constants/metametrics';
 import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
 import { AssetPickerAmount } from '../..';
+import useUpdateSwapsState from '../../../../hooks/useUpdateSwapsState';
 import {
   SendPageAccountPicker,
   SendPageRecipientContent,
@@ -71,6 +72,32 @@ export const SendPage = () => {
 
   const handleSelectToken = useCallback(
     (token, isReceived) => {
+      const tokenType = token.type.toUpperCase();
+      switch (tokenType) {
+        case TokenStandard.ERC20:
+          token.type = AssetType.token;
+          token.standard = TokenStandard.ERC20;
+          break;
+        case TokenStandard.ERC721:
+          token.type = AssetType.NFT;
+          token.standard = TokenStandard.ERC721;
+          token.isERC721 = true;
+          break;
+        case TokenStandard.ERC1155:
+          token.type = AssetType.NFT;
+          token.standard = TokenStandard.ERC1155;
+          break;
+        default:
+          if (tokenType === 'NATIVE') {
+            break;
+          }
+          token.type = AssetType.unknown;
+          token.standard = TokenStandard.none;
+          break;
+      }
+
+      token.image = token.image ?? token.iconUrl;
+
       if (token.type === AssetType.native) {
         dispatch(
           updateSendAsset({
@@ -192,6 +219,8 @@ export const SendPage = () => {
     (newToken) => handleSelectToken(newToken, false),
     [handleSelectToken],
   );
+
+  useUpdateSwapsState();
 
   return (
     <Page className="multichain-send-page">
