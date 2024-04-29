@@ -5,9 +5,9 @@ const {
   completeSRPRevealQuiz,
   tapAndHoldToRevealSRP,
   closeSRPReveal,
-} = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
-const { tEn } = require('../../lib/i18n-helpers');
+} = require('../../helpers');
+const FixtureBuilder = require('../../fixture-builder');
+const { tEn } = require('../../../lib/i18n-helpers');
 
 describe('Reveal SRP through settings', function () {
   const testPassword = 'correct horse battery staple';

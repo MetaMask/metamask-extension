@@ -6,8 +6,8 @@ const {
   DAPP_URL,
   unlockWallet,
   WINDOW_TITLES,
-} = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+} = require('../../helpers');
+const FixtureBuilder = require('../../fixture-builder');
 
 describe('Sign in with ethereum', function () {
   it('user should be able to confirm sign in with ethereum', async function () {

@@ -5,9 +5,9 @@ const {
   unlockWallet,
   WINDOW_TITLES,
   generateGanacheOptions,
-} = require('../helpers');
-const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
-const FixtureBuilder = require('../fixture-builder');
+} = require('../../helpers');
+const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
+const FixtureBuilder = require('../../fixture-builder');
 
 describe('Failing contract interaction ', function () {
   const smartContract = SMART_CONTRACTS.FAILING;

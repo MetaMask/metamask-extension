@@ -5,8 +5,8 @@ const {
   withFixtures,
   regularDelayMs,
   unlockWallet,
-} = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+} = require('../../helpers');
+const FixtureBuilder = require('../../fixture-builder');
 
 describe('Custom RPC history', function () {
   it(`creates first custom RPC entry`, async function () {

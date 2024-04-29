@@ -6,8 +6,8 @@ const {
   locateAccountBalanceDOM,
   openActionMenuAndStartSendFlow,
   unlockWallet,
-} = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+} = require('../../helpers');
+const FixtureBuilder = require('../../fixture-builder');
 
 describe('MetaMask Responsive UI', function () {
   it('Creating a new wallet @no-mmi', async function () {

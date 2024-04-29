@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
-const { defaultGanacheOptions, withFixtures } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+const { defaultGanacheOptions, withFixtures } = require('../../helpers');
+const FixtureBuilder = require('../../fixture-builder');
 
 const lock = async (driver) => {
   await driver.clickElement('[data-testid="account-options-menu-button"]');

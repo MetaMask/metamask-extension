@@ -31,7 +31,7 @@ import { flushPromises } from '../../test/lib/timer-helpers';
 import { deferredPromise } from './lib/util';
 import MetaMaskController from './metamask-controller';
 
-const { Ganache } = require('../../test/e2e/ganache');
+const { Ganache } = require('../../test/e2e/seeder/ganache');
 
 const ganacheServer = new Ganache();
 
