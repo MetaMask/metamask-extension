@@ -19,6 +19,12 @@ const PAGES = {
   POPUP: 'popup',
 };
 
+const allowedHandles = {
+  ['MetaMask']: true,
+  ['SSK - Simple Snap Keyring']: true,
+  ['MetaMask Dialog']: true,
+};
+
 /**
  * Temporary workaround to patch selenium's element handle API with methods
  * that match the playwright API for Elements
@@ -546,7 +552,7 @@ class Driver {
     let windowHandles = await this.driver.getAllWindowHandles();
     console.log('--- windowHandles A', windowHandles);
     windowHandles = windowHandles.filter((h) => {
-      return !this.ignoredHandleList[h];
+      return allowedHandles[h];
     });
     console.log('--- windowHandles B', windowHandles);
     return windowHandles;
@@ -591,7 +597,7 @@ class Driver {
   ) {
     let windowHandles =
       initialWindowHandles || (await this.driver.getAllWindowHandles());
-    windowHandles = windowHandles.filter((h) => !this.ignoredHandleList[h]);
+    windowHandles = windowHandles.filter((h) => allowedHandles[h]);
     let timeElapsed = 0;
 
     while (timeElapsed <= timeout) {
