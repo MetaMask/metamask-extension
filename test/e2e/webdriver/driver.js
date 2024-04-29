@@ -615,6 +615,7 @@ class Driver {
       timeElapsed += delayStep;
       // refresh the window handles
       windowHandles = await this.driver.getAllWindowHandles();
+      windowHandles = windowHandles.filter((h) => !this.ignoredHandleList[h]);
     }
 
     throw new Error(`No window with title: ${title}`);
