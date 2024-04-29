@@ -208,8 +208,13 @@ export const SendPage = () => {
 
   const sendErrors = useSelector(getSendErrors);
   const isInvalidSendForm = useSelector(isSendFormInvalid);
+
+  const isGasTooLow =
+    sendErrors.gasFee === INSUFFICIENT_FUNDS_ERROR &&
+    sendErrors.amount !== INSUFFICIENT_FUNDS_ERROR;
+
   const submitDisabled =
-    (isInvalidSendForm && sendErrors.gasFee !== INSUFFICIENT_FUNDS_ERROR) ||
+    (isInvalidSendForm && !isGasTooLow) ||
     requireContractAddressAcknowledgement;
 
   const isSendFormShown =
