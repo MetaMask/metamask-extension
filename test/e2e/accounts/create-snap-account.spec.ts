@@ -13,7 +13,7 @@ import {
 import { Driver } from '../webdriver/driver';
 import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../constants';
 
-async function tS (n, driver) {
+async function tS (n: any, driver: any) {
   const artifactDir = `./test-artifacts/chrome/CreateSnapAccount`;
   const filepathBase = `${artifactDir}/test-failure`;
   const screenshot = await driver.takeScreenshot();
