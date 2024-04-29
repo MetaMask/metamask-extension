@@ -25387,7 +25387,7 @@ __metadata:
     superstruct: "npm:^1.0.3"
     terser: "npm:^5.7.0"
     through2: "npm:^4.0.2"
-    ts-mixer: "npm:^6.0.4"
+    ts-mixer: "patch:ts-mixer@npm%3A6.0.4#~/.yarn/patches/ts-mixer-npm-6.0.4-5d9747bdf5.patch"
     ts-node: "npm:^10.9.2"
     tsx: "npm:^4.7.1"
     ttest: "npm:^2.1.1"
@@ -33835,10 +33835,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-mixer@npm:^6.0.3, ts-mixer@npm:^6.0.4":
+"ts-mixer@npm:6.0.4":
   version: 6.0.4
   resolution: "ts-mixer@npm:6.0.4"
   checksum: f20571a4a4ff7b5e1a2ff659208c1ea9d4180dda932b71d289edc99e25a2948c9048e2e676b930302ac0f8e88279e0da6022823183e67de3906a3f3a8b72ea80
+  languageName: node
+  linkType: hard
+
+"ts-mixer@patch:ts-mixer@npm%3A6.0.4#~/.yarn/patches/ts-mixer-npm-6.0.4-5d9747bdf5.patch":
+  version: 6.0.4
+  resolution: "ts-mixer@patch:ts-mixer@npm%3A6.0.4#~/.yarn/patches/ts-mixer-npm-6.0.4-5d9747bdf5.patch::version=6.0.4&hash=50841d"
+  checksum: 06ec178abc6fc6c27b401fc6cd44b46c385534050c75b6eaa82ca526685b354783d1016bd524463cf9dadb43e78d8344e8f02d179fe0421a8f0de8d697dbd7c1
   languageName: node
   linkType: hard
 
