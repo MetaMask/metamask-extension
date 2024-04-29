@@ -10,7 +10,6 @@ const {
   WINDOW_TITLES,
   defaultGanacheOptions,
   largeDelayMs,
-  veryLargeDelayMs,
   switchToNotificationWindow,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
