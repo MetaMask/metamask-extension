@@ -5,9 +5,9 @@ const { get, has, set, unset, cloneDeep } = require('lodash');
 const { Browser } = require('selenium-webdriver');
 const { format } = require('prettier');
 const { isObject } = require('@metamask/utils');
-const { SENTRY_UI_STATE } = require('../../../app/scripts/lib/setupSentry');
-const FixtureBuilder = require('../fixture-builder');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { SENTRY_UI_STATE } = require('../../../../app/scripts/lib/setupSentry');
+const FixtureBuilder = require('../../fixture-builder');
+const { convertToHexValue, withFixtures } = require('../../helpers');
 
 /**
  * Derive a UI state field from a background state field.
