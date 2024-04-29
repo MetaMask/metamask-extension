@@ -25,10 +25,13 @@ async function tS (n: any, driver: any, title: any) {
 
 describe('Create Snap Account', function (this: Suite) {
   it('create Snap account popup contains correct Snap name and snapId', async function () {
+    const driverOptions = { openDevToolsForTabs: true };
+
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
+        driverOptions,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
