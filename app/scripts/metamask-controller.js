@@ -601,6 +601,7 @@ export default class MetamaskController extends EventEmitter {
       allowedActions: [
         'ApprovalController:addRequest',
         'NetworkController:getNetworkClientById',
+        'AccountsController:getAccount',
       ],
       allowedEvents: [
         'NetworkController:networkDidChange',
@@ -612,36 +613,10 @@ export default class MetamaskController extends EventEmitter {
     this.tokensController = new TokensController({
       messenger: tokensControllerMessenger,
       chainId: this.networkController.state.providerConfig.chainId,
-      // TODO: The tokens controller currently does not support internalAccounts. This is done to match the behavior of the previous tokens controller subscription.
-      onPreferencesStateChange: (listener) =>
-        this.controllerMessenger.subscribe(
-          `AccountsController:selectedAccountChange`,
-          (newlySelectedInternalAccount) => {
-            listener({ selectedAddress: newlySelectedInternalAccount.address });
-          },
-        ),
-      onNetworkDidChange: (cb) =>
-        networkControllerMessenger.subscribe(
-          'NetworkController:networkDidChange',
-          () => {
-            const networkState = this.networkController.state;
-            return cb(networkState);
-          },
-        ),
-      onTokenListStateChange: (listener) =>
-        this.controllerMessenger.subscribe(
-          `${this.tokenListController.name}:stateChange`,
-          listener,
-        ),
-      getNetworkClientById: this.networkController.getNetworkClientById.bind(
-        this.networkController,
-      ),
       config: {
         provider: this.provider,
-        selectedAddress:
-          initState.AccountsController?.internalAccounts?.accounts[
-            initState.AccountsController?.internalAccounts?.selectedAccount
-          ]?.address ?? '',
+        selectedAccountId:
+          initState.AccountsController?.internalAccounts?.selectedAccount ?? '',
       },
       state: initState.TokensController,
     });
@@ -726,13 +701,6 @@ export default class MetamaskController extends EventEmitter {
         networkControllerMessenger,
         'NetworkController:stateChange',
       ),
-      onSelectedAccountChange: (listener) =>
-        this.controllerMessenger.subscribe(
-          `AccountsController:selectedAccountChange`,
-          (newlySelectedInternalAccount) => {
-            listener(newlySelectedInternalAccount);
-          },
-        ),
       getOpenSeaApiKey: () => this.nftController.openSeaApiKey,
       getBalancesInSingleCall:
         this.assetsContractController.getBalancesInSingleCall.bind(
@@ -741,18 +709,14 @@ export default class MetamaskController extends EventEmitter {
       addNft: this.nftController.addNft.bind(this.nftController),
       getNftApi: this.nftController.getNftApi.bind(this.nftController),
       getNftState: () => this.nftController.state,
-      selectedAccountId: this.accountsController.getSelectedAccount.bind(
-        this.accountsController,
-      ).address,
-      getInternalAccount: this.accountsController.getAccount.bind(
-        this.accountsController,
-      ),
       // added this to track previous value of useNftDetection, should be true on very first initializing of controller[]
       disabled:
         this.preferencesController.store.getState().useNftDetection ===
         undefined
           ? true
           : !this.preferencesController.store.getState().useNftDetection,
+      selectedAddress:
+        this.preferencesController.store.getState().selectedAddress,
     });
 
     this.metaMetricsController = new MetaMetricsController({
@@ -909,20 +873,21 @@ export default class MetamaskController extends EventEmitter {
       {
         chainId: this.networkController.state.providerConfig.chainId,
         ticker: this.networkController.state.providerConfig.ticker,
-        selectedAddress: this.accountsController.getSelectedAccount().address,
+        selectedAccountId: this.accountsController.getSelectedAccount().id,
+        getInternalAccount: this.accountsController.getAccount.bind(
+          this.accountsController,
+        ),
         onTokensStateChange: (listener) =>
           this.tokensController.subscribe(listener),
         onNetworkStateChange: networkControllerMessenger.subscribe.bind(
           networkControllerMessenger,
           'NetworkController:stateChange',
         ),
-        onPreferencesStateChange: (listener) =>
+        onSelectedAccountChange: (listener) =>
           this.controllerMessenger.subscribe(
             `AccountsController:selectedAccountChange`,
             (newlySelectedInternalAccount) => {
-              listener({
-                selectedAddress: newlySelectedInternalAccount.address,
-              });
+              listener(newlySelectedInternalAccount);
             },
           ),
         tokenPricesService: new CodefiTokenPricesServiceV2(),
@@ -1523,6 +1488,7 @@ export default class MetamaskController extends EventEmitter {
         name: 'TokenDetectionController',
         allowedActions: [
           'AccountsController:getSelectedAccount',
+          'AccountsController:getAccount',
           'KeyringController:getState',
           'NetworkController:getNetworkClientById',
           'NetworkController:getNetworkConfigurationByNetworkClientId',
