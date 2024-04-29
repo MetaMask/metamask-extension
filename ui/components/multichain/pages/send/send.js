@@ -75,6 +75,7 @@ export const SendPage = () => {
       const tokenType = token.type.toUpperCase();
       switch (tokenType) {
         case TokenStandard.ERC20:
+        case 'TOKEN':
           token.type = AssetType.token;
           token.standard = TokenStandard.ERC20;
           break;
