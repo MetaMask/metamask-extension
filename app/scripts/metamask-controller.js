@@ -151,6 +151,11 @@ import {
 } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IF
 
+import {
+  methodsRequiringNetworkSwitch,
+  methodsWithConfirmation,
+} from '../../shared/constants/methods-tags';
+
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IF
@@ -160,11 +165,7 @@ import {
   TokenStandard,
   SIGNING_METHODS,
 } from '../../shared/constants/transaction';
-import {
-  GAS_API_BASE_URL,
-  GAS_DEV_API_BASE_URL,
-  SWAPS_CLIENT_ID,
-} from '../../shared/constants/swaps';
+import { SWAPS_CLIENT_ID } from '../../shared/constants/swaps';
 import {
   CHAIN_IDS,
   NETWORK_TYPES,
@@ -316,7 +317,10 @@ import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscree
 import PREINSTALLED_SNAPS from './snaps/preinstalled-snaps';
 ///: END:ONLY_INCLUDE_IF
 import AuthenticationController from './controllers/authentication/authentication-controller';
+import UserStorageController from './controllers/user-storage/user-storage-controller';
 import { WeakRefObjectMap } from './lib/WeakRefObjectMap';
+
+import { PushPlatformNotificationsController } from './controllers/push-platform-notifications/push-platform-notifications';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -413,6 +417,12 @@ export default class MetamaskController extends EventEmitter {
 
     // next, we will initialize the controllers
     // controller initialization order matters
+    const clearPendingConfirmations = () => {
+      this.encryptionPublicKeyController.clearUnapproved();
+      this.decryptMessageController.clearUnapproved();
+      this.signatureController.clearUnapproved();
+      this.approvalController.clear(ethErrors.provider.userRejectedRequest());
+    };
 
     this.queuedRequestController = new QueuedRequestController({
       messenger: this.controllerMessenger.getRestricted({
@@ -422,7 +432,10 @@ export default class MetamaskController extends EventEmitter {
           'NetworkController:setActiveNetwork',
           'SelectedNetworkController:getNetworkClientIdForDomain',
         ],
+        allowedEvents: ['SelectedNetworkController:stateChange'],
       }),
+      methodsRequiringNetworkSwitch,
+      clearPendingConfirmations,
     });
 
     this.approvalController = new ApprovalController({
@@ -506,15 +519,6 @@ export default class MetamaskController extends EventEmitter {
       allowedEvents: ['NetworkController:stateChange'],
     });
 
-    this.tokenListController = new TokenListController({
-      chainId: this.networkController.state.providerConfig.chainId,
-      preventPollingOnNetworkRestart: initState.TokenListController
-        ? initState.TokenListController.preventPollingOnNetworkRestart
-        : true,
-      messenger: tokenListMessenger,
-      state: initState.TokenListController,
-    });
-
     const preferencesMessenger = this.controllerMessenger.getRestricted({
       name: 'PreferencesController',
       allowedActions: [],
@@ -532,6 +536,15 @@ export default class MetamaskController extends EventEmitter {
           'KeyringController:stateChange',
           listener,
         ),
+    });
+
+    this.tokenListController = new TokenListController({
+      chainId: this.networkController.state.providerConfig.chainId,
+      preventPollingOnNetworkRestart: !this.#isTokenListPollingRequired(
+        this.preferencesController.store.getState(),
+      ),
+      messenger: tokenListMessenger,
+      state: initState.TokenListController,
     });
 
     this.assetsContractController = new AssetsContractController(
@@ -691,6 +704,14 @@ export default class MetamaskController extends EventEmitter {
       addNft: this.nftController.addNft.bind(this.nftController),
       getNftApi: this.nftController.getNftApi.bind(this.nftController),
       getNftState: () => this.nftController.state,
+      // added this to track previous value of useNftDetection, should be true on very first initializing of controller[]
+      disabled:
+        this.preferencesController.store.getState().useNftDetection ===
+        undefined
+          ? true
+          : !this.preferencesController.store.getState().useNftDetection,
+      selectedAddress:
+        this.preferencesController.store.getState().selectedAddress,
     });
 
     this.metaMetricsController = new MetaMetricsController({
@@ -727,10 +748,6 @@ export default class MetamaskController extends EventEmitter {
       allowedEvents: ['NetworkController:stateChange'],
     });
 
-    const gasApiBaseUrl = process.env.SWAPS_USE_DEV_APIS
-      ? GAS_DEV_API_BASE_URL
-      : GAS_API_BASE_URL;
-
     this.gasFeeController = new GasFeeController({
       state: initState.GasFeeController,
       interval: 10000,
@@ -750,13 +767,12 @@ export default class MetamaskController extends EventEmitter {
         ),
       getCurrentAccountEIP1559Compatibility:
         this.getCurrentAccountEIP1559Compatibility.bind(this),
-      legacyAPIEndpoint: `${gasApiBaseUrl}/networks/<chain_id>/gasPrices`,
-      EIP1559APIEndpoint: `${gasApiBaseUrl}/networks/<chain_id>/suggestedGasFees`,
       getCurrentNetworkLegacyGasAPICompatibility: () => {
         const { chainId } = this.networkController.state.providerConfig;
         return chainId === CHAIN_IDS.BSC;
       },
       getChainId: () => this.networkController.state.providerConfig.chainId,
+      infuraAPIKey: opts.infuraProjectId,
     });
 
     this.appStateController = new AppStateController({
@@ -911,12 +927,8 @@ export default class MetamaskController extends EventEmitter {
         const { useCurrencyRateCheck: prevUseCurrencyRateCheck } = prevState;
         const { useCurrencyRateCheck: currUseCurrencyRateCheck } = currState;
         if (currUseCurrencyRateCheck && !prevUseCurrencyRateCheck) {
-          this.currencyRateController.startPollingByNetworkClientId(
-            this.networkController.state.selectedNetworkClientId,
-          );
           this.tokenRatesController.start();
         } else if (!currUseCurrencyRateCheck && prevUseCurrencyRateCheck) {
-          this.currencyRateController.stopAllPolling();
           this.tokenRatesController.stop();
         }
       }, this.preferencesController.store.getState()),
@@ -1102,6 +1114,7 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe('KeyringController:lock', () =>
       this._onLock(),
     );
+
     this.controllerMessenger.subscribe(
       'KeyringController:stateChange',
       (state) => {
@@ -1188,9 +1201,10 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
       state: initState.SelectedNetworkController,
-      getUseRequestQueue: this.preferencesController.getUseRequestQueue.bind(
-        this.preferencesController,
-      ),
+      useRequestQueuePreference:
+        this.preferencesController.store.getState().useRequestQueue,
+      onPreferencesStateChange: (listener) =>
+        this.preferencesController.store.subscribe(listener),
       domainProxyMap: new WeakRefObjectMap(),
     });
 
@@ -1405,9 +1419,30 @@ export default class MetamaskController extends EventEmitter {
       state: initState.AuthenticationController,
       messenger: this.controllerMessenger.getRestricted({
         name: 'AuthenticationController',
-        allowedActions: [`${this.snapController.name}:handleRequest`],
+        allowedActions: ['SnapController:handleRequest'],
       }),
     });
+    this.userStorageController = new UserStorageController({
+      state: initState.UserStorageController,
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'UserStorageController',
+        allowedActions: [
+          'SnapController:handleRequest',
+          'AuthenticationController:getBearerToken',
+          'AuthenticationController:getSessionProfile',
+          'AuthenticationController:isSignedIn',
+          'AuthenticationController:performSignIn',
+        ],
+      }),
+    });
+    this.pushPlatformNotificationsController =
+      new PushPlatformNotificationsController({
+        messenger: this.controllerMessenger.getRestricted({
+          name: 'PushPlatformNotificationsController',
+          allowedActions: ['AuthenticationController:getBearerToken'],
+        }),
+        state: initState.PushPlatformNotificationsController,
+      });
 
     // account tracker watches balances, nonces, and any code at their address
     this.accountTracker = new AccountTracker({
@@ -1450,8 +1485,14 @@ export default class MetamaskController extends EventEmitter {
         const { completedOnboarding: prevCompletedOnboarding } = prevState;
         const { completedOnboarding: currCompletedOnboarding } = currState;
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
+          const { address } = this.accountsController.getSelectedAccount();
+
           this.postOnboardingInitialization();
           this.triggerNetworkrequests();
+          // execute once the token detection on the post-onboarding
+          await this.tokenDetectionController.detectTokens({
+            selectedAddress: address,
+          });
         }
       }, this.onboardingController.store.getState()),
     );
@@ -1646,25 +1687,6 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this._addTransactionControllerListeners();
-
-    networkControllerMessenger.subscribe(
-      'NetworkController:networkDidChange',
-      async () => {
-        try {
-          if (
-            this.preferencesController.store.getState().useCurrencyRateCheck
-          ) {
-            await this.currencyRateController.stopAllPolling();
-            this.currencyRateController.startPollingByNetworkClientId(
-              this.networkController.state.selectedNetworkClientId,
-            );
-          }
-        } catch (error) {
-          // TODO: Handle failure to get conversion rate more gracefully
-          console.error(error);
-        }
-      },
-    );
 
     this.decryptMessageController = new DecryptMessageController({
       getState: this.getState.bind(this),
@@ -1941,12 +1963,7 @@ export default class MetamaskController extends EventEmitter {
     // clear unapproved transactions and messages when the network will change
     networkControllerMessenger.subscribe(
       'NetworkController:networkWillChange',
-      () => {
-        this.encryptionPublicKeyController.clearUnapproved();
-        this.decryptMessageController.clearUnapproved();
-        this.signatureController.clearUnapproved();
-        this.approvalController.clear(ethErrors.provider.userRejectedRequest());
-      },
+      clearPendingConfirmations.bind(this),
     );
 
     this.metamaskMiddleware = createMetamaskMiddleware({
@@ -2247,12 +2264,14 @@ export default class MetamaskController extends EventEmitter {
     const preferencesControllerState =
       this.preferencesController.store.getState();
 
-    const { useCurrencyRateCheck } = preferencesControllerState;
+    const { useCurrencyRateCheck, useNftDetection } =
+      preferencesControllerState;
+
+    if (useNftDetection) {
+      this.nftDetectionController.start();
+    }
 
     if (useCurrencyRateCheck) {
-      this.currencyRateController.startPollingByNetworkClientId(
-        this.networkController.state.selectedNetworkClientId,
-      );
       this.tokenRatesController.start();
     }
 
@@ -2265,6 +2284,7 @@ export default class MetamaskController extends EventEmitter {
     this.accountTracker.stop();
     this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
+    this.nftDetectionController.stop();
 
     const preferencesControllerState =
       this.preferencesController.store.getState();
@@ -2272,7 +2292,6 @@ export default class MetamaskController extends EventEmitter {
     const { useCurrencyRateCheck } = preferencesControllerState;
 
     if (useCurrencyRateCheck) {
-      this.currencyRateController.stopAllPolling();
       this.tokenRatesController.stop();
     }
 
@@ -3170,8 +3189,6 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setShowBetaHeader.bind(appStateController),
       setShowPermissionsTour:
         appStateController.setShowPermissionsTour.bind(appStateController),
-      setShowProductTour:
-        appStateController.setShowProductTour.bind(appStateController),
       setShowAccountBanner:
         appStateController.setShowAccountBanner.bind(appStateController),
       setShowNetworkBanner:
@@ -3516,19 +3533,21 @@ export default class MetamaskController extends EventEmitter {
         announcementController,
       ),
 
+      // CurrencyRateController
+      currencyRateStartPollingByNetworkClientId:
+        currencyRateController.startPollingByNetworkClientId.bind(
+          currencyRateController,
+        ),
+      currencyRateStopPollingByPollingToken:
+        currencyRateController.stopPollingByPollingToken.bind(
+          currencyRateController,
+        ),
+
       // GasFeeController
       gasFeeStartPollingByNetworkClientId:
         gasFeeController.startPollingByNetworkClientId.bind(gasFeeController),
       gasFeeStopPollingByPollingToken:
         gasFeeController.stopPollingByPollingToken.bind(gasFeeController),
-
-      getGasFeeEstimatesAndStartPolling:
-        gasFeeController.getGasFeeEstimatesAndStartPolling.bind(
-          gasFeeController,
-        ),
-
-      disconnectGasFeeEstimatePoller:
-        gasFeeController.disconnectPoller.bind(gasFeeController),
 
       getGasFeeTimeEstimate:
         gasFeeController.getTimeEstimate.bind(gasFeeController),
@@ -4872,6 +4891,7 @@ export default class MetamaskController extends EventEmitter {
       useRequestQueue: this.preferencesController.getUseRequestQueue.bind(
         this.preferencesController,
       ),
+      methodsWithConfirmation,
     });
     // add some middleware that will switch chain on each request (as needed)
     engine.push(requestQueueMiddleware);
@@ -5687,8 +5707,8 @@ export default class MetamaskController extends EventEmitter {
    */
   onClientClosed() {
     try {
-      this.gasFeeController.stopPolling();
       this.gasFeeController.stopAllPolling();
+      this.currencyRateController.stopAllPolling();
       this.appStateController.clearPollingTokens();
     } catch (error) {
       console.error(error);
@@ -5707,8 +5727,8 @@ export default class MetamaskController extends EventEmitter {
     const pollingTokensToDisconnect =
       this.appStateController.store.getState()[appStatePollingTokenType];
     pollingTokensToDisconnect.forEach((pollingToken) => {
-      this.gasFeeController.disconnectPoller(pollingToken);
       this.gasFeeController.stopPollingByPollingToken(pollingToken);
+      this.currencyRateController.stopPollingByPollingToken(pollingToken);
       this.appStateController.removePollingToken(
         pollingToken,
         appStatePollingTokenType,

@@ -27,7 +27,6 @@ const initialState = {
   isUnlocked: false,
   isAccountMenuOpen: false,
   isNetworkMenuOpen: false,
-  identities: {},
   internalAccounts: { accounts: {}, selectedAccount: '' },
   transactions: [],
   networkConfigurations: {},
@@ -99,9 +98,6 @@ export default function reduceMetamask(state = initialState, action) {
     case actionConstants.SET_ACCOUNT_LABEL: {
       const { account } = action.value;
       const name = action.value.label;
-      const id = {};
-      id[account] = { ...metamaskState.identities[account], name };
-      const identities = { ...metamaskState.identities, ...id };
       const accountToUpdate = Object.values(
         metamaskState.internalAccounts.accounts,
       ).find((internalAccount) => {
@@ -121,7 +117,7 @@ export default function reduceMetamask(state = initialState, action) {
           },
         },
       };
-      return Object.assign(metamaskState, { identities, internalAccounts });
+      return Object.assign(metamaskState, { internalAccounts });
     }
 
     case actionConstants.UPDATE_CUSTOM_NONCE:
