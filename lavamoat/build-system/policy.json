@@ -1678,8 +1678,8 @@
       "packages": {
         "browserify>browser-resolve": true,
         "browserify>cached-path-relative": true,
-        "browserify>concat-stream": true,
         "browserify>duplexer2": true,
+        "browserify>module-deps>concat-stream": true,
         "browserify>module-deps>detective": true,
         "browserify>module-deps>stream-combiner2": true,
         "browserify>module-deps>through2": true,
@@ -1690,6 +1690,18 @@
         "readable-stream": true,
         "watchify>defined": true,
         "watchify>xtend": true
+      }
+    },
+    "browserify>module-deps>concat-stream": {
+      "globals": {
+        "Buffer.concat": true,
+        "Buffer.isBuffer": true
+      },
+      "packages": {
+        "browserify>concat-stream>typedarray": true,
+        "pumpify>inherits": true,
+        "readable-stream": true,
+        "terser>source-map-support>buffer-from": true
       }
     },
     "browserify>module-deps>detective": {
@@ -5890,9 +5902,28 @@
       },
       "packages": {
         "browserify>concat-stream>typedarray": true,
-        "lavamoat-browserify>readable-stream": true,
+        "lavamoat-browserify>concat-stream>readable-stream": true,
         "pumpify>inherits": true,
         "terser>source-map-support>buffer-from": true
+      }
+    },
+    "lavamoat-browserify>concat-stream>readable-stream": {
+      "builtin": {
+        "buffer.Buffer": true,
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.env.READABLE_STREAM": true,
+        "process.nextTick": true,
+        "process.stderr": true,
+        "process.stdout": true
+      },
+      "packages": {
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true
       }
     },
     "lavamoat-browserify>readable-stream": {

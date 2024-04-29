@@ -858,11 +858,69 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
-        "@metamask/base-controller": true,
-        "@metamask/eth-snap-keyring": true,
-        "@metamask/keyring-api": true,
+        "@metamask/accounts-controller>@metamask/base-controller": true,
+        "@metamask/accounts-controller>@metamask/eth-snap-keyring": true,
+        "@metamask/accounts-controller>@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
         "uuid": true
+      }
+    },
+    "@metamask/accounts-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
+      }
+    },
+    "@metamask/accounts-controller>@metamask/eth-snap-keyring": {
+      "globals": {
+        "URL": true,
+        "console.error": true
+      },
+      "packages": {
+        "@ethereumjs/tx": true,
+        "@metamask/accounts-controller>@metamask/eth-snap-keyring>@metamask/utils": true,
+        "@metamask/accounts-controller>@metamask/eth-snap-keyring>uuid": true,
+        "@metamask/accounts-controller>@metamask/keyring-api": true,
+        "@metamask/eth-sig-util": true,
+        "superstruct": true,
+        "webpack>events": true
+      }
+    },
+    "@metamask/accounts-controller>@metamask/eth-snap-keyring>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/accounts-controller>@metamask/eth-snap-keyring>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/accounts-controller>@metamask/keyring-api": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "@metamask/accounts-controller>@metamask/keyring-api>uuid": true,
+        "@metamask/utils": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/accounts-controller>@metamask/keyring-api>uuid": {
+      "globals": {
+        "crypto": true
       }
     },
     "@metamask/address-book-controller": {
@@ -1240,32 +1298,6 @@
       },
       "packages": {
         "browserify>browser-resolve": true
-      }
-    },
-    "@metamask/eth-snap-keyring": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@ethereumjs/tx": true,
-        "@metamask/eth-sig-util": true,
-        "@metamask/eth-snap-keyring>@metamask/keyring-api": true,
-        "@metamask/eth-snap-keyring>uuid": true,
-        "@metamask/utils": true,
-        "superstruct": true,
-        "webpack>events": true
-      }
-    },
-    "@metamask/eth-snap-keyring>@metamask/keyring-api": {
-      "packages": {
-        "@metamask/eth-snap-keyring>uuid": true,
-        "@metamask/utils": true,
-        "superstruct": true
-      }
-    },
-    "@metamask/eth-snap-keyring>uuid": {
-      "globals": {
-        "crypto": true
       }
     },
     "@metamask/eth-token-tracker": {
@@ -2536,7 +2568,6 @@
         "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-middleware-stream": true,
         "@metamask/snaps-controllers>@xstate/fsm": true,
-        "@metamask/snaps-controllers>concat-stream": true,
         "@metamask/snaps-controllers>get-npm-tarball-url": true,
         "@metamask/snaps-controllers>nanoid": true,
         "@metamask/snaps-controllers>readable-stream": true,
@@ -2548,7 +2579,8 @@
         "@metamask/snaps-utils>@metamask/snaps-registry": true,
         "@metamask/utils": true,
         "browserify>browserify-zlib": true,
-        "eslint>fast-deep-equal": true
+        "eslint>fast-deep-equal": true,
+        "lavamoat-browserify>concat-stream": true
       }
     },
     "@metamask/snaps-controllers-flask>nanoid": {
@@ -2578,16 +2610,18 @@
       },
       "packages": {
         "@metamask/safe-event-emitter": true,
-        "@metamask/snaps-controllers>readable-stream": true
+        "@metamask/snaps-controllers>@metamask/json-rpc-middleware-stream>readable-stream": true
       }
     },
-    "@metamask/snaps-controllers>concat-stream": {
+    "@metamask/snaps-controllers>@metamask/json-rpc-middleware-stream>readable-stream": {
       "packages": {
-        "@metamask/snaps-controllers>readable-stream": true,
+        "browserify>browser-resolve": true,
         "browserify>buffer": true,
-        "browserify>concat-stream>typedarray": true,
+        "browserify>process": true,
+        "browserify>string_decoder": true,
         "pumpify>inherits": true,
-        "terser>source-map-support>buffer-from": true
+        "readable-stream>util-deprecate": true,
+        "webpack>events": true
       }
     },
     "@metamask/snaps-controllers>nanoid": {
@@ -4338,6 +4372,26 @@
     "koa>is-generator-function>has-tostringtag": {
       "packages": {
         "string.prototype.matchall>has-symbols": true
+      }
+    },
+    "lavamoat-browserify>concat-stream": {
+      "packages": {
+        "browserify>buffer": true,
+        "browserify>concat-stream>typedarray": true,
+        "lavamoat-browserify>concat-stream>readable-stream": true,
+        "pumpify>inherits": true,
+        "terser>source-map-support>buffer-from": true
+      }
+    },
+    "lavamoat-browserify>concat-stream>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "browserify>process": true,
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true,
+        "webpack>events": true
       }
     },
     "localforage": {
