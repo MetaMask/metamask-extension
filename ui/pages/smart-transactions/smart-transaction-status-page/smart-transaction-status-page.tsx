@@ -218,6 +218,7 @@ const Description = ({ description }: { description: string | undefined }) => {
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       alignItems={AlignItems.center}
+      className="smart-transaction-status-page__description"
     >
       <Text
         marginTop={2}
