@@ -1,6 +1,13 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventLocation,
+  MetaMetricsEventName,
+} from '../../../../../../shared/constants/metametrics';
+import { ConfirmInfoRow } from '../../../../../components/app/confirm/info/row';
+import { ConfirmInfoRowCurrency } from '../../../../../components/app/confirm/info/row/currency';
+import {
   AvatarAccount,
   AvatarAccountSize,
   AvatarAccountVariant,
@@ -15,6 +22,9 @@ import {
   ModalOverlay,
   Text,
 } from '../../../../../components/component-library';
+import { AddressCopyButton } from '../../../../../components/multichain';
+import Tooltip from '../../../../../components/ui/tooltip/tooltip';
+import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
   AlignItems,
   Display,
@@ -25,31 +35,20 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { ConfirmInfoRow } from '../../../../../components/app/confirm/info/row';
-import { AddressCopyButton } from '../../../../../components/multichain';
-import Tooltip from '../../../../../components/ui/tooltip/tooltip';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
-
 import {
   currentConfirmationSelector,
   getUseBlockie,
 } from '../../../../../selectors';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventLocation,
-  MetaMetricsEventName,
-} from '../../../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
-import { ConfirmInfoRowCurrency } from '../../../../../components/app/confirm/info/row/currency';
 import { useBalance } from '../../../hooks/useBalance';
+import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
 
 const HeaderInfo = () => {
   const useBlockie = useSelector(getUseBlockie);
   const [showAccountInfo, setShowAccountInfo] = React.useState(false);
 
   const currentConfirmation = useSelector(currentConfirmationSelector);
-  const { recipientAddress: fromAddress, recipientName: fromName } =
+  const { senderAddress: fromAddress, senderName: fromName } =
     useConfirmationRecipientInfo();
 
   const t = useI18nContext();
