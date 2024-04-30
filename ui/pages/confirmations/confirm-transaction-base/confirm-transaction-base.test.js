@@ -1,19 +1,16 @@
-import React from 'react';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import { fireEvent } from '@testing-library/react';
-
 import { NetworkType } from '@metamask/controller-utils';
-import { NetworkStatus } from '@metamask/network-controller';
 import { EthAccountType } from '@metamask/keyring-api';
+import { NetworkStatus } from '@metamask/network-controller';
 import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { fireEvent } from '@testing-library/react';
+import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { setBackgroundConnection } from '../../../store/background-connection';
-import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../../test/jest/mocks';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import {
@@ -21,14 +18,15 @@ import {
   GOERLI_DISPLAY_NAME,
   NETWORK_TYPES,
 } from '../../../../shared/constants/network';
-import { domainInitialState } from '../../../ducks/domains';
-
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
+import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../../test/jest/mocks';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { domainInitialState } from '../../../ducks/domains';
 import { defaultBuyableChains } from '../../../ducks/ramps/constants';
-import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import ConfirmTransactionBase from './confirm-transaction-base.container';
 
 jest.mock('../components/simulation-details/useSimulationMetrics');
