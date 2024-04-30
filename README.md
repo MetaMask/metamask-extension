@@ -1,4 +1,4 @@
-so much nonsense
+so much nonsense!
 
 # MetaMask Browser Extension
 
