@@ -31,7 +31,15 @@ export const BROKEN_PRERENDER_BROWSER_VERSIONS = {
 export const FIXED_PRERENDER_BROWSER_VERSIONS = {
   // https://chromium.googlesource.com/chromium/src/+/a88eee8a2798c1dc4d69b255ccad24fea5ff2d8b
   // https://chromiumdash.appspot.com/commits?commit=a88eee8a2798c1dc4d69b255ccad24fea5ff2d8b&platform=Windows
+  windows: {
+    chrome: '>=120',
+    edge: '>=120',
+  },
   // https://chromiumdash.appspot.com/commits?commit=a88eee8a2798c1dc4d69b255ccad24fea5ff2d8b&platform=Mac
+  macos: {
+    chrome: '>=120',
+    edge: '>=120',
+  },
   // https://chromiumdash.appspot.com/commits?commit=a88eee8a2798c1dc4d69b255ccad24fea5ff2d8b&platform=Linux
   chrome: '>=121',
   edge: '>=121',
