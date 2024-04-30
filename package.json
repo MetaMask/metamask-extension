@@ -608,7 +608,7 @@
     "ts-node": "^10.9.2",
     "tsx": "^4.7.1",
     "ttest": "^2.1.1",
-    "typescript": "^5.4.5",
+    "typescript": "~5.4.5",
     "vinyl": "^2.2.1",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
