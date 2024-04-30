@@ -17,8 +17,11 @@ import {
 
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { SIGNING_METHODS } from '../../../shared/constants/transaction';
-import { ConfirmationRedesignTypes } from '../../../ui/pages/confirmations/utils/confirm';
 
+import {
+  RedesignApprovalTypes,
+  RedesignTransactionTypes,
+} from '../../../ui/pages/confirmations/utils/confirm';
 import { getBlockaidMetricsProps } from '../../../ui/helpers/utils/metrics';
 ///: END:ONLY_INCLUDE_IF
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
@@ -255,8 +258,10 @@ export default function createRPCMethodTrackingMiddleware({
         }
         ///: END:ONLY_INCLUDE_IF
 
-        const isConfirmationRedesign = isConfirmationRedesignEnabled &&
-          ConfirmationRedesignTypes.includes(method);
+        const isConfirmationRedesign =
+          isConfirmationRedesignEnabled &&
+          (RedesignApprovalTypes.find((type) => type === method) ||
+            RedesignTransactionTypes.find((type) => type === method));
 
         if (isConfirmationRedesign) {
           eventProperties.ui_customizations = (

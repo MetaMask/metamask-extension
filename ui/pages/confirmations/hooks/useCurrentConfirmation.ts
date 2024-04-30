@@ -11,6 +11,7 @@ import {
   pendingConfirmationsSelector,
   unconfirmedTransactionsHashSelector,
 } from '../../../selectors';
+import { RedesignApprovalTypes, RedesignTransactionTypes } from '../utils';
 
 type Approval = ApprovalRequest<Record<string, Json>>;
 
@@ -67,9 +68,8 @@ const useCurrentConfirmation = () => {
       }
 
       if (
-        pendingConfirmation.type !== ApprovalType.PersonalSign &&
-        pendingConfirmation.type !== ApprovalType.EthSignTypedData &&
-        unconfirmedTransaction.type !== TransactionType.contractInteraction
+        RedesignApprovalTypes.find((type) => type === pendingConfirmation.type) ||
+        RedesignTransactionTypes.find((type) => type === unconfirmedTransaction.type)
       ) {
         setCurrentConfirmation(undefined);
         return;
