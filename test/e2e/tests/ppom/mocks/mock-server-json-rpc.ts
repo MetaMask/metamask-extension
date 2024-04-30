@@ -1,5 +1,5 @@
 import { MockttpServer } from 'mockttp';
-import { mockJsonRpcResult } from '../mocks/json-rpc-result';
+import { mockJsonRpcResult } from './json-rpc-result';
 
 type RequestConfig = [
   method: string,

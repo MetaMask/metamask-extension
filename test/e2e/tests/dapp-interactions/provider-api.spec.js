@@ -5,8 +5,8 @@ const {
   withFixtures,
   openDapp,
   unlockWallet,
-} = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+} = require('../../helpers');
+const FixtureBuilder = require('../../fixture-builder');
 
 describe('MetaMask', function () {
   it('provider should inform dapp when switching networks', async function () {
