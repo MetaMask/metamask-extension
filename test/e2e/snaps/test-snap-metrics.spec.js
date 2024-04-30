@@ -139,7 +139,7 @@ async function mockedSnapUpdateFailed(mockServer) {
 
 async function mockedNpmInstall(mockServer) {
   return await mockServer
-    .forGet(/https:\/\/registry.npmjs.org/)
+    .forGet(/https:\/\/registry\.npmjs\.org/)
     .thenCallback(() => {
       return {
         statusCode: 429,
@@ -214,10 +214,10 @@ describe('Test Snap Metrics', function () {
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Install' });
+        await driver.waitForSelector({ text: 'Confirm' });
 
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
 
@@ -307,7 +307,7 @@ describe('Test Snap Metrics', function () {
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Install' });
+        await driver.waitForSelector({ text: 'Confirm' });
 
         await driver.clickElement({
           text: 'Cancel',
@@ -470,10 +470,10 @@ describe('Test Snap Metrics', function () {
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Install' });
+        await driver.waitForSelector({ text: 'Confirm' });
 
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
 
@@ -587,22 +587,24 @@ describe('Test Snap Metrics', function () {
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Install' });
+        await driver.waitForSelector({ text: 'Confirm' });
 
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
 
         // wait for permissions popover, click checkboxes and confirm
         await driver.delay(500);
         await driver.clickElement('.mm-checkbox__input');
-        await driver.clickElement({
-          text: 'Confirm',
-          tag: 'button',
-        });
+        await driver.waitForSelector(
+          '[data-testid="snap-install-warning-modal-confirm"]',
+        );
+        await driver.clickElement(
+          '[data-testid="snap-install-warning-modal-confirm"]',
+        );
 
         await driver.waitForSelector({ text: 'OK' });
 
@@ -634,12 +636,12 @@ describe('Test Snap Metrics', function () {
         // switch to metamask extension and update
         await switchToNotificationWindow(driver, 2);
 
-        await driver.waitForSelector({ text: 'Update' });
+        await driver.waitForSelector({ text: 'Confirm' });
 
         await driver.clickElementSafe('[data-testid="snap-update-scroll"]');
 
         await driver.clickElement({
-          text: 'Update',
+          text: 'Confirm',
           tag: 'button',
         });
 
@@ -729,22 +731,24 @@ describe('Test Snap Metrics', function () {
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Install' });
+        await driver.waitForSelector({ text: 'Confirm' });
 
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
 
         // wait for permissions popover, click checkboxes and confirm
         await driver.delay(500);
         await driver.clickElement('.mm-checkbox__input');
-        await driver.clickElement({
-          text: 'Confirm',
-          tag: 'button',
-        });
+        await driver.waitForSelector(
+          '[data-testid="snap-install-warning-modal-confirm"]',
+        );
+        await driver.clickElement(
+          '[data-testid="snap-install-warning-modal-confirm"]',
+        );
 
         await driver.waitForSelector({ text: 'OK' });
 
@@ -776,7 +780,7 @@ describe('Test Snap Metrics', function () {
         // switch to metamask extension and update
         await switchToNotificationWindow(driver, 2);
 
-        await driver.waitForSelector({ text: 'Update' });
+        await driver.waitForSelector({ text: 'Confirm' });
 
         await driver.clickElementSafe('[data-testid="snap-update-scroll"]');
 
@@ -830,6 +834,7 @@ describe('Test Snap Metrics', function () {
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
+        ignoredConsoleErrors: ['Object']
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await unlockWallet(driver);
@@ -856,22 +861,24 @@ describe('Test Snap Metrics', function () {
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Install' });
+        await driver.waitForSelector({ text: 'Confirm' });
 
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
 
         // wait for permissions popover, click checkboxes and confirm
         await driver.delay(500);
         await driver.clickElement('.mm-checkbox__input');
-        await driver.clickElement({
-          text: 'Confirm',
-          tag: 'button',
-        });
+        await driver.waitForSelector(
+          '[data-testid="snap-install-warning-modal-confirm"]',
+        );
+        await driver.clickElement(
+          '[data-testid="snap-install-warning-modal-confirm"]',
+        );
 
         await driver.waitForSelector({ text: 'OK' });
 
@@ -899,6 +906,9 @@ describe('Test Snap Metrics', function () {
         await driver.scrollToElement(snapButton2);
         await driver.delay(1000);
         await driver.clickElement('#connectUpdateNew');
+
+        await driver.delay(1000);
+        await driver.closeAlertPopup();
 
         // switch to metamask extension and update
         await switchToNotificationWindow(driver, 2);
