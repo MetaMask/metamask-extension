@@ -1,6 +1,5 @@
 import { ApprovalRequest } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
-import { TransactionType } from '@metamask/transaction-controller';
 import { Json } from '@metamask/utils';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -11,7 +10,7 @@ import {
   pendingConfirmationsSelector,
   unconfirmedTransactionsHashSelector,
 } from '../../../selectors';
-import { RedesignApprovalTypes, RedesignTransactionTypes } from '../utils';
+import { REDESIGN_APPROVAL_TYPES, REDESIGN_TRANSACTION_TYPES } from '../utils';
 
 type Approval = ApprovalRequest<Record<string, Json>>;
 
@@ -68,8 +67,12 @@ const useCurrentConfirmation = () => {
       }
 
       if (
-        RedesignApprovalTypes.find((type) => type === pendingConfirmation.type) ||
-        RedesignTransactionTypes.find((type) => type === unconfirmedTransaction.type)
+        REDESIGN_APPROVAL_TYPES.find(
+          (type) => type === pendingConfirmation.type,
+        ) ||
+        REDESIGN_TRANSACTION_TYPES.find(
+          (type) => type === unconfirmedTransaction.type,
+        )
       ) {
         setCurrentConfirmation(undefined);
         return;

@@ -3,12 +3,12 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { TransactionType } from '@metamask/transaction-controller';
 import { Json } from '@metamask/utils';
 
-export const RedesignApprovalTypes = [
+export const REDESIGN_APPROVAL_TYPES = [
   ApprovalType.PersonalSign,
   ApprovalType.EthSignTypedData,
 ] as const;
 
-export const RedesignTransactionTypes = [
+export const REDESIGN_TRANSACTION_TYPES = [
   TransactionType.contractInteraction,
 ] as const;
 

@@ -19,8 +19,8 @@ import {
 import { SIGNING_METHODS } from '../../../shared/constants/transaction';
 
 import {
-  RedesignApprovalTypes,
-  RedesignTransactionTypes,
+  REDESIGN_APPROVAL_TYPES,
+  REDESIGN_TRANSACTION_TYPES,
 } from '../../../ui/pages/confirmations/utils/confirm';
 import { getBlockaidMetricsProps } from '../../../ui/helpers/utils/metrics';
 ///: END:ONLY_INCLUDE_IF
@@ -260,8 +260,8 @@ export default function createRPCMethodTrackingMiddleware({
 
         const isConfirmationRedesign =
           isConfirmationRedesignEnabled &&
-          (RedesignApprovalTypes.find((type) => type === method) ||
-            RedesignTransactionTypes.find((type) => type === method));
+          (REDESIGN_APPROVAL_TYPES.find((type) => type === method) ||
+            REDESIGN_TRANSACTION_TYPES.find((type) => type === method));
 
         if (isConfirmationRedesign) {
           eventProperties.ui_customizations = (
