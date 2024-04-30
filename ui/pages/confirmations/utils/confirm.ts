@@ -12,7 +12,7 @@ export const REDESIGN_TRANSACTION_TYPES = [
   TransactionType.contractInteraction,
 ] as const;
 
-const SignatureApprovalTypes = [
+const SIGNATURE_APPROVAL_TYPES = [
   ApprovalType.EthSign,
   ApprovalType.PersonalSign,
   ApprovalType.EthSignTypedData,
@@ -20,4 +20,4 @@ const SignatureApprovalTypes = [
 
 export const isSignatureApprovalRequest = (
   request: ApprovalRequest<Record<string, Json>>,
-) => SignatureApprovalTypes.includes(request.type as ApprovalType);
+) => SIGNATURE_APPROVAL_TYPES.includes(request.type as ApprovalType);
