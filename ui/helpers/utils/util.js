@@ -30,7 +30,11 @@ import {
   TRUNCATED_ADDRESS_END_CHARS,
 } from '../../../shared/constants/labels';
 import { Numeric } from '../../../shared/modules/Numeric';
-import { BROKEN_PRERENDER_BROWSER_VERSIONS, FIXED_PRERENDER_BROWSER_VERSIONS, OUTDATED_BROWSER_VERSIONS } from '../constants/common';
+import {
+  BROKEN_PRERENDER_BROWSER_VERSIONS,
+  FIXED_PRERENDER_BROWSER_VERSIONS,
+  OUTDATED_BROWSER_VERSIONS,
+} from '../constants/common';
 // formatData :: ( date: <Unix Timestamp> ) -> String
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
@@ -359,7 +363,11 @@ export function getIsBrowserDeprecated(
 export function getIsBrowserPrerenderBroken(
   browser = bowser.getParser(window.navigator.userAgent),
 ) {
-  return (browser.satisfies(BROKEN_PRERENDER_BROWSER_VERSIONS) && !browser.satisfies(FIXED_PRERENDER_BROWSER_VERSIONS)) ?? false;
+  return (
+    (browser.satisfies(BROKEN_PRERENDER_BROWSER_VERSIONS) &&
+      !browser.satisfies(FIXED_PRERENDER_BROWSER_VERSIONS)) ??
+    false
+  );
 }
 
 export function getURLHost(url) {
