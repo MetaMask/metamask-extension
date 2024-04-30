@@ -68,10 +68,10 @@ const useCurrentConfirmation = () => {
 
       const isConfirmationRedesignType =
         REDESIGN_APPROVAL_TYPES.find(
-          (type) => type === pendingConfirmation.type,
+          (type) => type === pendingConfirmation?.type,
         ) ||
         REDESIGN_TRANSACTION_TYPES.find(
-          (type) => type === unconfirmedTransaction.type,
+          (type) => type === unconfirmedTransaction?.type,
         );
 
       if (!isConfirmationRedesignType) {
@@ -79,7 +79,7 @@ const useCurrentConfirmation = () => {
         return;
       }
 
-      if (pendingConfirmation.type === ApprovalType.PersonalSign) {
+      if (pendingConfirmation?.type === ApprovalType.PersonalSign) {
         const { siwe } = unconfirmedTransaction.msgParams;
         if (siwe?.isSIWEMessage) {
           setCurrentConfirmation(undefined);
