@@ -50,11 +50,7 @@ export function BasicConfigurationModal() {
   }
 
   return (
-    <Modal
-      onClose={closeModal}
-      data-testid="dapp-permission-modal"
-      isOpen={true}
-    >
+    <Modal onClose={closeModal} data-testid="dapp-permission-modal" isOpen>
       <ModalOverlay />
       <ModalContent
         modalDialogProps={{
@@ -106,10 +102,8 @@ export function BasicConfigurationModal() {
               <Checkbox
                 id="basic-configuration-checkbox"
                 isChecked={hasAgreed}
-                onClick={() => {
-                  setHasAgreed((prevValue) => !prevValue);
-                }}
-              />{' '}
+                onClick={() => setHasAgreed((prevValue) => !prevValue)}
+              />
               <Label
                 htmlFor="basic-configuration-checkbox"
                 fontWeight={FontWeight.Normal}
@@ -127,9 +121,7 @@ export function BasicConfigurationModal() {
               size={ButtonSize.Lg}
               width={BlockSize.Half}
               variant={ButtonVariant.Secondary}
-              onClick={() => {
-                closeModal();
-              }}
+              onClick={closeModal}
             >
               {t('cancel')}
             </Button>
