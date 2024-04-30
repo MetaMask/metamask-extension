@@ -25,5 +25,14 @@
     i {
       font-style: revert;
     }
+
+    b {
+      font-weight: revert;
+    }
+
+    span {
+      font-style: inherit;
+      font-weight: inherit;
+    }
   }
 }

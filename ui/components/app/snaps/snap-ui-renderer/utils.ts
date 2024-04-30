@@ -1,4 +1,4 @@
-import { Component } from '@metamask/snaps-sdk';
+import { JSXElement, GenericSnapElement } from '@metamask/snaps-sdk/jsx';
 import { memoize } from 'lodash';
 import { sha256 } from '@noble/hashes/sha256';
 import { bytesToHex, remove0x } from '@metamask/utils';
@@ -6,7 +6,7 @@ import { COMPONENT_MAPPING } from './components';
 
 export type MapToTemplateParams = {
   map: Record<string, number>;
-  element: Component;
+  element: JSXElement;
   form?: string;
 };
 
@@ -18,19 +18,18 @@ export type MapToTemplateParams = {
  * @param component - The component.
  * @returns A hash as a string.
  */
-const generateHash = memoize((component: Component) => {
-  const { type, name } = component;
-  const value =
-    typeof component.value === 'string'
-      ? component.value.slice(0, 5000)
-      : component.value;
+const generateHash = memoize((component: JSXElement) => {
+  const { type, props } = component as GenericSnapElement;
+  const { name } = props;
+  const children =
+    typeof props.children === 'string' ? props.children.slice(0, 5000) : null;
   return remove0x(
     bytesToHex(
       sha256(
         JSON.stringify({
           type,
           name: name ?? null,
-          value,
+          children,
         }),
       ),
     ),
@@ -46,7 +45,7 @@ const generateHash = memoize((component: Component) => {
  * @param component - The component.
  * @returns A key.
  */
-function generateKey(map: Record<string, number>, component: Component) {
+function generateKey(map: Record<string, number>, component: JSXElement) {
   const hash = generateHash(component);
   const count = (map[hash] ?? 0) + 1;
   map[hash] = count;
@@ -66,15 +65,8 @@ export const mapToTemplate = (params: MapToTemplateParams) => {
 export const mapTextToTemplate = (
   elements: unknown[],
   params: Pick<MapToTemplateParams, 'map'>,
-) => {
-  const isStringArray = elements.every(
-    (element) => typeof element === 'string',
-  );
-  if (isStringArray) {
-    return elements;
-  }
-
-  return elements.map((element) => {
+) =>
+  elements.map((element) => {
     // With the introduction of JSX elements here can be strings.
     if (typeof element === 'string') {
       return mapToTemplate({
@@ -85,4 +77,3 @@ export const mapTextToTemplate = (
 
     return mapToTemplate({ ...params, element });
   });
-};

@@ -1,4 +1,4 @@
-import { InputElement } from '@metamask/snaps-sdk/jsx';
+import { FieldElement } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
 
 import { UIComponentFactory } from './types';

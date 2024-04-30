@@ -1,16 +1,12 @@
-import {
-  TextVariant,
-  OverflowWrap,
-  TextColor,
-  Display,
-} from '../../../../helpers/constants/design-system';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import { Display } from '../../../../helpers/constants/design-system';
 import {
   ButtonLink,
   ButtonLinkSize,
   Icon,
   IconName,
   IconSize,
-  Text,
 } from '../../../component-library';
 import SnapLinkWarning from '../snap-link-warning';
 
@@ -27,11 +23,7 @@ export const SnapUILink = ({ href, children }) => {
 
   return (
     <>
-      <SnapLinkWarning
-        isOpen={isOpen}
-        onClose={handleModalClose}
-        url={href}
-      />
+      <SnapLinkWarning isOpen={isOpen} onClose={handleModalClose} url={href} />
       <ButtonLink
         as="a"
         onClick={handleLinkClick}
@@ -45,4 +37,9 @@ export const SnapUILink = ({ href, children }) => {
       </ButtonLink>
     </>
   );
+};
+
+SnapUILink.propTypes = {
+  children: PropTypes.string,
+  href: PropTypes.string,
 };

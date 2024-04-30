@@ -8,7 +8,10 @@ import {
 import { mapToTemplate } from '../utils';
 import { UIComponentFactory } from './types';
 
-export const box: UIComponentFactory<BoxElement> = ({ element, ...params }) => ({
+export const box: UIComponentFactory<BoxElement> = ({
+  element,
+  ...params
+}) => ({
   element: 'Box',
   children: getJsxChildren(element).map((children) =>
     mapToTemplate({ ...params, element: children }),

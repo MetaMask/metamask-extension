@@ -1,19 +1,15 @@
 import React, { memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { isJSXElement } from '@metamask/snaps-sdk/jsx';
 import { useSelector } from 'react-redux';
 
 import { isEqual } from 'lodash';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
-import { TextVariant } from '../../../../helpers/constants/design-system';
 import { SnapDelineator } from '../snap-delineator';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getSnapMetadata,
   getMemoizedInterfaceContent,
 } from '../../../../selectors';
-import { Box, FormTextField, Text } from '../../../component-library';
-import { Copyable } from '../copyable';
+import { Box, FormTextField } from '../../../component-library';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
 
 import { SnapInterfaceContextProvider } from '../../../../contexts/snaps';
@@ -35,7 +31,6 @@ const SnapUIRendererComponent = ({
   boxProps,
   interfaceId,
 }) => {
-  const t = useI18nContext();
   const { name: snapName } = useSelector((state) =>
     getSnapMetadata(state, snapId),
   );
