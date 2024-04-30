@@ -27,7 +27,7 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_PROD_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.0.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.0.2/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
     # Main build uses the default browser manifest
     manifestOverrides: false
@@ -64,7 +64,7 @@ buildTypes:
       - SEGMENT_FLASK_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.0.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.0.2/index.html
       - SUPPORT_LINK: https://metamask-flask.zendesk.com/hc
       - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
@@ -86,7 +86,7 @@ buildTypes:
       - SEGMENT_FLASK_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.0.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.0.2/index.html
       - SUPPORT_LINK: https://metamask-flask.zendesk.com/hc
       - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
@@ -109,7 +109,7 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_MMI_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.0.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.0.2/index.html
       - MMI_CONFIGURATION_SERVICE_URL: https://configuration.metamask-institutional.io/v2/configuration/default
       - SUPPORT_LINK: https://mmi-support.metamask.io/hc/en-us
       - SUPPORT_REQUEST_LINK: https://mmi-support.metamask.io/hc/en-us/requests/new
@@ -192,14 +192,14 @@ env:
   # TODO(ritave): Move ManifestV3 into a feature?
   - ENABLE_MV3: false
   # These are exclusively used for MV3
+  - USE_SNOW
   - APPLY_LAVAMOAT
   - FILE_NAMES
 
   # This variable is read by Trezor's source and breaks build if not included
   - ASSET_PREFIX: null
 
-  # This variable is needed for MMI to have it's specific Sentry Key
-  - SENTRY_MMI_DSN
+  - SENTRY_MMI_DSN: ''
 
   ###
   # Notifications Feature
@@ -209,6 +209,20 @@ env:
   - OIDC_CLIENT_ID: 1132f10a-b4e5-4390-a5f2-d9c6022db564
   - OIDC_GRANT_TYPE: urn:ietf:params:oauth:grant-type:jwt-bearer
   - USER_STORAGE_API: https://user-storage.api.cx.metamask.io
+  - CONTENTFUL_ACCESS_SPACE_ID: null
+  - CONTENTFUL_ACCESS_TOKEN: null
+  - NOTIFICATIONS_SERVICE_URL: https://notification.api.cx.metamask.io
+  - TRIGGERS_SERVICE_URL: https://trigger.api.cx.metamask.io
+  - PUSH_NOTIFICATIONS_SERVICE_URL: https://push.api.cx.metamask.io
+  - VAPID_KEY: null
+  - FIREBASE_API_KEY: null
+  - FIREBASE_AUTH_DOMAIN: null
+  - FIREBASE_STORAGE_BUCKET: null
+  - FIREBASE_PROJECT_ID: null
+  - FIREBASE_MESSAGING_SENDER_ID: null
+  - FIREBASE_APP_ID: null
+  - FIREBASE_MEASUREMENT_ID: null
+  - __FIREBASE_DEFAULTS__: null
 
   ###
   # API keys to 3rd party services
