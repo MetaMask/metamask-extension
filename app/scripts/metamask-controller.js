@@ -6066,7 +6066,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.controllerMessenger.publish(
       'TransactionController:transactionStatusUpdated',
-      { updatedTransactionMeta },
+      { transactionMeta: updatedTransactionMeta },
     );
   }
 
