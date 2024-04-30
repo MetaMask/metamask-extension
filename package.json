@@ -238,11 +238,12 @@
     "@metamask/network-controller@npm:^15.0.0": "patch:@metamask/network-controller@npm%3A18.0.1#~/.yarn/patches/@metamask-network-controller-npm-18.0.1-c4d0cfaecd.patch",
     "@metamask/network-controller@npm:^18.0.1": "patch:@metamask/network-controller@npm%3A18.0.1#~/.yarn/patches/@metamask-network-controller-npm-18.0.1-c4d0cfaecd.patch",
     "@metamask/network-controller@npm:^17.2.1": "patch:@metamask/network-controller@npm%3A18.0.1#~/.yarn/patches/@metamask-network-controller-npm-18.0.1-c4d0cfaecd.patch",
-    "@metamask/keyring-controller@npm:^13.0.0": "patch:@metamask/keyring-controller@npm%3A13.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-13.0.0-d94816a680.patch"
+    "@metamask/keyring-controller@npm:^13.0.0": "patch:@metamask/keyring-controller@npm%3A13.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-13.0.0-d94816a680.patch",
+    "@metamask/gas-fee-controller@npm:^14.0.1": "patch:@metamask/gas-fee-controller@npm%3A14.0.1#~/.yarn/patches/@metamask-gas-fee-controller-npm-14.0.1-59e9d16a4e.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
-    "@blockaid/ppom_release": "^1.4.5",
+    "@blockaid/ppom_release": "^1.4.6",
     "@ensdomains/content-hash": "^2.5.7",
     "@ethereumjs/common": "^3.1.1",
     "@ethereumjs/tx": "^4.1.1",
@@ -291,7 +292,7 @@
     "@metamask/ethjs": "^0.6.0",
     "@metamask/ethjs-contract": "^0.4.1",
     "@metamask/ethjs-query": "^0.7.1",
-    "@metamask/gas-fee-controller": "^14.0.0",
+    "@metamask/gas-fee-controller": "patch:@metamask/gas-fee-controller@npm%3A14.0.1#~/.yarn/patches/@metamask-gas-fee-controller-npm-14.0.1-59e9d16a4e.patch",
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/keyring-api": "^3.0.0",
     "@metamask/keyring-controller": "patch:@metamask/keyring-controller@npm%3A13.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-13.0.0-d94816a680.patch",

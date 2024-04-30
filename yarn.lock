@@ -1699,10 +1699,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blockaid/ppom_release@npm:^1.4.5":
-  version: 1.4.5
-  resolution: "@blockaid/ppom_release@npm:1.4.5"
-  checksum: 653b75922951f0b73b0c9a1e3621a29d5a8d7569fbfc9e9ac89b0e14161eacc712dfe8a656107df2453b37ce1b40e59cd287dfcb6bdc73982771e3b90dfa5cca
+"@blockaid/ppom_release@npm:^1.4.6":
+  version: 1.4.6
+  resolution: "@blockaid/ppom_release@npm:1.4.6"
+  checksum: 53b9774f97ba24d98dee4a66653c83223afd2db8598d8b631ee4851731b1f68a99d05a8a2b68584d7b9a8e71370a09e79aba024d171af8a823c1053371009756
   languageName: node
   linkType: hard
 
@@ -4685,7 +4685,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/gas-fee-controller@npm:^14.0.0, @metamask/gas-fee-controller@npm:^14.0.1":
+"@metamask/gas-fee-controller@npm:14.0.1":
   version: 14.0.1
   resolution: "@metamask/gas-fee-controller@npm:14.0.1"
   dependencies:
@@ -4724,6 +4724,27 @@ __metadata:
   peerDependencies:
     "@metamask/network-controller": ^18.0.0
   checksum: f4ca2ca113d543d3f1282df8e171d06a8cd2ce99ad7df54d1796416f9c93dd62d998af09c124fbd5138b4592602c958d30c9fe03a8ed06ccaecd8745cd6a3913
+  languageName: node
+  linkType: hard
+
+"@metamask/gas-fee-controller@patch:@metamask/gas-fee-controller@npm%3A14.0.1#~/.yarn/patches/@metamask-gas-fee-controller-npm-14.0.1-59e9d16a4e.patch":
+  version: 14.0.1
+  resolution: "@metamask/gas-fee-controller@patch:@metamask/gas-fee-controller@npm%3A14.0.1#~/.yarn/patches/@metamask-gas-fee-controller-npm-14.0.1-59e9d16a4e.patch::version=14.0.1&hash=35f894"
+  dependencies:
+    "@metamask/base-controller": "npm:^5.0.1"
+    "@metamask/controller-utils": "npm:^9.0.1"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/ethjs-unit": "npm:^0.3.0"
+    "@metamask/network-controller": "npm:^18.0.1"
+    "@metamask/polling-controller": "npm:^6.0.1"
+    "@metamask/utils": "npm:^8.3.0"
+    "@types/bn.js": "npm:^5.1.5"
+    "@types/uuid": "npm:^8.3.0"
+    bn.js: "npm:^5.2.1"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/network-controller": ^18.0.0
+  checksum: 93ff5edb72ce5c877c2bb35de09795ee824ea0709ca16569cdc98d957f286c56e61e9df643afd1bbde862d8ba8593eb9d56511b519201d2a975dade15a89a7a0
   languageName: node
   linkType: hard
 
@@ -24867,7 +24888,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.23.2"
     "@babel/register": "npm:^7.22.15"
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch"
-    "@blockaid/ppom_release": "npm:^1.4.5"
+    "@blockaid/ppom_release": "npm:^1.4.6"
     "@ensdomains/content-hash": "npm:^2.5.7"
     "@ethereumjs/common": "npm:^3.1.1"
     "@ethereumjs/tx": "npm:^4.1.1"
@@ -24928,7 +24949,7 @@ __metadata:
     "@metamask/ethjs-contract": "npm:^0.4.1"
     "@metamask/ethjs-query": "npm:^0.7.1"
     "@metamask/forwarder": "npm:^1.1.0"
-    "@metamask/gas-fee-controller": "npm:^14.0.0"
+    "@metamask/gas-fee-controller": "patch:@metamask/gas-fee-controller@npm%3A14.0.1#~/.yarn/patches/@metamask-gas-fee-controller-npm-14.0.1-59e9d16a4e.patch"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/keyring-api": "npm:^3.0.0"
     "@metamask/keyring-controller": "patch:@metamask/keyring-controller@npm%3A13.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-13.0.0-d94816a680.patch"
