@@ -60,25 +60,24 @@ describe('Browser Runtime Utils', () => {
       expect(spy).toHaveBeenCalled();
     });
     it('should return false when given a chrome browser with working prerender', () => {
-      const browserBeforeBroken = Bowser.getParser(
+      const bowserBefore = Bowser.getParser(
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36',
       );
-      let result =
-        BrowserRuntimeUtil.getIsBrowserPrerenderBroken(browserBeforeBroken);
+      let result = BrowserRuntimeUtil.getIsBrowserPrerenderBroken(bowserBefore);
       expect(result).toStrictEqual(false);
 
-      const browserWhenFixed = Bowser.getParser(
+      const bowserWhenFixed = Bowser.getParser(
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
       );
-      result = BrowserRuntimeUtil.getIsBrowserPrerenderBroken(browserWhenFixed);
+      result = BrowserRuntimeUtil.getIsBrowserPrerenderBroken(bowserWhenFixed);
       expect(result).toStrictEqual(false);
     });
     it('should return true when given a chrome browser with broken prerender', () => {
-      const browserWhenBroken = Bowser.getParser(
+      const bowserWhenBroken = Bowser.getParser(
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36',
       );
       let result =
-        BrowserRuntimeUtil.getIsBrowserPrerenderBroken(browserWhenBroken);
+        BrowserRuntimeUtil.getIsBrowserPrerenderBroken(bowserWhenBroken);
       expect(result).toStrictEqual(true);
 
       const browserBeforeFixed = Bowser.getParser(
@@ -89,25 +88,24 @@ describe('Browser Runtime Utils', () => {
       expect(result).toStrictEqual(true);
     });
     it('should return false when given an edge browser with working prerender', () => {
-      const browserBeforeBroken = Bowser.getParser(
+      const bowserBefore = Bowser.getParser(
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36 Edg/112.0.0.0',
       );
-      let result =
-        BrowserRuntimeUtil.getIsBrowserPrerenderBroken(browserBeforeBroken);
+      let result = BrowserRuntimeUtil.getIsBrowserPrerenderBroken(bowserBefore);
       expect(result).toStrictEqual(false);
 
-      const browserWhenFixed = Bowser.getParser(
+      const bowserWhenFixed = Bowser.getParser(
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 Edg/121.0.0.0',
       );
-      result = BrowserRuntimeUtil.getIsBrowserPrerenderBroken(browserWhenFixed);
+      result = BrowserRuntimeUtil.getIsBrowserPrerenderBroken(bowserWhenFixed);
       expect(result).toStrictEqual(false);
     });
     it('should return true when given an edge browser with broken prerender', () => {
-      const browserWhenBroken = Bowser.getParser(
+      const bowserWhenBroken = Bowser.getParser(
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 Edge/113.0.0.0',
       );
       let result =
-        BrowserRuntimeUtil.getIsBrowserPrerenderBroken(browserWhenBroken);
+        BrowserRuntimeUtil.getIsBrowserPrerenderBroken(bowserWhenBroken);
       expect(result).toStrictEqual(true);
 
       const browserBeforeFixed = Bowser.getParser(
@@ -118,24 +116,24 @@ describe('Browser Runtime Utils', () => {
       expect(result).toStrictEqual(true);
     });
     it('should return false when given a firefox browser', () => {
-      const browser = Bowser.getParser(
+      const bowser = Bowser.getParser(
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/91.0',
       );
-      const result = BrowserRuntimeUtil.getIsBrowserPrerenderBroken(browser);
+      const result = BrowserRuntimeUtil.getIsBrowserPrerenderBroken(bowser);
       expect(result).toStrictEqual(false);
     });
     it('should return false when given an opera browser', () => {
-      const browser = Bowser.getParser(
+      const bowser = Bowser.getParser(
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.3578.98 Safari/537.36 OPR/76.0.3135.47',
       );
-      const result = BrowserRuntimeUtil.getIsBrowserPrerenderBroken(browser);
+      const result = BrowserRuntimeUtil.getIsBrowserPrerenderBroken(bowser);
       expect(result).toStrictEqual(false);
     });
     it('should return false when given an unknown browser', () => {
-      const browser = Bowser.getParser(
+      const bowser = Bowser.getParser(
         'Mozilla/5.0 (Nintendo Switch; WebApplet) AppleWebKit/609.4 (KHTML, like Gecko) NF/6.0.2.21.3 NintendoBrowser/5.1.0.22474',
       );
-      const result = BrowserRuntimeUtil.getIsBrowserPrerenderBroken(browser);
+      const result = BrowserRuntimeUtil.getIsBrowserPrerenderBroken(bowser);
       expect(result).toStrictEqual(false);
     });
   });
