@@ -1,12 +1,10 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-
 import { ApprovalRequest } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
+import { TransactionType } from '@metamask/transaction-controller';
 import { Json } from '@metamask/utils';
-import { ConfirmationRedesignTypes } from '../utils/confirm';
-
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import {
   getRedesignedConfirmationsEnabled,
   latestPendingConfirmationSelector,
@@ -69,9 +67,9 @@ const useCurrentConfirmation = () => {
       }
 
       if (
-        !ConfirmationRedesignTypes.find(
-          (type) => type === pendingConfirmation?.type,
-        )
+        pendingConfirmation.type !== ApprovalType.PersonalSign &&
+        pendingConfirmation.type !== ApprovalType.EthSignTypedData &&
+        unconfirmedTransaction.type !== TransactionType.contractInteraction
       ) {
         setCurrentConfirmation(undefined);
         return;
