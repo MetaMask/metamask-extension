@@ -72,7 +72,7 @@ async function getSRP(driver) {
 
 describe('Vault Decryptor Page', function () {
   // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('is able to decrypt the vault using the vault-decryptor webapp', async function () {
+  it('is able to decrypt the vault using the vault-decryptor webapp', async function () {
     await withFixtures({}, async ({ driver }) => {
       await driver.navigate();
       // the first app launch opens a new tab, we need to switch the focus
