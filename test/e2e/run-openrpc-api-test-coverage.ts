@@ -403,6 +403,7 @@ async function main() {
       // update chainId for signTypedData
       (signTypedData4 as any).examples[0].params[1].value.domain.chainId = 1337;
 
+      // net_version missing from execution-apis. see here: https://github.com/ethereum/execution-apis/issues/540
       const netVersion: MethodObject = {
         name: 'net_version',
         params: [],
