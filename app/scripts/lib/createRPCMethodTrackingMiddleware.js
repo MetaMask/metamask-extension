@@ -264,9 +264,10 @@ export default function createRPCMethodTrackingMiddleware({
             REDESIGN_TRANSACTION_TYPES.find((type) => type === method));
 
         if (isConfirmationRedesign) {
-          eventProperties.ui_customizations = (
-            eventProperties.ui_customizations || []
-          ).concat(MetaMetricsEventUiCustomization.RedesignedConfirmation);
+          eventProperties.ui_customizations = [
+            ...(eventProperties.ui_customizations || []),
+            MetaMetricsEventUiCustomization.RedesignedConfirmation,
+          ];
         }
 
         const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
@@ -282,9 +283,10 @@ export default function createRPCMethodTrackingMiddleware({
           if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
             const { isSIWEMessage } = detectSIWE({ data });
             if (isSIWEMessage) {
-              eventProperties.ui_customizations = (
-                eventProperties.ui_customizations || []
-              ).concat(MetaMetricsEventUiCustomization.Siwe);
+              eventProperties.ui_customizations = [
+                ...(eventProperties.ui_customizations || []),
+                MetaMetricsEventUiCustomization.Siwe,
+              ];
             }
           }
         } catch (e) {
