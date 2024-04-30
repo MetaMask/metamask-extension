@@ -22,6 +22,11 @@ describe('Create Snap Account', function (this: Suite) {
         try {
           await unlockWallet(driver);
 
+          await driver.switchToWindowWithTitle('MetaMask Offscreen Page');
+          const offScreenWindowHandle = await driver.getWindowHandle();
+          driver.addToIgnoredHandleList(offScreenWindowHandle);
+          await driver.switchToWindowWithTitle('MetaMask');
+
           // navigate to test Snaps page and connect
           await driver.openNewPage(TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL);
           await driver.clickElement('#connectButton');

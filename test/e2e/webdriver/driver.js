@@ -128,6 +128,7 @@ class Driver {
     this.timeout = timeout;
     this.exceptions = [];
     this.errors = [];
+    this.ignoredHandleList = {};
     // The following values are found in
     // https://github.com/SeleniumHQ/selenium/blob/trunk/javascript/node/selenium-webdriver/lib/input.js#L50-L110
     // These should be replaced with string constants 'Enter' etc for playwright.
@@ -139,6 +140,10 @@ class Driver {
       COMMAND: '\uE03D',
       MODIFIER: process.platform === 'darwin' ? Key.COMMAND : Key.CONTROL,
     };
+  }
+
+  addToIgnoredHandleList(handleId) {
+    this.ignoredHandleList[handleId] = true;
   }
 
   async executeAsyncScript(script, ...args) {
@@ -526,11 +531,17 @@ class Driver {
   }
 
   async getAllWindowHandles() {
-    return await this.driver.getAllWindowHandles();
+    let windowHandles = await this.driver.getAllWindowHandles();
+    windowHandles = windowHandles.filter((h) => {
+      return !this.ignoredHandleList[h];
+    });
+    return windowHandles;
   }
 
   async waitUntilXWindowHandles(_x, delayStep = 1000, timeout = this.timeout) {
-    const x = process.env.ENABLE_MV3 ? _x + 1 : _x;
+    const x = process.env.ENABLE_MV3
+      ? _x + (Object.keys(this.ignoredHandleList).length ? 0 : 1)
+      : _x;
     let timeElapsed = 0;
     let windowHandles = [];
     while (timeElapsed <= timeout) {
@@ -559,6 +570,7 @@ class Driver {
   ) {
     let windowHandles =
       initialWindowHandles || (await this.driver.getAllWindowHandles());
+    windowHandles = windowHandles.filter((h) => !this.ignoredHandleList[h]);
     let timeElapsed = 0;
 
     while (timeElapsed <= timeout) {
@@ -582,6 +594,7 @@ class Driver {
       timeElapsed += delayStep;
       // refresh the window handles
       windowHandles = await this.driver.getAllWindowHandles();
+      windowHandles = windowHandles.filter((h) => !this.ignoredHandleList[h]);
     }
 
     throw new Error(`No window with title: ${title}`);
@@ -596,6 +609,7 @@ class Driver {
   ) {
     let windowHandles =
       initialWindowHandles || (await this.driver.getAllWindowHandles());
+    windowHandles = windowHandles.filter((h) => !this.ignoredHandleList[h]);
     let timeElapsed = 0;
 
     while (timeElapsed <= timeout) {
@@ -619,6 +633,7 @@ class Driver {
       timeElapsed += delayStep;
       // refresh the window handles
       windowHandles = await this.driver.getAllWindowHandles();
+      windowHandles = windowHandles.filter((h) => !this.ignoredHandleList[h]);
     }
 
     throw new Error(`No window with url: ${url}`);
