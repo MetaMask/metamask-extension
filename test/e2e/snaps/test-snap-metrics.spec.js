@@ -139,7 +139,7 @@ async function mockedSnapUpdateFailed(mockServer) {
 
 async function mockedNpmInstall(mockServer) {
   return await mockServer
-    .forGet(/https:\/\/registry\.npmjs\.org/)
+    .forGet(/https:\/\/registry\.npmjs\.org/u)
     .thenCallback(() => {
       return {
         statusCode: 429,
@@ -834,7 +834,7 @@ describe('Test Snap Metrics', function () {
           .build(),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
-        ignoredConsoleErrors: ['Object']
+        ignoredConsoleErrors: ['Object'],
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await unlockWallet(driver);
