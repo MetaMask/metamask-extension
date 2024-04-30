@@ -23,3 +23,16 @@ export const OUTDATED_BROWSER_VERSIONS = {
   // See https://en.wikipedia.org/wiki/History_of_the_Opera_web_browser
   opera: '<76',
 };
+export const BROKEN_PRERENDER_BROWSER_VERSIONS = {
+  // https://issues.chromium.org/issues/40273420
+  chrome: '>=113',
+  edge: '>=113',
+}
+export const FIXED_PRERENDER_BROWSER_VERSIONS = {
+  // https://chromium.googlesource.com/chromium/src/+/a88eee8a2798c1dc4d69b255ccad24fea5ff2d8b
+  // https://chromiumdash.appspot.com/commits?commit=a88eee8a2798c1dc4d69b255ccad24fea5ff2d8b&platform=Windows
+  // https://chromiumdash.appspot.com/commits?commit=a88eee8a2798c1dc4d69b255ccad24fea5ff2d8b&platform=Mac
+  // https://chromiumdash.appspot.com/commits?commit=a88eee8a2798c1dc4d69b255ccad24fea5ff2d8b&platform=Linux
+  chrome: '>=121',
+  edge: '>=121',
+}
