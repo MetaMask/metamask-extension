@@ -66,14 +66,15 @@ const useCurrentConfirmation = () => {
         return;
       }
 
-      if (
+      const isConfirmationRedesignType =
         REDESIGN_APPROVAL_TYPES.find(
           (type) => type === pendingConfirmation.type,
         ) ||
         REDESIGN_TRANSACTION_TYPES.find(
           (type) => type === unconfirmedTransaction.type,
-        )
-      ) {
+        );
+
+      if (!isConfirmationRedesignType) {
         setCurrentConfirmation(undefined);
         return;
       }
