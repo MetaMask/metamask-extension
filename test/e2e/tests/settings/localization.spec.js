@@ -3,8 +3,8 @@ const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
-} = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+} = require('../../helpers');
+const FixtureBuilder = require('../../fixture-builder');
 
 describe('Localization', function () {
   it('can correctly display Philippine peso symbol and code', async function () {

@@ -5,8 +5,8 @@ const {
   openDapp,
   unlockWallet,
   WINDOW_TITLES,
-} = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+} = require('../../helpers');
+const FixtureBuilder = require('../../fixture-builder');
 
 async function validateEncryptionKey(driver, encryptionKey) {
   await driver.clickElement('#getEncryptionKeyButton');
