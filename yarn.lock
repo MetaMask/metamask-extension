@@ -4842,43 +4842,7 @@ __metadata:
     bn.js: "npm:^5.2.1"
     eth-ens-namehash: "npm:^2.0.8"
     fast-deep-equal: "npm:^3.1.3"
-<<<<<<< Updated upstream
   checksum: cc17c0574eea34d80265d39c7410a3cb4ec5718d26f3e1f4252616ae31b431f817754b37c542d9707640508dc1a1dc2a705fc6d51ccc65f84a1ccaec1d7e6c8e
-=======
-  checksum: edf8f23d349da01bb9e9906bc2825612eaa422f5c13d19b820ee84c3366d79900f9cd98e6e89b02b9ffd241510c1d7615b99b4263ce79a43d88ad4dffdb028f7
-  languageName: node
-  linkType: hard
-
-"@metamask/controller-utils@npm:^9.1.0":
-  version: 9.1.0
-  resolution: "@metamask/controller-utils@npm:9.1.0"
-  dependencies:
-    "@ethereumjs/util": "npm:^8.1.0"
-    "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/ethjs-unit": "npm:^0.3.0"
-    "@metamask/utils": "npm:^8.3.0"
-    "@spruceid/siwe-parser": "npm:2.1.0"
-    "@types/bn.js": "npm:^5.1.5"
-    bn.js: "npm:^5.2.1"
-    eth-ens-namehash: "npm:^2.0.8"
-    fast-deep-equal: "npm:^3.1.3"
-  checksum: cc17c0574eea34d80265d39c7410a3cb4ec5718d26f3e1f4252616ae31b431f817754b37c542d9707640508dc1a1dc2a705fc6d51ccc65f84a1ccaec1d7e6c8e
-  languageName: node
-  linkType: hard
-
-"@metamask/controller-utils@patch:@metamask/controller-utils@npm%3A8.0.4#~/.yarn/patches/@metamask-controller-utils-npm-8.0.4-077edd6162.patch":
-  version: 8.0.4
-  resolution: "@metamask/controller-utils@patch:@metamask/controller-utils@npm%3A8.0.4#~/.yarn/patches/@metamask-controller-utils-npm-8.0.4-077edd6162.patch::version=8.0.4&hash=0d2618"
-  dependencies:
-    "@ethereumjs/util": "npm:^8.1.0"
-    "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/ethjs-unit": "npm:^0.3.0"
-    "@metamask/utils": "npm:^8.3.0"
-    "@spruceid/siwe-parser": "npm:1.1.3"
-    eth-ens-namehash: "npm:^2.0.8"
-    fast-deep-equal: "npm:^3.1.3"
-  checksum: 280f8250164bfce90dba0151bd008ce03cc12a3272802d7056d8eae9f294020d4ef7dad22ed88d720651e6c3171203dc40c911875b78adcc4a6bc47ed91d9977
->>>>>>> Stashed changes
   languageName: node
   linkType: hard
 
@@ -5844,7 +5808,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-controller@npm:^8.0.1, @metamask/phishing-controller@npm:^8.0.2":
+"@metamask/phishing-controller@npm:^8.0.1":
   version: 8.0.2
   resolution: "@metamask/phishing-controller@npm:8.0.2"
   dependencies:
@@ -5857,7 +5821,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-<<<<<<< Updated upstream
 "@metamask/phishing-controller@npm:^9.0.1":
   version: 9.0.1
   resolution: "@metamask/phishing-controller@npm:9.0.1"
@@ -5868,7 +5831,9 @@ __metadata:
     eth-phishing-detect: "npm:^1.2.0"
     punycode: "npm:^2.1.1"
   checksum: 6fc1c75e58f187a12eb042cb6c7f41a5c038e0fcf71d1e18f6b428f971c74961551b208fcd79885d7002b5ef5158264592cf0bb859018bacf7048a5fb6db25f3
-=======
+  languageName: node
+  linkType: hard
+
 "@metamask/phishing-controller@npm:^9.0.2":
   version: 9.0.2
   resolution: "@metamask/phishing-controller@npm:9.0.2"
@@ -5879,7 +5844,6 @@ __metadata:
     eth-phishing-detect: "npm:^1.2.0"
     punycode: "npm:^2.1.1"
   checksum: 2a1fa922502a42e831567ac3965489e1b61b75fc5bcd1619b417ee3747b98ab3a1381a17b68b70a121154667858ca666c91bf1c1743892640b6f1f3d221e2bde
->>>>>>> Stashed changes
   languageName: node
   linkType: hard
 
@@ -6687,11 +6651,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-<<<<<<< Updated upstream
 "@noble/hashes@npm:1.4.0, @noble/hashes@npm:^1.0.0, @noble/hashes@npm:^1.1.2, @noble/hashes@npm:^1.2.0, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:^1.3.2, @noble/hashes@npm:^1.3.3, @noble/hashes@npm:^1.4.0":
-=======
-"@noble/hashes@npm:^1.1.2":
->>>>>>> Stashed changes
   version: 1.4.0
   resolution: "@noble/hashes@npm:1.4.0"
   checksum: e156e65794c473794c52fa9d06baf1eb20903d0d96719530f523cc4450f6c721a957c544796e6efd0197b2296e7cd70efeb312f861465e17940a3e3c7e0febc6
@@ -7979,18 +7939,6 @@ __metadata:
     uri-js: "npm:^4.4.1"
     valid-url: "npm:^1.0.9"
   checksum: 6a6f7fbf7a43a63a3e9cf7fadd4ef2bc700d3933ed65db1b5d57262cc1b502bb2d00e741b3b315c705897c34dcf6b9031c4963e6e72e8608d593f1bfdaf32169
-  languageName: node
-  linkType: hard
-
-"@spruceid/siwe-parser@npm:2.1.0":
-  version: 2.1.0
-  resolution: "@spruceid/siwe-parser@npm:2.1.0"
-  dependencies:
-    "@noble/hashes": "npm:^1.1.2"
-    apg-js: "npm:^4.1.1"
-    uri-js: "npm:^4.4.1"
-    valid-url: "npm:^1.0.9"
-  checksum: 12198f613f15000b5ec2e2f59c4c3c34918c88d48e0c2e2cfdb34ce926b89a13b6f18e7612777ffb8fa25ca2c226577e47c72592e76823b03770b67c54f78d38
   languageName: node
   linkType: hard
 
@@ -25611,11 +25559,7 @@ __metadata:
     "@metamask/obs-store": "npm:^8.1.0"
     "@metamask/permission-controller": "npm:^9.0.1"
     "@metamask/permission-log-controller": "npm:^1.0.0"
-<<<<<<< Updated upstream
-    "@metamask/phishing-controller": "npm:^8.0.2"
-=======
     "@metamask/phishing-controller": "npm:^9.0.2"
->>>>>>> Stashed changes
     "@metamask/phishing-warning": "npm:^3.0.3"
     "@metamask/post-message-stream": "npm:^8.0.0"
     "@metamask/ppom-validator": "npm:^0.29.0"
@@ -35098,15 +35042,6 @@ __metadata:
   linkType: hard
 
 "uri-js@npm:^4.2.2, uri-js@npm:^4.4.1":
-  version: 4.4.1
-  resolution: "uri-js@npm:4.4.1"
-  dependencies:
-    punycode: "npm:^2.1.0"
-  checksum: b271ca7e3d46b7160222e3afa3e531505161c9a4e097febae9664e4b59912f4cbe94861361a4175edac3a03fee99d91e44b6a58c17a634bc5a664b19fc76fbcb
-  languageName: node
-  linkType: hard
-
-"uri-js@npm:^4.4.1":
   version: 4.4.1
   resolution: "uri-js@npm:4.4.1"
   dependencies:
