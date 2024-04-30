@@ -1,9 +1,9 @@
 import React from 'react';
-import { ConfirmInfoRow, ConfirmInfoRowVariant } from './row';
+import { ConfirmInfoRow, ConfirmInfoRowVariant } from '../row';
 import { AlertRow, AlertRowProps } from './alert-row';
-import { Severity } from '../../../../../helpers/constants/design-system';
-import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
-import configureStore from '../../../../../store/store';
+import { Severity } from '../../../../../../helpers/constants/design-system';
+import { Alert } from '../../../../../../ducks/confirm-alerts/confirm-alerts';
+import configureStore from '../../../../../../store/store';
 import { Provider } from 'react-redux';
 import { Meta } from '@storybook/react';
 

@@ -21,7 +21,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { InlineAlertContext } from './alert-row';
+import { InlineAlertContext } from './alert-row/alert-row';
 
 export enum ConfirmInfoRowVariant {
   Default = 'default',
@@ -47,6 +47,12 @@ const TEXT_COLORS = {
   [ConfirmInfoRowVariant.Default]: TextColor.textDefault,
   [ConfirmInfoRowVariant.Critical]: Color.errorAlternative,
   [ConfirmInfoRowVariant.Warning]: Color.warningAlternative,
+};
+
+const ALERT_TEXT_COLORS = {
+  [ConfirmInfoRowVariant.Default]: TextColor.infoDefault,
+  [ConfirmInfoRowVariant.Critical]: TextColor.errorDefault,
+  [ConfirmInfoRowVariant.Warning]: TextColor.warningDefault,
 };
 
 const TOOLTIP_ICONS = {
@@ -88,7 +94,11 @@ export const ConfirmInfoRow = ({
         marginBottom={2}
         paddingLeft={2}
         paddingRight={2}
-        color={TEXT_COLORS[variant] as TextColor}
+        color={
+          inlineAlert
+            ? ALERT_TEXT_COLORS[variant]
+            : (TEXT_COLORS[variant] as TextColor)
+        }
         style={{
           overflowWrap: OverflowWrap.Anywhere,
           minHeight: '24px',

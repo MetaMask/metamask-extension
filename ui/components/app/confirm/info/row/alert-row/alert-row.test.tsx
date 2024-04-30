@@ -1,8 +1,8 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { Text } from '../../../../component-library';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
-import { Severity } from '../../../../../helpers/constants/design-system';
+import { Text } from '../../../../../component-library';
+import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
+import { Severity } from '../../../../../../helpers/constants/design-system';
 import { AlertRow } from './alert-row';
 
 describe('AlertRow', () => {
