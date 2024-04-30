@@ -1,5 +1,8 @@
 import React, { createContext } from 'react';
-import { Severity } from '../../../../../../helpers/constants/design-system';
+import {
+  Severity,
+  TextColor,
+} from '../../../../../../helpers/constants/design-system';
 import InlineAlert from '../../../../confirmations/alerts/inline-alert/inline-alert';
 import useAlerts from '../../../../../../hooks/useAlerts';
 import {
@@ -12,6 +15,19 @@ export type AlertRowProps = ConfirmInfoRowProps & {
   alertKey: string;
   alertOwnerId: string;
 };
+
+export function getAlertTextColors(variant: ConfirmInfoRowVariant): TextColor {
+  switch (variant) {
+    case ConfirmInfoRowVariant.Critical:
+      return TextColor.errorDefault;
+    case ConfirmInfoRowVariant.Warning:
+      return TextColor.warningDefault;
+    case ConfirmInfoRowVariant.Default:
+      return TextColor.infoDefault;
+    default:
+      return TextColor.textDefault;
+  }
+}
 
 function getSeverityAlerts(variant: ConfirmInfoRowVariant): Severity {
   switch (variant) {
@@ -59,8 +75,6 @@ export const AlertRow = ({
   ) : null;
 
   return (
-    <InlineAlertContext.Provider value={inlineAlert}>
-      <ConfirmInfoRow {...confirmInfoRowProps} />
-    </InlineAlertContext.Provider>
+    <ConfirmInfoRow {...confirmInfoRowProps} labelEndChildren={inlineAlert} />
   );
 };
