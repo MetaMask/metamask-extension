@@ -6,7 +6,6 @@ export async function getCustodianInfoByName(name: string) {
   // First get an admin token
   try {
     const { custodians } = (await axios.get(`${MMI_E2E_MMI_CONFIG_URL}`)).data;
-    console.log("MMI_E2E_MMI_CONFIG_URL", MMI_E2E_MMI_CONFIG_URL);
     return custodians.filter(function (custodian: any) {
       return custodian.name === name;
     });
