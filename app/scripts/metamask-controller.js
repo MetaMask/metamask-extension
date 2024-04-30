@@ -4930,8 +4930,10 @@ export default class MetamaskController extends EventEmitter {
     );
     ///: END:ONLY_INCLUDE_IF
 
-    const isConfirmationRedesignEnabled = process.env.ENABLE_CONFIRMATION_REDESIGN &&
-      this.preferencesController.store.getState().preferences.redesignedConfirmations;
+    const isConfirmationRedesignEnabled =
+      process.env.ENABLE_CONFIRMATION_REDESIGN &&
+      this.preferencesController.store.getState().preferences
+        .redesignedConfirmations;
 
     engine.push(
       createRPCMethodTrackingMiddleware({
@@ -4943,7 +4945,7 @@ export default class MetamaskController extends EventEmitter {
         ),
         getAccountType: this.getAccountType.bind(this),
         getDeviceModel: this.getDeviceModel.bind(this),
-        isConfirmationRedesignEnabled: isConfirmationRedesignEnabled,
+        isConfirmationRedesignEnabled,
         snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
           name: 'SnapAndHardwareMessenger',
           allowedActions: [
