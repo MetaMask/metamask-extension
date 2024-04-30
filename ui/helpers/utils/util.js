@@ -31,8 +31,6 @@ import {
 } from '../../../shared/constants/labels';
 import { Numeric } from '../../../shared/modules/Numeric';
 import {
-  BROKEN_PRERENDER_BROWSER_VERSIONS,
-  FIXED_PRERENDER_BROWSER_VERSIONS,
   OUTDATED_BROWSER_VERSIONS,
 } from '../constants/common';
 // formatData :: ( date: <Unix Timestamp> ) -> String
@@ -358,16 +356,6 @@ export function getIsBrowserDeprecated(
   browser = bowser.getParser(window.navigator.userAgent),
 ) {
   return browser.satisfies(OUTDATED_BROWSER_VERSIONS) ?? false;
-}
-
-export function getIsBrowserPrerenderBroken(
-  browser = bowser.getParser(window.navigator.userAgent),
-) {
-  return (
-    (browser.satisfies(BROKEN_PRERENDER_BROWSER_VERSIONS) &&
-      !browser.satisfies(FIXED_PRERENDER_BROWSER_VERSIONS)) ??
-    false
-  );
 }
 
 export function getURLHost(url) {

@@ -2,8 +2,10 @@
  * Utility Functions to support browser.runtime JavaScript API
  */
 
+import bowser from 'bowser';
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
+import { BROKEN_PRERENDER_BROWSER_VERSIONS, FIXED_PRERENDER_BROWSER_VERSIONS } from '../../ui/helpers/constants/common';
 
 /**
  * Returns an Error if extension.runtime.lastError is present
@@ -52,4 +54,14 @@ export function checkForLastErrorAndWarn() {
   }
 
   return error;
+}
+
+export function getIsBrowserPrerenderBroken(
+  browser = bowser.getParser(window.navigator.userAgent),
+) {
+  return (
+    (browser.satisfies(BROKEN_PRERENDER_BROWSER_VERSIONS) &&
+      !browser.satisfies(FIXED_PRERENDER_BROWSER_VERSIONS)) ??
+    false
+  );
 }
