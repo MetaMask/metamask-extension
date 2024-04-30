@@ -11,7 +11,7 @@ export type NumericValue = string | number | BN | BigNumber;
 export type NumericBase = 10 | 16;
 
 /**
- * All variations of isHexString from our own utilities and etherumjs-utils
+ * All variations of isHexString from our own utilities and ethereumjs-utils
  * return false for a '-' prefixed hex string. This utility method strips the
  * possible '-' from the string before testing its validity so that negative
  * hex values can be properly handled.
@@ -25,7 +25,7 @@ function isHexStringOrNegatedHexString(value: string): value is string {
 
 /**
  * BigNumber supports hex strings with '.' (aka decimals) in the string.
- * No version of isHexString returs true if the string contains a decimal so
+ * No version of isHexString returns true if the string contains a decimal so
  * this method is used to check if both parts of the string split by the
  * decimal are hex strings. If so we can feed this value into BigNumber to get
  * a valid Numeric.
@@ -83,7 +83,7 @@ function decimalToBigNumber(value: string | number) {
  * string value must be provided.
  *
  * @param value - A hexadecimal or decimal string
- * @param numericBase - Either 16 for a hexadeciaml or 10 for a decimal
+ * @param numericBase - Either 16 for a hexadecimal or 10 for a decimal
  * @returns A BigNumber representation of the value
  */
 function stringToBigNumber(value: string, numericBase: NumericBase) {
@@ -110,7 +110,7 @@ function stringToBigNumber(value: string, numericBase: NumericBase) {
 }
 
 /**
- * This method will convert a hexadecimal or deciaml number into a BigNumber.
+ * This method will convert a hexadecimal or decimal number into a BigNumber.
  * The second parameter must be supplied and determines whether to treat the
  * value as a hexadecimal or decimal value.
  *
@@ -241,7 +241,7 @@ function alignOperandDenominations(
  * decimal of GWEI. Prior to this class the method would call into our root
  * level 'conversionUtil' which was the proverbial kitchen sink doing
  * everything from denomination conversion, currency conversion (with provided
- * conversionRate prop) and more. The same opeartion can now be expressed as:
+ * conversionRate prop) and more. The same operation can now be expressed as:
  * new Numeric(hexString, 16, EtherDenomination.WEI)
  * .toDenomination(EtherDenomination.GWEI)
  * .toBase(10)
@@ -348,9 +348,9 @@ export class Numeric {
    * the predecessor to Numeric, 'conversionUtil', were programmed into this
    * method:
    * 1. You may supply a denomination that is undefined, which will result in
-   * nothing happening. Coincidently this is also useful due to the nature of
+   * nothing happening. Coincidentally this is also useful due to the nature of
    * chaining operations on Numeric. You may pass an undefined value in this
-   * method without breaking the chain to conditionally apply a operator.
+   * method without breaking the chain to conditionally apply an operator.
    * 2. If the numeric that .toDenomination is called on does not have a
    * denomination set, that is it was constructed without the third parameter,
    * then it is assumed to be in ETH. Otherwise we convert it to ETH prior to
@@ -624,7 +624,7 @@ export class Numeric {
    * Returns a fixed-point decimal string representation of the Numeric
    *
    * @param decimals - the amount of decimal precision to use when rounding
-   * @returns A fixed point decimal string represenation of the Numeric
+   * @returns A fixed point decimal string representation of the Numeric
    */
   toFixed(decimals: number) {
     return this.value.toFixed(decimals);

@@ -20,13 +20,12 @@ import {
   removePermittedAccount,
   setSelectedAccount,
 } from '../../../store/actions';
-import {
-  getOriginOfCurrentTab,
-  getPermissionsForActiveTab,
-} from '../../../selectors';
+import { getPermissionsForActiveTab } from '../../../selectors';
 import { PermissionDetailsModal } from '../permission-details-modal/permission-details-modal';
 import { Identity } from './connected-accounts-menu.types';
 
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const TsMenuItem = MenuItem as any;
 
 export const ConnectedAccountsMenu = ({
@@ -36,6 +35,8 @@ export const ConnectedAccountsMenu = ({
   disableAccountSwitcher = false,
   onClose,
   closeMenu,
+  onActionClick,
+  activeTabOrigin,
 }: {
   isOpen: boolean;
   identity: Identity;
@@ -43,8 +44,9 @@ export const ConnectedAccountsMenu = ({
   disableAccountSwitcher: boolean;
   onClose: () => void;
   closeMenu: () => void;
+  onActionClick: (message: string) => void;
+  activeTabOrigin: string;
 }) => {
-  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const dispatch = useDispatch();
   const t = useI18nContext();
   const popoverDialogRef = useRef<HTMLDivElement | null>(null);
@@ -134,6 +136,7 @@ export const ConnectedAccountsMenu = ({
               iconColor={IconColor.errorDefault}
               data-testid="disconnect-menu-item"
               onClick={() => {
+                onActionClick(identity.metadata.name);
                 dispatch(
                   removePermittedAccount(activeTabOrigin, identity.address),
                 );

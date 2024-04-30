@@ -3480,12 +3480,6 @@
   "smartContracts": {
     "message": "스마트 계약"
   },
-  "smartSwapsAreHere": {
-    "message": "스마트 스왑이 시작되었습니다!"
-  },
-  "smartSwapsDescription": {
-    "message": "MetaMask 스왑이 더욱 스마트해졌습니다! 스마트 스왑을 활성화하면 MetaMask가 프로그램을 통해 스왑을 최적화하여 다음과 같은 활동에 도움을 드립니다."
-  },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "스마트 스왑 자금 부족"
   },
@@ -3764,18 +3758,6 @@
   },
   "strong": {
     "message": "강함"
-  },
-  "stxBenefit1": {
-    "message": "트랜잭션 비용 최소화하기"
-  },
-  "stxBenefit2": {
-    "message": "트랜잭션 실패 줄이기"
-  },
-  "stxBenefit3": {
-    "message": "중단된 트랜잭션 제거하기"
-  },
-  "stxBenefit4": {
-    "message": "프런트 러닝 방지"
   },
   "stxCancelled": {
     "message": "스왑이 실패했을 것입니다"
@@ -4707,7 +4689,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "$2에서 $1 보기",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "Etherscan에서 $1 보기",

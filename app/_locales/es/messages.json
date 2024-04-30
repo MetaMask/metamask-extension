@@ -3480,12 +3480,6 @@
   "smartContracts": {
     "message": "Contratos inteligentes"
   },
-  "smartSwapsAreHere": {
-    "message": "¡Los intercambios inteligentes ya están aquí!"
-  },
-  "smartSwapsDescription": {
-    "message": "¡La función Intercambios de MetaMask ahora es mucho más inteligente! Habilitar Intercambios inteligentes permitirá que MetaMask optimice mediante programación su intercambio para ayudar a:"
-  },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "No hay suficientes fondos para un intercambio inteligente."
   },
@@ -3764,18 +3758,6 @@
   },
   "strong": {
     "message": "Fuerte"
-  },
-  "stxBenefit1": {
-    "message": "Minimizar los costos de transacción"
-  },
-  "stxBenefit2": {
-    "message": "Reducir las fallas en las transacciones"
-  },
-  "stxBenefit3": {
-    "message": "Eliminar las transacciones atascadas"
-  },
-  "stxBenefit4": {
-    "message": "Prevenir la inversión ventajista"
   },
   "stxCancelled": {
     "message": "El intercambio habría fallado"
@@ -4707,7 +4689,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "Ver $1 en $2",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "Ver $1 en Etherscan",

@@ -1,0 +1,40 @@
+diff --git a/dist/NftDetectionController.js b/dist/NftDetectionController.js
+index 24373e328d3600d1168914a3dc0bbbd905b19ebe..3877bebee24d1ad5cd2183b50547e8cef1846558 100644
+--- a/dist/NftDetectionController.js
++++ b/dist/NftDetectionController.js
+@@ -36,7 +36,7 @@ class NftDetectionController extends polling_controller_1.StaticIntervalPollingC
+      * @param config - Initial options used to configure this controller.
+      * @param state - Initial state to set on this controller.
+      */
+-    constructor({ chainId: initialChainId, getNetworkClientById, onPreferencesStateChange, onNetworkStateChange, getOpenSeaApiKey, addNft, getNftApi, getNftState, }, config, state) {
++    constructor({ chainId: initialChainId, getNetworkClientById, onPreferencesStateChange, onNetworkStateChange, getOpenSeaApiKey, addNft, getNftApi, getNftState, disabled: initialDisabled, selectedAddress: initialSelectedAddress }, config, state) {
+         super(config, state);
+         /**
+          * Name of this controller used during composition
+@@ -54,8 +54,8 @@ class NftDetectionController extends polling_controller_1.StaticIntervalPollingC
+         this.defaultConfig = {
+             interval: DEFAULT_INTERVAL,
+             chainId: initialChainId,
+-            selectedAddress: '',
+-            disabled: true,
++            selectedAddress: initialSelectedAddress,
++            disabled: initialDisabled,
+         };
+         this.initialize();
+         this.getNftState = getNftState;
+diff --git a/dist/Standards/NftStandards/ERC721/ERC721Standard.js b/dist/Standards/NftStandards/ERC721/ERC721Standard.js
+index d9286b0c0e607d2857f3ee7dad40d13a6c11d7d7..4e12e4b590b1f34a66602d63035f1905917f8c93 100644
+--- a/dist/Standards/NftStandards/ERC721/ERC721Standard.js
++++ b/dist/Standards/NftStandards/ERC721/ERC721Standard.js
+@@ -66,7 +66,10 @@ class ERC721Standard {
+             const contract = new contracts_1.Contract(address, metamask_eth_abis_1.abiERC721, this.provider);
+             const supportsMetadata = yield this.contractSupportsMetadataInterface(address);
+             if (!supportsMetadata) {
+-                throw new Error('Contract does not support ERC721 metadata interface.');
++                // Do not throw error here, supporting Metadata interface is optional even though majority of ERC721 nfts do support it.
++                // This change is made because of instances of NFTs that are ERC404( mixed ERC20 / ERC721 implementation).
++                // As of today, ERC404 is unofficial but some people use it, the contract does not support Metadata interface, but it has the tokenURI() fct.
++                console.error('Contract does not support ERC721 metadata interface.');
+             }
+             return contract.tokenURI(tokenId);
+         });

@@ -3480,12 +3480,6 @@
   "smartContracts": {
     "message": "स्मार्ट कॉन्ट्रैक्ट्स"
   },
-  "smartSwapsAreHere": {
-    "message": "स्मार्ट स्वैप यहां हैं!"
-  },
-  "smartSwapsDescription": {
-    "message": "MetaMask के स्वैप अब और अधिक स्मार्ट हो गए हैं! इन हेतु सहायता के लिए स्मार्ट स्वैप को इनेबल करने से MetaMask आपके स्वैप को प्रोग्रामेटिक रूप से ऑप्टिमाइज कर पाएगा:"
-  },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "स्मार्ट स्वैप के लिए पर्याप्त फंड नहीं है।"
   },
@@ -3764,18 +3758,6 @@
   },
   "strong": {
     "message": "मजबूत"
-  },
-  "stxBenefit1": {
-    "message": "ट्रांसेक्शन लागतें मिनिमाइज़ करें"
-  },
-  "stxBenefit2": {
-    "message": "ट्रांसेक्शन विफलताएं कम करें"
-  },
-  "stxBenefit3": {
-    "message": "अटके हुए ट्रांसेक्शन को हटा दें"
-  },
-  "stxBenefit4": {
-    "message": "फ़्रंट-रनिंग को रोकें"
   },
   "stxCancelled": {
     "message": "स्वैप विफल हो सकता था"
@@ -4707,7 +4689,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "$1 को $2 पर देखें",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "Etherscan पर $1 देखें",

@@ -18,7 +18,13 @@ import {
   getShowExtensionInFullSizeView,
   getSelectedAccount,
   getPermittedAccountsForCurrentTab,
+  getSwitchedNetworkDetails,
+  getNeverShowSwitchedNetworkMessage,
+  getNetworkToAutomaticallySwitchTo,
+  getNumberOfAllUnapprovedTransactionsAndMessages,
+  getUseRequestQueue,
 } from '../../selectors';
+import { getSmartTransactionsOptInStatus } from '../../../shared/modules/selectors';
 import {
   lockMetamask,
   hideImportNftsModal,
@@ -30,6 +36,9 @@ import {
   hideImportTokensModal,
   hideDeprecatedNetworkModal,
   addPermittedAccount,
+  automaticallySwitchNetwork,
+  clearSwitchedNetworkDetails,
+  neverShowSwitchedNetworkMessage,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   hideKeyringRemovalResultModal,
   ///: END:ONLY_INCLUDE_IF
@@ -64,6 +73,10 @@ function mapStateToProps(state) {
       !connectedAccounts.find((address) => address === account.address),
   );
 
+  const networkToAutomaticallySwitchTo =
+    getNetworkToAutomaticallySwitchTo(state);
+  const switchedNetworkDetails = getSwitchedNetworkDetails(state);
+
   return {
     alertOpen,
     alertMessage,
@@ -87,6 +100,7 @@ function mapStateToProps(state) {
     allAccountsOnNetworkAreEmpty: getAllAccountsOnNetworkAreEmpty(state),
     isTestNet: getIsTestnet(state),
     showExtensionInFullSizeView: getShowExtensionInFullSizeView(state),
+    smartTransactionsOptInStatus: getSmartTransactionsOptInStatus(state),
     currentChainId: getCurrentChainId(state),
     shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
     forgottenPassword: state.metamask.forgottenPassword,
@@ -99,6 +113,13 @@ function mapStateToProps(state) {
     accountDetailsAddress: state.appState.accountDetailsAddress,
     isImportNftsModalOpen: state.appState.importNftsModal.open,
     isIpfsModalOpen: state.appState.showIpfsModalOpen,
+    switchedNetworkDetails,
+    networkToAutomaticallySwitchTo,
+    unapprovedTransactions:
+      getNumberOfAllUnapprovedTransactionsAndMessages(state),
+    neverShowSwitchedNetworkMessage: getNeverShowSwitchedNetworkMessage(state),
+    currentExtensionPopupId: state.metamask.currentExtensionPopupId,
+    useRequestQueue: getUseRequestQueue(state),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal:
       state.appState.showKeyringRemovalSnapModal,
@@ -122,6 +143,11 @@ function mapDispatchToProps(dispatch) {
     hideDeprecatedNetworkModal: () => dispatch(hideDeprecatedNetworkModal()),
     addPermittedAccount: (activeTabOrigin, address) =>
       dispatch(addPermittedAccount(activeTabOrigin, address)),
+    clearSwitchedNetworkDetails: () => dispatch(clearSwitchedNetworkDetails()),
+    setSwitchedNetworkNeverShowMessage: () =>
+      dispatch(neverShowSwitchedNetworkMessage()),
+    automaticallySwitchNetwork: (networkId, selectedTabOrigin) =>
+      dispatch(automaticallySwitchNetwork(networkId, selectedTabOrigin)),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     hideShowKeyringSnapRemovalResultModal: () =>
       dispatch(hideKeyringRemovalResultModal()),

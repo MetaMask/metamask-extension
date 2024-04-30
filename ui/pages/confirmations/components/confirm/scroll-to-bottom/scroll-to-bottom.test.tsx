@@ -1,10 +1,17 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { unapprovedTypedSignMsgV4 } from '../../../../../../test/data/confirmations/typed_sign';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import * as ConfirmDucks from '../../../../../ducks/confirm/confirm';
 import ScrollToBottom from './scroll-to-bottom';
 
 const buttonSelector = '.confirm-scroll-to-bottom__button';
+
+const mockState = {
+  confirm: {
+    currentConfirmation: unapprovedTypedSignMsgV4,
+  },
+};
 
 const mockUseScrollRequiredResult = {
   hasScrolledToBottom: false,
@@ -29,7 +36,7 @@ describe('ScrollToBottom', () => {
           <div>foo</div>
           <div>bar</div>
         </ScrollToBottom>,
-        configureMockStore([])(),
+        configureMockStore([])(mockState),
       );
 
       expect(getByText('foo')).toBeInTheDocument();
@@ -41,7 +48,7 @@ describe('ScrollToBottom', () => {
       const updateSpy = jest.spyOn(ConfirmDucks, 'updateConfirm');
       renderWithProvider(
         <ScrollToBottom>foobar</ScrollToBottom>,
-        configureMockStore([])(),
+        configureMockStore([])(mockState),
       );
 
       expect(updateSpy).toHaveBeenCalledWith({
@@ -63,7 +70,7 @@ describe('ScrollToBottom', () => {
             <div>bar</div>
           </ScrollToBottom>
         </div>,
-        configureMockStore([])(),
+        configureMockStore([])(mockState),
       );
 
       expect(getByText('foo')).toBeInTheDocument();
@@ -75,7 +82,7 @@ describe('ScrollToBottom', () => {
       const updateSpy = jest.spyOn(ConfirmDucks, 'updateConfirm');
       renderWithProvider(
         <ScrollToBottom>foobar</ScrollToBottom>,
-        configureMockStore([])(),
+        configureMockStore([])(mockState),
       );
 
       expect(updateSpy).toHaveBeenCalledWith({
@@ -91,7 +98,7 @@ describe('ScrollToBottom', () => {
       it('hides the button', () => {
         const { container } = renderWithProvider(
           <ScrollToBottom>foobar</ScrollToBottom>,
-          configureMockStore([])(),
+          configureMockStore([])(mockState),
         );
 
         expect(container.querySelector(buttonSelector)).not.toBeInTheDocument();
@@ -101,7 +108,7 @@ describe('ScrollToBottom', () => {
         const updateSpy = jest.spyOn(ConfirmDucks, 'updateConfirm');
         const { container } = renderWithProvider(
           <ScrollToBottom>foobar</ScrollToBottom>,
-          configureMockStore([])(),
+          configureMockStore([])(mockState),
         );
 
         expect(container.querySelector(buttonSelector)).not.toBeInTheDocument();
