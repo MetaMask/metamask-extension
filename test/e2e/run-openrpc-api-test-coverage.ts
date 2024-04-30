@@ -12,6 +12,7 @@ import {
   MethodObject,
   OpenrpcDocument,
 } from '@open-rpc/meta-schema';
+import openrpcDocument from "@metamask/api-specs";
 const { v4 } = require('uuid');
 
 declare let window: any;
@@ -281,10 +282,6 @@ async function main() {
 
       const transport = createDriverTransport(driver);
 
-      const openrpcDocument: OpenrpcDocument = await (
-        await fetch('https://metamask.github.io/api-specs/0.9.0/openrpc.json')
-      ).json();
-
       const transaction = openrpcDocument.components?.schemas?.TransactionInfo?.allOf?.[0];
 
       if (transaction) {
@@ -406,8 +403,7 @@ async function main() {
       // update chainId for signTypedData
       (signTypedData4 as any).examples[0].params[1].value.domain.chainId = 1337;
 
-      // add net_version
-      openrpcDocument.methods.push({
+      const netVersion: MethodObject = {
         name: 'net_version',
         params: [],
         result: {
@@ -425,11 +421,14 @@ async function main() {
             params: [],
             result: {
               name: 'net_version',
+              description: 'The current network ID',
               value: '0x1',
             },
           },
         ],
-      });
+      }
+      // add net_version
+      openrpcDocument.methods.push(netVersion as any);
 
       const getEncryptionPublicKey = openrpcDocument.methods.find(
         (m) => (m as MethodObject).name === 'eth_getEncryptionPublicKey',
