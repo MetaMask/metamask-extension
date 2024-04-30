@@ -121,6 +121,7 @@
     "update-mock-cdn": "node test/e2e/mock-cdn/update-mock-cdn-files.js"
   },
   "resolutions": {
+    "@metamask/gas-fee-controller": "npm:@metamask-previews/gas-fee-controller@15.1.0-preview-02d970ca",
     "simple-update-notifier@^1.0.0": "^2.0.0",
     "@babel/core": "patch:@babel/core@npm%3A7.23.2#~/.yarn/patches/@babel-core-npm-7.23.2-b93f586907.patch",
     "@types/react": "^16.9.53",
