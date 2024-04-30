@@ -12,6 +12,7 @@ const props = {
   onClose: mockHandleClose,
   custodianName: 'Test Custodian',
   custodianURL: 'http://testcustodian.com',
+  setQrConnectionRequest: jest.fn(),
 };
 
 describe('QRCodeModal', () => {

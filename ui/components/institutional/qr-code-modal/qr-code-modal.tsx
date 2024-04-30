@@ -242,7 +242,6 @@ const QRCodeModal: React.FC<QRCodeModalProps> = ({
           {t('custodianQRCodeScanDescription', [custodianLink])}
         </Text>
         <ButtonLink
-          as="p"
           paddingRight={10}
           paddingLeft={10}
           paddingBottom={4}

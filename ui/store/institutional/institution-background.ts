@@ -250,7 +250,7 @@ export function mmiActionsFactory() {
       createAsyncAction('setCustodianNewRefreshToken', [
         { address, refreshToken },
       ]),
-    setConnectionRequest: (payload: ConnectionRequest) =>
+    setConnectionRequest: (payload: ConnectionRequest | null) =>
       createAsyncAction('setConnectionRequest', [payload]),
   };
 }

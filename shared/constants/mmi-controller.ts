@@ -57,7 +57,7 @@ export type MMIControllerOptions = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   updateTransaction: (txMeta: any) => void;
   setChannelId: (channelId: string) => void;
-  setConnectionRequest: (payload: ConnectionRequest) => void;
+  setConnectionRequest: (payload: ConnectionRequest | null) => void;
 };
 
 export type ISignedEvent = {

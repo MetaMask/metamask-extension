@@ -109,7 +109,7 @@ export default class MMIController extends EventEmitter {
 
   private setChannelId: (channelId: string) => void;
 
-  private setConnectionRequest: (payload: ConnectionRequest) => void;
+  private setConnectionRequest: (payload: ConnectionRequest | null) => void;
 
   public trackTransactionEvents: (
     args: { transactionMeta: TransactionMeta },
