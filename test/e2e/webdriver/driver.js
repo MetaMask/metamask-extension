@@ -530,6 +530,10 @@ class Driver {
     await this.driver.switchTo().frame(element);
   }
 
+  async getWindowHandle() {
+    return this.driver.getWindowHandle();
+  }
+
   async getAllWindowHandles() {
     let windowHandles = await this.driver.getAllWindowHandles();
     windowHandles = windowHandles.filter((h) => {
@@ -545,7 +549,7 @@ class Driver {
     let timeElapsed = 0;
     let windowHandles = [];
     while (timeElapsed <= timeout) {
-      windowHandles = await this.driver.getAllWindowHandles();
+      windowHandles = await this.getAllWindowHandles();
 
       if (windowHandles.length === x) {
         return windowHandles;
@@ -569,8 +573,7 @@ class Driver {
     { retries = 8, retryDelay = 2500 } = {},
   ) {
     let windowHandles =
-      initialWindowHandles || (await this.driver.getAllWindowHandles());
-    windowHandles = windowHandles.filter((h) => !this.ignoredHandleList[h]);
+      initialWindowHandles || (await this.getAllWindowHandles());
     let timeElapsed = 0;
 
     while (timeElapsed <= timeout) {
@@ -585,7 +588,6 @@ class Driver {
             return await this.driver.getTitle();
           },
         );
-
         if (handleTitle === title) {
           return handle;
         }
@@ -593,8 +595,7 @@ class Driver {
       await this.delay(delayStep);
       timeElapsed += delayStep;
       // refresh the window handles
-      windowHandles = await this.driver.getAllWindowHandles();
-      windowHandles = windowHandles.filter((h) => !this.ignoredHandleList[h]);
+      windowHandles = await this.getAllWindowHandles();
     }
 
     throw new Error(`No window with title: ${title}`);
@@ -608,8 +609,7 @@ class Driver {
     { retries = 8, retryDelay = 2500 } = {},
   ) {
     let windowHandles =
-      initialWindowHandles || (await this.driver.getAllWindowHandles());
-    windowHandles = windowHandles.filter((h) => !this.ignoredHandleList[h]);
+      initialWindowHandles || (await this.getAllWindowHandles());
     let timeElapsed = 0;
 
     while (timeElapsed <= timeout) {
@@ -632,8 +632,7 @@ class Driver {
       await this.delay(delayStep);
       timeElapsed += delayStep;
       // refresh the window handles
-      windowHandles = await this.driver.getAllWindowHandles();
-      windowHandles = windowHandles.filter((h) => !this.ignoredHandleList[h]);
+      windowHandles = await this.getAllWindowHandles();
     }
 
     throw new Error(`No window with url: ${url}`);
@@ -662,7 +661,7 @@ class Driver {
    */
   async closeAllWindowHandlesExcept(exceptions, windowHandles) {
     // eslint-disable-next-line no-param-reassign
-    windowHandles = windowHandles || (await this.driver.getAllWindowHandles());
+    windowHandles = windowHandles || (await this.getAllWindowHandles());
 
     for (const handle of windowHandles) {
       if (!exceptions.includes(handle)) {
