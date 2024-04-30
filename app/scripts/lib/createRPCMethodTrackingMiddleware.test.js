@@ -35,25 +35,12 @@ const appStateController = {
   },
 };
 
-const mockedPreferences = jest.mocked({
-  redesignedConfirmations: true,
-});
-
-const preferencesController = {
-  store: {
-    getState: () => ({
-      preferences: mockedPreferences,
-    }),
-  },
-};
-
 const createHandler = (opts) =>
   createRPCMethodTrackingMiddleware({
     trackEvent,
     getMetricsState,
     rateLimitTimeout: 1000,
     rateLimitSamplePercent: 0.1,
-    preferencesController,
     globalRateLimitTimeout: 0,
     globalRateLimitMaxAmount: 0,
     appStateController,
@@ -431,10 +418,6 @@ describe('createRPCMethodTrackingMiddleware', () => {
     });
 
     it('should track Confirmation Redesign through ui_customizations prop if enabled', async () => {
-      const originalEnvConfirmationRedesign =
-        process.env.ENABLE_CONFIRMATION_REDESIGN;
-      process.env.ENABLE_CONFIRMATION_REDESIGN = true;
-
       const req = {
         method: MESSAGE_TYPE.PERSONAL_SIGN,
         origin: 'some.dapp',
@@ -443,7 +426,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         error: null,
       };
       const { next, executeMiddlewareStack } = getNext();
-      const handler = createHandler();
+      const handler = createHandler({ isConfirmationRedesignEnabled: true });
 
       await handler(req, res, next);
       await executeMiddlewareStack();
@@ -461,18 +444,9 @@ describe('createRPCMethodTrackingMiddleware', () => {
         },
         referrer: { url: 'some.dapp' },
       });
-
-      process.env.ENABLE_CONFIRMATION_REDESIGN =
-        originalEnvConfirmationRedesign;
     });
 
     it('should not track Confirmation Redesign through ui_customizations prop if not enabled', async () => {
-      mockedPreferences.redesignedConfirmations = false;
-
-      const originalEnvConfirmationRedesign =
-        process.env.ENABLE_CONFIRMATION_REDESIGN;
-      process.env.ENABLE_CONFIRMATION_REDESIGN = true;
-
       const req = {
         method: MESSAGE_TYPE.PERSONAL_SIGN,
         origin: 'some.dapp',
@@ -481,7 +455,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         error: null,
       };
       const { next, executeMiddlewareStack } = getNext();
-      const handler = createHandler();
+      const handler = createHandler({ isConfirmationRedesignEnabled: false });
 
       await handler(req, res, next);
       await executeMiddlewareStack();
@@ -496,9 +470,6 @@ describe('createRPCMethodTrackingMiddleware', () => {
         },
         referrer: { url: 'some.dapp' },
       });
-
-      process.env.ENABLE_CONFIRMATION_REDESIGN =
-        originalEnvConfirmationRedesign;
     });
 
     it('should track Sign-in With Ethereum (SIWE) message if detected', async () => {
