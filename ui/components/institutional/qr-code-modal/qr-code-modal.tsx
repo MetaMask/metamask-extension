@@ -18,7 +18,6 @@ import {
   TextVariant,
   FontWeight,
 } from '../../../helpers/constants/design-system';
-import { I18nContext } from '../../../contexts/i18n';
 import Spinner from '../../ui/spinner';
 import {
   getChannelId,
@@ -27,12 +26,12 @@ import {
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-interface QRCodeModalProps {
+type QRCodeModalProps = {
   onClose: () => void;
   custodianName?: string;
   custodianURL: string;
-  setQrConnectionRequest: (message: any) => void;
-}
+  setQrConnectionRequest: (message: string) => void;
+};
 
 const QRCodeModal: React.FC<QRCodeModalProps> = ({
   onClose,
@@ -92,6 +91,7 @@ const QRCodeModal: React.FC<QRCodeModalProps> = ({
       );
 
       setPrivateKey(keyPair.privateKey);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       handleError('An error occurred while generating cryptographic keys.', e);
     }
@@ -110,6 +110,7 @@ const QRCodeModal: React.FC<QRCodeModalProps> = ({
         );
         const decryptedString = new TextDecoder().decode(decrypted);
         return JSON.parse(decryptedString);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
         handleError('An error occurred while decrypting data.', e);
         throw e;
@@ -159,6 +160,7 @@ const QRCodeModal: React.FC<QRCodeModalProps> = ({
       try {
         setQrConnectionRequest(decryptedMessage);
         handleClose();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
         handleError('An error occurred while updating connection requests.', e);
       }
