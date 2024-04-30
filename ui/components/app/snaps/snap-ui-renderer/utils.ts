@@ -1,7 +1,7 @@
 import { JSXElement, GenericSnapElement } from '@metamask/snaps-sdk/jsx';
 import { memoize } from 'lodash';
 import { sha256 } from '@noble/hashes/sha256';
-import { bytesToHex, remove0x } from '@metamask/utils';
+import { bytesToHex, remove0x, Json } from '@metamask/utils';
 import { COMPONENT_MAPPING } from './components';
 
 export type MapToTemplateParams = {
@@ -9,6 +9,26 @@ export type MapToTemplateParams = {
   element: JSXElement;
   form?: string;
 };
+
+/**
+ * Get a truncated version of component children to use in a hash.
+ *
+ * @param children - A JSON blob describing one or more children of a component.
+ * @returns A truncated version of component children to use in a hash.
+ */
+function getChildrenForHash(children: Json) {
+  if (typeof children === 'string') {
+    // For the hash we reduce long strings
+    return children.slice(0, 5000);
+  }
+
+  if (Array.isArray(children)) {
+    // For arrays of children we just use the types
+    return children.map((child) => ({ type: child?.type ?? null }));
+  }
+
+  return children;
+}
 
 /**
  * A memoized function for generating a hash that represents a Snap UI component.
@@ -21,8 +41,7 @@ export type MapToTemplateParams = {
 const generateHash = memoize((component: JSXElement) => {
   const { type, props } = component as GenericSnapElement;
   const { name } = props;
-  const children =
-    typeof props.children === 'string' ? props.children.slice(0, 5000) : null;
+  const children = getChildrenForHash(props.children);
   return remove0x(
     bytesToHex(
       sha256(
