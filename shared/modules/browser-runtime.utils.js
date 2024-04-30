@@ -5,7 +5,10 @@
 import bowser from 'bowser';
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
-import { BROKEN_PRERENDER_BROWSER_VERSIONS, FIXED_PRERENDER_BROWSER_VERSIONS } from '../../ui/helpers/constants/common';
+import {
+  BROKEN_PRERENDER_BROWSER_VERSIONS,
+  FIXED_PRERENDER_BROWSER_VERSIONS,
+} from '../../ui/helpers/constants/common';
 
 /**
  * Returns an Error if extension.runtime.lastError is present

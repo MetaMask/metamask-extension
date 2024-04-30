@@ -30,9 +30,7 @@ import {
   TRUNCATED_ADDRESS_END_CHARS,
 } from '../../../shared/constants/labels';
 import { Numeric } from '../../../shared/modules/Numeric';
-import {
-  OUTDATED_BROWSER_VERSIONS,
-} from '../constants/common';
+import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
 // formatData :: ( date: <Unix Timestamp> ) -> String
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
