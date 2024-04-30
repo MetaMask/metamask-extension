@@ -5,10 +5,7 @@ import pump from 'pump';
 import { obj as createThoughStream } from 'through2';
 import browser from 'webextension-polyfill';
 import { EXTENSION_MESSAGES } from '../../shared/constants/app';
-import {
-  checkForLastError,
-  getIsBrowserPrerenderBroken,
-} from '../../shared/modules/browser-runtime.utils';
+import { checkForLastError, getIsBrowserPrerenderBroken } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
 
