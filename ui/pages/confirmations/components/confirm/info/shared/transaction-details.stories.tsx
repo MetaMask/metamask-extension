@@ -1,3 +1,4 @@
+import { Meta } from '@storybook/react';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
@@ -16,7 +17,9 @@ const Story = {
   title: 'Components/App/Confirm/info/TransactionDetails',
   component: TransactionDetails,
   decorators: [
-    (story: () => any) => <Provider store={store}>{story()}</Provider>,
+    (story: () => Meta<typeof TransactionDetails>) => (
+      <Provider store={store}>{story()}</Provider>
+    ),
   ],
 };
 

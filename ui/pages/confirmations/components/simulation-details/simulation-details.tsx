@@ -127,6 +127,7 @@ const HeaderLayout: React.FC = ({ children }) => {
  *
  * @param props
  * @param props.inHeader
+ * @param props.isTransactionsRedesign
  * @param props.children
  */
 const SimulationDetailsLayout: React.FC<{
@@ -160,6 +161,8 @@ const SimulationDetailsLayout: React.FC<{
  * @param props.simulationData - The simulation data to display.
  * @param props.transactionId - The ID of the transaction being simulated.
  * @param props.enableMetrics - Whether to enable simulation metrics.
+ * @param props.isTransactionsRedesign - Whether or not the component is being
+ * used inside the transaction redesign flow.
  */
 export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   simulationData,

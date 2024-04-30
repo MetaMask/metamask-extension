@@ -10,9 +10,44 @@ import {
 } from '../../../../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../selectors';
-import { useKnownMethodDataInTransaction } from '../../hooks';
+import { useKnownMethodDataInTransaction } from '../hooks/known-method-data-in-transaction';
 
-export const TransactionDetails = () => {
+const OriginRow = () => {
+  const t = useI18nContext();
+
+  const currentConfirmation = useSelector(
+    currentConfirmationSelector,
+  ) as TransactionMeta;
+
+  return currentConfirmation?.origin ? (
+    <ConfirmInfoRow
+      label={t('requestFrom')}
+      tooltip={t('requestFromTransactionDescription')}
+    >
+      <ConfirmInfoRowUrl url={currentConfirmation.origin} />
+    </ConfirmInfoRow>
+  ) : null;
+};
+
+const RecipientRow = () => {
+  const t = useI18nContext();
+
+  const currentConfirmation = useSelector(
+    currentConfirmationSelector,
+  ) as TransactionMeta;
+
+  return currentConfirmation?.txParams.to &&
+    isValidAddress(currentConfirmation.txParams.to) ? (
+    <ConfirmInfoRow
+      label={t('interactingWith')}
+      tooltip={t('interactingWithTransactionDescription')}
+    >
+      <ConfirmInfoRowAddress address={currentConfirmation.txParams.to} />
+    </ConfirmInfoRow>
+  ) : null;
+};
+
+const MethodDataRow = () => {
   const t = useI18nContext();
 
   const currentConfirmation = useSelector(
@@ -22,33 +57,22 @@ export const TransactionDetails = () => {
   const { knownMethodData } =
     useKnownMethodDataInTransaction(currentConfirmation);
 
+  return knownMethodData?.name ? (
+    <ConfirmInfoRow
+      label={t('methodData')}
+      tooltip={t('methodDataTransactionDescription')}
+    >
+      <ConfirmInfoRowText text={knownMethodData.name} />
+    </ConfirmInfoRow>
+  ) : null;
+};
+
+export const TransactionDetails = () => {
   return (
     <>
-      {currentConfirmation?.origin ? (
-        <ConfirmInfoRow
-          label={t('requestFrom')}
-          tooltip={t('requestFromTransactionDescription')}
-        >
-          <ConfirmInfoRowUrl url={currentConfirmation.origin} />
-        </ConfirmInfoRow>
-      ) : null}
-      {currentConfirmation?.txParams.to &&
-        isValidAddress(currentConfirmation.txParams.to) && (
-          <ConfirmInfoRow
-            label={t('interactingWith')}
-            tooltip={t('interactingWithTransactionDescription')}
-          >
-            <ConfirmInfoRowAddress address={currentConfirmation.txParams.to} />
-          </ConfirmInfoRow>
-        )}
-      {knownMethodData?.name && (
-        <ConfirmInfoRow
-          label={t('methodData')}
-          tooltip={t('methodDataTransactionDescription')}
-        >
-          <ConfirmInfoRowText text={knownMethodData.name} />
-        </ConfirmInfoRow>
-      )}
+      <OriginRow />
+      <RecipientRow />
+      <MethodDataRow />
     </>
   );
 };

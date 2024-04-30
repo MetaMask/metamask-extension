@@ -1,3 +1,4 @@
+import { Meta } from '@storybook/react';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
@@ -6,7 +7,10 @@ import configureStore from '../../../../../../store/store';
 import ContractInteractionInfo from './contract-interaction';
 
 const store = configureStore({
-  metamask: { ...mockState.metamask },
+  ...mockState,
+  metamask: {
+    ...mockState.metamask,
+  },
   confirm: {
     currentConfirmation: genUnapprovedContractInteractionConfirmation(),
   },
@@ -16,7 +20,9 @@ const Story = {
   title: 'Components/App/Confirm/info/ContractInteractionInfo',
   component: ContractInteractionInfo,
   decorators: [
-    (story: () => any) => <Provider store={store}>{story()}</Provider>,
+    (story: () => Meta<typeof ContractInteractionInfo>) => (
+      <Provider store={store}>{story()}</Provider>
+    ),
   ],
 };
 
