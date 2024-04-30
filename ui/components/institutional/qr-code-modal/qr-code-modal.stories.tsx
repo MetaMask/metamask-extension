@@ -1,4 +1,5 @@
 import React from 'react';
+import { Meta, StoryFn } from '@storybook/react';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import QRCodeModal from './qr-code-modal';
@@ -17,9 +18,11 @@ const testData = {
 
 const store = mockStore(testData);
 
-export default {
+const meta: Meta<typeof QRCodeModal> = {
   title: 'Components/QRCodeModal',
-  decorators: [(story) => <Provider store={store}>{story()}</Provider>],
+  decorators: [
+    (storyFn: any) => <Provider store={store}>{storyFn()}</Provider>,
+  ],
   component: QRCodeModal,
   argTypes: {
     onClose: { action: 'closed' },
@@ -28,7 +31,11 @@ export default {
   },
 };
 
-const Template = (args) => <QRCodeModal {...args} />;
+export default meta;
+
+const Template: StoryFn<typeof QRCodeModal> = (args) => (
+  <QRCodeModal {...args} />
+);
 
 export const Default = Template.bind({});
 Default.args = {

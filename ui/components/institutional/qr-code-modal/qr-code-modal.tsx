@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 import QRCode from 'qrcode.react';
 import { v4 as uuid } from 'uuid';
 import { captureException } from '@sentry/browser';
@@ -26,23 +25,31 @@ import {
   getConnectionRequest,
 } from '../../../ducks/institutional/institutional';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
-export default function QRCodeModal({
+interface QRCodeModalProps {
+  onClose: () => void;
+  custodianName?: string;
+  custodianURL: string;
+  setQrConnectionRequest: (message: any) => void;
+}
+
+const QRCodeModal: React.FC<QRCodeModalProps> = ({
   onClose,
   custodianName = 'custodian',
   custodianURL,
   setQrConnectionRequest,
-}) {
-  const t = useContext(I18nContext);
+}) => {
+  const t = useI18nContext();
   const dispatch = useDispatch();
   const channelId = useSelector(getChannelId);
   const connectionRequest = useSelector(getConnectionRequest);
-  const [publicKey, setPublicKey] = useState(null);
-  const [privateKey, setPrivateKey] = useState(null);
-  const [decryptedMessage, setDecryptedMessage] = useState(null);
-  const [qrCodeValue, setQrCodeValue] = useState(null);
-  const [error, setError] = useState('');
-  const [traceId] = useState(uuid());
+  const [publicKey, setPublicKey] = useState<string | null>(null);
+  const [privateKey, setPrivateKey] = useState<CryptoKey | null>(null);
+  const [decryptedMessage, setDecryptedMessage] = useState<any>(null);
+  const [qrCodeValue, setQrCodeValue] = useState<string | null>(null);
+  const [error, setError] = useState<string>('');
+  const [traceId] = useState<string>(uuid());
   const mmiActions = mmiActionsFactory();
 
   const handleClose = useCallback(async () => {
@@ -50,12 +57,15 @@ export default function QRCodeModal({
     onClose();
   }, [dispatch, mmiActions, onClose]);
 
-  const handleError = useCallback((message, e) => {
-    const errorMessage = `${message} Please try again or contact support if the problem persists.`;
-    console.error(message, e);
-    setError(errorMessage);
-    captureException(e);
-  }, []);
+  const handleError = useCallback(
+    (message: string, e: Error) => {
+      const errorMessage = `${message} Please try again or contact support if the problem persists.`;
+      console.error(message, e);
+      setError(errorMessage);
+      captureException(e);
+    },
+    [setError],
+  );
 
   const generateKeyPair = useCallback(async () => {
     try {
@@ -76,17 +86,19 @@ export default function QRCodeModal({
       );
 
       setPublicKey(
-        btoa(String.fromCharCode(...new Uint8Array(exportedPublicKey))),
+        btoa(
+          String.fromCharCode(...Array.from(new Uint8Array(exportedPublicKey))),
+        ),
       );
 
       setPrivateKey(keyPair.privateKey);
-    } catch (e) {
+    } catch (e: any) {
       handleError('An error occurred while generating cryptographic keys.', e);
     }
   }, [handleError]);
 
   const decrypt = useCallback(
-    async (_privateKey, encryptedData) => {
+    async (_privateKey: CryptoKey, encryptedData: string) => {
       try {
         const encryptedBuffer = Uint8Array.from(atob(encryptedData), (c) =>
           c.charCodeAt(0),
@@ -98,7 +110,7 @@ export default function QRCodeModal({
         );
         const decryptedString = new TextDecoder().decode(decrypted);
         return JSON.parse(decryptedString);
-      } catch (e) {
+      } catch (e: any) {
         handleError('An error occurred while decrypting data.', e);
         throw e;
       }
@@ -108,7 +120,7 @@ export default function QRCodeModal({
 
   useEffect(() => {
     generateKeyPair();
-  }, [generateKeyPair]);
+  }, []);
 
   useEffect(() => {
     const decryptAndProcessData = async () => {
@@ -147,7 +159,7 @@ export default function QRCodeModal({
       try {
         setQrConnectionRequest(decryptedMessage);
         handleClose();
-      } catch (e) {
+      } catch (e: any) {
         handleError('An error occurred while updating connection requests.', e);
       }
     };
@@ -188,7 +200,7 @@ export default function QRCodeModal({
         <ModalHeader onClose={handleClose}>
           {t('connectCustodianAccounts', [custodianName])}
         </ModalHeader>
-        {error && <Text color={TextColor.error}>{error}</Text>}
+        {error && <Text color={TextColor.errorDefault}>{error}</Text>}
         {qrCodeValue ? (
           <Box
             data-testid="qr-code-visible"
@@ -212,7 +224,7 @@ export default function QRCodeModal({
           paddingBottom={4}
           color={TextColor.textDefault}
           textAlign={TextAlign.Center}
-          fontWeight={FontWeight.bodySmBold}
+          fontWeight={FontWeight.Bold}
         >
           {t('custodianQRCodeScan', [custodianName])}
         </Text>
@@ -244,11 +256,6 @@ export default function QRCodeModal({
       </ModalContent>
     </Modal>
   );
-}
-
-QRCodeModal.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  custodianName: PropTypes.string.isRequired,
-  custodianURL: PropTypes.string.isRequired,
-  setQrConnectionRequest: PropTypes.func.isRequired,
 };
+
+export default QRCodeModal;
