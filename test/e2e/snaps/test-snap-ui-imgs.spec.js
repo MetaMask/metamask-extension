@@ -8,8 +8,8 @@ const {
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
-describe('Test Snap bip-44', function () {
-  it('can pop up bip-44 snap and get private key result', async function () {
+describe('Test Snap Images', function () {
+  it('can display images in snap ui', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
