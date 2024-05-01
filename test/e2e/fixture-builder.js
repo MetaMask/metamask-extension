@@ -306,6 +306,7 @@ function onboardingFixture() {
           smartTransactionsOptInStatus: false,
           useNativeCurrencyAsPrimaryCurrency: true,
           petnamesEnabled: true,
+          hasMigratedFromOpenSeaToBlockaid: true,
         },
         theme: 'light',
         useBlockie: false,
