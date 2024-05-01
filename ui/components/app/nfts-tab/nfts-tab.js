@@ -92,7 +92,7 @@ export default function NftsTab() {
   const currentLocale = useSelector(getCurrentLocale);
 
   useEffect(() => {
-    if (!showNftBanner) {
+    if (nftsLoading || !showNftBanner) {
       return;
     }
     trackEvent({
@@ -105,7 +105,14 @@ export default function NftsTab() {
         referrer: ORIGIN_METAMASK,
       },
     });
-  }, [showNftBanner, trackEvent, chainId, nickname, currentLocale]);
+  }, [
+    nftsLoading,
+    showNftBanner,
+    trackEvent,
+    chainId,
+    nickname,
+    currentLocale,
+  ]);
 
   if (nftsLoading) {
     return <div className="nfts-tab__loading">{t('loadingNFTs')}</div>;

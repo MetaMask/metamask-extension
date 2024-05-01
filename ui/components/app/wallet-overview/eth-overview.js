@@ -87,12 +87,13 @@ const EthOverview = ({ className, showAddress }) => {
   const showFiat = useSelector(getShouldShowFiat);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const chainId = useSelector(getCurrentChainId);
-  const { ticker, type } = useSelector(getProviderConfig);
+  const { ticker, type, rpcUrl } = useSelector(getProviderConfig);
   const balance = useSelector(getSelectedAccountCachedBalance);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
     chainId,
     ticker,
     type,
+    rpcUrl,
   );
 
   const account = useSelector(getSelectedInternalAccount);
