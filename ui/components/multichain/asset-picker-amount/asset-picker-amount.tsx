@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Box } from '../../component-library';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { Box, Text } from '../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -8,11 +9,17 @@ import {
   BorderRadius,
   BorderStyle,
   Display,
+  TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { getSelectedInternalAccount } from '../../../selectors';
 
 import { TokenStandard } from '../../../../shared/constants/transaction';
-import type { Amount, Asset } from '../../../ducks/send';
+import {
+  getCurrentDraftTransaction,
+  type Amount,
+  type Asset,
+} from '../../../ducks/send';
 import MaxClearButton from './max-clear-button';
 import {
   AssetPicker,
@@ -28,6 +35,7 @@ type AssetPickerAmountProps = OverridingUnion<
     // all of these props should be explicitly received
     asset: Asset;
     amount: Amount;
+    isAmountLoading?: boolean;
     /**
      * Callback for when the amount changes; disables the input when undefined
      */
@@ -40,11 +48,17 @@ export const AssetPickerAmount = ({
   asset,
   amount,
   onAmountChange,
+  isAmountLoading,
   ...assetPickerProps
 }: AssetPickerAmountProps) => {
   const selectedAccount = useSelector(getSelectedInternalAccount);
+  const t = useI18nContext();
 
   const isFiatPrimary = useSelector(getIsFiatPrimary);
+
+  const { swapQuotesError } = useSelector(getCurrentDraftTransaction);
+  const isDisabled = !onAmountChange;
+  const isSwapsErrorShown = isDisabled && swapQuotesError;
 
   const [isFocused, setIsFocused] = useState(false);
 
@@ -58,7 +72,12 @@ export const AssetPickerAmount = ({
 
   let borderColor = BorderColor.borderDefault;
 
-  if (amount.error) {
+  if (isDisabled) {
+    // if disabled, do not show source-side border colors
+    if (isSwapsErrorShown) {
+      borderColor = BorderColor.errorDefault;
+    }
+  } else if (amount.error) {
     borderColor = BorderColor.errorDefault;
   } else if (isFocused) {
     borderColor = BorderColor.primaryDefault;
@@ -89,11 +108,18 @@ export const AssetPickerAmount = ({
           assetType={asset.type}
           asset={asset}
           amount={amount}
+          isAmountLoading={isAmountLoading}
         />
       </Box>
       <Box display={Display.Flex}>
+        {/* Only show balance if mutable */}
+        {onAmountChange && <AssetBalance asset={asset} error={error} />}
+        {isSwapsErrorShown && (
+          <Text variant={TextVariant.bodySm} color={TextColor.errorDefault}>
+            {t(swapQuotesError)}
+          </Text>
+        )}
         {/* The fiat value will always leave dust and is often inaccurate anyways */}
-        <AssetBalance asset={asset} error={error} />
         {!isFiatPrimary && onAmountChange && <MaxClearButton asset={asset} />}
       </Box>
     </Box>

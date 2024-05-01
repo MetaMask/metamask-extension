@@ -1,6 +1,8 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import { Box } from '../../component-library';
+import { BlockSize } from '../../../helpers/constants/design-system';
 import UnitInput from '../../ui/unit-input';
 import CurrencyDisplay from '../../ui/currency-display';
 import { I18nContext } from '../../../contexts/i18n';
@@ -36,6 +38,7 @@ const LARGE_SYMBOL_LENGTH = 7;
  * @param options0.swapIcon
  * @param options0.className
  * @param options0.asset
+ * @param options0.isSkeleton
  */
 export default function CurrencyInput({
   hexValue,
@@ -46,10 +49,11 @@ export default function CurrencyInput({
   className = '',
   // if null, the asset is the native currency
   asset,
+  isSkeleton,
 }) {
   const t = useContext(I18nContext);
 
-  const assetDecimals = asset?.decimals || NATIVE_CURRENCY_DECIMALS;
+  const assetDecimals = Number(asset?.decimals) || NATIVE_CURRENCY_DECIMALS;
 
   const preferredCurrency = useSelector(getNativeCurrency);
   const secondaryCurrency = useSelector(getCurrentCurrency);
@@ -75,6 +79,8 @@ export default function CurrencyInput({
     type,
     rpcUrl,
   );
+
+  const inputRef = useRef();
 
   const tokenToFiatConversionRate = useTokenExchangeRate(asset?.address);
 
@@ -133,6 +139,10 @@ export default function CurrencyInput({
 
     setTokenDecimalValue(newTokenDecimalValue);
     setFiatDecimalValue(newFiatDecimalValue);
+
+    // timeout intentionally not cleared so this always runs
+    setTimeout(() => inputRef.current?.updateIsOverflowing?.(), 500);
+
     // tokenDecimalValue does not need to be in here, since this side effect is only for upstream updates
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -201,8 +211,14 @@ export default function CurrencyInput({
     );
   };
 
-  return (
+  return isSkeleton ? (
+    <Box paddingRight={4} className="currency-input__skeleton-container">
+      <Box width={BlockSize.Half} className="currency-input__pulsing-bar" />
+      <Box width={BlockSize.OneThird} className="currency-input__pulsing-bar" />
+    </Box>
+  ) : (
     <UnitInput
+      ref={inputRef}
       isDisabled={isDisabled}
       hideSuffix={isTokenPrimary && isLongSymbol}
       dataTestId="currency-input"
@@ -231,7 +247,8 @@ CurrencyInput.propTypes = {
   asset: PropTypes.shape({
     address: PropTypes.string,
     symbol: PropTypes.string,
-    decimals: PropTypes.number,
+    decimals: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     isERC721: PropTypes.bool,
   }),
+  isSkeleton: PropTypes.bool,
 };
