@@ -14,7 +14,6 @@ import { bold } from './bold';
 import { italic } from './italic';
 import { link } from './link';
 import { field } from './field';
-import { span } from './span';
 
 export const COMPONENT_MAPPING = {
   Box: box,
@@ -33,6 +32,4 @@ export const COMPONENT_MAPPING = {
   Italic: italic,
   Link: link,
   Field: field,
-  // This is not actually exposed to Snaps, but used as a utility to construct UIs
-  Span: span,
 };

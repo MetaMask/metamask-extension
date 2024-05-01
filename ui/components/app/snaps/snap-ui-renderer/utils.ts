@@ -88,10 +88,7 @@ export const mapTextToTemplate = (
   elements.map((element) => {
     // With the introduction of JSX elements here can be strings.
     if (typeof element === 'string') {
-      return mapToTemplate({
-        ...params,
-        element: { type: 'Span', props: { children: element } },
-      });
+      return element;
     }
 
     return mapToTemplate({ ...params, element });
