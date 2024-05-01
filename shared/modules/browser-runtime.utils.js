@@ -64,8 +64,6 @@ export function checkForLastErrorAndWarn() {
  * extension port stream established between the contentscript and background
  * to be broken when a prerendered (eagerly rendered, hidden) page becomes active (visible to the user).
  *
- * @see {@link https://issues.chromium.org/issues/40273420}
- * @see {@link https://chromium.googlesource.com/chromium/src/+/a88eee8a2798c1dc4d69b255ccad24fea5ff2d8b}
  * @param {Bowser} bowser - optional Bowser instance to check against
  * @returns {boolean} Whether the browser is affected by the prerender regression
  */

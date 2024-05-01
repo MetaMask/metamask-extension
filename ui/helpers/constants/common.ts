@@ -23,13 +23,26 @@ export const OUTDATED_BROWSER_VERSIONS = {
   // See https://en.wikipedia.org/wiki/History_of_the_Opera_web_browser
   opera: '<76',
 };
+
+/**
+ * Specifies the browser and their versions where a regression in the extension port
+ * stream established between the contentscript and background was breaking for
+ * prerendered pages.
+ *
+ * @see {@link https://issues.chromium.org/issues/40273420}
+ */
 export const BROKEN_PRERENDER_BROWSER_VERSIONS = {
-  // https://issues.chromium.org/issues/40273420
   chrome: '>=113',
   edge: '>=113',
 };
+
+/**
+ * Specifies the browser and their versions on a specific OS where a fix for the
+ * prerender regression specified in BROKEN_PRERENDER_BROWSER_VERSIONS was resolved.
+ *
+ * @see {@link https://chromium.googlesource.com/chromium/src/+/a88eee8a2798c1dc4d69b255ccad24fea5ff2d8b}
+ */
 export const FIXED_PRERENDER_BROWSER_VERSIONS = {
-  // https://chromium.googlesource.com/chromium/src/+/a88eee8a2798c1dc4d69b255ccad24fea5ff2d8b
   // https://chromiumdash.appspot.com/commits?commit=a88eee8a2798c1dc4d69b255ccad24fea5ff2d8b&platform=Windows
   windows: {
     chrome: '>=120',
