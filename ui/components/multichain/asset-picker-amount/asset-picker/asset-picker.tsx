@@ -34,10 +34,18 @@ import { getAssetImageURL } from '../../../../helpers/utils/util';
 export type AssetPickerProps = {
   asset: Asset;
   onAssetChange: (newAsset: Asset) => void;
+  /**
+   * Sending asset for UI treatments; only for dest component
+   */
+  sendingAsset?: Asset;
 };
 
 // A component that lets the user pick from a list of assets.
-export function AssetPicker({ asset, onAssetChange }: AssetPickerProps) {
+export function AssetPicker({
+  asset,
+  onAssetChange,
+  sendingAsset,
+}: AssetPickerProps) {
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
   const nativeCurrencyImageUrl = useSelector(getNativeCurrencyImage);
   // TODO: Replace `any` with type
@@ -48,14 +56,26 @@ export function AssetPicker({ asset, onAssetChange }: AssetPickerProps) {
 
   const [showAssetPickerModal, setShowAssetPickerModal] = useState(false);
 
-  let image: string | undefined;
+  let primaryTokenImage: string | undefined;
 
   if (asset.type === AssetType.native) {
-    image = nativeCurrencyImageUrl;
+    primaryTokenImage = nativeCurrencyImageUrl;
   } else if (tokenList && asset.details) {
-    image =
+    primaryTokenImage =
       getAssetImageURL(asset.details?.image, ipfsGateway) ||
       tokenList[asset.details.address?.toLowerCase()]?.iconUrl;
+  }
+
+  let sendingTokenImage: string | undefined;
+
+  if (sendingAsset) {
+    if (sendingAsset.type === AssetType.native) {
+      sendingTokenImage = nativeCurrencyImageUrl;
+    } else if (tokenList && sendingAsset.details) {
+      sendingTokenImage =
+        getAssetImageURL(sendingAsset.details?.image, ipfsGateway) ||
+        tokenList[sendingAsset.details.address?.toLowerCase()]?.iconUrl;
+    }
   }
 
   const symbol =
@@ -79,6 +99,10 @@ export function AssetPicker({ asset, onAssetChange }: AssetPickerProps) {
         onClose={() => setShowAssetPickerModal(false)}
         asset={asset}
         onAssetChange={onAssetChange}
+        sendingAssetImage={sendingTokenImage}
+        sendingAssetSymbol={
+          sendingAsset?.details?.symbol || nativeCurrencySymbol
+        }
       />
       <Button
         className="asset-picker"
@@ -97,9 +121,10 @@ export function AssetPicker({ asset, onAssetChange }: AssetPickerProps) {
         <Box display={Display.Flex} alignItems={AlignItems.center} gap={3}>
           <AvatarToken
             borderRadius={isNFT ? BorderRadius.LG : BorderRadius.full}
-            src={image}
+            src={primaryTokenImage}
             size={AvatarTokenSize.Md}
             showHalo={!isNFT}
+            {...(isNFT && { backgroundColor: BackgroundColor.transparent })}
           />
           <Tooltip disabled={!isSymbolLong} title={symbol} position="bottom">
             <Text className="asset-picker__symbol" variant={TextVariant.bodyMd}>
