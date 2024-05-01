@@ -35,13 +35,9 @@ export class AddressBookPetnamesBridge extends AbstractPetnamesBridge {
     const entries: PetnameEntry[] = [];
     const { state } = this.#addressBookController;
     for (const chainId of Object.keys(state.addressBook)) {
-      // TODO: Replace `any` with type
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const chainEntries = state.addressBook[chainId as any];
 
       for (const address of Object.keys(chainEntries)) {
-        // TODO: Replace `any` with type
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const entry = state.addressBook[chainId as any][address];
         const normalizedChainId = chainId.toLowerCase();
         const { name, isEns } = entry;
@@ -68,17 +64,11 @@ export class AddressBookPetnamesBridge extends AbstractPetnamesBridge {
    */
   protected updateSourceEntry(type: ChangeType, entry: PetnameEntry): void {
     if (type === ChangeType.DELETED) {
-      // TODO: Replace `any` with type
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       this.#addressBookController.delete(entry.variation as any, entry.value);
     } else {
       this.#addressBookController.set(
         entry.value,
-        // TODO: Replace `any` with type
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         entry.name as any,
-        // TODO: Replace `any` with type
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         entry.variation as any,
       );
     }

@@ -12,8 +12,6 @@ import { TemplateRendererComponent } from './util';
 const PENDING_APPROVAL_MOCK = {
   id: 'testApprovalId',
   requestData: { testProperty: 'testValue' },
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 } as ApprovalRequest<any>;
 
 const T_MOCK = () => 'TestLabel';
@@ -184,8 +182,6 @@ describe('ResultTemplate', () => {
 
         expect(
           flattenContent(content).some(
-            // TODO: Replace `any` with type
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (t: any) =>
               t.key === 'icon' &&
               t.props.iconName === IconName.Confirmation &&
@@ -206,8 +202,6 @@ describe('ResultTemplate', () => {
 
         expect(
           flattenContent(content).some(
-            // TODO: Replace `any` with type
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (t: any) =>
               t.key === 'icon' &&
               t.props.iconName === IconName.Warning &&

@@ -8,13 +8,11 @@ import AdvancedTab from '.';
 
 const mockSetAutoLockTimeLimit = jest.fn();
 const mockSetShowTestNetworks = jest.fn();
-const mockSetStxOptIn = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => {
   return {
     setAutoLockTimeLimit: () => mockSetAutoLockTimeLimit,
     setShowTestNetworks: () => mockSetShowTestNetworks,
-    setSmartTransactionsOptInStatus: () => mockSetStxOptIn,
   };
 });
 
@@ -63,7 +61,7 @@ describe('AdvancedTab Component', () => {
   it('should toggle show test networks', () => {
     const { queryAllByRole } = renderWithProvider(<AdvancedTab />, mockStore);
 
-    const testNetworkToggle = queryAllByRole('checkbox')[3];
+    const testNetworkToggle = queryAllByRole('checkbox')[2];
 
     fireEvent.click(testNetworkToggle);
 
@@ -85,20 +83,5 @@ describe('AdvancedTab Component', () => {
     );
 
     expect(queryByTestId('ledger-live-control')).not.toBeInTheDocument();
-  });
-
-  describe('renderToggleStxOptIn', () => {
-    it('should render the toggle button for Smart Transactions', () => {
-      const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
-      const toggleButton = queryByTestId('settings-page-stx-opt-in-toggle');
-      expect(toggleButton).toBeInTheDocument();
-    });
-
-    it('should call setSmartTransactionsOptInStatus when the toggle button is clicked', () => {
-      const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
-      const toggleButton = queryByTestId('settings-page-stx-opt-in-toggle');
-      fireEvent.click(toggleButton);
-      expect(mockSetStxOptIn).toHaveBeenCalled();
-    });
   });
 });

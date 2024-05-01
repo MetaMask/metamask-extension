@@ -3,15 +3,7 @@ import { useSelector } from 'react-redux';
 import { getUnconnectedAccounts } from '../../../selectors/selectors';
 import { ConnectAccountsModalList } from './connect-accounts-modal-list';
 
-export const ConnectAccountsModal = ({
-  onClose,
-  onAccountsUpdate,
-  activeTabOrigin,
-}: {
-  onClose: () => void;
-  onAccountsUpdate: () => void;
-  activeTabOrigin: string;
-}) => {
+export const ConnectAccountsModal = ({ onClose }: { onClose: () => void }) => {
   const accounts = useSelector(getUnconnectedAccounts);
   const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]);
 
@@ -66,8 +58,6 @@ export const ConnectAccountsModal = ({
       checked={checked}
       isIndeterminate={isIndeterminate}
       onClose={onClose}
-      onAccountsUpdate={onAccountsUpdate}
-      activeTabOrigin={activeTabOrigin}
     />
   );
 };

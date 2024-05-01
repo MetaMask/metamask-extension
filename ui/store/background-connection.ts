@@ -4,14 +4,10 @@ let background:
   | ({
       connectionStream: { readable: boolean };
       DisconnectError: typeof Error;
-      // TODO: Replace `any` with type
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } & Record<string, (...args: any[]) => any>)
   | null = null;
 let promisifiedBackground: Record<
   string,
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (...args: any[]) => Promise<any>
 > | null = null;
 
@@ -26,8 +22,6 @@ export const generateActionId = () => Date.now() + Math.random();
  */
 export function submitRequestToBackground<R>(
   method: string,
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   args?: any[],
 ): Promise<R> {
   return promisifiedBackground?.[method](
@@ -47,8 +41,6 @@ type CallbackMethod<R = unknown> = (error?: unknown, result?: R) => void;
  */
 export const callBackgroundMethod = <R>(
   method: string,
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   args: any[],
   callback: CallbackMethod<R>,
 ) => {
@@ -65,7 +57,5 @@ export async function setBackgroundConnection(
   backgroundConnection: typeof background,
 ) {
   background = backgroundConnection;
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   promisifiedBackground = pify(background as Record<string, any>);
 }

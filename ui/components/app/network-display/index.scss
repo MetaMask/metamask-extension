@@ -17,14 +17,13 @@
   }
 
   & .chip__label {
-    padding-left: 2px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
   & .chip__left-icon {
-    padding-left: 8px;
+    margin-left: 4px;
   }
 
   & .chip__right-icon {

@@ -8,19 +8,19 @@ import { MMISignatureMismatchBanner } from '../../../components/app/mmi-signatur
 ///: END:ONLY_INCLUDE_IF
 import { Nav } from '../components/confirm/nav';
 import { Title } from '../components/confirm/title';
-import { Page } from '../../../components/multichain/pages/page';
+import { Box } from '../../../components/component-library';
+import { Content, Page } from '../../../components/multichain/pages/page';
+import { BackgroundColor } from '../../../helpers/constants/design-system';
 import setCurrentConfirmation from '../hooks/setCurrentConfirmation';
 import syncConfirmPath from '../hooks/syncConfirmPath';
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { BlockaidAlert } from '../components/confirm/blockaid-alert';
-///: END:ONLY_INCLUDE_IF
 
 const Confirm = () => {
   setCurrentConfirmation();
   syncConfirmPath();
 
   return (
-    <Page>
+    <Page backgroundColor={BackgroundColor.backgroundAlternative}>
       <Nav />
       <Header />
       {
@@ -28,16 +28,20 @@ const Confirm = () => {
         <MMISignatureMismatchBanner />
         ///: END:ONLY_INCLUDE_IF
       }
-      <ScrollToBottom>
+      <Content backgroundColor={BackgroundColor.backgroundAlternative}>
         {
           // todo: section below is to be removed once new alerts implementation is there
           ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-          <BlockaidAlert marginTop={4} />
+          <BlockaidAlert />
           ///: END:ONLY_INCLUDE_IF
         }
         <Title />
-        <Info />
-      </ScrollToBottom>
+        <ScrollToBottom>
+          <Box padding={4}>
+            <Info />
+          </Box>
+        </ScrollToBottom>
+      </Content>
       <Footer />
     </Page>
   );

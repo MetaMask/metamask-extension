@@ -41,11 +41,14 @@ import {
   setFromTokenError,
   setMaxSlippage,
   setReviewSwapClickedTimestamp,
+  getSmartTransactionsOptInStatus,
+  getSmartTransactionsEnabled,
   getCurrentSmartTransactionsEnabled,
   getFromTokenInputValue,
   getFromTokenError,
   getMaxSlippage,
   getIsFeatureFlagLoaded,
+  getCurrentSmartTransactionsError,
   getFetchingQuotes,
   getSwapsErrorKey,
   getAggregatorMetadata,
@@ -65,10 +68,6 @@ import {
   getIsBridgeChain,
   getMetaMetricsId,
 } from '../../../selectors';
-import {
-  getSmartTransactionsOptInStatus,
-  getSmartTransactionsEnabled,
-} from '../../../../shared/modules/selectors';
 import {
   getValueFromWeiHex,
   hexToDecimal,
@@ -101,6 +100,7 @@ import {
   ignoreTokens,
   clearSwapsQuotes,
   stopPollingForQuotes,
+  setSmartTransactionsOptInStatus,
   clearSmartTransactionFees,
   setSwapsErrorKey,
   setBackgroundSwapRouteState,
@@ -138,6 +138,7 @@ import SwapsBannerAlert from '../swaps-banner-alert/swaps-banner-alert';
 import SwapsFooter from '../swaps-footer';
 import SelectedToken from '../selected-token/selected-token';
 import ListWithSearch from '../list-with-search/list-with-search';
+import SmartTransactionsPopover from './smart-transactions-popover';
 import QuotesLoadingAnimation from './quotes-loading-animation';
 import ReviewQuote from './review-quote';
 
@@ -216,9 +217,27 @@ export default function PrepareSwapPage({
   );
   const isSmartTransaction =
     currentSmartTransactionsEnabled && smartTransactionsOptInStatus;
+  const smartTransactionsOptInPopoverDisplayed =
+    smartTransactionsOptInStatus !== undefined;
+  const currentSmartTransactionsError = useSelector(
+    getCurrentSmartTransactionsError,
+  );
   const currentCurrency = useSelector(getCurrentCurrency);
   const fetchingQuotes = useSelector(getFetchingQuotes);
   const loadingComplete = !fetchingQuotes && areQuotesPresent;
+
+  const showSmartTransactionsOptInPopover =
+    smartTransactionsEnabled && !smartTransactionsOptInPopoverDisplayed;
+
+  const onManageStxInSettings = (e) => {
+    e?.preventDefault();
+    setSmartTransactionsOptInStatus(true, smartTransactionsOptInStatus);
+    dispatch(setTransactionSettingsOpened(true));
+  };
+
+  const onStartSwapping = () => {
+    setSmartTransactionsOptInStatus(true, smartTransactionsOptInStatus);
+  };
 
   const fetchParamsFromToken = isSwapsDefaultTokenSymbol(
     sourceTokenInfo?.symbol,
@@ -858,6 +877,12 @@ export default function PrepareSwapPage({
           </ModalContent>
         </Modal>
 
+        <SmartTransactionsPopover
+          onStartSwapping={onStartSwapping}
+          onManageStxInSettings={onManageStxInSettings}
+          isOpen={showSmartTransactionsOptInPopover}
+        />
+
         <div className="prepare-swap-page__swap-from-content">
           <Box
             display={DISPLAY.FLEX}
@@ -1105,19 +1130,25 @@ export default function PrepareSwapPage({
             />
           </Box>
         )}
-        {transactionSettingsOpened && !isDirectWrappingEnabled && (
-          <TransactionSettings
-            onSelect={(newSlippage) => {
-              dispatch(setMaxSlippage(newSlippage));
-            }}
-            maxAllowedSlippage={MAX_ALLOWED_SLIPPAGE}
-            currentSlippage={maxSlippage}
-            isDirectWrappingEnabled={isDirectWrappingEnabled}
-            onModalClose={() => {
-              dispatch(setTransactionSettingsOpened(false));
-            }}
-          />
-        )}
+        {transactionSettingsOpened &&
+          (smartTransactionsEnabled ||
+            (!smartTransactionsEnabled && !isDirectWrappingEnabled)) && (
+            <TransactionSettings
+              onSelect={(newSlippage) => {
+                dispatch(setMaxSlippage(newSlippage));
+              }}
+              maxAllowedSlippage={MAX_ALLOWED_SLIPPAGE}
+              currentSlippage={maxSlippage}
+              smartTransactionsEnabled={smartTransactionsEnabled}
+              smartTransactionsOptInStatus={smartTransactionsOptInStatus}
+              setSmartTransactionsOptInStatus={setSmartTransactionsOptInStatus}
+              currentSmartTransactionsError={currentSmartTransactionsError}
+              isDirectWrappingEnabled={isDirectWrappingEnabled}
+              onModalClose={() => {
+                dispatch(setTransactionSettingsOpened(false));
+              }}
+            />
+          )}
         {showQuotesLoadingAnimation && (
           <QuotesLoadingAnimation
             quoteCount={quoteCount}

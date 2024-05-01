@@ -71,11 +71,7 @@ describe('useSimulationMetrics', () => {
   const useEffectMock = jest.mocked(useEffect);
   const useDisplayNamesMock = jest.mocked(useDisplayNames);
   const useContextMock = jest.mocked(useContext);
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let updateTransactionEventFragmentMock: jest.MockedFunction<any>;
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let trackEventMock: jest.MockedFunction<any>;
 
   function expectUpdateTransactionEventFragmentCalled(
@@ -86,8 +82,6 @@ describe('useSimulationMetrics', () => {
       balanceChanges?: BalanceChange[];
       simulationData?: SimulationData | undefined;
     },
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expected: any,
   ) {
     useSimulationMetrics({
@@ -114,13 +108,9 @@ describe('useSimulationMetrics', () => {
       updateTransactionEventFragment: updateTransactionEventFragmentMock,
     });
 
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     useStateMock.mockImplementation(((initialValue: any) => [
       initialValue,
       jest.fn(),
-      // TODO: Replace `any` with type
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ]) as any);
 
     useEffectMock.mockImplementation((fn) => fn());

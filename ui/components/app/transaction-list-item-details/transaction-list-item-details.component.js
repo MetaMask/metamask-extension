@@ -12,9 +12,8 @@ import Button from '../../ui/button';
 import Tooltip from '../../ui/tooltip';
 import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
-import { Box } from '../../component-library/box';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { Icon, IconName, Text } from '../../component-library';
+import { Box, Icon, IconName, Text } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 ///: END:ONLY_INCLUDE_IF
 import { SECOND } from '../../../../shared/constants/time';
@@ -381,21 +380,19 @@ export default class TransactionListItemDetails extends PureComponent {
               }
               {transactionGroup.initialTransaction.type !==
                 TransactionType.incoming && (
-                <Box marginTop={3} marginBottom={3}>
-                  <Disclosure
-                    title={t('activityLog')}
-                    size="small"
-                    isScrollToBottomOnOpen
-                  >
-                    <TransactionActivityLog
-                      transactionGroup={transactionGroup}
-                      className="transaction-list-item-details__transaction-activity-log"
-                      onCancel={this.handleCancel}
-                      onRetry={this.handleRetry}
-                      isEarliestNonce={isEarliestNonce}
-                    />
-                  </Disclosure>
-                </Box>
+                <Disclosure
+                  title={t('activityLog')}
+                  size="small"
+                  isScrollToBottomOnOpen
+                >
+                  <TransactionActivityLog
+                    transactionGroup={transactionGroup}
+                    className="transaction-list-item-details__transaction-activity-log"
+                    onCancel={this.handleCancel}
+                    onRetry={this.handleRetry}
+                    isEarliestNonce={isEarliestNonce}
+                  />
+                </Disclosure>
               )}
             </div>
           </div>

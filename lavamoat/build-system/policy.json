@@ -8467,9 +8467,10 @@
       }
     },
     "terser>@jridgewell/source-map": {
-      "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
-        "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "define": true
       }
     },
     "terser>@jridgewell/source-map>@jridgewell/gen-mapping": {

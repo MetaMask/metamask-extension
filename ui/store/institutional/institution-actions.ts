@@ -57,8 +57,6 @@ export function showCustodyConfirmLink({
 export function updateCustodyState(
   dispatch: ThunkDispatch<CombinedBackgroundAndReduxState, unknown, AnyAction>,
   newState: MetaMaskReduxState['metamask'],
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   state: CombinedBackgroundAndReduxState & any,
 ) {
   if (!newState.transactions || !state.metamask.transactions) {
@@ -74,8 +72,6 @@ export function updateCustodyState(
   const differentTxs = newCurrentNetworkTxList.filter(
     (item: TransactionMeta) =>
       oldCurrentNetworkTxList.filter(
-        // TODO: Replace `any` with type
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (tx: { [key: string]: any }) =>
           tx.custodyId === item.custodyId &&
           tx.custodyStatus !== item.custodyStatus,

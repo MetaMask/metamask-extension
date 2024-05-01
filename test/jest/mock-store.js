@@ -1,10 +1,10 @@
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
-import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../shared/constants/network';
+import { CHAIN_IDS } from '../../shared/constants/network';
 import { KeyringType } from '../../shared/constants/keyring';
 
-export const createGetSmartTransactionFeesApiResponse = () => {
+const createGetSmartTransactionFeesApiResponse = () => {
   return {
     tradeTxFees: {
       // Approval tx.
@@ -150,7 +150,6 @@ export const createSwapsMockStore = () => {
       },
       preferences: {
         showFiatInTestnets: true,
-        smartTransactionsOptInStatus: true,
       },
       transactions: [
         {
@@ -362,13 +361,7 @@ export const createSwapsMockStore = () => {
           accounts: ['0xd85a4b6a394794842887b8284293d69163007bbb'],
         },
       ],
-      networkConfigurations: {
-        'network-configuration-id-1': {
-          chainId: CHAIN_IDS.MAINNET,
-          ticker: CURRENCY_SYMBOLS.ETH,
-          rpcUrl: 'https://mainnet.infura.io/v3/',
-        },
-      },
+      networkConfigurations: {},
       tokens: [
         {
           erc20: true,
@@ -385,15 +378,6 @@ export const createSwapsMockStore = () => {
       ],
       swapsState: {
         swapsFeatureFlags: {
-          ethereum: {
-            extensionActive: true,
-            mobileActive: false,
-            smartTransactions: {
-              expectedDeadline: 45,
-              maxDeadline: 150,
-              returnTxHashAsap: false,
-            },
-          },
           smartTransactions: {
             mobileActive: true,
             extensionActive: true,

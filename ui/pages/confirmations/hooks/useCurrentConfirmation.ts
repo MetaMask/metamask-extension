@@ -29,9 +29,6 @@ const useCurrentConfirmation = () => {
     useState<Record<string, unknown>>();
 
   useEffect(() => {
-    if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
-      return;
-    }
     let pendingConfirmation: Approval | undefined;
     if (paramsTransactionId) {
       if (paramsTransactionId === currentConfirmation?.id) {
@@ -59,12 +56,18 @@ const useCurrentConfirmation = () => {
         pendingConfirmation.type !== ApprovalType.PersonalSign &&
         pendingConfirmation.type !== ApprovalType.EthSignTypedData
       ) {
-        setCurrentConfirmation(undefined);
         return;
       }
       if (pendingConfirmation.type === ApprovalType.PersonalSign) {
         const { siwe } = unconfirmedTransaction.msgParams;
         if (siwe?.isSIWEMessage) {
+          setCurrentConfirmation(undefined);
+          return;
+        }
+      }
+      if (pendingConfirmation.type === ApprovalType.EthSignTypedData) {
+        const { version } = unconfirmedTransaction.msgParams;
+        if (version !== 'V3' && version !== 'V4') {
           setCurrentConfirmation(undefined);
           return;
         }

@@ -552,12 +552,7 @@ export default class ConfirmApproveContent extends Component {
       >
         {
           ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-          <BlockaidBannerAlert
-            txData={txData}
-            marginTop={4}
-            marginLeft={4}
-            marginRight={4}
-          />
+          <BlockaidBannerAlert txData={txData} margin={4} />
           ///: END:ONLY_INCLUDE_IF
         }
         {isSuspiciousResponse(txData?.securityProviderResponse) && (

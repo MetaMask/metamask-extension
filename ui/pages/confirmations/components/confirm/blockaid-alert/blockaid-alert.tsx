@@ -12,7 +12,7 @@ type SignatureSecurityAlertResponsesState = {
 };
 
 // todo: this component can be deleted once new alert imlementation is added
-const BlockaidAlert = ({ ...props }) => {
+const BlockaidAlert = () => {
   const currentConfirmation = useSelector(currentConfirmationSelector);
   const signatureSecurityAlertResponses = useSelector(
     (state: SignatureSecurityAlertResponsesState) =>
@@ -29,12 +29,9 @@ const BlockaidAlert = ({ ...props }) => {
         ...currentConfirmation,
         securityAlertResponse:
           signatureSecurityAlertResponses?.[
-            // TODO: Replace `any` with type
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             currentConfirmation?.securityAlertResponse?.securityAlertId as any
           ],
       }}
-      {...props}
     />
   );
 };

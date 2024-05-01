@@ -19,8 +19,6 @@ jest.mock('./useCurrentConfirmation', () => () => ({
   currentConfirmation: mockCurrentConfirmation,
 }));
 
-// TODO: Replace `any` with type
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const ReduxProvider = Provider as any;
 
 describe('setCurrentConfirmation', () => {
@@ -29,8 +27,6 @@ describe('setCurrentConfirmation', () => {
       ConfirmDucks,
       'updateCurrentConfirmation',
     );
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const wrapper = ({ children }: { children: any }) => (
       <ReduxProvider store={configureStore(mockState)}>
         {children}

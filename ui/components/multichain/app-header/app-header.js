@@ -75,7 +75,7 @@ import { SEND_STAGES, getSendStage } from '../../../ducks/send';
 import Tooltip from '../../ui/tooltip';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
-import { shortenAddress } from '../../../helpers/utils/util';
+import { getURLHost, shortenAddress } from '../../../helpers/utils/util';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 
 export const AppHeader = ({ location }) => {
@@ -175,7 +175,9 @@ export const AppHeader = ({ location }) => {
   }, [chainId, dispatch, trackEvent]);
 
   const handleConnectionsRoute = () => {
-    history.push(`${CONNECTIONS}/${encodeURIComponent(origin)}`);
+    const hostName = getURLHost(origin);
+
+    history.push(`${CONNECTIONS}/${encodeURIComponent(hostName)}`);
   };
   // This is required to ensure send and confirmation screens
   // look as desired
@@ -235,16 +237,13 @@ export const AppHeader = ({ location }) => {
                     <PickerNetwork
                       avatarNetworkProps={{
                         backgroundColor: testNetworkBackgroundColor,
-                        role: 'img',
                       }}
                       className="multichain-app-header__contents--avatar-network"
                       ref={menuRef}
                       as="button"
                       src={currentNetwork?.rpcPrefs?.imageUrl}
                       label={currentNetwork?.nickname}
-                      aria-label={`${t('networkMenu')} ${
-                        currentNetwork?.nickname
-                      }`}
+                      aria-label={t('networkMenu')}
                       labelProps={{
                         display: Display.None,
                       }}
@@ -263,12 +262,8 @@ export const AppHeader = ({ location }) => {
                   <PickerNetwork
                     avatarNetworkProps={{
                       backgroundColor: testNetworkBackgroundColor,
-                      role: 'img',
                     }}
                     margin={2}
-                    aria-label={`${t('networkMenu')} ${
-                      currentNetwork?.nickname
-                    }`}
                     label={currentNetwork?.nickname}
                     src={currentNetwork?.rpcPrefs?.imageUrl}
                     onClick={(e) => {
@@ -487,9 +482,7 @@ export const AppHeader = ({ location }) => {
                 <PickerNetwork
                   avatarNetworkProps={{
                     backgroundColor: testNetworkBackgroundColor,
-                    role: 'img',
                   }}
-                  aria-label={`${t('networkMenu')} ${currentNetwork?.nickname}`}
                   label={currentNetwork?.nickname}
                   src={currentNetwork?.rpcPrefs?.imageUrl}
                   onClick={(e) => {

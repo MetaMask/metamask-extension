@@ -9,8 +9,6 @@ import { TransactionMeta } from '@metamask/transaction-controller';
  */
 export function afterTransactionSign(
   txMeta: TransactionMeta,
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   signedEthTx: any,
   addTransactionToWatchList: (
     custodianTransactionId: string | undefined,

@@ -2,7 +2,6 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
   BannerAlert,
-  Box,
   ButtonLink,
   Icon,
   IconName,
@@ -50,24 +49,22 @@ function SecurityProviderBannerAlert({
     >
       <Text marginTop={2}>{description}</Text>
 
-      <Box marginTop={3}>
-        <Disclosure title={t('seeDetails')} variant={DisclosureVariant.Arrow}>
-          {details}
-          <Text marginTop={3} display={Display.Flex}>
-            {t('somethingDoesntLookRight', [
-              <ButtonLink
-                key={`security-provider-button-supporturl-${provider}`}
-                size={Size.inherit}
-                href={reportUrl || ZENDESK_URLS.SUPPORT_URL}
-                externalLink
-                onClick={onClickSupportLink}
-              >
-                {t('reportIssue')}
-              </ButtonLink>,
-            ])}
-          </Text>
-        </Disclosure>
-      </Box>
+      <Disclosure title={t('seeDetails')} variant={DisclosureVariant.Arrow}>
+        {details}
+        <Text marginTop={3} display={Display.Flex}>
+          {t('somethingDoesntLookRight', [
+            <ButtonLink
+              key={`security-provider-button-supporturl-${provider}`}
+              size={Size.inherit}
+              href={reportUrl || ZENDESK_URLS.SUPPORT_URL}
+              externalLink
+              onClick={onClickSupportLink}
+            >
+              {t('reportIssue')}
+            </ButtonLink>,
+          ])}
+        </Text>
+      </Disclosure>
 
       {provider && (
         <Text

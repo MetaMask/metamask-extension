@@ -44,6 +44,8 @@ import {
   fetchSwapsLivenessAndFeatureFlags,
   getReviewSwapClickedTimestamp,
   getPendingSmartTransactions,
+  getSmartTransactionsOptInStatus,
+  getSmartTransactionsEnabled,
   getCurrentSmartTransactionsEnabled,
   getCurrentSmartTransactionsError,
   navigateBackToBuildQuote,
@@ -55,10 +57,6 @@ import {
   checkNetworkAndAccountSupports1559,
   getCurrentNetworkTransactions,
 } from '../../selectors';
-import {
-  getSmartTransactionsOptInStatus,
-  getSmartTransactionsEnabled,
-} from '../../../shared/modules/selectors';
 import {
   AWAITING_SIGNATURES_ROUTE,
   AWAITING_SWAP_ROUTE,

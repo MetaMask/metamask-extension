@@ -57,6 +57,7 @@ const MMISignatureMismatchBanner: React.FC = memo(() => {
       display={Display.Flex}
       width={BlockSize.Full}
       padding={4}
+      marginBottom={4}
       backgroundColor={BackgroundColor.primaryMuted}
     >
       <Icon

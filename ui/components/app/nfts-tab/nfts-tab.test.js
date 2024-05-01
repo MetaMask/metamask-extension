@@ -6,10 +6,8 @@ import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/jest';
 import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
 import { setBackgroundConnection } from '../../../store/background-connection';
-import { CHAIN_IDS, NETWORK_TYPES } from '../../../../shared/constants/network';
+import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import NftsTab from '.';
-
-const ETH_BALANCE = '0x16345785d8a0000'; // 0.1 ETH
 
 const NFTS = [
   {
@@ -154,7 +152,6 @@ const render = ({
   selectedAddress,
   chainId = '0x1',
   useNftDetection,
-  balance = ETH_BALANCE,
 }) => {
   const store = configureStore({
     metamask: {
@@ -170,16 +167,6 @@ const render = ({
       },
       providerConfig: { chainId, type: NETWORK_TYPES.MAINNET },
       selectedAddress,
-      accounts: {
-        [selectedAddress]: {
-          address: selectedAddress,
-        },
-      },
-      accountsByChainId: {
-        [CHAIN_IDS.MAINNET]: {
-          [selectedAddress]: { balance },
-        },
-      },
       internalAccounts: {
         accounts: {
           'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -198,8 +185,6 @@ const render = ({
         },
         selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       },
-      currentCurrency: 'usd',
-      tokenList: {},
       useNftDetection,
       nftsDropdownState,
     },
@@ -293,7 +278,6 @@ describe('NFT Items', () => {
       expect(screen.queryByText('Munks (3)')).not.toBeInTheDocument();
     });
   });
-
   describe('NFTs options', () => {
     it('should render a link "Refresh list" when some NFTs are present on mainnet and NFT auto-detection preference is set to true, which, when clicked calls methods DetectNFTs and checkAndUpdateNftsOwnershipStatus', () => {
       render({
@@ -332,21 +316,23 @@ describe('NFT Items', () => {
     });
   });
 
-  describe('NFT Tab Ramps Card', () => {
-    it('shows the ramp card when user balance is zero', () => {
+  describe('nft conversion banner', () => {
+    it('shows the NFT conversion banner when there are no NFTs', () => {
       const { queryByText } = render({
         selectedAddress: ACCOUNT_1,
-        balance: '0x0',
+        nfts: [],
       });
-      expect(queryByText('Get ETH to buy NFTs')).toBeInTheDocument();
+
+      expect(queryByText('Learn more about NFTs')).toBeInTheDocument();
     });
 
-    it('does not show the ramp card when the account has a balance', () => {
+    it('does not show the NFT conversion banner when there are NFTs', () => {
       const { queryByText } = render({
         selectedAddress: ACCOUNT_1,
-        balance: ETH_BALANCE,
+        nfts: NFTS,
       });
-      expect(queryByText('Get ETH to buy NFTs')).not.toBeInTheDocument();
+
+      expect(queryByText('Learn more about NFTs')).not.toBeInTheDocument();
     });
   });
 });

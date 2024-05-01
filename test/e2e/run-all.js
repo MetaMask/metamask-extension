@@ -80,7 +80,7 @@ async function main() {
             choices: ['chrome', 'firefox'],
           })
           .option('debug', {
-            default: true,
+            default: process.env.E2E_DEBUG === 'true',
             description:
               'Run tests in debug mode, logging each driver interaction',
             type: 'boolean',
@@ -192,8 +192,8 @@ async function main() {
   if (retries) {
     args.push('--retries', retries);
   }
-  if (!debug) {
-    args.push('--debug=false');
+  if (debug) {
+    args.push('--debug');
   }
   if (updateSnapshot) {
     args.push('--update-snapshot');

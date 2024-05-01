@@ -5,11 +5,13 @@
   position: relative;
   height: 16px;
   width: 16px;
+  margin-left: 5px;
 
   &__spinner {
-    position: absolute;
     width: 27px;
     height: 26px;
-    left: -5px;
+    position: absolute;
+    top: -5px;
+    left: -6px;
   }
 }

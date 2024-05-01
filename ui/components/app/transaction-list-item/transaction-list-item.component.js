@@ -65,7 +65,6 @@ import EditGasPopover from '../../../pages/confirmations/components/edit-gas-pop
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ActivityListItem } from '../../multichain';
 import { abortTransactionSigning } from '../../../store/actions';
-import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 
 function TransactionListItemInner({
   transactionGroup,
@@ -82,7 +81,6 @@ function TransactionListItemInner({
   const { supportsEIP1559 } = useGasFeeContext();
   const { openModal } = useTransactionModalContext();
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
-  const isSmartTransaction = useSelector(getIsSmartTransaction);
   const dispatch = useDispatch();
 
   const {
@@ -404,8 +402,7 @@ function TransactionListItemInner({
             !isCustodian &&
             ///: END:ONLY_INCLUDE_IF
             status === TransactionStatus.failed &&
-            !isSwap &&
-            !isSmartTransaction
+            !isSwap
           }
           showSpeedUp={
             ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)

@@ -13,10 +13,7 @@ import {
   BackgroundColor,
   BorderRadius,
 } from '../../../../../../helpers/constants/design-system';
-import {
-  hexToText,
-  sanitizeString,
-} from '../../../../../../helpers/utils/util';
+import { hexToText } from '../../../../../../helpers/utils/util';
 
 const PersonalSignInfo: React.FC = () => {
   const t = useI18nContext();
@@ -35,7 +32,7 @@ const PersonalSignInfo: React.FC = () => {
         marginBottom={4}
       >
         <ConfirmInfoRow label={t('requestFrom')} tooltip={t('requestFromInfo')}>
-          <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
+          <ConfirmInfoRowUrl url={currentConfirmation?.msgParams?.origin} />
         </ConfirmInfoRow>
       </Box>
       <Box
@@ -46,9 +43,7 @@ const PersonalSignInfo: React.FC = () => {
       >
         <ConfirmInfoRow label={t('message')}>
           <ConfirmInfoRowText
-            text={sanitizeString(
-              hexToText(currentConfirmation.msgParams?.data),
-            )}
+            text={hexToText(currentConfirmation.msgParams?.data)}
           />
         </ConfirmInfoRow>
       </Box>

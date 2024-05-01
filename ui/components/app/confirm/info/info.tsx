@@ -38,8 +38,6 @@ type ConfirmInfoTypeProps =
   | ConfirmInfoRowUrlProps
   | ConfirmInfoRowValueDoubleProps;
 
-// TODO: Replace `any` with type
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const TYPE_TO_COMPONENT: Record<ConfirmInfoRowType, any> = {
   [ConfirmInfoRowType.Address]: ({ address }: ConfirmInfoRowAddressProps) => {
     return <ConfirmInfoRowAddress address={address} />;

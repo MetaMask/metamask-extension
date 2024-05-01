@@ -155,46 +155,46 @@ function getCopyTargets(
       src: shouldIncludeSnow
         ? `./node_modules/@lavamoat/snow/snow.prod.js`
         : EMPTY_JS_FILE,
-      dest: `scripts/snow.js`,
+      dest: `snow.js`,
     },
     {
       src: shouldIncludeSnow ? `./app/scripts/use-snow.js` : EMPTY_JS_FILE,
-      dest: `scripts/use-snow.js`,
+      dest: `use-snow.js`,
     },
     {
       src: shouldIncludeLockdown
         ? getPathInsideNodeModules('ses', 'dist/lockdown.umd.min.js')
         : EMPTY_JS_FILE,
-      dest: `scripts/lockdown-install.js`,
+      dest: `lockdown-install.js`,
     },
     {
       src: './app/scripts/init-globals.js',
-      dest: 'scripts/init-globals.js',
+      dest: 'init-globals.js',
     },
     {
       src: './app/scripts/load-app.js',
-      dest: 'scripts/load-app.js',
+      dest: 'load-app.js',
     },
     {
       src: shouldIncludeLockdown
         ? `./app/scripts/lockdown-run.js`
         : EMPTY_JS_FILE,
-      dest: `scripts/lockdown-run.js`,
+      dest: `lockdown-run.js`,
     },
     {
       src: shouldIncludeLockdown
         ? `./app/scripts/lockdown-more.js`
         : EMPTY_JS_FILE,
-      dest: `scripts/lockdown-more.js`,
+      dest: `lockdown-more.js`,
     },
     {
       src: getPathInsideNodeModules('@lavamoat/lavapack', 'src/runtime-cjs.js'),
-      dest: `scripts/runtime-cjs.js`,
+      dest: `runtime-cjs.js`,
       pattern: '',
     },
     {
       src: getPathInsideNodeModules('@lavamoat/lavapack', 'src/runtime.js'),
-      dest: `scripts/runtime-lavamoat.js`,
+      dest: `runtime-lavamoat.js`,
       pattern: '',
     },
     {
