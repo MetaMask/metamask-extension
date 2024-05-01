@@ -10255,6 +10255,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/he@npm:^1":
+  version: 1.2.3
+  resolution: "@types/he@npm:1.2.3"
+  checksum: e77851c73dd7b9902d92fe0118a26246a7f3676a3a1c6eb1408305187ef73b57c22550b1435946b983267f961d935554d5d0e1b458416932552f31e763e1aa41
+  languageName: node
+  linkType: hard
+
 "@types/history@npm:^4.7.11":
   version: 4.7.11
   resolution: "@types/history@npm:4.7.11"
@@ -25503,6 +25510,7 @@ __metadata:
     "@types/gulp-autoprefixer": "npm:^0.0.33"
     "@types/gulp-sass": "npm:^5.0.0"
     "@types/gulp-sourcemaps": "npm:^0.0.35"
+    "@types/he": "npm:^1"
     "@types/jest": "npm:^29.1.2"
     "@types/mocha": "npm:^10.0.3"
     "@types/node": "npm:^20"
@@ -25603,6 +25611,7 @@ __metadata:
     gulp-stylelint: "npm:^13.0.0"
     gulp-watch: "npm:^5.0.1"
     gulp-zip: "npm:^5.1.0"
+    he: "npm:^1.2.0"
     history: "npm:^5.0.0"
     human-standard-token-abi: "npm:^2.0.0"
     husky: "npm:^8.0.3"

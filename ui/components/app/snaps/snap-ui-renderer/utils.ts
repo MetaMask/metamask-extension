@@ -2,6 +2,7 @@ import { JSXElement, GenericSnapElement } from '@metamask/snaps-sdk/jsx';
 import { memoize } from 'lodash';
 import { sha256 } from '@noble/hashes/sha256';
 import { bytesToHex, remove0x, Json } from '@metamask/utils';
+import { unescape as unescapeEntities } from 'he';
 import { COMPONENT_MAPPING } from './components';
 
 export type MapToTemplateParams = {
@@ -88,7 +89,8 @@ export const mapTextToTemplate = (
   elements.map((element) => {
     // With the introduction of JSX elements here can be strings.
     if (typeof element === 'string') {
-      return element;
+      // We unescape HTML entities here, to allow usage of &bull; etc.
+      return unescapeEntities(element);
     }
 
     return mapToTemplate({ ...params, element });
