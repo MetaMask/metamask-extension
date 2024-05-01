@@ -4,8 +4,9 @@ import { TransactionType } from '@metamask/transaction-controller';
 import { Json } from '@metamask/utils';
 
 export const REDESIGN_APPROVAL_TYPES = [
-  ApprovalType.PersonalSign,
   ApprovalType.EthSignTypedData,
+  ApprovalType.PersonalSign,
+  ApprovalType.Transaction,
 ] as const;
 
 export const REDESIGN_TRANSACTION_TYPES = [
