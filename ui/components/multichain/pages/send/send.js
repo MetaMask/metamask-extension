@@ -218,7 +218,7 @@ export const SendPage = () => {
               requireContractAddressAcknowledgement={
                 requireContractAddressAcknowledgement
               }
-              onAssetChange={handleSelectToken(true)}
+              onAssetChange={handleSelectToken}
             />
           ) : (
             <SendPageRecipient />

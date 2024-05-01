@@ -106,6 +106,14 @@ export default class UnitInput extends PureComponent {
     this.props.onChange(value);
   };
 
+  // imperatively updates the overflow when the input is changed upstreamed
+  updateIsOverflowing = () => {
+    this.setState({
+      ...this.state,
+      isOverflowing: this.getIsOverflowing(),
+    });
+  };
+
   getInputWidth(value) {
     const valueString = String(value);
     const valueLength = valueString.length || 1;

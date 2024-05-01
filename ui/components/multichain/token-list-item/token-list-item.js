@@ -157,7 +157,9 @@ export const TokenListItem = ({
             return;
           }
 
-          onClick();
+          if (onClick) {
+            onClick();
+          }
           trackEvent({
             category: MetaMetricsEventCategory.Tokens,
             event: MetaMetricsEventName.TokenDetailsOpened,
@@ -212,7 +214,6 @@ export const TokenListItem = ({
               {title?.length > 12 ? (
                 <Tooltip
                   position="bottom"
-                  interactive
                   html={title}
                   tooltipInnerClassName="multichain-token-list-item__tooltip"
                 >

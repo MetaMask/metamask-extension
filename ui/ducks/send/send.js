@@ -79,6 +79,7 @@ import {
   ACCOUNT_CHANGED,
   ADDRESS_BOOK_UPDATED,
   GAS_FEE_ESTIMATES_UPDATED,
+  CLEAR_SWAP_AND_SEND_STATE,
 } from '../../store/actionConstants';
 import {
   getTokenAddressParam,
@@ -111,6 +112,7 @@ import {
   TokenStandard,
 } from '../../../shared/constants/transaction';
 import { INVALID_ASSET_TYPE } from '../../helpers/constants/error-keys';
+import { SECOND } from '../../../shared/constants/time';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
 import { getTokenValueParam } from '../../../shared/lib/metamask-controller-utils';
@@ -127,7 +129,12 @@ import {
   estimateGasLimitForSend,
   generateTransactionParams,
   getRoundedGasPrice,
+  calculateBestQuote,
 } from './helpers';
+
+const RECENT_REQUEST_ERROR =
+  'This has been replaced with a more recent request';
+const FETCH_DELAY = SECOND;
 
 // typedef import statements
 /**
@@ -363,6 +370,7 @@ export const RECIPIENT_SEARCH_MODES = {
  * @property {Recipient} recipient - An object that describes the intended
  *  recipient of the transaction.
  * @property {string} [swapQuotesError] - error message for swap quotes
+ * @property {number} [swapQuotesLatestRequestTimestamp] - timestamp of most recent swap quotes request
  * @property {MapValuesToUnion<DraftTxStatus>} status - Describes the
  *  validity of the draft transaction, which will be either 'VALID' or
  *  'INVALID', depending on our ability to generate a valid txParams object for
@@ -419,6 +427,7 @@ export const draftTransactionInitialState = {
   userInputHexData: null,
   isSwapQuoteLoading: false,
   swapQuotesError: null,
+  swapQuotesLatestRequestTimestamp: null,
   quotes: null,
 };
 
@@ -746,16 +755,18 @@ export const initializeSendState = createAsyncThunk(
   },
 );
 
+// variable tracking the latestFetchTime
+let latestFetchTime;
+
 /**
  * Fetch the swap and send transaction if the source and destination token do not match
  *
- * @param {string} hexData - hex encoded string representing transaction data.
+ * @param {string} requestTimestamp - the timestamp of the request
  * @returns {ThunkAction<void>}
  */
-
-export const fetchSwapAndSendQuotes = createAsyncThunk(
+const fetchSwapAndSendQuotes = createAsyncThunk(
   'send/fetchSwapAndSendQuotes',
-  async (_, thunkApi) => {
+  async ({ requestTimestamp }, thunkApi) => {
     const state = thunkApi.getState();
     const sendState = state[name];
 
@@ -770,47 +781,47 @@ export const fetchSwapAndSendQuotes = createAsyncThunk(
       sendState.selectedAccount.address ??
       getSelectedInternalAccount(state).address;
 
-    // return early if swap isn't required
-    if (
-      draftTransaction?.sendAsset?.details?.address ===
-      draftTransaction?.receiveAsset?.details?.address
-    ) {
-      return { quotes: null };
-    }
-
     const sourceAmount = hexToDecimal(draftTransaction.amount.value);
 
     // return early if form isn't filled out
     if (
       !Number(sourceAmount) ||
-      // !draftTransaction.sendAsset ||
-      // !draftTransaction.receiveAsset ||
+      !draftTransaction.sendAsset ||
+      !draftTransaction.receiveAsset ||
       !draftTransaction.recipient.address
     ) {
-      return { quotes: null };
+      return { quotes: null, requestTimestamp };
     }
 
-    const quotes = await getSwapAndSendQuotes({
-      chainId,
-      sourceAmount,
-      sourceToken:
-        draftTransaction.sendAsset?.details?.address ||
-        SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].address,
-      destinationToken:
-        draftTransaction.receiveAsset?.details?.address ||
-        SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].address,
-      sender,
-      recipient: draftTransaction.recipient.address,
-      slippage: '5', // TODO: update when solution is available
-    }).catch(() => {
-      throw new Error(SWAPS_QUOTES_ERROR);
-    });
+    const quotes = await new Promise((resolve, reject) =>
+      setTimeout(async () => {
+        if (requestTimestamp !== latestFetchTime) {
+          reject(new Error(RECENT_REQUEST_ERROR));
+        }
+
+        getSwapAndSendQuotes({
+          chainId,
+          sourceAmount,
+          sourceToken:
+            draftTransaction.sendAsset?.details?.address ||
+            SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].address,
+          destinationToken:
+            draftTransaction.receiveAsset?.details?.address ||
+            SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].address,
+          sender,
+          recipient: draftTransaction.recipient.address,
+          slippage: '5', // TODO: update when solution is available
+        })
+          .then((response) => resolve(response))
+          .catch(() => reject(SWAPS_QUOTES_ERROR));
+      }, FETCH_DELAY),
+    );
 
     if (!Object.keys(quotes).length) {
       throw new Error(SWAPS_NO_QUOTES);
     }
 
-    return { quotes };
+    return { quotes, requestTimestamp };
   },
 );
 
@@ -1076,8 +1087,12 @@ const slice = createSlice({
       if (state.amountMode === AMOUNT_MODES.MAX) {
         slice.caseReducers.updateAmountToMax(state);
       } else if (initialAssetSet === false) {
-        slice.caseReducers.updateSendAmount(state, { payload: '0x0' });
-        slice.caseReducers.updateUserInputHexData(state, { payload: '' });
+        if (isReceived) {
+          draftTransaction.quotes = draftTransactionInitialState.quotes;
+        } else {
+          slice.caseReducers.updateSendAmount(state, { payload: '0x0' });
+          slice.caseReducers.updateUserInputHexData(state, { payload: '' });
+        }
       }
       // validate send state
       slice.caseReducers.validateSendState(state);
@@ -1385,9 +1400,18 @@ const slice = createSlice({
             amount: draftTransaction.amount.value,
             balance: draftTransaction.sendAsset.balance,
             gasTotal: draftTransaction.gas.gasTotal ?? '0x0',
-          }):
-          draftTransaction.amount.error = INSUFFICIENT_FUNDS_FOR_GAS_ERROR;
+          }): {
+          const isInsufficientWithoutGas = !isBalanceSufficient({
+            amount: draftTransaction.amount.value,
+            balance: draftTransaction.sendAsset.balance,
+            gasTotal: '0x0', // assume gas is free
+          });
+
+          draftTransaction.amount.error = isInsufficientWithoutGas
+            ? INSUFFICIENT_FUNDS_ERROR
+            : INSUFFICIENT_FUNDS_FOR_GAS_ERROR;
           break;
+        }
         // set error to INSUFFICIENT_TOKENS_ERROR if the token balance is lower
         // than the amount of token the user is attempting to send.
         case draftTransaction.sendAsset.type === AssetType.token &&
@@ -1667,6 +1691,18 @@ const slice = createSlice({
             addressBook[draftTransaction.recipient.address].name;
         }
       })
+      .addCase(CLEAR_SWAP_AND_SEND_STATE, (state) => {
+        const draftTransaction =
+          state.draftTransactions[state.currentTransactionUUID];
+
+        draftTransaction.quotes = draftTransactionInitialState.quotes;
+        draftTransaction.swapQuotesError =
+          draftTransactionInitialState.swapQuotesError;
+        draftTransaction.isSwapQuoteLoading =
+          draftTransactionInitialState.isSwapQuoteLoading;
+        draftTransaction.swapQuotesLatestRequestTimestamp =
+          draftTransactionInitialState.swapQuotesLatestRequestTimestamp;
+      })
       .addCase(computeEstimatedGasLimit.pending, (state) => {
         // When we begin to fetch gasLimit we should indicate we are loading
         // a gas estimate.
@@ -1761,21 +1797,31 @@ const slice = createSlice({
         slice.caseReducers.validateGasField(state);
         slice.caseReducers.validateSendState(state);
       })
-      .addCase(fetchSwapAndSendQuotes.pending, (state) => {
+      .addCase(fetchSwapAndSendQuotes.pending, (state, action) => {
         const draftTransaction =
           state.draftTransactions[state.currentTransactionUUID];
 
         if (draftTransaction) {
-          draftTransaction.quotes = draftTransactionInitialState.quotes;
+          if (!action.meta?.arg?.isRefreshingQuotes) {
+            draftTransaction.quotes = draftTransactionInitialState.quotes;
+          }
           draftTransaction.swapQuotesError = null;
           draftTransaction.isSwapQuoteLoading = true;
+          draftTransaction.swapQuotesLatestRequestTimestamp = Math.max(
+            action.meta.arg.requestTimestamp,
+            draftTransaction.swapQuotesLatestRequestTimestamp,
+          );
         }
       })
       .addCase(fetchSwapAndSendQuotes.fulfilled, (state, action) => {
         const draftTransaction =
           state.draftTransactions[state.currentTransactionUUID];
 
-        if (draftTransaction) {
+        if (
+          draftTransaction &&
+          action.payload.requestTimestamp ===
+            draftTransaction.swapQuotesLatestRequestTimestamp
+        ) {
           draftTransaction.isSwapQuoteLoading = false;
           draftTransaction.swapQuotesError = null;
           if (action.payload) {
@@ -1784,6 +1830,10 @@ const slice = createSlice({
         }
       })
       .addCase(fetchSwapAndSendQuotes.rejected, (state, action) => {
+        if (action.error.message === RECENT_REQUEST_ERROR) {
+          return;
+        }
+
         const draftTransaction =
           state.draftTransactions[state.currentTransactionUUID];
 
@@ -2049,6 +2099,42 @@ export function updateGasPrice(gasPrice) {
   };
 }
 
+export function updateSendQuote(
+  isComputingSendGasLimit = true,
+  isRefreshingQuotes = false,
+) {
+  return async (dispatch, getState) => {
+    const state = getState();
+
+    const draftTransaction =
+      state[name].draftTransactions[state[name].currentTransactionUUID];
+
+    const isSwapAndSend =
+      draftTransaction?.sendAsset?.details?.address !==
+      draftTransaction?.receiveAsset?.details?.address;
+
+    if (isSwapAndSend) {
+      const currentTime = Date.now();
+      // set this synchronously so it can be used in fetchSwapAndSendQuotes thunks immediately
+      latestFetchTime = currentTime;
+      await dispatch(
+        fetchSwapAndSendQuotes({
+          requestTimestamp: currentTime,
+          isRefreshingQuotes,
+        }),
+      );
+    } else {
+      await dispatch({
+        type: CLEAR_SWAP_AND_SEND_STATE,
+      });
+    }
+
+    if (isComputingSendGasLimit) {
+      await dispatch(computeEstimatedGasLimit());
+    }
+  };
+}
+
 /**
  * Updates the recipient in state based on the input provided, and then will
  * recompute gas limit when sending a TOKEN asset type. Changing the recipient
@@ -2079,8 +2165,7 @@ export function updateRecipient({ address, nickname }) {
         nickname: nickname || nicknameFromAddressBookEntryOrAccountName,
       }),
     );
-    await dispatch(fetchSwapAndSendQuotes());
-    await dispatch(computeEstimatedGasLimit());
+    await dispatch(updateSendQuote());
   };
 }
 
@@ -2198,8 +2283,7 @@ export function updateSendAmount(amount) {
       await dispatch(actions.updateAmountMode(AMOUNT_MODES.INPUT));
     }
 
-    await dispatch(fetchSwapAndSendQuotes());
-    await dispatch(computeEstimatedGasLimit());
+    await dispatch(updateSendQuote());
   };
 }
 
@@ -2349,11 +2433,12 @@ export function updateSendAsset(
       await dispatch(
         actions.updateAsset({ asset, initialAssetSet, isReceived }),
       );
-      await dispatch(fetchSwapAndSendQuotes());
     }
-    if (initialAssetSet === false && !skipComputeEstimatedGasLimit) {
-      await dispatch(computeEstimatedGasLimit());
-    }
+    await dispatch(
+      updateSendQuote(
+        initialAssetSet === false && !skipComputeEstimatedGasLimit,
+      ),
+    );
   };
 }
 
@@ -2378,10 +2463,10 @@ export function updateSendHexData(hexData) {
     const state = getState();
     const draftTransaction =
       state[name].draftTransactions[state[name].currentTransactionUUID];
-    await dispatch(fetchSwapAndSendQuotes());
-    if (draftTransaction.sendAsset.type === AssetType.native) {
-      await dispatch(computeEstimatedGasLimit());
-    }
+
+    await dispatch(
+      updateSendQuote(draftTransaction.sendAsset.type === AssetType.native),
+    );
   };
 }
 
@@ -2463,14 +2548,29 @@ export function resetSendState() {
  *
  * @returns {ThunkAction<void>}
  */
-// TODO: update this?
+
+// TODO: handle approvals once API is ready
 export function signTransaction() {
   return async (dispatch, getState) => {
     const state = getState();
     const { stage, eip1559support, amountMode } = state[name];
-    const txParams = generateTransactionParams(state[name]);
     const draftTransaction =
       state[name].draftTransactions[state[name].currentTransactionUUID];
+
+    let txParams;
+    const isSwapAndSend =
+      draftTransaction?.sendAsset?.details?.address !==
+      draftTransaction?.receiveAsset?.details?.address;
+
+    if (isSwapAndSend) {
+      // TODO: update to selected quote
+      const quotesAsArray = Object.values(draftTransaction.quotes || {});
+      const bestQuote = calculateBestQuote(quotesAsArray);
+
+      txParams = { ...bestQuote.trade };
+    } else {
+      txParams = generateTransactionParams(state[name]);
+    }
 
     if (stage === SEND_STAGES.EDIT) {
       // When dealing with the edit flow there is already a transaction in
@@ -2581,8 +2681,8 @@ export function toggleSendMaxMode() {
       await dispatch(actions.updateAmountToMax());
       await dispatch(addHistoryEntry(`sendFlow - user toggled max mode on`));
     }
-    await dispatch(fetchSwapAndSendQuotes());
-    await dispatch(computeEstimatedGasLimit());
+
+    await dispatch(updateSendQuote());
   };
 }
 
@@ -2650,20 +2750,13 @@ export function getCurrentDraftTransaction(state) {
 
 export const getBestQuote = createSelector(
   getCurrentDraftTransaction,
-  ({ quotes, isSwapQuoteLoading, swapQuotesError }) => {
+  ({ quotes, swapQuotesError }) => {
     const quotesAsArray = Object.values(quotes || {});
-    if (isSwapQuoteLoading || swapQuotesError || !quotesAsArray.length) {
+    if (swapQuotesError || !quotesAsArray.length) {
       return undefined;
     }
 
-    // TODO: account for gas
-    const bestQuote = quotesAsArray.reduce(
-      (best, current) =>
-        current?.destinationAmount > (best?.destinationAmount || 0)
-          ? current
-          : best,
-      undefined,
-    );
+    const bestQuote = calculateBestQuote(quotesAsArray);
 
     return bestQuote;
   },

@@ -22,6 +22,7 @@ type BaseProps = {
   onAmountChange?: (newAmount: string) => void;
   asset?: Asset;
   amount: Amount;
+  isAmountLoading?: boolean;
 };
 
 type ERC20Props = OverridingUnion<
@@ -68,6 +69,7 @@ export function SwappableCurrencyInput({
   assetType,
   asset,
   amount: { value },
+  isAmountLoading,
   onAmountChange,
 }: SwappableCurrencyInputProps) {
   const dispatch = useDispatch();
@@ -90,6 +92,7 @@ export function SwappableCurrencyInput({
           )}
           onPreferenceToggle={() => dispatch(toggleCurrencySwitch())}
           asset={asset?.details}
+          isSkeleton={isAmountLoading}
         />
       );
     case AssetType.NFT:
