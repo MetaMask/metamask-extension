@@ -3,11 +3,12 @@ import { Suite } from 'mocha';
 const FixtureBuilder = require('../../../fixture-builder');
 const { Ganache } = require('../../../ganache');
 const {
+  DAPP_URL_WITHOUT_SCHEMA,
+  WINDOW_TITLES,
   defaultGanacheOptions,
   withFixtures,
   openDapp,
   unlockWallet,
-  WINDOW_TITLES,
 } = require('../../../helpers');
 import { Driver } from '../../../webdriver/driver';
 
@@ -45,7 +46,7 @@ describe('Personal Sign', function (this: Suite) {
         );
 
         const origin = await driver.isElementPresent({
-          text: '127.0.0.1:8080',
+          text: DAPP_URL_WITHOUT_SCHEMA,
           tag: 'p',
         });
         const message = await driver.isElementPresent({
