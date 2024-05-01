@@ -135,11 +135,7 @@ export default function configureStore(preloadedState: any) {
          * that out and enable this in test environments so that mutation
          * causes E2E failures.
          */
-        immutableCheck: isDev
-          ? {
-              warnAfter: 100,
-            }
-          : false,
+        immutableCheck: false,
       }),
     devTools: false,
     enhancers,
