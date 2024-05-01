@@ -163,6 +163,16 @@ export async function estimateGasLimitForSend({
   }
 }
 
+// TODO: account for gas
+export const calculateBestQuote = (quotesArray) =>
+  quotesArray.reduce(
+    (best, current) =>
+      current?.destinationAmount > (best?.destinationAmount || 0)
+        ? current
+        : best,
+    undefined,
+  );
+
 /**
  * Generates a txParams from the send slice.
  *
