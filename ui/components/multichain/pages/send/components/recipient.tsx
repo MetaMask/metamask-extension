@@ -30,8 +30,6 @@ const renderExplicitAddress = (
   address: string,
   nickname: string,
   type: string,
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dispatch: any,
 ) => {
   return (

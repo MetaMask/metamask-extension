@@ -3,9 +3,11 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import TransactionIcon from '../transaction-icon';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import {
+  TransactionGroupCategory,
   TransactionGroupStatus,
   SmartTransactionStatus,
 } from '../../../../shared/constants/transaction';
@@ -33,19 +35,20 @@ export default function SmartTransactionListItem({
   isEarliestNonce = false,
 }) {
   const dispatch = useDispatch();
+  const t = useI18nContext();
   const [cancelSwapLinkClicked, setCancelSwapLinkClicked] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
-  const {
-    title,
-    category,
-    primaryCurrency,
-    recipientAddress,
-    isPending,
-    senderAddress,
-  } = useTransactionDisplayData(transactionGroup);
+  const { primaryCurrency, recipientAddress, isPending, senderAddress } =
+    useTransactionDisplayData(transactionGroup);
   const currentChain = useSelector(getCurrentNetwork);
 
-  const { time, status } = smartTransaction;
+  const { sourceTokenSymbol, destinationTokenSymbol, time, status } =
+    smartTransaction;
+  const category = TransactionGroupCategory.swap;
+  const title = t('swapTokenToToken', [
+    sourceTokenSymbol,
+    destinationTokenSymbol,
+  ]);
   const date = formatDateWithYearContext(time, 'MMM d, y', 'MMM d');
   let displayedStatusKey;
   if (status === SmartTransactionStatus.pending) {

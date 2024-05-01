@@ -57,8 +57,6 @@ const openSupportArticle = (): void => {
   });
 };
 
-// TODO: Replace `any` with type
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function SRPQuiz(props: any) {
   const [stage, setStage] = useState<QuizStage>(QuizStage.introduction);
 

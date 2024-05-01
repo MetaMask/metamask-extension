@@ -66,8 +66,6 @@ describe('AssetBalanceText', () => {
     };
     const { asFragment } = render(
       <Provider store={store}>
-        {/* Replace `any` with type */}
-        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         <AssetBalanceText asset={asset} balanceColor={'textColor' as any} />
       </Provider>,
     );
@@ -93,8 +91,6 @@ describe('AssetBalanceText', () => {
     };
     const { getByText } = render(
       <Provider store={store}>
-        {/* Replace `any` with type */}
-        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         <AssetBalanceText asset={asset} balanceColor={'textColor' as any} />
       </Provider>,
     );
@@ -120,8 +116,6 @@ describe('AssetBalanceText', () => {
 
     const { getByText } = render(
       <Provider store={store}>
-        {/* Replace `any` with type */}
-        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         <AssetBalanceText asset={asset} balanceColor={'textColor' as any} />
       </Provider>,
     );

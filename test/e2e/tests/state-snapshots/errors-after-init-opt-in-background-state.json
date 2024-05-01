@@ -45,10 +45,7 @@
     "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
     "snapsInstallPrivacyWarningShown": true,
     "surveyLinkLastClickedOrClosed": "object",
-    "signatureSecurityAlertResponses": "object",
-    "switchedNetworkDetails": "object",
-    "switchedNetworkNeverShowMessage": "boolean",
-    "currentExtensionPopupId": "number"
+    "signatureSecurityAlertResponses": "object"
   },
   "ApprovalController": {
     "pendingApprovals": "object",
@@ -170,7 +167,6 @@
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": false,
-      "smartTransactionsOptInStatus": false,
       "useNativeCurrencyAsPrimaryCurrency": true,
       "petnamesEnabled": true
     },
@@ -244,7 +240,7 @@
   "TokenListController": {
     "tokenList": "object",
     "tokensChainsCache": {},
-    "preventPollingOnNetworkRestart": false
+    "preventPollingOnNetworkRestart": true
   },
   "TokenRatesController": {
     "contractExchangeRates": "object",

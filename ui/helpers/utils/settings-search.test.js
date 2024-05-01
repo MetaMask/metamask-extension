@@ -36,8 +36,6 @@ const t = (key) => {
       return 'Select this to show gas price and limit controls directly on the send and confirm screens.';
     case 'showHexData':
       return 'Show hex data';
-    case 'smartTransactions':
-      return 'Smart transactions';
     case 'showHexDataDescription':
       return 'Select this to show the hex data field on the send screen';
     case 'showFiatConversionInTestnets':
@@ -154,7 +152,7 @@ describe('Settings Search Utils', () => {
     });
 
     it('returns "Advanced" section count', () => {
-      expect(getNumberOfSettingRoutesInTab(t, t('advanced'))).toStrictEqual(13);
+      expect(getNumberOfSettingRoutesInTab(t, t('advanced'))).toStrictEqual(12);
     });
 
     it('returns "Contact" section count', () => {
@@ -177,7 +175,7 @@ describe('Settings Search Utils', () => {
 
     it('returns "Experimental" section count', () => {
       expect(getNumberOfSettingRoutesInTab(t, t('experimental'))).toStrictEqual(
-        3,
+        2,
       );
     });
 

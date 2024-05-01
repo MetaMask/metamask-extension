@@ -42,8 +42,6 @@ export const showError = (
   controllerMessenger: SnapKeyringBuilderMessenger,
   snapId: string,
   opts: ResultComponentOptions,
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   properties: Record<string, any>,
 ): Promise<ErrorResult> => {
   return controllerMessenger.call('ApprovalController:showError', {
@@ -72,8 +70,6 @@ export const showSuccess = (
   controllerMessenger: SnapKeyringBuilderMessenger,
   snapId: string,
   opts: ResultComponentOptions,
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   properties: Record<string, any>,
 ): Promise<ErrorResult> => {
   return controllerMessenger.call('ApprovalController:showSuccess', {

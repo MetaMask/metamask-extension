@@ -50,9 +50,13 @@ async function getExtensionStorageFilePath(driver) {
  */
 async function closePopoverIfPresent(driver) {
   const popoverButtonSelector = '[data-testid="popover-close"]';
-  const linkNotRightNow = { text: 'Not right now', tag: 'button' };
-  await driver.clickElementSafe(popoverButtonSelector);
-  await driver.clickElementSafe(linkNotRightNow);
+  try {
+    if (await driver.isElementPresent(popoverButtonSelector)) {
+      await driver.clickElement(popoverButtonSelector);
+    }
+  } catch (_err) {
+    // No popover
+  }
 }
 
 /**
@@ -71,7 +75,6 @@ async function getSRP(driver) {
 }
 
 describe('Vault Decryptor Page', function () {
-  // eslint-disable-next-line mocha/no-skipped-tests
   it('is able to decrypt the vault using the vault-decryptor webapp', async function () {
     await withFixtures({}, async ({ driver }) => {
       await driver.navigate();

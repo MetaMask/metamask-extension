@@ -29,8 +29,6 @@ export const SelectWrapper: SelectWrapperComponent = React.forwardRef(
     }: SelectWrapperProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [uncontrolledValue, setUncontrolledValue] = useState<any | null>();
     const [isUncontrolledOpen, setIsUncontrolledOpen] =
       useState<boolean>(false);

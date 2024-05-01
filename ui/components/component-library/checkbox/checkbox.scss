@@ -13,7 +13,6 @@
 
     &:hover:not(:disabled) {
       background-color: var(--color-background-default-hover);
-      cursor: pointer;
     }
 
     &:focus {

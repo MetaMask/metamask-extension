@@ -515,8 +515,6 @@ describe('Transaction Utils', () => {
 
         request.securityAlertsEnabled = true;
         request.chainId = '0x1';
-        // TODO: Replace `any` with type
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         request.ppomController.usePPOM = (callback: any) => callback(ppomMock);
 
         await addTransaction(request);

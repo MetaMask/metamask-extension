@@ -99,7 +99,11 @@ export default function NewNetworkInfo() {
               size={ButtonPrimarySize.Md}
               className="footer__button"
             >
-              <Text variant={TextVariant.bodySm} as="h6" color={Color.inherit}>
+              <Text
+                variant={TextVariant.bodySm}
+                as="h6"
+                color={TextColor.textDefault}
+              >
                 {t('recoveryPhraseReminderConfirm')}
               </Text>
             </Button>

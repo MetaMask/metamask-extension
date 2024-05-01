@@ -23,8 +23,6 @@ export async function migrate(
   return versionedData;
 }
 
-// TODO: Replace `any` with type
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function transformState(state: Record<string, any>) {
   const transactionControllerState = state?.TransactionController || {};
   const transactions = transactionControllerState?.transactions || {};
@@ -34,8 +32,6 @@ function transformState(state: Record<string, any>) {
   }
 
   const newTxs = Object.keys(transactions).reduce(
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (txs: { [key: string]: any }, txId) => {
       // Clone the transaction
       const transaction = cloneDeep(transactions[txId]);

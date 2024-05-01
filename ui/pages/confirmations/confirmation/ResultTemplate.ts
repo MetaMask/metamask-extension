@@ -38,12 +38,8 @@ export class ResultTemplate {
   }
 
   getValues(
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     pendingApproval: ApprovalRequest<any>,
     t: (key: string) => string,
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     actions: any,
   ) {
     const content = this.#getContent(pendingApproval.requestData || {}, t);
@@ -62,12 +58,8 @@ export class ResultTemplate {
 
   #getContent(
     requestData: SuccessOptions | ErrorOptions,
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     t: any,
   ): (undefined | string | TemplateRendererComponent)[] {
-    // TODO: Replace `any` with type
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { error, header, icon, message, title } = requestData as any;
     const isSuccess = this.#type === ApprovalType.ResultSuccess;
 

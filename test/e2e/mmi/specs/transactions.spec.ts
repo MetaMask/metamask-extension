@@ -13,7 +13,6 @@ const sendTransaction = async (
   page: Page,
   context: BrowserContext,
   client: CustodianTestClient,
-  repeatTx?: boolean,
 ) => {
   // Getting extension id of MMI
   const extensions = new ChromeExtensionPage(await context.newPage());
@@ -35,8 +34,6 @@ const sendTransaction = async (
   // Setup testnetwork in settings
   const mainMenuPage = new MMIMainMenuPage(page, extensionId as string);
   await mainMenuPage.goto();
-  await mainMenuPage.fillPassword();
-  await mainMenuPage.finishOnboarding();
   await mainMenuPage.selectMenuOption('settings');
   await mainMenuPage.selectSettings('Advance');
   await mainMenuPage.switchTestNetwork();
@@ -66,26 +63,13 @@ const sendTransaction = async (
   await mainPage.selectMainAction('Send');
   await mainPage.sendFunds(accounTo, '0');
 
-  if (repeatTx) {
-    await mainPage.bringToFront();
-    await mainPage.selectMainAction('Send');
-    await mainPage.sendFunds(accounTo, '0');
-  }
-
   // Check that action took place
   await mainPage.bringToFront();
   await mainPage.openActivityTab();
   await mainPage.checkLastTransactionStatus(/created/iu);
   // Get custodianTxId to mine the transaction
   const custodianTxId = await mainPage.getCustodianTXId();
-
-  // Get the 2nd txId of the 2nd sent transaction
-  let secondCustodianTxId = '';
-  if (repeatTx) {
-    secondCustodianTxId = await mainPage.getSecondCustodianTXId();
-  }
-
-  return { mainPage, custodianTxId, secondCustodianTxId };
+  return { mainPage, custodianTxId };
 };
 
 test.describe('MMI send', () => {
@@ -106,31 +90,6 @@ test.describe('MMI send', () => {
     const statusName = await client.submitTransactionById(custodianTxId);
     await mainPage.checkLastTransactionStatus(statusName);
   });
-
-  test('Send a 2nd transaction while a there is already a pending transaction', async ({
-    page,
-    context,
-  }) => {
-    // Setup custodian and auth
-    const client = new CustodianTestClient();
-    await client.setup();
-    const repeatTx = true;
-    const { mainPage, custodianTxId, secondCustodianTxId } = await sendTransaction(
-      page,
-      context,
-      client,
-      repeatTx,
-    );
-
-    // Sign and submit
-    const statusName = await client.submitTransactionById(custodianTxId);
-    await mainPage.checkLastTransactionStatus(statusName);
-
-    if (secondCustodianTxId.length > 0) {
-      await client.submitTransactionById(secondCustodianTxId);
-    }
-  });
-
 
   test('Send a transaction from one account to another and abort it from custody', async ({
     page,

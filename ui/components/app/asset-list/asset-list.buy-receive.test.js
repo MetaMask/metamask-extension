@@ -40,19 +40,31 @@ const render = (
   );
 };
 
-describe('AssetList Ramps Card', () => {
+describe('AssetList Buy/Receive', () => {
   useIsOriginalNativeTokenSymbol.mockReturnValue(true);
 
-  it('shows the ramp card when the account is empty', () => {
+  it('shows Buy and Receive when the account is empty', () => {
     const { queryByText } = render(
       '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
       '0x0',
     );
-    expect(queryByText('Fund your wallet')).toBeInTheDocument();
+    expect(queryByText('Buy')).toBeInTheDocument();
+    expect(queryByText('Receive')).toBeInTheDocument();
   });
 
-  it('does not show the ramp card when the account has a balance', () => {
+  it('shows only Receive when chainId is not buyable', () => {
+    const { queryByText } = render(
+      '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+      '0x0',
+      '0x8675309', // Custom chain ID that isn't buyable
+    );
+    expect(queryByText('Buy')).not.toBeInTheDocument();
+    expect(queryByText('Receive')).toBeInTheDocument();
+  });
+
+  it('shows neither when the account has a balance', () => {
     const { queryByText } = render();
-    expect(queryByText('Fund your wallet')).not.toBeInTheDocument();
+    expect(queryByText('Buy')).not.toBeInTheDocument();
+    expect(queryByText('Receive')).not.toBeInTheDocument();
   });
 });

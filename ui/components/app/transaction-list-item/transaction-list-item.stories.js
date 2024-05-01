@@ -156,6 +156,13 @@ SimpleSend.args = {
   },
 };
 
+Smart.storyName = 'smart';
+Smart.args = {
+  'transactionGroup.primaryTransaction': {
+    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.smart],
+  },
+};
+
 Swap.storyName = 'swap';
 Swap.args = {
   'transactionGroup.primaryTransaction': {
