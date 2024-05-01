@@ -155,13 +155,8 @@ class ConfirmationsRejectRule implements Rule {
           tag: 'button',
         });
 
-        await this.driver.findClickableElements({
-          text: 'Connect',
-          tag: 'button',
-        });
-
         await this.driver.clickElement({
-          text: 'Connect',
+          text: 'Confirm',
           tag: 'button',
         });
 
