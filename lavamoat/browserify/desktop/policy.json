@@ -4015,6 +4015,11 @@
         "string.prototype.matchall>has-symbols": true
       }
     },
+    "he": {
+      "globals": {
+        "define": true
+      }
+    },
     "json-rpc-engine": {
       "packages": {
         "eth-rpc-errors": true,
