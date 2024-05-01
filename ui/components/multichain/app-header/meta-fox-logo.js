@@ -11,11 +11,9 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../component-library';
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  getTheme,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../selectors';
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+import { getTheme } from '../../../selectors';
+///: END:ONLY_INCLUDE_IF
 
 import Logo from '../../ui/metafox-logo';
 
