@@ -60,6 +60,7 @@ import {
 ///: END:ONLY_INCLUDE_IF
 
 import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
+import { ORIGIN_METAMASK } from '../../../../../shared/constants/app';
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
@@ -213,7 +214,7 @@ const ConfirmPageContainer = (props) => {
           />
         ) : (
           <ConfirmPageContainerHeader
-            showEdit={showEdit}
+            showEdit={origin === ORIGIN_METAMASK ? showEdit : false}
             onEdit={() => onEdit()}
             showAccountInHeader={showAccountInHeader}
             accountAddress={fromAddress}
