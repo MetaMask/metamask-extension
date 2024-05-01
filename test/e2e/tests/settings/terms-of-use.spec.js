@@ -3,8 +3,8 @@ const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
-} = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+} = require('../../helpers');
+const FixtureBuilder = require('../../fixture-builder');
 
 describe('Terms of use', function () {
   it('accepts the updated terms of use @no-mmi', async function () {

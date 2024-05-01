@@ -6,10 +6,10 @@ const {
   largeDelayMs,
   WINDOW_TITLES,
   locateAccountBalanceDOM,
-} = require('../helpers');
+} = require('../../helpers');
 
-const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
-const FixtureBuilder = require('../fixture-builder');
+const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
+const FixtureBuilder = require('../../fixture-builder');
 
 describe('Deploy contract and call contract methods', function () {
   const smartContract = SMART_CONTRACTS.PIGGYBANK;
