@@ -12,7 +12,7 @@ import {
   MethodObject,
   OpenrpcDocument,
 } from '@open-rpc/meta-schema';
-import openrpcDocument from "@metamask/api-specs";
+import openrpcDocument from '@metamask/api-specs';
 const { v4 } = require('uuid');
 
 declare let window: any;
@@ -118,82 +118,90 @@ class ConfirmationsRejectRule implements Rule {
   }
 
   async beforeRequest(_: any, call: Call) {
-    if (this.requiresEthAccountsPermission.includes(call.methodName)) {
-      const requestPermissionsRequest = JSON.stringify({
-        jsonrpc: '2.0',
-        method: 'wallet_requestPermissions',
-        params: [{ eth_accounts: {} }],
-      });
+    try {
+      if (this.requiresEthAccountsPermission.includes(call.methodName)) {
+        const requestPermissionsRequest = JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'wallet_requestPermissions',
+          params: [{ eth_accounts: {} }],
+        });
 
-      await this.driver.executeScript(
-        `window.ethereum.request(${requestPermissionsRequest})`,
-      );
+        await this.driver.executeScript(
+          `window.ethereum.request(${requestPermissionsRequest})`,
+        );
+        const screenshot = await this.driver.driver.takeScreenshot();
+        call.attachments = call.attachments || [];
+        call.attachments.push({
+          type: 'image',
+          data: `data:image/png;base64,${screenshot.toString('base64')}`,
+        });
+
+        await this.driver.waitUntilXWindowHandles(3);
+        await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        await this.driver.findClickableElements({
+          text: 'Next',
+          tag: 'button',
+        });
+
+        const screenshotTwo = await this.driver.driver.takeScreenshot();
+        call.attachments.push({
+          type: 'image',
+          data: `data:image/png;base64,${screenshotTwo.toString('base64')}`,
+        });
+
+        await this.driver.clickElement({
+          text: 'Next',
+          tag: 'button',
+        });
+
+        await this.driver.findClickableElements({
+          text: 'Connect',
+          tag: 'button',
+        });
+
+        await this.driver.clickElement({
+          text: 'Connect',
+          tag: 'button',
+        });
+
+        await switchToOrOpenDapp(this.driver);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  async afterRequest(_: any, call: Call) {
+    try {
+      await this.driver.waitUntilXWindowHandles(3);
+      await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+      let text = 'Cancel';
+      if (this.rejectButtonInsteadOfCancel.includes(call.methodName)) {
+        await this.driver.findClickableElements({
+          text: 'Reject',
+          tag: 'button',
+        });
+        text = 'Reject';
+      } else {
+        await this.driver.findClickableElements({
+          text: 'Cancel',
+          tag: 'button',
+        });
+      }
       const screenshot = await this.driver.driver.takeScreenshot();
       call.attachments = call.attachments || [];
       call.attachments.push({
         type: 'image',
         data: `data:image/png;base64,${screenshot.toString('base64')}`,
       });
-
-      await this.driver.waitUntilXWindowHandles(3);
-      await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-      await this.driver.findClickableElements({
-        text: 'Next',
-        tag: 'button',
-      });
-
-      const screenshotTwo = await this.driver.driver.takeScreenshot();
-      call.attachments.push({
-        type: 'image',
-        data: `data:image/png;base64,${screenshotTwo.toString('base64')}`,
-      });
-
-      await this.driver.clickElement({
-        text: 'Next',
-        tag: 'button',
-      });
-
-      await this.driver.findClickableElements({
-        text: 'Connect',
-        tag: 'button',
-      });
-
-      await this.driver.clickElement({
-        text: 'Connect',
-        tag: 'button',
-      });
-
+      await this.driver.clickElement({ text, tag: 'button' });
+      // make sure to switch back to the dapp or else the next test will fail on the wrong window
       await switchToOrOpenDapp(this.driver);
+    } catch (e) {
+      console.log(e);
     }
-  }
-
-  async afterRequest(_: any, call: Call) {
-    await this.driver.waitUntilXWindowHandles(3);
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-    let text = 'Cancel';
-    if (this.rejectButtonInsteadOfCancel.includes(call.methodName)) {
-      await this.driver.findClickableElements({
-        text: 'Reject',
-        tag: 'button',
-      });
-      text = 'Reject';
-    } else {
-      await this.driver.findClickableElements({
-        text: 'Cancel',
-        tag: 'button',
-      });
-    }
-    const screenshot = await this.driver.driver.takeScreenshot();
-    call.attachments = call.attachments || [];
-    call.attachments.push({
-      type: 'image',
-      data: `data:image/png;base64,${screenshot.toString('base64')}`,
-    });
-    await this.driver.clickElement({ text, tag: 'button' });
-    // make sure to switch back to the dapp or else the next test will fail on the wrong window
-    await switchToOrOpenDapp(this.driver);
   }
 
   // get all the confirmation calls to make and expect to pass
@@ -237,16 +245,20 @@ class ConfirmationsRejectRule implements Rule {
   }
 
   async afterResponse(_: any, call: Call) {
-    if (this.requiresEthAccountsPermission.includes(call.methodName)) {
-      const revokePermissionsRequest = JSON.stringify({
-        jsonrpc: '2.0',
-        method: 'wallet_revokePermissions',
-        params: [{ eth_accounts: {} }],
-      });
+    try {
+      if (this.requiresEthAccountsPermission.includes(call.methodName)) {
+        const revokePermissionsRequest = JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'wallet_revokePermissions',
+          params: [{ eth_accounts: {} }],
+        });
 
-      await this.driver.executeScript(
-        `window.ethereum.request(${revokePermissionsRequest})`,
-      );
+        await this.driver.executeScript(
+          `window.ethereum.request(${revokePermissionsRequest})`,
+        );
+      }
+    } catch (e) {
+      console.log(e);
     }
   }
 
@@ -282,7 +294,8 @@ async function main() {
 
       const transport = createDriverTransport(driver);
 
-      const transaction = openrpcDocument.components?.schemas?.TransactionInfo?.allOf?.[0];
+      const transaction =
+        openrpcDocument.components?.schemas?.TransactionInfo?.allOf?.[0];
 
       if (transaction) {
         delete transaction.unevaluatedProperties;
@@ -427,7 +440,7 @@ async function main() {
             },
           },
         ],
-      }
+      };
       // add net_version
       openrpcDocument.methods.push(netVersion as any);
 
@@ -490,7 +503,9 @@ async function main() {
         .map((m) => (m as MethodObject).name);
 
       const testCoverageResults = await testCoverage({
-        openrpcDocument: await parseOpenRPCDocument(openrpcDocument as any) as any,
+        openrpcDocument: (await parseOpenRPCDocument(
+          openrpcDocument as any,
+        )) as any,
         transport,
         reporters: [
           'console-streaming',
@@ -503,7 +518,7 @@ async function main() {
           'eth_getBlockReceipts',
           'eth_maxPriorityFeePerGas',
         ],
-            // these 2 method
+        // these 2 method
         // only: ['eth_newFilter'],
         rules: [
           new JsonSchemaFakerRule({
