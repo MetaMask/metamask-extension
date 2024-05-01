@@ -17,7 +17,7 @@ import { getTheme } from '../../../selectors';
 
 import Logo from '../../ui/metafox-logo';
 
-export const MetaFoxLogo = () => {
+export const MultichainMetaFoxLogo = () => {
   const history = useHistory();
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const theme = useSelector((state) => getTheme(state));

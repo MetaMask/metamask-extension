@@ -65,7 +65,7 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-import { MetaFoxLogo } from './meta-fox-logo';
+import { MultichainMetaFoxLogo } from './multichain-meta-fox-logo';
 
 export const AppHeader = ({ location }) => {
   const trackEvent = useContext(MetaMetricsContext);
@@ -158,7 +158,7 @@ export const AppHeader = ({ location }) => {
 
   return (
     <>
-      {isUnlocked && !popupStatus ? <MetaFoxLogo /> : null}
+      {isUnlocked && !popupStatus ? <MultichainMetaFoxLogo /> : null}
       <Box
         display={Display.Flex}
         className={classnames('multichain-app-header', {
