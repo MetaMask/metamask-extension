@@ -1,30 +1,27 @@
 const { strict: assert } = require('assert');
 const {
-  defaultGanacheOptions,
-  unlockWallet,
-  waitForAccountRendered,
-  connectToDapp,
-  waitForDappConnected,
   withFixtures,
+  openDapp,
+  unlockWallet,
   getEventPayloads,
+  DAPP_ONE_URL,
+  DAPP_URL,
+  switchToNotificationWindow,
+  defaultGanacheOptions,
 } = require('../../helpers');
+const {
+  MetaMetricsEventName,
+} = require('../../../../shared/constants/metametrics');
 const FixtureBuilder = require('../../fixture-builder');
 
-/**
- * This function mocks the segment API multiple times for specific payloads that we expect to
- * see when these tests are run. In this case, we are looking for 'Track Event' calls.
- * Do not use the constants from the metrics constants files, because if these change we want a
- * strong indicator to our data team that the shape of data will change.
- *
- * @param {import('mockttp').Mockttp} mockServer
- * @returns {Promise<import('mockttp/dist/pluggable-admin').MockttpClientResponse>[]}
- */
-async function mockTrackEvent(mockServer) {
+async function mockSegment(mockServer) {
   return [
     await mockServer
-      .forPost('https://api.segment.io/v1/track')
+      .forPost('https://api.segment.io/v1/batch')
       .withJsonBodyIncluding({
-        event: 'NavNetworkSwitched',
+        batch: [
+          { type: 'track', event: MetaMetricsEventName.NavNetworkSwitched },
+        ],
       })
       .thenCallback(() => {
         return {
@@ -40,31 +37,47 @@ describe('Track Event Test', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
-            participateInMetaMetrics: true,
-          })
+          .withPermissionControllerConnectedToTwoTestDapps()
+          .withNetworkControllerDoubleGanache()
           .build(),
-        defaultGanacheOptions,
+        dappOptions: { numberOfDapps: 2 },
+        ganacheOptions: {
+          ...defaultGanacheOptions,
+          concurrent: [{ port: 8546, chainId: 1338 }],
+        },
         title: this.test.fullTitle(),
-        testSpecificMock: mockTrackEvent,
+        testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await unlockWallet(driver);
-        await waitForAccountRendered(driver);
-        await connectToDapp(driver);
-        await waitForDappConnected(driver);
 
-        // TODO: TRIGGER NETWORK SWITCH
+        // open two dapps
+        await openDapp(driver, undefined, DAPP_URL);
+        await openDapp(driver, undefined, DAPP_ONE_URL);
 
-        await driver.navigate();
-        await driver.clickElement('#network-switch-modal');
+        // switchEthereumChain request
+        const switchEthereumChainRequest = JSON.stringify({
+          jsonrpc: '2.0',
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: '0x53a' }],
+        });
 
-        // Triggering the event
-        await driver.clickElement('#confirm-switch-button');
+        // Initiate switchEthereumChain on Dapp Two
+        await driver.executeScript(
+          `window.ethereum.request(${switchEthereumChainRequest})`,
+        );
+
+        // Confirm switchEthereumChain
+        await switchToNotificationWindow(driver, 4);
+        await driver.findClickableElements({
+          text: 'Switch network',
+          tag: 'button',
+        });
+        await driver.clickElement({ text: 'Switch network', tag: 'button' });
 
         // Verifying the track event
         const events = await getEventPayloads(driver, mockedEndpoints);
+
         assert.equal(events.length, 1);
         assert.deepStrictEqual(events[0].properties, {
           location: 'Switch Modal',
