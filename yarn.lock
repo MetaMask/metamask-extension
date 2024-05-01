@@ -5345,6 +5345,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/gas-fee-controller@npm:^15.1.1":
+  version: 15.1.1
+  resolution: "@metamask/gas-fee-controller@npm:15.1.1"
+  dependencies:
+    "@metamask/base-controller": "npm:^5.0.2"
+    "@metamask/controller-utils": "npm:^9.1.0"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/ethjs-unit": "npm:^0.3.0"
+    "@metamask/network-controller": "npm:^18.1.0"
+    "@metamask/polling-controller": "npm:^6.0.2"
+    "@metamask/utils": "npm:^8.3.0"
+    "@types/bn.js": "npm:^5.1.5"
+    "@types/uuid": "npm:^8.3.0"
+    bn.js: "npm:^5.2.1"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/network-controller": ^18.0.0
+  checksum: 6e0ddf10d4dde13e4da8bb17e7503a68f64369e51958059168f3400941b540dd02df417e60451a5bdb2be9d9fb1d4a11ae9685f811b0a4f1744ff23ce1c7b1ff
+  languageName: node
+  linkType: hard
+
 "@metamask/jazzicon@npm:^2.0.0":
   version: 2.0.0
   resolution: "@metamask/jazzicon@npm:2.0.0"
@@ -5871,6 +5892,23 @@ __metadata:
   peerDependencies:
     "@metamask/network-controller": ^18.0.0
   checksum: 178f6b978043f824bf841ec03321406e0d095cdb7880cb9fd4f4cbe12e7bef2d13bfdfce31dc58ae9f89694824f994a3385b2d033e14575780bef47e2d12e8e9
+  languageName: node
+  linkType: hard
+
+"@metamask/polling-controller@npm:^6.0.2":
+  version: 6.0.2
+  resolution: "@metamask/polling-controller@npm:6.0.2"
+  dependencies:
+    "@metamask/base-controller": "npm:^5.0.2"
+    "@metamask/controller-utils": "npm:^9.1.0"
+    "@metamask/network-controller": "npm:^18.1.0"
+    "@metamask/utils": "npm:^8.3.0"
+    "@types/uuid": "npm:^8.3.0"
+    fast-json-stable-stringify: "npm:^2.1.0"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/network-controller": ^18.0.0
+  checksum: 86fecbb621621546d2c97a60da85831eba5b57bbd9a4d361865ebe2ff99edff9393e90ffd027d3506d2d8213bc3c4ea7614a4f5b506173d6b1954ff6b43ccd35
   languageName: node
   linkType: hard
 
@@ -25521,7 +25559,7 @@ __metadata:
     "@metamask/ethjs-contract": "npm:^0.4.1"
     "@metamask/ethjs-query": "npm:^0.7.1"
     "@metamask/forwarder": "npm:^1.1.0"
-    "@metamask/gas-fee-controller": "npm:^15.0.0"
+    "@metamask/gas-fee-controller": "npm:^15.1.1"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/keyring-api": "npm:^3.0.0"
     "@metamask/keyring-controller": "patch:@metamask/keyring-controller@npm%3A13.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-13.0.0-d94816a680.patch"
