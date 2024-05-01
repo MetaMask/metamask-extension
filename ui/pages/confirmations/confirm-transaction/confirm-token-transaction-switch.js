@@ -185,7 +185,7 @@ export default function ConfirmTokenTransactionSwitch({ transaction }) {
             fiatTransactionTotal={fiatTransactionTotal}
             hexMaximumTransactionFee={sumHexes(
               hexMaximumTransactionFee,
-              layer1GasFee,
+              layer1GasFee ?? 0x0,
             )}
           />
         )}
