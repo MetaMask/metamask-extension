@@ -1,10 +1,13 @@
 import { EthereumRpcError } from 'eth-rpc-errors';
+import MetaMaskOpenRPCDocument from '@metamask/api-specs';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   isSupportedScopeString,
   isSupportedNotification,
   isValidScope,
 } from './caip-25';
+
+const validRpcMethods = MetaMaskOpenRPCDocument.methods.map(({ name }) => name);
 
 // {
 //   "requiredScopes": {
@@ -134,7 +137,7 @@ async function providerAuthorizeHandler(_req, res, _next, end, _hooks) {
   //   code = 5002
   //   message = "User disapproved requested notifications"
 
-  for (const [scopeString] of Object.entries(validScopes)) {
+  for (const [scopeString, scopeObject] of Object.entries(validScopes)) {
     if (!isSupportedScopeString(scopeString)) {
       // A little awkward. What is considered validation? Currently isValidScope only
       // verifies that the shape of a scopeString and scopeObject is correct, not if it
@@ -150,15 +153,25 @@ async function providerAuthorizeHandler(_req, res, _next, end, _hooks) {
         new EthereumRpcError(5100, 'Requested chains are not supported'),
       );
     }
-  }
 
-  // TODO:
-  // When provider evaluates requested methods to not be supported
-  //   code = 5101
-  //   message = "Requested methods are not supported"
-  // When provider does not recognize one or more requested method(s)
-  //   code = 5201
-  //   message = "Unknown method(s) requested"
+    // Needs to be split by namespace?
+    const allMethodsSupported = scopeObject.methods.every((method) =>
+      validRpcMethods.includes(method),
+    );
+    if (!allMethodsSupported) {
+      // not sure which one of these to use
+      // When provider evaluates requested methods to not be supported
+      //   code = 5101
+      //   message = "Requested methods are not supported"
+      // When provider does not recognize one or more requested method(s)
+      //   code = 5201
+      //   message = "Unknown method(s) requested"
+
+      return end(
+        new EthereumRpcError(5101, 'Requested methods are not supported'),
+      );
+    }
+  }
 
   for (const [, scopeObject] of Object.entries(validScopes)) {
     if (!scopeObject.notifications) {
