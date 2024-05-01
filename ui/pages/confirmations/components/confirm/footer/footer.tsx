@@ -72,7 +72,7 @@ const Footer = () => {
       </Button>
       <Button
         block
-        data-testid="confirm-footer-confirm-button"
+        data-testid="confirm-footer-button"
         onClick={onSubmit}
         size={ButtonSize.Lg}
         disabled={
