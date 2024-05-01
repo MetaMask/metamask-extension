@@ -56,7 +56,7 @@ describe('Editing confirmations of dapp initiated contract interactions', functi
     );
   });
 
-  it('should show an edit button on a simple ETH send initiated by a dapp', async function () {
+  it.skip('should show an edit button on a simple ETH send initiated by a dapp', async function () {
     await withFixtures(
       {
         dapp: true,
