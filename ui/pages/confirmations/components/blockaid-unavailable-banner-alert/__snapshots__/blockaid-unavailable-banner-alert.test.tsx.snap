@@ -1,0 +1,50 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<BlockaidUnavailableBannerAlert /> should not render if user hasn't been migrated to blockaid 1`] = `<div />`;
+
+exports[`<BlockaidUnavailableBannerAlert /> should render if user has been migrated to blockaid 1`] = `
+<div>
+  <div
+    class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-info mm-box--margin-4 mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-primary-muted mm-box--rounded-sm"
+  >
+    <span
+      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-primary-default"
+      style="mask-image: url('./images/icons/info.svg');"
+    />
+    <div
+      class="mm-box mm-box--min-width-0"
+    >
+      <p
+        class="mm-box mm-text mm-text--body-lg-medium mm-box--color-text-default"
+      >
+        Heads up!
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+      >
+        Security alerts are no longer available on this network. Installing a Snap may improve your security.
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+      />
+      <a
+        class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+        href="https://snaps.metamask.io/transaction-insights"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        Explore Snaps
+      </a>
+    </div>
+    <button
+      aria-label="Close"
+      class="mm-box mm-button-icon mm-button-icon--size-sm mm-banner-base__close-button mm-box--margin-left-auto mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+    >
+      <span
+        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+        style="mask-image: url('./images/icons/close.svg');"
+      />
+    </button>
+  </div>
+</div>
+`;

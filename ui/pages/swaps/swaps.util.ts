@@ -49,6 +49,11 @@ const CACHE_REFRESH_FIVE_MINUTES = 300000;
 const USD_CURRENCY_CODE = 'usd';
 
 const clientIdHeader = { 'X-Client-Id': SWAPS_CLIENT_ID };
+const infuraAuthHeader = {
+  Authorization: `Basic ${Buffer.from(
+    `${process.env.INFURA_PROJECT_ID}:`,
+  ).toString('base64')}`,
+};
 
 type Validator = {
   property: string;
@@ -94,6 +99,8 @@ const AGGREGATOR_METADATA_VALIDATORS: Validator[] = [
   },
 ];
 
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isValidDecimalNumber = (string: any): boolean =>
   !isNaN(string) && string.match(/^[.0-9]+$/u) && !isNaN(parseFloat(string));
 
@@ -117,6 +124,8 @@ const SWAP_GAS_PRICE_VALIDATOR: Validator[] = [
 
 export async function fetchToken(
   contractAddress: string,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   chainId: any,
 ): Promise<Json> {
   const tokenUrl = getBaseApi('token', chainId);
@@ -155,6 +164,8 @@ export async function fetchTokens(
   ];
 }
 
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function fetchAggregatorMetadata(chainId: any): Promise<object> {
   const aggregatorMetadataUrl = getBaseApi('aggregatorMetadata', chainId);
   const aggregators = await fetchWithCache({
@@ -163,6 +174,8 @@ export async function fetchAggregatorMetadata(chainId: any): Promise<object> {
     cacheOptions: { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
     functionName: 'fetchAggregatorMetadata',
   });
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const filteredAggregators = {} as any;
   for (const aggKey in aggregators) {
     if (
@@ -178,6 +191,8 @@ export async function fetchAggregatorMetadata(chainId: any): Promise<object> {
   return filteredAggregators;
 }
 
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function fetchTopAssets(chainId: any): Promise<object> {
   const topAssetsUrl = getBaseApi('topAssets', chainId);
   const response =
@@ -188,6 +203,8 @@ export async function fetchTopAssets(chainId: any): Promise<object> {
       cacheOptions: { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
     })) || [];
   const topAssetsMap = response.reduce(
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (_topAssetsMap: any, asset: { address: string }, index: number) => {
       if (validateData(TOP_ASSET_VALIDATORS, asset, topAssetsUrl)) {
         return { ..._topAssetsMap, [asset.address]: { index: String(index) } };
@@ -199,6 +216,8 @@ export async function fetchTopAssets(chainId: any): Promise<object> {
   return topAssetsMap;
 }
 
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function fetchSwapsFeatureFlags(): Promise<any> {
   const v2ApiBaseUrl = process.env.SWAPS_USE_DEV_APIS
     ? SWAPS_DEV_API_V2_BASE_URL
@@ -213,6 +232,8 @@ export async function fetchSwapsFeatureFlags(): Promise<any> {
 
 export async function fetchTokenPrice(
   tokenContractAddress: string,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): Promise<any> {
   const query = `spot-prices?tokenAddresses=${tokenContractAddress}&vsCurrency=eth&includeMarketData=false`;
 
@@ -227,7 +248,11 @@ export async function fetchTokenPrice(
   return prices?.[tokenContractAddress]?.eth;
 }
 
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function fetchSwapsGasPrices(chainId: any): Promise<
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   | any
   | {
       safeLow: string;
@@ -238,7 +263,13 @@ export async function fetchSwapsGasPrices(chainId: any): Promise<
   const gasPricesUrl = getBaseApi('gasPrices', chainId);
   const response = await fetchWithCache({
     url: gasPricesUrl,
-    fetchOptions: { method: 'GET', headers: clientIdHeader },
+    fetchOptions: {
+      method: 'GET',
+      headers: {
+        ...clientIdHeader,
+        ...infuraAuthHeader,
+      },
+    },
     cacheOptions: { cacheRefreshTime: 30000 },
     functionName: 'fetchSwapsGasPrices',
   });
@@ -424,11 +455,15 @@ export function quotesToRenderableData({
   conversionRate: number;
   currentCurrency: string;
   approveGas: string;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tokenConversionRates: Record<string, any>;
   chainId: keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP;
   smartTransactionEstimatedGas: IndividualTxFees;
   nativeCurrencySymbol: string;
   multiLayerL1ApprovalFeeTotal: string | null;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 }): Record<string, any> {
   return Object.values(quotes).map((quote) => {
     const {
@@ -653,7 +688,11 @@ export const getNetworkNameByChainId = (chainId: string): string => {
  * @returns object with 2 items: "swapsFeatureIsLive"
  */
 export const getSwapsLivenessForNetwork = (
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   chainId: any,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   swapsFeatureFlags: any = {},
 ) => {
   const networkName = getNetworkNameByChainId(chainId);
@@ -685,6 +724,8 @@ export const getSwapsLivenessForNetwork = (
  * @param value
  * @returns number
  */
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const countDecimals = (value: any): number => {
   if (!value || Math.floor(value) === value) {
     return 0;
@@ -693,6 +734,8 @@ export const countDecimals = (value: any): number => {
 };
 
 export const showRemainingTimeInMinAndSec = (
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   remainingTimeInSec: any,
 ): string => {
   if (!Number.isInteger(remainingTimeInSec)) {
@@ -711,6 +754,8 @@ export enum StxErrorTypes {
 
 export const getTranslatedStxErrorMessage = (
   errorType: StxErrorTypes,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   t: (...args: any[]) => string,
 ): string => {
   switch (errorType) {

@@ -1,14 +1,15 @@
 import React from 'react';
-import mockState from '../../../../../../test/data/mock-state.json';
-import { fireEvent, renderWithProvider } from '../../../../../../test/jest';
-import * as Actions from '../../../../../store/actions';
-import configureStore from '../../../../../store/store';
 import {
   LedgerTransportTypes,
   WebHIDConnectedStatuses,
 } from '../../../../../../shared/constants/hardware-wallets';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
+import { unapprovedPersonalSignMsg } from '../../../../../../test/data/confirmations/personal_sign';
+import mockState from '../../../../../../test/data/mock-state.json';
+import { fireEvent, renderWithProvider } from '../../../../../../test/jest';
 import * as MMIConfirmations from '../../../../../hooks/useMMIConfirmations';
-
+import * as Actions from '../../../../../store/actions';
+import configureStore from '../../../../../store/store';
 import Footer from './footer';
 
 jest.mock('react-redux', () => ({
@@ -36,8 +37,23 @@ const render = (args = {}) => {
 };
 
 describe('ConfirmFooter', () => {
-  it('should match snapshot', () => {
-    const { container } = render();
+  it('should match snapshot with signature confirmation', () => {
+    const { container } = render({
+      confirm: {
+        currentConfirmation: unapprovedPersonalSignMsg,
+        isScrollToBottomNeeded: false,
+      },
+    });
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should match snapshot with transaction confirmation', () => {
+    const { container } = render({
+      confirm: {
+        currentConfirmation: genUnapprovedContractInteractionConfirmation(),
+        isScrollToBottomNeeded: false,
+      },
+    });
     expect(container).toMatchSnapshot();
   });
 
@@ -54,6 +70,8 @@ describe('ConfirmFooter', () => {
     const cancelButton = getAllByRole('button')[0];
     const rejectSpy = jest
       .spyOn(Actions, 'rejectPendingApproval')
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .mockImplementation(() => ({} as any));
     fireEvent.click(cancelButton);
     expect(rejectSpy).toHaveBeenCalled();
@@ -64,6 +82,8 @@ describe('ConfirmFooter', () => {
     const submitButton = getAllByRole('button')[1];
     const resolveSpy = jest
       .spyOn(Actions, 'resolvePendingApproval')
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .mockImplementation(() => ({} as any));
     fireEvent.click(submitButton);
     expect(resolveSpy).toHaveBeenCalled();

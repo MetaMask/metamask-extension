@@ -51,3 +51,12 @@ privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
 # For now, restricting approvals inside the .devcontainer folder to devs
 # who were involved with the Codespaces project.
 .devcontainer/                       @MetaMask/library-admins @HowardBraham @plasmacorral @brad-decker
+
+# Confirmations UX team to own code for confirmations on UI.
+ui/pages/confirmations               @MetaMask/confirmations-ux @MetaMask/confirmations-system-team
+
+# MMI team is responsible for code related with Institutioanl version of MetaMask
+ui/pages/institutional               @MetaMask/mmi
+ui/components/institutional          @MetaMask/mmi
+ui/ducks/institutional               @MetaMask/mmi
+ui/selectors/institutional           @MetaMask/mmi

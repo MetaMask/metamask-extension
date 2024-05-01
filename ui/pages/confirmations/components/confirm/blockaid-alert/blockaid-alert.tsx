@@ -2,7 +2,10 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { currentConfirmationSelector } from '../../../../../selectors';
-import { SecurityAlertResponse } from '../../../types/confirm';
+import {
+  SecurityAlertResponse,
+  SignatureRequestType,
+} from '../../../types/confirm';
 import BlockaidBannerAlert from '../../security-provider-banner-alert/blockaid-banner-alert';
 
 type SignatureSecurityAlertResponsesState = {
@@ -12,8 +15,10 @@ type SignatureSecurityAlertResponsesState = {
 };
 
 // todo: this component can be deleted once new alert imlementation is added
-const BlockaidAlert = () => {
-  const currentConfirmation = useSelector(currentConfirmationSelector);
+const BlockaidAlert = ({ ...props }) => {
+  const currentConfirmation = useSelector(
+    currentConfirmationSelector,
+  ) as SignatureRequestType;
   const signatureSecurityAlertResponses = useSelector(
     (state: SignatureSecurityAlertResponsesState) =>
       state.metamask.signatureSecurityAlertResponses,
@@ -29,9 +34,12 @@ const BlockaidAlert = () => {
         ...currentConfirmation,
         securityAlertResponse:
           signatureSecurityAlertResponses?.[
+            // TODO: Replace `any` with type
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             currentConfirmation?.securityAlertResponse?.securityAlertId as any
           ],
       }}
+      {...props}
     />
   );
 };

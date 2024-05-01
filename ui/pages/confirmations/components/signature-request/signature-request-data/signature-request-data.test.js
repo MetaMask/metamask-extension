@@ -39,16 +39,6 @@ describe('Signature Request Data', () => {
           type: 'test',
           chainId: '0x5',
         },
-        identities: {
-          '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826': {
-            name: 'Account 1',
-            address: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
-          },
-          '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF': {
-            name: 'Account 2',
-            address: '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF',
-          },
-        },
         internalAccounts: {
           accounts: {
             'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {

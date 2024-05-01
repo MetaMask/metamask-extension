@@ -50,13 +50,15 @@ export const SendPageContent = ({
   // Gas data
   const dispatch = useDispatch();
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSelectToken = async (token: any) => {
     if (token.type === AssetType.native) {
       dispatch(
         updateSendAsset({
           type: token.type,
           details: token,
-          skipComputeEstimatedGasLimit: true,
+          skipComputeEstimatedGasLimit: false,
         }),
       );
     } else {
@@ -67,7 +69,7 @@ export const SendPageContent = ({
             ...token,
             standard: token.standard ?? TokenStandard.ERC20,
           },
-          skipComputeEstimatedGasLimit: true,
+          skipComputeEstimatedGasLimit: false,
         }),
       );
     }

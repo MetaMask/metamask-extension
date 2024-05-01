@@ -1,7 +1,6 @@
+import { ethErrors, serializeError } from 'eth-rpc-errors';
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ethErrors, serializeError } from 'eth-rpc-errors';
-
 import {
   Button,
   ButtonSize,
@@ -9,13 +8,16 @@ import {
 } from '../../../../../components/component-library';
 import { Footer as PageFooter } from '../../../../../components/multichain/pages/page';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { useMMIConfirmations } from '../../../../../hooks/useMMIConfirmations';
+///: END:ONLY_INCLUDE_IF
 import { doesAddressRequireLedgerHidConnection } from '../../../../../selectors';
 import {
   rejectPendingApproval,
   resolvePendingApproval,
 } from '../../../../../store/actions';
 import { confirmSelector } from '../../../selectors';
+import { getConfirmationSender } from '../utils';
 
 const Footer = () => {
   const t = useI18nContext();
@@ -25,11 +27,8 @@ const Footer = () => {
   const { mmiOnSignCallback, mmiSubmitDisabled } = useMMIConfirmations();
   ///: END:ONLY_INCLUDE_IF
 
-  let from: string | undefined;
-  // todo: extend to other confirmation types
-  if (currentConfirmation?.msgParams) {
-    from = currentConfirmation?.msgParams?.from;
-  }
+  const { from } = getConfirmationSender(currentConfirmation);
+
   const hardwareWalletRequiresConnection = useSelector((state) => {
     if (from) {
       return doesAddressRequireLedgerHidConnection(state, from);
@@ -62,7 +61,7 @@ const Footer = () => {
   }, [currentConfirmation]);
 
   return (
-    <PageFooter>
+    <PageFooter className="confirm-footer_page-footer">
       <Button
         block
         onClick={onCancel}

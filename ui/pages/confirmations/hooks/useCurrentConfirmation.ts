@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-
 import { ApprovalRequest } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
+import { TransactionType } from '@metamask/transaction-controller';
 import { Json } from '@metamask/utils';
-
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import {
+  getRedesignedConfirmationsEnabled,
   latestPendingConfirmationSelector,
   pendingConfirmationsSelector,
   unconfirmedTransactionsHashSelector,
@@ -27,8 +27,17 @@ const useCurrentConfirmation = () => {
   );
   const [currentConfirmation, setCurrentConfirmation] =
     useState<Record<string, unknown>>();
+  const redesignedConfirmationsEnabled = useSelector(
+    getRedesignedConfirmationsEnabled,
+  );
 
   useEffect(() => {
+    if (
+      !process.env.ENABLE_CONFIRMATION_REDESIGN ||
+      !redesignedConfirmationsEnabled
+    ) {
+      return;
+    }
     let pendingConfirmation: Approval | undefined;
     if (paramsTransactionId) {
       if (paramsTransactionId === currentConfirmation?.id) {
@@ -54,20 +63,15 @@ const useCurrentConfirmation = () => {
       }
       if (
         pendingConfirmation.type !== ApprovalType.PersonalSign &&
-        pendingConfirmation.type !== ApprovalType.EthSignTypedData
+        pendingConfirmation.type !== ApprovalType.EthSignTypedData &&
+        unconfirmedTransaction.type !== TransactionType.contractInteraction
       ) {
+        setCurrentConfirmation(undefined);
         return;
       }
       if (pendingConfirmation.type === ApprovalType.PersonalSign) {
         const { siwe } = unconfirmedTransaction.msgParams;
         if (siwe?.isSIWEMessage) {
-          setCurrentConfirmation(undefined);
-          return;
-        }
-      }
-      if (pendingConfirmation.type === ApprovalType.EthSignTypedData) {
-        const { version } = unconfirmedTransaction.msgParams;
-        if (version !== 'V3' && version !== 'V4') {
           setCurrentConfirmation(undefined);
           return;
         }
