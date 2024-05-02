@@ -8,7 +8,7 @@ import { getNativeCurrency } from '../ducks/metamask/metamask';
 
 import { PRIMARY, SECONDARY } from '../helpers/constants/common';
 import { EtherDenomination } from '../../shared/constants/common';
-import { ETH_DEFAULT_DECIMALS } from '../pages/confirmations/constants';
+import { ETH_DEFAULT_DECIMALS } from '../constants';
 
 /**
  * Defines the shape of the options parameter for useUserPreferencedCurrency
