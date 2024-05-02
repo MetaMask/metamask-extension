@@ -45,5 +45,7 @@
   "tx-insights.metaswap.codefi.network",
   "tx-sentinel-ethereum-mainnet.api.cx.metamask.io",
   "unresponsive-rpc.url",
-  "www.4byte.directory"
+  "www.4byte.directory",
+  "authentication.api.cx.metamask.io",
+  "oidc.api.cx.metamask.io"
 ]
