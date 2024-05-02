@@ -62,16 +62,10 @@ export class MMIAccountMenuPage {
     }
 
     const custodian = await getCustodianInfoByName(name);
-
-    const buttonText = await this.page
-    .getByRole('list')
-    .locator('div')
-    .filter({ hasText: `${custodian[0].name}` })
-    .first()
-    .textContent();
-
-  console.log(buttonText);
-
+    const { MMI_E2E_MMI_CONFIG_URL } = process.env;
+console.log(
+  MMI_E2E_MMI_CONFIG_URL
+)
     await this.page
       .getByRole('list')
       .locator('div')
