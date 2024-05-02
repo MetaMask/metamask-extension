@@ -241,6 +241,7 @@ export const SENTRY_BACKGROUND_STATE = {
     useTokenDetection: true,
     useRequestQueue: true,
     useTransactionSimulations: true,
+    enableMV3TimestampSave: true,
     hasDismissedOpenSeaToBlockaidBanner: true,
   },
   SelectedNetworkController: { domains: false },
