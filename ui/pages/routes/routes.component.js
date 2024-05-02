@@ -139,6 +139,15 @@ import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/Dep
 import { getURLHost } from '../../helpers/utils/util';
 import { BorderColor } from '../../helpers/constants/design-system';
 import { MILLISECOND } from '../../../shared/constants/time';
+import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/multichain-meta-fox-logo';
+
+const isConfirmTransactionRoute = (pathname) =>
+  Boolean(
+    matchPath(pathname, {
+      path: CONFIRM_TRANSACTION_ROUTE,
+      exact: false,
+    }),
+  );
 
 export default class Routes extends Component {
   static propTypes = {
@@ -601,7 +610,11 @@ export default class Routes extends Component {
       }),
     );
 
-    return isHandlingPermissionsRequest || isHandlingAddEthereumChainRequest;
+    return (
+      isHandlingPermissionsRequest ||
+      isHandlingAddEthereumChainRequest ||
+      isConfirmTransactionRoute(this.pathname)
+    );
   }
 
   showOnboardingHeader() {
@@ -731,6 +744,7 @@ export default class Routes extends Component {
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
         {!this.hideAppHeader() && <AppHeader location={location} />}
+        {isConfirmTransactionRoute(this.pathname) && <MultichainMetaFoxLogo />}
         {this.showOnboardingHeader() && <OnboardingAppHeader />}
         {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -822,6 +836,7 @@ export default class Routes extends Component {
                   size={AvatarAccountSize.Md}
                   borderColor={BorderColor.transparent}
                   src={switchedNetworkDetails?.imageUrl}
+                  name={switchedNetworkDetails?.nickname}
                 />
               }
               text={this.context.t('switchedNetworkToastMessage', [
