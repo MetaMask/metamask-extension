@@ -13,11 +13,11 @@ import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 
 describe('Personal Sign', function (this: Suite) {
-  it('initiates and confirms', async function () {
-    if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
-      return;
-    }
+  if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
+    return;
+  }
 
+  it('initiates and confirms', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -66,6 +66,12 @@ async function assertVerifiedPersonalMessage(driver: Driver, publicAddress: stri
   const verifySigUtil = await driver.findElement(
     '#personalSignVerifySigUtilResult',
   );
+
+  await driver.waitForSelector({
+    css: '#personalSignVerifyECRecoverResult',
+    text: publicAddress,
+  });
+
   const verifyECRecover = await driver.findElement(
     '#personalSignVerifyECRecoverResult',
   );
