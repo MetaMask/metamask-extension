@@ -44,6 +44,17 @@ export const SENTRY_BACKGROUND_STATE = {
   AuthenticationController: {
     isSignedIn: false,
   },
+  UserStorageController: {
+    isProfileSyncingEnabled: true,
+  },
+  MetamaskNotificationsController: {
+    isFeatureAnnouncementsEnabled: false,
+    isMetamaskNotificationsEnabled: false,
+    isMetamaskNotificationsFeatureSeen: false,
+    isSnapNotificationsEnabled: false,
+    metamaskNotificationsList: [],
+    metamaskNotificationsReadList: [],
+  },
   AccountsController: {
     internalAccounts: {
       accounts: false,
@@ -114,17 +125,6 @@ export const SENTRY_BACKGROUND_STATE = {
     timeoutMinutes: true,
     trezorModel: true,
     usedNetworks: true,
-  },
-  MetamaskNotificationsController: {
-    isFeatureAnnouncementsEnabled: false,
-    isMetamaskNotificationsEnabled: false,
-    isMetamaskNotificationsFeatureSeen: false,
-    isSnapNotificationsEnabled: false,
-    metamaskNotificationsList: [],
-    metamaskNotificationsReadList: [],
-  },
-  UserStorageController: {
-    isProfileSyncingEnabled: true,
   },
   CronjobController: {
     jobs: false,
