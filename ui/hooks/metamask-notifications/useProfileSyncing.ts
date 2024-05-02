@@ -49,7 +49,7 @@ export function useEnableProfileSyncing(): {
 
   const enableProfileSyncing = useCallback(async () => {
     setLoading(true);
-    showLoadingIndication();
+    dispatch(showLoadingIndication());
     setError(null);
 
     try {
@@ -70,11 +70,11 @@ export function useEnableProfileSyncing(): {
       setError(errorMessage);
     } finally {
       setLoading(false);
-      hideLoadingIndication();
+      dispatch(hideLoadingIndication());
     }
 
     setLoading(false);
-    hideLoadingIndication();
+    dispatch(hideLoadingIndication());
   }, [dispatch, isSignedIn]);
 
   return { enableProfileSyncing, loading, error };
@@ -108,7 +108,7 @@ export function useDisableProfileSyncing(): {
 
   const disableProfileSyncing = useCallback(async () => {
     setLoading(true);
-    showLoadingIndication();
+    dispatch(showLoadingIndication());
     setError(null);
 
     try {
@@ -132,11 +132,11 @@ export function useDisableProfileSyncing(): {
       setError(errorMessage);
     } finally {
       setLoading(false);
-      hideLoadingIndication();
+      dispatch(hideLoadingIndication());
     }
 
     setLoading(false);
-    hideLoadingIndication();
+    dispatch(hideLoadingIndication());
   }, [dispatch, isSignedIn, isMetamaskNotificationsEnabled]);
 
   return { disableProfileSyncing, loading, error };

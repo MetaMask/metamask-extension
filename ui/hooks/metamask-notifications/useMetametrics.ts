@@ -32,7 +32,7 @@ export function useEnableMetametrics(): {
 
   const enableMetametrics = useCallback(async () => {
     setLoading(true);
-    showLoadingIndication();
+    dispatch(showLoadingIndication());
     setError(null);
 
     try {
@@ -45,11 +45,11 @@ export function useEnableMetametrics(): {
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');
     } finally {
       setLoading(false);
-      hideLoadingIndication();
+      dispatch(hideLoadingIndication());
     }
 
     setLoading(false);
-    hideLoadingIndication();
+    dispatch(hideLoadingIndication());
   }, [dispatch, isUserSignedIn]);
 
   return {
@@ -78,7 +78,7 @@ export function useDisableMetametrics(): {
 
   const disableMetametrics = useCallback(async () => {
     setLoading(true);
-    showLoadingIndication();
+    dispatch(showLoadingIndication());
     setError(null);
 
     try {
@@ -91,11 +91,11 @@ export function useDisableMetametrics(): {
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');
     } finally {
       setLoading(false);
-      hideLoadingIndication();
+      dispatch(hideLoadingIndication());
     }
 
     setLoading(false);
-    hideLoadingIndication();
+    dispatch(hideLoadingIndication());
   }, [dispatch, isProfileSyncingEnabled]);
 
   return {

@@ -29,11 +29,11 @@ const MetametricsToggle = () => {
   const participateInMetaMetrics = useSelector(selectParticipateInMetaMetrics);
 
   const handleUseParticipateInMetaMetrics = async () => {
-    if (isProfileSyncingEnabled) {
+    if (participateInMetaMetrics) {
       await disableMetametrics();
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.TurnOnMetaMetrics,
+        event: MetaMetricsEventName.TurnOffMetaMetrics,
         properties: {
           isProfileSyncingEnabled,
           participateInMetaMetrics,

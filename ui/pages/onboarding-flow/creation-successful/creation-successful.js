@@ -110,7 +110,7 @@ export default function CreationSuccessful() {
           type="primary"
           large
           rounded
-          onClick={async () => {
+          onClick={() => {
             trackEvent({
               category: MetaMetricsEventCategory.Onboarding,
               event: MetaMetricsEventName.OnboardingWalletCreationComplete,
@@ -129,7 +129,7 @@ export default function CreationSuccessful() {
                 },
               });
             }
-            await createSession();
+            createSession();
             history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
           }}
         >
