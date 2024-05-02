@@ -63,17 +63,16 @@ export class MMIAccountMenuPage {
 
     const custodian = await getCustodianInfoByName(name);
 
-    console.log(custodian)
+    if (qrCode) {
 
-    await this.page
+      await this.page
       .getByRole('list')
       .locator('div')
-      .filter({ hasText: `${custodian[0].name}` })
+      .filter({ hasText: `${custodian[0].name} Dev` })
       .first()
       .getByTestId('custody-connect-button')
       .click();
 
-    if (qrCode) {
       const spanElement = await this.page.$('span.hidden');
 
       if (spanElement) {
@@ -92,6 +91,14 @@ export class MMIAccountMenuPage {
         await this.page.getByRole('button', { name: /close/iu }).first().click();
       }
     } else {
+      await this.page
+      .getByRole('list')
+      .locator('div')
+      .filter({ hasText: `${custodian[0].name}` })
+      .first()
+      .getByTestId('custody-connect-button')
+      .click();
+
       await expect(
         this.page.getByText(/connect saturn custody accounts/iu),
       ).toBeVisible();
