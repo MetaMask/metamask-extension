@@ -822,6 +822,7 @@ export default class Routes extends Component {
                   size={AvatarAccountSize.Md}
                   borderColor={BorderColor.transparent}
                   src={switchedNetworkDetails?.imageUrl}
+                  name={switchedNetworkDetails?.nickname}
                 />
               }
               text={this.context.t('switchedNetworkToastMessage', [
