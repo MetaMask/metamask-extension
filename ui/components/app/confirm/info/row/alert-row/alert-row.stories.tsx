@@ -78,7 +78,7 @@ AlertRowCritical.args = {
   label: LABEL_FROM_MOCK,
   children: 'Value',
   alertKey: LABEL_FROM_MOCK,
-  alertOwnerId: OWNER_ID_MOCK,
+  ownerId: OWNER_ID_MOCK,
   variant: ConfirmInfoRowVariant.Critical,
 };
 
@@ -90,7 +90,7 @@ AlertRowWarning.args = {
   label: LABEL_FROM_MOCK,
   children: 'Value',
   alertKey: LABEL_FROM_MOCK,
-  alertOwnerId: OWNER_ID_MOCK,
+  ownerId: OWNER_ID_MOCK,
   variant: ConfirmInfoRowVariant.Warning,
 };
 
@@ -102,5 +102,5 @@ AlertRowInformative.args = {
   label: LABEL_FROM_MOCK,
   children: 'Value',
   alertKey: LABEL_FROM_MOCK,
-  alertOwnerId: OWNER_ID_MOCK,
+  ownerId: OWNER_ID_MOCK,
 };
