@@ -1444,6 +1444,17 @@ export default class MetamaskController extends EventEmitter {
         state: initState.PushPlatformNotificationsController,
       });
 
+    const test = async () => {
+      try {
+        console.log('AUTH: START TEST');
+        const x = await this.authenticationController.getPublicKey();
+        console.log('AUTH: ', x);
+      } catch (e) {
+        console.error('AUTH: UNABLE TO TEST', e);
+      }
+    };
+    test();
+
     // account tracker watches balances, nonces, and any code at their address
     this.accountTracker = new AccountTracker({
       provider: this.provider,

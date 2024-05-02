@@ -162,6 +162,11 @@ export default class AuthenticationController extends BaseController<
     });
   }
 
+  public async getPublicKey() {
+    const key = await this.#snapGetPublicKey();
+    return key;
+  }
+
   public async getBearerToken(): Promise<string> {
     this.#assertLoggedIn();
 
