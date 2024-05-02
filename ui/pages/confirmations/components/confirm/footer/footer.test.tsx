@@ -138,7 +138,7 @@ describe('ConfirmFooter', () => {
     expect(mockFn).toHaveBeenCalledTimes(1);
   });
 
-  describe('AlertReviewButton', () => {
+  describe('ConfirmButton', () => {
     const OWNER_ID_MOCK = '123';
     const KEY_ALERT_KEY_MOCK = 'Key';
     const ALERT_MESSAGE_MOCK = 'Alert 1';
@@ -169,19 +169,19 @@ describe('ConfirmFooter', () => {
         },
       },
     };
-    it('renders the ReviewAlertButton when there are unconfirmed alerts', () => {
-      const { getByTestId } = render(stateWithAlertsMock);
-      expect(getByTestId('review-alert-button')).toBeDefined();
+    it('renders the review alerts button when there are unconfirmed alerts', () => {
+      const { getByText } = render(stateWithAlertsMock);
+      expect(getByText('Review alerts')).toBeInTheDocument();
     });
 
-    it('does not render the ReviewAlertButton when there are no unconfirmed alerts', () => {
-      const { queryByTestId } = render();
-      expect(queryByTestId('review-alert-button')).toBeNull();
+    it('renders the confirm button when there are no unconfirmed alerts', () => {
+      const { getByText } = render();
+      expect(getByText('Confirm')).toBeInTheDocument();
     });
 
-    it('sets the alert modal visible when the ReviewAlertButton is clicked', () => {
+    it('sets the alert modal visible when the review alerts button is clicked', () => {
       const { getByTestId } = render(stateWithAlertsMock);
-      fireEvent.click(getByTestId('review-alert-button'));
+      fireEvent.click(getByTestId('confirm-footer-confirm-button'));
       expect(getByTestId('alert-modal-button')).toBeDefined();
     });
   });

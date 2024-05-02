@@ -16,7 +16,7 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { getSeverityBackground } from '../alert-utils';
+import { getSeverityBackground } from '../utils';
 
 export type InlineAlertProps = {
   /** The onClick handler for the inline alerts */

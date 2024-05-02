@@ -2,7 +2,7 @@ import {
   BackgroundColor,
   Severity,
 } from '../../../../helpers/constants/design-system';
-import { getSeverityBackground } from './alert-utils';
+import { getSeverityBackground } from './utils';
 
 describe('getSeverityBackground', () => {
   it('returns the correct background color for Danger severity', () => {

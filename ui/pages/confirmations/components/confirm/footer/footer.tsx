@@ -25,79 +25,76 @@ import {
   BackgroundColor,
   Severity,
 } from '../../../../../helpers/constants/design-system';
-import { getSeverityBackground } from '../../../../../components/app/confirmations/alerts/alert-utils';
+import { getSeverityBackground } from '../../../../../components/app/confirmations/alerts/utils';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 
-function ReviewAlertButton({
-  backgroundColor,
-  setAlertModalVisible,
-}: {
-  backgroundColor: BackgroundColor;
-  setAlertModalVisible: (visible: boolean) => void;
-}) {
-  const t = useI18nContext();
-  return (
-    <Button
-      block
-      backgroundColor={backgroundColor}
-      onClick={() => setAlertModalVisible(true)}
-      startIconName={IconName.SecuritySearch}
-      size={ButtonSize.Lg}
-      data-testid="review-alert-button"
-    >
-      {t('reviewAlerts')}
-    </Button>
-  );
+function getSeverityStyle(alerts: Alert[]): BackgroundColor {
+  let severity = Severity.Info;
+  alerts.forEach((alert) => {
+    if (alert.severity === Severity.Danger) {
+      severity = Severity.Danger;
+    } else if (
+      alert.severity === Severity.Warning &&
+      severity !== Severity.Danger
+    ) {
+      severity = Severity.Warning;
+    }
+  });
+  return getSeverityBackground(severity);
 }
 
-function ConfirmFooterButton({
-  hasUnconfirmedAlerts,
-  unconfirmedAlerts,
-  setAlertModalVisible,
-  onSubmit,
+function ConfirmButton({
+  alertOwnerId = '',
   disabled,
+  onSubmit,
 }: {
-  hasUnconfirmedAlerts: boolean;
-  unconfirmedAlerts: Alert[];
-  setAlertModalVisible: (visible: boolean) => void;
-  onSubmit: () => void;
+  alertOwnerId?: string;
   disabled: boolean;
+  onSubmit: () => void;
 }) {
   const t = useI18nContext();
+  const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
+  const { alerts, isAlertConfirmed } = useAlerts(alertOwnerId);
+  const unconfirmedAlerts = alerts.filter(
+    (alert) => alert.field && !isAlertConfirmed(alert.key),
+  );
+  const hasAlerts = alerts.length > 0;
+  const hasUnconfirmedAlerts = unconfirmedAlerts.length > 0;
 
-  function severityStyle() {
-    let severity = Severity.Info;
-    unconfirmedAlerts.forEach((alert) => {
-      if (alert.severity === Severity.Danger) {
-        severity = Severity.Danger;
-      } else if (
-        alert.severity === Severity.Warning &&
-        severity !== Severity.Danger
-      ) {
-        severity = Severity.Warning;
-      }
-    });
-    return getSeverityBackground(severity);
-  }
+  const handleCloseModal = () => {
+    setAlertModalVisible(false);
+  };
 
-  return hasUnconfirmedAlerts ? (
-    <ReviewAlertButton
-      backgroundColor={severityStyle()}
-      setAlertModalVisible={setAlertModalVisible}
-    />
-  ) : (
-    <Button
-      block
-      data-testid="confirm-footer-confirm-button"
-      onClick={onSubmit}
-      backgroundColor={
-        hasUnconfirmedAlerts ? severityStyle() : BackgroundColor.primaryDefault
-      }
-      size={ButtonSize.Lg}
-      disabled={disabled}
-    >
-      {t('confirm')}
-    </Button>
+  const handleOpenModal = () => {
+    setAlertModalVisible(true);
+  };
+
+  return (
+    <>
+      {alertModalVisible ? (
+        <MultipleAlertModal
+          alertKey={alerts[0]?.key}
+          ownerId={alertOwnerId}
+          onFinalAcknowledgeClick={handleCloseModal}
+          onClose={handleCloseModal}
+        />
+      ) : null}
+      <Button
+        block
+        data-testid="confirm-footer-confirm-button"
+        startIconName={
+          hasUnconfirmedAlerts ? IconName.SecuritySearch : undefined
+        }
+        onClick={hasUnconfirmedAlerts ? handleOpenModal : onSubmit}
+        backgroundColor={
+          hasAlerts ? getSeverityStyle(alerts) : BackgroundColor.primaryDefault
+        }
+        size={ButtonSize.Lg}
+        disabled={hasUnconfirmedAlerts ? false : disabled}
+      >
+        {hasUnconfirmedAlerts ? t('reviewAlerts') : t('confirm')}
+      </Button>
+    </>
   );
 }
 
@@ -117,18 +114,6 @@ const Footer = () => {
     }
     return false;
   });
-
-  const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
-  const alertOwnerId = currentConfirmation?.id as string;
-  const { alerts, isAlertConfirmed } = useAlerts(alertOwnerId);
-  const unconfirmedAlerts = alerts.filter(
-    (alert) => alert.field && !isAlertConfirmed(alert.key),
-  );
-  const hasUnconfirmedAlerts = unconfirmedAlerts.length > 0;
-
-  const handleCloseModal = useCallback(() => {
-    setAlertModalVisible(false);
-  }, []);
 
   const dispatch = useDispatch();
 
@@ -165,18 +150,8 @@ const Footer = () => {
       >
         {t('cancel')}
       </Button>
-      {alertModalVisible ? (
-        <MultipleAlertModal
-          alertKey={unconfirmedAlerts[0]?.key}
-          ownerId={alertOwnerId}
-          onFinalAcknowledgeClick={handleCloseModal}
-          onClose={handleCloseModal}
-        />
-      ) : null}
-      <ConfirmFooterButton
-        hasUnconfirmedAlerts={hasUnconfirmedAlerts}
-        unconfirmedAlerts={unconfirmedAlerts}
-        setAlertModalVisible={setAlertModalVisible}
+      <ConfirmButton
+        alertOwnerId={currentConfirmation?.id}
         onSubmit={onSubmit}
         disabled={
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
