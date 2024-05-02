@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import FixtureBuilder from '../../../fixture-builder';
+const FixtureBuilder = require('../../../fixture-builder');
 import { Ganache } from '../../../seeder/ganache';
 import {
   DAPP_URL_WITHOUT_SCHEMA,
