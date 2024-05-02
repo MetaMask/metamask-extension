@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-// @ts-expect-error
+// @ts-expect-error: No available type definitions for module 'qrcode.react'
 import QRCode from 'qrcode.react';
 import { v4 as uuid } from 'uuid';
 import { captureException } from '@sentry/browser';
