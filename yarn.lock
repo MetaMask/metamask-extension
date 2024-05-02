@@ -4768,13 +4768,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "@metamask/base-controller@npm:5.0.1"
+"@metamask/base-controller@npm:^5.0.1, @metamask/base-controller@npm:^5.0.2":
+  version: 5.0.2
+  resolution: "@metamask/base-controller@npm:5.0.2"
   dependencies:
     "@metamask/utils": "npm:^8.3.0"
     immer: "npm:^9.0.6"
-  checksum: 62fe2c0047ea5ae88821ab6bf3e2d72f1b732a9157cd0632a4309721fe84b7e07c21ecdbf24eebfc742d00a53963e9b72bc1bc45540ce1075cf5407cec50d8a2
+  checksum: f9c142766d8cdb69c0cc93aa5cfdaeae97a8c126a5f30f75d31bfdebbc57e82574dc5a3743eceb9e3106d182d066d1517fb73991bb2d06d861d25fd1dac87dcc
   languageName: node
   linkType: hard
 
@@ -5798,7 +5798,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-controller@npm:^8.0.1, @metamask/phishing-controller@npm:^8.0.2":
+"@metamask/phishing-controller@npm:^8.0.1":
   version: 8.0.2
   resolution: "@metamask/phishing-controller@npm:8.0.2"
   dependencies:
@@ -5811,16 +5811,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-controller@npm:^9.0.1":
-  version: 9.0.1
-  resolution: "@metamask/phishing-controller@npm:9.0.1"
+"@metamask/phishing-controller@npm:^9.0.1, @metamask/phishing-controller@npm:^9.0.2":
+  version: 9.0.2
+  resolution: "@metamask/phishing-controller@npm:9.0.2"
   dependencies:
-    "@metamask/base-controller": "npm:^5.0.1"
-    "@metamask/controller-utils": "npm:^9.0.1"
+    "@metamask/base-controller": "npm:^5.0.2"
+    "@metamask/controller-utils": "npm:^9.1.0"
     "@types/punycode": "npm:^2.1.0"
     eth-phishing-detect: "npm:^1.2.0"
     punycode: "npm:^2.1.1"
-  checksum: 6fc1c75e58f187a12eb042cb6c7f41a5c038e0fcf71d1e18f6b428f971c74961551b208fcd79885d7002b5ef5158264592cf0bb859018bacf7048a5fb6db25f3
+  checksum: 2a1fa922502a42e831567ac3965489e1b61b75fc5bcd1619b417ee3747b98ab3a1381a17b68b70a121154667858ca666c91bf1c1743892640b6f1f3d221e2bde
   languageName: node
   linkType: hard
 
@@ -25536,7 +25536,7 @@ __metadata:
     "@metamask/obs-store": "npm:^8.1.0"
     "@metamask/permission-controller": "npm:^9.0.1"
     "@metamask/permission-log-controller": "npm:^1.0.0"
-    "@metamask/phishing-controller": "npm:^8.0.2"
+    "@metamask/phishing-controller": "npm:^9.0.2"
     "@metamask/phishing-warning": "npm:^3.0.3"
     "@metamask/post-message-stream": "npm:^8.0.0"
     "@metamask/ppom-validator": "npm:^0.29.0"
@@ -25804,7 +25804,7 @@ __metadata:
     ts-node: "npm:^10.9.2"
     tsx: "npm:^4.7.1"
     ttest: "npm:^2.1.1"
-    typescript: "npm:~5.3.3"
+    typescript: "npm:~5.4.5"
     unicode-confusables: "npm:^0.1.1"
     uuid: "npm:^8.3.2"
     vinyl: "npm:^2.2.1"
@@ -34458,23 +34458,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.0.4, typescript@npm:^5.2.2, typescript@npm:~5.3.3":
-  version: 5.3.3
-  resolution: "typescript@npm:5.3.3"
+"typescript@npm:^5.0.4, typescript@npm:^5.2.2, typescript@npm:~5.4.5":
+  version: 5.4.5
+  resolution: "typescript@npm:5.4.5"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 6e4e6a14a50c222b3d14d4ea2f729e79f972fa536ac1522b91202a9a65af3605c2928c4a790a4a50aa13694d461c479ba92cedaeb1e7b190aadaa4e4b96b8e18
+  checksum: d04a9e27e6d83861f2126665aa8d84847e8ebabcea9125b9ebc30370b98cb38b5dff2508d74e2326a744938191a83a69aa9fddab41f193ffa43eabfdf3f190a5
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A^5.0.4#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.2.2#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A~5.3.3#optional!builtin<compat/typescript>":
-  version: 5.3.3
-  resolution: "typescript@patch:typescript@npm%3A5.3.3#optional!builtin<compat/typescript>::version=5.3.3&hash=e012d7"
+"typescript@patch:typescript@npm%3A^5.0.4#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.2.2#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A~5.4.5#optional!builtin<compat/typescript>":
+  version: 5.4.5
+  resolution: "typescript@patch:typescript@npm%3A5.4.5#optional!builtin<compat/typescript>::version=5.4.5&hash=e012d7"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: c93786fcc9a70718ba1e3819bab56064ead5817004d1b8186f8ca66165f3a2d0100fee91fa64c840dcd45f994ca5d615d8e1f566d39a7470fc1e014dbb4cf15d
+  checksum: 584be8bac7112ad49a9eb9992f71d542b1ff2fafb5bb315e1c196145e8feab589f1d7223cfb2d5df6770789582e6918f8287d1f2f89911b38eb80e29c560ad00
   languageName: node
   linkType: hard
 
