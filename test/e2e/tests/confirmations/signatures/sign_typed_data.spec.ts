@@ -33,9 +33,9 @@ describe('Sign Typed Data', function (this: Suite) {
         ganacheOptions: defaultGanacheOptions,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, ganacheServer }: { driver: Driver, ganacheServer: typeof Ganache }) => {
+      async ({ driver, ganacheServer }: { driver: Driver, ganacheServer: Ganache }) => {
         const addresses = await ganacheServer.getAccounts();
-        const publicAddress = addresses[0] as string;
+        const publicAddress = addresses?.[0] as string;
 
         await unlockWallet(driver);
         await openDapp(driver);
