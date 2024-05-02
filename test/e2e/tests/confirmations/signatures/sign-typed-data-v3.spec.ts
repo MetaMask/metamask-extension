@@ -45,20 +45,20 @@ describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
           WINDOW_TITLES.Dialog
         );
 
-        const origin = driver.isElementPresent({
+        const origin = driver.findElement({
           text: DAPP_URL_WITHOUT_SCHEMA,
         });
-        const contractPetName = driver.isElementPresent({
+        const contractPetName = driver.findElement({
           css: '.name__value',
           text: '0xCcCCc...ccccC',
         });
 
-        const primaryType = driver.isElementPresent({ text: 'Mail' });
-        const fromName = driver.isElementPresent({ text: 'Cow' });
-        const fromAddress = driver.isElementPresent({ css: '.name__value', text: '0xCD2a3...DD826' });
-        const toName = driver.isElementPresent({ text: 'Bob' });
-        const toAddress = driver.isElementPresent({ css: '.name__value', text: '0xbBbBB...bBBbB' });
-        const contents = driver.isElementPresent({ text: 'Hello, Bob!' });
+        const primaryType = driver.findElement({ text: 'Mail' });
+        const fromName = driver.findElement({ text: 'Cow' });
+        const fromAddress = driver.findElement({ css: '.name__value', text: '0xCD2a3...DD826' });
+        const toName = driver.findElement({ text: 'Bob' });
+        const toAddress = driver.findElement({ css: '.name__value', text: '0xbBbBB...bBBbB' });
+        const contents = driver.findElement({ text: 'Hello, Bob!' });
 
         assert.ok(await origin, 'origin');
         assert.ok(await contractPetName, 'contractPetName');
