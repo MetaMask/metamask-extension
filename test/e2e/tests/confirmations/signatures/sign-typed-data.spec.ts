@@ -1,7 +1,6 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import FixtureBuilder from '../../../fixture-builder';
-import { Ganache } from '../../../seeder/ganache';
 import {
   DAPP_URL_WITHOUT_SCHEMA,
   WINDOW_TITLES,
@@ -10,6 +9,7 @@ import {
   openDapp,
   unlockWallet,
 } from '../../../helpers';
+import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 
 describe('Sign Typed Data', function (this: Suite) {
