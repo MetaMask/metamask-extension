@@ -62,9 +62,7 @@ export class MMIAccountMenuPage {
     }
 
     const custodian = await getCustodianInfoByName(name);
-console.log(
-  custodian
-)
+
     await this.page
       .getByRole('list')
       .locator('div')
