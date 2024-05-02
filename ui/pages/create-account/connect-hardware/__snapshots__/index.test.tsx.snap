@@ -38,6 +38,7 @@ exports[`ConnectHardwareForm should match snapshot 1`] = `
     >
       <button
         class="hw-connect__btn"
+        data-testid="connect-ledger-btn"
       >
         <svg
           aria-label="Ledger"
@@ -54,6 +55,7 @@ exports[`ConnectHardwareForm should match snapshot 1`] = `
       </button>
       <button
         class="hw-connect__btn"
+        data-testid="connect-trezor-btn"
       >
         <svg
           aria-label="Trezor"
@@ -75,6 +77,7 @@ exports[`ConnectHardwareForm should match snapshot 1`] = `
     >
       <button
         class="hw-connect__btn"
+        data-testid="connect-lattice-btn"
       >
         <svg
           aria-label="Lattice"
@@ -93,6 +96,7 @@ exports[`ConnectHardwareForm should match snapshot 1`] = `
       </button>
       <button
         class="hw-connect__btn"
+        data-testid="connect-qr-btn"
       >
         <svg
           aria-label="QRCode"

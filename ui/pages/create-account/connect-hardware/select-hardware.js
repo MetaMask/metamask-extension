@@ -66,10 +66,10 @@ export default class SelectHardware extends Component {
               { vendorId: 0x1209, productId: 0x53c1 },
             ],
           });
-          this.setState({ trezorRequestDevicePending: false });
         } catch (e) {
-          this.setState({ trezorRequestDevicePending: false });
           throw e;
+        } finally {
+          this.setState({ trezorRequestDevicePending: false });
         }
       }
 
@@ -81,6 +81,7 @@ export default class SelectHardware extends Component {
   renderConnectToTrezorButton() {
     return (
       <button
+        data-testid="connect-trezor-btn"
         className={classnames('hw-connect__btn', {
           selected: this.state.selectedDevice === HardwareDeviceNames.trezor,
         })}
@@ -96,6 +97,7 @@ export default class SelectHardware extends Component {
   renderConnectToLatticeButton() {
     return (
       <button
+        data-testid="connect-lattice-btn"
         className={classnames('hw-connect__btn', {
           selected: this.state.selectedDevice === HardwareDeviceNames.lattice,
         })}
@@ -111,6 +113,7 @@ export default class SelectHardware extends Component {
   renderConnectToLedgerButton() {
     return (
       <button
+        data-testid="connect-ledger-btn"
         className={classnames('hw-connect__btn', {
           selected: this.state.selectedDevice === HardwareDeviceNames.ledger,
         })}
@@ -126,6 +129,7 @@ export default class SelectHardware extends Component {
   renderConnectToQRButton() {
     return (
       <button
+        data-testid="connect-qr-btn"
         className={classnames('hw-connect__btn', {
           selected: this.state.selectedDevice === HardwareDeviceNames.qr,
         })}

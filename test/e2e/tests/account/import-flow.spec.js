@@ -377,7 +377,7 @@ describe('Import flow @no-mmi', function () {
     );
   });
 
-  it('Connects to a Hardware wallet for trezor', async function () {
+  it('Connects to a Hardware wallet for lattice', async function () {
     if (process.env.ENABLE_MV3) {
       // Hardware wallets not supported in MV3 build yet
       this.skip();
@@ -401,11 +401,18 @@ describe('Import flow @no-mmi', function () {
           text: 'Add hardware wallet',
           tag: 'button',
         });
-        await driver.delay(regularDelayMs);
-
+        await driver.waitForSelector(
+          '[data-testid="hardware-connect-close-btn"]',
+        );
         // should open the TREZOR Connect popup
-        await driver.clickElement('.hw-connect__btn:nth-of-type(2)');
-        await driver.delay(largeDelayMs * 2);
+        await driver.clickElement('[data-testid="connect-lattice-btn"]');
+        const continueButton = await driver.findElement({
+          text: 'Continue',
+          tag: 'button',
+        });
+        const continueButtonEnabled = await continueButton.isEnabled();
+        assert.equal(continueButtonEnabled, true, 'Continue button is enabled');
+
         await driver.clickElement({ text: 'Continue', tag: 'button' });
 
         const allWindows = await driver.waitUntilXWindowHandles(2);
