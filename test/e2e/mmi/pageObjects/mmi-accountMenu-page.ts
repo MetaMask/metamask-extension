@@ -62,7 +62,6 @@ export class MMIAccountMenuPage {
     }
 
     const custodian = await getCustodianInfoByName(name);
-    const { MMI_E2E_MMI_CONFIG_URL } = process.env;
 
     await this.page
       .getByRole('list')
