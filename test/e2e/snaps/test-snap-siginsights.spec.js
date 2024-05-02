@@ -36,15 +36,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.delay(1000);
 
         // switch to metamask extension and click connect
-        let windowHandles = await driver.waitUntilXWindowHandles(
-          3,
-          1000,
-          10000,
-        );
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -65,17 +57,13 @@ describe('Test Snap Signature Insights', function () {
         });
 
         // switch to test-snaps page
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // open the test-dapp page
         await openDapp(driver);
 
         // poll windowHandles and switch to test-dapp
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.TestDApp,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // find and scroll to basic actions and click connect
         const connectButton1 = await driver.findElement('#connectButton');
@@ -83,11 +71,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#connectButton');
 
         // switch back to MetaMask window and deal with dialogs
-        windowHandles = await driver.waitUntilXWindowHandles(4, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({
           text: 'Next',
           tag: 'button',
@@ -99,11 +83,7 @@ describe('Test Snap Signature Insights', function () {
         });
 
         // switch to test-dapp page and send tx
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.TestDApp,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // TEST ONE: personal sign
         // find and scroll to personal sign and click sign
@@ -112,11 +92,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#personalSign');
 
         // switch back to MetaMask window and switch to tx insights pane
-        windowHandles = await driver.waitUntilXWindowHandles(4, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // wait for and click sign
         await driver.waitForSelector({
@@ -141,10 +117,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('[data-testid="snapInsightsButtonConfirm"]');
 
         // switch back to test-dapp window
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.TestDApp,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // check result of test
         await driver.waitForSelector({
@@ -159,11 +132,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#signTypedData');
 
         // switch back to MetaMask window and switch to tx insights pane
-        windowHandles = await driver.waitUntilXWindowHandles(4, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // wait for and click sign
         await driver.waitForSelector({
@@ -188,10 +157,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('[data-testid="snapInsightsButtonConfirm"]');
 
         // switch back to test-dapp window
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.TestDApp,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // check result of test
         await driver.waitForSelector({
@@ -206,11 +172,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#signTypedDataV3');
 
         // switch back to MetaMask window and switch to tx insights pane
-        windowHandles = await driver.waitUntilXWindowHandles(4, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // click down arrow
         await driver.waitForSelector('.fa-arrow-down');
@@ -239,10 +201,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('[data-testid="snapInsightsButtonConfirm"]');
 
         // switch back to test-dapp window
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.TestDApp,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // check result of test
         await driver.waitForSelector({
@@ -257,11 +216,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#signTypedDataV4');
 
         // switch back to MetaMask window and switch to tx insights pane
-        windowHandles = await driver.waitUntilXWindowHandles(4, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // click down arrow
         await driver.waitForSelector('.fa-arrow-down');
@@ -290,10 +245,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('[data-testid="snapInsightsButtonConfirm"]');
 
         // switch back to test-dapp window
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.TestDApp,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // check results of test
         await driver.waitForSelector({
@@ -303,8 +255,9 @@ describe('Test Snap Signature Insights', function () {
 
         // TEST FIVE: eth_sign
         // switch to metamask window
-        const extensionPage = windowHandles[0];
-        await driver.switchToWindow(extensionPage);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
 
         // click on the global action menu
         await driver.waitForSelector(
@@ -351,10 +304,7 @@ describe('Test Snap Signature Insights', function () {
         });
 
         // switch back to test-dapp window
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.TestDApp,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // scroll to and click eth sign button
         const ethSignButton1 = await driver.findElement('#ethSign');
@@ -362,11 +312,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#ethSign');
 
         // switch back to MetaMask window and switch to tx insights pane
-        windowHandles = await driver.waitUntilXWindowHandles(4, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // wait for and click sign
         await driver.waitForSelector({
@@ -393,10 +339,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('[data-testid="snapInsightsButtonConfirm"]');
 
         // switch back to test-dapp window
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.TestDApp,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // check results of test
         await driver.waitForSelector({

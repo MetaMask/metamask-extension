@@ -3,6 +3,7 @@ const {
   withFixtures,
   switchToNotificationWindow,
   unlockWallet,
+  WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
@@ -68,12 +69,7 @@ describe('Test Snap update', function () {
         });
 
         // navigate to test snap page
-        let windowHandles = await driver.waitUntilXWindowHandles(
-          1,
-          1000,
-          10000,
-        );
-        await driver.switchToWindow(windowHandles[0]);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // wait for npm installation success
         await driver.waitForSelector({
@@ -107,8 +103,7 @@ describe('Test Snap update', function () {
         });
 
         // navigate to test snap page
-        windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
-        await driver.switchToWindow(windowHandles[0]);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // look for the correct version text
         await driver.waitForSelector({

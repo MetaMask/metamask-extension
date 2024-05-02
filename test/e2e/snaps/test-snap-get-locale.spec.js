@@ -33,15 +33,7 @@ describe('Test Snap Get Locale', function () {
         await driver.clickElement('#connectgetlocale');
 
         // switch to metamask extension and click connect
-        let windowHandles = await driver.waitUntilXWindowHandles(
-          3,
-          1000,
-          10000,
-        );
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -70,7 +62,7 @@ describe('Test Snap Get Locale', function () {
         });
 
         // switch to test snaps tab
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // wait for npm installation success
         await driver.waitForSelector({
@@ -90,8 +82,9 @@ describe('Test Snap Get Locale', function () {
         // try switching language to dansk
         //
         // switch to the original MM tab
-        const extensionPage = windowHandles[0];
-        await driver.switchToWindow(extensionPage);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
 
         // click on the global action menu
         await driver.waitForSelector(
@@ -136,8 +129,7 @@ describe('Test Snap Get Locale', function () {
         await driver.waitForSelector({ text: 'Oversættelses Eksempel Snap' });
 
         // switch back to test snaps tab
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // click on alert dialog
         await driver.clickElement('#sendGetLocaleHelloButton');

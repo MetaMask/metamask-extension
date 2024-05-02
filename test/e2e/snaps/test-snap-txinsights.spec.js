@@ -36,15 +36,7 @@ describe('Test Snap TxInsights', function () {
         await driver.clickElement('#connecttransaction-insights');
 
         // switch to metamask extension and click connect
-        let windowHandles = await driver.waitUntilXWindowHandles(
-          2,
-          1000,
-          10000,
-        );
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -65,15 +57,11 @@ describe('Test Snap TxInsights', function () {
         });
 
         // switch to test-snaps page and get accounts
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
         await driver.clickElement('#getAccounts');
 
         // switch back to MetaMask window and deal with dialogs
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({
           text: 'Next',
           tag: 'button',
@@ -88,16 +76,12 @@ describe('Test Snap TxInsights', function () {
         });
 
         // switch to test-snaps page and send tx
-        windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
         await driver.clickElement('#sendInsights');
 
         // switch back to MetaMask window and switch to tx insights pane
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await driver.delay(1000);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector({
           text: 'Insights Example Snap',
           tag: 'button',
