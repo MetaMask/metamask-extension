@@ -1,15 +1,15 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-const FixtureBuilder = require('../../../fixture-builder');
-const { Ganache } = require('../../../ganache');
-const {
+import FixtureBuilder from '../../../fixture-builder';
+import { Ganache } from '../../../seeder/ganache';
+import {
   DAPP_URL_WITHOUT_SCHEMA,
   WINDOW_TITLES,
   defaultGanacheOptions,
   withFixtures,
   openDapp,
   unlockWallet,
-} = require('../../../helpers');
+} from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 
 describe('Personal Sign', function (this: Suite) {
