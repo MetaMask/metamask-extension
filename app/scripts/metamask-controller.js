@@ -5646,10 +5646,10 @@ export default class MetamaskController extends EventEmitter {
     this.preferencesController.toggleExternalServices(useExternal);
     if (useExternal) {
       this.tokenDetectionController.enable();
-      // this.gasFeeController.enable(); // uncomment & merge once gas fee controller changes are in
+      this.gasFeeController.enableNonRPCGasFeeApis();
     } else {
       this.tokenDetectionController.disable();
-      // this.gasFeeController.disable(); // uncomment & merge once gas fee controller changes are in
+      this.gasFeeController.disableNonRPCGasFeeApis();
     }
   }
 
