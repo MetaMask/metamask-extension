@@ -102,6 +102,11 @@ export type TransactionEventPayload = {
   error?: string;
 };
 
+export type TransactionMetaEventPayload = TransactionMeta & {
+  actionId?: string;
+  error?: string;
+};
+
 /**
  * This function is called when a transaction is added to the controller.
  *
@@ -197,7 +202,7 @@ export const handleTransactionFailed = async (
  */
 export const handleTransactionConfirmed = async (
   transactionMetricsRequest: TransactionMetricsRequest,
-  transactionEventPayload: TransactionEventPayload,
+  transactionEventPayload: TransactionMetaEventPayload,
 ) => {
   if (Object.keys(transactionEventPayload).length === 0) {
     return;
@@ -206,7 +211,7 @@ export const handleTransactionConfirmed = async (
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const extraParams = {} as Record<string, any>;
-  const transactionMeta = transactionEventPayload;
+  const transactionMeta = { ...transactionEventPayload };
   const { txReceipt } = transactionMeta;
 
   extraParams.gas_used = txReceipt?.gasUsed;
