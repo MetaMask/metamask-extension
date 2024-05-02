@@ -218,11 +218,7 @@ const CustodyPage = () => {
                 alt={custodian.displayName}
               />
             )}
-            <Text marginLeft={2}>
-              {custodian.envName === 'neptune-custody-dev'
-                ? 'Neptune Custody Dev'
-                : custodian.displayName}
-            </Text>
+            <Text marginLeft={2}>{custodian.displayName}</Text>
           </Box>
 
           <Button
