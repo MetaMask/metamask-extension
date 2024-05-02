@@ -183,6 +183,7 @@
     "snapsAddSnapAccountModalDismissed": "boolean",
     "useExternalNameSources": "boolean",
     "useTransactionSimulations": true,
+    "enableMV3TimestampSave": true,
     "selectedAddress": "string"
   },
   "SelectedNetworkController": { "domains": "object" },

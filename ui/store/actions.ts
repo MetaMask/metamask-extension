@@ -3069,7 +3069,7 @@ export function setPetnamesEnabled(value: boolean) {
 }
 
 export function setRedesignedConfirmationsEnabled(value: boolean) {
-  return setPreference('redesignedConfirmations', value);
+  return setPreference('redesignedConfirmationsEnabled', value);
 }
 
 export function setFeatureNotificationsEnabled(value: boolean) {
@@ -3149,6 +3149,24 @@ export function resetOnboarding(): ThunkAction<
 export function resetOnboardingAction() {
   return {
     type: actionConstants.RESET_ONBOARDING,
+  };
+}
+
+export function setServiceWorkerKeepAlivePreference(
+  value: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setServiceWorkerKeepAlivePreference`);
+    try {
+      await submitRequestToBackground('setServiceWorkerKeepAlivePreference', [
+        value,
+      ]);
+    } catch (error) {
+      dispatch(displayWarning(error));
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
   };
 }
 
