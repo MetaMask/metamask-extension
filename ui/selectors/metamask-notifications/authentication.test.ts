@@ -1,9 +1,15 @@
-import { getMetametricsId, selectIsSignedIn } from './authentication';
+import {
+  selectIsSignedIn,
+  selectParticipateInMetaMetrics,
+} from './authentication';
 
 describe('Authentication Selectors', () => {
   const mockState = {
-    isSignedIn: true,
-    metametricsId: 'id',
+    metamask: {
+      isSignedIn: true,
+      metametricsId: 'id',
+      participateInMetaMetrics: true,
+    },
   };
 
   it('should select the Authentications status', () => {
@@ -11,6 +17,10 @@ describe('Authentication Selectors', () => {
   });
 
   it('should select the Metamask Notifications Enabled status', () => {
-    expect(getMetametricsId(mockState)).toBe('id');
+    expect(selectParticipateInMetaMetrics(mockState)).toBe(true);
+  });
+
+  it('should select the Metamask Notifications Enabled status', () => {
+    expect(selectParticipateInMetaMetrics(mockState)).toBe(true);
   });
 });

@@ -44,6 +44,8 @@ import {
 } from '../../../helpers/utils/settings-search';
 
 import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
+import ProfileSyncToggle from './profile-sync-toggle';
+import MetametricsToggle from './metametrics-toggle';
 
 export default class SecurityTab extends PureComponent {
   static contextTypes = {
@@ -58,8 +60,6 @@ export default class SecurityTab extends PureComponent {
     setOpenSeaEnabled: PropTypes.func,
     useNftDetection: PropTypes.bool,
     setUseNftDetection: PropTypes.func,
-    participateInMetaMetrics: PropTypes.bool.isRequired,
-    setParticipateInMetaMetrics: PropTypes.func.isRequired,
     incomingTransactionsPreferences: PropTypes.object.isRequired,
     allNetworks: PropTypes.array.isRequired,
     setIncomingTransactionsPreferences: PropTypes.func.isRequired,
@@ -314,42 +314,6 @@ export default class SecurityTab extends PureComponent {
           <ToggleButton
             value={use4ByteResolution}
             onToggle={(value) => setUse4ByteResolution(!value)}
-            offLabel={t('off')}
-            onLabel={t('on')}
-          />
-        </div>
-      </Box>
-    );
-  }
-
-  renderMetaMetricsOptIn() {
-    const { t } = this.context;
-    const { participateInMetaMetrics, setParticipateInMetaMetrics } =
-      this.props;
-
-    return (
-      <Box
-        ref={this.settingsRefs[4]}
-        className="settings-page__content-row"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        gap={4}
-      >
-        <div className="settings-page__content-item">
-          <span>{t('participateInMetaMetrics')}</span>
-          <div className="settings-page__content-description">
-            <span>{t('participateInMetaMetricsDescription')}</span>
-          </div>
-        </div>
-
-        <div
-          className="settings-page__content-item-col"
-          data-testid="participateInMetaMetrics"
-        >
-          <ToggleButton
-            value={participateInMetaMetrics}
-            onToggle={(value) => setParticipateInMetaMetrics(!value)}
             offLabel={t('off')}
             onLabel={t('on')}
           />
@@ -995,6 +959,10 @@ export default class SecurityTab extends PureComponent {
           {this.context.t('privacy')}
         </span>
 
+        <div className="settings-page__content-padded">
+          <ProfileSyncToggle />
+        </div>
+
         <div>
           <span className="settings-page__security-tab-sub-header">
             {this.context.t('alerts')}
@@ -1059,7 +1027,7 @@ export default class SecurityTab extends PureComponent {
           {this.context.t('metrics')}
         </span>
         <div className="settings-page__content-padded">
-          {this.renderMetaMetricsOptIn()}
+          <MetametricsToggle />
         </div>
       </div>
     );

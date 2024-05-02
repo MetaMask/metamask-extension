@@ -316,11 +316,13 @@ import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscree
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import PREINSTALLED_SNAPS from './snaps/preinstalled-snaps';
 ///: END:ONLY_INCLUDE_IF
-import AuthenticationController from './controllers/authentication/authentication-controller';
-import UserStorageController from './controllers/user-storage/user-storage-controller';
 import { WeakRefObjectMap } from './lib/WeakRefObjectMap';
 
+// Notification controllers
+import AuthenticationController from './controllers/authentication/authentication-controller';
+import UserStorageController from './controllers/user-storage/user-storage-controller';
 import { PushPlatformNotificationsController } from './controllers/push-platform-notifications/push-platform-notifications';
+import { MetamaskNotificationsController } from './controllers/metamask-notifications/metamask-notifications';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1444,6 +1446,25 @@ export default class MetamaskController extends EventEmitter {
         state: initState.PushPlatformNotificationsController,
       });
 
+    this.metamaskNotificationsController = new MetamaskNotificationsController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'MetamaskNotificationsController',
+        allowedActions: [
+          'KeyringController:getAccounts',
+          'AuthenticationController:getBearerToken',
+          'AuthenticationController:isSignedIn',
+          'UserStorageController:getStorageKey',
+          'UserStorageController:performGetStorage',
+          'UserStorageController:performSetStorage',
+          'PushPlatformNotificationsController:enablePushNotifications',
+          'PushPlatformNotificationsController:disablePushNotifications',
+          'PushPlatformNotificationsController:updateTriggerPushNotifications',
+        ],
+        allowedEvents: ['KeyringController:stateChange'],
+      }),
+      state: initState.MetamaskNotificationsController,
+    });
+
     // account tracker watches balances, nonces, and any code at their address
     this.accountTracker = new AccountTracker({
       provider: this.provider,
@@ -2083,7 +2104,6 @@ export default class MetamaskController extends EventEmitter {
 
     this.store.updateStructure({
       AccountsController: this.accountsController,
-      AuthenticationController: this.authenticationController,
       AppStateController: this.appStateController.store,
       AppMetadataController: this.appMetadataController.store,
       TransactionController: this.txController,
@@ -2131,6 +2151,10 @@ export default class MetamaskController extends EventEmitter {
       ///: END:ONLY_INCLUDE_IF
       NameController: this.nameController,
       UserOperationController: this.userOperationController,
+      // Notification Controllers
+      AuthenticationController: this.authenticationController,
+      UserStorageController: this.userStorageController,
+      MetamaskNotificationsController: this.metamaskNotificationsController,
       ...resetOnRestartStore,
     });
 
@@ -2139,7 +2163,6 @@ export default class MetamaskController extends EventEmitter {
         AccountsController: this.accountsController,
         AppStateController: this.appStateController.store,
         AppMetadataController: this.appMetadataController.store,
-        AuthenticationController: this.authenticationController,
         NetworkController: this.networkController,
         KeyringController: this.keyringController,
         PreferencesController: this.preferencesController.store,
@@ -2180,6 +2203,10 @@ export default class MetamaskController extends EventEmitter {
         ///: END:ONLY_INCLUDE_IF
         NameController: this.nameController,
         UserOperationController: this.userOperationController,
+        // Notification Controllers
+        AuthenticationController: this.authenticationController,
+        UserStorageController: this.userStorageController,
+        MetamaskNotificationsController: this.metamaskNotificationsController,
         ...resetOnRestartStore,
       },
       controllerMessenger: this.controllerMessenger,
@@ -2864,7 +2891,6 @@ export default class MetamaskController extends EventEmitter {
       addressBookController,
       alertController,
       appStateController,
-      authenticationController,
       keyringController,
       nftController,
       nftDetectionController,
@@ -2876,8 +2902,6 @@ export default class MetamaskController extends EventEmitter {
       networkController,
       announcementController,
       onboardingController,
-      performSignIn,
-      performSignOut,
       permissionController,
       preferencesController,
       swapsController,
@@ -2888,6 +2912,10 @@ export default class MetamaskController extends EventEmitter {
       backup,
       approvalController,
       phishingController,
+      // Notification Controllers
+      authenticationController,
+      userStorageController,
+      metamaskNotificationsController,
     } = this;
 
     return {
@@ -3588,9 +3616,58 @@ export default class MetamaskController extends EventEmitter {
         ),
 
       // Authentication Controller
-      performSignIn: authenticationController.performSignIn.bind(performSignIn),
-      performSignOut:
-        authenticationController.performSignOut.bind(performSignOut),
+      performSignIn: authenticationController.performSignIn.bind(
+        authenticationController,
+      ),
+      performSignOut: authenticationController.performSignOut.bind(
+        authenticationController,
+      ),
+
+      // UserStorageController
+      enableProfileSyncing: userStorageController.enableProfileSyncing.bind(
+        userStorageController,
+      ),
+      disableProfileSyncing: userStorageController.disableProfileSyncing.bind(
+        userStorageController,
+      ),
+
+      // MetamaskNotificationsController
+      checkAccountsPresence:
+        metamaskNotificationsController.checkAccountsPresence.bind(
+          metamaskNotificationsController,
+        ),
+      createOnChainTriggers:
+        metamaskNotificationsController.createOnChainTriggers.bind(
+          metamaskNotificationsController,
+        ),
+      deleteOnChainTriggersByAccount:
+        metamaskNotificationsController.deleteOnChainTriggersByAccount.bind(
+          metamaskNotificationsController,
+        ),
+      updateOnChainTriggersByAccount:
+        metamaskNotificationsController.updateOnChainTriggersByAccount.bind(
+          metamaskNotificationsController,
+        ),
+      fetchAndUpdateMetamaskNotifications:
+        metamaskNotificationsController.fetchAndUpdateMetamaskNotifications.bind(
+          metamaskNotificationsController,
+        ),
+      markMetamaskNotificationsAsRead:
+        metamaskNotificationsController.markMetamaskNotificationsAsRead.bind(
+          metamaskNotificationsController,
+        ),
+      setSnapNotificationsEnabled:
+        metamaskNotificationsController.setSnapNotificationsEnabled.bind(
+          metamaskNotificationsController,
+        ),
+      setFeatureAnnouncementsEnabled:
+        metamaskNotificationsController.setFeatureAnnouncementsEnabled.bind(
+          metamaskNotificationsController,
+        ),
+      setMetamaskNotificationsEnabled:
+        metamaskNotificationsController.setMetamaskNotificationsEnabled.bind(
+          metamaskNotificationsController,
+        ),
 
       // E2E testing
       throwTestError: this.throwTestError.bind(this),

@@ -55,6 +55,16 @@ import Routes from './routes.component';
 
 function mapStateToProps(state) {
   const { activeTab, appState } = state;
+
+  console.log('TEST DATA', {
+    'Is User SignedIn': state.metamask.isSignedIn,
+    'User Session Data': state.metamask.sessionData,
+    'Profile Syncing Enabled': state.metamask.isProfileSyncingEnabled,
+    'Metametrics Enabled': state.metamask.participateInMetaMetrics,
+    'MetaMetrics Id': state.metamask.metaMetricsId,
+    'Notifications Enabled': state.metamask.isMetamaskNotificationsEnabled,
+  });
+
   const { alertOpen, alertMessage, isLoading, loadingMessage } = appState;
   const { autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT } =
     getPreferences(state);

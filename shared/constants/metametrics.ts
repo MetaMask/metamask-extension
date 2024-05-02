@@ -562,8 +562,11 @@ export enum MetaMetricsEventName {
   OnboardingWalletSecurityPhraseWrittenDown = 'SRP Backup Confirm Display',
   OnboardingWalletSecurityPhraseConfirmed = 'SRP Backup Confirmed',
   OnboardingWalletCreationComplete = 'Wallet Created',
+  OnboardingWalletCreationCompleteWithAuthenticating = 'Wallet Created with Authenticating',
   OnboardingWalletSetupComplete = 'Application Opened',
   OnboardingWalletAdvancedSettings = 'Settings Updated',
+  OnboardingWalletAdvancedSettingsWithAuthenticating = 'Settings Updated with Authenticating',
+  OnboardingWalletAdvancedSettingsTurnOffProfileSyncing = 'Turn Off Profile Syncing',
   OnboardingWalletImportAttempted = 'Wallet Import Attempted',
   OnboardingWalletVideoPlay = 'SRP Intro Video Played',
   OnboardingTwitterClick = 'External Link Clicked',
@@ -697,6 +700,10 @@ export enum MetaMetricsEventName {
   SnapAccountTransactionFinalizeRedirectSnapUrlClicked = 'Snap Account Transaction Finalize Redirect "Snap URL" Clicked',
   SnapAccountTransactionFinalizeClosed = 'Snap Account Transaction Finalize Closed',
   ///: END:ONLY_INCLUDE_IF
+  TurnOffProfileSyncing = 'Turn Off Profile Syncing',
+  TurnOnProfileSyncing = 'Turn On Profile Syncing',
+  TurnOnMetaMetrics = 'Turn On MetaMetrics',
+  TurnOffMetaMetrics = 'Turn Off MetaMetrics',
 }
 
 export enum MetaMetricsEventAccountType {

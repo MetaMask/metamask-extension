@@ -307,12 +307,12 @@ export default function reduceApp(
     case actionConstants.MODAL_CLOSE:
       return {
         ...appState,
-        modal: Object.assign(
-          appState.modal,
-          { open: false },
-          { modalState: { name: null, props: {} } },
-          { previousModalState: appState.modal.modalState },
-        ),
+        modal: {
+          ...appState.modal,
+          open: false,
+          modalState: { name: null, props: {} },
+          previousModalState: { ...appState.modal.modalState },
+        },
       };
 
     case actionConstants.CLEAR_ACCOUNT_DETAILS:

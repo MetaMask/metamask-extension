@@ -34,6 +34,9 @@ import {
   getCurrentNetwork,
   getPetnamesEnabled,
 } from '../../../selectors';
+import { selectIsProfileSyncingEnabled } from '../../../selectors/metamask-notifications/profile-syncing';
+import { selectParticipateInMetaMetrics } from '../../../selectors/metamask-notifications/authentication';
+import { useEnableProfileSyncing } from '../../../hooks/metamask-notifications/useProfileSyncing';
 import {
   setCompletedOnboarding,
   setIpfsGateway,
@@ -48,6 +51,7 @@ import {
   setIncomingTransactionsPreferences,
   setUseTransactionSimulations,
   setPetnamesEnabled,
+  showConfirmTurnOffProfileSyncing,
 } from '../../../store/actions';
 import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
 import { Setting } from './setting';
@@ -56,6 +60,8 @@ export default function PrivacySettings() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const { enableProfileSyncing } = useEnableProfileSyncing();
 
   const defaultState = useSelector((state) => state.metamask);
   const {
@@ -70,6 +76,8 @@ export default function PrivacySettings() {
     useTransactionSimulations,
   } = defaultState;
   const petnamesEnabled = useSelector(getPetnamesEnabled);
+  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+  const participateInMetaMetrics = useSelector(selectParticipateInMetaMetrics);
 
   const [usePhishingDetection, setUsePhishingDetection] =
     useState(usePhishDetect);
@@ -128,6 +136,23 @@ export default function PrivacySettings() {
     history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
   };
 
+  const handleUseProfileSync = async () => {
+    if (isProfileSyncingEnabled) {
+      dispatch(showConfirmTurnOffProfileSyncing());
+    } else {
+      await enableProfileSyncing();
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event:
+          MetaMetricsEventName.OnboardingWalletAdvancedSettingsWithAuthenticating,
+        properties: {
+          isProfileSyncingEnabled,
+          participateInMetaMetrics,
+        },
+      });
+    }
+  };
+
   const handleIPFSChange = (url) => {
     setIPFSURL(url);
     try {
@@ -162,6 +187,22 @@ export default function PrivacySettings() {
               dispatch(setIncomingTransactionsPreferences(chainId, value))
             }
             incomingTransactionsPreferences={incomingTransactionsPreferences}
+          />
+
+          <Setting
+            value={isProfileSyncingEnabled}
+            setValue={handleUseProfileSync}
+            title={t('profileSync')}
+            description={t('profileSyncDescription', [
+              <a
+                href="https://consensys.io/privacy-policy/"
+                key="link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t('profileSyncPrivacyLink')}
+              </a>,
+            ])}
           />
           <Setting
             value={usePhishingDetection}

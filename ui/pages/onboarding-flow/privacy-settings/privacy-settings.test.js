@@ -50,6 +50,8 @@ describe('Privacy Settings Onboarding View', () => {
   const setIncomingTransactionsPreferencesStub = jest.fn();
   const setUseTransactionSimulationsStub = jest.fn();
   const setPreferenceStub = jest.fn();
+  const enableProfileSyncingStub = jest.fn();
+  const disableProfileSyncingStub = jest.fn();
 
   setBackgroundConnection({
     setFeatureFlag: setFeatureFlagStub,
@@ -64,6 +66,8 @@ describe('Privacy Settings Onboarding View', () => {
     setIncomingTransactionsPreferences: setIncomingTransactionsPreferencesStub,
     setUseTransactionSimulations: setUseTransactionSimulationsStub,
     setPreference: setPreferenceStub,
+    enableProfileSyncing: enableProfileSyncingStub,
+    disableProfileSyncing: disableProfileSyncingStub,
   });
 
   it('should update preferences', () => {
@@ -87,12 +91,12 @@ describe('Privacy Settings Onboarding View', () => {
     // toggle to false
     fireEvent.click(toggles[0]);
     fireEvent.click(toggles[3]);
-    fireEvent.click(toggles[4]);
     fireEvent.click(toggles[5]);
     fireEvent.click(toggles[6]);
     fireEvent.click(toggles[7]);
     fireEvent.click(toggles[8]);
     fireEvent.click(toggles[9]);
+    fireEvent.click(toggles[10]);
 
     fireEvent.click(submitButton);
 
