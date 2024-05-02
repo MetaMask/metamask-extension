@@ -45,6 +45,7 @@ const QRCodeModal: React.FC<QRCodeModalProps> = ({
   const connectionRequest = useSelector(getConnectionRequest);
   const [publicKey, setPublicKey] = useState<string | null>(null);
   const [privateKey, setPrivateKey] = useState<CryptoKey | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [decryptedMessage, setDecryptedMessage] = useState<any>(null);
   const [qrCodeValue, setQrCodeValue] = useState<string | null>(null);
   const [error, setError] = useState<string>('');
