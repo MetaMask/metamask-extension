@@ -112,6 +112,20 @@ export const SENTRY_BACKGROUND_STATE = {
     trezorModel: true,
     usedNetworks: true,
   },
+  AuthenticationController: {
+    isSignedIn: false,
+  },
+  MetamaskNotificationsController: {
+    isFeatureAnnouncementsEnabled: false,
+    isMetamaskNotificationsEnabled: false,
+    isMetamaskNotificationsFeatureSeen: false,
+    isSnapNotificationsEnabled: false,
+    metamaskNotificationsList: [],
+    metamaskNotificationsReadList: [],
+  },
+  UserStorageController: {
+    isProfileSyncingEnabled: true,
+  },
   CronjobController: {
     jobs: false,
   },
