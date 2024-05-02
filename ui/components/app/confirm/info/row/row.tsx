@@ -103,7 +103,6 @@ export const ConfirmInfoRow = ({
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
-        gap={1}
       >
         <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
           {label}

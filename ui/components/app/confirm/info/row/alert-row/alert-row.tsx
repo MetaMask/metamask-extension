@@ -80,6 +80,7 @@ export const AlertRow = ({
     <InlineAlert
       onClick={handleOpenModal}
       severity={getSeverityAlerts(variant)}
+      style={{ marginLeft: '4px' }}
     />
   ) : null;
 
