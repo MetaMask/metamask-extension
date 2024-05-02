@@ -12,7 +12,7 @@ import {
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 
-describe('Sign Typed Data', function (this: Suite) {
+describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
   if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
     return;
   }
@@ -66,12 +66,10 @@ async function assertVerifiedResults(driver: Driver, publicAddress: string) {
   const verifyResult = await driver.findElement(
     '#signTypedDataResult',
   );
-
   await driver.waitForSelector({
     css: '#signTypedDataVerifyResult',
     text: publicAddress,
   });
-
   const verifyRecoverAddress = await driver.findElement(
     '#signTypedDataVerifyResult',
   );

@@ -12,7 +12,7 @@ import {
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 
-describe('Personal Sign', function (this: Suite) {
+describe('Confirmation Signature - Personal Sign', function (this: Suite) {
   if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
     return;
   }
@@ -66,12 +66,10 @@ async function assertVerifiedPersonalMessage(driver: Driver, publicAddress: stri
   const verifySigUtil = await driver.findElement(
     '#personalSignVerifySigUtilResult',
   );
-
   await driver.waitForSelector({
     css: '#personalSignVerifyECRecoverResult',
     text: publicAddress,
   });
-
   const verifyECRecover = await driver.findElement(
     '#personalSignVerifyECRecoverResult',
   );
