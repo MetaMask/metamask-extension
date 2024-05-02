@@ -2,7 +2,6 @@ import { permissionRpcMethods } from '@metamask/permission-controller';
 import { selectHooks } from '@metamask/snaps-rpc-methods';
 import { hasProperty } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
-import { flatten } from 'lodash';
 import { UNSUPPORTED_RPC_METHODS } from '../../../../shared/constants/network';
 import localHandlers from './handlers';
 
@@ -15,10 +14,8 @@ const handlerMap = allHandlers.reduce((map, handler) => {
   return map;
 }, new Map());
 
-const expectedHookNames = Array.from(
-  new Set(
-    flatten(allHandlers.map(({ hookNames }) => Object.keys(hookNames))),
-  ).values(),
+const expectedHookNames = new Set(
+  allHandlers.flatMap(({ hookNames }) => Object.keys(hookNames)),
 );
 
 /**
@@ -32,24 +29,7 @@ const expectedHookNames = Array.from(
  * @returns {(req: object, res: object, next: Function, end: Function) => void}
  */
 export function createMethodMiddleware(hooks) {
-  // Fail immediately if we forgot to provide any expected hooks.
-  const missingHookNames = expectedHookNames.filter(
-    (hookName) => !hasProperty(hooks, hookName),
-  );
-  if (missingHookNames.length > 0) {
-    throw new Error(
-      `Missing expected hooks:\n\n${missingHookNames.join('\n')}\n`,
-    );
-  }
-
-  const extraneousHookNames = Object.keys(hooks).filter(
-    (hookName) => !expectedHookNames.includes(hookName),
-  );
-  if (extraneousHookNames.length > 0) {
-    throw new Error(
-      `Received unexpected hooks:\n\n${extraneousHookNames.join('\n')}\n`,
-    );
-  }
+  assertExpectedHook(hooks);
 
   return async function methodMiddleware(req, res, next, end) {
     // Reject unsupported methods.
@@ -79,4 +59,33 @@ export function createMethodMiddleware(hooks) {
 
     return next();
   };
+}
+
+/**
+ * Asserts that the hooks object only has all expected hooks and no extraneous ones.
+ *
+ * @param {Record<string, unknown>} hooks - Required "hooks" into our
+ * controllers.
+ */
+function assertExpectedHook(hooks) {
+  const missingHookNames = [];
+  expectedHookNames.forEach((hookName) => {
+    if (!hasProperty(hooks, hookName)) {
+      missingHookNames.push(hookName);
+    }
+  });
+  if (missingHookNames.length > 0) {
+    throw new Error(
+      `Missing expected hooks:\n\n${missingHookNames.join('\n')}\n`,
+    );
+  }
+
+  const extraneousHookNames = Object.keys(hooks).filter(
+    (hookName) => !expectedHookNames.has(hookName),
+  );
+  if (extraneousHookNames.length > 0) {
+    throw new Error(
+      `Received unexpected hooks:\n\n${extraneousHookNames.join('\n')}\n`,
+    );
+  }
 }
