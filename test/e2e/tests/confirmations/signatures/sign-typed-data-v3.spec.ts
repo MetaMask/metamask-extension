@@ -22,7 +22,7 @@ describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-        .withNetworkControllerOnMainnet()
+          .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({
             preferences: {

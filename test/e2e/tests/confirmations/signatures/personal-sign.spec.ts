@@ -22,7 +22,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-        .withNetworkControllerOnMainnet()
+          .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({
             preferences: {

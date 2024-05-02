@@ -22,7 +22,7 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-        .withNetworkControllerOnMainnet()
+          .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({
             preferences: {
@@ -40,6 +40,7 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#signPermit');
+
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.Dialog
         );
