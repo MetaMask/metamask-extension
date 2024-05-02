@@ -460,6 +460,103 @@ async function main() {
         },
       ];
 
+      const getTransactionCount = openrpcDocument.methods.find(
+        (m) => (m as MethodObject).name === 'eth_getTransactionCount',
+      );
+      (getTransactionCount as MethodObject).examples = [
+        {
+          name: 'getTransactionCountExampleEarliest',
+          description: 'Example of a pending getTransactionCount request',
+          params: [
+            {
+              name: 'address',
+              value: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+            },
+            {
+              name: 'tag',
+              value: 'earliest',
+            },
+          ],
+          result: {
+            name: 'getTransactionCountResult',
+            value: '0x0',
+          },
+        },
+        {
+          name: 'getTransactionCountExampleFinalized',
+          description: 'Example of a pending getTransactionCount request',
+          params: [
+            {
+              name: 'address',
+              value: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+            },
+            {
+              name: 'tag',
+              value: 'finalized',
+            },
+          ],
+          result: {
+            name: 'getTransactionCountResult',
+            value: '0x0',
+          },
+        },
+        {
+          name: 'getTransactionCountExampleSafe',
+          description: 'Example of a pending getTransactionCount request',
+          params: [
+            {
+              name: 'address',
+              value: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+            },
+            {
+              name: 'tag',
+              value: 'safe',
+            },
+          ],
+          result: {
+            name: 'getTransactionCountResult',
+            value: '0x0',
+          },
+        },
+        {
+          name: 'getTransactionCountExample',
+          description: 'Example of a getTransactionCount request',
+          params: [
+            {
+              name: 'address',
+              value: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+            },
+            {
+              name: 'tag',
+              value: 'latest',
+            },
+          ],
+          result: {
+            name: 'getTransactionCountResult',
+            value: '0x0',
+          },
+        },
+        // returns a number right now. see here: https://github.com/MetaMask/metamask-extension/pull/14822
+        // {
+        //   name: 'getTransactionCountExamplePending',
+        //   description: 'Example of a pending getTransactionCount request',
+        //   params: [
+        //     {
+        //       name: 'address',
+        //       value: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+        //     },
+        //     {
+        //       name: 'tag',
+        //       value: 'pending',
+        //     },
+        //   ],
+        //   result: {
+        //     name: 'getTransactionCountResult',
+        //     value: '0x0',
+        //   },
+        // },
+      ];
+
       const server = mockServer(port, openrpcDocument);
       server.start();
 
