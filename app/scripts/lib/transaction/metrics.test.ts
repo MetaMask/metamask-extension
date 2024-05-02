@@ -571,7 +571,7 @@ describe('Transaction metrics', () => {
       mockTransactionMeta.submittedTime = 123;
 
       await handleTransactionConfirmed(mockTransactionMetricsRequest, {
-        transactionMeta: mockTransactionMeta,
+        ...mockTransactionMeta,
         actionId: mockActionId,
       } as any);
 
@@ -627,7 +627,7 @@ describe('Transaction metrics', () => {
       mockTransactionMetaWithBlockaid.submittedTime = 123;
 
       await handleTransactionConfirmed(mockTransactionMetricsRequest, {
-        transactionMeta: mockTransactionMetaWithBlockaid,
+        ...mockTransactionMetaWithBlockaid,
         actionId: mockActionId,
       } as any);
 
