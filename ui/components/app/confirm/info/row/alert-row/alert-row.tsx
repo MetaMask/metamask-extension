@@ -71,6 +71,7 @@ export const AlertRow = ({
         // intentionally empty
       }}
       severity={getSeverityAlerts(variant)}
+      style={{ marginLeft: '4px' }}
     />
   ) : null;
 
