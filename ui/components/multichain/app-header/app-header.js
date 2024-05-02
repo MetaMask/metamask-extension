@@ -45,9 +45,7 @@ import {
 import {
   getCurrentChainId,
   getCurrentNetwork,
-  getOnboardedInThisUISession,
   getOriginOfCurrentTab,
-  getShowProductTour,
   getTestNetworkBackgroundColor,
   getSelectedInternalAccount,
   getUnapprovedTransactions,
@@ -55,37 +53,28 @@ import {
   getTheme,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
-import { AccountPicker, GlobalMenu, ProductTour } from '..';
+import { AccountPicker, GlobalMenu } from '..';
 
-import {
-  hideProductTour,
-  toggleAccountMenu,
-  toggleNetworkMenu,
-} from '../../../store/actions';
+import { toggleAccountMenu, toggleNetworkMenu } from '../../../store/actions';
 import MetafoxLogo from '../../ui/metafox-logo';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import ConnectedStatusIndicator from '../../app/connected-status-indicator';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  getCompletedOnboarding,
-  getIsUnlocked,
-} from '../../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../../ducks/metamask/metamask';
 import { SEND_STAGES, getSendStage } from '../../../ducks/send';
 import Tooltip from '../../ui/tooltip';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
-import { getURLHost, shortenAddress } from '../../../helpers/utils/util';
+import { shortenAddress } from '../../../helpers/utils/util';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 
 export const AppHeader = ({ location }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
-  const [multichainProductTourStep, setMultichainProductTourStep] = useState(1);
   const menuRef = useRef(null);
   const origin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
-  const isHomePage = location.pathname === DEFAULT_ROUTE;
   const isUnlocked = useSelector(getIsUnlocked);
   const t = useI18nContext();
   const chainId = useSelector(getCurrentChainId);
@@ -96,9 +85,6 @@ export const AppHeader = ({ location }) => {
     internalAccount &&
     shortenAddress(toChecksumHexAddress(internalAccount.address));
   const dispatch = useDispatch();
-  const completedOnboarding = useSelector(getCompletedOnboarding);
-  const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
-  const showProductTourPopup = useSelector(getShowProductTour);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const theme = useSelector((state) => getTheme(state));
@@ -120,11 +106,6 @@ export const AppHeader = ({ location }) => {
     getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
     origin &&
     origin !== browser.runtime.id;
-  const showProductTour =
-    completedOnboarding && !onboardedInThisUISession && showProductTourPopup;
-  const productTourDirection = document
-    .querySelector('[dir]')
-    ?.getAttribute('dir');
 
   // Disable the network and account pickers if the user is in
   // a critical flow
@@ -175,9 +156,7 @@ export const AppHeader = ({ location }) => {
   }, [chainId, dispatch, trackEvent]);
 
   const handleConnectionsRoute = () => {
-    const hostName = getURLHost(origin);
-
-    history.push(`${CONNECTIONS}/${encodeURIComponent(hostName)}`);
+    history.push(`${CONNECTIONS}/${encodeURIComponent(origin)}`);
   };
   // This is required to ensure send and confirmation screens
   // look as desired
@@ -285,24 +264,6 @@ export const AppHeader = ({ location }) => {
                   />
                 </div>
               )}
-              {showProductTour &&
-              popupStatus &&
-              isHomePage &&
-              multichainProductTourStep === 1 ? (
-                <ProductTour
-                  className="multichain-app-header__product-tour"
-                  anchorElement={menuRef.current}
-                  title={t('switcherTitle')}
-                  description={t('switcherTourDescription')}
-                  currentStep="1"
-                  totalSteps="3"
-                  onClick={() =>
-                    setMultichainProductTourStep(multichainProductTourStep + 1)
-                  }
-                  positionObj={productTourDirection === 'rtl' ? '0%' : '88%'}
-                  productTourDirection={productTourDirection}
-                />
-              ) : null}
 
               {internalAccount ? (
                 <Text
@@ -328,6 +289,8 @@ export const AppHeader = ({ location }) => {
                     }}
                     disabled={disableAccountPicker}
                     labelProps={{ fontWeight: FontWeight.Bold }}
+                    paddingLeft={2}
+                    paddingRight={2}
                   />
                   <Tooltip
                     position="left"
@@ -371,6 +334,7 @@ export const AppHeader = ({ location }) => {
                 display={Display.Flex}
                 alignItems={AlignItems.center}
                 justifyContent={JustifyContent.flexEnd}
+                style={{ marginLeft: 'auto' }}
               >
                 <Box display={Display.Flex} gap={4}>
                   {showConnectedStatus ? (
@@ -391,32 +355,6 @@ export const AppHeader = ({ location }) => {
                       />
                     </Box>
                   ) : null}{' '}
-                  {popupStatus && multichainProductTourStep === 2 ? (
-                    <ProductTour
-                      className="multichain-app-header__product-tour"
-                      anchorElement={menuRef.current}
-                      closeMenu={() => setAccountOptionsMenuOpen(false)}
-                      prevIcon
-                      title={t('permissionsTitle')}
-                      description={t('permissionsTourDescription')}
-                      currentStep="2"
-                      totalSteps="3"
-                      prevClick={() =>
-                        setMultichainProductTourStep(
-                          multichainProductTourStep - 1,
-                        )
-                      }
-                      onClick={() =>
-                        setMultichainProductTourStep(
-                          multichainProductTourStep + 1,
-                        )
-                      }
-                      positionObj={
-                        productTourDirection === 'rtl' ? '76%' : '12%'
-                      }
-                      productTourDirection={productTourDirection}
-                    />
-                  ) : null}
                   <Box
                     ref={menuRef}
                     display={Display.Flex}
@@ -446,30 +384,6 @@ export const AppHeader = ({ location }) => {
                   isOpen={accountOptionsMenuOpen}
                   closeMenu={() => setAccountOptionsMenuOpen(false)}
                 />
-                {showProductTour &&
-                popupStatus &&
-                multichainProductTourStep === 3 ? (
-                  <ProductTour
-                    className="multichain-app-header__product-tour"
-                    anchorElement={menuRef.current}
-                    closeMenu={() => setAccountOptionsMenuOpen(false)}
-                    prevIcon
-                    title={t('globalTitle')}
-                    description={t('globalTourDescription')}
-                    currentStep="3"
-                    totalSteps="3"
-                    prevClick={() =>
-                      setMultichainProductTourStep(
-                        multichainProductTourStep - 1,
-                      )
-                    }
-                    onClick={() => {
-                      hideProductTour();
-                    }}
-                    positionObj={productTourDirection === 'rtl' ? '88%' : '0%'}
-                    productTourDirection={productTourDirection}
-                  />
-                ) : null}
               </Box>
             </Box>
           ) : (

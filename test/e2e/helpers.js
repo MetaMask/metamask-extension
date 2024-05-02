@@ -8,7 +8,7 @@ const { difference } = require('lodash');
 const createStaticServer = require('../../development/create-static-server');
 const { tEn } = require('../lib/i18n-helpers');
 const { setupMocking } = require('./mock-e2e');
-const { Ganache } = require('./ganache');
+const { Ganache } = require('./seeder/ganache');
 const FixtureServer = require('./fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
@@ -57,7 +57,7 @@ async function withFixtures(options, testSuite) {
   const bundlerServer = new Bundler();
   const https = await mockttp.generateCACertificate();
   const mockServer = mockttp.getLocal({ https, cors: true });
-  let secondaryGanacheServer;
+  const secondaryGanacheServer = [];
   let numberOfDapps = dapp ? 1 : 0;
   const dappServer = [];
   const phishingPageServer = new PhishingWarningPageServer();
@@ -71,19 +71,28 @@ async function withFixtures(options, testSuite) {
 
     if (smartContract) {
       const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
-      await ganacheSeeder.deploySmartContract(smartContract);
+      const contracts =
+        smartContract instanceof Array ? smartContract : [smartContract];
+      await Promise.all(
+        contracts.map((contract) =>
+          ganacheSeeder.deploySmartContract(contract),
+        ),
+      );
       contractRegistry = ganacheSeeder.getContractRegistry();
     }
 
     if (ganacheOptions?.concurrent) {
-      const { port, chainId, ganacheOptions2 } = ganacheOptions.concurrent;
-      secondaryGanacheServer = new Ganache();
-      await secondaryGanacheServer.start({
-        blockTime: 2,
-        chain: { chainId },
-        port,
-        vmErrorsOnRPCResponse: false,
-        ...ganacheOptions2,
+      ganacheOptions.concurrent.forEach(async (ganacheSettings) => {
+        const { port, chainId, ganacheOptions2 } = ganacheSettings;
+        const server = new Ganache();
+        secondaryGanacheServer.push(server);
+        await server.start({
+          blockTime: 2,
+          chain: { chainId },
+          port,
+          vmErrorsOnRPCResponse: false,
+          ...ganacheOptions2,
+        });
       });
     }
 
@@ -255,7 +264,9 @@ async function withFixtures(options, testSuite) {
       await ganacheServer.quit();
 
       if (ganacheOptions?.concurrent) {
-        await secondaryGanacheServer.quit();
+        secondaryGanacheServer.forEach(async (server) => {
+          await server.quit();
+        });
       }
 
       if (useBundler) {
@@ -683,7 +694,7 @@ const connectToDapp = async (driver) => {
     tag: 'button',
   });
   await driver.clickElement({
-    text: 'Connect',
+    text: 'Confirm',
     tag: 'button',
   });
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);

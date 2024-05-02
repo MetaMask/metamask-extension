@@ -33,18 +33,18 @@ import useAlerts from '../../../../../hooks/useAlerts';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 
 export type AlertModalProps = {
-  /** The unique key representing the specific alert field */
+  /** The unique key representing the specific alert field. */
   alertKey: string;
   /**
-   * The navigation component passed when more exists more than one alert.
-   * It override `startAccessory` of ModalHeaderDefault and by default no navigation button is present.
+   * The start (left) content area of ModalHeader.
+   * It override `startAccessory` of ModalHeaderDefault and by default no content is present.
    */
   headerStartAccessory?: React.ReactNode;
   /** The owner ID of the relevant alert from the `confirmAlerts` reducer. */
   ownerId: string;
-  /** The key of the specific alert to display from the `confirmAlerts` reducer.  */
+  /** The function invoked when the user acknowledges the alert. */
   onAcknowledgeClick: () => void;
-  /** The function to be executed when the modal needs to be closed */
+  /** The function to be executed when the modal needs to be closed. */
   onClose: () => void;
 };
 
@@ -116,7 +116,7 @@ function AlertDetails({ selectedAlert }: { selectedAlert: Alert }) {
       borderRadius={BorderRadius.SM}
     >
       <Text variant={TextVariant.bodySm}>{selectedAlert.message}</Text>
-      {selectedAlert.alertDetails && selectedAlert.alertDetails?.length > 0 ? (
+      {selectedAlert.alertDetails?.length ? (
         <Text variant={TextVariant.bodySmBold} marginTop={1}>
           {t('alertModalDetails')}
         </Text>
@@ -144,6 +144,9 @@ function AcknowledgeCheckbox({
 }) {
   const t = useI18nContext();
   const severityStyle = getSeverityStyle(selectedAlert.severity);
+  const handleCheckboxClick = () => {
+    return setAlertConfirmed(selectedAlert.key, !isConfirmed);
+  };
   return (
     <Box
       display={Display.Flex}
@@ -158,7 +161,7 @@ function AcknowledgeCheckbox({
         label={t('alertModalAcknowledge')}
         data-testid="alert-modal-acknowledge-checkbox"
         isChecked={isConfirmed}
-        onClick={() => setAlertConfirmed(selectedAlert.key, !isConfirmed)}
+        onChange={handleCheckboxClick}
         alignItems={AlignItems.flexStart}
         className={'alert-modal__acknowledge-checkbox'}
       />
@@ -168,8 +171,10 @@ function AcknowledgeCheckbox({
 
 function AcknowledgeButton({
   onAcknowledgeClick,
+  isConfirmed,
 }: {
   onAcknowledgeClick: () => void;
+  isConfirmed: boolean;
 }) {
   const t = useI18nContext();
 
@@ -181,6 +186,7 @@ function AcknowledgeButton({
         onClick={onAcknowledgeClick}
         size={ButtonSize.Lg}
         data-testid="alert-modal-button"
+        disabled={!isConfirmed}
       >
         {t('gotIt')}
       </Button>
@@ -219,8 +225,8 @@ export function AlertModal({
           borderWidth={1}
           display={headerStartAccessory ? Display.InlineFlex : Display.Block}
         />
+        <AlertHeader selectedAlert={selectedAlert} />
         <ModalBody>
-          <AlertHeader selectedAlert={selectedAlert} />
           <AlertDetails selectedAlert={selectedAlert} />
           <AcknowledgeCheckbox
             selectedAlert={selectedAlert}
@@ -229,7 +235,10 @@ export function AlertModal({
           />
         </ModalBody>
         <ModalFooter>
-          <AcknowledgeButton onAcknowledgeClick={onAcknowledgeClick} />
+          <AcknowledgeButton
+            onAcknowledgeClick={onAcknowledgeClick}
+            isConfirmed={isConfirmed}
+          />
         </ModalFooter>
       </ModalContent>
     </Modal>

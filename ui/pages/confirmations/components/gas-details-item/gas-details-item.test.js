@@ -8,6 +8,7 @@ import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 import { renderWithProvider } from '../../../../../test/jest';
 import configureStore from '../../../../store/store';
 
+import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
 import GasDetailsItem from './gas-details-item';
 
 jest.mock('../../../../store/actions', () => ({
@@ -21,13 +22,16 @@ jest.mock('../../../../store/actions', () => ({
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
 }));
 
+const mockSelectedInternalAccount =
+  getSelectedInternalAccountFromMockState(mockState);
+
 const render = async ({ contextProps } = {}) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
       accounts: {
-        [mockState.metamask.selectedAddress]: {
-          address: mockState.metamask.selectedAddress,
+        [mockSelectedInternalAccount.address]: {
+          address: mockSelectedInternalAccount.address,
           balance: '0x1F4',
         },
       },
@@ -201,6 +205,91 @@ describe('GasDetailsItem', () => {
     await waitFor(() => {
       expect(screen.queryAllByTitle('0.001113 ETH').length).toBeGreaterThan(0);
       expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
+    });
+  });
+
+  it('does not render icon if network is not busy', async () => {
+    await render();
+    await waitFor(() => {
+      expect(
+        screen.queryByTestId('network-busy-tooltip'),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  it('does not render icon if txParams.type is set to 0x0', async () => {
+    await render({
+      contextProps: {
+        gasFeeEstimates: {
+          high: {
+            suggestedMaxPriorityFeePerGas: '1',
+          },
+        },
+        gasFeeEstimatesByChainId: {
+          ...mockState.metamask.gasFeeEstimatesByChainId,
+          '0x5': {
+            gasFeeEstimates: {
+              high: {
+                suggestedMaxPriorityFeePerGas: '1',
+              },
+              networkCongestion: 0.7,
+            },
+          },
+        },
+        transaction: {
+          txParams: {
+            type: '0x0',
+          },
+          userFeeLevel: 'medium',
+          dappSuggestedGasFees: {
+            maxPriorityFeePerGas: '0x38D7EA4C68000',
+            maxFeePerGas: '0x38D7EA4C68000',
+          },
+        },
+      },
+    });
+    await waitFor(() => {
+      expect(
+        screen.queryByTestId('network-busy-tooltip'),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  it('renders icon if network is busy', async () => {
+    await render({
+      contextProps: {
+        gasFeeEstimates: {
+          high: {
+            suggestedMaxPriorityFeePerGas: '1',
+          },
+        },
+        gasFeeEstimatesByChainId: {
+          ...mockState.metamask.gasFeeEstimatesByChainId,
+          '0x5': {
+            gasFeeEstimates: {
+              high: {
+                suggestedMaxPriorityFeePerGas: '1',
+              },
+              networkCongestion: 0.7,
+            },
+          },
+        },
+        transaction: {
+          txParams: {
+            gas: '0x52081',
+            maxFeePerGas: '0x38D7EA4C68000',
+          },
+          userFeeLevel: 'medium',
+          dappSuggestedGasFees: {
+            maxPriorityFeePerGas: '0x38D7EA4C68000',
+            maxFeePerGas: '0x38D7EA4C68000',
+          },
+        },
+      },
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('network-busy-tooltip')).toBeInTheDocument();
     });
   });
 });

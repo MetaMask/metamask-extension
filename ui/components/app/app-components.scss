@@ -7,7 +7,6 @@
 @import 'cancel-speedup-popover/index';
 @import 'confirmations/alerts/alert-modal/index';
 @import 'confirmations/alerts/inline-alert/index';
-@import 'confirmations/alerts/multiple-alert-modal/index';
 @import 'import-token/index';
 @import 'nfts-items/index';
 @import 'nfts-tab/index';
@@ -39,13 +38,13 @@
 @import 'network-display/index';
 @import 'incoming-trasaction-toggle/network-toggle';
 @import 'permission-page-container/index';
-@import 'permissions-connect-footer/index';
 @import 'permissions-connect-header/index';
 @import 'permissions-connect-permission-list/index';
 @import 'permission-cell/index';
 @import 'recovery-phrase-reminder/index';
 @import 'step-progress-bar/index.scss';
 @import 'selected-account/index';
+@import 'smart-transactions/index';
 @import 'srp-input/srp-input';
 @import 'snaps/snap-privacy-warning/index';
 @import 'tab-bar/index';

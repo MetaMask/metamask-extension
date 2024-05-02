@@ -20,10 +20,7 @@ import {
   removePermittedAccount,
   setSelectedAccount,
 } from '../../../store/actions';
-import {
-  getOriginOfCurrentTab,
-  getPermissionsForActiveTab,
-} from '../../../selectors';
+import { getPermissionsForActiveTab } from '../../../selectors';
 import { PermissionDetailsModal } from '../permission-details-modal/permission-details-modal';
 import { Identity } from './connected-accounts-menu.types';
 
@@ -33,22 +30,23 @@ const TsMenuItem = MenuItem as any;
 
 export const ConnectedAccountsMenu = ({
   isOpen,
-  identity,
+  account,
   anchorElement,
   disableAccountSwitcher = false,
   onClose,
   closeMenu,
   onActionClick,
+  activeTabOrigin,
 }: {
   isOpen: boolean;
-  identity: Identity;
+  account: Identity;
   anchorElement: HTMLElement | null;
   disableAccountSwitcher: boolean;
   onClose: () => void;
   closeMenu: () => void;
   onActionClick: (message: string) => void;
+  activeTabOrigin: string;
 }) => {
-  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const dispatch = useDispatch();
   const t = useI18nContext();
   const popoverDialogRef = useRef<HTMLDivElement | null>(null);
@@ -123,7 +121,7 @@ export const ConnectedAccountsMenu = ({
                 iconName={IconName.SwapHorizontal}
                 data-testid="switch-account-menu-item"
                 onClick={() => {
-                  dispatch(setSelectedAccount(identity.address));
+                  dispatch(setSelectedAccount(account.address));
                   onClose();
                   closeMenu();
                 }}
@@ -138,9 +136,9 @@ export const ConnectedAccountsMenu = ({
               iconColor={IconColor.errorDefault}
               data-testid="disconnect-menu-item"
               onClick={() => {
-                onActionClick(identity.metadata.name);
+                onActionClick(account.metadata.name);
                 dispatch(
-                  removePermittedAccount(activeTabOrigin, identity.address),
+                  removePermittedAccount(activeTabOrigin, account.address),
                 );
               }}
             >
@@ -154,9 +152,9 @@ export const ConnectedAccountsMenu = ({
       {showPermissionModal ? (
         <PermissionDetailsModal
           isOpen={showPermissionModal}
-          account={identity}
+          account={account}
           onClick={() => {
-            dispatch(removePermittedAccount(activeTabOrigin, identity.address));
+            dispatch(removePermittedAccount(activeTabOrigin, account.address));
           }}
           onClose={() => setShowPermissionModal(false)}
           permissions={permissions}

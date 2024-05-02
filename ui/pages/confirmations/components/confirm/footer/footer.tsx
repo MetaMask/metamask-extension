@@ -1,7 +1,6 @@
+import { ethErrors, serializeError } from 'eth-rpc-errors';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ethErrors, serializeError } from 'eth-rpc-errors';
-
 import {
   Button,
   ButtonSize,
@@ -19,6 +18,7 @@ import {
   resolvePendingApproval,
 } from '../../../../../store/actions';
 import { confirmSelector } from '../../../selectors';
+import { getConfirmationSender } from '../utils';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { MultipleAlertModal } from '../../../../../components/app/confirmations/alerts/multiple-alert-modal';
 import {
@@ -109,11 +109,8 @@ const Footer = () => {
   const { mmiOnSignCallback, mmiSubmitDisabled } = useMMIConfirmations();
   ///: END:ONLY_INCLUDE_IF
 
-  let from: string | undefined;
-  // todo: extend to other confirmation types
-  if (currentConfirmation?.msgParams) {
-    from = currentConfirmation.msgParams.from;
-  }
+  const { from } = getConfirmationSender(currentConfirmation);
+
   const hardwareWalletRequiresConnection = useSelector((state) => {
     if (from) {
       return doesAddressRequireLedgerHidConnection(state, from);

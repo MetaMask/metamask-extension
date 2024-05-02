@@ -190,6 +190,7 @@ async function defineAndRunBuildTasks() {
   const styleTasks = createStyleTasks({ livereload });
 
   const scriptTasks = createScriptTasks({
+    shouldIncludeSnow,
     applyLavaMoat,
     browserPlatforms,
     buildType,

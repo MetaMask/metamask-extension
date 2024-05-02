@@ -133,6 +133,9 @@ workflows:
       - prep-build-multichain-test:
           requires:
             - prep-deps
+      - prep-build-confirmation-redesign-test:
+          requires:
+            - prep-deps
       - prep-build-test-mv3:
           requires:
             - prep-deps
@@ -168,9 +171,15 @@ workflows:
       - test-e2e-chrome-multichain:
           requires:
             - prep-build-multichain-test
+      - test-e2e-chrome-confirmation-redesign:
+          requires:
+            - prep-build-confirmation-redesign-test
       - test-e2e-firefox:
           requires:
             - prep-build-test
+      - test-e2e-firefox-confirmation-redesign:
+          requires:
+            - prep-build-confirmation-redesign-test
       - test-e2e-chrome-rpc:
           requires:
             - prep-build-test
@@ -283,6 +292,8 @@ workflows:
             - test-e2e-chrome
             - test-e2e-chrome-multichain
             - test-e2e-chrome-multiple-providers
+            - test-e2e-chrome-confirmation-redesign
+            - test-e2e-firefox-confirmation-redesign
             - test-e2e-firefox
             - test-e2e-chrome-flask
             - test-e2e-firefox-flask
@@ -404,6 +415,7 @@ jobs:
             PR_RESPONSE=$(curl -s -H "Authorization: token ${GITHUB_TOKEN}" \
               "https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls?state=open&head=${CIRCLE_PROJECT_USERNAME}:${BRANCH}")
             echo "https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls?state=open&head=${CIRCLE_PROJECT_USERNAME}:${BRANCH}"
+
             # Check if the response contains valid JSON
             if ! echo "$PR_RESPONSE" | jq empty; then
                 echo "Failed to parse JSON response."
@@ -416,6 +428,16 @@ jobs:
                 echo "$PR_RESPONSE"
                 echo "Expected an array of PRs, got something else."
                 exit 1
+            fi
+
+            # Check if the array of PRs is empty
+            PR_COUNT=$(echo "$PR_RESPONSE" | jq '. | length')
+
+            # If no PRs are found, exit gracefully
+            if [ "$PR_COUNT" -eq 0 ]; then
+              echo "No open PRs found. Exiting."
+              echo "false" > ./RUN_MMI_OPTIONAL
+              exit 0
             fi
 
             # Extract label names from the PR_RESPONSE
@@ -792,6 +814,27 @@ jobs:
             - dist-test-multichain
             - builds-test-multichain
 
+  prep-build-confirmation-redesign-test:
+    executor: node-browsers-medium-plus
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build extension for testing
+          command: ENABLE_CONFIRMATION_REDESIGN=1 yarn build:test
+      - run:
+          name: Move test build to 'dist-test' to avoid conflict with production build
+          command: mv ./dist ./dist-test-confirmations
+      - run:
+          name: Move test zips to 'builds-test' to avoid conflict with production build
+          command: mv ./builds ./builds-test-confirmations
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-test-confirmations
+            - builds-test-confirmations
+
   prep-build-storybook:
     executor: node-browsers-medium-plus
     steps:
@@ -974,6 +1017,35 @@ jobs:
           no_output_timeout: 5m
           environment:
             MULTICHAIN: 1
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e
+
+  test-e2e-chrome-confirmation-redesign:
+    executor: node-browsers-medium-plus
+    parallelism: 20
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-confirmations ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-confirmations ./builds
+      - run:
+          name: test:e2e:chrome-confirmation-redesign
+          command: |
+            if .circleci/scripts/test-run-e2e.sh
+            then
+              timeout 20m yarn test:e2e:chrome --retries 2
+            fi
+          no_output_timeout: 5m
+          environment:
+            ENABLE_CONFIRMATION_REDESIGN: 1
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -1249,6 +1321,36 @@ jobs:
       - store_test_results:
           path: test/test-results/e2e
 
+  test-e2e-firefox-confirmation-redesign:
+    executor: node-browsers-medium-plus
+    parallelism: 20
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-confirmations ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-confirmations ./builds
+      - run:
+          name: test:e2e:firefox-confirmation-redesign
+          command: |
+            if .circleci/scripts/test-run-e2e.sh
+            then
+              timeout 20m yarn test:e2e:firefox --retries 2
+            fi
+          no_output_timeout: 5m
+          environment:
+            ENABLE_CONFIRMATION_REDESIGN: 1
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e
+
+
   benchmark:
     executor: node-browsers-small
     steps:
@@ -1333,7 +1435,7 @@ jobs:
             - test-artifacts
 
   job-publish-prerelease:
-    executor: node-browsers-small
+    executor: node-browsers-medium
     steps:
       - checkout
       - attach_workspace:
@@ -1373,13 +1475,9 @@ jobs:
           path: test-artifacts
           destination: test-artifacts
       # important: generate lavamoat viz AFTER uploading builds as artifacts
-      # Temporarily disabled until we can update to a version of `sesify` with
-      # this fix included: https://github.com/LavaMoat/LavaMoat/pull/121
-      # Disabled 2024-03-25 due to flakiness.
-      #   - see: https://github.com/MetaMask/metamask-extension/issues/23704
-      #- run:
-      #    name: build:lavamoat-viz
-      #    command: ./.circleci/scripts/create-lavamoat-viz.sh
+      - run:
+          name: build:lavamoat-viz
+          command: ./.circleci/scripts/create-lavamoat-viz.sh
       - store_artifacts:
           path: build-artifacts
           destination: build-artifacts
