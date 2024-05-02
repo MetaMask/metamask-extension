@@ -3068,7 +3068,7 @@ export function setPetnamesEnabled(value: boolean) {
 }
 
 export function setRedesignedConfirmationsEnabled(value: boolean) {
-  return setPreference('redesignedConfirmations', value);
+  return setPreference('redesignedConfirmationsEnabled', value);
 }
 
 export function setFeatureNotificationsEnabled(value: boolean) {
