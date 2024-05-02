@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "11.14.0",
+  "version": "11.14.4",
   "private": true,
   "repository": {
     "type": "git",
@@ -310,7 +310,7 @@
     "@metamask/obs-store": "^8.1.0",
     "@metamask/permission-controller": "^9.0.1",
     "@metamask/permission-log-controller": "^1.0.0",
-    "@metamask/phishing-controller": "^8.0.2",
+    "@metamask/phishing-controller": "^9.0.2",
     "@metamask/post-message-stream": "^8.0.0",
     "@metamask/ppom-validator": "^0.29.0",
     "@metamask/providers": "^14.0.2",
@@ -608,7 +608,7 @@
     "ts-node": "^10.9.2",
     "tsx": "^4.7.1",
     "ttest": "^2.1.1",
-    "typescript": "~5.3.3",
+    "typescript": "~5.4.5",
     "vinyl": "^2.2.1",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
