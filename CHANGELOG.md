@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [11.14.5]
+### Fixed
+- Prevent users from making fund loss errors while editing transactions by removing the edit button when on any confirmation screen for a transaction proposed by a dapp ([#24322](https://github.com/MetaMask/metamask-extension/pull/24322))
+- Reduce failed simulations on NFT mint confirmations ([#24350]https://github.com/MetaMask/metamask-extension/pull/24350)
 
 ## [11.14.4]
 ### Fixed
