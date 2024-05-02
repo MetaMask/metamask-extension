@@ -13,6 +13,3 @@ jobs:
     - uses: amannn/action-semantic-pull-request@e9fabac35e210fea40ca5b14c0da95a099eff26f
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - name: Debug Output
-      if: failure() # This step will run only if the previous step fails
-      run: echo "The check failed!"
