@@ -11,12 +11,11 @@ export const useKnownMethodDataInTransaction = (
 ) => {
   const dispatch = useDispatch();
   const use4ByteResolution = useSelector(use4ByteResolutionSelector);
-  if (use4ByteResolution && currentConfirmation?.txParams?.data) {
+  const transactionData = currentConfirmation?.txParams?.data;
+  if (use4ByteResolution && transactionData) {
     dispatch(getContractMethodData(currentConfirmation.txParams.data));
   }
   const knownMethodData =
-    useSelector((state) =>
-      getKnownMethodData(state, currentConfirmation?.txParams?.data),
-    ) || {};
+    useSelector((state) => getKnownMethodData(state, transactionData)) || {};
   return { knownMethodData };
 };

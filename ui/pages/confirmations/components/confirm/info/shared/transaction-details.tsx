@@ -19,14 +19,20 @@ const OriginRow = () => {
     currentConfirmationSelector,
   ) as TransactionMeta;
 
-  return currentConfirmation?.origin ? (
+  const origin = currentConfirmation.origin;
+
+  if (!origin) {
+    return null;
+  }
+
+  return (
     <ConfirmInfoRow
       label={t('requestFrom')}
       tooltip={t('requestFromTransactionDescription')}
     >
-      <ConfirmInfoRowUrl url={currentConfirmation.origin} />
+      <ConfirmInfoRowUrl url={origin} />
     </ConfirmInfoRow>
-  ) : null;
+  );
 };
 
 const RecipientRow = () => {
@@ -36,15 +42,21 @@ const RecipientRow = () => {
     currentConfirmationSelector,
   ) as TransactionMeta;
 
-  return currentConfirmation?.txParams.to &&
-    isValidAddress(currentConfirmation.txParams.to) ? (
+  if (
+    !currentConfirmation.txParams.to ||
+    !isValidAddress(currentConfirmation.txParams.to)
+  ) {
+    return null;
+  }
+
+  return (
     <ConfirmInfoRow
       label={t('interactingWith')}
       tooltip={t('interactingWithTransactionDescription')}
     >
       <ConfirmInfoRowAddress address={currentConfirmation.txParams.to} />
     </ConfirmInfoRow>
-  ) : null;
+  );
 };
 
 const MethodDataRow = () => {
@@ -57,14 +69,18 @@ const MethodDataRow = () => {
   const { knownMethodData } =
     useKnownMethodDataInTransaction(currentConfirmation);
 
-  return knownMethodData?.name ? (
+  if (!knownMethodData?.name) {
+    return null;
+  }
+
+  return (
     <ConfirmInfoRow
       label={t('methodData')}
       tooltip={t('methodDataTransactionDescription')}
     >
       <ConfirmInfoRowText text={knownMethodData.name} />
     </ConfirmInfoRow>
-  ) : null;
+  );
 };
 
 export const TransactionDetails = () => {
