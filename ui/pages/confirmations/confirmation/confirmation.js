@@ -460,6 +460,22 @@ export default function ConfirmationPage({
   };
   const handleSubmit = async () => {
     setLoading(true);
+
+    trackEvent({
+      category: MetaMetricsEventCategory.Network,
+      event: MetaMetricsEventName.NavNetworkSwitched,
+      properties: {
+        location: 'Switch Modal',
+        from_network:
+          pendingConfirmation.requestData.fromNetworkConfiguration.chainId,
+        to_network:
+          pendingConfirmation.requestData.toNetworkConfiguration.chainId,
+        referrer: {
+          url: window.location.origin,
+        },
+      },
+    });
+
     if (templateState[pendingConfirmation.id]?.useWarningModal) {
       setShowWarningModal(true);
     } else {
@@ -469,21 +485,6 @@ export default function ConfirmationPage({
       // submit result is an array of errors or empty on success
       const submitResult = await templatedValues.onSubmit(inputState);
       handleSubmitResult(submitResult);
-
-      this.context.trackEvent({
-        category: MetaMetricsEventCategory.Network,
-        event: MetaMetricsEventName.NavNetworkSwitched,
-        properties: {
-          location: 'Switch Modal',
-          from_network:
-            pendingConfirmation.requestData.fromNetworkConfiguration.chainId,
-          to_network:
-            pendingConfirmation.requestData.toNetworkConfiguration.chainId,
-          referrer: {
-            url: window.location.origin,
-          },
-        },
-      });
     }
   };
 

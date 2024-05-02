@@ -39,6 +39,10 @@ describe('Track Event Test', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTwoTestDapps()
           .withNetworkControllerDoubleGanache()
+          .withMetaMetricsController({
+            metaMetricsId: 'fake-metrics-id',
+            participateInMetaMetrics: true,
+          })
           .build(),
         dappOptions: { numberOfDapps: 2 },
         ganacheOptions: {

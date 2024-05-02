@@ -6,27 +6,54 @@ const {
   DAPP_URL,
   DAPP_ONE_URL,
   unlockWallet,
+  getEventPayloads,
   switchToNotificationWindow,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const {
+  MetaMetricsEventName,
+} = require('../../../shared/constants/metametrics');
 
 describe('Switch Ethereum Chain for two dapps', function () {
   it('switches the chainId of two dapps when switchEthereumChain of one dapp is confirmed', async function () {
+    async function mockSegment(mockServer) {
+      return [
+        await mockServer
+          .forPost('https://api.segment.io/v1/batch')
+          .withJsonBodyIncluding({
+            batch: [
+              { type: 'track', event: MetaMetricsEventName.NavNetworkSwitched },
+            ],
+          })
+          .thenCallback(() => {
+            return {
+              statusCode: 200,
+            };
+          }),
+      ];
+    }
+
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTwoTestDapps()
           .withNetworkControllerDoubleGanache()
+          .withMetaMetricsController({
+            metaMetricsId: 'fake-metrics-id',
+            participateInMetaMetrics: true,
+          })
           .build(),
+        testSpecificMock: mockSegment,
         dappOptions: { numberOfDapps: 2 },
+
         ganacheOptions: {
           ...defaultGanacheOptions,
           concurrent: [{ port: 8546, chainId: 1338 }],
         },
         title: this.test.fullTitle(),
       },
-      async ({ driver }) => {
+      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await unlockWallet(driver);
 
         // open two dapps
@@ -77,6 +104,15 @@ describe('Switch Ethereum Chain for two dapps', function () {
 
         // Dapp Two ChainId Assertion
         await driver.findElement({ css: '#chainId', text: '0x53a' });
+
+        const events = await getEventPayloads(driver, mockedEndpoints);
+        assert.equal(events.length, 1);
+        assert.deepStrictEqual(events[0].properties, {
+          location: 'Switch Modal',
+          from_network: '0x1',
+          to_network: '0x2',
+          referrer: { url: window.location.origin },
+        });
       },
     );
   });
