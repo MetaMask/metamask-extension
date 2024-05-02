@@ -45,17 +45,11 @@ describe('Personal Sign', function (this: Suite) {
           WINDOW_TITLES.Dialog
         );
 
-        const origin = await driver.isElementPresent({
-          text: DAPP_URL_WITHOUT_SCHEMA,
-          tag: 'p',
-        });
-        const message = await driver.isElementPresent({
-          text: 'Example `personal_sign` message',
-          tag: 'p',
-        });
+        const origin = driver.findElement({ text: DAPP_URL_WITHOUT_SCHEMA });
+        const message = driver.findElement({ text: 'Example `personal_sign` message' });
 
-        assert.ok(origin);
-        assert.ok(message);
+        assert.ok(await origin);
+        assert.ok(await message);
 
         await driver.clickElement('[data-testid="confirm-footer-button"]');
 
