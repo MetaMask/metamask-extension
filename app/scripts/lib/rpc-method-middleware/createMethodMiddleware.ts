@@ -2,6 +2,7 @@ import { permissionRpcMethods } from '@metamask/permission-controller';
 import { selectHooks } from '@metamask/snaps-rpc-methods';
 import { hasProperty } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
+import { JsonRpcMiddleware } from 'json-rpc-engine';
 import { UNSUPPORTED_RPC_METHODS } from '../../../../shared/constants/network';
 import localHandlers from './handlers';
 
@@ -24,16 +25,18 @@ const expectedHookNames = new Set(
  * Handlers consume functions that hook into the background, and only depend
  * on their signatures, not e.g. controller internals.
  *
- * @param {Record<string, unknown>} hooks - Required "hooks" into our
+ * @param hooks - Required "hooks" into our
  * controllers.
- * @returns {(req: object, res: object, next: Function, end: Function) => void}
+ * @returns The method middleware function.
  */
-export function createMethodMiddleware(hooks) {
+export function createMethodMiddleware(
+  hooks: Record<string, unknown>,
+): JsonRpcMiddleware<unknown, unknown> {
   assertExpectedHook(hooks);
 
   return async function methodMiddleware(req, res, next, end) {
     // Reject unsupported methods.
-    if (UNSUPPORTED_RPC_METHODS.has(req.method)) {
+    if ((UNSUPPORTED_RPC_METHODS as Set<string>).has(req.method)) {
       return end(ethErrors.rpc.methodNotSupported());
     }
 
@@ -53,7 +56,11 @@ export function createMethodMiddleware(hooks) {
         if (process.env.METAMASK_DEBUG) {
           console.error(error);
         }
-        return end(error);
+        return end(
+          error instanceof Error
+            ? error
+            : ethErrors.rpc.internal({ data: error }),
+        );
       }
     }
 
@@ -64,11 +71,10 @@ export function createMethodMiddleware(hooks) {
 /**
  * Asserts that the hooks object only has all expected hooks and no extraneous ones.
  *
- * @param {Record<string, unknown>} hooks - Required "hooks" into our
- * controllers.
+ * @param hooks - Required "hooks" into our controllers.
  */
-function assertExpectedHook(hooks) {
-  const missingHookNames = [];
+function assertExpectedHook(hooks: Record<string, unknown>) {
+  const missingHookNames: string[] = [];
   expectedHookNames.forEach((hookName) => {
     if (!hasProperty(hooks, hookName)) {
       missingHookNames.push(hookName);
