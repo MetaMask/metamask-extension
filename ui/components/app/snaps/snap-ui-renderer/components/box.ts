@@ -1,4 +1,4 @@
-import { BoxElement } from '@metamask/snaps-sdk/jsx';
+import { BoxElement, JSXElement } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
 import {
   Display,
@@ -14,7 +14,7 @@ export const box: UIComponentFactory<BoxElement> = ({
 }) => ({
   element: 'Box',
   children: getJsxChildren(element).map((children) =>
-    mapToTemplate({ ...params, element: children }),
+    mapToTemplate({ ...params, element: children as JSXElement }),
   ),
   props: {
     display: Display.Flex,

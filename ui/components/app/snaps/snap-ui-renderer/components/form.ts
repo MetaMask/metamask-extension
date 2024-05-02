@@ -1,4 +1,4 @@
-import { FormElement } from '@metamask/snaps-sdk/jsx';
+import { FormElement, JSXElement } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
 import { mapToTemplate } from '../utils';
 import { UIComponentFactory } from './types';
@@ -8,10 +8,9 @@ export const form: UIComponentFactory<FormElement> = ({
   ...params
 }) => ({
   element: 'SnapUIForm',
-  // @ts-expect-error This seems to be compatibility issue between superstruct and this repo.
   children: getJsxChildren(element).map((children) =>
     mapToTemplate({
-      element: children,
+      element: children as JSXElement,
       form: element.props.name,
       ...params,
     }),
