@@ -858,8 +858,8 @@ export function getPetnamesEnabled(state) {
 }
 
 export function getRedesignedConfirmationsEnabled(state) {
-  const { redesignedConfirmations } = getPreferences(state);
-  return redesignedConfirmations;
+  const { redesignedConfirmationsEnabled } = getPreferences(state);
+  return redesignedConfirmationsEnabled;
 }
 
 export function getFeatureNotificationsEnabled(state) {
