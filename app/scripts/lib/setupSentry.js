@@ -41,6 +41,9 @@ export const MMI_SENTRY_BACKGROUND_STATE = {
 // sent to Sentry These properties have some potential to be useful for
 // debugging, and they do not contain any identifiable information.
 export const SENTRY_BACKGROUND_STATE = {
+  AuthenticationController: {
+    isSignedIn: false,
+  },
   AccountsController: {
     internalAccounts: {
       accounts: false,
@@ -111,9 +114,6 @@ export const SENTRY_BACKGROUND_STATE = {
     timeoutMinutes: true,
     trezorModel: true,
     usedNetworks: true,
-  },
-  AuthenticationController: {
-    isSignedIn: false,
   },
   MetamaskNotificationsController: {
     isFeatureAnnouncementsEnabled: false,
