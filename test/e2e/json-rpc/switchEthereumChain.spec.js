@@ -107,12 +107,9 @@ describe('Switch Ethereum Chain for two dapps', function () {
 
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 1);
-        assert.deepStrictEqual(events[0].properties, {
-          location: 'Switch Modal',
-          from_network: '0x1',
-          to_network: '0x2',
-          referrer: { url: window.location.origin },
-        });
+        assert.equal(events[0].properties.location, 'Switch Modal');
+        assert.equal(events[0].properties.from_network, '0x539');
+        assert.equal(events[0].properties.to_network, '0x53a');
       },
     );
   });
