@@ -32,18 +32,12 @@ export const ConfirmInfoRowCurrency = ({
       columnGap: '8px',
       fontSize: 'var(--font-size-3)',
     }}
+    data-testid={dataTestId}
   >
     {currency ? (
-      <CurrencyDisplay
-        currency={currency}
-        value={`${value}`}
-        data-testid={dataTestId}
-      />
+      <CurrencyDisplay currency={currency} value={`${value}`} />
     ) : (
-      <UserPreferencedCurrencyDisplay
-        value={`${value}`}
-        data-testid={dataTestId}
-      />
+      <UserPreferencedCurrencyDisplay value={`${value}`} />
     )}
   </Box>
 );

@@ -8,21 +8,24 @@ const {
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
-describe('Header component', function () {
+const SIGNATURE_CONFIRMATIONS = [
+  { name: 'Personal Sign signature', testDAppBtnId: 'personalSign' },
+  { name: 'Sign Typed Data signature', testDAppBtnId: 'signTypedData' },
+  { name: 'Sign Typed Data v3 signature', testDAppBtnId: 'signTypedDataV3' },
+  { name: 'Sign Typed Data v4 signature', testDAppBtnId: 'signTypedDataV4' },
+  { name: 'Sign Permit signature', testDAppBtnId: 'signPermit' },
+];
+
+const WALLET_ADDRESS = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
+const WALLET_ETH_BALANCE = '25';
+
+describe('Confirmation Header Component', function () {
   if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
     return;
   }
 
-  const SIGNATURE_CONFIRMATIONS = [
-    { name: 'Personal Sign signature', testDAppBtnId: 'personalSign' },
-    { name: 'Sign Typed Data signature', testDAppBtnId: 'signTypedData' },
-    { name: 'Sign Typed Data v3 signature', testDAppBtnId: 'signTypedDataV3' },
-    { name: 'Sign Typed Data v4 signature', testDAppBtnId: 'signTypedDataV4' },
-    { name: 'Sign Permit signature', testDAppBtnId: 'signPermit' },
-  ];
-
   SIGNATURE_CONFIRMATIONS.forEach((confirmation) => {
-    it(`${confirmation.name} component includes header with balance and copyable address element`, async function () {
+    it(`${confirmation.name} component includes header with balance`, async function () {
       await withFixtures(
         {
           dapp: true,
@@ -39,14 +42,42 @@ describe('Header component', function () {
           await unlockWallet(driver);
           await openDapp(driver);
 
-          const WALLET_ADDRESS = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
+          await clickConfirmationBtnOnTestDapp(
+            driver,
+            confirmation.testDAppBtnId,
+          );
+          await clickHeaderInfoBtn(driver);
+
+          await assertHeaderInfoBalance(driver, WALLET_ETH_BALANCE);
+        },
+      );
+    });
+
+    it(`${confirmation.name} component includes copyable address element`, async function () {
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withPermissionControllerConnectedToTestDapp()
+            .withPreferencesController({
+              preferences: { redesignedConfirmations: true },
+            })
+            .build(),
+          ganacheOptions: defaultGanacheOptions,
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver }) => {
+          await unlockWallet(driver);
+          await openDapp(driver);
 
           await clickConfirmationBtnOnTestDapp(
             driver,
             confirmation.testDAppBtnId,
           );
-          await clickHeaderInfoBtnAndAssertBalance(driver);
-          await copyAddressAndAssertPastedValue(driver, WALLET_ADDRESS);
+          await clickHeaderInfoBtn(driver);
+          await copyAddressAndPasteWalletAddress(driver);
+
+          await assertPastedAddress(driver, WALLET_ADDRESS);
         },
       );
     });
@@ -57,30 +88,27 @@ describe('Header component', function () {
       await driver.delay(2000);
     }
 
-    async function clickHeaderInfoBtnAndAssertBalance(driver) {
+    async function clickHeaderInfoBtn(driver) {
       await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-      const headerInfoButtonEl = await driver.findElement(
-        'button[data-testid="header-info-button"]',
-      );
-      headerInfoButtonEl.click();
+      await driver.clickElement('button[data-testid="header-info-button"]');
+    }
 
-      const tokenValue = '25';
+    async function assertHeaderInfoBalance(driver, walletEthBalance) {
       const headerBalanceEl = await driver.findElement(
         '[data-testid="header-balance"]',
       );
       await driver.waitForNonEmptyElement(headerBalanceEl);
-      assert.equal(await headerBalanceEl.getText(), `${tokenValue}\nETH`);
+      assert.equal(await headerBalanceEl.getText(), `${walletEthBalance}\nETH`);
     }
 
-    async function copyAddressAndAssertPastedValue(driver, walletAddress) {
-      const addressCopyBtnEl = await driver.findElement(
-        '[data-testid="address-copy-button-text"]',
-      );
-      addressCopyBtnEl.click();
-
+    async function copyAddressAndPasteWalletAddress(driver) {
+      await driver.clickElement('[data-testid="address-copy-button-text"]');
       await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
       await driver.findElement('#eip747ContractAddress');
       await driver.pasteFromClipboardIntoField('#eip747ContractAddress');
+    }
+
+    async function assertPastedAddress(driver, walletAddress) {
       const formFieldEl = await driver.findElement('#eip747ContractAddress');
       assert.equal(await formFieldEl.getProperty('value'), walletAddress);
     }

@@ -13,7 +13,6 @@ export type UserPrefrencedCurrencyDisplayProps = OverridingUnion<
     showFiat?: boolean;
     showNative?: boolean;
     showCurrencySuffix?: boolean;
-    'data-testid'?: string;
   }
 >;
 
