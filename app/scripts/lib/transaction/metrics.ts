@@ -224,6 +224,7 @@ export const handleTransactionConfirmed = async (
     eventName: TransactionMetaMetricsEvent.finalized,
     extraParams,
     transactionEventPayload: {
+      actionId: transactionMeta.actionId,
       transactionMeta,
     },
     transactionMetricsRequest,
