@@ -15,7 +15,7 @@ const handlerMap = allHandlers.reduce((map, handler) => {
 }, new Map());
 
 const expectedHookNames = new Set(
-  allHandlers.flatMap(({ hookNames }) => Object.keys(hookNames)),
+  allHandlers.flatMap(({ hookNames }) => Object.getOwnPropertyNames(hookNames)),
 );
 
 /**
@@ -80,7 +80,7 @@ function assertExpectedHook(hooks) {
     );
   }
 
-  const extraneousHookNames = Object.keys(hooks).filter(
+  const extraneousHookNames = Object.getOwnPropertyNames(hooks).filter(
     (hookName) => !expectedHookNames.has(hookName),
   );
   if (extraneousHookNames.length > 0) {
