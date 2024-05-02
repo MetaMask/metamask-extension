@@ -1,0 +1,24 @@
+diff --git a/dist/crypto-compare.js b/dist/crypto-compare.js
+index 657cbaaa1784a90e6662f034cb45ab43326d9fe0..da29f26718049c5e99d26f66f415c3b86aa8a317 100644
+--- a/dist/crypto-compare.js
++++ b/dist/crypto-compare.js
+@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.fetchExchangeRate = void 0;
+ const controller_utils_1 = require("@metamask/controller-utils");
++var nativeSymbolOverrides = /* @__PURE__ */ new Map([["MNT", "MANTLE"]]);
+ /**
+  * Get the CryptoCompare API URL for getting the conversion rate from the given native currency to
+  * the given currency. Optionally, the conversion rate from the native currency to USD can also be
+@@ -23,8 +24,10 @@ const controller_utils_1 = require("@metamask/controller-utils");
+  * @returns The API URL for getting the conversion rate.
+  */
+ function getPricingURL(currentCurrency, nativeCurrency, includeUSDRate) {
++    nativeCurrency = nativeCurrency.toUpperCase();
++    const fsym = nativeSymbolOverrides.get(nativeCurrency) ?? nativeCurrency;
+     return (`https://min-api.cryptocompare.com/data/price?fsym=` +
+-        `${nativeCurrency.toUpperCase()}&tsyms=${currentCurrency.toUpperCase()}` +
++        `${fsym}&tsyms=${currentCurrency.toUpperCase()}` +
+         `${includeUSDRate && currentCurrency.toUpperCase() !== 'USD' ? ',USD' : ''}`);
+ }
+ /**
