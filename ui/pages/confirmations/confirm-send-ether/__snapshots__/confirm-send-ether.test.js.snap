@@ -80,21 +80,6 @@ exports[`ConfirmSendEther should render correct information for for confirm send
         class="confirm-page-container-header__row"
       >
         <div
-          class="confirm-page-container-header__back-button-container"
-          style="visibility: initial;"
-        >
-          <span
-            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/arrow-left.svg');"
-          />
-          <span
-            class="confirm-page-container-header__back-button"
-            data-testid="confirm-page-back-edit-button"
-          >
-            Edit
-          </span>
-        </div>
-        <div
           class="network-display chip chip--with-left-icon chip--border-color-border-muted chip--background-color-undefined chip--max-content"
           data-testid="network-display"
         >
