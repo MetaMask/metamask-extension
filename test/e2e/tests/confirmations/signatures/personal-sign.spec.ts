@@ -53,8 +53,11 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        const rejectionResult = await driver.findElement('#personalSign');
-        assert.equal(await rejectionResult.getText(), 'ERROR: USER REJECTED THE REQUEST.');
+        const rejectionResult = await driver.waitForSelector({
+          css: '#personalSign',
+          text: 'ERROR: USER REJECTED THE REQUEST.',
+        });
+        assert.ok(rejectionResult);
       },
     );
   });

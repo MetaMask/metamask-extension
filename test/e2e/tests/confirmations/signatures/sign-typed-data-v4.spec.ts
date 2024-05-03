@@ -82,8 +82,11 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        const rejectionResult = await driver.findElement('#signTypedDataV4Result');
-        assert.equal(await rejectionResult.getText(), 'Error: User rejected the request.');
+        const rejectionResult = await driver.waitForSelector({
+          css: '#signTypedDataV4Result',
+          text: 'Error: User rejected the request.',
+        });
+        assert.ok(rejectionResult);
       },
     );
   });

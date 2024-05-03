@@ -79,8 +79,11 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        const rejectionResult = await driver.findElement('#signPermitResult');
-        assert.equal(await rejectionResult.getText(), 'Error: User rejected the request.');
+        const rejectionResult = await driver.waitForSelector({
+          css: '#signPermitResult',
+          text: 'Error: User rejected the request.',
+        });
+        assert.ok(rejectionResult);
       },
     );
   });

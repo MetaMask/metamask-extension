@@ -53,8 +53,11 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-        const rejectionResult = await driver.findElement('#signTypedDataResult');
-        assert.equal(await rejectionResult.getText(), 'Error: User rejected the request.');
+        const rejectionResult = await driver.waitForSelector({
+          css: '#signTypedDataResult',
+          text: 'Error: User rejected the request.',
+        });
+        assert.ok(rejectionResult);
       },
     );
   });
