@@ -32,6 +32,15 @@
   "QRHardwareUnknownWalletQRCode": {
     "message": "Invalid QR code. Please scan the sync QR code of the hardware wallet."
   },
+  "generalDescription": {
+    "message": "Sync settings across devices, select network preferences, and track token data"
+  },
+  "assetsDescription": {
+    "message": "Autodetect tokens in your wallet, display NFTs, and get batched account balance updates"
+  },
+  "securityDescription": {
+    "message": "Reduce your chances of joining unsafe networks and protect your accounts"
+  },
   "QRHardwareWalletImporterTitle": {
     "message": "Scan QR code"
   },
@@ -319,6 +328,18 @@
   },
   "advancedConfiguration": {
     "message": "Advanced configuration"
+  },
+  "manageDefaultSettings": {
+    "message": "Manage default settings"
+  },
+  "defaultSettingsTitle": {
+    "message": "Default settings"
+  },
+  "defaultSettingsSubTitle": {
+    "message": "MetaMask uses default settings to best balance safety and ease of use. Change these settings to further increase your privacy."
+  },
+  "learnMoreAboutPrivacy": {
+    "message": "Learn more about privacy best practices."
   },
   "advancedGasFeeDefaultOptIn": {
     "message": "Save these values as my default for the $1 network.",
@@ -4178,6 +4199,9 @@
   },
   "security": {
     "message": "Security"
+  },
+  "assets": {
+    "message": "Assets"
   },
   "securityAlert": {
     "message": "Security alert from $1 and $2"

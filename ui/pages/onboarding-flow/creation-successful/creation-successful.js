@@ -5,11 +5,13 @@ import { useSelector } from 'react-redux';
 import Box from '../../../components/ui/box';
 import Typography from '../../../components/ui/typography';
 import Button from '../../../components/ui/button';
+import { Icon, IconName } from '../../../components/component-library';
 import {
   FONT_WEIGHT,
   TEXT_ALIGN,
   TypographyVariant,
   AlignItems,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -90,13 +92,19 @@ export default function CreationSuccessful() {
           </Button>
         </li>
       </ul>
-      <Box marginTop={6} className="creation-successful__actions">
-        <Button
+      <Button
           type="link"
+          icon={
+            <Icon
+            name={IconName.Setting}
+            color={IconColor.primaryDefault}
+          />
+          }
           onClick={() => history.push(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
         >
-          {t('advancedConfiguration')}
+          {t('manageDefaultSettings')}
         </Button>
+      <Box marginTop={6} className="creation-successful__actions">
         <Button
           data-testid="onboarding-complete-done"
           type="primary"

@@ -5,6 +5,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  overflow-x: hidden;
 
   @include design-system.screen-sm-max {
     margin-bottom: 24px;
@@ -15,12 +16,12 @@
   }
 
   &__header {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    text-align: center;
     max-width: 500px;
     margin: 24px;
+
+    a {
+      color: var(--color-primary-default);
+    }
   }
 
   &__settings {
@@ -64,4 +65,30 @@
       padding: 8px !important;
     }
   }
+
+  .container {
+    display: flex;
+    width: 100%;
+    transition: transform 0.5s ease;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .list-view, .detail-view {
+    flex: 0 0 100%;
+    width: 100%;
+  }
+
+/* Slide to show the detail view */
+.container.show-detail {
+  transform: translateX(-100%);
+}
+
+/* Slide back to show the list view */
+.container.show-list {
+  transform: translateX(0%);
+}
+
 }
