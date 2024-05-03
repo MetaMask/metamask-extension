@@ -19,7 +19,7 @@ const OriginRow = () => {
     currentConfirmationSelector,
   ) as TransactionMeta;
 
-  const origin = currentConfirmation.origin;
+  const origin = currentConfirmation?.origin;
 
   if (!origin) {
     return null;
