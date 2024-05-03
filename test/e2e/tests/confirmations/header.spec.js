@@ -32,7 +32,7 @@ describe('Confirmation Header Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
-              preferences: { redesignedConfirmations: true },
+              preferences: { redesignedConfirmationsEnabled: true },
             })
             .build(),
           ganacheOptions: defaultGanacheOptions,
@@ -60,7 +60,7 @@ describe('Confirmation Header Component', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
-              preferences: { redesignedConfirmations: true },
+              preferences: { redesignedConfirmationsEnabled: true },
             })
             .build(),
           ganacheOptions: defaultGanacheOptions,
