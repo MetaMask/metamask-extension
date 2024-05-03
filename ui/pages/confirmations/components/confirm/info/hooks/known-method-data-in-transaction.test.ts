@@ -35,8 +35,6 @@ describe('useKnownMethodDataInTransaction', () => {
   });
 
   it('returns no known method data if resolution is turned off', () => {
-    const depositHexData = '0xd0e30db0';
-
     const currentConfirmation = genUnapprovedContractInteractionConfirmation({
       address: CONTRACT_INTERACTION_SENDER_ADDRESS,
       txData: depositHexData,
@@ -60,8 +58,6 @@ describe('useKnownMethodDataInTransaction', () => {
   });
 
   it("returns no method data if it's not known even if resolution is enabled", () => {
-    const depositHexData = '0xd0e30db0';
-
     const currentConfirmation = genUnapprovedContractInteractionConfirmation({
       address: CONTRACT_INTERACTION_SENDER_ADDRESS,
       txData: depositHexData,

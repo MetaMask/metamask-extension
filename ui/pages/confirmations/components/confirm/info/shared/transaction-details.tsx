@@ -43,8 +43,8 @@ const RecipientRow = () => {
   ) as TransactionMeta;
 
   if (
-    !currentConfirmation.txParams.to ||
-    !isValidAddress(currentConfirmation.txParams.to)
+    !currentConfirmation?.txParams?.to ||
+    !isValidAddress(currentConfirmation?.txParams?.to ?? '')
   ) {
     return null;
   }
