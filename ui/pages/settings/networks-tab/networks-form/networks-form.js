@@ -720,7 +720,7 @@ const NetworksForm = ({
     ? rpcUrl.replace(`/v3/${infuraProjectId}`, '')
     : rpcUrl;
   if (viewOnly) {
-    displayRpcUrl = displayRpcUrl.toLowerCase();
+    displayRpcUrl = displayRpcUrl?.toLowerCase();
   }
 
   return (
