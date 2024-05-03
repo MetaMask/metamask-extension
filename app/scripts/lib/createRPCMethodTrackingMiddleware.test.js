@@ -563,6 +563,8 @@ describe('createRPCMethodTrackingMiddleware', () => {
         };
 
         const { next } = getNext();
+        const handler = createHandler({ rateLimitSamplePercent: 1 });
+
         await handler(req, res, next);
 
         expect(trackEvent).toHaveBeenCalledTimes(1);
