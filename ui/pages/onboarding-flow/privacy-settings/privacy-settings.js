@@ -3,6 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
 import {
+  useSetIsProfileSyncingEnabled,
+  useEnableProfileSyncing,
+} from '../../../hooks/metamask-notifications/useProfileSyncing';
+import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
@@ -37,7 +41,6 @@ import {
 } from '../../../selectors';
 import { selectIsProfileSyncingEnabled } from '../../../selectors/metamask-notifications/profile-syncing';
 import { selectParticipateInMetaMetrics } from '../../../selectors/metamask-notifications/authentication';
-import { useEnableProfileSyncing } from '../../../hooks/metamask-notifications/useProfileSyncing';
 import {
   setCompletedOnboarding,
   setIpfsGateway,
@@ -53,7 +56,6 @@ import {
   toggleExternalServices,
   setUseTransactionSimulations,
   setPetnamesEnabled,
-  showConfirmTurnOffProfileSyncing,
   performSignIn,
 } from '../../../store/actions';
 import {
@@ -68,7 +70,13 @@ export default function PrivacySettings() {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { enableProfileSyncing } = useEnableProfileSyncing();
+  const { setIsProfileSyncingEnabled, error: setIsProfileSyncingEnabledError } =
+    useSetIsProfileSyncingEnabled();
+  const { enableProfileSyncing, error: disableProfileSyncingError } =
+    useEnableProfileSyncing();
+
+  const profileSyncingError =
+    setIsProfileSyncingEnabledError || disableProfileSyncingError;
 
   const defaultState = useSelector((state) => state.metamask);
   const {
@@ -168,7 +176,22 @@ export default function PrivacySettings() {
 
   const handleUseProfileSync = async () => {
     if (isProfileSyncingEnabled) {
-      dispatch(showConfirmTurnOffProfileSyncing());
+      dispatch(
+        showModal({
+          name: 'CONFIRM_TURN_OFF_PROFILE_SYNCING',
+          turnOffProfileSyncing: () => {
+            setIsProfileSyncingEnabled(false);
+            trackEvent({
+              category: MetaMetricsEventCategory.Onboarding,
+              event:
+                MetaMetricsEventName.OnboardingWalletAdvancedSettingsTurnOffProfileSyncing,
+              properties: {
+                participateInMetaMetrics,
+              },
+            });
+          },
+        }),
+      );
     } else {
       await enableProfileSyncing();
     }
@@ -239,6 +262,18 @@ export default function PrivacySettings() {
               </a>,
             ])}
           />
+          {profileSyncingError && (
+            <Box paddingBottom={4}>
+              <Text
+                as="p"
+                color={TextColor.errorDefault}
+                variant={TextVariant.bodySm}
+              >
+                {t('notificationsSettingsBoxError')}
+              </Text>
+            </Box>
+          )}
+
           <Setting
             value={usePhishingDetection}
             setValue={setUsePhishingDetection}

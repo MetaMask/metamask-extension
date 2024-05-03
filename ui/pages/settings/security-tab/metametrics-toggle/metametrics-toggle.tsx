@@ -12,19 +12,26 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { Box } from '../../../../components/component-library';
+import { Box, Text } from '../../../../components/component-library';
 import ToggleButton from '../../../../components/ui/toggle-button';
 import {
   Display,
   FlexDirection,
   JustifyContent,
+  TextColor,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 
 const MetametricsToggle = () => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
-  const { enableMetametrics } = useEnableMetametrics();
-  const { disableMetametrics } = useDisableMetametrics();
+  const { enableMetametrics, error: enableMetametricsError } =
+    useEnableMetametrics();
+  const { disableMetametrics, error: disableMetametricsError } =
+    useDisableMetametrics();
+
+  const error = enableMetametricsError || disableMetametricsError;
+
   const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
   const participateInMetaMetrics = useSelector(selectParticipateInMetaMetrics);
 
@@ -53,36 +60,49 @@ const MetametricsToggle = () => {
   };
 
   return (
-    <Box
-      className="settings-page__content-row"
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      justifyContent={JustifyContent.spaceBetween}
-      gap={4}
-      data-testid="profileSyncToggle"
-    >
-      <div className="settings-page__content-item" id="profileSyncLabel">
-        <span>{t('participateInMetaMetrics')}</span>
-        <div
-          className="settings-page__content-description"
-          data-testid="profileSyncDescription"
-        >
-          {t('participateInMetaMetricsDescription')}
-        </div>
-      </div>
-
-      <div
-        className="settings-page__content-item-col"
-        data-testid="participateInMetaMetrics"
+    <Box>
+      <Box
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+        data-testid="profileSyncToggle"
       >
-        <ToggleButton
-          value={participateInMetaMetrics}
-          onToggle={handleUseParticipateInMetaMetrics}
-          offLabel={t('off')}
-          onLabel={t('on')}
-          dataTestId="toggleButton"
-        />
-      </div>
+        <div className="settings-page__content-item" id="profileSyncLabel">
+          <span>{t('participateInMetaMetrics')}</span>
+          <div
+            className="settings-page__content-description"
+            data-testid="profileSyncDescription"
+          >
+            {t('participateInMetaMetricsDescription')}
+          </div>
+        </div>
+
+        <div
+          className="settings-page__content-item-col"
+          data-testid="participateInMetaMetrics"
+        >
+          <ToggleButton
+            value={participateInMetaMetrics}
+            onToggle={handleUseParticipateInMetaMetrics}
+            offLabel={t('off')}
+            onLabel={t('on')}
+            dataTestId="toggleButton"
+          />
+        </div>
+      </Box>
+      {error && (
+        <Box paddingBottom={4}>
+          <Text
+            as="p"
+            color={TextColor.errorDefault}
+            variant={TextVariant.bodySm}
+          >
+            {t('notificationsSettingsBoxError')}
+          </Text>
+        </Box>
+      )}
     </Box>
   );
 };

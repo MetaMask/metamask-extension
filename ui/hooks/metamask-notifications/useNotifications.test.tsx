@@ -4,13 +4,11 @@ import { renderHook, act } from '@testing-library/react-hooks';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import type { Store } from 'redux';
-import { TRIGGER_TYPES } from '../../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
 import * as actions from '../../store/actions';
+import { MetamaskNotificationsProvider } from '../../contexts/metamask-notifications/metamask-notifications';
 import {
-  useEnableNotifications,
+  useCreateNotifications,
   useDisableNotifications,
-  useListNotifications,
-  useMarkNotificationAsRead,
 } from './useNotifications';
 
 const middlewares = [thunk];
@@ -24,6 +22,16 @@ jest.mock('../../store/actions', () => ({
   setSnapNotificationsEnabled: jest.fn(),
   setFeatureAnnouncementsEnabled: jest.fn(),
   markMetamaskNotificationsAsRead: jest.fn(),
+  showLoadingIndication: jest.fn(),
+  hideLoadingIndication: jest.fn(),
+  setMetamaskNotificationsFeatureSeen: jest.fn(),
+  disableMetamaskNotifications: jest.fn(),
+}));
+
+jest.mock('./useProfileSyncing', () => ({
+  useEnableProfileSyncing: jest.fn(() => ({
+    enableProfileSyncing: jest.fn(),
+  })),
 }));
 
 describe('useNotifications', () => {
@@ -33,6 +41,7 @@ describe('useNotifications', () => {
     store = mockStore({
       metamask: {
         isMetamaskNotificationsEnabled: false,
+        isProfileSyncingEnabled: false,
         internalAccounts: {
           accounts: [
             {
@@ -61,18 +70,22 @@ describe('useNotifications', () => {
     jest.clearAllMocks();
   });
 
-  it('should enable notifications', async () => {
+  it('should create notifications', async () => {
     const { result, waitForNextUpdate } = renderHook(
-      () => useEnableNotifications(),
+      () => useCreateNotifications(),
       {
         wrapper: ({ children }) => (
-          <Provider store={store}>{children}</Provider>
+          <Provider store={store}>
+            <MetamaskNotificationsProvider>
+              {children}
+            </MetamaskNotificationsProvider>
+          </Provider>
         ),
       },
     );
 
     act(() => {
-      result.current.enableNotifications();
+      result.current.createNotifications();
     });
 
     await waitForNextUpdate();
@@ -80,7 +93,7 @@ describe('useNotifications', () => {
     expect(actions.createOnChainTriggers).toHaveBeenCalled();
   });
 
-  it('should disable notifications', async () => {
+  it('should disable notifications and handle states', async () => {
     const { result, waitForNextUpdate } = renderHook(
       () => useDisableNotifications(),
       {
@@ -90,72 +103,17 @@ describe('useNotifications', () => {
       },
     );
 
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBeNull();
+
     act(() => {
       result.current.disableNotifications();
     });
 
     await waitForNextUpdate();
 
-    expect(actions.deleteOnChainTriggersByAccount).toHaveBeenCalled();
-    expect(actions.setMetamaskNotificationsEnabled).toHaveBeenCalledWith(false);
-    expect(actions.setSnapNotificationsEnabled).toHaveBeenCalledWith(false);
-    expect(actions.setFeatureAnnouncementsEnabled).toHaveBeenCalledWith(false);
-  });
-
-  it('should list notifications', async () => {
-    const { result, waitForNextUpdate } = renderHook(
-      () => useListNotifications(),
-      {
-        wrapper: ({ children }) => (
-          <Provider store={store}>{children}</Provider>
-        ),
-      },
-    );
-
-    act(() => {
-      result.current.listNotifications();
-    });
-
-    await waitForNextUpdate();
-
-    expect(actions.fetchAndUpdateMetamaskNotifications).toHaveBeenCalled();
-  });
-
-  it('should mark notifications as read', async () => {
-    const notifications = [
-      {
-        id: 'notif1',
-        type: TRIGGER_TYPES.ERC20_SENT,
-        isRead: true,
-      },
-      {
-        id: 'notif2',
-        type: TRIGGER_TYPES.ERC20_SENT,
-        isRead: false,
-      },
-      {
-        id: 'notif3',
-        type: TRIGGER_TYPES.ERC20_SENT,
-        isRead: false,
-      },
-    ];
-    const { result, waitForNextUpdate } = renderHook(
-      () => useMarkNotificationAsRead(notifications),
-      {
-        wrapper: ({ children }) => (
-          <Provider store={store}>{children}</Provider>
-        ),
-      },
-    );
-
-    act(() => {
-      result.current.markNotificationAsRead();
-    });
-
-    await waitForNextUpdate();
-
-    expect(actions.markMetamaskNotificationsAsRead).toHaveBeenCalledWith(
-      notifications,
-    );
+    expect(result.current.loading).toBe(false); // Check if loading state is reset
+    expect(actions.disableMetamaskNotifications).toHaveBeenCalled(); // Check if the action was called
+    expect(result.current.error).toBeNull(); // Verify no error is set
   });
 });

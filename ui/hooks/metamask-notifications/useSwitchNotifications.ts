@@ -1,41 +1,25 @@
 import { useState, useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import type { InternalAccount } from '@metamask/keyring-api';
+import { useDispatch } from 'react-redux';
+import log from 'loglevel';
 import {
   setSnapNotificationsEnabled,
   setFeatureAnnouncementsEnabled,
   checkAccountsPresence,
   deleteOnChainTriggersByAccount,
   updateOnChainTriggersByAccount,
+  hideLoadingIndication,
 } from '../../store/actions';
-import { getInternalAccounts } from '../../selectors';
-import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-
-// Define KeyringType interface
-type KeyringType = {
-  type: string;
-};
-
-// Define AccountType interface
-type AccountType = InternalAccount & {
-  balance: string;
-  keyring: KeyringType;
-  label: string;
-};
 
 export function useSwitchSnapNotificationsChange(): {
   onChange: (state: boolean) => Promise<void>;
-  isLoading: boolean;
-  error: unknown;
+  error: null | string;
 } {
   const dispatch = useDispatch();
 
-  const [isLoading, setLoading] = useState(false);
-  const [error, setError] = useState<unknown>(null);
+  const [error, setError] = useState<null | string>(null);
 
   const onChange = useCallback(
     async (state: boolean) => {
-      setLoading(true);
       setError(null);
 
       try {
@@ -44,34 +28,29 @@ export function useSwitchSnapNotificationsChange(): {
         const errorMessage =
           e instanceof Error ? e.message : JSON.stringify(e ?? '');
         setError(errorMessage);
-      } finally {
-        setLoading(false);
+        log.error(errorMessage);
+        throw e;
       }
-      setLoading(false);
     },
     [dispatch],
   );
 
   return {
     onChange,
-    isLoading,
     error,
   };
 }
 
 export function useSwitchFeatureAnnouncementsChange(): {
   onChange: (state: boolean) => Promise<void>;
-  isLoading: boolean;
-  error: unknown;
+  error: null | string;
 } {
   const dispatch = useDispatch();
 
-  const [isLoading, setLoading] = useState(false);
-  const [error, setError] = useState<unknown>(null);
+  const [error, setError] = useState<null | string>(null);
 
   const onChange = useCallback(
     async (state: boolean) => {
-      setLoading(true);
       setError(null);
 
       try {
@@ -80,90 +59,87 @@ export function useSwitchFeatureAnnouncementsChange(): {
         const errorMessage =
           e instanceof Error ? e.message : JSON.stringify(e ?? '');
         setError(errorMessage);
-      } finally {
-        setLoading(false);
+        throw e;
       }
-      setLoading(false);
     },
     [dispatch],
   );
 
   return {
     onChange,
-    isLoading,
     error,
   };
 }
 
-export function useSwitchAccountNotifications(): {
-  data: (addresses: string[]) => Promise<void>;
+export type UseSwitchAccountNotificationsData = { [address: string]: boolean };
+
+export function useSwitchAccountNotifications(accounts: string[]): {
+  switchAccountNotifications: () => Promise<
+    UseSwitchAccountNotificationsData | undefined
+  >;
   isLoading: boolean;
   error: string | null;
 } {
   const dispatch = useDispatch();
-  const accounts: AccountType[] = useSelector(getInternalAccounts);
-  const checksumAddresses = accounts.map((account: AccountType) =>
-    toChecksumHexAddress(account.address),
-  );
 
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const data = useCallback(
-    async (addresses: string[]) => {
-      setLoading(true);
-      try {
-        await dispatch(checkAccountsPresence(addresses));
-      } catch (e) {
-        const errorMessage =
-          e instanceof Error ? e.message : JSON.stringify(e ?? '');
-        setError(errorMessage);
-      } finally {
-        setLoading(false);
-      }
-      setLoading(false);
-    },
-    [checksumAddresses, dispatch], // Ensure dependencies are correctly listed
-  );
+  const switchAccountNotifications = useCallback(async (): Promise<
+    UseSwitchAccountNotificationsData | undefined
+  > => {
+    setIsLoading(true);
+    setError(null);
 
-  return {
-    data,
-    isLoading,
-    error,
-  };
+    try {
+      const data = await dispatch(checkAccountsPresence(accounts));
+      return data as unknown as UseSwitchAccountNotificationsData;
+    } catch (e) {
+      const errorMessage =
+        e instanceof Error ? e.message : JSON.stringify(e ?? '');
+      setError(errorMessage);
+      log.error(errorMessage);
+      throw e;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [dispatch]);
+
+  return { switchAccountNotifications, isLoading, error };
 }
 
 export function useSwitchAccountNotificationsChange(): {
-  onChange: (address: string, state: boolean) => Promise<void>;
-  isLoading: boolean;
-  error: unknown;
+  onChange: (addresses: string[], state: boolean) => Promise<void>;
+  error: string | null;
 } {
   const dispatch = useDispatch();
-  const [isLoading, setLoading] = useState(false);
-  const [error, setError] = useState<unknown>(null);
+
+  const [error, setError] = useState<string | null>(null);
 
   const onChange = useCallback(
-    async (address: string, state: boolean) => {
-      setLoading(true);
+    async (addresses: string[], state: boolean) => {
+      setError(null);
+
       try {
         if (state) {
-          await dispatch(updateOnChainTriggersByAccount([address]));
+          await dispatch(updateOnChainTriggersByAccount(addresses));
         } else {
-          await dispatch(deleteOnChainTriggersByAccount([address]));
+          await dispatch(deleteOnChainTriggersByAccount(addresses));
         }
       } catch (e) {
-        setError(e);
-      } finally {
-        setLoading(false);
+        const errorMessage =
+          e instanceof Error ? e.message : JSON.stringify(e ?? '');
+        log.error(errorMessage);
+        setError(errorMessage);
+        throw e;
       }
-      setLoading(false);
+      dispatch(hideLoadingIndication());
     },
     [dispatch],
   );
 
   return {
     onChange,
-    isLoading,
     error,
   };
 }

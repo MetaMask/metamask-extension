@@ -57,12 +57,7 @@ export type Trigger = {
   supported_chains: (typeof SUPPORTED_CHAINS)[number][];
 };
 
-type OnChainTriggerTypes = Exclude<
-  TRIGGER_TYPES,
-  TRIGGER_TYPES.FEATURES_ANNOUNCEMENT
->;
-
-export const TRIGGERS: Record<OnChainTriggerTypes, Trigger> = {
+export const TRIGGERS: Partial<Record<TRIGGER_TYPES, Trigger>> = {
   [TRIGGER_TYPES.METAMASK_SWAP_COMPLETED]: {
     supported_chains: [
       NOTIFICATION_CHAINS.ETHEREUM,
@@ -156,7 +151,7 @@ export const TRIGGERS: Record<OnChainTriggerTypes, Trigger> = {
   [TRIGGER_TYPES.LIDO_WITHDRAWAL_COMPLETED]: {
     supported_chains: [NOTIFICATION_CHAINS.ETHEREUM],
   },
-  [TRIGGER_TYPES.LIDO_STAKE_READY_TO_BE_WITHDRAWN]: {
-    supported_chains: [NOTIFICATION_CHAINS.ETHEREUM],
-  },
+  // [TRIGGER_TYPES.LIDO_STAKE_READY_TO_BE_WITHDRAWN]: {
+  //   supported_chains: [NOTIFICATION_CHAINS.ETHEREUM],
+  // },
 };

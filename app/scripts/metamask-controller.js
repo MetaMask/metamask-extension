@@ -1395,10 +1395,16 @@ export default class MetamaskController extends EventEmitter {
       state: initState.AuthenticationController,
       messenger: this.controllerMessenger.getRestricted({
         name: 'AuthenticationController',
-        allowedActions: ['SnapController:handleRequest'],
+        allowedActions: [
+          'SnapController:handleRequest',
+          'UserStorageController:disableProfileSyncing',
+        ],
       }),
     });
+
     this.userStorageController = new UserStorageController({
+      getMetaMetricsState: () =>
+        this.metaMetricsController.state.participateInMetaMetrics,
       state: initState.UserStorageController,
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserStorageController',
@@ -1407,17 +1413,24 @@ export default class MetamaskController extends EventEmitter {
           'AuthenticationController:getBearerToken',
           'AuthenticationController:getSessionProfile',
           'AuthenticationController:isSignedIn',
+          'AuthenticationController:performSignOut',
           'AuthenticationController:performSignIn',
+          'MetamaskNotificationsController:disableMetamaskNotifications',
+          'MetamaskNotificationsController:selectIsMetamaskNotificationsEnabled',
         ],
       }),
     });
+
     this.pushPlatformNotificationsController =
       new PushPlatformNotificationsController({
+        state: initState.PushPlatformNotificationsController,
         messenger: this.controllerMessenger.getRestricted({
           name: 'PushPlatformNotificationsController',
-          allowedActions: ['AuthenticationController:getBearerToken'],
+          allowedActions: [
+            'AuthenticationController:getBearerToken',
+            'MetamaskNotificationsController:updateMetamaskNotificationsList',
+          ],
         }),
-        state: initState.PushPlatformNotificationsController,
       });
 
     this.metamaskNotificationsController = new MetamaskNotificationsController({
@@ -1427,6 +1440,7 @@ export default class MetamaskController extends EventEmitter {
           'KeyringController:getAccounts',
           'AuthenticationController:getBearerToken',
           'AuthenticationController:isSignedIn',
+          'UserStorageController:enableProfileSyncing',
           'UserStorageController:getStorageKey',
           'UserStorageController:performGetStorage',
           'UserStorageController:performSetStorage',
@@ -2134,6 +2148,8 @@ export default class MetamaskController extends EventEmitter {
       AuthenticationController: this.authenticationController,
       UserStorageController: this.userStorageController,
       MetamaskNotificationsController: this.metamaskNotificationsController,
+      PushPlatformNotificationsController:
+        this.pushPlatformNotificationsController,
       ...resetOnRestartStore,
     });
 
@@ -2186,6 +2202,8 @@ export default class MetamaskController extends EventEmitter {
         AuthenticationController: this.authenticationController,
         UserStorageController: this.userStorageController,
         MetamaskNotificationsController: this.metamaskNotificationsController,
+        PushPlatformNotificationsController:
+          this.pushPlatformNotificationsController,
         ...resetOnRestartStore,
       },
       controllerMessenger: this.controllerMessenger,
@@ -2895,6 +2913,7 @@ export default class MetamaskController extends EventEmitter {
       authenticationController,
       userStorageController,
       metamaskNotificationsController,
+      pushPlatformNotificationsController,
     } = this;
 
     return {
@@ -3618,6 +3637,10 @@ export default class MetamaskController extends EventEmitter {
       disableProfileSyncing: userStorageController.disableProfileSyncing.bind(
         userStorageController,
       ),
+      setIsProfileSyncingEnabled:
+        userStorageController.setIsProfileSyncingEnabled.bind(
+          userStorageController,
+        ),
 
       // MetamaskNotificationsController
       checkAccountsPresence:
@@ -3654,6 +3677,30 @@ export default class MetamaskController extends EventEmitter {
         ),
       setMetamaskNotificationsEnabled:
         metamaskNotificationsController.setMetamaskNotificationsEnabled.bind(
+          metamaskNotificationsController,
+        ),
+      setMetamaskNotificationsFeatureSeen:
+        metamaskNotificationsController.setMetamaskNotificationsFeatureSeen.bind(
+          metamaskNotificationsController,
+        ),
+      enablePushNotifications:
+        pushPlatformNotificationsController.enablePushNotifications.bind(
+          pushPlatformNotificationsController,
+        ),
+      disablePushNotifications:
+        pushPlatformNotificationsController.disablePushNotifications.bind(
+          pushPlatformNotificationsController,
+        ),
+      updateTriggerPushNotifications:
+        pushPlatformNotificationsController.updateTriggerPushNotifications.bind(
+          pushPlatformNotificationsController,
+        ),
+      enableMetamaskNotifications:
+        metamaskNotificationsController.enableMetamaskNotifications.bind(
+          metamaskNotificationsController,
+        ),
+      disableMetamaskNotifications:
+        metamaskNotificationsController.disableMetamaskNotifications.bind(
           metamaskNotificationsController,
         ),
 

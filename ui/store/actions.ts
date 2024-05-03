@@ -5348,7 +5348,10 @@ export function fetchAndUpdateMetamaskNotifications(): ThunkAction<
 > {
   return async () => {
     try {
-      await submitRequestToBackground('fetchAndUpdateMetamaskNotifications');
+      const response = await submitRequestToBackground(
+        'fetchAndUpdateMetamaskNotifications',
+      );
+      return response;
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -5469,7 +5472,11 @@ export function checkAccountsPresence(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {
-      await submitRequestToBackground('checkAccountsPresence', [accounts]);
+      const response = await submitRequestToBackground(
+        'checkAccountsPresence',
+        [accounts],
+      );
+      return response;
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -5495,5 +5502,113 @@ export function showConfirmTurnOffProfileSyncing(): ThunkAction<
         name: 'CONFIRM_TURN_OFF_PROFILE_SYNCING',
       }),
     );
+  };
+}
+
+/**
+ * Triggers a modal to confirm the action of turning on MetaMask notifications.
+ * This function dispatches an action to show a modal dialog asking the user to confirm if they want to turn on MetaMask notifications.
+ *
+ * @returns A thunk action that, when dispatched, shows the confirmation modal.
+ */
+export function showConfirmTurnOnMetamaskNotifications(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(
+      showModal({
+        name: 'TURN_ON_METAMASK_NOTIFICATIONS',
+      }),
+    );
+  };
+}
+
+/**
+ * Marks the MetaMask notifications feature as seen by the user.
+ *
+ * This function sends a request to the background script to mark the MetaMask notifications feature as seen.
+ * This is typically used to track if a user has been introduced to the notifications feature to avoid redundant prompts.
+ * If the operation fails, it logs the error message.
+ *
+ * @returns A thunk action that, when dispatched, marks the MetaMask notifications feature as seen.
+ */
+export function setMetamaskNotificationsFeatureSeen(): ThunkAction<
+  void,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      await submitRequestToBackground('setMetamaskNotificationsFeatureSeen');
+    } catch (error) {
+      log.error(error);
+      throw error;
+    }
+  };
+}
+
+/**
+ * Enables MetaMask notifications.
+ * This function dispatches a request to the background script to enable MetaMask notifications.
+ * If the operation fails, it logs the error message and rethrows the error to ensure it is handled appropriately.
+ *
+ * @returns A thunk action that, when dispatched, attempts to enable MetaMask notifications.
+ */
+export function enableMetamaskNotifications(): ThunkAction<
+  void,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      await submitRequestToBackground('enableMetamaskNotifications');
+    } catch (error) {
+      log.error(error);
+      throw error;
+    }
+  };
+}
+
+/**
+ * Disables MetaMask notifications.
+ * This function dispatches a request to the background script to disable MetaMask notifications.
+ * If the operation fails, it logs the error message and rethrows the error to ensure it is handled appropriately.
+ *
+ * @returns A thunk action that, when dispatched, attempts to disable MetaMask notifications.
+ */
+export function disableMetamaskNotifications(): ThunkAction<
+  void,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      await submitRequestToBackground('disableMetamaskNotifications');
+    } catch (error) {
+      log.error(error);
+      throw error;
+    }
+  };
+}
+
+export function setIsProfileSyncingEnabled(
+  isProfileSyncingEnabled: boolean,
+): ThunkAction<void, unknown, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      dispatch(showLoadingIndication());
+      await submitRequestToBackground('setIsProfileSyncingEnabled', [
+        isProfileSyncingEnabled,
+      ]);
+      dispatch(hideLoadingIndication());
+    } catch (error) {
+      logErrorWithMessage(error);
+      throw error;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
   };
 }

@@ -5,6 +5,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import type { Store } from 'redux';
 import * as actions from '../../store/actions';
+import { MetamaskNotificationsProvider } from '../../contexts/metamask-notifications/metamask-notifications';
 import {
   useSwitchSnapNotificationsChange,
   useSwitchFeatureAnnouncementsChange,
@@ -21,6 +22,9 @@ jest.mock('../../store/actions', () => ({
   checkAccountsPresence: jest.fn(),
   updateOnChainTriggersByAccount: jest.fn(),
   deleteOnChainTriggersByAccount: jest.fn(),
+  showLoadingIndication: jest.fn(),
+  hideLoadingIndication: jest.fn(),
+  fetchAndUpdateMetamaskNotifications: jest.fn(),
 }));
 
 describe('useSwitchNotifications', () => {
@@ -57,78 +61,77 @@ describe('useSwitchNotifications', () => {
   });
 
   it('should toggle snap notifications', async () => {
-    const { result, waitForNextUpdate } = renderHook(
-      () => useSwitchSnapNotificationsChange(),
-      {
-        wrapper: ({ children }) => (
-          <Provider store={store}>{children}</Provider>
-        ),
-      },
-    );
+    const { result } = renderHook(() => useSwitchSnapNotificationsChange(), {
+      wrapper: ({ children }) => (
+        <Provider store={store}>
+          <MetamaskNotificationsProvider>
+            {children}
+          </MetamaskNotificationsProvider>
+        </Provider>
+      ),
+    });
 
     act(() => {
       result.current.onChange(true);
     });
-
-    await waitForNextUpdate();
 
     expect(actions.setSnapNotificationsEnabled).toHaveBeenCalledWith(true);
   });
 
   it('should toggle feature announcements', async () => {
-    const { result, waitForNextUpdate } = renderHook(
-      () => useSwitchFeatureAnnouncementsChange(),
-      {
-        wrapper: ({ children }) => (
-          <Provider store={store}>{children}</Provider>
-        ),
-      },
-    );
+    const { result } = renderHook(() => useSwitchFeatureAnnouncementsChange(), {
+      wrapper: ({ children }) => (
+        <Provider store={store}>
+          <MetamaskNotificationsProvider>
+            {children}
+          </MetamaskNotificationsProvider>
+        </Provider>
+      ),
+    });
 
     act(() => {
       result.current.onChange(true);
     });
 
-    await waitForNextUpdate();
-
     expect(actions.setFeatureAnnouncementsEnabled).toHaveBeenCalledWith(true);
   });
 
   it('should check account presence', async () => {
-    const { result, waitForNextUpdate } = renderHook(
-      () => useSwitchAccountNotifications(),
+    const { result } = renderHook(
+      () => useSwitchAccountNotifications(['0x123']),
       {
         wrapper: ({ children }) => (
-          <Provider store={store}>{children}</Provider>
+          <Provider store={store}>
+            <MetamaskNotificationsProvider>
+              {children}
+            </MetamaskNotificationsProvider>
+          </Provider>
         ),
       },
     );
 
     act(() => {
-      result.current.data(['0x123']);
+      result.current.switchAccountNotifications();
     });
-
-    await waitForNextUpdate();
 
     expect(actions.checkAccountsPresence).toHaveBeenCalledWith(['0x123']);
   });
 
   it('should handle account notification changes', async () => {
-    const { result, waitForNextUpdate } = renderHook(
-      () => useSwitchAccountNotificationsChange(),
-      {
-        wrapper: ({ children }) => (
-          <Provider store={store}>{children}</Provider>
-        ),
-      },
-    );
+    const { result } = renderHook(() => useSwitchAccountNotificationsChange(), {
+      wrapper: ({ children }) => (
+        <Provider store={store}>
+          <MetamaskNotificationsProvider>
+            {children}
+          </MetamaskNotificationsProvider>
+        </Provider>
+      ),
+    });
 
     // Test enabling notifications
     act(() => {
-      result.current.onChange('0x123', true);
+      result.current.onChange(['0x123'], true);
     });
-
-    await waitForNextUpdate();
 
     expect(actions.updateOnChainTriggersByAccount).toHaveBeenCalledWith([
       '0x123',
@@ -136,10 +139,8 @@ describe('useSwitchNotifications', () => {
 
     // Test disabling notifications
     act(() => {
-      result.current.onChange('0x123', false);
+      result.current.onChange(['0x123'], false);
     });
-
-    await waitForNextUpdate();
 
     expect(actions.deleteOnChainTriggersByAccount).toHaveBeenCalledWith([
       '0x123',

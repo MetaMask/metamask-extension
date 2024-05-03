@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import log from 'loglevel';
 import { selectIsSignedIn } from '../../selectors/metamask-notifications/authentication';
 import { selectIsProfileSyncingEnabled } from '../../selectors/metamask-notifications/profile-syncing';
 import {
@@ -40,12 +41,13 @@ export function useEnableMetametrics(): {
       await dispatch(setParticipateInMetaMetrics(true));
     } catch (e) {
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');
+      log.error(e);
+      throw e;
     } finally {
       setLoading(false);
       dispatch(hideLoadingIndication());
     }
 
-    setLoading(false);
     dispatch(hideLoadingIndication());
   }, [dispatch, isUserSignedIn]);
 
@@ -82,16 +84,15 @@ export function useDisableMetametrics(): {
       if (!isProfileSyncingEnabled) {
         await dispatch(performSignOut());
       }
-
       await dispatch(setParticipateInMetaMetrics(false));
     } catch (e) {
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');
+      throw e;
     } finally {
       setLoading(false);
       dispatch(hideLoadingIndication());
     }
 
-    setLoading(false);
     dispatch(hideLoadingIndication());
   }, [dispatch, isProfileSyncingEnabled]);
 

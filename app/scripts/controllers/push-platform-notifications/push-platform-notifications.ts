@@ -6,6 +6,8 @@ import {
 import log from 'loglevel';
 
 import type { AuthenticationControllerGetBearerToken } from '../authentication/authentication-controller';
+import type { MetamaskNotificationsControllerUpdateMetamaskNotificationsList } from '../metamask-notifications/metamask-notifications';
+import type { Notification } from '../metamask-notifications/types/notification/notification';
 import {
   activatePushNotifications,
   deactivatePushNotifications,
@@ -18,24 +20,32 @@ export type PushPlatformNotificationsControllerState = {
   fcmToken: string;
 };
 
-export declare type PushPlatformNotificationsControllerEnablePushNotificationsAction =
+export declare type PushPlatformNotificationsControllerEnablePushNotifications =
   {
     type: `${typeof controllerName}:enablePushNotifications`;
     handler: PushPlatformNotificationsController['enablePushNotifications'];
   };
 
-export declare type PushPlatformNotificationsControllerDisablePushNotificationsAction =
+export declare type PushPlatformNotificationsControllerDisablePushNotifications =
   {
     type: `${typeof controllerName}:disablePushNotifications`;
     handler: PushPlatformNotificationsController['disablePushNotifications'];
   };
+export declare type PushPlatformNotificationsControllerUpdateTriggerPushNotifications =
+  {
+    type: `${typeof controllerName}:updateTriggerPushNotifications`;
+    handler: PushPlatformNotificationsController['updateTriggerPushNotifications'];
+  };
 
 export type PushPlatformNotificationsControllerMessengerActions =
-  | PushPlatformNotificationsControllerEnablePushNotificationsAction
-  | PushPlatformNotificationsControllerDisablePushNotificationsAction
+  | PushPlatformNotificationsControllerEnablePushNotifications
+  | PushPlatformNotificationsControllerDisablePushNotifications
+  | PushPlatformNotificationsControllerUpdateTriggerPushNotifications
   | ControllerGetStateAction<'state', PushPlatformNotificationsControllerState>;
 
-type AllowedActions = AuthenticationControllerGetBearerToken;
+type AllowedActions =
+  | AuthenticationControllerGetBearerToken
+  | MetamaskNotificationsControllerUpdateMetamaskNotificationsList;
 
 export type PushPlatformNotificationsControllerMessenger =
   RestrictedControllerMessenger<
@@ -67,6 +77,15 @@ export class PushPlatformNotificationsController extends BaseController<
   PushPlatformNotificationsControllerState,
   PushPlatformNotificationsControllerMessenger
 > {
+  #metamaskNotification = {
+    updateMetamaskNotificationsList: async (notification: Notification) => {
+      return await this.messagingSystem.call(
+        'MetamaskNotificationsController:updateMetamaskNotificationsList',
+        notification,
+      );
+    },
+  };
+
   constructor({
     messenger,
     state,
@@ -82,6 +101,23 @@ export class PushPlatformNotificationsController extends BaseController<
         fcmToken: state?.fcmToken || '',
       },
     });
+
+    this.#registerMessageHandlers();
+  }
+
+  #registerMessageHandlers(): void {
+    this.messagingSystem.registerActionHandler(
+      'PushPlatformNotificationsController:enablePushNotifications',
+      this.enablePushNotifications.bind(this),
+    );
+    this.messagingSystem.registerActionHandler(
+      'PushPlatformNotificationsController:disablePushNotifications',
+      this.disablePushNotifications.bind(this),
+    );
+    this.messagingSystem.registerActionHandler(
+      'PushPlatformNotificationsController:updateTriggerPushNotifications',
+      this.updateTriggerPushNotifications.bind(this),
+    );
   }
 
   async #getAndAssertBearerToken() {
@@ -113,7 +149,11 @@ export class PushPlatformNotificationsController extends BaseController<
 
     try {
       // 2. Call the activatePushNotifications method from PushPlatformNotificationsUtils
-      const regToken = await activatePushNotifications(bearerToken, UUIDs);
+      const regToken = await activatePushNotifications(
+        bearerToken,
+        UUIDs,
+        this.#metamaskNotification.updateMetamaskNotificationsList,
+      );
 
       // 3. Update the state with the FCM token
       if (regToken) {
@@ -172,7 +212,18 @@ export class PushPlatformNotificationsController extends BaseController<
     const bearerToken = await this.#getAndAssertBearerToken();
 
     try {
-      updateTriggerPushNotifications(this.state.fcmToken, bearerToken, UUIDs);
+      const { fcmToken } = await updateTriggerPushNotifications(
+        this.state.fcmToken,
+        bearerToken,
+        UUIDs,
+      );
+
+      // update the state with the new FCM token
+      if (fcmToken) {
+        this.update((state) => {
+          state.fcmToken = fcmToken;
+        });
+      }
     } catch (error) {
       const errorMessage = `Failed to update triggers for push notifications: ${error}`;
       log.error(errorMessage);

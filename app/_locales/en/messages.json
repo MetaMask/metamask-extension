@@ -130,6 +130,12 @@
   "account": {
     "message": "Account"
   },
+  "accountActivity": {
+    "message": "Account activity"
+  },
+  "accountActivityText": {
+    "message": "Select the accounts you want to be notified about:"
+  },
   "accountDetails": {
     "message": "Account details"
   },
@@ -367,6 +373,9 @@
   "alerts": {
     "message": "Alerts"
   },
+  "all": {
+    "message": "All"
+  },
   "allCustodianAccountsConnectedSubtitle": {
     "message": "You have either already connected all your custodian accounts or don’t have any account to connect to MetaMask Institutional."
   },
@@ -389,6 +398,9 @@
   },
   "allowMmiToConnectToCustodian": {
     "message": "This will allow MMI to connect to $1 to import your accounts."
+  },
+  "allowNotifications": {
+    "message": "Allow notifications"
   },
   "allowSpendToken": {
     "message": "Give permission to access your $1?",
@@ -487,6 +499,17 @@
   },
   "assetOptions": {
     "message": "Asset options"
+  },
+  "assetsReceived": {
+    "message": "Assets received"
+  },
+
+  "assetsSent": {
+    "message": "Assets sent"
+  },
+
+  "assetsSentReceivedText": {
+    "message": "Funds and NFTs"
   },
   "attemptSendingAssets": {
     "message": "You may lose your assets if you try to send them from another network. Transfer funds safely between networks by using a bridge."
@@ -1199,6 +1222,12 @@
   "customerSupport": {
     "message": "customer support"
   },
+  "customizeYourNotifications": {
+    "message": "Customize your notifications"
+  },
+  "customizeYourNotificationsText": {
+    "message": "Turn on the types of notifications you want to receive:"
+  },
   "dappRequestedSpendingCap": {
     "message": "Site requested spending cap"
   },
@@ -1236,6 +1265,13 @@
   },
   "dcent": {
     "message": "D'Cent"
+  },
+  "deFi": {
+    "message": "DeFi"
+  },
+
+  "deFiText": {
+    "message": "Staking, swapping, and bridging"
   },
   "decimal": {
     "message": "Token decimal"
@@ -2615,6 +2651,9 @@
   "metamaskInstitutionalVersion": {
     "message": "MetaMask Institutional Version"
   },
+  "metamaskNotificationsAreOff": {
+    "message": "Notifications are currently not active."
+  },
   "metamaskPortfolio": {
     "message": "MetaMask Portfolio."
   },
@@ -3043,6 +3082,96 @@
   "notePlaceholder": {
     "message": "The approver will see this note when approving the transaction at the custodian."
   },
+  "notificationItemAddress": {
+    "message": "Address"
+  },
+  "notificationItemCheckBlockExplorer": {
+    "message": "Check on the BlockExplorer"
+  },
+  "notificationItemCollection": {
+    "message": "Collection"
+  },
+  "notificationItemConfirmed": {
+    "message": "Confirmed"
+  },
+  "notificationItemError": {
+    "message": "Unable to retrieve fees currently"
+  },
+  "notificationItemFrom": {
+    "message": "From (You)"
+  },
+  "notificationItemLidoStakeReadyToBeWithdrawn": {
+    "message": "Withdrawal Ready"
+  },
+  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
+    "message": "Claim your un-staked $1. This will include a gas fee to process the transaction."
+  },
+  "notificationItemLidoWithdrawalRequested": {
+    "message": "Withdrawal requested"
+  },
+  "notificationItemLidoWithdrawalRequestedMessage": {
+    "message": "Your request to unstake $1 has been sent"
+  },
+  "notificationItemNFTReceivedFrom": {
+    "message": "Received NFT from"
+  },
+  "notificationItemNFTSentTo": {
+    "message": "Sent NFT to"
+  },
+  "notificationItemNetwork": {
+    "message": "Network"
+  },
+  "notificationItemRate": {
+    "message": "Rate (fee included)"
+  },
+  "notificationItemReceived": {
+    "message": "Received"
+  },
+  "notificationItemReceivedFrom": {
+    "message": "Received from"
+  },
+  "notificationItemSent": {
+    "message": "Sent"
+  },
+  "notificationItemSentTo": {
+    "message": "Sent to"
+  },
+  "notificationItemStakeCompleted": {
+    "message": "Stake completed"
+  },
+  "notificationItemStaked": {
+    "message": "Staked"
+  },
+  "notificationItemStakingProvider": {
+    "message": "Staking Provider"
+  },
+  "notificationItemStatus": {
+    "message": "Status"
+  },
+  "notificationItemSwapped": {
+    "message": "Swapped"
+  },
+  "notificationItemSwappedFor": {
+    "message": "for"
+  },
+  "notificationItemTo": {
+    "message": "To"
+  },
+  "notificationItemTransactionId": {
+    "message": "Transaction ID"
+  },
+  "notificationItemUnStakeCompleted": {
+    "message": "UnStaking complete"
+  },
+  "notificationItemUnStaked": {
+    "message": "Unstaked"
+  },
+  "notificationItemUnStakingConfirmed": {
+    "message": "Unstaking confirmed"
+  },
+  "notificationItemUnStakingRequested": {
+    "message": "Unstaking requested"
+  },
   "notificationTransactionFailedMessage": {
     "message": "Transaction $1 failed! $2",
     "description": "Content of the browser notification that appears when a transaction fails"
@@ -3148,6 +3277,21 @@
   "notificationsMarkAllAsRead": {
     "message": "Mark all as read"
   },
+  "notificationsPageEmptyContent": {
+    "message": "This is where you can find notifications once there’s activity in your wallet or if you have received notifications from the Snaps you are using."
+  },
+  "notificationsPageEmptyTitle": {
+    "message": "Nothing to see here"
+  },
+  "notificationsPageErrorContent": {
+    "message": "Please, try to visit this page again."
+  },
+  "notificationsPageErrorTitle": {
+    "message": "There has been an error"
+  },
+  "notificationsPageNoNotificationsContent": {
+    "message": "You have not received any notifications yet."
+  },
   "notificationsPetnamesActionText": {
     "message": "Got it"
   },
@@ -3174,6 +3318,15 @@
   },
   "notificationsPortfolioV2Title": {
     "message": "MetaMask Portfolio - join millions"
+  },
+  "notificationsSettingsBoxError": {
+    "message": "Something went wrong. Please try again."
+  },
+  "notificationsSettingsPageAllowNotifications": {
+    "message": "Stay in the loop on what’s happening in your wallet with notifications. To use notifications, we use a profile to sync some settings across your devices. $1"
+  },
+  "notificationsSettingsPageAllowNotificationsLink": {
+    "message": "Learn how we protect your privacy while using this feature."
   },
   "notificationsSimulationsDescriptionOne": {
     "message": "Now you can see the potential outcome of your transactions before you make them!"
@@ -3398,6 +3551,9 @@
   },
   "osTheme": {
     "message": "System"
+  },
+  "other": {
+    "message": "Other"
   },
   "otherSnaps": {
     "message": "other snaps",
@@ -3795,6 +3951,9 @@
   },
   "proceedWithTransaction": {
     "message": "I want to proceed anyway"
+  },
+  "productAnnouncements": {
+    "message": "Product announcements"
   },
   "profileSync": {
     "message": "Profile Sync"
@@ -5797,8 +5956,39 @@
   "turnOff": {
     "message": "Turn off"
   },
+  "turnOffMetamaskNotificationsError": {
+    "message": "There was an error in disabling the notifications. Please try again later."
+  },
   "turnOn": {
     "message": "Turn on"
+  },
+  "turnOnMetamaskNotifications": {
+    "message": "Turn on notifications"
+  },
+  "turnOnMetamaskNotificationsButton": {
+    "message": "Turn on"
+  },
+  "turnOnMetamaskNotificationsError": {
+    "message": "There was an error in creating the notifications. Please try again later."
+  },
+  "turnOnMetamaskNotificationsMessageFirst": {
+    "message": "Stay in the loop on what's happening in your wallet with notifications."
+  },
+
+  "turnOnMetamaskNotificationsMessagePrivacyBold": {
+    "message": "Settings > Notifications."
+  },
+
+  "turnOnMetamaskNotificationsMessagePrivacyLink": {
+    "message": "Learn how we protect your privacy while using this feature."
+  },
+
+  "turnOnMetamaskNotificationsMessageSecond": {
+    "message": "To use notifications, we use a profile to sync some settings across your devices. $1"
+  },
+
+  "turnOnMetamaskNotificationsMessageThird": {
+    "message": "You can turn off notifications at any time in $1"
   },
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"

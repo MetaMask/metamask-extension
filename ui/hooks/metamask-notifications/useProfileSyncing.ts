@@ -1,20 +1,13 @@
 import { useState, useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import type { InternalAccount } from '@metamask/keyring-api';
-import {
-  selectIsSignedIn,
-  selectParticipateInMetaMetrics,
-} from '../../selectors/metamask-notifications/authentication';
-import { selectIsMetamaskNotificationsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
+import log from 'loglevel';
 import {
   disableProfileSyncing as disableProfileSyncingAction,
   enableProfileSyncing as enableProfileSyncingAction,
-  performSignIn,
-  performSignOut,
-  showLoadingIndication,
+  setIsProfileSyncingEnabled as setIsProfileSyncingEnabledAction,
   hideLoadingIndication,
 } from '../../store/actions';
-import { useDisableNotifications } from './useNotifications';
 
 // Define KeyringType interface
 export type KeyringType = {
@@ -36,47 +29,29 @@ export type AccountType = InternalAccount & {
  */
 export function useEnableProfileSyncing(): {
   enableProfileSyncing: () => Promise<void>;
-  loading: boolean;
   error: string | null;
 } {
   const dispatch = useDispatch();
 
-  const isSignedIn = useSelector(selectIsSignedIn);
-
-  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const enableProfileSyncing = useCallback(async () => {
-    setLoading(true);
-    dispatch(showLoadingIndication());
     setError(null);
 
     try {
-      // if the user is not signed in, perform sign in
-      if (!isSignedIn) {
-        await dispatch(performSignIn());
-      }
-
+      console.log('enableProfileSyncing');
       // set profile syncing to true
       await dispatch(enableProfileSyncingAction());
     } catch (e) {
-      // if an error occurs, we need to be sure that the
-      // profileSyncing is not enabled
-      await dispatch(disableProfileSyncingAction());
-
       const errorMessage =
         e instanceof Error ? e.message : JSON.stringify(e ?? '');
+      log.error(errorMessage);
       setError(errorMessage);
-    } finally {
-      setLoading(false);
-      dispatch(hideLoadingIndication());
+      throw e;
     }
+  }, [dispatch]);
 
-    setLoading(false);
-    dispatch(hideLoadingIndication());
-  }, [dispatch, isSignedIn]);
-
-  return { enableProfileSyncing, loading, error };
+  return { enableProfileSyncing, error };
 }
 
 /**
@@ -88,55 +63,54 @@ export function useEnableProfileSyncing(): {
  */
 export function useDisableProfileSyncing(): {
   disableProfileSyncing: () => Promise<void>;
-  loading: boolean;
   error: string | null;
 } {
   const dispatch = useDispatch();
-  const isSignedIn = useSelector(selectIsSignedIn);
-  const isParticipateInMetaMetrics = useSelector(
-    selectParticipateInMetaMetrics,
-  );
-  const isMetamaskNotificationsEnabled = useSelector(
-    selectIsMetamaskNotificationsEnabled,
-  );
 
-  const { disableNotifications } = useDisableNotifications();
-
-  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const disableProfileSyncing = useCallback(async () => {
-    setLoading(true);
-    dispatch(showLoadingIndication());
     setError(null);
 
     try {
-      // if the notifications are enabled, disable them
-      // and set the states to false
-      if (isMetamaskNotificationsEnabled) {
-        await disableNotifications();
-      }
-
       // disable profile syncing
       await dispatch(disableProfileSyncingAction());
+    } catch (e) {
+      console.log('error', error);
+      const errorMessage =
+        e instanceof Error ? e.message : JSON.stringify(e ?? '');
+      setError(errorMessage);
+      log.error(errorMessage);
+      throw e;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  }, [dispatch]);
 
-      // if metametrics is not enabled, perform sign out
-      if (!isParticipateInMetaMetrics) {
-        // perform sign out
-        await dispatch(performSignOut());
-      }
+  return { disableProfileSyncing, error };
+}
+
+export function useSetIsProfileSyncingEnabled(state: boolean): {
+  setIsProfileSyncingEnabled: () => Promise<void>;
+  error: string | null;
+} {
+  const dispatch = useDispatch();
+
+  const [error, setError] = useState<string | null>(null);
+
+  const setIsProfileSyncingEnabled = useCallback(async () => {
+    setError(null);
+
+    try {
+      await dispatch(setIsProfileSyncingEnabledAction(state));
     } catch (e) {
       const errorMessage =
         e instanceof Error ? e.message : JSON.stringify(e ?? '');
       setError(errorMessage);
-    } finally {
-      setLoading(false);
-      dispatch(hideLoadingIndication());
+      log.error(errorMessage);
+      throw e;
     }
+  }, [dispatch]);
 
-    setLoading(false);
-    dispatch(hideLoadingIndication());
-  }, [dispatch, isSignedIn, isMetamaskNotificationsEnabled]);
-
-  return { disableProfileSyncing, loading, error };
+  return { setIsProfileSyncingEnabled, error };
 }

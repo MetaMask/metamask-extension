@@ -22,17 +22,14 @@ const store = mockStore(initialState);
 
 describe('ProfileSyncToggle', () => {
   const enableProfileSyncingMock = jest.fn(() => Promise.resolve());
-  const showConfirmTurnOffProfileSyncingMock = jest.fn();
+  const showModal = jest.fn();
 
   beforeEach(() => {
     jest.spyOn(ProfileSyncingHook, 'useEnableProfileSyncing').mockReturnValue({
       enableProfileSyncing: enableProfileSyncingMock,
-      loading: false,
       error: null,
     });
-    jest
-      .spyOn(store, 'dispatch')
-      .mockImplementation(showConfirmTurnOffProfileSyncingMock);
+    jest.spyOn(store, 'dispatch').mockImplementation(showModal);
   });
 
   afterEach(() => {
@@ -58,16 +55,5 @@ describe('ProfileSyncToggle', () => {
     );
     fireEvent.click(getByTestId('toggleButton'));
     expect(enableProfileSyncingMock).toHaveBeenCalled();
-  });
-
-  it('dispatches showConfirmTurnOffProfileSyncing when toggle is turned off', () => {
-    mockUseSelectorReturnValue = true;
-    const { getByTestId } = render(
-      <Provider store={store}>
-        <ProfileSyncToggle />
-      </Provider>,
-    );
-    fireEvent.click(getByTestId('toggleButton'));
-    expect(showConfirmTurnOffProfileSyncingMock).toHaveBeenCalled();
   });
 });

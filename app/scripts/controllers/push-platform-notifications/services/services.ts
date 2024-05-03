@@ -5,6 +5,7 @@ import { getMessaging, onBackgroundMessage } from 'firebase/messaging/sw';
 import type { Messaging, MessagePayload } from 'firebase/messaging/sw';
 import log from 'loglevel';
 import { onPushNotification } from '../utils/get-notification-message';
+import type { Notification } from '../../metamask-notifications/types/notification/notification';
 
 const url = process.env.PUSH_NOTIFICATIONS_SERVICE_URL;
 const REGISTRATION_TOKENS_ENDPOINT = `${url}/v1/link`;
@@ -97,10 +98,12 @@ export async function getPushNotificationLinks(
       headers: { Authorization: `Bearer ${bearerToken}` },
     });
     if (!response.ok) {
-      throw new Error('Failed to fetch links');
+      log.error('Failed to fetch the push notification links');
+      throw new Error('Failed to fetch the push notification links');
     }
     return response.json() as Promise<LinksResult>;
-  } catch {
+  } catch (error) {
+    log.error('Failed to fetch the push notification links', error);
     return null;
   }
 }
@@ -123,17 +126,14 @@ export async function updateLinksAPI(
       trigger_ids: triggers,
       registration_tokens: regTokens,
     };
-    const response = await fetch(
-      `${process.env.PUSH_NOTIFICATIONS_SERVICE_URL}/v1/link`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${bearerToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
+    const response = await fetch(`${url}/v1/link`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${bearerToken}`,
+        'Content-Type': 'application/json',
       },
-    );
+      body: JSON.stringify(body),
+    });
     return response.status === 200;
   } catch {
     return false;
@@ -145,13 +145,16 @@ export async function updateLinksAPI(
  *
  * @param bearerToken - The JSON Web Token used for authorization.
  * @param triggers - An array of trigger identifiers.
+ * @param updateMetamaskNotificationsList - A function to update the notification list.
  * @returns A promise that resolves with an object containing the success status and the BearerToken token.
  */
 export async function activatePushNotifications(
   bearerToken: string,
   triggers: string[],
+  updateMetamaskNotificationsList: (notification: Notification) => void,
 ): Promise<string | null> {
   const notificationLinks = await getPushNotificationLinks(bearerToken);
+
   if (!notificationLinks) {
     return null;
   }
@@ -176,6 +179,15 @@ export async function activatePushNotifications(
         if (!notificationData) {
           return;
         }
+
+        sw.addEventListener('notificationclick', (event) => {
+          event.notification.close();
+          const destination = `chrome-extension://${sw.location.host}/home.html#notifications/${notificationData?.id}`;
+          event.waitUntil(sw.clients.openWindow(destination));
+        });
+
+        // update the notification list
+        updateMetamaskNotificationsList(notificationData);
 
         await onPushNotification(notificationData);
       } catch (error) {
@@ -251,17 +263,20 @@ export async function updateTriggerPushNotifications(
   regToken: string,
   bearerToken: string,
   triggers: string[],
-): Promise<boolean> {
+): Promise<{
+  isTriggersLinkedToPushNotifications: boolean;
+  fcmToken?: string;
+}> {
   const notificationLinks = await getPushNotificationLinks(bearerToken);
   if (!notificationLinks) {
-    return false;
+    return { isTriggersLinkedToPushNotifications: false };
   }
-
   // Create new registration token if doesn't exist
   const regTokenSet = new Set(notificationLinks.registration_tokens);
+  let newRegToken;
   if (!regToken || !regTokenSet.has(regToken)) {
     await deleteRegToken();
-    const newRegToken = await createRegToken();
+    newRegToken = await createRegToken();
     if (!newRegToken) {
       throw new Error('Failed to create a new registration token');
     }
@@ -274,5 +289,8 @@ export async function updateTriggerPushNotifications(
     Array.from(regTokenSet),
   );
 
-  return isTriggersLinkedToPushNotifications;
+  return {
+    isTriggersLinkedToPushNotifications,
+    fcmToken: newRegToken,
+  };
 }

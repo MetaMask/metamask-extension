@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { NotificationsTagCounter } from '../notifications-tag-counter';
 import {
   SETTINGS_ROUTE,
   DEFAULT_ROUTE,
@@ -11,14 +12,19 @@ import {
   PERMISSIONS,
   ///: END:ONLY_INCLUDE_IF(snaps)
 } from '../../../helpers/constants/routes';
-import { lockMetamask } from '../../../store/actions';
+import {
+  lockMetamask,
+  showConfirmTurnOnMetamaskNotifications,
+} from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  selectIsMetamaskNotificationsEnabled,
+  selectIsMetamaskNotificationsFeatureSeen,
+} from '../../../selectors/metamask-notifications/metamask-notifications';
 import {
   Box,
   IconName,
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  Text,
-  ///: END:ONLY_INCLUDE_IF(snaps)
+  Tag,
   Popover,
   PopoverPosition,
 } from '../../component-library';
@@ -50,8 +56,6 @@ import {
   getSelectedInternalAccount,
   getUnapprovedTransactions,
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  getNotifySnaps,
-  getUnreadNotificationsCount,
   getAnySnapUpdateAvailable,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
@@ -61,10 +65,11 @@ import {
   BackgroundColor,
   BlockSize,
   BorderColor,
+  BorderRadius,
   BorderStyle,
   Display,
+  FlexDirection,
   JustifyContent,
-  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -77,16 +82,23 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
-  const history = useHistory();
-  const account = useSelector(getSelectedInternalAccount);
-  const unapprovedTransactons = useSelector(getUnapprovedTransactions);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  const notifySnaps = useSelector(getNotifySnaps);
-  ///: END:ONLY_INCLUDE_IF
+  const history = useHistory();
+
+  const account = useSelector(getSelectedInternalAccount);
+
+  const unapprovedTransactions = useSelector(getUnapprovedTransactions);
+
+  const isMetamaskNotificationsFeatureSeen = useSelector(
+    selectIsMetamaskNotificationsFeatureSeen,
+  );
+
+  const isMetamaskNotificationsEnabled = useSelector(
+    selectIsMetamaskNotificationsEnabled,
+  );
 
   const hasUnapprovedTransactions =
-    Object.keys(unapprovedTransactons).length > 0;
+    Object.keys(unapprovedTransactions).length > 0;
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const metaMetricsId = useSelector(getMetaMetricsId);
@@ -95,7 +107,6 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
   ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  const unreadNotificationsCount = useSelector(getUnreadNotificationsCount);
   const snapsUpdatesAvailable = useSelector(getAnySnapUpdateAvailable);
   ///: END:ONLY_INCLUDE_IF
 
@@ -129,6 +140,16 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
     };
   }, [closeMenu]);
 
+  const handleNotificationsClick = () => {
+    if (isMetamaskNotificationsFeatureSeen) {
+      history.push(NOTIFICATIONS_ROUTE);
+      closeMenu();
+    } else {
+      dispatch(showConfirmTurnOnMetamaskNotifications());
+      closeMenu();
+    }
+  };
+
   return (
     <Popover
       referenceElement={anchorElement}
@@ -143,6 +164,41 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
       borderStyle={BorderStyle.none}
       position={PopoverPosition.BottomEnd}
     >
+      <>
+        <MenuItem
+          iconName={IconName.Notification}
+          onClick={() => handleNotificationsClick()}
+        >
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.spaceBetween}
+          >
+            {t('notifications')}
+            {isMetamaskNotificationsEnabled && <NotificationsTagCounter />}
+            {!isMetamaskNotificationsFeatureSeen && (
+              <Tag
+                backgroundColor={BackgroundColor.infoMuted}
+                borderStyle={BorderStyle.none}
+                borderRadius={BorderRadius.MD}
+                label={t('new')}
+                labelProps={{
+                  color: TextColor.primaryDefault,
+                  variant: TextVariant.bodySm,
+                }}
+                paddingLeft={2}
+                paddingRight={2}
+              />
+            )}
+          </Box>
+        </MenuItem>
+        <Box
+          borderColor={BorderColor.borderMuted}
+          width={BlockSize.Full}
+          style={{ height: '1px', borderBottomWidth: 0 }}
+        ></Box>
+      </>
       {account && (
         <>
           <AccountDetailsMenuItem
@@ -223,46 +279,6 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
           {t('expandView')}
         </MenuItem>
       )}
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-        notifySnaps.length ? (
-          <>
-            <MenuItem
-              iconName={IconName.Notification}
-              onClick={() => {
-                closeMenu();
-                history.push(NOTIFICATIONS_ROUTE);
-              }}
-            >
-              {t('notifications')}
-              {unreadNotificationsCount > 0 && (
-                <Text
-                  as="span"
-                  display={Display.InlineBlock}
-                  justifyContent={JustifyContent.center}
-                  alignItems={AlignItems.center}
-                  backgroundColor={BackgroundColor.primaryDefault}
-                  color={TextColor.primaryInverse}
-                  padding={[0, 1, 0, 1]}
-                  variant={TextVariant.bodyXs}
-                  textAlign={TextAlign.Center}
-                  data-testid="global-menu-notification-count"
-                  style={{
-                    borderRadius: '16px',
-                    minWidth: '24px',
-                  }}
-                  marginInlineStart={2}
-                >
-                  {unreadNotificationsCount > 99
-                    ? '99+'
-                    : unreadNotificationsCount}
-                </Text>
-              )}
-            </MenuItem>
-          </>
-        ) : null
-        ///: END:ONLY_INCLUDE_IF(snaps)
-      }
       {
         ///: BEGIN:ONLY_INCLUDE_IF(snaps)
         <MenuItem

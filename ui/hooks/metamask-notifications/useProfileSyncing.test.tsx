@@ -57,44 +57,26 @@ describe('useProfileSyncing', () => {
   });
 
   it('should enable profile syncing', async () => {
-    const { result, waitForNextUpdate } = renderHook(
-      () => useEnableProfileSyncing(),
-      {
-        wrapper: ({ children }) => (
-          <Provider store={store}>{children}</Provider>
-        ),
-      },
-    );
+    const { result } = renderHook(() => useEnableProfileSyncing(), {
+      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
+    });
 
     act(() => {
       result.current.enableProfileSyncing();
     });
 
-    await waitForNextUpdate();
-
-    expect(actions.performSignIn).toHaveBeenCalled();
     expect(actions.enableProfileSyncing).toHaveBeenCalled();
   });
 
   it('should disable profile syncing', async () => {
-    const { result, waitForNextUpdate } = renderHook(
-      () => useDisableProfileSyncing(),
-      {
-        wrapper: ({ children }) => (
-          <Provider store={store}>{children}</Provider>
-        ),
-      },
-    );
+    const { result } = renderHook(() => useDisableProfileSyncing(), {
+      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
+    });
 
     act(() => {
       result.current.disableProfileSyncing();
     });
 
-    await waitForNextUpdate();
-
     expect(actions.disableProfileSyncing).toHaveBeenCalled();
-    if (!store.getState().metamask.participateInMetaMetrics) {
-      expect(actions.performSignOut).toHaveBeenCalled();
-    }
   });
 });

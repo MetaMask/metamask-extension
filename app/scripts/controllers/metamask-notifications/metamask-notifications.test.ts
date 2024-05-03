@@ -14,14 +14,17 @@ import {
   UserStorageControllerGetStorageKey,
   UserStorageControllerPerformGetStorage,
   UserStorageControllerPerformSetStorage,
+  UserStorageControllerEnableProfileSyncing,
 } from '../user-storage/user-storage-controller';
+import {
+  PushPlatformNotificationsControllerEnablePushNotifications,
+  PushPlatformNotificationsControllerDisablePushNotifications,
+  PushPlatformNotificationsControllerUpdateTriggerPushNotifications,
+} from '../push-platform-notifications/push-platform-notifications';
 import {
   AllowedActions,
   AllowedEvents,
   MetamaskNotificationsController,
-  PushNotificationsControllerDisablePushNotifications,
-  PushNotificationsControllerEnablePushNotifications,
-  PushNotificationsControllerUpdateTriggerPushNotifications,
   defaultState,
 } from './metamask-notifications';
 import {
@@ -289,22 +292,6 @@ describe('metamask-notifications - setSnapNotificationsEnabled()', () => {
 });
 
 describe('metamask-notifications - createOnChainTriggers()', () => {
-  test('(Re-Creates) triggers and updates push notification links if using an existing User Storage (login for existing user)', async () => {
-    const {
-      messenger,
-      mockInitializeUserStorage,
-      mockEnablePushNotifications,
-      mockCreateOnChainTriggers,
-    } = arrangeMocks();
-    const controller = new MetamaskNotificationsController({ messenger });
-
-    const result = await controller.createOnChainTriggers();
-    expect(result).toBeDefined();
-    expect(mockInitializeUserStorage).not.toBeCalled(); // not called since we don't need to initialize (this is an existing user)
-    expect(mockCreateOnChainTriggers).toBeCalled();
-    expect(mockEnablePushNotifications).toBeCalled();
-  });
-
   test('Create new triggers and push notifications if there is no User Storage (login for new user)', async () => {
     const {
       messenger,
@@ -471,7 +458,11 @@ describe('metamask-notifications - fetchAndUpdateMetamaskNotifications()', () =>
       mockFeatureAnnouncementAPIResult,
       mockListNotificationsAPIResult,
     } = arrangeMocks();
-    const controller = new MetamaskNotificationsController({ messenger });
+
+    const controller = new MetamaskNotificationsController({
+      messenger,
+      state: { ...defaultState, isFeatureAnnouncementsEnabled: true },
+    });
 
     const result = await controller.fetchAndUpdateMetamaskNotifications();
 
@@ -495,7 +486,10 @@ describe('metamask-notifications - fetchAndUpdateMetamaskNotifications()', () =>
       new Error('MOCK - failed to get access token'),
     );
 
-    const controller = new MetamaskNotificationsController({ messenger });
+    const controller = new MetamaskNotificationsController({
+      messenger,
+      state: { ...defaultState, isFeatureAnnouncementsEnabled: true },
+    });
 
     // Should only have feature announcement
     const result = await controller.fetchAndUpdateMetamaskNotifications();
@@ -604,6 +598,7 @@ function mockNotificationMessenger() {
       'UserStorageController:getStorageKey',
       'UserStorageController:performGetStorage',
       'UserStorageController:performSetStorage',
+      'UserStorageController:enableProfileSyncing',
     ],
     allowedEvents: ['KeyringController:stateChange'],
   });
@@ -620,18 +615,21 @@ function mockNotificationMessenger() {
     typedMockAction<AuthenticationControllerIsSignedIn>().mockReturnValue(true);
 
   const mockDisablePushNotifications =
-    typedMockAction<PushNotificationsControllerDisablePushNotifications>();
+    typedMockAction<PushPlatformNotificationsControllerDisablePushNotifications>();
 
   const mockEnablePushNotifications =
-    typedMockAction<PushNotificationsControllerEnablePushNotifications>();
+    typedMockAction<PushPlatformNotificationsControllerEnablePushNotifications>();
 
   const mockUpdateTriggerPushNotifications =
-    typedMockAction<PushNotificationsControllerUpdateTriggerPushNotifications>();
+    typedMockAction<PushPlatformNotificationsControllerUpdateTriggerPushNotifications>();
 
   const mockGetStorageKey =
     typedMockAction<UserStorageControllerGetStorageKey>().mockResolvedValue(
       'MOCK_STORAGE_KEY',
     );
+
+  const mockEnableProfileSyncing =
+    typedMockAction<UserStorageControllerEnableProfileSyncing>();
 
   const mockPerformGetStorage =
     typedMockAction<UserStorageControllerPerformGetStorage>().mockResolvedValue(
@@ -683,6 +681,10 @@ function mockNotificationMessenger() {
 
     if (actionType === 'UserStorageController:getStorageKey') {
       return mockGetStorageKey();
+    }
+
+    if (actionType === 'UserStorageController:enableProfileSyncing') {
+      return mockEnableProfileSyncing();
     }
 
     if (actionType === 'UserStorageController:performGetStorage') {
