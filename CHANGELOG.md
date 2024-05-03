@@ -6,14 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [11.14.5]
-### Fixed
-- Prevent users from making fund loss errors while editing transactions by removing the edit button when on any confirmation screen for a transaction proposed by a dapp ([#24322](https://github.com/MetaMask/metamask-extension/pull/24322))
-- Reduce failed simulations on NFT mint confirmations ([#24350]https://github.com/MetaMask/metamask-extension/pull/24350)
+## [11.15.1]
+### Changed
+- Restores 11.15.0, and also incorporates the 11.14.4 and 11.14.5 changes
 
-## [11.14.4]
-### Fixed
-- Fix bug that could cause safe-transfer-from transactions to be converted to transfer-from transactions, by removing the edit button on the safe-transfer-from confirmation screens ([#24287](https://github.com/MetaMask/metamask-extension/pull/24287))
 ## [11.15.0]
 ### Added
 - Expanded Smart Transactions (STX) functionality to include non-Swaps transactions on Ethereum Mainnet for users opted into STX ([#23155](https://github.com/MetaMask/metamask-extension/pull/23155))
@@ -53,6 +49,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Resolved an issue preventing QR code-based hardware wallet connections ([#23903](https://github.com/MetaMask/metamask-extension/pull/23903))
 - Resolved an issue where the connected accounts modal would crash if a dApp with an installed Snap was accessed ([#23928](https://github.com/MetaMask/metamask-extension/pull/23928))
 
+## [11.14.5]
+### Fixed
+- Prevent users from making fund loss errors while editing transactions by removing the edit button when on any confirmation screen for a transaction proposed by a dapp ([#24322](https://github.com/MetaMask/metamask-extension/pull/24322))
+- Reduce failed simulations on NFT mint confirmations ([#24350]https://github.com/MetaMask/metamask-extension/pull/24350)
+
+## [11.14.4]
+### Fixed
+- Fix bug that could cause safe-transfer-from transactions to be converted to transfer-from transactions, by removing the edit button on the safe-transfer-from confirmation screens ([#24287](https://github.com/MetaMask/metamask-extension/pull/24287))
 
 ## [11.14.3]
 ### Fixed
@@ -4669,11 +4673,11 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.14.5...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.15.1...HEAD
+[11.15.1]: https://github.com/MetaMask/metamask-extension/compare/v11.15.0...v11.15.1
+[11.15.0]: https://github.com/MetaMask/metamask-extension/compare/v11.14.5...v11.15.0
 [11.14.5]: https://github.com/MetaMask/metamask-extension/compare/v11.14.4...v11.14.5
 [11.14.4]: https://github.com/MetaMask/metamask-extension/compare/v11.14.3...v11.14.4
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.15.0...HEAD
-[11.15.0]: https://github.com/MetaMask/metamask-extension/compare/v11.14.3...v11.15.0
 [11.14.3]: https://github.com/MetaMask/metamask-extension/compare/v11.14.2...v11.14.3
 [11.14.2]: https://github.com/MetaMask/metamask-extension/compare/v11.14.1...v11.14.2
 [11.14.1]: https://github.com/MetaMask/metamask-extension/compare/v11.14.0...v11.14.1
