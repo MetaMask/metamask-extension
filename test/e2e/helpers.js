@@ -643,8 +643,8 @@ const closeSRPReveal = async (driver) => {
   });
 };
 
+const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
 const DAPP_URL = 'http://127.0.0.1:8080';
-const DAPP_URL_WITHOUT_SCHEMA = '127.0.0.1:8080';
 const DAPP_ONE_URL = 'http://127.0.0.1:8081';
 
 const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
@@ -1099,8 +1099,8 @@ async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
 }
 
 module.exports = {
+  DAPP_HOST_ADDRESS,
   DAPP_URL,
-  DAPP_URL_WITHOUT_SCHEMA,
   DAPP_ONE_URL,
   TEST_SEED_PHRASE,
   TEST_SEED_PHRASE_TWO,

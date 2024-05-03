@@ -9,7 +9,6 @@ export function withRedesignConfirmationFixtures (title: string = '', testFuncti
     {
       dapp: true,
       fixtures: new FixtureBuilder()
-      .withNetworkControllerOnMainnet()
         .withPermissionControllerConnectedToTestDapp()
         .withPreferencesController({
           preferences: {

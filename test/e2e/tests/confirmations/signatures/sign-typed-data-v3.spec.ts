@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { withRedesignConfirmationFixtures } from '../helper-fixture';
 import {
-  DAPP_URL_WITHOUT_SCHEMA,
+  DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
   openDapp,
   unlockWallet,
@@ -25,7 +25,7 @@ describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
         await driver.clickElement('#signTypedDataV3');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const origin = driver.findElement({ text: DAPP_URL_WITHOUT_SCHEMA });
+        const origin = driver.findElement({ text: DAPP_HOST_ADDRESS });
         const contractPetName = driver.findElement({
           css: '.name__value',
           text: '0xCcCCc...ccccC',
