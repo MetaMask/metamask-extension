@@ -455,11 +455,11 @@ export default class Routes extends Component {
           />
           ///: END:ONLY_INCLUDE_IF
         }
-          <Authenticated
-            path={`${CONNECTIONS}/:origin`}
-            component={Connections}
-          />
-          <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
+        <Authenticated
+          path={`${CONNECTIONS}/:origin`}
+          component={Connections}
+        />
+        <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
         <Authenticated path={DEFAULT_ROUTE} component={Home} />
       </Switch>
     );
