@@ -64,6 +64,7 @@ const Footer = () => {
     <PageFooter className="confirm-footer_page-footer">
       <Button
         block
+        data-testid="confirm-footer-cancel-button"
         onClick={onCancel}
         size={ButtonSize.Lg}
         variant={ButtonVariant.Secondary}

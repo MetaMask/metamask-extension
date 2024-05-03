@@ -49,7 +49,37 @@ describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
 
         await driver.clickElement('[data-testid="confirm-footer-button"]');
 
+        /**
+         * TODO: test scroll and fixing scroll
+         * @see {@link https://github.com/MetaMask/MetaMask-planning/issues/2458}
+         */
+        // test "confirm-footer-button" is disabled and unclickable
+        //
+        // await driver.clickElement('.confirm-scroll-to-bottom__button');
+        // await driver.clickElement('[data-testid="confirm-footer-button"]');
+
         await assertVerifiedResults(driver, publicAddress);
+      },
+    );
+  });
+
+  it('initiates and rejects', async function () {
+    await withRedesignConfirmationFixtures(
+      this.test?.fullTitle(),
+      async ({ driver, ganacheServer }: { driver: Driver, ganacheServer: Ganache }) => {
+        const addresses = await ganacheServer.getAccounts();
+        const publicAddress = addresses?.[0] as string;
+
+        await unlockWallet(driver);
+        await openDapp(driver);
+        await driver.clickElement('#signTypedDataV3');
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await driver.clickElement('[data-testid="confirm-footer-cancel-button"]');
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
+        const rejectionResult = await driver.findElement('#signTypedDataV3Result');
+        assert.equal(await rejectionResult.getText(), 'Error: User rejected the request.');
       },
     );
   });

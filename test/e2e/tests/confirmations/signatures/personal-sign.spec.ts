@@ -37,6 +37,27 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
       }
     );
   });
+
+  it('initiates and rejects', async function () {
+    await withRedesignConfirmationFixtures(
+      this.test?.fullTitle(),
+      async ({ driver, ganacheServer }: { driver: Driver, ganacheServer: Ganache }) => {
+        const addresses = await ganacheServer.getAccounts();
+        const publicAddress = addresses?.[0] as string;
+
+        await unlockWallet(driver);
+        await openDapp(driver);
+        await driver.clickElement('#personalSign');
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await driver.clickElement('[data-testid="confirm-footer-cancel-button"]');
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
+        const rejectionResult = await driver.findElement('#personalSign');
+        assert.equal(await rejectionResult.getText(), 'ERROR: USER REJECTED THE REQUEST.');
+      },
+    );
+  });
 });
 
 async function assertVerifiedPersonalMessage(driver: Driver, publicAddress: string) {
