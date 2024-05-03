@@ -66,13 +66,11 @@ describe('Navigation Signature - Different signature types', function (this: Sui
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
       async ({ driver, ganacheServer }: { driver: Driver, ganacheServer: Ganache }) => {
-        const addresses = await ganacheServer.getAccounts();
-        const publicAddress = addresses?.[0] as string;
-
         await unlockWallet(driver);
         await openDapp(driver);
         await queueSignatures(driver);
-
+        await driver.delay(regularDelayMs);
+        
         await driver.clickElement('[data-testid="confirm-nav__reject-all"]');
 
         await driver.waitUntilXWindowHandles(3);
@@ -81,7 +79,6 @@ describe('Navigation Signature - Different signature types', function (this: Sui
         await verifyRejectionResults(driver, "#signTypedDataResult");
         await verifyRejectionResults(driver, "#signTypedDataV3Result");
         await verifyRejectionResults(driver, "#signTypedDataV4Result");
-
       },
     );
   });
