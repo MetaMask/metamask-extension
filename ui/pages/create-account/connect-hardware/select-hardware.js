@@ -67,7 +67,9 @@ export default class SelectHardware extends Component {
             ],
           });
         } catch (e) {
-          throw e;
+          if (!e.message.match('No device selected')) {
+            throw e;
+          }
         } finally {
           this.setState({ trezorRequestDevicePending: false });
         }
