@@ -101,9 +101,9 @@ async function assertVerifiedResults(driver: Driver, publicAddress: string) {
   });
   const verifyRecoverAddress = await driver.findElement('#signPermitVerifyResult');
 
-  assert.equal(await verifyResult.getText(), '0x68272d5c4007252c3a79e2cb96a96dcda95ed540d29ec0f162225d8ff47a549167a85a47894c7dbc3511d497b0fbe2456d7c092afa35de566304e525c3b2a0531c');
-  assert.equal(await verifyResultR.getText(), 'r: 0x68272d5c4007252c3a79e2cb96a96dcda95ed540d29ec0f162225d8ff47a5491');
-  assert.equal(await verifyResultS.getText(), 's: 0x67a85a47894c7dbc3511d497b0fbe2456d7c092afa35de566304e525c3b2a053');
+  assert.equal(await verifyResult.getText(), '0x0a396f89ee073214f7e055e700048abd7b4aba6ecca0352937d6a2ebb7176f2f43c63097ad7597632e34d6a801695702ba603d5872a33ee7d7562fcdb9e816ee1c');
+  assert.equal(await verifyResultR.getText(), 'r: 0x0a396f89ee073214f7e055e700048abd7b4aba6ecca0352937d6a2ebb7176f2f');
+  assert.equal(await verifyResultS.getText(), 's: 0x43c63097ad7597632e34d6a801695702ba603d5872a33ee7d7562fcdb9e816ee');
   assert.equal(await verifyResultV.getText(), 'v: 28');
   assert.equal(await verifyRecoverAddress.getText(), publicAddress);
 }

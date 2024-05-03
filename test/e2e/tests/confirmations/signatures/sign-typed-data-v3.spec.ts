@@ -96,6 +96,6 @@ async function assertVerifiedResults(driver: Driver, publicAddress: string) {
   });
   const verifyRecoverAddress = await driver.findElement('#signTypedDataV3VerifyResult');
 
-  assert.equal(await verifyResult.getText(), '0x232588587d1e29b4ecf33725505e58f4305ba1d3ad09c9edb655b580e68e6cda01630fbef3b415dbd08e839fc5deee2c6887902539b5032a7c2a8487f58873821c');
+  assert.equal(await verifyResult.getText(), '0x0a22f7796a2a70c8dc918e7e6eb8452c8f2999d1a1eb5ad714473d36270a40d6724472e5609948c778a07216bd082b60b6f6853d6354c731fd8ccdd3a2f4af261b');
   assert.equal(await verifyRecoverAddress.getText(), publicAddress);
 }
