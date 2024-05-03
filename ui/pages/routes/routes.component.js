@@ -835,7 +835,6 @@ export default class Routes extends Component {
       hideDeprecatedNetworkModal,
       switchedNetworkDetails,
       clearSwitchedNetworkDetails,
-      neverShowSwitchedNetworkMessage,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       isShowKeyringSnapRemovalResultModal,
       hideShowKeyringSnapRemovalResultModal,
