@@ -292,11 +292,6 @@ const state = {
         state: {},
         snapId: 'local:http://localhost:8080/',
       },
-      'error-interface': {
-        content: 'foo',
-        state: {},
-        snapId: 'local:http://localhost:8080/',
-      },
     },
     accountArray: [
       {
