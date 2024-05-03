@@ -43,16 +43,12 @@ async function assertVerifiedPersonalMessage(driver: Driver, publicAddress: stri
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await driver.clickElement('#personalSignVerify');
 
-  const verifySigUtil = await driver.findElement(
-    '#personalSignVerifySigUtilResult',
-  );
+  const verifySigUtil = await driver.findElement('#personalSignVerifySigUtilResult');
   await driver.waitForSelector({
     css: '#personalSignVerifyECRecoverResult',
     text: publicAddress,
   });
-  const verifyECRecover = await driver.findElement(
-    '#personalSignVerifyECRecoverResult',
-  );
+  const verifyECRecover = await driver.findElement('#personalSignVerifyECRecoverResult');
 
   assert.equal(await verifySigUtil.getText(), publicAddress);
   assert.equal(await verifyECRecover.getText(), publicAddress);

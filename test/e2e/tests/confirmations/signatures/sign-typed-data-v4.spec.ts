@@ -11,9 +11,7 @@ import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 
 describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
-  if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
-    return;
-  }
+  if (!process.env.ENABLE_CONFIRMATION_REDESIGN) { return; }
 
   it('initiates and confirms', async function () {
     await withRedesignConfirmationFixtures(
@@ -25,14 +23,9 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#signTypedDataV4');
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog
-        );
-
-        const origin = driver.findElement({
-          text: DAPP_URL_WITHOUT_SCHEMA,
-        });
+        const origin = driver.findElement({ text: DAPP_URL_WITHOUT_SCHEMA });
         const contractPetName = driver.findElement({
           css: '.name__value',
           text: '0xCcCCc...ccccC',
@@ -70,16 +63,12 @@ async function assertVerifiedResults(driver: Driver, publicAddress: string) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await driver.clickElement('#signTypedDataV4Verify');
 
-  const verifyResult = await driver.findElement(
-    '#signTypedDataV4Result',
-  );
+  const verifyResult = await driver.findElement('#signTypedDataV4Result');
   await driver.waitForSelector({
     css: '#signTypedDataV4VerifyResult',
     text: publicAddress,
   });
-  const verifyRecoverAddress = await driver.findElement(
-    '#signTypedDataV4VerifyResult',
-  );
+  const verifyRecoverAddress = await driver.findElement('#signTypedDataV4VerifyResult');
 
   assert.equal(await verifyResult.getText(), '0x089bfbf84d16c9b7a48c3d768e200e8b84e651bf4efb6c444ad2c89aa311859f1c4c637982939ec69fe8519214257d5bbb2e2ae0b8e9644a4008412863a2e0ae1b');
   assert.equal(await verifyRecoverAddress.getText(), publicAddress);

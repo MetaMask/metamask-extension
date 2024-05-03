@@ -11,9 +11,7 @@ import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 
 describe('Confirmation Signature - Permit', function (this: Suite) {
-  if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
-    return;
-  }
+  if (!process.env.ENABLE_CONFIRMATION_REDESIGN) { return; }
 
   it('initiates and confirms', async function () {
     await withRedesignConfirmationFixtures(
@@ -25,14 +23,9 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#signPermit');
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog
-        );
-
-        const origin = driver.findElement({
-          text: DAPP_URL_WITHOUT_SCHEMA,
-        });
+        const origin = driver.findElement({ text: DAPP_URL_WITHOUT_SCHEMA });
         const contractPetName = driver.findElement({
           css: '.name__value',
           text: '0xCcCCc...ccccC',
