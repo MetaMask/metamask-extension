@@ -126,6 +126,7 @@
     "snapsAddSnapAccountModalDismissed": "boolean",
     "useExternalNameSources": "boolean",
     "useTransactionSimulations": true,
+    "enableMV3TimestampSave": true,
     "selectedAddress": "string",
     "metaMetricsId": "fake-metrics-id",
     "eventsBeforeMetricsOptIn": "object",

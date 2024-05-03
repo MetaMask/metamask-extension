@@ -283,13 +283,16 @@ async function initialize() {
     ///: END:ONLY_INCLUDE_IF
 
     let isFirstMetaMaskControllerSetup;
+
     if (isManifestV3) {
       // Save the timestamp immediately and then every `SAVE_TIMESTAMP_INTERVAL`
       // miliseconds. This keeps the service worker alive.
-      const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000;
+      if (initState.PreferencesController?.enableMV3TimestampSave) {
+        const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000;
 
-      saveTimestamp();
-      setInterval(saveTimestamp, SAVE_TIMESTAMP_INTERVAL_MS);
+        saveTimestamp();
+        setInterval(saveTimestamp, SAVE_TIMESTAMP_INTERVAL_MS);
+      }
 
       const sessionData = await browser.storage.session.get([
         'isFirstMetaMaskControllerSetup',
