@@ -401,17 +401,15 @@ describe('Import flow @no-mmi', function () {
           text: 'Add hardware wallet',
           tag: 'button',
         });
-        await driver.waitForSelector(
+        await driver.findClickableElement(
           '[data-testid="hardware-connect-close-btn"]',
         );
         // should open the TREZOR Connect popup
         await driver.clickElement('[data-testid="connect-lattice-btn"]');
-        const continueButton = await driver.findElement({
+        await driver.findClickableElement({
           text: 'Continue',
           tag: 'button',
         });
-        const continueButtonEnabled = await continueButton.isEnabled();
-        assert.equal(continueButtonEnabled, true, 'Continue button is enabled');
 
         await driver.clickElement({ text: 'Continue', tag: 'button' });
 
