@@ -94,7 +94,7 @@ describe('Request-queue chainId proxy sync', function () {
         });
 
         await driver.clickElement({
-          text: 'Connect',
+          text: 'Confirm',
           tag: 'button',
           css: '[data-testid="page-container-footer-next"]',
         });

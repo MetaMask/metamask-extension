@@ -1,0 +1,57 @@
+diff --git a/dist/AssetsContractController.js b/dist/AssetsContractController.js
+index e8bae0bc514db69398fc2c378ca42eeb8f135e60..33c1e894f0318a59ec43f1b0a51500118c49bef6 100644
+--- a/dist/AssetsContractController.js
++++ b/dist/AssetsContractController.js
+@@ -40,6 +40,13 @@ exports.SINGLE_CALL_BALANCES_ADDRESS_BY_CHAINID = {
+     [assetsUtil_1.SupportedTokenDetectionNetworks.optimism]: '0xB1c568e9C3E6bdaf755A60c7418C269eb11524FC',
+     [assetsUtil_1.SupportedTokenDetectionNetworks.base]: '0x6AA75276052D96696134252587894ef5FFA520af',
+     [assetsUtil_1.SupportedTokenDetectionNetworks.zksync]: '0x458fEd3144680a5b8bcfaa0F9594aa19B4Ea2D34',
++    [assetsUtil_1.SupportedTokenDetectionNetworks.cronos]: '0x768ca200f0fc702ac9ea502498c18f5eff176378',
++    [assetsUtil_1.SupportedTokenDetectionNetworks.celo]: '0x6aa75276052d96696134252587894ef5ffa520af',
++    [assetsUtil_1.SupportedTokenDetectionNetworks.gnosis]: '0x6aa75276052d96696134252587894ef5ffa520af',
++    [assetsUtil_1.SupportedTokenDetectionNetworks.fantom]: '0x6aa75276052d96696134252587894ef5ffa520af',
++    [assetsUtil_1.SupportedTokenDetectionNetworks.polygon_zkevm]: '0x6aa75276052d96696134252587894ef5ffa520af',
++    [assetsUtil_1.SupportedTokenDetectionNetworks.moonbeam]: '0x6aa75276052d96696134252587894ef5ffa520af',
++    [assetsUtil_1.SupportedTokenDetectionNetworks.moonriver]: '0x6aa75276052d96696134252587894ef5ffa520af',
+ };
+ exports.MISSING_PROVIDER_ERROR = 'AssetsContractController failed to set the provider correctly. A provider must be set for this method to be available';
+ /**
+diff --git a/dist/assetsUtil.d.ts b/dist/assetsUtil.d.ts
+index 85c85697971f08cd74cbb0fd9b305ee844a0519e..5d90c63f0cf8ab5d694467afc003c7e83ed8e64b 100644
+--- a/dist/assetsUtil.d.ts
++++ b/dist/assetsUtil.d.ts
+@@ -53,7 +53,15 @@ export declare enum SupportedTokenDetectionNetworks {
+     arbitrum = "0xa4b1",
+     optimism = "0xa",
+     base = "0x2105",
+-    zksync = "0x144"
++    zksync = "0x144",
++    zksync = "0x144",
++    cronos = "0x19",
++    celo = "0xa4ec",
++    gnosis = "0x64",
++    fantom = "0xfa",
++    polygon_zkevm = "0x44d",
++    moonbeam = "0x504",
++    moonriver = "0x505"
+ }
+ /**
+  * Check if token detection is enabled for certain networks.
+diff --git a/dist/assetsUtil.js b/dist/assetsUtil.js
+index 27689263f0af453ac35c6f3240cc11e6b307458e..8d7098eff7080a4846c6b8c55650df102a6d8f2f 100644
+--- a/dist/assetsUtil.js
++++ b/dist/assetsUtil.js
+@@ -119,6 +119,13 @@ var SupportedTokenDetectionNetworks;
+     SupportedTokenDetectionNetworks["optimism"] = "0xa";
+     SupportedTokenDetectionNetworks["base"] = "0x2105";
+     SupportedTokenDetectionNetworks["zksync"] = "0x144";
++    SupportedTokenDetectionNetworks["cronos"] = "0x19";
++    SupportedTokenDetectionNetworks["celo"] = "0xa4ec";
++    SupportedTokenDetectionNetworks["gnosis"] = "0x64";
++    SupportedTokenDetectionNetworks["fantom"] = "0xfa";
++    SupportedTokenDetectionNetworks["polygon_zkevm"] = "0x44d";
++    SupportedTokenDetectionNetworks["moonbeam"] = "0x504";
++    SupportedTokenDetectionNetworks["moonriver"] = "0x505";
+ })(SupportedTokenDetectionNetworks = exports.SupportedTokenDetectionNetworks || (exports.SupportedTokenDetectionNetworks = {}));
+ /**
+  * Check if token detection is enabled for certain networks.

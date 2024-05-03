@@ -821,22 +821,13 @@
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/assets-controllers>@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
         "@metamask/ethjs>@metamask/ethjs-unit": true,
         "@metamask/utils": true,
         "bn.js": true,
         "browserify>buffer": true,
         "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true
-      }
-    },
-    "@metamask/assets-controllers>@metamask/controller-utils>@spruceid/siwe-parser": {
-      "globals": {
-        "console.error": true,
-        "console.log": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@spruceid/siwe-parser>apg-js": true
       }
     },
     "@metamask/assets-controllers>@metamask/polling-controller": {
@@ -967,22 +958,13 @@
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/ens-controller>@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
         "@metamask/ethjs>@metamask/ethjs-unit": true,
         "@metamask/utils": true,
         "bn.js": true,
         "browserify>buffer": true,
         "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true
-      }
-    },
-    "@metamask/ens-controller>@metamask/controller-utils>@spruceid/siwe-parser": {
-      "globals": {
-        "console.error": true,
-        "console.log": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@spruceid/siwe-parser>apg-js": true
       }
     },
     "@metamask/eth-json-rpc-filters": {
@@ -1603,22 +1585,13 @@
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
         "@metamask/ethjs>@metamask/ethjs-unit": true,
-        "@metamask/message-manager>@metamask/controller-utils>@spruceid/siwe-parser": true,
         "@metamask/utils": true,
         "bn.js": true,
         "browserify>buffer": true,
         "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true
-      }
-    },
-    "@metamask/message-manager>@metamask/controller-utils>@spruceid/siwe-parser": {
-      "globals": {
-        "console.error": true,
-        "console.log": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@spruceid/siwe-parser>apg-js": true
       }
     },
     "@metamask/message-manager>jsonschema": {
@@ -1774,37 +1747,18 @@
         "fetch": true
       },
       "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/phishing-controller>@metamask/controller-utils": true,
+        "@metamask/controller-utils": true,
+        "@metamask/phishing-controller>@metamask/base-controller": true,
         "@metamask/phishing-warning>eth-phishing-detect": true,
         "punycode": true
       }
     },
-    "@metamask/phishing-controller>@metamask/controller-utils": {
+    "@metamask/phishing-controller>@metamask/base-controller": {
       "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
         "setTimeout": true
       },
       "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/ethjs>@metamask/ethjs-unit": true,
-        "@metamask/phishing-controller>@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/utils": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true
-      }
-    },
-    "@metamask/phishing-controller>@metamask/controller-utils>@spruceid/siwe-parser": {
-      "globals": {
-        "console.error": true,
-        "console.log": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@spruceid/siwe-parser>apg-js": true
+        "immer": true
       }
     },
     "@metamask/phishing-warning>eth-phishing-detect": {
@@ -1948,22 +1902,13 @@
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
         "@metamask/ethjs>@metamask/ethjs-unit": true,
-        "@metamask/signature-controller>@metamask/controller-utils>@spruceid/siwe-parser": true,
         "@metamask/utils": true,
         "bn.js": true,
         "browserify>buffer": true,
         "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true
-      }
-    },
-    "@metamask/signature-controller>@metamask/controller-utils>@spruceid/siwe-parser": {
-      "globals": {
-        "console.error": true,
-        "console.log": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@spruceid/siwe-parser>apg-js": true
       }
     },
     "@metamask/smart-transactions-controller": {
@@ -2038,9 +1983,9 @@
         "setTimeout": true
       },
       "packages": {
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
         "@metamask/ethjs>@metamask/ethjs-unit": true,
         "@metamask/smart-transactions-controller>@metamask/controller-utils>@ethereumjs/util": true,
-        "@metamask/smart-transactions-controller>@metamask/controller-utils>@spruceid/siwe-parser": true,
         "@metamask/utils": true,
         "bn.js": true,
         "browserify>buffer": true,
@@ -2059,15 +2004,6 @@
         "browserify>buffer": true,
         "browserify>insert-module-globals>is-buffer": true,
         "webpack>events": true
-      }
-    },
-    "@metamask/smart-transactions-controller>@metamask/controller-utils>@spruceid/siwe-parser": {
-      "globals": {
-        "console.error": true,
-        "console.log": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@spruceid/siwe-parser>apg-js": true
       }
     },
     "@metamask/smart-transactions-controller>@metamask/controllers>nanoid": {
@@ -2375,6 +2311,7 @@
         "File": true,
         "FileReader": true,
         "TextDecoder": true,
+        "TextEncoder": true,
         "URL": true,
         "console.error": true,
         "console.log": true,
@@ -3761,6 +3698,121 @@
         "clearTimeout": true,
         "removeEventListener": true,
         "setTimeout": true
+      }
+    },
+    "firebase": {
+      "packages": {
+        "firebase>@firebase/app": true,
+        "firebase>@firebase/messaging": true
+      }
+    },
+    "firebase>@firebase/app": {
+      "globals": {
+        "FinalizationRegistry": true,
+        "console.warn": true
+      },
+      "packages": {
+        "firebase>@firebase/app>@firebase/component": true,
+        "firebase>@firebase/app>@firebase/logger": true,
+        "firebase>@firebase/app>idb": true,
+        "firebase>@firebase/util": true
+      }
+    },
+    "firebase>@firebase/app>@firebase/component": {
+      "packages": {
+        "firebase>@firebase/util": true
+      }
+    },
+    "firebase>@firebase/app>@firebase/logger": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "@trezor/connect-web>tslib": true
+      }
+    },
+    "firebase>@firebase/app>idb": {
+      "globals": {
+        "DOMException": true,
+        "IDBCursor": true,
+        "IDBDatabase": true,
+        "IDBIndex": true,
+        "IDBObjectStore": true,
+        "IDBRequest": true,
+        "IDBTransaction": true,
+        "indexedDB.deleteDatabase": true,
+        "indexedDB.open": true
+      }
+    },
+    "firebase>@firebase/installations": {
+      "globals": {
+        "BroadcastChannel": true,
+        "Headers": true,
+        "btoa": true,
+        "console.error": true,
+        "crypto": true,
+        "fetch": true,
+        "msCrypto": true,
+        "navigator.onLine": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "firebase>@firebase/app": true,
+        "firebase>@firebase/app>@firebase/component": true,
+        "firebase>@firebase/app>idb": true,
+        "firebase>@firebase/util": true
+      }
+    },
+    "firebase>@firebase/messaging": {
+      "globals": {
+        "Headers": true,
+        "Notification.maxActions": true,
+        "Notification.permission": true,
+        "Notification.requestPermission": true,
+        "PushSubscription.prototype.hasOwnProperty": true,
+        "ServiceWorkerRegistration": true,
+        "URL": true,
+        "addEventListener": true,
+        "atob": true,
+        "btoa": true,
+        "clients.matchAll": true,
+        "clients.openWindow": true,
+        "console.warn": true,
+        "document": true,
+        "fetch": true,
+        "indexedDB": true,
+        "location.href": true,
+        "location.origin": true,
+        "navigator": true,
+        "origin.replace": true,
+        "registration.showNotification": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@trezor/connect-web>tslib": true,
+        "firebase>@firebase/app": true,
+        "firebase>@firebase/app>@firebase/component": true,
+        "firebase>@firebase/app>idb": true,
+        "firebase>@firebase/installations": true,
+        "firebase>@firebase/util": true
+      }
+    },
+    "firebase>@firebase/util": {
+      "globals": {
+        "atob": true,
+        "browser": true,
+        "btoa": true,
+        "chrome": true,
+        "console": true,
+        "document": true,
+        "indexedDB": true,
+        "navigator": true,
+        "process": true,
+        "self": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "browserify>process": true
       }
     },
     "fuse.js": {

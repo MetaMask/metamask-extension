@@ -113,6 +113,7 @@ export default class PreferencesController {
       ///: END:ONLY_INCLUDE_IF
       useExternalNameSources: true,
       useTransactionSimulations: true,
+      enableMV3TimestampSave: true,
       ...opts.initState,
     };
 
@@ -442,7 +443,8 @@ export default class PreferencesController {
    */
   syncAddresses(addresses) {
     if (!Array.isArray(addresses) || addresses.length === 0) {
-      throw new Error('Expected non-empty array of addresses. Error #11201');
+      // eslint-disable-next-line @metamask/design-tokens/color-no-hex
+      throw new Error('Expected non-empty array of addresses. Error #11201'); // not a hex color value
     }
 
     const { identities, lostIdentities } = this.store.getState();
@@ -672,6 +674,10 @@ export default class PreferencesController {
     const previousValue = this.store.getState().incomingTransactionsPreferences;
     const updatedValue = { ...previousValue, [chainId]: value };
     this.store.updateState({ incomingTransactionsPreferences: updatedValue });
+  }
+
+  setServiceWorkerKeepAlivePreference(value) {
+    this.store.updateState({ enableMV3TimestampSave: value });
   }
 
   getRpcMethodPreferences() {

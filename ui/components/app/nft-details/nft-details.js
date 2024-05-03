@@ -126,7 +126,7 @@ export default function NftDetails({ nft }) {
       trackEvent({
         event: MetaMetricsEventName.NFTRemoved,
         category: 'Wallet',
-        sensitiveProperties: {
+        properties: {
           token_contract_address: address,
           tokenId: tokenId.toString(),
           asset_type: AssetType.NFT,
