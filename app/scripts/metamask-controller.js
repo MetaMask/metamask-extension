@@ -320,6 +320,8 @@ import AuthenticationController from './controllers/authentication/authenticatio
 import UserStorageController from './controllers/user-storage/user-storage-controller';
 import { WeakRefObjectMap } from './lib/WeakRefObjectMap';
 
+import { PushPlatformNotificationsController } from './controllers/push-platform-notifications/push-platform-notifications';
+
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
   // The process of updating the badge happens in app/scripts/background.js.
@@ -1433,6 +1435,14 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
     });
+    this.pushPlatformNotificationsController =
+      new PushPlatformNotificationsController({
+        messenger: this.controllerMessenger.getRestricted({
+          name: 'PushPlatformNotificationsController',
+          allowedActions: ['AuthenticationController:getBearerToken'],
+        }),
+        state: initState.PushPlatformNotificationsController,
+      });
 
     // account tracker watches balances, nonces, and any code at their address
     this.accountTracker = new AccountTracker({
@@ -1802,6 +1812,10 @@ export default class MetamaskController extends EventEmitter {
         this.txController.updateTransaction(txMeta, note),
       updateTransactionHash: (id, hash) =>
         this.txController.updateCustodialTransaction(id, { hash }),
+      setChannelId: (channelId) =>
+        this.institutionalFeaturesController.setChannelId(channelId),
+      setConnectionRequest: (payload) =>
+        this.institutionalFeaturesController.setConnectionRequest(payload),
     });
     ///: END:ONLY_INCLUDE_IF
 
@@ -2966,6 +2980,10 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setIncomingTransactionsPreferences.bind(
           preferencesController,
         ),
+      setServiceWorkerKeepAlivePreference:
+        preferencesController.setServiceWorkerKeepAlivePreference.bind(
+          preferencesController,
+        ),
       markPasswordForgotten: this.markPasswordForgotten.bind(this),
       unMarkPasswordForgotten: this.unMarkPasswordForgotten.bind(this),
       getRequestAccountTabIds: this.getRequestAccountTabIds,
@@ -3344,6 +3362,10 @@ export default class MetamaskController extends EventEmitter {
         ),
       removeAddTokenConnectRequest:
         this.institutionalFeaturesController.removeAddTokenConnectRequest.bind(
+          this.institutionalFeaturesController,
+        ),
+      setConnectionRequest:
+        this.institutionalFeaturesController.setConnectionRequest.bind(
           this.institutionalFeaturesController,
         ),
       showInteractiveReplacementTokenBanner:
@@ -6048,7 +6070,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.controllerMessenger.publish(
       'TransactionController:transactionStatusUpdated',
-      { updatedTransactionMeta },
+      { transactionMeta: updatedTransactionMeta },
     );
   }
 

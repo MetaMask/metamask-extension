@@ -340,8 +340,17 @@
   "airgapVault": {
     "message": "AirGap Vault"
   },
+  "alert": {
+    "message": "Alert"
+  },
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
+  },
+  "alertModalAcknowledge": {
+    "message": "I have acknowledged the risk and still want to proceed"
+  },
+  "alertModalDetails": {
+    "message": "Alert Details"
   },
   "alertSettingsUnconnectedAccount": {
     "message": "Browsing a website with an unconnected account selected"
@@ -797,6 +806,9 @@
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
   },
+  "confirmTitleDescContractInteractionTransaction": {
+    "message": "Only confirm this transaction if you fully understand the content and trust the requesting site."
+  },
   "confirmTitleDescPersonalSignature": {
     "message": "Only sign this message if you fully understand the content and trust the requesting site"
   },
@@ -805,6 +817,10 @@
   },
   "confirmTitleSignature": {
     "message": "Signature request"
+  },
+
+  "confirmTitleTransaction": {
+    "message": "Transaction request"
   },
   "confirmed": {
     "message": "Confirmed"
@@ -1083,6 +1099,12 @@
   },
   "custodianAccountAddedTitle": {
     "message": "Selected $1 accounts have been added."
+  },
+  "custodianQRCodeScan": {
+    "message": "Scan QR code with your $1 mobile app"
+  },
+  "custodianQRCodeScanDescription": {
+    "message": "Or log into your $1 account and click on the 'Connect to MMI' button"
   },
   "custodianReplaceRefreshTokenChangedFailed": {
     "message": "Please go to $1 and click the 'Connect to MMI' button within their user interface to connect your accounts to MMI again."
@@ -1372,6 +1394,9 @@
   },
   "developerOptionsResetStatesOnboarding": {
     "message": "Resets various states related to onboarding and redirects to the \"Secure Your Wallet\" onboarding page."
+  },
+  "developerOptionsServiceWorkerKeepAlive": {
+    "message": "Results in a timestamp being continuously saved to session.storage"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” is disabled because it does not meet the minimum of a 10% increase from the original gas fee.",
@@ -3754,6 +3779,78 @@
   "publicAddress": {
     "message": "Public address"
   },
+  "pushPlatformNotificationsFundsReceivedDescription": {
+    "message": "You received $1 $2"
+  },
+  "pushPlatformNotificationsFundsReceivedDescriptionDefault": {
+    "message": "You received some tokens"
+  },
+  "pushPlatformNotificationsFundsReceivedTitle": {
+    "message": "Funds received"
+  },
+  "pushPlatformNotificationsFundsSentDescription": {
+    "message": "You successfully sent $1 $2"
+  },
+  "pushPlatformNotificationsFundsSentDescriptionDefault": {
+    "message": "You successfully sent some tokens"
+  },
+  "pushPlatformNotificationsFundsSentTitle": {
+    "message": "Funds sent"
+  },
+  "pushPlatformNotificationsNftReceivedDescription": {
+    "message": "You received new NFTs"
+  },
+  "pushPlatformNotificationsNftReceivedTitle": {
+    "message": "NFT received"
+  },
+  "pushPlatformNotificationsNftSentDescription": {
+    "message": "You have successfully sent an NFT"
+  },
+  "pushPlatformNotificationsNftSentTitle": {
+    "message": "NFT sent"
+  },
+  "pushPlatformNotificationsStakingLidoStakeCompletedDescription": {
+    "message": "Your Lido stake was successful"
+  },
+  "pushPlatformNotificationsStakingLidoStakeCompletedTitle": {
+    "message": "Stake complete"
+  },
+  "pushPlatformNotificationsStakingLidoStakeReadyToBeWithdrawnDescription": {
+    "message": "Your Lido stake is now ready to be withdrawn"
+  },
+  "pushPlatformNotificationsStakingLidoStakeReadyToBeWithdrawnTitle": {
+    "message": "Stake ready for withdrawal"
+  },
+  "pushPlatformNotificationsStakingLidoWithdrawalCompletedDescription": {
+    "message": "Your Lido withdrawal was successful"
+  },
+  "pushPlatformNotificationsStakingLidoWithdrawalCompletedTitle": {
+    "message": "Withdrawal completed"
+  },
+  "pushPlatformNotificationsStakingLidoWithdrawalRequestedDescription": {
+    "message": "Your Lido withdrawal request was submitted"
+  },
+  "pushPlatformNotificationsStakingLidoWithdrawalRequestedTitle": {
+    "message": "Withdrawal requested"
+  },
+  "pushPlatformNotificationsStakingRocketpoolStakeCompletedDescription": {
+    "message": "Your RocketPool stake was successful"
+  },
+  "pushPlatformNotificationsStakingRocketpoolStakeCompletedTitle": {
+    "message": "Stake complete"
+  },
+  "pushPlatformNotificationsStakingRocketpoolUnstakeCompletedDescription": {
+    "message": "Your RocketPool unstake was successful"
+  },
+  "pushPlatformNotificationsStakingRocketpoolUnstakeCompletedTitle": {
+    "message": "Unstake complete"
+  },
+  "pushPlatformNotificationsSwapCompletedDescription": {
+    "message": "Your MetaMask Swap was successful"
+  },
+  "pushPlatformNotificationsSwapCompletedTitle": {
+    "message": "Swap completed"
+  },
   "queued": {
     "message": "Queued"
   },
@@ -4250,6 +4347,9 @@
   "sepolia": {
     "message": "Sepolia test network"
   },
+  "serviceWorkerKeepAlive": {
+    "message": "Service Worker Keep Alive"
+  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask uses these trusted third-party services to enhance product usability and safety."
   },
@@ -4385,12 +4485,6 @@
   "simulationsSettingSubHeader": {
     "message": "Estimate balance changes"
   },
-  "siteConnections": {
-    "message": "Site Connections"
-  },
-  "sites": {
-    "message": "Sites"
-  },
   "skip": {
     "message": "Skip"
   },
@@ -4497,9 +4591,6 @@
   "snapConnectionWarning": {
     "message": "$1 wants to use $2",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
-  },
-  "snapConnections": {
-    "message": "Snap Connections"
   },
   "snapContent": {
     "message": "This content is coming from $1",
