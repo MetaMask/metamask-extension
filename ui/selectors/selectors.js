@@ -113,7 +113,7 @@ import {
   SURVEY_END_TIME,
   SURVEY_START_TIME,
 } from '../helpers/constants/survey';
-import { NEW_PRIVACY_POLICY_DATE } from '../helpers/constants/new-privacy-policy';
+import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
 import { SUPPORTED_CHAIN_IDS } from '../../app/scripts/lib/ppom/ppom-middleware';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
 import {
@@ -1851,7 +1851,7 @@ export function getShowSurveyToast(state) {
  */
 export function getShowPrivacyPolicyToast(state) {
   const { newPrivacyPolicyToastClickedOrClosed } = state.metamask;
-  const newPrivacyPolicyDate = new Date(NEW_PRIVACY_POLICY_DATE);
+  const newPrivacyPolicyDate = new Date(PRIVACY_POLICY_DATE);
   const currentDate = new Date(Date.now());
   return (
     !newPrivacyPolicyToastClickedOrClosed && currentDate >= newPrivacyPolicyDate

@@ -11,7 +11,7 @@ import {
   OPTIMISM_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import { SURVEY_DATE, SURVEY_GMT } from '../helpers/constants/survey';
-import { NEW_PRIVACY_POLICY_DATE } from '../helpers/constants/new-privacy-policy';
+import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
 import { createMockInternalAccount } from '../../test/jest/mocks';
 import * as selectors from './selectors';
 
@@ -1254,7 +1254,7 @@ describe('Selectors', () => {
 
     describe('mock one day after', () => {
       beforeEach(() => {
-        const dayAfterPolicyDate = new Date(NEW_PRIVACY_POLICY_DATE);
+        const dayAfterPolicyDate = new Date(PRIVACY_POLICY_DATE);
         dayAfterPolicyDate.setDate(dayAfterPolicyDate.getDate() + 1);
 
         dateNowSpy = jest
@@ -1289,7 +1289,7 @@ describe('Selectors', () => {
       beforeEach(() => {
         dateNowSpy = jest
           .spyOn(Date, 'now')
-          .mockReturnValue(new Date(NEW_PRIVACY_POLICY_DATE).getTime());
+          .mockReturnValue(new Date(PRIVACY_POLICY_DATE).getTime());
       });
 
       afterEach(() => {
@@ -1317,7 +1317,7 @@ describe('Selectors', () => {
 
     describe('mock day before', () => {
       beforeEach(() => {
-        const dayBeforePolicyDate = new Date(NEW_PRIVACY_POLICY_DATE);
+        const dayBeforePolicyDate = new Date(PRIVACY_POLICY_DATE);
         dayBeforePolicyDate.setDate(dayBeforePolicyDate.getDate() - 1);
 
         dateNowSpy = jest
