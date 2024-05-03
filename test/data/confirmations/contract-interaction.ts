@@ -7,10 +7,12 @@ import { Confirmation } from '../../../ui/pages/confirmations/types/confirm';
 export const CONTRACT_INTERACTION_SENDER_ADDRESS =
   '0x2e0d7e8c45221fca00d74a3609a0f7097035d09b';
 
+export const DEPOSIT_METHOD_DATA = '0xd0e30db0';
+
 export const genUnapprovedContractInteractionConfirmation = (
   { address, txData } = {
     address: CONTRACT_INTERACTION_SENDER_ADDRESS,
-    txData: '0xd0e30db0',
+    txData: DEPOSIT_METHOD_DATA,
   },
 ): Confirmation => ({
   actionId: String(400855682),
