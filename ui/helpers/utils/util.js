@@ -702,7 +702,7 @@ export const hexToText = (hex) => {
   try {
     const stripped = stripHexPrefix(hex);
     const buff = Buffer.from(stripped, 'hex');
-    return buff.length === 32 ? hex : buff.toString('utf8');
+    return buff.toString('utf8');
   } catch (e) {
     return hex;
   }
