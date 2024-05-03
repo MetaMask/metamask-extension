@@ -295,7 +295,6 @@ export default class Routes extends Component {
     // if the user is using RPC queueing
     if (
       useRequestQueue &&
-      process.env.MULTICHAIN &&
       currentExtensionPopupId !== undefined &&
       global.metamask.id !== undefined &&
       currentExtensionPopupId !== global.metamask.id
@@ -456,15 +455,11 @@ export default class Routes extends Component {
           />
           ///: END:ONLY_INCLUDE_IF
         }
-        {process.env.MULTICHAIN && (
           <Authenticated
             path={`${CONNECTIONS}/:origin`}
             component={Connections}
           />
-        )}
-        {process.env.MULTICHAIN && (
           <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
-        )}
         <Authenticated path={DEFAULT_ROUTE} component={Home} />
       </Switch>
     );

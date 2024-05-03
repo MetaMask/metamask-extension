@@ -181,7 +181,6 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
       >
         {t('connectedSites')}
       </MenuItem>
-      {process.env.MULTICHAIN ? (
         <MenuItem
           iconName={IconName.SecurityTick}
           onClick={() => {
@@ -199,7 +198,6 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
         >
           {t('allPermissions')}
         </MenuItem>
-      ) : null}
 
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)

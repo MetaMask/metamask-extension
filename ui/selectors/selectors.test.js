@@ -296,15 +296,13 @@ describe('Selectors', () => {
     };
 
     it('should return the network to switch to', () => {
-      process.env.MULTICHAIN = 1;
       const networkToSwitchTo =
         selectors.getNetworkToAutomaticallySwitchTo(state);
       expect(networkToSwitchTo).toBe(SELECTED_ORIGIN_NETWORK_ID);
-      delete process.env.MULTICHAIN;
     });
 
     it('should return no network to switch to because we are already on it', () => {
-      process.env.MULTICHAIN = 1;
+
       const networkToSwitchTo = selectors.getNetworkToAutomaticallySwitchTo({
         ...state,
         metamask: {
@@ -316,7 +314,7 @@ describe('Selectors', () => {
         },
       });
       expect(networkToSwitchTo).toBe(null);
-      delete process.env.MULTICHAIN;
+
     });
   });
 

@@ -101,11 +101,9 @@ describe('NetworkListMenu', () => {
   });
 
   it('signals to the SelectedNetworkController when the user switches networks manually', () => {
-    process.env.MULTICHAIN = 1;
     const { getByText } = render();
     fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
     expect(numberOfSetNetworkClientIdForDomainCalls).toBe(1);
-    delete process.env.MULTICHAIN;
   });
 
   it('shows the correct selected network when networks share the same chain ID', () => {

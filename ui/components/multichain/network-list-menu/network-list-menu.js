@@ -363,7 +363,6 @@ export const NetworkListMenu = ({ onClose }) => {
                                     // the dapp via silent switchEthereumChain that the
                                     // network has changed due to user action
                                     if (
-                                      process.env.MULTICHAIN &&
                                       useRequestQueue &&
                                       selectedTabOrigin
                                     ) {
