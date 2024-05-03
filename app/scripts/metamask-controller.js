@@ -4930,7 +4930,7 @@ export default class MetamaskController extends EventEmitter {
     );
     ///: END:ONLY_INCLUDE_IF
 
-    const isConfirmationRedesignEnabled = () => {
+    const isConfirmationRedesignEnabledFn = () => {
       return (
         process.env.ENABLE_CONFIRMATION_REDESIGN &&
         this.preferencesController.store.getState().preferences
@@ -4948,7 +4948,7 @@ export default class MetamaskController extends EventEmitter {
         ),
         getAccountType: this.getAccountType.bind(this),
         getDeviceModel: this.getDeviceModel.bind(this),
-        isConfirmationRedesignEnabled,
+        isConfirmationRedesignEnabledFn,
         snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
           name: 'SnapAndHardwareMessenger',
           allowedActions: [

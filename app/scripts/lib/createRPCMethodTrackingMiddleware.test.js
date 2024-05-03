@@ -44,7 +44,7 @@ const createHandler = (opts) =>
     globalRateLimitTimeout: 0,
     globalRateLimitMaxAmount: 0,
     appStateController,
-    isConfirmationRedesignEnabled: () => false,
+    isConfirmationRedesignEnabledFn: () => false,
     ...opts,
   });
 
@@ -428,7 +428,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
       };
       const { next, executeMiddlewareStack } = getNext();
       const handler = createHandler({
-        isConfirmationRedesignEnabled: () => true,
+        isConfirmationRedesignEnabledFn: () => true,
       });
 
       await handler(req, res, next);
