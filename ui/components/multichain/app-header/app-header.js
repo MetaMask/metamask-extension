@@ -12,7 +12,6 @@ import {
 import {
   BUILD_QUOTE_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
-  CONNECTED_ACCOUNTS_ROUTE,
   CONNECTIONS,
   DEFAULT_ROUTE,
   SWAPS_ROUTE,
@@ -318,7 +317,7 @@ export const AppHeader = ({ location }) => {
                     <Box ref={menuRef}>
                       <ConnectedStatusIndicator
                         onClick={() => {
-                          handleConnectionsRoute()
+                          handleConnectionsRoute();
                         }}
                       />
                     </Box>

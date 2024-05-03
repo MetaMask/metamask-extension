@@ -66,7 +66,7 @@ function mapStateToProps(state) {
   const activeTabOrigin = activeTab?.origin;
   const connectedAccounts = getPermittedAccountsForCurrentTab(state);
   const showConnectAccountToast = Boolean(
-      account &&
+    account &&
       activeTabOrigin &&
       connectedAccounts.length > 0 &&
       !connectedAccounts.find((address) => address === account.address),

@@ -181,23 +181,23 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
       >
         {t('connectedSites')}
       </MenuItem>
-        <MenuItem
-          iconName={IconName.SecurityTick}
-          onClick={() => {
-            history.push(PERMISSIONS);
-            trackEvent({
-              event: MetaMetricsEventName.NavPermissionsOpened,
-              category: MetaMetricsEventCategory.Navigation,
-              properties: {
-                location: METRICS_LOCATION,
-              },
-            });
-            closeMenu();
-          }}
-          data-testid="global-menu-connected-sites"
-        >
-          {t('allPermissions')}
-        </MenuItem>
+      <MenuItem
+        iconName={IconName.SecurityTick}
+        onClick={() => {
+          history.push(PERMISSIONS);
+          trackEvent({
+            event: MetaMetricsEventName.NavPermissionsOpened,
+            category: MetaMetricsEventCategory.Navigation,
+            properties: {
+              location: METRICS_LOCATION,
+            },
+          });
+          closeMenu();
+        }}
+        data-testid="global-menu-connected-sites"
+      >
+        {t('allPermissions')}
+      </MenuItem>
 
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)

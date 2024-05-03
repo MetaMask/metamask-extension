@@ -161,16 +161,40 @@ export const AccountListItem = ({
         />
       )}
 
-        <>
-          <Box
-            display={[Display.Flex, Display.None]}
-            data-testid="account-list-item-badge"
-          >
-            <ConnectedStatus address={account.address} isActive={isActive} />
-          </Box>
-          <Box display={[Display.None, Display.Flex]}>
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+      <>
+        <Box
+          display={[Display.Flex, Display.None]}
+          data-testid="account-list-item-badge"
+        >
+          <ConnectedStatus address={account.address} isActive={isActive} />
+        </Box>
+        <Box display={[Display.None, Display.Flex]}>
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+            <AvatarAccount
+              borderColor={BorderColor.transparent}
+              size={Size.MD}
+              address={account.address}
+              variant={
+                useBlockie
+                  ? AvatarAccountVariant.Blockies
+                  : AvatarAccountVariant.Jazzicon
+              }
+              marginInlineEnd={2}
+            />
+            ///: END:ONLY_INCLUDE_IF
+          }
+
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+            custodianIcon ? (
+              <img
+                src={custodianIcon}
+                data-testid="custody-logo"
+                className="custody-logo"
+                alt="custody logo"
+              />
+            ) : (
               <AvatarAccount
                 borderColor={BorderColor.transparent}
                 size={Size.MD}
@@ -182,35 +206,11 @@ export const AccountListItem = ({
                 }
                 marginInlineEnd={2}
               />
-              ///: END:ONLY_INCLUDE_IF
-            }
-
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-              custodianIcon ? (
-                <img
-                  src={custodianIcon}
-                  data-testid="custody-logo"
-                  className="custody-logo"
-                  alt="custody logo"
-                />
-              ) : (
-                <AvatarAccount
-                  borderColor={BorderColor.transparent}
-                  size={Size.MD}
-                  address={account.address}
-                  variant={
-                    useBlockie
-                      ? AvatarAccountVariant.Blockies
-                      : AvatarAccountVariant.Jazzicon
-                  }
-                  marginInlineEnd={2}
-                />
-              )
-              ///: END:ONLY_INCLUDE_IF
-            }
-          </Box>
-        </>
+            )
+            ///: END:ONLY_INCLUDE_IF
+          }
+        </Box>
+      </>
 
       <Box
         display={Display.Flex}

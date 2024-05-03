@@ -302,7 +302,6 @@ describe('Selectors', () => {
     });
 
     it('should return no network to switch to because we are already on it', () => {
-
       const networkToSwitchTo = selectors.getNetworkToAutomaticallySwitchTo({
         ...state,
         metamask: {
@@ -314,7 +313,6 @@ describe('Selectors', () => {
         },
       });
       expect(networkToSwitchTo).toBe(null);
-
     });
   });
 
