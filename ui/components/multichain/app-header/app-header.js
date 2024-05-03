@@ -318,16 +318,7 @@ export const AppHeader = ({ location }) => {
                     <Box ref={menuRef}>
                       <ConnectedStatusIndicator
                         onClick={() => {
-                          if (process.env.MULTICHAIN) {
-                            handleConnectionsRoute();
-                          } else {
-                            history.push(CONNECTED_ACCOUNTS_ROUTE);
-                            trackEvent({
-                              event:
-                                MetaMetricsEventName.NavConnectedSitesOpened,
-                              category: MetaMetricsEventCategory.Navigation,
-                            });
-                          }
+                          handleConnectionsRoute()
                         }}
                       />
                     </Box>

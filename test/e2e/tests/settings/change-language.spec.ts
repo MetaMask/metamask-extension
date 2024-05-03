@@ -131,10 +131,6 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
   });
 
   it('validate "Deutsch" language on error messages', async function () {
-    if (process.env.MULTICHAIN) {
-      return;
-    }
-
     const languageIndex = 7;
     await withFixtures(
       {
@@ -164,10 +160,6 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
   });
 
   it('validate "मानक हिन्दी" language on tooltips', async function () {
-    if (process.env.MULTICHAIN) {
-      return;
-    }
-
     const languageIndex = 19;
     await withFixtures(
       {

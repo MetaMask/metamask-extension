@@ -66,7 +66,6 @@ function mapStateToProps(state) {
   const activeTabOrigin = activeTab?.origin;
   const connectedAccounts = getPermittedAccountsForCurrentTab(state);
   const showConnectAccountToast = Boolean(
-    process.env.MULTICHAIN &&
       account &&
       activeTabOrigin &&
       connectedAccounts.length > 0 &&

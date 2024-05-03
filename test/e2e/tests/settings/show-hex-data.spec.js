@@ -70,9 +70,6 @@ async function sendTransactionAndVerifyHexData(driver) {
 // Main test suite
 describe('Check the toggle for hex data', function () {
   it('Setting the hex data toggle and verify that the textbox appears', async function () {
-    if (process.env.MULTICHAIN) {
-      return;
-    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
