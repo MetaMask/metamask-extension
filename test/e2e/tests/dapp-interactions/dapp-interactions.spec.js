@@ -67,7 +67,7 @@ describe('Dapp interactions', function () {
         });
 
         await driver.clickElement({ text: 'Next', tag: 'button' });
-        await driver.clickElement({ text: 'Connect', tag: 'button' });
+        await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await driver.waitForSelector({
           css: '#accounts',

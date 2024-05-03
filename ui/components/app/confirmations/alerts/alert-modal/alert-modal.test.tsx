@@ -63,6 +63,20 @@ describe('AlertModal', () => {
     expect(getByText(ALERT_MESSAGE_MOCK)).toBeInTheDocument();
   });
 
+  it('disables button when alert is not acknowledged', () => {
+    const { getByTestId } = renderWithProvider(
+      <AlertModal
+        ownerId={OWNER_ID_MOCK}
+        onAcknowledgeClick={onAcknowledgeClickMock}
+        onClose={onCloseMock}
+        alertKey={'data'}
+      />,
+      mockStore,
+    );
+
+    expect(getByTestId('alert-modal-button')).toBeDisabled();
+  });
+
   it('calls onAcknowledgeClick when the button is clicked', () => {
     const mockStoreAcknowledgeAlerts = configureMockStore([])({
       ...STATE_MOCK,

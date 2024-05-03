@@ -51,9 +51,16 @@ describe('MultipleAlertModal', () => {
   });
 
   it('invokes the onFinalAcknowledgeClick when the button is clicked', () => {
+    const mockStoreAcknowledgeAlerts = configureMockStore([])({
+      ...STATE_MOCK,
+      confirmAlerts: {
+        alerts: { [OWNER_ID_MOCK]: alertsMock },
+        confirmed: { [OWNER_ID_MOCK]: { from: false, data: true } },
+      },
+    });
     const { getByTestId } = renderWithProvider(
       <MultipleAlertModal {...defaultProps} alertKey={'data'} />,
-      mockStore,
+      mockStoreAcknowledgeAlerts,
     );
 
     fireEvent.click(getByTestId('alert-modal-button'));

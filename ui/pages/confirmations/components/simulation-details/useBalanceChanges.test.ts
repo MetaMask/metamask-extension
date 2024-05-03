@@ -4,10 +4,10 @@ import {
   SimulationData,
   SimulationTokenStandard,
 } from '@metamask/transaction-controller';
+import { BigNumber } from 'bignumber.js';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import { getTokenStandardAndDetails } from '../../../../store/actions';
-import { Numeric } from '../../../../../shared/modules/Numeric';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
 import { useBalanceChanges } from './useBalanceChanges';
 import { FIAT_UNAVAILABLE } from './types';
@@ -159,7 +159,7 @@ describe('useBalanceChanges', () => {
       const { result, waitForNextUpdate } = setupHook([
         {
           ...dummyBalanceChange,
-          difference: DIFFERENCE_1_MOCK,
+          difference: '0x11',
           isDecrease: true,
           address: ERC20_TOKEN_ADDRESS_1_MOCK,
           standard: SimulationTokenStandard.erc20,
@@ -176,16 +176,11 @@ describe('useBalanceChanges', () => {
             standard: TokenStandard.ERC20,
             tokenId: undefined,
           },
-          amount: {
-            isNegative: true,
-            quantity: DIFFERENCE_1_MOCK,
-            decimals: 3,
-            numeric: expect.any(Numeric),
-          },
-          fiatAmount: Number('-0.0255'),
+          amount: new BigNumber('-0.017'),
+          fiatAmount: -0.0255,
         },
       ]);
-      expect(changes[0].amount.numeric.toString()).toBe('-0.017');
+      expect(changes[0].amount.toString()).toBe('-0.017');
     });
 
     it('handles multiple token balance changes', async () => {
@@ -210,9 +205,9 @@ describe('useBalanceChanges', () => {
 
       const changes = result.current.value;
       expect(changes).toHaveLength(2);
-      expect(changes[0].amount.numeric.toString()).toBe('-0.017');
+      expect(changes[0].amount.toString()).toBe('-0.017');
       expect(changes[0].fiatAmount).toBe(Number('-0.0255'));
-      expect(changes[1].amount.numeric.toString()).toBe('0.0002');
+      expect(changes[1].amount.toString()).toBe('0.0002');
       expect(changes[1].fiatAmount).toBe(Number('0.0012'));
     });
 
@@ -220,7 +215,7 @@ describe('useBalanceChanges', () => {
       const { result, waitForNextUpdate } = setupHook([
         {
           ...dummyBalanceChange,
-          difference: DIFFERENCE_1_MOCK,
+          difference: '0x1',
           isDecrease: true,
           address: NFT_TOKEN_ADDRESS_MOCK,
           standard: SimulationTokenStandard.erc721,
@@ -237,12 +232,7 @@ describe('useBalanceChanges', () => {
             standard: TokenStandard.ERC721,
             tokenId: TOKEN_ID_1_MOCK,
           },
-          amount: {
-            isNegative: true,
-            quantity: DIFFERENCE_1_MOCK,
-            decimals: 0,
-            numeric: expect.any(Numeric),
-          },
+          amount: new BigNumber('-1'),
           fiatAmount: FIAT_UNAVAILABLE,
         },
       ]);
@@ -261,7 +251,7 @@ describe('useBalanceChanges', () => {
 
       await waitForNextUpdate();
 
-      expect(result.current.value[0].amount.decimals).toBe(18);
+      expect(result.current.value[0].amount.decimalPlaces()).toBe(18);
     });
   });
 
@@ -291,18 +281,10 @@ describe('useBalanceChanges', () => {
           asset: {
             standard: TokenStandard.none,
           },
-          amount: {
-            isNegative: true,
-            quantity: DIFFERENCE_ETH_MOCK,
-            decimals: 18,
-            numeric: expect.any(Numeric),
-          },
+          amount: new BigNumber('-5373.003641998677469065'),
           fiatAmount: Number('-16119.010925996032'),
         },
       ]);
-      expect(changes[0].amount.numeric.toString()).toBe(
-        '-5373.003641998677469065',
-      );
     });
 
     it('handles no native balance change', async () => {
@@ -340,14 +322,14 @@ describe('useBalanceChanges', () => {
     expect(changes[0].asset).toEqual({
       standard: TokenStandard.none,
     });
-    expect(changes[0].amount.numeric.toString()).toBe(
-      '-5373.003641998677469065',
+    expect(changes[0].amount).toEqual(
+      new BigNumber('-5373.003641998677469065'),
     );
     expect(changes[0].fiatAmount).toBe(Number('-16119.010925996032'));
     expect(changes[1].asset).toEqual({
       address: ERC20_TOKEN_ADDRESS_1_MOCK,
       standard: TokenStandard.ERC20,
     });
-    expect(changes[1].amount.numeric.toString()).toBe('0.002');
+    expect(changes[1].amount).toEqual(new BigNumber('0.002'));
   });
 });
