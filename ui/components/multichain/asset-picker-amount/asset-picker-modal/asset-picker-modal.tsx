@@ -218,7 +218,7 @@ export function AssetPickerModal({
                 handleAssetChange={handleAssetChange}
                 searchQuery={searchQuery}
                 asset={asset}
-                tokenList={fromTokenList}
+                tokenList={toTokenList}
               />
             </>
           ) : (
@@ -240,7 +240,7 @@ export function AssetPickerModal({
                     handleAssetChange={handleAssetChange}
                     searchQuery={searchQuery}
                     asset={asset}
-                    tokenList={toTokenList}
+                    tokenList={fromTokenList}
                   />
                 </Tab>
               }
