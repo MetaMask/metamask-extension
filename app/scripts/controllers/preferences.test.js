@@ -450,4 +450,19 @@ describe('preferences controller', () => {
       ).toStrictEqual(false);
     });
   });
+
+  describe('setServiceWorkerKeepAlivePreference', () => {
+    it('should default to true', () => {
+      expect(
+        preferencesController.store.getState().enableMV3TimestampSave,
+      ).toStrictEqual(true);
+    });
+
+    it('should set the setServiceWorkerKeepAlivePreference property in state', () => {
+      preferencesController.setServiceWorkerKeepAlivePreference(false);
+      expect(
+        preferencesController.store.getState().enableMV3TimestampSave,
+      ).toStrictEqual(false);
+    });
+  });
 });

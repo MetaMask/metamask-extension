@@ -136,6 +136,7 @@ export const SENTRY_BACKGROUND_STATE = {
     gasEstimateType: true,
     gasFeeEstimates: true,
     gasFeeEstimatesByChainId: true,
+    nonRPCGasFeeApisDisabled: false,
   },
   KeyringController: {
     isUnlocked: true,
@@ -240,6 +241,7 @@ export const SENTRY_BACKGROUND_STATE = {
     useTokenDetection: true,
     useRequestQueue: true,
     useTransactionSimulations: true,
+    enableMV3TimestampSave: true,
     hasDismissedOpenSeaToBlockaidBanner: true,
   },
   SelectedNetworkController: { domains: false },
