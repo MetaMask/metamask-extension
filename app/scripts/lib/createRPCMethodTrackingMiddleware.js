@@ -133,7 +133,7 @@ let globalRateLimitCount = 0;
  *  that should be tracked for methods rate limited by random sample.
  * @param {Function} opts.getAccountType
  * @param {Function} opts.getDeviceModel
- * @param {PreferencesController} opts.preferencesController
+ * @param {Function} opts.isConfirmationRedesignEnabled
  * @param {RestrictedControllerMessenger} opts.snapAndHardwareMessenger
  * @param {AppStateController} opts.appStateController
  * @param {number} [opts.globalRateLimitTimeout] - time, in milliseconds, of the sliding
@@ -153,7 +153,7 @@ export default function createRPCMethodTrackingMiddleware({
   globalRateLimitMaxAmount = 10, // max of events in the globalRateLimitTimeout window. pass 0 for no global rate limit
   getAccountType,
   getDeviceModel,
-  preferencesController,
+  isConfirmationRedesignEnabled,
   snapAndHardwareMessenger,
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   appStateController,
@@ -259,9 +259,7 @@ export default function createRPCMethodTrackingMiddleware({
         ///: END:ONLY_INCLUDE_IF
 
         const isConfirmationRedesign =
-          process.env.ENABLE_CONFIRMATION_REDESIGN &&
-          preferencesController.store.getState().preferences
-            .redesignedConfirmations &&
+          isConfirmationRedesignEnabled() &&
           [...REDESIGN_APPROVAL_TYPES, ...REDESIGN_TRANSACTION_TYPES].find(
             (type) => type === method,
           );
