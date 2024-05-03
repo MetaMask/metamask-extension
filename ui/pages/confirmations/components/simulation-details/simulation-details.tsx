@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   SimulationData,
   SimulationError,
@@ -30,6 +30,7 @@ import { useSimulationMetrics } from './useSimulationMetrics';
 export type SimulationDetailsProps = {
   simulationData?: SimulationData;
   transactionId: string;
+  enableMetrics?: boolean;
 };
 
 /**
@@ -132,6 +133,7 @@ const SimulationDetailsLayout: React.FC<{
 }> = ({ inHeader, children }) => (
   <Box
     data-testid="simulation-details-layout"
+    className="simulation-details-layout"
     display={Display.Flex}
     flexDirection={FlexDirection.Column}
     borderRadius={BorderRadius.MD}
@@ -145,60 +147,28 @@ const SimulationDetailsLayout: React.FC<{
   </Box>
 );
 
-function useLoadingTime() {
-  const [loadingStart] = useState(Date.now());
-  const [loadingTime, setLoadingTime] = useState<number | undefined>();
-
-  const setLoadingComplete = () => {
-    if (loadingTime === undefined) {
-      setLoadingTime((Date.now() - loadingStart) / 1000);
-    }
-  };
-
-  return { loadingTime, setLoadingComplete };
-}
-
-function normalizeSimulationData(simulationData?: SimulationData) {
-  const isInsufficientGasError = simulationData?.error?.message?.includes(
-    'insufficient funds for gas',
-  );
-
-  if (!isInsufficientGasError) {
-    return simulationData;
-  }
-
-  return {
-    ...simulationData,
-    error: {
-      code: SimulationErrorCode.Reverted,
-      message: 'Transaction was reverted',
-    },
-  };
-}
-
 /**
  * Preview of a transaction's effects using simulation data.
  *
  * @param props
  * @param props.simulationData - The simulation data to display.
  * @param props.transactionId - The ID of the transaction being simulated.
+ * @param props.enableMetrics - Whether to enable simulation metrics.
  */
 export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   simulationData,
   transactionId,
+  enableMetrics = false,
 }: SimulationDetailsProps) => {
-  // Temporary pending update to controller.
-  const normalizedSimulationData = normalizeSimulationData(simulationData);
-
   const t = useI18nContext();
-  const { loadingTime, setLoadingComplete } = useLoadingTime();
-  const balanceChangesResult = useBalanceChanges(normalizedSimulationData);
-  const loading = !normalizedSimulationData || balanceChangesResult.pending;
+  const balanceChangesResult = useBalanceChanges(simulationData);
+  const loading = !simulationData || balanceChangesResult.pending;
 
   useSimulationMetrics({
+    enableMetrics,
     balanceChanges: balanceChangesResult.value,
-    loadingTime,
-    simulationData: normalizedSimulationData as SimulationData,
+    loading,
+    simulationData,
     transactionId,
   });
 
@@ -210,9 +180,7 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
     );
   }
 
-  setLoadingComplete();
-
-  const { error } = normalizedSimulationData;
+  const { error } = simulationData;
 
   if (
     [
@@ -241,8 +209,8 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
     );
   }
 
-  const outgoing = balanceChanges.filter((change) => change.amount.isNegative);
-  const incoming = balanceChanges.filter((change) => !change.amount.isNegative);
+  const outgoing = balanceChanges.filter((bc) => bc.amount.isNegative());
+  const incoming = balanceChanges.filter((bc) => !bc.amount.isNegative());
   return (
     <SimulationDetailsLayout>
       <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={3}>

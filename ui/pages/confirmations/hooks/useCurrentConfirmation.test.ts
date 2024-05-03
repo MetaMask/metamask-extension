@@ -37,6 +37,9 @@ const mockState = {
         expectsResult: false,
       },
     },
+    preferences: {
+      redesignedConfirmationsEnabled: true,
+    },
   },
 };
 
@@ -70,5 +73,19 @@ describe('useCurrentConfirmation', () => {
     expect(result.current.currentConfirmation).toBe(
       mockState.metamask.unapprovedPersonalMsgs['2'],
     );
+  });
+
+  it('should not return confirmation if user has not enabled preference for redesigned confirmations', () => {
+    const { result } = renderHookWithProvider(() => useCurrentConfirmation(), {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        preferences: {
+          redesignedConfirmationsEnabled: false,
+        },
+      },
+    });
+
+    expect(result.current.currentConfirmation).toBe(undefined);
   });
 });

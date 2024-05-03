@@ -160,6 +160,7 @@ const AddNetwork = () => {
                 variant={TextVariant.headingSm}
                 as="h4"
                 color={TextColor.textDefault}
+                data-testid="add-network-button"
               >
                 {t('addANetwork')}
               </Text>

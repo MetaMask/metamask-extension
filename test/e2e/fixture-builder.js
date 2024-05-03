@@ -176,6 +176,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           showExtensionInFullSizeView: false,
           showFiatInTestnets: false,
           showTestNetworks: false,
+          smartTransactionsOptInStatus: false,
           useNativeCurrencyAsPrimaryCurrency: true,
           petnamesEnabled: true,
         },
@@ -302,6 +303,7 @@ function onboardingFixture() {
           showExtensionInFullSizeView: false,
           showFiatInTestnets: false,
           showTestNetworks: false,
+          smartTransactionsOptInStatus: false,
           useNativeCurrencyAsPrimaryCurrency: true,
           petnamesEnabled: true,
         },
@@ -472,6 +474,23 @@ class FixtureBuilder {
         },
       },
     });
+  }
+
+  withNetworkControllerTripleGanache() {
+    this.withNetworkControllerDoubleGanache();
+    merge(this.fixture.data.NetworkController, {
+      networkConfigurations: {
+        '243ad4c2-10a6-4621-9536-e3a67f4dd4c9': {
+          id: '243ad4c2-10a6-4621-9536-e3a67f4dd4c9',
+          rpcUrl: 'http://localhost:7777',
+          chainId: '0x3e8',
+          ticker: 'ETH',
+          nickname: 'Localhost 7777',
+          rpcPrefs: {},
+        },
+      },
+    });
+    return this;
   }
 
   withNftController(data) {
@@ -881,9 +900,11 @@ class FixtureBuilder {
   }
 
   withPreferencesControllerUseRequestQueueEnabled() {
-    return this.withPreferencesController({
-      useRequestQueue: true,
-    });
+    return merge(
+      this.withPreferencesController({
+        useRequestQueue: true,
+      }),
+    );
   }
 
   withSmartTransactionsController(data) {

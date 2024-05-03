@@ -15,6 +15,12 @@ import { RestrictedMethods } from '../../../../shared/constants/permissions';
 import SnapPrivacyWarning from '../snaps/snap-privacy-warning';
 import { getDedupedSnaps } from '../../../helpers/utils/util';
 ///: END:ONLY_INCLUDE_IF
+import {
+  BackgroundColor,
+  Display,
+  FlexDirection,
+} from '../../../helpers/constants/design-system';
+import { Box } from '../../component-library';
 import { PermissionPageContainerContent } from '.';
 
 export default class PermissionPageContainer extends Component {
@@ -37,6 +43,8 @@ export default class PermissionPageContainer extends Component {
       extensionId: PropTypes.string,
       iconUrl: PropTypes.string,
     }),
+    history: PropTypes.object.isRequired,
+    connectPath: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -117,6 +125,11 @@ export default class PermissionPageContainer extends Component {
     ///: END:ONLY_INCLUDE_IF
   }
 
+  goBack() {
+    const { history, connectPath } = this.props;
+    history.push(connectPath);
+  }
+
   onCancel = () => {
     const { request, rejectPermissionsRequest } = this.props;
     rejectPermissionsRequest(request.metadata.id);
@@ -189,19 +202,24 @@ export default class PermissionPageContainer extends Component {
           selectedAccounts={selectedAccounts}
           allAccountsSelected={allAccountsSelected}
         />
-        <div className="permission-approval-container__footers">
+        <Box
+          display={Display.Flex}
+          backgroundColor={BackgroundColor.backgroundAlternative}
+          flexDirection={FlexDirection.Column}
+        >
           {targetSubjectMetadata?.subjectType !== SubjectType.Snap && (
             <PermissionsConnectFooter />
           )}
           <PageContainerFooter
+            footerClassName="permission-page-container-footer"
             cancelButtonType="default"
-            onCancel={() => this.onCancel()}
-            cancelText={this.context.t('cancel')}
+            onCancel={() => this.goBack()}
+            cancelText={this.context.t('back')}
             onSubmit={() => this.onSubmit()}
-            submitText={this.context.t('connect')}
+            submitText={this.context.t('confirm')}
             buttonSizeLarge={false}
           />
-        </div>
+        </Box>
       </>
     );
   }

@@ -348,18 +348,9 @@
     "message": "$1のすべてのNFT",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
-  "allowExternalExtensionTo": {
-    "message": "この外部拡張機能に次の操作を許可します"
-  },
   "allowSpendToken": {
     "message": "$1へのアクセス許可を与えますか？",
     "description": "$1 is the symbol of the token that are requesting to spend"
-  },
-  "allowThisSiteTo": {
-    "message": "このサイトに次の操作を許可します"
-  },
-  "allowThisSnapTo": {
-    "message": "このsnapに次の操作を許可します:"
   },
   "allowWithdrawAndSpend": {
     "message": "$1に以下の額までの引き出しと使用を許可します。",
@@ -742,26 +733,6 @@
   "connectSnap": {
     "message": "$1を接続",
     "description": "$1 is the snap for which a connection is being requested."
-  },
-  "connectTo": {
-    "message": "$1に接続",
-    "description": "$1 is the name/origin of a web3 site/application that the user can connect to metamask"
-  },
-  "connectToAll": {
-    "message": "すべての$1に接続",
-    "description": "$1 will be replaced by the translation of connectToAllAccounts"
-  },
-  "connectToAllAccounts": {
-    "message": "アカウント",
-    "description": "will replace $1 in connectToAll, completing the sentence 'connect to all of your accounts', will be text that shows list of accounts on hover"
-  },
-  "connectToMultiple": {
-    "message": "$1に接続",
-    "description": "$1 will be replaced by the translation of connectToMultipleNumberOfAccounts"
-  },
-  "connectToMultipleNumberOfAccounts": {
-    "message": "$1アカウント",
-    "description": "$1 is the number of accounts to which the web3 site/application is asking to connect; this will substitute $1 in connectToMultiple"
   },
   "connectWithMetaMask": {
     "message": "MetaMaskを使用して接続"
@@ -1649,12 +1620,6 @@
   },
   "general": {
     "message": "一般"
-  },
-  "globalTitle": {
-    "message": "グローバルメニュー"
-  },
-  "globalTourDescription": {
-    "message": "ポートフォリオ、接続されたサイト、設定などを確認できます"
   },
   "goBack": {
     "message": "戻る"
@@ -2562,21 +2527,6 @@
   "notificationsMarkAllAsRead": {
     "message": "すべて既読にする"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "詳細"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "🎉 MetaMask Snapsのオープンベータについてお知らせします！"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "開発者コミュニティによって開発されたsnapで、ウォレットをカスタマイズできます！"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "Snapsを使えば、他のネットワークへの接続やトランザクションインサイトの表示、カスタム通知の取得など、MetaMaskでより多くのことができるようになります。"
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "MetaMask Snapsのご紹介"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1種類の新しいトークンがこのアカウントで見つかりました",
     "description": "$1 is the number of new tokens detected"
@@ -2722,7 +2672,8 @@
     "message": "悪意のあるネットワーク プロバイダーは、ブロックチェーンのステートを偽り、ユーザーのネットワークアクティビティを記録することがあります。信頼するカスタムネットワークのみを追加してください。"
   },
   "onlyConnectTrust": {
-    "message": "信頼するサイトにのみ接続してください。"
+    "message": "信頼するサイトにのみ接続してください。",
+    "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
   "openFullScreenForLedgerWebHid": {
     "message": "全画面モードにしてLedgerを接続します。",
@@ -2819,9 +2770,6 @@
   "permissionRequest": {
     "message": "許可のリクエスト"
   },
-  "permissionRequestCapitalized": {
-    "message": "許可のリクエスト"
-  },
   "permissionRequested": {
     "message": "現在リクエスト中"
   },
@@ -2902,12 +2850,6 @@
   },
   "permissions": {
     "message": "許可"
-  },
-  "permissionsTitle": {
-    "message": "許可"
-  },
-  "permissionsTourDescription": {
-    "message": "ここで接続されたアカウントを見つけて許可の管理を行います"
   },
   "personalAddressDetected": {
     "message": "個人アドレスが検出されました。トークンコントラクトアドレスを入力してください。"
@@ -3267,6 +3209,10 @@
   "securityAndPrivacy": {
     "message": "セキュリティとプライバシー"
   },
+  "securityProviderPoweredBy": {
+    "message": "データソース: $1",
+    "description": "The security provider that is providing data"
+  },
   "seeDetails": {
     "message": "詳細を表示"
   },
@@ -3491,12 +3437,6 @@
   "smartContracts": {
     "message": "スマートコントラクト"
   },
-  "smartSwapsAreHere": {
-    "message": "スマートスワップの登場です！"
-  },
-  "smartSwapsDescription": {
-    "message": "MetaMask Swapsがはるかに賢くなりました！スマートスワップを有効にすると、MetaMaskがプログラムに従ってスワップを最適化できるようになるため、以下のようなメリットがあります。"
-  },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "スマートスワップに必要な資金が不足しています。"
   },
@@ -3513,10 +3453,6 @@
   },
   "snapDetailWebsite": {
     "message": "Webサイト"
-  },
-  "snapInstallRequest": {
-    "message": "$1をインストールすることで、次のアクセス許可が付与されます。$1を信頼できる場合にのみ続行してください。",
-    "description": "$1 is the snap name."
   },
   "snapInstallSuccess": {
     "message": "インストール完了"
@@ -3775,18 +3711,6 @@
   },
   "strong": {
     "message": "強"
-  },
-  "stxBenefit1": {
-    "message": "トランザクションコストを最小化"
-  },
-  "stxBenefit2": {
-    "message": "トランザクションの失敗数を低減"
-  },
-  "stxBenefit3": {
-    "message": "トランザクションの停滞を解消"
-  },
-  "stxBenefit4": {
-    "message": "フロントランニングを防止"
   },
   "stxCancelled": {
     "message": "スワップが失敗するところでした"
@@ -4277,12 +4201,6 @@
   "switchedTo": {
     "message": "次に切り替えました:"
   },
-  "switcherTitle": {
-    "message": "ネットワークスイッチャー"
-  },
-  "switcherTourDescription": {
-    "message": "アイコンをクリックしてネットワークを切り替えるか、新しいネットワークを追加します"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "ネットワークを切り替えると、保留中の承認がすべてキャンセルされます"
   },
@@ -4718,7 +4636,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "$1を$2で表示",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "$1をEtherscanで表示",
@@ -4821,10 +4739,6 @@
   },
   "whatsThis": {
     "message": "これは何ですか？"
-  },
-  "xOfY": {
-    "message": "$2中の$1",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total, and $1 is a count towards that total"
   },
   "xOfYPending": {
     "message": "$2件中$1件が保留中",

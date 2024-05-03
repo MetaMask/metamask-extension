@@ -17,11 +17,13 @@ describe('Switch ethereum chain', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions: generateGanacheOptions({
-          concurrent: {
-            port: 8546,
-            chainId: 1338,
-            ganacheOptions2: {},
-          },
+          concurrent: [
+            {
+              port: 8546,
+              chainId: 1338,
+              ganacheOptions2: {},
+            },
+          ],
         }),
         title: this.test.fullTitle(),
       },

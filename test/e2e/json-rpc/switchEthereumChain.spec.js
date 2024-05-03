@@ -22,7 +22,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         dappOptions: { numberOfDapps: 2 },
         ganacheOptions: {
           ...defaultGanacheOptions,
-          concurrent: { port: 8546, chainId: 1338 },
+          concurrent: [{ port: 8546, chainId: 1338 }],
         },
         title: this.test.fullTitle(),
       },
@@ -92,7 +92,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         dappOptions: { numberOfDapps: 2 },
         ganacheOptions: {
           ...defaultGanacheOptions,
-          concurrent: { port: 8546, chainId: 1338 },
+          concurrent: [{ port: 8546, chainId: 1338 }],
         },
         title: this.test.fullTitle(),
       },
@@ -164,7 +164,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         dappOptions: { numberOfDapps: 2 },
         ganacheOptions: {
           ...defaultGanacheOptions,
-          concurrent: { port: 8546, chainId: 1338 },
+          concurrent: [{ port: 8546, chainId: 1338 }],
         },
         title: this.test.fullTitle(),
       },
@@ -237,7 +237,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         dappOptions: { numberOfDapps: 2 },
         ganacheOptions: {
           ...defaultGanacheOptions,
-          concurrent: { port: 8546, chainId: 1338 },
+          concurrent: [{ port: 8546, chainId: 1338 }],
         },
         title: this.test.fullTitle(),
       },
