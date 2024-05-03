@@ -81,6 +81,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Restores 11.15.0, and also incorporates the 11.14.4 and 11.14.5 changes
 
+## [11.15.1]
+### Changed
+- Restores 11.15.0, and also incorporates the 11.14.4 and 11.14.5 changes
+
 ## [11.15.0]
 ### Added
 - Expanded Smart Transactions (STX) functionality to include non-Swaps transactions on Ethereum Mainnet for users opted into STX ([#23155](https://github.com/MetaMask/metamask-extension/pull/23155))
@@ -4750,6 +4754,7 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 [11.15.4]: https://github.com/MetaMask/metamask-extension/compare/v11.15.3...v11.15.4
 [11.15.3]: https://github.com/MetaMask/metamask-extension/compare/v11.15.2...v11.15.3
 [11.15.2]: https://github.com/MetaMask/metamask-extension/compare/v11.15.1...v11.15.2
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.15.1...HEAD
 [11.15.1]: https://github.com/MetaMask/metamask-extension/compare/v11.15.0...v11.15.1
 [11.15.0]: https://github.com/MetaMask/metamask-extension/compare/v11.14.5...v11.15.0
 [11.14.5]: https://github.com/MetaMask/metamask-extension/compare/v11.14.4...v11.14.5
