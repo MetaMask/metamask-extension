@@ -44,6 +44,7 @@ const createHandler = (opts) =>
     globalRateLimitTimeout: 0,
     globalRateLimitMaxAmount: 0,
     appStateController,
+    isConfirmationRedesignEnabled: () => false,
     ...opts,
   });
 
@@ -426,7 +427,9 @@ describe('createRPCMethodTrackingMiddleware', () => {
         error: null,
       };
       const { next, executeMiddlewareStack } = getNext();
-      const handler = createHandler({ isConfirmationRedesignEnabled: true });
+      const handler = createHandler({
+        isConfirmationRedesignEnabled: () => true,
+      });
 
       await handler(req, res, next);
       await executeMiddlewareStack();
@@ -455,7 +458,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         error: null,
       };
       const { next, executeMiddlewareStack } = getNext();
-      const handler = createHandler({ isConfirmationRedesignEnabled: false });
+      const handler = createHandler();
 
       await handler(req, res, next);
       await executeMiddlewareStack();
