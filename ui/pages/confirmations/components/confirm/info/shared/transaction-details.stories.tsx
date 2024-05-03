@@ -4,23 +4,20 @@ import { Provider } from 'react-redux';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import configureStore from '../../../../../../store/store';
-import ContractInteractionInfo from './contract-interaction';
+import { TransactionDetails } from './transaction-details';
 
 const store = configureStore({
-  ...mockState,
-  metamask: {
-    ...mockState.metamask,
-  },
+  metamask: { ...mockState.metamask },
   confirm: {
     currentConfirmation: genUnapprovedContractInteractionConfirmation(),
   },
 });
 
 const Story = {
-  title: 'Components/App/Confirm/info/ContractInteractionInfo',
-  component: ContractInteractionInfo,
+  title: 'Components/App/Confirm/info/TransactionDetails',
+  component: TransactionDetails,
   decorators: [
-    (story: () => Meta<typeof ContractInteractionInfo>) => (
+    (story: () => Meta<typeof TransactionDetails>) => (
       <Provider store={store}>{story()}</Provider>
     ),
   ],
@@ -28,6 +25,6 @@ const Story = {
 
 export default Story;
 
-export const DefaultStory = () => <ContractInteractionInfo />;
+export const DefaultStory = () => <TransactionDetails />;
 
 DefaultStory.storyName = 'Default';
