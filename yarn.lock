@@ -13526,6 +13526,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"camelcase@npm:^2.0.1":
+  version: 2.1.1
+  resolution: "camelcase@npm:2.1.1"
+  checksum: 20a3ef08f348de832631d605362ffe447d883ada89617144a82649363ed5860923b021f8e09681624ef774afb93ff3597cfbcf8aaf0574f65af7648f1aea5e50
+  languageName: node
+  linkType: hard
+
 "camelcase@npm:^3.0.0":
   version: 3.0.0
   resolution: "camelcase@npm:3.0.0"
@@ -13943,7 +13950,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cliui@npm:^3.2.0":
+"cliui@npm:^3.0.3, cliui@npm:^3.2.0":
   version: 3.2.0
   resolution: "cliui@npm:3.2.0"
   dependencies:
@@ -25161,6 +25168,7 @@ __metadata:
     style-loader: "npm:^0.21.0"
     stylelint: "npm:^13.6.1"
     superstruct: "npm:^1.0.3"
+    svg-jsx-loader: "npm:^1.0.1"
     terser: "npm:^5.7.0"
     through2: "npm:^4.0.2"
     ts-node: "npm:^10.9.2"
@@ -28829,6 +28837,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"q@npm:^1.4.1":
+  version: 1.5.1
+  resolution: "q@npm:1.5.1"
+  checksum: 70c4a30b300277165cd855889cd3aa681929840a5940413297645c5691e00a3549a2a4153131efdf43fe8277ee8cf5a34c9636dcb649d83ad47f311a015fd380
+  languageName: node
+  linkType: hard
+
 "qr.js@npm:0.0.0":
   version: 0.0.0
   resolution: "qr.js@npm:0.0.0"
@@ -31158,6 +31173,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"sax@npm:>=0.6.0":
+  version: 1.3.0
+  resolution: "sax@npm:1.3.0"
+  checksum: bb571b31d30ecb0353c2ff5f87b117a03e5fb9eb4c1519141854c1a8fbee0a77ddbe8045f413259e711833aa03da210887df8527d19cdc55f299822dbf4b34de
+  languageName: node
+  linkType: hard
+
 "sax@npm:^1.2.4":
   version: 1.2.4
   resolution: "sax@npm:1.2.4"
@@ -32967,10 +32989,36 @@ __metadata:
   languageName: node
   linkType: hard
 
+"svg-jsx-loader@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "svg-jsx-loader@npm:1.0.1"
+  dependencies:
+    loader-utils: "npm:^1.2.3"
+    object-assign: "npm:^4.1.1"
+    svg-to-jsx: "npm:~1.0.2"
+  checksum: ab6ad501a8e58247f6a2cf947199aee89fdb2bf6733e5d8c4d0e21050e93e753b81495f5b48e407aade97a9f23572c54014d19502b09df34e973c73d8e819da6
+  languageName: node
+  linkType: hard
+
 "svg-tags@npm:^1.0.0":
   version: 1.0.0
   resolution: "svg-tags@npm:1.0.0"
   checksum: 407e5ef87cfa2fb81c61d738081c2decd022ce13b922d035b214b49810630bf5d1409255a4beb3a940b77b32f6957806deff16f1bf0ce1ab11c7a184115a0b7f
+  languageName: node
+  linkType: hard
+
+"svg-to-jsx@npm:~1.0.2":
+  version: 1.0.4
+  resolution: "svg-to-jsx@npm:1.0.4"
+  dependencies:
+    object-assign: "npm:^4.0.1"
+    q: "npm:^1.4.1"
+    xml2js: "npm:^0.4.10"
+    xmlbuilder: "npm:^13.0.2"
+    yargs: "npm:^3.21.0"
+  bin:
+    svg-to-jsx: bin/svg-to-jsx
+  checksum: a2fbdbb9b70d6a46d4fb0d8070c012ff8529c535b344a72c95204a709278e192f957b0decf27273c1b515a4a0e257042ae939d53f86866c3fb075a3167d6ca6c
   languageName: node
   linkType: hard
 
@@ -35497,6 +35545,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"window-size@npm:^0.1.4":
+  version: 0.1.4
+  resolution: "window-size@npm:0.1.4"
+  bin:
+    window-size: cli.js
+  checksum: 26f86538be4975be7c8cb8f7aeb518dfb25473e7506baf1e90780758766f734df50cfbee289b645baf39b1e21100f4a86ef199538422a638b248ebacfbf8719b
+  languageName: node
+  linkType: hard
+
 "wordwrap@npm:^1.0.0, wordwrap@npm:~1.0.0":
   version: 1.0.0
   resolution: "wordwrap@npm:1.0.0"
@@ -35710,10 +35767,34 @@ __metadata:
   languageName: node
   linkType: hard
 
+"xml2js@npm:^0.4.10":
+  version: 0.4.23
+  resolution: "xml2js@npm:0.4.23"
+  dependencies:
+    sax: "npm:>=0.6.0"
+    xmlbuilder: "npm:~11.0.0"
+  checksum: 52896ef39429f860f32471dd7bb2b89ef25b7e15528e3a4366de0bd5e55a251601565e7814763e70f9e75310c3afe649a42b8826442b74b41eff8a0ae333fccc
+  languageName: node
+  linkType: hard
+
 "xml@npm:^1.0.1":
   version: 1.0.1
   resolution: "xml@npm:1.0.1"
   checksum: 6c4c31a1308e45732e5ac6b50edbca0e8f7abe5cb5de10215d8e3c688819fe7c7706e056f6fb59b1a23fdf1000c2d7a8bba0a89e94aa1796cd2376d9a5ba401e
+  languageName: node
+  linkType: hard
+
+"xmlbuilder@npm:^13.0.2":
+  version: 13.0.2
+  resolution: "xmlbuilder@npm:13.0.2"
+  checksum: 84671f47fbc28e56dc2fca9b29a2a62e3c2e28f5fcaa986b11c9a7df7385fc921e923cd1c3da83ae0d58b255bc2369feffdcd20600b4125391c79be02eedca15
+  languageName: node
+  linkType: hard
+
+"xmlbuilder@npm:~11.0.0":
+  version: 11.0.1
+  resolution: "xmlbuilder@npm:11.0.1"
+  checksum: c8c3d208783718db5b285101a736cd8e6b69a5c265199a0739abaa93d1a1b7de5489fd16df4e776e18b2c98cb91f421a7349e99fd8c1ebeb44ecfed72a25091a
   languageName: node
   linkType: hard
 
@@ -35738,7 +35819,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"y18n@npm:^3.2.1":
+"y18n@npm:^3.2.0, y18n@npm:^3.2.1":
   version: 3.2.2
   resolution: "y18n@npm:3.2.2"
   checksum: 42ee58e321252ac87f85ccc7cee01c2e3e224737531e9e543963264194255132ce406e02993904b84ea974050d53b8959dcf9da695408553c32f2a8b4b59a667
@@ -35895,6 +35976,21 @@ __metadata:
     y18n: "npm:^4.0.0"
     yargs-parser: "npm:^18.1.2"
   checksum: bbcc82222996c0982905b668644ca363eebe6ffd6a572fbb52f0c0e8146661d8ce5af2a7df546968779bb03d1e4186f3ad3d55dfaadd1c4f0d5187c0e3a5ba16
+  languageName: node
+  linkType: hard
+
+"yargs@npm:^3.21.0":
+  version: 3.32.0
+  resolution: "yargs@npm:3.32.0"
+  dependencies:
+    camelcase: "npm:^2.0.1"
+    cliui: "npm:^3.0.3"
+    decamelize: "npm:^1.1.1"
+    os-locale: "npm:^1.4.0"
+    string-width: "npm:^1.0.1"
+    window-size: "npm:^0.1.4"
+    y18n: "npm:^3.2.0"
+  checksum: bcf0bc61e77d104260838c757c5d83d9763030149cb4bc5c2bf60fbfbfdfb43393d92d0689f470047af6e41c72d8f680329c97615448c80748166ef60cc1eaaf
   languageName: node
   linkType: hard
 

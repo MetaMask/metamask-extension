@@ -131,7 +131,7 @@ export default function SecureYourWallet() {
           type="video/webm"
           src="./images/videos/recovery-onboarding/video.webm"
         />
-        {Object.keys(subtitles).map((key) => {
+        {/* {Object.keys(subtitles).map((key) => {
           return (
             <track
               default={Boolean(key === defaultLang)}
@@ -142,7 +142,7 @@ export default function SecureYourWallet() {
               src={`./images/videos/recovery-onboarding/subtitles/${key}.vtt`}
             />
           );
-        })}
+        })} */}
       </Box>
       <Box
         className="secure-your-wallet__actions"
