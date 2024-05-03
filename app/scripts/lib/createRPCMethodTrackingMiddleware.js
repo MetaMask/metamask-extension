@@ -260,8 +260,9 @@ export default function createRPCMethodTrackingMiddleware({
 
         const isConfirmationRedesign =
           isConfirmationRedesignEnabled &&
-          (REDESIGN_APPROVAL_TYPES.find((type) => type === method) ||
-            REDESIGN_TRANSACTION_TYPES.find((type) => type === method));
+          [...REDESIGN_APPROVAL_TYPES, ...REDESIGN_TRANSACTION_TYPES].find(
+            (type) => type === method,
+          );
 
         if (isConfirmationRedesign) {
           eventProperties.ui_customizations = [
