@@ -41,20 +41,6 @@ export const MMI_SENTRY_BACKGROUND_STATE = {
 // sent to Sentry These properties have some potential to be useful for
 // debugging, and they do not contain any identifiable information.
 export const SENTRY_BACKGROUND_STATE = {
-  AuthenticationController: {
-    isSignedIn: false,
-  },
-  UserStorageController: {
-    isProfileSyncingEnabled: true,
-  },
-  MetamaskNotificationsController: {
-    isFeatureAnnouncementsEnabled: false,
-    isMetamaskNotificationsEnabled: false,
-    isMetamaskNotificationsFeatureSeen: false,
-    isSnapNotificationsEnabled: false,
-    metamaskNotificationsList: [],
-    metamaskNotificationsReadList: [],
-  },
   AccountsController: {
     internalAccounts: {
       accounts: false,
@@ -77,6 +63,9 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   AnnouncementController: {
     announcements: false,
+  },
+  AuthenticationController: {
+    isSignedIn: false,
   },
   NetworkOrderController: {
     orderedNetworkList: [],
@@ -158,6 +147,14 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   LoggingController: {
     logs: false,
+  },
+  MetamaskNotificationsController: {
+    isMetamaskNotificationsFeatureSeen: false,
+    isMetamaskNotificationsEnabled: false,
+    isFeatureAnnouncementsEnabled: false,
+    isSnapNotificationsEnabled: false,
+    metamaskNotificationsList: [],
+    metamaskNotificationsReadList: [],
   },
   MetaMetricsController: {
     eventsBeforeMetricsOptIn: false,
@@ -255,7 +252,6 @@ export const SENTRY_BACKGROUND_STATE = {
     useTokenDetection: true,
     useRequestQueue: true,
     useTransactionSimulations: true,
-    enableMV3TimestampSave: true,
     hasDismissedOpenSeaToBlockaidBanner: true,
   },
   SelectedNetworkController: { domains: false },
@@ -362,6 +358,9 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   UserOperationController: {
     userOperations: false,
+  },
+  UserStorageController: {
+    isProfileSyncingEnabled: true,
   },
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   ...MMI_SENTRY_BACKGROUND_STATE,

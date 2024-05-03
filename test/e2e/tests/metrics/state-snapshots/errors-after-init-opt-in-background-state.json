@@ -54,6 +54,7 @@
     "pendingApprovalCount": "number",
     "approvalFlows": "object"
   },
+  "AuthenticationController": "object",
   "CronjobController": { "jobs": "object" },
   "CurrencyController": {
     "currencyRates": {
@@ -99,6 +100,7 @@
     "fragments": "object",
     "segmentApiCalls": "object"
   },
+  "MetamaskNotificationsController": "object",
   "NameController": { "names": "object", "nameSources": "object" },
   "NetworkController": {
     "selectedNetworkClientId": "string",
@@ -183,7 +185,6 @@
     "snapsAddSnapAccountModalDismissed": "boolean",
     "useExternalNameSources": "boolean",
     "useTransactionSimulations": true,
-    "enableMV3TimestampSave": true,
     "selectedAddress": "string"
   },
   "SelectedNetworkController": { "domains": "object" },
@@ -264,5 +265,6 @@
     "transactions": "object",
     "lastFetchedBlockNumbers": "object"
   },
-  "UserOperationController": { "userOperations": "object" }
+  "UserOperationController": { "userOperations": "object" },
+  "UserStorageController": "object"
 }
