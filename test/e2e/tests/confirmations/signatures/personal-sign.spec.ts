@@ -1,11 +1,9 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import FixtureBuilder from '../../../fixture-builder';
+import { withRedesignConfirmationFixtures } from '../helper-fixture';
 import {
   DAPP_URL_WITHOUT_SCHEMA,
   WINDOW_TITLES,
-  defaultGanacheOptions,
-  withFixtures,
   openDapp,
   unlockWallet,
 } from '../../../helpers';
@@ -13,26 +11,11 @@ import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 
 describe('Confirmation Signature - Personal Sign', function (this: Suite) {
-  if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
-    return;
-  }
+  if (!process.env.ENABLE_CONFIRMATION_REDESIGN) { return; }
 
   it('initiates and confirms', async function () {
-    await withFixtures(
-      {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
-          .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            preferences: {
-              redesignedConfirmations: true,
-            },
-          })
-          .build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test?.fullTitle(),
-      },
+    await withRedesignConfirmationFixtures(
+      this.test?.fullTitle(),
       async ({ driver, ganacheServer }: { driver: Driver, ganacheServer: Ganache }) => {
         const addresses = await ganacheServer.getAccounts();
         const publicAddress = addresses?.[0] as string;
@@ -40,10 +23,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#personalSign');
-
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const origin = driver.findElement({ text: DAPP_URL_WITHOUT_SCHEMA });
         const message = driver.findElement({ text: 'Example `personal_sign` message' });
@@ -54,7 +34,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
         await driver.clickElement('[data-testid="confirm-footer-button"]');
 
         await assertVerifiedPersonalMessage(driver, publicAddress);
-      },
+      }
     );
   });
 });

@@ -1,11 +1,9 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import FixtureBuilder from '../../../fixture-builder';
+import { withRedesignConfirmationFixtures } from '../helper-fixture';
 import {
   DAPP_URL_WITHOUT_SCHEMA,
   WINDOW_TITLES,
-  defaultGanacheOptions,
-  withFixtures,
   openDapp,
   unlockWallet,
 } from '../../../helpers';
@@ -18,21 +16,8 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
   }
 
   it('initiates and confirms', async function () {
-    await withFixtures(
-      {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
-          .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            preferences: {
-              redesignedConfirmations: true,
-            },
-          })
-          .build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test?.fullTitle(),
-      },
+    await withRedesignConfirmationFixtures(
+      this.test?.fullTitle(),
       async ({ driver, ganacheServer }: { driver: Driver, ganacheServer: Ganache }) => {
         const addresses = await ganacheServer.getAccounts();
         const publicAddress = addresses?.[0] as string;
