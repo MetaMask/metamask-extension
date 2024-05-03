@@ -54,17 +54,17 @@
     "pendingApprovalCount": "number",
     "approvalFlows": "object"
   },
-  "AuthenticationController": "object",
+  "AuthenticationController": { "isSignedIn": "boolean" },
   "CronjobController": { "jobs": "object" },
   "CurrencyController": {
+    "currentCurrency": "usd",
     "currencyRates": {
       "ETH": {
         "conversionDate": "number",
         "conversionRate": 1700,
         "usdConversionRate": 1700
       }
-    },
-    "currentCurrency": "usd"
+    }
   },
   "DecryptMessageController": {
     "unapprovedDecryptMsgs": "object",
@@ -100,7 +100,14 @@
     "fragments": "object",
     "segmentApiCalls": "object"
   },
-  "MetamaskNotificationsController": "object",
+  "MetamaskNotificationsController": {
+    "isMetamaskNotificationsFeatureSeen": "boolean",
+    "isMetamaskNotificationsEnabled": "boolean",
+    "isFeatureAnnouncementsEnabled": "boolean",
+    "isSnapNotificationsEnabled": "boolean",
+    "metamaskNotificationsList": {},
+    "metamaskNotificationsReadList": {}
+  },
   "NameController": { "names": "object", "nameSources": "object" },
   "NetworkController": {
     "selectedNetworkClientId": "string",
@@ -267,5 +274,5 @@
     "lastFetchedBlockNumbers": "object"
   },
   "UserOperationController": { "userOperations": "object" },
-  "UserStorageController": "object"
+  "UserStorageController": { "isProfileSyncingEnabled": true }
 }
