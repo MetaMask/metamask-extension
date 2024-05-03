@@ -231,6 +231,42 @@ describe('PermissionController specifications', () => {
             ),
           ).toThrow(/No approved accounts specified\.$/u);
         });
+
+        it('uses the approved accounts even if caveats are specified', () => {
+          const getInternalAccounts = jest.fn();
+          const getAllAccounts = jest.fn();
+          const { factory } = getPermissionSpecifications({
+            getInternalAccounts,
+            getAllAccounts,
+          })[RestrictedMethods.eth_accounts];
+
+          expect(
+            factory(
+              {
+                caveats: [
+                  {
+                    type: CaveatTypes.restrictReturnedAccounts,
+                    value: ['0x1', '0x2'],
+                  },
+                ],
+                invoker: 'foo.bar',
+                target: 'eth_accounts',
+              },
+              { approvedAccounts: ['0x1', '0x3'] },
+            ),
+          ).toStrictEqual({
+            caveats: [
+              {
+                type: CaveatTypes.restrictReturnedAccounts,
+                value: ['0x1', '0x3'],
+              },
+            ],
+            date: 1,
+            id: expect.any(String),
+            invoker: 'foo.bar',
+            parentCapability: 'eth_accounts',
+          });
+        });
       });
 
       describe('methodImplementation', () => {
