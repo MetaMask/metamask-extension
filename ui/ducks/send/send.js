@@ -23,6 +23,7 @@ import {
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_FUNDS_FOR_GAS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
+  NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
   INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR,
   KNOWN_RECIPIENT_ADDRESS_WARNING,
@@ -1439,7 +1440,7 @@ const slice = createSlice({
         case draftTransaction.sendAsset.type === AssetType.NFT &&
           draftTransaction.sendAsset.details.standard === TokenStandard.ERC1155 &&
           draftTransaction.amount.value === '0x0':
-            draftTransaction.amount.error = INSUFFICIENT_TOKENS_ERROR
+            draftTransaction.amount.error = NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR
           break;
         // set error to INSUFFICIENT_TOKENS_ERROR if the token balance is lower
         // than the amount of token the user is attempting to send.
