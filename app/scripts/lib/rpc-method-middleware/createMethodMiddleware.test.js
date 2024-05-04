@@ -1,20 +1,9 @@
-import { JsonRpcEngine, JsonRpcFailure } from 'json-rpc-engine';
+import { JsonRpcEngine } from 'json-rpc-engine';
 import {
   assertIsJsonRpcFailure,
   assertIsJsonRpcSuccess,
 } from '@metamask/utils';
-import { HandlerMiddlewareFunction } from '@metamask/permission-controller';
-import { EveryHook, createMethodMiddleware } from '.';
-
-type MockHandlerInterface = {
-  implementation: HandlerMiddlewareFunction<
-    Record<'hook1' | 'hook2', () => number>,
-    [number],
-    number
-  >;
-  hookNames: Record<string, true>;
-  methodNames: string[];
-};
+import { createMethodMiddleware } from '.';
 
 jest.mock('@metamask/permission-controller', () => ({
   permissionRpcMethods: { handlers: [] },
@@ -41,17 +30,16 @@ jest.mock('./handlers', () => [
     },
     hookNames: { hook1: true, hook2: true },
     methodNames: ['method1', 'method2'],
-  } as MockHandlerInterface,
+  },
 ]);
 
 describe('createMethodMiddleware', () => {
   const method1 = 'method1';
 
-  const getDefaultHooks = () =>
-    ({
-      hook1: () => 42,
-      hook2: () => 99,
-    } as unknown as EveryHook);
+  const getDefaultHooks = () => ({
+    hook1: () => 42,
+    hook2: () => 99,
+  });
 
   it('should return a function', () => {
     const middleware = createMethodMiddleware(getDefaultHooks());
@@ -115,11 +103,11 @@ describe('createMethodMiddleware', () => {
     const engine = new JsonRpcEngine();
     engine.push(middleware);
 
-    const response = (await engine.handle({
+    const response = await engine.handle({
       jsonrpc: '2.0',
       id: 1,
       method: 'nonMatchingMethod',
-    })) as JsonRpcFailure;
+    });
     assertIsJsonRpcFailure(response);
 
     expect(response.error).toMatchObject({
@@ -134,11 +122,11 @@ describe('createMethodMiddleware', () => {
     const engine = new JsonRpcEngine();
     engine.push(middleware);
 
-    const response = (await engine.handle({
+    const response = await engine.handle({
       jsonrpc: '2.0',
       id: 1,
       method: 'eth_signTransaction',
-    })) as JsonRpcFailure;
+    });
     assertIsJsonRpcFailure(response);
 
     expect(response.error.message).toBe('Method not supported.');
@@ -149,12 +137,12 @@ describe('createMethodMiddleware', () => {
     const engine = new JsonRpcEngine();
     engine.push(middleware);
 
-    const response = (await engine.handle({
+    const response = await engine.handle({
       jsonrpc: '2.0',
       id: 1,
       method: method1,
       params: [3],
-    })) as JsonRpcFailure;
+    });
     assertIsJsonRpcFailure(response);
 
     expect(response.error.message).toBe('test error');

@@ -2,35 +2,17 @@ import { permissionRpcMethods } from '@metamask/permission-controller';
 import { selectHooks } from '@metamask/snaps-rpc-methods';
 import { hasProperty } from '@metamask/utils';
 import { ethErrors } from 'eth-rpc-errors';
-import { JsonRpcMiddleware } from 'json-rpc-engine';
 import { UNSUPPORTED_RPC_METHODS } from '../../../../shared/constants/network';
 import localHandlers from './handlers';
 
 const allHandlers = [...localHandlers, ...permissionRpcMethods.handlers];
-
-type Handler = (typeof allHandlers)[number];
-type MethodNames = Handler['methodNames'][number];
-type HandlerMap = {
-  [K in MethodNames]: Extract<Handler, { methodNames: K[] }>;
-};
-
-type ExtractHookNames<T extends Record<string, boolean>> = T extends infer U
-  ? U extends { [K in keyof U]: unknown }
-    ? keyof U
-    : never
-  : never;
-type HookName = ExtractHookNames<Handler['hookNames']>;
-export type EveryHook = Record<
-  HookName,
-  (...args: unknown[]) => unknown | Promise<unknown>
->;
 
 const handlerMap = allHandlers.reduce((map, handler) => {
   for (const methodName of handler.methodNames) {
     map[methodName] = handler;
   }
   return map;
-}, {} as Partial<HandlerMap>) as HandlerMap;
+}, {});
 
 const expectedHookNames = new Set(
   allHandlers.flatMap(({ hookNames }) => Object.getOwnPropertyNames(hookNames)),
@@ -42,18 +24,16 @@ const expectedHookNames = new Set(
  * Handlers consume functions that hook into the background, and only depend
  * on their signatures, not e.g. controller internals.
  *
- * @param hooks - Required "hooks" into our
+ * @param  {Record<string, (...args: unknown[]) => unknown | Promise<unknown>>} hooks - Required "hooks" into our
  * controllers.
- * @returns The method middleware function.
+ * @returns {import('json-rpc-engine').JsonRpcMiddleware<unknown, unknown>} The method middleware function.
  */
-export function createMethodMiddleware(
-  hooks: EveryHook,
-): JsonRpcMiddleware<unknown, unknown> {
+export function createMethodMiddleware(hooks) {
   assertExpectedHook(hooks);
 
   return async function methodMiddleware(req, res, next, end) {
     // Reject unsupported methods.
-    if ((UNSUPPORTED_RPC_METHODS as Set<string>).has(req.method)) {
+    if (UNSUPPORTED_RPC_METHODS.has(req.method)) {
       return end(ethErrors.rpc.methodNotSupported());
     }
 
@@ -67,7 +47,7 @@ export function createMethodMiddleware(
           res,
           next,
           end,
-          selectHooks(hooks, hookNames as Record<HookName, true>),
+          selectHooks(hooks, hookNames),
         );
       } catch (error) {
         if (process.env.METAMASK_DEBUG) {
@@ -88,12 +68,10 @@ export function createMethodMiddleware(
 /**
  * Asserts that the hooks object only has all expected hooks and no extraneous ones.
  *
- * @param hooks - Required "hooks" into our controllers.
+ * @param {Record<string, unknown>} hooks - Required "hooks" into our controllers.
  */
-function assertExpectedHook<ExpectedHookNames extends string>(
-  hooks: Record<string, unknown>,
-): asserts hooks is Record<ExpectedHookNames, unknown> {
-  const missingHookNames: string[] = [];
+function assertExpectedHook(hooks) {
+  const missingHookNames = [];
   expectedHookNames.forEach((hookName) => {
     if (!hasProperty(hooks, hookName)) {
       missingHookNames.push(hookName);
