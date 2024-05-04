@@ -131,7 +131,7 @@ describe('Privacy Settings Onboarding View', () => {
     fireEvent.click(toggles[12]); // setPreferenceStub
 
     expect(mockOpenBasicFunctionalityModal).toHaveBeenCalledTimes(1);
-    
+
     fireEvent.click(submitButton);
 
     expect(toggleExternalServicesStub).toHaveBeenCalledTimes(1);
