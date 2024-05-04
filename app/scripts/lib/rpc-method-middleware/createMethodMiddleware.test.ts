@@ -1,16 +1,17 @@
-import {
-  JsonRpcEngine,
-  JsonRpcFailure,
-  JsonRpcMiddleware,
-} from 'json-rpc-engine';
+import { JsonRpcEngine, JsonRpcFailure } from 'json-rpc-engine';
 import {
   assertIsJsonRpcFailure,
   assertIsJsonRpcSuccess,
 } from '@metamask/utils';
-import { createMethodMiddleware } from '.';
+import { HandlerMiddlewareFunction } from '@metamask/permission-controller';
+import { EveryHook, createMethodMiddleware } from '.';
 
 type MockHandlerInterface = {
-  implementation: JsonRpcMiddleware<unknown, number>;
+  implementation: HandlerMiddlewareFunction<
+    Record<'hook1' | 'hook2', () => number>,
+    [number],
+    number
+  >;
   hookNames: Record<string, true>;
   methodNames: string[];
 };
@@ -21,12 +22,21 @@ jest.mock('@metamask/permission-controller', () => ({
 
 jest.mock('./handlers', () => [
   {
-    implementation: (req, res, _next, end) => {
-      if (Array.isArray(req.params) && req.params[0] === 1) {
-        return end(new Error('test error'));
+    implementation: (req, res, _next, end, hooks) => {
+      if (Array.isArray(req.params)) {
+        switch (req.params[0]) {
+          case 1:
+            res.result = hooks.hook1();
+            break;
+          case 2:
+            res.result = hooks.hook2();
+            break;
+          case 3:
+            return end(new Error('test error'));
+          default:
+            throw new Error(`unexpected param "${req.params[0]}"`);
+        }
       }
-
-      res.result = 42;
       return end();
     },
     hookNames: { hook1: true, hook2: true },
@@ -37,10 +47,11 @@ jest.mock('./handlers', () => [
 describe('createMethodMiddleware', () => {
   const method1 = 'method1';
 
-  const getDefaultHooks = () => ({
-    hook1: () => undefined,
-    hook2: () => undefined,
-  });
+  const getDefaultHooks = () =>
+    ({
+      hook1: () => 42,
+      hook2: () => 99,
+    } as unknown as EveryHook);
 
   it('should return a function', () => {
     const middleware = createMethodMiddleware(getDefaultHooks());
@@ -48,8 +59,9 @@ describe('createMethodMiddleware', () => {
   });
 
   it('should throw an error if a required hook is missing', () => {
-    const hooks = { hook1: () => undefined };
+    const hooks = { hook1: () => 42 };
 
+    // @ts-expect-error Intentional destructive testing
     expect(() => createMethodMiddleware(hooks)).toThrow(
       'Missing expected hooks',
     );
@@ -57,9 +69,8 @@ describe('createMethodMiddleware', () => {
 
   it('should throw an error if an extraneous hook is provided', () => {
     const hooks = {
-      hook1: () => undefined,
-      hook2: () => undefined,
-      extraneousHook: () => undefined,
+      ...getDefaultHooks(),
+      extraneousHook: () => 100,
     };
 
     expect(() => createMethodMiddleware(hooks)).toThrow(
@@ -67,7 +78,7 @@ describe('createMethodMiddleware', () => {
     );
   });
 
-  it('should call the handler for the matching method', async () => {
+  it('should call the handler for the matching method (uses hook1)', async () => {
     const middleware = createMethodMiddleware(getDefaultHooks());
     const engine = new JsonRpcEngine();
     engine.push(middleware);
@@ -76,10 +87,27 @@ describe('createMethodMiddleware', () => {
       jsonrpc: '2.0',
       id: 1,
       method: method1,
+      params: [1],
     });
     assertIsJsonRpcSuccess(response);
 
     expect(response.result).toBe(42);
+  });
+
+  it('should call the handler for the matching method (uses hook2)', async () => {
+    const middleware = createMethodMiddleware(getDefaultHooks());
+    const engine = new JsonRpcEngine();
+    engine.push(middleware);
+
+    const response = await engine.handle({
+      jsonrpc: '2.0',
+      id: 1,
+      method: method1,
+      params: [2],
+    });
+    assertIsJsonRpcSuccess(response);
+
+    expect(response.result).toBe(99);
   });
 
   it('should not call the handler for a non-matching method', async () => {
@@ -125,7 +153,7 @@ describe('createMethodMiddleware', () => {
       jsonrpc: '2.0',
       id: 1,
       method: method1,
-      params: [1],
+      params: [3],
     })) as JsonRpcFailure;
     assertIsJsonRpcFailure(response);
 

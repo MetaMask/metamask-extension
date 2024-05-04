@@ -8,12 +8,29 @@ import localHandlers from './handlers';
 
 const allHandlers = [...localHandlers, ...permissionRpcMethods.handlers];
 
+type Handler = (typeof allHandlers)[number];
+type MethodNames = Handler['methodNames'][number];
+type HandlerMap = {
+  [K in MethodNames]: Extract<Handler, { methodNames: K[] }>;
+};
+
+type ExtractHookNames<T extends Record<string, boolean>> = T extends infer U
+  ? U extends { [K in keyof U]: unknown }
+    ? keyof U
+    : never
+  : never;
+type HookName = ExtractHookNames<Handler['hookNames']>;
+export type EveryHook = Record<
+  HookName,
+  (...args: unknown[]) => unknown | Promise<unknown>
+>;
+
 const handlerMap = allHandlers.reduce((map, handler) => {
   for (const methodName of handler.methodNames) {
-    map.set(methodName, handler);
+    map[methodName] = handler;
   }
   return map;
-}, new Map());
+}, {} as Partial<HandlerMap>) as HandlerMap;
 
 const expectedHookNames = new Set(
   allHandlers.flatMap(({ hookNames }) => Object.getOwnPropertyNames(hookNames)),
@@ -30,7 +47,7 @@ const expectedHookNames = new Set(
  * @returns The method middleware function.
  */
 export function createMethodMiddleware(
-  hooks: Record<string, unknown>,
+  hooks: EveryHook,
 ): JsonRpcMiddleware<unknown, unknown> {
   assertExpectedHook(hooks);
 
@@ -40,7 +57,7 @@ export function createMethodMiddleware(
       return end(ethErrors.rpc.methodNotSupported());
     }
 
-    const handler = handlerMap.get(req.method);
+    const handler = handlerMap[req.method];
     if (handler) {
       const { implementation, hookNames } = handler;
       try {
@@ -50,7 +67,7 @@ export function createMethodMiddleware(
           res,
           next,
           end,
-          selectHooks(hooks, hookNames),
+          selectHooks(hooks, hookNames as Record<HookName, true>),
         );
       } catch (error) {
         if (process.env.METAMASK_DEBUG) {
@@ -73,7 +90,9 @@ export function createMethodMiddleware(
  *
  * @param hooks - Required "hooks" into our controllers.
  */
-function assertExpectedHook(hooks: Record<string, unknown>) {
+function assertExpectedHook<ExpectedHookNames extends string>(
+  hooks: Record<string, unknown>,
+): asserts hooks is Record<ExpectedHookNames, unknown> {
   const missingHookNames: string[] = [];
   expectedHookNames.forEach((hookName) => {
     if (!hasProperty(hooks, hookName)) {
