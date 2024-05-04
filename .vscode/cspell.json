@@ -67,6 +67,8 @@
     "pageload",
     "petnames",
     "pipefail",
+    "pixelmatch",
+    "pngjs",
     "quickstart",
     "recompiles",
     "shellcheck",
