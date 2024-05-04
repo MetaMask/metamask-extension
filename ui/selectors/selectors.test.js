@@ -1,6 +1,7 @@
 import { deepClone } from '@metamask/snaps-utils';
 import { ApprovalType, NetworkType } from '@metamask/controller-utils';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import mockState from '../../test/data/mock-state.json';
 import { KeyringType } from '../../shared/constants/keyring';
 import {
@@ -11,6 +12,11 @@ import {
 } from '../../shared/constants/network';
 import { SURVEY_DATE, SURVEY_GMT } from '../helpers/constants/survey';
 import * as selectors from './selectors';
+
+jest.mock('../../app/scripts/lib/util', () => ({
+  ...jest.requireActual('../../app/scripts/lib/util'),
+  getEnvironmentType: jest.fn().mockReturnValue('popup'),
+}));
 
 jest.mock('../../shared/modules/network.utils', () => {
   const actual = jest.requireActual('../../shared/modules/network.utils');
@@ -147,6 +153,158 @@ describe('Selectors', () => {
           'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
         ],
       );
+    });
+  });
+
+  describe('#getNeverShowSwitchedNetworkMessage', () => {
+    it('returns the correct value', () => {
+      expect(
+        selectors.getNeverShowSwitchedNetworkMessage({
+          metamask: { switchedNetworkNeverShowMessage: true },
+        }),
+      ).toStrictEqual(true);
+    });
+  });
+
+  describe('#getSwitchedNetworkDetails', () => {
+    it('returns no details when switchedNetworkDetails is empty', () => {
+      expect(
+        selectors.getSwitchedNetworkDetails({
+          metamask: { switchedNetworkDetails: undefined },
+        }),
+      ).toStrictEqual(null);
+    });
+
+    it('returns network information when valid switchedNetworkDetails are present', () => {
+      const origin = 'portfolio.metamask.io';
+
+      expect(
+        selectors.getSwitchedNetworkDetails({
+          ...mockState,
+          metamask: {
+            ...mockState.metamask,
+            switchedNetworkDetails: {
+              networkClientId:
+                mockState.metamask.networkConfigurations
+                  .testNetworkConfigurationId.id,
+              origin,
+            },
+          },
+        }),
+      ).toStrictEqual({
+        imageUrl: './images/eth_logo.svg',
+        nickname:
+          mockState.metamask.networkConfigurations.testNetworkConfigurationId
+            .nickname,
+        origin,
+      });
+    });
+  });
+
+  describe('#getNumberOfAllUnapprovedTransactionsAndMessages', () => {
+    it('returns no unapproved transactions and messages', () => {
+      expect(
+        selectors.getNumberOfAllUnapprovedTransactionsAndMessages({
+          metamask: {
+            transactions: [],
+            unapprovedMsgs: {},
+          },
+        }),
+      ).toStrictEqual(0);
+    });
+
+    it('returns correct number of unapproved transactions and messages', () => {
+      expect(
+        selectors.getNumberOfAllUnapprovedTransactionsAndMessages({
+          metamask: {
+            providerConfig: {
+              ...mockState.metamask.networkConfigurations
+                .testNetworkConfigurationId,
+              chainId: '0x1',
+              type: 'rpc',
+            },
+            transactions: [
+              {
+                id: 0,
+                chainId: CHAIN_IDS.MAINNET,
+                time: 0,
+                txParams: {
+                  from: '0xAddress',
+                  to: '0xRecipient',
+                },
+                status: TransactionStatus.unapproved,
+              },
+            ],
+            unapprovedMsgs: {
+              1: {
+                id: 1,
+                msgParams: {
+                  from: '0xAddress',
+                  data: '0xData',
+                  origin: 'origin',
+                },
+                time: 1,
+                status: TransactionStatus.unapproved,
+                type: 'eth_sign',
+              },
+            },
+          },
+        }),
+      ).toStrictEqual(2);
+    });
+  });
+
+  describe('#getNetworkToAutomaticallySwitchTo', () => {
+    const SELECTED_ORIGIN = 'https://portfolio.metamask.io';
+    const SELECTED_ORIGIN_NETWORK_ID = 'linea-goerli';
+    const state = {
+      activeTab: {
+        origin: SELECTED_ORIGIN,
+      },
+      metamask: {
+        isUnlocked: true,
+        useRequestQueue: true,
+        selectedTabOrigin: SELECTED_ORIGIN,
+        unapprovedMsgs: [],
+        unapprovedDecryptMsgs: [],
+        unapprovedPersonalMsgs: [],
+        unapprovedEncryptionPublicKeyMsgs: [],
+        unapprovedTypedMessages: [],
+        domains: {
+          [SELECTED_ORIGIN]: SELECTED_ORIGIN_NETWORK_ID,
+        },
+        providerConfig: {
+          ...mockState.metamask.networkConfigurations
+            .testNetworkConfigurationId,
+          chainId: '0x1',
+          type: 'rpc',
+          id: 'mainnet',
+        },
+      },
+    };
+
+    it('should return the network to switch to', () => {
+      process.env.MULTICHAIN = 1;
+      const networkToSwitchTo =
+        selectors.getNetworkToAutomaticallySwitchTo(state);
+      expect(networkToSwitchTo).toBe(SELECTED_ORIGIN_NETWORK_ID);
+      delete process.env.MULTICHAIN;
+    });
+
+    it('should return no network to switch to because we are already on it', () => {
+      process.env.MULTICHAIN = 1;
+      const networkToSwitchTo = selectors.getNetworkToAutomaticallySwitchTo({
+        ...state,
+        metamask: {
+          ...state.metamask,
+          providerConfig: {
+            ...state.metamask.providerConfig,
+            id: 'linea-goerli',
+          },
+        },
+      });
+      expect(networkToSwitchTo).toBe(null);
+      delete process.env.MULTICHAIN;
     });
   });
 
@@ -1199,7 +1357,9 @@ describe('Selectors', () => {
         balance: '0x0',
         pinned: false,
         hidden: false,
-        active: true,
+        active: false,
+        connections: true,
+        lastSelected: undefined,
       },
       {
         address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',

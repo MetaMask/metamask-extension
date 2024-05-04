@@ -25,6 +25,11 @@ export class MMIMainPage {
     await this.activityTab.click();
   }
 
+  async finishOnboarding() {
+    await this.page.getByRole('button', { name: /continue/iu }).click();
+    await this.page.getByRole('button', { name: /continue to wallet/iu }).click();
+  }
+
   async checkLastTransactionStatus(status: string | RegExp) {
     // NOTE: Assumes that transaction is the first one on the activity list
     await expect(
@@ -45,6 +50,13 @@ export class MMIMainPage {
     return (await this.page
       .locator('.test-transaction-meta')
       .first()
+      .getAttribute('data-custodiantransactionid')) as string;
+  }
+
+  async getSecondCustodianTXId() {
+    return (await this.page
+      .locator('.test-transaction-meta')
+      .nth(1)
       .getAttribute('data-custodiantransactionid')) as string;
   }
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   Box,
   ButtonPrimary,
@@ -24,7 +24,6 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import Tooltip from '../../ui/tooltip/tooltip';
-import { getOriginOfCurrentTab } from '../../../selectors/selectors';
 import { getURLHost } from '../../../helpers/utils/util';
 import { addMorePermittedAccounts } from '../../../store/actions';
 import { ConnectAccountsListProps } from './connect-account-modal.types';
@@ -39,15 +38,15 @@ export const ConnectAccountsModalList: React.FC<ConnectAccountsListProps> = ({
   accounts,
   checked,
   isIndeterminate,
+  onAccountsUpdate,
+  activeTabOrigin,
 }) => {
   const t = useI18nContext();
-  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const dispatch = useDispatch();
   return (
     <Modal isOpen onClose={onClose} data-testid="connect-more-accounts">
       <ModalOverlay />
       <ModalContent>
-        {/* Todo: Replace this with i18 text */}
         <ModalHeader
           data-testid="connect-more-accounts-title"
           onClose={onClose}
@@ -104,9 +103,11 @@ export const ConnectAccountsModalList: React.FC<ConnectAccountsListProps> = ({
                 addMorePermittedAccounts(activeTabOrigin, selectedAccounts),
               );
               onClose();
+              onAccountsUpdate();
             }}
             size={ButtonPrimarySize.Lg}
             block
+            disabled={selectedAccounts.length === 0}
           >
             {t('confirm')}
           </ButtonPrimary>

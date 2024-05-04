@@ -132,6 +132,7 @@ const SimulationDetailsLayout: React.FC<{
 }> = ({ inHeader, children }) => (
   <Box
     data-testid="simulation-details-layout"
+    className="simulation-details-layout"
     display={Display.Flex}
     flexDirection={FlexDirection.Column}
     borderRadius={BorderRadius.MD}

@@ -666,9 +666,6 @@
   "busy": {
     "message": "Busy"
   },
-  "buy": {
-    "message": "Buy"
-  },
   "buyAndSell": {
     "message": "Buy & Sell"
   },
@@ -682,6 +679,10 @@
   },
   "buyNow": {
     "message": "Buy Now"
+  },
+  "buyToken": {
+    "message": "Buy $1",
+    "description": "$1 is the token symbol"
   },
   "bytes": {
     "message": "Bytes"
@@ -758,6 +759,9 @@
   },
   "close": {
     "message": "Close"
+  },
+  "closeExtension": {
+    "message": "Close extension"
   },
   "coingecko": {
     "message": "CoinGecko"
@@ -894,6 +898,9 @@
     "message": "$1 can see the account balance, address, activity, and suggest transactions to approve for connected accounts.",
     "description": "$1 is the origin name"
   },
+  "connectedAccountsToast": {
+    "message": "Connected accounts updated"
+  },
   "connectedSites": {
     "message": "Connected sites"
   },
@@ -910,9 +917,6 @@
   },
   "connectedWith": {
     "message": "Connected with"
-  },
-  "connectedaccountsTabKey": {
-    "message": "Connected accounts"
   },
   "connecting": {
     "message": "Connecting..."
@@ -1419,6 +1423,14 @@
   "disconnectThisAccount": {
     "message": "Disconnect this account"
   },
+  "disconnectedAllAccountsToast": {
+    "message": "All accounts disconnected from $1",
+    "description": "$1 is name of the dapp`"
+  },
+  "disconnectedSingleAccountToast": {
+    "message": "$1 disconnected from $2",
+    "description": "$1 is name of the name and $2 represents the dapp name`"
+  },
   "discoverSnaps": {
     "message": "Discover Snaps",
     "description": "Text that links to the Snaps website. Displayed in a banner on Snaps list page in settings."
@@ -1566,14 +1578,17 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Edit speed up gas fee"
   },
+  "enable": {
+    "message": "Enable"
+  },
   "enableAutoDetect": {
     "message": " Enable autodetect"
   },
   "enableFromSettings": {
     "message": " Enable it from Settings."
   },
-  "enableSmartSwaps": {
-    "message": "Enable Smart Swaps"
+  "enableSmartTransactions": {
+    "message": "Enable Smart Transactions"
   },
   "enableSnap": {
     "message": "Enable"
@@ -1745,9 +1760,6 @@
   "failureMessage": {
     "message": "Something went wrong, and we were unable to complete the action"
   },
-  "faqAndRiskDisclosures": {
-    "message": "FAQ and Risk Disclosures"
-  },
   "fast": {
     "message": "Fast"
   },
@@ -1825,6 +1837,13 @@
   },
   "functionType": {
     "message": "Function type"
+  },
+  "fundYourWallet": {
+    "message": "Fund your wallet"
+  },
+  "fundYourWalletDescription": {
+    "message": "Get started by adding some $1 to your wallet.",
+    "description": "$1 is the token symbol"
   },
   "gas": {
     "message": "Gas"
@@ -1908,6 +1927,14 @@
   },
   "genericExplorerView": {
     "message": "View account on $1"
+  },
+  "getStartedWithNFTs": {
+    "message": "Get $1 to buy NFTs",
+    "description": "$1 is the token symbol"
+  },
+  "getStartedWithNFTsDescription": {
+    "message": "Get started with NFTs by adding some $1 to your wallet.",
+    "description": "$1 is the token symbol"
   },
   "globalTitle": {
     "message": "Global menu"
@@ -2227,6 +2254,9 @@
   "interactingWith": {
     "message": "Interacting with"
   },
+  "introducingSmartTransactions": {
+    "message": "Introducing Smart Transactions"
+  },
   "invalidAddress": {
     "message": "Invalid address"
   },
@@ -2374,6 +2404,9 @@
   "learnMoreUpperCase": {
     "message": "Learn more"
   },
+  "learnMoreUpperCaseWithDot": {
+    "message": "Learn more."
+  },
   "learnScamRisk": {
     "message": "scams and security risks."
   },
@@ -2515,9 +2548,6 @@
   "makeSureNoOneWatching": {
     "message": "Make sure nobody is looking",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
-  "manageInSettings": {
-    "message": "Manage in settings"
   },
   "max": {
     "message": "Max"
@@ -2877,9 +2907,6 @@
   "nftDisclaimer": {
     "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes gets changed by the marketplace on which the NFT was minted."
   },
-  "nftLearnMore": {
-    "message": "Learn more about NFTs"
-  },
   "nftOptions": {
     "message": "NFT Options"
   },
@@ -2945,6 +2972,9 @@
   "noWebcamFoundTitle": {
     "message": "Webcam not found"
   },
+  "nonCustodialAccounts": {
+    "message": "MetaMask Institutional allows you to use non-custodial accounts, if you plan to use these accounts backup the Secret Recovery Phrase."
+  },
   "nonce": {
     "message": "Nonce"
   },
@@ -2968,6 +2998,9 @@
   },
   "notEnoughGas": {
     "message": "Not enough gas"
+  },
+  "notRightNow": {
+    "message": "Not right now"
   },
   "note": {
     "message": "Note"
@@ -3061,6 +3094,14 @@
   },
   "notificationsEmptyText": {
     "message": "This is where you can find notifications from your installed snaps."
+  },
+  "notificationsFeatureToggle": {
+    "message": "Enable Wallet Notifications",
+    "description": "Experimental feature title"
+  },
+  "notificationsFeatureToggleDescription": {
+    "message": "This enables wallet notifications like send/receive funds or nfts and feature announcements.",
+    "description": "Description of the experimental notifications feature"
   },
   "notificationsHeader": {
     "message": "Notifications"
@@ -3755,6 +3796,9 @@
   "receive": {
     "message": "Receive"
   },
+  "receiveTokensCamelCase": {
+    "message": "Receive tokens"
+  },
   "recipientAddressPlaceholder": {
     "message": "Enter public address (0x) or ENS name"
   },
@@ -3838,6 +3882,9 @@
   },
   "removeNFT": {
     "message": "Remove NFT"
+  },
+  "removeNftErrorMessage": {
+    "message": "We could not remove this NFT."
   },
   "removeNftMessage": {
     "message": "NFT was successfully removed!"
@@ -4371,28 +4418,58 @@
   "smartContracts": {
     "message": "Smart contracts"
   },
-  "smartSwaps": {
-    "message": "Smart Swaps"
-  },
-  "smartSwapsAreHere": {
-    "message": "Smart Swaps are here!"
-  },
-  "smartSwapsDescription": {
-    "message": "MetaMask Swaps just got a whole lot smarter! Enabling Smart Swaps will allow MetaMask to programmatically optimize your Swap to help:"
-  },
-  "smartSwapsDescription2": {
-    "message": "*Smart Swaps will submit your transaction privately. You can opt-out in advanced settings at any time. To learn more about Smart Swaps, read our $1.",
-    "description": "$1 is an external link to FAQ and Risk Disclosures"
-  },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Not enough funds for a smart swap."
   },
   "smartSwapsErrorUnavailable": {
     "message": "Smart Swaps are temporarily unavailable."
   },
-  "smartSwapsTooltip": {
-    "message": "Simulate transactions before submitting to decrease transaction costs and reduce failures. To learn more, read our $1",
-    "description": "$1 is an external link to FAQ and Risk Disclosures"
+  "smartTransactionCancelled": {
+    "message": "Your transaction was canceled"
+  },
+  "smartTransactionCancelledDescription": {
+    "message": "Your transaction couldn't be completed, so it was canceled to save you from paying unnecessary gas fees."
+  },
+  "smartTransactionError": {
+    "message": "Your transaction failed"
+  },
+  "smartTransactionErrorDescription": {
+    "message": "Sudden market changes can cause failures. If the problem continues, reach out to MetaMask customer support."
+  },
+  "smartTransactionPending": {
+    "message": "Submitting your transaction"
+  },
+  "smartTransactionSuccess": {
+    "message": "Your transaction is complete"
+  },
+  "smartTransactionTakingTooLong": {
+    "message": "Sorry for the wait"
+  },
+  "smartTransactionTakingTooLongDescription": {
+    "message": "If your transaction is not finalized within $1, it will be canceled and you will not be charged for gas.",
+    "description": "$1 is remaining time in seconds"
+  },
+  "smartTransactions": {
+    "message": "Smart Transactions"
+  },
+  "smartTransactionsBenefit1": {
+    "message": "82% fewer failed transactions"
+  },
+  "smartTransactionsBenefit2": {
+    "message": "Transaction protection"
+  },
+  "smartTransactionsBenefit3": {
+    "message": "Real-time updates"
+  },
+  "smartTransactionsDescription": {
+    "message": "Unlock the safest, most reliable, and easiest transaction experience - a smarter way to navigate web3."
+  },
+  "smartTransactionsDescription2": {
+    "message": "Millions of dollars are lost every month due to failed transactions & frontrunning. Smart Transactions fixes this."
+  },
+  "smartTransactionsDescription3": {
+    "message": "Right now, Smart Transactions are only available on ETH Mainnet. You can turn them off at any time in settings. $1",
+    "description": "$1 is an external link to learn more about Smart Transactions"
   },
   "snapAccountCreated": {
     "message": "Account created"
@@ -4705,6 +4782,14 @@
   "stake": {
     "message": "Stake"
   },
+  "startYourJourney": {
+    "message": "Start your journey with $1",
+    "description": "$1 is the token symbol"
+  },
+  "startYourJourneyDescription": {
+    "message": "Get started with web3 by adding some $1 to your wallet.",
+    "description": "$1 is the token symbol"
+  },
   "stateLogError": {
     "message": "Error in retrieving state logs."
   },
@@ -4760,18 +4845,6 @@
   "strong": {
     "message": "Strong"
   },
-  "stxBenefit1": {
-    "message": "Minimize transaction costs"
-  },
-  "stxBenefit2": {
-    "message": "Reduce transaction failures"
-  },
-  "stxBenefit3": {
-    "message": "Eliminate stuck transactions"
-  },
-  "stxBenefit4": {
-    "message": "Prevent front-running"
-  },
   "stxCancelled": {
     "message": "Swap would have failed"
   },
@@ -4781,12 +4854,19 @@
   "stxCancelledSubDescription": {
     "message": "Try your swap again. We’ll be here to protect you against similar risks next time."
   },
+  "stxEstimatedCompletion": {
+    "message": "Estimated completion in < $1",
+    "description": "$1 is remeaning time in minutes and seconds, e.g. 0:10"
+  },
   "stxFailure": {
     "message": "Swap failed"
   },
   "stxFailureDescription": {
     "message": "Sudden market changes can cause failures. If the problem persists, please reach out to $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
+  },
+  "stxOptInDescription": {
+    "message": "Turn on Smart Transactions for more reliable and secure transactions, and adjustable fees on ETH Mainnet. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Privately submitting your Swap..."
@@ -5276,6 +5356,13 @@
   "switchToThisAccount": {
     "message": "Switch to this account"
   },
+  "switchedNetworkToastDecline": {
+    "message": "Don't show again"
+  },
+  "switchedNetworkToastMessage": {
+    "message": "$1 is now active on $2",
+    "description": "$1 represents the account name, $2 represents the network name"
+  },
   "switchedTo": {
     "message": "You're now using"
   },
@@ -5738,6 +5825,9 @@
   "view": {
     "message": "View"
   },
+  "viewActivity": {
+    "message": "View activity"
+  },
   "viewAllDetails": {
     "message": "View all details"
   },
@@ -5761,7 +5851,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "View $1 at $2",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "View $1 on Etherscan",
@@ -5772,6 +5862,9 @@
   },
   "viewOnOpensea": {
     "message": "View on Opensea"
+  },
+  "viewTransaction": {
+    "message": "View  transaction"
   },
   "viewinCustodianApp": {
     "message": "View in custodian app"

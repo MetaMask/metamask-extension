@@ -3480,12 +3480,6 @@
   "smartContracts": {
     "message": "Kontrak cerdas"
   },
-  "smartSwapsAreHere": {
-    "message": "Smart Swap telah hadir!"
-  },
-  "smartSwapsDescription": {
-    "message": "MetaMask Swaps kini semakin pintar! Mengaktifkan Smart Swap akan mengizinkan MetaMask mengoptimalkan Swap secara terprogram untuk membantu:"
-  },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Dana tidak cukup untuk pertukaran cerdas."
   },
@@ -3764,18 +3758,6 @@
   },
   "strong": {
     "message": "Kuat"
-  },
-  "stxBenefit1": {
-    "message": "Meminimalkan biaya transaksi"
-  },
-  "stxBenefit2": {
-    "message": "Kurangi potensi kegagalan transaksi \t"
-  },
-  "stxBenefit3": {
-    "message": "Hapus transaksi yang macet"
-  },
-  "stxBenefit4": {
-    "message": "Cegah perilaku front running \t"
   },
   "stxCancelled": {
     "message": "Pertukaran akan gagal"
@@ -4707,7 +4689,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "Lihat $1 di $2",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "Lihat $1 di Etherscan",
