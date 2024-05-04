@@ -27,7 +27,7 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_PROD_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/5.0.3/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/5.0.4/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
     # Main build uses the default browser manifest
     manifestOverrides: false
@@ -64,7 +64,7 @@ buildTypes:
       - SEGMENT_FLASK_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/5.0.3/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/5.0.4/index.html
       - SUPPORT_LINK: https://metamask-flask.zendesk.com/hc
       - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
@@ -85,7 +85,7 @@ buildTypes:
       - SEGMENT_FLASK_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/5.0.3/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/5.0.4/index.html
       - SUPPORT_LINK: https://metamask-flask.zendesk.com/hc
       - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
@@ -108,7 +108,7 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_MMI_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/5.0.3/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/5.0.4/index.html
       - MMI_CONFIGURATION_SERVICE_URL: https://configuration.metamask-institutional.io/v2/configuration/default
       - SUPPORT_LINK: https://mmi-support.metamask.io/hc/en-us
       - SUPPORT_REQUEST_LINK: https://mmi-support.metamask.io/hc/en-us/requests/new
@@ -144,7 +144,6 @@ features:
     env:
       - BLOCKAID_FILE_CDN: static.cx.metamask.io/api/v1/confirmations/ppom
       - BLOCKAID_PUBLIC_KEY: 066ad3e8af5583385e312c156d238055215d5f25247c1e91055afa756cb98a88
-  conf-redesign:
   ###
   # Build Type code extensions. Things like different support links, warning pages, banners
   ###
@@ -197,6 +196,14 @@ env:
 
   # This variable is read by Trezor's source and breaks build if not included
   - ASSET_PREFIX: null
+
+  ###
+  # Notifications Feature
+  ###
+  - AUTH_API: https://authentication.api.cx.metamask.io
+  - OIDC_API: https://oidc.api.cx.metamask.io
+  - OIDC_CLIENT_ID: 1132f10a-b4e5-4390-a5f2-d9c6022db564
+  - OIDC_GRANT_TYPE: urn:ietf:params:oauth:grant-type:jwt-bearer
 
   ###
   # API keys to 3rd party services
@@ -263,6 +270,12 @@ env:
   - MULTICHAIN: ''
   # Determines if feature flagged Multichain Transactions should be used
   - TRANSACTION_MULTICHAIN: ''
+
+  # Used to enable confirmation redesigned pages
+  - ENABLE_CONFIRMATION_REDESIGN: ''
+
+    # Enables the notifications feature within the build:
+  - NOTIFICATIONS: ''
 
   ###
   # Meta variables

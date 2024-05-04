@@ -3480,12 +3480,6 @@
   "smartContracts": {
     "message": "智能合约"
   },
-  "smartSwapsAreHere": {
-    "message": "智能兑换已推出！"
-  },
-  "smartSwapsDescription": {
-    "message": "MetaMask Swaps 变得更加智能！启用智能兑换使得 MetaMask 在编程方面让您的兑换体验更加优化，有助于："
-  },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "没有足够的资金进行智能兑换。"
   },
@@ -3764,18 +3758,6 @@
   },
   "strong": {
     "message": "强"
-  },
-  "stxBenefit1": {
-    "message": "将交易成本减至最低"
-  },
-  "stxBenefit2": {
-    "message": "减少交易失败"
-  },
-  "stxBenefit3": {
-    "message": "消除卡住的交易"
-  },
-  "stxBenefit4": {
-    "message": "防止抢先交易"
   },
   "stxCancelled": {
     "message": "交换就会失败"
@@ -4707,7 +4689,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "在 $2 上查看 $1",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "在 Etherscan 上查看 $1",

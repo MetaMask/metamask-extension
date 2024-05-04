@@ -187,16 +187,14 @@ export default class SecurityTab extends PureComponent {
 
   renderSecurityAlertsToggle() {
     const { t } = this.context;
-
     const { securityAlertsEnabled } = this.props;
 
     return (
       <>
-        <div
-          ref={this.settingsRefs[15]}
-          className="settings-page__security-tab-sub-header"
-        >
-          <span>{t('securityAlerts')}</span>
+        <div ref={this.settingsRefs[15]}>
+          <span className="settings-page__security-tab-sub-header">
+            {t('securityAlerts')}
+          </span>
         </div>
         <div className="settings-page__content-padded">
           <Box

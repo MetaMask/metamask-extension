@@ -26,6 +26,8 @@ import {
   updateTransaction,
   updateEditableParams,
   dismissOpenSeaToBlockaidBanner,
+  setSwapsFeatureFlags,
+  fetchSmartTransactionsLiveness,
 } from '../../../store/actions';
 import { isBalanceSufficient } from '../send/send.utils';
 import { shortenAddress, valuesFor } from '../../../helpers/utils/util';
@@ -58,6 +60,10 @@ import {
   getIsNetworkSupportedByBlockaid,
   getSelectedNetworkClientId,
 } from '../../../selectors';
+import {
+  getCurrentChainSupportsSmartTransactions,
+  getSmartTransactionsOptInStatus,
+} from '../../../../shared/modules/selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
   isAddressLedger,
@@ -161,6 +167,9 @@ const mapStateToProps = (state, ownProps) => {
     data,
   } = (transaction && transaction.txParams) || txParams;
   const accounts = getMetaMaskAccounts(state);
+  const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(state);
+  const currentChainSupportsSmartTransactions =
+    getCurrentChainSupportsSmartTransactions(state);
 
   const transactionData = parseStandardTokenTransactionData(data);
   const tokenToAddress = getTokenAddressParam(transactionData);
@@ -341,6 +350,8 @@ const mapStateToProps = (state, ownProps) => {
     isUserOpContractDeployError,
     useMaxValue,
     maxValue,
+    smartTransactionsOptInStatus,
+    currentChainSupportsSmartTransactions,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     accountType,
     isNoteToTraderSupported,
@@ -397,6 +408,12 @@ export const mapDispatchToProps = (dispatch) => {
     },
     updateTransactionValue: (id, value) => {
       dispatch(updateEditableParams(id, { value }));
+    },
+    setSwapsFeatureFlags: (swapsFeatureFlags) => {
+      dispatch(setSwapsFeatureFlags(swapsFeatureFlags));
+    },
+    fetchSmartTransactionsLiveness: () => {
+      dispatch(fetchSmartTransactionsLiveness());
     },
     getNextNonce: () => dispatch(getNextNonce()),
     setDefaultHomeActiveTabName: (tabName) =>

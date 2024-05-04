@@ -18,12 +18,10 @@ const supportContactUs =
   'https://mmi-support.metamask.io/hc/en-us/requests/new';
 const mmiHomePage = 'https://metamask.io/institutions/';
 const privacyAndPolicy = 'https://consensys.io/privacy-policy';
-const hwWalletPrivacyAndSecurity =
-  'https://support.metamask.io/hc/en-us/articles/4408552261275';
 const openSeaTermsOfUse = 'https://opensea.io/securityproviderterms';
 const metamaskAttributions = 'https://metamask.io/attributions/';
 const termsOfUse = 'https://consensys.io/terms-of-use';
-const learnMoreBlockaid = 'https://support.metamask.io/hc/en-us/articles/19878220833947-How-to-turn-on-Blockaid-security-alerts';
+const learnMoreArticles = 'https://support.metamask.io/hc/en-us/articles';
 
 test.describe('MMI Navigation', () => {
   test('MMI full navigation links', async ({ context }) => {
@@ -56,6 +54,8 @@ test.describe('MMI Navigation', () => {
     const mainPage = new MMIMainPage(
       await getPageAndCloseRepeated(context, 'home.html'),
     );
+
+    await mainPage.finishOnboarding();
 
     // Check main page links
     await checkLinkURL(
@@ -122,7 +122,7 @@ test.describe('MMI Navigation', () => {
       context,
       mainMenuPage.page,
       'learn more',
-      hwWalletPrivacyAndSecurity,
+      learnMoreArticles,
     );
 
     await mainMenuPage.selectSettings('Security & privacy');
@@ -136,7 +136,7 @@ test.describe('MMI Navigation', () => {
       context,
       mainMenuPage.page,
       'requests. Learn more',
-      learnMoreBlockaid,
+      learnMoreArticles,
     );
 
     await mainMenuPage.selectSettings('Experimental');

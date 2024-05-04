@@ -3480,12 +3480,6 @@
   "smartContracts": {
     "message": "Akıllı sözleşmeler"
   },
-  "smartSwapsAreHere": {
-    "message": "Akıllı Swap'lar burada!"
-  },
-  "smartSwapsDescription": {
-    "message": "MetaMask Swap işlemleri artık çok daha akıllı! Akıllı Swap'ları etkinleştirmek, MetaMask'in aşağıdakilere yardımcı olmak için Swap'ini programlı olarak optimize etmesine olanak tanır:"
-  },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Akıllı swap için yeterli para yok."
   },
@@ -3764,18 +3758,6 @@
   },
   "strong": {
     "message": "Güçlü"
-  },
-  "stxBenefit1": {
-    "message": "İşlem maliyetlerini en aza indir"
-  },
-  "stxBenefit2": {
-    "message": "İşlem hatalarını azalt"
-  },
-  "stxBenefit3": {
-    "message": "Sıkışmış işlemleri ortadan kaldır"
-  },
-  "stxBenefit4": {
-    "message": "Önden çalıştırmayı engelle"
   },
   "stxCancelled": {
     "message": "Swap işlemi başarısız olurdu"
@@ -4707,7 +4689,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "$1 ögesini $2 üzerinde görüntüle",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "Etherscan'de $1 görüntüle",

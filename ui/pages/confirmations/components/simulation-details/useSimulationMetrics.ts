@@ -206,6 +206,8 @@ function getSensitiveProperties(changes: BalanceChange[], prefix: string) {
   return getPrefixProperties({ total_value: totalValue }, prefix);
 }
 
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getPrefixProperties(properties: Record<string, any>, prefix: string) {
   return Object.entries(properties).reduce(
     (acc, [key, value]) => ({

@@ -3480,12 +3480,6 @@
   "smartContracts": {
     "message": "スマートコントラクト"
   },
-  "smartSwapsAreHere": {
-    "message": "スマートスワップの登場です！"
-  },
-  "smartSwapsDescription": {
-    "message": "MetaMask Swapsがはるかに賢くなりました！スマートスワップを有効にすると、MetaMaskがプログラムに従ってスワップを最適化できるようになるため、以下のようなメリットがあります。"
-  },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "スマートスワップに必要な資金が不足しています。"
   },
@@ -3764,18 +3758,6 @@
   },
   "strong": {
     "message": "強"
-  },
-  "stxBenefit1": {
-    "message": "トランザクションコストを最小化"
-  },
-  "stxBenefit2": {
-    "message": "トランザクションの失敗数を低減"
-  },
-  "stxBenefit3": {
-    "message": "トランザクションの停滞を解消"
-  },
-  "stxBenefit4": {
-    "message": "フロントランニングを防止"
   },
   "stxCancelled": {
     "message": "スワップが失敗するところでした"
@@ -4707,7 +4689,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "$1を$2で表示",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "$1をEtherscanで表示",
