@@ -11,11 +11,13 @@ function useConfirmationRecipientInfo() {
   const currentConfirmation = useSelector(
     currentConfirmationSelector,
   ) as Confirmation;
+  const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
+
+  const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
 
   let senderAddress, senderName;
   if (currentConfirmation) {
     const { from } = getConfirmationSender(currentConfirmation);
-    const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
     const fromAccount = getAccountByAddress(allAccounts, from);
 
     senderAddress = from;

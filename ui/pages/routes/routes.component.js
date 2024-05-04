@@ -130,6 +130,7 @@ import {
   Box,
 } from '../../components/component-library';
 import { ToggleIpfsModal } from '../../components/app/nft-default-image/toggle-ipfs-modal';
+import { BasicConfigurationModal } from '../../components/app/basic-configuration-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal';
 ///: END:ONLY_INCLUDE_IF
@@ -139,6 +140,15 @@ import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/Dep
 import { getURLHost } from '../../helpers/utils/util';
 import { BorderColor } from '../../helpers/constants/design-system';
 import { MILLISECOND } from '../../../shared/constants/time';
+import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/multichain-meta-fox-logo';
+
+const isConfirmTransactionRoute = (pathname) =>
+  Boolean(
+    matchPath(pathname, {
+      path: CONFIRM_TRANSACTION_ROUTE,
+      exact: false,
+    }),
+  );
 
 export default class Routes extends Component {
   static propTypes = {
@@ -184,6 +194,7 @@ export default class Routes extends Component {
     isImportNftsModalOpen: PropTypes.bool.isRequired,
     hideImportNftsModal: PropTypes.func.isRequired,
     isIpfsModalOpen: PropTypes.bool.isRequired,
+    isBasicConfigurationModalOpen: PropTypes.bool.isRequired,
     hideIpfsModal: PropTypes.func.isRequired,
     isImportTokensModalOpen: PropTypes.bool.isRequired,
     hideImportTokensModal: PropTypes.func.isRequired,
@@ -601,7 +612,11 @@ export default class Routes extends Component {
       }),
     );
 
-    return isHandlingPermissionsRequest || isHandlingAddEthereumChainRequest;
+    return (
+      isHandlingPermissionsRequest ||
+      isHandlingAddEthereumChainRequest ||
+      isConfirmTransactionRoute(this.pathname)
+    );
   }
 
   showOnboardingHeader() {
@@ -653,6 +668,7 @@ export default class Routes extends Component {
       isImportNftsModalOpen,
       hideImportNftsModal,
       isIpfsModalOpen,
+      isBasicConfigurationModalOpen,
       hideIpfsModal,
       hideImportTokensModal,
       hideDeprecatedNetworkModal,
@@ -731,6 +747,7 @@ export default class Routes extends Component {
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
         {!this.hideAppHeader() && <AppHeader location={location} />}
+        {isConfirmTransactionRoute(this.pathname) && <MultichainMetaFoxLogo />}
         {this.showOnboardingHeader() && <OnboardingAppHeader />}
         {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -752,6 +769,7 @@ export default class Routes extends Component {
         {isIpfsModalOpen ? (
           <ToggleIpfsModal onClose={() => hideIpfsModal()} />
         ) : null}
+        {isBasicConfigurationModalOpen ? <BasicConfigurationModal /> : null}
         {isImportTokensModalOpen ? (
           <ImportTokensModal onClose={() => hideImportTokensModal()} />
         ) : null}
