@@ -195,6 +195,24 @@ describe('NetworkForm Component', () => {
     ).toBeInTheDocument();
   });
 
+  it('should convert rpcUrl field to lowercase when not in input mode', async () => {
+    const networkDisplay = {
+      ...propNetworkDisplay,
+      selectedNetwork: {
+        ...propNetworkDisplay.suggestedNetwork,
+        rpcUrl: 'http://LOCALHOST:8545',
+        viewOnly: true,
+      },
+    };
+    const { getByDisplayValue } = renderComponent(networkDisplay);
+
+    expect(
+      getByDisplayValue(
+        propNetworkDisplay.selectedNetwork.rpcUrl.toLowerCase(),
+      ),
+    ).toBeInTheDocument();
+  });
+
   it('should validate chain id field correctly', async () => {
     renderComponent(propNewNetwork);
     const chainIdField = screen.getByRole('textbox', { name: 'Chain ID' });
