@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Switch, Route, useHistory } from 'react-router-dom';
+
+import { sumHexes } from '../../../../shared/modules/conversion.utils';
 import {
   CONFIRM_APPROVE_PATH,
   CONFIRM_INCREASE_ALLOWANCE_PATH,
@@ -24,8 +26,10 @@ import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/conf
 import { useAssetDetails } from '../hooks/useAssetDetails';
 
 export default function ConfirmTokenTransactionSwitch({ transaction }) {
-  const { txParams: { data, to: tokenAddress, from: userAddress } = {} } =
-    transaction;
+  const {
+    txParams: { data, to: tokenAddress, from: userAddress } = {},
+    layer1GasFee,
+  } = transaction;
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -171,7 +175,10 @@ export default function ConfirmTokenTransactionSwitch({ transaction }) {
             transaction={transaction}
             ethTransactionTotal={ethTransactionTotal}
             fiatTransactionTotal={fiatTransactionTotal}
-            hexMaximumTransactionFee={hexMaximumTransactionFee}
+            hexMaximumTransactionFee={sumHexes(
+              hexMaximumTransactionFee,
+              layer1GasFee ?? 0x0,
+            )}
           />
         )}
       />
@@ -212,5 +219,6 @@ ConfirmTokenTransactionSwitch.propTypes = {
       to: PropTypes.string,
       from: PropTypes.string,
     }),
+    layer1GasFee: PropTypes.number,
   }),
 };

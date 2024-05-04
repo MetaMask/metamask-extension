@@ -82,10 +82,13 @@ export default class SecurityTab extends PureComponent {
     setUseAddressBarEnsResolution: PropTypes.func.isRequired,
     useExternalNameSources: PropTypes.bool.isRequired,
     setUseExternalNameSources: PropTypes.func.isRequired,
+    setBasicFunctionalityModalOpen: PropTypes.func.isRequired,
     setUseTransactionSimulations: PropTypes.func.isRequired,
     useTransactionSimulations: PropTypes.bool.isRequired,
     petnamesEnabled: PropTypes.bool.isRequired,
     securityAlertsEnabled: PropTypes.bool,
+    useExternalServices: PropTypes.bool,
+    toggleExternalServices: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     setSecurityAlertsEnabled: PropTypes.func,
     ///: END:ONLY_INCLUDE_IF
@@ -942,11 +945,57 @@ export default class SecurityTab extends PureComponent {
   }
   ///: END:ONLY_INCLUDE_IF
 
+  renderUseExternalServices() {
+    const { t } = this.context;
+    const {
+      useExternalServices,
+      toggleExternalServices,
+      setBasicFunctionalityModalOpen,
+    } = this.props;
+
+    return (
+      <Box
+        ref={this.settingsRefs[3]}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+        data-testid="advanced-setting-show-testnet-conversion"
+      >
+        <div className="settings-page__content-item">
+          <span>{t('basicConfigurationLabel')}</span>
+          <div className="settings-page__content-description">
+            {t('basicConfigurationDescription')}
+          </div>
+        </div>
+
+        <div className="settings-page__content-item-col">
+          <ToggleButton
+            value={useExternalServices}
+            onToggle={() => {
+              if (useExternalServices) {
+                // If we are going to be disabling external services, then we want to show the "turn off" warning modal
+                setBasicFunctionalityModalOpen();
+              } else {
+                toggleExternalServices(true);
+              }
+            }}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
+        </div>
+      </Box>
+    );
+  }
+
   render() {
     const { warning, petnamesEnabled } = this.props;
 
     return (
       <div className="settings-page__body">
+        {this.renderUseExternalServices()}
+
         {warning && <div className="settings-tab__error">{warning}</div>}
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('security')}

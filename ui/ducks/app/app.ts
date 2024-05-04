@@ -75,6 +75,8 @@ type AppState = {
   smartTransactionsErrorMessageDismissed: boolean;
   ledgerWebHidConnectedStatus: WebHIDConnectedStatuses;
   ledgerTransportStatus: HardwareTransportStates;
+  showBasicFunctionalityModal: boolean;
+  externalServicesOnboardingToggleState: boolean;
   newNftAddedMessage: string;
   removeNftMessage: string;
   newNetworkAddedName: string;
@@ -116,6 +118,8 @@ const initialState: AppState = {
   networkDropdownOpen: false,
   importNftsModal: { open: false },
   showIpfsModalOpen: false,
+  showBasicFunctionalityModal: false,
+  externalServicesOnboardingToggleState: true,
   keyringRemovalSnapModal: {
     snapName: '',
     result: 'none',
@@ -207,6 +211,29 @@ export default function reduceApp(
         importNftsModal: {
           open: false,
         },
+      };
+
+    case actionConstants.SHOW_BASIC_FUNCTIONALITY_MODAL_OPEN:
+      return {
+        ...appState,
+        showBasicFunctionalityModal: true,
+      };
+
+    case actionConstants.SHOW_BASIC_FUNCTIONALITY_MODAL_CLOSE:
+      return {
+        ...appState,
+        showBasicFunctionalityModal: false,
+      };
+
+    case actionConstants.ONBOARDING_TOGGLE_BASIC_FUNCTIONALITY_ON:
+      return {
+        ...appState,
+        externalServicesOnboardingToggleState: true,
+      };
+    case actionConstants.ONBOARDING_TOGGLE_BASIC_FUNCTIONALITY_OFF:
+      return {
+        ...appState,
+        externalServicesOnboardingToggleState: false,
       };
 
     case actionConstants.SHOW_IPFS_MODAL_OPEN:
@@ -552,6 +579,30 @@ export default function reduceApp(
 export function hideWhatsNewPopup(): Action {
   return {
     type: actionConstants.HIDE_WHATS_NEW_POPUP,
+  };
+}
+
+export function openBasicFunctionalityModal(): Action {
+  return {
+    type: actionConstants.SHOW_BASIC_FUNCTIONALITY_MODAL_OPEN,
+  };
+}
+
+export function hideBasicFunctionalityModal(): Action {
+  return {
+    type: actionConstants.SHOW_BASIC_FUNCTIONALITY_MODAL_CLOSE,
+  };
+}
+
+export function onboardingToggleBasicFunctionalityOn(): Action {
+  return {
+    type: actionConstants.ONBOARDING_TOGGLE_BASIC_FUNCTIONALITY_ON,
+  };
+}
+
+export function onboardingToggleBasicFunctionalityOff(): Action {
+  return {
+    type: actionConstants.ONBOARDING_TOGGLE_BASIC_FUNCTIONALITY_OFF,
   };
 }
 
