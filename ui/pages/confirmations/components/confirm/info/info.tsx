@@ -1,12 +1,12 @@
+import { TransactionType } from '@metamask/transaction-controller';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-
-import { TransactionType } from '@metamask/transaction-controller';
-
 import { currentConfirmationSelector } from '../../../../../selectors';
+import { SignatureRequestType } from '../../../types/confirm';
+import ContractInteractionInfo from './contract-interaction/contract-interaction';
 import PersonalSignInfo from './personal-sign/personal-sign';
-import TypedSignInfo from './typed-sign/typed-sign';
 import TypedSignV1Info from './typed-sign-v1/typed-sign-v1';
+import TypedSignInfo from './typed-sign/typed-sign';
 
 const Info: React.FC = () => {
   const currentConfirmation = useSelector(currentConfirmationSelector);
@@ -15,12 +15,14 @@ const Info: React.FC = () => {
     () => ({
       [TransactionType.personalSign]: () => PersonalSignInfo,
       [TransactionType.signTypedData]: () => {
-        const { version } = currentConfirmation?.msgParams ?? {};
+        const { version } =
+          (currentConfirmation as SignatureRequestType)?.msgParams ?? {};
         if (version === 'V1') {
           return TypedSignV1Info;
         }
         return TypedSignInfo;
       },
+      [TransactionType.contractInteraction]: () => ContractInteractionInfo,
     }),
     [currentConfirmation],
   );

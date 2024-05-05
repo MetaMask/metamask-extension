@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-
 import { ApprovalRequest } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
+import { TransactionType } from '@metamask/transaction-controller';
 import { Json } from '@metamask/utils';
-
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import {
+  getRedesignedConfirmationsEnabled,
   latestPendingConfirmationSelector,
   pendingConfirmationsSelector,
   unconfirmedTransactionsHashSelector,
@@ -27,9 +27,15 @@ const useCurrentConfirmation = () => {
   );
   const [currentConfirmation, setCurrentConfirmation] =
     useState<Record<string, unknown>>();
+  const redesignedConfirmationsEnabled = useSelector(
+    getRedesignedConfirmationsEnabled,
+  );
 
   useEffect(() => {
-    if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
+    if (
+      !process.env.ENABLE_CONFIRMATION_REDESIGN ||
+      !redesignedConfirmationsEnabled
+    ) {
       return;
     }
     let pendingConfirmation: Approval | undefined;
@@ -57,7 +63,8 @@ const useCurrentConfirmation = () => {
       }
       if (
         pendingConfirmation.type !== ApprovalType.PersonalSign &&
-        pendingConfirmation.type !== ApprovalType.EthSignTypedData
+        pendingConfirmation.type !== ApprovalType.EthSignTypedData &&
+        unconfirmedTransaction.type !== TransactionType.contractInteraction
       ) {
         setCurrentConfirmation(undefined);
         return;

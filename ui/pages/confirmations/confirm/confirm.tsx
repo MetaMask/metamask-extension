@@ -14,13 +14,14 @@ import syncConfirmPath from '../hooks/syncConfirmPath';
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { BlockaidAlert } from '../components/confirm/blockaid-alert';
 ///: END:ONLY_INCLUDE_IF
+import { LedgerInfo } from '../components/confirm/ledger-info';
 
 const Confirm = () => {
   setCurrentConfirmation();
   syncConfirmPath();
 
   return (
-    <Page>
+    <Page className="confirm_wrapper">
       <Nav />
       <Header />
       {
@@ -29,6 +30,7 @@ const Confirm = () => {
         ///: END:ONLY_INCLUDE_IF
       }
       <ScrollToBottom>
+        <LedgerInfo />
         {
           // todo: section below is to be removed once new alerts implementation is there
           ///: BEGIN:ONLY_INCLUDE_IF(blockaid)

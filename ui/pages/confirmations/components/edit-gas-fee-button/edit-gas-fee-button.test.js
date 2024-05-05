@@ -14,6 +14,7 @@ import mockEstimates from '../../../../../test/data/mock-estimates.json';
 import mockState from '../../../../../test/data/mock-state.json';
 import configureStore from '../../../../store/store';
 
+import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
 import EditGasFeeButton from './edit-gas-fee-button';
 
 jest.mock('../../../../store/actions', () => ({
@@ -27,13 +28,16 @@ jest.mock('../../../../store/actions', () => ({
   createTransactionEventFragment: jest.fn(),
 }));
 
+const mockSelectedInternalAccount =
+  getSelectedInternalAccountFromMockState(mockState);
+
 const render = async ({ componentProps, contextProps } = {}) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
       accounts: {
-        [mockState.metamask.selectedAddress]: {
-          address: mockState.metamask.selectedAddress,
+        [mockSelectedInternalAccount.address]: {
+          address: mockSelectedInternalAccount.address,
           balance: '0x1F4',
         },
       },
