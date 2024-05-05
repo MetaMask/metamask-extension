@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Severity,
   TextColor,
@@ -40,8 +40,6 @@ function getSeverityAlerts(variant: ConfirmInfoRowVariant): Severity {
       return Severity.Info;
   }
 }
-
-export const InlineAlertContext = createContext<React.ReactNode | null>(null);
 
 export const AlertRow = ({
   alertKey,

@@ -30,6 +30,10 @@
     "customTokenAmount": "10"
   },
   "confirm": {},
+  "confirmAlerts": {
+    "alerts": [],
+    "confirmed": []
+  },
   "confirmTransaction": {
     "txData": {
       "txParams": {

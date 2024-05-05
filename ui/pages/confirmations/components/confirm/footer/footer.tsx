@@ -21,39 +21,74 @@ import { confirmSelector } from '../../../selectors';
 import { getConfirmationSender } from '../utils';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { MultipleAlertModal } from '../../../../../components/app/confirmations/alerts/multiple-alert-modal';
-import {
-  BackgroundColor,
-  Severity,
-} from '../../../../../helpers/constants/design-system';
-import { getSeverityBackground } from '../../../../../components/app/confirmations/alerts/utils';
-import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import { AlertModal } from '../../../../../components/app/confirmations/alerts/alert-modal';
 
-function getSeverityStyle(alerts: Alert[]): BackgroundColor {
-  let severity = Severity.Info;
-  alerts.forEach((alert) => {
-    if (alert.severity === Severity.Danger) {
-      severity = Severity.Danger;
-    } else if (
-      alert.severity === Severity.Warning &&
-      severity !== Severity.Danger
-    ) {
-      severity = Severity.Warning;
-    }
-  });
-  return getSeverityBackground(severity);
+function ConfirmAlertModal({
+  alertKey,
+  ownerId,
+  handleCloseModal,
+  hasUnconfirmedAlerts,
+  alertModalVisible,
+  frictionModalVisible,
+  handleOpenModal,
+  onCancel,
+  onSubmit,
+}: {
+  alertKey: string;
+  ownerId: string;
+  handleCloseModal: () => void;
+  hasUnconfirmedAlerts: boolean;
+  alertModalVisible: boolean;
+  frictionModalVisible: boolean;
+  handleOpenModal: () => void;
+  onCancel?: () => void;
+  onSubmit?: () => void;
+}) {
+  if (alertModalVisible) {
+    return (
+      <MultipleAlertModal
+        alertKey={alertKey}
+        ownerId={ownerId}
+        onFinalAcknowledgeClick={handleCloseModal}
+        onClose={handleCloseModal}
+      />
+    );
+  }
+
+  if (!hasUnconfirmedAlerts && frictionModalVisible) {
+    return (
+      <AlertModal
+        alertKey={alertKey}
+        ownerId={ownerId}
+        onAcknowledgeClick={handleCloseModal}
+        onClose={handleCloseModal}
+        frictionModalConfig={{
+          onAlertLinkClick: handleOpenModal,
+          onCancel,
+          onSubmit,
+        }}
+      />
+    );
+  }
+
+  return null;
 }
 
 function ConfirmButton({
   alertOwnerId = '',
   disabled,
   onSubmit,
+  onCancel,
 }: {
   alertOwnerId?: string;
   disabled: boolean;
-  onSubmit: () => void;
+  onSubmit?: () => void;
+  onCancel?: () => void;
 }) {
   const t = useI18nContext();
   const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
+  const [frictionModalVisible, setFrictionModalVisible] =
+    useState<boolean>(false);
   const { alerts, isAlertConfirmed } = useAlerts(alertOwnerId);
   const unconfirmedAlerts = alerts.filter(
     (alert) => alert.field && !isAlertConfirmed(alert.key),
@@ -65,30 +100,40 @@ function ConfirmButton({
     setAlertModalVisible(false);
   };
 
-  const handleOpenModal = () => {
-    setAlertModalVisible(true);
-  };
+  const handleOpenModal = useCallback(() => {
+    if (hasUnconfirmedAlerts) {
+      setAlertModalVisible(true);
+      return;
+    }
+    setFrictionModalVisible(true);
+  }, [hasUnconfirmedAlerts]);
+
+  function getIconName(): IconName {
+    if (hasUnconfirmedAlerts) {
+      return IconName.SecuritySearch;
+    }
+    return IconName.Danger;
+  }
 
   return (
     <>
-      {alertModalVisible ? (
-        <MultipleAlertModal
-          alertKey={alerts[0]?.key}
-          ownerId={alertOwnerId}
-          onFinalAcknowledgeClick={handleCloseModal}
-          onClose={handleCloseModal}
-        />
-      ) : null}
+      <ConfirmAlertModal
+        alertKey={alerts[0]?.key}
+        ownerId={alertOwnerId}
+        handleCloseModal={handleCloseModal}
+        hasUnconfirmedAlerts={hasUnconfirmedAlerts}
+        alertModalVisible={alertModalVisible}
+        frictionModalVisible={frictionModalVisible}
+        handleOpenModal={() => setAlertModalVisible(true)}
+        onCancel={onCancel}
+        onSubmit={onSubmit}
+      />
       <Button
         block
         data-testid="confirm-footer-confirm-button"
-        startIconName={
-          hasUnconfirmedAlerts ? IconName.SecuritySearch : undefined
-        }
-        onClick={hasUnconfirmedAlerts ? handleOpenModal : onSubmit}
-        backgroundColor={
-          hasAlerts ? getSeverityStyle(alerts) : BackgroundColor.primaryDefault
-        }
+        startIconName={hasAlerts ? getIconName() : undefined}
+        onClick={hasAlerts ? handleOpenModal : onSubmit}
+        danger={hasAlerts}
         size={ButtonSize.Lg}
         disabled={hasUnconfirmedAlerts ? false : disabled}
       >

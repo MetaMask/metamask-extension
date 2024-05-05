@@ -352,6 +352,18 @@
   "alertModalDetails": {
     "message": "Alert Details"
   },
+  "alertModalFrictionAcknowledge": {
+    "message": "I have acknowledged the alerts and still want to proceed"
+  },
+  "alertModalFrictionDetails": {
+    "message": "If you sign in, a third party known for scams might take all your assets. Please review the alerts before you proceed."
+  },
+  "alertModalFrictionTitle": {
+    "message": "Your assets may be at risk"
+  },
+  "alertModalReviewAllAlerts": {
+    "message": "Review all alerts"
+  },
   "alertSettingsUnconnectedAccount": {
     "message": "Browsing a website with an unconnected account selected"
   },
