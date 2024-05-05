@@ -61,7 +61,11 @@ import rawFirstTimeState from './first-time-state';
 import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
-import { deferredPromise, getPlatform } from './lib/util';
+import {
+  deferredPromise,
+  getPlatform,
+  shouldEmitDappViewedEvent,
+} from './lib/util';
 
 /* eslint-enable import/first */
 
@@ -283,13 +287,16 @@ async function initialize() {
     ///: END:ONLY_INCLUDE_IF
 
     let isFirstMetaMaskControllerSetup;
+
     if (isManifestV3) {
       // Save the timestamp immediately and then every `SAVE_TIMESTAMP_INTERVAL`
       // miliseconds. This keeps the service worker alive.
-      const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000;
+      if (initState.PreferencesController?.enableMV3TimestampSave) {
+        const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000;
 
-      saveTimestamp();
-      setInterval(saveTimestamp, SAVE_TIMESTAMP_INTERVAL_MS);
+        saveTimestamp();
+        setInterval(saveTimestamp, SAVE_TIMESTAMP_INTERVAL_MS);
+      }
 
       const sessionData = await browser.storage.session.get([
         'isFirstMetaMaskControllerSetup',
@@ -466,6 +473,11 @@ function emitDappViewedMetricEvent(
   connectSitePermissions,
   preferencesController,
 ) {
+  const { metaMetricsId } = controller.metaMetricsController.state;
+  if (!shouldEmitDappViewedEvent(metaMetricsId)) {
+    return;
+  }
+
   // A dapp may have other permissions than eth_accounts.
   // Since we are only interested in dapps that use Ethereum accounts, we bail out otherwise.
   if (!hasProperty(connectSitePermissions.permissions, 'eth_accounts')) {

@@ -81,7 +81,8 @@
     "gasFeeEstimatesByChainId": {},
     "gasFeeEstimates": {},
     "estimatedGasFeeTimeBounds": {},
-    "gasEstimateType": "none"
+    "gasEstimateType": "none",
+    "nonRPCGasFeeApisDisabled": "boolean"
   },
   "KeyringController": {
     "isUnlocked": false,
@@ -146,6 +147,7 @@
     "dismissSeedBackUpReminder": true,
     "disabledRpcMethodPreferences": { "eth_sign": false },
     "useMultiAccountBalanceChecker": true,
+    "hasDismissedOpenSeaToBlockaidBanner": false,
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": false,
     "useNftDetection": false,
@@ -157,7 +159,6 @@
     "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
     "featureFlags": {},
-    "hasDismissedOpenSeaToBlockaidBanner": false,
     "incomingTransactionsPreferences": {},
     "knownMethodData": "object",
     "currentLocale": "en",
@@ -173,6 +174,7 @@
       "useNativeCurrencyAsPrimaryCurrency": true,
       "petnamesEnabled": true
     },
+    "useExternalServices": "boolean",
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",
     "useAddressBarEnsResolution": true,
@@ -182,6 +184,7 @@
     "snapsAddSnapAccountModalDismissed": "boolean",
     "useExternalNameSources": "boolean",
     "useTransactionSimulations": true,
+    "enableMV3TimestampSave": true,
     "selectedAddress": "string"
   },
   "SelectedNetworkController": { "domains": "object" },
