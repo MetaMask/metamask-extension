@@ -3347,7 +3347,6 @@
   "onboardingMetametricsSendAnonymize_legacy": {
     "message": "Send anonymized click and pageview events"
   },
-
   "onboardingMetametricsTitle": {
     "message": "Help us improve MetaMask"
   },
