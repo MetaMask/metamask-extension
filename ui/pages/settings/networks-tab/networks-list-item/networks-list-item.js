@@ -102,7 +102,9 @@ const NetworksListItem = ({
         )
       )}
       {network.isATestNetwork &&
-        ![CHAIN_IDS.LINEA_SEPOLIA].includes(network.chainId) && (
+        ![CHAIN_IDS.LINEA_GOERLI, CHAIN_IDS.LINEA_SEPOLIA].includes(
+          network.chainId,
+        ) && (
           <UrlIcon
             name={label || getNetworkLabelKey(labelKey)}
             fallbackClassName={classnames(

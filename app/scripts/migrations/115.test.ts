@@ -1,8 +1,6 @@
 import { NetworkType } from '@metamask/controller-utils';
 import {
   CHAIN_IDS,
-  CHAIN_ID_TO_RPC_URL_MAP,
-  LINEA_SEPOLIA_DISPLAY_NAME,
   NETWORK_TYPES,
   TEST_NETWORK_TICKER_MAP,
 } from '../../../shared/constants/network';
@@ -153,16 +151,10 @@ describe('migration #115', () => {
     expect(transformedState.data).toEqual(ethereumOldState);
   });
 
-  it('Should update NetworkController to Linea Sepolia if chainId is on Linea Goerli', async () => {
+  it('Should keep NetworkController to Linea Goerli', async () => {
     const expectedNetworkControllerState = {
       networkConfigurations: {},
       networksMetadata: {
-        'linea-sepolia': {
-          EIPS: {
-            '1559': true,
-          },
-          status: 'available',
-        },
         'linea-goerli': {
           EIPS: {
             '1559': true,
@@ -171,16 +163,12 @@ describe('migration #115', () => {
         },
       },
       providerConfig: {
-        type: NetworkType['linea-sepolia'],
+        type: NetworkType['linea-goerli'],
         rpcPrefs: {},
-        chainId: CHAIN_IDS.LINEA_SEPOLIA,
-        nickname: LINEA_SEPOLIA_DISPLAY_NAME,
-        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_SEPOLIA],
-        providerType: NETWORK_TYPES.LINEA_SEPOLIA,
-        ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_SEPOLIA],
-        id: NETWORK_TYPES.LINEA_SEPOLIA,
+        chainId: CHAIN_IDS.LINEA_GOERLI,
+        ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_GOERLI],
       },
-      selectedNetworkClientId: 'linea-sepolia',
+      selectedNetworkClientId: 'linea-goerli',
     };
     const transformedState = await migrate({
       meta: { version: oldVersion },
