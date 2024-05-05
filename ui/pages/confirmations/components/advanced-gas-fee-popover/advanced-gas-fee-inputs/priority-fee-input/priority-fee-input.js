@@ -78,8 +78,10 @@ const PriorityFeeInput = () => {
 
   const [priorityFee, setPriorityFee] = useState(defaultPriorityFee);
   useEffect(() => {
-    setPriorityFee(defaultPriorityFee);
-  }, [defaultPriorityFee, setPriorityFee]);
+    if (maxPriorityFeePerGasNumber === null) {
+      setPriorityFee(defaultPriorityFee);
+    }
+  }, [maxPriorityFeePerGasNumber, defaultPriorityFee, setPriorityFee]);
 
   const { currency, numberOfDecimals } = useUserPreferencedCurrency(PRIMARY);
 

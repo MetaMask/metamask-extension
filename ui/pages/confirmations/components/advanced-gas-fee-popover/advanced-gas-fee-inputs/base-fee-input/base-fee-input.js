@@ -78,8 +78,10 @@ const BaseFeeInput = () => {
 
   const [baseFee, setBaseFee] = useState(defaultBaseFee);
   useEffect(() => {
-    setBaseFee(defaultBaseFee);
-  }, [defaultBaseFee, setBaseFee]);
+    if (maxBaseFeeNumber === null) {
+      setBaseFee(defaultBaseFee);
+    }
+  }, [maxBaseFeeNumber, defaultBaseFee, setBaseFee]);
 
   const [baseFeeInPrimaryCurrency] = useCurrencyDisplay(
     decGWEIToHexWEI(baseFee * gasLimit),
