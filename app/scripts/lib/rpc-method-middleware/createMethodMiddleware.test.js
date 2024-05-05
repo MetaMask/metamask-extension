@@ -22,6 +22,11 @@ jest.mock('./handlers', () => [
             break;
           case 3:
             return end(new Error('test error'));
+          case 4:
+            throw new Error('test error');
+          case 5:
+            // eslint-disable-next-line no-throw-literal
+            throw 'foo';
           default:
             throw new Error(`unexpected param "${req.params[0]}"`);
         }
@@ -132,7 +137,7 @@ describe('createMethodMiddleware', () => {
     expect(response.error.message).toBe('Method not supported.');
   });
 
-  it('should handle errors thrown by the implementation', async () => {
+  it('should handle errors returned by the implementation', async () => {
     const middleware = createMethodMiddleware(getDefaultHooks());
     const engine = new JsonRpcEngine();
     engine.push(middleware);
@@ -146,5 +151,40 @@ describe('createMethodMiddleware', () => {
     assertIsJsonRpcFailure(response);
 
     expect(response.error.message).toBe('test error');
+  });
+
+  it('should handle errors thrown by the implementation', async () => {
+    const middleware = createMethodMiddleware(getDefaultHooks());
+    const engine = new JsonRpcEngine();
+    engine.push(middleware);
+
+    const response = await engine.handle({
+      jsonrpc: '2.0',
+      id: 1,
+      method: method1,
+      params: [4],
+    });
+    assertIsJsonRpcFailure(response);
+
+    expect(response.error.message).toBe('test error');
+  });
+
+  it('should handle non-errors thrown by the implementation', async () => {
+    const middleware = createMethodMiddleware(getDefaultHooks());
+    const engine = new JsonRpcEngine();
+    engine.push(middleware);
+
+    const response = await engine.handle({
+      jsonrpc: '2.0',
+      id: 1,
+      method: method1,
+      params: [5],
+    });
+    assertIsJsonRpcFailure(response);
+
+    expect(response.error).toMatchObject({
+      message: 'Internal JSON-RPC error.',
+      data: 'foo',
+    });
   });
 });
