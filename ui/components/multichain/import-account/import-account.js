@@ -50,8 +50,12 @@ export const ImportAccount = ({ onActionComplete }) => {
         return false;
       }
     } catch (error) {
-      trackImportEvent(strategy, error.message);
-      translateWarning(error.message);
+      const message =
+        typeof error?.data?.cause?.message === 'undefined'
+          ? error.message
+          : error.data.cause.message;
+      trackImportEvent(strategy, message);
+      translateWarning(message);
       return false;
     }
 
