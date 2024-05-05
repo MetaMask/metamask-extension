@@ -572,7 +572,6 @@
     "nock": "^13.2.9",
     "node-fetch": "^2.6.1",
     "nyc": "^15.1.0",
-    "polyfill-crypto.getrandomvalues": "^1.0.0",
     "postcss": "^8.4.32",
     "postcss-rtlcss": "^4.0.9",
     "prettier": "^2.7.1",
