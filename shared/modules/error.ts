@@ -12,14 +12,18 @@ import log from 'loglevel';
 export function isErrorWithMessage(
   error: unknown,
 ): error is { message: string } {
-  return typeof error === 'object' && error !== null && (
-    'message' in error
-    || typeof (error as any)?.data?.cause?.message === 'string'
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    ('message' in error ||
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      typeof (error as any)?.data?.cause?.message === 'string')
   );
 }
 
 export function logErrorWithMessage(error: unknown) {
   if (isErrorWithMessage(error)) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     log.error((error as any)?.data?.cause?.message || error.message);
   } else {
     log.error(error);
