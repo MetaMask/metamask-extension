@@ -215,7 +215,6 @@ const CHAINLIST_CHAIN_IDS_MAP = {
 // `DEPRECATED_NETWORKS` and as a new case to `getDeprecationWarningCopy() in
 // `ui/components/ui/deprecated-networks/deprecated-networks.js`.
 export const DEPRECATED_NETWORKS = [
-  CHAIN_IDS.AURORA,
   CHAIN_IDS.GOERLI,
   CHAIN_IDS.ARBITRUM_GOERLI,
   CHAIN_IDS.OPTIMISM_GOERLI,

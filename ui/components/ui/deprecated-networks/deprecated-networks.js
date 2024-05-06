@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   BackgroundColor,
@@ -7,69 +8,68 @@ import {
   Severity,
 } from '../../../helpers/constants/design-system';
 
-import { getCurrentChainId } from '../../../selectors';
+import { getCurrentNetwork } from '../../../selectors';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 import { BannerAlert, Box, ButtonLink } from '../../component-library';
 import {
   CHAIN_IDS,
   DEPRECATED_NETWORKS,
 } from '../../../../shared/constants/network';
+import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 
 export default function DeprecatedNetworks() {
-  const currentChainID = useSelector(getCurrentChainId);
-  const [isShowingWarning, setIsShowingWarning] = useState(false);
+  const history = useHistory();
+  const { chainId, rpcUrl } = useSelector(getCurrentNetwork);
+  const [isClosed, setIsClosed] = useState(false);
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const t = useI18nContext();
 
-  useEffect(() => {
-    if (completedOnboarding && DEPRECATED_NETWORKS.includes(currentChainID)) {
-      setIsShowingWarning(true);
-    } else {
-      setIsShowingWarning(false);
-    }
-  }, [currentChainID, completedOnboarding]);
-
-  const { bannerAlertDescription, actionBtnLinkURL } =
-    getDeprecationWarningCopy(t, currentChainID);
-
-  return isShowingWarning ? (
-    <Box
-      className="deprecated-networks"
-      backgroundColor={BackgroundColor.backgroundDefault}
-      padding={4}
-      borderRadius={BorderRadius.SM}
-    >
-      <BannerAlert
-        severity={Severity.Warning}
-        description={bannerAlertDescription}
-        onClose={() => setIsShowingWarning(false)}
-        actionButtonLabel={actionBtnLinkURL && t('learnMoreUpperCase')}
-        actionButtonProps={{
-          className: 'deprecated-networks__content__inline-link',
-          href: actionBtnLinkURL,
-          variant: ButtonLink,
-          externalLink: true,
-        }}
-      />
-    </Box>
-  ) : null;
-}
-
-function getDeprecationWarningCopy(t, currentChainID) {
-  let bannerAlertDescription, actionBtnLinkURL;
-
-  if (currentChainID === CHAIN_IDS.AURORA) {
-    bannerAlertDescription = t('deprecatedAuroraNetworkMsg');
-    actionBtnLinkURL = 'https://mainnet.aurora.dev/';
-  } else if (DEPRECATED_NETWORKS.includes(currentChainID)) {
-    if (currentChainID === CHAIN_IDS.POLYGON_TESTNET) {
-      bannerAlertDescription = t('deprecatedNetwork');
-    } else {
-      bannerAlertDescription = t('deprecatedGoerliNtwrkMsg');
-      actionBtnLinkURL =
-        'https://github.com/eth-clients/goerli#goerli-goerlitzer-testnet';
-    }
+  if (!completedOnboarding || isClosed) {
+    return null;
   }
 
-  return { bannerAlertDescription, actionBtnLinkURL };
+  let props;
+  if (chainId === CHAIN_IDS.GOERLI) {
+    props = {
+      description: t('deprecatedGoerliNtwrkMsg'),
+      actionButtonLabel: t('learnMoreUpperCase'),
+      actionButtonProps: {
+        href: 'https://github.com/eth-clients/goerli#goerli-goerlitzer-testnet',
+      },
+    };
+  } else if (DEPRECATED_NETWORKS.includes(chainId)) {
+    props = { description: t('deprecatedNetwork') };
+  } else if (chainId === CHAIN_IDS.AURORA && rpcUrl.includs('infura.io')) {
+    props = {
+      description:
+        'The Infura RPC URL is no longer supporting Aurora. To use Aurora, please edit the RPC URL.',
+      actionButtonLabel: 'Network Settings',
+      actionButtonOnClick: () => {
+        setIsClosed(true);
+        global.platform.openExtensionInBrowser(NETWORKS_ROUTE);
+      },
+    };
+  }
+
+  return (
+    props && (
+      <Box
+        className="deprecated-networks"
+        backgroundColor={BackgroundColor.backgroundDefault}
+        padding={4}
+        borderRadius={BorderRadius.SM}
+      >
+        <BannerAlert
+          severity={Severity.Warning}
+          onClose={() => setIsClosed(true)}
+          actionButtonProps={{
+            variant: ButtonLink,
+            externalLink: true,
+            ...props.actionButtonProps,
+          }}
+          {...props}
+        />
+      </Box>
+    )
+  );
 }
