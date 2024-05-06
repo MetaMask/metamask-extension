@@ -4522,14 +4522,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/address-book-controller@npm:^3.1.7":
-  version: 3.1.7
-  resolution: "@metamask/address-book-controller@npm:3.1.7"
+"@metamask/address-book-controller@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "@metamask/address-book-controller@npm:4.0.1"
   dependencies:
-    "@metamask/base-controller": "npm:^4.1.1"
-    "@metamask/controller-utils": "npm:^8.0.2"
+    "@metamask/base-controller": "npm:^5.0.1"
+    "@metamask/controller-utils": "npm:^9.0.1"
     "@metamask/utils": "npm:^8.3.0"
-  checksum: e91c41dc2c88932b7a0e49734ea4205b27789e56c12c9c1d6ee7cbc971917896d195e368b10b8351689992de67ca6372461c2be52aca2a85618b788597be607b
+  checksum: 6d2d8bba15422249e2a1bf148e442712733717d33ba60d02fd76212de58d9d2e15e711b417b64dbbded1b4a545f6196709a8e5e4d584a3e1da265f5bd5cc3653
   languageName: node
   linkType: hard
 
@@ -25436,7 +25436,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mersenne-twister@npm:^1.0.1, mersenne-twister@npm:^1.1.0":
+"mersenne-twister@npm:^1.1.0":
   version: 1.1.0
   resolution: "mersenne-twister@npm:1.1.0"
   checksum: 1123526199091097102f2f91639ad7d5b3df4b098de9a4a72c835920e11ef0ce08e25737d5af1d363325a60da8804365eae8a41e03b7a46a1acc22e18fa8f261
@@ -25488,7 +25488,7 @@ __metadata:
     "@metamask-institutional/transaction-update": "npm:^0.2.0"
     "@metamask/abi-utils": "npm:^2.0.2"
     "@metamask/accounts-controller": "npm:^11.0.0"
-    "@metamask/address-book-controller": "npm:^3.1.7"
+    "@metamask/address-book-controller": "npm:^4.0.1"
     "@metamask/announcement-controller": "npm:^6.1.0"
     "@metamask/approval-controller": "npm:^6.0.0"
     "@metamask/assets-controllers": "patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@patch%253A@metamask/assets-controllers@npm%25253A26.0.0%2523~/.yarn/patches/@metamask-assets-controllers-npm-26.0.0-17c0e9432c.patch%253A%253Aversion=26.0.0&hash=cf1d54%23~/.yarn/patches/@metamask-assets-controllers-patch-0f46262fea.patch%3A%3Aversion=26.0.0&hash=5c145e#~/.yarn/patches/@metamask-assets-controllers-patch-7616cc1669.patch"
@@ -25739,7 +25739,6 @@ __metadata:
     nyc: "npm:^15.1.0"
     obj-multiplex: "npm:^1.0.0"
     pify: "npm:^5.0.0"
-    polyfill-crypto.getrandomvalues: "npm:^1.0.0"
     postcss: "npm:^8.4.32"
     postcss-rtlcss: "npm:^4.0.9"
     prettier: "npm:^2.7.1"
@@ -28679,15 +28678,6 @@ __metadata:
   dependencies:
     "@babel/runtime": "npm:^7.17.8"
   checksum: da71b15c1e1d98b7f55e143bbf9ebb1b0934286c74c333522e571e52f89e42a61d7d44c5b4f941dc927355c7ae09780877aeb8f23707376fa9f006ab861e758b
-  languageName: node
-  linkType: hard
-
-"polyfill-crypto.getrandomvalues@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "polyfill-crypto.getrandomvalues@npm:1.0.0"
-  dependencies:
-    mersenne-twister: "npm:^1.0.1"
-  checksum: 73f0880b022af0c5930ef2d34a83a25e03196081082d8ceb204a3e5609a1a3d0dd1656a183073b17bc069a2c5749e44689cebdc4254dae6ed7e4e8b83f451964
   languageName: node
   linkType: hard
 
