@@ -54,6 +54,7 @@ import {
   setUseTransactionSimulations,
   setPetnamesEnabled,
   showConfirmTurnOffProfileSyncing,
+  performSignIn,
 } from '../../../store/actions';
 import {
   onboardingToggleBasicFunctionalityOn,
@@ -129,6 +130,10 @@ export default function PrivacySettings() {
     setUseTransactionSimulations(isTransactionSimulationsEnabled);
     dispatch(setPetnamesEnabled(turnOnPetnames));
 
+    if (!isProfileSyncingEnabled && participateInMetaMetrics) {
+      dispatch(performSignIn());
+    }
+
     if (ipfsURL && !ipfsError) {
       const { host } = new URL(addUrlProtocolPrefix(ipfsURL));
       dispatch(setIpfsGateway(host));
@@ -144,6 +149,20 @@ export default function PrivacySettings() {
       },
     });
 
+    const eventName =
+      isProfileSyncingEnabled || participateInMetaMetrics
+        ? MetaMetricsEventName.OnboardingWalletAdvancedSettingsWithAuthenticating
+        : MetaMetricsEventName.OnboardingWalletAdvancedSettingsWithoutAuthenticating;
+
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: eventName,
+      properties: {
+        isProfileSyncingEnabled,
+        participateInMetaMetrics,
+      },
+    });
+
     history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
   };
 
@@ -152,15 +171,6 @@ export default function PrivacySettings() {
       dispatch(showConfirmTurnOffProfileSyncing());
     } else {
       await enableProfileSyncing();
-      trackEvent({
-        category: MetaMetricsEventCategory.Onboarding,
-        event:
-          MetaMetricsEventName.OnboardingWalletAdvancedSettingsWithAuthenticating,
-        properties: {
-          isProfileSyncingEnabled,
-          participateInMetaMetrics,
-        },
-      });
     }
   };
 

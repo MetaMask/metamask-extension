@@ -115,7 +115,7 @@ export function useDisableProfileSyncing(): {
       // if the notifications are enabled, disable them
       // and set the states to false
       if (isMetamaskNotificationsEnabled) {
-        disableNotifications();
+        await disableNotifications();
       }
 
       // disable profile syncing
