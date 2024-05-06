@@ -11,13 +11,7 @@
     margin-bottom: 24px;
   }
 
-  @include design-system.screen-sm-min {
-    margin-bottom: 40px;
-  }
-
   &__header {
-    max-width: 500px;
-    margin: 24px;
 
     a {
       color: var(--color-primary-default);

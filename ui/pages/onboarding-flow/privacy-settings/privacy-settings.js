@@ -20,8 +20,6 @@ import {
   PickerNetwork,
   Text,
   TextField,
-  ButtonPrimary,
-  ButtonPrimarySize,
   ButtonSecondary,
   ButtonSecondarySize,
   Icon,
@@ -30,7 +28,6 @@ import {
 } from '../../../components/component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  FontWeight,
   TextColor,
   TextVariant,
   IconColor,
@@ -40,7 +37,7 @@ import {
   FlexDirection,
   BlockSize,
 } from '../../../helpers/constants/design-system';
-import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
+import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getAllNetworks,
@@ -48,7 +45,6 @@ import {
   getPetnamesEnabled,
 } from '../../../selectors';
 import {
-  setCompletedOnboarding,
   setIpfsGateway,
   setUseCurrencyRateCheck,
   setUseMultiAccountBalanceChecker,
@@ -122,7 +118,6 @@ export default function PrivacySettings() {
       setUseMultiAccountBalanceChecker(isMultiAccountBalanceCheckerEnabled),
     );
     dispatch(setUseCurrencyRateCheck(turnOnCurrencyRateCheck));
-    dispatch(setCompletedOnboarding());
     dispatch(setUseAddressBarEnsResolution(addressBarResolution));
     setUseTransactionSimulations(isTransactionSimulationsEnabled);
     dispatch(setPetnamesEnabled(turnOnPetnames));
@@ -142,7 +137,7 @@ export default function PrivacySettings() {
       },
     });
 
-    history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
+    history.push(ONBOARDING_COMPLETION_ROUTE);
   };
 
   const handleIPFSChange = (url) => {
@@ -190,7 +185,7 @@ export default function PrivacySettings() {
             <Box
               className="privacy-settings__header"
               marginTop={6}
-              marginBottom={5}
+              marginBottom={6}
               display={Display.Flex}
               flexDirection={FlexDirection.Column}
               justifyContent={JustifyContent.flexStart}
@@ -198,13 +193,32 @@ export default function PrivacySettings() {
               <Box
                 display={Display.Flex}
                 alignItems={AlignItems.center}
-                justifyContent={JustifyContent.center}
+                flexDirection={FlexDirection.Row}
+                justifyContent={JustifyContent.flexStart}
               >
-                <Text variant={TextVariant.headingLg} as="h2">
-                  {t('defaultSettingsTitle')}
-                </Text>
+                <Button
+                  type="inline"
+                  icon={
+                    <Icon
+                      name={IconName.ArrowLeft}
+                      size={IconSize.Lg}
+                      color={IconColor.iconDefault}
+                    />
+                  }
+                  onClick={handleSubmit}
+                />
+                <Box
+                  display={Display.Flex}
+                  alignItems={AlignItems.center}
+                  justifyContent={JustifyContent.center}
+                  width={BlockSize.Full}
+                >
+                  <Text variant={TextVariant.headingLg} as="h2">
+                    {t('defaultSettingsTitle')}
+                  </Text>
+                </Box>
               </Box>
-              <Text variant={TextVariant.bodyLgMedium} marginTop={4}>
+              <Text variant={TextVariant.bodyLgMedium} marginTop={5}>
                 {t('defaultSettingsSubTitle')}
               </Text>
               <a
@@ -221,7 +235,6 @@ export default function PrivacySettings() {
                 as="ul"
                 marginTop={4}
                 marginBottom={4}
-                paddingInlineStart={4}
                 style={{ listStyleType: 'none' }}
                 className="privacy-settings__categories-list"
               >

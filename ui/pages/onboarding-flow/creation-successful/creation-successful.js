@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import Box from '../../../components/ui/box';
 import Typography from '../../../components/ui/typography';
 import Button from '../../../components/ui/button';
-import { Icon, IconName } from '../../../components/component-library';
+import { Icon, IconName, ButtonPrimary, ButtonPrimarySize } from '../../../components/component-library';
 import {
   FONT_WEIGHT,
   TEXT_ALIGN,
@@ -105,24 +105,23 @@ export default function CreationSuccessful() {
           {t('manageDefaultSettings')}
         </Button>
       <Box marginTop={6} className="creation-successful__actions">
-        <Button
-          data-testid="onboarding-complete-done"
-          type="primary"
-          large
-          rounded
-          onClick={() => {
-            trackEvent({
-              category: MetaMetricsEventCategory.Onboarding,
-              event: MetaMetricsEventName.OnboardingWalletCreationComplete,
-              properties: {
-                method: firstTimeFlowType,
-              },
-            });
-            history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
-          }}
-        >
-          {t('gotIt')}
-        </Button>
+                <ButtonPrimary
+            size={ButtonPrimarySize.Lg}
+            block
+            marginTop={6}
+            onClick={() => {
+              trackEvent({
+                category: MetaMetricsEventCategory.Onboarding,
+                event: MetaMetricsEventName.OnboardingWalletCreationComplete,
+                properties: {
+                  method: firstTimeFlowType,
+                },
+              });
+              history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
+            }}
+          >
+            {t('gotIt')}
+          </ButtonPrimary>
       </Box>
     </div>
   );
