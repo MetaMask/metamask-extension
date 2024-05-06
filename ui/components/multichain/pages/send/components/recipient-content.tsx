@@ -19,7 +19,10 @@ import { Display } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AssetPickerAmount } from '../../..';
 import { decimalToHex } from '../../../../../../shared/modules/conversion.utils';
-import { getIsSwapsChain } from '../../../../../selectors';
+import {
+  getIsSwapsChain,
+  getUseExternalServices,
+} from '../../../../../selectors';
 import { SendHexData, SendPageRow, QuoteCard } from '.';
 
 export const SendPageRecipientContent = ({
@@ -38,10 +41,12 @@ export const SendPageRecipientContent = ({
     isSwapQuoteLoading,
   } = useSelector(getCurrentDraftTransaction);
 
+  const isBasicFunctionality = useSelector(getUseExternalServices);
   const isSwapsChain = useSelector(getIsSwapsChain);
   const isSwapAllowed =
     isSwapsChain &&
-    [AssetType.token, AssetType.native].includes(sendAsset.type);
+    [AssetType.token, AssetType.native].includes(sendAsset.type) &&
+    isBasicFunctionality;
 
   const bestQuote = useSelector(getBestQuote);
 
@@ -74,7 +79,6 @@ export const SendPageRecipientContent = ({
   //          - handle repopulations
   //          - resolve all TODOs
   //          - handle approval gas
-  //          - implement hester's comment: https://consensys.slack.com/archives/C068SFX90PN/p1712696346996319
   //          - investigate overflow logic
   //          - Preserve dest token when returning to send page from tx page
   //          - Ensure max button works with swaps (update on refresh? buffer?)
