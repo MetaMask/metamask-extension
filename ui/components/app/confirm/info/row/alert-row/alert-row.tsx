@@ -45,6 +45,7 @@ function getSeverityAlerts(variant?: ConfirmInfoRowVariant): Severity {
 
 export const AlertRow = (props: AlertRowProps) => {
   const { alertKey, ownerId, style, variant, ...rowProperties } = props;
+  const processAlertAction = useConfirmationAlertActions();
   const { getFieldAlerts } = useAlerts(ownerId);
   const hasFieldAlert = getFieldAlerts(alertKey).length > 0;
 
