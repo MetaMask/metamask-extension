@@ -565,6 +565,33 @@
   "basic": {
     "message": "Basic"
   },
+  "basicConfigurationBannerCTA": {
+    "message": "Turn on basic functionality"
+  },
+  "basicConfigurationBannerTitle": {
+    "message": "Basic functionality is off"
+  },
+  "basicConfigurationDescription": {
+    "message": "Includes token data and value, optimal gas settings, and more. Using these services shares your IP address with MetaMask, just like when you visit a website."
+  },
+  "basicConfigurationLabel": {
+    "message": "Basic functionality"
+  },
+  "basicConfigurationModalCheckbox": {
+    "message": "I understand and want to continue"
+  },
+  "basicConfigurationModalDisclaimerOff": {
+    "message": "This means you won't fully optimize your time on MetaMask. Basic features (like token details, optimal gas settings, and others) won't be available to you."
+  },
+  "basicConfigurationModalDisclaimerOn": {
+    "message": "To optimize your time on MetaMask, you’ll need to turn on this feature. Basic functions (like token details, optimal gas settings, and others) are important to the web3 experience."
+  },
+  "basicConfigurationModalHeadingOff": {
+    "message": "Turn off basic functionality"
+  },
+  "basicConfigurationModalHeadingOn": {
+    "message": "Turn on basic functionality"
+  },
   "beCareful": {
     "message": "Be careful"
   },
@@ -1100,6 +1127,12 @@
   "custodianAccountAddedTitle": {
     "message": "Selected $1 accounts have been added."
   },
+  "custodianQRCodeScan": {
+    "message": "Scan QR code with your $1 mobile app"
+  },
+  "custodianQRCodeScanDescription": {
+    "message": "Or log into your $1 account and click on the 'Connect to MMI' button"
+  },
   "custodianReplaceRefreshTokenChangedFailed": {
     "message": "Please go to $1 and click the 'Connect to MMI' button within their user interface to connect your accounts to MMI again."
   },
@@ -1388,6 +1421,9 @@
   },
   "developerOptionsResetStatesOnboarding": {
     "message": "Resets various states related to onboarding and redirects to the \"Secure Your Wallet\" onboarding page."
+  },
+  "developerOptionsServiceWorkerKeepAlive": {
+    "message": "Results in a timestamp being continuously saved to session.storage"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” is disabled because it does not meet the minimum of a 10% increase from the original gas fee.",
@@ -2247,6 +2283,9 @@
   "interactingWith": {
     "message": "Interacting with"
   },
+  "interactingWithTransactionDescription": {
+    "message": "This is the contract you're interacting with. Protect yourself from scammers by  verifying the details."
+  },
   "introducingSmartTransactions": {
     "message": "Introducing Smart Transactions"
   },
@@ -2594,6 +2633,12 @@
   },
   "metamaskVersion": {
     "message": "MetaMask Version"
+  },
+  "methodData": {
+    "message": "Method"
+  },
+  "methodDataTransactionDescription": {
+    "message": "This is the specific action that will be taken. This data can be faked, so be sure you trust the site on the other end."
   },
   "methodNotSupported": {
     "message": "Not supported with this account."
@@ -3993,6 +4038,9 @@
   "requestFromInfo": {
     "message": "This is the site asking for your signature."
   },
+  "requestFromTransactionDescription": {
+    "message": "This is the site asking for your confirmation."
+  },
   "requestMayNotBeSafe": {
     "message": "Request may not be safe"
   },
@@ -4337,6 +4385,9 @@
   },
   "sepolia": {
     "message": "Sepolia test network"
+  },
+  "serviceWorkerKeepAlive": {
+    "message": "Service Worker Keep Alive"
   },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask uses these trusted third-party services to enhance product usability and safety."
@@ -5740,6 +5791,12 @@
   },
   "tryAgain": {
     "message": "Try again"
+  },
+  "turnOff": {
+    "message": "Turn off"
+  },
+  "turnOn": {
+    "message": "Turn on"
   },
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"
