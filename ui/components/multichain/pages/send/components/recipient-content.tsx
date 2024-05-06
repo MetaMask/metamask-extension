@@ -75,11 +75,9 @@ export const SendPageRecipientContent = ({
   // FIXME: these should all be resolved before marking the PR as ready
   // TODO: SWAP+SEND impl steps (all but step 3 correlate to a PR in the merge train):
   // TODO: 1. begin design review + revisions
-  //          - add pre-transaction validation and refetch if it doesn't match
   //          - handle repopulations
   //          - resolve all TODOs
   //          - handle approval gas
-  //          - investigate overflow logic
   //          - Preserve dest token when returning to send page from tx page
   //          - Ensure max button works with swaps (update on refresh? buffer?)
   //          - Update best quotes logic

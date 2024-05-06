@@ -4,7 +4,7 @@ import {
   createSlice,
 } from '@reduxjs/toolkit';
 import BigNumber from 'bignumber.js';
-import { addHexPrefix } from 'ethereumjs-util';
+import { addHexPrefix, zeroAddress } from 'ethereumjs-util';
 import { cloneDeep, debounce } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import {
@@ -1557,8 +1557,50 @@ const slice = createSlice({
       slice.caseReducers.addHistoryEntry(state, {
         payload: 'Begin validating send state',
       });
+
+      const quotes = Object.values(draftTransaction.quotes || {});
+      const bestQuote = quotes ? calculateBestQuote(quotes) : undefined;
+
       if (draftTransaction) {
         switch (true) {
+          case Boolean(
+            bestQuote &&
+              bestQuote.recipient !== draftTransaction.recipient.address,
+          ):
+            slice.caseReducers.addHistoryEntry(state, {
+              payload: `Recipient is not match ${draftTransaction.recipient.address} ${bestQuote.recipient}`,
+            });
+            draftTransaction.status = SEND_STATUSES.INVALID;
+            break;
+          case Boolean(
+            bestQuote && bestQuote.trade.from !== state.selectedAccount.address,
+          ):
+            slice.caseReducers.addHistoryEntry(state, {
+              payload: `Sender is not match ${state.selectedAccount.address} ${bestQuote.trade.from}`,
+            });
+            draftTransaction.status = SEND_STATUSES.INVALID;
+            break;
+          case Boolean(
+            bestQuote &&
+              (draftTransaction.sendAsset?.details?.address ||
+                zeroAddress()) !== bestQuote.sourceToken,
+          ):
+            slice.caseReducers.addHistoryEntry(state, {
+              payload: `Source token is not match ${draftTransaction.sendAsset?.details?.address} ${bestQuote.sourceToken}`,
+            });
+            draftTransaction.status = SEND_STATUSES.INVALID;
+            break;
+          case Boolean(
+            bestQuote &&
+              bestQuote.destinationToken !==
+                (draftTransaction.receiveAsset?.details?.address ||
+                  zeroAddress()),
+          ):
+            slice.caseReducers.addHistoryEntry(state, {
+              payload: `Destination token is not match ${draftTransaction.receiveAsset?.details?.address} ${bestQuote.destinationToken}`,
+            });
+            draftTransaction.status = SEND_STATUSES.INVALID;
+            break;
           case Boolean(draftTransaction.amount.error):
             slice.caseReducers.addHistoryEntry(state, {
               payload: `Amount is in error ${draftTransaction.amount.error}`,
