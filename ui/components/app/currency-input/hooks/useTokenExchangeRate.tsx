@@ -35,7 +35,9 @@ export default function useTokenExchangeRate(
     shallowEqual,
   );
 
-  const [exchangeRate, setExchangeRate] = useState<number | undefined>();
+  const [exchangeRates, setExchangeRates] = useState<Record<string, number>>(
+    {},
+  );
 
   return useMemo(() => {
     if (!tokenAddress) {
@@ -43,12 +45,15 @@ export default function useTokenExchangeRate(
     }
 
     const contractExchangeRate =
-      contractExchangeRates[tokenAddress] || exchangeRate;
+      contractExchangeRates[tokenAddress] || exchangeRates[tokenAddress];
 
     if (!contractExchangeRate) {
       fetchTokenExchangeRates(nativeCurrency, [tokenAddress], chainId).then(
         (addressToExchangeRate) => {
-          setExchangeRate(addressToExchangeRate[tokenAddress]);
+          setExchangeRates((prev) => ({
+            ...prev,
+            ...addressToExchangeRate,
+          }));
         },
       );
       return undefined;
@@ -56,7 +61,7 @@ export default function useTokenExchangeRate(
 
     return new Numeric(contractExchangeRate, 10).times(nativeConversionRate);
   }, [
-    exchangeRate,
+    exchangeRates,
     chainId,
     nativeCurrency,
     tokenAddress,
