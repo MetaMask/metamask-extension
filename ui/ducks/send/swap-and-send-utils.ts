@@ -145,14 +145,11 @@ const BASE_URL = process.env.SWAPS_USE_DEV_APIS
   ? SWAPS_DEV_API_V2_BASE_URL
   : SWAPS_API_V2_BASE_URL;
 
-export async function getSwapAndSendQuotes(
-  request: Request,
-): Promise<Record<string, Quote>> {
+export async function getSwapAndSendQuotes(request: Request): Promise<Quote[]> {
   const { chainId, ...params } = request;
 
   const queryString = new URLSearchParams(params);
 
-  // FIXME: can't use the dev API since it's several major versions behind prod
   const url = `${BASE_URL}/${SWAPS_API_VERSION}/networks/${hexToDecimal(
     chainId,
   )}/quotes?${queryString}`;
@@ -167,10 +164,8 @@ export async function getSwapAndSendQuotes(
     functionName: 'getSwapAndSendQuotes',
   });
 
-  // TODO: validate recipient and tokens against request
-
-  const newQuotes = tradesResponse.reduce(
-    (aggIdTradeMap: Record<string, Quote>, quote: Quote) => {
+  const newQuotes = tradesResponse
+    .map((quote: Quote) => {
       if (
         quote.trade &&
         !quote.error &&
@@ -192,19 +187,15 @@ export async function getSwapAndSendQuotes(
         }
 
         return {
-          ...aggIdTradeMap,
-          [quote.aggregator]: {
-            ...quote,
-            slippage: params.slippage,
-            trade: constructedTrade,
-            approvalNeeded,
-          },
+          ...quote,
+          slippage: params.slippage,
+          trade: constructedTrade,
+          approvalNeeded,
         };
       }
-      return aggIdTradeMap;
-    },
-    {},
-  );
+      return undefined;
+    })
+    .filter(Boolean);
 
   return newQuotes;
 }
