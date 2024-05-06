@@ -43,6 +43,7 @@ jobs:
 
   prepare:
     name: Prepare dependencies
+    runs-on: ubuntu-latest
     needs: is-fork-pull-request
     # Early exit if this is a fork, since later steps are skipped for forks
     if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
@@ -99,8 +100,8 @@ jobs:
     name: Commit the updated Attributions
     runs-on: ubuntu-latest
     needs:
-      - is-fork-pull-request
       - prepare
+      - is-fork-pull-request
       - update-attributions
     if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
     steps:
