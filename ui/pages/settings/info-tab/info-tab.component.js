@@ -113,7 +113,7 @@ export default class InfoTab extends PureComponent {
         <div ref={this.settingsRefs[4]} className="info-tab__link-item">
           <Button
             type="link"
-            href="https://metamask.io/attributions.html"
+            href="https://github.com/MetaMask/metamask-extension/blob/develop/attribution.txt"
             target="_blank"
             rel="noopener noreferrer"
             className="info-tab__link-text"

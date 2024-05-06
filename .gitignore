@@ -56,12 +56,13 @@ test-results/
 # enable the use of @metamask preview builds.
 .npmrc
 #yarn
-.yarn/*
+.yarn/
 !.yarn/patches
 !.yarn/plugins
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+**/.yarn/*
 
 # MMI Playwright
 public/playwright

@@ -1,0 +1,22 @@
+{
+  "name": "metamask-extension-generate-attributions",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "generate-attribution": "generate-attribution"
+  },
+  "devDependencies": {
+    "@lavamoat/allow-scripts": "^3.0.1",
+    "@lavamoat/preinstall-always-fail": "^2.0.0",
+    "@metamask/oss-attribution-generator": "^2.0.2"
+  },
+  "engines": {
+    "node": ">= 20",
+    "yarn": "^4.0.2"
+  },
+  "lavamoat": {
+    "allowScripts": {
+      "@lavamoat/preinstall-always-fail": false
+    }
+  }
+}

@@ -11,6 +11,6 @@ Step,Test Steps,Test Data,Expected Result,Notes
 9,Click on the link for the 'Privacy policy',,Privacy policy 'https://consensys.io/privacy-policy' page is loaded,Critical because it's the only way to access privacy policy
 10,Click on the link for the 'Terms of use',,Terms of use page 'https://consensys.io/terms-of-use' is loaded,
 11,Click on the link for the 'Visit our support center',,Support page 'https://support.metamask.io/hc/en-us' is loaded,
-12,Click on the link for the 'Attributions',,Attributions 'https://metamask.io/attributions/' page is loaded,
+12,Click on the link for the 'Attributions',,Attributions 'https://github.com/MetaMask/metamask-extension/blob/develop/attribution.txt' page is loaded,
 13,Click on the link for the 'Visit our website',,Visit our website 'https://metamask.io/' page is loaded,
 14,Click on the link for the 'Contact us',,Contact us 'https://support.metamask.io/hc/en-us' code page is loaded,
