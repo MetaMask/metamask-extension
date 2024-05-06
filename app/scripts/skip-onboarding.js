@@ -4,7 +4,8 @@ import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { defaultFixture } from '../../test/e2e/default-fixture';
 import { encryptorFactory } from './lib/encryptor-factory';
-import { networkConfigurations as additionalConfigurations } from '../../test/e2e/fixture-data-with-networks';
+import { networkConfigurations as additionalConfigurations } from '../../test/fixtures/with-networks';
+import { addressBookConfig} from '../../test/fixtures/with-addressbook';
 
 const E2E_SRP =
   'spread raise short crane omit tent fringe mandate neglect detail suspect cradle';
@@ -15,6 +16,7 @@ async function generateSkipOnboardingState() {
   state.AppStateController = generateAppStateControllerState();
   state.AnnouncementController = generateAnnouncementControllerState();
   state.NetworkController = generateNetworkControllerState();
+  state.AddressBookController = generateAddressBookControllerState();
 
   if (process.env.PASSWORD) {
     const { vault, account } = await generateVaultAndAccount(
@@ -84,6 +86,15 @@ function generateNetworkControllerState() {
       },
     },
   };
+}
+
+function generateAddressBookControllerState() {
+  return {
+    ...defaultFixture().data.AddressBookController,
+    addressBook: {
+      ...addressBookConfig,
+      },
+    }
 }
 
 async function generateVaultAndAccount(encodedSeedPhrase, password) {
