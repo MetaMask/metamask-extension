@@ -4,6 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import * as useAlertsModule from '../../../../../hooks/useAlerts';
+import mockState from '../../../../../../test/data/mock-state.json';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { AlertModal, FrictionModalConfig } from './alert-modal';
 
@@ -15,7 +16,6 @@ describe('AlertModal', () => {
   const ACTION_KEY_MOCK = 'key-mock';
   const ACTION_LABEL_MOCK = 'Label Mock';
   const onAcknowledgeClickMock = jest.fn();
-  const onActionClick = jest.fn();
   const onCloseMock = jest.fn();
 
   const alertsMock: Alert[] = [
@@ -36,6 +36,7 @@ describe('AlertModal', () => {
   ];
 
   const STATE_MOCK = {
+    ...mockState,
     confirmAlerts: {
       alerts: { [OWNER_ID_MOCK]: alertsMock },
       confirmed: {
@@ -44,6 +45,14 @@ describe('AlertModal', () => {
           data: false,
           [CONTRACT_ALERT_KEY_MOCK]: false,
         },
+      },
+    },
+    confirm: {
+      currentConfirmation: {
+        id: OWNER_ID_MOCK,
+        status: 'unapproved',
+        time: new Date().getTime(),
+        type: 'personal_sign',
       },
     },
   };
@@ -153,22 +162,6 @@ describe('AlertModal', () => {
 
     fireEvent.click(getByLabelText('Close'));
     expect(onCloseMock).toHaveBeenCalledTimes(1);
-  });
-
-  it('calls action when the button is clicked', () => {
-    const { getByText } = renderWithProvider(
-      <AlertModal
-        ownerId={OWNER_ID_MOCK}
-        onAcknowledgeClick={onAcknowledgeClickMock}
-        onActionClick={onActionClick}
-        onClose={onCloseMock}
-        alertKey={CONTRACT_ALERT_KEY_MOCK}
-      />,
-      mockStore,
-    );
-
-    fireEvent.click(getByText(ACTION_LABEL_MOCK));
-    expect(onActionClick).toHaveBeenCalledTimes(1);
   });
 
   describe('friction Modal', () => {

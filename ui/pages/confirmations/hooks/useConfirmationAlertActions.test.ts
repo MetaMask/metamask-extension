@@ -1,26 +1,13 @@
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
-import useConfirmationAlertAction from './useConfirmationAlertActions';
-import { usePersonalSignAlertActions } from './alerts/PersonalSignAlertAction';
-
-jest.mock('./alerts/PersonalSignAlertAction');
+import useConfirmationAlertActions from './useConfirmationAlertActions';
 
 describe('useConfirmationAlertActions', () => {
-  it('calls processPersonalSignAction with the provided actionKey', () => {
-    const processPersonalSignActionMock = jest.fn();
-    (usePersonalSignAlertActions as jest.Mock).mockReturnValue(
-      processPersonalSignActionMock,
-    );
-
+  it('returns a function', () => {
     const { result } = renderHookWithProvider(
-      () => useConfirmationAlertAction(),
+      () => useConfirmationAlertActions(),
       { ...mockState },
     );
-    const processAction = result.current;
-
-    const actionKey = 'actionKeyMock';
-    processAction(actionKey);
-
-    expect(processPersonalSignActionMock).toHaveBeenCalledWith(actionKey);
+    expect(typeof result.current).toBe('function');
   });
 });

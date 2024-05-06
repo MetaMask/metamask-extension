@@ -1,15 +1,12 @@
 import { useCallback } from 'react';
-import { usePersonalSignAlertActions } from './alerts/PersonalSignAlertAction';
 
+// This hook is responsible for processing confirmation actions.
+// Depending on the action type, we will call type-specific hooks.
 const useConfirmationAlertActions = () => {
-  const processPersonalSignAction = usePersonalSignAlertActions();
-
-  const processAction = useCallback(
-    (actionKey: string) => {
-      processPersonalSignAction(actionKey);
-    },
-    [processPersonalSignAction],
-  );
+  const processAction = useCallback((_actionKey: string) => {
+    // Call type-specific hooks based on the action type
+    // Leave this empty until PersonalSignAlertActions is implemented
+  }, []);
 
   return processAction;
 };

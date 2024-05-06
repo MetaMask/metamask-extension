@@ -34,6 +34,7 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import { useAlertActionHandler } from '../multiple-alert-modal/multiple-alert-modal';
 
 export type FrictionModalConfig = {
   /** Callback function that is called when the alert link is clicked. */
@@ -48,19 +49,17 @@ export type AlertModalProps = {
   /** The unique key representing the specific alert field. */
   alertKey: string;
   /**
-   * The start (left) content area of ModalHeader.
-   * It override `startAccessory` of ModalHeaderDefault and by default no content is present.
-   */
-  /**
    * The configuration for the friction modal.
    * Once this property is used, it enables the friction modal.
    */
   frictionModalConfig?: FrictionModalConfig;
+  /**
+   * The start (left) content area of ModalHeader.
+   * It override `startAccessory` of ModalHeaderDefault and by default no content is present.
+   */
   headerStartAccessory?: React.ReactNode;
   /** The function invoked when the user acknowledges the alert. */
   onAcknowledgeClick: () => void;
-  /** The function to execute a determinate action based on the action key. */
-  onActionClick?: (actionKey: string) => void;
   /** The function to be executed when the modal needs to be closed. */
   onClose: () => void;
   /** The owner ID of the relevant alert from the `confirmAlerts` reducer. */
@@ -304,10 +303,12 @@ function AcknowledgeButton({
   onAcknowledgeClick,
   isConfirmed,
   frictionModalConfig,
+  hasActions,
 }: {
   onAcknowledgeClick: () => void;
   isConfirmed: boolean;
   frictionModalConfig?: FrictionModalConfig;
+  hasActions?: boolean;
 }) {
   const t = useI18nContext();
   const isFrictionModal = Boolean(frictionModalConfig);
@@ -324,7 +325,7 @@ function AcknowledgeButton({
 
   return (
     <Button
-      variant={ButtonVariant.Primary}
+      variant={hasActions ? ButtonVariant.Secondary : ButtonVariant.Primary}
       width={BlockSize.Full}
       onClick={onAcknowledgeClick}
       size={ButtonSize.Lg}
@@ -336,30 +337,22 @@ function AcknowledgeButton({
   );
 }
 
-function ActionButton({
-  action,
-  onActionClick,
-}: {
-  action?: { key: string; label: string };
-  onActionClick?: (actionKey: string) => void;
-}) {
-  if (!onActionClick || !action) {
+function ActionButton({ action }: { action?: { key: string; label: string } }) {
+  const { processAction } = useAlertActionHandler();
+
+  if (!action) {
     return null;
   }
-
-  const handleActionClick = (key: string) => {
-    onActionClick(key);
-  };
 
   const { key, label } = action;
 
   return (
     <Button
       key={key}
-      variant={ButtonVariant.Secondary}
+      variant={ButtonVariant.Primary}
       width={BlockSize.Full}
       size={ButtonSize.Lg}
-      onClick={() => handleActionClick(key)}
+      onClick={() => processAction(key)}
     >
       {label}
     </Button>
@@ -369,7 +362,6 @@ function ActionButton({
 export function AlertModal({
   ownerId,
   onAcknowledgeClick,
-  onActionClick,
   alertKey,
   onClose,
   headerStartAccessory,
@@ -430,13 +422,10 @@ export function AlertModal({
               onAcknowledgeClick={onAcknowledgeClick}
               isConfirmed={isFrictionModal ? frictionCheckbox : isConfirmed}
               frictionModalConfig={frictionModalConfig}
+              hasActions={Boolean(selectedAlert.actions)}
             />
             {(selectedAlert.actions ?? []).map((action) => (
-              <ActionButton
-                key={action.key}
-                action={action}
-                onActionClick={onActionClick}
-              />
+              <ActionButton key={action.key} action={action} />
             ))}
           </Box>
         </ModalFooter>

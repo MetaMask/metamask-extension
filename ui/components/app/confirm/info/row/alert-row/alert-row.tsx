@@ -12,7 +12,6 @@ import {
 } from '../row';
 import { Box } from '../../../../../component-library';
 import { MultipleAlertModal } from '../../../../confirmations/alerts/multiple-alert-modal';
-import useConfirmationAlertActions from '../../../../../../pages/confirmations/hooks/useConfirmationAlertActions';
 
 export type AlertRowProps = ConfirmInfoRowProps & {
   alertKey: string;
@@ -45,7 +44,6 @@ function getSeverityAlerts(variant?: ConfirmInfoRowVariant): Severity {
 
 export const AlertRow = (props: AlertRowProps) => {
   const { alertKey, ownerId, style, variant, ...rowProperties } = props;
-  const processAlertAction = useConfirmationAlertActions();
   const { getFieldAlerts } = useAlerts(ownerId);
   const hasFieldAlert = getFieldAlerts(alertKey).length > 0;
 
@@ -82,9 +80,6 @@ export const AlertRow = (props: AlertRowProps) => {
       {alertModalVisible && (
         <MultipleAlertModal
           alertKey={alertKey}
-          onActionClick={(actionKey) => {
-            processAlertAction(actionKey);
-          }}
           ownerId={ownerId}
           onFinalAcknowledgeClick={handleCloseModal}
           onClose={handleCloseModal}

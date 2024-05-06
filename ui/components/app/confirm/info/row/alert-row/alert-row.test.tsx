@@ -80,7 +80,7 @@ describe('AlertRow', () => {
       expect(queryByTestId('inline-alert')).toBeNull();
     });
 
-    describe('Alert modal visibility:', () => {
+    describe('Modal visibility', () => {
       it('show when clicked in the inline alert', () => {
         const { getByTestId } = renderAlertRow({
           alertKey: KEY_ALERT_KEY_MOCK,
@@ -111,7 +111,7 @@ describe('AlertRow', () => {
       });
     });
 
-    describe('processAlertAction', () => {
+    describe('ProcessAlertAction', () => {
       it('renders dynamic action button', () => {
         const { getByTestId, getByText } = renderAlertRow({
           alertKey: KEY_ALERT_KEY_MOCK,

@@ -3,6 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
+import mockState from '../../../../../../test/data/mock-state.json';
 import {
   MultipleAlertModal,
   MultipleAlertModalProps,
@@ -11,8 +12,10 @@ import {
 describe('MultipleAlertModal', () => {
   const OWNER_ID_MOCK = '123';
   const FROM_ALERT_KEY_MOCK = 'from';
+  const CONTRACT_ALERT_KEY_MOCK = 'contract';
   const onAcknowledgeClickMock = jest.fn();
   const onCloseMock = jest.fn();
+
   const alertsMock = [
     {
       key: FROM_ALERT_KEY_MOCK,
@@ -25,10 +28,23 @@ describe('MultipleAlertModal', () => {
   ];
 
   const STATE_MOCK = {
+    ...mockState,
     confirmAlerts: {
       alerts: { [OWNER_ID_MOCK]: alertsMock },
       confirmed: {
-        [OWNER_ID_MOCK]: { [FROM_ALERT_KEY_MOCK]: false, data: false },
+        [OWNER_ID_MOCK]: {
+          [FROM_ALERT_KEY_MOCK]: false,
+          data: false,
+          [CONTRACT_ALERT_KEY_MOCK]: false,
+        },
+      },
+    },
+    confirm: {
+      currentConfirmation: {
+        id: OWNER_ID_MOCK,
+        status: 'unapproved',
+        time: new Date().getTime(),
+        type: 'personal_sign',
       },
     },
   };
