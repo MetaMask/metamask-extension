@@ -5,7 +5,7 @@ import { Severity } from '../../helpers/constants/design-system';
  */
 export type Alert = {
   /**
-   * The actions enable dynamic actions to be executed depending on the alert.
+   *Alternate actions the user can take, specific to the alert.
    */
   actions?: { key: string; label: string }[];
 
