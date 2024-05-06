@@ -31,15 +31,6 @@ export const SendPageRecipientContent = ({
 }) => {
   const t = useI18nContext();
 
-  // Hex data
-  const showHexDataFlag = useSelector(getSendHexDataFeatureFlagState);
-  const asset = useSelector(getSendAsset);
-  const showHexData =
-    showHexDataFlag &&
-    asset &&
-    asset.type !== AssetType.token &&
-    asset.type !== AssetType.NFT;
-
   const {
     receiveAsset,
     sendAsset,
@@ -56,10 +47,22 @@ export const SendPageRecipientContent = ({
 
   const isLoadingInitialQuotes = !bestQuote && isSwapQuoteLoading;
 
-  const amount =
-    receiveAsset.details?.address === sendAsset.details?.address
-      ? sendAmount
-      : { value: decimalToHex(bestQuote?.destinationAmount || '0') };
+  const isBasicSend =
+    receiveAsset.details?.address === sendAsset.details?.address;
+
+  const amount = isBasicSend
+    ? sendAmount
+    : { value: decimalToHex(bestQuote?.destinationAmount || '0') };
+
+  // Hex data
+  const showHexDataFlag = useSelector(getSendHexDataFeatureFlagState);
+  const asset = useSelector(getSendAsset);
+  const showHexData =
+    isBasicSend &&
+    showHexDataFlag &&
+    asset &&
+    asset.type !== AssetType.token &&
+    asset.type !== AssetType.NFT;
 
   // Gas data
   const dispatch = useDispatch();
@@ -68,7 +71,6 @@ export const SendPageRecipientContent = ({
   // TODO: SWAP+SEND impl steps (all but step 3 correlate to a PR in the merge train):
   // TODO: 1. begin design review + revisions
   //          - add pre-transaction validation and refetch if it doesn't match
-  //          - test hex data input (advanced settings)
   //          - handle repopulations
   //          - resolve all TODOs
   //          - handle approval gas
