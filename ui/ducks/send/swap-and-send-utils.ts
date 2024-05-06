@@ -12,7 +12,10 @@ import {
   validHex,
   validateData,
 } from '../../../shared/lib/swaps-utils';
-import { decimalToHex } from '../../../shared/modules/conversion.utils';
+import {
+  decimalToHex,
+  hexToDecimal,
+} from '../../../shared/modules/conversion.utils';
 import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
 
 type Address = `0x${string}`;
@@ -145,7 +148,9 @@ export async function getSwapAndSendQuotes(
   const queryString = new URLSearchParams(params);
 
   // FIXME: can't use the dev API since it's several major versions behind prod
-  const url = `${SWAPS_API_V2_BASE_URL}/${SWAPS_API_VERSION}/networks/${chainId}/quotes?${queryString}`;
+  const url = `${SWAPS_API_V2_BASE_URL}/${SWAPS_API_VERSION}/networks/${hexToDecimal(
+    chainId,
+  )}/quotes?${queryString}`;
 
   const tradesResponse = await fetchWithCache({
     url,
