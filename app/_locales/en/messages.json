@@ -565,6 +565,33 @@
   "basic": {
     "message": "Basic"
   },
+  "basicConfigurationBannerCTA": {
+    "message": "Turn on basic functionality"
+  },
+  "basicConfigurationBannerTitle": {
+    "message": "Basic functionality is off"
+  },
+  "basicConfigurationDescription": {
+    "message": "Includes token data and value, optimal gas settings, and more. Using these services shares your IP address with MetaMask, just like when you visit a website."
+  },
+  "basicConfigurationLabel": {
+    "message": "Basic functionality"
+  },
+  "basicConfigurationModalCheckbox": {
+    "message": "I understand and want to continue"
+  },
+  "basicConfigurationModalDisclaimerOff": {
+    "message": "This means you won't fully optimize your time on MetaMask. Basic features (like token details, optimal gas settings, and others) won't be available to you."
+  },
+  "basicConfigurationModalDisclaimerOn": {
+    "message": "To optimize your time on MetaMask, you’ll need to turn on this feature. Basic functions (like token details, optimal gas settings, and others) are important to the web3 experience."
+  },
+  "basicConfigurationModalHeadingOff": {
+    "message": "Turn off basic functionality"
+  },
+  "basicConfigurationModalHeadingOn": {
+    "message": "Turn on basic functionality"
+  },
   "beCareful": {
     "message": "Be careful"
   },
@@ -809,16 +836,12 @@
   "confirmTitleDescContractInteractionTransaction": {
     "message": "Only confirm this transaction if you fully understand the content and trust the requesting site."
   },
-  "confirmTitleDescPersonalSignature": {
-    "message": "Only sign this message if you fully understand the content and trust the requesting site"
-  },
-  "confirmTitleDescTypedDataSignature": {
-    "message": "Review everything below before continuing. Once done, this transaction can’t be undone"
+  "confirmTitleDescSignature": {
+    "message": "Only confirm this message if you approve the content and trust the requesting site."
   },
   "confirmTitleSignature": {
     "message": "Signature request"
   },
-
   "confirmTitleTransaction": {
     "message": "Transaction request"
   },
@@ -3915,10 +3938,10 @@
     "message": "Protect your funds"
   },
   "redesignedConfirmationsEnabledToggle": {
-    "message": "Redesigned confirmations"
+    "message": "Improved signature requests"
   },
   "redesignedConfirmationsToggleDescription": {
-    "message": "Turn this on to see re-designed confirmations whenever you receive signature requests."
+    "message": "Turn this on to see signature requests in an enhanced format."
   },
   "refreshList": {
     "message": "Refresh list"
@@ -5764,6 +5787,12 @@
   },
   "tryAgain": {
     "message": "Try again"
+  },
+  "turnOff": {
+    "message": "Turn off"
+  },
+  "turnOn": {
+    "message": "Turn on"
   },
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"
