@@ -160,7 +160,7 @@ export default class UnitInput extends PureComponent {
         <div className="unit-input__inputs">
           <Tooltip
             title={value}
-            disabled={!isOverflowing}
+            disabled={!isOverflowing || !value}
             arrow
             hideOnClick={false}
             className="unit-input__input-container"
