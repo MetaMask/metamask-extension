@@ -3068,7 +3068,7 @@ export function setPetnamesEnabled(value: boolean) {
 }
 
 export function setRedesignedConfirmationsEnabled(value: boolean) {
-  return setPreference('redesignedConfirmations', value);
+  return setPreference('redesignedConfirmationsEnabled', value);
 }
 
 export function setFeatureNotificationsEnabled(value: boolean) {
@@ -3148,6 +3148,24 @@ export function resetOnboarding(): ThunkAction<
 export function resetOnboardingAction() {
   return {
     type: actionConstants.RESET_ONBOARDING,
+  };
+}
+
+export function setServiceWorkerKeepAlivePreference(
+  value: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setServiceWorkerKeepAlivePreference`);
+    try {
+      await submitRequestToBackground('setServiceWorkerKeepAlivePreference', [
+        value,
+      ]);
+    } catch (error) {
+      dispatch(displayWarning(error));
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
   };
 }
 
@@ -3460,6 +3478,19 @@ export function setIpfsGateway(
   return (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setIpfsGateway`);
     callBackgroundMethod('setIpfsGateway', [val], (err) => {
+      if (err) {
+        dispatch(displayWarning(err));
+      }
+    });
+  };
+}
+
+export function toggleExternalServices(
+  val: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.toggleExternalServices`);
+    callBackgroundMethod('toggleExternalServices', [val], (err) => {
       if (err) {
         dispatch(displayWarning(err));
       }

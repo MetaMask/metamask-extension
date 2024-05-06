@@ -15,6 +15,7 @@ import {
 } from '../../../shared/constants/app';
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
 import {
+  shouldEmitDappViewedEvent,
   addUrlProtocolPrefix,
   deferredPromise,
   formatTxMetaForRpcResult,
@@ -252,6 +253,19 @@ describe('app utils', () => {
       reject(new Error('different message'));
 
       await expect(promise).resolves.toBe('test');
+    });
+  });
+
+  describe('shouldEmitDappViewedEvent', () => {
+    it('should return true for valid metrics IDs', () => {
+      expect(shouldEmitDappViewedEvent('fake-metrics-id-fd20')).toStrictEqual(
+        true,
+      );
+    });
+    it('should return false for invalid metrics IDs', () => {
+      expect(
+        shouldEmitDappViewedEvent('fake-metrics-id-invalid'),
+      ).toStrictEqual(false);
     });
   });
 

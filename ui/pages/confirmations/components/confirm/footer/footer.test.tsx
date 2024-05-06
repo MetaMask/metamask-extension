@@ -10,6 +10,7 @@ import { fireEvent, renderWithProvider } from '../../../../../../test/jest';
 import * as MMIConfirmations from '../../../../../hooks/useMMIConfirmations';
 import * as Actions from '../../../../../store/actions';
 import configureStore from '../../../../../store/store';
+import { Severity } from '../../../../../helpers/constants/design-system';
 import Footer from './footer';
 
 jest.mock('react-redux', () => ({
@@ -135,5 +136,53 @@ describe('ConfirmFooter', () => {
     const submitButton = getAllByRole('button')[1];
     fireEvent.click(submitButton);
     expect(mockFn).toHaveBeenCalledTimes(1);
+  });
+
+  describe('ConfirmButton', () => {
+    const OWNER_ID_MOCK = '123';
+    const KEY_ALERT_KEY_MOCK = 'Key';
+    const ALERT_MESSAGE_MOCK = 'Alert 1';
+    const alertsMock = [
+      {
+        key: KEY_ALERT_KEY_MOCK,
+        field: KEY_ALERT_KEY_MOCK,
+        severity: Severity.Warning,
+        message: ALERT_MESSAGE_MOCK,
+        reason: 'Reason 1',
+        alertDetails: ['Detail 1', 'Detail 2'],
+      },
+    ];
+    const stateWithAlertsMock = {
+      ...mockState,
+      confirmAlerts: {
+        alerts: { [OWNER_ID_MOCK]: alertsMock },
+        confirmed: {
+          [OWNER_ID_MOCK]: { [KEY_ALERT_KEY_MOCK]: false },
+        },
+      },
+      confirm: {
+        currentConfirmation: {
+          id: OWNER_ID_MOCK,
+          msgParams: {
+            from: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+          },
+        },
+      },
+    };
+    it('renders the review alerts button when there are unconfirmed alerts', () => {
+      const { getByText } = render(stateWithAlertsMock);
+      expect(getByText('Review alerts')).toBeInTheDocument();
+    });
+
+    it('renders the confirm button when there are no unconfirmed alerts', () => {
+      const { getByText } = render();
+      expect(getByText('Confirm')).toBeInTheDocument();
+    });
+
+    it('sets the alert modal visible when the review alerts button is clicked', () => {
+      const { getByTestId } = render(stateWithAlertsMock);
+      fireEvent.click(getByTestId('confirm-footer-confirm-button'));
+      expect(getByTestId('alert-modal-button')).toBeDefined();
+    });
   });
 });

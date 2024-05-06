@@ -476,6 +476,10 @@ class Driver {
     await this.fill(rawLocator, Key.chord(this.Key.MODIFIER, 'v'));
   }
 
+  async pasteFromClipboardIntoField(rawLocator) {
+    await this.fill(rawLocator, Key.chord(this.Key.MODIFIER, 'v'));
+  }
+
   // Navigation
 
   async navigate(page = PAGES.HOME) {
