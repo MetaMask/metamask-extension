@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { Text } from '../../../component-library';
 import UserPreferencedCurrencyDisplay from '../../../app/user-preferenced-currency-display';
 import { PRIMARY } from '../../../../helpers/constants/common';
-import TokenBalance from '../../../ui/token-balance';
 import { Asset } from '../../../../ducks/send';
 import {
   getCurrentCurrency,
@@ -114,14 +113,9 @@ export function AssetBalanceText({
   // catch-all for non-natives; they should all have addresses
   if (asset.details?.address) {
     return (
-      <TokenBalance
+      <UserPreferencedCurrencyDisplay
         {...commonProps}
-        token={{
-          ...asset.details,
-          decimals: asset.details.decimals
-            ? Number(asset.details.decimals)
-            : undefined,
-        }}
+        displayValue={balanceString || ''}
       />
     );
   }
