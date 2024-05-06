@@ -5144,12 +5144,9 @@ export function performSignIn(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async () => {
     try {
       await submitRequestToBackground('performSignIn');
-      dispatch({
-        type: actionConstants.PERFORM_SIGN_IN,
-      });
     } catch (error) {
       const errorMessage =
         error instanceof Error
@@ -5176,12 +5173,9 @@ export function performSignOut(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async () => {
     try {
       await submitRequestToBackground('performSignOut');
-      dispatch({
-        type: actionConstants.PERFORM_SIGN_OUT,
-      });
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -5204,12 +5198,9 @@ export function enableProfileSyncing(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async () => {
     try {
       await submitRequestToBackground('enableProfileSyncing');
-      dispatch({
-        type: actionConstants.ENABLE_PROFILE_SYNCING,
-      });
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -5232,12 +5223,9 @@ export function disableProfileSyncing(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async () => {
     try {
       await submitRequestToBackground('disableProfileSyncing');
-      dispatch({
-        type: actionConstants.DISABLE_PROFILE_SYNCING,
-      });
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -5260,12 +5248,9 @@ export function createOnChainTriggers(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async () => {
     try {
       await submitRequestToBackground('createOnChainTriggers');
-      dispatch({
-        type: actionConstants.CREATE_ON_CHAIN_TRIGGERS,
-      });
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -5286,15 +5271,11 @@ export function createOnChainTriggers(): ThunkAction<
 export function deleteOnChainTriggersByAccount(
   accounts: string[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async () => {
     try {
       await submitRequestToBackground('deleteOnChainTriggersByAccount', [
         accounts,
       ]);
-      dispatch({
-        type: actionConstants.DELETE_ON_CHAIN_TRIGGERS_BY_ACCOUNT,
-        payload: accounts,
-      });
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -5315,15 +5296,11 @@ export function deleteOnChainTriggersByAccount(
 export function updateOnChainTriggersByAccount(
   accounts: string[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async () => {
     try {
       await submitRequestToBackground('updateOnChainTriggersByAccount', [
         accounts,
       ]);
-      dispatch({
-        type: actionConstants.UPDATE_ON_CHAIN_TRIGGERS_BY_ACCOUNT,
-        payload: accounts,
-      });
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -5346,12 +5323,9 @@ export function fetchAndUpdateMetamaskNotifications(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async () => {
     try {
       await submitRequestToBackground('fetchAndUpdateMetamaskNotifications');
-      dispatch({
-        type: actionConstants.FETCH_AND_UPDATE_METAMASK_NOTIFICATIONS,
-      });
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -5372,15 +5346,11 @@ export function fetchAndUpdateMetamaskNotifications(): ThunkAction<
 export function markMetamaskNotificationsAsRead(
   notifications: MarkAsReadNotificationsParam,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async () => {
     try {
       await submitRequestToBackground('markMetamaskNotificationsAsRead', [
         notifications,
       ]);
-      dispatch({
-        type: actionConstants.MARK_METAMASK_NOTIFICATIONS_AS_READ,
-        payload: notifications,
-      });
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -5401,15 +5371,11 @@ export function markMetamaskNotificationsAsRead(
 export function setMetamaskNotificationsEnabled(
   state: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async () => {
     try {
       await submitRequestToBackground('setMetamaskNotificationsEnabled', [
         state,
       ]);
-      dispatch({
-        type: actionConstants.SET_METAMASK_NOTIFICATIONS_ENABLED,
-        payload: state,
-      });
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -5430,13 +5396,9 @@ export function setMetamaskNotificationsEnabled(
 export function setSnapNotificationsEnabled(
   state: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async () => {
     try {
       await submitRequestToBackground('setSnapNotificationsEnabled', [state]);
-      dispatch({
-        type: actionConstants.SET_SNAP_NOTIFICATIONS_ENABLED,
-        payload: state,
-      });
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -5457,15 +5419,11 @@ export function setSnapNotificationsEnabled(
 export function setFeatureAnnouncementsEnabled(
   state: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async () => {
     try {
       await submitRequestToBackground('setFeatureAnnouncementsEnabled', [
         state,
       ]);
-      dispatch({
-        type: actionConstants.SET_FEATURE_ANNOUNCEMENTS_ENABLED,
-        payload: state,
-      });
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -5486,13 +5444,9 @@ export function setFeatureAnnouncementsEnabled(
 export function checkAccountsPresence(
   accounts: string[],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async () => {
     try {
       await submitRequestToBackground('checkAccountsPresence', [accounts]);
-      dispatch({
-        type: actionConstants.CHECK_ACCOUNTS_PRESENCE,
-        payload: accounts,
-      });
     } catch (error) {
       logErrorWithMessage(error);
       throw error;

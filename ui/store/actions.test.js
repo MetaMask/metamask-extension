@@ -2223,14 +2223,8 @@ describe('Actions', () => {
         performSignIn: performSignInStub,
       });
       setBackgroundConnection(background.getApi());
-      const expectedActions = [
-        {
-          type: actionConstants.PERFORM_SIGN_IN,
-        },
-      ];
 
       await store.dispatch(actions.performSignIn());
-      await expect(store.getActions()).toStrictEqual(expectedActions);
       expect(performSignInStub.calledOnceWith()).toBe(true);
     });
   });
@@ -2249,14 +2243,8 @@ describe('Actions', () => {
         performSignOut: performSignOutStub,
       });
       setBackgroundConnection(background.getApi());
-      const expectedActions = [
-        {
-          type: actionConstants.PERFORM_SIGN_OUT,
-        },
-      ];
 
       await store.dispatch(actions.performSignOut());
-      await expect(store.getActions()).toStrictEqual(expectedActions);
       expect(performSignOutStub.calledOnceWith()).toBe(true);
     });
   });
@@ -2275,14 +2263,8 @@ describe('Actions', () => {
         enableProfileSyncing: enableProfileSyncingStub,
       });
       setBackgroundConnection(background.getApi());
-      const expectedActions = [
-        {
-          type: actionConstants.ENABLE_PROFILE_SYNCING,
-        },
-      ];
 
       await store.dispatch(actions.enableProfileSyncing());
-      await expect(store.getActions()).toStrictEqual(expectedActions);
       expect(enableProfileSyncingStub.calledOnceWith()).toBe(true);
     });
   });
@@ -2301,14 +2283,8 @@ describe('Actions', () => {
         disableProfileSyncing: disableProfileSyncingStub,
       });
       setBackgroundConnection(background.getApi());
-      const expectedActions = [
-        {
-          type: actionConstants.DISABLE_PROFILE_SYNCING,
-        },
-      ];
 
       await store.dispatch(actions.disableProfileSyncing());
-      await expect(store.getActions()).toStrictEqual(expectedActions);
       expect(disableProfileSyncingStub.calledOnceWith()).toBe(true);
     });
   });
@@ -2327,14 +2303,8 @@ describe('Actions', () => {
         createOnChainTriggers: createOnChainTriggersStub,
       });
       setBackgroundConnection(background.getApi());
-      const expectedActions = [
-        {
-          type: actionConstants.CREATE_ON_CHAIN_TRIGGERS,
-        },
-      ];
 
       await store.dispatch(actions.createOnChainTriggers());
-      await expect(store.getActions()).toStrictEqual(expectedActions);
       expect(createOnChainTriggersStub.calledOnceWith()).toBe(true);
     });
 
@@ -2380,15 +2350,8 @@ describe('Actions', () => {
         deleteOnChainTriggersByAccount: deleteOnChainTriggersByAccountStub,
       });
       setBackgroundConnection(background.getApi());
-      const expectedActions = [
-        {
-          type: actionConstants.DELETE_ON_CHAIN_TRIGGERS_BY_ACCOUNT,
-          payload: accounts,
-        },
-      ];
 
       await store.dispatch(actions.deleteOnChainTriggersByAccount(accounts));
-      await expect(store.getActions()).toStrictEqual(expectedActions);
       expect(deleteOnChainTriggersByAccountStub.calledOnceWith(accounts)).toBe(
         true,
       );
@@ -2431,15 +2394,8 @@ describe('Actions', () => {
         updateOnChainTriggersByAccount: updateOnChainTriggersByAccountStub,
       });
       setBackgroundConnection(background.getApi());
-      const expectedActions = [
-        {
-          type: actionConstants.UPDATE_ON_CHAIN_TRIGGERS_BY_ACCOUNT,
-          payload: accountIds,
-        },
-      ];
 
       await store.dispatch(actions.updateOnChainTriggersByAccount(accountIds));
-      await expect(store.getActions()).toStrictEqual(expectedActions);
       expect(
         updateOnChainTriggersByAccountStub.calledOnceWith(accountIds),
       ).toBe(true);
@@ -2482,14 +2438,8 @@ describe('Actions', () => {
           fetchAndUpdateMetamaskNotificationsStub,
       });
       setBackgroundConnection(background.getApi());
-      const expectedActions = [
-        {
-          type: actionConstants.FETCH_AND_UPDATE_METAMASK_NOTIFICATIONS,
-        },
-      ];
 
       await store.dispatch(actions.fetchAndUpdateMetamaskNotifications());
-      await expect(store.getActions()).toStrictEqual(expectedActions);
       expect(fetchAndUpdateMetamaskNotificationsStub.calledOnceWith()).toBe(
         true,
       );
@@ -2548,17 +2498,10 @@ describe('Actions', () => {
         markMetamaskNotificationsAsRead: markMetamaskNotificationsAsReadStub,
       });
       setBackgroundConnection(background.getApi());
-      const expectedActions = [
-        {
-          type: actionConstants.MARK_METAMASK_NOTIFICATIONS_AS_READ,
-          payload: notifications.map((n) => n.id),
-        },
-      ];
 
       await store.dispatch(
         actions.markMetamaskNotificationsAsRead(notifications.map((n) => n.id)),
       );
-      await expect(store.getActions()).toStrictEqual(expectedActions);
       expect(
         markMetamaskNotificationsAsReadStub.calledOnceWith(
           notifications.map((n) => n.id),
@@ -2618,15 +2561,8 @@ describe('Actions', () => {
         setMetamaskNotificationsEnabled: setMetamaskNotificationsEnabledStub,
       });
       setBackgroundConnection(background.getApi());
-      const expectedActions = [
-        {
-          type: actionConstants.SET_METAMASK_NOTIFICATIONS_ENABLED,
-          payload: state,
-        },
-      ];
 
       await store.dispatch(actions.setMetamaskNotificationsEnabled(state));
-      await expect(store.getActions()).toStrictEqual(expectedActions);
       expect(setMetamaskNotificationsEnabledStub.calledOnceWith(state)).toBe(
         true,
       );
@@ -2669,15 +2605,8 @@ describe('Actions', () => {
         setSnapNotificationsEnabled: setSnapNotificationsEnabledStub,
       });
       setBackgroundConnection(background.getApi());
-      const expectedActions = [
-        {
-          type: actionConstants.SET_SNAP_NOTIFICATIONS_ENABLED,
-          payload: state,
-        },
-      ];
 
       await store.dispatch(actions.setSnapNotificationsEnabled(state));
-      await expect(store.getActions()).toStrictEqual(expectedActions);
       expect(setSnapNotificationsEnabledStub.calledOnceWith(state)).toBe(true);
     });
 
@@ -2719,15 +2648,7 @@ describe('Actions', () => {
       });
       setBackgroundConnection(background.getApi());
 
-      const expectedActions = [
-        {
-          type: actionConstants.SET_FEATURE_ANNOUNCEMENTS_ENABLED,
-          payload: state,
-        },
-      ];
-
       await store.dispatch(actions.setFeatureAnnouncementsEnabled(state));
-      await expect(store.getActions()).toStrictEqual(expectedActions);
       expect(setFeatureAnnouncementsEnabledStub.calledOnceWith(state)).toBe(
         true,
       );
@@ -2769,16 +2690,7 @@ describe('Actions', () => {
       setBackgroundConnection({
         checkAccountsPresence: checkAccountsPresenceStub,
       });
-
-      const expectedActions = [
-        {
-          type: 'CHECK_ACCOUNTS_PRESENCE',
-          payload: accounts,
-        },
-      ];
-
       await store.dispatch(actions.checkAccountsPresence(accounts));
-      await expect(store.getActions()).toStrictEqual(expectedActions);
       expect(checkAccountsPresenceStub.calledOnceWith(accounts)).toBe(true);
     });
 
