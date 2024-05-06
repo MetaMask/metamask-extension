@@ -125,7 +125,9 @@ import { Numeric } from '../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
 import { setMaxValueMode } from '../confirm-transaction/confirm-transaction.duck';
-import { getSwapAndSendQuotes } from './swap-and-send-utils';
+// used for typing
+// eslint-disable-next-line no-unused-vars
+import { Quote, getSwapAndSendQuotes } from './swap-and-send-utils';
 import {
   estimateGasLimitForSend,
   generateTransactionParams,
@@ -365,7 +367,7 @@ export const RECIPIENT_SEARCH_MODES = {
  *  TransactionController state. This is required to be able to update the
  *  transaction in the controller.
  * @property {boolean} isSwapQuoteLoading – is a swap quote being fetched
- * @property {object} [quotes] – quotes for swaps // TODO: update type
+ * @property {Quote[]} [quotes] – quotes for swaps
  * @property {Asset} receiveAsset - An object that describes the asset that the user
  *  has selected for the recipient to receive.
  * @property {Recipient} recipient - An object that describes the intended
@@ -818,7 +820,7 @@ const fetchSwapAndSendQuotes = createAsyncThunk(
       }, FETCH_DELAY),
     );
 
-    if (!Object.keys(quotes).length) {
+    if (!quotes?.length) {
       throw new Error(SWAPS_NO_QUOTES);
     }
 
@@ -1558,7 +1560,7 @@ const slice = createSlice({
         payload: 'Begin validating send state',
       });
 
-      const quotes = Object.values(draftTransaction.quotes || {});
+      const { quotes } = draftTransaction;
       const bestQuote = quotes ? calculateBestQuote(quotes) : undefined;
 
       if (draftTransaction) {
@@ -2666,7 +2668,7 @@ export function signTransaction() {
 
     if (isSwapAndSend) {
       // TODO: update to selected quote
-      const quotesAsArray = Object.values(draftTransaction.quotes || {});
+      const quotesAsArray = draftTransaction.quotes;
       const bestQuote = calculateBestQuote(quotesAsArray);
 
       txParams = { ...bestQuote.trade };
@@ -2853,8 +2855,8 @@ export function getCurrentDraftTransaction(state) {
 export const getBestQuote = createSelector(
   getCurrentDraftTransaction,
   ({ quotes, swapQuotesError }) => {
-    const quotesAsArray = Object.values(quotes || {});
-    if (swapQuotesError || !quotesAsArray.length) {
+    const quotesAsArray = quotes;
+    if (swapQuotesError || !quotesAsArray?.length) {
       return undefined;
     }
 
