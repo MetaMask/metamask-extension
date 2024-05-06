@@ -2634,12 +2634,13 @@ export function updateSendAsset(
               details.tokenId,
             );
           } catch (err) {
-            if (err.message.includes('Unable to verify ownership.')) {
+            const message = err.data?.cause?.message || err.message;
+            if (message.includes('Unable to verify ownership.')) {
               // this would indicate that either our attempts to verify ownership failed because of network issues,
               // or, somehow a token has been added to NFTs state with an incorrect chainId.
             } else {
               // Any other error is unexpected and should be surfaced.
-              dispatch(displayWarning(err.message));
+              dispatch(displayWarning(err));
             }
           }
 
