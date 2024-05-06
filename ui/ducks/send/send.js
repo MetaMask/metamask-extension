@@ -71,6 +71,7 @@ import {
   getLayer1GasFee,
   gasFeeStopPollingByPollingToken,
   gasFeeStartPollingByNetworkClientId,
+  getBalancesInSingleCall,
 } from '../../store/actions';
 import { setCustomGasLimit } from '../gas/gas.duck';
 import {
@@ -2356,19 +2357,44 @@ export function updateSendAsset(
       await dispatch(showLoadingIndication());
 
       const STANDARD_TO_REQUIRED_PROPERTIES = {
+        // 'balance' must be last so that we know all other properties exist if `missingProperty` = 'balance'
         [TokenStandard.ERC20]: ['address', 'symbol', 'decimals', 'balance'],
         [TokenStandard.ERC721]: ['address', 'symbol', 'tokenId'],
         [TokenStandard.ERC1155]: ['address', 'symbol', 'tokenId'],
       };
 
+      let missingProperty = STANDARD_TO_REQUIRED_PROPERTIES[
+        providedDetails.standard
+      ].find((property) => providedDetails[property] === undefined);
+
       let details;
+
+      // attempt simple balance fetch if balance is missing
+      if (missingProperty === 'balance') {
+        const selectedNetworkClientId = getSelectedNetworkClientId(state);
+        const sender =
+          draftTransaction.fromAccount?.address ??
+          state[name].selectedAccount.address ??
+          getSelectedInternalAccount(state).address;
+
+        const balance = await getBalancesInSingleCall(
+          sender,
+          [providedDetails.address],
+          selectedNetworkClientId,
+        ).catch(() => ({}));
+
+        const hexBalance = balance[providedDetails.address]?.hex;
+
+        providedDetails.balance = hexBalance
+          ? hexToDecimal(hexBalance)
+          : undefined;
+
+        // regardless of if we get the balance or not, we should not consider it a missing property
+        missingProperty = undefined;
+      }
+
       // if standard exists with all required properties, do not call getTokenStandardAndDetails
-      if (
-        providedDetails.standard &&
-        !STANDARD_TO_REQUIRED_PROPERTIES[providedDetails.standard].find(
-          (property) => providedDetails[property] === undefined,
-        )
-      ) {
+      if (providedDetails.standard && !missingProperty) {
         details = {
           ...providedDetails,
         };
