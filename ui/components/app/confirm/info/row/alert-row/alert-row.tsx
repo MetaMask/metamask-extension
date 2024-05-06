@@ -1,4 +1,4 @@
-import React, { createContext } from 'react';
+import React from 'react';
 import {
   Severity,
   TextColor,
@@ -10,13 +10,14 @@ import {
   ConfirmInfoRowProps,
   ConfirmInfoRowVariant,
 } from '../row';
+import { Box } from '../../../../../component-library';
 
 export type AlertRowProps = ConfirmInfoRowProps & {
   alertKey: string;
   alertOwnerId: string;
 };
 
-export function getAlertTextColors(variant: ConfirmInfoRowVariant): TextColor {
+export function getAlertTextColors(variant?: ConfirmInfoRowVariant): TextColor {
   switch (variant) {
     case ConfirmInfoRowVariant.Critical:
       return TextColor.errorDefault;
@@ -29,7 +30,7 @@ export function getAlertTextColors(variant: ConfirmInfoRowVariant): TextColor {
   }
 }
 
-function getSeverityAlerts(variant: ConfirmInfoRowVariant): Severity {
+function getSeverityAlerts(variant?: ConfirmInfoRowVariant): Severity {
   switch (variant) {
     case ConfirmInfoRowVariant.Critical:
       return Severity.Danger;
@@ -40,42 +41,32 @@ function getSeverityAlerts(variant: ConfirmInfoRowVariant): Severity {
   }
 }
 
-export const InlineAlertContext = createContext<React.ReactNode | null>(null);
-
-export const AlertRow = ({
-  alertKey,
-  alertOwnerId,
-  children,
-  label,
-  tooltip,
-  variant = ConfirmInfoRowVariant.Default,
-  style,
-}: AlertRowProps) => {
+export const AlertRow = (props: AlertRowProps) => {
+  const { alertKey, alertOwnerId, style, variant, ...rowProperties } = props;
   const { getFieldAlerts } = useAlerts(alertOwnerId);
   const hasFieldAlert = getFieldAlerts(alertKey).length > 0;
 
   const confirmInfoRowProps = {
-    children,
-    label,
-    variant,
-    tooltip,
+    ...rowProperties,
     style: {
       background: 'transparent',
       ...style,
     },
+    color: getAlertTextColors(variant),
   };
 
   const inlineAlert = hasFieldAlert ? (
-    <InlineAlert
-      onClick={() => {
-        // intentionally empty
-      }}
-      severity={getSeverityAlerts(variant)}
-      style={{ marginLeft: '4px' }}
-    />
+    <Box marginLeft={1}>
+      <InlineAlert
+        onClick={() => {
+          // intentionally empty
+        }}
+        severity={getSeverityAlerts(variant)}
+      />
+    </Box>
   ) : null;
 
   return (
-    <ConfirmInfoRow {...confirmInfoRowProps} labelEndChildren={inlineAlert} />
+    <ConfirmInfoRow {...confirmInfoRowProps} labelChildren={inlineAlert} />
   );
 };

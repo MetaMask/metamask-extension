@@ -101,4 +101,5 @@ AlertRowInformative.args = {
   children: 'Value',
   alertKey: LABEL_FROM_MOCK,
   alertOwnerId: OWNER_ID_MOCK,
+  variant: ConfirmInfoRowVariant.Default,
 };
