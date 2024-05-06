@@ -2,6 +2,7 @@ import { isNumber } from 'lodash';
 import {
   SWAPS_API_V2_BASE_URL,
   SWAPS_CLIENT_ID,
+  SWAPS_DEV_API_V2_BASE_URL,
 } from '../../../shared/constants/swaps';
 import { SECOND } from '../../../shared/constants/time';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
@@ -140,6 +141,10 @@ const QUOTE_VALIDATORS = [
 ];
 const SWAPS_API_VERSION = 'v2';
 
+const BASE_URL = process.env.SWAPS_USE_DEV_APIS
+  ? SWAPS_DEV_API_V2_BASE_URL
+  : SWAPS_API_V2_BASE_URL;
+
 export async function getSwapAndSendQuotes(
   request: Request,
 ): Promise<Record<string, Quote>> {
@@ -148,7 +153,7 @@ export async function getSwapAndSendQuotes(
   const queryString = new URLSearchParams(params);
 
   // FIXME: can't use the dev API since it's several major versions behind prod
-  const url = `${SWAPS_API_V2_BASE_URL}/${SWAPS_API_VERSION}/networks/${hexToDecimal(
+  const url = `${BASE_URL}/${SWAPS_API_VERSION}/networks/${hexToDecimal(
     chainId,
   )}/quotes?${queryString}`;
 
