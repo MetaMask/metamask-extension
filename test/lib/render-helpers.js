@@ -3,14 +3,20 @@ import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 import userEvent from '@testing-library/user-event';
-import { Router } from 'react-router-dom';
+import { HashRouter, Router } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { createMemoryHistory } from 'history';
 import configureStore from '../../ui/store/store';
 import { I18nContext, LegacyI18nProvider } from '../../ui/contexts/i18n';
-import { LegacyMetaMetricsProvider } from '../../ui/contexts/metametrics';
+import {
+  LegacyMetaMetricsProvider,
+  MetaMetricsProvider,
+} from '../../ui/contexts/metametrics';
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
 import * as en from '../../app/_locales/en/messages.json';
+import { setupInitialStore } from '../../ui';
+import Routes from '../../ui/pages/routes';
+import { CurrencyRateProvider } from '../../ui/contexts/currencyRate';
 
 export const I18nProvider = (props) => {
   const { currentLocale, current, en: eng } = props;
@@ -131,5 +137,45 @@ export function renderWithUserEvent(jsx) {
   return {
     user: userEvent.setup(),
     ...render(jsx),
+  };
+}
+
+export async function integrationTestRenderWithProvider(extendedRenderOptions) {
+  const {
+    preloadedState = {},
+    backgroundConnection,
+    activeTab = {
+      id: 113,
+      title: 'E2E Test Dapp',
+      origin: 'https://metamask.github.io',
+      protocol: 'https:',
+      url: 'https://metamask.github.io/test-dapp/',
+    },
+    ...renderOptions
+  } = extendedRenderOptions;
+
+  const store = await setupInitialStore(preloadedState, backgroundConnection, {
+    activeTab,
+  });
+
+  return {
+    ...render(
+      <Provider store={store}>
+        <HashRouter hashType="noslash">
+          <MetaMetricsProvider>
+            <LegacyMetaMetricsProvider>
+              <I18nProvider currentLocale="en" current={en} en={en}>
+                <LegacyI18nProvider>
+                  <CurrencyRateProvider>
+                    <Routes />
+                  </CurrencyRateProvider>
+                </LegacyI18nProvider>
+              </I18nProvider>
+            </LegacyMetaMetricsProvider>
+          </MetaMetricsProvider>
+        </HashRouter>
+      </Provider>,
+      { ...renderOptions },
+    ),
   };
 }
