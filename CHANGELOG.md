@@ -72,6 +72,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Add animation on the smart transaction status page ([#24389](https://github.com/MetaMask/metamask-extension/pull/24389))
+## [11.15.3]
 
 ## [11.15.2]
 ### Fixed
@@ -4756,6 +4757,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 [11.15.2]: https://github.com/MetaMask/metamask-extension/compare/v11.15.1...v11.15.2
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.15.1...HEAD
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.15.2...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.15.3...HEAD
+[11.15.3]: https://github.com/MetaMask/metamask-extension/compare/v11.15.2...v11.15.3
 [11.15.2]: https://github.com/MetaMask/metamask-extension/compare/v11.15.1...v11.15.2
 [11.15.1]: https://github.com/MetaMask/metamask-extension/compare/v11.15.0...v11.15.1
 [11.15.0]: https://github.com/MetaMask/metamask-extension/compare/v11.14.5...v11.15.0
