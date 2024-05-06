@@ -1983,12 +1983,20 @@ export function ignoreTokens({
 /**
  * To fetch the ERC20 tokens with non-zero balance in a single call
  *
- * @param tokens
+ * @param selectedAddress - the targeted account
+ * @param tokensToDetect - the targeted list of tokens
+ * @param networkClientId - unique identifier for the network client
  */
 export async function getBalancesInSingleCall(
-  tokens: string[],
+  selectedAddress: string,
+  tokensToDetect: string[],
+  networkClientId: string,
 ): Promise<BalanceMap> {
-  return await submitRequestToBackground('getBalancesInSingleCall', [tokens]);
+  return await submitRequestToBackground('getBalancesInSingleCall', [
+    selectedAddress,
+    tokensToDetect,
+    networkClientId,
+  ]);
 }
 
 export function addNft(
