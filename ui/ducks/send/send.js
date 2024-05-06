@@ -2358,7 +2358,9 @@ export function updateSendAsset(
 
       const STANDARD_TO_REQUIRED_PROPERTIES = {
         // 'balance' must be last so that we know all other properties exist if `missingProperty` = 'balance'
-        [TokenStandard.ERC20]: ['address', 'symbol', 'decimals', 'balance'],
+        [TokenStandard.ERC20]: isReceived
+          ? ['address', 'symbol', 'decimals']
+          : ['address', 'symbol', 'decimals', 'balance'],
         [TokenStandard.ERC721]: ['address', 'symbol', 'tokenId'],
         [TokenStandard.ERC1155]: ['address', 'symbol', 'tokenId'],
       };
