@@ -3,11 +3,13 @@ import { toChecksumAddress } from 'ethereumjs-util';
 import { shallowEqual, useSelector } from 'react-redux';
 import {
   getCurrentChainId,
-  getCurrentCurrency,
   getTokenExchangeRates,
 } from '../../../../selectors';
 import { Numeric } from '../../../../../shared/modules/Numeric';
-import { getConversionRate } from '../../../../ducks/metamask/metamask';
+import {
+  getConversionRate,
+  getNativeCurrency,
+} from '../../../../ducks/metamask/metamask';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
 
 /**
@@ -22,7 +24,7 @@ export default function useTokenExchangeRate(
   const tokenAddress = uncheckedTokenAddress
     ? toChecksumAddress(uncheckedTokenAddress)
     : undefined;
-  const currentCurrency = useSelector(getCurrentCurrency);
+  const nativeCurrency = useSelector(getNativeCurrency);
   const chainId = useSelector(getCurrentChainId);
 
   const selectedNativeConversionRate = useSelector(getConversionRate);
@@ -44,7 +46,7 @@ export default function useTokenExchangeRate(
       contractExchangeRates[tokenAddress] || exchangeRate;
 
     if (!contractExchangeRate) {
-      fetchTokenExchangeRates(currentCurrency, [tokenAddress], chainId).then(
+      fetchTokenExchangeRates(nativeCurrency, [tokenAddress], chainId).then(
         (addressToExchangeRate) => {
           setExchangeRate(addressToExchangeRate[tokenAddress]);
         },
@@ -56,7 +58,7 @@ export default function useTokenExchangeRate(
   }, [
     exchangeRate,
     chainId,
-    currentCurrency,
+    nativeCurrency,
     tokenAddress,
     nativeConversionRate,
     contractExchangeRates,
