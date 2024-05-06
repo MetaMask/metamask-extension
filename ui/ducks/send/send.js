@@ -2405,7 +2405,11 @@ export function updateSendAsset(
             providedDetails.address,
             sendingAddress,
             providedDetails.tokenId,
-          )),
+          ).catch((error) => {
+            // prevent infinite stuck loading state
+            dispatch(hideLoadingIndication());
+            throw error;
+          })),
         };
       }
 
@@ -2418,9 +2422,11 @@ export function updateSendAsset(
       };
 
       if (details.standard === TokenStandard.ERC20) {
-        asset.balance = addHexPrefix(
-          calcTokenAmount(details.balance, details.decimals).toString(16),
-        );
+        asset.balance = details.balance
+          ? addHexPrefix(
+              calcTokenAmount(details.balance, details.decimals).toString(16),
+            )
+          : undefined;
 
         await dispatch(
           addHistoryEntry(
