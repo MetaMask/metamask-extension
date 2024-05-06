@@ -26,11 +26,12 @@ describe('Reveal SRP through settings', function () {
         await completeSRPRevealQuiz(driver);
         await driver.fill('#password-box', wrongTestPassword);
         await driver.press('#password-box', driver.Key.ENTER);
-        const passwordErrorIsDisplayed = await driver.isElementPresent({
+        await driver.isElementPresent({
           css: '.mm-help-text',
-          text: 'Incorrect password',
         });
-        assert.equal(passwordErrorIsDisplayed, true);
+        const displayedError = await driver.findVisibleElement('.mm-help-text');
+        const displayedErrorMessage = await displayedError.getText();
+        assert.equal(displayedErrorMessage, 'Incorrect password');
       },
     );
   });
