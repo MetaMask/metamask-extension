@@ -70,6 +70,7 @@ class ErrorPage extends PureComponent {
     const message = isPopup
       ? t('errorPagePopupMessage', [supportLink])
       : t('errorPageMessage', [supportLink]);
+    const errorMessage = error.data?.cause?.message || error.message;
 
     return (
       <section className="error-page">
@@ -79,8 +80,8 @@ class ErrorPage extends PureComponent {
           <details>
             <summary>{t('errorDetails')}</summary>
             <ul>
-              {error.message
-                ? this.renderErrorDetail(t('errorMessage', [error.message]))
+              {errorMessage
+                ? this.renderErrorDetail(t('errorMessage', [errorMessage]))
                 : null}
               {error.code
                 ? this.renderErrorDetail(t('errorCode', [error.code]))

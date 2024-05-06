@@ -246,7 +246,7 @@ export function createNewVaultAndGetSeedPhrase(
     } catch (error) {
       dispatch(displayWarning(error));
       if (isErrorWithMessage(error)) {
-        throw new Error(error.message);
+        throw new Error(error.data?.cause?.message || error.message);
       } else {
         throw error;
       }
@@ -270,7 +270,7 @@ export function unlockAndGetSeedPhrase(
     } catch (error) {
       dispatch(displayWarning(error));
       if (isErrorWithMessage(error)) {
-        throw new Error(error.message);
+        throw new Error(error.data?.cause?.message || error.message);
       } else {
         throw error;
       }
@@ -580,11 +580,12 @@ export function connectHardware(
       );
     } catch (error) {
       logErrorWithMessage(error);
+      const message = error.data?.cause?.message || error.message;
       if (
         deviceName === HardwareDeviceNames.ledger &&
         ledgerTransportType === LedgerTransportTypes.webhid &&
         isErrorWithMessage(error) &&
-        error.message.match('Failed to open the device')
+        message.match('Failed to open the device')
       ) {
         dispatch(displayWarning(t('ledgerDeviceOpenFailureMessage')));
         throw new Error(t('ledgerDeviceOpenFailureMessage'));
@@ -1717,7 +1718,7 @@ export function lockMetamask(): ThunkAction<
     return backgroundSetLocked()
       .then(() => updateMetamaskStateFromBackground())
       .catch((error) => {
-        dispatch(displayWarning(error.message));
+        dispatch(displayWarning(error.data?.cause?.message || error.message));
         return Promise.reject(error);
       })
       .then((newState) => {
