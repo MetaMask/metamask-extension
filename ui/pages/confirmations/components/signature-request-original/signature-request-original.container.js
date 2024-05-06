@@ -172,7 +172,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
       } catch (err) {
         await dispatchProps.setWaitForConfirmDeepLinkDialog(true);
         await dispatchProps.showTransactionsFailedModal({
-          errorMessage: err.message,
+          errorMessage: err.data?.cause?.message || err.message,
           closeNotification: true,
           operationFailed: true,
         });

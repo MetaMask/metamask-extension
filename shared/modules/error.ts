@@ -11,7 +11,7 @@ import log from 'loglevel';
  */
 export function isErrorWithMessage(
   error: unknown,
-): error is { message: string } {
+): error is { message: string } & { data: { cause: { message: string } } } {
   return (
     typeof error === 'object' &&
     error !== null &&
@@ -23,8 +23,7 @@ export function isErrorWithMessage(
 
 export function logErrorWithMessage(error: unknown) {
   if (isErrorWithMessage(error)) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    log.error((error as any)?.data?.cause?.message || error.message);
+    log.error(error.data?.cause?.message || error.message);
   } else {
     log.error(error);
   }

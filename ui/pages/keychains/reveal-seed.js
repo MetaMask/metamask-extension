@@ -97,7 +97,7 @@ export default function RevealSeedPage() {
             reason: e.message, // 'incorrect_password',
           },
         });
-        setError(e.message);
+        setError(e.data?.cause?.message || e.message);
       });
   };
 
