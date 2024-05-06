@@ -1,6 +1,9 @@
 import { fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
-import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
+import {
+  DEPOSIT_METHOD_DATA,
+  genUnapprovedContractInteractionConfirmation,
+} from '../../../../../../test/data/confirmations/contract-interaction';
 import { unapprovedPersonalSignMsg } from '../../../../../../test/data/confirmations/personal_sign';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../test/jest';
@@ -39,6 +42,7 @@ describe('Header', () => {
       confirm: {
         currentConfirmation: genUnapprovedContractInteractionConfirmation({
           address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+          txData: DEPOSIT_METHOD_DATA,
         }),
       },
     });

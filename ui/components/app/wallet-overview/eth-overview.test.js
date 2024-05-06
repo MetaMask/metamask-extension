@@ -73,6 +73,7 @@ describe('EthOverview', () => {
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
+      useExternalServices: true,
       useCurrencyRateCheck: true,
       currentCurrency: 'usd',
       currencyRates: {
