@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.15.2]
+### Fixed
+- Ensure smart transaction modal is shown for users upgrading from previous versions ([#24377](https://github.com/MetaMask/metamask-extension/pull/24377))
+
 ## [11.15.1]
 ### Changed
 - Restores 11.15.0, and also incorporates the 11.14.4 and 11.14.5 changes
@@ -4673,7 +4677,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.15.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.15.2...HEAD
+[11.15.2]: https://github.com/MetaMask/metamask-extension/compare/v11.15.1...v11.15.2
 [11.15.1]: https://github.com/MetaMask/metamask-extension/compare/v11.15.0...v11.15.1
 [11.15.0]: https://github.com/MetaMask/metamask-extension/compare/v11.14.5...v11.15.0
 [11.14.5]: https://github.com/MetaMask/metamask-extension/compare/v11.14.4...v11.14.5
