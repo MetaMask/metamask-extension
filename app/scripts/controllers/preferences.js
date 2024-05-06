@@ -113,6 +113,11 @@ export default class PreferencesController {
       ///: END:ONLY_INCLUDE_IF
       useExternalNameSources: true,
       useTransactionSimulations: true,
+      enableMV3TimestampSave: true,
+      // Turning OFF basic functionality toggle means turning OFF this useExternalServices flag.
+      // Whenever useExternalServices is false, certain features will be disabled.
+      // The flag is true by Default, meaning the toggle is ON by default.
+      useExternalServices: true,
       ...opts.initState,
     };
 
@@ -209,6 +214,16 @@ export default class PreferencesController {
    */
   setUseSafeChainsListValidation(val) {
     this.store.updateState({ useSafeChainsListValidation: val });
+  }
+
+  toggleExternalServices(useExternalServices) {
+    this.store.updateState({ useExternalServices });
+    this.setUseTokenDetection(useExternalServices);
+    this.setUseCurrencyRateCheck(useExternalServices);
+    this.setUsePhishDetect(useExternalServices);
+    this.setUseAddressBarEnsResolution(useExternalServices);
+    this.setOpenSeaEnabled(useExternalServices);
+    this.setUseNftDetection(useExternalServices);
   }
 
   /**
@@ -673,6 +688,10 @@ export default class PreferencesController {
     const previousValue = this.store.getState().incomingTransactionsPreferences;
     const updatedValue = { ...previousValue, [chainId]: value };
     this.store.updateState({ incomingTransactionsPreferences: updatedValue });
+  }
+
+  setServiceWorkerKeepAlivePreference(value) {
+    this.store.updateState({ enableMV3TimestampSave: value });
   }
 
   getRpcMethodPreferences() {
