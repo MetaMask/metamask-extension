@@ -156,13 +156,14 @@ export async function estimateGasLimitForSend({
     );
     return addHexPrefix(estimateWithBuffer);
   } catch (error) {
+    const errorMessage = error.data?.cause?.message || error.message;
     const simulationFailed =
-      error.message.includes('Transaction execution error.') ||
-      error.message.includes(
+      errorMessage.includes('Transaction execution error.') ||
+      errorMessage.includes(
         'gas required exceeds allowance or always failing transaction',
       ) ||
       (CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP[chainId] &&
-        error.message.includes('gas required exceeds allowance'));
+        errorMessage.includes('gas required exceeds allowance'));
     if (simulationFailed) {
       const estimateWithBuffer = addGasBuffer(
         paramsForGasEstimate?.gas ?? gasLimit,
