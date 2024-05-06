@@ -20,7 +20,7 @@ export function isErrorWithMessage(
 
 export function logErrorWithMessage(error: unknown) {
   if (isErrorWithMessage(error)) {
-    log.error(error.message || (error as any)?.data?.cause?.message);
+    log.error((error as any)?.data?.cause?.message || error.message);
   } else {
     log.error(error);
   }

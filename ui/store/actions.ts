@@ -10,6 +10,7 @@ import { capitalize, isEqual } from 'lodash';
 import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
+import type { OptionalDataWithOptionalCause } from '@metamask/rpc-errors';
 import { Hex, Json } from '@metamask/utils';
 import {
   AssetsContractController,
@@ -2828,7 +2829,9 @@ export function displayWarning(payload: unknown): PayloadAction<string> {
   if (isErrorWithMessage(payload)) {
     return {
       type: actionConstants.DISPLAY_WARNING,
-      payload: payload.message,
+      payload:
+        (payload.data as OptionalDataWithOptionalCause)?.cause?.message ||
+        payload.message,
     };
   } else if (typeof payload === 'string') {
     return {
