@@ -2420,7 +2420,7 @@ export function updateSendAsset(
 
       let missingProperty = STANDARD_TO_REQUIRED_PROPERTIES[
         providedDetails.standard
-      ].find((property) => providedDetails[property] === undefined);
+      ]?.find((property) => providedDetails[property] === undefined);
 
       let details;
 
