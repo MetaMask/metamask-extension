@@ -114,6 +114,10 @@ export default class PreferencesController {
       useExternalNameSources: true,
       useTransactionSimulations: true,
       enableMV3TimestampSave: true,
+      // Turning OFF basic functionality toggle means turning OFF this useExternalServices flag.
+      // Whenever useExternalServices is false, certain features will be disabled.
+      // The flag is true by Default, meaning the toggle is ON by default.
+      useExternalServices: true,
       ...opts.initState,
     };
 
@@ -210,6 +214,16 @@ export default class PreferencesController {
    */
   setUseSafeChainsListValidation(val) {
     this.store.updateState({ useSafeChainsListValidation: val });
+  }
+
+  toggleExternalServices(useExternalServices) {
+    this.store.updateState({ useExternalServices });
+    this.setUseTokenDetection(useExternalServices);
+    this.setUseCurrencyRateCheck(useExternalServices);
+    this.setUsePhishDetect(useExternalServices);
+    this.setUseAddressBarEnsResolution(useExternalServices);
+    this.setOpenSeaEnabled(useExternalServices);
+    this.setUseNftDetection(useExternalServices);
   }
 
   /**
