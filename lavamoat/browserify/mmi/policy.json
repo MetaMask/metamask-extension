@@ -1554,14 +1554,6 @@
         "uuid": true
       }
     },
-    "@metamask/gas-fee-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
     "@metamask/gas-fee-controller>@metamask/polling-controller": {
       "globals": {
         "clearTimeout": true,
@@ -1569,9 +1561,17 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/gas-fee-controller>@metamask/base-controller": true,
+        "@metamask/gas-fee-controller>@metamask/polling-controller>@metamask/base-controller": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "uuid": true
+      }
+    },
+    "@metamask/gas-fee-controller>@metamask/polling-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/jazzicon": {
@@ -2228,11 +2228,11 @@
       },
       "packages": {
         "@ethersproject/abi>@ethersproject/bytes": true,
-        "@metamask/assets-controllers>@metamask/polling-controller": true,
+        "@metamask/controller-utils": true,
         "@metamask/eth-query": true,
         "@metamask/smart-transactions-controller>@ethereumjs/tx": true,
         "@metamask/smart-transactions-controller>@ethereumjs/util": true,
-        "@metamask/smart-transactions-controller>@metamask/controller-utils": true,
+        "@metamask/smart-transactions-controller>@metamask/polling-controller": true,
         "@metamask/smart-transactions-controller>@metamask/transaction-controller": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
         "browserify>buffer": true,
@@ -2281,40 +2281,65 @@
         "TextEncoder": true
       }
     },
-    "@metamask/smart-transactions-controller>@metamask/controller-utils": {
+    "@metamask/smart-transactions-controller>@metamask/base-controller": {
       "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
         "setTimeout": true
       },
       "packages": {
-        "@metamask/ens-controller>@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/ethjs>@metamask/ethjs-unit": true,
-        "@metamask/smart-transactions-controller>@metamask/controller-utils>@ethereumjs/util": true,
-        "@metamask/utils": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true
-      }
-    },
-    "@metamask/smart-transactions-controller>@metamask/controller-utils>@ethereumjs/util": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/rlp": true,
-        "@ethereumjs/tx>@ethereumjs/util>micro-ftch": true,
-        "@ethereumjs/tx>ethereum-cryptography": true,
-        "browserify>buffer": true,
-        "browserify>insert-module-globals>is-buffer": true,
-        "webpack>events": true
+        "immer": true
       }
     },
     "@metamask/smart-transactions-controller>@metamask/controllers>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/network-controller": {
+      "globals": {
+        "URL": true,
+        "btoa": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils": true,
+        "@metamask/eth-json-rpc-middleware": true,
+        "@metamask/eth-query": true,
+        "@metamask/eth-token-tracker>eth-block-tracker": true,
+        "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
+        "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
+        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/smart-transactions-controller>@metamask/base-controller": true,
+        "@metamask/smart-transactions-controller>@metamask/network-controller>@metamask/eth-json-rpc-provider": true,
+        "@metamask/smart-transactions-controller>@metamask/network-controller>@metamask/json-rpc-engine": true,
+        "@metamask/utils": true,
+        "browserify>assert": true,
+        "uuid": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/network-controller>@metamask/eth-json-rpc-provider": {
+      "packages": {
+        "@metamask/safe-event-emitter": true,
+        "@metamask/smart-transactions-controller>@metamask/network-controller>@metamask/json-rpc-engine": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/network-controller>@metamask/json-rpc-engine": {
+      "packages": {
+        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/safe-event-emitter": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/polling-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/smart-transactions-controller>@metamask/base-controller": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "uuid": true
       }
     },
     "@metamask/smart-transactions-controller>@metamask/transaction-controller": {
@@ -2327,20 +2352,23 @@
       "packages": {
         "@ethereumjs/common": true,
         "@ethersproject/abi": true,
+        "@ethersproject/contracts": true,
+        "@ethersproject/providers": true,
+        "@metamask/controller-utils": true,
         "@metamask/eth-query": true,
-        "@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/name-controller>async-mutex": true,
-        "@metamask/network-controller": true,
         "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/smart-transactions-controller>@metamask/base-controller": true,
+        "@metamask/smart-transactions-controller>@metamask/network-controller": true,
         "@metamask/smart-transactions-controller>@metamask/transaction-controller>@ethereumjs/tx": true,
         "@metamask/smart-transactions-controller>@metamask/transaction-controller>@ethereumjs/util": true,
-        "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/base-controller": true,
-        "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/controller-utils": true,
+        "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/gas-fee-controller": true,
         "@metamask/smart-transactions-controller>@metamask/transaction-controller>eth-method-registry": true,
         "@metamask/transaction-controller>nonce-tracker": true,
         "@metamask/utils": true,
         "bn.js": true,
+        "browserify>buffer": true,
         "fast-json-patch": true,
         "lodash": true,
         "uuid": true,
@@ -2370,40 +2398,19 @@
         "webpack>events": true
       }
     },
-    "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/base-controller": {
+    "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/gas-fee-controller": {
       "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/controller-utils": {
-      "globals": {
-        "URL": true,
+        "clearInterval": true,
         "console.error": true,
-        "fetch": true,
-        "setTimeout": true
+        "setInterval": true
       },
       "packages": {
-        "@metamask/ethjs>@metamask/ethjs-unit": true,
-        "@metamask/smart-transactions-controller>@metamask/transaction-controller>@ethereumjs/util": true,
-        "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/utils": true,
+        "@metamask/controller-utils": true,
+        "@metamask/eth-query": true,
+        "@metamask/smart-transactions-controller>@metamask/polling-controller": true,
         "bn.js": true,
         "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true
-      }
-    },
-    "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/controller-utils>@spruceid/siwe-parser": {
-      "globals": {
-        "console.error": true,
-        "console.log": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@spruceid/siwe-parser>apg-js": true,
-        "@noble/hashes": true
+        "uuid": true
       }
     },
     "@metamask/smart-transactions-controller>@metamask/transaction-controller>eth-method-registry": {
@@ -2674,6 +2681,7 @@
         "File": true,
         "FileReader": true,
         "TextDecoder": true,
+        "TextEncoder": true,
         "URL": true,
         "console.error": true,
         "console.log": true,
@@ -2718,24 +2726,9 @@
     },
     "@metamask/snaps-utils>marked": {
       "globals": {
-        "Hooks": true,
-        "Lexer": true,
-        "Parser": true,
-        "Renderer": true,
-        "TextRenderer": true,
-        "Tokenizer": true,
         "console.error": true,
         "console.warn": true,
-        "defaults": true,
-        "define": true,
-        "inlineQueue": true,
-        "passThroughHooks": true,
-        "renderer": true,
-        "rules": true,
-        "state": true,
-        "textRenderer": true,
-        "tokenizer": true,
-        "tokens": true
+        "define": true
       }
     },
     "@metamask/snaps-utils>rfdc": {
@@ -2833,10 +2826,10 @@
         "@metamask/controller-utils": true,
         "@metamask/eth-query": true,
         "@metamask/gas-fee-controller": true,
+        "@metamask/gas-fee-controller>@metamask/polling-controller": true,
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/transaction-controller": true,
         "@metamask/user-operation-controller>@metamask/base-controller": true,
-        "@metamask/user-operation-controller>@metamask/polling-controller": true,
         "@metamask/utils": true,
         "bn.js": true,
         "lodash": true,
@@ -2851,18 +2844,6 @@
       },
       "packages": {
         "immer": true
-      }
-    },
-    "@metamask/user-operation-controller>@metamask/polling-controller": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
-        "@metamask/user-operation-controller>@metamask/base-controller": true,
-        "uuid": true
       }
     },
     "@metamask/utils": {
