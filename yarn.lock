@@ -5313,14 +5313,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/json-rpc-engine@npm:^8.0.1":
-  version: 8.0.1
-  resolution: "@metamask/json-rpc-engine@npm:8.0.1"
+"@metamask/json-rpc-engine@npm:^8.0.1, @metamask/json-rpc-engine@npm:^8.0.2":
+  version: 8.0.2
+  resolution: "@metamask/json-rpc-engine@npm:8.0.2"
   dependencies:
     "@metamask/rpc-errors": "npm:^6.2.1"
     "@metamask/safe-event-emitter": "npm:^3.0.0"
     "@metamask/utils": "npm:^8.3.0"
-  checksum: 340ea9be62f65b69ae552571f0176af23097e874bae276aa2349f13086dbd018ce58a4b9bbd902eff81ab959b143fb2821930564a5739353312968210308cff7
+  checksum: f088f4b648b9b55875b56e8237853e7282f13302a9db6a1f9bba06314dfd6cd0a23b3d27f8fde05a157b97ebb03b67bc2699ba455c99553dfb2ecccd73ab3474
   languageName: node
   linkType: hard
 
@@ -5861,20 +5861,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/queued-request-controller@npm:^0.9.0":
-  version: 0.9.0
-  resolution: "@metamask/queued-request-controller@npm:0.9.0"
+"@metamask/queued-request-controller@npm:^0.10.0":
+  version: 0.10.0
+  resolution: "@metamask/queued-request-controller@npm:0.10.0"
   dependencies:
-    "@metamask/base-controller": "npm:^5.0.1"
+    "@metamask/base-controller": "npm:^5.0.2"
     "@metamask/controller-utils": "npm:^9.1.0"
-    "@metamask/json-rpc-engine": "npm:^8.0.1"
+    "@metamask/json-rpc-engine": "npm:^8.0.2"
     "@metamask/rpc-errors": "npm:^6.2.1"
     "@metamask/swappable-obj-proxy": "npm:^2.2.0"
     "@metamask/utils": "npm:^8.3.0"
   peerDependencies:
     "@metamask/network-controller": ^18.0.0
-    "@metamask/selected-network-controller": ^12.0.0
-  checksum: 44ce97a9ff375787f3b96b420a8a2132218559c92282d2f2ba3940117400b3fa340606378e9f221a698e8f5d2f91ac4f9a94f3d3aded577ca47f89e7514bd9bc
+    "@metamask/selected-network-controller": ^13.0.0
+  checksum: b6caba5889b1e6219d33a5e80c6a3baf77c64b52cfdde8123f4e44d21ef501b78c49e111b050bb4aacd0bf12bd3593f88058f2a230ff5693d7b9d8ff1521e5bc
   languageName: node
   linkType: hard
 
@@ -5923,12 +5923,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/selected-network-controller@npm:^12.0.1":
-  version: 12.0.1
-  resolution: "@metamask/selected-network-controller@npm:12.0.1"
+"@metamask/selected-network-controller@npm:^13.0.0":
+  version: 13.0.0
+  resolution: "@metamask/selected-network-controller@npm:13.0.0"
   dependencies:
-    "@metamask/base-controller": "npm:^5.0.1"
-    "@metamask/json-rpc-engine": "npm:^8.0.1"
+    "@metamask/base-controller": "npm:^5.0.2"
+    "@metamask/json-rpc-engine": "npm:^8.0.2"
     "@metamask/network-controller": "npm:^18.1.0"
     "@metamask/permission-controller": "npm:^9.0.2"
     "@metamask/swappable-obj-proxy": "npm:^2.2.0"
@@ -5936,7 +5936,7 @@ __metadata:
   peerDependencies:
     "@metamask/network-controller": ^18.0.0
     "@metamask/permission-controller": ^9.0.0
-  checksum: a0ff5119cd9382cb7b30036bca018452bfe26e8a9bfec4f2a34e66b4f72f251839c063a903fb8edf05c88cf1e85ba1282fe2be2e85c3182eb617c1440508b17f
+  checksum: bebb6798ea9b7f12535f1997b69ef4aa7669c245566dfbb8c6729d9e497c8a0dc52ddd42db09defc6acba3ea82d2eaddead149f05ce4730bc4096eae0cb71750
   languageName: node
   linkType: hard
 
@@ -25405,11 +25405,11 @@ __metadata:
     "@metamask/post-message-stream": "npm:^8.0.0"
     "@metamask/ppom-validator": "npm:^0.29.0"
     "@metamask/providers": "npm:^14.0.2"
-    "@metamask/queued-request-controller": "npm:^0.9.0"
+    "@metamask/queued-request-controller": "npm:^0.10.0"
     "@metamask/rate-limit-controller": "npm:^3.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
-    "@metamask/selected-network-controller": "npm:^12.0.1"
+    "@metamask/selected-network-controller": "npm:^13.0.0"
     "@metamask/signature-controller": "npm:^12.0.0"
     "@metamask/smart-transactions-controller": "npm:^10.0.0"
     "@metamask/snaps-controllers": "npm:^8.0.0"
