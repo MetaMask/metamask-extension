@@ -4422,14 +4422,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-institutional/portfolio-dashboard@npm:^1.4.0":
-  version: 1.4.0
-  resolution: "@metamask-institutional/portfolio-dashboard@npm:1.4.0"
-  checksum: c973305d5b4088d5ae45300fc016f3cbc15232d1c8b734201a352b2296de8f21d0c1e5d9bfc6d1d164e5784e5128aaf2f6ca4370a9f6e99db3f5685a8266a5a0
-  languageName: node
-  linkType: hard
-
-"@metamask-institutional/portfolio-dashboard@npm:^1.4.1":
+"@metamask-institutional/portfolio-dashboard@npm:^1.4.0, @metamask-institutional/portfolio-dashboard@npm:^1.4.1":
   version: 1.4.1
   resolution: "@metamask-institutional/portfolio-dashboard@npm:1.4.1"
   checksum: 75573d236d2dd709bcf8d0c92f69eb71f07de4ed02ef3f5122f2acf5cf29e41c9e17b14c67cea4f200e64ce2e9a6c60bc5e85508f77aa904f9bbbcf65e5efb10
