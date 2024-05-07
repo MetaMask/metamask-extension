@@ -8,6 +8,16 @@ import mockState from '../../../../../../test/data/mock-state.json';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { AlertModal, FrictionModalConfig } from './alert-modal';
 
+const onProcessActionMock = jest.fn();
+
+const mockAlertActionHandlerProviderValue = {
+  processAction: onProcessActionMock,
+};
+
+jest.mock('../multiple-alert-modal/multiple-alert-modal', () => ({
+  useAlertActionHandler: jest.fn(() => mockAlertActionHandlerProviderValue),
+}));
+
 describe('AlertModal', () => {
   const OWNER_ID_MOCK = '123';
   const FROM_ALERT_KEY_MOCK = 'from';
@@ -26,7 +36,11 @@ describe('AlertModal', () => {
       reason: 'Reason 1',
       alertDetails: ['Detail 1', 'Detail 2'],
     },
-    { key: 'data', severity: Severity.Danger, message: 'Alert 2' },
+    {
+      key: 'data',
+      severity: Severity.Danger,
+      message: 'Alert 2',
+    },
     {
       key: CONTRACT_ALERT_KEY_MOCK,
       severity: Severity.Info,
@@ -164,7 +178,25 @@ describe('AlertModal', () => {
     expect(onCloseMock).toHaveBeenCalledTimes(1);
   });
 
-  describe('friction Modal', () => {
+  it('calls process action when action button is clicked', () => {
+    const { getByText } = renderWithProvider(
+      <AlertModal
+        ownerId={OWNER_ID_MOCK}
+        onAcknowledgeClick={onAcknowledgeClickMock}
+        onClose={onCloseMock}
+        alertKey={CONTRACT_ALERT_KEY_MOCK}
+      />,
+      mockStore,
+    );
+
+    expect(getByText(ACTION_LABEL_MOCK)).toBeInTheDocument();
+
+    fireEvent.click(getByText(ACTION_LABEL_MOCK));
+
+    expect(onProcessActionMock).toHaveBeenCalledTimes(1);
+  });
+
+  describe('Friction modal', () => {
     const onCancelMock = jest.fn();
     const onSubmitMock = jest.fn();
     const onFrictionLinkClickMock = jest.fn();
