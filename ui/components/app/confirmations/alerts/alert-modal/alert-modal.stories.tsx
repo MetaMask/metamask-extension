@@ -6,19 +6,43 @@ import configureStore from '../../../../../store/store';
 import { Provider } from 'react-redux';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 
-
 export const baseAlertsMock: Alert[] = [
-  { key: 'From', field: 'From', severity: Severity.Danger, message: 'Description of what may happen if this alert was ignored', reason: 'Reason for the alert 1', alertDetails: ['We found the contract Petname 0xEqT3b9773b1763efa556f55ccbeb20441962d82x to be malicious',
-  'Operator is an externally owned account (EOA) ',
-  'Operator is untrusted according to previous activity',]},
-  { key: 'Data', field: 'Data',severity: Severity.Warning, message: 'Alert 2', alertDetails:['detail 1 warning', 'detail 2 warning'], actions: [{key: 'go-to-gas-modal', label: 'Update gas option'}] },
-  { key: 'Contract', field: 'Contract', severity: Severity.Info, message: 'Alert Info', alertDetails:['detail 1 info', 'detail  info'] },
+  {
+    key: 'From',
+    field: 'From',
+    severity: Severity.Danger,
+    message: 'Description of what may happen if this alert was ignored',
+    reason: 'Reason for the alert 1',
+    alertDetails: [
+      'We found the contract Petname 0xEqT3b9773b1763efa556f55ccbeb20441962d82x to be malicious',
+      'Operator is an externally owned account (EOA) ',
+      'Operator is untrusted according to previous activity',
+    ],
+  },
+  {
+    key: 'Data',
+    field: 'Data',
+    severity: Severity.Warning,
+    message: 'Alert 2',
+    alertDetails: ['detail 1 warning', 'detail 2 warning'],
+    actions: [{ key: 'go-to-gas-modal', label: 'Update gas option' }],
+    isBlocking: true,
+  },
+  {
+    key: 'Contract',
+    field: 'Contract',
+    severity: Severity.Info,
+    message: 'Alert Info',
+    alertDetails: ['detail 1 info', 'detail  info'],
+  },
 ];
 const ownerIdMock = '123';
-const storeMock = configureStore({ confirmAlerts: {
-  alerts: {[ownerIdMock]: baseAlertsMock},
-  confirmed: {[ownerIdMock]: {'From': false, 'Data': false, 'Contract': false}},
-  } });
+const storeMock = configureStore({
+  confirmAlerts: {
+    alerts: { [ownerIdMock]: baseAlertsMock },
+    confirmed: { [ownerIdMock]: { From: false, Data: false, Contract: false } },
+  },
+});
 
 export default {
   title: 'Confirmations/Components/Alerts/AlertModal',
@@ -34,7 +58,8 @@ export default {
     },
     onClose: {
       action: 'onClick',
-      description: 'The function to be executed when the modal needs to be closed.',
+      description:
+        'The function to be executed when the modal needs to be closed.',
     },
     alertKey: {
       control: 'text',
