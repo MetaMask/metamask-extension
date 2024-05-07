@@ -29,6 +29,9 @@ async function getExtensionStorageFilePath(driver) {
     'Default',
     'Local Extension Settings',
   );
+  if (!extensionsStoragePath || !fs.existsSync(extensionsStoragePath)) {
+    return null;
+  }
   // we expect the extension to have been installed only once
   const extensionName = fs.readdirSync(extensionsStoragePath)[0];
   const extensionStoragePath = path.resolve(
@@ -85,6 +88,12 @@ describe('Vault Decryptor Page', function () {
         driver,
         WALLET_PASSWORD,
       );
+
+      const logFilePath = await getExtensionStorageFilePath(driver);
+      if (logFilePath === null) {
+        this.sklp();
+      }
+
       // close popover if any (Announcements etc..)
       await closePopoverIfPresent(driver);
       // obtain SRP
