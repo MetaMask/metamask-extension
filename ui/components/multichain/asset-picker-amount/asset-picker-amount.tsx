@@ -20,6 +20,7 @@ import {
   type Amount,
   type Asset,
 } from '../../../ducks/send';
+import { NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR } from '../../../pages/confirmations/send/send.constants';
 import MaxClearButton from './max-clear-button';
 import {
   AssetPicker,
@@ -62,7 +63,13 @@ export const AssetPickerAmount = ({
 
   const [isFocused, setIsFocused] = useState(false);
 
-  const { error } = amount;
+  const { error: rawError } = amount;
+
+  // if an error, like the 0 asset error, is out of scope, it shouldn't be shown in the AssetPickerAmount treatments
+  const error =
+    rawError && rawError !== NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR
+      ? rawError
+      : undefined;
 
   useEffect(() => {
     if (!asset) {
@@ -77,7 +84,7 @@ export const AssetPickerAmount = ({
     if (isSwapsErrorShown) {
       borderColor = BorderColor.errorDefault;
     }
-  } else if (amount.error) {
+  } else if (error) {
     borderColor = BorderColor.errorDefault;
   } else if (isFocused) {
     borderColor = BorderColor.primaryDefault;
