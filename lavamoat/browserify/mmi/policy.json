@@ -830,10 +830,25 @@
         "setInterval": true
       },
       "packages": {
-        "@metamask-institutional/sdk": true,
+        "@metamask-institutional/transaction-update>@metamask-institutional/sdk": true,
         "@metamask-institutional/transaction-update>@metamask-institutional/websocket-client": true,
         "@metamask/obs-store": true,
         "ethereumjs-util": true,
+        "webpack>events": true
+      }
+    },
+    "@metamask-institutional/transaction-update>@metamask-institutional/sdk": {
+      "globals": {
+        "URLSearchParams": true,
+        "console.debug": true,
+        "console.log": true,
+        "console.warn": true,
+        "fetch": true
+      },
+      "packages": {
+        "@metamask-institutional/sdk>@metamask-institutional/simplecache": true,
+        "@metamask-institutional/sdk>jsonwebtoken": true,
+        "browserify>crypto-browserify": true,
         "webpack>events": true
       }
     },
@@ -1946,6 +1961,10 @@
       }
     },
     "@metamask/phishing-warning>eth-phishing-detect": {
+      "globals": {
+        "console.log": true,
+        "console.trace": true
+      },
       "packages": {
         "eslint>optionator>fast-levenshtein": true
       }
@@ -3016,6 +3035,7 @@
         "XMLHttpRequest": true,
         "__SENTRY_DEBUG__": true,
         "__SENTRY_RELEASE__": true,
+        "console.log": true,
         "indexedDB.open": true,
         "setTimeout": true
       },
@@ -3088,6 +3108,7 @@
         "__rrMutationObserver": true,
         "clearTimeout": true,
         "console.error": true,
+        "console.log": true,
         "console.warn": true,
         "document": true,
         "innerHeight": true,
@@ -3133,6 +3154,7 @@
         "__SENTRY_DEBUG__": true,
         "clearTimeout": true,
         "console.error": true,
+        "console.log": true,
         "document": true,
         "setTimeout": true
       },

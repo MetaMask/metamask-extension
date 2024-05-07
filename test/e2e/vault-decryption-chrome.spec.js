@@ -71,6 +71,7 @@ async function getSRP(driver) {
 }
 
 describe('Vault Decryptor Page', function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
   it('is able to decrypt the vault using the vault-decryptor webapp', async function () {
     await withFixtures({}, async ({ driver }) => {
       await driver.navigate();
