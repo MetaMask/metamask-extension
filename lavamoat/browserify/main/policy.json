@@ -2029,9 +2029,9 @@
       },
       "packages": {
         "@ethersproject/abi>@ethersproject/bytes": true,
+        "@metamask/assets-controllers>@metamask/polling-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/eth-query": true,
-        "@metamask/gas-fee-controller>@metamask/polling-controller": true,
         "@metamask/smart-transactions-controller>@ethereumjs/tx": true,
         "@metamask/smart-transactions-controller>@ethereumjs/util": true,
         "@metamask/smart-transactions-controller>@metamask/transaction-controller": true,
