@@ -25,11 +25,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
         await driver.clickElement('#personalSign');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const origin = driver.findElement({ text: DAPP_HOST_ADDRESS });
-        const message = driver.findElement({ text: 'Example `personal_sign` message' });
-
-        assert.ok(await origin);
-        assert.ok(await message);
+        await assertInfoValues(driver);
 
         await driver.clickElement('[data-testid="confirm-footer-button"]');
 
@@ -62,6 +58,14 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
     );
   });
 });
+
+async function assertInfoValues(driver: Driver) {
+  const origin = driver.findElement({ text: DAPP_HOST_ADDRESS });
+  const message = driver.findElement({ text: 'Example `personal_sign` message' });
+
+  assert.ok(await origin);
+  assert.ok(await message);
+}
 
 async function assertVerifiedPersonalMessage(driver: Driver, publicAddress: string) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);

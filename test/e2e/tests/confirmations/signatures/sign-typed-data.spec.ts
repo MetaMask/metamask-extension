@@ -25,11 +25,7 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
         await driver.clickElement('#signTypedData');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const origin = driver.findElement({ text: DAPP_HOST_ADDRESS });
-        const message = driver.findElement({ text: 'Hi, Alice!' });
-
-        assert.ok(await origin);
-        assert.ok(await message);
+        await assertInfoValues(driver);
 
         await driver.clickElement('[data-testid="confirm-footer-button"]');
 
@@ -62,6 +58,14 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
     );
   });
 });
+
+async function assertInfoValues(driver: Driver) {
+  const origin = driver.findElement({ text: DAPP_HOST_ADDRESS });
+  const message = driver.findElement({ text: 'Hi, Alice!' });
+
+  assert.ok(await origin);
+  assert.ok(await message);
+}
 
 async function assertVerifiedResults(driver: Driver, publicAddress: string) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);

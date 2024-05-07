@@ -25,28 +25,7 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
         await driver.clickElement('#signPermit');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const origin = driver.findElement({ text: DAPP_HOST_ADDRESS });
-        const contractPetName = driver.findElement({
-          css: '.name__value',
-          text: '0xCcCCc...ccccC',
-        });
-
-        const primaryType = driver.findElement({ text: 'Permit' });
-        const owner = driver.findElement({ css: '.name__name', text: 'Account 1' });
-        const spender = driver.findElement({ css: '.name__value', text: '0x5B38D...eddC4' });
-        const value = driver.findElement({ text: '3000' });
-        const nonce = driver.findElement({ text: '0' });
-        const deadline = driver.findElement({ text: '50000000000' });
-
-        assert.ok(await origin, 'origin');
-        assert.ok(await contractPetName, 'contractPetName');
-
-        assert.ok(await primaryType, 'primaryType');
-        assert.ok(await owner, 'owner');
-        assert.ok(await spender, 'spender');
-        assert.ok(await value, 'value');
-        assert.ok(await nonce, 'nonce');
-        assert.ok(await deadline, 'deadline');
+        await assertInfoValues(driver);
 
         await driver.clickElement('[data-testid="confirm-footer-button"]');
 
@@ -88,6 +67,31 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
     );
   });
 });
+
+async function assertInfoValues(driver: Driver) {
+  const origin = driver.findElement({ text: DAPP_HOST_ADDRESS });
+  const contractPetName = driver.findElement({
+    css: '.name__value',
+    text: '0xCcCCc...ccccC',
+  });
+
+  const primaryType = driver.findElement({ text: 'Permit' });
+  const owner = driver.findElement({ css: '.name__name', text: 'Account 1' });
+  const spender = driver.findElement({ css: '.name__value', text: '0x5B38D...eddC4' });
+  const value = driver.findElement({ text: '3000' });
+  const nonce = driver.findElement({ text: '0' });
+  const deadline = driver.findElement({ text: '50000000000' });
+
+  assert.ok(await origin, 'origin');
+  assert.ok(await contractPetName, 'contractPetName');
+
+  assert.ok(await primaryType, 'primaryType');
+  assert.ok(await owner, 'owner');
+  assert.ok(await spender, 'spender');
+  assert.ok(await value, 'value');
+  assert.ok(await nonce, 'nonce');
+  assert.ok(await deadline, 'deadline');
+}
 
 async function assertVerifiedResults(driver: Driver, publicAddress: string) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);

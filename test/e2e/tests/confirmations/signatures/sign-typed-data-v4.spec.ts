@@ -25,31 +25,7 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
         await driver.clickElement('#signTypedDataV4');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const origin = driver.findElement({ text: DAPP_HOST_ADDRESS });
-        const contractPetName = driver.findElement({
-          css: '.name__value',
-          text: '0xCcCCc...ccccC',
-        });
-
-        const primaryType = driver.findElement({ text: 'Mail' });
-        const contents = driver.findElement({ text: 'Hello, Bob!' });
-
-        const fromName = driver.findElement({ text: 'Cow' });
-        const fromAddressNum0 = driver.findElement({ css: '.name__value', text: '0xCD2a3...DD826' });
-        const toName = driver.findElement({ text: 'Bob' });
-        const toAddressNum2 = driver.findElement({ css: '.name__value', text: '0xB0B0b...00000' });
-        const attachment = driver.findElement({ text: '0x' });
-
-        assert.ok(await origin, 'origin');
-        assert.ok(await contractPetName, 'contractPetName');
-
-        assert.ok(await primaryType, 'primaryType');
-        assert.ok(await contents, 'contents');
-        assert.ok(await fromName, 'fromName');
-        assert.ok(await fromAddressNum0, 'fromAddressNum0');
-        assert.ok(await toName, 'toName');
-        assert.ok(await toAddressNum2, 'toAddressNum2');
-        assert.ok(await attachment, 'attachment');
+        await assertInfoValues(driver);
 
         await driver.clickElement('[data-testid="confirm-footer-button"]');
 
@@ -91,6 +67,34 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
     );
   });
 });
+
+async function assertInfoValues(driver: Driver) {
+  const origin = driver.findElement({ text: DAPP_HOST_ADDRESS });
+  const contractPetName = driver.findElement({
+    css: '.name__value',
+    text: '0xCcCCc...ccccC',
+  });
+
+  const primaryType = driver.findElement({ text: 'Mail' });
+  const contents = driver.findElement({ text: 'Hello, Bob!' });
+
+  const fromName = driver.findElement({ text: 'Cow' });
+  const fromAddressNum0 = driver.findElement({ css: '.name__value', text: '0xCD2a3...DD826' });
+  const toName = driver.findElement({ text: 'Bob' });
+  const toAddressNum2 = driver.findElement({ css: '.name__value', text: '0xB0B0b...00000' });
+  const attachment = driver.findElement({ text: '0x' });
+
+  assert.ok(await origin, 'origin');
+  assert.ok(await contractPetName, 'contractPetName');
+
+  assert.ok(await primaryType, 'primaryType');
+  assert.ok(await contents, 'contents');
+  assert.ok(await fromName, 'fromName');
+  assert.ok(await fromAddressNum0, 'fromAddressNum0');
+  assert.ok(await toName, 'toName');
+  assert.ok(await toAddressNum2, 'toAddressNum2');
+  assert.ok(await attachment, 'attachment');
+}
 
 async function assertVerifiedResults(driver: Driver, publicAddress: string) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
