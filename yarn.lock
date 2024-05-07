@@ -5029,22 +5029,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-keyring-controller@npm:^16.0.0":
-  version: 16.0.0
-  resolution: "@metamask/eth-keyring-controller@npm:16.0.0"
-  dependencies:
-    "@ethereumjs/tx": "npm:^4.2.0"
-    "@metamask/browser-passworder": "npm:^4.3.0"
-    "@metamask/eth-hd-keyring": "npm:^7.0.1"
-    "@metamask/eth-sig-util": "npm:^7.0.0"
-    "@metamask/eth-simple-keyring": "npm:^6.0.1"
-    "@metamask/keyring-api": "npm:^2.0.0"
-    "@metamask/obs-store": "npm:^9.0.0"
-    "@metamask/utils": "npm:^8.2.0"
-  checksum: c935e4b9fd2845cd069c6dd3dff9378693af8fb0d81263e4dac1e6bdc944fa7ad0c5209cfd870bb1749aa1a5825007ff4cbdc0caf869353de1357ddaf2eb84dc
-  languageName: node
-  linkType: hard
-
 "@metamask/eth-ledger-bridge-keyring@npm:^2.0.1":
   version: 2.0.1
   resolution: "@metamask/eth-ledger-bridge-keyring@npm:2.0.1"
@@ -5681,16 +5665,6 @@ __metadata:
     "@metamask/safe-event-emitter": "npm:^2.0.0"
     through2: "npm:^2.0.3"
   checksum: 92356067fa3517526d656f2f0bdfbc4d39f65e27fb30d84240cfc9c1aa9cd5d743498952df18ed8efbb8887b6cc1bc1fab37bde3fb0fc059539e0dfcc67ff86f
-  languageName: node
-  linkType: hard
-
-"@metamask/obs-store@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "@metamask/obs-store@npm:9.0.0"
-  dependencies:
-    "@metamask/safe-event-emitter": "npm:^3.0.0"
-    readable-stream: "npm:^3.6.2"
-  checksum: 1c202a5bbdc79a6b8b3fba946c09dc5521e87260956d30db6543e7bf3d95bd44ebd958f509e3e7332041845176487fe78d3b40bdedbc213061ba849fd978e468
   languageName: node
   linkType: hard
 
@@ -25454,7 +25428,6 @@ __metadata:
     "@metamask/eslint-plugin-design-tokens": "npm:^1.1.0"
     "@metamask/eth-json-rpc-filters": "npm:^7.0.0"
     "@metamask/eth-json-rpc-middleware": "npm:^12.1.0"
-    "@metamask/eth-keyring-controller": "npm:^16.0.0"
     "@metamask/eth-ledger-bridge-keyring": "npm:^2.0.1"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/eth-sig-util": "npm:^7.0.1"
