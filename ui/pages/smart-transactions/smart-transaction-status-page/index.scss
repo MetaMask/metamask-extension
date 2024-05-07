@@ -11,6 +11,7 @@
   @media screen and (min-width: 768px) {
     max-width: 640px;
     margin: auto auto 16px auto;
+    overflow: hidden;
   }
 
   &__description {
