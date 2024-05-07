@@ -68,7 +68,6 @@ import {
   setNewTokensImported,
   setActiveNetwork,
   setNewTokensImportedError,
-  toggleExternalServices,
 } from '../../store/actions';
 import {
   hideWhatsNewPopup,
