@@ -99,6 +99,7 @@ exports[`Confirm matches snapshot for personal signature type 1`] = `
                 <button
                   aria-label="Account details"
                   class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                  data-testid="header-info-button"
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
@@ -139,7 +140,7 @@ exports[`Confirm matches snapshot for personal signature type 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
           >
-            Only sign this message if you fully understand the content and trust the requesting site
+            Only confirm this message if you approve the content and trust the requesting site.
           </p>
           <div
             class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
@@ -332,6 +333,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                 <button
                   aria-label="Account details"
                   class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                  data-testid="header-info-button"
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
@@ -372,7 +374,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-bottom-4 mm-box--color-text-alternative"
           >
-            Review everything below before continuing. Once done, this transaction can’t be undone
+            Only confirm this message if you approve the content and trust the requesting site.
           </p>
           <div
             class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"

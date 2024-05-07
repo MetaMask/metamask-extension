@@ -33,6 +33,7 @@ import {
   getAllNetworks,
   getCurrentNetwork,
   getPetnamesEnabled,
+  getExternalServicesOnboardingToggleState,
 } from '../../../selectors';
 import {
   setCompletedOnboarding,
@@ -46,9 +47,14 @@ import {
   showModal,
   toggleNetworkMenu,
   setIncomingTransactionsPreferences,
+  toggleExternalServices,
   setUseTransactionSimulations,
   setPetnamesEnabled,
 } from '../../../store/actions';
+import {
+  onboardingToggleBasicFunctionalityOn,
+  openBasicFunctionalityModal,
+} from '../../../ducks/app/app';
 import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
 import { Setting } from './setting';
 
@@ -97,7 +103,12 @@ export default function PrivacySettings() {
   const currentNetwork = useSelector(getCurrentNetwork);
   const allNetworks = useSelector(getAllNetworks);
 
+  const externalServicesOnboardingToggleState = useSelector(
+    getExternalServicesOnboardingToggleState,
+  );
+
   const handleSubmit = () => {
+    dispatch(toggleExternalServices(externalServicesOnboardingToggleState));
     dispatch(setUsePhishDetect(usePhishingDetection));
     dispatch(setUse4ByteResolution(turnOn4ByteResolution));
     dispatch(setUseTokenDetection(turnOnTokenDetection));
@@ -156,6 +167,19 @@ export default function PrivacySettings() {
           className="privacy-settings__settings"
           data-testid="privacy-settings-settings"
         >
+          <Setting
+            value={externalServicesOnboardingToggleState}
+            setValue={(toggledValue) => {
+              if (toggledValue === false) {
+                dispatch(openBasicFunctionalityModal());
+              } else {
+                dispatch(onboardingToggleBasicFunctionalityOn());
+              }
+            }}
+            title={t('basicConfigurationLabel')}
+            description={t('basicConfigurationDescription')}
+          />
+
           <IncomingTransactionToggle
             allNetworks={allNetworks}
             setIncomingTransactionsPreferences={(chainId, value) =>
