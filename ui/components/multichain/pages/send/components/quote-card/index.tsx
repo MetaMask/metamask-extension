@@ -104,7 +104,10 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
     if (isSwapQuoteLoading) {
       return t('swapFetchingQuotes');
     } else if (bestQuote) {
-      return timeLeft ? t('swapNewQuoteIn', [`0:${timeLeft}`]) : undefined;
+      const timeLeftFormatted = `0${timeLeft}`.slice(-2);
+      return timeLeft
+        ? t('swapNewQuoteIn', [`0:${timeLeftFormatted}`])
+        : undefined;
     }
     return undefined;
   }, [isSwapQuoteLoading, bestQuote, timeLeft]);
