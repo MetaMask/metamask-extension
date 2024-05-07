@@ -51,7 +51,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
 
         const rejectionResult = await driver.waitForSelector({
           css: '#personalSign',
-          text: 'ERROR: USER REJECTED THE REQUEST.',
+          text: 'Error: User rejected the request.',
         });
         assert.ok(rejectionResult);
       },
