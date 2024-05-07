@@ -32,20 +32,25 @@ import useEthFeeData from './hooks/useEthFeeData';
 import useTranslatedNetworkName from './hooks/useTranslatedNetworkName';
 import useGetConversionRate from './hooks/useGetConversionRate';
 
+type QuoteCardProps = {
+  scrollRef: React.RefObject<HTMLDivElement>;
+};
+
 // update literal below if over 60 seconds
 const REFRESH_INTERVAL = 30;
 
 /**
  * All the info about the current quote; handles polling and displaying the best quote
+ *
+ * @param options0
+ * @param options0.scrollRef - ref to scroll to quote on quote load
  */
-export function QuoteCard() {
+export function QuoteCard({ scrollRef }: QuoteCardProps) {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
   const translatedNetworkName = useTranslatedNetworkName();
   const trackEvent = useContext(MetaMetricsContext);
-
-  const scrollRef = useRef<HTMLDivElement>(null);
 
   const { isSwapQuoteLoading } = useSelector(getCurrentDraftTransaction);
 
@@ -207,11 +212,7 @@ export function QuoteCard() {
       )}
       {/* FEE INFO */}
       {bestQuote && (
-        <Text
-          color={TextColor.textAlternative}
-          variant={TextVariant.bodySm}
-          className="quote-card__fetch-status"
-        >
+        <Text color={TextColor.textAlternative} variant={TextVariant.bodySm}>
           {t('swapIncludesMMFeeAlt', [bestQuote?.fee])}
         </Text>
       )}
