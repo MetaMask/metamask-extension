@@ -75,6 +75,10 @@ async function selectDappClickSendGetNetwork(driver, dappUrl) {
 }
 
 describe('Request-queue UI changes', function () {
+  if (!process.env.MULTICHAIN) {
+    return;
+  }
+
   it('UI should show network specific to domain @no-mmi', async function () {
     const port = 8546;
     const chainId = 1338;
