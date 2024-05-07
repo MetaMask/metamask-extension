@@ -287,13 +287,6 @@ export default class AdvancedTab extends PureComponent {
             value={smartTransactionsOptInStatus}
             onToggle={(oldValue) => {
               const newValue = !oldValue;
-              this.context.trackEvent({
-                category: MetaMetricsEventCategory.Settings,
-                event: MetaMetricsEventName.SettingsUpdated,
-                properties: {
-                  stx_opt_in: newValue,
-                },
-              });
               setSmartTransactionsOptInStatus(newValue);
             }}
             offLabel={t('off')}
