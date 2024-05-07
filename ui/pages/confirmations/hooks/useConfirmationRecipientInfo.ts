@@ -11,7 +11,6 @@ function useConfirmationRecipientInfo() {
   const currentConfirmation = useSelector(
     currentConfirmationSelector,
   ) as Confirmation;
-  const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
 
   const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
 
