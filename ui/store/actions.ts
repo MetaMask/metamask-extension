@@ -36,6 +36,7 @@ import {
   NetworkConfiguration,
 } from '@metamask/network-controller';
 import { InterfaceState } from '@metamask/snaps-sdk';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
@@ -91,6 +92,8 @@ import {
   MetaMetricsPageOptions,
   MetaMetricsPagePayload,
   MetaMetricsReferrerObject,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
@@ -454,7 +457,10 @@ export function addNewAccount(): ThunkAction<
 > {
   log.debug(`background.addNewAccount`);
   return async (dispatch, getState) => {
-    const oldAccounts = getInternalAccounts(getState());
+    const oldAccounts = getInternalAccounts(getState()).filter(
+      (internalAccount) =>
+        internalAccount.metadata.keyring.type === KeyringTypes.hd,
+    );
     dispatch(showLoadingIndication());
 
     let addedAccountAddress;
@@ -3080,6 +3086,13 @@ export function setShowExtensionInFullSizeView(value: boolean) {
 }
 
 export function setSmartTransactionsOptInStatus(value: boolean) {
+  trackMetaMetricsEvent({
+    category: MetaMetricsEventCategory.Settings,
+    event: MetaMetricsEventName.SettingsUpdated,
+    properties: {
+      stx_opt_in: value,
+    },
+  });
   return setPreference('smartTransactionsOptInStatus', value);
 }
 
