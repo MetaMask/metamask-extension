@@ -5,7 +5,9 @@
     font-size: design-system.$font-size-h7;
   }
   &__TOS {
-    align-self: flex-start;
+    &:hover:not(.--disabled) {
+      text-decoration: none;
+    }
   }
 }
 
