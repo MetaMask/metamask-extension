@@ -213,6 +213,7 @@ const ConfirmPageContainer = (props) => {
             onEdit={() => onEdit()}
             showAccountInHeader={showAccountInHeader}
             accountAddress={fromAddress}
+            origin={origin}
           >
             {hideSenderToRecipient ? null : (
               <SenderToRecipient

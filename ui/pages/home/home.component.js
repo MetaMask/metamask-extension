@@ -41,6 +41,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   IconColor,
   BackgroundColor,
+  Severity,
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
 import {
@@ -54,6 +55,7 @@ import {
   Text,
   BannerBase,
   Icon,
+  BannerAlert,
 } from '../../components/component-library';
 
 import {
@@ -197,6 +199,8 @@ export default class Home extends PureComponent {
     setSurveyLinkLastClickedOrClosed: PropTypes.func.isRequired,
     showSurveyToast: PropTypes.bool.isRequired,
     hasAllowedPopupRedirectApprovals: PropTypes.bool.isRequired,
+    useExternalServices: PropTypes.bool,
+    setBasicFunctionalityModalOpen: PropTypes.func,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     institutionalConnectRequests: PropTypes.arrayOf(PropTypes.object),
     mmiPortfolioEnabled: PropTypes.bool,
@@ -810,6 +814,8 @@ export default class Home extends PureComponent {
     const {
       defaultHomeActiveTabName,
       onTabClick,
+      useExternalServices,
+      setBasicFunctionalityModalOpen,
       forgottenPassword,
       history,
       setSurveyLinkLastClickedOrClosed,
@@ -912,6 +918,18 @@ export default class Home extends PureComponent {
             ///: END:ONLY_INCLUDE_IF
           }
           <div className="home__main-view">
+            {useExternalServices ? null : (
+              <BannerAlert
+                margin={4}
+                marginBottom={0}
+                severity={Severity.Danger}
+                actionButtonLabel={t('basicConfigurationBannerCTA')}
+                actionButtonOnClick={() => {
+                  setBasicFunctionalityModalOpen();
+                }}
+                title={t('basicConfigurationBannerTitle')}
+              ></BannerAlert>
+            )}
             <div className="home__balance-wrapper">
               {
                 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)

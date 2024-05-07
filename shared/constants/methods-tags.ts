@@ -25,8 +25,6 @@ export const methodsWithConfirmation = [
   ...methodsRequiringNetworkSwitch,
   'wallet_requestPermissions',
   'wallet_requestSnaps',
-  'wallet_snap',
-  'wallet_invokeSnap',
   'eth_decrypt',
   'eth_sign',
   'eth_requestAccounts',
