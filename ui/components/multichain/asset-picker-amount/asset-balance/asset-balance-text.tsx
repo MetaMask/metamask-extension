@@ -10,7 +10,7 @@ import {
 } from '../../../../selectors';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import {
-  type TextColor,
+  TextColor,
   TextVariant,
   FontWeight,
 } from '../../../../helpers/constants/design-system';
@@ -25,11 +25,13 @@ import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 export type AssetBalanceTextProps = {
   asset: Asset;
   balanceColor: TextColor;
+  error?: string;
 };
 
 export function AssetBalanceText({
   asset,
   balanceColor,
+  error,
 }: AssetBalanceTextProps) {
   const t = useI18nContext();
   const secondaryCurrency = useSelector(getCurrentCurrency);
@@ -79,12 +81,15 @@ export function AssetBalanceText({
     },
   };
 
+  const errorText = error ? `. ${t(error)}` : '';
+
   if (asset.type === AssetType.NFT) {
     const numberOfTokens = hexToDecimal(asset.balance || '0x0');
     return (
       <Text fontWeight={FontWeight.Medium} {...commonProps.textProps}>
-        {numberOfTokens}{' '}
-        {t(numberOfTokens === '1' ? 'token' : 'tokens')?.toLowerCase()}
+        {`${numberOfTokens} ${t(
+          numberOfTokens === '1' ? 'token' : 'tokens',
+        )?.toLowerCase()}${errorText}`}
       </Text>
     );
   }
@@ -95,18 +100,29 @@ export function AssetBalanceText({
         {...commonProps}
         currency={secondaryCurrency}
         numberOfDecimals={2}
-        displayValue={formattedFiat}
+        displayValue={`${formattedFiat}${errorText}`}
       />
     );
   }
 
   if (asset.type === AssetType.native) {
     return (
-      <UserPreferencedCurrencyDisplay
-        {...commonProps}
-        value={asset.balance}
-        type={PRIMARY}
-      />
+      <>
+        <UserPreferencedCurrencyDisplay
+          {...commonProps}
+          value={asset.balance}
+          type={PRIMARY}
+        />
+        {errorText ? (
+          <Text
+            variant={TextVariant.bodySm}
+            color={TextColor.errorDefault}
+            data-testid="send-page-amount-error"
+          >
+            {errorText}
+          </Text>
+        ) : null}
+      </>
     );
   }
 
@@ -115,7 +131,7 @@ export function AssetBalanceText({
     return (
       <UserPreferencedCurrencyDisplay
         {...commonProps}
-        displayValue={balanceString || ''}
+        displayValue={`${balanceString || ''}${errorText}`}
       />
     );
   }
