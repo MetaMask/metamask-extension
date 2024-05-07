@@ -4,6 +4,9 @@
   &__fetch-status {
     font-size: design-system.$font-size-h7;
   }
+  &__TOS {
+    align-self: flex-start;
+  }
 }
 
 .tippy-tooltip {
