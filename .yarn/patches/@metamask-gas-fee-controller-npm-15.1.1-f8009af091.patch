@@ -1,0 +1,14 @@
+diff --git a/dist/chunk-JVVQPARV.js b/dist/chunk-JVVQPARV.js
+index f7a7f488466dcbed3e81367536288bdf777aa8d0..8886810b552684a3737d51e7cf9aece868eb1a2f 100644
+--- a/dist/chunk-JVVQPARV.js
++++ b/dist/chunk-JVVQPARV.js
+@@ -32,7 +32,8 @@ var metadata = {
+   },
+   gasFeeEstimates: { persist: true, anonymous: false },
+   estimatedGasFeeTimeBounds: { persist: true, anonymous: false },
+-  gasEstimateType: { persist: true, anonymous: false }
++  gasEstimateType: { persist: true, anonymous: false },
++  nonRPCGasFeeApisDisabled: { persist: true, anonymous: false },
+ };
+ var name = "GasFeeController";
+ var defaultState = {
