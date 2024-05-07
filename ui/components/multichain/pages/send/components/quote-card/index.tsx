@@ -225,6 +225,7 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
         href={CONSENSYS_TERMS_OF_USE}
         target="_blank"
         className="quote-card__TOS"
+        disableUnderline
       >
         {t('termsOfService')}
       </ButtonLink>
