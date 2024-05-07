@@ -72,6 +72,7 @@ import {
   gasFeeStopPollingByPollingToken,
   gasFeeStartPollingByNetworkClientId,
   getBalancesInSingleCall,
+  estimateGas,
 } from '../../store/actions';
 import { setCustomGasLimit } from '../gas/gas.duck';
 import {
@@ -819,6 +820,14 @@ const fetchSwapAndSendQuotes = createAsyncThunk(
           .catch(() => reject(SWAPS_QUOTES_ERROR));
       }, FETCH_DELAY),
     );
+
+    for (const quote of quotes) {
+      if (quote.approvalNeeded) {
+        quote.approvalNeeded.gas = addHexPrefix(
+          await estimateGas(quote.approvalNeeded),
+        );
+      }
+    }
 
     if (!quotes?.length) {
       throw new Error(SWAPS_NO_QUOTES);
@@ -2655,7 +2664,6 @@ export function resetSendState() {
  * @returns {ThunkAction<void>}
  */
 
-// TODO: handle approvals once API is ready
 export function signTransaction() {
   return async (dispatch, getState) => {
     const state = getState();
@@ -2668,10 +2676,13 @@ export function signTransaction() {
       draftTransaction?.sendAsset?.details?.address !==
       draftTransaction?.receiveAsset?.details?.address;
 
+    const quotesAsArray = draftTransaction.quotes;
+    const bestQuote = quotesAsArray
+      ? calculateBestQuote(quotesAsArray)
+      : undefined;
+
     if (isSwapAndSend) {
       // TODO: update to selected quote
-      const quotesAsArray = draftTransaction.quotes;
-      const bestQuote = calculateBestQuote(quotesAsArray);
 
       txParams = { ...bestQuote.trade };
     } else {
@@ -2748,6 +2759,19 @@ export function signTransaction() {
           `sendFlow - user clicked next and transaction should be added to controller`,
         ),
       );
+
+      if (isSwapAndSend) {
+        transactionType = TransactionType.contractInteraction;
+      }
+
+      if (bestQuote?.approvalNeeded) {
+        await dispatch(
+          addTransactionAndRouteToConfirmationPage(bestQuote.approvalNeeded, {
+            sendFlowHistory: draftTransaction.history,
+            type: TransactionType.contractInteraction,
+          }),
+        );
+      }
 
       const { id: transactionId } = await dispatch(
         addTransactionAndRouteToConfirmationPage(txParams, {

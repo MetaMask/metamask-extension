@@ -45,6 +45,7 @@ export type Quote = {
     data: string;
     to: string;
     from: string;
+    gas?: string;
   };
   sourceAmount: string;
   destinationAmount: string;
@@ -176,7 +177,6 @@ export async function getSwapAndSendQuotes(request: Request): Promise<Quote[]> {
           from: quote.trade.from,
           data: quote.trade.data,
           value: decimalToHex(quote.trade.value),
-          // bang is safe because we've validated the presence of this property
           gas: decimalToHex(quote.gasParams.maxGas),
         });
 
