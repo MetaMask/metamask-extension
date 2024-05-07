@@ -28,6 +28,7 @@ import useEthFeeData from './hooks/useEthFeeData';
 import useTranslatedNetworkName from './hooks/useTranslatedNetworkName';
 import useGetConversionRate from './hooks/useGetConversionRate';
 
+// update literal below if over 60 seconds
 const REFRESH_INTERVAL = 30;
 
 /**
@@ -94,7 +95,7 @@ export function QuoteCard() {
     if (isSwapQuoteLoading) {
       return t('swapFetchingQuotes');
     } else if (bestQuote) {
-      return timeLeft ? t('swapNewQuoteIn', [timeLeft]) : undefined;
+      return timeLeft ? t('swapNewQuoteIn', [`0:${timeLeft}`]) : undefined;
     }
     return undefined;
   }, [isSwapQuoteLoading, bestQuote, timeLeft]);
