@@ -133,6 +133,9 @@ workflows:
       - prep-build-multichain-test:
           requires:
             - prep-deps
+      - prep-build-confirmation-redesign-test:
+          requires:
+            - prep-deps
       - prep-build-test-mv3:
           requires:
             - prep-deps
@@ -168,9 +171,15 @@ workflows:
       - test-e2e-chrome-multichain:
           requires:
             - prep-build-multichain-test
+      - test-e2e-chrome-confirmation-redesign:
+          requires:
+            - prep-build-confirmation-redesign-test
       - test-e2e-firefox:
           requires:
             - prep-build-test
+      - test-e2e-firefox-confirmation-redesign:
+          requires:
+            - prep-build-confirmation-redesign-test
       - test-e2e-chrome-rpc:
           requires:
             - prep-build-test
@@ -283,6 +292,8 @@ workflows:
             - test-e2e-chrome
             - test-e2e-chrome-multichain
             - test-e2e-chrome-multiple-providers
+            - test-e2e-chrome-confirmation-redesign
+            - test-e2e-firefox-confirmation-redesign
             - test-e2e-firefox
             - test-e2e-chrome-flask
             - test-e2e-firefox-flask
@@ -396,54 +407,20 @@ jobs:
           command: |
             #!/bin/bash
 
-            # GitHub Personal Access Token for API Authentication
-            GITHUB_TOKEN="${GITHUB_TOKEN}"
-            BRANCH="${CIRCLE_BRANCH}"
+            GH_LABEL=team-mmi
 
-            # Fetch the PRs associated with the current branch and check the response
-            PR_RESPONSE=$(curl -s -H "Authorization: token ${GITHUB_TOKEN}" \
-              "https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls?state=open&head=${CIRCLE_PROJECT_USERNAME}:${BRANCH}")
-            echo "https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls?state=open&head=${CIRCLE_PROJECT_USERNAME}:${BRANCH}"
+            echo $CIRCLE_PULL_REQUESTS | sed 's/,/\n/g'
 
-            # Check if the response contains valid JSON
-            if ! echo "$PR_RESPONSE" | jq empty; then
-                echo "Failed to parse JSON response."
-                echo "$PR_RESPONSE"
-                exit 1
-            fi
+            # See if any associated PRs have matching label
+            HAS_MATCHING_PR=$(echo $CIRCLE_PULL_REQUESTS \
+              | sed -e 's#,#\n#g' -e 's#/github.com/#/api.github.com/repos/#g' -e 's#/pull/#/pulls/#g' \
+              | xargs -n1 curl -s \
+              | jq -s "map((.labels|map(select(.name==\"${GH_LABEL}\"))))|flatten|length > 0")
 
-            # Check if we received an array of PRs
-            if ! echo "$PR_RESPONSE" | jq -e '. | type == "array"'; then
-                echo "$PR_RESPONSE"
-                echo "Expected an array of PRs, got something else."
-                exit 1
-            fi
+            echo "${GH_LABEL} tag presence: ${HAS_MATCHING_PR}"
 
-            # Check if the array of PRs is empty
-            PR_COUNT=$(echo "$PR_RESPONSE" | jq '. | length')
-
-            # If no PRs are found, exit gracefully
-            if [ "$PR_COUNT" -eq 0 ]; then
-              echo "No open PRs found. Exiting."
-              echo "false" > ./RUN_MMI_OPTIONAL
-              exit 0
-            fi
-
-            # Extract label names from the PR_RESPONSE
-            LABEL_NAMES=$(echo "$PR_RESPONSE" | jq -r '.[0].labels[].name')
-
-            echo "Labels found: $LABEL_NAMES"
-
-            # Check if "team-mmi" label is present
-            if echo "$LABEL_NAMES" | grep -qw "team-mmi"; then
-              echo "team-mmi tag found."
-              # assign the RUN_MMI_OPTIONAL variable to true
-              echo "true" > ./RUN_MMI_OPTIONAL
-            else
-              echo "team-mmi tag not found."
-              # assign the RUN_MMI_OPTIONAL variable to false
-              echo "false" > ./RUN_MMI_OPTIONAL
-            fi
+            # assign the RUN_MMI_OPTIONAL variable
+            echo "${HAS_MATCHING_PR}" > ./RUN_MMI_OPTIONAL
       - persist_to_workspace:
           root: .
           paths:
@@ -803,6 +780,27 @@ jobs:
             - dist-test-multichain
             - builds-test-multichain
 
+  prep-build-confirmation-redesign-test:
+    executor: node-browsers-medium-plus
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build extension for testing
+          command: ENABLE_CONFIRMATION_REDESIGN=1 yarn build:test
+      - run:
+          name: Move test build to 'dist-test' to avoid conflict with production build
+          command: mv ./dist ./dist-test-confirmations
+      - run:
+          name: Move test zips to 'builds-test' to avoid conflict with production build
+          command: mv ./builds ./builds-test-confirmations
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-test-confirmations
+            - builds-test-confirmations
+
   prep-build-storybook:
     executor: node-browsers-medium-plus
     steps:
@@ -985,6 +983,35 @@ jobs:
           no_output_timeout: 5m
           environment:
             MULTICHAIN: 1
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e
+
+  test-e2e-chrome-confirmation-redesign:
+    executor: node-browsers-medium-plus
+    parallelism: 20
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-confirmations ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-confirmations ./builds
+      - run:
+          name: test:e2e:chrome-confirmation-redesign
+          command: |
+            if .circleci/scripts/test-run-e2e.sh
+            then
+              timeout 20m yarn test:e2e:chrome --retries 2
+            fi
+          no_output_timeout: 5m
+          environment:
+            ENABLE_CONFIRMATION_REDESIGN: 1
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -1259,6 +1286,36 @@ jobs:
           destination: test-artifacts
       - store_test_results:
           path: test/test-results/e2e
+
+  test-e2e-firefox-confirmation-redesign:
+    executor: node-browsers-medium-plus
+    parallelism: 20
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-confirmations ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-confirmations ./builds
+      - run:
+          name: test:e2e:firefox-confirmation-redesign
+          command: |
+            if .circleci/scripts/test-run-e2e.sh
+            then
+              timeout 20m yarn test:e2e:firefox --retries 2
+            fi
+          no_output_timeout: 5m
+          environment:
+            ENABLE_CONFIRMATION_REDESIGN: 1
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e
+
 
   benchmark:
     executor: node-browsers-small

@@ -10,6 +10,7 @@ import {
   setUseMultiAccountBalanceChecker,
   setUsePhishDetect,
   setUseTokenDetection,
+  toggleExternalServices,
   setUseAddressBarEnsResolution,
   setOpenSeaEnabled,
   setUseNftDetection,
@@ -28,6 +29,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getPetnamesEnabled,
 } from '../../../selectors';
+import { openBasicFunctionalityModal } from '../../../ducks/app/app';
 import SecurityTab from './security-tab.component';
 
 const mapStateToProps = (state) => {
@@ -51,6 +53,7 @@ const mapStateToProps = (state) => {
     openSeaEnabled,
     useNftDetection,
     use4ByteResolution,
+    useExternalServices,
     useExternalNameSources,
   } = metamask;
 
@@ -72,6 +75,7 @@ const mapStateToProps = (state) => {
     useNftDetection,
     use4ByteResolution,
     useExternalNameSources,
+    useExternalServices,
     petnamesEnabled,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     securityAlertsEnabled: getIsSecurityAlertsEnabled(state),
@@ -97,6 +101,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setUseAddressBarEnsResolution(val)),
     setUseSafeChainsListValidation: (val) =>
       dispatch(setUseSafeChainsListValidation(val)),
+    setBasicFunctionalityModalOpen: () =>
+      dispatch(openBasicFunctionalityModal()),
     setOpenSeaEnabled: (val) => dispatch(setOpenSeaEnabled(val)),
     setUseNftDetection: (val) => dispatch(setUseNftDetection(val)),
     setUse4ByteResolution: (value) => {
@@ -104,6 +110,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     setUseExternalNameSources: (value) => {
       return dispatch(setUseExternalNameSources(value));
+    },
+    toggleExternalServices: (value) => {
+      return dispatch(toggleExternalServices(value));
     },
     setUseTransactionSimulations: (value) => {
       return dispatch(setUseTransactionSimulations(value));

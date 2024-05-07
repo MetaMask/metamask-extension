@@ -56,7 +56,7 @@ describe('Editing confirmations of dapp initiated contract interactions', functi
     );
   });
 
-  it('should show an edit button on a simple ETH send initiated by a dapp', async function () {
+  it('should NOT show an edit button on a simple ETH send initiated by a dapp', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -88,8 +88,8 @@ describe('Editing confirmations of dapp initiated contract interactions', functi
         );
         assert.equal(
           editTransactionButton,
-          true,
-          `Edit transaction button should be visible on a contract interaction created by a dapp`,
+          false,
+          `Edit transaction button should not be visible on a simple send transaction created by a dapp`,
         );
       },
     );

@@ -50,10 +50,10 @@ describe('Test Snap Signature Insights', function () {
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Install' });
+        await driver.waitForSelector({ text: 'Confirm' });
 
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
 
@@ -94,7 +94,7 @@ describe('Test Snap Signature Insights', function () {
         });
         await driver.delay(1000);
         await driver.clickElement({
-          text: 'Connect',
+          text: 'Confirm',
           tag: 'button',
         });
 

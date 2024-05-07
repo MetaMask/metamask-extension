@@ -21,14 +21,12 @@ export const methodsRequiringNetworkSwitch = Object.freeze([
  * presented to the user. Note that some of these methods may
  * only sometimes cause a confirmation to appear.
  */
-export const methodsWithConfirmation = Object.freeze([
+export const methodsWithConfirmation = [
   ...methodsRequiringNetworkSwitch,
-  'wallet_requestPermissions' as const,
-  'wallet_requestSnaps' as const,
-  'wallet_snap' as const,
-  'wallet_invokeSnap' as const,
-  'eth_decrypt' as const,
-  'eth_sign' as const,
-  'eth_requestAccounts' as const,
-  'eth_getEncryptionPublicKey' as const,
-]);
+  'wallet_requestPermissions',
+  'wallet_requestSnaps',
+  'eth_decrypt',
+  'eth_sign',
+  'eth_requestAccounts',
+  'eth_getEncryptionPublicKey',
+];
