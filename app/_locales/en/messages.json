@@ -565,6 +565,33 @@
   "basic": {
     "message": "Basic"
   },
+  "basicConfigurationBannerCTA": {
+    "message": "Turn on basic functionality"
+  },
+  "basicConfigurationBannerTitle": {
+    "message": "Basic functionality is off"
+  },
+  "basicConfigurationDescription": {
+    "message": "Includes token data and value, optimal gas settings, and more. Using these services shares your IP address with MetaMask, just like when you visit a website."
+  },
+  "basicConfigurationLabel": {
+    "message": "Basic functionality"
+  },
+  "basicConfigurationModalCheckbox": {
+    "message": "I understand and want to continue"
+  },
+  "basicConfigurationModalDisclaimerOff": {
+    "message": "This means you won't fully optimize your time on MetaMask. Basic features (like token details, optimal gas settings, and others) won't be available to you."
+  },
+  "basicConfigurationModalDisclaimerOn": {
+    "message": "To optimize your time on MetaMask, you’ll need to turn on this feature. Basic functions (like token details, optimal gas settings, and others) are important to the web3 experience."
+  },
+  "basicConfigurationModalHeadingOff": {
+    "message": "Turn off basic functionality"
+  },
+  "basicConfigurationModalHeadingOn": {
+    "message": "Turn on basic functionality"
+  },
   "beCareful": {
     "message": "Be careful"
   },
@@ -809,16 +836,12 @@
   "confirmTitleDescContractInteractionTransaction": {
     "message": "Only confirm this transaction if you fully understand the content and trust the requesting site."
   },
-  "confirmTitleDescPersonalSignature": {
-    "message": "Only sign this message if you fully understand the content and trust the requesting site"
-  },
-  "confirmTitleDescTypedDataSignature": {
-    "message": "Review everything below before continuing. Once done, this transaction can’t be undone"
+  "confirmTitleDescSignature": {
+    "message": "Only confirm this message if you approve the content and trust the requesting site."
   },
   "confirmTitleSignature": {
     "message": "Signature request"
   },
-
   "confirmTitleTransaction": {
     "message": "Transaction request"
   },
@@ -2256,6 +2279,9 @@
   "interactingWith": {
     "message": "Interacting with"
   },
+  "interactingWithTransactionDescription": {
+    "message": "This is the contract you're interacting with. Protect yourself from scammers by  verifying the details."
+  },
   "introducingSmartTransactions": {
     "message": "Introducing Smart Transactions"
   },
@@ -2603,6 +2629,12 @@
   },
   "metamaskVersion": {
     "message": "MetaMask Version"
+  },
+  "methodData": {
+    "message": "Method"
+  },
+  "methodDataTransactionDescription": {
+    "message": "This is the specific action that will be taken. This data can be faked, so be sure you trust the site on the other end."
   },
   "methodNotSupported": {
     "message": "Not supported with this account."
@@ -3906,10 +3938,10 @@
     "message": "Protect your funds"
   },
   "redesignedConfirmationsEnabledToggle": {
-    "message": "Redesigned confirmations"
+    "message": "Improved signature requests"
   },
   "redesignedConfirmationsToggleDescription": {
-    "message": "Turn this on to see re-designed confirmations whenever you receive signature requests."
+    "message": "Turn this on to see signature requests in an enhanced format."
   },
   "refreshList": {
     "message": "Refresh list"
@@ -4001,6 +4033,9 @@
   },
   "requestFromInfo": {
     "message": "This is the site asking for your signature."
+  },
+  "requestFromTransactionDescription": {
+    "message": "This is the site asking for your confirmation."
   },
   "requestMayNotBeSafe": {
     "message": "Request may not be safe"
@@ -4945,7 +4980,7 @@
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
   "stxOptInDescription": {
-    "message": "Turn on Smart Transactions for more reliable and secure transactions, and adjustable fees on ETH Mainnet. $1"
+    "message": "Turn on Smart Transactions for more reliable and secure transactions on ETH Mainnet. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Privately submitting your Swap..."
@@ -5752,6 +5787,12 @@
   },
   "tryAgain": {
     "message": "Try again"
+  },
+  "turnOff": {
+    "message": "Turn off"
+  },
+  "turnOn": {
+    "message": "Turn on"
   },
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"
