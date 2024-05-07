@@ -1,4 +1,5 @@
 import { cloneDeep } from 'lodash';
+import log from 'loglevel';
 import { hasProperty, isObject } from '@metamask/utils';
 
 export const version = 118;
@@ -34,9 +35,7 @@ export async function migrate(
 function transformState(state: Record<string, unknown>) {
   const selectedNetworkControllerState = state.SelectedNetworkController;
   if (!selectedNetworkControllerState) {
-    global.sentry?.captureException?.(
-      new Error('SelectedNetworkController state not found.'),
-    );
+    log.warn('Skipping migration. SelectedNetworkController state not found.');
     return;
   }
 
