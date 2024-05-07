@@ -104,7 +104,6 @@ import {
   NOTIFICATION_DROP_LEDGER_FIREFOX,
   NOTIFICATION_PETNAMES,
   NOTIFICATION_U2F_LEDGER_LIVE,
-  NOTIFICATION_STAKING_PORTFOLIO,
   NOTIFICATION_PORTFOLIO_V2,
   NOTIFICATION_SIMULATIONS,
 } from '../../shared/notifications';
@@ -1682,7 +1681,6 @@ function getAllowedAnnouncementIds(state) {
     // This syntax is unusual, but very helpful here.  It's equivalent to `unnamedObject[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
     [NOTIFICATION_DROP_LEDGER_FIREFOX]: currentKeyringIsLedger && isFirefox,
     [NOTIFICATION_U2F_LEDGER_LIVE]: currentKeyringIsLedger && !isFirefox,
-    [NOTIFICATION_STAKING_PORTFOLIO]: true,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     [NOTIFICATION_BLOCKAID_DEFAULT]: true,
     ///: END:ONLY_INCLUDE_IF

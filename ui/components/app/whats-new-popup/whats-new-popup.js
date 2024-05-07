@@ -16,7 +16,6 @@ import {
   NOTIFICATION_PETNAMES,
   NOTIFICATION_U2F_LEDGER_LIVE,
   getTranslatedUINotifications,
-  NOTIFICATION_STAKING_PORTFOLIO,
   NOTIFICATION_PORTFOLIO_V2,
   NOTIFICATION_SIMULATIONS,
 } from '../../../../shared/notifications';
@@ -55,9 +54,6 @@ function getActionFunctionById(id, history) {
     },
     [NOTIFICATION_U2F_LEDGER_LIVE]: () => {
       updateViewedNotifications({ [NOTIFICATION_U2F_LEDGER_LIVE]: true });
-    },
-    [NOTIFICATION_STAKING_PORTFOLIO]: () => {
-      updateViewedNotifications({ [NOTIFICATION_STAKING_PORTFOLIO]: true });
     },
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     [NOTIFICATION_BLOCKAID_DEFAULT]: () => {
@@ -295,7 +291,6 @@ export default function WhatsNewPopup({ onClose }) {
     // This syntax is unusual, but very helpful here.  It's equivalent to `notificationRenderers[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
     [NOTIFICATION_DROP_LEDGER_FIREFOX]: renderFirstNotification,
     [NOTIFICATION_U2F_LEDGER_LIVE]: renderFirstNotification,
-    [NOTIFICATION_STAKING_PORTFOLIO]: renderFirstNotification,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     [NOTIFICATION_BLOCKAID_DEFAULT]: renderFirstNotification,
     ///: END:ONLY_INCLUDE_IF
