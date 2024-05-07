@@ -4421,6 +4421,7 @@ export default class MetamaskController extends EventEmitter {
       ppomController: this.ppomController,
       securityAlertsEnabled:
         this.preferencesController.store.getState()?.securityAlertsEnabled,
+      securityAlertsAPIEnabled: this.preferencesController.store?.getState()?.preferences?.securityAlertsAPIEnabled,
       chainId: this.networkController.state.providerConfig.chainId,
       ///: END:ONLY_INCLUDE_IF
     };

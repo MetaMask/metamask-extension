@@ -23,7 +23,8 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
-import { normalizePPOMRequest } from '../ppom/ppom-util';
+import { validateRequestWithPPOM } from '../ppom/ppom-util';
+import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 ///: END:ONLY_INCLUDE_IF
 
 /**
@@ -65,6 +66,7 @@ type BaseAddTransactionRequest = {
   networkClientId: string;
   ppomController: PPOMController;
   securityAlertsEnabled: boolean;
+  securityAlertsAPIEnabled: boolean;
   selectedAccount: InternalAccount;
   transactionParams: TransactionParams;
   transactionController: TransactionController;
@@ -136,6 +138,7 @@ export async function addTransaction(
     transactionOptions,
     ppomController,
     securityAlertsEnabled,
+    securityAlertsAPIEnabled,
     chainId,
   } = request;
 
@@ -149,10 +152,14 @@ export async function addTransaction(
     !typeIsExcludedFromPPOM
   ) {
     try {
-      const ppomRequest = normalizePPOMRequest({
+      const ppomRequest = {
         method: 'eth_sendTransaction',
         id: 'actionId' in transactionOptions ? transactionOptions.actionId : '',
-        origin: 'origin' in transactionOptions ? transactionOptions.origin : '',
+        origin:
+          'origin' in transactionOptions &&
+          transactionOptions?.origin !== ORIGIN_METAMASK
+            ? transactionOptions.origin
+            : '',
         params: [
           {
             from: transactionParams.from,
@@ -161,36 +168,21 @@ export async function addTransaction(
             data: transactionParams.data,
           },
         ],
-      });
+      };
 
       const securityAlertId = uuid();
 
-      ppomController
-        .usePPOM(async (ppom) => {
-          try {
-            const securityAlertResponse = await ppom.validateJsonRpc(
-              ppomRequest,
-            );
-            return securityAlertResponse;
-          } catch (e) {
-            captureException(e);
-            const errorObject = e as unknown as Error;
-            console.error('Error validating JSON RPC using PPOM: ', e);
-            const securityAlertResponse = {
-              securityAlertId,
-              result_type: BlockaidResultType.Errored,
-              reason: BlockaidReason.errored,
-              description: `${errorObject.name}: ${errorObject.message}`,
-            };
-            return securityAlertResponse;
-          }
-        })
-        .then((securityAlertResponse) => {
-          updateSecurityAlertResponseByTxId?.(request.transactionOptions, {
-            ...securityAlertResponse,
-            securityAlertId,
-          });
+      validateRequestWithPPOM({
+        chainId,
+        request: ppomRequest,
+        ppomController,
+        isAPIEnabled: securityAlertsAPIEnabled,
+      }).then((securityAlertResponse) => {
+        updateSecurityAlertResponseByTxId?.(request.transactionOptions, {
+          ...securityAlertResponse,
+          securityAlertId,
         });
+      });
 
       request.transactionOptions.securityAlertResponse = {
         reason: BlockaidResultType.Loading,
