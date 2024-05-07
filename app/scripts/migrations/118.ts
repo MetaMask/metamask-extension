@@ -1,7 +1,5 @@
 import { cloneDeep } from 'lodash';
 import { hasProperty, isObject } from '@metamask/utils';
-import { NetworkClientId } from '@metamask/network-controller';
-import { Domain } from '@metamask/selected-network-controller';
 
 export const version = 118;
 
@@ -63,16 +61,16 @@ function transformState(state: Record<string, unknown>) {
     return;
   }
 
-  const domains = selectedNetworkControllerState.domains as Record<
-    Domain,
-    NetworkClientId
-  >;
-  const filteredDomains = Object.keys(domains).reduce((acc, domain) => {
-    if (!domain.startsWith('npm:') && !domain.startsWith('local:')) {
-      acc[domain] = domains[domain];
-    }
-    return acc;
-  }, {} as Record<Domain, NetworkClientId>);
+  const { domains } = selectedNetworkControllerState;
+  const filteredDomains = Object.keys(domains).reduce<Record<string, unknown>>(
+    (acc, domain) => {
+      if (!domain.startsWith('npm:') && !domain.startsWith('local:')) {
+        acc[domain] = domains[domain];
+      }
+      return acc;
+    },
+    {},
+  );
 
   selectedNetworkControllerState.domains = filteredDomains;
 }
