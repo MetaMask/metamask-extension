@@ -18,6 +18,10 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { SIGNING_METHODS } from '../../../shared/constants/transaction';
 
+import {
+  REDESIGN_APPROVAL_TYPES,
+  REDESIGN_TRANSACTION_TYPES,
+} from '../../../ui/pages/confirmations/utils/confirm';
 import { getBlockaidMetricsProps } from '../../../ui/helpers/utils/metrics';
 ///: END:ONLY_INCLUDE_IF
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
@@ -129,6 +133,7 @@ let globalRateLimitCount = 0;
  *  that should be tracked for methods rate limited by random sample.
  * @param {Function} opts.getAccountType
  * @param {Function} opts.getDeviceModel
+ * @param {Function} opts.isConfirmationRedesignEnabled
  * @param {RestrictedControllerMessenger} opts.snapAndHardwareMessenger
  * @param {AppStateController} opts.appStateController
  * @param {number} [opts.globalRateLimitTimeout] - time, in milliseconds, of the sliding
@@ -148,6 +153,7 @@ export default function createRPCMethodTrackingMiddleware({
   globalRateLimitMaxAmount = 10, // max of events in the globalRateLimitTimeout window. pass 0 for no global rate limit
   getAccountType,
   getDeviceModel,
+  isConfirmationRedesignEnabled,
   snapAndHardwareMessenger,
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   appStateController,
@@ -252,6 +258,19 @@ export default function createRPCMethodTrackingMiddleware({
         }
         ///: END:ONLY_INCLUDE_IF
 
+        const isConfirmationRedesign =
+          isConfirmationRedesignEnabled() &&
+          [...REDESIGN_APPROVAL_TYPES, ...REDESIGN_TRANSACTION_TYPES].find(
+            (type) => type === method,
+          );
+
+        if (isConfirmationRedesign) {
+          eventProperties.ui_customizations = [
+            ...(eventProperties.ui_customizations || []),
+            MetaMetricsEventUiCustomization.RedesignedConfirmation,
+          ];
+        }
+
         const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
           getAccountType,
           getDeviceModel,
@@ -265,9 +284,10 @@ export default function createRPCMethodTrackingMiddleware({
           if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
             const { isSIWEMessage } = detectSIWE({ data });
             if (isSIWEMessage) {
-              eventProperties.ui_customizations = (
-                eventProperties.ui_customizations || []
-              ).concat(MetaMetricsEventUiCustomization.Siwe);
+              eventProperties.ui_customizations = [
+                ...(eventProperties.ui_customizations || []),
+                MetaMetricsEventUiCustomization.Siwe,
+              ];
             }
           }
         } catch (e) {
