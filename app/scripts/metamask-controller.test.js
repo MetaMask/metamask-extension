@@ -526,7 +526,6 @@ describe('MetaMaskController', () => {
 
     describe('#createNewVaultAndKeychain', () => {
       it('can only create new vault on keyringController once', async () => {
-        jest.spyOn(metamaskController, 'selectFirstAccount').mockReturnValue();
         const password = 'a-fake-password';
 
         const vault1 = await metamaskController.createNewVaultAndKeychain(
@@ -699,47 +698,6 @@ describe('MetaMaskController', () => {
         const getApi = metamaskController.getApi();
         const state = getApi.getState();
         expect(state).toStrictEqual(metamaskController.getState());
-      });
-    });
-
-    describe('#selectFirstAccount', () => {
-      let identities;
-
-      beforeEach(async () => {
-        await metamaskController.keyringController.createNewVaultAndRestore(
-          'password',
-          TEST_SEED,
-        );
-        await metamaskController.addNewAccount(1);
-        await metamaskController.addNewAccount(2);
-
-        identities = {
-          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-            TEST_ADDRESS,
-            name: 'Account 1',
-          },
-          '0xc42edfcc21ed14dda456aa0756c153f7985d8813': {
-            TEST_ADDRESS_2,
-            name: 'Account 2',
-          },
-        };
-        metamaskController.preferencesController.store.updateState({
-          identities,
-        });
-        metamaskController.selectFirstAccount();
-      });
-
-      it('changes preferences controller select address', () => {
-        const preferenceControllerState =
-          metamaskController.preferencesController.store.getState();
-        expect(preferenceControllerState.selectedAddress).toStrictEqual(
-          TEST_ADDRESS,
-        );
-      });
-
-      it('changes metamask controller selected address', () => {
-        const metamaskState = metamaskController.getState();
-        expect(metamaskState.selectedAddress).toStrictEqual(TEST_ADDRESS);
       });
     });
 
@@ -928,9 +886,6 @@ describe('MetaMaskController', () => {
           .mockResolvedValueOnce(['0x2'])
           .mockResolvedValueOnce(['0x3']);
         jest
-          .spyOn(metamaskController.preferencesController, 'setAddresses')
-          .mockReturnValue();
-        jest
           .spyOn(metamaskController.preferencesController, 'setSelectedAddress')
           .mockReturnValue();
         jest
@@ -973,12 +928,6 @@ describe('MetaMaskController', () => {
         expect(
           metamaskController.keyringController.getAccounts,
         ).toHaveBeenCalledTimes(3);
-      });
-
-      it('should call preferencesController.setAddresses', async () => {
-        expect(
-          metamaskController.preferencesController.setAddresses,
-        ).toHaveBeenCalledTimes(1);
       });
 
       it('should call preferencesController.setSelectedAddress', async () => {
@@ -1277,9 +1226,6 @@ describe('MetaMaskController', () => {
     describe('#_onKeyringControllerUpdate', () => {
       it('should do nothing if there are no keyrings in state', async () => {
         jest
-          .spyOn(metamaskController.preferencesController, 'syncAddresses')
-          .mockReturnValue();
-        jest
           .spyOn(metamaskController.accountTracker, 'syncWithAddresses')
           .mockReturnValue();
 
@@ -1287,18 +1233,12 @@ describe('MetaMaskController', () => {
         await metamaskController._onKeyringControllerUpdate({ keyrings: [] });
 
         expect(
-          metamaskController.preferencesController.syncAddresses,
-        ).not.toHaveBeenCalled();
-        expect(
           metamaskController.accountTracker.syncWithAddresses,
         ).not.toHaveBeenCalled();
         expect(metamaskController.getState()).toStrictEqual(oldState);
       });
 
       it('should sync addresses if there are keyrings in state', async () => {
-        jest
-          .spyOn(metamaskController.preferencesController, 'syncAddresses')
-          .mockReturnValue();
         jest
           .spyOn(metamaskController.accountTracker, 'syncWithAddresses')
           .mockReturnValue();
@@ -1313,18 +1253,12 @@ describe('MetaMaskController', () => {
         });
 
         expect(
-          metamaskController.preferencesController.syncAddresses,
-        ).toHaveBeenCalledWith(['0x1', '0x2']);
-        expect(
           metamaskController.accountTracker.syncWithAddresses,
         ).toHaveBeenCalledWith(['0x1', '0x2']);
         expect(metamaskController.getState()).toStrictEqual(oldState);
       });
 
       it('should NOT update selected address if already unlocked', async () => {
-        jest
-          .spyOn(metamaskController.preferencesController, 'syncAddresses')
-          .mockReturnValue();
         jest
           .spyOn(metamaskController.accountTracker, 'syncWithAddresses')
           .mockReturnValue();
@@ -1339,9 +1273,6 @@ describe('MetaMaskController', () => {
           ],
         });
 
-        expect(
-          metamaskController.preferencesController.syncAddresses,
-        ).toHaveBeenCalledWith(['0x1', '0x2']);
         expect(
           metamaskController.accountTracker.syncWithAddresses,
         ).toHaveBeenCalledWith(['0x1', '0x2']);
