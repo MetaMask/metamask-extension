@@ -206,22 +206,21 @@ export const getPermissionSpecifications = ({
       allowedCaveats: [CaveatTypes.restrictNetworkSwitching],
 
       factory: (permissionOptions, requestData) => {
-        console.log('factory called', permissionOptions, requestData);
         if (Array.isArray(permissionOptions.caveats)) {
           throw new Error(
-            `${PermissionNames.eth_accounts} error: Received unexpected caveats. Any permitted caveats will be added automatically.`,
+            `${PermissionNames.wallet_switchEthereumChain} error: Received unexpected caveats. Any permitted caveats will be added automatically.`,
           );
         }
 
         // This value will be further validated as part of the caveat.
-        if (!requestData.approvedChainId) {
+        if (!requestData.approvedChainIds) {
           throw new Error(
             `${PermissionNames.wallet_switchEthereumChain} error: No approved networks specified.`,
           );
         }
 
         const caveat = CaveatFactories[CaveatTypes.restrictNetworkSwitching](
-          requestData.approvedChainId,
+          requestData.approvedChainIds,
         );
 
         return constructPermission({
@@ -242,7 +241,6 @@ export const getPermissionSpecifications = ({
       },
       validator: (permission, _origin, _target) => {
         const { caveats } = permission;
-        console.log('validator called: ', permission, _origin, _target);
         if (
           !caveats ||
           caveats.length !== 1 ||
@@ -302,9 +300,9 @@ function validateCaveatAccounts(accounts, getInternalAccounts) {
  * @param {() => string} findNetworkClientIdByChainId - method to throw error if network is unknown
  *
  */
-function validateCaveatNetworks(chainIdForCaveat, findNetworkClientIdByChainId) {
-  console.log("validateCaveatNetworks called: ", chainIdForCaveat, findNetworkClientIdByChainId);
-  if (typeof chainIdForCaveat !== 'string') { // lets put better validation here tho
+function validateCaveatNetworks(chainIdsForCaveat, findNetworkClientIdByChainId) {
+  console.log("validateCaveatNetworks called: ", chainIdsForCaveat, findNetworkClientIdByChainId);
+  if (typeof chainIdsForCaveat !== 'string') { // lets put better validation here tho
     throw new Error(
       `${PermissionNames.wallet_switchEthereumChain} error: Expected chainId to be a string.`,
     );
@@ -314,11 +312,11 @@ function validateCaveatNetworks(chainIdForCaveat, findNetworkClientIdByChainId) 
   // in other words, we need to check if theres a networkConfiguration for this chainId
   // We could use a similar pattern to getInternalAccounts, where we pass another method in that will get the required info from the network controller.
   try {
-    findNetworkClientIdByChainId(chainIdForCaveat);
+    findNetworkClientIdByChainId(chainIdsForCaveat);
   } catch (e) {
     console.error(e);
     throw new Error(
-      `${PermissionNames.wallet_switchEthereumChain} error: Received unrecognized chainId: "${chainIdForCaveat}". Please try adding the network first via wallet_addEthereumChain.`,
+      `${PermissionNames.wallet_switchEthereumChain} error: Received unrecognized chainId: "${chainIdsForCaveat}". Please try adding the network first via wallet_addEthereumChain.`,
     );
   }
 }
