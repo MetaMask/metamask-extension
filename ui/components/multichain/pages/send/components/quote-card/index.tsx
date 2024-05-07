@@ -49,7 +49,8 @@ export function QuoteCard() {
   const [timeLeft, setTimeLeft] = useState<number | undefined>(undefined);
 
   const { formattedEthGasFee, formattedFiatGasFee } = useEthFeeData(
-    bestQuote?.gasParams.maxGas,
+    (bestQuote?.gasParams.maxGas || 0) +
+      Number(hexToDecimal(bestQuote?.approvalNeeded?.gas || '0x0')),
   );
 
   const formattedConversionRate = useGetConversionRate();
