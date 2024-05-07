@@ -3106,6 +3106,9 @@
   "notEnoughGas": {
     "message": "Not enough gas"
   },
+  "notRightNow": {
+    "message": "Not right now"
+  },
   "note": {
     "message": "Note"
   },

@@ -1,20 +1,9 @@
-import type { Hex } from '@metamask/utils';
-import { getUseTokenDetection } from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
+import { getUseTokenDetection } from '../../../ui/selectors/selectors';
 
 type TokenAutoDetectionMetaMaskState = {
   metamask: {
     preferences: {
       showTokenAutodetectModal: boolean | null;
-    };
-
-    providerConfig: {
-      chainId: Hex;
-    };
-    networkConfigurations: {
-      [key: string]: {
-        chainId: Hex;
-        rpcUrl: string;
-      };
     };
   };
 };
