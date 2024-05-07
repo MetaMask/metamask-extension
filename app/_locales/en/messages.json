@@ -2792,7 +2792,7 @@
     "message": "Can not send negative amounts of ETH."
   },
   "negativeOrZeroAmountToken": {
-    "message": "Cannot send negative or zero amounts of Tokens"
+    "message": "Cannot send negative or zero amounts of asset."
   },
   "network": {
     "message": "Network:"
