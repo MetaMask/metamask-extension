@@ -1,92 +1,103 @@
-import { createMockInternalAccount } from '../../../test/jest/mocks';
-import { migrate, version } from './117';
+import { TransactionStatus } from '@metamask/transaction-controller';
+import { migrate, version, StuckTransactionError, TARGET_DATE } from './117';
 
 const oldVersion = 116;
-const newVersion = 117;
+
+const TRANSACTIONS_MOCK = [
+  { id: 'tx1', time: TARGET_DATE - 1000, status: 'approved' }, // Before target date, should be marked as failed
+  { id: 'tx2', time: TARGET_DATE + 1000, status: 'approved' }, // After target date, should remain unchanged
+  { id: 'tx3', time: TARGET_DATE - 1000, status: 'signed' }, // Before target date, should be marked as failed
+  { id: 'tx4', time: TARGET_DATE - 1000, status: 'confirmed' }, // Before target date but not approved/signed, should remain unchanged
+];
 
 describe('migration #117', () => {
-  it('should update the version metadata', async () => {
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
+  it('updates the version metadata', async () => {
     const oldStorage = {
-      meta: { version: oldVersion },
+      meta: {
+        version: oldVersion,
+      },
       data: {},
     };
 
     const newStorage = await migrate(oldStorage);
+
     expect(newStorage.meta).toStrictEqual({ version });
   });
 
-  it('should add importTime to InternalAccount if it is not defined"', async () => {
-    const mockInternalAccount = createMockInternalAccount();
-    // @ts-expect-error forcing the importTime to be undefined for migration test.
-    mockInternalAccount.metadata.importTime = undefined;
-
-    const oldStorage = {
-      meta: {
-        version: oldVersion,
-      },
-      data: {
-        AccountsController: {
-          internalAccounts: {
-            accounts: {
-              [mockInternalAccount.id]: mockInternalAccount,
-            },
-            selectedAccount: mockInternalAccount.id,
-          },
-        },
-      },
+  it('handles missing TransactionController', async () => {
+    const oldState = {
+      OtherController: {},
     };
 
-    const newStorage = await migrate(oldStorage);
-    expect(newStorage).toStrictEqual({
-      meta: {
-        version: newVersion,
-      },
-      data: {
-        AccountsController: {
-          internalAccounts: {
-            accounts: {
-              [mockInternalAccount.id]: {
-                ...mockInternalAccount,
-                metadata: {
-                  ...mockInternalAccount.metadata,
-                  importTime: expect.any(Number),
-                },
-              },
-            },
-            selectedAccount: mockInternalAccount.id,
-          },
-        },
-      },
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: oldState,
     });
-    expect(newStorage);
+
+    expect(transformedState.data).toEqual(oldState);
   });
 
-  it('should make no changes importTime already exists', async () => {
-    const mockInternalAccount = createMockInternalAccount();
-    const mockAccountsControllerState = {
-      internalAccounts: {
-        accounts: {
-          [mockInternalAccount.id]: mockInternalAccount,
-        },
-        selectedAccount: mockInternalAccount.id,
-      },
-    };
-    const oldStorage = {
-      meta: {
-        version: oldVersion,
-      },
-      data: {
-        AccountsController: mockAccountsControllerState,
+  it('handles empty transactions', async () => {
+    const oldState = {
+      TransactionController: {
+        transactions: [],
       },
     };
 
-    const newStorage = await migrate(oldStorage);
-    expect(newStorage).toStrictEqual({
-      meta: {
-        version: newVersion,
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: oldState,
+    });
+
+    expect(transformedState.data).toEqual(oldState);
+  });
+
+  it('handles missing state', async () => {
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: {},
+    });
+
+    expect(transformedState.data).toEqual({});
+  });
+
+  it('marks the transactions as failed before December 8, 2023, if they are approved or signed', async () => {
+    const oldState = {
+      TransactionController: {
+        transactions: TRANSACTIONS_MOCK,
       },
-      data: {
-        AccountsController: mockAccountsControllerState,
+    };
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: oldState,
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    // Expected modifications to the transactions based on the migration logic
+    const expectedTransactions = [
+      {
+        ...TRANSACTIONS_MOCK[0], // Assuming tx1 is the first element
+        status: TransactionStatus.failed,
+        error: StuckTransactionError,
+      },
+      TRANSACTIONS_MOCK[1], // Assuming tx2 remains unchanged
+      {
+        ...TRANSACTIONS_MOCK[2], // Assuming tx3 is the third element
+        status: TransactionStatus.failed,
+        error: StuckTransactionError,
+      },
+      TRANSACTIONS_MOCK[3], // Assuming tx4 and any others remain unchanged
+      // Add more transactions if there are more than four in TRANSACTIONS_MOCK
+    ];
+
+    expect(newStorage.data).toEqual({
+      TransactionController: {
+        transactions: expectedTransactions,
       },
     });
   });

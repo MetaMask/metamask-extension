@@ -1,7 +1,9 @@
-import { cloneDeep, isObject } from 'lodash';
-import { hasProperty } from '@metamask/utils';
-import { AccountsControllerState } from '@metamask/accounts-controller';
-import { InternalAccount } from '@metamask/keyring-api';
+import { cloneDeep } from 'lodash';
+import {
+  TransactionMeta,
+  TransactionStatus,
+  TransactionError,
+} from '@metamask/transaction-controller';
 
 type VersionedData = {
   meta: { version: number };
@@ -10,8 +12,23 @@ type VersionedData = {
 
 export const version = 117;
 
+// Target date is December 8, 2023 - 00:00:00 UTC
+export const TARGET_DATE = new Date('2023-12-08T00:00:00Z').getTime();
+
+const STUCK_STATES = [TransactionStatus.approved, TransactionStatus.signed];
+
+type FailedTransactionMeta = TransactionMeta & {
+  status: TransactionStatus.failed;
+  error: TransactionError;
+};
+
+export const StuckTransactionError = {
+  name: 'StuckTransactionDueToStatus',
+  message: 'Transaction is stuck due to status - migration 116',
+};
+
 /**
- * Add a default value for importTime in the InternalAccount
+ * This migration sets the `status` to `failed` for all transactions created before December 8, 2023 that are still `approved` or `signed`.
  *
  * @param originalVersionedData
  */
@@ -23,35 +40,23 @@ export async function migrate(
   transformState(versionedData.data);
   return versionedData;
 }
+
+// TODO: Replace `any` with type
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function transformState(state: Record<string, any>) {
-  const AccountsController = state?.AccountsController || {};
+  const transactions: TransactionMeta[] =
+    state?.TransactionController?.transactions ?? [];
 
-  if (
-    hasProperty(state, 'AccountsController') &&
-    isObject(state.AccountsController) &&
-    hasProperty(state.AccountsController, 'internalAccounts') &&
-    hasProperty(
-      state.AccountsController
-        .internalAccounts as AccountsControllerState['internalAccounts'],
-      'accounts',
-    ) &&
-    Object.values(
-      (state.AccountsController as AccountsControllerState).internalAccounts
-        .accounts,
-    ).length > 0
-  ) {
-    Object.values(AccountsController.internalAccounts.accounts).forEach(
-      (internalAccount: InternalAccount) => {
-        if (!internalAccount.metadata?.importTime) {
-          internalAccount.metadata.importTime = Date.now();
-        }
-      },
-    );
+  for (const transaction of transactions) {
+    if (
+      transaction.time < TARGET_DATE &&
+      STUCK_STATES.includes(transaction.status)
+    ) {
+      transaction.status = TransactionStatus.failed;
+
+      const failedTransaction = transaction as FailedTransactionMeta;
+
+      failedTransaction.error = StuckTransactionError;
+    }
   }
-
-  return {
-    ...state,
-    AccountsController,
-  };
 }

@@ -15,10 +15,13 @@ import {
   BorderRadius,
 } from '../../../../../../helpers/constants/design-system';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
+import { SignatureRequestType } from '../../../../types/confirm';
 
 const TypedSignInfo: React.FC = () => {
   const t = useI18nContext();
-  const currentConfirmation = useSelector(currentConfirmationSelector);
+  const currentConfirmation = useSelector(
+    currentConfirmationSelector,
+  ) as SignatureRequestType;
 
   if (!currentConfirmation?.msgParams) {
     return null;

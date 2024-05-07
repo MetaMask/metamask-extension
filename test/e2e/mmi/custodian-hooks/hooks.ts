@@ -260,7 +260,7 @@ export class CustodianTestClient implements ICustodianTestClient {
         const diffTime = transactions.map((tx: { createdAt: string }) =>
           Math.abs(
             new Date(tx.createdAt).getTime() -
-              parseInt(signedTransactionTime, 10),
+            parseInt(signedTransactionTime, 10),
           ),
         );
         const min = Math.min(...diffTime);
@@ -345,5 +345,22 @@ export class CustodianTestClient implements ICustodianTestClient {
 
   async rejectPersonalSignatureId(txId: string): Promise<string | RegExp> {
     return txId;
+  }
+
+  public async postConnectionRequest(data: any) {
+    return (await axios
+      .post("https://neptune-custody.dev.metamask-institutional.io/qrcode/connection-request", data, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(function (response) {
+        expect(response.status).toBe(200);
+        return response.data;
+      })
+      .catch(function (error) {
+        console.log(error.response.data);
+        throw error;
+      })) as string;
   }
 }
