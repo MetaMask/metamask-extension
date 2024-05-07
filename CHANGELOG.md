@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.15.3]
+### Changed
+- Smart transaction improvements ([#24340](https://github.com/MetaMask/metamask-extension/pull/24340))
+    - disable Smart Transactions on Sepolia
+    - improve Smart Transaction status page layout on full screen view
+    - Conditionally close the extension when a user clicks on "View transaction" on the Smart Transaction status page
+    - Update animation UI for non-popup view of Smart Transactions
+
+### Fixed
+- Add animation on the smart transaction status page ([#24389](https://github.com/MetaMask/metamask-extension/pull/24389))
+
 ## [11.15.2]
 ### Fixed
 - Ensure smart transaction modal is shown for users upgrading from previous versions ([#24377](https://github.com/MetaMask/metamask-extension/pull/24377))
@@ -4677,7 +4688,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.15.2...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.15.3...HEAD
+[11.15.3]: https://github.com/MetaMask/metamask-extension/compare/v11.15.2...v11.15.3
 [11.15.2]: https://github.com/MetaMask/metamask-extension/compare/v11.15.1...v11.15.2
 [11.15.1]: https://github.com/MetaMask/metamask-extension/compare/v11.15.0...v11.15.1
 [11.15.0]: https://github.com/MetaMask/metamask-extension/compare/v11.14.5...v11.15.0
