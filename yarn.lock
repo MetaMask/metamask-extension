@@ -5682,23 +5682,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/polling-controller@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "@metamask/polling-controller@npm:5.0.1"
-  dependencies:
-    "@metamask/base-controller": "npm:^4.1.1"
-    "@metamask/controller-utils": "npm:^8.0.4"
-    "@metamask/network-controller": "npm:^17.2.1"
-    "@metamask/utils": "npm:^8.3.0"
-    "@types/uuid": "npm:^8.3.0"
-    fast-json-stable-stringify: "npm:^2.1.0"
-    uuid: "npm:^8.3.2"
-  peerDependencies:
-    "@metamask/network-controller": ^17.2.0
-  checksum: 3b2a0bcc2aa83758f973364746aaf291fef3db1b1ef188813e522b7dd41967a57888d5d8150fe0fb0226d5d85631b5df4d72f4c879f9132948800753a91b752c
-  languageName: node
-  linkType: hard
-
 "@metamask/polling-controller@npm:^6.0.1, @metamask/polling-controller@npm:^6.0.2":
   version: 6.0.2
   resolution: "@metamask/polling-controller@npm:6.0.2"
