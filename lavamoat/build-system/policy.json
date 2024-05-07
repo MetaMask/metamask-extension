@@ -1227,26 +1227,17 @@
     },
     "@lavamoat/lavapack>lavamoat-core": {
       "builtin": {
-        "events": true,
-        "fs.readFileSync": true,
-        "node:fs/promises.readFile": true,
+        "node:events": true,
+        "node:fs.readFileSync": true,
         "node:fs/promises.writeFile": true,
-        "path.extname": true,
-        "path.join": true
+        "node:path.extname": true,
+        "node:path.join": true
       },
       "globals": {
         "__dirname": true,
-        "ast": true,
         "console.error": true,
         "console.warn": true,
-        "content": true,
-        "define": true,
-        "file": true,
-        "importMap": true,
-        "moduleInitializer": true,
-        "packageName": true,
-        "specifier": true,
-        "type": true
+        "define": true
       },
       "packages": {
         "@lavamoat/lavapack>json-stable-stringify": true,
@@ -1259,7 +1250,7 @@
         "console.log": true
       },
       "packages": {
-        "@babel/core>@babel/parser": true,
+        "@lavamoat/lavapack>lavamoat-core>lavamoat-tofu>@babel/parser": true,
         "depcheck>@babel/traverse": true
       }
     },
