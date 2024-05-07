@@ -165,7 +165,7 @@ describe('Send NFT', function () {
     );
   });
 
-  it.only('should not be able to send ERC1155 NFT with invalid amount', async function () {
+  it('should not be able to send ERC1155 NFT with invalid amount', async function () {
     await withFixtures(
       {
         dapp: true,
