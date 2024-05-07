@@ -90,7 +90,7 @@ describe('ConfirmFooter', () => {
     expect(resolveSpy).toHaveBeenCalled();
   });
 
-  it.only('displays a danger "Confirm" button if the request is malicious', async () => {
+  it('displays a danger "Confirm" button if the request is malicious', async () => {
     const mockSecurityAlertId = '8';
     const { getAllByRole } = await render({
       confirm: {
