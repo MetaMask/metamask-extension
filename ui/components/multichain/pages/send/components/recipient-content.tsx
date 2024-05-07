@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   BannerAlert,
@@ -69,6 +69,8 @@ export const SendPageRecipientContent = ({
     asset.type !== AssetType.token &&
     asset.type !== AssetType.NFT;
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+
   // Gas data
   const dispatch = useDispatch();
 
@@ -124,8 +126,10 @@ export const SendPageRecipientContent = ({
           amount={amount}
         />
       </SendPageRow>
-      <QuoteCard />
+      <QuoteCard scrollRef={scrollRef} />
       {showHexData ? <SendHexData /> : null}
+      {/* SCROLL REF ANCHOR */}
+      <div ref={scrollRef} />
     </Box>
   );
 };
