@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [11.15.3]
+### Changed
+- Smart transaction improvements ([#24340](https://github.com/MetaMask/metamask-extension/pull/24340))
+    - disable Smart Transactions on Sepolia
+    - improve Smart Transaction status page layout on full screen view
+    - Conditionally close the extension when a user clicks on "View transaction" on the Smart Transaction status page
+    - Update animation UI for non-popup view of Smart Transactions
+
+### Fixed
+- Add animation on the smart transaction status page ([#24389](https://github.com/MetaMask/metamask-extension/pull/24389))
 
 ## [11.15.2]
 ### Fixed
