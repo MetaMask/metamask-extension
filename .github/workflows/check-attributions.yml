@@ -1,8 +1,7 @@
 name: Check attributions
 
 on:
-  pull_request_target:
-    types: [opened, edited]
+  pull_request:
 
 jobs:
   prepare:
