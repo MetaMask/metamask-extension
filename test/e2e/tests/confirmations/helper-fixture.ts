@@ -12,7 +12,7 @@ export function withRedesignConfirmationFixtures (title: string = '', testFuncti
         .withPermissionControllerConnectedToTestDapp()
         .withPreferencesController({
           preferences: {
-            redesignedConfirmations: true,
+            redesignedConfirmationsEnabled: true,
           },
         })
         .build(),
