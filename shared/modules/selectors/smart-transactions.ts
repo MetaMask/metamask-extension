@@ -13,7 +13,7 @@ import {
 type SmartTransactionsMetaMaskState = {
   metamask: {
     preferences: {
-      smartTransactionsOptInStatus: boolean | null;
+      smartTransactionsOptInStatus?: boolean | null;
     };
     internalAccounts: {
       selectedAccount: string;
@@ -62,7 +62,7 @@ type SmartTransactionsMetaMaskState = {
 export const getSmartTransactionsOptInStatus = (
   state: SmartTransactionsMetaMaskState,
 ): boolean | null => {
-  return state.metamask.preferences?.smartTransactionsOptInStatus;
+  return state.metamask.preferences?.smartTransactionsOptInStatus ?? null;
 };
 
 export const getCurrentChainSupportsSmartTransactions = (
