@@ -6,10 +6,7 @@ on:
       - develop
     types:
       - opened
-      - reopened
       - synchronize
-      - labeled
-      - unlabeled
 
 jobs:
   prepare:
