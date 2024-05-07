@@ -10,8 +10,11 @@ exports[`SmartTransactionStatusPage renders the "Sorry for the wait" pending sta
       style="flex-grow: 1;"
     >
       <div
-        class="mm-box mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
+        class="mm-box mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
       >
+        <div
+          class="mm-box smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--top mm-box--margin-top-3"
+        />
         <div
           class="mm-box mm-box--display-flex"
           style="font-size: 48px;"
@@ -58,6 +61,9 @@ exports[`SmartTransactionStatusPage renders the "Sorry for the wait" pending sta
           </p>
         </div>
       </div>
+      <div
+        class="mm-box smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--bottom mm-box--margin-top-3"
+      />
     </div>
     <div
       class="mm-box smart-transaction-status-page__footer mm-box--padding-4 mm-box--padding-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
@@ -83,8 +89,11 @@ exports[`SmartTransactionStatusPage renders the "cancelled" STX status 1`] = `
       style="flex-grow: 1;"
     >
       <div
-        class="mm-box mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
+        class="mm-box mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
       >
+        <div
+          class="mm-box smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--top mm-box--margin-top-3"
+        />
         <div
           class="mm-box mm-box--display-flex"
           style="font-size: 48px;"
@@ -119,6 +128,9 @@ exports[`SmartTransactionStatusPage renders the "cancelled" STX status 1`] = `
           </button>
         </div>
       </div>
+      <div
+        class="mm-box smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--bottom mm-box--margin-top-3"
+      />
     </div>
     <div
       class="mm-box smart-transaction-status-page__footer mm-box--padding-4 mm-box--padding-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
@@ -144,8 +156,11 @@ exports[`SmartTransactionStatusPage renders the "deadline_missed" STX status 1`]
       style="flex-grow: 1;"
     >
       <div
-        class="mm-box mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
+        class="mm-box mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
       >
+        <div
+          class="mm-box smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--top mm-box--margin-top-3"
+        />
         <div
           class="mm-box mm-box--display-flex"
           style="font-size: 48px;"
@@ -180,6 +195,9 @@ exports[`SmartTransactionStatusPage renders the "deadline_missed" STX status 1`]
           </button>
         </div>
       </div>
+      <div
+        class="mm-box smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--bottom mm-box--margin-top-3"
+      />
     </div>
     <div
       class="mm-box smart-transaction-status-page__footer mm-box--padding-4 mm-box--padding-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
@@ -205,8 +223,11 @@ exports[`SmartTransactionStatusPage renders the "reverted" STX status 1`] = `
       style="flex-grow: 1;"
     >
       <div
-        class="mm-box mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
+        class="mm-box mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
       >
+        <div
+          class="mm-box smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--top mm-box--margin-top-3"
+        />
         <div
           class="mm-box mm-box--display-flex"
           style="font-size: 48px;"
@@ -241,6 +262,9 @@ exports[`SmartTransactionStatusPage renders the "reverted" STX status 1`] = `
           </button>
         </div>
       </div>
+      <div
+        class="mm-box smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--bottom mm-box--margin-top-3"
+      />
     </div>
     <div
       class="mm-box smart-transaction-status-page__footer mm-box--padding-4 mm-box--padding-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
@@ -266,8 +290,11 @@ exports[`SmartTransactionStatusPage renders the "success" STX status 1`] = `
       style="flex-grow: 1;"
     >
       <div
-        class="mm-box mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
+        class="mm-box mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
       >
+        <div
+          class="mm-box smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--top mm-box--margin-top-3"
+        />
         <div
           class="mm-box mm-box--display-flex"
           style="font-size: 48px;"
@@ -293,6 +320,9 @@ exports[`SmartTransactionStatusPage renders the "success" STX status 1`] = `
           </button>
         </div>
       </div>
+      <div
+        class="mm-box smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--bottom mm-box--margin-top-3"
+      />
     </div>
     <div
       class="mm-box smart-transaction-status-page__footer mm-box--padding-4 mm-box--padding-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
@@ -318,8 +348,11 @@ exports[`SmartTransactionStatusPage renders the "unknown" STX status 1`] = `
       style="flex-grow: 1;"
     >
       <div
-        class="mm-box mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
+        class="mm-box mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
       >
+        <div
+          class="mm-box smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--top mm-box--margin-top-3"
+        />
         <div
           class="mm-box mm-box--display-flex"
           style="font-size: 48px;"
@@ -354,6 +387,9 @@ exports[`SmartTransactionStatusPage renders the "unknown" STX status 1`] = `
           </button>
         </div>
       </div>
+      <div
+        class="mm-box smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--bottom mm-box--margin-top-3"
+      />
     </div>
     <div
       class="mm-box smart-transaction-status-page__footer mm-box--padding-4 mm-box--padding-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
@@ -379,8 +415,11 @@ exports[`SmartTransactionStatusPage renders the component with initial props 1`]
       style="flex-grow: 1;"
     >
       <div
-        class="mm-box mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
+        class="mm-box mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
       >
+        <div
+          class="mm-box smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--top mm-box--margin-top-3"
+        />
         <div
           class="mm-box mm-box--display-flex"
           style="font-size: 48px;"
@@ -427,6 +466,9 @@ exports[`SmartTransactionStatusPage renders the component with initial props 1`]
           </p>
         </div>
       </div>
+      <div
+        class="mm-box smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--bottom mm-box--margin-top-3"
+      />
     </div>
     <div
       class="mm-box smart-transaction-status-page__footer mm-box--padding-4 mm-box--padding-bottom-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"

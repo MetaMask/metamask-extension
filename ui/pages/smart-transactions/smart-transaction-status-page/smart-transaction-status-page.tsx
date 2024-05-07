@@ -491,7 +491,12 @@ export const SmartTransactionStatusPage = ({
           alignItems={AlignItems.center}
           paddingLeft={6}
           paddingRight={6}
+          width={BlockSize.Full}
         >
+          <Box
+            marginTop={3}
+            className="smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--top"
+          />
           <SmartTransactionsStatusIcon
             iconName={iconName}
             iconColor={iconColor}
@@ -517,6 +522,10 @@ export const SmartTransactionStatusPage = ({
             transactionId={fullTxData.id}
           />
         )}
+        <Box
+          marginTop={3}
+          className="smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--bottom"
+        />
       </Box>
       <SmartTransactionsStatusPageFooter
         isDapp={isDapp}
