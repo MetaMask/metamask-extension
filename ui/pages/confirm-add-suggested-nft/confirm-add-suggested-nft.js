@@ -174,13 +174,7 @@ const ConfirmAddSuggestedNFT = () => {
           display={Display.Flex}
           justifyContent={JustifyContent.center}
         >
-          <TagUrl
-            chip
-            label={originMetadata.origin}
-            title={originMetadata.origin}
-            src={originMetadata.iconUrl}
-            lockIconProps={{ name: originMetadata.hostname }}
-          />
+          <TagUrl label={originMetadata.origin} src={originMetadata.iconUrl} />
         </Box>
         <Text
           variant={TextVariant.headingLg}
