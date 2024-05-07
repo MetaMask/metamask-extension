@@ -2384,7 +2384,6 @@
         "@metamask/snaps-controllers>@metamask/base-controller": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-middleware-stream": true,
-        "@metamask/snaps-controllers>@metamask/snaps-utils": true,
         "@metamask/snaps-controllers>@xstate/fsm": true,
         "@metamask/snaps-controllers>concat-stream": true,
         "@metamask/snaps-controllers>get-npm-tarball-url": true,
@@ -2394,6 +2393,7 @@
         "@metamask/snaps-controllers>tar-stream": true,
         "@metamask/snaps-rpc-methods": true,
         "@metamask/snaps-sdk": true,
+        "@metamask/snaps-utils": true,
         "@metamask/snaps-utils>@metamask/snaps-registry": true,
         "@metamask/utils": true,
         "browserify>browserify-zlib": true
@@ -2438,39 +2438,6 @@
         "pumpify>inherits": true,
         "readable-stream>util-deprecate": true,
         "webpack>events": true
-      }
-    },
-    "@metamask/snaps-controllers>@metamask/snaps-utils": {
-      "globals": {
-        "File": true,
-        "FileReader": true,
-        "TextDecoder": true,
-        "URL": true,
-        "console.error": true,
-        "console.log": true,
-        "console.warn": true,
-        "crypto": true,
-        "document.body.appendChild": true,
-        "document.createElement": true,
-        "fetch": true
-      },
-      "packages": {
-        "@metamask/permission-controller": true,
-        "@metamask/providers>@metamask/rpc-errors": true,
-        "@metamask/snaps-sdk": true,
-        "@metamask/snaps-sdk>@metamask/key-tree": true,
-        "@metamask/snaps-utils>@metamask/slip44": true,
-        "@metamask/snaps-utils>cron-parser": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
-        "@metamask/snaps-utils>marked": true,
-        "@metamask/snaps-utils>rfdc": true,
-        "@metamask/snaps-utils>validate-npm-package-name": true,
-        "@metamask/utils": true,
-        "@metamask/utils>@scure/base": true,
-        "@noble/hashes": true,
-        "chalk": true,
-        "semver": true,
-        "superstruct": true
       }
     },
     "@metamask/snaps-controllers>concat-stream": {
@@ -2544,44 +2511,11 @@
       "packages": {
         "@metamask/permission-controller": true,
         "@metamask/providers>@metamask/rpc-errors": true,
-        "@metamask/snaps-rpc-methods>@metamask/snaps-utils": true,
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-sdk>@metamask/key-tree": true,
+        "@metamask/snaps-utils": true,
         "@metamask/utils": true,
         "@noble/hashes": true,
-        "superstruct": true
-      }
-    },
-    "@metamask/snaps-rpc-methods>@metamask/snaps-utils": {
-      "globals": {
-        "File": true,
-        "FileReader": true,
-        "TextDecoder": true,
-        "URL": true,
-        "console.error": true,
-        "console.log": true,
-        "console.warn": true,
-        "crypto": true,
-        "document.body.appendChild": true,
-        "document.createElement": true,
-        "fetch": true
-      },
-      "packages": {
-        "@metamask/permission-controller": true,
-        "@metamask/providers>@metamask/rpc-errors": true,
-        "@metamask/snaps-sdk": true,
-        "@metamask/snaps-sdk>@metamask/key-tree": true,
-        "@metamask/snaps-utils>@metamask/slip44": true,
-        "@metamask/snaps-utils>cron-parser": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
-        "@metamask/snaps-utils>marked": true,
-        "@metamask/snaps-utils>rfdc": true,
-        "@metamask/snaps-utils>validate-npm-package-name": true,
-        "@metamask/utils": true,
-        "@metamask/utils>@scure/base": true,
-        "@noble/hashes": true,
-        "chalk": true,
-        "semver": true,
         "superstruct": true
       }
     },
