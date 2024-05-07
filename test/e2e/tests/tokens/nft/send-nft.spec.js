@@ -177,20 +177,20 @@ describe('Send NFT', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
+        const nftItemContainer = '.nft-item__container'
+        const recipientPlaceholder = 'input[placeholder="Enter public address (0x) or ENS name"]'
+
         // Fill the send NFT form and confirm the transaction
         await driver.clickElement('[data-testid="home__nfts-tab"]');
 
-        const erc1155Token = await driver.findElement('.nft-item__container');
+        const erc1155Token = await driver.findElement(nftItemContainer);
         await driver.scrollToElement(erc1155Token);
-        await driver.delay(1000);
-        await driver.clickElement('.nft-item__container');
-
+        await driver.waitForSelector(nftItemContainer)
+        await driver.clickElement(nftItemContainer);
         await driver.clickElement({ text: 'Send', tag: 'button' });
-
-        await driver.delay(10000);
-
+        await driver.waitForSelector(recipientPlaceholder)
         await driver.fill(
-          'input[placeholder="Enter public address (0x) or ENS name"]',
+          recipientPlaceholder,
           '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
         );
 
