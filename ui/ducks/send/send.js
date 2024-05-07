@@ -1872,6 +1872,7 @@ const slice = createSlice({
             draftTransaction.swapQuotesLatestRequestTimestamp,
           );
         }
+        slice.caseReducers.validateSendState(state);
       })
       .addCase(fetchSwapAndSendQuotes.fulfilled, (state, action) => {
         const draftTransaction =
@@ -1888,6 +1889,7 @@ const slice = createSlice({
             draftTransaction.quotes = action.payload.quotes;
           }
         }
+        slice.caseReducers.validateSendState(state);
       })
       .addCase(fetchSwapAndSendQuotes.rejected, (state, action) => {
         if (action.error.message === RECENT_REQUEST_ERROR) {
