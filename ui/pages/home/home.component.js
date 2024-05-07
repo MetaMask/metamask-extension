@@ -39,6 +39,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi)
   JustifyContent,
   ///: END:ONLY_INCLUDE_IF
+  Severity,
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
 import {
@@ -51,6 +52,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   Text,
   Icon,
+  BannerAlert,
 } from '../../components/component-library';
 import {
   ASSET_ROUTE,
@@ -193,6 +195,8 @@ export default class Home extends PureComponent {
     clearNewNetworkAdded: PropTypes.func,
     setActiveNetwork: PropTypes.func,
     hasAllowedPopupRedirectApprovals: PropTypes.bool.isRequired,
+    useExternalServices: PropTypes.bool,
+    setBasicFunctionalityModalOpen: PropTypes.func,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     institutionalConnectRequests: PropTypes.arrayOf(PropTypes.object),
     mmiPortfolioEnabled: PropTypes.bool,
@@ -803,6 +807,8 @@ export default class Home extends PureComponent {
     const {
       defaultHomeActiveTabName,
       onTabClick,
+      useExternalServices,
+      setBasicFunctionalityModalOpen,
       forgottenPassword,
       history,
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -903,6 +909,18 @@ export default class Home extends PureComponent {
             ///: END:ONLY_INCLUDE_IF
           }
           <div className="home__main-view">
+            {useExternalServices ? null : (
+              <BannerAlert
+                margin={4}
+                marginBottom={0}
+                severity={Severity.Danger}
+                actionButtonLabel={t('basicConfigurationBannerCTA')}
+                actionButtonOnClick={() => {
+                  setBasicFunctionalityModalOpen();
+                }}
+                title={t('basicConfigurationBannerTitle')}
+              ></BannerAlert>
+            )}
             <div className="home__balance-wrapper">
               {
                 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
