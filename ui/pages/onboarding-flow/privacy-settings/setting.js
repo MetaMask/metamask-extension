@@ -23,7 +23,7 @@ export const Setting = ({
     <Box
       display={Display.Flex}
       justifyContent={JustifyContent.spaceBetween}
-      alignItems={AlignItems.center}
+      alignItems={AlignItems.flexStart}
       marginTop={3}
       marginBottom={3}
       className="privacy-settings__setting__wrapper"

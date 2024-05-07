@@ -328,6 +328,18 @@ export default function PrivacySettings() {
               {selectedItem && selectedItem.id === 1 ? (
                 <>
                   <Setting
+                    value={externalServicesOnboardingToggleState}
+                    setValue={(toggledValue) => {
+                      if (toggledValue === false) {
+                        dispatch(openBasicFunctionalityModal());
+                      } else {
+                        dispatch(onboardingToggleBasicFunctionalityOn());
+                      }
+                    }}
+                    title={t('basicConfigurationLabel')}
+                    description={t('basicConfigurationDescription')}
+                  />
+                  <Setting
                     title={t('onboardingAdvancedPrivacyNetworkTitle')}
                     showToggle={false}
                     description={
