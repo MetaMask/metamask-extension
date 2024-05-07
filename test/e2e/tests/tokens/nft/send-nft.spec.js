@@ -194,10 +194,12 @@ describe('Send NFT', function () {
           '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
         );
 
-        const amtError = await driver.findElement('[data-testid="send-page-amount-error"')
+        const amtError = await driver.findElement(
+          '[data-testid="send-page-amount-error"',
+        );
         assert.equal(
           await amtError.getText(),
-          ". Cannot send negative or zero amounts of Tokens"
+          '. Cannot send negative or zero amounts of Tokens',
         );
       },
     );

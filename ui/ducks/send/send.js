@@ -1438,9 +1438,10 @@ const slice = createSlice({
         // INSUFFICIENT_TOKENS_ERROR if the user is attempting to transfer ERC1155 but has 0 amount selected
         // prevents the user from transferring 0 tokens
         case draftTransaction.sendAsset.type === AssetType.NFT &&
-          draftTransaction.sendAsset.details.standard === TokenStandard.ERC1155 &&
+          draftTransaction.sendAsset.details.standard ===
+            TokenStandard.ERC1155 &&
           draftTransaction.amount.value === '0x0':
-          draftTransaction.amount.error = NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR
+          draftTransaction.amount.error = NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR;
           break;
         // set error to INSUFFICIENT_TOKENS_ERROR if the token balance is lower
         // than the amount of token the user is attempting to send.
