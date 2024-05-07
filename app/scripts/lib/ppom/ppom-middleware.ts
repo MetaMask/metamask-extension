@@ -48,7 +48,7 @@ export const SUPPORTED_CHAIN_IDS: Hex[] = [
  * after the user has confirmed or rejected the request,
  * the request will be forwarded to the next middleware, together with the PPOM response.
  *
- * @param _ppomController - Instance of PPOMController.
+ * @param ppomController - Instance of PPOMController.
  * @param preferencesController - Instance of PreferenceController.
  * @param networkController - Instance of NetworkController.
  * @param appStateController
@@ -59,7 +59,7 @@ export function createPPOMMiddleware<
   Params extends JsonRpcParams,
   Result extends Json,
 >(
-  _ppomController: PPOMController,
+  ppomController: PPOMController,
   preferencesController: PreferencesController,
   networkController: NetworkController,
   // TODO: Replace `any` with type
@@ -80,9 +80,13 @@ export function createPPOMMiddleware<
     next: () => void,
   ) => {
     try {
-      const securityAlertsEnabled =
-        preferencesController.store.getState()?.securityAlertsEnabled;
       const { chainId } = networkController.state.providerConfig;
+      const preferencesState = preferencesController.store.getState();
+      const securityAlertsEnabled = preferencesState?.securityAlertsEnabled;
+
+      const isAPIEnabled =
+        preferencesState?.preferences?.securityAlertsAPIEnabled;
+
       if (
         securityAlertsEnabled &&
         CONFIRMATION_METHODS.includes(req.method) &&
@@ -90,20 +94,24 @@ export function createPPOMMiddleware<
       ) {
         // eslint-disable-next-line require-atomic-updates
         const securityAlertId = uuid();
+
         const securityAlertResponse: SecurityAlertResponse = {
           reason: BlockaidResultType.Loading,
           result_type: BlockaidReason.inProgress,
           securityAlertId,
         };
 
-        validateRequestWithPPOM({ chainId, request: req }).then(
-          (finalSecurityAlertResponse) => {
-            updateSecurityAlertResponseByTxId(req, {
-              ...finalSecurityAlertResponse,
-              securityAlertId,
-            });
-          },
-        );
+        validateRequestWithPPOM({
+          chainId,
+          request: req,
+          ppomController,
+          isAPIEnabled,
+        }).then((finalSecurityAlertResponse) => {
+          updateSecurityAlertResponseByTxId(req, {
+            ...finalSecurityAlertResponse,
+            securityAlertId,
+          });
+        });
 
         if (SIGNING_METHODS.includes(req.method)) {
           appStateController.addSignatureSecurityAlertResponse({

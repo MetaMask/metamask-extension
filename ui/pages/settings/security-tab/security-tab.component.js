@@ -85,9 +85,11 @@ export default class SecurityTab extends PureComponent {
     setUseTransactionSimulations: PropTypes.func.isRequired,
     useTransactionSimulations: PropTypes.bool.isRequired,
     petnamesEnabled: PropTypes.bool.isRequired,
-    securityAlertsEnabled: PropTypes.bool,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+    securityAlertsEnabled: PropTypes.bool,
     setSecurityAlertsEnabled: PropTypes.func,
+    securityAlertsAPIEnabled: PropTypes.bool,
+    setSecurityAlertsAPIEnabled: PropTypes.func,
     ///: END:ONLY_INCLUDE_IF
   };
 
@@ -190,49 +192,76 @@ export default class SecurityTab extends PureComponent {
     const { securityAlertsEnabled } = this.props;
 
     return (
-      <>
-        <div ref={this.settingsRefs[15]}>
-          <span className="settings-page__security-tab-sub-header">
-            {t('securityAlerts')}
-          </span>
+      <Box
+        ref={this.settingsRefs[2]}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
+        <div className="settings-page__content-item">
+          <span>Show security alerts</span>
+          <div className="settings-page__content-description">
+            {t('securityAlertsDescription', [
+              <a
+                key="learn_more_link"
+                href={SECURITY_ALERTS_LEARN_MORE_LINK}
+                rel="noreferrer"
+                target="_blank"
+              >
+                {t('learnMoreUpperCase')}
+              </a>,
+            ])}
+          </div>
         </div>
-        <div className="settings-page__content-padded">
-          <Box
-            ref={this.settingsRefs[2]}
-            className="settings-page__content-row"
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            justifyContent={JustifyContent.spaceBetween}
-            gap={4}
-          >
-            <div className="settings-page__content-item">
-              <div className="settings-page__content-description">
-                {t('securityAlertsDescription', [
-                  <a
-                    key="learn_more_link"
-                    href={SECURITY_ALERTS_LEARN_MORE_LINK}
-                    rel="noreferrer"
-                    target="_blank"
-                  >
-                    {t('learnMoreUpperCase')}
-                  </a>,
-                ])}
-              </div>
-            </div>
-            <div
-              className="settings-page__content-item-col"
-              data-testid="securityAlert"
-            >
-              <ToggleButton
-                value={securityAlertsEnabled}
-                onToggle={this.toggleSecurityAlert.bind(this)}
-                offLabel={t('off')}
-                onLabel={t('on')}
-              />
-            </div>
-          </Box>
+        <div
+          className="settings-page__content-item-col"
+          data-testid="securityAlert"
+        >
+          <ToggleButton
+            value={securityAlertsEnabled}
+            onToggle={this.toggleSecurityAlert.bind(this)}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
         </div>
-      </>
+      </Box>
+    );
+  }
+
+  renderSecurityAlertsAPIToggle() {
+    const { t } = this.context;
+    const { securityAlertsAPIEnabled, setSecurityAlertsAPIEnabled } =
+      this.props;
+
+    return (
+      <Box
+        ref={this.settingsRefs[2]}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
+        <div className="settings-page__content-item">
+          <span>Use security alerts API</span>
+          <div className="settings-page__content-description">
+            Speed up validation requests using a remote MetaMask service.
+          </div>
+        </div>
+        <div
+          className="settings-page__content-item-col"
+          data-testid="securityAlert"
+        >
+          <ToggleButton
+            value={securityAlertsAPIEnabled}
+            onToggle={(value) => setSecurityAlertsAPIEnabled(!value)}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
+        </div>
+      </Box>
     );
   }
 
@@ -988,8 +1017,18 @@ export default class SecurityTab extends PureComponent {
           {this.context.t('security')}
         </span>
         {this.renderSeedWords()}
+
+        <div>
+          <span className="settings-page__security-tab-sub-header">
+            {this.context.t('securityAlerts')}
+          </span>
+        </div>
         {/* ///: BEGIN:ONLY_INCLUDE_IF(blockaid) */}
-        {this.renderSecurityAlertsToggle()}
+        <div className="settings-page__content-padded">
+          {this.renderSecurityAlertsToggle()}
+          {this.renderSecurityAlertsAPIToggle()}
+        </div>
+
         {/* ///: END:ONLY_INCLUDE_IF */}
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}

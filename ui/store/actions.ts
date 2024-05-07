@@ -4827,6 +4827,10 @@ export function setSecurityAlertsEnabled(val: boolean): void {
     logErrorWithMessage(error);
   }
 }
+
+export function setSecurityAlertsAPIEnabled(value: boolean) {
+  return setPreference('securityAlertsAPIEnabled', value);
+}
 ///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)

@@ -19,6 +19,7 @@ import {
   setUseTransactionSimulations,
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   setSecurityAlertsEnabled,
+  setSecurityAlertsAPIEnabled,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../store/actions';
 import {
@@ -27,6 +28,7 @@ import {
   getIsSecurityAlertsEnabled,
   ///: END:ONLY_INCLUDE_IF
   getPetnamesEnabled,
+  getSecurityAlertsAPIEnabled,
 } from '../../../selectors';
 import SecurityTab from './security-tab.component';
 
@@ -75,6 +77,7 @@ const mapStateToProps = (state) => {
     petnamesEnabled,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     securityAlertsEnabled: getIsSecurityAlertsEnabled(state),
+    securityAlertsAPIEnabled: getSecurityAlertsAPIEnabled(state),
     ///: END:ONLY_INCLUDE_IF
     useTransactionSimulations: metamask.useTransactionSimulations,
   };
@@ -110,6 +113,8 @@ const mapDispatchToProps = (dispatch) => {
     },
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     setSecurityAlertsEnabled: (value) => setSecurityAlertsEnabled(value),
+    setSecurityAlertsAPIEnabled: (value) =>
+      dispatch(setSecurityAlertsAPIEnabled(value)),
     ///: END:ONLY_INCLUDE_IF
   };
 };

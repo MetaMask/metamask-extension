@@ -2194,6 +2194,11 @@ export function getUseRequestQueue(state) {
 export function getIsSecurityAlertsEnabled(state) {
   return state.metamask.securityAlertsEnabled;
 }
+
+export function getSecurityAlertsAPIEnabled(state) {
+  const { securityAlertsAPIEnabled } = getPreferences(state);
+  return securityAlertsAPIEnabled;
+}
 ///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)

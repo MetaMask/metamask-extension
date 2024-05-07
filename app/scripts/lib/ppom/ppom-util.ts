@@ -6,6 +6,7 @@ import {
 import { Hex } from '@metamask/utils';
 import { captureException } from '@sentry/browser';
 import { v4 as uuid } from 'uuid';
+import { PPOMController } from '@metamask/ppom-validator';
 import {
   BlockaidReason,
   BlockaidResultType,
@@ -35,29 +36,26 @@ export function normalizePPOMRequest(request: PPOMRequest) {
 export async function validateRequestWithPPOM({
   chainId,
   request,
+  ppomController,
+  isAPIEnabled,
 }: {
   chainId: Hex;
   request: PPOMRequest;
+  ppomController: PPOMController;
+  isAPIEnabled: boolean;
 }): Promise<SecurityAlertResponse> {
   const securityAlertId = uuid();
-
-  const body = JSON.stringify(normalizePPOMRequest(request));
-
-  console.log('Sending validation request', body);
+  const normalizedRequest = normalizePPOMRequest(request);
 
   try {
-    const response = await fetch(`http://localhost:3000/validate/${chainId}`, {
-      method: 'POST',
-      body,
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    if (isAPIEnabled) {
+      return await validateWithAPI({ request: normalizedRequest, chainId });
+    }
+
+    return await validateWithController({
+      ppomController,
+      request: normalizedRequest,
     });
-
-    const securityAlertResponse = await response.json();
-    securityAlertResponse.securityAlertId = securityAlertId;
-
-    return securityAlertResponse;
   } catch (e) {
     captureException(e);
 
@@ -74,4 +72,41 @@ export async function validateRequestWithPPOM({
 
     return securityAlertResponse;
   }
+}
+
+async function validateWithController({
+  ppomController,
+  request,
+}: {
+  ppomController: PPOMController;
+  request: PPOMRequest;
+}): Promise<SecurityAlertResponse> {
+  return await ppomController.usePPOM<SecurityAlertResponse>(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async (ppom: any) => {
+      return await ppom.validateJsonRpc(request);
+    },
+  );
+}
+
+async function validateWithAPI({
+  request,
+  chainId,
+}: {
+  request: PPOMRequest;
+  chainId: Hex;
+}): Promise<SecurityAlertResponse> {
+  const body = JSON.stringify(request);
+
+  console.log('Sending validation request', body);
+
+  const response = await fetch(`http://localhost:3000/validate/${chainId}`, {
+    method: 'POST',
+    body,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  return await response.json();
 }
