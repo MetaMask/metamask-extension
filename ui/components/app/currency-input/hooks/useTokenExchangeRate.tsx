@@ -35,9 +35,13 @@ export default function useTokenExchangeRate(
     shallowEqual,
   );
 
-  const [exchangeRates, setExchangeRates] = useState<Record<string, number>>(
-    {},
-  );
+  const [exchangeRates, setExchangeRates] = useState<
+    Record<string, number | undefined>
+  >({});
+
+  const [loadingExchangeRates, setLoadingExchangeRates] = useState<
+    Record<string, boolean>
+  >({});
 
   return useMemo(() => {
     if (!tokenAddress) {
@@ -47,15 +51,26 @@ export default function useTokenExchangeRate(
     const contractExchangeRate =
       contractExchangeRates[tokenAddress] || exchangeRates[tokenAddress];
 
-    if (!contractExchangeRate) {
-      fetchTokenExchangeRates(nativeCurrency, [tokenAddress], chainId).then(
-        (addressToExchangeRate) => {
+    if (!contractExchangeRate && !loadingExchangeRates[tokenAddress]) {
+      const setLoadingState = (value: boolean) => {
+        setLoadingExchangeRates((prev) => ({
+          ...prev,
+          [tokenAddress]: value,
+        }));
+      };
+
+      setLoadingState(true);
+      fetchTokenExchangeRates(nativeCurrency, [tokenAddress], chainId)
+        .then((addressToExchangeRate) => {
+          setLoadingState(false);
           setExchangeRates((prev) => ({
             ...prev,
             ...addressToExchangeRate,
           }));
-        },
-      );
+        })
+        .catch(() => {
+          setLoadingState(false);
+        });
       return undefined;
     }
 
@@ -67,5 +82,6 @@ export default function useTokenExchangeRate(
     tokenAddress,
     nativeConversionRate,
     contractExchangeRates,
+    loadingExchangeRates,
   ]);
 }
