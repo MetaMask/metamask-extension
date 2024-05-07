@@ -106,7 +106,7 @@ function getNativeBalanceChange(
   }
   const asset = NATIVE_ASSET_IDENTIFIER;
   const amount = getAssetAmount(nativeBalanceChange, NATIVE_DECIMALS);
-  const fiatAmount = amount.times(nativeFiatRate).toNumber();
+  const fiatAmount = amount?.times(nativeFiatRate).toNumber();
   return { asset, amount, fiatAmount };
 }
 
@@ -124,7 +124,9 @@ function getTokenBalanceChanges(
     };
 
     const decimals =
-      asset.standard === TokenStandard.ERC20 ? erc20Decimals[asset.address] : 0;
+      asset.standard === TokenStandard.ERC20 && erc20Decimals[asset.address]
+        ? erc20Decimals[asset.address]
+        : 0;
     const amount = getAssetAmount(tokenBc, decimals);
 
     const fiatRate = erc20FiatRates[tokenBc.address];
