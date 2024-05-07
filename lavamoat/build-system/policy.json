@@ -8525,7 +8525,6 @@
         "crypto": true,
         "fs": true,
         "inspector": true,
-        "module.findPnpApi": true,
         "os.EOL": true,
         "os.platform": true,
         "path.dirname": true,

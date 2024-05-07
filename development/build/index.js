@@ -26,7 +26,12 @@ const createScriptTasks = require('./scripts');
 const createStyleTasks = require('./styles');
 const createStaticAssetTasks = require('./static');
 const createEtcTasks = require('./etc');
-const { getBrowserVersionMap, getEnvironment } = require('./utils');
+const {
+  getBrowserVersionMap,
+  getEnvironment,
+  isDevBuild,
+  isTestBuild,
+} = require('./utils');
 const { getConfig } = require('./config');
 
 /* eslint-disable no-constant-condition, node/global-require */
@@ -190,6 +195,7 @@ async function defineAndRunBuildTasks() {
   const styleTasks = createStyleTasks({ livereload });
 
   const scriptTasks = createScriptTasks({
+    shouldIncludeSnow,
     applyLavaMoat,
     browserPlatforms,
     buildType,
@@ -380,8 +386,9 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
     platform,
   } = argv;
 
-  // Manually default this to `false` for dev builds only.
-  const shouldLintFenceFiles = lintFenceFiles ?? !/dev/iu.test(task);
+  // Manually default this to `false` for dev and test builds.
+  const shouldLintFenceFiles =
+    lintFenceFiles ?? (!isDevBuild(task) && !isTestBuild(task));
 
   const version = getVersion(buildType, buildVersion);
 

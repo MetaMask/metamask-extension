@@ -15,6 +15,10 @@ import { Box } from '../../components/component-library';
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header/snap-authorship-header';
 ///: END:ONLY_INCLUDE_IF
 import PermissionConnectHeader from '../../components/app/permission-connect-header';
+import {
+  CaveatTypes,
+  RestrictedMethods,
+} from '../../../shared/constants/permissions';
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -25,6 +29,20 @@ import SnapResult from './snaps/snap-result';
 ///: END:ONLY_INCLUDE_IF
 
 const APPROVE_TIMEOUT = MILLISECOND * 1200;
+
+function getDefaultSelectedAccounts(currentAddress, permissionsRequest) {
+  const permission =
+    permissionsRequest.permissions?.[RestrictedMethods.eth_accounts];
+  const requestedAccounts = permission?.caveats?.find(
+    (caveat) => caveat.type === CaveatTypes.restrictReturnedAccounts,
+  )?.value;
+
+  if (requestedAccounts) {
+    return new Set(requestedAccounts.map((address) => address.toLowerCase()));
+  }
+
+  return new Set([currentAddress]);
+}
 
 export default class PermissionConnect extends Component {
   static propTypes = {
@@ -99,7 +117,10 @@ export default class PermissionConnect extends Component {
 
   state = {
     redirecting: false,
-    selectedAccountAddresses: new Set([this.props.currentAddress]),
+    selectedAccountAddresses: getDefaultSelectedAccounts(
+      this.props.currentAddress,
+      this.props.permissionsRequest,
+    ),
     permissionsApproved: null,
     origin: this.props.origin,
     targetSubjectMetadata: this.props.targetSubjectMetadata || {},
