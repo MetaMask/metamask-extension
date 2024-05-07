@@ -3,6 +3,7 @@ import {
   LedgerTransportTypes,
   WebHIDConnectedStatuses,
 } from '../../../../../../shared/constants/hardware-wallets';
+import { BlockaidResultType } from '../../../../../../shared/constants/security-provider';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { unapprovedPersonalSignMsg } from '../../../../../../test/data/confirmations/personal_sign';
 import mockState from '../../../../../../test/data/mock-state.json';
@@ -87,6 +88,28 @@ describe('ConfirmFooter', () => {
       .mockImplementation(() => ({} as any));
     fireEvent.click(submitButton);
     expect(resolveSpy).toHaveBeenCalled();
+  });
+
+  it.only('displays a danger "Confirm" button if the request is malicious', async () => {
+    const mockSecurityAlertId = '8';
+    const { getAllByRole } = await render({
+      confirm: {
+        currentConfirmation: {
+          securityAlertResponse: {
+            securityAlertId: mockSecurityAlertId,
+          },
+        },
+      },
+      metamask: {
+        signatureSecurityAlertResponses: {
+          [mockSecurityAlertId]: {
+            result_type: BlockaidResultType.Malicious,
+          },
+        },
+      },
+    });
+    const submitButton = getAllByRole('button')[1];
+    expect(submitButton).toHaveClass('mm-button-primary--type-danger');
   });
 
   it('disables submit button if required LedgerHidConnection is not yet established', () => {
