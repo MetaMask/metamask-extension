@@ -15,6 +15,12 @@ export type Alert = {
   alertDetails?: string[];
 
   /**
+   * Whether the alert is a blocker and un-acknowledgeable, preventing
+   * the user from proceeding and relying on the actions to proceed.
+   */
+  isBlocking?: boolean;
+
+  /**
    * The field associated with the alert.
    */
   field?: string;

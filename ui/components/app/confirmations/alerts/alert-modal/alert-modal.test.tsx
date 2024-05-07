@@ -40,12 +40,14 @@ describe('AlertModal', () => {
       key: 'data',
       severity: Severity.Danger,
       message: 'Alert 2',
+      isBlocking: false,
     },
     {
       key: CONTRACT_ALERT_KEY_MOCK,
       severity: Severity.Info,
       message: 'Alert 3',
       actions: [{ key: ACTION_KEY_MOCK, label: ACTION_LABEL_MOCK }],
+      isBlocking: true,
     },
   ];
 
@@ -283,6 +285,39 @@ describe('AlertModal', () => {
 
       fireEvent.click(getByTestId('alert-modal-review-all-alerts'));
       expect(onFrictionLinkClickMock).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('Blocking alerts', () => {
+    it('renders blocking alert', () => {
+      const { getByText, queryByTestId } = renderWithProvider(
+        <AlertModal
+          ownerId={OWNER_ID_MOCK}
+          onAcknowledgeClick={onAcknowledgeClickMock}
+          onClose={onCloseMock}
+          alertKey={CONTRACT_ALERT_KEY_MOCK}
+        />,
+        mockStore,
+      );
+
+      expect(queryByTestId('alert-modal-acknowledge-checkbox')).toBeNull();
+      expect(queryByTestId('alert-modal-button')).toBeNull();
+      expect(getByText(ACTION_LABEL_MOCK)).toBeInTheDocument();
+    });
+
+    it('renders acknowledge button and checkbox for non-blocking alerts', () => {
+      const { getByTestId } = renderWithProvider(
+        <AlertModal
+          ownerId={OWNER_ID_MOCK}
+          onAcknowledgeClick={onAcknowledgeClickMock}
+          onClose={onCloseMock}
+          alertKey={FROM_ALERT_KEY_MOCK}
+        />,
+        mockStore,
+      );
+
+      expect(getByTestId('alert-modal-acknowledge-checkbox')).toBeDefined();
+      expect(getByTestId('alert-modal-button')).toBeDefined();
     });
   });
 });

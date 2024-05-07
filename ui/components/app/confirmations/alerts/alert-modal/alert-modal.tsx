@@ -66,6 +66,11 @@ export type AlertModalProps = {
   ownerId: string;
 };
 
+export type AlertChildrenDefaultProps = {
+  selectedAlert: Alert;
+  isFrictionModal: boolean;
+};
+
 function getSeverityStyle(severity: Severity) {
   switch (severity) {
     case Severity.Warning:
@@ -89,10 +94,7 @@ function getSeverityStyle(severity: Severity) {
 function AlertHeader({
   selectedAlert,
   isFrictionModal,
-}: {
-  selectedAlert: Alert;
-  isFrictionModal: boolean;
-}) {
+}: AlertChildrenDefaultProps) {
   const t = useI18nContext();
   const severityStyle = getSeverityStyle(selectedAlert.severity);
   return (
@@ -170,9 +172,7 @@ function AlertDetails({
   selectedAlert,
   isFrictionModal,
   onFrictionLinkClick,
-}: {
-  selectedAlert: Alert;
-  isFrictionModal: boolean;
+}: AlertChildrenDefaultProps & {
   onFrictionLinkClick?: () => void;
 }) {
   const t = useI18nContext();
@@ -222,13 +222,15 @@ function AcknowledgeCheckbox({
   isConfirmed,
   isFrictionModal,
   setFrictionCheckbox,
-}: {
-  selectedAlert: Alert;
+}: AlertChildrenDefaultProps & {
   setAlertConfirmed: (alertKey: string, isConfirmed: boolean) => void;
   isConfirmed: boolean;
-  isFrictionModal: boolean;
   setFrictionCheckbox: (value: boolean) => void;
 }) {
+  if (!isFrictionModal && selectedAlert.isBlocking) {
+    return null;
+  }
+
   const t = useI18nContext();
   const severityStyle = getSeverityStyle(selectedAlert.severity);
   const handleCheckboxClick = () => {
@@ -304,11 +306,13 @@ function AcknowledgeButton({
   isConfirmed,
   frictionModalConfig,
   hasActions,
+  isBlocking,
 }: {
   onAcknowledgeClick: () => void;
   isConfirmed: boolean;
   frictionModalConfig?: FrictionModalConfig;
   hasActions?: boolean;
+  isBlocking?: boolean;
 }) {
   const t = useI18nContext();
   const isFrictionModal = Boolean(frictionModalConfig);
@@ -321,6 +325,10 @@ function AcknowledgeButton({
         isConfirmed={isConfirmed}
       />
     );
+  }
+
+  if (isBlocking) {
+    return null;
   }
 
   return (
@@ -381,6 +389,10 @@ export function AlertModal({
   }
   const isConfirmed = isAlertConfirmed(selectedAlert.key);
   const [frictionCheckbox, setFrictionCheckbox] = useState<boolean>(false);
+  const defaultAlertChildrenProps = {
+    selectedAlert,
+    isFrictionModal,
+  };
 
   return (
     <Modal isOpen onClose={handleClose}>
@@ -393,22 +405,17 @@ export function AlertModal({
           borderWidth={1}
           display={headerStartAccessory ? Display.InlineFlex : Display.Block}
         />
-        <AlertHeader
-          selectedAlert={selectedAlert}
-          isFrictionModal={isFrictionModal}
-        />
+        <AlertHeader {...defaultAlertChildrenProps} />
         <ModalBody>
           <AlertDetails
-            selectedAlert={selectedAlert}
-            isFrictionModal={isFrictionModal}
             onFrictionLinkClick={frictionModalConfig?.onAlertLinkClick}
+            {...defaultAlertChildrenProps}
           />
           <AcknowledgeCheckbox
-            selectedAlert={selectedAlert}
             isConfirmed={isFrictionModal ? frictionCheckbox : isConfirmed}
             setAlertConfirmed={setAlertConfirmed}
-            isFrictionModal={isFrictionModal}
             setFrictionCheckbox={setFrictionCheckbox}
+            {...defaultAlertChildrenProps}
           />
         </ModalBody>
         <ModalFooter>
@@ -423,6 +430,7 @@ export function AlertModal({
               isConfirmed={isFrictionModal ? frictionCheckbox : isConfirmed}
               frictionModalConfig={frictionModalConfig}
               hasActions={Boolean(selectedAlert.actions)}
+              isBlocking={selectedAlert.isBlocking}
             />
             {(selectedAlert.actions ?? []).map((action) => (
               <ActionButton key={action.key} action={action} />
