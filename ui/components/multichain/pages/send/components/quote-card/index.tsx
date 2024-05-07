@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, Text } from '../../../../../component-library';
+import { Box, ButtonLink, Text } from '../../../../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -22,8 +22,12 @@ import { Quote } from '../../../../../../ducks/send/swap-and-send-utils';
 import Tooltip from '../../../../../ui/tooltip';
 import InfoTooltipIcon from '../../../../../ui/info-tooltip/info-tooltip-icon';
 import { MetaMetricsEventCategory } from '../../../../../../../shared/constants/metametrics';
-import { GAS_FEES_LEARN_MORE_URL } from '../../../../../../../shared/lib/ui-utils';
+import {
+  CONSENSYS_TERMS_OF_USE,
+  GAS_FEES_LEARN_MORE_URL,
+} from '../../../../../../../shared/lib/ui-utils';
 import { MetaMetricsContext } from '../../../../../../contexts/metametrics';
+import { hexToDecimal } from '../../../../../../../shared/modules/conversion.utils';
 import useEthFeeData from './hooks/useEthFeeData';
 import useTranslatedNetworkName from './hooks/useTranslatedNetworkName';
 import useGetConversionRate from './hooks/useGetConversionRate';
@@ -41,7 +45,7 @@ export function QuoteCard() {
   const translatedNetworkName = useTranslatedNetworkName();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const scrollRef = useRef<HTMLElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const { isSwapQuoteLoading } = useSelector(getCurrentDraftTransaction);
 
@@ -66,7 +70,7 @@ export function QuoteCard() {
     if (isQuoteJustLoaded) {
       scrollRef.current?.scrollIntoView({
         behavior: 'smooth',
-        block: 'center',
+        block: 'start',
       });
     }
 
@@ -100,20 +104,14 @@ export function QuoteCard() {
     return undefined;
   }, [isSwapQuoteLoading, bestQuote, timeLeft]);
 
-  const isContent = Boolean(infoText || bestQuote);
-
-  if (!isContent) {
-    return null;
-  }
-
   return (
     <Box
-      ref={scrollRef}
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       alignItems={isSwapQuoteLoading ? AlignItems.center : AlignItems.flexStart}
-      gap={3}
+      gap={2}
     >
+      {/* TIMER/FETCH INFO */}
       {infoText && (
         <Text
           color={TextColor.textAlternative}
@@ -123,6 +121,7 @@ export function QuoteCard() {
           {infoText}
         </Text>
       )}
+      {/* QUOTE CARD */}
       {bestQuote && (
         <Box
           backgroundColor={BackgroundColor.backgroundAlternative}
@@ -206,6 +205,27 @@ export function QuoteCard() {
           </Box>
         </Box>
       )}
+      {/* FEE INFO */}
+      {bestQuote && (
+        <Text
+          color={TextColor.textAlternative}
+          variant={TextVariant.bodySm}
+          className="quote-card__fetch-status"
+        >
+          {t('swapIncludesMMFeeAlt', [bestQuote?.fee])}
+        </Text>
+      )}
+      {/* TOS LINK; doubles as anchor for scroll ref */}
+      <ButtonLink
+        variant={TextVariant.bodySm}
+        href={CONSENSYS_TERMS_OF_USE}
+        target="_blank"
+        className="quote-card__TOS"
+      >
+        {t('termsOfService')}
+      </ButtonLink>
+      {/* SCROLL REF ANCHOR */}
+      <div ref={scrollRef} />
     </Box>
   );
 }
