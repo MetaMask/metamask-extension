@@ -848,16 +848,12 @@
   "confirmTitleDescContractInteractionTransaction": {
     "message": "Only confirm this transaction if you fully understand the content and trust the requesting site."
   },
-  "confirmTitleDescPersonalSignature": {
-    "message": "Only sign this message if you fully understand the content and trust the requesting site"
-  },
-  "confirmTitleDescTypedDataSignature": {
-    "message": "Review everything below before continuing. Once done, this transaction can’t be undone"
+  "confirmTitleDescSignature": {
+    "message": "Only confirm this message if you approve the content and trust the requesting site."
   },
   "confirmTitleSignature": {
     "message": "Signature request"
   },
-
   "confirmTitleTransaction": {
     "message": "Transaction request"
   },
@@ -3954,10 +3950,10 @@
     "message": "Protect your funds"
   },
   "redesignedConfirmationsEnabledToggle": {
-    "message": "Redesigned confirmations"
+    "message": "Improved signature requests"
   },
   "redesignedConfirmationsToggleDescription": {
-    "message": "Turn this on to see re-designed confirmations whenever you receive signature requests."
+    "message": "Turn this on to see signature requests in an enhanced format."
   },
   "refreshList": {
     "message": "Refresh list"
