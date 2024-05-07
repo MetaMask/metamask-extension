@@ -39,7 +39,7 @@ export default function DeprecatedNetworks() {
     };
   } else if (DEPRECATED_NETWORKS.includes(chainId)) {
     props = { description: t('deprecatedNetwork') };
-  } else if (chainId === CHAIN_IDS.AURORA && rpcUrl.includs('infura.io')) {
+  } else if (chainId === CHAIN_IDS.AURORA && rpcUrl.includes('infura.io')) {
     props = {
       description:
         'The Infura RPC URL is no longer supporting Aurora. To use Aurora, please edit the RPC URL.',
@@ -52,7 +52,7 @@ export default function DeprecatedNetworks() {
   }
 
   return (
-    props && (
+    props ? (
       <Box
         className="deprecated-networks"
         backgroundColor={BackgroundColor.backgroundDefault}
@@ -70,6 +70,6 @@ export default function DeprecatedNetworks() {
           {...props}
         />
       </Box>
-    )
+    ) : null
   );
 }
