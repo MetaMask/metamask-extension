@@ -8,14 +8,12 @@ type SignatureSecurityAlertResponsesState = {
 };
 
 function useSignatureSecurityAlertResponse(securityAlertId?: string) {
-  if (!securityAlertId) { return; }
-
   const signatureSecurityAlertResponses = useSelector(
     (state: SignatureSecurityAlertResponsesState) =>
       state.metamask.signatureSecurityAlertResponses,
   );
 
-  return signatureSecurityAlertResponses?.[securityAlertId];
+  return securityAlertId ? signatureSecurityAlertResponses?.[securityAlertId] : null;
 }
 
 export default useSignatureSecurityAlertResponse;
