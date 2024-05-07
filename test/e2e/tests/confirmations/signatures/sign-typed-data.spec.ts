@@ -44,7 +44,7 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#signTypedData');
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog, { timeout: 20000 });
         await driver.clickElement('[data-testid="confirm-footer-cancel-button"]');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
