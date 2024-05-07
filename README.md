@@ -215,6 +215,9 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
       - `rm -rf node_modules/ && yarn && yarn lavamoat:auto`
     - Keep in mind that any kind of dynamic import or dynamic use of globals may elude LavaMoat's static analysis.
       Refer to the LavaMoat documentation or ask for help if you run into any issues.
+- The Attributions file
+  - If you are a MetaMask team member and your PR is on a repository branch, you can use the bot command `@metamaskbot update-attributions` to ask the MetaMask bot to automatically update the attributions file for you.
+  - Manual update: run `yarn generate:attributions`.
 
 ## Architecture
 
