@@ -91,6 +91,8 @@ import {
   MetaMetricsPageOptions,
   MetaMetricsPagePayload,
   MetaMetricsReferrerObject,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
@@ -3080,6 +3082,13 @@ export function setShowExtensionInFullSizeView(value: boolean) {
 }
 
 export function setSmartTransactionsOptInStatus(value: boolean) {
+  trackMetaMetricsEvent({
+    category: MetaMetricsEventCategory.Settings,
+    event: MetaMetricsEventName.SettingsUpdated,
+    properties: {
+      stx_opt_in: value,
+    },
+  });
   return setPreference('smartTransactionsOptInStatus', value);
 }
 
