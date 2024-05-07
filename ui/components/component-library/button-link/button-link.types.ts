@@ -28,6 +28,10 @@ export interface ButtonLinkStyleUtilityProps
    */
   loading?: boolean;
   /**
+   * Boolean to hide underline on hover in button
+   */
+  disableUnderline?: boolean;
+  /**
    * Possible size values: 'ButtonLinkSize.Auto'(auto), 'ButtonLinkSize.Sm'(32px), 'ButtonLinkSize.Md'(40px), 'ButtonLinkSize.Lg'(48px), 'ButtonLinkSize.Inherit'(inherits parents font-size)
    * Default value is 'ButtonLinkSize.Auto'.
    */
