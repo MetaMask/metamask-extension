@@ -1,0 +1,93 @@
+name: Check attributions
+
+on:
+  pull_request_target:
+    types: [opened, edited]
+
+jobs:
+  prepare:
+    name: Prepare dependencies
+    runs-on: ubuntu-latest
+    outputs:
+      COMMIT_SHA: ${{ steps.commit-sha.outputs.COMMIT_SHA }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Checkout pull request
+        run: gh pr checkout "${PR_NUMBER}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+      - name: Install Yarn dependencies
+        run: yarn --immutable
+      - name: Get commit SHA
+        id: commit-sha
+        run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
+  generate-attributions:
+    name: Generate Attributions
+    runs-on: ubuntu-latest
+    needs:
+      - prepare
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Checkout pull request
+        run: gh pr checkout "${PR_NUMBER}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+      - name: Install dependencies from cache
+        run: yarn --immutable --immutable-cache
+      - name: Geneate Atributions
+        run: yarn generate:attributions
+      - name: Cache attribution file
+        uses: actions/cache/save@v3
+        with:
+          path: attribution.txt
+          key: cache-build-${{ needs.prepare.outputs.COMMIT_SHA }}
+
+  check-attributions:
+    name: Check attributions
+    runs-on: ubuntu-latest
+    needs:
+      - prepare
+      - generate-attributions
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout pull request
+        run: gh pr checkout "${PR_NUMBER}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+      - name: Get commit SHA
+        id: commit-sha
+        run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+      - name: Restore attribution file
+        uses: actions/cache/restore@v3
+        with:
+          path: attribution.txt
+          key: cache-build-${{ needs.prepare.outputs.COMMIT_SHA }}
+          fail-on-cache-miss: true
+      - name: Check whether there are attributions changes
+        run: |
+          if git diff --exit-code
+          then
+            echo "No attributions changes. Pipeline succeeded."
+          else
+            echo "Attributions have changed. Failing pipeline."
+            exit 1
+          fi
