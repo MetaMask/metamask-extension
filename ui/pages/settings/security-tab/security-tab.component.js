@@ -27,6 +27,7 @@ import {
   BUTTON_SIZES,
   Box,
   Text,
+  ButtonPrimary,
 } from '../../../components/component-library';
 import TextField from '../../../components/ui/text-field';
 import ToggleButton from '../../../components/ui/toggle-button';
@@ -356,6 +357,44 @@ export default class SecurityTab extends PureComponent {
             offLabel={t('off')}
             onLabel={t('on')}
           />
+        </div>
+      </Box>
+    );
+  }
+
+  renderDeleteMetaMetricsData() {
+    const { t } = this.context;
+
+    return (
+      <Box
+        className="settings-page__content-row"
+        data-testid="delete-metametrics-data"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        gap={4}
+      >
+        <div className="settings-page__content-item">
+          <span>{t('deleteMetaMetricsData')}</span>
+          <div className="settings-page__content-description">
+            {t('deleteMetaMetricsDataDescription', [
+              <b key="delete-MetaMetrics-Data-Desc-Bold">
+                {t('deleteMetaMetricsDataDescriptionBold')}
+              </b>,
+              <a
+                href={CONSENSYS_PRIVACY_LINK}
+                target="_blank"
+                rel="noopener noreferrer"
+                key="metametrics-consensys-privacy-link"
+              >
+                {t('consensysPrivacyPolicy')}
+              </a>,
+            ])}
+          </div>
+        </div>
+        <div className="settings-page__content-item-col">
+          <ButtonPrimary className="settings-page__button" onClick={() => {}}>
+            {t('deleteMetaMetricsData')}
+          </ButtonPrimary>
         </div>
       </Box>
     );
@@ -1109,6 +1148,7 @@ export default class SecurityTab extends PureComponent {
         </span>
         <div className="settings-page__content-padded">
           {this.renderMetaMetricsOptIn()}
+          {this.renderDeleteMetaMetricsData()}
         </div>
       </div>
     );
