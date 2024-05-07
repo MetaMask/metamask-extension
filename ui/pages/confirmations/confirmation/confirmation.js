@@ -461,22 +461,20 @@ export default function ConfirmationPage({
   const handleSubmit = async () => {
     setLoading(true);
 
-    if (trackEvent) {
-      trackEvent({
-        category: MetaMetricsEventCategory.Network,
-        event: MetaMetricsEventName.NavNetworkSwitched,
-        properties: {
-          location: 'Switch Modal',
-          from_network:
-            pendingConfirmation.requestData.fromNetworkConfiguration.chainId,
-          to_network:
-            pendingConfirmation.requestData.toNetworkConfiguration.chainId,
-          referrer: {
-            url: window.location.origin,
-          },
+    trackEvent({
+      category: MetaMetricsEventCategory.Network,
+      event: MetaMetricsEventName.NavNetworkSwitched,
+      properties: {
+        location: 'Switch Modal',
+        from_network:
+          pendingConfirmation.requestData.fromNetworkConfiguration.chainId,
+        to_network:
+          pendingConfirmation.requestData.toNetworkConfiguration.chainId,
+        referrer: {
+          url: window.location.origin,
         },
-      });
-    }
+      },
+    });
 
     if (templateState[pendingConfirmation.id]?.useWarningModal) {
       setShowWarningModal(true);
