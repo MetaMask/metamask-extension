@@ -8,7 +8,23 @@
 .smart-transaction-status-page {
   text-align: center;
 
+  @media screen and (min-width: 768px) {
+    max-width: 640px;
+    margin: auto auto 16px auto;
+    overflow: hidden;
+  }
+
+  &__description {
+    @media screen and (min-width: 768px) {
+      max-width: 480px;
+    }
+  }
+
   &__loading-bar-container {
+    @media screen and (min-width: 768px) {
+      max-width: 260px;
+    }
+
     width: 100%;
     height: 3px;
     background: var(--color-background-alternative);
