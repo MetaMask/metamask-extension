@@ -116,7 +116,7 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
     <Box
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
-      alignItems={isSwapQuoteLoading ? AlignItems.center : AlignItems.flexStart}
+      alignItems={AlignItems.flexStart}
       gap={2}
     >
       {/* TIMER/FETCH INFO */}
