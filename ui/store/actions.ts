@@ -36,6 +36,7 @@ import {
   NetworkConfiguration,
 } from '@metamask/network-controller';
 import { InterfaceState } from '@metamask/snaps-sdk';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
@@ -91,9 +92,12 @@ import {
   MetaMetricsPageOptions,
   MetaMetricsPagePayload,
   MetaMetricsReferrerObject,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+import { getSmartTransactionsOptInStatus } from '../../shared/modules/selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notifications';
 ///: END:ONLY_INCLUDE_IF
@@ -454,7 +458,10 @@ export function addNewAccount(): ThunkAction<
 > {
   log.debug(`background.addNewAccount`);
   return async (dispatch, getState) => {
-    const oldAccounts = getInternalAccounts(getState());
+    const oldAccounts = getInternalAccounts(getState()).filter(
+      (internalAccount) =>
+        internalAccount.metadata.keyring.type === KeyringTypes.hd,
+    );
     dispatch(showLoadingIndication());
 
     let addedAccountAddress;
@@ -3079,8 +3086,24 @@ export function setShowExtensionInFullSizeView(value: boolean) {
   return setPreference('showExtensionInFullSizeView', value);
 }
 
-export function setSmartTransactionsOptInStatus(value: boolean) {
-  return setPreference('smartTransactionsOptInStatus', value);
+export function setSmartTransactionsOptInStatus(
+  value: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch, getState) => {
+    const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(
+      getState(),
+    );
+    trackMetaMetricsEvent({
+      category: MetaMetricsEventCategory.Settings,
+      event: MetaMetricsEventName.SettingsUpdated,
+      properties: {
+        stx_opt_in: value,
+        prev_stx_opt_in: smartTransactionsOptInStatus,
+      },
+    });
+    await dispatch(setPreference('smartTransactionsOptInStatus', value));
+    await forceUpdateMetamaskState(dispatch);
+  };
 }
 
 export function setAutoLockTimeLimit(value: boolean) {
