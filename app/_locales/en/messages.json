@@ -4986,7 +4986,7 @@
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
   "stxOptInDescription": {
-    "message": "Turn on Smart Transactions for more reliable and secure transactions, and adjustable fees on ETH Mainnet. $1"
+    "message": "Turn on Smart Transactions for more reliable and secure transactions on ETH Mainnet. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Privately submitting your Swap..."
