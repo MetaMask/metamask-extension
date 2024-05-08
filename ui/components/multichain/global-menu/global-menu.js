@@ -164,24 +164,6 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
         style={{ height: '1px', borderBottomWidth: 0 }}
       ></Box>
       <MenuItem
-        iconName={IconName.Connect}
-        disabled={hasUnapprovedTransactions}
-        onClick={() => {
-          history.push(CONNECTED_ROUTE);
-          trackEvent({
-            event: MetaMetricsEventName.NavConnectedSitesOpened,
-            category: MetaMetricsEventCategory.Navigation,
-            properties: {
-              location: METRICS_LOCATION,
-            },
-          });
-          closeMenu();
-        }}
-        data-testid="global-menu-connected-sites"
-      >
-        {t('connectedSites')}
-      </MenuItem>
-      <MenuItem
         iconName={IconName.SecurityTick}
         onClick={() => {
           history.push(PERMISSIONS);
