@@ -151,7 +151,7 @@
     align-items: center;
     background: var(--color-background-default);
     border-radius: 0.5rem;
-    padding: 0.75rem 1rem;
+    padding: 0.75rem;
     border: 1px solid var(--color-border-muted);
     transition: border-color 150ms ease-in-out;
 
@@ -209,6 +209,7 @@
 
       @extend %ellipsify;
 
+      font-weight: 500;
       word-wrap: break-word;
       white-space: inherit !important;
       margin-left: .75rem;

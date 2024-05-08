@@ -44,6 +44,7 @@ import {
 import { MetaMetricsEventCategory } from '../../../../../shared/constants/metametrics';
 import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
 import { AssetPickerAmount } from '../..';
+import useUpdateSwapsState from '../../../../hooks/useUpdateSwapsState';
 import {
   SendPageAccountPicker,
   SendPageRecipientContent,
@@ -69,31 +70,61 @@ export const SendPage = () => {
   const location = useLocation();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const handleSelectToken = (isReceived) => async (token) => {
-    if (token.type === AssetType.native) {
-      dispatch(
-        updateSendAsset({
-          type: token.type,
-          details: token,
-          skipComputeEstimatedGasLimit: false,
-          isReceived,
-        }),
-      );
-    } else {
-      dispatch(
-        updateSendAsset({
-          type: token.type ?? AssetType.token,
-          details: {
-            ...token,
-            standard: token.standard ?? TokenStandard.ERC20,
-          },
-          skipComputeEstimatedGasLimit: false,
-          isReceived,
-        }),
-      );
-    }
-    history.push(SEND_ROUTE);
-  };
+  const handleSelectToken = useCallback(
+    (token, isReceived) => {
+      const tokenType = token.type.toUpperCase();
+      switch (tokenType) {
+        case TokenStandard.ERC20:
+        case 'TOKEN':
+          token.type = AssetType.token;
+          token.standard = TokenStandard.ERC20;
+          break;
+        case TokenStandard.ERC721:
+          token.type = AssetType.NFT;
+          token.standard = TokenStandard.ERC721;
+          token.isERC721 = true;
+          break;
+        case TokenStandard.ERC1155:
+          token.type = AssetType.NFT;
+          token.standard = TokenStandard.ERC1155;
+          break;
+        default:
+          if (tokenType === 'NATIVE') {
+            break;
+          }
+          token.type = AssetType.unknown;
+          token.standard = TokenStandard.none;
+          break;
+      }
+
+      token.image = token.image ?? token.iconUrl;
+
+      if (token.type === AssetType.native) {
+        dispatch(
+          updateSendAsset({
+            type: token.type,
+            details: token,
+            skipComputeEstimatedGasLimit: false,
+            isReceived,
+          }),
+        );
+      } else {
+        dispatch(
+          updateSendAsset({
+            type: token.type ?? AssetType.token,
+            details: {
+              ...token,
+              standard: token.standard ?? TokenStandard.ERC20,
+            },
+            skipComputeEstimatedGasLimit: false,
+            isReceived,
+          }),
+        );
+      }
+      history.push(SEND_ROUTE);
+    },
+    [dispatch, history],
+  );
 
   const cleanup = useCallback(() => {
     dispatch(resetSendState());
@@ -177,13 +208,25 @@ export const SendPage = () => {
 
   const sendErrors = useSelector(getSendErrors);
   const isInvalidSendForm = useSelector(isSendFormInvalid);
+
+  const isGasTooLow =
+    sendErrors.gasFee === INSUFFICIENT_FUNDS_ERROR &&
+    sendErrors.amount !== INSUFFICIENT_FUNDS_ERROR;
+
   const submitDisabled =
-    (isInvalidSendForm && sendErrors.gasFee !== INSUFFICIENT_FUNDS_ERROR) ||
+    (isInvalidSendForm && !isGasTooLow) ||
     requireContractAddressAcknowledgement;
 
   const isSendFormShown =
     draftTransactionExists &&
     [SEND_STAGES.EDIT, SEND_STAGES.DRAFT].includes(sendStage);
+
+  const handleSelectSendToken = useCallback(
+    (newToken) => handleSelectToken(newToken, false),
+    [handleSelectToken],
+  );
+
+  useUpdateSwapsState();
 
   return (
     <Page className="multichain-send-page">
@@ -205,7 +248,7 @@ export const SendPage = () => {
           <AssetPickerAmount
             asset={transactionAsset}
             amount={amount}
-            onAssetChange={handleSelectToken(false)}
+            onAssetChange={handleSelectSendToken}
             onAmountChange={(newAmount) =>
               dispatch(updateSendAmount(newAmount))
             }

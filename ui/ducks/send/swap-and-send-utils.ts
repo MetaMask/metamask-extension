@@ -2,6 +2,7 @@ import { isNumber } from 'lodash';
 import {
   SWAPS_API_V2_BASE_URL,
   SWAPS_CLIENT_ID,
+  SWAPS_DEV_API_V2_BASE_URL,
 } from '../../../shared/constants/swaps';
 import { SECOND } from '../../../shared/constants/time';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
@@ -12,7 +13,10 @@ import {
   validHex,
   validateData,
 } from '../../../shared/lib/swaps-utils';
-import { decimalToHex } from '../../../shared/modules/conversion.utils';
+import {
+  decimalToHex,
+  hexToDecimal,
+} from '../../../shared/modules/conversion.utils';
 import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
 
 type Address = `0x${string}`;
@@ -41,6 +45,7 @@ export type Quote = {
     data: string;
     to: string;
     from: string;
+    gas?: string;
   };
   sourceAmount: string;
   destinationAmount: string;
@@ -137,15 +142,18 @@ const QUOTE_VALIDATORS = [
 ];
 const SWAPS_API_VERSION = 'v2';
 
-export async function getSwapAndSendQuotes(
-  request: Request,
-): Promise<Record<string, Quote>> {
+const BASE_URL = process.env.SWAPS_USE_DEV_APIS
+  ? SWAPS_DEV_API_V2_BASE_URL
+  : SWAPS_API_V2_BASE_URL;
+
+export async function getSwapAndSendQuotes(request: Request): Promise<Quote[]> {
   const { chainId, ...params } = request;
 
   const queryString = new URLSearchParams(params);
 
-  // FIXME: can't use the dev API since it's several major versions behind prod
-  const url = `${SWAPS_API_V2_BASE_URL}/${SWAPS_API_VERSION}/networks/${chainId}/quotes?${queryString}`;
+  const url = `${BASE_URL}/${SWAPS_API_VERSION}/networks/${hexToDecimal(
+    chainId,
+  )}/quotes?${queryString}`;
 
   const tradesResponse = await fetchWithCache({
     url,
@@ -157,10 +165,8 @@ export async function getSwapAndSendQuotes(
     functionName: 'getSwapAndSendQuotes',
   });
 
-  // TODO: validate recipient and tokens against request
-
-  const newQuotes = tradesResponse.reduce(
-    (aggIdTradeMap: Record<string, Quote>, quote: Quote) => {
+  const newQuotes = tradesResponse
+    .map((quote: Quote) => {
       if (
         quote.trade &&
         !quote.error &&
@@ -171,7 +177,6 @@ export async function getSwapAndSendQuotes(
           from: quote.trade.from,
           data: quote.trade.data,
           value: decimalToHex(quote.trade.value),
-          // bang is safe because we've validated the presence of this property
           gas: decimalToHex(quote.gasParams.maxGas),
         });
 
@@ -182,19 +187,15 @@ export async function getSwapAndSendQuotes(
         }
 
         return {
-          ...aggIdTradeMap,
-          [quote.aggregator]: {
-            ...quote,
-            slippage: params.slippage,
-            trade: constructedTrade,
-            approvalNeeded,
-          },
+          ...quote,
+          slippage: params.slippage,
+          trade: constructedTrade,
+          approvalNeeded,
         };
       }
-      return aggIdTradeMap;
-    },
-    {},
-  );
+      return undefined;
+    })
+    .filter(Boolean);
 
   return newQuotes;
 }
