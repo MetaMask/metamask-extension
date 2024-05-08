@@ -5,6 +5,13 @@
 
   &__account-picker {
     height: 62px;
+    &__label {
+      @include design-system.H6;
+      font-weight: 500;
+
+      @extend %ellipsify;
+
+    }
   }
 
   &__recipient {
