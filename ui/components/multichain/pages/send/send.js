@@ -249,8 +249,8 @@ export const SendPage = () => {
             asset={transactionAsset}
             amount={amount}
             onAssetChange={handleSelectSendToken}
-            onAmountChange={(newAmount) =>
-              dispatch(updateSendAmount(newAmount))
+            onAmountChange={(newAmountRaw, newAmountFormatted) =>
+              dispatch(updateSendAmount(newAmountRaw, newAmountFormatted))
             }
           />
         )}

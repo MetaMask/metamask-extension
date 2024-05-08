@@ -118,6 +118,7 @@ export default function CurrencyInput({
       new Numeric(newTokenDecimalValue, 10)
         .times(Math.pow(10, assetDecimals), 10)
         .toPrefixedHexString(),
+      newTokenDecimalValue,
     );
   };
 

@@ -13,7 +13,6 @@ import {
 } from '@metamask/transaction-controller';
 import {
   decimalToHex,
-  getValueFromWeiHex,
   hexToDecimal,
 } from '../../../shared/modules/conversion.utils';
 import { GasEstimateTypes, GAS_LIMITS } from '../../../shared/constants/gas';
@@ -2353,38 +2352,21 @@ export function updateRecipientUserInput(userInput) {
  * 1. If the current mode is MAX change to INPUT
  * 2. If sending a token, recompute the gasLimit estimate
  *
- * @param {string} amount - hex string representing value
+ * @param {string} hexAmount - hex string representing value
+ * @param {string} decimalAmount - decimal string representing value
  * @returns {ThunkAction<void>}
  */
-export function updateSendAmount(amount) {
+export function updateSendAmount(hexAmount, decimalAmount) {
   return async (dispatch, getState) => {
     const state = getState();
     const { ticker } = getProviderConfig(state);
     const draftTransaction =
       state[name].draftTransactions[state[name].currentTransactionUUID];
-    let logAmount = amount;
+    let logAmount = hexAmount;
     if (draftTransaction.sendAsset.type === AssetType.token) {
-      const multiplier = Math.pow(
-        10,
-        Number(draftTransaction.sendAsset.details?.decimals || 0),
-      );
-      const decimalValueString = new Numeric(addHexPrefix(amount), 16)
-        .toBase(10)
-        .applyConversionRate(
-          draftTransaction.sendAsset.details?.symbol ? multiplier : 1,
-          true,
-        )
-        .toString();
-      logAmount = `${Number(decimalValueString) ? decimalValueString : ''} ${
-        draftTransaction.sendAsset.details?.symbol
-      }`;
+      logAmount = `${decimalAmount} ${draftTransaction.sendAsset.details?.symbol}`;
     } else {
-      const ethValue = getValueFromWeiHex({
-        value: amount,
-        toCurrency: EtherDenomination.ETH,
-        numberOfDecimals: 8,
-      });
-      logAmount = `${ethValue} ${ticker || EtherDenomination.ETH}`;
+      logAmount = `${decimalAmount} ${ticker || EtherDenomination.ETH}`;
     }
     await dispatch(
       addHistoryEntry(`sendFlow - user set amount to ${logAmount}`),
