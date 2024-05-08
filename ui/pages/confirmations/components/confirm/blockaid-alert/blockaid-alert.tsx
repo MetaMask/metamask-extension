@@ -2,7 +2,10 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { currentConfirmationSelector } from '../../../../../selectors';
-import { SecurityAlertResponse } from '../../../types/confirm';
+import {
+  SecurityAlertResponse,
+  SignatureRequestType,
+} from '../../../types/confirm';
 import BlockaidBannerAlert from '../../security-provider-banner-alert/blockaid-banner-alert';
 
 type SignatureSecurityAlertResponsesState = {
@@ -13,7 +16,9 @@ type SignatureSecurityAlertResponsesState = {
 
 // todo: this component can be deleted once new alert imlementation is added
 const BlockaidAlert = ({ ...props }) => {
-  const currentConfirmation = useSelector(currentConfirmationSelector);
+  const currentConfirmation = useSelector(
+    currentConfirmationSelector,
+  ) as SignatureRequestType;
   const signatureSecurityAlertResponses = useSelector(
     (state: SignatureSecurityAlertResponsesState) =>
       state.metamask.signatureSecurityAlertResponses,

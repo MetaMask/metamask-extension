@@ -65,6 +65,34 @@ const waitForDappConnected = async (driver) => {
 };
 
 describe('Dapp viewed Event @no-mmi', function () {
+  const validFakeMetricsId = 'fake-metrics-fd20';
+  it('is not sent when metametrics ID is not valid', async function () {
+    async function mockSegment(mockServer) {
+      return [await mockedDappViewedEndpoint(mockServer)];
+    }
+
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withMetaMetricsController({
+            metaMetricsId: 'invalid-metrics-id',
+            participateInMetaMetrics: true,
+          })
+          .build(),
+        title: this.test.fullTitle(),
+        testSpecificMock: mockSegment,
+      },
+      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+        await driver.navigate();
+        await unlockWallet(driver);
+        await connectToDapp(driver);
+        const events = await getEventPayloads(driver, mockedEndpoints);
+        assert.equal(events.length, 0);
+      },
+    );
+  });
+
   it('is sent when navigating to dapp with no account connected', async function () {
     async function mockSegment(mockServer) {
       return [await mockedDappViewedEndpoint(mockServer)];
@@ -75,7 +103,7 @@ describe('Dapp viewed Event @no-mmi', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: validFakeMetricsId, // 1% sample rate for dapp viewed event
             participateInMetaMetrics: true,
           })
           .build(),
@@ -111,7 +139,7 @@ describe('Dapp viewed Event @no-mmi', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: validFakeMetricsId,
             participateInMetaMetrics: true,
           })
           .build(),
@@ -150,7 +178,7 @@ describe('Dapp viewed Event @no-mmi', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: validFakeMetricsId,
             participateInMetaMetrics: true,
           })
           .build(),
@@ -194,7 +222,7 @@ describe('Dapp viewed Event @no-mmi', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: validFakeMetricsId,
             participateInMetaMetrics: true,
           })
           .build(),
@@ -232,7 +260,7 @@ describe('Dapp viewed Event @no-mmi', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: validFakeMetricsId,
             participateInMetaMetrics: true,
           })
           .build(),
@@ -286,7 +314,7 @@ describe('Dapp viewed Event @no-mmi', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-id',
+            metaMetricsId: validFakeMetricsId,
             participateInMetaMetrics: true,
           })
           .build(),

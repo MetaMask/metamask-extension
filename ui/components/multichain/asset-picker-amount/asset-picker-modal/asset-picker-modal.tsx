@@ -314,6 +314,7 @@ export function AssetPickerModal({
                                 tokenSymbol={primaryCurrencyProperties.suffix}
                                 secondary={secondaryCurrencyDisplay}
                                 tokenImage={token.image}
+                                onClick={handleAssetChange(token)}
                               />
                             ) : (
                               <TokenCell

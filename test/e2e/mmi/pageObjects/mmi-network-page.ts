@@ -32,6 +32,7 @@ export class MMINetworkPage {
   }
 
   async selectNetwork(network: string) {
-    await this.page.getByText(network).first().click();
+    await this.page.waitForSelector(`text=${network}`, { state: 'visible' });
+    await this.page.click(`text=${network}`, { force: true });
   }
 }

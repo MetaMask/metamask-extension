@@ -179,7 +179,7 @@ describe('metamask-notifications - checkAccountsPresence()', () => {
   });
 });
 
-describe('metamask-notifications - toggleMetamaskNotificationsEnabled()', () => {
+describe('metamask-notifications - setMetamaskNotificationsEnabled()', () => {
   test('flips enabled state', async () => {
     const { messenger, mockIsSignedIn } = mockNotificationMessenger();
     mockIsSignedIn.mockReturnValue(true);
@@ -189,7 +189,7 @@ describe('metamask-notifications - toggleMetamaskNotificationsEnabled()', () => 
       state: { ...defaultState, isMetamaskNotificationsEnabled: false },
     });
 
-    await controller.toggleMetamaskNotificationsEnabled();
+    await controller.setMetamaskNotificationsEnabled(true);
 
     expect(controller.state.isMetamaskNotificationsEnabled).toBe(true);
   });
@@ -227,7 +227,7 @@ describe('metamask-notifications - setMetamaskNotificationsFeatureSeen()', () =>
   });
 });
 
-describe('metamask-notifications - toggleFeatureAnnouncementsEnabled()', () => {
+describe('metamask-notifications - setFeatureAnnouncementsEnabled()', () => {
   test('flips state when the method is called', async () => {
     const { messenger, mockIsSignedIn } = mockNotificationMessenger();
     mockIsSignedIn.mockReturnValue(true);
@@ -237,7 +237,7 @@ describe('metamask-notifications - toggleFeatureAnnouncementsEnabled()', () => {
       state: { ...defaultState, isFeatureAnnouncementsEnabled: false },
     });
 
-    await controller.toggleFeatureAnnouncementsEnabled();
+    await controller.setFeatureAnnouncementsEnabled(true);
 
     expect(controller.state.isFeatureAnnouncementsEnabled).toBe(true);
   });
@@ -252,13 +252,13 @@ describe('metamask-notifications - toggleFeatureAnnouncementsEnabled()', () => {
     });
 
     await expect(() =>
-      controller.toggleFeatureAnnouncementsEnabled(),
+      controller.setFeatureAnnouncementsEnabled(false),
     ).rejects.toThrow();
     expect(controller.state.isFeatureAnnouncementsEnabled).toBe(false); // this flag was never flipped
   });
 });
 
-describe('metamask-notifications - toggleSnapNotificationsEnabled()', () => {
+describe('metamask-notifications - setSnapNotificationsEnabled()', () => {
   test('flips state when the method is called', async () => {
     const { messenger, mockIsSignedIn } = mockNotificationMessenger();
     mockIsSignedIn.mockReturnValue(true);
@@ -268,7 +268,7 @@ describe('metamask-notifications - toggleSnapNotificationsEnabled()', () => {
       state: { ...defaultState, isSnapNotificationsEnabled: false },
     });
 
-    await controller.toggleSnapNotificationsEnabled();
+    await controller.setSnapNotificationsEnabled(true);
 
     expect(controller.state.isSnapNotificationsEnabled).toBe(true);
   });
@@ -282,7 +282,7 @@ describe('metamask-notifications - toggleSnapNotificationsEnabled()', () => {
       state: { ...defaultState, isSnapNotificationsEnabled: false },
     });
 
-    await controller.toggleSnapNotificationsEnabled();
+    await controller.setSnapNotificationsEnabled(false);
 
     expect(controller.state.isSnapNotificationsEnabled).toBe(false); // this flag was never flipped
   });

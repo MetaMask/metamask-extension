@@ -8,7 +8,7 @@ const { difference } = require('lodash');
 const createStaticServer = require('../../development/create-static-server');
 const { tEn } = require('../lib/i18n-helpers');
 const { setupMocking } = require('./mock-e2e');
-const { Ganache } = require('./ganache');
+const { Ganache } = require('./seeder/ganache');
 const FixtureServer = require('./fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
@@ -71,7 +71,13 @@ async function withFixtures(options, testSuite) {
 
     if (smartContract) {
       const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
-      await ganacheSeeder.deploySmartContract(smartContract);
+      const contracts =
+        smartContract instanceof Array ? smartContract : [smartContract];
+      await Promise.all(
+        contracts.map((contract) =>
+          ganacheSeeder.deploySmartContract(contract),
+        ),
+      );
       contractRegistry = ganacheSeeder.getContractRegistry();
     }
 

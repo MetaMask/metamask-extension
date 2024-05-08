@@ -154,6 +154,8 @@ export const CHAIN_IDS = {
   POLYGON_ZKEVM: '0x44d',
   SCROLL: '0x82750',
   SCROLL_SEPOLIA: '0x8274f',
+  WETHIO: '0x4e',
+  CHZ: '0x15b38',
 } as const;
 
 const CHAINLIST_CHAIN_IDS_MAP = {
@@ -254,6 +256,7 @@ export const MOONBEAM_DISPLAY_NAME = 'Moonbeam';
 export const MOONRIVER_DISPLAY_NAME = 'Moonriver';
 export const SCROLL_DISPLAY_NAME = 'Scroll';
 export const SCROLL_SEPOLIA_DISPLAY_NAME = 'Scroll Sepolia';
+export const OP_BNB_DISPLAY_NAME = 'opBNB';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -367,6 +370,11 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
   HUOBI_ECO_CHAIN_MAINNET: 'HT',
   ACALA_NETWORK: 'ACA',
 } as const;
+
+export const CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION = {
+  WETHIO: 'ZYN',
+  CHZ: 'CHZ',
+};
 
 export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.svg';
 export const LINEA_GOERLI_TOKEN_IMAGE_URL = './images/linea-logo-testnet.png';
@@ -535,6 +543,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.SCROLL]: SCROLL_DISPLAY_NAME,
   [CHAIN_IDS.SCROLL_SEPOLIA]: SCROLL_SEPOLIA_DISPLAY_NAME,
   [CHAIN_IDS.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
+  [CHAIN_IDS.OPBNB]: OP_BNB_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -651,6 +660,23 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
     CHAINLIST_CURRENCY_SYMBOLS_MAP.ACALA_NETWORK,
 } as const;
 
+/**
+ * A mapping for networks with chain ID collisions to their currencies symbols.
+ * Useful for networks not listed on https://chainid.network/chains.json due to ID conflicts.
+ */
+export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP_NETWORK_COLLISION = {
+  [CHAINLIST_CHAIN_IDS_MAP.CHZ]: [
+    {
+      currencySymbol: CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION.CHZ,
+    },
+  ],
+  [CHAINLIST_CHAIN_IDS_MAP.WETHIO]: [
+    {
+      currencySymbol: CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION.WETHIO,
+    },
+  ],
+};
+
 export const CHAIN_ID_TO_TYPE_MAP = {
   [CHAIN_IDS.MAINNET]: NETWORK_TYPES.MAINNET,
   [CHAIN_IDS.GOERLI]: NETWORK_TYPES.GOERLI,
@@ -734,6 +760,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.ZKATANA]: ZKATANA_MAINNET_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.ZORA_MAINNET]: ZORA_MAINNET_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.FILECOIN]: FILECOIN_MAINNET_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.BASE]: BASE_TOKEN_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -902,6 +929,8 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.POLYGON_ZKEVM
     | typeof CHAIN_IDS.SCROLL
     | typeof CHAIN_IDS.SCROLL_SEPOLIA
+    | typeof CHAIN_IDS.WETHIO
+    | typeof CHAIN_IDS.CHZ
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {
