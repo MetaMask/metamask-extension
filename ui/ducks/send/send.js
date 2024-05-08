@@ -1959,7 +1959,7 @@ const slice = createSlice({
             // reset asset to native asset
             if (
               draftTransaction?.sendAsset.type === AssetType.token ||
-              draftTransaction?.asset.type === AssetType.NFT
+              draftTransaction?.sendAsset.type === AssetType.NFT
             ) {
               draftTransaction.sendAsset.type =
                 draftTransactionInitialState.sendAsset.type;
