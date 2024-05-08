@@ -2359,6 +2359,12 @@ export function updateRecipientUserInput(userInput) {
 export function updateSendAmount(hexAmount, decimalAmount) {
   return async (dispatch, getState) => {
     const state = getState();
+    dispatch(actions.updateSendAmount(hexAmount));
+    if (state[name].amountMode === AMOUNT_MODES.MAX) {
+      dispatch(actions.updateAmountMode(AMOUNT_MODES.INPUT));
+    }
+    dispatch(updateSendQuote());
+
     const { ticker } = getProviderConfig(state);
     const draftTransaction =
       state[name].draftTransactions[state[name].currentTransactionUUID];
@@ -2368,15 +2374,7 @@ export function updateSendAmount(hexAmount, decimalAmount) {
     } else {
       logAmount = `${decimalAmount} ${ticker || EtherDenomination.ETH}`;
     }
-    await dispatch(
-      addHistoryEntry(`sendFlow - user set amount to ${logAmount}`),
-    );
-    await dispatch(actions.updateSendAmount(amount));
-    if (state[name].amountMode === AMOUNT_MODES.MAX) {
-      await dispatch(actions.updateAmountMode(AMOUNT_MODES.INPUT));
-    }
-
-    await dispatch(updateSendQuote());
+    dispatch(addHistoryEntry(`sendFlow - user set amount to ${logAmount}`));
   };
 }
 
