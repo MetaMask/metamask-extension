@@ -13,8 +13,6 @@ import {
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
 
-import { methodsRequiringNetworkSwitch } from '../../../../shared/constants/methods-tags';
-
 /**
  * This file contains the specifications of the permissions and caveats
  * that are recognized by our permission system. See the PermissionController
@@ -231,7 +229,6 @@ export const getPermissionSpecifications = ({
         // Here, we should return all the network configurations with the given chainId.
         console.log('method implementation args: ', _args);
 
-        //findNetworkClientIdByChainId();
         return [];
       },
       validator: (permission, _origin, _target) => {
@@ -299,12 +296,6 @@ function validateCaveatNetworks(
   chainIdsForCaveat,
   findNetworkClientIdByChainId,
 ) {
-  // if (typeof chainIdsForCaveat !== 'string') {
-  //   // lets put better validation here tho
-  //   throw new Error(
-  //     `${PermissionNames.wallet_switchEthereumChain} error: Expected chainId to be a string.`,
-  //   );
-  // }
 
   if (!Array.isArray(chainIdsForCaveat) || chainIdsForCaveat.length === 0) {
     throw new Error(

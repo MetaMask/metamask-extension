@@ -1,6 +1,7 @@
 import { ethErrors } from 'eth-rpc-errors';
 import { omit } from 'lodash';
 import { ApprovalType } from '@metamask/controller-utils';
+import { PermissionDoesNotExistError } from '@metamask/permission-controller';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   CHAIN_ID_TO_TYPE_MAP,
@@ -17,7 +18,6 @@ import {
   CaveatTypes,
   RestrictedMethods,
 } from '../../../../../shared/constants/permissions';
-import { PermissionDoesNotExistError } from '@metamask/permission-controller';
 
 const switchEthereumChain = {
   methodNames: [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN],
@@ -75,8 +75,6 @@ async function switchEthereumChainHandler(
     requestUserApproval,
     getProviderConfig,
     hasPermissions,
-    hasPermission, // singular form checks the specific permission..
-    getPermissionsForOrigin,
     requestSwitchNetworkPermission,
     getCaveat,
   },
@@ -122,7 +120,6 @@ async function switchEthereumChainHandler(
   }
 
   let permissionedChainIds;
-  // throws if the origin does not have any switchEthereumChain permissions
   try {
     ({ value: permissionedChainIds } = getCaveat(
       origin,
@@ -130,17 +127,13 @@ async function switchEthereumChainHandler(
       CaveatTypes.restrictNetworkSwitching,
     ));
   } catch (e) {
+    // throws if the origin does not have any switchEthereumChain permissions yet
     if (e instanceof PermissionDoesNotExistError) {
       // suppress
     } else {
       throw e;
     }
   }
-
-  // const { [ApprovalType.wallet_switchEthereumChain] : {caveats: [{}]} }
-  // if(permissions?.[ApprovalType.wallet_switchEthereumChain]?.caveats) {
-
-  // TODO check if the permission for this chain for this origin is already granted
 
   if (
     permissionedChainIds === undefined ||
@@ -154,14 +147,6 @@ async function switchEthereumChainHandler(
       return end();
     }
   }
-
-  // if (!permissions) {
-  //   return end(
-  //     ethErrors.provider.internal({
-  //       message: `No permission found for wallet_switchEthereumChain for chainId: ${chainId}`,
-  //     }),
-  //   );
-  // }
 
   const networkClientId = findNetworkClientIdByChainId(chainId);
 

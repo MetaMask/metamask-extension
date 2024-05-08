@@ -28,7 +28,6 @@ export default class PermissionPageContainer extends Component {
     approvePermissionsRequest: PropTypes.func.isRequired,
     rejectPermissionsRequest: PropTypes.func.isRequired,
     selectedAccounts: PropTypes.array,
-    selectedNetworkConfiguration: PropTypes.object,
     allAccountsSelected: PropTypes.bool,
     ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     currentPermissions: PropTypes.object,
@@ -142,7 +141,6 @@ export default class PermissionPageContainer extends Component {
       approvePermissionsRequest,
       rejectPermissionsRequest,
       selectedAccounts,
-      selectedNetworkConfiguration,
     } = this.props;
 
     const request = {
