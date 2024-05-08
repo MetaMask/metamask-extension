@@ -7,7 +7,7 @@ type SecurityProviderConfig = Record<
   {
     /** translation key for security provider name */
     readonly tKeyName: string;
-    /** URL to securty provider website */
+    /** URL to security provider website */
     readonly url: string;
   }
 >;
