@@ -47,9 +47,6 @@ describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
       async ({ driver, ganacheServer }: { driver: Driver, ganacheServer: Ganache }) => {
-        const addresses = await ganacheServer.getAccounts();
-        const publicAddress = addresses?.[0] as string;
-
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#signTypedDataV3');

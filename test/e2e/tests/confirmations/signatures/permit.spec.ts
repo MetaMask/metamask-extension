@@ -47,9 +47,6 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
       async ({ driver, ganacheServer }: { driver: Driver, ganacheServer: Ganache }) => {
-        const addresses = await ganacheServer.getAccounts();
-        const publicAddress = addresses?.[0] as string;
-
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#signPermit');
@@ -84,7 +81,6 @@ async function assertInfoValues(driver: Driver) {
 
   assert.ok(await origin, 'origin');
   assert.ok(await contractPetName, 'contractPetName');
-
   assert.ok(await primaryType, 'primaryType');
   assert.ok(await owner, 'owner');
   assert.ok(await spender, 'spender');

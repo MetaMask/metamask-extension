@@ -47,9 +47,6 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
       async ({ driver, ganacheServer }: { driver: Driver, ganacheServer: Ganache }) => {
-        const addresses = await ganacheServer.getAccounts();
-        const publicAddress = addresses?.[0] as string;
-
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#signTypedDataV4');
@@ -77,7 +74,6 @@ async function assertInfoValues(driver: Driver) {
 
   const primaryType = driver.findElement({ text: 'Mail' });
   const contents = driver.findElement({ text: 'Hello, Bob!' });
-
   const fromName = driver.findElement({ text: 'Cow' });
   const fromAddressNum0 = driver.findElement({ css: '.name__value', text: '0xCD2a3...DD826' });
   const toName = driver.findElement({ text: 'Bob' });
@@ -86,7 +82,6 @@ async function assertInfoValues(driver: Driver) {
 
   assert.ok(await origin, 'origin');
   assert.ok(await contractPetName, 'contractPetName');
-
   assert.ok(await primaryType, 'primaryType');
   assert.ok(await contents, 'contents');
   assert.ok(await fromName, 'fromName');
