@@ -122,7 +122,7 @@ test.describe('MMI Navigation', () => {
       context,
       mainMenuPage.page,
       'learn more',
-      'https://support.metamask.io/token-swaps/what-is-smart-swaps/',
+      'https://support.metamask.io',
     );
 
     await mainMenuPage.selectSettings('Security & privacy');
