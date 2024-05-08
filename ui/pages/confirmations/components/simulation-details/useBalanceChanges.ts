@@ -55,8 +55,17 @@ function getAssetAmount(
 // Fetches the decimals for the given token address.
 async function fetchErc20Decimals(address: Hex): Promise<number> {
   try {
-    const { decimals } = await getTokenStandardAndDetails(address);
-    return decimals ? parseInt(decimals, 10) : ERC20_DEFAULT_DECIMALS;
+    const { decimals: decStr } = await getTokenStandardAndDetails(address);
+    if (!decStr) {
+      return ERC20_DEFAULT_DECIMALS;
+    }
+    for (const radix of [10, 16]) {
+      const parsedDec = parseInt(decStr, radix);
+      if (isFinite(parsedDec)) {
+        return parsedDec;
+      }
+    }
+    return ERC20_DEFAULT_DECIMALS;
   } catch {
     return ERC20_DEFAULT_DECIMALS;
   }

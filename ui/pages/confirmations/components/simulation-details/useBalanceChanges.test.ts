@@ -41,8 +41,10 @@ const ETH_TO_FIAT_RATE = 3;
 
 const ERC20_TOKEN_ADDRESS_1_MOCK: Hex = '0x0erc20_1';
 const ERC20_TOKEN_ADDRESS_2_MOCK: Hex = '0x0erc20_2';
+const ERC20_TOKEN_ADDRESS_3_MOCK: Hex = '0x0erc20_3';
 const ERC20_DECIMALS_1_MOCK = 3;
 const ERC20_DECIMALS_2_MOCK = 4;
+const ERC20_DECIMALS_INVALID_MOCK = 'xyz';
 const ERC20_TO_FIAT_RATE_1_MOCK = 1.5;
 const ERC20_TO_FIAT_RATE_2_MOCK = 6;
 
@@ -68,9 +70,10 @@ describe('useBalanceChanges', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetTokenStandardAndDetails.mockImplementation((address: Hex) => {
-      const decimalMap: Record<Hex, number> = {
+      const decimalMap: Record<Hex, number | string> = {
         [ERC20_TOKEN_ADDRESS_1_MOCK]: ERC20_DECIMALS_1_MOCK,
         [ERC20_TOKEN_ADDRESS_2_MOCK]: ERC20_DECIMALS_2_MOCK,
+        [ERC20_TOKEN_ADDRESS_3_MOCK]: ERC20_DECIMALS_INVALID_MOCK,
       };
       if (decimalMap[address]) {
         return Promise.resolve({
@@ -245,6 +248,22 @@ describe('useBalanceChanges', () => {
           difference: DIFFERENCE_1_MOCK,
           isDecrease: true,
           address: '0x0unknown',
+          standard: SimulationTokenStandard.erc20,
+        },
+      ]);
+
+      await waitForNextUpdate();
+
+      expect(result.current.value[0].amount.decimalPlaces()).toBe(18);
+    });
+
+    it('uses default decimals when token details are not valid numbers', async () => {
+      const { result, waitForNextUpdate } = setupHook([
+        {
+          ...dummyBalanceChange,
+          difference: DIFFERENCE_1_MOCK,
+          isDecrease: true,
+          address: ERC20_TOKEN_ADDRESS_3_MOCK,
           standard: SimulationTokenStandard.erc20,
         },
       ]);
