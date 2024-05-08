@@ -151,7 +151,9 @@ export default class PermissionPageContainer extends Component {
       approvedAccounts: selectedAccounts.map(
         (selectedAccount) => selectedAccount.address,
       ),
-      approvedChainIds: Object.keys(_request.permissions.wallet_switchEthereumChain)
+      approvedChainIds: Object.keys(
+        _request.permissions.wallet_switchEthereumChain,
+      ),
     };
 
     if (Object.keys(request.permissions).length > 0) {
@@ -159,6 +161,25 @@ export default class PermissionPageContainer extends Component {
     } else {
       rejectPermissionsRequest(request.metadata.id);
     }
+  };
+
+  footerLeftAction = () => {
+    const requestedPermissions = this.getRequestedPermissions();
+    if (
+      requestedPermissions[RestrictedMethods.wallet_switchEthereumChain] ===
+      undefined
+    ) {
+      this.goBack();
+    } else {
+      this.onCancel();
+    }
+  };
+
+  footerLeftActionText = () => {
+    const requestedPermissions = this.getRequestedPermissions();
+    return requestedPermissions[RestrictedMethods.wallet_switchEthereumChain]
+      ? this.context.t('cancel')
+      : this.context.t('back');
   };
 
   render() {
@@ -183,6 +204,12 @@ export default class PermissionPageContainer extends Component {
       this.props.setSnapsInstallPrivacyWarningShownStatus(true);
     };
     ///: END:ONLY_INCLUDE_IF
+
+    const footerLeftActionText = requestedPermissions[
+      RestrictedMethods.wallet_switchEthereumChain
+    ]
+      ? this.context.t('cancel')
+      : this.context.t('back');
 
     return (
       <>
@@ -216,8 +243,9 @@ export default class PermissionPageContainer extends Component {
           <PageContainerFooter
             footerClassName="permission-page-container-footer"
             cancelButtonType="default"
-            onCancel={() => this.goBack()}
-            cancelText={this.context.t('back')}
+            // TODO these shouldn't be back for switchEthereumChain requests
+            onCancel={() => this.footerLeftAction()}
+            cancelText={footerLeftActionText}
             onSubmit={() => this.onSubmit()}
             submitText={this.context.t('confirm')}
             buttonSizeLarge={false}
