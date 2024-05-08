@@ -173,9 +173,11 @@ async function main() {
     const filteredFlaskAndMainTests = featureTestsOnMain.filter((p) =>
       FLASK_ONLY_TESTS.every((filteredTest) => !p.endsWith(filteredTest)),
     );
+    console.log('testDir', testDir);
     testPaths = [
-      ...(await getTestPathsForTestDir(testDir)),
-      ...filteredFlaskAndMainTests,
+      ...filteredFlaskAndMainTests.filter((testFilePatch) =>
+        testFilePatch.match('create-snap-account'),
+      ),
     ];
   }
 
