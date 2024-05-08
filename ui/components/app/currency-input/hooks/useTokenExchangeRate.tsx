@@ -12,6 +12,11 @@ import {
 } from '../../../../ducks/metamask/metamask';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
 
+type ExchangeRate = number | typeof LOADING | typeof FAILED | undefined;
+
+const LOADING = 'loading';
+const FAILED = 'failed';
+
 /**
  * A hook that returns the exchange rate of the given token –– assumes native if no token address is passed.
  *
@@ -36,11 +41,7 @@ export default function useTokenExchangeRate(
   );
 
   const [exchangeRates, setExchangeRates] = useState<
-    Record<string, number | undefined>
-  >({});
-
-  const [loadingExchangeRates, setLoadingExchangeRates] = useState<
-    Record<string, boolean>
+    Record<string, ExchangeRate>
   >({});
 
   return useMemo(() => {
@@ -48,28 +49,36 @@ export default function useTokenExchangeRate(
       return nativeConversionRate;
     }
 
+    const isLoadingOrUnavailable = tokenAddress
+      ? ([LOADING, FAILED] as ExchangeRate[]).includes(
+          exchangeRates[tokenAddress],
+        )
+      : false;
+
+    if (isLoadingOrUnavailable) {
+      return undefined;
+    }
+
     const contractExchangeRate =
       contractExchangeRates[tokenAddress] || exchangeRates[tokenAddress];
 
-    if (!contractExchangeRate && !loadingExchangeRates[tokenAddress]) {
-      const setLoadingState = (value: boolean) => {
-        setLoadingExchangeRates((prev) => ({
-          ...prev,
-          [tokenAddress]: value,
-        }));
-      };
-
-      setLoadingState(true);
+    if (!contractExchangeRate) {
+      setExchangeRates((prev) => ({
+        ...prev,
+        [tokenAddress]: LOADING,
+      }));
       fetchTokenExchangeRates(nativeCurrency, [tokenAddress], chainId)
         .then((addressToExchangeRate) => {
-          setLoadingState(false);
           setExchangeRates((prev) => ({
             ...prev,
-            ...addressToExchangeRate,
+            [tokenAddress]: addressToExchangeRate[tokenAddress] || FAILED,
           }));
         })
         .catch(() => {
-          setLoadingState(false);
+          setExchangeRates((prev) => ({
+            ...prev,
+            [tokenAddress]: FAILED,
+          }));
         });
       return undefined;
     }
@@ -82,6 +91,5 @@ export default function useTokenExchangeRate(
     tokenAddress,
     nativeConversionRate,
     contractExchangeRates,
-    loadingExchangeRates,
   ]);
 }
