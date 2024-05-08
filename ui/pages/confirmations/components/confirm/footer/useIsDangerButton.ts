@@ -7,7 +7,6 @@ import { BlockaidResultType } from '../../../../../../shared/constants/security-
 
 const useIsDangerButton = () => {
   const [isDangerButton, setIsDangerButton] = useState(false);
-
   const currentConfirmation = useSelector(currentConfirmationSelector);
 
   const currentSecurityAlertId = (
