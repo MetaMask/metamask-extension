@@ -1,4 +1,5 @@
 import React from 'react';
+import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
 import mockState from '../../../../../../../test/data/mock-state.json';
@@ -6,6 +7,8 @@ import { renderWithProvider } from '../../../../../../../test/lib/render-helpers
 import ContractInteractionInfo from './contract-interaction';
 
 describe('<ContractInteractionInfo />', () => {
+  const middleware = [thunk];
+
   it('renders component for contract interaction request', () => {
     const state = {
       ...mockState,
@@ -13,7 +16,7 @@ describe('<ContractInteractionInfo />', () => {
         currentConfirmation: genUnapprovedContractInteractionConfirmation(),
       },
     };
-    const mockStore = configureMockStore([])(state);
+    const mockStore = configureMockStore(middleware)(state);
     const { container } = renderWithProvider(
       <ContractInteractionInfo />,
       mockStore,
@@ -33,7 +36,7 @@ describe('<ContractInteractionInfo />', () => {
         },
       },
     };
-    const mockStore = configureMockStore([])(state);
+    const mockStore = configureMockStore(middleware)(state);
     const { container } = renderWithProvider(
       <ContractInteractionInfo />,
       mockStore,

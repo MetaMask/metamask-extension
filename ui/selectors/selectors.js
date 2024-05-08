@@ -858,8 +858,8 @@ export function getPetnamesEnabled(state) {
 }
 
 export function getRedesignedConfirmationsEnabled(state) {
-  const { redesignedConfirmations } = getPreferences(state);
-  return redesignedConfirmations;
+  const { redesignedConfirmationsEnabled } = getPreferences(state);
+  return redesignedConfirmationsEnabled;
 }
 
 export function getFeatureNotificationsEnabled(state) {
@@ -1170,6 +1170,10 @@ export function getOriginOfCurrentTab(state) {
 
 export function getIpfsGateway(state) {
   return state.metamask.ipfsGateway;
+}
+
+export function getUseExternalServices(state) {
+  return state.metamask.useExternalServices;
 }
 
 export function getInfuraBlocked(state) {
@@ -1492,6 +1496,10 @@ export function getSnaps(state) {
   return state.metamask.snaps;
 }
 
+export function getLocale(state) {
+  return state.metamask.currentLocale;
+}
+
 export const getSnap = createDeepEqualSelector(
   getSnaps,
   (_, snapId) => snapId,
@@ -1501,25 +1509,31 @@ export const getSnap = createDeepEqualSelector(
 );
 
 /**
- * Get a selector that returns the snap manifest for a given `snapId`.
+ * Get a selector that returns all Snaps metadata (name and description) for all Snaps.
  *
  * @param {object} state - The Redux state object.
- * @param {string} snapId - The snap ID to get the manifest for.
- * @returns {object | undefined} The snap manifest.
+ * @returns {object} An object mapping all installed snaps to their metadata, which contains the snap name and description.
  */
-export const getSnapManifest = createDeepEqualSelector(
-  (state) => state.metamask.currentLocale,
-  (state, snapId) => getSnap(state, snapId),
-  (locale, snap) => {
-    if (!snap?.localizationFiles) {
-      return snap?.manifest;
-    }
+export const getSnapsMetadata = createDeepEqualSelector(
+  getLocale,
+  getSnaps,
+  (locale, snaps) => {
+    return Object.values(snaps).reduce((snapsMetadata, snap) => {
+      const snapId = snap.id;
+      const manifest = snap.localizationFiles
+        ? getLocalizedSnapManifest(
+            snap.manifest,
+            locale,
+            snap.localizationFiles,
+          )
+        : snap.manifest;
 
-    return getLocalizedSnapManifest(
-      snap.manifest,
-      locale,
-      snap.localizationFiles,
-    );
+      snapsMetadata[snapId] = {
+        name: manifest.proposedName,
+        description: manifest.description,
+      };
+      return snapsMetadata;
+    }, {});
   },
 );
 
@@ -1532,35 +1546,14 @@ export const getSnapManifest = createDeepEqualSelector(
  * @returns {object} An object containing the snap name and description.
  */
 export const getSnapMetadata = createDeepEqualSelector(
-  (state, snapId) => getSnapManifest(state, snapId),
+  getSnapsMetadata,
   (_, snapId) => snapId,
-  (manifest, snapId) => {
-    return {
-      // The snap manifest may not be available if the Snap is not installed, so
-      // we use the snap ID as the name in that case.
-      name: manifest?.proposedName ?? (snapId ? stripSnapPrefix(snapId) : null),
-      description: manifest?.description,
-    };
-  },
-);
-
-/**
- * Get a selector that returns all snaps metadata (name and description) for a
- * given `snapId`.
- *
- * @param {object} state - The Redux state object.
- * @returns {object} An object mapping all installed snaps to their metadata, which contains the snap name and description.
- */
-export const getSnapsMetadata = createDeepEqualSelector(
-  (state) => state,
-  (state) => {
-    return Object.keys(getSnaps(state));
-  },
-  (state, snapIds) => {
-    return snapIds.reduce((snapsMetadata, snapId) => {
-      snapsMetadata[snapId] = getSnapMetadata(state, snapId);
-      return snapsMetadata;
-    }, {});
+  (metadata, snapId) => {
+    return (
+      metadata[snapId] ?? {
+        name: snapId ? stripSnapPrefix(snapId) : null,
+      }
+    );
   },
 );
 
@@ -2371,6 +2364,14 @@ export function getUpdatedAndSortedAccounts(state) {
 
 export function getOnboardedInThisUISession(state) {
   return state.appState.onboardedInThisUISession;
+}
+
+export function getShowBasicFunctionalityModal(state) {
+  return state.appState.showBasicFunctionalityModal;
+}
+
+export function getExternalServicesOnboardingToggleState(state) {
+  return state.appState.externalServicesOnboardingToggleState;
 }
 
 export const useSafeChainsListValidationSelector = (state) => {

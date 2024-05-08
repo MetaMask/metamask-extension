@@ -39,6 +39,7 @@ import {
 import { hideLoadingIndication } from '../../../store/actions';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { SimulationDetails } from '../../confirmations/components/simulation-details';
+import { NOTIFICATION_WIDTH } from '../../../../shared/constants/notifications';
 
 type RequestState = {
   smartTransaction?: SmartTransaction;
@@ -217,6 +218,7 @@ const Description = ({ description }: { description: string | undefined }) => {
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       alignItems={AlignItems.center}
+      className="smart-transaction-status-page__description"
     >
       <Text
         marginTop={2}
@@ -243,7 +245,8 @@ const PortfolioSmartTransactionStatusUrl = ({
   }
 
   const handleViewTransactionLinkClick = useCallback(() => {
-    if (!isSmartTransactionPending) {
+    const isWiderThanNotificationWidth = window.innerWidth > NOTIFICATION_WIDTH;
+    if (!isSmartTransactionPending || isWiderThanNotificationWidth) {
       onCloseExtension();
     }
     global.platform.openTab({
@@ -491,7 +494,12 @@ export const SmartTransactionStatusPage = ({
           alignItems={AlignItems.center}
           paddingLeft={6}
           paddingRight={6}
+          width={BlockSize.Full}
         >
+          <Box
+            marginTop={3}
+            className="smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--top"
+          />
           <SmartTransactionsStatusIcon
             iconName={iconName}
             iconColor={iconColor}
@@ -517,6 +525,10 @@ export const SmartTransactionStatusPage = ({
             transactionId={fullTxData.id}
           />
         )}
+        <Box
+          marginTop={3}
+          className="smart-transaction-status-page__background-animation smart-transaction-status-page__background-animation--bottom"
+        />
       </Box>
       <SmartTransactionsStatusPageFooter
         isDapp={isDapp}

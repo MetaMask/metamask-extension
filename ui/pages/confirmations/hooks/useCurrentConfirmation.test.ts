@@ -38,7 +38,7 @@ const mockState = {
       },
     },
     preferences: {
-      redesignedConfirmations: true,
+      redesignedConfirmationsEnabled: true,
     },
   },
 };
@@ -81,7 +81,7 @@ describe('useCurrentConfirmation', () => {
       metamask: {
         ...mockState.metamask,
         preferences: {
-          redesignedConfirmations: false,
+          redesignedConfirmationsEnabled: false,
         },
       },
     });

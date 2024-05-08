@@ -82,6 +82,7 @@ const HeaderInfo = () => {
             ariaLabel={t('accountDetails')}
             color={IconColor.iconDefault}
             iconName={IconName.Info}
+            data-testid="header-info-button"
             size={ButtonIconSize.Md}
             onClick={() => {
               trackAccountModalOpened();
@@ -146,7 +147,10 @@ const HeaderInfo = () => {
               <AddressCopyButton address={fromAddress} shorten={true} />
             </ConfirmInfoRow>
             <ConfirmInfoRow label="Balance">
-              <ConfirmInfoRowCurrency value={balanceToUse ?? 0} />
+              <ConfirmInfoRowCurrency
+                value={balanceToUse ?? 0}
+                dataTestId="header-balance"
+              />
             </ConfirmInfoRow>
           </ModalBody>
         </ModalContent>

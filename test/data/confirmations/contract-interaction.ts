@@ -1,10 +1,19 @@
-import { TransactionStatus, TransactionType } from "@metamask/transaction-controller";
-import { Confirmation } from "../../../ui/pages/confirmations/types/confirm";
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import { Confirmation } from '../../../ui/pages/confirmations/types/confirm';
 
-export const CONTRACT_INTERACTION_SENDER_ADDRESS = '0x2e0d7e8c45221fca00d74a3609a0f7097035d09b';
+export const CONTRACT_INTERACTION_SENDER_ADDRESS =
+  '0x2e0d7e8c45221fca00d74a3609a0f7097035d09b';
+
+export const DEPOSIT_METHOD_DATA = '0xd0e30db0';
 
 export const genUnapprovedContractInteractionConfirmation = (
-  { address } = { address: CONTRACT_INTERACTION_SENDER_ADDRESS }
+  { address, txData } = {
+    address: CONTRACT_INTERACTION_SENDER_ADDRESS,
+    txData: DEPOSIT_METHOD_DATA,
+  },
 ): Confirmation => ({
   actionId: String(400855682),
   chainId: '0xaa36a7',
@@ -41,7 +50,7 @@ export const genUnapprovedContractInteractionConfirmation = (
       status: TransactionStatus.unapproved,
       time: 1713534772044,
       txParams: {
-        data: '0xd0e30db0',
+        data: txData,
         from: address,
         gas: '0xab77',
         maxFeePerGas: '0xaa350353',
@@ -126,7 +135,7 @@ export const genUnapprovedContractInteractionConfirmation = (
   status: TransactionStatus.unapproved,
   time: 1713534772044,
   txParams: {
-    data: '0xd0e30db0',
+    data: txData,
     from: address,
     gas: '0xab77',
     maxFeePerGas: '0xaa350353',
