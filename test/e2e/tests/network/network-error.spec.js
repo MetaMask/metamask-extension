@@ -48,6 +48,9 @@ describe('Gas API fallback', function () {
   }
 
   it('network error message is displayed if network is congested', async function () {
+    if (process.env.MULTICHAIN) {
+      return;
+    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
