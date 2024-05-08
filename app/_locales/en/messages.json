@@ -3534,7 +3534,7 @@
     "description": "The description for the `eth_accounts` permission"
   },
   "permission_walletSwitchEthereumChain": {
-    "message": "Switch ethereum networks",
+    "message": "Switch to and use the following Network:",
     "description": "The label for the `wallet_switchEthereumChain` permission"
   },
   "permission_ethereumProvider": {
