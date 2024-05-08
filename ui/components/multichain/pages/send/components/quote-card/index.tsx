@@ -229,15 +229,17 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
         </Text>
       )}
       {/* TOS LINK; doubles as anchor for scroll ref */}
-      <ButtonLink
-        variant={TextVariant.bodySm}
-        href={CONSENSYS_TERMS_OF_USE}
-        target="_blank"
-        className="quote-card__TOS"
-        disableUnderline
-      >
-        {t('termsOfService')}
-      </ButtonLink>
+      {bestQuote && (
+        <ButtonLink
+          variant={TextVariant.bodySm}
+          href={CONSENSYS_TERMS_OF_USE}
+          target="_blank"
+          className="quote-card__TOS"
+          disableUnderline
+        >
+          {t('termsOfService')}
+        </ButtonLink>
+      )}
       {/* SCROLL REF ANCHOR */}
       <div ref={scrollRef} />
     </Box>
