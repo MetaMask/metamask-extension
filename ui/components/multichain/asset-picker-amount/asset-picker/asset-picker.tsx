@@ -33,6 +33,9 @@ import { getAssetImageURL } from '../../../../helpers/utils/util';
 
 export type AssetPickerProps = {
   asset: Asset;
+  /**
+   * Needs to be wrapped in a callback
+   */
   onAssetChange: (newAsset: Asset) => void;
   /**
    * Sending asset for UI treatments; only for dest component

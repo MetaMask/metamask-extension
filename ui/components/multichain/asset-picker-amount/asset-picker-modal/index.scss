@@ -40,14 +40,12 @@
   }
 
   .tokens-main-view-modal {
-    max-height: 50vh;
-    overflow: scroll;
+    max-height: 100%;
   }
 
   .modal-tab {
     &__main-view {
-      flex: 1 1 66.5%;
-      max-height: 50vh;
+      max-height: 100%;
       background: var(--color-background-default);
       min-width: 0;
       display: flex;
@@ -76,6 +74,11 @@
       grid-template-columns: 1fr 1fr;
       border-bottom: 0;
       padding-inline: 16px;
+    }
+
+    &__wrapper {
+      max-height: 100%;
+      overflow-y: scroll;
     }
   }
 }
