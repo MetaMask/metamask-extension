@@ -153,7 +153,7 @@ export default class PermissionPageContainer extends Component {
           (selectedAccount) => selectedAccount.address,
         ),
       }),
-      ...(_request.permission.wallet_switchEthereumChain && {
+      ...(_request.permissions.wallet_switchEthereumChain && {
         approvedChainIds: Object.keys(
           _request.permissions?.wallet_switchEthereumChain,
         ),

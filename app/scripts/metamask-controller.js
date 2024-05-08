@@ -4989,10 +4989,15 @@ export default class MetamaskController extends EventEmitter {
             { origin },
             { eth_accounts: {} },
           ),
-        requestSwitchNetworkPermission: (chainId) =>
+        requestSwitchNetworkPermission: (chainIds) =>
           this.permissionController.requestPermissions(
             { origin },
-            { wallet_switchEthereumChain: { [chainId]: true } },
+            {
+              wallet_switchEthereumChain: chainIds.reduce((acc, chainId) => {
+                acc[chainId] = true;
+                return acc;
+              }, {}),
+            },
           ),
         requestPermissionsForOrigin:
           this.permissionController.requestPermissions.bind(

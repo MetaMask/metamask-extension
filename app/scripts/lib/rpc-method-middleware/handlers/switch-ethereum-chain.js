@@ -147,7 +147,8 @@ async function switchEthereumChainHandler(
     !permissionedChainIds.includes(_chainId)
   ) {
     try {
-      await requestSwitchNetworkPermission(chainId);
+      // TODO replace with caveat merging rather than passing already permissionedChains here as well
+      await requestSwitchNetworkPermission([...permissionedChainIds, chainId]);
     } catch (err) {
       res.error = err;
       return end();
