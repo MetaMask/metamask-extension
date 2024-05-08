@@ -1,5 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { isEqual } from 'lodash';
 import { I18nContext } from '../../../../../contexts/i18n';
 import {
   Box,
@@ -16,6 +17,7 @@ import {
   IconColor,
   BorderRadius,
 } from '../../../../../helpers/constants/design-system';
+import { usePrevious } from '../../../../../hooks/usePrevious';
 import { useScrollRequired } from '../../../../../hooks/useScrollRequired';
 import { updateConfirm } from '../../../../../ducks/confirm/confirm';
 import { currentConfirmationSelector } from '../../../selectors';
@@ -31,6 +33,7 @@ const ScrollToBottom = ({ children }: ContentProps) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const currentConfirmation = useSelector(currentConfirmationSelector);
+  const previousId = usePrevious(currentConfirmation?.id);
 
   const {
     hasScrolledToBottom,
@@ -40,6 +43,16 @@ const ScrollToBottom = ({ children }: ContentProps) => {
     scrollToBottom,
     ref,
   } = useScrollRequired([currentConfirmation?.id]);
+
+  /**
+   * Scroll to the top of the page when the confirmation changes. This happens
+   * when we navigate through different confirmations.
+   */
+  useEffect(() => {
+    if (!isEqual(previousId, currentConfirmation?.id)) {
+      (ref?.current as null | HTMLDivElement)?.scrollTo(0, 0);
+    }
+  }, [currentConfirmation?.id]);
 
   useEffect(() => {
     dispatch(
