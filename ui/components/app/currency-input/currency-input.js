@@ -1,11 +1,10 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Box } from '../../component-library';
 import { BlockSize } from '../../../helpers/constants/design-system';
 import UnitInput from '../../ui/unit-input';
 import CurrencyDisplay from '../../ui/currency-display';
-import { I18nContext } from '../../../contexts/i18n';
 import {
   getNativeCurrency,
   getProviderConfig,
@@ -51,8 +50,6 @@ export default function CurrencyInput({
   asset,
   isSkeleton,
 }) {
-  const t = useContext(I18nContext);
-
   const assetDecimals = Number(asset?.decimals) || NATIVE_CURRENCY_DECIMALS;
 
   const preferredCurrency = useSelector(getNativeCurrency);
@@ -178,11 +175,7 @@ export default function CurrencyInput({
     let suffix, displayValue;
 
     if (!isFiatAvailable || !tokenToFiatConversionRate) {
-      return (
-        <div className="currency-input__conversion-component">
-          {t('noConversionRateAvailable')}
-        </div>
-      );
+      return null;
     }
     if (!isOriginalNativeSymbol) {
       return null;
