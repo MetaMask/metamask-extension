@@ -63,6 +63,7 @@ import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import { deferredPromise, getPlatform } from './lib/util';
 import { generateSkipOnboardingState } from './skip-onboarding';
+import { generateGodModeState } from './god-mode';
 import { FIXTURE_STATE_METADATA_VERSION } from '../../test/e2e/default-fixture';
 
 /* eslint-enable import/first */
@@ -402,15 +403,21 @@ export async function loadStateFromPersistence() {
   // migrations
   const migrator = new Migrator({
     migrations,
-    defaultVersion: process.env.SKIP_ONBOARDING
-      ? FIXTURE_STATE_METADATA_VERSION
-      : null,
+    defaultVersion:
+      process.env.SKIP_ONBOARDING || process.env.GOD_MODE
+        ? FIXTURE_STATE_METADATA_VERSION
+        : null,
   });
   migrator.on('error', console.warn);
 
   if (process.env.SKIP_ONBOARDING) {
     const skipOnboardingStateOverrides = await generateSkipOnboardingState();
     firstTimeState = { ...firstTimeState, ...skipOnboardingStateOverrides };
+  }
+
+  if (process.env.GOD_MODE) {
+    const godModeStateOverrides = await generateGodModeState();
+    firstTimeState = { ...firstTimeState, ...godModeStateOverrides };
   }
 
   // read from disk

@@ -133,6 +133,9 @@ workflows:
       - prep-build-multichain-test:
           requires:
             - prep-deps
+      - prep-build-god-mode:
+          requires:
+            - prep-deps
       - prep-build-test-mv3:
           requires:
             - prep-deps
@@ -803,6 +806,26 @@ jobs:
             - dist-test-multichain
             - builds-test-multichain
 
+  prep-build-god-mode:
+    executor: node-browsers-medium-plus
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build extension for testing
+          command: GOD_MODE=1 yarn build
+      - run:
+          name: Move test build to 'dist-god-mode' to avoid conflict with production build
+          command: mv ./dist ./dist-god-mode
+      - run:
+          name: Move test zips to 'builds-god-mode' to avoid conflict with production build
+          command: mv ./builds ./builds-god-mode
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-god-mode
+            - builds-god-mode
   prep-build-storybook:
     executor: node-browsers-medium-plus
     steps:

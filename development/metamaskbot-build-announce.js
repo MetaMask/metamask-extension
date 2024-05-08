@@ -98,6 +98,12 @@ async function start() {
     })
     .join(', ');
 
+  const godModeBuildLinks = platforms
+    .map((platform) => {
+      const url = `${BUILD_LINK_BASE}/builds-god-mode/metamask-${platform}-${VERSION}.zip`;
+      return `<a href="${url}">${platform}</a>`;
+    })
+    .join(', ');
   // links to bundle browser builds
   const bundles = {};
   const fileType = '.html';
@@ -165,6 +171,7 @@ async function start() {
     `builds (MMI): ${mmiBuildLinks}`,
     `builds (test): ${testBuildLinks}`,
     `builds (test-flask): ${testFlaskBuildLinks}`,
+    `builds (god-mode): ${godModeBuildLinks}`,
     `build viz: ${depVizLink}`,
     `mv3: ${moduleInitStatsBackgroundLink}`,
     `mv3: ${moduleInitStatsUILink}`,

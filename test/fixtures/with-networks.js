@@ -1,4 +1,15 @@
 export const networkConfigurations = {
+  localhost: {
+    chainId: "0x1",
+    id: "localhost",
+    nickname: "Mainnet Fork",
+    rpcPrefs: {
+      blockExplorerUrl: "",
+      imageUrl: ""
+    },
+    rpcUrl: "http://localhost:8545",
+    ticker: "ETH"
+  },
   optimism: {
     chainId: "0xa",
     id: "optimism",

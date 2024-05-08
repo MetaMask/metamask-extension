@@ -5,18 +5,20 @@ import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { defaultFixture } from '../../test/e2e/default-fixture';
 import { networkConfigurations as additionalConfigurations } from '../../test/fixtures/with-networks';
 import { addressBook } from '../../test/fixtures/with-addressbook';
+import { preferences } from '../../test/fixtures/with-preferences';
 import { encryptorFactory } from './lib/encryptor-factory';
 
 const E2E_SRP =
   'spread raise short crane omit tent fringe mandate neglect detail suspect cradle';
 
-async function generateSkipOnboardingState() {
+async function generateGodModeState() {
   const state = defaultFixture('0xaa36a7').data;
 
   state.AppStateController = generateAppStateControllerState();
   state.AnnouncementController = generateAnnouncementControllerState();
   state.NetworkController = generateNetworkControllerState();
   state.AddressBookController = generateAddressBookControllerState();
+  state.PreferencesController = generatePreferencesControllerState();
 
   if (process.env.PASSWORD) {
     const { vault, account } = await generateVaultAndAccount(
@@ -97,6 +99,15 @@ function generateAddressBookControllerState() {
   };
 }
 
+function generatePreferencesControllerState() {
+  return {
+    ...defaultFixture().data.PreferencesController,
+    preferences: {
+      ...preferences,
+    },
+  };
+}
+
 async function generateVaultAndAccount(encodedSeedPhrase, password) {
   const controllerMessenger = new ControllerMessenger();
   const keyringControllerMessenger = controllerMessenger.getRestricted({
@@ -166,4 +177,4 @@ function generateAccountsControllerState(account) {
   };
 }
 
-module.exports = { generateSkipOnboardingState };
+module.exports = { generateGodModeState };
