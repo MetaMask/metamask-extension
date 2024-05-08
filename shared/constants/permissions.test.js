@@ -31,6 +31,7 @@ describe('RestrictedMethods', () => {
     expect(Object.keys(RestrictedMethods).sort()).toStrictEqual(
       [
         'eth_accounts',
+        'wallet_switchEthereumChain',
         ...Object.keys(restrictedMethodPermissionBuilders),
       ].sort(),
     );

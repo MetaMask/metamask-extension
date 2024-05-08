@@ -13,8 +13,6 @@ import {
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
 
-import { methodsRequiringNetworkSwitch } from '../../../../shared/constants/methods-tags';
-
 /**
  * This file contains the specifications of the permissions and caveats
  * that are recognized by our permission system. See the PermissionController
@@ -39,7 +37,7 @@ const CaveatFactories = Object.freeze({
   },
 
   [CaveatTypes.restrictNetworkSwitching]: (network) => {
-    console.log("caveat factory function", network);
+    console.log('caveat factory function', network);
     return { type: CaveatTypes.restrictNetworkSwitching, value: network };
   },
 });
@@ -52,7 +50,10 @@ const CaveatFactories = Object.freeze({
  *   getInternalAccounts: () => Record<string, import('@metamask/keyring-api').InternalAccount>,
  * }} options - Options bag.
  */
-export const getCaveatSpecifications = ({ getInternalAccounts, findNetworkClientIdByChainId }) => {
+export const getCaveatSpecifications = ({
+  getInternalAccounts,
+  findNetworkClientIdByChainId,
+}) => {
   return {
     [CaveatTypes.restrictReturnedAccounts]: {
       type: CaveatTypes.restrictReturnedAccounts,
@@ -71,9 +72,10 @@ export const getCaveatSpecifications = ({ getInternalAccounts, findNetworkClient
       type: CaveatTypes.restrictNetworkSwitching,
 
       decorator: (method, caveat) => {
-        // not sure what the decorator ought to be here. We really dont need to remove anything from requests that dont have the requisite permissions...  the desired functionality is that in the absense of the correct permission, we prompt to acquire the permission, which is afaik the default behaviour of the permission controller anyways.
-        console.log('inside caveat decorator: ', method);
-        return method;
+        return async (args) => {
+          const result = await method(args);
+          return result.filter((chainId) => caveat.value.includes(chainId));
+        };
       },
 
       validator: (caveat, _origin, _target) =>
@@ -219,19 +221,13 @@ export const getPermissionSpecifications = ({
 
         return constructPermission({
           ...permissionOptions,
-          caveats: [
-            caveat
-          ],
+          caveats: [caveat],
         });
       },
       methodImplementation: async (_args) => {
-        // return list of possible networks given the _args (chainId)
-        // In our case, it could be that 1 chain id ends up being more than 1 chain config.
-        // Here, we should return all the network configurations with the given chainId.
-        console.log("method implementation args: ", _args);
-
-        //findNetworkClientIdByChainId();
-        return [];
+        // should we actually move the implementation here?
+        // This would make putting the permissioning behind a feature flag a bit more difficult?
+        // Interestingly the validator is still called when granting permissions
       },
       validator: (permission, _origin, _target) => {
         const { caveats } = permission;
@@ -290,32 +286,30 @@ function validateCaveatAccounts(accounts, getInternalAccounts) {
  * This really should be the same validation / errors that are given from calling
  * switchEthereumChain.
  *
- * @param {string} chainId - The network associated with the caveat
+ * @param {Array} chainIdsForCaveat -The list of networks to validate have networkConfigurations
  * @param {() => string} findNetworkClientIdByChainId - method to throw error if network is unknown
- *
  */
-function validateCaveatNetworks(chainIdsForCaveat, findNetworkClientIdByChainId) {
-  console.log("validateCaveatNetworks called: ", chainIdsForCaveat, findNetworkClientIdByChainId);
-  if (typeof chainIdsForCaveat !== 'string') { // lets put better validation here tho
+function validateCaveatNetworks(
+  chainIdsForCaveat,
+  findNetworkClientIdByChainId,
+) {
+  if (!Array.isArray(chainIdsForCaveat) || chainIdsForCaveat.length === 0) {
     throw new Error(
-      `${PermissionNames.wallet_switchEthereumChain} error: Expected chainId to be a string.`,
+      `${PermissionNames.wallet_switchEthereumChain} error: Expected non-empty array of chainIds.`,
     );
   }
 
-  // I think we want to check that this chainId exists in the set of possible chainIds
-  // in other words, we need to check if theres a networkConfiguration for this chainId
-  // We could use a similar pattern to getInternalAccounts, where we pass another method in that will get the required info from the network controller.
-  try {
-    findNetworkClientIdByChainId(chainIdsForCaveat);
-  } catch (e) {
-    console.error(e);
-    throw new Error(
-      `${PermissionNames.wallet_switchEthereumChain} error: Received unrecognized chainId: "${chainIdsForCaveat}". Please try adding the network first via wallet_addEthereumChain.`,
-    );
-  }
+  chainIdsForCaveat.forEach((chainId) => {
+    try {
+      findNetworkClientIdByChainId(chainId);
+    } catch (e) {
+      console.error(e);
+      throw new Error(
+        `${PermissionNames.wallet_switchEthereumChain} error: Received unrecognized chainId: "${chainId}". Please try adding the network first via wallet_addEthereumChain.`,
+      );
+    }
+  });
 }
-
-
 
 /**
  * All unrestricted methods recognized by the PermissionController.
@@ -324,64 +318,62 @@ function validateCaveatNetworks(chainIdsForCaveat, findNetworkClientIdByChainId)
  * restricted or unrestricted method, or the request will be rejected with a
  * "method not found" error.
  */
-export const unrestrictedMethods = Object.freeze(
-  [
-    'eth_blockNumber',
-    'eth_call',
-    'eth_chainId',
-    'eth_coinbase',
-    'eth_decrypt',
-    'eth_estimateGas',
-    'eth_feeHistory',
-    'eth_gasPrice',
-    'eth_getBalance',
-    'eth_getBlockByHash',
-    'eth_getBlockByNumber',
-    'eth_getBlockTransactionCountByHash',
-    'eth_getBlockTransactionCountByNumber',
-    'eth_getCode',
-    'eth_getEncryptionPublicKey',
-    'eth_getFilterChanges',
-    'eth_getFilterLogs',
-    'eth_getLogs',
-    'eth_getProof',
-    'eth_getStorageAt',
-    'eth_getTransactionByBlockHashAndIndex',
-    'eth_getTransactionByBlockNumberAndIndex',
-    'eth_getTransactionByHash',
-    'eth_getTransactionCount',
-    'eth_getTransactionReceipt',
-    'eth_getUncleByBlockHashAndIndex',
-    'eth_getUncleByBlockNumberAndIndex',
-    'eth_getUncleCountByBlockHash',
-    'eth_getUncleCountByBlockNumber',
-    'eth_getWork',
-    'eth_hashrate',
-    'eth_mining',
-    'eth_newBlockFilter',
-    'eth_newFilter',
-    'eth_newPendingTransactionFilter',
-    'eth_protocolVersion',
-    'eth_sendRawTransaction',
-    'eth_sendTransaction',
-    'eth_sign',
-    'eth_signTypedData',
-    'eth_signTypedData_v1',
-    'eth_signTypedData_v3',
-    'eth_signTypedData_v4',
-    'eth_submitHashrate',
-    'eth_submitWork',
-    'eth_syncing',
-    'eth_uninstallFilter',
-    'metamask_getProviderState',
-    'metamask_watchAsset',
-    'net_listening',
-    'net_peerCount',
-    'net_version',
-    'personal_ecRecover',
-    'personal_sign',
-    'wallet_watchAsset',
-    'web3_clientVersion',
-    'web3_sha3',
-  ]
-);
+export const unrestrictedMethods = Object.freeze([
+  'eth_blockNumber',
+  'eth_call',
+  'eth_chainId',
+  'eth_coinbase',
+  'eth_decrypt',
+  'eth_estimateGas',
+  'eth_feeHistory',
+  'eth_gasPrice',
+  'eth_getBalance',
+  'eth_getBlockByHash',
+  'eth_getBlockByNumber',
+  'eth_getBlockTransactionCountByHash',
+  'eth_getBlockTransactionCountByNumber',
+  'eth_getCode',
+  'eth_getEncryptionPublicKey',
+  'eth_getFilterChanges',
+  'eth_getFilterLogs',
+  'eth_getLogs',
+  'eth_getProof',
+  'eth_getStorageAt',
+  'eth_getTransactionByBlockHashAndIndex',
+  'eth_getTransactionByBlockNumberAndIndex',
+  'eth_getTransactionByHash',
+  'eth_getTransactionCount',
+  'eth_getTransactionReceipt',
+  'eth_getUncleByBlockHashAndIndex',
+  'eth_getUncleByBlockNumberAndIndex',
+  'eth_getUncleCountByBlockHash',
+  'eth_getUncleCountByBlockNumber',
+  'eth_getWork',
+  'eth_hashrate',
+  'eth_mining',
+  'eth_newBlockFilter',
+  'eth_newFilter',
+  'eth_newPendingTransactionFilter',
+  'eth_protocolVersion',
+  'eth_sendRawTransaction',
+  'eth_sendTransaction',
+  'eth_sign',
+  'eth_signTypedData',
+  'eth_signTypedData_v1',
+  'eth_signTypedData_v3',
+  'eth_signTypedData_v4',
+  'eth_submitHashrate',
+  'eth_submitWork',
+  'eth_syncing',
+  'eth_uninstallFilter',
+  'metamask_getProviderState',
+  'metamask_watchAsset',
+  'net_listening',
+  'net_peerCount',
+  'net_version',
+  'personal_ecRecover',
+  'personal_sign',
+  'wallet_watchAsset',
+  'web3_clientVersion',
+  'web3_sha3',
+]);
