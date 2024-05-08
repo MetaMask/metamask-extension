@@ -178,6 +178,11 @@ export default class UnitInput extends PureComponent {
               onChange={this.handleChange}
               onBlur={this.handleInputBlur}
               onFocus={this.handleInputFocus}
+              onKeyDown={({ preventDefault, key }) => {
+                if (['e', 'E', '+', '-'].includes(key)) {
+                  preventDefault();
+                }
+              }}
               min={0}
               step="any"
               style={{ width: this.getInputWidth(value) }}
