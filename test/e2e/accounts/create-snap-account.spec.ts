@@ -119,6 +119,9 @@ describe('Create Snap Account', function (this: Suite) {
             console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
           } catch (e) {
             console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
+            console.log('e',e)
+           const logs = await driver.checkBrowserForLavamoatLogs();
+           console.log('logs', logs)
             console.log(e)
             throw e;
           }
