@@ -130,6 +130,17 @@ async function switchEthereumChainHandler(
     return end();
   }
 
+  const networkClientId = findNetworkClientIdByChainId(chainId);
+
+  if (!networkClientId) {
+    return end(
+      ethErrors.provider.custom({
+        code: 4902, // To-be-standardized "unrecognized chain ID" error
+        message: `Unrecognized chain ID "${chainId}". Try adding the chain using ${MESSAGE_TYPE.ADD_ETHEREUM_CHAIN} first.`,
+      }),
+    );
+  }
+
   let permissionedChainIds;
   try {
     ({ value: permissionedChainIds } = getCaveat(
@@ -152,14 +163,15 @@ async function switchEthereumChainHandler(
   ) {
     try {
       // TODO replace with caveat merging rather than passing already permissionedChains here as well
-      await requestSwitchNetworkPermission([...permissionedChainIds, chainId]);
+      await requestSwitchNetworkPermission([
+        ...(permissionedChainIds ?? []),
+        chainId,
+      ]);
     } catch (err) {
       res.error = err;
       return end();
     }
   }
-
-  const networkClientId = findNetworkClientIdByChainId(chainId);
 
   try {
     await setActiveNetwork(networkClientId);
