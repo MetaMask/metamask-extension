@@ -178,9 +178,9 @@ export default class UnitInput extends PureComponent {
               onChange={this.handleChange}
               onBlur={this.handleInputBlur}
               onFocus={this.handleInputFocus}
-              onKeyDown={({ preventDefault, key }) => {
-                if (['e', 'E', '+', '-'].includes(key)) {
-                  preventDefault();
+              onKeyDown={(e) => {
+                if (['e', 'E', '+', '-'].includes(e.key)) {
+                  e.preventDefault();
                 }
               }}
               min={0}
