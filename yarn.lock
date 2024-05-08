@@ -4576,7 +4576,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/approval-controller@npm:^6.0.0, @metamask/approval-controller@npm:^6.0.1, @metamask/approval-controller@npm:^6.0.2":
+"@metamask/approval-controller@npm:^6.0.1, @metamask/approval-controller@npm:^6.0.2":
   version: 6.0.2
   resolution: "@metamask/approval-controller@npm:6.0.2"
   dependencies:
@@ -25319,7 +25319,7 @@ __metadata:
     "@metamask/accounts-controller": "npm:^11.0.0"
     "@metamask/address-book-controller": "npm:^4.0.1"
     "@metamask/announcement-controller": "npm:^6.1.0"
-    "@metamask/approval-controller": "npm:^6.0.0"
+    "@metamask/approval-controller": "npm:^6.0.1"
     "@metamask/assets-controllers": "npm:^29.0.0"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^4.1.0"
