@@ -13,6 +13,10 @@ import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
+import {
+  CaveatTypes,
+  RestrictedMethods,
+} from '../../../../../shared/constants/permissions';
 
 const switchEthereumChain = {
   methodNames: [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN],
@@ -29,8 +33,9 @@ const switchEthereumChain = {
     getProviderConfig: true,
     hasPermissions: true,
     hasPermission: true,
-    getPermission: true,
-    requestSwitchNetworkPermission: true
+    getPermissionsForOrigin: true,
+    getCaveat: true,
+    requestSwitchNetworkPermission: true,
   },
 };
 
@@ -70,8 +75,9 @@ async function switchEthereumChainHandler(
     getProviderConfig,
     hasPermissions,
     hasPermission, // singular form checks the specific permission..
-    getPermission,
-    requestSwitchNetworkPermission
+    getPermissionsForOrigin,
+    requestSwitchNetworkPermission,
+    getCaveat,
   },
 ) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
@@ -114,16 +120,37 @@ async function switchEthereumChainHandler(
     );
   }
 
-  let permission = getPermission('wallet_switchEthereumChain');
-  if (!permission) {
+  // throws if the origin does not have any switchEthereumChain permissions
+  const { value: permissionedChainIds } = getCaveat(
+    origin,
+    RestrictedMethods.wallet_switchEthereumChain,
+    CaveatTypes.restrictNetworkSwitching,
+  );
+
+  // const { [ApprovalType.wallet_switchEthereumChain] : {caveats: [{}]} }
+  // if(permissions?.[ApprovalType.wallet_switchEthereumChain]?.caveats) {
+
+  // TODO check if the permission for this chain for this origin is already granted
+
+  if (!permissionedChainIds.includes(_chainId)) {
     try {
-      [permission] = await requestSwitchNetworkPermission(chainId);
+      await requestSwitchNetworkPermission(chainId);
     } catch (err) {
       res.error = err;
       return end();
     }
   }
-  const networkClientId = findNetworkClientIdByChainId(permission.wallet_switchEthereumChain.caveats[0].value);
+
+  // if (!permissions) {
+  //   return end(
+  //     ethErrors.provider.internal({
+  //       message: `No permission found for wallet_switchEthereumChain for chainId: ${chainId}`,
+  //     }),
+  //   );
+  // }
+
+  const networkClientId = findNetworkClientIdByChainId(chainId);
+
   try {
     await setActiveNetwork(networkClientId);
     if (hasPermissions(req.origin)) {

@@ -299,11 +299,6 @@ function validateCaveatNetworks(
   chainIdsForCaveat,
   findNetworkClientIdByChainId,
 ) {
-  console.log(
-    'validateCaveatNetworks called: ',
-    chainIdsForCaveat,
-    findNetworkClientIdByChainId,
-  );
   // if (typeof chainIdsForCaveat !== 'string') {
   //   // lets put better validation here tho
   //   throw new Error(
