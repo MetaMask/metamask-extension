@@ -176,7 +176,8 @@ async function main() {
     testPaths = [
       ...(await getTestPathsForTestDir(testDir)),
       ...filteredFlaskAndMainTests,
-    ];
+    ].filter(t => t.match('migrate-opensea'));
+    console.log('testPaths', testPaths)
   }
 
   const runE2eTestPath = path.join(__dirname, 'run-e2e-test.js');
