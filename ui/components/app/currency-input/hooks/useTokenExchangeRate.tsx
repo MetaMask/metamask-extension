@@ -33,7 +33,6 @@ export default function useTokenExchangeRate(
   const chainId = useSelector(getCurrentChainId);
 
   const selectedNativeConversionRate = useSelector(getConversionRate);
-  const nativeConversionRate = new Numeric(selectedNativeConversionRate, 10);
 
   const contractExchangeRates = useSelector(
     getTokenExchangeRates,
@@ -45,6 +44,8 @@ export default function useTokenExchangeRate(
   >({});
 
   return useMemo(() => {
+    const nativeConversionRate = new Numeric(selectedNativeConversionRate, 10);
+
     if (!tokenAddress) {
       return nativeConversionRate;
     }
@@ -89,7 +90,7 @@ export default function useTokenExchangeRate(
     chainId,
     nativeCurrency,
     tokenAddress,
-    nativeConversionRate,
+    selectedNativeConversionRate,
     contractExchangeRates,
   ]);
 }

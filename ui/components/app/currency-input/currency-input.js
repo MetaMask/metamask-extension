@@ -81,6 +81,10 @@ export default function CurrencyInput({
 
   const tokenToFiatConversionRate = useTokenExchangeRate(asset?.address);
 
+  const isNonZeroConversionRate = Boolean(
+    tokenToFiatConversionRate?.toNumber(),
+  );
+
   const processNewDecimalValue = useProcessNewDecimalValue(
     assetDecimals,
     isTokenPrimary,
@@ -99,10 +103,10 @@ export default function CurrencyInput({
       return;
     }
 
-    if (!tokenToFiatConversionRate) {
+    if (!isNonZeroConversionRate) {
       onPreferenceToggle();
     }
-  }, [tokenToFiatConversionRate, isTokenPrimary, onPreferenceToggle]);
+  }, [isNonZeroConversionRate, isTokenPrimary, onPreferenceToggle]);
 
   const handleChange = (newDecimalValue) => {
     const { newTokenDecimalValue, newFiatDecimalValue } =

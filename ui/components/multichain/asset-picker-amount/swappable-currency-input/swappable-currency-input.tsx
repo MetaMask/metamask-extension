@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import type { Asset, Amount } from '../../../../ducks/send';
@@ -90,7 +90,10 @@ export function SwappableCurrencyInput({
           swapIcon={(onClick: React.MouseEventHandler) => (
             <SwapIcon onClick={onClick} />
           )}
-          onPreferenceToggle={() => dispatch(toggleCurrencySwitch())}
+          onPreferenceToggle={useCallback(
+            () => dispatch(toggleCurrencySwitch()),
+            [dispatch],
+          )}
           asset={asset?.details}
           isSkeleton={isAmountLoading}
         />
