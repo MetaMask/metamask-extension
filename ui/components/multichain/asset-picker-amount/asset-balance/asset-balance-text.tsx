@@ -62,7 +62,10 @@ export function AssetBalanceText({
     asset.details?.address,
     balanceString,
     undefined,
-    undefined,
+    // if balance is zero, conversion rate will not be available so we just assume ~0 we can't use 0 because it will set off an undefined guard
+    Number(balanceString) === 0
+      ? { exchangeRate: Number.MIN_VALUE }
+      : undefined,
     true,
   );
 
