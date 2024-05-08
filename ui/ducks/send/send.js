@@ -1664,9 +1664,11 @@ const slice = createSlice({
               draftTransaction.asset.balance = action.payload.account.balance;
             }
 
-            // If selected account was changed and selected asset is a token then
-            // reset asset to native asset
-            if (draftTransaction?.asset.type === AssetType.token) {
+            // Reset to the native asset when the account is changed
+            if (
+              draftTransaction?.asset.type === AssetType.token ||
+              draftTransaction?.asset.type === AssetType.NFT
+            ) {
               draftTransaction.asset.type =
                 draftTransactionInitialState.asset.type;
               draftTransaction.asset.error =
