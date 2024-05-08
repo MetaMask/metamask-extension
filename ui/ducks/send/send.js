@@ -1598,10 +1598,9 @@ const slice = createSlice({
         payload: 'Begin validating send state',
       });
 
-      const { quotes } = draftTransaction;
-      const bestQuote = quotes ? calculateBestQuote(quotes) : undefined;
-
       if (draftTransaction) {
+        const { quotes } = draftTransaction;
+        const bestQuote = quotes ? calculateBestQuote(quotes) : undefined;
         switch (true) {
           case Boolean(draftTransaction.amount.error):
             slice.caseReducers.addHistoryEntry(state, {
