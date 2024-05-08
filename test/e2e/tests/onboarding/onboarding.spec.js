@@ -312,6 +312,37 @@ describe('MetaMask onboarding @no-mmi', function () {
     );
   });
 
+  it('User can turn off basic functionality in advanced configurations', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await importSRPOnboardingFlow(
+          driver,
+          TEST_SEED_PHRASE,
+          WALLET_PASSWORD,
+        );
+
+        await driver.clickElement({ text: 'Advanced configuration', tag: 'a' });
+        await driver.clickElement(
+          '[data-testid="basic-functionality-toggle"] .toggle-button',
+        );
+        await driver.clickElement('[id="basic-configuration-checkbox"]');
+        await driver.clickElement({ text: 'Turn off', tag: 'button' });
+        await driver.clickElement({ text: 'Done', tag: 'button' });
+        // Check that the 'basic functionality is off' banner is displayed on the home screen after onboarding completion
+        await driver.waitForSelector({
+          text: 'Basic functionality is off',
+          css: '.mm-banner-alert',
+        });
+      },
+    );
+  });
+
   it("doesn't make any network requests to infura before onboarding is completed", async function () {
     async function mockInfura(mockServer) {
       const infuraUrl =
