@@ -1065,9 +1065,14 @@ const slice = createSlice({
           16,
         ).add(new Numeric(state.gasTotalForLayer1 ?? '0x0', 16));
 
-        amount = new Numeric(draftTransaction.sendAsset.balance, 16)
-          .minus(_gasTotal)
-          .toString();
+        amount = new Numeric(
+          draftTransaction.sendAsset.balance,
+          16,
+        ).lessThanOrEqualTo(_gasTotal)
+          ? '0'
+          : new Numeric(draftTransaction.sendAsset.balance, 16)
+              .minus(_gasTotal)
+              .toString();
       }
       slice.caseReducers.updateSendAmount(state, {
         payload: amount,
@@ -2747,7 +2752,7 @@ export function signTransaction() {
         from: txParams.from,
         to: txParams.to,
         value: txParams.value,
-        gas: unapprovedTx.userEditedGasLimit
+        gas: unapprovedTx?.userEditedGasLimit
           ? unapprovedTx.txParams.gas
           : txParams.gas,
       };
