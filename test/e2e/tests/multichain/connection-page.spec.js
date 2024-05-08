@@ -23,7 +23,6 @@ describe('Connections page', function () {
         if (!process.env.MULTICHAIN) {
           return;
         }
-        await driver.navigate();
         await unlockWallet(driver);
         await waitForAccountRendered(driver);
         await connectToDapp(driver);
@@ -103,7 +102,6 @@ describe('Connections page', function () {
         if (!process.env.MULTICHAIN) {
           return;
         }
-        await driver.navigate();
         await unlockWallet(driver);
         await waitForAccountRendered(driver);
         await connectToDapp(driver);
