@@ -126,11 +126,12 @@ export const AssetPickerAmount = ({
           </Text>
         )}
         {/* The fiat value will always leave dust and is often inaccurate anyways */}
-        {!isFiatPrimary && onAmountChange ? (
-          <MaxClearButton asset={asset} />
-        ) : (
-          <Box marginBottom={6} />
-        )}
+        {onAmountChange &&
+          (isFiatPrimary ? (
+            <Box marginBottom={6} />
+          ) : (
+            <MaxClearButton asset={asset} />
+          ))}
       </Box>
     </Box>
   );
