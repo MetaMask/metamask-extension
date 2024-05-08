@@ -74,6 +74,7 @@ import {
   gasFeeStartPollingByNetworkClientId,
   getBalancesInSingleCall,
   estimateGas,
+  addTransactionAndWaitForPublish,
 } from '../../store/actions';
 import { setCustomGasLimit } from '../gas/gas.duck';
 import {
@@ -2779,12 +2780,17 @@ export function signTransaction() {
       }
 
       if (bestQuote?.approvalNeeded) {
-        await dispatch(
-          addTransactionAndRouteToConfirmationPage(bestQuote.approvalNeeded, {
-            sendFlowHistory: draftTransaction.history,
-            type: TransactionType.contractInteraction,
-          }),
-        );
+        addTransactionAndWaitForPublish(bestQuote.approvalNeeded, {
+          requireApproval: false,
+          type: TransactionType.swapApproval,
+          swaps: {
+            hasApproveTx: true,
+            meta: {
+              type: TransactionType.swapApproval,
+              sourceTokenSymbol: draftTransaction.sendAsset.details.symbol,
+            },
+          },
+        });
       }
 
       const { id: transactionId } = await dispatch(
