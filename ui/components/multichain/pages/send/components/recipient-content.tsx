@@ -84,6 +84,7 @@ export const SendPageRecipientContent = ({
   //          - Ensure max button works with swaps (update on refresh? buffer?)
   //          - Update best quotes logic
   //          - Changes `quotes` in redux to array
+  //          - Investigate gasTotalForLayer1 for swap+send
   // TODO: 2. add analytics + e2e tests + unit tests (check comments)
   //       - use transaction lifecycle events once
   // TODO: 3. final design and technical review + revisions
