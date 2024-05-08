@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   BannerAlert,
@@ -19,6 +19,10 @@ import { Display } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AssetPickerAmount } from '../../..';
 import { decimalToHex } from '../../../../../../shared/modules/conversion.utils';
+import {
+  getIsSwapsChain,
+  getUseExternalServices,
+} from '../../../../../selectors';
 import { SendHexData, SendPageRow, QuoteCard } from '.';
 
 export const SendPageRecipientContent = ({
@@ -26,18 +30,9 @@ export const SendPageRecipientContent = ({
   onAssetChange,
 }: {
   requireContractAddressAcknowledgement: boolean;
-  onAssetChange: (isReceived: boolean) => (newAsset: Asset) => void;
+  onAssetChange: (newAsset: Asset, isReceived: boolean) => void;
 }) => {
   const t = useI18nContext();
-
-  // Hex data
-  const showHexDataFlag = useSelector(getSendHexDataFeatureFlagState);
-  const asset = useSelector(getSendAsset);
-  const showHexData =
-    showHexDataFlag &&
-    asset &&
-    asset.type !== AssetType.token &&
-    asset.type !== AssetType.NFT;
 
   const {
     receiveAsset,
@@ -46,18 +41,35 @@ export const SendPageRecipientContent = ({
     isSwapQuoteLoading,
   } = useSelector(getCurrentDraftTransaction);
 
-  const isSendingToken = [AssetType.token, AssetType.native].includes(
-    sendAsset.type,
-  );
+  const isBasicFunctionality = useSelector(getUseExternalServices);
+  const isSwapsChain = useSelector(getIsSwapsChain);
+  const isSwapAllowed =
+    isSwapsChain &&
+    [AssetType.token, AssetType.native].includes(sendAsset.type) &&
+    isBasicFunctionality;
 
   const bestQuote = useSelector(getBestQuote);
 
   const isLoadingInitialQuotes = !bestQuote && isSwapQuoteLoading;
 
-  const amount =
-    receiveAsset.details?.address === sendAsset.details?.address
-      ? sendAmount
-      : { value: decimalToHex(bestQuote?.destinationAmount || '0') };
+  const isBasicSend =
+    receiveAsset.details?.address === sendAsset.details?.address;
+
+  const amount = isBasicSend
+    ? sendAmount
+    : { value: decimalToHex(bestQuote?.destinationAmount || '0') };
+
+  // Hex data
+  const showHexDataFlag = useSelector(getSendHexDataFeatureFlagState);
+  const asset = useSelector(getSendAsset);
+  const showHexData =
+    isBasicSend &&
+    showHexDataFlag &&
+    asset &&
+    asset.type !== AssetType.token &&
+    asset.type !== AssetType.NFT;
+
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   // Gas data
   const dispatch = useDispatch();
@@ -65,13 +77,15 @@ export const SendPageRecipientContent = ({
   // FIXME: these should all be resolved before marking the PR as ready
   // TODO: SWAP+SEND impl steps (all but step 3 correlate to a PR in the merge train):
   // TODO: 1. begin design review + revisions
-  //          - add pre-transaction validation and refetch if it doesn't match
-  //          - test hex data input (advanced settings)
   //          - handle repopulations
   //          - resolve all TODOs
   //          - handle approval gas
-  //          - implement hester's comment: https://consensys.slack.com/archives/C068SFX90PN/p1712696346996319
-  // TODO: 2. add analytics + e2e tests
+  //          - Preserve dest token when returning to send page from tx page
+  //          - Ensure max button works with swaps (update on refresh? buffer?)
+  //          - Update best quotes logic
+  //          - Changes `quotes` in redux to array
+  //          - Investigate gasTotalForLayer1 for swap+send
+  // TODO: 2. add analytics + e2e tests + unit tests (check comments)
   //       - use transaction lifecycle events once
   // TODO: 3. final design and technical review + revisions
   return (
@@ -103,15 +117,20 @@ export const SendPageRecipientContent = ({
       ) : null}
       <SendPageRow>
         <AssetPickerAmount
-          asset={isSendingToken ? receiveAsset : sendAsset}
-          sendingAsset={isSendingToken ? sendAsset : undefined}
-          onAssetChange={onAssetChange(isSendingToken)}
+          asset={isSwapAllowed ? receiveAsset : sendAsset}
+          sendingAsset={isSwapAllowed ? sendAsset : undefined}
+          onAssetChange={useCallback(
+            (newAsset) => onAssetChange(newAsset, isSwapAllowed),
+            [onAssetChange, isSwapAllowed],
+          )}
           isAmountLoading={isLoadingInitialQuotes}
           amount={amount}
         />
       </SendPageRow>
-      <QuoteCard />
+      <QuoteCard scrollRef={scrollRef} />
       {showHexData ? <SendHexData /> : null}
+      {/* SCROLL REF ANCHOR */}
+      <div ref={scrollRef} />
     </Box>
   );
 };

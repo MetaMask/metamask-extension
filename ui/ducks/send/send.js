@@ -4,7 +4,7 @@ import {
   createSlice,
 } from '@reduxjs/toolkit';
 import BigNumber from 'bignumber.js';
-import { addHexPrefix } from 'ethereumjs-util';
+import { addHexPrefix, zeroAddress } from 'ethereumjs-util';
 import { cloneDeep, debounce } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import {
@@ -23,6 +23,7 @@ import {
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_FUNDS_FOR_GAS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
+  NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
   INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR,
   KNOWN_RECIPIENT_ADDRESS_WARNING,
@@ -71,6 +72,9 @@ import {
   getLayer1GasFee,
   gasFeeStopPollingByPollingToken,
   gasFeeStartPollingByNetworkClientId,
+  getBalancesInSingleCall,
+  estimateGas,
+  addTransactionAndWaitForPublish,
 } from '../../store/actions';
 import { setCustomGasLimit } from '../gas/gas.duck';
 import {
@@ -124,7 +128,9 @@ import { Numeric } from '../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
 import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
 import { setMaxValueMode } from '../confirm-transaction/confirm-transaction.duck';
-import { getSwapAndSendQuotes } from './swap-and-send-utils';
+// used for typing
+// eslint-disable-next-line no-unused-vars
+import { Quote, getSwapAndSendQuotes } from './swap-and-send-utils';
 import {
   estimateGasLimitForSend,
   generateTransactionParams,
@@ -364,7 +370,7 @@ export const RECIPIENT_SEARCH_MODES = {
  *  TransactionController state. This is required to be able to update the
  *  transaction in the controller.
  * @property {boolean} isSwapQuoteLoading – is a swap quote being fetched
- * @property {object} [quotes] – quotes for swaps // TODO: update type
+ * @property {Quote[]} [quotes] – quotes for swaps
  * @property {Asset} receiveAsset - An object that describes the asset that the user
  *  has selected for the recipient to receive.
  * @property {Recipient} recipient - An object that describes the intended
@@ -817,7 +823,15 @@ const fetchSwapAndSendQuotes = createAsyncThunk(
       }, FETCH_DELAY),
     );
 
-    if (!Object.keys(quotes).length) {
+    for (const quote of quotes) {
+      if (quote.approvalNeeded) {
+        quote.approvalNeeded.gas = addHexPrefix(
+          await estimateGas(quote.approvalNeeded),
+        );
+      }
+    }
+
+    if (!quotes?.length) {
       throw new Error(SWAPS_NO_QUOTES);
     }
 
@@ -1422,6 +1436,14 @@ const slice = createSlice({
           }):
           draftTransaction.amount.error = INSUFFICIENT_TOKENS_ERROR;
           break;
+        // INSUFFICIENT_TOKENS_ERROR if the user is attempting to transfer ERC1155 but has 0 amount selected
+        // prevents the user from transferring 0 tokens
+        case draftTransaction.sendAsset.type === AssetType.NFT &&
+          draftTransaction.sendAsset.details.standard ===
+            TokenStandard.ERC1155 &&
+          draftTransaction.amount.value === '0x0':
+          draftTransaction.amount.error = NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR;
+          break;
         // set error to INSUFFICIENT_TOKENS_ERROR if the token balance is lower
         // than the amount of token the user is attempting to send.
         case draftTransaction.sendAsset.type === AssetType.NFT &&
@@ -1556,6 +1578,10 @@ const slice = createSlice({
       slice.caseReducers.addHistoryEntry(state, {
         payload: 'Begin validating send state',
       });
+
+      const { quotes } = draftTransaction;
+      const bestQuote = quotes ? calculateBestQuote(quotes) : undefined;
+
       if (draftTransaction) {
         switch (true) {
           case Boolean(draftTransaction.amount.error):
@@ -1634,6 +1660,50 @@ const slice = createSlice({
             draftTransaction.recipient.recipientWarningAcknowledged === false:
             slice.caseReducers.addHistoryEntry(state, {
               payload: `Form is invalid because recipient warning not acknolwedged`,
+            });
+            draftTransaction.status = SEND_STATUSES.INVALID;
+            break;
+          case Boolean(
+            bestQuote &&
+              bestQuote.recipient !== draftTransaction.recipient.address,
+          ):
+            slice.caseReducers.addHistoryEntry(state, {
+              payload: `Recipient is not match ${draftTransaction.recipient.address} ${bestQuote.recipient}`,
+            });
+            draftTransaction.status = SEND_STATUSES.INVALID;
+            break;
+          case Boolean(
+            bestQuote && bestQuote.trade.from !== state.selectedAccount.address,
+          ):
+            slice.caseReducers.addHistoryEntry(state, {
+              payload: `Sender is not match ${state.selectedAccount.address} ${bestQuote.trade.from}`,
+            });
+            draftTransaction.status = SEND_STATUSES.INVALID;
+            break;
+          case Boolean(
+            bestQuote &&
+              (draftTransaction.sendAsset?.details?.address ||
+                zeroAddress()) !== bestQuote.sourceToken,
+          ):
+            slice.caseReducers.addHistoryEntry(state, {
+              payload: `Source token is not match ${draftTransaction.sendAsset?.details?.address} ${bestQuote.sourceToken}`,
+            });
+            draftTransaction.status = SEND_STATUSES.INVALID;
+            break;
+          case Boolean(
+            bestQuote &&
+              bestQuote.destinationToken !==
+                (draftTransaction.receiveAsset?.details?.address ||
+                  zeroAddress()),
+          ):
+            slice.caseReducers.addHistoryEntry(state, {
+              payload: `Destination token is not match ${draftTransaction.receiveAsset?.details?.address} ${bestQuote.destinationToken}`,
+            });
+            draftTransaction.status = SEND_STATUSES.INVALID;
+            break;
+          case draftTransaction.isSwapQuoteLoading:
+            slice.caseReducers.addHistoryEntry(state, {
+              payload: `A swap quote is loading`,
             });
             draftTransaction.status = SEND_STATUSES.INVALID;
             break;
@@ -1812,6 +1882,7 @@ const slice = createSlice({
             draftTransaction.swapQuotesLatestRequestTimestamp,
           );
         }
+        slice.caseReducers.validateSendState(state);
       })
       .addCase(fetchSwapAndSendQuotes.fulfilled, (state, action) => {
         const draftTransaction =
@@ -1828,6 +1899,7 @@ const slice = createSlice({
             draftTransaction.quotes = action.payload.quotes;
           }
         }
+        slice.caseReducers.validateSendState(state);
       })
       .addCase(fetchSwapAndSendQuotes.rejected, (state, action) => {
         if (action.error.message === RECENT_REQUEST_ERROR) {
@@ -2357,14 +2429,65 @@ export function updateSendAsset(
       }
     } else {
       await dispatch(showLoadingIndication());
-      const details = {
-        ...providedDetails,
-        ...(await getTokenStandardAndDetails(
-          providedDetails.address,
-          sendingAddress,
-          providedDetails.tokenId,
-        )),
+
+      const STANDARD_TO_REQUIRED_PROPERTIES = {
+        // 'balance' must be last so that we know all other properties exist if `missingProperty` = 'balance'
+        [TokenStandard.ERC20]: isReceived
+          ? ['address', 'symbol', 'decimals']
+          : ['address', 'symbol', 'decimals', 'balance'],
+        [TokenStandard.ERC721]: ['address', 'symbol', 'tokenId'],
+        [TokenStandard.ERC1155]: ['address', 'symbol', 'tokenId'],
       };
+
+      let missingProperty = STANDARD_TO_REQUIRED_PROPERTIES[
+        providedDetails.standard
+      ]?.find((property) => providedDetails[property] === undefined);
+
+      let details;
+
+      // attempt simple balance fetch if balance is missing
+      if (missingProperty === 'balance') {
+        const selectedNetworkClientId = getSelectedNetworkClientId(state);
+        const sender =
+          draftTransaction.fromAccount?.address ??
+          state[name].selectedAccount.address ??
+          getSelectedInternalAccount(state).address;
+
+        const balance = await getBalancesInSingleCall(
+          sender,
+          [providedDetails.address],
+          selectedNetworkClientId,
+        ).catch(() => ({}));
+
+        const hexBalance = balance[providedDetails.address]?.hex;
+
+        providedDetails.balance = hexBalance
+          ? hexToDecimal(hexBalance)
+          : undefined;
+
+        // regardless of if we get the balance or not, we should not consider it a missing property
+        missingProperty = undefined;
+      }
+
+      // if standard exists with all required properties, do not call getTokenStandardAndDetails
+      if (providedDetails.standard && !missingProperty) {
+        details = {
+          ...providedDetails,
+        };
+      } else {
+        details = {
+          ...providedDetails,
+          ...(await getTokenStandardAndDetails(
+            providedDetails.address,
+            sendingAddress,
+            providedDetails.tokenId,
+          ).catch((error) => {
+            // prevent infinite stuck loading state
+            dispatch(hideLoadingIndication());
+            throw error;
+          })),
+        };
+      }
 
       await dispatch(hideLoadingIndication());
 
@@ -2375,9 +2498,11 @@ export function updateSendAsset(
       };
 
       if (details.standard === TokenStandard.ERC20) {
-        asset.balance = addHexPrefix(
-          calcTokenAmount(details.balance, details.decimals).toString(16),
-        );
+        asset.balance = details.balance
+          ? addHexPrefix(
+              calcTokenAmount(details.balance, details.decimals).toString(16),
+            )
+          : undefined;
 
         await dispatch(
           addHistoryEntry(
@@ -2515,11 +2640,13 @@ export function resetRecipientInput() {
   return async (dispatch, getState) => {
     const state = getState();
     const chainId = getCurrentChainId(state);
+    showLoadingIndication();
     await dispatch(addHistoryEntry(`sendFlow - user cleared recipient input`));
     await dispatch(updateRecipientUserInput(''));
     await dispatch(updateRecipient({ address: '', nickname: '' }));
     await dispatch(resetDomainResolution());
     await dispatch(validateRecipientUserInput({ chainId }));
+    hideLoadingIndication();
   };
 }
 
@@ -2552,7 +2679,6 @@ export function resetSendState() {
  * @returns {ThunkAction<void>}
  */
 
-// TODO: handle approvals once API is ready
 export function signTransaction() {
   return async (dispatch, getState) => {
     const state = getState();
@@ -2565,10 +2691,13 @@ export function signTransaction() {
       draftTransaction?.sendAsset?.details?.address !==
       draftTransaction?.receiveAsset?.details?.address;
 
+    const quotesAsArray = draftTransaction.quotes;
+    const bestQuote = quotesAsArray
+      ? calculateBestQuote(quotesAsArray)
+      : undefined;
+
     if (isSwapAndSend) {
       // TODO: update to selected quote
-      const quotesAsArray = Object.values(draftTransaction.quotes || {});
-      const bestQuote = calculateBestQuote(quotesAsArray);
 
       txParams = { ...bestQuote.trade };
     } else {
@@ -2645,6 +2774,24 @@ export function signTransaction() {
           `sendFlow - user clicked next and transaction should be added to controller`,
         ),
       );
+
+      if (isSwapAndSend) {
+        transactionType = TransactionType.contractInteraction;
+      }
+
+      if (bestQuote?.approvalNeeded) {
+        addTransactionAndWaitForPublish(bestQuote.approvalNeeded, {
+          requireApproval: false,
+          type: TransactionType.swapApproval,
+          swaps: {
+            hasApproveTx: true,
+            meta: {
+              type: TransactionType.swapApproval,
+              sourceTokenSymbol: draftTransaction.sendAsset.details.symbol,
+            },
+          },
+        });
+      }
 
       const { id: transactionId } = await dispatch(
         addTransactionAndRouteToConfirmationPage(txParams, {
@@ -2754,8 +2901,8 @@ export function getCurrentDraftTransaction(state) {
 export const getBestQuote = createSelector(
   getCurrentDraftTransaction,
   ({ quotes, swapQuotesError }) => {
-    const quotesAsArray = Object.values(quotes || {});
-    if (swapQuotesError || !quotesAsArray.length) {
+    const quotesAsArray = quotes;
+    if (swapQuotesError || !quotesAsArray?.length) {
       return undefined;
     }
 

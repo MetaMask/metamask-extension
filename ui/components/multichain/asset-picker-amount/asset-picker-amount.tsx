@@ -20,6 +20,7 @@ import {
   type Amount,
   type Asset,
 } from '../../../ducks/send';
+import { NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR } from '../../../pages/confirmations/send/send.constants';
 import MaxClearButton from './max-clear-button';
 import {
   AssetPicker,
@@ -62,7 +63,13 @@ export const AssetPickerAmount = ({
 
   const [isFocused, setIsFocused] = useState(false);
 
-  const { error } = amount;
+  const { error: rawError } = amount;
+
+  // if an error, like the 0 asset error, is out of scope, it shouldn't be shown in the AssetPickerAmount treatments
+  const error =
+    rawError && rawError !== NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR
+      ? rawError
+      : undefined;
 
   useEffect(() => {
     if (!asset) {
@@ -70,14 +77,14 @@ export const AssetPickerAmount = ({
     }
   }, [selectedAccount]);
 
-  let borderColor = BorderColor.borderDefault;
+  let borderColor = BorderColor.borderMuted;
 
   if (isDisabled) {
     // if disabled, do not show source-side border colors
     if (isSwapsErrorShown) {
       borderColor = BorderColor.errorDefault;
     }
-  } else if (amount.error) {
+  } else if (error) {
     borderColor = BorderColor.errorDefault;
   } else if (isFocused) {
     borderColor = BorderColor.primaryDefault;
@@ -95,7 +102,6 @@ export const AssetPickerAmount = ({
         borderColor={borderColor}
         borderStyle={BorderStyle.solid}
         borderWidth={1}
-        marginTop={1}
         marginBottom={1}
         padding={1}
         // apply extra padding if there isn't an input component to apply it
@@ -120,7 +126,12 @@ export const AssetPickerAmount = ({
           </Text>
         )}
         {/* The fiat value will always leave dust and is often inaccurate anyways */}
-        {!isFiatPrimary && onAmountChange && <MaxClearButton asset={asset} />}
+        {onAmountChange &&
+          (isFiatPrimary ? (
+            <Box marginBottom={6} />
+          ) : (
+            <MaxClearButton asset={asset} />
+          ))}
       </Box>
     </Box>
   );
