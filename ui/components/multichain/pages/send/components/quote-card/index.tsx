@@ -158,15 +158,18 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
             </Text>
           </Box>
           <Box display={Display.Flex} alignItems={AlignItems.center}>
-            <Text
+            <Box
               display={Display.Flex}
-              color={TextColor.textAlternative}
               marginRight={'auto'}
               gap={1}
               alignItems={AlignItems.center}
-              variant={TextVariant.bodySm}
             >
-              {t('transactionDetailGasHeading')}
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+              >
+                {t('transactionDetailGasHeading')}
+              </Text>
               <Tooltip
                 interactive
                 position="left"
@@ -203,7 +206,7 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
               >
                 <InfoTooltipIcon fillColor="var(--color-icon-alternative)" />
               </Tooltip>
-            </Text>
+            </Box>
             <Box display={Display.Flex} marginLeft={'auto'}>
               <Text variant={TextVariant.bodySm}>{formattedEthGasFee}</Text>
               {formattedFiatGasFee && (
