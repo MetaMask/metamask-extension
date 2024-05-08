@@ -1972,6 +1972,9 @@ const slice = createSlice({
 
               draftTransaction.receiveAsset =
                 draftTransactionInitialState.receiveAsset;
+
+              draftTransaction.amount.value =
+                draftTransactionInitialState.amount.value;
             }
 
             slice.caseReducers.validateAmountField(state);
