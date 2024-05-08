@@ -40,7 +40,7 @@ type AssetPickerAmountProps = OverridingUnion<
     /**
      * Callback for when the amount changes; disables the input when undefined
      */
-    onAmountChange?: (newAmount: string) => void;
+    onAmountChange?: (newAmountRaw: string, newAmountFormatted: string) => void;
   }
 >;
 
