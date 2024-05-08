@@ -3,7 +3,6 @@ const {
   defaultGanacheOptions,
   withFixtures,
   openDapp,
-  DAPP_URL,
   DAPP_ONE_URL,
   unlockWallet,
   WINDOW_TITLES,

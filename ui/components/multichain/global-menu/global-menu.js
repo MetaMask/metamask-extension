@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  CONNECTED_ROUTE,
   SETTINGS_ROUTE,
   DEFAULT_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
