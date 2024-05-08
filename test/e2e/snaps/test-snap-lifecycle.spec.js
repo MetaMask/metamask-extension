@@ -32,6 +32,9 @@ describe('Test Snap Lifecycle Hooks', function () {
         await driver.delay(1000);
         await driver.clickElement('#connectlifecycle-hooks');
 
+        // required delay awaiting the dialog window to open
+        await driver.delay(1000);
+
         // switch to metamask extension and click connect
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({
@@ -61,6 +64,9 @@ describe('Test Snap Lifecycle Hooks', function () {
           css: '#connectlifecycle-hooks',
           text: 'Reconnect to Lifecycle Hooks Snap',
         });
+
+        // required delay awaiting the dialog window to open
+        await driver.delay(1000);
 
         // switch to dialog popup
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
