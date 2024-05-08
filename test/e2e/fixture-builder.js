@@ -204,7 +204,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         useTokenDetection: false,
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
-        useRequestQueue: false,
+        useRequestQueue: true,
       },
       SelectedNetworkController: {
         domains: {},
@@ -331,7 +331,7 @@ function onboardingFixture() {
         useTokenDetection: false,
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
-        useRequestQueue: false,
+        useRequestQueue: true,
       },
       SelectedNetworkController: {
         domains: {},
