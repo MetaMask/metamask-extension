@@ -17,7 +17,6 @@ describe('Permissions Page', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
         if (!process.env.MULTICHAIN) {
           return;
@@ -54,7 +53,6 @@ describe('Permissions Page', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
         if (!process.env.MULTICHAIN) {
           return;
