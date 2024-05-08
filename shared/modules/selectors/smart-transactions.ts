@@ -1,14 +1,14 @@
 import type { Hex } from '@metamask/utils';
 import {
-  ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS,
+  getAllowedSmartTransactionsChainIds,
   SKIP_STX_RPC_URL_CHECK_CHAIN_IDS,
 } from '../../constants/smartTransactions';
-import { ENVIRONMENT } from '../../../development/build/constants';
 import {
   getCurrentChainId,
   getCurrentNetwork,
   accountSupportsSmartTx,
 } from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
+import { isProduction } from '../environment';
 
 type SmartTransactionsMetaMaskState = {
   metamask: {
@@ -69,17 +69,14 @@ export const getCurrentChainSupportsSmartTransactions = (
   state: SmartTransactionsMetaMaskState,
 ): boolean => {
   const chainId = getCurrentChainId(state);
-  return ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS.includes(chainId);
+  return getAllowedSmartTransactionsChainIds().includes(chainId);
 };
 
 const getIsAllowedRpcUrlForSmartTransactions = (
   state: SmartTransactionsMetaMaskState,
 ) => {
   const chainId = getCurrentChainId(state);
-  const isDevelopment =
-    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT ||
-    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING;
-  if (isDevelopment || SKIP_STX_RPC_URL_CHECK_CHAIN_IDS.includes(chainId)) {
+  if (!isProduction() || SKIP_STX_RPC_URL_CHECK_CHAIN_IDS.includes(chainId)) {
     // Allow any STX RPC URL in development and testing environments or for specific chain IDs.
     return true;
   }
