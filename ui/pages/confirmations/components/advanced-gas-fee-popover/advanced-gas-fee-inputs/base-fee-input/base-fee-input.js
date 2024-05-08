@@ -76,10 +76,14 @@ const BaseFeeInput = () => {
       ? advancedGasFeeValues.maxBaseFee
       : maxFeePerGas;
 
-  const [baseFee, setBaseFee] = useState(defaultBaseFee);
+  const [baseFee, setBaseFee] = useState(
+    defaultBaseFee > 0 ? defaultBaseFee : undefined,
+  );
   useEffect(() => {
-    setBaseFee(defaultBaseFee);
-  }, [defaultBaseFee, setBaseFee]);
+    if (baseFee === undefined && defaultBaseFee > 0) {
+      setBaseFee(defaultBaseFee);
+    }
+  }, [baseFee, defaultBaseFee, setBaseFee]);
 
   const [baseFeeInPrimaryCurrency] = useCurrencyDisplay(
     decGWEIToHexWEI(baseFee * gasLimit),
