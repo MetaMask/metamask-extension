@@ -148,12 +148,16 @@ export default class PermissionPageContainer extends Component {
     const request = {
       ..._request,
       permissions: { ..._request.permissions },
-      approvedAccounts: selectedAccounts.map(
-        (selectedAccount) => selectedAccount.address,
-      ),
-      approvedChainIds: Object.keys(
-        _request.permissions.wallet_switchEthereumChain,
-      ),
+      ...(_request.permissions.eth_accounts && {
+        approvedAccounts: selectedAccounts.map(
+          (selectedAccount) => selectedAccount.address,
+        ),
+      }),
+      ...(_request.permission.wallet_switchEthereumChain && {
+        approvedChainIds: Object.keys(
+          _request.permissions?.wallet_switchEthereumChain,
+        ),
+      }),
     };
 
     if (Object.keys(request.permissions).length > 0) {
