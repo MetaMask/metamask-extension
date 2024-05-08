@@ -37,6 +37,7 @@ const switchEthereumChain = {
     getPermissionsForOrigin: true,
     getCaveat: true,
     requestSwitchNetworkPermission: true,
+    getCurrentChainIdForDomain: true,
   },
 };
 
@@ -77,6 +78,7 @@ async function switchEthereumChainHandler(
     hasPermissions,
     requestSwitchNetworkPermission,
     getCaveat,
+    getCurrentChainIdForDomain,
   },
 ) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
@@ -93,6 +95,7 @@ async function switchEthereumChainHandler(
 
   // setup chainId
   const { chainId } = req.params[0];
+
   const _chainId = typeof chainId === 'string' && chainId.toLowerCase();
   if (!isPrefixedFormattedHexString(_chainId)) {
     return end(
@@ -117,6 +120,14 @@ async function switchEthereumChainHandler(
         message: `Received unexpected keys on object parameter. Unsupported keys:\n${otherKeys}`,
       }),
     );
+  }
+
+  const currentChainIdForOrigin = getCurrentChainIdForDomain(origin);
+
+  // get current chainId for origin
+  if (currentChainIdForOrigin === _chainId) {
+    res.result = null;
+    return end();
   }
 
   let permissionedChainIds;

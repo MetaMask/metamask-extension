@@ -5048,7 +5048,15 @@ export default class MetamaskController extends EventEmitter {
           this.selectedNetworkController.setNetworkClientIdForDomain.bind(
             this.selectedNetworkController,
           ),
-
+        getCurrentChainIdForDomain: (domain) => {
+          const networkClientId =
+            this.selectedNetworkController.getNetworkClientIdForDomain(domain);
+          const { chainId } =
+            this.networkController.getNetworkConfigurationByNetworkClientId(
+              networkClientId,
+            );
+          return chainId;
+        },
         getUseRequestQueue: this.preferencesController.getUseRequestQueue.bind(
           this.preferencesController,
         ),
