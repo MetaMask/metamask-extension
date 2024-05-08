@@ -128,6 +128,7 @@ class Driver {
     this.timeout = timeout;
     this.exceptions = [];
     this.errors = [];
+    this.ignoredHandleList = {};
     // The following values are found in
     // https://github.com/SeleniumHQ/selenium/blob/trunk/javascript/node/selenium-webdriver/lib/input.js#L50-L110
     // These should be replaced with string constants 'Enter' etc for playwright.
@@ -147,6 +148,22 @@ class Driver {
 
   async executeScript(script, ...args) {
     return this.driver.executeScript(script, args);
+  }
+
+  async takeScreenshot() {
+    return this.driver.takeScreenshot();
+  }
+
+  async getTitle() {
+    return this.driver.getTitle();
+  }
+
+  async getWindowHandle() {
+    return this.driver.getWindowHandle();
+  }
+
+  addToIgnoredHandleList(handleId) {
+    this.ignoredHandleList[handleId] = true;
   }
 
   buildLocator(locator) {
@@ -526,15 +543,24 @@ class Driver {
   }
 
   async getAllWindowHandles() {
-    return await this.driver.getAllWindowHandles();
+    let windowHandles = await this.driver.getAllWindowHandles();
+    console.log('--- windowHandles A', windowHandles);
+    windowHandles = windowHandles.filter((h) => {
+      return !this.ignoredHandleList[h];
+    });
+    console.log('--- windowHandles B', windowHandles);
+    return windowHandles;
   }
 
-  async waitUntilXWindowHandles(x, delayStep = 1000, timeout = this.timeout) {
+  async waitUntilXWindowHandles(_x, delayStep = 1000, timeout = this.timeout) {
+    const x = process.env.ENABLE_MV3
+      ? _x + (Object.keys(this.ignoredHandleList).length ? 0 : 1)
+      : _x;
     let timeElapsed = 0;
     let windowHandles = [];
     while (timeElapsed <= timeout) {
-      windowHandles = await this.driver.getAllWindowHandles();
-
+      windowHandles = await this.getAllWindowHandles();
+      console.log('--- windowHandles', windowHandles);
       if (windowHandles.length === x) {
         return windowHandles;
       }
@@ -558,6 +584,7 @@ class Driver {
   ) {
     let windowHandles =
       initialWindowHandles || (await this.driver.getAllWindowHandles());
+    windowHandles = windowHandles.filter((h) => !this.ignoredHandleList[h]);
     let timeElapsed = 0;
 
     while (timeElapsed <= timeout) {
