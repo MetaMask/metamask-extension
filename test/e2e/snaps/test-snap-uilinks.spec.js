@@ -26,6 +26,8 @@ describe('Test Snap UI Links', function () {
         await driver.scrollToElement(dialogButton);
         await driver.delay(1000);
         await driver.clickElement('#connectdialogs');
+
+        // required delay awaiting the dialog window to open
         await driver.delay(1000);
 
         // switch to metamask extension and click connect

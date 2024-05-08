@@ -32,6 +32,8 @@ describe('Test Snap Signature Insights', function () {
         await driver.scrollToElement(snapButton1);
         await driver.delay(1000);
         await driver.clickElement('#connectsignature-insights');
+
+        // required delay awaiting the dialog window to open
         await driver.delay(1000);
 
         // switch to metamask extension and click connect

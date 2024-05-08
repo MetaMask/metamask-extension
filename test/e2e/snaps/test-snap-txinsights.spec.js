@@ -35,6 +35,9 @@ describe('Test Snap TxInsights', function () {
         await driver.delay(1000);
         await driver.clickElement('#connecttransaction-insights');
 
+        // required delay awaiting the dialog window to open
+        await driver.delay(1000);
+
         // switch to metamask extension and click connect
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({
