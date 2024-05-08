@@ -42,6 +42,7 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
 
         await copyAddressAndPasteWalletAddress(driver);
         await assertPastedAddress(driver);
+        await assertAccountDetailsMetrics(driver, mockedEndpoints, 'eth_signTypedData');
 
         await assertSignatureDetails(driver);
 
@@ -51,9 +52,6 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
           mockedEndpoints,
           'eth_signTypedData',
         );
-
-        await assertAccountDetailsMetrics(driver, mockedEndpoints, 'eth_signTypedData');
-
         await assertVerifiedResults(driver, publicAddress);
       },
     );

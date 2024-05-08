@@ -49,6 +49,7 @@ describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
 
         await copyAddressAndPasteWalletAddress(driver);
         await assertPastedAddress(driver);
+        await assertAccountDetailsMetrics(driver, mockedEndpoints,  'eth_signTypedData_v3');
 
         await assertSignatureDetails(driver);
 
@@ -58,7 +59,6 @@ describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
           mockedEndpoints,
           'eth_signTypedData_v3',
         );
-        await assertAccountDetailsMetrics(driver, mockedEndpoints,  'eth_signTypedData_v3');
         /**
          * TODO: test scroll and fixing scroll
          * @see {@link https://github.com/MetaMask/MetaMask-planning/issues/2458}

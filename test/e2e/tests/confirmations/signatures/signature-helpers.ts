@@ -32,7 +32,6 @@ export async function assertSignatureMetrics(
     locale: 'en',
     chain_id: '0x539',
     environment_type: 'background',
-    security_alert_reason: 'NotApplicable',
     security_alert_response: 'NotApplicable',
     ui_customizations: ['redesigned_confirmation'],
   });
@@ -44,8 +43,7 @@ export async function assertAccountDetailsMetrics(
   type: string,
 ) {
   const events = await getEventPayloads(driver, mockedEndpoints);
-
-  assert.deepStrictEqual(events[2].properties, {
+  assert.deepStrictEqual(events[1].properties, {
     action: "Confirm Screen",
     location: "signature_confirmation",
     signature_type: type,

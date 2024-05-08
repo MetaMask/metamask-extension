@@ -49,6 +49,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
 
         await copyAddressAndPasteWalletAddress(driver);
         await assertPastedAddress(driver);
+        await assertAccountDetailsMetrics(driver, mockedEndpoints, 'personal_sign');
 
         await assertSignatureDetails(driver);
 
@@ -56,7 +57,6 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
 
         await assertVerifiedPersonalMessage(driver, publicAddress);
         await assertSignatureMetrics(driver, mockedEndpoints, 'personal_sign');
-        await assertAccountDetailsMetrics(driver, mockedEndpoints, 'personal_sign');
       },
     );
   });
