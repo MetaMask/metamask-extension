@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, Text } from '../../../../../component-library';
+import { Box, ButtonLink, Text } from '../../../../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -22,25 +22,35 @@ import { Quote } from '../../../../../../ducks/send/swap-and-send-utils';
 import Tooltip from '../../../../../ui/tooltip';
 import InfoTooltipIcon from '../../../../../ui/info-tooltip/info-tooltip-icon';
 import { MetaMetricsEventCategory } from '../../../../../../../shared/constants/metametrics';
-import { GAS_FEES_LEARN_MORE_URL } from '../../../../../../../shared/lib/ui-utils';
+import {
+  CONSENSYS_TERMS_OF_USE,
+  GAS_FEES_LEARN_MORE_URL,
+} from '../../../../../../../shared/lib/ui-utils';
 import { MetaMetricsContext } from '../../../../../../contexts/metametrics';
+import { hexToDecimal } from '../../../../../../../shared/modules/conversion.utils';
 import useEthFeeData from './hooks/useEthFeeData';
 import useTranslatedNetworkName from './hooks/useTranslatedNetworkName';
 import useGetConversionRate from './hooks/useGetConversionRate';
 
+type QuoteCardProps = {
+  scrollRef: React.RefObject<HTMLDivElement>;
+};
+
+// update literal below if over 60 seconds
 const REFRESH_INTERVAL = 30;
 
 /**
  * All the info about the current quote; handles polling and displaying the best quote
+ *
+ * @param options0
+ * @param options0.scrollRef - ref to scroll to quote on quote load
  */
-export function QuoteCard() {
+export function QuoteCard({ scrollRef }: QuoteCardProps) {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
   const translatedNetworkName = useTranslatedNetworkName();
   const trackEvent = useContext(MetaMetricsContext);
-
-  const scrollRef = useRef<HTMLElement>(null);
 
   const { isSwapQuoteLoading } = useSelector(getCurrentDraftTransaction);
 
@@ -49,7 +59,8 @@ export function QuoteCard() {
   const [timeLeft, setTimeLeft] = useState<number | undefined>(undefined);
 
   const { formattedEthGasFee, formattedFiatGasFee } = useEthFeeData(
-    bestQuote?.gasParams.maxGas,
+    (bestQuote?.gasParams.maxGas || 0) +
+      Number(hexToDecimal(bestQuote?.approvalNeeded?.gas || '0x0')),
   );
 
   const formattedConversionRate = useGetConversionRate();
@@ -64,7 +75,7 @@ export function QuoteCard() {
     if (isQuoteJustLoaded) {
       scrollRef.current?.scrollIntoView({
         behavior: 'smooth',
-        block: 'center',
+        block: 'start',
       });
     }
 
@@ -93,20 +104,22 @@ export function QuoteCard() {
     if (isSwapQuoteLoading) {
       return t('swapFetchingQuotes');
     } else if (bestQuote) {
-      return timeLeft ? t('swapNewQuoteIn', [timeLeft]) : undefined;
+      const timeLeftFormatted = `0${timeLeft}`.slice(-2);
+      return timeLeft
+        ? t('swapNewQuoteIn', [`0:${timeLeftFormatted}`])
+        : undefined;
     }
     return undefined;
   }, [isSwapQuoteLoading, bestQuote, timeLeft]);
 
   return (
     <Box
-      ref={scrollRef}
       display={Display.Flex}
-      paddingBottom={4}
       flexDirection={FlexDirection.Column}
-      alignItems={isSwapQuoteLoading ? AlignItems.center : AlignItems.flexStart}
-      gap={3}
+      alignItems={AlignItems.flexStart}
+      gap={2}
     >
+      {/* TIMER/FETCH INFO */}
       {infoText && (
         <Text
           color={TextColor.textAlternative}
@@ -116,6 +129,7 @@ export function QuoteCard() {
           {infoText}
         </Text>
       )}
+      {/* QUOTE CARD */}
       {bestQuote && (
         <Box
           backgroundColor={BackgroundColor.backgroundAlternative}
@@ -199,6 +213,24 @@ export function QuoteCard() {
           </Box>
         </Box>
       )}
+      {/* FEE INFO */}
+      {bestQuote && (
+        <Text color={TextColor.textAlternative} variant={TextVariant.bodySm}>
+          {t('swapIncludesMMFeeAlt', [bestQuote?.fee])}
+        </Text>
+      )}
+      {/* TOS LINK; doubles as anchor for scroll ref */}
+      <ButtonLink
+        variant={TextVariant.bodySm}
+        href={CONSENSYS_TERMS_OF_USE}
+        target="_blank"
+        className="quote-card__TOS"
+        disableUnderline
+      >
+        {t('termsOfService')}
+      </ButtonLink>
+      {/* SCROLL REF ANCHOR */}
+      <div ref={scrollRef} />
     </Box>
   );
 }

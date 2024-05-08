@@ -1,24 +1,16 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
-import isEqual from 'lodash/isEqual';
 import {
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
-  getSelectedInternalAccount,
-  getShouldHideZeroBalanceTokens,
 } from '../../../../selectors';
-import {
-  getNativeCurrency,
-  getTokens,
-} from '../../../../ducks/metamask/metamask';
-import { useTokenTracker } from '../../../../hooks/useTokenTracker';
+import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
 import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { Box } from '../../../component-library';
-import TokenCell from '../../../app/token-cell';
 import {
   AlignItems,
   BackgroundColor,
@@ -28,33 +20,29 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { TokenListItem } from '../..';
 import { Asset, Token } from './types';
+import AssetComponent from './Asset';
+
+const MAX_UNOWNED_TOKENS_RENDERED = 30;
 
 type AssetListProps = {
-  handleAssetChange: (token: Token) => () => void;
+  handleAssetChange: (token: Token) => void;
   asset: Asset;
+  tokenList: Token[];
+  // searchQuery and all attached logic (e.g., filteredTokenList) could be pulled up if appropriate for a future refactor
   searchQuery: string;
 };
 
 export default function AssetList({
   handleAssetChange,
   asset,
+  tokenList,
   searchQuery,
 }: AssetListProps) {
-  const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
   const selectedToken = asset.details?.address;
 
   const nativeCurrencyImage = useSelector(getNativeCurrencyImage);
   const nativeCurrency = useSelector(getNativeCurrency);
-  const shouldHideZeroBalanceTokens = useSelector(
-    getShouldHideZeroBalanceTokens,
-  );
   const balanceValue = useSelector(getSelectedAccountCachedBalance);
-  const tokens = useSelector(getTokens, isEqual);
-  const { tokensWithBalances } = useTokenTracker({
-    tokens,
-    address: selectedAddress,
-    hideZeroBalanceTokens: Boolean(shouldHideZeroBalanceTokens),
-  });
 
   const {
     currency: primaryCurrency,
@@ -75,12 +63,25 @@ export default function AssetList({
     useCurrencyDisplay(balanceValue, {
       numberOfDecimals: secondaryNumberOfDecimals,
       currency: secondaryCurrency,
+      hideLabel: true,
     });
 
-  const tokenList = useMemo(() => {
-    const filteredTokens: Token[] = tokensWithBalances.filter((token: Token) =>
-      token.symbol?.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
+  const filteredTokenList = useMemo(() => {
+    const filteredTokens: Token[] = [];
+
+    let token: Token;
+    for (token of tokenList) {
+      if (
+        token.symbol?.toLowerCase().includes(searchQuery.toLowerCase()) &&
+        token.symbol !== nativeCurrency
+      ) {
+        filteredTokens.push(token);
+      }
+
+      if (filteredTokens.length > MAX_UNOWNED_TOKENS_RENDERED) {
+        break;
+      }
+    }
 
     // prepend native currency to token list if it matches search query
     if (nativeCurrency?.toLowerCase().includes(searchQuery.toLowerCase())) {
@@ -96,11 +97,18 @@ export default function AssetList({
     }
 
     return filteredTokens;
-  }, [tokensWithBalances, searchQuery]);
+  }, [
+    tokenList,
+    searchQuery,
+    nativeCurrency,
+    nativeCurrencyImage,
+    balanceValue,
+    primaryCurrencyProperties.value,
+  ]);
 
   return (
     <Box className="tokens-main-view-modal">
-      {tokenList.map((token) => {
+      {filteredTokenList.map((token) => {
         const isSelected =
           token.address?.toLowerCase() === selectedToken?.toLowerCase();
         return (
@@ -117,7 +125,7 @@ export default function AssetList({
             className={classnames('multichain-asset-picker-list-item', {
               'multichain-asset-picker-list-item--selected': isSelected,
             })}
-            onClick={handleAssetChange(token)}
+            onClick={() => handleAssetChange(token)}
           >
             {isSelected ? (
               <Box
@@ -147,10 +155,11 @@ export default function AssetList({
                     tokenImage={token.image}
                   />
                 ) : (
-                  <TokenCell
+                  <AssetComponent
                     key={token.address}
                     {...token}
-                    onClick={handleAssetChange(token)}
+                    decimalTokenAmount={token.string}
+                    onClick={() => handleAssetChange(token)}
                   />
                 )}
               </Box>

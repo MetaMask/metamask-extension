@@ -34,6 +34,9 @@ export default {
     danger: {
       control: 'boolean',
     },
+    disableUnderline: {
+      control: 'boolean',
+    },
     size: {
       control: 'select',
       options: Object.values(ButtonLinkSize),
