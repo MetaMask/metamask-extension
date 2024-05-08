@@ -93,6 +93,10 @@ function mockParamId(id: string) {
 }
 
 describe('useCurrentConfirmation', () => {
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
   it('return message matching latest pending approval ID', () => {
     const currentConfirmation = runHook({
       message: MESSAGE_MOCK,

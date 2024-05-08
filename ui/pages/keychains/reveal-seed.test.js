@@ -24,7 +24,9 @@ jest.mock('../../store/actions.ts', () => ({
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useHistory: jest.fn(() => []),
+  useHistory: () => ({
+    push: jest.fn(),
+  }),
 }));
 
 const mockStateWithModal = {
