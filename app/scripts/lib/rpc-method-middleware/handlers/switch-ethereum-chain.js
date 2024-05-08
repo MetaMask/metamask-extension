@@ -130,9 +130,12 @@ async function switchEthereumChainHandler(
     return end();
   }
 
-  const networkClientId = findNetworkClientIdByChainId(chainId);
+  const networkConfigurationForRequestedChainId = findExistingNetwork(
+    _chainId,
+    findNetworkConfigurationBy,
+  );
 
-  if (!networkClientId) {
+  if (!networkConfigurationForRequestedChainId) {
     return end(
       ethErrors.provider.custom({
         code: 4902, // To-be-standardized "unrecognized chain ID" error
@@ -172,6 +175,8 @@ async function switchEthereumChainHandler(
       return end();
     }
   }
+
+  const networkClientId = findNetworkClientIdByChainId(chainId);
 
   try {
     await setActiveNetwork(networkClientId);
