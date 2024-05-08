@@ -472,8 +472,6 @@ describe('MetaMask onboarding @no-mmi', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-
         await unlockWallet(driver);
 
         // First screen we should be on is MetaMetrics
