@@ -33,6 +33,9 @@ describe('Test Snap Name Lookup', function () {
         await driver.delay(1000);
         await driver.clickElement('#connectname-lookup');
 
+        // required delay awaiting the dialog window to open
+        await driver.delay(1000);
+
         // switch to metamask extension and click connect
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({

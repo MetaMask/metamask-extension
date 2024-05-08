@@ -130,6 +130,9 @@ describe('Test Snap Signature Insights', function () {
         await driver.scrollToElement(signTypedButton1);
         await driver.clickElement('#signTypedData');
 
+        // required delay awaiting the dialog window to open
+        await driver.delay(1000);
+
         // switch back to MetaMask window and switch to tx insights pane
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
@@ -169,6 +172,9 @@ describe('Test Snap Signature Insights', function () {
         const signTypedV3Button1 = await driver.findElement('#signTypedDataV3');
         await driver.scrollToElement(signTypedV3Button1);
         await driver.clickElement('#signTypedDataV3');
+
+        // required delay awaiting the dialog window to open
+        await driver.delay(1000);
 
         // switch back to MetaMask window and switch to tx insights pane
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -213,6 +219,9 @@ describe('Test Snap Signature Insights', function () {
         const signTypedV4Button1 = await driver.findElement('#signTypedDataV4');
         await driver.scrollToElement(signTypedV4Button1);
         await driver.clickElement('#signTypedDataV4');
+
+        // required delay awaiting the dialog window to open
+        await driver.delay(1000);
 
         // switch back to MetaMask window and switch to tx insights pane
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -309,6 +318,9 @@ describe('Test Snap Signature Insights', function () {
         const ethSignButton1 = await driver.findElement('#ethSign');
         await driver.scrollToElement(ethSignButton1);
         await driver.clickElement('#ethSign');
+
+        // required delay awaiting the dialog window to open
+        await driver.delay(1000);
 
         // switch back to MetaMask window and switch to tx insights pane
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);

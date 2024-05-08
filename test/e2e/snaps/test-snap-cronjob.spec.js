@@ -32,6 +32,9 @@ describe('Test Snap Cronjob', function () {
         await driver.delay(500);
         await driver.clickElement('#connectcronjobs');
 
+        // required delay awaiting the dialog window to open
+        await driver.delay(500);
+
         // switch to metamask extension and click connect
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({

@@ -32,6 +32,9 @@ describe('Test Snap Dialog', function () {
         await driver.delay(500);
         await driver.clickElement('#connectdialogs');
 
+        // required delay awaiting the dialog window to open
+        await driver.delay(1000);
+
         // switch to metamask extension and click connect
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({
@@ -65,6 +68,9 @@ describe('Test Snap Dialog', function () {
         // click on alert dialog
         await driver.clickElement('#sendAlertButton');
 
+        // required delay awaiting the dialog window to open
+        await driver.delay(1000);
+
         // switch to dialog popup
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
@@ -94,6 +100,9 @@ describe('Test Snap Dialog', function () {
         // click conf button
         await driver.clickElement('#sendConfirmationButton');
 
+        // required delay awaiting the dialog window to open
+        await driver.delay(1000);
+
         // switch to dialog popup
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
@@ -114,6 +123,9 @@ describe('Test Snap Dialog', function () {
 
         // click conf button again
         await driver.clickElement('#sendConfirmationButton');
+
+        // required delay awaiting the dialog window to open
+        await driver.delay(1000);
 
         // switch to dialog popup
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -136,6 +148,9 @@ describe('Test Snap Dialog', function () {
         // click prompt button
         await driver.clickElement('#sendPromptButton');
 
+        // required delay awaiting the dialog window to open
+        await driver.delay(1000);
+
         // switch to dialog popup
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
@@ -156,6 +171,9 @@ describe('Test Snap Dialog', function () {
 
         // click prompt button
         await driver.clickElement('#sendPromptButton');
+
+        // required delay awaiting the dialog window to open
+        await driver.delay(1000);
 
         // switch to dialog popup
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
