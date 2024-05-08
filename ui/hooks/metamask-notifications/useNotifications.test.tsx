@@ -9,7 +9,6 @@ import * as actions from '../../store/actions';
 import {
   useEnableNotifications,
   useDisableNotifications,
-  useIsNotificationEnabled,
   useListNotifications,
   useMarkNotificationAsRead,
 } from './useNotifications';
@@ -101,14 +100,6 @@ describe('useNotifications', () => {
     expect(actions.setMetamaskNotificationsEnabled).toHaveBeenCalledWith(false);
     expect(actions.setSnapNotificationsEnabled).toHaveBeenCalledWith(false);
     expect(actions.setFeatureAnnouncementsEnabled).toHaveBeenCalledWith(false);
-  });
-
-  it('should check if notifications are enabled', () => {
-    const { result } = renderHook(() => useIsNotificationEnabled(), {
-      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
-    });
-
-    expect(result.current.isNotificationEnabled).toBe(false);
   });
 
   it('should list notifications', async () => {

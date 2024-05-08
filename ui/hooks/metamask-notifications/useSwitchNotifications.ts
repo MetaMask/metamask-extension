@@ -8,10 +8,6 @@ import {
   deleteOnChainTriggersByAccount,
   updateOnChainTriggersByAccount,
 } from '../../store/actions';
-import {
-  selectIsSnapNotificationsEnabled,
-  selectIsFeatureAnnouncementsEnabled,
-} from '../../selectors/metamask-notifications/metamask-notifications';
 import { getInternalAccounts } from '../../selectors';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 
@@ -26,18 +22,6 @@ type AccountType = InternalAccount & {
   keyring: KeyringType;
   label: string;
 };
-
-export function useSwitchSnapNotifications(): {
-  data: boolean;
-} {
-  const isSnapNotificationsEnabled = useSelector(
-    selectIsSnapNotificationsEnabled,
-  );
-
-  return {
-    data: isSnapNotificationsEnabled,
-  };
-}
 
 export function useSwitchSnapNotificationsChange(): {
   onChange: (state: boolean) => Promise<void>;
@@ -72,18 +56,6 @@ export function useSwitchSnapNotificationsChange(): {
     onChange,
     isLoading,
     error,
-  };
-}
-
-export function useSwitchFeatureAnnouncements(): {
-  data: boolean;
-} {
-  const isFeatureAnnouncementsEnabled = useSelector(
-    selectIsFeatureAnnouncementsEnabled,
-  );
-
-  return {
-    data: isFeatureAnnouncementsEnabled,
   };
 }
 

@@ -8,7 +8,6 @@ import * as actions from '../../store/actions';
 import {
   useEnableProfileSyncing,
   useDisableProfileSyncing,
-  useIsProfileSyncingEnabled,
 } from './useProfileSyncing';
 
 const middlewares = [thunk];
@@ -97,13 +96,5 @@ describe('useProfileSyncing', () => {
     if (!store.getState().metamask.participateInMetaMetrics) {
       expect(actions.performSignOut).toHaveBeenCalled();
     }
-  });
-
-  it('should check if profile syncing is enabled', () => {
-    const { result } = renderHook(() => useIsProfileSyncingEnabled(), {
-      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
-    });
-
-    expect(result.current.isProfileSyncingEnabled).toBe(false);
   });
 });

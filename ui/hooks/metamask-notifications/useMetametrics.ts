@@ -1,9 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  selectParticipateInMetaMetrics,
-  selectIsSignedIn,
-} from '../../selectors/metamask-notifications/authentication';
+import { selectIsSignedIn } from '../../selectors/metamask-notifications/authentication';
 import { selectIsProfileSyncingEnabled } from '../../selectors/metamask-notifications/profile-syncing';
 import {
   performSignOut,
@@ -102,22 +99,5 @@ export function useDisableMetametrics(): {
     disableMetametrics,
     loading,
     error,
-  };
-}
-
-/**
- * Provides a hook to check if MetaMetrics tracking is enabled.
- *
- * @returns An object containing a boolean `isMetametricsEnabled` that indicates whether MetaMetrics is currently enabled.
- */
-export function useIsMetametricsEnabled(): {
-  isMetametricsEnabled: boolean;
-} {
-  const isParticipateInMetaMetrics = useSelector(
-    selectParticipateInMetaMetrics,
-  );
-
-  return {
-    isMetametricsEnabled: isParticipateInMetaMetrics,
   };
 }

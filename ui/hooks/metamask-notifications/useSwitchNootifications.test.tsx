@@ -6,9 +6,7 @@ import thunk from 'redux-thunk';
 import type { Store } from 'redux';
 import * as actions from '../../store/actions';
 import {
-  useSwitchSnapNotifications,
   useSwitchSnapNotificationsChange,
-  useSwitchFeatureAnnouncements,
   useSwitchFeatureAnnouncementsChange,
   useSwitchAccountNotifications,
   useSwitchAccountNotificationsChange,
@@ -94,22 +92,6 @@ describe('useSwitchNotifications', () => {
     await waitForNextUpdate();
 
     expect(actions.setFeatureAnnouncementsEnabled).toHaveBeenCalledWith(true);
-  });
-
-  it('should get current state of snap notifications', () => {
-    const { result } = renderHook(() => useSwitchSnapNotifications(), {
-      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
-    });
-
-    expect(result.current.data).toBe(false);
-  });
-
-  it('should get current state of feature announcements', () => {
-    const { result } = renderHook(() => useSwitchFeatureAnnouncements(), {
-      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
-    });
-
-    expect(result.current.data).toBe(false);
   });
 
   it('should check account presence', async () => {

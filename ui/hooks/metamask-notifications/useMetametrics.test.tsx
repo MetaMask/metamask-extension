@@ -5,11 +5,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import type { Store } from 'redux';
 import * as actions from '../../store/actions';
-import {
-  useEnableMetametrics,
-  useDisableMetametrics,
-  useIsMetametricsEnabled,
-} from './useMetametrics';
+import { useEnableMetametrics, useDisableMetametrics } from './useMetametrics';
 
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);
@@ -93,13 +89,5 @@ describe('useMetametrics', () => {
     expect(actions.performSignOut).toHaveBeenCalled();
     expect(actions.setParticipateInMetaMetrics).toHaveBeenCalledWith(false);
     expect(result.current.loading).toBe(false);
-  });
-
-  it('should check if MetaMetrics is enabled', () => {
-    const { result } = renderHook(() => useIsMetametricsEnabled(), {
-      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
-    });
-
-    expect(result.current.isMetametricsEnabled).toBe(false);
   });
 });

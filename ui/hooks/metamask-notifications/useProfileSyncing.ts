@@ -5,7 +5,6 @@ import {
   selectIsSignedIn,
   selectParticipateInMetaMetrics,
 } from '../../selectors/metamask-notifications/authentication';
-import { selectIsProfileSyncingEnabled } from '../../selectors/metamask-notifications/profile-syncing';
 import { selectIsMetamaskNotificationsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
 import {
   disableProfileSyncing as disableProfileSyncingAction,
@@ -140,17 +139,4 @@ export function useDisableProfileSyncing(): {
   }, [dispatch, isSignedIn, isMetamaskNotificationsEnabled]);
 
   return { disableProfileSyncing, loading, error };
-}
-
-/**
- * Custom hook to check if profile syncing is enabled. This hook uses a selector to retrieve
- * the profile syncing state from the Redux store.
- *
- * @returns An object containing the current state of profile syncing.
- */
-export function useIsProfileSyncingEnabled(): {
-  isProfileSyncingEnabled: boolean;
-} {
-  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
-  return { isProfileSyncingEnabled };
 }

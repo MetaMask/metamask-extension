@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import type { InternalAccount } from '@metamask/keyring-api';
-import { selectIsMetamaskNotificationsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
 import {
   createOnChainTriggers,
   deleteOnChainTriggersByAccount,
@@ -109,23 +108,6 @@ export function useDisableNotifications(): {
     disableNotifications,
     loading,
     error,
-  };
-}
-
-/**
- * Custom hook to check if notifications are enabled by accessing the Redux state.
- *
- * @returns An object containing the current state of notification enablement.
- */
-export function useIsNotificationEnabled(): {
-  isNotificationEnabled: boolean;
-} {
-  const isNotificationEnabled = useSelector(
-    selectIsMetamaskNotificationsEnabled,
-  );
-
-  return {
-    isNotificationEnabled,
   };
 }
 
