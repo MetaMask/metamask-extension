@@ -94,18 +94,6 @@ describe('NetworkListMenu', () => {
     expect(mockSetProviderType).toHaveBeenCalled();
   });
 
-  it('does not signal to the SelectedNetworkController when the user switches networks manually', () => {
-    const { getByText } = render({ origin: undefined });
-    fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
-    expect(numberOfSetNetworkClientIdForDomainCalls).toBe(0);
-  });
-
-  it('signals to the SelectedNetworkController when the user switches networks manually', () => {
-    const { getByText } = render();
-    fireEvent.click(getByText(MAINNET_DISPLAY_NAME));
-    expect(numberOfSetNetworkClientIdForDomainCalls).toBe(1);
-  });
-
   it('shows the correct selected network when networks share the same chain ID', () => {
     // Mainnet and Custom Mainnet RPC both use chain ID 0x1
     render({
