@@ -1,6 +1,5 @@
 import { ethErrors } from 'eth-rpc-errors';
 import { omit } from 'lodash';
-import { ApprovalType } from '@metamask/controller-utils';
 import { PermissionDoesNotExistError } from '@metamask/permission-controller';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
@@ -23,15 +22,12 @@ const switchEthereumChain = {
   methodNames: [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN],
   implementation: switchEthereumChainHandler,
   hookNames: {
-    getCurrentChainId: true,
     findNetworkConfigurationBy: true,
     findNetworkClientIdByChainId: true,
     setNetworkClientIdForDomain: true,
     setProviderType: true,
     setActiveNetwork: true,
-    requestUserApproval: true,
     getNetworkConfigurations: true,
-    getProviderConfig: true,
     hasPermissions: true,
     hasPermission: true,
     getPermissionsForOrigin: true,
@@ -67,14 +63,10 @@ async function switchEthereumChainHandler(
   _next,
   end,
   {
-    getCurrentChainId,
     findNetworkConfigurationBy,
     findNetworkClientIdByChainId,
     setNetworkClientIdForDomain,
-    setProviderType,
     setActiveNetwork,
-    requestUserApproval,
-    getProviderConfig,
     hasPermissions,
     requestSwitchNetworkPermission,
     getCaveat,
@@ -154,7 +146,8 @@ async function switchEthereumChainHandler(
   } catch (e) {
     // throws if the origin does not have any switchEthereumChain permissions yet
     if (e instanceof PermissionDoesNotExistError) {
-      // suppress
+      // suppress expected error in case that the domain does not have a
+      // wallet_switchEthereumChain permission set yet
     } else {
       throw e;
     }
@@ -165,7 +158,8 @@ async function switchEthereumChainHandler(
     !permissionedChainIds.includes(_chainId)
   ) {
     try {
-      // TODO replace with caveat merging rather than passing already permissionedChains here as well
+      // TODO replace with caveat merging once merged
+      // rather than passing already permissionedChains here
       await requestSwitchNetworkPermission([
         ...(permissionedChainIds ?? []),
         chainId,

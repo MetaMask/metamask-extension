@@ -289,14 +289,13 @@ function validateCaveatAccounts(accounts, getInternalAccounts) {
  * switchEthereumChain.
  *
  * @param {string} chainId - The network associated with the caveat
+ * @param chainIdsForCaveat
  * @param {() => string} findNetworkClientIdByChainId - method to throw error if network is unknown
- *
  */
 function validateCaveatNetworks(
   chainIdsForCaveat,
   findNetworkClientIdByChainId,
 ) {
-
   if (!Array.isArray(chainIdsForCaveat) || chainIdsForCaveat.length === 0) {
     throw new Error(
       `${PermissionNames.wallet_switchEthereumChain} error: Expected non-empty array of chainIds.`,
