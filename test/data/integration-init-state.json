@@ -1226,6 +1226,7 @@
 			}
 		}
 	},
+  "switchedNetworkNeverShowMessage": false,
 	"termsOfUseLastAgreed": 1692109813199,
 	"theme": "os",
 	"tokenList": {
