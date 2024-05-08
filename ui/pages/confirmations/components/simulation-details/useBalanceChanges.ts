@@ -25,6 +25,11 @@ const NATIVE_DECIMALS = 18;
 
 const ERC20_DEFAULT_DECIMALS = 18;
 
+// See https://github.com/MikeMcl/bignumber.js/issues/11#issuecomment-23053776
+function convertNumberToStringWithPrecisionWarning(value: number): string {
+  return String(value);
+}
+
 // Converts a SimulationTokenStandard to a TokenStandard
 function convertStandard(standard: SimulationTokenStandard) {
   switch (standard) {
@@ -55,8 +60,17 @@ function getAssetAmount(
 // Fetches the decimals for the given token address.
 async function fetchErc20Decimals(address: Hex): Promise<number> {
   try {
-    const { decimals } = await getTokenStandardAndDetails(address);
-    return decimals ? parseInt(decimals, 10) : ERC20_DEFAULT_DECIMALS;
+    const { decimals: decStr } = await getTokenStandardAndDetails(address);
+    if (!decStr) {
+      return ERC20_DEFAULT_DECIMALS;
+    }
+    for (const radix of [10, 16]) {
+      const parsedDec = parseInt(decStr, radix);
+      if (isFinite(parsedDec)) {
+        return parsedDec;
+      }
+    }
+    return ERC20_DEFAULT_DECIMALS;
   } catch {
     return ERC20_DEFAULT_DECIMALS;
   }
@@ -106,7 +120,9 @@ function getNativeBalanceChange(
   }
   const asset = NATIVE_ASSET_IDENTIFIER;
   const amount = getAssetAmount(nativeBalanceChange, NATIVE_DECIMALS);
-  const fiatAmount = amount?.times(nativeFiatRate).toNumber();
+  const fiatAmount = amount
+    .times(convertNumberToStringWithPrecisionWarning(nativeFiatRate))
+    .toNumber();
   return { asset, amount, fiatAmount };
 }
 
@@ -131,7 +147,9 @@ function getTokenBalanceChanges(
 
     const fiatRate = erc20FiatRates[tokenBc.address];
     const fiatAmount = fiatRate
-      ? amount.times(fiatRate).toNumber()
+      ? amount
+          .times(convertNumberToStringWithPrecisionWarning(fiatRate))
+          .toNumber()
       : FIAT_UNAVAILABLE;
 
     return { asset, amount, fiatAmount };
