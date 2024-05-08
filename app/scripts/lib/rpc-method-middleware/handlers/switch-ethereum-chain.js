@@ -17,6 +17,7 @@ import {
   CaveatTypes,
   RestrictedMethods,
 } from '../../../../../shared/constants/permissions';
+import { PermissionDoesNotExistError } from '@metamask/permission-controller';
 
 const switchEthereumChain = {
   methodNames: [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN],
@@ -120,19 +121,31 @@ async function switchEthereumChainHandler(
     );
   }
 
+  let permissionedChainIds;
   // throws if the origin does not have any switchEthereumChain permissions
-  const { value: permissionedChainIds } = getCaveat(
-    origin,
-    RestrictedMethods.wallet_switchEthereumChain,
-    CaveatTypes.restrictNetworkSwitching,
-  );
+  try {
+    ({ value: permissionedChainIds } = getCaveat(
+      origin,
+      RestrictedMethods.wallet_switchEthereumChain,
+      CaveatTypes.restrictNetworkSwitching,
+    ));
+  } catch (e) {
+    if (e instanceof PermissionDoesNotExistError) {
+      // suppress
+    } else {
+      throw e;
+    }
+  }
 
   // const { [ApprovalType.wallet_switchEthereumChain] : {caveats: [{}]} }
   // if(permissions?.[ApprovalType.wallet_switchEthereumChain]?.caveats) {
 
   // TODO check if the permission for this chain for this origin is already granted
 
-  if (!permissionedChainIds.includes(_chainId)) {
+  if (
+    permissionedChainIds === undefined ||
+    !permissionedChainIds.includes(_chainId)
+  ) {
     try {
       await requestSwitchNetworkPermission(chainId);
     } catch (err) {
