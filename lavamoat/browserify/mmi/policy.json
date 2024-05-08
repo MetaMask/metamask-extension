@@ -756,12 +756,6 @@
         "@metamask/obs-store": true
       }
     },
-    "@metamask-institutional/portfolio-dashboard": {
-      "globals": {
-        "console.log": true,
-        "fetch": true
-      }
-    },
     "@metamask-institutional/rpc-allowlist": {
       "globals": {
         "URL": true
