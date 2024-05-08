@@ -10,7 +10,7 @@ import {
 } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
-import { assertMetrics } from './signature-helpers';
+import { assertAccountDetailsMetrics, assertHeaderInfoBalance, assertPastedAddress, assertSignatureMetrics, clickHeaderInfoBtn, copyAddressAndPasteWalletAddress } from './signature-helpers';
 
 describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
   if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
@@ -47,8 +47,13 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
 
         await driver.clickElement('[data-testid="confirm-footer-button"]');
 
-        await assertMetrics(driver, mockedEndpoints, 'eth_signTypedData_v4');
+        await assertSignatureMetrics(
+          driver,
+          mockedEndpoints,
+          'eth_signTypedData_v4',
+        );
 
+        await assertAccountDetailsMetrics(driver, mockedEndpoints,  'eth_signTypedData_v4');
         /**
          * TODO: test scroll and fixing scroll
          * @see {@link https://github.com/MetaMask/MetaMask-planning/issues/2458}
@@ -91,7 +96,13 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
         const rejectionResult = await driver.findElement(
           '#signTypedDataV4Result',
         );
-        await assertMetrics(driver, mockedEndpoints, 'eth_signTypedData_v4');
+        await assertSignatureMetrics(
+          driver,
+          mockedEndpoints,
+          'eth_signTypedData_v4',
+        );
+
+        await assertAccountDetailsMetrics(driver, mockedEndpoints, 'personal_sign');
 
         assert.equal(
           await rejectionResult.getText(),
@@ -103,6 +114,7 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
 });
 
 async function assertSignatureDetails(driver: Driver) {
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   const origin = driver.findElement({ text: DAPP_URL_WITHOUT_SCHEMA });
   const contractPetName = driver.findElement({
     css: '.name__value',
@@ -155,19 +167,3 @@ async function assertVerifiedResults(driver: Driver, publicAddress: string) {
   );
   assert.equal(await verifyRecoverAddress.getText(), publicAddress);
 }
-function clickHeaderInfoBtn(driver: Driver) {
-  throw new Error('Function not implemented.');
-}
-
-function assertHeaderInfoBalance(driver: Driver) {
-  throw new Error('Function not implemented.');
-}
-
-function copyAddressAndPasteWalletAddress(driver: Driver) {
-  throw new Error('Function not implemented.');
-}
-
-function assertPastedAddress(driver: Driver) {
-  throw new Error('Function not implemented.');
-}
-

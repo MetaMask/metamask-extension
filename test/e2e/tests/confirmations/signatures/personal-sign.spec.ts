@@ -15,7 +15,8 @@ import {
   assertPastedAddress,
   clickHeaderInfoBtn,
   copyAddressAndPasteWalletAddress,
-  assertMetrics as assertMetrics,
+  assertSignatureMetrics,
+  assertAccountDetailsMetrics,
 } from './signature-helpers';
 
 describe('Confirmation Signature - Personal Sign', function (this: Suite) {
@@ -54,7 +55,8 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
         await driver.clickElement('[data-testid="confirm-footer-button"]');
 
         await assertVerifiedPersonalMessage(driver, publicAddress);
-        await assertMetrics(driver, mockedEndpoints, 'personal_sign');
+        await assertSignatureMetrics(driver, mockedEndpoints, 'personal_sign');
+        await assertAccountDetailsMetrics(driver, mockedEndpoints, 'personal_sign');
       },
     );
   });
@@ -90,13 +92,14 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
           'ERROR: USER REJECTED THE REQUEST.',
         );
 
-        await assertMetrics(driver, mockedEndpoints, 'personal_sign');
+        await assertSignatureMetrics(driver, mockedEndpoints, 'personal_sign');
       },
     );
   });
 });
 
 async function assertSignatureDetails(driver: Driver) {
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   const origin = driver.findElement({ text: DAPP_URL_WITHOUT_SCHEMA });
   const message = driver.findElement({
     text: 'Example `personal_sign` message',

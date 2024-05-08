@@ -10,7 +10,7 @@ import {
 } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
-import { assertMetrics } from './signature-helpers';
+import { assertAccountDetailsMetrics, assertHeaderInfoBalance, assertPastedAddress, assertSignatureMetrics, clickHeaderInfoBtn, copyAddressAndPasteWalletAddress } from './signature-helpers';
 
 describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
   if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
@@ -46,7 +46,13 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
         await assertSignatureDetails(driver);
 
         await driver.clickElement('[data-testid="confirm-footer-button"]');
-        await assertMetrics(driver, mockedEndpoints, 'eth_signTypedData');
+        await assertSignatureMetrics(
+          driver,
+          mockedEndpoints,
+          'eth_signTypedData',
+        );
+
+        await assertAccountDetailsMetrics(driver, mockedEndpoints, 'eth_signTypedData');
 
         await assertVerifiedResults(driver, publicAddress);
       },
@@ -75,7 +81,11 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
         await driver.clickElement(
           '[data-testid="confirm-footer-cancel-button"]',
         );
-        await assertMetrics(driver, mockedEndpoints, 'eth_signTypedData');
+        await assertSignatureMetrics(
+          driver,
+          mockedEndpoints,
+          'eth_signTypedData',
+        );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
@@ -92,6 +102,7 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
 });
 
 async function assertSignatureDetails(driver: Driver) {
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   const origin = driver.findElement({ text: DAPP_URL_WITHOUT_SCHEMA });
   const message = driver.findElement({ text: 'Hi, Alice!' });
 
@@ -118,19 +129,3 @@ async function assertVerifiedResults(driver: Driver, publicAddress: string) {
   );
   assert.equal(await verifyRecoverAddress.getText(), publicAddress);
 }
-function clickHeaderInfoBtn(driver: Driver) {
-  throw new Error('Function not implemented.');
-}
-
-function assertHeaderInfoBalance(driver: Driver) {
-  throw new Error('Function not implemented.');
-}
-
-function copyAddressAndPasteWalletAddress(driver: Driver) {
-  throw new Error('Function not implemented.');
-}
-
-function assertPastedAddress(driver: Driver) {
-  throw new Error('Function not implemented.');
-}
-

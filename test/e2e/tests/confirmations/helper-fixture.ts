@@ -17,7 +17,7 @@ export function withRedesignConfirmationFixtures (title: string = '', testFuncti
         })
         .withPreferencesController({
           preferences: {
-            redesignedConfirmations: true,
+            redesignedConfirmationsEnabled: true,
           },
         })
         .build(),

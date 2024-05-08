@@ -1,8 +1,12 @@
 import { strict as assert } from 'assert';
-import { WINDOW_TITLES, getEventPayloads } from '../../../helpers';
+import {
+  WINDOW_TITLES,
+  getEventPayloads,
+  regularDelayMs,
+} from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 
-export async function assertMetrics(
+export async function assertSignatureMetrics(
   driver: Driver,
   mockedEndpoints: any,
   type: string,
@@ -34,12 +38,32 @@ export async function assertMetrics(
   });
 }
 
+export async function assertAccountDetailsMetrics(
+  driver: Driver,
+  mockedEndpoints: any,
+  type: string,
+) {
+  const events = await getEventPayloads(driver, mockedEndpoints);
+
+  assert.deepStrictEqual(events[2].properties, {
+    action: "Confirm Screen",
+    location: "signature_confirmation",
+    signature_type: type,
+    category: "Transactions",
+    locale: "en",
+    chain_id: "0x539",
+    environment_type: "notification",
+    ui_customizations: ['redesigned_confirmation'],
+  });
+}
+
 export async function clickHeaderInfoBtn(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await driver.clickElement('button[data-testid="header-info-button"]');
+  await driver.clickElementUsingMouseMove('button[data-testid="header-info-button"]');
 }
 
 export async function assertHeaderInfoBalance(driver: Driver) {
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   const headerBalanceEl = await driver.findElement(
     '[data-testid="header-balance"]',
   );
@@ -49,6 +73,9 @@ export async function assertHeaderInfoBalance(driver: Driver) {
 
 export async function copyAddressAndPasteWalletAddress(driver: Driver) {
   await driver.clickElement('[data-testid="address-copy-button-text"]');
+  await driver.clickElement(
+    '[data-testid="account-details-modal-close-button"]',
+  );
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await driver.findElement('#eip747ContractAddress');
   await driver.pasteFromClipboardIntoField('#eip747ContractAddress');

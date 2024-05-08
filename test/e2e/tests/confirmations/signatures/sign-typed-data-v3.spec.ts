@@ -15,7 +15,8 @@ import {
   assertPastedAddress,
   clickHeaderInfoBtn,
   copyAddressAndPasteWalletAddress,
-  assertMetrics as assertMetrics,
+  assertSignatureMetrics as assertSignatureMetrics,
+  assertAccountDetailsMetrics,
 } from './signature-helpers';
 
 describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
@@ -52,8 +53,12 @@ describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
         await assertSignatureDetails(driver);
 
         await driver.clickElement('[data-testid="confirm-footer-button"]');
-        await assertMetrics(driver, mockedEndpoints, 'eth_signTypedData_v3');
-
+        await assertSignatureMetrics(
+          driver,
+          mockedEndpoints,
+          'eth_signTypedData_v3',
+        );
+        await assertAccountDetailsMetrics(driver, mockedEndpoints,  'eth_signTypedData_v3');
         /**
          * TODO: test scroll and fixing scroll
          * @see {@link https://github.com/MetaMask/MetaMask-planning/issues/2458}
@@ -96,7 +101,11 @@ describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
         const rejectionResult = await driver.findElement(
           '#signTypedDataV3Result',
         );
-        await assertMetrics(driver, mockedEndpoints, 'eth_signTypedData_v3');
+        await assertSignatureMetrics(
+          driver,
+          mockedEndpoints,
+          'eth_signTypedData_v3',
+        );
 
         assert.equal(
           await rejectionResult.getText(),
@@ -108,6 +117,7 @@ describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
 });
 
 async function assertSignatureDetails(driver: Driver) {
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   const origin = driver.findElement({ text: DAPP_URL_WITHOUT_SCHEMA });
   const contractPetName = driver.findElement({
     css: '.name__value',
