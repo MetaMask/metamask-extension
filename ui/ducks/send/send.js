@@ -466,6 +466,7 @@ export const draftTransactionInitialState = {
  *  Comes from the GasFeeController.
  * @property {string} gasTotalForLayer1 -  Layer 1 gas fee total on multi-layer
  *  fee networks
+ * @property {object} prevSwapAndSendInput - form inputs for the last submitted swap and send transaction
  * @property {string} recipientInput - The user input of the recipient
  *  which is updated quickly to avoid delays in the UI reflecting manual entry
  *  of addresses.
@@ -755,6 +756,7 @@ export const initializeSendState = createAsyncThunk(
       gasTotal: addHexPrefix(calcGasTotal(gasLimit, gasPrice)),
       gasEstimatePollToken,
       eip1559support,
+      prevSwapAndSendInput: null,
       useTokenDetection: getUseTokenDetection(state),
       tokenAddressList: Object.keys(getTokenList(state)),
     };
@@ -858,6 +860,9 @@ const fetchSwapAndSendQuotes = createAsyncThunk(
  * @typedef {(
  *  import('@reduxjs/toolkit').PayloadAction<SendState['recipientMode']>
  * )} UpdateRecipientModePayload
+ * @typedef {(
+ *  import('@reduxjs/toolkit').PayloadAction<SendState['prevSwapAndSendInput']>
+ * )} PrevSwapAndSendPayload
  */
 
 /**
@@ -1000,11 +1005,25 @@ const slice = createSlice({
       state.draftTransactions = {};
     },
     /**
-     * Clears the send state by setting it to the initial value
+     * Clears the send state by setting it to the initial value; preserves the previous swap and send input  object
      *
+     * @param state - A writable draft of the send state to be
+     *  updated.
      * @returns {SendState}
      */
-    resetSendState: () => initialState,
+    resetSendState: (state) => ({
+      ...initialState,
+      prevSwapAndSendInput: state.prevSwapAndSendInput,
+    }),
+    /**
+     * Sets the amount to the provided value and validates the field.
+     *
+     * @param {SendStateDraft} state - A writable draft of the send state to be
+     * @param {PrevSwapAndSendPayload} action - An action with payload that is
+     */
+    setPrevSwapAndSend: (state, action) => {
+      state.prevSwapAndSendInput = action.payload;
+    },
     /**
      * sets the amount mode to the provided value as long as it is one of the
      * supported modes (MAX|INPUT)
@@ -2054,7 +2073,22 @@ export function editExistingTransaction(assetType, transactionId) {
     const transaction = unapprovedTransactions[transactionId];
     const account = getTargetAccount(state, transaction.txParams.from);
 
-    if (assetType === AssetType.native) {
+    const isSwapAndSend = state[name].prevSwapAndSendInput;
+
+    if (isSwapAndSend) {
+      dispatch(
+        actions.addNewDraft({
+          ...draftTransactionInitialState,
+          ...state[name].prevSwapAndSendInput,
+          id: transactionId,
+          fromAccount: account,
+          history: [
+            `sendFlow - user clicked edit on transaction with id ${transactionId} (swap and send)`,
+          ],
+        }),
+      );
+      dispatch(updateSendQuote());
+    } else if (assetType === AssetType.native) {
       await dispatch(
         actions.addNewDraft({
           ...draftTransactionInitialState,
@@ -2792,6 +2826,16 @@ export function signTransaction() {
           },
         });
       }
+
+      const { amount, sendAsset, receiveAsset, recipient } = draftTransaction;
+      await dispatch(
+        actions.setPrevSwapAndSend({
+          amount: { ...amount },
+          sendAsset: { ...sendAsset },
+          receiveAsset: { ...receiveAsset },
+          recipient: { ...recipient },
+        }),
+      );
 
       const { id: transactionId } = await dispatch(
         addTransactionAndRouteToConfirmationPage(txParams, {
