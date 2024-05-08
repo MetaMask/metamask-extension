@@ -3527,10 +3527,6 @@
     "message": "See address, account balance, activity and suggest transactions to approve",
     "description": "The description for the `eth_accounts` permission"
   },
-  "permission_walletSwitchEthereumChain": {
-    "message": "Switch ethereum networks",
-    "description": "The label for the `wallet_switchEthereumChain` permission"
-  },
   "permission_ethereumProvider": {
     "message": "Access the Ethereum provider.",
     "description": "The description for the `endowment:ethereum-provider` permission"
@@ -3682,6 +3678,10 @@
   "permission_viewNamedBip32PublicKeys": {
     "message": "View your public key for $1.",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'."
+  },
+  "permission_walletSwitchEthereumChain": {
+    "message": "Switch to and use the following network",
+    "description": "The label for the `wallet_switchEthereumChain` permission"
   },
   "permission_webAssembly": {
     "message": "Support for WebAssembly.",
@@ -4294,9 +4294,6 @@
   },
   "selectAccounts": {
     "message": "Select the account(s) to use on this site"
-  },
-  "selectNetwork": {
-    "message": "Select the networks(s) to use on this site"
   },
   "selectAccountsForSnap": {
     "message": "Select the account(s) to use with this snap"

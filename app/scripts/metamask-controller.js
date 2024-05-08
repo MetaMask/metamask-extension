@@ -1118,9 +1118,10 @@ export default class MetamaskController extends EventEmitter {
         getInternalAccounts: this.accountsController.listAccounts.bind(
           this.accountsController,
         ),
-        findNetworkClientIdByChainId: this.networkController.findNetworkClientIdByChainId.bind(
-          this.networkController
-        )
+        findNetworkClientIdByChainId:
+          this.networkController.findNetworkClientIdByChainId.bind(
+            this.networkController,
+          ),
       }),
       permissionSpecifications: {
         ...getPermissionSpecifications({
@@ -4996,20 +4997,22 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController,
           origin,
         ),
-        getPermission: this.permissionController.getPermissions.bind(
-          this.permissionController,
-          origin,
-        ),
         requestAccountsPermission:
           this.permissionController.requestPermissions.bind(
             this.permissionController,
             { origin },
             { eth_accounts: {} },
           ),
-        requestSwitchNetworkPermission: (chainId) => this.permissionController.requestPermissions(
-          { origin },
-          { wallet_switchEthereumChain: { [chainId]: true } },
-        ),
+        requestSwitchNetworkPermission: (chainIds) =>
+          this.permissionController.requestPermissions(
+            { origin },
+            {
+              wallet_switchEthereumChain: chainIds.reduce((acc, chainId) => {
+                acc[chainId] = true;
+                return acc;
+              }, {}),
+            },
+          ),
         requestPermissionsForOrigin:
           this.permissionController.requestPermissions.bind(
             this.permissionController,
@@ -5029,8 +5032,12 @@ export default class MetamaskController extends EventEmitter {
             console.log(e);
           }
         },
+        getCaveat: this.permissionController.getCaveat.bind(
+          this.permissionController,
+        ),
         getCurrentChainId: () =>
           this.networkController.state.providerConfig.chainId,
+        getChainPermissionsFeatureFlag: () => process.env.CHAIN_PERMISSIONS,
         getCurrentRpcUrl: () =>
           this.networkController.state.providerConfig.rpcUrl,
         // network configuration-related
@@ -5052,7 +5059,18 @@ export default class MetamaskController extends EventEmitter {
           this.selectedNetworkController.setNetworkClientIdForDomain.bind(
             this.selectedNetworkController,
           ),
-
+        getCurrentChainIdForDomain: (domain) => {
+          const networkClientId =
+            this.selectedNetworkController.getNetworkClientIdForDomain(domain);
+          const { chainId } =
+            this.networkController.getNetworkConfigurationByNetworkClientId(
+              networkClientId,
+            );
+          return chainId;
+        },
+        getUseRequestQueue: this.preferencesController.getUseRequestQueue.bind(
+          this.preferencesController,
+        ),
         getProviderConfig: () => this.networkController.state.providerConfig,
         setProviderType: (type) => {
           return this.networkController.setProviderType(type);
