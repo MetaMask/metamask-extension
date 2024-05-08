@@ -14,16 +14,10 @@ const mockSetShowTestNetworks = jest.fn();
 const mockSetProviderType = jest.fn();
 const mockToggleNetworkMenu = jest.fn();
 
-let numberOfSetNetworkClientIdForDomainCalls = 0;
-
 jest.mock('../../../store/actions.ts', () => ({
   setShowTestNetworks: () => mockSetShowTestNetworks,
   setProviderType: () => mockSetProviderType,
   toggleNetworkMenu: () => mockToggleNetworkMenu,
-  // This should no be a nested function
-  setNetworkClientIdForDomain: () => {
-    numberOfSetNetworkClientIdForDomainCalls += 1;
-  },
 }));
 
 const render = ({
