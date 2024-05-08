@@ -168,6 +168,7 @@ export default function PrivacySettings() {
           data-testid="privacy-settings-settings"
         >
           <Setting
+            dataTestId="basic-functionality-toggle"
             value={externalServicesOnboardingToggleState}
             setValue={(toggledValue) => {
               if (toggledValue === false) {
