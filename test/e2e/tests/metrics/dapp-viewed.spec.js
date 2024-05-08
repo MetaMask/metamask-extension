@@ -7,7 +7,6 @@ const {
   openDapp,
   waitForAccountRendered,
   WINDOW_TITLES,
-  DAPP_URL,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const {
