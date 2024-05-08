@@ -83,7 +83,6 @@ describe('Dapp viewed Event @no-mmi', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         await connectToDapp(driver);
@@ -119,7 +118,6 @@ describe('Dapp viewed Event @no-mmi', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await driver.navigate();
         await unlockWallet(driver);
         await waitForAccountRendered(driver);
         await connectToDapp(driver);
@@ -158,7 +156,6 @@ describe('Dapp viewed Event @no-mmi', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await driver.navigate();
         await unlockWallet(driver);
         await waitForAccountRendered(driver);
         await connectToDapp(driver);
@@ -202,7 +199,6 @@ describe('Dapp viewed Event @no-mmi', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await driver.navigate();
         await unlockWallet(driver);
         await waitForAccountRendered(driver);
         await connectToDapp(driver);
@@ -294,7 +290,6 @@ describe('Dapp viewed Event @no-mmi', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await driver.navigate();
         await unlockWallet(driver);
         await waitForAccountRendered(driver);
         await connectToDapp(driver);
