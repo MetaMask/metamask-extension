@@ -297,6 +297,17 @@ describe('Change assets', function () {
           css: '.asset-picker__symbol',
           text: 'ETH',
         });
+
+        // Populate an amount, continue
+        await driver.clickElement('[data-testid="currency-input"]');
+        await driver.press('[data-testid="currency-input"]', '2');
+        await driver.clickElement({ text: 'Continue', css: 'button' });
+
+        // Validate the send amount
+        await driver.waitForSelector({
+          css: '.currency-display-component__text',
+          text: '2.000042',
+        });
       },
     );
   });
