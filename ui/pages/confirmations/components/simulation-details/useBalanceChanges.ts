@@ -25,6 +25,11 @@ const NATIVE_DECIMALS = 18;
 
 const ERC20_DEFAULT_DECIMALS = 18;
 
+// See https://github.com/MikeMcl/bignumber.js/issues/11#issuecomment-23053776
+function convertNumberToStringWithPrecisionWarning(value: number): string {
+  return String(value);
+}
+
 // Converts a SimulationTokenStandard to a TokenStandard
 function convertStandard(standard: SimulationTokenStandard) {
   switch (standard) {
@@ -115,7 +120,9 @@ function getNativeBalanceChange(
   }
   const asset = NATIVE_ASSET_IDENTIFIER;
   const amount = getAssetAmount(nativeBalanceChange, NATIVE_DECIMALS);
-  const fiatAmount = amount?.times(nativeFiatRate).toNumber();
+  const fiatAmount = amount
+    .times(convertNumberToStringWithPrecisionWarning(nativeFiatRate))
+    .toNumber();
   return { asset, amount, fiatAmount };
 }
 
@@ -140,7 +147,9 @@ function getTokenBalanceChanges(
 
     const fiatRate = erc20FiatRates[tokenBc.address];
     const fiatAmount = fiatRate
-      ? amount.times(fiatRate).toNumber()
+      ? amount
+          .times(convertNumberToStringWithPrecisionWarning(fiatRate))
+          .toNumber()
       : FIAT_UNAVAILABLE;
 
     return { asset, amount, fiatAmount };

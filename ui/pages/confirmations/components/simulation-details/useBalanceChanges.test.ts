@@ -272,6 +272,25 @@ describe('useBalanceChanges', () => {
 
       expect(result.current.value[0].amount.decimalPlaces()).toBe(18);
     });
+
+    it('handles token fiat rate with more than 15 significant digits', async () => {
+      mockFetchTokenExchangeRates.mockResolvedValue({
+        [ERC20_TOKEN_ADDRESS_1_MOCK]: 0.1234567890123456,
+      });
+      const { result, waitForNextUpdate } = setupHook([
+        {
+          ...dummyBalanceChange,
+          difference: DIFFERENCE_1_MOCK,
+          isDecrease: true,
+          address: ERC20_TOKEN_ADDRESS_1_MOCK,
+          standard: SimulationTokenStandard.erc20,
+        },
+      ]);
+
+      await waitForNextUpdate();
+
+      expect(result.current.value[0].fiatAmount).toBe(-0.002098765413209875);
+    });
   });
 
   describe('with native balance change', () => {
@@ -304,6 +323,19 @@ describe('useBalanceChanges', () => {
           fiatAmount: Number('-16119.010925996032'),
         },
       ]);
+    });
+
+    it('handles native fiat rate with more than 15 significant digits', async () => {
+      mockGetConversionRate.mockReturnValue(0.1234567890123456);
+      const { result, waitForNextUpdate } = setupHook({
+        ...dummyBalanceChange,
+        difference: DIFFERENCE_ETH_MOCK,
+        isDecrease: true,
+      });
+
+      await waitForNextUpdate();
+
+      expect(result.current.value[0].fiatAmount).toBe(-663.3337769927953);
     });
 
     it('handles no native balance change', async () => {
