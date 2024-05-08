@@ -4,7 +4,7 @@ module.exports = {
     '<rootDir>/ui/**/*.(js|ts|tsx)',
   ],
   coverageDirectory: './coverage/integration',
-  coveragePathIgnorePatterns: ['.stories.*', '.snap'],
+  coveragePathIgnorePatterns: ['.stories.*', '.snap', '.test.(js|ts|tsx)'],
   coverageReporters: ['html', 'json'],
   reporters: [
     'default',
