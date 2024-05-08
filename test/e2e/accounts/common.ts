@@ -210,6 +210,7 @@ export async function disconnectFromTestDapp(driver: Driver) {
   });
   await driver.clickElement('[data-testid="account-list-item-menu-button"]');
   await driver.clickElement({ text: 'Disconnect', tag: 'button' });
+  await driver.clickElement('[data-testid ="disconnect-all"]');
 }
 
 export async function approveOrRejectRequest(driver: Driver, flowType: string) {
