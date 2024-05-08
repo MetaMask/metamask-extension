@@ -176,6 +176,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
           closeMenu();
         }}
         data-testid="global-menu-connected-sites"
+        disabled={hasUnapprovedTransactions}
       >
         {t('allPermissions')}
       </MenuItem>
