@@ -1372,8 +1372,6 @@ const slice = createSlice({
         // checking if there is enough left to cover the gas fee.
         slice.caseReducers.validateGasField(state);
       }
-      // validate send state
-      slice.caseReducers.validateSendState(state);
     },
     /**
      * updates the userInputHexData state key
@@ -2223,18 +2221,30 @@ export function updateSendQuote(
       draftTransaction?.sendAsset?.details?.address !==
       draftTransaction?.receiveAsset?.details?.address;
 
+    const {
+      quotes,
+      swapQuotesError,
+      isSwapQuoteLoading,
+      swapQuotesLatestRequestTimestamp,
+    } = draftTransaction;
+
     if (isSwapAndSend) {
       const currentTime = Date.now();
       // set this synchronously so it can be used in fetchSwapAndSendQuotes thunks immediately
       latestFetchTime = currentTime;
-      await dispatch(
+      dispatch(
         fetchSwapAndSendQuotes({
           requestTimestamp: currentTime,
           isRefreshingQuotes,
         }),
       );
-    } else {
-      await dispatch({
+    } else if (
+      quotes ||
+      swapQuotesError ||
+      isSwapQuoteLoading ||
+      swapQuotesLatestRequestTimestamp
+    ) {
+      dispatch({
         type: CLEAR_SWAP_AND_SEND_STATE,
       });
     }
@@ -2391,7 +2401,6 @@ export function updateSendAmount(hexAmount, decimalAmount) {
  * @param payload.skipComputeEstimatedGasLimit
  * @returns {ThunkAction<void>}
  */
-// tag
 export function updateSendAsset(
   { type, details: providedDetails, skipComputeEstimatedGasLimit, isReceived },
   { initialAssetSet = false } = {},
