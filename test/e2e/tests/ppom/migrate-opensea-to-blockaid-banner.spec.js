@@ -36,7 +36,6 @@ describe('Migrate Opensea to Blockaid Banner @no-mmi', function () {
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
-          await driver.navigate();
           await unlockWallet(driver);
           await openDapp(driver);
 
@@ -64,7 +63,6 @@ describe('Migrate Opensea to Blockaid Banner @no-mmi', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
         await openDapp(driver);
 
