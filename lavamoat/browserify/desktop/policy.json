@@ -1892,10 +1892,6 @@
       }
     },
     "@metamask/phishing-warning>eth-phishing-detect": {
-      "globals": {
-        "console.log": true,
-        "console.trace": true
-      },
       "packages": {
         "eslint>optionator>fast-levenshtein": true
       }
@@ -2914,7 +2910,6 @@
         "XMLHttpRequest": true,
         "__SENTRY_DEBUG__": true,
         "__SENTRY_RELEASE__": true,
-        "console.log": true,
         "indexedDB.open": true,
         "setTimeout": true
       },
@@ -2987,7 +2982,6 @@
         "__rrMutationObserver": true,
         "clearTimeout": true,
         "console.error": true,
-        "console.log": true,
         "console.warn": true,
         "document": true,
         "innerHeight": true,
@@ -3033,7 +3027,6 @@
         "__SENTRY_DEBUG__": true,
         "clearTimeout": true,
         "console.error": true,
-        "console.log": true,
         "document": true,
         "setTimeout": true
       },
