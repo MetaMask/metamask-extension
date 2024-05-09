@@ -7,6 +7,10 @@ type SignatureSecurityAlertResponsesState = {
   };
 };
 
+/**
+ * @deprecated This file should be deprecated when we introduce the alerts system logic
+ * @see {@link https://github.com/MetaMask/MetaMask-planning/issues/2412}
+ */
 function useSignatureSecurityAlertResponse(securityAlertId?: string) {
   const signatureSecurityAlertResponses = useSelector(
     (state: SignatureSecurityAlertResponsesState) =>
