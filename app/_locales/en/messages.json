@@ -4331,9 +4331,6 @@
   "selectNFTPrivacyPreference": {
     "message": "Turn on NFT detection in Settings"
   },
-  "selectNetwork": {
-    "message": "Select the networks(s) to use on this site"
-  },
   "selectPathHelp": {
     "message": "If you don't see the accounts you expect, try switching the HD path or current selected network."
   },
