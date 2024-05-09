@@ -28,7 +28,7 @@ const selectors = {
   headerText: { text: 'الإعدادات', tag: 'h3' },
 };
 
-async function changeLanguage(driver: Driver , languageIndex: number) {
+async function changeLanguage(driver: Driver, languageIndex: number) {
   await driver.clickElement(selectors.accountOptionsMenuButton);
   await driver.clickElement(selectors.settingsOption);
 
@@ -91,7 +91,7 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
 
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
-        await changeLanguage(driver, languageIndex );
+        await changeLanguage(driver, languageIndex);
 
         await driver.assertElementNotPresent('.loading-overlay__spinner');
 
@@ -134,7 +134,6 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
     if (process.env.MULTICHAIN) {
       return;
     }
-
     const languageIndex = 7;
     await withFixtures(
       {
@@ -145,7 +144,7 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
 
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
-        await changeLanguage( driver, languageIndex );
+        await changeLanguage(driver, languageIndex);
         await driver.navigate();
         await driver.clickElement(selectors.ethOverviewSend);
         await driver.fill(selectors.ensInput, 'test');
@@ -167,7 +166,6 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
     if (process.env.MULTICHAIN) {
       return;
     }
-
     const languageIndex = 19;
     await withFixtures(
       {
@@ -178,7 +176,7 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
 
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
-        await changeLanguage( driver, languageIndex );
+        await changeLanguage(driver, languageIndex);
         await driver.navigate();
 
         // Validate the account tooltip
@@ -216,7 +214,7 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         // selects "Magyar" language
-        await changeLanguage( driver, languageIndex );
+        await changeLanguage(driver, languageIndex);
         await driver.navigate();
         await driver.clickElement(selectors.nftsTab);
 
@@ -243,7 +241,7 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
-        await changeLanguage( driver, languageIndex );
+        await changeLanguage(driver, languageIndex);
 
         // Validate the header text
         const isHeaderTextChanged = await driver.isElementPresent(
