@@ -2251,12 +2251,6 @@
   "interactingWith": {
     "message": "Interacting with"
   },
-  "interactingWithTransactionDescription": {
-    "message": "This is the contract you're interacting with. Protect yourself from scammers by  verifying the details."
-  },
-  "introducingSmartTransactions": {
-    "message": "Introducing Smart Transactions"
-  },
   "invalidAddress": {
     "message": "Invalid address"
   },
