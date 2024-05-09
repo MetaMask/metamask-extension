@@ -1,0 +1,12 @@
+diff --git a/dist/chunk-3SFZPJR3.js b/dist/chunk-3SFZPJR3.js
+index f80221623372ca30d0e49562795e8168ad53a705..ad3b01ab1ce906fa94edaa1dc9646c7b33472c32 100644
+--- a/dist/chunk-3SFZPJR3.js
++++ b/dist/chunk-3SFZPJR3.js
+@@ -38,6 +38,7 @@ function createStreamMiddleware(options = {}) {
+     }
+     const context = idMap[responseId];
+     if (!context) {
++      console.log('processResponse res 2', res)
+       console.warn(`StreamMiddleware - Unknown response id "${responseId}"`);
+       return;
+     }

@@ -5377,19 +5377,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/json-rpc-middleware-stream@npm:^6.0.2":
-  version: 6.0.2
-  resolution: "@metamask/json-rpc-middleware-stream@npm:6.0.2"
-  dependencies:
-    "@metamask/json-rpc-engine": "npm:^7.3.2"
-    "@metamask/safe-event-emitter": "npm:^3.0.0"
-    "@metamask/utils": "npm:^8.3.0"
-    readable-stream: "npm:^3.6.2"
-  checksum: eb6fc179959206abeba8b12118757d55cc0028681566008a4005b570d21a9369795452e1bdb672fc9858f46a4e9ed5c996cfff0e85b47cef8bf39a6edfee8f1e
-  languageName: node
-  linkType: hard
-
-"@metamask/json-rpc-middleware-stream@npm:^7.0.1":
+"@metamask/json-rpc-middleware-stream@npm:7.0.1":
   version: 7.0.1
   resolution: "@metamask/json-rpc-middleware-stream@npm:7.0.1"
   dependencies:
@@ -5398,6 +5386,18 @@ __metadata:
     "@metamask/utils": "npm:^8.3.0"
     readable-stream: "npm:^3.6.2"
   checksum: 1df955cd6c39fb40388e1b656b401d94da1a6c9a780be0b17cff7d6ed8d63a6960e0693c18778e7acc79e3eec183df524ca711d98e17e0eefbaab5f4fe8a2fc4
+  languageName: node
+  linkType: hard
+
+"@metamask/json-rpc-middleware-stream@patch:@metamask/json-rpc-middleware-stream@npm%3A7.0.1#~/.yarn/patches/@metamask-json-rpc-middleware-stream-npm-7.0.1-889fab3de8.patch":
+  version: 7.0.1
+  resolution: "@metamask/json-rpc-middleware-stream@patch:@metamask/json-rpc-middleware-stream@npm%3A7.0.1#~/.yarn/patches/@metamask-json-rpc-middleware-stream-npm-7.0.1-889fab3de8.patch::version=7.0.1&hash=6a7a4c"
+  dependencies:
+    "@metamask/json-rpc-engine": "npm:^8.0.1"
+    "@metamask/safe-event-emitter": "npm:^3.0.0"
+    "@metamask/utils": "npm:^8.3.0"
+    readable-stream: "npm:^3.6.2"
+  checksum: 46768c9e30c9c5bcbd929da38840f520956e1a69921f3aa475807b15eb65c15002010bf5afe1e747d2da0a276caaaff46bec65ce8f4e4e4f4eb919f138d3c307
   languageName: node
   linkType: hard
 
