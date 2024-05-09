@@ -11,7 +11,7 @@ import log from 'loglevel';
  */
 export function isErrorWithMessage(
   error: unknown,
-): error is { message: string } & { data: { cause: { message: string } } } {
+): error is { message: string } | { data: { cause: { message: string } } } {
   return (
     typeof error === 'object' &&
     error !== null &&
