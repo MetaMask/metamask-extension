@@ -120,11 +120,24 @@ describe('Create Snap Account', function (this: Suite) {
               text: 'Create account',
             });
             console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+            const logs = await driver.checkBrowserForLavamoatLogs();
+            console.log('logs 1', logs)
+            const artifactDir = `./test-artifacts/chrome/${this.test?.fullTitle()}`;
+            const filepathBase = `${artifactDir}/test-failure`;
+            // On occasion there may be a bug in the offscreen document which does
+            // not render visibly to the user and therefore no screenshot can be
+            // taken. In this case we skip the screenshot and log the error.
+            try {
+              await fs.promises.mkdir(artifactDir, { recursive: true });
+              await fs.promises.writeFile(`${filepathBase}-${n}-success-logs.json`, JSON.stringify(logs));
+            } catch (_e) {
+              console.error('Failed to write logs', _e);
+            }
           } catch (e) {
             console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
             console.log('e',e)
            const logs = await driver.checkBrowserForLavamoatLogs();
-           console.log('logs', logs)
+           console.log('logs 2', logs)
            const artifactDir = `./test-artifacts/chrome/${this.test?.fullTitle()}`;
            const filepathBase = `${artifactDir}/test-failure`;
            // On occasion there may be a bug in the offscreen document which does
