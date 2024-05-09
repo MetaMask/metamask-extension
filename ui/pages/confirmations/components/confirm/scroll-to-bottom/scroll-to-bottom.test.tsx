@@ -20,6 +20,7 @@ const mockUseScrollRequiredResult = {
   isScrolledToBottom: false,
   onScroll: jest.fn(),
   scrollToBottom: jest.fn(),
+  setHasScrolledToBottom: jest.fn(),
   ref: {
     current: {},
   },
