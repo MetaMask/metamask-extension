@@ -2735,7 +2735,7 @@ describe('Actions', () => {
       await expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
-  
+
   describe('#toggleExternalServices', () => {
     it('calls toggleExternalServices', async () => {
       const store = mockStore();
