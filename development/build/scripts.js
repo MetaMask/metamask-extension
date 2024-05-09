@@ -695,6 +695,21 @@ function createFactoredBuild({
               applyLavaMoat,
               destinationFileName: 'load-app.js',
             });
+            renderHtmlFile({
+              htmlName: 'devtools',
+              browserPlatforms,
+              shouldIncludeSnow,
+              applyLavaMoat,
+              isTest,
+            });
+            renderJavaScriptLoader({
+              groupSet,
+              commonSet,
+              browserPlatforms,
+              shouldIncludeSnow,
+              applyLavaMoat,
+              destinationFileName: 'devtools.js',
+            });
             break;
           }
           case 'background': {

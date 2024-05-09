@@ -4,6 +4,7 @@
     "page": "background.html",
     "persistent": true
   },
+  "devtools_page": "devtools.html",
   "browser_action": {
     "default_icon": {
       "16": "images/icon-16.png",

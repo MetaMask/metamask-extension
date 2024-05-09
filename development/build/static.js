@@ -176,6 +176,14 @@ function getCopyTargets(
       dest: 'scripts/load-app.js',
     },
     {
+      src: './app/scripts/devtools.js',
+      dest: 'scripts/devtools.js',
+    },
+    {
+      src: './app/devtools.html',
+      dest: 'devtools.html',
+    },
+    {
       src: shouldIncludeLockdown
         ? `./app/scripts/lockdown-run.js`
         : EMPTY_JS_FILE,
