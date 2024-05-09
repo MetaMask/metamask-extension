@@ -262,7 +262,6 @@
     "@fortawesome/fontawesome-free": "^5.13.0",
     "@keystonehq/bc-ur-registry-eth": "^0.19.1",
     "@keystonehq/metamask-airgapped-keyring": "^0.13.1",
-    "@lavamoat/allow-scripts": "^3.0.4",
     "@lavamoat/lavadome-react": "0.0.17",
     "@lavamoat/snow": "^2.0.1",
     "@material-ui/core": "^4.11.0",
@@ -431,6 +430,7 @@
     "@babel/preset-react": "^7.22.15",
     "@babel/preset-typescript": "^7.23.2",
     "@babel/register": "^7.22.15",
+    "@lavamoat/allow-scripts": "^3.0.1",
     "@lavamoat/lavadome-core": "0.0.10",
     "@lavamoat/lavapack": "^6.1.0",
     "@lgbot/madge": "^6.2.0",
@@ -689,10 +689,7 @@
       "@storybook/test-runner>@swc/core": false,
       "@lavamoat/lavadome-react>@lavamoat/preinstall-always-fail": false,
       "tsx>esbuild": false,
-      "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs": false,
-      "@lavamoat/lavadome-core>@lavamoat/preinstall-always-fail": false,
-      "@metamask/desktop>ws>bufferutil": false,
-      "@metamask/desktop>ws>utf-8-validate": false
+      "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs": false
     }
   },
   "packageManager": "yarn@4.0.2"

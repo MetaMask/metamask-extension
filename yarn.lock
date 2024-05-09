@@ -4243,7 +4243,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/allow-scripts@npm:^3.0.4":
+"@lavamoat/allow-scripts@npm:^3.0.1":
   version: 3.0.4
   resolution: "@lavamoat/allow-scripts@npm:3.0.4"
   dependencies:
@@ -25432,7 +25432,7 @@ __metadata:
     "@fortawesome/fontawesome-free": "npm:^5.13.0"
     "@keystonehq/bc-ur-registry-eth": "npm:^0.19.1"
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.13.1"
-    "@lavamoat/allow-scripts": "npm:^3.0.4"
+    "@lavamoat/allow-scripts": "npm:^3.0.1"
     "@lavamoat/lavadome-core": "npm:0.0.10"
     "@lavamoat/lavadome-react": "npm:0.0.17"
     "@lavamoat/lavapack": "npm:^6.1.0"
