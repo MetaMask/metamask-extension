@@ -49,7 +49,12 @@ const ScrollToBottom = ({ children }: ContentProps) => {
    * when we navigate through different confirmations.
    */
   useEffect(() => {
-    if (!isEqual(previousId, currentConfirmation?.id)) {
+    const scrollTo = (ref?.current as null | HTMLDivElement)?.scrollTo;
+    const canScrollAndConfirmationChanged =
+      typeof scrollTo === 'function' &&
+      !isEqual(previousId, currentConfirmation?.id);
+
+    if (canScrollAndConfirmationChanged) {
       (ref?.current as null | HTMLDivElement)?.scrollTo(0, 0);
     }
   }, [currentConfirmation?.id]);

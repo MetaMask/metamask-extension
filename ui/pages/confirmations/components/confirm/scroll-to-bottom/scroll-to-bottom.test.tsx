@@ -3,6 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import { unapprovedTypedSignMsgV4 } from '../../../../../../test/data/confirmations/typed_sign';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import * as ConfirmDucks from '../../../../../ducks/confirm/confirm';
+import * as usePreviousHooks from '../../../../../hooks/usePrevious';
 import ScrollToBottom from './scroll-to-bottom';
 
 const buttonSelector = '.confirm-scroll-to-bottom__button';
@@ -19,7 +20,9 @@ const mockUseScrollRequiredResult = {
   isScrolledToBottom: false,
   onScroll: jest.fn(),
   scrollToBottom: jest.fn(),
-  ref: { current: null },
+  ref: {
+    current: {},
+  },
 };
 
 const mockedUseScrollRequiredResult = jest.mocked(mockUseScrollRequiredResult);
@@ -29,6 +32,10 @@ jest.mock('../../../../../hooks/useScrollRequired', () => ({
 }));
 
 describe('ScrollToBottom', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   describe('when content is not scrollable', () => {
     it('renders without button', () => {
       const { container, getByText } = renderWithProvider(
@@ -88,6 +95,40 @@ describe('ScrollToBottom', () => {
       expect(updateSpy).toHaveBeenCalledWith({
         isScrollToBottomNeeded: true,
       });
+    });
+
+    it('does not scroll to top when the confirmation changes', () => {
+      const mockScrollTo = jest.fn();
+      const originalScrollTo = window.HTMLDivElement.prototype.scrollTo;
+      window.HTMLDivElement.prototype.scrollTo = mockScrollTo;
+
+      jest
+        .spyOn(usePreviousHooks, 'usePrevious')
+        .mockImplementation(() => unapprovedTypedSignMsgV4.id);
+
+      renderWithProvider(
+        <ScrollToBottom>foobar</ScrollToBottom>,
+        configureMockStore([])(mockState),
+      );
+
+      expect(mockScrollTo).not.toHaveBeenCalled();
+
+      window.HTMLDivElement.prototype.scrollTo = originalScrollTo;
+    });
+
+    it('scrolls to top when the confirmation changes', () => {
+      const mockScrollTo = jest.fn();
+      const originalScrollTo = window.HTMLDivElement.prototype.scrollTo;
+      window.HTMLDivElement.prototype.scrollTo = mockScrollTo;
+
+      renderWithProvider(
+        <ScrollToBottom>foobar</ScrollToBottom>,
+        configureMockStore([])(mockState),
+      );
+
+      expect(mockScrollTo).toHaveBeenCalledWith(0, 0);
+
+      window.HTMLDivElement.prototype.scrollTo = originalScrollTo;
     });
 
     describe('when user has scrolled to the bottom', () => {
