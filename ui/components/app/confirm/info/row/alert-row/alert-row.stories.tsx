@@ -1,8 +1,6 @@
 import React from 'react';
-import { ConfirmInfoRow, ConfirmInfoRowVariant } from '../row';
-import { AlertRow, AlertRowProps } from './alert-row';
-import { Severity } from '../../../../../../helpers/constants/design-system';
-import { Alert } from '../../../../../../ducks/confirm-alerts/confirm-alerts';
+import { ConfirmInfoRowVariant } from '../row';
+import { AlertRow } from './alert-row';
 import configureStore from '../../../../../../store/store';
 import { Provider } from 'react-redux';
 import { Meta } from '@storybook/react';
@@ -16,20 +14,26 @@ const pendingApprovalMock = {
   status: 'unapproved',
   time: new Date().getTime(),
   type: 'personal_sign',
-}
+};
 const storeMock = configureStore({
   metamask: {
-  pendingApprovals:{
-    [OWNER_ID_MOCK]: pendingApprovalMock
-  }
-},
-confirmAlerts: {
-  alerts: { [OWNER_ID_MOCK]: baseAlertsMock },
-  confirmed: { [OWNER_ID_MOCK]: { [LABEL_FROM_MOCK]: false, 'Data': false, 'Contract': false } },
-},
-confirm: {
-  currentConfirmation: pendingApprovalMock,
-},
+    pendingApprovals: {
+      [OWNER_ID_MOCK]: pendingApprovalMock,
+    },
+  },
+  confirmAlerts: {
+    alerts: { [OWNER_ID_MOCK]: baseAlertsMock },
+    confirmed: {
+      [OWNER_ID_MOCK]: {
+        [LABEL_FROM_MOCK]: false,
+        Data: false,
+        Contract: false,
+      },
+    },
+  },
+  confirm: {
+    currentConfirmation: pendingApprovalMock,
+  },
 });
 
 const ConfirmInfoRowStory = {
