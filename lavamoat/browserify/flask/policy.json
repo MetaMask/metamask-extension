@@ -1837,6 +1837,10 @@
       }
     },
     "@metamask/phishing-warning>eth-phishing-detect": {
+      "globals": {
+        "console.log": true,
+        "console.trace": true
+      },
       "packages": {
         "eslint>optionator>fast-levenshtein": true
       }
@@ -2350,12 +2354,24 @@
     },
     "@metamask/snaps-controllers>@metamask/json-rpc-middleware-stream": {
       "globals": {
+        "console.log": true,
         "console.warn": true,
         "setTimeout": true
       },
       "packages": {
         "@metamask/safe-event-emitter": true,
-        "@metamask/snaps-controllers>readable-stream": true
+        "@metamask/snaps-controllers>@metamask/json-rpc-middleware-stream>readable-stream": true
+      }
+    },
+    "@metamask/snaps-controllers>@metamask/json-rpc-middleware-stream>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "browserify>process": true,
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true,
+        "webpack>events": true
       }
     },
     "@metamask/snaps-controllers>concat-stream": {
@@ -2783,6 +2799,7 @@
         "XMLHttpRequest": true,
         "__SENTRY_DEBUG__": true,
         "__SENTRY_RELEASE__": true,
+        "console.log": true,
         "indexedDB.open": true,
         "setTimeout": true
       },
@@ -2855,6 +2872,7 @@
         "__rrMutationObserver": true,
         "clearTimeout": true,
         "console.error": true,
+        "console.log": true,
         "console.warn": true,
         "document": true,
         "innerHeight": true,
@@ -2900,6 +2918,7 @@
         "__SENTRY_DEBUG__": true,
         "clearTimeout": true,
         "console.error": true,
+        "console.log": true,
         "document": true,
         "setTimeout": true
       },

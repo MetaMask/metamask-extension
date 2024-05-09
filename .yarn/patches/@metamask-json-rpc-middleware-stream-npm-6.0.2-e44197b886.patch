@@ -1,0 +1,12 @@
+diff --git a/dist/createStreamMiddleware.js b/dist/createStreamMiddleware.js
+index 88eb2d779f22df0f67460ef7cbcd97dd122ed6aa..207c5ac306ff8e5212d366759ce3908b936bbd71 100644
+--- a/dist/createStreamMiddleware.js
++++ b/dist/createStreamMiddleware.js
+@@ -74,6 +74,7 @@ function createStreamMiddleware(options = {}) {
+         }
+         const context = idMap[responseId];
+         if (!context) {
++            console.log('processResponse res 1', res)
+             console.warn(`StreamMiddleware - Unknown response id "${responseId}"`);
+             return;
+         }
