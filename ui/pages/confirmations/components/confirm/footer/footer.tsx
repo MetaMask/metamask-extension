@@ -91,14 +91,18 @@ function ConfirmButton({
     useState<boolean>(false);
   const { alerts, isAlertConfirmed } = useAlerts(alertOwnerId);
   const unconfirmedAlerts = alerts.filter(
-    (alert) => alert.field && !isAlertConfirmed(alert.key),
+    (alert) => !isAlertConfirmed(alert.key),
   );
   const hasAlerts = alerts.length > 0;
   const hasUnconfirmedAlerts = unconfirmedAlerts.length > 0;
 
-  const handleCloseModal = () => {
-    setAlertModalVisible(false);
-  };
+  const handleCloseModal = useCallback(() => {
+    if (alertModalVisible) {
+      setAlertModalVisible(false);
+      return;
+    }
+    setFrictionModalVisible(false);
+  }, [alertModalVisible]);
 
   const handleOpenModal = useCallback(() => {
     if (hasUnconfirmedAlerts) {

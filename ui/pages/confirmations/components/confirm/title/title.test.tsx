@@ -107,19 +107,6 @@ describe('ConfirmTitle', () => {
       expect(queryByText(alertMock.message)).toBeInTheDocument();
     });
 
-    it('does not render an alert banner if there are no danger alerts', () => {
-      const mockStore = configureMockStore([])(
-        mockAlertState({
-          alerts: {
-            [CONFIRMATION_ID_MOCK]: [{ ...alertMock, severity: Severity.Info }],
-          },
-        }),
-      );
-      const { queryByTestId } = renderWithProvider(<ConfirmTitle />, mockStore);
-
-      expect(queryByTestId('confirm-banner-alert')).toBeNull();
-    });
-
     it('renders alert banner when there are multiple alerts', () => {
       const mockStore = configureMockStore([])(mockAlertState());
 

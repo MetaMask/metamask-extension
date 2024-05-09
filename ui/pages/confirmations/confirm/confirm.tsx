@@ -20,7 +20,6 @@ import setConfirmationAlerts from '../hooks/setConfirmationAlerts';
 const Confirm = () => {
   setCurrentConfirmation();
   syncConfirmPath();
-  console.log('Confirm first call to set alerts >')
   setConfirmationAlerts();
 
   return (

@@ -84,7 +84,7 @@ function BlockaidBannerAlert({ txData, ...props }) {
     reason,
     result_type: resultType,
   } = securityAlertResponse;
-
+  console.log('BlockaidBannerAlert: ', securityAlertResponse);
   if (resultType === BlockaidResultType.Benign) {
     return null;
   }

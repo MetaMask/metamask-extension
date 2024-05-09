@@ -18,13 +18,18 @@ export type AlertRowProps = ConfirmInfoRowProps & {
   ownerId: string;
 };
 
-export function getAlertTextColors(variant?: ConfirmInfoRowVariant): TextColor {
+export function getAlertTextColors(
+  variant?: ConfirmInfoRowVariant | Severity,
+): TextColor {
   switch (variant) {
     case ConfirmInfoRowVariant.Critical:
+    case Severity.Danger:
       return TextColor.errorDefault;
     case ConfirmInfoRowVariant.Warning:
+    case Severity.Warning:
       return TextColor.warningDefault;
     case ConfirmInfoRowVariant.Default:
+    case Severity.Info:
       return TextColor.infoDefault;
     default:
       return TextColor.textDefault;
@@ -45,7 +50,8 @@ function getSeverityAlerts(variant?: ConfirmInfoRowVariant): Severity {
 export const AlertRow = (props: AlertRowProps) => {
   const { alertKey, ownerId, style, variant, ...rowProperties } = props;
   const { getFieldAlerts } = useAlerts(ownerId);
-  const hasFieldAlert = getFieldAlerts(alertKey).length > 0;
+  const fieldAlerts = getFieldAlerts(alertKey);
+  const hasFieldAlert = fieldAlerts.length > 0;
 
   const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
 
@@ -63,14 +69,16 @@ export const AlertRow = (props: AlertRowProps) => {
       background: 'transparent',
       ...style,
     },
-    color: getAlertTextColors(variant),
+    color: getAlertTextColors(variant ?? fieldAlerts[0]?.severity),
   };
 
   const inlineAlert = hasFieldAlert ? (
     <Box marginLeft={1}>
       <InlineAlert
         onClick={handleOpenModal}
-        severity={getSeverityAlerts(variant)}
+        severity={
+          variant ? getSeverityAlerts(variant) : fieldAlerts[0].severity
+        }
       />
     </Box>
   ) : null;

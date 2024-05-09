@@ -13,24 +13,36 @@ const usePersonalSignAlerts = (): Alert[] => {
       return [];
     }
 
-    console.log('usePersonalSignAlerts returning alerts >', currentConfirmation)
+    console.log(
+      'usePersonalSignAlerts returning alerts >',
+      currentConfirmation.id,
+    );
 
     return [
       {
-        key: 'message',
-        severity: Severity.Warning,
+        key: 'Message',
+        field: 'Message',
+        severity: Severity.Danger,
         message: `Test 1 - ${(currentConfirmation.id as string)?.slice(0, 3)}`,
       },
       {
         key: 'fieldTest1',
-        field: 'from',
-        severity: Severity.Info,
+        severity: Severity.Danger,
         message: 'Test 2',
+        reason: 'Test Reason',
+        alertDetails: ['Detail 1 of the alert', 'Detail 2 of the alert'],
       },
       {
         key: 'fieldTest2',
+        severity: Severity.Info,
+        message: 'General Test 2',
+        reason: 'General Test Reason 2',
+        alertDetails: ['Detail 1 of the alert', 'Detail 2 of the alert'],
+      },
+      {
+        key: 'fieldTest3',
         field: 'from',
-        severity: Severity.Danger,
+        severity: Severity.Info,
         message: 'Test 3',
         actions: [
           { key: PersonalSignAlertAction.GoToSwapPage, label: 'Redirect Test' },

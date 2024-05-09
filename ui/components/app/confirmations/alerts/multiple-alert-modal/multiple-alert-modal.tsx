@@ -180,7 +180,7 @@ export function MultipleAlertModal({
   onFinalAcknowledgeClick,
   ownerId,
 }: MultipleAlertModalProps) {
-  const { alerts } = useAlerts(ownerId);
+  const { alerts, isAlertConfirmed } = useAlerts(ownerId);
   const processAction = useConfirmationAlertActions();
 
   const [selectedIndex, setSelectedIndex] = useState(
@@ -188,6 +188,9 @@ export function MultipleAlertModal({
   );
 
   const selectedAlert = alerts[selectedIndex];
+  const hasUnconfirmedAlerts = alerts.some(
+    (alert) => !isAlertConfirmed(alert.key),
+  );
 
   const handleBackButtonClick = useCallback(() => {
     setSelectedIndex((prevIndex) =>
@@ -200,13 +203,23 @@ export function MultipleAlertModal({
   }, []);
 
   const handleAcknowledgeClick = useCallback(() => {
-    if (selectedIndex + 1 === alerts.length) {
+    if (!hasUnconfirmedAlerts) {
       onFinalAcknowledgeClick();
       return;
     }
 
-    handleBackButtonClick();
-  }, [onFinalAcknowledgeClick, handleBackButtonClick, selectedIndex, alerts]);
+    if (hasUnconfirmedAlerts && selectedIndex + 1 === alerts.length) {
+      setSelectedIndex(0);
+      return;
+    }
+    handleNextButtonClick();
+  }, [
+    onFinalAcknowledgeClick,
+    handleNextButtonClick,
+    selectedIndex,
+    alerts,
+    hasUnconfirmedAlerts,
+  ]);
 
   return (
     <AlertActionHandlerProvider processAction={processAction}>

@@ -1,3 +1,4 @@
+import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import {
   BackgroundColor,
   Severity,
@@ -19,4 +20,24 @@ export function getSeverityBackground(severity: Severity): BackgroundColor {
     default:
       return BackgroundColor.primaryMuted;
   }
+}
+
+/**
+ * Returns the highest  severity from an array of alerts.
+ *
+ * @param alerts - An array of alerts.
+ * @returns The highest  severity.
+ */
+export function getHighestSeverity(alerts: Alert[]): Severity {
+  return alerts.reduce((highestSeverity: Severity, alert: Alert) => {
+    if (alert.severity === Severity.Danger) {
+      return Severity.Danger;
+    } else if (
+      alert.severity === Severity.Warning &&
+      highestSeverity !== Severity.Danger
+    ) {
+      return Severity.Warning;
+    }
+    return highestSeverity;
+  }, Severity.Info);
 }

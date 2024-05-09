@@ -16,20 +16,32 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../../selectors';
 import { Confirmation } from '../../../types/confirm';
 import useAlerts from '../../../../../hooks/useAlerts';
+import { getHighestSeverity } from '../../../../../components/app/confirmations/alerts/utils';
+
+function getBannerAlertSeverity(severity: Severity): BannerAlertSeverity {
+  switch (severity) {
+    case Severity.Danger:
+      return BannerAlertSeverity.Danger;
+    case Severity.Warning:
+      return BannerAlertSeverity.Warning;
+    default:
+      return BannerAlertSeverity.Info;
+  }
+}
 
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
   const t = useI18nContext();
   const { generalAlerts } = useAlerts(ownerId);
-  const alerts = generalAlerts.filter(
-    (alert) => alert.severity === Severity.Danger,
-  );
-  const hasMultipleAlerts = alerts.length > 1;
+  const hasMultipleAlerts = generalAlerts.length > 1;
 
-  if (alerts.length === 0) {
+  if (generalAlerts.length === 0) {
     return null;
   }
 
-  const singleAlert = alerts[0];
+  const singleAlert = generalAlerts[0];
+  const highestSeverity = hasMultipleAlerts
+    ? getHighestSeverity(generalAlerts)
+    : singleAlert.severity;
   return (
     <BannerAlert
       data-testid={'confirm-banner-alert'}
@@ -43,7 +55,8 @@ function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
           ? t('alertBannerMultipleAlertsDescription')
           : singleAlert.message
       }
-      severity={BannerAlertSeverity.Danger}
+      severity={getBannerAlertSeverity(highestSeverity)}
+      marginTop={4}
     />
   );
 }

@@ -13,6 +13,7 @@ describe('MultipleAlertModal', () => {
   const OWNER_ID_MOCK = '123';
   const FROM_ALERT_KEY_MOCK = 'from';
   const CONTRACT_ALERT_KEY_MOCK = 'contract';
+  const DATA_ALERT_KEY_MOCK = 'data';
   const onAcknowledgeClickMock = jest.fn();
   const onCloseMock = jest.fn();
 
@@ -24,7 +25,12 @@ describe('MultipleAlertModal', () => {
       reason: 'Reason 1',
       alertDetails: ['Detail 1', 'Detail 2'],
     },
-    { key: 'data', severity: Severity.Danger, message: 'Alert 2' },
+    { key: DATA_ALERT_KEY_MOCK, severity: Severity.Danger, message: 'Alert 2' },
+    {
+      key: CONTRACT_ALERT_KEY_MOCK,
+      severity: Severity.Info,
+      message: 'Alert 3',
+    },
   ];
 
   const STATE_MOCK = {
@@ -34,7 +40,7 @@ describe('MultipleAlertModal', () => {
       confirmed: {
         [OWNER_ID_MOCK]: {
           [FROM_ALERT_KEY_MOCK]: false,
-          data: false,
+          [DATA_ALERT_KEY_MOCK]: false,
           [CONTRACT_ALERT_KEY_MOCK]: false,
         },
       },
@@ -71,11 +77,17 @@ describe('MultipleAlertModal', () => {
       ...STATE_MOCK,
       confirmAlerts: {
         alerts: { [OWNER_ID_MOCK]: alertsMock },
-        confirmed: { [OWNER_ID_MOCK]: { from: false, data: true } },
+        confirmed: {
+          [OWNER_ID_MOCK]: {
+            [FROM_ALERT_KEY_MOCK]: true,
+            [DATA_ALERT_KEY_MOCK]: true,
+            [CONTRACT_ALERT_KEY_MOCK]: true,
+          },
+        },
       },
     });
     const { getByTestId } = renderWithProvider(
-      <MultipleAlertModal {...defaultProps} alertKey={'data'} />,
+      <MultipleAlertModal {...defaultProps} alertKey={DATA_ALERT_KEY_MOCK} />,
       mockStoreAcknowledgeAlerts,
     );
 
@@ -85,14 +97,27 @@ describe('MultipleAlertModal', () => {
   });
 
   it('render the next alert when the "Got it" button is clicked', () => {
+    const mockStoreAcknowledgeAlerts = configureMockStore([])({
+      ...STATE_MOCK,
+      confirmAlerts: {
+        alerts: { [OWNER_ID_MOCK]: alertsMock },
+        confirmed: {
+          [OWNER_ID_MOCK]: {
+            [FROM_ALERT_KEY_MOCK]: true,
+            [DATA_ALERT_KEY_MOCK]: true,
+            [CONTRACT_ALERT_KEY_MOCK]: false,
+          },
+        },
+      },
+    });
     const { getByTestId, getByText } = renderWithProvider(
-      <MultipleAlertModal {...defaultProps} />,
-      mockStore,
+      <MultipleAlertModal {...defaultProps} alertKey={DATA_ALERT_KEY_MOCK} />,
+      mockStoreAcknowledgeAlerts,
     );
 
     fireEvent.click(getByTestId('alert-modal-button'));
 
-    expect(getByText(alertsMock[0].message)).toBeInTheDocument();
+    expect(getByText(alertsMock[2].message)).toBeInTheDocument();
   });
 
   describe('Navigation', () => {

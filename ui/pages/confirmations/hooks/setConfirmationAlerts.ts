@@ -9,20 +9,17 @@ import { currentConfirmationSelector } from '../../../selectors';
 import useConfirmationAlerts from './useConfirmationAlerts';
 
 const setConfirmationAlerts = () => {
-  console.log('setConfirmationAlerts >')
   const dispatch = useDispatch();
   const currentConfirmation = useSelector(currentConfirmationSelector);
   const alerts = useConfirmationAlerts();
   const ownerId = currentConfirmation?.id as string;
 
   useEffect(() => {
-    console.log('setConfirmationAlerts update alerts >')
     dispatch(updateAlerts(ownerId, alerts));
   }, [alerts, ownerId]);
 
   useEffect(() => {
     return () => {
-      console.log('setConfirmationAlerts clean alerts >')
       dispatch(clearAlerts(ownerId));
     };
   }, []);
