@@ -569,15 +569,6 @@ export default function PrivacySettings() {
             </div>
           </div>
         </div>
-
-        {/* <ButtonPrimary
-            size={ButtonPrimarySize.Lg}
-            onClick={handleSubmit}
-            block
-            marginTop={6}
-          >
-            {t('done')}
-          </ButtonPrimary> */}
       </div>
     </>
   );

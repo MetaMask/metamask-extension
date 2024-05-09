@@ -1505,6 +1505,10 @@
   "doNotShare": {
     "message": "Do not share this with anyone"
   },
+  "walletProtectedAndReadyToUse": {
+    "message": "Your wallet is protected and ready to use. You can find your Secret Recovery Phrase in $1 ",
+    "description": "$1 is the menu path to be shown with font weight bold"
+  },
   "domain": {
     "message": "Domain"
   },
@@ -2467,6 +2471,13 @@
   },
   "leaveMetaMask": {
     "message": "Leave MetaMask?"
+  },
+  "leaveYourselfAHint": {
+    "message": "Leave yourself a hint?"
+  },
+  "keepReminderOfSRP": {
+    "message": "Keep a reminder of your Secret Recovery Phrase somewhere safe. If you lose it, no one can help you get it back. Even worse, you won’t be able access to your wallet ever again. $1",
+    "description": "$1 is a learn more link"
   },
   "leaveMetaMaskDesc": {
     "message": "You're about to visit a site outside of MetaMask. Double-check the URL before continuing."
@@ -4528,6 +4539,13 @@
   "simulationDetailsTitleTooltip": {
     "message": "Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
   },
+  "ifYouGetLockedOut": {
+    "message": "If you get locked out of the app or get a new device, you will lose your funds. Be sure to back up your Secret Recovery Phrase in $1 ",
+    "description": "$1 is the menu path to be shown with font weight bold"
+  },
+  "securityPrivacyPath": {
+    "message": "Settings > Security & Privacy."
+  },
   "simulationDetailsTotalFiat": {
     "message": "Total = $1",
     "description": "$1 is the total amount in fiat currency on one side of the transaction"
@@ -6040,8 +6058,20 @@
     "message": "Never share your Secret Recovery Phrase",
     "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
   },
-  "walletCreationSuccessTitle": {
-    "message": "Wallet creation successful"
+  "yourWalletIsReady": {
+    "message": "Your wallet is ready"
+  },
+  "congratulations": {
+    "message": "Congratulations!"
+  },
+  "reminderSet": {
+    "message": "Reminder set!"
+  },
+  "rememberSRPIfYouLooseAccess": {
+    "message": "Remember, if you lose your Secret Recovery Phrase, you lose access to your wallet. Learn how to keep this set of words safe so you can always access your funds."
+  },
+  "settingsOptimisedForEaseOfUseAndSecurity": {
+    "message": "Settings are optimised for ease of use and security. Change these any time."
   },
   "wantToAddThisNetwork": {
     "message": "Want to add this network?"
