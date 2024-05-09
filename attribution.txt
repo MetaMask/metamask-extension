@@ -404,7 +404,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************
 
 array-buffer-byte-length
-1.0.0 <https://github.com/inspect-js/array-buffer-byte-length>
+1.0.1 <https://github.com/inspect-js/array-buffer-byte-length>
 MIT License
 
 Copyright (c) 2023 Inspect JS
@@ -431,7 +431,7 @@ SOFTWARE.
 ******************************
 
 assert
-2.0.0 <https://github.com/browserify/commonjs-assert>
+2.1.0 <https://github.com/browserify/commonjs-assert>
 Copyright Joyent, Inc. and other Node contributors. All rights reserved.
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -536,7 +536,7 @@ THE SOFTWARE.
 ******************************
 
 available-typed-arrays
-1.0.5 <https://github.com/inspect-js/available-typed-arrays>
+1.0.7 <https://github.com/inspect-js/available-typed-arrays>
 MIT License
 
 Copyright (c) 2020 Inspect JS
@@ -624,7 +624,7 @@ PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 @babel/code-frame
-7.23.5 <https://github.com/babel/babel>
+7.24.2 <https://github.com/babel/babel>
 MIT License
 
 Copyright (c) 2014-present Sebastian McKenzie and other contributors
@@ -652,7 +652,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 @babel/compat-data
-7.23.2 <https://github.com/babel/babel>
+7.24.4 <https://github.com/babel/babel>
 MIT License
 
 Copyright (c) 2014-present Sebastian McKenzie and other contributors
@@ -708,7 +708,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 @babel/generator
-7.23.6 <https://github.com/babel/babel>
+7.24.5 <https://github.com/babel/babel>
 MIT License
 
 Copyright (c) 2014-present Sebastian McKenzie and other contributors
@@ -736,7 +736,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 @babel/helper-compilation-targets
-7.22.15 <https://github.com/babel/babel>
+7.23.6 <https://github.com/babel/babel>
 MIT License
 
 Copyright (c) 2014-present Sebastian McKenzie and other contributors
@@ -848,7 +848,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 @babel/helper-module-imports
-7.22.15 <https://github.com/babel/babel>
+7.24.3 <https://github.com/babel/babel>
 MIT License
 
 Copyright (c) 2014-present Sebastian McKenzie and other contributors
@@ -876,7 +876,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 @babel/helper-module-transforms
-7.23.0 <https://github.com/babel/babel>
+7.24.5 <https://github.com/babel/babel>
 MIT License
 
 Copyright (c) 2014-present Sebastian McKenzie and other contributors
@@ -932,7 +932,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 @babel/helper-simple-access
-7.22.5 <https://github.com/babel/babel>
+7.24.5 <https://github.com/babel/babel>
 MIT License
 
 Copyright (c) 2014-present Sebastian McKenzie and other contributors
@@ -960,7 +960,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 @babel/helper-split-export-declaration
-7.22.6 <https://github.com/babel/babel>
+7.24.5 <https://github.com/babel/babel>
 MIT License
 
 Copyright (c) 2014-present Sebastian McKenzie and other contributors
@@ -988,7 +988,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 @babel/helper-string-parser
-7.23.4 <https://github.com/babel/babel>
+7.24.1 <https://github.com/babel/babel>
 MIT License
 
 Copyright (c) 2014-present Sebastian McKenzie and other contributors
@@ -1016,7 +1016,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 @babel/helper-validator-identifier
-7.22.20 <https://github.com/babel/babel>
+7.24.5 <https://github.com/babel/babel>
 MIT License
 
 Copyright (c) 2014-present Sebastian McKenzie and other contributors
@@ -1044,7 +1044,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 @babel/helper-validator-option
-7.22.15 <https://github.com/babel/babel>
+7.23.5 <https://github.com/babel/babel>
 MIT License
 
 Copyright (c) 2014-present Sebastian McKenzie and other contributors
@@ -1072,7 +1072,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 @babel/highlight
-7.23.4 <https://github.com/babel/babel>
+7.24.5 <https://github.com/babel/babel>
 MIT License
 
 Copyright (c) 2014-present Sebastian McKenzie and other contributors
@@ -1100,7 +1100,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 @babel/parser
-7.24.4 <https://github.com/babel/babel>
+7.24.5 <https://github.com/babel/babel>
 Copyright (C) 2012-2014 by various contributors (see AUTHORS)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -1181,7 +1181,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 @babel/template
-7.22.15 <https://github.com/babel/babel>
+7.24.0 <https://github.com/babel/babel>
 MIT License
 
 Copyright (c) 2014-present Sebastian McKenzie and other contributors
@@ -1209,7 +1209,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 @babel/traverse
-7.24.0 <https://github.com/babel/babel>
+7.24.5 <https://github.com/babel/babel>
 MIT License
 
 Copyright (c) 2014-present Sebastian McKenzie and other contributors
@@ -1237,7 +1237,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 @babel/types
-7.24.0 <https://github.com/babel/babel>
+7.24.5 <https://github.com/babel/babel>
 MIT License
 
 Copyright (c) 2014-present Sebastian McKenzie and other contributors
@@ -1751,7 +1751,7 @@ For more information, please refer to <http://unlicense.org>
 ******************************
 
 big-integer
-1.6.51 <https://github.com/peterolson/BigInteger.js>
+1.6.52 <https://github.com/peterolson/BigInteger.js>
 This is free and unencumbered software released into the public domain.
 
 Anyone is free to copy, modify, publish, use, compile, sell, or
@@ -2791,7 +2791,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 call-bind
-1.0.6 <https://github.com/ljharb/call-bind>
+1.0.7 <https://github.com/ljharb/call-bind>
 MIT License
 
 Copyright (c) 2020 Jordan Harband
@@ -2818,7 +2818,7 @@ SOFTWARE.
 ******************************
 
 caniuse-lite
-1.0.30001600 <https://github.com/browserslist/caniuse-lite>
+1.0.30001616 <https://github.com/browserslist/caniuse-lite>
 Attribution 4.0 International
 
 =======================================================================
@@ -3775,7 +3775,7 @@ ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 clone
-1.0.3 <https://github.com/pvorb/node-clone>
+1.0.4 <https://github.com/pvorb/node-clone>
 Copyright © 2011-2015 Paul Vorbach <paul@vorba.ch>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -4604,7 +4604,7 @@ SOFTWARE.
 ******************************
 
 csstype
-3.0.11 <https://github.com/frenic/csstype>
+3.1.3 <https://github.com/frenic/csstype>
 Copyright (c) 2017-2018 Fredrik Nicol
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -4805,7 +4805,7 @@ THE SOFTWARE.
 ******************************
 
 define-data-property
-1.1.2 <https://github.com/ljharb/define-data-property>
+1.1.4 <https://github.com/ljharb/define-data-property>
 MIT License
 
 Copyright (c) 2023 Jordan Harband
@@ -5290,6 +5290,13 @@ authors: Fedor Indutny <fedor@indutny.com>
 
 ******************************
 
+elliptic
+6.5.5 <https://github.com/indutny/elliptic>
+license: MIT
+authors: Fedor Indutny <fedor@indutny.com>
+
+******************************
+
 emoji-regex
 8.0.0 <https://github.com/mathiasbynens/emoji-regex>
 Copyright Mathias Bynens <https://mathiasbynens.be/>
@@ -5678,34 +5685,6 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ******************************
 
-es6-object-assign
-1.1.0 <https://github.com/rubennorte/es6-object-assign>
-Copyright (c) 2015-2017 Rubén Norte <rubennorte@gmail.com>
-
-MIT License
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
-******************************
-
 es6-promise
 4.2.8 <https://github.com/stefanpenner/es6-promise>
 Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors
@@ -5806,6 +5785,33 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+
+
+******************************
+
+es-define-property
+1.0.0 <https://github.com/ljharb/es-define-property>
+MIT License
+
+Copyright (c) 2024 Jordan Harband
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 
 ******************************
@@ -11878,7 +11884,7 @@ SOFTWARE.
 ******************************
 
 get-tsconfig
-4.7.2 <https://github.com/privatenumber/get-tsconfig>
+4.7.4 <https://github.com/privatenumber/get-tsconfig>
 MIT License
 
 Copyright (c) Hiroki Osame <hiroki.osame@gmail.com>
@@ -12549,7 +12555,7 @@ authors: Fedor Indutny <fedor@indutny.com>
 ******************************
 
 hasown
-2.0.0 <https://github.com/inspect-js/hasOwn>
+2.0.2 <https://github.com/inspect-js/hasOwn>
 MIT License
 
 Copyright (c) Jordan Harband and contributors
@@ -12576,7 +12582,7 @@ SOFTWARE.
 ******************************
 
 has-property-descriptors
-1.0.1 <https://github.com/inspect-js/has-property-descriptors>
+1.0.2 <https://github.com/inspect-js/has-property-descriptors>
 MIT License
 
 Copyright (c) 2022 Inspect JS
@@ -12603,7 +12609,7 @@ SOFTWARE.
 ******************************
 
 has-proto
-1.0.1 <https://github.com/inspect-js/has-proto>
+1.0.3 <https://github.com/inspect-js/has-proto>
 MIT License
 
 Copyright (c) 2022 Inspect JS
@@ -12657,7 +12663,7 @@ SOFTWARE.
 ******************************
 
 has-tostringtag
-1.0.0 <https://github.com/inspect-js/has-tostringtag>
+1.0.2 <https://github.com/inspect-js/has-tostringtag>
 MIT License
 
 Copyright (c) 2021 Inspect JS
@@ -13049,7 +13055,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 ******************************
 
 ignore
-5.3.0 <https://github.com/kaelzhang/node-ignore>
+5.3.1 <https://github.com/kaelzhang/node-ignore>
 Copyright (c) 2013 Kael Zhang <i@kael.me>, contributors
 http://kael.me/
 
@@ -13185,7 +13191,7 @@ SOFTWARE.
 ******************************
 
 internal-slot
-1.0.6 <https://github.com/ljharb/internal-slot>
+1.0.7 <https://github.com/ljharb/internal-slot>
 MIT License
 
 Copyright (c) 2019 Jordan Harband
@@ -13360,7 +13366,7 @@ SOFTWARE.
 ******************************
 
 is-array-buffer
-3.0.2 <https://github.com/inspect-js/is-array-buffer>
+3.0.4 <https://github.com/inspect-js/is-array-buffer>
 MIT License
 
 Copyright (c) 2015 Chen Gengyuan, Inspect JS
@@ -13929,7 +13935,7 @@ SOFTWARE.
 ******************************
 
 is-shared-array-buffer
-1.0.2 <https://github.com/inspect-js/is-shared-array-buffer>
+1.0.3 <https://github.com/inspect-js/is-shared-array-buffer>
 MIT License
 
 Copyright (c) 2021 Inspect JS
@@ -14042,7 +14048,7 @@ SOFTWARE.
 ******************************
 
 is-typed-array
-1.1.10 <https://github.com/inspect-js/is-typed-array>
+1.1.13 <https://github.com/inspect-js/is-typed-array>
 The MIT License (MIT)
 
 Copyright (c) 2015 Jordan Harband
@@ -14445,7 +14451,7 @@ SOFTWARE.
 ******************************
 
 @jridgewell/resolve-uri
-3.1.1 <https://github.com/jridgewell/resolve-uri>
+3.1.2 <https://github.com/jridgewell/resolve-uri>
 Copyright 2019 Justin Ridgewell <jridgewell@google.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20481,14 +20487,10 @@ THE SOFTWARE.
 ******************************
 
 nan
-2.15.0 <https://github.com/nodejs/nan>
+2.19.0 <https://github.com/nodejs/nan>
 The MIT License (MIT)
-=====================
 
-Copyright (c) 2018 NAN contributors
------------------------------------
-
-*NAN contributors listed at <https://github.com/nodejs/nan#contributors>*
+Copyright (c) 2018 [NAN contributors](<https://github.com/nodejs/nan#wg-members--collaborators>)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -21054,7 +21056,7 @@ THE SOFTWARE.
 ******************************
 
 object.assign
-4.1.4 <https://github.com/ljharb/object.assign>
+4.1.5 <https://github.com/ljharb/object.assign>
 The MIT License (MIT)
 
 Copyright (c) 2014 Jordan Harband
@@ -21080,7 +21082,7 @@ SOFTWARE.
 ******************************
 
 object-inspect
-1.12.3 <https://github.com/inspect-js/object-inspect>
+1.13.1 <https://github.com/inspect-js/object-inspect>
 MIT License
 
 Copyright (c) 2013 James Halliday
@@ -21215,7 +21217,7 @@ SOFTWARE.
 ******************************
 
 pako
-1.0.6 <https://github.com/nodeca/pako>
+1.0.11 <https://github.com/nodeca/pako>
 (The MIT License)
 
 Copyright (C) 2014-2017 by Vitaly Puzrin and Andrei Tuputcyn
@@ -21466,6 +21468,33 @@ FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+******************************
+
+possible-typed-array-names
+1.0.0 <https://github.com/ljharb/possible-typed-array-names>
+MIT License
+
+Copyright (c) 2024 Jordan Harband
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 
 ******************************
@@ -22248,7 +22277,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 ******************************
 
 qs
-6.11.2 <https://github.com/ljharb/qs>
+6.12.1 <https://github.com/ljharb/qs>
 BSD 3-Clause License
 
 Copyright (c) 2014, Nathan LaFreniere and other [contributors](https://github.com/ljharb/qs/graphs/contributors)
@@ -22880,7 +22909,7 @@ authors: undefined
 ******************************
 
 react-transition-group
-4.4.2 <https://github.com/reactjs/react-transition-group>
+4.4.5 <https://github.com/reactjs/react-transition-group>
 BSD 3-Clause License
 
 Copyright (c) 2018, React Community
@@ -22916,7 +22945,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************
 
 readable-stream
-2.3.7 <https://github.com/nodejs/readable-stream>
+2.3.8 <https://github.com/nodejs/readable-stream>
 Node.js is licensed for use as follows:
 
 """
@@ -23022,7 +23051,7 @@ IN THE SOFTWARE.
 ******************************
 
 readable-stream
-4.4.2 <https://github.com/nodejs/readable-stream>
+4.5.2 <https://github.com/nodejs/readable-stream>
 Node.js is licensed for use as follows:
 
 """
@@ -23190,7 +23219,7 @@ SOFTWARE.
 ******************************
 
 regexp.prototype.flags
-1.5.1 <https://github.com/es-shims/RegExp.prototype.flags>
+1.5.2 <https://github.com/es-shims/RegExp.prototype.flags>
 The MIT License (MIT)
 
 Copyright (C) 2014 Jordan Harband
@@ -25321,7 +25350,7 @@ ses
 ******************************
 
 set-function-length
-1.2.1 <https://github.com/ljharb/set-function-length>
+1.2.2 <https://github.com/ljharb/set-function-length>
 MIT License
 
 Copyright (c) Jordan Harband and contributors
@@ -25348,7 +25377,7 @@ SOFTWARE.
 ******************************
 
 set-function-name
-2.0.1 <https://github.com/ljharb/set-function-name>
+2.0.2 <https://github.com/ljharb/set-function-name>
 MIT License
 
 Copyright (c) Jordan Harband and contributors
@@ -25463,7 +25492,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************
 
 side-channel
-1.0.4 <https://github.com/ljharb/side-channel>
+1.0.6 <https://github.com/ljharb/side-channel>
 MIT License
 
 Copyright (c) 2019 Jordan Harband
@@ -25558,7 +25587,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 socks
-2.8.1 <https://github.com/JoshGlazebrook/socks>
+2.8.3 <https://github.com/JoshGlazebrook/socks>
 The MIT License (MIT)
 
 Copyright (c) 2013 Josh Glazebrook
@@ -26217,7 +26246,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 ******************************
 
 tiny-invariant
-1.3.1 <https://github.com/alexreardon/tiny-invariant>
+1.3.3 <https://github.com/alexreardon/tiny-invariant>
 MIT License
 
 Copyright (c) 2019 Alexander Reardon
@@ -27190,7 +27219,7 @@ SOFTWARE.
 ******************************
 
 @types/debug
-4.1.7 <https://github.com/DefinitelyTyped/DefinitelyTyped>
+4.1.12 <https://github.com/DefinitelyTyped/DefinitelyTyped>
     MIT License
 
     Copyright (c) Microsoft Corporation.
@@ -27278,7 +27307,7 @@ authors: Mohamed Hegazy <https://github.com/mhegazy>
 ******************************
 
 @types/lodash
-4.14.184 <https://github.com/DefinitelyTyped/DefinitelyTyped>
+4.17.1 <https://github.com/DefinitelyTyped/DefinitelyTyped>
     MIT License
 
     Copyright (c) Microsoft Corporation.
@@ -27386,7 +27415,7 @@ authors: Mohamed Hegazy <https://github.com/mhegazy>
 ******************************
 
 @types/node
-20.12.7 <https://github.com/DefinitelyTyped/DefinitelyTyped>
+20.12.8 <https://github.com/DefinitelyTyped/DefinitelyTyped>
     MIT License
 
     Copyright (c) Microsoft Corporation.
@@ -27521,7 +27550,7 @@ authors: Mohamed Hegazy <https://github.com/mhegazy>
 ******************************
 
 @types/react-transition-group
-4.4.6 <https://github.com/DefinitelyTyped/DefinitelyTyped>
+4.4.10 <https://github.com/DefinitelyTyped/DefinitelyTyped>
     MIT License
 
     Copyright (c) Microsoft Corporation.
@@ -27873,7 +27902,7 @@ SOFTWARE.
 ******************************
 
 unified
-9.2.0 <https://github.com/unifiedjs/unified>
+9.2.2 <https://github.com/unifiedjs/unified>
 (The MIT License)
 
 Copyright (c) 2015 Titus Wormer <tituswormer@gmail.com>
@@ -29519,7 +29548,7 @@ SOFTWARE.
 ******************************
 
 which-typed-array
-1.1.9 <https://github.com/inspect-js/which-typed-array>
+1.1.15 <https://github.com/inspect-js/which-typed-array>
 The MIT License (MIT)
 
 Copyright (c) 2015 Jordan Harband
@@ -29664,7 +29693,7 @@ SOFTWARE.
 ******************************
 
 ws
-8.16.0 <https://github.com/websockets/ws>
+8.17.0 <https://github.com/websockets/ws>
 Copyright (c) 2011 Einar Otto Stangvik <einaros@gmail.com>
 Copyright (c) 2013 Arnout Kazemier and contributors
 Copyright (c) 2016 Luigi Pinca and contributors
