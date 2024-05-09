@@ -644,7 +644,7 @@ const closeSRPReveal = async (driver) => {
 };
 
 const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
-const DAPP_URL = 'http://127.0.0.1:8080';
+const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 const DAPP_ONE_URL = 'http://127.0.0.1:8081';
 
 const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
