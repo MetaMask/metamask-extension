@@ -72,10 +72,8 @@
     "https://lattice.gridplus.io/*",
     "activeTab",
     "webRequest",
-    "webRequestBlocking",
     "*://*.eth/",
-    "notifications",
-    "<all_urls>"
+    "notifications"
   ],
   "short_name": "__MSG_appName__"
 }

@@ -176,21 +176,6 @@ const sendReadyMessageToTabs = async () => {
   }
 };
 
-const burnedTabIds = {};
-
-browser.webRequest.onHeadersReceived.addListener(
-    function(details) {
-        const { usePhishDetect } = controller.preferencesController.store.getState();
-        const { hostname } = new URL(details.url);
-        const phishingTestResponse = controller.phishingController.test(hostname);
-        if (usePhishDetect && phishingTestResponse?.result) {
-          controller.updateBurnedTabIds(details.tabId);
-        }
-    },
-    {urls: ["<all_urls>"]},
-    ["responseHeaders"]
-);
-
 // These are set after initialization
 let connectRemote;
 let connectExternal;
@@ -627,7 +612,6 @@ export function setupController(
    * @param {Port} remotePort - The port provided by a new context.
    */
   connectRemote = async (remotePort) => {
-    console.log('remotePort 2', remotePort)
     const processName = remotePort.name;
 
     if (metamaskBlockedPorts.includes(remotePort.name)) {
@@ -730,6 +714,20 @@ export function setupController(
             controller.preferencesController,
           );
         }
+
+        // Check for malicious URLs on each message
+        remotePort.onMessage.addListener(() => {
+          const { usePhishDetect } =
+            controller.preferencesController.store.getState();
+          if (usePhishDetect) {
+            const phishingTestResponse = controller.phishingController.test(
+              remotePort.sender.origin,
+            );
+            if (phishingTestResponse.result) {
+              controller.updateBurnedTabIds(remotePort.tab.id);
+            }
+          }
+        });
 
         remotePort.onMessage.addListener((msg) => {
           if (
