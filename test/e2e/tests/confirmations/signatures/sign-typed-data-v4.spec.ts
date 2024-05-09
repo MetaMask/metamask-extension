@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { withRedesignConfirmationFixtures } from '../helper-fixture';
+import { withRedesignConfirmationFixtures } from '../helper';
 import {
   DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
