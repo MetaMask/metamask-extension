@@ -2050,6 +2050,10 @@ const debouncedValidateRecipientUserInput = debounce(
   300,
 );
 
+const debouncedComputeEstimatedGasLimit = debounce((dispatch) => {
+  dispatch(computeEstimatedGasLimit());
+}, 300);
+
 /**
  * Begins a new draft transaction, derived from the txParams of an existing
  * transaction in the TransactionController. This action will first clear out
@@ -2250,7 +2254,7 @@ export function updateSendQuote(
     }
 
     if (isComputingSendGasLimit) {
-      await dispatch(computeEstimatedGasLimit());
+      debouncedComputeEstimatedGasLimit(dispatch);
     }
   };
 }
