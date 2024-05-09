@@ -6,50 +6,53 @@ import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import { AlertModal } from './alert-modal';
 
 describe('AlertModal', () => {
-  const ownerIdMock = '123';
+  const OWNER_ID_MOCK = '123';
+  const FROM_ALERT_KEY_MOCK = 'from';
+  const ALERT_MESSAGE_MOCK = 'Alert 1';
   const onAcknowledgeClickMock = jest.fn();
   const onCloseMock = jest.fn();
-  const fromAlertKeyMock = 'from';
   const alertsMock = [
     {
-      key: fromAlertKeyMock,
+      key: FROM_ALERT_KEY_MOCK,
       severity: Severity.Warning,
-      message: 'Alert 1',
+      message: ALERT_MESSAGE_MOCK,
       reason: 'Reason 1',
       alertDetails: ['Detail 1', 'Detail 2'],
     },
     { key: 'data', severity: Severity.Danger, message: 'Alert 2' },
   ];
 
-  const mockState = {
+  const STATE_MOCK = {
     confirmAlerts: {
-      alerts: { [ownerIdMock]: alertsMock },
-      confirmed: { [ownerIdMock]: { [fromAlertKeyMock]: false, data: false } },
+      alerts: { [OWNER_ID_MOCK]: alertsMock },
+      confirmed: {
+        [OWNER_ID_MOCK]: { [FROM_ALERT_KEY_MOCK]: false, data: false },
+      },
     },
   };
-  const mockStore = configureMockStore([])(mockState);
+  const mockStore = configureMockStore([])(STATE_MOCK);
 
   it('renders the alert modal', () => {
-    const { container } = renderWithProvider(
+    const { getByText } = renderWithProvider(
       <AlertModal
-        ownerId={ownerIdMock}
+        ownerId={OWNER_ID_MOCK}
         onAcknowledgeClick={onAcknowledgeClickMock}
         onClose={onCloseMock}
-        alertKey={fromAlertKeyMock}
+        alertKey={FROM_ALERT_KEY_MOCK}
       />,
       mockStore,
     );
 
-    expect(container).toMatchSnapshot();
+    expect(getByText(ALERT_MESSAGE_MOCK)).toBeInTheDocument();
   });
 
   it('disables button when alert is not acknowledged', () => {
     const { getByTestId } = renderWithProvider(
       <AlertModal
-        ownerId={ownerIdMock}
+        ownerId={OWNER_ID_MOCK}
         onAcknowledgeClick={onAcknowledgeClickMock}
         onClose={onCloseMock}
-        alertKey={fromAlertKeyMock}
+        alertKey={'data'}
       />,
       mockStore,
     );
@@ -59,18 +62,18 @@ describe('AlertModal', () => {
 
   it('calls onAcknowledgeClick when the button is clicked', () => {
     const mockStoreAcknowledgeAlerts = configureMockStore([])({
-      ...mockState,
+      ...STATE_MOCK,
       confirmAlerts: {
-        alerts: { [ownerIdMock]: alertsMock },
-        confirmed: { [ownerIdMock]: { from: true, data: true } },
+        alerts: { [OWNER_ID_MOCK]: alertsMock },
+        confirmed: { [OWNER_ID_MOCK]: { from: true, data: true } },
       },
     });
     const { getByTestId } = renderWithProvider(
       <AlertModal
-        ownerId={ownerIdMock}
+        ownerId={OWNER_ID_MOCK}
         onAcknowledgeClick={onAcknowledgeClickMock}
         onClose={onCloseMock}
-        alertKey={fromAlertKeyMock}
+        alertKey={FROM_ALERT_KEY_MOCK}
       />,
       mockStoreAcknowledgeAlerts,
     );

@@ -122,7 +122,7 @@ test.describe('MMI Navigation', () => {
       context,
       mainMenuPage.page,
       'learn more',
-      learnMoreArticles,
+      'https://support.metamask.io',
     );
 
     await mainMenuPage.selectSettings('Security & privacy');

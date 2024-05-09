@@ -56,7 +56,7 @@ export default class ExperimentalTab extends PureComponent {
     setPetnamesEnabled: PropTypes.func.isRequired,
     featureNotificationsEnabled: PropTypes.bool,
     setFeatureNotificationsEnabled: PropTypes.func,
-    redesignedConfirmations: PropTypes.bool.isRequired,
+    redesignedConfirmationsEnabled: PropTypes.bool.isRequired,
     setRedesignedConfirmationsEnabled: PropTypes.func.isRequired,
   };
 
@@ -113,8 +113,10 @@ export default class ExperimentalTab extends PureComponent {
 
   renderToggleRedesignedConfirmations() {
     const { t } = this.context;
-    const { redesignedConfirmations, setRedesignedConfirmationsEnabled } =
-      this.props;
+    const {
+      redesignedConfirmationsEnabled,
+      setRedesignedConfirmationsEnabled,
+    } = this.props;
 
     return (
       <Box
@@ -131,7 +133,7 @@ export default class ExperimentalTab extends PureComponent {
         <div className="settings-page__content-item-col">
           <ToggleButton
             className="redesigned-confirmations-toggle"
-            value={redesignedConfirmations}
+            value={redesignedConfirmationsEnabled}
             onToggle={(value) => setRedesignedConfirmationsEnabled(!value)}
             offLabel={t('off')}
             onLabel={t('on')}

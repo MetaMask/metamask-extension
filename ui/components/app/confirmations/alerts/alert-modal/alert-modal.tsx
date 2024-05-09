@@ -33,10 +33,15 @@ import useAlerts from '../../../../../hooks/useAlerts';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 
 export type AlertModalProps = {
-  /** The owner ID of the relevant alert from the `confirmAlerts` reducer. */
-  ownerId: string;
   /** The unique key representing the specific alert field. */
   alertKey: string;
+  /**
+   * The start (left) content area of ModalHeader.
+   * It override `startAccessory` of ModalHeaderDefault and by default no content is present.
+   */
+  headerStartAccessory?: React.ReactNode;
+  /** The owner ID of the relevant alert from the `confirmAlerts` reducer. */
+  ownerId: string;
   /** The function invoked when the user acknowledges the alert. */
   onAcknowledgeClick: () => void;
   /** The function to be executed when the modal needs to be closed. */
@@ -63,7 +68,7 @@ function getSeverityStyle(severity: Severity) {
   }
 }
 
-function Header({ selectedAlert }: { selectedAlert: Alert }) {
+function AlertHeader({ selectedAlert }: { selectedAlert: Alert }) {
   const t = useI18nContext();
   const severityStyle = getSeverityStyle(selectedAlert.severity);
   return (
@@ -73,6 +78,7 @@ function Header({ selectedAlert }: { selectedAlert: Alert }) {
         display={Display.Block}
         alignItems={AlignItems.center}
         textAlign={TextAlign.Center}
+        marginTop={3}
       >
         <Icon
           name={
@@ -87,6 +93,7 @@ function Header({ selectedAlert }: { selectedAlert: Alert }) {
           variant={TextVariant.headingSm}
           color={TextColor.inherit}
           marginTop={3}
+          marginBottom={4}
         >
           {selectedAlert.reason ?? t('alert')}
         </Text>
@@ -128,18 +135,18 @@ function AlertDetails({ selectedAlert }: { selectedAlert: Alert }) {
 
 function AcknowledgeCheckbox({
   selectedAlert,
-  onHandleAcknowledgeClick,
+  setAlertConfirmed,
   isConfirmed,
 }: {
   selectedAlert: Alert;
-  onHandleAcknowledgeClick: (
-    selectedAlertKey: string,
-    isConfirmed: boolean,
-  ) => void;
+  setAlertConfirmed: (alertKey: string, isConfirmed: boolean) => void;
   isConfirmed: boolean;
 }) {
   const t = useI18nContext();
   const severityStyle = getSeverityStyle(selectedAlert.severity);
+  const handleCheckboxClick = () => {
+    return setAlertConfirmed(selectedAlert.key, !isConfirmed);
+  };
   return (
     <Box
       display={Display.Flex}
@@ -154,9 +161,7 @@ function AcknowledgeCheckbox({
         label={t('alertModalAcknowledge')}
         data-testid="alert-modal-acknowledge-checkbox"
         isChecked={isConfirmed}
-        onChange={() =>
-          onHandleAcknowledgeClick(selectedAlert.key, isConfirmed)
-        }
+        onChange={handleCheckboxClick}
         alignItems={AlignItems.flexStart}
         className={'alert-modal__acknowledge-checkbox'}
       />
@@ -165,15 +170,14 @@ function AcknowledgeCheckbox({
 }
 
 function AcknowledgeButton({
-  selectedAlertKey,
   onAcknowledgeClick,
-  isAlertConfirmed,
+  isConfirmed,
 }: {
-  selectedAlertKey: string;
   onAcknowledgeClick: () => void;
-  isAlertConfirmed: (alertKey: string) => boolean;
+  isConfirmed: boolean;
 }) {
   const t = useI18nContext();
+
   return (
     <>
       <Button
@@ -182,7 +186,7 @@ function AcknowledgeButton({
         onClick={onAcknowledgeClick}
         size={ButtonSize.Lg}
         data-testid="alert-modal-button"
-        disabled={!isAlertConfirmed(selectedAlertKey)}
+        disabled={!isConfirmed}
       >
         {t('gotIt')}
       </Button>
@@ -195,19 +199,13 @@ export function AlertModal({
   onAcknowledgeClick,
   alertKey,
   onClose,
+  headerStartAccessory,
 }: AlertModalProps) {
   const { alerts, isAlertConfirmed, setAlertConfirmed } = useAlerts(ownerId);
 
   const handleClose = useCallback(() => {
     onClose();
   }, [onClose]);
-
-  const handleAcknowledgeClick = (
-    selectedAlertKey: string,
-    isConfirmed: boolean,
-  ) => {
-    setAlertConfirmed(selectedAlertKey, !isConfirmed);
-  };
 
   const selectedAlert = alerts.find((alert) => alert.key === alertKey);
 
@@ -220,22 +218,26 @@ export function AlertModal({
     <Modal isOpen onClose={handleClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader onClose={handleClose}>
-          <Header selectedAlert={selectedAlert} />
-        </ModalHeader>
+        <ModalHeader
+          onClose={handleClose}
+          startAccessory={headerStartAccessory}
+          className={'alert-modal__header'}
+          borderWidth={1}
+          display={headerStartAccessory ? Display.InlineFlex : Display.Block}
+        />
+        <AlertHeader selectedAlert={selectedAlert} />
         <ModalBody>
           <AlertDetails selectedAlert={selectedAlert} />
           <AcknowledgeCheckbox
             selectedAlert={selectedAlert}
-            onHandleAcknowledgeClick={handleAcknowledgeClick}
             isConfirmed={isConfirmed}
+            setAlertConfirmed={setAlertConfirmed}
           />
         </ModalBody>
         <ModalFooter>
           <AcknowledgeButton
-            selectedAlertKey={selectedAlert.key}
             onAcknowledgeClick={onAcknowledgeClick}
-            isAlertConfirmed={isAlertConfirmed}
+            isConfirmed={isConfirmed}
           />
         </ModalFooter>
       </ModalContent>

@@ -61,6 +61,7 @@ describe('Actions', () => {
     background.signPersonalMessage = sinon.stub();
     background.signTypedMessage = sinon.stub();
     background.abortTransactionSigning = sinon.stub();
+    background.toggleExternalServices = sinon.stub();
   });
 
   describe('#tryUnlockMetamask', () => {
@@ -1651,6 +1652,55 @@ describe('Actions', () => {
     });
   });
 
+  describe('#setServiceWorkerKeepAlivePreference', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('sends a value to background', async () => {
+      const store = mockStore();
+      const setServiceWorkerKeepAlivePreferenceStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+
+      setBackgroundConnection({
+        setServiceWorkerKeepAlivePreference:
+          setServiceWorkerKeepAlivePreferenceStub,
+      });
+
+      await store.dispatch(actions.setServiceWorkerKeepAlivePreference(true));
+      expect(setServiceWorkerKeepAlivePreferenceStub.callCount).toStrictEqual(
+        1,
+      );
+      expect(setServiceWorkerKeepAlivePreferenceStub.calledWith(true)).toBe(
+        true,
+      );
+    });
+
+    it('errors when setServiceWorkerKeepAlivePreference in background throws', async () => {
+      const store = mockStore();
+      const setServiceWorkerKeepAlivePreferenceStub = sinon
+        .stub()
+        .callsFake((_, cb) => {
+          cb(new Error('error'));
+        });
+
+      setBackgroundConnection({
+        setServiceWorkerKeepAlivePreference:
+          setServiceWorkerKeepAlivePreferenceStub,
+      });
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      await store.dispatch(actions.setServiceWorkerKeepAlivePreference(false));
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
   describe('#setParticipateInMetaMetrics', () => {
     beforeAll(() => {
       window.sentry = {
@@ -2156,6 +2206,23 @@ describe('Actions', () => {
       await expect(
         store.dispatch(actions.removeAndIgnoreNft('Oxtest', '6')),
       ).rejects.toThrow(error);
+    });
+  });
+
+  describe('#toggleExternalServices', () => {
+    it('calls toggleExternalServices', async () => {
+      const store = mockStore();
+
+      setBackgroundConnection(background);
+
+      store.dispatch(actions.toggleExternalServices(true));
+
+      // expect it to have been called once, with true as the value
+      expect(background.toggleExternalServices.callCount).toStrictEqual(1);
+      expect(background.toggleExternalServices.getCall(0).args).toStrictEqual([
+        true,
+        expect.any(Function),
+      ]);
     });
   });
 });
