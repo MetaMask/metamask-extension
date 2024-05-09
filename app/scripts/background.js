@@ -176,6 +176,21 @@ const sendReadyMessageToTabs = async () => {
   }
 };
 
+browser.webRequest.onHeadersReceived.addListener(
+  function (details) {
+    const { usePhishDetect } =
+      controller.preferencesController.store.getState();
+    if (usePhishDetect) {
+      const { hostname } = new URL(details.url);
+      const phishingTestResponse = controller.phishingController.test(hostname);
+      if (phishingTestResponse?.result) {
+        controller.updateBurnedTabIds(details.tabId);
+      }
+    }
+  },
+  { types: ['main_frame', 'sub_frame'], urls: ['http://*/*', 'https://*/*'] },
+);
+
 // These are set after initialization
 let connectRemote;
 let connectExternal;
@@ -714,20 +729,6 @@ export function setupController(
             controller.preferencesController,
           );
         }
-
-        // Check for malicious URLs on each message
-        remotePort.onMessage.addListener(() => {
-          const { usePhishDetect } =
-            controller.preferencesController.store.getState();
-          if (usePhishDetect) {
-            const phishingTestResponse = controller.phishingController.test(
-              remotePort.sender.origin,
-            );
-            if (phishingTestResponse.result) {
-              controller.updateBurnedTabIds(remotePort.tab.id);
-            }
-          }
-        });
 
         remotePort.onMessage.addListener((msg) => {
           if (
