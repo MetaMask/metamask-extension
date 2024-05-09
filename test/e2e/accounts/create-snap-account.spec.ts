@@ -60,11 +60,12 @@ describe('Create Snap Account', function (this: Suite) {
               text: 'Confirm',
               tag: 'button',
             });
-            await driver.waitForSelector({ text: 'OK' });
+            await driver.waitForSelector({ text: 'Installation complete' });
             console.log('******************** 0')
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.SnapSimpleKeyringDapp,
             );
+            await driver.delay(4000);
             await driver.waitForSelector({
               css: '#snapConnected',
               text: 'Connected',

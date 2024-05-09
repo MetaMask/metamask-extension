@@ -471,7 +471,10 @@ async function createManifestV3AppInitializationBundle({
       './dist/chrome/scripts/runtime-lavamoat.js',
       'utf8',
     );
-    const fileOutput = content.replace('statsMode = false', 'statsMode = true');
+    const fileOutput = content.replace(
+      'statsMode = false',
+      'statsMode = false',
+    );
     writeFileSync('./dist/chrome/scripts/runtime-lavamoat.js', fileOutput);
   }
 
