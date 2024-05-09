@@ -130,7 +130,7 @@ describe('Create Snap Account', function (this: Suite) {
            // taken. In this case we skip the screenshot and log the error.
            try {
              await fs.promises.mkdir(artifactDir, { recursive: true });
-             await fs.promises.writeFile(`${filepathBase}-error-logs.json`, JSON.stringify(logs));
+             await fs.promises.writeFile(`${filepathBase}-${n}-error-logs.json`, JSON.stringify(logs));
            } catch (_e) {
              console.error('Failed to write logs', _e);
            }
