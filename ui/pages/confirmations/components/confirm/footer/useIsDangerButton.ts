@@ -6,7 +6,6 @@ import { SecurityAlertResponse } from '../../../types/confirm';
 import { BlockaidResultType } from '../../../../../../shared/constants/security-provider';
 
 const useIsDangerButton = () => {
-  const [isDangerButton, setIsDangerButton] = useState(false);
   const currentConfirmation = useSelector(currentConfirmationSelector);
 
   const currentSecurityAlertId = (
@@ -17,13 +16,7 @@ const useIsDangerButton = () => {
     currentSecurityAlertId,
   );
 
-  useEffect(() => {
-    setIsDangerButton(
-      signatureSecurityAlertResponse?.result_type === BlockaidResultType.Malicious
-    );
-  }, [signatureSecurityAlertResponse?.result_type]);
-
-  return isDangerButton;
+  return signatureSecurityAlertResponse?.result_type === BlockaidResultType.Malicious;
 }
 
 export default useIsDangerButton;
