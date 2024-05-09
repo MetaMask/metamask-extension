@@ -12,12 +12,15 @@ import log from 'loglevel';
 export function isErrorWithMessage(
   error: unknown,
 ): error is { message: string } {
-  return typeof error === 'object' && error !== null && 'message' in error;
+  return typeof error === 'object' && error !== null && (
+    'message' in error
+    || typeof (error as any)?.data?.cause?.message === 'string'
+  );
 }
 
 export function logErrorWithMessage(error: unknown) {
   if (isErrorWithMessage(error)) {
-    log.error(error.message);
+    log.error(error.message || (error as any)?.data?.cause?.message);
   } else {
     log.error(error);
   }
