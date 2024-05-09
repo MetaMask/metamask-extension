@@ -1,3 +1,5 @@
+// noinspection t
+
 import { SnapKeyring } from '@metamask/eth-snap-keyring';
 import type { SnapController } from '@metamask/snaps-controllers';
 import browser from 'webextension-polyfill';
@@ -121,6 +123,9 @@ export const snapKeyringBuilder = (
         snapId: string,
         handleUserInput: (accepted: boolean) => Promise<void>,
       ) => {
+        // [HERE] Check Snap Controller if Snap ID has 'preinstalled' status
+        const preinstalledSnap = true;
+
         const snapName = getSnapName(snapId);
         const { id: addAccountApprovalId } = controllerMessenger.call(
           'ApprovalController:startFlow',
@@ -142,18 +147,20 @@ export const snapKeyringBuilder = (
           'https://support.metamask.io/hc/en-us/articles/360015289452-How-to-add-accounts-in-your-wallet';
 
         // Since we use this in the finally, better to give it a default value if the controller call fails
-        let confirmationResult = false;
+        let confirmationResult = preinstalledSnap;
         try {
-          confirmationResult = Boolean(
-            await controllerMessenger.call(
-              'ApprovalController:addRequest',
-              {
-                origin: snapId,
-                type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
-              },
-              true,
-            ),
-          );
+          if (!preinstalledSnap) {
+            confirmationResult = Boolean(
+              await controllerMessenger.call(
+                'ApprovalController:addRequest',
+                {
+                  origin: snapId,
+                  type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
+                },
+                true,
+              ),
+            );
+          }
 
           if (confirmationResult) {
             try {
@@ -180,19 +187,22 @@ export const snapKeyringBuilder = (
               trackSnapAccountEvent(
                 MetaMetricsEventName.AddSnapAccountSuccessViewed,
               );
-              await showSuccess(
-                controllerMessenger,
-                snapId,
-                {
-                  icon: IconName.UserCircleAdd,
-                  title: t('snapAccountCreated'),
-                },
-                {
-                  message: t('snapAccountCreatedDescription') as string,
-                  address,
-                  learnMoreLink,
-                },
-              );
+
+              if (!preinstalledSnap) {
+                await showSuccess(
+                  controllerMessenger,
+                  snapId,
+                  {
+                    icon: IconName.UserCircleAdd,
+                    title: t('snapAccountCreated'),
+                  },
+                  {
+                    message: t('snapAccountCreatedDescription') as string,
+                    address,
+                    learnMoreLink,
+                  },
+                );
+              }
 
               // User has clicked on "OK"
               trackSnapAccountEvent(
