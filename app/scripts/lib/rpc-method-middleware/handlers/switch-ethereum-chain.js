@@ -1,6 +1,7 @@
 import { ethErrors } from 'eth-rpc-errors';
 import { omit } from 'lodash';
 import { PermissionDoesNotExistError } from '@metamask/permission-controller';
+import { ApprovalType } from '@metamask/controller-utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   CHAIN_ID_TO_TYPE_MAP,
@@ -34,6 +35,10 @@ const switchEthereumChain = {
     getCaveat: true,
     requestSwitchNetworkPermission: true,
     getCurrentChainIdForDomain: true,
+    // old hooks no longer used post chain permissioning:
+    getProviderConfig: true,
+    getCurrentChainId: true,
+    requestUserApproval: true,
   },
 };
 
@@ -71,6 +76,8 @@ async function switchEthereumChainHandler(
     requestSwitchNetworkPermission,
     getCaveat,
     getCurrentChainIdForDomain,
+    getProviderConfig,
+    requestUserApproval,
   },
 ) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
@@ -136,50 +143,92 @@ async function switchEthereumChainHandler(
     );
   }
 
-  let permissionedChainIds;
-  try {
-    ({ value: permissionedChainIds } = getCaveat(
-      origin,
-      RestrictedMethods.wallet_switchEthereumChain,
-      CaveatTypes.restrictNetworkSwitching,
-    ));
-  } catch (e) {
-    // throws if the origin does not have any switchEthereumChain permissions yet
-    if (e instanceof PermissionDoesNotExistError) {
-      // suppress expected error in case that the domain does not have a
-      // wallet_switchEthereumChain permission set yet
-    } else {
-      throw e;
-    }
-  }
-
-  if (
-    permissionedChainIds === undefined ||
-    !permissionedChainIds.includes(_chainId)
-  ) {
+  if (process.env?.CHAIN_PERMISSIONS) {
+    let permissionedChainIds;
     try {
-      // TODO replace with caveat merging once merged
-      // rather than passing already permissionedChains here
-      await requestSwitchNetworkPermission([
-        ...(permissionedChainIds ?? []),
-        chainId,
-      ]);
-    } catch (err) {
-      res.error = err;
-      return end();
+      ({ value: permissionedChainIds } = getCaveat(
+        origin,
+        RestrictedMethods.wallet_switchEthereumChain,
+        CaveatTypes.restrictNetworkSwitching,
+      ));
+    } catch (e) {
+      // throws if the origin does not have any switchEthereumChain permissions yet
+      if (e instanceof PermissionDoesNotExistError) {
+        // suppress expected error in case that the domain does not have a
+        // wallet_switchEthereumChain permission set yet
+      } else {
+        throw e;
+      }
     }
+
+    if (
+      permissionedChainIds === undefined ||
+      !permissionedChainIds.includes(_chainId)
+    ) {
+      try {
+        // TODO replace with caveat merging once merged
+        // rather than passing already permissionedChains here
+        await requestSwitchNetworkPermission([
+          ...(permissionedChainIds ?? []),
+          chainId,
+        ]);
+      } catch (err) {
+        res.error = err;
+        return end();
+      }
+    }
+
+    const networkClientId = findNetworkClientIdByChainId(chainId);
+
+    try {
+      await setActiveNetwork(networkClientId);
+      if (hasPermissions(req.origin)) {
+        setNetworkClientIdForDomain(req.origin, networkClientId);
+      }
+      res.result = null;
+    } catch (error) {
+      return end(error);
+    }
+    return end();
+  }
+  // preserving old behavior when not using the chain permissionsing logic
+
+  const requestData = {
+    toNetworkConfiguration: findExistingNetwork(
+      _chainId,
+      findNetworkConfigurationBy,
+    ),
+  };
+
+  requestData.fromNetworkConfiguration = getProviderConfig();
+
+  if (requestData.toNetworkConfiguration) {
+    // we might want to change all this so that it displays the network you are switching from -> to (in a way that is domain - specific)
+    const networkClientId = findNetworkClientIdByChainId(_chainId);
+
+    try {
+      const approvedRequestData = await requestUserApproval({
+        origin,
+        type: ApprovalType.SwitchEthereumChain,
+        requestData,
+      });
+
+      await setActiveNetwork(approvedRequestData.id);
+
+      if (hasPermissions(req.origin)) {
+        setNetworkClientIdForDomain(req.origin, networkClientId);
+      }
+      res.result = null;
+    } catch (error) {
+      return end(error);
+    }
+    return end();
   }
 
-  const networkClientId = findNetworkClientIdByChainId(chainId);
-
-  try {
-    await setActiveNetwork(networkClientId);
-    if (hasPermissions(req.origin)) {
-      setNetworkClientIdForDomain(req.origin, networkClientId);
-    }
-    res.result = null;
-  } catch (error) {
-    return end(error);
-  }
-  return end();
+  return end(
+    ethErrors.provider.custom({
+      code: 4902, // To-be-standardized "unrecognized chain ID" error
+      message: `Unrecognized chain ID "${chainId}". Try adding the chain using ${MESSAGE_TYPE.ADD_ETHEREUM_CHAIN} first.`,
+    }),
+  );
 }
