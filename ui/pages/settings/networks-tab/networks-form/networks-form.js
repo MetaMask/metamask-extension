@@ -716,6 +716,12 @@ const NetworksForm = ({
     !rpcUrl ||
     !chainId ||
     !ticker;
+  let displayRpcUrl = rpcUrl?.includes(`/v3/${infuraProjectId}`)
+    ? rpcUrl.replace(`/v3/${infuraProjectId}`, '')
+    : rpcUrl;
+  if (viewOnly) {
+    displayRpcUrl = displayRpcUrl?.toLowerCase();
+  }
 
   return (
     <div
@@ -761,11 +767,7 @@ const NetworksForm = ({
             setRpcUrl(value);
           }}
           titleText={t('rpcUrl')}
-          value={
-            rpcUrl?.includes(`/v3/${infuraProjectId}`)
-              ? rpcUrl.replace(`/v3/${infuraProjectId}`, '')
-              : rpcUrl
-          }
+          value={displayRpcUrl}
           disabled={viewOnly}
           dataTestId="network-form-rpc-url"
         />
