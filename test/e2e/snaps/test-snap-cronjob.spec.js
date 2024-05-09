@@ -2,6 +2,7 @@ const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
+  switchToNotificationWindow,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -32,11 +33,8 @@ describe('Test Snap Cronjob', function () {
         await driver.delay(500);
         await driver.clickElement('#connectcronjobs');
 
-        // required delay awaiting the dialog window to open
-        await driver.delay(500);
-
         // switch to metamask extension and click connect
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -66,7 +64,7 @@ describe('Test Snap Cronjob', function () {
         });
 
         // switch to dialog popup, wait for a maximum of 65 seconds
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver);
 
         // look for the dialog popup to verify cronjob fired
         await driver.waitForSelector({

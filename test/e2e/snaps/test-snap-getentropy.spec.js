@@ -2,6 +2,7 @@ const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
+  switchToNotificationWindow,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -32,11 +33,8 @@ describe('Test Snap getEntropy', function () {
         await driver.delay(1000);
         await driver.clickElement('#connectGetEntropySnap');
 
-        // required delay awaiting the dialog window to open
-        await driver.delay(1000);
-
         // switch to metamask extension and click connect
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver, 2);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -75,7 +73,7 @@ describe('Test Snap getEntropy', function () {
         await driver.clickElement('#signEntropyMessage');
 
         // Switch to approve signature message window and approve
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver, 2);
         await driver.clickElement({
           text: 'Approve',
           tag: 'button',

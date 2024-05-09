@@ -3,6 +3,7 @@ const {
   defaultGanacheOptions,
   openDapp,
   unlockWallet,
+  switchToNotificationWindow,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -33,11 +34,8 @@ describe('Test Snap Signature Insights', function () {
         await driver.delay(1000);
         await driver.clickElement('#connectsignature-insights');
 
-        // required delay awaiting the dialog window to open
-        await driver.delay(1000);
-
         // switch to metamask extension and click connect
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -72,7 +70,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#connectButton');
 
         // switch back to MetaMask window and deal with dialogs
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver, 4);
         await driver.clickElement({
           text: 'Next',
           tag: 'button',
@@ -93,7 +91,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#personalSign');
 
         // switch back to MetaMask window and switch to tx insights pane
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver, 4);
 
         // wait for and click sign
         await driver.waitForSelector({
@@ -132,11 +130,8 @@ describe('Test Snap Signature Insights', function () {
         await driver.scrollToElement(signTypedButton1);
         await driver.clickElement('#signTypedData');
 
-        // required delay awaiting the dialog window to open
-        await driver.delay(1000);
-
         // switch back to MetaMask window and switch to tx insights pane
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver, 4);
 
         // wait for and click sign
         await driver.waitForSelector({
@@ -175,11 +170,8 @@ describe('Test Snap Signature Insights', function () {
         await driver.scrollToElement(signTypedV3Button1);
         await driver.clickElement('#signTypedDataV3');
 
-        // required delay awaiting the dialog window to open
-        await driver.delay(1000);
-
         // switch back to MetaMask window and switch to tx insights pane
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver, 4);
 
         // click down arrow
         await driver.waitForSelector('.fa-arrow-down');
@@ -222,11 +214,8 @@ describe('Test Snap Signature Insights', function () {
         await driver.scrollToElement(signTypedV4Button1);
         await driver.clickElement('#signTypedDataV4');
 
-        // required delay awaiting the dialog window to open
-        await driver.delay(1000);
-
         // switch back to MetaMask window and switch to tx insights pane
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver, 4);
 
         // click down arrow
         await driver.waitForSelector('.fa-arrow-down');
@@ -321,11 +310,8 @@ describe('Test Snap Signature Insights', function () {
         await driver.scrollToElement(ethSignButton1);
         await driver.clickElement('#ethSign');
 
-        // required delay awaiting the dialog window to open
-        await driver.delay(1000);
-
         // switch back to MetaMask window and switch to tx insights pane
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver, 4);
 
         // wait for and click sign
         await driver.waitForSelector({

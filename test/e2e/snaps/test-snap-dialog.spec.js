@@ -2,6 +2,7 @@ const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
+  switchToNotificationWindow,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -32,11 +33,8 @@ describe('Test Snap Dialog', function () {
         await driver.delay(500);
         await driver.clickElement('#connectdialogs');
 
-        // required delay awaiting the dialog window to open
-        await driver.delay(1000);
-
         // switch to metamask extension and click connect
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -68,11 +66,8 @@ describe('Test Snap Dialog', function () {
         // click on alert dialog
         await driver.clickElement('#sendAlertButton');
 
-        // required delay awaiting the dialog window to open
-        await driver.delay(1000);
-
         // switch to dialog popup
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver);
 
         // check dialog contents
         const result = await driver.findElement('.snap-ui-renderer__panel');
@@ -100,11 +95,8 @@ describe('Test Snap Dialog', function () {
         // click conf button
         await driver.clickElement('#sendConfirmationButton');
 
-        // required delay awaiting the dialog window to open
-        await driver.delay(1000);
-
         // switch to dialog popup
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver);
 
         // click reject
         await driver.clickElement({
@@ -124,11 +116,8 @@ describe('Test Snap Dialog', function () {
         // click conf button again
         await driver.clickElement('#sendConfirmationButton');
 
-        // required delay awaiting the dialog window to open
-        await driver.delay(1000);
-
         // switch to dialog popup
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver);
 
         // click accept
         await driver.clickElement({
@@ -148,11 +137,8 @@ describe('Test Snap Dialog', function () {
         // click prompt button
         await driver.clickElement('#sendPromptButton');
 
-        // required delay awaiting the dialog window to open
-        await driver.delay(1000);
-
         // switch to dialog popup
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver);
 
         // click cancel button
         await driver.clickElement({
@@ -172,11 +158,8 @@ describe('Test Snap Dialog', function () {
         // click prompt button
         await driver.clickElement('#sendPromptButton');
 
-        // required delay awaiting the dialog window to open
-        await driver.delay(1000);
-
         // switch to dialog popup
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver);
 
         // fill '2323' in form field
         await driver.pasteIntoField('.mm-input', '2323');

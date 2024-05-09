@@ -2,6 +2,7 @@ const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
+  switchToNotificationWindow,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -34,11 +35,8 @@ describe('Test Snap ethereum_provider', function () {
         await driver.delay(1000);
         await driver.clickElement('#connectethereum-provider');
 
-        // required delay awaiting the dialog window to open
-        await driver.delay(1000);
-
         // switch to metamask extension and click connect
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver, 2);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -88,7 +86,7 @@ describe('Test Snap ethereum_provider', function () {
         await driver.clickElement('#sendEthproviderAccounts');
 
         // switch to metamask window and click through confirmations
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver, 2);
         await driver.clickElement({
           text: 'Next',
           tag: 'button',

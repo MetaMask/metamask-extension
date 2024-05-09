@@ -4,6 +4,7 @@ const {
   withFixtures,
   unlockWallet,
   getEventPayloads,
+  switchToNotificationWindow,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -66,11 +67,8 @@ describe('Test Snap Installed', function () {
         await driver.delay(500);
         await driver.clickElement('#connectdialogs');
 
-        // required delay awaiting the dialog window to open
-        await driver.delay(1000);
-
         // switch to metamask extension and click connect
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -117,11 +115,8 @@ describe('Test Snap Installed', function () {
         await driver.delay(500);
         await driver.clickElement('#connecterrors');
 
-        // required delay awaiting the dialog window to open
-        await driver.delay(1000);
-
         // switch to metamask extension and click connect
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
