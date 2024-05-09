@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs');
+fs = fs.promises;
 import { Suite } from 'mocha';
 import FixtureBuilder from '../fixture-builder';
 import {
@@ -122,6 +123,17 @@ describe('Create Snap Account', function (this: Suite) {
             console.log('e',e)
            const logs = await driver.checkBrowserForLavamoatLogs();
            console.log('logs', logs)
+           const artifactDir = `./test-artifacts/chrome/${this.test?.fullTitle()}`;
+           const filepathBase = `${artifactDir}/test-failure`;
+           // On occasion there may be a bug in the offscreen document which does
+           // not render visibly to the user and therefore no screenshot can be
+           // taken. In this case we skip the screenshot and log the error.
+           try {
+             await fs.mkdir(artifactDir, { recursive: true });
+             await fs.writeFile(`${filepathBase}-error-logs.json`, JSON.stringify(logs));
+           } catch (_e) {
+             console.error('Failed to write logs', _e);
+           }
             console.log(e)
             throw e;
           }
