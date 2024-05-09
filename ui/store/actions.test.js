@@ -61,6 +61,7 @@ describe('Actions', () => {
     background.signPersonalMessage = sinon.stub();
     background.signTypedMessage = sinon.stub();
     background.abortTransactionSigning = sinon.stub();
+    background.toggleExternalServices = sinon.stub();
   });
 
   describe('#tryUnlockMetamask', () => {
@@ -2205,6 +2206,23 @@ describe('Actions', () => {
       await expect(
         store.dispatch(actions.removeAndIgnoreNft('Oxtest', '6')),
       ).rejects.toThrow(error);
+    });
+  });
+
+  describe('#toggleExternalServices', () => {
+    it('calls toggleExternalServices', async () => {
+      const store = mockStore();
+
+      setBackgroundConnection(background);
+
+      store.dispatch(actions.toggleExternalServices(true));
+
+      // expect it to have been called once, with true as the value
+      expect(background.toggleExternalServices.callCount).toStrictEqual(1);
+      expect(background.toggleExternalServices.getCall(0).args).toStrictEqual([
+        true,
+        expect.any(Function),
+      ]);
     });
   });
 });

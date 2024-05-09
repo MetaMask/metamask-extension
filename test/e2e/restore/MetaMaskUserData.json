@@ -41,7 +41,7 @@
     },
     "theme": "light",
     "useBlockie": false,
-    "useRequestQueue": false,
+    "useRequestQueue": true,
     "useNftDetection": false,
     "useNonceField": false,
     "usePhishDetect": true,
