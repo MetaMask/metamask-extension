@@ -177,7 +177,7 @@ function getCopyTargets(
     },
     {
       src: './app/scripts/devtools.js',
-      dest: 'scripts/devtools.js',
+      dest: 'devtools.js',
     },
     {
       src: './app/devtools.html',
