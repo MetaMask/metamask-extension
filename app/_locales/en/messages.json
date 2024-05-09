@@ -3266,10 +3266,10 @@
   "onboardingMetametricsAgree": {
     "message": "I agree"
   },
-  "onboardingMetametricsAllowOptOut_legacy": {
+  "onboardingMetametricsAllowOptOutLegacy": {
     "message": "Always allow you to opt-out via Settings"
   },
-  "onboardingMetametricsDataTerms_legacy": {
+  "onboardingMetametricsDataTermsLegacy": {
     "message": "This data is aggregated and is therefore anonymous for the purposes of General Data Protection Regulation (EU) 2016/679."
   },
   "onboardingMetametricsDescription": {
@@ -3278,10 +3278,10 @@
   "onboardingMetametricsDescription2": {
     "message": "When we gather metrics, it will always be..."
   },
-  "onboardingMetametricsDescription2_legacy": {
+  "onboardingMetametricsDescription2Legacy": {
     "message": "MetaMask will..."
   },
-  "onboardingMetametricsDescription_legacy": {
+  "onboardingMetametricsDescriptionLegacy": {
     "message": "MetaMask would like to gather usage data to better understand how our users interact with MetaMask. This data will be used to provide the service, which includes improving the service based on your use."
   },
 
@@ -3292,18 +3292,18 @@
     "message": "We’ll let you know if we decide to use this data for other purposes. You can review our $1 for more information. Remember, you can go to settings and opt out at any time.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
+  "onboardingMetametricsInfuraTermsLegacy": {
+    "message": "* When you use Infura as your default RPC provider in MetaMask, Infura will collect your IP address and your Ethereum wallet address when you send a transaction. We don’t store this information in a way that allows our systems to associate those two pieces of data. For more information on how MetaMask and Infura interact from a data collection perspective, see our update $1. For more information on our privacy practices in general, see our $2.",
+    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
+  },
   "onboardingMetametricsInfuraTermsPolicy": {
     "message": "Privacy Policy"
   },
-  "onboardingMetametricsInfuraTermsPolicyLink_legacy": {
-    "message": "here"
-  },
-  "onboardingMetametricsInfuraTermsPolicy_legacy": {
+  "onboardingMetametricsInfuraTermsPolicyLegacy": {
     "message": "Privacy Policy here"
   },
-  "onboardingMetametricsInfuraTerms_legacy": {
-    "message": "* When you use Infura as your default RPC provider in MetaMask, Infura will collect your IP address and your Ethereum wallet address when you send a transaction. We don’t store this information in a way that allows our systems to associate those two pieces of data. For more information on how MetaMask and Infura interact from a data collection perspective, see our update $1. For more information on our privacy practices in general, see our $2.",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
+  "onboardingMetametricsInfuraTermsPolicyLinkLegacy": {
+    "message": "here"
   },
   "onboardingMetametricsModalTitle": {
     "message": "Add custom network"
@@ -3322,15 +3322,15 @@
   "onboardingMetametricsNeverCollectIPEmphasis": {
     "message": "General:"
   },
-  "onboardingMetametricsNeverCollectIP_legacy": {
+  "onboardingMetametricsNeverCollectIPLegacy": {
     "message": "$1 collect your full IP address*",
     "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
   },
-  "onboardingMetametricsNeverCollect_legacy": {
+  "onboardingMetametricsNeverCollectLegacy": {
     "message": "$1 collect information we don’t need to provide the service (such as keys, addresses, transaction hashes, or balances)",
     "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
   },
-  "onboardingMetametricsNeverEmphasis_legacy": {
+  "onboardingMetametricsNeverEmphasisLegacy": {
     "message": "Never"
   },
   "onboardingMetametricsNeverSellData": {
@@ -3340,11 +3340,11 @@
   "onboardingMetametricsNeverSellDataEmphasis": {
     "message": "Optional:"
   },
-  "onboardingMetametricsNeverSellData_legacy": {
+  "onboardingMetametricsNeverSellDataLegacy": {
     "message": "$1 sell data.  Ever!",
     "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
   },
-  "onboardingMetametricsSendAnonymize_legacy": {
+  "onboardingMetametricsSendAnonymizeLegacy": {
     "message": "Send anonymized click and pageview events"
   },
   "onboardingMetametricsTitle": {

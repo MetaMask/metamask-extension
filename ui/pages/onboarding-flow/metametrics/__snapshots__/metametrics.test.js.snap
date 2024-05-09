@@ -4,7 +4,7 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
 <div>
   <div
     class="onboarding-metametrics"
-    data-testid="onboarding-metametrics"
+    data-testid="onboarding-legacy-metametrics"
   >
     <h2
       class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h2 typography--weight-bold typography--style-normal typography--align-center typography--color-text-default"

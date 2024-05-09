@@ -94,13 +94,13 @@ export default function OnboardingMetametrics() {
           className="onboarding-metametrics__desc"
           align={TEXT_ALIGN.CENTER}
         >
-          {t('onboardingMetametricsDescription_legacy')}
+          {t('onboardingMetametricsDescriptionLegacy')}
         </Typography>
         <Typography
           className="onboarding-metametrics__desc"
           align={TEXT_ALIGN.CENTER}
         >
-          {t('onboardingMetametricsDescription2_legacy')}
+          {t('onboardingMetametricsDescription2Legacy')}
         </Typography>
         <ul>
           <li>
@@ -109,7 +109,7 @@ export default function OnboardingMetametrics() {
               color={IconColor.successDefault}
               marginInlineEnd={3}
             />
-            {t('onboardingMetametricsAllowOptOut_legacy')}
+            {t('onboardingMetametricsAllowOptOutLegacy')}
           </li>
           <li>
             <Icon
@@ -117,7 +117,7 @@ export default function OnboardingMetametrics() {
               color={IconColor.successDefault}
               marginInlineEnd={3}
             />
-            {t('onboardingMetametricsSendAnonymize_legacy')}
+            {t('onboardingMetametricsSendAnonymizeLegacy')}
           </li>
           <li>
             <Box>
@@ -127,14 +127,14 @@ export default function OnboardingMetametrics() {
                 size={IconSize.Sm}
                 color={IconColor.errorDefault}
               />
-              {t('onboardingMetametricsNeverCollect_legacy', [
+              {t('onboardingMetametricsNeverCollectLegacy', [
                 <Typography
                   variant={TypographyVariant.span}
                   key="never"
                   fontWeight={FONT_WEIGHT.BOLD}
                   marginTop={0}
                 >
-                  {t('onboardingMetametricsNeverEmphasis_legacy')}
+                  {t('onboardingMetametricsNeverEmphasisLegacy')}
                 </Typography>,
               ])}
             </Box>
@@ -147,13 +147,13 @@ export default function OnboardingMetametrics() {
                 size={IconSize.Sm}
                 color={IconColor.errorDefault}
               />
-              {t('onboardingMetametricsNeverCollectIP_legacy', [
+              {t('onboardingMetametricsNeverCollectIPLegacy', [
                 <Typography
                   variant={TypographyVariant.span}
                   key="never-collect"
                   fontWeight={FONT_WEIGHT.BOLD}
                 >
-                  {t('onboardingMetametricsNeverEmphasis_legacy')}
+                  {t('onboardingMetametricsNeverEmphasisLegacy')}
                 </Typography>,
               ])}
             </Box>
@@ -166,13 +166,13 @@ export default function OnboardingMetametrics() {
                 size={IconSize.Sm}
                 color={IconColor.errorDefault}
               />
-              {t('onboardingMetametricsNeverSellData_legacy', [
+              {t('onboardingMetametricsNeverSellDataLegacy', [
                 <Typography
                   variant={TypographyVariant.span}
                   key="never-sell"
                   fontWeight={FONT_WEIGHT.BOLD}
                 >
-                  {t('onboardingMetametricsNeverEmphasis_legacy')}
+                  {t('onboardingMetametricsNeverEmphasisLegacy')}
                 </Typography>,
               ])}
             </Box>{' '}
@@ -184,7 +184,7 @@ export default function OnboardingMetametrics() {
           variant={TypographyVariant.H6}
           className="onboarding-metametrics__terms"
         >
-          {t('onboardingMetametricsDataTerms_legacy')}
+          {t('onboardingMetametricsDataTermsLegacy')}
         </Typography>
         <Typography
           color={TextColor.textAlternative}
@@ -192,14 +192,14 @@ export default function OnboardingMetametrics() {
           variant={TypographyVariant.H6}
           className="onboarding-metametrics__terms"
         >
-          {t('onboardingMetametricsInfuraTerms_legacy', [
+          {t('onboardingMetametricsInfuraTermsLegacy', [
             <a
               href="https://consensys.io/blog/consensys-data-retention-update"
               target="_blank"
               rel="noopener noreferrer"
               key="retention-link"
             >
-              {t('onboardingMetametricsInfuraTermsPolicyLink_legacy')}
+              {t('onboardingMetametricsInfuraTermsPolicyLinkLegacy')}
             </a>,
             <a
               href="https://metamask.io/privacy.html"
@@ -207,7 +207,7 @@ export default function OnboardingMetametrics() {
               rel="noopener noreferrer"
               key="privacy-link"
             >
-              {t('onboardingMetametricsInfuraTermsPolicy_legacy')}
+              {t('onboardingMetametricsInfuraTermsPolicyLegacy')}
             </a>,
           ])}
         </Typography>
