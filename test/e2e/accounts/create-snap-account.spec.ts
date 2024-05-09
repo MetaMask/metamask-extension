@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-fs = fs.promises;
+
 import { Suite } from 'mocha';
 import FixtureBuilder from '../fixture-builder';
 import {
@@ -129,8 +129,8 @@ describe('Create Snap Account', function (this: Suite) {
            // not render visibly to the user and therefore no screenshot can be
            // taken. In this case we skip the screenshot and log the error.
            try {
-             await fs.mkdir(artifactDir, { recursive: true });
-             await fs.writeFile(`${filepathBase}-error-logs.json`, JSON.stringify(logs));
+             await fs.promises.mkdir(artifactDir, { recursive: true });
+             await fs.promises.writeFile(`${filepathBase}-error-logs.json`, JSON.stringify(logs));
            } catch (_e) {
              console.error('Failed to write logs', _e);
            }
