@@ -41,20 +41,23 @@ const ScrollToBottom = ({ children }: ContentProps) => {
     isScrolledToBottom,
     onScroll,
     scrollToBottom,
+    setHasScrolledToBottom,
     ref,
   } = useScrollRequired([currentConfirmation?.id]);
 
   /**
    * Scroll to the top of the page when the confirmation changes. This happens
-   * when we navigate through different confirmations.
+   * when we navigate through different confirmations. Also, resets hasScrolledToBottom
    */
   useEffect(() => {
-    const scrollTo = (ref?.current as null | HTMLDivElement)?.scrollTo;
-    const canScrollAndConfirmationChanged =
-      typeof scrollTo === 'function' &&
-      !isEqual(previousId, currentConfirmation?.id);
+    if (isEqual(previousId, currentConfirmation?.id)) {
+      return;
+    }
 
-    if (canScrollAndConfirmationChanged) {
+    setHasScrolledToBottom(false);
+
+    const scrollTo = (ref?.current as null | HTMLDivElement)?.scrollTo;
+    if (typeof scrollTo === 'function') {
       (ref?.current as null | HTMLDivElement)?.scrollTo(0, 0);
     }
   }, [currentConfirmation?.id]);

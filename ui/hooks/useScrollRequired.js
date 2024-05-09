@@ -1,6 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { debounce, isEqual } from 'lodash';
-import { usePrevious } from './usePrevious';
+import { useEffect, useRef, useState } from 'react';
+import { debounce } from 'lodash';
 
 /**
  * Utility hook for requiring users to scroll through content.
@@ -13,24 +12,15 @@ import { usePrevious } from './usePrevious';
  */
 export const useScrollRequired = (dependencies = []) => {
   const ref = useRef(null);
-  const previousFirstDependency = usePrevious(dependencies[0]);
 
   const [hasScrolledToBottomState, setHasScrolledToBottom] = useState(false);
   const [isScrollableState, setIsScrollable] = useState(false);
   const [isScrolledToBottomState, setIsScrolledToBottom] = useState(false);
 
-  const resetHasScrolledToBottomWhenFirstDependencyChanges = useCallback(() => {
-    if (!isEqual(previousFirstDependency, dependencies[0])) {
-      setHasScrolledToBottom(false);
-    }
-  }, [dependencies, previousFirstDependency]);
-
   const update = () => {
     if (!ref.current) {
       return;
     }
-    resetHasScrolledToBottomWhenFirstDependencyChanges();
-
     const isScrollable =
       ref.current && ref.current.scrollHeight > ref.current.clientHeight;
 
@@ -68,6 +58,7 @@ export const useScrollRequired = (dependencies = []) => {
     isScrolledToBottom: isScrolledToBottomState,
     hasScrolledToBottom: hasScrolledToBottomState,
     scrollToBottom,
+    setHasScrolledToBottom,
     ref,
     onScroll: debounce(update, 25),
   };
