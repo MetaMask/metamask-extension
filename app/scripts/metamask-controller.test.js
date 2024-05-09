@@ -982,6 +982,10 @@ describe('MetaMaskController', () => {
           .mockReturnValue({ address: selectedAddressMock });
 
         jest.spyOn(metamaskController.txController, 'wipeTransactions');
+        jest.spyOn(
+          metamaskController.smartTransactionsController,
+          'wipeSmartTransactions',
+        );
 
         await metamaskController.resetAccount();
 
@@ -989,8 +993,17 @@ describe('MetaMaskController', () => {
           metamaskController.txController.wipeTransactions,
         ).toHaveBeenCalledTimes(1);
         expect(
+          metamaskController.smartTransactionsController.wipeSmartTransactions,
+        ).toHaveBeenCalledTimes(1);
+        expect(
           metamaskController.txController.wipeTransactions,
-        ).toHaveBeenCalledWith(true, selectedAddressMock);
+        ).toHaveBeenCalledWith(false, selectedAddressMock);
+        expect(
+          metamaskController.smartTransactionsController.wipeSmartTransactions,
+        ).toHaveBeenCalledWith({
+          address: selectedAddressMock,
+          ignoreNetwork: false,
+        });
       });
     });
 
