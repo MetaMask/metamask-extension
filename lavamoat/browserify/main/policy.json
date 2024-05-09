@@ -1806,10 +1806,6 @@
       }
     },
     "@metamask/phishing-warning>eth-phishing-detect": {
-      "globals": {
-        "console.log": true,
-        "console.trace": true
-      },
       "packages": {
         "eslint>optionator>fast-levenshtein": true
       }
@@ -2278,13 +2274,13 @@
         "setTimeout": true
       },
       "packages": {
+        "@metamask/permission-controller": true,
         "@metamask/post-message-stream": true,
         "@metamask/providers>@metamask/object-multiplex": true,
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/snaps-controllers>@metamask/base-controller": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-middleware-stream": true,
-        "@metamask/snaps-controllers>@metamask/permission-controller": true,
         "@metamask/snaps-controllers>@xstate/fsm": true,
         "@metamask/snaps-controllers>concat-stream": true,
         "@metamask/snaps-controllers>get-npm-tarball-url": true,
@@ -2340,21 +2336,6 @@
         "pumpify>inherits": true,
         "readable-stream>util-deprecate": true,
         "webpack>events": true
-      }
-    },
-    "@metamask/snaps-controllers>@metamask/permission-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@metamask/controller-utils": true,
-        "@metamask/providers>@metamask/rpc-errors": true,
-        "@metamask/snaps-controllers>@metamask/base-controller": true,
-        "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
-        "@metamask/snaps-controllers>nanoid": true,
-        "@metamask/utils": true,
-        "deep-freeze-strict": true,
-        "immer": true
       }
     },
     "@metamask/snaps-controllers>concat-stream": {
@@ -2782,7 +2763,6 @@
         "XMLHttpRequest": true,
         "__SENTRY_DEBUG__": true,
         "__SENTRY_RELEASE__": true,
-        "console.log": true,
         "indexedDB.open": true,
         "setTimeout": true
       },
@@ -2855,7 +2835,6 @@
         "__rrMutationObserver": true,
         "clearTimeout": true,
         "console.error": true,
-        "console.log": true,
         "console.warn": true,
         "document": true,
         "innerHeight": true,
@@ -2901,7 +2880,6 @@
         "__SENTRY_DEBUG__": true,
         "clearTimeout": true,
         "console.error": true,
-        "console.log": true,
         "document": true,
         "setTimeout": true
       },
