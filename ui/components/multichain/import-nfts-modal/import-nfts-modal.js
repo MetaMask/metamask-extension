@@ -95,10 +95,9 @@ export const ImportNftsModal = ({ onClose }) => {
 
       dispatch(updateNftDropDownState(newNftDropdownState));
     } catch (error) {
-      const message =
-        typeof error?.data?.cause?.message === 'undefined'
+      const message = (typeof error.data?.cause?.message === 'undefined'
           ? error.message
-          : error.data.cause.message;
+          : error.data.cause.message);
       dispatch(setNewNftAddedMessage(message));
       setNftAddFailed(true);
       return;
