@@ -4898,6 +4898,14 @@ export default class MetamaskController extends EventEmitter {
     );
     ///: END:ONLY_INCLUDE_IF
 
+    const isConfirmationRedesignEnabled = () => {
+      return (
+        process.env.ENABLE_CONFIRMATION_REDESIGN &&
+        this.preferencesController.store.getState().preferences
+          .redesignedConfirmations
+      );
+    };
+
     engine.push(
       createRPCMethodTrackingMiddleware({
         trackEvent: this.metaMetricsController.trackEvent.bind(
@@ -4908,6 +4916,7 @@ export default class MetamaskController extends EventEmitter {
         ),
         getAccountType: this.getAccountType.bind(this),
         getDeviceModel: this.getDeviceModel.bind(this),
+        isConfirmationRedesignEnabled,
         snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
           name: 'SnapAndHardwareMessenger',
           allowedActions: [
