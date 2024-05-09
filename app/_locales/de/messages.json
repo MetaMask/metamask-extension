@@ -2579,50 +2579,50 @@
   "onboardingMetametricsAgree": {
     "message": "Ich stimme zu"
   },
-  "onboardingMetametricsAllowOptOut": {
+  "onboardingMetametricsAllowOptOutLegacy": {
     "message": "Erlaubt Ihnen immer die Abmeldung über Einstellungen"
   },
-  "onboardingMetametricsDataTerms": {
+  "onboardingMetametricsDataTermsLegacy": {
     "message": "Diese Daten werden gesammelt und sind daher im Rahmen der Datenschutz-Grundverordnung (EU) 2016/679 anonym."
   },
-  "onboardingMetametricsDescription": {
-    "message": "MetaMask möchte Nutzungsdaten sammeln, um ein besseres Verständnis zu erhalten, wie unsere Nutzer mit MetaMask interagieren. Diese Daten werden verwendet, um Dienste anzubieten, was auf Ihrer Nutzung basierte Dienstverbesserungen einschließt."
-  },
-  "onboardingMetametricsDescription2": {
+  "onboardingMetametricsDescription2Legacy": {
     "message": "MetaMask wird ..."
+  },
+  "onboardingMetametricsDescriptionLegacy": {
+    "message": "MetaMask möchte Nutzungsdaten sammeln, um ein besseres Verständnis zu erhalten, wie unsere Nutzer mit MetaMask interagieren. Diese Daten werden verwendet, um Dienste anzubieten, was auf Ihrer Nutzung basierte Dienstverbesserungen einschließt."
   },
   "onboardingMetametricsDisagree": {
     "message": "Nein, danke!"
   },
-  "onboardingMetametricsInfuraTerms": {
+  "onboardingMetametricsInfuraTermsLegacy": {
     "message": "*Wenn Sie Infura als Standard-RPC-Anbieter in MetaMask vewenden, speichert Infura Ihre IP-Adresse und Ihre Etherum-Wallet-Adresse, wenn Sie eine Transaktion senden. Wir speichern diese Daten in keinster Weise in unserem System, um sie miteinander in Verbindung zu bringen. Für weitere Informationen darüber, wie MetaMask und Infura in Hinischt auf Datenspeicherung zusammenarbeiten, sehen Sie sich bitte unser Update $1 an. Für mehr Informationen bezüglich unseren allgemeinen Datenschutzpraktiken, sehen Sie sich bitte unsere $2 an.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
-  "onboardingMetametricsInfuraTermsPolicy": {
+  "onboardingMetametricsInfuraTermsPolicyLegacy": {
     "message": "Datenschutzerklärung hier"
   },
-  "onboardingMetametricsInfuraTermsPolicyLink": {
+  "onboardingMetametricsInfuraTermsPolicyLinkLegacy": {
     "message": "hier"
   },
   "onboardingMetametricsModalTitle": {
     "message": "Benutzerdefiniertes Netzwerk hinzufügen"
   },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 speichert Daten, die wir nicht benötigen, um die Dienstleistung zur Verfügung zu stellen (wie zum Beispiel Schlüssel, Adresse, Transaktions-Hashs oder Guthaben)",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectIP": {
+  "onboardingMetametricsNeverCollectIPLegacy": {
     "message": "$1 speichert Ihre vollständige IP-Adresse*",
     "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
   },
-  "onboardingMetametricsNeverEmphasis": {
+  "onboardingMetametricsNeverCollectLegacy": {
+    "message": "$1 speichert Daten, die wir nicht benötigen, um die Dienstleistung zur Verfügung zu stellen (wie zum Beispiel Schlüssel, Adresse, Transaktions-Hashs oder Guthaben)",
+    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
+  },
+  "onboardingMetametricsNeverEmphasisLegacy": {
     "message": "Nie"
   },
-  "onboardingMetametricsNeverSellData": {
+  "onboardingMetametricsNeverSellDataLegacy": {
     "message": "$1 Daten verkaufen. Niemals!",
     "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
   },
-  "onboardingMetametricsSendAnonymize": {
+  "onboardingMetametricsSendAnonymizeLegacy": {
     "message": "Anonymisierte Ereignisse für Klicks und Seitenaufrufe senden"
   },
   "onboardingMetametricsTitle": {
