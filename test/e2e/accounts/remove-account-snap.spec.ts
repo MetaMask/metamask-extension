@@ -1,11 +1,7 @@
 const { strict: assert } = require('assert');
 import { Suite } from 'mocha';
 import FixtureBuilder from '../fixture-builder';
-import {
-  WINDOW_TITLES,
-  defaultGanacheOptions,
-  withFixtures,
-} from '../helpers';
+import { WINDOW_TITLES, defaultGanacheOptions, withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import { installSnapSimpleKeyring, makeNewAccountAndSwitch } from './common';
 
@@ -22,7 +18,7 @@ describe('Remove Account Snap', function (this: Suite) {
 
         await makeNewAccountAndSwitch(driver);
 
-        // Assert that a new account was added to the account menu.
+        // Check accounts after adding the snap account.
         await driver.clickElement('[data-testid="account-menu-icon"]');
         const accountMenuItemsWithSnapAdded = await driver.findElements(
           '.multichain-account-list-item',
@@ -83,14 +79,14 @@ describe('Remove Account Snap', function (this: Suite) {
         });
         await driver.clickElement('.mm-box button[aria-label="Close"]');
 
-        // Assert that an account was removed
+        // Assert that an account was removed.
         await driver.clickElement('[data-testid="account-menu-icon"]');
         const accountMenuItemsAfterRemoval = await driver.findElements(
           '.multichain-account-list-item',
         );
         assert.equal(
           accountMenuItemsAfterRemoval.length,
-          (accountMenuItemsWithSnapAdded.length - 1),
+          accountMenuItemsWithSnapAdded.length - 1,
         );
       },
     );
