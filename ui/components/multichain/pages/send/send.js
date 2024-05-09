@@ -228,6 +228,12 @@ export const SendPage = () => {
 
   useUpdateSwapsState();
 
+  const onAmountChange = useCallback(
+    (newAmountRaw, newAmountFormatted) =>
+      dispatch(updateSendAmount(newAmountRaw, newAmountFormatted)),
+    [dispatch],
+  );
+
   return (
     <Page className="multichain-send-page">
       <Header
@@ -249,9 +255,7 @@ export const SendPage = () => {
             asset={transactionAsset}
             amount={amount}
             onAssetChange={handleSelectSendToken}
-            onAmountChange={(newAmountRaw, newAmountFormatted) =>
-              dispatch(updateSendAmount(newAmountRaw, newAmountFormatted))
-            }
+            onAmountChange={onAmountChange}
           />
         )}
         <Box marginTop={6}>
