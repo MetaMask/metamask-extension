@@ -60,7 +60,7 @@ const ScrollToBottom = ({ children }: ContentProps) => {
     if (typeof scrollTo === 'function') {
       (ref?.current as null | HTMLDivElement)?.scrollTo(0, 0);
     }
-  }, [currentConfirmation?.id]);
+  }, [currentConfirmation?.id, previousId, setHasScrolledToBottom]);
 
   useEffect(() => {
     dispatch(
