@@ -39,6 +39,7 @@ const switchEthereumChain = {
     getProviderConfig: true,
     getCurrentChainId: true,
     requestUserApproval: true,
+    getChainPermissionsFeatureFlag: true,
   },
 };
 
@@ -78,6 +79,7 @@ async function switchEthereumChainHandler(
     getCurrentChainIdForDomain,
     getProviderConfig,
     requestUserApproval,
+    getChainPermissionsFeatureFlag,
   },
 ) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
@@ -143,7 +145,7 @@ async function switchEthereumChainHandler(
     );
   }
 
-  if (process.env?.CHAIN_PERMISSIONS) {
+  if (getChainPermissionsFeatureFlag()) {
     let permissionedChainIds;
     try {
       ({ value: permissionedChainIds } = getCaveat(
@@ -191,8 +193,8 @@ async function switchEthereumChainHandler(
     }
     return end();
   }
-  // preserving old behavior when not using the chain permissionsing logic
 
+  // preserving old behavior when not using the chain permissionsing logic
   const requestData = {
     toNetworkConfiguration: findExistingNetwork(
       _chainId,

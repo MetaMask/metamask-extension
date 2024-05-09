@@ -293,6 +293,8 @@ env:
   - MULTICHAIN: ''
   # Determines if feature flagged Multichain Transactions should be used
   - TRANSACTION_MULTICHAIN: ''
+  # Determines if feature flagged Chain permissions
+  - CHAIN_PERMISSIONS: ''
 
     # Enables the notifications feature within the build:
   - NOTIFICATIONS: ''
