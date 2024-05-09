@@ -81,7 +81,7 @@ export default function OnboardingMetametrics() {
     return (
       <div
         className="onboarding-metametrics"
-        data-testid="onboarding-metametrics"
+        data-testid="onboarding-legacy-metametrics"
       >
         <Typography
           variant={TypographyVariant.H2}
