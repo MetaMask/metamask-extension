@@ -6,21 +6,21 @@ let scriptsLoadInitiated = false;
 const { chrome } = globalThis;
 const testMode = process.env.IN_TEST;
 
-const loadTimeLogs = [];
+// const loadTimeLogs = [];
 // eslint-disable-next-line import/unambiguous
 function tryImport(...fileNames) {
   try {
-    const startTime = new Date().getTime();
+    // const startTime = new Date().getTime();
     // eslint-disable-next-line
     importScripts(...fileNames);
-    const endTime = new Date().getTime();
-    loadTimeLogs.push({
-      name: fileNames[0],
-      value: endTime - startTime,
-      children: [],
-      startTime,
-      endTime,
-    });
+    // const endTime = new Date().getTime();
+    // loadTimeLogs.push({
+    //   name: fileNames[0],
+    //   value: endTime - startTime,
+    //   children: [],
+    //   startTime,
+    //   endTime,
+    // });
 
     return true;
   } catch (e) {
@@ -94,7 +94,7 @@ function importAllScripts() {
   // Import all required resources
   tryImport(...files);
 
-  const endImportScriptsTime = Date.now();
+  // const endImportScriptsTime = Date.now();
 
   // for performance metrics/reference
   console.log(
@@ -104,22 +104,22 @@ function importAllScripts() {
   );
 
   // In testMode load time logs are output to console
-  if (testMode) {
-    console.log(
-      `Time for each import: ${JSON.stringify(
-        {
-          name: 'Total',
-          children: loadTimeLogs,
-          startTime: startImportScriptsTime,
-          endTime: endImportScriptsTime,
-          value: endImportScriptsTime - startImportScriptsTime,
-          version: 1,
-        },
-        undefined,
-        '    ',
-      )}`,
-    );
-  }
+  //   if (testMode) {
+  //     console.log(
+  //       `Time for each import: ${JSON.stringify(
+  //         {
+  //           name: 'Total',
+  //           children: loadTimeLogs,
+  //           startTime: startImportScriptsTime,
+  //           endTime: endImportScriptsTime,
+  //           value: endImportScriptsTime - startImportScriptsTime,
+  //           version: 1,
+  //         },
+  //         undefined,
+  //         '    ',
+  //       )}`,
+  //     );
+  //   }
 }
 
 // Ref: https://stackoverflow.com/questions/66406672/chrome-extension-mv3-modularize-service-worker-js-file
