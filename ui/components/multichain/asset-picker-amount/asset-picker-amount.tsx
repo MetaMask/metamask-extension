@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Box, Text } from '../../component-library';
@@ -14,7 +14,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import { getSelectedInternalAccount } from '../../../selectors';
 
-import { TokenStandard } from '../../../../shared/constants/transaction';
+import {
+  AssetType,
+  TokenStandard,
+} from '../../../../shared/constants/transaction';
 import {
   getCurrentDraftTransaction,
   type Amount,
@@ -62,14 +65,27 @@ export const AssetPickerAmount = ({
   const isSwapsErrorShown = isDisabled && swapQuotesError;
 
   const [isFocused, setIsFocused] = useState(false);
+  const [isNFTInputChanged, setIsTokenInputChanged] = useState(false);
+
+  const handleChange = useCallback(
+    (newAmountRaw, newAmountFormatted) => {
+      if (!isNFTInputChanged && asset.type === AssetType.NFT) {
+        setIsTokenInputChanged(true);
+      }
+      onAmountChange?.(newAmountRaw, newAmountFormatted);
+    },
+    [onAmountChange, isNFTInputChanged, asset.type],
+  );
 
   const { error: rawError } = amount;
 
-  // if an error, like the 0 asset error, is out of scope, it shouldn't be shown in the AssetPickerAmount treatments
-  const error =
-    rawError && rawError !== NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR
-      ? rawError
-      : undefined;
+  // if input hasn't been touched, don't show the zero amount error
+  const isLowBalanceErrorInvalid =
+    rawError === NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR &&
+    asset.type === AssetType.NFT &&
+    !isNFTInputChanged;
+
+  const error = rawError && !isLowBalanceErrorInvalid ? rawError : undefined;
 
   useEffect(() => {
     if (!asset) {
@@ -110,7 +126,7 @@ export const AssetPickerAmount = ({
       >
         <AssetPicker asset={asset} {...assetPickerProps} />
         <SwappableCurrencyInput
-          onAmountChange={onAmountChange}
+          onAmountChange={handleChange}
           assetType={asset.type}
           asset={asset}
           amount={amount}
