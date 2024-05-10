@@ -98,7 +98,7 @@ describe('ScrollToBottom', () => {
       });
     });
 
-    it('does not scroll to top when the confirmation changes', () => {
+    it('does not scroll to the top while the confirmation id does not change', () => {
       const mockScrollTo = jest.fn();
       const originalScrollTo = window.HTMLDivElement.prototype.scrollTo;
       window.HTMLDivElement.prototype.scrollTo = mockScrollTo;
@@ -117,7 +117,7 @@ describe('ScrollToBottom', () => {
       window.HTMLDivElement.prototype.scrollTo = originalScrollTo;
     });
 
-    it('scrolls to top when the confirmation changes', () => {
+    it('scrolls to the top when the confirmation changes', () => {
       const mockScrollTo = jest.fn();
       const originalScrollTo = window.HTMLDivElement.prototype.scrollTo;
       window.HTMLDivElement.prototype.scrollTo = mockScrollTo;
