@@ -4896,11 +4896,8 @@ export default class MetamaskController extends EventEmitter {
     ///: END:ONLY_INCLUDE_IF
 
     const isConfirmationRedesignEnabled = () => {
-      return (
-        process.env.ENABLE_CONFIRMATION_REDESIGN &&
-        this.preferencesController.store.getState().preferences
-          .redesignedConfirmations
-      );
+      return this.preferencesController.store.getState().preferences
+        .redesignedConfirmations;
     };
 
     engine.push(
