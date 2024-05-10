@@ -50,7 +50,7 @@ export default function useEthFeeData(gasLimit = 0) {
     }
   }, [dispatch, chainId, networkAndAccountSupports1559, isSwapsChain]);
 
-  const { formattedEthGasFee, formattedFiatGasFee } = useMemo(() => {
+  return useMemo(() => {
     const ethGasFee = new Numeric(
       networkAndAccountSupports1559 ? gasFee1559 : gasPriceNon1559,
       10,
@@ -82,6 +82,4 @@ export default function useEthFeeData(gasLimit = 0) {
     currentCurrency,
     nativeCurrencySymbol,
   ]);
-
-  return { formattedEthGasFee, formattedFiatGasFee };
 }
