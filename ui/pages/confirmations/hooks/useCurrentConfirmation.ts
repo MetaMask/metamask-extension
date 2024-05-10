@@ -32,10 +32,7 @@ const useCurrentConfirmation = () => {
   );
 
   useEffect(() => {
-    if (
-      !process.env.ENABLE_CONFIRMATION_REDESIGN ||
-      !redesignedConfirmationsEnabled
-    ) {
+    if (!redesignedConfirmationsEnabled) {
       return;
     }
 
