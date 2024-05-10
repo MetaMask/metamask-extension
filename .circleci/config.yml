@@ -812,7 +812,6 @@ jobs:
       - run:
           name: test:e2e:chrome
           command: |
-            export ENABLE_MV3=false
               if .circleci/scripts/test-run-e2e.sh; then
                   timeout 20m yarn test:e2e:chrome --retries 2
               fi
