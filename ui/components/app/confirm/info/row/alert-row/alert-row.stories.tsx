@@ -7,6 +7,8 @@ import { Meta } from '@storybook/react';
 import { baseAlertsMock } from '../../../../confirmations/alerts/alert-modal/alert-modal.stories';
 
 const LABEL_FROM_MOCK = 'From';
+const DATA_FROM_MOCK = 'Data';
+const CONTRACT_FROM_MOCK = 'Contract';
 const OWNER_ID_MOCK = '123';
 
 const pendingApprovalMock = {
@@ -26,8 +28,8 @@ const storeMock = configureStore({
     confirmed: {
       [OWNER_ID_MOCK]: {
         [LABEL_FROM_MOCK]: false,
-        Data: false,
-        Contract: false,
+        [DATA_FROM_MOCK]: false,
+        [CONTRACT_FROM_MOCK]: false,
       },
     },
   },
@@ -83,9 +85,9 @@ AlertRowCritical.args = {
  */
 export const AlertRowWarning = DefaultStory.bind({});
 AlertRowWarning.args = {
-  label: LABEL_FROM_MOCK,
+  label: DATA_FROM_MOCK,
   children: 'Value',
-  alertKey: LABEL_FROM_MOCK,
+  alertKey: DATA_FROM_MOCK,
   ownerId: OWNER_ID_MOCK,
   variant: ConfirmInfoRowVariant.Warning,
 };
@@ -95,9 +97,9 @@ AlertRowWarning.args = {
  */
 export const AlertRowInformative = DefaultStory.bind({});
 AlertRowInformative.args = {
-  label: LABEL_FROM_MOCK,
+  label: CONTRACT_FROM_MOCK,
   children: 'Value',
-  alertKey: LABEL_FROM_MOCK,
+  alertKey: CONTRACT_FROM_MOCK,
   ownerId: OWNER_ID_MOCK,
   variant: ConfirmInfoRowVariant.Default,
 };

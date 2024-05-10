@@ -94,7 +94,7 @@ export default class PreferencesController {
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
-        redesignedConfirmationsEnabled: false,
+        redesignedConfirmationsEnabled: true,
         featureNotificationsEnabled: false,
       },
       // ENS decentralized website resolution
