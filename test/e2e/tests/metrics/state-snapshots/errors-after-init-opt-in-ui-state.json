@@ -107,7 +107,7 @@
     "useTokenDetection": false,
     "useNftDetection": false,
     "useCurrencyRateCheck": true,
-    "useRequestQueue": false,
+    "useRequestQueue": true,
     "openSeaEnabled": false,
     "securityAlertsEnabled": "boolean",
     "addSnapAccountEnabled": "boolean",
