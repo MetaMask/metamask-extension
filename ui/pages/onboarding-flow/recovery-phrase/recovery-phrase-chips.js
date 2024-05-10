@@ -1,9 +1,9 @@
 import React from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import Chip from '../../../components/ui/chip';
 import Box from '../../../components/ui/box';
 import Typography from '../../../components/ui/typography';
+import { Tag } from '../../../components/component-library/tag';
 import { ChipWithInput } from '../../../components/ui/chip/chip-with-input';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -71,13 +71,12 @@ export default function RecoveryPhraseChips({
               <div className="recovery-phrase__chip-item__number">
                 {`${index + 1}.`}
               </div>
-              <Chip
+              <Tag
+                label={word}
                 dataTestId={`recovery-phrase-chip-${index}`}
-                className="recovery-phrase__chip"
+                className={classnames('chip', 'recovery-phrase__chip')}
                 borderColor={BorderColor.borderDefault}
-              >
-                {word}
-              </Chip>
+              />
             </div>
           );
         })}
