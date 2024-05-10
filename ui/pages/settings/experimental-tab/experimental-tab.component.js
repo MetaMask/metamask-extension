@@ -315,8 +315,7 @@ export default class ExperimentalTab extends PureComponent {
     return (
       <div className="settings-page__body">
         {this.renderTogglePetnames()}
-        {process.env.ENABLE_CONFIRMATION_REDESIGN &&
-          this.renderToggleRedesignedConfirmations()}
+        {this.renderToggleRedesignedConfirmations()}
         {process.env.NOTIFICATIONS ? this.renderNotificationsToggle() : null}
         {
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)

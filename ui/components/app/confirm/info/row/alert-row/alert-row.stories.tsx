@@ -1,6 +1,6 @@
 import React from 'react';
-import { ConfirmInfoRow, ConfirmInfoRowVariant } from '../row';
-import { AlertRow, AlertRowProps } from './alert-row';
+import { ConfirmInfoRowVariant } from '../row';
+import { AlertRow } from './alert-row';
 import { Severity } from '../../../../../../helpers/constants/design-system';
 import { Alert } from '../../../../../../ducks/confirm-alerts/confirm-alerts';
 import configureStore from '../../../../../../store/store';
@@ -8,6 +8,8 @@ import { Provider } from 'react-redux';
 import { Meta } from '@storybook/react';
 
 const LABEL_FROM_MOCK = 'From';
+const DATA_FROM_MOCK = 'Data';
+const CONTRACT_FROM_MOCK = 'Contract';
 const alertsMock: Alert[] = [
   {
     key: LABEL_FROM_MOCK,
@@ -21,12 +23,32 @@ const alertsMock: Alert[] = [
       'Operator is untrusted according to previous activity',
     ],
   },
+  {
+    key: 'Data',
+    field: 'Data',
+    severity: Severity.Warning,
+    message: 'Alert 2',
+    alertDetails: ['detail 1 warning', 'detail 2 warning'],
+  },
+  {
+    key: 'Contract',
+    field: 'Contract',
+    severity: Severity.Info,
+    message: 'Alert Info',
+    alertDetails: ['detail 1 info', 'detail info'],
+  },
 ];
 const OWNER_ID_MOCK = '123';
 const storeMock = configureStore({
   confirmAlerts: {
     alerts: { [OWNER_ID_MOCK]: alertsMock },
-    confirmed: { [OWNER_ID_MOCK]: { [LABEL_FROM_MOCK]: false, 'data': false, 'contract': false } },
+    confirmed: {
+      [OWNER_ID_MOCK]: {
+        [LABEL_FROM_MOCK]: false,
+        [DATA_FROM_MOCK]: false,
+        [CONTRACT_FROM_MOCK]: false,
+      },
+    },
   },
   confirm: {
     currentConfirmation: {
@@ -76,7 +98,7 @@ AlertRowCritical.args = {
   label: LABEL_FROM_MOCK,
   children: 'Value',
   alertKey: LABEL_FROM_MOCK,
-  alertOwnerId: OWNER_ID_MOCK,
+  ownerId: OWNER_ID_MOCK,
   variant: ConfirmInfoRowVariant.Critical,
 };
 
@@ -85,10 +107,10 @@ AlertRowCritical.args = {
  */
 export const AlertRowWarning = DefaultStory.bind({});
 AlertRowWarning.args = {
-  label: LABEL_FROM_MOCK,
+  label: DATA_FROM_MOCK,
   children: 'Value',
-  alertKey: LABEL_FROM_MOCK,
-  alertOwnerId: OWNER_ID_MOCK,
+  alertKey: DATA_FROM_MOCK,
+  ownerId: OWNER_ID_MOCK,
   variant: ConfirmInfoRowVariant.Warning,
 };
 
@@ -97,9 +119,9 @@ AlertRowWarning.args = {
  */
 export const AlertRowInformative = DefaultStory.bind({});
 AlertRowInformative.args = {
-  label: LABEL_FROM_MOCK,
+  label: CONTRACT_FROM_MOCK,
   children: 'Value',
-  alertKey: LABEL_FROM_MOCK,
-  alertOwnerId: OWNER_ID_MOCK,
+  alertKey: CONTRACT_FROM_MOCK,
+  ownerId: OWNER_ID_MOCK,
   variant: ConfirmInfoRowVariant.Default,
 };
