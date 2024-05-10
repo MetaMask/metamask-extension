@@ -78,37 +78,40 @@ export function SwappableCurrencyInput({
 
   const isFiatPrimary = useSelector(getIsFiatPrimary);
 
+  const TokenComponent = (
+    <CurrencyInput
+      className="asset-picker-amount__input"
+      isFiatPreferred={isFiatPrimary}
+      onChange={onAmountChange}
+      hexValue={value}
+      swapIcon={(onClick: React.MouseEventHandler) => (
+        <SwapIcon onClick={onClick} />
+      )}
+      onPreferenceToggle={useCallback(
+        () => dispatch(toggleCurrencySwitch()),
+        [dispatch],
+      )}
+      asset={asset?.details}
+      isSkeleton={isAmountLoading}
+    />
+  );
+
+  const NFTComponent = (
+    <NFTInput
+      integerValue={parseInt(value, 16)}
+      onChange={onAmountChange}
+      className="asset-picker-amount__input-nft"
+    />
+  );
+
   switch (assetType) {
     case AssetType.token:
     case AssetType.native:
-      return (
-        <CurrencyInput
-          className="asset-picker-amount__input"
-          isFiatPreferred={isFiatPrimary}
-          onChange={onAmountChange}
-          hexValue={value}
-          swapIcon={(onClick: React.MouseEventHandler) => (
-            <SwapIcon onClick={onClick} />
-          )}
-          onPreferenceToggle={useCallback(
-            () => dispatch(toggleCurrencySwitch()),
-            [dispatch],
-          )}
-          asset={asset?.details}
-          isSkeleton={isAmountLoading}
-        />
-      );
+      return TokenComponent;
     case AssetType.NFT:
-      if (asset.details?.standard === TokenStandard.ERC721) {
-        return null;
-      }
-      return (
-        <NFTInput
-          integerValue={parseInt(value, 16)}
-          onChange={onAmountChange}
-          className="asset-picker-amount__input-nft"
-        />
-      );
+      return asset.details?.standard === TokenStandard.ERC721
+        ? null
+        : NFTComponent;
     default:
     // do nothing
   }
