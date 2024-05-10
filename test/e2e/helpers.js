@@ -50,6 +50,7 @@ async function withFixtures(options, testSuite) {
     },
     useBundler,
     usePaymaster,
+    ethConversionInUsd,
   } = options;
 
   const fixtureServer = new FixtureServer();
@@ -135,6 +136,7 @@ async function withFixtures(options, testSuite) {
       testSpecificMock,
       {
         chainId: ganacheOptions?.chainId || 1337,
+        ethConversionInUsd,
       },
     );
     if ((await detectPort(8000)) !== 8000) {
