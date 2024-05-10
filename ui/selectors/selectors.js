@@ -1801,8 +1801,7 @@ export function getNetworkToAutomaticallySwitchTo(state) {
     getIsUnlocked(state) &&
     useRequestQueue &&
     selectedTabOrigin &&
-    numberOfUnapprovedTx === 0 &&
-    process.env.MULTICHAIN
+    numberOfUnapprovedTx === 0
   ) {
     const domainNetworks = getAllDomains(state);
     const networkIdForThisDomain = domainNetworks[selectedTabOrigin];

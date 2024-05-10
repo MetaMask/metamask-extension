@@ -513,9 +513,17 @@ const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
   await driver.findElement({ text: 'Wallet creation successful', tag: 'h2' });
   // opt-out from third party API
   await driver.clickElement({ text: 'Advanced configuration', tag: 'a' });
+  await driver.clickElement(
+    '[data-testid="basic-functionality-toggle"] .toggle-button',
+  );
+  await driver.clickElement('[id="basic-configuration-checkbox"]');
+  await driver.clickElement({ text: 'Turn off', tag: 'button' });
+
   await Promise.all(
     (
-      await driver.findClickableElements('.toggle-button.toggle-button--on')
+      await driver.findClickableElements(
+        '.toggle-button.toggle-button--on:not([data-testid="basic-functionality-toggle"] .toggle-button)',
+      )
     ).map((toggle) => toggle.click()),
   );
   // complete onboarding
@@ -875,6 +883,7 @@ async function waitForAccountRendered(driver) {
 
 /**
  * Unlock the wallet with the default password.
+ * This method is intended to replace driver.navigate and should not be called after driver.navigate.
  *
  * @param {WebDriver} driver - The webdriver instance
  * @param {object} options - Options for unlocking the wallet
