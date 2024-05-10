@@ -113,7 +113,7 @@
       "useTokenDetection": false,
       "useCurrencyRateCheck": true,
       "useMultiAccountBalanceChecker": true,
-      "useRequestQueue": false
+      "useRequestQueue": true
     },
     "SelectedNetworkController": { "domains": "object" },
     "SmartTransactionsController": {

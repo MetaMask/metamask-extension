@@ -1,0 +1,149 @@
+diff --git a/dist/chunk-HBNET6MY.mjs b/dist/chunk-HBNET6MY.mjs
+index 5843d635c91e9125d130a6ef5688550e5d514eaa..ca94b6c69ac51c1415968339fe188b2141bce044 100644
+--- a/dist/chunk-HBNET6MY.mjs
++++ b/dist/chunk-HBNET6MY.mjs
+@@ -117,7 +117,7 @@ function truncateSnap(snap) {
+   return truncatedSnap;
+ }
+ var name = "SnapController";
+-var _closeAllConnections, _dynamicPermissions, _environmentEndowmentPermissions, _excludedPermissions, _featureFlags, _fetchFunction, _idleTimeCheckInterval, _maxIdleTime, _encryptor, _getMnemonic, _detectSnapLocation, _snapsRuntimeData, _rollbackSnapshots, _timeoutForLastRequestStatus, _statusMachine, _initializeStateMachine, initializeStateMachine_fn, _registerMessageHandlers, registerMessageHandlers_fn, _handlePreinstalledSnaps, handlePreinstalledSnaps_fn, _pollForLastRequestStatus, pollForLastRequestStatus_fn, _blockSnap, blockSnap_fn, _unblockSnap, unblockSnap_fn, _assertIsInstallAllowed, assertIsInstallAllowed_fn, _stopSnapsLastRequestPastMax, stopSnapsLastRequestPastMax_fn, _transition, transition_fn, _terminateSnap, terminateSnap_fn, _getSnapEncryptionKey, getSnapEncryptionKey_fn, _decryptSnapState, decryptSnapState_fn, _encryptSnapState, encryptSnapState_fn, _handleInitialConnections, handleInitialConnections_fn, _addSnapToSubject, addSnapToSubject_fn, _removeSnapFromSubjects, removeSnapFromSubjects_fn, _revokeAllSnapPermissions, revokeAllSnapPermissions_fn, _createApproval, createApproval_fn, _updateApproval, updateApproval_fn, _resolveAllowlistVersion, resolveAllowlistVersion_fn, _add, add_fn, _startSnap, startSnap_fn, _getEndowments, getEndowments_fn, _set, set_fn, _validateSnapPermissions, validateSnapPermissions_fn, _getExecutionTimeout, getExecutionTimeout_fn, _getRpcRequestHandler, getRpcRequestHandler_fn, _createInterface, createInterface_fn, _assertInterfaceExists, assertInterfaceExists_fn, _transformSnapRpcRequestResult, transformSnapRpcRequestResult_fn, _assertSnapRpcRequestResult, assertSnapRpcRequestResult_fn, _recordSnapRpcRequestStart, recordSnapRpcRequestStart_fn, _recordSnapRpcRequestFinish, recordSnapRpcRequestFinish_fn, _getRollbackSnapshot, getRollbackSnapshot_fn, _createRollbackSnapshot, createRollbackSnapshot_fn, _rollbackSnap, rollbackSnap_fn, _rollbackSnaps, rollbackSnaps_fn, _getRuntime, getRuntime_fn, _getRuntimeExpect, getRuntimeExpect_fn, _setupRuntime, setupRuntime_fn, _calculatePermissionsChange, calculatePermissionsChange_fn, _updatePermissions, updatePermissions_fn, _isValidUpdate, isValidUpdate_fn, _callLifecycleHook, callLifecycleHook_fn;
++var _closeAllConnections, _dynamicPermissions, _environmentEndowmentPermissions, _excludedPermissions, _featureFlags, _fetchFunction, _idleTimeCheckInterval, _maxIdleTime, _encryptor, _getMnemonic, _detectSnapLocation, _snapsRuntimeData, _rollbackSnapshots, _timeoutForLastRequestStatus, _statusMachine, _preinstalledSnaps, _initializeStateMachine, initializeStateMachine_fn, _registerMessageHandlers, registerMessageHandlers_fn, _handlePreinstalledSnaps, handlePreinstalledSnaps_fn, _pollForLastRequestStatus, pollForLastRequestStatus_fn, _blockSnap, blockSnap_fn, _unblockSnap, unblockSnap_fn, _assertIsInstallAllowed, assertIsInstallAllowed_fn, _stopSnapsLastRequestPastMax, stopSnapsLastRequestPastMax_fn, _transition, transition_fn, _terminateSnap, terminateSnap_fn, _getSnapEncryptionKey, getSnapEncryptionKey_fn, _decryptSnapState, decryptSnapState_fn, _encryptSnapState, encryptSnapState_fn, _handleInitialConnections, handleInitialConnections_fn, _addSnapToSubject, addSnapToSubject_fn, _removeSnapFromSubjects, removeSnapFromSubjects_fn, _revokeAllSnapPermissions, revokeAllSnapPermissions_fn, _createApproval, createApproval_fn, _updateApproval, updateApproval_fn, _resolveAllowlistVersion, resolveAllowlistVersion_fn, _add, add_fn, _startSnap, startSnap_fn, _getEndowments, getEndowments_fn, _set, set_fn, _validateSnapPermissions, validateSnapPermissions_fn, _getExecutionTimeout, getExecutionTimeout_fn, _getRpcRequestHandler, getRpcRequestHandler_fn, _createInterface, createInterface_fn, _assertInterfaceExists, assertInterfaceExists_fn, _transformSnapRpcRequestResult, transformSnapRpcRequestResult_fn, _assertSnapRpcRequestResult, assertSnapRpcRequestResult_fn, _recordSnapRpcRequestStart, recordSnapRpcRequestStart_fn, _recordSnapRpcRequestFinish, recordSnapRpcRequestFinish_fn, _getRollbackSnapshot, getRollbackSnapshot_fn, _createRollbackSnapshot, createRollbackSnapshot_fn, _rollbackSnap, rollbackSnap_fn, _rollbackSnaps, rollbackSnaps_fn, _getRuntime, getRuntime_fn, _getRuntimeExpect, getRuntimeExpect_fn, _setupRuntime, setupRuntime_fn, _calculatePermissionsChange, calculatePermissionsChange_fn, _updatePermissions, updatePermissions_fn, _isValidUpdate, isValidUpdate_fn, _callLifecycleHook, callLifecycleHook_fn;
+ var SnapController = class extends BaseController {
+   constructor({
+     closeAllConnections,
+@@ -132,7 +132,7 @@ var SnapController = class extends BaseController {
+     fetchFunction = globalThis.fetch.bind(globalThis),
+     featureFlags = {},
+     detectSnapLocation: detectSnapLocationFunction = detectSnapLocation,
+-    preinstalledSnaps,
++    preinstalledSnaps = null,
+     encryptor,
+     getMnemonic
+   }) {
+@@ -448,6 +448,7 @@ var SnapController = class extends BaseController {
+     __privateAdd(this, _rollbackSnapshots, void 0);
+     __privateAdd(this, _timeoutForLastRequestStatus, void 0);
+     __privateAdd(this, _statusMachine, void 0);
++    __privateAdd(this, _preinstalledSnaps, void 0);
+     __privateSet(this, _closeAllConnections, closeAllConnections);
+     __privateSet(this, _dynamicPermissions, dynamicPermissions);
+     __privateSet(this, _environmentEndowmentPermissions, environmentEndowmentPermissions);
+@@ -460,6 +461,7 @@ var SnapController = class extends BaseController {
+     __privateSet(this, _detectSnapLocation, detectSnapLocationFunction);
+     __privateSet(this, _encryptor, encryptor);
+     __privateSet(this, _getMnemonic, getMnemonic);
++    __privateSet(this, _preinstalledSnaps, preinstalledSnaps);
+     this._onUnhandledSnapError = this._onUnhandledSnapError.bind(this);
+     this._onOutboundRequest = this._onOutboundRequest.bind(this);
+     this._onOutboundResponse = this._onOutboundResponse.bind(this);
+@@ -498,8 +500,8 @@ var SnapController = class extends BaseController {
+     });
+     __privateMethod(this, _initializeStateMachine, initializeStateMachine_fn).call(this);
+     __privateMethod(this, _registerMessageHandlers, registerMessageHandlers_fn).call(this);
+-    if (preinstalledSnaps) {
+-      __privateMethod(this, _handlePreinstalledSnaps, handlePreinstalledSnaps_fn).call(this, preinstalledSnaps);
++    if (__privateGet(this, _preinstalledSnaps)) {
++      __privateMethod(this, _handlePreinstalledSnaps, handlePreinstalledSnaps_fn).call(this, __privateGet(this, _preinstalledSnaps));
+     }
+     Object.values(this.state?.snaps ?? {}).forEach(
+       (snap) => __privateMethod(this, _setupRuntime, setupRuntime_fn).call(this, snap.id)
+@@ -801,6 +803,13 @@ var SnapController = class extends BaseController {
+       state.snaps = {};
+       state.snapStates = {};
+     });
++    __privateGet(this, _snapsRuntimeData).clear();
++    if (__privateGet(this, _preinstalledSnaps)) {
++      __privateMethod(this, _handlePreinstalledSnaps, handlePreinstalledSnaps_fn).call(this, __privateGet(this, _preinstalledSnaps));
++      Object.values(this.state?.snaps).forEach(
++        (snap) => __privateMethod(this, _setupRuntime, setupRuntime_fn).call(this, snap.id)
++      );
++    }
+   }
+   /**
+    * Removes the given snap from state, and clears all associated handlers
+@@ -1420,6 +1429,7 @@ _snapsRuntimeData = new WeakMap();
+ _rollbackSnapshots = new WeakMap();
+ _timeoutForLastRequestStatus = new WeakMap();
+ _statusMachine = new WeakMap();
++_preinstalledSnaps = new WeakMap();
+ _initializeStateMachine = new WeakSet();
+ initializeStateMachine_fn = function() {
+   const disableGuard = ({ snapId }) => {
+diff --git a/dist/chunk-JMP6XYRL.js b/dist/chunk-JMP6XYRL.js
+index 20c3b12643e4f87d70aa0df96a36c4dda8b1ed47..5ac24c006b8db0b06d3a48cc312ba630845ef79c 100644
+--- a/dist/chunk-JMP6XYRL.js
++++ b/dist/chunk-JMP6XYRL.js
+@@ -117,7 +117,7 @@ function truncateSnap(snap) {
+   return truncatedSnap;
+ }
+ var name = "SnapController";
+-var _closeAllConnections, _dynamicPermissions, _environmentEndowmentPermissions, _excludedPermissions, _featureFlags, _fetchFunction, _idleTimeCheckInterval, _maxIdleTime, _encryptor, _getMnemonic, _detectSnapLocation, _snapsRuntimeData, _rollbackSnapshots, _timeoutForLastRequestStatus, _statusMachine, _initializeStateMachine, initializeStateMachine_fn, _registerMessageHandlers, registerMessageHandlers_fn, _handlePreinstalledSnaps, handlePreinstalledSnaps_fn, _pollForLastRequestStatus, pollForLastRequestStatus_fn, _blockSnap, blockSnap_fn, _unblockSnap, unblockSnap_fn, _assertIsInstallAllowed, assertIsInstallAllowed_fn, _stopSnapsLastRequestPastMax, stopSnapsLastRequestPastMax_fn, _transition, transition_fn, _terminateSnap, terminateSnap_fn, _getSnapEncryptionKey, getSnapEncryptionKey_fn, _decryptSnapState, decryptSnapState_fn, _encryptSnapState, encryptSnapState_fn, _handleInitialConnections, handleInitialConnections_fn, _addSnapToSubject, addSnapToSubject_fn, _removeSnapFromSubjects, removeSnapFromSubjects_fn, _revokeAllSnapPermissions, revokeAllSnapPermissions_fn, _createApproval, createApproval_fn, _updateApproval, updateApproval_fn, _resolveAllowlistVersion, resolveAllowlistVersion_fn, _add, add_fn, _startSnap, startSnap_fn, _getEndowments, getEndowments_fn, _set, set_fn, _validateSnapPermissions, validateSnapPermissions_fn, _getExecutionTimeout, getExecutionTimeout_fn, _getRpcRequestHandler, getRpcRequestHandler_fn, _createInterface, createInterface_fn, _assertInterfaceExists, assertInterfaceExists_fn, _transformSnapRpcRequestResult, transformSnapRpcRequestResult_fn, _assertSnapRpcRequestResult, assertSnapRpcRequestResult_fn, _recordSnapRpcRequestStart, recordSnapRpcRequestStart_fn, _recordSnapRpcRequestFinish, recordSnapRpcRequestFinish_fn, _getRollbackSnapshot, getRollbackSnapshot_fn, _createRollbackSnapshot, createRollbackSnapshot_fn, _rollbackSnap, rollbackSnap_fn, _rollbackSnaps, rollbackSnaps_fn, _getRuntime, getRuntime_fn, _getRuntimeExpect, getRuntimeExpect_fn, _setupRuntime, setupRuntime_fn, _calculatePermissionsChange, calculatePermissionsChange_fn, _updatePermissions, updatePermissions_fn, _isValidUpdate, isValidUpdate_fn, _callLifecycleHook, callLifecycleHook_fn;
++var _closeAllConnections, _dynamicPermissions, _environmentEndowmentPermissions, _excludedPermissions, _featureFlags, _fetchFunction, _idleTimeCheckInterval, _maxIdleTime, _encryptor, _getMnemonic, _detectSnapLocation, _snapsRuntimeData, _rollbackSnapshots, _timeoutForLastRequestStatus, _statusMachine, _preinstalledSnaps, _initializeStateMachine, initializeStateMachine_fn, _registerMessageHandlers, registerMessageHandlers_fn, _handlePreinstalledSnaps, handlePreinstalledSnaps_fn, _pollForLastRequestStatus, pollForLastRequestStatus_fn, _blockSnap, blockSnap_fn, _unblockSnap, unblockSnap_fn, _assertIsInstallAllowed, assertIsInstallAllowed_fn, _stopSnapsLastRequestPastMax, stopSnapsLastRequestPastMax_fn, _transition, transition_fn, _terminateSnap, terminateSnap_fn, _getSnapEncryptionKey, getSnapEncryptionKey_fn, _decryptSnapState, decryptSnapState_fn, _encryptSnapState, encryptSnapState_fn, _handleInitialConnections, handleInitialConnections_fn, _addSnapToSubject, addSnapToSubject_fn, _removeSnapFromSubjects, removeSnapFromSubjects_fn, _revokeAllSnapPermissions, revokeAllSnapPermissions_fn, _createApproval, createApproval_fn, _updateApproval, updateApproval_fn, _resolveAllowlistVersion, resolveAllowlistVersion_fn, _add, add_fn, _startSnap, startSnap_fn, _getEndowments, getEndowments_fn, _set, set_fn, _validateSnapPermissions, validateSnapPermissions_fn, _getExecutionTimeout, getExecutionTimeout_fn, _getRpcRequestHandler, getRpcRequestHandler_fn, _createInterface, createInterface_fn, _assertInterfaceExists, assertInterfaceExists_fn, _transformSnapRpcRequestResult, transformSnapRpcRequestResult_fn, _assertSnapRpcRequestResult, assertSnapRpcRequestResult_fn, _recordSnapRpcRequestStart, recordSnapRpcRequestStart_fn, _recordSnapRpcRequestFinish, recordSnapRpcRequestFinish_fn, _getRollbackSnapshot, getRollbackSnapshot_fn, _createRollbackSnapshot, createRollbackSnapshot_fn, _rollbackSnap, rollbackSnap_fn, _rollbackSnaps, rollbackSnaps_fn, _getRuntime, getRuntime_fn, _getRuntimeExpect, getRuntimeExpect_fn, _setupRuntime, setupRuntime_fn, _calculatePermissionsChange, calculatePermissionsChange_fn, _updatePermissions, updatePermissions_fn, _isValidUpdate, isValidUpdate_fn, _callLifecycleHook, callLifecycleHook_fn;
+ var SnapController = class extends _basecontroller.BaseController {
+   constructor({
+     closeAllConnections,
+@@ -132,7 +132,7 @@ var SnapController = class extends _basecontroller.BaseController {
+     fetchFunction = globalThis.fetch.bind(globalThis),
+     featureFlags = {},
+     detectSnapLocation: detectSnapLocationFunction = _chunkPT22IXNSjs.detectSnapLocation,
+-    preinstalledSnaps,
++    preinstalledSnaps = null,
+     encryptor,
+     getMnemonic
+   }) {
+@@ -448,6 +448,7 @@ var SnapController = class extends _basecontroller.BaseController {
+     _chunkEXN2TFDJjs.__privateAdd.call(void 0, this, _rollbackSnapshots, void 0);
+     _chunkEXN2TFDJjs.__privateAdd.call(void 0, this, _timeoutForLastRequestStatus, void 0);
+     _chunkEXN2TFDJjs.__privateAdd.call(void 0, this, _statusMachine, void 0);
++    _chunkEXN2TFDJjs.__privateAdd.call(void 0, this, _preinstalledSnaps, void 0);
+     _chunkEXN2TFDJjs.__privateSet.call(void 0, this, _closeAllConnections, closeAllConnections);
+     _chunkEXN2TFDJjs.__privateSet.call(void 0, this, _dynamicPermissions, dynamicPermissions);
+     _chunkEXN2TFDJjs.__privateSet.call(void 0, this, _environmentEndowmentPermissions, environmentEndowmentPermissions);
+@@ -460,6 +461,7 @@ var SnapController = class extends _basecontroller.BaseController {
+     _chunkEXN2TFDJjs.__privateSet.call(void 0, this, _detectSnapLocation, detectSnapLocationFunction);
+     _chunkEXN2TFDJjs.__privateSet.call(void 0, this, _encryptor, encryptor);
+     _chunkEXN2TFDJjs.__privateSet.call(void 0, this, _getMnemonic, getMnemonic);
++    _chunkEXN2TFDJjs.__privateSet.call(void 0, this, _preinstalledSnaps, preinstalledSnaps);
+     this._onUnhandledSnapError = this._onUnhandledSnapError.bind(this);
+     this._onOutboundRequest = this._onOutboundRequest.bind(this);
+     this._onOutboundResponse = this._onOutboundResponse.bind(this);
+@@ -498,8 +500,8 @@ var SnapController = class extends _basecontroller.BaseController {
+     });
+     _chunkEXN2TFDJjs.__privateMethod.call(void 0, this, _initializeStateMachine, initializeStateMachine_fn).call(this);
+     _chunkEXN2TFDJjs.__privateMethod.call(void 0, this, _registerMessageHandlers, registerMessageHandlers_fn).call(this);
+-    if (preinstalledSnaps) {
+-      _chunkEXN2TFDJjs.__privateMethod.call(void 0, this, _handlePreinstalledSnaps, handlePreinstalledSnaps_fn).call(this, preinstalledSnaps);
++    if (_chunkEXN2TFDJjs.__privateGet.call(void 0, this, _preinstalledSnaps)) {
++      _chunkEXN2TFDJjs.__privateMethod.call(void 0, this, _handlePreinstalledSnaps, handlePreinstalledSnaps_fn).call(this, _chunkEXN2TFDJjs.__privateGet.call(void 0, this, _preinstalledSnaps));
+     }
+     Object.values(this.state?.snaps ?? {}).forEach(
+       (snap) => _chunkEXN2TFDJjs.__privateMethod.call(void 0, this, _setupRuntime, setupRuntime_fn).call(this, snap.id)
+@@ -801,6 +803,13 @@ var SnapController = class extends _basecontroller.BaseController {
+       state.snaps = {};
+       state.snapStates = {};
+     });
++    _chunkEXN2TFDJjs.__privateGet.call(void 0, this, _snapsRuntimeData).clear();
++    if (_chunkEXN2TFDJjs.__privateGet.call(void 0, this, _preinstalledSnaps)) {
++      _chunkEXN2TFDJjs.__privateMethod.call(void 0, this, _handlePreinstalledSnaps, handlePreinstalledSnaps_fn).call(this, _chunkEXN2TFDJjs.__privateGet.call(void 0, this, _preinstalledSnaps));
++      Object.values(this.state?.snaps).forEach(
++        (snap) => _chunkEXN2TFDJjs.__privateMethod.call(void 0, this, _setupRuntime, setupRuntime_fn).call(this, snap.id)
++      );
++    }
+   }
+   /**
+    * Removes the given snap from state, and clears all associated handlers
+@@ -1420,6 +1429,7 @@ _snapsRuntimeData = new WeakMap();
+ _rollbackSnapshots = new WeakMap();
+ _timeoutForLastRequestStatus = new WeakMap();
+ _statusMachine = new WeakMap();
++_preinstalledSnaps = new WeakMap();
+ _initializeStateMachine = new WeakSet();
+ initializeStateMachine_fn = function() {
+   const disableGuard = ({ snapId }) => {
+@@ -2434,4 +2444,5 @@ callLifecycleHook_fn = async function(snapId, handler) {
+ 
+ 
+ exports.controllerName = controllerName; exports.SNAP_APPROVAL_INSTALL = SNAP_APPROVAL_INSTALL; exports.SNAP_APPROVAL_UPDATE = SNAP_APPROVAL_UPDATE; exports.SNAP_APPROVAL_RESULT = SNAP_APPROVAL_RESULT; exports.SnapController = SnapController;
++
+ //# sourceMappingURL=chunk-JMP6XYRL.js.map
+\ No newline at end of file
