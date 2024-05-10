@@ -16,7 +16,9 @@ const useIsDangerButton = () => {
     currentSecurityAlertId,
   );
 
-  return signatureSecurityAlertResponse?.result_type === BlockaidResultType.Malicious;
-}
+  return (
+    signatureSecurityAlertResponse?.result_type === BlockaidResultType.Malicious
+  );
+};
 
 export default useIsDangerButton;

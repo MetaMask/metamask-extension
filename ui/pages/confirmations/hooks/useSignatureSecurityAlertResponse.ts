@@ -8,6 +8,7 @@ type SignatureSecurityAlertResponsesState = {
 };
 
 /**
+ * @param securityAlertId
  * @deprecated This file should be deprecated when we introduce the alerts system logic
  * @see {@link https://github.com/MetaMask/MetaMask-planning/issues/2412}
  */
@@ -17,7 +18,9 @@ function useSignatureSecurityAlertResponse(securityAlertId?: string) {
       state.metamask.signatureSecurityAlertResponses,
   );
 
-  return securityAlertId ? signatureSecurityAlertResponses?.[securityAlertId] : null;
+  return securityAlertId
+    ? signatureSecurityAlertResponses?.[securityAlertId]
+    : null;
 }
 
 export default useSignatureSecurityAlertResponse;
