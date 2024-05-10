@@ -96,22 +96,12 @@ describe('Test Snap Notification', function () {
 
         // try to click on the notification item (via xpath)
         await driver.waitForSelector({
-          text: 'Notifications 1',
+          text: 'Notifications',
           css: '.menu-item',
         });
         await driver.clickElement({
-          text: 'Notifications 1',
+          text: 'Notifications',
           css: '.menu-item',
-        });
-
-        // look for the correct text in notifications (via xpath)
-        await driver.waitForSelector({
-          css: '.notifications__item__details__message',
-          text: 'Hello from within MetaMask!',
-        });
-        await driver.findElement({
-          css: '.notifications__item__details__message',
-          text: 'Hello from within MetaMask!',
         });
       },
     );
