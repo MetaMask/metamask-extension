@@ -47,6 +47,9 @@ describe('Metamask Notifications Selectors', () => {
       isSnapNotificationsEnabled: true,
       metamaskNotificationsList: mockNotifications,
       metamaskNotificationsReadList: [],
+      isProfileSyncingUpdateLoading: false,
+      isFetchingMetamaskNotifications: false,
+      isCreatingMetamaskNotifications: false,
     },
   };
 

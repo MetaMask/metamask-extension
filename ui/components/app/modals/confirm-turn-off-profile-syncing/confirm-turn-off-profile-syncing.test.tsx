@@ -37,7 +37,6 @@ describe('ConfirmTurnOffProfileSyncing', () => {
     });
     mockedUseDisableProfileSyncing.mockReturnValue({
       disableProfileSyncing: mockDisableProfileSyncing,
-      loading: false,
       error: null,
     });
   });

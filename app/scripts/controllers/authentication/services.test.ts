@@ -42,7 +42,11 @@ describe('authentication/services.ts - getNonce() tests', () => {
 describe('authentication/services.ts - login() tests', () => {
   test('returns single-use jwt if successful login', async () => {
     const mockLoginEndpoint = mockEndpointLogin();
-    const response = await login('mock raw message', 'mock signature');
+    const response = await login(
+      'mock raw message',
+      'mock signature',
+      'mock id',
+    );
 
     mockLoginEndpoint.done();
     expect(response?.token).toBe(MOCK_JWT);
@@ -55,7 +59,11 @@ describe('authentication/services.ts - login() tests', () => {
       body: Record<string, unknown>,
     ) {
       const mockLoginEndpoint = mockEndpointLogin({ status, body });
-      const response = await login('mock raw message', 'mock signature');
+      const response = await login(
+        'mock raw message',
+        'mock signature',
+        'mock id',
+      );
 
       mockLoginEndpoint.done();
       expect(response).toBe(null);

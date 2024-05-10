@@ -62,7 +62,10 @@ describe('user-storage/user-storage-controller - performGetStorage() tests', () 
     const controller = new UserStorageController({
       messenger: messengerMocks.messenger,
       getMetaMetricsState: () => true,
-      state: { isProfileSyncingEnabled: false },
+      state: {
+        isProfileSyncingEnabled: false,
+        isProfileSyncingUpdateLoading: false,
+      },
     });
 
     await expect(
@@ -123,7 +126,10 @@ describe('user-storage/user-storage-controller - performSetStorage() tests', () 
     const controller = new UserStorageController({
       messenger: messengerMocks.messenger,
       getMetaMetricsState: () => true,
-      state: { isProfileSyncingEnabled: false },
+      state: {
+        isProfileSyncingEnabled: false,
+        isProfileSyncingUpdateLoading: false,
+      },
     });
 
     await expect(
@@ -197,7 +203,10 @@ describe('user-storage/user-storage-controller - performSetStorage() tests', () 
     const controller = new UserStorageController({
       messenger: messengerMocks.messenger,
       getMetaMetricsState: () => true,
-      state: { isProfileSyncingEnabled: false },
+      state: {
+        isProfileSyncingEnabled: false,
+        isProfileSyncingUpdateLoading: false,
+      },
     });
 
     await expect(controller.getStorageKey()).rejects.toThrow();
@@ -238,7 +247,10 @@ describe('user-storage/user-storage-controller - enableProfileSyncing() tests', 
     const controller = new UserStorageController({
       messenger: messengerMocks.messenger,
       getMetaMetricsState: () => true,
-      state: { isProfileSyncingEnabled: false },
+      state: {
+        isProfileSyncingEnabled: false,
+        isProfileSyncingUpdateLoading: false,
+      },
     });
 
     expect(controller.state.isProfileSyncingEnabled).toBe(false);

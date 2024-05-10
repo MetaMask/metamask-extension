@@ -17,7 +17,7 @@ describe('NotificationsSettingsAllowNotifications', () => {
     const { getByTestId } = render(
       <Provider store={store}>
         <MetamaskNotificationsProvider>
-          <NotificationsSettingsAllowNotifications addresses={['0x123']} />
+          <NotificationsSettingsAllowNotifications disabled={false} />
         </MetamaskNotificationsProvider>
       </Provider>,
     );

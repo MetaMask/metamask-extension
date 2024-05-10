@@ -46,7 +46,7 @@ describe('NotificationsList', () => {
       <Provider store={store}>
         <Router>
           <MetamaskNotificationsProvider>
-            <NotificationsList activeTab="ALL" />
+            <NotificationsList activeTab="ALL" notifications={[]} />
           </MetamaskNotificationsProvider>
         </Router>
       </Provider>,

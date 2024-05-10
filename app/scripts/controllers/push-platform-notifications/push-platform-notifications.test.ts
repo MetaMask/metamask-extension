@@ -73,7 +73,9 @@ describe('PushPlatformNotificationsController', () => {
         mockAuthBearerTokenCall(messenger);
         const spy = jest
           .spyOn(services, 'updateTriggerPushNotifications')
-          .mockResolvedValue(true);
+          .mockResolvedValue({
+            isTriggersLinkedToPushNotifications: true,
+          });
 
         await controller.updateTriggerPushNotifications(MOCK_TRIGGERS);
 
