@@ -408,6 +408,9 @@ jobs:
             #!/bin/bash
 
             GH_LABEL=team-mmi
+            if [ -z "$CIRCLE_PULL_REQUESTS" ]; then
+              exit 0
+            fi
 
             echo $CIRCLE_PULL_REQUESTS | sed 's/,/\n/g'
 
