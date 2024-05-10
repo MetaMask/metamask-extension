@@ -31,12 +31,15 @@ export default function useEthFeeData(gasLimit = 0) {
   const networkAndAccountSupports1559 = useSelector(
     checkNetworkAndAccountSupports1559,
   );
-  const { medium } = useSelector(getGasFeeEstimates);
+  const { medium, gasPrice: maybeGasFee } = useSelector(getGasFeeEstimates);
+
+  const gasFee1559 = maybeGasFee ?? medium;
 
   const chainId = useSelector(getCurrentChainId);
   const isSwapsChain = useSelector(getIsSwapsChain);
 
-  const gasPrice = useSelector(getUsedSwapsGasPrice);
+  const gasPriceNon1559 = useSelector(getUsedSwapsGasPrice);
+
   useEffect(() => {
     if (!isSwapsChain) {
       return;
@@ -49,7 +52,7 @@ export default function useEthFeeData(gasLimit = 0) {
 
   const { formattedEthGasFee, formattedFiatGasFee } = useMemo(() => {
     const ethGasFee = new Numeric(
-      networkAndAccountSupports1559 ? medium?.suggestedMaxFeePerGas : gasPrice,
+      networkAndAccountSupports1559 ? gasFee1559 : gasPriceNon1559,
       10,
       EtherDenomination.GWEI,
     )
@@ -73,7 +76,7 @@ export default function useEthFeeData(gasLimit = 0) {
   }, [
     networkAndAccountSupports1559,
     medium?.suggestedMaxFeePerGas,
-    gasPrice,
+    gasPriceNon1559,
     gasLimit,
     selectedNativeConversionRate,
     currentCurrency,
