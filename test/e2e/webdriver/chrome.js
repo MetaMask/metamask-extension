@@ -35,7 +35,7 @@ class ChromeDriver {
       args.push('--auto-open-devtools-for-tabs');
     }
 
-    if (process.env.ENABLE_MV3) {
+    if (true) {
       args.push('--log-level=0');
       args.push('--enable-logging');
       args.push(`--user-data-dir=${process.cwd()}/test-artifacts/chrome`);
