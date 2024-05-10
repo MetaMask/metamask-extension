@@ -95,7 +95,7 @@ describe('Onboarding Metametrics Component', () => {
   });
 
   it('should render the Onboarding component when the current date is after the new privacy policy date', () => {
-    jest.setSystemTime(new Date('2026-01-01'));
+    jest.useFakeTimers().setSystemTime(new Date('2026-01-01'));
     const { queryByTestId } = renderWithProvider(
       <OnboardingMetametrics />,
       mockStore,
