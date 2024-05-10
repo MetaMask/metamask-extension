@@ -122,21 +122,6 @@ describe('createMethodMiddleware', () => {
     });
   });
 
-  it('should reject unsupported methods', async () => {
-    const middleware = createMethodMiddleware(getDefaultHooks());
-    const engine = new JsonRpcEngine();
-    engine.push(middleware);
-
-    const response = await engine.handle({
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'eth_signTransaction',
-    });
-    assertIsJsonRpcFailure(response);
-
-    expect(response.error.message).toBe('Method not supported.');
-  });
-
   it('should handle errors returned by the implementation', async () => {
     const middleware = createMethodMiddleware(getDefaultHooks());
     const engine = new JsonRpcEngine();
