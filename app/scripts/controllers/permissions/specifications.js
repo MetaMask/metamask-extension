@@ -225,9 +225,39 @@ export const getPermissionSpecifications = ({
         });
       },
       methodImplementation: async (_args) => {
+
         // should we actually move the implementation here?
         // This would make putting the permissioning behind a feature flag a bit more difficult?
         // Interestingly the validator is still called when granting permissions
+
+        const {chainId} = _args[0];
+
+        const {
+          origin,
+          chainId,
+          findNetworkConfigurationBy,
+          setActiveNetwork,
+          hasPermissions,
+          setNetworkClientIdForDomain,
+          findNetworkClientIdByChainId,
+        } = options;
+
+        const networkConfiguration = findNetworkConfigurationBy({ chainId });
+        if (!networkConfiguration) {
+          throw ethErrors.provider.custom({
+            code: 4902,
+            message: `Unrecognized chain ID "${chainId}".`,
+          });
+        }
+
+        const networkClientId = findNetworkClientIdByChainId(chainId);
+
+        await setActiveNetwork(networkClientId);
+        if (hasPermissions(origin)) {
+          setNetworkClientIdForDomain(origin, networkClientId);
+        }
+
+        return null;
       },
       validator: (permission, _origin, _target) => {
         const { caveats } = permission;
