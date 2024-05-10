@@ -42,7 +42,7 @@ const ScrollToBottom = ({ children }: ContentProps) => {
     scrollToBottom,
     setHasScrolledToBottom,
     ref,
-  } = useScrollRequired([currentConfirmation?.id]);
+  } = useScrollRequired([currentConfirmation?.id], { offsetPxFromBottom: 0 });
 
   /**
    * Scroll to the top of the page when the confirmation changes. This happens
