@@ -1,30 +1,61 @@
 import log from 'loglevel';
+import {
+  getErrorMessage as _getErrorMessage,
+  hasProperty,
+  isObject,
+  isErrorWithMessage,
+} from '@metamask/utils';
+import { messageWithCauses, getErrorCause } from 'pony-cause';
+
+export { isErrorWithMessage } from '@metamask/utils';
 
 /**
- * Type guard for determining whether the given value is an error object with a
- * `message` property, such as an instance of Error.
- *
- * TODO: Remove once this becomes available at @metamask/utils
- *
- * @param error - The object to check.
- * @returns True or false, depending on the result.
+ * Different ways to reduce nested cause error messages
  */
-export function isErrorWithMessage(
+export enum Causes {
+  // Get the topmost error message
+  Top = 'top',
+  // Get the lowest cause message
+  Bottom = 'bottom',
+  // Concatenate cause messages with ': '
+  Full = 'full',
+}
+
+/**
+ * Attempts to obtain the message from a possible error object, defaulting to an
+ * empty string if it is impossible to do so.
+ *
+ * @param error - The possible error to get the message from.
+ * @param causeHandling
+ * @returns The message if `error` is an object with a `message` property;
+ * the string version of `error` if it is not `undefined` or `null`; otherwise
+ * an empty string.
+ */
+// TODO: Remove completely once changes implemented in @metamask/utils
+export function getErrorMessage(
   error: unknown,
-): error is { message: string } | { data: { cause: { message: string } } } {
-  return (
-    typeof error === 'object' &&
-    error !== null &&
-    ('message' in error ||
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      typeof (error as any)?.data?.cause?.message === 'string')
-  );
+  causeHandling = Causes.Bottom,
+): string {
+  if (isErrorWithMessage(error)) {
+    if (
+      hasProperty(error, 'data') &&
+      isObject(error.data) &&
+      hasProperty(error.data, 'cause')
+    ) {
+      switch (causeHandling) {
+        case Causes.Top:
+          return _getErrorMessage(error);
+        case Causes.Bottom:
+        //
+        case Causes.Full: {
+          return messageWithCauses(error as unknown as Error);
+        }
+      }
+    }
+  }
+  return _getErrorMessage(error);
 }
 
 export function logErrorWithMessage(error: unknown) {
-  if (isErrorWithMessage(error)) {
-    log.error(error.data?.cause?.message || error.message);
-  } else {
-    log.error(error);
-  }
+  log.error(getErrorMessage(error));
 }

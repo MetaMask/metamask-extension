@@ -1221,9 +1221,9 @@
       },
       "packages": {
         "@metamask/utils>@scure/base": true,
-        "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
         "nock>debug": true,
+        "pony-cause": true,
         "semver": true,
         "superstruct": true
       }

@@ -25321,6 +25321,7 @@ __metadata:
     node-fetch: "npm:^2.6.1"
     nyc: "npm:^15.1.0"
     pify: "npm:^5.0.0"
+    pony-cause: "npm:^2.1.11"
     postcss: "npm:^8.4.32"
     postcss-rtlcss: "npm:^4.0.9"
     prettier: "npm:^2.7.1"
@@ -28327,10 +28328,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pony-cause@npm:^2.1.10":
-  version: 2.1.10
-  resolution: "pony-cause@npm:2.1.10"
-  checksum: 906563565030996d0c40ba79a584e2f298391931acc59c98510f9fd583d72cd9e9c58b0fb5a25bbae19daf16840f94cb9c1ee72c7ed5ef249ecba147cee40495
+"pony-cause@npm:^2.1.10, pony-cause@npm:^2.1.11":
+  version: 2.1.11
+  resolution: "pony-cause@npm:2.1.11"
+  checksum: ed7d0bb6e3e69f753080bf736b71f40e6ae4c13ec0c8c473ff73345345c088819966fdd68a62ad7482d464bf41176cf9421f5f63715d1a4532005eedc099db55
   languageName: node
   linkType: hard
 

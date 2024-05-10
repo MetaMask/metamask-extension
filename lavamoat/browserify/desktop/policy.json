@@ -2695,10 +2695,10 @@
       },
       "packages": {
         "@metamask/utils>@scure/base": true,
-        "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
         "browserify>buffer": true,
         "nock>debug": true,
+        "pony-cause": true,
         "semver": true,
         "superstruct": true
       }
