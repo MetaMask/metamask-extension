@@ -126,7 +126,7 @@ export const AssetPickerAmount = ({
       >
         <AssetPicker asset={asset} {...assetPickerProps} />
         <SwappableCurrencyInput
-          onAmountChange={handleChange}
+          onAmountChange={onAmountChange ? handleChange : undefined}
           assetType={asset.type}
           asset={asset}
           amount={amount}
