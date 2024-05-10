@@ -1,5 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { EtherDenomination } from '../../../../../../../../shared/constants/common';
 import { EditGasModes } from '../../../../../../../../shared/constants/gas';
@@ -44,6 +44,14 @@ import EditGasFeePopover from '../../../../edit-gas-fee-popover';
 import EditGasPopover from '../../../../edit-gas-popover';
 import GasTiming from '../../../../gas-timing';
 import { useSupportsEIP1559 } from '../../hooks/supports-eip-1559';
+
+// TODO:
+// - Assert gas on e2e tests (1)
+// - Refactor components (2)
+
+// - Add metric event when opening legacy tx modal
+// - Add L2 tests and logic
+// - Add Simulations to e2e tests
 
 export const RedesignedGasFees = () => {
   const currentConfirmation = useSelector(
@@ -100,14 +108,31 @@ export const RedesignedGasFees = () => {
     ),
   );
 
-  const maxFeePerGas = currentConfirmation?.txParams?.maxFeePerGas
-    ? Number(hexToDecimal(currentConfirmation.txParams.maxFeePerGas))
-    : 0;
+  const useEIP1559TxFees = (currentConfirmation: TransactionMeta) => {
+    const [maxFeePerGas, setMaxFeePerGas] = useState(0);
+    const [maxPriorityFeePerGas, setMaxPriorityFeePerGas] = useState(0);
 
-  const maxPriorityFeePerGas = currentConfirmation?.txParams
-    ?.maxPriorityFeePerGas
-    ? Number(hexToDecimal(currentConfirmation.txParams.maxPriorityFeePerGas))
-    : 0;
+    useEffect(() => {
+      const newMaxFeePerGas = currentConfirmation?.txParams?.maxFeePerGas
+        ? Number(hexToDecimal(currentConfirmation.txParams.maxFeePerGas))
+        : 0;
+
+      const newMaxPriorityFeePerGas = currentConfirmation?.txParams
+        ?.maxPriorityFeePerGas
+        ? Number(
+            hexToDecimal(currentConfirmation.txParams.maxPriorityFeePerGas),
+          )
+        : 0;
+
+      setMaxFeePerGas(newMaxFeePerGas);
+      setMaxPriorityFeePerGas(newMaxPriorityFeePerGas);
+    }, [currentConfirmation]);
+
+    return { maxFeePerGas, maxPriorityFeePerGas };
+  };
+
+  const { maxFeePerGas, maxPriorityFeePerGas } =
+    useEIP1559TxFees(currentConfirmation);
 
   return (
     <>
@@ -136,7 +161,7 @@ export const RedesignedGasFees = () => {
             <Text color={TextColor.textAlternative}>{nativeCurrencyFees}</Text>
           </Box>
 
-          <EditGasEIP1559Icon
+          <EditGasIcon
             supportsEIP1559={supportsEIP1559}
             setShowCustomizeGasPopover={setShowCustomizeGasPopover}
           />
@@ -175,7 +200,6 @@ export const RedesignedGasFees = () => {
         </>
       )}
 
-      {/* TODO: Fix total after modal */}
       {!supportsEIP1559 && showCustomizeGasPopover && (
         <EditGasPopover
           onClose={closeCustomizeGasPopover}
@@ -187,7 +211,7 @@ export const RedesignedGasFees = () => {
   );
 };
 
-const EditGasEIP1559Icon = ({
+const EditGasIcon = ({
   supportsEIP1559,
   setShowCustomizeGasPopover,
 }: {
@@ -207,7 +231,6 @@ const EditGasEIP1559Icon = ({
   };
 
   const openEditGasFeeLegacyTxModal = () => {
-    // TODO: Add metric event here?
     setShowCustomizeGasPopover(true);
   };
 
