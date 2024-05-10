@@ -1,4 +1,6 @@
 const { strict: assert } = require('assert');
+const http = require('http');
+const { createDeferredPromise } = require('@metamask/utils');
 
 const {
   defaultGanacheOptions,
@@ -56,6 +58,39 @@ describe('Phishing Detection', function () {
         });
         const header = await driver.findElement('h1');
         assert.equal(await header.getText(), 'E2E Test Dapp');
+      },
+    );
+  });
+
+  it('should display the MetaMask Phishing Detection page if a site redirects to a blocked page', async function () {
+    const blockedSite = 'test.metamask-phishing.io';
+    const redirectServerPort = 5959;
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+        testSpecificMock: async (mockServer) => {
+          return setupPhishingDetectionMocks(mockServer, {
+            blockProvider: BlockProvider.MetaMask,
+            blocklist: [blockedSite],
+          });
+        },
+      },
+      async ({ driver }) => {
+        await withRedirectServer(
+          { port: redirectServerPort, redirectUrl: `https://${blockedSite}` },
+          async () => {
+            await unlockWallet(driver);
+            await driver.openNewPage(`http://127.0.0.1:${redirectServerPort}/`);
+            await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
+            await driver.clickElement({
+              text: 'continue to the site.',
+            });
+            const header = await driver.findElement('h1');
+            assert.equal(await header.getText(), 'MetaMask Phishing Test Page');
+          },
+        );
       },
     );
   });
@@ -298,3 +333,44 @@ describe('Phishing Detection', function () {
     );
   });
 });
+
+/**
+ * Start a server that redirects to the given URL, which is kept running for the duration of the
+ * given wrapped function. The server is automatically stopped when the wrapped function finishes,
+ * even if it throws an error.
+ *
+ * @param {Record<string, number | string>} options - Redirect server options.
+ * @param {string} options.port - The port to listen on.
+ * @param {string} options.redirectUrl - The URL to redirect to.
+ * @param {Function} wrapped - The wrapped function.
+ */
+async function withRedirectServer({ port, redirectUrl }, wrapped) {
+  const server = http.createServer((_request, response) => {
+    response.writeHead(302, {
+      Location: redirectUrl,
+    });
+    response.end();
+  });
+
+  const {
+    promise: serverStarted,
+    resolve: serverStartedSuccessfully,
+    reject: serverFailed,
+  } = createDeferredPromise();
+  server.listen(port, serverStartedSuccessfully);
+  server.on('error', serverFailed);
+
+  await serverStarted;
+
+  try {
+    await wrapped();
+  } finally {
+    const { promise: serverStopped, resolve: serverStoppedSuccessfully } =
+      createDeferredPromise();
+    server.close(serverStoppedSuccessfully);
+    // We need to close all connections to stop the server quickly
+    // Otherwise it takes a few seconds for it to close
+    server.closeAllConnections();
+    await serverStopped;
+  }
+}
