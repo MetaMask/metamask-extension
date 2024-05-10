@@ -4964,16 +4964,6 @@ export default class MetamaskController extends EventEmitter {
         endApprovalFlow: this.approvalController.endFlow.bind(
           this.approvalController,
         ),
-        setApprovalFlowLoadingText:
-          this.approvalController.setFlowLoadingText.bind(
-            this.approvalController,
-          ),
-        showApprovalSuccess: this.approvalController.success.bind(
-          this.approvalController,
-        ),
-        showApprovalError: this.approvalController.error.bind(
-          this.approvalController,
-        ),
         sendMetrics: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),
@@ -5035,18 +5025,11 @@ export default class MetamaskController extends EventEmitter {
             this.networkController,
           ),
         findNetworkConfigurationBy: this.findNetworkConfigurationBy.bind(this),
-        getNetworkClientIdForDomain:
-          this.selectedNetworkController.getNetworkClientIdForDomain.bind(
-            this.selectedNetworkController,
-          ),
         setNetworkClientIdForDomain:
           this.selectedNetworkController.setNetworkClientIdForDomain.bind(
             this.selectedNetworkController,
           ),
 
-        getUseRequestQueue: this.preferencesController.getUseRequestQueue.bind(
-          this.preferencesController,
-        ),
         getProviderConfig: () => this.networkController.state.providerConfig,
         setProviderType: (type) => {
           return this.networkController.setProviderType(type);
