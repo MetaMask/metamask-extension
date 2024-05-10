@@ -1,6 +1,5 @@
 import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { isEqual } from 'lodash';
 import { I18nContext } from '../../../../../contexts/i18n';
 import {
   Box,
@@ -50,7 +49,7 @@ const ScrollToBottom = ({ children }: ContentProps) => {
    * when we navigate through different confirmations. Also, resets hasScrolledToBottom
    */
   useEffect(() => {
-    if (isEqual(previousId, currentConfirmation?.id)) {
+    if (previousId === currentConfirmation?.id) {
       return;
     }
 
