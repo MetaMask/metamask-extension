@@ -153,7 +153,11 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
             >
               {t('quoteRate')}
             </Text>
-            <Text marginLeft={'auto'} variant={TextVariant.bodySm}>
+            <Text
+              marginLeft={'auto'}
+              variant={TextVariant.bodySm}
+              data-testid="quote-card__conversion-rate"
+            >
               {formattedConversionRate}
             </Text>
           </Box>
@@ -207,12 +211,18 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
               </Tooltip>
             </Box>
             <Box display={Display.Flex} marginLeft={'auto'}>
-              <Text variant={TextVariant.bodySm}>{formattedEthGasFee}</Text>
+              <Text
+                variant={TextVariant.bodySm}
+                data-testid="quote-card__gas-fee"
+              >
+                {formattedEthGasFee}
+              </Text>
               {formattedFiatGasFee && (
                 <Text
                   color={TextColor.textAlternative}
                   variant={TextVariant.bodySm}
                   marginLeft={1}
+                  data-testid="quote-card__fiat-gas-fee"
                 >
                   ≈ {formattedFiatGasFee}
                 </Text>

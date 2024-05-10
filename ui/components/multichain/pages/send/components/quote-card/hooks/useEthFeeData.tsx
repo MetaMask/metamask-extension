@@ -53,7 +53,10 @@ export default function useEthFeeData(gasLimit = 0) {
 
   return useMemo(() => {
     const ethGasFee = new Numeric(
-      networkAndAccountSupports1559 ? gasFee1559 : gasPriceNon1559,
+      // TODO does this need to be removed? Needs to be tested with non 1559 network
+      networkAndAccountSupports1559
+        ? gasFee1559
+        : `0x${String(gasPriceNon1559)}`,
       10,
       EtherDenomination.GWEI,
     )
