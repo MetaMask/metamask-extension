@@ -53,13 +53,20 @@ const ScrollToBottom = ({ children }: ContentProps) => {
       return;
     }
 
-    setHasScrolledToBottom(false);
-
-    const scrollTo = (ref?.current as null | HTMLDivElement)?.scrollTo;
-    if (typeof scrollTo === 'function') {
-      (ref?.current as null | HTMLDivElement)?.scrollTo(0, 0);
+    const currentRef = ref?.current as null | HTMLDivElement;
+    if (!currentRef) {
+      return;
     }
-  }, [currentConfirmation?.id, previousId, setHasScrolledToBottom]);
+
+    if (typeof currentRef.scrollTo === 'function') {
+      currentRef.scrollTo(0, 0);
+    }
+
+    const currentRefIsScrollable =
+      currentRef.scrollHeight > currentRef.clientHeight;
+
+    setHasScrolledToBottom(!currentRefIsScrollable);
+  }, [currentConfirmation?.id, previousId, ref, setHasScrolledToBottom]);
 
   useEffect(() => {
     dispatch(
