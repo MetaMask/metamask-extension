@@ -5,6 +5,7 @@ import {
   DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
   openDapp,
+  switchToNotificationWindow,
   unlockWallet,
 } from '../../../helpers';
 import { Ganache } from '../../../seeder/ganache';
@@ -23,9 +24,7 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#signTypedData');
-
-        await driver.waitUntilXWindowHandles(3);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(WINDOW_TITLES.Dialog);
 
         await assertInfoValues(driver);
 
@@ -43,14 +42,11 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#signTypedData');
-
-        await driver.waitUntilXWindowHandles(3);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(WINDOW_TITLES.Dialog);
 
         await driver.clickElement('[data-testid="confirm-footer-cancel-button"]');
 
-        await driver.waitUntilXWindowHandles(2);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await switchToNotificationWindow(WINDOW_TITLES.TestDApp, 2);
 
         const rejectionResult = await driver.waitForSelector({
           css: '#signTypedDataResult',
@@ -71,8 +67,7 @@ async function assertInfoValues(driver: Driver) {
 }
 
 async function assertVerifiedResults(driver: Driver, publicAddress: string) {
-  await driver.waitUntilXWindowHandles(2);
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+  await switchToNotificationWindow(WINDOW_TITLES.TestDApp, 2);
   await driver.clickElement('#signTypedDataVerify');
 
   const result = await driver.findElement('#signTypedDataResult');
