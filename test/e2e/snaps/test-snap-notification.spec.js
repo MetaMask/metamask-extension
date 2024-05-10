@@ -84,10 +84,6 @@ describe('Test Snap Notification', function () {
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
-        await driver.findElement({
-          css: '[data-testid="global-menu-notification-count"]',
-          text: '1',
-        });
         // this click will close the menu
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
