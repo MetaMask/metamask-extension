@@ -271,7 +271,10 @@ import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
 import createDupeReqFilterStream from './lib/createDupeReqFilterStream';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
-import { createMethodMiddleware } from './lib/rpc-method-middleware';
+import {
+  createMethodMiddleware,
+  createUnsupportedMethodMiddleware,
+} from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
 import createTabIdMiddleware from './lib/createTabIdMiddleware';
 import { NetworkOrderController } from './controllers/network-order';
@@ -5148,6 +5151,8 @@ export default class MetamaskController extends EventEmitter {
         ///: END:ONLY_INCLUDE_IF
       }),
     );
+
+    engine.push(createUnsupportedMethodMiddleware());
 
     if (subjectType !== SubjectType.Internal) {
       engine.push(
