@@ -39,6 +39,7 @@ const LARGE_SYMBOL_LENGTH = 7;
  * @param options0.className
  * @param options0.asset
  * @param options0.isSkeleton
+ * @param options0.isMatchingUpstream
  */
 export default function CurrencyInput({
   hexValue,
@@ -50,6 +51,7 @@ export default function CurrencyInput({
   // if null, the asset is the native currency
   asset,
   isSkeleton,
+  isMatchingUpstream,
 }) {
   const assetDecimals = Number(asset?.decimals) || NATIVE_CURRENCY_DECIMALS;
 
@@ -138,7 +140,8 @@ export default function CurrencyInput({
     }
 
     // if input is disabled or the input hasn't changed, the value is upstream (i.e., based on the raw token value)
-    const isUpstreamValue = isDisabled || isInputUnchanged;
+    const isUpstreamValue =
+      isDisabled || isInputUnchanged || isMatchingUpstream;
 
     const { newTokenDecimalValue, newFiatDecimalValue } =
       processNewDecimalValue(
@@ -262,4 +265,5 @@ CurrencyInput.propTypes = {
     isERC721: PropTypes.bool,
   }),
   isSkeleton: PropTypes.bool,
+  isMatchingUpstream: PropTypes.bool,
 };

@@ -1,7 +1,11 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import type { Asset, Amount } from '../../../../ducks/send';
+import {
+  type Asset,
+  type Amount,
+  getSendMaxModeState,
+} from '../../../../ducks/send';
 import { toggleCurrencySwitch } from '../../../../ducks/app/app';
 import {
   AssetType,
@@ -77,6 +81,7 @@ export function SwappableCurrencyInput({
   const t = useI18nContext();
 
   const isFiatPrimary = useSelector(getIsFiatPrimary);
+  const isSetToMax = useSelector(getSendMaxModeState);
 
   const TokenComponent = (
     <CurrencyInput
@@ -93,6 +98,7 @@ export function SwappableCurrencyInput({
       )}
       asset={asset?.details}
       isSkeleton={isAmountLoading}
+      isMatchingUpstream={isSetToMax}
     />
   );
 

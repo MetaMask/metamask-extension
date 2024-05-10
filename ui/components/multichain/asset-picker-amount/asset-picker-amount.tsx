@@ -31,7 +31,6 @@ import {
 } from './asset-picker/asset-picker';
 import { SwappableCurrencyInput } from './swappable-currency-input/swappable-currency-input';
 import { AssetBalance } from './asset-balance/asset-balance';
-import { getIsFiatPrimary } from './utils';
 
 type AssetPickerAmountProps = OverridingUnion<
   AssetPickerProps,
@@ -57,8 +56,6 @@ export const AssetPickerAmount = ({
 }: AssetPickerAmountProps) => {
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const t = useI18nContext();
-
-  const isFiatPrimary = useSelector(getIsFiatPrimary);
 
   const { swapQuotesError } = useSelector(getCurrentDraftTransaction);
   const isDisabled = !onAmountChange;
@@ -142,12 +139,7 @@ export const AssetPickerAmount = ({
           </Text>
         )}
         {/* The fiat value will always leave dust and is often inaccurate anyways */}
-        {onAmountChange &&
-          (isFiatPrimary ? (
-            <Box marginBottom={6} />
-          ) : (
-            <MaxClearButton asset={asset} />
-          ))}
+        {onAmountChange && <MaxClearButton asset={asset} />}
       </Box>
     </Box>
   );
