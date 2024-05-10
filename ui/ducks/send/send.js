@@ -755,7 +755,6 @@ export const initializeSendState = createAsyncThunk(
       gasTotal: addHexPrefix(calcGasTotal(gasLimit, gasPrice)),
       gasEstimatePollToken,
       eip1559support,
-      prevSwapAndSendInput: null,
       useTokenDetection: getUseTokenDetection(state),
       tokenAddressList: Object.keys(getTokenList(state)),
     };
@@ -1840,6 +1839,7 @@ const slice = createSlice({
         state.eip1559support = action.payload.eip1559support;
         state.selectedAccount.address = action.payload.account.address;
         state.selectedAccount.balance = action.payload.account.balance;
+        state.prevSwapAndSendInput = initialState.prevSwapAndSendInput;
         const draftTransaction =
           state.draftTransactions[state.currentTransactionUUID];
         if (draftTransaction) {
@@ -1886,6 +1886,9 @@ const slice = createSlice({
         slice.caseReducers.validateAmountField(state);
         slice.caseReducers.validateGasField(state);
         slice.caseReducers.validateSendState(state);
+      })
+      .addCase(initializeSendState.rejected, (state) => {
+        state.prevSwapAndSendInput = initialState.prevSwapAndSendInput;
       })
       .addCase(fetchSwapAndSendQuotes.pending, (state, action) => {
         const draftTransaction =
