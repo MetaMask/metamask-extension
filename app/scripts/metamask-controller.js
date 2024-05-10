@@ -1659,6 +1659,7 @@ export default class MetamaskController extends EventEmitter {
         },
       },
       provider: this.provider,
+      testGasFeeFlows: process.env.TEST_GAS_FEE_FLOWS,
       hooks: {
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         afterSign: (txMeta, signedEthTx) =>
@@ -4983,11 +4984,8 @@ export default class MetamaskController extends EventEmitter {
     ///: END:ONLY_INCLUDE_IF
 
     const isConfirmationRedesignEnabled = () => {
-      return (
-        process.env.ENABLE_CONFIRMATION_REDESIGN &&
-        this.preferencesController.store.getState().preferences
-          .redesignedConfirmations
-      );
+      return this.preferencesController.store.getState().preferences
+        .redesignedConfirmations;
     };
 
     engine.push(
