@@ -2106,7 +2106,7 @@ export function editExistingTransaction(assetType, transactionId) {
       );
       if (amountMode === AMOUNT_MODES.MAX) {
         dispatch(actions.updateAmountMode(AMOUNT_MODES.MAX));
-        dispatch(actions.updateSendAmount('0x0'));
+        dispatch(actions.updateAmountToMax());
         dispatch(updateSendQuote());
       } else {
         dispatch(updateSendAmount(amount));
