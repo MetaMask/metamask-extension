@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.17.0]
+
 ## [11.14.4]
 ### Fixed
 - Fix bug that could cause safe-transfer-from transactions to be converted to transfer-from transactions, by removing the edit button on the safe-transfer-from confirmation screens ([#24287](https://github.com/MetaMask/metamask-extension/pull/24287))
