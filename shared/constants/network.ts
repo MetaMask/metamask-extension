@@ -999,6 +999,12 @@ export const BUYABLE_CHAINS_MAP: {
   },
 };
 
+export const BUYABLE_TEST_CHAINS_MAP = {
+  [CHAIN_IDS.SEPOLIA]: {
+    network: SEPOLIA_DISPLAY_NAME,
+  },
+} as const;
+
 export const FEATURED_RPCS: RPCDefinition[] = [
   {
     chainId: CHAIN_IDS.ARBITRUM,

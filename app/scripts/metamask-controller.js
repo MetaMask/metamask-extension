@@ -324,6 +324,8 @@ import UserStorageController from './controllers/user-storage/user-storage-contr
 import { WeakRefObjectMap } from './lib/WeakRefObjectMap';
 
 import { PushPlatformNotificationsController } from './controllers/push-platform-notifications/push-platform-notifications';
+import { FaucetController } from './controllers/faucets/faucet';
+import { SnapsFaucetProvider } from './lib/SnapsFaucetProvider';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1902,6 +1904,26 @@ export default class MetamaskController extends EventEmitter {
       nameController: this.nameController,
       messenger: petnamesBridgeMessenger,
     }).init();
+
+    this.faucetController = new FaucetController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'FaucetController',
+        allowedActions: [],
+      }),
+      providers: [
+        new SnapsFaucetProvider({
+          messenger: this.controllerMessenger.getRestricted({
+            name: 'SnapsFaucetProvider',
+            allowedActions: [
+              'SnapController:getAll',
+              'SnapController:get',
+              'SnapController:handleRequest',
+            ],
+          }),
+        }),
+      ],
+      state: initState.FaucetController,
+    });
 
     this.userOperationController = new UserOperationController({
       entrypoint: process.env.EIP_4337_ENTRYPOINT,
@@ -3577,6 +3599,11 @@ export default class MetamaskController extends EventEmitter {
         this.nameController,
       ),
       setName: this.nameController.setName.bind(this.nameController),
+      getFaucetProvidersByChain: this.faucetController.getAllSourceIds.bind(
+        this.faucetController,
+      ),
+      getFaucetProviderTestToken:
+        this.faucetController.getProviderTestToken.bind(this.faucetController),
     };
   }
 
