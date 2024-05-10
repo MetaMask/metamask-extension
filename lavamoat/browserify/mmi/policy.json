@@ -756,12 +756,6 @@
         "@metamask/obs-store": true
       }
     },
-    "@metamask-institutional/portfolio-dashboard": {
-      "globals": {
-        "console.log": true,
-        "fetch": true
-      }
-    },
     "@metamask-institutional/rpc-allowlist": {
       "globals": {
         "URL": true
@@ -1501,7 +1495,6 @@
         "@metamask/assets-controllers>@metamask/polling-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/eth-query": true,
-        "@metamask/ethjs>@metamask/ethjs-unit": true,
         "bn.js": true,
         "browserify>buffer": true,
         "uuid": true

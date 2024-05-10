@@ -17,11 +17,7 @@ describe('Permissions Page', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
-        if (!process.env.MULTICHAIN) {
-          return;
-        }
         await waitForAccountRendered(driver);
         await connectToDapp(driver);
 
@@ -54,11 +50,7 @@ describe('Permissions Page', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
-        if (!process.env.MULTICHAIN) {
-          return;
-        }
         await waitForAccountRendered(driver);
         await connectToDapp(driver);
 
