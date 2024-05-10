@@ -8,6 +8,9 @@ export function withRedesignConfirmationFixtures (title: string = '', testFuncti
   return withFixtures(
     {
       dapp: true,
+      driverOptions: {
+        timeOut: 20000,
+      },
       fixtures: new FixtureBuilder()
         .withPermissionControllerConnectedToTestDapp()
         .withPreferencesController({
