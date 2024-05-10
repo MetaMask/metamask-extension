@@ -2514,19 +2514,6 @@
     "message": "Firefox의 Ledger 지원 중단",
     "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
   },
-  "notificationsEmptyText": {
-    "message": "설치한 스냅에서 알림을 찾을 수 있는 곳입니다."
-  },
-  "notificationsHeader": {
-    "message": "알림"
-  },
-  "notificationsInfos": {
-    "message": "$1($2)",
-    "description": "$1 is the date at which the notification has been dispatched and $2 is the link to the snap that dispatched the notification."
-  },
-  "notificationsMarkAllAsRead": {
-    "message": "모두 읽음으로 표시"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "계정에서 $1개의 새로운 토큰이 발견됨",
     "description": "$1 is the number of new tokens detected"

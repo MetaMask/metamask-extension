@@ -2514,19 +2514,6 @@
     "message": "Hindi na ipagpapatuloy ang Ledger Support para s Firefox",
     "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
   },
-  "notificationsEmptyText": {
-    "message": "Dito mo makikita ang mga notipikasyon mula sa iyong naka-install na snaps."
-  },
-  "notificationsHeader": {
-    "message": "Mga Abiso"
-  },
-  "notificationsInfos": {
-    "message": "$1 mula $2",
-    "description": "$1 is the date at which the notification has been dispatched and $2 is the link to the snap that dispatched the notification."
-  },
-  "notificationsMarkAllAsRead": {
-    "message": "Markahan ang lahat bilang nabasa na"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 (na) bagong token ang nakita sa account na ito",
     "description": "$1 is the number of new tokens detected"

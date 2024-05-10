@@ -500,17 +500,6 @@
   "assetOptions": {
     "message": "Asset options"
   },
-  "assetsReceived": {
-    "message": "Assets received"
-  },
-
-  "assetsSent": {
-    "message": "Assets sent"
-  },
-
-  "assetsSentReceivedText": {
-    "message": "Funds and NFTs"
-  },
   "attemptSendingAssets": {
     "message": "You may lose your assets if you try to send them from another network. Transfer funds safely between networks by using a bridge."
   },
@@ -1265,13 +1254,6 @@
   },
   "dcent": {
     "message": "D'Cent"
-  },
-  "deFi": {
-    "message": "DeFi"
-  },
-
-  "deFiText": {
-    "message": "Staking, swapping, and bridging"
   },
   "decimal": {
     "message": "Token decimal"
@@ -3082,9 +3064,6 @@
   "notePlaceholder": {
     "message": "The approver will see this note when approving the transaction at the custodian."
   },
-  "notificationItemAddress": {
-    "message": "Address"
-  },
   "notificationItemCheckBlockExplorer": {
     "message": "Check on the BlockExplorer"
   },
@@ -3102,9 +3081,6 @@
   },
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "Withdrawal Ready"
-  },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "Claim your un-staked $1. This will include a gas fee to process the transaction."
   },
   "notificationItemLidoWithdrawalRequested": {
     "message": "Withdrawal requested"
@@ -3165,9 +3141,6 @@
   },
   "notificationItemUnStaked": {
     "message": "Unstaked"
-  },
-  "notificationItemUnStakingConfirmed": {
-    "message": "Unstaking confirmed"
   },
   "notificationItemUnStakingRequested": {
     "message": "Unstaking requested"
@@ -3256,9 +3229,6 @@
     "message": "Dropping Ledger Support for Firefox",
     "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
   },
-  "notificationsEmptyText": {
-    "message": "This is where you can find notifications from your installed snaps."
-  },
   "notificationsFeatureToggle": {
     "message": "Enable Wallet Notifications",
     "description": "Experimental feature title"
@@ -3266,19 +3236,6 @@
   "notificationsFeatureToggleDescription": {
     "message": "This enables wallet notifications like send/receive funds or nfts and feature announcements.",
     "description": "Description of the experimental notifications feature"
-  },
-  "notificationsHeader": {
-    "message": "Notifications"
-  },
-  "notificationsInfos": {
-    "message": "$1 from $2",
-    "description": "$1 is the date at which the notification has been dispatched and $2 is the link to the snap that dispatched the notification."
-  },
-  "notificationsMarkAllAsRead": {
-    "message": "Mark all as read"
-  },
-  "notificationsPageEmptyContent": {
-    "message": "This is where you can find notifications once there’s activity in your wallet or if you have received notifications from the Snaps you are using."
   },
   "notificationsPageEmptyTitle": {
     "message": "Nothing to see here"

@@ -110,7 +110,11 @@ export const NotificationsTagCounter = ({
       paddingLeft={2}
       paddingRight={2}
     >
-      <Text color={TextColor.errorInverse} variant={TextVariant.bodySm}>
+      <Text
+        color={TextColor.errorInverse}
+        variant={TextVariant.bodySm}
+        data-testid="global-menu-notification-count"
+      >
         {notificationsCount > 99 ? '99+' : notificationsCount}
       </Text>
     </Box>
