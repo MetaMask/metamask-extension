@@ -267,13 +267,11 @@ export default function createRPCMethodTrackingMiddleware({
             req.securityAlertResponse.description;
         }
         ///: END:ONLY_INCLUDE_IF
-
         const isConfirmationRedesign =
           isConfirmationRedesignEnabled() &&
-          (REDESIGN_APPROVAL_TYPES.find(
+          REDESIGN_APPROVAL_TYPES.find(
             (type) => type === ETH_METHOD_TO_APPROVAL_TYPE[method],
-          ) ||
-            REDESIGN_TRANSACTION_TYPES.find((type) => type === method));
+          );
 
         if (isConfirmationRedesign) {
           eventProperties.ui_customizations = [
