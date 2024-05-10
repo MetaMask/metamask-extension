@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import useSignatureSecurityAlertResponse from '../../../hooks/useSignatureSecurityAlertResponse';
 import { currentConfirmationSelector } from '../../../selectors';
