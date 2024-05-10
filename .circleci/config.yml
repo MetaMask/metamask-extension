@@ -501,7 +501,7 @@ jobs:
           at: .
       - run:
           name: Build extension in mv3 for testing
-          command: yarn build:test:mv3
+          command: yarn build:test
       - run:
           name: Move test build to 'dist-test' to avoid conflict with production build
           command: mv ./dist ./dist-test-mv3
@@ -812,7 +812,7 @@ jobs:
       - run:
           name: test:e2e:chrome
           command: |
-            export ENABLE_MV3=true
+            export ENABLE_MV3=false
               if .circleci/scripts/test-run-e2e.sh; then
                   timeout 20m yarn test:e2e:chrome --retries 2
               fi
