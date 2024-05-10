@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Severity,
   TextColor,
@@ -11,62 +11,76 @@ import {
   ConfirmInfoRowVariant,
 } from '../row';
 import { Box } from '../../../../../component-library';
+import { MultipleAlertModal } from '../../../../confirmations/alerts/multiple-alert-modal';
 
 export type AlertRowProps = ConfirmInfoRowProps & {
   alertKey: string;
-  alertOwnerId: string;
+  ownerId: string;
 };
 
-export function getAlertTextColors(variant?: ConfirmInfoRowVariant): TextColor {
+export function getAlertTextColors(
+  variant?: ConfirmInfoRowVariant | Severity,
+): TextColor {
   switch (variant) {
     case ConfirmInfoRowVariant.Critical:
+    case Severity.Danger:
       return TextColor.errorDefault;
     case ConfirmInfoRowVariant.Warning:
+    case Severity.Warning:
       return TextColor.warningDefault;
     case ConfirmInfoRowVariant.Default:
+    case Severity.Info:
       return TextColor.infoDefault;
     default:
       return TextColor.textDefault;
   }
 }
 
-function getSeverityAlerts(variant?: ConfirmInfoRowVariant): Severity {
-  switch (variant) {
-    case ConfirmInfoRowVariant.Critical:
-      return Severity.Danger;
-    case ConfirmInfoRowVariant.Warning:
-      return Severity.Warning;
-    default:
-      return Severity.Info;
-  }
-}
+export const AlertRow = ({
+  alertKey,
+  ownerId,
+  variant,
+  ...rowProperties
+}: AlertRowProps) => {
+  const { getFieldAlerts } = useAlerts(ownerId);
+  const fieldAlerts = getFieldAlerts(alertKey);
+  const hasFieldAlert = fieldAlerts.length > 0;
+  const selectedAlertSeverity = fieldAlerts[0]?.severity;
 
-export const AlertRow = (props: AlertRowProps) => {
-  const { alertKey, alertOwnerId, style, variant, ...rowProperties } = props;
-  const { getFieldAlerts } = useAlerts(alertOwnerId);
-  const hasFieldAlert = getFieldAlerts(alertKey).length > 0;
+  const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
+
+  const handleCloseModal = () => {
+    setAlertModalVisible(false);
+  };
+
+  const handleOpenModal = () => {
+    setAlertModalVisible(true);
+  };
 
   const confirmInfoRowProps = {
     ...rowProperties,
-    style: {
-      background: 'transparent',
-      ...style,
-    },
-    color: getAlertTextColors(variant),
+    style: { background: 'transparent', ...rowProperties.style },
+    color: getAlertTextColors(variant ?? selectedAlertSeverity),
+    variant,
   };
 
   const inlineAlert = hasFieldAlert ? (
     <Box marginLeft={1}>
-      <InlineAlert
-        onClick={() => {
-          // intentionally empty
-        }}
-        severity={getSeverityAlerts(variant)}
-      />
+      <InlineAlert onClick={handleOpenModal} severity={selectedAlertSeverity} />
     </Box>
   ) : null;
 
   return (
-    <ConfirmInfoRow {...confirmInfoRowProps} labelChildren={inlineAlert} />
+    <>
+      {alertModalVisible && (
+        <MultipleAlertModal
+          alertKey={alertKey}
+          ownerId={ownerId}
+          onFinalAcknowledgeClick={handleCloseModal}
+          onClose={handleCloseModal}
+        />
+      )}
+      <ConfirmInfoRow {...confirmInfoRowProps} labelChildren={inlineAlert} />
+    </>
   );
 };
