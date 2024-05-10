@@ -62,7 +62,7 @@ describe('Phishing Detection', function () {
     );
   });
 
-  it('should display the MetaMask Phishing Detection page if a blocked site redirects to another page', async function () {
+  it.only('should display the MetaMask Phishing Detection page if a blocked site redirects to another page', async function () {
     const safeSite = 'https://metamask.github.io/test-dapp/';
     const redirectServerPort = 5959;
     await withFixtures(

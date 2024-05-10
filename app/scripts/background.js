@@ -176,25 +176,90 @@ const sendReadyMessageToTabs = async () => {
   }
 };
 
-browser.webRequest.onHeadersReceived.addListener(
-  function (details) {
+const interceptors = {
+  onBeforeRedirect: [
+    undefined,
+    ['responseHeaders'],
+    ['extraHeaders'],
+    ['responseHeaders', 'extraHeaders'],
+  ],
+  onBeforeRequest: [
+    undefined,
+    ['requestBody'],
+    ['extraHeaders'],
+    ['requestBody', 'extraHeaders'],
+  ],
+  onBeforeSendHeaders: [
+    undefined,
+    ['requestHeaders'],
+    ['extraHeaders'],
+    ['requestHeaders', 'extraHeaders'],
+  ],
+  onCompleted: [
+    undefined,
+    ['responseHeaders'],
+    ['extraHeaders'],
+    ['responseHeaders', 'extraHeaders'],
+  ],
+  // onErrorOccurred: [undefined, 'extraHeaders'],
+  onHeadersReceived: [
+    undefined,
+    ['responseHeaders'],
+    ['extraHeaders'],
+    ['responseHeaders', 'extraHeaders'],
+  ],
+  onResponseStarted: [
+    undefined,
+    ['responseHeaders'],
+    ['extraHeaders'],
+    ['responseHeaders', 'extraHeaders'],
+  ],
+  onSendHeaders: [
+    undefined,
+    ['requestHeaders'],
+    ['extraHeaders'],
+    ['requestHeaders', 'extraHeaders'],
+  ],
+};
+
+function getHandler(prefix) {
+  return (details) => {
     const { usePhishDetect } =
       controller.preferencesController.store.getState();
     if (usePhishDetect) {
       const { hostname } = new URL(details.url);
       const phishingTestResponse = controller.phishingController.test(hostname);
       if (phishingTestResponse?.result) {
-        console.log(`burn ${hostname} with ${details.tabId}`);
-        controller.updateBurnedTabIds(details.tabId);
+        if (details.tabId === -1) {
+          console.log(`[${prefix}] cannot burn ${hostname}, no tab id`);
+        } else {
+          console.log(`[${prefix}] burn ${hostname} with ${details.tabId}`);
+          controller.updateBurnedTabIds(details.tabId);
+        }
       } else {
-        console.log(`do not burn ${hostname} with ${details.tabId}`);
+        console.log(
+          `[${prefix}] do not burn ${hostname} with ${details.tabId}`,
+        );
       }
     } else {
-      console.log('skipping burn check, disabled');
+      console.log(`[${prefix}] skipping burn check, disabled`);
     }
-  },
-  { types: ['main_frame', 'sub_frame'], urls: ['http://*/*', 'https://*/*'] },
-);
+  };
+}
+
+for (const [interceptor, optionSets] of Object.entries(interceptors)) {
+  optionSets.forEach((options, index) => {
+    console.log(`adding ${interceptor} with ${index}`);
+    browser.webRequest[interceptor].addListener(
+      getHandler(`${interceptor}:${index}`),
+      {
+        types: ['main_frame', 'sub_frame'],
+        urls: ['http://*/*', 'https://*/*'],
+      },
+      options,
+    );
+  });
+}
 
 // These are set after initialization
 let connectRemote;
