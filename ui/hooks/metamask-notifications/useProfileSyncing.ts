@@ -39,7 +39,6 @@ export function useEnableProfileSyncing(): {
     setError(null);
 
     try {
-      console.log('enableProfileSyncing');
       // set profile syncing to true
       await dispatch(enableProfileSyncingAction());
     } catch (e) {
@@ -76,7 +75,6 @@ export function useDisableProfileSyncing(): {
       // disable profile syncing
       await dispatch(disableProfileSyncingAction());
     } catch (e) {
-      console.log('error', error);
       const errorMessage =
         e instanceof Error ? e.message : JSON.stringify(e ?? '');
       setError(errorMessage);

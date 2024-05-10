@@ -33,11 +33,6 @@ export const selectIsProfileSyncingEnabled = createSelector(
 export const selectIsProfileSyncingUpdateLoading = createSelector(
   [getMetamask],
   (metamask) => {
-    console.log('metamask:', metamask);
-    console.log(
-      'Profile Syncing Update Loading:',
-      metamask.isProfileSyncingUpdateLoading,
-    );
     return metamask.isProfileSyncingUpdateLoading;
   },
 );
