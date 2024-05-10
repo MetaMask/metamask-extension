@@ -49,6 +49,7 @@ import {
   POLYGON_ZKEVM_DISPLAY_NAME,
   MOONBEAM_DISPLAY_NAME,
   MOONRIVER_DISPLAY_NAME,
+  BUYABLE_TEST_CHAINS_MAP,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -1262,6 +1263,12 @@ export function getIsBuyableChain(state) {
   const chainId = getCurrentChainId(state);
   return Object.keys(BUYABLE_CHAINS_MAP).includes(chainId);
 }
+
+export function getIsFaucetBuyableChain(state) {
+  const chainId = getCurrentChainId(state);
+  return Object.keys(BUYABLE_TEST_CHAINS_MAP).includes(chainId);
+}
+
 export function getNativeCurrencyImage(state) {
   const chainId = getCurrentChainId(state);
   return CHAIN_ID_TOKEN_IMAGE_MAP[chainId];

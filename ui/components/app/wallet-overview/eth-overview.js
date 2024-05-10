@@ -41,6 +41,7 @@ import {
   getIsBridgeChain,
   getIsBuyableChain,
   getMetaMetricsId,
+  getIsFaucetBuyableChain,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -68,6 +69,7 @@ import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { showPrimaryCurrency } from '../../../../shared/modules/currency-display.utils';
+import { getFaucetProviderTestToken } from '../../../store/actions';
 import WalletOverview from './wallet-overview';
 
 const EthOverview = ({ className, showAddress }) => {
@@ -79,6 +81,7 @@ const EthOverview = ({ className, showAddress }) => {
   const location = useLocation();
   const isBridgeChain = useSelector(getIsBridgeChain);
   const isBuyableChain = useSelector(getIsBuyableChain);
+  const isBuyableTestChain = useSelector(getIsFaucetBuyableChain);
   const metaMetricsId = useSelector(getMetaMetricsId);
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
@@ -107,7 +110,7 @@ const EthOverview = ({ className, showAddress }) => {
   const buttonTooltips = {
     buyButton: [
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-      { condition: !isBuyableChain, message: '' },
+      { condition: !(isBuyableChain || !isBuyableTestChain), message: '' },
       ///: END:ONLY_INCLUDE_IF
       { condition: !isSigningEnabled, message: 'methodNotSupported' },
     ],
@@ -263,21 +266,36 @@ const EthOverview = ({ className, showAddress }) => {
                   color={IconColor.primaryInverse}
                 />
               }
-              disabled={!isBuyableChain || !isSigningEnabled}
+              disabled={
+                !(isBuyableChain || isBuyableTestChain) || !isSigningEnabled
+              }
               data-testid="eth-overview-buy"
               label={t('buyAndSell')}
-              onClick={() => {
-                openBuyCryptoInPdapp();
-                trackEvent({
-                  event: MetaMetricsEventName.NavBuyButtonClicked,
-                  category: MetaMetricsEventCategory.Navigation,
-                  properties: {
-                    location: 'Home',
-                    text: 'Buy',
-                    chain_id: chainId,
-                    token_symbol: defaultSwapsToken,
-                  },
-                });
+              onClick={async () => {
+                if (isBuyableChain) {
+                  openBuyCryptoInPdapp();
+                  trackEvent({
+                    event: MetaMetricsEventName.NavBuyButtonClicked,
+                    category: MetaMetricsEventCategory.Navigation,
+                    properties: {
+                      location: 'Home',
+                      text: 'Buy',
+                      chain_id: chainId,
+                      token_symbol: defaultSwapsToken,
+                    },
+                  });
+
+                  if (isBuyableTestChain) {
+                    console.log('Clicking this shit');
+                    await dispatch(
+                      getFaucetProviderTestToken({
+                        chainId,
+                        sourceId: 'local:http://localhost:8080',
+                        address: account.address,
+                      }),
+                    );
+                  }
+                }
               }}
               tooltipRender={(contents) =>
                 generateTooltip('buyButton', contents)
