@@ -62,8 +62,8 @@ describe('Phishing Detection', function () {
     );
   });
 
-  it('should display the MetaMask Phishing Detection page if a site redirects to a blocked page', async function () {
-    const blockedSite = 'test.metamask-phishing.io';
+  it('should display the MetaMask Phishing Detection page if a blocked site redirects to another page', async function () {
+    const safeSite = 'https://metamask.github.io/test-dapp/';
     const redirectServerPort = 5959;
     await withFixtures(
       {
@@ -73,13 +73,13 @@ describe('Phishing Detection', function () {
         testSpecificMock: async (mockServer) => {
           return setupPhishingDetectionMocks(mockServer, {
             blockProvider: BlockProvider.MetaMask,
-            blocklist: [blockedSite],
+            blocklist: ['127.0.0.1'],
           });
         },
       },
       async ({ driver }) => {
         await withRedirectServer(
-          { port: redirectServerPort, redirectUrl: `https://${blockedSite}` },
+          { port: redirectServerPort, redirectUrl: safeSite },
           async () => {
             await unlockWallet(driver);
             await driver.openNewPage(`http://127.0.0.1:${redirectServerPort}/`);
@@ -88,7 +88,7 @@ describe('Phishing Detection', function () {
               text: 'continue to the site.',
             });
             const header = await driver.findElement('h1');
-            assert.equal(await header.getText(), 'MetaMask Phishing Test Page');
+            assert.equal(await header.getText(), 'E2E Test Dapp');
             await driver.clickElement({
               text: 'DOES NOT EXIST.',
             });
