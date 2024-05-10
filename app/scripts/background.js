@@ -184,8 +184,13 @@ browser.webRequest.onHeadersReceived.addListener(
       const { hostname } = new URL(details.url);
       const phishingTestResponse = controller.phishingController.test(hostname);
       if (phishingTestResponse?.result) {
+        console.log(`burn ${hostname} with ${details.tabId}`);
         controller.updateBurnedTabIds(details.tabId);
+      } else {
+        console.log(`do not burn ${hostname} with ${details.tabId}`);
       }
+    } else {
+      console.log('skipping burn check, disabled');
     }
   },
   { types: ['main_frame', 'sub_frame'], urls: ['http://*/*', 'https://*/*'] },

@@ -4807,6 +4807,11 @@ export default class MetamaskController extends EventEmitter {
       this.phishingController.maybeUpdateState();
       // Check if new connection is blocked if phishing detection is on
       const phishingTestResponse = this.phishingController.test(hostname);
+      console.log(
+        `testing ${hostname} with tab ID ${sender.tab?.id} which is ${
+          sender.tab?.id in this.burnedTabIds ? ' ' : 'NOT '
+        }burned`,
+      );
       if (phishingTestResponse?.result || this.burnedTabIds[sender.tab?.id]) {
         this.sendPhishingWarning(connectionStream, hostname);
         this.metaMetricsController.trackEvent({

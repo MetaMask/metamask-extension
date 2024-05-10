@@ -89,6 +89,9 @@ describe('Phishing Detection', function () {
             });
             const header = await driver.findElement('h1');
             assert.equal(await header.getText(), 'MetaMask Phishing Test Page');
+            await driver.clickElement({
+              text: 'DOES NOT EXIST.',
+            });
           },
         );
       },
