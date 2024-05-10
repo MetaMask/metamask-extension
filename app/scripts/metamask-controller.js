@@ -93,6 +93,7 @@ import {
   createSnapsMethodMiddleware,
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
+  createSnapsMethodRemapMiddleware,
 } from '@metamask/snaps-rpc-methods';
 ///: END:ONLY_INCLUDE_IF
 
@@ -4927,6 +4928,8 @@ export default class MetamaskController extends EventEmitter {
     );
 
     engine.push(createUnsupportedMethodMiddleware());
+
+    engine.push(createSnapsMethodRemapMiddleware());
 
     if (subjectType !== SubjectType.Internal) {
       engine.push(
