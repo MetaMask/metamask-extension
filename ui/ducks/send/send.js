@@ -2081,13 +2081,19 @@ export function editExistingTransaction(assetType, transactionId) {
     const transaction = unapprovedTransactions[transactionId];
     const account = getTargetAccount(state, transaction.txParams.from);
 
-    const isSwapAndSend = state[name].prevSwapAndSendInput;
+    const isSwapAndSend = Boolean(state[name].prevSwapAndSendInput);
 
     if (isSwapAndSend) {
+      const {
+        amountMode,
+        amount: { value: amount },
+        ...draftTxParams
+      } = state[name].prevSwapAndSendInput;
+
       dispatch(
         actions.addNewDraft({
           ...draftTransactionInitialState,
-          ...state[name].prevSwapAndSendInput,
+          ...draftTxParams,
           id: transactionId,
           fromAccount: account,
           history: [
@@ -2095,7 +2101,13 @@ export function editExistingTransaction(assetType, transactionId) {
           ],
         }),
       );
-      dispatch(updateSendQuote());
+      if (amountMode === AMOUNT_MODES.MAX) {
+        dispatch(actions.updateAmountMode(AMOUNT_MODES.MAX));
+        dispatch(actions.updateSendAmount('0x0'));
+        dispatch(updateSendQuote());
+      } else {
+        dispatch(updateSendAmount(amount));
+      }
     } else if (assetType === AssetType.native) {
       await dispatch(
         actions.addNewDraft({
@@ -2383,6 +2395,10 @@ export function updateSendAmount(hexAmount, decimalAmount) {
       dispatch(actions.updateAmountMode(AMOUNT_MODES.INPUT));
     }
     dispatch(updateSendQuote());
+
+    if (!decimalAmount) {
+      return;
+    }
 
     const { ticker } = getProviderConfig(state);
     const draftTransaction =
@@ -2834,6 +2850,7 @@ export function signTransaction() {
           sendAsset: { ...sendAsset },
           receiveAsset: { ...receiveAsset },
           recipient: { ...recipient },
+          amountMode: state[name].amountMode,
         }),
       );
 
