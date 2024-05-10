@@ -66,9 +66,8 @@ describe('ConfirmTurnOffProfileSyncing', () => {
         <ConfirmTurnOffProfileSyncing />
       </I18nContext.Provider>,
     );
-    fireEvent.click(getByTestId('submit-button'));
+    fireEvent.click(getByTestId('cancel-button'));
     await waitFor(() => {
-      expect(mockDisableProfileSyncing).toHaveBeenCalledTimes(1);
       expect(mockHideModal).toHaveBeenCalledTimes(1);
     });
   });
