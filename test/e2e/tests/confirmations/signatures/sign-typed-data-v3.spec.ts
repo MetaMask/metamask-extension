@@ -23,6 +23,8 @@ describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#signTypedDataV3');
+
+        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await assertInfoValues(driver);
@@ -50,9 +52,13 @@ describe('Confirmation Signature - Sign Typed Data V3', function (this: Suite) {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#signTypedDataV3');
+
+        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
         await driver.clickElement('[data-testid="confirm-footer-cancel-button"]');
 
+        await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         const rejectionResult = await driver.waitForSelector({
@@ -90,6 +96,7 @@ async function assertInfoValues(driver: Driver) {
 }
 
 async function assertVerifiedResults(driver: Driver, publicAddress: string) {
+  await driver.waitUntilXWindowHandles(2);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await driver.clickElement('#signTypedDataV3Verify');
 
