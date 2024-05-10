@@ -41,7 +41,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
         await unlockWallet(driver);
         await openDapp(driver);
         await driver.clickElement('#personalSign');
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog, { timeout: 20000 });
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement('[data-testid="confirm-footer-cancel-button"]');
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
