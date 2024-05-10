@@ -16,7 +16,7 @@ export type Alert = {
 
   /**
    * Whether the alert is a blocker and un-acknowledgeable, preventing
-   * the user from proceeding and relying on the actions to proceed.
+   * the user from proceeding and relying on actions to proceed.
    */
   isBlocking?: boolean;
 
