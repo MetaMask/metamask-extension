@@ -89,6 +89,8 @@ const exceptionsToFilter = {
  * @typedef {object} MetaMetricsControllerState
  * @property {string} [metaMetricsId] - The user's metaMetricsId that will be
  *  attached to all non-anonymized event payloads
+ * @property {string} [serverMetaMetricsId] - A server generated metametrics id that will be
+ *  attached to logged in user events
  * @property {boolean} [participateInMetaMetrics] - The user's preference for
  *  participating in the MetaMetrics analytics program. This setting controls
  *  whether or not events are tracked
@@ -154,6 +156,7 @@ export default class MetaMetricsController {
     this.store = new ObservableStore({
       participateInMetaMetrics: null,
       metaMetricsId: null,
+      serverMetaMetricsId: null,
       eventsBeforeMetricsOptIn: [],
       traits: {},
       previousUserTraits: {},
@@ -497,9 +500,10 @@ export default class MetaMetricsController {
       ) {
         return;
       }
-      const { metaMetricsId } = this.state;
-      const idTrait = metaMetricsId ? 'userId' : 'anonymousId';
-      const idValue = metaMetricsId ?? METAMETRICS_ANONYMOUS_ID;
+      const { metaMetricsId, serverMetaMetricsId } = this.state;
+      const unifiedMetaMetrics = serverMetaMetricsId ?? metaMetricsId;
+      const idTrait = unifiedMetaMetrics ? 'userId' : 'anonymousId';
+      const idValue = unifiedMetaMetrics ?? METAMETRICS_ANONYMOUS_ID;
       this._submitSegmentAPICall('page', {
         messageId: buildUniqueMessageId({ actionId }),
         [idTrait]: idValue,
@@ -650,6 +654,21 @@ export default class MetaMetricsController {
     this.store.updateState({
       traits: { ...traits, ...newTraits },
     });
+  }
+
+  // Retrieve (or generate if doesn't exist) the client metametrics id
+  getClientMetaMetricsId() {
+    let { metaMetricsId } = this.state;
+    if (!metaMetricsId) {
+      metaMetricsId = this.generateMetaMetricsId();
+      this.store.updateState({ metaMetricsId });
+    }
+    return metaMetricsId;
+  }
+
+  // New authentication can return a server metametrics id that we can utilize in our events
+  setServerMetaMetricsId(metaMetricsId) {
+    this.store.updateState({ serverMetaMetricsId: metaMetricsId });
   }
 
   /** PRIVATE METHODS */
@@ -904,7 +923,8 @@ export default class MetaMetricsController {
    * @param {object} userTraits
    */
   _identify(userTraits) {
-    const { metaMetricsId } = this.state;
+    const { metaMetricsId, serverMetaMetricsId } = this.state;
+    const unifiedMetaMetrics = serverMetaMetricsId ?? metaMetricsId;
 
     if (!userTraits || Object.keys(userTraits).length === 0) {
       console.warn('MetaMetricsController#_identify: No userTraits found');
@@ -913,7 +933,7 @@ export default class MetaMetricsController {
 
     try {
       this._submitSegmentAPICall('identify', {
-        userId: metaMetricsId,
+        userId: unifiedMetaMetrics,
         traits: userTraits,
       });
     } catch (err) {
@@ -990,7 +1010,9 @@ export default class MetaMetricsController {
       flushImmediately,
     } = options || {};
     let idType = 'userId';
-    let idValue = this.state.metaMetricsId;
+    const unifiedMetaMetrics =
+      this.state.serverMetaMetricsId ?? this.state.metaMetricsId;
+    let idValue = unifiedMetaMetrics;
     let excludeMetaMetricsId = options?.excludeMetaMetricsId ?? false;
     // This is carried over from the old implementation, and will likely need
     // to be updated to work with the new tracking plan. I think we should use

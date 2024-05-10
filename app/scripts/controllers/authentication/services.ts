@@ -47,6 +47,7 @@ export type LoginResponse = {
 export async function login(
   rawMessage: string,
   signature: string,
+  clientMetaMetricsId: string,
 ): Promise<LoginResponse | null> {
   try {
     const response = await fetch(AUTH_LOGIN_ENDPOINT, {
@@ -57,6 +58,10 @@ export async function login(
       body: JSON.stringify({
         signature,
         raw_message: rawMessage,
+        metametrics: {
+          metametrics_id: clientMetaMetricsId,
+          agent: 'extension',
+        },
       }),
     });
 
