@@ -20,6 +20,7 @@ import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNati
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import useTokenExchangeRate from './hooks/useTokenExchangeRate';
 import useProcessNewDecimalValue from './hooks/useProcessNewDecimalValue';
+import useStateWithFirstTouch from './hooks/useStateWithFirstTouch';
 
 const NATIVE_CURRENCY_DECIMALS = 18;
 const LARGE_SYMBOL_LENGTH = 7;
@@ -65,7 +66,9 @@ export default function CurrencyInput({
   const shouldUseFiat = isFiatAvailable && isFiatPreferred;
   const isTokenPrimary = !shouldUseFiat;
 
-  const [tokenDecimalValue, setTokenDecimalValue] = useState('0');
+  const [tokenDecimalValue, setTokenDecimalValue, isInputUnchanged] =
+    useStateWithFirstTouch('0');
+
   const [fiatDecimalValue, setFiatDecimalValue] = useState('0');
 
   const chainId = useSelector(getCurrentChainId);
@@ -134,10 +137,13 @@ export default function CurrencyInput({
       return;
     }
 
+    // if input is disabled or the input hasn't changed, the value is upstream (i.e., based on the raw token value)
+    const isUpstreamValue = isDisabled || isInputUnchanged;
+
     const { newTokenDecimalValue, newFiatDecimalValue } =
       processNewDecimalValue(
         decimalizedHexValue,
-        isDisabled ? true : undefined,
+        isUpstreamValue ? true : undefined,
       );
 
     setTokenDecimalValue(newTokenDecimalValue);
