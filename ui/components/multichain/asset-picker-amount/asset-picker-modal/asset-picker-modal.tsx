@@ -179,12 +179,19 @@ export function AssetPickerModal({
 
     function* tokenGenerator() {
       yield nativeToken;
+
       for (const token of memoizedUsersTokens) {
         yield token;
       }
-      for (const token of Object.values(topTokens)) {
-        yield token;
+
+      // topTokens should already be sorted by popularity
+      for (const address of Object.keys(topTokens)) {
+        const token = tokenList?.[address];
+        if (token) {
+          yield token;
+        }
       }
+
       for (const token of Object.values(tokenList)) {
         yield token;
       }
