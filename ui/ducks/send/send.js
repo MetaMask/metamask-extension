@@ -2757,6 +2757,17 @@ export function signTransaction() {
       txParams = generateTransactionParams(state[name]);
     }
 
+    const { amount, sendAsset, receiveAsset, recipient } = draftTransaction;
+    const prevSwapAndSendData = {
+      amount: { ...amount },
+      sendAsset: { ...sendAsset },
+      receiveAsset: { ...receiveAsset },
+      recipient: { ...recipient },
+      amountMode: state[name].amountMode,
+    };
+
+    await dispatch(actions.setPrevSwapAndSend(prevSwapAndSendData));
+
     if (stage === SEND_STAGES.EDIT) {
       // When dealing with the edit flow there is already a transaction in
       // state that we must update, this branch is responsible for that logic.
@@ -2846,17 +2857,6 @@ export function signTransaction() {
         });
       }
 
-      const { amount, sendAsset, receiveAsset, recipient } = draftTransaction;
-      await dispatch(
-        actions.setPrevSwapAndSend({
-          amount: { ...amount },
-          sendAsset: { ...sendAsset },
-          receiveAsset: { ...receiveAsset },
-          recipient: { ...recipient },
-          amountMode: state[name].amountMode,
-        }),
-      );
-
       const { id: transactionId } = await dispatch(
         addTransactionAndRouteToConfirmationPage(txParams, {
           sendFlowHistory: draftTransaction.history,
@@ -2872,6 +2872,7 @@ export function signTransaction() {
         ),
       );
     }
+    await dispatch(actions.setPrevSwapAndSend(prevSwapAndSendData));
   };
 }
 
