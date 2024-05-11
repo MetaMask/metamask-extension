@@ -284,17 +284,16 @@ const EthOverview = ({ className, showAddress }) => {
                       token_symbol: defaultSwapsToken,
                     },
                   });
+                }
 
-                  if (isBuyableTestChain) {
-                    console.log('Clicking this shit');
-                    await dispatch(
-                      getFaucetProviderTestToken({
-                        chainId,
-                        sourceId: 'local:http://localhost:8080',
-                        address: account.address,
-                      }),
-                    );
-                  }
+                if (isBuyableTestChain) {
+                  await dispatch(
+                    getFaucetProviderTestToken({
+                      chainId,
+                      sourceId: 'local:http://localhost:8080',
+                      address: account.address,
+                    }),
+                  );
                 }
               }}
               tooltipRender={(contents) =>

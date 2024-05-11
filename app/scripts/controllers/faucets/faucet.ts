@@ -130,8 +130,6 @@ export class FaucetController extends BaseController<
       state: { ...getDefaultState(), ...state },
     });
 
-    console.log('INIT FAUCET PROVIDERS', providers);
-
     this.#providers = providers;
   }
   async getProviderTestToken(
@@ -140,21 +138,16 @@ export class FaucetController extends BaseController<
     let responseError: unknown | undefined;
     let response: FaucetProviderSourceResult | undefined;
 
-    console.log('FAUCET CONTROLLER, getProviderTestToken', request);
-
     const provider = this.#providers.find((provider) =>
       this.#getSourceIds(provider, request.chainId).includes(request.sourceId),
     );
 
     if (!provider) {
       const ProviderNotFoundError = new Error('Faucet provider not found');
-      console.log(ProviderNotFoundError);
       return {
         error: ProviderNotFoundError,
       };
     }
-
-    console.log('FAUCET PROVIDER', provider);
 
     try {
       response = await provider.sendETH(request);

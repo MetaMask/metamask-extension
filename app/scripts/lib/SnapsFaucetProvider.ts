@@ -70,10 +70,8 @@ export class SnapsFaucetProvider implements FaucetProvider {
   async sendETH(
     request: FaucetProviderRequest,
   ): Promise<FaucetProviderSourceResult> {
-    console.log('SnapsFaucetProvider:sendETH', request);
     const faucetSnap = this.#messenger.call('SnapController:get', request.sourceId);
 
-    console.log('SnapsFaucetProvider:sendETH:faucetSnap', faucetSnap);
     if (!faucetSnap) {
       throw new Error('Faucet snap not found');
     };
@@ -121,11 +119,6 @@ export class SnapsFaucetProvider implements FaucetProvider {
 
       resultError = error;
     }
-
-    console.log('SnapsFaucetProvider:#getSnapSendEth', {
-      txHash,
-      resultError,
-    });
 
     return {
       txHash,
