@@ -16,6 +16,7 @@ import {
   IconColor,
   BorderRadius,
 } from '../../../../../helpers/constants/design-system';
+import { usePrevious } from '../../../../../hooks/usePrevious';
 import { useScrollRequired } from '../../../../../hooks/useScrollRequired';
 import { updateConfirm } from '../../../../../ducks/confirm/confirm';
 import { currentConfirmationSelector } from '../../../selectors';
@@ -31,6 +32,7 @@ const ScrollToBottom = ({ children }: ContentProps) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const currentConfirmation = useSelector(currentConfirmationSelector);
+  const previousId = usePrevious(currentConfirmation?.id);
 
   const {
     hasScrolledToBottom,
@@ -38,8 +40,26 @@ const ScrollToBottom = ({ children }: ContentProps) => {
     isScrolledToBottom,
     onScroll,
     scrollToBottom,
+    setHasScrolledToBottom,
     ref,
   } = useScrollRequired([currentConfirmation?.id]);
+
+  /**
+   * Scroll to the top of the page when the confirmation changes. This happens
+   * when we navigate through different confirmations. Also, resets hasScrolledToBottom
+   */
+  useEffect(() => {
+    if (previousId === currentConfirmation?.id) {
+      return;
+    }
+
+    setHasScrolledToBottom(false);
+
+    const scrollTo = (ref?.current as null | HTMLDivElement)?.scrollTo;
+    if (typeof scrollTo === 'function') {
+      (ref?.current as null | HTMLDivElement)?.scrollTo(0, 0);
+    }
+  }, [currentConfirmation?.id, previousId, setHasScrolledToBottom]);
 
   useEffect(() => {
     dispatch(
