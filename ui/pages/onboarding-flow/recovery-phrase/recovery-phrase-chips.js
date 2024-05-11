@@ -73,7 +73,7 @@ export default function RecoveryPhraseChips({
               </div>
               <Tag
                 label={word}
-                dataTestId={`recovery-phrase-chip-${index}`}
+                data-testid={`recovery-phrase-chip-${index}`}
                 className={classnames('chip', 'recovery-phrase__chip')}
                 borderColor={BorderColor.borderDefault}
               />
