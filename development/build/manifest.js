@@ -55,25 +55,17 @@ function createManifestTasks({
 
   // dev: add perms
   const envDev = createTaskForModifyManifestForEnvironment((manifest) => {
-    manifest.permissions = [...manifest.permissions, 'webRequestBlocking'];
+    manifest.permissions = [...manifest.permissions];
   });
 
   // testDev: add perms
   const envTestDev = createTaskForModifyManifestForEnvironment((manifest) => {
-    manifest.permissions = [
-      ...manifest.permissions,
-      'webRequestBlocking',
-      'http://localhost/*',
-    ];
+    manifest.permissions = [...manifest.permissions, 'http://localhost/*'];
   });
 
   // test: add permissions
   const envTest = createTaskForModifyManifestForEnvironment((manifest) => {
-    manifest.permissions = [
-      ...manifest.permissions,
-      'webRequestBlocking',
-      'http://localhost/*',
-    ];
+    manifest.permissions = [...manifest.permissions, 'http://localhost/*'];
   });
 
   // high level manifest tasks

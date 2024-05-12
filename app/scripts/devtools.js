@@ -1,9 +1,12 @@
-// eslint-disable-next-line import/unambiguous, no-undef
-chrome.devtools.panels.create(
-  'MetaMask Devtools',
-  'panel.png',
-  'devtools.html',
-  function (panel) {
-    console.log('Panel created: ', panel);
-  },
-);
+try {
+  chrome.devtools.panels.create(
+    'Dev Tools',
+    'images/icon-34.png',
+    'devtools-panel.html',
+    function (panel) {
+      console.log('Panel created: ', panel);
+    },
+  );
+} catch (e) {
+  console.error(e);
+}

@@ -16,16 +16,6 @@
   "background": {
     "service_worker": "scripts/app-init.js"
   },
-  "commands": {
-    "_execute_browser_action": {
-      "suggested_key": {
-        "windows": "Alt+Shift+M",
-        "mac": "Alt+Shift+M",
-        "chromeos": "Alt+Shift+M",
-        "linux": "Alt+Shift+M"
-      }
-    }
-  },
   "content_scripts": [
     {
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
@@ -75,5 +65,16 @@
     "webRequest",
     "offscreen"
   ],
-  "short_name": "__MSG_appName__"
+  "short_name": "__MSG_appName__",
+  "devtools_page": "devtools.html",
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "images/icon-34.png"
+      ],
+      "matches": [
+        "*://*/*"
+      ]
+    }
+  ]
 }

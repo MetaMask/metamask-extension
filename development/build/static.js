@@ -177,7 +177,11 @@ function getCopyTargets(
     },
     {
       src: './app/scripts/devtools.js',
-      dest: 'devtools.js',
+      dest: 'scripts/devtools.js',
+    },
+    {
+      src: './app/devtools-panel.html',
+      dest: 'devtools-panel.html',
     },
     {
       src: './app/devtools.html',
