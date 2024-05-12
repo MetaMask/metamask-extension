@@ -5083,7 +5083,7 @@ export function getFaucetProvidersByChain(
       'submitRequestToBackground > getFaucetProvidersByChain',
       chainId,
     );
-    await submitRequestToBackground<void>('getFaucetProvidersByChain', [
+    return await submitRequestToBackground<void>('getFaucetProvidersByChain', [
       chainId,
     ]);
     // TODO: Replace `any` with type

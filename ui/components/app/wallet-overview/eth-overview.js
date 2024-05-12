@@ -462,10 +462,7 @@ const EthOverview = ({ className, showAddress }) => {
 
                     console.log('eth-overview: providers: ', providers);
 
-                    // FIXME:
-                    // - providers should return snap source ids. Currently, it is returning [].
-                    // - remove || [] with hardcoded source ids
-                    setFaucetProviders(providers || [faucetSnapId]);
+                    setFaucetProviders(providers);
                     setShowModalFaucet(true);
                   }}
                   tooltipRender={(contents) =>
