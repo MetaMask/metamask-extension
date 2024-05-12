@@ -2436,14 +2436,17 @@ export function getIsDesktopEnabled(state) {
  * To get all installed snaps with proper metadata
  *
  * @param {*} state
+ * @param snapIds
  * @returns Boolean
  */
-export function getSnapsList(state) {
+export function getSnapsList(state, snapIds) {
   const snaps = getSnaps(state);
   return Object.entries(snaps)
     .filter(
       ([_key, snap]) =>
-        !snap.preinstalled && snap.status !== SnapStatus.Installing,
+        !snap.preinstalled &&
+        snap.status !== SnapStatus.Installing &&
+        (!snapIds || snapIds.includes(snap.id)),
     )
     .map(([key, snap]) => {
       const targetSubjectMetadata = getTargetSubjectMetadata(state, snap?.id);

@@ -20,6 +20,7 @@ import {
 import SnapAvatar from '../snap-avatar';
 
 const SnapListItem = ({
+  className,
   name,
   packageName,
   onClick,
@@ -28,7 +29,7 @@ const SnapListItem = ({
 }) => {
   return (
     <Box
-      className="snap-list-item"
+      className={`snap-list-item ${className}`}
       data-testid={snapId}
       display={Display.Flex}
       alignItems={AlignItems.center}
@@ -85,6 +86,10 @@ const SnapListItem = ({
 };
 
 SnapListItem.propTypes = {
+  /**
+   * Optional classnames
+   */
+  className: PropTypes.string,
   /**
    * Name of the snap
    */
