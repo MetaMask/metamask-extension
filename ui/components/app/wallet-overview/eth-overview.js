@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
@@ -10,6 +10,7 @@ import {
 } from 'react-router-dom';
 
 import { EthMethod } from '@metamask/keyring-api';
+import { ApprovalType } from '@metamask/controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import {
   getMmiPortfolioEnabled,
@@ -21,6 +22,7 @@ import {
   SEND_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   BUILD_QUOTE_ROUTE,
+  CONFIRMATION_V_NEXT_ROUTE,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
 import Tooltip from '../../ui/tooltip';
@@ -42,6 +44,7 @@ import {
   getIsBuyableChain,
   getMetaMetricsId,
   getIsFaucetBuyableChain,
+  getMemoizedUnapprovedTemplatedConfirmations,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -106,6 +109,26 @@ const EthOverview = ({ className, showAddress }) => {
   const isSigningEnabled =
     account.methods.includes(EthMethod.SignTransaction) ||
     account.methods.includes(EthMethod.SignUserOperation);
+
+  const unapprovedTemplatedConfirmations = useSelector(
+    getMemoizedUnapprovedTemplatedConfirmations,
+  );
+
+  const [faucetSnapId] = useState('local:http://localhost:8080');
+
+  useEffect(() => {
+    // Snaps are allowed to redirect to their own pending confirmations (templated or not)
+    const templatedSnapApproval = unapprovedTemplatedConfirmations.find(
+      (approval) => approval.origin === faucetSnapId,
+    );
+
+    if (
+      templatedSnapApproval &&
+      templatedSnapApproval.type === ApprovalType.SnapDialogAlert
+    ) {
+      history.push(`${CONFIRMATION_V_NEXT_ROUTE}/${templatedSnapApproval.id}`);
+    }
+  }, [unapprovedTemplatedConfirmations, faucetSnapId, history]);
 
   const buttonTooltips = {
     buyButton: [
@@ -287,10 +310,10 @@ const EthOverview = ({ className, showAddress }) => {
                 }
 
                 if (isBuyableTestChain) {
-                  await dispatch(
+                  dispatch(
                     getFaucetProviderTestToken({
                       chainId,
-                      sourceId: 'local:http://localhost:8080',
+                      sourceId: faucetSnapId,
                       address: account.address,
                     }),
                   );

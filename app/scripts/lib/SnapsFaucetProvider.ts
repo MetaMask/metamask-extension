@@ -99,7 +99,7 @@ export class SnapsFaucetProvider implements FaucetProvider {
         'SnapController:handleRequest',
         {
           snapId: snap.id,
-          origin: '',
+          origin: 'metamask',
           handler: HandlerType.OnRpcRequest,
           request: {
             jsonrpc: '2.0',
