@@ -6,9 +6,13 @@
   align-items: center;
   background-color: unset;
   text-align: center;
-  width: 60px;
+  width: 72px;
 
   @include design-system.H7;
+
+  @include design-system.screen-sm-max {
+    width: 56px;
+  }
 
   font-size: 13px;
   cursor: pointer;
