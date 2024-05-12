@@ -33,7 +33,8 @@ export default function useEthFeeData(gasLimit = 0) {
   );
   const { medium, gasPrice: maybeGasFee } = useSelector(getGasFeeEstimates);
 
-  const gasFee1559 = maybeGasFee ?? medium;
+  // remove this logic once getGasFeeEstimates is typed
+  const gasFee1559 = maybeGasFee ?? medium?.suggestedMaxFeePerGas;
 
   const chainId = useSelector(getCurrentChainId);
   const isSwapsChain = useSelector(getIsSwapsChain);
