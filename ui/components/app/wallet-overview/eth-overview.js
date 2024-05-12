@@ -72,8 +72,9 @@ import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { showPrimaryCurrency } from '../../../../shared/modules/currency-display.utils';
-import { getFaucetProviderTestToken } from '../../../store/actions';
+import { getFaucetProvidersByChain } from '../../../store/actions';
 import WalletOverview from './wallet-overview';
+import ModalFaucet from './modal-faucet';
 
 const EthOverview = ({ className, showAddress }) => {
   const dispatch = useDispatch();
@@ -115,6 +116,8 @@ const EthOverview = ({ className, showAddress }) => {
   );
 
   const [faucetSnapId] = useState('local:http://localhost:8080');
+  const [faucetProviders, setFaucetProviders] = useState([]);
+  const [showModalFaucet, setShowModalFaucet] = useState(false);
 
   useEffect(() => {
     // Snaps are allowed to redirect to their own pending confirmations (templated or not)
@@ -289,9 +292,7 @@ const EthOverview = ({ className, showAddress }) => {
                   color={IconColor.primaryInverse}
                 />
               }
-              disabled={
-                !(isBuyableChain || isBuyableTestChain) || !isSigningEnabled
-              }
+              disabled={!isBuyableChain || !isSigningEnabled}
               data-testid="eth-overview-buy"
               label={t('buyAndSell')}
               onClick={async () => {
@@ -307,16 +308,6 @@ const EthOverview = ({ className, showAddress }) => {
                       token_symbol: defaultSwapsToken,
                     },
                   });
-                }
-
-                if (isBuyableTestChain) {
-                  dispatch(
-                    getFaucetProviderTestToken({
-                      chainId,
-                      sourceId: faucetSnapId,
-                      address: account.address,
-                    }),
-                  );
                 }
               }}
               tooltipRender={(contents) =>
@@ -447,6 +438,52 @@ const EthOverview = ({ className, showAddress }) => {
                 generateTooltip('bridgeButton', contents)
               }
             />
+            ///: END:ONLY_INCLUDE_IF
+          }
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+            isBuyableTestChain && (
+              <>
+                <IconButton
+                  className="eth-overview__button"
+                  Icon={
+                    <Icon
+                      name={IconName.WalletMoney}
+                      color={IconColor.primaryInverse}
+                    />
+                  }
+                  disabled={!isSigningEnabled}
+                  data-testid="eth-overview-faucet"
+                  label="Faucet"
+                  onClick={async () => {
+                    const providers = await dispatch(
+                      getFaucetProvidersByChain(chainId),
+                    );
+
+                    console.log('eth-overview: providers: ', providers);
+
+                    // FIXME:
+                    // - providers should return snap source ids. Currently, it is returning [].
+                    // - remove || [] with hardcoded source ids
+                    setFaucetProviders(providers || [faucetSnapId]);
+                    setShowModalFaucet(true);
+                  }}
+                  tooltipRender={(contents) =>
+                    generateTooltip('buyButton', contents)
+                  }
+                />
+                {showModalFaucet && (
+                  <ModalFaucet
+                    accountAddress={account.address}
+                    chainId={chainId}
+                    faucetSnapSourceIds={faucetProviders}
+                    onClose={() => {
+                      setShowModalFaucet(false);
+                    }}
+                  />
+                )}
+              </>
+            )
             ///: END:ONLY_INCLUDE_IF
           }
           {

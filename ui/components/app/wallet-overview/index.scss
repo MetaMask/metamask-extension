@@ -27,6 +27,21 @@
   }
 }
 
+.wallet-overview__modal-faucet {
+  .snap-list-item {
+    cursor: pointer;
+    transition: opacity .25s;
+
+    &.is-selected {
+      cursor: initial;
+      background: var(--color-background-alternative);
+    }
+    &.is-notSelected:not(:hover) {
+      opacity: 40%;
+    }
+  }
+}
+
 %asset-buttons {
   min-width: initial;
   width: 100px;
