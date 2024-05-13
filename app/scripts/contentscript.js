@@ -451,6 +451,7 @@ function extensionStreamMessageListener(msg) {
     isManifestV3 &&
     msg.data.method === 'metamask_chainChanged'
   ) {
+    console.log('!@# extensionStreamMessageListener', msg, '|->', Date.now());
     METAMASK_EXTENSION_CONNECT_SENT = false;
     window.postMessage(
       {

@@ -1,0 +1,28 @@
+diff --git a/dist/createStreamMiddleware.js b/dist/createStreamMiddleware.js
+index 70aee90ae2f7e78ea61002611c508cce73ac4022..d9fe0dd7c1d6f91decf1a804f1165dbb7e8d46d6 100644
+--- a/dist/createStreamMiddleware.js
++++ b/dist/createStreamMiddleware.js
+@@ -87,6 +87,7 @@ function createStreamMiddleware(options = {}) {
+      * @param notif - The notification to process.
+      */
+     function processNotification(notif) {
++        console.log('$$$ createStreamMiddleware processNotification notif', JSON.stringify(notif), '|->', Date.now())
+         if ((options === null || options === void 0 ? void 0 : options.retryOnMessage) && notif.method === options.retryOnMessage) {
+             retryStuckRequests();
+         }
+@@ -96,6 +97,7 @@ function createStreamMiddleware(options = {}) {
+      * Retry pending requests.
+      */
+     function retryStuckRequests() {
++        console.log('$$$ createStreamMiddleware retryStuckRequests idMap', JSON.stringify(idMap), '|->', Date.now())
+         Object.values(idMap).forEach(({ req, retryCount = 0 }) => {
+             // Avoid retrying requests without an id - they cannot have matching responses so retry logic doesn't apply
+             // Check for retry count below ensure that a request is not retried more than 3 times
+@@ -106,6 +108,7 @@ function createStreamMiddleware(options = {}) {
+                 throw new Error(`StreamMiddleware - Retry limit exceeded for request id "${req.id}"`);
+             }
+             idMap[req.id].retryCount = retryCount + 1;
++            console.log('$$$ createStreamMiddleware retryStuckRequests req', JSON.stringify(req), '|->', Date.now())
+             sendToStream(req);
+         });
+     }

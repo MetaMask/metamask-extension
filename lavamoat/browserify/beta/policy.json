@@ -3710,6 +3710,7 @@
     },
     "json-rpc-middleware-stream": {
       "globals": {
+        "console.log": true,
         "console.warn": true,
         "setTimeout": true
       },
