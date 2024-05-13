@@ -20,10 +20,7 @@ import {
 import { SIGNING_METHODS } from '../../../shared/constants/transaction';
 import { getBlockaidMetricsProps } from '../../../ui/helpers/utils/metrics';
 ///: END:ONLY_INCLUDE_IF
-import {
-  REDESIGN_APPROVAL_TYPES,
-  REDESIGN_TRANSACTION_TYPES,
-} from '../../../ui/pages/confirmations/utils/confirm';
+import { REDESIGN_APPROVAL_TYPES } from '../../../ui/pages/confirmations/utils/confirm';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 
 /**
