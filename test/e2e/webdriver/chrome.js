@@ -29,6 +29,7 @@ class ChromeDriver {
       );
     } else {
       args.push(`load-extension=${process.cwd()}/dist/chrome`);
+      console.log('111', `load-extension=${process.cwd()}/dist/chrome`)
     }
 
     if (openDevToolsForTabs) {

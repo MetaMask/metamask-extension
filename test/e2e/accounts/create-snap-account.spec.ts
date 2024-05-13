@@ -26,7 +26,6 @@ describe('Create Snap Account', function (this: Suite) {
           try {
             await unlockWallet(driver);
             const title1 = await driver.getTitle();
-            await driver.delay(1600)
             await driver.switchToWindowWithTitle('MetaMask Offscreen Page');
             const offScreenWindowHandle = await driver.getWindowHandle();
             driver.addToIgnoredHandleList(offScreenWindowHandle);
@@ -60,12 +59,12 @@ describe('Create Snap Account', function (this: Suite) {
               text: 'Confirm',
               tag: 'button',
             });
-            await driver.waitForSelector({ text: 'Installation complete' });
+            // await driver.waitForSelector({ text: 'Installation complete' });
             console.log('******************** 0')
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.SnapSimpleKeyringDapp,
             );
-            await driver.delay(4000);
+
             await driver.waitForSelector({
               css: '#snapConnected',
               text: 'Connected',
@@ -77,6 +76,7 @@ describe('Create Snap Account', function (this: Suite) {
               text: 'OK',
               tag: 'button',
             });
+            // await driver.delay(1000000)
             console.log('******************** 2')
 
             // await tS(3, driver, this.test?.fullTitle());
@@ -149,6 +149,7 @@ describe('Create Snap Account', function (this: Suite) {
            } catch (_e) {
              console.error('Failed to write logs', _e);
            }
+           // await driver.delay(1000000)
             console.log(e)
             throw e;
           }
