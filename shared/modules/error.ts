@@ -5,7 +5,7 @@ import {
   isObject,
   isErrorWithMessage,
 } from '@metamask/utils';
-import { messageWithCauses, getErrorCause } from 'pony-cause';
+import { messageWithCauses } from 'pony-cause';
 
 export { isErrorWithMessage } from '@metamask/utils';
 
@@ -37,19 +37,21 @@ export function getErrorMessage(
   causeHandling = Causes.Bottom,
 ): string {
   if (isErrorWithMessage(error)) {
-    if (
-      hasProperty(error, 'data') &&
-      isObject(error.data) &&
-      hasProperty(error.data, 'cause')
-    ) {
+    if (hasProperty(error, 'cause') && isObject(error.cause)) {
       switch (causeHandling) {
         case Causes.Top:
           return _getErrorMessage(error);
         case Causes.Bottom:
-        //
+          // TODO: recurse? or rename enum?
+          return hasProperty(error.cause, 'message') &&
+            typeof error.cause.message === 'string'
+            ? error.cause.message
+            : _getErrorMessage(error);
         case Causes.Full: {
           return messageWithCauses(error as unknown as Error);
         }
+        default:
+          return _getErrorMessage(error);
       }
     }
   }
