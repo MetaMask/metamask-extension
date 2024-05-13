@@ -13,15 +13,29 @@ export default function createDupeReqFilterMiddleware() {
     /** @type {Function} */ next,
     /** @type {Function} */ end,
   ) {
-    console.log('!@# processedRequestId A:', processedRequestId)
-    console.log('!@# req', JSON.stringify(req))
+    console.log(
+      '!@# processedRequestId A:',
+      processedRequestId,
+      '|->',
+      Date.now(),
+    );
+    console.log('!@# req', JSON.stringify(req));
     if (processedRequestId.indexOf(req.id) >= 0) {
-      console.log('!@# createDupeReqFilterMiddleware duplicate!')
+      console.log(
+        '!@# createDupeReqFilterMiddleware duplicate!',
+        '|->',
+        Date.now(),
+      );
       log.info(`RPC request with id ${req.id} already seen.`);
       return end();
     }
     processedRequestId.push(req.id);
-    console.log('!@# processedRequestId B:', processedRequestId)
+    console.log(
+      '!@# processedRequestId B:',
+      processedRequestId,
+      '|->',
+      Date.now(),
+    );
     return next();
   };
 }
