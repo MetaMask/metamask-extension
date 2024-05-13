@@ -115,7 +115,7 @@ const EthOverview = ({ className, showAddress }) => {
     getMemoizedUnapprovedTemplatedConfirmations,
   );
 
-  const [faucetSnapId] = useState('local:http://localhost:8080');
+  const [faucetSnapId, setFaucetSnapId] = useState(undefined);
   const [faucetProviders, setFaucetProviders] = useState([]);
   const [showModalFaucet, setShowModalFaucet] = useState(false);
 
@@ -474,6 +474,9 @@ const EthOverview = ({ className, showAddress }) => {
                     accountAddress={account.address}
                     chainId={chainId}
                     faucetSnapSourceIds={faucetProviders}
+                    setFaucetSnapId={(snapId) => {
+                      setFaucetSnapId(snapId);
+                    }}
                     onClose={() => {
                       setShowModalFaucet(false);
                     }}

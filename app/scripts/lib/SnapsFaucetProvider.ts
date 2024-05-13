@@ -19,6 +19,8 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 // The name provider snaps have its own endowment - maybe that is what we need,
 // but it is a stretch for the hackathon time frame
 const snapId = 'local:http://localhost:8080' as SnapId;
+const anotherSnapId = 'local:http://localhost:9090' as SnapId;
+
 
 type AllowedActions =
   | GetAllSnaps
@@ -44,8 +46,12 @@ export class SnapsFaucetProvider implements FaucetProvider {
   getMetadata(): FaucetProviderMetadata {
     const snaps = this.#getFaucetLookupSnaps();
 
+
     const sourceIds = {
       [CHAIN_IDS.SEPOLIA]: snaps.map((snap) => snap.id),
+      '0xaa37dc': snaps.filter((snap) => {
+        return snap?.manifest.proposedName === 'Circle Snap';
+      }).map((snap) => snap.id),
     };
 
     const sourceLabels = snaps.reduce(
@@ -79,10 +85,20 @@ export class SnapsFaucetProvider implements FaucetProvider {
     return await this.#getSnapSendEth(faucetSnap, request);
   }
 
-  #getFaucetLookupSnaps(): TruncatedSnap[] {
+  #getFaucetLookupSnaps() {
     const snap = this.#messenger.call('SnapController:get', snapId);
+    const anotherSnap = this.#messenger.call('SnapController:get', anotherSnapId);
 
-    return snap ? [snap] : [];
+    let snaps = [];
+
+    if (snap) {
+      snaps.push(snap);
+    }
+     if (anotherSnap) {
+      snaps.push(anotherSnap);
+    }
+
+    return snaps;
   }
 
   async #getSnapSendEth(

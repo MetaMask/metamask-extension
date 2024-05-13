@@ -27,6 +27,7 @@ type ModalFaucetProps = {
   accountAddress: string;
   chainId: BUYABLE_TEST_CHAINS_IDS;
   faucetSnapSourceIds: string[];
+  setFaucetSnapId: (snapId: string) => void;
   onClose: () => void;
 };
 
@@ -34,6 +35,7 @@ const ModalFaucet: React.FC<ModalFaucetProps> = ({
   accountAddress,
   chainId,
   faucetSnapSourceIds,
+  setFaucetSnapId,
   onClose,
 }) => {
   const dispatch = useDispatch();
@@ -112,7 +114,7 @@ const ModalFaucet: React.FC<ModalFaucetProps> = ({
               if (!selectedSnapId) {
                 return;
               }
-
+              setFaucetSnapId(selectedSnapId);
               // FIXME: we could add back in await here and handle response
               dispatch(
                 getFaucetProviderTestToken({
