@@ -1,9 +1,19 @@
+import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import {
   BackgroundColor,
   Severity,
 } from '../../../../helpers/constants/design-system';
-import { getHighestSeverity, getSeverityBackground } from './utils';
+import { SecurityAlertResponse } from '../../../../pages/confirmations/types/confirm';
+import {
+  getBannerAlertSeverity,
+  getHighestSeverity,
+  getProviderAlertSeverity,
+  getSeverityBackground,
+  providerAlertNormalizer,
+} from './utils';
+
+jest.mock('../../../../hooks/useI18nContext');
 
 describe('Utils', () => {
   describe('getSeverityBackground', () => {
@@ -51,6 +61,51 @@ describe('Utils', () => {
         const result = getHighestSeverity(alerts);
         expect(result).toBe(expected);
       });
+    });
+  });
+
+  describe('getBannerAlertSeverity', () => {
+    it.each([
+      [Severity.Danger, 'danger'],
+      [Severity.Warning, 'warning'],
+      [Severity.Info, 'info'],
+    ])('maps %s to %s', (inputSeverity, expectedSeverity) => {
+      expect(getBannerAlertSeverity(inputSeverity)).toBe(expectedSeverity);
+    });
+  });
+
+  describe('getProviderAlertSeverity', () => {
+    it.each([
+      [BlockaidResultType.Malicious, Severity.Danger],
+      [BlockaidResultType.Warning, Severity.Warning],
+      ['Other', Severity.Info],
+    ])('maps %s to %s', (inputSeverity, expectedSeverity) => {
+      expect(
+        getProviderAlertSeverity(inputSeverity as BlockaidResultType),
+      ).toBe(expectedSeverity);
+    });
+  });
+
+  describe('providerAlertNormalizer', () => {
+    const mockT = jest.fn((key) => key);
+    // useI18nContext.mockReturnValue(mockT);
+
+    const mockResponse: SecurityAlertResponse = {
+      securityAlertId: 'test-id',
+      reason: 'test-reason',
+      result_type: BlockaidResultType.Malicious,
+      features: ['Feature 1', 'Feature 2'],
+    };
+
+    it('normalizes a security alert response correctly', () => {
+      const normalizedAlert = providerAlertNormalizer(mockResponse, mockT);
+      expect(normalizedAlert.key).toBe('test-id');
+      expect(normalizedAlert.reason).toBe('blockaidTitleDeceptive');
+      expect(normalizedAlert.severity).toBe(Severity.Danger);
+      expect(normalizedAlert.alertDetails).toEqual(['Feature 1', 'Feature 2']);
+      expect(normalizedAlert.message).toBe(
+        'blockaidDescriptionMightLoseAssets',
+      );
     });
   });
 });
