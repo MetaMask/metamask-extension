@@ -83,8 +83,15 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
   }
   next();
 };
-
 jest.mock('./lib/createLoggerMiddleware', () => createLoggerMiddlewareMock);
+
+const rpcMethodMiddlewareMock = {
+  createMethodMiddleware: () => (_req, _res, next, _end) => {
+    next();
+  },
+};
+jest.mock('./lib/rpc-method-middleware', () => rpcMethodMiddlewareMock);
+
 jest.mock(
   './controllers/preferences',
   () =>
