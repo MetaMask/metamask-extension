@@ -1,4 +1,7 @@
+import { SecurityProvider } from '../../../shared/constants/security-provider';
 import { Severity } from '../../helpers/constants/design-system';
+
+export type AlertSeverity = Severity.Danger | Severity.Warning | Severity.Info;
 
 /**
  * A confirmable alert to be displayed in the UI.
@@ -36,6 +39,11 @@ export type Alert = {
   message: string;
 
   /**
+   * The security provider associated with the alert.
+   */
+  provider?: SecurityProvider;
+
+  /**
    * The reason for the alert.
    */
   reason?: string;
@@ -43,7 +51,7 @@ export type Alert = {
   /**
    * The severity of the alert.
    */
-  severity: Severity.Danger | Severity.Warning | Severity.Info;
+  severity: AlertSeverity;
 };
 
 /**

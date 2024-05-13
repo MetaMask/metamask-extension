@@ -52,6 +52,7 @@ export const AlertRow = (props: AlertRowProps) => {
   const { getFieldAlerts } = useAlerts(ownerId);
   const fieldAlerts = getFieldAlerts(alertKey);
   const hasFieldAlert = fieldAlerts.length > 0;
+  const selectedAlertVariant = fieldAlerts[0]?.severity;
 
   const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
 
@@ -69,16 +70,14 @@ export const AlertRow = (props: AlertRowProps) => {
       background: 'transparent',
       ...style,
     },
-    color: getAlertTextColors(variant ?? fieldAlerts[0]?.severity),
+    color: getAlertTextColors(variant ?? selectedAlertVariant),
   };
 
   const inlineAlert = hasFieldAlert ? (
     <Box marginLeft={1}>
       <InlineAlert
         onClick={handleOpenModal}
-        severity={
-          variant ? getSeverityAlerts(variant) : fieldAlerts[0].severity
-        }
+        severity={variant ? getSeverityAlerts(variant) : selectedAlertVariant}
       />
     </Box>
   ) : null;

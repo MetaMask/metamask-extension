@@ -96,6 +96,8 @@ export function createPPOMMiddleware<
           result_type: BlockaidReason.inProgress,
           securityAlertId,
         };
+        console.time('label');
+        console.log('requesting blockaid validation', securityAlertId);
 
         ppomController
           .usePPOM(async (ppom: PPOM) => {
@@ -158,7 +160,19 @@ export function createPPOMMiddleware<
           });
         }
 
-        req.securityAlertResponse = { ...securityAlertResponse };
+        // req.securityAlertResponse = { ...securityAlertResponse };
+        console.timeEnd('label');
+        console.log('overwrite response with final blockaid response');
+        req.securityAlertResponse = {
+          ...securityAlertResponse,
+          result_type: 'Malicious',
+          reason: 'permit_farming',
+          description:
+            'permit_farming to spender 0x1661f1b207629e4f385da89cff535c8e5eb23ee3, classification: A known malicious address is involved in the transaction',
+          features: [
+            'A known malicious address is involved in the transaction',
+          ],
+        };
       }
     } catch (error: unknown) {
       sentry?.captureException(error);

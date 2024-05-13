@@ -1,13 +1,8 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import React, { memo, useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { Box, Text } from '../../../../../components/component-library';
 import {
-  BannerAlert,
-  BannerAlertSeverity,
-  Text,
-} from '../../../../../components/component-library';
-import {
-  Severity,
   TextAlign,
   TextColor,
   TextVariant,
@@ -17,17 +12,7 @@ import { currentConfirmationSelector } from '../../../../../selectors';
 import { Confirmation } from '../../../types/confirm';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { getHighestSeverity } from '../../../../../components/app/confirmations/alerts/utils';
-
-function getBannerAlertSeverity(severity: Severity): BannerAlertSeverity {
-  switch (severity) {
-    case Severity.Danger:
-      return BannerAlertSeverity.Danger;
-    case Severity.Warning:
-      return BannerAlertSeverity.Warning;
-    default:
-      return BannerAlertSeverity.Info;
-  }
-}
+import SecurityAlertBanner from '../../../../../components/app/confirmations/alerts/security-alert-banner/security-alert-banner';
 
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
   const t = useI18nContext();
@@ -43,21 +28,23 @@ function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
     ? getHighestSeverity(generalAlerts)
     : singleAlert.severity;
   return (
-    <BannerAlert
-      data-testid={'confirm-banner-alert'}
-      title={
-        hasMultipleAlerts
-          ? t('alertBannerMultipleAlertsTitle')
-          : singleAlert.reason
-      }
-      description={
-        hasMultipleAlerts
-          ? t('alertBannerMultipleAlertsDescription')
-          : singleAlert.message
-      }
-      severity={getBannerAlertSeverity(highestSeverity)}
-      marginTop={4}
-    />
+    <Box marginTop={4}>
+      <SecurityAlertBanner
+        data-testid={'confirm-banner-alert'}
+        title={
+          hasMultipleAlerts
+            ? t('alertBannerMultipleAlertsTitle')
+            : singleAlert.reason
+        }
+        description={
+          hasMultipleAlerts
+            ? t('alertBannerMultipleAlertsDescription')
+            : singleAlert.message
+        }
+        severity={highestSeverity}
+        provider={hasMultipleAlerts ? undefined : singleAlert.provider}
+      />
+    </Box>
   );
 }
 

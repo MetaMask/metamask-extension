@@ -8,7 +8,7 @@ import {
 } from '../../../types/confirm';
 import BlockaidBannerAlert from '../../security-provider-banner-alert/blockaid-banner-alert';
 
-type SignatureSecurityAlertResponsesState = {
+export type SignatureSecurityAlertResponsesState = {
   metamask: {
     signatureSecurityAlertResponses: SecurityAlertResponse[];
   };
