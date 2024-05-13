@@ -6149,7 +6149,7 @@ __metadata:
 
 "@metamask/snaps-rpc-methods@patch:@metamask/snaps-rpc-methods@npm%3A8.0.0#~/.yarn/patches/@metamask-snaps-rpc-methods-npm-8.0.0-3a839cd168.patch":
   version: 8.0.0
-  resolution: "@metamask/snaps-rpc-methods@patch:@metamask/snaps-rpc-methods@npm%3A8.0.0#~/.yarn/patches/@metamask-snaps-rpc-methods-npm-8.0.0-3a839cd168.patch::version=8.0.0&hash=263fb7"
+  resolution: "@metamask/snaps-rpc-methods@patch:@metamask/snaps-rpc-methods@npm%3A8.0.0#~/.yarn/patches/@metamask-snaps-rpc-methods-npm-8.0.0-3a839cd168.patch::version=8.0.0&hash=98315f"
   dependencies:
     "@metamask/key-tree": "npm:^9.0.0"
     "@metamask/permission-controller": "npm:^9.0.2"
@@ -6159,7 +6159,7 @@ __metadata:
     "@metamask/utils": "npm:^8.3.0"
     "@noble/hashes": "npm:^1.3.1"
     superstruct: "npm:^1.0.3"
-  checksum: e4ed802c3e92dbf61ef7dbe117d01f3496bf39de86f6e6ca3f6039dce08717c9244baf8510c292a5d2d320dcb8e49f02423eb7b9e0e906534a98d08f98133563
+  checksum: 05e8b50b2ef051d8966055f06829cbcb6e4647dc95b74fcd907e79e99d3f4dcd3746c1fe76ab3bbf7f0ad4ae3152720dfd5b81b4ec509911c6652cc038eaa337
   languageName: node
   linkType: hard
 

@@ -6,7 +6,7 @@ index c202d09bb9f82e0e64956ab3cfe5ff3f37b725a7..2c7d2591a2747228b7f4174b431dc7c5
  }
  async function requestSnapsImplementation(req, res, _next, end, { installSnaps, requestPermissions, getPermissions }) {
    const requestedSnaps = req.params;
-+  console.log('requestSnapsImplementation requestedSnaps', JSON.stringify(requestedSnaps))
++  console.log('requestSnapsImplementation requestedSnaps', JSON.stringify(requestedSnaps), '|->', Date.now())
    if (!_utils.isObject.call(void 0, requestedSnaps)) {
 +    console.log('requestSnapsImplementation requestedSnaps 1')
      return end(
@@ -16,35 +16,35 @@ index c202d09bb9f82e0e64956ab3cfe5ff3f37b725a7..2c7d2591a2747228b7f4174b431dc7c5
      );
    }
    try {
-+    console.log('requestSnapsImplementation requestedSnaps 2')
++    console.log('requestSnapsImplementation requestedSnaps 2', '|->', Date.now())
      if (Object.keys(requestedSnaps).length === 0) {
-+      console.log('requestSnapsImplementation requestedSnaps 3')
++      console.log('requestSnapsImplementation requestedSnaps 3', '|->', Date.now())
        return end(
          _rpcerrors.rpcErrors.invalidParams({
            message: "Request must have at least one requested snap."
          })
        );
      }
-+    console.log('requestSnapsImplementation requestedSnaps 4')
++    console.log('requestSnapsImplementation requestedSnaps 4', '|->', Date.now())
      const requestedPermissions = {
        [_chunkFFHVA6PPjs.WALLET_SNAP_PERMISSION_KEY]: {
          caveats: [{ type: _snapsutils.SnapCaveatType.SnapIds, value: requestedSnaps }]
        }
      };
-+    console.log('requestSnapsImplementation requestedSnaps 5')
++    console.log('requestSnapsImplementation requestedSnaps 5', '|->', Date.now())
      const existingPermissions = await getPermissions();
-+    console.log('requestSnapsImplementation requestedSnaps 6')
++    console.log('requestSnapsImplementation requestedSnaps 6', '|->', Date.now())
      if (!existingPermissions) {
-+      console.log('requestSnapsImplementation requestedSnaps 7')
++      console.log('requestSnapsImplementation requestedSnaps 7', '|->', Date.now())
        const [, metadata] = await requestPermissions(requestedPermissions);
-+      console.log('requestSnapsImplementation requestedSnaps 8', JSON.stringify(res), JSON.stringify(metadata.data[_chunkFFHVA6PPjs.WALLET_SNAP_PERMISSION_KEY]))
++      console.log('requestSnapsImplementation requestedSnaps 8', JSON.stringify(res), JSON.stringify(metadata.data[_chunkFFHVA6PPjs.WALLET_SNAP_PERMISSION_KEY]), '|->', Date.now())
        res.result = metadata.data[_chunkFFHVA6PPjs.WALLET_SNAP_PERMISSION_KEY];
      } else if (hasRequestedSnaps(existingPermissions, requestedSnaps)) {
-+      console.log('requestSnapsImplementation requestedSnaps 9')
++      console.log('requestSnapsImplementation requestedSnaps 9', '|->', Date.now())
        res.result = await installSnaps(requestedSnaps);
-+      console.log('requestSnapsImplementation requestedSnaps 10')
++      console.log('requestSnapsImplementation requestedSnaps 10', '|->', Date.now())
      } else {
-+      console.log('requestSnapsImplementation requestedSnaps 11')
++      console.log('requestSnapsImplementation requestedSnaps 11', '|->', Date.now())
        const mergedPermissionsRequest = getSnapPermissionsRequest(
          existingPermissions,
          requestedPermissions
