@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
+import { getErrorMessage } from '../../../../shared/modules/error';
 import {
   MetaMetricsEventAccountImportType,
   MetaMetricsEventAccountType,
@@ -50,7 +51,7 @@ export const ImportAccount = ({ onActionComplete }) => {
         return false;
       }
     } catch (error) {
-      const message = error.data?.cause?.message || error.message;
+      const message = getErrorMessage(error);
       trackImportEvent(strategy, message);
       translateWarning(message);
       return false;

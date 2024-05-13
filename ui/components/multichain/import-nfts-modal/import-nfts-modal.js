@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { getErrorMessage } from '../../../../shared/modules/error';
 import {
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
@@ -95,10 +96,7 @@ export const ImportNftsModal = ({ onClose }) => {
 
       dispatch(updateNftDropDownState(newNftDropdownState));
     } catch (error) {
-      const message =
-        typeof error.data?.cause?.message === 'undefined'
-          ? error.message
-          : error.data.cause.message;
+      const message = getErrorMessage(error);
       dispatch(setNewNftAddedMessage(message));
       setNftAddFailed(true);
       return;

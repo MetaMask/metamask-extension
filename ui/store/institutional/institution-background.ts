@@ -12,7 +12,10 @@ import {
   submitRequestToBackground,
 } from '../background-connection';
 import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../store';
-import { isErrorWithMessage } from '../../../shared/modules/error';
+import {
+  isErrorWithMessage,
+  getErrorMessage,
+} from '../../../shared/modules/error';
 import { ConnectionRequest } from '../../../shared/constants/mmi-controller';
 
 export function showInteractiveReplacementTokenBanner({
@@ -35,7 +38,7 @@ export function showInteractiveReplacementTokenBanner({
     } catch (err: any) {
       if (err) {
         dispatch(displayWarning(err));
-        throw new Error(err.data?.cause?.message || err.message);
+        throw new Error(getErrorMessage(err));
       }
     }
   };
@@ -120,7 +123,7 @@ export function mmiActionsFactory() {
       } catch (error) {
         dispatch(displayWarning(error));
         if (isErrorWithMessage(error)) {
-          throw new Error(error.data?.cause?.message || error.message);
+          throw new Error(getErrorMessage(error));
         } else {
           throw error;
         }
@@ -142,7 +145,7 @@ export function mmiActionsFactory() {
     return () => {
       callBackgroundMethod(name, [payload], (err) => {
         if (isErrorWithMessage(err)) {
-          throw new Error(err.data?.cause?.message || err.message);
+          throw new Error(getErrorMessage(err));
         }
       });
     };

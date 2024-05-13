@@ -111,6 +111,7 @@ import { TxGasFees, PriorityLevels } from '../../shared/constants/gas';
 import { NetworkType, RPCDefinition } from '../../shared/constants/network';
 import { EtherDenomination } from '../../shared/constants/common';
 import {
+  getErrorMessage,
   isErrorWithMessage,
   logErrorWithMessage,
 } from '../../shared/modules/error';
@@ -246,7 +247,7 @@ export function createNewVaultAndGetSeedPhrase(
     } catch (error) {
       dispatch(displayWarning(error));
       if (isErrorWithMessage(error)) {
-        throw new Error(error.data?.cause?.message || error.message);
+        throw new Error(getErrorMessage(error));
       } else {
         throw error;
       }
@@ -270,7 +271,7 @@ export function unlockAndGetSeedPhrase(
     } catch (error) {
       dispatch(displayWarning(error));
       if (isErrorWithMessage(error)) {
-        throw new Error(error.data?.cause?.message || error.message);
+        throw new Error(getErrorMessage(error));
       } else {
         throw error;
       }
@@ -580,7 +581,7 @@ export function connectHardware(
       );
     } catch (error) {
       logErrorWithMessage(error);
-      const message = error.data?.cause?.message || error.message;
+      const message = getErrorMessage(error);
       if (
         deviceName === HardwareDeviceNames.ledger &&
         ledgerTransportType === LedgerTransportTypes.webhid &&
@@ -1718,7 +1719,7 @@ export function lockMetamask(): ThunkAction<
     return backgroundSetLocked()
       .then(() => updateMetamaskStateFromBackground())
       .catch((error) => {
-        dispatch(displayWarning(error.data?.cause?.message || error.message));
+        dispatch(displayWarning(getErrorMessage(error)));
         return Promise.reject(error);
       })
       .then((newState) => {
@@ -2052,7 +2053,7 @@ export function addNftVerifyOwnership(
       ]);
     } catch (error) {
       if (isErrorWithMessage(error)) {
-        const message = error.data?.cause?.message || error.message;
+        const message = getErrorMessage(error);
         if (
           message.includes('This NFT is not owned by the user') ||
           message.includes('Unable to verify ownership')

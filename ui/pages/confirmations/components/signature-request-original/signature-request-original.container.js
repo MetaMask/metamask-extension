@@ -11,6 +11,7 @@ import {
 } from '../../../../store/actions';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 // eslint-disable-next-line import/order
+import { getErrorMessage } from '../../../../../shared/modules/error';
 import {
   mmiActionsFactory,
   setPersonalMessageInProgress,
@@ -172,7 +173,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
       } catch (err) {
         await dispatchProps.setWaitForConfirmDeepLinkDialog(true);
         await dispatchProps.showTransactionsFailedModal({
-          errorMessage: err.data?.cause?.message || err.message,
+          errorMessage: getErrorMessage(err),
           closeNotification: true,
           operationFailed: true,
         });
