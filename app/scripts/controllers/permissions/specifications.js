@@ -2,6 +2,7 @@ import {
   constructPermission,
   PermissionType,
 } from '@metamask/permission-controller';
+import { ethErrors } from 'eth-rpc-errors';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import {
   caveatSpecifications as snapsCaveatsSpecifications,
@@ -109,6 +110,11 @@ export const getCaveatSpecifications = ({
 export const getPermissionSpecifications = ({
   getAllAccounts,
   getInternalAccounts,
+  findNetworkConfigurationBy,
+  setActiveNetwork,
+  hasPermissions,
+  setNetworkClientIdForDomain,
+  findNetworkClientIdByChainId,
   captureKeyringTypesWithMissingIdentities,
 }) => {
   return {
@@ -225,22 +231,21 @@ export const getPermissionSpecifications = ({
         });
       },
       methodImplementation: async (_args) => {
-
         // should we actually move the implementation here?
         // This would make putting the permissioning behind a feature flag a bit more difficult?
         // Interestingly the validator is still called when granting permissions
 
-        const {chainId} = _args[0];
+        const { chainId, origin } = _args[0];
 
-        const {
-          origin,
-          chainId,
-          findNetworkConfigurationBy,
-          setActiveNetwork,
-          hasPermissions,
-          setNetworkClientIdForDomain,
-          findNetworkClientIdByChainId,
-        } = options;
+        // const {
+        //   // origin,
+        //   // chainId,
+        //   // findNetworkConfigurationBy,
+        //   // setActiveNetwork,
+        //   // hasPermissions,
+        //   // setNetworkClientIdForDomain,
+        //   // findNetworkClientIdByChainId,
+        // } = options;
 
         const networkConfiguration = findNetworkConfigurationBy({ chainId });
         if (!networkConfiguration) {
