@@ -711,70 +711,6 @@ export class MetamaskNotificationsController extends BaseController<
   }
 
   /**
-   * Deletes on-chain triggers associated with a specific account.
-   * This method performs several key operations:
-   * 1. Validates Auth & Storage
-   * 2. Finds and deletes all triggers associated with the account
-   * 3. Disables any related push notifications
-   * 4. Updates Storage to reflect new state.
-   *
-   * **Action** - When a user disables notifications for a given account in settings.
-   *
-   * @param accounts - The account for which on-chain triggers are to be deleted.
-   * @returns A promise that resolves to void or an object containing a success message.
-   * @throws {Error} Throws an error if unauthenticated or from other operations.
-   */
-  public async deleteOnChainTriggersByAccount(
-    accounts: string[],
-  ): Promise<UserStorage> {
-    try {
-      this.#setIsCreatingMetamaskNotifications(true);
-      // Get and Validate BearerToken and User Storage Key
-      const { bearerToken, storageKey } =
-        await this.#getValidStorageKeyAndBearerToken();
-
-      // Get & Validate User Storage
-      const userStorage = await this.#getUserStorage();
-      this.#assertUserStorage(userStorage);
-
-      // Get the UUIDs to delete
-      const UUIDs = accounts
-        .map((a) =>
-          MetamaskNotificationsUtils.getUUIDsForAccount(
-            userStorage,
-            a.toLowerCase(),
-          ),
-        )
-        .flat();
-
-      if (UUIDs.length === 0) {
-        return userStorage;
-      }
-
-      // Delete these UUIDs (Mutates User Storage)
-      await OnChainNotifications.deleteOnChainTriggers(
-        userStorage,
-        storageKey,
-        bearerToken,
-        UUIDs,
-      );
-
-      // Delete these UUIDs from the push notifications
-      await this.#pushNotifications.disablePushNotifications(UUIDs);
-
-      // Update User Storage
-      await this.#storage.setNotificationStorage(JSON.stringify(userStorage));
-      this.#setIsCreatingMetamaskNotifications(false);
-
-      return userStorage;
-    } catch (err) {
-      this.#setIsCreatingMetamaskNotifications(false);
-      log.error('Failed to delete OnChain triggers', err);
-      throw new Error('Failed to delete OnChain triggers');
-    }
-  }
-
-  /**
    * Enables all MetaMask notifications for the user.
    * This method performs several key operations:
    * 1. Validates the storage key and bearer token necessary for authentication.
@@ -840,6 +776,70 @@ export class MetamaskNotificationsController extends BaseController<
       this.#setIsCreatingMetamaskNotifications(false);
       log.error('Unable to disable notifications', e);
       throw new Error('Unable to disable notifications');
+    }
+  }
+
+  /**
+   * Deletes on-chain triggers associated with a specific account.
+   * This method performs several key operations:
+   * 1. Validates Auth & Storage
+   * 2. Finds and deletes all triggers associated with the account
+   * 3. Disables any related push notifications
+   * 4. Updates Storage to reflect new state.
+   *
+   * **Action** - When a user disables notifications for a given account in settings.
+   *
+   * @param accounts - The account for which on-chain triggers are to be deleted.
+   * @returns A promise that resolves to void or an object containing a success message.
+   * @throws {Error} Throws an error if unauthenticated or from other operations.
+   */
+  public async deleteOnChainTriggersByAccount(
+    accounts: string[],
+  ): Promise<UserStorage> {
+    try {
+      this.#setIsCreatingMetamaskNotifications(true);
+      // Get and Validate BearerToken and User Storage Key
+      const { bearerToken, storageKey } =
+        await this.#getValidStorageKeyAndBearerToken();
+
+      // Get & Validate User Storage
+      const userStorage = await this.#getUserStorage();
+      this.#assertUserStorage(userStorage);
+
+      // Get the UUIDs to delete
+      const UUIDs = accounts
+        .map((a) =>
+          MetamaskNotificationsUtils.getUUIDsForAccount(
+            userStorage,
+            a.toLowerCase(),
+          ),
+        )
+        .flat();
+
+      if (UUIDs.length === 0) {
+        return userStorage;
+      }
+
+      // Delete these UUIDs (Mutates User Storage)
+      await OnChainNotifications.deleteOnChainTriggers(
+        userStorage,
+        storageKey,
+        bearerToken,
+        UUIDs,
+      );
+
+      // Delete these UUIDs from the push notifications
+      await this.#pushNotifications.disablePushNotifications(UUIDs);
+
+      // Update User Storage
+      await this.#storage.setNotificationStorage(JSON.stringify(userStorage));
+      this.#setIsCreatingMetamaskNotifications(false);
+
+      return userStorage;
+    } catch (err) {
+      this.#setIsCreatingMetamaskNotifications(false);
+      log.error('Failed to delete OnChain triggers', err);
+      throw new Error('Failed to delete OnChain triggers');
     }
   }
 

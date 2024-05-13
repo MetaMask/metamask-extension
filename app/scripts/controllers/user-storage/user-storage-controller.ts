@@ -201,11 +201,6 @@ export default class UserStorageController extends BaseController<
   }
 
   public async enableProfileSyncing(): Promise<void> {
-    const isAlreadyEnabled = this.state.isProfileSyncingEnabled;
-    if (isAlreadyEnabled) {
-      return;
-    }
-
     try {
       this.#setIsProfileSyncingUpdateLoading(true);
 
