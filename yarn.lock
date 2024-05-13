@@ -5948,13 +5948,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/rpc-errors@npm:^6.0.0, @metamask/rpc-errors@npm:^6.1.0, @metamask/rpc-errors@npm:^6.2.1":
-  version: 6.2.1
-  resolution: "@metamask/rpc-errors@npm:6.2.1"
+"@metamask/rpc-errors@npm:6.3.0-test5, @metamask/rpc-errors@npm:^6.0.0, @metamask/rpc-errors@npm:^6.1.0, @metamask/rpc-errors@npm:^6.2.1":
+  version: 6.3.0-test5
+  resolution: "@metamask/rpc-errors@npm:6.3.0-test5"
   dependencies:
     "@metamask/utils": "npm:^8.3.0"
     fast-safe-stringify: "npm:^2.0.6"
-  checksum: 789f0a2090339c1aa43d45ee496f4f115e141bc55b98e4ce27498497568f9e85fb5527ecf1f113b156d88fc4f1e63a572ced74bdc1ba16826bf648391b223f7b
+  checksum: 4371d58a9666dfbe54064b88a20d72fe4c1601d8e70ed4df0dcfe327a3dd98596e141f025cb74f5454a42496bb20828ac0456a654072fe211be9e77d4e5fad38
   languageName: node
   linkType: hard
 
@@ -25125,7 +25125,7 @@ __metadata:
     "@metamask/providers": "npm:^14.0.2"
     "@metamask/queued-request-controller": "npm:^0.10.0"
     "@metamask/rate-limit-controller": "npm:^5.0.1"
-    "@metamask/rpc-errors": "npm:^6.2.1"
+    "@metamask/rpc-errors": "npm:6.3.0-test5"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^13.0.0"
