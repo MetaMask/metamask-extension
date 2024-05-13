@@ -18,9 +18,6 @@ describe('Permissions Page', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
-        if (!process.env.MULTICHAIN) {
-          return;
-        }
         await waitForAccountRendered(driver);
         await connectToDapp(driver);
 
@@ -54,9 +51,6 @@ describe('Permissions Page', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
-        if (!process.env.MULTICHAIN) {
-          return;
-        }
         await waitForAccountRendered(driver);
         await connectToDapp(driver);
 
