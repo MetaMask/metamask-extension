@@ -12,6 +12,7 @@ import { debounce } from 'lodash';
  */
 export const useScrollRequired = (dependencies = []) => {
   const ref = useRef(null);
+
   const [hasScrolledToBottomState, setHasScrolledToBottom] = useState(false);
   const [isScrollableState, setIsScrollable] = useState(false);
   const [isScrolledToBottomState, setIsScrolledToBottom] = useState(false);
@@ -20,7 +21,6 @@ export const useScrollRequired = (dependencies = []) => {
     if (!ref.current) {
       return;
     }
-
     const isScrollable =
       ref.current && ref.current.scrollHeight > ref.current.clientHeight;
 
@@ -58,6 +58,7 @@ export const useScrollRequired = (dependencies = []) => {
     isScrolledToBottom: isScrolledToBottomState,
     hasScrolledToBottom: hasScrolledToBottomState,
     scrollToBottom,
+    setHasScrolledToBottom,
     ref,
     onScroll: debounce(update, 25),
   };

@@ -201,7 +201,7 @@ export function createMockFeatureAnnouncementAPIResult(): ContentfulResult {
 export function createMockFeatureAnnouncementRaw(): FeatureAnnouncementRawNotification {
   return {
     type: TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
-    createdAt: '2024-04-09T13:24:01.872Z',
+    createdAt: '2999-04-09T13:24:01.872Z',
     data: {
       id: 'dont-miss-out-on-airdrops-and-new-nft-mints',
       category: 'ANNOUNCEMENT',

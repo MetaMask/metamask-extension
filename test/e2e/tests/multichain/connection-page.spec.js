@@ -20,9 +20,6 @@ describe('Connections page', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        if (!process.env.MULTICHAIN) {
-          return;
-        }
         await unlockWallet(driver);
         await waitForAccountRendered(driver);
         await connectToDapp(driver);
@@ -99,9 +96,6 @@ describe('Connections page', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        if (!process.env.MULTICHAIN) {
-          return;
-        }
         await unlockWallet(driver);
         await waitForAccountRendered(driver);
         await connectToDapp(driver);
