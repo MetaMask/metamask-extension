@@ -1726,6 +1726,12 @@ const slice = createSlice({
             });
             draftTransaction.status = SEND_STATUSES.INVALID;
             break;
+          case draftTransaction.swapQuotesError:
+            slice.caseReducers.addHistoryEntry(state, {
+              payload: `A swap quote failed to load`,
+            });
+            draftTransaction.status = SEND_STATUSES.INVALID;
+            break;
           default:
             slice.caseReducers.addHistoryEntry(state, {
               payload: `Form is valid`,
