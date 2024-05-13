@@ -20,10 +20,6 @@ const WALLET_ADDRESS = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 const WALLET_ETH_BALANCE = '25';
 
 describe('Confirmation Header Component', function () {
-  if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
-    return;
-  }
-
   SIGNATURE_CONFIRMATIONS.forEach((confirmation) => {
     it(`${confirmation.name} component includes header with balance`, async function () {
       await withFixtures(
