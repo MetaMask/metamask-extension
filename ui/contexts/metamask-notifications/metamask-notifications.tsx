@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useListNotifications } from '../../hooks/metamask-notifications/useNotifications';
 import { selectIsProfileSyncingEnabled } from '../../selectors/metamask-notifications/profile-syncing';
@@ -18,7 +18,7 @@ const MetamaskNotificationsContext = createContext<
 
 export const useMetamaskNotificationsContext = () => {
   const context = useContext(MetamaskNotificationsContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error(
       'useNotificationsContext must be used within a MetamaskNotificationsProvider',
     );
@@ -35,11 +35,16 @@ export const MetamaskNotificationsProvider: React.FC = ({ children }) => {
   const { listNotifications, notificationsData, isLoading, error } =
     useListNotifications();
 
+  const shouldFetchNotifications = useMemo(
+    () => isProfileSyncingEnabled && isNotificationsEnabled,
+    [isProfileSyncingEnabled, isNotificationsEnabled],
+  );
+
   useEffect(() => {
-    if (isProfileSyncingEnabled && isNotificationsEnabled) {
+    if (shouldFetchNotifications) {
       listNotifications();
     }
-  }, [isProfileSyncingEnabled, isNotificationsEnabled]);
+  }, [shouldFetchNotifications, listNotifications]);
 
   return (
     <MetamaskNotificationsContext.Provider
