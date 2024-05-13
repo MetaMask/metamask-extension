@@ -1,8 +1,36 @@
 diff --git a/dist/createStreamMiddleware.js b/dist/createStreamMiddleware.js
-index 70aee90ae2f7e78ea61002611c508cce73ac4022..d9fe0dd7c1d6f91decf1a804f1165dbb7e8d46d6 100644
+index 70aee90ae2f7e78ea61002611c508cce73ac4022..d78988b64ded4569a478ba09d8c4edd1826342a7 100644
 --- a/dist/createStreamMiddleware.js
 +++ b/dist/createStreamMiddleware.js
-@@ -87,6 +87,7 @@ function createStreamMiddleware(options = {}) {
+@@ -23,6 +23,8 @@ function createStreamMiddleware(options = {}) {
+     });
+     const events = new safe_event_emitter_1.default();
+     const middleware = (req, res, next, end) => {
++        console.log('$$$ createStreamMiddleware middleware req', JSON.stringify(req), '|->', Date.now())
++        console.log('$$$ createStreamMiddleware middleware res', JSON.stringify(res), '|->', Date.now())
+         // register request on id map *before* sending it to the stream, to avoid race issues
+         idMap[req.id] = { req, res, next, end };
+         // write req to stream
+@@ -47,6 +49,8 @@ function createStreamMiddleware(options = {}) {
+      */
+     function processMessage(res, _encoding, streamWriteCallback) {
+         let errorObj = null;
++        console.log('$$$ createStreamMiddleware processMessage res', JSON.stringify(res), '|->', Date.now())
++
+         try {
+             const isNotification = !res.id;
+             if (isNotification) {
+@@ -70,6 +74,9 @@ function createStreamMiddleware(options = {}) {
+     function processResponse(res) {
+         const responseId = res.id;
+         const context = idMap[responseId];
++        console.log('$$$ createStreamMiddleware processResponse res', JSON.stringify(res), '|->', Date.now())
++        console.log('$$$ createStreamMiddleware processResponse context', JSON.stringify(context), '|->', Date.now())
++        
+         if (!context) {
+             console.warn(`StreamMiddleware - Unknown response id "${responseId}"`);
+             return;
+@@ -87,6 +94,7 @@ function createStreamMiddleware(options = {}) {
       * @param notif - The notification to process.
       */
      function processNotification(notif) {
@@ -10,7 +38,7 @@ index 70aee90ae2f7e78ea61002611c508cce73ac4022..d9fe0dd7c1d6f91decf1a804f1165dbb
          if ((options === null || options === void 0 ? void 0 : options.retryOnMessage) && notif.method === options.retryOnMessage) {
              retryStuckRequests();
          }
-@@ -96,6 +97,7 @@ function createStreamMiddleware(options = {}) {
+@@ -96,6 +104,7 @@ function createStreamMiddleware(options = {}) {
       * Retry pending requests.
       */
      function retryStuckRequests() {
@@ -18,7 +46,7 @@ index 70aee90ae2f7e78ea61002611c508cce73ac4022..d9fe0dd7c1d6f91decf1a804f1165dbb
          Object.values(idMap).forEach(({ req, retryCount = 0 }) => {
              // Avoid retrying requests without an id - they cannot have matching responses so retry logic doesn't apply
              // Check for retry count below ensure that a request is not retried more than 3 times
-@@ -106,6 +108,7 @@ function createStreamMiddleware(options = {}) {
+@@ -106,6 +115,7 @@ function createStreamMiddleware(options = {}) {
                  throw new Error(`StreamMiddleware - Retry limit exceeded for request id "${req.id}"`);
              }
              idMap[req.id].retryCount = retryCount + 1;

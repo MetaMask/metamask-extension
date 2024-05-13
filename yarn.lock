@@ -23536,13 +23536,13 @@ __metadata:
 
 "json-rpc-middleware-stream@patch:json-rpc-middleware-stream@npm%3A5.0.1#~/.yarn/patches/json-rpc-middleware-stream-npm-5.0.1-828d82a160.patch":
   version: 5.0.1
-  resolution: "json-rpc-middleware-stream@patch:json-rpc-middleware-stream@npm%3A5.0.1#~/.yarn/patches/json-rpc-middleware-stream-npm-5.0.1-828d82a160.patch::version=5.0.1&hash=5c8ddc"
+  resolution: "json-rpc-middleware-stream@patch:json-rpc-middleware-stream@npm%3A5.0.1#~/.yarn/patches/json-rpc-middleware-stream-npm-5.0.1-828d82a160.patch::version=5.0.1&hash=46194e"
   dependencies:
     "@metamask/json-rpc-engine": "npm:^7.1.1"
     "@metamask/safe-event-emitter": "npm:^3.0.0"
     "@metamask/utils": "npm:^8.1.0"
     readable-stream: "npm:^3.6.2"
-  checksum: 48866b83917494cd13f36ec449e5e43749462c8f727ce30443410dfb3d06b41c73565623b09e747d2de66c18fe18af6243903be208966f8b65b074f642d8e892
+  checksum: 616490fb77d3a8f5f92b15c20d179fb5d7e2bac4528512c3f3ddf3465626c548fef2657a95b65312aefa849834e8d12b6b11b77d16f978cd9dceee5d41236895
   languageName: node
   linkType: hard
 
