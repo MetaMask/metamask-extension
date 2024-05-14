@@ -4229,6 +4229,20 @@ export function setSurveyLinkLastClickedOrClosed(time: number) {
   };
 }
 
+export function setNewPrivacyPolicyToastClickedOrClosed() {
+  return async () => {
+    await submitRequestToBackground('setNewPrivacyPolicyToastClickedOrClosed');
+  };
+}
+
+export function setNewPrivacyPolicyToastShownDate(time: number) {
+  return async () => {
+    await submitRequestToBackground('setNewPrivacyPolicyToastShownDate', [
+      time,
+    ]);
+  };
+}
+
 export function setOutdatedBrowserWarningLastShown(lastShown: number) {
   return async () => {
     await submitRequestToBackground('setOutdatedBrowserWarningLastShown', [
