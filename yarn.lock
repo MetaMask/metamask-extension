@@ -5580,13 +5580,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/obs-store@npm:^8.0.0, @metamask/obs-store@npm:^8.1.0":
+"@metamask/obs-store@npm:^8.0.0":
   version: 8.1.0
   resolution: "@metamask/obs-store@npm:8.1.0"
   dependencies:
     "@metamask/safe-event-emitter": "npm:^2.0.0"
     through2: "npm:^2.0.3"
   checksum: 92356067fa3517526d656f2f0bdfbc4d39f65e27fb30d84240cfc9c1aa9cd5d743498952df18ed8efbb8887b6cc1bc1fab37bde3fb0fc059539e0dfcc67ff86f
+  languageName: node
+  linkType: hard
+
+"@metamask/obs-store@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@metamask/obs-store@npm:9.0.0"
+  dependencies:
+    "@metamask/safe-event-emitter": "npm:^3.0.0"
+    readable-stream: "npm:^3.6.2"
+  checksum: 1c202a5bbdc79a6b8b3fba946c09dc5521e87260956d30db6543e7bf3d95bd44ebd958f509e3e7332041845176487fe78d3b40bdedbc213061ba849fd978e468
   languageName: node
   linkType: hard
 
@@ -25432,7 +25442,7 @@ __metadata:
     "@metamask/name-controller": "npm:^4.2.0"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A18.1.0#~/.yarn/patches/@metamask-network-controller-npm-18.1.0-680908c29a.patch"
     "@metamask/notification-controller": "npm:^3.0.0"
-    "@metamask/obs-store": "npm:^8.1.0"
+    "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/permission-controller": "npm:^9.0.1"
     "@metamask/permission-log-controller": "npm:^1.0.0"
     "@metamask/phishing-controller": "npm:^9.0.2"

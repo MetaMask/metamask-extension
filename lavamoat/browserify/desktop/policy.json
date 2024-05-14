@@ -1744,25 +1744,19 @@
     },
     "@metamask/obs-store": {
       "packages": {
-        "@metamask/obs-store>@metamask/safe-event-emitter": true,
-        "@metamask/obs-store>through2": true,
-        "stream-browserify": true
+        "@metamask/obs-store>readable-stream": true,
+        "@metamask/safe-event-emitter": true
       }
     },
-    "@metamask/obs-store>@metamask/safe-event-emitter": {
-      "globals": {
-        "setTimeout": true
-      },
+    "@metamask/obs-store>readable-stream": {
       "packages": {
-        "webpack>events": true
-      }
-    },
-    "@metamask/obs-store>through2": {
-      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
         "browserify>process": true,
-        "browserify>util": true,
-        "readable-stream": true,
-        "watchify>xtend": true
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true,
+        "webpack>events": true
       }
     },
     "@metamask/permission-controller": {

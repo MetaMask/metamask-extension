@@ -712,8 +712,31 @@
     "@metamask-institutional/custody-controller": {
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask-institutional/custody-keyring": true,
-        "@metamask/obs-store": true
+        "@metamask-institutional/custody-controller>@metamask/obs-store": true,
+        "@metamask-institutional/custody-keyring": true
+      }
+    },
+    "@metamask-institutional/custody-controller>@metamask/obs-store": {
+      "packages": {
+        "@metamask-institutional/custody-controller>@metamask/obs-store>@metamask/safe-event-emitter": true,
+        "@metamask-institutional/custody-controller>@metamask/obs-store>through2": true,
+        "stream-browserify": true
+      }
+    },
+    "@metamask-institutional/custody-controller>@metamask/obs-store>@metamask/safe-event-emitter": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "webpack>events": true
+      }
+    },
+    "@metamask-institutional/custody-controller>@metamask/obs-store>through2": {
+      "packages": {
+        "browserify>process": true,
+        "browserify>util": true,
+        "readable-stream": true,
+        "watchify>xtend": true
       }
     },
     "@metamask-institutional/custody-keyring": {
@@ -725,9 +748,9 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask-institutional/custody-keyring>@metamask-institutional/configuration-client": true,
+        "@metamask-institutional/custody-keyring>@metamask/obs-store": true,
         "@metamask-institutional/sdk": true,
         "@metamask-institutional/sdk>@metamask-institutional/types": true,
-        "@metamask/obs-store": true,
         "browserify>crypto-browserify": true,
         "gulp-sass>lodash.clonedeep": true,
         "webpack>events": true
@@ -737,6 +760,29 @@
       "globals": {
         "console.log": true,
         "fetch": true
+      }
+    },
+    "@metamask-institutional/custody-keyring>@metamask/obs-store": {
+      "packages": {
+        "@metamask-institutional/custody-keyring>@metamask/obs-store>@metamask/safe-event-emitter": true,
+        "@metamask-institutional/custody-keyring>@metamask/obs-store>through2": true,
+        "stream-browserify": true
+      }
+    },
+    "@metamask-institutional/custody-keyring>@metamask/obs-store>@metamask/safe-event-emitter": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "webpack>events": true
+      }
+    },
+    "@metamask-institutional/custody-keyring>@metamask/obs-store>through2": {
+      "packages": {
+        "browserify>process": true,
+        "browserify>util": true,
+        "readable-stream": true,
+        "watchify>xtend": true
       }
     },
     "@metamask-institutional/extension": {
@@ -753,7 +799,30 @@
     "@metamask-institutional/institutional-features": {
       "packages": {
         "@metamask-institutional/custody-keyring": true,
-        "@metamask/obs-store": true
+        "@metamask-institutional/institutional-features>@metamask/obs-store": true
+      }
+    },
+    "@metamask-institutional/institutional-features>@metamask/obs-store": {
+      "packages": {
+        "@metamask-institutional/institutional-features>@metamask/obs-store>@metamask/safe-event-emitter": true,
+        "@metamask-institutional/institutional-features>@metamask/obs-store>through2": true,
+        "stream-browserify": true
+      }
+    },
+    "@metamask-institutional/institutional-features>@metamask/obs-store>@metamask/safe-event-emitter": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "webpack>events": true
+      }
+    },
+    "@metamask-institutional/institutional-features>@metamask/obs-store>through2": {
+      "packages": {
+        "browserify>process": true,
+        "browserify>util": true,
+        "readable-stream": true,
+        "watchify>xtend": true
       }
     },
     "@metamask-institutional/rpc-allowlist": {
@@ -826,7 +895,7 @@
       "packages": {
         "@metamask-institutional/sdk": true,
         "@metamask-institutional/transaction-update>@metamask-institutional/websocket-client": true,
-        "@metamask/obs-store": true,
+        "@metamask-institutional/transaction-update>@metamask/obs-store": true,
         "ethereumjs-util": true,
         "webpack>events": true
       }
@@ -840,6 +909,29 @@
       },
       "packages": {
         "webpack>events": true
+      }
+    },
+    "@metamask-institutional/transaction-update>@metamask/obs-store": {
+      "packages": {
+        "@metamask-institutional/transaction-update>@metamask/obs-store>@metamask/safe-event-emitter": true,
+        "@metamask-institutional/transaction-update>@metamask/obs-store>through2": true,
+        "stream-browserify": true
+      }
+    },
+    "@metamask-institutional/transaction-update>@metamask/obs-store>@metamask/safe-event-emitter": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "webpack>events": true
+      }
+    },
+    "@metamask-institutional/transaction-update>@metamask/obs-store>through2": {
+      "packages": {
+        "browserify>process": true,
+        "browserify>util": true,
+        "readable-stream": true,
+        "watchify>xtend": true
       }
     },
     "@metamask/abi-utils": {
@@ -1792,25 +1884,19 @@
     },
     "@metamask/obs-store": {
       "packages": {
-        "@metamask/obs-store>@metamask/safe-event-emitter": true,
-        "@metamask/obs-store>through2": true,
-        "stream-browserify": true
+        "@metamask/obs-store>readable-stream": true,
+        "@metamask/safe-event-emitter": true
       }
     },
-    "@metamask/obs-store>@metamask/safe-event-emitter": {
-      "globals": {
-        "setTimeout": true
-      },
+    "@metamask/obs-store>readable-stream": {
       "packages": {
-        "webpack>events": true
-      }
-    },
-    "@metamask/obs-store>through2": {
-      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
         "browserify>process": true,
-        "browserify>util": true,
-        "readable-stream": true,
-        "watchify>xtend": true
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true,
+        "webpack>events": true
       }
     },
     "@metamask/permission-controller": {
