@@ -24,8 +24,9 @@ import {
  * The "keys" of all of permissions recognized by the PermissionController.
  * Permission keys and names have distinct meanings in the permission system.
  */
-const PermissionNames = Object.freeze({
+export const PermissionNames = Object.freeze({
   ...RestrictedMethods,
+  wallet_switchEthereumChain: 'wallet_switchEthereumChain',
 });
 
 /**
@@ -361,6 +362,7 @@ export const unrestrictedMethods = Object.freeze([
   'net_version',
   'personal_ecRecover',
   'personal_sign',
+  'wallet_switchEthereumChain',
   'wallet_watchAsset',
   'web3_clientVersion',
   'web3_sha3',

@@ -61,7 +61,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: IconName.Eye,
     weight: 3,
   }),
-  [RestrictedMethods.wallet_switchEthereumChain]: ({ t }) => ({
+  wallet_switchEthereumChain: ({ t }) => ({
     label: t('permission_walletSwitchEthereumChain'),
     leftIcon: IconName.Wifi,
     weight: 3,

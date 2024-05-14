@@ -14,10 +14,8 @@ import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
-import {
-  CaveatTypes,
-  RestrictedMethods,
-} from '../../../../../shared/constants/permissions';
+import { PermissionNames } from '../../../controllers/permissions';
+import { CaveatTypes } from '../../../../../shared/constants/permissions';
 
 const switchEthereumChain = {
   methodNames: [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN],
@@ -134,7 +132,7 @@ async function switchEthereumChainHandler(
   );
 
   const networkClientIdToSwitchTo =
-    networkConfigurationForRequestedChainId.id ??
+    networkConfigurationForRequestedChainId?.id ??
     networkConfigurationForRequestedChainId.type;
 
   if (!networkClientIdToSwitchTo) {
@@ -151,7 +149,7 @@ async function switchEthereumChainHandler(
     try {
       ({ value: permissionedChainIds } = getCaveat(
         origin,
-        RestrictedMethods.wallet_switchEthereumChain,
+        PermissionNames.wallet_switchEthereumChain,
         CaveatTypes.restrictNetworkSwitching,
       ));
     } catch (e) {

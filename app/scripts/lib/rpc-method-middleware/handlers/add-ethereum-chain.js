@@ -16,6 +16,7 @@ import {
   CaveatTypes,
   RestrictedMethods,
 } from '../../../../../shared/constants/permissions';
+import { PermissionNames } from '../../../controllers/permissions';
 
 const addEthereumChain = {
   methodNames: [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN],
@@ -167,7 +168,7 @@ async function addEthereumChainHandler(
     try {
       ({ value: permissionedChainIds } = getCaveat(
         origin,
-        RestrictedMethods.wallet_switchEthereumChain,
+        PermissionNames.wallet_switchEthereumChain,
         CaveatTypes.restrictNetworkSwitching,
       ));
     } catch (e) {
