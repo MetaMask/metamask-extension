@@ -243,7 +243,7 @@ describe('Test Snap Metrics', function () {
         assert.deepStrictEqual(events[1].properties, {
           snap_id: 'npm:@metamask/notification-example-snap',
           origin: 'https://metamask.github.io',
-          version: '2.1.1',
+          version: '2.1.3',
           category: 'Snaps',
           locale: 'en',
           chain_id: '0x539',
@@ -533,7 +533,7 @@ describe('Test Snap Metrics', function () {
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.deepStrictEqual(events[0].properties, {
           snap_id: 'npm:@metamask/notification-example-snap',
-          version: '2.1.1',
+          version: '2.1.3',
           category: 'Snaps',
           locale: 'en',
           chain_id: '0x539',
