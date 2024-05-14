@@ -394,7 +394,6 @@
     "luxon": "^3.2.1",
     "nanoid": "^2.1.6",
     "pify": "^5.0.0",
-    "pony-cause": "^2.1.11",
     "promise-to-callback": "^1.0.0",
     "prop-types": "^15.6.1",
     "punycode": "^2.1.1",
