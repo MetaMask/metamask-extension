@@ -524,7 +524,7 @@ export default class MetamaskController extends EventEmitter {
 
     const preferencesMessenger = this.controllerMessenger.getRestricted({
       name: 'PreferencesController',
-      allowedActions: [],
+      allowedActions: ['AccountsController:getSelectedAccount'],
       allowedEvents: [],
     });
 
@@ -623,7 +623,12 @@ export default class MetamaskController extends EventEmitter {
 
     const nftControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'NftController',
-      allowedActions: [`${this.approvalController.name}:addRequest`],
+      allowedActions: [
+        `${this.approvalController.name}:addRequest`,
+        `${this.accountsController.name}:getAccount`,
+        `${this.accountsController.name}:getSelectedAccount`,
+      ],
+      allowedEvents: ['AccountsController:selectedAccountChange'],
     });
     this.nftController = new NftController(
       {
@@ -688,6 +693,19 @@ export default class MetamaskController extends EventEmitter {
       onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
         this.preferencesController.store,
       ),
+      onSelectedAccountChange: (listener) =>
+        this.controllerMessenger.subscribe(
+          `AccountsController:selectedAccountChange`,
+          (newlySelectedInternalAccount) => {
+            listener(newlySelectedInternalAccount);
+          },
+        ),
+      getInternalAccount: this.accountsController.getAccount.bind(
+        this.accountsController,
+      ),
+      getSelectedAccount: this.accountsController.getSelectedAccount.bind(
+        this.accountsController,
+      ),
       onNetworkStateChange: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
         'NetworkController:stateChange',
@@ -706,8 +724,7 @@ export default class MetamaskController extends EventEmitter {
         undefined
           ? true
           : !this.preferencesController.store.getState().useNftDetection,
-      selectedAddress:
-        this.preferencesController.store.getState().selectedAddress,
+      selectedAccountId: this.accountsController.getSelectedAccount().id,
     });
 
     this.metaMetricsController = new MetaMetricsController({
@@ -878,6 +895,9 @@ export default class MetamaskController extends EventEmitter {
               listener(newlySelectedInternalAccount);
             },
           ),
+        getInternalAccount: this.accountsController.getAccount.bind(
+          this.accountsController,
+        ),
         tokenPricesService: new CodefiTokenPricesServiceV2(),
         getNetworkClientById: this.networkController.getNetworkClientById.bind(
           this.networkController,
@@ -1468,6 +1488,7 @@ export default class MetamaskController extends EventEmitter {
       });
 
     this.tokenDetectionController = new TokenDetectionController({
+      selectedAccountId: this.accountsController.getSelectedAccount().id,
       messenger: tokenDetectionControllerMessenger,
       getBalancesInSingleCall:
         this.assetsContractController.getBalancesInSingleCall.bind(
