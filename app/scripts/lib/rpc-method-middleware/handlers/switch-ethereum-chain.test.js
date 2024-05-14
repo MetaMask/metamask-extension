@@ -37,7 +37,6 @@ describe('switchEthereumChainHandler', () => {
         getChainPermissionsFeatureFlag: () => false,
         getCurrentChainIdForDomain: () => NON_INFURA_CHAIN_ID,
         setNetworkClientIdForDomain: jest.fn(),
-        getProviderConfig: () => ({ chainId: NON_INFURA_CHAIN_ID }),
         findNetworkConfigurationBy: () => MOCK_MAINNET_CONFIGURATION,
         setActiveNetwork: mockSetActiveNetwork,
         requestUserApproval: mockRequestUserApproval,
@@ -61,7 +60,6 @@ describe('switchEthereumChainHandler', () => {
       jest.fn(),
       jest.fn(),
       {
-        getProviderConfig: () => ({ chainId: NON_INFURA_CHAIN_ID }),
         setNetworkClientIdForDomain: jest.fn(),
         findNetworkConfigurationBy: () => MOCK_LINEA_MAINNET_CONFIGURATION,
         setActiveNetwork: mockSetActiveNetwork,
@@ -90,7 +88,6 @@ describe('switchEthereumChainHandler', () => {
       {
         getCurrentChainIdForDomain: () => NON_INFURA_CHAIN_ID,
         setNetworkClientIdForDomain: jest.fn(),
-        getProviderConfig: () => ({ chainId: NON_INFURA_CHAIN_ID }),
         findNetworkConfigurationBy: () => MOCK_LINEA_MAINNET_CONFIGURATION,
         setActiveNetwork: mockSetActiveNetwork,
         requestUserApproval: mockRequestUserApproval,
@@ -117,7 +114,6 @@ describe('switchEthereumChainHandler', () => {
       {
         getCurrentChainIdForDomain: () => CHAIN_IDS.MAINNET,
         setNetworkClientIdForDomain: jest.fn(),
-        getProviderConfig: () => ({ chainId: CHAIN_IDS.MAINNET }),
         findNetworkConfigurationBy: () => MOCK_MAINNET_CONFIGURATION,
         setActiveNetwork: mockSetActiveNetwork,
         requestUserApproval: mockRequestUserApproval,

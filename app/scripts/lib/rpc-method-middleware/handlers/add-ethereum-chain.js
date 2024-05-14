@@ -28,7 +28,6 @@ const addEthereumChain = {
     requestUserApproval: true,
     startApprovalFlow: true,
     endApprovalFlow: true,
-    getProviderConfig: true,
     hasPermissions: true,
     getCaveat: true,
     requestSwitchNetworkPermission: true,
@@ -53,7 +52,6 @@ async function addEthereumChainHandler(
     requestUserApproval,
     startApprovalFlow,
     endApprovalFlow,
-    getProviderConfig,
     getCurrentChainIdForDomain,
     hasPermissions,
     getCaveat,
@@ -223,6 +221,10 @@ async function addEthereumChainHandler(
     return end();
   };
 
+  const currentChainIdForOrigin = getCurrentChainIdForDomain(origin);
+  const currentNetworkConfiguration = findNetworkConfigurationBy({
+    chainId: currentChainIdForOrigin,
+  });
   const existingNetwork = findNetworkConfigurationBy({ chainId: _chainId });
 
   // if the request is to add a network that is already added and configured
@@ -231,8 +233,6 @@ async function addEthereumChainHandler(
     // If the network already exists, the request is considered successful
     res.result = null;
 
-    // const currentChainId = getCurrentChainId();
-    const currentChainIdForOrigin = getCurrentChainIdForDomain(origin);
     const currentRpcUrl = getCurrentRpcUrl();
 
     // If the current chainId and rpcUrl matches that of the incoming request
@@ -244,7 +244,7 @@ async function addEthereumChainHandler(
       return end();
     }
 
-    // If this network is already added but is not the currently selected network
+    // If this network is already added but is not the currently selected network for the given origin
     // Ask the user to switch the network
     if (getChainPermissionsFeatureFlag()) {
       await switchChainWithPermissions();
@@ -256,7 +256,7 @@ async function addEthereumChainHandler(
           type: ApprovalType.SwitchEthereumChain,
           requestData: {
             toNetworkConfiguration: existingNetwork,
-            fromNetworkConfiguration: getProviderConfig(),
+            fromNetworkConfiguration: currentNetworkConfiguration,
           },
         });
 
@@ -390,9 +390,7 @@ async function addEthereumChainHandler(
             ticker,
             networkConfigurationId,
           },
-          // TODO should this actually be the networkConfiguration for the selected network for the origin?
-          // Maybe currently this is always the same?
-          fromNetworkConfiguration: getProviderConfig(),
+          fromNetworkConfiguration: currentNetworkConfiguration,
         },
       });
       if (hasPermissions(req.origin)) {

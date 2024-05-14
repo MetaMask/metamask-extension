@@ -5064,10 +5064,6 @@ export default class MetamaskController extends EventEmitter {
             );
           return chainId;
         },
-        getProviderConfig: () => this.networkController.state.providerConfig,
-        setProviderType: (type) => {
-          return this.networkController.setProviderType(type);
-        },
 
         // Web3 shim-related
         getWeb3ShimUsageState: this.alertController.getWeb3ShimUsageState.bind(
