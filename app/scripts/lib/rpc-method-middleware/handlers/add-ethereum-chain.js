@@ -12,10 +12,7 @@ import {
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
 import { getValidUrl } from '../../util';
-import {
-  CaveatTypes,
-  RestrictedMethods,
-} from '../../../../../shared/constants/permissions';
+import { CaveatTypes } from '../../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../controllers/permissions';
 
 const addEthereumChain = {
