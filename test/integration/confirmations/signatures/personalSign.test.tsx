@@ -192,7 +192,7 @@ describe('PersonalSign', () => {
     expect(getByText('Signature request')).toBeInTheDocument();
     expect(
       getByText(
-        'Only sign this message if you fully understand the content and trust the requesting site',
+        'Only confirm this message if you approve the content and trust the requesting site.',
       ),
     ).toBeInTheDocument();
   });
