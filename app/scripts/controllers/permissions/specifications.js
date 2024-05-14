@@ -272,11 +272,12 @@ function validateCaveatAccounts(accounts, getInternalAccounts) {
 }
 
 /**
- * This really should be the same validation / errors that are given from calling
- * switchEthereumChain.
+ * Validates the networks associated with a caveat. Ensures that
+ * the networks value is an array of valid chain IDs.
  *
- * @param {Array} chainIdsForCaveat -The list of networks to validate have networkConfigurations
- * @param {() => string} findNetworkClientIdByChainId - method to throw error if network is unknown
+ * @param {string[]} chainIdsForCaveat - The list of chain IDs to validate.
+ * @param {function(string): string} findNetworkClientIdByChainId - Function to find network client ID by chain ID.
+ * @throws {Error} If the chainIdsForCaveat is not a non-empty array of valid chain IDs.
  */
 function validateCaveatNetworks(
   chainIdsForCaveat,
