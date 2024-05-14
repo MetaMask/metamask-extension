@@ -6,15 +6,15 @@
  * network for the dapp. It could also be that a method expects the
  * globally selected network to match some value in the request params itself.
  */
-export const methodsRequiringNetworkSwitch = Object.freeze([
-  'eth_sendTransaction' as const,
-  'eth_sendRawTransaction' as const,
-  'wallet_switchEthereumChain' as const,
-  'wallet_addEthereumChain' as const,
-  'wallet_watchAsset' as const,
-  'eth_signTypedData_v4' as const,
-  'personal_sign' as const,
-]);
+export const methodsRequiringNetworkSwitch = [
+  'eth_sendTransaction',
+  'eth_sendRawTransaction',
+  'wallet_switchEthereumChain',
+  'wallet_addEthereumChain',
+  'wallet_watchAsset',
+  'eth_signTypedData_v4',
+  'personal_sign',
+] as const;
 
 /**
  * This is a list of methods that can cause a confirmation to be
