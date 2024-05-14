@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useEnableNotifications } from '../../hooks/metamask-notifications/useNotifications';
-import { selectIsCreatingMetamaskNotifications } from '../../selectors/metamask-notifications/metamask-notifications';
+import { getIsUpdatingMetamaskNotifications } from '../../selectors/metamask-notifications/metamask-notifications';
 import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
 import {
   Box,
@@ -32,21 +32,21 @@ export const NotificationsListTurnOnNotifications = () => {
 
   const error = errorEnableNotifications;
 
-  const isCreatingMetamaskNotifications = useSelector(
-    selectIsCreatingMetamaskNotifications,
+  const isUpdatingMetamaskNotifications = useSelector(
+    getIsUpdatingMetamaskNotifications,
   );
 
   const [loading, setLoading] = useState<boolean>(
-    isCreatingMetamaskNotifications || false,
+    isUpdatingMetamaskNotifications || false,
   );
 
   useEffect(() => {
-    setLoading(isCreatingMetamaskNotifications);
-  }, [isCreatingMetamaskNotifications]);
+    setLoading(isUpdatingMetamaskNotifications);
+  }, [isUpdatingMetamaskNotifications]);
 
   const handleTurnOnNotifications = async () => {
     await enableNotifications();
-    if (!error && !isCreatingMetamaskNotifications) {
+    if (!error && !isUpdatingMetamaskNotifications) {
       listNotifications();
     }
   };

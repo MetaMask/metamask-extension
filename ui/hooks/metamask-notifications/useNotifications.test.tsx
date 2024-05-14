@@ -94,26 +94,14 @@ describe('useNotifications', () => {
   });
 
   it('should disable notifications and handle states', async () => {
-    const { result, waitForNextUpdate } = renderHook(
-      () => useDisableNotifications(),
-      {
-        wrapper: ({ children }) => (
-          <Provider store={store}>{children}</Provider>
-        ),
-      },
-    );
-
-    expect(result.current.loading).toBe(false);
-    expect(result.current.error).toBeNull();
+    const { result } = renderHook(() => useDisableNotifications(), {
+      wrapper: ({ children }) => <Provider store={store}>{children}</Provider>,
+    });
 
     act(() => {
       result.current.disableNotifications();
     });
 
-    await waitForNextUpdate();
-
-    expect(result.current.loading).toBe(false); // Check if loading state is reset
-    expect(actions.disableMetamaskNotifications).toHaveBeenCalled(); // Check if the action was called
-    expect(result.current.error).toBeNull(); // Verify no error is set
+    expect(actions.disableMetamaskNotifications).toHaveBeenCalled();
   });
 });

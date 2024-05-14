@@ -73,10 +73,10 @@ export function useSwitchFeatureAnnouncementsChange(): {
 
 export type UseSwitchAccountNotificationsData = { [address: string]: boolean };
 
-export function useSwitchAccountNotifications(accounts: string[]): {
-  switchAccountNotifications: () => Promise<
-    UseSwitchAccountNotificationsData | undefined
-  >;
+export function useSwitchAccountNotifications(): {
+  switchAccountNotifications: (
+    accounts: string[],
+  ) => Promise<UseSwitchAccountNotificationsData | undefined>;
   isLoading: boolean;
   error: string | null;
 } {
@@ -85,25 +85,28 @@ export function useSwitchAccountNotifications(accounts: string[]): {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const switchAccountNotifications = useCallback(async (): Promise<
-    UseSwitchAccountNotificationsData | undefined
-  > => {
-    setIsLoading(true);
-    setError(null);
+  const switchAccountNotifications = useCallback(
+    async (
+      accounts: string[],
+    ): Promise<UseSwitchAccountNotificationsData | undefined> => {
+      setIsLoading(true);
+      setError(null);
 
-    try {
-      const data = await dispatch(checkAccountsPresence(accounts));
-      return data as unknown as UseSwitchAccountNotificationsData;
-    } catch (e) {
-      const errorMessage =
-        e instanceof Error ? e.message : JSON.stringify(e ?? '');
-      setError(errorMessage);
-      log.error(errorMessage);
-      throw e;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [dispatch]);
+      try {
+        const data = await dispatch(checkAccountsPresence(accounts));
+        return data as unknown as UseSwitchAccountNotificationsData;
+      } catch (e) {
+        const errorMessage =
+          e instanceof Error ? e.message : JSON.stringify(e ?? '');
+        setError(errorMessage);
+        log.error(errorMessage);
+        throw e;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [dispatch],
+  );
 
   return { switchAccountNotifications, isLoading, error };
 }

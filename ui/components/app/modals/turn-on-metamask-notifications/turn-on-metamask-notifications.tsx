@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { I18nContext } from '../../../../contexts/i18n';
@@ -6,7 +6,7 @@ import { useModalProps } from '../../../../hooks/useModalProps';
 import { useMetamaskNotificationsContext } from '../../../../contexts/metamask-notifications/metamask-notifications';
 import {
   selectIsMetamaskNotificationsEnabled,
-  selectIsCreatingMetamaskNotifications,
+  getIsUpdatingMetamaskNotifications,
 } from '../../../../selectors/metamask-notifications/metamask-notifications';
 import { useCreateNotifications } from '../../../../hooks/metamask-notifications/useNotifications';
 import { NOTIFICATIONS_ROUTE } from '../../../../helpers/constants/routes';
@@ -33,22 +33,24 @@ import {
 export default function TurnOnMetamaskNotifications() {
   const { hideModal } = useModalProps();
   const history = useHistory();
+  const t = useContext(I18nContext);
+  const { listNotifications } = useMetamaskNotificationsContext();
 
   const isNotificationEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
-
-  const isCreatingMetamaskNotifications = useSelector(
-    selectIsCreatingMetamaskNotifications,
+  const isUpdatingMetamaskNotifications = useSelector(
+    getIsUpdatingMetamaskNotifications,
   );
 
-  const t = useContext(I18nContext);
+  const [buttonState, setButtonState] = useState<boolean>(
+    isUpdatingMetamaskNotifications,
+  );
 
-  const { listNotifications } = useMetamaskNotificationsContext();
-
-  const { createNotifications, loading, error } = useCreateNotifications();
+  const { createNotifications, error } = useCreateNotifications();
 
   const handleTurnOnNotifications = async () => {
+    setButtonState(true);
     await createNotifications();
   };
 
@@ -57,12 +59,12 @@ export default function TurnOnMetamaskNotifications() {
   };
 
   useEffect(() => {
-    if (isNotificationEnabled && !loading && !error) {
+    if (isNotificationEnabled && !error) {
       history.push(NOTIFICATIONS_ROUTE);
       hideModal();
       listNotifications();
     }
-  }, [isNotificationEnabled, loading, error]);
+  }, [isNotificationEnabled, error]);
 
   const privacyLink = (
     <Text
@@ -123,8 +125,8 @@ export default function TurnOnMetamaskNotifications() {
           }}
           submitButtonProps={{
             children: t('turnOnMetamaskNotificationsButton'),
-            loading: isCreatingMetamaskNotifications,
-            disabled: isCreatingMetamaskNotifications,
+            loading: buttonState,
+            disabled: buttonState,
             'data-testid': 'turn-on-notifications-button',
           }}
         />

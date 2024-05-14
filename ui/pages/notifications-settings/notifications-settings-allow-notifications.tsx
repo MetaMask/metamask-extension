@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   useEnableNotifications,
   useDisableNotifications,
 } from '../../hooks/metamask-notifications/useNotifications';
-import { selectIsMetamaskNotificationsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
+import {
+  selectIsMetamaskNotificationsEnabled,
+  getIsUpdatingMetamaskNotifications,
+} from '../../selectors/metamask-notifications/metamask-notifications';
 import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
 import { Box, Text } from '../../components/component-library';
 import {
@@ -22,54 +25,77 @@ import {
 } from '../../components/multichain';
 
 export function NotificationsSettingsAllowNotifications({
+  loading,
+  setLoading,
   disabled,
 }: {
+  loading: boolean;
+  setLoading: (loading: boolean) => void;
   disabled: boolean;
 }) {
   const t = useI18nContext();
-
   const { listNotifications } = useMetamaskNotificationsContext();
+  const isMetamaskNotificationsEnabled = useSelector(
+    selectIsMetamaskNotificationsEnabled,
+  );
+  const [toggleValue, setToggleValue] = useState(
+    isMetamaskNotificationsEnabled,
+  );
+  const isUpdatingMetamaskNotifications = useSelector(
+    getIsUpdatingMetamaskNotifications,
+  );
+
   const { enableNotifications, error: errorEnableNotifications } =
     useEnableNotifications();
   const { disableNotifications, error: errorDisableNotifications } =
     useDisableNotifications();
-
   const error = errorEnableNotifications || errorDisableNotifications;
 
-  const isMetamaskNotificationsEnabled = useSelector(
-    selectIsMetamaskNotificationsEnabled,
-  );
+  useEffect(() => {
+    setLoading(isUpdatingMetamaskNotifications);
+  }, [isUpdatingMetamaskNotifications, setLoading]);
 
-  const [toggleState, setToggleState] = useState<boolean>(
-    isMetamaskNotificationsEnabled,
-  );
+  useEffect(() => {
+    setToggleValue(isMetamaskNotificationsEnabled);
+  }, [isMetamaskNotificationsEnabled]);
 
   useEffect(() => {
     if (isMetamaskNotificationsEnabled && !error) {
       listNotifications();
     }
-  }, [isMetamaskNotificationsEnabled, error]);
+  }, [isMetamaskNotificationsEnabled, error, listNotifications]);
 
-  const toggleNotifications = async () => {
-    setToggleState(!isMetamaskNotificationsEnabled);
+  const toggleNotifications = useCallback(async () => {
+    setLoading(true);
     if (isMetamaskNotificationsEnabled) {
       await disableNotifications();
     } else {
       await enableNotifications();
     }
-  };
+    setLoading(false);
+    setToggleValue(!toggleValue);
+  }, [
+    setLoading,
+    isMetamaskNotificationsEnabled,
+    disableNotifications,
+    enableNotifications,
+    toggleValue,
+  ]);
 
-  const privacyLink = (
-    <Text
-      as="a"
-      href="https://metamask.io/privacy.html"
-      target="_blank"
-      rel="noopener noreferrer"
-      key="privacy-link"
-      color={TextColor.infoDefault}
-    >
-      {t('notificationsSettingsPageAllowNotificationsLink')}
-    </Text>
+  const privacyLink = useMemo(
+    () => (
+      <Text
+        as="a"
+        href="https://metamask.io/privacy.html"
+        target="_blank"
+        rel="noopener noreferrer"
+        key="privacy-link"
+        color={TextColor.infoDefault}
+      >
+        {t('notificationsSettingsPageAllowNotificationsLink')}
+      </Text>
+    ),
+    [t],
   );
 
   return (
@@ -85,9 +111,10 @@ export function NotificationsSettingsAllowNotifications({
       data-testid="notifications-settings-allow-notifications"
     >
       <NotificationsSettingsBox
-        value={toggleState}
+        value={toggleValue}
         onToggle={toggleNotifications}
         disabled={disabled}
+        loading={loading}
       >
         <NotificationsSettingsType title={t('allowNotifications')} />
       </NotificationsSettingsBox>

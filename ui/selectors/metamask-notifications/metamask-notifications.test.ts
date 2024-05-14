@@ -49,7 +49,7 @@ describe('Metamask Notifications Selectors', () => {
       metamaskNotificationsReadList: [],
       isProfileSyncingUpdateLoading: false,
       isFetchingMetamaskNotifications: false,
-      isCreatingMetamaskNotifications: false,
+      isUpdatingMetamaskNotifications: false,
     },
   };
 

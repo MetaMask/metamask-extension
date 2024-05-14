@@ -9,11 +9,14 @@ import {
   FlexDirection,
   AlignItems,
   TextColor,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
+import Preloader from '../../ui/icon/preloader/preloader-icon.component';
 
 export type NotificationsSettingsBoxProps = {
   children?: React.ReactNode;
   value: boolean;
+  loading?: boolean;
   disabled?: boolean;
   error?: string | null;
   onToggle: () => void;
@@ -22,6 +25,7 @@ export type NotificationsSettingsBoxProps = {
 export function NotificationsSettingsBox({
   children,
   value,
+  loading = false,
   disabled = false,
   error = null,
   onToggle,
@@ -41,18 +45,24 @@ export function NotificationsSettingsBox({
       >
         {children}
         <Box className="notifications-settings-box__toggle">
-          <ToggleButton
-            value={value}
-            onToggle={onToggle}
-            disabled={disabled}
-            dataTestId="test-toggle"
-            className="notifications-settings-box__toggle"
-          />
+          {loading ? (
+            <Box textAlign={TextAlign.Right}>
+              <Preloader size={24} />
+            </Box>
+          ) : (
+            <ToggleButton
+              value={value}
+              onToggle={onToggle}
+              disabled={disabled}
+              dataTestId="test-toggle"
+              className="notifications-settings-box__toggle"
+            />
+          )}
         </Box>
       </Box>
       {error && (
         <Box paddingTop={0}>
-          <Text as="p" color={TextColor.errorDefault} paddingTop={4}>
+          <Text as="p" color={TextColor.errorDefault} paddingTop={2}>
             {t('notificationsSettingsBoxError')}
           </Text>
         </Box>

@@ -148,15 +148,15 @@ export const selectIsFeatureAnnouncementsEnabled = createSelector(
 /**
  * Selector to determine if MetaMask notifications are currently being created.
  *
- * This selector checks the `isCreatingMetamaskNotifications` property of the `metamask` state to see if the notifications are in the process of being created.
+ * This selector checks the `isUpdatingMetamaskNotifications` property of the `metamask` state to see if the notifications are in the process of being created.
  * It uses the `createSelector` function from 'reselect' for memoization, improving performance by avoiding unnecessary recalculations.
  *
- * @param {AppState} state - The current state of the Redux store.
- * @returns {boolean} Returns true if MetaMask notifications are being created, false otherwise.
+ * @param state - The current state of the Redux store.
+ * @returns Returns true if MetaMask notifications are being created, false otherwise.
  */
-export const selectIsCreatingMetamaskNotifications = createSelector(
+export const getIsUpdatingMetamaskNotifications = createSelector(
   [getMetamask],
-  (metamask) => metamask.isCreatingMetamaskNotifications,
+  (metamask) => metamask.isUpdatingMetamaskNotifications,
 );
 
 /**
@@ -171,4 +171,34 @@ export const selectIsCreatingMetamaskNotifications = createSelector(
 export const isFetchingMetamaskNotifications = createSelector(
   [getMetamask],
   (metamask) => metamask.isFetchingMetamaskNotifications,
+);
+
+/**
+ * Selector to determine if the MetaMask notifications account is currently being updated.
+ *
+ * This selector checks the `isUpdatingMetamaskNotificationsAccount` property of the `metamask` state to see if the account associated with MetaMask notifications is in the process of being updated.
+ * It uses the `createSelector` function from 'reselect' for memoization, improving performance by avoiding unnecessary recalculations.
+ *
+ * @param {AppState} state - The current state of the Redux store.
+ * @returns {boolean} Returns true if the MetaMask notifications account is being updated, false otherwise.
+ */
+export const getIsUpdatingMetamaskNotificationsAccount = createSelector(
+  [getMetamask],
+  (metamask) => {
+    return metamask.isUpdatingMetamaskNotificationsAccount;
+  },
+);
+
+/**
+ * Selector to determine if the presence of accounts is currently being checked.
+ *
+ * This selector accesses the `isCheckingAccountsPresence` property from the `metamask` state to check if the system is currently verifying the presence of accounts.
+ * It leverages the `createSelector` function for memoization, which helps in optimizing performance by caching the result until the input selectors' outputs change.
+ *
+ * @param {AppState} state - The current state of the Redux store.
+ * @returns {boolean} Returns true if the account presence check is ongoing, false otherwise.
+ */
+export const getIsCheckingAccountsPresence = createSelector(
+  [getMetamask],
+  (metamask) => metamask.isCheckingAccountsPresence,
 );

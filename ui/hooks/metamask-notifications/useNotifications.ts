@@ -10,7 +10,6 @@ import {
   createOnChainTriggers,
   fetchAndUpdateMetamaskNotifications,
   markMetamaskNotificationsAsRead,
-  setMetamaskNotificationsFeatureSeen,
   enableMetamaskNotifications,
   disableMetamaskNotifications,
 } from '../../store/actions';
@@ -82,33 +81,25 @@ export function useListNotifications(): {
  */
 export function useCreateNotifications(): {
   createNotifications: () => Promise<void>;
-  loading: boolean;
   error: string | null;
 } {
   const dispatch = useDispatch();
-
-  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const createNotifications = useCallback(async () => {
-    setLoading(true);
     setError(null);
 
     try {
       await dispatch(createOnChainTriggers());
-      dispatch(setMetamaskNotificationsFeatureSeen());
     } catch (e) {
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');
       log.error(e);
       throw e;
-    } finally {
-      setLoading(false);
     }
   }, [dispatch]);
 
   return {
     createNotifications,
-    loading,
     error,
   };
 }
@@ -125,33 +116,26 @@ export function useCreateNotifications(): {
  */
 export function useEnableNotifications(): {
   enableNotifications: () => Promise<void>;
-  loading: boolean;
   error: string | null;
 } {
   const dispatch = useDispatch();
 
-  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const enableNotifications = useCallback(async () => {
-    setLoading(true);
     setError(null);
 
     try {
       await dispatch(enableMetamaskNotifications());
-      dispatch(setMetamaskNotificationsFeatureSeen());
     } catch (e) {
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');
       log.error(e);
       throw e;
-    } finally {
-      setLoading(false);
     }
   }, [dispatch]);
 
   return {
     enableNotifications,
-    loading,
     error,
   };
 }
@@ -164,16 +148,13 @@ export function useEnableNotifications(): {
  */
 export function useDisableNotifications(): {
   disableNotifications: () => Promise<void>;
-  loading: boolean;
   error: string | null;
 } {
   const dispatch = useDispatch();
 
-  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const disableNotifications = useCallback(async () => {
-    setLoading(true);
     setError(null);
 
     try {
@@ -182,14 +163,11 @@ export function useDisableNotifications(): {
       setError(e instanceof Error ? e.message : 'An unexpected error occurred');
       log.error(e);
       throw e;
-    } finally {
-      setLoading(false);
     }
   }, [dispatch]);
 
   return {
     disableNotifications,
-    loading,
     error,
   };
 }

@@ -97,21 +97,18 @@ describe('useSwitchNotifications', () => {
   });
 
   it('should check account presence', async () => {
-    const { result } = renderHook(
-      () => useSwitchAccountNotifications(['0x123']),
-      {
-        wrapper: ({ children }) => (
-          <Provider store={store}>
-            <MetamaskNotificationsProvider>
-              {children}
-            </MetamaskNotificationsProvider>
-          </Provider>
-        ),
-      },
-    );
+    const { result } = renderHook(() => useSwitchAccountNotifications(), {
+      wrapper: ({ children }) => (
+        <Provider store={store}>
+          <MetamaskNotificationsProvider>
+            {children}
+          </MetamaskNotificationsProvider>
+        </Provider>
+      ),
+    });
 
     act(() => {
-      result.current.switchAccountNotifications();
+      result.current.switchAccountNotifications(['0x123']);
     });
 
     expect(actions.checkAccountsPresence).toHaveBeenCalledWith(['0x123']);
