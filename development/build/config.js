@@ -8,7 +8,13 @@ const { Variables } = require('../lib/variables');
 const { ENVIRONMENT } = require('./constants');
 
 const VARIABLES_REQUIRED_IN_PRODUCTION = {
-  main: ['INFURA_PROD_PROJECT_ID', 'SEGMENT_PROD_WRITE_KEY', 'SENTRY_DSN'],
+  main: [
+    'INFURA_PROD_PROJECT_ID',
+    'SEGMENT_PROD_WRITE_KEY',
+    'SENTRY_DSN',
+    'SEGMENT_DELETE_API_PROD_SOURCE_ID',
+    'SEGMENT_REGULATIONS_PROD_ENDPOINT',
+  ],
   beta: ['INFURA_BETA_PROJECT_ID', 'SEGMENT_BETA_WRITE_KEY', 'SENTRY_DSN'],
   flask: ['INFURA_FLASK_PROJECT_ID', 'SEGMENT_FLASK_WRITE_KEY', 'SENTRY_DSN'],
   mmi: [

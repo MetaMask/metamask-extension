@@ -57,6 +57,16 @@ module.exports.setEnvironmentVariables = function setEnvironmentVariables({
       variables,
       environment,
     }),
+    SEGMENT_DELETE_API_SOURCE_ID: getSegmentDeleteApiSourceId({
+      buildType,
+      variables,
+      environment,
+    }),
+    SEGMENT_REGULATIONS_ENDPOINT: getSegmentRegulationEndpoint({
+      buildType,
+      variables,
+      environment,
+    }),
     TEST_GAS_FEE_FLOWS:
       isDevBuild && variables.getMaybe('TEST_GAS_FEE_FLOWS') === true,
   });
@@ -209,4 +219,72 @@ function getPhishingWarningPageUrl({ variables, testing }) {
   // return a normalized version of the URL; a `/` will be appended to the end
   // of the domain if it is missing
   return phishingWarningPageUrlObject.toString();
+}
+
+/**
+ * Get the appropriate source id for the segment delete api
+ *
+ * @param {object} options - The Segment write key options.
+ * @param {string} options.buildType - The current build type.
+ * @param {keyof ENVIRONMENT} options.environment - The current build environment.
+ * @param {import('../lib/variables').Variables} options.variables - Object containing all variables that modify the build pipeline
+ * @returns {string} The source id for the segment delete api.
+ */
+function getSegmentDeleteApiSourceId({ buildType, variables, environment }) {
+  if (environment !== ENVIRONMENT.PRODUCTION) {
+    return variables.get('SEGMENT_DELETE_API_SOURCE_ID');
+  }
+
+  const segmentDeleteApiSourceIdReference = variables.get(
+    'SEGMENT_DELETE_API_SOURCE_ID_REF',
+  );
+  assert(
+    typeof segmentDeleteApiSourceIdReference === 'string' &&
+      segmentDeleteApiSourceIdReference.length > 0,
+    `Build type "${buildType}" has improperly set SEGMENT_DELETE_API_SOURCE_ID_REF in builds.yml. Current value: "${segmentDeleteApiSourceIdReference}"`,
+  );
+
+  const segmentDeleteApiSourceId = variables.get(
+    segmentDeleteApiSourceIdReference,
+  );
+  assert(
+    typeof segmentDeleteApiSourceId === 'string' &&
+      segmentDeleteApiSourceId.length > 0,
+    `Segment Write Key environmental variable "${segmentDeleteApiSourceId}" is set improperly.`,
+  );
+  return segmentDeleteApiSourceId;
+}
+
+/**
+ * Get the appropriate Segment regulation proxy endpoint.
+ *
+ * @param {object} options - The Segment write key options.
+ * @param {string} options.buildType - The current build type.
+ * @param {keyof ENVIRONMENT} options.environment - The current build environment.
+ * @param {import('../lib/variables').Variables} options.variables - Object containing all variables that modify the build pipeline
+ * @returns {string} The Segment regulation proxy endpoint.
+ */
+function getSegmentRegulationEndpoint({ buildType, variables, environment }) {
+  if (environment !== ENVIRONMENT.PRODUCTION) {
+    return variables.get('SEGMENT_REGULATIONS_ENDPOINT');
+  }
+
+  const segmentRegulationEndpointReference = variables.get(
+    'SEGMENT_REGULATIONS_ENDPOINT_REF',
+  );
+  assert(
+    typeof segmentRegulationEndpointReference === 'string' &&
+      segmentRegulationEndpointReference.length > 0,
+    `Build type "${buildType}" has improperly set SEGMENT_REGULATIONS_ENDPOINT_REF in builds.yml. Current value: "${segmentRegulationEndpointReference}"`,
+  );
+
+  const segmentRegulationEndpoint = variables.get(
+    segmentRegulationEndpointReference,
+  );
+  assert(
+    typeof segmentRegulationEndpoint === 'string' &&
+      segmentRegulationEndpoint.length > 0,
+    `Segment Write Key environmental variable "${segmentRegulationEndpointReference}" is set improperly.`,
+  );
+  return segmentRegulationEndpoint;
 }
