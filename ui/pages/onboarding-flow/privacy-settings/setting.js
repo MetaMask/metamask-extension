@@ -31,7 +31,11 @@ export const Setting = ({
     >
       <div className="privacy-settings__setting">
         <Text variant={TextVariant.bodyMdMedium}>{title}</Text>
-        <Text variant={TextVariant.bodySm} color={TextColor.textAlternative} as="div">
+        <Text
+          variant={TextVariant.bodySm}
+          color={TextColor.textAlternative}
+          as="div"
+        >
           {description}
         </Text>
       </div>

@@ -98,11 +98,15 @@ export default function CreationSuccessful() {
           {firstTimeFlowType === FirstTimeFlowType.create &&
             seedPhraseBackedUp &&
             t('walletProtectedAndReadyToUse', [
-              <b>{t('securityPrivacyPath')}</b>,
+              <b key="walletProtectedAndReadyToUse">
+                {t('securityPrivacyPath')}
+              </b>,
             ])}
           {firstTimeFlowType === FirstTimeFlowType.create &&
             !seedPhraseBackedUp &&
-            t('ifYouGetLockedOut', [<b>{t('securityPrivacyPath')}</b>])}
+            t('ifYouGetLockedOut', [
+              <b key="ifYouGetLockedOut">{t('securityPrivacyPath')}</b>,
+            ])}
         </Text>
       </Box>
 
@@ -129,6 +133,7 @@ export default function CreationSuccessful() {
         <Text variant={TextVariant.bodyLgMedium} marginBottom={6}>
           {t('keepReminderOfSRP', [
             <ButtonLink
+              key="keepReminderOfSRP"
               size={ButtonLinkSize.Inherit}
               textProps={{
                 variant: TextVariant.bodyMd,

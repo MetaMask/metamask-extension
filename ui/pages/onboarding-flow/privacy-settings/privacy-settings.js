@@ -192,7 +192,7 @@ export default function PrivacySettings() {
         <div
           className={`container ${showDetail ? 'show-detail' : 'show-list'}`}
         >
-          <div className={`list-view`}>
+          <div className="list-view">
             <Box
               className="privacy-settings__header"
               marginTop={6}
@@ -232,15 +232,6 @@ export default function PrivacySettings() {
               <Text variant={TextVariant.bodyLgMedium} marginTop={5}>
                 {t('defaultSettingsSubTitle')}
               </Text>
-              {/* <Button
-            variant={ButtonVariant.Link}
-            style={{
-              fontSize: 'var(--font-size-5)',
-            }}
-            onClick={() => 'www.google.com'}
-          >
-            {t('leaveYourselfAHint')}
-          </Button> */}
               <a
                 href="https://support.metamask.io/privacy-and-security/privacy-best-practices"
                 target="_blank"
@@ -267,6 +258,8 @@ export default function PrivacySettings() {
                       display={Display.Flex}
                       alignItems={AlignItems.flexStart}
                       justifyContent={JustifyContent.spaceBetween}
+                      className="categories-item-header"
+                      onClick={() => handleItemSelected(item)}
                     >
                       <Text variant={TextVariant.bodyLgMedium}>
                         {item.title}
@@ -279,9 +272,7 @@ export default function PrivacySettings() {
                             color={IconColor.iconDefault}
                           />
                         }
-                        onClick={() => {
-                          handleItemSelected(item);
-                        }}
+                        onClick={() => handleItemSelected(item)}
                       />
                     </Box>
                     <Text
@@ -535,7 +526,6 @@ export default function PrivacySettings() {
                   />
                 </>
               ) : null}
-
               {selectedItem && selectedItem.id === 3 ? (
                 <>
                   <Setting
