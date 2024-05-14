@@ -24,7 +24,6 @@ const switchEthereumChain = {
   implementation: switchEthereumChainHandler,
   hookNames: {
     findNetworkConfigurationBy: true,
-    findNetworkClientIdByChainId: true,
     setNetworkClientIdForDomain: true,
     setProviderType: true,
     setActiveNetwork: true,
@@ -37,7 +36,6 @@ const switchEthereumChain = {
     getCurrentChainIdForDomain: true,
     // old hooks no longer used post chain permissioning:
     getProviderConfig: true,
-    getCurrentChainId: true,
     requestUserApproval: true,
     getChainPermissionsFeatureFlag: true,
   },
@@ -70,7 +68,6 @@ async function switchEthereumChainHandler(
   end,
   {
     findNetworkConfigurationBy,
-    findNetworkClientIdByChainId,
     setNetworkClientIdForDomain,
     setActiveNetwork,
     hasPermissions,
@@ -136,7 +133,11 @@ async function switchEthereumChainHandler(
     findNetworkConfigurationBy,
   );
 
-  if (!networkConfigurationForRequestedChainId) {
+  const networkClientIdToSwitchTo =
+    networkConfigurationForRequestedChainId.id ??
+    networkConfigurationForRequestedChainId.type;
+
+  if (!networkClientIdToSwitchTo) {
     return end(
       ethErrors.provider.custom({
         code: 4902, // To-be-standardized "unrecognized chain ID" error
@@ -180,12 +181,10 @@ async function switchEthereumChainHandler(
       }
     }
 
-    const networkClientId = findNetworkClientIdByChainId(chainId);
-
     try {
-      await setActiveNetwork(networkClientId);
+      await setActiveNetwork(networkClientIdToSwitchTo);
       if (hasPermissions(req.origin)) {
-        setNetworkClientIdForDomain(req.origin, networkClientId);
+        setNetworkClientIdForDomain(req.origin, networkClientIdToSwitchTo);
       }
       res.result = null;
     } catch (error) {
@@ -196,29 +195,23 @@ async function switchEthereumChainHandler(
 
   // preserving old behavior when not using the chain permissionsing logic
   const requestData = {
-    toNetworkConfiguration: findExistingNetwork(
-      _chainId,
-      findNetworkConfigurationBy,
-    ),
+    toNetworkConfiguration: networkConfigurationForRequestedChainId,
   };
 
   requestData.fromNetworkConfiguration = getProviderConfig();
 
   if (requestData.toNetworkConfiguration) {
-    // we might want to change all this so that it displays the network you are switching from -> to (in a way that is domain - specific)
-    const networkClientId = findNetworkClientIdByChainId(_chainId);
-
     try {
-      const approvedRequestData = await requestUserApproval({
+      await requestUserApproval({
         origin,
         type: ApprovalType.SwitchEthereumChain,
         requestData,
       });
 
-      await setActiveNetwork(approvedRequestData.id);
+      await setActiveNetwork(networkClientIdToSwitchTo);
 
       if (hasPermissions(req.origin)) {
-        setNetworkClientIdForDomain(req.origin, networkClientId);
+        setNetworkClientIdForDomain(req.origin, networkClientIdToSwitchTo);
       }
       res.result = null;
     } catch (error) {
