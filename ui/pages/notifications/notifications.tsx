@@ -34,14 +34,13 @@ import { SnapNotificationWithoutSnapName } from './snap/types/types';
 export type NotificationType = Notification | SnapNotificationWithoutSnapName;
 
 export default function Notifications() {
+  const dispatch = useDispatch();
   const history = useHistory();
   const t = useI18nContext();
-  const dispatch = useDispatch();
-
   const { notificationsData, listNotifications } =
     useMetamaskNotificationsContext();
-  const unreadNotifications = useSelector(getUnreadNotifications);
 
+  const unreadNotifications = useSelector(getUnreadNotifications);
   const snapNotifications = useSelector(getNotifications);
   const isMetamaskNotificationsFeatureSeen = useSelector(
     selectIsMetamaskNotificationsFeatureSeen,
@@ -50,16 +49,16 @@ export default function Notifications() {
     selectIsSnapNotificationsEnabled,
   );
 
+  const [notifications, setNotifications] = useState<NotificationType[]>([]);
+  const [activeTab, setActiveTab] = useState<string>('notifications');
+  const [notificationReadArray, setNotificationReadArray] =
+    useState<MarkAsReadNotificationsParam>([]);
+
   const markAllAsRead = () => {
     const unreadNotificationIds = unreadNotifications.map(({ id }) => id);
 
     dispatch(markNotificationsAsRead(unreadNotificationIds));
   };
-
-  const [notifications, setNotifications] = useState<NotificationType[]>([]);
-  const [activeTab, setActiveTab] = useState<string>('notifications');
-  const [notificationReadArray, setNotificationReadArray] =
-    useState<MarkAsReadNotificationsParam>([]);
 
   const { markNotificationAsRead } = useMarkNotificationAsRead();
 

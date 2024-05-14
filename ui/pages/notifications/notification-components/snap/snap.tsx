@@ -21,7 +21,7 @@ export const SnapComponent = ({ snapNotification }: SnapComponentProps) => {
 
   const snapsNameGetter = getSnapName(snapsMetadata);
 
-  const handleNameClick = () => {
+  const handleSnapClick = () => {
     dispatch(markNotificationsAsRead([snapNotification.id]));
     history.push(getSnapRoute(snapNotification.data.origin));
   };
@@ -50,12 +50,10 @@ export const SnapComponent = ({ snapNotification }: SnapComponentProps) => {
         type: NotificationListItemIconType.Token,
         value: 'https://s2.coinmarketcap.com/static/img/coins/64x64/13855.png',
       }}
-      onClick={() => handleNameClick()}
+      onClick={handleSnapClick}
       snapButton={{
         text: 'View',
-        onClick: () => {
-          history.push(getSnapRoute(snapNotification.data.origin));
-        },
+        onClick: handleSnapClick,
       }}
     />
   );

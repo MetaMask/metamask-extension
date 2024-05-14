@@ -75,6 +75,7 @@ export const components: NotificationComponent<FeatureAnnouncementNotification> 
             width={BlockSize.Full}
             paddingLeft={4}
             paddingRight={4}
+            paddingBottom={4}
           >
             <Box
               as="img"

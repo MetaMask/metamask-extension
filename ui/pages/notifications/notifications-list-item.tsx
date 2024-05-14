@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import type { Notification } from '../../../app/scripts/controllers/metamask-notifications/types/notification/notification';
 import { Box } from '../../components/component-library';
@@ -21,11 +21,11 @@ export function NotificationsListItem({
   notification: Notification;
 }) {
   const history = useHistory();
-
-  const { markNotificationAsRead } = useMarkNotificationAsRead();
   const { listNotifications } = useMetamaskNotificationsContext();
 
-  const handleNotificationClick = () => {
+  const { markNotificationAsRead } = useMarkNotificationAsRead();
+
+  const handleNotificationClick = useCallback(() => {
     markNotificationAsRead([
       {
         id: notification.id,
@@ -35,7 +35,7 @@ export function NotificationsListItem({
     ]);
     listNotifications();
     history.push(`${NOTIFICATIONS_ROUTE}/${notification.id}`);
-  };
+  }, [notification, markNotificationAsRead, listNotifications, history]);
 
   if (!hasNotificationComponents(notification.type)) {
     return null;

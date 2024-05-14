@@ -20,7 +20,6 @@ import {
 import { useI18nContext } from '../../hooks/useI18nContext';
 import type { Notification } from '../../../app/scripts/controllers/metamask-notifications/types/notification/notification';
 import { deleteExpiredNotifications } from '../../store/actions';
-import { selectIsProfileSyncingEnabled } from '../../selectors/metamask-notifications/profile-syncing';
 import { SnapComponent } from './notification-components/snap/snap';
 import { NotificationsPlaceholder } from './notifications-list-placeholder';
 import { NotificationsListTurnOnNotifications } from './notifications-list-turn-on-notifications';
@@ -43,21 +42,18 @@ export function NotificationsList({
   activeTab,
   notifications,
 }: NotificationsListProps) {
-  const t = useI18nContext();
-  const history = useHistory();
   const dispatch = useDispatch();
 
+  const t = useI18nContext();
+  const history = useHistory();
   const { isLoading, error } = useMetamaskNotificationsContext();
 
-  // Snap notifications
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
   const isMetamaskNotificationsFeatureSeen = useSelector(
     selectIsMetamaskNotificationsFeatureSeen,
   );
-
-  const isProfileSyncing = useSelector(selectIsProfileSyncingEnabled);
 
   if (!isMetamaskNotificationsFeatureSeen) {
     history.push(DEFAULT_ROUTE);
@@ -70,7 +66,7 @@ export function NotificationsList({
   }, [dispatch]);
 
   const renderNotificationsContent = () => {
-    if (!isMetamaskNotificationsEnabled || !isProfileSyncing) {
+    if (!isMetamaskNotificationsEnabled) {
       return <NotificationsListTurnOnNotifications />;
     }
 
