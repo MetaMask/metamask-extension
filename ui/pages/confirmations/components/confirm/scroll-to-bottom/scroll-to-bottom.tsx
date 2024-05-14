@@ -62,11 +62,8 @@ const ScrollToBottom = ({ children }: ContentProps) => {
       currentRef.scrollTo(0, 0);
     }
 
-    const currentRefIsScrollable =
-      currentRef.scrollHeight > currentRef.clientHeight;
-
-    setHasScrolledToBottom(!currentRefIsScrollable);
-  }, [currentConfirmation?.id, previousId, ref, setHasScrolledToBottom]);
+    setHasScrolledToBottom(false);
+  }, [currentConfirmation?.id, previousId, ref?.current]);
 
   useEffect(() => {
     dispatch(
