@@ -65,6 +65,8 @@ export default class AppStateController extends EventEmitter {
         '0x539': true,
       },
       surveyLinkLastClickedOrClosed: null,
+      newPrivacyPolicyToastClickedOrClosed: null,
+      newPrivacyPolicyToastShownDate: null,
       signatureSecurityAlertResponses: {},
       // States used for displaying the changed network toast
       switchedNetworkDetails: null,
@@ -181,6 +183,18 @@ export default class AppStateController extends EventEmitter {
   setSurveyLinkLastClickedOrClosed(time) {
     this.store.updateState({
       surveyLinkLastClickedOrClosed: time,
+    });
+  }
+
+  setNewPrivacyPolicyToastClickedOrClosed() {
+    this.store.updateState({
+      newPrivacyPolicyToastClickedOrClosed: true,
+    });
+  }
+
+  setNewPrivacyPolicyToastShownDate(time) {
+    this.store.updateState({
+      newPrivacyPolicyToastShownDate: time,
     });
   }
 
