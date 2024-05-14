@@ -1,5 +1,6 @@
 .inline-alert {
   padding: 2px;
+  cursor: pointer;
 
   &__danger {
     color: var(--color-error-default);
