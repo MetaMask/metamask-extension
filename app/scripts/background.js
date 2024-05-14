@@ -318,7 +318,7 @@ async function initialize() {
       await loadPhishingWarningPage();
     }
     await sendReadyMessageToTabs();
-    log.info('MetaMask initialization complete.');
+    log.info('MetaMask initialization complete. &&&');
 
     resolveInitialization();
   } catch (error) {

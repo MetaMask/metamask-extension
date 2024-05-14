@@ -343,7 +343,7 @@ export default class MetamaskController extends EventEmitter {
    */
   constructor(opts) {
     super();
-
+    console.log('&&& constructor !!!');
     const { isFirstMetaMaskControllerSetup } = opts;
 
     this.defaultMaxListeners = 20;
@@ -5378,7 +5378,10 @@ export default class MetamaskController extends EventEmitter {
    */
   _onStateUpdate(newState) {
     this.isClientOpenAndUnlocked = newState.isUnlocked && this._isClientOpen;
-    this._notifyChainChange();
+    setTimeout(() => {
+      console.log('&&& _notifyChainChange !!!');
+      this._notifyChainChange();
+    }, 2200);
   }
 
   // misc
