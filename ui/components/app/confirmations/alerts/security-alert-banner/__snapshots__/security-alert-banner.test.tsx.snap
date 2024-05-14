@@ -19,7 +19,7 @@ exports[`SecurityAlertBanner renders security alert banner 1`] = `
         Security Alert
       </p>
       <p
-        class="mm-box mm-text mm-text--body-md mm-box--margin-top-2 mm-box--color-text-default"
+        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
       >
         This is a security alert
       </p>

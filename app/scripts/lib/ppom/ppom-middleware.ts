@@ -96,8 +96,6 @@ export function createPPOMMiddleware<
           result_type: BlockaidReason.inProgress,
           securityAlertId,
         };
-        console.time('label');
-        console.log('requesting blockaid validation', securityAlertId);
 
         ppomController
           .usePPOM(async (ppom: PPOM) => {
@@ -161,8 +159,7 @@ export function createPPOMMiddleware<
         }
 
         // req.securityAlertResponse = { ...securityAlertResponse };
-        console.timeEnd('label');
-        console.log('overwrite response with final blockaid response');
+        console.log('setting response with final blockaid response');
         req.securityAlertResponse = {
           ...securityAlertResponse,
           result_type: 'Malicious',
