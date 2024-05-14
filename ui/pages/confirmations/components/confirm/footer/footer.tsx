@@ -12,6 +12,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { useMMIConfirmations } from '../../../../../hooks/useMMIConfirmations';
 ///: END:ONLY_INCLUDE_IF
+
 import { doesAddressRequireLedgerHidConnection } from '../../../../../selectors';
 import {
   rejectPendingApproval,
@@ -22,6 +23,7 @@ import { getConfirmationSender } from '../utils';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { MultipleAlertModal } from '../../../../../components/app/confirmations/alerts/multiple-alert-modal';
 import { AlertModal } from '../../../../../components/app/confirmations/alerts/alert-modal';
+import useIsDangerButton from './useIsDangerButton';
 
 function ConfirmAlertModal({
   alertKey,
@@ -85,6 +87,7 @@ function ConfirmButton({
   onSubmit?: () => void;
   onCancel?: () => void;
 }) {
+  const isDangerButton = useIsDangerButton();
   const t = useI18nContext();
   const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
   const [frictionModalVisible, setFrictionModalVisible] =
@@ -133,7 +136,7 @@ function ConfirmButton({
         data-testid="confirm-footer-confirm-button"
         startIconName={hasAlerts ? getIconName() : undefined}
         onClick={hasAlerts ? handleOpenModal : onSubmit}
-        danger={hasAlerts}
+        danger={hasAlerts ? true : isDangerButton}
         size={ButtonSize.Lg}
         disabled={hasUnconfirmedAlerts ? false : disabled}
       >
@@ -144,14 +147,16 @@ function ConfirmButton({
 }
 
 const Footer = () => {
+  const dispatch = useDispatch();
   const t = useI18nContext();
   const confirm = useSelector(confirmSelector);
+
   const { currentConfirmation, isScrollToBottomNeeded } = confirm;
+  const { from } = getConfirmationSender(currentConfirmation);
+
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const { mmiOnSignCallback, mmiSubmitDisabled } = useMMIConfirmations();
   ///: END:ONLY_INCLUDE_IF
-
-  const { from } = getConfirmationSender(currentConfirmation);
 
   const hardwareWalletRequiresConnection = useSelector((state) => {
     if (from) {
@@ -160,12 +165,11 @@ const Footer = () => {
     return false;
   });
 
-  const dispatch = useDispatch();
-
   const onCancel = useCallback(() => {
     if (!currentConfirmation) {
       return;
     }
+
     dispatch(
       rejectPendingApproval(
         currentConfirmation.id,
@@ -180,6 +184,7 @@ const Footer = () => {
     }
 
     dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
+
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     mmiOnSignCallback();
     ///: END:ONLY_INCLUDE_IF
