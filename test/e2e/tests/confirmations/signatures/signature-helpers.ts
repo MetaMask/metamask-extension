@@ -81,7 +81,7 @@ export async function copyAddressAndPasteWalletAddress(driver: Driver) {
 
 export async function assertPastedAddress(driver: Driver) {
   const formFieldEl = await driver.findElement('#eip747ContractAddress');
-  assert.equal(await formFieldEl.getProperty('value'), WALLET_ADDRESS);
+  assert.equal(await formFieldEl.getAttribute('value'), WALLET_ADDRESS);
 }
 
 export const WALLET_ADDRESS = '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
