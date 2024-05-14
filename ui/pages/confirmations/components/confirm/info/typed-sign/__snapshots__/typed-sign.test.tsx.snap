@@ -154,7 +154,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
           >
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-              style="white-space: pre;"
+              style="white-space: pre-wrap;"
             >
               Mail
             </p>
@@ -201,7 +201,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                      style="white-space: pre;"
+                      style="white-space: pre-wrap;"
                     >
                       Cow
                     </p>
@@ -314,7 +314,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                      style="white-space: pre;"
+                      style="white-space: pre-wrap;"
                     >
                       Bob
                     </p>
@@ -411,7 +411,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre;"
+                  style="white-space: pre-wrap;"
                 >
                   Hello, Bob!
                 </p>
@@ -577,7 +577,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
           >
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-              style="white-space: pre;"
+              style="white-space: pre-wrap;"
             >
               Mail
             </p>
@@ -624,7 +624,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                      style="white-space: pre;"
+                      style="white-space: pre-wrap;"
                     >
                       Cow
                     </p>
@@ -737,7 +737,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                      style="white-space: pre;"
+                      style="white-space: pre-wrap;"
                     >
                       Bob
                     </p>
@@ -834,7 +834,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre;"
+                  style="white-space: pre-wrap;"
                 >
                   Hello, Bob!
                 </p>
@@ -1000,7 +1000,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
           >
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-              style="white-space: pre;"
+              style="white-space: pre-wrap;"
             >
               Mail
             </p>
@@ -1031,7 +1031,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre;"
+                  style="white-space: pre-wrap;"
                 >
                   Hello, Bob!
                 </p>
@@ -1071,7 +1071,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                      style="white-space: pre;"
+                      style="white-space: pre-wrap;"
                     >
                       Cow
                     </p>
@@ -1360,7 +1360,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                          style="white-space: pre;"
+                          style="white-space: pre-wrap;"
                         >
                           Bob
                         </p>

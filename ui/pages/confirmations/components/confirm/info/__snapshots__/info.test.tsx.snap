@@ -65,7 +65,7 @@ exports[`Info renders info section for personal sign request 1`] = `
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre;"
+          style="white-space: pre-wrap;"
         >
           Example \`personal_sign\` message
         </p>
@@ -227,7 +227,7 @@ exports[`Info renders info section for typed sign request 1`] = `
           >
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-              style="white-space: pre;"
+              style="white-space: pre-wrap;"
             >
               Mail
             </p>
@@ -274,7 +274,7 @@ exports[`Info renders info section for typed sign request 1`] = `
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                      style="white-space: pre;"
+                      style="white-space: pre-wrap;"
                     >
                       Cow
                     </p>
@@ -387,7 +387,7 @@ exports[`Info renders info section for typed sign request 1`] = `
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                      style="white-space: pre;"
+                      style="white-space: pre-wrap;"
                     >
                       Bob
                     </p>
@@ -484,7 +484,7 @@ exports[`Info renders info section for typed sign request 1`] = `
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre;"
+                  style="white-space: pre-wrap;"
                 >
                   Hello, Bob!
                 </p>

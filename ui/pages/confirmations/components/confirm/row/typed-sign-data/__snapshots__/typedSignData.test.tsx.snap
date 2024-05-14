@@ -23,7 +23,7 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre;"
+          style="white-space: pre-wrap;"
         >
           Mail
         </p>
@@ -54,7 +54,7 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
           >
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-              style="white-space: pre;"
+              style="white-space: pre-wrap;"
             >
               Hello, Bob!
             </p>
@@ -94,7 +94,7 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre;"
+                  style="white-space: pre-wrap;"
                 >
                   Cow
                 </p>
@@ -383,7 +383,7 @@ exports[`ConfirmInfoRowTypedSignData should match snapshot 1`] = `
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                      style="white-space: pre;"
+                      style="white-space: pre-wrap;"
                     >
                       Bob
                     </p>
