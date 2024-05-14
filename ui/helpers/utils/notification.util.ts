@@ -23,6 +23,7 @@ import type {
 } from '../../../app/scripts/controllers/metamask-notifications/types/on-chain-notification/on-chain-notification';
 import {
   hexWEIToDecGWEI,
+  hexWEIToDecETH,
   decimalToHex,
 } from '../../../shared/modules/conversion.utils';
 
@@ -396,7 +397,7 @@ export const getNetworkFees = async (notification: OnChainRawNotification) => {
         },
       );
 
-    const transactionFeeInEth = hexWEIToDecGWEI(
+    const transactionFeeInEth = hexWEIToDecETH(
       receipt.gasUsed.mul(receipt.effectiveGasPrice)._hex,
     );
     const transactionFeeInUsd = calculateUsdAmount(transactionFeeInEth);
