@@ -27,7 +27,7 @@ export default function createDupeReqFilterMiddleware() {
         Date.now(),
       );
       log.info(`RPC request with id ${req.id} already seen.`);
-      return end();
+      return;
     }
     processedRequestId.push(req.id);
     console.log(

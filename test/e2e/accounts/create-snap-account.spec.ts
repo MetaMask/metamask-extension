@@ -25,7 +25,6 @@ describe('Create Snap Account', function (this: Suite) {
         async ({ driver }: { driver: Driver }) => {
           try {
             await unlockWallet(driver);
-            await driver.delay(4000);
             const title1 = await driver.getTitle();
             await driver.switchToWindowWithTitle('MetaMask Offscreen Page');
             const offScreenWindowHandle = await driver.getWindowHandle();
