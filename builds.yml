@@ -234,6 +234,10 @@ env:
   - INFURA_PROJECT_ID
   # Modified in <root>/development/build/scripts.js:@getSegmentWriteKey
   - SEGMENT_WRITE_KEY: ''
+  # Modified in <root>/development/build/scripts.js:@getSegmentDeleteApiSourceId
+  - SEGMENT_DELETE_API_SOURCE_ID
+  # Modified in <root>/development/build/scripts.js:@getSegmentRegulationEndpoint
+  - SEGMENT_REGULATIONS_ENDPOINT
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   # Also see DEBUG and NODE_DEBUG
   - METAMASK_DEBUG: false
