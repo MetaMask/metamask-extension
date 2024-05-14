@@ -30,7 +30,7 @@ class EncryptorDecryptor {
 
   #PBKDF2_SALT_SIZE: number = 16; // 16 bytes
 
-  #PBKDF2_ITERATIONS: number = 900_000;
+  #PBKDF2_ITERATIONS: number = 32_767;
 
   encryptString(plaintext: string, password: string): string {
     try {
