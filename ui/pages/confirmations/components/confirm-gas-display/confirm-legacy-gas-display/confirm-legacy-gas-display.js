@@ -23,8 +23,6 @@ import {
   TextColor,
 } from '../../../../../helpers/constants/design-system';
 import { useDraftTransactionWithTxParams } from '../../../hooks/useDraftTransactionWithTxParams';
-import { getNativeCurrency } from '../../../../../ducks/metamask/metamask';
-import MultilayerFeeMessage from '../../multilayer-fee-message/multi-layer-fee-message';
 import {
   Icon,
   IconName,
@@ -41,7 +39,6 @@ const ConfirmLegacyGasDisplay = ({ 'data-testid': dataTestId } = {}) => {
   const isMainnet = useSelector(getIsMainnet);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
-  const nativeCurrency = useSelector(getNativeCurrency);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
   const transactionData = useDraftTransactionWithTxParams();
   const txData = useSelector((state) => txDataSelector(state));
@@ -52,43 +49,6 @@ const ConfirmLegacyGasDisplay = ({ 'data-testid': dataTestId } = {}) => {
   const { hexMinimumTransactionFee, hexMaximumTransactionFee } = useSelector(
     (state) => transactionFeeSelector(state, transaction),
   );
-  const { layer1GasFee } = txData;
-  const hasLayer1GasFee = layer1GasFee !== undefined;
-
-  if (hasLayer1GasFee) {
-    return [
-      <TransactionDetailItem
-        key="legacy-total-item"
-        data-testid={dataTestId}
-        detailTitle={t('transactionDetailLayer2GasHeading')}
-        detailTotal={
-          <UserPreferencedCurrencyDisplay
-            type={PRIMARY}
-            value={hexMinimumTransactionFee}
-            hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-            numberOfDecimals={18}
-          />
-        }
-        detailText={
-          useCurrencyRateCheck && (
-            <UserPreferencedCurrencyDisplay
-              type={SECONDARY}
-              value={hexMinimumTransactionFee}
-              hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
-            />
-          )
-        }
-        noBold
-        flexWidthValues
-      />,
-      <MultilayerFeeMessage
-        key="confirm-layer-1"
-        transaction={txData}
-        layer2fee={hexMinimumTransactionFee}
-        nativeCurrency={nativeCurrency}
-      />,
-    ];
-  }
 
   return (
     <TransactionDetailItem

@@ -1,7 +1,6 @@
+import { ethErrors, serializeError } from 'eth-rpc-errors';
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ethErrors, serializeError } from 'eth-rpc-errors';
-
 import {
   Button,
   ButtonSize,
@@ -12,26 +11,29 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { useMMIConfirmations } from '../../../../../hooks/useMMIConfirmations';
 ///: END:ONLY_INCLUDE_IF
+
 import { doesAddressRequireLedgerHidConnection } from '../../../../../selectors';
 import {
   rejectPendingApproval,
   resolvePendingApproval,
 } from '../../../../../store/actions';
 import { confirmSelector } from '../../../selectors';
+import { getConfirmationSender } from '../utils';
+import useIsDangerButton from './useIsDangerButton';
 
 const Footer = () => {
+  const dispatch = useDispatch();
   const t = useI18nContext();
   const confirm = useSelector(confirmSelector);
+  const isDangerButton = useIsDangerButton();
+
   const { currentConfirmation, isScrollToBottomNeeded } = confirm;
+  const { from } = getConfirmationSender(currentConfirmation);
+
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const { mmiOnSignCallback, mmiSubmitDisabled } = useMMIConfirmations();
   ///: END:ONLY_INCLUDE_IF
 
-  let from: string | undefined;
-  // todo: extend to other confirmation types
-  if (currentConfirmation?.msgParams) {
-    from = currentConfirmation.msgParams.from;
-  }
   const hardwareWalletRequiresConnection = useSelector((state) => {
     if (from) {
       return doesAddressRequireLedgerHidConnection(state, from);
@@ -39,12 +41,11 @@ const Footer = () => {
     return false;
   });
 
-  const dispatch = useDispatch();
-
   const onCancel = useCallback(() => {
     if (!currentConfirmation) {
       return;
     }
+
     dispatch(
       rejectPendingApproval(
         currentConfirmation.id,
@@ -58,6 +59,7 @@ const Footer = () => {
       return;
     }
     dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
+
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     mmiOnSignCallback();
     ///: END:ONLY_INCLUDE_IF
@@ -78,6 +80,7 @@ const Footer = () => {
         data-testid="confirm-footer-confirm-button"
         onClick={onSubmit}
         size={ButtonSize.Lg}
+        danger={isDangerButton}
         disabled={
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           mmiSubmitDisabled ||
