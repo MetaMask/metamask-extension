@@ -1,18 +1,17 @@
+import type { JsonRpcId, JsonRpcMiddleware } from 'json-rpc-engine';
 import log from 'loglevel';
 
 /**
  * Returns a middleware that filters out requests already seen
  *
- * @returns {Function}
+ * @returns
  */
-export default function createDupeReqFilterMiddleware() {
-  const processedRequestId = [];
-  return function filterDuplicateRequestMiddleware(
-    /** @type {any} */ req,
-    /** @type {any} */ _res,
-    /** @type {Function} */ next,
-    /** @type {Function} */ end,
-  ) {
+export default function createDupeReqFilterMiddleware(): JsonRpcMiddleware<
+  unknown,
+  void
+> {
+  const processedRequestId: JsonRpcId[] = [];
+  return function filterDuplicateRequestMiddleware(req, _res, next, end) {
     if (processedRequestId.indexOf(req.id) >= 0) {
       log.info(`RPC request with id ${req.id} already seen.`);
       return end();
