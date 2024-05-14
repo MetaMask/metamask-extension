@@ -235,9 +235,9 @@ env:
   # Modified in <root>/development/build/scripts.js:@getSegmentWriteKey
   - SEGMENT_WRITE_KEY: ''
   # Modified in <root>/development/build/scripts.js:@getSegmentDeleteApiSourceId
-  - SEGMENT_DELETE_API_SOURCE_ID
+  - SEGMENT_DELETE_API_SOURCE_ID: null
   # Modified in <root>/development/build/scripts.js:@getSegmentRegulationEndpoint
-  - SEGMENT_REGULATIONS_ENDPOINT
+  - SEGMENT_REGULATIONS_ENDPOINT: null
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   # Also see DEBUG and NODE_DEBUG
   - METAMASK_DEBUG: false
