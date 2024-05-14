@@ -113,6 +113,7 @@ import {
   SURVEY_END_TIME,
   SURVEY_START_TIME,
 } from '../helpers/constants/survey';
+import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
 import { SUPPORTED_CHAIN_IDS } from '../../app/scripts/lib/ppom/ppom-middleware';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
 import {
@@ -1831,12 +1832,33 @@ export function getShowTermsOfUse(state) {
   );
 }
 
+/**
+ * Determines if the survey toast should be shown based on the current time, survey start and end times, and whether the survey link was last clicked or closed.
+ *
+ * @param {*} state - The application state containing the necessary survey data.
+ * @returns {boolean} True if the current time is between the survey start and end times and the survey link was not last clicked or closed. False otherwise.
+ */
 export function getShowSurveyToast(state) {
   const { surveyLinkLastClickedOrClosed } = state.metamask;
   const startTime = new Date(`${SURVEY_DATE} ${SURVEY_START_TIME}`).getTime();
   const endTime = new Date(`${SURVEY_DATE} ${SURVEY_END_TIME}`).getTime();
   const now = Date.now();
   return now > startTime && now < endTime && !surveyLinkLastClickedOrClosed;
+}
+
+/**
+ * Determines if the privacy policy toast should be shown based on the current date and whether the new privacy policy toast was clicked or closed.
+ *
+ * @param {*} state - The application state containing the privacy policy data.
+ * @returns {boolean} True if the current date is on or after the new privacy policy date and the privacy policy toast was not clicked or closed. False otherwise.
+ */
+export function getShowPrivacyPolicyToast(state) {
+  const { newPrivacyPolicyToastClickedOrClosed } = state.metamask;
+  const newPrivacyPolicyDate = new Date(PRIVACY_POLICY_DATE);
+  const currentDate = new Date(Date.now());
+  return (
+    !newPrivacyPolicyToastClickedOrClosed && currentDate >= newPrivacyPolicyDate
+  );
 }
 
 export function getShowOutdatedBrowserWarning(state) {
@@ -1846,6 +1868,10 @@ export function getShowOutdatedBrowserWarning(state) {
   }
   const currentTime = new Date().getTime();
   return currentTime - outdatedBrowserWarningLastShown >= DAY * 2;
+}
+
+export function getNewPrivacyPolicyToastShownDate(state) {
+  return state.metamask.newPrivacyPolicyToastShownDate;
 }
 
 export function getShowBetaHeader(state) {
