@@ -523,7 +523,7 @@ export default function setupSentry({ release, getState }) {
      * transactions are sent. By setting `tracesSampleRate` to a value lower than 1.0, we
      * reduce the volume of transactions to a more reasonable amount.
      */
-    tracesSampleRate: 0.1,
+    tracesSampleRate: 0.01,
     beforeSend: (report) => rewriteReport(report, getState),
     beforeBreadcrumb: beforeBreadcrumb(getState),
   });
