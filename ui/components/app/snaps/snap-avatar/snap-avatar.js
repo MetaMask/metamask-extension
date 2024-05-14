@@ -10,7 +10,6 @@ import {
   JustifyContent,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
-import { getSnapName } from '../../../../helpers/utils/util';
 import {
   AvatarFavicon,
   BadgeWrapper,
@@ -20,7 +19,11 @@ import {
   IconName,
   IconSize,
 } from '../../../component-library';
-import { getTargetSubjectMetadata } from '../../../../selectors';
+import {
+  getSnapMetadata,
+  getTargetSubjectMetadata,
+} from '../../../../selectors';
+import { getAvatarFallbackLetter } from '../../../../helpers/utils/util';
 
 const SnapAvatar = ({
   snapId,
@@ -33,12 +36,14 @@ const SnapAvatar = ({
     getTargetSubjectMetadata(state, snapId),
   );
 
-  const friendlyName = snapId && getSnapName(snapId, subjectMetadata);
+  const { name: snapName } = useSelector((state) =>
+    getSnapMetadata(state, snapId),
+  );
 
   const iconUrl = subjectMetadata?.iconUrl;
 
   // We choose the first non-symbol char as the fallback icon.
-  const fallbackIcon = friendlyName?.match(/[a-z0-9]/iu)?.[0] ?? '?';
+  const fallbackIcon = getAvatarFallbackLetter(snapName);
 
   return (
     <BadgeWrapper
@@ -62,7 +67,7 @@ const SnapAvatar = ({
           backgroundColor={BackgroundColor.backgroundAlternative}
           size={avatarSize}
           src={iconUrl}
-          name={friendlyName}
+          name={snapName}
         />
       ) : (
         <AvatarBase

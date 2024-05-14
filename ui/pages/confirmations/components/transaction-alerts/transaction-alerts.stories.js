@@ -7,7 +7,11 @@ import { NetworkStatus } from '@metamask/network-controller';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 import configureStore from '../../../../store/store';
 import testData from '../../../../../.storybook/test-data';
+import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
 import TransactionAlerts from '.';
+
+const mockSelectedInternalAccount =
+  getSelectedInternalAccountFromMockState(testData);
 
 const customTransaction = ({
   estimateUsed,
@@ -28,7 +32,7 @@ const customTransaction = ({
       gas: '0x5208',
       gasPrice: '0x147d357000',
       nonce: '0xf',
-      to: testData?.metamask?.selectedAddress,
+      to: mockSelectedInternalAccount.address,
       value: '0x63eb89da4ed00000',
       ...props?.txParams,
     },

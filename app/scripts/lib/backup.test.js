@@ -161,6 +161,7 @@ const jsonData = JSON.stringify({
       showExtensionInFullSizeView: false,
       showFiatInTestnets: false,
       showTestNetworks: true,
+      smartTransactionsOptInStatus: false,
       useNativeCurrencyAsPrimaryCurrency: true,
     },
     ipfsGateway: 'dweb.link',
@@ -168,7 +169,7 @@ const jsonData = JSON.stringify({
     theme: 'light',
     customNetworkListEnabled: false,
     textDirection: 'auto',
-    useRequestQueue: false,
+    useRequestQueue: true,
   },
   internalAccounts: {
     accounts: {

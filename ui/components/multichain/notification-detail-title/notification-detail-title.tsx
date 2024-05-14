@@ -11,10 +11,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Box, Text } from '../../component-library';
 
-export interface NotificationDetailTitleProps {
+export type NotificationDetailTitleProps = {
   title: string;
   date?: string;
-}
+};
 
 /**
  * NotificationDetailTitle component.

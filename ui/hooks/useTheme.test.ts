@@ -6,6 +6,8 @@ jest.mock('../selectors', () => ({
   getTheme: jest.fn(),
 }));
 
+// TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const renderProviderWithTheme: any = (
   settingTheme = ThemeType.light,
   documentTheme = ThemeType.light,

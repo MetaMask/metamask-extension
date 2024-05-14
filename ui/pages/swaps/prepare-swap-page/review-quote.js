@@ -41,10 +41,8 @@ import {
   getBackgroundSwapRouteState,
   swapsQuoteSelected,
   getReviewSwapClickedTimestamp,
-  getSmartTransactionsOptInStatus,
   signAndSendSwapsSmartTransaction,
   getSwapsNetworkConfig,
-  getSmartTransactionsEnabled,
   getSmartTransactionsError,
   getCurrentSmartTransactionsError,
   getSwapsSTXLoading,
@@ -63,13 +61,17 @@ import {
   getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
   getUSDConversionRate,
-  getIsMultiLayerFeeNetwork,
 } from '../../../selectors';
+import {
+  getSmartTransactionsOptInStatus,
+  getSmartTransactionsEnabled,
+} from '../../../../shared/modules/selectors';
 import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
 import {
   setCustomApproveTxData,
   showModal,
   setSwapsQuotesPollingLimitEnabled,
+  getLayer1GasFee,
 } from '../../../store/actions';
 import {
   ASSET_ROUTE,
@@ -134,7 +136,6 @@ import {
 } from '../../../../shared/lib/transactions-controller-utils';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
-import fetchEstimatedL1Fee from '../../../helpers/utils/optimism/fetchEstimatedL1Fee';
 import ExchangeRateDisplay from '../exchange-rate-display';
 import InfoTooltip from '../../../components/ui/info-tooltip';
 import useRamps from '../../../hooks/experiences/useRamps';
@@ -196,7 +197,6 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const { balance: ethBalance } = useSelector(getSelectedAccount, shallowEqual);
   const conversionRate = useSelector(conversionRateSelector);
   const USDConversionRate = useSelector(getUSDConversionRate);
-  const isMultiLayerFeeNetwork = useSelector(getIsMultiLayerFeeNetwork);
   const currentCurrency = useSelector(getCurrentCurrency);
   const swapsTokens = useSelector(getTokens, isEqual);
   const networkAndAccountSupports1559 = useSelector(
@@ -264,6 +264,8 @@ export default function ReviewQuote({ setReceiveToAmount }) {
         return t('networkNameZkSyncEra');
       case CHAIN_IDS.LINEA_MAINNET:
         return t('networkNameLinea');
+      case CHAIN_IDS.BASE:
+        return t('networkNameBase');
       default:
         throw new Error('This network is not supported for token swaps');
     }
@@ -295,16 +297,19 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     usedQuote?.gasEstimateWithRefund ||
     `0x${decimalToHex(usedQuote?.averageGas || 0)}`;
 
-  const gasLimitForMax = usedQuote?.gasEstimate || `0x0`;
-
-  const usedGasLimitWithMultiplier = new BigNumber(gasLimitForMax, 16)
-    .times(usedQuote?.gasMultiplier || FALLBACK_GAS_MULTIPLIER, 10)
-    .round(0)
-    .toString(16);
+  const estimatedGasLimit = new BigNumber(
+    usedQuote?.gasEstimate || 0,
+    16,
+  ).toString(16);
 
   const nonCustomMaxGasLimit = usedQuote?.gasEstimate
-    ? usedGasLimitWithMultiplier
-    : `0x${decimalToHex(usedQuote?.maxGas || 0)}`;
+    ? `0x${estimatedGasLimit}`
+    : `0x${decimalToHex(
+        new BigNumber(usedQuote?.maxGas)
+          .mul(usedQuote?.gasMultiplier || FALLBACK_GAS_MULTIPLIER)
+          .toString() || 0,
+      )}`;
+
   const maxGasLimit = customMaxGas || nonCustomMaxGasLimit;
 
   let maxFeePerGas;
@@ -981,21 +986,23 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   ]);
 
   useEffect(() => {
-    if (!isMultiLayerFeeNetwork || !usedQuote?.multiLayerL1TradeFeeTotal) {
+    if (!usedQuote?.multiLayerL1TradeFeeTotal) {
       return;
     }
     const getEstimatedL1Fees = async () => {
       try {
         let l1ApprovalFeeTotal = '0x0';
         if (approveTxParams) {
-          l1ApprovalFeeTotal = await fetchEstimatedL1Fee({
-            txParams: {
-              ...approveTxParams,
-              gasPrice: addHexPrefix(approveTxParams.gasPrice),
-              value: '0x0', // For approval txs we need to use "0x0" here.
-            },
-            chainId,
-          });
+          l1ApprovalFeeTotal = await dispatch(
+            getLayer1GasFee({
+              transactionParams: {
+                ...approveTxParams,
+                gasPrice: addHexPrefix(approveTxParams.gasPrice),
+                value: '0x0', // For approval txs we need to use "0x0" here.
+              },
+              chainId,
+            }),
+          );
           setMultiLayerL1ApprovalFeeTotal(l1ApprovalFeeTotal);
         }
         const l1FeeTotal = sumHexes(
@@ -1010,13 +1017,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       }
     };
     getEstimatedL1Fees();
-  }, [
-    unsignedTransaction,
-    approveTxParams,
-    isMultiLayerFeeNetwork,
-    chainId,
-    usedQuote,
-  ]);
+  }, [unsignedTransaction, approveTxParams, chainId, usedQuote]);
 
   const destinationValue = calcTokenValue(
     destinationTokenValue,

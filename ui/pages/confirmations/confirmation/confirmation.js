@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { produce } from 'immer';
 import log from 'loglevel';
@@ -17,6 +17,10 @@ import { ApprovalType } from '@metamask/controller-utils';
 ///: END:ONLY_INCLUDE_IF
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import Box from '../../../components/ui/box';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import MetaMaskTemplateRenderer from '../../../components/app/metamask-template-renderer';
 import ConfirmationWarningModal from '../components/confirmation-warning-modal';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
@@ -24,14 +28,14 @@ import { Size, TextColor } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  getTargetSubjectMetadata,
-  ///: END:ONLY_INCLUDE_IF
-  getUnapprovedTemplatedConfirmations,
+  getMemoizedUnapprovedTemplatedConfirmations,
   getUnapprovedTxCount,
   getApprovalFlows,
   getTotalUnapprovedCount,
   useSafeChainsListValidationSelector,
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+  getSnapsMetadata,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import NetworkDisplay from '../../../components/app/network-display/network-display';
 import Callout from '../../../components/ui/callout';
@@ -39,7 +43,6 @@ import { Icon, IconName } from '../../../components/component-library';
 import Loading from '../../../components/ui/loading-screen';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import SnapAuthorshipHeader from '../../../components/app/snaps/snap-authorship-header';
-import { getSnapName } from '../../../helpers/utils/util';
 import { SnapUIRenderer } from '../../../components/app/snaps/snap-ui-renderer';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -201,8 +204,7 @@ export default function ConfirmationPage({
   const dispatch = useDispatch();
   const history = useHistory();
   const pendingConfirmations = useSelector(
-    getUnapprovedTemplatedConfirmations,
-    isEqual,
+    getMemoizedUnapprovedTemplatedConfirmations,
   );
   const unapprovedTxsCount = useSelector(getUnapprovedTxCount);
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
@@ -211,9 +213,18 @@ export default function ConfirmationPage({
     useSafeChainsListValidationSelector,
   );
   const [approvalFlowLoadingText, setApprovalFlowLoadingText] = useState(null);
+
   const [currentPendingConfirmation, setCurrentPendingConfirmation] =
     useState(0);
-  const pendingConfirmation = pendingConfirmations[currentPendingConfirmation];
+  const { id } = useParams();
+  const pendingRoutedConfirmation = pendingConfirmations.find(
+    (confirmation) => confirmation.id === id,
+  );
+  // Confirmations that are directly routed to get priority and will be shown above the current queue.
+  const pendingConfirmation =
+    pendingRoutedConfirmation ??
+    pendingConfirmations[currentPendingConfirmation];
+
   const [matchedChain, setMatchedChain] = useState({});
   const [chainFetchComplete, setChainFetchComplete] = useState(false);
   const preventAlertsForAddChainValidation =
@@ -241,9 +252,9 @@ export default function ConfirmationPage({
   const [submitAlerts, setSubmitAlerts] = useState([]);
 
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  const targetSubjectMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, pendingConfirmation?.origin),
-  );
+  const snapsMetadata = useSelector(getSnapsMetadata);
+
+  const name = snapsMetadata[pendingConfirmation?.origin]?.name;
 
   const SNAP_DIALOG_TYPE = [
     ApprovalType.SnapDialogAlert,
@@ -274,10 +285,7 @@ export default function ConfirmationPage({
   let useSnapHeader = isSnapDialog;
 
   // When pendingConfirmation is undefined, this will also be undefined
-  const snapName =
-    isSnapDialog &&
-    targetSubjectMetadata &&
-    getSnapName(pendingConfirmation?.origin, targetSubjectMetadata);
+  const snapName = isSnapDialog && name;
   ///: END:ONLY_INCLUDE_IF
 
   const INPUT_STATE_CONFIRMATIONS = [
@@ -452,6 +460,27 @@ export default function ConfirmationPage({
   };
   const handleSubmit = async () => {
     setLoading(true);
+
+    if (
+      pendingConfirmation?.requestData?.fromNetworkConfiguration?.chainId &&
+      pendingConfirmation?.requestData?.toNetworkConfiguration?.chainId
+    ) {
+      trackEvent({
+        category: MetaMetricsEventCategory.Network,
+        event: MetaMetricsEventName.NavNetworkSwitched,
+        properties: {
+          location: 'Switch Modal',
+          from_network:
+            pendingConfirmation.requestData.fromNetworkConfiguration.chainId,
+          to_network:
+            pendingConfirmation.requestData.toNetworkConfiguration.chainId,
+          referrer: {
+            url: window.location.origin,
+          },
+        },
+      });
+    }
+
     if (templateState[pendingConfirmation.id]?.useWarningModal) {
       setShowWarningModal(true);
     } else {

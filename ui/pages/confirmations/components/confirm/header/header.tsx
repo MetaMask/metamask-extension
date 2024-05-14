@@ -1,44 +1,58 @@
 import React from 'react';
-
-import useConfirmationNetworkInfo from '../../../hooks/useConfirmationNetworkInfo';
-import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
-import {
-  AlignItems,
-  Display,
-  TextColor,
-} from '../../../../../helpers/constants/design-system';
-
-import Identicon from '../../../../../components/ui/identicon';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
   Text,
 } from '../../../../../components/component-library';
+import Identicon from '../../../../../components/ui/identicon';
+import {
+  AlignItems,
+  Display,
+  JustifyContent,
+  TextColor,
+  TextVariant,
+} from '../../../../../helpers/constants/design-system';
+import { getAvatarNetworkColor } from '../../../../../helpers/utils/accounts';
+import useConfirmationNetworkInfo from '../../../hooks/useConfirmationNetworkInfo';
+import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
+import HeaderInfo from './header-info';
 
 const Header = () => {
   const { networkImageUrl, networkDisplayName } = useConfirmationNetworkInfo();
-  const { recipientAddress, recipientName } = useConfirmationRecipientInfo();
+  const { senderAddress: fromAddress, senderName: fromName } =
+    useConfirmationRecipientInfo();
 
   return (
     <Box
-      alignItems={AlignItems.center}
       display={Display.Flex}
-      padding={4}
       className="confirm_header__wrapper"
+      alignItems={AlignItems.center}
+      justifyContent={JustifyContent.spaceBetween}
     >
-      <Box display={Display.Flex}>
-        <Identicon address={recipientAddress} diameter={32} />
-        <AvatarNetwork
-          src={networkImageUrl}
-          name={networkDisplayName}
-          size={AvatarNetworkSize.Xs}
-          className="confirm_header__avatar-network"
-        />
+      <Box alignItems={AlignItems.flexStart} display={Display.Flex} padding={4}>
+        <Box display={Display.Flex} marginTop={2}>
+          <Identicon address={fromAddress} diameter={32} />
+          <AvatarNetwork
+            src={networkImageUrl}
+            name={networkDisplayName}
+            size={AvatarNetworkSize.Xs}
+            backgroundColor={getAvatarNetworkColor(networkDisplayName)}
+            className="confirm_header__avatar-network"
+          />
+        </Box>
+        <Box marginInlineStart={4}>
+          <Text
+            color={TextColor.textDefault}
+            variant={TextVariant.bodyMdMedium}
+          >
+            {fromName}
+          </Text>
+          <Text color={TextColor.textAlternative}>{networkDisplayName}</Text>
+        </Box>
       </Box>
-      <Box marginInlineStart={4}>
-        <Text>{recipientName}</Text>
-        <Text color={TextColor.textAlternative}>{networkDisplayName}</Text>
+      <Box alignItems={AlignItems.flexEnd} display={Display.Flex} padding={4}>
+        <HeaderInfo />
       </Box>
     </Box>
   );

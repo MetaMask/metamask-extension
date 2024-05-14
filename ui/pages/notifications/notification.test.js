@@ -39,6 +39,16 @@ describe('Notifications', () => {
             subjectType: 'snap',
           },
         },
+        snaps: {
+          'npm:@metamask/notifications-example-snap': {
+            id: 'npm:@metamask/notifications-example-snap',
+            version: '1.2.3',
+            manifest: {
+              proposedName: 'Notifications Example Snap',
+              description: 'A snap',
+            },
+          },
+        },
       },
     };
 
@@ -89,6 +99,16 @@ describe('NotificationItem', () => {
             name: 'Notifications Example Snap',
             version: '1.2.3',
             subjectType: 'snap',
+          },
+        },
+        snaps: {
+          'npm:@metamask/notifications-example-snap': {
+            id: 'npm:@metamask/notifications-example-snap',
+            version: '1.2.3',
+            manifest: {
+              proposedName: 'Notifications Example Snap',
+              description: 'A snap',
+            },
           },
         },
       },

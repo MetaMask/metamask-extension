@@ -9,7 +9,6 @@ const mockStore = configureMockStore()(mockSendState);
 
 const props = {
   tokens: [],
-  selectedAddress: '0x0',
   nfts: [],
   collections: [],
   sendAsset: {

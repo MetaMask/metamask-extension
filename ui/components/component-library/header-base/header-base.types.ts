@@ -6,6 +6,8 @@ import type {
   BoxProps,
 } from '../box';
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface HeaderBaseStyleUtilityProps extends StyleUtilityProps {
   /**
    * The children is the title area of the HeaderBase

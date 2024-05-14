@@ -1,7 +1,7 @@
 import React from 'react';
 import { Meta } from '@storybook/react';
-import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { shortenAddress } from '../../../helpers/utils/util';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import {
   NotificationDetailCopyButton,
   NotificationDetailCopyButtonProps,

@@ -1,0 +1,13 @@
+diff --git a/lib/index.js b/lib/index.js
+index b7a810396d6c0dad839fc08f1e192f5df134879f..93cb54be0f33c77e9f801f1c23330eb0fc65bb38 100644
+--- a/lib/index.js
++++ b/lib/index.js
+@@ -4,7 +4,7 @@ exports.Optional = exports.Type = exports.AssertWeak = exports.Assert = exports.
+ const typebox_1 = require("@sinclair/typebox");
+ Object.defineProperty(exports, "Optional", { enumerable: true, get: function () { return typebox_1.Optional; } });
+ const errors_1 = require("@sinclair/typebox/errors");
+-const ts_mixer_1 = require("ts-mixer");
++const ts_mixer_1 = require("ts-mixer/dist/cjs/index");
+ const custom_types_1 = require("./custom-types");
+ const errors_2 = require("./errors");
+ const utils_1 = require("./utils");

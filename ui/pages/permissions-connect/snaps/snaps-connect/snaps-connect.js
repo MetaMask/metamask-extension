@@ -2,13 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import Box from '../../../../components/ui/box';
-import SiteOrigin from '../../../../components/ui/site-origin';
-import {
-  IconSize,
-  ValidTag,
-  Text,
-} from '../../../../components/component-library';
+import { Box, IconSize, Text } from '../../../../components/component-library';
 import {
   FlexDirection,
   TextVariant,
@@ -19,16 +13,14 @@ import {
   FontWeight,
   BlockSize,
   OverflowWrap,
+  BackgroundColor,
 } from '../../../../helpers/constants/design-system';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import SnapConnectCell from '../../../../components/app/snaps/snap-connect-cell/snap-connect-cell';
-import { getDedupedSnaps, getSnapName } from '../../../../helpers/utils/util';
+import { getDedupedSnaps } from '../../../../helpers/utils/util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import SnapPrivacyWarning from '../../../../components/app/snaps/snap-privacy-warning/snap-privacy-warning';
-import {
-  getPermissions,
-  getTargetSubjectMetadata,
-} from '../../../../selectors';
+import { getPermissions, getSnapMetadata } from '../../../../selectors';
 import SnapAvatar from '../../../../components/app/snaps/snap-avatar/snap-avatar';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 
@@ -41,7 +33,7 @@ export default function SnapsConnect({
   setSnapsInstallPrivacyWarningShownStatus,
 }) {
   const t = useI18nContext();
-  const { origin, iconUrl, name } = targetSubjectMetadata;
+  const { origin } = targetSubjectMetadata;
   const [isLoading, setIsLoading] = useState(false);
   const [isShowingSnapsPrivacyWarning, setIsShowingSnapsPrivacyWarning] =
     useState(!snapsInstallPrivacyWarningShown);
@@ -64,44 +56,51 @@ export default function SnapsConnect({
 
   const snaps = getDedupedSnaps(request, currentPermissions);
 
-  const singularConnectSnapMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, snaps?.[0]),
-  );
-
   const SnapsConnectContent = () => {
     const { hostname: trimmedOrigin } = useOriginMetadata(origin) || {};
+
+    const snapId = snaps[0];
+    const { name: snapName } = useSelector((state) =>
+      getSnapMetadata(state, snapId),
+    );
+
     if (isLoading) {
       return (
         <Box
-          className="snap-connect__loader-container"
+          display={Display.Flex}
           flexDirection={FlexDirection.Column}
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.center}
+          width={BlockSize.Full}
+          height={BlockSize.Full}
         >
           <PulseLoader />
         </Box>
       );
     }
+
     if (snaps?.length > 1) {
       return (
         <Box
-          className="snaps-connect__content"
           flexDirection={FlexDirection.Column}
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
-          paddingLeft={4}
-          paddingRight={4}
-          paddingTop={8}
+          paddingTop={4}
           width={BlockSize.Full}
           style={{ overflowY: 'hidden' }}
+          backgroundColor={BackgroundColor.backgroundAlternative}
         >
-          <Text paddingBottom={2} variant={TextVariant.headingLg}>
+          <Text
+            paddingBottom={2}
+            variant={TextVariant.headingMd}
+            textAlign={TextAlign.Center}
+          >
             {t('connectionRequest')}
           </Text>
           <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
             {t('multipleSnapConnectionWarning', [
               <Text
-                as={ValidTag.Span}
+                as="span"
                 key="1"
                 variant={TextVariant.bodyMd}
                 fontWeight={FontWeight.Medium}
@@ -109,7 +108,7 @@ export default function SnapsConnect({
                 {trimmedOrigin}
               </Text>,
               <Text
-                as={ValidTag.Span}
+                as="span"
                 key="2"
                 variant={TextVariant.bodyMd}
                 fontWeight={FontWeight.Medium}
@@ -119,7 +118,6 @@ export default function SnapsConnect({
             ])}
           </Text>
           <Box
-            className="snaps-connect__content__snaps-list"
             flexDirection={FlexDirection.Column}
             display={Display.Flex}
             marginTop={4}
@@ -138,17 +136,17 @@ export default function SnapsConnect({
         </Box>
       );
     } else if (snaps?.length === 1) {
-      const snapId = snaps[0];
-      const snapName = getSnapName(snapId, singularConnectSnapMetadata);
       return (
         <Box
-          className="snaps-connect__content"
+          display={Display.Flex}
           flexDirection={FlexDirection.Column}
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
+          width={BlockSize.Full}
           height={BlockSize.Full}
           paddingLeft={4}
           paddingRight={4}
+          backgroundColor={BackgroundColor.backgroundAlternative}
         >
           <Box paddingBottom={2}>
             <SnapAvatar
@@ -158,7 +156,7 @@ export default function SnapsConnect({
               borderWidth={3}
             />
           </Box>
-          <Text paddingBottom={2} variant={TextVariant.headingLg}>
+          <Text paddingBottom={2} variant={TextVariant.headingMd}>
             {t('connectionRequest')}
           </Text>
           <Text
@@ -169,7 +167,7 @@ export default function SnapsConnect({
           >
             {t('snapConnectionWarning', [
               <Text
-                as={ValidTag.Span}
+                as="span"
                 key="1"
                 variant={TextVariant.bodyMd}
                 fontWeight={FontWeight.Medium}
@@ -177,7 +175,7 @@ export default function SnapsConnect({
                 {trimmedOrigin}
               </Text>,
               <Text
-                as={ValidTag.Span}
+                as="span"
                 key="2"
                 variant={TextVariant.bodyMd}
                 fontWeight={FontWeight.Medium}
@@ -194,9 +192,13 @@ export default function SnapsConnect({
 
   return (
     <Box
-      className="page-container snaps-connect"
+      className="snaps-connect"
+      display={Display.Flex}
       flexDirection={FlexDirection.Column}
       alignItems={AlignItems.center}
+      height={BlockSize.Full}
+      width={BlockSize.Full}
+      backgroundColor={BackgroundColor.backgroundAlternative}
     >
       {isShowingSnapsPrivacyWarning && (
         <SnapPrivacyWarning
@@ -208,23 +210,15 @@ export default function SnapsConnect({
         />
       )}
       <Box
-        className="snaps-connect__header"
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.center}
+        display={Display.Flex}
+        height={BlockSize.Full}
+        width={BlockSize.Full}
         paddingLeft={4}
         paddingRight={4}
       >
-        <SiteOrigin
-          chip
-          siteOrigin={origin}
-          title={origin}
-          iconSrc={iconUrl}
-          iconName={name}
-        />
+        <SnapsConnectContent />
       </Box>
-      <SnapsConnectContent />
       <PageContainerFooter
-        footerClassName="snaps-connect__footer"
         cancelButtonType="default"
         hideCancel={false}
         disabled={isLoading}

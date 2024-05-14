@@ -180,11 +180,13 @@ export const isValidDate = (d: Date | number) => {
  * @property {() => void} reject - A function that rejects the Promise.
  */
 
-interface DeferredPromise {
+type DeferredPromise = {
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   promise: Promise<any>;
   resolve?: () => void;
   reject?: () => void;
-}
+};
 
 /**
  * Create a defered Promise.
@@ -274,7 +276,26 @@ export function isWebUrl(urlString: string): boolean {
   );
 }
 
-interface FormattedTransactionMeta {
+/**
+ * Determines whether to emit a MetaMetrics event for a given metaMetricsId.
+ * Relies on the last 4 characters of the metametricsId. Assumes the IDs are evenly distributed.
+ * If metaMetricsIds are distributed evenly, this should be a 1% sample rate
+ *
+ * @param metaMetricsId - The metametricsId to use for the event.
+ * @returns Whether to emit the event or not.
+ */
+export function shouldEmitDappViewedEvent(metaMetricsId: string): boolean {
+  if (metaMetricsId === null) {
+    return false;
+  }
+
+  const lastFourCharacters = metaMetricsId.slice(-4);
+  const lastFourCharactersAsNumber = parseInt(lastFourCharacters, 16);
+
+  return lastFourCharactersAsNumber % 100 === 0;
+}
+
+type FormattedTransactionMeta = {
   blockHash: string | null;
   blockNumber: string | null;
   from: string;
@@ -293,7 +314,7 @@ interface FormattedTransactionMeta {
   type: TransactionEnvelopeType;
   accessList: AccessList | null;
   transactionIndex: string | null;
-}
+};
 
 export function formatTxMetaForRpcResult(
   txMeta: TransactionMeta,

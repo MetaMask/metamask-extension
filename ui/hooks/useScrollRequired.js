@@ -11,7 +11,9 @@ import { debounce } from 'lodash';
  * @returns Flags for isScrollable and isScrollToBottom, a ref to use for the scrolling content, a scrollToBottom function and a onScroll handler.
  */
 export const useScrollRequired = (dependencies = []) => {
-  const ref = useRef();
+  const ref = useRef(null);
+
+  const [hasScrolledToBottomState, setHasScrolledToBottom] = useState(false);
   const [isScrollableState, setIsScrollable] = useState(false);
   const [isScrolledToBottomState, setIsScrolledToBottom] = useState(false);
 
@@ -19,7 +21,6 @@ export const useScrollRequired = (dependencies = []) => {
     if (!ref.current) {
       return;
     }
-
     const isScrollable =
       ref.current && ref.current.scrollHeight > ref.current.clientHeight;
 
@@ -31,9 +32,10 @@ export const useScrollRequired = (dependencies = []) => {
         ref.current.scrollHeight;
 
     setIsScrollable(isScrollable);
+    setIsScrolledToBottom(!isScrollable || isScrolledToBottom);
 
     if (!isScrollable || isScrolledToBottom) {
-      setIsScrolledToBottom(true);
+      setHasScrolledToBottom(true);
     }
   };
 
@@ -41,16 +43,22 @@ export const useScrollRequired = (dependencies = []) => {
 
   const scrollToBottom = () => {
     setIsScrolledToBottom(true);
+    setHasScrolledToBottom(true);
 
     if (ref.current) {
-      ref.current.scrollTo(0, ref.current.scrollHeight);
+      ref.current.scrollTo({
+        top: ref.current.scrollHeight,
+        behavior: 'smooth',
+      });
     }
   };
 
   return {
     isScrollable: isScrollableState,
     isScrolledToBottom: isScrolledToBottomState,
+    hasScrolledToBottom: hasScrolledToBottomState,
     scrollToBottom,
+    setHasScrolledToBottom,
     ref,
     onScroll: debounce(update, 25),
   };

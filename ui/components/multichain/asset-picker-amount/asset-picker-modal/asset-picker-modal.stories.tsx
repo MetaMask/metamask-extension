@@ -21,11 +21,15 @@ const props = {
     type: AssetType.token,
   } as unknown as Asset,
 };
-export const DefaultStory = () => <AssetPickerModal {...props} />;
+export const DefaultStory = () => (
+  <AssetPickerModal onAssetChange={() => ({})} {...props} />
+);
 
 DefaultStory.storyName = 'Default';
 
-export const TokenStory = () => <AssetPickerModal {...props} />;
+export const TokenStory = () => (
+  <AssetPickerModal onAssetChange={() => ({})} {...props} />
+);
 
 TokenStory.storyName = 'Modal With Balance';
 

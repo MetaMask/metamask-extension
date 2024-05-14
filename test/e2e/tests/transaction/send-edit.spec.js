@@ -34,7 +34,13 @@ describe('Editing Confirm Transaction', function () {
         await driver.clickElement(
           '.confirm-page-container-header__back-button',
         );
-        await driver.fill('.unit-input__input', '2.2');
+
+        const inputAmount = await driver.findElement('.unit-input__input');
+
+        await inputAmount.press(driver.Key.BACK_SPACE);
+        await inputAmount.press('2');
+        await inputAmount.press('.');
+        await inputAmount.press('2');
 
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
@@ -103,7 +109,13 @@ describe('Editing Confirm Transaction', function () {
         await driver.clickElement(
           '.confirm-page-container-header__back-button',
         );
-        await driver.fill('.unit-input__input', '2.2');
+
+        const inputAmount = await driver.findElement('.unit-input__input');
+
+        await inputAmount.press(driver.Key.BACK_SPACE);
+        await inputAmount.press('2');
+        await inputAmount.press('.');
+        await inputAmount.press('2');
 
         await driver.clickElement({ text: 'Next', tag: 'button' });
 

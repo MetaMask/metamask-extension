@@ -1,20 +1,22 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import SnapInstallWarning from '../../../../components/app/snaps/snap-install-warning';
-import Box from '../../../../components/ui/box/box';
 import {
   AlignItems,
   BackgroundColor,
-  BLOCK_SIZES,
   BorderStyle,
-  FLEX_DIRECTION,
   FontWeight,
   JustifyContent,
   TextVariant,
-  TEXT_ALIGN,
   IconColor,
+  Display,
+  BorderRadius,
+  BlockSize,
+  FlexDirection,
+  TextAlign,
 } from '../../../../helpers/constants/design-system';
 
 import UpdateSnapPermissionList from '../../../../components/app/snaps/update-snap-permission-list';
@@ -24,12 +26,13 @@ import InstallError from '../../../../components/app/snaps/install-error/install
 import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorship-header';
 import {
   AvatarIcon,
+  Box,
   IconName,
-  ValidTag,
   Text,
 } from '../../../../components/component-library';
-import { getSnapName } from '../../../../helpers/utils/util';
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';
+import { getSnapMetadata, getSnapsMetadata } from '../../../../selectors';
+import { getSnapName } from '../../../../helpers/utils/util';
 
 export default function SnapUpdate({
   request,
@@ -44,6 +47,7 @@ export default function SnapUpdate({
 
   const { isScrollable, isScrolledToBottom, scrollToBottom, ref, onScroll } =
     useScrollRequired([requestState]);
+  const snapsMetadata = useSelector(getSnapsMetadata);
 
   const onCancel = useCallback(
     () => rejectSnapUpdate(request.metadata.id),
@@ -53,6 +57,10 @@ export default function SnapUpdate({
   const onSubmit = useCallback(
     () => approveSnapUpdate(request.metadata.id),
     [request, approveSnapUpdate],
+  );
+
+  const { name: snapName } = useSelector((state) =>
+    getSnapMetadata(state, targetSubjectMetadata.origin),
   );
 
   const approvedPermissions = requestState.approvedPermissions ?? {};
@@ -65,16 +73,12 @@ export default function SnapUpdate({
 
   const warnings = getSnapInstallWarnings(
     newPermissions,
-    targetSubjectMetadata,
     t,
+    snapName,
+    getSnapName(snapsMetadata),
   );
 
   const shouldShowWarning = warnings.length > 0;
-
-  const snapName = getSnapName(
-    targetSubjectMetadata.origin,
-    targetSubjectMetadata,
-  );
 
   const handleSubmit = () => {
     if (!hasError && shouldShowWarning) {
@@ -88,11 +92,13 @@ export default function SnapUpdate({
 
   return (
     <Box
-      className="page-container snap-update"
+      className="snap-update"
+      display={Display.Flex}
       justifyContent={JustifyContent.spaceBetween}
-      height={BLOCK_SIZES.FULL}
+      height={BlockSize.Full}
       borderStyle={BorderStyle.none}
-      flexDirection={FLEX_DIRECTION.COLUMN}
+      flexDirection={FlexDirection.Column}
+      backgroundColor={BackgroundColor.backgroundAlternative}
     >
       <SnapAuthorshipHeader snapId={targetSubjectMetadata.origin} />
       <Box
@@ -103,12 +109,14 @@ export default function SnapUpdate({
           overflowY: 'auto',
           flex: !isLoading && '1',
         }}
+        paddingLeft={4}
+        paddingRight={4}
       >
         {!isLoading && !hasError && (
           <Text
-            paddingBottom={4}
             paddingTop={4}
-            variant={TextVariant.headingLg}
+            paddingBottom={2}
+            variant={TextVariant.headingMd}
             textAlign="center"
           >
             {t('updateRequest')}
@@ -117,7 +125,8 @@ export default function SnapUpdate({
         {isLoading && (
           <Box
             className="snap-update__content__loader-container"
-            flexDirection={FLEX_DIRECTION.COLUMN}
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
           >
@@ -130,7 +139,7 @@ export default function SnapUpdate({
             error={requestState.error}
             title={t('snapUpdateErrorTitle')}
             description={t('snapUpdateErrorDescription', [
-              <Text as={ValidTag.Span} key="1" fontWeight={FontWeight.Medium}>
+              <Text as="span" key="1" fontWeight={FontWeight.Medium}>
                 {snapName}
               </Text>,
             ])}
@@ -143,11 +152,11 @@ export default function SnapUpdate({
               paddingBottom={4}
               paddingLeft={4}
               paddingRight={4}
-              textAlign={TEXT_ALIGN.CENTER}
+              textAlign={TextAlign.Center}
             >
               {t('snapUpdateRequest', [
                 <Text
-                  as={ValidTag.Span}
+                  as="span"
                   key="2"
                   variant={TextVariant.bodyMd}
                   fontWeight={FontWeight.Medium}
@@ -155,7 +164,7 @@ export default function SnapUpdate({
                   {snapName}
                 </Text>,
                 <Text
-                  as={ValidTag.Span}
+                  as="span"
                   key="3"
                   variant={TextVariant.bodyMd}
                   fontWeight={FontWeight.Medium}
@@ -164,7 +173,15 @@ export default function SnapUpdate({
                 </Text>,
               ])}
             </Text>
-            <Box marginLeft={4} marginRight={4}>
+            <Box
+              display={Display.Flex}
+              backgroundColor={BackgroundColor.backgroundDefault}
+              paddingLeft={4}
+              paddingRight={4}
+              paddingTop={2}
+              paddingBottom={2}
+              borderRadius={BorderRadius.XL}
+            >
               <UpdateSnapPermissionList
                 approvedPermissions={approvedPermissions}
                 revokedPermissions={revokedPermissions}
@@ -173,26 +190,27 @@ export default function SnapUpdate({
               />
             </Box>
             {isScrollable && !isScrolledToBottom ? (
-              <AvatarIcon
-                className="snap-install__scroll-button"
-                data-testid="snap-update-scroll"
-                iconName={IconName.Arrow2Down}
-                backgroundColor={BackgroundColor.infoDefault}
-                color={IconColor.primaryInverse}
-                onClick={scrollToBottom}
-                style={{ cursor: 'pointer' }}
-              />
+              <Box className="snap-update__scroll-button-area">
+                <AvatarIcon
+                  className="snap-install__scroll-button"
+                  data-testid="snap-update-scroll"
+                  iconName={IconName.Arrow2Down}
+                  backgroundColor={BackgroundColor.infoDefault}
+                  color={IconColor.primaryInverse}
+                  onClick={scrollToBottom}
+                  style={{ cursor: 'pointer' }}
+                />
+              </Box>
             ) : null}
           </>
         )}
       </Box>
       <Box
         className="snap-update__footer"
+        display={Display.Flex}
         alignItems={AlignItems.center}
-        flexDirection={FLEX_DIRECTION.COLUMN}
-        style={{
-          boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
-        }}
+        flexDirection={FlexDirection.Column}
+        backgroundColor={BackgroundColor.backgroundAlternative}
       >
         <PageContainerFooter
           cancelButtonType="default"
@@ -203,7 +221,7 @@ export default function SnapUpdate({
           onCancel={onCancel}
           cancelText={t('cancel')}
           onSubmit={handleSubmit}
-          submitText={t(hasError ? 'ok' : 'update')}
+          submitText={t(hasError ? 'ok' : 'confirm')}
         />
       </Box>
       {isShowingWarning && (

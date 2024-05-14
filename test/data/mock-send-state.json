@@ -1262,7 +1262,7 @@
     "gasIsSetInModal": false,
     "gasPriceEstimate": "0x0",
     "gasLimitMinimum": "0x5208",
-    "gasTotalForLayer1": "0x0",
+    "gasTotalForLayer1": null,
     "recipientMode": "CONTACT_LIST",
     "recipientInput": "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b",
     "selectedAccount": {

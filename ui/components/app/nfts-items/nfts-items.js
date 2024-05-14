@@ -157,7 +157,7 @@ export default function NftsItems({
       updateSendAsset({
         type: AssetType.NFT,
         details: nft,
-        skipComputeEstimatedGasLimit: true,
+        skipComputeEstimatedGasLimit: false,
       }),
     );
     history.push(SEND_ROUTE);

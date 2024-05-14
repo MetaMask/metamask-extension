@@ -20,7 +20,7 @@ export const BUNDLER_URL = 'http://localhost:3000/rpc';
 
 /* URL of the 4337 account snap site. */
 export const ERC_4337_ACCOUNT_SNAP_URL =
-  'https://metamask.github.io/snap-account-abstraction-keyring/latest/';
+  'https://metamask.github.io/snap-account-abstraction-keyring/0.2.2/';
 
 /* Salt used to generate the 4337 account. */
 export const ERC_4337_ACCOUNT_SALT = '0x1';
@@ -28,6 +28,10 @@ export const ERC_4337_ACCOUNT_SALT = '0x1';
 /* Address of the SimpleAccountFactory smart contract deployed to Ganache. */
 export const SIMPLE_ACCOUNT_FACTORY =
   '0x4aFf835038b16dccDb1670103C4877A8F93E5219';
+
+/* URL of the Snap Simple Keyring site. */
+export const TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL =
+  'https://metamask.github.io/snap-simple-keyring/1.1.1/';
 
 /* Address of the VerifyingPaymaster smart contract deployed to Ganache. */
 export const VERIFYING_PAYMASTER = '0xbdbDEc38ed168331b1F7004cc9e5392A2272C1D7';

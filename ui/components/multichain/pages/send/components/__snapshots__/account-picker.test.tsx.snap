@@ -61,6 +61,49 @@ exports[`SendPageAccountPicker render renders correctly 1`] = `
             </div>
           </div>
         </div>
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+        >
+          <div
+            class="mm-avatar-account__jazzicon"
+          >
+            <div
+              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(250, 58, 0);"
+            >
+              <svg
+                height="16"
+                width="16"
+                x="0"
+                y="0"
+              >
+                <rect
+                  fill="#18CDF2"
+                  height="16"
+                  transform="translate(-0.52419675189697 -1.6521420347302493) rotate(328.9 8 8)"
+                  width="16"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#035E56"
+                  height="16"
+                  transform="translate(-9.149230854416022 5.2962309358743) rotate(176.2 8 8)"
+                  width="16"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#F26602"
+                  height="16"
+                  transform="translate(8.333921009111961 -7.102569861498541) rotate(468.9 8 8)"
+                  width="16"
+                  x="0"
+                  y="0"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
         <span
           class="mm-box mm-text multichain-account-picker__label mm-text--body-md mm-text--ellipsis mm-box--padding-inline-start-2 mm-box--color-text-default"
           style="flex-grow: 1; text-align: start;"

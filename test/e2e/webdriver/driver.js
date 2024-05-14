@@ -378,11 +378,18 @@ class Driver {
    * without causing a test failure, but provide a console log of why.
    *
    * @param rawLocator
+   * @param timeout
    */
-  async clickElementSafe(rawLocator) {
+  async clickElementSafe(rawLocator, timeout = 1000) {
     try {
-      const element = await this.findClickableElement(rawLocator);
-      await element.click();
+      const locator = this.buildLocator(rawLocator);
+
+      const elements = await this.driver.wait(
+        until.elementsLocated(locator),
+        timeout,
+      );
+
+      await elements[0].click();
     } catch (e) {
       console.log(`Element ${rawLocator} not found (${e})`);
     }
@@ -466,6 +473,10 @@ class Driver {
     await this.executeScript(
       `navigator.clipboard.writeText("${contentToPaste}")`,
     );
+    await this.fill(rawLocator, Key.chord(this.Key.MODIFIER, 'v'));
+  }
+
+  async pasteFromClipboardIntoField(rawLocator) {
     await this.fill(rawLocator, Key.chord(this.Key.MODIFIER, 'v'));
   }
 

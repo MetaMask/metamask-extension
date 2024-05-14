@@ -4,6 +4,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
 } from '../../../../../shared/constants/metametrics';
+import { shouldEmitDappViewedEvent } from '../../util';
 
 /**
  * This method attempts to retrieve the Ethereum accounts available to the
@@ -108,18 +109,26 @@ async function requestEthereumAccountsHandler(
     res.result = accounts;
     const numberOfConnectedAccounts =
       getPermissionsForOrigin(origin).eth_accounts.caveats[0].value.length;
-    sendMetrics({
-      event: MetaMetricsEventName.DappViewed,
-      category: MetaMetricsEventCategory.InpageProvider,
-      referrer: {
-        url: origin,
-      },
-      properties: {
-        is_first_visit: true,
-        number_of_accounts: Object.keys(metamaskState.accounts).length,
-        number_of_accounts_connected: numberOfConnectedAccounts,
-      },
-    });
+    // first time connection to dapp will lead to no log in the permissionHistory
+    // and if user has connected to dapp before, the dapp origin will be included in the permissionHistory state
+    // we will leverage that to identify `is_first_visit` for metrics
+    const isFirstVisit = !Object.keys(metamaskState.permissionHistory).includes(
+      origin,
+    );
+    if (shouldEmitDappViewedEvent(metamaskState.metaMetricsId)) {
+      sendMetrics({
+        event: MetaMetricsEventName.DappViewed,
+        category: MetaMetricsEventCategory.InpageProvider,
+        referrer: {
+          url: origin,
+        },
+        properties: {
+          is_first_visit: isFirstVisit,
+          number_of_accounts: Object.keys(metamaskState.accounts).length,
+          number_of_accounts_connected: numberOfConnectedAccounts,
+        },
+      });
+    }
   } else {
     // This should never happen, because it should be caught in the
     // above catch clause

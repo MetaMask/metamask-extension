@@ -38,6 +38,8 @@ describe('Test Snap Client Status', function () {
           1000,
           10000,
         );
+
+        await driver.delay(1000);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.Dialog,
           windowHandles,
@@ -47,10 +49,10 @@ describe('Test Snap Client Status', function () {
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Install' });
+        await driver.waitForSelector({ text: 'Confirm' });
 
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
 

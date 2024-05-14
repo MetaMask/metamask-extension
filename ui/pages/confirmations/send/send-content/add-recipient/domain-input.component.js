@@ -4,7 +4,7 @@ import classnames from 'classnames';
 
 import { isHexString } from '@metamask/utils';
 import { addHexPrefix } from '../../../../../../app/scripts/lib/util';
-import { isValidDomainName } from '../../../../../helpers/utils/util';
+import { IS_FLASK, isValidDomainName } from '../../../../../helpers/utils/util';
 import {
   isBurnAddress,
   isValidHexAddress,
@@ -72,12 +72,7 @@ export default class DomainInput extends Component {
       return null;
     }
 
-    let isFlask = false;
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-    isFlask = true;
-    ///: END:ONLY_INCLUDE_IF
-
-    if ((isFlask && !isHexString(input)) || isValidDomainName(input)) {
+    if ((IS_FLASK && !isHexString(input)) || isValidDomainName(input)) {
       lookupDomainName(input);
     } else {
       resetDomainResolution();
@@ -134,7 +129,11 @@ export default class DomainInput extends Component {
                 className="ens-input__wrapper__input"
                 type="text"
                 dir="auto"
-                placeholder={t('recipientAddressPlaceholder')}
+                placeholder={
+                  IS_FLASK
+                    ? t('recipientAddressPlaceholderFlask')
+                    : t('recipientAddressPlaceholder')
+                }
                 onChange={this.onChange}
                 onPaste={this.onPaste}
                 spellCheck="false"

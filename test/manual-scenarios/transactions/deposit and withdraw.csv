@@ -1,0 +1,22 @@
+Step,Test steps,Test data,Expected result,Notes
+1,Open the extension.,,The Welcome Back screen is shown.,
+2,Proceed to Unlock the wallet.,password (8 characters min).,The Ether balance is shown on the overview. The wallet address is shown on the overview. The selected network is Ethereum Mainnet.        ,
+3,Switch networks to a test network.,e.g. Sepolia,The Sepolia balance is shown on the overview. The wallet address is shown on the overview. The selected network is Sepolia.,
+4,Open the test dapp in another tab.,https://metamask.github.io/test-dapp/,,
+5,Proceed to connect with MetaMask. ,,,
+6,Connect with the current account. ,,,
+7,Deploy Piggy Bank contract.,,"MetaMask popup with estimated gas fees, total fees appears.",
+8,Proceed to confirm contract deployment and wait for the transaction to be confirmed.,,"Contract deployment status on MetaMask Activity list displayed as ""Confirmed"". ""Deposit"" and 'Withdraw"" buttons in the Piggy Bank Contract section of the test dapp are active, 'Contract status: deployed"" is visible at the bottom of the section.",
+9,Start Deposit transaction.,,"MetaMask popup  with estimated gas fees, total fees appears.",
+10,Proceed to confirm transaction.,,,
+11,Switch back to the wallet.,,,Click on the MetaMask logo or return to the MetaMask tab if the extension is in the expanded view mode.
+12,Open the Activity tab.,,"The ""Deposit"" transaction in ""Pending"" status is displayed.  The amount is shown in the activity list item.",
+13,"Allow some time for the transaction status to update to ""Confirmed"".",,"The ""Deposit"" transaction in ""Confirmed"" status is displayed.  The amount is shown in the activity list item.",Waiting times may vary based on network conditions.
+14,Proceed to view the transaction on the block explorer.,,Block explorer opens in the new tab.,
+15,Go back to test dapp,,,
+16,"Start ""Withdraw' transaction",,"MetaMask popup  with estimated gas fees, total fees appears.",
+17,Proceed to confirm the transaction.,,,
+18,Switch back to the wallet.,,,Click on the MetaMask logo or return to the MetaMask tab if the extension is in the expanded view mode.
+19,Open the Activity tab.,,"The ""Withdraw"" transaction in ""Pending"" status is displayed.  The amount is shown in the activity list item.",
+20,"Allow some time for the transaction status to update to ""Confirmed"".",,"The ""Withdraw"" transaction in ""Confirmed"" status is displayed.  The amount is shown in the activity list item.",Waiting times may vary based on network conditions.
+21,Proceed to view the transaction on the block explorer.,,Block explorer opens in the new tab.,

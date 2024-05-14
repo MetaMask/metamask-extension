@@ -35,7 +35,6 @@ jest.mock('../../store/actions', () => ({
 describe('Onboarding Flow', () => {
   const mockState = {
     metamask: {
-      identities: {},
       internalAccounts: {
         accounts: {},
         selectedAccount: '',
@@ -47,9 +46,15 @@ describe('Onboarding Flow', () => {
       incomingTransactionsPreferences: {
         [CHAIN_IDS.MAINNET]: true,
       },
+      preferences: {
+        petnamesEnabled: true,
+      },
     },
     localeMessages: {
       currentLocale: 'en',
+    },
+    appState: {
+      externalServicesOnboardingToggleState: true,
     },
   };
 

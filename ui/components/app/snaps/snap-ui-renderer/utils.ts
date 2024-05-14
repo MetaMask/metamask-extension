@@ -57,6 +57,8 @@ export const mapToTemplate = (params: MapToTemplateParams) => {
   const { type } = params.element;
   const indexKey = generateKey(params.map, params.element);
   // @ts-expect-error This seems to be compatibility issue between superstruct and this repo.
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const mapped = COMPONENT_MAPPING[type](params as any);
   return { ...mapped, key: indexKey };
 };

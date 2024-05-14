@@ -5,7 +5,7 @@ const {
   withFixtures,
   openDapp,
   unlockWallet,
-  editGasfeeForm,
+  editGasFeeForm,
   WINDOW_TITLES,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
@@ -238,6 +238,7 @@ describe('Create token, approve token and approve token without gas', function (
           text: 'View details',
           css: '.token-allowance-container__view-details',
         });
+
         await driver.clickElement({
           text: 'Next',
           tag: 'button',
@@ -253,13 +254,6 @@ describe('Create token, approve token and approve token without gas', function (
           '5 TST',
           'Default value is not correctly set',
         );
-        await driver.waitForSelector(
-          {
-            css: '.box--flex-direction-row > h6',
-            text: '0.000895 ETH',
-          },
-          { timeout: 15000 },
-        );
 
         // editing gas fee
         const editBtn = await driver.findElement({
@@ -269,20 +263,12 @@ describe('Create token, approve token and approve token without gas', function (
 
         editBtn.click();
 
-        await driver.clickElement({
-          text: 'Edit suggested gas fee',
-          tag: 'button',
-        });
-
         await driver.waitForSelector({
           text: 'Edit priority',
-        });
-        await driver.waitForSelector({
-          text: '0.00089526 ETH',
-          tag: 'h1',
+          tag: 'header',
         });
 
-        await editGasfeeForm(driver, '60001', '10');
+        await editGasFeeForm(driver, '60001', '10');
 
         await driver.waitForSelector(
           {

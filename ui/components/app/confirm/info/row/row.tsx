@@ -1,6 +1,12 @@
 import React, { createContext } from 'react';
 import Tooltip from '../../../../ui/tooltip/tooltip';
-import { Box, Icon, IconName, Text } from '../../../../component-library';
+import {
+  Box,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+} from '../../../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -28,6 +34,8 @@ export type ConfirmInfoRowProps = {
   tooltip?: string;
   variant?: ConfirmInfoRowVariant;
   style?: React.CSSProperties;
+  labelChildren?: React.ReactNode;
+  color?: TextColor;
 };
 
 const BACKGROUND_COLORS = {
@@ -64,6 +72,8 @@ export const ConfirmInfoRow = ({
   variant = ConfirmInfoRowVariant.Default,
   tooltip,
   style,
+  labelChildren,
+  color,
 }: ConfirmInfoRowProps) => (
   <ConfirmInfoRowContext.Provider value={{ variant }}>
     <Box
@@ -78,7 +88,7 @@ export const ConfirmInfoRow = ({
       marginBottom={2}
       paddingLeft={2}
       paddingRight={2}
-      color={TEXT_COLORS[variant] as TextColor}
+      color={color ?? (TEXT_COLORS[variant] as TextColor)}
       style={{
         overflowWrap: OverflowWrap.Anywhere,
         minHeight: '24px',
@@ -94,12 +104,18 @@ export const ConfirmInfoRow = ({
         <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
           {label}
         </Text>
+        {labelChildren}
         {tooltip && tooltip.length > 0 && (
-          <Tooltip title={tooltip} style={{ display: 'flex' }}>
+          <Tooltip
+            position="bottom"
+            title={tooltip}
+            style={{ display: 'flex' }}
+          >
             <Icon
               name={TOOLTIP_ICONS[variant]}
               marginLeft={1}
               color={TOOLTIP_ICON_COLORS[variant] as unknown as IconColor}
+              size={IconSize.Sm}
             />
           </Tooltip>
         )}

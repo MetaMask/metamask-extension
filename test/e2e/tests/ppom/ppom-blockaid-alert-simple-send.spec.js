@@ -1,6 +1,5 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
-const { mockServerJsonRpc } = require('../../mock-server-json-rpc');
 
 const {
   defaultGanacheOptions,
@@ -8,6 +7,7 @@ const {
   sendScreenToConfirmScreen,
   unlockWallet,
 } = require('../../helpers');
+const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
 const bannerAlertSelector = '[data-testid="security-provider-banner-alert"]';
 const mockMaliciousAddress = '0x5fbdb2315678afecb367f032d93f642f64180aa3';
@@ -126,8 +126,10 @@ async function mockInfuraWithFailedResponses(mockServer) {
  * @see {@link https://wobbly-nutmeg-8a5.notion.site/MM-E2E-Testing-1e51b617f79240a49cd3271565c6e12d}
  */
 describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should not show security alerts for benign requests', async function () {
+  it('should not show security alerts for benign requests', async function () {
+    if (process.env.MULTICHAIN) {
+      return;
+    }
     await withFixtures(
       {
         dapp: true,
@@ -159,8 +161,10 @@ describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
    * 'malicious_domain'. Some other tests are found in other files:
    * e.g. test/e2e/flask/ppom-blockaid-alert-<name>.spec.js
    */
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should show security alerts for malicious requests', async function () {
+  it('should show security alerts for malicious requests', async function () {
+    if (process.env.MULTICHAIN) {
+      return;
+    }
     await withFixtures(
       {
         dapp: true,
@@ -178,11 +182,7 @@ describe('Simple Send Security Alert - Blockaid @no-mmi', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        await sendScreenToConfirmScreen(
-          driver,
-          '0x985c30949c92df7a0bd42e0f3e3d539ece98db24',
-          '1',
-        );
+        await sendScreenToConfirmScreen(driver, mockMaliciousAddress, '1');
 
         // Find element by title
         const bannerAlertFoundByTitle = await driver.findElement({

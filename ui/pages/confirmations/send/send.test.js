@@ -47,7 +47,6 @@ jest.mock('react-router-dom', () => {
 
 setBackgroundConnection({
   getGasFeeTimeEstimate: jest.fn(),
-  getGasFeeEstimatesAndStartPolling: jest.fn(),
   promisifiedBackground: jest.fn(),
 });
 
@@ -82,7 +81,6 @@ const baseStore = {
       medium: '1',
       fast: '2',
     },
-    selectedAddress: '0x0',
     internalAccounts: {
       accounts: {
         'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -135,7 +133,6 @@ const baseStore = {
     accounts: {
       '0x0': { balance: '0x0', address: '0x0' },
     },
-    identities: { '0x0': { address: '0x0' } },
     tokenAddress: '0x32e6c34cd57087abbd59b5a4aecc4cb495924356',
     tokenList: {
       '0x32e6c34cd57087abbd59b5a4aecc4cb495924356': {
@@ -160,6 +157,8 @@ const baseStore = {
     sendInputCurrencySwitched: false,
   },
 };
+
+const placeholderText = 'Enter public address (0x) or ENS name';
 
 describe('Send Page', () => {
   describe('Send Flow Initialization', () => {
@@ -206,9 +205,7 @@ describe('Send Page', () => {
     it('should render the DomainInput field', () => {
       const store = configureMockStore(middleware)(baseStore);
       const { getByPlaceholderText } = renderWithProvider(<Send />, store);
-      expect(
-        getByPlaceholderText('Enter public address (0x) or ENS name'),
-      ).toBeTruthy();
+      expect(getByPlaceholderText(placeholderText)).toBeTruthy();
     });
 
     it('should not render the footer', () => {
@@ -229,9 +226,7 @@ describe('Send Page', () => {
       const { getByPlaceholderText } = renderWithProvider(<Send />, store);
       // Ensure that the send flow renders on the add recipient screen when
       // there is no draft transaction.
-      expect(
-        getByPlaceholderText('Enter public address (0x) or ENS name'),
-      ).toBeTruthy();
+      expect(getByPlaceholderText(placeholderText)).toBeTruthy();
       // Ensure we start a new draft transaction when its missing.
       expect(startNewDraftTransaction).toHaveBeenCalledTimes(1);
     });
@@ -278,9 +273,7 @@ describe('Send Page', () => {
     it('should render the DomainInput field', () => {
       const store = configureMockStore(middleware)(baseStore);
       const { getByPlaceholderText } = renderWithProvider(<Send />, store);
-      expect(
-        getByPlaceholderText('Enter public address (0x) or ENS name'),
-      ).toBeTruthy();
+      expect(getByPlaceholderText(placeholderText)).toBeTruthy();
     });
 
     it('should render the footer', () => {

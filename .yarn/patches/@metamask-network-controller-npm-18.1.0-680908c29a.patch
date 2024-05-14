@@ -1,0 +1,24 @@
+diff --git a/dist/chunk-AJED3H6M.mjs b/dist/chunk-AJED3H6M.mjs
+index c7f9903611ccf8f0bb01bea786177efc1a915f7f..26d559fe80f193288badd737cfb8f9d91eb3fa67 100644
+--- a/dist/chunk-AJED3H6M.mjs
++++ b/dist/chunk-AJED3H6M.mjs
+@@ -341,7 +341,6 @@ var NetworkController = class extends BaseController {
+   async initializeProvider() {
+     __privateMethod(this, _ensureAutoManagedNetworkClientRegistryPopulated, ensureAutoManagedNetworkClientRegistryPopulated_fn).call(this);
+     __privateMethod(this, _applyNetworkSelection, applyNetworkSelection_fn).call(this);
+-    await this.lookupNetwork();
+   }
+   /**
+    * Refreshes the network meta with EIP-1559 support and the network status
+diff --git a/dist/chunk-UEWIYOS6.js b/dist/chunk-UEWIYOS6.js
+index 05e09914e085ed2fb67106bc750b8bb46882c80e..16eb520b7658625e411c9c6e35f86bd49fcce52f 100644
+--- a/dist/chunk-UEWIYOS6.js
++++ b/dist/chunk-UEWIYOS6.js
+@@ -341,7 +341,6 @@ var NetworkController = class extends _basecontroller.BaseController {
+   async initializeProvider() {
+     _chunkZ4BLTVTBjs.__privateMethod.call(void 0, this, _ensureAutoManagedNetworkClientRegistryPopulated, ensureAutoManagedNetworkClientRegistryPopulated_fn).call(this);
+     _chunkZ4BLTVTBjs.__privateMethod.call(void 0, this, _applyNetworkSelection, applyNetworkSelection_fn).call(this);
+-    await this.lookupNetwork();
+   }
+   /**
+    * Refreshes the network meta with EIP-1559 support and the network status

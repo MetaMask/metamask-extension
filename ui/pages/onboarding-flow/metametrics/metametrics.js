@@ -13,8 +13,8 @@ import Button from '../../../components/ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setParticipateInMetaMetrics } from '../../../store/actions';
 import {
-  getFirstTimeFlowTypeRoute,
   getFirstTimeFlowType,
+  getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,
 } from '../../../selectors';
 
 import {
@@ -31,13 +31,14 @@ import {
 } from '../../../components/component-library';
 
 import Box from '../../../components/ui/box/box';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 
 export default function OnboardingMetametrics() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const nextRoute = useSelector(getFirstTimeFlowTypeRoute);
+  const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
   const trackEvent = useContext(MetaMetricsContext);
@@ -51,7 +52,7 @@ export default function OnboardingMetametrics() {
           event: MetaMetricsEventName.WalletSetupStarted,
           properties: {
             account_type:
-              firstTimeFlowType === 'create'
+              firstTimeFlowType === FirstTimeFlowType.create
                 ? MetaMetricsEventAccountType.Default
                 : MetaMetricsEventAccountType.Imported,
           },

@@ -5,7 +5,10 @@ import pump from 'pump';
 import { obj as createThoughStream } from 'through2';
 import browser from 'webextension-polyfill';
 import { EXTENSION_MESSAGES } from '../../shared/constants/app';
-import { checkForLastError } from '../../shared/modules/browser-runtime.utils';
+import {
+  checkForLastError,
+  getIsBrowserPrerenderBroken,
+} from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
 
@@ -519,11 +522,7 @@ const start = () => {
   if (shouldInjectProvider()) {
     initStreams();
 
-    // https://bugs.chromium.org/p/chromium/issues/detail?id=1457040
-    // Temporary workaround for chromium bug that breaks the content script <=> background connection
-    // for prerendered pages. This resets potentially broken extension streams if a page transitions
-    // from the prerendered state to the active state.
-    if (document.prerendering) {
+    if (document.prerendering && getIsBrowserPrerenderBroken()) {
       document.addEventListener('prerenderingchange', () => {
         onDisconnectDestroyStreams(
           new Error('Prerendered page has become active.'),

@@ -286,6 +286,12 @@ export function useTransactionDisplayData(transactionGroup) {
     title = t('setApprovalForAllTitle', [token?.symbol || t('token')]);
     subtitle = origin;
     subtitleContainsOrigin = true;
+  } else if (type === TransactionType.tokenMethodIncreaseAllowance) {
+    category = TransactionGroupCategory.approval;
+    prefix = '';
+    title = t('approveIncreaseAllowance', [token?.symbol || t('token')]);
+    subtitle = origin;
+    subtitleContainsOrigin = true;
   } else if (type === TransactionType.contractInteraction) {
     category = TransactionGroupCategory.interaction;
     const transactionTypeTitle = getTransactionTypeTitle(t, type);
