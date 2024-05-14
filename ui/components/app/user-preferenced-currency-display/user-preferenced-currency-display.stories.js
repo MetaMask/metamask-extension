@@ -35,7 +35,7 @@ export default {
     showEthLogo: {
       control: 'boolean',
     },
-    ethLogoHeight: {
+    ethlogoheight: {
       control: 'number',
     },
     type: {

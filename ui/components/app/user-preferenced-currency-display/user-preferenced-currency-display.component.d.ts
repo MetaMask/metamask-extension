@@ -7,7 +7,7 @@ export type UserPrefrencedCurrencyDisplayProps = OverridingUnion<
     type?: PRIMARY | SECONDARY;
     currency?: string;
     showEthLogo?: boolean;
-    ethLogoHeight?: number;
+    ethlogoheight?: number;
     ethNumberOfDecimals?: string | number;
     fiatNumberOfDecimals?: string | number;
     showFiat?: boolean;

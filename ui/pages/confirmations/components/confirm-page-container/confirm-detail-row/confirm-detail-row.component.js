@@ -44,7 +44,7 @@ const ConfirmDetailRow = (props) => {
             type={PRIMARY}
             value={value}
             showEthLogo
-            ethLogoHeight={18}
+            ethlogoheight={18}
             style={{ color: primaryValueTextColor }}
             hideLabel
           />

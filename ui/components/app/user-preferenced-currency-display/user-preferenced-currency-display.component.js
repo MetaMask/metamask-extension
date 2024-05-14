@@ -73,7 +73,7 @@ const UserPreferencedCurrencyDisplayPropTypes = {
   hideTitle: PropTypes.bool,
   style: PropTypes.object,
   showEthLogo: PropTypes.bool,
-  ethLogoHeight: PropTypes.number,
+  ethlogoheight: PropTypes.number,
   type: PropTypes.oneOf([PRIMARY, SECONDARY]),
   ethNumberOfDecimals: PropTypes.oneOfType([
     PropTypes.string,

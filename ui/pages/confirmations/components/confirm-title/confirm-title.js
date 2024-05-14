@@ -48,7 +48,7 @@ const ConfirmTitle = ({ title, hexTransactionAmount, txData }) => {
       variant={TextVariant.headingMd}
     >
       <UserPreferencedCurrencyDisplay
-        ethLogoHeight={24}
+        ethlogoheight={24}
         hideLabel={!isContractInteraction}
         showCurrencySuffix={isContractInteraction}
         showEthLogo
