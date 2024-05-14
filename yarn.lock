@@ -5184,28 +5184,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/gas-fee-controller@npm:^15.0.0, @metamask/gas-fee-controller@npm:^15.1.0, @metamask/gas-fee-controller@npm:^15.1.1":
-  version: 15.1.1
-  resolution: "@metamask/gas-fee-controller@npm:15.1.1"
-  dependencies:
-    "@metamask/base-controller": "npm:^5.0.2"
-    "@metamask/controller-utils": "npm:^9.1.0"
-    "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/ethjs-unit": "npm:^0.3.0"
-    "@metamask/network-controller": "npm:^18.1.0"
-    "@metamask/polling-controller": "npm:^6.0.2"
-    "@metamask/utils": "npm:^8.3.0"
-    "@types/bn.js": "npm:^5.1.5"
-    "@types/uuid": "npm:^8.3.0"
-    bn.js: "npm:^5.2.1"
-    uuid: "npm:^8.3.2"
-  peerDependencies:
-    "@metamask/network-controller": ^18.0.0
-  checksum: 6e0ddf10d4dde13e4da8bb17e7503a68f64369e51958059168f3400941b540dd02df417e60451a5bdb2be9d9fb1d4a11ae9685f811b0a4f1744ff23ce1c7b1ff
-  languageName: node
-  linkType: hard
-
-"@metamask/gas-fee-controller@npm:^15.1.2":
+"@metamask/gas-fee-controller@npm:^15.0.0, @metamask/gas-fee-controller@npm:^15.1.0, @metamask/gas-fee-controller@npm:^15.1.1, @metamask/gas-fee-controller@npm:^15.1.2":
   version: 15.1.2
   resolution: "@metamask/gas-fee-controller@npm:15.1.2"
   dependencies:

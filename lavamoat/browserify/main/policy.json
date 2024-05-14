@@ -2092,6 +2092,7 @@
         "@ethersproject/providers": true,
         "@metamask/controller-utils": true,
         "@metamask/eth-query": true,
+        "@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/name-controller>async-mutex": true,
         "@metamask/network-controller": true,
@@ -2099,7 +2100,6 @@
         "@metamask/smart-transactions-controller>@metamask/base-controller": true,
         "@metamask/smart-transactions-controller>@metamask/transaction-controller>@ethereumjs/tx": true,
         "@metamask/smart-transactions-controller>@metamask/transaction-controller>@ethereumjs/util": true,
-        "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/gas-fee-controller": true,
         "@metamask/smart-transactions-controller>@metamask/transaction-controller>eth-method-registry": true,
         "@metamask/transaction-controller>nonce-tracker": true,
         "@metamask/utils": true,
@@ -2132,22 +2132,6 @@
         "browserify>buffer": true,
         "browserify>insert-module-globals>is-buffer": true,
         "webpack>events": true
-      }
-    },
-    "@metamask/smart-transactions-controller>@metamask/transaction-controller>@metamask/gas-fee-controller": {
-      "globals": {
-        "clearInterval": true,
-        "console.error": true,
-        "setInterval": true
-      },
-      "packages": {
-        "@metamask/assets-controllers>@metamask/polling-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/eth-query": true,
-        "@metamask/ethjs>@metamask/ethjs-unit": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "uuid": true
       }
     },
     "@metamask/smart-transactions-controller>@metamask/transaction-controller>eth-method-registry": {
