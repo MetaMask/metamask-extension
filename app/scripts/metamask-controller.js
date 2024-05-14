@@ -4308,23 +4308,6 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  async switchEthereumChain(origin, { suppressUnauthorizedError = true } = {}) {
-    try {
-      return await this.permissionController.executeRestrictedMethod(
-        origin,
-        RestrictedMethods.wallet_switchEthereumChain,
-      );
-    } catch (error) {
-      if (
-        suppressUnauthorizedError &&
-        error.code === rpcErrorCodes.provider.unauthorized
-      ) {
-        return [];
-      }
-      throw error;
-    }
-  }
-
   /**
    * Stops exposing the account with the specified address to all third parties.
    * Exposed accounts are stored in caveats of the eth_accounts permission. This
@@ -5008,7 +4991,6 @@ export default class MetamaskController extends EventEmitter {
             { origin },
             { eth_accounts: {} },
           ),
-        switchEthereumChain: this.switchEthereumChain.bind(this, origin),
         requestSwitchNetworkPermission: (chainIds) =>
           this.permissionController.requestPermissions(
             { origin },
@@ -5074,9 +5056,6 @@ export default class MetamaskController extends EventEmitter {
             );
           return chainId;
         },
-        getUseRequestQueue: this.preferencesController.getUseRequestQueue.bind(
-          this.preferencesController,
-        ),
         getProviderConfig: () => this.networkController.state.providerConfig,
         setProviderType: (type) => {
           return this.networkController.setProviderType(type);

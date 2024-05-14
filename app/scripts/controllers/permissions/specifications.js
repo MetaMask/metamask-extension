@@ -1,6 +1,7 @@
 import {
   constructPermission,
   PermissionType,
+  SubjectType,
 } from '@metamask/permission-controller';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import {
@@ -70,14 +71,6 @@ export const getCaveatSpecifications = ({
     },
     [CaveatTypes.restrictNetworkSwitching]: {
       type: CaveatTypes.restrictNetworkSwitching,
-
-      decorator: (method, caveat) => {
-        return async (args) => {
-          const result = await method(args);
-          return result.filter((chainId) => caveat.value.includes(chainId));
-        };
-      },
-
       validator: (caveat, _origin, _target) =>
         validateCaveatNetworks(caveat.value, findNetworkClientIdByChainId),
     },
@@ -197,9 +190,10 @@ export const getPermissionSpecifications = ({
     },
 
     [PermissionNames.wallet_switchEthereumChain]: {
-      permissionType: PermissionType.RestrictedMethod,
+      permissionType: PermissionType.Endowment,
       targetName: PermissionNames.wallet_switchEthereumChain,
       allowedCaveats: [CaveatTypes.restrictNetworkSwitching],
+      subjectTypes: [SubjectType.Website],
 
       factory: (permissionOptions, requestData) => {
         if (Array.isArray(permissionOptions.caveats)) {
@@ -208,7 +202,6 @@ export const getPermissionSpecifications = ({
           );
         }
 
-        // This value will be further validated as part of the caveat.
         if (!requestData.approvedChainIds) {
           throw new Error(
             `${PermissionNames.wallet_switchEthereumChain} error: No approved networks specified.`,
@@ -224,41 +217,7 @@ export const getPermissionSpecifications = ({
           caveats: [caveat],
         });
       },
-      methodImplementation: async (_args) => {
-
-        // should we actually move the implementation here?
-        // This would make putting the permissioning behind a feature flag a bit more difficult?
-        // Interestingly the validator is still called when granting permissions
-
-        const {chainId} = _args[0];
-
-        const {
-          origin,
-          chainId,
-          findNetworkConfigurationBy,
-          setActiveNetwork,
-          hasPermissions,
-          setNetworkClientIdForDomain,
-          findNetworkClientIdByChainId,
-        } = options;
-
-        const networkConfiguration = findNetworkConfigurationBy({ chainId });
-        if (!networkConfiguration) {
-          throw ethErrors.provider.custom({
-            code: 4902,
-            message: `Unrecognized chain ID "${chainId}".`,
-          });
-        }
-
-        const networkClientId = findNetworkClientIdByChainId(chainId);
-
-        await setActiveNetwork(networkClientId);
-        if (hasPermissions(origin)) {
-          setNetworkClientIdForDomain(origin, networkClientId);
-        }
-
-        return null;
-      },
+      endowmentGetter: async (_getterOptions) => undefined,
       validator: (permission, _origin, _target) => {
         const { caveats } = permission;
         if (
