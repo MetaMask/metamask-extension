@@ -836,16 +836,12 @@
   "confirmTitleDescContractInteractionTransaction": {
     "message": "Only confirm this transaction if you fully understand the content and trust the requesting site."
   },
-  "confirmTitleDescPersonalSignature": {
-    "message": "Only sign this message if you fully understand the content and trust the requesting site"
-  },
-  "confirmTitleDescTypedDataSignature": {
-    "message": "Review everything below before continuing. Once done, this transaction can’t be undone"
+  "confirmTitleDescSignature": {
+    "message": "Only confirm this message if you approve the content and trust the requesting site."
   },
   "confirmTitleSignature": {
     "message": "Signature request"
   },
-
   "confirmTitleTransaction": {
     "message": "Transaction request"
   },
@@ -1622,9 +1618,6 @@
   "enableFromSettings": {
     "message": " Enable it from Settings."
   },
-  "enableSmartTransactions": {
-    "message": "Enable Smart Transactions"
-  },
   "enableSnap": {
     "message": "Enable"
   },
@@ -2285,9 +2278,6 @@
   },
   "interactingWithTransactionDescription": {
     "message": "This is the contract you're interacting with. Protect yourself from scammers by  verifying the details."
-  },
-  "introducingSmartTransactions": {
-    "message": "Introducing Smart Transactions"
   },
   "invalidAddress": {
     "message": "Invalid address"
@@ -3008,6 +2998,9 @@
   "noSnaps": {
     "message": "You don't have any snaps installed."
   },
+  "noThanks": {
+    "message": "No thanks"
+  },
   "noTransactions": {
     "message": "You have no transactions"
   },
@@ -3043,9 +3036,6 @@
   },
   "notEnoughGas": {
     "message": "Not enough gas"
-  },
-  "notRightNow": {
-    "message": "Not right now"
   },
   "note": {
     "message": "Note"
@@ -3942,10 +3932,10 @@
     "message": "Protect your funds"
   },
   "redesignedConfirmationsEnabledToggle": {
-    "message": "Redesigned confirmations"
+    "message": "Improved signature requests"
   },
   "redesignedConfirmationsToggleDescription": {
-    "message": "Turn this on to see re-designed confirmations whenever you receive signature requests."
+    "message": "Turn this on to see signature requests in an enhanced format."
   },
   "refreshList": {
     "message": "Refresh list"
@@ -4571,7 +4561,7 @@
     "message": "Smart Transactions"
   },
   "smartTransactionsBenefit1": {
-    "message": "82% fewer failed transactions"
+    "message": "99.5% success rate"
   },
   "smartTransactionsBenefit2": {
     "message": "Transaction protection"
@@ -4580,14 +4570,14 @@
     "message": "Real-time updates"
   },
   "smartTransactionsDescription": {
-    "message": "Unlock the safest, most reliable, and easiest transaction experience - a smarter way to navigate web3."
+    "message": "Unlock higher success rates, frontrunning protection, and better visibility with Smart Transactions."
   },
   "smartTransactionsDescription2": {
-    "message": "Millions of dollars are lost every month due to failed transactions & frontrunning. Smart Transactions fixes this."
-  },
-  "smartTransactionsDescription3": {
-    "message": "Right now, Smart Transactions are only available on ETH Mainnet. You can turn them off at any time in settings. $1",
+    "message": "Only available on Ethereum. Enable or disable any time in settings. $1",
     "description": "$1 is an external link to learn more about Smart Transactions"
+  },
+  "smartTransactionsOptItModalTitle": {
+    "message": "Transactions just got smarter"
   },
   "snapAccountCreated": {
     "message": "Account created"
@@ -4984,7 +4974,7 @@
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
   "stxOptInDescription": {
-    "message": "Turn on Smart Transactions for more reliable and secure transactions, and adjustable fees on ETH Mainnet. $1"
+    "message": "Turn on Smart Transactions for more reliable and secure transactions on ETH Mainnet. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Privately submitting your Swap..."
