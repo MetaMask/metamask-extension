@@ -71,6 +71,8 @@ const useCurrentConfirmation = () => {
           (type) => type === unconfirmedTransaction?.type,
         );
 
+      console.log('**************', isConfirmationRedesignType, pendingConfirmation?.type, unconfirmedTransaction?.type)
+
       if (!isConfirmationRedesignType) {
         setCurrentConfirmation(undefined);
         return;
@@ -87,6 +89,7 @@ const useCurrentConfirmation = () => {
     }
   }, [latestPendingConfirmation, paramsTransactionId, unconfirmedTransactions]);
 
+  console.log('currentConfirmation = ', currentConfirmation);
   return { currentConfirmation };
 };
 
