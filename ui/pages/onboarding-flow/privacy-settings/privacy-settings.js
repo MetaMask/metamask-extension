@@ -232,11 +232,23 @@ export default function PrivacySettings() {
               <Text variant={TextVariant.bodyLgMedium} marginTop={5}>
                 {t('defaultSettingsSubTitle')}
               </Text>
+              {/* <Button
+            variant={ButtonVariant.Link}
+            style={{
+              fontSize: 'var(--font-size-5)',
+            }}
+            onClick={() => 'www.google.com'}
+          >
+            {t('leaveYourselfAHint')}
+          </Button> */}
               <a
                 href="https://support.metamask.io/privacy-and-security/privacy-best-practices"
                 target="_blank"
                 rel="noreferrer"
                 key="learnMoreAboutPrivacy"
+                style={{
+                  fontSize: 'var(--font-size-5)',
+                }}
               >
                 {t('learnMoreAboutPrivacy')}
               </a>

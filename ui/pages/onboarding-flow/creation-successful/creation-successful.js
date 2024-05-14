@@ -7,27 +7,16 @@ import {
   ButtonVariant,
 } from '../../../components/component-library/button';
 import {
-  TextColor,
   TextVariant,
-  IconColor,
   Display,
   AlignItems,
   JustifyContent,
   FlexDirection,
-  BlockSize,
-  Size,
 } from '../../../helpers/constants/design-system';
 import {
   Box,
-  PickerNetwork,
   Text,
-  TextField,
-  ButtonSecondary,
-  ButtonSecondarySize,
-  Icon,
   IconName,
-  ButtonPrimary,
-  ButtonPrimarySize,
   ButtonLink,
   ButtonLinkSize,
   IconSize,
@@ -68,20 +57,21 @@ export default function CreationSuccessful() {
         justifyContent={JustifyContent.center}
         marginTop={6}
       >
-        {firstTimeFlowType === FirstTimeFlowType.create &&
-        !seedPhraseBackedUp ? (
-          <Text
-            justifyContent={JustifyContent.center}
-            style={{
-              alignSelf: AlignItems.center,
-              fontSize: '70px',
-            }}
-          >
-            🔓
-          </Text>
-        ) : (
-          <img src="./images/tada.png" />
-        )}
+        <Text
+          justifyContent={JustifyContent.center}
+          marginBottom={4}
+          style={{
+            alignSelf: AlignItems.center,
+            fontSize: '70px',
+          }}
+        >
+          {firstTimeFlowType === FirstTimeFlowType.create &&
+          !seedPhraseBackedUp ? (
+            <span>🔓</span>
+          ) : (
+            <span>🎉</span>
+          )}
+        </Text>
         <Text
           variant={TextVariant.headingLg}
           as="h2"
@@ -121,33 +111,38 @@ export default function CreationSuccessful() {
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
           alignItems={AlignItems.flexStart}
+          marginBottom={6}
         >
-          <Button variant={ButtonVariant.Link} onClick={() => 'www.google.com'}>
+          <Button
+            variant={ButtonVariant.Link}
+            style={{
+              fontSize: 'var(--font-size-5)',
+            }}
+            onClick={() => 'www.google.com'}
+          >
             {t('leaveYourselfAHint')}
           </Button>
         </Box>
       )}
 
       {firstTimeFlowType === FirstTimeFlowType.create && (
-        <Box>
-          <Text variant={TextVariant.bodyLgMedium} marginBottom={6}>
-            {t('keepReminderOfSRP', [
-              <ButtonLink
-                size={ButtonLinkSize.Inherit}
-                textProps={{
-                  variant: TextVariant.bodyMd,
-                  alignItems: AlignItems.flexStart,
-                }}
-                as="a"
-                href={learnMoreLink}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {t('learnMoreUpperCaseWithDot')}
-              </ButtonLink>,
-            ])}
-          </Text>
-        </Box>
+        <Text variant={TextVariant.bodyLgMedium} marginBottom={6}>
+          {t('keepReminderOfSRP', [
+            <ButtonLink
+              size={ButtonLinkSize.Inherit}
+              textProps={{
+                variant: TextVariant.bodyMd,
+                alignItems: AlignItems.flexStart,
+              }}
+              as="a"
+              href={learnMoreLink}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t('learnMoreUpperCaseWithDot')}
+            </ButtonLink>,
+          ])}
+        </Text>
       )}
 
       <Box
@@ -161,12 +156,12 @@ export default function CreationSuccessful() {
           startIconProps={{
             size: IconSize.Md,
           }}
-          size={ButtonLinkSize.Lg}
           style={{
             fontSize: 'var(--font-size-5)',
           }}
-          data-
           onClick={() => history.push(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
+          marginTop={4}
+          marginBottom={4}
         >
           {t('manageDefaultSettings')}
         </Button>
