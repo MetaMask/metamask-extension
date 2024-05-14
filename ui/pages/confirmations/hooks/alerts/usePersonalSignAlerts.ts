@@ -1,32 +1,35 @@
 import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import { ApprovalType } from '@metamask/controller-utils';
 import useCurrentConfirmation from '../useCurrentConfirmation';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../helpers/constants/design-system';
-import { SignatureSecurityAlertResponsesState } from '../../components/confirm/blockaid-alert/blockaid-alert';
 import { SecurityAlertResponse } from '../../types/confirm';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { providerAlertNormalizer } from '../../../../components/app/confirmations/alerts/utils';
+import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
 import { PersonalSignAlertAction } from './PersonalSignAlertActions';
 
 const usePersonalSignAlerts = (): Alert[] => {
   const { currentConfirmation } = useCurrentConfirmation();
   const t = useI18nContext();
 
-  const signatureSecurityAlertResponses = useSelector(
-    (state: SignatureSecurityAlertResponsesState) =>
-      state.metamask.signatureSecurityAlertResponses,
-  );
-
   const alerts = useMemo<Alert[]>(() => {
-    if (currentConfirmation?.type !== ApprovalType.PersonalSign) {
+    if (
+      currentConfirmation?.type !== ApprovalType.PersonalSign ||
+      !currentConfirmation?.securityAlertResponse
+    ) {
       return [];
     }
 
     const securityAlertResponse =
       currentConfirmation.securityAlertResponse as SecurityAlertResponse;
 
+    if (
+      !securityAlertResponse.securityAlertId ||
+      securityAlertResponse.reason === BlockaidResultType.Loading
+    ) {
+      return [];
+    }
     return [
       providerAlertNormalizer(securityAlertResponse, t),
       {
@@ -63,7 +66,7 @@ const usePersonalSignAlerts = (): Alert[] => {
         ],
       },
     ];
-  }, [currentConfirmation, signatureSecurityAlertResponses]);
+  }, [currentConfirmation]);
 
   return alerts;
 };
