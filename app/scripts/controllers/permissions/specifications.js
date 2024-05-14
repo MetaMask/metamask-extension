@@ -37,9 +37,8 @@ const CaveatFactories = Object.freeze({
     return { type: CaveatTypes.restrictReturnedAccounts, value: accounts };
   },
 
-  [CaveatTypes.restrictNetworkSwitching]: (network) => {
-    console.log('caveat factory function', network);
-    return { type: CaveatTypes.restrictNetworkSwitching, value: network };
+  [CaveatTypes.restrictNetworkSwitching]: (chainIds) => {
+    return { type: CaveatTypes.restrictNetworkSwitching, value: chainIds };
   },
 });
 
