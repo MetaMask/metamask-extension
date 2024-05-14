@@ -4764,19 +4764,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ens-controller@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "@metamask/ens-controller@npm:9.0.0"
+"@metamask/ens-controller@npm:^10.0.1":
+  version: 10.0.1
+  resolution: "@metamask/ens-controller@npm:10.0.1"
   dependencies:
     "@ethersproject/providers": "npm:^5.7.0"
-    "@metamask/base-controller": "npm:^4.1.1"
-    "@metamask/controller-utils": "npm:^8.0.2"
+    "@metamask/base-controller": "npm:^5.0.1"
+    "@metamask/controller-utils": "npm:^9.0.1"
     "@metamask/utils": "npm:^8.3.0"
-    ethereum-ens-network-map: "npm:^1.0.2"
     punycode: "npm:^2.1.1"
   peerDependencies:
-    "@metamask/network-controller": ^17.2.0
-  checksum: d1f14db169614b3c403660eae3b1e7b74fd8347a5df6e94b67cd1f47f0bb43513dd109683568c284b6edfe1bf68088777fba55f59c1c2adad152f86932982623
+    "@metamask/network-controller": ^18.0.0
+  checksum: 2420b32f7cfd4cb70ddedb1f77b446a4a8cd1d9e3550decff720f82b5236b6359e5ef94f66a37f59a7135ff7789d78dafd2104738594b59de3d7dcc253dd5e02
   languageName: node
   linkType: hard
 
@@ -5185,16 +5184,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/gas-fee-controller@npm:^15.0.0, @metamask/gas-fee-controller@npm:^15.1.0":
-  version: 15.1.0
-  resolution: "@metamask/gas-fee-controller@npm:15.1.0"
+"@metamask/gas-fee-controller@npm:^15.0.0, @metamask/gas-fee-controller@npm:^15.1.0, @metamask/gas-fee-controller@npm:^15.1.1":
+  version: 15.1.1
+  resolution: "@metamask/gas-fee-controller@npm:15.1.1"
   dependencies:
-    "@metamask/base-controller": "npm:^5.0.1"
+    "@metamask/base-controller": "npm:^5.0.2"
     "@metamask/controller-utils": "npm:^9.1.0"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/ethjs-unit": "npm:^0.3.0"
     "@metamask/network-controller": "npm:^18.1.0"
-    "@metamask/polling-controller": "npm:^6.0.1"
+    "@metamask/polling-controller": "npm:^6.0.2"
     "@metamask/utils": "npm:^8.3.0"
     "@types/bn.js": "npm:^5.1.5"
     "@types/uuid": "npm:^8.3.0"
@@ -5202,7 +5201,7 @@ __metadata:
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@metamask/network-controller": ^18.0.0
-  checksum: 42e3dc470b9e075c2eff48f9272c5f0cc4f0a3357873b74301c928c227344ff670756d748fca95ae395dbedb72ce848cb6812fb07eb636410cd4db22c35f2060
+  checksum: 6e0ddf10d4dde13e4da8bb17e7503a68f64369e51958059168f3400941b540dd02df417e60451a5bdb2be9d9fb1d4a11ae9685f811b0a4f1744ff23ce1c7b1ff
   languageName: node
   linkType: hard
 
@@ -6290,7 +6289,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^28.1.0, @metamask/transaction-controller@npm:^28.1.1":
+"@metamask/transaction-controller@npm:^28.1.0":
   version: 28.1.1
   resolution: "@metamask/transaction-controller@npm:28.1.1"
   dependencies:
@@ -6322,6 +6321,41 @@ __metadata:
     "@metamask/gas-fee-controller": ^15.0.0
     "@metamask/network-controller": ^18.0.0
   checksum: 01e6f0e1431e56cc0ef986cbfa99cf37e0a44aade14419c69d815be77847bb33b43049b90c6e6961bb5070ecfe1420c893db8a68c0fd6977d5ec28d9853d6554
+  languageName: node
+  linkType: hard
+
+"@metamask/transaction-controller@npm:^29.0.0":
+  version: 29.0.0
+  resolution: "@metamask/transaction-controller@npm:29.0.0"
+  dependencies:
+    "@ethereumjs/common": "npm:^3.2.0"
+    "@ethereumjs/tx": "npm:^4.2.0"
+    "@ethereumjs/util": "npm:^8.1.0"
+    "@ethersproject/abi": "npm:^5.7.0"
+    "@ethersproject/contracts": "npm:^5.7.0"
+    "@ethersproject/providers": "npm:^5.7.0"
+    "@metamask/approval-controller": "npm:^6.0.2"
+    "@metamask/base-controller": "npm:^5.0.2"
+    "@metamask/controller-utils": "npm:^9.1.0"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/gas-fee-controller": "npm:^15.1.1"
+    "@metamask/metamask-eth-abis": "npm:^3.1.1"
+    "@metamask/network-controller": "npm:^18.1.0"
+    "@metamask/rpc-errors": "npm:^6.2.1"
+    "@metamask/utils": "npm:^8.3.0"
+    async-mutex: "npm:^0.2.6"
+    bn.js: "npm:^5.2.1"
+    eth-method-registry: "npm:^4.0.0"
+    fast-json-patch: "npm:^3.1.1"
+    lodash: "npm:^4.17.21"
+    nonce-tracker: "npm:^3.0.0"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@babel/runtime": ^7.23.9
+    "@metamask/approval-controller": ^6.0.0
+    "@metamask/gas-fee-controller": ^15.0.0
+    "@metamask/network-controller": ^18.0.0
+  checksum: c40cc6787ccad5894af470870151f00394decab463c23ef5032bbe329bb2d720edeaaf61716f9774d61b25f499ed65a657d15b3abdfdf56a41305c5174be8862
   languageName: node
   linkType: hard
 
@@ -25366,7 +25400,7 @@ __metadata:
     "@metamask/controller-utils": "npm:^9.1.0"
     "@metamask/design-tokens": "npm:^2.1.1"
     "@metamask/desktop": "npm:^0.3.0"
-    "@metamask/ens-controller": "npm:^9.0.0"
+    "@metamask/ens-controller": "npm:^10.0.1"
     "@metamask/eslint-config": "npm:^9.0.0"
     "@metamask/eslint-config-jest": "npm:^9.0.0"
     "@metamask/eslint-config-mocha": "npm:^9.0.0"
@@ -25420,7 +25454,7 @@ __metadata:
     "@metamask/snaps-utils": "npm:^7.1.1"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:^8.4.0"
-    "@metamask/transaction-controller": "npm:^28.1.1"
+    "@metamask/transaction-controller": "npm:^29.0.0"
     "@metamask/user-operation-controller": "npm:^8.0.1"
     "@metamask/utils": "npm:^8.2.1"
     "@ngraveio/bc-ur": "npm:^1.1.12"
