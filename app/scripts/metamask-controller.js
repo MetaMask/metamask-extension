@@ -541,6 +541,25 @@ export default class MetamaskController extends EventEmitter {
         ),
     });
 
+    const accountsControllerMessenger = this.controllerMessenger.getRestricted({
+      name: 'AccountsController',
+      allowedEvents: [
+        'SnapController:stateChange',
+        'KeyringController:accountRemoved',
+        'KeyringController:stateChange',
+      ],
+      allowedActions: [
+        'KeyringController:getAccounts',
+        'KeyringController:getKeyringsByType',
+        'KeyringController:getKeyringForAccount',
+      ],
+    });
+
+    this.accountsController = new AccountsController({
+      messenger: accountsControllerMessenger,
+      state: initState.AccountsController,
+    });
+
     this.tokenListController = new TokenListController({
       chainId: this.networkController.state.providerConfig.chainId,
       preventPollingOnNetworkRestart: !this.#isTokenListPollingRequired(
@@ -578,6 +597,7 @@ export default class MetamaskController extends EventEmitter {
       allowedActions: [
         'ApprovalController:addRequest',
         'NetworkController:getNetworkClientById',
+        'AccountsController:getAccount',
       ],
       allowedEvents: [
         'NetworkController:networkDidChange',
@@ -589,36 +609,9 @@ export default class MetamaskController extends EventEmitter {
     this.tokensController = new TokensController({
       messenger: tokensControllerMessenger,
       chainId: this.networkController.state.providerConfig.chainId,
-      // TODO: The tokens controller currently does not support internalAccounts. This is done to match the behavior of the previous tokens controller subscription.
-      onPreferencesStateChange: (listener) =>
-        this.controllerMessenger.subscribe(
-          `AccountsController:selectedAccountChange`,
-          (newlySelectedInternalAccount) => {
-            listener({ selectedAddress: newlySelectedInternalAccount.address });
-          },
-        ),
-      onNetworkDidChange: (cb) =>
-        networkControllerMessenger.subscribe(
-          'NetworkController:networkDidChange',
-          () => {
-            const networkState = this.networkController.state;
-            return cb(networkState);
-          },
-        ),
-      onTokenListStateChange: (listener) =>
-        this.controllerMessenger.subscribe(
-          `${this.tokenListController.name}:stateChange`,
-          listener,
-        ),
-      getNetworkClientById: this.networkController.getNetworkClientById.bind(
-        this.networkController,
-      ),
       config: {
         provider: this.provider,
-        selectedAddress:
-          initState.AccountsController?.internalAccounts?.accounts[
-            initState.AccountsController?.internalAccounts?.selectedAccount
-          ]?.address ?? '',
+        selectedAccountId: this.accountsController.getSelectedAccount().id,
       },
       state: initState.TokensController,
     });
@@ -866,51 +859,23 @@ export default class MetamaskController extends EventEmitter {
       state: initState.AccountOrderController,
     });
 
-    const accountsControllerMessenger = this.controllerMessenger.getRestricted({
-      name: 'AccountsController',
-      allowedEvents: [
-        'SnapController:stateChange',
-        'KeyringController:accountRemoved',
-        'KeyringController:stateChange',
-        'AccountsController:selectedAccountChange',
-      ],
-      allowedActions: [
-        'AccountsController:setCurrentAccount',
-        'AccountsController:setAccountName',
-        'AccountsController:listAccounts',
-        'AccountsController:getSelectedAccount',
-        'AccountsController:getAccountByAddress',
-        'AccountsController:updateAccounts',
-        'KeyringController:getAccounts',
-        'KeyringController:getKeyringsByType',
-        'KeyringController:getKeyringForAccount',
-      ],
-    });
-
-    this.accountsController = new AccountsController({
-      messenger: accountsControllerMessenger,
-      state: initState.AccountsController,
-    });
-
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController(
       {
         chainId: this.networkController.state.providerConfig.chainId,
         ticker: this.networkController.state.providerConfig.ticker,
-        selectedAddress: this.accountsController.getSelectedAccount().address,
+        selectedAccountId: this.accountsController.getSelectedAccount().id,
         onTokensStateChange: (listener) =>
           this.tokensController.subscribe(listener),
         onNetworkStateChange: networkControllerMessenger.subscribe.bind(
           networkControllerMessenger,
           'NetworkController:stateChange',
         ),
-        onPreferencesStateChange: (listener) =>
+        onSelectedAccountChange: (listener) =>
           this.controllerMessenger.subscribe(
             `AccountsController:selectedAccountChange`,
             (newlySelectedInternalAccount) => {
-              listener({
-                selectedAddress: newlySelectedInternalAccount.address,
-              });
+              listener(newlySelectedInternalAccount);
             },
           ),
         tokenPricesService: new CodefiTokenPricesServiceV2(),
@@ -1482,6 +1447,7 @@ export default class MetamaskController extends EventEmitter {
         name: 'TokenDetectionController',
         allowedActions: [
           'AccountsController:getSelectedAccount',
+          'AccountsController:getAccount',
           'KeyringController:getState',
           'NetworkController:getNetworkClientById',
           'NetworkController:getNetworkConfigurationByNetworkClientId',
@@ -1604,8 +1570,7 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController.store.getState().advancedGasFee[
           this.networkController.state.providerConfig.chainId
         ],
-      getSelectedAddress: () =>
-        this.accountsController.getSelectedAccount().address,
+      getSelectedAccount: () => this.accountsController.getSelectedAccount(),
       incomingTransactions: {
         includeTokenTransfers: false,
         isEnabled: () =>
