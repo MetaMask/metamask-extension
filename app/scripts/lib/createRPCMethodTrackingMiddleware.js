@@ -1,4 +1,5 @@
-import { detectSIWE } from '@metamask/controller-utils';
+import { ApprovalType, detectSIWE } from '@metamask/controller-utils';
+import { EthMethod } from '@metamask/keyring-api';
 import { errorCodes } from 'eth-rpc-errors';
 import { isValidAddress } from 'ethereumjs-util';
 import { MESSAGE_TYPE, ORIGIN_METAMASK } from '../../../shared/constants/app';
@@ -19,10 +20,7 @@ import {
 import { SIGNING_METHODS } from '../../../shared/constants/transaction';
 import { getBlockaidMetricsProps } from '../../../ui/helpers/utils/metrics';
 ///: END:ONLY_INCLUDE_IF
-import {
-  REDESIGN_APPROVAL_TYPES,
-  REDESIGN_TRANSACTION_TYPES,
-} from '../../../ui/pages/confirmations/utils/confirm';
+import { REDESIGN_APPROVAL_TYPES } from '../../../ui/pages/confirmations/utils/confirm';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 
 /**
@@ -56,6 +54,15 @@ const RATE_LIMIT_MAP = {
   [MESSAGE_TYPE.ETH_ACCOUNTS]: RATE_LIMIT_TYPES.BLOCKED,
   [MESSAGE_TYPE.LOG_WEB3_SHIM_USAGE]: RATE_LIMIT_TYPES.BLOCKED,
   [MESSAGE_TYPE.GET_PROVIDER_STATE]: RATE_LIMIT_TYPES.BLOCKED,
+};
+
+const ETH_METHOD_TO_APPROVAL_TYPE = {
+  [EthMethod.PersonalSign]: ApprovalType.PersonalSign,
+  [EthMethod.Sign]: ApprovalType.Sign,
+  [EthMethod.SignTransaction]: ApprovalType.SignTransaction,
+  [EthMethod.SignTypedDataV1]: ApprovalType.EthSignTypedData,
+  [EthMethod.SignTypedDataV3]: ApprovalType.EthSignTypedData,
+  [EthMethod.SignTypedDataV4]: ApprovalType.EthSignTypedData,
 };
 
 /**
@@ -256,11 +263,10 @@ export default function createRPCMethodTrackingMiddleware({
             req.securityAlertResponse.description;
         }
         ///: END:ONLY_INCLUDE_IF
-
         const isConfirmationRedesign =
           isConfirmationRedesignEnabled() &&
-          [...REDESIGN_APPROVAL_TYPES, ...REDESIGN_TRANSACTION_TYPES].find(
-            (type) => type === method,
+          REDESIGN_APPROVAL_TYPES.find(
+            (type) => type === ETH_METHOD_TO_APPROVAL_TYPE[method],
           );
 
         if (isConfirmationRedesign) {
