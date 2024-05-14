@@ -2256,7 +2256,7 @@ export function updateSendQuote(
       swapQuotesError,
       isSwapQuoteLoading,
       swapQuotesLatestRequestTimestamp,
-    } = draftTransaction;
+    } = draftTransaction ?? {};
 
     if (isSwapAndSend) {
       const currentTime = Date.now();
