@@ -236,6 +236,41 @@ describe('MetaMetricsController', function () {
     });
   });
 
+  describe('getClientMetaMetricsId', function () {
+    it('should generate or return the metametrics id', function () {
+      const metaMetricsController = getMetaMetricsController({
+        participateInMetaMetrics: true,
+        metaMetricsId: null,
+      });
+
+      // Starts off being empty.
+      assert.equal(metaMetricsController.state.metaMetricsId, null);
+
+      // Create a new metametrics id.
+      const clientMetaMetricsId =
+        metaMetricsController.getClientMetaMetricsId();
+      assert.equal(clientMetaMetricsId.startsWith('0x'), true);
+
+      // Return same metametrics id.
+      const sameMetaMetricsId = metaMetricsController.getClientMetaMetricsId();
+      assert.equal(clientMetaMetricsId, sameMetaMetricsId);
+    });
+  });
+
+  describe('setServerMetaMetricsId', function () {
+    it('should set a server metametrics id', function () {
+      const metaMetricsController = getMetaMetricsController();
+      assert.equal(metaMetricsController.state.serverMetaMetricsId, null);
+
+      const SERVER_METAMETRICS_ID = '0xServerMetaMetricsId';
+      metaMetricsController.setServerMetaMetricsId(SERVER_METAMETRICS_ID);
+      assert.equal(
+        metaMetricsController.state.serverMetaMetricsId,
+        SERVER_METAMETRICS_ID,
+      );
+    });
+  });
+
   describe('identify', function () {
     it('should call segment.identify for valid traits if user is participating in metametrics', async function () {
       const metaMetricsController = getMetaMetricsController({
@@ -309,6 +344,26 @@ describe('MetaMetricsController', function () {
       mock.expects('identify').never();
 
       metaMetricsController.identify(MOCK_INVALID_TRAITS);
+      mock.verify();
+    });
+
+    it('should prioritize using the server metametrics id once set', function () {
+      const metaMetricsController = getMetaMetricsController({
+        participateInMetaMetrics: true,
+      });
+      const SERVER_METAMETRICS_ID = '0xServerMetaMetricsId';
+      metaMetricsController.setServerMetaMetricsId(SERVER_METAMETRICS_ID);
+      const mock = sinon.mock(segment);
+
+      // Test Identify
+      mock.expects('identify').once().withArgs({
+        userId: SERVER_METAMETRICS_ID,
+        traits: MOCK_TRAITS,
+        messageId: Utils.generateRandomId(),
+        timestamp: new Date(),
+      });
+
+      metaMetricsController.identify(MOCK_TRAITS);
       mock.verify();
     });
   });
@@ -563,6 +618,31 @@ describe('MetaMetricsController', function () {
         }),
       );
     });
+
+    it('should prioritize using the server metametrics id once set', function () {
+      const metaMetricsController = getMetaMetricsController({
+        participateInMetaMetrics: true,
+      });
+      const SERVER_METAMETRICS_ID = '0xServerMetaMetricsId';
+      metaMetricsController.setServerMetaMetricsId(SERVER_METAMETRICS_ID);
+      const spy = sinon.spy(segment, 'track');
+
+      metaMetricsController.submitEvent({
+        event: 'Fake Event',
+        category: 'Unit Test',
+      });
+
+      assert.ok(
+        spy.calledWith({
+          event: 'Fake Event',
+          userId: SERVER_METAMETRICS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: DEFAULT_EVENT_PROPERTIES,
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
+        }),
+      );
+    });
   });
 
   describe('Change Transaction XXX anonymous event namnes', function () {
@@ -755,6 +835,39 @@ describe('MetaMetricsController', function () {
         },
         { isOptInPath: true },
       );
+      mock.verify();
+    });
+
+    it('should prioritize using the server metametrics id once set', function () {
+      const metaMetricsController = getMetaMetricsController({
+        participateInMetaMetrics: true,
+      });
+      const SERVER_METAMETRICS_ID = '0xServerMetaMetricsId';
+      metaMetricsController.setServerMetaMetricsId(SERVER_METAMETRICS_ID);
+      const mock = sinon.mock(segment);
+
+      // Test Identify
+      mock
+        .expects('page')
+        .once()
+        .withArgs({
+          name: 'home',
+          userId: SERVER_METAMETRICS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            params: null,
+            ...DEFAULT_PAGE_PROPERTIES,
+          },
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
+        });
+
+      metaMetricsController.trackPage({
+        name: 'home',
+        params: null,
+        environmentType: ENVIRONMENT_TYPE_BACKGROUND,
+        page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
+      });
       mock.verify();
     });
   });
