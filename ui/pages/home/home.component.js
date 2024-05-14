@@ -39,8 +39,6 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi)
   JustifyContent,
   ///: END:ONLY_INCLUDE_IF
-  IconColor,
-  BackgroundColor,
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
 import {
@@ -52,10 +50,8 @@ import {
   ButtonLink,
   ///: END:ONLY_INCLUDE_IF
   Text,
-  BannerBase,
   Icon,
 } from '../../components/component-library';
-
 import {
   ASSET_ROUTE,
   RESTORE_VAULT_ROUTE,
@@ -78,9 +74,11 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-///: BEGIN:ONLY_INCLUDE_IF(build-main)
-import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
-///: END:ONLY_INCLUDE_IF
+import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
+  SUPPORT_LINK,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../shared/lib/ui-utils';
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
@@ -194,8 +192,6 @@ export default class Home extends PureComponent {
     setNewTokensImportedError: PropTypes.func.isRequired,
     clearNewNetworkAdded: PropTypes.func,
     setActiveNetwork: PropTypes.func,
-    setSurveyLinkLastClickedOrClosed: PropTypes.func.isRequired,
-    showSurveyToast: PropTypes.bool.isRequired,
     hasAllowedPopupRedirectApprovals: PropTypes.bool.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     institutionalConnectRequests: PropTypes.arrayOf(PropTypes.object),
@@ -809,8 +805,6 @@ export default class Home extends PureComponent {
       onTabClick,
       forgottenPassword,
       history,
-      setSurveyLinkLastClickedOrClosed,
-      showSurveyToast,
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       connectedStatusPopoverHasBeenShown,
       isPopup,
@@ -1060,27 +1054,6 @@ export default class Home extends PureComponent {
             }
           </div>
           {this.renderNotifications()}
-          {showSurveyToast ? (
-            <BannerBase
-              className="home__survey-banner"
-              data-theme="dark"
-              backgroundColor={BackgroundColor.backgroundAlternative}
-              startAccessory={
-                <Icon name={IconName.Heart} color={IconColor.errorDefault} />
-              }
-              title={t('surveyTitle')}
-              actionButtonLabel={t('surveyConversion')}
-              actionButtonOnClick={() => {
-                global.platform.openTab({
-                  url: 'https://www.getfeedback.com/r/Oczu1vP0',
-                });
-                setSurveyLinkLastClickedOrClosed(Date.now());
-              }}
-              onClose={() => {
-                setSurveyLinkLastClickedOrClosed(Date.now());
-              }}
-            />
-          ) : null}
         </div>
       </div>
     );
