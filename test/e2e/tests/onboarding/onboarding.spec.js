@@ -159,6 +159,9 @@ describe('MetaMask onboarding @no-mmi', function () {
         // metrics
         await driver.clickElement('[data-testid="metametrics-no-thanks"]');
 
+        // wait for password screen
+        await driver.waitForSelector('[data-testid="create-password-new"]');
+
         // Fill in confirm password field with incorrect password
         await driver.fill(
           '[data-testid="create-password-new"]',
