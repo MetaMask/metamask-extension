@@ -156,6 +156,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       PreferencesController: {
         advancedGasFee: null,
         currentLocale: 'en',
+        useExternalServices: true,
         dismissSeedBackUpReminder: true,
         featureFlags: {},
         forgottenPassword: false,
@@ -189,7 +190,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         useTokenDetection: false,
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
-        useRequestQueue: false,
+        useRequestQueue: true,
       },
       SelectedNetworkController: {
         domains: {},
@@ -307,6 +308,7 @@ function onboardingFixture() {
           useNativeCurrencyAsPrimaryCurrency: true,
           petnamesEnabled: true,
         },
+        useExternalServices: true,
         theme: 'light',
         useBlockie: false,
         useNftDetection: false,
@@ -315,7 +317,7 @@ function onboardingFixture() {
         useTokenDetection: false,
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
-        useRequestQueue: false,
+        useRequestQueue: true,
       },
       SelectedNetworkController: {
         domains: {},
