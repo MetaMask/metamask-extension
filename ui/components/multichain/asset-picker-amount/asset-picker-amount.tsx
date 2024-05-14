@@ -74,6 +74,10 @@ export const AssetPickerAmount = ({
     [onAmountChange, isNFTInputChanged, asset.type],
   );
 
+  useEffect(() => {
+    setIsTokenInputChanged(false);
+  }, [asset]);
+
   const { error: rawError } = amount;
 
   // if input hasn't been touched, don't show the zero amount error
