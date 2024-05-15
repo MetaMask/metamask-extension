@@ -207,12 +207,14 @@ exports[`App Header should match snapshot 1`] = `
     >
       <div>
         <button
+          aria-label="Network Menu Chain 5"
           class="mm-box mm-picker-network multichain-app-header__contents__network-picker mm-box--margin-2 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--display-none mm-box--sm:display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-background-alternative mm-box--rounded-pill"
           data-testid="network-display"
           disabled=""
         >
           <div
             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-picker-network__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+            role="img"
           >
             C
           </div>
@@ -231,12 +233,55 @@ exports[`App Header should match snapshot 1`] = `
         class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--color-text-default"
       >
         <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-base--ellipsis multichain-account-picker mm-text--body-md-medium mm-text--ellipsis mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-lg"
+          class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-base--ellipsis multichain-account-picker mm-text--body-md-medium mm-text--ellipsis mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-lg"
           data-testid="account-menu-icon"
         >
           <span
             class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--color-text-default"
           >
+            <div
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+            >
+              <div
+                class="mm-avatar-account__jazzicon"
+              >
+                <div
+                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(250, 58, 0);"
+                >
+                  <svg
+                    height="16"
+                    width="16"
+                    x="0"
+                    y="0"
+                  >
+                    <rect
+                      fill="#18CDF2"
+                      height="16"
+                      transform="translate(-0.52419675189697 -1.6521420347302493) rotate(328.9 8 8)"
+                      width="16"
+                      x="0"
+                      y="0"
+                    />
+                    <rect
+                      fill="#035E56"
+                      height="16"
+                      transform="translate(-9.149230854416022 5.2962309358743) rotate(176.2 8 8)"
+                      width="16"
+                      x="0"
+                      y="0"
+                    />
+                    <rect
+                      fill="#F26602"
+                      height="16"
+                      transform="translate(8.333921009111961 -7.102569861498541) rotate(468.9 8 8)"
+                      width="16"
+                      x="0"
+                      y="0"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
             <div
               class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
             >
@@ -324,6 +369,7 @@ exports[`App Header should match snapshot 1`] = `
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--justify-content-flex-end mm-box--align-items-center"
+        style="margin-left: auto;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--gap-4"

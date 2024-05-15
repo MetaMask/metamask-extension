@@ -12,7 +12,7 @@ describe('Chain Interactions', function () {
   const port = 8546;
   const chainId = 1338;
   const ganacheOptions = generateGanacheOptions({
-    concurrent: { port, chainId },
+    concurrent: [{ port, chainId }],
   });
   it('should add the Ganache test chain and not switch the network', async function () {
     await withFixtures(

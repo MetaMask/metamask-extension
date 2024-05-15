@@ -104,12 +104,13 @@ describe('Send NFT', function () {
 
         // Fill the send NFT form and confirm the transaction
         await driver.clickElement('[data-testid="home__nfts-tab"]');
-        // await sleep(100000);
 
         const erc1155Token = await driver.findElement('.nft-item__container');
         await driver.scrollToElement(erc1155Token);
         await driver.delay(1000);
-        await driver.clickElement('.nft-item__container');
+        await driver.clickElement(
+          '.nft-item__container .mm-badge-wrapper__badge-container',
+        );
 
         await driver.clickElement({ text: 'Send', tag: 'button' });
         await driver.fill(
@@ -128,26 +129,12 @@ describe('Send NFT', function () {
           tag: 'button',
         });
 
-        // Edit the NFT, ensure same address, and move forward
-        await driver.clickElement(
+        // Ensure that this type of NFT is not editable for now
+        // https://github.com/MetaMask/metamask-extension/issues/24320
+        const editButtonPresent = await driver.isElementPresent(
           '[data-testid="confirm-page-back-edit-button"]',
         );
-
-        const recipient = await driver.findElement(
-          '.ens-input__selected-input__title',
-        );
-
-        assert.equal(
-          await recipient.getText(),
-          '0xc427d562164062a23a5cff596a4a3208e72acd28',
-        );
-
-        await driver.fill('input[placeholder="0"]', '1');
-
-        await driver.clickElement({
-          text: isMultichain ? 'Continue' : 'Next',
-          tag: 'button',
-        });
+        assert.equal(editButtonPresent, false);
 
         // Confirm the send
         await driver.clickElement({ text: 'Confirm', tag: 'button' });

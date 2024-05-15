@@ -130,8 +130,8 @@ describe('Send Slice', () => {
       .spyOn(Actions, 'estimateGas')
       .mockImplementation(() => Promise.resolve('0x0'));
     jest
-      .spyOn(Actions, 'getGasFeeEstimatesAndStartPolling')
-      .mockImplementation(() => Promise.resolve());
+      .spyOn(Actions, 'gasFeeStartPollingByNetworkClientId')
+      .mockImplementation(() => Promise.resolve('pollToken'));
     jest
       .spyOn(Actions, 'updateTokenType')
       .mockImplementation(() => Promise.resolve({ isERC721: false }));
@@ -144,6 +144,9 @@ describe('Send Slice', () => {
     jest
       .spyOn(Actions, 'updateTransactionGasFees')
       .mockImplementation(() => ({ type: 'UPDATE_TRANSACTION_GAS_FEES' }));
+    jest
+      .spyOn(Actions, 'getLayer1GasFee')
+      .mockReturnValue({ type: 'GET_LAYER_1_GAS_FEE' });
   });
 
   describe('Reducers', () => {
@@ -1207,7 +1210,7 @@ describe('Send Slice', () => {
         );
       });
       it('should reset to native asset on selectedAccount changed', () => {
-        const olderState = {
+        const olderState = (asset) => ({
           ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
           selectedAccount: {
             balance: '0x3',
@@ -1216,42 +1219,60 @@ describe('Send Slice', () => {
           draftTransactions: {
             'test-uuid': {
               ...draftTransactionInitialState,
-              asset: {
-                type: AssetType.token,
-                error: null,
-                details: {
-                  address: 'tokenAddress',
-                  symbol: 'tokenSymbol',
-                  decimals: 'tokenDecimals',
-                },
-                balance: '0x2',
+              asset,
+            },
+          },
+        });
+
+        const assets = [
+          {
+            type: AssetType.token,
+            error: null,
+            details: {
+              address: 'tokenAddress',
+              symbol: 'tokenSymbol',
+              decimals: 'tokenDecimals',
+            },
+            balance: '0x2',
+          },
+          {
+            type: AssetType.NFT,
+            details: {
+              standard: TokenStandard.ERC721,
+            },
+          },
+          {
+            type: AssetType.NFT,
+            details: {
+              standard: TokenStandard.ERC1155,
+            },
+          },
+        ];
+
+        for (let i = 0; i < assets.length; i++) {
+          const action = {
+            type: 'SELECTED_ACCOUNT_CHANGED',
+            payload: {
+              account: {
+                address: `0xAddress${i}`,
+                balance: `0x${i}`,
               },
             },
-          },
-        };
+          };
 
-        const action = {
-          type: 'SELECTED_ACCOUNT_CHANGED',
-          payload: {
-            account: {
-              address: '0xDifferentAddress',
-              balance: '0x1',
-            },
-          },
-        };
+          const result = sendReducer(olderState(assets[i]), action);
+          expect(result.selectedAccount.balance).toStrictEqual(
+            action.payload.account.balance,
+          );
+          expect(result.selectedAccount.address).toStrictEqual(
+            action.payload.account.address,
+          );
 
-        const result = sendReducer(olderState, action);
-        expect(result.selectedAccount.balance).toStrictEqual(
-          action.payload.account.balance,
-        );
-        expect(result.selectedAccount.address).toStrictEqual(
-          action.payload.account.address,
-        );
-
-        expect(result.draftTransactions['test-uuid'].asset).toStrictEqual({
-          ...draftTransactionInitialState.asset,
-          balance: action.payload.account.balance,
-        });
+          expect(result.draftTransactions['test-uuid'].asset).toStrictEqual({
+            ...draftTransactionInitialState.asset,
+            balance: action.payload.account.balance,
+          });
+        }
       });
 
       it('should gracefully handle missing account in payload', () => {
@@ -1393,8 +1414,6 @@ describe('Send Slice', () => {
                 status: NetworkStatus.Available,
               },
             },
-            selectedAddress: mockAddress1,
-            identities: { [mockAddress1]: { address: mockAddress1 } },
             internalAccounts: {
               accounts: {
                 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -1562,7 +1581,6 @@ describe('Send Slice', () => {
         const sendState = {
           metamask: {
             blockGasLimit: '',
-            selectedAddress: '',
             internalAccounts: {
               accounts: {
                 'mock-id': {
@@ -1625,10 +1643,11 @@ describe('Send Slice', () => {
         expect(actionResult[2].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
-        expect(actionResult[3].type).toStrictEqual(
+        expect(actionResult[3].type).toStrictEqual('GET_LAYER_1_GAS_FEE');
+        expect(actionResult[4].type).toStrictEqual(
           'metamask/gas/SET_CUSTOM_GAS_LIMIT',
         );
-        expect(actionResult[4].type).toStrictEqual(
+        expect(actionResult[5].type).toStrictEqual(
           'send/computeEstimatedGasLimit/fulfilled',
         );
       });
@@ -1637,7 +1656,6 @@ describe('Send Slice', () => {
         const sendState = {
           metamask: {
             blockGasLimit: '',
-            selectedAddress: '',
             internalAccounts: {
               accounts: {
                 'mock-id': {
@@ -1714,7 +1732,6 @@ describe('Send Slice', () => {
         const sendState = {
           metamask: {
             blockGasLimit: '',
-            selectedAddress: '',
             internalAccounts: {
               accounts: {
                 'mock-id': {
@@ -1776,10 +1793,11 @@ describe('Send Slice', () => {
         expect(actionResult[2].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
-        expect(actionResult[3].type).toStrictEqual(
+        expect(actionResult[3].type).toStrictEqual('GET_LAYER_1_GAS_FEE');
+        expect(actionResult[4].type).toStrictEqual(
           'metamask/gas/SET_CUSTOM_GAS_LIMIT',
         );
-        expect(actionResult[4].type).toStrictEqual(
+        expect(actionResult[5].type).toStrictEqual(
           'send/computeEstimatedGasLimit/fulfilled',
         );
       });
@@ -1788,7 +1806,6 @@ describe('Send Slice', () => {
         const tokenAssetTypeSendState = {
           metamask: {
             blockGasLimit: '',
-            selectedAddress: '',
             internalAccounts: {
               accounts: {
                 'mock-id': {
@@ -1836,16 +1853,17 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(5);
+        expect(actionResult).toHaveLength(6);
         expect(actionResult[0].type).toStrictEqual('send/addHistoryEntry');
         expect(actionResult[1].type).toStrictEqual('send/updateSendAmount');
         expect(actionResult[2].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
-        expect(actionResult[3].type).toStrictEqual(
+        expect(actionResult[3].type).toStrictEqual('GET_LAYER_1_GAS_FEE');
+        expect(actionResult[4].type).toStrictEqual(
           'metamask/gas/SET_CUSTOM_GAS_LIMIT',
         );
-        expect(actionResult[4].type).toStrictEqual(
+        expect(actionResult[5].type).toStrictEqual(
           'send/computeEstimatedGasLimit/fulfilled',
         );
       });
@@ -1855,7 +1873,6 @@ describe('Send Slice', () => {
       const defaultSendAssetState = {
         metamask: {
           blockGasLimit: '',
-          selectedAddress: '',
           internalAccounts: {
             accounts: {
               'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -1886,9 +1903,6 @@ describe('Send Slice', () => {
             [mockAddress1]: {
               address: '0x0',
             },
-          },
-          identities: {
-            [mockAddress1]: {},
           },
         },
         send: {
@@ -1925,7 +1939,7 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(5);
+        expect(actionResult).toHaveLength(6);
 
         expect(actionResult[0]).toMatchObject({
           type: 'send/addHistoryEntry',
@@ -1945,10 +1959,11 @@ describe('Send Slice', () => {
         expect(actionResult[2].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
-        expect(actionResult[3].type).toStrictEqual(
+        expect(actionResult[3].type).toStrictEqual('GET_LAYER_1_GAS_FEE');
+        expect(actionResult[4].type).toStrictEqual(
           'metamask/gas/SET_CUSTOM_GAS_LIMIT',
         );
-        expect(actionResult[4].type).toStrictEqual(
+        expect(actionResult[5].type).toStrictEqual(
           'send/computeEstimatedGasLimit/fulfilled',
         );
       });
@@ -1984,7 +1999,7 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(7);
+        expect(actionResult).toHaveLength(8);
         expect(actionResult[0].type).toStrictEqual('SHOW_LOADING_INDICATION');
         expect(actionResult[1].type).toStrictEqual('HIDE_LOADING_INDICATION');
         expect(actionResult[2]).toMatchObject({
@@ -2010,10 +2025,11 @@ describe('Send Slice', () => {
         expect(actionResult[4].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
-        expect(actionResult[5].type).toStrictEqual(
+        expect(actionResult[5].type).toStrictEqual('GET_LAYER_1_GAS_FEE');
+        expect(actionResult[6].type).toStrictEqual(
           'metamask/gas/SET_CUSTOM_GAS_LIMIT',
         );
-        expect(actionResult[6].type).toStrictEqual(
+        expect(actionResult[7].type).toStrictEqual(
           'send/computeEstimatedGasLimit/fulfilled',
         );
       });
@@ -2207,7 +2223,6 @@ describe('Send Slice', () => {
         const updateRecipientState = {
           metamask: {
             addressBook: {},
-            identities: {},
             internalAccounts: {
               accounts: {},
               selectedAccount: '',
@@ -2319,13 +2334,11 @@ describe('Send Slice', () => {
         const tokenState = {
           metamask: {
             addressBook: {},
-            identities: {},
             internalAccounts: {
               accounts: {},
               selectedAccount: '',
             },
             blockGasLimit: '',
-            selectedAddress: '',
             providerConfig: {
               chainId: '0x1',
             },
@@ -2373,7 +2386,6 @@ describe('Send Slice', () => {
         const updateRecipientState = {
           metamask: {
             addressBook: {},
-            identities: {},
             providerConfig: {
               chainId: '',
             },
@@ -2432,7 +2444,7 @@ describe('Send Slice', () => {
         await store.dispatch(resetRecipientInput());
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(12);
+        expect(actionResult).toHaveLength(13);
         expect(actionResult[0]).toMatchObject({
           type: 'send/addHistoryEntry',
           payload: 'sendFlow - user cleared recipient input',
@@ -2457,16 +2469,17 @@ describe('Send Slice', () => {
         expect(actionResult[7].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
-        expect(actionResult[8].type).toStrictEqual(
+        expect(actionResult[8].type).toStrictEqual('GET_LAYER_1_GAS_FEE');
+        expect(actionResult[9].type).toStrictEqual(
           'metamask/gas/SET_CUSTOM_GAS_LIMIT',
         );
-        expect(actionResult[9].type).toStrictEqual(
+        expect(actionResult[10].type).toStrictEqual(
           'send/computeEstimatedGasLimit/fulfilled',
         );
-        expect(actionResult[10].type).toStrictEqual(
+        expect(actionResult[11].type).toStrictEqual(
           'DNS/resetDomainResolution',
         );
-        expect(actionResult[11].type).toStrictEqual(
+        expect(actionResult[12].type).toStrictEqual(
           'send/validateRecipientUserInput',
         );
       });
@@ -2602,7 +2615,7 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(6);
+        expect(actionResult).toHaveLength(7);
         expect(actionResult[0].type).toStrictEqual('send/updateAmountMode');
         expect(actionResult[1].type).toStrictEqual('send/updateSendAmount');
         expect(actionResult[2]).toMatchObject({
@@ -2612,10 +2625,11 @@ describe('Send Slice', () => {
         expect(actionResult[3].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
-        expect(actionResult[4].type).toStrictEqual(
+        expect(actionResult[4].type).toStrictEqual('GET_LAYER_1_GAS_FEE');
+        expect(actionResult[5].type).toStrictEqual(
           'metamask/gas/SET_CUSTOM_GAS_LIMIT',
         );
-        expect(actionResult[5].type).toStrictEqual(
+        expect(actionResult[6].type).toStrictEqual(
           'send/computeEstimatedGasLimit/fulfilled',
         );
       });
@@ -2766,9 +2780,6 @@ describe('Send Slice', () => {
             tokens: [],
             addressBook: {
               [CHAIN_IDS.GOERLI]: {},
-            },
-            identities: {
-              [mockAddress1]: {},
             },
             internalAccounts: {
               accounts: {
@@ -2926,16 +2937,12 @@ describe('Send Slice', () => {
         const editTransactionState = {
           metamask: {
             blockGasLimit: '0x3a98',
-            selectedAddress: '',
             providerConfig: {
               chainId: CHAIN_IDS.GOERLI,
             },
             tokens: [],
             addressBook: {
               [CHAIN_IDS.GOERLI]: {},
-            },
-            identities: {
-              [mockAddress1]: {},
             },
             accounts: {
               [mockAddress1]: {
@@ -3130,7 +3137,6 @@ describe('Send Slice', () => {
       const editTransactionState = {
         metamask: {
           blockGasLimit: '0x3a98',
-          selectedAddress: '',
           internalAccounts: {
             accounts: {
               'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -3166,9 +3172,6 @@ describe('Send Slice', () => {
           },
           addressBook: {
             [CHAIN_IDS.GOERLI]: {},
-          },
-          identities: {
-            [mockAddress1]: {},
           },
           accounts: {
             [mockAddress1]: {
@@ -3598,7 +3601,6 @@ describe('Send Slice', () => {
             send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
             metamask: {
               ensResolutionsByAddress: {},
-              identities: {},
               internalAccounts: {
                 accounts: {},
                 selectedAccount: '',
@@ -3618,7 +3620,6 @@ describe('Send Slice', () => {
             metamask: {
               ensResolutionsByAddress: {},
               addressBook: {},
-              identities: {},
               internalAccounts: {
                 accounts: {},
                 selectedAccount: '',
@@ -3669,7 +3670,6 @@ describe('Send Slice', () => {
             send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
             metamask: {
               ensResolutionsByAddress: {},
-              identities: {},
               internalAccounts: {
                 accounts: {},
                 selectedAccount: '',

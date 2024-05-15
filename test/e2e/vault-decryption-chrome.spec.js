@@ -50,13 +50,12 @@ async function getExtensionStorageFilePath(driver) {
  */
 async function closePopoverIfPresent(driver) {
   const popoverButtonSelector = '[data-testid="popover-close"]';
-  try {
-    if (await driver.isElementPresent(popoverButtonSelector)) {
-      await driver.clickElement(popoverButtonSelector);
-    }
-  } catch (_err) {
-    // No popover
-  }
+  const linkNoThanks = {
+    text: "Don't enable enhanced protection",
+    tag: 'button',
+  };
+  await driver.clickElementSafe(popoverButtonSelector);
+  await driver.clickElementSafe(linkNoThanks);
 }
 
 /**

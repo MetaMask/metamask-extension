@@ -348,18 +348,9 @@
     "message": "Όλα τα NFT σας από το $1",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
-  "allowExternalExtensionTo": {
-    "message": "Επιτρέψτε σε αυτή την εξωτερική επέκταση να:"
-  },
   "allowSpendToken": {
     "message": "Δίνετε άδεια για να αποκτήσετε πρόσβαση στο $1;",
     "description": "$1 is the symbol of the token that are requesting to spend"
-  },
-  "allowThisSiteTo": {
-    "message": "Επιτρέψτε σε αυτόν τον ιστότοπο να:"
-  },
-  "allowThisSnapTo": {
-    "message": "Επιτρέψτε αυτό το snap να:"
   },
   "allowWithdrawAndSpend": {
     "message": "Επιτρέψτε στο $1 να κάνει ανάληψη και να ξοδέψει μέχρι το ακόλουθο ποσό:",
@@ -742,26 +733,6 @@
   "connectSnap": {
     "message": "Σύνδεση $1",
     "description": "$1 is the snap for which a connection is being requested."
-  },
-  "connectTo": {
-    "message": "Σύνδεση με $1",
-    "description": "$1 is the name/origin of a web3 site/application that the user can connect to metamask"
-  },
-  "connectToAll": {
-    "message": "Συνδεθείτε σε όλα τα $1 σας",
-    "description": "$1 will be replaced by the translation of connectToAllAccounts"
-  },
-  "connectToAllAccounts": {
-    "message": "λογαριασμοί",
-    "description": "will replace $1 in connectToAll, completing the sentence 'connect to all of your accounts', will be text that shows list of accounts on hover"
-  },
-  "connectToMultiple": {
-    "message": "Σύνδεση με $1",
-    "description": "$1 will be replaced by the translation of connectToMultipleNumberOfAccounts"
-  },
-  "connectToMultipleNumberOfAccounts": {
-    "message": "$1 λογαριασμοί",
-    "description": "$1 is the number of accounts to which the web3 site/application is asking to connect; this will substitute $1 in connectToMultiple"
   },
   "connectWithMetaMask": {
     "message": "Σύνδεση με το MetaMask"
@@ -1649,12 +1620,6 @@
   },
   "general": {
     "message": "Γενικά"
-  },
-  "globalTitle": {
-    "message": "Γενικό μενού"
-  },
-  "globalTourDescription": {
-    "message": "Δείτε το χαρτοφυλάκιό σας, τις συνδεδεμένες ιστοσελίδες, τις ρυθμίσεις και πολλά άλλα"
   },
   "goBack": {
     "message": "Πηγαίνετε πίσω"
@@ -2562,21 +2527,6 @@
   "notificationsMarkAllAsRead": {
     "message": "Επισήμανση όλων ως αναγνωσμένων"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "Μάθετε περισσότερα"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "🎉 Είμαστε ενθουσιασμένοι που ανακοινώνουμε την δοκιμαστική έναρξη του MetaMask Snaps!"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "Εξατομικεύστε το πορτοφόλι σας με snaps που δημιουργήθηκαν από την κοινότητα προγραμματιστών!"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "Τα Snaps σάς βοηθούν να κάνετε περισσότερα με το MetaMask — όπως τη σύνδεση σε περισσότερα δίκτυα, τη προβολή πληροφοριών συναλλαγών και τη λήψη προσαρμοσμένων ειδοποιήσεων."
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "Παρουσιάζουμε τα MetaMask Snaps"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 νέα tokens βρέθηκαν σε αυτόν τον λογαριασμό",
     "description": "$1 is the number of new tokens detected"
@@ -2722,7 +2672,8 @@
     "message": "Ένας κακόβουλος πάροχος δικτύου μπορεί να πει ψέματα σχετικά με την κατάσταση του blockchain και να καταγράψει τη δραστηριότητα του δικτύου σας. Προσθέστε μόνο προσαρμοσμένα δίκτυα που εμπιστεύεστε."
   },
   "onlyConnectTrust": {
-    "message": "Συνδεθείτε μόνο με ιστότοπους που εμπιστεύεστε."
+    "message": "Συνδεθείτε μόνο με ιστότοπους που εμπιστεύεστε.",
+    "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
   "openFullScreenForLedgerWebHid": {
     "message": "Μεταβείτε σε πλήρη οθόνη για να συνδέσετε το Ledger σας.",
@@ -2819,9 +2770,6 @@
   "permissionRequest": {
     "message": "Αίτημα άδειας"
   },
-  "permissionRequestCapitalized": {
-    "message": "Αίτημα άδειας"
-  },
   "permissionRequested": {
     "message": "Ζητήθηκε τώρα"
   },
@@ -2902,12 +2850,6 @@
   },
   "permissions": {
     "message": "Άδειες"
-  },
-  "permissionsTitle": {
-    "message": "Άδειες"
-  },
-  "permissionsTourDescription": {
-    "message": "Βρείτε τους συνδεδεμένους λογαριασμούς σας και διαχειριστείτε τις άδειες εδώ"
   },
   "personalAddressDetected": {
     "message": "Η προσωπική διεύθυνση εντοπίστηκε. Καταχωρίστε τη διεύθυνση συμβολαίου του token."
@@ -3267,6 +3209,10 @@
   "securityAndPrivacy": {
     "message": "Ασφάλεια και απόρρητο"
   },
+  "securityProviderPoweredBy": {
+    "message": "Με την υποστήριξη του $1",
+    "description": "The security provider that is providing data"
+  },
   "seeDetails": {
     "message": "Δείτε λεπτομέρειες"
   },
@@ -3491,12 +3437,6 @@
   "smartContracts": {
     "message": "Έξυπνα συμβόλαια"
   },
-  "smartSwapsAreHere": {
-    "message": "Οι Έξυπνες Ανταλλαγές είναι εδώ!"
-  },
-  "smartSwapsDescription": {
-    "message": "Οι Ανταλλαγές στο MetaMask μόλις έγιναν πολύ πιο έξυπνες! Η ενεργοποίηση των Έξυπνων Ανταλλαγών θα επιτρέψει στο MetaMask να βελτιστοποιήσει προγραμματιστικά τις Ανταλλαγές σας, ώστε να σας βοηθήσει:"
-  },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Δεν υπάρχουν αρκετά κεφάλαια για έξυπνες ανταλλαγές."
   },
@@ -3513,10 +3453,6 @@
   },
   "snapDetailWebsite": {
     "message": "Ιστότοπος"
-  },
-  "snapInstallRequest": {
-    "message": "Με την εγκατάσταση, εκχωρούνται στο $1 οι ακόλουθες άδειες. Συνεχίστε μόνο αν εμπιστεύεστε το $1.",
-    "description": "$1 is the snap name."
   },
   "snapInstallSuccess": {
     "message": "Η εγκατάσταση ολοκληρώθηκε"
@@ -3775,18 +3711,6 @@
   },
   "strong": {
     "message": "Ισχυρό"
-  },
-  "stxBenefit1": {
-    "message": "Ελαχιστοποίηση του κόστους συναλλαγών"
-  },
-  "stxBenefit2": {
-    "message": "Μείωση των αποτυχημένων συναλλαγών"
-  },
-  "stxBenefit3": {
-    "message": "Εξάλειψη των εμπλοκών στις συναλλαγές"
-  },
-  "stxBenefit4": {
-    "message": "Αποτροπή των προπορευόμενων συναλλαγών (front-running)"
   },
   "stxCancelled": {
     "message": "Η ανταλλαγή θα είχε αποτύχει"
@@ -4277,12 +4201,6 @@
   "switchedTo": {
     "message": "Έχετε αλλάξει σε"
   },
-  "switcherTitle": {
-    "message": "Επιλογέας δικτύου"
-  },
-  "switcherTourDescription": {
-    "message": "Κάντε κλικ στο εικονίδιο για να αλλάξετε δίκτυο ή να προσθέσετε ένα νέο δίκτυο"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Η αλλαγή δικτύων θα ακυρώσει όλες τις εκκρεμείς επιβεβαιώσεις"
   },
@@ -4718,7 +4636,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "Προβολή $1 στο $2",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "Προβολή $1 στο Etherscan",
@@ -4821,10 +4739,6 @@
   },
   "whatsThis": {
     "message": "Τι είναι αυτό;"
-  },
-  "xOfY": {
-    "message": "$1 από $2",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total, and $1 is a count towards that total"
   },
   "xOfYPending": {
     "message": "$1 από $2 σε εκκρεμότητα",

@@ -128,7 +128,11 @@ const EMPTY_INIT_STATE = {
 const sandbox = sinon.createSandbox();
 let fetchTradesInfoStub = sandbox.stub();
 const getCurrentChainIdStub = sandbox.stub();
+const getLayer1GasFeeStub = sandbox.stub();
+const getNetworkClientIdStub = sandbox.stub();
 getCurrentChainIdStub.returns(CHAIN_IDS.MAINNET);
+getNetworkClientIdStub.returns('1');
+getLayer1GasFeeStub.resolves('0x1');
 const getEIP1559GasFeeEstimatesStub = sandbox.stub(() => {
   return {
     gasFeeEstimates: {
@@ -150,6 +154,8 @@ describe('SwapsController', function () {
       fetchTradesInfo: fetchTradesInfoStub,
       getCurrentChainId: getCurrentChainIdStub,
       getEIP1559GasFeeEstimates: getEIP1559GasFeeEstimatesStub,
+      getNetworkClientId: getNetworkClientIdStub,
+      getLayer1GasFee: getLayer1GasFeeStub,
     });
   };
 
@@ -667,9 +673,9 @@ describe('SwapsController', function () {
             total: '5.43388249494949494949494949494949495',
             medianMetaMaskFee: '0.444444444444444444444444444444444444',
           },
-          ethFee: '0.113822',
-          multiLayerL1TradeFeeTotal: '0x0103c18816d4e8',
-          overallValueOfQuote: '49.886178',
+          ethFee: '0.113536',
+          multiLayerL1TradeFeeTotal: '0x1',
+          overallValueOfQuote: '49.886464',
           metaMaskFeeInEth: '0.50505050505050505050505050505050505',
           ethValueOfTokens: '50',
         });
@@ -851,6 +857,8 @@ describe('SwapsController', function () {
           getTokenRatesState: MOCK_TOKEN_RATES_STORE,
           fetchTradesInfo: fetchTradesInfoStub,
           getCurrentChainId: getCurrentChainIdStub,
+          getLayer1GasFee: getLayer1GasFeeStub,
+          getNetworkClientId: getNetworkClientIdStub,
         });
         const firstEthersInstance = _swapsController.ethersProvider;
         const firstEthersProviderChainId =

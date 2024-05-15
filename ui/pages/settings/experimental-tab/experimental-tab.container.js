@@ -8,6 +8,7 @@ import {
   setUseRequestQueue,
   setPetnamesEnabled,
   setFeatureNotificationsEnabled,
+  setRedesignedConfirmationsEnabled,
 } from '../../../store/actions';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -16,6 +17,7 @@ import {
   getUseRequestQueue,
   getPetnamesEnabled,
   getFeatureNotificationsEnabled,
+  getRedesignedConfirmationsEnabled,
 } from '../../../selectors';
 import ExperimentalTab from './experimental-tab.component';
 
@@ -29,6 +31,7 @@ const mapStateToProps = (state) => {
     useRequestQueue: getUseRequestQueue(state),
     petnamesEnabled,
     featureNotificationsEnabled,
+    redesignedConfirmationsEnabled: getRedesignedConfirmationsEnabled(state),
   };
 };
 
@@ -44,6 +47,8 @@ const mapDispatchToProps = (dispatch) => {
     setFeatureNotificationsEnabled: (value) => {
       return dispatch(setFeatureNotificationsEnabled(value));
     },
+    setRedesignedConfirmationsEnabled: (value) =>
+      dispatch(setRedesignedConfirmationsEnabled(value)),
   };
 };
 

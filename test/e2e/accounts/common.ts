@@ -65,14 +65,14 @@ export async function installSnapSimpleKeyring(
     tag: 'button',
   });
 
-  await driver.findElement({ text: 'Installation request', tag: 'h2' });
+  await driver.findElement({ text: 'Add to MetaMask', tag: 'h3' });
 
   await driver.clickElementSafe('[data-testid="snap-install-scroll"]', 200);
 
-  await driver.waitForSelector({ text: 'Install' });
+  await driver.waitForSelector({ text: 'Confirm' });
 
   await driver.clickElement({
-    text: 'Install',
+    text: 'Confirm',
     tag: 'button',
   });
 
@@ -193,7 +193,7 @@ export async function connectAccountToTestDapp(driver: Driver) {
     css: '[data-testid="page-container-footer-next"]',
   });
   await driver.clickElement({
-    text: 'Connect',
+    text: 'Confirm',
     tag: 'button',
     css: '[data-testid="page-container-footer-next"]',
   });
@@ -202,9 +202,15 @@ export async function connectAccountToTestDapp(driver: Driver) {
 export async function disconnectFromTestDapp(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
   await driver.clickElement('[data-testid="account-options-menu-button"]');
-  await driver.clickElement('[data-testid="global-menu-connected-sites"]');
-  await driver.clickElement({ text: 'Disconnect', tag: 'a' });
+  await driver.clickElement({ text: 'All Permissions', tag: 'div' });
+  await driver.clickElement({ text: 'Got it', tag: 'button' });
+  await driver.clickElement({
+    text: '127.0.0.1:8080',
+    tag: 'p',
+  });
+  await driver.clickElement('[data-testid="account-list-item-menu-button"]');
   await driver.clickElement({ text: 'Disconnect', tag: 'button' });
+  await driver.clickElement('[data-testid ="disconnect-all"]');
 }
 
 export async function approveOrRejectRequest(driver: Driver, flowType: string) {

@@ -14,6 +14,7 @@ const render = () => {
     allAreSelected: () => false,
     checked: false,
     isIndeterminate: false,
+    activeTabOrigin: 'metamask.github.io',
     accounts: [
       {
         address: '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275',

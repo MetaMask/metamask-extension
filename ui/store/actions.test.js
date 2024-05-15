@@ -17,7 +17,6 @@ const middleware = [thunk];
 const defaultState = {
   metamask: {
     currentLocale: 'test',
-    selectedAddress: '0xFirstAddress',
     providerConfig: { chainId: '0x1' },
     accounts: {
       '0xFirstAddress': {
@@ -42,9 +41,6 @@ const defaultState = {
       },
       selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
     },
-    identities: {
-      '0xFirstAddress': {},
-    },
   },
 };
 const mockStore = (state = defaultState) => configureStore(middleware)(state);
@@ -65,6 +61,7 @@ describe('Actions', () => {
     background.signPersonalMessage = sinon.stub();
     background.signTypedMessage = sinon.stub();
     background.abortTransactionSigning = sinon.stub();
+    background.toggleExternalServices = sinon.stub();
   });
 
   describe('#tryUnlockMetamask', () => {
@@ -246,7 +243,6 @@ describe('Actions', () => {
       background.getState.callsFake((cb) =>
         cb(null, {
           currentLocale: 'test',
-          selectedAddress: '0xAnotherAddress',
           providerConfig: {
             chainId: '0x1',
           },
@@ -254,9 +250,6 @@ describe('Actions', () => {
             '0xAnotherAddress': {
               balance: '0x0',
             },
-          },
-          identities: {
-            '0xAnotherAddress': {},
           },
           internalAccounts: {
             accounts: {
@@ -731,7 +724,6 @@ describe('Actions', () => {
         getState: sinon.stub().callsFake((cb) =>
           cb(null, {
             currentLocale: 'test',
-            selectedAddress: '0xFirstAddress',
           }),
         ),
       });
@@ -801,54 +793,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('#setSelectedAddress', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls setSelectedAddress in background', async () => {
-      const store = mockStore();
-
-      const setSelectedAddressSpy = sinon.stub().callsFake((_, cb) => cb());
-
-      background.getApi.returns({
-        setSelectedAddress: setSelectedAddressSpy,
-      });
-
-      setBackgroundConnection(background.getApi());
-
-      await store.dispatch(
-        actions.setSelectedAddress(
-          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        ),
-      );
-      expect(setSelectedAddressSpy.callCount).toStrictEqual(1);
-    });
-
-    it('errors when setSelectedAddress throws', async () => {
-      const store = mockStore();
-
-      const setSelectedAddressSpy = sinon
-        .stub()
-        .callsFake((_, cb) => cb(new Error('error')));
-
-      background.getApi.returns({
-        setSelectedAddress: setSelectedAddressSpy,
-      });
-
-      setBackgroundConnection(background.getApi());
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
-
-      await store.dispatch(actions.setSelectedAddress());
-      expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
   describe('#setSelectedAccount', () => {
     afterEach(() => {
       sinon.restore();
@@ -890,11 +834,9 @@ describe('Actions', () => {
       const setSelectedInternalAccountSpy = sinon
         .stub()
         .callsFake((_, cb) => cb());
-      const setSelectedAddressSpy = sinon.stub().callsFake((_, cb) => cb());
 
       background.getApi.returns({
         setSelectedInternalAccount: setSelectedInternalAccountSpy,
-        setSelectedAddress: setSelectedAddressSpy,
       });
 
       setBackgroundConnection(background.getApi());
@@ -902,8 +844,6 @@ describe('Actions', () => {
       await store.dispatch(actions.setSelectedAccount('0x123'));
       expect(setSelectedInternalAccountSpy.callCount).toStrictEqual(1);
       expect(setSelectedInternalAccountSpy.calledWith('mock-id')).toBe(true);
-      expect(setSelectedAddressSpy.callCount).toStrictEqual(1);
-      expect(setSelectedAddressSpy.calledWith('0x123')).toBe(true);
     });
 
     it('displays warning if setSelectedAccount throws', async () => {
@@ -942,11 +882,9 @@ describe('Actions', () => {
       const setSelectedInternalAccountSpy = sinon
         .stub()
         .callsFake((_, cb) => cb(new Error('error')));
-      const setSelectedAddressSpy = sinon.stub().callsFake((_, cb) => cb());
 
       background.getApi.returns({
         setSelectedInternalAccount: setSelectedInternalAccountSpy,
-        setSelectedAddress: setSelectedAddressSpy,
       });
 
       setBackgroundConnection(background.getApi());
@@ -1714,6 +1652,55 @@ describe('Actions', () => {
     });
   });
 
+  describe('#setServiceWorkerKeepAlivePreference', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('sends a value to background', async () => {
+      const store = mockStore();
+      const setServiceWorkerKeepAlivePreferenceStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+
+      setBackgroundConnection({
+        setServiceWorkerKeepAlivePreference:
+          setServiceWorkerKeepAlivePreferenceStub,
+      });
+
+      await store.dispatch(actions.setServiceWorkerKeepAlivePreference(true));
+      expect(setServiceWorkerKeepAlivePreferenceStub.callCount).toStrictEqual(
+        1,
+      );
+      expect(setServiceWorkerKeepAlivePreferenceStub.calledWith(true)).toBe(
+        true,
+      );
+    });
+
+    it('errors when setServiceWorkerKeepAlivePreference in background throws', async () => {
+      const store = mockStore();
+      const setServiceWorkerKeepAlivePreferenceStub = sinon
+        .stub()
+        .callsFake((_, cb) => {
+          cb(new Error('error'));
+        });
+
+      setBackgroundConnection({
+        setServiceWorkerKeepAlivePreference:
+          setServiceWorkerKeepAlivePreferenceStub,
+      });
+
+      const expectedActions = [
+        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
+        { type: 'DISPLAY_WARNING', payload: 'error' },
+        { type: 'HIDE_LOADING_INDICATION' },
+      ];
+
+      await store.dispatch(actions.setServiceWorkerKeepAlivePreference(false));
+      expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+  });
+
   describe('#setParticipateInMetaMetrics', () => {
     beforeAll(() => {
       window.sentry = {
@@ -2066,7 +2053,6 @@ describe('Actions', () => {
         getState: sinon.stub().callsFake((cb) =>
           cb(null, {
             currentLocale: 'test',
-            selectedAddress: '0xFirstAddress',
             providerConfig: {
               chainId: '0x1',
             },
@@ -2074,9 +2060,6 @@ describe('Actions', () => {
               '0xFirstAddress': {
                 balance: '0x0',
               },
-            },
-            identities: {
-              '0xFirstAddress': {},
             },
             internalAccounts: {
               accounts: {
@@ -2189,6 +2172,57 @@ describe('Actions', () => {
 
       expect(expectedAction.payload.name).toBe('TRANSACTION_ALREADY_CONFIRMED');
       expect(expectedAction.payload.originalTransactionId).toBe(txId);
+    });
+  });
+
+  describe('#removeAndIgnoreNft', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('should throw when no address found', async () => {
+      const store = mockStore();
+
+      await expect(
+        store.dispatch(actions.removeAndIgnoreNft(undefined, '55')),
+      ).rejects.toThrow('MetaMask - Cannot ignore NFT without address');
+    });
+
+    it('should throw when no tokenId found', async () => {
+      const store = mockStore();
+
+      await expect(
+        store.dispatch(actions.removeAndIgnoreNft('Oxtest', undefined)),
+      ).rejects.toThrow('MetaMask - Cannot ignore NFT without tokenID');
+    });
+
+    it('should throw when removeAndIgnoreNft throws an error', async () => {
+      const store = mockStore();
+      const error = new Error('remove nft fake error');
+      background.removeAndIgnoreNft = sinon.stub().throws(error);
+
+      setBackgroundConnection(background);
+
+      await expect(
+        store.dispatch(actions.removeAndIgnoreNft('Oxtest', '6')),
+      ).rejects.toThrow(error);
+    });
+  });
+
+  describe('#toggleExternalServices', () => {
+    it('calls toggleExternalServices', async () => {
+      const store = mockStore();
+
+      setBackgroundConnection(background);
+
+      store.dispatch(actions.toggleExternalServices(true));
+
+      // expect it to have been called once, with true as the value
+      expect(background.toggleExternalServices.callCount).toStrictEqual(1);
+      expect(background.toggleExternalServices.getCall(0).args).toStrictEqual([
+        true,
+        expect.any(Function),
+      ]);
     });
   });
 });

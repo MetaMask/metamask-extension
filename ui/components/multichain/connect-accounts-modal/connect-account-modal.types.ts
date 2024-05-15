@@ -28,4 +28,5 @@ export type ConnectAccountsListProps = {
   accounts: AccountType[];
   checked: boolean;
   isIndeterminate: boolean;
+  activeTabOrigin: string;
 };

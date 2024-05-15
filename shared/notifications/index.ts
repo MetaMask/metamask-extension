@@ -5,11 +5,8 @@
  * into numbers in only one place. This should make merge conflicts easier.
  */
 export const NOTIFICATION_DROP_LEDGER_FIREFOX = 25;
-export const NOTIFICATION_OPEN_BETA_SNAPS = 26;
-export const NOTIFICATION_BUY_SELL_BUTTON = 27;
 export const NOTIFICATION_U2F_LEDGER_LIVE = 28;
 export const NOTIFICATION_BLOCKAID_DEFAULT = 29;
-export const NOTIFICATION_STAKING_PORTFOLIO = 30;
 export const NOTIFICATION_PETNAMES = 31;
 export const NOTIFICATION_PORTFOLIO_V2 = 32;
 export const NOTIFICATION_SIMULATIONS = 33;
@@ -48,22 +45,6 @@ export const UI_NOTIFICATIONS: UINotifications = {
     id: Number(NOTIFICATION_DROP_LEDGER_FIREFOX),
     date: null,
   },
-  [NOTIFICATION_OPEN_BETA_SNAPS]: {
-    id: Number(NOTIFICATION_OPEN_BETA_SNAPS),
-    date: null,
-    image: {
-      src: 'images/introducing-snaps.svg',
-      width: '100%',
-    },
-  },
-  [NOTIFICATION_BUY_SELL_BUTTON]: {
-    id: Number(NOTIFICATION_BUY_SELL_BUTTON),
-    date: null,
-    image: {
-      src: 'images/sell_button_whatsnew.png',
-      width: '100%',
-    },
-  },
   [NOTIFICATION_U2F_LEDGER_LIVE]: {
     id: Number(NOTIFICATION_U2F_LEDGER_LIVE),
     date: null,
@@ -74,14 +55,6 @@ export const UI_NOTIFICATIONS: UINotifications = {
     date: null,
   },
   ///: END:ONLY_INCLUDE_IF
-  [NOTIFICATION_STAKING_PORTFOLIO]: {
-    id: Number(NOTIFICATION_STAKING_PORTFOLIO),
-    date: null,
-    image: {
-      src: 'images/staking-light-mode-preview.png',
-      width: '100%',
-    },
-  },
   [NOTIFICATION_PETNAMES]: {
     id: Number(NOTIFICATION_PETNAMES),
     date: null,
@@ -100,7 +73,7 @@ export const UI_NOTIFICATIONS: UINotifications = {
   },
   [NOTIFICATION_SIMULATIONS]: {
     id: Number(NOTIFICATION_SIMULATIONS),
-    date: null,
+    date: '2024-04-09',
   },
 };
 
@@ -189,34 +162,6 @@ export const getTranslatedUINotifications = (
           )
         : '',
     },
-    [NOTIFICATION_OPEN_BETA_SNAPS]: {
-      ...UI_NOTIFICATIONS[NOTIFICATION_OPEN_BETA_SNAPS],
-      title: t('notificationsOpenBetaSnapsTitle'),
-      description: [
-        t('notificationsOpenBetaSnapsDescriptionOne'),
-        t('notificationsOpenBetaSnapsDescriptionTwo'),
-        t('notificationsOpenBetaSnapsDescriptionThree'),
-      ],
-      actionText: t('notificationsOpenBetaSnapsActionText'),
-      date: UI_NOTIFICATIONS[NOTIFICATION_OPEN_BETA_SNAPS].date
-        ? formatDate(
-            UI_NOTIFICATIONS[NOTIFICATION_OPEN_BETA_SNAPS].date,
-            formattedLocale,
-          )
-        : '',
-    },
-    [NOTIFICATION_BUY_SELL_BUTTON]: {
-      ...UI_NOTIFICATIONS[NOTIFICATION_BUY_SELL_BUTTON],
-      title: t('notificationsBuySellTitle'),
-      description: t('notificationsBuySellDescription'),
-      actionText: t('notificationsBuySellActionText'),
-      date: UI_NOTIFICATIONS[NOTIFICATION_BUY_SELL_BUTTON].date
-        ? formatDate(
-            UI_NOTIFICATIONS[NOTIFICATION_BUY_SELL_BUTTON].date,
-            formattedLocale,
-          )
-        : '',
-    },
     [NOTIFICATION_U2F_LEDGER_LIVE]: {
       ...UI_NOTIFICATIONS[NOTIFICATION_U2F_LEDGER_LIVE],
       title: t('notificationsU2FLedgerLiveTitle'),
@@ -224,18 +169,6 @@ export const getTranslatedUINotifications = (
       date: UI_NOTIFICATIONS[NOTIFICATION_U2F_LEDGER_LIVE].date
         ? formatDate(
             UI_NOTIFICATIONS[NOTIFICATION_U2F_LEDGER_LIVE].date,
-            formattedLocale,
-          )
-        : '',
-    },
-    [NOTIFICATION_STAKING_PORTFOLIO]: {
-      ...UI_NOTIFICATIONS[NOTIFICATION_STAKING_PORTFOLIO],
-      title: t('notificationsStakingPortfolioTitle'),
-      description: [t('notificationsStakingPortfolioDescription')],
-      actionText: t('notificationsStakingPortfolioActionText'),
-      date: UI_NOTIFICATIONS[NOTIFICATION_STAKING_PORTFOLIO].date
-        ? formatDate(
-            UI_NOTIFICATIONS[NOTIFICATION_STAKING_PORTFOLIO].date,
             formattedLocale,
           )
         : '',

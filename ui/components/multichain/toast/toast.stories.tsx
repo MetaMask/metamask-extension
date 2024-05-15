@@ -4,10 +4,12 @@ import { AvatarAccount, AvatarAccountSize } from '../../component-library';
 import { BorderColor } from '../../../helpers/constants/design-system';
 import { Toast } from '.';
 
-const [chaosAddress] = Object.keys(testData.metamask.identities);
+const [chaosAccount] = Object.values(
+  testData.metamask.internalAccounts.accounts,
+);
 
-const CHAOS_IDENTITY = {
-  ...testData.metamask.identities[chaosAddress],
+const CHAOS_ACCOUNT = {
+  ...chaosAccount,
   balance: '0x152387ad22c3f0',
   keyring: {
     type: 'HD Key Tree',
@@ -34,11 +36,13 @@ export default {
     },
   },
   args: {
-    startAdornment: (<AvatarAccount
-    address={CHAOS_IDENTITY.address}
-    size={AvatarAccountSize.Md}
-    borderColor={BorderColor.transparent}
-  />),
+    startAdornment: (
+      <AvatarAccount
+        address={CHAOS_ACCOUNT.address}
+        size={AvatarAccountSize.Md}
+        borderColor={BorderColor.transparent}
+      />
+    ),
     text: 'This is the Toast text',
     actionText: 'Take some action',
     onActionClick: () => undefined,
