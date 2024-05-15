@@ -55,9 +55,6 @@ import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { getTopAssets } from '../../../../ducks/swaps/swaps';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import { useEqualityCheck } from '../../../../hooks/useEqualityCheck';
-import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
-import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
-import { PRIMARY } from '../../../../helpers/constants/common';
 import AssetList from './AssetList';
 import { Asset, Collection, Token } from './types';
 
@@ -132,16 +129,6 @@ export function AssetPickerModal({
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const conversionRate = useSelector(getConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
-
-  const {
-    currency: primaryCurrency,
-    numberOfDecimals: primaryNumberOfDecimals,
-  } = useUserPreferencedCurrency(PRIMARY, { ethNumberOfDecimals: 4 });
-
-  const [, primaryCurrencyProperties] = useCurrencyDisplay(balanceValue, {
-    numberOfDecimals: primaryNumberOfDecimals,
-    currency: primaryCurrency,
-  });
 
   const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
   const shouldHideZeroBalanceTokens = useSelector(
@@ -234,7 +221,6 @@ export function AssetPickerModal({
     nativeCurrency,
     nativeCurrencyImage,
     balanceValue,
-    primaryCurrencyProperties.value,
     tokenConversionRates,
     conversionRate,
     currentCurrency,
