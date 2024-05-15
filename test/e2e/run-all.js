@@ -1,6 +1,8 @@
 const path = require('path');
 const fs = require('fs');
 const { execSync } = require('child_process');
+const { promisify } = require('util');
+const exec = promisify(require('child_process').exec);
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 const { runInShell } = require('../../development/lib/run-command');
@@ -213,13 +215,14 @@ async function main() {
   console.log('My test list:', myTestList);
 
   // Indentify changed or new test files
-  let changedOrNewTests = execSync(
-    'git diff --name-only origin/develop...$CIRCLE_BRANCH',
-  );
-  changedOrNewTests = changedOrNewTests
+  const { stdout } = await exec(`git diff --name-only develop...HEAD`);
+  const changedOrNewTests = stdout
     .toString()
     .split('\n')
     .filter((line) => line.match(/^test\/.*\/.*\.spec\.js$/u));
+
+  console.log('Changed or new', changedOrNewTests);
+  console.log('stdout', stdout);
 
   // spawn `run-e2e-test.js` for each test in myTestList
   for (let testPath of myTestList) {
