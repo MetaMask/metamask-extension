@@ -5088,6 +5088,42 @@ export function setName(
 }
 
 /**
+ * To create a data deletion regulation for MetaMetrics data deletion
+ */
+export function createMetaMetricsDataDeletionTask(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('createMetaMetricsDataDeletionTask');
+    } catch (error) {
+      logErrorWithMessage(error);
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+    }
+  };
+}
+
+/**
+ * To check the status of the current delete regulation.
+ */
+export async function checkDataDeletionTaskStatus(): Promise<DataDeletionResponse> {
+  let dataDeletionResponse: DataDeletionResponse;
+  try {
+    dataDeletionResponse =
+      await submitRequestToBackground<DataDeletionResponse>(
+        'checkDataDeletionTaskStatus',
+      );
+  } catch (error) {
+    console.error(error);
+  }
+  return dataDeletionResponse;
+}
+
+/**
  * Throw an error in the background for testing purposes.
  *
  * @param message - The error message.
