@@ -33,13 +33,11 @@ export default function DeprecatedNetworks() {
 
   let props;
   if (
-    [
-      // Goerli variants
-      CHAIN_IDS.GOERLI,
-      CHAIN_IDS.LINEA_GOERLI,
-      CHAIN_IDS.ARBITRUM_GOERLI,
-      CHAIN_IDS.OPTIMISM_GOERLI,
-    ].includes(chainId)
+    // Goerli variants
+    chainId === CHAIN_IDS.GOERLI ||
+    chainId === CHAIN_IDS.LINEA_GOERLI ||
+    chainId === CHAIN_IDS.ARBITRUM_GOERLI ||
+    chainId === CHAIN_IDS.OPTIMISM_GOERLI
   ) {
     props = {
       description: t('deprecatedGoerliNtwrkMsg'),
