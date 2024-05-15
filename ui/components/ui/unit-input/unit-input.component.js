@@ -193,14 +193,14 @@ export default class UnitInput extends PureComponent {
                 const isNumericInput = /^[0-9]$/.test(e.key);
                 const isDecimalPoint = e.key === '.';
                 const isControlKey =
-                e.key === 'Backspace' ||
-                e.key === 'Tab' ||
-                e.key === 'Enter' ||
-                e.key === 'ArrowLeft' ||
-                e.key === 'ArrowRight' ||
-                e.key === 'Delete' ||
-                e.key === 'Home' ||
-                e.key === 'End';
+                  e.key === 'Backspace' ||
+                  e.key === 'Tab' ||
+                  e.key === 'Enter' ||
+                  e.key === 'ArrowLeft' ||
+                  e.key === 'ArrowRight' ||
+                  e.key === 'Delete' ||
+                  e.key === 'Home' ||
+                  e.key === 'End';
                 // Allow numeric input and decimal point
                 if (!isNumericInput && !isDecimalPoint && !isControlKey) {
                   e.preventDefault();
