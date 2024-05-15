@@ -1493,6 +1493,9 @@
   "done": {
     "message": "Done"
   },
+  "dontEnableEnhancedProtection": {
+    "message": "Don't enable enhanced protection"
+  },
   "dontShowThisAgain": {
     "message": "Don't show this again"
   },
@@ -1617,9 +1620,6 @@
   },
   "enableFromSettings": {
     "message": " Enable it from Settings."
-  },
-  "enableSmartTransactions": {
-    "message": "Enable Smart Transactions"
   },
   "enableSnap": {
     "message": "Enable"
@@ -2282,9 +2282,6 @@
   "interactingWithTransactionDescription": {
     "message": "This is the contract you're interacting with. Protect yourself from scammers by  verifying the details."
   },
-  "introducingSmartTransactions": {
-    "message": "Introducing Smart Transactions"
-  },
   "invalidAddress": {
     "message": "Invalid address"
   },
@@ -2921,6 +2918,12 @@
   "newPassword": {
     "message": "New password (8 characters min)"
   },
+  "newPrivacyPolicyActionButton": {
+    "message": "Read more"
+  },
+  "newPrivacyPolicyTitle": {
+    "message": "We’ve updated our privacy policy"
+  },
   "newTokensImportedMessage": {
     "message": "You’ve successfully imported $1.",
     "description": "$1 is the string of symbols of all the tokens imported"
@@ -3039,9 +3042,6 @@
   },
   "notEnoughGas": {
     "message": "Not enough gas"
-  },
-  "notRightNow": {
-    "message": "Not right now"
   },
   "note": {
     "message": "Note"
@@ -3186,18 +3186,6 @@
   },
   "notificationsSimulationsDescriptionTwo": {
     "message": "This is just a simulation, so we can’t guarantee the final outcome. You can turn this off anytime in \nSettings > Security & Privacy. "
-  },
-  "notificationsStakingPortfolioActionText": {
-    "message": "Got it",
-    "description": "Action text for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
-  },
-  "notificationsStakingPortfolioDescription": {
-    "message": "Now you can stake ETH and manage your rewards all in one place.",
-    "description": "Description for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
-  },
-  "notificationsStakingPortfolioTitle": {
-    "message": "Stake smarter in Portfolio",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
   },
   "notificationsU2FLedgerLiveDescription": {
     "message": "U2F and Ledger Live are no longer available on Chrome. You can still connect Ledger devices on Chrome using Webhid.",
@@ -4567,23 +4555,23 @@
     "message": "Smart Transactions"
   },
   "smartTransactionsBenefit1": {
-    "message": "82% fewer failed transactions"
+    "message": "99.5% success rate"
   },
   "smartTransactionsBenefit2": {
-    "message": "Transaction protection"
+    "message": "Saves you money"
   },
   "smartTransactionsBenefit3": {
     "message": "Real-time updates"
   },
   "smartTransactionsDescription": {
-    "message": "Unlock the safest, most reliable, and easiest transaction experience - a smarter way to navigate web3."
+    "message": "Unlock higher success rates, frontrunning protection, and better visibility with Smart Transactions."
   },
   "smartTransactionsDescription2": {
-    "message": "Millions of dollars are lost every month due to failed transactions & frontrunning. Smart Transactions fixes this."
-  },
-  "smartTransactionsDescription3": {
-    "message": "Right now, Smart Transactions are only available on ETH Mainnet. You can turn them off at any time in settings. $1",
+    "message": "Only available on Ethereum. Enable or disable any time in settings. $1",
     "description": "$1 is an external link to learn more about Smart Transactions"
+  },
+  "smartTransactionsOptItModalTitle": {
+    "message": "Enhanced Transaction Protection"
   },
   "snapAccountCreated": {
     "message": "Account created"
@@ -4980,7 +4968,7 @@
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
   "stxOptInDescription": {
-    "message": "Turn on Smart Transactions for more reliable and secure transactions, and adjustable fees on ETH Mainnet. $1"
+    "message": "Turn on Smart Transactions for more reliable and secure transactions on ETH Mainnet. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Privately submitting your Swap..."
