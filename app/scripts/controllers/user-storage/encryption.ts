@@ -1,13 +1,26 @@
-import { pbkdf2 } from '@noble/hashes/pbkdf2';
+import { scrypt } from '@noble/hashes/scrypt';
 import { sha256 } from '@noble/hashes/sha256';
 import { utf8ToBytes, concatBytes, bytesToHex } from '@noble/hashes/utils';
 import { gcm } from '@noble/ciphers/aes';
 import { randomBytes } from '@noble/ciphers/webcrypto';
 
 export type EncryptedPayload = {
-  v: '1'; // version
-  d: string; // data
-  iterations: number;
+  // version
+  v: '1';
+
+  // encryption type - script
+  t: 'script';
+
+  // data
+  d: string;
+
+  // encryption options - script
+  o: {
+    N: number;
+    r: number;
+    p: number;
+    dkLen: number;
+  };
 };
 
 function byteArrayToBase64(byteArray: Uint8Array) {
@@ -28,9 +41,13 @@ class EncryptorDecryptor {
 
   #ALGORITHM_KEY_SIZE: number = 16; // 16 bytes
 
-  #PBKDF2_SALT_SIZE: number = 16; // 16 bytes
+  #SCRYPT_SALT_SIZE: number = 16; // 16 bytes
 
-  #PBKDF2_ITERATIONS: number = 900_000;
+  #SCRYPT_N: number = 2 ** 14; // CPU/memory cost parameter (must be a power of 2, > 1)
+
+  #SCRYPT_r: number = 8; // Block size parameter
+
+  #SCRYPT_p: number = 1; // Parallelization parameter
 
   encryptString(plaintext: string, password: string): string {
     try {
@@ -45,7 +62,9 @@ class EncryptorDecryptor {
     try {
       const encryptedData: EncryptedPayload = JSON.parse(encryptedDataStr);
       if (encryptedData.v === '1') {
-        return this.#decryptStringV1(encryptedData, password);
+        if (encryptedData.t === 'script') {
+          return this.#decryptStringV1(encryptedData, password);
+        }
       }
       throw new Error(`Unsupported encrypted data payload - ${encryptedData}`);
     } catch (e) {
@@ -55,11 +74,13 @@ class EncryptorDecryptor {
   }
 
   #encryptStringV1(plaintext: string, password: string): string {
-    const salt = randomBytes(this.#PBKDF2_SALT_SIZE);
+    const salt = randomBytes(this.#SCRYPT_SALT_SIZE);
 
     // Derive a key using PBKDF2.
-    const key = pbkdf2(sha256, password, salt, {
-      c: this.#PBKDF2_ITERATIONS,
+    const key = scrypt(password, salt, {
+      N: this.#SCRYPT_N,
+      r: this.#SCRYPT_r,
+      p: this.#SCRYPT_p,
       dkLen: this.#ALGORITHM_KEY_SIZE,
     });
 
@@ -75,15 +96,21 @@ class EncryptorDecryptor {
 
     const encryptedPayload: EncryptedPayload = {
       v: '1',
+      t: 'script',
       d: encryptedData,
-      iterations: this.#PBKDF2_ITERATIONS,
+      o: {
+        N: this.#SCRYPT_N,
+        r: this.#SCRYPT_r,
+        p: this.#SCRYPT_p,
+        dkLen: this.#ALGORITHM_KEY_SIZE,
+      },
     };
 
     return JSON.stringify(encryptedPayload);
   }
 
   #decryptStringV1(data: EncryptedPayload, password: string): string {
-    const { iterations, d: base64CiphertextAndNonceAndSalt } = data;
+    const { o, d: base64CiphertextAndNonceAndSalt } = data;
 
     // Decode the base64.
     const ciphertextAndNonceAndSalt = base64ToByteArray(
@@ -91,16 +118,18 @@ class EncryptorDecryptor {
     );
 
     // Create buffers of salt and ciphertextAndNonce.
-    const salt = ciphertextAndNonceAndSalt.slice(0, this.#PBKDF2_SALT_SIZE);
+    const salt = ciphertextAndNonceAndSalt.slice(0, this.#SCRYPT_SALT_SIZE);
     const ciphertextAndNonce = ciphertextAndNonceAndSalt.slice(
-      this.#PBKDF2_SALT_SIZE,
+      this.#SCRYPT_SALT_SIZE,
       ciphertextAndNonceAndSalt.length,
     );
 
     // Derive the key using PBKDF2.
-    const key = pbkdf2(sha256, password, salt, {
-      c: iterations,
-      dkLen: this.#ALGORITHM_KEY_SIZE,
+    const key = scrypt(password, salt, {
+      N: o.N,
+      r: o.r,
+      p: o.p,
+      dkLen: o.dkLen,
     });
 
     // Decrypt and return result.
