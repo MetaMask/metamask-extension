@@ -7,6 +7,16 @@ import { Severity } from '../../../../../../helpers/constants/design-system';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { AlertRow, AlertRowProps } from './alert-row';
 
+const onProcessActionMock = jest.fn();
+
+const mockAlertActionHandlerProviderValue = {
+  processAction: onProcessActionMock,
+};
+
+jest.mock('../../../../../../hooks/useAlertActionHandler', () => ({
+  useAlertActionHandler: jest.fn(() => mockAlertActionHandlerProviderValue),
+}));
+
 describe('AlertRow', () => {
   const OWNER_ID_MOCK = '123';
   const OWNER_ID_NO_ALERT_MOCK = '000';
