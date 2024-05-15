@@ -117,6 +117,13 @@ export default class UnitInput extends PureComponent {
     this.props.onChange(value);
   };
 
+  handleOnKeyPress = (e) => {
+    const isNumericInput = DECIMAL_INPUT_REGEX.test(e.key);
+    if (!isNumericInput) {
+      e.preventDefault();
+    }
+  };
+
   // imperatively updates the overflow when the input is changed upstreamed
   updateIsOverflowing = () => {
     this.setState({
@@ -189,11 +196,7 @@ export default class UnitInput extends PureComponent {
               onChange={this.handleChange}
               onBlur={this.handleInputBlur}
               onFocus={this.handleInputFocus}
-              onKeyDown={(e) => {
-                if (['e', 'E', '+', '-'].includes(e.key)) {
-                  e.preventDefault();
-                }
-              }}
+              onKeyPress={this.handleOnKeyPress}
               min={0}
               step="any"
               style={{ width: this.getInputWidth(value) }}
