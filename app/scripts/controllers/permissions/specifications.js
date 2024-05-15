@@ -204,7 +204,7 @@ export const getPermissionSpecifications = ({
 
         if (!requestData.approvedChainIds) {
           throw new Error(
-            `${PermissionNames.permittedChains} error: No approved networks specified.`,
+            `${PermissionNames.permittedChains}: No approved networks specified.`,
           );
         }
 
