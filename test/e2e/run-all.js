@@ -212,12 +212,26 @@ async function main() {
 
   console.log('My test list:', myTestList);
 
+  // Indentify changed or new test files
+  let changedOrNewTests = execSync(
+    'git diff --name-only origin/develop...$CIRCLE_BRANCH',
+  );
+  changedOrNewTests = changedOrNewTests
+    .toString()
+    .split('\n')
+    .filter((line) => line.match(/^test\/.*\/.*\.spec\.js$/u));
+
   // spawn `run-e2e-test.js` for each test in myTestList
   for (let testPath of myTestList) {
     if (testPath !== '') {
+      const isChangedOrNew = changedOrNewTests.includes(testPath);
+      const extraArgs = isChangedOrNew
+        ? ['--retry-until-failure=true', '--retries=5']
+        : [];
+
       testPath = testPath.replace('\n', ''); // sometimes there's a newline at the end of the testPath
       console.log(`\nExecuting testPath: ${testPath}\n`);
-      await runInShell('node', [...args, testPath]);
+      await runInShell('node', [...args, ...extraArgs, testPath]);
     }
   }
 }
