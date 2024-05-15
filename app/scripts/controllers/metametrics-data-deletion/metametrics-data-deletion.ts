@@ -19,7 +19,7 @@ export enum responseStatus {
   error = 'error',
 }
 
-export type DataDeletionResponseStatus = {
+export type DataDeletionResponse = {
   status: responseStatus;
   metaMetricsDataDeletionStatus?: string | null;
   error?: string;
@@ -78,7 +78,7 @@ export default class MetaMetricsDataDeletionController {
     return `${day}/${month}/${year}`;
   }
 
-  async createMetaMetricsDataDeletionTask(): Promise<DataDeletionResponseStatus> {
+  async createMetaMetricsDataDeletionTask(): Promise<DataDeletionResponse> {
     const segmentSourceId = process.env.SEGMENT_DELETE_API_SOURCE_ID;
     const segmentRegulationEndpoint = process.env.SEGMENT_REGULATIONS_ENDPOINT;
 
@@ -109,7 +109,7 @@ export default class MetaMetricsDataDeletionController {
     }
   }
 
-  async checkDataDeletionTaskStatus(): Promise<DataDeletionResponseStatus> {
+  async checkDataDeletionTaskStatus(): Promise<DataDeletionResponse> {
     const segmentRegulationEndpoint = process.env.SEGMENT_REGULATIONS_ENDPOINT;
 
     if (!segmentRegulationEndpoint) {

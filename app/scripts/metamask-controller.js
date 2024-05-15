@@ -326,6 +326,7 @@ import AuthenticationController from './controllers/authentication/authenticatio
 import UserStorageController from './controllers/user-storage/user-storage-controller';
 import { PushPlatformNotificationsController } from './controllers/push-platform-notifications/push-platform-notifications';
 import { MetamaskNotificationsController } from './controllers/metamask-notifications/metamask-notifications';
+import MetaMetricsDataDeletionController from './controllers/metametrics-data-deletion/metametrics-data-deletion';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -742,6 +743,12 @@ export default class MetamaskController extends EventEmitter {
     this.on('update', (update) => {
       this.metaMetricsController.handleMetaMaskStateUpdate(update);
     });
+
+    this.metaMetricsDataDeletionController =
+      new MetaMetricsDataDeletionController({
+        initState: initState.metaMetricsDataDeletionController,
+        metaMetricsController: this.metaMetricsController,
+      });
 
     const gasFeeMessenger = this.controllerMessenger.getRestricted({
       name: 'GasFeeController',
@@ -2106,6 +2113,8 @@ export default class MetamaskController extends EventEmitter {
       KeyringController: this.keyringController,
       PreferencesController: this.preferencesController.store,
       MetaMetricsController: this.metaMetricsController.store,
+      MetaMetricsDataDeletionController:
+        this.metaMetricsDataDeletionController.store,
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyRateController,
       NetworkController: this.networkController,
@@ -2165,6 +2174,8 @@ export default class MetamaskController extends EventEmitter {
         KeyringController: this.keyringController,
         PreferencesController: this.preferencesController.store,
         MetaMetricsController: this.metaMetricsController.store,
+        MetaMetricsDataDeletionController:
+          this.metaMetricsDataDeletionController.store,
         AddressBookController: this.addressBookController,
         CurrencyController: this.currencyRateController,
         AlertController: this.alertController.store,
@@ -5100,6 +5111,15 @@ export default class MetamaskController extends EventEmitter {
         sendMetrics: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),
+        // metrics data deleteion
+        createMetaMetricsDataDeletionTask:
+          this.metaMetricsDataDeletionController.createMetaMetricsDataDeletionTask.bind(
+            this.metaMetricsDataDeletionController,
+          ),
+        checkDataDeletionTaskStatus:
+          this.metaMetricsDataDeletionController.checkDataDeletionTaskStatus.bind(
+            this.metaMetricsDataDeletionController,
+          ),
         // Permission-related
         getAccounts: this.getPermittedAccounts.bind(this, origin),
         getPermissionsForOrigin: this.permissionController.getPermissions.bind(
