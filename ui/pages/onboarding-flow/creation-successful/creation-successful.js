@@ -110,7 +110,7 @@ export default function CreationSuccessful() {
         </Text>
       </Box>
 
-      {firstTimeFlowType === FirstTimeFlowType.create && seedPhraseBackedUp && (
+      {/* {firstTimeFlowType === FirstTimeFlowType.create && seedPhraseBackedUp && (
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
@@ -127,7 +127,7 @@ export default function CreationSuccessful() {
             {t('leaveYourselfAHint')}
           </Button>
         </Box>
-      )}
+      )} */}
 
       {firstTimeFlowType === FirstTimeFlowType.create && (
         <Text variant={TextVariant.bodyLgMedium} marginBottom={6}>
