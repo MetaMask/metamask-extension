@@ -32,7 +32,7 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
-import { useAlertActionHandler } from '../multiple-alert-modal/multiple-alert-modal';
+import { useAlertActionHandler } from '../../../../../hooks/useAlertActionHandler';
 
 export type AlertModalProps = {
   /**
