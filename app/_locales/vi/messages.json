@@ -3494,9 +3494,6 @@
   "snaps": {
     "message": "Snap"
   },
-  "snapsInvalidUIError": {
-    "message": "Giao diện người dùng được chỉ định bởi Snap không hợp lệ."
-  },
   "snapsNoInsight": {
     "message": "Snap không trả về bất kỳ thông tin chi tiết nào"
   },

@@ -3494,9 +3494,6 @@
   "snaps": {
     "message": "Snaps"
   },
-  "snapsInvalidUIError": {
-    "message": "Το UI που καθορίζεται από το snap δεν είναι έγκυρο."
-  },
   "snapsNoInsight": {
     "message": "Το snap δεν επέστρεψε καμία πληροφορία"
   },
