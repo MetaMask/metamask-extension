@@ -10,7 +10,7 @@ const {
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Personal sign', function () {
-  it('can initiate and confirm a personal sign', async function () {
+  it('CHANGED TO TEST CI - can initiate and confirm a personal sign', async function () {
     await withFixtures(
       {
         dapp: true,

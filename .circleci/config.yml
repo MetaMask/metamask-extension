@@ -950,6 +950,16 @@ jobs:
           name: Move test zips to builds
           command: mv ./builds-test ./builds
       - run:
+          name: Run changed tests with retries
+          command: |
+            # Identify changed test files
+            changed_tests=$(git diff --name-only origin/develop...$CIRCLE_SHA1 | grep '^test/.*\.spec\.js$')
+            if [[ -n "$changed_tests" ]]; then
+              for test_file in $changed_tests; do
+                timeout 20m yarn test:e2e:single "$test_file" --browser=chrome --retries=5 --retry-until-failure=true
+              done
+            fi
+      - run:
           name: test:e2e:chrome
           command: |
             if .circleci/scripts/test-run-e2e.sh
@@ -1276,6 +1286,16 @@ jobs:
       - run:
           name: Move test zips to builds
           command: mv ./builds-test ./builds
+      - run:
+          name: Run changed tests with retries
+          command: |
+            # Identify changed test files
+            changed_tests=$(git diff --name-only origin/develop...$CIRCLE_SHA1 | grep '^test/.*\.spec\.js$')
+            if [[ -n "$changed_tests" ]]; then
+              for test_file in $changed_tests; do
+                timeout 20m yarn test:e2e:single "$test_file" --browser=firefox --retries=5 --retry-until-failure=true
+              done
+            fi
       - run:
           name: test:e2e:firefox
           command: |
