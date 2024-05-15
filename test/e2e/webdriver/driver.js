@@ -188,7 +188,7 @@ class Driver {
       }
       // The tag prop is optional and further refines which elements match
       return By.xpath(
-        `//${locator.tag ?? '*'}[contains(text(), '${locator.text}')]`,
+        `//${locator.tag ?? '*'}[contains(text(), "${locator.text}")]`,
       );
     }
     throw new Error(
