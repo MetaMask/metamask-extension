@@ -5,7 +5,6 @@ export const CaveatTypes = Object.freeze({
 
 export const RestrictedMethods = Object.freeze({
   eth_accounts: 'eth_accounts',
-  wallet_switchEthereumChain: 'wallet_switchEthereumChain',
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   snap_dialog: 'snap_dialog',
   snap_notify: 'snap_notify',

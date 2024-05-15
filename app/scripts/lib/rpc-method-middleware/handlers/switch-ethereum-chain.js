@@ -31,7 +31,6 @@ const switchEthereumChain = {
     getCaveat: true,
     requestSwitchNetworkPermission: true,
     getCurrentChainIdForDomain: true,
-    // old hooks no longer used post chain permissioning:
     requestUserApproval: true,
     getChainPermissionsFeatureFlag: true,
   },
@@ -86,7 +85,6 @@ async function switchEthereumChainHandler(
 
   const { origin } = req;
 
-  // setup chainId
   const { chainId } = req.params[0];
 
   const _chainId = typeof chainId === 'string' && chainId.toLowerCase();
@@ -105,7 +103,6 @@ async function switchEthereumChainHandler(
     );
   }
 
-  // setup otherkeys
   const otherKeys = Object.keys(omit(req.params[0], ['chainId']));
   if (otherKeys.length > 0) {
     return end(
@@ -117,7 +114,6 @@ async function switchEthereumChainHandler(
 
   const currentChainIdForOrigin = getCurrentChainIdForDomain(origin);
 
-  // get current chainId for origin
   if (currentChainIdForOrigin === _chainId) {
     res.result = null;
     return end();

@@ -181,7 +181,7 @@ async function addEthereumChainHandler(
       !permissionedChainIds.includes(_chainId)
     ) {
       try {
-        // TODO replace with caveat merging once merged
+        // TODO replace with incremental permission request
         // rather than passing already permissionedChains here
         await requestSwitchNetworkPermission([
           ...(permissionedChainIds ?? []),
