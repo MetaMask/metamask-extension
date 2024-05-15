@@ -64,7 +64,9 @@ const SnapAvatar = ({
     >
       {iconUrl ? (
         <AvatarFavicon
-          style={{ "background-color": 'var(--color-background-alternative-hover)' }}
+          style={{
+            'background-color': 'var(--color-background-alternative-hover)',
+          }}
           size={avatarSize}
           src={iconUrl}
           name={snapName}
@@ -76,7 +78,10 @@ const SnapAvatar = ({
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.center}
           color={TextColor.textAlternative}
-          style={{ borderWidth: '0px', "background-color": 'var(--color-background-alternative-hover)' }}
+          style={{
+            borderWidth: '0px',
+            'background-color': 'var(--color-background-alternative-hover)',
+          }}
         >
           {fallbackIcon}
         </AvatarBase>
