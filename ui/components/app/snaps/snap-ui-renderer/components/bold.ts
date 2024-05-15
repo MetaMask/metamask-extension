@@ -1,4 +1,4 @@
-import { TextElement } from '@metamask/snaps-sdk/jsx';
+import { BoldElement } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
 import { mapTextToTemplate } from '../utils';
 import {
@@ -8,7 +8,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { UIComponentFactory } from './types';
 
-export const text: UIComponentFactory<TextElement> = ({
+export const bold: UIComponentFactory<BoldElement> = ({
   element,
   ...params
 }) => ({
@@ -19,5 +19,6 @@ export const text: UIComponentFactory<TextElement> = ({
     overflowWrap: OverflowWrap.Anywhere,
     color: TextColor.inherit,
     className: 'snap-ui-renderer__text',
+    as: 'b',
   },
 });
