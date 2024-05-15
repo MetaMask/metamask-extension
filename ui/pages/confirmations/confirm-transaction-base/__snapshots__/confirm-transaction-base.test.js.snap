@@ -260,7 +260,6 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
           >
             <div
               class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-              ethlogoheight="24"
               title="0.0001"
             >
               <span
