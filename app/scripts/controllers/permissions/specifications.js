@@ -198,7 +198,7 @@ export const getPermissionSpecifications = ({
       factory: (permissionOptions, requestData) => {
         if (Array.isArray(permissionOptions.caveats)) {
           throw new Error(
-            `${PermissionNames.wallet_switchEthereumChain} error: Received unexpected caveats. Any permitted caveats will be added automatically.`,
+            `${PermissionNames.wallet_switchEthereumChain}: Received unexpected caveats. Any permitted caveats will be added automatically.`,
           );
         }
 
