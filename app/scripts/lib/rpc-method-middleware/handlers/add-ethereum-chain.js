@@ -1,5 +1,4 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import { PermissionDoesNotExistError } from '@metamask/permission-controller';
 import { errorCodes, ethErrors } from 'eth-rpc-errors';
 import { omit } from 'lodash';
 import {
@@ -159,22 +158,10 @@ async function addEthereumChainHandler(
     networkConfigurationId,
     approvalFlowId,
   }) => {
-    let permissionedChainIds;
-    try {
-      ({ value: permissionedChainIds } = getCaveat(
-        origin,
-        PermissionNames.permittedChains,
-        CaveatTypes.restrictNetworkSwitching,
-      ));
-    } catch (e) {
-      // throws if the origin does not have any switchEthereumChain permissions yet
-      if (e instanceof PermissionDoesNotExistError) {
-        // suppress expected error in case that the domain does not have a
-        // permittedChains permission set yet
-      } else {
-        throw e;
-      }
-    }
+    const permissionedChainIds = getCaveat({
+      target: PermissionNames.permittedChains,
+      caveatType: CaveatTypes.restrictNetworkSwitching,
+    });
 
     if (
       permissionedChainIds === undefined ||

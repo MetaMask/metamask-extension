@@ -1,6 +1,5 @@
 import { ethErrors } from 'eth-rpc-errors';
 import { omit } from 'lodash';
-import { PermissionDoesNotExistError } from '@metamask/permission-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
@@ -138,22 +137,10 @@ async function switchEthereumChainHandler(
   }
 
   if (getChainPermissionsFeatureFlag()) {
-    let permissionedChainIds;
-    try {
-      ({ value: permissionedChainIds } = getCaveat(
-        origin,
-        PermissionNames.permittedChains,
-        CaveatTypes.restrictNetworkSwitching,
-      ));
-    } catch (e) {
-      // throws if the origin does not have any switchEthereumChain permissions yet
-      if (e instanceof PermissionDoesNotExistError) {
-        // suppress expected error in case that the domain does not have a
-        // wallet_switchEthereumChain permission set yet
-      } else {
-        throw e;
-      }
-    }
+    const permissionedChainIds = getCaveat({
+      target: PermissionNames.permittedChains,
+      caveatType: CaveatTypes.restrictNetworkSwitching,
+    });
 
     if (
       permissionedChainIds === undefined ||

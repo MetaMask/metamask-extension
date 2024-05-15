@@ -65,6 +65,7 @@ import { NetworkController } from '@metamask/network-controller';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import {
   PermissionController,
+  PermissionDoesNotExistError,
   PermissionsRequestNotFoundError,
   SubjectMetadataController,
   SubjectType,
@@ -5028,9 +5029,23 @@ export default class MetamaskController extends EventEmitter {
             console.log(e);
           }
         },
-        getCaveat: this.permissionController.getCaveat.bind(
-          this.permissionController,
-        ),
+        getCaveat: ({ target, caveatType }) => {
+          try {
+            return this.permissionController.getCaveat(
+              origin,
+              target,
+              caveatType,
+            );
+          } catch (e) {
+            if (e instanceof PermissionDoesNotExistError) {
+              // suppress expected error in case that the origin
+              // does not have the target permission yet
+            } else {
+              throw e;
+            }
+          }
+          return undefined;
+        },
         getCurrentChainId: () =>
           this.networkController.state.providerConfig.chainId,
         getChainPermissionsFeatureFlag: () => process.env.CHAIN_PERMISSIONS,
