@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { withRedesignConfirmationFixtures } from '../helpers';
+import { scrollAndConfirmAndAssertConfirm, withRedesignConfirmationFixtures } from '../helpers';
 import {
   DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
@@ -27,18 +27,7 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
         await switchToNotificationWindow(driver);
 
         await assertInfoValues(driver);
-
-        await driver.clickElement('[data-testid="confirm-footer-button"]');
-
-        /**
-         * TODO: test scroll and fixing scroll
-         * @see {@link https://github.com/MetaMask/MetaMask-planning/issues/2458}
-         */
-        // test "confirm-footer-button" is disabled and unclickable
-        //
-        // await driver.clickElement('.confirm-scroll-to-bottom__button');
-        // await driver.clickElement('[data-testid="confirm-footer-button"]');
-
+        await scrollAndConfirmAndAssertConfirm(driver);
         await assertVerifiedResults(driver, publicAddress);
       },
     );
