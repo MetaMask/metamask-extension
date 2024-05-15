@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   fetchAggregatorMetadata,
   fetchTokens,
@@ -12,6 +11,7 @@ import {
   setTopAssets,
 } from '../ducks/swaps/swaps';
 import { setSwapsTokens } from '../store/actions';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   checkNetworkAndAccountSupports1559,
   getCurrentChainId,
