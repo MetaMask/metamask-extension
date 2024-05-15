@@ -7,7 +7,6 @@
 export const NOTIFICATION_DROP_LEDGER_FIREFOX = 25;
 export const NOTIFICATION_U2F_LEDGER_LIVE = 28;
 export const NOTIFICATION_BLOCKAID_DEFAULT = 29;
-export const NOTIFICATION_STAKING_PORTFOLIO = 30;
 export const NOTIFICATION_PETNAMES = 31;
 export const NOTIFICATION_PORTFOLIO_V2 = 32;
 export const NOTIFICATION_SIMULATIONS = 33;
@@ -56,14 +55,6 @@ export const UI_NOTIFICATIONS: UINotifications = {
     date: null,
   },
   ///: END:ONLY_INCLUDE_IF
-  [NOTIFICATION_STAKING_PORTFOLIO]: {
-    id: Number(NOTIFICATION_STAKING_PORTFOLIO),
-    date: null,
-    image: {
-      src: 'images/staking-light-mode-preview.png',
-      width: '100%',
-    },
-  },
   [NOTIFICATION_PETNAMES]: {
     id: Number(NOTIFICATION_PETNAMES),
     date: null,
@@ -178,18 +169,6 @@ export const getTranslatedUINotifications = (
       date: UI_NOTIFICATIONS[NOTIFICATION_U2F_LEDGER_LIVE].date
         ? formatDate(
             UI_NOTIFICATIONS[NOTIFICATION_U2F_LEDGER_LIVE].date,
-            formattedLocale,
-          )
-        : '',
-    },
-    [NOTIFICATION_STAKING_PORTFOLIO]: {
-      ...UI_NOTIFICATIONS[NOTIFICATION_STAKING_PORTFOLIO],
-      title: t('notificationsStakingPortfolioTitle'),
-      description: [t('notificationsStakingPortfolioDescription')],
-      actionText: t('notificationsStakingPortfolioActionText'),
-      date: UI_NOTIFICATIONS[NOTIFICATION_STAKING_PORTFOLIO].date
-        ? formatDate(
-            UI_NOTIFICATIONS[NOTIFICATION_STAKING_PORTFOLIO].date,
             formattedLocale,
           )
         : '',

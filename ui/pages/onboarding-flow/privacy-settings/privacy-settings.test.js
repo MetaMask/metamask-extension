@@ -115,7 +115,6 @@ describe('Privacy Settings Onboarding View', () => {
     fireEvent.click(toggles[1]); // setIncomingTransactionsPreferencesStub
     fireEvent.click(toggles[2]); // setIncomingTransactionsPreferencesStub (2)
     fireEvent.click(toggles[3]); // setIncomingTransactionsPreferencesStub (3)
-    fireEvent.click(toggles[4]); // setIncomingTransactionsPreferencesStub (4)
     fireEvent.click(toggles[5]); // setUsePhishDetectStub
     fireEvent.click(toggles[6]); // setUse4ByteResolutionStub
     fireEvent.click(toggles[7]); // setUseTokenDetectionStub
