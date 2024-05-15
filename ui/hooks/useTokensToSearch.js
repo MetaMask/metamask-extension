@@ -84,7 +84,7 @@ export function getRenderableTokenData(
     primaryLabel: symbol,
     secondaryLabel: name || tokenList[address?.toLowerCase()]?.name,
     rightPrimaryLabel:
-      string && `${new BigNumber(string, 10).round(6).toString()} ${symbol}`,
+      string && `${new BigNumber(string).round(6).toString()} ${symbol}`,
     rightSecondaryLabel: formattedFiat,
     iconUrl: usedIconUrl,
     identiconAddress: usedIconUrl ? null : address,
