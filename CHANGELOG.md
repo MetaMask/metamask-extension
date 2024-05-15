@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.15.5]
+### Changed
+- Update copy in Smart Transactions opt-in modal([#24461](https://github.com/MetaMask/metamask-extension/pull/24461))
+
 ## [11.15.4]
 ### Changed
 -  Update UI for the Smart Transactions Opt In modal ([#24441](https://github.com/MetaMask/metamask-extension/pull/24441))
@@ -4692,7 +4696,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.15.4...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.15.5...HEAD
+[11.15.5]: https://github.com/MetaMask/metamask-extension/compare/v11.15.4...v11.15.5
 [11.15.4]: https://github.com/MetaMask/metamask-extension/compare/v11.15.3...v11.15.4
 [11.15.3]: https://github.com/MetaMask/metamask-extension/compare/v11.15.2...v11.15.3
 [11.15.2]: https://github.com/MetaMask/metamask-extension/compare/v11.15.1...v11.15.2

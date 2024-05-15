@@ -1462,6 +1462,9 @@
   "done": {
     "message": "Done"
   },
+  "dontEnableEnhancedProtection": {
+    "message": "Don't enable enhanced protection"
+  },
   "dontShowThisAgain": {
     "message": "Don't show this again"
   },
@@ -2957,9 +2960,6 @@
   "noSnaps": {
     "message": "You don't have any snaps installed."
   },
-  "noThanks": {
-    "message": "No thanks"
-  },
   "noTransactions": {
     "message": "You have no transactions"
   },
@@ -4450,7 +4450,7 @@
     "message": "99.5% success rate"
   },
   "smartTransactionsBenefit2": {
-    "message": "Transaction protection"
+    "message": "Saves you money"
   },
   "smartTransactionsBenefit3": {
     "message": "Real-time updates"
@@ -4463,7 +4463,7 @@
     "description": "$1 is an external link to learn more about Smart Transactions"
   },
   "smartTransactionsOptItModalTitle": {
-    "message": "Transactions just got smarter"
+    "message": "Enhanced Transaction Protection"
   },
   "snapAccountCreated": {
     "message": "Account created"
