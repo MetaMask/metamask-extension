@@ -1,11 +1,19 @@
-import { FieldElement, InputElement } from '@metamask/snaps-sdk/jsx';
+import {
+  FieldElement,
+  InputElement,
+  ButtonElement,
+} from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
+import { button as buttonMapper } from './button';
 
 import { UIComponentFactory } from './types';
 
 export const field: UIComponentFactory<FieldElement> = ({ element, form }) => {
   // For fields we don't render the Input itself, we just adapt SnapUIInput.
-  const input = getJsxChildren(element)[0] as InputElement;
+  const children = getJsxChildren(element);
+  const input = children[0] as InputElement;
+  const button = children[1] as ButtonElement | undefined;
+  const mappedButton = button && buttonMapper({ element: button });
 
   return {
     element: 'SnapUIInput',
@@ -20,6 +28,18 @@ export const field: UIComponentFactory<FieldElement> = ({ element, form }) => {
       form,
       error: element.props.error !== undefined,
       helpText: element.props.error,
+    },
+    propComponents: {
+      endAccessory: mappedButton && {
+        ...mappedButton,
+        props: {
+          ...mappedButton.props,
+          variant: 'link',
+          style: {
+            width: 'inherit',
+          },
+        },
+      },
     },
   };
 };
