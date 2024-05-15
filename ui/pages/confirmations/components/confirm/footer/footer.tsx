@@ -22,16 +22,16 @@ import { confirmSelector } from '../../../selectors';
 import { getConfirmationSender } from '../utils';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { MultipleAlertModal } from '../../../../../components/app/confirmations/alerts/multiple-alert-modal';
-import { AlertModal } from '../../../../../components/app/confirmations/alerts/alert-modal';
+import { ConfirmAlertModal } from '../../../../../components/app/confirmations/alerts/confirm-alert-modal ';
 import useIsDangerButton from './useIsDangerButton';
 
-function ConfirmAlertModal({
+function ConfirmReviewAlertModal({
   alertKey,
   ownerId,
   handleCloseModal,
   hasUnconfirmedAlerts,
   alertModalVisible,
-  frictionModalVisible,
+  confirmModalVisible,
   handleOpenModal,
   onCancel,
   onSubmit,
@@ -41,7 +41,7 @@ function ConfirmAlertModal({
   handleCloseModal: () => void;
   hasUnconfirmedAlerts: boolean;
   alertModalVisible: boolean;
-  frictionModalVisible: boolean;
+  confirmModalVisible: boolean;
   handleOpenModal: () => void;
   onCancel?: () => void;
   onSubmit?: () => void;
@@ -57,18 +57,15 @@ function ConfirmAlertModal({
     );
   }
 
-  if (!hasUnconfirmedAlerts && frictionModalVisible) {
+  if (!hasUnconfirmedAlerts && confirmModalVisible) {
     return (
-      <AlertModal
+      <ConfirmAlertModal
         alertKey={alertKey}
         ownerId={ownerId}
-        onAcknowledgeClick={handleCloseModal}
         onClose={handleCloseModal}
-        frictionModalConfig={{
-          onAlertLinkClick: handleOpenModal,
-          onCancel,
-          onSubmit,
-        }}
+        onAlertLinkClick={handleOpenModal}
+        onCancel={onCancel}
+        onSubmit={onSubmit}
       />
     );
   }
@@ -77,12 +74,12 @@ function ConfirmAlertModal({
 }
 
 function ConfirmButton({
-  alertOwnerId = '',
+  alertOwnerId,
   disabled,
   onSubmit,
   onCancel,
 }: {
-  alertOwnerId?: string;
+  alertOwnerId: string;
   disabled: boolean;
   onSubmit?: () => void;
   onCancel?: () => void;
@@ -90,7 +87,7 @@ function ConfirmButton({
   const isDangerButton = useIsDangerButton();
   const t = useI18nContext();
   const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
-  const [frictionModalVisible, setFrictionModalVisible] =
+  const [confirmModalVisible, setConfirmModalVisible] =
     useState<boolean>(false);
   const { alerts, isAlertConfirmed } = useAlerts(alertOwnerId);
   const unconfirmedAlerts = alerts.filter(
@@ -99,16 +96,16 @@ function ConfirmButton({
   const hasAlerts = alerts.length > 0;
   const hasUnconfirmedAlerts = unconfirmedAlerts.length > 0;
 
-  const handleCloseModal = () => {
+  const handleCloseModal = useCallback(() => {
     setAlertModalVisible(false);
-  };
+  }, []);
 
   const handleOpenModal = useCallback(() => {
     if (hasUnconfirmedAlerts) {
       setAlertModalVisible(true);
       return;
     }
-    setFrictionModalVisible(true);
+    setConfirmModalVisible(true);
   }, [hasUnconfirmedAlerts]);
 
   function getIconName(): IconName {
@@ -120,13 +117,13 @@ function ConfirmButton({
 
   return (
     <>
-      <ConfirmAlertModal
+      <ConfirmReviewAlertModal
         alertKey={alerts[0]?.key}
         ownerId={alertOwnerId}
         handleCloseModal={handleCloseModal}
         hasUnconfirmedAlerts={hasUnconfirmedAlerts}
         alertModalVisible={alertModalVisible}
-        frictionModalVisible={frictionModalVisible}
+        confirmModalVisible={confirmModalVisible}
         handleOpenModal={() => setAlertModalVisible(true)}
         onCancel={onCancel}
         onSubmit={onSubmit}
@@ -165,6 +162,10 @@ const Footer = () => {
     return false;
   });
 
+  if (!currentConfirmation) {
+    return null;
+  }
+
   const onCancel = useCallback(() => {
     if (!currentConfirmation) {
       return;
@@ -201,7 +202,7 @@ const Footer = () => {
         {t('cancel')}
       </Button>
       <ConfirmButton
-        alertOwnerId={currentConfirmation?.id}
+        alertOwnerId={currentConfirmation.id}
         onSubmit={onSubmit}
         disabled={
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
