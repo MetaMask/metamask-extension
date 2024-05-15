@@ -12,7 +12,6 @@ describe('ConfirmAlertModal', () => {
   const OWNER_ID_MOCK = '123';
   const FROM_ALERT_KEY_MOCK = 'from';
   const onCloseMock = jest.fn();
-  const onAlertLinkClickMock = jest.fn();
   const onCancelMock = jest.fn();
   const onSubmitMock = jest.fn();
   const alertsMock = [
@@ -83,13 +82,13 @@ describe('ConfirmAlertModal', () => {
     expect(onSubmitMock).toHaveBeenCalledTimes(1);
   });
 
-  it('calls review alerts link when the link is clicked', () => {
+  it('calls open multiple alert modal when review alerts link is clicked', () => {
     const { getByTestId } = renderWithProvider(
       <ConfirmAlertModal {...defaultProps} />,
       mockStore,
     );
 
     fireEvent.click(getByTestId('confirm-alert-modal-review-all-alerts'));
-    expect(onAlertLinkClickMock).toHaveBeenCalledTimes(1);
+    expect(getByTestId('alert-modal-button')).toBeInTheDocument();
   });
 });
