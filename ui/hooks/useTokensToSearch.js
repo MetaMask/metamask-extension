@@ -79,18 +79,12 @@ export function getRenderableTokenData(
         });
   const usedIconUrl = tokenIconUrl || token?.image;
 
-  // the `string` property of a token is typically passed as `tokenAmount`; for very low values, it will be "< 0.000001"
-  const isTokenAmountNearZero = Boolean(String(string)?.includes('<'));
-
   return {
     ...token,
     primaryLabel: symbol,
     secondaryLabel: name || tokenList[address?.toLowerCase()]?.name,
     rightPrimaryLabel:
-      string &&
-      `${new BigNumber(isTokenAmountNearZero ? 0 : string, 10)
-        .round(6)
-        .toString()} ${symbol}`,
+      string && `${new BigNumber(string, 10).round(6).toString()} ${symbol}`,
     rightSecondaryLabel: formattedFiat,
     iconUrl: usedIconUrl,
     identiconAddress: usedIconUrl ? null : address,
