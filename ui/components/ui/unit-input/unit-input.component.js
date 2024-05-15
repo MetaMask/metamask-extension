@@ -118,16 +118,8 @@ export default class UnitInput extends PureComponent {
   };
 
   handleOnKeyPress = (e) => {
-    const isNumericInput = DECIMAL_INPUT_REGEX.test(e.key)
-    const isControlKey =
-      e.key === 'Backspace' ||
-      e.key === 'Tab' ||
-      e.key === 'ArrowLeft' ||
-      e.key === 'ArrowRight' ||
-      e.key === 'Delete'
-
-    // Allow numeric input and decimal point
-    if (!isNumericInput && !isControlKey) {
+    const isNumericInput = DECIMAL_INPUT_REGEX.test(e.key);
+    if (!isNumericInput) {
       e.preventDefault();
     }
   };
