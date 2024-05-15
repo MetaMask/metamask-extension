@@ -21,7 +21,7 @@ import { editAndSetNetworkConfiguration } from '../../../store/actions';
 import { MetaMetricsNetworkEventSource } from '../../../../shared/constants/metametrics';
 
 export default function DeprecatedNetworks() {
-  const { id, chainId, rpcUrl } = useSelector(getCurrentNetwork);
+  const { id, chainId, rpcUrl } = useSelector(getCurrentNetwork) ?? {};
   const [isClosed, setIsClosed] = useState(false);
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const t = useI18nContext();
