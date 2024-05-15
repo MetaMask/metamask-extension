@@ -216,14 +216,21 @@ async function main() {
 
   // Indentify changed or new test files
   await exec(`git fetch`);
-  const { stdout } = await exec(`git diff --name-only origin/develop...$CIRCLE_SHA1`);
-  const changedOrNewTests = stdout
+
+  const { stdout: DEVELOP_SHA1 } = (await exec('git rev-parse origin/develop'))
+    .toString()
+    .trim();
+  console.log('DEVELOP_SHA1', DEVELOP_SHA1);
+
+  const { stdout: fileChanges } = await exec(
+    `git diff --name-only ${DEVELOP_SHA1}...$CIRCLE_SHA1`,
+  );
+  const changedOrNewTests = fileChanges
     .toString()
     .split('\n')
     .filter((line) => line.match(/^test\/.*\/.*\.spec\.js$/u));
 
   console.log('Changed or new', changedOrNewTests);
-  console.log('stdout', stdout);
 
   // spawn `run-e2e-test.js` for each test in myTestList
   for (let testPath of myTestList) {
