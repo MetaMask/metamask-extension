@@ -57,7 +57,6 @@ TemplateStory.storyName = 'Multiple Critical Alert Modal';
  * Single Critical Alert Modal.
  */
 export const SingleCriticalAlertModal = TemplateStory.bind({});
-SingleCriticalAlertModal.storyName = 'Single Critical Alert Modal';
 SingleCriticalAlertModal.args = {
   alertKey: 'from',
 };
@@ -77,8 +76,6 @@ SingleCriticalAlertModal.decorators = [
  * Multiple Warning Alert Modal.
  */
 export const MultipleWarningAlertModal = TemplateStory.bind({});
-
-MultipleWarningAlertModal.storyName = 'Multiple Warning Alert Modal';
 MultipleWarningAlertModal.args = {
   alertKey: 'data',
 };
@@ -87,7 +84,6 @@ MultipleWarningAlertModal.args = {
  * Multiple Info Alert Modal.
  */
 export const MultipleInfoAlertModal = TemplateStory.bind({});
-MultipleInfoAlertModal.storyName = 'Multiple Info Alert Modal';
 MultipleInfoAlertModal.args = {
   alertKey: 'contract',
 };
@@ -96,7 +92,6 @@ MultipleInfoAlertModal.args = {
  * Multiple Critical Alert Modal.
  */
 export const MultipleCriticalAlertModal = TemplateStory.bind({});
-MultipleCriticalAlertModal.storyName = 'Multiple Critical Alert Modal';
 MultipleCriticalAlertModal.args = {
   alertKey: 'from',
 };
