@@ -503,9 +503,8 @@
   "attributions": {
     "message": "Attributions"
   },
-  "auroraDeprecationWarning": {
-    "message": "MetaMask will be deprecating support for $1 network",
-    "description": "$1 is name of deprecated network"
+  "auroraRpcDeprecationMessage": {
+    "message": "The Infura RPC URL is no longer supporting Aurora."
   },
   "authorizedPermissions": {
     "message": "You have authorized the following permissions"

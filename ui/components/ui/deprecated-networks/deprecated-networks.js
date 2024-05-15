@@ -9,10 +9,7 @@ import {
 
 import { getCurrentNetwork } from '../../../selectors';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
-import {
-  BannerAlert,
-  Box,
-} from '../../component-library';
+import { BannerAlert, Box } from '../../component-library';
 import {
   AURORA_DISPLAY_NAME,
   CHAIN_IDS,
@@ -51,8 +48,8 @@ export default function DeprecatedNetworks() {
     rpcUrl.startsWith('https://aurora-mainnet.infura.io/')
   ) {
     props = {
-      description: 'The Infura RPC URL is no longer supporting Aurora.',
-      actionButtonLabel: 'Switch to mainnet.aurora.dev',
+      description: t('auroraRpcDeprecationMessage'),
+      actionButtonLabel: t('switchToNetwork', ['mainnet.aurora.dev']),
       actionButtonOnClick: async () => {
         setIsClosed(true);
         await dispatch(
