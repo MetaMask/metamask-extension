@@ -43,7 +43,7 @@ class EncryptorDecryptor {
 
   #SCRYPT_SALT_SIZE: number = 16; // 16 bytes
 
-  #SCRYPT_N: number = 2 ** 14; // CPU/memory cost parameter (must be a power of 2, > 1)
+  #SCRYPT_N: number = 2 ** 17; // CPU/memory cost parameter (must be a power of 2, > 1)
 
   #SCRYPT_r: number = 8; // Block size parameter
 
