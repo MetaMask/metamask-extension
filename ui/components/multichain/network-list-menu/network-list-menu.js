@@ -182,7 +182,7 @@ export const NetworkListMenu = ({ onClose }) => {
       const canDeleteNetwork =
         isUnlocked && !isCurrentNetwork && network.removable;
 
-      const isDeprecatedNetwork = network.chainId === CHAIN_IDS.AURORA;
+      // const isDeprecatedNetwork = network.chainId === CHAIN_IDS.AURORA;
 
       return (
         <NetworkListItem
