@@ -24,7 +24,6 @@ const switchEthereumChain = {
     setNetworkClientIdForDomain: true,
     setActiveNetwork: true,
     getNetworkConfigurations: true,
-    hasPermissions: true,
     hasPermission: true,
     getPermissionsForOrigin: true,
     getCaveat: true,
@@ -64,7 +63,7 @@ async function switchEthereumChainHandler(
     findNetworkConfigurationBy,
     setNetworkClientIdForDomain,
     setActiveNetwork,
-    hasPermissions,
+    hasPermission,
     requestSwitchNetworkPermission,
     getCaveat,
     getCurrentChainIdForDomain,
@@ -161,7 +160,9 @@ async function switchEthereumChainHandler(
 
     try {
       await setActiveNetwork(networkClientIdToSwitchTo);
-      if (hasPermissions(req.origin)) {
+      // if the origin has the eth_accounts permission
+      // we set per dapp network selection state
+      if (hasPermission(req.origin, PermissionNames.eth_accounts)) {
         setNetworkClientIdForDomain(req.origin, networkClientIdToSwitchTo);
       }
       res.result = null;

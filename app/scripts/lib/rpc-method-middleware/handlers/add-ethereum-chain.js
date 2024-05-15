@@ -27,7 +27,7 @@ const addEthereumChain = {
     requestUserApproval: true,
     startApprovalFlow: true,
     endApprovalFlow: true,
-    hasPermissions: true,
+    hasPermission: true,
     getCaveat: true,
     requestSwitchNetworkPermission: true,
     findNetworkClientIdByChainId: true,
@@ -52,7 +52,7 @@ async function addEthereumChainHandler(
     startApprovalFlow,
     endApprovalFlow,
     getCurrentChainIdForDomain,
-    hasPermissions,
+    hasPermission,
     getCaveat,
     requestSwitchNetworkPermission,
     findNetworkClientIdByChainId,
@@ -184,7 +184,9 @@ async function addEthereumChainHandler(
 
     try {
       await setActiveNetwork(networkConfigurationId ?? networkClientId);
-      if (hasPermissions(req.origin)) {
+      // if the origin has the eth_accounts permission
+      // we set per dapp network selection state
+      if (hasPermission(req.origin, PermissionNames.eth_accounts)) {
         setNetworkClientIdForDomain(
           req.origin,
           networkConfigurationId ?? networkClientId,
