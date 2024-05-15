@@ -186,9 +186,16 @@ class Driver {
           .toXPath();
         return By.xpath(xpath);
       }
+      // If the text to be selected contains single or double quotation marks
+      // it can cause the xpath selector to be invalid. `textToLocate` results
+      // in a string that won't be invalidated by the presence of quotation
+      // marks within the text the test is trying to find
+      const textToLocate = locator.text.match(/"/u)
+        ? `'${locator.text}'`
+        : `"${locator.text}"`;
       // The tag prop is optional and further refines which elements match
       return By.xpath(
-        `//${locator.tag ?? '*'}[contains(text(), '${locator.text}')]`,
+        `//${locator.tag ?? '*'}[contains(text(), ${textToLocate})]`,
       );
     }
     throw new Error(
