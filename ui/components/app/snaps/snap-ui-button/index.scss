@@ -2,17 +2,14 @@
   background: none;
   text-align: center;
 
-  &--variant-primary:not(&--disabled) {
+  &:not(&--disabled) {
     &:hover {
       cursor: pointer;
-      color: var(--color-primary-alternative);
+      opacity: 0.75;
     }
   }
 
-  &--variant-destructive:not(&--disabled) {
-    &:hover {
-      cursor: pointer;
-      color: var(--color-error-alternative);
-    }
+  &--disabled {
+    cursor: default !important;
   }
 }

@@ -46,8 +46,6 @@ export const SnapUIButton: FunctionComponent<
   return (
     <Text
       className={classnames(className, 'snap-ui-button', {
-        'snap-ui-button--variant-primary': variant === 'primary',
-        'snap-ui-button--variant-destructive': variant === 'destructive',
         'snap-ui-button--disabled': disabled,
       })}
       as="button"
