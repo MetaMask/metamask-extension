@@ -25,13 +25,13 @@ export const SnapUIButton: FunctionComponent<
   children,
   type,
   variant = 'primary',
-  disabled,
-  className,
+  disabled = false,
+  className = '',
   ...props
 }) => {
   const { handleEvent } = useSnapInterfaceContext();
 
-  const handleClick = (event: ReactMouseEvent<any>) => {
+  const handleClick = (event: ReactMouseEvent<HTMLElement>) => {
     if (type === ButtonType.Button) {
       event.preventDefault();
     }
@@ -39,9 +39,9 @@ export const SnapUIButton: FunctionComponent<
     handleEvent({ event: UserInputEventType.ButtonClickEvent, name });
   };
 
-  const overridenVariant = disabled ? 'disabled' : variant;
+  const overriddenVariant = disabled ? 'disabled' : variant;
 
-  const color = COLORS[overridenVariant];
+  const color = COLORS[overriddenVariant as keyof typeof COLORS];
 
   return (
     <Text
