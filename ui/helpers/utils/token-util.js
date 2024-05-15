@@ -227,7 +227,7 @@ export function getTokenFiatAmount(
     .toString();
 
   // the `string` property of a token is typically passed as `tokenAmount`; for very low values, it will be "< 0.000001"
-  const isTokenAmountNearZero = tokenAmount.includes('<');
+  const isTokenAmountNearZero = String(tokenAmount)?.includes('<');
   let currentTokenInFiat = new Numeric(
     isTokenAmountNearZero ? 0 : tokenAmount,
     10,
