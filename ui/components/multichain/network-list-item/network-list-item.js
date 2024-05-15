@@ -17,7 +17,6 @@ import {
   AvatarNetwork,
   Box,
   ButtonIcon,
-  Icon,
   IconName,
   Text,
 } from '../../component-library';
@@ -34,7 +33,6 @@ export const NetworkListItem = ({
   focus = true,
   onClick,
   onDeleteClick,
-  // isDeprecatedNetwork,
 }) => {
   const t = useI18nContext();
   const networkRef = useRef();
@@ -147,8 +145,4 @@ NetworkListItem.propTypes = {
    * Represents if the network item should be keyboard selected
    */
   focus: PropTypes.bool,
-  /**
-   * Boolean to know if the network is deprecated
-   */
-  // isDeprecatedNetwork: PropTypes.bool,
 };
