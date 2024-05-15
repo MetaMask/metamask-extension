@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Box,
   Button,
@@ -25,6 +25,7 @@ import useAlerts from '../../../../../hooks/useAlerts';
 import { AlertModal } from '../alert-modal';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { getSeverityStyle } from '../alert-modal/alert-modal';
+import { MultipleAlertModal } from '../multiple-alert-modal';
 
 export type ConfirmAlertModalProps = {
   /** The unique key representing the specific alert field. */
@@ -33,12 +34,10 @@ export type ConfirmAlertModalProps = {
   ownerId: string;
   /** The function to be executed when the modal needs to be closed. */
   onClose: () => void;
-  /** Callback function that is called when the alert link is clicked. */
-  onAlertLinkClick?: () => void;
   /** Callback function that is called when the cancel button is clicked. */
-  onCancel?: () => void;
+  onCancel: () => void;
   /** Callback function that is called when the submit button is clicked. */
-  onSubmit?: () => void;
+  onSubmit: () => void;
 };
 
 function ConfirmButtons({
@@ -46,8 +45,8 @@ function ConfirmButtons({
   onSubmit,
   isConfirmed,
 }: {
-  onCancel?: () => void;
-  onSubmit?: () => void;
+  onCancel: () => void;
+  onSubmit: () => void;
   isConfirmed: boolean;
 }) {
   const t = useI18nContext();
@@ -149,18 +148,43 @@ function AcknowledgeCheckbox({
 
 export function ConfirmAlertModal({
   alertKey,
-  onAlertLinkClick,
   onCancel,
   onClose,
   onSubmit,
   ownerId,
 }: ConfirmAlertModalProps) {
   const t = useI18nContext();
-  const { alerts } = useAlerts(ownerId);
+  const { alerts, isAlertConfirmed } = useAlerts(ownerId);
 
+  const unconfirmedAlerts = alerts.filter(
+    (alert) => alert.field && !isAlertConfirmed(alert.key),
+  );
   const selectedAlert = alerts.find((alert) => alert.key === alertKey);
+  const hasUnconfirmedAlerts = unconfirmedAlerts.length > 0;
 
   const [confirmCheckbox, setConfirmCheckbox] = useState<boolean>(false);
+  // if there are multiple alerts, show the multiple alert modal
+  const [multipleAlertModalVisible, setMultipleAlertModalVisible] =
+    useState<boolean>(hasUnconfirmedAlerts);
+
+  const handleCloseMultipleAlertModal = useCallback(() => {
+    setMultipleAlertModalVisible(false);
+  }, []);
+
+  const handleOpenMultipleAlertModal = useCallback(() => {
+    setMultipleAlertModalVisible(true);
+  }, []);
+
+  if (multipleAlertModalVisible) {
+    return (
+      <MultipleAlertModal
+        alertKey={alertKey}
+        ownerId={ownerId}
+        onFinalAcknowledgeClick={handleCloseMultipleAlertModal}
+        onClose={handleCloseMultipleAlertModal}
+      />
+    );
+  }
 
   return (
     <AlertModal
@@ -170,7 +194,7 @@ export function ConfirmAlertModal({
       onClose={onClose}
       customAlertTitle={t('alertModalFrictionTitle')}
       customAlertDetails={
-        <ConfirmDetails onAlertLinkClick={onAlertLinkClick} />
+        <ConfirmDetails onAlertLinkClick={handleOpenMultipleAlertModal} />
       }
       customAcknowledgeCheckbox={
         <AcknowledgeCheckbox

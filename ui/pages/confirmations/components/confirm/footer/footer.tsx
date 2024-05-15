@@ -21,57 +21,8 @@ import {
 import { confirmSelector } from '../../../selectors';
 import { getConfirmationSender } from '../utils';
 import useAlerts from '../../../../../hooks/useAlerts';
-import { MultipleAlertModal } from '../../../../../components/app/confirmations/alerts/multiple-alert-modal';
 import { ConfirmAlertModal } from '../../../../../components/app/confirmations/alerts/confirm-alert-modal ';
 import useIsDangerButton from './useIsDangerButton';
-
-function ConfirmReviewAlertModal({
-  alertKey,
-  ownerId,
-  handleCloseModal,
-  hasUnconfirmedAlerts,
-  alertModalVisible,
-  confirmModalVisible,
-  handleOpenModal,
-  onCancel,
-  onSubmit,
-}: {
-  alertKey: string;
-  ownerId: string;
-  handleCloseModal: () => void;
-  hasUnconfirmedAlerts: boolean;
-  alertModalVisible: boolean;
-  confirmModalVisible: boolean;
-  handleOpenModal: () => void;
-  onCancel?: () => void;
-  onSubmit?: () => void;
-}) {
-  if (alertModalVisible) {
-    return (
-      <MultipleAlertModal
-        alertKey={alertKey}
-        ownerId={ownerId}
-        onFinalAcknowledgeClick={handleCloseModal}
-        onClose={handleCloseModal}
-      />
-    );
-  }
-
-  if (!hasUnconfirmedAlerts && confirmModalVisible) {
-    return (
-      <ConfirmAlertModal
-        alertKey={alertKey}
-        ownerId={ownerId}
-        onClose={handleCloseModal}
-        onAlertLinkClick={handleOpenModal}
-        onCancel={onCancel}
-        onSubmit={onSubmit}
-      />
-    );
-  }
-
-  return null;
-}
 
 function ConfirmButton({
   alertOwnerId,
@@ -81,12 +32,12 @@ function ConfirmButton({
 }: {
   alertOwnerId: string;
   disabled: boolean;
-  onSubmit?: () => void;
-  onCancel?: () => void;
+  onSubmit: () => void;
+  onCancel: () => void;
 }) {
   const isDangerButton = useIsDangerButton();
   const t = useI18nContext();
-  const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
+
   const [confirmModalVisible, setConfirmModalVisible] =
     useState<boolean>(false);
   const { alerts, isAlertConfirmed } = useAlerts(alertOwnerId);
@@ -96,15 +47,11 @@ function ConfirmButton({
   const hasAlerts = alerts.length > 0;
   const hasUnconfirmedAlerts = unconfirmedAlerts.length > 0;
 
-  const handleCloseModal = useCallback(() => {
-    setAlertModalVisible(false);
+  const handleCloseConfirmModal = useCallback(() => {
+    setConfirmModalVisible(false);
   }, []);
 
-  const handleOpenModal = useCallback(() => {
-    if (hasUnconfirmedAlerts) {
-      setAlertModalVisible(true);
-      return;
-    }
+  const handleOpenConfirmModal = useCallback(() => {
     setConfirmModalVisible(true);
   }, [hasUnconfirmedAlerts]);
 
@@ -117,22 +64,20 @@ function ConfirmButton({
 
   return (
     <>
-      <ConfirmReviewAlertModal
-        alertKey={alerts[0]?.key}
-        ownerId={alertOwnerId}
-        handleCloseModal={handleCloseModal}
-        hasUnconfirmedAlerts={hasUnconfirmedAlerts}
-        alertModalVisible={alertModalVisible}
-        confirmModalVisible={confirmModalVisible}
-        handleOpenModal={() => setAlertModalVisible(true)}
-        onCancel={onCancel}
-        onSubmit={onSubmit}
-      />
+      {confirmModalVisible && (
+        <ConfirmAlertModal
+          alertKey={alerts[0]?.key}
+          ownerId={alertOwnerId}
+          onClose={handleCloseConfirmModal}
+          onCancel={onCancel}
+          onSubmit={onSubmit}
+        />
+      )}
       <Button
         block
         data-testid="confirm-footer-confirm-button"
         startIconName={hasAlerts ? getIconName() : undefined}
-        onClick={hasAlerts ? handleOpenModal : onSubmit}
+        onClick={hasAlerts ? handleOpenConfirmModal : onSubmit}
         danger={hasAlerts ? true : isDangerButton}
         size={ButtonSize.Lg}
         disabled={hasUnconfirmedAlerts ? false : disabled}
@@ -211,6 +156,7 @@ const Footer = () => {
           isScrollToBottomNeeded ||
           hardwareWalletRequiresConnection
         }
+        onCancel={onCancel}
       />
     </PageFooter>
   );

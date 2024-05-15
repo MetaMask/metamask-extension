@@ -40,7 +40,6 @@ describe('ConfirmAlertModal', () => {
     ownerId: OWNER_ID_MOCK,
     alertKey: FROM_ALERT_KEY_MOCK,
     onClose: onCloseMock,
-    onAlertLinkClick: onAlertLinkClickMock,
     onCancel: onCancelMock,
     onSubmit: onSubmitMock,
   };
