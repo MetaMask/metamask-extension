@@ -1,12 +1,10 @@
 import { useCallback } from 'react';
 
 // This hook is responsible for processing confirmation actions.
-// Depending on the action type, we will call type-specific hooks.
+// We will delegate to alternate confirmation type hooks which will process the action if the type matches.
 const useConfirmationAlertActions = () => {
-  const processAction = useCallback((_actionKey: string) => {
-    // Call type-specific hooks based on the action type
-    // Leave this empty until PersonalSignAlertActions is implemented
-  }, []);
+  // eslint-disable-next-line no-empty-function
+  const processAction = useCallback((_actionKey: string) => {}, []);
 
   return processAction;
 };

@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  ReactNode,
-  useCallback,
-  useContext,
-  useState,
-} from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Box,
   ButtonIcon,
@@ -25,36 +19,6 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { AlertModal } from '../alert-modal';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
-import useConfirmationAlertActions from '../../../../../pages/confirmations/hooks/useConfirmationAlertActions';
-
-type AlertActionHandlerContextType = {
-  processAction: (actionKey: string) => void;
-};
-
-const AlertActionHandlerContext = createContext<
-  AlertActionHandlerContextType | undefined
->(undefined);
-
-export const useAlertActionHandler = () => {
-  const context = useContext(AlertActionHandlerContext);
-  if (!context) {
-    throw new Error(
-      'useAlertActionHandler must be used within an AlertActionHandlerProvider',
-    );
-  }
-  return context;
-};
-
-export const AlertActionHandlerProvider: React.FC<{
-  children: ReactNode;
-  processAction: (actionKey: string) => void;
-}> = ({ children, processAction }) => {
-  return (
-    <AlertActionHandlerContext.Provider value={{ processAction }}>
-      {children}
-    </AlertActionHandlerContext.Provider>
-  );
-};
 
 export type MultipleAlertModalProps = {
   /** The key of the initial alert to display. */
@@ -181,7 +145,6 @@ export function MultipleAlertModal({
   ownerId,
 }: MultipleAlertModalProps) {
   const { alerts } = useAlerts(ownerId);
-  const processAction = useConfirmationAlertActions();
 
   const [selectedIndex, setSelectedIndex] = useState(
     alerts.findIndex((alert) => alert.key === alertKey),
@@ -205,25 +168,23 @@ export function MultipleAlertModal({
       return;
     }
 
-    handleBackButtonClick();
-  }, [onFinalAcknowledgeClick, handleBackButtonClick, selectedIndex, alerts]);
+    handleNextButtonClick();
+  }, [onFinalAcknowledgeClick, handleNextButtonClick, selectedIndex, alerts]);
 
   return (
-    <AlertActionHandlerProvider processAction={processAction}>
-      <AlertModal
-        ownerId={ownerId}
-        onAcknowledgeClick={handleAcknowledgeClick}
-        alertKey={selectedAlert.key}
-        onClose={onClose}
-        headerStartAccessory={
-          <PageNavigation
-            alerts={alerts}
-            onBackButtonClick={handleBackButtonClick}
-            onNextButtonClick={handleNextButtonClick}
-            selectedIndex={selectedIndex}
-          />
-        }
-      />
-    </AlertActionHandlerProvider>
+    <AlertModal
+      ownerId={ownerId}
+      onAcknowledgeClick={handleAcknowledgeClick}
+      alertKey={selectedAlert.key}
+      onClose={onClose}
+      headerStartAccessory={
+        <PageNavigation
+          alerts={alerts}
+          onBackButtonClick={handleBackButtonClick}
+          onNextButtonClick={handleNextButtonClick}
+          selectedIndex={selectedIndex}
+        />
+      }
+    />
   );
 }
