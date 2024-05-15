@@ -1600,6 +1600,10 @@ const slice = createSlice({
       });
 
       if (draftTransaction) {
+        const isSwapAndSend =
+          draftTransaction.sendAsset?.details?.address !==
+          draftTransaction.receiveAsset?.details?.address;
+
         const { quotes } = draftTransaction;
         const bestQuote = quotes ? calculateBestQuote(quotes) : undefined;
         switch (true) {
@@ -1720,15 +1724,9 @@ const slice = createSlice({
             });
             draftTransaction.status = SEND_STATUSES.INVALID;
             break;
-          case draftTransaction.isSwapQuoteLoading:
+          case isSwapAndSend && !bestQuote:
             slice.caseReducers.addHistoryEntry(state, {
-              payload: `A swap quote is loading`,
-            });
-            draftTransaction.status = SEND_STATUSES.INVALID;
-            break;
-          case draftTransaction.swapQuotesError:
-            slice.caseReducers.addHistoryEntry(state, {
-              payload: `A swap quote failed to load`,
+              payload: `No swap and send quote available`,
             });
             draftTransaction.status = SEND_STATUSES.INVALID;
             break;
