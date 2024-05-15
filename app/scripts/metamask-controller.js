@@ -4890,7 +4890,11 @@ export default class MetamaskController extends EventEmitter {
       ),
     );
     const handleUpdate = (update) => {
-      if (outStream._writableState.ended) {
+      if (
+        !outStream.writable ||
+        outStream.destroyed ||
+        outStream._writableState.ended
+      ) {
         return;
       }
       // send notification to client-side
@@ -4902,7 +4906,11 @@ export default class MetamaskController extends EventEmitter {
     };
     this.on('update', handleUpdate);
     const startUISync = () => {
-      if (outStream._writableState.ended) {
+      if (
+        !outStream.writable ||
+        outStream.destroyed ||
+        outStream._writableState.ended
+      ) {
         return;
       }
       // send notification to client-side

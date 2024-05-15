@@ -3,7 +3,11 @@ import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 
 const createMetaRPCHandler = (api, outStream, store, localStoreApiWrapper) => {
   return async (data) => {
-    if (outStream._writableState.ended) {
+    if (
+      !outStream.writable ||
+      outStream.destroyed ||
+      outStream._writableState.ended
+    ) {
       return;
     }
     if (!api[data.method]) {
@@ -29,7 +33,11 @@ const createMetaRPCHandler = (api, outStream, store, localStoreApiWrapper) => {
       }
     }
 
-    if (outStream._writableState.ended) {
+    if (
+      !outStream.writable ||
+      outStream.destroyed ||
+      outStream._writableState.ended
+    ) {
       if (error) {
         console.error(error);
       }
