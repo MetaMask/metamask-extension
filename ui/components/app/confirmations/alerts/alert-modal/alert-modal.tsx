@@ -1,10 +1,8 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { ButtonVariant } from '@metamask/snaps-sdk';
 import {
   Box,
   Button,
-  ButtonLink,
-  ButtonLinkSize,
   ButtonSize,
   Checkbox,
   Icon,
@@ -34,35 +32,45 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
-import { useAlertActionHandler } from '../multiple-alert-modal/multiple-alert-modal';
-
-export type FrictionModalConfig = {
-  /** Callback function that is called when the alert link is clicked. */
-  onAlertLinkClick?: () => void;
-  /** Callback function that is called when the cancel button is clicked. */
-  onCancel?: () => void;
-  /** Callback function that is called when the submit button is clicked. */
-  onSubmit?: () => void;
-};
+import { useAlertActionHandler } from '../../../../../hooks/useAlertActionHandler';
 
 export type AlertModalProps = {
-  /** The unique key representing the specific alert field. */
+  /**
+   * The unique key representing the specific alert field.
+   */
   alertKey: string;
   /**
-   * The configuration for the friction modal.
-   * Once this property is used, it enables the friction modal.
+   * The custom button component for acknowledging the alert.
    */
-  frictionModalConfig?: FrictionModalConfig;
+  customAcknowledgeButton?: React.ReactNode;
+  /**
+   * The custom checkbox component for acknowledging the alert.
+   */
+  customAcknowledgeCheckbox?: React.ReactNode;
+  /**
+   * The custom details component for the alert.
+   */
+  customAlertDetails?: React.ReactNode;
+  /**
+   * The custom title for the alert.
+   */
+  customAlertTitle?: string;
   /**
    * The start (left) content area of ModalHeader.
-   * It override `startAccessory` of ModalHeaderDefault and by default no content is present.
+   * It overrides `startAccessory` of ModalHeaderDefault and by default no content is present.
    */
   headerStartAccessory?: React.ReactNode;
-  /** The function invoked when the user acknowledges the alert. */
+  /**
+   * The function invoked when the user acknowledges the alert.
+   */
   onAcknowledgeClick: () => void;
-  /** The function to be executed when the modal needs to be closed. */
+  /**
+   * The function to be executed when the modal needs to be closed.
+   */
   onClose: () => void;
-  /** The owner ID of the relevant alert from the `confirmAlerts` reducer. */
+  /**
+   * The owner ID of the relevant alert from the `confirmAlerts` reducer.
+   */
   ownerId: string;
 };
 
@@ -71,7 +79,7 @@ export type AlertChildrenDefaultProps = {
   isFrictionModal: boolean;
 };
 
-function getSeverityStyle(severity: Severity) {
+export function getSeverityStyle(severity?: Severity) {
   switch (severity) {
     case Severity.Warning:
       return {
@@ -93,8 +101,11 @@ function getSeverityStyle(severity: Severity) {
 
 function AlertHeader({
   selectedAlert,
-  isFrictionModal,
-}: AlertChildrenDefaultProps) {
+  customAlertTitle,
+}: {
+  selectedAlert: Alert;
+  customAlertTitle?: string;
+}) {
   const t = useI18nContext();
   const severityStyle = getSeverityStyle(selectedAlert.severity);
   return (
@@ -121,48 +132,8 @@ function AlertHeader({
           marginTop={3}
           marginBottom={4}
         >
-          {isFrictionModal
-            ? t('alertModalFrictionTitle')
-            : selectedAlert.reason ?? t('alert')}
+          {customAlertTitle ?? selectedAlert.reason ?? t('alert')}
         </Text>
-      </Box>
-    </>
-  );
-}
-
-function FrictionDetails({
-  onFrictionLinkClick,
-}: {
-  onFrictionLinkClick?: () => void;
-}) {
-  const t = useI18nContext();
-  return (
-    <>
-      <Box alignItems={AlignItems.center} textAlign={TextAlign.Center}>
-        <Text variant={TextVariant.bodySm}>
-          {t('alertModalFrictionDetails')}
-        </Text>
-        <ButtonLink
-          paddingTop={5}
-          paddingBottom={5}
-          size={ButtonLinkSize.Inherit}
-          textProps={{
-            variant: TextVariant.bodyMd,
-            alignItems: AlignItems.flexStart,
-          }}
-          as="a"
-          onClick={onFrictionLinkClick}
-          target="_blank"
-          rel="noopener noreferrer"
-          data-testid={'alert-modal-review-all-alerts'}
-        >
-          <Icon
-            name={IconName.SecuritySearch}
-            size={IconSize.Inherit}
-            marginLeft={1}
-          />
-          {t('alertModalReviewAllAlerts')}
-        </ButtonLink>
       </Box>
     </>
   );
@@ -170,10 +141,10 @@ function FrictionDetails({
 
 function AlertDetails({
   selectedAlert,
-  isFrictionModal,
-  onFrictionLinkClick,
-}: AlertChildrenDefaultProps & {
-  onFrictionLinkClick?: () => void;
+  customAlertDetails,
+}: {
+  selectedAlert: Alert;
+  customAlertDetails?: React.ReactNode;
 }) {
   const t = useI18nContext();
   const severityStyle = getSeverityStyle(selectedAlert.severity);
@@ -184,13 +155,13 @@ function AlertDetails({
         display={Display.InlineBlock}
         padding={2}
         width={BlockSize.Full}
-        backgroundColor={isFrictionModal ? undefined : severityStyle.background}
+        backgroundColor={
+          customAlertDetails ? undefined : severityStyle.background
+        }
         gap={2}
         borderRadius={BorderRadius.SM}
       >
-        {isFrictionModal ? (
-          <FrictionDetails onFrictionLinkClick={onFrictionLinkClick} />
-        ) : (
+        {customAlertDetails ?? (
           <>
             <Text variant={TextVariant.bodySm}>{selectedAlert.message}</Text>
             {selectedAlert.alertDetails?.length ? (
@@ -220,14 +191,12 @@ function AcknowledgeCheckbox({
   selectedAlert,
   setAlertConfirmed,
   isConfirmed,
-  isFrictionModal,
-  setFrictionCheckbox,
-}: AlertChildrenDefaultProps & {
+}: {
+  selectedAlert: Alert;
   setAlertConfirmed: (alertKey: string, isConfirmed: boolean) => void;
   isConfirmed: boolean;
-  setFrictionCheckbox: (value: boolean) => void;
 }) {
-  if (!isFrictionModal && selectedAlert.isBlocking) {
+  if (selectedAlert.isBlocking) {
     return null;
   }
 
@@ -247,18 +216,10 @@ function AcknowledgeCheckbox({
       borderRadius={BorderRadius.LG}
     >
       <Checkbox
-        label={
-          isFrictionModal
-            ? t('alertModalFrictionAcknowledge')
-            : t('alertModalAcknowledge')
-        }
+        label={t('alertModalAcknowledge')}
         data-testid="alert-modal-acknowledge-checkbox"
         isChecked={isConfirmed}
-        onChange={
-          isFrictionModal
-            ? () => setFrictionCheckbox(!isConfirmed)
-            : handleCheckboxClick
-        }
+        onChange={handleCheckboxClick}
         alignItems={AlignItems.flexStart}
         className={'alert-modal__acknowledge-checkbox'}
       />
@@ -266,66 +227,18 @@ function AcknowledgeCheckbox({
   );
 }
 
-function FrictionButtons({
-  onCancel,
-  onSubmit,
-  isConfirmed,
-}: {
-  onCancel?: () => void;
-  onSubmit?: () => void;
-  isConfirmed: boolean;
-}) {
-  const t = useI18nContext();
-  return (
-    <>
-      <Button
-        block
-        onClick={onCancel}
-        size={ButtonSize.Lg}
-        variant={ButtonVariant.Secondary}
-        data-testid="alert-modal-cancel-button"
-      >
-        {t('cancel')}
-      </Button>
-      <Button
-        variant={ButtonVariant.Primary}
-        onClick={onSubmit}
-        size={ButtonSize.Lg}
-        data-testid="alert-modal-submit-button"
-        disabled={!isConfirmed}
-        danger
-      >
-        {t('confirm')}
-      </Button>
-    </>
-  );
-}
-
 function AcknowledgeButton({
   onAcknowledgeClick,
   isConfirmed,
-  frictionModalConfig,
   hasActions,
   isBlocking,
 }: {
   onAcknowledgeClick: () => void;
   isConfirmed: boolean;
-  frictionModalConfig?: FrictionModalConfig;
   hasActions?: boolean;
   isBlocking?: boolean;
 }) {
   const t = useI18nContext();
-  const isFrictionModal = Boolean(frictionModalConfig);
-
-  if (isFrictionModal) {
-    return (
-      <FrictionButtons
-        onCancel={frictionModalConfig?.onCancel}
-        onSubmit={frictionModalConfig?.onSubmit}
-        isConfirmed={isConfirmed}
-      />
-    );
-  }
 
   if (isBlocking) {
     return null;
@@ -373,10 +286,12 @@ export function AlertModal({
   alertKey,
   onClose,
   headerStartAccessory,
-  frictionModalConfig,
+  customAlertTitle,
+  customAlertDetails,
+  customAcknowledgeCheckbox,
+  customAcknowledgeButton,
 }: AlertModalProps) {
   const { alerts, isAlertConfirmed, setAlertConfirmed } = useAlerts(ownerId);
-  const isFrictionModal = Boolean(frictionModalConfig);
 
   const handleClose = useCallback(() => {
     onClose();
@@ -388,11 +303,6 @@ export function AlertModal({
     return null;
   }
   const isConfirmed = isAlertConfirmed(selectedAlert.key);
-  const [frictionCheckbox, setFrictionCheckbox] = useState<boolean>(false);
-  const defaultAlertChildrenProps = {
-    selectedAlert,
-    isFrictionModal,
-  };
 
   return (
     <Modal isOpen onClose={handleClose}>
@@ -405,18 +315,22 @@ export function AlertModal({
           borderWidth={1}
           display={headerStartAccessory ? Display.InlineFlex : Display.Block}
         />
-        <AlertHeader {...defaultAlertChildrenProps} />
+        <AlertHeader
+          selectedAlert={selectedAlert}
+          customAlertTitle={customAlertTitle}
+        />
         <ModalBody>
           <AlertDetails
-            onFrictionLinkClick={frictionModalConfig?.onAlertLinkClick}
-            {...defaultAlertChildrenProps}
+            selectedAlert={selectedAlert}
+            customAlertDetails={customAlertDetails}
           />
-          <AcknowledgeCheckbox
-            isConfirmed={isFrictionModal ? frictionCheckbox : isConfirmed}
-            setAlertConfirmed={setAlertConfirmed}
-            setFrictionCheckbox={setFrictionCheckbox}
-            {...defaultAlertChildrenProps}
-          />
+          {customAcknowledgeCheckbox ?? (
+            <AcknowledgeCheckbox
+              selectedAlert={selectedAlert}
+              isConfirmed={isConfirmed}
+              setAlertConfirmed={setAlertConfirmed}
+            />
+          )}
         </ModalBody>
         <ModalFooter>
           <Box
@@ -425,16 +339,19 @@ export function AlertModal({
             gap={4}
             width={BlockSize.Full}
           >
-            <AcknowledgeButton
-              onAcknowledgeClick={onAcknowledgeClick}
-              isConfirmed={isFrictionModal ? frictionCheckbox : isConfirmed}
-              frictionModalConfig={frictionModalConfig}
-              hasActions={Boolean(selectedAlert.actions)}
-              isBlocking={selectedAlert.isBlocking}
-            />
-            {(selectedAlert.actions ?? []).map((action) => (
-              <ActionButton key={action.key} action={action} />
-            ))}
+            {customAcknowledgeButton ?? (
+              <>
+                <AcknowledgeButton
+                  onAcknowledgeClick={onAcknowledgeClick}
+                  isConfirmed={isConfirmed}
+                  hasActions={Boolean(selectedAlert.actions)}
+                  isBlocking={selectedAlert.isBlocking}
+                />
+                {(selectedAlert.actions ?? []).map((action) => (
+                  <ActionButton key={action.key} action={action} />
+                ))}
+              </>
+            )}
           </Box>
         </ModalFooter>
       </ModalContent>

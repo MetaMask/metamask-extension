@@ -256,6 +256,7 @@ export const MOONBEAM_DISPLAY_NAME = 'Moonbeam';
 export const MOONRIVER_DISPLAY_NAME = 'Moonriver';
 export const SCROLL_DISPLAY_NAME = 'Scroll';
 export const SCROLL_SEPOLIA_DISPLAY_NAME = 'Scroll Sepolia';
+export const OP_BNB_DISPLAY_NAME = 'opBNB';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -442,12 +443,14 @@ export const SCROLL_IMAGE_URL = './images/scroll.svg';
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
   NETWORK_TYPES.SEPOLIA,
+  NETWORK_TYPES.LINEA_GOERLI,
   NETWORK_TYPES.LINEA_SEPOLIA,
   NETWORK_TYPES.LINEA_MAINNET,
 ] as const;
 
 export const TEST_CHAINS = [
   CHAIN_IDS.SEPOLIA,
+  NETWORK_TYPES.LINEA_GOERLI,
   CHAIN_IDS.LINEA_SEPOLIA,
   CHAIN_IDS.LOCALHOST,
 ];
@@ -484,6 +487,11 @@ export const BUILT_IN_NETWORKS = {
     chainId: CHAIN_IDS.SEPOLIA,
     ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
     blockExplorerUrl: `https://${NETWORK_TYPES.SEPOLIA}.etherscan.io`,
+  },
+  [NETWORK_TYPES.LINEA_GOERLI]: {
+    chainId: CHAIN_IDS.LINEA_GOERLI,
+    ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_GOERLI],
+    blockExplorerUrl: 'https://goerli.lineascan.build',
   },
   [NETWORK_TYPES.LINEA_SEPOLIA]: {
     chainId: CHAIN_IDS.LINEA_SEPOLIA,
@@ -542,6 +550,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.SCROLL]: SCROLL_DISPLAY_NAME,
   [CHAIN_IDS.SCROLL_SEPOLIA]: SCROLL_SEPOLIA_DISPLAY_NAME,
   [CHAIN_IDS.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
+  [CHAIN_IDS.OPBNB]: OP_BNB_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {

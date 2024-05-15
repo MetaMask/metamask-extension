@@ -12,6 +12,7 @@ import {
   JustifyContent,
   TextVariant,
   IconColor,
+  FontWeight,
 } from '../../../helpers/constants/design-system';
 import {
   Modal,
@@ -26,7 +27,6 @@ import {
   ButtonLinkSize,
   Icon,
   IconName,
-  IconSize,
 } from '../../component-library';
 import { setSmartTransactionsOptInStatus } from '../../../store/actions';
 import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../shared/constants/smartTransactions';
@@ -68,15 +68,15 @@ const EnableSmartTransactionsButton = ({
       onClick={handleEnableButtonClick}
       width={BlockSize.Full}
     >
-      {t('enableSmartTransactions')}
+      {t('enable')}
     </Button>
   );
 };
 
-const NotRightNowLink = ({
-  handleNotRightNowLinkClick,
+const NoThanksLink = ({
+  handleNoThanksLinkClick,
 }: {
-  handleNotRightNowLinkClick: () => void;
+  handleNoThanksLinkClick: () => void;
 }) => {
   const t = useI18nContext();
   return (
@@ -84,10 +84,12 @@ const NotRightNowLink = ({
       marginTop={2}
       type="link"
       variant={ButtonVariant.Link}
-      onClick={handleNotRightNowLinkClick}
+      color={TextColor.textAlternative}
+      onClick={handleNoThanksLinkClick}
       width={BlockSize.Full}
+      className="mm-smart-transactions-opt-in-modal__no-thanks-link"
     >
-      {t('notRightNow')}
+      {t('dontEnableEnhancedProtection')}
     </Button>
   );
 };
@@ -100,10 +102,7 @@ const Description = () => {
         {t('smartTransactionsDescription')}
       </Text>
       <Text variant={TextVariant.bodyMd} marginTop={4}>
-        {t('smartTransactionsDescription2')}
-      </Text>
-      <Text variant={TextVariant.bodyMd} marginTop={4}>
-        {t('smartTransactionsDescription3', [<LearnMoreLink />])}
+        {t('smartTransactionsDescription2', [<LearnMoreLink />])}
       </Text>
     </Box>
   );
@@ -121,12 +120,12 @@ const Benefit = ({ text, iconName }: { text: string; iconName: IconName }) => {
     >
       <Icon
         name={iconName}
-        size={IconSize.Xl}
         color={IconColor.primaryDefault}
+        className="mm-smart-transactions-opt-in-modal__icon"
       />
       <Text
-        variant={TextVariant.bodyXs}
-        color={TextColor.textAlternative}
+        variant={TextVariant.bodySm}
+        fontWeight={FontWeight.Medium}
         marginTop={1}
       >
         {text}
@@ -150,10 +149,7 @@ const Benefits = () => {
         text={t('smartTransactionsBenefit1')}
         iconName={IconName.Confirmation}
       />
-      <Benefit
-        text={t('smartTransactionsBenefit2')}
-        iconName={IconName.SecurityTick}
-      />
+      <Benefit text={t('smartTransactionsBenefit2')} iconName={IconName.Coin} />
       <Benefit
         text={t('smartTransactionsBenefit3')}
         iconName={IconName.Clock}
@@ -173,7 +169,7 @@ export default function SmartTransactionsOptInModal({
     dispatch(setSmartTransactionsOptInStatus(true));
   }, [dispatch]);
 
-  const handleNotRightNowLinkClick = useCallback(() => {
+  const handleNoThanksLinkClick = useCallback(() => {
     dispatch(setSmartTransactionsOptInStatus(false));
   }, [dispatch]);
 
@@ -201,7 +197,7 @@ export default function SmartTransactionsOptInModal({
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.center}
         >
-          {t('introducingSmartTransactions')}
+          {t('smartTransactionsOptItModalTitle')}
         </ModalHeader>
         <Box
           display={Display.Flex}
@@ -214,9 +210,7 @@ export default function SmartTransactionsOptInModal({
           <EnableSmartTransactionsButton
             handleEnableButtonClick={handleEnableButtonClick}
           />
-          <NotRightNowLink
-            handleNotRightNowLinkClick={handleNotRightNowLinkClick}
-          />
+          <NoThanksLink handleNoThanksLinkClick={handleNoThanksLinkClick} />
         </Box>
       </ModalContent>
     </Modal>

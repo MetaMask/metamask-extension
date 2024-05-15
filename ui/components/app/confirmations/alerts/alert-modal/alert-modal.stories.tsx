@@ -26,7 +26,6 @@ export const baseAlertsMock: Alert[] = [
     message: 'Alert 2',
     alertDetails: ['detail 1 warning', 'detail 2 warning'],
     actions: [{ key: 'go-to-gas-modal', label: 'Update gas option' }],
-    isBlocking: true,
   },
   {
     key: 'Contract',

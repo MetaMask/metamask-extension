@@ -1,4 +1,5 @@
-import { detectSIWE } from '@metamask/controller-utils';
+import { ApprovalType, detectSIWE } from '@metamask/controller-utils';
+import { EthMethod } from '@metamask/keyring-api';
 import { errorCodes } from 'eth-rpc-errors';
 import { isValidAddress } from 'ethereumjs-util';
 import { MESSAGE_TYPE, ORIGIN_METAMASK } from '../../../shared/constants/app';
@@ -17,9 +18,9 @@ import {
 
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { SIGNING_METHODS } from '../../../shared/constants/transaction';
-
 import { getBlockaidMetricsProps } from '../../../ui/helpers/utils/metrics';
 ///: END:ONLY_INCLUDE_IF
+import { REDESIGN_APPROVAL_TYPES } from '../../../ui/pages/confirmations/utils/confirm';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 
 /**
@@ -53,6 +54,15 @@ const RATE_LIMIT_MAP = {
   [MESSAGE_TYPE.ETH_ACCOUNTS]: RATE_LIMIT_TYPES.BLOCKED,
   [MESSAGE_TYPE.LOG_WEB3_SHIM_USAGE]: RATE_LIMIT_TYPES.BLOCKED,
   [MESSAGE_TYPE.GET_PROVIDER_STATE]: RATE_LIMIT_TYPES.BLOCKED,
+};
+
+const ETH_METHOD_TO_APPROVAL_TYPE = {
+  [EthMethod.PersonalSign]: ApprovalType.PersonalSign,
+  [EthMethod.Sign]: ApprovalType.Sign,
+  [EthMethod.SignTransaction]: ApprovalType.SignTransaction,
+  [EthMethod.SignTypedDataV1]: ApprovalType.EthSignTypedData,
+  [EthMethod.SignTypedDataV3]: ApprovalType.EthSignTypedData,
+  [EthMethod.SignTypedDataV4]: ApprovalType.EthSignTypedData,
 };
 
 /**
@@ -129,6 +139,7 @@ let globalRateLimitCount = 0;
  *  that should be tracked for methods rate limited by random sample.
  * @param {Function} opts.getAccountType
  * @param {Function} opts.getDeviceModel
+ * @param {Function} opts.isConfirmationRedesignEnabled
  * @param {RestrictedControllerMessenger} opts.snapAndHardwareMessenger
  * @param {AppStateController} opts.appStateController
  * @param {number} [opts.globalRateLimitTimeout] - time, in milliseconds, of the sliding
@@ -148,6 +159,7 @@ export default function createRPCMethodTrackingMiddleware({
   globalRateLimitMaxAmount = 10, // max of events in the globalRateLimitTimeout window. pass 0 for no global rate limit
   getAccountType,
   getDeviceModel,
+  isConfirmationRedesignEnabled,
   snapAndHardwareMessenger,
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   appStateController,
@@ -251,6 +263,18 @@ export default function createRPCMethodTrackingMiddleware({
             req.securityAlertResponse.description;
         }
         ///: END:ONLY_INCLUDE_IF
+        const isConfirmationRedesign =
+          isConfirmationRedesignEnabled() &&
+          REDESIGN_APPROVAL_TYPES.find(
+            (type) => type === ETH_METHOD_TO_APPROVAL_TYPE[method],
+          );
+
+        if (isConfirmationRedesign) {
+          eventProperties.ui_customizations = [
+            ...(eventProperties.ui_customizations || []),
+            MetaMetricsEventUiCustomization.RedesignedConfirmation,
+          ];
+        }
 
         const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
           getAccountType,
@@ -265,9 +289,10 @@ export default function createRPCMethodTrackingMiddleware({
           if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
             const { isSIWEMessage } = detectSIWE({ data });
             if (isSIWEMessage) {
-              eventProperties.ui_customizations = (
-                eventProperties.ui_customizations || []
-              ).concat(MetaMetricsEventUiCustomization.Siwe);
+              eventProperties.ui_customizations = [
+                ...(eventProperties.ui_customizations || []),
+                MetaMetricsEventUiCustomization.Siwe,
+              ];
             }
           }
         } catch (e) {

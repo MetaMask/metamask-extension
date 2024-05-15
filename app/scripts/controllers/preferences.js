@@ -15,6 +15,7 @@ const mainNetworks = {
 const testNetworks = {
   [CHAIN_IDS.GOERLI]: true,
   [CHAIN_IDS.SEPOLIA]: true,
+  [CHAIN_IDS.LINEA_GOERLI]: true,
   [CHAIN_IDS.LINEA_SEPOLIA]: true,
 };
 
@@ -60,7 +61,7 @@ export default class PreferencesController {
       useNftDetection: false,
       use4ByteResolution: true,
       useCurrencyRateCheck: true,
-      useRequestQueue: false,
+      useRequestQueue: true,
       openSeaEnabled: false,
       ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
       securityAlertsEnabled: true,
@@ -94,7 +95,7 @@ export default class PreferencesController {
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
-        redesignedConfirmationsEnabled: false,
+        redesignedConfirmationsEnabled: true,
         featureNotificationsEnabled: false,
       },
       // ENS decentralized website resolution
