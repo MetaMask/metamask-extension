@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [11.15.5]
+### Changed
+- Update copy in Smart Transactions opt-in modal([#24461](https://github.com/MetaMask/metamask-extension/pull/24461))
 
 ## [11.15.4]
 ### Changed
