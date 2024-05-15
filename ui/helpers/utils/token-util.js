@@ -226,7 +226,6 @@ export function getTokenFiatAmount(
     .times(new Numeric(conversionRate, 10))
     .toString();
 
-  // the `string` property of a token is typically passed as `tokenAmount`; for very low values, it will be "< 0.000001"
   let currentTokenInFiat = new Numeric(tokenAmount, 10);
 
   if (tokenSymbol !== currentCurrency.toUpperCase() && currentTokenToFiatRate) {
