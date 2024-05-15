@@ -21,7 +21,7 @@ import {
 import { confirmSelector } from '../../../selectors';
 import { getConfirmationSender } from '../utils';
 import useAlerts from '../../../../../hooks/useAlerts';
-import { ConfirmAlertModal } from '../../../../../components/app/confirmations/alerts/confirm-alert-modal ';
+import { ConfirmAlertModal } from '../../../../../components/app/confirmations/alerts/confirm-alert-modal';
 import useIsDangerButton from './useIsDangerButton';
 
 function ConfirmButton({
