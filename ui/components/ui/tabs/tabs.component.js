@@ -7,6 +7,7 @@ import {
   DISPLAY,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
+import { detectNfts } from '../../../store/actions';
 
 const Tabs = ({
   defaultActiveTabKey,
@@ -40,6 +41,9 @@ const Tabs = ({
     if (tabIndex !== activeTabIndex) {
       setActiveTabIndex(tabIndex);
       onTabClick?.(tabKey);
+    }
+    if (tabKey === 'nfts') {
+      detectNfts();
     }
   };
 

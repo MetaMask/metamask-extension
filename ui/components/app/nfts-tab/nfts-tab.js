@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
@@ -48,6 +48,8 @@ import {
   RampsCard,
 } from '../../multichain/ramps-card/ramps-card';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
+import { getIsStillNftsFetching } from '../../../ducks/metamask/metamask';
+import Spinner from '../../ui/spinner';
 ///: END:ONLY_INCLUDE_IF
 
 export default function NftsTab() {
@@ -63,11 +65,16 @@ export default function NftsTab() {
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
+
+  const isNftsStillFetched = useSelector(getIsStillNftsFetching);
+
   const { totalFiatBalance } = useAccountTotalFiatBalance(
     selectedAddress,
     shouldHideZeroBalanceTokens,
   );
   const balanceIsZero = Number(totalFiatBalance) === 0;
+  const [showLoader, setShowLoader] = useState(true);
+  const [showRefreshLoader, setShowRefreshLoader] = useState(false);
   const isBuyableChain = useSelector(getIsBuyableChain);
   const showRampsCard = isBuyableChain && balanceIsZero;
   ///: END:ONLY_INCLUDE_IF
@@ -80,9 +87,15 @@ export default function NftsTab() {
   };
 
   const onRefresh = () => {
+    setShowRefreshLoader(true);
     if (isMainnet) {
-      dispatch(detectNfts());
+      detectNfts();
     }
+    const timeoutForRefresh = setTimeout(() => {
+      setShowRefreshLoader(false);
+      clearTimeout(timeoutForRefresh);
+    }, 200);
+
     checkAndUpdateAllNftsOwnershipStatus();
   };
 
@@ -114,10 +127,34 @@ export default function NftsTab() {
     currentLocale,
   ]);
 
-  if (nftsLoading) {
-    return <div className="nfts-tab__loading">{t('loadingNFTs')}</div>;
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setShowLoader(false);
+    }, 2000);
+    return () => clearTimeout(timeoutId);
+  }, []);
+
+  if (!hasAnyNfts && showLoader) {
+    return (
+      <Box className="nfts-tab__loading">
+        <Spinner
+          color="var(--color-warning-default)"
+          className="loading-overlay__spinner"
+        />
+      </Box>
+    );
   }
 
+  if (showRefreshLoader) {
+    return (
+      <Box className="nfts-tab__loading">
+        <Spinner
+          color="var(--color-warning-default)"
+          className="loading-overlay__spinner"
+        />
+      </Box>
+    );
+  }
   return (
     <>
       {
@@ -129,10 +166,21 @@ export default function NftsTab() {
       }
       <Box className="nfts-tab">
         {hasAnyNfts > 0 || previouslyOwnedCollection.nfts.length > 0 ? (
-          <NftsItems
-            collections={collections}
-            previouslyOwnedCollection={previouslyOwnedCollection}
-          />
+          <Box>
+            <NftsItems
+              collections={collections}
+              previouslyOwnedCollection={previouslyOwnedCollection}
+            />
+
+            {isNftsStillFetched.isFetchingInProgress ? (
+              <Box className="nfts-tab__fetching">
+                <Spinner
+                  color="var(--color-warning-default)"
+                  className="loading-overlay__spinner"
+                />
+              </Box>
+            ) : null}
+          </Box>
         ) : (
           <>
             {isMainnet && !useNftDetection ? (

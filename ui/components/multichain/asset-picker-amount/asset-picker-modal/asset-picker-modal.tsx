@@ -3,7 +3,6 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { isEqual, uniqBy } from 'lodash';
 import { Tab, Tabs } from '../../../ui/tabs';
-import NftsItems from '../../../app/nfts-items/nfts-items';
 import {
   Modal,
   ModalContent,
@@ -11,9 +10,6 @@ import {
   ModalHeader,
   TextFieldSearch,
   Box,
-  Text,
-  ButtonLink,
-  ButtonLinkSize,
   ButtonIconSize,
   TextFieldSearchSize,
   AvatarTokenSize,
@@ -26,7 +22,6 @@ import {
   TextVariant,
   TextAlign,
   Display,
-  JustifyContent,
   AlignItems,
   FlexDirection,
 } from '../../../../helpers/constants/design-system';

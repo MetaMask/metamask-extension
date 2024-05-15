@@ -714,13 +714,17 @@ export default class MetamaskController extends EventEmitter {
           this.assetsContractController,
         ),
       addNft: this.nftController.addNft.bind(this.nftController),
+      updateNftFetchingProgressStatus:
+        this.nftController.updateNftFetchingProgressStatus.bind(
+          this.nftController,
+        ),
       getNftApi: this.nftController.getNftApi.bind(this.nftController),
       getNftState: () => this.nftController.state,
       // added this to track previous value of useNftDetection, should be true on very first initializing of controller[]
       disabled:
         this.preferencesController.store.getState().useNftDetection ===
         undefined
-          ? true
+          ? false // the detection is enabled by default
           : !this.preferencesController.store.getState().useNftDetection,
       selectedAddress:
         this.preferencesController.store.getState().selectedAddress,
@@ -2354,12 +2358,7 @@ export default class MetamaskController extends EventEmitter {
     const preferencesControllerState =
       this.preferencesController.store.getState();
 
-    const { useCurrencyRateCheck, useNftDetection } =
-      preferencesControllerState;
-
-    if (useNftDetection) {
-      this.nftDetectionController.start();
-    }
+    const { useCurrencyRateCheck } = preferencesControllerState;
 
     if (useCurrencyRateCheck) {
       this.tokenRatesController.start();
@@ -2374,7 +2373,6 @@ export default class MetamaskController extends EventEmitter {
     this.accountTracker.stop();
     this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
-    this.nftDetectionController.stop();
 
     const preferencesControllerState =
       this.preferencesController.store.getState();
@@ -3237,6 +3235,8 @@ export default class MetamaskController extends EventEmitter {
         nftController.checkAndUpdateSingleNftOwnershipStatus.bind(
           nftController,
         ),
+      updateNftFetchingProgressStatus:
+        nftController.updateNftFetchingProgressStatus.bind(nftController),
 
       isNftOwner: nftController.isNftOwner.bind(nftController),
 
@@ -6225,7 +6225,6 @@ export default class MetamaskController extends EventEmitter {
 
     const { data, to: contractAddress, from: userAddress } = txParams;
     const transactionData = parseStandardTokenTransactionData(data);
-
     // Sometimes the tokenId value is parsed as "_value" param. Not seeing this often any more, but still occasionally:
     // i.e. call approve() on BAYC contract - https://etherscan.io/token/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d#writeContract, and tokenId shows up as _value,
     // not sure why since it doesn't match the ERC721 ABI spec we use to parse these transactions - https://github.com/MetaMask/metamask-eth-abis/blob/d0474308a288f9252597b7c93a3a8deaad19e1b2/src/abis/abiERC721.ts#L62.

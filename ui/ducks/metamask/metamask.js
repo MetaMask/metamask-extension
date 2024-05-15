@@ -323,6 +323,17 @@ export const getNfts = (state) => {
   return allNfts?.[selectedAddress]?.[chainId] ?? [];
 };
 
+export const getIsStillNftsFetching = (state) => {
+  const {
+    metamask: { isNftFetchingInProgress },
+  } = state;
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
+
+  const { chainId } = getProviderConfig(state);
+
+  return isNftFetchingInProgress?.[selectedAddress]?.[chainId];
+};
+
 export const getNftContracts = (state) => {
   const {
     metamask: { allNftContracts },
