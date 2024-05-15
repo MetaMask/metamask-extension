@@ -1,10 +1,18 @@
 .snap-ui-button {
   background: none;
-  color: var(--color-primary-default);
   text-align: center;
 
-  &:hover {
-    cursor: pointer;
-    color: var(--color-primary-alternative);
+  &--variant-primary:not(&--disabled) {
+    &:hover {
+      cursor: pointer;
+      color: var(--color-primary-alternative);
+    }
+  }
+
+  &--variant-destructive:not(&--disabled) {
+    &:hover {
+      cursor: pointer;
+      color: var(--color-error-alternative);
+    }
   }
 }
