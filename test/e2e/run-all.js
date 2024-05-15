@@ -223,7 +223,7 @@ async function main() {
   console.log('DEVELOP_SHA1', DEVELOP_SHA1);
 
   const { stdout: fileChanges } = await exec(
-    `git diff --name-only ${DEVELOP_SHA1}...$CIRCLE_SHA1`,
+    `git diff --name-only 527f12cd56d12c3a3bd68adfd1d7fdf3eb35629d...$CIRCLE_SHA1`,
   );
   const changedOrNewTests = fileChanges
     .toString()
