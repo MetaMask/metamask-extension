@@ -25,10 +25,10 @@ import { MetaMetricsNetworkEventSource } from '../../../../shared/constants/meta
 
 export default function DeprecatedNetworks() {
   const { id, chainId, rpcUrl } = useSelector(getCurrentNetwork);
-  const dispatch = useDispatch();
   const [isClosed, setIsClosed] = useState(false);
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const t = useI18nContext();
+  const dispatch = useDispatch();
 
   if (!completedOnboarding || isClosed) {
     return null;
