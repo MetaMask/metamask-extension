@@ -30,14 +30,14 @@ import { MultipleAlertModal } from '../multiple-alert-modal';
 export type ConfirmAlertModalProps = {
   /** The unique key representing the specific alert field. */
   alertKey: string;
-  /** The owner ID of the relevant alert from the `confirmAlerts` reducer. */
-  ownerId: string;
-  /** The function to be executed when the modal needs to be closed. */
-  onClose: () => void;
   /** Callback function that is called when the cancel button is clicked. */
   onCancel: () => void;
+  /** The function to be executed when the modal needs to be closed. */
+  onClose: () => void;
   /** Callback function that is called when the submit button is clicked. */
   onSubmit: () => void;
+  /** The owner ID of the relevant alert from the `confirmAlerts` reducer. */
+  ownerId: string;
 };
 
 function ConfirmButtons({
@@ -85,7 +85,7 @@ function ConfirmDetails({
     <>
       <Box alignItems={AlignItems.center} textAlign={TextAlign.Center}>
         <Text variant={TextVariant.bodySm}>
-          {t('alertModalFrictionDetails')}
+          {t('confirmAlertModalDetails')}
         </Text>
         <ButtonLink
           paddingTop={5}
@@ -135,7 +135,7 @@ function AcknowledgeCheckbox({
       borderRadius={BorderRadius.LG}
     >
       <Checkbox
-        label={t('alertModalFrictionAcknowledge')}
+        label={t('confirmAlertModalAcknowledge')}
         data-testid="confirm-alert-modal-acknowledge-checkbox"
         isChecked={isConfirmed}
         onChange={() => setConfirmCheckbox(!isConfirmed)}
@@ -192,7 +192,7 @@ export function ConfirmAlertModal({
       onAcknowledgeClick={onClose}
       alertKey={alertKey}
       onClose={onClose}
-      customAlertTitle={t('alertModalFrictionTitle')}
+      customAlertTitle={t('confirmAlertModalTitle')}
       customAlertDetails={
         <ConfirmDetails onAlertLinkClick={handleOpenMultipleAlertModal} />
       }

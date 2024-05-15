@@ -40,6 +40,22 @@ export type AlertModalProps = {
    */
   alertKey: string;
   /**
+   * The custom button component for acknowledging the alert.
+   */
+  customAcknowledgeButton?: React.ReactNode;
+  /**
+   * The custom checkbox component for acknowledging the alert.
+   */
+  customAcknowledgeCheckbox?: React.ReactNode;
+  /**
+   * The custom details component for the alert.
+   */
+  customAlertDetails?: React.ReactNode;
+  /**
+   * The custom title for the alert.
+   */
+  customAlertTitle?: string;
+  /**
    * The start (left) content area of ModalHeader.
    * It overrides `startAccessory` of ModalHeaderDefault and by default no content is present.
    */
@@ -56,22 +72,6 @@ export type AlertModalProps = {
    * The function to be executed when the modal needs to be closed.
    */
   onClose: () => void;
-  /**
-   * The custom title for the alert.
-   */
-  customAlertTitle?: string;
-  /**
-   * The custom details component for the alert.
-   */
-  customAlertDetails?: React.ReactNode;
-  /**
-   * The custom checkbox component for acknowledging the alert.
-   */
-  customAcknowledgeCheckbox?: React.ReactNode;
-  /**
-   * The custom button component for acknowledging the alert.
-   */
-  customAcknowledgeButton?: React.ReactNode;
 };
 
 export function getSeverityStyle(severity?: Severity) {

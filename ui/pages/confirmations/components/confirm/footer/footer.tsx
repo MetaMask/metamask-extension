@@ -24,13 +24,20 @@ import useAlerts from '../../../../../hooks/useAlerts';
 import { ConfirmAlertModal } from '../../../../../components/app/confirmations/alerts/confirm-alert-modal';
 import useIsDangerButton from './useIsDangerButton';
 
+function getIconName(hasUnconfirmedAlerts: boolean): IconName {
+  if (hasUnconfirmedAlerts) {
+    return IconName.SecuritySearch;
+  }
+  return IconName.Danger;
+}
+
 function ConfirmButton({
-  alertOwnerId,
+  alertOwnerId = '',
   disabled,
   onSubmit,
   onCancel,
 }: {
-  alertOwnerId: string;
+  alertOwnerId?: string;
   disabled: boolean;
   onSubmit: () => void;
   onCancel: () => void;
@@ -55,13 +62,6 @@ function ConfirmButton({
     setConfirmModalVisible(true);
   }, [hasUnconfirmedAlerts]);
 
-  function getIconName(): IconName {
-    if (hasUnconfirmedAlerts) {
-      return IconName.SecuritySearch;
-    }
-    return IconName.Danger;
-  }
-
   return (
     <>
       {confirmModalVisible && (
@@ -76,7 +76,9 @@ function ConfirmButton({
       <Button
         block
         data-testid="confirm-footer-confirm-button"
-        startIconName={hasAlerts ? getIconName() : undefined}
+        startIconName={
+          hasAlerts ? getIconName(hasUnconfirmedAlerts) : undefined
+        }
         onClick={hasAlerts ? handleOpenConfirmModal : onSubmit}
         danger={hasAlerts ? true : isDangerButton}
         size={ButtonSize.Lg}
@@ -106,10 +108,6 @@ const Footer = () => {
     }
     return false;
   });
-
-  if (!currentConfirmation) {
-    return null;
-  }
 
   const onCancel = useCallback(() => {
     if (!currentConfirmation) {
@@ -147,7 +145,7 @@ const Footer = () => {
         {t('cancel')}
       </Button>
       <ConfirmButton
-        alertOwnerId={currentConfirmation.id}
+        alertOwnerId={currentConfirmation?.id}
         onSubmit={onSubmit}
         disabled={
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
