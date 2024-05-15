@@ -8,14 +8,13 @@ import domainReducer from './domains';
 import appStateReducer from './app/app';
 import confirmTransactionReducer from './confirm-transaction/confirm-transaction.duck';
 import gasReducer from './gas/gas.duck';
-import { invalidCustomNetwork, unconnectedAccount } from './alerts';
+import { invalidCustomNetwork } from './alerts';
 import swapsReducer from './swaps/swaps';
 import historyReducer from './history/history';
 import confirmAlertsReducer from './confirm-alerts/confirm-alerts';
 
 export default combineReducers({
   [AlertTypes.invalidCustomNetwork]: invalidCustomNetwork,
-  [AlertTypes.unconnectedAccount]: unconnectedAccount,
   activeTab: (s) => (s === undefined ? null : s),
   metamask: metamaskReducer,
   appState: appStateReducer,
