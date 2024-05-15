@@ -169,10 +169,7 @@ export default class PermissionPageContainer extends Component {
 
   footerLeftAction = () => {
     const requestedPermissions = this.getRequestedPermissions();
-    if (
-      requestedPermissions[PermissionNames.wallet_switchEthereumChain] ===
-      undefined
-    ) {
+    if (requestedPermissions[PermissionNames.permittedChains] === undefined) {
       this.goBack();
     } else {
       this.onCancel();
@@ -181,7 +178,7 @@ export default class PermissionPageContainer extends Component {
 
   footerLeftActionText = () => {
     const requestedPermissions = this.getRequestedPermissions();
-    return requestedPermissions[PermissionNames.wallet_switchEthereumChain]
+    return requestedPermissions[PermissionNames.permittedChains]
       ? this.context.t('cancel')
       : this.context.t('back');
   };
@@ -210,7 +207,7 @@ export default class PermissionPageContainer extends Component {
     ///: END:ONLY_INCLUDE_IF
 
     const footerLeftActionText = requestedPermissions[
-      PermissionNames.wallet_switchEthereumChain
+      PermissionNames.permittedChains
     ]
       ? this.context.t('cancel')
       : this.context.t('back');

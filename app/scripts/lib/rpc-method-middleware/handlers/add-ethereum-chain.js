@@ -163,14 +163,14 @@ async function addEthereumChainHandler(
     try {
       ({ value: permissionedChainIds } = getCaveat(
         origin,
-        PermissionNames.wallet_switchEthereumChain,
+        PermissionNames.permittedChains,
         CaveatTypes.restrictNetworkSwitching,
       ));
     } catch (e) {
       // throws if the origin does not have any switchEthereumChain permissions yet
       if (e instanceof PermissionDoesNotExistError) {
         // suppress expected error in case that the domain does not have a
-        // wallet_switchEthereumChain permission set yet
+        // permittedChains permission set yet
       } else {
         throw e;
       }

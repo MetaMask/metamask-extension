@@ -26,7 +26,7 @@ import {
  */
 export const PermissionNames = Object.freeze({
   ...RestrictedMethods,
-  wallet_switchEthereumChain: 'wallet_switchEthereumChain',
+  permittedChains: 'permittedChains',
 });
 
 /**
@@ -189,22 +189,22 @@ export const getPermissionSpecifications = ({
       },
     },
 
-    [PermissionNames.wallet_switchEthereumChain]: {
+    [PermissionNames.permittedChains]: {
       permissionType: PermissionType.Endowment,
-      targetName: PermissionNames.wallet_switchEthereumChain,
+      targetName: PermissionNames.permittedChains,
       allowedCaveats: [CaveatTypes.restrictNetworkSwitching],
       subjectTypes: [SubjectType.Website],
 
       factory: (permissionOptions, requestData) => {
         if (Array.isArray(permissionOptions.caveats)) {
           throw new Error(
-            `${PermissionNames.wallet_switchEthereumChain}: Received unexpected caveats. Any permitted caveats will be added automatically.`,
+            `${PermissionNames.permittedChains}: Received unexpected caveats. Any permitted caveats will be added automatically.`,
           );
         }
 
         if (!requestData.approvedChainIds) {
           throw new Error(
-            `${PermissionNames.wallet_switchEthereumChain} error: No approved networks specified.`,
+            `${PermissionNames.permittedChains} error: No approved networks specified.`,
           );
         }
 
@@ -226,7 +226,7 @@ export const getPermissionSpecifications = ({
           caveats[0].type !== CaveatTypes.restrictNetworkSwitching
         ) {
           throw new Error(
-            `${PermissionNames.wallet_switchEthereumChain} error: Invalid caveats. There must be a single caveat of type "${CaveatTypes.restrictNetworkSwitching}".`,
+            `${PermissionNames.permittedChains} error: Invalid caveats. There must be a single caveat of type "${CaveatTypes.restrictNetworkSwitching}".`,
           );
         }
       },
@@ -285,7 +285,7 @@ function validateCaveatNetworks(
 ) {
   if (!Array.isArray(chainIdsForCaveat) || chainIdsForCaveat.length === 0) {
     throw new Error(
-      `${PermissionNames.wallet_switchEthereumChain} error: Expected non-empty array of chainIds.`,
+      `${PermissionNames.permittedChains} error: Expected non-empty array of chainIds.`,
     );
   }
 
@@ -295,7 +295,7 @@ function validateCaveatNetworks(
     } catch (e) {
       console.error(e);
       throw new Error(
-        `${PermissionNames.wallet_switchEthereumChain} error: Received unrecognized chainId: "${chainId}". Please try adding the network first via wallet_addEthereumChain.`,
+        `${PermissionNames.permittedChains} error: Received unrecognized chainId: "${chainId}". Please try adding the network first via wallet_addEthereumChain.`,
       );
     }
   });

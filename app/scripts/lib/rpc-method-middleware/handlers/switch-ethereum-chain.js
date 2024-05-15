@@ -146,7 +146,7 @@ async function switchEthereumChainHandler(
     try {
       ({ value: permissionedChainIds } = getCaveat(
         origin,
-        PermissionNames.wallet_switchEthereumChain,
+        PermissionNames.permittedChains,
         CaveatTypes.restrictNetworkSwitching,
       ));
     } catch (e) {
