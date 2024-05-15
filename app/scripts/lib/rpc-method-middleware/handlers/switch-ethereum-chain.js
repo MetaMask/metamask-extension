@@ -192,7 +192,7 @@ async function switchEthereumChainHandler(
 
       await setActiveNetwork(networkClientIdToSwitchTo);
 
-      if (hasPermissions(req.origin)) {
+      if (hasPermission(req.origin)) {
         setNetworkClientIdForDomain(req.origin, networkClientIdToSwitchTo);
       }
       res.result = null;

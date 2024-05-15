@@ -382,7 +382,7 @@ async function addEthereumChainHandler(
           fromNetworkConfiguration: currentNetworkConfiguration,
         },
       });
-      if (hasPermissions(req.origin)) {
+      if (hasPermission(req.origin, PermissionNames.eth_accounts)) {
         setNetworkClientIdForDomain(req.origin, networkConfigurationId);
       }
     } catch (error) {

@@ -188,9 +188,9 @@ describe('PermissionController specifications', () => {
       expect(
         permissionSpecifications[RestrictedMethods.eth_accounts].targetName,
       ).toStrictEqual(RestrictedMethods.eth_accounts);
-      expect(
-        permissionSpecifications.wallet_switchEthereumChain.targetName,
-      ).toStrictEqual('wallet_switchEthereumChain');
+      expect(permissionSpecifications.permittedChains.targetName).toStrictEqual(
+        'permittedChains',
+      );
     });
 
     describe('eth_accounts', () => {
