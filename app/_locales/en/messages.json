@@ -4700,9 +4700,6 @@
   "snapsConnected": {
     "message": "Snaps connected"
   },
-  "snapsInvalidUIError": {
-    "message": "The UI specified by the snap is invalid."
-  },
   "snapsNoInsight": {
     "message": "The snap didn't return any insight"
   },
