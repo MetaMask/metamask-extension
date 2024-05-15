@@ -169,7 +169,6 @@ export function AssetPickerModal({
       decimals: 18,
       image: nativeCurrencyImage,
       balance: balanceValue,
-      string: primaryCurrencyProperties.value,
       type: AssetType.native,
     };
 
