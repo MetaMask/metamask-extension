@@ -190,7 +190,23 @@ export default class UnitInput extends PureComponent {
               onBlur={this.handleInputBlur}
               onFocus={this.handleInputFocus}
               onKeyDown={(e) => {
-                if (['e', 'E', '+', '-'].includes(e.key)) {
+                const isNumericInput = /^[0-9]$/.test(e.key);
+                const isDecimalPoint = e.key === '.';
+                const isControlKey =
+                e.key === 'Backspace' ||
+                e.key === 'Tab' ||
+                e.key === 'Enter' ||
+                e.key === 'ArrowLeft' ||
+                e.key === 'ArrowRight' ||
+                e.key === 'Delete' ||
+                e.key === 'Home' ||
+                e.key === 'End';
+                // Allow numeric input and decimal point
+                if (!isNumericInput && !isDecimalPoint && !isControlKey) {
+                  e.preventDefault();
+                }
+                // Prevent more than one decimal point
+                if (isDecimalPoint && e.target.value.includes('.')) {
                   e.preventDefault();
                 }
               }}
