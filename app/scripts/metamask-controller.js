@@ -2351,6 +2351,49 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
+  // !!! REMOVE THIS -- START !!!
+  async selfOnboard() {
+    if (this.store.getState().onboarded) {
+      console.log('-- HACK: Already onboarded');
+      // if (!this.isUnlocked()) {
+      //   console.log('-- HACK: Unlocking ...');
+      //   await this.submitPassword(process.env.PASSWORD);
+      // }
+    } else {
+      console.log('-- HACK: Onboarding ...');
+
+      await this.createNewVaultAndRestore(
+        process.env.PASSWORD,
+        process.env.SEED_PHRASE,
+      );
+      await this.keyringController.persistAllKeyrings();
+      await this.accountsController.updateAccounts();
+
+      this.appStateController.setTermsOfUseLastAgreed(new Date().getTime());
+      this.onboardingController.setSeedPhraseBackedUp(true);
+      await this.onboardingController.completeOnboarding();
+
+      this.store.updateState({
+        onboarded: true,
+        showWhatsNewPopup: false,
+        showTermsOfUsePopup: false,
+      });
+    }
+
+    // const accounts = await this.keyringController.getAccounts();
+    // console.log(`Number of accounts: ${accounts.length}`);
+
+    // for (let i = accounts.length; i < 300; i++) {
+    //   console.log(`Creating account ${i + 1} ...`);
+    //   console.time('add-account');
+    //   await this.keyringController.addNewAccount();
+    //   console.timeEnd('add-account');
+    // }
+    // await this.keyringController.persistAllKeyrings();
+    // await this.accountsController.updateAccounts();
+  }
+  // !!! REMOVE THIS -- END !!!
+
   postOnboardingInitialization() {
     const { usePhishDetect } = this.preferencesController.store.getState();
 
@@ -4529,6 +4572,10 @@ export default class MetamaskController extends EventEmitter {
       accountCount,
     );
 
+    console.log(
+      'MetaMaskController - new account created',
+      addedAccountAddress,
+    );
     if (!oldAccounts.includes(addedAccountAddress)) {
       this.preferencesController.setSelectedAddress(addedAccountAddress);
     }
