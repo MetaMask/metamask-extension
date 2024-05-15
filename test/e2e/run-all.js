@@ -215,7 +215,8 @@ async function main() {
   console.log('My test list:', myTestList);
 
   // Indentify changed or new test files
-  const { stdout } = await exec(`git diff --name-only develop...HEAD`);
+  await exec(`git fetch`);
+  const { stdout } = await exec(`git diff --name-only origin/develop...$CIRCLE_SHA1`);
   const changedOrNewTests = stdout
     .toString()
     .split('\n')
