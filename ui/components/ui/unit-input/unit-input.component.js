@@ -117,7 +117,7 @@ export default class UnitInput extends PureComponent {
     this.props.onChange(value);
   };
 
-  handleOnKeyDown = (e) => {
+  handleOnKeyPress = (e) => {
     const isNumericInput = DECIMAL_INPUT_REGEX.test(e.key)
     const isControlKey =
       e.key === 'Backspace' ||
@@ -204,7 +204,7 @@ export default class UnitInput extends PureComponent {
               onChange={this.handleChange}
               onBlur={this.handleInputBlur}
               onFocus={this.handleInputFocus}
-              onKeyDown={this.handleOnKeyDown}
+              onKeyPress={this.handleOnKeyPress}
               min={0}
               step="any"
               style={{ width: this.getInputWidth(value) }}
