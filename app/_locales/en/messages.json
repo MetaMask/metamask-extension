@@ -1281,9 +1281,6 @@
   "deposit": {
     "message": "Deposit"
   },
-  "deprecatedAuroraNetworkMsg": {
-    "message": "MetaMask will be deprecating support for Aurora network. Please add it as a custom network if you want to continue to use it"
-  },
   "deprecatedGoerliNtwrkMsg": {
     "message": "Because of updates to the Ethereum system, the Goerli test network will be phased out soon."
   },
