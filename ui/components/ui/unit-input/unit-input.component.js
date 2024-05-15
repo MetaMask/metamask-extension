@@ -32,6 +32,7 @@ export default class UnitInput extends PureComponent {
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     keyPressRegex: PropTypes.instanceOf(RegExp),
     isDisabled: PropTypes.bool,
+    isFocusOnInput: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -61,6 +62,16 @@ export default class UnitInput extends PureComponent {
   handleFocus = () => {
     this.unitInput.focus();
   };
+
+  componentDidMount() {
+    if (this.props.isFocusOnInput) {
+      document.addEventListener('keypress', this.handleFocus);
+    }
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keypress', this.handleFocus);
+  }
 
   handleInputFocus = ({ target: { value } }) => {
     if (value === '0') {

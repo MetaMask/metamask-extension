@@ -234,6 +234,7 @@ export default function CurrencyInput({
     <UnitInput
       ref={inputRef}
       isDisabled={isDisabled}
+      isFocusOnInput={!isDisabled}
       hideSuffix={isTokenPrimary && isLongSymbol}
       dataTestId="currency-input"
       suffix={isTokenPrimary ? primarySuffix : secondarySuffix}
