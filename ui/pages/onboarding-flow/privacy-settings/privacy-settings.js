@@ -216,6 +216,7 @@ export default function PrivacySettings() {
                       color={IconColor.iconDefault}
                     />
                   }
+                  data-testid="privacy-settings-back-button"
                   onClick={handleSubmit}
                 />
                 <Box
@@ -260,6 +261,7 @@ export default function PrivacySettings() {
                       justifyContent={JustifyContent.spaceBetween}
                       className="categories-item-header"
                       onClick={() => handleItemSelected(item)}
+                      data-testid={`category-item-${item.title}`}
                     >
                       <Text variant={TextVariant.bodyLgMedium}>
                         {item.title}
