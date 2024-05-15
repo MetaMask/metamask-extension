@@ -244,7 +244,6 @@ export default class PermissionPageContainer extends Component {
           <PageContainerFooter
             footerClassName="permission-page-container-footer"
             cancelButtonType="default"
-            // TODO these shouldn't be back for switchEthereumChain requests
             onCancel={() => this.footerLeftAction()}
             cancelText={footerLeftActionText}
             onSubmit={() => this.onSubmit()}
