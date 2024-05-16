@@ -32,7 +32,9 @@ function renderElement(element) {
 
 function getPropComponents(components) {
   return Object.entries(components).reduce((accumulator, [key, component]) => {
-    accumulator[key] = renderElement(component);
+    if (component) {
+      accumulator[key] = renderElement(component);
+    }
     return accumulator;
   }, {});
 }
