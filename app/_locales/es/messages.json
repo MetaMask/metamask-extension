@@ -3481,9 +3481,6 @@
   "snaps": {
     "message": "Snaps"
   },
-  "snapsInvalidUIError": {
-    "message": "La IU especificada por el snap no es válida."
-  },
   "snapsNoInsight": {
     "message": "El snap no devolvió ninguna información"
   },

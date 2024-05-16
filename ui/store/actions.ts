@@ -797,7 +797,7 @@ const updateMetamaskStateFromBackground = (): Promise<
 
 /**
  * TODO: update previousGasParams to use typed gas params object
- * TODO: codeword: NOT_A_THUNK @brad-decker
+ * TODO: Not a thunk, but rather a wrapper around a background call
  *
  * @param txId - MetaMask internal transaction id
  * @param previousGasParams - Object of gas params to set as previous
@@ -856,7 +856,7 @@ export function updateEditableParams(
 
 /**
  * Appends new send flow history to a transaction
- * TODO: codeword: NOT_A_THUNK @brad-decker
+ * TODO: Not a thunk, but rather a wrapper around a background call
  *
  * @param txId - the id of the transaction to update
  * @param currentSendFlowHistoryLength - sendFlowHistory entries currently
@@ -919,7 +919,7 @@ export async function restoreUserData(jsonString: Json): Promise<true> {
   return true;
 }
 
-// TODO: codeword: NOT_A_THUNK @brad-decker
+// TODO: Not a thunk, but rather a wrapper around a background call
 export function updateTransactionGasFees(
   txId: string,
   txGasFees: Partial<TxGasFees>,
@@ -4230,6 +4230,20 @@ export function setSurveyLinkLastClickedOrClosed(time: number) {
   };
 }
 
+export function setNewPrivacyPolicyToastClickedOrClosed() {
+  return async () => {
+    await submitRequestToBackground('setNewPrivacyPolicyToastClickedOrClosed');
+  };
+}
+
+export function setNewPrivacyPolicyToastShownDate(time: number) {
+  return async () => {
+    await submitRequestToBackground('setNewPrivacyPolicyToastShownDate', [
+      time,
+    ]);
+  };
+}
+
 export function setOutdatedBrowserWarningLastShown(lastShown: number) {
   return async () => {
     await submitRequestToBackground('setOutdatedBrowserWarningLastShown', [
@@ -4814,7 +4828,7 @@ export function cancelSmartTransaction(
   };
 }
 
-// TODO: codeword NOT_A_THUNK @brad-decker
+// TODO: Not a thunk but rather a wrapper around a background call
 export function fetchSmartTransactionsLiveness() {
   return async () => {
     try {

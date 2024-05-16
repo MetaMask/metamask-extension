@@ -3481,9 +3481,6 @@
   "snaps": {
     "message": "Mga Snap"
   },
-  "snapsInvalidUIError": {
-    "message": "Ang UI na tinukoy ng snap ay hindi wasto."
-  },
   "snapsNoInsight": {
     "message": "Ang snap ay hindi nagbalik ng anumang insight"
   },

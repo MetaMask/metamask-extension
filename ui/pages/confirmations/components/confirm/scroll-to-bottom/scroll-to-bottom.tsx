@@ -42,7 +42,7 @@ const ScrollToBottom = ({ children }: ContentProps) => {
     scrollToBottom,
     setHasScrolledToBottom,
     ref,
-  } = useScrollRequired([currentConfirmation?.id]);
+  } = useScrollRequired([currentConfirmation?.id], { offsetPxFromBottom: 0 });
 
   /**
    * Scroll to the top of the page when the confirmation changes. This happens
@@ -53,13 +53,17 @@ const ScrollToBottom = ({ children }: ContentProps) => {
       return;
     }
 
-    setHasScrolledToBottom(false);
-
-    const scrollTo = (ref?.current as null | HTMLDivElement)?.scrollTo;
-    if (typeof scrollTo === 'function') {
-      (ref?.current as null | HTMLDivElement)?.scrollTo(0, 0);
+    const currentRef = ref?.current as null | HTMLDivElement;
+    if (!currentRef) {
+      return;
     }
-  }, [currentConfirmation?.id, previousId, setHasScrolledToBottom]);
+
+    if (typeof currentRef.scrollTo === 'function') {
+      currentRef.scrollTo(0, 0);
+    }
+
+    setHasScrolledToBottom(false);
+  }, [currentConfirmation?.id, previousId, ref?.current]);
 
   useEffect(() => {
     dispatch(
