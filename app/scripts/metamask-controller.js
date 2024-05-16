@@ -3975,12 +3975,12 @@ export default class MetamaskController extends EventEmitter {
         }),
       // metrics data deleteion
       createMetaMetricsDataDeletionTask:
-        this.metaMetricsDataDeletionController.createMetaMetricsDataDeletionTask.bind(
-          this.metaMetricsDataDeletionController,
+        metaMetricsDataDeletionController.createMetaMetricsDataDeletionTask.bind(
+          metaMetricsDataDeletionController,
         ),
       checkDataDeletionTaskStatus:
-        this.metaMetricsDataDeletionController.checkDataDeletionTaskStatus.bind(
-          this.metaMetricsDataDeletionController,
+        metaMetricsDataDeletionController.checkDataDeletionTaskStatus.bind(
+          metaMetricsDataDeletionController,
         ),
 
       // Trace
