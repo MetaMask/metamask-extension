@@ -8,10 +8,9 @@ import {
 } from '../../../helpers/constants/routes';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { renderWithProvider } from '../../../../test/jest';
-import CreationSuccessful from './creation-successful';
 import initializedMockState from '../../../../test/data/mock-state.json';
-
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import CreationSuccessful from './creation-successful';
 
 const mockHistoryPush = jest.fn();
 
@@ -50,9 +49,14 @@ describe('Creation Successful Onboarding View', () => {
         firstTimeFlowType: FirstTimeFlowType.import,
       },
     };
-    const mockStore = configureMockStore([thunk])(importFirstTimeFlowState);
+    const customMockStore = configureMockStore([thunk])(
+      importFirstTimeFlowState,
+    );
 
-    const { getByText } = renderWithProvider(<CreationSuccessful />, mockStore);
+    const { getByText } = renderWithProvider(
+      <CreationSuccessful />,
+      customMockStore,
+    );
 
     expect(getByText('Your wallet is ready')).toBeInTheDocument();
     expect(
@@ -71,9 +75,14 @@ describe('Creation Successful Onboarding View', () => {
         seedPhraseBackedUp: true,
       },
     };
-    const mockStore = configureMockStore([thunk])(importFirstTimeFlowState);
+    const customMockStore = configureMockStore([thunk])(
+      importFirstTimeFlowState,
+    );
 
-    const { getByText } = renderWithProvider(<CreationSuccessful />, mockStore);
+    const { getByText } = renderWithProvider(
+      <CreationSuccessful />,
+      customMockStore,
+    );
 
     expect(getByText('Congratulations!')).toBeInTheDocument();
     expect(
@@ -90,9 +99,14 @@ describe('Creation Successful Onboarding View', () => {
         seedPhraseBackedUp: false,
       },
     };
-    const mockStore = configureMockStore([thunk])(importFirstTimeFlowState);
+    const customMockStore = configureMockStore([thunk])(
+      importFirstTimeFlowState,
+    );
 
-    const { getByText } = renderWithProvider(<CreationSuccessful />, mockStore);
+    const { getByText } = renderWithProvider(
+      <CreationSuccessful />,
+      customMockStore,
+    );
 
     expect(getByText('Reminder set!')).toBeInTheDocument();
     expect(
