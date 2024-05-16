@@ -125,7 +125,7 @@ export const AppHeader = ({ location }) => {
     matchPath(location.pathname, { path: BUILD_QUOTE_ROUTE, exact: false }),
   );
 
-  const isEvmAccount = isEvmAccountType(internalAccount.type);
+  const isEvmAccount = isEvmAccountType(internalAccount?.type);
 
   const unapprovedTransactions = useSelector(getUnapprovedTransactions);
 
