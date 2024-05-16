@@ -3973,6 +3973,15 @@ export default class MetamaskController extends EventEmitter {
           ...request,
           ethQuery: new EthQuery(this.provider),
         }),
+      // metrics data deleteion
+      createMetaMetricsDataDeletionTask:
+        this.metaMetricsDataDeletionController.createMetaMetricsDataDeletionTask.bind(
+          this.metaMetricsDataDeletionController,
+        ),
+      checkDataDeletionTaskStatus:
+        this.metaMetricsDataDeletionController.checkDataDeletionTaskStatus.bind(
+          this.metaMetricsDataDeletionController,
+        ),
 
       // Trace
       endTrace,
@@ -5595,15 +5604,6 @@ export default class MetamaskController extends EventEmitter {
         sendMetrics: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),
-        // metrics data deleteion
-        createMetaMetricsDataDeletionTask:
-          this.metaMetricsDataDeletionController.createMetaMetricsDataDeletionTask.bind(
-            this.metaMetricsDataDeletionController,
-          ),
-        checkDataDeletionTaskStatus:
-          this.metaMetricsDataDeletionController.checkDataDeletionTaskStatus.bind(
-            this.metaMetricsDataDeletionController,
-          ),
         // Permission-related
         getAccounts: this.getPermittedAccounts.bind(this, origin),
         getPermissionsForOrigin: this.permissionController.getPermissions.bind(
