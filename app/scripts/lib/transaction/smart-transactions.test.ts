@@ -134,6 +134,23 @@ describe('submitSmartTransactionHook', () => {
     expect(result).toEqual({ transactionHash: undefined });
   });
 
+  it('falls back to regular transaction submit if /getFees throws an error', async () => {
+    const request: SubmitSmartTransactionRequestMocked = createRequest();
+    jest
+      .spyOn(request.smartTransactionsController, 'getFees')
+      .mockImplementation(() => {
+        throw new Error('Backend call to /getFees failed');
+      });
+    const result = await submitSmartTransactionHook(request);
+    expect(request.controllerMessenger.call).toHaveBeenCalledWith(
+      'ApprovalController:endFlow',
+      {
+        id: 'approvalId',
+      },
+    );
+    expect(result).toEqual({ transactionHash: undefined });
+  });
+
   it('returns a txHash asap if the feature flag requires it', async () => {
     const request: SubmitSmartTransactionRequestMocked = createRequest();
     request.featureFlags.smartTransactions.returnTxHashAsap = true;
