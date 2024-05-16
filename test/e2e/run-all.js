@@ -1,8 +1,6 @@
 const path = require('path');
 const fs = require('fs');
 const { execSync } = require('child_process');
-const { promisify } = require('util');
-const exec = promisify(require('child_process').exec);
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 const { runInShell } = require('../../development/lib/run-command');
@@ -215,18 +213,17 @@ async function main() {
   console.log('My test list:', myTestList);
 
   // Indentify changed or new test files
-  await exec(`git fetch`);
+  const { CIRCLE_WORKFLOW_JOB_ID } = process.env;
+  const BUILD_LINK_BASE = `https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0`;
 
-  const { stdout: DEVELOP_SHA1 } = (await exec('git rev-parse origin/develop'))
-    .toString()
-    .trim();
-  console.log('DEVELOP_SHA1', DEVELOP_SHA1);
-
-  const { stdout: fileChanges } = await exec(
-    `git diff --name-only 527f12cd56d12c3a3bd68adfd1d7fdf3eb35629d...$CIRCLE_SHA1`,
+  const changedFiles = fs.readFileSync(
+    `${BUILD_LINK_BASE}/tmp/changed_files.txt`,
+    'utf8',
   );
-  const changedOrNewTests = fileChanges
-    .toString()
+
+  console.log('changed files', changedFiles);
+
+  const changedOrNewTests = changedFiles
     .split('\n')
     .filter((line) => line.match(/^test\/.*\/.*\.spec\.js$/u));
 

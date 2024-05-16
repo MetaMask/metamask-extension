@@ -168,42 +168,54 @@ workflows:
       - test-e2e-chrome:
           requires:
             - prep-build-test
+            - fetch-changed-files
       - test-e2e-chrome-multichain:
           requires:
             - prep-build-multichain-test
+            - fetch-changed-files
       - test-e2e-chrome-confirmation-redesign:
           requires:
             - prep-build-confirmation-redesign-test
+            - fetch-changed-files
       - test-e2e-firefox:
           requires:
             - prep-build-test
+            - fetch-changed-files
       - test-e2e-firefox-confirmation-redesign:
           requires:
             - prep-build-confirmation-redesign-test
+            - fetch-changed-files
       - test-e2e-chrome-rpc:
           requires:
             - prep-build-test
+            - fetch-changed-files
       - test-e2e-chrome-multiple-providers:
           requires:
             - prep-build-test
+            - fetch-changed-files
       - test-e2e-chrome-flask:
           requires:
             - prep-build-test-flask
+            - fetch-changed-files
       - test-e2e-firefox-flask:
           requires:
             - prep-build-test-flask
+            - fetch-changed-files
       - test-e2e-chrome-mmi:
           requires:
             - prep-build-test-mmi
+            - fetch-changed-files
       - test-e2e-mmi-playwright - OPTIONAL:
           requires:
             - prep-build-test-mmi-playwright
       - test-e2e-chrome-rpc-mmi:
           requires:
             - prep-build-test-mmi
+            - fetch-changed-files
       - test-e2e-chrome-mv3:
           requires:
             - prep-build-test-mv3
+            - fetch-changed-files
       - test-e2e-chrome-vault-decryption:
           filters:
             branches:
@@ -212,6 +224,7 @@ workflows:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
           requires:
             - prep-build
+            - fetch-files-changed
       - test-unit-mocha:
           requires:
             - prep-deps
@@ -462,7 +475,15 @@ jobs:
           paths:
             - node_modules
             - build-artifacts
-
+  fetch-changed-files:
+    executor: node-browsers-small
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Fetch changed files
+          command: .circleci/scripts/fetch-changed-files.sh
   validate-lavamoat-allow-scripts:
     executor: node-browsers-small
     steps:
