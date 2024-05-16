@@ -185,7 +185,7 @@ async function switchEthereumChainHandler(
 
   const networkClientIdToSwitchTo =
     networkConfigurationForRequestedChainId?.id ??
-    networkConfigurationForRequestedChainId.type;
+    networkConfigurationForRequestedChainId?.type;
 
   if (!networkClientIdToSwitchTo) {
     return end(
