@@ -416,7 +416,6 @@ export const SENTRY_UI_STATE = {
     newPrivacyPolicyToastClickedOrClosed: false,
     newPrivacyPolicyToastShownDate: false,
   },
-  unconnectedAccount: true,
 };
 
 /**

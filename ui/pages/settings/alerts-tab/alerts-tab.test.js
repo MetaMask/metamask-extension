@@ -15,7 +15,6 @@ describe('Alerts Tab', () => {
   const store = configureMockStore([])({
     metamask: {
       alertEnabledness: {
-        unconnectedAccount: false,
         web3ShimUsage: false,
       },
     },
