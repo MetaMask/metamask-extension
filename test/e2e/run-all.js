@@ -6,7 +6,7 @@ const { hideBin } = require('yargs/helpers');
 const { runInShell } = require('../../development/lib/run-command');
 const { exitWithError } = require('../../development/lib/exit-with-error');
 const { loadBuildTypesConfig } = require('../../development/lib/build-type');
-const { fetchTestFilesChanged } = require('./fetch-e2e-file-changes');
+const { fetchChangedE2eFiles } = require('./fetch-changed-files');
 
 // These tests should only be run on Flask for now.
 const FLASK_ONLY_TESTS = ['test-snap-namelookup.spec.js'];
@@ -213,7 +213,8 @@ async function main() {
 
   console.log('My test list:', myTestList);
 
-  const changedOrNewTests = await fetchTestFilesChanged();
+  const changedOrNewTests = await fetchChangedE2eFiles();
+  console.log('Spec files that will be re-run:', changedOrNewTests);
 
   // spawn `run-e2e-test.js` for each test in myTestList
   for (let testPath of myTestList) {
