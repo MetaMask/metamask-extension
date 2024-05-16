@@ -1,10 +1,9 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { isEqualCaseInsensitive } from '@metamask/assets-controllers/dist/TokenDetectionController';
 import { getTokenList } from '../../../../selectors';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { TokenListItem } from '../../token-list-item';
+import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 
 type AssetProps = {
   address?: string | null;
