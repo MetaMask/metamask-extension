@@ -5,14 +5,25 @@ import {
   fetchDeletionRegulationStatus,
 } from './services/services';
 
-export type DataDeleteDate = string | undefined;
-export type DataDeleteRegulationId = string | undefined;
+export type DataDeleteDate = string;
+export type DataDeleteRegulationId = string;
 
 export type RegulationId = Record<string, string>;
 export type CurrentRegulationStatus = Record<string, Record<string, string>>;
 export type DeleteRegulationAPIResponse = {
   data: Record<string, RegulationId | CurrentRegulationStatus>;
 };
+
+export enum DeleteRegulationStatus {
+  FAILED = 'FAILED',
+  FINISHED = 'FINISHED',
+  INITIALIZED = 'INITIALIZED',
+  INVALID = 'INVALID',
+  NOT_SUPPORTED = 'NOT_SUPPORTED',
+  PARTIAL_SUCCESS = 'PARTIAL_SUCCESS',
+  RUNNING = 'RUNNING',
+  UNKNOWN = 'UNKNOWN',
+}
 
 export enum responseStatus {
   ok = 'ok',
@@ -21,18 +32,19 @@ export enum responseStatus {
 
 export type DataDeletionResponse = {
   status: responseStatus;
-  metaMetricsDataDeletionStatus?: string | null;
   error?: string;
 };
 
 export type MetaMetricsDataDeletionState = {
   metaMetricsDataDeletionId: DataDeleteRegulationId;
   metaMetricsDataDeletionDate: DataDeleteDate;
+  metaMetricsDataDeletionStatus?: DeleteRegulationStatus;
 };
 
 const defaultState: MetaMetricsDataDeletionState = {
-  metaMetricsDataDeletionId: undefined,
-  metaMetricsDataDeletionDate: undefined,
+  metaMetricsDataDeletionId: '',
+  metaMetricsDataDeletionDate: '',
+  metaMetricsDataDeletionStatus: undefined,
 };
 
 /**
@@ -79,16 +91,13 @@ export default class MetaMetricsDataDeletionController {
   }
 
   async createMetaMetricsDataDeletionTask(): Promise<DataDeletionResponse> {
-    const segmentSourceId = process.env.SEGMENT_DELETE_API_SOURCE_ID;
-    const segmentRegulationEndpoint = process.env.SEGMENT_REGULATIONS_ENDPOINT;
-
-    if (!segmentSourceId || !segmentRegulationEndpoint) {
+    const { metaMetricsId } = this.metaMetricsController.store.getState();
+    if (!metaMetricsId) {
       return {
         status: responseStatus.error,
-        error: 'Segment API source ID or endpoint not found',
+        error: 'MetaMetrics ID not found',
       };
     }
-    const { metaMetricsId } = this.metaMetricsController.store.getState();
 
     try {
       const { data } = await createDataDeletionRegulationTask(
@@ -110,23 +119,22 @@ export default class MetaMetricsDataDeletionController {
   }
 
   async checkDataDeletionTaskStatus(): Promise<DataDeletionResponse> {
-    const segmentRegulationEndpoint = process.env.SEGMENT_REGULATIONS_ENDPOINT;
-
-    if (!segmentRegulationEndpoint) {
+    const deleteRegulationId = this.store.getState().metaMetricsDataDeletionId;
+    if (deleteRegulationId) {
       return {
         status: responseStatus.error,
-        error: 'Segment API source ID or endpoint not found',
+        error: 'Delete Regulation id not found',
       };
     }
     try {
-      const { data } = await fetchDeletionRegulationStatus(
-        this.store.getState().metaMetricsDataDeletionId as string,
-      );
+      const { data } = await fetchDeletionRegulationStatus(deleteRegulationId);
       const regulation = data?.data?.regulation as Record<string, string>;
-
+      this.store.updateState({
+        metaMetricsDataDeletionStatus:
+          regulation.overallStatus as DeleteRegulationStatus,
+      });
       return {
         status: responseStatus.ok,
-        metaMetricsDataDeletionStatus: regulation.overallStatus,
       };
     } catch (error: unknown) {
       return {
