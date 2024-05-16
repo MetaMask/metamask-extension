@@ -3494,9 +3494,6 @@
   "snaps": {
     "message": "Snaps"
   },
-  "snapsInvalidUIError": {
-    "message": "Die vom Snap spezifizierte UI ist ungültig."
-  },
   "snapsNoInsight": {
     "message": "Der Snap brachte keine Einsicht."
   },
