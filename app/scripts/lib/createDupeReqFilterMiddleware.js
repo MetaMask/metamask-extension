@@ -11,13 +11,12 @@ export default function createDupeReqFilterMiddleware() {
     /** @type {any} */ req,
     /** @type {any} */ _res,
     /** @type {Function} */ next,
-    /** @type {Function} */ end,
   ) {
     if (processedRequestId.indexOf(req.id) >= 0) {
       log.info(`RPC request with id ${req.id} already seen.`);
-      return end();
+      return; // Add this return statement
     }
     processedRequestId.push(req.id);
-    return next();
+    next();
   };
 }
