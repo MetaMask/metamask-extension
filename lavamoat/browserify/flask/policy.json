@@ -4092,7 +4092,7 @@
     },
     "gulp>vinyl-fs>object.assign": {
       "packages": {
-        "@lavamoat/lavapack>json-stable-stringify>object-keys": true,
+        "lavamoat>json-stable-stringify>object-keys": true,
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>define-properties": true,
         "string.prototype.matchall>has-symbols": true

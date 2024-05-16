@@ -1906,7 +1906,8 @@
         "chokidar>normalize-path": true,
         "chokidar>readdirp": true,
         "del>is-glob": true,
-        "eslint>glob-parent": true
+        "eslint>glob-parent": true,
+        "tsx>fsevents": true
       }
     },
     "chokidar>anymatch": {
@@ -4759,7 +4760,8 @@
         "setImmediate": true
       },
       "packages": {
-        "gulp-watch>chokidar>fsevents>node-pre-gyp": true
+        "gulp-watch>chokidar>fsevents>node-pre-gyp": true,
+        "lavamoat>bindings": true
       }
     },
     "gulp-watch>chokidar>fsevents>node-pre-gyp": {
@@ -5347,7 +5349,8 @@
         "setImmediate": true
       },
       "packages": {
-        "gulp-watch>chokidar>fsevents>node-pre-gyp": true
+        "gulp-watch>chokidar>fsevents>node-pre-gyp": true,
+        "lavamoat>bindings": true
       }
     },
     "gulp>glob-watcher>chokidar>is-binary-path": {
@@ -6066,6 +6069,36 @@
       },
       "packages": {
         "depcheck>resolve": true
+      }
+    },
+    "lavamoat>bindings": {
+      "builtin": {
+        "fs.accessSync": true,
+        "fs.existsSync": true,
+        "path.dirname": true,
+        "path.existsSync": true,
+        "path.extname": true,
+        "path.join": true
+      },
+      "globals": {
+        "__filename": true,
+        "__non_webpack_require__": true,
+        "__webpack_require__": true,
+        "process.arch": true,
+        "process.cwd": true,
+        "process.env.NODE_BINDINGS_ARROW": true,
+        "process.env.NODE_BINDINGS_COMPILED_DIR": true,
+        "process.platform": true,
+        "process.versions.modules": true,
+        "process.versions.node": true
+      },
+      "packages": {
+        "lavamoat>bindings>file-uri-to-path": true
+      }
+    },
+    "lavamoat>bindings>file-uri-to-path": {
+      "builtin": {
+        "path.sep": true
       }
     },
     "lavamoat>json-stable-stringify": {
@@ -8658,6 +8691,13 @@
         "tslib": true,
         "typescript": true
       }
+    },
+    "tsx>fsevents": {
+      "globals": {
+        "console.assert": true,
+        "process.platform": true
+      },
+      "native": true
     },
     "typescript": {
       "builtin": {
