@@ -477,6 +477,7 @@ jobs:
           paths:
             - node_modules
             - build-artifacts
+
   fetch-changed-files:
     executor: node-browsers-small
     steps:
@@ -485,7 +486,10 @@ jobs:
           at: .
       - run:
           name: Fetch changed files
-          command: .circleci/scripts/fetch-changed-files.sh
+          command: |
+            chmod +x .circleci/scripts/fetch-changed-files.sh
+            .circleci/scripts/fetch-changed-files.sh
+
   validate-lavamoat-allow-scripts:
     executor: node-browsers-small
     steps:
