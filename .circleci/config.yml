@@ -227,7 +227,6 @@ workflows:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
           requires:
             - prep-build
-            - fetch-files-changed
       - test-unit-mocha:
           requires:
             - prep-deps
