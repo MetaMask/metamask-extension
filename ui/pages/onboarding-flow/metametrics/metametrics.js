@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Typography from '../../../components/ui/typography/typography';
@@ -25,6 +25,7 @@ import {
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
+  Checkbox,
   Icon,
   IconName,
   IconSize,
@@ -46,6 +47,9 @@ export default function OnboardingMetametrics() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
   const trackEvent = useContext(MetaMetricsContext);
+
+  // TODO: maybe this can be a simple ref
+  const [hasAgreedToDataUse, setHasAgreedToDataUse] = useState(false);
 
   const onConfirm = async () => {
     const [, metaMetricsId] = await dispatch(setParticipateInMetaMetrics(true));
@@ -319,6 +323,13 @@ export default function OnboardingMetametrics() {
             </Box>{' '}
           </li>
         </ul>
+        <Checkbox
+          id="metametrics-opt-in"
+          isChecked={hasAgreedToDataUse}
+          onClick={() => setHasAgreedToDataUse((prevValue) => !prevValue)}
+          label={t('onboardingMetametricsUseDataCheckbox')}
+          paddingBottom={3}
+        />
         <Typography
           color={TextColor.textAlternative}
           align={TEXT_ALIGN.LEFT}
