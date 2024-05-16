@@ -43,6 +43,7 @@ const addEthereumChain = {
 };
 export default addEthereumChain;
 
+// TODO should this be searching by rpcUrl instead of chainId?
 function findExistingNetwork(chainId, findNetworkConfigurationBy) {
   if (
     Object.values(BUILT_IN_INFURA_NETWORKS)
@@ -387,6 +388,12 @@ async function addEthereumChainHandler(
     currentChainIdForOrigin,
     findNetworkConfigurationBy,
   );
+
+  // TODO should this be searching by rpcUrl instead of chainId?
+  // currently we aren't preventing adding the same rpcUrl multiple times
+  // since this just finds the first network with the same chainId
+  // the actual add is prevented downstream in upsertNetworkConfiguration
+  // but we should consider changing this to search by rpcUrl
   const existingNetwork = findExistingNetwork(
     chainId,
     findNetworkConfigurationBy,
@@ -485,7 +492,6 @@ async function addEthereumChainHandler(
     return end(error);
   }
 
-  // Ask the user to switch the network
   await switchChain(
     res,
     end,
