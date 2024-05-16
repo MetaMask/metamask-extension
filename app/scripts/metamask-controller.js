@@ -5051,8 +5051,6 @@ export default class MetamaskController extends EventEmitter {
         getCurrentRpcUrl: () =>
           this.networkController.state.providerConfig.rpcUrl,
         // network configuration-related
-        getNetworkConfigurations: () =>
-          this.networkController.state.networkConfigurations,
         upsertNetworkConfiguration:
           this.networkController.upsertNetworkConfiguration.bind(
             this.networkController,
@@ -5078,10 +5076,6 @@ export default class MetamaskController extends EventEmitter {
             this.networkController,
           ),
         findNetworkConfigurationBy: this.findNetworkConfigurationBy.bind(this),
-        setNetworkClientIdForDomain:
-          this.selectedNetworkController.setNetworkClientIdForDomain.bind(
-            this.selectedNetworkController,
-          ),
         getCurrentChainIdForDomain: (domain) => {
           const networkClientId =
             this.selectedNetworkController.getNetworkClientIdForDomain(domain);
