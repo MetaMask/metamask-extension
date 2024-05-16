@@ -6,7 +6,7 @@ import useSignatureSecurityAlertResponse from '../../../hooks/useSignatureSecuri
 import { SignatureRequestType } from '../../../types/confirm';
 import BlockaidBannerAlert from '../../security-provider-banner-alert/blockaid-banner-alert';
 
-// todo: this component can be deleted once new alert imlementation is added
+// todo: this component can be deleted once new alert implementation is added
 const BlockaidAlert = ({ ...props }) => {
   const currentConfirmation = useSelector(
     currentConfirmationSelector,
