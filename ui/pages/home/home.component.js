@@ -19,9 +19,10 @@ import SmartTransactionsOptInModal from '../../components/app/smart-transactions
 ///: END:ONLY_INCLUDE_IF
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
+import Typography from '../../components/ui/typography/typography';
 import TransactionList from '../../components/app/transaction-list';
-import Popover from '../../components/ui/popover';
 import Button from '../../components/ui/button';
+import Popover from '../../components/ui/popover';
 import ConnectedSites from '../connected-sites';
 import ConnectedAccounts from '../connected-accounts';
 import { Tabs, Tab } from '../../components/ui/tabs';
@@ -40,6 +41,8 @@ import {
   JustifyContent,
   ///: END:ONLY_INCLUDE_IF
   Severity,
+  FlexDirection,
+  BlockSize,
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
 import {
@@ -756,6 +759,50 @@ export default class Home extends PureComponent {
     );
   }
 
+  renderOnboardingPopover = () => {
+    const { t } = this.context;
+
+    return (
+      <Popover
+        wrapTitle
+        centerTitle
+        onClose={() => {}}
+        title={t('onboardedMetametricsTitle')}
+        footer={
+          <Box
+            gap={2}
+            display={Display.Flex}
+            width={BlockSize.Full}
+            flexDirection={FlexDirection.Row}
+          >
+            <Button type="secondary" onClick={() => {}}>
+              {t('onboardedMetametricsDisagree')}
+            </Button>
+            <Button type="primary" onClick={() => {}}>
+              {t('onboardedMetametricsAccept')}
+            </Button>
+          </Box>
+        }
+      >
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          gap={2}
+          margin={4}
+        >
+          <Typography>{t('onboardedMetametricsParagraph1')}</Typography>
+          <Typography>{t('onboardedMetametricsParagraph2')}</Typography>
+          <ul className="home__onboarding_list">
+            <li>{t('onboardedMetametricsKey1')}</li>
+            <li>{t('onboardedMetametricsKey2')}</li>
+            <li>{t('onboardedMetametricsKey3')}</li>
+          </ul>
+          <Typography>{t('onboardedMetametricsParagraph3')}</Typography>
+        </Box>
+      </Popover>
+    );
+  };
+
   renderPopover = () => {
     const { setConnectedStatusPopoverHasBeenShown } = this.props;
     const { t } = this.context;
@@ -905,6 +952,7 @@ export default class Home extends PureComponent {
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()
             : null}
+          {this.renderOnboardingPopover()}
           {
             ///: END:ONLY_INCLUDE_IF
           }
