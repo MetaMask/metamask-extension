@@ -36,11 +36,6 @@ type SessionData = {
   expiresIn: string;
 };
 
-type MetaMetricsAuth = {
-  getMetaMetricsId: () => string;
-  setMetaMetricsId: (serverMetaMetricsId: string | null) => string;
-};
-
 export type AuthenticationControllerState = {
   /**
    * Global isSignedIn state.
@@ -108,21 +103,12 @@ export default class AuthenticationController extends BaseController<
   AuthenticationControllerState,
   AuthenticationControllerMessenger
 > {
-  #metametrics: MetaMetricsAuth;
-
   constructor({
     messenger,
     state,
-    metametrics,
   }: {
     messenger: AuthenticationControllerMessenger;
     state?: AuthenticationControllerState;
-
-    /**
-     * Not using the Messaging System as we
-     * do not want to tie this strictly to extension
-     */
-    metametrics: MetaMetricsAuth;
   }) {
     super({
       messenger,
@@ -130,8 +116,6 @@ export default class AuthenticationController extends BaseController<
       name: controllerName,
       state: { ...defaultState, ...state },
     });
-
-    this.#metametrics = metametrics;
 
     this.#registerMessageHandlers();
   }
@@ -174,8 +158,6 @@ export default class AuthenticationController extends BaseController<
 
   public performSignOut(): void {
     this.#assertLoggedIn();
-
-    this.#metametrics.setMetaMetricsId(null);
 
     this.update((state) => {
       state.isSignedIn = false;
@@ -238,11 +220,7 @@ export default class AuthenticationController extends BaseController<
       // 2. Login
       const rawMessage = createLoginRawMessage(nonce, publicKey);
       const signature = await this.#snapSignMessage(rawMessage);
-      const loginResponse = await login(
-        rawMessage,
-        signature,
-        this.#metametrics.getMetaMetricsId(),
-      );
+      const loginResponse = await login(rawMessage, signature);
       if (!loginResponse?.token) {
         throw new Error(`Unable to login`);
       }
@@ -252,8 +230,6 @@ export default class AuthenticationController extends BaseController<
         profileId: loginResponse.profile.profile_id,
         metametricsId: loginResponse.profile.metametrics_id,
       };
-
-      this.#metametrics.setMetaMetricsId(profile.metametricsId);
 
       // 3. Trade for Access Token
       const accessToken = await getAccessToken(loginResponse.token);
