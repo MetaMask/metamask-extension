@@ -1,3 +1,10 @@
+/**
+ * Quote text so it can be used in an xpath expression,
+ * often used to locate an element by its text.
+ *
+ * @param s - The text to quote. May contain single or double quotes.
+ * @returns The quoted text.
+ */
 export function quoteXPathText(s: string = '') {
   if (!s.includes('"')) {
     return `"${s}"`;
