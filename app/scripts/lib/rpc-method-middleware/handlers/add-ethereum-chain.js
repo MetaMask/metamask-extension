@@ -13,6 +13,13 @@ import {
 import { getValidUrl } from '../../util';
 import { CaveatTypes } from '../../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../controllers/permissions';
+import {
+  BUILT_IN_INFURA_NETWORKS,
+  CHAIN_ID_TO_RPC_URL_MAP,
+  CHAIN_ID_TO_TYPE_MAP,
+  CURRENCY_SYMBOLS,
+  NETWORK_TO_NAME_MAP,
+} from '../../../../../shared/constants/network';
 
 const addEthereumChain = {
   methodNames: [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN],
@@ -22,7 +29,6 @@ const addEthereumChain = {
     getCurrentChainId: true,
     getCurrentRpcUrl: true,
     findNetworkConfigurationBy: true,
-    setNetworkClientIdForDomain: true,
     setActiveNetwork: true,
     requestUserApproval: true,
     startApprovalFlow: true,
@@ -37,6 +43,166 @@ const addEthereumChain = {
 };
 export default addEthereumChain;
 
+function findExistingNetwork(chainId, findNetworkConfigurationBy) {
+  if (
+    Object.values(BUILT_IN_INFURA_NETWORKS)
+      .map(({ chainId: id }) => id)
+      .includes(chainId)
+  ) {
+    return {
+      chainId,
+      ticker: CURRENCY_SYMBOLS.ETH,
+      nickname: NETWORK_TO_NAME_MAP[chainId],
+      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[chainId],
+      type: CHAIN_ID_TO_TYPE_MAP[chainId],
+    };
+  }
+
+  return findNetworkConfigurationBy({ chainId });
+}
+
+const switchChainWithPermissions = async (
+  res,
+  end,
+  networkConfigurationId,
+  approvalFlowId,
+  chainId,
+  {
+    getCaveat,
+    requestSwitchNetworkPermission,
+    setActiveNetwork,
+    findNetworkClientIdByChainId,
+    endApprovalFlow,
+  },
+) => {
+  const permissionedChainIds = getCaveat({
+    target: PermissionNames.permittedChains,
+    caveatType: CaveatTypes.restrictNetworkSwitching,
+  });
+
+  if (
+    permissionedChainIds === undefined ||
+    !permissionedChainIds.includes(chainId)
+  ) {
+    try {
+      // TODO replace with incremental permission request
+      // rather than passing already permissionedChains here
+      await requestSwitchNetworkPermission([
+        ...(permissionedChainIds ?? []),
+        chainId,
+      ]);
+    } catch (err) {
+      res.error = err;
+      return end();
+    }
+  }
+
+  const networkClientId = findNetworkClientIdByChainId(chainId);
+
+  try {
+    await setActiveNetwork(networkConfigurationId ?? networkClientId);
+    res.result = null;
+  } catch (error) {
+    return end(
+      // For the purposes of this method, it does not matter if the user
+      // declines to switch the selected network. However, other errors indicate
+      // that something is wrong.
+      error.code === errorCodes.provider.userRejectedRequest
+        ? undefined
+        : error,
+    );
+  } finally {
+    if (approvalFlowId) {
+      endApprovalFlow({ id: approvalFlowId });
+    }
+  }
+  return end();
+};
+
+const switchChainWithoutPermissions = async (
+  res,
+  end,
+  requestData,
+  networkConfigurationId,
+  approvalFlowId,
+  origin,
+  { setActiveNetwork, endApprovalFlow, requestUserApproval },
+) => {
+  try {
+    await requestUserApproval({
+      origin,
+      type: ApprovalType.SwitchEthereumChain,
+      requestData,
+    });
+
+    await setActiveNetwork(networkConfigurationId);
+    res.result = null;
+  } catch (error) {
+    // For the purposes of this method, it does not matter if the user
+    // declines to switch the selected network. However, other errors indicate
+    // that something is wrong.
+    if (error.code !== errorCodes.provider.userRejectedRequest) {
+      return end(error);
+    }
+  } finally {
+    if (approvalFlowId) {
+      endApprovalFlow({ id: approvalFlowId });
+    }
+  }
+  return end();
+};
+
+const switchChain = async (
+  res,
+  end,
+  origin,
+  chainId,
+  requestData,
+  networkConfigurationId,
+  approvalFlowId,
+  {
+    getChainPermissionsFeatureFlag,
+    setActiveNetwork,
+    endApprovalFlow,
+    requestUserApproval,
+    getCaveat,
+    requestSwitchNetworkPermission,
+    findNetworkClientIdByChainId,
+  },
+) => {
+  // If this network is already added but is not the currently selected network for the given origin
+  // Ask the user to switch the network
+  if (getChainPermissionsFeatureFlag()) {
+    await switchChainWithPermissions(
+      res,
+      end,
+      networkConfigurationId,
+      approvalFlowId,
+      chainId,
+      {
+        getCaveat,
+        requestSwitchNetworkPermission,
+        setActiveNetwork,
+        findNetworkClientIdByChainId,
+        endApprovalFlow,
+      },
+    );
+  } else {
+    // TODO remove once CHAIN_PERMISSIONS feature flag is gone
+    // await switchChainWithoutPermissions(requestData, networkConfigurationId);
+    await switchChainWithoutPermissions(
+      res,
+      end,
+      requestData,
+      networkConfigurationId,
+      approvalFlowId,
+      origin,
+      { setActiveNetwork, endApprovalFlow, requestUserApproval },
+    );
+  }
+  return end();
+};
+
 async function addEthereumChainHandler(
   req,
   res,
@@ -46,13 +212,11 @@ async function addEthereumChainHandler(
     upsertNetworkConfiguration,
     getCurrentRpcUrl,
     findNetworkConfigurationBy,
-    setNetworkClientIdForDomain,
     setActiveNetwork,
     requestUserApproval,
     startApprovalFlow,
     endApprovalFlow,
     getCurrentChainIdForDomain,
-    hasPermission,
     getCaveat,
     requestSwitchNetworkPermission,
     findNetworkClientIdByChainId,
@@ -154,67 +318,15 @@ async function addEthereumChainHandler(
     );
   }
 
-  const switchChainWithPermissions = async ({
-    networkConfigurationId,
-    approvalFlowId,
-  }) => {
-    const permissionedChainIds = getCaveat({
-      target: PermissionNames.permittedChains,
-      caveatType: CaveatTypes.restrictNetworkSwitching,
-    });
-
-    if (
-      permissionedChainIds === undefined ||
-      !permissionedChainIds.includes(_chainId)
-    ) {
-      try {
-        // TODO replace with incremental permission request
-        // rather than passing already permissionedChains here
-        await requestSwitchNetworkPermission([
-          ...(permissionedChainIds ?? []),
-          chainId,
-        ]);
-      } catch (err) {
-        res.error = err;
-        return end();
-      }
-    }
-
-    const networkClientId = findNetworkClientIdByChainId(chainId);
-
-    try {
-      await setActiveNetwork(networkConfigurationId ?? networkClientId);
-      // if the origin has the eth_accounts permission
-      // we set per dapp network selection state
-      if (hasPermission(req.origin, PermissionNames.eth_accounts)) {
-        setNetworkClientIdForDomain(
-          req.origin,
-          networkConfigurationId ?? networkClientId,
-        );
-      }
-      res.result = null;
-    } catch (error) {
-      return end(
-        // For the purposes of this method, it does not matter if the user
-        // declines to switch the selected network. However, other errors indicate
-        // that something is wrong.
-        error.code === errorCodes.provider.userRejectedRequest
-          ? undefined
-          : error,
-      );
-    } finally {
-      if (approvalFlowId) {
-        endApprovalFlow({ id: approvalFlowId });
-      }
-    }
-    return end();
-  };
-
   const currentChainIdForOrigin = getCurrentChainIdForDomain(origin);
-  const currentNetworkConfiguration = findNetworkConfigurationBy({
-    chainId: currentChainIdForOrigin,
-  });
-  const existingNetwork = findNetworkConfigurationBy({ chainId: _chainId });
+  const currentNetworkConfiguration = findExistingNetwork(
+    currentChainIdForOrigin,
+    findNetworkConfigurationBy,
+  );
+  const existingNetwork = findExistingNetwork(
+    _chainId,
+    findNetworkConfigurationBy,
+  );
 
   // if the request is to add a network that is already added and configured
   // with the same RPC gateway we shouldn't try to add it again.
@@ -233,34 +345,35 @@ async function addEthereumChainHandler(
       return end();
     }
 
-    // If this network is already added but is not the currently selected network for the given origin
-    // Ask the user to switch the network
-    if (getChainPermissionsFeatureFlag()) {
-      await switchChainWithPermissions();
-    } else {
-      // TODO remove once CHAIN_PERMISSIONS feature flag is gone
-      try {
-        await requestUserApproval({
-          origin,
-          type: ApprovalType.SwitchEthereumChain,
-          requestData: {
-            toNetworkConfiguration: existingNetwork,
-            fromNetworkConfiguration: currentNetworkConfiguration,
-          },
-        });
+    const requestData = {
+      toNetworkConfiguration: existingNetwork,
+      fromNetworkConfiguration: currentNetworkConfiguration,
+    };
 
-        await setActiveNetwork(existingNetwork.id);
-        res.result = null;
-      } catch (error) {
-        // For the purposes of this method, it does not matter if the user
-        // declines to switch the selected network. However, other errors indicate
-        // that something is wrong.
-        if (error.code !== errorCodes.provider.userRejectedRequest) {
-          return end(error);
-        }
-      }
-      return end();
-    }
+    // return await switchChain({
+    //   requestData,
+    //   networkConfigurationId: existingNetwork.id ?? existingNetwork.type,
+    // });
+    const networkConfigurationId = existingNetwork.id ?? existingNetwork.type;
+    await switchChain(
+      res,
+      end,
+      origin,
+      chainId,
+      requestData,
+      networkConfigurationId,
+      undefined,
+      {
+        getChainPermissionsFeatureFlag,
+        setActiveNetwork,
+        endApprovalFlow,
+        requestUserApproval,
+        getCaveat,
+        requestSwitchNetworkPermission,
+        findNetworkClientIdByChainId,
+      },
+    );
+    return end();
   }
 
   if (typeof chainName !== 'string' || !chainName) {
@@ -323,6 +436,7 @@ async function addEthereumChainHandler(
       }),
     );
   }
+
   let networkConfigurationId;
 
   const { id: approvalFlowId } = await startApprovalFlow();
@@ -359,50 +473,32 @@ async function addEthereumChainHandler(
   }
 
   // Ask the user to switch the network
-
-  if (getChainPermissionsFeatureFlag()) {
-    await switchChainWithPermissions({
-      networkConfigurationId,
-      approvalFlowId,
-    });
-  } else {
-    // TODO remove once CHAIN_PERMISSIONS feature flag is gone
-    try {
-      await requestUserApproval({
-        origin,
-        type: ApprovalType.SwitchEthereumChain,
-        requestData: {
-          toNetworkConfiguration: {
-            rpcUrl: firstValidRPCUrl,
-            chainId: _chainId,
-            nickname: _chainName,
-            ticker,
-            networkConfigurationId,
-          },
-          fromNetworkConfiguration: currentNetworkConfiguration,
-        },
-      });
-      if (hasPermission(req.origin, PermissionNames.eth_accounts)) {
-        setNetworkClientIdForDomain(req.origin, networkConfigurationId);
-      }
-    } catch (error) {
-      // For the purposes of this method, it does not matter if the user
-      // declines to switch the selected network. However, other errors indicate
-      // that something is wrong.
-      return end(
-        error.code === errorCodes.provider.userRejectedRequest
-          ? undefined
-          : error,
-      );
-    } finally {
-      endApprovalFlow({ id: approvalFlowId });
-    }
-
-    try {
-      await setActiveNetwork(networkConfigurationId);
-    } catch (error) {
-      return end(error);
-    }
-  }
+  await switchChain(
+    res,
+    end,
+    origin,
+    chainId,
+    {
+      toNetworkConfiguration: {
+        rpcUrl: firstValidRPCUrl,
+        chainId: _chainId,
+        nickname: _chainName,
+        ticker,
+        networkConfigurationId,
+      },
+      fromNetworkConfiguration: currentNetworkConfiguration,
+    },
+    networkConfigurationId,
+    approvalFlowId,
+    {
+      getChainPermissionsFeatureFlag,
+      setActiveNetwork,
+      endApprovalFlow,
+      requestUserApproval,
+      getCaveat,
+      requestSwitchNetworkPermission,
+      findNetworkClientIdByChainId,
+    },
+  );
   return end();
 }
