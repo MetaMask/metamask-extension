@@ -1796,8 +1796,16 @@
     },
     "@metamask/permission-log-controller": {
       "packages": {
-        "@metamask/base-controller": true,
+        "@metamask/permission-log-controller>@metamask/base-controller": true,
         "@metamask/utils": true
+      }
+    },
+    "@metamask/permission-log-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/phishing-controller": {
