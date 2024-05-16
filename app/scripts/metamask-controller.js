@@ -5048,7 +5048,8 @@ export default class MetamaskController extends EventEmitter {
         },
         getCurrentChainId: () =>
           this.networkController.state.providerConfig.chainId,
-        getChainPermissionsFeatureFlag: () => Boolean(process.env.CHAIN_PERMISSIONS),
+        getChainPermissionsFeatureFlag: () =>
+          Boolean(process.env.CHAIN_PERMISSIONS),
         getCurrentRpcUrl: () =>
           this.networkController.state.providerConfig.rpcUrl,
         // network configuration-related
