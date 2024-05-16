@@ -293,9 +293,6 @@
   "advancedBaseGasFeeToolTip": {
     "message": "트랜잭션이 블록에 포함되면 최대 기본 요금과 실제 기본 요금 간의 차액이 환불됩니다. 총 금액은 최대 기본 요금(GWEI 단위) 곱하기 가스 한도로 계산합니다."
   },
-  "advancedConfiguration": {
-    "message": "고급 옵션"
-  },
   "advancedGasFeeDefaultOptIn": {
     "message": "이 수치를 $1 네트워크의 기본값으로 저장합니다.",
     "description": "$1 is the current network name."
@@ -509,12 +506,6 @@
   },
   "betaTerms": {
     "message": "베타 이용약관"
-  },
-  "betaWalletCreationSuccessReminder1": {
-    "message": "MetaMask 베타는 비밀복구구문을 복구할 수 없습니다."
-  },
-  "betaWalletCreationSuccessReminder2": {
-    "message": "MetaMask 베타는 비밀복구구문을 절대 묻지 않습니다."
   },
   "blockExplorerAccountAction": {
     "message": "계정",
@@ -2992,9 +2983,6 @@
   "rejected": {
     "message": "거부됨"
   },
-  "remember": {
-    "message": "참고:"
-  },
   "remove": {
     "message": "제거"
   },
@@ -3341,9 +3329,6 @@
   },
   "sepolia": {
     "message": "Sepolia 테스트 네트워크"
-  },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "이와 같이 MetaMask는 신용있는 타사의 서비스를 사용하여 제품 가용성과 안전성을 향상합니다."
   },
   "setApprovalForAll": {
     "message": "모두 승인 설정"
@@ -4660,26 +4645,6 @@
   },
   "walletConnectionGuide": {
     "message": "당사의 하드웨어 지갑 연결 가이드"
-  },
-  "walletCreationSuccessDetail": {
-    "message": "지갑을 성공적으로 보호했습니다. 비밀복구구문을 안전하게 비밀로 유지하세요. 이는 회원님의 책임입니다!"
-  },
-  "walletCreationSuccessReminder1": {
-    "message": "MetaMask는 비밀복구구문을 복구할 수 없습니다."
-  },
-  "walletCreationSuccessReminder2": {
-    "message": "MetaMask는 비밀복구구문을 절대 묻지 않습니다."
-  },
-  "walletCreationSuccessReminder3": {
-    "message": "누군가와 $1 또는 회원님의 자금을 도난당할 위험이 있습니다.",
-    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
-  },
-  "walletCreationSuccessReminder3BoldSection": {
-    "message": "비밀복구구문을 절대 공유하지 마세요.",
-    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
-  },
-  "walletCreationSuccessTitle": {
-    "message": "지갑 생성 성공"
   },
   "wantToAddThisNetwork": {
     "message": "이 네트워크를 추가하시겠습니까?"

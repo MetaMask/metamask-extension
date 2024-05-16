@@ -293,9 +293,6 @@
   "advancedBaseGasFeeToolTip": {
     "message": "После включения вашей транзакции в блок возмещается любая разница между вашей максимальной базовой комиссией и фактической базовой комиссией. Общая сумма рассчитывается следующим образом: максимальная базовая комиссия (в Гвей) x лимит газа."
   },
-  "advancedConfiguration": {
-    "message": "Дополнительная конфигурация"
-  },
   "advancedGasFeeDefaultOptIn": {
     "message": "Сохраните эти значения как значения по умолчанию для сети $1.",
     "description": "$1 is the current network name."
@@ -509,12 +506,6 @@
   },
   "betaTerms": {
     "message": "Условия использования бета-версии"
-  },
-  "betaWalletCreationSuccessReminder1": {
-    "message": "Бета-версия MetaMask не сможет восстановить вашу секретную фразу для восстановления."
-  },
-  "betaWalletCreationSuccessReminder2": {
-    "message": "Бета-версия MetaMask никогда не запрашивает у вас секретную фразу для восстановления."
   },
   "blockExplorerAccountAction": {
     "message": "Счет",
@@ -2992,9 +2983,6 @@
   "rejected": {
     "message": "Отклонено"
   },
-  "remember": {
-    "message": "Помните:"
-  },
   "remove": {
     "message": "Удалить"
   },
@@ -3341,9 +3329,6 @@
   },
   "sepolia": {
     "message": "Тестовая сеть Sepolia"
-  },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "MetaMask использует эти доверенные сторонние сервисы для повышения удобства использования и безопасности продукта."
   },
   "setApprovalForAll": {
     "message": "Установить одобрение для всех"
@@ -4660,26 +4645,6 @@
   },
   "walletConnectionGuide": {
     "message": "наше руководство по подключению аппаратного кошелька"
-  },
-  "walletCreationSuccessDetail": {
-    "message": "Вы успешно защитили свой кошелек. Сохраните секретную фразу для восстановления в тайне — вы отвечаете за ее сохранность!"
-  },
-  "walletCreationSuccessReminder1": {
-    "message": "MetaMask не сможет восстановить вашу секретную фразу для восстановления."
-  },
-  "walletCreationSuccessReminder2": {
-    "message": "MetaMask никогда не запрашивает у вас секретную фразу для восстановления."
-  },
-  "walletCreationSuccessReminder3": {
-    "message": "$1, чтобы предотвратить кражу ваших средств",
-    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
-  },
-  "walletCreationSuccessReminder3BoldSection": {
-    "message": "Никогда не сообщайте никому свою секретную фразу для восстановления",
-    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
-  },
-  "walletCreationSuccessTitle": {
-    "message": "Кошелек создан"
   },
   "wantToAddThisNetwork": {
     "message": "Хотите добавить эту сеть?"

@@ -293,9 +293,6 @@
   "advancedBaseGasFeeToolTip": {
     "message": "जब आपका ट्रांसेक्शन ब्लॉक में शामिल हो जाता है, तो आपके अधिकतम बेस फ़ीस और वास्तविक बेस फ़ीस के बीच का कोई भी अंतर वापस कर दिया जाता है। कुल अमाउंट को अधिकतम बेस फ़ीस (GWEI में) * गैस लिमिट के रुप में कैलकुलेट किया जाता है।"
   },
-  "advancedConfiguration": {
-    "message": "एडवांस्ड कॉन्फ़िगरेशन"
-  },
   "advancedGasFeeDefaultOptIn": {
     "message": "$1 नेटवर्क के लिए इन मूल्यों को मेरे डिफॉल्ट के रूप में सहेजें।",
     "description": "$1 is the current network name."
@@ -509,12 +506,6 @@
   },
   "betaTerms": {
     "message": "बीटा के इस्तेमाल की शर्तें"
-  },
-  "betaWalletCreationSuccessReminder1": {
-    "message": "MetaMask बीटा आपका सीक्रेट रिकवरी फ्रेज़ रिकवर नहीं कर सकता।"
-  },
-  "betaWalletCreationSuccessReminder2": {
-    "message": "MetaMask बीटा आपसे आपका गुप्त रिकवरी वाक्यांश कभी नहीं मांगेगा।"
   },
   "blockExplorerAccountAction": {
     "message": "अकाउंट",
@@ -2992,9 +2983,6 @@
   "rejected": {
     "message": "रिजेक्ट"
   },
-  "remember": {
-    "message": "याद रखें:"
-  },
   "remove": {
     "message": "हटाएं"
   },
@@ -3341,9 +3329,6 @@
   },
   "sepolia": {
     "message": "Sepolia टेस्ट नेटवर्क"
-  },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "MetaMask उत्पाद की उपयोगिता और सुरक्षा को बढ़ाने के लिए इन विश्वसनीय तीसरे-पक्ष की सेवाओं का इस्तेमाल करता है।"
   },
   "setApprovalForAll": {
     "message": "सभी के लिए स्वीकृति सेट करें"
@@ -4660,26 +4645,6 @@
   },
   "walletConnectionGuide": {
     "message": "हमारी hardware wallet कनेक्शन गाइड"
-  },
-  "walletCreationSuccessDetail": {
-    "message": "आपने अपने वॉलेट को सफलतापूर्वक सुरक्षित कर लिया है। अपने सीक्रेट रिकवरी फ्रेज को सुरक्षित और गुप्त रखें -- यह आपकी जिम्मेदारी है!"
-  },
-  "walletCreationSuccessReminder1": {
-    "message": "MetaMask आपके सीक्रेट रिकवरी फ्रेज को फिर से प्राप्त नहीं कर सकता है।"
-  },
-  "walletCreationSuccessReminder2": {
-    "message": "MetaMask कभी भी आपके सीक्रेट रिकवरी फ्रेज के बारे में नहीं पूछेगा।"
-  },
-  "walletCreationSuccessReminder3": {
-    "message": "$1 किसी के साथ या आपके फंड के चोरी होने का खतरा",
-    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
-  },
-  "walletCreationSuccessReminder3BoldSection": {
-    "message": "अपने सीक्रेट रिकवरी फ्रेज को कभी शेयर ना करें",
-    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
-  },
-  "walletCreationSuccessTitle": {
-    "message": "वॉलेट का निर्माण सफल हुआ"
   },
   "wantToAddThisNetwork": {
     "message": "इस नेटवर्क को जोड़ना चाहते हैं?"

@@ -293,9 +293,6 @@
   "advancedBaseGasFeeToolTip": {
     "message": "Cuando su transacción se incluya en el bloque, se reembolsará cualquier diferencia entre su tarifa base máxima y la tarifa base real. El importe total se calcula como tarifa base máxima (en GWEI) * límite de gas."
   },
-  "advancedConfiguration": {
-    "message": "Configuración avanzada"
-  },
   "advancedGasFeeDefaultOptIn": {
     "message": "Guarde estos valores como mis valores por defecto para la red de $1.",
     "description": "$1 is the current network name."
@@ -509,12 +506,6 @@
   },
   "betaTerms": {
     "message": "Términos de uso de beta"
-  },
-  "betaWalletCreationSuccessReminder1": {
-    "message": "MetaMask beta no puede recuperar su frase secreta de recuperación."
-  },
-  "betaWalletCreationSuccessReminder2": {
-    "message": "MetaMask beta nunca le pedirá su frase secreta de recuperación."
   },
   "blockExplorerAccountAction": {
     "message": "Cuenta",
@@ -2992,9 +2983,6 @@
   "rejected": {
     "message": "Rechazado"
   },
-  "remember": {
-    "message": "Recuerde:"
-  },
   "remove": {
     "message": "Quitar"
   },
@@ -3341,9 +3329,6 @@
   },
   "sepolia": {
     "message": "Red de prueba Sepolia"
-  },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "MetaMask utiliza estos servicios de terceros de confianza para mejorar la usabilidad y la seguridad de los productos."
   },
   "setApprovalForAll": {
     "message": "Establecer aprobación para todos"
@@ -4660,26 +4645,6 @@
   },
   "walletConnectionGuide": {
     "message": "nuestra guía de conexión del monedero físico"
-  },
-  "walletCreationSuccessDetail": {
-    "message": "Ha protegido con éxito su monedero. Mantenga su frase secreta de recuperación a salvo y en secreto: ¡es su responsabilidad!"
-  },
-  "walletCreationSuccessReminder1": {
-    "message": "MetaMask no puede recuperar su frase secreta de recuperación."
-  },
-  "walletCreationSuccessReminder2": {
-    "message": "MetaMask nunca le pedirá su frase secreta de recuperación."
-  },
-  "walletCreationSuccessReminder3": {
-    "message": "$1 con nadie o se arriesga a que le roben los fondos",
-    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
-  },
-  "walletCreationSuccessReminder3BoldSection": {
-    "message": "Nunca comparta su frase secreta de recuperación",
-    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
-  },
-  "walletCreationSuccessTitle": {
-    "message": "Creación exitosa del monedero"
   },
   "wantToAddThisNetwork": {
     "message": "¿Desea añadir esta red?"

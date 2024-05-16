@@ -293,9 +293,6 @@
   "advancedBaseGasFeeToolTip": {
     "message": "トランザクションがブロックに含まれた場合、最大基本料金と実際の基本料金の差が返金されます。合計金額は、最大基本料金 (Gwei単位) * ガスリミットで計算されます。"
   },
-  "advancedConfiguration": {
-    "message": "詳細設定"
-  },
   "advancedGasFeeDefaultOptIn": {
     "message": "これらの値を$1ネットワークのデフォルトとして保存する",
     "description": "$1 is the current network name."
@@ -509,12 +506,6 @@
   },
   "betaTerms": {
     "message": "ベータ版利用規約"
-  },
-  "betaWalletCreationSuccessReminder1": {
-    "message": "MetaMaskベータ版はシークレットリカバリーフレーズを復元できません。"
-  },
-  "betaWalletCreationSuccessReminder2": {
-    "message": "MetaMaskベータ版がユーザーのシークレットリカバリーフレーズを求めることは絶対にありません。"
   },
   "blockExplorerAccountAction": {
     "message": "アカウント",
@@ -2992,9 +2983,6 @@
   "rejected": {
     "message": "拒否されました"
   },
-  "remember": {
-    "message": "ご注意:"
-  },
   "remove": {
     "message": "削除"
   },
@@ -3341,9 +3329,6 @@
   },
   "sepolia": {
     "message": "Sepoliaテストネットワーク"
-  },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "MetaMaskはこれらの信頼できるサードパーティサービスを使用して、製品の使いやすさと安全性を向上させています。"
   },
   "setApprovalForAll": {
     "message": "すべてを承認に設定"
@@ -4660,26 +4645,6 @@
   },
   "walletConnectionGuide": {
     "message": "弊社のハードウェアウォレット接続ガイド"
-  },
-  "walletCreationSuccessDetail": {
-    "message": "ウォレットが正常に保護されました。シークレットリカバリーフレーズを安全かつ機密に保管してください。これはユーザーの責任です！"
-  },
-  "walletCreationSuccessReminder1": {
-    "message": "MetaMaskはシークレットリカバリーフレーズを復元できません。"
-  },
-  "walletCreationSuccessReminder2": {
-    "message": "MetaMaskがユーザーのシークレットリカバリーフレーズを確認することは絶対にありません。"
-  },
-  "walletCreationSuccessReminder3": {
-    "message": "誰に対しても$1。資金が盗まれる恐れがあります",
-    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
-  },
-  "walletCreationSuccessReminder3BoldSection": {
-    "message": "シークレットリカバリーフレーズは決して教えないでください",
-    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
-  },
-  "walletCreationSuccessTitle": {
-    "message": "ウォレットが作成されました"
   },
   "wantToAddThisNetwork": {
     "message": "このネットワークを追加しますか？"

@@ -293,9 +293,6 @@
   "advancedBaseGasFeeToolTip": {
     "message": "Lorsque votre transaction est intégrée au bloc, toute différence entre vos frais de base maximaux et les frais de base réels vous sera remboursée. Le montant total est calculé comme suit : frais de base maximaux (en GWEI) × limite de carburant."
   },
-  "advancedConfiguration": {
-    "message": "Configuration avancée"
-  },
   "advancedGasFeeDefaultOptIn": {
     "message": "Enregistrer ces valeurs comme valeurs par défaut pour le réseau $1.",
     "description": "$1 is the current network name."
@@ -509,12 +506,6 @@
   },
   "betaTerms": {
     "message": "Conditions d’utilisation de la version bêta"
-  },
-  "betaWalletCreationSuccessReminder1": {
-    "message": "La version bêta de MetaMask ne peut pas retrouver votre phrase secrète de récupération."
-  },
-  "betaWalletCreationSuccessReminder2": {
-    "message": "La version bêta de MetaMask ne vous demandera jamais votre phrase secrète de récupération."
   },
   "blockExplorerAccountAction": {
     "message": "Compte",
@@ -2995,9 +2986,6 @@
   "rejected": {
     "message": "Rejeté"
   },
-  "remember": {
-    "message": "Rappel :"
-  },
   "remove": {
     "message": "Supprimer"
   },
@@ -3344,9 +3332,6 @@
   },
   "sepolia": {
     "message": "Réseau de test Sepolia"
-  },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "MetaMask utilise ces services tiers de confiance pour améliorer la convivialité et la sécurité des produits."
   },
   "setApprovalForAll": {
     "message": "Définir l’approbation pour tous"
@@ -4663,26 +4648,6 @@
   },
   "walletConnectionGuide": {
     "message": "notre guide de connexion des portefeuilles matériels"
-  },
-  "walletCreationSuccessDetail": {
-    "message": "Votre portefeuille est bien protégé. Conservez votre phrase secrète de récupération en sécurité et en toute discrétion. C’est votre responsabilité !"
-  },
-  "walletCreationSuccessReminder1": {
-    "message": "MetaMask ne peut pas restaurer votre phrase secrète de récupération."
-  },
-  "walletCreationSuccessReminder2": {
-    "message": "MetaMask ne vous demandera jamais votre phrase secrète de récupération."
-  },
-  "walletCreationSuccessReminder3": {
-    "message": "$1 avec n’importe qui, sinon vous risquez de voir vos fonds subtilisés",
-    "description": "$1 is separated as walletCreationSuccessReminder3BoldSection so that we can bold it"
-  },
-  "walletCreationSuccessReminder3BoldSection": {
-    "message": "Ne partagez jamais votre phrase secrète de récupération",
-    "description": "This string is localized separately from walletCreationSuccessReminder3 so that we can bold it"
-  },
-  "walletCreationSuccessTitle": {
-    "message": "Portefeuille créé avec succès"
   },
   "wantToAddThisNetwork": {
     "message": "Voulez-vous ajouter ce réseau ?"
