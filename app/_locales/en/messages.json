@@ -1509,6 +1509,9 @@
   "done": {
     "message": "Done"
   },
+  "dontEnableEnhancedProtection": {
+    "message": "Don't enable enhanced protection"
+  },
   "dontShowThisAgain": {
     "message": "Don't show this again"
   },
@@ -2944,6 +2947,12 @@
   "newPassword": {
     "message": "New password (8 characters min)"
   },
+  "newPrivacyPolicyActionButton": {
+    "message": "Read more"
+  },
+  "newPrivacyPolicyTitle": {
+    "message": "We’ve updated our privacy policy"
+  },
   "newTokensImportedMessage": {
     "message": "You’ve successfully imported $1.",
     "description": "$1 is the string of symbols of all the tokens imported"
@@ -3026,9 +3035,6 @@
   },
   "noSnaps": {
     "message": "You don't have any snaps installed."
-  },
-  "noThanks": {
-    "message": "No thanks"
   },
   "noTransactions": {
     "message": "You have no transactions"
@@ -3209,18 +3215,6 @@
   },
   "notificationsSimulationsDescriptionTwo": {
     "message": "This is just a simulation, so we can’t guarantee the final outcome. You can turn this off anytime in \nSettings > Security & Privacy. "
-  },
-  "notificationsStakingPortfolioActionText": {
-    "message": "Got it",
-    "description": "Action text for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
-  },
-  "notificationsStakingPortfolioDescription": {
-    "message": "Now you can stake ETH and manage your rewards all in one place.",
-    "description": "Description for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
-  },
-  "notificationsStakingPortfolioTitle": {
-    "message": "Stake smarter in Portfolio",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
   },
   "notificationsU2FLedgerLiveDescription": {
     "message": "U2F and Ledger Live are no longer available on Chrome. You can still connect Ledger devices on Chrome using Webhid.",
@@ -4612,7 +4606,7 @@
     "message": "99.5% success rate"
   },
   "smartTransactionsBenefit2": {
-    "message": "Transaction protection"
+    "message": "Saves you money"
   },
   "smartTransactionsBenefit3": {
     "message": "Real-time updates"
@@ -4625,7 +4619,7 @@
     "description": "$1 is an external link to learn more about Smart Transactions"
   },
   "smartTransactionsOptItModalTitle": {
-    "message": "Transactions just got smarter"
+    "message": "Enhanced Transaction Protection"
   },
   "snapAccountCreated": {
     "message": "Account created"
@@ -4753,9 +4747,6 @@
   },
   "snapsConnected": {
     "message": "Snaps connected"
-  },
-  "snapsInvalidUIError": {
-    "message": "The UI specified by the snap is invalid."
   },
   "snapsNoInsight": {
     "message": "The snap didn't return any insight"
