@@ -42,7 +42,6 @@ describe('Creation Successful Onboarding View', () => {
     jest.resetAllMocks();
   });
 
-
   it('should remind the user to not loose the SRP and keep it safe (Import case)', () => {
     const importFirstTimeFlowState = {
       ...initializedMockState,
@@ -56,9 +55,12 @@ describe('Creation Successful Onboarding View', () => {
     const { getByText } = renderWithProvider(<CreationSuccessful />, mockStore);
 
     expect(getByText('Your wallet is ready')).toBeInTheDocument();
-    expect(getByText(/Remember, if you lose your Secret Recovery Phrase, you lose access to your wallet/u)).toBeInTheDocument();
+    expect(
+      getByText(
+        /Remember, if you lose your Secret Recovery Phrase, you lose access to your wallet/u,
+      ),
+    ).toBeInTheDocument();
   });
-
 
   it('should show the Congratulations! message to the user (New wallet & backed up SRP)', () => {
     const importFirstTimeFlowState = {
@@ -74,7 +76,9 @@ describe('Creation Successful Onboarding View', () => {
     const { getByText } = renderWithProvider(<CreationSuccessful />, mockStore);
 
     expect(getByText('Congratulations!')).toBeInTheDocument();
-    expect(getByText(/Your wallet is protected and ready to use/u)).toBeInTheDocument();
+    expect(
+      getByText(/Your wallet is protected and ready to use/u),
+    ).toBeInTheDocument();
   });
 
   it('should show the Reminder set! message to the user (New wallet & did not backed up SRP)', () => {
@@ -91,7 +95,11 @@ describe('Creation Successful Onboarding View', () => {
     const { getByText } = renderWithProvider(<CreationSuccessful />, mockStore);
 
     expect(getByText('Reminder set!')).toBeInTheDocument();
-    expect(getByText(/If you get locked out of the app or get a new device, you will lose your funds./u)).toBeInTheDocument();
+    expect(
+      getByText(
+        /If you get locked out of the app or get a new device, you will lose your funds./u,
+      ),
+    ).toBeInTheDocument();
   });
 
   it('should redirect to privacy-settings view when "Manage default settings" button is clicked', () => {
