@@ -376,8 +376,6 @@ export const getInternalAccountsSortedByKeyring = createSelector(
   getMetaMaskKeyrings,
   getMetaMaskAccounts,
   (keyrings, accounts) => {
-    console.log(111, keyrings);
-    console.log(222, accounts);
     // keep existing keyring order
     const internalAccounts = keyrings
       .map(({ accounts: addresses }) => addresses)
@@ -386,7 +384,6 @@ export const getInternalAccountsSortedByKeyring = createSelector(
         return accounts[address];
       });
 
-    console.log(internalAccounts);
     return internalAccounts;
   },
 );
