@@ -278,9 +278,6 @@ export default function ConfirmationPage({
   const isSnapCustomUIDialog = SNAP_CUSTOM_UI_DIALOG.includes(
     pendingConfirmation?.type,
   );
-  console.log(
-    `PENDING CONFIRMATION: ${JSON.stringify(pendingConfirmation, null, 2)}`,
-  );
   const isSnapPrompt =
     pendingConfirmation?.type === ApprovalType.SnapDialogPrompt;
   let useSnapHeader = isSnapDialog;

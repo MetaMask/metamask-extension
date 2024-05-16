@@ -128,9 +128,6 @@ export const snapKeyringBuilder = (
         const preinstalledSnap = isSnapPreinstalled(snapId);
 
         const snapName = getSnapName(snapId);
-        const { id: addAccountApprovalId } = controllerMessenger.call(
-          'ApprovalController:startFlow',
-        );
 
         const trackSnapAccountEvent = (event: MetaMetricsEventName) => {
           trackEvent({
@@ -149,8 +146,13 @@ export const snapKeyringBuilder = (
 
         // Since we use this in the finally, better to give it a default value if the controller call fails
         let confirmationResult = preinstalledSnap;
+        let addAccountApprovalId = '';
         try {
           if (!preinstalledSnap) {
+            const { id } = controllerMessenger.call(
+              'ApprovalController:startFlow',
+            );
+            addAccountApprovalId = id;
             confirmationResult = Boolean(
               await controllerMessenger.call(
                 'ApprovalController:addRequest',
@@ -191,9 +193,6 @@ export const snapKeyringBuilder = (
 
               if (preinstalledSnap) {
                 // For preinstalled snaps redirect to account page for newly added account
-                controllerMessenger.call('ApprovalController:endFlow', {
-                  id: addAccountApprovalId,
-                });
                 await controllerMessenger.call(
                   'ApprovalController:addRequest',
                   {
@@ -261,10 +260,11 @@ export const snapKeyringBuilder = (
           if (confirmationResult) {
             trackSnapAccountEvent(MetaMetricsEventName.AccountAdded);
           }
-
-          controllerMessenger.call('ApprovalController:endFlow', {
-            id: addAccountApprovalId,
-          });
+          if (!preinstalledSnap) {
+            controllerMessenger.call('ApprovalController:endFlow', {
+              id: addAccountApprovalId,
+            });
+          }
         }
       },
       removeAccount: async (
