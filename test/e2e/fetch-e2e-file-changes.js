@@ -29,4 +29,4 @@ async function fetchFilesChanged() {
   }
 }
 
-module.exports = fetchFilesChanged;
+module.exports = { fetchFilesChanged };
