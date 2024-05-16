@@ -3494,9 +3494,6 @@
   "snaps": {
     "message": "Snaps"
   },
-  "snapsInvalidUIError": {
-    "message": "Snap 指定的用户界面无效。"
-  },
   "snapsNoInsight": {
     "message": "Snap 没有返回任何洞察"
   },
