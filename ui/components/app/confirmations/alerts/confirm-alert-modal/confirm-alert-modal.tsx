@@ -84,7 +84,7 @@ function ConfirmDetails({
   return (
     <>
       <Box alignItems={AlignItems.center} textAlign={TextAlign.Center}>
-        <Text variant={TextVariant.bodySm}>
+        <Text variant={TextVariant.bodyMd}>
           {t('confirmAlertModalDetails')}
         </Text>
         <ButtonLink

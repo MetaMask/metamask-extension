@@ -7,7 +7,15 @@ import {
 import { Severity } from '../../../../helpers/constants/design-system';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
+import useSignatureSecurityAlertResponse from '../useSignatureSecurityAlertResponse';
 import usePersonalSignAlerts from './usePersonalSignAlerts';
+
+jest.mock('../useSignatureSecurityAlertResponse', () => {
+  return {
+    __esModule: true,
+    default: jest.fn(() => jest.fn()),
+  };
+});
 
 const mockSecurityAlertResponse: SecurityAlertResponse = {
   securityAlertId: 'test-id-mock',
@@ -40,13 +48,9 @@ const mockExpectedState = {
         expectsResult: false,
       },
     },
-    preferences: {
-      redesignedConfirmationsEnabled: true,
-    },
+    preferences: { redesignedConfirmationsEnabled: true },
   },
-  confirm: {
-    currentConfirmation: currentConfirmationMock,
-  },
+  confirm: { currentConfirmation: currentConfirmationMock },
 };
 
 describe('usePersonalSignAlerts', () => {
@@ -66,7 +70,7 @@ describe('usePersonalSignAlerts', () => {
     expect(result.current).toEqual([]);
   });
 
-  it('returns an empty array when the current confirmation is not of type `PersonalSign`', () => {
+  it('returns an empty array when the current confirmation is not of type PersonalSign', () => {
     const { result } = renderHookWithProvider(
       () => usePersonalSignAlerts(),
       mockState,
@@ -74,7 +78,7 @@ describe('usePersonalSignAlerts', () => {
     expect(result.current).toEqual([]);
   });
 
-  it('returns alerts when there is a valid `PersonalSign` confirmation with a security alert response', () => {
+  it('returns alerts when there is a valid PersonalSign confirmation with a security alert response', () => {
     const alertResponseExpected = {
       key: mockSecurityAlertResponse.securityAlertId,
       severity: Severity.Danger,
@@ -83,6 +87,9 @@ describe('usePersonalSignAlerts', () => {
       provider: SecurityProvider.Blockaid,
       reason: 'This is a deceptive request',
     };
+    (useSignatureSecurityAlertResponse as jest.Mock).mockReturnValue(
+      mockSecurityAlertResponse,
+    );
     const { result } = renderHookWithProvider(
       () => usePersonalSignAlerts(),
       mockExpectedState,

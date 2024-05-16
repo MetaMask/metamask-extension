@@ -163,9 +163,9 @@ function AlertDetails({
       >
         {customAlertDetails ?? (
           <>
-            <Text variant={TextVariant.bodySm}>{selectedAlert.message}</Text>
+            <Text variant={TextVariant.bodyMd}>{selectedAlert.message}</Text>
             {selectedAlert.alertDetails?.length ? (
-              <Text variant={TextVariant.bodySmBold} marginTop={1}>
+              <Text variant={TextVariant.bodyMdBold} marginTop={1}>
                 {t('alertModalDetails')}
               </Text>
             ) : null}
@@ -176,7 +176,7 @@ function AlertDetails({
             >
               {selectedAlert.alertDetails?.map((detail, index) => (
                 <Box as="li" key={`${selectedAlert.key}-detail-${index}`}>
-                  <Text variant={TextVariant.bodySm}>{detail}</Text>
+                  <Text variant={TextVariant.bodyMd}>{detail}</Text>
                 </Box>
               ))}
             </Box>
