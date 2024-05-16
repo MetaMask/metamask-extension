@@ -30,6 +30,7 @@ export const NotificationDetailsBody = ({
       )}
       {body.type === 'body_onchain_notification' && (
         <>
+          {body.Image && <body.Image notification={notification} />}
           {body.From && <body.From notification={notification} />}
           {body.To && <body.To notification={notification} />}
           {body.Asset && <body.Asset notification={notification} />}
