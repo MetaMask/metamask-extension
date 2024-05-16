@@ -3494,9 +3494,6 @@
   "snaps": {
     "message": "Snaps"
   },
-  "snapsInvalidUIError": {
-    "message": "Snap द्वारा निर्दिष्ट किया गया UI ग़लत है।"
-  },
   "snapsNoInsight": {
     "message": "Snap ने कोई इनसाइट नहीं लौटाई"
   },

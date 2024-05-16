@@ -3494,9 +3494,6 @@
   "snaps": {
     "message": "스냅"
   },
-  "snapsInvalidUIError": {
-    "message": "스냅에서 지정한 UI가 올바르지 않습니다."
-  },
   "snapsNoInsight": {
     "message": "스냅이 인사이트를 가져오지 못했습니다"
   },
