@@ -1116,9 +1116,6 @@
   "currencySymbolDefinition": {
     "message": "इस नेटवर्क की करेंसी के लिए दिखाया गया टिकर सिंबल।"
   },
-  "currentAccountNotConnected": {
-    "message": "आपका चालू अकाउंट कनेक्ट नहीं है"
-  },
   "currentExtension": {
     "message": "वर्तमान एक्सटेंशन पेज"
   },

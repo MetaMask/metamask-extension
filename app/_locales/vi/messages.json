@@ -1116,9 +1116,6 @@
   "currencySymbolDefinition": {
     "message": "Mã chứng khoán hiển thị cho tiền tệ của mạng này."
   },
-  "currentAccountNotConnected": {
-    "message": "Tài khoản hiện tại của bạn chưa được kết nối"
-  },
   "currentExtension": {
     "message": "Trang tiện ích mở rộng hiện tại"
   },

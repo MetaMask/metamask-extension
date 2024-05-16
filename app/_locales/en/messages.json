@@ -1160,9 +1160,6 @@
   "currencySymbolDefinition": {
     "message": "The ticker symbol displayed for this network’s currency."
   },
-  "currentAccountNotConnected": {
-    "message": "Your current account is not connected"
-  },
   "currentExtension": {
     "message": "Current extension page"
   },

@@ -464,9 +464,6 @@
   "currencySymbolDefinition": {
     "message": "El símbolo bursátil que se muestra para la moneda de esta red."
   },
-  "currentAccountNotConnected": {
-    "message": "La cuenta actual no está conectada"
-  },
   "currentExtension": {
     "message": "Página de extensión actual"
   },

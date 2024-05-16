@@ -564,9 +564,6 @@
   "currencySymbolDefinition": {
     "message": "Il simbolo del ticker visualizzato per la valuta di questa rete."
   },
-  "currentAccountNotConnected": {
-    "message": "Il tuo account corrente non è connesso"
-  },
   "currentExtension": {
     "message": "Pagina estensione corrente"
   },

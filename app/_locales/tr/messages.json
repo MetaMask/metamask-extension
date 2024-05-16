@@ -1119,9 +1119,6 @@
   "currencySymbolDefinition": {
     "message": "Bu ağın para birimi için görüntülenen sembol."
   },
-  "currentAccountNotConnected": {
-    "message": "Mevcut hesabınız bağlı değil"
-  },
   "currentExtension": {
     "message": "Mevcut uzantı sayfası"
   },

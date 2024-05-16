@@ -330,9 +330,6 @@
   "currencySymbolDefinition": {
     "message": "Ang simbolo ng ticker na ipinapakita para sa currency ng network na ito."
   },
-  "currentAccountNotConnected": {
-    "message": "Hindi nakakonekta ang kasalukuyan mong account"
-  },
   "currentExtension": {
     "message": "Kasalukuyang extension page"
   },

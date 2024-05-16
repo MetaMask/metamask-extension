@@ -323,9 +323,6 @@
   "currencySymbolDefinition": {
     "message": "用來代表這個網路的貨幣的代碼。"
   },
-  "currentAccountNotConnected": {
-    "message": "您目前的帳戶並未連結"
-  },
   "currentExtension": {
     "message": "目前擴充功能頁面"
   },

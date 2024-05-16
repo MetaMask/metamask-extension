@@ -1116,9 +1116,6 @@
   "currencySymbolDefinition": {
     "message": "このネットワークの通貨に対して表示されるティッカーシンボル。"
   },
-  "currentAccountNotConnected": {
-    "message": "現在のアカウントは接続されていません"
-  },
   "currentExtension": {
     "message": "現在の拡張機能ページ"
   },

@@ -1119,9 +1119,6 @@
   "currencySymbolDefinition": {
     "message": "O símbolo do ticker exibido para a moeda dessa rede."
   },
-  "currentAccountNotConnected": {
-    "message": "Sua conta atual não está conectada"
-  },
   "currentExtension": {
     "message": "Página atual da extensão"
   },

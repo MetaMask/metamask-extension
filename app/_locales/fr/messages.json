@@ -1119,9 +1119,6 @@
   "currencySymbolDefinition": {
     "message": "Le code mnémo affiché pour la devise de ce réseau."
   },
-  "currentAccountNotConnected": {
-    "message": "Votre compte actuel n’est pas connecté"
-  },
   "currentExtension": {
     "message": "Page d’extension actuelle"
   },

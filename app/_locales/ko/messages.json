@@ -1116,9 +1116,6 @@
   "currencySymbolDefinition": {
     "message": "이 네트워크의 통화를 표시하는 티커 기호입니다."
   },
-  "currentAccountNotConnected": {
-    "message": "현재 계정이 연결되어 있지 있습니다."
-  },
   "currentExtension": {
     "message": "현재 확장 페이지"
   },

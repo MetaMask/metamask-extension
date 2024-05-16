@@ -1119,9 +1119,6 @@
   "currencySymbolDefinition": {
     "message": "Das Ticker-Symbol, das für die Währung dieses Netzwerks angezeigt wird."
   },
-  "currentAccountNotConnected": {
-    "message": "Ihr aktuelles Konto ist nicht verbunden."
-  },
   "currentExtension": {
     "message": "Aktuelle Erweiterungsseite"
   },

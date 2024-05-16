@@ -1119,9 +1119,6 @@
   "currencySymbolDefinition": {
     "message": "Тикер, который отображается для валюты этой сети."
   },
-  "currentAccountNotConnected": {
-    "message": "Ваша текущий счет не подключен"
-  },
   "currentExtension": {
     "message": "Страница текущего расширения"
   },

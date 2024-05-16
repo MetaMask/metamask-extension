@@ -1116,9 +1116,6 @@
   "currencySymbolDefinition": {
     "message": "此网络的货币显示的股票代码。"
   },
-  "currentAccountNotConnected": {
-    "message": "您的当前账户没有连接"
-  },
   "currentExtension": {
     "message": "当前扩展程序页面"
   },
