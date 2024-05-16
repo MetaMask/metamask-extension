@@ -11,6 +11,7 @@ const {
 const cssToXPath = require('css-to-xpath');
 const { sprintf } = require('sprintf-js');
 const { retry } = require('../../../development/lib/retry');
+const { quoteXPathText } = require('../../helpers/quoteXPathText');
 
 const PAGES = {
   BACKGROUND: 'background',
@@ -186,17 +187,10 @@ class Driver {
           .toXPath();
         return By.xpath(xpath);
       }
-      // If the text to be selected contains single or double quotation marks
-      // it can cause the xpath selector to be invalid. `textToLocate` results
-      // in a string that won't be invalidated by the presence of quotation
-      // marks within the text the test is trying to find
-      const textToLocate = locator.text.match(/"/u)
-        ? `'${locator.text}'`
-        : `"${locator.text}"`;
+
+      const quoted = quoteXPathText(locator.text);
       // The tag prop is optional and further refines which elements match
-      return By.xpath(
-        `//${locator.tag ?? '*'}[contains(text(), ${textToLocate})]`,
-      );
+      return By.xpath(`//${locator.tag ?? '*'}[contains(text(), ${quoted})]`);
     }
     throw new Error(
       `The locator '${locator}' is not supported by the E2E test driver`,
