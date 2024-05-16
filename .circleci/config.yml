@@ -483,7 +483,17 @@ jobs:
           at: .
       - run:
           name: Fetch changed files
-          command: .circleci/scripts/fetch-changed-files.sh
+          command: |
+            #!/bin/bash
+            set -e
+            set -u
+            set -o pipefail
+
+            git fetch
+
+            DIFF_RESULT=$(git diff --name-only origin/develop..."$CIRCLE_SHA1")
+            echo "$DIFF_RESULT"
+            fi
   validate-lavamoat-allow-scripts:
     executor: node-browsers-small
     steps:
