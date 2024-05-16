@@ -1,11 +1,11 @@
 import { ObservableStore } from '@metamask/obs-store';
-import { normalize as normalizeAddress } from '@metamask/eth-sig-util';
 import {
   CHAIN_IDS,
   IPFS_DEFAULT_GATEWAY_URL,
 } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
+import { normalizeAddress } from '../lib/util';
 
 const mainNetworks = {
   [CHAIN_IDS.MAINNET]: true,

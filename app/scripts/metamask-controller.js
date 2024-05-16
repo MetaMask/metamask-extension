@@ -1936,9 +1936,9 @@ export default class MetamaskController extends EventEmitter {
     this.chainController = new ChainController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'ChainController',
+        allowedActions: ['SnapController:handleRequest'],
       }),
       state: initState.ChainController,
-      getSnapController: () => this.snapController,
     });
 
     this.metamaskMiddleware = createMetamaskMiddleware({
