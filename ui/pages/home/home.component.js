@@ -790,7 +790,18 @@ export default class Home extends PureComponent {
           gap={2}
           margin={4}
         >
-          <Typography>{t('onboardedMetametricsParagraph1')}</Typography>
+          <Typography>
+            {t('onboardedMetametricsParagraph1', [
+              <a
+                href="https://support.metamask.io/privacy-and-security/how-to-manage-your-metametrics-settings/"
+                target="_blank"
+                rel="noopener noreferrer"
+                key="retention-link"
+              >
+                {t('onboardedMetametricsLink')}
+              </a>,
+            ])}
+          </Typography>
           <Typography>{t('onboardedMetametricsParagraph2')}</Typography>
           <ul className="home__onboarding_list">
             <li>{t('onboardedMetametricsKey1')}</li>
