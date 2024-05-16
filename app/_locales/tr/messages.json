@@ -3481,9 +3481,6 @@
   "snaps": {
     "message": "Snapler"
   },
-  "snapsInvalidUIError": {
-    "message": "Snap tarafından belirtilen kullanıcı arayüzü geçersiz."
-  },
   "snapsNoInsight": {
     "message": "Snap herhangi bir ayrıntıya ulaşamadı"
   },

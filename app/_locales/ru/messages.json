@@ -3481,9 +3481,6 @@
   "snaps": {
     "message": "Snaps"
   },
-  "snapsInvalidUIError": {
-    "message": "Пользовательский интерфейс, указанный snap, недействителен."
-  },
   "snapsNoInsight": {
     "message": "Этот snap не выдал никакой аналитики"
   },

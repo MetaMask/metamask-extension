@@ -3481,9 +3481,6 @@
   "snaps": {
     "message": "Snap"
   },
-  "snapsInvalidUIError": {
-    "message": "UI yang ditentukan oleh snap tidak valid."
-  },
   "snapsNoInsight": {
     "message": "Snap tidak mengembalikan wawasan apa pun"
   },
