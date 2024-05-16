@@ -58,6 +58,10 @@ async function retry(
     }
   }
 
+  if (retryUntilFailure) {
+    return null;
+  }
+
   throw new Error(rejectionMessage);
 }
 

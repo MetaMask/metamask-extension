@@ -10,7 +10,7 @@ const headers = {
   'X-GitHub-Api-Version': '2022-11-28',
 };
 
-async function fetchFilesChanged() {
+async function fetchTestFilesChanged() {
   try {
     const response = await axios.get(GH_API_URL, { headers });
     const filesChanged = response.data
@@ -29,4 +29,4 @@ async function fetchFilesChanged() {
   }
 }
 
-module.exports = { fetchFilesChanged };
+module.exports = { fetchTestFilesChanged };

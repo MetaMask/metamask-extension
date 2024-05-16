@@ -6,7 +6,7 @@ const { hideBin } = require('yargs/helpers');
 const { runInShell } = require('../../development/lib/run-command');
 const { exitWithError } = require('../../development/lib/exit-with-error');
 const { loadBuildTypesConfig } = require('../../development/lib/build-type');
-const { fetchFilesChanged } = require('./fetch-e2e-file-changes');
+const { fetchTestFilesChanged } = require('./fetch-e2e-file-changes');
 
 // These tests should only be run on Flask for now.
 const FLASK_ONLY_TESTS = ['test-snap-namelookup.spec.js'];
@@ -213,17 +213,23 @@ async function main() {
 
   console.log('My test list:', myTestList);
 
-  const changedOrNewTests = await fetchFilesChanged();
+  const changedOrNewTests = await fetchTestFilesChanged();
 
   // spawn `run-e2e-test.js` for each test in myTestList
   for (let testPath of myTestList) {
     if (testPath !== '') {
       testPath = testPath.replace('\n', ''); // sometimes there's a newline at the end of the testPath
       console.log(`\nExecuting testPath: ${testPath}\n`);
+
       const testFileName = testPath.split('/').pop();
-      const isChangedOrNew = changedOrNewTests.includes(testFileName);
-      const extraArgs = isChangedOrNew
-        ? ['--retry-until-failure=true', '--retries=5']
+      const isTestChangedOrNew = changedOrNewTests.includes(testFileName);
+      const retryIndex = args.indexOf('--retries');
+      if (retryIndex !== -1) {
+        args.splice(retryIndex, 2);
+      }
+
+      const extraArgs = isTestChangedOrNew
+        ? ['--retry-until-failure', '--retries=5']
         : [];
       await runInShell('node', [...args, ...extraArgs, testPath]);
     }
