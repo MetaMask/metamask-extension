@@ -348,18 +348,9 @@
     "message": "Tüm $1 NFT'leriniz",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
-  "allowExternalExtensionTo": {
-    "message": "Bu harici uzantının şunu yapmasına izin ver:"
-  },
   "allowSpendToken": {
     "message": "$1 erişimine izin ver?",
     "description": "$1 is the symbol of the token that are requesting to spend"
-  },
-  "allowThisSiteTo": {
-    "message": "Bu sitenin şunu yapmasına izin ver:"
-  },
-  "allowThisSnapTo": {
-    "message": "Bu snap için şuna izin verin:"
   },
   "allowWithdrawAndSpend": {
     "message": "$1 için şu tutara kadar para çekme ve harcama izni ver:",
@@ -742,26 +733,6 @@
   "connectSnap": {
     "message": "Şuna bağlanın: $1",
     "description": "$1 is the snap for which a connection is being requested."
-  },
-  "connectTo": {
-    "message": "$1 uygulamasına bağlan",
-    "description": "$1 is the name/origin of a web3 site/application that the user can connect to metamask"
-  },
-  "connectToAll": {
-    "message": "Tümüne bağlan: $1",
-    "description": "$1 will be replaced by the translation of connectToAllAccounts"
-  },
-  "connectToAllAccounts": {
-    "message": "hesaplar",
-    "description": "will replace $1 in connectToAll, completing the sentence 'connect to all of your accounts', will be text that shows list of accounts on hover"
-  },
-  "connectToMultiple": {
-    "message": "Bağlan: $1",
-    "description": "$1 will be replaced by the translation of connectToMultipleNumberOfAccounts"
-  },
-  "connectToMultipleNumberOfAccounts": {
-    "message": "$1 hesap",
-    "description": "$1 is the number of accounts to which the web3 site/application is asking to connect; this will substitute $1 in connectToMultiple"
   },
   "connectWithMetaMask": {
     "message": "MetaMask ile Bağlan"
@@ -1649,12 +1620,6 @@
   },
   "general": {
     "message": "Genel"
-  },
-  "globalTitle": {
-    "message": "Genel menü"
-  },
-  "globalTourDescription": {
-    "message": "Portföyünüze, bağlı sitelere, ayarlara ve daha fazlasına bakın"
   },
   "goBack": {
     "message": "Geri git"
@@ -2562,21 +2527,6 @@
   "notificationsMarkAllAsRead": {
     "message": "Tümünü okundu olarak işaretle"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "Daha fazla bilgi edinin"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "MetaMask Snaps'in Açık Beta sürümünü duyurmaktan heyecan duyuyoruz!"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "Geliştirici topluluğu tarafından oluşturulan snap'lerle cüzdanınızı kişiselleştirin!"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "Snap'ler MetaMask ile daha fazla ağa bağlanma, işlem içgörülerini görme ve kişisel bildirimler alma gibi daha çok şey yapmanıza yardımcı olur."
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "MetaMask Snaps tanıtımı"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "Bu hesapta $1 yeni token bulundu",
     "description": "$1 is the number of new tokens detected"
@@ -2629,50 +2579,50 @@
   "onboardingMetametricsAgree": {
     "message": "Kabul ediyorum"
   },
-  "onboardingMetametricsAllowOptOut": {
+  "onboardingMetametricsAllowOptOutLegacy": {
     "message": "Her zaman Ayarlar kısmından vazgeçebilmenize izin verir"
   },
-  "onboardingMetametricsDataTerms": {
+  "onboardingMetametricsDataTermsLegacy": {
     "message": "Bu veriler toplanmıştır ve bu nedenle 2016/679 sayılı Genel Veri Koruma Tüzüğü (AB) maksadıyla isimsizdir."
   },
-  "onboardingMetametricsDescription": {
-    "message": "MetaMask kullanıcılarımızn MetaMask ile nasıl etkileşimde bulunduklarını daha iyi anlamak amacıyla kullanım verilerini toplamak ister. Bu veriler, hizmeti kullanımınıza göre geliştirmek de dahil olmak üzere hizmeti sunmak için kullanılacaktır."
-  },
-  "onboardingMetametricsDescription2": {
+  "onboardingMetametricsDescription2Legacy": {
     "message": "MetaMask..."
+  },
+  "onboardingMetametricsDescriptionLegacy": {
+    "message": "MetaMask kullanıcılarımızn MetaMask ile nasıl etkileşimde bulunduklarını daha iyi anlamak amacıyla kullanım verilerini toplamak ister. Bu veriler, hizmeti kullanımınıza göre geliştirmek de dahil olmak üzere hizmeti sunmak için kullanılacaktır."
   },
   "onboardingMetametricsDisagree": {
     "message": "Hayır, istemiyorum"
   },
-  "onboardingMetametricsInfuraTerms": {
+  "onboardingMetametricsInfuraTermsLegacy": {
     "message": "* MetaMask'te varsayılan RPC sağlayıcınız olarak Infura'yı kullandığınızda, siz bir işlem gönderdiğinizde Infura tarafından IP adresiniz ve Ethereum cüzdan adresiniz toplanır. Bu bilgileri sistemlerimizin bu iki veri parçasını ilişkilendirebilmesini sağlayan şekilde saklamayız. MetaMask ve Infura'nın veri toplama açısından nasıl etkileşimde bulundukları hakkında daha fazla bilgi için lütfen güncel $1 bölümümüze bakın. Genel olarak gizlilik uygulamalarımız hakkında daha fazla bilgi için $2 bölümümüze bakın.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
-  "onboardingMetametricsInfuraTermsPolicy": {
+  "onboardingMetametricsInfuraTermsPolicyLegacy": {
     "message": "buradan Gizlilik Politikası"
   },
-  "onboardingMetametricsInfuraTermsPolicyLink": {
+  "onboardingMetametricsInfuraTermsPolicyLinkLegacy": {
     "message": "burada"
   },
   "onboardingMetametricsModalTitle": {
     "message": "Özel ağ ekle"
   },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 ihtiyacımız olmayan bilgileri (anahtarlar, adresler, işlem hash değerleri veya bakiyeler gibi) hizmeti sunmak için toplar",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectIP": {
+  "onboardingMetametricsNeverCollectIPLegacy": {
     "message": "$1 tam IP adresinizi toplar*",
     "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
   },
-  "onboardingMetametricsNeverEmphasis": {
+  "onboardingMetametricsNeverCollectLegacy": {
+    "message": "$1 ihtiyacımız olmayan bilgileri (anahtarlar, adresler, işlem hash değerleri veya bakiyeler gibi) hizmeti sunmak için toplar",
+    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
+  },
+  "onboardingMetametricsNeverEmphasisLegacy": {
     "message": "Hiçbir Zaman"
   },
-  "onboardingMetametricsNeverSellData": {
+  "onboardingMetametricsNeverSellDataLegacy": {
     "message": "$1 verileri satmaz. Asla!",
     "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
   },
-  "onboardingMetametricsSendAnonymize": {
+  "onboardingMetametricsSendAnonymizeLegacy": {
     "message": "İsimsiz tıklama ve sayfa görüntüleme etkinlikleri gönder"
   },
   "onboardingMetametricsTitle": {
@@ -2722,7 +2672,8 @@
     "message": "Kötü amaçlı bir ağ sağlayıcı blokzinciri durumu hakkında yalan söyleyebilir ve ağ aktivitenizi kaydedebilir. Sadece güvendiğiniz özel ağları ekleyin."
   },
   "onlyConnectTrust": {
-    "message": "Sadece güvendiğiniz sitelere bağlayın."
+    "message": "Sadece güvendiğiniz sitelere bağlayın.",
+    "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
   "openFullScreenForLedgerWebHid": {
     "message": "Ledger'ınızı bağlamak için tam ekrana gidin.",
@@ -2819,9 +2770,6 @@
   "permissionRequest": {
     "message": "İzin talebi"
   },
-  "permissionRequestCapitalized": {
-    "message": "İzin talebi"
-  },
   "permissionRequested": {
     "message": "Şimdi talep edildi"
   },
@@ -2902,12 +2850,6 @@
   },
   "permissions": {
     "message": "İzinler"
-  },
-  "permissionsTitle": {
-    "message": "İzinler"
-  },
-  "permissionsTourDescription": {
-    "message": "Burada bağlı hesaplarınızı bulun ve izinleri yönetin"
   },
   "personalAddressDetected": {
     "message": "Kişisel adres algılandı. Token sözleşme adresini girin."
@@ -3264,9 +3206,6 @@
   "securityAlerts": {
     "message": "Güvenlik uyarıları"
   },
-  "securityAlertsDescription": {
-    "message": "Bu özellik, işlem ve imza taleplerinizi aktif bir şekilde incelerken gizliliğinizi koruyarak Ethereum Ana Ağındaki kötü amaçlı faaliyetlere karşı sizi uyarır. Verileriniz, bu hizmeti sunan üçüncü taraf ile paylaşılmaz. Talepleri onaylamadan önce her zaman gereken özeni kendiniz gösterin. Bu özelliğin tüm kötü amaçlı faaliyetleri algılayacağına dair herhangi bir garanti bulunmamaktadır."
-  },
   "securityAndPrivacy": {
     "message": "Güvenlik ve gizlilik"
   },
@@ -3498,12 +3437,6 @@
   "smartContracts": {
     "message": "Akıllı sözleşmeler"
   },
-  "smartSwapsAreHere": {
-    "message": "Akıllı Swap'lar burada!"
-  },
-  "smartSwapsDescription": {
-    "message": "MetaMask Swap işlemleri artık çok daha akıllı! Akıllı Swap'ları etkinleştirmek, MetaMask'in aşağıdakilere yardımcı olmak için Swap'ini programlı olarak optimize etmesine olanak tanır:"
-  },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Akıllı swap için yeterli para yok."
   },
@@ -3520,10 +3453,6 @@
   },
   "snapDetailWebsite": {
     "message": "Web Sitesi"
-  },
-  "snapInstallRequest": {
-    "message": "$1 yüklendiğinde aşağıdaki izinler verilir. Sadece $1 adlı snape güveniyorsanız devam edin.",
-    "description": "$1 is the snap name."
   },
   "snapInstallSuccess": {
     "message": "Yükleme tamamlandı"
@@ -3564,9 +3493,6 @@
   },
   "snaps": {
     "message": "Snapler"
-  },
-  "snapsInvalidUIError": {
-    "message": "Snap tarafından belirtilen kullanıcı arayüzü geçersiz."
   },
   "snapsNoInsight": {
     "message": "Snap herhangi bir ayrıntıya ulaşamadı"
@@ -3782,18 +3708,6 @@
   },
   "strong": {
     "message": "Güçlü"
-  },
-  "stxBenefit1": {
-    "message": "İşlem maliyetlerini en aza indir"
-  },
-  "stxBenefit2": {
-    "message": "İşlem hatalarını azalt"
-  },
-  "stxBenefit3": {
-    "message": "Sıkışmış işlemleri ortadan kaldır"
-  },
-  "stxBenefit4": {
-    "message": "Önden çalıştırmayı engelle"
   },
   "stxCancelled": {
     "message": "Swap işlemi başarısız olurdu"
@@ -4284,12 +4198,6 @@
   "switchedTo": {
     "message": "Şuna geçiş yaptınız:"
   },
-  "switcherTitle": {
-    "message": "Ağ değiştirici"
-  },
-  "switcherTourDescription": {
-    "message": "Ağ değiştirmek veya yeni bir ağ eklemek için simgeye tıklayın"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Ağ değiştirmek bekleyen tüm onayları iptal eder"
   },
@@ -4725,7 +4633,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "$1 ögesini $2 üzerinde görüntüle",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "Etherscan'de $1 görüntüle",
@@ -4828,10 +4736,6 @@
   },
   "whatsThis": {
     "message": "Bu nedir?"
-  },
-  "xOfY": {
-    "message": "$1 / $2",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total, and $1 is a count towards that total"
   },
   "xOfYPending": {
     "message": "$1 / $2 bekliyor",

@@ -8,6 +8,7 @@ import React, {
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
+import Fuse from 'fuse.js';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -21,6 +22,7 @@ import {
   ButtonVariant,
   Box,
   Text,
+  TextFieldSearch,
 } from '../../../components/component-library';
 import {
   AlignItems,
@@ -36,13 +38,17 @@ import {
   TextAlign,
   TextVariant,
   BackgroundColor,
+  Size,
 } from '../../../helpers/constants/design-system';
 import {
   CUSTODY_ACCOUNT_DONE_ROUTE,
   CUSTODY_ACCOUNT_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
-import { getCurrentChainId, getSelectedAddress } from '../../../selectors';
+import {
+  getCurrentChainId,
+  getSelectedInternalAccount,
+} from '../../../selectors';
 import { getMMIConfiguration } from '../../../selectors/institutional/selectors';
 import { getInstitutionalConnectRequests } from '../../../ducks/institutional/institutional';
 import CustodyAccountList from '../connect-custody/account-list';
@@ -54,9 +60,8 @@ import {
 import PulseLoader from '../../../components/ui/pulse-loader/pulse-loader';
 import ConfirmConnectCustodianModal from '../confirm-connect-custodian-modal';
 import { findCustodianByEnvName } from '../../../helpers/utils/institutional/find-by-custodian-name';
-import { setSelectedAddress } from '../../../store/actions';
-
-const GK8_DISPLAY_NAME = 'gk8';
+import { setSelectedInternalAccount } from '../../../store/actions';
+import QRCodeModal from '../../../components/institutional/qr-code-modal/qr-code-modal';
 
 const CustodyPage = () => {
   const t = useI18nContext();
@@ -86,12 +91,34 @@ const CustodyPage = () => {
   const [jwtList, setJwtList] = useState([]);
   const [addNewTokenClicked, setAddNewTokenClicked] = useState(false);
   const [chainId, setChainId] = useState(parseInt(currentChainId, 16));
-  const connectRequests = useSelector(getInstitutionalConnectRequests, isEqual);
   const [accounts, setAccounts] = useState();
-  const address = useSelector(getSelectedAddress);
+  const [showQRCodeModal, setShowQRCodeModal] = useState(false);
+  const [qrConnectionRequest, setQrConnectionRequest] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const connectRequests = useSelector(getInstitutionalConnectRequests, isEqual);
+  const { address } = useSelector(getSelectedInternalAccount);
   const connectRequest = connectRequests ? connectRequests[0] : undefined;
   const isCheckBoxSelected =
     accounts && Object.keys(selectedAccounts).length === accounts.length;
+  const custodianURL =
+    matchedCustodian?.onboardingUrl || matchedCustodian?.website;
+
+  let searchResults = accounts;
+
+  if (searchQuery) {
+    const fuse = new Fuse(accounts, {
+      threshold: 0.0,
+      location: 0,
+      distance: 100,
+      maxPatternLength: 32,
+      minMatchCharLength: 1,
+      tokenize: true,
+      matchAllTokens: true,
+      keys: ['name', 'address'],
+    });
+
+    searchResults = fuse.search(searchQuery);
+  }
 
   const custodianButtons = useMemo(() => {
     const custodianItems = [];
@@ -140,15 +167,13 @@ const CustodyPage = () => {
         setCurrentJwt(jwtListValue[0] || '');
         setJwtList(jwtListValue);
 
-        // open confirm Connect Custodian modal except for gk8
-        if (
-          custodianByDisplayName?.displayName?.toLocaleLowerCase() ===
-          GK8_DISPLAY_NAME
-        ) {
+        if (custodianByDisplayName.isManualTokenInputSupported) {
           setSelectedCustodianType(custodian.type);
         } else {
           setMatchedCustodian(custodianByDisplayName);
-          setIsConfirmConnectCustodianModalVisible(true);
+          custodianByDisplayName.isQRCodeSupported
+            ? setShowQRCodeModal(true)
+            : setIsConfirmConnectCustodianModalVisible(true);
         }
 
         trackEvent({
@@ -252,15 +277,27 @@ const CustodyPage = () => {
     [selectedCustodianName, trackEvent],
   );
 
-  useEffect(() => {
-    const fetchConnectRequest = async () => {
+  const removeConnectRequest = async () => {
+    if (connectRequest) {
+      await dispatch(
+        mmiActions.removeAddTokenConnectRequest({
+          origin: connectRequest.origin,
+          environment: connectRequest.environment,
+          token: connectRequest.token,
+        }),
+      );
+    }
+  };
+
+  const fetchConnectRequest = useCallback(
+    async (connectionRequest) => {
       try {
-        if (connectRequest && Object.keys(connectRequest).length) {
+        if (connectionRequest && Object.keys(connectionRequest).length) {
           const {
             token,
             environment: custodianName, // this is the env name
             service: custodianType,
-          } = connectRequest;
+          } = connectionRequest;
 
           const custodianToken =
             token || (await dispatch(mmiActions.getCustodianToken(address)));
@@ -269,6 +306,7 @@ const CustodyPage = () => {
           setSelectedCustodianType(custodianType);
           setSelectedCustodianName(custodianName || custodianType);
           setConnectError('');
+          setQrConnectionRequest(null);
 
           const accountsValue = await dispatch(
             mmiActions.getCustodianAccounts(
@@ -294,11 +332,21 @@ const CustodyPage = () => {
         console.error(error);
         handleConnectError(error);
       }
-    };
+    },
+    [
+      address,
+      connectRequest,
+      dispatch,
+      handleConnectError,
+      mmiActions,
+      trackEvent,
+    ],
+  );
 
+  useEffect(() => {
     const handleFetchConnectRequest = () => {
       setLoading(true);
-      fetchConnectRequest().finally(() => setLoading(false));
+      fetchConnectRequest(connectRequest).finally(() => setLoading(false));
     };
 
     handleFetchConnectRequest();
@@ -333,7 +381,15 @@ const CustodyPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentChainId]);
 
-  const cancelConnectCustodianToken = () => {
+  useEffect(() => {
+    if (qrConnectionRequest) {
+      setLoading(true);
+      fetchConnectRequest(qrConnectionRequest).finally(() => setLoading(false));
+    }
+  }, [fetchConnectRequest, qrConnectionRequest]);
+
+  const cancelConnectCustodianToken = async () => {
+    await removeConnectRequest();
     setSelectedCustodianName('');
     setSelectedCustodianType('');
     setSelectedCustodianImage(null);
@@ -518,6 +574,7 @@ const CustodyPage = () => {
                       );
 
                       setAccounts(accountsValue);
+                      await removeConnectRequest();
                       trackEvent({
                         category: MetaMetricsEventCategory.MMI,
                         event: MetaMetricsEventName.CustodianConnected,
@@ -545,7 +602,7 @@ const CustodyPage = () => {
       {accounts && accounts.length > 0 && (
         <CustodyAccountList
           custody={selectedCustodianName}
-          accounts={accounts}
+          accounts={searchResults}
           onAccountChange={(account) => {
             setSelectedAccounts((prevSelectedAccounts) => {
               const updatedSelectedAccounts = { ...prevSelectedAccounts };
@@ -573,7 +630,7 @@ const CustodyPage = () => {
               const selectedCustodian = custodians.find(
                 (custodian) => custodian.envName === selectedCustodianName,
               );
-              const firstAccountKey = Object.keys(selectedAccounts).shift();
+              const firstAccountId = Object.keys(selectedAccounts).shift();
 
               await dispatch(
                 mmiActions.connectCustodyAddresses(
@@ -583,7 +640,7 @@ const CustodyPage = () => {
                 ),
               );
 
-              dispatch(setSelectedAddress(firstAccountKey.toLowerCase()));
+              dispatch(setSelectedInternalAccount(firstAccountId));
 
               trackEvent({
                 category: MetaMetricsEventCategory.MMI,
@@ -594,6 +651,8 @@ const CustodyPage = () => {
                   chainId,
                 },
               });
+
+              await removeConnectRequest();
 
               history.push({
                 pathname: CUSTODY_ACCOUNT_DONE_ROUTE,
@@ -610,7 +669,8 @@ const CustodyPage = () => {
               setSelectError(e.message);
             }
           }}
-          onCancel={() => {
+          onCancel={async () => {
+            await removeConnectRequest();
             setAccounts(null);
             setSelectedCustodianName(null);
             setSelectedCustodianType(null);
@@ -633,10 +693,25 @@ const CustodyPage = () => {
         >
           <Box paddingTop={4} paddingBottom={4} width={BlockSize.Full}>
             <Text as="h4">{t('selectAnAccount')}</Text>
-            <Text marginTop={2} marginBottom={2}>
-              {t('selectAnAccountHelp')}
-            </Text>
+            <Text marginTop={2}>{t('selectAnAccountHelp')}</Text>
           </Box>
+          {/* Search box */}
+          {accounts.length > 1 ? (
+            <Box paddingBottom={4} paddingTop={0}>
+              <TextFieldSearch
+                size={Size.SM}
+                width={BlockSize.Full}
+                placeholder={t('searchAccounts')}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                clearButtonOnClick={() => setSearchQuery('')}
+                clearButtonProps={{
+                  size: Size.SM,
+                }}
+                inputProps={{ autoFocus: true }}
+              />
+            </Box>
+          ) : null}
           <Box
             paddingBottom={4}
             display={Display.Flex}
@@ -696,9 +771,18 @@ const CustodyPage = () => {
         <ConfirmConnectCustodianModal
           onModalClose={() => setIsConfirmConnectCustodianModalVisible(false)}
           custodianName={selectedCustodianDisplayName}
-          custodianURL={
-            matchedCustodian?.onboardingUrl || matchedCustodian?.website
-          }
+          custodianURL={custodianURL}
+        />
+      )}
+
+      {showQRCodeModal && (
+        <QRCodeModal
+          onClose={() => {
+            setShowQRCodeModal(false);
+          }}
+          custodianName={selectedCustodianDisplayName}
+          custodianURL={custodianURL}
+          setQrConnectionRequest={setQrConnectionRequest}
         />
       )}
     </Box>

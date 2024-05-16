@@ -8,7 +8,7 @@ const { difference } = require('lodash');
 const createStaticServer = require('../../development/create-static-server');
 const { tEn } = require('../lib/i18n-helpers');
 const { setupMocking } = require('./mock-e2e');
-const { Ganache } = require('./ganache');
+const { Ganache } = require('./seeder/ganache');
 const FixtureServer = require('./fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
@@ -57,7 +57,7 @@ async function withFixtures(options, testSuite) {
   const bundlerServer = new Bundler();
   const https = await mockttp.generateCACertificate();
   const mockServer = mockttp.getLocal({ https, cors: true });
-  let secondaryGanacheServer;
+  const secondaryGanacheServer = [];
   let numberOfDapps = dapp ? 1 : 0;
   const dappServer = [];
   const phishingPageServer = new PhishingWarningPageServer();
@@ -71,19 +71,28 @@ async function withFixtures(options, testSuite) {
 
     if (smartContract) {
       const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
-      await ganacheSeeder.deploySmartContract(smartContract);
+      const contracts =
+        smartContract instanceof Array ? smartContract : [smartContract];
+      await Promise.all(
+        contracts.map((contract) =>
+          ganacheSeeder.deploySmartContract(contract),
+        ),
+      );
       contractRegistry = ganacheSeeder.getContractRegistry();
     }
 
     if (ganacheOptions?.concurrent) {
-      const { port, chainId, ganacheOptions2 } = ganacheOptions.concurrent;
-      secondaryGanacheServer = new Ganache();
-      await secondaryGanacheServer.start({
-        blockTime: 2,
-        chain: { chainId },
-        port,
-        vmErrorsOnRPCResponse: false,
-        ...ganacheOptions2,
+      ganacheOptions.concurrent.forEach(async (ganacheSettings) => {
+        const { port, chainId, ganacheOptions2 } = ganacheSettings;
+        const server = new Ganache();
+        secondaryGanacheServer.push(server);
+        await server.start({
+          blockTime: 2,
+          chain: { chainId },
+          port,
+          vmErrorsOnRPCResponse: false,
+          ...ganacheOptions2,
+        });
       });
     }
 
@@ -172,6 +181,7 @@ async function withFixtures(options, testSuite) {
       secondaryGanacheServer,
       mockedEndpoint,
       bundlerServer,
+      mockServer,
     });
 
     const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
@@ -199,7 +209,7 @@ async function withFixtures(options, testSuite) {
       ...new Set([...privacyReport, ...privacySnapshot]),
     ].sort();
 
-    // To determine if a new host was requsted, we use the lodash difference
+    // To determine if a new host was requested, we use the lodash difference
     // method to generate an array of the items included in the first argument
     // but not in the second
     const newHosts = difference(mergedReport, privacySnapshot);
@@ -229,7 +239,10 @@ async function withFixtures(options, testSuite) {
       } catch (verboseReportError) {
         console.error(verboseReportError);
       }
-      if (driver.errors.length > 0 || driver.exceptions.length > 0) {
+      if (
+        process.env.E2E_LEAVE_RUNNING !== 'true' &&
+        (driver.errors.length > 0 || driver.exceptions.length > 0)
+      ) {
         /**
          * Navigate to the background
          * forcing background exceptions to be captured
@@ -251,7 +264,9 @@ async function withFixtures(options, testSuite) {
       await ganacheServer.quit();
 
       if (ganacheOptions?.concurrent) {
-        await secondaryGanacheServer.quit();
+        secondaryGanacheServer.forEach(async (server) => {
+          await server.quit();
+        });
       }
 
       if (useBundler) {
@@ -303,12 +318,12 @@ const WINDOW_TITLES = Object.freeze({
 });
 
 /**
- * @param {*} driver - selinium driver
+ * @param {*} driver - Selenium driver
  * @param {*} handlesCount - total count of windows that should be loaded
  * @returns handles - an object with window handles, properties in object represent windows:
- *            1. extension: metamask extension window
+ *            1. extension: MetaMask extension window
  *            2. dapp: test-app window
- *            3. popup: metsmask extension popup window
+ *            3. popup: MetaMask extension popup window
  */
 const getWindowHandles = async (driver, handlesCount) => {
   await driver.waitUntilXWindowHandles(handlesCount);
@@ -498,9 +513,17 @@ const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
   await driver.findElement({ text: 'Wallet creation successful', tag: 'h2' });
   // opt-out from third party API
   await driver.clickElement({ text: 'Advanced configuration', tag: 'a' });
+  await driver.clickElement(
+    '[data-testid="basic-functionality-toggle"] .toggle-button',
+  );
+  await driver.clickElement('[id="basic-configuration-checkbox"]');
+  await driver.clickElement({ text: 'Turn off', tag: 'button' });
+
   await Promise.all(
     (
-      await driver.findClickableElements('.toggle-button.toggle-button--on')
+      await driver.findClickableElements(
+        '.toggle-button.toggle-button--on:not([data-testid="basic-functionality-toggle"] .toggle-button)',
+      )
     ).map((toggle) => toggle.click()),
   );
   // complete onboarding
@@ -637,6 +660,16 @@ const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
     : await driver.openNewPage(dappURL);
 };
 
+const createDappTransaction = async (driver, transaction) => {
+  await openDapp(
+    driver,
+    null,
+    `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([
+      transaction,
+    ])}`,
+  );
+};
+
 const switchToOrOpenDapp = async (
   driver,
   contract = null,
@@ -669,7 +702,7 @@ const connectToDapp = async (driver) => {
     tag: 'button',
   });
   await driver.clickElement({
-    text: 'Connect',
+    text: 'Confirm',
     tag: 'button',
   });
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -680,6 +713,9 @@ const PRIVATE_KEY =
 
 const PRIVATE_KEY_TWO =
   '0xa444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8';
+
+const ACCOUNT_1 = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
+const ACCOUNT_2 = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
 
 const defaultGanacheOptions = {
   accounts: [{ secretKey: PRIVATE_KEY, balance: convertETHToHexGwei(25) }],
@@ -717,7 +753,7 @@ const generateGanacheOptions = ({
 };
 
 // Edit priority gas fee form
-const editGasfeeForm = async (driver, gasLimit, gasPrice) => {
+const editGasFeeForm = async (driver, gasLimit, gasPrice) => {
   const inputs = await driver.findElements('input[type="number"]');
   const gasLimitInput = inputs[0];
   const gasPriceInput = inputs[1];
@@ -830,16 +866,11 @@ const TEST_SEED_PHRASE_TWO =
 
 // Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or after txn is made
 const locateAccountBalanceDOM = async (driver, ganacheServer) => {
-  const balance = (await ganacheServer.getFiatBalance()).toLocaleString(
-    undefined,
-    {
-      minimumFractionDigits: 2,
-    },
-  );
+  const balance = await ganacheServer.getBalance();
 
   await driver.findElement({
     css: '[data-testid="eth-overview__primary-currency"]',
-    text: `$ ${balance} USD`,
+    text: `${balance} ETH`,
   });
 };
 
@@ -851,6 +882,7 @@ async function waitForAccountRendered(driver) {
 
 /**
  * Unlock the wallet with the default password.
+ * This method is intended to replace driver.navigate and should not be called after driver.navigate.
  *
  * @param {WebDriver} driver - The webdriver instance
  * @param {object} options - Options for unlocking the wallet
@@ -906,7 +938,7 @@ function genRandInitBal(minETHBal = 10, maxETHBal = 100, decimalPlaces = 4) {
 }
 
 /**
- * This method handles clicking the sign button on signature confrimation
+ * This method handles clicking the sign button on signature confirmation
  * screen.
  *
  * @param {WebDriver} driver
@@ -1069,7 +1101,7 @@ async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
 
     await bundlerServer.start();
   } catch (error) {
-    console.log('Failed to initialise bundler', error);
+    console.log('Failed to initialize bundler', error);
     throw error;
   }
 }
@@ -1081,6 +1113,8 @@ module.exports = {
   TEST_SEED_PHRASE_TWO,
   PRIVATE_KEY,
   PRIVATE_KEY_TWO,
+  ACCOUNT_1,
+  ACCOUNT_2,
   getWindowHandles,
   convertToHexValue,
   tinyDelayMs,
@@ -1102,6 +1136,7 @@ module.exports = {
   importWrongSRPOnboardingFlow,
   testSRPDropdownIterations,
   openDapp,
+  createDappTransaction,
   switchToOrOpenDapp,
   connectToDapp,
   multipleGanacheOptions,
@@ -1133,5 +1168,5 @@ module.exports = {
   genRandInitBal,
   openActionMenuAndStartSendFlow,
   getCleanAppState,
-  editGasfeeForm,
+  editGasFeeForm,
 };

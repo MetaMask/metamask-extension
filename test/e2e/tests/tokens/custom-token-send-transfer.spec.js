@@ -5,7 +5,7 @@ const {
   switchToNotificationWindow,
   openDapp,
   unlockWallet,
-  editGasfeeForm,
+  editGasFeeForm,
   WINDOW_TITLES,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
@@ -35,18 +35,7 @@ describe('Transfer custom tokens @no-mmi', function () {
           css: '[data-testid="multichain-token-list-item-value"]',
           text: '10 TST',
         });
-
-        // TODO: Simplify once MMI has the new asset page
-        try {
-          await driver.clickElement('[data-testid="eth-overview-send"]');
-        } catch {
-          const sendButton = await driver.findElement(
-            '[data-testid="asset-send-button"]',
-          );
-          await driver.scrollToElement(sendButton);
-          sendButton.click();
-        }
-
+        await driver.clickElement('[data-testid="eth-overview-send"]');
         await driver.fill(
           'input[placeholder="Enter public address (0x) or ENS name"]',
           recipientAddress,
@@ -94,7 +83,7 @@ describe('Transfer custom tokens @no-mmi', function () {
         // edit gas fee
         await driver.clickElement({ text: 'Details', tag: 'button' });
         await driver.clickElement({ text: 'Edit', tag: 'button' });
-        await editGasfeeForm(driver, '60000', '10');
+        await editGasFeeForm(driver, '60000', '10');
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         // check that transaction has completed correctly and is displayed in the activity list
@@ -139,11 +128,7 @@ describe('Transfer custom tokens @no-mmi', function () {
 
         // edit gas fee
         await driver.clickElement({ text: 'Edit', tag: 'button' });
-        await driver.clickElement(
-          { text: 'Edit suggested gas fee', tag: 'button' },
-          10000,
-        );
-        await editGasfeeForm(driver, '60000', '10');
+        await editGasFeeForm(driver, '60000', '10');
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         // in extension, check that transaction has completed correctly and is displayed in the activity list

@@ -1,22 +1,27 @@
+import { TransactionType } from '@metamask/transaction-controller';
 import React, { memo, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { TransactionType } from '@metamask/transaction-controller';
 import { Text } from '../../../../../components/component-library';
 import {
-  TextVariant,
   TextAlign,
   TextColor,
+  TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../../selectors';
+import { Confirmation } from '../../../types/confirm';
 
 const ConfirmTitle: React.FC = memo(() => {
   const t = useI18nContext();
-  const currentConfirmation = useSelector(currentConfirmationSelector);
+  const currentConfirmation = useSelector(
+    currentConfirmationSelector,
+  ) as Confirmation;
 
   const typeToTitleTKey: Partial<Record<TransactionType, string>> = useMemo(
     () => ({
       [TransactionType.personalSign]: t('confirmTitleSignature'),
+      [TransactionType.signTypedData]: t('confirmTitleSignature'),
+      [TransactionType.contractInteraction]: t('confirmTitleTransaction'),
     }),
     [],
   );
@@ -24,6 +29,10 @@ const ConfirmTitle: React.FC = memo(() => {
   const typeToDescTKey: Partial<Record<TransactionType, string>> = useMemo(
     () => ({
       [TransactionType.personalSign]: t('confirmTitleDescSignature'),
+      [TransactionType.signTypedData]: t('confirmTitleDescSignature'),
+      [TransactionType.contractInteraction]: t(
+        'confirmTitleDescContractInteractionTransaction',
+      ),
     }),
     [],
   );
@@ -32,8 +41,14 @@ const ConfirmTitle: React.FC = memo(() => {
     return null;
   }
 
-  const title = typeToTitleTKey[currentConfirmation.type];
-  const description = typeToDescTKey[currentConfirmation.type];
+  const title =
+    typeToTitleTKey[
+      currentConfirmation.type || TransactionType.contractInteraction
+    ];
+  const description =
+    typeToDescTKey[
+      currentConfirmation.type || TransactionType.contractInteraction
+    ];
 
   return (
     <>

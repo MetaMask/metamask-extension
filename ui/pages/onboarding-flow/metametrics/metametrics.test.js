@@ -9,6 +9,7 @@ import {
   onboardingMetametricsDisagree,
 } from '../../../../app/_locales/en/messages.json';
 import { setParticipateInMetaMetrics } from '../../../store/actions';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import OnboardingMetametrics from './metametrics';
 
 const mockPushHistory = jest.fn();
@@ -35,7 +36,7 @@ describe('Onboarding Metametrics Component', () => {
 
   const mockState = {
     metamask: {
-      firstTimeFlowType: 'create',
+      firstTimeFlowType: FirstTimeFlowType.create,
       participateInMetaMetrics: '',
     },
   };
@@ -91,5 +92,23 @@ describe('Onboarding Metametrics Component', () => {
         ONBOARDING_CREATE_PASSWORD_ROUTE,
       );
     });
+  });
+
+  it('should render the Onboarding component when the current date is after the new privacy policy date', () => {
+    jest.useFakeTimers().setSystemTime(new Date('2026-01-01'));
+    const { queryByTestId } = renderWithProvider(
+      <OnboardingMetametrics />,
+      mockStore,
+    );
+    expect(queryByTestId('onboarding-metametrics')).toBeInTheDocument();
+  });
+
+  it('should render the Legacy Onboarding component when the current date is before the new privacy policy date', () => {
+    jest.useFakeTimers().setSystemTime(new Date('2020-01-01'));
+    const { queryByTestId } = renderWithProvider(
+      <OnboardingMetametrics />,
+      mockStore,
+    );
+    expect(queryByTestId('onboarding-legacy-metametrics')).toBeInTheDocument();
   });
 });

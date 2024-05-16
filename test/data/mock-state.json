@@ -365,6 +365,7 @@
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": true,
+      "smartTransactionsOptInStatus": false,
       "useNativeCurrencyAsPrimaryCurrency": true,
       "petnamesEnabled": false
     },
@@ -684,7 +685,9 @@
     ],
     "contractExchangeRates": {
       "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d": 0.00039345803819379796,
-      "0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5": 0.00008189274407698049
+      "0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5": 0.00008189274407698049,
+      "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599": 0.0017123,
+      "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": 0.0000000018
     },
     "ticker": "ETH",
     "currentCurrency": "usd",

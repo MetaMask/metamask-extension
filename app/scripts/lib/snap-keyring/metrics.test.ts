@@ -3,6 +3,8 @@ import { getSnapAndHardwareInfoForMetrics } from './metrics';
 describe('getSnapAndHardwareInfoForMetrics', () => {
   let getAccountType: jest.Mock;
   let getDeviceModel: jest.Mock;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let messenger: any;
 
   beforeEach(() => {

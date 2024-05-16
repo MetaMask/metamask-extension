@@ -10,6 +10,7 @@ import {
   COINGECKO_LINK,
   CRYPTOCOMPARE_LINK,
   PRIVACY_POLICY_LINK,
+  TRANSACTION_SIMULATIONS_LEARN_MORE_LINK,
 } from '../../../../shared/lib/ui-utils';
 import {
   Box,
@@ -28,7 +29,12 @@ import {
 } from '../../../helpers/constants/design-system';
 import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getAllNetworks, getCurrentNetwork } from '../../../selectors';
+import {
+  getAllNetworks,
+  getCurrentNetwork,
+  getPetnamesEnabled,
+  getExternalServicesOnboardingToggleState,
+} from '../../../selectors';
 import {
   setCompletedOnboarding,
   setIpfsGateway,
@@ -41,7 +47,14 @@ import {
   showModal,
   toggleNetworkMenu,
   setIncomingTransactionsPreferences,
+  toggleExternalServices,
+  setUseTransactionSimulations,
+  setPetnamesEnabled,
 } from '../../../store/actions';
+import {
+  onboardingToggleBasicFunctionalityOn,
+  openBasicFunctionalityModal,
+} from '../../../ducks/app/app';
 import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
 import { Setting } from './setting';
 
@@ -60,7 +73,9 @@ export default function PrivacySettings() {
     useMultiAccountBalanceChecker,
     ipfsGateway,
     useAddressBarEnsResolution,
+    useTransactionSimulations,
   } = defaultState;
+  const petnamesEnabled = useSelector(getPetnamesEnabled);
 
   const [usePhishingDetection, setUsePhishingDetection] =
     useState(usePhishDetect);
@@ -75,17 +90,25 @@ export default function PrivacySettings() {
     isMultiAccountBalanceCheckerEnabled,
     setMultiAccountBalanceCheckerEnabled,
   ] = useState(useMultiAccountBalanceChecker);
+  const [isTransactionSimulationsEnabled, setTransactionSimulationsEnabled] =
+    useState(useTransactionSimulations);
   const [ipfsURL, setIPFSURL] = useState(ipfsGateway);
   const [ipfsError, setIPFSError] = useState(null);
   const [addressBarResolution, setAddressBarResolution] = useState(
     useAddressBarEnsResolution,
   );
+  const [turnOnPetnames, setTurnOnPetnames] = useState(petnamesEnabled);
 
   const trackEvent = useContext(MetaMetricsContext);
   const currentNetwork = useSelector(getCurrentNetwork);
   const allNetworks = useSelector(getAllNetworks);
 
+  const externalServicesOnboardingToggleState = useSelector(
+    getExternalServicesOnboardingToggleState,
+  );
+
   const handleSubmit = () => {
+    dispatch(toggleExternalServices(externalServicesOnboardingToggleState));
     dispatch(setUsePhishDetect(usePhishingDetection));
     dispatch(setUse4ByteResolution(turnOn4ByteResolution));
     dispatch(setUseTokenDetection(turnOnTokenDetection));
@@ -95,6 +118,8 @@ export default function PrivacySettings() {
     dispatch(setUseCurrencyRateCheck(turnOnCurrencyRateCheck));
     dispatch(setCompletedOnboarding());
     dispatch(setUseAddressBarEnsResolution(addressBarResolution));
+    setUseTransactionSimulations(isTransactionSimulationsEnabled);
+    dispatch(setPetnamesEnabled(turnOnPetnames));
 
     if (ipfsURL && !ipfsError) {
       const { host } = new URL(addUrlProtocolPrefix(ipfsURL));
@@ -142,6 +167,20 @@ export default function PrivacySettings() {
           className="privacy-settings__settings"
           data-testid="privacy-settings-settings"
         >
+          <Setting
+            dataTestId="basic-functionality-toggle"
+            value={externalServicesOnboardingToggleState}
+            setValue={(toggledValue) => {
+              if (toggledValue === false) {
+                dispatch(openBasicFunctionalityModal());
+              } else {
+                dispatch(onboardingToggleBasicFunctionalityOn());
+              }
+            }}
+            title={t('basicConfigurationLabel')}
+            description={t('basicConfigurationDescription')}
+          />
+
           <IncomingTransactionToggle
             allNetworks={allNetworks}
             setIncomingTransactionsPreferences={(chainId, value) =>
@@ -264,6 +303,21 @@ export default function PrivacySettings() {
             }
           />
           <Setting
+            value={isTransactionSimulationsEnabled}
+            setValue={setTransactionSimulationsEnabled}
+            title={t('simulationsSettingSubHeader')}
+            description={t('simulationsSettingDescription', [
+              <a
+                key="learn_more_link"
+                href={TRANSACTION_SIMULATIONS_LEARN_MORE_LINK}
+                rel="noreferrer"
+                target="_blank"
+              >
+                {t('learnMoreUpperCase')}
+              </a>,
+            ])}
+          />
+          <Setting
             value={addressBarResolution}
             setValue={setAddressBarResolution}
             title={t('ensDomainsSettingTitle')}
@@ -322,6 +376,12 @@ export default function PrivacySettings() {
                 {t('privacyMsg')}
               </a>,
             ])}
+          />
+          <Setting
+            value={turnOnPetnames}
+            setValue={setTurnOnPetnames}
+            title={t('petnamesEnabledToggle')}
+            description={t('petnamesEnabledToggleDescription')}
           />
           <ButtonPrimary
             size={ButtonPrimarySize.Lg}

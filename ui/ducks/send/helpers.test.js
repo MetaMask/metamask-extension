@@ -152,7 +152,7 @@ describe('Send Slice Helpers', () => {
       );
       expect(txParams).toStrictEqual({
         from: '0x00',
-        data: undefined,
+        data: '0x',
         to: BURN_ADDRESS,
         type: '0x0',
         value: '0x1',
@@ -189,7 +189,7 @@ describe('Send Slice Helpers', () => {
       });
       expect(txParams).toStrictEqual({
         from: '0x00',
-        data: undefined,
+        data: '0x',
         to: BURN_ADDRESS,
         type: '0x2',
         value: '0x1',

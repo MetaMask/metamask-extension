@@ -12,8 +12,18 @@ const {
   locateAccountBalanceDOM,
   defaultGanacheOptions,
   WALLET_PASSWORD,
+  onboardingBeginCreateNewWallet,
+  onboardingChooseMetametricsOption,
+  onboardingCreatePassword,
+  onboardingRevealAndConfirmSRP,
+  onboardingCompleteWalletCreation,
+  regularDelayMs,
+  unlockWallet,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+const {
+  FirstTimeFlowType,
+} = require('../../../../shared/constants/onboarding');
 
 describe('MetaMask onboarding @no-mmi', function () {
   const wrongSeedPhrase =
@@ -252,7 +262,7 @@ describe('MetaMask onboarding @no-mmi', function () {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions: {
           ...defaultGanacheOptions,
-          concurrent: { port, chainId, ganacheOptions2 },
+          concurrent: [{ port, chainId, ganacheOptions2 }],
         },
         title: this.test.fullTitle(),
       },
@@ -297,7 +307,225 @@ describe('MetaMask onboarding @no-mmi', function () {
           text: networkName,
         });
 
-        await locateAccountBalanceDOM(driver, secondaryGanacheServer);
+        await locateAccountBalanceDOM(driver, secondaryGanacheServer[0]);
+      },
+    );
+  });
+
+  it('User can turn off basic functionality in advanced configurations', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await importSRPOnboardingFlow(
+          driver,
+          TEST_SEED_PHRASE,
+          WALLET_PASSWORD,
+        );
+
+        await driver.clickElement({ text: 'Advanced configuration', tag: 'a' });
+        await driver.clickElement(
+          '[data-testid="basic-functionality-toggle"] .toggle-button',
+        );
+        await driver.clickElement('[id="basic-configuration-checkbox"]');
+        await driver.clickElement({ text: 'Turn off', tag: 'button' });
+        await driver.clickElement({ text: 'Done', tag: 'button' });
+        // Check that the 'basic functionality is off' banner is displayed on the home screen after onboarding completion
+        await driver.waitForSelector({
+          text: 'Basic functionality is off',
+          css: '.mm-banner-alert',
+        });
+      },
+    );
+  });
+
+  it("doesn't make any network requests to infura before onboarding is completed", async function () {
+    async function mockInfura(mockServer) {
+      const infuraUrl =
+        'https://mainnet.infura.io/v3/00000000000000000000000000000000';
+      const sampleAddress = '1111111111111111111111111111111111111111';
+
+      return [
+        await mockServer
+          .forPost(infuraUrl)
+          .withJsonBodyIncluding({ method: 'eth_blockNumber' })
+          .thenCallback(() => {
+            return {
+              statusCode: 200,
+              json: {
+                jsonrpc: '2.0',
+                id: '1111111111111111',
+                result: '0x1',
+              },
+            };
+          }),
+        await mockServer
+          .forPost(infuraUrl)
+          .withJsonBodyIncluding({ method: 'eth_getBalance' })
+          .thenCallback(() => {
+            return {
+              statusCode: 200,
+              json: {
+                jsonrpc: '2.0',
+                id: '1111111111111111',
+                result: '0x1',
+              },
+            };
+          }),
+        await mockServer
+          .forPost(infuraUrl)
+          .withJsonBodyIncluding({ method: 'eth_getBlockByNumber' })
+          .thenCallback(() => {
+            return {
+              statusCode: 200,
+              json: {
+                jsonrpc: '2.0',
+                id: '1111111111111111',
+                result: {},
+              },
+            };
+          }),
+        await mockServer
+          .forPost(infuraUrl)
+          .withJsonBodyIncluding({ method: 'eth_call' })
+          .thenCallback(() => {
+            return {
+              statusCode: 200,
+              json: {
+                jsonrpc: '2.0',
+                id: '1111111111111111',
+                result: `0x000000000000000000000000${sampleAddress}`,
+              },
+            };
+          }),
+        await mockServer
+          .forPost(infuraUrl)
+          .withJsonBodyIncluding({ method: 'net_version' })
+          .thenCallback(() => {
+            return {
+              statusCode: 200,
+              json: { id: 8262367391254633, jsonrpc: '2.0', result: '1337' },
+            };
+          }),
+      ];
+    }
+
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true })
+          .withNetworkControllerOnMainnet()
+          .build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+        testSpecificMock: mockInfura,
+      },
+      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+        const password = 'password';
+
+        await driver.navigate();
+
+        await onboardingBeginCreateNewWallet(driver);
+        await onboardingChooseMetametricsOption(driver, false);
+        await onboardingCreatePassword(driver, password);
+        await onboardingRevealAndConfirmSRP(driver);
+        await onboardingCompleteWalletCreation(driver);
+
+        // pin extension walkthrough screen
+        await driver.clickElement('[data-testid="pin-extension-next"]');
+
+        await driver.delay(regularDelayMs);
+
+        for (let i = 0; i < mockedEndpoints.length; i += 1) {
+          const mockedEndpoint = await mockedEndpoints[i];
+          const isPending = await mockedEndpoint.isPending();
+          assert.equal(
+            isPending,
+            true,
+            `${mockedEndpoints[i]} mock should still be pending before onboarding`,
+          );
+          const requests = await mockedEndpoint.getSeenRequests();
+
+          assert.equal(
+            requests.length,
+            0,
+            `${mockedEndpoints[i]} should make no requests before onboarding`,
+          );
+        }
+
+        await driver.clickElement('[data-testid="pin-extension-done"]');
+        // requests happen here!
+
+        for (let i = 0; i < mockedEndpoints.length; i += 1) {
+          const mockedEndpoint = await mockedEndpoints[i];
+
+          await driver.wait(async () => {
+            const isPending = await mockedEndpoint.isPending();
+            return isPending === false;
+          }, driver.timeout);
+
+          const requests = await mockedEndpoint.getSeenRequests();
+
+          assert.equal(
+            requests.length > 0,
+            true,
+            `${mockedEndpoints[i]} should make requests after onboarding`,
+          );
+        }
+      },
+    );
+  });
+
+  it('Provides an onboarding path for a user who has restored their account from state persistence failure', async function () {
+    // We don't use onboarding:true here because we want there to be a vault,
+    // simulating what will happen when a user eventually restores their vault
+    // during a state persistence failure. Instead, we set the
+    // firstTimeFlowType to 'restore' and completedOnboarding to false. as well
+    // as some other first time state options to get us into an onboarding
+    // state similar to a new state tree.
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withOnboardingController({
+            completedOnboarding: false,
+            firstTimeFlowType: FirstTimeFlowType.restore,
+            seedPhraseBackedUp: null,
+          })
+          .withMetaMetricsController({
+            participateInMetaMetrics: null,
+            metaMetricsId: null,
+          })
+          .build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+
+        // First screen we should be on is MetaMetrics
+        assert.equal(
+          await driver.isElementPresent({
+            text: 'Help us improve MetaMask',
+            tag: 'h2',
+          }),
+          true,
+          'First screen should be MetaMetrics',
+        );
+
+        // select no thanks
+        await driver.clickElement('[data-testid="metametrics-no-thanks"]');
+
+        // Next should be Secure your wallet screen
+        assert.equal(
+          await driver.isElementPresent({
+            text: 'Secure your wallet',
+            tag: 'h2',
+          }),
+          true,
+        );
       },
     );
   });

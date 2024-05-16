@@ -23,6 +23,7 @@ import {
   getSnapMetadata,
   getTargetSubjectMetadata,
 } from '../../../../selectors';
+import { getAvatarFallbackLetter } from '../../../../helpers/utils/util';
 
 const SnapAvatar = ({
   snapId,
@@ -42,7 +43,7 @@ const SnapAvatar = ({
   const iconUrl = subjectMetadata?.iconUrl;
 
   // We choose the first non-symbol char as the fallback icon.
-  const fallbackIcon = snapName?.match(/[a-z0-9]/iu)?.[0] ?? '?';
+  const fallbackIcon = getAvatarFallbackLetter(snapName);
 
   return (
     <BadgeWrapper
@@ -52,7 +53,7 @@ const SnapAvatar = ({
           iconName={IconName.Snaps}
           size={badgeSize}
           backgroundColor={IconColor.infoDefault}
-          borderColor={BackgroundColor.backgroundDefault}
+          borderColor={BackgroundColor.backgroundAlternative}
           borderWidth={borderWidth}
           iconProps={{
             color: IconColor.infoInverse,
@@ -63,7 +64,9 @@ const SnapAvatar = ({
     >
       {iconUrl ? (
         <AvatarFavicon
-          backgroundColor={BackgroundColor.backgroundAlternative}
+          style={{
+            'background-color': 'var(--color-background-alternative-hover)',
+          }}
           size={avatarSize}
           src={iconUrl}
           name={snapName}
@@ -75,8 +78,10 @@ const SnapAvatar = ({
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.center}
           color={TextColor.textAlternative}
-          style={{ borderWidth: '0px' }}
-          backgroundColor={BackgroundColor.backgroundAlternative}
+          style={{
+            borderWidth: '0px',
+            'background-color': 'var(--color-background-alternative-hover)',
+          }}
         >
           {fallbackIcon}
         </AvatarBase>

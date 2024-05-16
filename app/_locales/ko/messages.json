@@ -348,18 +348,9 @@
     "message": "$1의 모든 내 NFT",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
-  "allowExternalExtensionTo": {
-    "message": "이 외부 확장을 다음에 허용:"
-  },
   "allowSpendToken": {
     "message": "$1에 액세스할 수 있는 권한을 부여하시겠습니까?",
     "description": "$1 is the symbol of the token that are requesting to spend"
-  },
-  "allowThisSiteTo": {
-    "message": "다음에 이 사이트를 허용:"
-  },
-  "allowThisSnapTo": {
-    "message": "다음에 이 스냅을 허용:"
   },
   "allowWithdrawAndSpend": {
     "message": "$1에서 다음 금액까지 인출 및 지출하도록 허용:",
@@ -742,26 +733,6 @@
   "connectSnap": {
     "message": "$1 연결",
     "description": "$1 is the snap for which a connection is being requested."
-  },
-  "connectTo": {
-    "message": "$1에 연결",
-    "description": "$1 is the name/origin of a web3 site/application that the user can connect to metamask"
-  },
-  "connectToAll": {
-    "message": "모든 $1에 연결",
-    "description": "$1 will be replaced by the translation of connectToAllAccounts"
-  },
-  "connectToAllAccounts": {
-    "message": "계정",
-    "description": "will replace $1 in connectToAll, completing the sentence 'connect to all of your accounts', will be text that shows list of accounts on hover"
-  },
-  "connectToMultiple": {
-    "message": "$1에 연결",
-    "description": "$1 will be replaced by the translation of connectToMultipleNumberOfAccounts"
-  },
-  "connectToMultipleNumberOfAccounts": {
-    "message": "$1개 계정",
-    "description": "$1 is the number of accounts to which the web3 site/application is asking to connect; this will substitute $1 in connectToMultiple"
   },
   "connectWithMetaMask": {
     "message": "MetaMask로 연결"
@@ -1649,12 +1620,6 @@
   },
   "general": {
     "message": "일반"
-  },
-  "globalTitle": {
-    "message": "글로벌 메뉴"
-  },
-  "globalTourDescription": {
-    "message": "포트폴리오, 연결된 사이트, 설정 등을 확인하세요"
   },
   "goBack": {
     "message": "뒤로 가기"
@@ -2562,21 +2527,6 @@
   "notificationsMarkAllAsRead": {
     "message": "모두 읽음으로 표시"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "자세히 알아보기"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "🎉 MetaMask Snaps의 오픈 베타가 시작되었습니다!"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "개발자 커뮤니티가 구축한 스냅으로 지갑을 개별 맞춤하세요!"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "스냅은 추가 네트워크 연결, 트랜잭션 인사이트 확인, 커스텀 알림 받기 등 사용자가 MetaMask에서 더욱 다양한 기능을 사용할 수 있도록 합니다."
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "MetaMask Snaps 소개"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "계정에서 $1개의 새로운 토큰이 발견됨",
     "description": "$1 is the number of new tokens detected"
@@ -2629,50 +2579,50 @@
   "onboardingMetametricsAgree": {
     "message": "동의함"
   },
-  "onboardingMetametricsAllowOptOut": {
+  "onboardingMetametricsAllowOptOutLegacy": {
     "message": "언제든 설정을 통해 옵트아웃할 수 있습니다."
   },
-  "onboardingMetametricsDataTerms": {
+  "onboardingMetametricsDataTermsLegacy": {
     "message": "이 데이터는 집계 처리된 정보이며 일반 데이터 보호 규정 (EU) 2016/679의 목적에 따라 익명으로 관리됩니다."
   },
-  "onboardingMetametricsDescription": {
-    "message": "MetaMask는 사용자가 MetaMask를 어떻게 사용하는지 이해하기 위해 기본적인 사용 데이터를 수집하고자 합니다. 이 데이터는 사용자 경험을 통한 서비스 개선에 사용됩니다."
-  },
-  "onboardingMetametricsDescription2": {
+  "onboardingMetametricsDescription2Legacy": {
     "message": "MetaMask에서는..."
+  },
+  "onboardingMetametricsDescriptionLegacy": {
+    "message": "MetaMask는 사용자가 MetaMask를 어떻게 사용하는지 이해하기 위해 기본적인 사용 데이터를 수집하고자 합니다. 이 데이터는 사용자 경험을 통한 서비스 개선에 사용됩니다."
   },
   "onboardingMetametricsDisagree": {
     "message": "괜찮습니다"
   },
-  "onboardingMetametricsInfuraTerms": {
+  "onboardingMetametricsInfuraTermsLegacy": {
     "message": "* MetaMask에서 Infura를 기본 RPC 공급업체로 이용하는 경우, 트랜잭션 전송 시 Infura가 IP 주소와 이더리움 지갑 주소 정보를 수집합니다. MetaMask는 해당 두 정보를 연계할 수 있는 방식으로 정보를 저장하지 않습니다. 데이터 수집 관점에서 MetaMask와 Infura가 인터렉션하는 방법에 대한 자세한 내용은 $1 업데이트를 참조하세요. 일반적인 개인정보 처리방침에 대한 자세한 내용은 $2에서 확인하세요.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
-  "onboardingMetametricsInfuraTermsPolicy": {
+  "onboardingMetametricsInfuraTermsPolicyLegacy": {
     "message": "개인정보 처리방침"
   },
-  "onboardingMetametricsInfuraTermsPolicyLink": {
+  "onboardingMetametricsInfuraTermsPolicyLinkLegacy": {
     "message": "여기"
   },
   "onboardingMetametricsModalTitle": {
     "message": "맞춤 네트워크 추가"
   },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1에서는 서비스 제공에 필요하지 않은 정보(예: 키, 주소, 트랜잭션 해시 또는 잔액)를 수집합니다.",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectIP": {
+  "onboardingMetametricsNeverCollectIPLegacy": {
     "message": "$1에서는 사용자의 IP 주소 전체를 수집합니다.",
     "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
   },
-  "onboardingMetametricsNeverEmphasis": {
+  "onboardingMetametricsNeverCollectLegacy": {
+    "message": "$1에서는 서비스 제공에 필요하지 않은 정보(예: 키, 주소, 트랜잭션 해시 또는 잔액)를 수집합니다.",
+    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
+  },
+  "onboardingMetametricsNeverEmphasisLegacy": {
     "message": "절대로"
   },
-  "onboardingMetametricsNeverSellData": {
+  "onboardingMetametricsNeverSellDataLegacy": {
     "message": "$1에서는 데이터를 판매합니다. 항상요!",
     "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
   },
-  "onboardingMetametricsSendAnonymize": {
+  "onboardingMetametricsSendAnonymizeLegacy": {
     "message": "익명 클릭 및 페이지뷰 이벤트 보내기"
   },
   "onboardingMetametricsTitle": {
@@ -2722,7 +2672,8 @@
     "message": "악성 네트워크 공급업체는 블록체인 상태를 거짓으로 보고하고 네트워크 활동을 기록할 수 있습니다. 신뢰하는 맞춤 네트워크만 추가하세요."
   },
   "onlyConnectTrust": {
-    "message": "신뢰하는 사이트만 연결하세요."
+    "message": "신뢰하는 사이트만 연결하세요.",
+    "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
   "openFullScreenForLedgerWebHid": {
     "message": "전체 화면으로 이동하여 Ledger를 연결하세요.",
@@ -2819,9 +2770,6 @@
   "permissionRequest": {
     "message": "권한 요청"
   },
-  "permissionRequestCapitalized": {
-    "message": "권한 요청"
-  },
   "permissionRequested": {
     "message": "지금 요청됨"
   },
@@ -2902,12 +2850,6 @@
   },
   "permissions": {
     "message": "권한"
-  },
-  "permissionsTitle": {
-    "message": "권한"
-  },
-  "permissionsTourDescription": {
-    "message": "연결된 계정을 찾아 여기서 권한을 관리하세요"
   },
   "personalAddressDetected": {
     "message": "개인 주소가 발견되었습니다. 토큰 계약 주소를 입력하세요."
@@ -3264,9 +3206,6 @@
   "securityAlerts": {
     "message": "보안 경고"
   },
-  "securityAlertsDescription": {
-    "message": "이 기능은 개인정보를 보호하면서 트랜잭션 및 서명 요청을 적극적으로 검토하여 이더리움 메인넷에서 악의적인 활동이 있는 경우 경고합니다. 사용자 데이터는 이 서비스를 제공하는 제삼자와 공유되지 않습니다. 요청을 승인하기 전에 항상 직접 확인하세요. 이 기능이 모든 악의적인 활동 탐지를 보장하는 것은 아닙니다."
-  },
   "securityAndPrivacy": {
     "message": "보안 및 프라이버시"
   },
@@ -3498,12 +3437,6 @@
   "smartContracts": {
     "message": "스마트 계약"
   },
-  "smartSwapsAreHere": {
-    "message": "스마트 스왑이 시작되었습니다!"
-  },
-  "smartSwapsDescription": {
-    "message": "MetaMask 스왑이 더욱 스마트해졌습니다! 스마트 스왑을 활성화하면 MetaMask가 프로그램을 통해 스왑을 최적화하여 다음과 같은 활동에 도움을 드립니다."
-  },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "스마트 스왑 자금 부족"
   },
@@ -3520,10 +3453,6 @@
   },
   "snapDetailWebsite": {
     "message": "웹사이트"
-  },
-  "snapInstallRequest": {
-    "message": "$1 설치는 다음과 같은 권한을 허용합니다. $1 스냅을 신뢰하는 경우에만 계속 진행하세요.",
-    "description": "$1 is the snap name."
   },
   "snapInstallSuccess": {
     "message": "설치 완료"
@@ -3564,9 +3493,6 @@
   },
   "snaps": {
     "message": "스냅"
-  },
-  "snapsInvalidUIError": {
-    "message": "스냅에서 지정한 UI가 올바르지 않습니다."
   },
   "snapsNoInsight": {
     "message": "스냅이 인사이트를 가져오지 못했습니다"
@@ -3782,18 +3708,6 @@
   },
   "strong": {
     "message": "강함"
-  },
-  "stxBenefit1": {
-    "message": "트랜잭션 비용 최소화하기"
-  },
-  "stxBenefit2": {
-    "message": "트랜잭션 실패 줄이기"
-  },
-  "stxBenefit3": {
-    "message": "중단된 트랜잭션 제거하기"
-  },
-  "stxBenefit4": {
-    "message": "프런트 러닝 방지"
   },
   "stxCancelled": {
     "message": "스왑이 실패했을 것입니다"
@@ -4284,12 +4198,6 @@
   "switchedTo": {
     "message": "다음으로 변경했습니다:"
   },
-  "switcherTitle": {
-    "message": "네트워크 전환기"
-  },
-  "switcherTourDescription": {
-    "message": "아이콘을 클릭하면 네트워크가 변경되거나 새로운 네트워크가 추가됩니다"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "네트워크를 전환하면 대기 중인 모든 컨펌 작업이 취소됩니다."
   },
@@ -4725,7 +4633,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "$2에서 $1 보기",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "Etherscan에서 $1 보기",
@@ -4828,10 +4736,6 @@
   },
   "whatsThis": {
     "message": "이것은 무엇인가요?"
-  },
-  "xOfY": {
-    "message": "$1/$2개",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total, and $1 is a count towards that total"
   },
   "xOfYPending": {
     "message": "$1/$2개 보류 중",

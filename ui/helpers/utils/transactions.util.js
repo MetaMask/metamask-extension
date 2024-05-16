@@ -108,6 +108,7 @@ export function isTokenMethodAction(type) {
     TransactionType.tokenMethodSetApprovalForAll,
     TransactionType.tokenMethodTransferFrom,
     TransactionType.tokenMethodSafeTransferFrom,
+    TransactionType.tokenMethodIncreaseAllowance,
   ].includes(type);
 }
 
@@ -200,6 +201,9 @@ export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
     }
     case TransactionType.tokenMethodSetApprovalForAll: {
       return t('setApprovalForAll');
+    }
+    case TransactionType.tokenMethodIncreaseAllowance: {
+      return t('approveIncreaseAllowance');
     }
     case TransactionType.simpleSend: {
       return t('sendingNativeAsset', [nativeCurrency]);

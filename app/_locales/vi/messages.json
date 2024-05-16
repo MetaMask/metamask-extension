@@ -348,18 +348,9 @@
     "message": "Tất cả NFT của bạn từ $1",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
-  "allowExternalExtensionTo": {
-    "message": "Cho phép tiện ích mở rộng bên ngoài này:"
-  },
   "allowSpendToken": {
     "message": "Cấp quyền truy cập vào $1 của bạn?",
     "description": "$1 is the symbol of the token that are requesting to spend"
-  },
-  "allowThisSiteTo": {
-    "message": "Cho phép trang web này:"
-  },
-  "allowThisSnapTo": {
-    "message": "Cho phép Snap này:"
   },
   "allowWithdrawAndSpend": {
     "message": "Cho phép $1 rút và chi tiêu tối đa số tiền sau đây:",
@@ -742,26 +733,6 @@
   "connectSnap": {
     "message": "Kết nối $1",
     "description": "$1 is the snap for which a connection is being requested."
-  },
-  "connectTo": {
-    "message": "Kết nối với $1",
-    "description": "$1 is the name/origin of a web3 site/application that the user can connect to metamask"
-  },
-  "connectToAll": {
-    "message": "Kết nối với tất cả các $1 của bạn",
-    "description": "$1 will be replaced by the translation of connectToAllAccounts"
-  },
-  "connectToAllAccounts": {
-    "message": "tài khoản",
-    "description": "will replace $1 in connectToAll, completing the sentence 'connect to all of your accounts', will be text that shows list of accounts on hover"
-  },
-  "connectToMultiple": {
-    "message": "Kết nối với $1",
-    "description": "$1 will be replaced by the translation of connectToMultipleNumberOfAccounts"
-  },
-  "connectToMultipleNumberOfAccounts": {
-    "message": "$1 tài khoản",
-    "description": "$1 is the number of accounts to which the web3 site/application is asking to connect; this will substitute $1 in connectToMultiple"
   },
   "connectWithMetaMask": {
     "message": "Kết nối với MetaMask"
@@ -1649,12 +1620,6 @@
   },
   "general": {
     "message": "Chung"
-  },
-  "globalTitle": {
-    "message": "Trình đơn chung"
-  },
-  "globalTourDescription": {
-    "message": "Xem danh mục đầu tư, trang web đã kết nối, cài đặt, v.v... của bạn"
   },
   "goBack": {
     "message": "Quay Lại"
@@ -2562,21 +2527,6 @@
   "notificationsMarkAllAsRead": {
     "message": "Đánh dấu đã đọc tất cả"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "Tìm hiểu thêm"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "Chúng tôi vui mừng thông báo về phiên bản Open Beta của MetaMask Snaps!"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "Cá nhân hóa ví của bạn bằng các snap do cộng đồng nhà lập trình xây dựng!"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "Snap giúp bạn làm được nhiều việc hơn với MetaMask — chẳng hạn như kết nối với nhiều mạng hơn, xem thông tin chuyên sâu về giao dịch và nhận thông báo tùy chỉnh."
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "Giới thiệu MetaMask Snaps"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "Tìm thấy $1 token mới trong tài khoản này",
     "description": "$1 is the number of new tokens detected"
@@ -2629,50 +2579,50 @@
   "onboardingMetametricsAgree": {
     "message": "Tôi đồng ý"
   },
-  "onboardingMetametricsAllowOptOut": {
+  "onboardingMetametricsAllowOptOutLegacy": {
     "message": "Luôn cho phép bạn chọn không tham gia thông qua phần Cài đặt"
   },
-  "onboardingMetametricsDataTerms": {
+  "onboardingMetametricsDataTermsLegacy": {
     "message": "Do đó, dữ liệu này được tổng hợp và ẩn danh theo các mục đích của Quy định bảo vệ dữ liệu chung (EU) 2016/679."
   },
-  "onboardingMetametricsDescription": {
-    "message": "MetaMask muốn thu thập dữ liệu sử dụng để hiểu rõ hơn cách người dùng tương tác với MetaMask. Dữ liệu này sẽ được sử dụng để cung cấp dịch vụ, bao gồm cả cải thiện dịch vụ dựa trên quá trình sử dụng của bạn."
-  },
-  "onboardingMetametricsDescription2": {
+  "onboardingMetametricsDescription2Legacy": {
     "message": "MetaMask sẽ..."
+  },
+  "onboardingMetametricsDescriptionLegacy": {
+    "message": "MetaMask muốn thu thập dữ liệu sử dụng để hiểu rõ hơn cách người dùng tương tác với MetaMask. Dữ liệu này sẽ được sử dụng để cung cấp dịch vụ, bao gồm cả cải thiện dịch vụ dựa trên quá trình sử dụng của bạn."
   },
   "onboardingMetametricsDisagree": {
     "message": "Không, cảm ơn"
   },
-  "onboardingMetametricsInfuraTerms": {
+  "onboardingMetametricsInfuraTermsLegacy": {
     "message": "* Khi bạn sử dụng Infura làm nhà cung cấp RPC mặc định trong MetaMask, Infura sẽ thu thập địa chỉ IP và địa chỉ ví Ethereum của bạn khi bạn gửi giao dịch. Chúng tôi không lưu trữ thông tin này để cho phép hệ thống của chúng tôi liên kết hai loại dữ liệu đó. Để biết thêm thông tin về cách MetaMask và Infura tương tác trong việc thu thập dữ liệu, hãy xem bản cập nhật $1 của chúng tôi. Để biết thêm thông tin về các phương pháp bảo vệ quyền riêng tư của chúng tôi nói chung, hãy xem $2.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
-  "onboardingMetametricsInfuraTermsPolicy": {
+  "onboardingMetametricsInfuraTermsPolicyLegacy": {
     "message": "Chính sách quyền riêng tư tại đây"
   },
-  "onboardingMetametricsInfuraTermsPolicyLink": {
+  "onboardingMetametricsInfuraTermsPolicyLinkLegacy": {
     "message": "tại đây"
   },
   "onboardingMetametricsModalTitle": {
     "message": "Thêm mạng tùy chỉnh"
   },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 thu thập các thông tin mà chúng tôi không cần để cung cấp dịch vụ (chẳng hạn như khóa, địa chỉ, mã băm giao dịch hoặc số dư)",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectIP": {
+  "onboardingMetametricsNeverCollectIPLegacy": {
     "message": "$1 thu thập địa chỉ IP đầy đủ của bạn*",
     "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
   },
-  "onboardingMetametricsNeverEmphasis": {
+  "onboardingMetametricsNeverCollectLegacy": {
+    "message": "$1 thu thập các thông tin mà chúng tôi không cần để cung cấp dịch vụ (chẳng hạn như khóa, địa chỉ, mã băm giao dịch hoặc số dư)",
+    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
+  },
+  "onboardingMetametricsNeverEmphasisLegacy": {
     "message": "Không bao giờ"
   },
-  "onboardingMetametricsNeverSellData": {
+  "onboardingMetametricsNeverSellDataLegacy": {
     "message": "$1 không bao giờ bán dữ liệu!",
     "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
   },
-  "onboardingMetametricsSendAnonymize": {
+  "onboardingMetametricsSendAnonymizeLegacy": {
     "message": "Gửi các sự kiện nhấp chuột & lượt xem trang ẩn danh"
   },
   "onboardingMetametricsTitle": {
@@ -2722,7 +2672,8 @@
     "message": "Một nhà cung cấp mạng độc hại có thể nói dối về trạng thái của chuỗi khối và ghi lại hoạt động của bạn trên mạng. Chỉ thêm các mạng tùy chỉnh mà bạn tin tưởng."
   },
   "onlyConnectTrust": {
-    "message": "Chỉ kết nối với các trang web mà bạn tin tưởng."
+    "message": "Chỉ kết nối với các trang web mà bạn tin tưởng.",
+    "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
   "openFullScreenForLedgerWebHid": {
     "message": "Bật toàn màn hình để kết nối với thiết bị Ledger của bạn.",
@@ -2819,9 +2770,6 @@
   "permissionRequest": {
     "message": "Yêu cầu cấp quyền"
   },
-  "permissionRequestCapitalized": {
-    "message": "Yêu cầu cấp quyền"
-  },
   "permissionRequested": {
     "message": "Đã yêu cầu ngay"
   },
@@ -2902,12 +2850,6 @@
   },
   "permissions": {
     "message": "Quyền"
-  },
-  "permissionsTitle": {
-    "message": "Quyền"
-  },
-  "permissionsTourDescription": {
-    "message": "Tìm tài khoản đã kết nối của bạn và quản lý quyền tại đây"
   },
   "personalAddressDetected": {
     "message": "Đã tìm thấy địa chỉ cá nhân. Nhập địa chỉ hợp đồng token."
@@ -3264,9 +3206,6 @@
   "securityAlerts": {
     "message": "Cảnh báo bảo mật"
   },
-  "securityAlertsDescription": {
-    "message": "Tính năng này sẽ cảnh báo cho bạn khi có hoạt động độc hại trên Ethereum Mainnet bằng cách chủ động xem xét các yêu cầu giao dịch và chữ ký trong khi vẫn bảo vệ quyền riêng tư của bạn. Dữ liệu của bạn sẽ không được chia sẻ với bên thứ ba cung cấp dịch vụ này. Luôn tự thẩm định trước khi chấp thuận bất kỳ yêu cầu nào. Không có gì đảm bảo rằng tính năng này sẽ phát hiện được tất cả các hoạt động độc hại."
-  },
   "securityAndPrivacy": {
     "message": "Bảo mật và quyền riêng tư"
   },
@@ -3498,12 +3437,6 @@
   "smartContracts": {
     "message": "Hợp đồng thông minh"
   },
-  "smartSwapsAreHere": {
-    "message": "Hoán đổi thông minh đã ra mắt!"
-  },
-  "smartSwapsDescription": {
-    "message": "Tính năng Hoán đổi của MetaMask nay đã thông minh hơn rất nhiều! Kích hoạt Hoán đổi thông minh sẽ cho phép MetaMask tối ưu quy trình Hoán đổi để giúp bạn:"
-  },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Không có đủ tiền để thực hiện hoán đổi thông minh."
   },
@@ -3520,10 +3453,6 @@
   },
   "snapDetailWebsite": {
     "message": "Trang web"
-  },
-  "snapInstallRequest": {
-    "message": "Cài đặt $1 để được cấp các quyền sau. Chỉ tiếp tục nếu bạn tin tưởng $1.",
-    "description": "$1 is the snap name."
   },
   "snapInstallSuccess": {
     "message": "Cài đặt hoàn tất"
@@ -3564,9 +3493,6 @@
   },
   "snaps": {
     "message": "Snap"
-  },
-  "snapsInvalidUIError": {
-    "message": "Giao diện người dùng được chỉ định bởi Snap không hợp lệ."
   },
   "snapsNoInsight": {
     "message": "Snap không trả về bất kỳ thông tin chi tiết nào"
@@ -3782,18 +3708,6 @@
   },
   "strong": {
     "message": "Mạnh"
-  },
-  "stxBenefit1": {
-    "message": "Giảm thiểu chi phí giao dịch"
-  },
-  "stxBenefit2": {
-    "message": "Giảm tỷ lệ thất bại khi giao dịch"
-  },
-  "stxBenefit3": {
-    "message": "Loại bỏ các giao dịch bị mắc kẹt"
-  },
-  "stxBenefit4": {
-    "message": "Ngăn chặn giao dịch chạy trước"
   },
   "stxCancelled": {
     "message": "Hoán đổi sẽ thất bại"
@@ -4284,12 +4198,6 @@
   "switchedTo": {
     "message": "Bạn đã chuyển sang"
   },
-  "switcherTitle": {
-    "message": "Trình chuyển mạng"
-  },
-  "switcherTourDescription": {
-    "message": "Nhấp vào biểu tượng để chuyển mạng hoặc thêm mạng mới"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Khi bạn chuyển mạng, mọi xác nhận đang chờ xử lý sẽ bị hủy"
   },
@@ -4725,7 +4633,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "Xem $1 tại $2",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "Xem $1 trên Etherscan",
@@ -4828,10 +4736,6 @@
   },
   "whatsThis": {
     "message": "Đây là gì?"
-  },
-  "xOfY": {
-    "message": "$1/$2",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total, and $1 is a count towards that total"
   },
   "xOfYPending": {
     "message": "$1/$2 đang chờ xử lý",

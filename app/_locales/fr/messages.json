@@ -348,18 +348,9 @@
     "message": "Tous vos NFT via $1",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
-  "allowExternalExtensionTo": {
-    "message": "Autoriser cette extension externe à :"
-  },
   "allowSpendToken": {
     "message": "Donner l’autorisation d’accéder à votre $1 ?",
     "description": "$1 is the symbol of the token that are requesting to spend"
-  },
-  "allowThisSiteTo": {
-    "message": "Autoriser ce site à :"
-  },
-  "allowThisSnapTo": {
-    "message": "Autoriser ce snap à :"
   },
   "allowWithdrawAndSpend": {
     "message": "Permettre à $1 de retirer et de dépenser jusqu’au montant suivant :",
@@ -742,26 +733,6 @@
   "connectSnap": {
     "message": "Connecter $1",
     "description": "$1 is the snap for which a connection is being requested."
-  },
-  "connectTo": {
-    "message": "Connectez-vous à $1",
-    "description": "$1 is the name/origin of a web3 site/application that the user can connect to metamask"
-  },
-  "connectToAll": {
-    "message": "Connectez-vous à vos $1",
-    "description": "$1 will be replaced by the translation of connectToAllAccounts"
-  },
-  "connectToAllAccounts": {
-    "message": "comptes",
-    "description": "will replace $1 in connectToAll, completing the sentence 'connect to all of your accounts', will be text that shows list of accounts on hover"
-  },
-  "connectToMultiple": {
-    "message": "Connectez-vous à $1",
-    "description": "$1 will be replaced by the translation of connectToMultipleNumberOfAccounts"
-  },
-  "connectToMultipleNumberOfAccounts": {
-    "message": "$1 comptes",
-    "description": "$1 is the number of accounts to which the web3 site/application is asking to connect; this will substitute $1 in connectToMultiple"
   },
   "connectWithMetaMask": {
     "message": "Connectez-vous avec MetaMask"
@@ -1652,12 +1623,6 @@
   },
   "genericExplorerView": {
     "message": "Afficher le compte sur $1"
-  },
-  "globalTitle": {
-    "message": "Menu global"
-  },
-  "globalTourDescription": {
-    "message": "Voyez votre portfolio, vos sites connectés, vos paramètres, et bien plus encore"
   },
   "goBack": {
     "message": "Retour"
@@ -2565,21 +2530,6 @@
   "notificationsMarkAllAsRead": {
     "message": "Marquer tout comme lu"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "En savoir plus"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "🎉 Nous sommes ravis d’annoncer le lancement de la version bêta publique de MetaMask Snaps !"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "Personnalisez votre portefeuille avec des snaps conçus par la communauté de développeurs !"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "Les snaps vous aident à profiter pleinement de MetaMask, par exemple vous connecter à plus de réseaux, voir un aperçu des transactions et recevoir des notifications personnalisées."
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "Présentation de MetaMask Snaps"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 nouveaux jetons trouvés dans ce compte",
     "description": "$1 is the number of new tokens detected"
@@ -2632,50 +2582,50 @@
   "onboardingMetametricsAgree": {
     "message": "J’accepte"
   },
-  "onboardingMetametricsAllowOptOut": {
+  "onboardingMetametricsAllowOptOutLegacy": {
     "message": "Vous pourrez toujours vous désinscrire depuis les Paramètres"
   },
-  "onboardingMetametricsDataTerms": {
+  "onboardingMetametricsDataTermsLegacy": {
     "message": "Conformément au règlement général sur la protection des données (UE) 2016/679, ces données sont agrégées pour préserver l’anonymat des utilisateurs."
   },
-  "onboardingMetametricsDescription": {
-    "message": "MetaMask souhaite recueillir des données d’utilisation afin de mieux comprendre comment les utilisateurs interagissent avec MetaMask. Ces données seront utilisées pour améliorer les services que nous proposons ainsi que l’expérience utilisateur."
-  },
-  "onboardingMetametricsDescription2": {
+  "onboardingMetametricsDescription2Legacy": {
     "message": "MetaMask..."
+  },
+  "onboardingMetametricsDescriptionLegacy": {
+    "message": "MetaMask souhaite recueillir des données d’utilisation afin de mieux comprendre comment les utilisateurs interagissent avec MetaMask. Ces données seront utilisées pour améliorer les services que nous proposons ainsi que l’expérience utilisateur."
   },
   "onboardingMetametricsDisagree": {
     "message": "Non merci"
   },
-  "onboardingMetametricsInfuraTerms": {
+  "onboardingMetametricsInfuraTermsLegacy": {
     "message": "* Sachez que lorsque vous définissez Infura comme fournisseur de RPC par défaut dans MetaMask, votre adresse IP et l’adresse de votre portefeuille Ethereum seront communiquées à Infura pour valider les transactions. Ces données sont stockées séparément sur nos systèmes pour préserver l’anonymat des utilisateurs. Pour plus d’informations sur la façon dont MetaMask et Infura collectent les données, consultez nos dernières mises à jour $1. Pour plus d’informations, consultez notre $2.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
-  "onboardingMetametricsInfuraTermsPolicy": {
+  "onboardingMetametricsInfuraTermsPolicyLegacy": {
     "message": "Politique de confidentialité ici"
   },
-  "onboardingMetametricsInfuraTermsPolicyLink": {
+  "onboardingMetametricsInfuraTermsPolicyLinkLegacy": {
     "message": "ici"
   },
   "onboardingMetametricsModalTitle": {
     "message": "Ajouter un réseau personnalisé"
   },
-  "onboardingMetametricsNeverCollect": {
-    "message": "Nous ne collectons $1 d’informations dont nous n’avons pas besoin pour fournir nos services (comme les clés, les adresses, les hachages de transactions ou les soldes)",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectIP": {
+  "onboardingMetametricsNeverCollectIPLegacy": {
     "message": "Nous ne collectons $1 l’intégralité de votre adresse IP*",
     "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
   },
-  "onboardingMetametricsNeverEmphasis": {
+  "onboardingMetametricsNeverCollectLegacy": {
+    "message": "Nous ne collectons $1 d’informations dont nous n’avons pas besoin pour fournir nos services (comme les clés, les adresses, les hachages de transactions ou les soldes)",
+    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
+  },
+  "onboardingMetametricsNeverEmphasisLegacy": {
     "message": "Jamais"
   },
-  "onboardingMetametricsNeverSellData": {
+  "onboardingMetametricsNeverSellDataLegacy": {
     "message": "Nous ne vendons $1 vos données !",
     "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
   },
-  "onboardingMetametricsSendAnonymize": {
+  "onboardingMetametricsSendAnonymizeLegacy": {
     "message": "Envoyer des données anonymisées sur les clics effectués et les pages vues"
   },
   "onboardingMetametricsTitle": {
@@ -2725,7 +2675,8 @@
     "message": "Un fournisseur de réseau malveillant peut mentir quant à l’état de la blockchain et enregistrer votre activité réseau. N’ajoutez que des réseaux personnalisés auxquels vous faites confiance."
   },
   "onlyConnectTrust": {
-    "message": "Ne vous connectez qu’aux sites auxquels vous faites confiance."
+    "message": "Ne vous connectez qu’aux sites auxquels vous faites confiance.",
+    "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
   "openFullScreenForLedgerWebHid": {
     "message": "Passez en plein écran pour connecter votre Ledger.",
@@ -2822,9 +2773,6 @@
   "permissionRequest": {
     "message": "Demande d’autorisation"
   },
-  "permissionRequestCapitalized": {
-    "message": "Demande d’autorisation"
-  },
   "permissionRequested": {
     "message": "Demandé maintenant"
   },
@@ -2905,12 +2853,6 @@
   },
   "permissions": {
     "message": "Autorisations"
-  },
-  "permissionsTitle": {
-    "message": "Autorisations"
-  },
-  "permissionsTourDescription": {
-    "message": "Trouvez vos comptes connectés et gérez les autorisations ici"
   },
   "personalAddressDetected": {
     "message": "Votre adresse personnelle a été détectée. Veuillez saisir à la place l’adresse du contrat du jeton."
@@ -3267,9 +3209,6 @@
   "securityAlerts": {
     "message": "Alertes de sécurité"
   },
-  "securityAlertsDescription": {
-    "message": "Cette fonctionnalité vous avertit de toute activité malveillante sur le réseau principal Ethereum en examinant activement les transactions et les demandes de signature tout en protégeant vos données personnelles. Vos données ne sont pas partagées avec la tierce partie qui fournit ce service. Vous devez faire preuve de diligence raisonnable avant d’approuver toute demande. Rien ne garantit que toutes les activités malveillantes seront détectées par cette fonctionnalité."
-  },
   "securityAndPrivacy": {
     "message": "Sécurité et confidentialité"
   },
@@ -3501,12 +3440,6 @@
   "smartContracts": {
     "message": "Contrats intelligents"
   },
-  "smartSwapsAreHere": {
-    "message": "Les contrats de swap intelligents sont enfin arrivés !"
-  },
-  "smartSwapsDescription": {
-    "message": "Les swaps sont devenus beaucoup plus intelligents sur MetaMask ! L’activation des contrats de swap intelligents permettra à MetaMask d’optimiser programmatiquement le processus contractuel pour vous aider à :"
-  },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Fonds insuffisants pour souscrire un contrat de swap intelligent."
   },
@@ -3523,10 +3456,6 @@
   },
   "snapDetailWebsite": {
     "message": "Site web"
-  },
-  "snapInstallRequest": {
-    "message": "L’installation de $1 lui donne les autorisations suivantes. Ne continuez que si vous faites confiance à $1.",
-    "description": "$1 is the snap name."
   },
   "snapInstallSuccess": {
     "message": "Installation terminée"
@@ -3567,9 +3496,6 @@
   },
   "snaps": {
     "message": "Snaps"
-  },
-  "snapsInvalidUIError": {
-    "message": "L’interface utilisateur (IU) spécifiée par le snap n’est pas valide."
   },
   "snapsNoInsight": {
     "message": "Le snap n’a renvoyé aucun aperçu"
@@ -3785,18 +3711,6 @@
   },
   "strong": {
     "message": "Robuste"
-  },
-  "stxBenefit1": {
-    "message": "Minimise les frais de transaction"
-  },
-  "stxBenefit2": {
-    "message": "Réduit les échecs de transaction"
-  },
-  "stxBenefit3": {
-    "message": "Élimine les blocages de transaction"
-  },
-  "stxBenefit4": {
-    "message": "Empêcher le favoritisme"
   },
   "stxCancelled": {
     "message": "Le swap aurait échoué"
@@ -4287,12 +4201,6 @@
   "switchedTo": {
     "message": "Vous êtes passé à"
   },
-  "switcherTitle": {
-    "message": "Commutateur réseau"
-  },
-  "switcherTourDescription": {
-    "message": "Cliquez sur l’icône pour changer de réseau ou ajouter un nouveau réseau"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Le changement de réseau annulera toutes les confirmations en attente"
   },
@@ -4728,7 +4636,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "Afficher $1 à $2",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "Afficher $1 sur Etherscan",
@@ -4831,10 +4739,6 @@
   },
   "whatsThis": {
     "message": "Qu’est-ce que c’est ?"
-  },
-  "xOfY": {
-    "message": "$1 sur $2",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total, and $1 is a count towards that total"
   },
   "xOfYPending": {
     "message": "$1 sur $2 en attente",

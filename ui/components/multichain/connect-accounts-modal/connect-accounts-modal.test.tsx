@@ -7,12 +7,14 @@ import { ConnectAccountsModalList } from './connect-accounts-modal-list';
 const render = () => {
   const props = {
     onClose: () => ({}),
+    onAccountsUpdate: () => ({}),
     handleAccountClick: () => ({}),
     deselectAll: () => ({}),
     selectAll: () => ({}),
     allAreSelected: () => false,
     checked: false,
     isIndeterminate: false,
+    activeTabOrigin: 'metamask.github.io',
     accounts: [
       {
         address: '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275',

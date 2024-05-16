@@ -26,3 +26,10 @@ export type AccountType = InternalAccount & {
   keyring: KeyringType;
   label: string;
 };
+
+export type Subject = {
+  permissions: { parentCapability: string }[];
+};
+export type SubjectsType = {
+  [key: string]: Subject;
+};

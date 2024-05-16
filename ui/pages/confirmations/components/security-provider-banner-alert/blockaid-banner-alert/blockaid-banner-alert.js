@@ -5,17 +5,17 @@ import BlockaidPackage from '@blockaid/ppom_release/package.json';
 
 import { useSelector } from 'react-redux';
 import { NETWORK_TO_NAME_MAP } from '../../../../../../shared/constants/network';
-import {
-  OverflowWrap,
-  Severity,
-} from '../../../../../helpers/constants/design-system';
+import { OverflowWrap } from '../../../../../helpers/constants/design-system';
 import { I18nContext } from '../../../../../contexts/i18n';
 import {
   BlockaidReason,
   BlockaidResultType,
   SecurityProvider,
 } from '../../../../../../shared/constants/security-provider';
-import { Text } from '../../../../../components/component-library';
+import {
+  BannerAlertSeverity,
+  Text,
+} from '../../../../../components/component-library';
 import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 
 import SecurityProviderBannerAlert from '../security-provider-banner-alert';
@@ -70,7 +70,12 @@ function BlockaidBannerAlert({ txData, ...props }) {
   ) {
     return null;
   } else if (securityAlertResponse.reason === 'loading') {
-    return <LoadingIndicator isLoading />;
+    return (
+      <LoadingIndicator
+        isLoading
+        style={{ position: 'relative', flex: '0 0 auto', margin: '8px auto 0' }}
+      />
+    );
   }
 
   const {
@@ -104,8 +109,8 @@ function BlockaidBannerAlert({ txData, ...props }) {
 
   const severity =
     resultType === BlockaidResultType.Malicious
-      ? Severity.Danger
-      : Severity.Warning;
+      ? BannerAlertSeverity.Danger
+      : BannerAlertSeverity.Warning;
 
   const title = t(REASON_TO_TITLE_TKEY[reason] || 'blockaidTitleDeceptive');
 

@@ -27,7 +27,6 @@ const initialState = {
   isUnlocked: false,
   isAccountMenuOpen: false,
   isNetworkMenuOpen: false,
-  identities: {},
   internalAccounts: { accounts: {}, selectedAccount: '' },
   transactions: [],
   networkConfigurations: {},
@@ -47,8 +46,10 @@ const initialState = {
     showExtensionInFullSizeView: false,
     showFiatInTestnets: false,
     showTestNetworks: false,
+    smartTransactionsOptInStatus: false,
     useNativeCurrencyAsPrimaryCurrency: true,
     petnamesEnabled: true,
+    featureNotificationsEnabled: false,
   },
   firstTimeFlowType: null,
   completedOnboarding: false,
@@ -97,9 +98,6 @@ export default function reduceMetamask(state = initialState, action) {
     case actionConstants.SET_ACCOUNT_LABEL: {
       const { account } = action.value;
       const name = action.value.label;
-      const id = {};
-      id[account] = { ...metamaskState.identities[account], name };
-      const identities = { ...metamaskState.identities, ...id };
       const accountToUpdate = Object.values(
         metamaskState.internalAccounts.accounts,
       ).find((internalAccount) => {
@@ -119,7 +117,7 @@ export default function reduceMetamask(state = initialState, action) {
           },
         },
       };
-      return Object.assign(metamaskState, { identities, internalAccounts });
+      return Object.assign(metamaskState, { internalAccounts });
     }
 
     case actionConstants.UPDATE_CUSTOM_NONCE:
@@ -187,6 +185,19 @@ export default function reduceMetamask(state = initialState, action) {
       return {
         ...metamaskState,
         completedOnboarding: true,
+      };
+    }
+
+    case actionConstants.RESET_ONBOARDING: {
+      return {
+        ...metamaskState,
+        completedOnboarding: false,
+        firstTimeFlowType: null,
+        isInitialized: false,
+        isUnlocked: false,
+        onboardingTabs: {},
+        seedPhraseBackedUp: null,
+        welcomeScreenSeen: false,
       };
     }
 
@@ -364,31 +375,85 @@ export function isEIP1559Network(state, networkClientId) {
   );
 }
 
-export function getGasEstimateType(state) {
+function getGasFeeControllerEstimateType(state) {
   return state.metamask.gasEstimateType;
 }
 
-export function getGasFeeControllerEstimates(state) {
+function getGasFeeControllerEstimateTypeByChainId(state, chainId) {
+  return state.metamask.gasFeeEstimatesByChainId?.[chainId]?.gasEstimateType;
+}
+
+function getGasFeeControllerEstimates(state) {
   return state.metamask.gasFeeEstimates;
 }
 
-export function getTransactionGasFeeEstimates(state) {
+function getGasFeeControllerEstimatesByChainId(state, chainId) {
+  return state.metamask.gasFeeEstimatesByChainId?.[chainId]?.gasFeeEstimates;
+}
+
+function getTransactionGasFeeEstimates(state) {
   const transactionMetadata = state.confirmTransaction?.txData;
   return transactionMetadata?.gasFeeEstimates;
 }
 
-export const getGasFeeEstimates = createSelector(
-  getGasEstimateType,
-  getGasFeeControllerEstimates,
+function getTransactionGasFeeEstimatesByChainId(state, chainId) {
+  const transactionMetadata = state.confirmTransaction?.txData;
+  const transactionChainId = transactionMetadata?.chainId;
+
+  if (transactionChainId !== chainId) {
+    return undefined;
+  }
+
+  return transactionMetadata?.gasFeeEstimates;
+}
+
+const getTransactionGasFeeEstimateType = createSelector(
   getTransactionGasFeeEstimates,
-  (
-    gasFeeControllerEstimateType,
-    gasFeeControllerEstimates,
-    transactionGasFeeEstimates,
-  ) => {
+  (transactionGasFeeEstimates) => transactionGasFeeEstimates?.type,
+);
+
+const getTransactionGasFeeEstimateTypeByChainId = createSelector(
+  getTransactionGasFeeEstimatesByChainId,
+  (transactionGasFeeEstimates) => transactionGasFeeEstimates?.type,
+);
+
+export const getGasEstimateType = createSelector(
+  getGasFeeControllerEstimateType,
+  getTransactionGasFeeEstimateType,
+  (gasFeeControllerEstimateType, transactionGasFeeEstimateType) => {
+    return transactionGasFeeEstimateType ?? gasFeeControllerEstimateType;
+  },
+);
+
+export const getGasEstimateTypeByChainId = createSelector(
+  getGasFeeControllerEstimateTypeByChainId,
+  getTransactionGasFeeEstimateTypeByChainId,
+  (gasFeeControllerEstimateType, transactionGasFeeEstimateType) => {
+    return transactionGasFeeEstimateType ?? gasFeeControllerEstimateType;
+  },
+);
+
+export const getGasFeeEstimatesByChainId = createSelector(
+  getGasFeeControllerEstimatesByChainId,
+  getTransactionGasFeeEstimatesByChainId,
+  (gasFeeControllerEstimates, transactionGasFeeEstimates) => {
     if (transactionGasFeeEstimates) {
       return mergeGasFeeEstimates({
-        gasFeeControllerEstimateType,
+        gasFeeControllerEstimates,
+        transactionGasFeeEstimates,
+      });
+    }
+
+    return gasFeeControllerEstimates;
+  },
+);
+
+export const getGasFeeEstimates = createSelector(
+  getGasFeeControllerEstimates,
+  getTransactionGasFeeEstimates,
+  (gasFeeControllerEstimates, transactionGasFeeEstimates) => {
+    if (transactionGasFeeEstimates) {
+      return mergeGasFeeEstimates({
         gasFeeControllerEstimates,
         transactionGasFeeEstimates,
       });
@@ -400,14 +465,6 @@ export const getGasFeeEstimates = createSelector(
 
 export function getEstimatedGasFeeTimeBounds(state) {
   return state.metamask.estimatedGasFeeTimeBounds;
-}
-
-export function getGasEstimateTypeByChainId(state, chainId) {
-  return state.metamask.gasFeeEstimatesByChainId?.[chainId]?.gasEstimateType;
-}
-
-export function getGasFeeEstimatesByChainId(state, chainId) {
-  return state.metamask.gasFeeEstimatesByChainId?.[chainId]?.gasFeeEstimates;
 }
 
 export function getEstimatedGasFeeTimeBoundsByChainId(state, chainId) {
@@ -458,11 +515,6 @@ export function getIsGasEstimatesLoadingByChainId(
       gasEstimateType === GasEstimateTypes.feeMarket);
 
   return isGasEstimatesLoading;
-}
-
-export function getIsNetworkBusy(state) {
-  const gasFeeEstimates = getGasFeeEstimates(state);
-  return gasFeeEstimates?.networkCongestion >= NetworkCongestionThresholds.busy;
 }
 
 export function getIsNetworkBusyByChainId(state, chainId) {
@@ -539,8 +591,4 @@ export function doesUserHaveALedgerAccount(state) {
   return state.metamask.keyrings.some((kr) => {
     return kr.type === KeyringType.ledger;
   });
-}
-
-export function isLineaMainnetNetworkReleased(state) {
-  return state.metamask.isLineaMainnetReleased;
 }

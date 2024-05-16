@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { isEqual } from 'lodash';
 import { Tab, Tabs } from '../../../ui/tabs';
@@ -35,10 +34,9 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
-  getSelectedAddress,
+  getSelectedInternalAccount,
   getShouldHideZeroBalanceTokens,
 } from '../../../../selectors';
-import { SEND_ROUTE } from '../../../../helpers/constants/routes';
 
 import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
 import {
@@ -50,7 +48,7 @@ import {
   TokenStandard,
 } from '../../../../../shared/constants/transaction';
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
-import { updateSendAsset, Asset } from '../../../../ducks/send';
+import { type Asset } from '../../../../ducks/send';
 import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import TokenCell from '../../../app/token-cell';
@@ -62,6 +60,7 @@ type AssetPickerModalProps = {
   isOpen: boolean;
   onClose: () => void;
   asset: Asset;
+  onAssetChange: (asset: Asset) => void;
 };
 
 type NFT = {
@@ -76,6 +75,17 @@ type NFT = {
   tokenURI?: string;
 };
 
+type Token = {
+  address: string | null;
+  symbol: string;
+  decimals: number;
+  image: string;
+  balance: string;
+  string: string;
+  type: AssetType;
+  isSelected: boolean;
+};
+
 type Collection = {
   collectionName: string;
   collectionImage: string | null;
@@ -86,11 +96,10 @@ export function AssetPickerModal({
   isOpen,
   onClose,
   asset,
+  onAssetChange,
 }: AssetPickerModalProps) {
   const t = useI18nContext();
-  const selectedAddress = useSelector(getSelectedAddress);
-  const dispatch = useDispatch();
-  const history = useHistory();
+  const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedToken, setSelectedToken] = useState(
@@ -135,22 +144,11 @@ export function AssetPickerModal({
       currency: secondaryCurrency,
     });
 
-  const tokenList = tokensWithBalances.map(
-    (token: {
-      address: string | null;
-      symbol: string;
-      decimals: number;
-      image: string;
-      balance: string;
-      string: string;
-      type: AssetType;
-      isSelected: boolean;
-    }) => {
-      token.isSelected =
-        token.address?.toLowerCase() === selectedToken?.toLowerCase();
-      return token;
-    },
-  );
+  const tokenList = tokensWithBalances.map((token: Token) => {
+    token.isSelected =
+      token.address?.toLowerCase() === selectedToken?.toLowerCase();
+    return token;
+  });
 
   tokenList.push({
     address: null,
@@ -179,6 +177,8 @@ export function AssetPickerModal({
   const collectionsKeys = Object.keys(collections);
 
   const collectionsData = collectionsKeys.reduce((acc: unknown[], key) => {
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const collection = (collections as any)[key];
 
     const isMatchingQuery = collection.collectionName
@@ -208,27 +208,9 @@ export function AssetPickerModal({
     setSearchQuery(query);
   };
 
-  const handleSelectToken = async (token: any) => {
+  const handleAssetChange = (token: Token) => () => {
+    onAssetChange(token);
     setSelectedToken(token.address);
-    if (token.type === AssetType.native) {
-      await dispatch(
-        updateSendAsset({
-          type: token.type ?? AssetType.native,
-          details: token,
-          skipComputeEstimatedGasLimit: true,
-        }),
-      );
-      history.push(SEND_ROUTE);
-      onClose();
-    }
-    await dispatch(
-      updateSendAsset({
-        type: token.type ?? AssetType.token,
-        details: { ...token, standard: TokenStandard.ERC20 },
-        skipComputeEstimatedGasLimit: true,
-      }),
-    );
-    history.push(SEND_ROUTE);
     onClose();
   };
 
@@ -264,6 +246,8 @@ export function AssetPickerModal({
                   <TextFieldSearch
                     placeholder={t('searchTokenOrNFT')}
                     value={searchQuery}
+                    // TODO: Replace `any` with type
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     onChange={(e: any) => handleSearch(e.target.value)}
                     error={false}
                     autoFocus
@@ -302,7 +286,7 @@ export function AssetPickerModal({
                               token.isSelected,
                           },
                         )}
-                        onClick={() => handleSelectToken(token)}
+                        onClick={handleAssetChange(token)}
                       >
                         {token.isSelected ? (
                           <Box
@@ -330,12 +314,13 @@ export function AssetPickerModal({
                                 tokenSymbol={primaryCurrencyProperties.suffix}
                                 secondary={secondaryCurrencyDisplay}
                                 tokenImage={token.image}
+                                onClick={handleAssetChange(token)}
                               />
                             ) : (
                               <TokenCell
                                 key={token.address}
                                 {...token}
-                                onClick={() => handleSelectToken(token)}
+                                onClick={handleAssetChange(token)}
                               />
                             )}
                           </Box>
@@ -360,6 +345,8 @@ export function AssetPickerModal({
                   <TextFieldSearch
                     placeholder={t('searchTokenOrNFT')}
                     value={searchQuery}
+                    // TODO: Replace `any` with type
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     onChange={(e: any) => handleSearch(e.target.value)}
                     error={false}
                     autoFocus

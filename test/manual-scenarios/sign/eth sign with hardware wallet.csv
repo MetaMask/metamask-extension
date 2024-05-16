@@ -1,0 +1,18 @@
+Steps,Test Steps,Preconditions,Test Data,Expected Result,Notes
+1,Open the extension.,,,The Welcome Back screen is shown.,
+2,Proceed to unlock the wallet.,,password (8 characters min).,"The Ether balance is shown on the overview. The wallet address is shown on the overview.",
+3,"Click on account menu icon. Click ""Add account or hardware wallet"".",,,"The ""Add account"" modal is shown.",
+4,"On ""Add account"" modal, click ""Add hardware wallet"" button.",,,"""Connect a hardware wallet"" screen is shown. User can choose between different options to connect a hardware: Ledger, Trezor, Lattice, or QR-based. ""Continue"" button is disabled.",
+5,Choose an option to connect hardware wallet.,We need to have a hardware wallet set up to test this functionality.,"e.g. choose ""Ledger""","""Continue"" button is enabled.",
+6,"Plug the hardware wallet directly into computer, then unlock it.",,Password for hardware wallet,"Hardware wallet is detected by MetaMask. ""Select an account"" screen is shown on MetaMask, accounts on hardware wallet are shown on this screen.","If you use Ledger, you need to open the Ethereum app on Ledger. If you use Trezor, make sure you use the correct passphrase."
+7,"Choose one or multiples accounts that user wants to connect. Then click ""Unlock"".",,,,
+8,Click account menu icon to open accounts list.,,,"In accounts list, all selected hardware wallet accounts are shown, and they are all flagged with harware wallet name to be distinguished from other accounts.",
+9,Select one hardware wallet account.,,,"The Ether balance for the selected hardware wallet account is shown on the overview. The selected account address is shown on the overview.",
+10,"Open the accounts options menu, select settings. In advanced tab, enable the eth_sign request.",,,"The ""Use at your own risk"" modal is shown",
+11,"Click the ""I understand that I can lose all of my funds and NFTs if I enable eth_sign requests."" checkbox, Click Continue button and enter the text ""I only sign what I understand"" in the provided text field, Click Enable buton",,,The eth_sign toggle is ON.,
+12,Open the test dapp in another tab.,,https://metamask.github.io/test-dapp/,,
+13,Click Connect.,,,"The MetaMask popup is opened with the Connect with MetaMask screen displayed. Your imported hardware wallet account is selected.",
+14,Click Next and Connect with the hardware wallet account.,,,"The MetaMask popup is closed. You are connected to the test dapp.",
+15,"Click Sign in the ""Eth Sign"" section",,,"The info modal instructions for signing with hardware wallet is displayed. The signature message is in Hex formatting.",
+16,"Click Sign in the displayed modal Then the ""Your funds may be at risk"" modal is shown click Sign",,,,
+14,Accept the Signature in the hardware wallet device.,,,The signature hash is displayed on the test dapp.,

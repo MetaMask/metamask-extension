@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { ConfirmInfoRow, ConfirmInfoRowVariant } from '../../../../../../components/app/confirm/info/row';
-import { unapprovedTypedSignMsg } from '../../../../../../../test/data/confirmations/typed_sign';
+import { unapprovedTypedSignMsgV4 } from '../../../../../../../test/data/confirmations/typed_sign';
 import { ConfirmInfoRowTypedSignData } from './typedSignData';
 
 const ConfirmInfoRowTypedSignDataStory = {
@@ -28,7 +28,7 @@ export const DefaultStory = ({ variant, data }) => (
 DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
-  data: unapprovedTypedSignMsg.msgParams.data,
+  data: unapprovedTypedSignMsgV4.msgParams.data,
 };
 
 export default ConfirmInfoRowTypedSignDataStory;

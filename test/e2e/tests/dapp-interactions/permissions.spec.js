@@ -40,7 +40,7 @@ describe('Permissions', function () {
           tag: 'button',
         });
         await driver.clickElement({
-          text: 'Connect',
+          text: 'Confirm',
           tag: 'button',
         });
 
@@ -50,18 +50,17 @@ describe('Permissions', function () {
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
-        await driver.clickElement('.menu-item:nth-of-type(3)');
-
-        await driver.findElement({
-          text: 'Connected sites',
-          tag: 'h2',
+        await driver.clickElement({
+          text: 'All Permissions',
+          tag: 'div',
         });
+        await driver.clickElement({ text: 'Got it', tag: 'button' });
         await driver.waitForSelector({
-          css: '.connected-sites-list__subject-name',
           text: '127.0.0.1:8080',
+          tag: 'p',
         });
         const domains = await driver.findClickableElements(
-          '.connected-sites-list__subject-name',
+          '[data-testid="connection-list-item"]',
         );
         assert.equal(domains.length, 1);
 

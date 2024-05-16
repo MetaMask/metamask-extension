@@ -44,7 +44,9 @@ export class MMISignUpPage {
       'button:has-text("Confirm Secret Recovery Phrase")',
     );
     this.agreeBtn = page.locator('button:has-text("I agree")');
-    this.noThanksBtn = page.locator('button:has-text("No thanks")');
+    this.noThanksBtn = page.locator(
+      'button:has-text("Don\'t enable enhanced protection")',
+    );
     this.passwordTxt = page.getByTestId('create-password-new');
     this.passwordConfirmTxt = page.getByTestId('create-password-confirm');
     this.agreeCheck = page.getByTestId('create-new-vault__terms-checkbox');
@@ -52,7 +54,7 @@ export class MMISignUpPage {
     this.agreePasswordTermsCheck = page.getByTestId('create-password-terms');
     this.importBtn = page.locator('button:has-text("Import my wallet")');
     this.doneBtn = page.locator('button:has-text("Done")');
-    this.gotItBtn = page.locator('button:has-text("Got it!")');
+    this.gotItBtn = page.locator('button:has-text("Got it")');
     this.nextBtn = page.locator('button:has-text("Next")');
   }
 
@@ -84,12 +86,6 @@ export class MMISignUpPage {
 
   async info() {
     await this.page.getByRole('button', { name: /continue/iu }).click();
-    await this.page
-      .getByRole('button', {
-        name: /continue metamask institutional onboarding/iu,
-      })
-      .click();
-    // After this click its redirect to the dashboard but we don't need to signin
   }
 
   async close() {

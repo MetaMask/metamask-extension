@@ -348,18 +348,9 @@
     "message": "Seluruh NFT Anda dari $1 ",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
-  "allowExternalExtensionTo": {
-    "message": "Izinkan ekstensi eksternal ini untuk:"
-  },
   "allowSpendToken": {
     "message": "Berikan izin untuk mengakses $1 Anda?",
     "description": "$1 is the symbol of the token that are requesting to spend"
-  },
-  "allowThisSiteTo": {
-    "message": "Izinkan situs ini untuk:"
-  },
-  "allowThisSnapTo": {
-    "message": "Izinkan snap ini untuk:"
   },
   "allowWithdrawAndSpend": {
     "message": "Izinkan $1 untuk menarik dan menggunakan hingga jumlah berikut:",
@@ -742,26 +733,6 @@
   "connectSnap": {
     "message": "Hubungkan $1",
     "description": "$1 is the snap for which a connection is being requested."
-  },
-  "connectTo": {
-    "message": "Hubungkan ke $1",
-    "description": "$1 is the name/origin of a web3 site/application that the user can connect to metamask"
-  },
-  "connectToAll": {
-    "message": "Hubungkan ke semua $1 Anda",
-    "description": "$1 will be replaced by the translation of connectToAllAccounts"
-  },
-  "connectToAllAccounts": {
-    "message": "akun",
-    "description": "will replace $1 in connectToAll, completing the sentence 'connect to all of your accounts', will be text that shows list of accounts on hover"
-  },
-  "connectToMultiple": {
-    "message": "Hubungkan ke $1",
-    "description": "$1 will be replaced by the translation of connectToMultipleNumberOfAccounts"
-  },
-  "connectToMultipleNumberOfAccounts": {
-    "message": "$1 akun",
-    "description": "$1 is the number of accounts to which the web3 site/application is asking to connect; this will substitute $1 in connectToMultiple"
   },
   "connectWithMetaMask": {
     "message": "Hubungkan dengan MetaMask"
@@ -1649,12 +1620,6 @@
   },
   "general": {
     "message": "Umum"
-  },
-  "globalTitle": {
-    "message": "Menu global"
-  },
-  "globalTourDescription": {
-    "message": "Lihat portofolio, situs terhubung, pengaturan, dan lainnya"
   },
   "goBack": {
     "message": "Kembali"
@@ -2562,21 +2527,6 @@
   "notificationsMarkAllAsRead": {
     "message": "Tandai semua telah dibaca"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "Selengkapnya"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "🎉 Kami sangat gembira mengumumkan versi Open Beta dari MetaMask Snap!"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "Personalisasikan dompet Anda dengan snap yang dibuat oleh komunitas pengembang!"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "Snap membantu Anda melakukan lebih banyak hal dengan MetaMask — seperti terhubung ke lebih banyak jaringan, melihat wawasan transaksi, dan mendapatkan notifikasi khusus."
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "Memperkenalkan MetaMask Snap"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 token baru ditemukan di akun ini",
     "description": "$1 is the number of new tokens detected"
@@ -2629,50 +2579,50 @@
   "onboardingMetametricsAgree": {
     "message": "Saya setuju"
   },
-  "onboardingMetametricsAllowOptOut": {
+  "onboardingMetametricsAllowOptOutLegacy": {
     "message": "Selalu izinkan Anda untuk keluar melalui Pengaturan"
   },
-  "onboardingMetametricsDataTerms": {
+  "onboardingMetametricsDataTermsLegacy": {
     "message": "Data ini dikumpulkan sehingga bersifat anonim untuk tujuan Peraturan Perlindungan Data Umum (UE) 2016/679."
   },
-  "onboardingMetametricsDescription": {
-    "message": "MetaMask ingin mengumpulkan data penggunaan untuk lebih memahami cara pengguna kami berinteraksi dengan MetaMask. Data ini akan digunakan untuk menyediakan layanan, termasuk meningkatkan layanan berdasarkan penggunaan Anda."
-  },
-  "onboardingMetametricsDescription2": {
+  "onboardingMetametricsDescription2Legacy": {
     "message": "MetaMask akan..."
+  },
+  "onboardingMetametricsDescriptionLegacy": {
+    "message": "MetaMask ingin mengumpulkan data penggunaan untuk lebih memahami cara pengguna kami berinteraksi dengan MetaMask. Data ini akan digunakan untuk menyediakan layanan, termasuk meningkatkan layanan berdasarkan penggunaan Anda."
   },
   "onboardingMetametricsDisagree": {
     "message": "Tidak, terima kasih"
   },
-  "onboardingMetametricsInfuraTerms": {
+  "onboardingMetametricsInfuraTermsLegacy": {
     "message": "* Saat Anda menggunakan Infura sebagai penyedia RPC awal di MetaMask, Infura akan mengumpulkan alamat IP dan alamat dompet Ethereum Anda saat mengirim transaksi. Kami tidak menyimpan informasi ini dengan cara yang memungkinkan sistem kami menghubungkan kedua bagian data tersebut. Untuk informasi lebih lanjut seputar cara MetaMask dan Infura berinteraksi dari perspektif pengumpulan data, lihat pembaruan $1. Untuk informasi lebih lanjut seputar praktik privasi kami secara umum, lihat $2 kami.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
-  "onboardingMetametricsInfuraTermsPolicy": {
+  "onboardingMetametricsInfuraTermsPolicyLegacy": {
     "message": "Kebijakan Privasi di sini"
   },
-  "onboardingMetametricsInfuraTermsPolicyLink": {
+  "onboardingMetametricsInfuraTermsPolicyLinkLegacy": {
     "message": "di sini"
   },
   "onboardingMetametricsModalTitle": {
     "message": "Tambahkan jaringan khusus"
   },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 mengumpulkan informasi yang tidak kami perlukan untuk menyediakan layanan (seperti kunci, alamat, hash transaksi, atau saldo)",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectIP": {
+  "onboardingMetametricsNeverCollectIPLegacy": {
     "message": "$1 mengumpulkan alamat IP lengkap Anda*",
     "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
   },
-  "onboardingMetametricsNeverEmphasis": {
+  "onboardingMetametricsNeverCollectLegacy": {
+    "message": "$1 mengumpulkan informasi yang tidak kami perlukan untuk menyediakan layanan (seperti kunci, alamat, hash transaksi, atau saldo)",
+    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
+  },
+  "onboardingMetametricsNeverEmphasisLegacy": {
     "message": "Jangan"
   },
-  "onboardingMetametricsNeverSellData": {
+  "onboardingMetametricsNeverSellDataLegacy": {
     "message": "$1 menjual data. Jangan pernah!",
     "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
   },
-  "onboardingMetametricsSendAnonymize": {
+  "onboardingMetametricsSendAnonymizeLegacy": {
     "message": "Kirim klik anonim dan acara tampilan laman"
   },
   "onboardingMetametricsTitle": {
@@ -2722,7 +2672,8 @@
     "message": "Penyedia jaringan jahat dapat berbohong tentang status blockchain dan merekam aktivitas jaringan Anda. Hanya tambahkan jaringan kustom yang Anda percayai."
   },
   "onlyConnectTrust": {
-    "message": "Hanya hubungkan ke situs yang Anda percayai."
+    "message": "Hanya hubungkan ke situs yang Anda percayai.",
+    "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
   "openFullScreenForLedgerWebHid": {
     "message": "Buka layar penuh untuk menghubungkan Ledger Anda.",
@@ -2819,9 +2770,6 @@
   "permissionRequest": {
     "message": "Permintaan izin"
   },
-  "permissionRequestCapitalized": {
-    "message": "Permintaan izin"
-  },
   "permissionRequested": {
     "message": "Diminta sekarang"
   },
@@ -2902,12 +2850,6 @@
   },
   "permissions": {
     "message": "Izin"
-  },
-  "permissionsTitle": {
-    "message": "Izin"
-  },
-  "permissionsTourDescription": {
-    "message": "Temukan akun yang terhubung dan kelola izin di sini"
   },
   "personalAddressDetected": {
     "message": "Alamat pribadi terdeteksi. Masukkan alamat kontrak token."
@@ -3264,9 +3206,6 @@
   "securityAlerts": {
     "message": "Peringatan keamanan"
   },
-  "securityAlertsDescription": {
-    "message": "Fitur ini memperingatkan Anda tentang aktivitas berbahaya di Mainnet Ethereum dengan secara aktif meninjau permintaan transaksi dan tanda tangan sambil menjaga privasi. Data Anda tidak dibagikan dengan pihak ketiga yang menyediakan layanan ini. Selalu lakukan uji tuntas sendiri sebelum menyetujui permintaan apa pun. Tidak ada jaminan bahwa fitur ini akan mendeteksi semua aktivitas berbahaya."
-  },
   "securityAndPrivacy": {
     "message": "Keamanan & privasi"
   },
@@ -3498,12 +3437,6 @@
   "smartContracts": {
     "message": "Kontrak cerdas"
   },
-  "smartSwapsAreHere": {
-    "message": "Smart Swap telah hadir!"
-  },
-  "smartSwapsDescription": {
-    "message": "MetaMask Swaps kini semakin pintar! Mengaktifkan Smart Swap akan mengizinkan MetaMask mengoptimalkan Swap secara terprogram untuk membantu:"
-  },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Dana tidak cukup untuk pertukaran cerdas."
   },
@@ -3520,10 +3453,6 @@
   },
   "snapDetailWebsite": {
     "message": "Situs web"
-  },
-  "snapInstallRequest": {
-    "message": "Menginstal $1 memberinya izin berikut. Lanjutkan hanya jika Anda memercayai $1.",
-    "description": "$1 is the snap name."
   },
   "snapInstallSuccess": {
     "message": "Instalasi selesai"
@@ -3564,9 +3493,6 @@
   },
   "snaps": {
     "message": "Snap"
-  },
-  "snapsInvalidUIError": {
-    "message": "UI yang ditentukan oleh snap tidak valid."
   },
   "snapsNoInsight": {
     "message": "Snap tidak mengembalikan wawasan apa pun"
@@ -3782,18 +3708,6 @@
   },
   "strong": {
     "message": "Kuat"
-  },
-  "stxBenefit1": {
-    "message": "Meminimalkan biaya transaksi"
-  },
-  "stxBenefit2": {
-    "message": "Kurangi potensi kegagalan transaksi \t"
-  },
-  "stxBenefit3": {
-    "message": "Hapus transaksi yang macet"
-  },
-  "stxBenefit4": {
-    "message": "Cegah perilaku front running \t"
   },
   "stxCancelled": {
     "message": "Pertukaran akan gagal"
@@ -4284,12 +4198,6 @@
   "switchedTo": {
     "message": "Anda telah beralih ke"
   },
-  "switcherTitle": {
-    "message": "Pengalih jaringan"
-  },
-  "switcherTourDescription": {
-    "message": "Klik ikon untuk beralih jaringan atau menambahkan jaringan baru"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Mengalihkan jaringan akan membatalkan semua konfirmasi yang berstatus menunggu"
   },
@@ -4725,7 +4633,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "Lihat $1 di $2",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "Lihat $1 di Etherscan",
@@ -4828,10 +4736,6 @@
   },
   "whatsThis": {
     "message": "Apa ini?"
-  },
-  "xOfY": {
-    "message": "$1 dari $2",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total, and $1 is a count towards that total"
   },
   "xOfYPending": {
     "message": "$1 dari $2 berstatus menunggu",

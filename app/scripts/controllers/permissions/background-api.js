@@ -7,13 +7,13 @@ import {
 export function getPermissionBackgroundApiMethods(permissionController) {
   return {
     addPermittedAccount: (origin, account) => {
-      const existing = permissionController.getCaveat(
+      const { value: existingAccounts } = permissionController.getCaveat(
         origin,
         RestrictedMethods.eth_accounts,
         CaveatTypes.restrictReturnedAccounts,
       );
 
-      if (existing.value.includes(account)) {
+      if (existingAccounts.includes(account)) {
         return;
       }
 
@@ -21,40 +21,48 @@ export function getPermissionBackgroundApiMethods(permissionController) {
         origin,
         RestrictedMethods.eth_accounts,
         CaveatTypes.restrictReturnedAccounts,
-        [...existing.value, account],
+        [...existingAccounts, account],
       );
     },
 
-    // To add more than one accounts when already connected to the dapp
+    // To add more than one account when already connected to the dapp
     addMorePermittedAccounts: (origin, accounts) => {
-      const existing = permissionController.getCaveat(
+      const { value: existingAccounts } = permissionController.getCaveat(
         origin,
         RestrictedMethods.eth_accounts,
         CaveatTypes.restrictReturnedAccounts,
       );
-      // Since this function will be called for unconnected accounts, we dodn't need an extra check
+
+      const updatedAccounts = Array.from(
+        new Set([...existingAccounts, ...accounts]),
+      );
+
+      if (updatedAccounts.length === existingAccounts.length) {
+        return;
+      }
+
       permissionController.updateCaveat(
         origin,
         RestrictedMethods.eth_accounts,
         CaveatTypes.restrictReturnedAccounts,
-        [...existing.value, ...accounts],
+        updatedAccounts,
       );
     },
 
     removePermittedAccount: (origin, account) => {
-      const existing = permissionController.getCaveat(
+      const { value: existingAccounts } = permissionController.getCaveat(
         origin,
         RestrictedMethods.eth_accounts,
         CaveatTypes.restrictReturnedAccounts,
       );
 
-      if (!existing.value.includes(account)) {
-        return;
-      }
-
-      const remainingAccounts = existing.value.filter(
+      const remainingAccounts = existingAccounts.filter(
         (existingAccount) => existingAccount !== account,
       );
+
+      if (remainingAccounts.length === existingAccounts.length) {
+        return;
+      }
 
       if (remainingAccounts.length === 0) {
         permissionController.revokePermission(

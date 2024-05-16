@@ -11,6 +11,7 @@ const {
 const cssToXPath = require('css-to-xpath');
 const { sprintf } = require('sprintf-js');
 const { retry } = require('../../../development/lib/retry');
+const { quoteXPathText } = require('../../helpers/quoteXPathText');
 
 const PAGES = {
   BACKGROUND: 'background',
@@ -186,10 +187,10 @@ class Driver {
           .toXPath();
         return By.xpath(xpath);
       }
+
+      const quoted = quoteXPathText(locator.text);
       // The tag prop is optional and further refines which elements match
-      return By.xpath(
-        `//${locator.tag ?? '*'}[contains(text(), '${locator.text}')]`,
-      );
+      return By.xpath(`//${locator.tag ?? '*'}[contains(text(), ${quoted})]`);
     }
     throw new Error(
       `The locator '${locator}' is not supported by the E2E test driver`,
@@ -473,6 +474,10 @@ class Driver {
     await this.executeScript(
       `navigator.clipboard.writeText("${contentToPaste}")`,
     );
+    await this.fill(rawLocator, Key.chord(this.Key.MODIFIER, 'v'));
+  }
+
+  async pasteFromClipboardIntoField(rawLocator) {
     await this.fill(rawLocator, Key.chord(this.Key.MODIFIER, 'v'));
   }
 

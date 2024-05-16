@@ -6,6 +6,72 @@ exports[`Security Tab should match snapshot 1`] = `
     class="settings-page__body"
   >
     <div
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      data-testid="advanced-setting-show-testnet-conversion"
+    >
+      <div
+        class="settings-page__content-item"
+      >
+        <span>
+          Basic functionality
+        </span>
+        <div
+          class="settings-page__content-description"
+        >
+          Includes token data and value, optimal gas settings, and more. Using these services shares your IP address with MetaMask, just like when you visit a website.
+        </div>
+      </div>
+      <div
+        class="settings-page__content-item-col"
+      >
+        <label
+          class="toggle-button toggle-button--off"
+          tabindex="0"
+        >
+          <div
+            style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+          >
+            <div
+              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(159, 166, 174);"
+            >
+              <div
+                style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+              />
+              <div
+                style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+              />
+            </div>
+            <div
+              style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+            >
+              <div
+                style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
+              />
+            </div>
+            <input
+              style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+              type="checkbox"
+              value="false"
+            />
+          </div>
+          <div
+            class="toggle-button__status"
+          >
+            <span
+              class="toggle-button__label-off"
+            >
+              Off
+            </span>
+            <span
+              class="toggle-button__label-on"
+            >
+              On
+            </span>
+          </div>
+        </label>
+      </div>
+    </div>
+    <div
       class="settings-tab__error"
     >
       warning
@@ -31,189 +97,89 @@ exports[`Security Tab should match snapshot 1`] = `
         Reveal Secret Recovery Phrase
       </button>
     </div>
-    <div
-      class="settings-page__security-tab-sub-header"
-    >
-      <span />
+    <div>
       <span
-        class="mm-box mm-text mm-text--inherit mm-box--color-text-alternative"
+        class="settings-page__security-tab-sub-header"
       >
         Security alerts
       </span>
+    </div>
+    <div
+      class="settings-page__content-padded"
+    >
       <div
-        class="settings-page__content-padded"
+        class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
       >
-        <p
-          class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
-        >
-          This feature alerts you to malicious activity by actively reviewing transaction and signature requests. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity. By enabling this feature you agree to the provider's terms of use.
-        </p>
-        <p
-          class="mm-box mm-text mm-text--body-sm-bold mm-box--margin-top-4 mm-box--color-text-alternative"
-        >
-          Select your preferred provider
-        </p>
         <div
-          class="mm-box mm-box--margin-top-3 mm-box--margin-bottom-3 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
-          data-testid="settings-toggle-security-alert-blockaid"
+          class="settings-page__content-item"
         >
-          <div>
-            <div
-              class="mm-box mm-box--display-flex"
-            >
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-              >
-                Blockaid
-              </p>
-              <div
-                class="mm-box mm-tag mm-box--margin-left-2 mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
-                >
-                  Recommended
-                </p>
-              </div>
-            </div>
-            <h6
-              class="mm-box mm-text mm-text--body-sm mm-box--margin-top-0 mm-box--margin-right-1 mm-box--color-text-alternative"
-            >
-              Privacy preserving - no data is shared with third parties. Available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon, Base and Sepolia.
-            </h6>
-          </div>
           <div
-            data-testid="securityAlert"
+            class="settings-page__content-description"
           >
-            <label
-              class="toggle-button toggle-button--off"
-              tabindex="0"
-            >
-              <div
-                style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+            <span>
+               
+              This feature alerts you to malicious activity by actively reviewing transaction and signature requests. 
+              <a
+                href="https://support.metamask.io/hc/en-us/articles/19878220833947"
+                rel="noreferrer"
+                target="_blank"
               >
-                <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
-                >
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
-                  />
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
-                  />
-                </div>
-                <div
-                  style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
-                >
-                  <div
-                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
-                  />
-                </div>
-                <input
-                  style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
-                  type="checkbox"
-                  value="false"
-                />
-              </div>
-              <div
-                class="toggle-button__status"
-              >
-                <span
-                  class="toggle-button__label-off"
-                />
-                <span
-                  class="toggle-button__label-on"
-                />
-              </div>
-            </label>
+                Learn more
+              </a>
+              
+               
+            </span>
           </div>
         </div>
         <div
-          class="mm-box mm-box--margin-top-3 mm-box--margin-bottom-3 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+          class="settings-page__content-item-col"
+          data-testid="securityAlert"
         >
-          <div>
+          <label
+            class="toggle-button toggle-button--off"
+            tabindex="0"
+          >
             <div
-              class="mm-box mm-box--display-flex"
+              style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-              >
-                OpenSea + Blockaid
-              </p>
               <div
-                class="mm-box mm-tag mm-box--margin-left-2 mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(159, 166, 174);"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
-                >
-                  Beta
-                </p>
+                <div
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                />
+                <div
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+                />
               </div>
+              <div
+                style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+              >
+                <div
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
+                />
+              </div>
+              <input
+                style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                type="checkbox"
+                value="false"
+              />
             </div>
             <div
-              class="settings-page__content-description"
-              data-testid="termsOfUse"
+              class="toggle-button__status"
             >
-              <span>
-                 
-                Data is shared with third parties. Security providers will receive your unsigned transactions and signature requests. 
-                <a
-                  href="https://opensea.io/securityproviderterms"
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  Terms of use
-                </a>
-                
-                 
+              <span
+                class="toggle-button__label-off"
+              >
+                Off
+              </span>
+              <span
+                class="toggle-button__label-on"
+              >
+                On
               </span>
             </div>
-          </div>
-          <div
-            data-testid="transactionSecurityCheck"
-          >
-            <label
-              class="toggle-button toggle-button--off"
-              tabindex="0"
-            >
-              <div
-                style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
-              >
-                <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
-                >
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
-                  />
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
-                  />
-                </div>
-                <div
-                  style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
-                >
-                  <div
-                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
-                  />
-                </div>
-                <input
-                  style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
-                  type="checkbox"
-                  value="false"
-                />
-              </div>
-              <div
-                class="toggle-button__status"
-              >
-                <span
-                  class="toggle-button__label-off"
-                />
-                <span
-                  class="toggle-button__label-on"
-                />
-              </div>
-            </label>
-          </div>
+          </label>
         </div>
       </div>
     </div>
@@ -259,7 +225,7 @@ exports[`Security Tab should match snapshot 1`] = `
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(16, 152, 252);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
@@ -272,7 +238,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
               >
                 <div
-                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(3, 125, 214); left: 18px;"
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 18px;"
                 />
               </div>
               <input
@@ -336,7 +302,7 @@ exports[`Security Tab should match snapshot 1`] = `
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(16, 152, 252);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
@@ -349,7 +315,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
               >
                 <div
-                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(3, 125, 214); left: 18px;"
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 18px;"
                 />
               </div>
               <input
@@ -439,7 +405,7 @@ exports[`Security Tab should match snapshot 1`] = `
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(16, 152, 252);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
@@ -452,7 +418,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
               >
                 <div
-                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(3, 125, 214); left: 18px;"
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 18px;"
                 />
               </div>
               <input
@@ -539,7 +505,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
               >
                 <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(16, 152, 252);"
                 >
                   <div
                     style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
@@ -552,7 +518,7 @@ exports[`Security Tab should match snapshot 1`] = `
                   style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
                 >
                   <div
-                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(3, 125, 214); left: 18px;"
+                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 18px;"
                   />
                 </div>
                 <input
@@ -626,7 +592,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
               >
                 <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(159, 166, 174);"
                 >
                   <div
                     style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -639,7 +605,7 @@ exports[`Security Tab should match snapshot 1`] = `
                   style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
                 >
                   <div
-                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
+                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
                   />
                 </div>
                 <input
@@ -709,7 +675,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
               >
                 <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(159, 166, 174);"
                 >
                   <div
                     style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -722,7 +688,7 @@ exports[`Security Tab should match snapshot 1`] = `
                   style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
                 >
                   <div
-                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
+                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
                   />
                 </div>
                 <input
@@ -792,7 +758,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
               >
                 <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(16, 152, 252);"
                 >
                   <div
                     style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
@@ -805,13 +771,100 @@ exports[`Security Tab should match snapshot 1`] = `
                   style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
                 >
                   <div
-                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(3, 125, 214); left: 18px;"
+                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 18px;"
                   />
                 </div>
                 <input
                   style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
                   type="checkbox"
                   value="true"
+                />
+              </div>
+              <div
+                class="toggle-button__status"
+              >
+                <span
+                  class="toggle-button__label-off"
+                >
+                  Off
+                </span>
+                <span
+                  class="toggle-button__label-on"
+                >
+                  On
+                </span>
+              </div>
+            </label>
+          </div>
+        </div>
+        <div
+          class="mm-box network-toggle-wrapper mm-box--margin-top-6 mm-box--margin-bottom-6 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+          data-testid="network-toggle-0xe705"
+        >
+          <div
+            class="mm-box network-toggle-wrapper__overflow-container mm-box--display-flex mm-box--gap-4 mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+          >
+            <div
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+            >
+              <img
+                alt="Linea Sepolia logo"
+                class="mm-avatar-network__network-image"
+                src="./images/linea-logo-testnet.png"
+              />
+            </div>
+            <div
+              class="mm-box network-toggle-wrapper__overflow-container mm-box--display-flex mm-box--flex-direction-column"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+              >
+                Linea Sepolia
+              </p>
+              <p
+                class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-primary-default mm-box--background-color-transparent"
+              >
+                <a
+                  href="https://lineascan.build"
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  Lineascan.build
+                </a>
+              </p>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-box--margin-left-auto"
+          >
+            <label
+              class="toggle-button toggle-button--off"
+              tabindex="0"
+            >
+              <div
+                style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+              >
+                <div
+                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(159, 166, 174);"
+                >
+                  <div
+                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                  />
+                  <div
+                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+                  />
+                </div>
+                <div
+                  style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+                >
+                  <div
+                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
+                  />
+                </div>
+                <input
+                  style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                  type="checkbox"
+                  value="false"
                 />
               </div>
               <div
@@ -879,7 +932,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
               >
                 <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(16, 152, 252);"
                 >
                   <div
                     style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
@@ -892,7 +945,7 @@ exports[`Security Tab should match snapshot 1`] = `
                   style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
                 >
                   <div
-                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(3, 125, 214); left: 18px;"
+                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 18px;"
                   />
                 </div>
                 <input
@@ -917,6 +970,84 @@ exports[`Security Tab should match snapshot 1`] = `
               </div>
             </label>
           </div>
+        </div>
+      </div>
+      <div
+        class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      >
+        <div
+          class="settings-page__content-item"
+        >
+          <span>
+            Estimate balance changes
+          </span>
+          <div
+            class="settings-page__content-description"
+          >
+            <span>
+               
+              Turn this on to estimate balance changes of transactions before you confirm them. This doesn't guarantee the final outcome of your transactions. 
+              <a
+                href="https://support.metamask.io/transactions-and-gas/transactions/simulations/"
+                rel="noreferrer"
+                target="_blank"
+              >
+                Learn more
+              </a>
+              
+               
+            </span>
+          </div>
+        </div>
+        <div
+          class="settings-page__content-item-col"
+          data-testid="useTransactionSimulations"
+        >
+          <label
+            class="toggle-button toggle-button--off"
+            tabindex="0"
+          >
+            <div
+              style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+            >
+              <div
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(159, 166, 174);"
+              >
+                <div
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                />
+                <div
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+                />
+              </div>
+              <div
+                style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+              >
+                <div
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
+                />
+              </div>
+              <input
+                style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                type="checkbox"
+                value="false"
+              />
+            </div>
+            <div
+              class="toggle-button__status"
+            >
+              <span
+                class="toggle-button__label-off"
+              >
+                Off
+              </span>
+              <span
+                class="toggle-button__label-on"
+              >
+                On
+              </span>
+            </div>
+          </label>
         </div>
       </div>
     </div>
@@ -1006,7 +1137,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
               >
                 <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(159, 166, 174);"
                 >
                   <div
                     style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -1019,7 +1150,7 @@ exports[`Security Tab should match snapshot 1`] = `
                   style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
                 >
                   <div
-                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
+                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
                   />
                 </div>
                 <input
@@ -1077,7 +1208,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
               >
                 <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(16, 152, 252);"
                 >
                   <div
                     style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
@@ -1090,7 +1221,7 @@ exports[`Security Tab should match snapshot 1`] = `
                   style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
                 >
                   <div
-                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(3, 125, 214); left: 18px;"
+                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 18px;"
                   />
                 </div>
                 <input
@@ -1191,7 +1322,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
               >
                 <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(159, 166, 174);"
                 >
                   <div
                     style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -1204,7 +1335,7 @@ exports[`Security Tab should match snapshot 1`] = `
                   style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
                 >
                   <div
-                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
+                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
                   />
                 </div>
                 <input
@@ -1281,7 +1412,7 @@ exports[`Security Tab should match snapshot 1`] = `
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(16, 152, 252);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
@@ -1294,7 +1425,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
               >
                 <div
-                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(3, 125, 214); left: 18px;"
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 18px;"
                 />
               </div>
               <input
@@ -1347,7 +1478,7 @@ exports[`Security Tab should match snapshot 1`] = `
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(159, 166, 174);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -1360,7 +1491,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
               >
                 <div
-                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
                 />
               </div>
               <input
@@ -1414,7 +1545,7 @@ exports[`Security Tab should match snapshot 1`] = `
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(16, 152, 252);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
@@ -1427,7 +1558,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
               >
                 <div
-                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(3, 125, 214); left: 18px;"
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 18px;"
                 />
               </div>
               <input
@@ -1480,7 +1611,7 @@ exports[`Security Tab should match snapshot 1`] = `
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(16, 152, 252);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
@@ -1493,7 +1624,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
               >
                 <div
-                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(3, 125, 214); left: 18px;"
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 18px;"
                 />
               </div>
               <input
@@ -1557,7 +1688,7 @@ exports[`Security Tab should match snapshot 1`] = `
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(159, 166, 174);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
@@ -1570,7 +1701,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
               >
                 <div
-                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: var(--shadow-size-xs) var(--color-shadow-default); border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(255, 255, 255); left: 3px;"
                 />
               </div>
               <input

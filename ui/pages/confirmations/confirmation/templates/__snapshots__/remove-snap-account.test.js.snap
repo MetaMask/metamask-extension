@@ -22,16 +22,16 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
               class="mm-box mm-badge-wrapper snap-avatar mm-box--display-inline-block"
             >
               <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-lg mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-default box--border-style-solid box--border-width-1"
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-lg mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full"
                 style="border-width: 0px;"
               >
-                m
+                T
               </div>
               <div
                 class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-bottom-right"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-icon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-info-default mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-icon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-info-default mm-box--rounded-full mm-box--border-color-background-alternative mm-box--border-width-2 box--border-style-solid"
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-info-inverse"
@@ -48,7 +48,7 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
             <p
               class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
             >
-              @metamask/snap-test
+              Test Snap
             </p>
             <p
               class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
@@ -107,45 +107,168 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
                     class="mm-box multichain-account-list-item__selected-indicator mm-box--background-color-primary-default mm-box--rounded-pill"
                   />
                   <div
-                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                    class="mm-box mm-box--display-flex mm-box--sm:display-none"
+                    data-testid="account-list-item-badge"
+                  >
+                    <button
+                      class="mm-box multichain-badge-status mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-transparent"
+                      data-testid="multichain-badge-status"
+                    >
+                      <div>
+                        <div
+                          aria-describedby="tippy-tooltip-1"
+                          class=""
+                          data-original-title="Not connected"
+                          data-tooltipped=""
+                          style="display: inline;"
+                          tabindex="0"
+                        >
+                          <div
+                            class="mm-box mm-badge-wrapper mm-box--display-inline-block"
+                          >
+                            <div
+                              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                            >
+                              <div
+                                class="mm-avatar-account__jazzicon"
+                              >
+                                <div
+                                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
+                                >
+                                  <svg
+                                    height="32"
+                                    width="32"
+                                    x="0"
+                                    y="0"
+                                  >
+                                    <rect
+                                      fill="#18CDF2"
+                                      height="32"
+                                      transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                                      width="32"
+                                      x="0"
+                                      y="0"
+                                    />
+                                    <rect
+                                      fill="#035E56"
+                                      height="32"
+                                      transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                                      width="32"
+                                      x="0"
+                                      y="0"
+                                    />
+                                    <rect
+                                      fill="#F26602"
+                                      height="32"
+                                      transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                                      width="32"
+                                      x="0"
+                                      y="0"
+                                    />
+                                  </svg>
+                                </div>
+                              </div>
+                            </div>
+                            <div
+                              class="mm-box mm-badge-wrapper__badge-container"
+                              style="bottom: -1px; right: 2px;"
+                            >
+                              <div
+                                class="mm-box multichain-badge-status__badge mm-box--background-color-border-muted mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-4 box--border-style-solid"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </button>
+                  </div>
+                  <div
+                    class="mm-box mm-box--display-none mm-box--sm:display-flex"
                   >
                     <div
-                      class="mm-avatar-account__jazzicon"
+                      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
                     >
                       <div
-                        style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
+                        class="mm-avatar-account__jazzicon"
                       >
-                        <svg
-                          height="32"
-                          width="32"
-                          x="0"
-                          y="0"
+                        <div
+                          style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
                         >
-                          <rect
-                            fill="#18CDF2"
+                          <svg
                             height="32"
-                            transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
                             width="32"
                             x="0"
                             y="0"
-                          />
-                          <rect
-                            fill="#035E56"
+                          >
+                            <rect
+                              fill="#18CDF2"
+                              height="32"
+                              transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                              width="32"
+                              x="0"
+                              y="0"
+                            />
+                            <rect
+                              fill="#035E56"
+                              height="32"
+                              transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                              width="32"
+                              x="0"
+                              y="0"
+                            />
+                            <rect
+                              fill="#F26602"
+                              height="32"
+                              transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                              width="32"
+                              x="0"
+                              y="0"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                    >
+                      <div
+                        class="mm-avatar-account__jazzicon"
+                      >
+                        <div
+                          style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
+                        >
+                          <svg
                             height="32"
-                            transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
                             width="32"
                             x="0"
                             y="0"
-                          />
-                          <rect
-                            fill="#F26602"
-                            height="32"
-                            transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
-                            width="32"
-                            x="0"
-                            y="0"
-                          />
-                        </svg>
+                          >
+                            <rect
+                              fill="#18CDF2"
+                              height="32"
+                              transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                              width="32"
+                              x="0"
+                              y="0"
+                            />
+                            <rect
+                              fill="#035E56"
+                              height="32"
+                              transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                              width="32"
+                              x="0"
+                              y="0"
+                            />
+                            <rect
+                              fill="#F26602"
+                              height="32"
+                              transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                              width="32"
+                              x="0"
+                              y="0"
+                            />
+                          </svg>
+                        </div>
                       </div>
                     </div>
                   </div>

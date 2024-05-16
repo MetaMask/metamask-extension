@@ -8,6 +8,7 @@ import {
   WINDOW_TITLES,
   sendTransaction,
   convertETHToHexGwei,
+  createDappTransaction,
 } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import {
@@ -38,10 +39,10 @@ async function installExampleSnap(driver: Driver) {
     text: 'Connect',
     tag: 'button',
   });
-  await driver.findElement({ text: 'Installation request', tag: 'h2' });
+  await driver.findElement({ text: 'Add to MetaMask', tag: 'h3' });
   await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
   await driver.clickElement({
-    text: 'Install',
+    text: 'Confirm',
     tag: 'button',
   });
   await driver.clickElement({
@@ -91,19 +92,6 @@ async function setSnapConfig(
   await driver.clickElement({ text: 'Set Chain Config' });
   await driver.fill('#set-chain-config-chain-config-object', data);
   await driver.clickElement({ text: 'Set Chain Configs', tag: 'button' });
-}
-
-async function createDappTransaction(
-  driver: Driver,
-  transaction: TransactionParams,
-) {
-  await openDapp(
-    driver,
-    null,
-    `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([
-      transaction,
-    ])}`,
-  );
 }
 
 async function createSwap(driver: Driver) {

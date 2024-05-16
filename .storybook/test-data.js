@@ -5,6 +5,8 @@ import { NetworkStatus } from '@metamask/network-controller';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { CHAIN_IDS } from '../shared/constants/network';
 import { copyable, divider, heading, panel, text } from '@metamask/snaps-sdk';
+import { getJsxElementFromComponent } from '@metamask/snaps-utils';
+import { FirstTimeFlowType } from '../shared/constants/onboarding';
 
 const state = {
   invalidCustomNetwork: {
@@ -280,18 +282,13 @@ const state = {
     },
     interfaces: {
       'test-interface': {
-        content: panel([
+        content: getJsxElementFromComponent(panel([
           heading('Foo bar'),
           text('Description'),
           divider(),
           text('More text'),
           copyable('Text you can copy'),
-        ]),
-        state: {},
-        snapId: 'local:http://localhost:8080/',
-      },
-      'error-interface': {
-        content: 'foo',
+        ])),
         state: {},
         snapId: 'local:http://localhost:8080/',
       },
@@ -670,7 +667,7 @@ const state = {
       [CHAIN_IDS.OPTIMISM_TESTNET]: false,
       [CHAIN_IDS.AVALANCHE_TESTNET]: true,
     },
-    firstTimeFlowType: 'create',
+    firstTimeFlowType: FirstTimeFlowType.create,
     completedOnboarding: true,
     knownMethodData: {
       '0x60806040': {

@@ -499,6 +499,7 @@ export enum MetaMetricsEventName {
   AccountAdded = 'Account Added',
   AccountAddSelected = 'Account Add Selected',
   AccountAddFailed = 'Account Add Failed',
+  AccountDetailsOpened = 'Account Details Opened',
   AccountPasswordCreated = 'Account Password Created',
   AccountReset = 'Account Reset',
   AccountRenamed = 'Account Renamed',
@@ -539,7 +540,6 @@ export enum MetaMetricsEventName {
   MetricsOptIn = 'Metrics Opt In',
   MetricsOptOut = 'Metrics Opt Out',
   NavAccountMenuOpened = 'Account Menu Opened',
-  NavAccountDetailsOpened = 'Account Details Opened',
   NavConnectedSitesOpened = 'Connected Sites Opened',
   NavMainMenuOpened = 'Main Menu Opened',
   NavPermissionsOpened = 'Permissions Opened',
@@ -587,6 +587,7 @@ export enum MetaMetricsEventName {
   SignatureRejected = 'Signature Rejected',
   SignatureRequested = 'Signature Requested',
   SimulationFails = 'Simulation Fails',
+  SimulationIncompleteAssetDisplayed = 'Incomplete Asset Displayed',
   SrpRevealStarted = 'Reveal SRP Initiated',
   SrpRevealClicked = 'Clicked Reveal Secret Recovery',
   SrpRevealViewed = 'Views Reveal Secret Recovery',
@@ -609,6 +610,8 @@ export enum MetaMetricsEventName {
   TokenImportButtonClicked = 'Import Token Button Clicked',
   TokenScreenOpened = 'Token Screen Opened',
   TokenAdded = 'Token Added',
+  TokenRemoved = 'Token Removed',
+  NFTRemoved = 'NFT Removed',
   TokenDetected = 'Token Detected',
   TokenHidden = 'Token Hidden',
   TokenImportCanceled = 'Token Import Canceled',
@@ -644,6 +647,7 @@ export enum MetaMetricsEventName {
   CustomNetworkAdded = 'Custom Network Added',
   TokenDetailsOpened = 'Token Details Opened',
   NftScreenOpened = 'NFT Screen Opened',
+  NftDetailsOpened = 'NFT Details Opened',
   ActivityScreenOpened = 'Activity Screen Opened',
   WhatsNewViewed = `What's New Viewed`,
   WhatsNewClicked = `What's New Link Clicked`,
@@ -663,7 +667,7 @@ export enum MetaMetricsEventName {
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   SnapInstallStarted = 'Snap Install Started',
   SnapInstallFailed = 'Snap Install Failed',
-  SnapInstallRejected = 'Snap Update Rejected',
+  SnapInstallRejected = 'Snap Install Rejected',
   SnapInstalled = 'Snap Installed',
   SnapUninstalled = 'Snap Uninstalled',
   SnapUpdateStarted = 'Snap Update Started',
@@ -782,6 +786,7 @@ export enum MetaMetricsTransactionEventSource {
 }
 
 export enum MetaMetricsEventLocation {
+  SignatureConfirmation = 'signature_confirmation',
   TokenDetails = 'token_details',
   TokenDetection = 'token_detection',
   TokenMenu = 'token_menu',
@@ -792,6 +797,7 @@ export enum MetaMetricsEventUiCustomization {
   FlaggedAsSafetyUnknown = 'flagged_as_safety_unknown',
   FlaggedAsWarning = 'flagged_as_warning',
   GasEstimationFailed = 'gas_estimation_failed',
+  RedesignedConfirmation = 'redesigned_confirmation',
   SecurityAlertError = 'security_alert_error',
   Siwe = 'sign_in_with_ethereum',
 }

@@ -22,16 +22,16 @@ exports[`create-snap-account confirmation should match snapshot 1`] = `
               class="mm-box mm-badge-wrapper snap-avatar mm-box--display-inline-block"
             >
               <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-lg mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-default box--border-style-solid box--border-width-1"
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-lg mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full"
                 style="border-width: 0px;"
               >
-                m
+                T
               </div>
               <div
                 class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-bottom-right"
               >
                 <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-icon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-info-default mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-icon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-info-default mm-box--rounded-full mm-box--border-color-background-alternative mm-box--border-width-2 box--border-style-solid"
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-info-inverse"
@@ -48,7 +48,7 @@ exports[`create-snap-account confirmation should match snapshot 1`] = `
             <p
               class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
             >
-              @metamask/snap-test
+              Test Snap
             </p>
             <p
               class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"

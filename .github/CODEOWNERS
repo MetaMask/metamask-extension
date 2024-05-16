@@ -29,7 +29,7 @@ offscreen/scripts/offscreen.ts       @MetaMask/snaps-devs
 # empower our CI steps. ANY addition of orbs to our CircleCI config
 # should be brought to the attention of engineering leadership for
 # discussion
-.circleci/                           @MetaMask/library-admins @kumavis @brad-decker
+.circleci/                           @MetaMask/library-admins @kumavis
 
 # The privacy-snapshot.json file includes a list of all hosts that the
 # extension communicates with during the E2E test suite runs. It is not a
@@ -50,4 +50,17 @@ privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
 
 # For now, restricting approvals inside the .devcontainer folder to devs
 # who were involved with the Codespaces project.
-.devcontainer/                       @MetaMask/library-admins @HowardBraham @plasmacorral @brad-decker
+.devcontainer/                       @MetaMask/library-admins @HowardBraham @plasmacorral
+
+# Confirmations UX team to own code for confirmations on UI.
+ui/pages/confirmations               @MetaMask/confirmations-ux @MetaMask/confirmations-system-team
+
+# MMI team is responsible for code related with Institutioanl version of MetaMask
+ui/pages/institutional               @MetaMask/mmi
+ui/components/institutional          @MetaMask/mmi
+ui/ducks/institutional               @MetaMask/mmi
+ui/selectors/institutional           @MetaMask/mmi
+
+# Design System to own code for the component-library folder
+# Slack handle: @metamask-design-system-team | Slack channel: #metamask-design-system
+ui/components/component-library      @MetaMask/design-system-engineers

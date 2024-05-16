@@ -97,12 +97,6 @@ export const getPermissionSpecifications = ({
       allowedCaveats: [CaveatTypes.restrictReturnedAccounts],
 
       factory: (permissionOptions, requestData) => {
-        if (Array.isArray(permissionOptions.caveats)) {
-          throw new Error(
-            `${PermissionNames.eth_accounts} error: Received unexpected caveats. Any permitted caveats will be added automatically.`,
-          );
-        }
-
         // This value will be further validated as part of the caveat.
         if (!requestData.approvedAccounts) {
           throw new Error(

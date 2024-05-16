@@ -41,19 +41,13 @@ exports[`All Connections render renders correctly 1`] = `
         </div>
       </div>
       <div
-        class="mm-box multichain-page-content mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+        class="mm-box multichain-page-content mm-box--padding-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
       >
         <div
           class="mm-box"
         />
-        <p
-          class="mm-box mm-text mm-text--body-lg-medium mm-text--text-align-center mm-box--padding-4 mm-box--color-text-default mm-box--background-color-background-default"
-          data-testid="sites-connections"
-        >
-          Site Connections
-        </p>
         <button
-          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--align-items-baseline mm-box--width-full mm-box--background-color-background-default"
+          class="mm-box multichain-connection-list-item mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--align-items-baseline mm-box--width-full mm-box--background-color-background-default"
           data-testid="connection-list-item"
         >
           <div
@@ -76,10 +70,16 @@ exports[`All Connections render renders correctly 1`] = `
               <div
                 class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-top-right"
               >
-                <span
-                  class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-icon-default mm-box--border-color-background-default box--border-style-solid box--border-width-1"
-                  style="mask-image: url('./images/icons/global.svg');"
-                />
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                  data-testid="connection-list-item__avatar-network-badge"
+                >
+                  <img
+                    alt="Ethereum Mainnet logo"
+                    class="mm-avatar-network__network-image"
+                    src="./images/eth_logo.svg"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -166,165 +166,6 @@ exports[`All Connections render renders correctly 1`] = `
                 </div>
               </div>
             </div>
-          </div>
-          <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--justify-content-flex-end mm-box--align-items-center"
-            style="flex: 1; align-self: center;"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-flex mm-box--color-icon-default mm-box--background-color-background-default"
-              style="mask-image: url('./images/icons/arrow-right.svg');"
-            />
-          </div>
-        </button>
-        <p
-          class="mm-box mm-text mm-text--body-lg-medium mm-text--text-align-center mm-box--padding-4 mm-box--color-text-default mm-box--background-color-background-default"
-          data-testid="snaps-connections"
-        >
-          Snap Connections
-        </p>
-        <button
-          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--align-items-baseline mm-box--width-full mm-box--background-color-background-default"
-          data-testid="connection-list-item"
-        >
-          <div
-            class="mm-box mm-box--display-flex mm-box--align-items-center"
-            style="align-self: center;"
-          >
-            <div
-              class="mm-box mm-badge-wrapper snap-avatar connection-list-item__snap-avatar mm-box--display-inline-block"
-            >
-              <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-default box--border-style-solid box--border-width-1"
-                style="border-width: 0px;"
-              >
-                m
-              </div>
-              <div
-                class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-bottom-right"
-              >
-                <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-icon mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-info-default mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-0 box--border-style-solid box--border-width-1"
-                >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-info-inverse"
-                    style="mask-image: url('./images/icons/snaps.svg');"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-5/12"
-            style="align-self: center; flex-grow: 1;"
-          >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
-            >
-              @metamask/testSnap1
-            </p>
-          </div>
-          <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--justify-content-flex-end mm-box--align-items-center"
-            style="flex: 1; align-self: center;"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-flex mm-box--color-icon-default mm-box--background-color-background-default"
-              style="mask-image: url('./images/icons/arrow-right.svg');"
-            />
-          </div>
-        </button>
-        <button
-          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--align-items-baseline mm-box--width-full mm-box--background-color-background-default"
-          data-testid="connection-list-item"
-        >
-          <div
-            class="mm-box mm-box--display-flex mm-box--align-items-center"
-            style="align-self: center;"
-          >
-            <div
-              class="mm-box mm-badge-wrapper snap-avatar connection-list-item__snap-avatar mm-box--display-inline-block"
-            >
-              <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-default box--border-style-solid box--border-width-1"
-                style="border-width: 0px;"
-              >
-                m
-              </div>
-              <div
-                class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-bottom-right"
-              >
-                <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-icon mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-info-default mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-0 box--border-style-solid box--border-width-1"
-                >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-info-inverse"
-                    style="mask-image: url('./images/icons/snaps.svg');"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-5/12"
-            style="align-self: center; flex-grow: 1;"
-          >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
-            >
-              @metamask/testSnap2
-            </p>
-          </div>
-          <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--justify-content-flex-end mm-box--align-items-center"
-            style="flex: 1; align-self: center;"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-flex mm-box--color-icon-default mm-box--background-color-background-default"
-              style="mask-image: url('./images/icons/arrow-right.svg');"
-            />
-          </div>
-        </button>
-        <button
-          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--align-items-baseline mm-box--width-full mm-box--background-color-background-default"
-          data-testid="connection-list-item"
-        >
-          <div
-            class="mm-box mm-box--display-flex mm-box--align-items-center"
-            style="align-self: center;"
-          >
-            <div
-              class="mm-box mm-badge-wrapper snap-avatar connection-list-item__snap-avatar mm-box--display-inline-block"
-            >
-              <div
-                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-default box--border-style-solid box--border-width-1"
-                style="border-width: 0px;"
-              >
-                m
-              </div>
-              <div
-                class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-bottom-right"
-              >
-                <div
-                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-icon mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-info-default mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-0 box--border-style-solid box--border-width-1"
-                >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-info-inverse"
-                    style="mask-image: url('./images/icons/snaps.svg');"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-5/12"
-            style="align-self: center; flex-grow: 1;"
-          >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
-            >
-              @metamask/testSnap3
-            </p>
           </div>
           <div
             class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--justify-content-flex-end mm-box--align-items-center"

@@ -136,18 +136,10 @@ describe('Add existing token using search', function () {
         );
         await tkn.click();
 
-        // TODO: Simplify once MMI has the new asset page
-        try {
-          await driver.waitForSelector({
-            css: '[data-testid="multichain-token-list-item-value"]',
-            text: '0 BAT',
-          });
-        } catch {
-          await driver.waitForSelector({
-            css: '.token-overview__primary-balance',
-            text: '0 BAT',
-          });
-        }
+        await driver.waitForSelector({
+          css: '.token-overview__primary-balance',
+          text: '0 BAT',
+        });
       },
     );
   });

@@ -348,18 +348,9 @@
     "message": "Lahat ng iyong NFT mula sa $1",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
-  "allowExternalExtensionTo": {
-    "message": "Payagan ang external extension na ito na:"
-  },
   "allowSpendToken": {
     "message": "Magbigay ng pahintulot na ma-access ang iyong $1?",
     "description": "$1 is the symbol of the token that are requesting to spend"
-  },
-  "allowThisSiteTo": {
-    "message": "Payagan ang site na ito na:"
-  },
-  "allowThisSnapTo": {
-    "message": "Payagan ang snap na ito sa:"
   },
   "allowWithdrawAndSpend": {
     "message": "Payagan ang $1 na mag-withdraw at gastusin ang sumusunod na halaga:",
@@ -742,26 +733,6 @@
   "connectSnap": {
     "message": "Ikonekta ang $1",
     "description": "$1 is the snap for which a connection is being requested."
-  },
-  "connectTo": {
-    "message": "Kumonekta sa $1",
-    "description": "$1 is the name/origin of a web3 site/application that the user can connect to metamask"
-  },
-  "connectToAll": {
-    "message": "Ikonekta sa lahat ng iyong $1",
-    "description": "$1 will be replaced by the translation of connectToAllAccounts"
-  },
-  "connectToAllAccounts": {
-    "message": "mga account",
-    "description": "will replace $1 in connectToAll, completing the sentence 'connect to all of your accounts', will be text that shows list of accounts on hover"
-  },
-  "connectToMultiple": {
-    "message": "Kumonekta sa $1",
-    "description": "$1 will be replaced by the translation of connectToMultipleNumberOfAccounts"
-  },
-  "connectToMultipleNumberOfAccounts": {
-    "message": "Mga $1 account",
-    "description": "$1 is the number of accounts to which the web3 site/application is asking to connect; this will substitute $1 in connectToMultiple"
   },
   "connectWithMetaMask": {
     "message": "Kumonekta sa MetaMask"
@@ -1649,12 +1620,6 @@
   },
   "general": {
     "message": "Pangkalahatan"
-  },
-  "globalTitle": {
-    "message": "Global menu"
-  },
-  "globalTourDescription": {
-    "message": "Tingnan ang iyong portfolio, mga nakakonektang site, setting at marami pang iba"
   },
   "goBack": {
     "message": "Bumalik"
@@ -2562,21 +2527,6 @@
   "notificationsMarkAllAsRead": {
     "message": "Markahan ang lahat bilang nabasa na"
   },
-  "notificationsOpenBetaSnapsActionText": {
-    "message": "Matuto pa"
-  },
-  "notificationsOpenBetaSnapsDescriptionOne": {
-    "message": "🎉 Nasasabik kaming ianunsiyo ang Open Beta ng MetaMask Snaps!"
-  },
-  "notificationsOpenBetaSnapsDescriptionThree": {
-    "message": "Ipersonalisa ang iyong wallet gamit ang mga snap na binuo ng developer community!"
-  },
-  "notificationsOpenBetaSnapsDescriptionTwo": {
-    "message": "Ang Snaps ay makakatulong sa iyo na maraming magawa sa MetaMask -- tulad ng kumonekta sa maraming network, tingnan ang mga insight sa transaksyon, at makakuha ng custom na notipikasyon."
-  },
-  "notificationsOpenBetaSnapsTitle": {
-    "message": "Ipinakikilala ang MetaMask Snaps"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 (na) bagong token ang nakita sa account na ito",
     "description": "$1 is the number of new tokens detected"
@@ -2629,50 +2579,50 @@
   "onboardingMetametricsAgree": {
     "message": "Sumasang-ayon ako"
   },
-  "onboardingMetametricsAllowOptOut": {
+  "onboardingMetametricsAllowOptOutLegacy": {
     "message": "Palagi kang pinapayagan na mag-opt out sa pamamagitan ng Mga Setting"
   },
-  "onboardingMetametricsDataTerms": {
+  "onboardingMetametricsDataTermsLegacy": {
     "message": "Ang datos na ito ay pinagsama-sama at samakatuwid ay hindi nagpapakilala para sa mga layunin ng General Data Protection Regulation (EU) 2016/679."
   },
-  "onboardingMetametricsDescription": {
-    "message": "Nais ng MetaMask na mangalap ng datos ng paggamit upang mas maunawaan kung paano nakikipag-ugnayan ang aming mga user sa MetaMask. Gagamitin ang datos na ito upang ibigay ang serbisyo, na kinabibilangan ng pagpapabuti ng serbisyo batay sa iyong paggamit."
-  },
-  "onboardingMetametricsDescription2": {
+  "onboardingMetametricsDescription2Legacy": {
     "message": "Ang MetaMask ay..."
+  },
+  "onboardingMetametricsDescriptionLegacy": {
+    "message": "Nais ng MetaMask na mangalap ng datos ng paggamit upang mas maunawaan kung paano nakikipag-ugnayan ang aming mga user sa MetaMask. Gagamitin ang datos na ito upang ibigay ang serbisyo, na kinabibilangan ng pagpapabuti ng serbisyo batay sa iyong paggamit."
   },
   "onboardingMetametricsDisagree": {
     "message": "Salamat nalang"
   },
-  "onboardingMetametricsInfuraTerms": {
+  "onboardingMetametricsInfuraTermsLegacy": {
     "message": "* Kapag ginamit mo ang Infura bilang iyong default na provider ng RPC sa MetaMask, kukunin ng Infura ang iyong IP address at ang iyong Ethereum wallet address kapag nagpadala ka ng transaksyon. Hindi namin iniimbak ang impormasyong ito sa paraan na nagpapahintulot sa aming mga system na iugnay ang dalawang piraso ng data na iyon. Para sa higit pang impormasyon kung paano nakikipag-ugnayan ang MetaMask at Infura mula sa pananaw ng pagkolekta ng data, tingnan ang aming update na $1. Para sa higit pang impormasyon sa aming mga kasanayan sa pagkapribado sa pangkalahatan, tingnan ang aming $2.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
-  "onboardingMetametricsInfuraTermsPolicy": {
+  "onboardingMetametricsInfuraTermsPolicyLegacy": {
     "message": "Patakaran sa Pagkapribado dito"
   },
-  "onboardingMetametricsInfuraTermsPolicyLink": {
+  "onboardingMetametricsInfuraTermsPolicyLinkLegacy": {
     "message": "dito"
   },
   "onboardingMetametricsModalTitle": {
     "message": "Magdagdag ng custom na network"
   },
-  "onboardingMetametricsNeverCollect": {
-    "message": "Kinokolekta ng $1 ang impormasyon na hindi namin kailangan para ibigay ang serbisyo (tulad ng mga key, address, hash ng transaksyon, o balanse)",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectIP": {
+  "onboardingMetametricsNeverCollectIPLegacy": {
     "message": "Kinokolekta ng $1 ang iyong buong IP address*",
     "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
   },
-  "onboardingMetametricsNeverEmphasis": {
+  "onboardingMetametricsNeverCollectLegacy": {
+    "message": "Kinokolekta ng $1 ang impormasyon na hindi namin kailangan para ibigay ang serbisyo (tulad ng mga key, address, hash ng transaksyon, o balanse)",
+    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
+  },
+  "onboardingMetametricsNeverEmphasisLegacy": {
     "message": "Hindi kailanman"
   },
-  "onboardingMetametricsNeverSellData": {
+  "onboardingMetametricsNeverSellDataLegacy": {
     "message": "Ang $1 ay nagbebenta ng datos.  Kailanman!",
     "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
   },
-  "onboardingMetametricsSendAnonymize": {
+  "onboardingMetametricsSendAnonymizeLegacy": {
     "message": "Magpapadala ng mga anonymous na kaganapang pag-click at pagtingin sa page"
   },
   "onboardingMetametricsTitle": {
@@ -2722,7 +2672,8 @@
     "message": "Ang isang mapaminsalang network provider ay maaaring magsinungaling tungkol sa estado ng blockchain at itala ang iyong aktibidad sa network. Magdagdag lamang ng mga custom na network na pinagkakatiwalaan mo."
   },
   "onlyConnectTrust": {
-    "message": "Kumonekta lang sa mga site na pinagkakatiwalaan mo."
+    "message": "Kumonekta lang sa mga site na pinagkakatiwalaan mo.",
+    "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
   "openFullScreenForLedgerWebHid": {
     "message": "Pumunta sa full screen para ikonekta ang iyong Ledger.",
@@ -2819,9 +2770,6 @@
   "permissionRequest": {
     "message": "Kahilingan sa pahintulot"
   },
-  "permissionRequestCapitalized": {
-    "message": "Kahilingan sa pahintulot"
-  },
   "permissionRequested": {
     "message": "Hiniling ngayon"
   },
@@ -2902,12 +2850,6 @@
   },
   "permissions": {
     "message": "Mga Pahintulot"
-  },
-  "permissionsTitle": {
-    "message": "Mga Pahintulot"
-  },
-  "permissionsTourDescription": {
-    "message": "Hanapin ang mga nakakonekta mong account at pamahalaan ang mga pahintulot dito"
   },
   "personalAddressDetected": {
     "message": "Natukoy ang personal na address. Ilagay ang address ng kontrata ng token."
@@ -3264,9 +3206,6 @@
   "securityAlerts": {
     "message": "Mga alerto sa seguridad"
   },
-  "securityAlertsDescription": {
-    "message": "Ang tampok na ito ay nagbibigay ng alerto sa iyo sa mapaminsalang aktibidad sa pamamagitan ng lokal na pagsusuri sa iyong mga transaksyon at kahilingan sa paglagda. Ang iyong datos ay hindi ibinabahagi sa mga third party na nagbibigay ng serbisyong ito. Palaging gumawa ng sarili mong pagsusuri bago aprubahan ang anumang mga kahilingan. Walang garantiya na made-detect ng tampok na ito ang lahat ng mapaminsalang aktibidad."
-  },
   "securityAndPrivacy": {
     "message": "Seguridad at pagkapribado"
   },
@@ -3498,12 +3437,6 @@
   "smartContracts": {
     "message": "Mga smart na kontrata"
   },
-  "smartSwapsAreHere": {
-    "message": "Nandito na ang mga Smart Swap!"
-  },
-  "smartSwapsDescription": {
-    "message": "Mas humusay pa ang mga MetaMask Swap! Ang pag-enable sa mga Smart Swap ay magbibigay-daan sa MetaMask na i-optimize ang iyong Swap gamit ang program para makatulong na:"
-  },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Hindi sapat ang pondo para sa smart swap."
   },
@@ -3520,10 +3453,6 @@
   },
   "snapDetailWebsite": {
     "message": "Website"
-  },
-  "snapInstallRequest": {
-    "message": "Ang pag-install ng $1 ay nagbibigay dito ng mga sumusunod na pahintulot. Magpatuloy lang kung pinagkakatiwalaan mo ang $1.",
-    "description": "$1 is the snap name."
   },
   "snapInstallSuccess": {
     "message": "Tapos na ang pag-install"
@@ -3564,9 +3493,6 @@
   },
   "snaps": {
     "message": "Mga Snap"
-  },
-  "snapsInvalidUIError": {
-    "message": "Ang UI na tinukoy ng snap ay hindi wasto."
   },
   "snapsNoInsight": {
     "message": "Ang snap ay hindi nagbalik ng anumang insight"
@@ -3782,18 +3708,6 @@
   },
   "strong": {
     "message": "Mahirap"
-  },
-  "stxBenefit1": {
-    "message": "Bawasan ang mga gastos sa transaksyon"
-  },
-  "stxBenefit2": {
-    "message": "Bawasan ang mga nabigong transaksyon"
-  },
-  "stxBenefit3": {
-    "message": "Alisin ang mga hindi umuusad na transaksyon"
-  },
-  "stxBenefit4": {
-    "message": "Pigilan ang front-running"
   },
   "stxCancelled": {
     "message": "Nabigo sana ang pag-swap kung"
@@ -4284,12 +4198,6 @@
   "switchedTo": {
     "message": "Lumipat ka sa"
   },
-  "switcherTitle": {
-    "message": "Network switcher"
-  },
-  "switcherTourDescription": {
-    "message": "I-click ang icon para lumipat ng network o magdagdag ng bagong network"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Ang paglipat ng network ay magkakansela ng lahat ng nakabinbing kumpirmasyon"
   },
@@ -4725,7 +4633,7 @@
   },
   "viewOnCustomBlockExplorer": {
     "message": "Tingnan ang $1 sa $2",
-    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Exporer URL"
+    "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
   },
   "viewOnEtherscan": {
     "message": "Tingnan ang $1 sa Etherscan",
@@ -4828,10 +4736,6 @@
   },
   "whatsThis": {
     "message": "Ano ito?"
-  },
-  "xOfY": {
-    "message": "$1 ng $2",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total, and $1 is a count towards that total"
   },
   "xOfYPending": {
     "message": "$1 ng $2 ang nakabinbin",

@@ -32,7 +32,7 @@ export const DisconnectAllModal = ({
   const t = useI18nContext();
 
   return (
-    <Modal isOpen onClose={onClose}>
+    <Modal isOpen onClose={onClose} data-testid="disconnect-all-modal">
       <ModalOverlay />
       <ModalContent>
         <ModalHeader onClose={onClose}>
