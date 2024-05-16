@@ -91,6 +91,7 @@ workflows:
             - prep-deps
       - check-pr-tag
       - prep-deps
+      - fetch-changed-files
       - test-deps-audit:
           requires:
             - prep-deps
