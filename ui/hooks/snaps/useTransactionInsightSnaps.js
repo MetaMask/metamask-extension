@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { getTransactionOriginCaveat } from '@metamask/snaps-rpc-methods';
 import { SeverityLevel } from '@metamask/snaps-sdk';
-import { handleSnapRequest } from '../../store/actions';
+import { handleSnapRequest, forceUpdateMetamaskState } from '../../store/actions';
 import { getPermissionSubjectsDeepEqual } from '../../selectors';
 
 const INSIGHT_PERMISSION = 'endowment:transaction-insight';
@@ -13,6 +13,7 @@ export function useTransactionInsightSnaps({
   origin,
   insightSnaps,
 }) {
+  const dispatch = useDispatch();
   const subjects = useSelector(getPermissionSubjectsDeepEqual);
 
   const [loading, setLoading] = useState(true);
@@ -75,6 +76,7 @@ export function useTransactionInsightSnaps({
         setData(reformattedData);
         setLoading(false);
         setHasFetchedInsight(true);
+        forceUpdateMetamaskState(dispatch);
       }
     }
     if (transaction && Object.keys(transaction).length > 0) {

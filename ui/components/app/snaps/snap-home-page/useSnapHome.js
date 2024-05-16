@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
-import { handleSnapRequest } from '../../../../store/actions';
+import { handleSnapRequest, forceUpdateMetamaskState } from '../../../../store/actions';
+import { useDispatch } from 'react-redux';
 
 export function useSnapHome({ snapId }) {
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(undefined);
   const [error, setError] = useState(undefined);
@@ -24,6 +26,7 @@ export function useSnapHome({ snapId }) {
         });
         if (!cancelled) {
           setData(newData);
+          forceUpdateMetamaskState(dispatch);
         }
       } catch (err) {
         if (!cancelled) {
