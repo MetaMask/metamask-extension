@@ -4990,10 +4990,6 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController,
           origin,
         ),
-        hasPermissions: this.permissionController.hasPermissions.bind(
-          this.permissionController,
-          origin,
-        ),
         requestAccountsPermission:
           this.permissionController.requestPermissions.bind(
             this.permissionController,
