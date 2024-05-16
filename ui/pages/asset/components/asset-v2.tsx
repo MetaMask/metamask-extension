@@ -130,7 +130,7 @@ const AssetV2 = ({
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
-        paddingLeft={4}
+        paddingLeft={2}
         paddingRight={4}
         paddingBottom={1}
       >
