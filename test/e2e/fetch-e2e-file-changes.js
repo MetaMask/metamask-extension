@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 const PR_URL = `${process.env.CIRCLE_PULL_REQUEST}`;
-const PR_NUMBER = PR_URL.match(/\/(\d+)$/u);
+const PR_NUMBER = PR_URL.match(/\/(\d+)$/u)[1];
 
 const GH_API_URL = `https://api.github.com/repos/MetaMask/metamask-extension/pulls/${PR_NUMBER}/files`;
 const headers = {
