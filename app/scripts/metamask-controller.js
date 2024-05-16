@@ -1643,6 +1643,7 @@ export default class MetamaskController extends EventEmitter {
         },
       },
       provider: this.provider,
+      testGasFeeFlows: process.env.TEST_GAS_FEE_FLOWS,
       hooks: {
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         afterSign: (txMeta, signedEthTx) =>
@@ -3157,6 +3158,14 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setTermsOfUseLastAgreed.bind(appStateController),
       setSurveyLinkLastClickedOrClosed:
         appStateController.setSurveyLinkLastClickedOrClosed.bind(
+          appStateController,
+        ),
+      setNewPrivacyPolicyToastClickedOrClosed:
+        appStateController.setNewPrivacyPolicyToastClickedOrClosed.bind(
+          appStateController,
+        ),
+      setNewPrivacyPolicyToastShownDate:
+        appStateController.setNewPrivacyPolicyToastShownDate.bind(
           appStateController,
         ),
       ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -4901,11 +4910,8 @@ export default class MetamaskController extends EventEmitter {
     ///: END:ONLY_INCLUDE_IF
 
     const isConfirmationRedesignEnabled = () => {
-      return (
-        process.env.ENABLE_CONFIRMATION_REDESIGN &&
-        this.preferencesController.store.getState().preferences
-          .redesignedConfirmations
-      );
+      return this.preferencesController.store.getState().preferences
+        .redesignedConfirmations;
     };
 
     engine.push(
@@ -4971,16 +4977,6 @@ export default class MetamaskController extends EventEmitter {
         endApprovalFlow: this.approvalController.endFlow.bind(
           this.approvalController,
         ),
-        setApprovalFlowLoadingText:
-          this.approvalController.setFlowLoadingText.bind(
-            this.approvalController,
-          ),
-        showApprovalSuccess: this.approvalController.success.bind(
-          this.approvalController,
-        ),
-        showApprovalError: this.approvalController.error.bind(
-          this.approvalController,
-        ),
         sendMetrics: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),
@@ -5042,18 +5038,11 @@ export default class MetamaskController extends EventEmitter {
             this.networkController,
           ),
         findNetworkConfigurationBy: this.findNetworkConfigurationBy.bind(this),
-        getNetworkClientIdForDomain:
-          this.selectedNetworkController.getNetworkClientIdForDomain.bind(
-            this.selectedNetworkController,
-          ),
         setNetworkClientIdForDomain:
           this.selectedNetworkController.setNetworkClientIdForDomain.bind(
             this.selectedNetworkController,
           ),
 
-        getUseRequestQueue: this.preferencesController.getUseRequestQueue.bind(
-          this.preferencesController,
-        ),
         getProviderConfig: () => this.networkController.state.providerConfig,
         setProviderType: (type) => {
           return this.networkController.setProviderType(type);
