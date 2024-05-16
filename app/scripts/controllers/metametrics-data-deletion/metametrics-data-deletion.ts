@@ -120,7 +120,7 @@ export default class MetaMetricsDataDeletionController {
 
   async checkDataDeletionTaskStatus(): Promise<DataDeletionResponse> {
     const deleteRegulationId = this.store.getState().metaMetricsDataDeletionId;
-    if (deleteRegulationId) {
+    if (typeof deleteRegulationId && deleteRegulationId.length === 0) {
       return {
         status: responseStatus.error,
         error: 'Delete Regulation id not found',
