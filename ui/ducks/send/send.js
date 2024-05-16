@@ -1688,7 +1688,8 @@ const slice = createSlice({
             break;
           case Boolean(
             bestQuote &&
-              bestQuote.recipient !== draftTransaction.recipient.address,
+              bestQuote.recipient.toLowerCase() !==
+                draftTransaction.recipient.address.toLowerCase(),
           ):
             slice.caseReducers.addHistoryEntry(state, {
               payload: `Recipient is not match ${draftTransaction.recipient.address} ${bestQuote.recipient}`,
