@@ -1,6 +1,5 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import { errorCodes, ethErrors } from 'eth-rpc-errors';
-import { omit } from 'lodash';
 import {
   MESSAGE_TYPE,
   UNKNOWN_TICKER_SYMBOL,
