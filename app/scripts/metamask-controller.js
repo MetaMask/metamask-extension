@@ -302,6 +302,7 @@ import {
   getPermissionSpecifications,
   getPermittedAccountsByOrigin,
   NOTIFICATION_NAMES,
+  PermissionNames,
   unrestrictedMethods,
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
@@ -5040,6 +5041,7 @@ export default class MetamaskController extends EventEmitter {
               throw e;
             }
           }
+
           return undefined;
         },
         getCurrentChainId: () =>
@@ -5055,8 +5057,21 @@ export default class MetamaskController extends EventEmitter {
           this.networkController.upsertNetworkConfiguration.bind(
             this.networkController,
           ),
-        setActiveNetwork: (networkClientId) => {
-          this.networkController.setActiveNetwork(networkClientId);
+        setActiveNetwork: async (networkClientId) => {
+          await this.networkController.setActiveNetwork(networkClientId);
+          // if the origin has the eth_accounts permission
+          // we set per dapp network selection state
+          if (
+            this.permissionController.hasPermission(
+              origin,
+              PermissionNames.eth_accounts,
+            )
+          ) {
+            this.selectedNetworkController.setNetworkClientIdForDomain(
+              origin,
+              networkClientId,
+            );
+          }
         },
         findNetworkClientIdByChainId:
           this.networkController.findNetworkClientIdByChainId.bind(

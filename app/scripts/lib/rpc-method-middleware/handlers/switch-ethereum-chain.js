@@ -21,9 +21,7 @@ const switchEthereumChain = {
   implementation: switchEthereumChainHandler,
   hookNames: {
     findNetworkConfigurationBy: true,
-    setNetworkClientIdForDomain: true,
     setActiveNetwork: true,
-    hasPermission: true,
     getCaveat: true,
     requestSwitchNetworkPermission: true,
     getCurrentChainIdForDomain: true,
@@ -93,41 +91,12 @@ function validateRequestParams(req, end) {
 
   return _chainId;
 }
-
-async function switchNetwork(
-  req,
-  res,
-  end,
-  networkClientIdToSwitchTo,
-  { setNetworkClientIdForDomain, setActiveNetwork, hasPermission },
-) {
-  try {
-    await setActiveNetwork(networkClientIdToSwitchTo);
-    // if the origin has the eth_accounts permission
-    // we set per dapp network selection state
-    if (hasPermission(req.origin, PermissionNames.eth_accounts)) {
-      setNetworkClientIdForDomain(req.origin, networkClientIdToSwitchTo);
-    }
-    res.result = null;
-  } catch (error) {
-    return end(error);
-  }
-
-  return end();
-}
-
 async function handleSwitchWithPermissions(
-  req,
   res,
   end,
-  _chainId,
-  {
-    setNetworkClientIdForDomain,
-    setActiveNetwork,
-    hasPermission,
-    requestSwitchNetworkPermission,
-    getCaveat,
-  },
+  chainid,
+  networkClientIdToSwitchTo,
+  { setActiveNetwork, requestSwitchNetworkPermission, getCaveat },
 ) {
   const permissionedChainIds = getCaveat({
     target: PermissionNames.permittedChains,
@@ -136,12 +105,12 @@ async function handleSwitchWithPermissions(
 
   if (
     permissionedChainIds === undefined ||
-    !permissionedChainIds.includes(_chainId)
+    !permissionedChainIds.includes(chainid)
   ) {
     try {
       await requestSwitchNetworkPermission([
         ...(permissionedChainIds ?? []),
-        _chainId,
+        chainid,
       ]);
     } catch (err) {
       res.error = err;
@@ -149,26 +118,22 @@ async function handleSwitchWithPermissions(
     }
   }
 
-  return await switchNetwork(req, res, end, _chainId, {
-    setNetworkClientIdForDomain,
-    setActiveNetwork,
-    hasPermission,
-  });
+  try {
+    await setActiveNetwork(networkClientIdToSwitchTo);
+    res.result = null;
+  } catch (error) {
+    return end(error);
+  }
+  return end();
 }
 
 async function handleSwitchWithoutPermissions(
-  req,
   res,
   end,
-  _chainId,
+  networkClientIdToSwitchTo,
   origin,
   requestData,
-  {
-    setNetworkClientIdForDomain,
-    setActiveNetwork,
-    hasPermission,
-    requestUserApproval,
-  },
+  { setActiveNetwork, requestUserApproval },
 ) {
   try {
     await requestUserApproval({
@@ -176,15 +141,13 @@ async function handleSwitchWithoutPermissions(
       type: ApprovalType.SwitchEthereumChain,
       requestData,
     });
+
+    await setActiveNetwork(networkClientIdToSwitchTo);
+    res.result = null;
   } catch (error) {
     return end(error);
   }
-
-  return await switchNetwork(req, res, end, _chainId, {
-    setNetworkClientIdForDomain,
-    setActiveNetwork,
-    hasPermission,
-  });
+  return end();
 }
 
 async function switchEthereumChainHandler(
@@ -194,9 +157,7 @@ async function switchEthereumChainHandler(
   end,
   {
     findNetworkConfigurationBy,
-    setNetworkClientIdForDomain,
     setActiveNetwork,
-    hasPermission,
     requestSwitchNetworkPermission,
     getCaveat,
     getCurrentChainIdForDomain,
@@ -204,21 +165,21 @@ async function switchEthereumChainHandler(
     getChainPermissionsFeatureFlag,
   },
 ) {
-  const _chainId = validateRequestParams(req, end);
-  if (!_chainId) {
+  const chainId = validateRequestParams(req, end);
+  if (!chainId) {
     return end();
   }
 
   const { origin } = req;
   const currentChainIdForOrigin = getCurrentChainIdForDomain(origin);
 
-  if (currentChainIdForOrigin === _chainId) {
+  if (currentChainIdForOrigin === chainId) {
     res.result = null;
     return end();
   }
 
   const networkConfigurationForRequestedChainId = findExistingNetwork(
-    _chainId,
+    chainId,
     findNetworkConfigurationBy,
   );
 
@@ -230,23 +191,20 @@ async function switchEthereumChainHandler(
     return end(
       ethErrors.provider.custom({
         code: 4902,
-        message: `Unrecognized chain ID "${_chainId}". Try adding the chain using ${MESSAGE_TYPE.ADD_ETHEREUM_CHAIN} first.`,
+        message: `Unrecognized chain ID "${chainId}". Try adding the chain using ${MESSAGE_TYPE.ADD_ETHEREUM_CHAIN} first.`,
       }),
     );
   }
 
   if (getChainPermissionsFeatureFlag()) {
     return await handleSwitchWithPermissions(
-      req,
       res,
       end,
+      chainId,
       networkClientIdToSwitchTo,
-      origin,
       {
         findNetworkConfigurationBy,
-        setNetworkClientIdForDomain,
         setActiveNetwork,
-        hasPermission,
         requestSwitchNetworkPermission,
         getCaveat,
       },
@@ -262,16 +220,13 @@ async function switchEthereumChainHandler(
   };
 
   return await handleSwitchWithoutPermissions(
-    req,
     res,
     end,
     networkClientIdToSwitchTo,
     origin,
     requestData,
     {
-      setNetworkClientIdForDomain,
       setActiveNetwork,
-      hasPermission,
       requestUserApproval,
     },
   );
