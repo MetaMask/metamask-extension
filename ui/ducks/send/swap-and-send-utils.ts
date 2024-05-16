@@ -63,13 +63,13 @@ const QUOTE_VALIDATORS = [
   {
     property: 'gasParams',
     type: 'object',
-    validator: (gasParams: Record<string, any>) =>
+    validator: (gasParams: Record<string, number>) =>
       gasParams && isNumber(gasParams.maxGas),
   },
   {
     property: 'trade',
     type: 'object',
-    validator: (trade: Record<string, any>) =>
+    validator: (trade: Record<string, string>) =>
       trade &&
       validHex(trade.data) &&
       isValidHexAddress(trade.to, { allowNonPrefixed: false }) &&
@@ -79,7 +79,7 @@ const QUOTE_VALIDATORS = [
   {
     property: 'approvalNeeded',
     type: 'object',
-    validator: (approvalTx: Record<string, any>) =>
+    validator: (approvalTx: Record<string, string>) =>
       approvalTx === null ||
       (approvalTx &&
         validHex(approvalTx.data) &&
@@ -132,8 +132,9 @@ const QUOTE_VALIDATORS = [
   },
   {
     property: 'error',
-    type: 'object',
-    validator: (error: any) => error === null || typeof error === 'object',
+    type: 'string',
+    validator: (error: string | null) =>
+      error === null || typeof error === 'string',
   },
   {
     property: 'fee',
@@ -183,7 +184,9 @@ export async function getSwapAndSendQuotes(request: Request): Promise<Quote[]> {
         let { approvalNeeded } = quote;
 
         if (approvalNeeded) {
-          approvalNeeded = addHexPrefixToObjectValues(approvalNeeded) as any;
+          approvalNeeded = addHexPrefixToObjectValues(
+            approvalNeeded,
+          ) as Quote['approvalNeeded'];
         }
 
         return {
