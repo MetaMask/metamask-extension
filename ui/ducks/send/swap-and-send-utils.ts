@@ -132,9 +132,8 @@ const QUOTE_VALIDATORS = [
   },
   {
     property: 'error',
-    type: 'string',
-    validator: (error: string | null) =>
-      error === null || typeof error === 'string',
+    type: 'object',
+    validator: (error: unknown) => error === null || typeof error === 'object',
   },
   {
     property: 'fee',
