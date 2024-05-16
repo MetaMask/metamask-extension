@@ -61,6 +61,151 @@ function findExistingNetwork(chainId, findNetworkConfigurationBy) {
   return findNetworkConfigurationBy({ chainId });
 }
 
+function validateParams(params, end) {
+  if (!params || typeof params !== 'object') {
+    return end(
+      ethErrors.rpc.invalidParams({
+        message: `Expected single, object parameter. Received:\n${JSON.stringify(
+          params,
+        )}`,
+      }),
+    );
+  }
+  const {
+    chainId,
+    chainName,
+    blockExplorerUrls,
+    nativeCurrency,
+    rpcUrls,
+    ...otherParams
+  } = params;
+
+  if (Object.keys(otherParams).length > 0) {
+    return end(
+      ethErrors.rpc.invalidParams({
+        message: `Received unexpected keys on object parameter. Unsupported keys:\n${Object.keys(
+          otherParams,
+        )}`,
+      }),
+    );
+  }
+
+  if (!rpcUrls || !Array.isArray(rpcUrls) || rpcUrls.length === 0) {
+    return end(
+      ethErrors.rpc.invalidParams({
+        message: `Expected an array with at least one valid string HTTPS url 'rpcUrls', Received:\n${rpcUrls}`,
+      }),
+    );
+  }
+
+  const isLocalhostOrHttps = (urlString) => {
+    const url = getValidUrl(urlString);
+    return (
+      url !== null &&
+      (url.hostname === 'localhost' ||
+        url.hostname === '127.0.0.1' ||
+        url.protocol === 'https:')
+    );
+  };
+
+  const firstValidRPCUrl = rpcUrls.find((rpcUrl) => isLocalhostOrHttps(rpcUrl));
+  const firstValidBlockExplorerUrl =
+    blockExplorerUrls !== null && Array.isArray(blockExplorerUrls)
+      ? blockExplorerUrls.find((blockExplorerUrl) =>
+          isLocalhostOrHttps(blockExplorerUrl),
+        )
+      : null;
+
+  if (!firstValidRPCUrl) {
+    return end(
+      ethErrors.rpc.invalidParams({
+        message: `Expected an array with at least one valid string HTTPS url 'rpcUrls', Received:\n${rpcUrls}`,
+      }),
+    );
+  }
+
+  if (blockExplorerUrls !== null && !firstValidBlockExplorerUrl) {
+    return end(
+      ethErrors.rpc.invalidParams({
+        message: `Expected null or array with at least one valid string HTTPS URL 'blockExplorerUrl'. Received: ${blockExplorerUrls}`,
+      }),
+    );
+  }
+
+  const _chainId = typeof chainId === 'string' && chainId.toLowerCase();
+  if (!isPrefixedFormattedHexString(_chainId)) {
+    return end(
+      ethErrors.rpc.invalidParams({
+        message: `Expected 0x-prefixed, unpadded, non-zero hexadecimal string 'chainId'. Received:\n${chainId}`,
+      }),
+    );
+  }
+
+  if (!isSafeChainId(parseInt(_chainId, 16))) {
+    return end(
+      ethErrors.rpc.invalidParams({
+        message: `Invalid chain ID "${_chainId}": numerical value greater than max safe value. Received:\n${chainId}`,
+      }),
+    );
+  }
+
+  if (typeof chainName !== 'string' || !chainName) {
+    return end(
+      ethErrors.rpc.invalidParams({
+        message: `Expected non-empty string 'chainName'. Received:\n${chainName}`,
+      }),
+    );
+  }
+
+  const _chainName =
+    chainName.length > 100 ? chainName.substring(0, 100) : chainName;
+
+  if (nativeCurrency !== null) {
+    if (typeof nativeCurrency !== 'object' || Array.isArray(nativeCurrency)) {
+      return end(
+        ethErrors.rpc.invalidParams({
+          message: `Expected null or object 'nativeCurrency'. Received:\n${nativeCurrency}`,
+        }),
+      );
+    }
+    if (nativeCurrency.decimals !== 18) {
+      return end(
+        ethErrors.rpc.invalidParams({
+          message: `Expected the number 18 for 'nativeCurrency.decimals' when 'nativeCurrency' is provided. Received: ${nativeCurrency.decimals}`,
+        }),
+      );
+    }
+
+    if (!nativeCurrency.symbol || typeof nativeCurrency.symbol !== 'string') {
+      return end(
+        ethErrors.rpc.invalidParams({
+          message: `Expected a string 'nativeCurrency.symbol'. Received: ${nativeCurrency.symbol}`,
+        }),
+      );
+    }
+  }
+
+  const ticker = nativeCurrency?.symbol || UNKNOWN_TICKER_SYMBOL;
+  if (
+    ticker !== UNKNOWN_TICKER_SYMBOL &&
+    (typeof ticker !== 'string' || ticker.length < 2 || ticker.length > 6)
+  ) {
+    return end(
+      ethErrors.rpc.invalidParams({
+        message: `Expected 2-6 character string 'nativeCurrency.symbol'. Received:\n${ticker}`,
+      }),
+    );
+  }
+
+  return {
+    chainId: _chainId,
+    chainName: _chainName,
+    firstValidBlockExplorerUrl,
+    firstValidRPCUrl,
+    ticker,
+  };
+}
+
 const switchChainWithPermissions = async (
   res,
   end,
@@ -223,100 +368,19 @@ async function addEthereumChainHandler(
     getChainPermissionsFeatureFlag,
   },
 ) {
-  if (!req.params?.[0] || typeof req.params[0] !== 'object') {
-    return end(
-      ethErrors.rpc.invalidParams({
-        message: `Expected single, object parameter. Received:\n${JSON.stringify(
-          req.params,
-        )}`,
-      }),
-    );
+  const validParams = validateParams(req.params[0], end);
+  if (!validParams) {
+    return end();
   }
-
-  const { origin } = req;
 
   const {
     chainId,
-    chainName = null,
-    blockExplorerUrls = null,
-    nativeCurrency = null,
-    rpcUrls,
-  } = req.params[0];
-
-  const otherKeys = Object.keys(
-    omit(req.params[0], [
-      'chainId',
-      'chainName',
-      'blockExplorerUrls',
-      'iconUrls',
-      'rpcUrls',
-      'nativeCurrency',
-    ]),
-  );
-
-  if (otherKeys.length > 0) {
-    return end(
-      ethErrors.rpc.invalidParams({
-        message: `Received unexpected keys on object parameter. Unsupported keys:\n${otherKeys}`,
-      }),
-    );
-  }
-
-  function isLocalhostOrHttps(urlString) {
-    const url = getValidUrl(urlString);
-
-    return (
-      url !== null &&
-      (url.hostname === 'localhost' ||
-        url.hostname === '127.0.0.1' ||
-        url.protocol === 'https:')
-    );
-  }
-
-  const firstValidRPCUrl = Array.isArray(rpcUrls)
-    ? rpcUrls.find((rpcUrl) => isLocalhostOrHttps(rpcUrl))
-    : null;
-
-  const firstValidBlockExplorerUrl =
-    blockExplorerUrls !== null && Array.isArray(blockExplorerUrls)
-      ? blockExplorerUrls.find((blockExplorerUrl) =>
-          isLocalhostOrHttps(blockExplorerUrl),
-        )
-      : null;
-
-  if (!firstValidRPCUrl) {
-    return end(
-      ethErrors.rpc.invalidParams({
-        message: `Expected an array with at least one valid string HTTPS url 'rpcUrls', Received:\n${rpcUrls}`,
-      }),
-    );
-  }
-
-  if (blockExplorerUrls !== null && !firstValidBlockExplorerUrl) {
-    return end(
-      ethErrors.rpc.invalidParams({
-        message: `Expected null or array with at least one valid string HTTPS URL 'blockExplorerUrl'. Received: ${blockExplorerUrls}`,
-      }),
-    );
-  }
-
-  const _chainId = typeof chainId === 'string' && chainId.toLowerCase();
-
-  if (!isPrefixedFormattedHexString(_chainId)) {
-    return end(
-      ethErrors.rpc.invalidParams({
-        message: `Expected 0x-prefixed, unpadded, non-zero hexadecimal string 'chainId'. Received:\n${chainId}`,
-      }),
-    );
-  }
-
-  if (!isSafeChainId(parseInt(_chainId, 16))) {
-    return end(
-      ethErrors.rpc.invalidParams({
-        message: `Invalid chain ID "${_chainId}": numerical value greater than max safe value. Received:\n${chainId}`,
-      }),
-    );
-  }
+    chainName,
+    firstValidBlockExplorerUrl,
+    firstValidRPCUrl,
+    ticker,
+  } = validParams;
+  const { origin } = req;
 
   const currentChainIdForOrigin = getCurrentChainIdForDomain(origin);
   const currentNetworkConfiguration = findExistingNetwork(
@@ -324,7 +388,7 @@ async function addEthereumChainHandler(
     findNetworkConfigurationBy,
   );
   const existingNetwork = findExistingNetwork(
-    _chainId,
+    chainId,
     findNetworkConfigurationBy,
   );
 
@@ -339,7 +403,7 @@ async function addEthereumChainHandler(
     // If the current chainId and rpcUrl matches that of the incoming request
     // We don't need to proceed further.
     if (
-      currentChainIdForOrigin === _chainId &&
+      currentChainIdForOrigin === chainId &&
       currentRpcUrl === firstValidRPCUrl
     ) {
       return end();
@@ -350,10 +414,6 @@ async function addEthereumChainHandler(
       fromNetworkConfiguration: currentNetworkConfiguration,
     };
 
-    // return await switchChain({
-    //   requestData,
-    //   networkConfigurationId: existingNetwork.id ?? existingNetwork.type,
-    // });
     const networkConfigurationId = existingNetwork.id ?? existingNetwork.type;
     await switchChain(
       res,
@@ -376,58 +436,11 @@ async function addEthereumChainHandler(
     return end();
   }
 
-  if (typeof chainName !== 'string' || !chainName) {
-    return end(
-      ethErrors.rpc.invalidParams({
-        message: `Expected non-empty string 'chainName'. Received:\n${chainName}`,
-      }),
-    );
-  }
-  const _chainName =
-    chainName.length > 100 ? chainName.substring(0, 100) : chainName;
-
-  if (nativeCurrency !== null) {
-    if (typeof nativeCurrency !== 'object' || Array.isArray(nativeCurrency)) {
-      return end(
-        ethErrors.rpc.invalidParams({
-          message: `Expected null or object 'nativeCurrency'. Received:\n${nativeCurrency}`,
-        }),
-      );
-    }
-    if (nativeCurrency.decimals !== 18) {
-      return end(
-        ethErrors.rpc.invalidParams({
-          message: `Expected the number 18 for 'nativeCurrency.decimals' when 'nativeCurrency' is provided. Received: ${nativeCurrency.decimals}`,
-        }),
-      );
-    }
-
-    if (!nativeCurrency.symbol || typeof nativeCurrency.symbol !== 'string') {
-      return end(
-        ethErrors.rpc.invalidParams({
-          message: `Expected a string 'nativeCurrency.symbol'. Received: ${nativeCurrency.symbol}`,
-        }),
-      );
-    }
-  }
-
-  const ticker = nativeCurrency?.symbol || UNKNOWN_TICKER_SYMBOL;
-
-  if (
-    ticker !== UNKNOWN_TICKER_SYMBOL &&
-    (typeof ticker !== 'string' || ticker.length < 2 || ticker.length > 6)
-  ) {
-    return end(
-      ethErrors.rpc.invalidParams({
-        message: `Expected 2-6 character string 'nativeCurrency.symbol'. Received:\n${ticker}`,
-      }),
-    );
-  }
   // if the chainId is the same as an existing network but the ticker is different we want to block this action
   // as it is potentially malicious and confusing
   if (
     existingNetwork &&
-    existingNetwork.chainId === _chainId &&
+    existingNetwork.chainId === chainId &&
     existingNetwork.ticker !== ticker
   ) {
     return end(
@@ -446,9 +459,9 @@ async function addEthereumChainHandler(
       origin,
       type: ApprovalType.AddEthereumChain,
       requestData: {
-        chainId: _chainId,
+        chainId,
         rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
-        chainName: _chainName,
+        chainName,
         rpcUrl: firstValidRPCUrl,
         ticker,
       },
@@ -456,9 +469,9 @@ async function addEthereumChainHandler(
 
     networkConfigurationId = await upsertNetworkConfiguration(
       {
-        chainId: _chainId,
+        chainId,
         rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
-        nickname: _chainName,
+        nickname: chainName,
         rpcUrl: firstValidRPCUrl,
         ticker,
       },
@@ -481,8 +494,8 @@ async function addEthereumChainHandler(
     {
       toNetworkConfiguration: {
         rpcUrl: firstValidRPCUrl,
-        chainId: _chainId,
-        nickname: _chainName,
+        chainId,
+        nickname: chainName,
         ticker,
         networkConfigurationId,
       },
