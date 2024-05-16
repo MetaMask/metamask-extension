@@ -91,7 +91,9 @@ workflows:
             - prep-deps
       - check-pr-tag
       - prep-deps
-      - fetch-changed-files
+      - fetch-changed-files:
+          requires:
+            - prep-deps
       - test-deps-audit:
           requires:
             - prep-deps
@@ -225,6 +227,7 @@ workflows:
                 - /^Version-v(\d+)[.](\d+)[.](\d+)/
           requires:
             - prep-build
+            - fetch-files-changed
       - test-unit-mocha:
           requires:
             - prep-deps
@@ -483,17 +486,7 @@ jobs:
           at: .
       - run:
           name: Fetch changed files
-          command: |
-            #!/bin/bash
-            set -e
-            set -u
-            set -o pipefail
-
-            git fetch
-
-            DIFF_RESULT=$(git diff --name-only origin/develop..."$CIRCLE_SHA1")
-            echo "$DIFF_RESULT"
-            fi
+          command: .circleci/scripts/fetch-changed-files.sh
   validate-lavamoat-allow-scripts:
     executor: node-browsers-small
     steps:
