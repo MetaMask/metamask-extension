@@ -383,9 +383,9 @@ async function addEthereumChainHandler(
   } = validParams;
   const { origin } = req;
 
-  const currentChainIdForOrigin = getCurrentChainIdForDomain(origin);
+  const currentChainIdForDomain = getCurrentChainIdForDomain(origin);
   const currentNetworkConfiguration = findExistingNetwork(
-    currentChainIdForOrigin,
+    currentChainIdForDomain,
     findNetworkConfigurationBy,
   );
 
@@ -398,50 +398,6 @@ async function addEthereumChainHandler(
     chainId,
     findNetworkConfigurationBy,
   );
-
-  // if the request is to add a network that is already added and configured
-  // with the same RPC gateway we shouldn't try to add it again.
-  if (existingNetwork && existingNetwork.rpcUrl === firstValidRPCUrl) {
-    // If the network already exists, the request is considered successful
-    res.result = null;
-
-    const currentRpcUrl = getCurrentRpcUrl();
-
-    // If the current chainId and rpcUrl matches that of the incoming request
-    // We don't need to proceed further.
-    if (
-      currentChainIdForOrigin === chainId &&
-      currentRpcUrl === firstValidRPCUrl
-    ) {
-      return end();
-    }
-
-    const requestData = {
-      toNetworkConfiguration: existingNetwork,
-      fromNetworkConfiguration: currentNetworkConfiguration,
-    };
-
-    const networkConfigurationId = existingNetwork.id ?? existingNetwork.type;
-    await switchChain(
-      res,
-      end,
-      origin,
-      chainId,
-      requestData,
-      networkConfigurationId,
-      undefined,
-      {
-        getChainPermissionsFeatureFlag,
-        setActiveNetwork,
-        endApprovalFlow,
-        requestUserApproval,
-        getCaveat,
-        requestSwitchNetworkPermission,
-        findNetworkClientIdByChainId,
-      },
-    );
-    return end();
-  }
 
   // if the chainId is the same as an existing network but the ticker is different we want to block this action
   // as it is potentially malicious and confusing
@@ -458,46 +414,45 @@ async function addEthereumChainHandler(
   }
 
   let networkConfigurationId;
+  let requestData;
+  let approvalFlowId;
 
-  const { id: approvalFlowId } = await startApprovalFlow();
+  // If the network doesn't already exist with the same rpcUrl, add it
+  if (!existingNetwork || existingNetwork.rpcUrl !== firstValidRPCUrl) {
+    ({ id: approvalFlowId } = await startApprovalFlow());
 
-  try {
-    await requestUserApproval({
-      origin,
-      type: ApprovalType.AddEthereumChain,
-      requestData: {
-        chainId,
-        rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
-        chainName,
-        rpcUrl: firstValidRPCUrl,
-        ticker,
-      },
-    });
+    try {
+      await requestUserApproval({
+        origin,
+        type: ApprovalType.AddEthereumChain,
+        requestData: {
+          chainId,
+          rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
+          chainName,
+          rpcUrl: firstValidRPCUrl,
+          ticker,
+        },
+      });
 
-    networkConfigurationId = await upsertNetworkConfiguration(
-      {
-        chainId,
-        rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
-        nickname: chainName,
-        rpcUrl: firstValidRPCUrl,
-        ticker,
-      },
-      { source: MetaMetricsNetworkEventSource.Dapp, referrer: origin },
-    );
+      networkConfigurationId = await upsertNetworkConfiguration(
+        {
+          chainId,
+          rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
+          nickname: chainName,
+          rpcUrl: firstValidRPCUrl,
+          ticker,
+        },
+        { source: MetaMetricsNetworkEventSource.Dapp, referrer: origin },
+      );
 
-    // Once the network has been added, the requested is considered successful
-    res.result = null;
-  } catch (error) {
-    endApprovalFlow({ id: approvalFlowId });
-    return end(error);
-  }
+      // Once the network has been added, the request is considered successful
+      res.result = null;
+    } catch (error) {
+      endApprovalFlow({ id: approvalFlowId });
+      return end(error);
+    }
 
-  await switchChain(
-    res,
-    end,
-    origin,
-    chainId,
-    {
+    requestData = {
       toNetworkConfiguration: {
         rpcUrl: firstValidRPCUrl,
         chainId,
@@ -506,7 +461,34 @@ async function addEthereumChainHandler(
         networkConfigurationId,
       },
       fromNetworkConfiguration: currentNetworkConfiguration,
-    },
+    };
+  } else {
+    networkConfigurationId = existingNetwork.id ?? existingNetwork.type;
+
+    const currentRpcUrl = getCurrentRpcUrl();
+
+    // If the current chainId and rpcUrl match the incoming request, no need to proceed further
+    if (
+      currentChainIdForDomain === chainId &&
+      currentRpcUrl === firstValidRPCUrl
+    ) {
+      return end();
+    }
+
+    requestData = {
+      toNetworkConfiguration: existingNetwork,
+      fromNetworkConfiguration: currentNetworkConfiguration,
+    };
+
+    res.result = null;
+  }
+
+  return switchChain(
+    res,
+    end,
+    origin,
+    chainId,
+    requestData,
     networkConfigurationId,
     approvalFlowId,
     {
@@ -519,5 +501,4 @@ async function addEthereumChainHandler(
       findNetworkClientIdByChainId,
     },
   );
-  return end();
 }
