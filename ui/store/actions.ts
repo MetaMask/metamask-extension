@@ -5149,4 +5149,20 @@ export async function setSnapsAddSnapAccountModalDismissed() {
     true,
   ]);
 }
+
+/**
+ * Request balance from the ChainController.
+ *
+ * @param scope - The CAIP-2 chain ID.
+ * @param accountId - The account's ID.
+ */
+export async function getBalanceFromChain(
+  scope: string,
+  accountId: string,
+): string {
+  return await submitRequestToBackground<string>('getBalanceFromChain', [
+    scope,
+    accountId,
+  ]);
+}
 ///: END:ONLY_INCLUDE_IF

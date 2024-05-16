@@ -25,7 +25,7 @@ import Button from '../../components/ui/button';
 import ConnectedSites from '../connected-sites';
 import ConnectedAccounts from '../connected-accounts';
 import { Tabs, Tab } from '../../components/ui/tabs';
-import { EthOverview } from '../../components/app/wallet-overview';
+import { EthOverview, BtcOverview } from '../../components/app/wallet-overview';
 
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import {
@@ -212,6 +212,7 @@ export default class Home extends PureComponent {
     custodianDeepLink: PropTypes.object,
     accountType: PropTypes.string,
     ///: END:ONLY_INCLUDE_IF
+    account: PropTypes.object,
   };
 
   state = {
@@ -835,7 +836,11 @@ export default class Home extends PureComponent {
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       mmiPortfolioEnabled,
       ///: END:ONLY_INCLUDE_IF
+      account,
     } = this.props;
+
+    const isBtc = account.type.startsWith('bip122:');
+    const isEth = !isBtc;
 
     if (forgottenPassword) {
       return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />;
@@ -930,19 +935,31 @@ export default class Home extends PureComponent {
             <div className="home__balance-wrapper">
               {
                 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-                <EthOverview showAddress />
+                isEth ? (
+                  <EthOverview showAddress />
+                ) : (
+                  <BtcOverview showAddress />
+                )
                 ///: END:ONLY_INCLUDE_IF
               }
               {
                 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-                <EthOverview
-                  showAddress
-                  mmiPortfolioEnabled={mmiPortfolioEnabled}
-                />
+                isEth ? (
+                  <EthOverview
+                    showAddress
+                    mmiPortfolioEnabled={mmiPortfolioEnabled}
+                  />
+                ) : (
+                  <BtcOverview showAddress />
+                )
                 ///: END:ONLY_INCLUDE_IF
               }
             </div>
-            <Box style={{ flexGrow: '1' }} paddingTop={tabPadding}>
+            <Box
+              hidden={!isEth}
+              style={{ flexGrow: '1' }}
+              paddingTop={tabPadding}
+            >
               <Tabs
                 t={this.context.t}
                 defaultActiveTabKey={defaultHomeActiveTabName}

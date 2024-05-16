@@ -53,7 +53,10 @@ import { AccountPicker, GlobalMenu } from '..';
 
 import { toggleAccountMenu, toggleNetworkMenu } from '../../../store/actions';
 import MetafoxLogo from '../../ui/metafox-logo';
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import {
+  getEnvironmentType,
+  normalizeSafeAddress,
+} from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import ConnectedStatusIndicator from '../../app/connected-status-indicator';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -65,6 +68,7 @@ import { MINUTE } from '../../../../shared/constants/time';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { MultichainMetaFoxLogo } from './multichain-meta-fox-logo';
+import { isEvmAccountType } from '@metamask/keyring-api';
 
 export const AppHeader = ({ location }) => {
   const trackEvent = useContext(MetaMetricsContext);
@@ -80,7 +84,7 @@ export const AppHeader = ({ location }) => {
   const internalAccount = useSelector(getSelectedInternalAccount);
   const shortenedAddress =
     internalAccount &&
-    shortenAddress(toChecksumHexAddress(internalAccount.address));
+    shortenAddress(normalizeSafeAddress(internalAccount.address));
   const dispatch = useDispatch();
 
   // Used for network icon / dropdown
@@ -121,6 +125,8 @@ export const AppHeader = ({ location }) => {
     matchPath(location.pathname, { path: BUILD_QUOTE_ROUTE, exact: false }),
   );
 
+  const isEvmAccount = isEvmAccountType(internalAccount.type);
+
   const unapprovedTransactions = useSelector(getUnapprovedTransactions);
 
   const hasUnapprovedTransactions =
@@ -133,7 +139,8 @@ export const AppHeader = ({ location }) => {
     isSwapsPage ||
     isTransactionEditPage ||
     isConfirmationPage ||
-    hasUnapprovedTransactions;
+    hasUnapprovedTransactions ||
+    !isEvmAccount;
 
   // Callback for network dropdown
   const networkOpenCallback = useCallback(() => {

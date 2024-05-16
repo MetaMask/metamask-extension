@@ -98,6 +98,8 @@ import {
 
 import { AccountsController } from '@metamask/accounts-controller';
 
+import { ChainController } from '@metamask/chain-controller';
+
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import {
   CUSTODIAN_TYPES,
@@ -1931,6 +1933,14 @@ export default class MetamaskController extends EventEmitter {
       clearPendingConfirmations.bind(this),
     );
 
+    this.chainController = new ChainController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'ChainController',
+      }),
+      state: initState.ChainController,
+      getSnapController: () => this.snapController,
+    });
+
     this.metamaskMiddleware = createMetamaskMiddleware({
       static: {
         eth_syncing: false,
@@ -3064,6 +3074,42 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IF
+      getBalanceFromChain: async (accountId) => {
+        const account = this.accountsController.getAccount(accountId);
+        // TODO: Move this to a proper module
+        const scope = ((network) => {
+          switch (network) {
+            case undefined:
+            case 'mainnet':
+              return 'bip122:000000000019d6689c085ae165831e93';
+
+            case 'testnet':
+              return 'bip122:000000000933ea01ad0ee984209779ba';
+
+            default:
+              throw new Error('Unsupported network');
+          }
+        })(account.options.network);
+        const asset = `${scope}/slip44:0`;
+
+        // HACK: Right now our Snap is not pre-bundled, so register it as a provider here
+        // NOTE: This is required before calling any methods from the ChainController
+        const snapId = account.metadata?.snap.id;
+        if (!this.chainController.hasProviderFor(scope)) {
+          console.log(
+            `-- HACK: Registering "${snapId}" as Chain provider for scope: "${scope}"`,
+          );
+          this.chainController.registerProvider(scope, snapId);
+        }
+
+        const result = await this.chainController.getBalancesFromAccount(
+          scope,
+          account,
+          [asset],
+        );
+
+        return result.balances[account.address][asset];
+      },
 
       // AccountsController
       setSelectedInternalAccount: (id) => {

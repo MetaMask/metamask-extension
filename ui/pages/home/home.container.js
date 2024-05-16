@@ -204,6 +204,7 @@ const mapStateToProps = (state) => {
     ///: END:ONLY_INCLUDE_IF
     isSmartTransactionsOptInModalAvailable:
       getIsSmartTransactionsOptInModalAvailable(state),
+    account: getSelectedInternalAccount(state),
   };
 };
 
