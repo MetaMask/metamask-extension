@@ -4319,6 +4319,50 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Stops exposing the specified chain ID to all third parties.
+   * Exposed chain IDs are stored in caveats of the wallet_switchEthereumChain permission. This
+   * method uses `PermissionController.updatePermissionsByCaveat` to
+   * remove the specified chain ID from every wallet_switchEthereumChain permission. If a
+   * permission only included this chain ID, the permission is revoked entirely.
+   *
+   * @param {string} targetChainId - The chain ID to stop exposing
+   * to third parties.
+   */
+  removeAllChainIdPermissions(targetChainId) {
+    this.permissionController.updatePermissionsByCaveat(
+      CaveatTypes.restrictNetworkSwitching,
+      (existingChainIds) =>
+        CaveatMutatorFactories[
+          CaveatTypes.restrictNetworkSwitching
+        ].removeChainId(targetChainId, existingChainIds),
+    );
+  }
+
+  removeNetworkConfiguration(networkConfigurationId) {
+    const { networkConfigurations } = this.networkController.state;
+    const { chainId } = networkConfigurations[networkConfigurationId] ?? {};
+    if (!chainId) {
+      throw new Error('Network configuration not found');
+    }
+    const otherNetworkConfigurationsWithSameChainId = Object.values(
+      networkConfigurations,
+    ).some(
+      (config) =>
+        config.chainId === chainId &&
+        config.id !== networkConfigurationId &&
+        config.type !== networkConfigurationId,
+    );
+
+    // if this network configuration is only one for a given chainId
+    // remove all permissions for that chainId
+    if (!otherNetworkConfigurationsWithSameChainId) {
+      this.removeAllChainIdPermissions(chainId);
+    }
+
+    this.networkController.removeNetworkConfiguration(networkConfigurationId);
+  }
+
+  /**
    * Stops exposing the account with the specified address to all third parties.
    * Exposed accounts are stored in caveats of the eth_accounts permission. This
    * method uses `PermissionController.updatePermissionsByCaveat` to
