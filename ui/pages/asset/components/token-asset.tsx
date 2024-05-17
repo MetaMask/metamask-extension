@@ -24,10 +24,10 @@ import { MetaMetricsEventCategory } from '../../../../shared/constants/metametri
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { getConversionRate } from '../../../ducks/metamask/metamask';
 import AssetOptions from './asset-options';
-import AssetV2 from './asset-v2';
+import AssetPage from './asset-page';
 
-const TokenAssetV2 = ({ token }: { token: Token }) => {
-  const { address, symbol } = token;
+const TokenAsset = ({ token }: { token: Token }) => {
+  const { address, symbol, isERC721 } = token;
 
   const tokenList = useSelector(getTokenList);
   const chainId = useSelector(getCurrentChainId);
@@ -70,7 +70,7 @@ const TokenAssetV2 = ({ token }: { token: Token }) => {
   );
 
   return (
-    <AssetV2
+    <AssetPage
       asset={{
         chainId,
         type: AssetType.token,
@@ -89,6 +89,7 @@ const TokenAssetV2 = ({ token }: { token: Token }) => {
           )}`,
           fiat,
         },
+        isERC721,
       }}
       optionsButton={
         <AssetOptions
@@ -117,4 +118,4 @@ const TokenAssetV2 = ({ token }: { token: Token }) => {
   );
 };
 
-export default TokenAssetV2;
+export default TokenAsset;

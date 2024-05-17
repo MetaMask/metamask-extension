@@ -49,8 +49,12 @@ import {
 import { AssetType } from '../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { startNewDraftTransaction } from '../../../ducks/send';
-import { IconColor } from '../../../helpers/constants/design-system';
-import { Icon, IconName } from '../../component-library';
+import {
+  Display,
+  IconColor,
+  JustifyContent,
+} from '../../../helpers/constants/design-system';
+import { Box, Icon, IconName } from '../../component-library';
 import IconButton from '../../ui/icon-button';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
@@ -177,7 +181,7 @@ const EthButtons = () => {
   ///: END:ONLY_INCLUDE_IF
 
   return (
-    <>
+    <Box display={Display.Flex} justifyContent={JustifyContent.spaceEvenly}>
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         <IconButton
@@ -364,7 +368,7 @@ const EthButtons = () => {
         />
         ///: END:ONLY_INCLUDE_IF
       }
-    </>
+    </Box>
   );
 };
 

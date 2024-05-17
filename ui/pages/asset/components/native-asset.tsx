@@ -22,9 +22,9 @@ import { getURLHostName } from '../../../helpers/utils/util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import AssetOptions from './asset-options';
-import AssetV2 from './asset-v2';
+import AssetPage from './asset-page';
 
-const NativeAssetV2 = () => {
+const NativeAsset = () => {
   const nativeCurrency = useSelector(getNativeCurrency);
   const balance = useSelector(getSelectedAccountCachedBalance);
   const image = useSelector(getNativeCurrencyImage);
@@ -51,7 +51,7 @@ const NativeAssetV2 = () => {
   });
 
   return (
-    <AssetV2
+    <AssetPage
       asset={{
         chainId,
         type: AssetType.native,
@@ -88,4 +88,4 @@ const NativeAssetV2 = () => {
   );
 };
 
-export default NativeAssetV2;
+export default NativeAsset;

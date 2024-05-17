@@ -1,5 +1,4 @@
 import React, { useContext, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
@@ -49,45 +48,31 @@ import {
   IconColor,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-
 import IconButton from '../../../components/ui/icon-button/icon-button';
 import { Box, Icon, IconName } from '../../../components/component-library';
+import { Asset } from './asset-page';
 
-// eslint-disable-next-line
-const TokenButtons = ({ token }) => {
+const TokenButtons = ({
+  token,
+}: {
+  token: Asset & { type: AssetType.token };
+}) => {
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
-  // const { tokensWithBalances } = useTokenTracker({ tokens: [token] });
+
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring.type);
-
-  const balance = token.balance.value;
-  console.log(balance);
-  // const balanceToRender = token.balance.string;
-  // const balance = tokensWithBalances[0]?.balance;
   ///: END:ONLY_INCLUDE_IF
-  // const balanceToRender = tokensWithBalances[0]?.string;
-  // const formattedFiatBalance = useTokenFiatAmount(
-  //   token.address,
-  //   balanceToRender,
-  //   token.symbol,
-  // );
 
-  // const isOriginalTokenSymbol = true;
-  // const isOriginalTokenSymbol = useIsOriginalTokenSymbol(
-  //   token.address,
-  //   token.symbol,
-  // );
   const chainId = useSelector(getCurrentChainId);
   const isSwapsChain = useSelector(getIsSwapsChain);
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBridgeChain = useSelector(getIsBridgeChain);
   const isBuyableChain = useSelector(getIsBuyableChain);
   const metaMetricsId = useSelector(getMetaMetricsId);
-
   const { openBuyCryptoInPdapp } = useRamps();
   ///: END:ONLY_INCLUDE_IF
 
@@ -122,13 +107,7 @@ const TokenButtons = ({ token }) => {
   }, [token.isERC721, token.address, dispatch]);
 
   return (
-    <Box
-      marginTop={4}
-      marginLeft={4}
-      marginRight={4}
-      display={Display.Flex}
-      justifyContent={JustifyContent.spaceAround}
-    >
+    <Box display={Display.Flex} justifyContent={JustifyContent.spaceEvenly}>
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         <IconButton
@@ -152,6 +131,7 @@ const TokenButtons = ({ token }) => {
             });
           }}
           disabled={token.isERC721 || !isBuyableChain}
+          tooltipRender={null}
         />
         ///: END:ONLY_INCLUDE_IF
       }
@@ -166,6 +146,7 @@ const TokenButtons = ({ token }) => {
             }
             label={t('stake')}
             data-testid="token-overview-mmi-stake"
+            tooltipRender={null}
             onClick={() => {
               stakingEvent();
               global.platform.openTab({
@@ -184,6 +165,7 @@ const TokenButtons = ({ token }) => {
               }
               label={t('portfolio')}
               data-testid="token-overview-mmi-portfolio"
+              tooltipRender={null}
               onClick={() => {
                 portfolioEvent();
                 global.platform.openTab({
@@ -217,7 +199,8 @@ const TokenButtons = ({ token }) => {
               }),
             );
             history.push(SEND_ROUTE);
-          } catch (err) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          } catch (err: any) {
             if (!err.message.includes(INVALID_ASSET_TYPE)) {
               throw err;
             }
@@ -232,6 +215,7 @@ const TokenButtons = ({ token }) => {
         label={t('send')}
         data-testid="eth-overview-send"
         disabled={token.isERC721}
+        tooltipRender={null}
       />
       {isSwapsChain && (
         <IconButton
@@ -262,17 +246,20 @@ const TokenButtons = ({ token }) => {
             });
             dispatch(
               setSwapsFromToken({
-                symbol: token.symbol,
-                name: token.name,
-                address: token.address,
-                decimals: token.decimals,
+                ...token,
+                address: token.address.toLowerCase(),
                 iconUrl: token.image,
                 balance: token.balance.value,
                 string: token.balance.display,
               }),
             );
             if (usingHardwareWallet) {
-              global.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE);
+              // todo
+              global.platform.openExtensionInBrowser?.(
+                BUILD_QUOTE_ROUTE,
+                undefined,
+                false,
+              );
             } else {
               history.push(BUILD_QUOTE_ROUTE);
             }
@@ -323,20 +310,4 @@ const TokenButtons = ({ token }) => {
   );
 };
 
-TokenButtons.propTypes = {
-  token: PropTypes.shape({
-    address: PropTypes.string.isRequired,
-    decimals: PropTypes.number,
-    symbol: PropTypes.string,
-    name: PropTypes.string,
-    image: PropTypes.string,
-    isERC721: PropTypes.bool,
-    balance: PropTypes.shape({
-      value: PropTypes.string,
-      display: PropTypes.string,
-    }),
-  }),
-};
-
-// eslint-disable-next-line
 export default TokenButtons;

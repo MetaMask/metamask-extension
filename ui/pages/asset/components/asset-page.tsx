@@ -35,9 +35,9 @@ import {
   localizeLargeNumber,
 } from '../util';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import AssetChart from './chart/asset-chart';
 // import AssetHeader from './asset-header';
-import NativeButtons from './native-buttons';
+import EthButtons from '../../../components/app/wallet-overview/eth-buttons';
+import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
 
 /** Information about a native or token asset */
@@ -81,10 +81,12 @@ export type Asset = (
     /** The balance's localized value in fiat e.g. '$12.34' or '56,78 €' */
     fiat?: string;
   };
+  /** True if the asset implements ERC721 */
+  isERC721?: boolean;
 };
 
 // A page representing a native or token asset
-const AssetV2 = ({
+const AssetPage = ({
   asset,
   optionsButton,
 }: {
@@ -157,11 +159,13 @@ const AssetV2 = ({
         currentPrice={asset.currentPrice}
         currency={currency}
       />
-      {type === AssetType.native ? (
-        <NativeButtons />
-      ) : (
-        <TokenButtons token={asset} />
-      )}
+      <Box marginTop={4}>
+        {type === AssetType.native ? (
+          <EthButtons />
+        ) : (
+          <TokenButtons token={asset} />
+        )}
+      </Box>
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
@@ -321,4 +325,4 @@ function renderRow(leftColumn: string, rightColumn: ReactNode) {
   );
 }
 
-export default AssetV2;
+export default AssetPage;

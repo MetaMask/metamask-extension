@@ -6,7 +6,8 @@ import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { KeyringType } from '../../../../shared/constants/keyring';
-import TokenOverview from './token-overview';
+import { AssetType } from '../../../../shared/constants/transaction';
+import AssetPage from './asset-page';
 
 // Mock BUYABLE_CHAINS_MAP
 jest.mock('../../../../shared/constants/network', () => ({
@@ -26,10 +27,23 @@ jest.mock('../../../../shared/constants/network', () => ({
 }));
 let openTabSpy;
 
-describe('TokenOverview', () => {
+describe('AssetPage', () => {
   const mockStore = {
+    localeMessages: {
+      currentLocale: 'en',
+    },
     metamask: {
+      tokenList: {},
+      currentCurrency: 'usd',
+      accounts: {},
+      networkConfigurations: {
+        test: {
+          id: 'test',
+          chainId: CHAIN_IDS.MAINNET,
+        },
+      },
       providerConfig: {
+        id: '1',
         type: 'test',
         chainId: CHAIN_IDS.MAINNET,
       },
@@ -96,128 +110,88 @@ describe('TokenOverview', () => {
       openTabSpy.mockClear();
     });
 
+    const native = {
+      type: AssetType.native,
+      chainId: '0x1',
+      symbol: 'TEST',
+      image: '',
+      isOriginalNativeSymbol: true,
+      balance: {
+        value: '0',
+        display: '0',
+      },
+    } as const;
+
     const token = {
-      name: 'test',
-      isERC721: false,
-      address: '0x01',
-      symbol: 'test',
-    };
+      type: AssetType.token,
+      chainId: '0x1',
+      address: '0x123',
+      symbol: 'TEST',
+      decimals: 18,
+      image: '',
+      balance: {
+        value: '0',
+        display: '0',
+      },
+    } as const;
+
+    it('should render a native asset', () => {
+      const { container } = renderWithProvider(
+        <AssetPage asset={native} optionsButton={null} />,
+        store,
+      );
+      expect(container).toMatchSnapshot();
+    });
+
+    it('should render a token asset', () => {
+      const { container } = renderWithProvider(
+        <AssetPage asset={token} optionsButton={null} />,
+        store,
+      );
+      expect(container).toMatchSnapshot();
+    });
 
     it('should not show a modal when token passed in props is not an ERC721', () => {
-      renderWithProvider(<TokenOverview token={token} />, store);
-
+      renderWithProvider(
+        <AssetPage asset={token} optionsButton={null} />,
+        store,
+      );
       const actions = store.getActions();
       expect(actions).toHaveLength(0);
     });
 
     it('should show ConvertTokenToNFT modal when token passed in props is an ERC721', () => {
-      const nftToken = {
-        ...token,
-        isERC721: true,
-      };
-      renderWithProvider(<TokenOverview token={nftToken} />, store);
-
+      renderWithProvider(
+        <AssetPage asset={{ ...token, isERC721: true }} optionsButton={null} />,
+        store,
+      );
       const actions = store.getActions();
       expect(actions).toHaveLength(1);
       expect(actions[0].type).toBe('UI_MODAL_OPEN');
       expect(actions[0].payload).toStrictEqual({
         name: 'CONVERT_TOKEN_TO_NFT',
-        tokenAddress: '0x01',
+        tokenAddress: '0x123',
       });
     });
 
-    it('should always show the Buy button regardless of chain Id', () => {
-      const mockedStoreWithUnbuyableChainId = {
-        metamask: {
-          ...mockStore.metamask,
-          providerConfig: { type: 'test', chainId: CHAIN_IDS.PALM },
-        },
-      };
-      const mockedStore = configureMockStore([thunk])(
-        mockedStoreWithUnbuyableChainId,
-      );
-
+    it('should enable the buy button on supported chains', () => {
       const { queryByTestId } = renderWithProvider(
-        <TokenOverview token={token} />,
-        mockedStore,
-      );
-      const buyButton = queryByTestId('token-overview-buy');
-      expect(buyButton).toBeInTheDocument();
-    });
-
-    it('should always show the Buy button regardless of token type', () => {
-      const nftToken = {
-        ...token,
-        isERC721: true,
-      };
-
-      const { queryByTestId } = renderWithProvider(
-        <TokenOverview token={nftToken} />,
+        <AssetPage asset={token} optionsButton={null} />,
         store,
       );
       const buyButton = queryByTestId('token-overview-buy');
       expect(buyButton).toBeInTheDocument();
+      expect(buyButton).toBeEnabled();
     });
 
-    it('should have the Buy token button disabled if chain id is not part of supported buyable chains', () => {
-      const mockedStoreWithUnbuyableChainId = {
-        metamask: {
-          ...mockStore.metamask,
-          providerConfig: { type: 'test', chainId: CHAIN_IDS.FANTOM },
-        },
-      };
-      const mockedStore = configureMockStore([thunk])(
-        mockedStoreWithUnbuyableChainId,
-      );
-
+    it('should disable the buy button on unsupported chains', () => {
+      const chainId = CHAIN_IDS.SEPOLIA;
       const { queryByTestId } = renderWithProvider(
-        <TokenOverview token={token} />,
-        mockedStore,
-      );
-      const buyButton = queryByTestId('token-overview-buy');
-      expect(buyButton).toBeInTheDocument();
-      expect(buyButton).toBeDisabled();
-    });
-
-    it('should have the Buy token button enabled if chain id is part of supported buyable chains', () => {
-      const mockedStoreWithBuyableChainId = {
-        metamask: {
-          ...mockStore.metamask,
-          providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
-        },
-      };
-      const mockedStore = configureMockStore([thunk])(
-        mockedStoreWithBuyableChainId,
-      );
-
-      const { queryByTestId } = renderWithProvider(
-        <TokenOverview token={token} />,
-        mockedStore,
-      );
-      const buyButton = queryByTestId('token-overview-buy');
-      expect(buyButton).toBeInTheDocument();
-      expect(buyButton).not.toBeDisabled();
-    });
-
-    it('should have the Buy token button disabled for ERC721 tokens', () => {
-      const nftToken = {
-        ...token,
-        isERC721: true,
-      };
-
-      const mockedStoreWithBuyableChainId = {
-        metamask: {
-          ...mockStore.metamask,
-          providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
-        },
-      };
-      const mockedStore = configureMockStore([thunk])(
-        mockedStoreWithBuyableChainId,
-      );
-
-      const { queryByTestId } = renderWithProvider(
-        <TokenOverview token={nftToken} />,
-        mockedStore,
+        <AssetPage asset={token} optionsButton={null} />,
+        configureMockStore([thunk])({
+          ...mockStore,
+          metamask: { ...mockStore.metamask, providerConfig: { chainId } },
+        }),
       );
       const buyButton = queryByTestId('token-overview-buy');
       expect(buyButton).toBeInTheDocument();
@@ -226,6 +200,7 @@ describe('TokenOverview', () => {
 
     it('should open the buy crypto URL for a buyable chain ID', async () => {
       const mockedStoreWithBuyableChainId = {
+        ...mockStore,
         metamask: {
           ...mockStore.metamask,
           providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
@@ -236,7 +211,7 @@ describe('TokenOverview', () => {
       );
 
       const { queryByTestId } = renderWithProvider(
-        <TokenOverview token={token} />,
+        <AssetPage asset={token} optionsButton={null} />,
         mockedStore,
       );
       const buyButton = queryByTestId('token-overview-buy');
@@ -256,26 +231,9 @@ describe('TokenOverview', () => {
     });
 
     it('should show the Bridge button if chain id is supported', async () => {
-      const mockToken = {
-        name: 'test',
-        isERC721: false,
-        address: '0x7ceb23fd6bc0add59e62ac25578270cff1B9f619',
-        symbol: 'test',
-      };
-
-      const mockedStoreWithBridgeableChainId = {
-        metamask: {
-          ...mockStore.metamask,
-          providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
-        },
-      };
-      const mockedStore = configureMockStore([thunk])(
-        mockedStoreWithBridgeableChainId,
-      );
-
       const { queryByTestId } = renderWithProvider(
-        <TokenOverview token={mockToken} />,
-        mockedStore,
+        <AssetPage asset={token} optionsButton={null} />,
+        store,
       );
       const bridgeButton = queryByTestId('token-overview-bridge');
       expect(bridgeButton).toBeInTheDocument();
@@ -287,33 +245,20 @@ describe('TokenOverview', () => {
       await waitFor(() =>
         expect(openTabSpy).toHaveBeenCalledWith({
           url: expect.stringContaining(
-            '/bridge?metamaskEntry=ext_bridge_button&metametricsId=&token=0x7ceb23fd6bc0add59e62ac25578270cff1B9f619',
+            '/bridge?metamaskEntry=ext_bridge_button&metametricsId=&token=0x123',
           ),
         }),
       );
     });
 
     it('should not show the Bridge button if chain id is not supported', async () => {
-      const mockToken = {
-        name: 'test',
-        isERC721: false,
-        address: '0x7ceb23fd6bc0add59e62ac25578270cff1B9f619',
-        symbol: 'test',
-      };
-
-      const mockedStoreWithBridgeableChainId = {
-        metamask: {
-          ...mockStore.metamask,
-          providerConfig: { type: 'test', chainId: CHAIN_IDS.FANTOM },
-        },
-      };
-      const mockedStore = configureMockStore([thunk])(
-        mockedStoreWithBridgeableChainId,
-      );
-
+      const chainId = CHAIN_IDS.SEPOLIA;
       const { queryByTestId } = renderWithProvider(
-        <TokenOverview token={mockToken} />,
-        mockedStore,
+        <AssetPage asset={token} optionsButton={null} />,
+        configureMockStore([thunk])({
+          ...mockStore,
+          metamask: { ...mockStore.metamask, providerConfig: { chainId } },
+        }),
       );
       const bridgeButton = queryByTestId('token-overview-bridge');
       expect(bridgeButton).not.toBeInTheDocument();
@@ -321,7 +266,7 @@ describe('TokenOverview', () => {
 
     it('should show the MMI Portfolio and Stake buttons', () => {
       const { queryByTestId } = renderWithProvider(
-        <TokenOverview token={token} />,
+        <AssetPage asset={token} optionsButton={null} />,
         store,
       );
       const mmiStakeButton = queryByTestId('token-overview-mmi-stake');
@@ -330,5 +275,8 @@ describe('TokenOverview', () => {
       expect(mmiStakeButton).toBeInTheDocument();
       expect(mmiPortfolioButton).toBeInTheDocument();
     });
+
+
+    // TODO more unit tests, click buttons, chart, verify market data on page, etc
   });
 });

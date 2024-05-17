@@ -1,4 +1,4 @@
-import { SUPPORTED_CHAIN_IDS } from '@metamask/assets-controllers/dist/token-prices-service/codefi-v2';
+import { SUPPORTED_CHAIN_IDS } from '@metamask/assets-controllers';
 
 /** Formats a datetime in a short human readable format like 'Feb 8, 12:11 PM' */
 export const shortDateFormatter = Intl.DateTimeFormat(navigator.language, {

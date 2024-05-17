@@ -10,53 +10,37 @@ import {
 } from '../../ducks/metamask/metamask';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import NativeAsset from './components/native-asset';
 import TokenAsset from './components/token-asset';
-///: END:ONLY_INCLUDE_IF
 
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-import NativeAssetV2 from './components/native-asset-v2';
-import TokenAssetV2 from './components/token-asset-v2';
-///: END:ONLY_INCLUDE_IF
-
+/** A page representing a native, token, or NFT asset */
 const Asset = () => {
   const nativeCurrency = useSelector(getNativeCurrency);
   const tokens = useSelector(getTokens);
   const nfts = useSelector(getNfts);
-  const { asset, id } = useParams();
+  const { asset, id } = useParams<{ asset: string; id: string }>();
 
-  const token = tokens.find(({ address }) =>
+  const token = tokens.find(({ address }: { address: string }) =>
     isEqualCaseInsensitive(address, asset),
   );
 
   const nft = nfts.find(
-    ({ address, tokenId }) =>
+    ({ address, tokenId }: { address: string; tokenId: string }) =>
       isEqualCaseInsensitive(address, asset) && id === tokenId.toString(),
   );
 
   useEffect(() => {
     const el = document.querySelector('.app');
-    el.scroll(0, 0);
+    el?.scroll(0, 0);
   }, []);
 
   let content;
   if (nft) {
     content = <NftDetails nft={nft} />;
   } else if (token) {
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     content = <TokenAsset token={token} />;
-    ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    content = <TokenAssetV2 token={token} />;
-    ///: END:ONLY_INCLUDE_IF
   } else if (asset === nativeCurrency) {
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    content = <NativeAsset nativeCurrency={nativeCurrency} />;
-    ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    content = <NativeAssetV2 />;
-    ///: END:ONLY_INCLUDE_IF
+    content = <NativeAsset />;
   } else {
     content = <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
   }
