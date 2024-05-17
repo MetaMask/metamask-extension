@@ -361,6 +361,40 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
+  renderDataCollectionForMarketing() {
+    const { t } = this.context;
+
+    return (
+      <Box
+        ref={this.settingsRefs[4]}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
+        <div className="settings-page__content-item">
+          <span>{t('dataCollectionForMarketing')}</span>
+          <div className="settings-page__content-description">
+            <span>{t('dataCollectionForMarketingDescription')}</span>
+          </div>
+        </div>
+
+        <div
+          className="settings-page__content-item-col"
+          data-testid="participateInMetaMetrics"
+        >
+          <ToggleButton
+            value={false}
+            onToggle={() => {}}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
+        </div>
+      </Box>
+    );
+  }
+
   renderChooseYourNetworkButton() {
     const { t } = this.context;
 
@@ -1109,6 +1143,7 @@ export default class SecurityTab extends PureComponent {
         </span>
         <div className="settings-page__content-padded">
           {this.renderMetaMetricsOptIn()}
+          {this.renderDataCollectionForMarketing()}
         </div>
       </div>
     );
