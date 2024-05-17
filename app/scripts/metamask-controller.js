@@ -3025,8 +3025,7 @@ export default class MetamaskController extends EventEmitter {
       },
       rollbackToPreviousProvider:
         networkController.rollbackToPreviousProvider.bind(networkController),
-      removeNetworkConfiguration:
-        networkController.removeNetworkConfiguration.bind(networkController),
+      removeNetworkConfiguration: this.removeNetworkConfiguration.bind(this),
       upsertNetworkConfiguration:
         this.networkController.upsertNetworkConfiguration.bind(
           this.networkController,
@@ -4320,9 +4319,9 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * Stops exposing the specified chain ID to all third parties.
-   * Exposed chain IDs are stored in caveats of the wallet_switchEthereumChain permission. This
+   * Exposed chain IDs are stored in caveats of the permittedChains permission. This
    * method uses `PermissionController.updatePermissionsByCaveat` to
-   * remove the specified chain ID from every wallet_switchEthereumChain permission. If a
+   * remove the specified chain ID from every permittedChains permission. If a
    * permission only included this chain ID, the permission is revoked entirely.
    *
    * @param {string} targetChainId - The chain ID to stop exposing
@@ -5045,10 +5044,13 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController.requestPermissions(
             { origin },
             {
-              wallet_switchEthereumChain: chainIds.reduce((acc, chainId) => {
-                acc[chainId] = true;
-                return acc;
-              }, {}),
+              [PermissionNames.permittedChains]: chainIds.reduce(
+                (acc, chainId) => {
+                  acc[chainId] = true;
+                  return acc;
+                },
+                {},
+              ),
             },
           ),
         requestPermissionsForOrigin:

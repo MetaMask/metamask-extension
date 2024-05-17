@@ -98,7 +98,7 @@ async function handleSwitchWithPermissions(
   networkClientIdToSwitchTo,
   { setActiveNetwork, requestSwitchNetworkPermission, getCaveat },
 ) {
-  const permissionedChainIds = getCaveat({
+  const { value: permissionedChainIds } = getCaveat({
     target: PermissionNames.permittedChains,
     caveatType: CaveatTypes.restrictNetworkSwitching,
   });
