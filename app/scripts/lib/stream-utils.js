@@ -24,3 +24,13 @@ export function setupMultiplex(connectionStream) {
   });
   return mux;
 }
+
+/**
+ * Checks if a stream is usable
+ *
+ * @param {stream.Stream} stream - the stream to check
+ * @returns {boolean} if the stream can be written to
+ */
+export function isStreamWritable(stream) {
+  return stream.writable && !stream.destroyed && !stream._writableState?.ended;
+}
