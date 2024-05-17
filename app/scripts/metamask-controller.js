@@ -4847,6 +4847,10 @@ export default class MetamaskController extends EventEmitter {
     // append origin to each request
     engine.push(createOriginMiddleware({ origin }));
 
+    if (isManifestV3) {
+      engine.push(createDupeReqFilterMiddleware());
+    }
+
     // append selectedNetworkClientId to each request
     engine.push(createSelectedNetworkMiddleware(this.controllerMessenger));
 
@@ -4878,10 +4882,6 @@ export default class MetamaskController extends EventEmitter {
     subscriptionManager.events.on('notification', (message) =>
       engine.emit('notification', message),
     );
-
-    if (isManifestV3) {
-      engine.push(createDupeReqFilterMiddleware());
-    }
 
     // append tabId to each request if it exists
     if (tabId) {
