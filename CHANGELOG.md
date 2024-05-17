@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [11.16.0]
+## [11.15.5]
+### Changed
+- Update copy in Smart Transactions opt-in modal([#24461](https://github.com/MetaMask/metamask-extension/pull/24461))
+
+## [11.15.4]
+### Changed
+-  Update UI for the Smart Transactions Opt In modal ([#24441](https://github.com/MetaMask/metamask-extension/pull/24441))
+
 ## [11.15.3]
 ### Changed
 - Smart transaction improvements ([#24340](https://github.com/MetaMask/metamask-extension/pull/24340))
@@ -4693,6 +4701,9 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 [11.16.0]: https://github.com/MetaMask/metamask-extension/compare/v11.14.0...v11.16.0
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.15.2...HEAD
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.15.3...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.15.5...HEAD
+[11.15.5]: https://github.com/MetaMask/metamask-extension/compare/v11.15.4...v11.15.5
+[11.15.4]: https://github.com/MetaMask/metamask-extension/compare/v11.15.3...v11.15.4
 [11.15.3]: https://github.com/MetaMask/metamask-extension/compare/v11.15.2...v11.15.3
 [11.15.2]: https://github.com/MetaMask/metamask-extension/compare/v11.15.1...v11.15.2
 [11.15.1]: https://github.com/MetaMask/metamask-extension/compare/v11.15.0...v11.15.1
