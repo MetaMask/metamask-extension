@@ -233,7 +233,6 @@ export default function createRPCMethodTrackingMiddleware({
 
       if (event === MetaMetricsEventName.SignatureRequested) {
         eventProperties.signature_type = method;
-        console.log(`method is ${method}`);
 
         // In personal messages the first param is data while in typed messages second param is data
         // if condition below is added to ensure that the right params are captured as data and address.
