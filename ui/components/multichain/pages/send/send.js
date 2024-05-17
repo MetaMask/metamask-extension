@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useEffect, useRef } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { I18nContext } from '../../../../contexts/i18n';
@@ -68,6 +74,8 @@ export const SendPage = () => {
   const history = useHistory();
   const location = useLocation();
   const trackEvent = useContext(MetaMetricsContext);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSelectToken = useCallback(
     (token, isReceived) => {
@@ -182,7 +190,9 @@ export const SendPage = () => {
   const onSubmit = async (event) => {
     event.preventDefault();
 
+    setIsSubmitting(true);
     await dispatch(signTransaction(history));
+    setIsSubmitting(false);
 
     trackEvent({
       category: MetaMetricsEventCategory.Transactions,
@@ -276,8 +286,9 @@ export const SendPage = () => {
         </ButtonSecondary>
         <ButtonPrimary
           onClick={onSubmit}
+          loading={isSubmitting}
           size={ButtonPrimarySize.Lg}
-          disabled={submitDisabled}
+          disabled={submitDisabled || isSubmitting}
           block
         >
           {t('continue')}
