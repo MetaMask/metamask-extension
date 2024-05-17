@@ -11,7 +11,7 @@ export type DataDeleteRegulationId = string;
 export type RegulationId = Record<string, string>;
 export type CurrentRegulationStatus = Record<string, Record<string, string>>;
 export type DeleteRegulationAPIResponse = {
-  data: Record<string, RegulationId | CurrentRegulationStatus>;
+  data: RegulationId | CurrentRegulationStatus;
 };
 
 export enum DeleteRegulationStatus {
@@ -100,16 +100,19 @@ export default class MetaMetricsDataDeletionController {
     }
 
     try {
-      const { data } = await createDataDeletionRegulationTask(
+      const response = await createDataDeletionRegulationTask(
         metaMetricsId as string,
       );
+      if (Object.keys(response).length > 0) {
+        const { data } = response;
+        this.store.updateState({
+          metaMetricsDataDeletionId: data?.regulateId as string,
+          metaMetricsDataDeletionDate: this._formatDeletionDate(),
+        });
+        return { status: responseStatus.ok };
+      }
 
-      this.store.updateState({
-        metaMetricsDataDeletionId: data?.data?.regulateId as string,
-        metaMetricsDataDeletionDate: this._formatDeletionDate(),
-      });
-
-      return { status: responseStatus.ok };
+      return { status: responseStatus.error, error: 'API fetch failed' };
     } catch (error: unknown) {
       return {
         status: responseStatus.error,
@@ -126,16 +129,20 @@ export default class MetaMetricsDataDeletionController {
         error: 'Delete Regulation id not found',
       };
     }
+
     try {
-      const { data } = await fetchDeletionRegulationStatus(deleteRegulationId);
-      const regulation = data?.data?.regulation as Record<string, string>;
-      this.store.updateState({
-        metaMetricsDataDeletionStatus:
-          regulation.overallStatus as DeleteRegulationStatus,
-      });
-      return {
-        status: responseStatus.ok,
-      };
+      const response = await fetchDeletionRegulationStatus(deleteRegulationId);
+      if (Object.keys(response).length > 0) {
+        const { data } = response;
+        const regulation = data?.regulation as Record<string, string>;
+        this.store.updateState({
+          metaMetricsDataDeletionStatus:
+            regulation.overallStatus as DeleteRegulationStatus,
+        });
+        return { status: responseStatus.ok };
+      }
+
+      return { status: responseStatus.error, error: 'API fetch failed' };
     } catch (error: unknown) {
       return {
         status: responseStatus.error,
