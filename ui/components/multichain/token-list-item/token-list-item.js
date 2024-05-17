@@ -66,6 +66,7 @@ export const TokenListItem = ({
   primary,
   secondary,
   title,
+  tooltipText,
   isOriginalTokenSymbol,
   isNativeCurrency = false,
   isStakeable = false,
@@ -141,6 +142,7 @@ export const TokenListItem = ({
       flexDirection={FlexDirection.Column}
       gap={4}
       data-testid="multichain-token-list-item"
+      title={tooltipText ? t(tooltipText) : undefined}
     >
       <Box
         className="multichain-token-list-item__container-cell"
@@ -387,6 +389,10 @@ TokenListItem.propTypes = {
    * title represents the name of the token and if name is not available then Symbol
    */
   title: PropTypes.string,
+  /**
+   * tooltipText represents the text to show in the tooltip when hovering over the token
+   */
+  tooltipText: PropTypes.string,
   /**
    * tokenImage represents the image of the token icon
    */

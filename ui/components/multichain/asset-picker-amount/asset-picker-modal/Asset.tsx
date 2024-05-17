@@ -11,6 +11,7 @@ type AssetProps = {
   symbol: string;
   decimalTokenAmount?: string;
   onClick: (address: string) => void;
+  tooltipText?: string;
 };
 
 export default function Asset({
@@ -19,6 +20,7 @@ export default function Asset({
   symbol,
   decimalTokenAmount,
   onClick,
+  tooltipText,
 }: AssetProps) {
   const tokenList = useSelector(getTokenList);
   const tokenData = address
@@ -47,6 +49,7 @@ export default function Asset({
       primary={`${decimalTokenAmount || 0}`}
       secondary={formattedFiat}
       title={title}
+      tooltipText={tooltipText}
     />
   );
 }
