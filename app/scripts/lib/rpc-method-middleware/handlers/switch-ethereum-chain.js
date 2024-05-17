@@ -46,7 +46,6 @@ function findExistingNetwork(chainId, findNetworkConfigurationBy) {
       type: CHAIN_ID_TO_TYPE_MAP[chainId],
     };
   }
-
   return findNetworkConfigurationBy({ chainId });
 }
 
@@ -114,16 +113,15 @@ async function handleSwitchWithPermissions(
         chainid,
       ]);
     } catch (err) {
-      res.error = err;
-      return end();
+      return end(err);
     }
   }
 
   try {
     await setActiveNetwork(networkClientIdToSwitchTo);
     res.result = null;
-  } catch (error) {
-    return end(error);
+  } catch (err) {
+    return end(err);
   }
   return end();
 }
@@ -145,8 +143,8 @@ async function handleSwitchWithoutPermissions(
 
     await setActiveNetwork(networkClientIdToSwitchTo);
     res.result = null;
-  } catch (error) {
-    return end(error);
+  } catch (err) {
+    return end(err);
   }
   return end();
 }
@@ -173,7 +171,6 @@ async function switchEthereumChainHandler(
 
   const { origin } = req;
   const currentChainIdForOrigin = getCurrentChainIdForDomain(origin);
-
   if (currentChainIdForOrigin === chainId) {
     res.result = null;
     return end();
