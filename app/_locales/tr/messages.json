@@ -2579,50 +2579,50 @@
   "onboardingMetametricsAgree": {
     "message": "Kabul ediyorum"
   },
-  "onboardingMetametricsAllowOptOut": {
+  "onboardingMetametricsAllowOptOutLegacy": {
     "message": "Her zaman Ayarlar kısmından vazgeçebilmenize izin verir"
   },
-  "onboardingMetametricsDataTerms": {
+  "onboardingMetametricsDataTermsLegacy": {
     "message": "Bu veriler toplanmıştır ve bu nedenle 2016/679 sayılı Genel Veri Koruma Tüzüğü (AB) maksadıyla isimsizdir."
   },
-  "onboardingMetametricsDescription": {
-    "message": "MetaMask kullanıcılarımızn MetaMask ile nasıl etkileşimde bulunduklarını daha iyi anlamak amacıyla kullanım verilerini toplamak ister. Bu veriler, hizmeti kullanımınıza göre geliştirmek de dahil olmak üzere hizmeti sunmak için kullanılacaktır."
-  },
-  "onboardingMetametricsDescription2": {
+  "onboardingMetametricsDescription2Legacy": {
     "message": "MetaMask..."
+  },
+  "onboardingMetametricsDescriptionLegacy": {
+    "message": "MetaMask kullanıcılarımızn MetaMask ile nasıl etkileşimde bulunduklarını daha iyi anlamak amacıyla kullanım verilerini toplamak ister. Bu veriler, hizmeti kullanımınıza göre geliştirmek de dahil olmak üzere hizmeti sunmak için kullanılacaktır."
   },
   "onboardingMetametricsDisagree": {
     "message": "Hayır, istemiyorum"
   },
-  "onboardingMetametricsInfuraTerms": {
+  "onboardingMetametricsInfuraTermsLegacy": {
     "message": "* MetaMask'te varsayılan RPC sağlayıcınız olarak Infura'yı kullandığınızda, siz bir işlem gönderdiğinizde Infura tarafından IP adresiniz ve Ethereum cüzdan adresiniz toplanır. Bu bilgileri sistemlerimizin bu iki veri parçasını ilişkilendirebilmesini sağlayan şekilde saklamayız. MetaMask ve Infura'nın veri toplama açısından nasıl etkileşimde bulundukları hakkında daha fazla bilgi için lütfen güncel $1 bölümümüze bakın. Genel olarak gizlilik uygulamalarımız hakkında daha fazla bilgi için $2 bölümümüze bakın.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
-  "onboardingMetametricsInfuraTermsPolicy": {
+  "onboardingMetametricsInfuraTermsPolicyLegacy": {
     "message": "buradan Gizlilik Politikası"
   },
-  "onboardingMetametricsInfuraTermsPolicyLink": {
+  "onboardingMetametricsInfuraTermsPolicyLinkLegacy": {
     "message": "burada"
   },
   "onboardingMetametricsModalTitle": {
     "message": "Özel ağ ekle"
   },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 ihtiyacımız olmayan bilgileri (anahtarlar, adresler, işlem hash değerleri veya bakiyeler gibi) hizmeti sunmak için toplar",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectIP": {
+  "onboardingMetametricsNeverCollectIPLegacy": {
     "message": "$1 tam IP adresinizi toplar*",
     "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
   },
-  "onboardingMetametricsNeverEmphasis": {
+  "onboardingMetametricsNeverCollectLegacy": {
+    "message": "$1 ihtiyacımız olmayan bilgileri (anahtarlar, adresler, işlem hash değerleri veya bakiyeler gibi) hizmeti sunmak için toplar",
+    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
+  },
+  "onboardingMetametricsNeverEmphasisLegacy": {
     "message": "Hiçbir Zaman"
   },
-  "onboardingMetametricsNeverSellData": {
+  "onboardingMetametricsNeverSellDataLegacy": {
     "message": "$1 verileri satmaz. Asla!",
     "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
   },
-  "onboardingMetametricsSendAnonymize": {
+  "onboardingMetametricsSendAnonymizeLegacy": {
     "message": "İsimsiz tıklama ve sayfa görüntüleme etkinlikleri gönder"
   },
   "onboardingMetametricsTitle": {
