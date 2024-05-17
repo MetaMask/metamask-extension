@@ -74,6 +74,7 @@ import {
   getBalancesInSingleCall,
   estimateGas,
   addTransactionAndWaitForPublish,
+  setDefaultHomeActiveTabName,
 } from '../../store/actions';
 import { setCustomGasLimit } from '../gas/gas.duck';
 import {
@@ -2954,6 +2955,7 @@ export function signTransaction(history) {
         );
         transactionId = swapAndSendTxId;
 
+        await dispatch(setDefaultHomeActiveTabName('activity'));
         history.push(DEFAULT_ROUTE);
       } else {
         // basic send
