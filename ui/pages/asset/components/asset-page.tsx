@@ -110,6 +110,7 @@ const AssetPage = ({
     useEffect(() => {
       setMarketData(undefined);
 
+      // TODO: Get this from https://github.com/MetaMask/core/pull/4206 once available
       fetchWithCache({
         url: `https://price-api.metafi.codefi.network/v2/chains/${chainId}/spot-prices/?includeMarketData=true&tokenAddresses=${address}&vsCurrency=${currency}`,
         cacheOptions: { cacheRefreshTime: 10 * MINUTE },
