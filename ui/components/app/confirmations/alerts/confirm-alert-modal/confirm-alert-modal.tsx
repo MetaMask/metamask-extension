@@ -17,6 +17,7 @@ import {
   BlockSize,
   BorderRadius,
   Display,
+  Severity,
   TextAlign,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
@@ -154,18 +155,19 @@ export function ConfirmAlertModal({
   ownerId,
 }: ConfirmAlertModalProps) {
   const t = useI18nContext();
-  const { alerts, isAlertConfirmed } = useAlerts(ownerId);
+  const { isAlertConfirmed, fieldAlerts } = useAlerts(ownerId);
 
-  const unconfirmedAlerts = alerts.filter(
-    (alert) => alert.field && !isAlertConfirmed(alert.key),
+  const unconfirmedDangerAlerts = fieldAlerts.filter(
+    (alert) =>
+      !isAlertConfirmed(alert.key) && alert.severity === Severity.Danger,
   );
-  const selectedAlert = alerts.find((alert) => alert.key === alertKey);
-  const hasUnconfirmedAlerts = unconfirmedAlerts.length > 0;
+  const selectedAlert = fieldAlerts.find((alert) => alert.key === alertKey);
+  const hasUnconfirmedDangerAlerts = unconfirmedDangerAlerts.length > 0;
 
   const [confirmCheckbox, setConfirmCheckbox] = useState<boolean>(false);
   // if there are multiple alerts, show the multiple alert modal
   const [multipleAlertModalVisible, setMultipleAlertModalVisible] =
-    useState<boolean>(hasUnconfirmedAlerts);
+    useState<boolean>(hasUnconfirmedDangerAlerts);
 
   const handleCloseMultipleAlertModal = useCallback(() => {
     setMultipleAlertModalVisible(false);

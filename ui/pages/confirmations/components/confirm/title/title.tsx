@@ -43,6 +43,7 @@ function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
         }
         severity={highestSeverity}
         provider={hasMultipleAlerts ? undefined : singleAlert.provider}
+        details={singleAlert.alertDetails}
       />
     </Box>
   );

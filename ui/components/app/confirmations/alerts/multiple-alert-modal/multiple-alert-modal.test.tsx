@@ -20,14 +20,21 @@ describe('MultipleAlertModal', () => {
   const alertsMock = [
     {
       key: FROM_ALERT_KEY_MOCK,
+      field: FROM_ALERT_KEY_MOCK,
       severity: Severity.Warning,
       message: 'Alert 1',
       reason: 'Reason 1',
       alertDetails: ['Detail 1', 'Detail 2'],
     },
-    { key: DATA_ALERT_KEY_MOCK, severity: Severity.Danger, message: 'Alert 2' },
+    {
+      key: DATA_ALERT_KEY_MOCK,
+      field: DATA_ALERT_KEY_MOCK,
+      severity: Severity.Danger,
+      message: 'Alert 2',
+    },
     {
       key: CONTRACT_ALERT_KEY_MOCK,
+      field: CONTRACT_ALERT_KEY_MOCK,
       severity: Severity.Info,
       message: 'Alert 3',
     },

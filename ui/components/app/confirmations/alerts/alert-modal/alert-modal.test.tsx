@@ -22,6 +22,7 @@ describe('AlertModal', () => {
   const OWNER_ID_MOCK = '123';
   const FROM_ALERT_KEY_MOCK = 'from';
   const CONTRACT_ALERT_KEY_MOCK = 'contract';
+  const DATA_ALERT_KEY_MOCK = 'data';
   const ALERT_MESSAGE_MOCK = 'Alert 1';
   const ACTION_KEY_MOCK = 'key-mock';
   const ACTION_LABEL_MOCK = 'Label Mock';
@@ -31,19 +32,22 @@ describe('AlertModal', () => {
   const alertsMock: Alert[] = [
     {
       key: FROM_ALERT_KEY_MOCK,
+      field: FROM_ALERT_KEY_MOCK,
       severity: Severity.Warning,
       message: ALERT_MESSAGE_MOCK,
       reason: 'Reason 1',
       alertDetails: ['Detail 1', 'Detail 2'],
     },
     {
-      key: 'data',
+      key: DATA_ALERT_KEY_MOCK,
+      field: DATA_ALERT_KEY_MOCK,
       severity: Severity.Danger,
       message: 'Alert 2',
       isBlocking: false,
     },
     {
       key: CONTRACT_ALERT_KEY_MOCK,
+      field: CONTRACT_ALERT_KEY_MOCK,
       severity: Severity.Info,
       message: 'Alert 3',
       actions: [{ key: ACTION_KEY_MOCK, label: ACTION_LABEL_MOCK }],
@@ -94,7 +98,7 @@ describe('AlertModal', () => {
         ownerId={OWNER_ID_MOCK}
         onAcknowledgeClick={onAcknowledgeClickMock}
         onClose={onCloseMock}
-        alertKey={'data'}
+        alertKey={DATA_ALERT_KEY_MOCK}
       />,
       mockStore,
     );
@@ -143,6 +147,7 @@ describe('AlertModal', () => {
       setAlertConfirmed: setAlertConfirmedMock,
       alerts: [alertsMock[0]],
       generalAlerts: [],
+      fieldAlerts: [alertsMock[0]],
       getFieldAlerts: () => [],
       isAlertConfirmed: () => false,
     });

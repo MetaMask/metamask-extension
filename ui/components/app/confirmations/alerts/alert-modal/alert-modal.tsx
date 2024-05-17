@@ -291,7 +291,11 @@ export function AlertModal({
   customAcknowledgeCheckbox,
   customAcknowledgeButton,
 }: AlertModalProps) {
-  const { alerts, isAlertConfirmed, setAlertConfirmed } = useAlerts(ownerId);
+  const {
+    isAlertConfirmed,
+    setAlertConfirmed,
+    fieldAlerts: alerts,
+  } = useAlerts(ownerId);
 
   const handleClose = useCallback(() => {
     onClose();

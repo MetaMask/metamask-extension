@@ -22,6 +22,7 @@ import { confirmSelector } from '../../../selectors';
 import { getConfirmationSender } from '../utils';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { ConfirmAlertModal } from '../../../../../components/app/confirmations/alerts/confirm-alert-modal';
+import { Severity } from '../../../../../helpers/constants/design-system';
 import useIsDangerButton from './useIsDangerButton';
 
 function getIconName(hasUnconfirmedAlerts: boolean): IconName {
@@ -47,12 +48,16 @@ function ConfirmButton({
 
   const [confirmModalVisible, setConfirmModalVisible] =
     useState<boolean>(false);
-  const { alerts, isAlertConfirmed } = useAlerts(alertOwnerId);
-  const unconfirmedAlerts = alerts.filter(
-    (alert) => !isAlertConfirmed(alert.key),
+  const { alerts, isAlertConfirmed, fieldAlerts } = useAlerts(alertOwnerId);
+  const unconfirmedDangerAlerts = fieldAlerts.filter(
+    (alert) =>
+      !isAlertConfirmed(alert.key) && alert.severity === Severity.Danger,
   );
   const hasAlerts = alerts.length > 0;
-  const hasUnconfirmedAlerts = unconfirmedAlerts.length > 0;
+  const hasDangerAlerts = alerts.some(
+    (alert) => alert.severity === Severity.Danger,
+  );
+  const hasUnconfirmedDangerAlerts = unconfirmedDangerAlerts.length > 0;
 
   const handleCloseConfirmModal = useCallback(() => {
     setConfirmModalVisible(false);
@@ -66,7 +71,7 @@ function ConfirmButton({
     <>
       {confirmModalVisible && (
         <ConfirmAlertModal
-          alertKey={alerts[0]?.key}
+          alertKey={fieldAlerts[0]?.key}
           ownerId={alertOwnerId}
           onClose={handleCloseConfirmModal}
           onCancel={onCancel}
@@ -77,14 +82,14 @@ function ConfirmButton({
         block
         data-testid="confirm-footer-confirm-button"
         startIconName={
-          hasAlerts ? getIconName(hasUnconfirmedAlerts) : undefined
+          hasAlerts ? getIconName(hasUnconfirmedDangerAlerts) : undefined
         }
-        onClick={hasAlerts ? handleOpenConfirmModal : onSubmit}
-        danger={hasAlerts ? true : isDangerButton}
+        onClick={hasDangerAlerts ? handleOpenConfirmModal : onSubmit}
+        danger={hasDangerAlerts ? true : isDangerButton}
         size={ButtonSize.Lg}
-        disabled={hasUnconfirmedAlerts ? false : disabled}
+        disabled={hasUnconfirmedDangerAlerts ? false : disabled}
       >
-        {hasUnconfirmedAlerts ? t('reviewAlerts') : t('confirm')}
+        {hasUnconfirmedDangerAlerts ? t('reviewAlerts') : t('confirm')}
       </Button>
     </>
   );
