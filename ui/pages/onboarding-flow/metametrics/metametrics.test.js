@@ -68,6 +68,8 @@ describe('Onboarding Metametrics Component', () => {
     );
 
     expect(container).toMatchSnapshot();
+
+    jest.useRealTimers();
   });
 
   it('should set setParticipateInMetaMetrics to true when clicking agree', async () => {
