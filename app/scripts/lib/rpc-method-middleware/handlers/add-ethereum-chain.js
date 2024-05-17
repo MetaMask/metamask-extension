@@ -220,10 +220,11 @@ const switchChainWithPermissions = async (
     endApprovalFlow,
   },
 ) => {
-  const { value: permissionedChainIds } = getCaveat({
-    target: PermissionNames.permittedChains,
-    caveatType: CaveatTypes.restrictNetworkSwitching,
-  });
+  const { value: permissionedChainIds } =
+    getCaveat({
+      target: PermissionNames.permittedChains,
+      caveatType: CaveatTypes.restrictNetworkSwitching,
+    }) ?? {};
 
   if (
     permissionedChainIds === undefined ||
