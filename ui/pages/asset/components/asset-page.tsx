@@ -35,7 +35,6 @@ import {
   localizeLargeNumber,
 } from '../util';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-// import AssetHeader from './asset-header';
 import EthButtons from '../../../components/app/wallet-overview/eth-buttons';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
