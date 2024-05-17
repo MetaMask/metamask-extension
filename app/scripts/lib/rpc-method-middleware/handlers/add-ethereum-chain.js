@@ -328,7 +328,6 @@ const switchChain = async (
     );
   } else {
     // TODO remove once CHAIN_PERMISSIONS feature flag is gone
-    // await switchChainWithoutPermissions(requestData, networkConfigurationId);
     await switchChainWithoutPermissions(
       res,
       end,
