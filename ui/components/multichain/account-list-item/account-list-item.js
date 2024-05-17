@@ -316,13 +316,19 @@ export const AccountListItem = ({
                   size={AvatarTokenSize.Xs}
                   borderColor={BorderColor.borderDefault}
                 />
-
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
+                  textAlign={TextAlign.End}
+                  as="div"
+                >
                   <UserPreferencedCurrencyDisplay
                     ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
                     value={account.balance}
                     type={SECONDARY}
                     showNative
                   />
+                </Text>
               </Box>
             }
           >
