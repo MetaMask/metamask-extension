@@ -545,13 +545,7 @@ export default class MMIController extends EventEmitter {
     }
 
     let keyring;
-console.log(
-  token,
-  envName,
-  custodianType,
-  getNonImportedAccounts,
-  CUSTODIAN_TYPES
-)
+
     if (custodianType) {
       const custodian = CUSTODIAN_TYPES[custodianType.toUpperCase()];
       if (!custodian) {
