@@ -2760,7 +2760,7 @@ export function resetSendState() {
  * @returns {ThunkAction<void>}
  */
 
-export function signTransaction() {
+export function signTransaction(history) {
   return async (dispatch, getState) => {
     const state = getState();
     const { stage, eip1559support, amountMode } = state[name];
@@ -2937,6 +2937,7 @@ export function signTransaction() {
         );
         transactionId = swapAndSendTxId;
 
+        history.push(DEFAULT_ROUTE);
       } else {
         // basic send
         const { id: basicSendTxId } = await dispatch(
@@ -2946,6 +2947,7 @@ export function signTransaction() {
           }),
         );
         transactionId = basicSendTxId;
+        history.push(CONFIRM_TRANSACTION_ROUTE);
       }
       await dispatch(
         setMaxValueMode(

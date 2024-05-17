@@ -37,7 +37,6 @@ import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { INSUFFICIENT_FUNDS_ERROR } from '../../../../pages/confirmations/send/send.constants';
 import { cancelTx, showQrScanner } from '../../../../store/actions';
 import {
-  CONFIRM_TRANSACTION_ROUTE,
   DEFAULT_ROUTE,
   SEND_ROUTE,
 } from '../../../../helpers/constants/routes';
@@ -183,7 +182,7 @@ export const SendPage = () => {
   const onSubmit = async (event) => {
     event.preventDefault();
 
-    await dispatch(signTransaction());
+    await dispatch(signTransaction(history));
 
     trackEvent({
       category: MetaMetricsEventCategory.Transactions,
@@ -193,7 +192,6 @@ export const SendPage = () => {
         legacy_event: true,
       },
     });
-    history.push(CONFIRM_TRANSACTION_ROUTE);
   };
 
   // Submit button
