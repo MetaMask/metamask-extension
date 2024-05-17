@@ -98,6 +98,7 @@ import {
 } from '../../helpers/utils/util';
 import {
   getGasEstimateType,
+  getNativeCurrency,
   getProviderConfig,
   getTokens,
 } from '../metamask/metamask';
@@ -129,7 +130,11 @@ import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps
 import { setMaxValueMode } from '../confirm-transaction/confirm-transaction.duck';
 // used for typing
 // eslint-disable-next-line no-unused-vars
-import { Quote, getSwapAndSendQuotes } from './swap-and-send-utils';
+import {
+  CONFIRM_TRANSACTION_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../helpers/constants/routes';
+import { getSwapAndSendQuotes } from './swap-and-send-utils';
 import {
   estimateGasLimitForSend,
   generateTransactionParams,
@@ -2862,31 +2867,86 @@ export function signTransaction() {
         ),
       );
 
-      if (isSwapAndSend) {
-        transactionType = TransactionType.contractInteraction;
-      }
+      let transactionId;
 
-      if (bestQuote?.approvalNeeded) {
-        addTransactionAndWaitForPublish(bestQuote.approvalNeeded, {
-          requireApproval: false,
-          type: TransactionType.swapApproval,
-          swaps: {
-            hasApproveTx: true,
-            meta: {
+      if (isSwapAndSend) {
+        const NATIVE_CURRENCY_DECIMALS = 18;
+
+        const chainId = getCurrentChainId(state);
+
+        const sourceTokenSymbol =
+          draftTransaction.sendAsset.details?.symbol ||
+          getNativeCurrency(state);
+        const destinationTokenSymbol =
+          draftTransaction.receiveAsset.details?.symbol ||
+          getNativeCurrency(state);
+        const destinationTokenDecimals =
+          draftTransaction.receiveAsset.details?.decimals ||
+          NATIVE_CURRENCY_DECIMALS;
+        const destinationTokenAddress =
+          draftTransaction.receiveAsset.details?.address ||
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].address;
+        const sourceTokenDecimals =
+          draftTransaction.sendAsset.details?.decimals ||
+          NATIVE_CURRENCY_DECIMALS;
+        const swapTokenValue = new Numeric(amount.value || '0x0', 16)
+          .toBase(10)
+          .shiftedBy(sourceTokenDecimals)
+          .toString();
+
+        const meta = {
+          swapAndSendRecipient: draftTransaction.recipient.address,
+          type: TransactionType.swap,
+          sourceTokenSymbol,
+          destinationTokenSymbol,
+          destinationTokenDecimals,
+          destinationTokenAddress,
+          swapTokenValue,
+          approvalTxId: undefined,
+        };
+
+        if (bestQuote?.approvalNeeded) {
+          const { id } = await addTransactionAndWaitForPublish(
+            { ...bestQuote.approvalNeeded, amount: '0x0' },
+            {
+              requireApproval: false,
               type: TransactionType.swapApproval,
-              sourceTokenSymbol: draftTransaction.sendAsset.details.symbol,
+              swaps: {
+                hasApproveTx: true,
+                meta: {
+                  type: TransactionType.swapApproval,
+                  sourceTokenSymbol,
+                },
+              },
+            },
+          );
+          meta.approvalTxId = id;
+        }
+
+        const { id: swapAndSendTxId } = await addTransactionAndWaitForPublish(
+          txParams,
+          {
+            requireApproval: false,
+            sendFlowHistory: draftTransaction.history,
+            type: TransactionType.swap,
+            swaps: {
+              hasApproveTx: Boolean(bestQuote?.approvalNeeded),
+              meta,
             },
           },
-        });
+        );
+        transactionId = swapAndSendTxId;
+
+      } else {
+        // basic send
+        const { id: basicSendTxId } = await dispatch(
+          addTransactionAndRouteToConfirmationPage(txParams, {
+            sendFlowHistory: draftTransaction.history,
+            type: transactionType,
+          }),
+        );
+        transactionId = basicSendTxId;
       }
-
-      const { id: transactionId } = await dispatch(
-        addTransactionAndRouteToConfirmationPage(txParams, {
-          sendFlowHistory: draftTransaction.history,
-          type: transactionType,
-        }),
-      );
-
       await dispatch(
         setMaxValueMode(
           transactionId,
