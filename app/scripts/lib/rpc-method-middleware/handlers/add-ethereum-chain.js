@@ -35,7 +35,6 @@ const addEthereumChain = {
     hasPermission: true,
     getCaveat: true,
     requestSwitchNetworkPermission: true,
-    findNetworkClientIdByChainId: true,
     getCurrentChainIdForDomain: true,
     getChainPermissionsFeatureFlag: true,
   },
@@ -90,6 +89,23 @@ function validateParams(params, end) {
     );
   }
 
+  const _chainId = typeof chainId === 'string' && chainId.toLowerCase();
+  if (!isPrefixedFormattedHexString(_chainId)) {
+    return end(
+      ethErrors.rpc.invalidParams({
+        message: `Expected 0x-prefixed, unpadded, non-zero hexadecimal string 'chainId'. Received:\n${chainId}`,
+      }),
+    );
+  }
+
+  if (!isSafeChainId(parseInt(_chainId, 16))) {
+    return end(
+      ethErrors.rpc.invalidParams({
+        message: `Invalid chain ID "${_chainId}": numerical value greater than max safe value. Received:\n${chainId}`,
+      }),
+    );
+  }
+
   if (!rpcUrls || !Array.isArray(rpcUrls) || rpcUrls.length === 0) {
     return end(
       ethErrors.rpc.invalidParams({
@@ -128,23 +144,6 @@ function validateParams(params, end) {
     return end(
       ethErrors.rpc.invalidParams({
         message: `Expected null or array with at least one valid string HTTPS URL 'blockExplorerUrl'. Received: ${blockExplorerUrls}`,
-      }),
-    );
-  }
-
-  const _chainId = typeof chainId === 'string' && chainId.toLowerCase();
-  if (!isPrefixedFormattedHexString(_chainId)) {
-    return end(
-      ethErrors.rpc.invalidParams({
-        message: `Expected 0x-prefixed, unpadded, non-zero hexadecimal string 'chainId'. Received:\n${chainId}`,
-      }),
-    );
-  }
-
-  if (!isSafeChainId(parseInt(_chainId, 16))) {
-    return end(
-      ethErrors.rpc.invalidParams({
-        message: `Invalid chain ID "${_chainId}": numerical value greater than max safe value. Received:\n${chainId}`,
       }),
     );
   }
@@ -216,7 +215,6 @@ const switchChainWithPermissions = async (
     getCaveat,
     requestSwitchNetworkPermission,
     setActiveNetwork,
-    findNetworkClientIdByChainId,
     endApprovalFlow,
   },
 ) => {
@@ -238,15 +236,12 @@ const switchChainWithPermissions = async (
         chainId,
       ]);
     } catch (err) {
-      res.error = err;
-      return end();
+      return end(err);
     }
   }
 
-  const networkClientId = findNetworkClientIdByChainId(chainId);
-
   try {
-    await setActiveNetwork(networkConfigurationId ?? networkClientId);
+    await setActiveNetwork(networkConfigurationId);
     res.result = null;
   } catch (error) {
     return end(
@@ -313,7 +308,6 @@ const switchChain = async (
     requestUserApproval,
     getCaveat,
     requestSwitchNetworkPermission,
-    findNetworkClientIdByChainId,
   },
 ) => {
   // If this network is already added but is not the currently selected network for the given origin
@@ -329,7 +323,6 @@ const switchChain = async (
         getCaveat,
         requestSwitchNetworkPermission,
         setActiveNetwork,
-        findNetworkClientIdByChainId,
         endApprovalFlow,
       },
     );
@@ -365,7 +358,6 @@ async function addEthereumChainHandler(
     getCurrentChainIdForDomain,
     getCaveat,
     requestSwitchNetworkPermission,
-    findNetworkClientIdByChainId,
     getChainPermissionsFeatureFlag,
   },
 ) {
@@ -398,6 +390,7 @@ async function addEthereumChainHandler(
     chainId,
     findNetworkConfigurationBy,
   );
+  console.log('existingNetwork:', existingNetwork);
 
   // if the chainId is the same as an existing network but the ticker is different we want to block this action
   // as it is potentially malicious and confusing
@@ -464,7 +457,6 @@ async function addEthereumChainHandler(
     };
   } else {
     networkConfigurationId = existingNetwork.id ?? existingNetwork.type;
-
     const currentRpcUrl = getCurrentRpcUrl();
 
     // If the current chainId and rpcUrl match the incoming request, no need to proceed further
@@ -482,7 +474,6 @@ async function addEthereumChainHandler(
 
     res.result = null;
   }
-
   return switchChain(
     res,
     end,
@@ -498,7 +489,6 @@ async function addEthereumChainHandler(
       requestUserApproval,
       getCaveat,
       requestSwitchNetworkPermission,
-      findNetworkClientIdByChainId,
     },
   );
 }
