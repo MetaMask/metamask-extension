@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -30,6 +31,7 @@ import {
 } from '../../component-library';
 import { setSmartTransactionsOptInStatus } from '../../../store/actions';
 import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../shared/constants/smartTransactions';
+import { ADVANCED_ROUTE } from '../../../helpers/constants/routes';
 
 export type SmartTransactionsOptInModalProps = {
   isOpen: boolean;
@@ -89,7 +91,7 @@ const NoThanksLink = ({
       width={BlockSize.Full}
       className="mm-smart-transactions-opt-in-modal__no-thanks-link"
     >
-      {t('dontEnableEnhancedProtection')}
+      {t('manageInSettings')}
     </Button>
   );
 };
@@ -164,6 +166,7 @@ export default function SmartTransactionsOptInModal({
 }: SmartTransactionsOptInModalProps) {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const handleEnableButtonClick = useCallback(() => {
     dispatch(setSmartTransactionsOptInStatus(true));
@@ -171,6 +174,7 @@ export default function SmartTransactionsOptInModal({
 
   const handleNoThanksLinkClick = useCallback(() => {
     dispatch(setSmartTransactionsOptInStatus(false));
+    history.push(`${ADVANCED_ROUTE}#smart-transactions`);
   }, [dispatch]);
 
   useEffect(() => {
