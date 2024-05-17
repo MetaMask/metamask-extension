@@ -2561,6 +2561,26 @@ export function getNameSources(state) {
   return state.metamask.nameSources || {};
 }
 
+export function getShowDeleteMetaMetricsDataModal(state) {
+  return state.appState.showDeleteMetaMetricsDataModal;
+}
+
+export function getParticipateInMetaMetrics(state) {
+  return state.metamask.participateInMetaMetrics;
+}
+
+export function getMetaMetricsDataDeletionId(state) {
+  return state.metamask.metaMetricsDataDeletionId;
+}
+
+export function getMetaMetricsDataDeletionDate(state) {
+  return state.metamask.metaMetricsDataDeletionDate;
+}
+
+export function getMetaMetricsDataDeletionStatus(state) {
+  return state.metamask.metaMetricsDataDeletionStatus;
+}
+
 /**
  * To get all installed snaps with proper metadata
  *
