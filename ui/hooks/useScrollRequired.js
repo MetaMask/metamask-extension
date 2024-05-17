@@ -8,10 +8,16 @@ import { debounce } from 'lodash';
  * The hook expects both the `ref` and the `onScroll` handler to be passed to the scrolling element.
  *
  * @param dependencies - Any optional hook dependencies for updating the scroll state.
+ * @param opt
+ * @param {number} opt.offsetPxFromBottom
  * @returns Flags for isScrollable and isScrollToBottom, a ref to use for the scrolling content, a scrollToBottom function and a onScroll handler.
  */
-export const useScrollRequired = (dependencies = []) => {
+export const useScrollRequired = (
+  dependencies = [],
+  { offsetPxFromBottom = 16 } = {},
+) => {
   const ref = useRef(null);
+
   const [hasScrolledToBottomState, setHasScrolledToBottom] = useState(false);
   const [isScrollableState, setIsScrollable] = useState(false);
   const [isScrolledToBottomState, setIsScrolledToBottom] = useState(false);
@@ -20,7 +26,6 @@ export const useScrollRequired = (dependencies = []) => {
     if (!ref.current) {
       return;
     }
-
     const isScrollable =
       ref.current && ref.current.scrollHeight > ref.current.clientHeight;
 
@@ -28,7 +33,9 @@ export const useScrollRequired = (dependencies = []) => {
       isScrollable &&
       // Add 16px to the actual scroll position to trigger setIsScrolledToBottom sooner.
       // This avoids the problem where a user has scrolled down to the bottom and it's not detected.
-      Math.round(ref.current.scrollTop) + ref.current.offsetHeight + 16 >=
+      Math.round(ref.current.scrollTop) +
+        ref.current.offsetHeight +
+        offsetPxFromBottom >=
         ref.current.scrollHeight;
 
     setIsScrollable(isScrollable);
@@ -58,6 +65,7 @@ export const useScrollRequired = (dependencies = []) => {
     isScrolledToBottom: isScrolledToBottomState,
     hasScrolledToBottom: hasScrolledToBottomState,
     scrollToBottom,
+    setHasScrolledToBottom,
     ref,
     onScroll: debounce(update, 25),
   };

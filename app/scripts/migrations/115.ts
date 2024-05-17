@@ -1,14 +1,4 @@
-import { cloneDeep, isObject } from 'lodash';
-import { NetworkType } from '@metamask/controller-utils';
-import { hasProperty } from '@metamask/utils';
-import { NetworkStatus } from '@metamask/network-controller';
-import {
-  CHAIN_IDS,
-  CHAIN_ID_TO_RPC_URL_MAP,
-  NETWORK_TYPES,
-  TEST_NETWORK_TICKER_MAP,
-  LINEA_SEPOLIA_DISPLAY_NAME,
-} from '../../../shared/constants/network';
+import { cloneDeep } from 'lodash';
 
 type VersionedData = {
   meta: { version: number };
@@ -36,46 +26,5 @@ export async function migrate(
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function transformState(state: Record<string, any>) {
-  const NetworkController = state?.NetworkController || {};
-  const provider = NetworkController?.providerConfig || {};
-
-  if (provider?.chainId !== CHAIN_IDS.LINEA_GOERLI) {
-    return state;
-  }
-  const networkControllerState = state.NetworkController;
-
-  if (
-    hasProperty(state, 'NetworkController') &&
-    isObject(state.NetworkController) &&
-    hasProperty(state.NetworkController, 'providerConfig') &&
-    isObject(state.NetworkController.providerConfig) &&
-    hasProperty(state.NetworkController.providerConfig, 'chainId') &&
-    state.NetworkController.providerConfig.chainId === CHAIN_IDS.LINEA_GOERLI
-  ) {
-    networkControllerState.providerConfig = {
-      type: NetworkType['linea-sepolia'],
-      rpcPrefs: {},
-      chainId: CHAIN_IDS.LINEA_SEPOLIA,
-      nickname: LINEA_SEPOLIA_DISPLAY_NAME,
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_SEPOLIA],
-      providerType: NETWORK_TYPES.LINEA_SEPOLIA,
-      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_SEPOLIA],
-      id: NETWORK_TYPES.LINEA_SEPOLIA,
-    };
-    networkControllerState.selectedNetworkClientId =
-      NETWORK_TYPES.LINEA_SEPOLIA;
-    networkControllerState.networksMetadata = {
-      ...networkControllerState.networksMetadata,
-      'linea-sepolia': {
-        EIPS: {
-          '1559': true,
-        },
-        status: NetworkStatus.Available,
-      },
-    };
-  }
-  return {
-    ...state,
-    NetworkController: networkControllerState,
-  };
+  return state;
 }
