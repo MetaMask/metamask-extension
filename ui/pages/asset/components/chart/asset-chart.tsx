@@ -159,6 +159,7 @@ const AssetChart = ({
               currentPrice ? JustifyContent.flexEnd : JustifyContent.flexStart
             }
           >
+            {/* TODO Clean this up if we're removing the chart instead of placeholder when no prices */}
             {noPriceHistory ? (
               <Box textAlign={TextAlign.Center}>
                 <img width="33%" src="./images/chart.webp"></img>
