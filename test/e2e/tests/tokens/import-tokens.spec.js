@@ -85,8 +85,10 @@ describe('Import flow', function () {
           '[data-testid="token-list-loading-message"]',
         );
 
-        const items = await driver.findElements('.multichain-token-list-item');
-        assert.equal(items.length, 4);
+        const expectedTokenListElementsAreFound =
+          await driver.elementCountBecomesN('.multichain-token-list-item', 4);
+        await driver.delay(1000);
+        assert.equal(expectedTokenListElementsAreFound, true);
       },
     );
   });
