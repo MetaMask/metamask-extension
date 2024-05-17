@@ -9,7 +9,7 @@ const defaultRender = (inner) => inner;
 export default function IconButton({
   onClick,
   Icon,
-  disabled,
+  disabled = false,
   label,
   tooltipRender,
   className,
