@@ -373,6 +373,12 @@ class Driver {
     await element.click();
   }
 
+  async clickElementAndWaitToDisappear(rawLocator) {
+    const element = await this.findClickableElement(rawLocator);
+    await element.click();
+    await element.waitForElementState('hidden');
+  }
+
   /**
    * for instances where an element such as a scroll button does not
    * show up because of render differences, proceed to the next step
