@@ -1444,6 +1444,9 @@ const slice = createSlice({
           draftTransaction.amount.error = isInsufficientWithoutGas
             ? INSUFFICIENT_FUNDS_ERROR
             : INSUFFICIENT_FUNDS_FOR_GAS_ERROR;
+          if (draftTransaction.status !== SEND_STATUSES.INVALID) {
+            slice.caseReducers.validateSendState(state);
+          }
           break;
         }
         // set error to INSUFFICIENT_TOKENS_ERROR if the token balance is lower
@@ -1455,6 +1458,9 @@ const slice = createSlice({
             decimals: draftTransaction.sendAsset.details.decimals,
           }):
           draftTransaction.amount.error = INSUFFICIENT_TOKENS_ERROR;
+          if (draftTransaction.status !== SEND_STATUSES.INVALID) {
+            slice.caseReducers.validateSendState(state);
+          }
           break;
         // INSUFFICIENT_TOKENS_ERROR if the user is attempting to transfer ERC1155 but has 0 amount selected
         // prevents the user from transferring 0 tokens
@@ -1463,6 +1469,9 @@ const slice = createSlice({
             TokenStandard.ERC1155 &&
           draftTransaction.amount.value === '0x0':
           draftTransaction.amount.error = NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR;
+          if (draftTransaction.status !== SEND_STATUSES.INVALID) {
+            slice.caseReducers.validateSendState(state);
+          }
           break;
         // set error to INSUFFICIENT_TOKENS_ERROR if the token balance is lower
         // than the amount of token the user is attempting to send.
@@ -1474,6 +1483,9 @@ const slice = createSlice({
             amount: draftTransaction.amount.value,
           }):
           draftTransaction.amount.error = INSUFFICIENT_FUNDS_ERROR;
+          if (draftTransaction.status !== SEND_STATUSES.INVALID) {
+            slice.caseReducers.validateSendState(state);
+          }
           break;
 
         // if the amount of tokens is a float, set error to FLOAT_TOKENS_ERROR
@@ -1481,10 +1493,16 @@ const slice = createSlice({
           draftTransaction.sendAsset.type === AssetType.NFT &&
           draftTransaction.sendAsset.details.standard === TokenStandard.ERC1155:
           draftTransaction.amount.error = FLOAT_TOKENS_ERROR;
+          if (draftTransaction.status !== SEND_STATUSES.INVALID) {
+            slice.caseReducers.validateSendState(state);
+          }
           break;
         // If none of the above are true, set error to null
         default:
           draftTransaction.amount.error = null;
+          if (draftTransaction.status === SEND_STATUSES.INVALID) {
+            slice.caseReducers.validateSendState(state);
+          }
       }
     },
     /**
