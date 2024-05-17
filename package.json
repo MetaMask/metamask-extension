@@ -310,7 +310,7 @@
     "@metamask/notification-controller": "^3.0.0",
     "@metamask/obs-store": "^9.0.0",
     "@metamask/permission-controller": "^9.0.1",
-    "@metamask/permission-log-controller": "^1.0.0",
+    "@metamask/permission-log-controller": "^2.0.1",
     "@metamask/phishing-controller": "^9.0.2",
     "@metamask/post-message-stream": "^8.0.0",
     "@metamask/ppom-validator": "^0.30.0",
