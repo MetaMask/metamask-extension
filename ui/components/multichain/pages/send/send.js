@@ -135,6 +135,7 @@ export const SendPage = () => {
 
   const cleanup = useCallback(() => {
     dispatch(resetSendState());
+    setIsSubmitting(false);
   }, [dispatch]);
 
   /**
@@ -192,7 +193,6 @@ export const SendPage = () => {
 
     setIsSubmitting(true);
     await dispatch(signTransaction(history));
-    setIsSubmitting(false);
 
     trackEvent({
       category: MetaMetricsEventCategory.Transactions,
