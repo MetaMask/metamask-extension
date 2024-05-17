@@ -130,9 +130,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         await driver.clickElement(
           '[data-testid="multichain-token-list-button"]',
         );
-
         await driver.clickElement('[data-testid="eth-overview-send"]');
-
         // Paste address without hex prefix
         await driver.pasteIntoField(
           'input[placeholder="Enter public address (0x) or ENS name"]',
@@ -195,7 +193,6 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         await driver.clickElement(
           '[data-testid="multichain-token-list-button"]',
         );
-
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
         // Type address without hex prefix
