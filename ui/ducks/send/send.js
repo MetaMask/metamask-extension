@@ -1711,8 +1711,10 @@ const slice = createSlice({
             break;
           case Boolean(
             bestQuote &&
-              bestQuote.recipient.toLowerCase() !==
+              !isEqualCaseInsensitive(
+                bestQuote.recipient.toLowerCase(),
                 draftTransaction.recipient.address.toLowerCase(),
+              ),
           ):
             slice.caseReducers.addHistoryEntry(state, {
               payload: `Recipient is not match ${draftTransaction.recipient.address} ${bestQuote.recipient}`,
@@ -1720,7 +1722,11 @@ const slice = createSlice({
             draftTransaction.status = SEND_STATUSES.INVALID;
             break;
           case Boolean(
-            bestQuote && bestQuote.trade.from !== state.selectedAccount.address,
+            bestQuote &&
+              !isEqualCaseInsensitive(
+                bestQuote.trade.from,
+                state.selectedAccount.address,
+              ),
           ):
             slice.caseReducers.addHistoryEntry(state, {
               payload: `Sender is not match ${state.selectedAccount.address} ${bestQuote.trade.from}`,
@@ -1729,8 +1735,10 @@ const slice = createSlice({
             break;
           case Boolean(
             bestQuote &&
-              (draftTransaction.sendAsset?.details?.address ||
-                zeroAddress()) !== bestQuote.sourceToken,
+              !isEqualCaseInsensitive(
+                draftTransaction.sendAsset?.details?.address || zeroAddress(),
+                bestQuote.sourceToken,
+              ),
           ):
             slice.caseReducers.addHistoryEntry(state, {
               payload: `Source token is not match ${draftTransaction.sendAsset?.details?.address} ${bestQuote.sourceToken}`,
@@ -1739,9 +1747,11 @@ const slice = createSlice({
             break;
           case Boolean(
             bestQuote &&
-              bestQuote.destinationToken !==
-                (draftTransaction.receiveAsset?.details?.address ||
-                  zeroAddress()),
+              !isEqualCaseInsensitive(
+                bestQuote.destinationToken,
+                draftTransaction.receiveAsset?.details?.address ||
+                  zeroAddress(),
+              ),
           ):
             slice.caseReducers.addHistoryEntry(state, {
               payload: `Destination token is not match ${draftTransaction.receiveAsset?.details?.address} ${bestQuote.destinationToken}`,
