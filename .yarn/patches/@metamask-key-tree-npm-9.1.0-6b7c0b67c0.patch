@@ -1,0 +1,23 @@
+diff --git a/dist/derivers/bip39.mjs b/dist/derivers/bip39.mjs
+index b2f015c55dd2a7b7b5fdaa173a9459ea4d77b0e7..e7d93d8aa731987d3c6ab33b0c9f04c20745847b 100644
+--- a/dist/derivers/bip39.mjs
++++ b/dist/derivers/bip39.mjs
+@@ -1,6 +1,6 @@
+-import $metamaskscurebip from "@metamask/scure-bip39";
++import * as $metamaskscurebip from "@metamask/scure-bip39";
+ const { mnemonicToEntropy, mnemonicToSeed } = $metamaskscurebip;
+-import $metamaskscurebipdistwordlistsenglishjs from "@metamask/scure-bip39/dist/wordlists/english.js";
++import * as $metamaskscurebipdistwordlistsenglishjs from "@metamask/scure-bip39/dist/wordlists/english.js";
+ const { wordlist: englishWordlist } = $metamaskscurebipdistwordlistsenglishjs;
+ import { assert } from "@metamask/utils";
+ import { hmac } from "@noble/hashes/hmac";
+diff --git a/dist/utils.mjs b/dist/utils.mjs
+index 60480c3f923e854a6a5538981bd57d836d36765e..333eabde6da422dd9618a9dc11067cb800d31291 100644
+--- a/dist/utils.mjs
++++ b/dist/utils.mjs
+@@ -1,4 +1,4 @@
+-import $metamaskscurebipdistwordlistsenglishjs from "@metamask/scure-bip39/dist/wordlists/english.js";
++import * as $metamaskscurebipdistwordlistsenglishjs from "@metamask/scure-bip39/dist/wordlists/english.js";
+ const { wordlist: englishWordlist } = $metamaskscurebipdistwordlistsenglishjs;
+ import { assert, createDataView, hexToBytes } from "@metamask/utils";
+ import { ripemd160 } from "@noble/hashes/ripemd160";
