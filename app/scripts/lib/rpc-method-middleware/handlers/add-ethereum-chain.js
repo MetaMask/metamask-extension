@@ -390,7 +390,6 @@ async function addEthereumChainHandler(
     chainId,
     findNetworkConfigurationBy,
   );
-  console.log('existingNetwork:', existingNetwork);
 
   // if the chainId is the same as an existing network but the ticker is different we want to block this action
   // as it is potentially malicious and confusing
