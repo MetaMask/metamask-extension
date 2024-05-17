@@ -98,6 +98,7 @@ type AppState = {
   customTokenAmount: string;
   txId: string | null;
   accountDetailsAddress: string;
+  showDeleteMetaMetricsDataModal: boolean;
   snapsInstallPrivacyWarningShown: boolean;
 };
 
@@ -180,6 +181,7 @@ const initialState: AppState = {
   scrollToBottom: true,
   txId: null,
   accountDetailsAddress: '',
+  showDeleteMetaMetricsDataModal: false,
   snapsInstallPrivacyWarningShown: false,
 };
 
@@ -583,6 +585,16 @@ export default function reduceApp(
         ...appState,
         customTokenAmount: action.payload,
       };
+    case actionConstants.DELETE_METAMETRICS_DATA_MODAL_OPEN:
+      return {
+        ...appState,
+        showDeleteMetaMetricsDataModal: true,
+      };
+    case actionConstants.DELETE_METAMETRICS_DATA_MODAL_CLOSE:
+      return {
+        ...appState,
+        showDeleteMetaMetricsDataModal: false,
+      };
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case actionConstants.SHOW_KEYRING_SNAP_REMOVAL_RESULT:
       return {
@@ -691,4 +703,16 @@ export function getLedgerWebHidConnectedStatus(
 
 export function getLedgerTransportStatus(state: AppSliceState): string | null {
   return state.appState.ledgerTransportStatus;
+}
+
+export function openDeleteMetaMetricsDataModal(): Action {
+  return {
+    type: actionConstants.DELETE_METAMETRICS_DATA_MODAL_OPEN,
+  };
+}
+
+export function hideDeleteMetaMetricsDataModal(): Action {
+  return {
+    type: actionConstants.DELETE_METAMETRICS_DATA_MODAL_CLOSE,
+  };
 }

@@ -1513,6 +1513,12 @@
   "deleteContact": {
     "message": "Delete contact"
   },
+  "deleteMetaMetricsDataModalDesc": {
+    "message": "We are about to remove all your MetaMetrics data. Are you sure?"
+  },
+  "deleteMetaMetricsDataModalTitle": {
+    "message": "Delete MetaMetrics data?"
+  },
   "deleteNetwork": {
     "message": "Delete network?"
   },
@@ -6572,5 +6578,21 @@
   },
   "zeroGasPriceOnSpeedUpError": {
     "message": "Zero gas price on speed up"
+  },
+  "deleteMetaMetricsData": {
+    "message": "Delete MetaMetrics data"
+  },
+  "deleteMetaMetricsDataDescription": {
+    "message": "This will delete historical MetaMetrics data associated with your wallet. $1 Your wallet and accounts will remain exactly as they are now after this data has been deleted. This process may take up to 60 days. View the $2",
+    "description": "$1 will have the text with bold font (deleteMetaMetricsDataDescriptionBold) regarding metametrics and $2 will have text saying Consensys Privacy Policy "
+  },
+  "deleteMetaMetricsDataDescriptionBold": {
+    "message": "MetaMetrics data is anonymized usage and diagnostic data."
+  },
+  "consensysPrivacyPolicy": {
+    "message": "Consensys Privacy Policy"
+  },
+  "deleteMetaMetricsDataRequestedDescription": {
+    "message": "You initiated this action on $1. This process can take up to 60 days. View the $2"
   }
 }
