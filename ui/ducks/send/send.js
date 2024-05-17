@@ -53,6 +53,7 @@ import {
   getSelectedInternalAccountWithBalance,
   getUnapprovedTransactions,
   getSelectedNetworkClientId,
+  getIsSwapsChain,
 } from '../../selectors';
 import {
   displayWarning,
@@ -135,6 +136,7 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
+import { fetchBlockedTokens } from '../../pages/swaps/swaps.util';
 import { getSwapAndSendQuotes } from './swap-and-send-utils';
 import {
   estimateGasLimitForSend,
@@ -488,6 +490,7 @@ export const draftTransactionInitialState = {
  * @property {MapValuesToUnion<SendStateStages>} stage - The stage of the
  *  send flow that the user has progressed to. Defaults to 'INACTIVE' which
  *  results in the send screen not being shown.
+ * @property {string[]} swapsBlockedTokens - list of tokens that are blocked by the swaps-api
  */
 
 /**
@@ -511,6 +514,7 @@ export const initialState = {
     balance: '0x0',
   },
   stage: SEND_STAGES.INACTIVE,
+  swapsBlockedTokens: [],
 };
 
 /**
@@ -750,6 +754,10 @@ export const initializeSendState = createAsyncThunk(
       );
     }
 
+    const swapsBlockedTokens = getIsSwapsChain(state)
+      ? (await fetchBlockedTokens(chainId)).map((t) => t.toLowerCase())
+      : [];
+
     return {
       account,
       chainId: getCurrentChainId(state),
@@ -763,6 +771,7 @@ export const initializeSendState = createAsyncThunk(
       eip1559support,
       useTokenDetection: getUseTokenDetection(state),
       tokenAddressList: Object.keys(getTokenList(state)),
+      swapsBlockedTokens,
     };
   },
 );
@@ -1919,6 +1928,7 @@ const slice = createSlice({
             },
           });
         }
+        state.swapsBlockedTokens = action.payload.swapsBlockedTokens;
         if (state.amountMode === AMOUNT_MODES.MAX) {
           slice.caseReducers.updateAmountToMax(state);
         }
@@ -3381,4 +3391,8 @@ export function getSendStage(state) {
 
 export function hasSendLayer1GasFee(state) {
   return state[name].gasTotalForLayer1 !== null;
+}
+
+export function getSwapsBlockedTokens(state) {
+  return state[name].swapsBlockedTokens;
 }
