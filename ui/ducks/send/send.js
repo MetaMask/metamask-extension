@@ -2090,6 +2090,10 @@ const debouncedComputeEstimatedGasLimit = debounce((dispatch) => {
   dispatch(computeEstimatedGasLimit());
 }, 300);
 
+const debouncedAddHistoryEntry = debounce((dispatch, payload) => {
+  dispatch(addHistoryEntry(payload));
+}, 100);
+
 /**
  * Begins a new draft transaction, derived from the txParams of an existing
  * transaction in the TransactionController. This action will first clear out
@@ -2440,7 +2444,10 @@ export function updateSendAmount(hexAmount, decimalAmount) {
     } else {
       logAmount = `${decimalAmount} ${ticker || EtherDenomination.ETH}`;
     }
-    dispatch(addHistoryEntry(`sendFlow - user set amount to ${logAmount}`));
+    debouncedAddHistoryEntry(
+      dispatch,
+      `sendFlow - user set amount to ${logAmount}`,
+    );
   };
 }
 
