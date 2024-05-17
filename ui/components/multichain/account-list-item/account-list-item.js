@@ -301,37 +301,33 @@ export const AccountListItem = ({
               {shortenAddress(toChecksumHexAddress(account.address))}
             </Text>
           </Box>
-          {mappedOrderedTokenList.length > 1 ? (
-            <AvatarGroup members={mappedOrderedTokenList} limit={4} />
-          ) : (
-            <Box
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              justifyContent={JustifyContent.center}
-              gap={1}
-              className="multichain-account-list-item__avatar-currency"
-            >
-              <AvatarToken
-                src={primaryTokenImage}
-                name={nativeCurrency}
-                size={AvatarTokenSize.Xs}
-                borderColor={BorderColor.borderDefault}
-              />
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
-                textAlign={TextAlign.End}
-                as="div"
+          <Tooltip
+            position="top"
+            html={
+              <Box
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                justifyContent={JustifyContent.center}
+                gap={1}
               >
-                <UserPreferencedCurrencyDisplay
-                  ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                  value={account.balance}
-                  type={SECONDARY}
-                  showNative
+                <AvatarToken
+                  src={primaryTokenImage}
+                  name={nativeCurrency}
+                  size={AvatarTokenSize.Xs}
+                  borderColor={BorderColor.borderDefault}
                 />
-              </Text>
-            </Box>
-          )}
+
+                  <UserPreferencedCurrencyDisplay
+                    ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
+                    value={account.balance}
+                    type={SECONDARY}
+                    showNative
+                  />
+              </Box>
+            }
+          >
+            <AvatarGroup members={mappedOrderedTokenList} limit={4} />
+          </Tooltip>
         </Box>
         {account.label ? (
           <Tag
