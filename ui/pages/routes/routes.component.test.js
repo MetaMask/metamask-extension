@@ -29,7 +29,6 @@ jest.mock('webextension-polyfill', () => ({
 }));
 
 jest.mock('../../store/actions', () => ({
-  ...jest.requireActual('../../store/actions'),
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
   gasFeeStartPollingByNetworkClientId: jest
     .fn()
