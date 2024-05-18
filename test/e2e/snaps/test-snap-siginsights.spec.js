@@ -86,43 +86,68 @@ describe('Test Snap Signature Insights', function () {
 
         // TEST ONE: personal sign
         // find and scroll to personal sign and click sign
-        const personalSignButton1 = await driver.findElement('#personalSign');
-        await driver.scrollToElement(personalSignButton1);
-        await driver.clickElement('#personalSign');
+        const ttt = [];
+        try {
+          console.log('!@# A');
+          ttt.push('!@# A');
+          const personalSignButton1 = await driver.findElement('#personalSign');
+          await driver.scrollToElement(personalSignButton1);
+          await driver.clickElement('#personalSign');
 
-        // switch back to MetaMask window and switch to tx insights pane
-        await switchToNotificationWindow(driver, 4);
+          console.log('!@# B');
+          ttt.push('!@# B');
+          // switch back to MetaMask window and switch to tx insights pane
+          await switchToNotificationWindow(driver, 4);
+          console.log('!@# C');
+          ttt.push('!@# C');
 
-        // wait for and click sign
-        await driver.waitForSelector({
-          text: 'Sign',
-          tag: 'button',
-        });
-        await driver.clickElement({
-          text: 'Sign',
-          tag: 'button',
-        });
+          // wait for and click sign
+          await driver.waitForSelector({
+            text: 'Sign',
+            tag: 'button',
+          });
+          await driver.clickElement({
+            text: 'Sign',
+            tag: 'button',
+          });
+          console.log('!@# D');
+          ttt.push('!@# D');
+          // look for returned signature insights data
+          await driver.waitForSelector({
+            text: '0x4578616d706c652060706572736f6e616c5f7369676e60206d657373616765',
+            tag: 'p',
+          });
+          console.log('!@# E');
+          ttt.push('!@# E');
 
-        // look for returned signature insights data
-        await driver.waitForSelector({
-          text: '0x4578616d706c652060706572736f6e616c5f7369676e60206d657373616765',
-          tag: 'p',
-        });
+          // click checkbox to authorize signing
+          await driver.clickElement('.mm-checkbox__input-wrapper');
+          console.log('!@# F');
+          ttt.push('!@# F');
 
-        // click checkbox to authorize signing
-        await driver.clickElement('.mm-checkbox__input-wrapper');
+          // click sign button
+          await driver.clickElement(
+            '[data-testid="snapInsightsButtonConfirm"]',
+          );
+          console.log('!@# G');
+          ttt.push('!@# G');
 
-        // click sign button
-        await driver.clickElement('[data-testid="snapInsightsButtonConfirm"]');
+          // switch back to test-dapp window
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+          console.log('!@# H');
+          ttt.push('!@# H');
 
-        // switch back to test-dapp window
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-
-        // check result of test
-        await driver.waitForSelector({
-          text: '0xa10b6707dd79e2f1f91ba243ab7abe15a46f58b052ad9cec170c5366ef5667c447a87eba2c0a9d4c9fbfa0a23e9db1fb55865d0568c32bd7cc681b8d0860e7af1b',
-          tag: 'span',
-        });
+          // check result of test
+          await driver.waitForSelector({
+            text: '0xa10b6707dd79e2f1f91ba243ab7abe15a46f58b052ad9cec170c5366ef5667c447a87eba2c0a9d4c9fbfa0a23e9db1fb55865d0568c32bd7cc681b8d0860e7af1b',
+            tag: 'span',
+          });
+        } catch (e) {
+          console.log('!@# ABC !@#');
+          console.log('ttt', ttt);
+          console.log(e);
+          throw e;
+        }
 
         // TEST TWO: sign typed data
         // find and scroll to sign typed data and click sign
