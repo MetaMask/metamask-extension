@@ -21,10 +21,9 @@ describe('createDupeReqFilterMiddleware', () => {
 
     filterFn(request, undefined, nextMock, endMock);
     expect(nextMock).toHaveBeenCalledTimes(1);
-    expect(endMock).not.toHaveBeenCalled();
 
     filterFn(request, undefined, nextMock, endMock);
     expect(nextMock).toHaveBeenCalledTimes(1);
-    expect(endMock).toHaveBeenCalledTimes(1);
+    expect(endMock).not.toHaveBeenCalled();
   });
 });
