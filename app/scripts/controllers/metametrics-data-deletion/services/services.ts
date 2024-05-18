@@ -13,7 +13,7 @@ export async function createDataDeletionRegulationTask(
     throw new Error('Segment API source ID or endpoint not found');
   }
 
-  const response: unknown = await fetchWithTimeout(
+  const response = await fetchWithTimeout(
     `${segmentRegulationEndpoint}/regulations/sources/${segmentSourceId}`,
     {
       method: 'POST',
@@ -25,7 +25,7 @@ export async function createDataDeletionRegulationTask(
       }),
     },
   );
-  return response as DeleteRegulationAPIResponse;
+  return response.json();
 }
 
 export async function fetchDeletionRegulationStatus(
@@ -34,12 +34,12 @@ export async function fetchDeletionRegulationStatus(
   if (!segmentSourceId || !segmentRegulationEndpoint) {
     throw new Error('Segment API source ID or endpoint not found');
   }
-  const response: unknown = await fetchWithTimeout(
+  const response = await fetchWithTimeout(
     `${segmentRegulationEndpoint}/regulations/${deleteRegulationId}`,
     {
       method: 'GET',
       headers: { 'Content-Type': 'application/vnd.segment.v1+json' },
     },
   );
-  return response as DeleteRegulationAPIResponse;
+  return response.json();
 }
