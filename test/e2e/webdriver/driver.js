@@ -532,8 +532,9 @@ class Driver {
   }
 
   async openNewPage(url) {
-    const newHandle = await this.driver.switchTo().newWindow();
+    await this.driver.switchTo().newWindow();
     await this.openNewURL(url);
+    const newHandle = await this.driver.getWindowHandle();
     return newHandle;
   }
 
