@@ -69,11 +69,8 @@ then
     release_body="$(awk -v version="${tag##v}" -f .circleci/scripts/show-changelog.awk CHANGELOG.md)"
     hub release create \
         --attach builds/metamask-chrome-*.zip \
-        --attach builds/metamask-firefox-*.zip \
         --attach builds-flask/metamask-flask-chrome-*.zip \
-        --attach builds-flask/metamask-flask-firefox-*.zip \
         --attach builds-mmi/metamask-mmi-chrome-*.zip \
-        --attach builds-mmi/metamask-mmi-firefox-*.zip \
         --message "Version ${tag##v}" \
         --message "$release_body" \
         --commitish "$CIRCLE_SHA1" \

@@ -2066,6 +2066,9 @@
       }
     },
     "@metamask/snaps-execution-environments": {
+      "globals": {
+        "document.getElementById": true
+      },
       "packages": {
         "@metamask/post-message-stream": true,
         "@metamask/snaps-utils": true,
