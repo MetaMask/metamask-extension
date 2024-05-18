@@ -92,7 +92,7 @@ There are many areas in above flow where the code can be improved upon to cleanu
      <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/develop/docs/confirmation-refactoring/signature-request/header.png" width="150"/>
 
    - [LedgerInstructions](https://github.com/MetaMask/metamask-extension/blob/e07ec9dcf3d3f341f83e6b29a29d30edaf7f5b5b/ui/components/app/signature-request-original/signature-request-original.component.js#L312) can also be moved to the header.
-   - Create a reuable footer component and use it across all confirmation pages. [#17237](https://github.com/MetaMask/metamask-extension/issues/17237)
+   - Create a reusable footer component and use it across all confirmation pages. [#17237](https://github.com/MetaMask/metamask-extension/issues/17237)
 
      <img src="https://raw.githubusercontent.com/MetaMask/metamask-extension/develop/docs/confirmation-refactoring/signature-request/footer.png" width="150"/>
 
