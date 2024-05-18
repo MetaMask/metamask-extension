@@ -53,13 +53,13 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.clickElement('.request-queue-toggle');
 
         // open two dapps
-        await openDapp(driver, undefined, DAPP_URL);
-        await openDapp(driver, undefined, DAPP_ONE_URL);
+        const dappOne = await openDapp(driver, undefined, DAPP_URL);
+        const dappTwo = await openDapp(driver, undefined, DAPP_ONE_URL);
 
         // Window Handling
-        const windowHandles = await driver.getAllWindowHandles();
-        const dappOne = windowHandles[1];
-        const dappTwo = windowHandles[2];
+        // const windowHandles = await driver.getAllWindowHandles();
+        // const dappOne = windowHandles[1];
+        // const dappTwo = windowHandles[2];
 
         // switchEthereumChain request
         const switchEthereumChainRequest = JSON.stringify({
@@ -145,12 +145,12 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.clickElement('.request-queue-toggle');
 
         // open two dapps
-        await openDapp(driver, undefined, DAPP_URL);
+        const dappOne = await openDapp(driver, undefined, DAPP_URL);
         await openDapp(driver, undefined, DAPP_ONE_URL);
 
         // Window Handling
-        const windowHandles = await driver.getAllWindowHandles();
-        const dappOne = windowHandles[1];
+        // const windowHandles = await driver.getAllWindowHandles();
+        // const dappOne = windowHandles[1];
 
         // Initiate send transaction on Dapp two
         await driver.clickElement('#sendButton');
@@ -239,12 +239,12 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.clickElement('.request-queue-toggle');
 
         // open two dapps
-        await openDapp(driver, undefined, DAPP_URL);
+        const dappOne = await openDapp(driver, undefined, DAPP_URL);
         await openDapp(driver, undefined, DAPP_ONE_URL);
 
         // Window Handling
-        let windowHandles = await driver.getAllWindowHandles();
-        const dappOne = windowHandles[1];
+        // let windowHandles = await driver.getAllWindowHandles();
+        // const dappOne = windowHandles[1];
 
         // switchEthereumChain request
         const switchEthereumChainRequest = JSON.stringify({
@@ -284,10 +284,10 @@ describe('Switch Ethereum Chain for two dapps', function () {
         // Confirm switchEthereumChain with queued pending tx
         await driver.clickElement({ text: 'Switch network', tag: 'button' });
 
-        // Window handles should only be expanded mm, dapp one, dapp 2 (3 total)
+        // Window handles should only be expanded mm, dapp one, dapp 2, and offscreen (4 total)
         await driver.wait(async () => {
-          windowHandles = await driver.getAllWindowHandles();
-          return windowHandles.length === 3;
+          const windowHandles = await driver.getAllWindowHandles();
+          return windowHandles.length === 4;
         });
       },
     );
@@ -334,12 +334,12 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.clickElement('.request-queue-toggle');
 
         // open two dapps
-        await openDapp(driver, undefined, DAPP_URL);
+        const dappOne = await openDapp(driver, undefined, DAPP_URL);
         await openDapp(driver, undefined, DAPP_ONE_URL);
 
         // Window Handling
-        const windowHandles = await driver.getAllWindowHandles();
-        const dappOne = windowHandles[1];
+        // const windowHandles = await driver.getAllWindowHandles();
+        // const dappOne = windowHandles[1];
 
         // switchEthereumChain request
         const switchEthereumChainRequest = JSON.stringify({
