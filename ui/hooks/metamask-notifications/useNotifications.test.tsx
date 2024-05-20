@@ -71,24 +71,19 @@ describe('useNotifications', () => {
   });
 
   it('should create notifications', async () => {
-    const { result, waitForNextUpdate } = renderHook(
-      () => useCreateNotifications(),
-      {
-        wrapper: ({ children }) => (
-          <Provider store={store}>
-            <MetamaskNotificationsProvider>
-              {children}
-            </MetamaskNotificationsProvider>
-          </Provider>
-        ),
-      },
-    );
+    const { result } = renderHook(() => useCreateNotifications(), {
+      wrapper: ({ children }) => (
+        <Provider store={store}>
+          <MetamaskNotificationsProvider>
+            {children}
+          </MetamaskNotificationsProvider>
+        </Provider>
+      ),
+    });
 
     act(() => {
       result.current.createNotifications();
     });
-
-    await waitForNextUpdate();
 
     expect(actions.createOnChainTriggers).toHaveBeenCalled();
   });
