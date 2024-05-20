@@ -603,52 +603,6 @@ export class MetamaskNotificationsController extends BaseController<
   }
 
   /**
-   * Sets the enabled state of MetaMask notifications.
-   * This method first checks if the user is authenticated before attempting to toggle the notification settings.
-   *
-   * **Action** - This method is used to enable or disable MetaMask notifications based on the provided state.
-   *
-   * @param metamaskNotificationsEnabled - A boolean value indicating the desired enabled state of the notifications.
-   * @async
-   * @throws {Error} If the user is not authenticated or if there is an error updating the state.
-   */
-  public async setMetamaskNotificationsEnabled(
-    metamaskNotificationsEnabled: boolean,
-  ) {
-    try {
-      this.#assertAuthEnabled();
-
-      this.update((state) => {
-        state.isMetamaskNotificationsEnabled = metamaskNotificationsEnabled;
-      });
-    } catch (e) {
-      log.error('Unable to toggle notifications', e);
-      throw new Error('Unable to toggle notifications');
-    }
-  }
-
-  /**
-   * This is for a 1-time flag/CTA for notifications. When dismissed we will invoke this.
-   *
-   * **Action** - use to dismiss the Notification CTA in the UI
-   *
-   * @async
-   * @throws {Error} Throws an error if the BearerToken token or storage key is missing.
-   */
-  public async setMetamaskNotificationsFeatureSeen() {
-    try {
-      this.#assertAuthEnabled();
-
-      this.update((state) => {
-        state.isMetamaskNotificationsFeatureSeen = true;
-      });
-    } catch (e) {
-      log.error('Unable to declare feature/CTA was seen', e);
-      throw new Error('Unable to declare feature/CTA was seen');
-    }
-  }
-
-  /**
    * Sets the enabled state of feature announcements.
    *
    * **Action** - used in the notification settings to enable/disable feature announcements.
@@ -744,10 +698,12 @@ export class MetamaskNotificationsController extends BaseController<
       await this.#storage.setNotificationStorage(JSON.stringify(userStorage));
 
       // Update the state of the controller
-      this.setMetamaskNotificationsFeatureSeen();
-      this.setFeatureAnnouncementsEnabled(true);
-      this.setSnapNotificationsEnabled(true);
-      this.setMetamaskNotificationsEnabled(true);
+      this.update((state) => {
+        state.isMetamaskNotificationsEnabled = true;
+        state.isFeatureAnnouncementsEnabled = true;
+        state.isSnapNotificationsEnabled = true;
+        state.isMetamaskNotificationsFeatureSeen = true;
+      });
 
       return userStorage;
     } catch (err) {
@@ -780,10 +736,12 @@ export class MetamaskNotificationsController extends BaseController<
       // For each account enable the triggers
       await this.updateOnChainTriggersByAccount(accounts);
 
-      // Set the states
-      this.setMetamaskNotificationsEnabled(true);
-      this.setFeatureAnnouncementsEnabled(true);
-      this.setSnapNotificationsEnabled(true);
+      // Update Notification States (toggles and list)
+      this.update((state) => {
+        state.isMetamaskNotificationsEnabled = true;
+        state.isFeatureAnnouncementsEnabled = true;
+        state.isSnapNotificationsEnabled = true;
+      });
     } catch (e) {
       log.error('Unable to enable notifications', e);
       throw new Error('Unable to enable notifications');
@@ -804,27 +762,18 @@ export class MetamaskNotificationsController extends BaseController<
     try {
       this.#setIsUpdatingMetamaskNotifications(true);
 
-      this.#assertAuthEnabled();
-
-      const { accounts } = await this.#accounts.listAccounts();
-
-      // For each account disable the triggers
-      await this.deleteOnChainTriggersByAccount(accounts);
-
-      // Set the states
-      this.setMetamaskNotificationsEnabled(false);
-      this.setFeatureAnnouncementsEnabled(false);
-      this.setSnapNotificationsEnabled(false);
-      this.#setIsUpdatingMetamaskNotifications(false);
-
-      // Empty the notifications list
+      // Clear Notification States (toggles and list)
       this.update((state) => {
+        state.isMetamaskNotificationsEnabled = false;
+        state.isFeatureAnnouncementsEnabled = false;
+        state.isSnapNotificationsEnabled = false;
         state.metamaskNotificationsList = [];
       });
     } catch (e) {
-      this.#setIsUpdatingMetamaskNotifications(false);
       log.error('Unable to disable notifications', e);
       throw new Error('Unable to disable notifications');
+    } finally {
+      this.#setIsUpdatingMetamaskNotifications(false);
     }
   }
 
@@ -925,29 +874,44 @@ export class MetamaskNotificationsController extends BaseController<
         MetamaskNotificationsUtils.upsertAddressTriggers(a, userStorage),
       );
 
-      // Write te updated userStorage (where triggers are disabled)
-      await this.#storage.setNotificationStorage(JSON.stringify(userStorage));
-
-      // Create the triggers
-      const triggers = MetamaskNotificationsUtils.traverseUserStorageTriggers(
-        userStorage,
-        {
+      const hasNewTriggers =
+        MetamaskNotificationsUtils.traverseUserStorageTriggers(userStorage, {
           mapTrigger: (t) => {
-            if (
-              accounts.some((a) => a.toLowerCase() === t.address.toLowerCase())
-            ) {
+            if (t.enabled === false) {
               return t;
             }
             return undefined;
           },
-        },
-      );
-      await OnChainNotifications.createOnChainTriggers(
-        userStorage,
-        storageKey,
-        bearerToken,
-        triggers,
-      );
+        });
+
+      // Create any missing triggers.
+      if (hasNewTriggers.length > 0) {
+        // Write te updated userStorage (where triggers are disabled)
+        await this.#storage.setNotificationStorage(JSON.stringify(userStorage));
+
+        // Create the triggers
+        const triggers = MetamaskNotificationsUtils.traverseUserStorageTriggers(
+          userStorage,
+          {
+            mapTrigger: (t) => {
+              if (
+                accounts.some(
+                  (a) => a.toLowerCase() === t.address.toLowerCase(),
+                )
+              ) {
+                return t;
+              }
+              return undefined;
+            },
+          },
+        );
+        await OnChainNotifications.createOnChainTriggers(
+          userStorage,
+          storageKey,
+          bearerToken,
+          triggers,
+        );
+      }
 
       // Update Push Notifications Triggers
       const UUIDs = MetamaskNotificationsUtils.getAllUUIDs(userStorage);
