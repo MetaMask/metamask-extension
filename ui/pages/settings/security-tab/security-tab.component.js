@@ -107,6 +107,7 @@ export default class SecurityTab extends PureComponent {
     ipfsGateway: this.props.ipfsGateway || IPFS_DEFAULT_GATEWAY_URL,
     ipfsGatewayError: '',
     srpQuizModalVisible: false,
+    showDataCollectionDisclaimer: false,
     ipfsToggle: this.props.ipfsGateway.length > 0,
   };
 
@@ -123,9 +124,17 @@ export default class SecurityTab extends PureComponent {
       return React.createRef();
     });
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     const { t } = this.context;
     handleSettingsRefs(t, t('securityAndPrivacy'), this.settingsRefs);
+
+    if (
+      prevProps.dataCollectionForMarketing === true &&
+      this.props.participateInMetaMetrics === true &&
+      this.props.dataCollectionForMarketing === false
+    ) {
+      this.setState({ showDataCollectionDisclaimer: true });
+    }
   }
 
   componentDidMount() {
@@ -336,8 +345,11 @@ export default class SecurityTab extends PureComponent {
 
   renderMetaMetricsOptIn() {
     const { t } = this.context;
-    const { participateInMetaMetrics, setParticipateInMetaMetrics } =
-      this.props;
+    const {
+      participateInMetaMetrics,
+      setParticipateInMetaMetrics,
+      setDataCollectionForMarketing,
+    } = this.props;
 
     return (
       <Box
@@ -361,7 +373,12 @@ export default class SecurityTab extends PureComponent {
         >
           <ToggleButton
             value={participateInMetaMetrics}
-            onToggle={(value) => setParticipateInMetaMetrics(!value)}
+            onToggle={(value) => {
+              setParticipateInMetaMetrics(!value);
+              if (value) {
+                setDataCollectionForMarketing(!value);
+              }
+            }}
             offLabel={t('off')}
             onLabel={t('on')}
           />
@@ -1077,7 +1094,7 @@ export default class SecurityTab extends PureComponent {
       <Popover
         wrapTitle
         centerTitle
-        onClose={() => {}}
+        onClose={() => this.setState({ showDataCollectionDisclaimer: false })}
         title={
           <Icon
             size={IconSize.Xl}
@@ -1086,7 +1103,13 @@ export default class SecurityTab extends PureComponent {
           />
         }
         footer={
-          <Button width={BlockSize.Full} type="primary" onClick={() => {}}>
+          <Button
+            width={BlockSize.Full}
+            type="primary"
+            onClick={() =>
+              this.setState({ showDataCollectionDisclaimer: false })
+            }
+          >
             {t('dataCollectionWarningPopoverButton')}
           </Button>
         }
@@ -1107,11 +1130,14 @@ export default class SecurityTab extends PureComponent {
 
   render() {
     const { warning, petnamesEnabled } = this.props;
+    const { showDataCollectionDisclaimer } = this.state;
 
     return (
       <div className="settings-page__body">
         {this.renderUseExternalServices()}
-        {/* {this.renderDataCollectionWarning()} */}
+        {showDataCollectionDisclaimer
+          ? this.renderDataCollectionWarning()
+          : null}
 
         {warning && <div className="settings-tab__error">{warning}</div>}
         <span className="settings-page__security-tab-sub-header__bold">
