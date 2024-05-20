@@ -21,6 +21,7 @@ import {
 import { Content, Footer, Header, Page } from '../page';
 import {
   SEND_STAGES,
+  getBestQuote,
   getCurrentDraftTransaction,
   getDraftTransactionExists,
   getDraftTransactionID,
@@ -217,6 +218,8 @@ export const SendPage = () => {
   const sendErrors = useSelector(getSendErrors);
   const isInvalidSendForm = useSelector(isSendFormInvalid);
 
+  const bestQuote = useSelector(getBestQuote);
+
   const isGasTooLow =
     sendErrors.gasFee === INSUFFICIENT_FUNDS_ERROR &&
     sendErrors.amount !== INSUFFICIENT_FUNDS_ERROR;
@@ -291,7 +294,7 @@ export const SendPage = () => {
           disabled={submitDisabled || isSubmitting}
           block
         >
-          {t('continue')}
+          {t(bestQuote ? 'confirm' : 'continue')}
         </ButtonPrimary>
       </Footer>
     </Page>
