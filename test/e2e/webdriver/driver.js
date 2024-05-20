@@ -11,6 +11,7 @@ const {
 const cssToXPath = require('css-to-xpath');
 const { sprintf } = require('sprintf-js');
 const { retry } = require('../../../development/lib/retry');
+const { quoteXPathText } = require('../../helpers/quoteXPathText');
 
 const PAGES = {
   BACKGROUND: 'background',
@@ -186,17 +187,10 @@ class Driver {
           .toXPath();
         return By.xpath(xpath);
       }
-      // If the text to be selected contains single or double quotation marks
-      // it can cause the xpath selector to be invalid. `textToLocate` results
-      // in a string that won't be invalidated by the presence of quotation
-      // marks within the text the test is trying to find
-      const textToLocate = locator.text.match(/"/u)
-        ? `'${locator.text}'`
-        : `"${locator.text}"`;
+
+      const quoted = quoteXPathText(locator.text);
       // The tag prop is optional and further refines which elements match
-      return By.xpath(
-        `//${locator.tag ?? '*'}[contains(text(), ${textToLocate})]`,
-      );
+      return By.xpath(`//${locator.tag ?? '*'}[contains(text(), ${quoted})]`);
     }
     throw new Error(
       `The locator '${locator}' is not supported by the E2E test driver`,
@@ -377,6 +371,20 @@ class Driver {
   async clickElement(rawLocator) {
     const element = await this.findClickableElement(rawLocator);
     await element.click();
+  }
+
+  /**
+   * Clicks on an element identified by the provided locator and waits for it to disappear.
+   * For scenarios where the clicked element, such as a notification or popup, needs to disappear afterward.
+   * The wait ensures that subsequent interactions are not obscured by the initial notification or popup element.
+   *
+   * @param {string} rawLocator - The locator used to identify the element to be clicked
+   * @param {number} timeout - The maximum time in ms to wait for the element to disappear after clicking.
+   */
+  async clickElementAndWaitToDisappear(rawLocator, timeout = 2000) {
+    const element = await this.findClickableElement(rawLocator);
+    await element.click();
+    await element.waitForElementState('hidden', timeout);
   }
 
   /**
