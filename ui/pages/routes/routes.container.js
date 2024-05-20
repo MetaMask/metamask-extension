@@ -62,7 +62,6 @@ import Routes from './routes.component';
 
 function mapStateToProps(state) {
   const { activeTab, appState } = state;
-
   const { alertOpen, alertMessage, isLoading, loadingMessage } = appState;
   const { autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT } =
     getPreferences(state);
