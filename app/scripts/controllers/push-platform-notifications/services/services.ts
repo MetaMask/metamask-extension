@@ -10,9 +10,14 @@ const url = process.env.PUSH_NOTIFICATIONS_SERVICE_URL;
 const REGISTRATION_TOKENS_ENDPOINT = `${url}/v1/link`;
 const sw = self as unknown as ServiceWorkerGlobalScope;
 
+export type RegToken = {
+  token: string;
+  platform: 'extension' | 'mobile' | 'portfolio';
+};
+
 export type LinksResult = {
   trigger_ids: string[];
-  registration_tokens: string[];
+  registration_tokens: RegToken[];
 };
 
 /**
@@ -116,7 +121,7 @@ export async function getPushNotificationLinks(
 export async function updateLinksAPI(
   bearerToken: string,
   triggers: string[],
-  regTokens: string[],
+  regTokens: RegToken[],
 ): Promise<boolean> {
   try {
     const body: LinksResult = {
@@ -190,7 +195,7 @@ export async function activatePushNotifications(
   );
 
   const newRegTokens = new Set(notificationLinks.registration_tokens);
-  newRegTokens.add(regToken);
+  newRegTokens.add({ token: regToken, platform: 'extension' });
 
   await updateLinksAPI(bearerToken, triggers, Array.from(newRegTokens));
   return regToken;
@@ -219,13 +224,14 @@ export async function deactivatePushNotifications(
     return false;
   }
 
-  const regTokenSet = new Set(notificationLinks.registration_tokens);
-  regTokenSet.delete(regToken);
+  const filteredRegTokens = notificationLinks.registration_tokens.filter(
+    (r) => r.token !== regToken,
+  );
 
   const isTokenRemovedFromAPI = await updateLinksAPI(
     bearerToken,
     triggers,
-    Array.from(regTokenSet),
+    filteredRegTokens,
   );
   if (!isTokenRemovedFromAPI) {
     return false;
@@ -258,20 +264,26 @@ export async function updateTriggerPushNotifications(
   }
 
   // Create new registration token if doesn't exist
-  const regTokenSet = new Set(notificationLinks.registration_tokens);
-  if (!regToken || !regTokenSet.has(regToken)) {
+  const hasRegToken = Boolean(
+    regToken &&
+      notificationLinks.registration_tokens.some((r) => r.token === regToken),
+  );
+  if (!hasRegToken) {
     await deleteRegToken();
     const newRegToken = await createRegToken();
     if (!newRegToken) {
       throw new Error('Failed to create a new registration token');
     }
-    regTokenSet.add(newRegToken);
+    notificationLinks.registration_tokens.push({
+      token: newRegToken,
+      platform: 'extension',
+    });
   }
 
   const isTriggersLinkedToPushNotifications = await updateLinksAPI(
     bearerToken,
     triggers,
-    Array.from(regTokenSet),
+    notificationLinks.registration_tokens,
   );
 
   return isTriggersLinkedToPushNotifications;
