@@ -1,10 +1,12 @@
 import React from 'react';
 import { ConfirmAlertModal } from './confirm-alert-modal';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { Meta } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react';
 import configureStore from '../../../../../store/store';
 import { Provider } from 'react-redux';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import { Box, Button } from '../../../../component-library';
+import { useArgs } from '@storybook/client-api';
 
 const ALERTS_MOCK: Alert[] = [
   {
@@ -87,7 +89,27 @@ export default {
   decorators: [(story) => <Provider store={storeMock}>{story()}</Provider>],
 } as Meta<typeof ConfirmAlertModal>;
 
-export const TemplateStory = (args) => {
-  return <ConfirmAlertModal alertKey={'from'} {...args} />;
+export const TemplateStory: StoryFn<typeof ConfirmAlertModal> = (args) => {
+  const [{ isOpen }, updateArgs] = useArgs();
+  const handleOnClick = () => {
+    updateArgs({ isOpen: true });
+  };
+  const handleOnClose = () => {
+    updateArgs({ isOpen: false });
+  };
+  return (
+    <Box>
+      {isOpen && (
+        <ConfirmAlertModal
+          {...args}
+          alertKey={'from'}
+          onClose={handleOnClose}
+          onCancel={handleOnClose}
+          onSubmit={handleOnClose}
+        />
+      )}
+      <Button onClick={handleOnClick} danger={true}>Open confirm alert modal</Button>
+    </Box>
+  );
 };
 TemplateStory.storyName = 'Confirm Critical Alert Modal';

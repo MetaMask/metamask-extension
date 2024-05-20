@@ -77,7 +77,7 @@ describe('ConfirmAlertModal', () => {
       mockStore,
     );
 
-    fireEvent.click(getByTestId('confirm-alert-modal-acknowledge-checkbox'));
+    fireEvent.click(getByTestId('alert-modal-acknowledge-checkbox'));
     fireEvent.click(getByTestId('confirm-alert-modal-submit-button'));
     expect(onSubmitMock).toHaveBeenCalledTimes(1);
   });
