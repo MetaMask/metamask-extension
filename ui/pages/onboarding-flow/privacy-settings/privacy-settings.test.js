@@ -121,13 +121,13 @@ describe('Privacy Settings Onboarding View', () => {
     fireEvent.click(toggles[2]); // setIncomingTransactionsPreferencesStub (2)
     fireEvent.click(toggles[3]); // setIncomingTransactionsPreferencesStub (3)
     fireEvent.click(toggles[5]); // setUsePhishDetectStub
-    fireEvent.click(toggles[6]); // setUse4ByteResolutionStub
-    fireEvent.click(toggles[7]); // setUseTokenDetectionStub
-    fireEvent.click(toggles[8]); // setUseMultiAccountBalanceCheckerStub
-    fireEvent.click(toggles[9]); // setUseTransactionSimulationsStub
-    fireEvent.click(toggles[10]); // setUseAddressBarEnsResolutionStub
-    fireEvent.click(toggles[11]); // setUseCurrencyRateCheckStub
-    fireEvent.click(toggles[12]); // setPreferenceStub
+    fireEvent.click(toggles[7]); // setUse4ByteResolutionStub
+    fireEvent.click(toggles[8]); // setUseTokenDetectionStub
+    fireEvent.click(toggles[9]); // setUseMultiAccountBalanceCheckerStub
+    fireEvent.click(toggles[10]); // setUseTransactionSimulationsStub
+    fireEvent.click(toggles[11]); // setUseAddressBarEnsResolutionStub
+    fireEvent.click(toggles[12]); // setUseCurrencyRateCheckStub
+    fireEvent.click(toggles[13]); // setPreferenceStub
 
     expect(mockOpenBasicFunctionalityModal).toHaveBeenCalledTimes(1);
 
