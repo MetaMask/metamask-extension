@@ -32,5 +32,7 @@ export function setupMultiplex(connectionStream) {
  * @returns {boolean} if the stream can be written to
  */
 export function isStreamWritable(stream) {
-  return stream.writable && !stream.destroyed && !stream._writableState?.ended;
+  return Boolean(
+    stream.writable && !stream.destroyed && !stream._writableState?.ended,
+  );
 }
