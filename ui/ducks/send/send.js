@@ -3067,6 +3067,11 @@ export function getCurrentDraftTransaction(state) {
   return state[name].draftTransactions[getCurrentTransactionUUID(state)] ?? {};
 }
 
+/**
+ * Selector that returns the best swap and send quote
+ *
+ * @type {Selector?<Quote>}
+ */
 export const getBestQuote = createSelector(
   getCurrentDraftTransaction,
   ({ quotes, swapQuotesError }) => {
@@ -3078,6 +3083,38 @@ export const getBestQuote = createSelector(
     const bestQuote = calculateBestQuote(quotesAsArray);
 
     return bestQuote;
+  },
+);
+
+/**
+ * Selector that returns the layer 1 chain's gas fee, when applicable.
+ *
+ * @type {Selector<string>}
+ */
+export function getSendLayer1GasFee(state) {
+  return state[name].gasTotalForLayer1;
+}
+
+/**
+ * Selector that returns if a native send is possible based on the current gas value
+ *
+ * @type {Selector<boolean>}
+ */
+export const getIsNativeSendPossible = createSelector(
+  getCurrentDraftTransaction,
+  getSendLayer1GasFee,
+  ({ gas: { gasTotal: baseGasTotal }, sendAsset }, gasTotalForLayer1) => {
+    if (sendAsset.type !== AssetType.native) {
+      return true;
+    }
+
+    const nativeBalance = sendAsset.balance;
+
+    const gasTotal = new Numeric(baseGasTotal || '0x0', 16).add(
+      new Numeric(gasTotalForLayer1 ?? '0x0', 16),
+    );
+
+    return gasTotal.lessThan(nativeBalance, 16);
   },
 );
 
