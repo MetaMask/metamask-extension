@@ -1136,10 +1136,16 @@ export class MetamaskNotificationsController extends BaseController<
 
     if (processedNotification) {
       this.update((s) => {
-        s.metamaskNotificationsList = [
-          notification,
-          ...s.metamaskNotificationsList,
-        ];
+        const existingNotificationIds = new Set(
+          s.metamaskNotificationsList.map((n) => n.id),
+        );
+        // Add the new notification only if its ID is not already present in the list
+        if (!existingNotificationIds.has(notification.id)) {
+          s.metamaskNotificationsList = [
+            notification,
+            ...s.metamaskNotificationsList,
+          ];
+        }
       });
     }
   }
