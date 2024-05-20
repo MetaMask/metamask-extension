@@ -1713,8 +1713,8 @@ const slice = createSlice({
           case Boolean(
             bestQuote &&
               !isEqualCaseInsensitive(
-                bestQuote.recipient.toLowerCase(),
-                draftTransaction.recipient.address.toLowerCase(),
+                bestQuote.recipient,
+                draftTransaction.recipient.address,
               ),
           ):
             slice.caseReducers.addHistoryEntry(state, {
