@@ -600,7 +600,10 @@ function mockNotificationMessenger() {
       'UserStorageController:performSetStorage',
       'UserStorageController:enableProfileSyncing',
     ],
-    allowedEvents: ['KeyringController:stateChange'],
+    allowedEvents: [
+      'KeyringController:stateChange',
+      'PushPlatformNotificationsController:onNewNotifications',
+    ],
   });
 
   const mockListAccounts =
