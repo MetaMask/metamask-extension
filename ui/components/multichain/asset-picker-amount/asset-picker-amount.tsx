@@ -21,6 +21,7 @@ import {
 import {
   getCurrentDraftTransaction,
   getIsNativeSendPossible,
+  getSendMaxModeState,
   type Amount,
   type Asset,
 } from '../../../ducks/send';
@@ -65,15 +66,26 @@ export const AssetPickerAmount = ({
   const isDisabled = !onAmountChange;
   const isSwapsErrorShown = isDisabled && swapQuotesError;
 
+  const isMaxMode = useSelector(getSendMaxModeState);
   const isNativeSendPossible = useSelector(getIsNativeSendPossible);
 
   useEffect(() => {
+    // if this input is immutable – avoids double fire
     if (isDisabled) {
       return;
     }
+
+    // if native send is not possible
     if (isNativeSendPossible) {
       return;
     }
+
+    // if max mode already enabled
+    if (!isMaxMode) {
+      return;
+    }
+
+    // disable max mode and replace with "0"
     onAmountChange('0x0');
   }, [isNativeSendPossible]);
 
