@@ -1,3 +1,4 @@
+import NodeStream from 'node:stream';
 import OurReadableStream from 'readable-stream';
 import ReadableStream2 from 'readable-stream-2';
 import ReadableStream3 from 'readable-stream-3';
@@ -6,6 +7,10 @@ import { isStreamWritable } from './stream-utils';
 describe('Stream Utils', () => {
   describe('isStreamWritable', () => {
     [
+      ['node:stream', NodeStream] as [
+        string,
+        typeof NodeStream,
+      ],
       // Redundantly include used version twice for regression-detection purposes
       ['readable-stream', OurReadableStream] as [
         string,
