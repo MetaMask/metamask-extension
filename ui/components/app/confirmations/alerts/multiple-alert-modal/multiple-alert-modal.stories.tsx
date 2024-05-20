@@ -1,9 +1,11 @@
 import React from 'react';
 import { MultipleAlertModal } from './multiple-alert-modal';
-import { Meta } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react';
 import configureStore from '../../../../../store/store';
 import { Provider } from 'react-redux';
 import { baseAlertsMock } from '../alert-modal/alert-modal.stories';
+import { useArgs } from '@storybook/client-api';
+import { Box, Button } from '../../../../component-library';
 
 const OWNER_ID_MOCK = '123';
 
@@ -31,7 +33,8 @@ export default {
     },
     onClose: {
       action: 'onClick',
-      description: 'The function to be executed when the modal needs to be closed.',
+      description:
+        'The function to be executed when the modal needs to be closed.',
     },
     ownerId: {
       control: 'text',
@@ -39,57 +42,34 @@ export default {
     },
   },
   args: {
-    onAcknowledgeClick: () => {},
-    onClose: () => {},
     ownerId: OWNER_ID_MOCK,
   },
   decorators: [(story) => <Provider store={storeMock}>{story()}</Provider>],
 } as Meta<typeof MultipleAlertModal>;
 
-export const TemplateStory = (args) => {
-  return <MultipleAlertModal alertKey={'From'} {...args} />;
-};
-TemplateStory.storyName = 'Multiple Critical Alert Modal';
-
-/**
- * Single Critical Alert Modal.
- */
-export const SingleCriticalAlertModal = TemplateStory.bind({});
-SingleCriticalAlertModal.args = {
-  alertKey: 'From',
-};
-SingleCriticalAlertModal.decorators = [
-  (story) => {
-    const singleAlertStore = configureStore({
-      confirmAlerts: {
-        alerts: { [OWNER_ID_MOCK]: [baseAlertsMock[0]] },
-        confirmed: { [OWNER_ID_MOCK]: { 'From': false } },
-      }
-    });
-    return <Provider store={singleAlertStore}>{story()}</Provider>
-  }
-];
-
-/**
- * Multiple Warning Alert Modal.
- */
-export const MultipleWarningAlertModal = TemplateStory.bind({});
-MultipleWarningAlertModal.args = {
-  alertKey: 'Data',
-};
-
-/**
- * Multiple Info Alert Modal.
- */
-export const MultipleInfoAlertModal = TemplateStory.bind({});
-MultipleInfoAlertModal.args = {
-  alertKey: 'Contract',
-};
-
 /**
  * Multiple Critical Alert Modal.
  */
-export const MultipleCriticalAlertModal = TemplateStory.bind({});
-MultipleCriticalAlertModal.args = {
-  alertKey: 'From',
+export const TemplateStory: StoryFn<typeof MultipleAlertModal> = (args) => {
+  const [{ isOpen }, updateArgs] = useArgs();
+  const handleOnClick = () => {
+    updateArgs({ isOpen: true });
+  };
+  const handleOnClose = () => {
+    updateArgs({ isOpen: false });
+  };
+  return (
+    <Box>
+      {isOpen && (
+        <MultipleAlertModal
+          {...args}
+          alertKey={'From'}
+          onClose={handleOnClose}
+          onFinalAcknowledgeClick={handleOnClose}
+        />
+      )}
+      <Button onClick={handleOnClick} danger={true}>Open multiple alert modal</Button>
+    </Box>
+  );
 };
+TemplateStory.storyName = 'Multiple Critical Alert Modal';
