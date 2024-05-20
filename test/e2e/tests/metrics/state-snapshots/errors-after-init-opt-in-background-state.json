@@ -59,14 +59,14 @@
   "AuthenticationController": { "isSignedIn": "boolean" },
   "CronjobController": { "jobs": "object" },
   "CurrencyController": {
-    "currentCurrency": "usd",
     "currencyRates": {
       "ETH": {
         "conversionDate": "number",
         "conversionRate": 1700,
         "usdConversionRate": 1700
       }
-    }
+    },
+    "currentCurrency": "usd"
   },
   "DecryptMessageController": {
     "unapprovedDecryptMsgs": "object",
@@ -108,7 +108,11 @@
     "isFeatureAnnouncementsEnabled": "boolean",
     "isSnapNotificationsEnabled": "boolean",
     "metamaskNotificationsList": {},
-    "metamaskNotificationsReadList": {}
+    "metamaskNotificationsReadList": {},
+    "isUpdatingMetamaskNotifications": "boolean",
+    "isFetchingMetamaskNotifications": "boolean",
+    "isUpdatingMetamaskNotificationsAccount": "object",
+    "isCheckingAccountsPresence": "boolean"
   },
   "NameController": { "names": "object", "nameSources": "object" },
   "NetworkController": {
@@ -185,7 +189,6 @@
       "useNativeCurrencyAsPrimaryCurrency": true,
       "petnamesEnabled": true
     },
-    "useExternalServices": "boolean",
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",
     "useAddressBarEnsResolution": true,
@@ -196,8 +199,10 @@
     "useExternalNameSources": "boolean",
     "useTransactionSimulations": true,
     "enableMV3TimestampSave": true,
+    "useExternalServices": "boolean",
     "selectedAddress": "string"
   },
+  "PushPlatformNotificationsController": "object",
   "SelectedNetworkController": { "domains": "object" },
   "SignatureController": {
     "unapprovedMsgs": "object",
@@ -277,5 +282,8 @@
     "lastFetchedBlockNumbers": "object"
   },
   "UserOperationController": { "userOperations": "object" },
-  "UserStorageController": { "isProfileSyncingEnabled": true }
+  "UserStorageController": {
+    "isProfileSyncingEnabled": true,
+    "isProfileSyncingUpdateLoading": "boolean"
+  }
 }
