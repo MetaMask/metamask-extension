@@ -2467,9 +2467,6 @@
   "leaveMetaMaskDesc": {
     "message": "You're about to visit a site outside of MetaMask. Double-check the URL before continuing."
   },
-  "leaveYourselfAHint": {
-    "message": "Leave yourself a hint?"
-  },
   "ledgerAccountRestriction": {
     "message": "You need to make use your last account before you can add a new one."
   },
