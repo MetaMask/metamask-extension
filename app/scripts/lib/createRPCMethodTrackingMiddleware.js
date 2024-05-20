@@ -19,9 +19,7 @@ import {
 import { SIGNING_METHODS } from '../../../shared/constants/transaction';
 import { getBlockaidMetricsProps } from '../../../ui/helpers/utils/metrics';
 ///: END:ONLY_INCLUDE_IF
-import {
-  REDESIGN_APPROVAL_TYPES,
-} from '../../../ui/pages/confirmations/utils/confirm';
+import { REDESIGN_APPROVAL_TYPES } from '../../../ui/pages/confirmations/utils/confirm';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 
 /**
@@ -265,7 +263,6 @@ export default function createRPCMethodTrackingMiddleware({
             req.securityAlertResponse.description;
         }
         ///: END:ONLY_INCLUDE_IF
-
         const isConfirmationRedesign =
           isConfirmationRedesignEnabled() &&
           REDESIGN_APPROVAL_TYPES.find(
