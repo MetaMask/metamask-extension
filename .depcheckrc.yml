@@ -42,10 +42,13 @@ ignores:
   # development tool
   - 'nyc'
   # storybook
+  - '@chromatic-com/storybook'
   - '@storybook/cli'
-  - '@storybook/core'
-  - '@storybook/addon-essentials'
+  - '@storybook/addon-actions'
   - '@storybook/addon-a11y'
+  - '@storybook/addon-essentials'
+  - '@storybook/addon-webpack5-compiler-swc'
+  - '@storybook/core'
   - '@storybook/builder-webpack5'
   - '@storybook/manager-webpack5'
   - '@storybook/react-webpack5'
