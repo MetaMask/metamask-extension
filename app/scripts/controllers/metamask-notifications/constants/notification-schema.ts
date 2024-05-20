@@ -151,7 +151,4 @@ export const TRIGGERS: Partial<Record<TRIGGER_TYPES, Trigger>> = {
   [TRIGGER_TYPES.LIDO_WITHDRAWAL_COMPLETED]: {
     supported_chains: [NOTIFICATION_CHAINS.ETHEREUM],
   },
-  // [TRIGGER_TYPES.LIDO_STAKE_READY_TO_BE_WITHDRAWN]: {
-  //   supported_chains: [NOTIFICATION_CHAINS.ETHEREUM],
-  // },
 };
