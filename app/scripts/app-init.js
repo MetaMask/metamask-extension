@@ -140,6 +140,8 @@ chrome.runtime.onMessage.addListener(() => {
   return false;
 });
 
+importAllScripts();
+
 /*
  * This content script is injected programmatically because
  * MAIN world injection does not work properly via manifest
