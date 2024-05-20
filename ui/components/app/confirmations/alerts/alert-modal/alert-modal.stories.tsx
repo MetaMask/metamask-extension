@@ -1,10 +1,12 @@
 import React from 'react';
 import { AlertModal } from './alert-modal';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { Meta } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react';
 import configureStore from '../../../../../store/store';
 import { Provider } from 'react-redux';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import { useArgs } from '@storybook/client-api';
+import { Box, Button } from '../../../../component-library';
 
 export const baseAlertsMock: Alert[] = [
   {
@@ -73,8 +75,27 @@ export default {
   excludeStories: ['baseAlertsMock'],
 } as Meta<typeof AlertModal>;
 
-export const DefaultStory = (args) => {
-  return <AlertModal alertKey={'From'} {...args} />;
+export const DefaultStory: StoryFn<typeof AlertModal> = (args) => {
+  const [{ isOpen }, updateArgs] = useArgs();
+  const handleOnClick = () => {
+    updateArgs({ isOpen: true });
+  };
+  const handleOnClose = () => {
+    updateArgs({ isOpen: false });
+  };
+  return (
+    <Box>
+      {isOpen && (
+        <AlertModal
+          {...args}
+          alertKey={'From'}
+          onClose={handleOnClose}
+          onAcknowledgeClick={handleOnClose}
+        />
+      )}
+      <Button onClick={handleOnClick} danger={true}>Open alert modal</Button>
+    </Box>
+  );
 };
 
 DefaultStory.storyName = 'Critical Alert';

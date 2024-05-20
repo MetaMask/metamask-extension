@@ -6,7 +6,6 @@ import {
   ButtonLinkSize,
   ButtonSize,
   ButtonVariant,
-  Checkbox,
   Icon,
   IconName,
   IconSize,
@@ -14,9 +13,6 @@ import {
 } from '../../../../component-library';
 import {
   AlignItems,
-  BlockSize,
-  BorderRadius,
-  Display,
   Severity,
   TextAlign,
   TextVariant,
@@ -24,8 +20,7 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { AlertModal } from '../alert-modal';
-import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
-import { getSeverityStyle } from '../alert-modal/alert-modal';
+import { AcknowledgeCheckboxBase } from '../alert-modal/alert-modal';
 import { MultipleAlertModal } from '../multiple-alert-modal';
 
 export type ConfirmAlertModalProps = {
@@ -114,39 +109,6 @@ function ConfirmDetails({
   );
 }
 
-function AcknowledgeCheckbox({
-  selectedAlert,
-  isConfirmed,
-  setConfirmCheckbox,
-}: {
-  selectedAlert?: Alert;
-  isConfirmed: boolean;
-  setConfirmCheckbox: (value: boolean) => void;
-}) {
-  const t = useI18nContext();
-  const severityStyle = getSeverityStyle(selectedAlert?.severity);
-  return (
-    <Box
-      display={Display.Flex}
-      padding={3}
-      width={BlockSize.Full}
-      gap={3}
-      backgroundColor={severityStyle.background}
-      marginTop={4}
-      borderRadius={BorderRadius.LG}
-    >
-      <Checkbox
-        label={t('confirmAlertModalAcknowledge')}
-        data-testid="confirm-alert-modal-acknowledge-checkbox"
-        isChecked={isConfirmed}
-        onChange={() => setConfirmCheckbox(!isConfirmed)}
-        alignItems={AlignItems.flexStart}
-        className={'alert-modal__acknowledge-checkbox'}
-      />
-    </Box>
-  );
-}
-
 export function ConfirmAlertModal({
   alertKey,
   onCancel,
@@ -177,6 +139,14 @@ export function ConfirmAlertModal({
     setMultipleAlertModalVisible(true);
   }, []);
 
+  const handleConfirmCheckbox = useCallback(() => {
+    setConfirmCheckbox(!confirmCheckbox);
+  }, [confirmCheckbox, selectedAlert]);
+
+  if (!selectedAlert) {
+    return null;
+  }
+
   if (multipleAlertModalVisible) {
     return (
       <MultipleAlertModal
@@ -199,10 +169,11 @@ export function ConfirmAlertModal({
         <ConfirmDetails onAlertLinkClick={handleOpenMultipleAlertModal} />
       }
       customAcknowledgeCheckbox={
-        <AcknowledgeCheckbox
+        <AcknowledgeCheckboxBase
           selectedAlert={selectedAlert}
           isConfirmed={confirmCheckbox}
-          setConfirmCheckbox={setConfirmCheckbox}
+          onCheckboxClick={handleConfirmCheckbox}
+          label={t('confirmAlertModalAcknowledge')}
         />
       }
       customAcknowledgeButton={

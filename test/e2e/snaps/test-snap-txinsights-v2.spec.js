@@ -118,7 +118,7 @@ describe('Test Snap TxInsights-v2', function () {
 
         // check info in warning
         await driver.waitForSelector({
-          css: '.snap-ui-markdown__text',
+          css: '.snap-ui-renderer__text',
           text: 'ERC-20',
         });
 

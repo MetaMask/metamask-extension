@@ -205,6 +205,7 @@ exports[`Confirm matches snapshot for personal signature type 1`] = `
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
                 >
                   Example \`personal_sign\` message
                 </p>
@@ -525,6 +526,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                   >
                     <p
                       class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                      style="white-space: pre-wrap;"
                     >
                       Mail
                     </p>
@@ -555,6 +557,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                       >
                         <p
                           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                          style="white-space: pre-wrap;"
                         >
                           Hello, Bob!
                         </p>
@@ -594,6 +597,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                           >
                             <p
                               class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                              style="white-space: pre-wrap;"
                             >
                               Cow
                             </p>
@@ -882,6 +886,7 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                               >
                                 <p
                                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                                  style="white-space: pre-wrap;"
                                 >
                                   Bob
                                 </p>
