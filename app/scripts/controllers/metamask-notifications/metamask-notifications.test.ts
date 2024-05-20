@@ -95,8 +95,10 @@ describe('metamask-notifications - constructor()', () => {
 
     // initialize controller with 1 address
     mockListAccounts.mockResolvedValueOnce(['addr1']);
-    const controller = new MetamaskNotificationsController({ messenger });
-    controller.state.isMetamaskNotificationsEnabled = true;
+    const controller = new MetamaskNotificationsController({
+      messenger,
+      state: { isMetamaskNotificationsEnabled: true },
+    });
 
     const mockUpdate = jest
       .spyOn(controller, 'updateOnChainTriggersByAccount')
@@ -522,6 +524,92 @@ describe('metamask-notifications - markMetamaskNotificationsAsRead()', () => {
       ...messengerMocks,
       mockMarkAsReadAPI,
     };
+  }
+});
+
+describe('metamask-notifications - enableMetamaskNotifications()', () => {
+  it('create new notifications when switched on and no new notifications', async () => {
+    const mocks = arrangeMocks();
+    mocks.mockListAccounts.mockResolvedValue(['0xAddr1']);
+    const controller = new MetamaskNotificationsController({
+      messenger: mocks.messenger,
+    });
+
+    const promise = controller.enableMetamaskNotifications();
+
+    // Act - intermediate state
+    expect(controller.state.isUpdatingMetamaskNotifications).toBe(true);
+
+    await promise;
+
+    // Act - final state
+    expect(controller.state.isUpdatingMetamaskNotifications).toBe(false);
+    expect(controller.state.isMetamaskNotificationsEnabled).toBe(true);
+
+    // Act - services called
+    expect(mocks.mockCreateOnChainTriggers).toBeCalled();
+  });
+
+  it('not create new notifications when enabling an account already in storage', async () => {
+    const mocks = arrangeMocks();
+    mocks.mockListAccounts.mockResolvedValue(['0xAddr1']);
+    mocks.mockPerformGetStorage.mockResolvedValue(
+      JSON.stringify(createMockFullUserStorage({ address: '0xAddr1' })),
+    );
+    const controller = new MetamaskNotificationsController({
+      messenger: mocks.messenger,
+    });
+
+    await controller.enableMetamaskNotifications();
+
+    expect(mocks.mockCreateOnChainTriggers).not.toBeCalled();
+  });
+
+  function arrangeMocks() {
+    const messengerMocks = mockNotificationMessenger();
+
+    const mockCreateOnChainTriggers = jest
+      .spyOn(OnChainNotifications, 'createOnChainTriggers')
+      .mockResolvedValue();
+
+    return { ...messengerMocks, mockCreateOnChainTriggers };
+  }
+});
+
+describe('metamask-notifications - disableMetamaskNotifications()', () => {
+  it('disable notifications and turn off push notifications', async () => {
+    const mocks = arrangeMocks();
+    const controller = new MetamaskNotificationsController({
+      messenger: mocks.messenger,
+      state: { isMetamaskNotificationsEnabled: true },
+    });
+
+    const promise = controller.disableMetamaskNotifications();
+
+    // Act - intermediate state
+    expect(controller.state.isUpdatingMetamaskNotifications).toBe(true);
+
+    await promise;
+
+    // Act - final state
+    expect(controller.state.isUpdatingMetamaskNotifications).toBe(false);
+    expect(controller.state.isMetamaskNotificationsEnabled).toBe(false);
+
+    expect(mocks.mockDisablePushNotifications).toBeCalled();
+
+    // We do not delete triggers when disabling notifications
+    // As other devices might be using those triggers to receive notifications
+    expect(mocks.mockDeleteOnChainTriggers).not.toBeCalled();
+  });
+
+  function arrangeMocks() {
+    const messengerMocks = mockNotificationMessenger();
+
+    const mockDeleteOnChainTriggers = jest
+      .spyOn(OnChainNotifications, 'deleteOnChainTriggers')
+      .mockResolvedValue({} as UserStorage);
+
+    return { ...messengerMocks, mockDeleteOnChainTriggers };
   }
 });
 
