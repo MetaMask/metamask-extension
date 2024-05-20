@@ -22,10 +22,51 @@ const MOCK_LINEA_MAINNET_CONFIGURATION = {
 };
 
 describe('switchEthereumChainHandler', () => {
+  const setupMocks = ({
+    permissionedChainIds = [],
+    permissionsFeatureFlagIsActive = false,
+    overrides = {},
+    mockedFindNetworkConfigurationByReturnValue = MOCK_MAINNET_CONFIGURATION,
+    mockedGetCurrentChainIdForDomainReturnValue = NON_INFURA_CHAIN_ID,
+  } = {}) => {
+    const mockGetCaveat = jest.fn();
+    mockGetCaveat.mockReturnValue({ value: permissionedChainIds });
+
+    return {
+      getChainPermissionsFeatureFlag: () => permissionsFeatureFlagIsActive,
+      getCurrentChainIdForDomain: jest
+        .fn()
+        .mockReturnValue(mockedGetCurrentChainIdForDomainReturnValue),
+      setNetworkClientIdForDomain: jest.fn(),
+      findNetworkConfigurationBy: jest
+        .fn()
+        .mockReturnValue(mockedFindNetworkConfigurationByReturnValue),
+      setActiveNetwork: jest.fn(),
+      requestUserApproval: jest
+        .fn()
+        .mockImplementation(mockRequestUserApproval),
+      requestSwitchNetworkPermission: jest.fn(),
+      getCaveat: mockGetCaveat,
+      ...overrides,
+    };
+  };
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   describe('with chainPermitted permissioning inactive', () => {
-    const getChainPermissionsFeatureFlag = () => false;
-    it('should call setActiveNetwork when switching to a built in infura network', async () => {
-      const mockSetActiveNetwork = jest.fn();
+    const permissionsFeatureFlagIsActive = false;
+
+    it('should call setActiveNetwork when switching to a built-in infura network', async () => {
+      const mocks = setupMocks({
+        permissionsFeatureFlagIsActive,
+        overrides: {
+          findNetworkConfigurationBy: jest
+            .fn()
+            .mockReturnValue(MOCK_MAINNET_CONFIGURATION),
+        },
+      });
       const switchEthereumChainHandler = switchEthereumChain.implementation;
       await switchEthereumChainHandler(
         {
@@ -35,23 +76,23 @@ describe('switchEthereumChainHandler', () => {
         {},
         jest.fn(),
         jest.fn(),
-        {
-          getChainPermissionsFeatureFlag,
-          getCurrentChainIdForDomain: () => NON_INFURA_CHAIN_ID,
-          setNetworkClientIdForDomain: jest.fn(),
-          findNetworkConfigurationBy: () => MOCK_MAINNET_CONFIGURATION,
-          setActiveNetwork: mockSetActiveNetwork,
-          requestUserApproval: mockRequestUserApproval,
-        },
+        mocks,
       );
-      expect(mockSetActiveNetwork).toHaveBeenCalledTimes(1);
-      expect(mockSetActiveNetwork).toHaveBeenCalledWith(
+      expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
+      expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
         MOCK_MAINNET_CONFIGURATION.type,
       );
     });
 
-    it('should call setActiveNetwork when switching to a built in infura network, when chainId from request is lower case', async () => {
-      const mockSetActiveNetwork = jest.fn();
+    it('should call setActiveNetwork when switching to a built-in infura network, when chainId from request is lower case', async () => {
+      const mocks = setupMocks({
+        permissionsFeatureFlagIsActive,
+        overrides: {
+          findNetworkConfigurationBy: jest
+            .fn()
+            .mockReturnValue(MOCK_LINEA_MAINNET_CONFIGURATION),
+        },
+      });
       const switchEthereumChainHandler = switchEthereumChain.implementation;
       await switchEthereumChainHandler(
         {
@@ -61,23 +102,23 @@ describe('switchEthereumChainHandler', () => {
         {},
         jest.fn(),
         jest.fn(),
-        {
-          setNetworkClientIdForDomain: jest.fn(),
-          findNetworkConfigurationBy: () => MOCK_LINEA_MAINNET_CONFIGURATION,
-          setActiveNetwork: mockSetActiveNetwork,
-          requestUserApproval: mockRequestUserApproval,
-          getCurrentChainIdForDomain: () => NON_INFURA_CHAIN_ID,
-          getChainPermissionsFeatureFlag,
-        },
+        mocks,
       );
-      expect(mockSetActiveNetwork).toHaveBeenCalledTimes(1);
-      expect(mockSetActiveNetwork).toHaveBeenCalledWith(
+      expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
+      expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
         MOCK_LINEA_MAINNET_CONFIGURATION.type,
       );
     });
 
-    it('should call setActiveNetwork when switching to a built in infura network, when chainId from request is upper case', async () => {
-      const mockSetActiveNetwork = jest.fn();
+    it('should call setActiveNetwork when switching to a built-in infura network, when chainId from request is upper case', async () => {
+      const mocks = setupMocks({
+        permissionsFeatureFlagIsActive,
+        overrides: {
+          findNetworkConfigurationBy: jest
+            .fn()
+            .mockReturnValue(MOCK_LINEA_MAINNET_CONFIGURATION),
+        },
+      });
       const switchEthereumChainHandler = switchEthereumChain.implementation;
       await switchEthereumChainHandler(
         {
@@ -87,23 +128,23 @@ describe('switchEthereumChainHandler', () => {
         {},
         jest.fn(),
         jest.fn(),
-        {
-          getCurrentChainIdForDomain: () => NON_INFURA_CHAIN_ID,
-          setNetworkClientIdForDomain: jest.fn(),
-          findNetworkConfigurationBy: () => MOCK_LINEA_MAINNET_CONFIGURATION,
-          setActiveNetwork: mockSetActiveNetwork,
-          requestUserApproval: mockRequestUserApproval,
-          getChainPermissionsFeatureFlag,
-        },
+        mocks,
       );
-      expect(mockSetActiveNetwork).toHaveBeenCalledTimes(1);
-      expect(mockSetActiveNetwork).toHaveBeenCalledWith(
+      expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
+      expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
         MOCK_LINEA_MAINNET_CONFIGURATION.type,
       );
     });
 
     it('should call setActiveNetwork when switching to a custom network', async () => {
-      const mockSetActiveNetwork = jest.fn();
+      const mocks = setupMocks({
+        permissionsFeatureFlagIsActive,
+        overrides: {
+          getCurrentChainIdForDomain: jest
+            .fn()
+            .mockReturnValue(CHAIN_IDS.MAINNET),
+        },
+      });
       const switchEthereumChainHandler = switchEthereumChain.implementation;
       await switchEthereumChainHandler(
         {
@@ -113,107 +154,85 @@ describe('switchEthereumChainHandler', () => {
         {},
         jest.fn(),
         jest.fn(),
-        {
-          getCurrentChainIdForDomain: () => CHAIN_IDS.MAINNET,
-          setNetworkClientIdForDomain: jest.fn(),
-          findNetworkConfigurationBy: () => MOCK_MAINNET_CONFIGURATION,
-          setActiveNetwork: mockSetActiveNetwork,
-          requestUserApproval: mockRequestUserApproval,
-          getChainPermissionsFeatureFlag,
-        },
+        mocks,
       );
-      expect(mockSetActiveNetwork).toHaveBeenCalledTimes(1);
-      expect(mockSetActiveNetwork).toHaveBeenCalledWith(
+      expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
+      expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
         MOCK_MAINNET_CONFIGURATION.id,
       );
     });
   });
 
   describe('with chainPermitted permissioning active', () => {
-    const mockRequestSwitchNetworkPermission = jest.fn();
-    const mockSetActiveNetwork = jest.fn();
-    const mockGetCaveat = jest.fn();
+    const permissionsFeatureFlagIsActive = true;
 
-    const setupMocks = ({
-      permissionedChainIds,
-      mockedFindNetworkConfigurationByReturnValue = MOCK_MAINNET_CONFIGURATION,
-      mockedGetCurrentChainIdForDomainReturnValue = NON_INFURA_CHAIN_ID,
-    }) => {
-      mockGetCaveat.mockReturnValue({ value: permissionedChainIds });
+    it('should call requestSwitchNetworkPermission and setActiveNetwork when chainId is not in permittedChains', async () => {
+      const mockRequestSwitchNetworkPermission = jest.fn().mockResolvedValue();
+      const mocks = setupMocks({
+        permissionsFeatureFlagIsActive,
+        overrides: {
+          requestSwitchNetworkPermission: mockRequestSwitchNetworkPermission,
+        },
+      });
+      const switchEthereumChainHandler = switchEthereumChain.implementation;
+      await switchEthereumChainHandler(
+        {
+          origin: 'example.com',
+          params: [{ chainId: CHAIN_IDS.MAINNET }],
+        },
+        {},
+        jest.fn(),
+        jest.fn(),
+        mocks,
+      );
 
-      return {
-        getChainPermissionsFeatureFlag: () => true,
-        getCurrentChainIdForDomain: () =>
-          mockedGetCurrentChainIdForDomainReturnValue,
-        setNetworkClientIdForDomain: jest.fn(),
-        findNetworkConfigurationBy: () =>
-          mockedFindNetworkConfigurationByReturnValue,
-        setActiveNetwork: mockSetActiveNetwork,
-        requestUserApproval: mockRequestUserApproval,
-        requestSwitchNetworkPermission: mockRequestSwitchNetworkPermission,
-        getCaveat: mockGetCaveat,
-      };
-    };
-
-    afterEach(() => {
-      jest.clearAllMocks();
+      expect(mocks.requestSwitchNetworkPermission).toHaveBeenCalledTimes(1);
+      expect(mocks.requestSwitchNetworkPermission).toHaveBeenCalledWith([
+        CHAIN_IDS.MAINNET,
+      ]);
+      expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
+      expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
+        MOCK_MAINNET_CONFIGURATION.type,
+      );
     });
 
-    describe('when chainId is not in permittedChains', () => {
-      it('should call requestSwitchNetworkPermission and setActiveNetwork', async () => {
-        mockRequestSwitchNetworkPermission.mockResolvedValue();
-
-        const switchEthereumChainHandler = switchEthereumChain.implementation;
-        await switchEthereumChainHandler(
-          {
-            origin: 'example.com',
-            params: [{ chainId: CHAIN_IDS.MAINNET }],
-          },
-          {},
-          jest.fn(),
-          jest.fn(),
-          setupMocks({ permissionedChainIds: [] }),
-        );
-
-        expect(mockRequestSwitchNetworkPermission).toHaveBeenCalledTimes(1);
-        expect(mockRequestSwitchNetworkPermission).toHaveBeenCalledWith([
-          CHAIN_IDS.MAINNET,
-        ]);
-        expect(mockSetActiveNetwork).toHaveBeenCalledTimes(1);
-        expect(mockSetActiveNetwork).toHaveBeenCalledWith(
-          MOCK_MAINNET_CONFIGURATION.type,
-        );
+    it('should call setActiveNetwork without calling requestSwitchNetworkPermission when requested chainId is in permittedChains', async () => {
+      const mocks = setupMocks({
+        permissionsFeatureFlagIsActive,
+        permissionedChainIds: [CHAIN_IDS.MAINNET],
       });
-    });
+      const switchEthereumChainHandler = switchEthereumChain.implementation;
+      await switchEthereumChainHandler(
+        {
+          origin: 'example.com',
+          params: [{ chainId: CHAIN_IDS.MAINNET }],
+        },
+        {},
+        jest.fn(),
+        jest.fn(),
+        mocks,
+      );
 
-    describe('when requested chainId is in permittedChains', () => {
-      it('should call setActiveNetwork without calling requestSwitchNetworkPermission', async () => {
-        const switchEthereumChainHandler = switchEthereumChain.implementation;
-        await switchEthereumChainHandler(
-          {
-            origin: 'example.com',
-            params: [{ chainId: CHAIN_IDS.MAINNET }],
-          },
-          {},
-          jest.fn(),
-          jest.fn(),
-          setupMocks({ permissionedChainIds: [CHAIN_IDS.MAINNET] }),
-        );
-
-        expect(mockRequestSwitchNetworkPermission).not.toHaveBeenCalled();
-        expect(mockSetActiveNetwork).toHaveBeenCalledTimes(1);
-        expect(mockSetActiveNetwork).toHaveBeenCalledWith(
-          MOCK_MAINNET_CONFIGURATION.type,
-        );
-      });
+      expect(mocks.requestSwitchNetworkPermission).not.toHaveBeenCalled();
+      expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
+      expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
+        MOCK_MAINNET_CONFIGURATION.type,
+      );
     });
 
     it('should handle errors during the switch network permission request', async () => {
       const mockError = new Error('Permission request failed');
-      mockRequestSwitchNetworkPermission.mockRejectedValue(mockError);
-
-      const switchEthereumChainHandler = switchEthereumChain.implementation;
+      const mockRequestSwitchNetworkPermission = jest
+        .fn()
+        .mockRejectedValue(mockError);
+      const mocks = setupMocks({
+        permissionsFeatureFlagIsActive,
+        overrides: {
+          requestSwitchNetworkPermission: mockRequestSwitchNetworkPermission,
+        },
+      });
       const mockEnd = jest.fn();
+      const switchEthereumChainHandler = switchEthereumChain.implementation;
 
       await switchEthereumChainHandler(
         {
@@ -223,12 +242,12 @@ describe('switchEthereumChainHandler', () => {
         {},
         jest.fn(),
         mockEnd,
-        setupMocks([]),
+        mocks,
       );
 
-      expect(mockRequestSwitchNetworkPermission).toHaveBeenCalledTimes(1);
+      expect(mocks.requestSwitchNetworkPermission).toHaveBeenCalledTimes(1);
       expect(mockEnd).toHaveBeenCalledWith(mockError);
-      expect(mockSetActiveNetwork).not.toHaveBeenCalled();
+      expect(mocks.setActiveNetwork).not.toHaveBeenCalled();
     });
   });
 });
