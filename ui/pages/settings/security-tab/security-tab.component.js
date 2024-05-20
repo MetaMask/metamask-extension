@@ -347,6 +347,7 @@ export default class SecurityTab extends PureComponent {
     const { t } = this.context;
     const {
       participateInMetaMetrics,
+      dataCollectionForMarketing,
       setParticipateInMetaMetrics,
       setDataCollectionForMarketing,
     } = this.props;
@@ -375,8 +376,8 @@ export default class SecurityTab extends PureComponent {
             value={participateInMetaMetrics}
             onToggle={(value) => {
               setParticipateInMetaMetrics(!value);
-              if (value) {
-                setDataCollectionForMarketing(!value);
+              if (dataCollectionForMarketing) {
+                setDataCollectionForMarketing(false);
               }
             }}
             offLabel={t('off')}
@@ -389,8 +390,12 @@ export default class SecurityTab extends PureComponent {
 
   renderDataCollectionForMarketing() {
     const { t } = this.context;
-    const { dataCollectionForMarketing, setDataCollectionForMarketing } =
-      this.props;
+    const {
+      dataCollectionForMarketing,
+      participateInMetaMetrics,
+      setDataCollectionForMarketing,
+      setParticipateInMetaMetrics,
+    } = this.props;
 
     return (
       <Box
@@ -414,7 +419,12 @@ export default class SecurityTab extends PureComponent {
         >
           <ToggleButton
             value={dataCollectionForMarketing}
-            onToggle={(value) => setDataCollectionForMarketing(!value)}
+            onToggle={(value) => {
+              setDataCollectionForMarketing(!value);
+              if (!participateInMetaMetrics) {
+                setParticipateInMetaMetrics(true);
+              }
+            }}
             offLabel={t('off')}
             onLabel={t('on')}
           />
