@@ -3686,14 +3686,6 @@ export default class MetamaskController extends EventEmitter {
         metamaskNotificationsController.setFeatureAnnouncementsEnabled.bind(
           metamaskNotificationsController,
         ),
-      setMetamaskNotificationsEnabled:
-        metamaskNotificationsController.setMetamaskNotificationsEnabled.bind(
-          metamaskNotificationsController,
-        ),
-      setMetamaskNotificationsFeatureSeen:
-        metamaskNotificationsController.setMetamaskNotificationsFeatureSeen.bind(
-          metamaskNotificationsController,
-        ),
       enablePushNotifications:
         pushPlatformNotificationsController.enablePushNotifications.bind(
           pushPlatformNotificationsController,

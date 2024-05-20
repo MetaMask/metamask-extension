@@ -2551,50 +2551,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('#setMetamaskNotificationsEnabled', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls setMetamaskNotificationsEnabled in the background with correct parameters', async () => {
-      const store = mockStore();
-      const state = true;
-
-      const setMetamaskNotificationsEnabledStub = sinon
-        .stub()
-        .callsFake((_, cb) => cb());
-
-      background.getApi.returns({
-        setMetamaskNotificationsEnabled: setMetamaskNotificationsEnabledStub,
-      });
-      setBackgroundConnection(background.getApi());
-
-      await store.dispatch(actions.setMetamaskNotificationsEnabled(state));
-      expect(setMetamaskNotificationsEnabledStub.calledOnceWith(state)).toBe(
-        true,
-      );
-    });
-
-    it('handles errors when setMetamaskNotificationsEnabled fails', async () => {
-      const store = mockStore();
-      const state = false;
-      const error = new Error('Failed to set notifications enabled state');
-
-      const setMetamaskNotificationsEnabledStub = sinon
-        .stub()
-        .callsFake((_, cb) => cb(error));
-
-      background.getApi.returns({
-        setMetamaskNotificationsEnabled: setMetamaskNotificationsEnabledStub,
-      });
-      setBackgroundConnection(background.getApi());
-
-      await expect(
-        store.dispatch(actions.setMetamaskNotificationsEnabled(state)),
-      ).rejects.toThrow(error);
-    });
-  });
-
   describe('#setSnapNotificationsEnabled', () => {
     afterEach(() => {
       sinon.restore();
@@ -2775,47 +2731,6 @@ describe('Actions', () => {
       ];
 
       expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
-  describe('setMetamaskNotificationsFeatureSeen', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('should call setMetamaskNotificationsFeatureSeen in the background', async () => {
-      const store = mockStore();
-      const setMetamaskNotificationsFeatureSeenStub = sinon
-        .stub()
-        .callsFake((cb) => cb());
-
-      background.getApi.returns({
-        setMetamaskNotificationsFeatureSeen:
-          setMetamaskNotificationsFeatureSeenStub,
-      });
-      setBackgroundConnection(background.getApi());
-
-      await store.dispatch(actions.setMetamaskNotificationsFeatureSeen());
-      expect(setMetamaskNotificationsFeatureSeenStub.calledOnce).toBe(true);
-    });
-
-    it('should handle errors when setMetamaskNotificationsFeatureSeen fails', async () => {
-      const store = mockStore();
-      const error = new Error('Failed to mark notifications feature as seen');
-
-      const setMetamaskNotificationsFeatureSeenStub = sinon
-        .stub()
-        .callsFake((cb) => cb(error));
-
-      background.getApi.returns({
-        setMetamaskNotificationsFeatureSeen:
-          setMetamaskNotificationsFeatureSeenStub,
-      });
-      setBackgroundConnection(background.getApi());
-
-      await expect(
-        store.dispatch(actions.setMetamaskNotificationsFeatureSeen()),
-      ).rejects.toThrow(error);
     });
   });
 });
