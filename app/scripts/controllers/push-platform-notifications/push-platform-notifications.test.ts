@@ -25,8 +25,15 @@ describe('PushPlatformNotificationsController', () => {
           .spyOn(services, 'activatePushNotifications')
           .mockResolvedValue(MOCK_FCM_TOKEN);
 
+        const unsubscribeMock = jest.fn();
+        jest
+          .spyOn(services, 'listenToPushNotifications')
+          .mockResolvedValue(unsubscribeMock);
+
         await controller.enablePushNotifications(MOCK_TRIGGERS);
         expect(controller.state.fcmToken).toBe(MOCK_FCM_TOKEN);
+
+        expect(services.listenToPushNotifications).toHaveBeenCalled();
       });
     });
 
