@@ -3155,6 +3155,14 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setSurveyLinkLastClickedOrClosed.bind(
           appStateController,
         ),
+      setNewPrivacyPolicyToastClickedOrClosed:
+        appStateController.setNewPrivacyPolicyToastClickedOrClosed.bind(
+          appStateController,
+        ),
+      setNewPrivacyPolicyToastShownDate:
+        appStateController.setNewPrivacyPolicyToastShownDate.bind(
+          appStateController,
+        ),
       ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       setSnapsInstallPrivacyWarningShownStatus:
         appStateController.setSnapsInstallPrivacyWarningShownStatus.bind(
@@ -4898,7 +4906,7 @@ export default class MetamaskController extends EventEmitter {
 
     const isConfirmationRedesignEnabled = () => {
       return this.preferencesController.store.getState().preferences
-        .redesignedConfirmations;
+        .redesignedConfirmationsEnabled;
     };
 
     engine.push(
