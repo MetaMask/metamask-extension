@@ -989,21 +989,6 @@ export class MetamaskNotificationsController extends BaseController<
 
       const readIds = this.state.metamaskNotificationsReadList;
 
-      // For each rawOnChainNotifications check if the notification unread is false
-      // update the state metamaskNotificationsReadList removing the id from the list
-      rawOnChainNotifications.forEach(
-        (notification: OnChainRawNotification) => {
-          if (notification.unread === false) {
-            this.update((s) => {
-              s.metamaskNotificationsReadList =
-                s.metamaskNotificationsReadList.filter(
-                  (id) => id !== notification.id,
-                );
-            });
-          }
-        },
-      );
-
       // Combined Notifications
       const isNotUndefined = <T>(t?: T): t is T => Boolean(t);
       const processAndFilter = (
@@ -1106,10 +1091,7 @@ export class MetamaskNotificationsController extends BaseController<
     // Update the state (state is also used on counter & badge)
     this.update((s) => {
       const currentReadList = s.metamaskNotificationsReadList;
-      const newReadIds = [
-        ...onchainNotificationIds,
-        ...featureAnnouncementNotificationIds,
-      ];
+      const newReadIds = [...featureAnnouncementNotificationIds];
       s.metamaskNotificationsReadList = [
         ...new Set([...currentReadList, ...newReadIds]),
       ];

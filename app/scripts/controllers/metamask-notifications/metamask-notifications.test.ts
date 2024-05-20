@@ -531,7 +531,7 @@ describe('metamask-notifications - fetchAndUpdateMetamaskNotifications()', () =>
 });
 
 describe('metamask-notifications - markMetamaskNotificationsAsRead()', () => {
-  test('updates feature announcements and wallet notifications as read', async () => {
+  test('updates feature announcements as read', async () => {
     const { messenger } = arrangeMocks();
     const controller = new MetamaskNotificationsController({ messenger });
 
@@ -541,7 +541,7 @@ describe('metamask-notifications - markMetamaskNotificationsAsRead()', () => {
     ]);
 
     // Should see 2 items in controller read state
-    expect(controller.state.metamaskNotificationsReadList.length).toBe(2);
+    expect(controller.state.metamaskNotificationsReadList.length).toBe(1);
   });
 
   test('should at least mark feature announcements locally if external updates fail', async () => {
