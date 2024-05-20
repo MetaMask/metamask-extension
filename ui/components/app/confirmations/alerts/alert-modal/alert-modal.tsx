@@ -156,7 +156,7 @@ function AlertDetails({
         borderRadius={BorderRadius.SM}
       >
         {customAlertDetails ?? (
-          <>
+          <Box>
             <Text variant={TextVariant.bodySm}>{selectedAlert.message}</Text>
             {selectedAlert.alertDetails?.length ? (
               <Text variant={TextVariant.bodySmBold} marginTop={1}>
@@ -174,27 +174,26 @@ function AlertDetails({
                 </Box>
               ))}
             </Box>
-          </>
+          </Box>
         )}
       </Box>
     </>
   );
 }
 
-function AcknowledgeCheckbox({
+export function AcknowledgeCheckboxBase({
   selectedAlert,
-  setAlertConfirmed,
+  onCheckboxClick,
   isConfirmed,
+  label,
 }: {
   selectedAlert: Alert;
-  setAlertConfirmed: (alertKey: string, isConfirmed: boolean) => void;
+  onCheckboxClick: () => void;
   isConfirmed: boolean;
+  label?: string;
 }) {
   const t = useI18nContext();
   const severityStyle = getSeverityStyle(selectedAlert.severity);
-  const handleCheckboxClick = () => {
-    return setAlertConfirmed(selectedAlert.key, !isConfirmed);
-  };
   return (
     <Box
       display={Display.Flex}
@@ -206,10 +205,10 @@ function AcknowledgeCheckbox({
       borderRadius={BorderRadius.LG}
     >
       <Checkbox
-        label={t('alertModalAcknowledge')}
-        data-testid="alert-modal-acknowledge-checkbox"
+        label={label ?? t('alertModalAcknowledge')}
+        data-testid={'alert-modal-acknowledge-checkbox'}
         isChecked={isConfirmed}
-        onChange={handleCheckboxClick}
+        onChange={onCheckboxClick}
         alignItems={AlignItems.flexStart}
         className={'alert-modal__acknowledge-checkbox'}
       />
@@ -264,6 +263,10 @@ export function AlertModal({
   }
   const isConfirmed = isAlertConfirmed(selectedAlert.key);
 
+  const handleCheckboxClick = useCallback(() => {
+    return setAlertConfirmed(selectedAlert.key, !isConfirmed);
+  }, [isConfirmed, selectedAlert.key]);
+
   return (
     <Modal isOpen onClose={handleClose}>
       <ModalOverlay />
@@ -285,10 +288,10 @@ export function AlertModal({
             customAlertDetails={customAlertDetails}
           />
           {customAcknowledgeCheckbox ?? (
-            <AcknowledgeCheckbox
+            <AcknowledgeCheckboxBase
               selectedAlert={selectedAlert}
               isConfirmed={isConfirmed}
-              setAlertConfirmed={setAlertConfirmed}
+              onCheckboxClick={handleCheckboxClick}
             />
           )}
         </ModalBody>
