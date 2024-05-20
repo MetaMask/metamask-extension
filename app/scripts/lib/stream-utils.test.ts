@@ -43,11 +43,12 @@ describe('Stream Utils', () => {
             const result = isStreamWritable(stream);
             expect(result).toBe(false);
           });
-          it(`should return false for ended ${className}`, (t) => {
+          it(`should return false for ended ${className}`, (done) => {
             const stream = new S();
             stream.end(() => {
               const result = isStreamWritable(stream);
               expect(result).toBe(false);
+              done()
             });
           });
         });
