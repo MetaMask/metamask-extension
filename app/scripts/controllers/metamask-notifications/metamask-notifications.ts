@@ -581,13 +581,12 @@ export class MetamaskNotificationsController extends BaseController<
         userStorage,
         accounts,
       );
-
-      this.#setIsCheckingAccountsPresence(false);
-
       return presence;
     } catch (error) {
-      this.#setIsCheckingAccountsPresence(false);
+      log.error('Failed to check accounts presence', error);
       throw error;
+    } finally {
+      this.#setIsCheckingAccountsPresence(false);
     }
   }
 
@@ -737,13 +736,13 @@ export class MetamaskNotificationsController extends BaseController<
       this.setFeatureAnnouncementsEnabled(true);
       this.setSnapNotificationsEnabled(true);
       this.setMetamaskNotificationsEnabled(true);
-      this.#setIsUpdatingMetamaskNotifications(false);
 
       return userStorage;
     } catch (err) {
-      this.#setIsUpdatingMetamaskNotifications(false);
       log.error('Failed to create On Chain triggers', err);
       throw new Error('Failed to create On Chain triggers');
+    } finally {
+      this.#setIsUpdatingMetamaskNotifications(false);
     }
   }
 
@@ -773,11 +772,11 @@ export class MetamaskNotificationsController extends BaseController<
       this.setMetamaskNotificationsEnabled(true);
       this.setFeatureAnnouncementsEnabled(true);
       this.setSnapNotificationsEnabled(true);
-      this.#setIsUpdatingMetamaskNotifications(false);
     } catch (e) {
-      this.#setIsUpdatingMetamaskNotifications(false);
       log.error('Unable to enable notifications', e);
       throw new Error('Unable to enable notifications');
+    } finally {
+      this.#setIsUpdatingMetamaskNotifications(false);
     }
   }
 
