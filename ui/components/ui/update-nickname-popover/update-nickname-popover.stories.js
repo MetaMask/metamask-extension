@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Button from '../button';
 import README from './README.mdx';
 import UpdateNicknamePopover from '.';
