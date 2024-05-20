@@ -168,6 +168,8 @@ export default class Home extends PureComponent {
     onTabClick: PropTypes.func.isRequired,
     haveSwapsQuotes: PropTypes.bool.isRequired,
     showAwaitingSwapScreen: PropTypes.bool.isRequired,
+    setDataCollectionForMarketing: PropTypes.func.isRequired,
+    dataCollectionForMarketing: PropTypes.bool.isRequired,
     swapsFetchParams: PropTypes.object,
     location: PropTypes.object,
     shouldShowWeb3ShimUsageNotification: PropTypes.bool.isRequired,
@@ -761,12 +763,13 @@ export default class Home extends PureComponent {
 
   renderOnboardingPopover = () => {
     const { t } = this.context;
+    const { setDataCollectionForMarketing } = this.props;
 
     return (
       <Popover
         wrapTitle
         centerTitle
-        onClose={() => {}}
+        onClose={() => setDataCollectionForMarketing(false)}
         title={t('onboardedMetametricsTitle')}
         footer={
           <Box
@@ -775,10 +778,16 @@ export default class Home extends PureComponent {
             width={BlockSize.Full}
             flexDirection={FlexDirection.Row}
           >
-            <Button type="secondary" onClick={() => {}}>
+            <Button
+              type="secondary"
+              onClick={() => setDataCollectionForMarketing(false)}
+            >
               {t('onboardedMetametricsDisagree')}
             </Button>
-            <Button type="primary" onClick={() => {}}>
+            <Button
+              type="primary"
+              onClick={() => setDataCollectionForMarketing(true)}
+            >
               {t('onboardedMetametricsAccept')}
             </Button>
           </Box>
@@ -880,6 +889,7 @@ export default class Home extends PureComponent {
       completedOnboarding,
       onboardedInThisUISession,
       announcementsToShow,
+      dataCollectionForMarketing,
       firstTimeFlowType,
       newNetworkAddedConfigurationId,
       isSmartTransactionsOptInModalAvailable,
@@ -963,7 +973,9 @@ export default class Home extends PureComponent {
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()
             : null}
-          {this.renderOnboardingPopover()}
+          {dataCollectionForMarketing === null
+            ? this.renderOnboardingPopover()
+            : null}
           {
             ///: END:ONLY_INCLUDE_IF
           }

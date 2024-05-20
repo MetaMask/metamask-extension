@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Typography from '../../../components/ui/typography/typography';
@@ -11,8 +11,12 @@ import {
 } from '../../../helpers/constants/design-system';
 import Button from '../../../components/ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { setParticipateInMetaMetrics } from '../../../store/actions';
 import {
+  setParticipateInMetaMetrics,
+  setDataCollectionForMarketing,
+} from '../../../store/actions';
+import {
+  getDataCollectionForMarketing,
   getFirstTimeFlowType,
   getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn,
 } from '../../../selectors';
@@ -45,11 +49,9 @@ export default function OnboardingMetametrics() {
 
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+  const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
 
   const trackEvent = useContext(MetaMetricsContext);
-
-  // TODO: maybe this can be a simple ref
-  const [hasAgreedToDataUse, setHasAgreedToDataUse] = useState(false);
 
   const onConfirm = async () => {
     const [, metaMetricsId] = await dispatch(setParticipateInMetaMetrics(true));
@@ -325,8 +327,10 @@ export default function OnboardingMetametrics() {
         </ul>
         <Checkbox
           id="metametrics-opt-in"
-          isChecked={hasAgreedToDataUse}
-          onClick={() => setHasAgreedToDataUse((prevValue) => !prevValue)}
+          isChecked={dataCollectionForMarketing}
+          onClick={() =>
+            dispatch(setDataCollectionForMarketing(!dataCollectionForMarketing))
+          }
           label={t('onboardingMetametricsUseDataCheckbox')}
           paddingBottom={3}
         />

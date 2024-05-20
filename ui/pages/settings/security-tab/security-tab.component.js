@@ -65,6 +65,8 @@ export default class SecurityTab extends PureComponent {
     setOpenSeaEnabled: PropTypes.func,
     useNftDetection: PropTypes.bool,
     setUseNftDetection: PropTypes.func,
+    dataCollectionForMarketing: PropTypes.bool.isRequired,
+    setDataCollectionForMarketing: PropTypes.func.isRequired,
     participateInMetaMetrics: PropTypes.bool.isRequired,
     setParticipateInMetaMetrics: PropTypes.func.isRequired,
     incomingTransactionsPreferences: PropTypes.object.isRequired,
@@ -370,6 +372,8 @@ export default class SecurityTab extends PureComponent {
 
   renderDataCollectionForMarketing() {
     const { t } = this.context;
+    const { dataCollectionForMarketing, setDataCollectionForMarketing } =
+      this.props;
 
     return (
       <Box
@@ -389,11 +393,11 @@ export default class SecurityTab extends PureComponent {
 
         <div
           className="settings-page__content-item-col"
-          data-testid="participateInMetaMetrics"
+          data-testid="dataCollectionForMarketing"
         >
           <ToggleButton
-            value={false}
-            onToggle={() => {}}
+            value={dataCollectionForMarketing}
+            onToggle={(value) => setDataCollectionForMarketing(!value)}
             offLabel={t('off')}
             onLabel={t('on')}
           />
@@ -1107,7 +1111,7 @@ export default class SecurityTab extends PureComponent {
     return (
       <div className="settings-page__body">
         {this.renderUseExternalServices()}
-        {this.renderDataCollectionWarning()}
+        {/* {this.renderDataCollectionWarning()} */}
 
         {warning && <div className="settings-tab__error">{warning}</div>}
         <span className="settings-page__security-tab-sub-header__bold">
