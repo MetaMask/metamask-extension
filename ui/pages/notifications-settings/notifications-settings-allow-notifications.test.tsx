@@ -17,7 +17,13 @@ describe('NotificationsSettingsAllowNotifications', () => {
     const { getByTestId } = render(
       <Provider store={store}>
         <MetamaskNotificationsProvider>
-          <NotificationsSettingsAllowNotifications disabled={false} />
+          <NotificationsSettingsAllowNotifications
+            disabled={false}
+            loading={false}
+            setLoading={() => {
+              return null;
+            }}
+          />
         </MetamaskNotificationsProvider>
       </Provider>,
     );

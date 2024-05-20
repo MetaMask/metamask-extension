@@ -50,6 +50,8 @@ describe('Metamask Notifications Selectors', () => {
       isProfileSyncingUpdateLoading: false,
       isFetchingMetamaskNotifications: false,
       isUpdatingMetamaskNotifications: false,
+      isUpdatingMetamaskNotificationsAccount: [],
+      isCheckingAccountsPresence: false,
     },
   };
 

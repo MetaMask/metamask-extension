@@ -4,12 +4,7 @@ import * as actions from '../../store/actions';
 import { useCreateSession } from './useCreateSession';
 
 jest.mock('../../store/actions', () => ({
-  signIn: jest.fn(),
-  signOut: jest.fn(),
-  enableMetaMetrics: jest.fn(),
-  disableMetaMetrics: jest.fn(),
   performSignIn: jest.fn(),
-  disableProfileSyncing: jest.fn(),
 }));
 
 jest.mock('react-redux', () => {
@@ -43,12 +38,15 @@ describe('useCreateSession', () => {
 
   it('should attempt sign in if profile syncing or MetaMetrics participation is enabled', async () => {
     (redux.useSelector as jest.Mock)
+      .mockReturnValueOnce(false)
       .mockReturnValueOnce(true)
-      .mockReturnValueOnce(false);
+      .mockReturnValueOnce(true);
     const { result } = renderHook(() => useCreateSession());
+
     await act(async () => {
       await result.current.createSession();
     });
+
     expect(actions.performSignIn).toHaveBeenCalled();
   });
 });
