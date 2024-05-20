@@ -17,7 +17,8 @@ async function fetchChangedE2eFiles() {
       .filter(
         (file) =>
           file.filename.startsWith('test/e2e/') &&
-          file.filename.endsWith('.spec.js'),
+          (file.filename.endsWith('.spec.js') ||
+            file.filename.endsWith('.spec.ts')),
       )
       .map((file) => file.filename)
       .join('\n');

@@ -213,7 +213,12 @@ async function main() {
 
   console.log('My test list:', myTestList);
 
-  const changedOrNewTests = await fetchChangedE2eFiles();
+  let changedOrNewTests = '';
+  try {
+    changedOrNewTests = await fetchChangedE2eFiles();
+  } catch (error) {
+    console.error('Error fetching changed e2e files:', error);
+  }
   console.log('Spec files that will be re-run:', changedOrNewTests);
 
   // spawn `run-e2e-test.js` for each test in myTestList
