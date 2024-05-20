@@ -3217,6 +3217,36 @@
   "on": {
     "message": "On"
   },
+  "onboardedMetametricsAccept": {
+    "message": "I agree"
+  },
+  "onboardedMetametricsDisagree": {
+    "message": "No thanks"
+  },
+  "onboardedMetametricsKey1": {
+    "message": "Latest developments"
+  },
+  "onboardedMetametricsKey2": {
+    "message": "Product features"
+  },
+  "onboardedMetametricsKey3": {
+    "message": "Other relevant promotional materials"
+  },
+  "onboardedMetametricsLink": {
+    "message": "MetaMetrics"
+  },
+  "onboardedMetametricsParagraph1": {
+    "message": "In addition to $1, we'd like to use data to understand how you interact with marketing communications."
+  },
+  "onboardedMetametricsParagraph2": {
+    "message": "This helps us personalize what we share with you, like:"
+  },
+  "onboardedMetametricsParagraph3": {
+    "message": "Remember, we never sell the data you provide and you can opt out any time."
+  },
+  "onboardedMetametricsTitle": {
+    "message": "Help us enhance your experience"
+  },
   "onboarding": {
     "message": "Onboarding"
   },
