@@ -13,10 +13,6 @@ const makeExpirySet = () => {
   const map: Map<string | number, number> = new Map();
 
   setInterval(() => {
-    if (map.size === 0) {
-      return;
-    }
-
     const cutoffTime = Date.now() - THREE_MINUTES;
 
     for (const [id, timestamp] of map.entries()) {
