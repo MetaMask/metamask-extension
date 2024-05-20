@@ -7643,7 +7643,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/components@npm:8.1.1, @storybook/components@npm:^8.0.9":
+"@storybook/components@npm:8.1.1":
   version: 8.1.1
   resolution: "@storybook/components@npm:8.1.1"
   dependencies:
@@ -7706,7 +7706,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/core-events@npm:8.1.1, @storybook/core-events@npm:^8.0.9":
+"@storybook/core-events@npm:8.1.1":
   version: 8.1.1
   resolution: "@storybook/core-events@npm:8.1.1"
   dependencies:
@@ -23730,8 +23730,6 @@ __metadata:
     "@storybook/addon-docs": "npm:^8.0.9"
     "@storybook/addon-essentials": "npm:^8.0.9"
     "@storybook/addon-webpack5-compiler-swc": "npm:^1.0.2"
-    "@storybook/components": "npm:^8.0.9"
-    "@storybook/core-events": "npm:^8.0.9"
     "@storybook/react": "npm:^8.0.9"
     "@storybook/react-webpack5": "npm:^8.0.9"
     "@storybook/storybook-deployer": "npm:^2.8.16"
