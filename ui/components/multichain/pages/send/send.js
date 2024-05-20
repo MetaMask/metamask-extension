@@ -194,7 +194,10 @@ export const SendPage = () => {
 
     setIsSubmitting(true);
     await dispatch(signTransaction(history));
-
+    // prevents state update on unmounted component error
+    if (isSubmitting) {
+      setIsSubmitting(false);
+    }
     trackEvent({
       category: MetaMetricsEventCategory.Transactions,
       event: 'Complete',
