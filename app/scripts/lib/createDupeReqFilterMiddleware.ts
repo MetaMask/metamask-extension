@@ -10,38 +10,23 @@ export const THREE_MINUTES = MINUTE * 3;
  * @returns The expiry set.
  */
 const makeExpirySet = () => {
-  const seenValues: (number | string)[] = [];
-  const timestamps: number[] = [];
+  const map: Map<string | number, number> = new Map();
 
   setInterval(() => {
-    if (timestamps.length === 0) {
+    if (map.size === 0) {
       return;
     }
 
     const cutoffTime = Date.now() - THREE_MINUTES;
 
-    if (timestamps.length === 1 && timestamps[0] <= cutoffTime) {
-      seenValues.shift();
-      timestamps.shift();
-      return;
-    }
-
-    for (let i = 0; i < timestamps.length; i++) {
-      if (timestamps[i] > cutoffTime) {
-        seenValues.splice(0, i);
-        timestamps.splice(0, i);
+    for (const [id, timestamp] of map.entries()) {
+      if (timestamp <= cutoffTime) {
+        map.delete(id);
+      } else {
         break;
       }
     }
   }, THREE_MINUTES);
-
-  // Implement our `has` operation as a search in descending order, under the assumption
-  // that repeats are more likely to occur in short succession.
-  const has = (value: string | number) => {
-    return (
-      seenValues.findLast((seenValue) => seenValue === value) !== undefined
-    );
-  };
 
   return {
     /**
@@ -51,9 +36,8 @@ const makeExpirySet = () => {
      * @returns `true` if the value was added, and `false` if it already existed.
      */
     add(value: string | number) {
-      if (!has(value)) {
-        seenValues.push(value);
-        timestamps.push(Date.now());
+      if (!map.has(value)) {
+        map.set(value, Date.now());
         return true;
       }
       return false;
