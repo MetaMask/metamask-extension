@@ -2888,9 +2888,9 @@ export function signTransaction(history) {
       let transactionId;
 
       if (isSwapAndSend) {
-        const NATIVE_CURRENCY_DECIMALS = 18;
-
         const chainId = getCurrentChainId(state);
+        const NATIVE_CURRENCY_DECIMALS =
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].decimals;
 
         const sourceTokenSymbol =
           draftTransaction.sendAsset.details?.symbol ||
