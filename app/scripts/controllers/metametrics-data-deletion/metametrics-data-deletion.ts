@@ -25,16 +25,6 @@ export enum DeleteRegulationStatus {
   UNKNOWN = 'UNKNOWN',
 }
 
-export enum responseStatus {
-  ok = 'ok',
-  error = 'error',
-}
-
-export type DataDeletionResponse = {
-  status: responseStatus;
-  error?: string;
-};
-
 export type MetaMetricsDataDeletionState = {
   metaMetricsDataDeletionId: DataDeleteRegulationId;
   metaMetricsDataDeletionDate: DataDeleteDate;
@@ -90,64 +80,46 @@ export default class MetaMetricsDataDeletionController {
     return `${day}/${month}/${year}`;
   }
 
-  async createMetaMetricsDataDeletionTask(): Promise<DataDeletionResponse> {
+  async createMetaMetricsDataDeletionTask(): Promise<void> {
     const { metaMetricsId } = this.metaMetricsController.store.getState();
     if (!metaMetricsId) {
-      return {
-        status: responseStatus.error,
-        error: 'MetaMetrics ID not found',
-      };
+      throw new Error('MetaMetrics ID not found');
     }
 
     try {
-      const response = await createDataDeletionRegulationTask(
+      const { data } = await createDataDeletionRegulationTask(
         metaMetricsId as string,
       );
-      if (Object.keys(response).length > 0) {
-        const { data } = response;
-        this.store.updateState({
-          metaMetricsDataDeletionId: data?.regulateId as string,
-          metaMetricsDataDeletionDate: this._formatDeletionDate(),
-        });
-        return { status: responseStatus.ok };
-      }
-
-      return { status: responseStatus.error, error: 'API fetch failed' };
-    } catch (error: unknown) {
-      return {
-        status: responseStatus.error,
-        error: error as string,
-      };
+      this.store.updateState({
+        metaMetricsDataDeletionId: data?.regulateId as string,
+        metaMetricsDataDeletionDate: this._formatDeletionDate(),
+      });
+      await this.checkDataDeletionTaskStatus();
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : JSON.stringify(error ?? '');
+      throw new Error(`Metametrics Data Deletion Error: ${errorMessage}`);
     }
   }
 
-  async checkDataDeletionTaskStatus(): Promise<DataDeletionResponse> {
+  async checkDataDeletionTaskStatus(): Promise<void> {
     const deleteRegulationId = this.store.getState().metaMetricsDataDeletionId;
-    if (typeof deleteRegulationId && deleteRegulationId.length === 0) {
-      return {
-        status: responseStatus.error,
-        error: 'Delete Regulation id not found',
-      };
+    if (deleteRegulationId.length === 0) {
+      throw new Error('Delete Regulation id not found');
     }
 
     try {
-      const response = await fetchDeletionRegulationStatus(deleteRegulationId);
-      if (Object.keys(response).length > 0) {
-        const { data } = response;
-        const regulation = data?.regulation as Record<string, string>;
-        this.store.updateState({
-          metaMetricsDataDeletionStatus:
-            regulation.overallStatus as DeleteRegulationStatus,
-        });
-        return { status: responseStatus.ok };
-      }
+      const { data } = await fetchDeletionRegulationStatus(deleteRegulationId);
 
-      return { status: responseStatus.error, error: 'API fetch failed' };
+      const regulation = data?.regulation as Record<string, string>;
+      this.store.updateState({
+        metaMetricsDataDeletionStatus:
+          regulation.overallStatus as DeleteRegulationStatus,
+      });
     } catch (error: unknown) {
-      return {
-        status: responseStatus.error,
-        error: error as string,
-      };
+      const errorMessage =
+        error instanceof Error ? error.message : JSON.stringify(error ?? '');
+      throw new Error(`Metametrics Data Deletion Error: ${errorMessage}`);
     }
   }
 }
