@@ -13,6 +13,8 @@ const MOCK_FCM_TOKEN = 'mockFcmToken';
 const MOCK_TRIGGERS = ['uuid1', 'uuid2'];
 
 describe('PushPlatformNotificationsController', () => {
+  process.env.ENABLE_MV3 = 'true';
+
   describe('enablePushNotifications', () => {
     afterEach(() => {
       jest.clearAllMocks();
