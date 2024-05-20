@@ -9,7 +9,7 @@ import { Box, Button } from '../../../../component-library';
 
 const OWNER_ID_MOCK = '123';
 
-const alertsMock = [baseAlertsMock[0], {...baseAlertsMock[1], actions: []}, baseAlertsMock[2]];
+const alertsMock = [baseAlertsMock[0], {...baseAlertsMock[1], actions: undefined}, baseAlertsMock[2]];
 const storeMock = configureStore({ confirmAlerts: {
   alerts: {[OWNER_ID_MOCK]: alertsMock},
   confirmed: {[OWNER_ID_MOCK]: {'From': false, 'Data': false, 'Contract': false}},
