@@ -1,8 +1,7 @@
 import { JsonRpcMiddleware } from 'json-rpc-engine';
 import log from 'loglevel';
+import { MINUTE } from '../../../shared/constants/time';
 
-const SECOND = 1000;
-const MINUTE = SECOND * 60;
 export const THREE_MINUTES = MINUTE * 3;
 
 /**
