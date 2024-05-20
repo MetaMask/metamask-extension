@@ -376,6 +376,17 @@ export default class SecurityTab extends PureComponent {
             value={participateInMetaMetrics}
             onToggle={(value) => {
               setParticipateInMetaMetrics(!value);
+              if (!value) {
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Settings,
+                  event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+                  properties: {
+                    is_metrics_opted_in: false,
+                    has_marketing_consent: false,
+                    location: 'Settings',
+                  },
+                });
+              }
               if (dataCollectionForMarketing) {
                 setDataCollectionForMarketing(false);
               }
@@ -421,7 +432,17 @@ export default class SecurityTab extends PureComponent {
             value={dataCollectionForMarketing}
             onToggle={(value) => {
               setDataCollectionForMarketing(!value);
-              if (!participateInMetaMetrics) {
+              if (participateInMetaMetrics) {
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Settings,
+                  event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+                  properties: {
+                    is_metrics_opted_in: true,
+                    has_marketing_consent: false,
+                    location: 'Settings',
+                  },
+                });
+              } else {
                 setParticipateInMetaMetrics(true);
               }
             }}

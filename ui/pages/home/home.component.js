@@ -770,7 +770,17 @@ export default class Home extends PureComponent {
       <Popover
         wrapTitle
         centerTitle
-        onClose={() => setDataCollectionForMarketing(false)}
+        onClose={() => {
+          setDataCollectionForMarketing(false);
+          this.context.trackEvent({
+            category: MetaMetricsEventCategory.Home,
+            event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+            properties: {
+              has_marketing_consent: false,
+              location: 'marketing_consent_modal',
+            },
+          });
+        }}
         title={t('onboardedMetametricsTitle')}
         footer={
           <Box
@@ -781,13 +791,33 @@ export default class Home extends PureComponent {
           >
             <Button
               type="secondary"
-              onClick={() => setDataCollectionForMarketing(false)}
+              onClick={() => {
+                setDataCollectionForMarketing(false);
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Home,
+                  event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+                  properties: {
+                    has_marketing_consent: false,
+                    location: 'marketing_consent_modal',
+                  },
+                });
+              }}
             >
               {t('onboardedMetametricsDisagree')}
             </Button>
             <Button
               type="primary"
-              onClick={() => setDataCollectionForMarketing(true)}
+              onClick={() => {
+                setDataCollectionForMarketing(true);
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Home,
+                  event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+                  properties: {
+                    has_marketing_consent: true,
+                    location: 'marketing_consent_modal',
+                  },
+                });
+              }}
             >
               {t('onboardedMetametricsAccept')}
             </Button>
