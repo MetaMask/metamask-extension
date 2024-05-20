@@ -19,6 +19,7 @@ import {
   PushPlatformNotificationsControllerEnablePushNotifications,
   PushPlatformNotificationsControllerDisablePushNotifications,
   PushPlatformNotificationsControllerUpdateTriggerPushNotifications,
+  PushPlatformNotificationsControllerOnNewNotificationEvent,
 } from '../push-platform-notifications/push-platform-notifications';
 import {
   UserStorageControllerEnableProfileSyncing,
@@ -204,7 +205,9 @@ export type MetamaskNotificationsControllerMessengerEvents =
   >;
 
 // Allowed Events
-export type AllowedEvents = KeyringControllerStateChangeEvent;
+export type AllowedEvents =
+  | KeyringControllerStateChangeEvent
+  | PushPlatformNotificationsControllerOnNewNotificationEvent;
 
 // Type for the messenger of MetamaskNotificationsController
 export type MetamaskNotificationsControllerMessenger =
@@ -276,6 +279,14 @@ export class MetamaskNotificationsController extends BaseController<
       return await this.messagingSystem.call(
         'PushPlatformNotificationsController:updateTriggerPushNotifications',
         UUIDs,
+      );
+    },
+    subscribe: () => {
+      this.messagingSystem.subscribe(
+        'PushPlatformNotificationsController:onNewNotifications',
+        (notification) => {
+          this.updateMetamaskNotificationsList(notification);
+        },
       );
     },
   };
@@ -373,6 +384,7 @@ export class MetamaskNotificationsController extends BaseController<
     this.#registerMessageHandlers();
     this.#accounts.initialize();
     this.#accounts.subscribe();
+    this.#pushNotifications.subscribe();
   }
 
   #registerMessageHandlers(): void {
@@ -1120,22 +1132,14 @@ export class MetamaskNotificationsController extends BaseController<
   public async updateMetamaskNotificationsList(
     notification: Notification,
   ): Promise<void> {
-    const isNotUndefined = <T>(t?: T): t is T => Boolean(t);
-    const processAndFilterSingle = (
-      n: FeatureAnnouncementRawNotification | OnChainRawNotification,
-    ) => {
-      try {
-        const processedNotification = processNotification(n);
-        if (isNotUndefined(processedNotification)) {
-          return processedNotification;
-        }
-      } catch {
-        return undefined;
-      }
-      return undefined;
-    };
+    if (
+      this.state.metamaskNotificationsList.some((n) => n.id === notification.id)
+    ) {
+      return;
+    }
 
-    const processedNotification = processAndFilterSingle(notification);
+    const processedNotification =
+      processAndFilterSingleNotification(notification);
 
     if (processedNotification) {
       this.update((state) => {
@@ -1152,4 +1156,19 @@ export class MetamaskNotificationsController extends BaseController<
       });
     }
   }
+}
+
+const isNotUndefined = <T>(t?: T): t is T => Boolean(t);
+function processAndFilterSingleNotification(
+  n: FeatureAnnouncementRawNotification | OnChainRawNotification,
+) {
+  try {
+    const processedNotification = processNotification(n);
+    if (isNotUndefined(processedNotification)) {
+      return processedNotification;
+    }
+  } catch {
+    return undefined;
+  }
+  return undefined;
 }

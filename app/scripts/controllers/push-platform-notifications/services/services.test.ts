@@ -16,7 +16,6 @@ const MOCK_RESPONSE: MockResponse = {
   ],
 };
 const MOCK_JWT = 'MOCK_JWT';
-const MOCK_ACTIVATE_PUSH_NOTIFICATIONS = () => Promise.resolve();
 
 describe('PushPlatformNotificationsServices', () => {
   describe('getPushNotificationLinks', () => {
@@ -84,7 +83,6 @@ describe('PushPlatformNotificationsServices', () => {
       const res = await services.activatePushNotifications(
         MOCK_JWT,
         MOCK_TRIGGERS,
-        MOCK_ACTIVATE_PUSH_NOTIFICATIONS,
       );
 
       expect(res).toBe(MOCK_NEW_REG_TOKEN);
@@ -97,7 +95,6 @@ describe('PushPlatformNotificationsServices', () => {
       const res = await services.activatePushNotifications(
         MOCK_JWT,
         MOCK_TRIGGERS,
-        MOCK_ACTIVATE_PUSH_NOTIFICATIONS,
       );
       expect(res).toBeNull();
     });
@@ -107,7 +104,6 @@ describe('PushPlatformNotificationsServices', () => {
       const res = await services.activatePushNotifications(
         MOCK_JWT,
         MOCK_TRIGGERS,
-        MOCK_ACTIVATE_PUSH_NOTIFICATIONS,
       );
       expect(res).toBeNull();
     });
@@ -117,7 +113,6 @@ describe('PushPlatformNotificationsServices', () => {
       const res = await services.activatePushNotifications(
         MOCK_JWT,
         MOCK_TRIGGERS,
-        MOCK_ACTIVATE_PUSH_NOTIFICATIONS,
       );
       expect(res).toBeNull();
     });

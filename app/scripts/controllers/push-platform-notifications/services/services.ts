@@ -2,10 +2,17 @@ import { getToken, deleteToken } from 'firebase/messaging';
 import type { FirebaseApp } from 'firebase/app';
 import { getApp, initializeApp } from 'firebase/app';
 import { getMessaging, onBackgroundMessage } from 'firebase/messaging/sw';
-import type { Messaging, MessagePayload } from 'firebase/messaging/sw';
+import type {
+  Messaging,
+  MessagePayload,
+  Unsubscribe,
+} from 'firebase/messaging/sw';
 import log from 'loglevel';
-import { onPushNotification } from '../utils/get-notification-message';
-import type { Notification } from '../../metamask-notifications/types/notification/notification';
+import {
+  onNotificationClick,
+  onPushNotification,
+} from '../utils/get-notification-message';
+import { Notification } from '../../metamask-notifications/types/types';
 
 const url = process.env.PUSH_NOTIFICATIONS_SERVICE_URL;
 const REGISTRATION_TOKENS_ENDPOINT = `${url}/v1/link`;
@@ -131,7 +138,7 @@ export async function updateLinksAPI(
       trigger_ids: triggers,
       registration_tokens: regTokens,
     };
-    const response = await fetch(`${url}/v1/link`, {
+    const response = await fetch(REGISTRATION_TOKENS_ENDPOINT, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${bearerToken}`,
@@ -150,13 +157,11 @@ export async function updateLinksAPI(
  *
  * @param bearerToken - The JSON Web Token used for authorization.
  * @param triggers - An array of trigger identifiers.
- * @param updateMetamaskNotificationsList - A function to update the notification list.
  * @returns A promise that resolves with an object containing the success status and the BearerToken token.
  */
 export async function activatePushNotifications(
   bearerToken: string,
   triggers: string[],
-  updateMetamaskNotificationsList: (notification: Notification) => void,
 ): Promise<string | null> {
   const notificationLinks = await getPushNotificationLinks(bearerToken);
 
@@ -169,9 +174,19 @@ export async function activatePushNotifications(
     return null;
   }
 
-  const messaging = await getFirebaseMessaging();
+  const newRegTokens = new Set(notificationLinks.registration_tokens);
+  newRegTokens.add({ token: regToken, platform: 'extension' });
 
-  onBackgroundMessage(
+  await updateLinksAPI(bearerToken, triggers, Array.from(newRegTokens));
+  return regToken;
+}
+
+export async function listenToPushNotifications(
+  onNewNotification: (notification: Notification) => void,
+): Promise<Unsubscribe> {
+  // Firebase
+  const messaging = await getFirebaseMessaging();
+  const unsubscribe = onBackgroundMessage(
     messaging,
     async (payload: MessagePayload): Promise<void> => {
       const typedPayload = payload;
@@ -185,14 +200,8 @@ export async function activatePushNotifications(
           return;
         }
 
-        sw.addEventListener('notificationclick', (event) => {
-          event.notification.close();
-          const destination = `chrome-extension://${sw.location.host}/home.html#notifications/${notificationData?.id}`;
-          event.waitUntil(sw.clients.openWindow(destination));
-        });
-
         // update the notification list
-        updateMetamaskNotificationsList(notificationData);
+        onNewNotification(notificationData);
 
         await onPushNotification(notificationData);
       } catch (error) {
@@ -206,12 +215,13 @@ export async function activatePushNotifications(
     },
   );
 
-  const newRegTokens = new Set(notificationLinks.registration_tokens);
-  newRegTokens.add({ token: regToken, platform: 'extension' });
-
-  await updateLinksAPI(bearerToken, triggers, Array.from(newRegTokens));
-  return regToken;
+  return unsubscribe;
 }
+
+/**
+ * Handle Clicking Notifications.
+ */
+sw.addEventListener('notificationclick', onNotificationClick);
 
 /**
  * Disables push notifications by removing the registration token and unlinking triggers.
@@ -286,6 +296,8 @@ export async function updateTriggerPushNotifications(
     regToken &&
       notificationLinks.registration_tokens.some((r) => r.token === regToken),
   );
+
+  let newRegToken: string | null = null;
   if (!hasRegToken) {
     await deleteRegToken();
     newRegToken = await createRegToken();
@@ -306,6 +318,6 @@ export async function updateTriggerPushNotifications(
 
   return {
     isTriggersLinkedToPushNotifications,
-    fcmToken: newRegToken,
+    fcmToken: newRegToken ?? undefined,
   };
 }

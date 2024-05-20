@@ -1426,10 +1426,7 @@ export default class MetamaskController extends EventEmitter {
         state: initState.PushPlatformNotificationsController,
         messenger: this.controllerMessenger.getRestricted({
           name: 'PushPlatformNotificationsController',
-          allowedActions: [
-            'AuthenticationController:getBearerToken',
-            'MetamaskNotificationsController:updateMetamaskNotificationsList',
-          ],
+          allowedActions: ['AuthenticationController:getBearerToken'],
         }),
       });
 
@@ -1448,7 +1445,10 @@ export default class MetamaskController extends EventEmitter {
           'PushPlatformNotificationsController:disablePushNotifications',
           'PushPlatformNotificationsController:updateTriggerPushNotifications',
         ],
-        allowedEvents: ['KeyringController:stateChange'],
+        allowedEvents: [
+          'KeyringController:stateChange',
+          'PushPlatformNotificationsController:onNewNotifications',
+        ],
       }),
       state: initState.MetamaskNotificationsController,
     });
