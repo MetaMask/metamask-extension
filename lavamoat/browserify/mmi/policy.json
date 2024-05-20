@@ -765,55 +765,15 @@
       "globals": {
         "URLSearchParams": true,
         "console.debug": true,
+        "console.error": true,
         "console.log": true,
         "console.warn": true,
         "fetch": true
       },
       "packages": {
         "@metamask-institutional/sdk>@metamask-institutional/simplecache": true,
-        "@metamask-institutional/sdk>jsonwebtoken": true,
         "browserify>crypto-browserify": true,
         "webpack>events": true
-      }
-    },
-    "@metamask-institutional/sdk>jsonwebtoken": {
-      "packages": {
-        "@metamask-institutional/sdk>jsonwebtoken>jws": true,
-        "browserify>buffer": true,
-        "browserify>crypto-browserify": true,
-        "browserify>process": true,
-        "lodash": true,
-        "mocha>ms": true,
-        "semver": true
-      }
-    },
-    "@metamask-institutional/sdk>jsonwebtoken>jws": {
-      "packages": {
-        "@metamask-institutional/sdk>jsonwebtoken>jws>jwa": true,
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "browserify>util": true,
-        "koa>content-disposition>safe-buffer": true,
-        "stream-browserify": true
-      }
-    },
-    "@metamask-institutional/sdk>jsonwebtoken>jws>jwa": {
-      "packages": {
-        "@metamask-institutional/sdk>jsonwebtoken>jws>jwa>buffer-equal-constant-time": true,
-        "@metamask-institutional/sdk>jsonwebtoken>jws>jwa>ecdsa-sig-formatter": true,
-        "browserify>crypto-browserify": true,
-        "browserify>util": true,
-        "koa>content-disposition>safe-buffer": true
-      }
-    },
-    "@metamask-institutional/sdk>jsonwebtoken>jws>jwa>buffer-equal-constant-time": {
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
-    "@metamask-institutional/sdk>jsonwebtoken>jws>jwa>ecdsa-sig-formatter": {
-      "packages": {
-        "koa>content-disposition>safe-buffer": true
       }
     },
     "@metamask-institutional/transaction-update": {
@@ -824,10 +784,10 @@
         "setInterval": true
       },
       "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask-institutional/sdk": true,
         "@metamask-institutional/transaction-update>@metamask-institutional/websocket-client": true,
-        "@metamask/obs-store": true,
-        "ethereumjs-util": true,
+        "@metamask-institutional/transaction-update>@metamask/obs-store": true,
         "webpack>events": true
       }
     },
