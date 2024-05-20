@@ -10,7 +10,6 @@ module.exports = {
     '<rootDir>/app/scripts/controllers/preferences.js',
     '<rootDir>/app/scripts/flask/**/*.js',
     '<rootDir>/app/scripts/lib/**/*.(js|ts)',
-    '<rootDir>/app/scripts/lib/createRPCMethodTrackingMiddleware.js',
     '<rootDir>/app/scripts/metamask-controller.js',
     '<rootDir>/app/scripts/migrations/*.js',
     '<rootDir>/app/scripts/migrations/*.ts',
