@@ -58,6 +58,20 @@ describe('Onboarding Metametrics Component', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('should match snapshot after new policy date', () => {
+    // TODO: merge this with the previous test once this date is reached
+    jest.useFakeTimers().setSystemTime(new Date('2024-06-05'));
+
+    const { container } = renderWithProvider(
+      <OnboardingMetametrics />,
+      mockStore,
+    );
+
+    expect(container).toMatchSnapshot();
+
+    jest.useRealTimers();
+  });
+
   it('should set setParticipateInMetaMetrics to true when clicking agree', async () => {
     const { queryByText } = renderWithProvider(
       <OnboardingMetametrics />,

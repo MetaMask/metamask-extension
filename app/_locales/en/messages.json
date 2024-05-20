@@ -3334,6 +3334,9 @@
   "onboardingMetametricsTitle": {
     "message": "Help us improve MetaMask"
   },
+  "onboardingMetametricsUseDataCheckbox": {
+    "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."
+  },
   "onboardingPinExtensionBillboardAccess": {
     "message": "Full access"
   },
