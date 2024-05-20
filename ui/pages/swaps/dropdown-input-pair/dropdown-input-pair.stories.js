@@ -1,5 +1,4 @@
 import React from 'react';
-import { useArgs } from '@storybook/client-api';
 
 import README from './README.mdx';
 import DropdownInputPair from '.';
@@ -150,18 +149,7 @@ const tokensToSearch = tokens.map((token) => ({
 }));
 
 export const DefaultStory = (args) => {
-  const [{ inputValue, selectedItem = tokensToSearch[0] }, updateArgs] =
-    useArgs();
-  return (
-    <DropdownInputPair
-      {...args}
-      inputValue={inputValue}
-      onInputChange={(value) => {
-        updateArgs({ ...args, inputValue: value });
-      }}
-      selectedItem={selectedItem}
-    />
-  );
+  return <DropdownInputPair {...args} />;
 };
 
 DefaultStory.storyName = 'Default';

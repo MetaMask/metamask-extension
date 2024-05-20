@@ -1,5 +1,5 @@
 import React from 'react';
-import { useArgs } from '@storybook/client-api';
+
 import AdvancedTab from './advanced-tab.component';
 
 export default {
@@ -34,53 +34,9 @@ export default {
 };
 
 export const DefaultStory = (args) => {
-  const [
-    {
-      useNonceField,
-      sendHexData,
-      showFiatInTestnets,
-      dismissSeedBackUpReminder,
-    },
-    updateArgs,
-  ] = useArgs();
-
-  const handleUseNonceField = () => {
-    updateArgs({
-      useNonceField: !useNonceField,
-    });
-  };
-
-  const handleSendHexData = () => {
-    updateArgs({
-      sendHexData: !sendHexData,
-    });
-  };
-
-  const handleShowFiatInTestnets = () => {
-    updateArgs({
-      showFiatInTestnets: !showFiatInTestnets,
-    });
-  };
-
-  const handleDismissSeedBackUpReminder = () => {
-    updateArgs({
-      dismissSeedBackUpReminder: !dismissSeedBackUpReminder,
-    });
-  };
   return (
     <div style={{ flex: 1, height: 500 }}>
-      <AdvancedTab
-        {...args}
-        useNonceField={useNonceField}
-        setUseNonceField={handleUseNonceField}
-        sendHexData={sendHexData}
-        setHexDataFeatureFlag={handleSendHexData}
-        showFiatInTestnets={showFiatInTestnets}
-        setShowFiatConversionOnTestnetsPreference={handleShowFiatInTestnets}
-        dismissSeedBackUpReminder={dismissSeedBackUpReminder}
-        setDismissSeedBackUpReminder={handleDismissSeedBackUpReminder}
-        ipfsGateway="ipfs-gateway"
-      />
+      <AdvancedTab {...args} ipfsGateway="ipfs-gateway" />
     </div>
   );
 };

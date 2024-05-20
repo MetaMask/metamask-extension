@@ -1,6 +1,5 @@
 import React, { useRef } from 'react';
-import { Meta } from '@storybook/react';
-import { useArgs } from '@storybook/client-api';
+import { Meta, StoryObj } from '@storybook/react';
 
 import {
   Display,
@@ -33,7 +32,7 @@ const marginSizeControlOptions = [
   'auto',
 ];
 
-export default {
+const meta: Meta<typeof Input> = {
   title: 'Components/ComponentLibrary/Input',
   component: Input,
   parameters: {
@@ -42,65 +41,25 @@ export default {
     },
   },
   argTypes: {
-    autoComplete: {
-      control: 'boolean',
-    },
-    autoFocus: {
-      control: 'boolean',
-    },
-    className: {
-      control: 'text',
-    },
-    defaultValue: {
-      control: 'text',
-    },
-    disabled: {
-      control: 'boolean',
-    },
-    disableStateStyles: {
-      control: 'boolean',
-    },
-    error: {
-      control: 'boolean',
-    },
-    id: {
-      control: 'text',
-    },
-    maxLength: {
-      control: 'number',
-    },
-    name: {
-      control: 'text',
-    },
-    onBlur: {
-      action: 'onBlur',
-    },
-    onChange: {
-      action: 'onChange',
-    },
-    onFocus: {
-      action: 'onFocus',
-    },
-    placeholder: {
-      control: 'text',
-    },
-    readOnly: {
-      control: 'boolean',
-    },
-    required: {
-      control: 'boolean',
-    },
-    type: {
-      control: 'select',
-      options: Object.values(InputType),
-    },
-    value: {
-      control: 'text',
-    },
-    textVariant: {
-      control: 'select',
-      options: Object.values(TextVariant),
-    },
+    autoComplete: { control: 'boolean' },
+    autoFocus: { control: 'boolean' },
+    className: { control: 'text' },
+    defaultValue: { control: 'text' },
+    disabled: { control: 'boolean' },
+    disableStateStyles: { control: 'boolean' },
+    error: { control: 'boolean' },
+    id: { control: 'text' },
+    maxLength: { control: 'number' },
+    name: { control: 'text' },
+    onBlur: { action: 'onBlur' },
+    onChange: { action: 'onChange' },
+    onFocus: { action: 'onFocus' },
+    placeholder: { control: 'text' },
+    readOnly: { control: 'boolean' },
+    required: { control: 'boolean' },
+    type: { control: 'select', options: Object.values(InputType) },
+    value: { control: 'text' },
+    textVariant: { control: 'select', options: Object.values(TextVariant) },
     marginTop: {
       options: marginSizeControlOptions,
       control: 'select',
@@ -126,167 +85,118 @@ export default {
     placeholder: 'Placeholder...',
     value: '',
   },
-} as Meta<typeof Input>;
-
-const Template = (args) => {
-  const [{ value }, updateArgs] = useArgs();
-  const handleOnChange = (e) => {
-    updateArgs({ value: e.target.value });
-  };
-  return <Input {...args} value={value} onChange={handleOnChange} />;
 };
 
-export const DefaultStory = Template.bind({});
-DefaultStory.storyName = 'Default';
+export default meta;
 
-export const Type = (args) => (
-  <Box
-    display={Display.InlineFlex}
-    flexDirection={FlexDirection.Column}
-    gap={4}
-  >
-    <Input {...args} placeholder="Default" />
-    <Input {...args} type={InputType.Password} placeholder="Password" />
-    <Input {...args} type={InputType.Number} placeholder="Number" />
-    <Input {...args} type={InputType.Search} placeholder="Search" />
-  </Box>
-);
-
-Type.args = {
-  value: undefined,
+export const DefaultStory: StoryObj<typeof Input> = {
+  render: (args) => <Input {...args} />,
 };
 
-export const Ref = (args) => {
-  const [{ value }, updateArgs] = useArgs();
-  const inputRef = useRef<HTMLInputElement>(null);
-  const handleOnClick = () => {
-    inputRef.current?.focus();
-  };
-  const handleOnChange = (e) => {
-    updateArgs({ value: e.target.value });
-  };
-  return (
-    <Box display={Display.Flex}>
-      <Input {...args} ref={inputRef} value={value} onChange={handleOnChange} />
-      <Button
-        variant={ButtonVariant.Primary}
-        marginLeft={1}
-        onClick={handleOnClick}
-      >
-        Edit
-      </Button>
-    </Box>
-  );
-};
-
-export const AutoComplete = Template.bind({});
-AutoComplete.args = {
-  autoComplete: true,
-  type: InputType.Password,
-  placeholder: 'Enter password',
-};
-
-export const AutoFocus = Template.bind({});
-AutoFocus.args = { autoFocus: true };
-
-export const DefaultValue = () => (
-  <Input placeholder="Default value" defaultValue="Default value" />
-);
-export const Disabled = Template.bind({});
-Disabled.args = { disabled: true };
-
-export const ErrorStory = Template.bind({});
-ErrorStory.args = { error: true };
-ErrorStory.storyName = 'Error';
-
-export const MaxLength = Template.bind({});
-MaxLength.args = { maxLength: 10, placeholder: 'Max length 10' };
-
-export const ReadOnly = Template.bind({});
-ReadOnly.args = { readOnly: true, value: 'Read only' };
-
-export const RequiredStory = Template.bind({});
-RequiredStory.args = { required: true, placeholder: 'Required' };
-RequiredStory.storyName = 'Required';
-
-export const DisableStateStyles = Template.bind({});
-DisableStateStyles.args = {
-  disableStateStyles: true,
-};
-
-export const TextVariantStory = (args) => {
-  const [{ value }, updateArgs] = useArgs();
-  const handleOnChange = (e) => {
-    updateArgs({ value: e.target.value });
-  };
-  return (
+export const Type: StoryObj<typeof Input> = {
+  render: (args) => (
     <Box
       display={Display.InlineFlex}
       flexDirection={FlexDirection.Column}
       gap={4}
     >
-      <Input
-        {...args}
-        value={value}
-        onChange={handleOnChange}
-        textVariant={TextVariant.displayMd}
-      />
-      <Input
-        {...args}
-        value={value}
-        onChange={handleOnChange}
-        textVariant={TextVariant.headingLg}
-      />
-      <Input
-        {...args}
-        value={value}
-        onChange={handleOnChange}
-        textVariant={TextVariant.headingMd}
-      />
-      <Input
-        {...args}
-        value={value}
-        onChange={handleOnChange}
-        textVariant={TextVariant.headingSm}
-      />
-      <Input
-        {...args}
-        value={value}
-        onChange={handleOnChange}
-        textVariant={TextVariant.bodyLgMedium}
-      />
-      <Input
-        {...args}
-        value={value}
-        onChange={handleOnChange}
-        textVariant={TextVariant.bodyMdBold}
-      />
-      <Input
-        {...args}
-        value={value}
-        onChange={handleOnChange}
-        textVariant={TextVariant.bodyMd}
-      />
-      <Input
-        {...args}
-        value={value}
-        onChange={handleOnChange}
-        textVariant={TextVariant.bodySm}
-      />
-      <Input
-        {...args}
-        value={value}
-        onChange={handleOnChange}
-        textVariant={TextVariant.bodySmBold}
-      />
-      <Input
-        {...args}
-        value={value}
-        onChange={handleOnChange}
-        textVariant={TextVariant.bodyXs}
-      />
+      <Input {...args} placeholder="Default" />
+      <Input {...args} type={InputType.Password} placeholder="Password" />
+      <Input {...args} type={InputType.Number} placeholder="Number" />
+      <Input {...args} type={InputType.Search} placeholder="Search" />
     </Box>
-  );
+  ),
+  args: {
+    value: undefined,
+  },
 };
 
-TextVariantStory.storyName = 'Text Variant';
+export const Ref: StoryObj<typeof Input> = {
+  render: (args) => {
+    const inputRef = useRef<HTMLInputElement>(null);
+    const handleOnClick = () => {
+      inputRef.current?.focus();
+    };
+
+    return (
+      <Box display={Display.Flex}>
+        <Input {...args} ref={inputRef} />
+        <Button
+          variant={ButtonVariant.Primary}
+          marginLeft={1}
+          onClick={handleOnClick}
+        >
+          Edit
+        </Button>
+      </Box>
+    );
+  },
+};
+
+export const AutoComplete: StoryObj<typeof Input> = {
+  args: {
+    autoComplete: true,
+    type: InputType.Password,
+    placeholder: 'Enter password',
+  },
+};
+
+export const AutoFocus: StoryObj<typeof Input> = {
+  args: { autoFocus: true },
+};
+
+export const DefaultValue: StoryObj<typeof Input> = {
+  render: () => (
+    <Input placeholder="Default value" defaultValue="Default value" />
+  ),
+};
+
+export const Disabled: StoryObj<typeof Input> = {
+  args: { disabled: true },
+};
+
+export const ErrorStory: StoryObj<typeof Input> = {
+  args: { error: true },
+  name: 'Error',
+};
+
+export const MaxLength: StoryObj<typeof Input> = {
+  args: { maxLength: 10, placeholder: 'Max length 10' },
+};
+
+export const ReadOnly: StoryObj<typeof Input> = {
+  args: { readOnly: true, value: 'Read only' },
+};
+
+export const RequiredStory: StoryObj<typeof Input> = {
+  args: { required: true, placeholder: 'Required' },
+  name: 'Required',
+};
+
+export const DisableStateStyles: StoryObj<typeof Input> = {
+  args: {
+    disableStateStyles: true,
+  },
+};
+
+export const TextVariantStory: StoryObj<typeof Input> = {
+  render: (args) => (
+    <Box
+      display={Display.InlineFlex}
+      flexDirection={FlexDirection.Column}
+      gap={4}
+    >
+      <Input {...args} textVariant={TextVariant.displayMd} />
+      <Input {...args} textVariant={TextVariant.headingLg} />
+      <Input {...args} textVariant={TextVariant.headingMd} />
+      <Input {...args} textVariant={TextVariant.headingSm} />
+      <Input {...args} textVariant={TextVariant.bodyLgMedium} />
+      <Input {...args} textVariant={TextVariant.bodyMdBold} />
+      <Input {...args} textVariant={TextVariant.bodyMd} />
+      <Input {...args} textVariant={TextVariant.bodySm} />
+      <Input {...args} textVariant={TextVariant.bodySmBold} />
+      <Input {...args} textVariant={TextVariant.bodyXs} />
+    </Box>
+  ),
+  name: 'Text Variant',
+};

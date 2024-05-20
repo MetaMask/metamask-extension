@@ -11,19 +11,15 @@ module.exports = {
   stories: [
     '../ui/**/*.stories.js',
     '../ui/**/*.stories.tsx',
-    '../ui/**/*.stories.mdx',
-    './*.stories.mdx',
+    '../ui/components/component-library/COMPONENT-LIBRARY.mdx',
+    './*.mdx',
   ],
   addons: [
     '@storybook/addon-essentials',
     '@storybook/addon-actions',
     '@storybook/addon-a11y',
-    '@storybook/addon-knobs',
-    './i18n-party-addon/register.js',
-    'storybook-dark-mode',
-    '@whitespace/storybook-addon-html',
-    '@storybook/addon-mdx-gfm',
-    '@storybook/addon-designs',
+    '@storybook/addon-webpack5-compiler-swc',
+    '@chromatic-com/storybook',
   ],
   staticDirs: ['../app', './images'],
   // Uses babel.config.js settings and prevents "Missing class properties transform" error
@@ -75,7 +71,7 @@ module.exports = {
             sourceMap: true,
             implementation: require('sass-embedded'),
             sassOptions: {
-              includePaths: ['ui/css/', 'node_modules/',],
+              includePaths: ['ui/css/', 'node_modules/'],
             },
           },
         },
@@ -85,12 +81,7 @@ module.exports = {
       new CopyWebpackPlugin({
         patterns: [
           {
-            from: path.join(
-              'ui',
-              'css',
-              'utilities',
-              'fonts/',
-            ),
+            from: path.join('ui', 'css', 'utilities', 'fonts/'),
             to: 'fonts',
           },
           {
@@ -118,9 +109,7 @@ module.exports = {
   framework: {
     name: '@storybook/react-webpack5',
     options: {
-      builder: {
-        useSWC: true,
-      },
+      builder: {},
     },
   },
 };

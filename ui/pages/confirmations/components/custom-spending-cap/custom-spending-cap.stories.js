@@ -1,5 +1,4 @@
 import React from 'react';
-import { useArgs } from '@storybook/client-api';
 
 import CustomSpendingCap from './custom-spending-cap';
 
@@ -57,17 +56,7 @@ export default {
 };
 
 const Template = (args) => {
-  const [{ customSpendingCap }, updateArgs] = useArgs();
-  const handleOnChange = (value) => {
-    updateArgs({ customSpendingCap: value });
-  };
-  return (
-    <CustomSpendingCap
-      {...args}
-      customSpendingCap={customSpendingCap}
-      setCustomSpendingCap={handleOnChange}
-    />
-  );
+  return <CustomSpendingCap {...args} />;
 };
 
 export const DefaultStory = Template.bind({});

@@ -1,6 +1,5 @@
-import { Story, Canvas, ArgTypes } from '@storybook/addon-docs';
-
-import { TextField } from './text-field';
+import { Controls, Canvas } from '@storybook/addon-docs';
+import * as TextFieldStories from './text-field.stories';
 
 # TextField
 
@@ -8,13 +7,11 @@ import { TextField } from './text-field';
 
 [MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
 
-<Canvas>
-  <Story id="components-componentlibrary-textfield--default-story" />
-</Canvas>
+<Canvas of={TextFieldStories.DefaultStory} />
 
 ## Props
 
-<ArgTypes of={TextField} />
+<Controls of={TextFieldStories.DefaultStory} />
 
 ### Size
 
@@ -28,9 +25,7 @@ Possible sizes include:
 
 Defaults to `md`
 
-<Canvas>
-  <Story id="components-componentlibrary-textfield--size-story" />
-</Canvas>
+<Canvas of={TextFieldStories.SizeStory} />
 
 ```jsx
 import { TextField, TextFieldSize } from '../../component-library';
@@ -52,9 +47,7 @@ Possible types include:
 
 Defaults to `text`.
 
-<Canvas>
-  <Story id="components-componentlibrary-textfield--type" />
-</Canvas>
+<Canvas of={TextFieldStories.Type} />
 
 ```jsx
 import { TextField, TextFieldType } from '../../component-library';
@@ -68,9 +61,7 @@ import { TextField, TextFieldType } from '../../component-library';
 
 Use the `truncate` prop to truncate the text of the `TextField`. Defaults to `true`.
 
-<Canvas>
-  <Story id="components-componentlibrary-textfield--truncate" />
-</Canvas>
+<Canvas of={TextFieldStories.Truncate} />
 
 ```jsx
 import { TextField } from '../../component-library';
@@ -83,9 +74,7 @@ import { TextField } from '../../component-library';
 
 Use the `startAccessory` and `endAccessory` props to add components such as icons or buttons to either side of the `TextField`.
 
-<Canvas>
-  <Story id="components-componentlibrary-textfield--start-accessory-end-accessory" />
-</Canvas>
+<Canvas of={TextFieldStories.StartAccessoryEndAccessory} />
 
 ```jsx
 import { Color, IconColor, SIZES, DISPLAY } from '../../../helpers/constants/design-system';
@@ -139,9 +128,7 @@ import { TextField, Icon, IconName, ButtonIcon } from '../../component-library';
 
 Use the `inputRef` prop to access the ref of the `<input />` html element of `TextField`. This is useful for focusing the input from a button or other component.
 
-<Canvas>
-  <Story id="components-componentlibrary-textfield--input-ref" />
-</Canvas>
+<Canvas of={TextFieldStories.InputRef} />
 
 ```jsx
 import { Button, TextField } from '../../component-library';
@@ -199,9 +186,7 @@ To function fully the custom component should accept the following props:
 - `variant`
 - `type`
 
-<Canvas>
-  <Story id="components-componentlibrary-textfield--input-component-story" />
-</Canvas>
+<Canvas of={TextFieldStories.InputComponentStory} />
 
 ```jsx
 import { TextField, Icon, IconName } from '../../component-library';
@@ -224,9 +209,7 @@ const TextFieldCustomInput = (args) => (
 
 Use the `autoComplete` prop to set the autocomplete html attribute. It allows the browser to predict the value based on earlier typed values.
 
-<Canvas>
-  <Story id="components-componentlibrary-textfield--auto-complete" />
-</Canvas>
+<Canvas of={TextFieldStories.AutoComplete} />
 
 ```jsx
 import { TextField } from '../../component-library';
@@ -250,9 +233,7 @@ import { TextField } from '../../component-library';
 
 Use the `defaultValue` prop to set the default value of the `TextField`
 
-<Canvas>
-  <Story id="components-componentlibrary-textfield--default-value" />
-</Canvas>
+<Canvas of={TextFieldStories.DefaultValue} />
 
 ```jsx
 import { TextField } from '../../component-library';
@@ -264,9 +245,7 @@ import { TextField } from '../../component-library';
 
 Use the `disabled` prop to set the disabled state of the `TextField`
 
-<Canvas>
-  <Story id="components-componentlibrary-textfield--disabled" />
-</Canvas>
+<Canvas of={TextFieldStories.Disabled} />
 
 ```jsx
 import { TextField } from '../../component-library';
@@ -278,9 +257,7 @@ import { TextField } from '../../component-library';
 
 Use the `error` prop to set the error state of the `TextField`
 
-<Canvas>
-  <Story id="components-componentlibrary-textfield--error-story" />
-</Canvas>
+<Canvas of={TextFieldStories.ErrorStory} />
 
 ```jsx
 import { TextField } from '../../component-library';
@@ -292,9 +269,7 @@ import { TextField } from '../../component-library';
 
 Use the `maxLength` prop to set the maximum allowed input characters for the `TextField`
 
-<Canvas>
-  <Story id="components-componentlibrary-textfield--max-length" />
-</Canvas>
+<Canvas of={TextFieldStories.MaxLength} />
 
 ```jsx
 import { TextField } from '../../component-library';
@@ -306,9 +281,7 @@ import { TextField } from '../../component-library';
 
 Use the `readOnly` prop to set the `TextField` to read only. When `readOnly` is true `TextField` will not have a focus state.
 
-<Canvas>
-  <Story id="components-componentlibrary-textfield--read-only" />
-</Canvas>
+<Canvas of={TextFieldStories.ReadOnly} />
 
 ```jsx
 import { TextField } from '../../component-library';
@@ -320,9 +293,7 @@ import { TextField } from '../../component-library';
 
 Use the `required` prop to set the `TextField` to required. Currently there is no visual difference to the `TextField` when required.
 
-<Canvas>
-  <Story id="components-componentlibrary-textfield--required-story" />
-</Canvas>
+<Canvas of={TextFieldStories.RequiredStory} />
 
 ```jsx
 import { TextField } from '../../component-library';

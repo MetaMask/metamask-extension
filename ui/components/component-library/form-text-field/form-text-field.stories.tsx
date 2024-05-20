@@ -1,6 +1,5 @@
 import { StoryFn, Meta } from '@storybook/react';
 import React, { useState, useEffect } from 'react';
-import { useArgs } from '@storybook/client-api';
 
 import {
   Display,
@@ -45,13 +44,9 @@ export default {
   },
 } as Meta<typeof FormTextField>;
 
-const Template: StoryFn<typeof FormTextField> = (args) => {
-  const [{ value = '' }, updateArgs] = useArgs();
-  const handleOnChange = (e) => {
-    updateArgs({ value: e.target.value });
-  };
-  return <FormTextField {...args} value={value} onChange={handleOnChange} />;
-};
+const Template: StoryFn<typeof FormTextField> = (args) => (
+  <FormTextField {...args} />
+);
 
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
@@ -72,26 +67,14 @@ LabelStory.args = {
 };
 
 export const HelpTextStory: StoryFn<typeof FormTextField> = (args) => {
-  const [{ value = '' }, updateArgs] = useArgs();
-  const handleOnChange = (e) => {
-    updateArgs({ value: e.target.value });
-  };
   return (
     <>
-      <FormTextField
-        {...args}
-        id="input-with-help-text"
-        value={value}
-        onChange={handleOnChange}
-        marginBottom={4}
-      />
+      <FormTextField {...args} id="input-with-help-text" marginBottom={4} />
       <FormTextField
         {...args}
         id="input-with-help-text-as-error"
         error
         helpText="When error is true the help text will be rendered as an error message"
-        value={value}
-        onChange={handleOnChange}
       />
     </>
   );

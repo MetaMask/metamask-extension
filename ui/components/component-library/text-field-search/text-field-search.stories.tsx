@@ -1,5 +1,4 @@
 import React from 'react';
-import { useArgs } from '@storybook/client-api';
 import type { Meta } from '@storybook/react';
 
 import {
@@ -134,21 +133,7 @@ const meta: Meta<typeof TextFieldSearch> = {
 export default meta;
 
 const Template = (args) => {
-  const [{ value }, updateArgs] = useArgs();
-  const handleOnChange = (e) => {
-    updateArgs({ value: e.target.value });
-  };
-  const handleOnClear = () => {
-    updateArgs({ value: '' });
-  };
-  return (
-    <TextFieldSearch
-      {...args}
-      value={value}
-      onChange={handleOnChange}
-      clearButtonOnClick={handleOnClear}
-    />
-  );
+  return <TextFieldSearch {...args} />;
 };
 
 export const DefaultStory = Template.bind({});

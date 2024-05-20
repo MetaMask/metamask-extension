@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-import { useArgs } from '@storybook/client-api';
 
 import {
   Display,
@@ -119,11 +118,7 @@ export default {
 } as Meta<typeof TextField>;
 
 const Template: StoryFn<typeof TextField> = (args) => {
-  const [{ value }, updateArgs] = useArgs();
-  const handleOnChange = (e) => {
-    updateArgs({ value: e.target.value });
-  };
-  return <TextField {...args} value={value} onChange={handleOnChange} />;
+  return <TextField {...args} />;
 };
 
 export const DefaultStory = Template.bind({});

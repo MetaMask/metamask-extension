@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useArgs } from '@storybook/client-api';
 import { StoryFn, Meta } from '@storybook/react';
 
 import { BlockSize, Display } from '../../../helpers/constants/design-system';
@@ -87,14 +86,14 @@ const LoremIpsum = (props) => (
 );
 
 const Template: StoryFn<typeof Modal> = (args) => {
-  const [{ isOpen }, updateArgs] = useArgs();
+  const [isOpen, setIsOpen] = useState(false);
   const [showLoremIpsum, setShowLoremIpsum] = useState(false);
   const [showMoreModalContent, setShowMoreModalContent] = useState(false);
   const handleOnClick = () => {
-    updateArgs({ isOpen: true });
+    setIsOpen(true);
   };
   const handleOnClose = () => {
-    updateArgs({ isOpen: false });
+    setIsOpen(false);
   };
   const handleHideLoremIpsum = () => {
     setShowLoremIpsum(!showLoremIpsum);
@@ -187,12 +186,12 @@ IsClosedOnEscapeKey.args = {
 
 export const InitialFocusRef: StoryFn<typeof Modal> = (args) => {
   const inputRef = React.useRef<HTMLInputElement>(null);
-  const [{ isOpen }, updateArgs] = useArgs();
+  const [isOpen, setIsOpen] = useState(false);
   const handleOnClick = () => {
-    updateArgs({ isOpen: true });
+    setIsOpen(true);
   };
   const handleOnClose = () => {
-    updateArgs({ isOpen: false });
+    setIsOpen(false);
   };
   return (
     <>
@@ -235,12 +234,12 @@ InitialFocusRef.args = {
 
 export const FinalFocusRef: StoryFn<typeof Modal> = (args) => {
   const buttonRef = React.useRef<HTMLButtonElement>(null);
-  const [{ isOpen }, updateArgs] = useArgs();
+  const [isOpen, setIsOpen] = useState(false);
   const handleOnClick = () => {
-    updateArgs({ isOpen: true });
+    setIsOpen(true);
   };
   const handleOnClose = () => {
-    updateArgs({ isOpen: false });
+    setIsOpen(false);
   };
   return (
     <>

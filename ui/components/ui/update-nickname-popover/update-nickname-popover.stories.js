@@ -1,4 +1,3 @@
-import { useArgs } from '@storybook/client-api';
 import React from 'react';
 import Button from '../button';
 import README from './README.mdx';
@@ -29,12 +28,10 @@ export default {
 };
 
 export const DefaultStory = (args) => {
-  const [{ showPopover }, updateArgs] = useArgs();
+  const [showPopover, setShowPopover] = useState(false);
 
   const handlePopoverState = () => {
-    updateArgs({
-      showPopover: !showPopover,
-    });
+    setShowPopover(!showPopover);
   };
 
   return (
@@ -55,12 +52,10 @@ export const DefaultStory = (args) => {
 DefaultStory.storyName = 'UpdateNickname';
 
 export const AddNickname = (args) => {
-  const [{ showPopover }, updateArgs] = useArgs();
+  const [showPopover, setShowPopover] = useState(false);
 
   const handlePopoverState = () => {
-    updateArgs({
-      showPopover: !showPopover,
-    });
+    setShowPopover(!showPopover);
   };
 
   return (

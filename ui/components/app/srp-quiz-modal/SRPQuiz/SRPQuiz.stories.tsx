@@ -1,6 +1,5 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-import { useArgs } from '@storybook/client-api';
 import { Button } from '../../../component-library';
 import SRPQuiz from '.';
 
@@ -14,22 +13,8 @@ export default {
   },
 } as Meta<typeof SRPQuiz>;
 
-export const DefaultStory: StoryFn<typeof SRPQuiz> = () => {
-  const [{ isShowingModal }, updateArgs] = useArgs();
-
-  return (
-    <>
-      <Button onClick={() => updateArgs({ isShowingModal: true })}>
-        Open modal
-      </Button>
-      {isShowingModal && (
-        <SRPQuiz
-          isOpen={isShowingModal}
-          onClose={() => updateArgs({ isShowingModal: false })}
-        />
-      )}
-    </>
-  );
-};
+export const DefaultStory: StoryFn<typeof SRPQuiz> = (args) => (
+  <SRPQuiz {...args} />
+);
 
 DefaultStory.storyName = 'Default';
