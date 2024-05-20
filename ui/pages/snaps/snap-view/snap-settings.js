@@ -152,7 +152,9 @@ function SnapSettings({ snapId }) {
         </SnapDelineator>
       </Box>
       <Box className="snap-view__content__permissions" marginTop={12}>
-        <Text variant={TextVariant.bodyLgMedium}>{t('permissions')}</Text>
+        <Text variant={TextVariant.bodyLgMedium} marginBottom={1}>
+          {t('permissions')}
+        </Text>
         <SnapPermissionsList
           snapId={snapId}
           snapName={snapName}

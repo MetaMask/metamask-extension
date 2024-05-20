@@ -23,7 +23,6 @@ const controllerName = 'AuthenticationController';
 type SessionProfile = {
   identifierId: string;
   profileId: string;
-  metametricsId: string;
 };
 
 type SessionData = {
@@ -33,6 +32,10 @@ type SessionData = {
   accessToken: string;
   /** expiresIn - string date to determine if new access token is required  */
   expiresIn: string;
+};
+
+type MetaMetricsAuth = {
+  getMetaMetricsId: () => string;
 };
 
 export type AuthenticationControllerState = {
@@ -63,7 +66,11 @@ type CreateActionsObj<T extends keyof AuthenticationController> = {
   };
 };
 type ActionsObj = CreateActionsObj<
-  'performSignIn' | 'performSignOut' | 'getBearerToken' | 'getSessionProfile'
+  | 'performSignIn'
+  | 'performSignOut'
+  | 'getBearerToken'
+  | 'getSessionProfile'
+  | 'isSignedIn'
 >;
 export type Actions = ActionsObj[keyof ActionsObj];
 export type AuthenticationControllerPerformSignIn = ActionsObj['performSignIn'];
@@ -73,9 +80,10 @@ export type AuthenticationControllerGetBearerToken =
   ActionsObj['getBearerToken'];
 export type AuthenticationControllerGetSessionProfile =
   ActionsObj['getSessionProfile'];
+export type AuthenticationControllerIsSignedIn = ActionsObj['isSignedIn'];
 
 // Allowed Actions
-type AllowedActions = HandleSnapRequest;
+export type AllowedActions = HandleSnapRequest;
 
 // Messenger
 export type AuthenticationControllerMessenger = RestrictedControllerMessenger<
@@ -95,12 +103,20 @@ export default class AuthenticationController extends BaseController<
   AuthenticationControllerState,
   AuthenticationControllerMessenger
 > {
+  #metametrics: MetaMetricsAuth;
+
   constructor({
     messenger,
     state,
+    metametrics,
   }: {
     messenger: AuthenticationControllerMessenger;
     state?: AuthenticationControllerState;
+    /**
+     * Not using the Messaging System as we
+     * do not want to tie this strictly to extension
+     */
+    metametrics: MetaMetricsAuth;
   }) {
     super({
       messenger,
@@ -108,6 +124,41 @@ export default class AuthenticationController extends BaseController<
       name: controllerName,
       state: { ...defaultState, ...state },
     });
+
+    this.#metametrics = metametrics;
+
+    this.#registerMessageHandlers();
+  }
+
+  /**
+   * Constructor helper for registering this controller's messaging system
+   * actions.
+   */
+  #registerMessageHandlers(): void {
+    this.messagingSystem.registerActionHandler(
+      'AuthenticationController:getBearerToken',
+      this.getBearerToken.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      'AuthenticationController:getSessionProfile',
+      this.getSessionProfile.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      'AuthenticationController:isSignedIn',
+      this.isSignedIn.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      'AuthenticationController:performSignIn',
+      this.performSignIn.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      'AuthenticationController:performSignOut',
+      this.performSignOut.bind(this),
+    );
   }
 
   public async performSignIn(): Promise<string> {
@@ -152,6 +203,10 @@ export default class AuthenticationController extends BaseController<
     return profile;
   }
 
+  public isSignedIn(): boolean {
+    return this.state.isSignedIn;
+  }
+
   #assertLoggedIn(): void {
     if (!this.state.isSignedIn) {
       throw new Error(
@@ -175,7 +230,11 @@ export default class AuthenticationController extends BaseController<
       // 2. Login
       const rawMessage = createLoginRawMessage(nonce, publicKey);
       const signature = await this.#snapSignMessage(rawMessage);
-      const loginResponse = await login(rawMessage, signature);
+      const loginResponse = await login(
+        rawMessage,
+        signature,
+        this.#metametrics.getMetaMetricsId(),
+      );
       if (!loginResponse?.token) {
         throw new Error(`Unable to login`);
       }
@@ -183,7 +242,6 @@ export default class AuthenticationController extends BaseController<
       const profile: SessionProfile = {
         identifierId: loginResponse.profile.identifier_id,
         profileId: loginResponse.profile.profile_id,
-        metametricsId: loginResponse.profile.metametrics_id,
       };
 
       // 3. Trade for Access Token

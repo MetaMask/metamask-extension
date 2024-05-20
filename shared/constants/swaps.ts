@@ -170,7 +170,7 @@ const SWAPS_TESTNET_CHAIN_ID = '0x539';
 
 export const SWAPS_API_V2_BASE_URL = 'https://swap.metaswap.codefi.network';
 export const SWAPS_DEV_API_V2_BASE_URL = 'https://swap.dev-api.cx.metamask.io';
-export const GAS_API_BASE_URL = 'https://gas.api.cx.metamask.io';
+export const GAS_API_BASE_URL = 'https://gas.api.infura.io';
 export const GAS_DEV_API_BASE_URL = 'https://gas.uat-api.cx.metamask.io';
 
 const BSC_DEFAULT_BLOCK_EXPLORER_URL = 'https://bscscan.com/';

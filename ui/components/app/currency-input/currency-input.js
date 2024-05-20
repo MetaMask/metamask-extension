@@ -68,11 +68,12 @@ export default function CurrencyInput({
   const [fiatDecimalValue, setFiatDecimalValue] = useState('0');
 
   const chainId = useSelector(getCurrentChainId);
-  const { ticker, type } = useSelector(getProviderConfig);
+  const { ticker, type, rpcUrl } = useSelector(getProviderConfig);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
     chainId,
     ticker,
     type,
+    rpcUrl,
   );
 
   const tokenToFiatConversionRate = useTokenExchangeRate(asset?.address);

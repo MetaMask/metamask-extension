@@ -1,8 +1,5 @@
 import { connect } from 'react-redux';
-import {
-  getShouldShowFiat,
-  getIsMultiLayerFeeNetwork,
-} from '../../../selectors';
+import { getShouldShowFiat } from '../../../selectors';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { getHexGasTotal } from '../../../helpers/utils/confirm-tx.util';
 import { isEIP1559Transaction } from '../../../../shared/modules/transaction.utils';
@@ -40,14 +37,7 @@ const mapStateToProps = (state, ownProps) => {
       getHexGasTotal({ gasLimit, gasPrice: usedGasPrice })) ||
     '0x0';
 
-  let totalInHex = sumHexes(hexGasTotal, value);
-
-  const isMultiLayerFeeNetwork =
-    getIsMultiLayerFeeNetwork(state) && l1HexGasTotal !== undefined;
-
-  if (isMultiLayerFeeNetwork) {
-    totalInHex = sumHexes(totalInHex, l1HexGasTotal);
-  }
+  const totalInHex = sumHexes(hexGasTotal, value, l1HexGasTotal ?? 0);
 
   return {
     nativeCurrency: getNativeCurrency(state),
@@ -62,7 +52,6 @@ const mapStateToProps = (state, ownProps) => {
     priorityFee,
     baseFee: baseFeePerGas,
     isEIP1559Transaction: isEIP1559Transaction(transaction),
-    isMultiLayerFeeNetwork,
     l1HexGasTotal,
   };
 };

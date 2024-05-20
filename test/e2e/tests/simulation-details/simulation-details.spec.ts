@@ -114,7 +114,7 @@ describe('Simulation Details', () => {
 
       await switchToNotificationWindow(driver);
       await expectBalanceChange(driver, true, 0, '- 0.002', 'ETH');
-      await expectBalanceChange(driver, false, 0, '+ 6.756291', 'DAI');
+      await expectBalanceChange(driver, false, 0, '+ 6.756', 'DAI');
     });
   });
 

@@ -4,15 +4,15 @@ on:
     secrets:
       SONAR_TOKEN:
         required: true
-  pull_request:
-    branches:
-      - develop
-    types:
-      - opened
-      - reopened
-      - synchronize
-      - labeled
-      - unlabeled
+#  pull_request:
+#    branches:
+#      - develop
+#    types:
+#      - opened
+#      - reopened
+#      - synchronize
+#      - labeled
+#      - unlabeled
 
 jobs:
   sonarcloud:

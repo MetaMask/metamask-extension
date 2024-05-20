@@ -29,7 +29,6 @@ export default class TransactionBreakdown extends PureComponent {
     priorityFee: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     hexGasTotal: PropTypes.string,
     isEIP1559Transaction: PropTypes.bool,
-    isMultiLayerFeeNetwork: PropTypes.bool,
     l1HexGasTotal: PropTypes.string,
   };
 
@@ -55,7 +54,6 @@ export default class TransactionBreakdown extends PureComponent {
       priorityFee,
       hexGasTotal,
       isEIP1559Transaction,
-      isMultiLayerFeeNetwork,
       l1HexGasTotal,
     } = this.props;
     return (
@@ -81,7 +79,7 @@ export default class TransactionBreakdown extends PureComponent {
         </TransactionBreakdownRow>
         <TransactionBreakdownRow
           title={
-            isMultiLayerFeeNetwork
+            l1HexGasTotal
               ? t('transactionHistoryL2GasLimitLabel')
               : `${t('gasLimit')} (${t('units')})`
           }
@@ -136,7 +134,7 @@ export default class TransactionBreakdown extends PureComponent {
         {!isEIP1559Transaction && (
           <TransactionBreakdownRow
             title={
-              isMultiLayerFeeNetwork
+              l1HexGasTotal
                 ? t('transactionHistoryL2GasPriceLabel')
                 : t('advancedGasPriceTitle')
             }
@@ -198,7 +196,7 @@ export default class TransactionBreakdown extends PureComponent {
             )}
           </TransactionBreakdownRow>
         )}
-        {isMultiLayerFeeNetwork && (
+        {l1HexGasTotal && (
           <TransactionBreakdownRow title={t('transactionHistoryL1GasLabel')}>
             <UserPreferencedCurrencyDisplay
               className="transaction-breakdown__value"
@@ -221,7 +219,7 @@ export default class TransactionBreakdown extends PureComponent {
             className="transaction-breakdown__value transaction-breakdown__value--eth-total"
             type={PRIMARY}
             value={totalInHex}
-            numberOfDecimals={isMultiLayerFeeNetwork ? 18 : null}
+            numberOfDecimals={l1HexGasTotal ? 18 : null}
           />
           {showFiat && (
             <UserPreferencedCurrencyDisplay
