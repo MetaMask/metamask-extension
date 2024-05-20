@@ -37,6 +37,19 @@ describe('Stream Utils', () => {
             const result = isStreamWritable(stream);
             expect(result).toBe(true);
           });
+          it(`should return false for destroyed ${className}`, () => {
+            const stream = new S();
+            stream.destroy();
+            const result = isStreamWritable(stream);
+            expect(result).toBe(false);
+          });
+          it(`should return false for ended ${className}`, (t) => {
+            const stream = new S();
+            stream.end(() => {
+              const result = isStreamWritable(stream);
+              expect(result).toBe(false);
+            });
+          });
         });
         [
           ['Readable', streamsImpl.Readable] as [
