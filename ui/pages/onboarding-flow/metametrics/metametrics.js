@@ -54,6 +54,10 @@ export default function OnboardingMetametrics() {
   const trackEvent = useContext(MetaMetricsContext);
 
   const onConfirm = async () => {
+    if (dataCollectionForMarketing === null) {
+      await dispatch(setDataCollectionForMarketing(false));
+    }
+
     const [, metaMetricsId] = await dispatch(setParticipateInMetaMetrics(true));
     try {
       trackEvent(
@@ -80,6 +84,7 @@ export default function OnboardingMetametrics() {
 
   const onCancel = async () => {
     await dispatch(setParticipateInMetaMetrics(false));
+    await dispatch(setDataCollectionForMarketing(false));
     history.push(nextRoute);
   };
 
