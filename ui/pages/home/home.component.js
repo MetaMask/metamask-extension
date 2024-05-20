@@ -165,6 +165,7 @@ export default class Home extends PureComponent {
     // eslint-disable-next-line react/no-unused-prop-types
     totalUnapprovedCount: PropTypes.number.isRequired,
     defaultHomeActiveTabName: PropTypes.string,
+    participateInMetaMetrics: PropTypes.bool.isRequired,
     onTabClick: PropTypes.func.isRequired,
     haveSwapsQuotes: PropTypes.bool.isRequired,
     showAwaitingSwapScreen: PropTypes.bool.isRequired,
@@ -887,6 +888,7 @@ export default class Home extends PureComponent {
       showWhatsNewPopup,
       hideWhatsNewPopup,
       completedOnboarding,
+      participateInMetaMetrics,
       onboardedInThisUISession,
       announcementsToShow,
       dataCollectionForMarketing,
@@ -973,7 +975,8 @@ export default class Home extends PureComponent {
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()
             : null}
-          {dataCollectionForMarketing === null
+          {dataCollectionForMarketing === null &&
+          participateInMetaMetrics === true
             ? this.renderOnboardingPopover()
             : null}
           {
