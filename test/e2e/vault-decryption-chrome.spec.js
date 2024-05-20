@@ -50,9 +50,12 @@ async function getExtensionStorageFilePath(driver) {
  */
 async function closePopoverIfPresent(driver) {
   const popoverButtonSelector = '[data-testid="popover-close"]';
-  const linkNotRightNow = { text: 'Not right now', tag: 'button' };
+  const linkNoThanks = {
+    text: "Don't enable enhanced protection",
+    tag: 'button',
+  };
   await driver.clickElementSafe(popoverButtonSelector);
-  await driver.clickElementSafe(linkNotRightNow);
+  await driver.clickElementSafe(linkNoThanks);
 }
 
 /**

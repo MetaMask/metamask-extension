@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { PRIMARY } from '../../../../../helpers/constants/common';
 import {
   AlignItems,
   Display,
@@ -37,7 +38,7 @@ export const ConfirmInfoRowCurrency = ({
     {currency ? (
       <CurrencyDisplay currency={currency} value={`${value}`} />
     ) : (
-      <UserPreferencedCurrencyDisplay value={`${value}`} />
+      <UserPreferencedCurrencyDisplay type={PRIMARY} value={`${value}`} />
     )}
   </Box>
 );

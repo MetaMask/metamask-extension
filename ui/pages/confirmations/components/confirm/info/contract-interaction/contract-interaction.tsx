@@ -1,20 +1,16 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowText,
-} from '../../../../../../components/app/confirm/info/row';
 import { Box } from '../../../../../../components/component-library';
 import {
   BackgroundColor,
   BorderRadius,
 } from '../../../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../../../selectors';
+import { SimulationDetails } from '../../../simulation-details';
+import { TransactionDetails } from '../shared/transaction-details';
 
 const ContractInteractionInfo: React.FC = () => {
-  const t = useI18nContext();
   const currentConfirmation = useSelector(
     currentConfirmationSelector,
   ) as TransactionMeta;
@@ -28,12 +24,21 @@ const ContractInteractionInfo: React.FC = () => {
       <Box
         backgroundColor={BackgroundColor.backgroundDefault}
         borderRadius={BorderRadius.MD}
+        marginBottom={4}
+      >
+        <SimulationDetails
+          simulationData={currentConfirmation.simulationData}
+          transactionId={currentConfirmation.id}
+          isTransactionsRedesign
+        />
+      </Box>
+      <Box
+        backgroundColor={BackgroundColor.backgroundDefault}
+        borderRadius={BorderRadius.MD}
         padding={2}
         marginBottom={4}
       >
-        <ConfirmInfoRow label={t('requestFrom')} tooltip={t('requestFromInfo')}>
-          <ConfirmInfoRowText text={currentConfirmation.txParams.from} />
-        </ConfirmInfoRow>
+        <TransactionDetails />
       </Box>
     </>
   );

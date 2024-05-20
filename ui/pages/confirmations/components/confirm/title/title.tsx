@@ -28,8 +28,8 @@ const ConfirmTitle: React.FC = memo(() => {
 
   const typeToDescTKey: Partial<Record<TransactionType, string>> = useMemo(
     () => ({
-      [TransactionType.personalSign]: t('confirmTitleDescPersonalSignature'),
-      [TransactionType.signTypedData]: t('confirmTitleDescTypedDataSignature'),
+      [TransactionType.personalSign]: t('confirmTitleDescSignature'),
+      [TransactionType.signTypedData]: t('confirmTitleDescSignature'),
       [TransactionType.contractInteraction]: t(
         'confirmTitleDescContractInteractionTransaction',
       ),
