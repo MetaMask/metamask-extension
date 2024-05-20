@@ -82,9 +82,6 @@ const groupTriggerTypes = (type: TRIGGER_TYPES): TRIGGER_TYPES_GROUPS => {
     case TRIGGER_TYPES.LIDO_WITHDRAWAL_COMPLETED:
     default:
       return TRIGGER_TYPES_GROUPS.DEFI;
-
-    // case TRIGGER_TYPES.LIDO_STAKE_READY_TO_BE_WITHDRAWN:
-    //   return TRIGGER_TYPES_GROUPS.DEFI;
   }
 };
 
