@@ -394,8 +394,8 @@ export class MetamaskNotificationsController extends BaseController<
 
   #assertAuthEnabled() {
     if (!this.#auth.isSignedIn()) {
-      this.update((s) => {
-        s.isMetamaskNotificationsEnabled = false;
+      this.update((state) => {
+        state.isMetamaskNotificationsEnabled = false;
       });
       throw new Error('User is not signed in.');
     }
@@ -501,8 +501,8 @@ export class MetamaskNotificationsController extends BaseController<
   #setIsUpdatingMetamaskNotifications(
     isUpdatingMetamaskNotifications: boolean,
   ) {
-    this.update((s) => {
-      s.isUpdatingMetamaskNotifications = isUpdatingMetamaskNotifications;
+    this.update((state) => {
+      state.isUpdatingMetamaskNotifications = isUpdatingMetamaskNotifications;
     });
   }
 
@@ -517,8 +517,8 @@ export class MetamaskNotificationsController extends BaseController<
   #setIsFetchingMetamaskNotifications(
     isFetchingMetamaskNotifications: boolean,
   ) {
-    this.update((s) => {
-      s.isFetchingMetamaskNotifications = isFetchingMetamaskNotifications;
+    this.update((state) => {
+      state.isFetchingMetamaskNotifications = isFetchingMetamaskNotifications;
     });
   }
 
@@ -532,8 +532,8 @@ export class MetamaskNotificationsController extends BaseController<
    * @param isCheckingAccountsPresence - A boolean value indicating whether the account presence check is currently active.
    */
   #setIsCheckingAccountsPresence(isCheckingAccountsPresence: boolean) {
-    this.update((s) => {
-      s.isCheckingAccountsPresence = isCheckingAccountsPresence;
+    this.update((state) => {
+      state.isCheckingAccountsPresence = isCheckingAccountsPresence;
     });
   }
 
@@ -544,12 +544,12 @@ export class MetamaskNotificationsController extends BaseController<
    * @param accounts - The accounts being updated.
    */
   #updateUpdatingAccountsState(accounts: string[]) {
-    this.update((s) => {
+    this.update((state) => {
       const uniqueAccounts = new Set([
-        ...s.isUpdatingMetamaskNotificationsAccount,
+        ...state.isUpdatingMetamaskNotificationsAccount,
         ...accounts,
       ]);
-      s.isUpdatingMetamaskNotificationsAccount = Array.from(uniqueAccounts);
+      state.isUpdatingMetamaskNotificationsAccount = Array.from(uniqueAccounts);
     });
   }
 
@@ -559,9 +559,9 @@ export class MetamaskNotificationsController extends BaseController<
    * @param accounts - The accounts that have finished updating.
    */
   #clearUpdatingAccountsState(accounts: string[]) {
-    this.update((s) => {
-      s.isUpdatingMetamaskNotificationsAccount =
-        s.isUpdatingMetamaskNotificationsAccount.filter(
+    this.update((state) => {
+      state.isUpdatingMetamaskNotificationsAccount =
+        state.isUpdatingMetamaskNotificationsAccount.filter(
           (existingAccount) => !accounts.includes(existingAccount),
         );
     });
@@ -597,16 +597,18 @@ export class MetamaskNotificationsController extends BaseController<
    *
    * **Action** - This method is used to enable or disable MetaMask notifications based on the provided state.
    *
-   * @param state - A boolean value indicating the desired enabled state of the notifications.
+   * @param metamaskNotificationsEnabled - A boolean value indicating the desired enabled state of the notifications.
    * @async
    * @throws {Error} If the user is not authenticated or if there is an error updating the state.
    */
-  public async setMetamaskNotificationsEnabled(state: boolean) {
+  public async setMetamaskNotificationsEnabled(
+    metamaskNotificationsEnabled: boolean,
+  ) {
     try {
       this.#assertAuthEnabled();
 
-      this.update((s) => {
-        s.isMetamaskNotificationsEnabled = state;
+      this.update((state) => {
+        state.isMetamaskNotificationsEnabled = metamaskNotificationsEnabled;
       });
     } catch (e) {
       log.error('Unable to toggle notifications', e);
@@ -626,8 +628,8 @@ export class MetamaskNotificationsController extends BaseController<
     try {
       this.#assertAuthEnabled();
 
-      this.update((s) => {
-        s.isMetamaskNotificationsFeatureSeen = true;
+      this.update((state) => {
+        state.isMetamaskNotificationsFeatureSeen = true;
       });
     } catch (e) {
       log.error('Unable to declare feature/CTA was seen', e);
@@ -640,16 +642,18 @@ export class MetamaskNotificationsController extends BaseController<
    *
    * **Action** - used in the notification settings to enable/disable feature announcements.
    *
-   * @param state - A boolean value indicating the desired enabled state of the feature announcements.
+   * @param featureAnnouncementsEnabled - A boolean value indicating the desired enabled state of the feature announcements.
    * @async
    * @throws {Error} If the BearerToken token or storage key is missing.
    */
-  public async setFeatureAnnouncementsEnabled(state: boolean) {
+  public async setFeatureAnnouncementsEnabled(
+    featureAnnouncementsEnabled: boolean,
+  ) {
     try {
       this.#assertAuthEnabled();
 
-      this.update((s) => {
-        s.isFeatureAnnouncementsEnabled = state;
+      this.update((state) => {
+        state.isFeatureAnnouncementsEnabled = featureAnnouncementsEnabled;
       });
     } catch (e) {
       log.error('Unable to toggle feature announcements', e);
@@ -662,16 +666,16 @@ export class MetamaskNotificationsController extends BaseController<
    *
    * **Action** - used in the notifications settings page to enable/disable snap notifications.
    *
-   * @param state - A boolean value indicating the desired enabled state of the snap notifications.
+   * @param snapNotificationsEnabled - A boolean value indicating the desired enabled state of the snap notifications.
    * @async
    * @throws {Error} If the BearerToken token or storage key is missing.
    */
-  public async setSnapNotificationsEnabled(state: boolean) {
+  public async setSnapNotificationsEnabled(snapNotificationsEnabled: boolean) {
     try {
       this.#assertAuthEnabled();
 
-      this.update((s) => {
-        s.isSnapNotificationsEnabled = state;
+      this.update((state) => {
+        state.isSnapNotificationsEnabled = snapNotificationsEnabled;
       });
     } catch (e) {
       log.error('Unable to toggle snap notifications', e);
@@ -803,8 +807,8 @@ export class MetamaskNotificationsController extends BaseController<
       this.#setIsUpdatingMetamaskNotifications(false);
 
       // Empty the notifications list
-      this.update((s) => {
-        s.metamaskNotificationsList = [];
+      this.update((state) => {
+        state.metamaskNotificationsList = [];
       });
     } catch (e) {
       this.#setIsUpdatingMetamaskNotifications(false);
@@ -1020,8 +1024,8 @@ export class MetamaskNotificationsController extends BaseController<
       );
 
       // Update State
-      this.update((s) => {
-        s.metamaskNotificationsList = metamaskNotifications;
+      this.update((state) => {
+        state.metamaskNotificationsList = metamaskNotifications;
       });
 
       this.#setIsFetchingMetamaskNotifications(false);
@@ -1089,14 +1093,14 @@ export class MetamaskNotificationsController extends BaseController<
     }
 
     // Update the state (state is also used on counter & badge)
-    this.update((s) => {
-      const currentReadList = s.metamaskNotificationsReadList;
+    this.update((state) => {
+      const currentReadList = state.metamaskNotificationsReadList;
       const newReadIds = [...featureAnnouncementNotificationIds];
-      s.metamaskNotificationsReadList = [
+      state.metamaskNotificationsReadList = [
         ...new Set([...currentReadList, ...newReadIds]),
       ];
 
-      s.metamaskNotificationsList = s.metamaskNotificationsList.map(
+      state.metamaskNotificationsList = state.metamaskNotificationsList.map(
         (notification: Notification) => {
           if (newReadIds.includes(notification.id)) {
             return { ...notification, isRead: true };
@@ -1135,15 +1139,15 @@ export class MetamaskNotificationsController extends BaseController<
     const processedNotification = processAndFilterSingle(notification);
 
     if (processedNotification) {
-      this.update((s) => {
+      this.update((state) => {
         const existingNotificationIds = new Set(
-          s.metamaskNotificationsList.map((n) => n.id),
+          state.metamaskNotificationsList.map((n) => n.id),
         );
         // Add the new notification only if its ID is not already present in the list
         if (!existingNotificationIds.has(notification.id)) {
-          s.metamaskNotificationsList = [
+          state.metamaskNotificationsList = [
             notification,
-            ...s.metamaskNotificationsList,
+            ...state.metamaskNotificationsList,
           ];
         }
       });

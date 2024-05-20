@@ -223,9 +223,11 @@ export default class UserStorageController extends BaseController<
     }
   }
 
-  public async setIsProfileSyncingEnabled(state: boolean): Promise<void> {
-    this.update((s) => {
-      s.isProfileSyncingEnabled = state;
+  public async setIsProfileSyncingEnabled(
+    isProfileSyncingEnabled: boolean,
+  ): Promise<void> {
+    this.update((state) => {
+      state.isProfileSyncingEnabled = isProfileSyncingEnabled;
     });
   }
 
@@ -379,8 +381,8 @@ export default class UserStorageController extends BaseController<
   async #setIsProfileSyncingUpdateLoading(
     isProfileSyncingUpdateLoading: boolean,
   ): Promise<void> {
-    this.update((s) => {
-      s.isProfileSyncingUpdateLoading = isProfileSyncingUpdateLoading;
+    this.update((state) => {
+      state.isProfileSyncingUpdateLoading = isProfileSyncingUpdateLoading;
     });
   }
 }
