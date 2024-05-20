@@ -19,10 +19,8 @@ const txId = 7900715443136469;
 
 const PageSet = ({ children }) => {
   const origin = 'https://metamask.github.io';
-  const subjectIconUrl = text(
-    'Icon URL',
-    'https://metamask.github.io/test-dapp/metamask-fox.svg',
-  );
+  const subjectIconUrl =
+    'https://metamask.github.io/test-dapp/metamask-fox.svg';
   const state = store.getState();
   const currentNetworkTxList = useSelector(getCurrentNetworkTransactions);
   const transaction = currentNetworkTxList.find(({ id }) => id === txId);
