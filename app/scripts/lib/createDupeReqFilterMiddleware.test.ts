@@ -96,12 +96,36 @@ describe('createDupeReqFilterMiddleware', () => {
     expect(endMock).toHaveBeenCalledTimes(1);
   });
 
+  it('expires single id in three minute intervals', () => {
+    const filterFn = createDupeReqFilterMiddleware();
+    const nextMock = jest.fn();
+    const endMock = jest.fn();
+
+    filterFn(getMockRequest(0), getMockResponse(), nextMock, endMock);
+
+    jest.advanceTimersByTime(THREE_MINUTES);
+
+    filterFn(getMockRequest(0), getMockResponse(), nextMock, endMock);
+    // This should be ignored
+    filterFn(getMockRequest(0), getMockResponse(), nextMock, endMock);
+
+    expect(nextMock).toHaveBeenCalledTimes(2);
+    expect(endMock).toHaveBeenCalledTimes(1);
+
+    jest.advanceTimersByTime(THREE_MINUTES);
+
+    filterFn(getMockRequest(0), getMockResponse(), nextMock, endMock);
+
+    expect(nextMock).toHaveBeenCalledTimes(3);
+    expect(endMock).toHaveBeenCalledTimes(1);
+  });
+
   it('handles running expiry job without seeing any ids', () => {
     const filterFn = createDupeReqFilterMiddleware();
     const nextMock = jest.fn();
     const endMock = jest.fn();
 
-    jest.runAllTimers();
+    jest.advanceTimersByTime(THREE_MINUTES + 1);
 
     filterFn(getMockRequest(0), getMockResponse(), nextMock, endMock);
 
