@@ -304,6 +304,7 @@ export default function PrivacySettings() {
               justifyContent={JustifyContent.flexStart}
             >
               <Button
+                data-testid="category-back-button"
                 type="inline"
                 icon={
                   <Icon
@@ -333,6 +334,7 @@ export default function PrivacySettings() {
               {selectedItem && selectedItem.id === 1 ? (
                 <>
                   <Setting
+                    dataTestId="basic-functionality-toggle"
                     value={externalServicesOnboardingToggleState}
                     setValue={(toggledValue) => {
                       if (toggledValue === false) {

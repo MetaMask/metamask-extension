@@ -202,7 +202,7 @@ describe('MetaMask onboarding @no-mmi', function () {
         // Verify site
         assert.equal(
           await driver.isElementPresent({
-            text: 'Wallet creation successful',
+            text: 'Your wallet is ready',
             tag: 'h2',
           }),
           true,
@@ -276,7 +276,11 @@ describe('MetaMask onboarding @no-mmi', function () {
         );
 
         // Add custom network localhost 8546 during onboarding
-        await driver.clickElement({ text: 'Advanced configuration', tag: 'a' });
+        await driver.clickElement({
+          text: 'Manage default settings',
+          tag: 'button',
+        });
+        await driver.clickElement('[data-testid="category-item-General"]');
         await driver.clickElement('.mm-picker-network');
         await driver.clickElement({
           text: 'Add network',
@@ -299,7 +303,13 @@ describe('MetaMask onboarding @no-mmi', function () {
         await driver.assertElementNotPresent(
           '[data-testid="add-network-modal"]',
         );
-        await driver.clickElement({ text: 'Done', tag: 'button' });
+        await driver.clickElement('[data-testid="category-back-button"]');
+        await driver.clickElement(
+          '[data-testid="privacy-settings-back-button"]',
+        );
+        await driver.clickElement('[data-testid="onboarding-complete-done"]');
+        await driver.clickElement('[data-testid="pin-extension-next"]');
+        await driver.clickElement('[data-testid="pin-extension-done"]');
 
         // Check localhost 8546 is selected and its balance value is correct
         await driver.findElement({
@@ -327,13 +337,24 @@ describe('MetaMask onboarding @no-mmi', function () {
           WALLET_PASSWORD,
         );
 
-        await driver.clickElement({ text: 'Advanced configuration', tag: 'a' });
+        await driver.clickElement({
+          text: 'Manage default settings',
+          tag: 'button',
+        });
+        await driver.clickElement('[data-testid="category-item-General"]');
         await driver.clickElement(
           '[data-testid="basic-functionality-toggle"] .toggle-button',
         );
         await driver.clickElement('[id="basic-configuration-checkbox"]');
         await driver.clickElement({ text: 'Turn off', tag: 'button' });
-        await driver.clickElement({ text: 'Done', tag: 'button' });
+        await driver.clickElement('[data-testid="category-back-button"]');
+        await driver.clickElement(
+          '[data-testid="privacy-settings-back-button"]',
+        );
+        await driver.clickElement('[data-testid="onboarding-complete-done"]');
+        await driver.clickElement('[data-testid="pin-extension-next"]');
+        await driver.clickElement('[data-testid="pin-extension-done"]');
+
         // Check that the 'basic functionality is off' banner is displayed on the home screen after onboarding completion
         await driver.waitForSelector({
           text: 'Basic functionality is off',

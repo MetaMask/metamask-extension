@@ -504,7 +504,7 @@ const onboardingRevealAndConfirmSRP = async (driver) => {
  */
 const onboardingCompleteWalletCreation = async (driver) => {
   // complete
-  await driver.findElement({ text: 'Wallet creation successful', tag: 'h2' });
+  await driver.findElement({ text: 'Congratulations', tag: 'h2' });
   await driver.clickElement('[data-testid="onboarding-complete-done"]');
 };
 

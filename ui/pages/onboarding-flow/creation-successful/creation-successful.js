@@ -110,25 +110,6 @@ export default function CreationSuccessful() {
         </Text>
       </Box>
 
-      {/* {firstTimeFlowType === FirstTimeFlowType.create && seedPhraseBackedUp && (
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          alignItems={AlignItems.flexStart}
-          marginBottom={6}
-        >
-          <Button
-            variant={ButtonVariant.Link}
-            style={{
-              fontSize: 'var(--font-size-5)',
-            }}
-            onClick={() => 'www.google.com'}
-          >
-            {t('leaveYourselfAHint')}
-          </Button>
-        </Box>
-      )} */}
-
       {firstTimeFlowType === FirstTimeFlowType.create && (
         <Text variant={TextVariant.bodyLgMedium} marginBottom={6}>
           {t('keepReminderOfSRP', [
@@ -184,6 +165,7 @@ export default function CreationSuccessful() {
         alignItems={AlignItems.center}
       >
         <Button
+          data-testid="onboarding-complete-done"
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
           style={{
