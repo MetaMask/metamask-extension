@@ -58,7 +58,7 @@ describe('createDupeReqFilterMiddleware', () => {
     expect(endMock).not.toHaveBeenCalled();
   });
 
-  it('expires single id after five minutes', () => {
+  it('expires single id after three minutes', () => {
     const filterFn = createDupeReqFilterMiddleware();
     const nextMock = jest.fn();
     const endMock = jest.fn();
@@ -73,7 +73,7 @@ describe('createDupeReqFilterMiddleware', () => {
     expect(endMock).not.toHaveBeenCalled();
   });
 
-  it('expires multiple ids after five minutes', () => {
+  it('expires multiple ids after three minutes', () => {
     const filterFn = createDupeReqFilterMiddleware();
     const nextMock = jest.fn();
     const endMock = jest.fn();

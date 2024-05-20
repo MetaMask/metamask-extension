@@ -5,7 +5,7 @@ import { MINUTE } from '../../../shared/constants/time';
 export const THREE_MINUTES = MINUTE * 3;
 
 /**
- * Creates a set abstraction whose values expire after five minutes.
+ * Creates a set abstraction whose values expire after three minutes.
  *
  * @returns The expiry set.
  */
@@ -13,7 +13,7 @@ const makeExpirySet = () => {
   const seenValues: (number | string)[] = [];
   const timestamps: number[] = [];
 
-  setTimeout(() => {
+  setInterval(() => {
     if (timestamps.length === 0) {
       return;
     }
