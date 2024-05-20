@@ -5040,7 +5040,7 @@ export default class MetamaskController extends EventEmitter {
 
     const isConfirmationRedesignEnabled = () => {
       return this.preferencesController.store.getState().preferences
-        .redesignedConfirmations;
+        .redesignedConfirmationsEnabled;
     };
 
     engine.push(
