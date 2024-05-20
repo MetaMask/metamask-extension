@@ -41,6 +41,7 @@ export type AssetPickerProps = {
    * Sending asset for UI treatments; only for dest component
    */
   sendingAsset?: Asset;
+  isDisabled?: boolean;
 };
 
 // A component that lets the user pick from a list of assets.
@@ -48,6 +49,7 @@ export function AssetPicker({
   asset,
   onAssetChange,
   sendingAsset,
+  isDisabled = false,
 }: AssetPickerProps) {
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
   const nativeCurrencyImageUrl = useSelector(getNativeCurrencyImage);
@@ -109,6 +111,7 @@ export function AssetPicker({
       />
       <Button
         className="asset-picker"
+        disabled={isDisabled}
         display={Display.Flex}
         alignItems={AlignItems.center}
         gap={2}
@@ -119,7 +122,11 @@ export function AssetPicker({
         backgroundColor={BackgroundColor.transparent}
         onClick={() => setShowAssetPickerModal(true)}
         endIconName={IconName.ArrowDown}
-        endIconProps={{ color: IconColor.iconDefault, marginInlineStart: 0 }}
+        endIconProps={{
+          color: IconColor.iconDefault,
+          marginInlineStart: 0,
+          display: isDisabled ? Display.None : Display.InlineBlock,
+        }}
       >
         <Box display={Display.Flex} alignItems={AlignItems.center} gap={3}>
           <AvatarToken
