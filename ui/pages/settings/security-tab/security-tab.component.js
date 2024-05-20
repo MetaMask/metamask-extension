@@ -25,17 +25,24 @@ import SRPQuiz from '../../../components/app/srp-quiz-modal/SRPQuiz';
 import {
   Button,
   BUTTON_SIZES,
+  Icon,
+  IconSize,
+  IconName,
   Box,
   Text,
 } from '../../../components/component-library';
 import TextField from '../../../components/ui/text-field';
 import ToggleButton from '../../../components/ui/toggle-button';
+import Popover from '../../../components/ui/popover';
+import Typography from '../../../components/ui/typography';
 import {
   Display,
+  BlockSize,
   FlexDirection,
   JustifyContent,
   TextColor,
   TextVariant,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
 import {
@@ -353,6 +360,40 @@ export default class SecurityTab extends PureComponent {
           <ToggleButton
             value={participateInMetaMetrics}
             onToggle={(value) => setParticipateInMetaMetrics(!value)}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
+        </div>
+      </Box>
+    );
+  }
+
+  renderDataCollectionForMarketing() {
+    const { t } = this.context;
+
+    return (
+      <Box
+        ref={this.settingsRefs[4]}
+        className="settings-page__content-row"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
+        <div className="settings-page__content-item">
+          <span>{t('dataCollectionForMarketing')}</span>
+          <div className="settings-page__content-description">
+            <span>{t('dataCollectionForMarketingDescription')}</span>
+          </div>
+        </div>
+
+        <div
+          className="settings-page__content-item-col"
+          data-testid="participateInMetaMetrics"
+        >
+          <ToggleButton
+            value={false}
+            onToggle={() => {}}
             offLabel={t('off')}
             onLabel={t('on')}
           />
@@ -1025,12 +1066,48 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
+  renderDataCollectionWarning = () => {
+    const { t } = this.context;
+
+    return (
+      <Popover
+        wrapTitle
+        centerTitle
+        onClose={() => {}}
+        title={
+          <Icon
+            size={IconSize.Xl}
+            name={IconName.Danger}
+            color={IconColor.warningDefault}
+          />
+        }
+        footer={
+          <Button width={BlockSize.Full} type="primary" onClick={() => {}}>
+            {t('dataCollectionWarningPopoverButton')}
+          </Button>
+        }
+      >
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          gap={2}
+          margin={4}
+        >
+          <Typography>
+            {t('dataCollectionWarningPopoverDescription')}
+          </Typography>
+        </Box>
+      </Popover>
+    );
+  };
+
   render() {
     const { warning, petnamesEnabled } = this.props;
 
     return (
       <div className="settings-page__body">
         {this.renderUseExternalServices()}
+        {this.renderDataCollectionWarning()}
 
         {warning && <div className="settings-tab__error">{warning}</div>}
         <span className="settings-page__security-tab-sub-header__bold">
@@ -1109,6 +1186,7 @@ export default class SecurityTab extends PureComponent {
         </span>
         <div className="settings-page__content-padded">
           {this.renderMetaMetricsOptIn()}
+          {this.renderDataCollectionForMarketing()}
         </div>
       </div>
     );
