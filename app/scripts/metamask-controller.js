@@ -1400,6 +1400,9 @@ export default class MetamaskController extends EventEmitter {
           'UserStorageController:disableProfileSyncing',
         ],
       }),
+      metametrics: {
+        getMetaMetricsId: () => this.metaMetricsController.getMetaMetricsId(),
+      },
     });
 
     this.userStorageController = new UserStorageController({
