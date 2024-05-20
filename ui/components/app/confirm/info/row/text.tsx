@@ -19,7 +19,9 @@ export const ConfirmInfoRowText = ({ text }: ConfirmInfoRowTextProps) => {
       flexWrap={FlexWrap.Wrap}
       gap={2}
     >
-      <Text color={TextColor.inherit}>{text}</Text>
+      <Text color={TextColor.inherit} style={{ whiteSpace: 'pre-wrap' }}>
+        {text}
+      </Text>
     </Box>
   );
 };

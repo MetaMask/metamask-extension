@@ -15,6 +15,7 @@ const mainNetworks = {
 const testNetworks = {
   [CHAIN_IDS.GOERLI]: true,
   [CHAIN_IDS.SEPOLIA]: true,
+  [CHAIN_IDS.LINEA_GOERLI]: true,
   [CHAIN_IDS.LINEA_SEPOLIA]: true,
 };
 
@@ -94,7 +95,7 @@ export default class PreferencesController {
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
-        redesignedConfirmationsEnabled: false,
+        redesignedConfirmationsEnabled: true,
         featureNotificationsEnabled: false,
       },
       // ENS decentralized website resolution

@@ -23,6 +23,8 @@ export type InlineAlertProps = {
   onClick?: () => void;
   /** The severity of the alert, e.g. Severity.Warning */
   severity?: Severity;
+  /** Additional styles to apply to the inline alert */
+  style?: React.CSSProperties;
 };
 
 function getSeverityBackground(severity: Severity): BackgroundColor {
@@ -40,13 +42,14 @@ function getSeverityBackground(severity: Severity): BackgroundColor {
 export default function InlineAlert({
   onClick,
   severity = Severity.Info,
+  style,
 }: InlineAlertProps) {
   const t = useI18nContext();
 
   return (
     <Box>
       <Box
-        data-testid="inlineAlert"
+        data-testid="inline-alert"
         backgroundColor={getSeverityBackground(severity)}
         borderRadius={BorderRadius.SM}
         gap={1}
@@ -58,6 +61,7 @@ export default function InlineAlert({
           'inline-alert__warning': severity === Severity.Warning,
           'inline-alert__danger': severity === Severity.Danger,
         })}
+        style={style}
         onClick={onClick}
       >
         <Icon
