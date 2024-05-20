@@ -23,7 +23,6 @@ const controllerName = 'AuthenticationController';
 type SessionProfile = {
   identifierId: string;
   profileId: string;
-  metametricsId: string;
 };
 
 type SessionData = {
@@ -33,6 +32,10 @@ type SessionData = {
   accessToken: string;
   /** expiresIn - string date to determine if new access token is required  */
   expiresIn: string;
+};
+
+type MetaMetricsAuth = {
+  getMetaMetricsId: () => string;
 };
 
 export type AuthenticationControllerState = {
@@ -100,12 +103,20 @@ export default class AuthenticationController extends BaseController<
   AuthenticationControllerState,
   AuthenticationControllerMessenger
 > {
+  #metametrics: MetaMetricsAuth;
+
   constructor({
     messenger,
     state,
+    metametrics,
   }: {
     messenger: AuthenticationControllerMessenger;
     state?: AuthenticationControllerState;
+    /**
+     * Not using the Messaging System as we
+     * do not want to tie this strictly to extension
+     */
+    metametrics: MetaMetricsAuth;
   }) {
     super({
       messenger,
@@ -113,6 +124,8 @@ export default class AuthenticationController extends BaseController<
       name: controllerName,
       state: { ...defaultState, ...state },
     });
+
+    this.#metametrics = metametrics;
 
     this.#registerMessageHandlers();
   }
@@ -217,7 +230,11 @@ export default class AuthenticationController extends BaseController<
       // 2. Login
       const rawMessage = createLoginRawMessage(nonce, publicKey);
       const signature = await this.#snapSignMessage(rawMessage);
-      const loginResponse = await login(rawMessage, signature);
+      const loginResponse = await login(
+        rawMessage,
+        signature,
+        this.#metametrics.getMetaMetricsId(),
+      );
       if (!loginResponse?.token) {
         throw new Error(`Unable to login`);
       }
@@ -225,7 +242,6 @@ export default class AuthenticationController extends BaseController<
       const profile: SessionProfile = {
         identifierId: loginResponse.profile.identifier_id,
         profileId: loginResponse.profile.profile_id,
-        metametricsId: loginResponse.profile.metametrics_id,
       };
 
       // 3. Trade for Access Token
