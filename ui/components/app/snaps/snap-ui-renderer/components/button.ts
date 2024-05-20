@@ -5,7 +5,7 @@ export const button: UIComponentFactory<ButtonElement> = ({ element }) => ({
   element: 'SnapUIButton',
   props: {
     type: element.props.type,
-    variant: element.props.variant === 'destructive' ? 'secondary' : 'primary', // TODO: Support the new variants for the buttons
+    variant: element.props.variant,
     name: element.props.name,
     disabled: element.props.disabled,
   },
