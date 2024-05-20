@@ -253,11 +253,15 @@ export async function deactivatePushNotifications(
 
 /**
  * Updates the triggers linked to push notifications for a given registration token.
+ * If the provided registration token does not exist or is not in the current set of registration tokens,
+ * a new registration token is created and used for the update.
  *
- * @param regToken - The registration token to update triggers for.
+ * @param regToken - The registration token to update triggers for. If null or not found, a new token will be created.
  * @param bearerToken - The JSON Web Token used for authorization.
  * @param triggers - An array of new trigger identifiers to link.
- * @returns A promise that resolves with true if the triggers were successfully updated, false otherwise.
+ * @returns A promise that resolves with an object containing:
+ * - isTriggersLinkedToPushNotifications: boolean indicating if the triggers were successfully updated.
+ * - fcmToken: the new or existing Firebase Cloud Messaging token used for the update, if applicable.
  */
 export async function updateTriggerPushNotifications(
   regToken: string,
