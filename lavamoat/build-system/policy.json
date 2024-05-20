@@ -275,6 +275,9 @@
       }
     },
     "@babel/preset-env": {
+      "builtin": {
+        "fs.readFileSync": true
+      },
       "globals": {
         "console.log": true,
         "console.warn": true,
@@ -283,13 +286,14 @@
       },
       "packages": {
         "@babel/core>@babel/helper-compilation-targets": true,
-        "@babel/core>@babel/types": true,
         "@babel/plugin-transform-logical-assignment-operators": true,
         "@babel/preset-env>@babel/compat-data": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
         "@babel/preset-env>@babel/helper-validator-option": true,
+        "@babel/preset-env>@babel/plugin-bugfix-firefox-class-in-computed-class-key": true,
         "@babel/preset-env>@babel/plugin-bugfix-safari-id-destructuring-collision-in-function-expression": true,
         "@babel/preset-env>@babel/plugin-bugfix-v8-spread-parameters-in-optional-chaining": true,
+        "@babel/preset-env>@babel/plugin-bugfix-v8-static-class-fields-redefine-readonly": true,
         "@babel/preset-env>@babel/plugin-syntax-async-generators": true,
         "@babel/preset-env>@babel/plugin-syntax-class-properties": true,
         "@babel/preset-env>@babel/plugin-syntax-class-static-block": true,
@@ -359,8 +363,13 @@
         "@babel/preset-env>babel-plugin-polyfill-corejs2": true,
         "@babel/preset-env>babel-plugin-polyfill-corejs3": true,
         "@babel/preset-env>babel-plugin-polyfill-regenerator": true,
-        "@babel/preset-env>core-js-compat": true,
         "@babel/preset-env>semver": true
+      }
+    },
+    "@babel/preset-env>@babel/plugin-bugfix-firefox-class-in-computed-class-key": {
+      "packages": {
+        "@babel/preset-env>@babel/helper-plugin-utils": true,
+        "depcheck>@babel/traverse>@babel/helper-environment-visitor": true
       }
     },
     "@babel/preset-env>@babel/plugin-bugfix-safari-id-destructuring-collision-in-function-expression": {
@@ -372,8 +381,15 @@
       "packages": {
         "@babel/core": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
-        "@babel/preset-env>@babel/plugin-transform-optional-chaining": true,
-        "@babel/preset-env>@babel/plugin-transform-spread>@babel/helper-skip-transparent-expression-wrappers": true
+        "@babel/preset-env>@babel/plugin-transform-for-of>@babel/helper-skip-transparent-expression-wrappers": true,
+        "@babel/preset-env>@babel/plugin-transform-optional-chaining": true
+      }
+    },
+    "@babel/preset-env>@babel/plugin-bugfix-v8-static-class-fields-redefine-readonly": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/preset-env>@babel/helper-plugin-utils": true,
+        "depcheck>@babel/traverse>@babel/helper-environment-visitor": true
       }
     },
     "@babel/preset-env>@babel/plugin-syntax-async-generators": {
@@ -535,7 +551,6 @@
         "@babel/core>@babel/helper-compilation-targets": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-optimise-call-expression": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers": true,
         "@babel/preset-env>@babel/plugin-transform-classes>globals": true,
         "depcheck>@babel/traverse>@babel/helper-environment-visitor": true,
@@ -548,20 +563,20 @@
         "@babel/core>@babel/types": true
       }
     },
-    "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-optimise-call-expression": {
-      "packages": {
-        "@babel/core>@babel/types": true
-      }
-    },
     "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers": {
       "packages": {
         "@babel/core": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-optimise-call-expression": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-member-expression-to-functions": true,
+        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-optimise-call-expression": true,
         "depcheck>@babel/traverse>@babel/helper-environment-visitor": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-member-expression-to-functions": {
+      "packages": {
+        "@babel/core>@babel/types": true
+      }
+    },
+    "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-optimise-call-expression": {
       "packages": {
         "@babel/core>@babel/types": true
       }
@@ -666,7 +681,13 @@
     "@babel/preset-env>@babel/plugin-transform-for-of": {
       "packages": {
         "@babel/core": true,
-        "@babel/preset-env>@babel/helper-plugin-utils": true
+        "@babel/preset-env>@babel/helper-plugin-utils": true,
+        "@babel/preset-env>@babel/plugin-transform-for-of>@babel/helper-skip-transparent-expression-wrappers": true
+      }
+    },
+    "@babel/preset-env>@babel/plugin-transform-for-of>@babel/helper-skip-transparent-expression-wrappers": {
+      "packages": {
+        "@babel/core>@babel/types": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-function-name": {
@@ -760,7 +781,6 @@
       "packages": {
         "@babel/core": true,
         "@babel/core>@babel/helper-compilation-targets": true,
-        "@babel/preset-env>@babel/compat-data": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
         "@babel/preset-env>@babel/plugin-syntax-object-rest-spread": true,
         "@babel/preset-env>@babel/plugin-transform-parameters": true
@@ -784,7 +804,7 @@
         "@babel/core": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
         "@babel/preset-env>@babel/plugin-syntax-optional-chaining": true,
-        "@babel/preset-env>@babel/plugin-transform-spread>@babel/helper-skip-transparent-expression-wrappers": true
+        "@babel/preset-env>@babel/plugin-transform-for-of>@babel/helper-skip-transparent-expression-wrappers": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-parameters": {
@@ -806,11 +826,11 @@
       "packages": {
         "@babel/core": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-optimise-call-expression": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-member-expression-to-functions": true,
+        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers>@babel/helper-optimise-call-expression": true,
+        "@babel/preset-env>@babel/plugin-transform-for-of>@babel/helper-skip-transparent-expression-wrappers": true,
         "@babel/preset-env>@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin>semver": true,
-        "@babel/preset-env>@babel/plugin-transform-spread>@babel/helper-skip-transparent-expression-wrappers": true,
         "depcheck>@babel/traverse>@babel/helper-environment-visitor": true,
         "depcheck>@babel/traverse>@babel/helper-function-name": true,
         "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true
@@ -867,12 +887,7 @@
       "packages": {
         "@babel/core": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
-        "@babel/preset-env>@babel/plugin-transform-spread>@babel/helper-skip-transparent-expression-wrappers": true
-      }
-    },
-    "@babel/preset-env>@babel/plugin-transform-spread>@babel/helper-skip-transparent-expression-wrappers": {
-      "packages": {
-        "@babel/core>@babel/types": true
+        "@babel/preset-env>@babel/plugin-transform-for-of>@babel/helper-skip-transparent-expression-wrappers": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-sticky-regex": {
@@ -1281,11 +1296,6 @@
         "process.platform": true
       }
     },
-    "@storybook/addon-knobs>qs": {
-      "packages": {
-        "string.prototype.matchall>side-channel": true
-      }
-    },
     "@storybook/core>@storybook/core-server>x-default-browser>default-browser-id>untildify>os-homedir": {
       "builtin": {
         "os.homedir": true
@@ -1314,11 +1324,6 @@
     "@storybook/react>acorn-walk": {
       "globals": {
         "define": true
-      }
-    },
-    "@storybook/test-runner>jest-circus>p-limit": {
-      "packages": {
-        "@storybook/test-runner>jest-circus>p-limit>yocto-queue": true
       }
     },
     "@typescript-eslint/eslint-plugin": {
@@ -1646,8 +1651,8 @@
       "packages": {
         "browserify>browser-resolve": true,
         "browserify>cached-path-relative": true,
-        "browserify>concat-stream": true,
         "browserify>duplexer2": true,
+        "browserify>module-deps>concat-stream": true,
         "browserify>module-deps>detective": true,
         "browserify>module-deps>stream-combiner2": true,
         "browserify>module-deps>through2": true,
@@ -1658,6 +1663,18 @@
         "readable-stream": true,
         "watchify>defined": true,
         "watchify>xtend": true
+      }
+    },
+    "browserify>module-deps>concat-stream": {
+      "globals": {
+        "Buffer.concat": true,
+        "Buffer.isBuffer": true
+      },
+      "packages": {
+        "browserify>concat-stream>typedarray": true,
+        "pumpify>inherits": true,
+        "readable-stream": true,
+        "terser>source-map-support>buffer-from": true
       }
     },
     "browserify>module-deps>detective": {
@@ -1753,6 +1770,11 @@
       "packages": {
         "readable-stream": true,
         "watchify>xtend": true
+      }
+    },
+    "browserify>url>qs": {
+      "packages": {
+        "string.prototype.matchall>side-channel": true
       }
     },
     "chalk": {
@@ -2295,9 +2317,41 @@
       "packages": {
         "del>is-glob": true,
         "depcheck>resolve": true,
-        "eslint-plugin-import>tsconfig-paths": true,
+        "eslint-import-resolver-typescript>tsconfig-paths": true,
         "nock>debug": true,
         "nyc>glob": true
+      }
+    },
+    "eslint-import-resolver-typescript>tsconfig-paths": {
+      "builtin": {
+        "fs.existsSync": true,
+        "fs.lstatSync": true,
+        "fs.readFile": true,
+        "fs.readFileSync": true,
+        "fs.stat": true,
+        "fs.statSync": true,
+        "module._resolveFilename": true,
+        "module.builtinModules": true,
+        "path.dirname": true,
+        "path.isAbsolute": true,
+        "path.join": true,
+        "path.resolve": true
+      },
+      "globals": {
+        "console.warn": true,
+        "process.argv.slice": true,
+        "process.cwd": true,
+        "process.env": true
+      },
+      "packages": {
+        "eslint-import-resolver-typescript>tsconfig-paths>json5": true,
+        "eslint-import-resolver-typescript>tsconfig-paths>strip-bom": true,
+        "wait-on>minimist": true
+      }
+    },
+    "eslint-import-resolver-typescript>tsconfig-paths>json5": {
+      "globals": {
+        "console.warn": true
       }
     },
     "eslint-plugin-import": {
@@ -2448,27 +2502,15 @@
       "builtin": {
         "fs.existsSync": true,
         "fs.lstatSync": true,
-        "fs.readFile": true,
         "fs.readFileSync": true,
-        "fs.stat": true,
         "fs.statSync": true,
-        "module._resolveFilename": true,
-        "module.builtinModules": true,
         "path.dirname": true,
-        "path.isAbsolute": true,
         "path.join": true,
         "path.resolve": true
       },
-      "globals": {
-        "console.warn": true,
-        "process.argv.slice": true,
-        "process.cwd": true,
-        "process.env": true
-      },
       "packages": {
         "eslint-plugin-import>tsconfig-paths>json5": true,
-        "eslint-plugin-import>tsconfig-paths>strip-bom": true,
-        "wait-on>minimist": true
+        "eslint-plugin-import>tsconfig-paths>strip-bom": true
       }
     },
     "eslint-plugin-import>tsconfig-paths>json5": {
@@ -3410,7 +3452,7 @@
         "console.error": true
       },
       "packages": {
-        "@storybook/addon-knobs>qs": true,
+        "browserify>url>qs": true,
         "gulp-livereload>tiny-lr>body": true,
         "gulp-livereload>tiny-lr>debug": true,
         "gulp-livereload>tiny-lr>faye-websocket": true,
@@ -5786,6 +5828,11 @@
         "process": true
       }
     },
+    "jest>@jest/core>jest-runner>p-limit": {
+      "packages": {
+        "jest>@jest/core>jest-runner>p-limit>yocto-queue": true
+      }
+    },
     "jsdom>acorn": {
       "globals": {
         "console": true,
@@ -5853,9 +5900,28 @@
       },
       "packages": {
         "browserify>concat-stream>typedarray": true,
-        "lavamoat-browserify>readable-stream": true,
+        "lavamoat-browserify>concat-stream>readable-stream": true,
         "pumpify>inherits": true,
         "terser>source-map-support>buffer-from": true
+      }
+    },
+    "lavamoat-browserify>concat-stream>readable-stream": {
+      "builtin": {
+        "buffer.Buffer": true,
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.env.READABLE_STREAM": true,
+        "process.nextTick": true,
+        "process.stderr": true,
+        "process.stdout": true
+      },
+      "packages": {
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true
       }
     },
     "lavamoat-browserify>readable-stream": {
@@ -6056,7 +6122,7 @@
     },
     "mocha>find-up>locate-path>p-locate": {
       "packages": {
-        "@storybook/test-runner>jest-circus>p-limit": true
+        "jest>@jest/core>jest-runner>p-limit": true
       }
     },
     "mocha>log-symbols": {
@@ -7710,7 +7776,7 @@
     },
     "stylelint>@stylelint/postcss-markdown>unist-util-find-all-after": {
       "packages": {
-        "stylelint>@stylelint/postcss-markdown>unist-util-find-all-after>unist-util-is": true
+        "react-markdown>unist-util-visit>unist-util-is": true
       }
     },
     "stylelint>autoprefixer": {
