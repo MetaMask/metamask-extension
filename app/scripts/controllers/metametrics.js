@@ -472,8 +472,7 @@ export default class MetaMetricsController {
   }
 
   async setDataCollectionForMarketing(dataCollectionForMarketing) {
-    let { metaMetricsId } = this.state;
-    console.log({ dataCollectionForMarketing });
+    const { metaMetricsId } = this.state;
     this.store.updateState({ dataCollectionForMarketing });
     return metaMetricsId;
   }
