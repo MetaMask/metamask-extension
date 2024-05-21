@@ -165,7 +165,8 @@ describe('AlertModal', () => {
       fieldAlerts: [alertsMock[1]],
       getFieldAlerts: () => [],
       isAlertConfirmed: () => false,
-    });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any);
     const { getByTestId } = renderWithProvider(
       <AlertModal
         ownerId={OWNER_ID_MOCK}
