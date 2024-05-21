@@ -121,6 +121,9 @@ function shouldCloseNotificationPopup({
   return shouldClose;
 }
 
+const METAMETRICS_SETTINGS_LINK =
+  'https://support.metamask.io/privacy-and-security/how-to-manage-your-metametrics-settings/';
+
 export default class Home extends PureComponent {
   static contextTypes = {
     t: PropTypes.func,
@@ -833,7 +836,7 @@ export default class Home extends PureComponent {
           <Typography>
             {t('onboardedMetametricsParagraph1', [
               <a
-                href="https://support.metamask.io/privacy-and-security/how-to-manage-your-metametrics-settings/"
+                href={METAMETRICS_SETTINGS_LINK}
                 target="_blank"
                 rel="noopener noreferrer"
                 key="retention-link"
