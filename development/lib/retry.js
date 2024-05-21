@@ -46,12 +46,12 @@ async function retry(
         console.error('error caught in retry():', error);
       }
 
-      if (attempts < retries) {
-        console.log('Ready to retry() again');
+      if (retryUntilFailure) {
+        throw new Error('Test failed. No more retries will be performed');
       }
 
-      if (retryUntilFailure) {
-        return null;
+      if (attempts < retries) {
+        console.log('Ready to retry() again');
       }
     } finally {
       attempts += 1;

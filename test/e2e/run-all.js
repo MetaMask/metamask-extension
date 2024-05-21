@@ -213,12 +213,9 @@ async function main() {
 
   console.log('My test list:', myTestList);
 
-  let changedOrNewTests = '';
-  try {
-    changedOrNewTests = await fetchChangedE2eFiles();
-  } catch (error) {
-    console.error('Error fetching changed e2e files:', error);
-  }
+  const changedOrNewTests = await fetchChangedE2eFiles();
+  const retriesForChangedOrNewTests = 5;
+
   console.log('Spec files that will be re-run:', changedOrNewTests);
 
   // spawn `run-e2e-test.js` for each test in myTestList
@@ -228,14 +225,14 @@ async function main() {
       console.log(`\nExecuting testPath: ${testPath}\n`);
 
       const testFileName = testPath.split('/').pop();
-      const isTestChangedOrNew = changedOrNewTests.includes(testFileName);
+      const isTestChangedOrNew = changedOrNewTests?.includes(testFileName);
       const retryIndex = args.indexOf('--retries');
       if (retryIndex !== -1) {
         args.splice(retryIndex, 2);
       }
 
       const extraArgs = isTestChangedOrNew
-        ? ['--retry-until-failure', '--retries=5']
+        ? ['--retry-until-failure', `--retries=${retriesForChangedOrNewTests}`]
         : [];
       await runInShell('node', [...args, ...extraArgs, testPath]);
     }

@@ -26,7 +26,7 @@ async function fetchChangedE2eFiles() {
     return filesChanged;
   } catch (error) {
     console.error('Error making request:', error);
-    throw error;
+    return '';
   }
 }
 
