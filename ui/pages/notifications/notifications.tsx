@@ -15,18 +15,13 @@ import {
 import { NotificationsPage } from '../../components/multichain';
 import { Content, Header } from '../../components/multichain/pages/page';
 import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
-import { getNotifications, getUnreadNotifications } from '../../selectors';
+import { getNotifications } from '../../selectors';
 import {
   selectIsMetamaskNotificationsFeatureSeen,
   selectIsSnapNotificationsEnabled,
 } from '../../selectors/metamask-notifications/metamask-notifications';
 import type { Notification } from '../../../app/scripts/controllers/metamask-notifications/types/notification/notification';
-import {
-  deleteExpiredNotifications,
-  markNotificationsAsRead,
-} from '../../store/actions';
-import { useMarkNotificationAsRead } from '../../hooks/metamask-notifications/useNotifications';
-import { MarkAsReadNotificationsParam } from '../../../app/scripts/controllers/metamask-notifications/types/notification/notification';
+import { deleteExpiredNotifications } from '../../store/actions';
 import { NotificationsList } from './notifications-list';
 import { processSnapNotifications } from './snap/utils/utils';
 import { SnapNotificationWithoutSnapName } from './snap/types/types';
@@ -40,7 +35,6 @@ export default function Notifications() {
   const { notificationsData, listNotifications } =
     useMetamaskNotificationsContext();
 
-  const unreadNotifications = useSelector(getUnreadNotifications);
   const snapNotifications = useSelector(getNotifications);
   const isMetamaskNotificationsFeatureSeen = useSelector(
     selectIsMetamaskNotificationsFeatureSeen,
@@ -51,16 +45,6 @@ export default function Notifications() {
 
   const [notifications, setNotifications] = useState<NotificationType[]>([]);
   const [activeTab, setActiveTab] = useState<string>('notifications');
-  const [notificationReadArray, setNotificationReadArray] =
-    useState<MarkAsReadNotificationsParam>([]);
-
-  const markAllAsRead = () => {
-    const unreadNotificationIds = unreadNotifications.map(({ id }) => id);
-
-    dispatch(markNotificationsAsRead(unreadNotificationIds));
-  };
-
-  const { markNotificationAsRead } = useMarkNotificationAsRead();
 
   useEffect(() => {
     return () => {
@@ -83,20 +67,6 @@ export default function Notifications() {
     );
     setNotifications(combinedNotifications);
   }, [notificationsData, snapNotifications]);
-
-  useEffect(() => {
-    let notificationsRead: MarkAsReadNotificationsParam = [];
-    if (notificationsData && notificationsData.length > 0) {
-      notificationsRead = notificationsData.map(
-        (notification: Notification) => ({
-          id: notification.id,
-          type: notification.type,
-          isRead: notification.isRead,
-        }),
-      );
-    }
-    setNotificationReadArray(notificationsRead);
-  }, [notificationsData]);
 
   const handleTabClick = (tabKey: string) => {
     setActiveTab(tabKey);
@@ -121,8 +91,6 @@ export default function Notifications() {
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Sm}
             onClick={() => {
-              markNotificationAsRead(notificationReadArray);
-              markAllAsRead();
               listNotifications();
               history.push(DEFAULT_ROUTE);
             }}

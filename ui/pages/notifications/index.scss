@@ -2,6 +2,7 @@
 
 .notifications {
   display: block;
+  position: relative;
 
   &__tabs {
     border: none;
@@ -22,5 +23,17 @@
 
   &__tab button {
     padding: 8px;
+  }
+
+  &__list {
+    position: relative;
+  }
+
+  &__list__read__all__button {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
   }
 }

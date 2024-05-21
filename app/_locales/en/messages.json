@@ -3243,6 +3243,9 @@
     "message": "This enables wallet notifications like send/receive funds or nfts and feature announcements.",
     "description": "Description of the experimental notifications feature"
   },
+  "notificationsMarkAllAsRead": {
+    "message": "Mark all as read"
+  },
   "notificationsPageEmptyTitle": {
     "message": "Nothing to see here"
   },
