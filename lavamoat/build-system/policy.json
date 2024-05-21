@@ -1286,6 +1286,21 @@
         "crypto": true
       }
     },
+    "@sentry/cli>which": {
+      "builtin": {
+        "path.join": true
+      },
+      "globals": {
+        "process.cwd": true,
+        "process.env.OSTYPE": true,
+        "process.env.PATH": true,
+        "process.env.PATHEXT": true,
+        "process.platform": true
+      },
+      "packages": {
+        "@sentry/cli>which>isexe": true
+      }
+    },
     "@sentry/cli>which>isexe": {
       "builtin": {
         "fs": true
@@ -1938,9 +1953,9 @@
         "process.platform": true
       },
       "packages": {
+        "@sentry/cli>which": true,
         "cross-spawn>path-key": true,
-        "cross-spawn>shebang-command": true,
-        "cross-spawn>which": true
+        "cross-spawn>shebang-command": true
       }
     },
     "cross-spawn>path-key": {
@@ -1952,21 +1967,6 @@
     "cross-spawn>shebang-command": {
       "packages": {
         "cross-spawn>shebang-command>shebang-regex": true
-      }
-    },
-    "cross-spawn>which": {
-      "builtin": {
-        "path.join": true
-      },
-      "globals": {
-        "process.cwd": true,
-        "process.env.OSTYPE": true,
-        "process.env.PATH": true,
-        "process.env.PATHEXT": true,
-        "process.platform": true
-      },
-      "packages": {
-        "@sentry/cli>which>isexe": true
       }
     },
     "debounce-stream>duplexer": {
@@ -5000,7 +5000,6 @@
     },
     "gulp>glob-watcher": {
       "packages": {
-        "chokidar>normalize-path": true,
         "gulp>glob-watcher>anymatch": true,
         "gulp>glob-watcher>async-done": true,
         "gulp>glob-watcher>chokidar": true,
@@ -6102,13 +6101,6 @@
     "mocha>supports-color>has-flag": {
       "globals": {
         "process.argv": true
-      }
-    },
-    "mockttp>portfinder>mkdirp": {
-      "builtin": {
-        "fs": true,
-        "path.dirname": true,
-        "path.resolve": true
       }
     },
     "nock>debug": {
@@ -7828,7 +7820,14 @@
         "path.dirname": true
       },
       "packages": {
-        "mockttp>portfinder>mkdirp": true
+        "stylelint>file-entry-cache>flat-cache>write>mkdirp": true
+      }
+    },
+    "stylelint>file-entry-cache>flat-cache>write>mkdirp": {
+      "builtin": {
+        "fs": true,
+        "path.dirname": true,
+        "path.resolve": true
       }
     },
     "stylelint>global-modules": {
