@@ -161,11 +161,11 @@ describe('Send ETH', function () {
           smartContract,
           title: this.test.fullTitle(),
         },
-        async ({ driver, contractRegistry }) => {
+        async ({ driver, contractRegistry, ganacheServer }) => {
           const contractAddress = await contractRegistry.getContractAddress(
             smartContract,
           );
-          await unlockWallet(driver);
+          await logInWithBalanceValidation(driver, ganacheServer);
 
           await driver.clickElement('[data-testid="eth-overview-send"]');
           await driver.fill(
