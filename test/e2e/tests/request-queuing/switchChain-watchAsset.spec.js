@@ -66,12 +66,12 @@ describe('Request Queue SwitchChain -> WatchAsset', function () {
 
         await switchToNotificationWindow(driver);
 
-        await driver.findElement({
-          text: 'Allow this site to switch the network?',
-          tag: 'h3',
+        // Confirm Switch Network
+        await driver.findClickableElement({
+          text: 'Switch network',
+          tag: 'button',
         });
 
-        // Confirm Switch Network
         await driver.clickElement({ text: 'Switch network', tag: 'button' });
 
         await driver.waitUntilXWindowHandles(2);
