@@ -378,8 +378,8 @@ class Driver {
    * For scenarios where the clicked element, such as a notification or popup, needs to disappear afterward.
    * The wait ensures that subsequent interactions are not obscured by the initial notification or popup element.
    *
-   * @param {string} rawLocator - The locator used to identify the element to be clicked
-   * @param {number} timeout - The maximum time in ms to wait for the element to disappear after clicking.
+   * @param rawLocator - The locator used to identify the element to be clicked
+   * @param timeout - The maximum time in ms to wait for the element to disappear after clicking.
    */
   async clickElementAndWaitToDisappear(rawLocator, timeout = 2000) {
     const element = await this.findClickableElement(rawLocator);
