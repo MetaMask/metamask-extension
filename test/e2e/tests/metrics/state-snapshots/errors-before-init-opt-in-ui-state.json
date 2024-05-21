@@ -69,6 +69,10 @@
       "participateInMetaMetrics": true,
       "traits": "object"
     },
+    "MetaMetricsDataDeletionController": {
+      "metaMetricsDataDeletionId": "string",
+      "metaMetricsDataDeletionDate": "string"
+    },
     "NetworkController": {
       "selectedNetworkClientId": "string",
       "networksMetadata": {
