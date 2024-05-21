@@ -834,55 +834,15 @@
       "globals": {
         "URLSearchParams": true,
         "console.debug": true,
+        "console.error": true,
         "console.log": true,
         "console.warn": true,
         "fetch": true
       },
       "packages": {
         "@metamask-institutional/sdk>@metamask-institutional/simplecache": true,
-        "@metamask-institutional/sdk>jsonwebtoken": true,
         "browserify>crypto-browserify": true,
         "webpack>events": true
-      }
-    },
-    "@metamask-institutional/sdk>jsonwebtoken": {
-      "packages": {
-        "@metamask-institutional/sdk>jsonwebtoken>jws": true,
-        "browserify>buffer": true,
-        "browserify>crypto-browserify": true,
-        "browserify>process": true,
-        "lodash": true,
-        "mocha>ms": true,
-        "semver": true
-      }
-    },
-    "@metamask-institutional/sdk>jsonwebtoken>jws": {
-      "packages": {
-        "@metamask-institutional/sdk>jsonwebtoken>jws>jwa": true,
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "browserify>util": true,
-        "koa>content-disposition>safe-buffer": true,
-        "stream-browserify": true
-      }
-    },
-    "@metamask-institutional/sdk>jsonwebtoken>jws>jwa": {
-      "packages": {
-        "@metamask-institutional/sdk>jsonwebtoken>jws>jwa>buffer-equal-constant-time": true,
-        "@metamask-institutional/sdk>jsonwebtoken>jws>jwa>ecdsa-sig-formatter": true,
-        "browserify>crypto-browserify": true,
-        "browserify>util": true,
-        "koa>content-disposition>safe-buffer": true
-      }
-    },
-    "@metamask-institutional/sdk>jsonwebtoken>jws>jwa>buffer-equal-constant-time": {
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
-    "@metamask-institutional/sdk>jsonwebtoken>jws>jwa>ecdsa-sig-formatter": {
-      "packages": {
-        "koa>content-disposition>safe-buffer": true
       }
     },
     "@metamask-institutional/transaction-update": {
@@ -893,10 +853,10 @@
         "setInterval": true
       },
       "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask-institutional/sdk": true,
         "@metamask-institutional/transaction-update>@metamask-institutional/websocket-client": true,
         "@metamask-institutional/transaction-update>@metamask/obs-store": true,
-        "ethereumjs-util": true,
         "webpack>events": true
       }
     },
@@ -1736,8 +1696,16 @@
     },
     "@metamask/logging-controller": {
       "packages": {
-        "@metamask/base-controller": true,
+        "@metamask/logging-controller>@metamask/base-controller": true,
         "uuid": true
+      }
+    },
+    "@metamask/logging-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/logo": {
@@ -1802,9 +1770,17 @@
         "fetch": true
       },
       "packages": {
-        "@metamask/base-controller": true,
+        "@metamask/name-controller>@metamask/base-controller": true,
         "@metamask/name-controller>async-mutex": true,
         "@metamask/utils": true
+      }
+    },
+    "@metamask/name-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/name-controller>async-mutex": {
@@ -2205,33 +2181,35 @@
         "console.info": true
       },
       "packages": {
-        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
         "@metamask/logging-controller": true,
-        "@metamask/message-manager": true,
         "@metamask/providers>@metamask/rpc-errors": true,
-        "@metamask/signature-controller>@metamask/controller-utils": true,
+        "@metamask/signature-controller>@metamask/base-controller": true,
+        "@metamask/signature-controller>@metamask/message-manager": true,
+        "@metamask/utils": true,
         "browserify>buffer": true,
-        "ethereumjs-util": true,
         "lodash": true,
         "webpack>events": true
       }
     },
-    "@metamask/signature-controller>@metamask/controller-utils": {
+    "@metamask/signature-controller>@metamask/base-controller": {
       "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
         "setTimeout": true
       },
       "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/ethjs>@metamask/ethjs-unit": true,
+        "immer": true
+      }
+    },
+    "@metamask/signature-controller>@metamask/message-manager": {
+      "packages": {
+        "@metamask/controller-utils": true,
+        "@metamask/eth-sig-util": true,
+        "@metamask/message-manager>jsonschema": true,
+        "@metamask/signature-controller>@metamask/base-controller": true,
         "@metamask/utils": true,
-        "bn.js": true,
         "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true
+        "uuid": true,
+        "webpack>events": true
       }
     },
     "@metamask/smart-transactions-controller": {
@@ -4967,13 +4945,7 @@
         "console.error": true
       },
       "packages": {
-        "browserify>process": true,
-        "semver>lru-cache": true
-      }
-    },
-    "semver>lru-cache": {
-      "packages": {
-        "semver>lru-cache>yallist": true
+        "browserify>process": true
       }
     },
     "sinon>nise>path-to-regexp": {
