@@ -4403,7 +4403,7 @@
     "message": "You are sending 0 $1."
   },
   "sepolia": {
-    "message": "Sepolia test network"
+    "message": "Sepolia"
   },
   "serviceWorkerKeepAlive": {
     "message": "Service Worker Keep Alive"
