@@ -28,7 +28,6 @@ describe('preferences controller', () => {
   let preferencesController;
   let accountsController;
   let tokenListController;
-  let onKeyringStateChangeListener;
 
   beforeEach(() => {
     controllerMessenger = new ControllerMessenger();
