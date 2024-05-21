@@ -6,19 +6,29 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import Notifications from './notifications';
 
-jest.mock('../../store/actions', () => ({
-  deleteExpiredNotifications: jest.fn(() => () => null),
+const mockDispatch = jest.fn();
+
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+  useDispatch: () => mockDispatch,
 }));
 
 jest.mock(
   '../../contexts/metamask-notifications/metamask-notifications',
   () => ({
     useMetamaskNotificationsContext: () => ({
+      listNotifications: jest.fn(),
       isLoading: false,
       error: null,
     }),
   }),
 );
+
+jest.mock('../../store/actions', () => ({
+  ...jest.requireActual('../../store/actions'),
+  markNotificationsAsRead: jest.fn(),
+  markMetamaskNotificationsAsRead: jest.fn(),
+}));
 
 const initialState = {
   metamask: {
