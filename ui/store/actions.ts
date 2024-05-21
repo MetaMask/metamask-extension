@@ -5096,28 +5096,20 @@ export function createMetaMetricsDataDeletionTask(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    try {
-      await submitRequestToBackground('createMetaMetricsDataDeletionTask');
-      await forceUpdateMetamaskState(dispatch);
-    } catch (error) {
-      logErrorWithMessage(error);
-    }
+  return async () => {
+    await submitRequestToBackground('createMetaMetricsDataDeletionTask');
   };
 }
 
 /**
  * To check the status of the current delete regulation.
  */
-export async function checkDataDeletionTaskStatus(): Promise<DataDeletionResponse> {
-  try {
+export async function checkDataDeletionTaskStatus(): Promise<void> {
+  return async () => {
     await submitRequestToBackground<DataDeletionResponse>(
       'checkDataDeletionTaskStatus',
     );
-    await forceUpdateMetamaskState(dispatch);
-  } catch (error) {
-    console.error(error);
-  }
+  };
 }
 
 /**

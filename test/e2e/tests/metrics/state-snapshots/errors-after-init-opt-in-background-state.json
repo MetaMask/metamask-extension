@@ -130,6 +130,10 @@
     "rates": { "btc": { "conversionDate": 0, "conversionRate": "0" } },
     "cryptocurrencies": ["btc"]
   },
+  "MetaMetricsDataDeletionController": {
+    "metaMetricsDataDeletionId": "string",
+    "metaMetricsDataDeletionDate": "string"
+  },
   "NameController": { "names": "object", "nameSources": "object" },
   "NetworkController": {
     "selectedNetworkClientId": "string",

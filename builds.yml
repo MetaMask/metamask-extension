@@ -22,12 +22,12 @@ buildTypes:
     env:
       - INFURA_PROD_PROJECT_ID
       - SEGMENT_PROD_WRITE_KEY
-      - SEGMENT_DELETE_API_PROD_SOURCE_ID
-      - SEGMENT_REGULATIONS_PROD_ENDPOINT
+      - ANALYTICS_DATA_DELETION_PROD_SOURCE_ID
+      - ANALYTICS_DATA_DELETION_PROD_ENDPOINT
       - INFURA_ENV_KEY_REF: INFURA_PROD_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_PROD_WRITE_KEY
-      - SEGMENT_DELETE_API_SOURCE_ID_REF: SEGMENT_DELETE_API_PROD_SOURCE_ID
-      - SEGMENT_REGULATIONS_ENDPOINT_REF: SEGMENT_REGULATIONS_PROD_ENDPOINT
+      - ANALYTICS_DATA_DELETION_SOURCE_ID_REF: ANALYTICS_DATA_DELETION_PROD_SOURCE_ID
+      - ANALYTICS_DATA_DELETION_ENDPOINT_REF: ANALYTICS_DATA_DELETION_PROD_ENDPOINT
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/6.6.2/index.html
@@ -234,10 +234,10 @@ env:
   - INFURA_PROJECT_ID
   # Modified in <root>/development/build/scripts.js:@getSegmentWriteKey
   - SEGMENT_WRITE_KEY: ''
-  # Modified in <root>/development/build/scripts.js:@getSegmentDeleteApiSourceId
-  - SEGMENT_DELETE_API_SOURCE_ID: null
-  # Modified in <root>/development/build/scripts.js:@getSegmentRegulationEndpoint
-  - SEGMENT_REGULATIONS_ENDPOINT: null
+  # Modified in <root>/development/build/scripts.js:@getAnalyticsDataDeletionSourceId
+  - ANALYTICS_DATA_DELETION_SOURCE_ID: null
+  # Modified in <root>/development/build/scripts.js:@getAnalyticsDataDeletionEndpoint
+  - ANALYTICS_DATA_DELETION_ENDPOINT: null
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   # Also see DEBUG and NODE_DEBUG
   - METAMASK_DEBUG: false

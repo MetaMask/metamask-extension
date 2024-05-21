@@ -749,9 +749,14 @@ export default class MetamaskController extends EventEmitter {
       this.metaMetricsController.handleMetaMaskStateUpdate(update);
     });
 
+    const metaMetricsDataDeletionMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'MetaMetricsDataDeletionController',
+      });
     this.metaMetricsDataDeletionController =
       new MetaMetricsDataDeletionController({
-        initState: initState.metaMetricsDataDeletionController,
+        messenger: metaMetricsDataDeletionMessenger,
+        state: initState.metaMetricsDataDeletionController,
         metaMetricsController: this.metaMetricsController,
       });
 
@@ -2272,8 +2277,7 @@ export default class MetamaskController extends EventEmitter {
       KeyringController: this.keyringController,
       PreferencesController: this.preferencesController.store,
       MetaMetricsController: this.metaMetricsController.store,
-      MetaMetricsDataDeletionController:
-        this.metaMetricsDataDeletionController.store,
+      MetaMetricsDataDeletionController: this.metaMetricsDataDeletionController,
       AddressBookController: this.addressBookController,
       CurrencyController: this.currencyRateController,
       NetworkController: this.networkController,
@@ -2329,7 +2333,7 @@ export default class MetamaskController extends EventEmitter {
         PreferencesController: this.preferencesController.store,
         MetaMetricsController: this.metaMetricsController.store,
         MetaMetricsDataDeletionController:
-          this.metaMetricsDataDeletionController.store,
+          this.metaMetricsDataDeletionController,
         AddressBookController: this.addressBookController,
         CurrencyController: this.currencyRateController,
         AlertController: this.alertController.store,
