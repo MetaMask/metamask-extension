@@ -139,7 +139,7 @@ export default class PreferencesController {
 
     this.messagingSystem?.subscribe(
       'AccountsController:stateChange',
-      this.#handleAccountsControllerSync,
+      this.#handleAccountsControllerSync.bind(this),
     );
 
     global.setPreference = (key, value) => {
@@ -623,14 +623,12 @@ export default class PreferencesController {
       }
     });
 
-    console.log('account5s', accounts);
-    console.log('identities', identities);
-
     const updatedIdentities = Object.values(accounts).reduce(
       (identitesMap, account) => {
         identitesMap[account.address] = {
           address: account.address,
           name: account.metadata.name,
+          lastSelected: account.metadata.lastSelected,
         };
 
         return identitesMap;
@@ -641,7 +639,7 @@ export default class PreferencesController {
     this.store.updateState({
       identities: updatedIdentities,
       lostIdentities,
-      selectedAddress: selectedAccount.address,
+      selectedAddress: selectedAccount?.address || '', // it will be an empty string during onboarding
     });
   }
 }
