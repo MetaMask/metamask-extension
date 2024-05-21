@@ -6,9 +6,6 @@ import { Json } from '@metamask/utils';
 export const REDESIGN_APPROVAL_TYPES = [
   ApprovalType.EthSignTypedData,
   ApprovalType.PersonalSign,
-  ...(process.env.ENABLE_CONFIRMATION_REDESIGN
-    ? [ApprovalType.Transaction]
-    : []),
 ] as const;
 
 export const REDESIGN_TRANSACTION_TYPES = [
