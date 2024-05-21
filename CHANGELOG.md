@@ -7,6 +7,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [11.17.0]
+### Added
+- Launched the initial release of the signature redesign ([#24466](https://github.com/MetaMask/metamask-extension/pull/24466))
+- Enhanced support for transaction-specific gas fee estimates ([#24222](https://github.com/MetaMask/metamask-extension/pull/24222))
+- Introduced a new multiple alert component to enhance user interaction ([#23664](https://github.com/MetaMask/metamask-extension/pull/23664))
+- Updated the confirmation redesign to highlight the 'Confirm' button in red for malicious transactions ([#24402](https://github.com/MetaMask/metamask-extension/pull/24402))
+- Implemented Blockaid validation support for the OPBNB network ([#24361](https://github.com/MetaMask/metamask-extension/pull/24361))
+- Updated the Signature Redesign with revised settings and title descriptions ([#24364](https://github.com/MetaMask/metamask-extension/pull/24364))
+- Launched a revamped transaction details feature ([#24228](https://github.com/MetaMask/metamask-extension/pull/24228))
+- Introduced account pre-selection in dapp connection requests ([#24082](https://github.com/MetaMask/metamask-extension/pull/24082))
+- Added a 'Basic Configuration' option to simplify MetaMask by turning off automatic token detection, price checks, and phishing detection ([#23456](https://github.com/MetaMask/metamask-extension/pull/23456))
+
+### Changed
+- Refreshed the Smart Transactions Opt In modal with a modern UI design ([#24441](https://github.com/MetaMask/metamask-extension/pull/24441))
+- Activated 'Select networks for each site' by default ([#24274](https://github.com/MetaMask/metamask-extension/pull/24274))
+
+### Fixed
+- Fixed an issue where adding a new HD account incorrectly retrieved addresses from all keyrings ([#24199](https://github.com/MetaMask/metamask-extension/pull/24199))
+- Fixed an issue where changing accounts during an NFT transaction incorrectly retained the NFT asset selection ([#24398](https://github.com/MetaMask/metamask-extension/pull/24398))
+- Enhanced network verification to handle special cases like chain ID collisions with different symbols ([#23802](https://github.com/MetaMask/metamask-extension/pull/23802))
+- Resolved issues with decimal handling and fiat conversion during transaction simulations ([#24422](https://github.com/MetaMask/metamask-extension/pull/24422))
+- Fixed an issue where simulations wouldn't handle NFT minting ([#24306](https://github.com/MetaMask/metamask-extension/pull/24306))
+- Improved user interaction in the confirmation flow by requiring scroll to the bottom to enable the 'Confirm' button ([#24435](https://github.com/MetaMask/metamask-extension/pull/24435))
+- Resolved an issue where users were unable to manually edit gas fees in the advanced gas fee editing modal ([#24387](https://github.com/MetaMask/metamask-extension/pull/24387))
+- Fixed an issue where swaps initiated by DApps were causing errors in MetaMask ([#24382](https://github.com/MetaMask/metamask-extension/pull/24382))
+- Corrected the display mismatch of maximum gas for transactions on the Optimism network ([#24272](https://github.com/MetaMask/metamask-extension/pull/24272))
+- Resolved an issue with the currency display for user balances in the redesigned confirmation header ([#24328](https://github.com/MetaMask/metamask-extension/pull/24328))
+- Eliminated the redundant header from confirmation pages in expanded view ([#24280](https://github.com/MetaMask/metamask-extension/pull/24280))
+- Resolved an issue causing duplicate display of Layer 1 and Layer 2 fees for transactions on Layer 2 networks ([#24264](https://github.com/MetaMask/metamask-extension/pull/24264))
+- Resolved a calculation issue for minimum gas fees on transactions ([#24287](https://github.com/MetaMask/metamask-extension/pull/24287))
+- Improved the layout of the confirmation page in extended view ([#24211](https://github.com/MetaMask/metamask-extension/pull/24211))
+- Improved support for custom token approval transactions, allowing for extra data like attribution tags ([#23527](https://github.com/MetaMask/metamask-extension/pull/23527))
+- Updated the Snaps interface to conceal Snaps that are currently installing ([#24215](https://github.com/MetaMask/metamask-extension/pull/24215))
+- Adjusted the Connect Account Toast to honor user preferences ([#24474](https://github.com/MetaMask/metamask-extension/pull/24474))
+- Fixed a display issue by removing the outdated account alert ([#24475](https://github.com/MetaMask/metamask-extension/pull/24475))
+- Automatically switches to native currency when users change accounts during NFT sends ([#24421](https://github.com/MetaMask/metamask-extension/pull/24421))
+- Improved dapp toast notifications by ensuring network logos match the popup header ([#24258](https://github.com/MetaMask/metamask-extension/pull/24258))
+- Resolved an issue in the send flow where switching from an NFT to native currency caused an Internal JSON-RPC Error ([#23797](https://github.com/MetaMask/metamask-extension/pull/23797))
+- Enhanced the All Permissions screen with on-hover background color for clickable sites ([#24099](https://github.com/MetaMask/metamask-extension/pull/24099))
 
 ## [11.14.4]
 ### Fixed
