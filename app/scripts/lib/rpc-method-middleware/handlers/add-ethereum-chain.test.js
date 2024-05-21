@@ -73,7 +73,7 @@ describe('addEthereumChainHandler', () => {
     jest.clearAllMocks();
   });
 
-  describe('when getChainPermissionsFeatureFlag() returns false', () => {
+  describe('with permittedChains permissioning inactive', () => {
     describe('if a networkConfiguration for the given chainId does not already exist', () => {
       it('should call requestApproval, mockUpsertNetworkConfiguration with the requested chain, and setActiveNetwork', async () => {
         const mocks = makeMocks({
@@ -260,7 +260,7 @@ describe('addEthereumChainHandler', () => {
     });
   });
 
-  describe('when getChainPermissionsFeatureFlag() returns true', () => {
+  describe('with permittedChains permissioning active', () => {
     describe('if a networkConfiguration for the given chainId does not already exist', () => {
       it('should call upsertNetworkConfiguration, requestSwitchNetworkPermission, and call setActiveNetwork', async () => {
         const mocks = makeMocks({

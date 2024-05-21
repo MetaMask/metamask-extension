@@ -55,7 +55,7 @@ describe('switchEthereumChainHandler', () => {
     jest.clearAllMocks();
   });
 
-  describe('with chainPermitted permissioning inactive', () => {
+  describe('with permittedChains permissioning inactive', () => {
     const permissionsFeatureFlagIsActive = false;
 
     it('should call setActiveNetwork when switching to a built-in infura network', async () => {
@@ -163,7 +163,7 @@ describe('switchEthereumChainHandler', () => {
     });
   });
 
-  describe('with chainPermitted permissioning active', () => {
+  describe('with permittedChains permissioning active', () => {
     const permissionsFeatureFlagIsActive = true;
 
     it('should call requestSwitchNetworkPermission and setActiveNetwork when chainId is not in permittedChains', async () => {
