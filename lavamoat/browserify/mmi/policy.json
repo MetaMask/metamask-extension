@@ -1770,9 +1770,17 @@
         "fetch": true
       },
       "packages": {
-        "@metamask/base-controller": true,
+        "@metamask/name-controller>@metamask/base-controller": true,
         "@metamask/name-controller>async-mutex": true,
         "@metamask/utils": true
+      }
+    },
+    "@metamask/name-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
       }
     },
     "@metamask/name-controller>async-mutex": {
