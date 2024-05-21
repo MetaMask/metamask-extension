@@ -1151,9 +1151,7 @@ export default class SecurityTab extends PureComponent {
           gap={2}
           margin={4}
         >
-          <Typography>
-            {t('dataCollectionWarningPopoverDescription')}
-          </Typography>
+          <Text>{t('dataCollectionWarningPopoverDescription')}</Text>
         </Box>
       </Popover>
     );
