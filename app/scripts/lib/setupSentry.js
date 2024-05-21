@@ -155,6 +155,10 @@ export const SENTRY_BACKGROUND_STATE = {
     isSnapNotificationsEnabled: false,
     metamaskNotificationsList: [],
     metamaskNotificationsReadList: [],
+    isCheckingAccountsPresence: false,
+    isFetchingMetamaskNotifications: false,
+    isUpdatingMetamaskNotifications: false,
+    isUpdatingMetamaskNotificationsAccount: [],
   },
   MetaMetricsController: {
     eventsBeforeMetricsOptIn: false,
@@ -255,6 +259,9 @@ export const SENTRY_BACKGROUND_STATE = {
     useTransactionSimulations: true,
     enableMV3TimestampSave: true,
     hasDismissedOpenSeaToBlockaidBanner: true,
+  },
+  PushPlatformNotificationsController: {
+    fcmToken: '',
   },
   SelectedNetworkController: { domains: false },
   SignatureController: {
@@ -363,6 +370,7 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   UserStorageController: {
     isProfileSyncingEnabled: true,
+    isProfileSyncingUpdateLoading: false,
   },
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   ...MMI_SENTRY_BACKGROUND_STATE,
