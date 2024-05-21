@@ -15,8 +15,7 @@ import syncConfirmPath from '../hooks/syncConfirmPath';
 import { BlockaidAlert } from '../components/confirm/blockaid-alert';
 ///: END:ONLY_INCLUDE_IF
 import { LedgerInfo } from '../components/confirm/ledger-info';
-import { AlertActionHandlerContext } from '../../../hooks/useAlertActionHandler';
-import useConfirmationAlertActions from '../hooks/useConfirmationAlertActions';
+import { AlertActionHandlerProvider } from '../../../contexts/alertActionHandler';
 import setConfirmationAlerts from '../hooks/setConfirmationAlerts';
 
 const Confirm = () => {
@@ -24,10 +23,8 @@ const Confirm = () => {
   syncConfirmPath();
   setConfirmationAlerts();
 
-  const processAction = useConfirmationAlertActions();
-
   return (
-    <AlertActionHandlerContext.Provider value={{ processAction }}>
+    <AlertActionHandlerProvider>
       <Page className="confirm_wrapper">
         <Nav />
         <Header />
@@ -49,7 +46,7 @@ const Confirm = () => {
         </ScrollToBottom>
         <Footer />
       </Page>
-    </AlertActionHandlerContext.Provider>
+    </AlertActionHandlerProvider>
   );
 };
 

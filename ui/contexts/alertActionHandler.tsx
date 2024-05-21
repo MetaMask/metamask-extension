@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react';
+import { ReactElement, createContext, useCallback, useContext } from 'react';
 
 type AlertActionHandlerContextType = {
   processAction: (actionKey: string) => void;
@@ -7,6 +7,18 @@ type AlertActionHandlerContextType = {
 export const AlertActionHandlerContext = createContext<
   AlertActionHandlerContextType | undefined
 >(undefined);
+
+export const AlertActionHandlerProvider: React.FC<{
+  children: ReactElement;
+}> = ({ children }) => {
+  const processAction = useCallback((_actionKey: string) => {}, []);
+
+  return (
+    <AlertActionHandlerContext.Provider value={{ processAction }}>
+      {children}
+    </AlertActionHandlerContext.Provider>
+  );
+};
 
 export const useAlertActionHandler = () => {
   const context = useContext(AlertActionHandlerContext);
