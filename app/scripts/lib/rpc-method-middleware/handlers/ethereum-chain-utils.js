@@ -56,7 +56,7 @@ export function validateChainId(chainId, end) {
   return _chainId;
 }
 
-export function validateRequestParams(req, end) {
+export function validateSwitchEthereumChainParams(req, end) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
     return end(
       ethErrors.rpc.invalidParams({
@@ -66,8 +66,18 @@ export function validateRequestParams(req, end) {
       }),
     );
   }
+  const { chainId, ...otherParams } = req.params[0];
 
-  const { chainId } = req.params[0];
+  if (Object.keys(otherParams).length > 0) {
+    return end(
+      ethErrors.rpc.invalidParams({
+        message: `Received unexpected keys on object parameter. Unsupported keys:\n${Object.keys(
+          otherParams,
+        )}`,
+      }),
+    );
+  }
+
   return validateChainId(chainId, end);
 }
 

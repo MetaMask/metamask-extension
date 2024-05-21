@@ -2,7 +2,7 @@ import { ethErrors } from 'eth-rpc-errors';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   findExistingNetwork,
-  validateRequestParams,
+  validateSwitchEthereumChainParams,
   switchChain,
 } from './ethereum-chain-utils';
 
@@ -37,7 +37,7 @@ async function switchEthereumChainHandler(
     getChainPermissionsFeatureFlag,
   },
 ) {
-  const chainId = validateRequestParams(req, end);
+  const chainId = validateSwitchEthereumChainParams(req, end);
   if (!chainId) {
     return end();
   }
