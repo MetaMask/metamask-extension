@@ -42,7 +42,7 @@ export function NotificationsPage({ children }: NotificationsPageProps) {
       >
         <MetafoxLogo
           unsetIconHeight
-          onClick={async () => history.push(DEFAULT_ROUTE)}
+          onClick={() => history.push(DEFAULT_ROUTE)}
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           theme={theme}
           ///: END:ONLY_INCLUDE_IF

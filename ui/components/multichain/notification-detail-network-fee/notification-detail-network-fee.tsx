@@ -189,7 +189,7 @@ export const NotificationDetailNetworkFee: FC<
             fontWeight={FontWeight.Medium}
             color={TextColor.textDefault}
           >
-            Network Fee
+            {t('notificationDetailNetworkFee')}
           </Text>
         }
         secondaryTextLeft={
@@ -215,7 +215,7 @@ export const NotificationDetailNetworkFee: FC<
             gap={2}
           >
             <Text color={TextColor.primaryDefault} variant={TextVariant.bodyMd}>
-              Details
+              {t('notificationDetail')}
             </Text>
             <Icon
               name={isOpen ? IconName.ArrowUp : IconName.ArrowDown}
@@ -234,23 +234,23 @@ export const NotificationDetailNetworkFee: FC<
           width={BlockSize.Full}
         >
           <FeeDetail
-            label="Gas limit (units)"
+            label={t('notificationDetailGasLimit')}
             value={networkFees?.gasLimitUnits.toString() || ''}
           />
           <FeeDetail
-            label="Gas used (units)"
+            label={t('notificationDetailGasUsed')}
             value={networkFees?.gasUsedUnits.toString() || ''}
           />
           <FeeDetail
-            label="Base fee (GWEI)"
+            label={t('notificationDetailBaseFee')}
             value={networkFees?.baseFee || ''}
           />
           <FeeDetail
-            label="Priority fee (GWEI)"
+            label={t('notificationDetailPriorityFee')}
             value={networkFees?.priorityFee || ''}
           />
           <FeeDetail
-            label="Max fee per gas"
+            label={t('notificationDetailMaxFee')}
             value={networkFees?.maxFeePerGas || ''}
           />
         </Box>

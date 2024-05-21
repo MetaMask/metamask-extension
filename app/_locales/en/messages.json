@@ -3070,6 +3070,27 @@
   "notePlaceholder": {
     "message": "The approver will see this note when approving the transaction at the custodian."
   },
+  "notificationDetail": {
+    "message": "Details"
+  },
+  "notificationDetailBaseFee": {
+    "message": "Base fee (GWEI)"
+  },
+  "notificationDetailGasLimit": {
+    "message": "Gas limit (units)"
+  },
+  "notificationDetailGasUsed": {
+    "message": "Gas used (units)"
+  },
+  "notificationDetailMaxFee": {
+    "message": "Max fee per gas"
+  },
+  "notificationDetailNetworkFee": {
+    "message": "Network fee"
+  },
+  "notificationDetailPriorityFee": {
+    "message": "Priority fee (GWEI)"
+  },
   "notificationItemCheckBlockExplorer": {
     "message": "Check on the BlockExplorer"
   },
