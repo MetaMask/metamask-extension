@@ -1,4 +1,6 @@
 import { errorCodes, ethErrors } from 'eth-rpc-errors';
+import { ApprovalType } from '@metamask/controller-utils';
+
 import {
   BUILT_IN_INFURA_NETWORKS,
   CHAIN_ID_TO_RPC_URL_MAP,
@@ -225,6 +227,7 @@ export async function switchChain(
       end,
       chainId,
       networkConfigurationId,
+      approvalFlowId,
       {
         getCaveat,
         requestSwitchNetworkPermission,
@@ -249,6 +252,7 @@ async function switchChainWithPermissions(
   end,
   chainId,
   networkClientIdToSwitchTo,
+  approvalFlowId,
   {
     getCaveat,
     requestSwitchNetworkPermission,
