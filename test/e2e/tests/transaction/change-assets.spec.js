@@ -5,6 +5,7 @@ const {
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
+const { tEn } = require('../../../lib/i18n-helpers');
 
 describe('Change assets', function () {
   if (!process.env.MULTICHAIN) {
@@ -233,6 +234,79 @@ describe('Change assets', function () {
         await driver.waitForSelector({
           css: '[data-testid="transaction-list-item-primary-currency"]',
           text: '-2 ETH',
+        });
+      },
+    );
+  });
+
+  it('changes to native currency when switching accounts during a NFT send', async function () {
+    const smartContract = SMART_CONTRACTS.NFTS;
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder().withNftControllerERC721().build(),
+        ganacheOptions: defaultGanacheOptions,
+        smartContract,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver, ganacheServer }) => {
+        await logInWithBalanceValidation(driver, ganacheServer);
+
+        // Create second account
+        await driver.clickElement('[data-testid="account-menu-icon"]');
+        await driver.clickElement(
+          '[data-testid="multichain-account-menu-popover-action-button"]',
+        );
+        await driver.clickElement(
+          '[data-testid="multichain-account-menu-popover-add-account"]',
+        );
+        await driver.fill('[placeholder="Account 2"]', 'Account 2');
+        await driver.clickElement({ text: tEn('create'), tag: 'button' });
+
+        // Go back to Account 1
+        await driver.clickElement('[data-testid="account-menu-icon"]');
+        await driver.clickElement({
+          css: `.multichain-account-list-item .multichain-account-list-item__account-name__button`,
+          text: 'Account 1',
+        });
+
+        // Choose the nft
+        await driver.clickElement('[data-testid="home__nfts-tab"]');
+        await driver.clickElement('[data-testid="nft-default-image"]');
+        await driver.clickElement('[data-testid="nft-send-button"]');
+
+        // Chose a recipient
+        await driver.clickElement('.multichain-account-list-item');
+
+        // Validate that an NFT is chosen in the AssetAmountPicker
+        await driver.waitForSelector({
+          css: '.asset-picker__symbol',
+          text: 'TDN',
+        });
+        await driver.waitForSelector({ css: 'p', text: '#1' });
+
+        // Switch to Account 2
+        await driver.clickElement('[data-testid="send-page-account-picker"]');
+        await driver.clickElement({
+          css: `.multichain-account-list-item .multichain-account-list-item__account-name__button`,
+          text: 'Account 2',
+        });
+
+        // Ensure that the AssetPicker shows native currency and 0 value
+        await driver.waitForSelector({
+          css: '.asset-picker__symbol',
+          text: 'ETH',
+        });
+
+        // Populate an amount, continue
+        await driver.clickElement('[data-testid="currency-input"]');
+        await driver.press('[data-testid="currency-input"]', '2');
+        await driver.clickElement({ text: 'Continue', css: 'button' });
+
+        // Validate the send amount
+        await driver.waitForSelector({
+          css: '.currency-display-component__text',
+          text: '2.000042',
         });
       },
     );
