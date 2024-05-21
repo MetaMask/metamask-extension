@@ -41,7 +41,7 @@ const MOCK_NON_INFURA_CONFIGURATION = {
 describe('addEthereumChainHandler', () => {
   const addEthereumChainHandler = addEthereumChain.implementation;
 
-  const setupMocks = ({
+  const makeMocks = ({
     permissionedChainIds = [],
     permissionsFeatureFlagIsActive,
     overrides = {},
@@ -76,7 +76,7 @@ describe('addEthereumChainHandler', () => {
   describe('when getChainPermissionsFeatureFlag() returns false', () => {
     describe('if a networkConfiguration for the given chainId does not already exist', () => {
       it('should call requestApproval, mockUpsertNetworkConfiguration with the requested chain, and setActiveNetwork', async () => {
-        const mocks = setupMocks({
+        const mocks = makeMocks({
           permissionsFeatureFlagIsActive: false,
         });
         await addEthereumChainHandler(
@@ -124,7 +124,7 @@ describe('addEthereumChainHandler', () => {
     describe('if a networkConfiguration for the given chainId already exists', () => {
       describe('if proposed networkConfiguration has a different rpcUrl from all existing networkConfigurations', () => {
         it('should call upsertNetworkConfiguration and then setActiveNetwork', async () => {
-          const mocks = setupMocks({
+          const mocks = makeMocks({
             permissionsFeatureFlagIsActive: false,
             overrides: {
               upsertNetworkConfiguration: jest.fn().mockResolvedValue(123456),
@@ -160,7 +160,7 @@ describe('addEthereumChainHandler', () => {
       describe('if proposed networkConfiguration has the same rpcUrl as an existing networkConfiguration', () => {
         describe('if currentRpcUrl doesnt match the requested rpcUrl', () => {
           it('should call setActiveNetwork with the matched existing networkConfiguration id', async () => {
-            const mocks = setupMocks({
+            const mocks = makeMocks({
               permissionsFeatureFlagIsActive: false,
               overrides: {
                 getCurrentRpcUrl: jest
@@ -235,7 +235,7 @@ describe('addEthereumChainHandler', () => {
       });
 
       it('should return error for invalid chainId', async () => {
-        const mocks = setupMocks({
+        const mocks = makeMocks({
           permissionsFeatureFlagIsActive: false,
         });
         const mockEnd = jest.fn();
@@ -263,7 +263,7 @@ describe('addEthereumChainHandler', () => {
   describe('when getChainPermissionsFeatureFlag() returns true', () => {
     describe('if a networkConfiguration for the given chainId does not already exist', () => {
       it('should call upsertNetworkConfiguration, requestSwitchNetworkPermission, and call setActiveNetwork', async () => {
-        const mocks = setupMocks({
+        const mocks = makeMocks({
           permissionedChainIds: [],
           permissionsFeatureFlagIsActive: true,
         });
@@ -308,7 +308,7 @@ describe('addEthereumChainHandler', () => {
       describe('if the proposed networkConfiguration has a different rpcUrl from the one already in state', () => {
         describe('if the requested chainId has permittedChains permission granted for requesting origin', () => {
           it('should, after adding the chain, call setActiveNetwork without calling mockRequestSwitchNetworkPermission', async () => {
-            const mocks = setupMocks({
+            const mocks = makeMocks({
               permissionedChainIds: [CHAIN_IDS.MAINNET],
               permissionsFeatureFlagIsActive: true,
             });
@@ -344,7 +344,7 @@ describe('addEthereumChainHandler', () => {
 
         describe('if the requested chainId does not have permittedChains permission granted for requesting origin', () => {
           it('should call upsertNetworkConfiguration, requestSwitchPermissions and setActiveNetwork', async () => {
-            const mocks = setupMocks({
+            const mocks = makeMocks({
               permissionsFeatureFlagIsActive: true,
               permissionedChainIds: [],
               overrides: {
@@ -394,7 +394,7 @@ describe('addEthereumChainHandler', () => {
       describe('if the proposed networkConfiguration has the same rpcUrl as the one already in state', () => {
         describe('if the rpcUrl of the currently selected network does not match the requested rpcUrl', () => {
           it('should not call neither requestUserApproval nor mockRequestSwitchNetworkPermission, should call setActiveNetwork', async () => {
-            const mocks = setupMocks({
+            const mocks = makeMocks({
               permissionedChainIds: [MOCK_OPTIMISM_CONFIGURATION.chainId],
               permissionsFeatureFlagIsActive: true,
               overrides: {
@@ -443,7 +443,7 @@ describe('addEthereumChainHandler', () => {
 
       it('should handle errors during the switch network permission request', async () => {
         const mockError = new Error('Permission request failed');
-        const mocks = setupMocks({
+        const mocks = makeMocks({
           permissionsFeatureFlagIsActive: true,
           permissionedChainIds: [],
           overrides: {
@@ -483,7 +483,7 @@ describe('addEthereumChainHandler', () => {
     });
 
     it('should return error if nativeCurrency.symbol does not match existing network', async () => {
-      const mocks = setupMocks({
+      const mocks = makeMocks({
         permissionedChainIds: [CHAIN_IDS.MAINNET],
         permissionsFeatureFlagIsActive: true,
       });
