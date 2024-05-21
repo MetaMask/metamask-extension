@@ -374,6 +374,20 @@ class Driver {
   }
 
   /**
+   * Clicks on an element identified by the provided locator and waits for it to disappear.
+   * For scenarios where the clicked element, such as a notification or popup, needs to disappear afterward.
+   * The wait ensures that subsequent interactions are not obscured by the initial notification or popup element.
+   *
+   * @param rawLocator - The locator used to identify the element to be clicked
+   * @param timeout - The maximum time in ms to wait for the element to disappear after clicking.
+   */
+  async clickElementAndWaitToDisappear(rawLocator, timeout = 2000) {
+    const element = await this.findClickableElement(rawLocator);
+    await element.click();
+    await element.waitForElementState('hidden', timeout);
+  }
+
+  /**
    * for instances where an element such as a scroll button does not
    * show up because of render differences, proceed to the next step
    * without causing a test failure, but provide a console log of why.

@@ -562,7 +562,7 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
   await mockEmptyStalelistAndHotlist(server);
 
   await server
-    .forPost('https://customnetwork.com/api/customRPC')
+    .forPost('https://customnetwork.test/api/customRPC')
     .thenCallback(() => {
       return {
         statusCode: 200,
