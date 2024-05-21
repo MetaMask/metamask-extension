@@ -4346,9 +4346,7 @@ export default class MetamaskController extends EventEmitter {
     if (!chainId) {
       throw new Error('Network configuration not found');
     }
-    const otherNetworkConfigurationsWithSameChainId = Object.values(
-      networkConfigurations,
-    ).some(
+    const hasOtherConfigsForChainId = Object.values(networkConfigurations).some(
       (config) =>
         config.chainId === chainId &&
         config.id !== networkConfigurationId &&
@@ -4357,7 +4355,7 @@ export default class MetamaskController extends EventEmitter {
 
     // if this network configuration is only one for a given chainId
     // remove all permissions for that chainId
-    if (!otherNetworkConfigurationsWithSameChainId) {
+    if (!hasOtherConfigsForChainId) {
       this.removeAllChainIdPermissions(chainId);
     }
 

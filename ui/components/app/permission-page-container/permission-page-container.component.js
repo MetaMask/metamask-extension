@@ -165,20 +165,13 @@ export default class PermissionPageContainer extends Component {
     }
   };
 
-  footerLeftAction = () => {
+  onLeftFooterClick = () => {
     const requestedPermissions = this.getRequestedPermissions();
     if (requestedPermissions[PermissionNames.permittedChains] === undefined) {
       this.goBack();
     } else {
       this.onCancel();
     }
-  };
-
-  footerLeftActionText = () => {
-    const requestedPermissions = this.getRequestedPermissions();
-    return requestedPermissions[PermissionNames.permittedChains]
-      ? this.context.t('cancel')
-      : this.context.t('back');
   };
 
   render() {
@@ -242,7 +235,7 @@ export default class PermissionPageContainer extends Component {
           <PageContainerFooter
             footerClassName="permission-page-container-footer"
             cancelButtonType="default"
-            onCancel={() => this.footerLeftAction()}
+            onCancel={() => this.onLeftFooterClick()}
             cancelText={footerLeftActionText}
             onSubmit={() => this.onSubmit()}
             submitText={this.context.t('confirm')}
