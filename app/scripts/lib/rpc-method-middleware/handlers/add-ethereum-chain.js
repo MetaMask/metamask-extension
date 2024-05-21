@@ -114,8 +114,6 @@ async function addEthereumChainHandler(
         },
         { source: 'dapp', referrer: origin },
       );
-
-      res.result = null;
     } catch (error) {
       endApprovalFlow({ id: approvalFlowId });
       return end(error);
@@ -146,8 +144,6 @@ async function addEthereumChainHandler(
       toNetworkConfiguration: existingNetwork,
       fromNetworkConfiguration: currentNetworkConfiguration,
     };
-
-    res.result = null;
   }
 
   return switchChain(
