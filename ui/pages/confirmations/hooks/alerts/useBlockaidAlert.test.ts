@@ -7,7 +7,7 @@ import {
 import { Severity } from '../../../../helpers/constants/design-system';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
-import usePersonalSignAlerts from './usePersonalSignAlerts';
+import useBlockaidAlert from './useBlockaidAlert';
 
 const mockSecurityAlertResponse: SecurityAlertResponse = {
   securityAlertId: 'test-id-mock',
@@ -48,7 +48,7 @@ const mockExpectedState = {
   confirm: { currentConfirmation: currentConfirmationMock },
 };
 
-describe('usePersonalSignAlerts', () => {
+describe('useBlockaidAlert', () => {
   beforeAll(() => {
     process.env.ENABLE_CONFIRMATION_REDESIGN = 'true';
   });
@@ -59,7 +59,7 @@ describe('usePersonalSignAlerts', () => {
 
   it('returns an empty array when there is no current confirmation', () => {
     const { result } = renderHookWithProvider(
-      () => usePersonalSignAlerts(),
+      () => useBlockaidAlert(),
       mockState,
     );
     expect(result.current).toEqual([]);
@@ -77,7 +77,7 @@ describe('usePersonalSignAlerts', () => {
       },
     };
     const { result } = renderHookWithProvider(
-      () => usePersonalSignAlerts(),
+      () => useBlockaidAlert(),
       alteredState,
     );
     expect(result.current).toEqual([]);
@@ -92,7 +92,7 @@ describe('usePersonalSignAlerts', () => {
       provider: SecurityProvider.Blockaid,
       reason: 'This is a deceptive request',
     };
-    const { result } = renderHookWithProvider(() => usePersonalSignAlerts(), {
+    const { result } = renderHookWithProvider(() => useBlockaidAlert(), {
       ...mockExpectedState,
       metamask: {
         ...mockExpectedState.metamask,

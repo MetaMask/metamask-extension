@@ -1,12 +1,13 @@
 import { useMemo } from 'react';
-import { ApprovalType } from '@metamask/controller-utils';
 import { useSelector } from 'react-redux';
-import useCurrentConfirmation from '../useCurrentConfirmation';
-import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
-import { SecurityAlertResponse } from '../../types/confirm';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+
 import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
-import { providerAlertNormalizer } from './utils';
+import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { SecurityAlertResponse } from '../../types/confirm';
+import { isSignatureTransactionType } from '../../utils';
+import useCurrentConfirmation from '../useCurrentConfirmation';
+import { normalizeProviderAlert } from './utils';
 
 type SignatureSecurityAlertResponsesState = {
   metamask: {
@@ -14,7 +15,7 @@ type SignatureSecurityAlertResponsesState = {
   };
 };
 
-const usePersonalSignAlerts = (): Alert[] => {
+const useBlockaidAlerts = (): Alert[] => {
   const { currentConfirmation } = useCurrentConfirmation();
   const t = useI18nContext();
   const securityAlertResponse =
@@ -28,7 +29,7 @@ const usePersonalSignAlerts = (): Alert[] => {
   );
 
   const alerts = useMemo<Alert[]>(() => {
-    if (currentConfirmation?.type !== ApprovalType.PersonalSign) {
+    if (!isSignatureTransactionType(currentConfirmation)) {
       return [];
     }
 
@@ -41,10 +42,10 @@ const usePersonalSignAlerts = (): Alert[] => {
       return [];
     }
 
-    return [providerAlertNormalizer(signatureSecurityAlertResponse, t)];
+    return [normalizeProviderAlert(signatureSecurityAlertResponse, t)];
   }, [currentConfirmation, signatureSecurityAlertResponse]);
 
   return alerts;
 };
 
-export default usePersonalSignAlerts;
+export default useBlockaidAlerts;

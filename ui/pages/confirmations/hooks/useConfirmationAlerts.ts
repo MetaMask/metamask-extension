@@ -1,10 +1,30 @@
-import { useMemo } from 'react';
-import usePersonalSignAlerts from './alerts/usePersonalSignAlerts';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
 
-const useConfirmationAlerts = () => {
-  const personalSignAlerts = usePersonalSignAlerts();
+import {
+  clearAlerts,
+  updateAlerts,
+} from '../../../ducks/confirm-alerts/confirm-alerts';
+import { currentConfirmationSelector } from '../../../selectors';
+import useBlockaidAlerts from './alerts/useBlockaidAlert';
 
-  return useMemo(() => [...personalSignAlerts], [personalSignAlerts]);
+const setConfirmationAlerts = () => {
+  const dispatch = useDispatch();
+  // todo: currently we are showing only blockaid alerts
+  // more will be added to this list
+  const alerts = useBlockaidAlerts();
+  const currentConfirmation = useSelector(currentConfirmationSelector);
+  const ownerId = currentConfirmation?.id as string;
+
+  useEffect(() => {
+    dispatch(updateAlerts(ownerId, alerts));
+  }, [alerts, ownerId]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(clearAlerts(ownerId));
+    };
+  }, []);
 };
 
-export default useConfirmationAlerts;
+export default setConfirmationAlerts;

@@ -40,7 +40,7 @@ export function getProviderAlertSeverity(
  * @param t - The translation function.
  * @returns The normalized Alert object.
  */
-export function providerAlertNormalizer(
+export function normalizeProviderAlert(
   securityAlertResponse: SecurityAlertResponse,
   t: ReturnType<typeof useI18nContext>,
 ): Alert {

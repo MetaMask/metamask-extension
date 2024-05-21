@@ -8,14 +8,14 @@ import {
 import { Severity } from '../../../helpers/constants/design-system';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import setConfirmationAlerts from './setConfirmationAlerts';
-import useConfirmationAlerts from './useConfirmationAlerts';
+import useBlockaidAlerts from './alerts/useBlockaidAlert';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useDispatch: jest.fn(),
   useSelector: jest.fn(),
 }));
-jest.mock('./useConfirmationAlerts', () => ({
+jest.mock('./alerts/useBlockaidAlert', () => ({
   __esModule: true,
   default: jest.fn(),
 }));
@@ -40,7 +40,7 @@ describe('setConfirmationAlerts', () => {
     const mockDispatch = jest.fn();
     (useDispatch as jest.Mock).mockReturnValue(mockDispatch);
     (useSelector as jest.Mock).mockReturnValue({ id: '123' });
-    (useConfirmationAlerts as jest.Mock).mockReturnValue(alerts);
+    (useBlockaidAlerts as jest.Mock).mockReturnValue(alerts);
 
     renderHookWithProvider(() => setConfirmationAlerts(), mockState);
 
