@@ -461,17 +461,17 @@ function getOnboardingCompleteFromAppState(appState) {
 }
 
 export default function setupSentry({ release, getState }) {
-  if (!release) {
-    throw new Error('Missing release');
-  } else if (METAMASK_DEBUG && !IN_TEST) {
-    /**
-     * Workaround until the following issue is resolved
-     * https://github.com/MetaMask/metamask-extension/issues/15691
-     * The IN_TEST condition allows the e2e tests to run with both
-     * yarn start:test and yarn build:test
-     */
-    return undefined;
-  }
+  // if (!release) {
+  //   throw new Error('Missing release');
+  // } else if (METAMASK_DEBUG && !IN_TEST) {
+  //   /**
+  //    * Workaround until the following issue is resolved
+  //    * https://github.com/MetaMask/metamask-extension/issues/15691
+  //    * The IN_TEST condition allows the e2e tests to run with both
+  //    * yarn start:test and yarn build:test
+  //    */
+  //   return undefined;
+  // }
 
   const environment =
     METAMASK_BUILD_TYPE === 'main'
@@ -593,6 +593,7 @@ export default function setupSentry({ release, getState }) {
       new ExtraErrorData(),
     ],
     release,
+    tracesSampleRate: 0.01,
     beforeSend: (report) => rewriteReport(report, getState),
     beforeBreadcrumb: beforeBreadcrumb(getState),
   });
