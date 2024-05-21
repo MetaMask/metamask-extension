@@ -3166,21 +3166,6 @@
   "notificationsPetnamesTitle": {
     "message": "Suggested nicknames are here!"
   },
-  "notificationsPortfolioV2ActionText": {
-    "message": "See Portfolio"
-  },
-  "notificationsPortfolioV2DescriptionOne": {
-    "message": "Still missing out on MetaMask Portfolio?"
-  },
-  "notificationsPortfolioV2DescriptionThree": {
-    "message": "Your Portfolio is waiting."
-  },
-  "notificationsPortfolioV2DescriptionTwo": {
-    "message": "Manage your web3 assets across different networks and accounts in one powerful dashboard. Swap, Buy, Sell, Bridge, and Stake in a secure, convenient, and easy to use dapp. Stay up to speed with the pulse of the cryptoverse, see your DeFi positions, manage your NFT collection, and more. All in one place."
-  },
-  "notificationsPortfolioV2Title": {
-    "message": "MetaMask Portfolio - join millions"
-  },
   "notificationsSimulationsDescriptionOne": {
     "message": "Now you can see the potential outcome of your transactions before you make them!"
   },
