@@ -22,6 +22,7 @@ import useAlerts from '../../../../../hooks/useAlerts';
 import { AlertModal } from '../alert-modal';
 import { AcknowledgeCheckboxBase } from '../alert-modal/alert-modal';
 import { MultipleAlertModal } from '../multiple-alert-modal';
+import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 
 export type ConfirmAlertModalProps = {
   /** The unique key representing the specific alert field. */
@@ -64,6 +65,7 @@ function ConfirmButtons({
         data-testid="confirm-alert-modal-submit-button"
         disabled={!isConfirmed}
         danger
+        startIconName={IconName.Danger}
       >
         {t('confirm')}
       </Button>
@@ -120,10 +122,12 @@ export function ConfirmAlertModal({
   const { isAlertConfirmed, fieldAlerts } = useAlerts(ownerId);
 
   const unconfirmedDangerAlerts = fieldAlerts.filter(
-    (alert) =>
+    (alert: Alert) =>
       !isAlertConfirmed(alert.key) && alert.severity === Severity.Danger,
   );
-  const selectedAlert = fieldAlerts.find((alert) => alert.key === alertKey);
+  const selectedAlert = fieldAlerts.find(
+    (alert: Alert) => alert.key === alertKey,
+  );
   const hasUnconfirmedDangerAlerts = unconfirmedDangerAlerts.length > 0;
 
   const [confirmCheckbox, setConfirmCheckbox] = useState<boolean>(false);

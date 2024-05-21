@@ -106,6 +106,21 @@ describe('AlertModal', () => {
     expect(getByTestId('alert-modal-button')).toBeDisabled();
   });
 
+  it('omits the acknowledgment section for non-danger alerts', () => {
+    const { queryByTestId } = renderWithProvider(
+      <AlertModal
+        ownerId={OWNER_ID_MOCK}
+        onAcknowledgeClick={onAcknowledgeClickMock}
+        onClose={onCloseMock}
+        alertKey={FROM_ALERT_KEY_MOCK}
+      />,
+      mockStore,
+    );
+
+    expect(queryByTestId('alert-modal-acknowledge-checkbox')).toBeNull();
+    expect(queryByTestId('alert-modal-button')).toBeEnabled();
+  });
+
   it('calls onAcknowledgeClick when the button is clicked', () => {
     const mockStoreAcknowledgeAlerts = configureMockStore([])({
       ...STATE_MOCK,
@@ -134,10 +149,10 @@ describe('AlertModal', () => {
     const newMockStore = configureMockStore([])({
       ...STATE_MOCK,
       confirmAlerts: {
-        alerts: { [OWNER_ID_MOCK]: [alertsMock[0]] },
+        alerts: { [OWNER_ID_MOCK]: [alertsMock[1]] },
         confirmed: {
           [OWNER_ID_MOCK]: {
-            [FROM_ALERT_KEY_MOCK]: false,
+            [DATA_ALERT_KEY_MOCK]: false,
           },
         },
       },
@@ -145,9 +160,9 @@ describe('AlertModal', () => {
 
     useAlertsSpy.mockReturnValue({
       setAlertConfirmed: setAlertConfirmedMock,
-      alerts: [alertsMock[0]],
+      alerts: [alertsMock[1]],
       generalAlerts: [],
-      fieldAlerts: [alertsMock[0]],
+      fieldAlerts: [alertsMock[1]],
       getFieldAlerts: () => [],
       isAlertConfirmed: () => false,
     });
@@ -156,7 +171,7 @@ describe('AlertModal', () => {
         ownerId={OWNER_ID_MOCK}
         onAcknowledgeClick={onAcknowledgeClickMock}
         onClose={onCloseMock}
-        alertKey={FROM_ALERT_KEY_MOCK}
+        alertKey={DATA_ALERT_KEY_MOCK}
       />,
       newMockStore,
     );
@@ -164,7 +179,7 @@ describe('AlertModal', () => {
     fireEvent.click(getByTestId('alert-modal-acknowledge-checkbox'));
     expect(setAlertConfirmedMock).toHaveBeenCalled();
     expect(setAlertConfirmedMock).toHaveBeenCalledWith(
-      FROM_ALERT_KEY_MOCK,
+      DATA_ALERT_KEY_MOCK,
       true,
     );
     useAlertsSpy.mockRestore();
@@ -226,7 +241,7 @@ describe('AlertModal', () => {
           ownerId={OWNER_ID_MOCK}
           onAcknowledgeClick={onAcknowledgeClickMock}
           onClose={onCloseMock}
-          alertKey={FROM_ALERT_KEY_MOCK}
+          alertKey={DATA_ALERT_KEY_MOCK}
         />,
         mockStore,
       );

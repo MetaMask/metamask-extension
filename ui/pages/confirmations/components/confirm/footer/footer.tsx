@@ -23,6 +23,7 @@ import { getConfirmationSender } from '../utils';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { ConfirmAlertModal } from '../../../../../components/app/confirmations/alerts/confirm-alert-modal';
 import { Severity } from '../../../../../helpers/constants/design-system';
+import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import useIsDangerButton from './useIsDangerButton';
 
 function getIconName(hasUnconfirmedAlerts: boolean): IconName {
@@ -50,12 +51,15 @@ function ConfirmButton({
     useState<boolean>(false);
   const { alerts, isAlertConfirmed, fieldAlerts } = useAlerts(alertOwnerId);
   const unconfirmedDangerAlerts = fieldAlerts.filter(
-    (alert) =>
+    (alert: Alert) =>
       !isAlertConfirmed(alert.key) && alert.severity === Severity.Danger,
   );
-  const hasAlerts = alerts.length > 0;
+
   const hasDangerAlerts = alerts.some(
-    (alert) => alert.severity === Severity.Danger,
+    (alert: Alert) => alert.severity === Severity.Danger,
+  );
+  const hasDangerFieldAlerts = fieldAlerts.some(
+    (alert: Alert) => alert.severity === Severity.Danger,
   );
   const hasUnconfirmedDangerAlerts = unconfirmedDangerAlerts.length > 0;
 
@@ -82,9 +86,9 @@ function ConfirmButton({
         block
         data-testid="confirm-footer-confirm-button"
         startIconName={
-          hasAlerts ? getIconName(hasUnconfirmedDangerAlerts) : undefined
+          hasDangerAlerts ? getIconName(hasUnconfirmedDangerAlerts) : undefined
         }
-        onClick={hasDangerAlerts ? handleOpenConfirmModal : onSubmit}
+        onClick={hasDangerFieldAlerts ? handleOpenConfirmModal : onSubmit}
         danger={hasDangerAlerts ? true : isDangerButton}
         size={ButtonSize.Lg}
         disabled={hasUnconfirmedDangerAlerts ? false : disabled}

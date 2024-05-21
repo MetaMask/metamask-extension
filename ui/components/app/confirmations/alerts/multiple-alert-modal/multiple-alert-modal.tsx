@@ -12,6 +12,7 @@ import {
   BorderRadius,
   Display,
   IconColor,
+  Severity,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
@@ -101,7 +102,8 @@ function PageNumber({
     <Text
       variant={TextVariant.bodySm}
       color={TextColor.textAlternative}
-      marginInline={2}
+      marginInline={1}
+      style={{ whiteSpace: 'nowrap' }}
     >
       {`${selectedIndex + 1} ${t('ofTextNofM')} ${alertsLength}`}
     </Text>
@@ -147,31 +149,32 @@ export function MultipleAlertModal({
   const { isAlertConfirmed, fieldAlerts: alerts } = useAlerts(ownerId);
 
   const [selectedIndex, setSelectedIndex] = useState(
-    alerts.findIndex((alert) => alert.key === alertKey),
+    alerts.findIndex((alert: Alert) => alert.key === alertKey),
   );
 
   const selectedAlert = alerts[selectedIndex];
   const hasUnconfirmedAlerts = alerts.some(
-    (alert) => !isAlertConfirmed(alert.key),
+    (alert: Alert) =>
+      !isAlertConfirmed(alert.key) && alert.severity === Severity.Danger,
   );
 
   const handleBackButtonClick = useCallback(() => {
-    setSelectedIndex((prevIndex) =>
+    setSelectedIndex((prevIndex: number) =>
       prevIndex > 0 ? prevIndex - 1 : prevIndex,
     );
   }, []);
 
   const handleNextButtonClick = useCallback(() => {
-    setSelectedIndex((prevIndex) => prevIndex + 1);
+    setSelectedIndex((prevIndex: number) => prevIndex + 1);
   }, []);
 
   const handleAcknowledgeClick = useCallback(() => {
-    if (!hasUnconfirmedAlerts) {
-      onFinalAcknowledgeClick();
-      return;
-    }
+    if (selectedIndex + 1 === alerts.length) {
+      if (!hasUnconfirmedAlerts) {
+        onFinalAcknowledgeClick();
+        return;
+      }
 
-    if (hasUnconfirmedAlerts && selectedIndex + 1 === alerts.length) {
       setSelectedIndex(0);
       return;
     }
@@ -180,7 +183,7 @@ export function MultipleAlertModal({
     onFinalAcknowledgeClick,
     handleNextButtonClick,
     selectedIndex,
-    alerts,
+    alerts.length,
     hasUnconfirmedAlerts,
   ]);
 

@@ -86,7 +86,7 @@ export type AlertChildrenDefaultProps = {
   isFrictionModal: boolean;
 };
 
-export function getSeverityStyle(severity?: Severity) {
+function getSeverityStyle(severity?: Severity) {
   switch (severity) {
     case Severity.Warning:
       return {
@@ -100,7 +100,7 @@ export function getSeverityStyle(severity?: Severity) {
       };
     default:
       return {
-        background: BackgroundColor.infoMuted,
+        background: BackgroundColor.backgroundDefault,
         icon: IconColor.infoDefault,
       };
   }
@@ -152,7 +152,18 @@ export function AlertProvider({
   );
 }
 
-function AlertHeader({
+function AlertHeader({ severity }: { severity: Severity }) {
+  const severityStyle = getSeverityStyle(severity);
+  return (
+    <Icon
+      name={severity === Severity.Info ? IconName.Info : IconName.Danger}
+      size={IconSize.Xl}
+      color={severityStyle.icon}
+    />
+  );
+}
+
+function AlertReason({
   selectedAlert,
   customAlertTitle,
 }: {
@@ -160,35 +171,22 @@ function AlertHeader({
   customAlertTitle?: string;
 }) {
   const t = useI18nContext();
-  const severityStyle = getSeverityStyle(selectedAlert.severity);
   return (
-    <>
-      <Box
-        gap={3}
-        display={Display.Block}
-        alignItems={AlignItems.center}
-        textAlign={TextAlign.Center}
-        marginTop={1}
+    <Box
+      gap={3}
+      display={Display.Block}
+      alignItems={AlignItems.center}
+      textAlign={TextAlign.Center}
+    >
+      <Text
+        variant={TextVariant.headingSm}
+        color={TextColor.inherit}
+        marginTop={3}
+        marginBottom={4}
       >
-        <Icon
-          name={
-            selectedAlert.severity === Severity.Info
-              ? IconName.Info
-              : IconName.Danger
-          }
-          size={IconSize.Xl}
-          color={severityStyle.icon}
-        />
-        <Text
-          variant={TextVariant.headingSm}
-          color={TextColor.inherit}
-          marginTop={3}
-          marginBottom={4}
-        >
-          {customAlertTitle ?? selectedAlert.reason ?? t('alert')}
-        </Text>
-      </Box>
-    </>
+        {customAlertTitle ?? selectedAlert.reason ?? t('alert')}
+      </Text>
+    </Box>
   );
 }
 
@@ -202,41 +200,35 @@ function AlertDetails({
   const t = useI18nContext();
   const severityStyle = getSeverityStyle(selectedAlert.severity);
   return (
-    <>
-      <Box
-        key={selectedAlert.key}
-        display={Display.InlineBlock}
-        padding={2}
-        width={BlockSize.Full}
-        backgroundColor={
-          customAlertDetails ? undefined : severityStyle.background
-        }
-        gap={2}
-        borderRadius={BorderRadius.SM}
-      >
-        {customAlertDetails ?? (
-          <Box>
-            <Text variant={TextVariant.bodyMd}>{selectedAlert.message}</Text>
-            {selectedAlert.alertDetails?.length ? (
-              <Text variant={TextVariant.bodyMdBold} marginTop={1}>
-                {t('alertModalDetails')}
-              </Text>
-            ) : null}
-            <Box
-              as="ul"
-              className={'alert-modal__alert-details'}
-              paddingLeft={6}
-            >
-              {selectedAlert.alertDetails?.map((detail, index) => (
-                <Box as="li" key={`${selectedAlert.key}-detail-${index}`}>
-                  <Text variant={TextVariant.bodyMd}>{detail}</Text>
-                </Box>
-              ))}
-            </Box>
+    <Box
+      key={selectedAlert.key}
+      display={Display.InlineBlock}
+      padding={2}
+      width={BlockSize.Full}
+      backgroundColor={
+        customAlertDetails ? undefined : severityStyle.background
+      }
+      gap={2}
+      borderRadius={BorderRadius.SM}
+    >
+      {customAlertDetails ?? (
+        <Box>
+          <Text variant={TextVariant.bodyMd}>{selectedAlert.message}</Text>
+          {selectedAlert.alertDetails?.length ? (
+            <Text variant={TextVariant.bodyMdBold} marginTop={1}>
+              {t('alertModalDetails')}
+            </Text>
+          ) : null}
+          <Box as="ul" className={'alert-modal__alert-details'} paddingLeft={6}>
+            {selectedAlert.alertDetails?.map((detail, index) => (
+              <Box as="li" key={`${selectedAlert.key}-detail-${index}`}>
+                <Text variant={TextVariant.bodyMd}>{detail}</Text>
+              </Box>
+            ))}
           </Box>
-        )}
-      </Box>
-    </>
+        </Box>
+      )}
+    </Box>
   );
 }
 
@@ -251,7 +243,7 @@ export function AcknowledgeCheckboxBase({
   isConfirmed: boolean;
   label?: string;
 }) {
-  if (selectedAlert.isBlocking) {
+  if (selectedAlert.isBlocking || selectedAlert.severity !== Severity.Danger) {
     return null;
   }
 
@@ -359,6 +351,7 @@ export function AlertModal({
     return null;
   }
   const isConfirmed = isAlertConfirmed(selectedAlert.key);
+  const isAlertDanger = selectedAlert.severity === Severity.Danger;
 
   const handleCheckboxClick = useCallback(() => {
     return setAlertConfirmed(selectedAlert.key, !isConfirmed);
@@ -371,16 +364,16 @@ export function AlertModal({
         <ModalHeader
           onClose={handleClose}
           startAccessory={headerStartAccessory}
-          className={'alert-modal__header'}
-          borderWidth={1}
-          display={headerStartAccessory ? Display.InlineFlex : Display.Block}
-          paddingBottom={1}
-        />
-        <AlertHeader
-          selectedAlert={selectedAlert}
-          customAlertTitle={customAlertTitle}
-        />
+          paddingBottom={0}
+          textAlign={TextAlign.Center}
+        >
+          <AlertHeader severity={selectedAlert.severity} />
+        </ModalHeader>
         <ModalBody>
+          <AlertReason
+            selectedAlert={selectedAlert}
+            customAlertTitle={customAlertTitle}
+          />
           <AlertDetails
             selectedAlert={selectedAlert}
             customAlertDetails={customAlertDetails}
@@ -409,7 +402,7 @@ export function AlertModal({
               <>
                 <AcknowledgeButton
                   onAcknowledgeClick={onAcknowledgeClick}
-                  isConfirmed={isConfirmed}
+                  isConfirmed={isAlertDanger ? isConfirmed : true}
                   hasActions={Boolean(selectedAlert.actions)}
                   isBlocking={selectedAlert.isBlocking}
                 />

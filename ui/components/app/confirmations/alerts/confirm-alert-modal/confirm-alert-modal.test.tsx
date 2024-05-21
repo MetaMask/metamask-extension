@@ -84,7 +84,7 @@ describe('ConfirmAlertModal', () => {
 
   it('calls onSubmit when the button is clicked', () => {
     const { getByTestId } = renderWithProvider(
-      <ConfirmAlertModal {...defaultProps} />,
+      <ConfirmAlertModal {...defaultProps} alertKey={DATA_ALERT_KEY_MOCK} />,
       mockStore,
     );
 

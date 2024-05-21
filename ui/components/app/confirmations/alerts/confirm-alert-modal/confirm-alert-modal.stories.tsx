@@ -1,47 +1,18 @@
 import React from 'react';
 import { ConfirmAlertModal } from './confirm-alert-modal';
-import { Severity } from '../../../../../helpers/constants/design-system';
 import { Meta, StoryFn } from '@storybook/react';
 import configureStore from '../../../../../store/store';
 import { Provider } from 'react-redux';
-import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Box, Button } from '../../../../component-library';
 import { useArgs } from '@storybook/client-api';
+import { baseAlertsMock } from '../alert-modal/alert-modal.stories';
 
-const ALERTS_MOCK: Alert[] = [
-  {
-    key: 'from',
-    severity: Severity.Danger,
-    message: 'Description of what may happen if this alert was ignored',
-    reason: 'Reason for the alert 1',
-    alertDetails: [
-      'We found the contract Petname 0xEqT3b9773b1763efa556f55ccbeb20441962d82x to be malicious',
-      'Operator is an externally owned account (EOA) ',
-      'Operator is untrusted according to previous activity',
-    ],
-  },
-  {
-    key: 'data',
-    severity: Severity.Warning,
-    message: 'Alert 2',
-    alertDetails: ['detail 1 warning', 'detail 2 warning'],
-  },
-  {
-    key: 'contract',
-    severity: Severity.Info,
-    message: 'Alert Info',
-    alertDetails: ['detail 1 info', 'detail  info'],
-  },
-];
 const OWNER_ID_MOCK = '123';
-const storeMock = configureStore({
-  confirmAlerts: {
-    alerts: { [OWNER_ID_MOCK]: ALERTS_MOCK },
-    confirmed: {
-      [OWNER_ID_MOCK]: { from: false, data: false, contract: false },
-    },
-  },
-});
+
+const storeMock = configureStore({ confirmAlerts: {
+  alerts: {[OWNER_ID_MOCK]: baseAlertsMock},
+  confirmed: {[OWNER_ID_MOCK]: {'From': true, 'Data': true, 'Contract': true}},
+  } });
 
 export default {
   title: 'Confirmations/Components/Alerts/ConfirmAlertModal',
@@ -102,7 +73,7 @@ export const TemplateStory: StoryFn<typeof ConfirmAlertModal> = (args) => {
       {isOpen && (
         <ConfirmAlertModal
           {...args}
-          alertKey={'from'}
+          alertKey={'From'}
           onClose={handleOnClose}
           onCancel={handleOnClose}
           onSubmit={handleOnClose}

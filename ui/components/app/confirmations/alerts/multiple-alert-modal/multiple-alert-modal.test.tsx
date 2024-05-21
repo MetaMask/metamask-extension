@@ -94,7 +94,10 @@ describe('MultipleAlertModal', () => {
       },
     });
     const { getByTestId } = renderWithProvider(
-      <MultipleAlertModal {...defaultProps} alertKey={DATA_ALERT_KEY_MOCK} />,
+      <MultipleAlertModal
+        {...defaultProps}
+        alertKey={CONTRACT_ALERT_KEY_MOCK}
+      />,
       mockStoreAcknowledgeAlerts,
     );
 
