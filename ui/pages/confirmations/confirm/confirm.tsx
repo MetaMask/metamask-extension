@@ -21,7 +21,7 @@ const Confirm = () => {
   syncConfirmPath();
 
   return (
-    <Page>
+    <Page className="confirm_wrapper">
       <Nav />
       <Header />
       {

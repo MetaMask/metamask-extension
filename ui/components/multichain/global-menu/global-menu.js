@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  CONNECTED_ROUTE,
   SETTINGS_ROUTE,
   DEFAULT_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -164,12 +163,11 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
         style={{ height: '1px', borderBottomWidth: 0 }}
       ></Box>
       <MenuItem
-        iconName={IconName.Connect}
-        disabled={hasUnapprovedTransactions}
+        iconName={IconName.SecurityTick}
         onClick={() => {
-          history.push(CONNECTED_ROUTE);
+          history.push(PERMISSIONS);
           trackEvent({
-            event: MetaMetricsEventName.NavConnectedSitesOpened,
+            event: MetaMetricsEventName.NavPermissionsOpened,
             category: MetaMetricsEventCategory.Navigation,
             properties: {
               location: METRICS_LOCATION,
@@ -178,28 +176,10 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
           closeMenu();
         }}
         data-testid="global-menu-connected-sites"
+        disabled={hasUnapprovedTransactions}
       >
-        {t('connectedSites')}
+        {t('allPermissions')}
       </MenuItem>
-      {process.env.MULTICHAIN ? (
-        <MenuItem
-          iconName={IconName.SecurityTick}
-          onClick={() => {
-            history.push(PERMISSIONS);
-            trackEvent({
-              event: MetaMetricsEventName.NavPermissionsOpened,
-              category: MetaMetricsEventCategory.Navigation,
-              properties: {
-                location: METRICS_LOCATION,
-              },
-            });
-            closeMenu();
-          }}
-          data-testid="global-menu-connected-sites"
-        >
-          {t('allPermissions')}
-        </MenuItem>
-      ) : null}
 
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)

@@ -44,7 +44,9 @@ export class MMISignUpPage {
       'button:has-text("Confirm Secret Recovery Phrase")',
     );
     this.agreeBtn = page.locator('button:has-text("I agree")');
-    this.noThanksBtn = page.locator('button:has-text("No thanks")');
+    this.noThanksBtn = page.locator(
+      'button:has-text("Don\'t enable enhanced protection")',
+    );
     this.passwordTxt = page.getByTestId('create-password-new');
     this.passwordConfirmTxt = page.getByTestId('create-password-confirm');
     this.agreeCheck = page.getByTestId('create-new-vault__terms-checkbox');

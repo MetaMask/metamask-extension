@@ -11,6 +11,7 @@ const {
 const cssToXPath = require('css-to-xpath');
 const { sprintf } = require('sprintf-js');
 const { retry } = require('../../../development/lib/retry');
+const { quoteXPathText } = require('../../helpers/quoteXPathText');
 
 const PAGES = {
   BACKGROUND: 'background',
@@ -186,10 +187,10 @@ class Driver {
           .toXPath();
         return By.xpath(xpath);
       }
+
+      const quoted = quoteXPathText(locator.text);
       // The tag prop is optional and further refines which elements match
-      return By.xpath(
-        `//${locator.tag ?? '*'}[contains(text(), '${locator.text}')]`,
-      );
+      return By.xpath(`//${locator.tag ?? '*'}[contains(text(), ${quoted})]`);
     }
     throw new Error(
       `The locator '${locator}' is not supported by the E2E test driver`,
@@ -373,6 +374,20 @@ class Driver {
   }
 
   /**
+   * Clicks on an element identified by the provided locator and waits for it to disappear.
+   * For scenarios where the clicked element, such as a notification or popup, needs to disappear afterward.
+   * The wait ensures that subsequent interactions are not obscured by the initial notification or popup element.
+   *
+   * @param {string} rawLocator - The locator used to identify the element to be clicked
+   * @param {number} timeout - The maximum time in ms to wait for the element to disappear after clicking.
+   */
+  async clickElementAndWaitToDisappear(rawLocator, timeout = 2000) {
+    const element = await this.findClickableElement(rawLocator);
+    await element.click();
+    await element.waitForElementState('hidden', timeout);
+  }
+
+  /**
    * for instances where an element such as a scroll button does not
    * show up because of render differences, proceed to the next step
    * without causing a test failure, but provide a console log of why.
@@ -473,6 +488,10 @@ class Driver {
     await this.executeScript(
       `navigator.clipboard.writeText("${contentToPaste}")`,
     );
+    await this.fill(rawLocator, Key.chord(this.Key.MODIFIER, 'v'));
+  }
+
+  async pasteFromClipboardIntoField(rawLocator) {
     await this.fill(rawLocator, Key.chord(this.Key.MODIFIER, 'v'));
   }
 

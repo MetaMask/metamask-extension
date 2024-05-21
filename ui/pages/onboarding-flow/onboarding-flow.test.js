@@ -53,6 +53,9 @@ describe('Onboarding Flow', () => {
     localeMessages: {
       currentLocale: 'en',
     },
+    appState: {
+      externalServicesOnboardingToggleState: true,
+    },
   };
 
   process.env.METAMASK_BUILD_TYPE = 'main';
@@ -240,7 +243,9 @@ describe('Onboarding Flow', () => {
       ONBOARDING_METAMETRICS,
     );
 
-    const onboardingMetametrics = queryByTestId('onboarding-metametrics');
+    const onboardingMetametrics = queryByTestId(
+      'onboarding-legacy-metametrics',
+    );
     expect(onboardingMetametrics).toBeInTheDocument();
   });
 

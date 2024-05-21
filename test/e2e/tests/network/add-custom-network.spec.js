@@ -11,6 +11,7 @@ const {
 } = require('../../helpers');
 
 const TEST_CHAIN_ID = toHex(100);
+const TEST_COLLISION_CHAIN_ID = toHex(78);
 
 const MOCK_CHAINLIST_RESPONSE = [
   {
@@ -61,6 +62,61 @@ const MOCK_CHAINLIST_RESPONSE = [
     ],
   },
 ];
+
+const selectors = {
+  accountOptionsMenuButton: '[data-testid="account-options-menu-button"]',
+  informationSymbol: '[data-testid="info-tooltip"]',
+  settingsOption: { text: 'Settings', tag: 'div' },
+  networkOption: { text: 'Networks', tag: 'div' },
+  addNetwork: { text: 'Add a network', tag: 'button' },
+  addNetworkManually: { text: 'Add a network manually', tag: 'h6' },
+  generalOption: { text: 'General', tag: 'div' },
+  generalTabHeader: { text: 'General', tag: 'h4' },
+  ethereumNetwork: { text: 'Ethereum Mainnet', tag: 'div' },
+  newUpdateNetwork: { text: 'Update Network', tag: 'div' },
+  deleteButton: { text: 'Delete', tag: 'button' },
+  cancelButton: { text: 'Cancel', tag: 'button' },
+  saveButton: { text: 'Save', tag: 'button' },
+  updatedNetworkDropDown: { tag: 'span', text: 'Update Network' },
+  errorMessageInvalidUrl: {
+    tag: 'h6',
+    text: 'URLs require the appropriate HTTP/HTTPS prefix.',
+  },
+  warningSymbol: {
+    tag: 'h6',
+    text: 'URLs require the appropriate HTTP/HTTPS prefix.',
+  },
+  suggestedTicker: '[data-testid="network-form-ticker-suggestion"]',
+  tickerWarning: '[data-testid="network-form-ticker-warning"]',
+  tickerButton: { text: 'PETH', tag: 'button' },
+  networkAdded: { text: 'Network added successfully!', tag: 'h4' },
+
+  networkNameInputField: '[data-testid="network-form-network-name"]',
+  networkNameInputFieldSetToEthereumMainnet: {
+    xpath:
+      "//input[@data-testid = 'network-form-network-name'][@value = 'Ethereum Mainnet']",
+  },
+  rpcUrlInputField: '[data-testid="network-form-rpc-url"]',
+  chainIdInputField: '[data-testid="network-form-chain-id"]',
+  tickerInputField: '[data-testid="network-form-ticker-input"]',
+  explorerInputField: '[data-testid="network-form-block-explorer-url"]',
+  errorContainer: '.settings-tab__error',
+};
+
+async function navigateToAddNetwork(driver) {
+  await driver.clickElement(selectors.accountOptionsMenuButton);
+  await driver.clickElement(selectors.settingsOption);
+  await driver.clickElement(selectors.networkOption);
+  await driver.clickElement(selectors.addNetwork);
+  await driver.clickElement(selectors.addNetworkManually);
+}
+
+const inputData = {
+  networkName: 'Collision network',
+  rpcUrl: 'https://responsive-rpc.url/',
+  chainId: '78',
+  ticker: 'TST',
+};
 
 describe('Custom network', function () {
   const chainID = '42161';
@@ -617,6 +673,180 @@ describe('Custom network', function () {
           await toggleOffSafeChainsListValidation(driver);
 
           await candidateNetworkIsNotValidated(driver);
+        },
+      );
+    });
+  });
+
+  describe('customNetwork', function () {
+    it('should add mainnet network', async function () {
+      async function mockRPCURLAndChainId(mockServer) {
+        return [
+          await mockServer
+            .forPost('https://responsive-rpc.url/')
+            .thenCallback(() => ({
+              statusCode: 200,
+              json: {
+                id: '1694444405781',
+                jsonrpc: '2.0',
+                result: TEST_CHAIN_ID,
+              },
+            })),
+        ];
+      }
+
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilder().build(),
+          ganacheOptions: defaultGanacheOptions,
+          title: this.test.fullTitle(),
+          testSpecificMock: mockRPCURLAndChainId,
+        },
+
+        async ({ driver }) => {
+          await unlockWallet(driver);
+          await navigateToAddNetwork(driver);
+          await driver.fill(
+            selectors.networkNameInputField,
+            'Ethereum mainnet',
+          );
+          await driver.fill(
+            selectors.rpcUrlInputField,
+            'https://responsive-rpc.url',
+          );
+          await driver.fill(selectors.chainIdInputField, TEST_CHAIN_ID);
+          await driver.fill(selectors.tickerInputField, 'XDAI');
+          await driver.fill(selectors.explorerInputField, 'https://test.com');
+
+          const suggestedTicker = await driver.isElementPresent(
+            selectors.suggestedTicker,
+          );
+
+          const tickerWarning = await driver.isElementPresent(
+            selectors.tickerWarning,
+          );
+
+          assert.equal(suggestedTicker, false);
+          assert.equal(tickerWarning, false);
+
+          driver.clickElement(selectors.tickerButton);
+          driver.clickElement(selectors.saveButton);
+
+          // Validate the network was added
+          const networkAdded = await driver.isElementPresent(
+            selectors.networkAdded,
+          );
+          assert.equal(networkAdded, true, 'Network added successfully!');
+        },
+      );
+    });
+
+    it('should check symbol and show warnings', async function () {
+      async function mockRPCURLAndChainId(mockServer) {
+        return [
+          await mockServer
+            .forPost('https://responsive-rpc.url/')
+            .thenCallback(() => ({
+              statusCode: 200,
+              json: {
+                id: '1694444405781',
+                jsonrpc: '2.0',
+                result: TEST_CHAIN_ID,
+              },
+            })),
+        ];
+      }
+
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilder().build(),
+          ganacheOptions: defaultGanacheOptions,
+          title: this.test.fullTitle(),
+          testSpecificMock: mockRPCURLAndChainId,
+        },
+
+        async ({ driver }) => {
+          await unlockWallet(driver);
+          await navigateToAddNetwork(driver);
+          await driver.fill(
+            selectors.networkNameInputField,
+            'Ethereum mainnet',
+          );
+          await driver.fill(
+            selectors.rpcUrlInputField,
+            'https://responsive-rpc.url',
+          );
+          await driver.fill(selectors.chainIdInputField, '1');
+          await driver.fill(selectors.tickerInputField, 'TST');
+          await driver.fill(selectors.explorerInputField, 'https://test.com');
+
+          const suggestedTicker = await driver.isElementPresent(
+            selectors.suggestedTicker,
+          );
+
+          const tickerWarning = await driver.isElementPresent(
+            selectors.tickerWarning,
+          );
+
+          // suggestion and warning ticker should be displayed
+          assert.equal(suggestedTicker, true);
+          assert.equal(tickerWarning, true);
+        },
+      );
+    });
+    it('should add collision network', async function () {
+      async function mockRPCURLAndChainId(mockServer) {
+        return [
+          await mockServer
+            .forPost('https://responsive-rpc.url/')
+            .thenCallback(() => ({
+              statusCode: 200,
+              json: {
+                id: '1694444405781',
+                jsonrpc: '2.0',
+                result: TEST_COLLISION_CHAIN_ID,
+              },
+            })),
+        ];
+      }
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilder().build(),
+          ganacheOptions: defaultGanacheOptions,
+          title: this.test.fullTitle(),
+          testSpecificMock: mockRPCURLAndChainId,
+        },
+
+        async ({ driver }) => {
+          await unlockWallet(driver);
+          await navigateToAddNetwork(driver);
+          await driver.fill(
+            selectors.networkNameInputField,
+            inputData.networkName,
+          );
+          await driver.fill(selectors.rpcUrlInputField, inputData.rpcUrl);
+          await driver.fill(selectors.chainIdInputField, inputData.chainId);
+          await driver.fill(selectors.tickerInputField, inputData.ticker);
+
+          const suggestedTicker = await driver.isElementPresent(
+            selectors.suggestedTicker,
+          );
+
+          const tickerWarning = await driver.isElementPresent(
+            selectors.tickerWarning,
+          );
+
+          assert.equal(suggestedTicker, true);
+          assert.equal(tickerWarning, true);
+
+          driver.clickElement(selectors.tickerButton);
+          driver.clickElement(selectors.saveButton);
+
+          // Validate the network was added
+          const networkAdded = await driver.isElementPresent(
+            selectors.networkAdded,
+          );
+          assert.equal(networkAdded, true, 'Network added successfully!');
         },
       );
     });

@@ -33,6 +33,7 @@ const mockBaseStore = {
       [mockSnapOrigin]: {
         id: mockSnapOrigin,
         manifest: {
+          proposedName: 'Test Snap',
           description: 'Test Snap',
         },
       },
