@@ -14,13 +14,15 @@ const mockState = {
   },
 };
 
+const mockSetHasScrolledToBottom = jest.fn();
+
 const mockUseScrollRequiredResult = {
   hasScrolledToBottom: false,
   isScrollable: false,
   isScrolledToBottom: false,
   onScroll: jest.fn(),
   scrollToBottom: jest.fn(),
-  setHasScrolledToBottom: jest.fn(),
+  setHasScrolledToBottom: mockSetHasScrolledToBottom,
   ref: {
     current: {},
   },
@@ -130,6 +132,15 @@ describe('ScrollToBottom', () => {
       expect(mockScrollTo).toHaveBeenCalledWith(0, 0);
 
       window.HTMLDivElement.prototype.scrollTo = originalScrollTo;
+    });
+
+    it('resets setHasScrolledToBottom to false when the confirmation changes', () => {
+      renderWithProvider(
+        <ScrollToBottom>foobar</ScrollToBottom>,
+        configureMockStore([])(mockState),
+      );
+
+      expect(mockSetHasScrolledToBottom).toHaveBeenCalledWith(false);
     });
 
     describe('when user has scrolled to the bottom', () => {

@@ -21,6 +21,7 @@ import { SnapDelineator } from '../snaps/snap-delineator';
 import { Copyable } from '../snaps/copyable';
 import Spinner from '../../ui/spinner';
 import { SnapUIMarkdown } from '../snaps/snap-ui-markdown';
+import { SnapUILink } from '../snaps/snap-ui-link';
 import { SmartTransactionStatusPage } from '../../../pages/smart-transactions/smart-transaction-status-page';
 import { SnapUIImage } from '../snaps/snap-ui-image';
 import { SnapUIInput } from '../snaps/snap-ui-input';
@@ -69,6 +70,7 @@ export const safeComponentList = {
   Copyable,
   SnapDelineator,
   SnapUIMarkdown,
+  SnapUILink,
   SnapUIImage,
   Spinner,
   ConfirmInfoRow,
