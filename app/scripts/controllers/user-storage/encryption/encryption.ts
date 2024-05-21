@@ -10,13 +10,13 @@ export type EncryptedPayload = {
   // version
   v: '1';
 
-  // encryption type - scrypt
+  // key derivation function algorithm - scrypt
   t: 'scrypt';
 
   // data
   d: string;
 
-  // encryption options - script
+  // encryption options - scrypt
   o: {
     N: number;
     r: number;
@@ -35,6 +35,7 @@ class EncryptorDecryptor {
 
   #SCRYPT_SALT_SIZE: number = 16; // 16 bytes
 
+  // see: https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#scrypt
   #SCRYPT_N: number = 2 ** 17; // CPU/memory cost parameter (must be a power of 2, > 1)
 
   #SCRYPT_r: number = 8; // Block size parameter
@@ -58,7 +59,9 @@ class EncryptorDecryptor {
           return this.#decryptStringV1(encryptedData, password);
         }
       }
-      throw new Error(`Unsupported encrypted data payload - ${encryptedData}`);
+      throw new Error(
+        `Unsupported encrypted data payload - ${encryptedDataStr}`,
+      );
     } catch (e) {
       const errorMessage = e instanceof Error ? e.message : e;
       throw new Error(`Unable to decrypt string - ${errorMessage}`);
@@ -66,7 +69,7 @@ class EncryptorDecryptor {
   }
 
   #encryptStringV1(plaintext: string, password: string): string {
-    const key = this.#getOrGenerateScryptKey(password, {
+    const { key, salt } = this.#getOrGenerateScryptKey(password, {
       N: this.#SCRYPT_N,
       r: this.#SCRYPT_r,
       p: this.#SCRYPT_p,
@@ -76,8 +79,8 @@ class EncryptorDecryptor {
     // Encrypt and prepend salt.
     const plaintextRaw = utf8ToBytes(plaintext);
     const ciphertextAndNonceAndSalt = concatBytes(
-      key.salt,
-      this.#encrypt(plaintextRaw, key.key),
+      salt,
+      this.#encrypt(plaintextRaw, key),
     );
 
     // Convert to Base64
@@ -115,7 +118,7 @@ class EncryptorDecryptor {
     );
 
     // Derive the key.
-    const key = this.#getOrGenerateScryptKey(
+    const { key } = this.#getOrGenerateScryptKey(
       password,
       {
         N: o.N,
@@ -127,7 +130,7 @@ class EncryptorDecryptor {
     );
 
     // Decrypt and return result.
-    return bytesToUtf8(this.#decrypt(ciphertextAndNonce, key.key));
+    return bytesToUtf8(this.#decrypt(ciphertextAndNonce, key));
   }
 
   #encrypt(plaintext: Uint8Array, key: Uint8Array): Uint8Array {
@@ -156,7 +159,10 @@ class EncryptorDecryptor {
     o: EncryptedPayload['o'],
     salt?: Uint8Array,
   ) {
-    const cachedKey = salt ? getCachedKeyBySalt(salt) : getAnyCachedKey();
+    const hashedPassword = createSHA256Hash(password);
+    const cachedKey = salt
+      ? getCachedKeyBySalt(hashedPassword, salt)
+      : getAnyCachedKey(hashedPassword);
 
     if (cachedKey) {
       return {
@@ -172,7 +178,7 @@ class EncryptorDecryptor {
       p: o.p,
       dkLen: o.dkLen,
     });
-    setCachedKey(newSalt, newKey);
+    setCachedKey(hashedPassword, newSalt, newKey);
 
     return {
       key: newKey,
