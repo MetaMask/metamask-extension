@@ -153,12 +153,12 @@ export const SENTRY_BACKGROUND_STATE = {
     isMetamaskNotificationsEnabled: false,
     isFeatureAnnouncementsEnabled: false,
     isSnapNotificationsEnabled: false,
-    metamaskNotificationsList: [],
-    metamaskNotificationsReadList: [],
+    metamaskNotificationsList: false,
+    metamaskNotificationsReadList: false,
     isCheckingAccountsPresence: false,
     isFetchingMetamaskNotifications: false,
     isUpdatingMetamaskNotifications: false,
-    isUpdatingMetamaskNotificationsAccount: [],
+    isUpdatingMetamaskNotificationsAccount: false,
   },
   MetaMetricsController: {
     eventsBeforeMetricsOptIn: false,
@@ -261,7 +261,7 @@ export const SENTRY_BACKGROUND_STATE = {
     hasDismissedOpenSeaToBlockaidBanner: true,
   },
   PushPlatformNotificationsController: {
-    fcmToken: '',
+    fcmToken: false,
   },
   SelectedNetworkController: { domains: false },
   SignatureController: {

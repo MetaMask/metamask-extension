@@ -7,8 +7,8 @@
       "isMetamaskNotificationsEnabled": "boolean",
       "isMetamaskNotificationsFeatureSeen": "boolean",
       "isSnapNotificationsEnabled": "boolean",
-      "metamaskNotificationsList": {},
-      "metamaskNotificationsReadList": {}
+      "metamaskNotificationsList": "object",
+      "metamaskNotificationsReadList": "object"
     },
     "AccountsController": {
       "internalAccounts": { "selectedAccount": "string", "accounts": "object" }
