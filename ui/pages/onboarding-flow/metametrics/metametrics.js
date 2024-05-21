@@ -90,16 +90,11 @@ export default function OnboardingMetametrics() {
         trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
           event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-          properties: dataCollectionForMarketing
-            ? {
-                is_metrics_opted_in: true,
-                has_marketing_consent: true,
-                location: 'onboarding_metametrics',
-              }
-            : {
-                is_metrics_opted_in: true,
-                has_marketing_consent: false,
-              },
+          properties: {
+            is_metrics_opted_in: true,
+            has_marketing_consent: Boolean(dataCollectionForMarketing),
+            location: 'onboarding_metametrics',
+          },
         });
       }
     } finally {
