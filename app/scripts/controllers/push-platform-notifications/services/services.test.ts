@@ -2,7 +2,7 @@ import * as services from './services';
 
 type MockResponse = {
   trigger_ids: string[];
-  registration_tokens: string[];
+  registration_tokens: services.RegToken[];
 };
 
 const MOCK_REG_TOKEN = 'REG_TOKEN';
@@ -10,7 +10,10 @@ const MOCK_NEW_REG_TOKEN = 'NEW_REG_TOKEN';
 const MOCK_TRIGGERS = ['1', '2', '3'];
 const MOCK_RESPONSE: MockResponse = {
   trigger_ids: ['1', '2', '3'],
-  registration_tokens: ['reg-token-1', 'reg-token-2'],
+  registration_tokens: [
+    { token: 'reg_token_1', platform: 'portfolio' },
+    { token: 'reg_token_2', platform: 'extension' },
+  ],
 };
 const MOCK_JWT = 'MOCK_JWT';
 
@@ -51,7 +54,7 @@ describe('PushPlatformNotificationsServices', () => {
       jest.spyOn(services, 'updateLinksAPI').mockResolvedValue(true);
 
       const res = await services.updateLinksAPI(MOCK_JWT, MOCK_TRIGGERS, [
-        MOCK_NEW_REG_TOKEN,
+        { token: MOCK_NEW_REG_TOKEN, platform: 'extension' },
       ]);
 
       expect(res).toBe(true);
@@ -61,7 +64,7 @@ describe('PushPlatformNotificationsServices', () => {
       jest.spyOn(services, 'updateLinksAPI').mockResolvedValue(false);
 
       const res = await services.updateLinksAPI(MOCK_JWT, MOCK_TRIGGERS, [
-        MOCK_NEW_REG_TOKEN,
+        { token: MOCK_NEW_REG_TOKEN, platform: 'extension' },
       ]);
 
       expect(res).toBe(false);
