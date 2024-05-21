@@ -3,6 +3,8 @@ import { ButtonVariant } from '@metamask/snaps-sdk';
 import {
   Box,
   Button,
+  ButtonLink,
+  ButtonLinkSize,
   ButtonSize,
   Checkbox,
   Icon,
@@ -33,6 +35,11 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { useAlertActionHandler } from '../../../../../hooks/useAlertActionHandler';
+import {
+  SECURITY_PROVIDER_CONFIG,
+  SecurityProvider,
+} from '../../../../../../shared/constants/security-provider';
+import { SizeNumber } from '../../../../component-library/box/box.types';
 
 export type AlertModalProps = {
   /**
@@ -99,6 +106,52 @@ export function getSeverityStyle(severity?: Severity) {
   }
 }
 
+export function AlertProvider({
+  provider,
+  paddingTop = 0,
+  textAlign,
+}: {
+  provider?: SecurityProvider;
+  paddingTop?: SizeNumber;
+  textAlign?: TextAlign;
+}) {
+  const t = useI18nContext();
+
+  if (!provider) {
+    return null;
+  }
+
+  return (
+    <Box paddingTop={paddingTop} textAlign={textAlign}>
+      <Text
+        marginTop={1}
+        display={Display.InlineFlex}
+        alignItems={AlignItems.center}
+        color={TextColor.textAlternative}
+        variant={TextVariant.bodySm}
+      >
+        <Icon
+          className="disclosure__summary--icon"
+          color={IconColor.primaryDefault}
+          name={IconName.SecurityTick}
+          size={IconSize.Sm}
+          marginInlineEnd={1}
+        />
+        {t('securityProviderPoweredBy', [
+          <ButtonLink
+            key={`security-provider-button-link-${provider}`}
+            size={ButtonLinkSize.Inherit}
+            href={SECURITY_PROVIDER_CONFIG[provider]?.url}
+            externalLink
+          >
+            {t(SECURITY_PROVIDER_CONFIG[provider]?.tKeyName)}
+          </ButtonLink>,
+        ])}
+      </Text>
+    </Box>
+  );
+}
+
 function AlertHeader({
   selectedAlert,
   customAlertTitle,
@@ -115,7 +168,7 @@ function AlertHeader({
         display={Display.Block}
         alignItems={AlignItems.center}
         textAlign={TextAlign.Center}
-        marginTop={3}
+        marginTop={1}
       >
         <Icon
           name={
@@ -300,7 +353,7 @@ export function AlertModal({
     onClose();
   }, [onClose]);
 
-  const selectedAlert = alerts.find((alert) => alert.key === alertKey);
+  const selectedAlert = alerts.find((alert: Alert) => alert.key === alertKey);
 
   if (!selectedAlert) {
     return null;
@@ -321,6 +374,7 @@ export function AlertModal({
           className={'alert-modal__header'}
           borderWidth={1}
           display={headerStartAccessory ? Display.InlineFlex : Display.Block}
+          paddingBottom={1}
         />
         <AlertHeader
           selectedAlert={selectedAlert}
@@ -338,6 +392,11 @@ export function AlertModal({
               onCheckboxClick={handleCheckboxClick}
             />
           )}
+          <AlertProvider
+            provider={selectedAlert.provider}
+            paddingTop={2}
+            textAlign={TextAlign.Center}
+          />
         </ModalBody>
         <ModalFooter>
           <Box
@@ -354,9 +413,11 @@ export function AlertModal({
                   hasActions={Boolean(selectedAlert.actions)}
                   isBlocking={selectedAlert.isBlocking}
                 />
-                {(selectedAlert.actions ?? []).map((action) => (
-                  <ActionButton key={action.key} action={action} />
-                ))}
+                {(selectedAlert.actions ?? []).map(
+                  (action: { key: string; label: string }) => (
+                    <ActionButton key={action.key} action={action} />
+                  ),
+                )}
               </>
             )}
           </Box>

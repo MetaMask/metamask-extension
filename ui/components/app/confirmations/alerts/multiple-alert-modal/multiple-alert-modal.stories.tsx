@@ -6,10 +6,11 @@ import { Provider } from 'react-redux';
 import { baseAlertsMock } from '../alert-modal/alert-modal.stories';
 import { useArgs } from '@storybook/client-api';
 import { Box, Button } from '../../../../component-library';
+import { SecurityProvider } from '../../../../../../shared/constants/security-provider';
 
 const OWNER_ID_MOCK = '123';
 
-const alertsMock = [baseAlertsMock[0], {...baseAlertsMock[1], actions: undefined}, baseAlertsMock[2]];
+const alertsMock = [baseAlertsMock[0], {...baseAlertsMock[1], actions: undefined, provider: SecurityProvider.Blockaid}, baseAlertsMock[2]];
 const storeMock = configureStore({ confirmAlerts: {
   alerts: {[OWNER_ID_MOCK]: alertsMock},
   confirmed: {[OWNER_ID_MOCK]: {'From': false, 'Data': false, 'Contract': false}},
