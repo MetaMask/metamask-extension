@@ -6,7 +6,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 119;
+export const version = 118;
 
 /**
  * This migration sets preference useRequestQueue to true

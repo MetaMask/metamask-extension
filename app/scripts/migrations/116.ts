@@ -10,7 +10,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 117;
+export const version = 116;
 
 // Target date is December 8, 2023 - 00:00:00 UTC
 export const TARGET_DATE = new Date('2023-12-08T00:00:00Z').getTime();
@@ -24,7 +24,7 @@ type FailedTransactionMeta = TransactionMeta & {
 
 export const StuckTransactionError = {
   name: 'StuckTransactionDueToStatus',
-  message: 'Transaction is stuck due to status - migration 116',
+  message: 'Transaction is stuck due to status - migration 115',
 };
 
 /**

@@ -1,6 +1,6 @@
-import { migrate, version } from './116';
+import { migrate, version } from './115';
 
-const oldVersion = 115;
+const oldVersion = 114;
 
 describe('migration #79', () => {
   it('should update the version metadata', async () => {
@@ -29,7 +29,7 @@ describe('migration #79', () => {
     const newStorage = await migrate(oldStorage);
     expect(newStorage).toStrictEqual({
       meta: {
-        version: 116,
+        version: 115,
       },
       data: {
         AppStateController: {
@@ -54,7 +54,7 @@ describe('migration #79', () => {
     const newStorage = await migrate(oldStorage);
     expect(newStorage).toStrictEqual({
       meta: {
-        version: 116,
+        version: 115,
       },
       data: {
         AppStateController: {

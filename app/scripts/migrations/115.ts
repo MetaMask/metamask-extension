@@ -6,7 +6,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 116;
+export const version = 115;
 
 /**
  * As we have removed Product tour from Home Page so this migration is to remove showProductTour from AppState

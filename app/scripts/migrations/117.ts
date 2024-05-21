@@ -2,7 +2,7 @@ import { cloneDeep } from 'lodash';
 import log from 'loglevel';
 import { hasProperty, isObject } from '@metamask/utils';
 
-export const version = 118;
+export const version = 117;
 
 type VersionedData = {
   meta: { version: number };

@@ -1,7 +1,7 @@
 import { TransactionStatus } from '@metamask/transaction-controller';
-import { migrate, version, StuckTransactionError, TARGET_DATE } from './117';
+import { migrate, version, StuckTransactionError, TARGET_DATE } from './116';
 
-const oldVersion = 116;
+const oldVersion = 115;
 
 const TRANSACTIONS_MOCK = [
   { id: 'tx1', time: TARGET_DATE - 1000, status: 'approved' }, // Before target date, should be marked as failed
@@ -10,7 +10,7 @@ const TRANSACTIONS_MOCK = [
   { id: 'tx4', time: TARGET_DATE - 1000, status: 'confirmed' }, // Before target date but not approved/signed, should remain unchanged
 ];
 
-describe('migration #117', () => {
+describe('migration #116', () => {
   afterEach(() => {
     jest.resetAllMocks();
   });

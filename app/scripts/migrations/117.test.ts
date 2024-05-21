@@ -1,4 +1,4 @@
-import { migrate, version } from './118';
+import { migrate, version } from './117';
 
 const sentryCaptureExceptionMock = jest.fn();
 
@@ -6,14 +6,14 @@ global.sentry = {
   captureException: sentryCaptureExceptionMock,
 };
 
-describe('migration #118', () => {
+describe('migration #117', () => {
   afterEach(() => {
     jest.resetAllMocks();
   });
 
   it('updates the version metadata', async () => {
     const oldStorage = {
-      meta: { version: 117 },
+      meta: { version: 116 },
       data: {},
     };
 
@@ -28,7 +28,7 @@ describe('migration #118', () => {
     };
 
     const transformedState = await migrate({
-      meta: { version: 117 },
+      meta: { version: 116 },
       data: oldState,
     });
 
@@ -55,7 +55,7 @@ describe('migration #118', () => {
     };
 
     const transformedState = await migrate({
-      meta: { version: 117 },
+      meta: { version: 116 },
       data: oldState,
     });
 
@@ -82,7 +82,7 @@ describe('migration #118', () => {
     };
 
     const transformedState = await migrate({
-      meta: { version: 117 },
+      meta: { version: 116 },
       data: oldState,
     });
 
@@ -95,7 +95,7 @@ describe('migration #118', () => {
     };
     const oldStorage = {
       meta: {
-        version: 117,
+        version: 116,
       },
       data: oldData,
     };
@@ -116,7 +116,7 @@ describe('migration #118', () => {
     };
     const oldStorage = {
       meta: {
-        version: 117,
+        version: 116,
       },
       data: oldData,
     };
