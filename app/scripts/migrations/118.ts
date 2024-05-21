@@ -1,19 +1,22 @@
-import { cloneDeep, isObject } from 'lodash';
-import { hasProperty } from '@metamask/utils';
-import { AccountsControllerState } from '@metamask/accounts-controller';
-import { InternalAccount } from '@metamask/keyring-api';
+import { cloneDeep } from 'lodash';
+import log from 'loglevel';
+import { hasProperty, isObject } from '@metamask/utils';
+
+export const version = 118;
 
 type VersionedData = {
   meta: { version: number };
   data: Record<string, unknown>;
 };
 
-export const version = 118;
-
 /**
- * Add a default value for importTime in the InternalAccount
+ * Removes all Snaps domains (identified as starting with 'npm:' or 'local:') from the SelectedNetworkController's domains state.
  *
- * @param originalVersionedData
+ * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
+ * @param originalVersionedData.meta - State metadata.
+ * @param originalVersionedData.meta.version - The current state version.
+ * @param originalVersionedData.data - The persisted MetaMask state, keyed by controller.
+ * @returns Updated versioned MetaMask extension state.
  */
 export async function migrate(
   originalVersionedData: VersionedData,
@@ -23,35 +26,50 @@ export async function migrate(
   transformState(versionedData.data);
   return versionedData;
 }
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function transformState(state: Record<string, any>) {
-  const AccountsController = state?.AccountsController || {};
 
-  if (
-    hasProperty(state, 'AccountsController') &&
-    isObject(state.AccountsController) &&
-    hasProperty(state.AccountsController, 'internalAccounts') &&
-    hasProperty(
-      state.AccountsController
-        .internalAccounts as AccountsControllerState['internalAccounts'],
-      'accounts',
-    ) &&
-    Object.values(
-      (state.AccountsController as AccountsControllerState).internalAccounts
-        .accounts,
-    ).length > 0
-  ) {
-    Object.values(AccountsController.internalAccounts.accounts).forEach(
-      (internalAccount: InternalAccount) => {
-        if (!internalAccount.metadata?.importTime) {
-          internalAccount.metadata.importTime = Date.now();
-        }
-      },
-    );
+/**
+ * Removes all domains starting with 'npm:' or 'local:' from the SelectedNetworkController's domains state.
+ *
+ * @param state - The entire state object of the MetaMask extension.
+ */
+function transformState(state: Record<string, unknown>) {
+  const selectedNetworkControllerState = state.SelectedNetworkController;
+  if (!selectedNetworkControllerState) {
+    log.warn('Skipping migration. SelectedNetworkController state not found.');
+    return;
   }
 
-  return {
-    ...state,
-    AccountsController,
-  };
+  if (!isObject(selectedNetworkControllerState)) {
+    global.sentry?.captureException?.(
+      new Error('SelectedNetworkController is not an object.'),
+    );
+    return;
+  }
+
+  if (!hasProperty(selectedNetworkControllerState, 'domains')) {
+    global.sentry?.captureException?.(
+      new Error('Domains key is missing in SelectedNetworkController state.'),
+    );
+    return;
+  }
+
+  if (!isObject(selectedNetworkControllerState.domains)) {
+    global.sentry?.captureException?.(
+      new Error('Domains state is not an object.'),
+    );
+    return;
+  }
+
+  const { domains } = selectedNetworkControllerState;
+  const filteredDomains = Object.keys(domains).reduce<Record<string, unknown>>(
+    (acc, domain) => {
+      if (!domain.startsWith('npm:') && !domain.startsWith('local:')) {
+        acc[domain] = domains[domain];
+      }
+      return acc;
+    },
+    {},
+  );
+
+  selectedNetworkControllerState.domains = filteredDomains;
 }

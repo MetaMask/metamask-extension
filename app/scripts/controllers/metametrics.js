@@ -652,6 +652,16 @@ export default class MetaMetricsController {
     });
   }
 
+  // Retrieve (or generate if doesn't exist) the client metametrics id
+  getMetaMetricsId() {
+    let { metaMetricsId } = this.state;
+    if (!metaMetricsId) {
+      metaMetricsId = this.generateMetaMetricsId();
+      this.store.updateState({ metaMetricsId });
+    }
+    return metaMetricsId;
+  }
+
   /** PRIVATE METHODS */
 
   /**

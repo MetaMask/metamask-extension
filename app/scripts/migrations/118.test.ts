@@ -1,93 +1,131 @@
-import { createMockInternalAccount } from '../../../test/jest/mocks';
 import { migrate, version } from './118';
 
-const oldVersion = 117;
-const newVersion = 118;
+const sentryCaptureExceptionMock = jest.fn();
+
+global.sentry = {
+  captureException: sentryCaptureExceptionMock,
+};
 
 describe('migration #118', () => {
-  it('should update the version metadata', async () => {
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
+  it('updates the version metadata', async () => {
     const oldStorage = {
-      meta: { version: oldVersion },
+      meta: { version: 117 },
       data: {},
     };
 
     const newStorage = await migrate(oldStorage);
+
     expect(newStorage.meta).toStrictEqual({ version });
   });
 
-  it('should add importTime to InternalAccount if it is not defined"', async () => {
-    const mockInternalAccount = createMockInternalAccount();
-    // @ts-expect-error forcing the importTime to be undefined for migration test.
-    mockInternalAccount.metadata.importTime = undefined;
-
-    const oldStorage = {
-      meta: {
-        version: oldVersion,
-      },
-      data: {
-        AccountsController: {
-          internalAccounts: {
-            accounts: {
-              [mockInternalAccount.id]: mockInternalAccount,
-            },
-            selectedAccount: mockInternalAccount.id,
-          },
-        },
-      },
+  it('does nothing if SelectedNetworkController is not present', async () => {
+    const oldState = {
+      OtherController: {},
     };
 
-    const newStorage = await migrate(oldStorage);
-    expect(newStorage).toStrictEqual({
-      meta: {
-        version: newVersion,
-      },
-      data: {
-        AccountsController: {
-          internalAccounts: {
-            accounts: {
-              [mockInternalAccount.id]: {
-                ...mockInternalAccount,
-                metadata: {
-                  ...mockInternalAccount.metadata,
-                  importTime: expect.any(Number),
-                },
-              },
-            },
-            selectedAccount: mockInternalAccount.id,
-          },
-        },
-      },
+    const transformedState = await migrate({
+      meta: { version: 117 },
+      data: oldState,
     });
-    expect(newStorage);
+
+    expect(transformedState.data).toEqual(oldState);
   });
 
-  it('should make no changes importTime already exists', async () => {
-    const mockInternalAccount = createMockInternalAccount();
-    const mockAccountsControllerState = {
-      internalAccounts: {
-        accounts: {
-          [mockInternalAccount.id]: mockInternalAccount,
+  it('removes domains with npm: or local: prefixes and preserves other domains', async () => {
+    const oldState = {
+      SelectedNetworkController: {
+        domains: {
+          'npm:package': 'network1',
+          'local:development': 'network2',
+          otherDomain: 'network3',
         },
-        selectedAccount: mockInternalAccount.id,
+      },
+    };
+
+    const expectedState = {
+      SelectedNetworkController: {
+        domains: {
+          otherDomain: 'network3',
+        },
+      },
+    };
+
+    const transformedState = await migrate({
+      meta: { version: 117 },
+      data: oldState,
+    });
+
+    expect(transformedState.data).toEqual(expectedState);
+  });
+
+  it('keeps the domains unchanged if there are no npm: or local: prefixes', async () => {
+    const oldState = {
+      SelectedNetworkController: {
+        domains: {
+          someDomain: 'network1',
+          anotherDomain: 'network2',
+        },
+      },
+    };
+
+    const expectedState = {
+      SelectedNetworkController: {
+        domains: {
+          someDomain: 'network1',
+          anotherDomain: 'network2',
+        },
+      },
+    };
+
+    const transformedState = await migrate({
+      meta: { version: 117 },
+      data: oldState,
+    });
+
+    expect(transformedState.data).toEqual(expectedState);
+  });
+
+  it('should capture an exception if SelectedNetworkController is in state but is not an object', async () => {
+    const oldData = {
+      SelectedNetworkController: 'not an object',
+    };
+    const oldStorage = {
+      meta: {
+        version: 117,
+      },
+      data: oldData,
+    };
+
+    await migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error('SelectedNetworkController is not an object.'),
+    );
+  });
+
+  it('should capture an exception if SelectedNetworkController has domains but it is not an object', async () => {
+    const oldData = {
+      SelectedNetworkController: {
+        domains: 'not an object',
       },
     };
     const oldStorage = {
       meta: {
-        version: oldVersion,
+        version: 117,
       },
-      data: {
-        AccountsController: mockAccountsControllerState,
-      },
+      data: oldData,
     };
 
-    const newStorage = await migrate(oldStorage);
-    expect(newStorage).toStrictEqual({
-      meta: {
-        version: newVersion,
-      },
-      data: {
-        AccountsController: mockAccountsControllerState,
-      },
-    });
+    await migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error('Domains state is not an object.'),
+    );
   });
 });
