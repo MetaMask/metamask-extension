@@ -63,7 +63,7 @@ ui/selectors/institutional           @MetaMask/mmi
 
 # Design System to own code for the component-library folder
 # Slack handle: @metamask-design-system-team | Slack channel: #metamask-design-system
-ui/components/component-library      @MetaMask/design-system-engineers2
+ui/components/component-library      @MetaMask/design-system-engineers
 
 # Accounts team is responsible for code related with snap management accounts
 # Slack handle: @accounts-team-devs | Slack channel: #metamask-accounts-team
