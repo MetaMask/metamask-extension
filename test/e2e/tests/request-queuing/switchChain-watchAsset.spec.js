@@ -71,7 +71,6 @@ describe('Request Queue SwitchChain -> WatchAsset', function () {
           text: 'Switch network',
           tag: 'button',
         });
-
         await driver.clickElement({ text: 'Switch network', tag: 'button' });
 
         await driver.waitUntilXWindowHandles(2);
