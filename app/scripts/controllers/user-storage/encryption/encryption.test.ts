@@ -1,4 +1,4 @@
-import { createMockFullUserStorage } from '../metamask-notifications/mocks/mock-notification-user-storage';
+import { createMockFullUserStorage } from '../../metamask-notifications/mocks/mock-notification-user-storage';
 import encryption, { createSHA256Hash } from './encryption';
 
 describe('encryption tests', () => {
@@ -20,7 +20,7 @@ describe('encryption tests', () => {
   });
 
   it('Should decrypt some existing data', () => {
-    const encryptedData = `{"v":"1","t":"scrypt","d":"0lK5v9r3zkIoab2nNNeTr9TUAm+bllGH72SQKuIOWehIjpfXGN9kGQHVSC/bY7pJN8VDF4vmjw==","o":{"N":16384,"r":8,"p":1,"dkLen":16}}`;
+    const encryptedData = `{"v":"1","t":"scrypt","d":"WNEp1QXUZsxCfW9b27uzZ18CtsMvKP6+cqLq8NLAItXeYcFcUjtKprfvedHxf5JN9Q7pe50qnA==","o":{"N":131072,"r":8,"p":1,"dkLen":16},"saltLen":16}`;
     const result = encryption.decryptString(encryptedData, PASSWORD);
     expect(result).toBe(DATA1);
   });

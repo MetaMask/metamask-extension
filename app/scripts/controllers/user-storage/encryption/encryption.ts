@@ -3,6 +3,8 @@ import { sha256 } from '@noble/hashes/sha256';
 import { utf8ToBytes, concatBytes, bytesToHex } from '@noble/hashes/utils';
 import { gcm } from '@noble/ciphers/aes';
 import { randomBytes } from '@noble/ciphers/webcrypto';
+import { getAnyCachedKey, getCachedKeyBySalt, setCachedKey } from './cache';
+import { base64ToByteArray, byteArrayToBase64, bytesToUtf8 } from './utils';
 
 export type EncryptedPayload = {
   // version
@@ -21,58 +23,9 @@ export type EncryptedPayload = {
     p: number;
     dkLen: number;
   };
-};
 
-function byteArrayToBase64(byteArray: Uint8Array) {
-  return Buffer.from(byteArray).toString('base64');
-}
-
-function base64ToByteArray(base64: string) {
-  return new Uint8Array(Buffer.from(base64, 'base64'));
-}
-
-function bytesToUtf8(byteArray: Uint8Array) {
-  const decoder = new TextDecoder('utf-8');
-  return decoder.decode(byteArray);
-}
-
-/**
- * In Memory Cache of the derived key from a given salt.
- * We can tidy this to make it reusable with future versions and KDF functions
- */
-const inMemCachedKDF: Map<string, Uint8Array> = new Map();
-
-type CachedEntry = {
-  salt: Uint8Array;
-  key: Uint8Array;
-};
-const getCachedKeyBySalt = (salt: Uint8Array): CachedEntry | undefined => {
-  const base64Salt = byteArrayToBase64(salt);
-  const cachedKey = inMemCachedKDF.get(base64Salt);
-  if (!cachedKey) {
-    return undefined;
-  }
-
-  return {
-    salt,
-    key: cachedKey,
-  };
-};
-const getAnyCachedKey = (): CachedEntry | undefined => {
-  const cachedEntry = Array.from(inMemCachedKDF.entries()).at(0);
-  if (!cachedEntry) {
-    return undefined;
-  }
-
-  const bytesSalt = base64ToByteArray(cachedEntry[0]);
-  return {
-    salt: bytesSalt,
-    key: cachedEntry[1],
-  };
-};
-const setCachedKey = (salt: Uint8Array, key: Uint8Array): void => {
-  const base64Salt = byteArrayToBase64(salt);
-  inMemCachedKDF.set(base64Salt, key);
+  // Salt options
+  saltLen: number;
 };
 
 class EncryptorDecryptor {
@@ -113,29 +66,18 @@ class EncryptorDecryptor {
   }
 
   #encryptStringV1(plaintext: string, password: string): string {
-    let salt: Uint8Array;
-    let key: Uint8Array;
-
-    const cachedKey = getAnyCachedKey();
-    if (cachedKey) {
-      salt = cachedKey.salt;
-      key = cachedKey.key;
-    } else {
-      salt = randomBytes(this.#SCRYPT_SALT_SIZE);
-      key = scrypt(password, salt, {
-        N: this.#SCRYPT_N,
-        r: this.#SCRYPT_r,
-        p: this.#SCRYPT_p,
-        dkLen: this.#ALGORITHM_KEY_SIZE,
-      });
-      setCachedKey(salt, key);
-    }
+    const key = this.#getOrGenerateScryptKey(password, {
+      N: this.#SCRYPT_N,
+      r: this.#SCRYPT_r,
+      p: this.#SCRYPT_p,
+      dkLen: this.#ALGORITHM_KEY_SIZE,
+    });
 
     // Encrypt and prepend salt.
     const plaintextRaw = utf8ToBytes(plaintext);
     const ciphertextAndNonceAndSalt = concatBytes(
-      salt,
-      this.#encrypt(plaintextRaw, key),
+      key.salt,
+      this.#encrypt(plaintextRaw, key.key),
     );
 
     // Convert to Base64
@@ -151,13 +93,14 @@ class EncryptorDecryptor {
         p: this.#SCRYPT_p,
         dkLen: this.#ALGORITHM_KEY_SIZE,
       },
+      saltLen: this.#SCRYPT_SALT_SIZE,
     };
 
     return JSON.stringify(encryptedPayload);
   }
 
   #decryptStringV1(data: EncryptedPayload, password: string): string {
-    const { o, d: base64CiphertextAndNonceAndSalt } = data;
+    const { o, d: base64CiphertextAndNonceAndSalt, saltLen } = data;
 
     // Decode the base64.
     const ciphertextAndNonceAndSalt = base64ToByteArray(
@@ -165,28 +108,26 @@ class EncryptorDecryptor {
     );
 
     // Create buffers of salt and ciphertextAndNonce.
-    const salt = ciphertextAndNonceAndSalt.slice(0, this.#SCRYPT_SALT_SIZE);
+    const salt = ciphertextAndNonceAndSalt.slice(0, saltLen);
     const ciphertextAndNonce = ciphertextAndNonceAndSalt.slice(
-      this.#SCRYPT_SALT_SIZE,
+      saltLen,
       ciphertextAndNonceAndSalt.length,
     );
 
     // Derive the key.
-    const cachedKey = getCachedKeyBySalt(salt);
-    let key: Uint8Array;
-    if (cachedKey) {
-      key = cachedKey.key;
-    } else {
-      key = scrypt(password, salt, {
+    const key = this.#getOrGenerateScryptKey(
+      password,
+      {
         N: o.N,
         r: o.r,
         p: o.p,
         dkLen: o.dkLen,
-      });
-    }
+      },
+      salt,
+    );
 
     // Decrypt and return result.
-    return bytesToUtf8(this.#decrypt(ciphertextAndNonce, key));
+    return bytesToUtf8(this.#decrypt(ciphertextAndNonce, key.key));
   }
 
   #encrypt(plaintext: Uint8Array, key: Uint8Array): Uint8Array {
@@ -208,6 +149,35 @@ class EncryptorDecryptor {
 
     // Decrypt and return result.
     return gcm(key, nonce).decrypt(ciphertext);
+  }
+
+  #getOrGenerateScryptKey(
+    password: string,
+    o: EncryptedPayload['o'],
+    salt?: Uint8Array,
+  ) {
+    const cachedKey = salt ? getCachedKeyBySalt(salt) : getAnyCachedKey();
+
+    if (cachedKey) {
+      return {
+        key: cachedKey.key,
+        salt: cachedKey.salt,
+      };
+    }
+
+    const newSalt = salt ?? randomBytes(this.#SCRYPT_SALT_SIZE);
+    const newKey = scrypt(password, newSalt, {
+      N: o.N,
+      r: o.r,
+      p: o.p,
+      dkLen: o.dkLen,
+    });
+    setCachedKey(newSalt, newKey);
+
+    return {
+      key: newKey,
+      salt: newSalt,
+    };
   }
 }
 
