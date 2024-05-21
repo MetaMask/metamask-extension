@@ -231,67 +231,32 @@ export async function switchChain(
     requestSwitchNetworkPermission,
   },
 ) {
-  if (getChainPermissionsFeatureFlag()) {
-    return await switchChainWithPermissions(
-      res,
-      end,
-      chainId,
-      networkConfigurationId,
-      approvalFlowId,
-      {
-        getCaveat,
-        requestSwitchNetworkPermission,
-        setActiveNetwork,
-        endApprovalFlow,
-      },
-    );
-  }
-  return await switchChainWithoutPermissions(
-    res,
-    end,
-    requestData,
-    networkConfigurationId,
-    approvalFlowId,
-    origin,
-    { setActiveNetwork, endApprovalFlow, requestUserApproval },
-  );
-}
-
-async function switchChainWithPermissions(
-  res,
-  end,
-  chainId,
-  networkClientIdToSwitchTo,
-  approvalFlowId,
-  {
-    getCaveat,
-    requestSwitchNetworkPermission,
-    setActiveNetwork,
-    endApprovalFlow,
-  },
-) {
-  const { value: permissionedChainIds } =
-    getCaveat({
-      target: PermissionNames.permittedChains,
-      caveatType: CaveatTypes.restrictNetworkSwitching,
-    }) ?? {};
-
-  if (
-    permissionedChainIds === undefined ||
-    !permissionedChainIds.includes(chainId)
-  ) {
-    try {
-      await requestSwitchNetworkPermission([
-        ...(permissionedChainIds ?? []),
-        chainId,
-      ]);
-    } catch (err) {
-      return end(err);
-    }
-  }
-
   try {
-    await setActiveNetwork(networkClientIdToSwitchTo);
+    if (getChainPermissionsFeatureFlag()) {
+      const { value: permissionedChainIds } =
+        getCaveat({
+          target: PermissionNames.permittedChains,
+          caveatType: CaveatTypes.restrictNetworkSwitching,
+        }) ?? {};
+
+      if (
+        permissionedChainIds === undefined ||
+        !permissionedChainIds.includes(chainId)
+      ) {
+        await requestSwitchNetworkPermission([
+          ...(permissionedChainIds ?? []),
+          chainId,
+        ]);
+      }
+    } else {
+      await requestUserApproval({
+        origin,
+        type: ApprovalType.SwitchEthereumChain,
+        requestData,
+      });
+    }
+
+    await setActiveNetwork(networkConfigurationId);
     res.result = null;
   } catch (error) {
     return end(
@@ -299,36 +264,6 @@ async function switchChainWithPermissions(
         ? undefined
         : error,
     );
-  } finally {
-    if (approvalFlowId) {
-      endApprovalFlow({ id: approvalFlowId });
-    }
-  }
-  return end();
-}
-
-async function switchChainWithoutPermissions(
-  res,
-  end,
-  requestData,
-  networkClientIdToSwitchTo,
-  approvalFlowId,
-  origin,
-  { setActiveNetwork, endApprovalFlow, requestUserApproval },
-) {
-  try {
-    await requestUserApproval({
-      origin,
-      type: ApprovalType.SwitchEthereumChain,
-      requestData,
-    });
-
-    await setActiveNetwork(networkClientIdToSwitchTo);
-    res.result = null;
-  } catch (error) {
-    if (error.code !== errorCodes.provider.userRejectedRequest) {
-      return end(error);
-    }
   } finally {
     if (approvalFlowId) {
       endApprovalFlow({ id: approvalFlowId });
