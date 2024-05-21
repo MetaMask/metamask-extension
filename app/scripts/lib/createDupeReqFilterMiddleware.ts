@@ -52,14 +52,14 @@ export default function createDupeReqFilterMiddleware(): JsonRpcMiddleware<
   void
 > {
   const seenRequestIds = makeExpirySet();
-  return function filterDuplicateRequestMiddleware(req, _res, next, end) {
+  return function filterDuplicateRequestMiddleware(req, _res, next) {
     if (req.id === undefined) {
       // JSON-RPC notifications have no ids; our only recourse is to let them through.
-      return next();
+      next();
     } else if (!seenRequestIds.add(req.id)) {
       log.info(`RPC request with id "${req.id}" already seen.`);
-      return end();
+      return;
     }
-    return next();
+    next();
   };
 }

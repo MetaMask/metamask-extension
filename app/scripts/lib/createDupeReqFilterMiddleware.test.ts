@@ -18,7 +18,7 @@ describe('createDupeReqFilterMiddleware', () => {
   it('forwards requests with ids seen for the first time', () => {
     const filterFn = createDupeReqFilterMiddleware();
     const nextMock = jest.fn();
-    const endMock = jest.fn();
+    nextMock.mockReturnValue('mocked value');
 
     filterFn(getMockRequest(1), getMockResponse(), nextMock, endMock);
 
@@ -40,7 +40,7 @@ describe('createDupeReqFilterMiddleware', () => {
     filterFn(getMockRequest(1), response, nextMock, endMock);
     expect('result' in response).toBe(false);
     expect(nextMock).toHaveBeenCalledTimes(1);
-    expect(endMock).toHaveBeenCalledTimes(1);
+    expect(endMock).not.toHaveBeenCalled();
   });
 
   it('forwards JSON-RPC notifications (requests without ids)', () => {
@@ -93,7 +93,7 @@ describe('createDupeReqFilterMiddleware', () => {
     filterFn(getMockRequest(2), getMockResponse(), nextMock, endMock);
 
     expect(nextMock).toHaveBeenCalledTimes(5);
-    expect(endMock).toHaveBeenCalledTimes(1);
+    expect(endMock).not.toHaveBeenCalled();
   });
 
   it('expires single id in three minute intervals', () => {
@@ -110,14 +110,14 @@ describe('createDupeReqFilterMiddleware', () => {
     filterFn(getMockRequest(0), getMockResponse(), nextMock, endMock);
 
     expect(nextMock).toHaveBeenCalledTimes(2);
-    expect(endMock).toHaveBeenCalledTimes(1);
+    expect(endMock).not.toHaveBeenCalled();
 
     jest.advanceTimersByTime(THREE_MINUTES);
 
     filterFn(getMockRequest(0), getMockResponse(), nextMock, endMock);
 
     expect(nextMock).toHaveBeenCalledTimes(3);
-    expect(endMock).toHaveBeenCalledTimes(1);
+    expect(endMock).not.toHaveBeenCalled();
   });
 
   it('handles running expiry job without seeing any ids', () => {
