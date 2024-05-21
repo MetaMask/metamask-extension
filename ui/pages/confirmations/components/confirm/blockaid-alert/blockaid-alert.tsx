@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { TransactionType } from '@metamask/transaction-controller';
 
 import { currentConfirmationSelector } from '../../../../../selectors';
 import useSignatureSecurityAlertResponse from '../../../hooks/useSignatureSecurityAlertResponse';
@@ -18,9 +19,16 @@ const BlockaidAlert = ({ ...props }) => {
     currentSecurityAlertId,
   );
 
-  if (!currentSecurityAlertId) {
+  if (
+    !currentSecurityAlertId ||
+    currentConfirmation?.type === TransactionType.personalSign
+  ) {
     return null;
   }
+  // Skip displaying the Blockaid banner for confirmation types that use the new alert system.
+  // if (type === ApprovalType.PersonalSign) {
+  //   return null;
+  // }
 
   return (
     <BlockaidBannerAlert

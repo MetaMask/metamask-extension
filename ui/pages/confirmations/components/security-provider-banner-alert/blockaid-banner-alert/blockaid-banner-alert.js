@@ -65,11 +65,6 @@ function BlockaidBannerAlert({ txData, ...props }) {
   const t = useContext(I18nContext);
   const { updateTransactionEventFragment } = useTransactionEventFragment();
 
-  // Skip displaying the Blockaid banner for confirmation types that use the new alert system.
-  if (type === ApprovalType.PersonalSign) {
-    return null;
-  }
-
   if (
     !securityAlertResponse ||
     Object.keys(securityAlertResponse).length === 0
