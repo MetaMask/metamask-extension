@@ -3497,9 +3497,6 @@
   "snaps": {
     "message": "Snaps"
   },
-  "snapsInvalidUIError": {
-    "message": "L’interface utilisateur (IU) spécifiée par le snap n’est pas valide."
-  },
   "snapsNoInsight": {
     "message": "Le snap n’a renvoyé aucun aperçu"
   },
