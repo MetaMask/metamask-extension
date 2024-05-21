@@ -19,15 +19,16 @@ const mockSignedInState = (): AuthenticationControllerState => ({
     profile: {
       identifierId: MOCK_LOGIN_RESPONSE.profile.identifier_id,
       profileId: MOCK_LOGIN_RESPONSE.profile.profile_id,
-      metametricsId: MOCK_LOGIN_RESPONSE.profile.metametrics_id,
     },
   },
 });
 
 describe('authentication/authentication-controller - constructor() tests', () => {
   test('should initialize with default state', () => {
+    const metametrics = createMockAuthMetaMetrics();
     const controller = new AuthenticationController({
       messenger: createAuthenticationMessenger(),
+      metametrics,
     });
 
     expect(controller.state.isSignedIn).toBe(false);
@@ -35,9 +36,11 @@ describe('authentication/authentication-controller - constructor() tests', () =>
   });
 
   test('should initialize with override state', () => {
+    const metametrics = createMockAuthMetaMetrics();
     const controller = new AuthenticationController({
       messenger: createAuthenticationMessenger(),
       state: mockSignedInState(),
+      metametrics,
     });
 
     expect(controller.state.isSignedIn).toBe(true);
@@ -47,11 +50,12 @@ describe('authentication/authentication-controller - constructor() tests', () =>
 
 describe('authentication/authentication-controller - performSignIn() tests', () => {
   test('Should create access token and update state', async () => {
+    const metametrics = createMockAuthMetaMetrics();
     const mockEndpoints = mockAuthenticationFlowEndpoints();
     const { messenger, mockSnapGetPublicKey, mockSnapSignMessage } =
       createMockAuthenticationMessenger();
 
-    const controller = new AuthenticationController({ messenger });
+    const controller = new AuthenticationController({ messenger, metametrics });
 
     const result = await controller.performSignIn();
     expect(mockSnapGetPublicKey).toBeCalled();
@@ -85,7 +89,8 @@ describe('authentication/authentication-controller - performSignIn() tests', () 
       endpointFail,
     });
     const { messenger } = createMockAuthenticationMessenger();
-    const controller = new AuthenticationController({ messenger });
+    const metametrics = createMockAuthMetaMetrics();
+    const controller = new AuthenticationController({ messenger, metametrics });
 
     await expect(controller.performSignIn()).rejects.toThrow();
     expect(controller.state.isSignedIn).toBe(false);
@@ -111,10 +116,12 @@ describe('authentication/authentication-controller - performSignIn() tests', () 
 
 describe('authentication/authentication-controller - performSignOut() tests', () => {
   test('Should remove signed in user and any access tokens', () => {
+    const metametrics = createMockAuthMetaMetrics();
     const { messenger } = createMockAuthenticationMessenger();
     const controller = new AuthenticationController({
       messenger,
       state: mockSignedInState(),
+      metametrics,
     });
 
     controller.performSignOut();
@@ -123,10 +130,12 @@ describe('authentication/authentication-controller - performSignOut() tests', ()
   });
 
   test('Should throw error if attempting to sign out when user is not logged in', () => {
+    const metametrics = createMockAuthMetaMetrics();
     const { messenger } = createMockAuthenticationMessenger();
     const controller = new AuthenticationController({
       messenger,
       state: { isSignedIn: false },
+      metametrics,
     });
 
     expect(() => controller.performSignOut()).toThrow();
@@ -135,21 +144,25 @@ describe('authentication/authentication-controller - performSignOut() tests', ()
 
 describe('authentication/authentication-controller - getBearerToken() tests', () => {
   test('Should throw error if not logged in', async () => {
+    const metametrics = createMockAuthMetaMetrics();
     const { messenger } = createMockAuthenticationMessenger();
     const controller = new AuthenticationController({
       messenger,
       state: { isSignedIn: false },
+      metametrics,
     });
 
     await expect(controller.getBearerToken()).rejects.toThrow();
   });
 
   test('Should return original access token in state', async () => {
+    const metametrics = createMockAuthMetaMetrics();
     const { messenger } = createMockAuthenticationMessenger();
     const originalState = mockSignedInState();
     const controller = new AuthenticationController({
       messenger,
       state: originalState,
+      metametrics,
     });
 
     const result = await controller.getBearerToken();
@@ -158,6 +171,7 @@ describe('authentication/authentication-controller - getBearerToken() tests', ()
   });
 
   test('Should return new access token if state is invalid', async () => {
+    const metametrics = createMockAuthMetaMetrics();
     const { messenger } = createMockAuthenticationMessenger();
     mockAuthenticationFlowEndpoints();
     const originalState = mockSignedInState();
@@ -172,6 +186,7 @@ describe('authentication/authentication-controller - getBearerToken() tests', ()
     const controller = new AuthenticationController({
       messenger,
       state: originalState,
+      metametrics,
     });
 
     const result = await controller.getBearerToken();
@@ -182,21 +197,25 @@ describe('authentication/authentication-controller - getBearerToken() tests', ()
 
 describe('authentication/authentication-controller - getSessionProfile() tests', () => {
   test('Should throw error if not logged in', async () => {
+    const metametrics = createMockAuthMetaMetrics();
     const { messenger } = createMockAuthenticationMessenger();
     const controller = new AuthenticationController({
       messenger,
       state: { isSignedIn: false },
+      metametrics,
     });
 
     await expect(controller.getSessionProfile()).rejects.toThrow();
   });
 
   test('Should return original access token in state', async () => {
+    const metametrics = createMockAuthMetaMetrics();
     const { messenger } = createMockAuthenticationMessenger();
     const originalState = mockSignedInState();
     const controller = new AuthenticationController({
       messenger,
       state: originalState,
+      metametrics,
     });
 
     const result = await controller.getSessionProfile();
@@ -205,6 +224,7 @@ describe('authentication/authentication-controller - getSessionProfile() tests',
   });
 
   test('Should return new access token if state is invalid', async () => {
+    const metametrics = createMockAuthMetaMetrics();
     const { messenger } = createMockAuthenticationMessenger();
     mockAuthenticationFlowEndpoints();
     const originalState = mockSignedInState();
@@ -219,15 +239,13 @@ describe('authentication/authentication-controller - getSessionProfile() tests',
     const controller = new AuthenticationController({
       messenger,
       state: originalState,
+      metametrics,
     });
 
     const result = await controller.getSessionProfile();
     expect(result).toBeDefined();
     expect(result.identifierId).toBe(MOCK_LOGIN_RESPONSE.profile.identifier_id);
     expect(result.profileId).toBe(MOCK_LOGIN_RESPONSE.profile.profile_id);
-    expect(result.metametricsId).toBe(
-      MOCK_LOGIN_RESPONSE.profile.metametrics_id,
-    );
   });
 });
 
@@ -291,4 +309,10 @@ function mockAuthenticationFlowEndpoints(params?: {
     mockLoginEndpoint,
     mockAccessTokenEndpoint,
   };
+}
+
+function createMockAuthMetaMetrics() {
+  const getMetaMetricsId = jest.fn().mockReturnValue('MOCK_METAMETRICS_ID');
+
+  return { getMetaMetricsId };
 }
