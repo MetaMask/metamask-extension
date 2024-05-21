@@ -41,6 +41,6 @@ describe('NetworksList Component', () => {
     const { queryByText } = renderComponent(props);
 
     expect(queryByText('Ethereum Mainnet')).toBeInTheDocument();
-    expect(queryByText('Sepolia test network')).toBeInTheDocument();
+    expect(queryByText('Sepolia')).toBeInTheDocument();
   });
 });

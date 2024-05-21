@@ -32,7 +32,7 @@ describe('NetworksTab Component', () => {
     });
 
     expect(queryByText('Ethereum Mainnet')).toBeInTheDocument();
-    expect(queryByText('Sepolia test network')).toBeInTheDocument();
+    expect(queryByText('Sepolia')).toBeInTheDocument();
     expect(queryByText('Add network')).toBeInTheDocument();
   });
   it('should render add network form correctly', () => {

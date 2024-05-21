@@ -52,7 +52,7 @@ describe('NetworksTabContent Component', () => {
       renderComponent(props);
 
     expect(queryByText('Ethereum Mainnet')).toBeInTheDocument();
-    expect(queryByText('Sepolia test network')).toBeInTheDocument();
+    expect(queryByText('Sepolia')).toBeInTheDocument();
 
     expect(queryByText('Network name')).toBeInTheDocument();
     expect(queryByText('New RPC URL')).toBeInTheDocument();
