@@ -1,20 +1,22 @@
 import getFetchWithTimeout from '../../../../../shared/modules/fetch-with-timeout';
 import { DeleteRegulationAPIResponse } from '../metametrics-data-deletion';
 
-const segmentSourceId = process.env.SEGMENT_DELETE_API_SOURCE_ID;
-const segmentRegulationEndpoint = process.env.SEGMENT_REGULATIONS_ENDPOINT;
+const analyticsDataDeletionSourceId =
+  process.env.ANALYTICS_DATA_DELETION_SOURCE_ID;
+const analyticsDataDeletionEndpoint =
+  process.env.ANALYTICS_DATA_DELETION_ENDPOINT;
 
 const fetchWithTimeout = getFetchWithTimeout();
 
 export async function createDataDeletionRegulationTask(
   metaMetricsId: string,
 ): Promise<DeleteRegulationAPIResponse> {
-  if (!segmentRegulationEndpoint) {
+  if (!analyticsDataDeletionEndpoint || !analyticsDataDeletionSourceId) {
     throw new Error('Segment API source ID or endpoint not found');
   }
 
   const response = await fetchWithTimeout(
-    `${segmentRegulationEndpoint}/regulations/sources/${segmentSourceId}`,
+    `${analyticsDataDeletionEndpoint}/regulations/sources/${analyticsDataDeletionSourceId}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/vnd.segment.v1+json' },
@@ -31,11 +33,11 @@ export async function createDataDeletionRegulationTask(
 export async function fetchDeletionRegulationStatus(
   deleteRegulationId: string,
 ): Promise<DeleteRegulationAPIResponse> {
-  if (!segmentSourceId || !segmentRegulationEndpoint) {
+  if (!analyticsDataDeletionEndpoint) {
     throw new Error('Segment API source ID or endpoint not found');
   }
   const response = await fetchWithTimeout(
-    `${segmentRegulationEndpoint}/regulations/${deleteRegulationId}`,
+    `${analyticsDataDeletionEndpoint}/regulations/${deleteRegulationId}`,
     {
       method: 'GET',
       headers: { 'Content-Type': 'application/vnd.segment.v1+json' },
