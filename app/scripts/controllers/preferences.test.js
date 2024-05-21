@@ -369,9 +369,6 @@ describe('preferences controller', () => {
           useTokenDetection: false,
         },
         networkConfigurations: NETWORK_CONFIGURATION_DATA,
-        onKeyringStateChange: (listener) => {
-          onKeyringStateChangeListener = listener;
-        },
       });
       const state = preferencesControllerExistingUser.store.getState();
       expect(state.useTokenDetection).toStrictEqual(false);
