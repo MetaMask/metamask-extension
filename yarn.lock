@@ -10339,7 +10339,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/readable-stream-2@npm:@types/readable-stream@^2.3.15, @types/readable-stream@npm:^2.3.15":
+"@types/readable-stream-2@npm:@types/readable-stream@^2.3.15":
   version: 2.3.15
   resolution: "@types/readable-stream@npm:2.3.15"
   dependencies:
@@ -10349,7 +10349,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/readable-stream-3@npm:@types/readable-stream@^4.0.4":
+"@types/readable-stream-3@npm:@types/readable-stream@^4.0.4, @types/readable-stream@npm:4.0.4":
   version: 4.0.4
   resolution: "@types/readable-stream@npm:4.0.4"
   dependencies:
@@ -25210,7 +25210,7 @@ __metadata:
     "@types/react-dom": "npm:^17.0.11"
     "@types/react-redux": "npm:^7.1.25"
     "@types/react-router-dom": "npm:^5.3.3"
-    "@types/readable-stream": "npm:^2.3.15"
+    "@types/readable-stream": "npm:4.0.4"
     "@types/readable-stream-2": "npm:^2.3.15"
     "@types/readable-stream-3": "npm:^4.0.4"
     "@types/redux-mock-store": "npm:1.0.6"

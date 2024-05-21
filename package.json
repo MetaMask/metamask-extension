@@ -496,7 +496,7 @@
     "@types/react-dom": "^17.0.11",
     "@types/react-redux": "^7.1.25",
     "@types/react-router-dom": "^5.3.3",
-    "@types/readable-stream": "^2.3.15",
+    "@types/readable-stream": "4.0.4",
     "@types/readable-stream-2": "^2.3.15",
     "@types/readable-stream-3": "^4.0.4",
     "@types/redux-mock-store": "1.0.6",
