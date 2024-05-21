@@ -1,4 +1,6 @@
 import React, { useCallback, useState } from 'react';
+
+import { SecurityProvider } from '../../../../../shared/constants/security-provider';
 import {
   Box,
   Button,
@@ -13,7 +15,6 @@ import {
 } from '../../../component-library';
 import {
   AlignItems,
-  Severity,
   TextAlign,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
@@ -22,7 +23,6 @@ import useAlerts from '../../../../hooks/useAlerts';
 import { AlertModal } from '../alert-modal';
 import { AcknowledgeCheckboxBase } from '../alert-modal/alert-modal';
 import { MultipleAlertModal } from '../multiple-alert-modal';
-import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 
 export type ConfirmAlertModalProps = {
   /** The unique key representing the specific alert field. */
@@ -56,7 +56,7 @@ function ConfirmButtons({
         variant={ButtonVariant.Secondary}
         data-testid="confirm-alert-modal-cancel-button"
       >
-        {t('cancel')}
+        {t('reject')}
       </Button>
       <Button
         variant={ButtonVariant.Primary}
@@ -119,21 +119,14 @@ export function ConfirmAlertModal({
   ownerId,
 }: ConfirmAlertModalProps) {
   const t = useI18nContext();
-  const { isAlertConfirmed, fieldAlerts } = useAlerts(ownerId);
+  const { alerts, unconfirmedDangerAlerts } = useAlerts(ownerId);
 
-  const unconfirmedDangerAlerts = fieldAlerts.filter(
-    (alert: Alert) =>
-      !isAlertConfirmed(alert.key) && alert.severity === Severity.Danger,
-  );
-  const selectedAlert = fieldAlerts.find(
-    (alert: Alert) => alert.key === alertKey,
-  );
-  const hasUnconfirmedDangerAlerts = unconfirmedDangerAlerts.length > 0;
+  const selectedAlert = alerts.find((alert) => alert.key === alertKey);
 
   const [confirmCheckbox, setConfirmCheckbox] = useState<boolean>(false);
   // if there are multiple alerts, show the multiple alert modal
   const [multipleAlertModalVisible, setMultipleAlertModalVisible] =
-    useState<boolean>(hasUnconfirmedDangerAlerts);
+    useState<boolean>(unconfirmedDangerAlerts.length > 1);
 
   const handleCloseMultipleAlertModal = useCallback(() => {
     setMultipleAlertModalVisible(false);
@@ -170,14 +163,22 @@ export function ConfirmAlertModal({
       onClose={onClose}
       customTitle={t('confirmAlertModalTitle')}
       customDetails={
-        <ConfirmDetails onAlertLinkClick={handleOpenMultipleAlertModal} />
+        selectedAlert?.provider === SecurityProvider.Blockaid ? (
+          SecurityProvider.Blockaid
+        ) : (
+          <ConfirmDetails onAlertLinkClick={handleOpenMultipleAlertModal} />
+        )
       }
       customAcknowledgeCheckbox={
         <AcknowledgeCheckboxBase
           selectedAlert={selectedAlert}
           isConfirmed={confirmCheckbox}
           onCheckboxClick={handleConfirmCheckbox}
-          label={t('confirmAlertModalAcknowledge')}
+          label={
+            SecurityProvider.Blockaid
+              ? t('confirmAlertModalAcknowledgeBlockaid')
+              : t('confirmAlertModalAcknowledge')
+          }
         />
       }
       customAcknowledgeButton={
