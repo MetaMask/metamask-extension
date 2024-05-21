@@ -46,6 +46,7 @@ export const AvatarFavicon: AvatarFaviconComponent = React.forwardRef(
             className="mm-avatar-favicon__image"
             src={src}
             alt={t('logo', [name])}
+            loading="lazy"
           />
         ) : (
           <Icon

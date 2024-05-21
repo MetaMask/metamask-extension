@@ -70,6 +70,7 @@ export const AvatarNetwork: AvatarNetworkComponent = React.forwardRef(
                   showHalo ? 'mm-avatar-network__network-image--blurred' : ''
                 }
                 aria-hidden="true"
+                loading="lazy"
               />
             )}
             <img
@@ -81,6 +82,7 @@ export const AvatarNetwork: AvatarNetworkComponent = React.forwardRef(
               onError={handleOnError}
               src={src}
               alt={`${name} logo` || 'network logo'}
+              loading="lazy"
             />
           </>
         )}

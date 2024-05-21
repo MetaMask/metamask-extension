@@ -64,6 +64,7 @@ exports[`All Connections render renders correctly 1`] = `
                 <img
                   alt="avatar-favicon logo"
                   class="mm-avatar-favicon__image"
+                  loading="lazy"
                   src="https://metamask.github.io/test-dapp/metamask-fox.svg"
                 />
               </div>
@@ -77,6 +78,7 @@ exports[`All Connections render renders correctly 1`] = `
                   <img
                     alt="Ethereum Mainnet logo"
                     class="mm-avatar-network__network-image"
+                    loading="lazy"
                     src="./images/eth_logo.svg"
                   />
                 </div>

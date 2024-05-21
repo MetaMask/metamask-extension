@@ -54,6 +54,7 @@ exports[`Identicon should match snapshot with custom image and className props 1
   <img
     alt=""
     class="identicon test-image"
+    loading="lazy"
     src="test-image"
     style="height: 46px; width: 46px; border-radius: 23px;"
   />

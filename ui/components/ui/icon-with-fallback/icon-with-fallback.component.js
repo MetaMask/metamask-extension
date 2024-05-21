@@ -36,6 +36,7 @@ const IconWithFallback = ({
           style={style}
           className={className}
           alt={name || 'icon'}
+          loading="lazy"
           {...props}
         />
       ) : (

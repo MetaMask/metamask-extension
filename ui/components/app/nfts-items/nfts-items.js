@@ -126,6 +126,7 @@ export default function NftsItems({
           alt={collectionName}
           src={getAssetImageURL(collectionImage, ipfsGateway)}
           className="nfts-items__collection-image"
+          loading="lazy"
         />
       );
     }

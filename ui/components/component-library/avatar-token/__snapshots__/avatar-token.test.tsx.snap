@@ -9,6 +9,7 @@ exports[`AvatarToken should render correctly 1`] = `
     <img
       alt="ast logo"
       class="mm-avatar-token__token-image"
+      loading="lazy"
       src="./AST.png"
     />
   </div>

@@ -17,6 +17,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           <img
             alt="https://metamask.github.io/test-dapp/"
             class="url-icon confirm-approve-content__siteimage-identicon"
+            loading="lazy"
             src="https://metamask.github.io/test-dapp/metamask-fox.svg"
           />
         </div>
@@ -187,6 +188,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           <img
             alt="https://metamask.github.io/test-dapp/"
             class="url-icon confirm-approve-content__siteimage-identicon"
+            loading="lazy"
             src="https://metamask.github.io/test-dapp/metamask-fox.svg"
           />
         </div>
@@ -368,6 +370,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           <img
             alt="https://metamask.github.io/test-dapp/"
             class="url-icon confirm-approve-content__siteimage-identicon"
+            loading="lazy"
             src="https://metamask.github.io/test-dapp/metamask-fox.svg"
           />
         </div>
@@ -549,6 +552,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           <img
             alt="https://metamask.github.io/test-dapp/"
             class="url-icon confirm-approve-content__siteimage-identicon"
+            loading="lazy"
             src="https://metamask.github.io/test-dapp/metamask-fox.svg"
           />
         </div>

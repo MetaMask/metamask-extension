@@ -298,6 +298,7 @@ export const NetworkListMenu = ({ onClose }) => {
                   <img
                     src="./images/dragging-animation.svg"
                     alt="drag-and-drop"
+                    loading="lazy"
                   />
                 </Box>
               }

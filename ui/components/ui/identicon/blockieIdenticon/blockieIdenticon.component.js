@@ -12,6 +12,7 @@ const BlockieIdenticon = ({ address, diameter, alt = '', borderRadius }) => {
         borderRadius,
       }}
       alt={alt}
+      loading="lazy"
     />
   );
 };

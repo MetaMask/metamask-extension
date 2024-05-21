@@ -69,6 +69,7 @@ export const AvatarToken: AvatarTokenComponent = React.forwardRef(
                   showHalo ? 'mm-avatar-token__token-image--blurred' : ''
                 }
                 aria-hidden="true"
+                loading="lazy"
               />
             )}
             <img
@@ -80,6 +81,7 @@ export const AvatarToken: AvatarTokenComponent = React.forwardRef(
               onError={handleOnError}
               src={src}
               alt={`${name} logo` || 'token logo'}
+              loading="lazy"
             />
           </>
         )}

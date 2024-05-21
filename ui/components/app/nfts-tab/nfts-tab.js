@@ -148,7 +148,7 @@ export default function NftsTab() {
               justifyContent={JustifyContent.center}
             >
               <Box justifyContent={JustifyContent.center}>
-                <img src="./images/no-nfts.svg" />
+                <img src="./images/no-nfts.svg" loading="lazy" />
               </Box>
               <Box
                 marginTop={4}

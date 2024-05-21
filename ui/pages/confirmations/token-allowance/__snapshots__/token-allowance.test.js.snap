@@ -204,6 +204,7 @@ exports[`TokenAllowancePage when mounted should match snapshot 1`] = `
           <img
             alt="https://metamask.github.io"
             class="url-icon token-allowance-container__icon-display-content__siteimage-identicon"
+            loading="lazy"
             src="https://metamask.github.io/test-dapp/metamask-fox.svg"
           />
         </div>

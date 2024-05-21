@@ -24,6 +24,7 @@ exports[`Connected Site Menu should render the site menu in connected state 1`] 
             <img
               alt="Uniswap logo"
               class="mm-avatar-favicon__image"
+              loading="lazy"
               src="https://uniswap.org/favicon.ico"
             />
           </div>
@@ -66,6 +67,7 @@ exports[`Connected Site Menu should render the site menu in not connected state 
             <img
               alt="Uniswap logo"
               class="mm-avatar-favicon__image"
+              loading="lazy"
               src="https://uniswap.org/favicon.ico"
             />
           </div>
@@ -108,6 +110,7 @@ exports[`Connected Site Menu should render the site menu in not connected to cur
             <img
               alt="Uniswap logo"
               class="mm-avatar-favicon__image"
+              loading="lazy"
               src="https://uniswap.org/favicon.ico"
             />
           </div>

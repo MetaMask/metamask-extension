@@ -20,11 +20,13 @@ exports[`Token Cell should match snapshot 1`] = `
           <img
             aria-hidden="true"
             class="mm-avatar-token__token-image--blurred"
+            loading="lazy"
             src="./images/test_image.svg"
           />
           <img
             alt="TEST logo"
             class="mm-avatar-token__token-image--size-reduced"
+            loading="lazy"
             src="./images/test_image.svg"
           />
         </div>

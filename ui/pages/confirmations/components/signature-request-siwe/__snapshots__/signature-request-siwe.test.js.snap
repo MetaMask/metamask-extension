@@ -197,6 +197,7 @@ exports[`SignatureRequestSIWE (Sign in with Ethereum) should match snapshot 1`] 
                 >
                   <img
                     alt="icon"
+                    loading="lazy"
                     src="https://example-dapp.website/favicon-32x32.png"
                     style="height: 24px; width: 24px;"
                   />

@@ -105,6 +105,7 @@ export default class Identicon extends Component {
         onError={() => {
           this.setState({ imageLoadingError: true });
         }}
+        loading="lazy"
       />
     );
   }

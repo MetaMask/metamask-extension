@@ -12,6 +12,7 @@ exports[`ItemList renders the component with initial props 1`] = `
     <img
       alt="primaryLabel"
       class="url-icon"
+      loading="lazy"
       src="iconUrl"
     />
   </div>

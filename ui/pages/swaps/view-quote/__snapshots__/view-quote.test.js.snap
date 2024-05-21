@@ -17,6 +17,7 @@ exports[`ViewQuote renders the component with EIP-1559 enabled 1`] = `
     <img
       alt="DAI"
       class="url-icon main-quote-summary__icon"
+      loading="lazy"
       src="https://foo.bar/logo.png"
     />
   </div>
@@ -89,6 +90,7 @@ exports[`ViewQuote renders the component with initial props 1`] = `
     <img
       alt="DAI"
       class="url-icon main-quote-summary__icon"
+      loading="lazy"
       src="https://foo.bar/logo.png"
     />
   </div>

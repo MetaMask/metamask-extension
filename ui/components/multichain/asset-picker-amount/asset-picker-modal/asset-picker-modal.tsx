@@ -353,7 +353,7 @@ export function AssetPickerModal({
                       justifyContent={JustifyContent.center}
                     >
                       <Box justifyContent={JustifyContent.center}>
-                        <img src="./images/no-nfts.svg" />
+                        <img src="./images/no-nfts.svg" alt="" loading="lazy" />
                       </Box>
                       <Box
                         display={Display.Flex}
