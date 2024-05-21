@@ -1395,6 +1395,9 @@ export default class MetamaskController extends EventEmitter {
         name: 'AuthenticationController',
         allowedActions: ['SnapController:handleRequest'],
       }),
+      metametrics: {
+        getMetaMetricsId: () => this.metaMetricsController.getMetaMetricsId(),
+      },
     });
     this.userStorageController = new UserStorageController({
       state: initState.UserStorageController,
