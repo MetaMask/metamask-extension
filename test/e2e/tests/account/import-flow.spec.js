@@ -404,7 +404,6 @@ describe('Import flow @no-mmi', function () {
         await driver.findClickableElement(
           '[data-testid="hardware-connect-close-btn"]',
         );
-        // should open the TREZOR Connect popup
         await driver.clickElement('[data-testid="connect-lattice-btn"]');
         await driver.findClickableElement({
           text: 'Continue',
