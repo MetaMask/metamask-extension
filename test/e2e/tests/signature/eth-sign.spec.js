@@ -11,7 +11,7 @@ const {
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Eth sign', function () {
-  it('CHANGED TO TEST CI -will detect if eth_sign is disabled', async function () {
+  it('will detect if eth_sign is disabled', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -25,7 +25,7 @@ describe('Eth sign', function () {
         await unlockWallet(driver);
 
         await openDapp(driver);
-        await driver.clickElement('#BAD-ID-TO-FAIL-ON-PURPOSE');
+        await driver.clickElement('#ethSign');
 
         await driver.delay(1000);
         const ethSignButton = await driver.findElement('#ethSign');
