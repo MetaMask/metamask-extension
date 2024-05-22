@@ -295,6 +295,7 @@ import EncryptionPublicKeyController from './controllers/encryption-public-key';
 import AppMetadataController from './controllers/app-metadata';
 
 import {
+  CaveatFactories,
   CaveatMutatorFactories,
   getCaveatSpecifications,
   getChangedAccounts,
@@ -5041,17 +5042,17 @@ export default class MetamaskController extends EventEmitter {
             { origin },
             { eth_accounts: {} },
           ),
-        requestSwitchNetworkPermission: (chainIds) =>
+        requestPermittedChainsPermission: (chainIds) =>
           this.permissionController.requestPermissions(
             { origin },
             {
-              [PermissionNames.permittedChains]: chainIds.reduce(
-                (acc, chainId) => {
-                  acc[chainId] = true;
-                  return acc;
-                },
-                {},
-              ),
+              [PermissionNames.permittedChains]: {
+                caveats: [
+                  CaveatFactories[CaveatTypes.restrictNetworkSwitching](
+                    chainIds,
+                  ),
+                ],
+              },
             },
           ),
         requestPermissionsForOrigin:

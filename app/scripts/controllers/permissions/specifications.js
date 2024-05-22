@@ -196,25 +196,21 @@ export const getPermissionSpecifications = ({
       subjectTypes: [SubjectType.Website],
 
       factory: (permissionOptions, requestData) => {
-        if (Array.isArray(permissionOptions.caveats)) {
-          throw new Error(
-            `${PermissionNames.permittedChains}: Received unexpected caveats. Any permitted caveats will be added automatically.`,
-          );
-        }
-
         if (!requestData.approvedChainIds) {
           throw new Error(
             `${PermissionNames.permittedChains}: No approved networks specified.`,
           );
         }
 
-        const caveat = CaveatFactories[CaveatTypes.restrictNetworkSwitching](
-          requestData.approvedChainIds,
-        );
+        const caveats =
+          permissionOptions.caveats ??
+          CaveatFactories[CaveatTypes.restrictNetworkSwitching](
+            requestData.approvedChainIds,
+          );
 
         return constructPermission({
           ...permissionOptions,
-          caveats: [caveat],
+          caveats: [caveats],
         });
       },
       endowmentGetter: async (_getterOptions) => undefined,
