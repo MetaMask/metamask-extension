@@ -846,10 +846,8 @@ export default class Home extends PureComponent {
       !process.env.IN_TEST &&
       !newNetworkAddedConfigurationId;
 
-    // TODO(dbrans): temporary fix to disable the smart transactions opt-in modal
-    // in 11.15 to unblock the release. Change this line in 11.16.
     const showSmartTransactionsOptInModal =
-      false && canSeeModals && isSmartTransactionsOptInModalAvailable;
+      canSeeModals && isSmartTransactionsOptInModalAvailable;
 
     const showWhatsNew =
       canSeeModals &&
