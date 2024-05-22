@@ -8,6 +8,8 @@ import {
   subtractHexes,
   sumHexes,
 } from '../../../../shared/modules/conversion.utils';
+import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
+import { CONFIRMED_STATUS } from '../transaction-activity-log/transaction-activity-log.constants';
 import TransactionBreakdown from './transaction-breakdown.component';
 
 const mapStateToProps = (state, ownProps) => {
@@ -16,7 +18,32 @@ const mapStateToProps = (state, ownProps) => {
     txParams: { gas, gasPrice, maxFeePerGas, value } = {},
     txReceipt: { gasUsed, effectiveGasPrice, l1Fee: l1HexGasTotal } = {},
     baseFeePerGas,
+    sourceTokenAmount,
+    sourceTokenDecimals,
+    sourceTokenSymbol,
+    destinationTokenAmount,
+    destinationTokenDecimals,
+    destinationTokenSymbol,
+    status,
   } = transaction;
+
+  const sourceAmountFormatted =
+    sourceTokenAmount && sourceTokenDecimals && sourceTokenSymbol
+      ? `${calcTokenAmount(
+          sourceTokenAmount,
+          sourceTokenDecimals,
+        )} ${sourceTokenSymbol}`
+      : undefined;
+  const destinationAmountFormatted =
+    destinationTokenAmount &&
+    destinationTokenDecimals &&
+    destinationTokenSymbol &&
+    status === CONFIRMED_STATUS
+      ? `${calcTokenAmount(
+          destinationTokenAmount,
+          destinationTokenDecimals,
+        )} ${destinationTokenSymbol}`
+      : undefined;
 
   const gasLimit = typeof gasUsed === 'string' ? gasUsed : gas;
 
@@ -53,6 +80,8 @@ const mapStateToProps = (state, ownProps) => {
     baseFee: baseFeePerGas,
     isEIP1559Transaction: isEIP1559Transaction(transaction),
     l1HexGasTotal,
+    sourceAmountFormatted,
+    destinationAmountFormatted,
   };
 };
 

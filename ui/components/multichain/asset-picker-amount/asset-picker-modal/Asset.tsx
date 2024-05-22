@@ -1,9 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { BigNumber } from 'bignumber.js';
 import { getTokenList } from '../../../../selectors';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { TokenListItem } from '../../token-list-item';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
+import { formatAmount } from '../../../../pages/confirmations/components/simulation-details/formatAmount';
+import { getIntlLocale } from '../../../../ducks/locale/locale';
 
 type AssetProps = {
   address?: string | null;
@@ -22,6 +25,8 @@ export default function Asset({
   onClick,
   tooltipText,
 }: AssetProps) {
+  const locale = useSelector(getIntlLocale);
+
   const tokenList = useSelector(getTokenList);
   const tokenData = address
     ? Object.values(tokenList).find(
@@ -46,7 +51,10 @@ export default function Asset({
       onClick={onClick}
       tokenSymbol={symbol}
       tokenImage={tokenImage}
-      primary={`${decimalTokenAmount || 0}`}
+      primary={formatAmount(
+        locale,
+        new BigNumber(decimalTokenAmount || '0', 10),
+      )}
       secondary={formattedFiat}
       title={title}
       tooltipText={tooltipText}

@@ -20,6 +20,8 @@ import {
 } from '../../../../shared/constants/transaction';
 import {
   getCurrentDraftTransaction,
+  getIsNativeSendPossible,
+  getSendMaxModeState,
   type Amount,
   type Asset,
 } from '../../../ducks/send';
@@ -42,7 +44,10 @@ type AssetPickerAmountProps = OverridingUnion<
     /**
      * Callback for when the amount changes; disables the input when undefined
      */
-    onAmountChange?: (newAmountRaw: string, newAmountFormatted: string) => void;
+    onAmountChange?: (
+      newAmountRaw: string,
+      newAmountFormatted?: string,
+    ) => void;
   }
 >;
 
@@ -60,6 +65,29 @@ export const AssetPickerAmount = ({
   const { swapQuotesError } = useSelector(getCurrentDraftTransaction);
   const isDisabled = !onAmountChange;
   const isSwapsErrorShown = isDisabled && swapQuotesError;
+
+  const isMaxMode = useSelector(getSendMaxModeState);
+  const isNativeSendPossible = useSelector(getIsNativeSendPossible);
+
+  useEffect(() => {
+    // if this input is immutable – avoids double fire
+    if (isDisabled) {
+      return;
+    }
+
+    // if native send is not possible
+    if (isNativeSendPossible) {
+      return;
+    }
+
+    // if max mode already enabled
+    if (!isMaxMode) {
+      return;
+    }
+
+    // disable max mode and replace with "0"
+    onAmountChange('0x0');
+  }, [isNativeSendPossible]);
 
   const [isFocused, setIsFocused] = useState(false);
   const [isNFTInputChanged, setIsTokenInputChanged] = useState(false);
@@ -143,7 +171,9 @@ export const AssetPickerAmount = ({
           </Text>
         )}
         {/* The fiat value will always leave dust and is often inaccurate anyways */}
-        {onAmountChange && <MaxClearButton asset={asset} />}
+        {onAmountChange && isNativeSendPossible && (
+          <MaxClearButton asset={asset} />
+        )}
       </Box>
     </Box>
   );

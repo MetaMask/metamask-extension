@@ -1722,8 +1722,8 @@ const slice = createSlice({
           case Boolean(
             bestQuote &&
               !isEqualCaseInsensitive(
-                bestQuote.recipient.toLowerCase(),
-                draftTransaction.recipient.address.toLowerCase(),
+                bestQuote.recipient,
+                draftTransaction.recipient.address,
               ),
           ):
             slice.caseReducers.addHistoryEntry(state, {
@@ -2898,9 +2898,9 @@ export function signTransaction(history) {
       let transactionId;
 
       if (isSwapAndSend) {
-        const NATIVE_CURRENCY_DECIMALS = 18;
-
         const chainId = getCurrentChainId(state);
+        const NATIVE_CURRENCY_DECIMALS =
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].decimals;
 
         const sourceTokenSymbol =
           draftTransaction.sendAsset.details?.symbol ||
@@ -2922,15 +2922,26 @@ export function signTransaction(history) {
           .shiftedBy(sourceTokenDecimals)
           .toString();
 
+        const swapAndSendRecipient = draftTransaction.recipient.address;
+        const sourceTokenAddress =
+          draftTransaction.sendAsset.details?.address ||
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].address;
+        const sourceTokenAmount = bestQuote?.sourceAmount;
+        const destinationTokenAmount = bestQuote?.destinationAmount;
+
         const meta = {
-          swapAndSendRecipient: draftTransaction.recipient.address,
-          type: TransactionType.swap,
+          swapAndSendRecipient,
+          type: TransactionType.swapAndSend,
           sourceTokenSymbol,
           destinationTokenSymbol,
           destinationTokenDecimals,
           destinationTokenAddress,
           swapTokenValue,
           approvalTxId: undefined,
+          destinationTokenAmount,
+          sourceTokenAddress,
+          sourceTokenAmount,
+          sourceTokenDecimals,
         };
 
         if (bestQuote?.approvalNeeded) {
@@ -2956,7 +2967,7 @@ export function signTransaction(history) {
           {
             requireApproval: false,
             sendFlowHistory: draftTransaction.history,
-            type: TransactionType.swap,
+            type: TransactionType.swapAndSend,
             swaps: {
               hasApproveTx: Boolean(bestQuote?.approvalNeeded),
               meta,
@@ -3077,6 +3088,11 @@ export function getCurrentDraftTransaction(state) {
   return state[name].draftTransactions[getCurrentTransactionUUID(state)] ?? {};
 }
 
+/**
+ * Selector that returns the best swap and send quote
+ *
+ * @type {Selector?<Quote>}
+ */
 export const getBestQuote = createSelector(
   getCurrentDraftTransaction,
   ({ quotes, swapQuotesError }) => {
@@ -3088,6 +3104,38 @@ export const getBestQuote = createSelector(
     const bestQuote = calculateBestQuote(quotesAsArray);
 
     return bestQuote;
+  },
+);
+
+/**
+ * Selector that returns the layer 1 chain's gas fee, when applicable.
+ *
+ * @type {Selector<string>}
+ */
+export function getSendLayer1GasFee(state) {
+  return state[name].gasTotalForLayer1;
+}
+
+/**
+ * Selector that returns if a native send is possible based on the current gas value
+ *
+ * @type {Selector<boolean>}
+ */
+export const getIsNativeSendPossible = createSelector(
+  getCurrentDraftTransaction,
+  getSendLayer1GasFee,
+  ({ gas: { gasTotal: baseGasTotal }, sendAsset }, gasTotalForLayer1) => {
+    if (sendAsset.type !== AssetType.native) {
+      return true;
+    }
+
+    const nativeBalance = sendAsset.balance;
+
+    const gasTotal = new Numeric(baseGasTotal || '0x0', 16).add(
+      new Numeric(gasTotalForLayer1 ?? '0x0', 16),
+    );
+
+    return gasTotal.lessThan(nativeBalance, 16);
   },
 );
 
