@@ -19,13 +19,29 @@ const DEFAULT_ANALYTICS_DATA_DELETION_ENDPOINT =
 
 const fetchWithTimeout = getFetchWithTimeout();
 
+/**
+ * The number of times we retry a specific failed request to the data deletion API.
+ */
 const RETRIES = 3;
-// Each update attempt will result (1 + retries) calls if the server is down
+
+/**
+ * The maximum conseutive failures allowed before treating the server as inaccessible, and
+ * breaking the circuit.
+ *
+ * Each update attempt will result (1 + retries) calls if the server is down.
+ */
 const MAX_CONSECUTIVE_FAILURES = (1 + RETRIES) * 3;
 
-const DEFAULT_DEGRADED_THRESHOLD = 5_000;
-
+/**
+ * When the circuit breaks, we wait for this period of time (in milliseconds) before allowing
+ * a request to go through to the API.
+ */
 const CIRCUIT_BREAK_DURATION = 30 * 60 * 1000;
+
+/**
+ * The threshold (in milliseconds) for when a successful request is considered "degraded".
+ */
+const DEFAULT_DEGRADED_THRESHOLD = 5_000;
 
 /**
  * Type guard for Fetch network responses with a `statusCode` property.
@@ -118,6 +134,9 @@ function createRetryPolicy({
   return wrap(retryPolicy, circuitBreakerPolicy);
 }
 
+/**
+ * A serivce for requesting the deletion of analytics data.
+ */
 export class DataDeletionService {
   #analyticsDataDeletionEndpoint: string;
 
@@ -127,6 +146,17 @@ export class DataDeletionService {
 
   #createDataDeletionTaskPolicy: IPolicy;
 
+  /**
+   * Construct a data deletion service.
+   *
+   * @param options - Options.
+   * @param options.analyticsDataDeletionEndpoint - The base URL for the data deletion API.
+   * @param options.analyticsDataDeletionSourceId - The Segment source ID to delete data from.
+   * @param options.onBreak - An event handler for when the circuit breaks, useful for capturing
+   * metrics about network failures.
+   * @param options.onDegraded - An event handler for when the circuit remains closed, but requests
+   * are failing or resolving too slowly (i.e. resolving more slowly than the `degradedThreshold`).
+   */
   constructor({
     analyticsDataDeletionEndpoint = DEFAULT_ANALYTICS_DATA_DELETION_ENDPOINT,
     analyticsDataDeletionSourceId = DEFAULT_ANALYTICS_DATA_DELETION_SOURCE_ID,
@@ -163,6 +193,15 @@ export class DataDeletionService {
     });
   }
 
+  /**
+   * Submit a deletion request.
+   *
+   * We use Segment for this request. Segment calls this deletion request a "regulation", and
+   * returns a "regulation ID" to keep track of this request and get status updates for it.
+   *
+   * @param metaMetricsId - The ID associated with the analytics data that we will be deleting.
+   * @returns The regulation ID for the deletion request.
+   */
   async createDataDeletionRegulationTask(
     metaMetricsId: string,
   ): Promise<RegulationId> {
@@ -185,6 +224,12 @@ export class DataDeletionService {
     return response.json();
   }
 
+  /**
+   * Fetch the status of the given deletion request.
+   *
+   * @param deleteRegulationId - The Segment "regulation ID" for the deletion request to check.
+   * @returns The status of the given deletion request.
+   */
   async fetchDeletionRegulationStatus(
     deleteRegulationId: string,
   ): Promise<CurrentRegulationStatus> {
