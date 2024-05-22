@@ -1,11 +1,11 @@
+import ExtensionPlatform from '../../app/scripts/platforms/extension';
+import { Platform } from '../../types/global';
 import {
   parseVersion,
   compareVersions,
   SemVersion,
   getMetamaskVersion,
 } from './semversion';
-import ExtensionPlatform from '../../app/scripts/platforms/extension';
-import { Platform } from '../../types/global';
 
 describe('versionUtils', () => {
   beforeEach(() => {
@@ -13,7 +13,11 @@ describe('versionUtils', () => {
   });
   describe('parseVersion', () => {
     it('parses valid version strings', () => {
-      expect(parseVersion('1.2.3')).toEqual({ major: 1, minor: 2, patch: 3 });
+      expect(parseVersion('1.2.3')).toStrictEqual({
+        major: 1,
+        minor: 2,
+        patch: 3,
+      });
     });
 
     it('returns null for empty strings', () => {
@@ -72,7 +76,11 @@ describe('versionUtils', () => {
 
     it('should return the parsed Metamask version', () => {
       getVersionMock.mockReturnValue('1.2.3');
-      expect(getMetamaskVersion()).toEqual({ major: 1, minor: 2, patch: 3 });
+      expect(getMetamaskVersion()).toStrictEqual({
+        major: 1,
+        minor: 2,
+        patch: 3,
+      });
     });
 
     it('should return null if parsing the Metamask version fails', () => {
