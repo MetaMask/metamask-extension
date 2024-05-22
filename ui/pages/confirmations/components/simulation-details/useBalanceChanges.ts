@@ -140,7 +140,10 @@ function getTokenBalanceChanges(
     };
 
     const decimals =
-      asset.standard === TokenStandard.ERC20 ? erc20Decimals[asset.address] : 0;
+      // TODO(dbrans): stopgap for https://github.com/MetaMask/metamask-extension/issues/24690
+      asset.standard === TokenStandard.ERC20
+        ? erc20Decimals[asset.address] ?? ERC20_DEFAULT_DECIMALS
+        : 0;
     const amount = getAssetAmount(tokenBc, decimals);
 
     const fiatRate = erc20FiatRates[tokenBc.address];
