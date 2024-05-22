@@ -1,14 +1,5 @@
 import { cloneDeep, isObject } from 'lodash';
-import { NetworkType } from '@metamask/controller-utils';
 import { hasProperty } from '@metamask/utils';
-import { NetworkStatus } from '@metamask/network-controller';
-import {
-  CHAIN_IDS,
-  CHAIN_ID_TO_RPC_URL_MAP,
-  NETWORK_TYPES,
-  TEST_NETWORK_TICKER_MAP,
-  LINEA_SEPOLIA_DISPLAY_NAME,
-} from '../../../shared/constants/network';
 
 type VersionedData = {
   meta: { version: number };
@@ -18,13 +9,9 @@ type VersionedData = {
 export const version = 115;
 
 /**
- * Migrates the user network to Linea Sepolia if the user is on Linea Goerli network.
+ * As we have removed Product tour from Home Page so this migration is to remove showProductTour from AppState
  *
- * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
- * @param originalVersionedData.meta - State metadata.
- * @param originalVersionedData.meta.version - The current state version.
- * @param originalVersionedData.data - The persisted MetaMask state, keyed by controller.
- * @returns Updated versioned MetaMask extension state.
+ * @param originalVersionedData
  */
 export async function migrate(
   originalVersionedData: VersionedData,
@@ -36,46 +23,19 @@ export async function migrate(
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function transformState(state: Record<string, any>) {
-  const NetworkController = state?.NetworkController || {};
-  const provider = NetworkController?.providerConfig || {};
-
-  if (provider?.chainId !== CHAIN_IDS.LINEA_GOERLI) {
-    return state;
-  }
-  const networkControllerState = state.NetworkController;
+  const AppStateController = state?.AppStateController || {};
 
   if (
-    hasProperty(state, 'NetworkController') &&
-    isObject(state.NetworkController) &&
-    hasProperty(state.NetworkController, 'providerConfig') &&
-    isObject(state.NetworkController.providerConfig) &&
-    hasProperty(state.NetworkController.providerConfig, 'chainId') &&
-    state.NetworkController.providerConfig.chainId === CHAIN_IDS.LINEA_GOERLI
+    hasProperty(state, 'AppStateController') &&
+    isObject(state.AppStateController) &&
+    hasProperty(state.AppStateController, 'showProductTour') &&
+    state.AppStateController.showProductTour !== undefined
   ) {
-    networkControllerState.providerConfig = {
-      type: NetworkType['linea-sepolia'],
-      rpcPrefs: {},
-      chainId: CHAIN_IDS.LINEA_SEPOLIA,
-      nickname: LINEA_SEPOLIA_DISPLAY_NAME,
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_SEPOLIA],
-      providerType: NETWORK_TYPES.LINEA_SEPOLIA,
-      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_SEPOLIA],
-      id: NETWORK_TYPES.LINEA_SEPOLIA,
-    };
-    networkControllerState.selectedNetworkClientId =
-      NETWORK_TYPES.LINEA_SEPOLIA;
-    networkControllerState.networksMetadata = {
-      ...networkControllerState.networksMetadata,
-      'linea-sepolia': {
-        EIPS: {
-          '1559': true,
-        },
-        status: NetworkStatus.Available,
-      },
-    };
+    delete AppStateController.showProductTour;
   }
+
   return {
     ...state,
-    NetworkController: networkControllerState,
+    AppStateController,
   };
 }

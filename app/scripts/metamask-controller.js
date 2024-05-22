@@ -1385,6 +1385,9 @@ export default class MetamaskController extends EventEmitter {
         name: 'AuthenticationController',
         allowedActions: ['SnapController:handleRequest'],
       }),
+      metametrics: {
+        getMetaMetricsId: () => this.metaMetricsController.getMetaMetricsId(),
+      },
     });
     this.userStorageController = new UserStorageController({
       state: initState.UserStorageController,
@@ -3193,6 +3196,14 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setSurveyLinkLastClickedOrClosed.bind(
           appStateController,
         ),
+      setNewPrivacyPolicyToastClickedOrClosed:
+        appStateController.setNewPrivacyPolicyToastClickedOrClosed.bind(
+          appStateController,
+        ),
+      setNewPrivacyPolicyToastShownDate:
+        appStateController.setNewPrivacyPolicyToastShownDate.bind(
+          appStateController,
+        ),
       ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       setSnapsInstallPrivacyWarningShownStatus:
         appStateController.setSnapsInstallPrivacyWarningShownStatus.bind(
@@ -4936,7 +4947,7 @@ export default class MetamaskController extends EventEmitter {
 
     const isConfirmationRedesignEnabled = () => {
       return this.preferencesController.store.getState().preferences
-        .redesignedConfirmations;
+        .redesignedConfirmationsEnabled;
     };
 
     engine.push(
@@ -5133,6 +5144,11 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:install',
           origin,
+        ),
+        invokeSnap: this.permissionController.executeRestrictedMethod.bind(
+          this.permissionController,
+          origin,
+          RestrictedMethods.wallet_snap,
         ),
         getIsLocked: () => {
           return !this.appStateController.isUnlocked();

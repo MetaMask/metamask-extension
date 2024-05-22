@@ -3,18 +3,22 @@
     "@babel/code-frame": {
       "globals": {
         "console.warn": true,
-        "process.emitWarning": true
+        "process": true
       },
       "packages": {
         "@babel/code-frame>@babel/highlight": true,
-        "@babel/code-frame>chalk": true
+        "postcss>picocolors": true
       }
     },
     "@babel/code-frame>@babel/highlight": {
+      "globals": {
+        "process": true
+      },
       "packages": {
         "@babel/code-frame>@babel/highlight>chalk": true,
         "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
-        "loose-envify>js-tokens": true
+        "loose-envify>js-tokens": true,
+        "postcss>picocolors": true
       }
     },
     "@babel/code-frame>@babel/highlight>chalk": {
@@ -30,51 +34,10 @@
     },
     "@babel/code-frame>@babel/highlight>chalk>ansi-styles": {
       "packages": {
-        "@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert": true
-      }
-    },
-    "@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert": {
-      "packages": {
-        "@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert>color-name": true
+        "@metamask/jazzicon>color>color-convert": true
       }
     },
     "@babel/code-frame>@babel/highlight>chalk>supports-color": {
-      "builtin": {
-        "os.release": true
-      },
-      "globals": {
-        "process.env": true,
-        "process.platform": true,
-        "process.stderr": true,
-        "process.stdout": true,
-        "process.versions.node.split": true
-      },
-      "packages": {
-        "gulp-livereload>chalk>supports-color>has-flag": true
-      }
-    },
-    "@babel/code-frame>chalk": {
-      "globals": {
-        "process.env.TERM": true,
-        "process.platform": true
-      },
-      "packages": {
-        "@babel/code-frame>chalk>ansi-styles": true,
-        "@babel/code-frame>chalk>escape-string-regexp": true,
-        "@babel/code-frame>chalk>supports-color": true
-      }
-    },
-    "@babel/code-frame>chalk>ansi-styles": {
-      "packages": {
-        "@babel/code-frame>chalk>ansi-styles>color-convert": true
-      }
-    },
-    "@babel/code-frame>chalk>ansi-styles>color-convert": {
-      "packages": {
-        "@babel/code-frame>chalk>ansi-styles>color-convert>color-name": true
-      }
-    },
-    "@babel/code-frame>chalk>supports-color": {
       "builtin": {
         "os.release": true
       },
@@ -1038,12 +1001,17 @@
         "@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": true,
-        "@babel/preset-typescript>@babel/plugin-syntax-jsx": true
+        "@babel/preset-react>@babel/plugin-transform-react-jsx>@babel/plugin-syntax-jsx": true
       }
     },
     "@babel/preset-react>@babel/plugin-transform-react-jsx-development": {
       "packages": {
         "@babel/preset-react>@babel/plugin-transform-react-jsx": true
+      }
+    },
+    "@babel/preset-react>@babel/plugin-transform-react-jsx>@babel/plugin-syntax-jsx": {
+      "packages": {
+        "@babel/preset-env>@babel/helper-plugin-utils": true
       }
     },
     "@babel/preset-react>@babel/plugin-transform-react-pure-annotations": {
@@ -1139,16 +1107,6 @@
         "react>object-assign": true
       }
     },
-    "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>has-unicode": {
-      "builtin": {
-        "os.type": true
-      },
-      "globals": {
-        "process.env.LANG": true,
-        "process.env.LC_ALL": true,
-        "process.env.LC_CTYPE": true
-      }
-    },
     "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>string-width": {
       "packages": {
         "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>string-width>is-fullwidth-code-point": true,
@@ -1164,11 +1122,6 @@
     "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>strip-ansi": {
       "packages": {
         "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>strip-ansi>ansi-regex": true
-      }
-    },
-    "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>wide-align": {
-      "packages": {
-        "yargs>string-width": true
       }
     },
     "@lavamoat/lavapack": {
@@ -1272,6 +1225,11 @@
     "@metamask/jazzicon>color>clone": {
       "globals": {
         "Buffer": true
+      }
+    },
+    "@metamask/jazzicon>color>color-convert": {
+      "packages": {
+        "@metamask/jazzicon>color>color-convert>color-name": true
       }
     },
     "@metamask/utils": {
@@ -3350,12 +3308,7 @@
     },
     "gulp-livereload>chalk>ansi-styles": {
       "packages": {
-        "gulp-livereload>chalk>ansi-styles>color-convert": true
-      }
-    },
-    "gulp-livereload>chalk>ansi-styles>color-convert": {
-      "packages": {
-        "gulp-livereload>chalk>ansi-styles>color-convert>color-name": true
+        "@metamask/jazzicon>color>color-convert": true
       }
     },
     "gulp-livereload>chalk>supports-color": {
@@ -4731,6 +4684,7 @@
       },
       "packages": {
         "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>nopt>abbrev": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>nopt>abbrev": true,
         "gulp-watch>chokidar>fsevents>node-pre-gyp>nopt>osenv": true
       }
     },
@@ -4793,8 +4747,8 @@
         "process.stderr": true
       },
       "packages": {
-        "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>console-control-strings": true,
         "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>are-we-there-yet": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>console-control-strings": true,
         "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge": true,
         "nyc>yargs>set-blocking": true
       }
@@ -4820,14 +4774,24 @@
         "setInterval": true
       },
       "packages": {
-        "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>console-control-strings": true,
-        "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>has-unicode": true,
-        "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>wide-align": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>console-control-strings": true,
         "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>aproba": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>has-unicode": true,
         "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>string-width": true,
         "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>strip-ansi": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>wide-align": true,
         "nyc>signal-exit": true,
         "react>object-assign": true
+      }
+    },
+    "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>has-unicode": {
+      "builtin": {
+        "os.type": true
+      },
+      "globals": {
+        "process.env.LANG": true,
+        "process.env.LC_ALL": true,
+        "process.env.LC_CTYPE": true
       }
     },
     "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>string-width": {
@@ -4845,6 +4809,11 @@
     "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>strip-ansi": {
       "packages": {
         "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>strip-ansi>ansi-regex": true
+      }
+    },
+    "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>wide-align": {
+      "packages": {
+        "yargs>string-width": true
       }
     },
     "gulp-watch>chokidar>fsevents>node-pre-gyp>rimraf": {
@@ -6031,16 +6000,46 @@
         "console.log": true
       },
       "packages": {
-        "depcheck>@babel/traverse": true,
-        "lavamoat-viz>lavamoat-core>lavamoat-tofu>@babel/parser": true
+        "lavamoat-viz>lavamoat-core>lavamoat-tofu>@babel/parser": true,
+        "lavamoat-viz>lavamoat-core>lavamoat-tofu>@babel/traverse": true
+      }
+    },
+    "lavamoat-viz>lavamoat-core>lavamoat-tofu>@babel/traverse": {
+      "globals": {
+        "console.log": true
+      },
+      "packages": {
+        "@babel/code-frame": true,
+        "@babel/core>@babel/generator": true,
+        "depcheck>@babel/traverse>@babel/helper-environment-visitor": true,
+        "depcheck>@babel/traverse>@babel/helper-function-name": true,
+        "depcheck>@babel/traverse>@babel/helper-hoist-variables": true,
+        "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true,
+        "lavamoat-viz>lavamoat-core>lavamoat-tofu>@babel/traverse>@babel/parser": true,
+        "lavamoat-viz>lavamoat-core>lavamoat-tofu>@babel/traverse>@babel/types": true,
+        "lavamoat-viz>lavamoat-core>lavamoat-tofu>@babel/traverse>globals": true,
+        "nock>debug": true
+      }
+    },
+    "lavamoat-viz>lavamoat-core>lavamoat-tofu>@babel/traverse>@babel/types": {
+      "globals": {
+        "console.warn": true,
+        "process.env.BABEL_TYPES_8_BREAKING": true
+      },
+      "packages": {
+        "@babel/core>@babel/types>@babel/helper-string-parser": true,
+        "@babel/core>@babel/types>to-fast-properties": true,
+        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true
       }
     },
     "lavamoat>@lavamoat/aa": {
       "builtin": {
-        "fs.readFileSync": true,
-        "path.dirname": true,
-        "path.join": true,
-        "path.relative": true
+        "node:fs.lstatSync": true,
+        "node:fs.readFileSync": true,
+        "node:fs.realpathSync": true,
+        "node:path.dirname": true,
+        "node:path.join": true,
+        "node:path.relative": true
       },
       "packages": {
         "depcheck>resolve": true
@@ -7461,14 +7460,6 @@
       "globals": {
         "console.error": true,
         "process": true
-      },
-      "packages": {
-        "semver>lru-cache": true
-      }
-    },
-    "semver>lru-cache": {
-      "packages": {
-        "semver>lru-cache>yallist": true
       }
     },
     "source-map": {
@@ -8297,12 +8288,7 @@
     },
     "stylelint>table>slice-ansi>ansi-styles": {
       "packages": {
-        "stylelint>table>slice-ansi>ansi-styles>color-convert": true
-      }
-    },
-    "stylelint>table>slice-ansi>ansi-styles>color-convert": {
-      "packages": {
-        "stylelint>table>slice-ansi>ansi-styles>color-convert>color-name": true
+        "@metamask/jazzicon>color>color-convert": true
       }
     },
     "stylelint>table>string-width": {
