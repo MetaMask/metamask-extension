@@ -14,6 +14,7 @@ type AssetProps = {
   symbol: string;
   decimalTokenAmount?: string;
   onClick: (address: string) => void;
+  tooltipText?: string;
 };
 
 export default function Asset({
@@ -22,6 +23,7 @@ export default function Asset({
   symbol,
   decimalTokenAmount,
   onClick,
+  tooltipText,
 }: AssetProps) {
   const locale = useSelector(getIntlLocale);
 
@@ -55,6 +57,7 @@ export default function Asset({
       )}
       secondary={formattedFiat}
       title={title}
+      tooltipText={tooltipText}
     />
   );
 }

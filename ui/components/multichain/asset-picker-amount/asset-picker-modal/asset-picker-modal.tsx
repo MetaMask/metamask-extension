@@ -119,7 +119,6 @@ export function AssetPickerModal({
   const defaultActiveTabKey = asset?.type === AssetType.NFT ? 'nfts' : 'tokens';
 
   const isDest = sendingAssetImage && sendingAssetSymbol;
-
   const chainId = useSelector(getCurrentChainId);
 
   const nativeCurrencyImage = useSelector(getNativeCurrencyImage);
@@ -298,6 +297,7 @@ export function AssetPickerModal({
                 handleAssetChange={handleAssetChange}
                 asset={asset}
                 tokenList={filteredTokenList}
+                sendingAssetSymbol={sendingAssetSymbol}
               />
             </>
           ) : (

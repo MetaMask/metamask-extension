@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   BannerAlert,
@@ -12,6 +12,7 @@ import {
   getBestQuote,
   getCurrentDraftTransaction,
   getSendAsset,
+  getSwapsBlockedTokens,
 } from '../../../../../ducks/send';
 import { AssetType } from '../../../../../../shared/constants/transaction';
 import { CONTRACT_ADDRESS_LINK } from '../../../../../helpers/constants/common';
@@ -44,10 +45,15 @@ export const SendPageRecipientContent = ({
 
   const isBasicFunctionality = useSelector(getUseExternalServices);
   const isSwapsChain = useSelector(getIsSwapsChain);
+  const swapsBlockedTokens = useSelector(getSwapsBlockedTokens);
+  const memoizedSwapsBlockedTokens = useMemo(() => {
+    return new Set(swapsBlockedTokens);
+  }, [swapsBlockedTokens]);
   const isSwapAllowed =
     isSwapsChain &&
     [AssetType.token, AssetType.native].includes(sendAsset.type) &&
-    isBasicFunctionality;
+    isBasicFunctionality &&
+    !memoizedSwapsBlockedTokens.has(sendAsset.details?.address?.toLowerCase());
 
   const bestQuote: Quote = useSelector(getBestQuote);
 
@@ -121,6 +127,7 @@ export const SendPageRecipientContent = ({
           )}
           isAmountLoading={isLoadingInitialQuotes}
           amount={amount}
+          isDisabled={!isSwapAllowed}
         />
       </SendPageRow>
       <QuoteCard scrollRef={scrollRef} />

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { getSelectedAccountCachedBalance } from '../../../../selectors';
@@ -16,6 +16,8 @@ import {
   FlexWrap,
 } from '../../../../helpers/constants/design-system';
 import { TokenListItem } from '../..';
+import { getSwapsBlockedTokens } from '../../../../ducks/send';
+import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { Asset, Token } from './types';
 import AssetComponent from './Asset';
 
@@ -23,12 +25,14 @@ type AssetListProps = {
   handleAssetChange: (token: Token) => void;
   asset: Asset;
   tokenList: Token[];
+  sendingAssetSymbol?: string;
 };
 
 export default function AssetList({
   handleAssetChange,
   asset,
   tokenList,
+  sendingAssetSymbol,
 }: AssetListProps) {
   const selectedToken = asset.details?.address;
 
@@ -57,11 +61,20 @@ export default function AssetList({
       hideLabel: true,
     });
 
+  const swapsBlockedTokens = useSelector(getSwapsBlockedTokens);
+  const memoizedSwapsBlockedTokens = useMemo(() => {
+    return new Set(swapsBlockedTokens);
+  }, [swapsBlockedTokens]);
+
   return (
     <Box className="tokens-main-view-modal">
       {tokenList.map((token) => {
-        const isSelected =
-          token.address?.toLowerCase() === selectedToken?.toLowerCase();
+        const tokenAddress = token.address?.toLowerCase();
+        const isSelected = tokenAddress === selectedToken?.toLowerCase();
+        const isDisabled = sendingAssetSymbol
+          ? !isEqualCaseInsensitive(sendingAssetSymbol, token.symbol) &&
+            memoizedSwapsBlockedTokens.has(tokenAddress)
+          : false;
         return (
           <Box
             padding={0}
@@ -75,8 +88,14 @@ export default function AssetList({
             }
             className={classnames('multichain-asset-picker-list-item', {
               'multichain-asset-picker-list-item--selected': isSelected,
+              'multichain-asset-picker-list-item--disabled': isDisabled,
             })}
-            onClick={() => handleAssetChange(token)}
+            onClick={() => {
+              if (isDisabled) {
+                return;
+              }
+              handleAssetChange(token);
+            }}
           >
             {isSelected ? (
               <Box
@@ -110,7 +129,15 @@ export default function AssetList({
                     key={token.address}
                     {...token}
                     decimalTokenAmount={token.string}
-                    onClick={() => handleAssetChange(token)}
+                    onClick={() => {
+                      if (isDisabled) {
+                        return;
+                      }
+                      handleAssetChange(token);
+                    }}
+                    tooltipText={
+                      isDisabled ? 'swapTokenNotAvailable' : undefined
+                    }
                   />
                 )}
               </Box>
