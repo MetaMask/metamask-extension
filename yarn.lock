@@ -25173,6 +25173,7 @@ __metadata:
     chalk: "npm:^4.1.2"
     chokidar: "npm:^3.5.3"
     classnames: "npm:^2.2.6"
+    cockatiel: "npm:^3.1.2"
     concurrently: "npm:^8.2.2"
     contentful: "npm:^10.8.7"
     copy-to-clipboard: "npm:^3.3.3"
