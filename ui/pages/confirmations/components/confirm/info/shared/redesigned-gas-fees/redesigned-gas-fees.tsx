@@ -1,9 +1,16 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { EtherDenomination } from '../../../../../../../../shared/constants/common';
 import { EditGasModes } from '../../../../../../../../shared/constants/gas';
 import {
+  addHexes,
   getEthConversionFromWeiHex,
   getValueFromWeiHex,
   hexToDecimal,
@@ -32,6 +39,7 @@ import {
   JustifyContent,
   TextAlign,
   TextColor,
+  TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
 import { useFiatFormatter } from '../../../../../../../hooks/useFiatFormatter';
 import {
@@ -44,14 +52,6 @@ import EditGasFeePopover from '../../../../edit-gas-fee-popover';
 import EditGasPopover from '../../../../edit-gas-popover';
 import GasTiming from '../../../../gas-timing';
 import { useSupportsEIP1559 } from '../../hooks/supports-eip-1559';
-
-// TODO:
-// - Assert gas on e2e tests (1)
-// - Refactor components (2)
-
-// - Add metric event when opening legacy tx modal
-// - Add L2 tests and logic
-// - Add Simulations to e2e tests
 
 export const RedesignedGasFees = () => {
   const currentConfirmation = useSelector(
@@ -134,6 +134,62 @@ export const RedesignedGasFees = () => {
   const { maxFeePerGas, maxPriorityFeePerGas } =
     useEIP1559TxFees(currentConfirmation);
 
+  // Layer 2 fees breakdown
+
+  const layer1GasFee = currentConfirmation?.layer1GasFee ?? null;
+  const hasLayer1GasFee = layer1GasFee !== null;
+  const [expandFeeDetails, setExpandFeeDetails] = useState(false);
+
+  // L1
+  const nativeCurrencyL1Fees = layer1GasFee
+    ? getEthConversionFromWeiHex({
+        value: layer1GasFee,
+        fromCurrency: EtherDenomination.GWEI,
+        numberOfDecimals: 4,
+      })
+    : null;
+
+  const currentCurrencyL1Fees = layer1GasFee
+    ? fiatFormatter(
+        Number(
+          getValueFromWeiHex({
+            value: layer1GasFee,
+            conversionRate: conversionRate,
+            fromCurrency: EtherDenomination.GWEI,
+            toCurrency: currentCurrency,
+            numberOfDecimals: 2,
+          }),
+        ),
+      )
+    : null;
+
+  // Total
+  const getTransactionFeeTotal = useMemo(() => {
+    return addHexes(gasEstimate, (layer1GasFee as string) ?? 0);
+  }, [gasEstimate, layer1GasFee]);
+
+  const nativeCurrencyTotalFees = layer1GasFee
+    ? getEthConversionFromWeiHex({
+        value: getTransactionFeeTotal,
+        fromCurrency: EtherDenomination.GWEI,
+        numberOfDecimals: 4,
+      })
+    : null;
+
+  const currentCurrencyTotalFees = layer1GasFee
+    ? fiatFormatter(
+        Number(
+          getValueFromWeiHex({
+            value: getTransactionFeeTotal,
+            conversionRate: conversionRate,
+            fromCurrency: EtherDenomination.GWEI,
+            toCurrency: currentCurrency,
+            numberOfDecimals: 2,
+          }),
+        ),
+      )
+    : null;
+
   return (
     <>
       <ConfirmInfoRow
@@ -192,6 +248,102 @@ export const RedesignedGasFees = () => {
       >
         <Text>{nativeCurrencyFees}</Text>
       </ConfirmInfoRow>
+
+      {/* L2 Fees Breakdown */}
+
+      {hasLayer1GasFee && (
+        <Box
+          padding={4}
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          justifyContent={JustifyContent.center}
+        >
+          <Button
+            style={{ textDecoration: 'none' }}
+            size={ButtonSize.Sm}
+            variant={ButtonVariant.Link}
+            endIconName={
+              expandFeeDetails ? IconName.ArrowUp : IconName.ArrowDown
+            }
+            color={IconColor.primaryDefault}
+            data-testid="expand-fee-details-button"
+            onClick={() => setExpandFeeDetails(!expandFeeDetails)}
+          >
+            <Text variant={TextVariant.bodySm} color={IconColor.primaryDefault}>
+              {'feeDetails'}
+            </Text>
+          </Button>
+        </Box>
+      )}
+
+      {hasLayer1GasFee && expandFeeDetails && (
+        <>
+          <ConfirmInfoRow
+            label="L2 Fees"
+            variant={ConfirmInfoRowVariant.Default}
+          >
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
+              justifyContent={JustifyContent.spaceBetween}
+              alignItems={AlignItems.center}
+              textAlign={TextAlign.Center}
+              style={{ flexGrow: '1' }}
+              marginLeft={8}
+            >
+              <Text color={TextColor.textAlternative}>
+                {currentCurrencyFees}
+              </Text>
+              <Text color={TextColor.textAlternative}>
+                {nativeCurrencyFees}
+              </Text>
+            </Box>
+          </ConfirmInfoRow>
+
+          <ConfirmInfoRow
+            label="L1 Fees"
+            variant={ConfirmInfoRowVariant.Default}
+          >
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
+              justifyContent={JustifyContent.spaceBetween}
+              alignItems={AlignItems.center}
+              textAlign={TextAlign.Center}
+              style={{ flexGrow: '1' }}
+              marginLeft={8}
+            >
+              <Text color={TextColor.textAlternative}>
+                {currentCurrencyL1Fees}
+              </Text>
+              <Text color={TextColor.textAlternative}>
+                {nativeCurrencyL1Fees}
+              </Text>
+            </Box>
+          </ConfirmInfoRow>
+
+          <ConfirmInfoRow label="Total" variant={ConfirmInfoRowVariant.Default}>
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
+              justifyContent={JustifyContent.spaceBetween}
+              alignItems={AlignItems.center}
+              textAlign={TextAlign.Center}
+              style={{ flexGrow: '1' }}
+              marginLeft={8}
+            >
+              <Text color={TextColor.textAlternative}>
+                {currentCurrencyTotalFees}
+              </Text>
+              <Text color={TextColor.textAlternative}>
+                {nativeCurrencyTotalFees}
+              </Text>
+            </Box>
+          </ConfirmInfoRow>
+        </>
+      )}
+
+      {/* Modals */}
 
       {supportsEIP1559 && (
         <>
