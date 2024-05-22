@@ -831,7 +831,6 @@ const fetchSwapAndSendQuotes = createAsyncThunk(
             SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].address,
           sender,
           recipient: draftTransaction.recipient.address,
-          slippage: '5', // TODO: update when solution is available
         })
           .then((response) => resolve(response))
           .catch(() => reject(SWAPS_QUOTES_ERROR));

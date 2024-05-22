@@ -140,6 +140,9 @@ const QUOTE_VALIDATORS = [
     type: 'number',
   },
 ];
+
+const SWAP_AND_SEND_SLIPPAGE = '2';
+
 const SWAPS_API_VERSION = 'v2';
 
 const BASE_URL = process.env.SWAPS_USE_DEV_APIS
@@ -148,6 +151,8 @@ const BASE_URL = process.env.SWAPS_USE_DEV_APIS
 
 export async function getSwapAndSendQuotes(request: Request): Promise<Quote[]> {
   const { chainId, ...params } = request;
+
+  params.slippage = SWAP_AND_SEND_SLIPPAGE;
 
   const queryString = new URLSearchParams(params);
 
