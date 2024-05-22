@@ -126,7 +126,7 @@ describe('TransactionStatusLabel Component', () => {
     const customMockStore = {
       metamask: {
         custodyStatusMaps: {
-          jupiter: {
+          saturn: {
             approved: {
               shortText: mockShortText,
               longText: mockLongText,
@@ -141,7 +141,7 @@ describe('TransactionStatusLabel Component', () => {
               metadata: {
                 name: 'Account 1',
                 keyring: {
-                  type: 'Custody - Jupiter',
+                  type: 'Custody - JSONRPC',
                 },
               },
               options: {},
@@ -153,7 +153,7 @@ describe('TransactionStatusLabel Component', () => {
         },
         keyrings: [
           {
-            type: 'Custody - Jupiter',
+            type: 'Custody - JSONRPC',
             accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
           },
         ],
@@ -180,7 +180,7 @@ describe('TransactionStatusLabel Component', () => {
     const customMockStore = {
       metamask: {
         custodyStatusMaps: {
-          jupiter: {
+          saturn: {
             approved: {
               shortText: mockShortText,
               longText: mockLongText,
@@ -195,7 +195,7 @@ describe('TransactionStatusLabel Component', () => {
               metadata: {
                 name: 'Account 1',
                 keyring: {
-                  type: 'Custody - Jupiter',
+                  type: 'Custody - JSONRPC',
                 },
               },
               options: {},
@@ -207,7 +207,7 @@ describe('TransactionStatusLabel Component', () => {
         },
         keyrings: [
           {
-            type: 'Custody - Jupiter',
+            type: 'Custody - JSONRPC',
             accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
           },
         ],
@@ -236,7 +236,7 @@ describe('TransactionStatusLabel Component', () => {
     const customMockStore = {
       metamask: {
         custodyStatusMaps: {
-          jupiter: {
+          saturn: {
             approved: {
               shortText: mockShortText,
               longText: mockLongText,
@@ -251,7 +251,7 @@ describe('TransactionStatusLabel Component', () => {
               metadata: {
                 name: 'Account 1',
                 keyring: {
-                  type: 'Custody - Jupiter',
+                  type: 'Custody - JSONRPC',
                 },
               },
               options: {},
@@ -263,7 +263,7 @@ describe('TransactionStatusLabel Component', () => {
         },
         keyrings: [
           {
-            type: 'Custody - Jupiter',
+            type: 'Custody - JSONRPC',
             accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
           },
         ],
