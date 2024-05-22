@@ -21,7 +21,7 @@ Changing this code must be done cautiously to avoid breaking the app!
       return fetch(path);
     }
     throw new Error(
-      'Unscuttled fetch can only be used on images within the extension',
+      'Tamed fetch can only be used on images within the extension',
     );
   };
 
