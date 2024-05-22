@@ -24,8 +24,8 @@ import {
   getIsSwapsChain,
   getUseExternalServices,
 } from '../../../../../selectors';
-import { SendHexData, SendPageRow, QuoteCard } from '.';
 import type { Quote } from '../../../../../ducks/send/swap-and-send-utils';
+import { SendHexData, SendPageRow, QuoteCard } from '.';
 
 export const SendPageRecipientContent = ({
   requireContractAddressAcknowledgement,
