@@ -13,8 +13,6 @@ Changing this code must be done cautiously to avoid breaking the app!
   const msg =
     'Snow detected a new realm creation attempt in MetaMask. Performing scuttling on new realm.';
 
-  // eslint-disable-next-line no-undef
-  const chromeExtensionId = chrome && chrome.runtime && chrome.runtime.id;
   const tamedFetch = (path) => {
     const regex = /^chrome-extension:\/\/.+\/.*?\/images\/.*?/u;
     if (regex.test(path)) {
@@ -40,6 +38,9 @@ Changing this code must be done cautiously to avoid breaking the app!
     }
     return _scuttle(_ref);
   };
+
+  // eslint-disable-next-line no-undef
+  const chromeExtensionId = chrome && chrome.runtime && chrome.runtime.id;
 
   // eslint-disable-next-line no-undef
   Object.defineProperty(self, 'SCUTTLER', {
