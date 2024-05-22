@@ -100,20 +100,47 @@ CSS Selectors in Selenium are string patterns used to identify an element based 
 <details><summary><b>Locate element by XPath</b></summary>
 <br>
 XPath is a language used for locating nodes in an XML document, which can also be applied to HTML documents for locating elements in the test automation. It utilizes path expressions to navigate through and select elements and attributes within the document.<br>
-
-Standard XPath syntax for creating XPath is.
-
-`Xpath=//tagname[@attribute='value']`
 <br>
+Below is the video to locate the element based on Xpath.
 
 https://github.com/MetaMask/metamask-extension/assets/539738/7a67a35f-5e42-465c-a376-4b24f931783a
 
->![Screenshot displays ‘Confirm’ button in the send transaction page](image/xpath.png)
+There are two types of XPath
+> <details><summary><b>Absolute XPath</b></summary>
+><br>
+>It is the direct way to find the element, but the disadvantage of the absolute XPath is that if there are any changes made in the path of the element then that XPath gets failed. Hence this locator strategy should be avoided<br>
 >
->Syntax for locating the button element that contains text ‘Confirm’
+></details>
+> <details><summary><b>Relative XPath</b></summary>
+><br>
+>Relative Xpath starts from the middle of HTML DOM structure. It starts with double forward slash (//). It can search elements anywhere on the webpage, means no need to write a long xpath and you can start from the middle of HTML DOM structure. Relative Xpath is always preferred as it is not a complete path from the root element.<br>
+> Standard XPath syntax - `Xpath=//tagname[@attribute='value']`<br>
+><br>
+> Our framework supports XPath representation in the patterns mentioned below
+>
+>
+> <details><summary><b>Basic Xpath</b></summary>
+>XPath expression select nodes or list of nodes on the basis of attributes like ID , Name, Classname and we could provide it directly as mentioned in the syntax.<br>
+>
+> ![Screenshot displays ‘Confirm’ button in the send transaction page](image/xpath.png)
+>
+>Syntax for locating the button element ‘Confirm’ using xpath
 >
 >```tsx
->await driver.findClickableElement({ text: 'Confirm', tag: 'button' });
+>await driver.findClickableElement({xpath: "//button[@value=‘Confirm’]"});
+>```
+>
+></details>
+>
+> <details><summary><b>Contains</b></summary>
+>Locate element with search text using the method contains in the Xpath expression mainly used when there is dynamical text<br>
+>
+> ![Screenshot displays ‘Reject’ button in the send transaction page](image/xpath-contains.png)
+>
+>Syntax for locating the button element that contains text ‘Reject’
+>
+>```tsx
+>await driver.findClickableElement({ text: 'Reject', tag: 'button' });
 >```
 >
 >Another syntax for locating the div menu element that contains text ‘Settings’
@@ -121,7 +148,23 @@ https://github.com/MetaMask/metamask-extension/assets/539738/7a67a35f-5e42-465c-
 >```tsx
 >await driver.clickElement({ text: 'Settings', tag: 'div' });
 >```
->>
+><br>
+></details>
+>
+><details><summary><b>With CSS selector</b></summary>
+>Locate element with a combination of the xpath format and using the CSS selector.<br>
+>
+> ![Screenshot displays the Send transaction page](image/xpath-css-selector.png)
+>
+>Syntax for locating the button that contains text ‘Next’ and css attribute selector
+>
+>```tsx
+>await driver.clickElement({
+>    text: 'Next',
+>    tag: 'button',
+>    css: '[data-testid="page-container-footer-next"]',
+>  });
+>```
 </details>
 
 <details><summary><b>**** Note - locators ****</b></summary>
