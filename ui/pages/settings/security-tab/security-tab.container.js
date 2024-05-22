@@ -29,10 +29,14 @@ import {
   getMetaMetricsDataDeletionStatus,
   getPetnamesEnabled,
   getShowDeleteMetaMetricsDataModal,
+  isMetaMetricsDataDeletionMarked,
+  hasRecordedMetricsSinceDeletion,
 } from '../../../selectors';
 import {
+  continueRecordingMetaMetricsData,
   openBasicFunctionalityModal,
   openDeleteMetaMetricsDataModal,
+  unMarkingMetaMetricsDataDeletion,
 } from '../../../ducks/app/app';
 import SecurityTab from './security-tab.component';
 
@@ -88,6 +92,8 @@ const mapStateToProps = (state) => {
     showDeleteMetaMetricsDataModal: getShowDeleteMetaMetricsDataModal(state),
     metaMetricsDataDeletionStatus: getMetaMetricsDataDeletionStatus(state),
     metaMetricsDataDeletionDate: getMetaMetricsDataDeletionDate(state),
+    metaMetricsDataDeletionMarked: isMetaMetricsDataDeletionMarked(state),
+    hasRecordedMetricsSinceDeletion: hasRecordedMetricsSinceDeletion(state),
   };
 };
 
@@ -131,6 +137,12 @@ const mapDispatchToProps = (dispatch) => {
     },
     checkDataDeletionTaskStatus: () => {
       return dispatch(checkDataDeletionTaskStatus());
+    },
+    unMarkingMetaMetricsDataDeletion: () => {
+      return dispatch(unMarkingMetaMetricsDataDeletion());
+    },
+    continueRecordingMetaMetricsData: () => {
+      return dispatch(continueRecordingMetaMetricsData());
     },
     setSecurityAlertsEnabled: (value) => setSecurityAlertsEnabled(value),
   };

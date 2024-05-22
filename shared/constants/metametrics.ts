@@ -552,6 +552,7 @@ export enum MetaMetricsEventName {
   MarkAllNotificationsRead = 'Notifications Marked All as Read',
   MetricsOptIn = 'Metrics Opt In',
   MetricsOptOut = 'Metrics Opt Out',
+  MetricsDataDeletionRequest = 'Delete MetaMetrics Data Request Submitted',
   NavAccountMenuOpened = 'Account Menu Opened',
   NavConnectedSitesOpened = 'Connected Sites Opened',
   NavMainMenuOpened = 'Main Menu Opened',

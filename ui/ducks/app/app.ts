@@ -101,6 +101,8 @@ type AppState = {
   txId: string | null;
   accountDetailsAddress: string;
   showDeleteMetaMetricsDataModal: boolean;
+  metaMetricsDataDeletionMarked: boolean;
+  hasRecordedMetricsSinceDeletion: boolean;
   snapsInstallPrivacyWarningShown: boolean;
   isAddingNewNetwork: boolean;
   isMultiRpcOnboarding: boolean;
@@ -187,6 +189,8 @@ const initialState: AppState = {
   txId: null,
   accountDetailsAddress: '',
   showDeleteMetaMetricsDataModal: false,
+  metaMetricsDataDeletionMarked: false,
+  hasRecordedMetricsSinceDeletion: false,
   snapsInstallPrivacyWarningShown: false,
   isAddingNewNetwork: false,
   isMultiRpcOnboarding: false,
@@ -620,6 +624,26 @@ export default function reduceApp(
         ...appState,
         showDeleteMetaMetricsDataModal: false,
       };
+    case actionConstants.METAMETRICS_DATA_DELETION_MARKED:
+      return {
+        ...appState,
+        metaMetricsDataDeletionMarked: true,
+      };
+    case actionConstants.METAMETRICS_DATA_DELETION_UNMARKED:
+      return {
+        ...appState,
+        metaMetricsDataDeletionMarked: false,
+      };
+    case actionConstants.METAMETRICS_DATA_RECORDING:
+      return {
+        ...appState,
+        hasRecordedMetricsSinceDeletion: true,
+      };
+    case actionConstants.METAMETRICS_DATA_NOT_RECORDING:
+      return {
+        ...appState,
+        hasRecordedMetricsSinceDeletion: false,
+      };
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case actionConstants.SHOW_KEYRING_SNAP_REMOVAL_RESULT:
       return {
@@ -739,5 +763,29 @@ export function openDeleteMetaMetricsDataModal(): Action {
 export function hideDeleteMetaMetricsDataModal(): Action {
   return {
     type: actionConstants.DELETE_METAMETRICS_DATA_MODAL_CLOSE,
+  };
+}
+
+export function markingMetaMetricsDataDeletion(): Action {
+  return {
+    type: actionConstants.METAMETRICS_DATA_DELETION_MARKED,
+  };
+}
+
+export function unMarkingMetaMetricsDataDeletion(): Action {
+  return {
+    type: actionConstants.METAMETRICS_DATA_DELETION_UNMARKED,
+  };
+}
+
+export function continueRecordingMetaMetricsData(): Action {
+  return {
+    type: actionConstants.METAMETRICS_DATA_RECORDING,
+  };
+}
+
+export function stopRecordingMetaMetricsData(): Action {
+  return {
+    type: actionConstants.METAMETRICS_DATA_NOT_RECORDING,
   };
 }
