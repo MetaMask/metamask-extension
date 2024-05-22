@@ -4963,7 +4963,6 @@
     },
     "gulp>glob-watcher": {
       "packages": {
-        "chokidar>normalize-path": true,
         "gulp>glob-watcher>anymatch": true,
         "gulp>glob-watcher>async-done": true,
         "gulp>glob-watcher>chokidar": true,
