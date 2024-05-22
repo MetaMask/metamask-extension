@@ -5014,14 +5014,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-provider@npm:^3.0.1":
-  version: 3.0.1
-  resolution: "@metamask/eth-json-rpc-provider@npm:3.0.1"
+"@metamask/eth-json-rpc-provider@npm:^3.0.1, @metamask/eth-json-rpc-provider@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "@metamask/eth-json-rpc-provider@npm:3.0.2"
   dependencies:
-    "@metamask/json-rpc-engine": "npm:^8.0.1"
+    "@metamask/json-rpc-engine": "npm:^8.0.2"
     "@metamask/safe-event-emitter": "npm:^3.0.0"
     "@metamask/utils": "npm:^8.3.0"
-  checksum: 1c5fdbf7ff90520a961f970edbffb3f6999e0b80ba64a374f5c18eddf4df1fa27dfc463903a237e1b17ee1d55e8d07d2e44306c6e9c36050f63749efd10238ee
+  checksum: 63778defd3055633cbf0aed2d6fd0f8a1d866908be7b16b516fdb26ae6dcd34b2aefdfed80828c2af105a30ec3c16d7d0894bc6a73e2661515bcad6b6b6be4e2
   languageName: node
   linkType: hard
 
@@ -5285,7 +5285,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/gas-fee-controller@npm:^15.0.0, @metamask/gas-fee-controller@npm:^15.1.0, @metamask/gas-fee-controller@npm:^15.1.1, @metamask/gas-fee-controller@npm:^15.1.2":
+"@metamask/gas-fee-controller@npm:^15.0.0, @metamask/gas-fee-controller@npm:^15.1.0, @metamask/gas-fee-controller@npm:^15.1.2":
   version: 15.1.2
   resolution: "@metamask/gas-fee-controller@npm:15.1.2"
   dependencies:
@@ -5590,6 +5590,28 @@ __metadata:
     immer: "npm:^9.0.6"
     uuid: "npm:^8.3.2"
   checksum: cc3751205de1514333a99a638fc6fa7bdaa7fac505e32531fb1a71af5e9839e994de79c59ab91b08bdc8d3fbb4bb17330a677adf75754e5f56745d6d68e56515
+  languageName: node
+  linkType: hard
+
+"@metamask/network-controller@npm:^18.1.1":
+  version: 18.1.1
+  resolution: "@metamask/network-controller@npm:18.1.1"
+  dependencies:
+    "@metamask/base-controller": "npm:^5.0.2"
+    "@metamask/controller-utils": "npm:^9.1.0"
+    "@metamask/eth-json-rpc-infura": "npm:^9.1.0"
+    "@metamask/eth-json-rpc-middleware": "npm:^12.1.0"
+    "@metamask/eth-json-rpc-provider": "npm:^3.0.2"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/json-rpc-engine": "npm:^8.0.2"
+    "@metamask/rpc-errors": "npm:^6.2.1"
+    "@metamask/swappable-obj-proxy": "npm:^2.2.0"
+    "@metamask/utils": "npm:^8.3.0"
+    async-mutex: "npm:^0.2.6"
+    eth-block-tracker: "npm:^8.0.0"
+    immer: "npm:^9.0.6"
+    uuid: "npm:^8.3.2"
+  checksum: 1542b223851df1b316e5c5387712356dbbd84b6acd10b221d9802e5699a5d6baf6f1065da784fe0a2663b3843f82ce92270f94244e1d68f83aa3978e6c7ed76d
   languageName: node
   linkType: hard
 
@@ -6400,9 +6422,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^29.0.0":
-  version: 29.0.0
-  resolution: "@metamask/transaction-controller@npm:29.0.0"
+"@metamask/transaction-controller@npm:^29.0.2":
+  version: 29.1.0
+  resolution: "@metamask/transaction-controller@npm:29.1.0"
   dependencies:
     "@ethereumjs/common": "npm:^3.2.0"
     "@ethereumjs/tx": "npm:^4.2.0"
@@ -6414,9 +6436,9 @@ __metadata:
     "@metamask/base-controller": "npm:^5.0.2"
     "@metamask/controller-utils": "npm:^9.1.0"
     "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/gas-fee-controller": "npm:^15.1.1"
+    "@metamask/gas-fee-controller": "npm:^15.1.2"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/network-controller": "npm:^18.1.0"
+    "@metamask/network-controller": "npm:^18.1.1"
     "@metamask/rpc-errors": "npm:^6.2.1"
     "@metamask/utils": "npm:^8.3.0"
     async-mutex: "npm:^0.2.6"
@@ -6431,7 +6453,7 @@ __metadata:
     "@metamask/approval-controller": ^6.0.0
     "@metamask/gas-fee-controller": ^15.0.0
     "@metamask/network-controller": ^18.0.0
-  checksum: c40cc6787ccad5894af470870151f00394decab463c23ef5032bbe329bb2d720edeaaf61716f9774d61b25f499ed65a657d15b3abdfdf56a41305c5174be8862
+  checksum: 4b96d17d0bcc0f13ac72a94a3b4f3c3dd0f31a13aa6ae74b343ebe2d77e9aeb636b28c14ab23f08c6d8c6b66158c93f34243cf551f4c12d06b4ea8e87ae4ae64
   languageName: node
   linkType: hard
 
@@ -25075,7 +25097,7 @@ __metadata:
     "@metamask/snaps-utils": "npm:^7.4.0"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:^8.4.0"
-    "@metamask/transaction-controller": "npm:^29.0.0"
+    "@metamask/transaction-controller": "npm:^29.0.2"
     "@metamask/user-operation-controller": "npm:^8.0.1"
     "@metamask/utils": "npm:^8.2.1"
     "@ngraveio/bc-ur": "npm:^1.1.12"
