@@ -6,6 +6,7 @@ import {
   selectIsFeatureAnnouncementsEnabled,
   getFeatureAnnouncementsUnreadCount,
   getOnChainMetamaskNotificationsUnreadCount,
+  selectIsMetamaskNotificationsFeatureSeen,
 } from '../../../selectors/metamask-notifications/metamask-notifications';
 import { Box, IconName, Icon, Text } from '../../component-library';
 import { getUnreadNotificationsCount } from '../../../selectors';
@@ -19,6 +20,7 @@ import {
   TextVariant,
   IconColor,
 } from '../../../helpers/constants/design-system';
+import { NewFeatureTag } from '../../../pages/notifications/NewFeatureTag';
 
 type NotificationsTagCounterProps = {
   noLabel?: boolean;
@@ -65,11 +67,17 @@ export const NotificationsTagCounter = ({
   const snapNotificationCount = useSnapNotificationCount();
   const featureAnnouncementCount = useFeatureAnnouncementCount();
   const walletNotificationCount = useWalletNotificationCount();
+  const isMetamaskNotificationFeatureSeen = useSelector(
+    selectIsMetamaskNotificationsFeatureSeen,
+  );
 
   const notificationsCount =
     snapNotificationCount + featureAnnouncementCount + walletNotificationCount;
 
   if (notificationsCount === 0) {
+    if (!isMetamaskNotificationFeatureSeen) {
+      return <NewFeatureTag />;
+    }
     return null;
   }
 
