@@ -336,7 +336,9 @@ describe('addEthereumChainHandler', () => {
             );
 
             expect(mocks.requestUserApproval).toHaveBeenCalledTimes(1);
-            expect(mocks.requestPermittedChainsPermission).not.toHaveBeenCalled();
+            expect(
+              mocks.requestPermittedChainsPermission,
+            ).not.toHaveBeenCalled();
             expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
             expect(mocks.setActiveNetwork).toHaveBeenCalledWith(123);
           });
@@ -380,12 +382,12 @@ describe('addEthereumChainHandler', () => {
             );
 
             expect(mocks.upsertNetworkConfiguration).toHaveBeenCalledTimes(1);
-            expect(mocks.requestPermittedChainsPermission).toHaveBeenCalledTimes(
-              1,
+            expect(
+              mocks.requestPermittedChainsPermission,
+            ).toHaveBeenCalledTimes(1);
+            expect(mocks.requestPermittedChainsPermission).toHaveBeenCalledWith(
+              [NON_INFURA_CHAIN_ID],
             );
-            expect(mocks.requestPermittedChainsPermission).toHaveBeenCalledWith([
-              NON_INFURA_CHAIN_ID,
-            ]);
             expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
           });
         });
@@ -432,7 +434,9 @@ describe('addEthereumChainHandler', () => {
             );
 
             expect(mocks.requestUserApproval).not.toHaveBeenCalled();
-            expect(mocks.requestPermittedChainsPermission).not.toHaveBeenCalled();
+            expect(
+              mocks.requestPermittedChainsPermission,
+            ).not.toHaveBeenCalled();
             expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
             expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
               MOCK_OPTIMISM_CONFIGURATION.id,

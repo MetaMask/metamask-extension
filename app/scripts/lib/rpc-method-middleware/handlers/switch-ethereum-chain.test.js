@@ -167,11 +167,14 @@ describe('switchEthereumChainHandler', () => {
     const permissionsFeatureFlagIsActive = true;
 
     it('should call requestPermittedChainsPermission and setActiveNetwork when chainId is not in permittedChains', async () => {
-      const mockrequestPermittedChainsPermission = jest.fn().mockResolvedValue();
+      const mockrequestPermittedChainsPermission = jest
+        .fn()
+        .mockResolvedValue();
       const mocks = makeMocks({
         permissionsFeatureFlagIsActive,
         overrides: {
-          requestPermittedChainsPermission: mockrequestPermittedChainsPermission,
+          requestPermittedChainsPermission:
+            mockrequestPermittedChainsPermission,
         },
       });
       const switchEthereumChainHandler = switchEthereumChain.implementation;
@@ -228,7 +231,8 @@ describe('switchEthereumChainHandler', () => {
       const mocks = makeMocks({
         permissionsFeatureFlagIsActive,
         overrides: {
-          requestPermittedChainsPermission: mockrequestPermittedChainsPermission,
+          requestPermittedChainsPermission:
+            mockrequestPermittedChainsPermission,
         },
       });
       const mockEnd = jest.fn();
