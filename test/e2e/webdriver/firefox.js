@@ -65,14 +65,14 @@ class FirefoxDriver {
       );
       options.headless();
     }
-
     const builder = new Builder()
       .forBrowser('firefox')
       .setFirefoxOptions(options);
 
     // For cases where Firefox is installed as snap (Linux)
+    const FF_SNAP_GECKO_PATH = '/snap/bin/geckodriver';
     const service = process.env.FIREFOX_SNAP
-      ? new firefox.ServiceBuilder('/snap/bin/geckodriver')
+      ? new firefox.ServiceBuilder(FF_SNAP_GECKO_PATH)
       : new firefox.ServiceBuilder();
 
     if (port) {
