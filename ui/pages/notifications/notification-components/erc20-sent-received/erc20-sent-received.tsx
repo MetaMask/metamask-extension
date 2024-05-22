@@ -106,13 +106,17 @@ export const components: NotificationComponent<ERC20Notification> = {
       type: 'body_onchain_notification',
       From: ({ notification }) => (
         <NotificationDetailAddress
-          side={t('notificationItemFrom') || ''}
+          side={`${t('notificationItemFrom')}${
+            isSent(notification) ? ` (${t('you')})` : ''
+          }`}
           address={notification.data.from}
         />
       ),
       To: ({ notification }) => (
         <NotificationDetailAddress
-          side={t('notificationItemTo') || ''}
+          side={`${t('notificationItemTo')}${
+            isSent(notification) ? '' : ` (${t('you')})`
+          }`}
           address={notification.data.to}
         />
       ),

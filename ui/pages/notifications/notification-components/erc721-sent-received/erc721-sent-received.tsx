@@ -126,13 +126,17 @@ export const components: NotificationComponent<ERC721Notification> = {
       },
       From: ({ notification }) => (
         <NotificationDetailAddress
-          side={t('notificationItemFrom') || ''}
+          side={`${t('notificationItemFrom')}${
+            isSent(notification) ? ` (${t('you')})` : ''
+          }`}
           address={notification.data.from}
         />
       ),
       To: ({ notification }) => (
         <NotificationDetailAddress
-          side={t('notificationItemTo') || ''}
+          side={`${t('notificationItemTo')}${
+            isSent(notification) ? '' : ` (${t('you')})`
+          }`}
           address={notification.data.to}
         />
       ),
