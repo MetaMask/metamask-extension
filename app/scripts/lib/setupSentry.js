@@ -387,6 +387,8 @@ export const SENTRY_UI_STATE = {
     ///: END:ONLY_INCLUDE_IF
     switchedNetworkDetails: false,
     switchedNetworkNeverShowMessage: false,
+    newPrivacyPolicyToastClickedOrClosed: false,
+    newPrivacyPolicyToastShownDate: false,
   },
   unconnectedAccount: true,
 };
