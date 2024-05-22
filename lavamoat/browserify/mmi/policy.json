@@ -4881,13 +4881,7 @@
         "console.error": true
       },
       "packages": {
-        "browserify>process": true,
-        "semver>lru-cache": true
-      }
-    },
-    "semver>lru-cache": {
-      "packages": {
-        "semver>lru-cache>yallist": true
+        "browserify>process": true
       }
     },
     "sinon>nise>path-to-regexp": {
