@@ -60,7 +60,7 @@ describe('addEthereumChainHandler', () => {
         .fn()
         .mockReturnValue(MOCK_MAINNET_CONFIGURATION.rpcUrl),
       requestUserApproval: jest.fn().mockResolvedValue(123),
-      requestSwitchNetworkPermission: jest.fn(),
+      requestPermittedChainsPermission: jest.fn(),
       getCaveat: jest.fn().mockReturnValue({ value: permissionedChainIds }),
       upsertNetworkConfiguration: jest.fn().mockResolvedValue(123),
       startApprovalFlow: () => ({ id: 'approvalFlowId' }),
@@ -262,7 +262,7 @@ describe('addEthereumChainHandler', () => {
 
   describe('with permittedChains permissioning active', () => {
     describe('if a networkConfiguration for the given chainId does not already exist', () => {
-      it('should call upsertNetworkConfiguration, requestSwitchNetworkPermission, and call setActiveNetwork', async () => {
+      it('should call upsertNetworkConfiguration, requestPermittedChainsPermission, and call setActiveNetwork', async () => {
         const mocks = makeMocks({
           permissionedChainIds: [],
           permissionsFeatureFlagIsActive: true,
@@ -295,8 +295,8 @@ describe('addEthereumChainHandler', () => {
           MOCK_NON_INFURA_CONFIGURATION,
           { referrer: 'example.com', source: 'dapp' },
         );
-        expect(mocks.requestSwitchNetworkPermission).toHaveBeenCalledTimes(1);
-        expect(mocks.requestSwitchNetworkPermission).toHaveBeenCalledWith([
+        expect(mocks.requestPermittedChainsPermission).toHaveBeenCalledTimes(1);
+        expect(mocks.requestPermittedChainsPermission).toHaveBeenCalledWith([
           MOCK_NON_INFURA_CONFIGURATION.chainId,
         ]);
         expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
@@ -307,7 +307,7 @@ describe('addEthereumChainHandler', () => {
     describe('if a networkConfiguration for the given chainId already exists', () => {
       describe('if the proposed networkConfiguration has a different rpcUrl from the one already in state', () => {
         describe('if the requested chainId has permittedChains permission granted for requesting origin', () => {
-          it('should, after adding the chain, call setActiveNetwork without calling mockRequestSwitchNetworkPermission', async () => {
+          it('should, after adding the chain, call setActiveNetwork without calling mockrequestPermittedChainsPermission', async () => {
             const mocks = makeMocks({
               permissionedChainIds: [CHAIN_IDS.MAINNET],
               permissionsFeatureFlagIsActive: true,
@@ -336,7 +336,7 @@ describe('addEthereumChainHandler', () => {
             );
 
             expect(mocks.requestUserApproval).toHaveBeenCalledTimes(1);
-            expect(mocks.requestSwitchNetworkPermission).not.toHaveBeenCalled();
+            expect(mocks.requestPermittedChainsPermission).not.toHaveBeenCalled();
             expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
             expect(mocks.setActiveNetwork).toHaveBeenCalledWith(123);
           });
@@ -380,10 +380,10 @@ describe('addEthereumChainHandler', () => {
             );
 
             expect(mocks.upsertNetworkConfiguration).toHaveBeenCalledTimes(1);
-            expect(mocks.requestSwitchNetworkPermission).toHaveBeenCalledTimes(
+            expect(mocks.requestPermittedChainsPermission).toHaveBeenCalledTimes(
               1,
             );
-            expect(mocks.requestSwitchNetworkPermission).toHaveBeenCalledWith([
+            expect(mocks.requestPermittedChainsPermission).toHaveBeenCalledWith([
               NON_INFURA_CHAIN_ID,
             ]);
             expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
@@ -393,7 +393,7 @@ describe('addEthereumChainHandler', () => {
 
       describe('if the proposed networkConfiguration has the same rpcUrl as the one already in state', () => {
         describe('if the rpcUrl of the currently selected network does not match the requested rpcUrl', () => {
-          it('should not call neither requestUserApproval nor mockRequestSwitchNetworkPermission, should call setActiveNetwork', async () => {
+          it('should not call neither requestUserApproval nor mockrequestPermittedChainsPermission, should call setActiveNetwork', async () => {
             const mocks = makeMocks({
               permissionedChainIds: [MOCK_OPTIMISM_CONFIGURATION.chainId],
               permissionsFeatureFlagIsActive: true,
@@ -432,7 +432,7 @@ describe('addEthereumChainHandler', () => {
             );
 
             expect(mocks.requestUserApproval).not.toHaveBeenCalled();
-            expect(mocks.requestSwitchNetworkPermission).not.toHaveBeenCalled();
+            expect(mocks.requestPermittedChainsPermission).not.toHaveBeenCalled();
             expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
             expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
               MOCK_OPTIMISM_CONFIGURATION.id,
@@ -447,7 +447,7 @@ describe('addEthereumChainHandler', () => {
           permissionsFeatureFlagIsActive: true,
           permissionedChainIds: [],
           overrides: {
-            requestSwitchNetworkPermission: jest
+            requestPermittedChainsPermission: jest
               .fn()
               .mockRejectedValue(mockError),
           },
@@ -476,7 +476,7 @@ describe('addEthereumChainHandler', () => {
           mocks,
         );
 
-        expect(mocks.requestSwitchNetworkPermission).toHaveBeenCalledTimes(1);
+        expect(mocks.requestPermittedChainsPermission).toHaveBeenCalledTimes(1);
         expect(mockEnd).toHaveBeenCalledWith(mockError);
         expect(mocks.setActiveNetwork).not.toHaveBeenCalled();
       });

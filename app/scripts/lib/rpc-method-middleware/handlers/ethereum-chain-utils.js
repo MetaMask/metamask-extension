@@ -228,7 +228,7 @@ export async function switchChain(
     endApprovalFlow,
     requestUserApproval,
     getCaveat,
-    requestSwitchNetworkPermission,
+    requestPermittedChainsPermission,
   },
 ) {
   try {
@@ -243,7 +243,7 @@ export async function switchChain(
         permissionedChainIds === undefined ||
         !permissionedChainIds.includes(chainId)
       ) {
-        await requestSwitchNetworkPermission([
+        await requestPermittedChainsPermission([
           ...(permissionedChainIds ?? []),
           chainId,
         ]);

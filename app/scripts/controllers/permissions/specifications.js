@@ -33,7 +33,7 @@ export const PermissionNames = Object.freeze({
  * Factory functions for all caveat types recognized by the
  * PermissionController.
  */
-const CaveatFactories = Object.freeze({
+export const CaveatFactories = Object.freeze({
   [CaveatTypes.restrictReturnedAccounts]: (accounts) => {
     return { type: CaveatTypes.restrictReturnedAccounts, value: accounts };
   },
