@@ -187,6 +187,7 @@ env:
   - DEBUG: null
   - SUPPORT_LINK: https://support.metamask.io
   - SUPPORT_REQUEST_LINK: https://metamask.zendesk.com/hc/en-us
+  - METAMETRICS_SETTINGS_LINK: https://support.metamask.io/privacy-and-security/how-to-manage-your-metametrics-settings
   - SKIP_BACKGROUND_INITIALIZATION: false
 
   # TODO(ritave): Move ManifestV3 into a feature?

@@ -15,6 +15,7 @@ import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 import WhatsNewPopup from '../../components/app/whats-new-popup';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import { METAMETRICS_SETTINGS_LINK } from '../../helpers/constants/common';
 import SmartTransactionsOptInModal from '../../components/app/smart-transactions/smart-transactions-opt-in-modal';
 ///: END:ONLY_INCLUDE_IF
 import HomeNotification from '../../components/app/home-notification';
@@ -120,9 +121,6 @@ function shouldCloseNotificationPopup({
 
   return shouldClose;
 }
-
-const METAMETRICS_SETTINGS_LINK =
-  'https://support.metamask.io/privacy-and-security/how-to-manage-your-metametrics-settings/';
 
 export default class Home extends PureComponent {
   static contextTypes = {
