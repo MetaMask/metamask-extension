@@ -74,11 +74,6 @@ export type AlertModalProps = {
   ownerId: string;
 };
 
-export type AlertChildrenDefaultProps = {
-  selectedAlert: Alert;
-  isFrictionModal: boolean;
-};
-
 export function getSeverityStyle(severity?: Severity) {
   switch (severity) {
     case Severity.Warning:
