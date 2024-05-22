@@ -1,6 +1,11 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { hideDeleteMetaMetricsDataModal } from '../../../ducks/app/app';
+import {
+  hideDeleteMetaMetricsDataModal,
+  markingMetaMetricsDataDeletion,
+  continueRecordingMetaMetricsData,
+  stopRecordingMetaMetricsData,
+} from '../../../ducks/app/app';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Box,
@@ -23,15 +28,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { createMetaMetricsDataDeletionTask } from '../../../store/actions';
-import {
-  DataDeletionResponse,
-  responseStatus,
-} from '../../../../app/scripts/controllers/metametrics-data-deletion/metametrics-data-deletion';
-import {
-  getMetaMetricsDataDeletionDate,
-  getMetaMetricsDataDeletionId,
-  getParticipateInMetaMetrics,
-} from '../../../selectors';
+import { getParticipateInMetaMetrics } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -44,8 +41,6 @@ export default function ClearMetaMetricsData() {
   const trackEvent = useContext(MetaMetricsContext);
 
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
-  const id = useSelector(getMetaMetricsDataDeletionId);
-  const date = useSelector(getMetaMetricsDataDeletionDate);
 
   function closeModal() {
     dispatch(hideDeleteMetaMetricsDataModal());
@@ -53,19 +48,16 @@ export default function ClearMetaMetricsData() {
 
   async function deleteMetaMetricsData() {
     try {
-      const deleteResponse: DataDeletionResponse = (await dispatch(
-        createMetaMetricsDataDeletionTask(),
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      )) as any;
-
-      if (responseStatus.ok === deleteResponse?.status) {
-        console.log(`${deleteResponse}---${id}----${date}`);
-        if (participateInMetaMetrics) {
-          trackEvent({
-            category: MetaMetricsEventCategory.Settings,
-            event: MetaMetricsEventName.MetricsDataDeletionRequest,
-          });
-        }
+      await dispatch(createMetaMetricsDataDeletionTask());
+      dispatch(markingMetaMetricsDataDeletion());
+      if (participateInMetaMetrics) {
+        dispatch(continueRecordingMetaMetricsData());
+        trackEvent({
+          category: MetaMetricsEventCategory.Settings,
+          event: MetaMetricsEventName.MetricsDataDeletionRequest,
+        });
+      } else {
+        dispatch(stopRecordingMetaMetricsData());
       }
     } catch (error: unknown) {
       // ignore
