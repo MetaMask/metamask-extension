@@ -23,10 +23,10 @@ import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 export type MultipleAlertModalProps = {
   /** The key of the initial alert to display. */
   alertKey: string;
-  /** The function to be executed when the modal needs to be closed. */
-  onClose: () => void;
   /** The function to be executed when the button in the alert modal is clicked. */
   onFinalAcknowledgeClick: () => void;
+  /** The function to be executed when the modal needs to be closed. */
+  onClose: () => void;
   /** The unique identifier of the entity that owns the alert. */
   ownerId: string;
 };
@@ -168,8 +168,8 @@ export function MultipleAlertModal({
       return;
     }
 
-    handleBackButtonClick();
-  }, [onFinalAcknowledgeClick, handleBackButtonClick, selectedIndex, alerts]);
+    handleNextButtonClick();
+  }, [onFinalAcknowledgeClick, handleNextButtonClick, selectedIndex, alerts]);
 
   return (
     <AlertModal
