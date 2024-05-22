@@ -21,7 +21,7 @@ import {
 import { confirmSelector } from '../../../selectors';
 import { getConfirmationSender } from '../utils';
 import useAlerts from '../../../../../hooks/useAlerts';
-import { ConfirmAlertModal } from '../../../../../components/app/confirmations/alerts/confirm-alert-modal';
+import { ConfirmAlertModal } from '../../../../../components/app/alerts-system/confirm-alert-modal';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import useIsDangerButton from './useIsDangerButton';

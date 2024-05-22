@@ -11,8 +11,8 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../../selectors';
 import { Confirmation } from '../../../types/confirm';
 import useAlerts from '../../../../../hooks/useAlerts';
-import { getHighestSeverity } from '../../../../../components/app/confirmations/alerts/utils';
-import SecurityAlertBanner from '../../../../../components/app/confirmations/alerts/security-alert-banner/security-alert-banner';
+import { getHighestSeverity } from '../../../../../components/app/alerts-system/utils';
+import SecurityAlertBanner from '../../../../../components/app/alerts-system/security-alert-banner/security-alert-banner';
 
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
   const t = useI18nContext();

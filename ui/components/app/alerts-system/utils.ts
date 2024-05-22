@@ -1,22 +1,22 @@
 import {
   BlockaidResultType,
   SecurityProvider,
-} from '../../../../../shared/constants/security-provider';
+} from '../../../../shared/constants/security-provider';
 import {
   Alert,
   AlertSeverity,
-} from '../../../../ducks/confirm-alerts/confirm-alerts';
+} from '../../../ducks/confirm-alerts/confirm-alerts';
 import {
   BackgroundColor,
   Severity,
-} from '../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+} from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   REASON_TO_DESCRIPTION_TKEY,
   REASON_TO_TITLE_TKEY,
-} from '../../../../pages/confirmations/components/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
-import { SecurityAlertResponse } from '../../../../pages/confirmations/types/confirm';
-import { BannerAlertSeverity } from '../../../component-library';
+} from '../../../pages/confirmations/components/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
+import { SecurityAlertResponse } from '../../../pages/confirmations/types/confirm';
+import { BannerAlertSeverity } from '../../component-library';
 
 /**
  * Returns the background color based on the severity level.

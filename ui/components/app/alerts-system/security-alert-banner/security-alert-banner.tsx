@@ -5,17 +5,17 @@ import {
   ButtonLink,
   ButtonLinkSize,
   Text,
-} from '../../../../component-library';
-import Disclosure from '../../../../ui/disclosure';
-import { DisclosureVariant } from '../../../../ui/disclosure/disclosure.constants';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
+} from '../../../component-library';
+import Disclosure from '../../../ui/disclosure';
+import { DisclosureVariant } from '../../../ui/disclosure/disclosure.constants';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Display,
   Severity,
   TextVariant,
-} from '../../../../../helpers/constants/design-system';
-import { SecurityProvider } from '../../../../../../shared/constants/security-provider';
-import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
+} from '../../../../helpers/constants/design-system';
+import { SecurityProvider } from '../../../../../shared/constants/security-provider';
+import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { getBannerAlertSeverity } from '../utils';
 import { AlertProvider } from '../alert-modal/alert-modal';
 

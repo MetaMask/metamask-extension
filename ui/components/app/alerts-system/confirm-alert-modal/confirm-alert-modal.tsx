@@ -10,19 +10,19 @@ import {
   IconName,
   IconSize,
   Text,
-} from '../../../../component-library';
+} from '../../../component-library';
 import {
   AlignItems,
   Severity,
   TextAlign,
   TextVariant,
-} from '../../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import useAlerts from '../../../../../hooks/useAlerts';
+} from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import useAlerts from '../../../../hooks/useAlerts';
 import { AlertModal } from '../alert-modal';
 import { AcknowledgeCheckboxBase } from '../alert-modal/alert-modal';
 import { MultipleAlertModal } from '../multiple-alert-modal';
-import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 
 export type ConfirmAlertModalProps = {
   /** The unique key representing the specific alert field. */

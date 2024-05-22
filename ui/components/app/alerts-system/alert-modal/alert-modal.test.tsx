@@ -1,11 +1,11 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
-import { Severity } from '../../../../../helpers/constants/design-system';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
-import * as useAlertsModule from '../../../../../hooks/useAlerts';
-import mockState from '../../../../../../test/data/mock-state.json';
-import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import { Severity } from '../../../../helpers/constants/design-system';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import * as useAlertsModule from '../../../../hooks/useAlerts';
+import mockState from '../../../../../test/data/mock-state.json';
+import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { AlertModal } from './alert-modal';
 
 const onProcessActionMock = jest.fn();

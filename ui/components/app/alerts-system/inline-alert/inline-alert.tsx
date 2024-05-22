@@ -6,7 +6,7 @@ import {
   IconName,
   IconSize,
   Text,
-} from '../../../../component-library';
+} from '../../../component-library';
 import {
   AlignItems,
   BorderRadius,
@@ -14,8 +14,8 @@ import {
   Severity,
   TextColor,
   TextVariant,
-} from '../../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
+} from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getSeverityBackground } from '../utils';
 
 export type InlineAlertProps = {

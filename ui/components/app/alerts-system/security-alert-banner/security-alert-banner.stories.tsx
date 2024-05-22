@@ -1,11 +1,11 @@
 import React from 'react';
-import { Severity } from '../../../../../helpers/constants/design-system';
+import { Severity } from '../../../../helpers/constants/design-system';
 import {
   ButtonLink,
   ButtonLinkSize,
   Text,
-} from '../../../../../components/component-library';
-import { SecurityProvider } from '../../../../../../shared/constants/security-provider';
+} from '../../../component-library';
+import { SecurityProvider } from '../../../../../shared/constants/security-provider';
 import SecurityAlertBanner from './security-alert-banner';
 
 const mockPlainText =

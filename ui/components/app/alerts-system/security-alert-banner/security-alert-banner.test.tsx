@@ -1,8 +1,8 @@
 import React from 'react';
-import { Severity } from '../../../../../helpers/constants/design-system';
-import { SecurityProvider } from '../../../../../../shared/constants/security-provider';
-import { Text } from '../../../../component-library';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
+import { Severity } from '../../../../helpers/constants/design-system';
+import { SecurityProvider } from '../../../../../shared/constants/security-provider';
+import { Text } from '../../../component-library';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import SecurityAlertBanner, {
   SecurityAlertBannerProps,
 } from './security-alert-banner';

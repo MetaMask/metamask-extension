@@ -17,7 +17,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
-} from '../../../../component-library';
+} from '../../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -30,16 +30,16 @@ import {
   TextAlign,
   TextColor,
   TextVariant,
-} from '../../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import useAlerts from '../../../../../hooks/useAlerts';
-import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
-import { useAlertActionHandler } from '../../../../../contexts/alertActionHandler';
+} from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import useAlerts from '../../../../hooks/useAlerts';
+import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
+import { useAlertActionHandler } from '../../../../contexts/alertActionHandler';
 import {
   SECURITY_PROVIDER_CONFIG,
   SecurityProvider,
-} from '../../../../../../shared/constants/security-provider';
-import { SizeNumber } from '../../../../component-library/box/box.types';
+} from '../../../../../shared/constants/security-provider';
+import { SizeNumber } from '../../../component-library/box/box.types';
 
 export type AlertModalProps = {
   /**

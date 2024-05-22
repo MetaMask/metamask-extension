@@ -1,10 +1,10 @@
-import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
-import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
+import { BlockaidResultType } from '../../../../shared/constants/security-provider';
+import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
 import {
   BackgroundColor,
   Severity,
-} from '../../../../helpers/constants/design-system';
-import { SecurityAlertResponse } from '../../../../pages/confirmations/types/confirm';
+} from '../../../helpers/constants/design-system';
+import { SecurityAlertResponse } from '../../../pages/confirmations/types/confirm';
 import {
   getBannerAlertSeverity,
   getHighestSeverity,
