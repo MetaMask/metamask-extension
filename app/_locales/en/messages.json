@@ -401,6 +401,12 @@
   "amount": {
     "message": "Amount"
   },
+  "amountReceived": {
+    "message": "Amount Received"
+  },
+  "amountSent": {
+    "message": "Amount Sent"
+  },
   "andForListItems": {
     "message": "$1, and $2",
     "description": "$1 is the first item, $2 is the last item in a list of items. Used in Snap Install Warning modal."
@@ -4362,6 +4368,10 @@
   "sendTo": {
     "message": "Send to"
   },
+  "sendTokenAsToken": {
+    "message": "Send $1 as $2",
+    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
+  },
   "sendTokens": {
     "message": "Send tokens"
   },
@@ -5059,6 +5069,9 @@
   },
   "swapAmountReceivedInfo": {
     "message": "This is the minimum amount you will receive. You may receive more depending on slippage."
+  },
+  "swapAndSend": {
+    "message": "Swap & Send"
   },
   "swapAnyway": {
     "message": "Swap anyway"
