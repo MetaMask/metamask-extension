@@ -98,10 +98,16 @@ CSS Selectors in Selenium are string patterns used to identify an element based 
 </details>
 </details>
 <details><summary><b>Locate element by XPath</b></summary>
+<br>
+XPath is a language used for locating nodes in an XML document, which can also be applied to HTML documents for locating elements in the test automation. It utilizes path expressions to navigate through and select elements and attributes within the document.<br>
 
->
->To locate an element by XPath,to navigate through elements and attributes in the HTML document.
->
+Standard XPath syntax for creating XPath is.
+
+`Xpath=//tagname[@attribute='value']`
+<br>
+
+<iframe width="560" height="315" src="image/xpath_locator.mov" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 >![Screenshot displays ‘Confirm’ button in the send transaction page](image/xpath.png)
 >
 >Syntax for locating the button element that contains text ‘Confirm’
