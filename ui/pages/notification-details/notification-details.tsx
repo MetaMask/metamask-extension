@@ -44,7 +44,7 @@ export default function NotificationDetails() {
   );
 
   useEffect(() => {
-    if (!id || !notificationData) {
+    if (!id) {
       redirectToNotifications();
     }
     if (notificationData) {
