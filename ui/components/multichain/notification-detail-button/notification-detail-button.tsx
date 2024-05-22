@@ -21,7 +21,7 @@ export const NotificationDetailButton = ({
   text,
   href,
   id,
-  isExternal = true,
+  isExternal = false,
   endIconName = true,
 }: NotificationDetailButtonProps) => {
   return (

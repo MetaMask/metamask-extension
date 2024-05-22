@@ -72,8 +72,8 @@ export async function onNotificationClick(event: NotificationEvent) {
   const getPlatformResult = getPlatform();
   const platform =
     getPlatformResult === PLATFORM_FIREFOX
-      ? 'chrome-extension'
-      : 'moz-extension';
+      ? 'moz-extension'
+      : 'chrome-extension';
   const destination = `${platform}://${sw.location.host}/home.html#notifications/${data.id}`;
   event.waitUntil(sw.clients.openWindow(destination));
 }
