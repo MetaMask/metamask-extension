@@ -111,7 +111,6 @@ until.elementIsNotPresent = function elementIsNotPresent(locator) {
 };
 
 until.foundElementCountIs = function foundElementCountIs(locator, n) {
-  console.log('locator', locator);
   return new Condition(`Element count is ${n}`, function (driver) {
     return driver.findElements(locator).then(function (elements) {
       return elements.length === n;
