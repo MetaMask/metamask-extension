@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { TransactionType } from '@metamask/transaction-controller';
 import { getShouldShowFiat } from '../../../selectors';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { getHexGasTotal } from '../../../helpers/utils/confirm-tx.util';
@@ -8,7 +9,10 @@ import {
   subtractHexes,
   sumHexes,
 } from '../../../../shared/modules/conversion.utils';
-import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
+import {
+  calcTokenAmount,
+  getSwapsTokensReceivedFromTxMeta,
+} from '../../../../shared/lib/transactions-controller-utils';
 import { CONFIRMED_STATUS } from '../transaction-activity-log/transaction-activity-log.constants';
 import TransactionBreakdown from './transaction-breakdown.component';
 
@@ -18,31 +22,60 @@ const mapStateToProps = (state, ownProps) => {
     txParams: { gas, gasPrice, maxFeePerGas, value } = {},
     txReceipt: { gasUsed, effectiveGasPrice, l1Fee: l1HexGasTotal } = {},
     baseFeePerGas,
-    sourceTokenAmount,
+    sourceTokenAmount: rawSourceTokenAmount,
     sourceTokenDecimals,
     sourceTokenSymbol,
-    destinationTokenAmount,
+    destinationTokenAddress,
+    destinationTokenAmount: rawDestinationTokenAmountEstimate,
     destinationTokenDecimals,
     destinationTokenSymbol,
     status,
+    type,
   } = transaction;
+
+  const sourceTokenAmount = calcTokenAmount(
+    rawSourceTokenAmount,
+    sourceTokenDecimals,
+  );
+  let destinationTokenAmount;
+
+  if (
+    type === TransactionType.swapAndSend &&
+    // ensure fallback values are available
+    rawDestinationTokenAmountEstimate &&
+    destinationTokenDecimals &&
+    destinationTokenSymbol
+  ) {
+    try {
+      // try to get the actual destination token amount from the on-chain events
+      destinationTokenAmount = getSwapsTokensReceivedFromTxMeta(
+        destinationTokenSymbol,
+        transaction,
+        destinationTokenAddress,
+        undefined,
+        destinationTokenDecimals,
+      );
+
+      // if no amount is found, throw
+      if (!destinationTokenAmount) {
+        throw new Error('Actual destination token amount not found');
+      }
+    } catch (error) {
+      // if actual destination token amount is not found, use the estimated amount from the quote
+      calcTokenAmount(
+        rawDestinationTokenAmountEstimate,
+        destinationTokenDecimals,
+      );
+    }
+  }
 
   const sourceAmountFormatted =
     sourceTokenAmount && sourceTokenDecimals && sourceTokenSymbol
-      ? `${calcTokenAmount(
-          sourceTokenAmount,
-          sourceTokenDecimals,
-        )} ${sourceTokenSymbol}`
+      ? `${sourceTokenAmount} ${sourceTokenSymbol}`
       : undefined;
   const destinationAmountFormatted =
-    destinationTokenAmount &&
-    destinationTokenDecimals &&
-    destinationTokenSymbol &&
-    status === CONFIRMED_STATUS
-      ? `${calcTokenAmount(
-          destinationTokenAmount,
-          destinationTokenDecimals,
-        )} ${destinationTokenSymbol}`
+    destinationTokenAmount && status === CONFIRMED_STATUS
+      ? `${destinationTokenAmount} ${destinationTokenSymbol}`
       : undefined;
 
   const gasLimit = typeof gasUsed === 'string' ? gasUsed : gas;
