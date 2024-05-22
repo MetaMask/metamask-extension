@@ -724,10 +724,7 @@ export const initializeSendState = createAsyncThunk(
       const estimatedGasLimit = await estimateGasLimitForSend({
         gasPrice,
         blockGasLimit: metamask.currentBlockGasLimit,
-        selectedAddress:
-          draftTransaction.fromAccount?.address ??
-          sendState.selectedAccount.address ??
-          account.address,
+        selectedAddress: getSender(state),
         sendToken: draftTransaction.sendAsset.details,
         to: draftTransaction.recipient.address.toLowerCase(),
         value: draftTransaction.amount.value,
@@ -797,11 +794,7 @@ const fetchSwapAndSendQuotes = createAsyncThunk(
     const draftTransaction =
       sendState.draftTransactions[sendState.currentTransactionUUID];
 
-    // TODO: move to util
-    const sender =
-      draftTransaction.fromAccount?.address ??
-      sendState.selectedAccount.address ??
-      getSelectedInternalAccount(state).address;
+    const sender = getSender(state);
 
     const sourceAmount = hexToDecimal(draftTransaction.amount.value);
 
@@ -2386,12 +2379,7 @@ export function updateRecipientUserInput(userInput) {
     dispatch(actions.updateDraftTransactionStatus(SEND_STATUSES.INVALID));
     await dispatch(actions.updateRecipientUserInput(userInput));
     const state = getState();
-    const draftTransaction =
-      state[name].draftTransactions[state[name].currentTransactionUUID];
-    const sendingAddress =
-      draftTransaction.fromAccount?.address ??
-      state[name].selectedAccount.address ??
-      getSelectedInternalAccount(state).address;
+    const sendingAddress = getSender(state);
     const chainId = getCurrentChainId(state);
     const tokens = getTokens(state);
     const useTokenDetection = getUseTokenDetection(state);
@@ -2500,10 +2488,7 @@ export function updateSendAsset(
     const { ticker } = getProviderConfig(state);
     const draftTransaction =
       state[name].draftTransactions[state[name].currentTransactionUUID];
-    const sendingAddress =
-      draftTransaction.fromAccount?.address ??
-      state[name].selectedAccount.address ??
-      getSelectedInternalAccount(state).address;
+    const sendingAddress = getSender(state);
     const account = getTargetAccount(state, sendingAddress);
     if (type === AssetType.native) {
       const unapprovedTxs = getUnapprovedTransactions(state);
@@ -2563,10 +2548,7 @@ export function updateSendAsset(
       // attempt simple balance fetch if balance is missing
       if (missingProperty === 'balance') {
         const selectedNetworkClientId = getSelectedNetworkClientId(state);
-        const sender =
-          draftTransaction.fromAccount?.address ??
-          state[name].selectedAccount.address ??
-          getSelectedInternalAccount(state).address;
+        const sender = getSender(state);
 
         const balance = await getBalancesInSingleCall(
           sender,
@@ -3331,6 +3313,19 @@ export function getDraftTransactionID(state) {
  */
 export function sendAmountIsInError(state) {
   return Boolean(getCurrentDraftTransaction(state).amount?.error);
+}
+
+export function getSender(state) {
+  const sendState = state[name];
+
+  const draftTransaction =
+    sendState.draftTransactions[sendState.currentTransactionUUID];
+
+  return (
+    draftTransaction.fromAccount?.address ??
+    sendState.selectedAccount.address ??
+    getSelectedInternalAccount(state).address
+  );
 }
 
 // Recipient Selectors
