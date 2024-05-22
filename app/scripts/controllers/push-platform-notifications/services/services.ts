@@ -285,7 +285,7 @@ export async function updateTriggerPushNotifications(
   triggers: string[],
 ): Promise<{
   isTriggersLinkedToPushNotifications: boolean;
-  fcmToken?: string;
+  fcmToken?: string | null;
 }> {
   const notificationLinks = await getPushNotificationLinks(bearerToken);
   if (!notificationLinks) {
@@ -318,6 +318,6 @@ export async function updateTriggerPushNotifications(
 
   return {
     isTriggersLinkedToPushNotifications,
-    fcmToken: newRegToken ?? undefined,
+    fcmToken: newRegToken ?? null,
   };
 }
