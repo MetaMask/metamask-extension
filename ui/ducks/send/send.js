@@ -143,6 +143,7 @@ import {
   generateTransactionParams,
   getRoundedGasPrice,
   calculateBestQuote,
+  addAdjustedReturnToQuotes,
 } from './helpers';
 
 const RECENT_REQUEST_ERROR =
@@ -844,6 +845,12 @@ const fetchSwapAndSendQuotes = createAsyncThunk(
         );
       }
     }
+
+    addAdjustedReturnToQuotes(
+      quotes,
+      state,
+      draftTransaction.receiveAsset?.details,
+    );
 
     if (!quotes?.length) {
       throw new Error(SWAPS_NO_QUOTES);

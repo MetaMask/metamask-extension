@@ -57,6 +57,8 @@ export type Quote = {
   aggregatorType: string;
   error: null | object;
   fee: number;
+  // added on later
+  adjustAmountReceivedInNative?: number;
 };
 
 const QUOTE_VALIDATORS = [

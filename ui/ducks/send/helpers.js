@@ -1,4 +1,4 @@
-import { addHexPrefix } from 'ethereumjs-util';
+import { addHexPrefix, toChecksumAddress } from 'ethereumjs-util';
 import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
@@ -17,9 +17,21 @@ import {
   generateERC1155TransferData,
   getAssetTransferData,
 } from '../../pages/confirmations/send/send.utils';
-import { getGasPriceInHexWei } from '../../selectors';
+import {
+  checkNetworkAndAccountSupports1559,
+  getConfirmationExchangeRates,
+  getCurrentChainId,
+  getGasPriceInHexWei,
+  getTokenExchangeRates,
+} from '../../selectors';
 import { estimateGas } from '../../store/actions';
 import { Numeric } from '../../../shared/modules/Numeric';
+import { getGasFeeEstimates, getNativeCurrency } from '../metamask/metamask';
+import { getUsedSwapsGasPrice } from '../swaps/swaps';
+import { fetchTokenExchangeRates } from '../../helpers/utils/util';
+import { hexToDecimal } from '../../../shared/modules/conversion.utils';
+import { EtherDenomination } from '../../../shared/constants/common';
+import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps';
 
 export async function estimateGasLimitForSend({
   selectedAddress,
@@ -163,15 +175,111 @@ export async function estimateGasLimitForSend({
   }
 }
 
-// TODO: account for gas
+export const addAdjustedReturnToQuotes = async (
+  quotes,
+  state,
+  destinationAsset,
+) => {
+  if (!quotes?.length) {
+    return;
+  }
+
+  try {
+    const chainId = getCurrentChainId(state);
+
+    // get gas price
+    const { medium, gasPrice: maybeGasFee } = getGasFeeEstimates(state);
+    const networkAndAccountSupports1559 =
+      checkNetworkAndAccountSupports1559(state);
+    // remove this logic once getGasFeeEstimates is typed
+    const gasFee1559 = maybeGasFee ?? medium?.suggestedMaxFeePerGas;
+    const gasPriceNon1559 = getUsedSwapsGasPrice(state);
+    const gasPrice = networkAndAccountSupports1559
+      ? gasFee1559
+      : gasPriceNon1559;
+
+    // get exchange rates from state
+    const contractExchangeRates = getTokenExchangeRates(state);
+    const confirmationExchangeRates = getConfirmationExchangeRates(state);
+    const mergedRates = {
+      ...contractExchangeRates,
+      ...confirmationExchangeRates,
+    };
+
+    const nativeCurrency = getNativeCurrency(state);
+    const destinationAddress = destinationAsset?.address
+      ? toChecksumAddress(destinationAsset.address)
+      : undefined;
+
+    // attempt to get the conversion rate from the state; native currency is 1
+    let destToNativeConversionRate = destinationAddress
+      ? mergedRates[destinationAddress]
+      : 1;
+
+    // if conversion rate isn't already in the state, fetch it
+    if (!destToNativeConversionRate && destinationAddress) {
+      destToNativeConversionRate = (
+        await fetchTokenExchangeRates(
+          nativeCurrency,
+          [destinationAddress],
+          chainId,
+        )
+      )[destinationAddress];
+    }
+
+    // if conversion rate isn't available, do not update the property
+    if (!destToNativeConversionRate) {
+      return;
+    }
+
+    quotes.forEach((quote) => {
+      // get trade+approval
+      const totalGasLimit =
+        (quote?.gasParams.maxGas || 0) +
+        Number(hexToDecimal(quote?.approvalNeeded?.gas || '0x0'));
+
+      // get gas price in ETH (assuming mainnet for simplicity)
+      const gasPriceInNative = new Numeric(gasPrice, 10, EtherDenomination.GWEI)
+        .times(totalGasLimit, 10)
+        .toDenomination(EtherDenomination.ETH);
+
+      // convert token to ETH using conversion rate
+      const destTokenReceivedInNative = new Numeric(
+        calcTokenAmount(
+          quote.destinationAmount,
+          destinationAsset?.decimals ||
+            SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].decimals,
+        ),
+        10,
+      ).times(destToNativeConversionRate, 10);
+
+      // subtract gas ETH value from token ETH value
+      const adjustAmountReceivedInNative = destTokenReceivedInNative
+        .minus(gasPriceInNative)
+        .toNumber();
+
+      // add to qutoe
+      quote.adjustAmountReceivedInNative = adjustAmountReceivedInNative;
+    });
+  } catch (error) {
+    // no action is needed since we fallback from this property
+    console.warn(
+      `Could not calculate adjusted return for quote selection: ${error}`,
+    );
+  }
+};
+
 export const calculateBestQuote = (quotesArray) =>
-  quotesArray.reduce(
-    (best, current) =>
-      current?.destinationAmount > (best?.destinationAmount || 0)
-        ? current
-        : best,
-    undefined,
-  );
+  quotesArray.reduce((best, current) => {
+    const currentValue =
+      current?.adjustAmountReceivedInNative ||
+      Number(current?.destinationAmount || 0);
+    const bestValue =
+      best?.adjustAmountReceivedInNative ||
+      Number(best?.destinationAmount || 0);
+
+    return currentValue > bestValue ? current : best;
+  }, undefined);
 
 /**
  * Generates a txParams from the send slice.

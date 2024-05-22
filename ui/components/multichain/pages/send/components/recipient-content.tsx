@@ -85,8 +85,6 @@ export const SendPageRecipientContent = ({
   // TODO: SWAP+SEND impl steps (all but step 3 correlate to a PR in the merge train):
   // TODO: 1. begin design review + revisions
   //          - resolve all TODOs
-  //          - Update best quotes logic
-  //          - Investigate gasTotalForLayer1 for swap+send
   // TODO: 2. add analytics + e2e tests + unit tests (check comments)
   //       - use transaction lifecycle events once
   // TODO: 3. final design and technical review + revisions
