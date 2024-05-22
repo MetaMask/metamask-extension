@@ -25,10 +25,6 @@ const BlockaidAlert = ({ ...props }) => {
   ) {
     return null;
   }
-  // Skip displaying the Blockaid banner for confirmation types that use the new alert system.
-  // if (type === ApprovalType.PersonalSign) {
-  //   return null;
-  // }
 
   return (
     <BlockaidBannerAlert
