@@ -2912,8 +2912,15 @@ export function signTransaction(history) {
           .shiftedBy(sourceTokenDecimals)
           .toString();
 
+        const swapAndSendRecipient = draftTransaction.recipient.address;
+        const sourceTokenAddress =
+          draftTransaction.sendAsset.details?.address ||
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].address;
+        const sourceTokenAmount = bestQuote?.sourceAmount;
+        const destinationTokenAmount = bestQuote?.destinationAmount;
+
         const meta = {
-          swapAndSendRecipient: draftTransaction.recipient.address,
+          swapAndSendRecipient,
           type: TransactionType.swapAndSend,
           sourceTokenSymbol,
           destinationTokenSymbol,
@@ -2921,6 +2928,10 @@ export function signTransaction(history) {
           destinationTokenAddress,
           swapTokenValue,
           approvalTxId: undefined,
+          destinationTokenAmount,
+          sourceTokenAddress,
+          sourceTokenAmount,
+          sourceTokenDecimals,
         };
 
         if (bestQuote?.approvalNeeded) {
