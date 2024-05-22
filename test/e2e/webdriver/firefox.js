@@ -65,6 +65,10 @@ class FirefoxDriver {
       );
       options.headless();
     }
+    // For cases where Firefox is installed as snap (Linux)
+    if (process.env.FIREFOX_SNAP === 'true') {
+      process.env.PATH = `/snap/bin/geckodriver`;
+    }
     const builder = new Builder()
       .forBrowser('firefox')
       .setFirefoxOptions(options);
