@@ -54,9 +54,7 @@ import IncomingTransactionToggle from '../../../components/app/incoming-trasacti
 import ProfileSyncToggle from './profile-sync-toggle';
 import MetametricsToggle from './metametrics-toggle';
 import ClearMetametricsData from '../../../components/app/clear-metametrics-data';
-import {
-  DeleteRegulationStatus,
-} from '../../../../app/scripts/controllers/metametrics-data-deletion/metametrics-data-deletion';
+import { DeleteRegulationStatus } from '../../../../app/scripts/controllers/metametrics-data-deletion/metametrics-data-deletion';
 import { checkDataDeletionTaskStatus } from '../../../store/actions';
 
 export default class SecurityTab extends PureComponent {
@@ -109,6 +107,10 @@ export default class SecurityTab extends PureComponent {
     setDeleteMetaMetricsDataModalOpen: PropTypes.func.isRequired,
     metaMetricsDataDeletionStatus: PropTypes.string,
     metaMetricsDataDeletionDate: PropTypes.string,
+    metaMetricsDataDeletionMarked: PropTypes.bool.isRequired,
+    unMarkingMetaMetricsDataDeletion: PropTypes.func.isRequired,
+    hasRecordedMetricsSinceDeletion: PropTypes.bool.isRequired,
+    continueRecordingMetaMetricsData: PropTypes.func.isRequired,
     setSecurityAlertsEnabled: PropTypes.func,
   };
 
@@ -150,6 +152,13 @@ export default class SecurityTab extends PureComponent {
     const { t } = this.context;
     handleSettingsRefs(t, t('securityAndPrivacy'), this.settingsRefs);
     await checkDataDeletionTaskStatus();
+    if (this.props.participateInMetaMetrics) {
+      this.props.continueRecordingMetaMetricsData();
+    }
+  }
+
+  componentWillUnmount() {
+    this.props.unMarkingMetaMetricsDataDeletion();
   }
 
   toggleSetting(value, eventName, eventAction, toggleMethod) {
@@ -413,17 +422,31 @@ export default class SecurityTab extends PureComponent {
     const {
       metaMetricsDataDeletionStatus,
       metaMetricsDataDeletionDate,
-      participateInMetaMetrics,
+      metaMetricsDataDeletionMarked,
+      hasRecordedMetricsSinceDeletion,
     } = this.props;
+
     let dataDeletionButtonDisabled = false;
     if (metaMetricsDataDeletionStatus) {
       dataDeletionButtonDisabled =
-        [
+        metaMetricsDataDeletionMarked ||
+        ([
           DeleteRegulationStatus.INITIALIZED,
           DeleteRegulationStatus.RUNNING,
           DeleteRegulationStatus.FINISHED,
-        ].includes(metaMetricsDataDeletionStatus) && !participateInMetaMetrics;
+        ].includes(metaMetricsDataDeletionStatus) &&
+          !hasRecordedMetricsSinceDeletion);
     }
+    const privacyPolicyLink = (
+      <a
+        href={CONSENSYS_PRIVACY_LINK}
+        target="_blank"
+        rel="noopener noreferrer"
+        key="metametrics-consensys-privacy-link"
+      >
+        {t('privacyMsg')}
+      </a>
+    );
     return (
       <>
         <Box
@@ -436,19 +459,12 @@ export default class SecurityTab extends PureComponent {
           <div className="settings-page__content-item">
             <span>{t('deleteMetaMetricsData')}</span>
             <div className="settings-page__content-description">
-              {t('deleteMetaMetricsDataDescription', [
-              <b key="delete-MetaMetrics-Data-Desc-Bold">
-                {t('deleteMetaMetricsDataDescriptionBold')}
-              </b>,
-              <a
-                href={CONSENSYS_PRIVACY_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
-                key="metametrics-consensys-privacy-link"
-              >
-                {t('consensysPrivacyPolicy')}
-              </a>,
-            ])}
+              {dataDeletionButtonDisabled
+                ? t('deleteMetaMetricsDataRequestedDescription', [
+                    metaMetricsDataDeletionDate,
+                    privacyPolicyLink,
+                  ])
+                : t('deleteMetaMetricsDataDescription', [privacyPolicyLink])}
             </div>
           </div>
           <div className="settings-page__content-item-col">
