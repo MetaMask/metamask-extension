@@ -5107,6 +5107,11 @@ export default class MetamaskController extends EventEmitter {
           'SnapController:install',
           origin,
         ),
+        invokeSnap: this.permissionController.executeRestrictedMethod.bind(
+          this.permissionController,
+          origin,
+          RestrictedMethods.wallet_snap,
+        ),
         getIsLocked: () => {
           return !this.appStateController.isUnlocked();
         },

@@ -352,6 +352,9 @@
   "alertModalDetails": {
     "message": "Alert Details"
   },
+  "alertModalReviewAllAlerts": {
+    "message": "Review all alerts"
+  },
   "alertSettingsUnconnectedAccount": {
     "message": "Browsing a website with an unconnected account selected"
   },
@@ -817,6 +820,15 @@
   },
   "confirm": {
     "message": "Confirm"
+  },
+  "confirmAlertModalAcknowledge": {
+    "message": "I have acknowledged the alerts and still want to proceed"
+  },
+  "confirmAlertModalDetails": {
+    "message": "If you sign in, a third party known for scams might take all your assets. Please review the alerts before you proceed."
+  },
+  "confirmAlertModalTitle": {
+    "message": "Your assets may be at risk"
   },
   "confirmConnectCustodianRedirect": {
     "message": "We will redirect you to $1 upon clicking continue."
@@ -3166,21 +3178,6 @@
   "notificationsPetnamesTitle": {
     "message": "Suggested nicknames are here!"
   },
-  "notificationsPortfolioV2ActionText": {
-    "message": "See Portfolio"
-  },
-  "notificationsPortfolioV2DescriptionOne": {
-    "message": "Still missing out on MetaMask Portfolio?"
-  },
-  "notificationsPortfolioV2DescriptionThree": {
-    "message": "Your Portfolio is waiting."
-  },
-  "notificationsPortfolioV2DescriptionTwo": {
-    "message": "Manage your web3 assets across different networks and accounts in one powerful dashboard. Swap, Buy, Sell, Bridge, and Stake in a secure, convenient, and easy to use dapp. Stay up to speed with the pulse of the cryptoverse, see your DeFi positions, manage your NFT collection, and more. All in one place."
-  },
-  "notificationsPortfolioV2Title": {
-    "message": "MetaMask Portfolio - join millions"
-  },
   "notificationsSimulationsDescriptionOne": {
     "message": "Now you can see the potential outcome of your transactions before you make them!"
   },
@@ -3376,6 +3373,9 @@
   "onboardingUsePhishingDetectionDescription": {
     "message": "Phishing detection alerts rely on communication with $1. jsDeliver will have access to your IP address. View $2.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
+  },
+  "onekey": {
+    "message": "OneKey"
   },
   "onlyAddTrustedNetworks": {
     "message": "A malicious network provider can lie about the state of the blockchain and record your network activity. Only add custom networks you trust."
@@ -4171,6 +4171,9 @@
   },
   "revealTheSeedPhrase": {
     "message": "Reveal seed phrase"
+  },
+  "reviewAlerts": {
+    "message": "Review alerts"
   },
   "revokeAllTokensTitle": {
     "message": "Revoke permission to access and transfer all of your $1?",
