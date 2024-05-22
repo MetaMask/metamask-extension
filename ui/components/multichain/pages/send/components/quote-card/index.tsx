@@ -187,7 +187,6 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
                           /* istanbul ignore next */
                           trackEvent({
                             event: 'Clicked "Gas Fees: Learn More" Link',
-                            // TODO: update for swap and send
                             category: MetaMetricsEventCategory.Swaps,
                           });
                           global.platform.openTab({

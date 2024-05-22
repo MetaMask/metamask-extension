@@ -81,13 +81,8 @@ export const SendPageRecipientContent = ({
   // Gas data
   const dispatch = useDispatch();
 
-  // FIXME: these should all be resolved before marking the PR as ready
-  // TODO: SWAP+SEND impl steps (all but step 3 correlate to a PR in the merge train):
-  // TODO: 1. begin design review + revisions
-  //          - resolve all TODOs
-  // TODO: 2. add analytics + e2e tests + unit tests (check comments)
+  // FIXME: add analytics + e2e tests + unit tests (check comments)
   //       - use transaction lifecycle events once
-  // TODO: 3. final design and technical review + revisions
   return (
     <Box>
       {requireContractAddressAcknowledgement ? (
