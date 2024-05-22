@@ -747,7 +747,7 @@ export default class MetamaskController extends EventEmitter {
       new MetaMetricsDataDeletionController({
         messenger: metaMetricsDataDeletionMessenger,
         state: initState.metaMetricsDataDeletionController,
-        metaMetricsController: this.metaMetricsController,
+        metaMetricsStore: this.metaMetricsController.store,
       });
 
     const gasFeeMessenger = this.controllerMessenger.getRestricted({
