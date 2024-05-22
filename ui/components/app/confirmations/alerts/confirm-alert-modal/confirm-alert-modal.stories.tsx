@@ -1,12 +1,12 @@
 import React from 'react';
-import { MultipleAlertModal } from './multiple-alert-modal';
+import { ConfirmAlertModal } from './confirm-alert-modal';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { Meta, StoryFn } from '@storybook/react';
 import configureStore from '../../../../../store/store';
 import { Provider } from 'react-redux';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
-import { useArgs } from '@storybook/client-api';
 import { Box, Button } from '../../../../component-library';
+import { useArgs } from '@storybook/client-api';
 
 const ALERTS_MOCK: Alert[] = [
   {
@@ -44,37 +44,52 @@ const storeMock = configureStore({
 });
 
 export default {
-  title: 'Confirmations/Components/Alerts/MultipleAlertModal',
-  component: MultipleAlertModal,
+  title: 'Confirmations/Components/Alerts/ConfirmAlertModal',
+  component: ConfirmAlertModal,
   argTypes: {
     alertKey: {
       control: 'text',
-      description: 'The unique key representing the specific alert field .',
+      description: 'The unique key identifying the specific alert.',
     },
     onAcknowledgeClick: {
-      action: 'onClick',
-      description: 'The handler for the alert modal.',
+      action: 'acknowledged',
+      description:
+        'Callback function invoked when the acknowledge action is triggered.',
     },
     onClose: {
-      action: 'onClick',
+      action: 'closed',
       description:
-        'The function to be executed when the modal needs to be closed.',
+        'Callback function invoked when the modal is requested to close.',
     },
     ownerId: {
       control: 'text',
-      description: 'The unique identifier of the entity that owns the alert.',
+      description:
+        'The owner ID of the relevant alert from the `confirmAlerts` reducer.',
+    },
+    onAlertLinkClick: {
+      action: 'alertLinkClicked',
+      description: 'Callback function called when the alert link is clicked.',
+    },
+    onCancel: {
+      action: 'cancelled',
+      description:
+        'Callback function called when the cancel button is clicked.',
+    },
+    onSubmit: {
+      action: 'submitted',
+      description:
+        'Callback function called when the submit button is clicked.',
     },
   },
   args: {
+    onAcknowledgeClick: () => {},
+    onClose: () => {},
     ownerId: OWNER_ID_MOCK,
   },
   decorators: [(story) => <Provider store={storeMock}>{story()}</Provider>],
-} as Meta<typeof MultipleAlertModal>;
+} as Meta<typeof ConfirmAlertModal>;
 
-/**
- * Multiple Critical Alert Modal.
- */
-export const TemplateStory: StoryFn<typeof MultipleAlertModal> = (args) => {
+export const TemplateStory: StoryFn<typeof ConfirmAlertModal> = (args) => {
   const [{ isOpen }, updateArgs] = useArgs();
   const handleOnClick = () => {
     updateArgs({ isOpen: true });
@@ -85,15 +100,16 @@ export const TemplateStory: StoryFn<typeof MultipleAlertModal> = (args) => {
   return (
     <Box>
       {isOpen && (
-        <MultipleAlertModal
+        <ConfirmAlertModal
           {...args}
           alertKey={'from'}
           onClose={handleOnClose}
-          onFinalAcknowledgeClick={handleOnClose}
+          onCancel={handleOnClose}
+          onSubmit={handleOnClose}
         />
       )}
-      <Button onClick={handleOnClick} danger={true}>Open multiple alert modal</Button>
+      <Button onClick={handleOnClick} danger={true}>Open confirm alert modal</Button>
     </Box>
   );
 };
-TemplateStory.storyName = 'Multiple Critical Alert Modal';
+TemplateStory.storyName = 'Confirm Critical Alert Modal';
