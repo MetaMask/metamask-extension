@@ -2794,8 +2794,6 @@ export function signTransaction(history) {
       : undefined;
 
     if (isSwapAndSend) {
-      // TODO: update to selected quote
-
       txParams = { ...bestQuote.trade };
     } else {
       txParams = generateTransactionParams(state[name]);
@@ -2863,7 +2861,6 @@ export function signTransaction(history) {
           ? TransactionType.contractInteraction
           : TransactionType.simpleSend;
 
-      // TODO: check this for dest
       if (draftTransaction.sendAsset.type !== AssetType.native) {
         if (draftTransaction.sendAsset.type === AssetType.NFT) {
           if (
