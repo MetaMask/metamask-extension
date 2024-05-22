@@ -8,6 +8,7 @@ import {
   MetaMetricsProvider,
   LegacyMetaMetricsProvider,
 } from '../contexts/metametrics';
+import { CurrencyRateProvider } from '../contexts/currencyRate';
 import ErrorPage from './error';
 import Routes from './routes';
 
@@ -45,7 +46,9 @@ class Index extends PureComponent {
             <LegacyMetaMetricsProvider>
               <I18nProvider>
                 <LegacyI18nProvider>
-                  <Routes />
+                  <CurrencyRateProvider>
+                    <Routes />
+                  </CurrencyRateProvider>
                 </LegacyI18nProvider>
               </I18nProvider>
             </LegacyMetaMetricsProvider>

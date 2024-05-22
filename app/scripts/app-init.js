@@ -49,6 +49,12 @@ function importAllScripts() {
 
   const startImportScriptsTime = Date.now();
 
+  // value of useSnow below is dynamically replaced at build time with actual value
+  const useSnow = process.env.USE_SNOW;
+  if (typeof useSnow !== 'boolean') {
+    throw new Error('Missing USE_SNOW environment variable');
+  }
+
   // value of applyLavaMoat below is dynamically replaced at build time with actual value
   const applyLavaMoat = process.env.APPLY_LAVAMOAT;
   if (typeof applyLavaMoat !== 'boolean') {
@@ -57,13 +63,15 @@ function importAllScripts() {
 
   loadFile('../scripts/sentry-install.js');
 
-  // eslint-disable-next-line no-undef
-  const isWorker = !self.document;
-  if (!isWorker) {
-    loadFile('../scripts/snow.js');
-  }
+  if (useSnow) {
+    // eslint-disable-next-line no-undef
+    const isWorker = !self.document;
+    if (!isWorker) {
+      loadFile('../scripts/snow.js');
+    }
 
-  loadFile('../scripts/use-snow.js');
+    loadFile('../scripts/use-snow.js');
+  }
 
   // Always apply LavaMoat in e2e test builds, so that we can capture initialization stats
   if (testMode || applyLavaMoat) {

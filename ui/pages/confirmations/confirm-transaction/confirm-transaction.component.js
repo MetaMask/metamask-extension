@@ -1,18 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Switch, Route, useHistory, useParams } from 'react-router-dom';
-
-import Loading from '../../../components/ui/loading-screen';
-import ConfirmContractInteraction from '../confirm-contract-interaction';
-import ConfirmDeployContract from '../confirm-deploy-contract';
-import ConfirmDecryptMessage from '../../confirm-decrypt-message';
-import ConfirmEncryptionPublicKey from '../../confirm-encryption-public-key';
-import ConfirmSendEther from '../confirm-send-ether';
-import ConfirmTransactionSwitch from '../confirm-transaction-switch';
-
+import { Route, Switch, useHistory, useParams } from 'react-router-dom';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
-
-import useCurrentConfirmation from '../hooks/useCurrentConfirmation';
+import Loading from '../../../components/ui/loading-screen';
 import {
   clearConfirmTransaction,
   setTransactionToConfirm,
@@ -30,22 +20,29 @@ import {
   SIGNATURE_REQUEST_PATH,
 } from '../../../helpers/constants/routes';
 import { isTokenMethodAction } from '../../../helpers/utils/transactions.util';
+import usePolling from '../../../hooks/usePolling';
 import { usePrevious } from '../../../hooks/usePrevious';
 import {
-  unconfirmedTransactionsListSelector,
-  unconfirmedTransactionsHashSelector,
-  use4ByteResolutionSelector,
   getSelectedNetworkClientId,
+  unconfirmedTransactionsHashSelector,
+  unconfirmedTransactionsListSelector,
+  use4ByteResolutionSelector,
 } from '../../../selectors';
 import {
-  getContractMethodData,
-  setDefaultHomeActiveTabName,
   gasFeeStartPollingByNetworkClientId,
   gasFeeStopPollingByPollingToken,
+  getContractMethodData,
+  setDefaultHomeActiveTabName,
 } from '../../../store/actions';
+import ConfirmDecryptMessage from '../../confirm-decrypt-message';
+import ConfirmEncryptionPublicKey from '../../confirm-encryption-public-key';
+import ConfirmContractInteraction from '../confirm-contract-interaction';
+import ConfirmDeployContract from '../confirm-deploy-contract';
+import ConfirmSendEther from '../confirm-send-ether';
 import ConfirmSignatureRequest from '../confirm-signature-request';
+import ConfirmTransactionSwitch from '../confirm-transaction-switch';
 import Confirm from '../confirm/confirm';
-import usePolling from '../../../hooks/usePolling';
+import useCurrentConfirmation from '../hooks/useCurrentConfirmation';
 import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
 
 const ConfirmTransaction = () => {

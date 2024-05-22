@@ -562,7 +562,7 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
   await mockEmptyStalelistAndHotlist(server);
 
   await server
-    .forPost('https://customnetwork.com/api/customRPC')
+    .forPost('https://customnetwork.test/api/customRPC')
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -576,6 +576,17 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
 
   await mockLensNameProvider(server);
   await mockTokenNameProvider(server, chainId);
+
+  // IPFS endpoint for NFT metadata
+  await server
+    .forGet(
+      'https://bafybeidxfmwycgzcp4v2togflpqh2gnibuexjy4m4qqwxp7nh3jx5zlh4y.ipfs.dweb.link/1.json',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+      };
+    });
 
   /**
    * Returns an array of alphanumerically sorted hostnames that were requested

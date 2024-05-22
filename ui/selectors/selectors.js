@@ -6,6 +6,7 @@ import { ApprovalType } from '@metamask/controller-utils';
 import {
   stripSnapPrefix,
   getLocalizedSnapManifest,
+  SnapStatus,
 } from '@metamask/snaps-utils';
 import { memoize } from 'lodash';
 import semver from 'semver';
@@ -31,6 +32,7 @@ import {
   LINEA_GOERLI_DISPLAY_NAME,
   CURRENCY_SYMBOLS,
   TEST_NETWORK_TICKER_MAP,
+  LINEA_GOERLI_TOKEN_IMAGE_URL,
   LINEA_MAINNET_DISPLAY_NAME,
   LINEA_MAINNET_TOKEN_IMAGE_URL,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -103,8 +105,6 @@ import {
   NOTIFICATION_DROP_LEDGER_FIREFOX,
   NOTIFICATION_PETNAMES,
   NOTIFICATION_U2F_LEDGER_LIVE,
-  NOTIFICATION_STAKING_PORTFOLIO,
-  NOTIFICATION_PORTFOLIO_V2,
   NOTIFICATION_SIMULATIONS,
 } from '../../shared/notifications';
 import {
@@ -112,6 +112,7 @@ import {
   SURVEY_END_TIME,
   SURVEY_START_TIME,
 } from '../helpers/constants/survey';
+import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
 import { SUPPORTED_CHAIN_IDS } from '../../app/scripts/lib/ppom/ppom-middleware';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
 import {
@@ -692,6 +693,18 @@ export const getTestNetworks = createDeepEqualSelector(
         id: NETWORK_TYPES.LINEA_SEPOLIA,
         removable: false,
       },
+      {
+        chainId: CHAIN_IDS.LINEA_GOERLI,
+        nickname: LINEA_GOERLI_DISPLAY_NAME,
+        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_GOERLI],
+        rpcPrefs: {
+          imageUrl: LINEA_GOERLI_TOKEN_IMAGE_URL,
+        },
+        providerType: NETWORK_TYPES.LINEA_GOERLI,
+        ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_GOERLI],
+        id: NETWORK_TYPES.LINEA_GOERLI,
+        removable: false,
+      },
       // Localhosts
       ...Object.values(networkConfigurations)
         .filter(({ chainId }) => chainId === CHAIN_IDS.LOCALHOST)
@@ -857,8 +870,8 @@ export function getPetnamesEnabled(state) {
 }
 
 export function getRedesignedConfirmationsEnabled(state) {
-  const { redesignedConfirmations } = getPreferences(state);
-  return redesignedConfirmations;
+  const { redesignedConfirmationsEnabled } = getPreferences(state);
+  return redesignedConfirmationsEnabled;
 }
 
 export function getFeatureNotificationsEnabled(state) {
@@ -1169,6 +1182,10 @@ export function getOriginOfCurrentTab(state) {
 
 export function getIpfsGateway(state) {
   return state.metamask.ipfsGateway;
+}
+
+export function getUseExternalServices(state) {
+  return state.metamask.useExternalServices;
 }
 
 export function getInfuraBlocked(state) {
@@ -1491,6 +1508,10 @@ export function getSnaps(state) {
   return state.metamask.snaps;
 }
 
+export function getLocale(state) {
+  return state.metamask.currentLocale;
+}
+
 export const getSnap = createDeepEqualSelector(
   getSnaps,
   (_, snapId) => snapId,
@@ -1500,25 +1521,31 @@ export const getSnap = createDeepEqualSelector(
 );
 
 /**
- * Get a selector that returns the snap manifest for a given `snapId`.
+ * Get a selector that returns all Snaps metadata (name and description) for all Snaps.
  *
  * @param {object} state - The Redux state object.
- * @param {string} snapId - The snap ID to get the manifest for.
- * @returns {object | undefined} The snap manifest.
+ * @returns {object} An object mapping all installed snaps to their metadata, which contains the snap name and description.
  */
-export const getSnapManifest = createDeepEqualSelector(
-  (state) => state.metamask.currentLocale,
-  (state, snapId) => getSnap(state, snapId),
-  (locale, snap) => {
-    if (!snap?.localizationFiles) {
-      return snap?.manifest;
-    }
+export const getSnapsMetadata = createDeepEqualSelector(
+  getLocale,
+  getSnaps,
+  (locale, snaps) => {
+    return Object.values(snaps).reduce((snapsMetadata, snap) => {
+      const snapId = snap.id;
+      const manifest = snap.localizationFiles
+        ? getLocalizedSnapManifest(
+            snap.manifest,
+            locale,
+            snap.localizationFiles,
+          )
+        : snap.manifest;
 
-    return getLocalizedSnapManifest(
-      snap.manifest,
-      locale,
-      snap.localizationFiles,
-    );
+      snapsMetadata[snapId] = {
+        name: manifest.proposedName,
+        description: manifest.description,
+      };
+      return snapsMetadata;
+    }, {});
   },
 );
 
@@ -1531,35 +1558,14 @@ export const getSnapManifest = createDeepEqualSelector(
  * @returns {object} An object containing the snap name and description.
  */
 export const getSnapMetadata = createDeepEqualSelector(
-  (state, snapId) => getSnapManifest(state, snapId),
+  getSnapsMetadata,
   (_, snapId) => snapId,
-  (manifest, snapId) => {
-    return {
-      // The snap manifest may not be available if the Snap is not installed, so
-      // we use the snap ID as the name in that case.
-      name: manifest?.proposedName ?? (snapId ? stripSnapPrefix(snapId) : null),
-      description: manifest?.description,
-    };
-  },
-);
-
-/**
- * Get a selector that returns all snaps metadata (name and description) for a
- * given `snapId`.
- *
- * @param {object} state - The Redux state object.
- * @returns {object} An object mapping all installed snaps to their metadata, which contains the snap name and description.
- */
-export const getSnapsMetadata = createDeepEqualSelector(
-  (state) => state,
-  (state) => {
-    return Object.keys(getSnaps(state));
-  },
-  (state, snapIds) => {
-    return snapIds.reduce((snapsMetadata, snapId) => {
-      snapsMetadata[snapId] = getSnapMetadata(state, snapId);
-      return snapsMetadata;
-    }, {});
+  (metadata, snapId) => {
+    return (
+      metadata[snapId] ?? {
+        name: snapId ? stripSnapPrefix(snapId) : null,
+      }
+    );
   },
 );
 
@@ -1688,12 +1694,10 @@ function getAllowedAnnouncementIds(state) {
     // This syntax is unusual, but very helpful here.  It's equivalent to `unnamedObject[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
     [NOTIFICATION_DROP_LEDGER_FIREFOX]: currentKeyringIsLedger && isFirefox,
     [NOTIFICATION_U2F_LEDGER_LIVE]: currentKeyringIsLedger && !isFirefox,
-    [NOTIFICATION_STAKING_PORTFOLIO]: true,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     [NOTIFICATION_BLOCKAID_DEFAULT]: true,
     ///: END:ONLY_INCLUDE_IF
     [NOTIFICATION_PETNAMES]: true,
-    [NOTIFICATION_PORTFOLIO_V2]: true,
     [NOTIFICATION_SIMULATIONS]: true,
   };
 }
@@ -1807,8 +1811,7 @@ export function getNetworkToAutomaticallySwitchTo(state) {
     getIsUnlocked(state) &&
     useRequestQueue &&
     selectedTabOrigin &&
-    numberOfUnapprovedTx === 0 &&
-    process.env.MULTICHAIN
+    numberOfUnapprovedTx === 0
   ) {
     const domainNetworks = getAllDomains(state);
     const networkIdForThisDomain = domainNetworks[selectedTabOrigin];
@@ -1838,12 +1841,33 @@ export function getShowTermsOfUse(state) {
   );
 }
 
+/**
+ * Determines if the survey toast should be shown based on the current time, survey start and end times, and whether the survey link was last clicked or closed.
+ *
+ * @param {*} state - The application state containing the necessary survey data.
+ * @returns {boolean} True if the current time is between the survey start and end times and the survey link was not last clicked or closed. False otherwise.
+ */
 export function getShowSurveyToast(state) {
   const { surveyLinkLastClickedOrClosed } = state.metamask;
   const startTime = new Date(`${SURVEY_DATE} ${SURVEY_START_TIME}`).getTime();
   const endTime = new Date(`${SURVEY_DATE} ${SURVEY_END_TIME}`).getTime();
   const now = Date.now();
   return now > startTime && now < endTime && !surveyLinkLastClickedOrClosed;
+}
+
+/**
+ * Determines if the privacy policy toast should be shown based on the current date and whether the new privacy policy toast was clicked or closed.
+ *
+ * @param {*} state - The application state containing the privacy policy data.
+ * @returns {boolean} True if the current date is on or after the new privacy policy date and the privacy policy toast was not clicked or closed. False otherwise.
+ */
+export function getShowPrivacyPolicyToast(state) {
+  const { newPrivacyPolicyToastClickedOrClosed } = state.metamask;
+  const newPrivacyPolicyDate = new Date(PRIVACY_POLICY_DATE);
+  const currentDate = new Date(Date.now());
+  return (
+    !newPrivacyPolicyToastClickedOrClosed && currentDate >= newPrivacyPolicyDate
+  );
 }
 
 export function getShowOutdatedBrowserWarning(state) {
@@ -1853,6 +1877,10 @@ export function getShowOutdatedBrowserWarning(state) {
   }
   const currentTime = new Date().getTime();
   return currentTime - outdatedBrowserWarningLastShown >= DAY * 2;
+}
+
+export function getNewPrivacyPolicyToastShownDate(state) {
+  return state.metamask.newPrivacyPolicyToastShownDate;
 }
 
 export function getShowBetaHeader(state) {
@@ -2372,6 +2400,14 @@ export function getOnboardedInThisUISession(state) {
   return state.appState.onboardedInThisUISession;
 }
 
+export function getShowBasicFunctionalityModal(state) {
+  return state.appState.showBasicFunctionalityModal;
+}
+
+export function getExternalServicesOnboardingToggleState(state) {
+  return state.appState.externalServicesOnboardingToggleState;
+}
+
 export const useSafeChainsListValidationSelector = (state) => {
   return state.metamask.useSafeChainsListValidation;
 };
@@ -2433,7 +2469,10 @@ export function getIsDesktopEnabled(state) {
 export function getSnapsList(state) {
   const snaps = getSnaps(state);
   return Object.entries(snaps)
-    .filter(([_key, snap]) => !snap.preinstalled)
+    .filter(
+      ([_key, snap]) =>
+        !snap.preinstalled && snap.status !== SnapStatus.Installing,
+    )
     .map(([key, snap]) => {
       const targetSubjectMetadata = getTargetSubjectMetadata(state, snap?.id);
       return {

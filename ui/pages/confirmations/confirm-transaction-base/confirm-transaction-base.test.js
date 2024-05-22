@@ -332,7 +332,7 @@ describe('Confirm Transaction Base', () => {
     expect(securityProviderBanner).toBeInTheDocument();
   });
 
-  it('should contain L1 L2 fee details for optimism', async () => {
+  it('should estimated fee details for optimism', async () => {
     const state = {
       metamask: {
         ...baseStore.metamask,
@@ -353,8 +353,7 @@ describe('Confirm Transaction Base', () => {
 
     const { queryByText } = await render({ state });
 
-    expect(queryByText('Layer 1 fees')).toBeInTheDocument();
-    expect(queryByText('Layer 2 gas fee')).toBeInTheDocument();
+    expect(queryByText('Estimated fee')).not.toBeInTheDocument();
   });
 
   it('should render NoteToTrader when isNoteToTraderSupported is true', async () => {

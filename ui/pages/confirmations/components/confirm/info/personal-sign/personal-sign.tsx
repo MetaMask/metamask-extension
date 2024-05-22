@@ -17,10 +17,13 @@ import {
   hexToText,
   sanitizeString,
 } from '../../../../../../helpers/utils/util';
+import { SignatureRequestType } from '../../../../types/confirm';
 
 const PersonalSignInfo: React.FC = () => {
   const t = useI18nContext();
-  const currentConfirmation = useSelector(currentConfirmationSelector);
+  const currentConfirmation = useSelector(
+    currentConfirmationSelector,
+  ) as SignatureRequestType;
 
   if (!currentConfirmation?.msgParams) {
     return null;

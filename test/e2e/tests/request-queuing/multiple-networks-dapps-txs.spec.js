@@ -62,7 +62,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         });
 
         await driver.clickElement({
-          text: 'Connect',
+          text: 'Confirm',
           tag: 'button',
           css: '[data-testid="page-container-footer-next"]',
         });
@@ -102,7 +102,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         });
 
         await driver.clickElement({
-          text: 'Connect',
+          text: 'Confirm',
           tag: 'button',
           css: '[data-testid="page-container-footer-next"]',
         });
