@@ -3312,6 +3312,11 @@ export function sendAmountIsInError(state) {
   return Boolean(getCurrentDraftTransaction(state).amount?.error);
 }
 
+/**
+ * Selector that returns the address of the curent send sender
+ *
+ * @type {Selector?<string>}
+ */
 export function getSender(state) {
   const sendState = state[name];
 
