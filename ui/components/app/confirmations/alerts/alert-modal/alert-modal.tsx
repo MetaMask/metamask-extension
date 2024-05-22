@@ -23,7 +23,6 @@ import {
   BorderRadius,
   Display,
   FlexDirection,
-  FlexDirection,
   IconColor,
   Severity,
   TextAlign,
