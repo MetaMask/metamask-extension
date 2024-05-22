@@ -21,7 +21,7 @@ export const NotificationDetailButton = ({
   text,
   href,
   id,
-  isExternal = false,
+  isExternal = true,
   endIconName = true,
 }: NotificationDetailButtonProps) => {
   return (
@@ -29,7 +29,7 @@ export const NotificationDetailButton = ({
       key={id}
       href={href}
       variant={variant}
-      externalLink={isExternal || true}
+      externalLink={isExternal}
       size={ButtonSize.Lg}
       width={BlockSize.Full}
       endIconName={endIconName ? IconName.Arrow2UpRight : undefined}
