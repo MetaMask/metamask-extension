@@ -254,12 +254,12 @@ export const getSwapSendFixtures = (
         },
       })
       // TODO fix TST exchange rate (not visible atm)
-      .withTokenRatesController({
-        contractExchangeRates: {
-          '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947':
-            1 / ETH_CONVERSION_RATE_USD,
-        },
-      })
+      // .withTokenRatesController({
+      //   contractExchangeRates: {
+      //     '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947':
+      //       1 / ETH_CONVERSION_RATE_USD,
+      //   },
+      // })
       .withTokensControllerERC20()
       .withPreferencesControllerPetnamesDisabled()
       .build(),
