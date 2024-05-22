@@ -168,8 +168,8 @@ export function MultipleAlertModal({
       return;
     }
 
-    handleBackButtonClick();
-  }, [onFinalAcknowledgeClick, handleBackButtonClick, selectedIndex, alerts]);
+    handleNextButtonClick();
+  }, [onFinalAcknowledgeClick, handleNextButtonClick, selectedIndex, alerts]);
 
   return (
     <AlertModal
