@@ -24,6 +24,7 @@ import {
   getUseExternalServices,
 } from '../../../../../selectors';
 import { SendHexData, SendPageRow, QuoteCard } from '.';
+import type { Quote } from '../../../../../ducks/send/swap-and-send-utils';
 
 export const SendPageRecipientContent = ({
   requireContractAddressAcknowledgement,
@@ -48,7 +49,7 @@ export const SendPageRecipientContent = ({
     [AssetType.token, AssetType.native].includes(sendAsset.type) &&
     isBasicFunctionality;
 
-  const bestQuote = useSelector(getBestQuote);
+  const bestQuote: Quote = useSelector(getBestQuote);
 
   const isLoadingInitialQuotes = !bestQuote && isSwapQuoteLoading;
 
