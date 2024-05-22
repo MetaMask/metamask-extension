@@ -1,10 +1,12 @@
 import React from 'react';
 import { AlertModal } from './alert-modal';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { Meta } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react';
 import configureStore from '../../../../../store/store';
 import { Provider } from 'react-redux';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import { useArgs } from '@storybook/client-api';
+import { Box, Button } from '../../../../component-library';
 
 const alertsMock: Alert[] = [
   { key: 'from', severity: Severity.Danger, message: 'Description of what may happen if this alert was ignored', reason: 'Reason for the alert 1', alertDetails: ['We found the contract Petname 0xEqT3b9773b1763efa556f55ccbeb20441962d82x to be malicious',
@@ -47,8 +49,27 @@ export default {
   decorators: [(story) => <Provider store={storeMock}>{story()}</Provider>],
 } as Meta<typeof AlertModal>;
 
-export const DefaultStory = (args) => {
-  return <AlertModal alertKey={'from'} {...args} />;
+export const DefaultStory: StoryFn<typeof AlertModal> = (args) => {
+  const [{ isOpen }, updateArgs] = useArgs();
+  const handleOnClick = () => {
+    updateArgs({ isOpen: true });
+  };
+  const handleOnClose = () => {
+    updateArgs({ isOpen: false });
+  };
+  return (
+    <Box>
+      {isOpen && (
+        <AlertModal
+          {...args}
+          alertKey={'from'}
+          onClose={handleOnClose}
+          onAcknowledgeClick={handleOnClose}
+        />
+      )}
+      <Button onClick={handleOnClick} danger={true}>Open alert modal</Button>
+    </Box>
+  );
 };
 
 DefaultStory.storyName = 'Critical Alert';
