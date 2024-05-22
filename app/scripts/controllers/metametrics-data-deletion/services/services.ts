@@ -1,5 +1,5 @@
 import getFetchWithTimeout from '../../../../../shared/modules/fetch-with-timeout';
-import { DeleteRegulationAPIResponse } from '../metametrics-data-deletion';
+import { CurrentRegulationStatus, RegulationId } from '../types';
 
 const analyticsDataDeletionSourceId =
   process.env.ANALYTICS_DATA_DELETION_SOURCE_ID;
@@ -10,7 +10,7 @@ const fetchWithTimeout = getFetchWithTimeout();
 
 export async function createDataDeletionRegulationTask(
   metaMetricsId: string,
-): Promise<DeleteRegulationAPIResponse> {
+): Promise<RegulationId> {
   if (!analyticsDataDeletionEndpoint || !analyticsDataDeletionSourceId) {
     throw new Error('Segment API source ID or endpoint not found');
   }
@@ -32,7 +32,7 @@ export async function createDataDeletionRegulationTask(
 
 export async function fetchDeletionRegulationStatus(
   deleteRegulationId: string,
-): Promise<DeleteRegulationAPIResponse> {
+): Promise<CurrentRegulationStatus> {
   if (!analyticsDataDeletionEndpoint) {
     throw new Error('Segment API source ID or endpoint not found');
   }
