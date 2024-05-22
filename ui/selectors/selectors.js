@@ -50,6 +50,7 @@ import {
   POLYGON_ZKEVM_DISPLAY_NAME,
   MOONBEAM_DISPLAY_NAME,
   MOONRIVER_DISPLAY_NAME,
+  BUYABLE_TEST_CHAINS_MAP,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -1274,6 +1275,12 @@ export function getIsBuyableChain(state) {
   const chainId = getCurrentChainId(state);
   return Object.keys(BUYABLE_CHAINS_MAP).includes(chainId);
 }
+
+export function getIsFaucetBuyableChain(state) {
+  const chainId = getCurrentChainId(state);
+  return Object.keys(BUYABLE_TEST_CHAINS_MAP).includes(chainId);
+}
+
 export function getNativeCurrencyImage(state) {
   const chainId = getCurrentChainId(state);
   return CHAIN_ID_TOKEN_IMAGE_MAP[chainId];
@@ -2464,14 +2471,17 @@ export function getIsDesktopEnabled(state) {
  * To get all installed snaps with proper metadata
  *
  * @param {*} state
+ * @param snapIds
  * @returns Boolean
  */
-export function getSnapsList(state) {
+export function getSnapsList(state, snapIds) {
   const snaps = getSnaps(state);
   return Object.entries(snaps)
     .filter(
       ([_key, snap]) =>
-        !snap.preinstalled && snap.status !== SnapStatus.Installing,
+        !snap.preinstalled &&
+        snap.status !== SnapStatus.Installing &&
+        (!snapIds || snapIds.includes(snap.id)),
     )
     .map(([key, snap]) => {
       const targetSubjectMetadata = getTargetSubjectMetadata(state, snap?.id);

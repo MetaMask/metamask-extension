@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
@@ -10,6 +10,7 @@ import {
 } from 'react-router-dom';
 
 import { EthMethod } from '@metamask/keyring-api';
+import { ApprovalType } from '@metamask/controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import {
   getMmiPortfolioEnabled,
@@ -21,6 +22,7 @@ import {
   SEND_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   BUILD_QUOTE_ROUTE,
+  CONFIRMATION_V_NEXT_ROUTE,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
 import Tooltip from '../../ui/tooltip';
@@ -41,6 +43,8 @@ import {
   getIsBridgeChain,
   getIsBuyableChain,
   getMetaMetricsId,
+  getIsFaucetBuyableChain,
+  getMemoizedUnapprovedTemplatedConfirmations,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -68,7 +72,9 @@ import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { showPrimaryCurrency } from '../../../../shared/modules/currency-display.utils';
+import { getFaucetProvidersByChain } from '../../../store/actions';
 import WalletOverview from './wallet-overview';
+import ModalFaucet from './modal-faucet';
 
 const EthOverview = ({ className, showAddress }) => {
   const dispatch = useDispatch();
@@ -79,6 +85,7 @@ const EthOverview = ({ className, showAddress }) => {
   const location = useLocation();
   const isBridgeChain = useSelector(getIsBridgeChain);
   const isBuyableChain = useSelector(getIsBuyableChain);
+  const isBuyableTestChain = useSelector(getIsFaucetBuyableChain);
   const metaMetricsId = useSelector(getMetaMetricsId);
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
@@ -104,10 +111,32 @@ const EthOverview = ({ className, showAddress }) => {
     account.methods.includes(EthMethod.SignTransaction) ||
     account.methods.includes(EthMethod.SignUserOperation);
 
+  const unapprovedTemplatedConfirmations = useSelector(
+    getMemoizedUnapprovedTemplatedConfirmations,
+  );
+
+  const [faucetSnapId, setFaucetSnapId] = useState(undefined);
+  const [faucetProviders, setFaucetProviders] = useState([]);
+  const [showModalFaucet, setShowModalFaucet] = useState(false);
+
+  useEffect(() => {
+    // Snaps are allowed to redirect to their own pending confirmations (templated or not)
+    const templatedSnapApproval = unapprovedTemplatedConfirmations.find(
+      (approval) => approval.origin === faucetSnapId,
+    );
+
+    if (
+      templatedSnapApproval &&
+      templatedSnapApproval.type === ApprovalType.SnapDialogAlert
+    ) {
+      history.push(`${CONFIRMATION_V_NEXT_ROUTE}/${templatedSnapApproval.id}`);
+    }
+  }, [unapprovedTemplatedConfirmations, faucetSnapId, history]);
+
   const buttonTooltips = {
     buyButton: [
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-      { condition: !isBuyableChain, message: '' },
+      { condition: !(isBuyableChain || !isBuyableTestChain), message: '' },
       ///: END:ONLY_INCLUDE_IF
       { condition: !isSigningEnabled, message: 'methodNotSupported' },
     ],
@@ -266,18 +295,20 @@ const EthOverview = ({ className, showAddress }) => {
               disabled={!isBuyableChain || !isSigningEnabled}
               data-testid="eth-overview-buy"
               label={t('buyAndSell')}
-              onClick={() => {
-                openBuyCryptoInPdapp();
-                trackEvent({
-                  event: MetaMetricsEventName.NavBuyButtonClicked,
-                  category: MetaMetricsEventCategory.Navigation,
-                  properties: {
-                    location: 'Home',
-                    text: 'Buy',
-                    chain_id: chainId,
-                    token_symbol: defaultSwapsToken,
-                  },
-                });
+              onClick={async () => {
+                if (isBuyableChain) {
+                  openBuyCryptoInPdapp();
+                  trackEvent({
+                    event: MetaMetricsEventName.NavBuyButtonClicked,
+                    category: MetaMetricsEventCategory.Navigation,
+                    properties: {
+                      location: 'Home',
+                      text: 'Buy',
+                      chain_id: chainId,
+                      token_symbol: defaultSwapsToken,
+                    },
+                  });
+                }
               }}
               tooltipRender={(contents) =>
                 generateTooltip('buyButton', contents)
@@ -407,6 +438,52 @@ const EthOverview = ({ className, showAddress }) => {
                 generateTooltip('bridgeButton', contents)
               }
             />
+            ///: END:ONLY_INCLUDE_IF
+          }
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+            isBuyableTestChain && (
+              <>
+                <IconButton
+                  className="eth-overview__button"
+                  Icon={
+                    <Icon
+                      name={IconName.WalletMoney}
+                      color={IconColor.primaryInverse}
+                    />
+                  }
+                  disabled={!isSigningEnabled}
+                  data-testid="eth-overview-faucet"
+                  label="Faucet"
+                  onClick={async () => {
+                    const providers = await dispatch(
+                      getFaucetProvidersByChain(chainId),
+                    );
+
+                    console.log('eth-overview: providers: ', providers);
+
+                    setFaucetProviders(providers);
+                    setShowModalFaucet(true);
+                  }}
+                  tooltipRender={(contents) =>
+                    generateTooltip('buyButton', contents)
+                  }
+                />
+                {showModalFaucet && (
+                  <ModalFaucet
+                    accountAddress={account.address}
+                    chainId={chainId}
+                    faucetSnapSourceIds={faucetProviders}
+                    setFaucetSnapId={(snapId) => {
+                      setFaucetSnapId(snapId);
+                    }}
+                    onClose={() => {
+                      setShowModalFaucet(false);
+                    }}
+                  />
+                )}
+              </>
+            )
             ///: END:ONLY_INCLUDE_IF
           }
           {
