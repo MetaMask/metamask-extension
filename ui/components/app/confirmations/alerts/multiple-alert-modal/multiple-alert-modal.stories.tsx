@@ -35,6 +35,8 @@ export default {
       action: 'onClick',
       description:
         'The function to be executed when the modal needs to be closed.',
+      description:
+        'The function to be executed when the modal needs to be closed.',
     },
     ownerId: {
       control: 'text',
