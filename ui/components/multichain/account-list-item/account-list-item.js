@@ -18,6 +18,9 @@ import {
   Icon,
   IconName,
   IconSize,
+  Popover,
+  PopoverPosition,
+  PopoverRole,
   Tag,
   Text,
 } from '../../component-library';
@@ -84,7 +87,10 @@ export const AccountListItem = ({
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
-
+  const [referenceElement, setReferenceElement] = useState();
+const setBoxRef = (ref) => {
+  setReferenceElement(ref);
+};
   const useBlockie = useSelector(getUseBlockie);
   const currentNetwork = useSelector(getCurrentNetwork);
   const setAccountListItemMenuRef = (ref) => {
@@ -301,39 +307,47 @@ export const AccountListItem = ({
               {shortenAddress(toChecksumHexAddress(account.address))}
             </Text>
           </Box>
-          <Tooltip
-            position="top"
-            html={
-              <Box
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                justifyContent={JustifyContent.center}
-                gap={1}
-              >
-                <AvatarToken
-                  src={primaryTokenImage}
-                  name={nativeCurrency}
-                  size={AvatarTokenSize.Xs}
-                  borderColor={BorderColor.borderDefault}
-                />
-                <Text
-                  variant={TextVariant.bodySm}
-                  color={TextColor.textAlternative}
-                  textAlign={TextAlign.End}
-                  as="div"
-                >
-                  <UserPreferencedCurrencyDisplay
-                    ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                    value={account.balance}
-                    type={SECONDARY}
-                    showNative
-                  />
-                </Text>
-              </Box>
-            }
-          >
+          <Box ref={setBoxRef}>
             <AvatarGroup members={mappedOrderedTokenList} limit={4} />
-          </Tooltip>
+          </Box>
+          <Popover
+            referenceElement={referenceElement}
+            role={PopoverRole.Tooltip}
+            position={PopoverPosition.Bottom}
+            offset={[0, 0]}
+            padding={0}
+            isPortal
+            preventOverflow
+            isOpen
+          >
+            <Box
+              display={Display.Flex}
+              alignItems={AlignItems.center}
+              justifyContent={JustifyContent.center}
+              gap={1}
+              data-testid="account-list-item-popover"
+            >
+              <AvatarToken
+                src={primaryTokenImage}
+                name={nativeCurrency}
+                size={AvatarTokenSize.Xs}
+                borderColor={BorderColor.borderDefault}
+              />
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+                textAlign={TextAlign.End}
+                as="div"
+              >
+                <UserPreferencedCurrencyDisplay
+                  ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
+                  value={account.balance}
+                  type={SECONDARY}
+                  showNative
+                />
+              </Text>
+            </Box>
+          </Popover>
         </Box>
         {account.label ? (
           <Tag
