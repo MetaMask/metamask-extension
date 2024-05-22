@@ -16,10 +16,7 @@ Changing this code must be done cautiously to avoid breaking the app!
   // eslint-disable-next-line no-undef
   const chromeExtensionId = chrome && chrome.runtime && chrome.runtime.id;
   const tamedFetch = (path) => {
-    const regex = new RegExp(
-      `^chrome-extension://${chromeExtensionId}/.*?/images/.*`,
-      'u',
-    );
+    const regex = /^chrome-extension:\/\/.+\/.*?\/images\/.*?/u;
     if (regex.test(path)) {
       return fetch(path);
     }
