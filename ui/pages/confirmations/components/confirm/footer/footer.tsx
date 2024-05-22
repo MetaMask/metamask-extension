@@ -27,10 +27,7 @@ import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import useIsDangerButton from './useIsDangerButton';
 
 function getIconName(hasUnconfirmedAlerts: boolean): IconName {
-  if (hasUnconfirmedAlerts) {
-    return IconName.SecuritySearch;
-  }
-  return IconName.Danger;
+  return hasUnconfirmedAlerts ? IconName.SecuritySearch : IconName.Danger;
 }
 
 function ConfirmButton({

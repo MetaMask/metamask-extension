@@ -13,7 +13,7 @@ export const AlertActionHandlerProvider: React.FC<{
   children: ReactElement;
 }> = ({ children }) => {
   // eslint-disable-next-line no-empty-function
-  const process action = useCallback((_actionKey: string) => {}, []);
+  const processAction = useCallback((_actionKey: string) => {}, []);
 
   return (
     <AlertActionHandlerContext.Provider value={{ processAction }}>

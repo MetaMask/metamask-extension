@@ -30,7 +30,6 @@ export function getSeverityBackground(severity: Severity): BackgroundColor {
       return BackgroundColor.errorMuted;
     case Severity.Warning:
       return BackgroundColor.warningMuted;
-    // Defaults to Severity.Info
     default:
       return BackgroundColor.primaryMuted;
   }

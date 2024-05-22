@@ -57,11 +57,11 @@ export type AlertModalProps = {
   /**
    * The custom details component for the alert.
    */
-  customAlertDetails?: React.ReactNode;
+  customDetails?: React.ReactNode;
   /**
    * The custom title for the alert.
    */
-  customAlertTitle?: string;
+  customTitle?: string;
   /**
    * The start (left) content area of ModalHeader.
    * It overrides `startAccessory` of ModalHeaderDefault and by default no content is present.
@@ -165,10 +165,10 @@ function AlertHeader({ severity }: { severity: Severity }) {
 
 function AlertReason({
   selectedAlert,
-  customAlertTitle,
+  customTitle,
 }: {
   selectedAlert: Alert;
-  customAlertTitle?: string;
+  customTitle?: string;
 }) {
   const t = useI18nContext();
   return (
@@ -184,7 +184,7 @@ function AlertReason({
         marginTop={3}
         marginBottom={4}
       >
-        {customAlertTitle ?? selectedAlert.reason ?? t('alert')}
+        {customTitle ?? selectedAlert.reason ?? t('alert')}
       </Text>
     </Box>
   );
@@ -192,10 +192,10 @@ function AlertReason({
 
 function AlertDetails({
   selectedAlert,
-  customAlertDetails,
+  customDetails,
 }: {
   selectedAlert: Alert;
-  customAlertDetails?: React.ReactNode;
+  customDetails?: React.ReactNode;
 }) {
   const t = useI18nContext();
   const severityStyle = getSeverityStyle(selectedAlert.severity);
@@ -205,13 +205,11 @@ function AlertDetails({
       display={Display.InlineBlock}
       padding={2}
       width={BlockSize.Full}
-      backgroundColor={
-        customAlertDetails ? undefined : severityStyle.background
-      }
+      backgroundColor={customDetails ? undefined : severityStyle.background}
       gap={2}
       borderRadius={BorderRadius.SM}
     >
-      {customAlertDetails ?? (
+      {customDetails ?? (
         <Box>
           <Text variant={TextVariant.bodyMd}>{selectedAlert.message}</Text>
           {selectedAlert.alertDetails?.length ? (
@@ -330,8 +328,8 @@ export function AlertModal({
   alertKey,
   onClose,
   headerStartAccessory,
-  customAlertTitle,
-  customAlertDetails,
+  customTitle,
+  customDetails,
   customAcknowledgeCheckbox,
   customAcknowledgeButton,
 }: AlertModalProps) {
@@ -372,11 +370,11 @@ export function AlertModal({
         <ModalBody>
           <AlertReason
             selectedAlert={selectedAlert}
-            customAlertTitle={customAlertTitle}
+            customTitle={customTitle}
           />
           <AlertDetails
             selectedAlert={selectedAlert}
-            customAlertDetails={customAlertDetails}
+            customDetails={customDetails}
           />
           {customAcknowledgeCheckbox ?? (
             <AcknowledgeCheckboxBase
