@@ -977,7 +977,7 @@ const addAppInstalledEvent = () => {
   setTimeout(() => {
     // If the controller is not set yet, we wait and try to add the "App Installed" event again.
     addAppInstalledEvent();
-  }, 1000);
+  }, 500);
 };
 
 // On first install, open a new tab with MetaMask
