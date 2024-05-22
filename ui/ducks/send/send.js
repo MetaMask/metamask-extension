@@ -144,6 +144,7 @@ import {
   getRoundedGasPrice,
   calculateBestQuote,
   addAdjustedReturnToQuotes,
+  getIsDraftSwapAndSend,
 } from './helpers';
 
 const RECENT_REQUEST_ERROR =
@@ -1632,9 +1633,7 @@ const slice = createSlice({
       });
 
       if (draftTransaction) {
-        const isSwapAndSend =
-          draftTransaction.sendAsset?.details?.address !==
-          draftTransaction.receiveAsset?.details?.address;
+        const isSwapAndSend = getIsDraftSwapAndSend(draftTransaction);
 
         const { quotes } = draftTransaction;
         const bestQuote = quotes ? calculateBestQuote(quotes) : undefined;
@@ -2293,10 +2292,7 @@ export function updateSendQuote(
     const draftTransaction =
       state[name].draftTransactions[state[name].currentTransactionUUID];
 
-    const isSwapAndSend =
-      draftTransaction?.sendAsset?.details?.address !==
-      draftTransaction?.receiveAsset?.details?.address;
-
+    const isSwapAndSend = getIsDraftSwapAndSend(draftTransaction);
     const {
       quotes,
       swapQuotesError,
@@ -2784,10 +2780,7 @@ export function signTransaction(history) {
       state[name].draftTransactions[state[name].currentTransactionUUID];
 
     let txParams;
-    const isSwapAndSend =
-      draftTransaction?.sendAsset?.details?.address !==
-      draftTransaction?.receiveAsset?.details?.address;
-
+    const isSwapAndSend = getIsDraftSwapAndSend(draftTransaction);
     const quotesAsArray = draftTransaction.quotes;
     const bestQuote = quotesAsArray
       ? calculateBestQuote(quotesAsArray)

@@ -51,6 +51,7 @@ import { MetaMetricsEventCategory } from '../../../../../shared/constants/metame
 import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
 import { AssetPickerAmount } from '../..';
 import useUpdateSwapsState from '../../../../hooks/useUpdateSwapsState';
+import { getIsDraftSwapAndSend } from '../../../../ducks/send/helpers';
 import {
   SendPageAccountPicker,
   SendPageRecipientContent,
@@ -65,11 +66,10 @@ export const SendPage = () => {
   const startedNewDraftTransaction = useRef(false);
   const draftTransactionExists = useSelector(getDraftTransactionExists);
 
-  const {
-    sendAsset: transactionAsset,
-    amount,
-    receiveAsset,
-  } = useSelector(getCurrentDraftTransaction);
+  const draftTransaction = useSelector(getCurrentDraftTransaction);
+
+  const { sendAsset: transactionAsset, amount } = draftTransaction;
+
   const draftTransactionID = useSelector(getDraftTransactionID);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const sendStage = useSelector(getSendStage);
@@ -248,8 +248,7 @@ export const SendPage = () => {
     [dispatch],
   );
 
-  const isSwapAndSend =
-    transactionAsset?.details?.address !== receiveAsset?.details?.address;
+  const isSwapAndSend = getIsDraftSwapAndSend(draftTransaction);
 
   return (
     <Page className="multichain-send-page">

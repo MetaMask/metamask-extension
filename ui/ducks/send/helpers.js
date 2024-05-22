@@ -411,3 +411,16 @@ export async function getERC20Balance(token, accountAddress) {
   ).toString(16);
   return addHexPrefix(amount);
 }
+
+/**
+ * returns if a given draft transaction is a swap and send
+ *
+ * @param {DraftTransaction} draftTransaction
+ * @returns {boolean} true if the draft transaction is a swap and send
+ */
+export function getIsDraftSwapAndSend(draftTransaction) {
+  return (
+    draftTransaction?.sendAsset?.details?.address !==
+    draftTransaction?.receiveAsset?.details?.address
+  );
+}
