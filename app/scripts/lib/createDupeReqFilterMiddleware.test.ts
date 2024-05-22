@@ -18,7 +18,7 @@ describe('createDupeReqFilterMiddleware', () => {
   it('forwards requests with ids seen for the first time', () => {
     const filterFn = createDupeReqFilterMiddleware();
     const nextMock = jest.fn();
-    nextMock.mockReturnValue('mocked value');
+    const endMock = jest.fn();
 
     filterFn(getMockRequest(1), getMockResponse(), nextMock, endMock);
 
@@ -48,10 +48,12 @@ describe('createDupeReqFilterMiddleware', () => {
     const nextMock = jest.fn();
     const endMock = jest.fn();
 
+    expect(nextMock).toHaveBeenCalledTimes(0);
     const notification = getMockRequest(1);
     // @ts-expect-error Intentional destructive testing
     delete notification.id;
     filterFn(notification, getMockResponse(), nextMock, endMock);
+    expect(nextMock).toHaveBeenCalledTimes(1);
     filterFn(notification, getMockResponse(), nextMock, endMock);
 
     expect(nextMock).toHaveBeenCalledTimes(2);

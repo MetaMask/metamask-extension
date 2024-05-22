@@ -56,10 +56,10 @@ export default function createDupeReqFilterMiddleware(): JsonRpcMiddleware<
     if (req.id === undefined) {
       // JSON-RPC notifications have no ids; our only recourse is to let them through.
       next();
-    } else if (!seenRequestIds.add(req.id)) {
+    } else if (seenRequestIds.add(req.id)) {
+      next();
+    } else {
       log.info(`RPC request with id "${req.id}" already seen.`);
-      return;
     }
-    next();
   };
 }
