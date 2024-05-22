@@ -5184,10 +5184,10 @@ export function createMetaMetricsDataDeletionTask(): ThunkAction<
 /**
  * To check the status of the current delete regulation.
  */
-export async function checkDataDeletionTaskStatus(): Promise<void> {
+export async function UpdateDataDeletionTaskStatusAction(): Promise<void> {
   return async () => {
     await submitRequestToBackground<DataDeletionResponse>(
-      'checkDataDeletionTaskStatus',
+      'UpdateDataDeletionTaskStatusAction',
     );
   };
 }

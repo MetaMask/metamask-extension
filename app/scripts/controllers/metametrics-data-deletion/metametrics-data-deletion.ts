@@ -2,7 +2,8 @@ import {
   BaseController,
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
-import MetaMetricsController from '../metametrics';
+import { ObservableStore } from '@metamask/obs-store';
+import { MetaMetricsControllerState } from '../metametrics';
 import {
   createDataDeletionRegulationTask,
   fetchDeletionRegulationStatus,
@@ -11,15 +12,21 @@ import {
 // Unique name for the controller
 const controllerName = 'MetaMetricsDataDeletionController';
 
+/**
+ * @type DataDeleteDate
+ * Deletion date in DD/MM/YYYY format
+ */
 export type DataDeleteDate = string;
+/**
+ * @type DataDeleteDate
+ * Regulation Id retuned while creating a delete regulation.
+ */
 export type DataDeleteRegulationId = string;
 
-export type RegulationId = Record<string, string>;
-export type CurrentRegulationStatus = Record<string, Record<string, string>>;
-export type DeleteRegulationAPIResponse = {
-  data: RegulationId | CurrentRegulationStatus;
-};
-
+/**
+ * @type DeleteRegulationStatus
+ * The status on which to filter the returned regulations.
+ */
 export enum DeleteRegulationStatus {
   FAILED = 'FAILED',
   FINISHED = 'FINISHED',
@@ -30,7 +37,13 @@ export enum DeleteRegulationStatus {
   RUNNING = 'RUNNING',
   UNKNOWN = 'UNKNOWN',
 }
-
+/**
+ * @type MetaMetricsDataDeletionState
+ * MetaMetricsDataDeletionController controller state
+ * @property metaMetricsDataDeletionId - Regulation Id retuned while creating a delete regulation.
+ * @property metaMetricsDataDeletionDate - Date at which the most recent regulation is created/requested for.
+ * @property metaMetricsDataDeletionStatus - Status of the current delete regulation.
+ */
 export type MetaMetricsDataDeletionState = {
   metaMetricsDataDeletionId: DataDeleteRegulationId;
   metaMetricsDataDeletionDate: DataDeleteDate;
@@ -66,15 +79,15 @@ export type CreateMetaMetricsDataDeletionTaskAction = {
 };
 
 // Describes the action to check teh existing regulation status
-export type CheckDataDeletionTaskStatusAction = {
-  type: `${typeof controllerName}:checkDataDeletionTaskStatus`;
-  handler: MetaMetricsDataDeletionController['checkDataDeletionTaskStatus'];
+export type UpdateDataDeletionTaskStatusAction = {
+  type: `${typeof controllerName}:updateDataDeletionTaskStatus`;
+  handler: MetaMetricsDataDeletionController['updateDataDeletionTaskStatus'];
 };
 
 // Union of all possible actions for the messenger
 export type MetaMetricsDataDeletionControllerMessengerActions =
   | CreateMetaMetricsDataDeletionTaskAction
-  | CheckDataDeletionTaskStatusAction;
+  | UpdateDataDeletionTaskStatusAction;
 
 // Type for the messenger of AccountOrderController
 export type MetaMetricsDataDeletionControllerMessenger =
@@ -95,7 +108,7 @@ export default class MetaMetricsDataDeletionController extends BaseController<
   MetaMetricsDataDeletionState,
   MetaMetricsDataDeletionControllerMessenger
 > {
-  private metaMetricsController: MetaMetricsController;
+  private metaMetricsId;
 
   /**
    * Creates a MetaMetricsDataDeletionController instance.
@@ -103,16 +116,16 @@ export default class MetaMetricsDataDeletionController extends BaseController<
    * @param args - The arguments to this function.
    * @param args.messenger - Messenger used to communicate with BaseV2 controller.
    * @param args.state - Initial state to set on this controller.
-   * @param args.metaMetricsController
+   * @param args.metaMetricsStore
    */
   constructor({
     messenger,
     state,
-    metaMetricsController,
+    metaMetricsStore,
   }: {
     messenger: MetaMetricsDataDeletionControllerMessenger;
     state?: MetaMetricsDataDeletionState;
-    metaMetricsController: MetaMetricsController;
+    metaMetricsStore: ObservableStore<MetaMetricsControllerState>;
   }) {
     // Call the constructor of BaseControllerV2
     super({
@@ -121,7 +134,7 @@ export default class MetaMetricsDataDeletionController extends BaseController<
       name: controllerName,
       state: { ...defaultState, ...state },
     });
-    this.metaMetricsController = metaMetricsController;
+    this.metaMetricsId = metaMetricsStore.getState().metaMetricsId;
   }
 
   _formatDeletionDate() {
@@ -134,49 +147,41 @@ export default class MetaMetricsDataDeletionController extends BaseController<
     return `${day}/${month}/${year}`;
   }
 
+  /**
+   * Creating the delete regulation using source regulation
+   *
+   */
   async createMetaMetricsDataDeletionTask(): Promise<void> {
-    const { metaMetricsId } = this.metaMetricsController.store.getState();
-    if (!metaMetricsId) {
+    if (!this.metaMetricsId) {
       throw new Error('MetaMetrics ID not found');
     }
 
-    try {
-      const { data } = await createDataDeletionRegulationTask(
-        metaMetricsId as string,
-      );
-      this.update((state) => {
-        state.metaMetricsDataDeletionId = data?.regulateId as string;
-        state.metaMetricsDataDeletionDate = this._formatDeletionDate();
-        return state;
-      });
-      await this.checkDataDeletionTaskStatus();
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : JSON.stringify(error ?? '');
-      throw new Error(`Metametrics Data Deletion Error: ${errorMessage}`);
-    }
+    const { data } = await createDataDeletionRegulationTask(this.metaMetricsId);
+    this.update((state) => {
+      state.metaMetricsDataDeletionId = data?.regulateId;
+      state.metaMetricsDataDeletionDate = this._formatDeletionDate();
+      return state;
+    });
+    await this.updateDataDeletionTaskStatus();
   }
 
-  async checkDataDeletionTaskStatus(): Promise<void> {
+  /**
+   * To check eth status of the current delete regulation.
+   */
+  async updateDataDeletionTaskStatus(): Promise<void> {
     const deleteRegulationId = this.state.metaMetricsDataDeletionId;
     if (deleteRegulationId.length === 0) {
       throw new Error('Delete Regulation id not found');
     }
 
-    try {
-      const { data } = await fetchDeletionRegulationStatus(deleteRegulationId);
+    const { data } = await fetchDeletionRegulationStatus(deleteRegulationId);
 
-      const regulation = data?.regulation as Record<string, string>;
-      this.update((state) => {
-        state.metaMetricsDataDeletionStatus =
-          regulation.overallStatus as DeleteRegulationStatus;
+    const regulation = data?.regulation;
+    this.update((state) => {
+      state.metaMetricsDataDeletionStatus =
+        regulation.overallStatus as DeleteRegulationStatus;
 
-        return state;
-      });
-    } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : JSON.stringify(error ?? '');
-      throw new Error(`Metametrics Data Deletion Error: ${errorMessage}`);
-    }
+      return state;
+    });
   }
 }
