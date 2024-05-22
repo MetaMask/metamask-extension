@@ -1,4 +1,5 @@
-import { Panel } from '@metamask/snaps-sdk';
+import { BoxElement, JSXElement } from '@metamask/snaps-sdk/jsx';
+import { getJsxChildren } from '@metamask/snaps-utils';
 import {
   Display,
   FlexDirection,
@@ -7,10 +8,13 @@ import {
 import { mapToTemplate } from '../utils';
 import { UIComponentFactory } from './types';
 
-export const panel: UIComponentFactory<Panel> = ({ element, ...params }) => ({
+export const box: UIComponentFactory<BoxElement> = ({
+  element,
+  ...params
+}) => ({
   element: 'Box',
-  children: element.children.map((children) =>
-    mapToTemplate({ ...params, element: children }),
+  children: getJsxChildren(element).map((children) =>
+    mapToTemplate({ ...params, element: children as JSXElement }),
   ),
   props: {
     display: Display.Flex,
