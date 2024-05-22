@@ -268,7 +268,6 @@ function mockUserStorageMessenger() {
     AuthenticationControllerGetSessionProfile['handler']
   >().mockResolvedValue({
     identifierId: '',
-    metametricsId: '',
     profileId: 'MOCK_PROFILE_ID',
   });
 
