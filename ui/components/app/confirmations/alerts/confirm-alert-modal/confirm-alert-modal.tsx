@@ -187,6 +187,7 @@ export function ConfirmAlertModal({
           isConfirmed={confirmCheckbox}
         />
       }
+      enableProvider={false}
     />
   );
 }
