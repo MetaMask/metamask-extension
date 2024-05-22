@@ -349,7 +349,7 @@ describe('MMIController', function () {
   });
 
   describe('getAllCustodianAccountsWithToken', () => {
-    it('should return custodian accounts with tokens', async () => {});
+    it('should return custodian accounts with tokens', async () => { });
   });
 
   describe('handleMmiDashboardData', () => {

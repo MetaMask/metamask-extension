@@ -2322,6 +2322,7 @@
         "@metamask/snaps-controllers>@metamask/base-controller": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-middleware-stream": true,
+        "@metamask/snaps-controllers>@metamask/snaps-rpc-methods": true,
         "@metamask/snaps-controllers>@xstate/fsm": true,
         "@metamask/snaps-controllers>concat-stream": true,
         "@metamask/snaps-controllers>get-npm-tarball-url": true,
@@ -2329,7 +2330,6 @@
         "@metamask/snaps-controllers>readable-stream": true,
         "@metamask/snaps-controllers>readable-web-to-node-stream": true,
         "@metamask/snaps-controllers>tar-stream": true,
-        "@metamask/snaps-rpc-methods": true,
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-utils": true,
         "@metamask/snaps-utils>@metamask/snaps-registry": true,
@@ -2377,6 +2377,18 @@
         "pumpify>inherits": true,
         "readable-stream>util-deprecate": true,
         "webpack>events": true
+      }
+    },
+    "@metamask/snaps-controllers>@metamask/snaps-rpc-methods": {
+      "packages": {
+        "@metamask/permission-controller": true,
+        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/snaps-sdk": true,
+        "@metamask/snaps-sdk>@metamask/key-tree": true,
+        "@metamask/snaps-utils": true,
+        "@metamask/utils": true,
+        "@noble/hashes": true,
+        "superstruct": true
       }
     },
     "@metamask/snaps-controllers>concat-stream": {
@@ -2478,33 +2490,11 @@
     },
     "@metamask/snaps-sdk>@metamask/key-tree": {
       "packages": {
+        "@metamask/message-signing-snap>@noble/curves": true,
         "@metamask/scure-bip39": true,
-        "@metamask/snaps-sdk>@metamask/key-tree>@metamask/utils": true,
-        "@metamask/snaps-sdk>@metamask/key-tree>@noble/ed25519": true,
+        "@metamask/utils": true,
         "@metamask/utils>@scure/base": true,
-        "@noble/hashes": true,
-        "eth-lattice-keyring>@noble/secp256k1": true
-      }
-    },
-    "@metamask/snaps-sdk>@metamask/key-tree>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true,
-        "superstruct": true
-      }
-    },
-    "@metamask/snaps-sdk>@metamask/key-tree>@noble/ed25519": {
-      "globals": {
-        "crypto": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
+        "@noble/hashes": true
       }
     },
     "@metamask/snaps-sdk>fast-xml-parser": {
@@ -3608,14 +3598,6 @@
       "globals": {
         "TextEncoder": true,
         "crypto": true
-      }
-    },
-    "eth-lattice-keyring>@noble/secp256k1": {
-      "globals": {
-        "crypto": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk": {

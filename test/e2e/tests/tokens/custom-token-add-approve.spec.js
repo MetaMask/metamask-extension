@@ -123,7 +123,7 @@ describe('Create token, approve token and approve token without gas', function (
 
         assert.equal(await modalTitle.getText(), 'Third-party details');
 
-        await driver.clickElement({
+        await driver.clickElementAndWaitToDisappear({
           text: 'Got it',
           tag: 'button',
         });
