@@ -93,10 +93,11 @@ export default class AccountTracker {
 
     this.selectedAccount = this.controllerMessenger.call(
       'AccountsController:getSelectedAccount',
+      'eip155:*',
     );
 
     this.controllerMessenger.subscribe(
-      'AccountsController:selectedAccountChange',
+      'AccountsController:selectedEvmAccountChange',
       (newAccount) => {
         const { useMultiAccountBalanceChecker } =
           this.preferencesController.store.getState();
@@ -478,6 +479,7 @@ export default class AccountTracker {
     } else {
       const selectedAddress = this.controllerMessenger.call(
         'AccountsController:getSelectedAccount',
+        'eip155:*',
       ).address;
 
       addresses = [selectedAddress];

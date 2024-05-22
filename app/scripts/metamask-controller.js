@@ -603,7 +603,7 @@ export default class MetamaskController extends EventEmitter {
       ],
       allowedEvents: [
         'NetworkController:networkDidChange',
-        'AccountsController:selectedAccountChange',
+        'AccountsController:selectedEvmAccountChange',
         'PreferencesController:stateChange',
         'TokenListController:stateChange',
       ],
@@ -613,7 +613,8 @@ export default class MetamaskController extends EventEmitter {
       chainId: this.networkController.state.providerConfig.chainId,
       config: {
         provider: this.provider,
-        selectedAccountId: this.accountsController.getSelectedAccount().id,
+        selectedAccountId:
+          this.accountsController.getSelectedAccount('eip155:*').id,
       },
       state: initState.TokensController,
     });
@@ -630,7 +631,7 @@ export default class MetamaskController extends EventEmitter {
         `${this.accountsController.name}:getAccount`,
         `${this.accountsController.name}:getSelectedAccount`,
       ],
-      allowedEvents: ['AccountsController:selectedAccountChange'],
+      allowedEvents: ['AccountsController:selectedEvmAccountChange'],
     });
     this.nftController = new NftController(
       {
@@ -697,7 +698,7 @@ export default class MetamaskController extends EventEmitter {
       ),
       onSelectedAccountChange: (listener) =>
         this.controllerMessenger.subscribe(
-          `AccountsController:selectedAccountChange`,
+          `AccountsController:selectedEvmAccountChange`,
           (newlySelectedInternalAccount) => {
             listener(newlySelectedInternalAccount);
           },
@@ -726,7 +727,8 @@ export default class MetamaskController extends EventEmitter {
         undefined
           ? true
           : !this.preferencesController.store.getState().useNftDetection,
-      selectedAccountId: this.accountsController.getSelectedAccount().id,
+      selectedAccountId:
+        this.accountsController.getSelectedAccount('eip155:*').id,
     });
 
     this.metaMetricsController = new MetaMetricsController({
@@ -883,7 +885,8 @@ export default class MetamaskController extends EventEmitter {
       {
         chainId: this.networkController.state.providerConfig.chainId,
         ticker: this.networkController.state.providerConfig.ticker,
-        selectedAccountId: this.accountsController.getSelectedAccount().id,
+        selectedAccountId:
+          this.accountsController.getSelectedAccount('eip155:*').id,
         onTokensStateChange: (listener) =>
           this.tokensController.subscribe(listener),
         onNetworkStateChange: networkControllerMessenger.subscribe.bind(
@@ -892,7 +895,7 @@ export default class MetamaskController extends EventEmitter {
         ),
         onSelectedAccountChange: (listener) =>
           this.controllerMessenger.subscribe(
-            `AccountsController:selectedAccountChange`,
+            `AccountsController:selectedEvmAccountChange`,
             (newlySelectedInternalAccount) => {
               listener(newlySelectedInternalAccount);
             },
@@ -1420,7 +1423,7 @@ export default class MetamaskController extends EventEmitter {
       onboardingController: this.onboardingController,
       controllerMessenger: this.controllerMessenger.getRestricted({
         name: 'AccountTracker',
-        allowedEvents: ['AccountsController:selectedAccountChange'],
+        allowedEvents: ['AccountsController:selectedEvmAccountChange'],
         allowedActions: ['AccountsController:getSelectedAccount'],
       }),
       initState: { accounts: {} },
@@ -1446,7 +1449,8 @@ export default class MetamaskController extends EventEmitter {
         const { completedOnboarding: prevCompletedOnboarding } = prevState;
         const { completedOnboarding: currCompletedOnboarding } = currState;
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
-          const { address } = this.accountsController.getSelectedAccount();
+          const { address } =
+            this.accountsController.getSelectedAccount('eip155:*');
 
           this.postOnboardingInitialization();
           this.triggerNetworkrequests();
@@ -1480,7 +1484,7 @@ export default class MetamaskController extends EventEmitter {
           'TokensController:addDetectedTokens',
         ],
         allowedEvents: [
-          'AccountsController:selectedAccountChange',
+          'AccountsController:selectedEvmAccountChange',
           'KeyringController:lock',
           'KeyringController:unlock',
           'NetworkController:networkDidChange',
@@ -1490,7 +1494,8 @@ export default class MetamaskController extends EventEmitter {
       });
 
     this.tokenDetectionController = new TokenDetectionController({
-      selectedAccountId: this.accountsController.getSelectedAccount().id,
+      selectedAccountId:
+        this.accountsController.getSelectedAccount('eip155:*').id,
       messenger: tokenDetectionControllerMessenger,
       getBalancesInSingleCall:
         this.assetsContractController.getBalancesInSingleCall.bind(
@@ -1593,7 +1598,8 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController.store.getState().advancedGasFee[
           this.networkController.state.providerConfig.chainId
         ],
-      getSelectedAccount: () => this.accountsController.getSelectedAccount(),
+      getSelectedAccount: () =>
+        this.accountsController.getSelectedAccount('eip155:*'),
       incomingTransactions: {
         includeTokenTransfers: false,
         isEnabled: () =>
