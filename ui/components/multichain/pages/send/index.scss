@@ -14,6 +14,10 @@
     }
   }
 
+  &__nav-button {
+    flex-basis: 50%;
+  }
+
   &__recipient {
     .tabs__list {
       font-size: design-system.$font-size-h6;
