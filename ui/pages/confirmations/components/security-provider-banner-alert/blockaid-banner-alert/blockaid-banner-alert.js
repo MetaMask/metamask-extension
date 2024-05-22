@@ -4,7 +4,6 @@ import { captureException } from '@sentry/browser';
 import BlockaidPackage from '@blockaid/ppom_release/package.json';
 
 import { useSelector } from 'react-redux';
-import { ApprovalType } from '@metamask/controller-utils';
 import { NETWORK_TO_NAME_MAP } from '../../../../../../shared/constants/network';
 import { OverflowWrap } from '../../../../../helpers/constants/design-system';
 import { I18nContext } from '../../../../../contexts/i18n';
@@ -64,11 +63,6 @@ function BlockaidBannerAlert({ txData, ...props }) {
 
   const t = useContext(I18nContext);
   const { updateTransactionEventFragment } = useTransactionEventFragment();
-
-  // Skip displaying the Blockaid banner for confirmation types that use the new alert system.
-  if (type === ApprovalType.PersonalSign) {
-    return null;
-  }
 
   if (
     !securityAlertResponse ||

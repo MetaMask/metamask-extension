@@ -1,6 +1,6 @@
 import React from 'react';
 import { renderHookWithProvider } from '../../test/lib/render-helpers';
-import { useAlertActionHandler } from './useAlertActionHandler';
+import { useAlertActionHandler } from '../contexts/alertActionHandler';
 
 jest.mock('react', () => ({
   ...jest.requireActual('react'),
