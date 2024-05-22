@@ -129,12 +129,6 @@ export default function AssetList({
                     key={token.address}
                     {...token}
                     decimalTokenAmount={token.string}
-                    onClick={() => {
-                      if (isDisabled) {
-                        return;
-                      }
-                      handleAssetChange(token);
-                    }}
                     tooltipText={
                       isDisabled ? 'swapTokenNotAvailable' : undefined
                     }

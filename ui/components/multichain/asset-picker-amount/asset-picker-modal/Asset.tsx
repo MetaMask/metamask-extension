@@ -13,7 +13,6 @@ type AssetProps = {
   image?: string;
   symbol: string;
   decimalTokenAmount?: string;
-  onClick: (address: string) => void;
   tooltipText?: string;
 };
 
@@ -22,7 +21,6 @@ export default function Asset({
   image,
   symbol,
   decimalTokenAmount,
-  onClick,
   tooltipText,
 }: AssetProps) {
   const locale = useSelector(getIntlLocale);
@@ -48,7 +46,6 @@ export default function Asset({
 
   return (
     <TokenListItem
-      onClick={onClick}
       tokenSymbol={symbol}
       tokenImage={tokenImage}
       primary={formatAmount(
