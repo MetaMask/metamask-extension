@@ -318,7 +318,8 @@ const setBoxRef = (ref) => {
             padding={0}
             isPortal
             preventOverflow
-            isOpen
+            flip
+            isOpen={true}
           >
             <Box
               display={Display.Flex}
