@@ -2994,7 +2994,6 @@ export default class MetamaskController extends EventEmitter {
       userStorageController,
       metamaskNotificationsController,
       pushPlatformNotificationsController,
-      metaMetricsDataDeletionController,
     } = this;
 
     return {
@@ -3841,12 +3840,12 @@ export default class MetamaskController extends EventEmitter {
         }),
       // metrics data deleteion
       createMetaMetricsDataDeletionTask:
-        metaMetricsDataDeletionController.createMetaMetricsDataDeletionTask.bind(
-          metaMetricsDataDeletionController,
+        this.metaMetricsDataDeletionController.createMetaMetricsDataDeletionTask.bind(
+          this.metaMetricsDataDeletionController,
         ),
-      checkDataDeletionTaskStatus:
-        metaMetricsDataDeletionController.checkDataDeletionTaskStatus.bind(
-          metaMetricsDataDeletionController,
+      updateDataDeletionTaskStatus:
+        this.metaMetricsDataDeletionController.updateDataDeletionTaskStatus.bind(
+          this.metaMetricsDataDeletionController,
         ),
     };
   }
