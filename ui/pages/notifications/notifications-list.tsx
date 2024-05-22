@@ -26,6 +26,7 @@ import { NotificationsListTurnOnNotifications } from './notifications-list-turn-
 import { NotificationsListItem } from './notifications-list-item';
 import { SnapNotificationWithoutSnapName, SNAP } from './snap/types/types';
 import type { NotificationType } from './notifications';
+import { NotificationsListReadAllButton } from './notifications-list-read-all-button';
 
 export type NotificationsListProps = {
   activeTab: string;
@@ -150,8 +151,10 @@ export function NotificationsList({
       data-testid="notifications-list"
       height={BlockSize.Full}
       width={BlockSize.Full}
+      className="notifications__list"
     >
       {renderNotificationsContent()}
+      <NotificationsListReadAllButton notifications={notifications} />
     </Box>
   );
 }
