@@ -109,6 +109,14 @@ until.elementIsNotPresent = function elementIsNotPresent(locator) {
   });
 };
 
+until.foundElementCountIs = function foundElementCountIs(locator, n) {
+  return new Condition(`Element count is ${n}`, function (driver) {
+    return driver.findElements(locator).then(function (elements) {
+      return elements.length === n;
+    });
+  });
+};
+
 /**
  * This is MetaMask's custom E2E test driver, wrapping the Selenium WebDriver.
  * For Selenium WebDriver API documentation, see:
@@ -263,6 +271,20 @@ class Driver {
       const empty = elemText === '';
       return !empty;
     }, this.timeout);
+  }
+
+  async elementCountBecomesN(rawLocator, n, timeout = this.timeout) {
+    const locator = this.buildLocator(rawLocator);
+    try {
+      await this.driver.wait(until.foundElementCountIs(locator, n), timeout);
+      return true;
+    } catch (e) {
+      const elements = await this.findElements(locator);
+      console.error(
+        `Waiting for count of ${locator} elements to be ${n}, but it is ${elements.length}`,
+      );
+      return false;
+    }
   }
 
   /**
