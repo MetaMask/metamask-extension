@@ -120,6 +120,7 @@ export const components: NotificationComponent<FeatureAnnouncementNotification> 
             }
             id={notification.id}
             endIconName={false}
+            isExternal={true}
           />
         ) : null,
     },
