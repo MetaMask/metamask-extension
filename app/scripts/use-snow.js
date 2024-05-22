@@ -24,29 +24,40 @@ Changing this code must be done cautiously to avoid breaking the app!
       'Tamed fetch can only be used on images within the extension',
     );
   };
+  const scuttleWithRestrictedException = (
+    _scuttle,
+    _ref,
+    restrictedExceptions,
+  ) => {
+    for (const key in restrictedExceptions) {
+      if (Object.hasOwn(restrictedExceptions, key)) {
+        Object.defineProperty(_ref, key, {
+          configurable: false,
+          writable: false,
+          value: restrictedExceptions[key],
+        });
+      }
+    }
+    return _scuttle(_ref);
+  };
 
   // eslint-disable-next-line no-undef
   Object.defineProperty(self, 'SCUTTLER', {
     value: (realm, scuttle) => {
-      const scuttleWithRestrictedException = (_ref, restrictedExceptions) => {
-        const ref = _ref;
-        for (const key in restrictedExceptions) {
-          if (Object.hasOwn(restrictedExceptions, key)) {
-            ref[key] = restrictedExceptions[key];
-          }
-        }
-        return scuttle(ref);
-      };
       if (isWorker) {
         chromeExtensionId
-          ? scuttleWithRestrictedException(realm, { fetch: tamedFetch })
+          ? scuttleWithRestrictedException(scuttle, realm, {
+              fetch: tamedFetch,
+            })
           : scuttle(realm);
       } else {
         // eslint-disable-next-line no-undef
         self.SNOW((win) => {
           log(msg, win);
           chromeExtensionId
-            ? scuttleWithRestrictedException(win, { fetch: tamedFetch })
+            ? scuttleWithRestrictedException(scuttle, win, {
+                fetch: tamedFetch,
+              })
             : scuttle(win);
         }, realm);
       }
