@@ -163,15 +163,14 @@ export const components: NotificationComponent<LidoReadyWithDrawnNotification> =
         const { nativeBlockExplorerUrl } = getNetworkDetailsByChainId(
           `0x${chainId}` as keyof typeof CHAIN_IDS,
         );
+        if (!nativeBlockExplorerUrl) {
+          return null;
+        }
         return (
           <NotificationDetailButton
             variant={ButtonVariant.Secondary}
             text={t('notificationItemCheckBlockExplorer') || ''}
-            href={
-              nativeBlockExplorerUrl
-                ? `${nativeBlockExplorerUrl}//tx/${notification.tx_hash}`
-                : '#'
-            }
+            href={`${nativeBlockExplorerUrl}/tx/${notification.tx_hash}`}
             id={notification.id}
           />
         );
