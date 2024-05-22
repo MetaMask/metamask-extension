@@ -4422,7 +4422,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-institutional/sdk@npm:^0.1.26, @metamask-institutional/sdk@npm:^0.1.27":
+"@metamask-institutional/sdk@npm:^0.1.27":
   version: 0.1.27
   resolution: "@metamask-institutional/sdk@npm:0.1.27"
   dependencies:
@@ -24712,7 +24712,7 @@ __metadata:
     "@metamask-institutional/institutional-features": "npm:^1.3.2"
     "@metamask-institutional/portfolio-dashboard": "npm:^1.4.1"
     "@metamask-institutional/rpc-allowlist": "npm:^1.0.3"
-    "@metamask-institutional/sdk": "npm:^0.1.26"
+    "@metamask-institutional/sdk": "npm:^0.1.27"
     "@metamask-institutional/transaction-update": "npm:^0.2.2"
     "@metamask/abi-utils": "npm:^2.0.2"
     "@metamask/accounts-controller": "npm:^11.0.0"
