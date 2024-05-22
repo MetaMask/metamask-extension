@@ -1,14 +1,22 @@
 import type { Hex } from '@metamask/utils';
+import { createSelector } from 'reselect';
+import {
+  accountSupportsSmartTx,
+  getCurrentChainId,
+  getCurrentNetwork,
+} from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
 import {
   getAllowedSmartTransactionsChainIds,
   SKIP_STX_RPC_URL_CHECK_CHAIN_IDS,
 } from '../../constants/smartTransactions';
-import {
-  getCurrentChainId,
-  getCurrentNetwork,
-  accountSupportsSmartTx,
-} from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
 import { isProduction } from '../environment';
+import { compareVersions, parseVersion } from '../../lib/semversion';
+import ExtensionPlatform from '../../../app/scripts/platforms/extension';
+import {
+  ChainSpecificFeatureFlags,
+  SmartTransactionsFeatureFlags,
+  getFeatureFlagsByChainId,
+} from './feature-flags';
 
 type SmartTransactionsMetaMaskState = {
   metamask: {
@@ -32,19 +40,8 @@ type SmartTransactionsMetaMaskState = {
     };
     swapsState: {
       swapsFeatureFlags: {
-        ethereum: {
-          extensionActive: boolean;
-          mobileActive: boolean;
-          smartTransactions: {
-            expectedDeadline?: number;
-            maxDeadline?: number;
-            returnTxHashAsap?: boolean;
-          };
-        };
-        smartTransactions: {
-          extensionActive: boolean;
-          mobileActive: boolean;
-        };
+        ethereum: ChainSpecificFeatureFlags;
+        smartTransactions: SmartTransactionsFeatureFlags;
       };
     };
     smartTransactionsState: {
@@ -89,10 +86,33 @@ const getIsAllowedRpcUrlForSmartTransactions = (
   return rpcUrl?.hostname?.endsWith('.infura.io');
 };
 
+/**
+ * Returns true if the current platform version is greater than or equal to the
+ * minimum version required to show the smart transaction opt-in modal.
+ */
+export const getMeetsMinimumVersionToShowOptInModal = createSelector(
+  getFeatureFlagsByChainId,
+  (featureFlags) => {
+    const minVersionStr = featureFlags?.smartTransactions?.optInModalMinVersion;
+    const minVer = parseVersion(minVersionStr);
+    if (!minVer) {
+      return false;
+    }
+    const version = parseVersion(
+      (global.platform as ExtensionPlatform).getVersion(),
+    );
+    if (!version) {
+      return false;
+    }
+    return compareVersions(version, minVer) >= 0;
+  },
+);
+
 export const getIsSmartTransactionsOptInModalAvailable = (
   state: SmartTransactionsMetaMaskState,
 ) => {
   return (
+    getMeetsMinimumVersionToShowOptInModal(state) &&
     getCurrentChainSupportsSmartTransactions(state) &&
     getIsAllowedRpcUrlForSmartTransactions(state) &&
     getSmartTransactionsOptInStatus(state) === null
