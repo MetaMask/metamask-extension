@@ -3841,8 +3841,7 @@ export default class MetamaskController extends EventEmitter {
         }
 
         // This account has assets, so check the next one
-        ({ addedAccountAddress: address } =
-          await this.keyringController.addNewAccount(count));
+        address = await this.keyringController.addNewAccount(count);
       }
 
       // This must be set as soon as possible to communicate to the
@@ -4276,7 +4275,7 @@ export default class MetamaskController extends EventEmitter {
   async addNewAccount(accountCount) {
     const oldAccounts = await this.keyringController.getAccounts();
 
-    const { addedAccountAddress } = await this.keyringController.addNewAccount(
+    const addedAccountAddress = await this.keyringController.addNewAccount(
       accountCount,
     );
 
@@ -4313,7 +4312,7 @@ export default class MetamaskController extends EventEmitter {
    */
   async resetAccount() {
     const selectedAddress =
-      this.accountsController.getSelectedAccount().address;
+      this.accountsController.getSelectedAccount('eip155:*').address;
     this.txController.wipeTransactions(false, selectedAddress);
     this.smartTransactionsController.wipeSmartTransactions({
       address: selectedAddress,
@@ -4406,7 +4405,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {any} args - The data required by that strategy to import an account.
    */
   async importAccountWithStrategy(strategy, args) {
-    const { importedAccountAddress } =
+    const importedAccountAddress =
       await this.keyringController.importAccountWithStrategy(strategy, args);
     // set new account as selected
     this.preferencesController.setSelectedAddress(importedAccountAddress);
@@ -5609,7 +5608,7 @@ export default class MetamaskController extends EventEmitter {
       getEIP1559GasFeeEstimates:
         this.gasFeeController.fetchGasFeeEstimates.bind(this.gasFeeController),
       getSelectedAddress: () =>
-        this.preferencesController.store.getState().selectedAddress,
+        this.accountsController.getSelectedAccount('eip155:*').address,
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
       getTransaction: (id) =>
         this.txController.state.transactions.find((tx) => tx.id === id),
@@ -6055,7 +6054,7 @@ export default class MetamaskController extends EventEmitter {
       ...transactionMeta,
       txParams: {
         ...transactionMeta.txParams,
-        from: this.preferencesController.getSelectedAddress(),
+        from: this.accountsController.getSelectedAccount('eip155:*').address,
       },
     };
 
