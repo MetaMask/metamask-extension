@@ -553,8 +553,14 @@ class Driver {
     const x = process.env.ENABLE_MV3 ? _x + 1 : _x;
     let timeElapsed = 0;
     let windowHandles = [];
+    if (delayStep === 1003) {
+      console.log('_x', _x, '|', x);
+    }
     while (timeElapsed <= timeout) {
       windowHandles = await this.getAllWindowHandles();
+      if (delayStep === 1003) {
+        console.log('windowHandles', windowHandles);
+      }
       if (windowHandles.length === x) {
         return windowHandles;
       }

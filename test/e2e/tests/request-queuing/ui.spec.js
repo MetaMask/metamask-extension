@@ -65,6 +65,7 @@ async function openDappAndSwitchChain(driver, dappUrl, chainId) {
 async function selectDappClickSendGetNetwork(driver, dappUrl) {
   await driver.switchToWindowWithUrl(dappUrl);
   const currentWindowHandles = await driver.getAllWindowHandles();
+  console.log('currentWindowHandles', currentWindowHandles);
   await driver.clickElement('#sendButton');
 
   // Under mv3, we don't need to add to the current number of window handles
@@ -74,6 +75,7 @@ async function selectDappClickSendGetNetwork(driver, dappUrl) {
     process.env.ENABLE_MV3
       ? currentWindowHandles.length
       : currentWindowHandles.length + 1,
+    1003,
   );
   const [newNotificationWindowHandle] = newWindowHandles.filter(
     (h) => !currentWindowHandles.includes(h),
