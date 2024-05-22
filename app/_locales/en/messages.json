@@ -4397,6 +4397,10 @@
     "message": "Send $1",
     "description": "Symbol of the specified token"
   },
+  "sendSwapSubmissionWarning": {
+    "message": "Clicking this button will immediately initiate your swap transaction. Please review your transaction details before proceeding."
+  },
+
   "sendTo": {
     "message": "Send to"
   },

@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
+import { Tooltip } from 'react-tippy';
 import { I18nContext } from '../../../../contexts/i18n';
 import {
   ButtonIcon,
@@ -21,7 +22,6 @@ import {
 import { Content, Footer, Header, Page } from '../page';
 import {
   SEND_STAGES,
-  getBestQuote,
   getCurrentDraftTransaction,
   getDraftTransactionExists,
   getDraftTransactionID,
@@ -65,9 +65,11 @@ export const SendPage = () => {
   const startedNewDraftTransaction = useRef(false);
   const draftTransactionExists = useSelector(getDraftTransactionExists);
 
-  const { sendAsset: transactionAsset, amount } = useSelector(
-    getCurrentDraftTransaction,
-  );
+  const {
+    sendAsset: transactionAsset,
+    amount,
+    receiveAsset,
+  } = useSelector(getCurrentDraftTransaction);
   const draftTransactionID = useSelector(getDraftTransactionID);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const sendStage = useSelector(getSendStage);
@@ -221,8 +223,6 @@ export const SendPage = () => {
   const sendErrors = useSelector(getSendErrors);
   const isInvalidSendForm = useSelector(isSendFormInvalid);
 
-  const bestQuote = useSelector(getBestQuote);
-
   const isGasTooLow =
     sendErrors.gasFee === INSUFFICIENT_FUNDS_ERROR &&
     sendErrors.amount !== INSUFFICIENT_FUNDS_ERROR;
@@ -247,6 +247,9 @@ export const SendPage = () => {
       dispatch(updateSendAmount(newAmountRaw, newAmountFormatted)),
     [dispatch],
   );
+
+  const isSwapAndSend =
+    transactionAsset?.details?.address !== receiveAsset?.details?.address;
 
   return (
     <Page className="multichain-send-page">
@@ -287,18 +290,35 @@ export const SendPage = () => {
         </Box>
       </Content>
       <Footer>
-        <ButtonSecondary onClick={onCancel} size={ButtonSecondarySize.Lg} block>
-          {sendStage === SEND_STAGES.EDIT ? t('reject') : t('cancel')}
-        </ButtonSecondary>
-        <ButtonPrimary
-          onClick={onSubmit}
-          loading={isSubmitting}
-          size={ButtonPrimarySize.Lg}
-          disabled={submitDisabled || isSubmitting}
+        <ButtonSecondary
+          className="multichain-send-page__nav-button"
+          onClick={onCancel}
+          size={ButtonSecondarySize.Lg}
           block
         >
-          {t(bestQuote ? 'confirm' : 'continue')}
-        </ButtonPrimary>
+          {sendStage === SEND_STAGES.EDIT ? t('reject') : t('cancel')}
+        </ButtonSecondary>
+        <Tooltip
+          className="multichain-send-page__nav-button"
+          title={t('sendSwapSubmissionWarning')}
+          disabled={!isSwapAndSend}
+          arrow
+          hideOnClick={false}
+          // explicitly inherit display since Tooltip will default to block
+          style={{
+            display: 'inline-flex',
+          }}
+        >
+          <ButtonPrimary
+            onClick={onSubmit}
+            loading={isSubmitting}
+            size={ButtonPrimarySize.Lg}
+            disabled={submitDisabled || isSubmitting}
+            block
+          >
+            {t(isSwapAndSend ? 'confirm' : 'continue')}
+          </ButtonPrimary>
+        </Tooltip>
       </Footer>
     </Page>
   );
