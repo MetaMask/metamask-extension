@@ -1,0 +1,120 @@
+{
+  "actionId": 3577139671,
+  "chainId": "0xa",
+  "dappSuggestedGasFees": { "gas": "0x31f10" },
+  "defaultGasEstimates": {
+    "estimateType": "dappSuggested",
+    "gas": "0x31f10",
+    "maxFeePerGas": "0x3b014b3",
+    "maxPriorityFeePerGas": "0x3b014b3"
+  },
+  "gasFeeEstimates": { "gasPrice": "0x3b202d0", "type": "eth_gasPrice" },
+  "gasFeeEstimatesLoaded": true,
+  "history": [
+    {
+      "actionId": 3577139671,
+      "chainId": "0xa",
+      "dappSuggestedGasFees": { "gas": "0x31f10" },
+      "defaultGasEstimates": {
+        "estimateType": "dappSuggested",
+        "gas": "0x31f10",
+        "maxFeePerGas": "0x3b014b3",
+        "maxPriorityFeePerGas": "0x3b014b3"
+      },
+      "id": "f0fc75d0-181d-11ef-9546-8b2366f13afd",
+      "layer1GasFee": "0x175283ae57",
+      "networkClientId": "efb54935-ecc4-4d24-a2c5-f12e921092ab",
+      "origin": "https://metamask.github.io",
+      "securityAlertResponse": {
+        "reason": "loading",
+        "result_type": "validation_in_progress",
+        "securityAlertId": "30626504-0069-4278-9e2e-3d7fba2e6aef"
+      },
+      "sendFlowHistory": [],
+      "status": "unapproved",
+      "time": 1716370234797,
+      "txParams": {
+        "data": "0x608060405234801561001057600080fd5b5033600160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055506000808190555061023b806100686000396000f300608060405260043610610057576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680632e1a7d4d1461005c5780638da5cb5b1461009d578063d0e30db0146100f4575b600080fd5b34801561006857600080fd5b5061008760048036038101908080359060200190929190505050610112565b6040518082815260200191505060405180910390f35b3480156100a957600080fd5b506100b26101d0565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b6100fc6101f6565b6040518082815260200191505060405180910390f35b6000600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff1614151561017057600080fd5b8160008082825403925050819055503373ffffffffffffffffffffffffffffffffffffffff166108fc839081150290604051600060405180830381858888f193505050501580156101c5573d6000803e3d6000fd5b506000549050919050565b600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b60003460008082825401925050819055506000549050905600a165627a7a72305820f237db3ec816a52589d82512117bc85bc08d3537683ffeff9059108caf3e5d400029",
+        "from": "0x2e0d7e8c45221fca00d74a3609a0f7097035d09b",
+        "gas": "0x31f10",
+        "maxFeePerGas": "0x3b014b3",
+        "maxPriorityFeePerGas": "0x3b014b3",
+        "value": "0x0"
+      },
+      "type": "contractDeployment",
+      "userEditedGasLimit": false,
+      "userFeeLevel": "dappSuggested",
+      "verifiedOnBlockchain": false
+    },
+    [
+      {
+        "note": "TransactionController#updateSimulationData - Update simulation data",
+        "op": "add",
+        "path": "/simulationData",
+        "timestamp": 1716370235743,
+        "value": {
+          "error": { "code": "disabled", "message": "Simulation disabled" },
+          "tokenBalanceChanges": []
+        }
+      }
+    ],
+    [
+      {
+        "note": "TransactionController:updatesecurityAlertResponse - securityAlertResponse updated",
+        "op": "replace",
+        "path": "/securityAlertResponse/result_type",
+        "timestamp": 1716370236091,
+        "value": "Benign"
+      },
+      { "op": "replace", "path": "/securityAlertResponse/reason", "value": "" },
+      {
+        "op": "add",
+        "path": "/securityAlertResponse/description",
+        "value": ""
+      },
+      { "op": "add", "path": "/securityAlertResponse/features", "value": [] },
+      {
+        "op": "add",
+        "path": "/securityAlertResponse/block",
+        "value": 120385722
+      },
+      {
+        "op": "add",
+        "path": "/gasFeeEstimates",
+        "value": { "gasPrice": "0x3b014b3", "type": "eth_gasPrice" }
+      },
+      { "op": "add", "path": "/gasFeeEstimatesLoaded", "value": true }
+    ]
+  ],
+  "id": "f0fc75d0-181d-11ef-9546-8b2366f13afd",
+  "layer1GasFee": "0x19fdabf615",
+  "networkClientId": "efb54935-ecc4-4d24-a2c5-f12e921092ab",
+  "origin": "https://metamask.github.io",
+  "securityAlertResponse": {
+    "block": 120385722,
+    "description": "",
+    "features": [],
+    "reason": "",
+    "result_type": "Benign",
+    "securityAlertId": "30626504-0069-4278-9e2e-3d7fba2e6aef"
+  },
+  "sendFlowHistory": [],
+  "simulationData": {
+    "error": { "code": "disabled", "message": "Simulation disabled" },
+    "tokenBalanceChanges": []
+  },
+  "status": "unapproved",
+  "time": 1716370234797,
+  "txParams": {
+    "data": "0x608060405234801561001057600080fd5b5033600160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055506000808190555061023b806100686000396000f300608060405260043610610057576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680632e1a7d4d1461005c5780638da5cb5b1461009d578063d0e30db0146100f4575b600080fd5b34801561006857600080fd5b5061008760048036038101908080359060200190929190505050610112565b6040518082815260200191505060405180910390f35b3480156100a957600080fd5b506100b26101d0565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b6100fc6101f6565b6040518082815260200191505060405180910390f35b6000600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff1614151561017057600080fd5b8160008082825403925050819055503373ffffffffffffffffffffffffffffffffffffffff166108fc839081150290604051600060405180830381858888f193505050501580156101c5573d6000803e3d6000fd5b506000549050919050565b600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b60003460008082825401925050819055506000549050905600a165627a7a72305820f237db3ec816a52589d82512117bc85bc08d3537683ffeff9059108caf3e5d400029",
+    "from": "0x2e0d7e8c45221fca00d74a3609a0f7097035d09b",
+    "gas": "0x31f10",
+    "maxFeePerGas": "0x3b014b3",
+    "maxPriorityFeePerGas": "0x3b014b3",
+    "value": "0x0"
+  },
+  "type": "contractDeployment",
+  "userEditedGasLimit": false,
+  "userFeeLevel": "dappSuggested",
+  "verifiedOnBlockchain": false
+}
