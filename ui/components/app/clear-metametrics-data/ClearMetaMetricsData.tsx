@@ -5,6 +5,7 @@ import {
   markingMetaMetricsDataDeletion,
   continueRecordingMetaMetricsData,
   stopRecordingMetaMetricsData,
+  openDataDeletionErrorModal,
 } from '../../../ducks/app/app';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -60,7 +61,7 @@ export default function ClearMetaMetricsData() {
         dispatch(stopRecordingMetaMetricsData());
       }
     } catch (error: unknown) {
-      // ignore
+      dispatch(openDataDeletionErrorModal());
     } finally {
       dispatch(hideDeleteMetaMetricsDataModal());
     }

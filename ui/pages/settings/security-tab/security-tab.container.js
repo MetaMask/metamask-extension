@@ -31,6 +31,7 @@ import {
   getShowDeleteMetaMetricsDataModal,
   isMetaMetricsDataDeletionMarked,
   hasRecordedMetricsSinceDeletion,
+  getShowDataDeletionErrorModal,
 } from '../../../selectors';
 import {
   continueRecordingMetaMetricsData,
@@ -90,6 +91,7 @@ const mapStateToProps = (state) => {
     securityAlertsEnabled: getIsSecurityAlertsEnabled(state),
     useTransactionSimulations: metamask.useTransactionSimulations,
     showDeleteMetaMetricsDataModal: getShowDeleteMetaMetricsDataModal(state),
+    showDataDeletionErrorModal: getShowDataDeletionErrorModal(state),
     metaMetricsDataDeletionStatus: getMetaMetricsDataDeletionStatus(state),
     metaMetricsDataDeletionDate: getMetaMetricsDataDeletionDate(state),
     metaMetricsDataDeletionMarked: isMetaMetricsDataDeletionMarked(state),

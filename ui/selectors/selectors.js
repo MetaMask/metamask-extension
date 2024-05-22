@@ -2565,6 +2565,10 @@ export function getShowDeleteMetaMetricsDataModal(state) {
   return state.appState.showDeleteMetaMetricsDataModal;
 }
 
+export function getShowDataDeletionErrorModal(state) {
+  return state.appState.showDataDeletionErrorModal;
+}
+
 export function getParticipateInMetaMetrics(state) {
   return state.metamask.participateInMetaMetrics;
 }

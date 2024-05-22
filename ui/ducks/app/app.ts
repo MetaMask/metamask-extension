@@ -101,6 +101,7 @@ type AppState = {
   txId: string | null;
   accountDetailsAddress: string;
   showDeleteMetaMetricsDataModal: boolean;
+  showDataDeletionErrorModal: boolean;
   metaMetricsDataDeletionMarked: boolean;
   hasRecordedMetricsSinceDeletion: boolean;
   snapsInstallPrivacyWarningShown: boolean;
@@ -189,6 +190,7 @@ const initialState: AppState = {
   txId: null,
   accountDetailsAddress: '',
   showDeleteMetaMetricsDataModal: false,
+  showDataDeletionErrorModal: false,
   metaMetricsDataDeletionMarked: false,
   hasRecordedMetricsSinceDeletion: false,
   snapsInstallPrivacyWarningShown: false,
@@ -624,6 +626,16 @@ export default function reduceApp(
         ...appState,
         showDeleteMetaMetricsDataModal: false,
       };
+    case actionConstants.DATA_DELETION_ERROR_MODAL_OPEN:
+      return {
+        ...appState,
+        showDataDeletionErrorModal: true,
+      };
+    case actionConstants.DATA_DELETION_ERROR_MODAL_CLOSE:
+      return {
+        ...appState,
+        showDataDeletionErrorModal: false,
+      };
     case actionConstants.METAMETRICS_DATA_DELETION_MARKED:
       return {
         ...appState,
@@ -763,6 +775,18 @@ export function openDeleteMetaMetricsDataModal(): Action {
 export function hideDeleteMetaMetricsDataModal(): Action {
   return {
     type: actionConstants.DELETE_METAMETRICS_DATA_MODAL_CLOSE,
+  };
+}
+
+export function openDataDeletionErrorModal(): Action {
+  return {
+    type: actionConstants.DATA_DELETION_ERROR_MODAL_OPEN,
+  };
+}
+
+export function hideDataDeletionErrorModal(): Action {
+  return {
+    type: actionConstants.DATA_DELETION_ERROR_MODAL_CLOSE,
   };
 }
 
