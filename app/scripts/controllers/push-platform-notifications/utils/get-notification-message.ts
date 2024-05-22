@@ -6,6 +6,8 @@ import { CHAIN_SYMBOLS } from '../../metamask-notifications/constants/notificati
 import type { TRIGGER_TYPES } from '../../metamask-notifications/constants/notification-schema';
 import type { OnChainRawNotification } from '../../metamask-notifications/types/on-chain-notification/on-chain-notification';
 import { t } from '../../../translate';
+import { getPlatform } from '../../../lib/util';
+import { PLATFORM_FIREFOX } from '../../../../../shared/constants/app';
 import { getAmount, formatAmount } from './get-notification-data';
 
 type PushNotificationMessage = {
@@ -67,7 +69,12 @@ export async function onNotificationClick(event: NotificationEvent) {
   const data: OnChainRawNotification = event?.notification?.data;
 
   // Navigate
-  const destination = `chrome-extension://${sw.location.host}/home.html#notifications/${data.id}`;
+  const getPlatformResult = getPlatform();
+  const platform =
+    getPlatformResult === PLATFORM_FIREFOX
+      ? 'chrome-extension'
+      : 'moz-extension';
+  const destination = `${platform}://${sw.location.host}/home.html#notifications/${data.id}`;
   event.waitUntil(sw.clients.openWindow(destination));
 }
 
