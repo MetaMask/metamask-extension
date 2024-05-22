@@ -372,7 +372,7 @@ export class MetamaskNotificationsController extends BaseController<
     state,
   }: {
     messenger: MetamaskNotificationsControllerMessenger;
-    state?: MetamaskNotificationsControllerState;
+    state?: Partial<MetamaskNotificationsControllerState>;
   }) {
     super({
       messenger,
@@ -382,6 +382,7 @@ export class MetamaskNotificationsController extends BaseController<
     });
 
     this.#registerMessageHandlers();
+    this.#clearLoadingStates();
     this.#accounts.initialize();
     this.#accounts.subscribe();
     this.#pushNotifications.subscribe();
@@ -402,6 +403,15 @@ export class MetamaskNotificationsController extends BaseController<
       `${controllerName}:selectIsMetamaskNotificationsEnabled`,
       this.selectIsMetamaskNotificationsEnabled.bind(this),
     );
+  }
+
+  #clearLoadingStates(): void {
+    this.update((state) => {
+      state.isUpdatingMetamaskNotifications = false;
+      state.isCheckingAccountsPresence = false;
+      state.isFetchingMetamaskNotifications = false;
+      state.isUpdatingMetamaskNotificationsAccount = [];
+    });
   }
 
   #assertAuthEnabled() {
@@ -748,6 +758,12 @@ export class MetamaskNotificationsController extends BaseController<
     try {
       this.#setIsUpdatingMetamaskNotifications(true);
 
+      // Disable Push Notifications
+      const userStorage = await this.#getUserStorage();
+      this.#assertUserStorage(userStorage);
+      const UUIDs = MetamaskNotificationsUtils.getAllUUIDs(userStorage);
+      await this.#pushNotifications.disablePushNotifications(UUIDs);
+
       // Clear Notification States (toggles and list)
       this.update((state) => {
         state.isMetamaskNotificationsEnabled = false;
@@ -817,13 +833,12 @@ export class MetamaskNotificationsController extends BaseController<
 
       // Update User Storage
       await this.#storage.setNotificationStorage(JSON.stringify(userStorage));
-      this.#clearUpdatingAccountsState(accounts);
-
       return userStorage;
     } catch (err) {
-      this.#clearUpdatingAccountsState(accounts);
       log.error('Failed to delete OnChain triggers', err);
       throw new Error('Failed to delete OnChain triggers');
+    } finally {
+      this.#clearUpdatingAccountsState(accounts);
     }
   }
 
@@ -860,7 +875,7 @@ export class MetamaskNotificationsController extends BaseController<
         MetamaskNotificationsUtils.upsertAddressTriggers(a, userStorage),
       );
 
-      const hasNewTriggers =
+      const newTriggers =
         MetamaskNotificationsUtils.traverseUserStorageTriggers(userStorage, {
           mapTrigger: (t) => {
             if (t.enabled === false) {
@@ -871,7 +886,7 @@ export class MetamaskNotificationsController extends BaseController<
         });
 
       // Create any missing triggers.
-      if (hasNewTriggers.length > 0) {
+      if (newTriggers.length > 0) {
         // Write te updated userStorage (where triggers are disabled)
         await this.#storage.setNotificationStorage(JSON.stringify(userStorage));
 
@@ -905,13 +920,12 @@ export class MetamaskNotificationsController extends BaseController<
 
       // Update the userStorage (where triggers are enabled)
       await this.#storage.setNotificationStorage(JSON.stringify(userStorage));
-      this.#clearUpdatingAccountsState(accounts);
-
       return userStorage;
     } catch (err) {
-      this.#clearUpdatingAccountsState(accounts);
       log.error('Failed to update OnChain triggers', err);
       throw new Error('Failed to update OnChain triggers');
+    } finally {
+      this.#clearUpdatingAccountsState(accounts);
     }
   }
 
