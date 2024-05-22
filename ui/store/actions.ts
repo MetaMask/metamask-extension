@@ -5399,31 +5399,6 @@ export function markMetamaskNotificationsAsRead(
 }
 
 /**
- * Enables or disables MetaMask notifications.
- *
- * This function sends a request to the background script to toggle the enabled state of MetaMask notifications.
- * Upon success, it dispatches an action with type `SET_METAMASK_NOTIFICATIONS_ENABLED` to update the Redux state.
- * If the operation encounters an error, it logs the error message and rethrows the error to ensure it is handled appropriately.
- *
- * @param state - A boolean indicating whether to enable (true) or disable (false) MetaMask notifications.
- * @returns A thunk action that, when dispatched, attempts to set the enabled state of MetaMask notifications.
- */
-export function setMetamaskNotificationsEnabled(
-  state: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
-    try {
-      await submitRequestToBackground('setMetamaskNotificationsEnabled', [
-        state,
-      ]);
-    } catch (error) {
-      logErrorWithMessage(error);
-      throw error;
-    }
-  };
-}
-
-/**
  * Enables or disables Snap notifications.
  *
  * This function sends a request to the background script to toggle the enabled state of Snap notifications.
@@ -5537,30 +5512,6 @@ export function showConfirmTurnOnMetamaskNotifications(): ThunkAction<
         name: 'TURN_ON_METAMASK_NOTIFICATIONS',
       }),
     );
-  };
-}
-
-/**
- * Marks the MetaMask notifications feature as seen by the user.
- *
- * This function sends a request to the background script to mark the MetaMask notifications feature as seen.
- * This is typically used to track if a user has been introduced to the notifications feature to avoid redundant prompts.
- * If the operation fails, it logs the error message.
- *
- * @returns A thunk action that, when dispatched, marks the MetaMask notifications feature as seen.
- */
-export function setMetamaskNotificationsFeatureSeen(): ThunkAction<
-  void,
-  unknown,
-  AnyAction
-> {
-  return async () => {
-    try {
-      await submitRequestToBackground('setMetamaskNotificationsFeatureSeen');
-    } catch (error) {
-      log.error(error);
-      throw error;
-    }
   };
 }
 

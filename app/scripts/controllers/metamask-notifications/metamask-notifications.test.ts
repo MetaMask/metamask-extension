@@ -182,54 +182,6 @@ describe('metamask-notifications - checkAccountsPresence()', () => {
   });
 });
 
-describe('metamask-notifications - setMetamaskNotificationsEnabled()', () => {
-  test('flips enabled state', async () => {
-    const { messenger, mockIsSignedIn } = mockNotificationMessenger();
-    mockIsSignedIn.mockReturnValue(true);
-
-    const controller = new MetamaskNotificationsController({
-      messenger,
-      state: { ...defaultState, isMetamaskNotificationsEnabled: false },
-    });
-
-    await controller.setMetamaskNotificationsEnabled(true);
-
-    expect(controller.state.isMetamaskNotificationsEnabled).toBe(true);
-  });
-});
-
-describe('metamask-notifications - setMetamaskNotificationsFeatureSeen()', () => {
-  test('flips state when the method is called', async () => {
-    const { messenger, mockIsSignedIn } = mockNotificationMessenger();
-    mockIsSignedIn.mockReturnValue(true);
-
-    const controller = new MetamaskNotificationsController({
-      messenger,
-      state: { ...defaultState, isMetamaskNotificationsFeatureSeen: false },
-    });
-
-    await controller.setMetamaskNotificationsFeatureSeen();
-
-    expect(controller.state.isMetamaskNotificationsFeatureSeen).toBe(true);
-  });
-
-  test('does not update if auth is not enabled', async () => {
-    const { messenger, mockIsSignedIn } = mockNotificationMessenger();
-    mockIsSignedIn.mockReturnValue(false); // state is off.
-
-    const controller = new MetamaskNotificationsController({
-      messenger,
-      state: { ...defaultState, isMetamaskNotificationsFeatureSeen: false },
-    });
-
-    await expect(() =>
-      controller.setMetamaskNotificationsFeatureSeen(),
-    ).rejects.toThrow();
-
-    expect(controller.state.isMetamaskNotificationsFeatureSeen).toBe(false); // this flag was never flipped
-  });
-});
-
 describe('metamask-notifications - setFeatureAnnouncementsEnabled()', () => {
   test('flips state when the method is called', async () => {
     const { messenger, mockIsSignedIn } = mockNotificationMessenger();
