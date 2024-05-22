@@ -116,7 +116,6 @@ import {
 import { ThemeType } from '../../shared/constants/preferences';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import type { MarkAsReadNotificationsParam } from '../../app/scripts/controllers/metamask-notifications/types/notification/notification';
-import { DataDeletionResponse } from '../../app/scripts/controllers/metametrics-data-deletion/metametrics-data-deletion';
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { updateCustodyState } from './institutional/institution-actions';
@@ -5090,26 +5089,15 @@ export function setName(
 /**
  * To create a data deletion regulation for MetaMetrics data deletion
  */
-export function createMetaMetricsDataDeletionTask(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async () => {
-    await submitRequestToBackground('createMetaMetricsDataDeletionTask');
-  };
+export async function createMetaMetricsDataDeletionTask(): Promise<void> {
+  await submitRequestToBackground('createMetaMetricsDataDeletionTask');
 }
 
 /**
  * To check the status of the current delete regulation.
  */
-export async function UpdateDataDeletionTaskStatusAction(): Promise<void> {
-  return async () => {
-    await submitRequestToBackground<DataDeletionResponse>(
-      'UpdateDataDeletionTaskStatusAction',
-    );
-  };
+export async function updateDataDeletionTaskStatus(): Promise<void> {
+  await submitRequestToBackground('updateDataDeletionTaskStatus');
 }
 
 /**
