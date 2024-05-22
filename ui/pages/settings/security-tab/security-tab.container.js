@@ -20,7 +20,7 @@ import {
   setUseExternalNameSources,
   setUseTransactionSimulations,
   setSecurityAlertsEnabled,
-  checkDataDeletionTaskStatus,
+  updateDataDeletionTaskStatus,
 } from '../../../store/actions';
 import {
   getIsSecurityAlertsEnabled,
@@ -137,8 +137,8 @@ const mapDispatchToProps = (dispatch) => {
     setDeleteMetaMetricsDataModalOpen: () => {
       return dispatch(openDeleteMetaMetricsDataModal());
     },
-    checkDataDeletionTaskStatus: () => {
-      return dispatch(checkDataDeletionTaskStatus());
+    updateDataDeletionTaskStatus: () => {
+      return dispatch(updateDataDeletionTaskStatus());
     },
     unMarkingMetaMetricsDataDeletion: () => {
       return dispatch(unMarkingMetaMetricsDataDeletion());
