@@ -3,11 +3,7 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import type { InternalAccount } from '@metamask/keyring-api';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
-import {
-  NOTIFICATIONS_ROUTE,
-  DEFAULT_ROUTE,
-} from '../../helpers/constants/routes';
+import { NOTIFICATIONS_ROUTE } from '../../helpers/constants/routes';
 import {
   Box,
   IconName,
@@ -29,7 +25,6 @@ import { NotificationsPage } from '../../components/multichain';
 import { Content, Header } from '../../components/multichain/pages/page';
 import {
   selectIsMetamaskNotificationsEnabled,
-  selectIsMetamaskNotificationsFeatureSeen,
   getIsUpdatingMetamaskNotifications,
   getIsUpdatingMetamaskNotificationsAccount,
 } from '../../selectors/metamask-notifications/metamask-notifications';
@@ -54,13 +49,7 @@ export default function NotificationsSettings() {
   const history = useHistory();
   const t = useI18nContext();
 
-  // Context
-  const { listNotifications } = useMetamaskNotificationsContext();
-
   // Selectors
-  const isMetamaskNotificationsFeatureSeen = useSelector(
-    selectIsMetamaskNotificationsFeatureSeen,
-  );
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
@@ -98,11 +87,6 @@ export default function NotificationsSettings() {
     }
   }, [isUpdatingMetamaskNotificationsAccount]);
 
-  if (!isMetamaskNotificationsFeatureSeen) {
-    listNotifications();
-    history.push(DEFAULT_ROUTE);
-  }
-
   return (
     <NotificationsPage>
       <Header
@@ -114,9 +98,10 @@ export default function NotificationsSettings() {
             onClick={() => history.push(NOTIFICATIONS_ROUTE)}
           />
         }
-        children={t('notifications')}
         endAccessory={null}
-      />
+      >
+        {t('notifications')}
+      </Header>
       <Content padding={0}>
         {/* Allow notifications */}
         <NotificationsSettingsAllowNotifications

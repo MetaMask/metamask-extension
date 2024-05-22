@@ -2649,7 +2649,7 @@
     "message": "MetaMask Institutional Version"
   },
   "metamaskNotificationsAreOff": {
-    "message": "Notifications are currently not active."
+    "message": "Wallet notifications are currently not active."
   },
   "metamaskPortfolio": {
     "message": "MetaMask Portfolio."
@@ -3561,9 +3561,6 @@
   },
   "osTheme": {
     "message": "System"
-  },
-  "other": {
-    "message": "Other"
   },
   "otherSnaps": {
     "message": "other snaps",
@@ -5994,7 +5991,7 @@
   },
 
   "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "To use notifications, we use a profile to sync some settings across your devices. $1"
+    "message": "To use wallet notifications, we use a profile to sync some settings across your devices. $1"
   },
 
   "turnOnMetamaskNotificationsMessageThird": {
@@ -6244,6 +6241,9 @@
   },
   "weak": {
     "message": "Weak"
+  },
+  "web3": {
+    "message": "Web3"
   },
   "web3ShimUsageNotification": {
     "message": "We noticed that the current website tried to use the removed window.web3 API. If the site appears to be broken, please click $1 for more information.",

@@ -8,6 +8,8 @@ import {
   Box,
   Button,
   ButtonSize,
+  Container,
+  ContainerMaxWidth,
   Text,
 } from '../../components/component-library';
 import {
@@ -20,6 +22,7 @@ import {
   AlignItems,
   TextColor,
   TextVariant,
+  BorderRadius,
 } from '../../helpers/constants/design-system';
 
 export const NotificationsListTurnOnNotifications = () => {
@@ -71,29 +74,38 @@ export const NotificationsListTurnOnNotifications = () => {
   );
 
   return (
-    <Box
+    <Container
+      maxWidth={ContainerMaxWidth.Sm}
       height={BlockSize.Full}
-      width={BlockSize.Full}
+      margin="auto"
       display={Display.Flex}
       justifyContent={JustifyContent.center}
       alignItems={AlignItems.center}
       flexDirection={FlexDirection.Column}
-      gap={2}
+      gap={4}
       data-testid="notifications-list-turn-on-notifications"
       textAlign={TextAlign.Center}
       paddingLeft={4}
       paddingRight={4}
+      paddingTop={4}
     >
       <Text variant={TextVariant.headingSm}>
         {t('metamaskNotificationsAreOff')}
       </Text>
-      <Text as="p" paddingTop={4}>
+      <Box
+        as="img"
+        src="./images/turn-on-metamask-notifications.png"
+        width={BlockSize.Full}
+        borderRadius={BorderRadius.MD}
+      />
+
+      <Text as="p">
         {t('turnOnMetamaskNotificationsMessageSecond', [privacyLink])}
       </Text>
-      <Text as="p" paddingTop={4}>
+      <Text as="p">
         {t('turnOnMetamaskNotificationsMessageThird', [strongText])}
       </Text>
-      <Box paddingTop={4}>
+      <Box>
         <Button
           onClick={() => handleTurnOnNotifications()}
           size={ButtonSize.Md}
@@ -103,11 +115,11 @@ export const NotificationsListTurnOnNotifications = () => {
           {t('turnOnMetamaskNotificationsButton')}
         </Button>
         {error && (
-          <Text as="p" color={TextColor.errorDefault} paddingTop={4}>
+          <Text as="p" color={TextColor.errorDefault}>
             {t('turnOnMetamaskNotificationsError')}
           </Text>
         )}
       </Box>
-    </Box>
+    </Container>
   );
 };

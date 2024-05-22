@@ -130,8 +130,16 @@ export const selectIsMetamaskNotificationsEnabled = createSelector(
  * @returns {boolean} Returns true if Snap notifications are enabled, false otherwise.
  */
 export const selectIsSnapNotificationsEnabled = createSelector(
-  [getMetamask],
-  (metamask) => metamask.isSnapNotificationsEnabled,
+  [getMetamask, selectIsMetamaskNotificationsEnabled],
+  (metamask, isMetamaskNotificationsEnabled) => {
+    // The snap enabled state is managed by the unified notifications controller.
+    // If this controller is not setup, use defaults (true)
+    if (!isMetamaskNotificationsEnabled) {
+      return true;
+    }
+
+    return metamask.isSnapNotificationsEnabled;
+  },
 );
 
 /**

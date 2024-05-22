@@ -6,6 +6,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { MetamaskNotificationsProvider } from '../../contexts/metamask-notifications/metamask-notifications';
 import { NotificationsList } from './notifications-list';
+import { TAB_KEYS } from './notifications';
 
 jest.mock('../../store/actions', () => ({
   deleteExpiredNotifications: jest.fn(() => () => Promise.resolve()),
@@ -46,7 +47,12 @@ describe('NotificationsList', () => {
       <Provider store={store}>
         <Router>
           <MetamaskNotificationsProvider>
-            <NotificationsList activeTab="ALL" notifications={[]} />
+            <NotificationsList
+              activeTab={TAB_KEYS.ALL}
+              notifications={[]}
+              isLoading={false}
+              isError={false}
+            />
           </MetamaskNotificationsProvider>
         </Router>
       </Provider>,

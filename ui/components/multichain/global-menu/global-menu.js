@@ -17,14 +17,10 @@ import {
   showConfirmTurnOnMetamaskNotifications,
 } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  selectIsMetamaskNotificationsEnabled,
-  selectIsMetamaskNotificationsFeatureSeen,
-} from '../../../selectors/metamask-notifications/metamask-notifications';
+import { selectIsMetamaskNotificationsEnabled } from '../../../selectors/metamask-notifications/metamask-notifications';
 import {
   Box,
   IconName,
-  Tag,
   Popover,
   PopoverPosition,
 } from '../../component-library';
@@ -57,21 +53,18 @@ import {
   getUnapprovedTransactions,
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getAnySnapUpdateAvailable,
+  getNotifySnaps,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import {
   AlignItems,
-  BackgroundColor,
   BlockSize,
   BorderColor,
-  BorderRadius,
   BorderStyle,
   Display,
   FlexDirection,
   JustifyContent,
-  TextColor,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
 ///: END:ONLY_INCLUDE_IF
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '..';
@@ -89,10 +82,6 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
 
   const unapprovedTransactions = useSelector(getUnapprovedTransactions);
 
-  const isMetamaskNotificationsFeatureSeen = useSelector(
-    selectIsMetamaskNotificationsFeatureSeen,
-  );
-
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
@@ -106,8 +95,10 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
   ///: END:ONLY_INCLUDE_IF
 
+  let hasNotifySnaps = false;
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   const snapsUpdatesAvailable = useSelector(getAnySnapUpdateAvailable);
+  hasNotifySnaps = useSelector(getNotifySnaps).length > 0;
   ///: END:ONLY_INCLUDE_IF
 
   let supportText = t('support');
@@ -141,13 +132,18 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
   }, [closeMenu]);
 
   const handleNotificationsClick = () => {
-    if (isMetamaskNotificationsFeatureSeen) {
-      history.push(NOTIFICATIONS_ROUTE);
-      closeMenu();
-    } else {
+    const shouldShowEnableModal =
+      !hasNotifySnaps && !isMetamaskNotificationsEnabled;
+
+    if (shouldShowEnableModal) {
       dispatch(showConfirmTurnOnMetamaskNotifications());
       closeMenu();
+      return;
     }
+
+    // Otherwise we can navigate to the notifications page
+    history.push(NOTIFICATIONS_ROUTE);
+    closeMenu();
   };
 
   return (
@@ -176,21 +172,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
             justifyContent={JustifyContent.spaceBetween}
           >
             {t('notifications')}
-            {isMetamaskNotificationsEnabled && <NotificationsTagCounter />}
-            {!isMetamaskNotificationsFeatureSeen && (
-              <Tag
-                backgroundColor={BackgroundColor.infoMuted}
-                borderStyle={BorderStyle.none}
-                borderRadius={BorderRadius.MD}
-                label={t('new')}
-                labelProps={{
-                  color: TextColor.primaryDefault,
-                  variant: TextVariant.bodySm,
-                }}
-                paddingLeft={2}
-                paddingRight={2}
-              />
-            )}
+            <NotificationsTagCounter />
           </Box>
         </MenuItem>
         <Box
