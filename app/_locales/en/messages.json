@@ -352,6 +352,9 @@
   "alertModalDetails": {
     "message": "Alert Details"
   },
+  "alertModalReviewAllAlerts": {
+    "message": "Review all alerts"
+  },
   "alertSettingsUnconnectedAccount": {
     "message": "Browsing a website with an unconnected account selected"
   },
@@ -817,6 +820,15 @@
   },
   "confirm": {
     "message": "Confirm"
+  },
+  "confirmAlertModalAcknowledge": {
+    "message": "I have acknowledged the alerts and still want to proceed"
+  },
+  "confirmAlertModalDetails": {
+    "message": "If you sign in, a third party known for scams might take all your assets. Please review the alerts before you proceed."
+  },
+  "confirmAlertModalTitle": {
+    "message": "Your assets may be at risk"
   },
   "confirmConnectCustodianRedirect": {
     "message": "We will redirect you to $1 upon clicking continue."
@@ -4159,6 +4171,9 @@
   },
   "revealTheSeedPhrase": {
     "message": "Reveal seed phrase"
+  },
+  "reviewAlerts": {
+    "message": "Review alerts"
   },
   "revokeAllTokensTitle": {
     "message": "Revoke permission to access and transfer all of your $1?",
