@@ -131,8 +131,6 @@ export const RedesignedGasFees = () => {
     return { maxFeePerGas, maxPriorityFeePerGas };
   };
 
-  console.log({ currentConfirmation });
-
   const { maxFeePerGas, maxPriorityFeePerGas } =
     useEIP1559TxFees(currentConfirmation);
 
