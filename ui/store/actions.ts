@@ -5090,26 +5090,15 @@ export function setName(
 /**
  * To create a data deletion regulation for MetaMetrics data deletion
  */
-export function createMetaMetricsDataDeletionTask(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async () => {
-    await submitRequestToBackground('createMetaMetricsDataDeletionTask');
-  };
+export async function createMetaMetricsDataDeletionTask(): Promise<void> {
+  await submitRequestToBackground('createMetaMetricsDataDeletionTask');
 }
 
 /**
  * To check the status of the current delete regulation.
  */
-export async function UpdateDataDeletionTaskStatusAction(): Promise<void> {
-  return async () => {
-    await submitRequestToBackground<DataDeletionResponse>(
-      'UpdateDataDeletionTaskStatusAction',
-    );
-  };
+export async function updateDataDeletionTaskStatus(): Promise<void> {
+  await submitRequestToBackground('updateDataDeletionTaskStatus');
 }
 
 /**
