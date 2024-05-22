@@ -271,10 +271,12 @@ describe('Switch Ethereum Chain for two dapps', function () {
         // Confirm switchEthereumChain with queued pending tx
         await driver.clickElement({ text: 'Switch network', tag: 'button' });
 
-        // Window handles should only be expanded mm, dapp one, dapp 2, and offscreen (4 total)
+        // Window handles should only be expanded mm, dapp one, dapp 2, and the offscreen document
+        // if this is an MV3 build(3 or 4 total)
         await driver.wait(async () => {
           const windowHandles = await driver.getAllWindowHandles();
-          return windowHandles.length === 4;
+          const numberOfWindowHandlesToExpect = process.env.ENABLE_MV3 ? 4 : 3;
+          return windowHandles.length === numberOfWindowHandlesToExpect;
         });
       },
     );
