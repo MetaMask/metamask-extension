@@ -2914,7 +2914,7 @@ export function signTransaction(history) {
 
         const meta = {
           swapAndSendRecipient: draftTransaction.recipient.address,
-          type: TransactionType.swap,
+          type: TransactionType.swapAndSend,
           sourceTokenSymbol,
           destinationTokenSymbol,
           destinationTokenDecimals,
@@ -2946,7 +2946,7 @@ export function signTransaction(history) {
           {
             requireApproval: false,
             sendFlowHistory: draftTransaction.history,
-            type: TransactionType.swap,
+            type: TransactionType.swapAndSend,
             swaps: {
               hasApproveTx: Boolean(bestQuote?.approvalNeeded),
               meta,
