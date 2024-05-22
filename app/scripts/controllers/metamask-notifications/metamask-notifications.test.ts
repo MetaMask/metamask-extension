@@ -553,16 +553,20 @@ describe('metamask-notifications - enableMetamaskNotifications()', () => {
   it('not create new notifications when enabling an account already in storage', async () => {
     const mocks = arrangeMocks();
     mocks.mockListAccounts.mockResolvedValue(['0xAddr1']);
-    mocks.mockPerformGetStorage.mockResolvedValue(
-      JSON.stringify(createMockFullUserStorage({ address: '0xAddr1' })),
-    );
+    const userStorage = createMockFullUserStorage({ address: '0xAddr1' });
+    mocks.mockPerformGetStorage.mockResolvedValue(JSON.stringify(userStorage));
     const controller = new MetamaskNotificationsController({
       messenger: mocks.messenger,
     });
 
     await controller.enableMetamaskNotifications();
 
-    expect(mocks.mockCreateOnChainTriggers).not.toBeCalled();
+    const existingTriggers =
+      MetamaskNotificationsUtils.getAllUUIDs(userStorage);
+    const upsertedTriggers =
+      mocks.mockCreateOnChainTriggers.mock.calls[0][3].map((t) => t.id);
+
+    expect(existingTriggers).toEqual(upsertedTriggers);
   });
 
   function arrangeMocks() {
