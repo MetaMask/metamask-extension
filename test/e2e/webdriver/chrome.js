@@ -35,13 +35,8 @@ class ChromeDriver {
       args.push('--auto-open-devtools-for-tabs');
     }
 
-    if (process.env.ENABLE_MV3) {
-      args.push('--log-level=0');
-      args.push('--enable-logging');
-      args.push(`--user-data-dir=${process.cwd()}/test-artifacts/chrome`);
-    } else {
-      args.push('--log-level=3');
-    }
+    args.push('--log-level=3');
+    args.push('--enable-logging');
 
     if (process.env.CI || process.env.CODESPACES) {
       args.push('--disable-gpu');
