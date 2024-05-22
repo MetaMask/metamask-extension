@@ -106,7 +106,7 @@ Standard XPath syntax for creating XPath is.
 `Xpath=//tagname[@attribute='value']`
 <br>
 
-<iframe width="560" height="315" src="image/xpath_locator.mov" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+https://github.com/MetaMask/metamask-extension/assets/539738/7a67a35f-5e42-465c-a376-4b24f931783a
 
 >![Screenshot displays ‘Confirm’ button in the send transaction page](image/xpath.png)
 >
