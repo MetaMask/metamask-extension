@@ -1,66 +1,93 @@
+import { createMockInternalAccount } from '../../../test/jest/mocks';
 import { migrate, version } from './119';
 
 const oldVersion = 118;
+const newVersion = 119;
 
-describe('migration #119', () => {
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
-
-  it('updates the version metadata', async () => {
+describe('migration #120', () => {
+  it('should update the version metadata', async () => {
     const oldStorage = {
-      meta: {
-        version: oldVersion,
-      },
+      meta: { version: oldVersion },
       data: {},
     };
 
     const newStorage = await migrate(oldStorage);
-
     expect(newStorage.meta).toStrictEqual({ version });
   });
 
-  describe('set useRequestQueue to true in PreferencesController', () => {
-    it('sets useRequestQueue to true', async () => {
-      const oldStorage = {
-        PreferencesController: {
-          useRequestQueue: false,
+  it('should add importTime to InternalAccount if it is not defined"', async () => {
+    const mockInternalAccount = createMockInternalAccount();
+    // @ts-expect-error forcing the importTime to be undefined for migration test.
+    mockInternalAccount.metadata.importTime = undefined;
+
+    const oldStorage = {
+      meta: {
+        version: oldVersion,
+      },
+      data: {
+        AccountsController: {
+          internalAccounts: {
+            accounts: {
+              [mockInternalAccount.id]: mockInternalAccount,
+            },
+            selectedAccount: mockInternalAccount.id,
+          },
         },
-      };
+      },
+    };
 
-      const expectedState = {
-        PreferencesController: {
-          useRequestQueue: true,
+    const newStorage = await migrate(oldStorage);
+    expect(newStorage).toStrictEqual({
+      meta: {
+        version: newVersion,
+      },
+      data: {
+        AccountsController: {
+          internalAccounts: {
+            accounts: {
+              [mockInternalAccount.id]: {
+                ...mockInternalAccount,
+                metadata: {
+                  ...mockInternalAccount.metadata,
+                  importTime: expect.any(Number),
+                },
+              },
+            },
+            selectedAccount: mockInternalAccount.id,
+          },
         },
-      };
-
-      const transformedState = await migrate({
-        meta: { version: oldVersion },
-        data: oldStorage,
-      });
-
-      expect(transformedState.data).toEqual(expectedState);
+      },
     });
+    expect(newStorage);
+  });
 
-    it('should not update useRequestQueue value if it was set true in initial state', async () => {
-      const oldStorage = {
-        PreferencesController: {
-          useRequestQueue: true,
+  it('should make no changes importTime already exists', async () => {
+    const mockInternalAccount = createMockInternalAccount();
+    const mockAccountsControllerState = {
+      internalAccounts: {
+        accounts: {
+          [mockInternalAccount.id]: mockInternalAccount,
         },
-      };
+        selectedAccount: mockInternalAccount.id,
+      },
+    };
+    const oldStorage = {
+      meta: {
+        version: oldVersion,
+      },
+      data: {
+        AccountsController: mockAccountsControllerState,
+      },
+    };
 
-      const expectedState = {
-        PreferencesController: {
-          useRequestQueue: true,
-        },
-      };
-
-      const transformedState = await migrate({
-        meta: { version: oldVersion },
-        data: oldStorage,
-      });
-
-      expect(transformedState.data).toEqual(expectedState);
+    const newStorage = await migrate(oldStorage);
+    expect(newStorage).toStrictEqual({
+      meta: {
+        version: newVersion,
+      },
+      data: {
+        AccountsController: mockAccountsControllerState,
+      },
     });
   });
 });

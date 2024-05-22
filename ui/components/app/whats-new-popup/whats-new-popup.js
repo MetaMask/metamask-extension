@@ -16,7 +16,6 @@ import {
   NOTIFICATION_PETNAMES,
   NOTIFICATION_U2F_LEDGER_LIVE,
   getTranslatedUINotifications,
-  NOTIFICATION_PORTFOLIO_V2,
   NOTIFICATION_SIMULATIONS,
 } from '../../../../shared/notifications';
 import { I18nContext } from '../../../contexts/i18n';
@@ -62,12 +61,6 @@ function getActionFunctionById(id, history) {
     ///: END:ONLY_INCLUDE_IF
     [NOTIFICATION_PETNAMES]: () => {
       updateViewedNotifications({ [NOTIFICATION_PETNAMES]: true });
-    },
-    [NOTIFICATION_PORTFOLIO_V2]: () => {
-      updateViewedNotifications({ [NOTIFICATION_PORTFOLIO_V2]: true });
-      global.platform.openTab({
-        url: 'https://portfolio.metamask.io/',
-      });
     },
     [NOTIFICATION_SIMULATIONS]: () => {
       updateViewedNotifications({ [NOTIFICATION_SIMULATIONS]: true });
@@ -295,7 +288,6 @@ export default function WhatsNewPopup({ onClose }) {
     [NOTIFICATION_BLOCKAID_DEFAULT]: renderFirstNotification,
     ///: END:ONLY_INCLUDE_IF
     [NOTIFICATION_PETNAMES]: renderFirstNotification,
-    [NOTIFICATION_PORTFOLIO_V2]: renderFirstNotification,
     [NOTIFICATION_SIMULATIONS]: renderFirstNotification,
   };
 

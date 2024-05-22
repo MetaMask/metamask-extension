@@ -1,3 +1,1 @@
-import preloader from './preloader-icon.component';
-
-export default preloader;
+export { default } from './preloader-icon.component';
