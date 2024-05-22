@@ -48,9 +48,6 @@ async function addEthereumChainHandler(
   },
 ) {
   const validParams = validateAddEthereumChainParams(req.params[0], end);
-  if (!validParams) {
-    return end();
-  }
 
   const {
     chainId,
