@@ -32,6 +32,7 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import { useAlertActionHandler } from '../../../../../hooks/useAlertActionHandler';
 
 export type AlertModalProps = {
   /**
@@ -219,15 +220,17 @@ export function AcknowledgeCheckboxBase({
 function AcknowledgeButton({
   onAcknowledgeClick,
   isConfirmed,
+  hasActions,
 }: {
   onAcknowledgeClick: () => void;
   isConfirmed: boolean;
+  hasActions?: boolean;
 }) {
   const t = useI18nContext();
 
   return (
     <Button
-      variant={ButtonVariant.Primary}
+      variant={hasActions ? ButtonVariant.Secondary : ButtonVariant.Primary}
       width={BlockSize.Full}
       onClick={onAcknowledgeClick}
       size={ButtonSize.Lg}
@@ -235,6 +238,28 @@ function AcknowledgeButton({
       disabled={!isConfirmed}
     >
       {t('gotIt')}
+    </Button>
+  );
+}
+
+function ActionButton({ action }: { action?: { key: string; label: string } }) {
+  const { processAction } = useAlertActionHandler();
+
+  if (!action) {
+    return null;
+  }
+
+  const { key, label } = action;
+
+  return (
+    <Button
+      key={key}
+      variant={ButtonVariant.Primary}
+      width={BlockSize.Full}
+      size={ButtonSize.Lg}
+      onClick={() => processAction(key)}
+    >
+      {label}
     </Button>
   );
 }
@@ -303,10 +328,16 @@ export function AlertModal({
             width={BlockSize.Full}
           >
             {customAcknowledgeButton ?? (
-              <AcknowledgeButton
-                onAcknowledgeClick={onAcknowledgeClick}
-                isConfirmed={isConfirmed}
-              />
+              <>
+                <AcknowledgeButton
+                  onAcknowledgeClick={onAcknowledgeClick}
+                  isConfirmed={isConfirmed}
+                  hasActions={Boolean(selectedAlert.actions)}
+                />
+                {(selectedAlert.actions ?? []).map((action) => (
+                  <ActionButton key={action.key} action={action} />
+                ))}
+              </>
             )}
           </Box>
         </ModalFooter>
