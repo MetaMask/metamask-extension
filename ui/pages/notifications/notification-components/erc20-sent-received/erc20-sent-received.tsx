@@ -153,11 +153,11 @@ export const components: NotificationComponent<ERC20Notification> = {
             }}
             label={t('asset') || ''}
             detail={notification.data.token.symbol}
-            fiatValue={`${getUsdAmount(
+            fiatValue={`$${getUsdAmount(
               notification.data.token.amount,
               notification.data.token.decimals,
               notification.data.token.usd,
-            )} $`}
+            )}`}
             value={`${getAmount(
               notification.data.token.amount,
               notification.data.token.decimals,

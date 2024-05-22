@@ -159,11 +159,11 @@ export const components: NotificationComponent<StakeNotification> = {
                 : t('notificationItemUnStaked') || ''
             }
             detail={notification.data.stake_in.symbol}
-            fiatValue={`${getUsdAmount(
+            fiatValue={`$${getUsdAmount(
               notification.data.stake_in.amount,
               notification.data.stake_in.decimals,
               notification.data.stake_in.usd,
-            )} $`}
+            )}`}
             value={`${getAmount(
               notification.data.stake_in.amount,
               notification.data.stake_in.decimals,
@@ -193,11 +193,11 @@ export const components: NotificationComponent<StakeNotification> = {
                 : t('notificationItemUnStaked') || ''
             }
             detail={notification.data.stake_out.symbol}
-            fiatValue={`${getUsdAmount(
+            fiatValue={`$${getUsdAmount(
               notification.data.stake_out.amount,
               notification.data.stake_out.decimals,
               notification.data.stake_out.usd,
-            )} $`}
+            )}`}
             value={`${getAmount(
               notification.data.stake_out.amount,
               notification.data.stake_out.decimals,

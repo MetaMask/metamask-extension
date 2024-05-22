@@ -122,11 +122,11 @@ export const components: NotificationComponent<LidoReadyWithDrawnNotification> =
               }}
               label={t('notificationItemUnStakingRequested') || ''}
               detail={notification.data.staked_eth.symbol}
-              fiatValue={`${getUsdAmount(
+              fiatValue={`$${getUsdAmount(
                 notification.data.staked_eth.usd,
                 notification.data.staked_eth.decimals,
                 notification.data.staked_eth.usd,
-              )} $`}
+              )}`}
               value={`${getAmount(
                 notification.data.staked_eth.amount,
                 notification.data.staked_eth.decimals,

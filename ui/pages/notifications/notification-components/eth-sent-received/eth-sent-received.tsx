@@ -167,11 +167,11 @@ export const components: NotificationComponent<ETHNotification> = {
             }}
             label={t('asset') || ''}
             detail={nativeCurrencySymbol}
-            fiatValue={`${getUsdAmount(
+            fiatValue={`$${getUsdAmount(
               notification.data.amount.eth,
               '18',
               notification.data.amount.usd,
-            )} $`}
+            )}`}
             value={`${getAmount(notification.data.amount.eth, '18', {
               shouldEllipse: true,
             })} ${nativeCurrencySymbol}`}
