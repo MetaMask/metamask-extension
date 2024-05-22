@@ -37,7 +37,12 @@ async function switchEthereumChainHandler(
     getChainPermissionsFeatureFlag,
   },
 ) {
-  const chainId = validateSwitchEthereumChainParams(req, end);
+  let chainId;
+  try {
+    chainId = validateSwitchEthereumChainParams(req, end);
+  } catch (error) {
+    return end(error);
+  }
 
   const { origin } = req;
   const currentChainIdForOrigin = getCurrentChainIdForDomain(origin);

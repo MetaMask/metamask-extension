@@ -47,7 +47,12 @@ async function addEthereumChainHandler(
     getChainPermissionsFeatureFlag,
   },
 ) {
-  const validParams = validateAddEthereumChainParams(req.params[0], end);
+  let validParams;
+  try {
+    validParams = validateAddEthereumChainParams(req.params[0], end);
+  } catch (error) {
+    return end(error);
+  }
 
   const {
     chainId,
