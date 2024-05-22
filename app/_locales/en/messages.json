@@ -3097,6 +3097,9 @@
   "notificationDetailMaxFee": {
     "message": "Max fee per gas"
   },
+  "notificationDetailNetwork": {
+    "message": "Network"
+  },
   "notificationDetailNetworkFee": {
     "message": "Network fee"
   },

@@ -178,7 +178,7 @@ export const components: NotificationComponent<ERC1155Notification> = {
             icon={{
               src: nativeCurrencyLogo,
             }}
-            label={t('network') || ''}
+            label={t('notificationDetailNetwork') || ''}
             detail={nativeCurrencyName}
           />
         );

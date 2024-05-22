@@ -188,7 +188,7 @@ export const components: NotificationComponent<ETHNotification> = {
             icon={{
               src: nativeCurrencyLogo,
             }}
-            label={t('network') || ''}
+            label={t('notificationDetailNetwork') || ''}
             detail={nativeCurrencyName}
           />
         );
