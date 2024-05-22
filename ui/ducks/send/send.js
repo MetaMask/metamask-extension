@@ -809,7 +809,7 @@ const fetchSwapAndSendQuotes = createAsyncThunk(
       return { quotes: null, requestTimestamp };
     }
 
-    const quotes = await new Promise((resolve, reject) =>
+    let quotes = await new Promise((resolve, reject) =>
       setTimeout(async () => {
         if (requestTimestamp !== latestFetchTime) {
           reject(new Error(RECENT_REQUEST_ERROR));
@@ -840,7 +840,7 @@ const fetchSwapAndSendQuotes = createAsyncThunk(
       }
     }
 
-    addAdjustedReturnToQuotes(
+    quotes = await addAdjustedReturnToQuotes(
       quotes,
       state,
       draftTransaction.receiveAsset?.details,

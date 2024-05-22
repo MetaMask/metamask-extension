@@ -181,7 +181,7 @@ export const addAdjustedReturnToQuotes = async (
   destinationAsset,
 ) => {
   if (!quotes?.length) {
-    return;
+    return quotes;
   }
 
   try {
@@ -229,7 +229,7 @@ export const addAdjustedReturnToQuotes = async (
 
     // if conversion rate isn't available, do not update the property
     if (!destToNativeConversionRate) {
-      return;
+      return quotes;
     }
 
     quotes.forEach((quote) => {
@@ -258,8 +258,8 @@ export const addAdjustedReturnToQuotes = async (
         .minus(gasPriceInNative)
         .toNumber();
 
-      // add to qutoe
-      quote.adjustAmountReceivedInNative = adjustAmountReceivedInNative;
+      // add to quote
+      return { ...quote, adjustAmountReceivedInNative };
     });
   } catch (error) {
     // no action is needed since we fallback from this property
@@ -267,6 +267,7 @@ export const addAdjustedReturnToQuotes = async (
       `Could not calculate adjusted return for quote selection: ${error}`,
     );
   }
+  return quotes;
 };
 
 export const calculateBestQuote = (quotesArray) =>
