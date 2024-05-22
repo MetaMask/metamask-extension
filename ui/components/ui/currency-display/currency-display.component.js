@@ -67,6 +67,7 @@ export default function CurrencyDisplay({
       <Text
         as="span"
         className="currency-display-component__text"
+        ellipsis
         variant={TextVariant.inherit}
         {...textProps}
       >
