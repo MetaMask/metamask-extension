@@ -46,8 +46,10 @@ import Alerts from '../../components/app/alerts';
 import Asset from '../asset';
 import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboarding-app-header';
 import TokenDetailsPage from '../token-details';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import Notifications from '../notifications';
+import NotificationsSettings from '../notifications-settings';
+import NotificationDetails from '../notification-details';
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import SnapList from '../snaps/snaps-list';
 import SnapView from '../snaps/snap-view';
 ///: END:ONLY_INCLUDE_IF
@@ -94,7 +96,6 @@ import {
   CUSTODY_ACCOUNT_ROUTE,
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  NOTIFICATIONS_ROUTE,
   SNAPS_ROUTE,
   SNAPS_VIEW_ROUTE,
   ///: END:ONLY_INCLUDE_IF
@@ -102,6 +103,8 @@ import {
   DESKTOP_PAIRING_ROUTE,
   DESKTOP_ERROR_ROUTE,
   ///: END:ONLY_INCLUDE_IF
+  NOTIFICATIONS_ROUTE,
+  NOTIFICATIONS_SETTINGS_ROUTE,
 } from '../../helpers/constants/routes';
 
 ///: BEGIN:ONLY_INCLUDE_IF(desktop)
@@ -375,11 +378,15 @@ export default class Routes extends Component {
           exact
         />
         <Authenticated path={SETTINGS_ROUTE} component={Settings} />
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-          <Authenticated path={NOTIFICATIONS_ROUTE} component={Notifications} />
-          ///: END:ONLY_INCLUDE_IF
-        }
+        <Authenticated
+          path={NOTIFICATIONS_SETTINGS_ROUTE}
+          component={NotificationsSettings}
+        />
+        <Authenticated
+          path={`${NOTIFICATIONS_ROUTE}/:uuid`}
+          component={NotificationDetails}
+        />
+        <Authenticated path={NOTIFICATIONS_ROUTE} component={Notifications} />
         {
           ///: BEGIN:ONLY_INCLUDE_IF(snaps)
           <Authenticated exact path={SNAPS_ROUTE} component={SnapList} />
@@ -552,6 +559,17 @@ export default class Routes extends Component {
       return true;
     }
     ///: END:ONLY_INCLUDE_IF
+
+    const isNotificationsPage = Boolean(
+      matchPath(location.pathname, {
+        path: `${NOTIFICATIONS_ROUTE}`,
+        exact: false,
+      }),
+    );
+
+    if (isNotificationsPage) {
+      return true;
+    }
 
     const isInitializing = Boolean(
       matchPath(location.pathname, {
