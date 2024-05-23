@@ -6,6 +6,12 @@ Changing this code must be done cautiously to avoid breaking the app!
 */
 
 // eslint-disable-next-line import/unambiguous
+const {
+  // eslint-disable-next-line camelcase
+  fetch: { __sentry_original__ },
+} = globalThis;
+
+// eslint-disable-next-line import/unambiguous
 (function () {
   const log = console.log.bind(console);
   // eslint-disable-next-line no-undef
@@ -16,7 +22,7 @@ Changing this code must be done cautiously to avoid breaking the app!
   const tamedFetch = (path) => {
     const regex = /^chrome-extension:\/\/.+\/.*?\/images\/.*?/u;
     if (regex.test(path)) {
-      return fetch(path);
+      return __sentry_original__(path);
     }
     throw new Error(
       'Tamed fetch can only be used on images within the extension',
@@ -49,6 +55,7 @@ Changing this code must be done cautiously to avoid breaking the app!
         chromeExtensionId
           ? scuttleWithRestrictedException(scuttle, realm, {
               fetch: tamedFetch,
+              OffscreenCanvas: globalThis.OffscreenCanvas,
             })
           : scuttle(realm);
       } else {
@@ -58,6 +65,7 @@ Changing this code must be done cautiously to avoid breaking the app!
           chromeExtensionId
             ? scuttleWithRestrictedException(scuttle, win, {
                 fetch: tamedFetch,
+                OffscreenCanvas: globalThis.OffscreenCanvas,
               })
             : scuttle(win);
         }, realm);
