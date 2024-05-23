@@ -3127,9 +3127,6 @@
   "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
     "message": "You can now withdraw your unstaked $1"
   },
-  "notificationItemLidoWithdrawalRequested": {
-    "message": "Withdrawal requested"
-  },
   "notificationItemLidoWithdrawalRequestedMessage": {
     "message": "Your request to unstake $1 has been sent"
   },
