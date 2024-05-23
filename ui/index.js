@@ -24,6 +24,7 @@ import {
   getNetworkToAutomaticallySwitchTo,
   getSwitchedNetworkDetails,
   getUseRequestQueue,
+  getUseExternalServices,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
@@ -162,9 +163,11 @@ async function startApp(metamaskState, backgroundConnection, opts) {
 
   const state = store.getState();
 
-  // Fetch feature flags so they are ready on the home page.
-  // Do not await this. If you do, the app will not continue until the flags are fetched.
-  store.dispatch(fetchFeatureFlagsThunk);
+  if (getUseExternalServices(state)) {
+    // Fetch feature flags so they are ready on the home page.
+    // Do not await this. If you do, the app will not continue until the flags are fetched.
+    store.dispatch(fetchFeatureFlagsThunk);
+  }
 
   const unapprovedTxs = getUnapprovedTransactions(metamaskState);
 
