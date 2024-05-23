@@ -2668,7 +2668,8 @@ describe('Send Slice', () => {
       it('should show confirm tx page when no other conditions for signing have been met', async () => {
         const store = mockStore(signTransactionState);
 
-        await store.dispatch(signTransaction());
+        const history = { push: jest.fn() };
+        await store.dispatch(signTransaction(history));
 
         const actionResult = store.getActions();
 
@@ -2732,7 +2733,8 @@ describe('Send Slice', () => {
 
           const store = mockStore(tokenTransferTxState);
 
-          await store.dispatch(signTransaction());
+          const history = { push: jest.fn() };
+          await store.dispatch(signTransaction(history));
 
           expect(
             addTransactionAndRouteToConfirmationPageStub.mock.calls[0][0].data,
@@ -2772,7 +2774,8 @@ describe('Send Slice', () => {
 
         const store = mockStore(editStageSignTxState);
 
-        await store.dispatch(signTransaction());
+        const history = { push: jest.fn() };
+        await store.dispatch(signTransaction(history));
 
         const actionResult = store.getActions();
 
