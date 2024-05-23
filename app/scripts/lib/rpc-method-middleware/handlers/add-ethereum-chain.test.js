@@ -7,7 +7,7 @@ import addEthereumChain from './add-ethereum-chain';
 
 const NON_INFURA_CHAIN_ID = '0x123456789';
 
-const MOCK_MAINNET_CONFIGURATION = {
+const createMockMainnetConfiguration = () => ({
   chainId: CHAIN_IDS.MAINNET,
   nickname: 'Ethereum Mainnet',
   rpcUrl: 'https://mainnet.infura.io/v3/',
@@ -16,9 +16,9 @@ const MOCK_MAINNET_CONFIGURATION = {
   rpcPrefs: {
     blockExplorerUrl: 'https://etherscan.io',
   },
-};
+});
 
-const MOCK_OPTIMISM_CONFIGURATION = {
+const createMockOptimismConfiguration = () => ({
   chainId: CHAIN_IDS.OPTIMISM,
   nickname: 'Optimism',
   rpcUrl: 'https://optimism.llamarpc.com',
@@ -26,9 +26,9 @@ const MOCK_OPTIMISM_CONFIGURATION = {
     blockExplorerUrl: 'https://optimistic.etherscan.io',
   },
   ticker: 'ETH',
-};
+});
 
-const MOCK_NON_INFURA_CONFIGURATION = {
+const createMockNonInfuraConfiguration = () => ({
   chainId: NON_INFURA_CHAIN_ID,
   rpcUrl: 'https://custom.network',
   ticker: 'CUST',
@@ -36,7 +36,7 @@ const MOCK_NON_INFURA_CONFIGURATION = {
   rpcPrefs: {
     blockExplorerUrl: 'https://custom.blockexplorer',
   },
-};
+});
 
 describe('addEthereumChainHandler', () => {
   const addEthereumChainHandler = addEthereumChain.implementation;
@@ -54,11 +54,11 @@ describe('addEthereumChainHandler', () => {
       setNetworkClientIdForDomain: jest.fn(),
       findNetworkConfigurationBy: jest
         .fn()
-        .mockReturnValue(MOCK_MAINNET_CONFIGURATION),
+        .mockReturnValue(createMockMainnetConfiguration()),
       setActiveNetwork: jest.fn(),
       getCurrentRpcUrl: jest
         .fn()
-        .mockReturnValue(MOCK_MAINNET_CONFIGURATION.rpcUrl),
+        .mockReturnValue(createMockMainnetConfiguration().rpcUrl),
       requestUserApproval: jest.fn().mockResolvedValue(123),
       requestPermittedChainsPermission: jest.fn(),
       getCaveat: jest.fn().mockReturnValue({ value: permissionedChainIds }),
@@ -159,18 +159,18 @@ describe('addEthereumChainHandler', () => {
           overrides: {
             getCurrentRpcUrl: jest
               .fn()
-              .mockReturnValue(MOCK_NON_INFURA_CONFIGURATION.rpcUrl),
+              .mockReturnValue(createMockNonInfuraConfiguration().rpcUrl),
             getCurrentChainIdForDomain: jest
               .fn()
-              .mockReturnValue(MOCK_NON_INFURA_CONFIGURATION.chainId),
+              .mockReturnValue(createMockNonInfuraConfiguration().chainId),
             findNetworkConfigurationBy: jest
               .fn()
               .mockImplementation(({ chainId }) => {
                 switch (chainId) {
-                  case MOCK_NON_INFURA_CONFIGURATION.chainId:
-                    return MOCK_NON_INFURA_CONFIGURATION;
-                  case MOCK_OPTIMISM_CONFIGURATION.chainId:
-                    return MOCK_OPTIMISM_CONFIGURATION;
+                  case createMockNonInfuraConfiguration().chainId:
+                    return createMockNonInfuraConfiguration();
+                  case createMockOptimismConfiguration().chainId:
+                    return createMockOptimismConfiguration();
                   default:
                     return undefined;
                 }
@@ -184,15 +184,15 @@ describe('addEthereumChainHandler', () => {
             origin: 'example.com',
             params: [
               {
-                chainId: MOCK_OPTIMISM_CONFIGURATION.chainId,
-                chainName: MOCK_OPTIMISM_CONFIGURATION.nickname,
-                rpcUrls: [MOCK_OPTIMISM_CONFIGURATION.rpcUrl],
+                chainId: createMockOptimismConfiguration().chainId,
+                chainName: createMockOptimismConfiguration().nickname,
+                rpcUrls: [createMockOptimismConfiguration().rpcUrl],
                 nativeCurrency: {
-                  symbol: MOCK_OPTIMISM_CONFIGURATION.ticker,
+                  symbol: createMockOptimismConfiguration().ticker,
                   decimals: 18,
                 },
                 blockExplorerUrls: [
-                  MOCK_OPTIMISM_CONFIGURATION.rpcPrefs.blockExplorerUrl,
+                  createMockOptimismConfiguration().rpcPrefs.blockExplorerUrl,
                 ],
               },
             ],
@@ -207,7 +207,7 @@ describe('addEthereumChainHandler', () => {
         expect(mocks.requestUserApproval).toHaveBeenCalledWith({
           origin: 'example.com',
           requestData: {
-            fromNetworkConfiguration: MOCK_NON_INFURA_CONFIGURATION,
+            fromNetworkConfiguration: createMockNonInfuraConfiguration(),
             toNetworkConfiguration: {
               chainId: '0xa',
               nickname: 'Optimism',
@@ -222,7 +222,7 @@ describe('addEthereumChainHandler', () => {
         });
         expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
         expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
-          MOCK_OPTIMISM_CONFIGURATION.id,
+          createMockOptimismConfiguration().id,
         );
       });
 
@@ -263,15 +263,15 @@ describe('addEthereumChainHandler', () => {
           origin: 'example.com',
           params: [
             {
-              chainId: MOCK_NON_INFURA_CONFIGURATION.chainId,
-              chainName: MOCK_NON_INFURA_CONFIGURATION.nickname,
-              rpcUrls: [MOCK_NON_INFURA_CONFIGURATION.rpcUrl],
+              chainId: createMockNonInfuraConfiguration().chainId,
+              chainName: createMockNonInfuraConfiguration().nickname,
+              rpcUrls: [createMockNonInfuraConfiguration().rpcUrl],
               nativeCurrency: {
-                symbol: MOCK_NON_INFURA_CONFIGURATION.ticker,
+                symbol: createMockNonInfuraConfiguration().ticker,
                 decimals: 18,
               },
               blockExplorerUrls: [
-                MOCK_NON_INFURA_CONFIGURATION.rpcPrefs.blockExplorerUrl,
+                createMockNonInfuraConfiguration().rpcPrefs.blockExplorerUrl,
               ],
             },
           ],
@@ -283,12 +283,12 @@ describe('addEthereumChainHandler', () => {
       );
 
       expect(mocks.upsertNetworkConfiguration).toHaveBeenCalledWith(
-        MOCK_NON_INFURA_CONFIGURATION,
+        createMockNonInfuraConfiguration(),
         { referrer: 'example.com', source: 'dapp' },
       );
       expect(mocks.requestPermittedChainsPermission).toHaveBeenCalledTimes(1);
       expect(mocks.requestPermittedChainsPermission).toHaveBeenCalledWith([
-        MOCK_NON_INFURA_CONFIGURATION.chainId,
+        createMockNonInfuraConfiguration().chainId,
       ]);
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(123);
@@ -337,7 +337,7 @@ describe('addEthereumChainHandler', () => {
             overrides: {
               findNetworkConfigurationBy: jest
                 .fn()
-                .mockReturnValue(MOCK_NON_INFURA_CONFIGURATION),
+                .mockReturnValue(createMockNonInfuraConfiguration()),
               getCurrentChainIdForDomain: jest
                 .fn()
                 .mockReturnValue(CHAIN_IDS.MAINNET),
@@ -379,7 +379,7 @@ describe('addEthereumChainHandler', () => {
 
       it('should switch to the existing networkConfiguration if the proposed networkConfiguration has the same rpcUrl as the one already in state (and is not currently selected)', async () => {
         const mocks = makeMocks({
-          permissionedChainIds: [MOCK_OPTIMISM_CONFIGURATION.chainId],
+          permissionedChainIds: [createMockOptimismConfiguration().chainId],
           permissionsFeatureFlagIsActive: true,
           overrides: {
             getCurrentRpcUrl: jest
@@ -387,7 +387,7 @@ describe('addEthereumChainHandler', () => {
               .mockReturnValue('https://eth.llamarpc.com'),
             findNetworkConfigurationBy: jest
               .fn()
-              .mockReturnValue(MOCK_OPTIMISM_CONFIGURATION),
+              .mockReturnValue(createMockOptimismConfiguration()),
           },
         });
 
@@ -396,15 +396,15 @@ describe('addEthereumChainHandler', () => {
             origin: 'example.com',
             params: [
               {
-                chainId: MOCK_OPTIMISM_CONFIGURATION.chainId,
-                chainName: MOCK_OPTIMISM_CONFIGURATION.nickname,
-                rpcUrls: [MOCK_OPTIMISM_CONFIGURATION.rpcUrl],
+                chainId: createMockOptimismConfiguration().chainId,
+                chainName: createMockOptimismConfiguration().nickname,
+                rpcUrls: [createMockOptimismConfiguration().rpcUrl],
                 nativeCurrency: {
-                  symbol: MOCK_OPTIMISM_CONFIGURATION.ticker,
+                  symbol: createMockOptimismConfiguration().ticker,
                   decimals: 18,
                 },
                 blockExplorerUrls: [
-                  MOCK_OPTIMISM_CONFIGURATION.rpcPrefs.blockExplorerUrl,
+                  createMockOptimismConfiguration().rpcPrefs.blockExplorerUrl,
                 ],
               },
             ],
@@ -419,7 +419,7 @@ describe('addEthereumChainHandler', () => {
         expect(mocks.requestPermittedChainsPermission).not.toHaveBeenCalled();
         expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
         expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
-          MOCK_OPTIMISM_CONFIGURATION.id,
+          createMockOptimismConfiguration().id,
         );
       });
     });
@@ -463,7 +463,7 @@ describe('addEthereumChainHandler', () => {
     expect(mockEnd).toHaveBeenCalledWith(mockError);
     expect(mocks.setActiveNetwork).not.toHaveBeenCalled();
   });
-  it('should return  error if nativeCurrency.symbol does not match existing network', async () => {
+  it('should return an error if nativeCurrency.symbol does not match existing network', async () => {
     const mocks = makeMocks({
       permissionedChainIds: [CHAIN_IDS.MAINNET],
       permissionsFeatureFlagIsActive: true,
