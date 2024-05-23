@@ -25,7 +25,7 @@ describe('AssetPickerModal', () => {
       store,
     );
 
-    const modalContent = getByText('Select a token');
+    const modalContent = getByText('Select asset to send');
     expect(modalContent).toBeInTheDocument();
   });
 
@@ -34,7 +34,7 @@ describe('AssetPickerModal', () => {
       <AssetPickerModal onAssetChange={() => ({})} {...props} isOpen={false} />,
       store,
     );
-    const modalContent = queryByText('Select a token');
+    const modalContent = queryByText('Select asset to send');
     expect(modalContent).not.toBeInTheDocument();
   });
 
@@ -43,7 +43,7 @@ describe('AssetPickerModal', () => {
       <AssetPickerModal onAssetChange={() => ({})} {...props} />,
       store,
     );
-    const modalTitle = getByText('Select a token');
+    const modalTitle = getByText('Select asset to send');
     const searchPlaceholder = getByPlaceholderText('Search token or NFT');
 
     expect(modalTitle).toBeInTheDocument();
