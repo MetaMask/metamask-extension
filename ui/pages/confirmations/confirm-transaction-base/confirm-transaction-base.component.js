@@ -795,6 +795,8 @@ export default class ConfirmTransactionBase extends Component {
       toAddress,
       showCustodianDeepLink,
       clearConfirmTransaction,
+      smartTransactionsOptInStatus,
+      currentChainSupportsSmartTransactions,
     } = this.props;
     const { noteText } = this.state;
 
@@ -804,6 +806,13 @@ export default class ConfirmTransactionBase extends Component {
 
       if (isNoteToTraderSupported) {
         txData.metadata.note = noteText;
+      }
+
+      if (
+        smartTransactionsOptInStatus &&
+        currentChainSupportsSmartTransactions
+      ) {
+        txData.origin += '#smartTransaction';
       }
 
       txData.metadata.custodianPublishesTransaction =
