@@ -161,7 +161,7 @@ export class PushPlatformNotificationsController extends BaseController<
       }
 
       // Listen to push notifications
-      this.#pushListenerUnsubscribe = await listenToPushNotifications(
+      this.#pushListenerUnsubscribe ??= await listenToPushNotifications(
         (n) =>
           this.messagingSystem.publish(
             'PushPlatformNotificationsController:onNewNotifications',
