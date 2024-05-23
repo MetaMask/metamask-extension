@@ -13,6 +13,7 @@ import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
 import { COPY_OPTIONS } from '../shared/constants/copy';
 import switchDirection from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
+import { fetchFeatureFlagsThunk } from '../shared/modules/selectors';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
@@ -225,6 +226,9 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     global.metamask.id = thisPopupId;
     await store.dispatch(actions.setCurrentExtensionPopupId(thisPopupId));
   }
+  // fetch feature flags so they are ready on the home page.
+  // if you await this, the app will not start until the flags are fetched
+  store.dispatch(fetchFeatureFlagsThunk);
 
   // start app
   render(<Root store={store} />, opts.container);

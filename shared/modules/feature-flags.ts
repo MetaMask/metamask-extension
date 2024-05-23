@@ -1,3 +1,9 @@
+import { fetchSwapsFeatureFlags } from '../../ui/pages/swaps/swaps.util';
+import {
+  fetchSmartTransactionsLiveness,
+  setSwapsFeatureFlags,
+} from '../../ui/store/actions';
+import { MetaMaskAsyncThunkAction } from '../../ui/store/store';
 import { CHAIN_IDS } from '../constants/network';
 
 enum NetworkName {
@@ -38,4 +44,14 @@ export const getNetworkNameByChainId = (chainId: string): string => {
     default:
       return '';
   }
+};
+
+export const fetchFeatureFlagsThunk: MetaMaskAsyncThunkAction = async (
+  dispatch,
+) => {
+  const [swapsFeatureFlags] = await Promise.all([
+    fetchSwapsFeatureFlags(),
+    fetchSmartTransactionsLiveness(),
+  ]);
+  dispatch(setSwapsFeatureFlags(swapsFeatureFlags));
 };

@@ -68,19 +68,13 @@ import {
   setNewTokensImported,
   setActiveNetwork,
   setNewTokensImportedError,
-  setSwapsFeatureFlags,
-  fetchSmartTransactionsLiveness,
 } from '../../store/actions';
 import {
   hideWhatsNewPopup,
   openBasicFunctionalityModal,
 } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
-import {
-  getIsFeatureFlagLoaded,
-  getSwapsFeatureIsLive,
-  setIsFeatureFlagLoaded,
-} from '../../ducks/swaps/swaps';
+import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { getIsBrowserDeprecated } from '../../helpers/utils/util';
 import {
@@ -151,9 +145,6 @@ const mapStateToProps = (state) => {
     ///: END:ONLY_INCLUDE_IF
   ]);
 
-  const showWhatsNewPopup =
-    getIsFeatureFlagLoaded(state) && getShowWhatsNewPopup(state);
-
   return {
     useExternalServices: getUseExternalServices(state),
     isBasicConfigurationModalOpen: appState.showBasicFunctionalityModal,
@@ -182,7 +173,7 @@ const mapStateToProps = (state) => {
     pendingConfirmations,
     infuraBlocked: getInfuraBlocked(state),
     announcementsToShow: getSortedAnnouncementsToShow(state).length > 0,
-    showWhatsNewPopup,
+    showWhatsNewPopup: getShowWhatsNewPopup(state),
     showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
     showTermsOfUsePopup: getShowTermsOfUse(state),
     showOutdatedBrowserWarning:
@@ -207,7 +198,6 @@ const mapStateToProps = (state) => {
     custodianDeepLink: getCustodianDeepLink(state),
     accountType: getAccountType(state),
     ///: END:ONLY_INCLUDE_IF
-
     isSmartTransactionsOptInModalAvailable:
       getIsSmartTransactionsOptInModalAvailable(state),
   };
@@ -258,14 +248,6 @@ const mapDispatchToProps = (dispatch) => {
     setActiveNetwork: (networkConfigurationId) => {
       dispatch(setActiveNetwork(networkConfigurationId));
     },
-    setSwapsFeatureFlags: (swapsFeatureFlags) => {
-      dispatch(setSwapsFeatureFlags(swapsFeatureFlags));
-      dispatch(setIsFeatureFlagLoaded(true));
-    },
-    fetchSmartTransactionsLiveness: () => {
-      dispatch(fetchSmartTransactionsLiveness());
-    },
-
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     setWaitForConfirmDeepLinkDialog: (wait) =>
       dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),

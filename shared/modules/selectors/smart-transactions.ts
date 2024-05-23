@@ -12,7 +12,6 @@ import {
 import { isProduction } from '../environment';
 import { compareVersions, parseVersion } from '../../lib/semversion';
 import ExtensionPlatform from '../../../app/scripts/platforms/extension';
-import { getIsFeatureFlagLoaded } from '../../../ui/ducks/swaps/swaps';
 import {
   ChainSpecificFeatureFlags,
   SmartTransactionsFeatureFlags,
@@ -113,7 +112,6 @@ export const getIsSmartTransactionsOptInModalAvailable = (
   state: SmartTransactionsMetaMaskState,
 ) => {
   return (
-    getIsFeatureFlagLoaded(state) &&
     getMeetsMinimumVersionToShowOptInModal(state) &&
     getCurrentChainSupportsSmartTransactions(state) &&
     getIsAllowedRpcUrlForSmartTransactions(state) &&

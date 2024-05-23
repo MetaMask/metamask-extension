@@ -1,10 +1,11 @@
-import { StoreEnhancer } from 'redux';
+import { AnyAction, StoreEnhancer } from 'redux';
 import { configureStore as baseConfigureStore } from '@reduxjs/toolkit';
 import devtoolsEnhancer from 'remote-redux-devtools';
 import { ApprovalControllerState } from '@metamask/approval-controller';
 import { GasEstimateType, GasFeeEstimates } from '@metamask/gas-fee-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { InternalAccount } from '@metamask/keyring-api';
+import { ThunkAction } from 'redux-thunk';
 import rootReducer from '../ducks';
 import { LedgerTransportTypes } from '../../shared/constants/hardware-wallets';
 import type { NetworkStatus } from '../../shared/constants/network';
@@ -149,3 +150,15 @@ export default function configureStore(preloadedState: any) {
 type Store = ReturnType<typeof configureStore>;
 export type MetaMaskReduxState = ReturnType<Store['getState']>;
 export type MetaMaskReduxDispatch = Store['dispatch'];
+export type MetaMaskThunkAction<Return = void> = ThunkAction<
+  Return,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+>;
+export type MetaMaskAsyncThunkAction<Return = void> = ThunkAction<
+  Promise<Return>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+>;

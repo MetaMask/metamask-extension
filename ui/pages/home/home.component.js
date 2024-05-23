@@ -81,7 +81,6 @@ import {
   SUPPORT_LINK,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/lib/ui-utils';
-import { fetchSwapsFeatureFlags } from '../swaps/swaps.util';
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
@@ -198,11 +197,6 @@ export default class Home extends PureComponent {
     hasAllowedPopupRedirectApprovals: PropTypes.bool.isRequired,
     useExternalServices: PropTypes.bool,
     setBasicFunctionalityModalOpen: PropTypes.func,
-
-    // Smart transactions
-    setSwapsFeatureFlags: PropTypes.func,
-    fetchSmartTransactionsLiveness: PropTypes.func,
-
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     institutionalConnectRequests: PropTypes.arrayOf(PropTypes.object),
     mmiPortfolioEnabled: PropTypes.bool,
@@ -342,9 +336,7 @@ export default class Home extends PureComponent {
     ///: END:ONLY_INCLUDE_IF
   }
 
-  async componentDidMount() {
-    const { setSwapsFeatureFlags, fetchSmartTransactionsLiveness } = this.props;
-
+  componentDidMount() {
     this.checkStatusAndNavigate();
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -355,14 +347,6 @@ export default class Home extends PureComponent {
       setWaitForConfirmDeepLinkDialog(false);
     });
     ///: END:ONLY_INCLUDE_IF
-
-    // TODO: Fetching swaps feature flags, which include feature flags for smart transactions, is only a short-term solution.
-    // Long-term, we want to have a new proxy service specifically for feature flags.
-    const [swapsFeatureFlags] = await Promise.all([
-      fetchSwapsFeatureFlags(),
-      fetchSmartTransactionsLiveness(),
-    ]);
-    await setSwapsFeatureFlags(swapsFeatureFlags);
   }
 
   static getDerivedStateFromProps(props) {
