@@ -100,7 +100,6 @@ export const SENTRY_BACKGROUND_STATE = {
     recoveryPhraseReminderLastShown: true,
     showBetaHeader: true,
     showPermissionsTour: true,
-    showProductTour: true,
     showNetworkBanner: true,
     showAccountBanner: true,
     switchedNetworkDetails: false,
@@ -137,6 +136,7 @@ export const SENTRY_BACKGROUND_STATE = {
     gasEstimateType: true,
     gasFeeEstimates: true,
     gasFeeEstimatesByChainId: true,
+    nonRPCGasFeeApisDisabled: false,
   },
   KeyringController: {
     isUnlocked: true,
@@ -387,6 +387,8 @@ export const SENTRY_UI_STATE = {
     ///: END:ONLY_INCLUDE_IF
     switchedNetworkDetails: false,
     switchedNetworkNeverShowMessage: false,
+    newPrivacyPolicyToastClickedOrClosed: false,
+    newPrivacyPolicyToastShownDate: false,
   },
   unconnectedAccount: true,
 };

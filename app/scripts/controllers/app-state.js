@@ -48,7 +48,6 @@ export default class AppStateController extends EventEmitter {
       showTestnetMessageInDropdown: true,
       showBetaHeader: isBeta(),
       showPermissionsTour: true,
-      showProductTour: true,
       showNetworkBanner: true,
       showAccountBanner: true,
       trezorModel: null,
@@ -66,6 +65,8 @@ export default class AppStateController extends EventEmitter {
         '0x539': true,
       },
       surveyLinkLastClickedOrClosed: null,
+      newPrivacyPolicyToastClickedOrClosed: null,
+      newPrivacyPolicyToastShownDate: null,
       signatureSecurityAlertResponses: {},
       // States used for displaying the changed network toast
       switchedNetworkDetails: null,
@@ -182,6 +183,18 @@ export default class AppStateController extends EventEmitter {
   setSurveyLinkLastClickedOrClosed(time) {
     this.store.updateState({
       surveyLinkLastClickedOrClosed: time,
+    });
+  }
+
+  setNewPrivacyPolicyToastClickedOrClosed() {
+    this.store.updateState({
+      newPrivacyPolicyToastClickedOrClosed: true,
+    });
+  }
+
+  setNewPrivacyPolicyToastShownDate(time) {
+    this.store.updateState({
+      newPrivacyPolicyToastShownDate: time,
     });
   }
 
@@ -376,15 +389,6 @@ export default class AppStateController extends EventEmitter {
    */
   setShowPermissionsTour(showPermissionsTour) {
     this.store.updateState({ showPermissionsTour });
-  }
-
-  /**
-   * Sets whether the product tour should be shown
-   *
-   * @param showProductTour
-   */
-  setShowProductTour(showProductTour) {
-    this.store.updateState({ showProductTour });
   }
 
   /**

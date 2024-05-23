@@ -21,7 +21,7 @@ jest.mock('../../../../components/app/name', () => ({
 }));
 
 describe('AssetPill', () => {
-  afterEach(() => {
+  beforeEach(() => {
     jest.clearAllMocks();
   });
 

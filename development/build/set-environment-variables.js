@@ -26,9 +26,9 @@ module.exports.setEnvironmentVariables = function setEnvironmentVariables({
 }) {
   variables.set({
     DEBUG: isDevBuild || isTestBuild ? variables.getMaybe('DEBUG') : undefined,
-    EIP_4337_ENTRYPOINT:
-      variables.getMaybe('EIP_4337_ENTRYPOINT') ||
-      (isTestBuild ? '0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b' : undefined),
+    EIP_4337_ENTRYPOINT: isTestBuild
+      ? '0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b'
+      : variables.getMaybe('EIP_4337_ENTRYPOINT'),
     IN_TEST: isTestBuild,
     INFURA_PROJECT_ID: getInfuraProjectId({
       buildType,

@@ -57,7 +57,7 @@ describe('Request Queuing Switch Network on Dapp Send Tx while on different netw
         });
 
         await driver.clickElement({
-          text: 'Connect',
+          text: 'Confirm',
           tag: 'button',
           css: '[data-testid="page-container-footer-next"]',
         });

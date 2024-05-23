@@ -8,11 +8,7 @@ const { exitWithError } = require('../../development/lib/exit-with-error');
 const { loadBuildTypesConfig } = require('../../development/lib/build-type');
 
 // These tests should only be run on Flask for now.
-const FLASK_ONLY_TESTS = [
-  'test-snap-txinsights-v2.spec.js',
-  'test-snap-namelookup.spec.js',
-  'test-snap-siginsights.spec.js',
-];
+const FLASK_ONLY_TESTS = ['test-snap-namelookup.spec.js'];
 
 const getTestPathsForTestDir = async (testDir) => {
   const testFilenames = await fs.promises.readdir(testDir, {

@@ -25,7 +25,6 @@ import {
   addToAddressBook,
   updateTransaction,
   updateEditableParams,
-  dismissOpenSeaToBlockaidBanner,
   setSwapsFeatureFlags,
   fetchSmartTransactionsLiveness,
 } from '../../../store/actions';
@@ -46,7 +45,6 @@ import {
   getPreferences,
   doesAddressRequireLedgerHidConnection,
   getTokenList,
-  getIsMultiLayerFeeNetwork,
   getIsBuyableChain,
   getEnsResolutionByAddress,
   getUnapprovedTransaction,
@@ -55,9 +53,6 @@ import {
   getUnapprovedTransactions,
   getInternalAccountByAddress,
   getApprovedAndSignedTransactions,
-  getHasDismissedOpenSeaToBlockaidBanner,
-  getHasMigratedFromOpenSeaToBlockaid,
-  getIsNetworkSupportedByBlockaid,
   getSelectedNetworkClientId,
 } from '../../../selectors';
 import {
@@ -270,7 +265,6 @@ const mapStateToProps = (state, ownProps) => {
   const hardwareWalletRequiresConnection =
     doesAddressRequireLedgerHidConnection(state, fromAddress);
 
-  const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
   const isUsingPaymaster = getIsUsingPaymaster(state);
 
   let isSigningOrSubmitting = Boolean(
@@ -283,12 +277,6 @@ const mapStateToProps = (state, ownProps) => {
 
   const isUserOpContractDeployError =
     fullTxData.isUserOperation && type === TransactionType.deployContract;
-
-  const hasMigratedFromOpenSeaToBlockaid =
-    getHasMigratedFromOpenSeaToBlockaid(state);
-  const hasDismissedOpenSeaToBlockaidBanner =
-    getHasDismissedOpenSeaToBlockaidBanner(state);
-  const isNetworkSupportedByBlockaid = getIsNetworkSupportedByBlockaid(state);
 
   return {
     balance,
@@ -337,7 +325,6 @@ const mapStateToProps = (state, ownProps) => {
     showLedgerSteps: fromAddressIsLedger,
     nativeCurrency,
     hardwareWalletRequiresConnection,
-    isMultiLayerFeeNetwork,
     chainId,
     isBuyableChain,
     useCurrencyRateCheck: getUseCurrencyRateCheck(state),
@@ -359,9 +346,6 @@ const mapStateToProps = (state, ownProps) => {
     custodianPublishesTransaction,
     rpcUrl,
     ///: END:ONLY_INCLUDE_IF
-    hasMigratedFromOpenSeaToBlockaid,
-    hasDismissedOpenSeaToBlockaidBanner,
-    isNetworkSupportedByBlockaid,
   };
 };
 
@@ -458,8 +442,6 @@ export const mapDispatchToProps = (dispatch) => {
     setWaitForConfirmDeepLinkDialog: (wait) =>
       dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
     ///: END:ONLY_INCLUDE_IF
-    dismissOpenSeaToBlockaidBanner: () =>
-      dispatch(dismissOpenSeaToBlockaidBanner()),
   };
 };
 

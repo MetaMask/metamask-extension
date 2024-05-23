@@ -37,12 +37,6 @@ describe('TokenOverview', () => {
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
-      identities: {
-        '0x1': {
-          address: '0x1',
-        },
-      },
-      selectedAddress: '0x1',
       internalAccounts: {
         accounts: {
           'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {

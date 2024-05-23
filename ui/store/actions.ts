@@ -1732,28 +1732,6 @@ export function lockMetamask(): ThunkAction<
   };
 }
 
-async function _setSelectedAddress(address: string): Promise<void> {
-  log.debug(`background.setSelectedAddress`);
-  await submitRequestToBackground('setSelectedAddress', [address]);
-}
-
-export function setSelectedAddress(
-  address: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`background.setSelectedAddress`);
-    try {
-      await _setSelectedAddress(address);
-    } catch (error) {
-      dispatch(displayWarning(error));
-      return;
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-  };
-}
-
 async function _setSelectedInternalAccount(accountId: string): Promise<void> {
   log.debug(`background.setSelectedInternalAccount`);
   await submitRequestToBackground('setSelectedInternalAccount', [accountId]);
@@ -1787,7 +1765,7 @@ export function setSelectedAccount(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch, getState) => {
     dispatch(showLoadingIndication());
-    log.debug(`background.setSelectedAddress`);
+    log.debug(`background.setSelectedAccount`);
 
     const state = getState();
     const unconnectedAccountAccountAlertIsEnabled =
@@ -1807,7 +1785,6 @@ export function setSelectedAccount(
       !currentTabIsConnectedToNextAddress;
 
     try {
-      await _setSelectedAddress(address);
       await _setSelectedInternalAccount(internalAccount.id);
       await forceUpdateMetamaskState(dispatch);
     } catch (error) {
@@ -2276,6 +2253,23 @@ export function abortTransactionSigning(
       dispatch(displayWarning(error));
     }
   };
+}
+
+export function getLayer1GasFee({
+  chainId,
+  networkClientId,
+  transactionParams,
+}: {
+  chainId?: Hex;
+  networkClientId?: NetworkClientId;
+  transactionParams: TransactionParams;
+}): // TODO: Replace `any` with type
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ThunkAction<Promise<void>, MetaMaskReduxState, any, AnyAction> {
+  return async () =>
+    await submitRequestToBackground('getLayer1GasFee', [
+      { chainId, networkClientId, transactionParams },
+    ]);
 }
 
 export function createCancelTransaction(
@@ -3076,6 +3070,10 @@ export function setPetnamesEnabled(value: boolean) {
   return setPreference('petnamesEnabled', value);
 }
 
+export function setRedesignedConfirmationsEnabled(value: boolean) {
+  return setPreference('redesignedConfirmations', value);
+}
+
 export function setFeatureNotificationsEnabled(value: boolean) {
   return setPreference('featureNotificationsEnabled', value);
 }
@@ -3147,6 +3145,28 @@ export function setCompletedOnboarding(): ThunkAction<
 export function completeOnboarding() {
   return {
     type: actionConstants.COMPLETE_ONBOARDING,
+  };
+}
+
+export function resetOnboarding(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch) => {
+    try {
+      await dispatch(setSeedPhraseBackedUp(false));
+      dispatch(resetOnboardingAction());
+    } catch (err) {
+      console.error(err);
+    }
+  };
+}
+
+export function resetOnboardingAction() {
+  return {
+    type: actionConstants.RESET_ONBOARDING,
   };
 }
 
@@ -4174,6 +4194,20 @@ export function setSurveyLinkLastClickedOrClosed(time: number) {
   };
 }
 
+export function setNewPrivacyPolicyToastClickedOrClosed() {
+  return async () => {
+    await submitRequestToBackground('setNewPrivacyPolicyToastClickedOrClosed');
+  };
+}
+
+export function setNewPrivacyPolicyToastShownDate(time: number) {
+  return async () => {
+    await submitRequestToBackground('setNewPrivacyPolicyToastShownDate', [
+      time,
+    ]);
+  };
+}
+
 export function setOutdatedBrowserWarningLastShown(lastShown: number) {
   return async () => {
     await submitRequestToBackground('setOutdatedBrowserWarningLastShown', [
@@ -4405,6 +4439,39 @@ export async function removePollingTokenFromAppState(pollingToken: string) {
 }
 
 /**
+ * Informs the CurrencyRateController that the UI requires currency rate polling
+ *
+ * @param networkClientId - unique identifier for the network client
+ * @returns polling token that can be used to stop polling
+ */
+export async function currencyRateStartPollingByNetworkClientId(
+  networkClientId: string,
+): Promise<string> {
+  const pollingToken = await submitRequestToBackground(
+    'currencyRateStartPollingByNetworkClientId',
+    [networkClientId],
+  );
+  await addPollingTokenToAppState(pollingToken);
+  return pollingToken;
+}
+
+/**
+ * Informs the CurrencyRateController that the UI no longer requires currency rate polling
+ * for the given network client.
+ * If all network clients unsubscribe, the controller stops polling.
+ *
+ * @param pollingToken - Poll token received from calling startPollingByNetworkClientId
+ */
+export async function currencyRateStopPollingByPollingToken(
+  pollingToken: string,
+) {
+  await submitRequestToBackground('currencyRateStopPollingByPollingToken', [
+    pollingToken,
+  ]);
+  await removePollingTokenFromAppState(pollingToken);
+}
+
+/**
  * Informs the GasFeeController that the UI requires gas fee polling
  *
  * @param networkClientId - unique identifier for the network client
@@ -4516,6 +4583,10 @@ export function trackMetaMetricsPage(
     { ...payload, actionId: generateActionId() },
     options,
   ]);
+}
+
+export function resetViewedNotifications() {
+  return submitRequestToBackground('resetViewedNotifications');
 }
 
 export function updateViewedNotifications(notificationIdViewedStatusMap: {
@@ -4749,10 +4820,6 @@ export function hideBetaHeader() {
 
 export function hidePermissionsTour() {
   return submitRequestToBackground('setShowPermissionsTour', [false]);
-}
-
-export function hideProductTour() {
-  return submitRequestToBackground('setShowProductTour', [false]);
 }
 
 export function hideAccountBanner() {

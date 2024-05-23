@@ -65,7 +65,7 @@ exports[`Header should match snapshot 1`] = `
         class="mm-box mm-box--margin-inline-start-4"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
         >
           Test Account
         </p>

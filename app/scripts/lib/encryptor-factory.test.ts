@@ -5,6 +5,7 @@ jest.mock('@metamask/browser-passworder');
 
 const mockIterations = 100;
 const mockPassword = 'password';
+const mockSalt = 'salt';
 const mockData = 'data';
 
 describe('encryptorFactory', () => {
@@ -28,6 +29,8 @@ describe('encryptorFactory', () => {
       'decryptWithKey',
       'keyFromPassword',
       'importKey',
+      'exportKey',
+      'generateSalt',
       'isVaultUpdated',
     ].forEach((method) => {
       expect(encryptor).toHaveProperty(method);
@@ -140,6 +143,86 @@ describe('encryptorFactory', () => {
 
       expect(await encryptor.decryptWithDetail(mockPassword, mockData)).toBe(
         mockResult,
+      );
+    });
+  });
+
+  describe('keyFromPassword', () => {
+    it('should call browser-passworder.keyFromPassword with the given parameters', async () => {
+      const encryptor = encryptorFactory(mockIterations);
+
+      const keyDerivationOpts = {
+        algorithm: 'PBKDF2' as const,
+        params: {
+          iterations: 1,
+        },
+      };
+
+      const mockResult = {
+        key: 'key',
+        derivationOptions: keyDerivationOpts,
+      };
+
+      // @ts-expect-error The key type is a mock type and not valid.
+      mockBrowserPassworder.keyFromPassword.mockResolvedValue(mockResult);
+
+      expect(
+        await encryptor.keyFromPassword(
+          mockPassword,
+          mockSalt,
+          true,
+          keyDerivationOpts,
+        ),
+      ).toBe(mockResult);
+
+      expect(mockBrowserPassworder.keyFromPassword).toHaveBeenCalledWith(
+        mockPassword,
+        mockSalt,
+        true,
+        {
+          algorithm: 'PBKDF2',
+          params: {
+            iterations: 1,
+          },
+        },
+      );
+    });
+
+    it('should call browser-passworder.keyFromPassword with overriden opts', async () => {
+      const encryptor = encryptorFactory(mockIterations);
+
+      const mockResult = {
+        key: 'key',
+        derivationOptions: {
+          algorithm: 'PBKDF2',
+          params: {
+            iterations: mockIterations,
+          },
+        },
+      };
+
+      // @ts-expect-error The key type is a mock type and not valid.
+      mockBrowserPassworder.keyFromPassword.mockResolvedValue(mockResult);
+
+      expect(
+        await encryptor.keyFromPassword(
+          mockPassword,
+          mockSalt,
+          true,
+          undefined,
+        ),
+      ).toBe(mockResult);
+
+      expect(mockBrowserPassworder.keyFromPassword).toHaveBeenCalledWith(
+        mockPassword,
+        mockSalt,
+        true,
+        {
+          algorithm: 'PBKDF2',
+          params: {
+            iterations: mockIterations,
+          },
+        },
       );
     });
   });

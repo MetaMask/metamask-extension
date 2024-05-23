@@ -10,6 +10,7 @@ import { GasFeeContextProvider } from '../../../../../contexts/gasFee';
 import configureStore from '../../../../../store/store';
 
 import { AdvancedGasFeePopoverContextProvider } from '../context';
+import { getSelectedInternalAccountFromMockState } from '../../../../../../test/jest/mocks';
 import AdvancedGasFeeGasLimit from './advanced-gas-fee-gas-limit';
 
 jest.mock('../../../../../store/actions', () => ({
@@ -22,13 +23,16 @@ jest.mock('../../../../../store/actions', () => ({
     .mockResolvedValue({ chainId: '0x5' }),
 }));
 
+const mockSelectedInternalAccount =
+  getSelectedInternalAccountFromMockState(mockState);
+
 const render = async (contextProps) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
       accounts: {
-        [mockState.metamask.selectedAddress]: {
-          address: mockState.metamask.selectedAddress,
+        [mockSelectedInternalAccount.address]: {
+          address: mockSelectedInternalAccount.address,
           balance: '0x1F4',
         },
       },

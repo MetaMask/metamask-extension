@@ -42,9 +42,9 @@ import {
   getSuggestedTokens,
   getSuggestedNfts,
   getApprovalFlows,
-  getShowSurveyToast,
   getNewTokensImportedError,
   hasPendingApprovals,
+  getSelectedInternalAccount,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getAccountType,
   ///: END:ONLY_INCLUDE_IF
@@ -66,7 +66,6 @@ import {
   setRemoveNftMessage,
   setNewTokensImported,
   setActiveNetwork,
-  setSurveyLinkLastClickedOrClosed,
   setNewTokensImportedError,
 } from '../../store/actions';
 import { hideWhatsNewPopup } from '../../ducks/app/app';
@@ -92,13 +91,13 @@ const mapStateToProps = (state) => {
   const { metamask, appState } = state;
   const {
     seedPhraseBackedUp,
-    selectedAddress,
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
     swapsState,
     firstTimeFlowType,
     completedOnboarding,
   } = metamask;
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
   const { forgottenPassword } = metamask;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
   const swapsEnabled = getSwapsFeatureIsLive(state);
@@ -182,7 +181,6 @@ const mapStateToProps = (state) => {
     newTokensImportedError: getNewTokensImportedError(state),
     newNetworkAddedConfigurationId: appState.newNetworkAddedConfigurationId,
     onboardedInThisUISession: appState.onboardedInThisUISession,
-    showSurveyToast: getShowSurveyToast(state),
     hasAllowedPopupRedirectApprovals,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     waitForConfirmDeepLinkDialog: getWaitForConfirmDeepLinkDialog(state),
@@ -272,8 +270,6 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setCustodianDeepLink({}));
     },
     ///: END:ONLY_INCLUDE_IF
-    setSurveyLinkLastClickedOrClosed: (time) =>
-      dispatch(setSurveyLinkLastClickedOrClosed(time)),
   };
 };
 

@@ -35,7 +35,6 @@ jest.mock('../../store/actions', () => ({
 describe('Onboarding Flow', () => {
   const mockState = {
     metamask: {
-      identities: {},
       internalAccounts: {
         accounts: {},
         selectedAccount: '',
@@ -241,7 +240,9 @@ describe('Onboarding Flow', () => {
       ONBOARDING_METAMETRICS,
     );
 
-    const onboardingMetametrics = queryByTestId('onboarding-metametrics');
+    const onboardingMetametrics = queryByTestId(
+      'onboarding-legacy-metametrics',
+    );
     expect(onboardingMetametrics).toBeInTheDocument();
   });
 

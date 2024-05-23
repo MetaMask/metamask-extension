@@ -14,7 +14,6 @@ import {
   FLEX_DIRECTION,
   FontWeight,
   JustifyContent,
-  Severity,
   TextAlign,
   TextColor,
   TextVariant,
@@ -37,9 +36,6 @@ import {
   getTargetAccountWithSendEtherInfo,
   getCustomNonceValue,
   getNextSuggestedNonce,
-  getHasMigratedFromOpenSeaToBlockaid,
-  getIsNetworkSupportedByBlockaid,
-  getHasDismissedOpenSeaToBlockaidBanner,
 } from '../../../selectors';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import {
@@ -49,7 +45,6 @@ import {
   updateAndApproveTx,
   getNextNonce,
   updateCustomNonce,
-  dismissOpenSeaToBlockaidBanner,
 } from '../../../store/actions';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
@@ -66,26 +61,20 @@ import {
   NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX,
 } from '../../../../shared/constants/tokens';
 import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
-
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import BlockaidBannerAlert from '../components/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
 ///: END:ONLY_INCLUDE_IF
-
 import { ConfirmPageContainerNavigation } from '../components/confirm-page-container';
 import { useSimulationFailureWarning } from '../hooks/useSimulationFailureWarning';
 import SimulationErrorMessage from '../components/simulation-error-message';
 import LedgerInstructionField from '../components/ledger-instruction-field/ledger-instruction-field';
 import SecurityProviderBannerMessage from '../components/security-provider-banner-message/security-provider-banner-message';
-import {
-  BannerAlert,
-  Icon,
-  IconName,
-  Text,
-} from '../../../components/component-library';
+import { Icon, IconName, Text } from '../../../components/component-library';
 import { ConfirmPageContainerWarning } from '../components/confirm-page-container/confirm-page-container-content';
 import CustomNonce from '../components/custom-nonce';
 import FeeDetailsComponent from '../components/fee-details-component/fee-details-component';
 import { BlockaidResultType } from '../../../../shared/constants/security-provider';
+import { BlockaidUnavailableBannerAlert } from '../components/blockaid-unavailable-banner-alert/blockaid-unavailable-banner-alert';
 
 const ALLOWED_HOSTS = ['portfolio.metamask.io'];
 
@@ -101,7 +90,6 @@ export default function TokenAllowance({
   hexTransactionTotal,
   hexMinimumTransactionFee,
   txData,
-  isMultiLayerFeeNetwork,
   supportsEIP1559,
   userAddress,
   tokenAddress,
@@ -347,24 +335,6 @@ export default function TokenAllowance({
       ? 'danger-primary'
       : 'primary';
 
-  const hasMigratedFromOpenSeaToBlockaid = useSelector(
-    getHasMigratedFromOpenSeaToBlockaid,
-  );
-  const isNetworkSupportedByBlockaid = useSelector(
-    getIsNetworkSupportedByBlockaid,
-  );
-  const hasDismissedOpenSeaToBlockaidBanner = useSelector(
-    getHasDismissedOpenSeaToBlockaidBanner,
-  );
-
-  const showOpenSeaToBlockaidBannerAlert =
-    hasMigratedFromOpenSeaToBlockaid &&
-    !isNetworkSupportedByBlockaid &&
-    !hasDismissedOpenSeaToBlockaidBanner;
-
-  const handleCloseOpenSeaToBlockaidBannerAlert = () => {
-    dispatch(dismissOpenSeaToBlockaidBanner());
-  };
   return (
     <Box className="token-allowance-container page-container">
       <Box>
@@ -421,23 +391,7 @@ export default function TokenAllowance({
         />
         ///: END:ONLY_INCLUDE_IF
       }
-      {showOpenSeaToBlockaidBannerAlert ? (
-        <BannerAlert
-          severity={Severity.Info}
-          title={t('openSeaToBlockaidTitle')}
-          description={t('openSeaToBlockaidDescription')}
-          actionButtonLabel={t('openSeaToBlockaidBtnLabel')}
-          actionButtonProps={{
-            href: 'https://snaps.metamask.io/transaction-insights',
-            externalLink: true,
-          }}
-          marginBottom={4}
-          marginLeft={4}
-          marginTop={4}
-          marginRight={4}
-          onClose={handleCloseOpenSeaToBlockaidBannerAlert}
-        />
-      ) : null}
+      <BlockaidUnavailableBannerAlert />
       {isSuspiciousResponse(txData?.securityProviderResponse) && (
         <SecurityProviderBannerMessage
           securityProviderResponse={txData.securityProviderResponse}
@@ -576,7 +530,6 @@ export default function TokenAllowance({
             renderTransactionDetailsContent
             noBorder={useNonceField || !showFullTxDetails}
             supportsEIP1559={supportsEIP1559}
-            isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
             ethTransactionTotal={ethTransactionTotal}
             nativeCurrency={nativeCurrency}
             fullTxData={fullTxData}
@@ -751,10 +704,6 @@ TokenAllowance.propTypes = {
    * Current transaction
    */
   txData: PropTypes.object,
-  /**
-   * Is multi-layer fee network or not
-   */
-  isMultiLayerFeeNetwork: PropTypes.bool,
   /**
    * Is the enhanced gas fee enabled or not
    */

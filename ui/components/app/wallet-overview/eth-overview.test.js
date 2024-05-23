@@ -80,18 +80,12 @@ describe('EthOverview', () => {
           conversionRate: 2,
         },
       },
-      identities: {
-        '0x1': {
-          address: '0x1',
-        },
-      },
       accounts: {
         '0x1': {
           address: '0x1',
           balance: '0x1F4',
         },
       },
-      selectedAddress: '0x1',
       internalAccounts: {
         accounts: {
           'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {

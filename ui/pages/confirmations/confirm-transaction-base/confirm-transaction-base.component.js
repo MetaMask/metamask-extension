@@ -7,7 +7,6 @@ import {
 import ConfirmPageContainer from '../components/confirm-page-container';
 import { isBalanceSufficient } from '../send/send.utils';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import fetchEstimatedL1Fee from '../../../helpers/utils/optimism/fetchEstimatedL1Fee';
 
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
@@ -21,7 +20,6 @@ import UserPreferencedCurrencyDisplay from '../../../components/app/user-prefere
 
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import TextField from '../../../components/ui/text-field';
-import SimulationErrorMessage from '../components/simulation-error-message';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { getMethodName } from '../../../helpers/utils/metrics';
 import {
@@ -65,10 +63,8 @@ import SnapAccountTransactionLoadingScreen from '../../snap-account-transaction-
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import FeeDetailsComponent from '../components/fee-details-component/fee-details-component';
 import { SimulationDetails } from '../components/simulation-details';
-import { BannerAlert } from '../../../components/component-library';
-import { Severity } from '../../../helpers/constants/design-system';
-
 import { fetchSwapsFeatureFlags } from '../../swaps/swaps.util';
+import { BlockaidUnavailableBannerAlert } from '../components/blockaid-unavailable-banner-alert/blockaid-unavailable-banner-alert';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -173,11 +169,6 @@ export default class ConfirmTransactionBase extends Component {
     isUserOpContractDeployError: PropTypes.bool,
     useMaxValue: PropTypes.bool,
     maxValue: PropTypes.string,
-    isMultiLayerFeeNetwork: PropTypes.bool,
-    hasMigratedFromOpenSeaToBlockaid: PropTypes.bool,
-    hasDismissedOpenSeaToBlockaidBanner: PropTypes.bool,
-    dismissOpenSeaToBlockaidBanner: PropTypes.func,
-    isNetworkSupportedByBlockaid: PropTypes.bool,
     isSmartTransaction: PropTypes.bool,
     smartTransactionsOptInStatus: PropTypes.bool,
     currentChainSupportsSmartTransactions: PropTypes.bool,
@@ -192,7 +183,6 @@ export default class ConfirmTransactionBase extends Component {
     editingGas: false,
     userAcknowledgedGasMissing: false,
     showWarningModal: false,
-    estimatedL1Fees: 0,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     noteText: '',
     ///: END:ONLY_INCLUDE_IF
@@ -212,7 +202,6 @@ export default class ConfirmTransactionBase extends Component {
       setDefaultHomeActiveTabName,
       hexMaximumTransactionFee,
       useMaxValue,
-      txData,
     } = this.props;
     const {
       customNonceValue: prevCustomNonceValue,
@@ -267,21 +256,11 @@ export default class ConfirmTransactionBase extends Component {
       }
     }
 
-    if (hexMaximumTransactionFee !== prevHexMaximumTransactionFee) {
-      fetchEstimatedL1Fee(txData?.chainId, txData)
-        .then((result) => {
-          this.setState({
-            estimatedL1Fees: result,
-          });
-        })
-        .catch((_err) => {
-          this.setState({
-            estimatedL1Fees: 0,
-          });
-        });
-      if (useMaxValue) {
-        this.updateValueToMax();
-      }
+    if (
+      hexMaximumTransactionFee !== prevHexMaximumTransactionFee &&
+      useMaxValue
+    ) {
+      this.updateValueToMax();
     }
   }
 
@@ -406,15 +385,10 @@ export default class ConfirmTransactionBase extends Component {
       useCurrencyRateCheck,
       tokenSymbol,
       isUsingPaymaster,
-      isMultiLayerFeeNetwork,
-      hasMigratedFromOpenSeaToBlockaid,
-      hasDismissedOpenSeaToBlockaidBanner,
-      dismissOpenSeaToBlockaidBanner,
-      isNetworkSupportedByBlockaid,
     } = this.props;
 
     const { t } = this.context;
-    const { userAcknowledgedGasMissing, estimatedL1Fees } = this.state;
+    const { userAcknowledgedGasMissing } = this.state;
 
     const { valid } = this.getErrorKey();
     const isDisabled = () => {
@@ -431,7 +405,7 @@ export default class ConfirmTransactionBase extends Component {
       return sumHexes(
         txData.txParams.value,
         useMaxFee ? hexMaximumTransactionFee : hexMinimumTransactionFee,
-        isMultiLayerFeeNetwork ? estimatedL1Fees : 0,
+        txData.layer1GasFee ?? 0,
       );
     };
 
@@ -513,58 +487,21 @@ export default class ConfirmTransactionBase extends Component {
       </div>
     ) : null;
 
-    const simulationFailureWarning = () => (
-      <div
-        className="confirm-page-container-content__error-container"
-        key="confirm-transaction-base_simulation-error-container"
-      >
-        <SimulationErrorMessage
-          userAcknowledgedGasMissing={userAcknowledgedGasMissing}
-          setUserAcknowledgedGasMissing={() =>
-            this.setUserAcknowledgedGasMissing()
-          }
-        />
-      </div>
-    );
-
     const { simulationData } = txData;
 
     const simulationDetails = (
       <SimulationDetails
         simulationData={simulationData}
         transactionId={txData.id}
+        enableMetrics
       />
     );
-
-    const showOpenSeaToBlockaidBannerAlert =
-      hasMigratedFromOpenSeaToBlockaid &&
-      !isNetworkSupportedByBlockaid &&
-      !hasDismissedOpenSeaToBlockaidBanner;
-    const handleCloseOpenSeaToBlockaidBannerAlert = () => {
-      dismissOpenSeaToBlockaidBanner();
-    };
 
     const showTotals = Boolean(simulationData?.error);
 
     return (
       <div className="confirm-page-container-content__details">
-        {showOpenSeaToBlockaidBannerAlert ? (
-          <BannerAlert
-            severity={Severity.Info}
-            title={t('openSeaToBlockaidTitle')}
-            description={t('openSeaToBlockaidDescription')}
-            actionButtonLabel={t('openSeaToBlockaidBtnLabel')}
-            actionButtonProps={{
-              href: 'https://snaps.metamask.io/transaction-insights',
-              externalLink: true,
-            }}
-            marginBottom={4}
-            marginLeft={4}
-            marginTop={4}
-            marginRight={4}
-            onClose={handleCloseOpenSeaToBlockaidBannerAlert}
-          />
-        ) : null}
+        <BlockaidUnavailableBannerAlert />
         <TransactionAlerts
           txData={txData}
           setUserAcknowledgedGasMissing={() =>
@@ -579,16 +516,13 @@ export default class ConfirmTransactionBase extends Component {
           isUsingPaymaster={isUsingPaymaster}
         />
         {simulationDetails}
-        <TransactionDetail
-          disableEditGasFeeButton
-          disabled={isDisabled()}
-          userAcknowledgedGasMissing={userAcknowledgedGasMissing}
-          onEdit={
-            renderSimulationFailureWarning ? null : () => this.handleEditGas()
-          }
-          rows={[
-            renderSimulationFailureWarning && simulationFailureWarning(),
-            !renderSimulationFailureWarning && (
+        {!renderSimulationFailureWarning && (
+          <TransactionDetail
+            disableEditGasFeeButton
+            disabled={isDisabled()}
+            userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+            onEdit={() => this.handleEditGas()}
+            rows={[
               <div key="confirm-transaction-base_confirm-gas-display">
                 <ConfirmGasDisplay
                   userAcknowledgedGasMissing={userAcknowledgedGasMissing}
@@ -597,10 +531,10 @@ export default class ConfirmTransactionBase extends Component {
                   useCurrencyRateCheck={useCurrencyRateCheck}
                   txData={txData}
                 />
-              </div>
-            ),
-          ]}
-        />
+              </div>,
+            ]}
+          />
+        )}
         {showTotals && (
           <TransactionDetail
             disableEditGasFeeButton

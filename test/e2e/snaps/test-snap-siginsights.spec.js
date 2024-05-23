@@ -19,7 +19,6 @@ describe('Test Snap Signature Insights', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         // navigate to test snaps page and connect
@@ -50,10 +49,10 @@ describe('Test Snap Signature Insights', function () {
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Install' });
+        await driver.waitForSelector({ text: 'Confirm' });
 
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
 
@@ -77,16 +76,6 @@ describe('Test Snap Signature Insights', function () {
           windowHandles,
         );
 
-        // wait for and click use flask
-        await driver.waitForSelector({
-          text: 'Use MetaMask Flask',
-          tag: 'button',
-        });
-        await driver.clickElement({
-          text: 'Use MetaMask Flask',
-          tag: 'button',
-        });
-
         // find and scroll to basic actions and click connect
         const connectButton1 = await driver.findElement('#connectButton');
         await driver.scrollToElement(connectButton1);
@@ -104,7 +93,7 @@ describe('Test Snap Signature Insights', function () {
         });
         await driver.delay(1000);
         await driver.clickElement({
-          text: 'Connect',
+          text: 'Confirm',
           tag: 'button',
         });
 

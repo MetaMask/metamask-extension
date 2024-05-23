@@ -6,16 +6,15 @@ import {
   SimulationTokenBalanceChange,
   SimulationTokenStandard,
 } from '@metamask/transaction-controller';
+import { BigNumber } from 'bignumber.js';
 import { ContractExchangeRates } from '@metamask/assets-controllers';
 import { useAsyncResultOrThrow } from '../../../../hooks/useAsyncResult';
 import { getTokenStandardAndDetails } from '../../../../store/actions';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
-import { Numeric } from '../../../../../shared/modules/Numeric';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
 import { getCurrentChainId, getCurrentCurrency } from '../../../../selectors';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
 import {
-  Amount,
   BalanceChange,
   FIAT_UNAVAILABLE,
   NATIVE_ASSET_IDENTIFIER,
@@ -25,6 +24,11 @@ import {
 const NATIVE_DECIMALS = 18;
 
 const ERC20_DEFAULT_DECIMALS = 18;
+
+// See https://github.com/MikeMcl/bignumber.js/issues/11#issuecomment-23053776
+function convertNumberToStringWithPrecisionWarning(value: number): string {
+  return String(value);
+}
 
 // Converts a SimulationTokenStandard to a TokenStandard
 function convertStandard(standard: SimulationTokenStandard) {
@@ -44,19 +48,29 @@ function convertStandard(standard: SimulationTokenStandard) {
 function getAssetAmount(
   { isDecrease: isNegative, difference: quantity }: SimulationBalanceChange,
   decimals: number,
-): Amount {
-  const numeric = Numeric.from(quantity, 16)
-    .times(isNegative ? -1 : 1, 10)
-    .toBase(10)
-    .shiftedBy(decimals);
-  return { isNegative, quantity, decimals, numeric };
+): BigNumber {
+  return (
+    new BigNumber(quantity, 16)
+      .times(isNegative ? -1 : 1)
+      // Shift the decimal point to the left by the number of decimals.
+      .shift(-decimals)
+  );
 }
 
 // Fetches the decimals for the given token address.
 async function fetchErc20Decimals(address: Hex): Promise<number> {
   try {
-    const { decimals } = await getTokenStandardAndDetails(address);
-    return decimals ? parseInt(decimals, 10) : ERC20_DEFAULT_DECIMALS;
+    const { decimals: decStr } = await getTokenStandardAndDetails(address);
+    if (!decStr) {
+      return ERC20_DEFAULT_DECIMALS;
+    }
+    for (const radix of [10, 16]) {
+      const parsedDec = parseInt(decStr, radix);
+      if (isFinite(parsedDec)) {
+        return parsedDec;
+      }
+    }
+    return ERC20_DEFAULT_DECIMALS;
   } catch {
     return ERC20_DEFAULT_DECIMALS;
   }
@@ -106,8 +120,8 @@ function getNativeBalanceChange(
   }
   const asset = NATIVE_ASSET_IDENTIFIER;
   const amount = getAssetAmount(nativeBalanceChange, NATIVE_DECIMALS);
-  const fiatAmount = amount.numeric
-    .applyConversionRate(nativeFiatRate)
+  const fiatAmount = amount
+    .times(convertNumberToStringWithPrecisionWarning(nativeFiatRate))
     .toNumber();
   return { asset, amount, fiatAmount };
 }
@@ -126,12 +140,17 @@ function getTokenBalanceChanges(
     };
 
     const decimals =
-      asset.standard === TokenStandard.ERC20 ? erc20Decimals[asset.address] : 0;
+      // TODO(dbrans): stopgap for https://github.com/MetaMask/metamask-extension/issues/24690
+      asset.standard === TokenStandard.ERC20
+        ? erc20Decimals[asset.address] ?? ERC20_DEFAULT_DECIMALS
+        : 0;
     const amount = getAssetAmount(tokenBc, decimals);
 
     const fiatRate = erc20FiatRates[tokenBc.address];
     const fiatAmount = fiatRate
-      ? amount.numeric.applyConversionRate(fiatRate).toNumber()
+      ? amount
+          .times(convertNumberToStringWithPrecisionWarning(fiatRate))
+          .toNumber()
       : FIAT_UNAVAILABLE;
 
     return { asset, amount, fiatAmount };
@@ -140,7 +159,7 @@ function getTokenBalanceChanges(
 
 // Compiles a list of balance changes from simulation data
 export const useBalanceChanges = (
-  simulationData?: Partial<SimulationData>,
+  simulationData: SimulationData | undefined,
 ): { pending: boolean; value: BalanceChange[] } => {
   const chainId = useSelector(getCurrentChainId);
   const fiatCurrency = useSelector(getCurrentCurrency);

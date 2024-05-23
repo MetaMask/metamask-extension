@@ -23,6 +23,7 @@ import {
   getSnapMetadata,
   getTargetSubjectMetadata,
 } from '../../../../selectors';
+import { getAvatarFallbackLetter } from '../../../../helpers/utils/util';
 
 const SnapAvatar = ({
   snapId,
@@ -42,7 +43,7 @@ const SnapAvatar = ({
   const iconUrl = subjectMetadata?.iconUrl;
 
   // We choose the first non-symbol char as the fallback icon.
-  const fallbackIcon = snapName?.match(/[a-z0-9]/iu)?.[0] ?? '?';
+  const fallbackIcon = getAvatarFallbackLetter(snapName);
 
   return (
     <BadgeWrapper

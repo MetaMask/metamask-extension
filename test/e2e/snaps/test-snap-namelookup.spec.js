@@ -16,7 +16,6 @@ describe('Test Snap Name Lookup', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         // navigate to test snaps page and connect
@@ -49,10 +48,10 @@ describe('Test Snap Name Lookup', function () {
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Install' });
+        await driver.waitForSelector({ text: 'Confirm' });
 
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
 

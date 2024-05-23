@@ -14,21 +14,21 @@ describe('ConfirmInfoRowUrl', () => {
     const { getByText } = render(
       <ConfirmInfoRowUrl url="https://www.example.com" />,
     );
-    expect(getByText('https://www.example.com')).toBeInTheDocument();
+    expect(getByText('www.example.com')).toBeInTheDocument();
   });
 
   it('renders a URL with a path', () => {
     const { getByText } = render(
       <ConfirmInfoRowUrl url="https://www.example.com/foo" />,
     );
-    expect(getByText('https://www.example.com/foo')).toBeInTheDocument();
+    expect(getByText('www.example.com/foo')).toBeInTheDocument();
   });
 
-  it('renders a URL, protocol, and warning icon when the protocol is "http"', () => {
+  it('renders a URL, and warning icon when the protocol is "http"', () => {
     const { container, getByText } = render(
       <ConfirmInfoRowUrl url="http://www.example.com/" />,
     );
-    expect(getByText('http://www.example.com/')).toBeInTheDocument();
+    expect(getByText('www.example.com/')).toBeInTheDocument();
     expect(getByText('HTTP')).toBeInTheDocument();
     expect(container.querySelector('.mm-icon')).toBeInTheDocument();
     expect(container).toMatchSnapshot();

@@ -81,10 +81,10 @@ describe('Test Snap Installed', function () {
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Install' });
+        await driver.waitForSelector({ text: 'Confirm' });
 
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
 
@@ -133,10 +133,10 @@ describe('Test Snap Installed', function () {
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Install' });
+        await driver.waitForSelector({ text: 'Confirm' });
 
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
 

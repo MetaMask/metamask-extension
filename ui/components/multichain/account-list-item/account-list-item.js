@@ -11,7 +11,6 @@ import { ConnectedAccountsMenu } from '../connected-accounts-menu';
 import {
   AvatarAccount,
   AvatarAccountVariant,
-  AvatarFavicon,
   AvatarToken,
   AvatarTokenSize,
   Box,
@@ -48,7 +47,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  getAddressConnectedSubjectMap,
+  isAccountConnectedToCurrentTab,
   getCurrentNetwork,
   getNativeCurrencyImage,
   getShowFiatInTestnets,
@@ -67,13 +66,12 @@ const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
 
 export const AccountListItem = ({
-  identity,
+  account,
   selected = false,
   onClick,
   closeMenu,
   accountsCount,
   connectedAvatar,
-  connectedAvatarName,
   isPinned = false,
   menuType = AccountListItemMenuTypes.None,
   isHidden = false,
@@ -96,19 +94,19 @@ export const AccountListItem = ({
   const showFiat =
     TEST_NETWORKS.includes(currentNetwork?.nickname) && !showFiatInTestnets;
   const { totalWeiBalance, orderedTokenList } = useAccountTotalFiatBalance(
-    identity.address,
+    account.address,
   );
   const mappedOrderedTokenList = orderedTokenList.map((item) => ({
     avatarValue: item.iconUrl,
   }));
   let balanceToTranslate = totalWeiBalance;
   if (showFiat) {
-    balanceToTranslate = identity.balance;
+    balanceToTranslate = account.balance;
   }
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const custodianIcon = useSelector((state) =>
-    getCustodianIconForAddress(state, identity.address),
+    getCustodianIconForAddress(state, account.address),
   );
   ///: END:ONLY_INCLUDE_IF
 
@@ -124,11 +122,8 @@ export const AccountListItem = ({
   const trackEvent = useContext(MetaMetricsContext);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const nativeCurrency = useSelector(getNativeCurrency);
-  const addressConnectedSubjectMap = useSelector(getAddressConnectedSubjectMap);
-  const selectedAddressSubjectMap =
-    addressConnectedSubjectMap[identity.address];
-  const currentTabIsConnectedToSelectedAddress = Boolean(
-    selectedAddressSubjectMap && selectedAddressSubjectMap[currentTabOrigin],
+  const currentTabIsConnectedToSelectedAddress = useSelector((state) =>
+    isAccountConnectedToCurrentTab(state, account.address),
   );
   const isConnected =
     currentTabOrigin && currentTabIsConnectedToSelectedAddress;
@@ -171,7 +166,7 @@ export const AccountListItem = ({
             display={[Display.Flex, Display.None]}
             data-testid="account-list-item-badge"
           >
-            <ConnectedStatus address={identity.address} isActive={isActive} />
+            <ConnectedStatus address={account.address} isActive={isActive} />
           </Box>
           <Box display={[Display.None, Display.Flex]}>
             {
@@ -179,7 +174,7 @@ export const AccountListItem = ({
               <AvatarAccount
                 borderColor={BorderColor.transparent}
                 size={Size.MD}
-                address={identity.address}
+                address={account.address}
                 variant={
                   useBlockie
                     ? AvatarAccountVariant.Blockies
@@ -203,7 +198,7 @@ export const AccountListItem = ({
                 <AvatarAccount
                   borderColor={BorderColor.transparent}
                   size={Size.MD}
-                  address={identity.address}
+                  address={account.address}
                   variant={
                     useBlockie
                       ? AvatarAccountVariant.Blockies
@@ -223,7 +218,7 @@ export const AccountListItem = ({
             <AvatarAccount
               borderColor={BorderColor.transparent}
               size={Size.MD}
-              address={identity.address}
+              address={account.address}
               variant={
                 useBlockie
                   ? AvatarAccountVariant.Blockies
@@ -246,7 +241,7 @@ export const AccountListItem = ({
               <AvatarAccount
                 borderColor={BorderColor.transparent}
                 size={Size.MD}
-                address={identity.address}
+                address={account.address}
                 variant={
                   useBlockie
                     ? AvatarAccountVariant.Blockies
@@ -304,17 +299,17 @@ export const AccountListItem = ({
                 textAlign={TextAlign.Left}
                 ellipsis
               >
-                {identity.metadata.name.length >
+                {account.metadata.name.length >
                 MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
                   <Tooltip
-                    title={identity.metadata.name}
+                    title={account.metadata.name}
                     position="bottom"
                     wrapperClassName="multichain-account-list-item__tooltip"
                   >
-                    {identity.metadata.name}
+                    {account.metadata.name}
                   </Tooltip>
                 ) : (
-                  identity.metadata.name
+                  account.metadata.name
                 )}
               </Text>
             </Box>
@@ -344,16 +339,8 @@ export const AccountListItem = ({
           justifyContent={JustifyContent.spaceBetween}
         >
           <Box display={Display.Flex} alignItems={AlignItems.center}>
-            {connectedAvatar ? (
-              <AvatarFavicon
-                size={Size.XS}
-                src={connectedAvatar}
-                name={connectedAvatarName}
-                className="multichain-account-list-item__avatar"
-              />
-            ) : null}
             <Text variant={TextVariant.bodySm} color={Color.textAlternative}>
-              {shortenAddress(toChecksumHexAddress(identity.address))}
+              {shortenAddress(toChecksumHexAddress(account.address))}
             </Text>
           </Box>
           {mappedOrderedTokenList.length > 1 ? (
@@ -380,7 +367,7 @@ export const AccountListItem = ({
               >
                 <UserPreferencedCurrencyDisplay
                   ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                  value={identity.balance}
+                  value={account.balance}
                   type={SECONDARY}
                   showNative
                 />
@@ -388,15 +375,15 @@ export const AccountListItem = ({
             </Box>
           )}
         </Box>
-        {identity.label ? (
+        {account.label ? (
           <Tag
-            label={identity.label}
+            label={account.label}
             labelProps={{
               variant: TextVariant.bodyXs,
               color: Color.textAlternative,
             }}
             startIconName={
-              identity.metadata.keyring.type === KeyringType.snap
+              account.metadata.keyring.type === KeyringType.snap
                 ? IconName.Snaps
                 : null
             }
@@ -406,7 +393,7 @@ export const AccountListItem = ({
 
       {menuType === AccountListItemMenuTypes.None ? null : (
         <ButtonIcon
-          ariaLabel={`${identity.metadata.name} ${t('options')}`}
+          ariaLabel={`${account.metadata.name} ${t('options')}`}
           iconName={IconName.MoreVertical}
           size={IconSize.Sm}
           ref={setAccountListItemMenuRef}
@@ -429,10 +416,10 @@ export const AccountListItem = ({
       {menuType === AccountListItemMenuTypes.Account && (
         <AccountListItemMenu
           anchorElement={accountListItemMenuElement}
-          identity={identity}
+          account={account}
           onClose={() => setAccountOptionsMenuOpen(false)}
           isOpen={accountOptionsMenuOpen}
-          isRemovable={identity.keyring.type !== KeyringType.hdKeyTree}
+          isRemovable={account.keyring.type !== KeyringType.hdKeyTree}
           closeMenu={closeMenu}
           isPinned={isPinned}
           isHidden={isHidden}
@@ -442,7 +429,7 @@ export const AccountListItem = ({
       {menuType === AccountListItemMenuTypes.Connection && (
         <ConnectedAccountsMenu
           anchorElement={accountListItemMenuElement}
-          identity={identity}
+          account={account}
           onClose={() => setAccountOptionsMenuOpen(false)}
           closeMenu={closeMenu}
           disableAccountSwitcher={isSingleAccount}
@@ -459,7 +446,7 @@ AccountListItem.propTypes = {
   /**
    * An account object that has name, address, and balance data
    */
-  identity: PropTypes.shape({
+  account: PropTypes.shape({
     id: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
     balance: PropTypes.string.isRequired,
@@ -503,10 +490,6 @@ AccountListItem.propTypes = {
    * File location of the avatar icon
    */
   connectedAvatar: PropTypes.string,
-  /**
-   * Text used as the avatar alt text
-   */
-  connectedAvatarName: PropTypes.string,
   /**
    * Represents the type of menu to be rendered
    */

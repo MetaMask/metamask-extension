@@ -54,3 +54,9 @@ privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
 
 # Confirmations UX team to own code for confirmations on UI.
 ui/pages/confirmations               @MetaMask/confirmations-ux @MetaMask/confirmations-system-team
+
+# MMI team is responsible for code related with Institutioanl version of MetaMask
+ui/pages/institutional               @MetaMask/mmi
+ui/components/institutional          @MetaMask/mmi
+ui/ducks/institutional               @MetaMask/mmi
+ui/selectors/institutional           @MetaMask/mmi

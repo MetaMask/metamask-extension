@@ -79,4 +79,24 @@ describe('ExperimentalTab', () => {
       expect(setPetnamesEnabled).toHaveBeenCalledWith(false);
     });
   });
+
+  it('should enable redesigned confirmations', async () => {
+    process.env.ENABLE_CONFIRMATION_REDESIGN = true;
+    const setRedesignedConfirmationsEnabled = jest.fn();
+    const { getByTestId } = render(
+      { desktopEnabled: true },
+      {
+        setRedesignedConfirmationsEnabled,
+        redesignedConfirmationsEnabled: false,
+      },
+    );
+
+    const toggle = getByTestId('toggle-redesigned-confirmations');
+    fireEvent.click(toggle);
+
+    await waitFor(() => {
+      expect(setRedesignedConfirmationsEnabled).toHaveBeenCalledWith(true);
+    });
+    delete process.env.ENABLE_CONFIRMATION_REDESIGN;
+  });
 });

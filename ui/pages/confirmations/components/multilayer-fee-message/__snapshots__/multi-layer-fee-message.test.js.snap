@@ -22,7 +22,7 @@ exports[`Multi layer fee message when balance and token price checker is disable
           <h6
             class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--text-align-right mm-box--margin-left-1 mm-box--color-text-default"
           >
-            Unknown
+            0.000000003000 ETH
           </h6>
         </div>
       </div>
@@ -54,7 +54,7 @@ exports[`Multi layer fee message when balance and token price checker is disable
           <h6
             class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--text-align-right mm-box--margin-left-1 mm-box--color-text-default"
           >
-            0.001000021000 ETH
+            0.001000024000 ETH
           </h6>
         </div>
       </div>
@@ -97,12 +97,21 @@ exports[`Multi layer fee message when balance and token price checker is enabled
           <h6
             class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
           >
-            Unknown
+            <div
+              class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+              title="$0.00"
+            >
+              <span
+                class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+              >
+                $0.00
+              </span>
+            </div>
           </h6>
           <h6
             class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--text-align-right mm-box--margin-left-1 mm-box--color-text-default"
           >
-            Unknown
+            0.000000003000 ETH
           </h6>
         </div>
       </div>
@@ -148,7 +157,7 @@ exports[`Multi layer fee message when balance and token price checker is enabled
           <h6
             class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--text-align-right mm-box--margin-left-1 mm-box--color-text-default"
           >
-            0.001000021000 ETH
+            0.001000024000 ETH
           </h6>
         </div>
       </div>

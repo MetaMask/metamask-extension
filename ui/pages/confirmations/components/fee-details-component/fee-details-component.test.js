@@ -22,7 +22,11 @@ const render = async (state = {}) => {
   let result;
 
   await act(
-    async () => (result = renderWithProvider(<FeeDetailsComponent />, store)),
+    async () =>
+      (result = renderWithProvider(
+        <FeeDetailsComponent txData={{ layer1GasFee: '0x0' }} />,
+        store,
+      )),
   );
 
   return result;
@@ -56,7 +60,7 @@ describe('FeeDetailsComponent', () => {
     await act(async () => {
       screen.getByRole('button').click();
     });
-    expect(screen.getAllByTitle('0 ETH')).toHaveLength(2);
+    expect(screen.getAllByTitle('0 ETH')).toHaveLength(3);
     expect(screen.getAllByTitle('0 ETH')[0]).toBeInTheDocument();
   });
 
