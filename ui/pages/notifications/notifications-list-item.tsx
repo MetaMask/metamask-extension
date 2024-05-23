@@ -33,7 +33,7 @@ export function NotificationsListItem({
 
   const handleNotificationClick = useCallback(() => {
     trackEvent({
-      category: MetaMetricsEventCategory.NotifictionInteraction,
+      category: MetaMetricsEventCategory.NotificationInteraction,
       event: MetaMetricsEventName.NotificationItemClicked,
       properties: {
         notificationId: notification.id,

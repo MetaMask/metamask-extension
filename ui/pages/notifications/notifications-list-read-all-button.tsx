@@ -54,7 +54,7 @@ export const NotificationsListReadAllButton = ({
 
   const handleOnClick = () => {
     trackEvent({
-      category: MetaMetricsEventCategory.NotifictionInteraction,
+      category: MetaMetricsEventCategory.NotificationInteraction,
       event: MetaMetricsEventName.MarkAllNotificationsRead,
     });
 

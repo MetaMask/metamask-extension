@@ -34,7 +34,7 @@ function NotificationItem({ snapNotification }: SnapComponentProps) {
   const handleNameClick = (e: Pick<Event, 'stopPropagation'>) => {
     e.stopPropagation();
     trackEvent({
-      category: MetaMetricsEventCategory.NotifictionInteraction,
+      category: MetaMetricsEventCategory.NotificationInteraction,
       event: MetaMetricsEventName.NotificationDetailClicked,
       properties: {
         notificationId: snapNotification.id,
@@ -48,7 +48,7 @@ function NotificationItem({ snapNotification }: SnapComponentProps) {
 
   const handleItemClick = () => {
     trackEvent({
-      category: MetaMetricsEventCategory.NotifictionInteraction,
+      category: MetaMetricsEventCategory.NotificationInteraction,
       event: MetaMetricsEventName.NotificationItemClicked,
       properties: {
         notificationId: snapNotification.id,
