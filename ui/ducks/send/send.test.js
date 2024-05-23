@@ -2039,7 +2039,7 @@ describe('Send Slice', () => {
           payload: `sendFlow - user set asset to ERC20 token with symbol TokenSymbol and address tokenAddress`,
         });
         expect(actionResult[3].payload).toStrictEqual({
-          sendAsset: {
+          asset: {
             type: AssetType.token,
             details: {
               address: 'tokenAddress',
@@ -2810,7 +2810,7 @@ describe('Send Slice', () => {
             'UPDATE_TRANSACTION_EDITABLE_PARAMS',
             'UPDATE_TRANSACTION_GAS_FEES',
           ]),
-        ).toBe(true),
+        ).toBe(true);
       });
     });
 
