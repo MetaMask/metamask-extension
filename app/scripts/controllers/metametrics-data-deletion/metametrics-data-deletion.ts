@@ -53,7 +53,6 @@ export type MetaMetricsDataDeletionState = {
 const defaultState: MetaMetricsDataDeletionState = {
   metaMetricsDataDeletionId: '',
   metaMetricsDataDeletionDate: '',
-  metaMetricsDataDeletionStatus: undefined,
 };
 
 // Metadata for the controller state

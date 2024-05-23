@@ -57,16 +57,6 @@ module.exports.setEnvironmentVariables = function setEnvironmentVariables({
       variables,
       environment,
     }),
-    ANALYTICS_DATA_DELETION_SOURCE_ID: getAnalyticsDataDeletionSourceId({
-      buildType,
-      variables,
-      environment,
-    }),
-    ANALYTICS_DATA_DELETION_ENDPOINT: getAnalyticsDataDeletionEndpoint({
-      buildType,
-      variables,
-      environment,
-    }),
     TEST_GAS_FEE_FLOWS:
       isDevBuild && variables.getMaybe('TEST_GAS_FEE_FLOWS') === true,
   });
@@ -219,80 +209,4 @@ function getPhishingWarningPageUrl({ variables, testing }) {
   // return a normalized version of the URL; a `/` will be appended to the end
   // of the domain if it is missing
   return phishingWarningPageUrlObject.toString();
-}
-
-/**
- * Get the appropriate source id for the segment delete api
- *
- * @param {object} options - The Segment write key options.
- * @param {string} options.buildType - The current build type.
- * @param {keyof ENVIRONMENT} options.environment - The current build environment.
- * @param {import('../lib/variables').Variables} options.variables - Object containing all variables that modify the build pipeline
- * @returns {string} The source id for the segment delete api.
- */
-function getAnalyticsDataDeletionSourceId({
-  buildType,
-  variables,
-  environment,
-}) {
-  if (environment !== ENVIRONMENT.PRODUCTION) {
-    return variables.get('ANALYTICS_DATA_DELETION_SOURCE_ID');
-  }
-
-  const analyticsDataDeletionSourceIdReference = variables.get(
-    'ANALYTICS_DATA_DELETION_SOURCE_ID_REF',
-  );
-  assert(
-    typeof analyticsDataDeletionSourceIdReference === 'string' &&
-      analyticsDataDeletionSourceIdReference.length > 0,
-    `Build type "${buildType}" has improperly set ANALYTICS_DATA_DELETION_SOURCE_ID_REF in builds.yml. Current value: "${analyticsDataDeletionSourceIdReference}"`,
-  );
-
-  const analyticsDataDeletionSourceId = variables.get(
-    analyticsDataDeletionSourceIdReference,
-  );
-  assert(
-    typeof analyticsDataDeletionSourceId === 'string' &&
-      analyticsDataDeletionSourceId.length > 0,
-    `Segment Write Key environmental variable "${analyticsDataDeletionSourceId}" is set improperly.`,
-  );
-  return analyticsDataDeletionSourceId;
-}
-
-/**
- * Get the appropriate Segment regulation proxy endpoint.
- *
- * @param {object} options - The Segment write key options.
- * @param {string} options.buildType - The current build type.
- * @param {keyof ENVIRONMENT} options.environment - The current build environment.
- * @param {import('../lib/variables').Variables} options.variables - Object containing all variables that modify the build pipeline
- * @returns {string} The Segment regulation proxy endpoint.
- */
-function getAnalyticsDataDeletionEndpoint({
-  buildType,
-  variables,
-  environment,
-}) {
-  if (environment !== ENVIRONMENT.PRODUCTION) {
-    return variables.get('ANALYTICS_DATA_DELETION_ENDPOINT');
-  }
-
-  const analyticsDataDeletionEndpointReference = variables.get(
-    'ANALYTICS_DATA_DELETION_ENDPOINT_REF',
-  );
-  assert(
-    typeof analyticsDataDeletionEndpointReference === 'string' &&
-      analyticsDataDeletionEndpointReference.length > 0,
-    `Build type "${buildType}" has improperly set ANALYTICS_DATA_DELETION_ENDPOINT_REF in builds.yml. Current value: "${analyticsDataDeletionEndpointReference}"`,
-  );
-
-  const analyticsDataDeletionEndpoint = variables.get(
-    analyticsDataDeletionEndpointReference,
-  );
-  assert(
-    typeof analyticsDataDeletionEndpoint === 'string' &&
-      analyticsDataDeletionEndpoint.length > 0,
-    `Segment Write Key environmental variable "${analyticsDataDeletionEndpoint}" is set improperly.`,
-  );
-  return analyticsDataDeletionEndpoint;
 }
