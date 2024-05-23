@@ -133,6 +133,7 @@ Note: The `yarn start:test` command (which initiates the testDev build type) has
 Once you have your test build ready, choose the browser for your e2e tests:
 
 - For Firefox, run `yarn test:e2e:firefox`.
+  - Note:  If you are running Firefox as a snap package on Linux, ensure you enable the appropriate environment variable: `FIREFOX_SNAP=true yarn test:e2e:firefox`
 - For Chrome, run `yarn test:e2e:chrome`.
 
 These scripts support additional options for debugging. Use `--help`to see all available options.
