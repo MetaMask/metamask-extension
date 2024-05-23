@@ -22,11 +22,7 @@ import {
   TextColor,
 } from '../../../../../helpers/constants/design-system';
 import { useDraftTransactionWithTxParams } from '../../../hooks/useDraftTransactionWithTxParams';
-import {
-  Icon,
-  IconName,
-  Text,
-} from '../../../../../components/component-library';
+import { Icon, IconName } from '../../../../../components/component-library';
 
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST ? null : <LoadingHeartBeat />;
