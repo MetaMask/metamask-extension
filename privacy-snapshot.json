@@ -42,6 +42,10 @@
   "test.metamask-phishing.io",
   "token.api.cx.metamask.io",
   "tx-sentinel-ethereum-mainnet.api.cx.metamask.io",
+  "unresponsive-rpc.url",
+  "www.4byte.directory",
+  "lattice.gridplus.io",
   "unresponsive-rpc.test",
-  "www.4byte.directory"
+  "authentication.api.cx.metamask.io",
+  "oidc.api.cx.metamask.io"
 ]

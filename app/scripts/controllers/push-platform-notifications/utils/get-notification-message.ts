@@ -59,6 +59,18 @@ export async function onPushNotification(notification: unknown): Promise<void> {
   });
 }
 
+export async function onNotificationClick(event: NotificationEvent) {
+  // Close notification
+  event.notification.close();
+
+  // Get Data
+  const data: OnChainRawNotification = event?.notification?.data;
+
+  // Navigate
+  const destination = `chrome-extension://${sw.location.host}/home.html#notifications/${data.id}`;
+  event.waitUntil(sw.clients.openWindow(destination));
+}
+
 function isOnChainNotification(n: unknown): n is OnChainRawNotification {
   const assumed = n as OnChainRawNotification;
 
