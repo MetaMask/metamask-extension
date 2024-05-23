@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Box, Icon, IconName, Text } from '../../component-library';
+import { Box, Icon, IconName, Text, IconSize } from '../../component-library';
 import {
   AlignItems,
   BlockSize,
@@ -14,21 +14,20 @@ import {
   TextVariant,
   TextAlign,
 } from '../../../helpers/constants/design-system';
-import type { NotificationListItemIconProps } from '../notification-list-item-icon/notification-list-item-icon';
 import type { NotificationListItemTextProps } from '../notification-list-item-text/notification-list-item-text';
-import { NotificationListItemIcon } from '../notification-list-item-icon';
 import { NotificationListItemText } from '../notification-list-item-text';
 import { formatMenuItemDate } from '../../../helpers/utils/notification.util';
+import { SnapUIMarkdown } from '../../app/snaps/snap-ui-markdown';
+import SnapAvatar from '../../app/snaps/snap-avatar';
 
-export type NotificationListItemProps = {
+export type NotificationListItemSnapProps = {
   id: string;
   isRead: boolean;
-  icon: NotificationListItemIconProps;
   title: NotificationListItemTextProps;
-  description: NotificationListItemTextProps;
+  snapMessage: string;
   createdAt: Date;
-  amount?: string;
-  onClick?: () => void;
+  handleSnapClick?: () => void;
+  handleSnapButton?: () => void;
 };
 
 /**
@@ -36,27 +35,29 @@ export type NotificationListItemProps = {
  *
  * @param props - The properties object.
  * @param props.isRead - Indicates whether the notification has been read.
- * @param props.icon - The icon of the notification.
  * @param props.title - The title of the notification.
- * @param props.description - The description of the notification.
  * @param props.createdAt - The date of the notification.
- * @param props.amount - The amount associated with the notification, if applicable.
  * @param props.id - The id of the notification.
- * @param props.onClick - The function to call when the notification is clicked.
+ * @param props.handleSnapClick - The function to call when the notification is clicked.
+ * @param props.handleSnapButton - The function to call when the snap button is clicked.
+ * @param props.snapMessage - The snap message to display on the notification.
  * @returns Returns a notification list item component.
  */
-export const NotificationListItem = ({
+export const NotificationListItemSnap = ({
   id,
   isRead,
-  icon,
   title,
-  description,
+  snapMessage,
   createdAt,
-  amount,
-  onClick,
-}: NotificationListItemProps) => {
+  handleSnapClick,
+  handleSnapButton,
+}: NotificationListItemSnapProps) => {
   const handleClick = () => {
-    onClick?.();
+    handleSnapClick?.();
+  };
+
+  const handleButtonClick = () => {
+    handleSnapButton?.();
   };
 
   return (
@@ -74,21 +75,24 @@ export const NotificationListItem = ({
       paddingLeft={5}
       paddingTop={3}
       key={id}
+      onClick={handleClick}
+      style={{ cursor: 'pointer' }}
     >
       <Box
         display={Display.Flex}
         justifyContent={JustifyContent.spaceBetween}
         flexDirection={FlexDirection.Row}
         alignItems={AlignItems.flexStart}
-        as="button"
-        onClick={handleClick}
         width={BlockSize.Full}
         backgroundColor={BackgroundColor.transparent}
+        gap={4}
+        height={BlockSize.Full}
+        style={{ paddingLeft: '6px', paddingRight: '6px', paddingTop: '2px' }}
       >
         {!isRead && (
           <Box
             display={Display.Block}
-            className="notification-list-item__unread-dot__wrapper"
+            className="notification-list-item__unread-dot__wrapper--snap"
           >
             <Icon
               name={IconName.FullCircle}
@@ -99,17 +103,21 @@ export const NotificationListItem = ({
           </Box>
         )}
 
+        <Box height={BlockSize.Full} className="notification-list-item__icon">
+          <SnapAvatar
+            snapId="npm:@metamask/notification-example-snap"
+            badgeBackgroundColor={BackgroundColor.backgroundDefault}
+            avatarSize={IconSize.Md}
+          />
+        </Box>
+
         <Box
           display={Display.Flex}
           gap={4}
-          paddingRight={4}
           height={BlockSize.Full}
           alignItems={AlignItems.flexStart}
+          width={BlockSize.Full}
         >
-          <Box height={BlockSize.Full} className="notification-list-item__icon">
-            <NotificationListItemIcon {...icon} />
-          </Box>
-
           <Box
             display={Display.Block}
             flexDirection={FlexDirection.Column}
@@ -117,42 +125,39 @@ export const NotificationListItem = ({
             textAlign={TextAlign.Left}
             width={BlockSize.Full}
           >
-            {/* Notification Title */}
-            <NotificationListItemText
-              {...title}
-              color={TextColor.textAlternative}
-            />
-            {/* Notification Description */}
-            <NotificationListItemText {...description} />
-          </Box>
-        </Box>
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          alignItems={AlignItems.flexEnd}
-          textAlign={TextAlign.Right}
-          className="notification-list-item__right-container"
-        >
-          {/* Date */}
-          <Text
-            color={TextColor.textMuted}
-            variant={TextVariant.bodySm}
-            fontWeight={FontWeight.Normal}
-            as="p"
-          >
-            {formatMenuItemDate(createdAt)}
-          </Text>
-          {/* Amount */}
-          {amount && (
-            <Text
-              color={TextColor.textDefault}
-              variant={TextVariant.bodyMd}
-              fontWeight={FontWeight.Normal}
-              as="p"
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
+              alignItems={AlignItems.flexStart}
+              justifyContent={JustifyContent.spaceBetween}
             >
-              {amount}
-            </Text>
-          )}
+              {/* Notification Title */}
+              <Box onClick={handleButtonClick}>
+                <NotificationListItemText
+                  {...title}
+                  color={TextColor.primaryDefault}
+                />
+              </Box>
+
+              {/* Date */}
+              <Text
+                color={TextColor.textMuted}
+                variant={TextVariant.bodySm}
+                fontWeight={FontWeight.Normal}
+                as="p"
+              >
+                {formatMenuItemDate(createdAt)}
+              </Text>
+            </Box>
+
+            {/* Snap Message */}
+            <Box
+              color={TextColor.textDefault}
+              className="snap-notifications__item__details__message"
+            >
+              <SnapUIMarkdown markdown>{snapMessage}</SnapUIMarkdown>
+            </Box>
+          </Box>
         </Box>
       </Box>
     </Box>
