@@ -2517,19 +2517,6 @@
     "message": "La prise en charge de Ledger ne sera plus assurée sur Firefox",
     "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
   },
-  "notificationsEmptyText": {
-    "message": "Ici, vous pouvez trouver des notifications de vos snaps installés."
-  },
-  "notificationsHeader": {
-    "message": "Notifications"
-  },
-  "notificationsInfos": {
-    "message": "Le $1 de $2",
-    "description": "$1 is the date at which the notification has been dispatched and $2 is the link to the snap that dispatched the notification."
-  },
-  "notificationsMarkAllAsRead": {
-    "message": "Marquer tout comme lu"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 nouveaux jetons trouvés dans ce compte",
     "description": "$1 is the number of new tokens detected"

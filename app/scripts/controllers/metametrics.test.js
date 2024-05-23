@@ -236,6 +236,26 @@ describe('MetaMetricsController', function () {
     });
   });
 
+  describe('getMetaMetricsId', function () {
+    it('should generate or return the metametrics id', function () {
+      const metaMetricsController = getMetaMetricsController({
+        participateInMetaMetrics: true,
+        metaMetricsId: null,
+      });
+
+      // Starts off being empty.
+      assert.equal(metaMetricsController.state.metaMetricsId, null);
+
+      // Create a new metametrics id.
+      const clientMetaMetricsId = metaMetricsController.getMetaMetricsId();
+      assert.equal(clientMetaMetricsId.startsWith('0x'), true);
+
+      // Return same metametrics id.
+      const sameMetaMetricsId = metaMetricsController.getMetaMetricsId();
+      assert.equal(clientMetaMetricsId, sameMetaMetricsId);
+    });
+  });
+
   describe('identify', function () {
     it('should call segment.identify for valid traits if user is participating in metametrics', async function () {
       const metaMetricsController = getMetaMetricsController({
