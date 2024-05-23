@@ -86,7 +86,7 @@ async function addEthereumChainHandler(
     );
   }
 
-  let networkConfigurationId;
+  let networkClientId;
   let requestData;
   let approvalFlowId;
 
@@ -106,7 +106,7 @@ async function addEthereumChainHandler(
         },
       });
 
-      networkConfigurationId = await upsertNetworkConfiguration(
+      networkClientId = await upsertNetworkConfiguration(
         {
           chainId,
           rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
@@ -127,12 +127,12 @@ async function addEthereumChainHandler(
         chainId,
         nickname: chainName,
         ticker,
-        networkConfigurationId,
+        networkClientId,
       },
       fromNetworkConfiguration: currentNetworkConfiguration,
     };
   } else {
-    networkConfigurationId = existingNetwork.id ?? existingNetwork.type;
+    networkClientId = existingNetwork.id ?? existingNetwork.type;
     const currentRpcUrl = getCurrentRpcUrl();
 
     if (
@@ -154,7 +154,7 @@ async function addEthereumChainHandler(
     origin,
     chainId,
     requestData,
-    networkConfigurationId,
+    networkClientId,
     approvalFlowId,
     {
       getChainPermissionsFeatureFlag,

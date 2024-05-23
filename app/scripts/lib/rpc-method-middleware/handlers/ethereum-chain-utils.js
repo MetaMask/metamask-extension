@@ -188,7 +188,7 @@ export async function switchChain(
   origin,
   chainId,
   requestData,
-  networkConfigurationId,
+  networkClientId,
   approvalFlowId,
   {
     getChainPermissionsFeatureFlag,
@@ -224,7 +224,7 @@ export async function switchChain(
       });
     }
 
-    await setActiveNetwork(networkConfigurationId);
+    await setActiveNetwork(networkClientId);
     res.result = null;
   } catch (error) {
     return end(
