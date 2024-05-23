@@ -1860,13 +1860,19 @@
       },
       "packages": {
         "@metamask/scure-bip39>@noble/hashes": true,
-        "@metamask/utils>@scure/base": true
+        "@metamask/scure-bip39>@scure/base": true
       }
     },
     "@metamask/scure-bip39>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
+      }
+    },
+    "@metamask/scure-bip39>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
       }
     },
     "@metamask/selected-network-controller": {

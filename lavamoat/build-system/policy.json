@@ -1001,12 +1001,17 @@
         "@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": true,
-        "@babel/preset-typescript>@babel/plugin-syntax-jsx": true
+        "@babel/preset-react>@babel/plugin-transform-react-jsx>@babel/plugin-syntax-jsx": true
       }
     },
     "@babel/preset-react>@babel/plugin-transform-react-jsx-development": {
       "packages": {
         "@babel/preset-react>@babel/plugin-transform-react-jsx": true
+      }
+    },
+    "@babel/preset-react>@babel/plugin-transform-react-jsx>@babel/plugin-syntax-jsx": {
+      "packages": {
+        "@babel/preset-env>@babel/helper-plugin-utils": true
       }
     },
     "@babel/preset-react>@babel/plugin-transform-react-pure-annotations": {
