@@ -130,6 +130,12 @@
   "account": {
     "message": "Account"
   },
+  "accountActivity": {
+    "message": "Account activity"
+  },
+  "accountActivityText": {
+    "message": "Select the accounts you want to be notified about:"
+  },
   "accountDetails": {
     "message": "Account details"
   },
@@ -340,8 +346,20 @@
   "airgapVault": {
     "message": "AirGap Vault"
   },
+  "alert": {
+    "message": "Alert"
+  },
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
+  },
+  "alertModalAcknowledge": {
+    "message": "I have acknowledged the risk and still want to proceed"
+  },
+  "alertModalDetails": {
+    "message": "Alert Details"
+  },
+  "alertModalReviewAllAlerts": {
+    "message": "Review all alerts"
   },
   "alertSettingsUnconnectedAccount": {
     "message": "Browsing a website with an unconnected account selected"
@@ -357,6 +375,9 @@
   },
   "alerts": {
     "message": "Alerts"
+  },
+  "all": {
+    "message": "All"
   },
   "allCustodianAccountsConnectedSubtitle": {
     "message": "You have either already connected all your custodian accounts or don’t have any account to connect to MetaMask Institutional."
@@ -378,21 +399,15 @@
   "allow": {
     "message": "Allow"
   },
-  "allowExternalExtensionTo": {
-    "message": "Allow this external extension to:"
-  },
   "allowMmiToConnectToCustodian": {
     "message": "This will allow MMI to connect to $1 to import your accounts."
+  },
+  "allowNotifications": {
+    "message": "Allow notifications"
   },
   "allowSpendToken": {
     "message": "Give permission to access your $1?",
     "description": "$1 is the symbol of the token that are requesting to spend"
-  },
-  "allowThisSiteTo": {
-    "message": "Allow this site to:"
-  },
-  "allowThisSnapTo": {
-    "message": "Allow this snap to:"
   },
   "allowWithdrawAndSpend": {
     "message": "Allow $1 to withdraw and spend up to the following amount:",
@@ -408,6 +423,9 @@
   "andForTwoItems": {
     "message": "$1 and $2",
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
+  },
+  "announcements": {
+    "message": "Announcements"
   },
   "appDescription": {
     "message": "An Ethereum Wallet in your Browser",
@@ -562,6 +580,33 @@
   "basic": {
     "message": "Basic"
   },
+  "basicConfigurationBannerCTA": {
+    "message": "Turn on basic functionality"
+  },
+  "basicConfigurationBannerTitle": {
+    "message": "Basic functionality is off"
+  },
+  "basicConfigurationDescription": {
+    "message": "Includes token data and value, optimal gas settings, and more. Using these services shares your IP address with MetaMask, just like when you visit a website."
+  },
+  "basicConfigurationLabel": {
+    "message": "Basic functionality"
+  },
+  "basicConfigurationModalCheckbox": {
+    "message": "I understand and want to continue"
+  },
+  "basicConfigurationModalDisclaimerOff": {
+    "message": "This means you won't fully optimize your time on MetaMask. Basic features (like token details, optimal gas settings, and others) won't be available to you."
+  },
+  "basicConfigurationModalDisclaimerOn": {
+    "message": "To optimize your time on MetaMask, you’ll need to turn on this feature. Basic functions (like token details, optimal gas settings, and others) are important to the web3 experience."
+  },
+  "basicConfigurationModalHeadingOff": {
+    "message": "Turn off basic functionality"
+  },
+  "basicConfigurationModalHeadingOn": {
+    "message": "Turn on basic functionality"
+  },
   "beCareful": {
     "message": "Be careful"
   },
@@ -619,7 +664,7 @@
     "message": "If you approve this request, someone can steal your assets listed on Blur."
   },
   "blockaidDescriptionErrored": {
-    "message": "Because of an error, this request was not verified by the security provider. Proceed with caution."
+    "message": "Because of an error, we couldn't check for security alerts. Only continue if you trust every address involved."
   },
   "blockaidDescriptionMaliciousDomain": {
     "message": "You're interacting with a malicious domain. If you approve this request, you might lose your assets."
@@ -640,7 +685,7 @@
     "message": "This is a deceptive request"
   },
   "blockaidTitleMayNotBeSafe": {
-    "message": "Request may not be safe"
+    "message": "Be careful"
   },
   "blockaidTitleSuspicious": {
     "message": "This is a suspicious request"
@@ -788,6 +833,15 @@
   "confirm": {
     "message": "Confirm"
   },
+  "confirmAlertModalAcknowledge": {
+    "message": "I have acknowledged the alerts and still want to proceed"
+  },
+  "confirmAlertModalDetails": {
+    "message": "If you sign in, a third party known for scams might take all your assets. Please review the alerts before you proceed."
+  },
+  "confirmAlertModalTitle": {
+    "message": "Your assets may be at risk"
+  },
   "confirmConnectCustodianRedirect": {
     "message": "We will redirect you to $1 upon clicking continue."
   },
@@ -803,14 +857,17 @@
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
   },
-  "confirmTitleDescPersonalSignature": {
-    "message": "Only sign this message if you fully understand the content and trust the requesting site"
+  "confirmTitleDescContractInteractionTransaction": {
+    "message": "Only confirm this transaction if you fully understand the content and trust the requesting site."
   },
-  "confirmTitleDescTypedDataSignature": {
-    "message": "Review everything below before continuing. Once done, this transaction can’t be undone"
+  "confirmTitleDescSignature": {
+    "message": "Only confirm this message if you approve the content and trust the requesting site."
   },
   "confirmTitleSignature": {
     "message": "Signature request"
+  },
+  "confirmTitleTransaction": {
+    "message": "Transaction request"
   },
   "confirmed": {
     "message": "Confirmed"
@@ -858,26 +915,6 @@
     "message": "Connect $1",
     "description": "$1 is the snap for which a connection is being requested."
   },
-  "connectTo": {
-    "message": "Connect to $1",
-    "description": "$1 is the name/origin of a web3 site/application that the user can connect to metamask"
-  },
-  "connectToAll": {
-    "message": "Connect to all your $1",
-    "description": "$1 will be replaced by the translation of connectToAllAccounts"
-  },
-  "connectToAllAccounts": {
-    "message": "accounts",
-    "description": "will replace $1 in connectToAll, completing the sentence 'connect to all of your accounts', will be text that shows list of accounts on hover"
-  },
-  "connectToMultiple": {
-    "message": "Connect to $1",
-    "description": "$1 will be replaced by the translation of connectToMultipleNumberOfAccounts"
-  },
-  "connectToMultipleNumberOfAccounts": {
-    "message": "$1 accounts",
-    "description": "$1 is the number of accounts to which the web3 site/application is asking to connect; this will substitute $1 in connectToMultiple"
-  },
   "connectWithMetaMask": {
     "message": "Connect with MetaMask"
   },
@@ -919,7 +956,7 @@
     "message": "Connected with"
   },
   "connecting": {
-    "message": "Connecting..."
+    "message": "Connecting"
   },
   "connectingTo": {
     "message": "Connecting to $1"
@@ -1110,6 +1147,12 @@
   "custodianAccountAddedTitle": {
     "message": "Selected $1 accounts have been added."
   },
+  "custodianQRCodeScan": {
+    "message": "Scan QR code with your $1 mobile app"
+  },
+  "custodianQRCodeScanDescription": {
+    "message": "Or log into your $1 account and click on the 'Connect to MMI' button"
+  },
   "custodianReplaceRefreshTokenChangedFailed": {
     "message": "Please go to $1 and click the 'Connect to MMI' button within their user interface to connect your accounts to MMI again."
   },
@@ -1179,6 +1222,12 @@
   },
   "customerSupport": {
     "message": "customer support"
+  },
+  "customizeYourNotifications": {
+    "message": "Customize your notifications"
+  },
+  "customizeYourNotificationsText": {
+    "message": "Turn on the types of notifications you want to receive:"
   },
   "dappRequestedSpendingCap": {
     "message": "Site requested spending cap"
@@ -1389,6 +1438,18 @@
   },
   "details": {
     "message": "Details"
+  },
+  "developerOptions": {
+    "message": "Developer Options"
+  },
+  "developerOptionsResetStatesAnnouncementsDescription": {
+    "message": "Resets isShown boolean to false for all announcements. Announcements are the notifications shown in the What's New popup modal."
+  },
+  "developerOptionsResetStatesOnboarding": {
+    "message": "Resets various states related to onboarding and redirects to the \"Secure Your Wallet\" onboarding page."
+  },
+  "developerOptionsServiceWorkerKeepAlive": {
+    "message": "Results in a timestamp being continuously saved to session.storage"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” is disabled because it does not meet the minimum of a 10% increase from the original gas fee.",
@@ -1936,12 +1997,6 @@
     "message": "Get started with NFTs by adding some $1 to your wallet.",
     "description": "$1 is the token symbol"
   },
-  "globalTitle": {
-    "message": "Global menu"
-  },
-  "globalTourDescription": {
-    "message": "See your portfolio, connected sites, settings, and more"
-  },
   "goBack": {
     "message": "Go back"
   },
@@ -2221,7 +2276,7 @@
     "message": "Install origin"
   },
   "installRequest": {
-    "message": "Installation request"
+    "message": "Add to MetaMask"
   },
   "installedOn": {
     "message": "Installed on $1",
@@ -2253,6 +2308,9 @@
   },
   "interactingWith": {
     "message": "Interacting with"
+  },
+  "interactingWithTransactionDescription": {
+    "message": "This is the contract you're interacting with. Protect yourself from scammers by  verifying the details."
   },
   "invalidAddress": {
     "message": "Invalid address"
@@ -2383,6 +2441,9 @@
   },
   "layer1Fees": {
     "message": "Layer 1 fees"
+  },
+  "layer2Fees": {
+    "message": "Layer 2 fees"
   },
   "learnCancelSpeeedup": {
     "message": "Learn how to $1",
@@ -2587,6 +2648,9 @@
   "metamaskInstitutionalVersion": {
     "message": "MetaMask Institutional Version"
   },
+  "metamaskNotificationsAreOff": {
+    "message": "Wallet notifications are currently not active."
+  },
   "metamaskPortfolio": {
     "message": "MetaMask Portfolio."
   },
@@ -2595,6 +2659,12 @@
   },
   "metamaskVersion": {
     "message": "MetaMask Version"
+  },
+  "methodData": {
+    "message": "Method"
+  },
+  "methodDataTransactionDescription": {
+    "message": "This is the specific action that will be taken. This data can be faked, so be sure you trust the site on the other end."
   },
   "methodNotSupported": {
     "message": "Not supported with this account."
@@ -2644,7 +2714,7 @@
     "message": "more"
   },
   "multipleSnapConnectionWarning": {
-    "message": "$1 wants to connect with $2 snaps. Only proceed if you trust this website.",
+    "message": "$1 wants to use $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
   "mustSelectOne": {
@@ -2708,6 +2778,10 @@
   "nameSetPlaceholder": {
     "message": "Choose a nickname...",
     "description": "Placeholder text for name input field in name component modal."
+  },
+  "nativePermissionRequestDescription": {
+    "message": "Do you want this site to do the following?",
+    "description": "Description below header used on Permission Connect screen for native permissions."
   },
   "nativeToken": {
     "message": "The native token on this network is $1. It is the token used for gas fees. ",
@@ -2877,6 +2951,12 @@
   "newPassword": {
     "message": "New password (8 characters min)"
   },
+  "newPrivacyPolicyActionButton": {
+    "message": "Read more"
+  },
+  "newPrivacyPolicyTitle": {
+    "message": "We’ve updated our privacy policy"
+  },
   "newTokensImportedMessage": {
     "message": "You’ve successfully imported $1.",
     "description": "$1 is the string of symbols of all the tokens imported"
@@ -3002,6 +3082,108 @@
   "notePlaceholder": {
     "message": "The approver will see this note when approving the transaction at the custodian."
   },
+  "notificationDetail": {
+    "message": "Details"
+  },
+  "notificationDetailBaseFee": {
+    "message": "Base fee (GWEI)"
+  },
+  "notificationDetailGasLimit": {
+    "message": "Gas limit (units)"
+  },
+  "notificationDetailGasUsed": {
+    "message": "Gas used (units)"
+  },
+  "notificationDetailMaxFee": {
+    "message": "Max fee per gas"
+  },
+  "notificationDetailNetworkFee": {
+    "message": "Network fee"
+  },
+  "notificationDetailPriorityFee": {
+    "message": "Priority fee (GWEI)"
+  },
+  "notificationItemCheckBlockExplorer": {
+    "message": "Check on the BlockExplorer"
+  },
+  "notificationItemCollection": {
+    "message": "Collection"
+  },
+  "notificationItemConfirmed": {
+    "message": "Confirmed"
+  },
+  "notificationItemError": {
+    "message": "Unable to retrieve fees currently"
+  },
+  "notificationItemFrom": {
+    "message": "From (You)"
+  },
+  "notificationItemLidoStakeReadyToBeWithdrawn": {
+    "message": "Withdrawal Ready"
+  },
+  "notificationItemLidoWithdrawalRequested": {
+    "message": "Withdrawal requested"
+  },
+  "notificationItemLidoWithdrawalRequestedMessage": {
+    "message": "Your request to unstake $1 has been sent"
+  },
+  "notificationItemNFTReceivedFrom": {
+    "message": "Received NFT from"
+  },
+  "notificationItemNFTSentTo": {
+    "message": "Sent NFT to"
+  },
+  "notificationItemNetwork": {
+    "message": "Network"
+  },
+  "notificationItemRate": {
+    "message": "Rate (fee included)"
+  },
+  "notificationItemReceived": {
+    "message": "Received"
+  },
+  "notificationItemReceivedFrom": {
+    "message": "Received from"
+  },
+  "notificationItemSent": {
+    "message": "Sent"
+  },
+  "notificationItemSentTo": {
+    "message": "Sent to"
+  },
+  "notificationItemStakeCompleted": {
+    "message": "Stake completed"
+  },
+  "notificationItemStaked": {
+    "message": "Staked"
+  },
+  "notificationItemStakingProvider": {
+    "message": "Staking Provider"
+  },
+  "notificationItemStatus": {
+    "message": "Status"
+  },
+  "notificationItemSwapped": {
+    "message": "Swapped"
+  },
+  "notificationItemSwappedFor": {
+    "message": "for"
+  },
+  "notificationItemTo": {
+    "message": "To"
+  },
+  "notificationItemTransactionId": {
+    "message": "Transaction ID"
+  },
+  "notificationItemUnStakeCompleted": {
+    "message": "UnStaking complete"
+  },
+  "notificationItemUnStaked": {
+    "message": "Unstaked"
+  },
+  "notificationItemUnStakingRequested": {
+    "message": "Unstaking requested"
+  },
   "notificationTransactionFailedMessage": {
     "message": "Transaction $1 failed! $2",
     "description": "Content of the browser notification that appears when a transaction fails"
@@ -3086,9 +3268,6 @@
     "message": "Dropping Ledger Support for Firefox",
     "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
   },
-  "notificationsEmptyText": {
-    "message": "This is where you can find notifications from your installed snaps."
-  },
   "notificationsFeatureToggle": {
     "message": "Enable Wallet Notifications",
     "description": "Experimental feature title"
@@ -3097,15 +3276,24 @@
     "message": "This enables wallet notifications like send/receive funds or nfts and feature announcements.",
     "description": "Description of the experimental notifications feature"
   },
-  "notificationsHeader": {
-    "message": "Notifications"
-  },
   "notificationsInfos": {
     "message": "$1 from $2",
     "description": "$1 is the date at which the notification has been dispatched and $2 is the link to the snap that dispatched the notification."
   },
   "notificationsMarkAllAsRead": {
     "message": "Mark all as read"
+  },
+  "notificationsPageEmptyTitle": {
+    "message": "Nothing to see here"
+  },
+  "notificationsPageErrorContent": {
+    "message": "Please, try to visit this page again."
+  },
+  "notificationsPageErrorTitle": {
+    "message": "There has been an error"
+  },
+  "notificationsPageNoNotificationsContent": {
+    "message": "You have not received any notifications yet."
   },
   "notificationsPetnamesActionText": {
     "message": "Got it"
@@ -3119,38 +3307,20 @@
   "notificationsPetnamesTitle": {
     "message": "Suggested nicknames are here!"
   },
-  "notificationsPortfolioV2ActionText": {
-    "message": "See Portfolio"
+  "notificationsSettingsBoxError": {
+    "message": "Something went wrong. Please try again."
   },
-  "notificationsPortfolioV2DescriptionOne": {
-    "message": "Still missing out on MetaMask Portfolio?"
+  "notificationsSettingsPageAllowNotifications": {
+    "message": "Stay in the loop on what’s happening in your wallet with notifications. To use notifications, we use a profile to sync some settings across your devices. $1"
   },
-  "notificationsPortfolioV2DescriptionThree": {
-    "message": "Your Portfolio is waiting."
-  },
-  "notificationsPortfolioV2DescriptionTwo": {
-    "message": "Manage your web3 assets across different networks and accounts in one powerful dashboard. Swap, Buy, Sell, Bridge, and Stake in a secure, convenient, and easy to use dapp. Stay up to speed with the pulse of the cryptoverse, see your DeFi positions, manage your NFT collection, and more. All in one place."
-  },
-  "notificationsPortfolioV2Title": {
-    "message": "MetaMask Portfolio - join millions"
+  "notificationsSettingsPageAllowNotificationsLink": {
+    "message": "Learn how we protect your privacy while using this feature."
   },
   "notificationsSimulationsDescriptionOne": {
     "message": "Now you can see the potential outcome of your transactions before you make them!"
   },
   "notificationsSimulationsDescriptionTwo": {
     "message": "This is just a simulation, so we can’t guarantee the final outcome. You can turn this off anytime in \nSettings > Security & Privacy. "
-  },
-  "notificationsStakingPortfolioActionText": {
-    "message": "Got it",
-    "description": "Action text for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
-  },
-  "notificationsStakingPortfolioDescription": {
-    "message": "Now you can stake ETH and manage your rewards all in one place.",
-    "description": "Description for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
-  },
-  "notificationsStakingPortfolioTitle": {
-    "message": "Stake smarter in Portfolio",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
   },
   "notificationsU2FLedgerLiveDescription": {
     "message": "U2F and Ledger Live are no longer available on Chrome. You can still connect Ledger devices on Chrome using Webhid.",
@@ -3182,6 +3352,9 @@
   "on": {
     "message": "On"
   },
+  "onboarding": {
+    "message": "Onboarding"
+  },
   "onboardingAdvancedPrivacyIPFSDescription": {
     "message": "The IPFS gateway makes it possible to access and view data hosted by third parties. You can add a custom IPFS gateway or continue using the default."
   },
@@ -3212,50 +3385,85 @@
   "onboardingMetametricsAgree": {
     "message": "I agree"
   },
-  "onboardingMetametricsAllowOptOut": {
+  "onboardingMetametricsAllowOptOutLegacy": {
     "message": "Always allow you to opt-out via Settings"
   },
-  "onboardingMetametricsDataTerms": {
+  "onboardingMetametricsDataTermsLegacy": {
     "message": "This data is aggregated and is therefore anonymous for the purposes of General Data Protection Regulation (EU) 2016/679."
   },
   "onboardingMetametricsDescription": {
-    "message": "MetaMask would like to gather usage data to better understand how our users interact with MetaMask. This data will be used to provide the service, which includes improving the service based on your use."
+    "message": "We’d like to gather basic usage and diagnostics data to improve MetaMask. Know that we never sell the data you provide here."
   },
   "onboardingMetametricsDescription2": {
+    "message": "When we gather metrics, it will always be..."
+  },
+  "onboardingMetametricsDescription2Legacy": {
     "message": "MetaMask will..."
   },
+  "onboardingMetametricsDescriptionLegacy": {
+    "message": "MetaMask would like to gather usage data to better understand how our users interact with MetaMask. This data will be used to provide the service, which includes improving the service based on your use."
+  },
+
   "onboardingMetametricsDisagree": {
     "message": "No thanks"
   },
   "onboardingMetametricsInfuraTerms": {
+    "message": "We’ll let you know if we decide to use this data for other purposes. You can review our $1 for more information. Remember, you can go to settings and opt out at any time.",
+    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
+  },
+  "onboardingMetametricsInfuraTermsLegacy": {
     "message": "* When you use Infura as your default RPC provider in MetaMask, Infura will collect your IP address and your Ethereum wallet address when you send a transaction. We don’t store this information in a way that allows our systems to associate those two pieces of data. For more information on how MetaMask and Infura interact from a data collection perspective, see our update $1. For more information on our privacy practices in general, see our $2.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
   "onboardingMetametricsInfuraTermsPolicy": {
+    "message": "Privacy Policy"
+  },
+  "onboardingMetametricsInfuraTermsPolicyLegacy": {
     "message": "Privacy Policy here"
   },
-  "onboardingMetametricsInfuraTermsPolicyLink": {
+  "onboardingMetametricsInfuraTermsPolicyLinkLegacy": {
     "message": "here"
   },
   "onboardingMetametricsModalTitle": {
     "message": "Add custom network"
   },
   "onboardingMetametricsNeverCollect": {
-    "message": "$1 collect information we don’t need to provide the service (such as keys, addresses, transaction hashes, or balances)",
-    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
+    "message": "$1 clicks and views on the app are stored, but other details (like your public address) are not.",
+    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
+  },
+  "onboardingMetametricsNeverCollectEmphasis": {
+    "message": "Private:"
   },
   "onboardingMetametricsNeverCollectIP": {
+    "message": "$1 we temporarily use your IP address to detect a general location (like your country or region), but it's never stored.",
+    "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
+  },
+  "onboardingMetametricsNeverCollectIPEmphasis": {
+    "message": "General:"
+  },
+  "onboardingMetametricsNeverCollectIPLegacy": {
     "message": "$1 collect your full IP address*",
     "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
   },
-  "onboardingMetametricsNeverEmphasis": {
+  "onboardingMetametricsNeverCollectLegacy": {
+    "message": "$1 collect information we don’t need to provide the service (such as keys, addresses, transaction hashes, or balances)",
+    "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
+  },
+  "onboardingMetametricsNeverEmphasisLegacy": {
     "message": "Never"
   },
   "onboardingMetametricsNeverSellData": {
+    "message": "$1 you decide if you want to share or delete your usage data via settings any time.",
+    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
+  },
+  "onboardingMetametricsNeverSellDataEmphasis": {
+    "message": "Optional:"
+  },
+  "onboardingMetametricsNeverSellDataLegacy": {
     "message": "$1 sell data.  Ever!",
     "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
   },
-  "onboardingMetametricsSendAnonymize": {
+  "onboardingMetametricsSendAnonymizeLegacy": {
     "message": "Send anonymized click and pageview events"
   },
   "onboardingMetametricsTitle": {
@@ -3304,11 +3512,15 @@
     "message": "Phishing detection alerts rely on communication with $1. jsDeliver will have access to your IP address. View $2.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
+  "onekey": {
+    "message": "OneKey"
+  },
   "onlyAddTrustedNetworks": {
     "message": "A malicious network provider can lie about the state of the blockchain and record your network activity. Only add custom networks you trust."
   },
   "onlyConnectTrust": {
-    "message": "Only connect with sites you trust."
+    "message": "Only connect with sites you trust. $1",
+    "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
   "openCustodianApp": {
     "message": "Open $1 app",
@@ -3335,9 +3547,6 @@
   },
   "operationFailed": {
     "message": "Operation Failed"
-  },
-  "optimismFees": {
-    "message": "Optimism fees"
   },
   "optional": {
     "message": "Optional"
@@ -3429,9 +3638,6 @@
     "message": "Permission details"
   },
   "permissionRequest": {
-    "message": "Permission request"
-  },
-  "permissionRequestCapitalized": {
     "message": "Permission request"
   },
   "permissionRequested": {
@@ -3663,12 +3869,6 @@
   "permissionsPageTourTitle": {
     "message": "Connected sites are now permissions"
   },
-  "permissionsTitle": {
-    "message": "Permissions"
-  },
-  "permissionsTourDescription": {
-    "message": "Find your connected accounts and manage permissions here"
-  },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
@@ -3763,6 +3963,21 @@
   "proceedWithTransaction": {
     "message": "I want to proceed anyway"
   },
+  "productAnnouncements": {
+    "message": "Product announcements"
+  },
+  "profileSync": {
+    "message": "Profile Sync"
+  },
+  "profileSyncConfirmation": {
+    "message": "If you turn off profile sync, you won’t be able to receive notifications."
+  },
+  "profileSyncDescription": {
+    "message": "Creates a profile that MetaMask uses to sync some settings among your devices. This is required to get notifications. $1."
+  },
+  "profileSyncPrivacyLink": {
+    "message": "Learn how we protect your privacy"
+  },
   "proposedApprovalLimit": {
     "message": "Proposed approval limit"
   },
@@ -3771,6 +3986,78 @@
   },
   "publicAddress": {
     "message": "Public address"
+  },
+  "pushPlatformNotificationsFundsReceivedDescription": {
+    "message": "You received $1 $2"
+  },
+  "pushPlatformNotificationsFundsReceivedDescriptionDefault": {
+    "message": "You received some tokens"
+  },
+  "pushPlatformNotificationsFundsReceivedTitle": {
+    "message": "Funds received"
+  },
+  "pushPlatformNotificationsFundsSentDescription": {
+    "message": "You successfully sent $1 $2"
+  },
+  "pushPlatformNotificationsFundsSentDescriptionDefault": {
+    "message": "You successfully sent some tokens"
+  },
+  "pushPlatformNotificationsFundsSentTitle": {
+    "message": "Funds sent"
+  },
+  "pushPlatformNotificationsNftReceivedDescription": {
+    "message": "You received new NFTs"
+  },
+  "pushPlatformNotificationsNftReceivedTitle": {
+    "message": "NFT received"
+  },
+  "pushPlatformNotificationsNftSentDescription": {
+    "message": "You have successfully sent an NFT"
+  },
+  "pushPlatformNotificationsNftSentTitle": {
+    "message": "NFT sent"
+  },
+  "pushPlatformNotificationsStakingLidoStakeCompletedDescription": {
+    "message": "Your Lido stake was successful"
+  },
+  "pushPlatformNotificationsStakingLidoStakeCompletedTitle": {
+    "message": "Stake complete"
+  },
+  "pushPlatformNotificationsStakingLidoStakeReadyToBeWithdrawnDescription": {
+    "message": "Your Lido stake is now ready to be withdrawn"
+  },
+  "pushPlatformNotificationsStakingLidoStakeReadyToBeWithdrawnTitle": {
+    "message": "Stake ready for withdrawal"
+  },
+  "pushPlatformNotificationsStakingLidoWithdrawalCompletedDescription": {
+    "message": "Your Lido withdrawal was successful"
+  },
+  "pushPlatformNotificationsStakingLidoWithdrawalCompletedTitle": {
+    "message": "Withdrawal completed"
+  },
+  "pushPlatformNotificationsStakingLidoWithdrawalRequestedDescription": {
+    "message": "Your Lido withdrawal request was submitted"
+  },
+  "pushPlatformNotificationsStakingLidoWithdrawalRequestedTitle": {
+    "message": "Withdrawal requested"
+  },
+  "pushPlatformNotificationsStakingRocketpoolStakeCompletedDescription": {
+    "message": "Your RocketPool stake was successful"
+  },
+  "pushPlatformNotificationsStakingRocketpoolStakeCompletedTitle": {
+    "message": "Stake complete"
+  },
+  "pushPlatformNotificationsStakingRocketpoolUnstakeCompletedDescription": {
+    "message": "Your RocketPool unstake was successful"
+  },
+  "pushPlatformNotificationsStakingRocketpoolUnstakeCompletedTitle": {
+    "message": "Unstake complete"
+  },
+  "pushPlatformNotificationsSwapCompletedDescription": {
+    "message": "Your MetaMask Swap was successful"
+  },
+  "pushPlatformNotificationsSwapCompletedTitle": {
+    "message": "Swap completed"
   },
   "queued": {
     "message": "Queued"
@@ -3825,6 +4112,12 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Protect your funds"
+  },
+  "redesignedConfirmationsEnabledToggle": {
+    "message": "Improved signature requests"
+  },
+  "redesignedConfirmationsToggleDescription": {
+    "message": "Turn this on to see signature requests in an enhanced format."
   },
   "refreshList": {
     "message": "Refresh list"
@@ -3917,6 +4210,9 @@
   "requestFromInfo": {
     "message": "This is the site asking for your signature."
   },
+  "requestFromTransactionDescription": {
+    "message": "This is the site asking for your confirmation."
+  },
   "requestMayNotBeSafe": {
     "message": "Request may not be safe"
   },
@@ -3937,6 +4233,9 @@
   },
   "reset": {
     "message": "Reset"
+  },
+  "resetStates": {
+    "message": "Reset States"
   },
   "resetWallet": {
     "message": "Reset wallet"
@@ -4025,6 +4324,9 @@
   },
   "revealTheSeedPhrase": {
     "message": "Reveal seed phrase"
+  },
+  "reviewAlerts": {
+    "message": "Review alerts"
   },
   "revokeAllTokensTitle": {
     "message": "Revoke permission to access and transfer all of your $1?",
@@ -4259,6 +4561,9 @@
   "sepolia": {
     "message": "Sepolia test network"
   },
+  "serviceWorkerKeepAlive": {
+    "message": "Service Worker Keep Alive"
+  },
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask uses these trusted third-party services to enhance product usability and safety."
   },
@@ -4394,12 +4699,6 @@
   "simulationsSettingSubHeader": {
     "message": "Estimate balance changes"
   },
-  "siteConnections": {
-    "message": "Site Connections"
-  },
-  "sites": {
-    "message": "Sites"
-  },
   "skip": {
     "message": "Skip"
   },
@@ -4504,11 +4803,8 @@
     "message": "Accounts controlled by third-party Snaps."
   },
   "snapConnectionWarning": {
-    "message": "$1 wants to connect to $2. Only continue if you trust this website.",
+    "message": "$1 wants to use $2",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
-  },
-  "snapConnections": {
-    "message": "Snap Connections"
   },
   "snapContent": {
     "message": "This content is coming from $1",
@@ -4518,7 +4814,7 @@
     "message": "Website"
   },
   "snapInstallRequest": {
-    "message": "Installing $1 gives it the following permissions. Only continue if you trust $1.",
+    "message": "Installing $1 gives it the following permissions.",
     "description": "$1 is the snap name."
   },
   "snapInstallSuccess": {
@@ -4580,8 +4876,8 @@
     "description": "Error title used when snap update fails."
   },
   "snapUpdateRequest": {
-    "message": "Updating $1 to $2 gives it the following permissions. Only continue if you trust $1.",
-    "description": "$1 is the snap name and $2 is the snap version."
+    "message": "Updating $1 gives it the following permissions.",
+    "description": "$1 is the Snap name."
   },
   "snapUpdateSuccess": {
     "message": "Update complete"
@@ -4594,9 +4890,6 @@
   },
   "snapsConnected": {
     "message": "Snaps connected"
-  },
-  "snapsInvalidUIError": {
-    "message": "The UI specified by the snap is invalid."
   },
   "snapsNoInsight": {
     "message": "The snap didn't return any insight"
@@ -4795,6 +5088,9 @@
   },
   "stateLogsDescription": {
     "message": "State logs contain your public account addresses and sent transactions."
+  },
+  "states": {
+    "message": "States"
   },
   "status": {
     "message": "Status"
@@ -5360,12 +5656,6 @@
   "switchedTo": {
     "message": "You're now using"
   },
-  "switcherTitle": {
-    "message": "Network switcher"
-  },
-  "switcherTourDescription": {
-    "message": "Click the icon to switch networks or add a new network"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Switching networks will cancel all pending confirmations"
   },
@@ -5674,6 +5964,43 @@
   "tryAgain": {
     "message": "Try again"
   },
+  "turnOff": {
+    "message": "Turn off"
+  },
+  "turnOffMetamaskNotificationsError": {
+    "message": "There was an error in disabling the notifications. Please try again later."
+  },
+  "turnOn": {
+    "message": "Turn on"
+  },
+  "turnOnMetamaskNotifications": {
+    "message": "Turn on notifications"
+  },
+  "turnOnMetamaskNotificationsButton": {
+    "message": "Turn on"
+  },
+  "turnOnMetamaskNotificationsError": {
+    "message": "There was an error in creating the notifications. Please try again later."
+  },
+  "turnOnMetamaskNotificationsMessageFirst": {
+    "message": "Stay in the loop on what's happening in your wallet with notifications."
+  },
+
+  "turnOnMetamaskNotificationsMessagePrivacyBold": {
+    "message": "Settings > Notifications."
+  },
+
+  "turnOnMetamaskNotificationsMessagePrivacyLink": {
+    "message": "Learn how we protect your privacy while using this feature."
+  },
+
+  "turnOnMetamaskNotificationsMessageSecond": {
+    "message": "To use wallet notifications, we use a profile to sync some settings across your devices. $1"
+  },
+
+  "turnOnMetamaskNotificationsMessageThird": {
+    "message": "You can turn off notifications at any time in $1"
+  },
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"
   },
@@ -5919,6 +6246,9 @@
   "weak": {
     "message": "Weak"
   },
+  "web3": {
+    "message": "Web3"
+  },
   "web3ShimUsageNotification": {
     "message": "We noticed that the current website tried to use the removed window.web3 API. If the site appears to be broken, please click $1 for more information.",
     "description": "$1 is a clickable link."
@@ -5958,10 +6288,6 @@
   },
   "whatsThis": {
     "message": "What's this?"
-  },
-  "xOfY": {
-    "message": "$1 of $2",
-    "description": "$1 and $2 are intended to be two numbers, where $2 is a total, and $1 is a count towards that total"
   },
   "xOfYPending": {
     "message": "$1 of $2 pending",

@@ -200,8 +200,7 @@
     }
 
     &-icon {
-      @include design-system.H3;
-
+      font-size: 24px;
       margin-inline-end: 12px;
       color: var(--color-success-default);
     }
@@ -277,12 +276,5 @@
       font-size: 12px;
       line-height: 140.62%;
     }
-  }
-
-  &__survey-banner {
-    position: absolute;
-    bottom: 8px;
-    left: 8px;
-    right: 8px;
   }
 }

@@ -14,6 +14,19 @@ const { DEFAULT_FIXTURE_ACCOUNT, ERC_4337_ACCOUNT } = require('./constants');
 function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
   return {
     data: {
+      AuthenticationController: {
+        isSignedIn: true,
+      },
+      UserStorageController: {
+        isProfileSyncingEnabled: true,
+      },
+      MetamaskNotificationsController: {
+        isFeatureAnnouncementsEnabled: false,
+        isMetamaskNotificationsEnabled: false,
+        isMetamaskNotificationsFeatureSeen: false,
+        metamaskNotificationsList: [],
+        metamaskNotificationsReadList: [],
+      },
       AccountsController: {
         internalAccounts: {
           selectedAccount: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
@@ -156,6 +169,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       PreferencesController: {
         advancedGasFee: null,
         currentLocale: 'en',
+        useExternalServices: true,
         dismissSeedBackUpReminder: true,
         featureFlags: {},
         forgottenPassword: false,
@@ -189,7 +203,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         useTokenDetection: false,
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
-        useRequestQueue: false,
+        useRequestQueue: true,
       },
       SelectedNetworkController: {
         domains: {},
@@ -307,6 +321,7 @@ function onboardingFixture() {
           useNativeCurrencyAsPrimaryCurrency: true,
           petnamesEnabled: true,
         },
+        useExternalServices: true,
         theme: 'light',
         useBlockie: false,
         useNftDetection: false,
@@ -315,7 +330,7 @@ function onboardingFixture() {
         useTokenDetection: false,
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
-        useRequestQueue: false,
+        useRequestQueue: true,
       },
       SelectedNetworkController: {
         domains: {},
@@ -474,6 +489,23 @@ class FixtureBuilder {
         },
       },
     });
+  }
+
+  withNetworkControllerTripleGanache() {
+    this.withNetworkControllerDoubleGanache();
+    merge(this.fixture.data.NetworkController, {
+      networkConfigurations: {
+        '243ad4c2-10a6-4621-9536-e3a67f4dd4c9': {
+          id: '243ad4c2-10a6-4621-9536-e3a67f4dd4c9',
+          rpcUrl: 'http://localhost:7777',
+          chainId: '0x3e8',
+          ticker: 'ETH',
+          nickname: 'Localhost 7777',
+          rpcPrefs: {},
+        },
+      },
+    });
+    return this;
   }
 
   withNftController(data) {
@@ -883,9 +915,11 @@ class FixtureBuilder {
   }
 
   withPreferencesControllerUseRequestQueueEnabled() {
-    return this.withPreferencesController({
-      useRequestQueue: true,
-    });
+    return merge(
+      this.withPreferencesController({
+        useRequestQueue: true,
+      }),
+    );
   }
 
   withSmartTransactionsController(data) {

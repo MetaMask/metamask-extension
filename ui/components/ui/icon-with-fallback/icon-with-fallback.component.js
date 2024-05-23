@@ -28,7 +28,7 @@ const IconWithFallback = ({
   };
 
   return (
-    <div className={classnames(wrapperClassName)}>
+    <div className={classnames(wrapperClassName)} style={style}>
       {!iconError && icon ? (
         <img
           onError={handleOnError}

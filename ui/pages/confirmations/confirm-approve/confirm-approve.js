@@ -25,7 +25,6 @@ import {
   getNextSuggestedNonce,
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
-  getIsMultiLayerFeeNetwork,
   checkNetworkAndAccountSupports1559,
   getUseCurrencyRateCheck,
   getPreferences,
@@ -77,7 +76,6 @@ export default function ConfirmApprove({
   const customNonceValue = useSelector(getCustomNonceValue);
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
-  const isMultiLayerFeeNetwork = useSelector(getIsMultiLayerFeeNetwork);
   const networkAndAccountSupports1559 = useSelector(
     checkNetworkAndAccountSupports1559,
   );
@@ -142,7 +140,7 @@ export default function ConfirmApprove({
     checkIfContract();
   }, [checkIfContract]);
 
-  const { origin } = transaction;
+  const { origin, layer1GasFee } = transaction;
   const formattedOrigin = origin || '';
 
   const { iconUrl: siteImage = '' } = subjectMetadata[origin] || {};
@@ -203,7 +201,6 @@ export default function ConfirmApprove({
             hexTransactionTotal={hexTransactionTotal}
             hexMinimumTransactionFee={hexMinimumTransactionFee}
             txData={transaction}
-            isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
             supportsEIP1559={supportsEIP1559}
             userAddress={userAddress}
             tokenAddress={tokenAddress}
@@ -306,7 +303,7 @@ export default function ConfirmApprove({
               chainId={chainId}
               rpcPrefs={rpcPrefs}
               isContract={isContract}
-              isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
+              hasLayer1GasFee={layer1GasFee !== undefined}
               supportsEIP1559={supportsEIP1559}
               useCurrencyRateCheck={useCurrencyRateCheck}
               useNativeCurrencyAsPrimaryCurrency={
@@ -350,6 +347,7 @@ ConfirmApprove.propTypes = {
   userAddress: PropTypes.string,
   toAddress: PropTypes.string,
   transaction: PropTypes.shape({
+    layer1GasFee: PropTypes.string,
     origin: PropTypes.string,
     txParams: PropTypes.shape({
       data: PropTypes.string,

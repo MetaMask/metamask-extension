@@ -169,7 +169,6 @@ const render = ({
         },
       },
       providerConfig: { chainId, type: NETWORK_TYPES.MAINNET },
-      selectedAddress,
       accounts: {
         [selectedAddress]: {
           address: selectedAddress,

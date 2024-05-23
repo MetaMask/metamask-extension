@@ -29,7 +29,7 @@ import {
   unlockAndGetSeedPhrase,
   createNewVaultAndRestore,
 } from '../../store/actions';
-import { getFirstTimeFlowTypeRoute } from '../../selectors';
+import { getFirstTimeFlowTypeRouteAfterUnlock } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import Button from '../../components/ui/button';
 import RevealSRPModal from '../../components/app/reveal-SRP-modal';
@@ -66,7 +66,7 @@ export default function OnboardingFlow() {
   const history = useHistory();
   const t = useI18nContext();
   const completedOnboarding = useSelector(getCompletedOnboarding);
-  const nextRoute = useSelector(getFirstTimeFlowTypeRoute);
+  const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
   const isFromReminder = new URLSearchParams(search).get('isFromReminder');
   const trackEvent = useContext(MetaMetricsContext);
 

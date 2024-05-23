@@ -1,0 +1,19 @@
+@use "design-system";
+
+.alert-modal {
+  &__header {
+    border-width: 0 0 1px 0;
+    border-color: var(--brand-colors-grey-grey040);
+  }
+
+  &__alert-details {
+    list-style-type: disc;
+    word-wrap: break-word;
+  }
+
+  &__acknowledge-checkbox {
+    @include design-system.H6;
+
+    padding-top: 2px;
+  }
+}

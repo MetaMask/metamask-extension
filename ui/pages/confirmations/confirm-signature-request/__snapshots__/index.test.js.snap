@@ -130,6 +130,7 @@ exports[`Confirm Signature Request Component render should match snapshot 1`] = 
             </div>
             <div
               class="network-account-balance-header__network-account__ident-icon-ethereum--gray"
+              style="height: 16px; width: 16px;"
             >
               <span
                 class="icon-with-fallback__fallback"

@@ -42,10 +42,10 @@ describe('Test Snap revoke permission', function () {
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Install' });
+        await driver.waitForSelector({ text: 'Confirm' });
 
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
 
@@ -81,7 +81,7 @@ describe('Test Snap revoke permission', function () {
         });
         await driver.delay(500);
         await driver.clickElement({
-          text: 'Connect',
+          text: 'Confirm',
           tag: 'button',
         });
 
@@ -146,7 +146,7 @@ describe('Test Snap revoke permission', function () {
         });
         await driver.delay(500);
         await driver.clickElement({
-          text: 'Connect',
+          text: 'Confirm',
           tag: 'button',
         });
 

@@ -22,6 +22,9 @@ import {
   getNeverShowSwitchedNetworkMessage,
   getNetworkToAutomaticallySwitchTo,
   getNumberOfAllUnapprovedTransactionsAndMessages,
+  getShowSurveyToast,
+  getNewPrivacyPolicyToastShownDate,
+  getShowPrivacyPolicyToast,
   getUseRequestQueue,
 } from '../../selectors';
 import { getSmartTransactionsOptInStatus } from '../../../shared/modules/selectors';
@@ -36,6 +39,9 @@ import {
   hideImportTokensModal,
   hideDeprecatedNetworkModal,
   addPermittedAccount,
+  setSurveyLinkLastClickedOrClosed,
+  setNewPrivacyPolicyToastClickedOrClosed,
+  setNewPrivacyPolicyToastShownDate,
   automaticallySwitchNetwork,
   clearSwitchedNetworkDetails,
   neverShowSwitchedNetworkMessage,
@@ -47,6 +53,7 @@ import { pageChanged } from '../../ducks/history/history';
 import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps';
 import { getSendStage } from '../../ducks/send';
 import {
+  getAlertEnabledness,
   getIsUnlocked,
   getProviderConfig,
 } from '../../ducks/metamask/metamask';
@@ -62,11 +69,12 @@ function mapStateToProps(state) {
 
   // If there is more than one connected account to activeTabOrigin,
   // *BUT* the current account is not one of them, show the banner
+  const allowShowAccountSetting = getAlertEnabledness(state).unconnectedAccount;
   const account = getSelectedAccount(state);
   const activeTabOrigin = activeTab?.origin;
   const connectedAccounts = getPermittedAccountsForCurrentTab(state);
   const showConnectAccountToast = Boolean(
-    process.env.MULTICHAIN &&
+    allowShowAccountSetting &&
       account &&
       activeTabOrigin &&
       connectedAccounts.length > 0 &&
@@ -109,6 +117,7 @@ function mapStateToProps(state) {
     isAccountMenuOpen: state.metamask.isAccountMenuOpen,
     isNetworkMenuOpen: state.metamask.isNetworkMenuOpen,
     isImportTokensModalOpen: state.appState.importTokensModalOpen,
+    isBasicConfigurationModalOpen: state.appState.showBasicFunctionalityModal,
     isDeprecatedNetworkModalOpen: state.appState.deprecatedNetworkModalOpen,
     accountDetailsAddress: state.appState.accountDetailsAddress,
     isImportNftsModalOpen: state.appState.importNftsModal.open,
@@ -120,6 +129,9 @@ function mapStateToProps(state) {
     neverShowSwitchedNetworkMessage: getNeverShowSwitchedNetworkMessage(state),
     currentExtensionPopupId: state.metamask.currentExtensionPopupId,
     useRequestQueue: getUseRequestQueue(state),
+    newPrivacyPolicyToastShownDate: getNewPrivacyPolicyToastShownDate(state),
+    showPrivacyPolicyToast: getShowPrivacyPolicyToast(state),
+    showSurveyToast: getShowSurveyToast(state),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal:
       state.appState.showKeyringRemovalSnapModal,
@@ -148,6 +160,12 @@ function mapDispatchToProps(dispatch) {
       dispatch(neverShowSwitchedNetworkMessage()),
     automaticallySwitchNetwork: (networkId, selectedTabOrigin) =>
       dispatch(automaticallySwitchNetwork(networkId, selectedTabOrigin)),
+    setSurveyLinkLastClickedOrClosed: (time) =>
+      dispatch(setSurveyLinkLastClickedOrClosed(time)),
+    setNewPrivacyPolicyToastClickedOrClosed: () =>
+      dispatch(setNewPrivacyPolicyToastClickedOrClosed()),
+    setNewPrivacyPolicyToastShownDate: (date) =>
+      dispatch(setNewPrivacyPolicyToastShownDate(date)),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     hideShowKeyringSnapRemovalResultModal: () =>
       dispatch(hideKeyringRemovalResultModal()),
