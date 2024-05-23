@@ -379,6 +379,7 @@ describe('preferences controller', () => {
         [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[1]].chainId]: true,
         [CHAIN_IDS.GOERLI]: true,
         [CHAIN_IDS.SEPOLIA]: true,
+        [CHAIN_IDS.LINEA_GOERLI]: true,
         [CHAIN_IDS.LINEA_SEPOLIA]: true,
       });
     });
@@ -396,6 +397,7 @@ describe('preferences controller', () => {
         [NETWORK_CONFIGURATION_DATA[addedNonTestNetworks[1]].chainId]: true,
         [CHAIN_IDS.GOERLI]: true,
         [CHAIN_IDS.SEPOLIA]: true,
+        [CHAIN_IDS.LINEA_GOERLI]: true,
         [CHAIN_IDS.LINEA_SEPOLIA]: true,
       });
     });

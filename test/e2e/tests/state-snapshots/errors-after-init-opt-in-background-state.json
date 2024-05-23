@@ -44,6 +44,8 @@
     "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
     "snapsInstallPrivacyWarningShown": true,
     "surveyLinkLastClickedOrClosed": "object",
+    "newPrivacyPolicyToastClickedOrClosed": "object",
+    "newPrivacyPolicyToastShownDate": "object",
     "signatureSecurityAlertResponses": "object",
     "switchedNetworkDetails": "object",
     "switchedNetworkNeverShowMessage": "boolean",
@@ -81,7 +83,8 @@
     "gasFeeEstimatesByChainId": {},
     "gasFeeEstimates": {},
     "estimatedGasFeeTimeBounds": {},
-    "gasEstimateType": "none"
+    "gasEstimateType": "none",
+    "nonRPCGasFeeApisDisabled": "boolean"
   },
   "KeyringController": {
     "isUnlocked": false,
@@ -146,6 +149,7 @@
     "dismissSeedBackUpReminder": true,
     "disabledRpcMethodPreferences": { "eth_sign": false },
     "useMultiAccountBalanceChecker": true,
+    "hasDismissedOpenSeaToBlockaidBanner": false,
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": false,
     "useNftDetection": false,
@@ -157,7 +161,6 @@
     "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
     "featureFlags": {},
-    "hasDismissedOpenSeaToBlockaidBanner": false,
     "incomingTransactionsPreferences": {},
     "knownMethodData": "object",
     "currentLocale": "en",
