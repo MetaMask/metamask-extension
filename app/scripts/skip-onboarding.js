@@ -2,11 +2,8 @@ import { ControllerMessenger } from '@metamask/base-controller';
 import { KeyringController } from '@metamask/keyring-controller';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
-import { defaultFixture } from '../../test/e2e/default-fixture';
+import { E2E_SRP, defaultFixture } from '../../test/e2e/default-fixture';
 import { encryptorFactory } from './lib/encryptor-factory';
-
-const E2E_SRP =
-  'spread raise short crane omit tent fringe mandate neglect detail suspect cradle';
 
 async function generateSkipOnboardingState() {
   const state = defaultFixture('0xaa36a7').data;

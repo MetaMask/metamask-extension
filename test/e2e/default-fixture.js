@@ -4,6 +4,9 @@ const { FirstTimeFlowType } = require('../../shared/constants/onboarding');
 
 const FIXTURE_STATE_METADATA_VERSION = 74;
 
+const E2E_SRP =
+  'spread raise short crane omit tent fringe mandate neglect detail suspect cradle';
+
 function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
   return {
     data: {
@@ -245,4 +248,4 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
   };
 }
 
-module.exports = { defaultFixture, FIXTURE_STATE_METADATA_VERSION };
+module.exports = { defaultFixture, FIXTURE_STATE_METADATA_VERSION, E2E_SRP };
