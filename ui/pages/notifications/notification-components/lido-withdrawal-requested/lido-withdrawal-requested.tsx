@@ -152,7 +152,6 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
           const { nativeCurrencyLogo } = getNetworkDetailsByChainId(
             `0x${chainId}` as keyof typeof CHAIN_IDS,
           );
-          console.log(notification);
           return (
             <NotificationDetailAsset
               icon={{
