@@ -244,14 +244,16 @@ export const addAdjustedReturnToQuotes = async (
         .toDenomination(EtherDenomination.ETH);
 
       // convert token to ETH using conversion rate
-      const destTokenReceivedInNative = new Numeric(
-        calcTokenAmount(
-          quote.destinationAmount,
-          destinationAsset?.decimals ||
-            SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].decimals,
-        ),
-        10,
-      ).times(destToNativeConversionRate, 10);
+      const destTokenReceivedInNative = quote.destinationAmount
+        ? new Numeric(
+            calcTokenAmount(
+              quote.destinationAmount,
+              destinationAsset?.decimals ||
+                SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].decimals,
+            ),
+            10,
+          ).times(destToNativeConversionRate, 10)
+        : undefined;
 
       // subtract gas ETH value from token ETH value
       const adjustAmountReceivedInNative = destTokenReceivedInNative

@@ -33,10 +33,10 @@ const mapStateToProps = (state, ownProps) => {
     type,
   } = transaction;
 
-  const sourceTokenAmount = calcTokenAmount(
-    rawSourceTokenAmount,
-    sourceTokenDecimals,
-  );
+  const sourceTokenAmount =
+    rawSourceTokenAmount && sourceTokenDecimals
+      ? calcTokenAmount(rawSourceTokenAmount, sourceTokenDecimals)
+      : undefined;
   let destinationTokenAmount;
 
   if (
@@ -62,10 +62,13 @@ const mapStateToProps = (state, ownProps) => {
       }
     } catch (error) {
       // if actual destination token amount is not found, use the estimated amount from the quote
-      calcTokenAmount(
-        rawDestinationTokenAmountEstimate,
-        destinationTokenDecimals,
-      );
+      destinationTokenAmount =
+        rawDestinationTokenAmountEstimate && destinationTokenDecimals
+          ? calcTokenAmount(
+              rawDestinationTokenAmountEstimate,
+              destinationTokenDecimals,
+            )
+          : undefined;
     }
   }
 
