@@ -202,15 +202,13 @@ export const getPermissionSpecifications = ({
           );
         }
 
-        const caveats = permissionOptions.caveats ?? [
-          CaveatFactories[CaveatTypes.restrictNetworkSwitching](
-            requestData.approvedChainIds,
-          ),
-        ];
-
         return constructPermission({
           ...permissionOptions,
-          caveats,
+          caveats: [
+            CaveatFactories[CaveatTypes.restrictNetworkSwitching](
+              requestData.approvedChainIds,
+            ),
+          ],
         });
       },
       endowmentGetter: async (_getterOptions) => undefined,
