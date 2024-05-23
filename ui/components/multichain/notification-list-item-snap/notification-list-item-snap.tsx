@@ -151,7 +151,9 @@ export const NotificationListItemSnap = ({
             </Box>
 
             {/* Snap Message */}
-            <SnapUIMarkdown markdown>{snapMessage}</SnapUIMarkdown>
+            <Box color={TextColor.textDefault}>
+              <SnapUIMarkdown markdown>{snapMessage}</SnapUIMarkdown>
+            </Box>
           </Box>
         </Box>
       </Box>

@@ -2,13 +2,13 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { NotificationListItemSnap } from '../../../../components/multichain';
-import type { SnapNotificationWithoutSnapName } from '../../snap/types/types';
+import type { SnapNotification } from '../../snap/types/types';
 import { getSnapsMetadata } from '../../../../selectors';
 import { markNotificationsAsRead } from '../../../../store/actions';
 import { getSnapRoute, getSnapName } from '../../../../helpers/utils/util';
 
 type SnapComponentProps = {
-  snapNotification: SnapNotificationWithoutSnapName;
+  snapNotification: SnapNotification;
 };
 
 export const SnapComponent = ({ snapNotification }: SnapComponentProps) => {
