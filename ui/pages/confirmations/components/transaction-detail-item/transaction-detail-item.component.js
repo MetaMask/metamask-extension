@@ -8,7 +8,7 @@ import {
   TextVariant,
   Display,
   FlexWrap,
-  FontWeight,
+  BlockSize,
 } from '../../../../helpers/constants/design-system';
 import { Text } from '../../../../components/component-library';
 
@@ -19,12 +19,18 @@ export default function TransactionDetailItem({
   detailText,
   detailTitleColor = Color.textDefault, // todo remove
   detailTotal = '',
+  hasDetailTextInSeparateRow = false,
   subTitle = '',
   subText = '',
   flexWidthValues = false,
+  ...props
 }) {
   return (
-    <div className="transaction-detail-item" data-testid={dataTestId}>
+    <div
+      className="transaction-detail-item"
+      data-testid={dataTestId}
+      {...props}
+    >
       <div className="transaction-detail-item__row">
         <Text
           as="h6"
@@ -43,7 +49,11 @@ export default function TransactionDetailItem({
           })}
         >
           {detailText && (
-            <Text as="h6" color={Color.textAlternative}>
+            <Text
+              as="h6"
+              color={Color.textAlternative}
+              width={hasDetailTextInSeparateRow ? BlockSize.Full : null}
+            >
               {detailText}
             </Text>
           )}
@@ -51,7 +61,6 @@ export default function TransactionDetailItem({
             as="h6"
             color={Color.textDefault}
             marginLeft={1}
-            fontWeight={FontWeight.Bold}
             textAlign={TextAlign.Right}
             variant={TextVariant.bodyMd}
           >
@@ -66,8 +75,8 @@ export default function TransactionDetailItem({
           <Text
             as="h6"
             variant={TextVariant.bodySm}
-            color={Color.textAlternative}
-            style={{ whitespace: 'nowrap' }}
+            color={Color.textMuted}
+            style={{ flex: '1 0 auto' }}
           >
             {subTitle}
           </Text>
@@ -108,6 +117,10 @@ TransactionDetailItem.propTypes = {
    * Total amount to show. Wrapped in Typography component.
    */
   detailTotal: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * If true, separates detailText and detailTotal into separate rows
+   */
+  hasDetailTextInSeparateRow: PropTypes.bool,
   /**
    * Subtitle text. Checks if React.isValidElement before displaying. Displays under detailTitle
    */

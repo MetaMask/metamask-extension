@@ -126,13 +126,20 @@ const GasDetailsItem = ({
       detailTitle={detailTitle()}
       detailText={
         Object.keys(draftTransaction).length === 0 && (
-          <div className="gas-details-item__currency-container">
+          <div
+            className="gas-details-item__currency-container"
+            style={{ width: '100%' }}
+          >
             <LoadingHeartBeat estimateUsed={estimateUsed} />
             <EditGasFeeIcon
               userAcknowledgedGasMissing={userAcknowledgedGasMissing}
             />
             {useCurrencyRateCheck && (
               <UserPreferencedCurrencyDisplay
+                paddingInlineStart={1}
+                suffixProps={{
+                  variant: TextVariant.bodyMdBold,
+                }}
                 textProps={{
                   variant: TextVariant.bodyMdBold,
                 }}
@@ -162,6 +169,7 @@ const GasDetailsItem = ({
           />
         </div>
       }
+      hasDetailTextInSeparateRow
       subText={
         <>
           <Box

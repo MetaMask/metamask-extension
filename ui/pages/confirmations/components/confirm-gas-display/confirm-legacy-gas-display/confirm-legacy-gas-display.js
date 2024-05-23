@@ -113,6 +113,14 @@ const ConfirmLegacyGasDisplay = ({ 'data-testid': dataTestId } = {}) => {
             type={PRIMARY}
             value={hexMinimumTransactionFee}
             hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+            suffixProps={{
+              color: TextColor.textDefault,
+              variant: TextVariant.bodyMdBold,
+            }}
+            textProps={{
+              color: TextColor.textDefault,
+              variant: TextVariant.bodyMdBold,
+            }}
             numberOfDecimals={6}
           />
         </div>
@@ -133,19 +141,7 @@ const ConfirmLegacyGasDisplay = ({ 'data-testid': dataTestId } = {}) => {
           </div>
         </>
       }
-      subTitle={
-        <>
-          {dappSuggestedGasFees && (
-            <Text
-              variant={TextVariant.bodySm}
-              color={TextColor.textMuted}
-              as="h6"
-            >
-              {t('transactionDetailDappGasMoreInfo')}
-            </Text>
-          )}
-        </>
-      }
+      subTitle={dappSuggestedGasFees && t('transactionDetailDappGasMoreInfo')}
     />
   );
 };
