@@ -93,22 +93,13 @@ export const components: NotificationComponent<StakeNotification> = {
   guardFn: isStakeNotification,
   item: ({ notification, onClick }) => {
     const direction = DIRECTION_MAP[notification.type];
-    const amount =
-      direction === 'staked'
-        ? getAmount(
-            notification.data.stake_in.amount,
-            notification.data.stake_in.decimals,
-            {
-              shouldEllipse: true,
-            },
-          )
-        : getAmount(
-            notification.data.stake_out.amount,
-            notification.data.stake_out.decimals,
-            {
-              shouldEllipse: true,
-            },
-          );
+    const stakingProp = direction === 'staked'
+      ? notification.data.stake_in
+      : notification.data.stake_out;
+
+    const amount = getAmount(stakingProp.amount, stakingProp.decimals, {
+      shouldEllipse: true,
+    });
     return (
       <NotificationListItem
         id={notification.id}
