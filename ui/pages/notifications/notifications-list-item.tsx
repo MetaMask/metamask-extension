@@ -1,5 +1,10 @@
-import React, { useCallback } from 'react';
+import React, { useContext, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
+import { MetaMetricsContext } from '../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 import type { Notification } from '../../../app/scripts/controllers/metamask-notifications/types/notification/notification';
 import { Box } from '../../components/component-library';
 import {
@@ -22,10 +27,20 @@ export function NotificationsListItem({
 }) {
   const history = useHistory();
   const { listNotifications } = useMetamaskNotificationsContext();
+  const trackEvent = useContext(MetaMetricsContext);
 
   const { markNotificationAsRead } = useMarkNotificationAsRead();
 
   const handleNotificationClick = useCallback(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.NotifictionInteraction,
+      event: MetaMetricsEventName.NotificationItemClicked,
+      properties: {
+        notificationId: notification.id,
+        notificationType: notification.type,
+        notificationIsRead: notification.isRead,
+      },
+    });
     markNotificationAsRead([
       {
         id: notification.id,

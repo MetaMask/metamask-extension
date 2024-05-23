@@ -216,6 +216,7 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
       );
       return (
         <NotificationDetailButton
+          notification={notification}
           variant={ButtonVariant.Secondary}
           text={t('notificationItemCheckBlockExplorer') || ''}
           href={

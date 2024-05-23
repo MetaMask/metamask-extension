@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import classnames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import type { SnapNotification } from '../../snap/types/types';
 import { SnapUIMarkdown } from '../../../../components/app/snaps/snap-ui-markdown';
 import { formatDate, getSnapRoute } from '../../../../helpers/utils/util';
@@ -19,6 +24,7 @@ function NotificationItem({ snapNotification }: SnapComponentProps) {
   const dispatch = useDispatch();
   const history = useHistory();
   const t = useI18nContext();
+  const trackEvent = useContext(MetaMetricsContext);
 
   const { name: snapName } = useSelector((state) =>
     // @ts-expect-error params only expect 1 argument not 2
@@ -27,11 +33,29 @@ function NotificationItem({ snapNotification }: SnapComponentProps) {
 
   const handleNameClick = (e: Pick<Event, 'stopPropagation'>) => {
     e.stopPropagation();
+    trackEvent({
+      category: MetaMetricsEventCategory.NotifictionInteraction,
+      event: MetaMetricsEventName.NotificationDetailClicked,
+      properties: {
+        notificationId: snapNotification.id,
+        notificationType: snapNotification.type,
+        notificationIsRead: snapNotification.isRead,
+      },
+    });
     dispatch(markNotificationsAsRead([snapNotification.id]));
     history.push(getSnapRoute(origin));
   };
 
   const handleItemClick = () => {
+    trackEvent({
+      category: MetaMetricsEventCategory.NotifictionInteraction,
+      event: MetaMetricsEventName.NotificationItemClicked,
+      properties: {
+        notificationId: snapNotification.id,
+        notificationType: snapNotification.type,
+        notificationIsRead: snapNotification.isRead,
+      },
+    });
     dispatch(markNotificationsAsRead([snapNotification.id]));
   };
 

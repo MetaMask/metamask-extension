@@ -177,6 +177,7 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
         );
         return (
           <NotificationDetailButton
+            notification={notification}
             variant={ButtonVariant.Secondary}
             text={t('notificationItemCheckBlockExplorer') || ''}
             href={
