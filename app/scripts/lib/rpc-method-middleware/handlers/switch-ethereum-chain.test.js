@@ -10,23 +10,24 @@ const mockRequestUserApproval = ({ requestData }) => {
   return Promise.resolve(requestData.toNetworkConfiguration);
 };
 
-const MOCK_MAINNET_CONFIGURATION = {
+const createMockMainnetConfiguration = () => ({
   id: 123,
   chainId: CHAIN_IDS.MAINNET,
   type: NETWORK_TYPES.MAINNET,
-};
-const MOCK_LINEA_MAINNET_CONFIGURATION = {
+});
+
+const createMockLineaMainnetConfiguration = () => ({
   id: 1234,
   chainId: CHAIN_IDS.LINEA_MAINNET,
   type: NETWORK_TYPES.LINEA_MAINNET,
-};
+});
 
 describe('switchEthereumChainHandler', () => {
   const makeMocks = ({
     permissionedChainIds = [],
     permissionsFeatureFlagIsActive = false,
     overrides = {},
-    mockedFindNetworkConfigurationByReturnValue = MOCK_MAINNET_CONFIGURATION,
+    mockedFindNetworkConfigurationByReturnValue = createMockMainnetConfiguration(),
     mockedGetCurrentChainIdForDomainReturnValue = NON_INFURA_CHAIN_ID,
   } = {}) => {
     const mockGetCaveat = jest.fn();
@@ -64,7 +65,7 @@ describe('switchEthereumChainHandler', () => {
         overrides: {
           findNetworkConfigurationBy: jest
             .fn()
-            .mockReturnValue(MOCK_MAINNET_CONFIGURATION),
+            .mockReturnValue(createMockMainnetConfiguration()),
         },
       });
       const switchEthereumChainHandler = switchEthereumChain.implementation;
@@ -80,7 +81,7 @@ describe('switchEthereumChainHandler', () => {
       );
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
-        MOCK_MAINNET_CONFIGURATION.type,
+        createMockMainnetConfiguration().type,
       );
     });
 
@@ -90,7 +91,7 @@ describe('switchEthereumChainHandler', () => {
         overrides: {
           findNetworkConfigurationBy: jest
             .fn()
-            .mockReturnValue(MOCK_LINEA_MAINNET_CONFIGURATION),
+            .mockReturnValue(createMockLineaMainnetConfiguration()),
         },
       });
       const switchEthereumChainHandler = switchEthereumChain.implementation;
@@ -106,7 +107,7 @@ describe('switchEthereumChainHandler', () => {
       );
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
-        MOCK_LINEA_MAINNET_CONFIGURATION.type,
+        createMockLineaMainnetConfiguration().type,
       );
     });
 
@@ -116,7 +117,7 @@ describe('switchEthereumChainHandler', () => {
         overrides: {
           findNetworkConfigurationBy: jest
             .fn()
-            .mockReturnValue(MOCK_LINEA_MAINNET_CONFIGURATION),
+            .mockReturnValue(createMockLineaMainnetConfiguration()),
         },
       });
       const switchEthereumChainHandler = switchEthereumChain.implementation;
@@ -132,7 +133,7 @@ describe('switchEthereumChainHandler', () => {
       );
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
-        MOCK_LINEA_MAINNET_CONFIGURATION.type,
+        createMockLineaMainnetConfiguration().type,
       );
     });
 
@@ -158,7 +159,7 @@ describe('switchEthereumChainHandler', () => {
       );
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
-        MOCK_MAINNET_CONFIGURATION.id,
+        createMockMainnetConfiguration().id,
       );
     });
   });
@@ -195,7 +196,7 @@ describe('switchEthereumChainHandler', () => {
       ]);
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
-        MOCK_MAINNET_CONFIGURATION.type,
+        createMockMainnetConfiguration().type,
       );
     });
 
@@ -219,7 +220,7 @@ describe('switchEthereumChainHandler', () => {
       expect(mocks.requestPermittedChainsPermission).not.toHaveBeenCalled();
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
-        MOCK_MAINNET_CONFIGURATION.type,
+        createMockMainnetConfiguration().type,
       );
     });
 
