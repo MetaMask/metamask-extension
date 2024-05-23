@@ -192,7 +192,7 @@ env:
   - SKIP_BACKGROUND_INITIALIZATION: false
 
   # TODO(ritave): Move ManifestV3 into a feature?
-  - ENABLE_MV3: false
+  - ENABLE_MV3: true
   # These are exclusively used for MV3
   - USE_SNOW
   - APPLY_LAVAMOAT

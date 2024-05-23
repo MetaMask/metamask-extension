@@ -378,7 +378,10 @@ describe('Import flow @no-mmi', function () {
   });
 
   it('Connects to a Hardware wallet for lattice', async function () {
-    if (process.env.ENABLE_MV3) {
+    if (
+      process.env.ENABLE_MV3 === 'true' ||
+      process.env.ENABLE_MV3 === undefined
+    ) {
       // Hardware wallets not supported in MV3 build yet
       this.skip();
     }

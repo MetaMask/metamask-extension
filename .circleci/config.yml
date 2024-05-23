@@ -136,9 +136,6 @@ workflows:
       - prep-build-confirmation-redesign-test:
           requires:
             - prep-deps
-      - prep-build-test-mv3:
-          requires:
-            - prep-deps
       - prep-build-test-flask:
           requires:
             - prep-deps
@@ -201,9 +198,6 @@ workflows:
       - test-e2e-chrome-rpc-mmi:
           requires:
             - prep-build-test-mmi
-      - test-e2e-chrome-mv3:
-          requires:
-            - prep-build-test-mv3
       - test-e2e-chrome-vault-decryption:
           filters:
             branches:
@@ -309,7 +303,7 @@ workflows:
             - prep-build-test
       - stats-module-load-init:
           requires:
-            - prep-build-test-mv3
+            - prep-build-test
       - job-publish-prerelease:
           requires:
             - prep-deps
@@ -320,7 +314,6 @@ workflows:
             - prep-build-flask
             - prep-build-storybook
             - prep-build-ts-migration-dashboard
-            - prep-build-test-mv3
             - benchmark
             - user-actions-benchmark
             - stats-module-load-init
@@ -720,27 +713,6 @@ jobs:
           path: builds-test-mmi-playwright
           destination: builds-test-mmi-playwright
 
-  prep-build-test-mv3:
-    executor: node-browsers-medium-plus
-    steps:
-      - run: *shallow-git-clone
-      - attach_workspace:
-          at: .
-      - run:
-          name: Build extension in mv3 for testing
-          command: yarn build:test:mv3
-      - run:
-          name: Move test build to 'dist-test' to avoid conflict with production build
-          command: mv ./dist ./dist-test-mv3
-      - run:
-          name: Move test zips to 'builds-test-mv3' to avoid conflict with production build
-          command: mv ./builds ./builds-test-mv3
-      - persist_to_workspace:
-          root: .
-          paths:
-            - dist-test-mv3
-            - builds-test-mv3
-
   prep-build-test:
     executor: node-browsers-medium-plus
     steps:
@@ -1023,33 +995,6 @@ jobs:
       - store_test_results:
           path: test/test-results/e2e
 
-  test-e2e-chrome-mv3:
-    executor: node-browsers-medium-plus
-    parallelism: 16
-    steps:
-      - run: *shallow-git-clone
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test-mv3 ./dist
-      - run:
-          name: Move test zips to builds
-          command: mv ./builds-test-mv3 ./builds
-      - run:
-          name: test:e2e:chrome
-          command: |
-            export ENABLE_MV3=true
-            if .circleci/scripts/test-run-e2e.sh; then
-              timeout 20m yarn test:e2e:chrome --retries 2
-            fi
-          no_output_timeout: 5m
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-      - store_test_results:
-                path: test/test-results/e2e
-
   test-e2e-chrome-rpc:
     executor: node-browsers-medium
     parallelism: 1
@@ -1161,6 +1106,7 @@ jobs:
       - run:
           name: test:e2e:firefox:flask
           command: |
+            export ENABLE_MV3=false
             if .circleci/scripts/test-run-e2e.sh
             then
               timeout 20m yarn test:e2e:firefox:flask --retries 2
@@ -1283,6 +1229,7 @@ jobs:
       - run:
           name: test:e2e:firefox
           command: |
+            export ENABLE_MV3=false
             if .circleci/scripts/test-run-e2e.sh
             then
               timeout 20m yarn test:e2e:firefox --retries 2
@@ -1310,6 +1257,7 @@ jobs:
       - run:
           name: test:e2e:firefox-confirmation-redesign
           command: |
+            export ENABLE_MV3=false
             if .circleci/scripts/test-run-e2e.sh
             then
               timeout 20m yarn test:e2e:firefox --retries 2
@@ -1378,21 +1326,21 @@ jobs:
           at: .
       - run:
           name: Move test build to dist
-          command: mv ./dist-test-mv3 ./dist
+          command: mv ./dist-test ./dist
       - run:
           name: Move test zips to builds
-          command: mv ./builds-test-mv3 ./builds
+          command: mv ./builds-test ./builds
       - run:
           name: Run page load benchmark
           command: |
-            mkdir -p test-artifacts/chrome/mv3
-            cp -R development/charts/flamegraph test-artifacts/chrome/mv3/initialisation
-            cp -R development/charts/flamegraph/chart test-artifacts/chrome/mv3/initialisation/background
-            cp -R development/charts/flamegraph/chart test-artifacts/chrome/mv3/initialisation/ui
-            cp -R development/charts/table test-artifacts/chrome/mv3/load_time
+            mkdir -p test-artifacts/chrome/
+            cp -R development/charts/flamegraph test-artifacts/chrome/initialisation
+            cp -R development/charts/flamegraph/chart test-artifacts/chrome/initialisation/background
+            cp -R development/charts/flamegraph/chart test-artifacts/chrome/initialisation/ui
+            cp -R development/charts/table test-artifacts/chrome/load_time
       - run:
           name: Run page load benchmark
-          command: yarn mv3:stats:chrome --out test-artifacts/chrome/mv3
+          command: yarn mv3:stats:chrome --out test-artifacts/chrome
       - run:
           name: Install jq
           command: sudo apt install jq -y
