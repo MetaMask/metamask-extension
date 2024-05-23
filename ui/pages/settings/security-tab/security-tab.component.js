@@ -1103,7 +1103,12 @@ export default class SecurityTab extends PureComponent {
   };
 
   render() {
-    const { warning, petnamesEnabled, dataCollectionForMarketing } = this.props;
+    const {
+      warning,
+      petnamesEnabled,
+      dataCollectionForMarketing,
+      setDataCollectionForMarketing,
+    } = this.props;
     const { showDataCollectionDisclaimer } = this.state;
 
     return (
