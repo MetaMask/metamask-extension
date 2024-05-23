@@ -30,7 +30,7 @@ describe('Send Slice Helpers', () => {
           amount: {
             value: '0x1',
           },
-          asset: {
+          sendAsset: {
             type: AssetType.token,
             balance: '0xaf',
             details: tokenDetails,
@@ -64,7 +64,7 @@ describe('Send Slice Helpers', () => {
           amount: {
             value: '0x1',
           },
-          asset: {
+          sendAsset: {
             type: AssetType.NFT,
             balance: '0xaf',
             details: {
@@ -102,7 +102,7 @@ describe('Send Slice Helpers', () => {
           amount: {
             value: '0x1',
           },
-          asset: {
+          sendAsset: {
             type: AssetType.NFT,
             balance: '0xaf',
             details: {
@@ -140,7 +140,7 @@ describe('Send Slice Helpers', () => {
           amount: {
             value: '0x1',
           },
-          asset: {
+          sendAsset: {
             type: AssetType.native,
             balance: '0xaf',
             details: null,
@@ -170,7 +170,7 @@ describe('Send Slice Helpers', () => {
           amount: {
             value: '0x1',
           },
-          asset: {
+          sendAsset: {
             type: AssetType.native,
             balance: '0xaf',
             details: null,

@@ -517,7 +517,7 @@ describe('Send Slice', () => {
           recipient: {
             error: CONTRACT_ADDRESS_ERROR,
           },
-          asset: {
+          sendAsset: {
             type: AssetType.token,
           },
         });
@@ -525,7 +525,7 @@ describe('Send Slice', () => {
         const action = {
           type: 'send/updateAsset',
           payload: {
-            asset: {
+            sendAsset: {
               type: 'New Type',
             },
           },
@@ -545,7 +545,7 @@ describe('Send Slice', () => {
         const action = {
           type: 'send/updateAsset',
           payload: {
-            asset: {
+            sendAsset: {
               type: AssetType.token,
               details: {
                 address: '0xTokenAddress',
@@ -748,7 +748,7 @@ describe('Send Slice', () => {
       it('should error with same address recipient as a token', () => {
         const tokenAssetTypeState = {
           ...getInitialSendStateWithExistingTxState({
-            asset: {
+            sendAsset: {
               type: AssetType.token,
               details: {
                 address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
@@ -875,7 +875,7 @@ describe('Send Slice', () => {
           amount: {
             value: '0x6fc23ac0', // 1875000000
           },
-          asset: {
+          sendAsset: {
             type: AssetType.native,
             balance: '0x77359400', // 2000000000
           },
@@ -902,7 +902,7 @@ describe('Send Slice', () => {
           amount: {
             value: '0x77359400', // 2000000000
           },
-          asset: {
+          sendAsset: {
             type: AssetType.token,
             balance: '0x6fc23ac0', // 1875000000
             details: {
@@ -929,7 +929,7 @@ describe('Send Slice', () => {
           amount: {
             value: '1.2',
           },
-          asset: {
+          sendAsset: {
             type: AssetType.NFT,
             balance: '2',
             details: {
@@ -976,7 +976,7 @@ describe('Send Slice', () => {
           amount: {
             value: '2',
           },
-          asset: {
+          sendAsset: {
             type: AssetType.NFT,
             balance: '0x1',
             details: {
@@ -1064,7 +1064,7 @@ describe('Send Slice', () => {
 
       it('should set `INVALID` send state status when asset type is `TOKEN` without token details present', () => {
         const assetErrorState = getInitialSendStateWithExistingTxState({
-          asset: {
+          sendAsset: {
             type: AssetType.token,
           },
         });
@@ -1102,7 +1102,7 @@ describe('Send Slice', () => {
       it('should set `VALID` send state status when conditionals have not been met', () => {
         const validSendStatusState = {
           ...getInitialSendStateWithExistingTxState({
-            asset: {
+            sendAsset: {
               type: AssetType.token,
               details: {
                 address: '0x000',
@@ -1830,7 +1830,7 @@ describe('Send Slice', () => {
             },
           },
           send: getInitialSendStateWithExistingTxState({
-            asset: {
+            sendAsset: {
               type: AssetType.token,
               details: {},
             },
@@ -1947,7 +1947,7 @@ describe('Send Slice', () => {
         });
         expect(actionResult[1].type).toStrictEqual('send/updateAsset');
         expect(actionResult[1].payload).toStrictEqual({
-          asset: {
+          sendAsset: {
             type: AssetType.native,
             balance: '0x0',
             error: null,
@@ -2007,7 +2007,7 @@ describe('Send Slice', () => {
           payload: `sendFlow - user set asset to ERC20 token with symbol TokenSymbol and address tokenAddress`,
         });
         expect(actionResult[3].payload).toStrictEqual({
-          asset: {
+          sendAsset: {
             type: AssetType.token,
             details: {
               address: 'tokenAddress',
@@ -2347,7 +2347,7 @@ describe('Send Slice', () => {
             account: {
               balance: '',
             },
-            asset: {
+            sendAsset: {
               type: AssetType.token,
               details: {},
             },
@@ -2519,7 +2519,7 @@ describe('Send Slice', () => {
       it('should create actions to toggle update max mode when send amount mode is not max', async () => {
         const sendMaxModeState = {
           send: {
-            asset: {
+            sendAsset: {
               type: AssetType.token,
               details: {},
             },
@@ -2567,7 +2567,7 @@ describe('Send Slice', () => {
         const sendMaxModeState = {
           send: {
             ...getInitialSendStateWithExistingTxState({
-              asset: {
+              sendAsset: {
                 type: AssetType.token,
                 details: {},
               },
@@ -2857,7 +2857,7 @@ describe('Send Slice', () => {
               value: '0xde0b6b3a7640000',
               error: null,
             },
-            asset: {
+            sendAsset: {
               balance: '0x0',
               details: null,
               error: null,
@@ -3028,7 +3028,7 @@ describe('Send Slice', () => {
               error: null,
               value: '0x1',
             },
-            asset: {
+            sendAsset: {
               balance: '0x0',
               details: null,
               error: null,
@@ -3083,7 +3083,7 @@ describe('Send Slice', () => {
         expect(actionResult[5]).toStrictEqual({
           type: 'send/updateAsset',
           payload: {
-            asset: {
+            sendAsset: {
               balance: '0x1',
               details: {
                 address: '0xNftAddress',
@@ -3247,7 +3247,7 @@ describe('Send Slice', () => {
             error: null,
             value: '0x3a98',
           },
-          asset: {
+          sendAsset: {
             balance: '0x0',
             details: null,
             error: null,
@@ -3302,7 +3302,7 @@ describe('Send Slice', () => {
       expect(actionResult[5]).toStrictEqual({
         type: 'send/updateAsset',
         payload: {
-          asset: {
+          sendAsset: {
             balance: '0x0',
             type: AssetType.token,
             error: null,
@@ -3489,7 +3489,7 @@ describe('Send Slice', () => {
         expect(
           getSendAssetAddress({
             send: getInitialSendStateWithExistingTxState({
-              asset: {
+              sendAsset: {
                 balance: '0x0',
                 details: { address: '0x0' },
                 type: AssetType.token,
@@ -3506,7 +3506,7 @@ describe('Send Slice', () => {
         expect(
           getIsAssetSendable({
             send: getInitialSendStateWithExistingTxState({
-              asset: {
+              sendAsset: {
                 type: AssetType.token,
                 details: { isERC721: true },
               },

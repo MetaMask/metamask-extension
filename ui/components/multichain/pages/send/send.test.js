@@ -319,7 +319,7 @@ describe('SendPage', () => {
                 amount: {
                   value: '0x1',
                 },
-                asset: {
+                sendAsset: {
                   type: AssetType.token,
                   balance: '0xaf',
                   details: {},

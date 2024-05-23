@@ -57,7 +57,7 @@ describe('SendHeader Component', () => {
           send: {
             ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
             stage: SEND_STAGES.DRAFT,
-            asset: {
+            sendAsset: {
               ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT.asset,
               type: AssetType.native,
             },
@@ -75,7 +75,7 @@ describe('SendHeader Component', () => {
         configureMockStore(middleware)({
           send: {
             ...getInitialSendStateWithExistingTxState({
-              asset: {
+              sendAsset: {
                 type: AssetType.token,
               },
             }),

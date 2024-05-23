@@ -27,7 +27,7 @@ describe('AssetPickerAmount', () => {
         draftTransactions: {
           '1-tx': {
             ...mockSendState.send.draftTransactions['1-tx'],
-            asset: {
+            sendAsset: {
               balance: '0x3635c9adc5dea00000',
               type: AssetType.NFT,
               // TODO: Replace `any` with type
@@ -60,7 +60,7 @@ describe('AssetPickerAmount', () => {
         onAmountChange={() => ({})}
         onAssetChange={() => ({})}
         amount={{ value: '100' }}
-        asset={tokenAssetState.send.draftTransactions['1-tx'].asset}
+        asset={tokenAssetState.send.draftTransactions['1-tx'].sendAsset}
       />,
       mockedNftStore,
     );
@@ -76,7 +76,7 @@ describe('AssetPickerAmount', () => {
         draftTransactions: {
           '1-tx': {
             ...mockSendState.send.draftTransactions['1-tx'],
-            asset: {
+            sendAsset: {
               balance: '0x3635c9adc5dea00000',
               type: AssetType.NFT,
               error: undefined,
@@ -104,7 +104,7 @@ describe('AssetPickerAmount', () => {
 
     const { getByText, getByPlaceholderText } = renderWithProvider(
       <AssetPickerAmount
-        asset={tokenAssetState.send.draftTransactions['1-tx'].asset}
+        asset={tokenAssetState.send.draftTransactions['1-tx'].sendAsset}
         amount={{ value: '1' }}
         onAmountChange={() => ({})}
         onAssetChange={() => ({})}
