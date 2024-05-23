@@ -16,7 +16,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
     return;
   }
 
-  it.skip(`Opens a contract interaction type 0 transaction`, async function () {
+  it(`Opens a contract interaction type 0 transaction (Legacy)`, async function () {
     await withFixtures(
       {
         dapp: true,
@@ -36,9 +36,9 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await driver.clickElement(`#deployButton`);
 
-        await driver.delay(2 ** 5);
-
+        await driver.delay(1000);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
         await driver.waitForSelector({
           css: '.confirm-page-container-summary__action__name',
           text: 'Contract deployment',
@@ -57,19 +57,18 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await driver.clickElement(`#depositButton`);
 
+        await driver.delay(1000);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.waitForSelector({
           css: 'h2',
           text: 'Transaction request',
         });
-
-        // await driver.delay(1024 ** 2);
       },
     );
   });
 
-  it.skip(`Opens a contract interaction type 2 transaction`, async function () {
+  it(`Opens a contract interaction type 2 transaction (EIP1559)`, async function () {
     await withFixtures(
       {
         dapp: true,
@@ -89,9 +88,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await driver.clickElement(`#deployButton`);
 
-        // await driver.delay(2 ** 5);
-        await driver.delay(5000);
-
+        await driver.delay(1000);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector({
           css: '.confirm-page-container-summary__action__name',
@@ -111,19 +108,18 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await driver.clickElement(`#depositButton`);
 
+        await driver.delay(1000);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.waitForSelector({
           css: 'h2',
           text: 'Transaction request',
         });
-
-        await driver.delay(1024 ** 2);
       },
     );
   });
 
-  it.only(`Opens a contract interaction type 2 transaction that includes layer 1 fees breakdown on a layer 2`, async function () {
+  it(`Opens a contract interaction type 2 transaction that includes layer 1 fees breakdown on a layer 2`, async function () {
     await withFixtures(
       {
         dapp: true,
@@ -143,8 +139,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
-
-        await driver.delay(1024 ** 2);
       },
     );
   });
