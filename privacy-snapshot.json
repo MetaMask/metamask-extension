@@ -48,5 +48,7 @@
   "unresponsive-rpc.url",
   "www.4byte.directory",
   "lattice.gridplus.io",
-  "unresponsive-rpc.test"
+  "unresponsive-rpc.test",
+  "authentication.api.cx.metamask.io",
+  "oidc.api.cx.metamask.io"
 ]
