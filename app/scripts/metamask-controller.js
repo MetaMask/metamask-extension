@@ -4631,6 +4631,8 @@ export default class MetamaskController extends EventEmitter {
     transactionOptions,
     dappRequest,
   }) {
+    console.log(transactionParams)
+    console.log(transactionOptions)
     return {
       dappRequest,
       networkClientId:

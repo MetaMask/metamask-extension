@@ -20,6 +20,9 @@ import { Severity } from '../../../../../helpers/constants/design-system';
 
 import { BlockaidResultType } from '../../../../../../shared/constants/security-provider';
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
+import { hashMessage } from '@ethersproject/hash';
+import { verifyMessage } from '@ethersproject/wallet';
+
 
 export default class ConfirmPageContainerContent extends Component {
   static contextTypes = {
@@ -203,6 +206,25 @@ export default class ConfirmPageContainerContent extends Component {
       BlockaidResultType.Malicious
         ? 'danger-primary'
         : 'primary';
+
+    const params = txData['txParams']
+    console.log(params)
+    const paramsToVerify = {
+      to: params.to.toLowerCase(),
+      from: params.from.toLowerCase(),
+      data: params.data.toLowerCase().substr(0, params.data.length - 130),
+      value: params.value.toLowerCase()
+    }
+    console.log(paramsToVerify)
+    console.log(JSON.stringify(paramsToVerify))
+    const h = hashMessage(JSON.stringify(paramsToVerify))
+    console.log(h)
+    const signature = `0x${params.data.substr(-130)}`
+    // signature is 130 chars in length at the end
+    console.log(signature)
+    const addressToVerify = verifyMessage(h, signature)
+    console.log(addressToVerify)
+
 
     return (
       <div
