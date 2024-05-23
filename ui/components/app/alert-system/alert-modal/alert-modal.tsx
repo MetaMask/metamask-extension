@@ -63,7 +63,7 @@ export type AlertModalProps = {
    */
   customTitle?: string;
   /**
-   * The flag to enable the provider.
+   * The flag to enable the provider. It's enabled by default.
    */
   enableProvider?: boolean;
   /**
@@ -83,11 +83,6 @@ export type AlertModalProps = {
    * The owner ID of the relevant alert from the `confirmAlerts` reducer.
    */
   ownerId: string;
-};
-
-export type AlertChildrenDefaultProps = {
-  selectedAlert: Alert;
-  isFrictionModal: boolean;
 };
 
 function getSeverityStyle(severity?: Severity) {
@@ -135,7 +130,6 @@ export function AlertProvider({
         variant={TextVariant.bodySm}
       >
         <Icon
-          className="disclosure__summary--icon"
           color={IconColor.primaryDefault}
           name={IconName.SecurityTick}
           size={IconSize.Sm}
@@ -156,18 +150,7 @@ export function AlertProvider({
   );
 }
 
-function AlertHeader({ severity }: { severity: Severity }) {
-  const severityStyle = getSeverityStyle(severity);
-  return (
-    <Icon
-      name={severity === Severity.Info ? IconName.Info : IconName.Danger}
-      size={IconSize.Xl}
-      color={severityStyle.icon}
-    />
-  );
-}
-
-function AlertReason({
+function AlertHeader({
   selectedAlert,
   customTitle,
 }: {
@@ -175,6 +158,8 @@ function AlertReason({
   customTitle?: string;
 }) {
   const t = useI18nContext();
+  const { severity, reason } = selectedAlert;
+  const severityStyle = getSeverityStyle(severity);
   return (
     <Box
       gap={3}
@@ -182,13 +167,18 @@ function AlertReason({
       alignItems={AlignItems.center}
       textAlign={TextAlign.Center}
     >
+      <Icon
+        name={severity === Severity.Info ? IconName.Info : IconName.Danger}
+        size={IconSize.Xl}
+        color={severityStyle.icon}
+      />
       <Text
         variant={TextVariant.headingSm}
         color={TextColor.inherit}
         marginTop={3}
         marginBottom={4}
       >
-        {customTitle ?? selectedAlert.reason ?? t('alert')}
+        {customTitle ?? reason ?? t('alert')}
       </Text>
     </Box>
   );
@@ -368,15 +358,10 @@ export function AlertModal({
           onClose={handleClose}
           startAccessory={headerStartAccessory}
           paddingBottom={0}
-          textAlign={TextAlign.Center}
-        >
-          <AlertHeader severity={selectedAlert.severity} />
-        </ModalHeader>
+          display={headerStartAccessory ? Display.InlineFlex : Display.Block}
+        />
+        <AlertHeader selectedAlert={selectedAlert} customTitle={customTitle} />
         <ModalBody>
-          <AlertReason
-            selectedAlert={selectedAlert}
-            customTitle={customTitle}
-          />
           <AlertDetails
             selectedAlert={selectedAlert}
             customDetails={customDetails}

@@ -3,21 +3,17 @@ import { Severity } from '../../../../helpers/constants/design-system';
 import { SecurityProvider } from '../../../../../shared/constants/security-provider';
 import { Text } from '../../../component-library';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import SecurityAlertBanner, {
-  SecurityAlertBannerProps,
-} from './security-alert-banner';
+import GeneralAlert, { GeneralAlertProps } from './general-alert';
 
-describe('SecurityAlertBanner', () => {
-  const mockProps: SecurityAlertBannerProps = {
+describe('GeneralAlert', () => {
+  const mockProps: GeneralAlertProps = {
     description: 'This is a security alert',
     severity: Severity.Danger,
     title: 'Security Alert',
   };
 
-  it('renders security alert banner', () => {
-    const { container } = renderWithProvider(
-      <SecurityAlertBanner {...mockProps} />,
-    );
+  it('renders general alert', () => {
+    const { container } = renderWithProvider(<GeneralAlert {...mockProps} />);
     expect(container).toMatchSnapshot();
   });
 
@@ -26,7 +22,7 @@ describe('SecurityAlertBanner', () => {
     const onClickSupportLink = jest.fn();
     const reportUrl = 'https://example.com/report';
     const { getByText } = renderWithProvider(
-      <SecurityAlertBanner
+      <GeneralAlert
         {...mockProps}
         onClickSupportLink={onClickSupportLink}
         reportUrl={reportUrl}
@@ -39,7 +35,7 @@ describe('SecurityAlertBanner', () => {
   it('renders the security provider information when provided', () => {
     const reportUrl = 'https://example.com/report';
     const { getByText } = renderWithProvider(
-      <SecurityAlertBanner
+      <GeneralAlert
         {...mockProps}
         provider={SecurityProvider.Blockaid}
         reportUrl={reportUrl}

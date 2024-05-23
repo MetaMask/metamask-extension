@@ -11,25 +11,25 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { currentConfirmationSelector } from '../../../../../selectors';
 import { Confirmation } from '../../../types/confirm';
 import useAlerts from '../../../../../hooks/useAlerts';
-import { getHighestSeverity } from '../../../../../components/app/alerts-system/utils';
-import SecurityAlertBanner from '../../../../../components/app/alerts-system/security-alert-banner/security-alert-banner';
+import { getHighestSeverity } from '../../../../../components/app/alert-system/utils';
+import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
 
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
   const t = useI18nContext();
   const { generalAlerts } = useAlerts(ownerId);
-  const hasMultipleAlerts = generalAlerts.length > 1;
 
   if (generalAlerts.length === 0) {
     return null;
   }
 
+  const hasMultipleAlerts = generalAlerts.length > 1;
   const singleAlert = generalAlerts[0];
   const highestSeverity = hasMultipleAlerts
     ? getHighestSeverity(generalAlerts)
     : singleAlert.severity;
   return (
     <Box marginTop={4}>
-      <SecurityAlertBanner
+      <GeneralAlert
         data-testid={'confirm-banner-alert'}
         title={
           hasMultipleAlerts

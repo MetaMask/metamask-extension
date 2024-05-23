@@ -3,7 +3,7 @@ import {
   Severity,
   TextColor,
 } from '../../../../../../helpers/constants/design-system';
-import InlineAlert from '../../../../alerts-system/inline-alert/inline-alert';
+import InlineAlert from '../../../../alert-system/inline-alert/inline-alert';
 import useAlerts from '../../../../../../hooks/useAlerts';
 import {
   ConfirmInfoRow,
@@ -11,7 +11,7 @@ import {
   ConfirmInfoRowVariant,
 } from '../row';
 import { Box } from '../../../../../component-library';
-import { MultipleAlertModal } from '../../../../alerts-system/multiple-alert-modal';
+import { MultipleAlertModal } from '../../../../alert-system/multiple-alert-modal';
 
 export type AlertRowProps = ConfirmInfoRowProps & {
   alertKey: string;

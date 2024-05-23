@@ -11,21 +11,21 @@ import { DisclosureVariant } from '../../../ui/disclosure/disclosure.constants';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Display,
-  Severity,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { SecurityProvider } from '../../../../../shared/constants/security-provider';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { getBannerAlertSeverity } from '../utils';
 import { AlertProvider } from '../alert-modal/alert-modal';
+import { AlertSeverity } from '../../../../ducks/confirm-alerts/confirm-alerts';
 
-export type SecurityAlertBannerProps = {
+export type GeneralAlertProps = {
   description: string;
   details?: React.ReactNode | string[];
   onClickSupportLink?: () => void;
   provider?: SecurityProvider;
   reportUrl?: string;
-  severity: Severity.Danger | Severity.Info | Severity.Warning;
+  severity: AlertSeverity;
   title: string;
 };
 
@@ -96,7 +96,7 @@ function AlertDetails({
   );
 }
 
-function SecurityAlertBanner({
+function GeneralAlert({
   description,
   details,
   onClickSupportLink,
@@ -105,10 +105,9 @@ function SecurityAlertBanner({
   title,
   reportUrl,
   ...props
-}: SecurityAlertBannerProps) {
+}: GeneralAlertProps) {
   return (
     <BannerAlert
-      data-testid="security-banner-alert"
       title={title}
       severity={getBannerAlertSeverity(severity)}
       description={description}
@@ -125,4 +124,4 @@ function SecurityAlertBanner({
   );
 }
 
-export default SecurityAlertBanner;
+export default GeneralAlert;

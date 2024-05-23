@@ -4,7 +4,7 @@ import { AlertRow } from './alert-row';
 import configureStore from '../../../../../../store/store';
 import { Provider } from 'react-redux';
 import { Meta } from '@storybook/react';
-import { baseAlertsMock } from '../../../../alerts-system/alert-modal/alert-modal.stories';
+import { baseAlertsMock } from '../../../../alert-system/alert-modal/alert-modal.stories';
 
 const LABEL_FROM_MOCK = 'From';
 const DATA_FROM_MOCK = 'Data';

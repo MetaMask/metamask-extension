@@ -6,7 +6,7 @@ import {
   Text,
 } from '../../../component-library';
 import { SecurityProvider } from '../../../../../shared/constants/security-provider';
-import SecurityAlertBanner from './security-alert-banner';
+import GeneralAlert from './general-alert';
 
 const mockPlainText =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sapien tellus, elementum sit ' +
@@ -30,8 +30,8 @@ const MockDetailsList = () => (
 );
 
 export default {
-  title: 'Confirmations/Components/SecurityAlertBanner',
-  component: SecurityAlertBanner,
+  title: 'Confirmations/Components/GeneralAlert',
+  component: GeneralAlert,
   argTypes: {
     description: {
       control: 'text',
@@ -73,7 +73,7 @@ export default {
   },
 };
 
-export const Default = (args) => <SecurityAlertBanner {...args} />;
+export const Default = (args) => <GeneralAlert {...args} />;
 Default.args = {
   description: 'This is a default security alert banner.',
   severity: Severity.Warning,
@@ -81,13 +81,13 @@ Default.args = {
   provider: SecurityProvider.Blockaid,
 };
 
-export const WithDetailsList = (args) => <SecurityAlertBanner {...args} />;
+export const WithDetailsList = (args) => <GeneralAlert {...args} />;
 WithDetailsList.args = {
   ...Default.args,
   details: <MockDetailsList />,
 };
 
-export const WithLinksInDescription = (args) => <SecurityAlertBanner {...args} />;
+export const WithLinksInDescription = (args) => <GeneralAlert {...args} />;
 WithLinksInDescription.args = {
   ...Default.args,
   description: <MockDescriptionWithLinks />,
