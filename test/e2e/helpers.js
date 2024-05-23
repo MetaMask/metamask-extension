@@ -768,6 +768,12 @@ const openActionMenuAndStartSendFlow = async (driver) => {
   await driver.clickElement('[data-testid="eth-overview-send"]');
 };
 
+const clickNestedButton = async (driver, tabName) => {
+  await driver.clickElement({
+    xpath: `//*[contains(text(),"${tabName}")]/parent::button`,
+  });
+};
+
 const sendScreenToConfirmScreen = async (
   driver,
   recipientAddress,
@@ -1152,4 +1158,5 @@ module.exports = {
   openActionMenuAndStartSendFlow,
   getCleanAppState,
   editGasFeeForm,
+  clickNestedButton,
 };
