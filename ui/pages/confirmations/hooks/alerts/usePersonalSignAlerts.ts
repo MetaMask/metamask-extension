@@ -5,8 +5,8 @@ import useCurrentConfirmation from '../useCurrentConfirmation';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { SecurityAlertResponse } from '../../types/confirm';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { providerAlertNormalizer } from '../../../../components/app/alerts-system/utils';
 import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
+import { providerAlertNormalizer } from './utils';
 
 type SignatureSecurityAlertResponsesState = {
   metamask: {
