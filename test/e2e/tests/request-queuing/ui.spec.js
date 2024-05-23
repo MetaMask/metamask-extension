@@ -72,9 +72,7 @@ async function selectDappClickSendGetNetwork(driver, dappUrl) {
   // because the offscreen document returned by getAllWindowHandles provides
   // an extra window handle
   const newWindowHandles = await driver.waitUntilXWindowHandles(
-    process.env.ENABLE_MV3
-      ? expectedWindowHandles
-      : expectedWindowHandles + 1,
+    process.env.ENABLE_MV3 ? expectedWindowHandles : expectedWindowHandles + 1,
   );
   const [newNotificationWindowHandle] = newWindowHandles.filter(
     (h) => !currentWindowHandles.includes(h),
