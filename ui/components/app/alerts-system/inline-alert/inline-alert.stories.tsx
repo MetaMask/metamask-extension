@@ -1,6 +1,6 @@
 import React from 'react';
 import InlineAlert, { InlineAlertProps } from './inline-alert';
-import { Severity } from '../../../../../helpers/constants/design-system';
+import { Severity } from '../../../../helpers/constants/design-system';
 import { Meta, StoryFn } from '@storybook/react';
 
 export default {

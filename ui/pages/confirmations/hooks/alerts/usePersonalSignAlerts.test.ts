@@ -7,15 +7,7 @@ import {
 import { Severity } from '../../../../helpers/constants/design-system';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
-import useSignatureSecurityAlertResponse from '../useSignatureSecurityAlertResponse';
 import usePersonalSignAlerts from './usePersonalSignAlerts';
-
-jest.mock('../useSignatureSecurityAlertResponse', () => {
-  return {
-    __esModule: true,
-    default: jest.fn(() => jest.fn()),
-  };
-});
 
 const mockSecurityAlertResponse: SecurityAlertResponse = {
   securityAlertId: 'test-id-mock',
@@ -49,6 +41,9 @@ const mockExpectedState = {
       },
     },
     preferences: { redesignedConfirmationsEnabled: true },
+    signatureSecurityAlertResponses: {
+      'test-id-mock': mockSecurityAlertResponse,
+    },
   },
   confirm: { currentConfirmation: currentConfirmationMock },
 };
@@ -71,9 +66,19 @@ describe('usePersonalSignAlerts', () => {
   });
 
   it('returns an empty array when the current confirmation is not of type PersonalSign', () => {
+    const alteredState = {
+      ...mockState,
+      confirm: {
+        ...mockState.confirm,
+        currentConfirmation: {
+          ...currentConfirmationMock,
+          type: ApprovalType.Transaction,
+        },
+      },
+    };
     const { result } = renderHookWithProvider(
       () => usePersonalSignAlerts(),
-      mockState,
+      alteredState,
     );
     expect(result.current).toEqual([]);
   });
@@ -87,15 +92,16 @@ describe('usePersonalSignAlerts', () => {
       provider: SecurityProvider.Blockaid,
       reason: 'This is a deceptive request',
     };
-    (useSignatureSecurityAlertResponse as jest.Mock).mockReturnValue(
-      mockSecurityAlertResponse,
-    );
-    const { result } = renderHookWithProvider(
-      () => usePersonalSignAlerts(),
-      mockExpectedState,
-    );
+    const { result } = renderHookWithProvider(() => usePersonalSignAlerts(), {
+      ...mockExpectedState,
+      metamask: {
+        ...mockExpectedState.metamask,
+        signatureSecurityAlertResponses: {
+          'test-id-mock': mockSecurityAlertResponse,
+        },
+      },
+    });
     expect(result.current).toHaveLength(1);
-    expect(result.current[0].key).toBe('test-id-mock');
     expect(result.current[0]).toStrictEqual(alertResponseExpected);
   });
 });

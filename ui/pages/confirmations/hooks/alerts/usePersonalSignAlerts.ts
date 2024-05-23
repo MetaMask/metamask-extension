@@ -1,12 +1,18 @@
 import { useMemo } from 'react';
 import { ApprovalType } from '@metamask/controller-utils';
+import { useSelector } from 'react-redux';
 import useCurrentConfirmation from '../useCurrentConfirmation';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { SecurityAlertResponse } from '../../types/confirm';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { providerAlertNormalizer } from '../../../../components/app/confirmations/alerts/utils';
+import { providerAlertNormalizer } from '../../../../components/app/alerts-system/utils';
 import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
-import useSignatureSecurityAlertResponse from '../useSignatureSecurityAlertResponse';
+
+type SignatureSecurityAlertResponsesState = {
+  metamask: {
+    signatureSecurityAlertResponses: Record<string, SecurityAlertResponse>;
+  };
+};
 
 const usePersonalSignAlerts = (): Alert[] => {
   const { currentConfirmation } = useCurrentConfirmation();
@@ -14,8 +20,11 @@ const usePersonalSignAlerts = (): Alert[] => {
   const securityAlertResponse =
     currentConfirmation?.securityAlertResponse as SecurityAlertResponse;
 
-  const signatureSecurityAlertResponse = useSignatureSecurityAlertResponse(
-    securityAlertResponse?.securityAlertId,
+  const signatureSecurityAlertResponse = useSelector(
+    (state: SignatureSecurityAlertResponsesState) =>
+      state.metamask.signatureSecurityAlertResponses?.[
+        securityAlertResponse?.securityAlertId as string
+      ],
   );
 
   const alerts = useMemo<Alert[]>(() => {
@@ -25,12 +34,14 @@ const usePersonalSignAlerts = (): Alert[] => {
 
     if (
       !signatureSecurityAlertResponse ||
-      signatureSecurityAlertResponse?.reason === BlockaidResultType.Loading
+      [BlockaidResultType.Benign, BlockaidResultType.Loading].includes(
+        signatureSecurityAlertResponse?.result_type as BlockaidResultType,
+      )
     ) {
       return [];
     }
 
-    return [providerAlertNormalizer(securityAlertResponse, t)];
+    return [providerAlertNormalizer(signatureSecurityAlertResponse, t)];
   }, [currentConfirmation, signatureSecurityAlertResponse]);
 
   return alerts;

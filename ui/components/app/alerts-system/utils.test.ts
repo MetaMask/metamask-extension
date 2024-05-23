@@ -13,7 +13,7 @@ import {
   providerAlertNormalizer,
 } from './utils';
 
-jest.mock('../../../../hooks/useI18nContext');
+jest.mock('../../../hooks/useI18nContext');
 
 describe('Utils', () => {
   describe('getSeverityBackground', () => {
