@@ -150,6 +150,12 @@ export class PushPlatformNotificationsController extends BaseController<
    * @param UUIDs - An array of UUIDs to enable push notifications for.
    */
   public async enablePushNotifications(UUIDs: string[]) {
+    // TEMP: disabling push notifications if browser does not support MV3.
+    // Will need work to support firefox on MV2
+    if (!process.env.ENABLE_MV3) {
+      return;
+    }
+
     const bearerToken = await this.#getAndAssertBearerToken();
 
     try {
@@ -194,6 +200,12 @@ export class PushPlatformNotificationsController extends BaseController<
    * @param UUIDs - An array of UUIDs for which push notifications should be disabled.
    */
   public async disablePushNotifications(UUIDs: string[]) {
+    // TEMP: disabling push notifications if browser does not support MV3.
+    // Will need work to support firefox on MV2
+    if (!process.env.ENABLE_MV3) {
+      return;
+    }
+
     const bearerToken = await this.#getAndAssertBearerToken();
     let isPushNotificationsDisabled: boolean;
 
@@ -234,6 +246,12 @@ export class PushPlatformNotificationsController extends BaseController<
    * @param UUIDs - An array of UUIDs that should trigger push notifications.
    */
   public async updateTriggerPushNotifications(UUIDs: string[]) {
+    // TEMP: disabling push notifications if browser does not support MV3.
+    // Will need work to support firefox on MV2
+    if (!process.env.ENABLE_MV3) {
+      return;
+    }
+
     const bearerToken = await this.#getAndAssertBearerToken();
 
     try {
