@@ -53,6 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved the permissions page to correctly display all permissions across networks ([#23986](https://github.com/MetaMask/metamask-extension/pull/23986))
 - Enhanced the connections page to accurately display connected dApp information and status ([#24022](https://github.com/MetaMask/metamask-extension/pull/24022))
 - Fixed an issue to ensure smooth disconnection of a single account from a dApp without breaking the page ([#23935](https://github.com/MetaMask/metamask-extension/pull/23935))
+
 ## [11.15.6]
 ### Changed
 - Disable smart transaction opt-in modal ([#24715](https://github.com/MetaMask/metamask-extension/pull/24715))
@@ -4748,8 +4749,7 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.16.0...HEAD
-[11.16.0]: https://github.com/MetaMask/metamask-extension/compare/v11.15.5...v11.16.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.15.6...HEAD
+[11.16.0]: https://github.com/MetaMask/metamask-extension/compare/v11.15.6...v11.16.0
 [11.15.6]: https://github.com/MetaMask/metamask-extension/compare/v11.15.5...v11.15.6
 [11.15.5]: https://github.com/MetaMask/metamask-extension/compare/v11.15.4...v11.15.5
 [11.15.4]: https://github.com/MetaMask/metamask-extension/compare/v11.15.3...v11.15.4
