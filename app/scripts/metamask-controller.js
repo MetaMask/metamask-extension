@@ -1439,7 +1439,7 @@ export default class MetamaskController extends EventEmitter {
       (notification) => {
         this.metaMetricsController.trackEvent({
           event: MetaMetricsEventName.PushNotificationReceived,
-          category: MetaMetricsEventCategory.Notifications,
+          category: MetaMetricsEventCategory.PushNotifications,
           properties: {
             notification_type: notification.type,
             chain_id: notification?.chain_id,
@@ -1452,7 +1452,7 @@ export default class MetamaskController extends EventEmitter {
       (notification) => {
         this.metaMetricsController.trackEvent({
           event: MetaMetricsEventName.PushNotificationClicked,
-          category: MetaMetricsEventCategory.Notifications,
+          category: MetaMetricsEventCategory.PushNotifications,
           properties: {
             notification_type: notification.type,
             chain_id: notification?.chain_id,
