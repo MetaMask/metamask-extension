@@ -35,10 +35,10 @@ import {
 } from '../../helpers/constants/design-system';
 import { NotificationsList } from './notifications-list';
 import { processSnapNotifications } from './snap/utils/utils';
-import { SnapNotificationWithoutSnapName } from './snap/types/types';
+import { SnapNotification } from './snap/types/types';
 import { NewFeatureTag } from './NewFeatureTag';
 
-export type NotificationType = Notification | SnapNotificationWithoutSnapName;
+export type NotificationType = Notification | SnapNotification;
 
 // NOTE - Tab filters could change once we support more notifications.
 export const enum TAB_KEYS {
@@ -70,12 +70,11 @@ const useSnapNotifications = () => {
 
   const snapNotifications = useSelector(getNotifications);
 
-  const processedSnapNotifications: SnapNotificationWithoutSnapName[] =
-    useMemo(() => {
-      return isSnapNotificationsEnabled
-        ? processSnapNotifications(snapNotifications)
-        : [];
-    }, [isSnapNotificationsEnabled, snapNotifications]);
+  const processedSnapNotifications: SnapNotification[] = useMemo(() => {
+    return isSnapNotificationsEnabled
+      ? processSnapNotifications(snapNotifications)
+      : [];
+  }, [isSnapNotificationsEnabled, snapNotifications]);
 
   return processedSnapNotifications;
 };

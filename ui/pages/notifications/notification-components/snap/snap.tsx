@@ -1,60 +1,67 @@
 import React from 'react';
+import classnames from 'classnames';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { NotificationListItem } from '../../../../components/multichain';
-import type { SnapNotificationWithoutSnapName } from '../../snap/types/types';
-import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
-import { getSnapsMetadata } from '../../../../selectors';
+import type { SnapNotification } from '../../snap/types/types';
+import { SnapUIMarkdown } from '../../../../components/app/snaps/snap-ui-markdown';
+import { formatDate, getSnapRoute } from '../../../../helpers/utils/util';
+import { getSnapMetadata } from '../../../../selectors';
 import { markNotificationsAsRead } from '../../../../store/actions';
-import { getSnapRoute, getSnapName } from '../../../../helpers/utils/util';
-import { TextVariant } from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import Button from '../../../../components/ui/button';
 
 type SnapComponentProps = {
-  snapNotification: SnapNotificationWithoutSnapName;
+  snapNotification: SnapNotification;
 };
 
-export const SnapComponent = ({ snapNotification }: SnapComponentProps) => {
+function NotificationItem({ snapNotification }: SnapComponentProps) {
+  const { message, origin, createdDate, readDate } = snapNotification.data;
   const dispatch = useDispatch();
   const history = useHistory();
+  const t = useI18nContext();
 
-  const snapsMetadata = useSelector(getSnapsMetadata);
+  const { name: snapName } = useSelector((state) =>
+    // @ts-expect-error weird types
+    getSnapMetadata(state, origin),
+  );
 
-  const snapsNameGetter = getSnapName(snapsMetadata);
-
-  const handleSnapClick = () => {
+  const handleNameClick = (e: Pick<Event, 'stopPropagation'>) => {
+    e.stopPropagation();
     dispatch(markNotificationsAsRead([snapNotification.id]));
-    history.push(getSnapRoute(snapNotification.data.origin));
+    history.push(getSnapRoute(origin));
+  };
+
+  const handleItemClick = () => {
+    dispatch(markNotificationsAsRead([snapNotification.id]));
   };
 
   return (
-    <NotificationListItem
-      id={snapNotification.id}
-      isRead={snapNotification.isRead}
-      createdAt={new Date(snapNotification.createdAt)}
-      title={{
-        items: [
-          {
-            text: snapsNameGetter(snapNotification.data.origin) || 'Snap',
-          },
-        ],
-      }}
-      description={{
-        items: [
-          {
-            text: snapNotification.data.message,
-          },
-        ],
-        variant: TextVariant.bodyMd,
-      }}
-      icon={{
-        type: NotificationListItemIconType.Token,
-        value: 'https://s2.coinmarketcap.com/static/img/coins/64x64/13855.png',
-      }}
-      onClick={handleSnapClick}
-      snapButton={{
-        text: 'View',
-        onClick: handleSnapClick,
-      }}
-    />
+    <div className="snap-notifications__item" onClick={handleItemClick}>
+      <div
+        className={classnames(
+          'snap-notifications__item__unread-dot',
+          // @ts-expect-error bad type given
+          !readDate && 'unread',
+        )}
+      />
+      <div className="snap-notifications__item__details">
+        <div className="snap-notifications__item__details__message">
+          <SnapUIMarkdown markdown>{message}</SnapUIMarkdown>
+        </div>
+        <p className="snap-notifications__item__details__infos">
+          {t('notificationsInfos', [
+            formatDate(createdDate, "LLLL d',' yyyy 'at' t"),
+            // @ts-expect-error deprecated component
+            <Button type="inline" onClick={handleNameClick} key="button">
+              {snapName}
+            </Button>,
+          ])}
+        </p>
+      </div>
+    </div>
   );
+}
+
+export const SnapComponent = ({ snapNotification }: SnapComponentProps) => {
+  return <NotificationItem snapNotification={snapNotification} />;
 };
