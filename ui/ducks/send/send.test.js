@@ -230,7 +230,7 @@ describe('Send Slice', () => {
         const result = sendReducer(
           {
             ...getInitialSendStateWithExistingTxState({
-              asset: { balance: '0xffff' },
+              sendAsset: { balance: '0xffff' },
               gas: {
                 gasPrice: '0x1',
                 gasLimit: GAS_LIMITS.SIMPLE,
@@ -283,7 +283,7 @@ describe('Send Slice', () => {
           amount: {
             value: '',
           },
-          asset: {
+          sendAsset: {
             balance: '0x56bc75e2d63100000', // 100000000000000000000
           },
           gas: {
@@ -457,7 +457,7 @@ describe('Send Slice', () => {
     describe('updateAsset', () => {
       it('should update asset type and balance from respective action payload', () => {
         const updateAssetState = getInitialSendStateWithExistingTxState({
-          asset: {
+          sendAsset: {
             type: 'old type',
             balance: 'old balance',
           },
@@ -477,17 +477,17 @@ describe('Send Slice', () => {
 
         const draftTransaction = getTestUUIDTx(result);
 
-        expect(draftTransaction.asset.type).toStrictEqual(
+        expect(draftTransaction.sendAsset.type).toStrictEqual(
           action.payload.asset.type,
         );
-        expect(draftTransaction.asset.balance).toStrictEqual(
+        expect(draftTransaction.sendAsset.balance).toStrictEqual(
           action.payload.asset.balance,
         );
       });
 
       it('should update hex data if its not the initial asset set', () => {
         const updateAssetState = getInitialSendStateWithExistingTxState({
-          asset: {
+          sendAsset: {
             type: 'old type',
             balance: 'old balance',
           },
@@ -525,7 +525,7 @@ describe('Send Slice', () => {
         const action = {
           type: 'send/updateAsset',
           payload: {
-            sendAsset: {
+            asset: {
               type: 'New Type',
             },
           },
@@ -545,7 +545,7 @@ describe('Send Slice', () => {
         const action = {
           type: 'send/updateAsset',
           payload: {
-            sendAsset: {
+            asset: {
               type: AssetType.token,
               details: {
                 address: '0xTokenAddress',
@@ -563,10 +563,10 @@ describe('Send Slice', () => {
 
         const draftTransaction = getTestUUIDTx(result);
 
-        expect(draftTransaction.asset.type).toStrictEqual(
+        expect(draftTransaction.sendAsset.type).toStrictEqual(
           action.payload.asset.type,
         );
-        expect(draftTransaction.asset.details).toStrictEqual(
+        expect(draftTransaction.sendAsset.details).toStrictEqual(
           action.payload.asset.details,
         );
       });
@@ -654,7 +654,7 @@ describe('Send Slice', () => {
               gasLimit: '0x0',
               minimumGasLimit: '0x0',
             },
-            asset: {},
+            sendAsset: {},
           }),
           recipientInput: '',
           recipientMode: RECIPIENT_SEARCH_MODES.MY_ACCOUNTS,
@@ -955,7 +955,7 @@ describe('Send Slice', () => {
             error: 'someError',
             value: '1',
           },
-          asset: {
+          sendAsset: {
             type: '',
           },
         });
@@ -1268,10 +1268,12 @@ describe('Send Slice', () => {
             action.payload.account.address,
           );
 
-          expect(result.draftTransactions['test-uuid'].asset).toStrictEqual({
-            ...draftTransactionInitialState.asset,
-            balance: action.payload.account.balance,
-          });
+          expect(result.draftTransactions['test-uuid'].sendAsset).toStrictEqual(
+            {
+              ...draftTransactionInitialState.sendAsset,
+              balance: action.payload.account.balance,
+            },
+          );
         }
       });
 
@@ -1605,7 +1607,7 @@ describe('Send Slice', () => {
             },
           },
           send: getInitialSendStateWithExistingTxState({
-            asset: {
+            sendAsset: {
               details: {},
             },
             gas: {
@@ -1680,7 +1682,7 @@ describe('Send Slice', () => {
             },
           },
           send: getInitialSendStateWithExistingTxState({
-            asset: {
+            sendAsset: {
               balance: '0x1',
               details: {
                 address: '0x24204A596025b871BD01F31D89474C1c15785baF',
@@ -1756,7 +1758,7 @@ describe('Send Slice', () => {
             },
           },
           send: getInitialSendStateWithExistingTxState({
-            asset: {
+            sendAsset: {
               details: {},
             },
             gas: {
@@ -1907,7 +1909,7 @@ describe('Send Slice', () => {
         },
         send: {
           ...getInitialSendStateWithExistingTxState({
-            asset: {
+            sendAsset: {
               type: '',
               details: {},
             },
@@ -1947,7 +1949,7 @@ describe('Send Slice', () => {
         });
         expect(actionResult[1].type).toStrictEqual('send/updateAsset');
         expect(actionResult[1].payload).toStrictEqual({
-          sendAsset: {
+          asset: {
             type: AssetType.native,
             balance: '0x0',
             error: null,
@@ -2235,7 +2237,7 @@ describe('Send Slice', () => {
             account: {
               balance: '',
             },
-            asset: {
+            sendAsset: {
               type: '',
             },
             gas: {
@@ -2294,7 +2296,7 @@ describe('Send Slice', () => {
             account: {
               balance: '',
             },
-            asset: {
+            sendAsset: {
               type: '',
             },
             gas: {
@@ -2488,7 +2490,7 @@ describe('Send Slice', () => {
     describe('UpdateSendHexData', () => {
       const sendHexDataState = {
         send: getInitialSendStateWithExistingTxState({
-          asset: {
+          sendAsset: {
             type: '',
           },
         }),
@@ -2639,7 +2641,7 @@ describe('Send Slice', () => {
       const signTransactionState = {
         send: getInitialSendStateWithExistingTxState({
           id: 1,
-          asset: {},
+          sendAsset: {},
           recipient: {},
           amount: {},
           gas: {
@@ -2685,7 +2687,13 @@ describe('Send Slice', () => {
             send: {
               ...getInitialSendStateWithExistingTxState({
                 id: 1,
-                asset: {
+                sendAsset: {
+                  details: {
+                    address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+                  },
+                  type: 'TOKEN',
+                },
+                receiveAsset: {
                   details: {
                     address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
                   },
@@ -2888,6 +2896,12 @@ describe('Send Slice', () => {
             },
             history: ['sendFlow - user clicked edit on transaction with id 1'],
             id: 1,
+            receiveAsset: {
+              balance: '0x0',
+              details: null,
+              error: null,
+              type: 'NATIVE',
+            },
             recipient: {
               address: '0xRecipientAddress',
               error: null,
@@ -3059,6 +3073,12 @@ describe('Send Slice', () => {
             },
             history: ['sendFlow - user clicked edit on transaction with id 1'],
             id: 1,
+            receiveAsset: {
+              balance: '0x0',
+              details: null,
+              error: null,
+              type: 'NATIVE',
+            },
             recipient: {
               address: BURN_ADDRESS,
               error: null,
@@ -3278,6 +3298,12 @@ describe('Send Slice', () => {
           },
           history: ['sendFlow - user clicked edit on transaction with id 1'],
           id: 1,
+          receiveAsset: {
+            balance: '0x0',
+            details: null,
+            error: null,
+            type: 'NATIVE',
+          },
           recipient: {
             address: BURN_ADDRESS,
             error: null,
@@ -3302,7 +3328,7 @@ describe('Send Slice', () => {
       expect(actionResult[5]).toStrictEqual({
         type: 'send/updateAsset',
         payload: {
-          sendAsset: {
+          asset: {
             balance: '0x0',
             type: AssetType.token,
             error: null,
@@ -3481,7 +3507,7 @@ describe('Send Slice', () => {
         expect(
           getSendAsset({ send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT }),
         ).toMatchObject(
-          getTestUUIDTx(INITIAL_SEND_STATE_FOR_EXISTING_DRAFT).asset,
+          getTestUUIDTx(INITIAL_SEND_STATE_FOR_EXISTING_DRAFT).sendAsset,
         );
       });
 

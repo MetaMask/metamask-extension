@@ -58,7 +58,7 @@ describe('SendHeader Component', () => {
             ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
             stage: SEND_STAGES.DRAFT,
             sendAsset: {
-              ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT.asset,
+              ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT.sendAsset,
               type: AssetType.native,
             },
           },
