@@ -1,7 +1,5 @@
 .transaction-detail-item {
   color: var(--color-text-alternative);
-  margin-bottom: 16px;
-
   &__row {
     display: flex;
     justify-content: space-between;
@@ -21,8 +19,8 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
-    flex: 0 0 54%;
-    width: 54%;
+    flex: 0 0 51%;
+    width: 51%;
 
     &--flex-width {
       width: auto;
@@ -49,16 +47,7 @@
     }
   }
 
-  &:first-of-type {
-    padding-top: 0;
-  }
-
-  &:first-child {
-    padding-top: 0;
-  }
-
   &:last-child {
-    padding-bottom: 0;
     border-bottom: 0;
   }
 }
