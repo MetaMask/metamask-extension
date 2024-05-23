@@ -26,7 +26,6 @@ export type NotificationListItemSnapProps = {
   title: NotificationListItemTextProps;
   snapMessage: string;
   createdAt: Date;
-  amount?: string;
   handleSnapClick?: () => void;
   handleSnapButton?: () => void;
 };
@@ -87,6 +86,7 @@ export const NotificationListItemSnap = ({
         width={BlockSize.Full}
         backgroundColor={BackgroundColor.transparent}
         gap={4}
+        height={BlockSize.Full}
         style={{ paddingLeft: '6px', paddingRight: '6px' }}
       >
         {!isRead && (
@@ -103,11 +103,13 @@ export const NotificationListItemSnap = ({
           </Box>
         )}
 
-        <SnapAvatar
-          snapId="npm:@metamask/notification-example-snap"
-          badgeBackgroundColor={BackgroundColor.backgroundDefault}
-          avatarSize={IconSize.Md}
-        />
+        <Box height={BlockSize.Full} style={{ paddingTop: '6px' }}>
+          <SnapAvatar
+            snapId="npm:@metamask/notification-example-snap"
+            badgeBackgroundColor={BackgroundColor.backgroundDefault}
+            avatarSize={IconSize.Md}
+          />
+        </Box>
 
         <Box
           display={Display.Flex}
@@ -116,8 +118,6 @@ export const NotificationListItemSnap = ({
           alignItems={AlignItems.flexStart}
           width={BlockSize.Full}
         >
-          {/* <Box padding={4} /> */}
-
           <Box
             display={Display.Block}
             flexDirection={FlexDirection.Column}
