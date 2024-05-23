@@ -51,8 +51,8 @@ export const components: NotificationComponent<FeatureAnnouncementNotification> 
         id={notification.id}
         isRead={notification.isRead}
         icon={{
-          type: NotificationListItemIconType.Nft,
-          value: './images/logo/metamask-fox.svg',
+          type: NotificationListItemIconType.Token,
+          value: './images/product-announcement-logo.svg',
         }}
         title={getTitle(notification)}
         description={getDescription(notification)}

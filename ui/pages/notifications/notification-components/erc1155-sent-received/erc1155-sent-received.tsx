@@ -94,17 +94,13 @@ export const components: NotificationComponent<ERC1155Notification> = {
   ),
   details: {
     title: ({ notification }) => {
-      const chainId = decimalToHex(notification.chain_id);
-      const { nativeCurrencySymbol } = getNetworkDetailsByChainId(
-        `0x${chainId}` as keyof typeof CHAIN_IDS,
-      );
       return (
         <NotificationDetailTitle
           title={`${
             isSent(notification)
               ? t('notificationItemSent')
               : t('notificationItemReceived')
-          } ${nativeCurrencySymbol}`}
+          } NFT`}
           date={formatIsoDateString(notification.createdAt)}
         />
       );

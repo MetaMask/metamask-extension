@@ -198,54 +198,583 @@ export async function getOnChainNotifications(
     return [];
   }
 
-  const onChainNotifications: OnChainRawNotification[] = [];
-  const PAGE_LIMIT = 2;
-  for (let page = 1; page <= PAGE_LIMIT; page++) {
-    try {
-      const response = await makeApiCall(
-        bearerToken,
-        NOTIFICATION_API_LIST_ENDPOINT_PAGE_QUERY(page),
-        'POST',
-        { trigger_ids: triggerIds },
-      );
+  const onChainNotifications: OnChainRawNotification[] = [
+    // erc20_received
+    // Received from data.from
+    // data.token.name
+    // created_at
+    // data.amount in eth
+    {
+      block_number: 18765683,
+      block_timestamp: '1702330595',
+      chain_id: 1,
+      created_at: '2023-12-11T22:27:13.020176Z',
+      data: {
+        to: '0xeae7380dd4cef6fbd1144f49e4d1e6964258a4f4',
+        from: '0xdbf5e9c5206d0db70a90108bf936da60221dc080',
+        kind: 'erc20_received',
+        token: {
+          usd: '1.00',
+          name: 'Dai Stablecoin',
+          image:
+            'https://raw.githubusercontent.com/MetaMask/contract-metadata/master/images/dai.svg',
+          amount: '232708000000000000000000',
+          symbol: 'DAI',
+          address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+          decimals: '18',
+        },
+        network_fee: {
+          gas_price: '40060432936',
+          native_token_price_in_usd: '2192.74',
+        },
+      },
+      id: '0441bf59-d211-5c55-91b5-c5d859a3d301',
+      trigger_id: 'e6a9210c-f367-4c9f-8767-12a6153e5c37',
+      tx_hash:
+        '0xf8d58eb524e9ac1ba924599adef1df3b75a3dfa1de68d20918979934db4eb379',
+      unread: true,
+      type: TRIGGER_TYPES.ERC20_RECEIVED,
+    },
+    // erc20_sent
+    // Sent to data.to
+    // data.token.name
+    // created_at
+    // data.amount in eth
 
-      const notifications = (await response.json()) as OnChainRawNotification[];
-
-      // Transform and sort notifications
-      const transformedNotifications = notifications
-        .map(
-          (
-            n: components['schemas']['Notification'],
-          ): OnChainRawNotification | undefined => {
-            if (!n.data?.kind) {
-              return undefined;
-            }
-
-            return {
-              ...n,
-              type: n.data.kind as TRIGGER_TYPES,
-            } as OnChainRawNotification;
+    {
+      block_number: 18765838,
+      block_timestamp: '1702332491',
+      chain_id: 1,
+      created_at: '2023-12-11T22:58:38.050634Z',
+      data: {
+        to: '0xa7062bba94c91d565ae33b893ab5dfaf1fc57c4d',
+        from: '0x1231deb6f5749ef6ce6943a275a1d3e7486f4eae',
+        kind: 'erc20_sent',
+        token: {
+          usd: '0.99',
+          name: 'USDC',
+          image:
+            'https://raw.githubusercontent.com/MetaMask/contract-metadata/master/images/usdc.svg',
+          amount: '217036314',
+          symbol: 'USDC',
+          address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+          decimals: '6',
+        },
+        network_fee: {
+          gas_price: '38014348484',
+          native_token_price_in_usd: '2209.01',
+        },
+      },
+      id: '2570d043-fc56-5b64-9448-d03b92354f27',
+      trigger_id: '8b4fb943-b968-4961-af84-1977b52288be',
+      tx_hash:
+        '0x6d556146221590525af6698d6ef997cf46d31e71d080d66beffd38cd4d092875',
+      unread: true,
+      type: TRIGGER_TYPES.ERC20_SENT,
+    },
+    // eth_received
+    // Receveid from data.from
+    // Native token name (getting from the chain_id in the portfolio)
+    // created_at
+    // data.amount.eth in eth
+    {
+      block_number: 18765878,
+      block_timestamp: '1702332971',
+      chain_id: 1,
+      created_at: '2023-12-11T23:06:37.829837Z',
+      data: {
+        to: '0x881d40237659c251811cec9c364ef91dc08d300c',
+        from: '0xf6e4c53d8c0cdb615229efa0283f6e367458215d',
+        kind: 'eth_received',
+        amount: {
+          eth: '0.810000000000000000',
+          usd: '1789.30',
+        },
+        network_fee: {
+          gas_price: '41125902808',
+          native_token_price_in_usd: '2209.01',
+        },
+      },
+      id: '5d2b2525-e7db-5e0f-bf3a-c001eb61fd22',
+      trigger_id: 'b972b8b9-9489-475a-93a5-45de218e9530',
+      tx_hash:
+        '0xe234b0379196f5e39bd10e732f190d51a3dd8bb249093998fbdb0f5e36481a91',
+      unread: true,
+      type: TRIGGER_TYPES.ETH_RECEIVED,
+    },
+    // eth_sent
+    // Sent to data.to
+    // Native token name (getting from the chain_id in the portfolio)
+    // created_at
+    // data.amount.eth in eth
+    {
+      block_number: 18556017,
+      block_timestamp: '1699794347',
+      chain_id: 1,
+      created_at: '2023-11-14T09:39:26.780384Z',
+      data: {
+        to: '0xbf94f0ac752c739f623c463b5210a7fb2cbb420b',
+        from: '0xa5a0944852972da191dc0becaaa1167d573e0008',
+        kind: 'eth_sent',
+        amount: {
+          eth: '294.999020640000000000',
+          usd: '608004.78',
+        },
+        network_fee: {
+          gas_price: '40921278535',
+          native_token_price_in_usd: '2061.04',
+        },
+      },
+      id: 'f44c34e6-6f6a-5437-8a1a-b2a12d6e865a',
+      trigger_id: '43130ec3-4a01-404f-b575-b532a89feb8f',
+      tx_hash:
+        '0xdcb3acf1957bff7fed9781a7245b62ebc69e4051ddb7acb857346cbf77ea316d',
+      unread: false,
+      type: TRIGGER_TYPES.ETH_SENT,
+    },
+    // metamask_swap_completed
+    // swapped data.token_in.image
+    // data.token_out.name
+    // created_at
+    // data.token_amount.amount in eth
+    {
+      block_number: 18751372,
+      block_timestamp: '1702157639',
+      chain_id: 1,
+      created_at: '2023-12-09T22:24:43.004613Z',
+      data: {
+        kind: 'metamask_swap_completed',
+        rate: '2358.71',
+        token_in: {
+          usd: '2358.71',
+          name: 'Ethereum',
+          image:
+            'https://token.metaswap.codefi.network/assets/nativeCurrencyLogos/ethereum.svg',
+          amount: '700000000000000000',
+          symbol: 'ETH',
+          address: '0x0000000000000000000000000000000000000000',
+          decimals: '18',
+        },
+        token_out: {
+          usd: '1.00',
+          name: 'USDC',
+          image:
+            'https://raw.githubusercontent.com/MetaMask/contract-metadata/master/images/usdc.svg',
+          amount: '1632659284',
+          symbol: 'USDC',
+          address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+          decimals: '6',
+        },
+        network_fee: {
+          gas_price: '25156609121',
+          native_token_price_in_usd: '2358.71',
+        },
+      },
+      id: 'f0670d83-2b56-5d21-9244-2f267736efab',
+      trigger_id: 'eb374813-cf0d-4f50-8f52-0548bdaf5551',
+      tx_hash:
+        '0xae731745f3444c7d612eb17578adbb40895669ad22ff6b6627e24ed84df29da2',
+      unread: false,
+      type: TRIGGER_TYPES.METAMASK_SWAP_COMPLETED,
+    },
+    // lido_stake_completed
+    // Stake Completed
+    // data.stake_out.symbol
+    // created_at
+    // data.stake_out.amount in eth
+    {
+      block_number: 18377709,
+      block_timestamp: '1697637803',
+      chain_id: 1,
+      created_at: '2023-10-18T14:07:30.743736Z',
+      data: {
+        kind: 'lido_stake_completed',
+        stake_in: {
+          usd: '1576.73',
+          image:
+            'https://token.metaswap.codefi.network/assets/nativeCurrencyLogos/ethereum.svg',
+          amount: '5699248700889760434',
+          symbol: 'ETH',
+          address: '0x0000000000000000000000000000000000000000',
+          decimals: '18',
+          name: 'Ethereum',
+        },
+        stake_out: {
+          usd: '1573.58',
+          image:
+            'https://raw.githubusercontent.com/MetaMask/contract-metadata/master/images/stETH.svg',
+          amount: '5699248700889760434',
+          symbol: 'STETH',
+          address: '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84',
+          decimals: '18',
+          name: 'Lido stETH',
+        },
+        network_fee: {
+          gas_price: '16425692596',
+          native_token_price_in_usd: '1576.73',
+        },
+      },
+      id: '271ec116-7bc7-5bfe-9620-13500b1a74ed',
+      trigger_id: 'ec10d66a-f78f-461f-83c9-609aada8cc50',
+      tx_hash:
+        '0x9addd72331d559a70a74dc8e3b03ac72d78d88e1b51fb8b0d295522f7651b687',
+      unread: false,
+      type: TRIGGER_TYPES.LIDO_STAKE_COMPLETED,
+    },
+    // lido_withdrawal_completed
+    // Unstake completed
+    // data.stake_out.symbol
+    // created_at
+    // data.stake_out.amount in eth
+    {
+      block_number: 18378208,
+      block_timestamp: '1697643851',
+      chain_id: 1,
+      created_at: '2023-10-18T16:35:03.147606Z',
+      data: {
+        kind: 'lido_withdrawal_completed',
+        stake_in: {
+          usd: '1570.23',
+          image:
+            'https://raw.githubusercontent.com/MetaMask/contract-metadata/master/images/stETH.svg',
+          amount: '35081997661451346',
+          symbol: 'STETH',
+          address: '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84',
+          decimals: '18',
+          name: 'Lido stETH',
+        },
+        stake_out: {
+          usd: '1571.74',
+          image:
+            'https://token.metaswap.codefi.network/assets/nativeCurrencyLogos/ethereum.svg',
+          amount: '35081997661451346',
+          symbol: 'ETH',
+          address: '0x0000000000000000000000000000000000000000',
+          decimals: '18',
+          name: 'Ethereum',
+        },
+        network_fee: {
+          gas_price: '12699495150',
+          native_token_price_in_usd: '1571.74',
+        },
+      },
+      id: 'f4ef0b7f-5612-537f-9144-0b5c63ae5322',
+      trigger_id: 'd73df14d-ce73-4f38-bad3-ab028154042c',
+      tx_hash:
+        '0xe6d210d2e601ef3dd1075c48e71452cf35f2daae3886911e964e3babad8ac657',
+      unread: false,
+      type: TRIGGER_TYPES.LIDO_WITHDRAWAL_COMPLETED,
+    },
+    // lido_withdrawal_requested
+    // Withdrawal requested
+    // Your request to `unstake data.stake_out.amount in eth` has been sent
+    // created_at
+    {
+      block_number: 18377758,
+      block_timestamp: '1697638391',
+      chain_id: 1,
+      created_at: '2023-10-18T15:03:44.356109Z',
+      data: {
+        kind: 'lido_withdrawal_requested',
+        stake_in: {
+          usd: '1568.54',
+          image:
+            'https://raw.githubusercontent.com/MetaMask/contract-metadata/master/images/stETH.svg',
+          amount: '102901750883816233567',
+          symbol: 'STETH',
+          address: '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84',
+          decimals: '18',
+          name: 'Lido stETH',
+        },
+        stake_out: {
+          usd: '1576.73',
+          image:
+            'https://token.metaswap.codefi.network/assets/nativeCurrencyLogos/ethereum.svg',
+          amount: '102901750883816233567',
+          symbol: 'ETH',
+          address: '0x0000000000000000000000000000000000000000',
+          decimals: '18',
+          name: 'Ethereum',
+        },
+        network_fee: {
+          gas_price: '11873417690',
+          native_token_price_in_usd: '1576.73',
+        },
+      },
+      id: '5b8136b9-8a4f-5d3e-8d3d-49e31456639a',
+      trigger_id: 'ef003925-3379-4ba7-9e2d-8218690cadc8',
+      tx_hash:
+        '0x7a4570deefbddc73f706bf4fa30866c114ce901354d3636ca63855e4e8a44ead',
+      unread: false,
+      type: TRIGGER_TYPES.LIDO_WITHDRAWAL_REQUESTED,
+    },
+    // rocketpool_stake_completed
+    // Stake completed
+    // data.stake_out.symbol
+    // created_at
+    // data.stake_out.amoun in eth
+    {
+      block_number: 18383263,
+      block_timestamp: '1697704991',
+      chain_id: 1,
+      created_at: '2023-10-19T09:34:04.847658Z',
+      data: {
+        kind: 'rocketpool_stake_completed',
+        stake_in: {
+          usd: '1552.60',
+          image:
+            'https://token.metaswap.codefi.network/assets/nativeCurrencyLogos/ethereum.svg',
+          amount: '3792441625028954042',
+          symbol: 'ETH',
+          address: '0x0000000000000000000000000000000000000000',
+          decimals: '18',
+          name: 'Ethereum',
+        },
+        stake_out: {
+          usd: '1684.69',
+          image:
+            'https://raw.githubusercontent.com/MetaMask/contract-metadata/master/images/rETH.svg',
+          amount: '3489634403479000396',
+          symbol: 'RETH',
+          address: '0xae78736Cd615f374D3085123A210448E74Fc6393',
+          decimals: '18',
+          name: 'Rocket Pool ETH',
+        },
+        network_fee: {
+          gas_price: '9211205051',
+          native_token_price_in_usd: '1552.60',
+        },
+      },
+      id: '71a97d6a-a540-53f3-a453-6190ce4ab092',
+      trigger_id: '5110ff97-acff-40c0-83b4-11d487b8c7b0',
+      tx_hash:
+        '0xa975359646a8a2937b8f9a363332d61943890d431bddd5aba45ab8a8203e035c',
+      unread: false,
+      type: TRIGGER_TYPES.ROCKETPOOL_STAKE_COMPLETED,
+    },
+    // rocketpool_unstake_completed
+    // Unstake completed
+    // data.stake_out.name
+    // created_at
+    // data.stake_out.amount in eth
+    {
+      block_number: 18626198,
+      block_timestamp: '1700643011',
+      chain_id: 1,
+      created_at: '2023-11-22T09:41:10.045442Z',
+      data: {
+        kind: 'rocketpool_unstake_completed',
+        stake_in: {
+          usd: '2188.44',
+          name: 'Rocket Pool ETH',
+          image:
+            'https://raw.githubusercontent.com/MetaMask/contract-metadata/master/images/rETH.svg',
+          amount: '198784711376327719',
+          symbol: 'RETH',
+          address: '0xae78736Cd615f374D3085123A210448E74Fc6393',
+          decimals: '18',
+        },
+        stake_out: {
+          usd: '2003.39',
+          name: 'Ethereum',
+          image:
+            'https://token.metaswap.codefi.network/assets/nativeCurrencyLogos/ethereum.svg',
+          amount: '216684622988177178',
+          symbol: 'ETH',
+          address: '0x0000000000000000000000000000000000000000',
+          decimals: '18',
+        },
+        network_fee: {
+          gas_price: '24094116190',
+          native_token_price_in_usd: '2003.39',
+        },
+      },
+      id: 'af7ccc0e-c85c-5e39-b8dc-a285ab5d3ecb',
+      trigger_id: '291ec897-f569-4837-b6c0-21001b198dff',
+      tx_hash:
+        '0x27f61160571f0020f6bc59b00c9d90e09b0e7116b0c5d14018a0855f8afa2194',
+      unread: true,
+      type: TRIGGER_TYPES.ROCKETPOOL_UNSTAKE_COMPLETED,
+    },
+    // erc721_sent
+    // Sent NFT to data.to
+    // data.nft.collection.name
+    // created_at
+    // data.nft.token_id
+    {
+      block_number: 18572932,
+      block_timestamp: '1699998575',
+      chain_id: 1,
+      created_at: '2023-11-14T22:39:52.417788Z',
+      data: {
+        to: '0xdd40dd3c3c1ee0117619c7318efa25910627cca2',
+        nft: {
+          name: 'rektguy #4873',
+          image:
+            'https://i.seadn.io/gcs/files/31e727693b39b7d5f5ff4fe15b5652e5.gif?w=500&auto=format',
+          token_id: '4873',
+          collection: {
+            name: 'rektguy',
+            image:
+              'https://i.seadn.io/gcs/files/0d5f1b200a067938f507cbe12bbbabc2.jpg?w=500&auto=format',
+            symbol: 'Rektguy',
+            address: '0xb852c6b5892256c264cc2c888ea462189154d8d7',
           },
-        )
-        .filter((n): n is OnChainRawNotification => Boolean(n));
-
-      onChainNotifications.push(...transformedNotifications);
-
-      // if less than 100 notifications on page, then means we reached end
-      if (notifications.length < 100) {
-        page = PAGE_LIMIT + 1;
-        break;
-      }
-    } catch (err) {
-      log.error(
-        `Error fetching on-chain notifications for trigger IDs ${triggerIds.join(
-          ', ',
-        )}:`,
-        err,
-      );
-      // do nothing
-    }
-  }
+        },
+        from: '0x24a0bb54b7e7a8e406e9b28058a9fd6c49e6df4f',
+        kind: 'erc721_sent',
+        network_fee: {
+          gas_price: '32000000000',
+          native_token_price_in_usd: '1974.85',
+        },
+      },
+      id: 'd0a61e2f-6d5b-5e0a-b105-dfe8e7339530',
+      trigger_id: '028485be-b994-422b-a93b-03fcc01ab715',
+      tx_hash:
+        '0xd3e805abc3f5e00cfb6a07ea0c39328351c405d9068d1678c7bee6176c142f0e',
+      unread: false,
+      type: TRIGGER_TYPES.ERC721_SENT,
+    },
+    // erc721_received
+    // Received NFT from data.from
+    // data.nft.collection.name
+    // created_at
+    // data.nft.token_id
+    {
+      block_number: 18571446,
+      block_timestamp: '1699980623',
+      chain_id: 1,
+      created_at: '2023-11-14T17:40:52.319281Z',
+      data: {
+        to: '0xba7f3daa8adfdad686574406ab9bd5d2f0a49d2e',
+        nft: {
+          name: 'The Plague #2722',
+          image:
+            'https://i.seadn.io/s/raw/files/a96f90ec8ebf55a2300c66a0c46d6a16.png?w=500&auto=format',
+          token_id: '2722',
+          collection: {
+            name: 'The Plague NFT',
+            image:
+              'https://i.seadn.io/gcs/files/4577987a5ca45ca5118b2e31559ee4d1.jpg?w=500&auto=format',
+            symbol: 'FROG',
+            address: '0xc379e535caff250a01caa6c3724ed1359fe5c29b',
+          },
+        },
+        from: '0x24a0bb54b7e7a8e406e9b28058a9fd6c49e6df4f',
+        kind: 'erc721_received',
+        network_fee: {
+          gas_price: '53701898538',
+          native_token_price_in_usd: '2047.01',
+        },
+      },
+      id: '00a79d24-befa-57ed-a55a-9eb8696e1654',
+      trigger_id: 'd24ac26a-8579-49ec-9947-d04d63592ebd',
+      tx_hash:
+        '0xe554c9e29e6eeca8ba94da4d047334ba08b8eb9ca3b801dd69cec08dfdd4ae43',
+      unread: false,
+      type: TRIGGER_TYPES.ERC721_RECEIVED,
+    },
+    // erc1155_sent
+    // Sent NFT to data.to
+    // data.nft.collection.name
+    // created_at
+    {
+      block_number: 18634390,
+      block_timestamp: '1700741987',
+      chain_id: 1,
+      created_at: '2023-11-23T13:17:07.213291Z',
+      data: {
+        to: '0xdadffe4a4fb54508ce443730ebd29ef67e76196d',
+        nft: {
+          name: '',
+          image: '',
+          token_id: '',
+          collection: {
+            name: 'ENS: Ethereum Name Service',
+            image:
+              'https://i.seadn.io/gae/0cOqWoYA7xL9CkUjGlxsjreSYBdrUBE0c6EO1COG4XE8UeP-Z30ckqUNiL872zHQHQU5MUNMNhfDpyXIP17hRSC5HQ?w=500&auto=format',
+            symbol: '',
+            address: '0xd4416b13d2b3a9abae7acd5d6c2bbdbe25686401',
+          },
+        },
+        from: '0x0000000000000000000000000000000000000000',
+        kind: 'erc1155_sent',
+        network_fee: {
+          gas_price: '58532781514',
+          native_token_price_in_usd: '2052.48',
+        },
+      },
+      id: '1c770f60-e679-5dfe-82ab-b72cd416c543',
+      trigger_id: 'e2130f7d-78b8-4c34-999a-3f3d3bb5b03c',
+      tx_hash:
+        '0x225f2c46ea35f856fdce241f11457023bba3bbfe486447ab75e6ec6f5cb78ea7',
+      unread: true,
+      type: TRIGGER_TYPES.ERC1155_SENT,
+    },
+    // erc1155_received
+    // Sent NFT from data.to
+    // data.nft.collection.name
+    // created_at
+    {
+      block_number: 18634392,
+      block_timestamp: '1700742011',
+      chain_id: 1,
+      created_at: '2023-11-23T13:17:03.34354Z',
+      data: {
+        to: '0x67622b5a8d7a245966d6656e493a3815d15252ab',
+        nft: {
+          name: '',
+          image: '',
+          token_id: '',
+          collection: {
+            name: 'ENS: Ethereum Name Service',
+            image:
+              'https://i.seadn.io/gae/0cOqWoYA7xL9CkUjGlxsjreSYBdrUBE0c6EO1COG4XE8UeP-Z30ckqUNiL872zHQHQU5MUNMNhfDpyXIP17hRSC5HQ?w=500&auto=format',
+            symbol: '',
+            address: '0xd4416b13d2b3a9abae7acd5d6c2bbdbe25686401',
+          },
+        },
+        from: '0x0000000000000000000000000000000000000000',
+        kind: 'erc1155_received',
+        network_fee: {
+          gas_price: '60187073603',
+          native_token_price_in_usd: '2052.48',
+        },
+      },
+      id: '69bc8761-98dd-5884-9411-9e1c9f9ae55a',
+      trigger_id: '710c8abb-43a9-42a5-9d86-9dd258726c82',
+      tx_hash:
+        '0x683c17c555470bcd2c323f91418247af5fe076330af38804c2a05c4aa0cc7ce6',
+      unread: true,
+      type: TRIGGER_TYPES.ERC1155_RECEIVED,
+    },
+    {
+      type: TRIGGER_TYPES.LIDO_STAKE_READY_TO_BE_WITHDRAWN,
+      block_number: 18378208,
+      block_timestamp: '1697643851',
+      chain_id: 1,
+      created_at: '2023-10-18T16:35:03.147606Z',
+      data: {
+        kind: 'lido_stake_ready_to_be_withdrawn',
+        request_id: '123456789',
+        staked_eth: {
+          address: '0x881D40237659C251811CEC9c364ef91dC08D300F',
+          symbol: 'ETH',
+          name: 'Ethereum',
+          amount: '2.5',
+          decimals: '18',
+          image:
+            'https://token.api.cx.metamask.io/assets/nativeCurrencyLogos/ethereum.svg',
+          usd: '10000.00',
+        },
+      },
+      id: 'f4ef0b7f-5612-537f-9144-0b5c63ae5391',
+      trigger_id: 'd73df14d-ce73-4f38-bad3-ab028154042c',
+      tx_hash:
+        '0xe6d210d2e601ef3dd1075c48e71452cf35f2daae3886911e964e3babad8ac657',
+      unread: true,
+    },
+  ];
 
   return onChainNotifications;
 }
