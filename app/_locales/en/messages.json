@@ -3276,10 +3276,6 @@
     "message": "This enables wallet notifications like send/receive funds or nfts and feature announcements.",
     "description": "Description of the experimental notifications feature"
   },
-  "notificationsInfos": {
-    "message": "$1 from $2",
-    "description": "$1 is the date at which the notification has been dispatched and $2 is the link to the snap that dispatched the notification."
-  },
   "notificationsMarkAllAsRead": {
     "message": "Mark all as read"
   },
