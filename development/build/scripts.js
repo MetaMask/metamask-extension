@@ -752,7 +752,6 @@ function createFactoredBuild({
               browserPlatforms,
               shouldIncludeSnow,
               applyLavaMoat,
-              offscreen: true,
               destinationFileName: 'load-offscreen.js',
             });
             break;
@@ -1140,7 +1139,6 @@ function renderJavaScriptLoader({
   browserPlatforms,
   shouldIncludeSnow,
   applyLavaMoat,
-  offscreen,
   destinationFileName,
 }) {
   if (applyLavaMoat === undefined) {
@@ -1168,12 +1166,7 @@ function renderJavaScriptLoader({
 
   const requiredScripts = [
     ...(shouldIncludeSnow
-      ? [
-          './scripts/snow.js',
-          offscreen
-            ? './scripts/use-snow-offscreen.js'
-            : './scripts/use-snow.js',
-        ]
+      ? ['./scripts/snow.js', './scripts/use-snow.js']
       : []),
     './scripts/sentry-install.js',
     ...securityScripts,

@@ -159,10 +159,6 @@ function getCopyTargets(
             src: `./app/scripts/use-snow.js`,
             dest: `scripts/use-snow.js`,
           },
-          {
-            src: `./app/scripts/use-snow-offscreen.js`,
-            dest: `scripts/use-snow-offscreen.js`,
-          },
         ]
       : []),
     {
