@@ -83,10 +83,12 @@ describe('switchEthereumChainHandler', () => {
     });
 
     it('should call setActiveNetwork when switching to a built-in infura network, when chainId from request is lower case', async () => {
-      const MOCK_LINEA_MAINNET_CONFIGURATION = createMockLineaMainnetConfiguration();
+      const MOCK_LINEA_MAINNET_CONFIGURATION =
+        createMockLineaMainnetConfiguration();
       const mocks = makeMocks({
         permissionsFeatureFlagIsActive,
-        mockedFindNetworkConfigurationByReturnValue: MOCK_LINEA_MAINNET_CONFIGURATION,
+        mockedFindNetworkConfigurationByReturnValue:
+          MOCK_LINEA_MAINNET_CONFIGURATION,
       });
       const switchEthereumChainHandler = switchEthereumChain.implementation;
       await switchEthereumChainHandler(
@@ -106,10 +108,12 @@ describe('switchEthereumChainHandler', () => {
     });
 
     it('should call setActiveNetwork when switching to a built-in infura network, when chainId from request is upper case', async () => {
-      const MOCK_LINEA_MAINNET_CONFIGURATION = createMockLineaMainnetConfiguration();
+      const MOCK_LINEA_MAINNET_CONFIGURATION =
+        createMockLineaMainnetConfiguration();
       const mocks = makeMocks({
         permissionsFeatureFlagIsActive,
-        mockedFindNetworkConfigurationByReturnValue: MOCK_LINEA_MAINNET_CONFIGURATION,
+        mockedFindNetworkConfigurationByReturnValue:
+          MOCK_LINEA_MAINNET_CONFIGURATION,
       });
       const switchEthereumChainHandler = switchEthereumChain.implementation;
       await switchEthereumChainHandler(

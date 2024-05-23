@@ -115,7 +115,6 @@ describe('addEthereumChainHandler', () => {
 
     describe('if a networkConfiguration for the given chainId already exists', () => {
       it('creates a new network configuration for the given chainid and switches to it if proposed networkConfiguration has a different rpcUrl from all existing networkConfigurations', async () => {
-        const MOCK_MAINNET_CONFIGURATION = createMockMainnetConfiguration();
         const mocks = makeMocks({
           permissionsFeatureFlagIsActive: false,
           overrides: {
@@ -288,7 +287,6 @@ describe('addEthereumChainHandler', () => {
     describe('if a networkConfiguration for the given chainId already exists', () => {
       describe('if the proposed networkConfiguration has a different rpcUrl from the one already in state', () => {
         it('create a new networkConfiguration and switches to it without requesting permissions, if the requested chainId has permittedChains permission granted for requesting origin', async () => {
-          const MOCK_MAINNET_CONFIGURATION = createMockMainnetConfiguration();
           const mocks = makeMocks({
             permissionedChainIds: [CHAIN_IDS.MAINNET],
             permissionsFeatureFlagIsActive: true,
