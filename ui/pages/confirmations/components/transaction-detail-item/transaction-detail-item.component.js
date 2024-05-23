@@ -31,6 +31,7 @@ export default function TransactionDetailItem({
           color={detailTitleColor}
           display={Display.Flex}
           flexWrap={FlexWrap.NoWrap}
+          paddingBottom={1}
           variant={TextVariant.bodyMdMedium}
         >
           {detailTitle}
