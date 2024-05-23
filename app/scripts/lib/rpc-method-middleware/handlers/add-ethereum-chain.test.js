@@ -463,7 +463,7 @@ describe('addEthereumChainHandler', () => {
     expect(mockEnd).toHaveBeenCalledWith(mockError);
     expect(mocks.setActiveNetwork).not.toHaveBeenCalled();
   });
-  it('should return an error if nativeCurrency.symbol does not match existing network', async () => {
+  it('should return an error if nativeCurrency.symbol does not match an existing network with the same chainId', async () => {
     const mocks = makeMocks({
       permissionedChainIds: [CHAIN_IDS.MAINNET],
       permissionsFeatureFlagIsActive: true,
