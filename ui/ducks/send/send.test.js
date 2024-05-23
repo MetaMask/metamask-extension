@@ -1886,10 +1886,9 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(6);
+        expect(actionResult).toHaveLength(5);
         expect(
           checkIfTypesExistInActionResult(actionResult, [
-            'send/addHistoryEntry',
             'send/updateSendAmount',
             'send/computeEstimatedGasLimit/pending',
             'GET_LAYER_1_GAS_FEE',
