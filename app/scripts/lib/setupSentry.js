@@ -593,7 +593,7 @@ export default function setupSentry({ release, getState }) {
       new ExtraErrorData(),
     ],
     release,
-    tracesSampleRate: 0.01,
+    tracesSampleRate: 1,
     beforeSend: (report) => rewriteReport(report, getState),
     beforeBreadcrumb: beforeBreadcrumb(getState),
   });
