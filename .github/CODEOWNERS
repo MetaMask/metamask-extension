@@ -52,8 +52,8 @@ privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
 # who were involved with the Codespaces project.
 .devcontainer/                       @MetaMask/library-admins @HowardBraham @plasmacorral
 
-# Confirmations UX team to own code for confirmations on UI.
-ui/pages/confirmations               @MetaMask/confirmations-ux @MetaMask/confirmations-system-team
+# Confirmations team to own code for confirmations on UI.
+ui/pages/confirmations               @MetaMask/confirmations
 
 # MMI team is responsible for code related with Institutioanl version of MetaMask
 ui/pages/institutional               @MetaMask/mmi
