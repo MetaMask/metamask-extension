@@ -11,11 +11,11 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 
 export type NotificationDetailAddressProps = {
-  side: string | null;
+  side: string;
   address: string;
 };
 
-const SideText: FC<{ side: string | null }> = ({ side }) => (
+const SideText: FC<{ side: string }> = ({ side }) => (
   <Text variant={TextVariant.bodyLgMedium} fontWeight={FontWeight.Medium}>
     {side}
   </Text>
