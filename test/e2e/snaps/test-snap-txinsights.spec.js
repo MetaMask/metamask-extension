@@ -4,6 +4,7 @@ const {
   unlockWallet,
   switchToNotificationWindow,
   WINDOW_TITLES,
+  clickNestedButton,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
@@ -83,14 +84,7 @@ describe('Test Snap TxInsights', function () {
         // switch back to MetaMask window and switch to tx insights pane
         await driver.delay(2000);
         await switchToNotificationWindow(driver, 2);
-        await driver.waitForSelector({
-          text: 'Insights Example Snap',
-          tag: 'button',
-        });
-        await driver.clickElement({
-          text: 'Insights Example Snap',
-          tag: 'button',
-        });
+        await clickNestedButton(driver, 'Insights Example Snap');
 
         // check that txinsightstest tab contains the right info
         await driver.waitForSelector({

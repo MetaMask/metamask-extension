@@ -4,6 +4,7 @@ const {
   unlockWallet,
   switchToNotificationWindow,
   WINDOW_TITLES,
+  clickNestedButton,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
@@ -89,14 +90,7 @@ describe('Test Snap TxInsights-v2', function () {
           tag: 'button',
         });
 
-        await driver.waitForSelector({
-          text: 'Insights Example Snap',
-          tag: 'button',
-        });
-        await driver.clickElement({
-          text: 'Insights Example Snap',
-          tag: 'button',
-        });
+        await clickNestedButton(driver, 'Insights Example Snap');
 
         // check that txinsightstest tab contains the right info
         await driver.waitForSelector({
@@ -136,10 +130,7 @@ describe('Test Snap TxInsights-v2', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await driver.clickElement({
-          tag: 'button',
-          text: 'Activity',
-        });
+        await clickNestedButton(driver, 'Activity');
 
         // wait for transaction confirmation
         await driver.waitForSelector({

@@ -41,6 +41,7 @@ describe('Swap-Send ERC20', function () {
           await swapSendPage.verifyAssetSymbolsAndAmounts(
             ['TST', 'TST'],
             ['0', '0'],
+            4000,
           );
 
           await swapSendPage.verifyMaxButtonClick(['TST', 'TST'], ['10', '10']);
@@ -60,6 +61,7 @@ describe('Swap-Send ERC20', function () {
           await swapSendPage.verifyAssetSymbolsAndAmounts(
             TST_ETH_TOKEN_INPUTS[0],
             TST_ETH_TOKEN_INPUTS[1],
+            4000,
           );
 
           await swapSendPage.verifySwitchPrimaryCurrency(

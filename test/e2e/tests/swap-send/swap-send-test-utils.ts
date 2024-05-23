@@ -61,7 +61,7 @@ export class SwapSendPage {
   verifyAssetSymbolsAndAmounts = async (
     expectedAssetSymbols: string[],
     expectedInputValues: string[],
-    currency: 'fiat' | 'token' = 'token',
+    delayInMs = 0,
   ) => {
     await this.driver.delay(1000);
     const assetPickers = await this.driver.findElements(
@@ -80,7 +80,7 @@ export class SwapSendPage {
     assert.equal(inputAmounts.length, 2);
     await Promise.all(
       inputAmounts.map(async (e: any, index: number) => {
-        await this.driver.delay(4000);
+        await this.driver.delay(delayInMs);
         const i = await e.nestedFindElement('input');
         assert.ok(i);
         const v = await i.getProperty('value');

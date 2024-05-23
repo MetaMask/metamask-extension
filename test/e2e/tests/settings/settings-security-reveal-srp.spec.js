@@ -5,6 +5,7 @@ const {
   completeSRPRevealQuiz,
   tapAndHoldToRevealSRP,
   closeSRPReveal,
+  clickNestedButton,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { tEn } = require('../../../lib/i18n-helpers');
@@ -117,10 +118,7 @@ describe('Reveal SRP through settings', function () {
         await tapAndHoldToRevealSRP(driver);
 
         // confirm SRP QR is displayed
-        await driver.clickElement({
-          text: 'QR',
-          tag: 'button',
-        });
+        await clickNestedButton(driver, 'QR');
         const qrCode = await driver.findElement('[data-testid="qr-srp"]');
         assert.equal(await qrCode.isDisplayed(), true);
 
