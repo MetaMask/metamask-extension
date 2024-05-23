@@ -12,6 +12,8 @@ CONTAINER_VOLUME_1=$(pwd)/:/usr/src/app/
 # mkdir -p test/src
 #cp -r ./dist-test ./dist
 #cp -r ./builds-test ./builds
+# cp -r ./dist-test ./dist
+# cp -r ./builds-test ./builds
 # cp -r ./dist-test ../dist-test
 # cp -r ./builds-test ../builds-test
 # cp -r . .
@@ -31,7 +33,7 @@ fi
 
 # Run the Docker container
 echo "Running the Docker container..."
-result=$(docker run --platform linux/amd64 --rm -it --privileged -v "$CONTAINER_VOLUME_1" --network host $IMAGE_NAME $UPDATE_SNAPSHOTS | tee /dev/fd/2)
+result=$(docker run --init --platform linux/amd64 --rm -it --privileged -v "$CONTAINER_VOLUME_1" --network host $IMAGE_NAME $UPDATE_SNAPSHOTS | tee /dev/fd/2)
 if [ "$result" != "ok" ]; then
     echo "Visual tests failed"
 fi

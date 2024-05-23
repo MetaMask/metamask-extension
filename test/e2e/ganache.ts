@@ -19,6 +19,7 @@ export class Ganache {
 
     this.#server = server(options);
     await this.#server.listen(options.port);
+    console.log('Ganache server started');
   }
 
   getProvider() {

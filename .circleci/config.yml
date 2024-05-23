@@ -3,20 +3,20 @@ version: 2.1
 executors:
   node-browsers-small:
     docker:
-      - image: cimg/node:20.11-browsers
-    resource_class: small
+      - image: cimg/node:20.11-browsers@sha256:7ef58dedaa4596eae20162b790845aa0bdb54b5488fc7726dacfea39de3da2cd
+    resource_class: arm.small
     environment:
       NODE_OPTIONS: --max_old_space_size=2048
   node-browsers-medium:
     docker:
-      - image: cimg/node:20.11-browsers
-    resource_class: medium
+      - image: cimg/node:20.11-browsers@sha256:7ef58dedaa4596eae20162b790845aa0bdb54b5488fc7726dacfea39de3da2cd
+    resource_class: arm.medium
     environment:
       NODE_OPTIONS: --max_old_space_size=3072
   node-browsers-medium-plus:
     docker:
-      - image: cimg/node:20.11-browsers
-    resource_class: medium+
+      - image: cimg/node:20.11-browsers@sha256:7ef58dedaa4596eae20162b790845aa0bdb54b5488fc7726dacfea39de3da2cd
+    resource_class: arm.medium+
     environment:
       NODE_OPTIONS: --max_old_space_size=4096
   shellcheck:
