@@ -154,7 +154,6 @@ export const NotificationListItem = ({
             </Text>
           )}
         </Box>
-        {/* Snap Button */}
       </Box>
     </Box>
   );

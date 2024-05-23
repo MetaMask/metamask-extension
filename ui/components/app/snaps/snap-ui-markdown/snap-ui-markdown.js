@@ -5,10 +5,17 @@ import {
   TextVariant,
   OverflowWrap,
   TextColor,
+  Display,
 } from '../../../../helpers/constants/design-system';
-import { Text } from '../../../component-library';
+import {
+  ButtonLink,
+  ButtonLinkSize,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+} from '../../../component-library';
 import SnapLinkWarning from '../snap-link-warning';
-import { NotificationListSnapButton } from '../../../multichain/notification-list-snap-button/notification-list-snap-button';
 
 const Paragraph = (props) => (
   <Text
@@ -19,6 +26,21 @@ const Paragraph = (props) => (
     color={TextColor.textDefault}
     textVariant={TextVariant.bodyMd}
   />
+);
+
+const Link = ({ onClick, children, ...rest }) => (
+  <ButtonLink
+    {...rest}
+    as="a"
+    onClick={onClick}
+    externalLink
+    size={ButtonLinkSize.Inherit}
+    display={Display.Inline}
+    className="snap-ui-markdown__link"
+  >
+    {children}
+    <Icon name={IconName.Export} size={IconSize.Inherit} marginLeft={1} />
+  </ButtonLink>
 );
 
 export const SnapUIMarkdown = ({ children, markdown }) => {
@@ -48,10 +70,7 @@ export const SnapUIMarkdown = ({ children, markdown }) => {
         components={{
           p: Paragraph,
           a: ({ children: value, href }) => (
-            <NotificationListSnapButton
-              onClick={() => handleLinkClick(href)}
-              text={value ?? href}
-            />
+            <Link onClick={() => handleLinkClick(href)}>{value ?? href}</Link>
           ),
         }}
       >
@@ -64,4 +83,9 @@ export const SnapUIMarkdown = ({ children, markdown }) => {
 SnapUIMarkdown.propTypes = {
   children: PropTypes.string,
   markdown: PropTypes.bool,
+};
+
+Link.propTypes = {
+  onClick: PropTypes.func,
+  children: PropTypes.node,
 };
