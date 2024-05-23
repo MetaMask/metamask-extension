@@ -2108,8 +2108,8 @@ const debouncedValidateRecipientUserInput = debounce(
   300,
 );
 
-const debouncedComputeEstimatedGasLimit = debounce((dispatch) => {
-  dispatch(computeEstimatedGasLimit());
+const debouncedComputeEstimatedGasLimit = debounce(async (dispatch) => {
+  await dispatch(computeEstimatedGasLimit());
 }, 300);
 
 const debouncedAddHistoryEntry = debounce((dispatch, payload) => {
@@ -2326,7 +2326,7 @@ export function updateSendQuote(
     }
 
     if (isComputingSendGasLimit) {
-      debouncedComputeEstimatedGasLimit(dispatch);
+      await debouncedComputeEstimatedGasLimit(dispatch);
     }
   };
 }
@@ -2444,7 +2444,7 @@ export function updateSendAmount(hexAmount, decimalAmount) {
     if (state[name].amountMode === AMOUNT_MODES.MAX) {
       dispatch(actions.updateAmountMode(AMOUNT_MODES.INPUT));
     }
-    dispatch(updateSendQuote());
+    await dispatch(updateSendQuote());
 
     if (!decimalAmount) {
       return;
