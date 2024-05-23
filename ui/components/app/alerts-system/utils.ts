@@ -36,7 +36,7 @@ export function getSeverityBackground(severity: Severity): BackgroundColor {
 }
 
 /**
- * Returns the highest  severity from an array of alerts.
+ * Returns the highest severity from an array of alerts.
  *
  * @param alerts - An array of alerts.
  * @returns The highest  severity.
