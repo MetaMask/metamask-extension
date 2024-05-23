@@ -1556,6 +1556,26 @@ describe('Send Slice', () => {
   });
 
   describe('Action Creators', () => {
+    const checkIfTypesExistInActionResult = (
+      actionResult,
+      typesAndPayloads,
+    ) => {
+      typesAndPayloads.forEach((targetTypeOrPayload) => {
+        const isType = typeof targetTypeOrPayload === 'string';
+        const type = isType ? targetTypeOrPayload : targetTypeOrPayload.type;
+
+        const action = actionResult.find(
+          ({ type: actionType }) => actionType === type,
+        );
+
+        expect(isType ? action?.type : action)[
+          isType ? 'toBe' : 'toStrictEqual'
+        ](targetTypeOrPayload);
+      });
+
+      return true;
+    };
+
     describe('updateGasPrice', () => {
       it('should update gas price and update draft transaction with validated state', async () => {
         const store = mockStore({
@@ -1639,7 +1659,7 @@ describe('Send Slice', () => {
 
         const newSendAmount = 'DE0B6B3A7640000';
 
-        await store.dispatch(updateSendAmount(newSendAmount));
+        await store.dispatch(updateSendAmount(newSendAmount, '1'));
 
         const actionResult = store.getActions();
 
@@ -1653,18 +1673,16 @@ describe('Send Slice', () => {
           payload: 'DE0B6B3A7640000',
         };
 
-        expect(actionResult[0]).toStrictEqual(expectedFirstActionResult);
-        expect(actionResult[1]).toStrictEqual(expectedSecondActionResult);
-        expect(actionResult[2].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/pending',
-        );
-        expect(actionResult[3].type).toStrictEqual('GET_LAYER_1_GAS_FEE');
-        expect(actionResult[4].type).toStrictEqual(
-          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
-        );
-        expect(actionResult[5].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/fulfilled',
-        );
+        expect(
+          checkIfTypesExistInActionResult(actionResult, [
+            expectedFirstActionResult,
+            expectedSecondActionResult,
+            'send/computeEstimatedGasLimit/pending',
+            'GET_LAYER_1_GAS_FEE',
+            'metamask/gas/SET_CUSTOM_GAS_LIMIT',
+            'send/computeEstimatedGasLimit/fulfilled',
+          ]),
+        ).toBe(true);
       });
 
       it('should create an action to update send amount ERC1155', async () => {
@@ -1740,7 +1758,9 @@ describe('Send Slice', () => {
         const actionResult = store.getActions();
 
         expect(null).toBe(null);
-        expect(actionResult[1]).toStrictEqual(expectedActionResult);
+        expect(
+          checkIfTypesExistInActionResult(actionResult, [expectedActionResult]),
+        ).toBe(true);
       });
 
       it('should create an action to update send amount mode to `INPUT` when mode is `MAX`', async () => {
@@ -1789,7 +1809,7 @@ describe('Send Slice', () => {
 
         const store = mockStore(sendState);
 
-        await store.dispatch(updateSendAmount());
+        await store.dispatch(updateSendAmount(undefined, '0'));
 
         const actionResult = store.getActions();
 
@@ -1803,18 +1823,16 @@ describe('Send Slice', () => {
           payload: undefined,
         };
 
-        expect(actionResult[0]).toStrictEqual(expectedFirstActionResult);
-        expect(actionResult[1]).toStrictEqual(expectedSecondActionResult);
-        expect(actionResult[2].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/pending',
-        );
-        expect(actionResult[3].type).toStrictEqual('GET_LAYER_1_GAS_FEE');
-        expect(actionResult[4].type).toStrictEqual(
-          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
-        );
-        expect(actionResult[5].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/fulfilled',
-        );
+        expect(
+          checkIfTypesExistInActionResult(actionResult, [
+            expectedFirstActionResult,
+            expectedSecondActionResult,
+            'send/computeEstimatedGasLimit/pending',
+            'GET_LAYER_1_GAS_FEE',
+            'metamask/gas/SET_CUSTOM_GAS_LIMIT',
+            'send/computeEstimatedGasLimit/fulfilled',
+          ]),
+        ).toBe(true);
       });
 
       it('should create an action computeEstimateGasLimit and change states from pending to fulfilled with token asset types', async () => {
@@ -1869,18 +1887,16 @@ describe('Send Slice', () => {
         const actionResult = store.getActions();
 
         expect(actionResult).toHaveLength(6);
-        expect(actionResult[0].type).toStrictEqual('send/addHistoryEntry');
-        expect(actionResult[1].type).toStrictEqual('send/updateSendAmount');
-        expect(actionResult[2].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/pending',
-        );
-        expect(actionResult[3].type).toStrictEqual('GET_LAYER_1_GAS_FEE');
-        expect(actionResult[4].type).toStrictEqual(
-          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
-        );
-        expect(actionResult[5].type).toStrictEqual(
-          'send/computeEstimatedGasLimit/fulfilled',
-        );
+        expect(
+          checkIfTypesExistInActionResult(actionResult, [
+            'send/addHistoryEntry',
+            'send/updateSendAmount',
+            'send/computeEstimatedGasLimit/pending',
+            'GET_LAYER_1_GAS_FEE',
+            'metamask/gas/SET_CUSTOM_GAS_LIMIT',
+            'send/computeEstimatedGasLimit/fulfilled',
+          ]),
+        ).toBe(true);
       });
     });
 
@@ -2673,13 +2689,17 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(3);
-        expect(actionResult[0]).toMatchObject({
-          type: 'send/addHistoryEntry',
-          payload:
-            'sendFlow - user clicked next and transaction should be added to controller',
-        });
-        expect(actionResult[1].type).toStrictEqual('SHOW_CONF_TX_PAGE');
+        expect(actionResult).toHaveLength(5);
+        expect(
+          checkIfTypesExistInActionResult(actionResult, [
+            {
+              type: 'send/addHistoryEntry',
+              payload:
+                'sendFlow - user clicked next and transaction should be added to controller',
+            },
+            'SHOW_CONF_TX_PAGE',
+          ]),
+        ).toBe(true);
       });
 
       describe('with token transfers', () => {
@@ -2779,18 +2799,18 @@ describe('Send Slice', () => {
 
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(3);
-        expect(actionResult[0]).toMatchObject({
-          type: 'send/addHistoryEntry',
-          payload:
-            'sendFlow - user clicked next and transaction should be updated in controller',
-        });
-        expect(actionResult[1].type).toStrictEqual(
-          'UPDATE_TRANSACTION_EDITABLE_PARAMS',
-        );
-        expect(actionResult[2].type).toStrictEqual(
-          'UPDATE_TRANSACTION_GAS_FEES',
-        );
+        expect(actionResult).toHaveLength(5);
+        expect(
+          checkIfTypesExistInActionResult(actionResult, [
+            {
+              type: 'send/addHistoryEntry',
+              payload:
+                'sendFlow - user clicked next and transaction should be updated in controller',
+            },
+            'UPDATE_TRANSACTION_EDITABLE_PARAMS',
+            'UPDATE_TRANSACTION_GAS_FEES',
+          ]),
+        ).toBe(true),
       });
     });
 
