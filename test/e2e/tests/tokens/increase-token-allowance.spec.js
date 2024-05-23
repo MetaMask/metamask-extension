@@ -272,9 +272,13 @@ describe('Increase Token Allowance', function () {
       tag: 'button',
       text: 'Next',
     });
-    driver.waitForSelector({
+    await driver.waitForSelector({
       css: '.box--display-flex > h6',
       text: `10 TST`,
+    });
+    await driver.waitForSelector({
+      tag: 'h6',
+      text: '0.000062 ETH',
     });
     await driver.waitForSelector({
       text: `${finalSpendingCap} TST`,

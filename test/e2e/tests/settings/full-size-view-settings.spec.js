@@ -33,28 +33,25 @@ describe('Full-size View Setting @no-mmi', function () {
         await unlockWallet(driver);
         await toggleFullSizeViewSetting(driver);
         await openDapp(driver);
+        const windowHandlesPreClick = await driver.waitUntilXWindowHandles(
+          2,
+          1000,
+          10000,
+        );
         await driver.clickElement('#maliciousPermit'); // Opens the extension in popup view.
-        const windowHandles = await driver.waitUntilXWindowHandles(
+        const windowHandlesPostClick = await driver.waitUntilXWindowHandles(
           3,
           1000,
           10000,
         );
-        const fullScreenWindowTitle = await driver.getWindowTitleByHandlerId(
-          windowHandles[0],
+        const [newWindowHandle] = windowHandlesPostClick.filter(
+          (handleId) => !windowHandlesPreClick.includes(handleId),
         );
-        const dappWindowTitle = await driver.getWindowTitleByHandlerId(
-          windowHandles[1],
-        );
-        const popUpWindowTitle = await driver.getWindowTitleByHandlerId(
-          windowHandles[2],
+        const newWindowTitle = await driver.getWindowTitleByHandlerId(
+          newWindowHandle,
         );
 
-        assert.equal(
-          fullScreenWindowTitle,
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
-        assert.equal(dappWindowTitle, WINDOW_TITLES.TestDApp);
-        assert.equal(popUpWindowTitle, WINDOW_TITLES.Dialog);
+        assert.equal(newWindowTitle, WINDOW_TITLES.Dialog);
       },
     );
   });
