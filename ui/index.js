@@ -160,6 +160,12 @@ async function startApp(metamaskState, backgroundConnection, opts) {
   const store = configureStore(draftInitialState);
   reduxStore = store;
 
+  const state = store.getState();
+
+  // Fetch feature flags so they are ready on the home page.
+  // Do not await this. If you do, the app will not continue until the flags are fetched.
+  store.dispatch(fetchFeatureFlagsThunk);
+
   const unapprovedTxs = getUnapprovedTransactions(metamaskState);
 
   // if unconfirmed txs, start on txConf page
@@ -199,7 +205,6 @@ async function startApp(metamaskState, backgroundConnection, opts) {
   // for a given dapp, when there are no pending confimrations
   // This allows the user to be connected on one chain
   // for one dapp, and automatically change for another
-  const state = store.getState();
   const networkIdToSwitchTo = getNetworkToAutomaticallySwitchTo(state);
   if (networkIdToSwitchTo) {
     await store.dispatch(
@@ -226,9 +231,6 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     global.metamask.id = thisPopupId;
     await store.dispatch(actions.setCurrentExtensionPopupId(thisPopupId));
   }
-  // fetch feature flags so they are ready on the home page.
-  // if you await this, the app will not start until the flags are fetched
-  store.dispatch(fetchFeatureFlagsThunk);
 
   // start app
   render(<Root store={store} />, opts.container);
