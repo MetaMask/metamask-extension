@@ -5772,20 +5772,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-controller@npm:^9.0.1":
-  version: 9.0.2
-  resolution: "@metamask/phishing-controller@npm:9.0.2"
-  dependencies:
-    "@metamask/base-controller": "npm:^5.0.2"
-    "@metamask/controller-utils": "npm:^9.1.0"
-    "@types/punycode": "npm:^2.1.0"
-    eth-phishing-detect: "npm:^1.2.0"
-    punycode: "npm:^2.1.1"
-  checksum: 2a1fa922502a42e831567ac3965489e1b61b75fc5bcd1619b417ee3747b98ab3a1381a17b68b70a121154667858ca666c91bf1c1743892640b6f1f3d221e2bde
-  languageName: node
-  linkType: hard
-
-"@metamask/phishing-controller@npm:^9.0.3":
+"@metamask/phishing-controller@npm:^9.0.1, @metamask/phishing-controller@npm:^9.0.3":
   version: 9.0.3
   resolution: "@metamask/phishing-controller@npm:9.0.3"
   dependencies:
