@@ -4323,9 +4323,6 @@
   "select": {
     "message": "Select"
   },
-  "selectAToken": {
-    "message": "Select a token"
-  },
   "selectAccounts": {
     "message": "Select the account(s) to use on this site"
   },
