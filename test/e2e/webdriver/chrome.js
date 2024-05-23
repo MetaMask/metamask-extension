@@ -17,6 +17,10 @@ const HTTPS_PROXY_HOST = `${
 class ChromeDriver {
   static async build({ openDevToolsForTabs, port }) {
     const args = [
+      '--verbose',
+      '--no-sandbox',
+      '--ignore-certificate-errors',
+      '--disable-gpu',
       `--proxy-server=${HTTPS_PROXY_HOST}`, // Set proxy in the way that doesn't interfere with Selenium Manager
       '--disable-features=OptimizationGuideModelDownloading,OptimizationHintsFetching,OptimizationTargetPrediction,OptimizationHints,NetworkTimeServiceQuerying', // Stop chrome from calling home so much (auto-downloads of AI models; time sync)
       '--disable-component-update', // Stop chrome from calling home so much (auto-update)

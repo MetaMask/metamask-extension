@@ -56,6 +56,7 @@ async function runCommand(command, args) {
      * was thrown inside the Promise constructor, the stack trace would show a few frames of
      * Node.js internals then end, without indicating where `runCommand` was called.
      */
+    console.log(error)
     if (error === internalError) {
       let errorMessage;
       if (errorCode !== null && errorSignal !== null) {
@@ -115,6 +116,7 @@ async function runInShell(command, args, output) {
       });
     });
   } catch (error) {
+    console.log(error)
     /**
      * The error is re-thrown here in an `async` context to preserve the stack trace. If this was
      * was thrown inside the Promise constructor, the stack trace would show a few frames of

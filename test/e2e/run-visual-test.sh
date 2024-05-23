@@ -6,12 +6,12 @@ set -e
 # Define variables for better readability
 IMAGE_NAME=e2e/chrome:latest
 # CONTAINER_VOLUME_1=$(pwd)/test-artifacts/chrome/:/usr/src/app/test-artifacts/chrome
-CONTAINER_VOLUME_1=$(pwd)/:/usr/src/app//
+CONTAINER_VOLUME_1=$(pwd)/:/usr/src/app/
 
 # copy build to the docker context
 # mkdir -p test/src
-cp -r ./dist-test ./dist
-cp -r ./builds-test ./builds
+#cp -r ./dist-test ./dist
+#cp -r ./builds-test ./builds
 # cp -r ./dist-test ../dist-test
 # cp -r ./builds-test ../builds-test
 # cp -r . .
