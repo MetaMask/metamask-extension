@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { useSelector } from 'react-redux';
 import { getIpfsGateway, getOpenSeaEnabled } from '../../../selectors';
 import NftDefaultImage from '../../app/nft-default-image/nft-default-image';
+import { isIpfsURL } from '../../../helpers/utils/notification.util';
 
 import { NotificationDetail } from '../notification-detail';
 import {
@@ -32,10 +33,6 @@ export type NotificationDetailCollectionProps = {
   icon: IconProps;
   label: string;
   collection: string;
-};
-
-const isIpfsURL = (url: string): boolean => {
-  return url.startsWith('ipfs://');
 };
 
 export const NotificationDetailCollection: FC<
