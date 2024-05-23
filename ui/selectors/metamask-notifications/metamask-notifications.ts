@@ -124,25 +124,6 @@ export const selectIsMetamaskNotificationsEnabled = createSelector(
 );
 
 /**
- * Selector to determine if Snap notifications are enabled.
- *
- * @param {AppState} state - The current state of the Redux store.
- * @returns {boolean} Returns true if Snap notifications are enabled, false otherwise.
- */
-export const selectIsSnapNotificationsEnabled = createSelector(
-  [getMetamask, selectIsMetamaskNotificationsEnabled],
-  (metamask, isMetamaskNotificationsEnabled) => {
-    // The snap enabled state is managed by the unified notifications controller.
-    // If this controller is not setup, use defaults (true)
-    if (!isMetamaskNotificationsEnabled) {
-      return true;
-    }
-
-    return metamask.isSnapNotificationsEnabled;
-  },
-);
-
-/**
  * Selector to determine if feature announcements are enabled.
  *
  * @param {AppState} state - The current state of the Redux store.

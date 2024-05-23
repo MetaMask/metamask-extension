@@ -20,7 +20,6 @@ import { getNotifications } from '../../selectors';
 import {
   selectIsFeatureAnnouncementsEnabled,
   selectIsMetamaskNotificationsEnabled,
-  selectIsSnapNotificationsEnabled,
 } from '../../selectors/metamask-notifications/metamask-notifications';
 import type { Notification } from '../../../app/scripts/controllers/metamask-notifications/types/notification/notification';
 import { deleteExpiredNotifications } from '../../store/actions';
@@ -64,17 +63,11 @@ const useEffectDeleteExpiredNotifications = () => {
 };
 
 const useSnapNotifications = () => {
-  const isSnapNotificationsEnabled = useSelector(
-    selectIsSnapNotificationsEnabled,
-  );
-
   const snapNotifications = useSelector(getNotifications);
 
   const processedSnapNotifications: SnapNotification[] = useMemo(() => {
-    return isSnapNotificationsEnabled
-      ? processSnapNotifications(snapNotifications)
-      : [];
-  }, [isSnapNotificationsEnabled, snapNotifications]);
+    return processSnapNotifications(snapNotifications);
+  }, [snapNotifications]);
 
   return processedSnapNotifications;
 };

@@ -18,7 +18,6 @@ jest.mock('../../store/actions', () => ({
   createOnChainTriggers: jest.fn(),
   deleteOnChainTriggersByAccount: jest.fn(),
   fetchAndUpdateMetamaskNotifications: jest.fn(),
-  setSnapNotificationsEnabled: jest.fn(),
   setFeatureAnnouncementsEnabled: jest.fn(),
   markMetamaskNotificationsAsRead: jest.fn(),
   showLoadingIndication: jest.fn(),

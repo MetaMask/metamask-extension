@@ -10,7 +10,6 @@ const initialState = {
   metamask: {
     theme: 'light',
     isMetamaskNotificationsEnabled: true,
-    isSnapNotificationsEnabled: false,
     isFeatureAnnouncementsEnabled: true,
     internalAccounts: {
       accounts: [

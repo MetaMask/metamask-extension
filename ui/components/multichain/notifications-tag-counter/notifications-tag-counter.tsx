@@ -2,7 +2,6 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import {
   selectIsMetamaskNotificationsEnabled,
-  selectIsSnapNotificationsEnabled,
   selectIsFeatureAnnouncementsEnabled,
   getFeatureAnnouncementsUnreadCount,
   getOnChainMetamaskNotificationsUnreadCount,
@@ -27,12 +26,8 @@ type NotificationsTagCounterProps = {
 };
 
 const useSnapNotificationCount = () => {
-  const isSnapNotificationsEnabled = useSelector(
-    selectIsSnapNotificationsEnabled,
-  );
   const unreadNotificationsCount = useSelector(getUnreadNotificationsCount);
-
-  return isSnapNotificationsEnabled ? unreadNotificationsCount : 0;
+  return unreadNotificationsCount;
 };
 
 const useFeatureAnnouncementCount = () => {

@@ -5399,29 +5399,6 @@ export function markMetamaskNotificationsAsRead(
 }
 
 /**
- * Enables or disables Snap notifications.
- *
- * This function sends a request to the background script to toggle the enabled state of Snap notifications.
- * Upon success, it dispatches an action with type `SET_SNAP_NOTIFICATIONS_ENABLED` to update the Redux state.
- * If the operation encounters an error, it logs the error message and rethrows the error to ensure it is handled appropriately.
- *
- * @param state - A boolean indicating whether to enable (true) or disable (false) Snap notifications.
- * @returns A thunk action that, when dispatched, attempts to set the enabled state of Snap notifications.
- */
-export function setSnapNotificationsEnabled(
-  state: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
-    try {
-      await submitRequestToBackground('setSnapNotificationsEnabled', [state]);
-    } catch (error) {
-      logErrorWithMessage(error);
-      throw error;
-    }
-  };
-}
-
-/**
  * Enables or disables feature announcements.
  *
  * This function sends a request to the background script to toggle the enabled state of feature announcements.

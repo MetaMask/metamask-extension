@@ -106,7 +106,6 @@
     "isMetamaskNotificationsFeatureSeen": "boolean",
     "isMetamaskNotificationsEnabled": "boolean",
     "isFeatureAnnouncementsEnabled": "boolean",
-    "isSnapNotificationsEnabled": "boolean",
     "metamaskNotificationsList": "object",
     "metamaskNotificationsReadList": "object",
     "isUpdatingMetamaskNotifications": "boolean",

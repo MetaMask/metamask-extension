@@ -5,7 +5,6 @@ import {
   getMetamaskNotifications,
   getMetamaskNotificationsReadList,
   getMetamaskNotificationsUnreadCount,
-  selectIsSnapNotificationsEnabled,
   selectIsFeatureAnnouncementsEnabled,
 } from './metamask-notifications';
 
@@ -44,7 +43,6 @@ describe('Metamask Notifications Selectors', () => {
       isMetamaskNotificationsFeatureSeen: true,
       isMetamaskNotificationsEnabled: true,
       isFeatureAnnouncementsEnabled: true,
-      isSnapNotificationsEnabled: true,
       metamaskNotificationsList: mockNotifications,
       metamaskNotificationsReadList: [],
       isProfileSyncingUpdateLoading: false,
@@ -78,10 +76,6 @@ describe('Metamask Notifications Selectors', () => {
     expect(getMetamaskNotificationsUnreadCount(mockState)).toEqual(
       expectedUnreadNotificationsCount,
     );
-  });
-
-  it('should select the isSnapNotificationsEnabled state', () => {
-    expect(selectIsSnapNotificationsEnabled(mockState)).toBe(true);
   });
 
   it('should select the isFeatureAnnouncementsEnabled state', () => {

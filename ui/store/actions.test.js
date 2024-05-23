@@ -2551,48 +2551,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('#setSnapNotificationsEnabled', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls setSnapNotificationsEnabled in the background with correct parameters', async () => {
-      const store = mockStore();
-      const state = true;
-
-      const setSnapNotificationsEnabledStub = sinon
-        .stub()
-        .callsFake((_, cb) => cb());
-
-      background.getApi.returns({
-        setSnapNotificationsEnabled: setSnapNotificationsEnabledStub,
-      });
-      setBackgroundConnection(background.getApi());
-
-      await store.dispatch(actions.setSnapNotificationsEnabled(state));
-      expect(setSnapNotificationsEnabledStub.calledOnceWith(state)).toBe(true);
-    });
-
-    it('handles errors when setSnapNotificationsEnabled fails', async () => {
-      const store = mockStore();
-      const state = false;
-      const error = new Error('Failed to set snap notifications enabled state');
-
-      const setSnapNotificationsEnabledStub = sinon
-        .stub()
-        .callsFake((_, cb) => cb(error));
-
-      background.getApi.returns({
-        setSnapNotificationsEnabled: setSnapNotificationsEnabledStub,
-      });
-      setBackgroundConnection(background.getApi());
-
-      await expect(
-        store.dispatch(actions.setSnapNotificationsEnabled(state)),
-      ).rejects.toThrow(error);
-    });
-  });
-
   describe('#setFeatureAnnouncementsEnabled', () => {
     afterEach(() => {
       sinon.restore();

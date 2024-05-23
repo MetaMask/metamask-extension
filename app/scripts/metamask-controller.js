@@ -3678,10 +3678,6 @@ export default class MetamaskController extends EventEmitter {
         metamaskNotificationsController.markMetamaskNotificationsAsRead.bind(
           metamaskNotificationsController,
         ),
-      setSnapNotificationsEnabled:
-        metamaskNotificationsController.setSnapNotificationsEnabled.bind(
-          metamaskNotificationsController,
-        ),
       setFeatureAnnouncementsEnabled:
         metamaskNotificationsController.setFeatureAnnouncementsEnabled.bind(
           metamaskNotificationsController,

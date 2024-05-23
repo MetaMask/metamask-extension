@@ -7,7 +7,6 @@ import type { Store } from 'redux';
 import * as actions from '../../store/actions';
 import { MetamaskNotificationsProvider } from '../../contexts/metamask-notifications/metamask-notifications';
 import {
-  useSwitchSnapNotificationsChange,
   useSwitchFeatureAnnouncementsChange,
   useSwitchAccountNotifications,
   useSwitchAccountNotificationsChange,
@@ -17,7 +16,6 @@ const middlewares = [thunk];
 const mockStore = configureStore(middlewares);
 
 jest.mock('../../store/actions', () => ({
-  setSnapNotificationsEnabled: jest.fn(),
   setFeatureAnnouncementsEnabled: jest.fn(),
   checkAccountsPresence: jest.fn(),
   updateOnChainTriggersByAccount: jest.fn(),
@@ -33,7 +31,6 @@ describe('useSwitchNotifications', () => {
   beforeEach(() => {
     store = mockStore({
       metamask: {
-        isSnapNotificationsEnabled: false,
         isFeatureAnnouncementsEnabled: false,
         internalAccounts: {
           accounts: {
@@ -58,24 +55,6 @@ describe('useSwitchNotifications', () => {
     });
 
     jest.clearAllMocks();
-  });
-
-  it('should toggle snap notifications', async () => {
-    const { result } = renderHook(() => useSwitchSnapNotificationsChange(), {
-      wrapper: ({ children }) => (
-        <Provider store={store}>
-          <MetamaskNotificationsProvider>
-            {children}
-          </MetamaskNotificationsProvider>
-        </Provider>
-      ),
-    });
-
-    act(() => {
-      result.current.onChange(true);
-    });
-
-    expect(actions.setSnapNotificationsEnabled).toHaveBeenCalledWith(true);
   });
 
   it('should toggle feature announcements', async () => {

@@ -198,51 +198,6 @@ describe('metamask-notifications - setFeatureAnnouncementsEnabled()', () => {
 
     expect(controller.state.isFeatureAnnouncementsEnabled).toBe(true);
   });
-
-  test('does not update if auth is not enabled', async () => {
-    const { messenger, mockIsSignedIn } = mockNotificationMessenger();
-    mockIsSignedIn.mockReturnValue(false); // state is off.
-
-    const controller = new MetamaskNotificationsController({
-      messenger,
-      state: { ...defaultState, isFeatureAnnouncementsEnabled: false },
-    });
-
-    await expect(() =>
-      controller.setFeatureAnnouncementsEnabled(false),
-    ).rejects.toThrow();
-    expect(controller.state.isFeatureAnnouncementsEnabled).toBe(false); // this flag was never flipped
-  });
-});
-
-describe('metamask-notifications - setSnapNotificationsEnabled()', () => {
-  test('flips state when the method is called', async () => {
-    const { messenger, mockIsSignedIn } = mockNotificationMessenger();
-    mockIsSignedIn.mockReturnValue(true);
-
-    const controller = new MetamaskNotificationsController({
-      messenger,
-      state: { ...defaultState, isSnapNotificationsEnabled: false },
-    });
-
-    await controller.setSnapNotificationsEnabled(true);
-
-    expect(controller.state.isSnapNotificationsEnabled).toBe(true);
-  });
-
-  test('does not update if auth is not enabled', async () => {
-    const { messenger, mockIsSignedIn } = mockNotificationMessenger();
-    mockIsSignedIn.mockReturnValue(false); // state is off.
-
-    const controller = new MetamaskNotificationsController({
-      messenger,
-      state: { ...defaultState, isSnapNotificationsEnabled: false },
-    });
-
-    await controller.setSnapNotificationsEnabled(false);
-
-    expect(controller.state.isSnapNotificationsEnabled).toBe(false); // this flag was never flipped
-  });
 });
 
 describe('metamask-notifications - createOnChainTriggers()', () => {

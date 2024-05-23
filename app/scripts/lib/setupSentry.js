@@ -152,7 +152,6 @@ export const SENTRY_BACKGROUND_STATE = {
     isMetamaskNotificationsFeatureSeen: false,
     isMetamaskNotificationsEnabled: false,
     isFeatureAnnouncementsEnabled: false,
-    isSnapNotificationsEnabled: false,
     metamaskNotificationsList: false,
     metamaskNotificationsReadList: false,
     isCheckingAccountsPresence: false,

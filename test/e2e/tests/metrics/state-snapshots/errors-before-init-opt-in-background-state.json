@@ -6,7 +6,6 @@
       "isFeatureAnnouncementsEnabled": "boolean",
       "isMetamaskNotificationsEnabled": "boolean",
       "isMetamaskNotificationsFeatureSeen": "boolean",
-      "isSnapNotificationsEnabled": "boolean",
       "metamaskNotificationsList": "object",
       "metamaskNotificationsReadList": "object"
     },

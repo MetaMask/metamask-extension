@@ -34,7 +34,6 @@ const initialState = {
   metamask: {
     theme: 'light',
     isMetamaskNotificationsEnabled: true,
-    isSnapNotificationsEnabled: false,
     isFeatureAnnouncementsEnabled: true,
     metamaskNotifications: [],
     notifications: [],

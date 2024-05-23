@@ -24,7 +24,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         isFeatureAnnouncementsEnabled: false,
         isMetamaskNotificationsEnabled: false,
         isMetamaskNotificationsFeatureSeen: false,
-        isSnapNotificationsEnabled: false,
         metamaskNotificationsList: [],
         metamaskNotificationsReadList: [],
       },

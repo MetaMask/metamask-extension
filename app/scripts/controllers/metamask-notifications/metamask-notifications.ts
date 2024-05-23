@@ -67,11 +67,6 @@ export type MetamaskNotificationsControllerState = {
   isFeatureAnnouncementsEnabled: boolean;
 
   /**
-   * Flag that indicates if the Snap notifications are enabled
-   */
-  isSnapNotificationsEnabled: boolean;
-
-  /**
    * List of metamask notifications
    */
   metamaskNotificationsList: Notification[];
@@ -113,10 +108,6 @@ const metadata: StateMetadata<MetamaskNotificationsControllerState> = {
     persist: true,
     anonymous: false,
   },
-  isSnapNotificationsEnabled: {
-    persist: true,
-    anonymous: false,
-  },
   metamaskNotificationsList: {
     persist: true,
     anonymous: true,
@@ -146,7 +137,6 @@ export const defaultState: MetamaskNotificationsControllerState = {
   isMetamaskNotificationsFeatureSeen: false,
   isMetamaskNotificationsEnabled: false,
   isFeatureAnnouncementsEnabled: false,
-  isSnapNotificationsEnabled: false,
   metamaskNotificationsList: [],
   metamaskNotificationsReadList: [],
   isUpdatingMetamaskNotifications: false,
@@ -619,41 +609,18 @@ export class MetamaskNotificationsController extends BaseController<
    *
    * @param featureAnnouncementsEnabled - A boolean value indicating the desired enabled state of the feature announcements.
    * @async
-   * @throws {Error} If the BearerToken token or storage key is missing.
+   * @throws {Error} If fails to update
    */
   public async setFeatureAnnouncementsEnabled(
     featureAnnouncementsEnabled: boolean,
   ) {
     try {
-      this.#assertAuthEnabled();
-
-      this.update((state) => {
-        state.isFeatureAnnouncementsEnabled = featureAnnouncementsEnabled;
+      this.update((s) => {
+        s.isFeatureAnnouncementsEnabled = featureAnnouncementsEnabled;
       });
     } catch (e) {
       log.error('Unable to toggle feature announcements', e);
       throw new Error('Unable to toggle feature announcements');
-    }
-  }
-
-  /**
-   * Sets the enabled state of Snap notifications.
-   *
-   * **Action** - used in the notifications settings page to enable/disable snap notifications.
-   *
-   * @param snapNotificationsEnabled - A boolean value indicating the desired enabled state of the snap notifications.
-   * @async
-   * @throws {Error} If the BearerToken token or storage key is missing.
-   */
-  public async setSnapNotificationsEnabled(snapNotificationsEnabled: boolean) {
-    try {
-      this.#assertAuthEnabled();
-
-      this.update((state) => {
-        state.isSnapNotificationsEnabled = snapNotificationsEnabled;
-      });
-    } catch (e) {
-      log.error('Unable to toggle snap notifications', e);
     }
   }
 
@@ -711,7 +678,6 @@ export class MetamaskNotificationsController extends BaseController<
       this.update((state) => {
         state.isMetamaskNotificationsEnabled = true;
         state.isFeatureAnnouncementsEnabled = true;
-        state.isSnapNotificationsEnabled = true;
         state.isMetamaskNotificationsFeatureSeen = true;
       });
 
@@ -750,7 +716,7 @@ export class MetamaskNotificationsController extends BaseController<
    * Disables all MetaMask notifications for the user.
    * This method ensures that the user is authenticated, retrieves all linked accounts,
    * and disables on-chain triggers for each account. It also sets the global notification
-   * settings for MetaMask, feature announcements, and Snap notifications to false.
+   * settings for MetaMask, feature announcements to false.
    *
    * @throws {Error} If the user is not authenticated or if there is an error during the process.
    */
@@ -768,7 +734,6 @@ export class MetamaskNotificationsController extends BaseController<
       this.update((state) => {
         state.isMetamaskNotificationsEnabled = false;
         state.isFeatureAnnouncementsEnabled = false;
-        state.isSnapNotificationsEnabled = false;
         state.metamaskNotificationsList = [];
       });
     } catch (e) {

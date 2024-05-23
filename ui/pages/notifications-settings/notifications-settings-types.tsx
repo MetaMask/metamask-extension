@@ -2,10 +2,7 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
-import {
-  useSwitchFeatureAnnouncementsChange,
-  useSwitchSnapNotificationsChange,
-} from '../../hooks/metamask-notifications/useSwitchNotifications';
+import { useSwitchFeatureAnnouncementsChange } from '../../hooks/metamask-notifications/useSwitchNotifications';
 import { Box, IconName, Text } from '../../components/component-library';
 import {
   BlockSize,
@@ -21,10 +18,7 @@ import {
   NotificationsSettingsBox,
   NotificationsSettingsType,
 } from '../../components/multichain';
-import {
-  selectIsSnapNotificationsEnabled,
-  selectIsFeatureAnnouncementsEnabled,
-} from '../../selectors/metamask-notifications/metamask-notifications';
+import { selectIsFeatureAnnouncementsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
 
 export function NotificationsSettingsTypes({
   disabled,
@@ -36,36 +30,19 @@ export function NotificationsSettingsTypes({
   const { listNotifications } = useMetamaskNotificationsContext();
 
   // Selectors
-  const isSnapNotificationsEnabled = useSelector(
-    selectIsSnapNotificationsEnabled,
-  );
   const isFeatureAnnouncementsEnabled = useSelector(
     selectIsFeatureAnnouncementsEnabled,
   );
 
   // Hooks
-  const { onChange: onChangeSnapNotifications, error: errorSnapNotifications } =
-    useSwitchSnapNotificationsChange();
   const {
     onChange: onChangeFeatureAnnouncements,
     error: errorFeatureAnnouncements,
   } = useSwitchFeatureAnnouncementsChange();
 
   // States
-  const [snapNotificationsEnabled, setSnapNotificationsEnabled] =
-    useState<boolean>(isSnapNotificationsEnabled);
   const [featureAnnouncementsEnabled, setFeatureAnnouncementsEnabled] =
     useState<boolean>(isFeatureAnnouncementsEnabled);
-
-  const onToggleSnapNotifications = async () => {
-    setSnapNotificationsEnabled(!snapNotificationsEnabled);
-    try {
-      onChangeSnapNotifications(!snapNotificationsEnabled);
-      listNotifications();
-    } catch (error) {
-      setSnapNotificationsEnabled(snapNotificationsEnabled);
-    }
-  };
 
   const onToggleFeatureAnnouncements = async () => {
     setFeatureAnnouncementsEnabled(!featureAnnouncementsEnabled);
@@ -103,16 +80,6 @@ export function NotificationsSettingsTypes({
         paddingRight={8}
         paddingBottom={4}
       >
-        {/* Snap notifications */}
-        <NotificationsSettingsBox
-          value={snapNotificationsEnabled}
-          onToggle={onToggleSnapNotifications}
-          error={errorSnapNotifications}
-          disabled={disabled}
-        >
-          <NotificationsSettingsType icon={IconName.Snaps} title={t('snaps')} />
-        </NotificationsSettingsBox>
-
         {/* Product announcements */}
         <NotificationsSettingsBox
           value={featureAnnouncementsEnabled}

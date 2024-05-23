@@ -2,44 +2,12 @@ import { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import log from 'loglevel';
 import {
-  setSnapNotificationsEnabled,
   setFeatureAnnouncementsEnabled,
   checkAccountsPresence,
   deleteOnChainTriggersByAccount,
   updateOnChainTriggersByAccount,
   hideLoadingIndication,
 } from '../../store/actions';
-
-export function useSwitchSnapNotificationsChange(): {
-  onChange: (state: boolean) => Promise<void>;
-  error: null | string;
-} {
-  const dispatch = useDispatch();
-
-  const [error, setError] = useState<null | string>(null);
-
-  const onChange = useCallback(
-    async (state: boolean) => {
-      setError(null);
-
-      try {
-        await dispatch(setSnapNotificationsEnabled(state));
-      } catch (e) {
-        const errorMessage =
-          e instanceof Error ? e.message : JSON.stringify(e ?? '');
-        setError(errorMessage);
-        log.error(errorMessage);
-        throw e;
-      }
-    },
-    [dispatch],
-  );
-
-  return {
-    onChange,
-    error,
-  };
-}
 
 export function useSwitchFeatureAnnouncementsChange(): {
   onChange: (state: boolean) => Promise<void>;
