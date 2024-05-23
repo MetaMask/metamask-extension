@@ -110,6 +110,14 @@ until.elementIsNotPresent = function elementIsNotPresent(locator) {
   });
 };
 
+until.foundElementCountIs = function foundElementCountIs(locator, n) {
+  return new Condition(`Element count is ${n}`, function (driver) {
+    return driver.findElements(locator).then(function (elements) {
+      return elements.length === n;
+    });
+  });
+};
+
 /**
  * This is MetaMask's custom E2E test driver, wrapping the Selenium WebDriver.
  * For Selenium WebDriver API documentation, see:
@@ -259,6 +267,20 @@ class Driver {
     }, this.timeout);
   }
 
+  async elementCountBecomesN(rawLocator, n, timeout = this.timeout) {
+    const locator = this.buildLocator(rawLocator);
+    try {
+      await this.driver.wait(until.foundElementCountIs(locator, n), timeout);
+      return true;
+    } catch (e) {
+      const elements = await this.findElements(locator);
+      console.error(
+        `Waiting for count of ${locator} elements to be ${n}, but it is ${elements.length}`,
+      );
+      return false;
+    }
+  }
+
   /**
    * Wait until an element is absent.
    *
@@ -371,6 +393,20 @@ class Driver {
   async clickElement(rawLocator) {
     const element = await this.findClickableElement(rawLocator);
     await element.click();
+  }
+
+  /**
+   * Clicks on an element identified by the provided locator and waits for it to disappear.
+   * For scenarios where the clicked element, such as a notification or popup, needs to disappear afterward.
+   * The wait ensures that subsequent interactions are not obscured by the initial notification or popup element.
+   *
+   * @param rawLocator - The locator used to identify the element to be clicked
+   * @param timeout - The maximum time in ms to wait for the element to disappear after clicking.
+   */
+  async clickElementAndWaitToDisappear(rawLocator, timeout = 2000) {
+    const element = await this.findClickableElement(rawLocator);
+    await element.click();
+    await element.waitForElementState('hidden', timeout);
   }
 
   /**
@@ -509,8 +545,9 @@ class Driver {
   }
 
   async openNewPage(url) {
-    const newHandle = await this.driver.switchTo().newWindow();
+    await this.driver.switchTo().newWindow();
     await this.openNewURL(url);
+    const newHandle = await this.driver.getWindowHandle();
     return newHandle;
   }
 
@@ -534,12 +571,12 @@ class Driver {
     return await this.driver.getAllWindowHandles();
   }
 
-  async waitUntilXWindowHandles(x, delayStep = 1000, timeout = this.timeout) {
+  async waitUntilXWindowHandles(_x, delayStep = 1000, timeout = this.timeout) {
+    const x = process.env.ENABLE_MV3 ? _x + 1 : _x;
     let timeElapsed = 0;
     let windowHandles = [];
     while (timeElapsed <= timeout) {
-      windowHandles = await this.driver.getAllWindowHandles();
-
+      windowHandles = await this.getAllWindowHandles();
       if (windowHandles.length === x) {
         return windowHandles;
       }

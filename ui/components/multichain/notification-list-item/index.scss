@@ -3,6 +3,10 @@
   background-color: transparent;
 }
 
+.notification-list-item:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
 .notification-list-item__icon {
   padding-top: 6px;
 }
@@ -14,7 +18,13 @@
 .notification-list-item__unread-dot__wrapper {
   position: absolute;
   top: 24px;
-  left: 9px;
+  left: 11px;
+}
+
+.notification-list-item__unread-dot__wrapper--snap {
+  position: absolute;
+  top: 22px;
+  left: 11px;
 }
 
 .notification-list-item__unread-dot__dot {
