@@ -198,6 +198,10 @@ env:
 
   # This variable is read by Trezor's source and breaks build if not included
   - ASSET_PREFIX: null
+  - SUITE_TYPE: null
+  - COMMITHASH: null
+  - VERSION: null
+  - IS_CODESIGN_BUILD: null
 
   - SENTRY_MMI_DSN: ''
 
@@ -209,19 +213,19 @@ env:
   - OIDC_CLIENT_ID: 1132f10a-b4e5-4390-a5f2-d9c6022db564
   - OIDC_GRANT_TYPE: urn:ietf:params:oauth:grant-type:jwt-bearer
   - USER_STORAGE_API: https://user-storage.api.cx.metamask.io
-  - CONTENTFUL_ACCESS_SPACE_ID: null
-  - CONTENTFUL_ACCESS_TOKEN: null
+  - CONTENTFUL_ACCESS_SPACE_ID:
+  - CONTENTFUL_ACCESS_TOKEN:
   - NOTIFICATIONS_SERVICE_URL: https://notification.api.cx.metamask.io
   - TRIGGERS_SERVICE_URL: https://trigger.api.cx.metamask.io
   - PUSH_NOTIFICATIONS_SERVICE_URL: https://push.api.cx.metamask.io
-  - VAPID_KEY: null
-  - FIREBASE_API_KEY: null
-  - FIREBASE_AUTH_DOMAIN: null
-  - FIREBASE_STORAGE_BUCKET: null
-  - FIREBASE_PROJECT_ID: null
-  - FIREBASE_MESSAGING_SENDER_ID: null
-  - FIREBASE_APP_ID: null
-  - FIREBASE_MEASUREMENT_ID: null
+  - VAPID_KEY:
+  - FIREBASE_API_KEY:
+  - FIREBASE_AUTH_DOMAIN:
+  - FIREBASE_STORAGE_BUCKET:
+  - FIREBASE_PROJECT_ID:
+  - FIREBASE_MESSAGING_SENDER_ID:
+  - FIREBASE_APP_ID:
+  - FIREBASE_MEASUREMENT_ID:
   - __FIREBASE_DEFAULTS__: null
 
   ###
