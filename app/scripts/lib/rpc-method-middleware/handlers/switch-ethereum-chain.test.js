@@ -60,13 +60,10 @@ describe('switchEthereumChainHandler', () => {
     const permissionsFeatureFlagIsActive = false;
 
     it('should call setActiveNetwork when switching to a built-in infura network', async () => {
+      const MOCK_MAINNET_CONFIGURATION = createMockMainnetConfiguration();
       const mocks = makeMocks({
         permissionsFeatureFlagIsActive,
-        overrides: {
-          findNetworkConfigurationBy: jest
-            .fn()
-            .mockReturnValue(createMockMainnetConfiguration()),
-        },
+        mockedFindNetworkConfigurationByReturnValue: MOCK_MAINNET_CONFIGURATION,
       });
       const switchEthereumChainHandler = switchEthereumChain.implementation;
       await switchEthereumChainHandler(
@@ -81,18 +78,15 @@ describe('switchEthereumChainHandler', () => {
       );
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
-        createMockMainnetConfiguration().type,
+        MOCK_MAINNET_CONFIGURATION.type,
       );
     });
 
     it('should call setActiveNetwork when switching to a built-in infura network, when chainId from request is lower case', async () => {
+      const MOCK_LINEA_MAINNET_CONFIGURATION = createMockLineaMainnetConfiguration();
       const mocks = makeMocks({
         permissionsFeatureFlagIsActive,
-        overrides: {
-          findNetworkConfigurationBy: jest
-            .fn()
-            .mockReturnValue(createMockLineaMainnetConfiguration()),
-        },
+        mockedFindNetworkConfigurationByReturnValue: MOCK_LINEA_MAINNET_CONFIGURATION,
       });
       const switchEthereumChainHandler = switchEthereumChain.implementation;
       await switchEthereumChainHandler(
@@ -107,18 +101,15 @@ describe('switchEthereumChainHandler', () => {
       );
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
-        createMockLineaMainnetConfiguration().type,
+        MOCK_LINEA_MAINNET_CONFIGURATION.type,
       );
     });
 
     it('should call setActiveNetwork when switching to a built-in infura network, when chainId from request is upper case', async () => {
+      const MOCK_LINEA_MAINNET_CONFIGURATION = createMockLineaMainnetConfiguration();
       const mocks = makeMocks({
         permissionsFeatureFlagIsActive,
-        overrides: {
-          findNetworkConfigurationBy: jest
-            .fn()
-            .mockReturnValue(createMockLineaMainnetConfiguration()),
-        },
+        mockedFindNetworkConfigurationByReturnValue: MOCK_LINEA_MAINNET_CONFIGURATION,
       });
       const switchEthereumChainHandler = switchEthereumChain.implementation;
       await switchEthereumChainHandler(
@@ -133,11 +124,12 @@ describe('switchEthereumChainHandler', () => {
       );
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
-        createMockLineaMainnetConfiguration().type,
+        MOCK_LINEA_MAINNET_CONFIGURATION.type,
       );
     });
 
     it('should call setActiveNetwork when switching to a custom network', async () => {
+      const MOCK_MAINNET_CONFIGURATION = createMockMainnetConfiguration();
       const mocks = makeMocks({
         permissionsFeatureFlagIsActive,
         overrides: {
@@ -159,7 +151,7 @@ describe('switchEthereumChainHandler', () => {
       );
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
-        createMockMainnetConfiguration().id,
+        MOCK_MAINNET_CONFIGURATION.id,
       );
     });
   });
@@ -168,6 +160,7 @@ describe('switchEthereumChainHandler', () => {
     const permissionsFeatureFlagIsActive = true;
 
     it('should call requestPermittedChainsPermission and setActiveNetwork when chainId is not in permittedChains', async () => {
+      const MOCK_MAINNET_CONFIGURATION = createMockMainnetConfiguration();
       const mockrequestPermittedChainsPermission = jest
         .fn()
         .mockResolvedValue();
@@ -196,11 +189,12 @@ describe('switchEthereumChainHandler', () => {
       ]);
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
-        createMockMainnetConfiguration().type,
+        MOCK_MAINNET_CONFIGURATION.type,
       );
     });
 
     it('should call setActiveNetwork without calling requestPermittedChainsPermission when requested chainId is in permittedChains', async () => {
+      const MOCK_MAINNET_CONFIGURATION = createMockMainnetConfiguration();
       const mocks = makeMocks({
         permissionsFeatureFlagIsActive,
         permissionedChainIds: [CHAIN_IDS.MAINNET],
@@ -220,7 +214,7 @@ describe('switchEthereumChainHandler', () => {
       expect(mocks.requestPermittedChainsPermission).not.toHaveBeenCalled();
       expect(mocks.setActiveNetwork).toHaveBeenCalledTimes(1);
       expect(mocks.setActiveNetwork).toHaveBeenCalledWith(
-        createMockMainnetConfiguration().type,
+        MOCK_MAINNET_CONFIGURATION.type,
       );
     });
 
