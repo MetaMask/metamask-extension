@@ -19,13 +19,14 @@ import type { NotificationListItemTextProps } from '../notification-list-item-te
 import { NotificationListItemIcon } from '../notification-list-item-icon';
 import { NotificationListItemText } from '../notification-list-item-text';
 import { formatMenuItemDate } from '../../../helpers/utils/notification.util';
+import { SnapUIMarkdown } from '../../app/snaps/snap-ui-markdown';
 
-export type NotificationListItemProps = {
+export type NotificationListItemSnapProps = {
   id: string;
   isRead: boolean;
   icon: NotificationListItemIconProps;
   title: NotificationListItemTextProps;
-  description: NotificationListItemTextProps;
+  snapMessage: string;
   createdAt: Date;
   amount?: string;
   onClick?: () => void;
@@ -38,23 +39,21 @@ export type NotificationListItemProps = {
  * @param props.isRead - Indicates whether the notification has been read.
  * @param props.icon - The icon of the notification.
  * @param props.title - The title of the notification.
- * @param props.description - The description of the notification.
  * @param props.createdAt - The date of the notification.
- * @param props.amount - The amount associated with the notification, if applicable.
  * @param props.id - The id of the notification.
  * @param props.onClick - The function to call when the notification is clicked.
+ * @param props.snapMessage - The snap message to display on the notification.
  * @returns Returns a notification list item component.
  */
-export const NotificationListItem = ({
+export const NotificationListItemSnap = ({
   id,
   isRead,
   icon,
   title,
-  description,
+  snapMessage,
   createdAt,
-  amount,
   onClick,
-}: NotificationListItemProps) => {
+}: NotificationListItemSnapProps) => {
   const handleClick = () => {
     onClick?.();
   };
@@ -102,9 +101,9 @@ export const NotificationListItem = ({
         <Box
           display={Display.Flex}
           gap={4}
-          paddingRight={4}
           height={BlockSize.Full}
           alignItems={AlignItems.flexStart}
+          width={BlockSize.Full}
         >
           <Box height={BlockSize.Full} className="notification-list-item__icon">
             <NotificationListItemIcon {...icon} />
@@ -117,44 +116,33 @@ export const NotificationListItem = ({
             textAlign={TextAlign.Left}
             width={BlockSize.Full}
           >
-            {/* Notification Title */}
-            <NotificationListItemText
-              {...title}
-              color={TextColor.textAlternative}
-            />
-            {/* Notification Description */}
-            <NotificationListItemText {...description} />
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
+              alignItems={AlignItems.flexStart}
+              justifyContent={JustifyContent.spaceBetween}
+            >
+              {/* Notification Title */}
+              <NotificationListItemText
+                {...title}
+                color={TextColor.textAlternative}
+              />
+
+              {/* Date */}
+              <Text
+                color={TextColor.textMuted}
+                variant={TextVariant.bodySm}
+                fontWeight={FontWeight.Normal}
+                as="p"
+              >
+                {formatMenuItemDate(createdAt)}
+              </Text>
+            </Box>
+
+            {/* Snap Message */}
+            <SnapUIMarkdown markdown>{snapMessage}</SnapUIMarkdown>
           </Box>
         </Box>
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          alignItems={AlignItems.flexEnd}
-          textAlign={TextAlign.Right}
-          className="notification-list-item__right-container"
-        >
-          {/* Date */}
-          <Text
-            color={TextColor.textMuted}
-            variant={TextVariant.bodySm}
-            fontWeight={FontWeight.Normal}
-            as="p"
-          >
-            {formatMenuItemDate(createdAt)}
-          </Text>
-          {/* Amount */}
-          {amount && (
-            <Text
-              color={TextColor.textDefault}
-              variant={TextVariant.bodyMd}
-              fontWeight={FontWeight.Normal}
-              as="p"
-            >
-              {amount}
-            </Text>
-          )}
-        </Box>
-        {/* Snap Button */}
       </Box>
     </Box>
   );
