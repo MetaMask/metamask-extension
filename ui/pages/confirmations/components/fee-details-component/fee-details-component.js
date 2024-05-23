@@ -48,7 +48,7 @@ export default function FeeDetailsComponent({
   const renderTotalDetailText = useCallback(
     (value) => {
       return (
-        <div className="confirm-page-container-content__total-value is-secondary">
+        <div className="confirm-page-container-content__total-value">
           <LoadingHeartBeat estimateUsed={txData?.userFeeLevel} />
           <UserPreferencedCurrencyDisplay
             type={SECONDARY}
