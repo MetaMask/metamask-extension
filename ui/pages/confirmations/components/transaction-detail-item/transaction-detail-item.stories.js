@@ -1,8 +1,6 @@
 import React from 'react';
 import InfoTooltip from '../../../../components/ui/info-tooltip/info-tooltip';
 
-import { TextColor } from '../../../../helpers/constants/design-system';
-
 import { Icon, IconName } from '../../../../components/component-library';
 import README from './README.mdx';
 import TransactionDetailItem from '.';
@@ -17,12 +15,6 @@ export default {
   },
   argTypes: {
     detailTitle: { control: 'object' },
-    detailTitleColor: {
-      control: {
-        type: 'select',
-      },
-      options: Object.values(TextColor),
-    },
     detailText: { control: 'text' },
     detailTotal: { control: 'text' },
     subTitle: { control: 'object' },

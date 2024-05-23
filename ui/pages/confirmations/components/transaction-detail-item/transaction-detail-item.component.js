@@ -12,12 +12,10 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { Text } from '../../../../components/component-library';
 
-// todo: can we remove detailTitleColor? Verify design after changes
 export default function TransactionDetailItem({
   'data-testid': dataTestId,
   detailTitle = '',
   detailText,
-  detailTitleColor = Color.textDefault, // todo remove
   detailTotal = '',
   hasDetailTextInSeparateRow = false,
   subTitle = '',
@@ -34,7 +32,6 @@ export default function TransactionDetailItem({
       <div className="transaction-detail-item__row">
         <Text
           as="h6"
-          color={detailTitleColor}
           display={Display.Flex}
           flexWrap={FlexWrap.NoWrap}
           paddingBottom={1}
@@ -105,10 +102,6 @@ TransactionDetailItem.propTypes = {
    * Detail title text wrapped in Typography component.
    */
   detailTitle: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-  /**
-   * The color of the detailTitle text accepts all Typography color props
-   */
-  detailTitleColor: PropTypes.string,
   /**
    * Text to show on the left of the detailTotal. Wrapped in Typography component.
    */
