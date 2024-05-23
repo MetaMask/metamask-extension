@@ -15,6 +15,11 @@ import { Driver } from '../webdriver/driver';
 import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../constants';
 import { retry } from '../../../development/lib/retry';
 
+export enum RequestType {
+  Message = 'message',
+  Transaction = 'transaction',
+}
+
 /**
  * These are fixtures specific to Account Snap E2E tests:
  * -- connected to Test Dapp
@@ -216,7 +221,11 @@ export async function disconnectFromTestDapp(driver: Driver) {
   await driver.clickElement('[data-testid ="disconnect-all"]');
 }
 
-export async function approveOrRejectRequest(driver: Driver, flowType: string) {
+export async function approveOrRejectRequest(
+  driver: Driver,
+  flowType: string,
+  requestType: RequestType,
+) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.SnapSimpleKeyringDapp);
 
   await driver.clickElementUsingMouseMove({
@@ -232,7 +241,7 @@ export async function approveOrRejectRequest(driver: Driver, flowType: string) {
   // get the JSON from the screen
   const requestJSON = await (
     await driver.findElement({
-      text: '"scope": "eip155:1337",',
+      text: `"scope": ${requestType === 'transaction' ? '"eip155:1337"' : ''}`,
       tag: 'div',
     })
   ).getText();
@@ -276,6 +285,7 @@ export async function signData(
   locatorID: string,
   newPublicKey: string,
   flowType: string,
+  requestType: RequestType,
 ) {
   const isAsyncFlow = flowType !== 'sync';
 
@@ -324,7 +334,7 @@ export async function signData(
     );
 
     await driver.delay(1000);
-    await approveOrRejectRequest(driver, flowType);
+    await approveOrRejectRequest(driver, flowType, requestType);
   }
 
   await driver.delay(500);

@@ -8,6 +8,7 @@ import {
   connectAccountToTestDapp,
   disconnectFromTestDapp,
   signData,
+  RequestType,
 } from './common';
 
 describe('Snap Account Signatures and Disconnects', function (this: Suite) {
@@ -31,7 +32,13 @@ describe('Snap Account Signatures and Disconnects', function (this: Suite) {
         await connectAccountToTestDapp(driver);
 
         // do #signTypedDataV3
-        await signData(driver, '#signTypedDataV3', newPublicKey, flowType);
+        await signData(
+          driver,
+          '#signTypedDataV3',
+          newPublicKey,
+          flowType,
+          RequestType.Message,
+        );
 
         // disconnect from the Test Dapp
         await disconnectFromTestDapp(driver);
@@ -40,7 +47,13 @@ describe('Snap Account Signatures and Disconnects', function (this: Suite) {
         await connectAccountToTestDapp(driver);
 
         // do #signTypedDataV4
-        await signData(driver, '#signTypedDataV4', newPublicKey, flowType);
+        await signData(
+          driver,
+          '#signTypedDataV4',
+          newPublicKey,
+          flowType,
+          RequestType.Message,
+        );
       },
     );
   });

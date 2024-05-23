@@ -7,6 +7,7 @@ import {
   installSnapSimpleKeyring,
   importKeyAndSwitch,
   approveOrRejectRequest,
+  RequestType,
 } from './common';
 
 describe('Snap Account Transfers', function (this: Suite) {
@@ -73,7 +74,7 @@ describe('Snap Account Transfers', function (this: Suite) {
       });
 
       await driver.delay(1000);
-      await approveOrRejectRequest(driver, flowType);
+      await approveOrRejectRequest(driver, flowType, RequestType.Transaction);
     }
 
     if (flowType === 'sync' || flowType === 'approve') {

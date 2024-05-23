@@ -2,6 +2,7 @@ import { Suite } from 'mocha';
 import { openDapp, withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import {
+  RequestType,
   accountSnapFixtures,
   installSnapSimpleKeyring,
   makeNewAccountAndSwitch,
@@ -40,7 +41,13 @@ describe('Snap Account Signatures', function (this: Suite) {
           ];
 
           for (const locatorID of locatorIDs) {
-            await signData(driver, locatorID, newPublicKey, flowType);
+            await signData(
+              driver,
+              locatorID,
+              newPublicKey,
+              flowType,
+              RequestType.Message,
+            );
           }
         },
       );
