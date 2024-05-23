@@ -2446,7 +2446,7 @@ export function updateSendAmount(hexAmount, decimalAmount) {
     }
     await dispatch(updateSendQuote());
 
-    if (!decimalAmount) {
+    if (decimalAmount === undefined) {
       return;
     }
 
