@@ -830,6 +830,10 @@ export default class MetaMetricsController {
         metamaskState.securityAlertsEnabled ? ['blockaid'] : [],
       [MetaMetricsUserTrait.PetnameAddressCount]:
         this._getPetnameAddressCount(metamaskState),
+      [MetaMetricsUserTrait.IsMetricsOptedIn]:
+        metamaskState.participateInMetaMetrics,
+      [MetaMetricsUserTrait.HasMarketingConsent]:
+        metamaskState.dataCollectionForMarketing,
     };
 
     if (!previousUserTraits) {
