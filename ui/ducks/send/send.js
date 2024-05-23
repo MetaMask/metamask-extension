@@ -11,6 +11,7 @@ import {
   TransactionEnvelopeType,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { ethErrors } from 'eth-rpc-errors';
 import {
   decimalToHex,
   hexToDecimal,
@@ -76,6 +77,7 @@ import {
   estimateGas,
   addTransactionAndWaitForPublish,
   setDefaultHomeActiveTabName,
+  rejectPendingApproval,
 } from '../../store/actions';
 import { setCustomGasLimit } from '../gas/gas.duck';
 import {
@@ -2804,7 +2806,8 @@ export function signTransaction(history) {
 
     await dispatch(actions.setPrevSwapAndSend(prevSwapAndSendData));
 
-    if (stage === SEND_STAGES.EDIT) {
+    // you can only edit a basic send transaction
+    if (stage === SEND_STAGES.EDIT && !isSwapAndSend) {
       // When dealing with the edit flow there is already a transaction in
       // state that we must update, this branch is responsible for that logic.
       // We first must grab the previous transaction object from state and then
@@ -2849,6 +2852,8 @@ export function signTransaction(history) {
       await dispatch(
         updateTransactionGasFees(draftTransaction.id, editingTx.txParams),
       );
+
+      history.push(CONFIRM_TRANSACTION_ROUTE);
     } else {
       let transactionType =
         draftTransaction.recipient.type === RECIPIENT_TYPES.SMART_CONTRACT
@@ -2877,6 +2882,20 @@ export function signTransaction(history) {
       let transactionId;
 
       if (isSwapAndSend) {
+        // clear existing swap transaction if editing
+        if (stage === SEND_STAGES.EDIT) {
+          const unapprovedTxs = getUnapprovedTransactions(state);
+          const unapprovedSendTx = unapprovedTxs[draftTransaction.id];
+          if (unapprovedSendTx) {
+            await dispatch(
+              rejectPendingApproval(
+                unapprovedSendTx.id,
+                ethErrors.provider.userRejectedRequest().serialize(),
+              ),
+            );
+          }
+        }
+
         const chainId = getCurrentChainId(state);
         const NATIVE_CURRENCY_DECIMALS =
           SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].decimals;
