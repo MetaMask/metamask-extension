@@ -414,7 +414,10 @@ export default class ConfirmTransactionBase extends Component {
       );
     };
 
-    const renderTotalMaxAmount = (useMaxFee) => {
+    const renderTotalMaxAmount = (
+      useMaxFee,
+      isBoldTextAndNotOverridden = false,
+    ) => {
       if (
         primaryTotalTextOverrideMaxAmount === undefined &&
         secondaryTotalTextOverride === undefined
@@ -434,9 +437,15 @@ export default class ConfirmTransactionBase extends Component {
       const primaryTotal = useMaxFee
         ? primaryTotalTextOverrideMaxAmount
         : primaryTotalTextOverride;
-      return useNativeCurrencyAsPrimaryCurrency
+      const totalMaxAmount = useNativeCurrencyAsPrimaryCurrency
         ? primaryTotal
         : secondaryTotalTextOverride;
+
+      return isBoldTextAndNotOverridden ? (
+        <Text variant={TextVariant.bodyMdBold}>{totalMaxAmount}</Text>
+      ) : (
+        totalMaxAmount
+      );
     };
 
     const renderTotalDetailText = (value) => {
@@ -561,7 +570,7 @@ export default class ConfirmTransactionBase extends Component {
                   useCurrencyRateCheck &&
                   renderTotalDetailText(getTotalAmount())
                 }
-                detailTotal={renderTotalMaxAmount(false)}
+                detailTotal={renderTotalMaxAmount(false, true)}
                 subTitle={t('transactionDetailGasTotalSubtitle')}
                 subText={
                   <div className="confirm-page-container-content__total-amount">
