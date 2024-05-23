@@ -8,6 +8,7 @@ import {
   TextVariant,
   Display,
   FlexWrap,
+  FontWeight,
 } from '../../../../helpers/constants/design-system';
 import { Text } from '../../../../components/component-library';
 
@@ -49,6 +50,7 @@ export default function TransactionDetailItem({
             as="h6"
             color={Color.textDefault}
             marginLeft={1}
+            fontWeight={FontWeight.Bold}
             textAlign={TextAlign.Right}
             variant={TextVariant.bodyMd}
           >
