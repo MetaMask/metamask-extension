@@ -88,9 +88,17 @@ export const AccountListItem = ({
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
   const [referenceElement, setReferenceElement] = useState();
-const setBoxRef = (ref) => {
-  setReferenceElement(ref);
-};
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const setBoxRef = (ref) => {
+    setReferenceElement(ref);
+  };
+  const handleMouseEnter = () => {
+    setIsPopoverOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsPopoverOpen(false);
+  };
   const useBlockie = useSelector(getUseBlockie);
   const currentNetwork = useSelector(getCurrentNetwork);
   const setAccountListItemMenuRef = (ref) => {
@@ -307,7 +315,11 @@ const setBoxRef = (ref) => {
               {shortenAddress(toChecksumHexAddress(account.address))}
             </Text>
           </Box>
-          <Box ref={setBoxRef}>
+          <Box
+            ref={setBoxRef}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
             <AvatarGroup members={mappedOrderedTokenList} limit={4} />
           </Box>
           <Popover
@@ -319,7 +331,7 @@ const setBoxRef = (ref) => {
             isPortal
             preventOverflow
             flip
-            isOpen={true}
+            isOpen={isPopoverOpen}
           >
             <Box
               display={Display.Flex}
