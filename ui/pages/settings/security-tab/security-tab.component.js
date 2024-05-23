@@ -344,62 +344,6 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
-  renderMetaMetricsOptIn() {
-    const { t } = this.context;
-    const {
-      participateInMetaMetrics,
-      dataCollectionForMarketing,
-      setParticipateInMetaMetrics,
-      setDataCollectionForMarketing,
-    } = this.props;
-
-    return (
-      <Box
-        ref={this.settingsRefs[4]}
-        className="settings-page__content-row"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        gap={4}
-      >
-        <div className="settings-page__content-item">
-          <span>{t('participateInMetaMetrics')}</span>
-          <div className="settings-page__content-description">
-            <span>{t('participateInMetaMetricsDescription')}</span>
-          </div>
-        </div>
-
-        <div
-          className="settings-page__content-item-col"
-          data-testid="participateInMetaMetrics"
-        >
-          <ToggleButton
-            value={participateInMetaMetrics}
-            onToggle={(value) => {
-              setParticipateInMetaMetrics(!value);
-              if (!value) {
-                this.context.trackEvent({
-                  category: MetaMetricsEventCategory.Settings,
-                  event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-                  properties: {
-                    is_metrics_opted_in: false,
-                    has_marketing_consent: false,
-                    location: 'Settings',
-                  },
-                });
-              }
-              if (dataCollectionForMarketing) {
-                setDataCollectionForMarketing(false);
-              }
-            }}
-            offLabel={t('off')}
-            onLabel={t('on')}
-          />
-        </div>
-      </Box>
-    );
-  }
-
   renderDataCollectionForMarketing() {
     const { t } = this.context;
     const {
@@ -1159,7 +1103,7 @@ export default class SecurityTab extends PureComponent {
   };
 
   render() {
-    const { warning, petnamesEnabled } = this.props;
+    const { warning, petnamesEnabled, dataCollectionForMarketing } = this.props;
     const { showDataCollectionDisclaimer } = this.state;
 
     return (
@@ -1249,7 +1193,10 @@ export default class SecurityTab extends PureComponent {
           {this.context.t('metrics')}
         </span>
         <div className="settings-page__content-padded">
-          <MetametricsToggle />
+          <MetametricsToggle
+            dataCollectionForMarketing={dataCollectionForMarketing}
+            setDataCollectionForMarketing={setDataCollectionForMarketing}
+          />
           {this.renderDataCollectionForMarketing()}
         </div>
       </div>
