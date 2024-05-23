@@ -261,9 +261,22 @@ describe('Send Slice', () => {
           type: 'send/resetSendState',
         };
 
-        const result = sendReducer({}, action);
+        const result = sendReducer({ prevSwapAndSendInput: null }, action);
 
         expect(result).toStrictEqual(initialState);
+      });
+
+      it('should set the state back to a blank slate matching the initialState object and preserve prevSwapAndSend', () => {
+        const action = {
+          type: 'send/resetSendState',
+        };
+
+        const result = sendReducer({ prevSwapAndSendInput: 'test' }, action);
+
+        expect(result).toStrictEqual({
+          ...initialState,
+          prevSwapAndSendInput: 'test',
+        });
       });
     });
     describe('updateSendAmount', () => {
@@ -1956,6 +1969,7 @@ describe('Send Slice', () => {
             details: null,
           },
           initialAssetSet: false,
+          isReceived: undefined,
         });
 
         expect(actionResult[2].type).toStrictEqual(
@@ -2022,6 +2036,7 @@ describe('Send Slice', () => {
             error: null,
           },
           initialAssetSet: false,
+          isReceived: undefined,
         });
 
         expect(actionResult[4].type).toStrictEqual(
@@ -2896,6 +2911,8 @@ describe('Send Slice', () => {
             },
             history: ['sendFlow - user clicked edit on transaction with id 1'],
             id: 1,
+            isSwapQuoteLoading: false,
+            quotes: null,
             receiveAsset: {
               balance: '0x0',
               details: null,
@@ -2911,6 +2928,8 @@ describe('Send Slice', () => {
               type: '',
             },
             status: SEND_STATUSES.VALID,
+            swapQuotesError: null,
+            swapQuotesLatestRequestTimestamp: null,
             transactionType: '0x0',
             userInputHexData: '',
           },
@@ -3073,6 +3092,8 @@ describe('Send Slice', () => {
             },
             history: ['sendFlow - user clicked edit on transaction with id 1'],
             id: 1,
+            isSwapQuoteLoading: false,
+            quotes: null,
             receiveAsset: {
               balance: '0x0',
               details: null,
@@ -3088,6 +3109,8 @@ describe('Send Slice', () => {
               recipientWarningAcknowledged: false,
             },
             status: SEND_STATUSES.VALID,
+            swapQuotesError: null,
+            swapQuotesLatestRequestTimestamp: null,
             transactionType: '0x0',
             userInputHexData:
               editTransactionState.metamask.transactions[0].txParams.data,
@@ -3103,7 +3126,7 @@ describe('Send Slice', () => {
         expect(actionResult[5]).toStrictEqual({
           type: 'send/updateAsset',
           payload: {
-            sendAsset: {
+            asset: {
               balance: '0x1',
               details: {
                 address: '0xNftAddress',
@@ -3115,6 +3138,7 @@ describe('Send Slice', () => {
               type: AssetType.NFT,
             },
             initialAssetSet: true,
+            isReceived: undefined,
           },
         });
         expect(actionResult[6].type).toStrictEqual(
@@ -3298,6 +3322,8 @@ describe('Send Slice', () => {
           },
           history: ['sendFlow - user clicked edit on transaction with id 1'],
           id: 1,
+          isSwapQuoteLoading: false,
+          quotes: null,
           receiveAsset: {
             balance: '0x0',
             details: null,
@@ -3313,6 +3339,8 @@ describe('Send Slice', () => {
             recipientWarningAcknowledged: false,
           },
           status: SEND_STATUSES.VALID,
+          swapQuotesError: null,
+          swapQuotesLatestRequestTimestamp: null,
           transactionType: '0x0',
           userInputHexData:
             editTransactionState.metamask.transactions[0].txParams.data,
@@ -3341,6 +3369,7 @@ describe('Send Slice', () => {
             },
           },
           initialAssetSet: true,
+          isReceived: undefined,
         },
       });
       expect(actionResult[6].type).toStrictEqual(

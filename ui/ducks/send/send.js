@@ -511,6 +511,7 @@ export const initialState = {
   gasPriceEstimate: '0x0',
   gasLimitMinimum: GAS_LIMITS.SIMPLE,
   gasTotalForLayer1: null,
+  prevSwapAndSendInput: null,
   recipientMode: RECIPIENT_SEARCH_MODES.CONTACT_LIST,
   recipientInput: '',
   selectedAccount: {
@@ -2290,9 +2291,10 @@ export function updateSendQuote(
 ) {
   return async (dispatch, getState) => {
     const state = getState();
+    const sendState = state[name];
 
     const draftTransaction =
-      state[name].draftTransactions[state[name].currentTransactionUUID];
+      sendState.draftTransactions?.[sendState?.currentTransactionUUID];
 
     const isSwapAndSend = getIsDraftSwapAndSend(draftTransaction);
     const {
