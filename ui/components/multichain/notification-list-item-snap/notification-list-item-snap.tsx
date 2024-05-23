@@ -87,12 +87,12 @@ export const NotificationListItemSnap = ({
         backgroundColor={BackgroundColor.transparent}
         gap={4}
         height={BlockSize.Full}
-        style={{ paddingLeft: '6px', paddingRight: '6px' }}
+        style={{ paddingLeft: '6px', paddingRight: '6px', paddingTop: '2px' }}
       >
         {!isRead && (
           <Box
             display={Display.Block}
-            className="notification-list-item__unread-dot__wrapper"
+            className="notification-list-item__unread-dot__wrapper--snap"
           >
             <Icon
               name={IconName.FullCircle}
@@ -103,7 +103,7 @@ export const NotificationListItemSnap = ({
           </Box>
         )}
 
-        <Box height={BlockSize.Full} style={{ paddingTop: '6px' }}>
+        <Box height={BlockSize.Full} className="notification-list-item__icon">
           <SnapAvatar
             snapId="npm:@metamask/notification-example-snap"
             badgeBackgroundColor={BackgroundColor.backgroundDefault}
