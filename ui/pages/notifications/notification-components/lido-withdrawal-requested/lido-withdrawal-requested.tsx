@@ -42,7 +42,7 @@ const isLidoWithdrawalRequestedNotification = isOfTypeNodeGuard([
 
 const getTitle = () => {
   const items = createTextItems(
-    [t('notificationItemLidoWithdrawalRequested') || ''],
+    [t('notificationItemUnStakingRequested') || ''],
     TextVariant.bodySm,
   );
   return items;
@@ -152,6 +152,7 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
           const { nativeCurrencyLogo } = getNetworkDetailsByChainId(
             `0x${chainId}` as keyof typeof CHAIN_IDS,
           );
+          console.log(notification);
           return (
             <NotificationDetailAsset
               icon={{
@@ -161,7 +162,7 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
                   position: BadgeWrapperPosition.topRight,
                 },
               }}
-              label={t('notificationItemUnStakingProvider') || ''}
+              label={t('notificationItemStakingProvider') || ''}
               detail="Lido-staked ETH"
             />
           );
