@@ -3326,7 +3326,7 @@ export function sendAmountIsInError(state) {
 }
 
 /**
- * Selector that returns the address of the curent send sender
+ * Selector that returns the address of the current send sender
  *
  * @type {Selector?<string>}
  */
@@ -3337,7 +3337,7 @@ export function getSender(state) {
     sendState.draftTransactions[sendState.currentTransactionUUID];
 
   return (
-    draftTransaction.fromAccount?.address ??
+    draftTransaction?.fromAccount?.address ??
     sendState.selectedAccount.address ??
     getSelectedInternalAccount(state).address
   );
