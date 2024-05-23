@@ -7,17 +7,15 @@ import {
   getOnChainMetamaskNotificationsUnreadCount,
   selectIsMetamaskNotificationsFeatureSeen,
 } from '../../../selectors/metamask-notifications/metamask-notifications';
-import { Box, IconName, Icon, Text } from '../../component-library';
+import { Box, Text } from '../../component-library';
 import { getUnreadNotificationsCount } from '../../../selectors';
 import {
   BackgroundColor,
-  BorderColor,
   BorderRadius,
   BorderStyle,
   Display,
   TextColor,
   TextVariant,
-  IconColor,
 } from '../../../helpers/constants/design-system';
 import { NewFeatureTag } from '../../../pages/notifications/NewFeatureTag';
 
@@ -85,22 +83,24 @@ export const NotificationsTagCounter = ({
           position: 'absolute',
           cursor: 'pointer',
           top: '-5px',
-          left: '9px',
+          left: '10px',
           zIndex: 1,
         }}
+        backgroundColor={BackgroundColor.errorDefault}
+        borderStyle={BorderStyle.none}
+        borderRadius={BorderRadius.MD}
+        paddingTop={0}
+        paddingBottom={0}
+        paddingLeft={0}
+        paddingRight={0}
       >
-        <Icon
-          borderColor={BorderColor.backgroundDefault}
-          borderStyle={BorderStyle.solid}
-          borderWidth={4}
-          borderRadius={BorderRadius.full}
-          name={IconName.FullCircle}
-          color={IconColor.errorDefault}
-          style={{
-            height: '15px',
-            width: '15px',
-          }}
-        />
+        <Text
+          color={TextColor.errorInverse}
+          variant={TextVariant.bodySm}
+          className="notifications-tag-counter__unread-dot"
+        >
+          {notificationsCount > 10 ? '9+' : notificationsCount}
+        </Text>
       </Box>
     );
   }
@@ -109,18 +109,17 @@ export const NotificationsTagCounter = ({
     <Box
       backgroundColor={BackgroundColor.errorDefault}
       borderStyle={BorderStyle.none}
-      borderRadius={BorderRadius.MD}
+      borderRadius={BorderRadius.LG}
       paddingTop={0}
       paddingBottom={0}
-      paddingLeft={2}
-      paddingRight={2}
+      className="notifications-tag-counter"
     >
       <Text
         color={TextColor.errorInverse}
         variant={TextVariant.bodySm}
         data-testid="global-menu-notification-count"
       >
-        {notificationsCount > 99 ? '99+' : notificationsCount}
+        {notificationsCount > 10 ? '9+' : notificationsCount}
       </Text>
     </Box>
   );
