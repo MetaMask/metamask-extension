@@ -188,7 +188,6 @@ export const components: NotificationComponent<StakeNotification> = {
         );
       },
       AssetReceived: ({ notification }) => {
-        const direction = DIRECTION_MAP[notification.type];
         const chainId = decimalToHex(notification.chain_id);
         const { nativeCurrencyLogo } = getNetworkDetailsByChainId(
           `0x${chainId}` as keyof typeof CHAIN_IDS,
@@ -202,11 +201,7 @@ export const components: NotificationComponent<StakeNotification> = {
                 position: BadgeWrapperPosition.topRight,
               },
             }}
-            label={
-              direction === 'staked'
-                ? t('notificationItemStaked') || ''
-                : t('notificationItemUnStaked') || ''
-            }
+            label={t('notificationItemReceived') || ''}
             detail={notification.data.stake_out.symbol}
             fiatValue={`$${getUsdAmount(
               notification.data.stake_out.amount,
