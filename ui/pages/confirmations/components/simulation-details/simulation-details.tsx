@@ -112,8 +112,7 @@ const HeaderLayout: React.FC = ({ children }) => {
           {t('simulationDetailsTitle')}
         </Text>
         <InfoTooltip
-          position="right"
-          iconFillColor="var(--color-icon-muted)"
+          position="top"
           contentText={t('simulationDetailsTitleTooltip')}
         />
       </Box>
