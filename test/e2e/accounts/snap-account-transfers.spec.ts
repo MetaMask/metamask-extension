@@ -1,5 +1,10 @@
 import { Suite } from 'mocha';
-import { sendTransaction, withFixtures, WINDOW_TITLES } from '../helpers';
+import {
+  sendTransaction,
+  withFixtures,
+  WINDOW_TITLES,
+  clickNestedButton,
+} from '../helpers';
 import { Driver } from '../webdriver/driver';
 import {
   accountSnapFixtures,
@@ -61,7 +66,7 @@ describe('Snap Account Transfers', function (this: Suite) {
         WINDOW_TITLES.ExtensionInFullScreenView,
       );
       await driver.navigate();
-      await driver.delay(1000);
+      await driver.delay(2000);
       await driver.clickElement({
         text: 'Go to site',
         tag: 'button',
@@ -80,7 +85,7 @@ describe('Snap Account Transfers', function (this: Suite) {
       await driver.findElement('[title="24 ETH"]');
     } else if (flowType === 'reject') {
       // ensure the transaction was rejected by the Snap
-      await driver.clickElement({ text: 'Activity', tag: 'button' });
+      await clickNestedButton(driver, 'Activity');
       await driver.findElement(
         '[data-original-title="Request rejected by user or snap."]',
       );

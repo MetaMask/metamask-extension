@@ -17,7 +17,7 @@ const selectors = {
   quantity: 'input[placeholder="0"]',
   hexDataInput: '[data-testid="send-hex-textarea"]',
   nextPageButton: { text: 'Continue', tag: 'button' },
-  hexButton: { text: 'Hex', tag: 'button' },
+  hexButton: { xpath: '//*[contains(text(),"Hex")]/parent::button' },
   detailsTab: { text: 'Details', tag: 'button' },
   containerContent: '.confirm-page-container-content',
   confirmButton: { text: 'Confirm', tag: 'button' },
