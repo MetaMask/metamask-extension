@@ -13,13 +13,5 @@ export type SnapNotification = {
   createdAt: string;
   isRead: boolean;
   type: typeof SNAP;
-  data: {
-    snapName: string;
-    message: string;
-    origin: string;
-  };
-};
-
-export type SnapNotificationWithoutSnapName = Omit<SnapNotification, 'data'> & {
-  data: Omit<SnapNotification['data'], 'snapName'>;
+  data: RawSnapNotification;
 };
