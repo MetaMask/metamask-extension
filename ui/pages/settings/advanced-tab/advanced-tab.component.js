@@ -47,7 +47,6 @@ export default class AdvancedTab extends PureComponent {
     setHexDataFeatureFlag: PropTypes.func,
     displayWarning: PropTypes.func,
     showResetAccountConfirmationModal: PropTypes.func,
-    showEthSignModal: PropTypes.func,
     warning: PropTypes.string,
     sendHexData: PropTypes.bool,
     showFiatInTestnets: PropTypes.bool,
@@ -62,10 +61,6 @@ export default class AdvancedTab extends PureComponent {
     dismissSeedBackUpReminder: PropTypes.bool.isRequired,
     backupUserData: PropTypes.func.isRequired,
     restoreUserData: PropTypes.func.isRequired,
-    setDisabledRpcMethodPreference: PropTypes.func.isRequired,
-    disabledRpcMethodPreferences: PropTypes.shape({
-      eth_sign: PropTypes.bool.isRequired,
-    }),
     showExtensionInFullSizeView: PropTypes.bool,
     setShowExtensionInFullSizeView: PropTypes.func.isRequired,
   };
@@ -551,64 +546,6 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
-  renderToggleEthSignControl() {
-    const { t, trackEvent } = this.context;
-    const {
-      disabledRpcMethodPreferences,
-      showEthSignModal,
-      setDisabledRpcMethodPreference,
-    } = this.props;
-    const toggleOff = (value) => {
-      setDisabledRpcMethodPreference('eth_sign', !value);
-      trackEvent({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.OnboardingWalletAdvancedSettings,
-        properties: {
-          location: 'Settings',
-          enable_eth_sign: false,
-        },
-      });
-    };
-    return (
-      <Box
-        ref={this.settingsRefs[10]}
-        className="settings-page__content-row"
-        data-testid="advanced-setting-toggle-ethsign"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-      >
-        <div className="settings-page__content-item">
-          <span>{t('toggleEthSignField')}</span>
-          <div className="settings-page__content-description">
-            {t('toggleEthSignDescriptionField')}
-          </div>
-        </div>
-        {disabledRpcMethodPreferences?.eth_sign ? (
-          <BannerAlert
-            severity={Severity.Danger}
-            marginTop={3}
-            marginBottom={4}
-            descriptionProps={{ variant: TextVariant.bodyMd }}
-          >
-            {t('toggleEthSignBannerDescription')}
-          </BannerAlert>
-        ) : null}
-
-        <div className="settings-page__content-item-col">
-          <ToggleButton
-            className="eth-sign-toggle"
-            value={disabledRpcMethodPreferences?.eth_sign || false}
-            onToggle={(value) => {
-              value ? toggleOff(value) : showEthSignModal();
-            }}
-            offLabel={t('toggleEthSignOff')}
-            onLabel={t('toggleEthSignOn')}
-          />
-        </div>
-      </Box>
-    );
-  }
-
   handleLockChange(autoLockTimeLimitBeforeNormalization) {
     const { t } = this.context;
 
@@ -766,7 +703,6 @@ export default class AdvancedTab extends PureComponent {
         {this.renderUserDataBackup()}
         {this.renderRestoreUserData()}
         {this.renderDismissSeedBackupReminderControl()}
-        {this.renderToggleEthSignControl()}
       </div>
     );
   }

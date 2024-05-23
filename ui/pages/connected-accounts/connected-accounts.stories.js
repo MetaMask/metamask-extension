@@ -96,7 +96,6 @@ const internalAccount = {
   options: {},
   methods: [
     'personal_sign',
-    'eth_sign',
     'eth_signTransaction',
     'eth_signTypedData_v1',
     'eth_signTypedData_v3',
