@@ -45,11 +45,6 @@ describe('Eth sign', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withPreferencesController({
-            disabledRpcMethodPreferences: {
-              eth_sign: true,
-            },
-          })
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions: defaultGanacheOptions,
@@ -99,11 +94,6 @@ describe('Eth sign', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withPreferencesController({
-            disabledRpcMethodPreferences: {
-              eth_sign: true,
-            },
-          })
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions: defaultGanacheOptions,

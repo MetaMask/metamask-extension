@@ -231,7 +231,6 @@ export const SENTRY_BACKGROUND_STATE = {
   PreferencesController: {
     advancedGasFee: true,
     currentLocale: true,
-    disabledRpcMethodPreferences: true,
     dismissSeedBackUpReminder: true,
     featureFlags: true,
     forgottenPassword: true,

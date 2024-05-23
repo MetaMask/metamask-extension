@@ -37,7 +37,6 @@ const RATE_LIMIT_TYPES = {
  * default is RANDOM_SAMPLE
  */
 const RATE_LIMIT_MAP = {
-  [MESSAGE_TYPE.ETH_SIGN]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
@@ -148,7 +147,6 @@ let globalRateLimitCount = 0;
  * @param {Function} opts.getDeviceModel
  * @param {Function} opts.isConfirmationRedesignEnabled
  * @param {RestrictedControllerMessenger} opts.snapAndHardwareMessenger
- * @param {AppStateController} opts.appStateController
  * @param {number} [opts.globalRateLimitTimeout] - time, in milliseconds, of the sliding
  * time window that should limit the number of method calls tracked to globalRateLimitMaxAmount.
  * @param {number} [opts.globalRateLimitMaxAmount] - max number of method calls that should
@@ -345,18 +343,8 @@ export default function createRPCMethodTrackingMiddleware({
         return callback();
       }
 
-      // The rpc error methodNotFound implies that 'eth_sign' is disabled in Advanced Settings
-      const isDisabledEthSignAdvancedSetting =
-        method === MESSAGE_TYPE.ETH_SIGN &&
-        res.error?.code === errorCodes.rpc.methodNotFound;
-
-      const isDisabledRPCMethod = isDisabledEthSignAdvancedSetting;
-
       let event;
-      if (isDisabledRPCMethod) {
-        event = eventType.FAILED;
-        eventProperties.error = res.error;
-      } else if (res.error?.code === errorCodes.provider.userRejectedRequest) {
+      if (res.error?.code === errorCodes.provider.userRejectedRequest) {
         event = eventType.REJECTED;
       } else if (
         res.error?.code === errorCodes.rpc.internal &&
@@ -370,17 +358,15 @@ export default function createRPCMethodTrackingMiddleware({
       }
 
       let blockaidMetricProps = {};
-      if (!isDisabledRPCMethod) {
-        if (SIGNING_METHODS.includes(method)) {
-          const securityAlertResponse =
-            appStateController.getSignatureSecurityAlertResponse(
-              req.securityAlertResponse?.securityAlertId,
-            );
+      if (SIGNING_METHODS.includes(method)) {
+        const securityAlertResponse =
+          appStateController.getSignatureSecurityAlertResponse(
+            req.securityAlertResponse?.securityAlertId,
+          );
 
-          blockaidMetricProps = getBlockaidMetricsProps({
-            securityAlertResponse,
-          });
-        }
+        blockaidMetricProps = getBlockaidMetricsProps({
+          securityAlertResponse,
+        });
       }
 
       const properties = {

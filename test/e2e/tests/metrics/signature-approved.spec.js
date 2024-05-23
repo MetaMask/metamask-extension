@@ -244,11 +244,6 @@ describe('Signature Approved Event @no-mmi', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesController({
-            disabledRpcMethodPreferences: {
-              eth_sign: true,
-            },
-          })
           .withMetaMetricsController({
             metaMetricsId: 'fake-metrics-id',
             participateInMetaMetrics: true,

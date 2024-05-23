@@ -64,9 +64,6 @@
   "metamask": {
     "ipfsGateway": "",
     "dismissSeedBackUpReminder": false,
-    "disabledRpcMethodPreferences": {
-      "eth_sign": false
-    },
     "usePhishDetect": true,
     "participateInMetaMetrics": false,
     "gasEstimateType": "fee-market",

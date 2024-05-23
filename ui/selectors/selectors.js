@@ -947,10 +947,6 @@ export function getTestNetworkBackgroundColor(state) {
   }
 }
 
-export function getDisabledRpcMethodPreferences(state) {
-  return state.metamask.disabledRpcMethodPreferences;
-}
-
 export function getShouldShowFiat(state) {
   const isMainNet = getIsMainnet(state);
   const isLineaMainNet = getIsLineaMainnet(state);

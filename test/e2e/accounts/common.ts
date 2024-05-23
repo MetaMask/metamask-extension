@@ -30,11 +30,6 @@ export const accountSnapFixtures = (title: string | undefined) => {
     dapp: true,
     fixtures: new FixtureBuilder()
       .withPermissionControllerConnectedToTestDapp(false)
-      .withPreferencesController({
-        disabledRpcMethodPreferences: {
-          eth_sign: true,
-        },
-      })
       .build(),
     ganacheOptions: multipleGanacheOptions,
     title,
