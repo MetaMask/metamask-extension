@@ -60,7 +60,9 @@ export default class UnitInput extends PureComponent {
   }
 
   handleFocus = () => {
-    this.unitInput.focus();
+    if (document.activeElement.tagName !== 'INPUT') {
+      this.unitInput.focus();
+    }
   };
 
   componentDidMount() {
