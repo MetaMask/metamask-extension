@@ -367,11 +367,6 @@
     @include design-system.screen-sm-max {
       max-width: 100%;
     }
-
-    .eth-sign-toggle .toggle-button__status {
-      // for eth_sign we need to override the uppercase property of toggle button text
-      text-transform: capitalize;
-    }
   }
 
   &__button {

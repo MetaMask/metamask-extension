@@ -20,7 +20,6 @@ import { retry } from '../../../development/lib/retry';
 /**
  * These are fixtures specific to Account Snap E2E tests:
  * -- connected to Test Dapp
- * -- eth_sign enabled
  * -- two private keys with 25 ETH each
  *
  * @param title

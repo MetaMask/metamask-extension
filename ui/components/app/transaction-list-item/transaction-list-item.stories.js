@@ -135,13 +135,6 @@ PersonalSign.args = {
   },
 };
 
-Sign.storyName = 'eth_sign';
-Sign.args = {
-  'transactionGroup.primaryTransaction': {
-    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.sign],
-  },
-};
-
 SignTypeData.storyName = 'eth_signTypedData';
 SignTypeData.args = {
   'transactionGroup.primaryTransaction': {
