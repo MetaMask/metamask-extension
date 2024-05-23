@@ -8,6 +8,8 @@
     &-subText {
       display: flex;
       align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
 
       .currency-display-component {
         margin-left: 4px;
@@ -19,8 +21,8 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
-    flex: 0 0 51%;
-    width: 51%;
+    flex: 1 1 50%;
+    width: 50%;
 
     &--flex-width {
       width: auto;
