@@ -93,7 +93,7 @@ describe('metamask-notifications - constructor()', () => {
     // initialize controller with 1 address
     mockListAccounts.mockResolvedValueOnce(['addr1']);
     const controller = new MetamaskNotificationsController({ messenger });
-    controller.state.isMetamaskNotificationsEnabled = true;
+    controller.setMetamaskNotificationsEnabled(true);
 
     const mockUpdate = jest
       .spyOn(controller, 'updateOnChainTriggersByAccount')
