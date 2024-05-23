@@ -137,7 +137,7 @@ describe('CurrencyInput Component', () => {
       const currencyInput = queryByTestId('currency-input');
       fireEvent.change(currencyInput, { target: { value: 1 } });
 
-      expect(props.onChange).toHaveBeenCalledWith('0xde0b6b3a7640000');
+      expect(props.onChange).toHaveBeenCalledWith('0xde0b6b3a7640000', '1');
       // assume the onChange function updates the hexValue
       rerender(<CurrencyInput {...props} hexValue="0xde0b6b3a7640000" />);
 
@@ -162,7 +162,10 @@ describe('CurrencyInput Component', () => {
 
       fireEvent.change(currencyInput, { target: { value: 1 } });
 
-      expect(props.onChange).toHaveBeenCalledWith('0xf604b06968000');
+      expect(props.onChange).toHaveBeenCalledWith(
+        '0xf604b06968000',
+        '0.004328',
+      );
       expect(queryByTitle('0.004328 ETH')).toBeInTheDocument();
     });
 

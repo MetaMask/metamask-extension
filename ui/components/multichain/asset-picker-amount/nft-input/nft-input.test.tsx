@@ -54,6 +54,6 @@ describe('NFTInput', () => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     fireEvent.change(input!, { target: { value: '10' } });
 
-    expect(mockAssetChange).toHaveBeenCalledWith('0xa');
+    expect(mockAssetChange).toHaveBeenCalledWith('0xa', '10');
   });
 });
