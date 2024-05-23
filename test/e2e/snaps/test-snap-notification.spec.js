@@ -104,11 +104,11 @@ describe('Test Snap Notification', function () {
 
         // look for the correct text in notifications (via xpath)
         await driver.waitForSelector({
-          css: '.notifications__item__details__message',
+          css: '.snap-notifications__item__details__message',
           text: 'Hello from within MetaMask!',
         });
         await driver.findElement({
-          css: '.notifications__item__details__message',
+          css: '.snap-notifications__item__details__message',
           text: 'Hello from within MetaMask!',
         });
       },

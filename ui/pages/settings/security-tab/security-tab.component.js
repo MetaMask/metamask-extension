@@ -50,6 +50,8 @@ import {
 } from '../../../helpers/utils/settings-search';
 
 import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
+import ProfileSyncToggle from './profile-sync-toggle';
+import MetametricsToggle from './metametrics-toggle';
 
 export default class SecurityTab extends PureComponent {
   static contextTypes = {
@@ -1179,6 +1181,10 @@ export default class SecurityTab extends PureComponent {
           {this.context.t('privacy')}
         </span>
 
+        <div className="settings-page__content-padded">
+          <ProfileSyncToggle />
+        </div>
+
         <div>
           <span className="settings-page__security-tab-sub-header">
             {this.context.t('alerts')}
@@ -1243,7 +1249,7 @@ export default class SecurityTab extends PureComponent {
           {this.context.t('metrics')}
         </span>
         <div className="settings-page__content-padded">
-          {this.renderMetaMetricsOptIn()}
+          <MetametricsToggle />
           {this.renderDataCollectionForMarketing()}
         </div>
       </div>
