@@ -49,7 +49,7 @@ const isStakeNotification = isOfTypeNodeGuard([
 ]);
 
 const TITLE_MAP = {
-  [TRIGGER_TYPES.LIDO_STAKE_COMPLETED]: t('notificationItemStakeCompleted'),
+  [TRIGGER_TYPES.LIDO_STAKE_COMPLETED]: t('notificationItemStaked'),
   [TRIGGER_TYPES.LIDO_WITHDRAWAL_COMPLETED]: t(
     'notificationItemUnStakeCompleted',
   ),
@@ -92,6 +92,23 @@ const getDescription = (n: StakeNotification) => {
 export const components: NotificationComponent<StakeNotification> = {
   guardFn: isStakeNotification,
   item: ({ notification, onClick }) => {
+    const direction = DIRECTION_MAP[notification.type];
+    const amount =
+      direction === 'staked'
+        ? getAmount(
+            notification.data.stake_in.amount,
+            notification.data.stake_in.decimals,
+            {
+              shouldEllipse: true,
+            },
+          )
+        : getAmount(
+            notification.data.stake_out.amount,
+            notification.data.stake_out.decimals,
+            {
+              shouldEllipse: true,
+            },
+          );
     return (
       <NotificationListItem
         id={notification.id}
@@ -107,13 +124,11 @@ export const components: NotificationComponent<StakeNotification> = {
         title={getTitle(notification)}
         description={getDescription(notification)}
         createdAt={new Date(notification.createdAt)}
-        amount={getAmount(
-          notification.data.stake_out.amount,
-          notification.data.stake_out.decimals,
-          {
-            shouldEllipse: true,
-          },
-        )}
+        amount={`${amount} ${
+          direction === 'staked'
+            ? notification.data.stake_in.symbol
+            : notification.data.stake_out.symbol
+        }`}
         onClick={onClick}
       />
     );
