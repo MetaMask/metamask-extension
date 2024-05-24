@@ -511,6 +511,7 @@ export const initialState = {
   gasPriceEstimate: '0x0',
   gasLimitMinimum: GAS_LIMITS.SIMPLE,
   gasTotalForLayer1: null,
+  prevSwapAndSendInput: null,
   recipientMode: RECIPIENT_SEARCH_MODES.CONTACT_LIST,
   recipientInput: '',
   selectedAccount: {
@@ -2107,8 +2108,8 @@ const debouncedValidateRecipientUserInput = debounce(
   300,
 );
 
-const debouncedComputeEstimatedGasLimit = debounce((dispatch) => {
-  dispatch(computeEstimatedGasLimit());
+const debouncedComputeEstimatedGasLimit = debounce(async (dispatch) => {
+  await dispatch(computeEstimatedGasLimit());
 }, 300);
 
 const debouncedAddHistoryEntry = debounce((dispatch, payload) => {
@@ -2290,9 +2291,10 @@ export function updateSendQuote(
 ) {
   return async (dispatch, getState) => {
     const state = getState();
+    const sendState = state[name];
 
     const draftTransaction =
-      state[name].draftTransactions[state[name].currentTransactionUUID];
+      sendState.draftTransactions?.[sendState?.currentTransactionUUID];
 
     const isSwapAndSend = getIsDraftSwapAndSend(draftTransaction);
     const {
@@ -2324,7 +2326,7 @@ export function updateSendQuote(
     }
 
     if (isComputingSendGasLimit) {
-      debouncedComputeEstimatedGasLimit(dispatch);
+      await debouncedComputeEstimatedGasLimit(dispatch);
     }
   };
 }
@@ -2442,9 +2444,9 @@ export function updateSendAmount(hexAmount, decimalAmount) {
     if (state[name].amountMode === AMOUNT_MODES.MAX) {
       dispatch(actions.updateAmountMode(AMOUNT_MODES.INPUT));
     }
-    dispatch(updateSendQuote());
+    await dispatch(updateSendQuote());
 
-    if (!decimalAmount) {
+    if (decimalAmount === undefined) {
       return;
     }
 
@@ -2557,7 +2559,7 @@ export function updateSendAsset(
         const hexBalance = balance[providedDetails.address]?.hex;
 
         providedDetails.balance = hexBalance
-          ? hexToDecimal(hexBalance)
+          ? addHexPrefix(hexBalance)
           : undefined;
 
         // regardless of if we get the balance or not, we should not consider it a missing property
@@ -2639,7 +2641,7 @@ export function updateSendAsset(
           if (isCurrentOwner) {
             asset.error = null;
             asset.balance = details.balance
-              ? addHexPrefix(decimalToHex(details.balance))
+              ? addHexPrefix(details.balance)
               : '0x1';
           } else {
             throw new Error(
@@ -3339,7 +3341,7 @@ export function getSender(state) {
   return (
     draftTransaction?.fromAccount?.address ??
     sendState.selectedAccount.address ??
-    getSelectedInternalAccount(state).address
+    getSelectedInternalAccount(state)?.address
   );
 }
 

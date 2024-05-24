@@ -52,22 +52,24 @@ export default function useEthFeeData(gasLimit = 0) {
   }, [dispatch, chainId, networkAndAccountSupports1559, isSwapsChain]);
 
   return useMemo(() => {
-    const ethGasFee = new Numeric(
-      networkAndAccountSupports1559 ? gasFee1559 : gasPriceNon1559,
-      10,
-      EtherDenomination.GWEI,
-    )
+    const rawGasPrice = networkAndAccountSupports1559
+      ? gasFee1559
+      : gasPriceNon1559;
+
+    if (!rawGasPrice) {
+      return { formattedFiatGasFee: '', formattedEthGasFee: '' };
+    }
+    const ethGasFee = new Numeric(rawGasPrice, 10, EtherDenomination.GWEI)
       .times(new Numeric(gasLimit, 10))
       .toDenomination(EtherDenomination.ETH);
 
-    const fiatGasFee = ethGasFee
-      .applyConversionRate(selectedNativeConversionRate)
-      .toNumber();
+    const fiatGasFee = selectedNativeConversionRate
+      ? ethGasFee.applyConversionRate(selectedNativeConversionRate).toNumber()
+      : undefined;
 
-    const formattedFiatGasFee = formatCurrency(
-      new Numeric(fiatGasFee, 10).toString(),
-      currentCurrency,
-    );
+    const formattedFiatGasFee = fiatGasFee
+      ? formatCurrency(new Numeric(fiatGasFee, 10).toString(), currentCurrency)
+      : '';
 
     const formattedEthGasFee = `${toFixedNoTrailingZeros(
       ethGasFee.toNumber(),

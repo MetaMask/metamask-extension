@@ -21,14 +21,14 @@ import { isValidHexAddress } from '../../../shared/modules/hexstring-utils';
 
 type Address = `0x${string}`;
 
-type Request = {
+export type Request = {
   chainId: number; // chain ID as decimal
   sourceAmount: string; // big number string
   sourceToken: Address;
   destinationToken: Address;
   sender: Address;
   recipient: Address;
-  slippage: string; // slippage as a percentage; e.g. '1.0' for 1%
+  slippage?: string; // slippage as a percentage; e.g. '1.0' for 1%
 };
 
 export type Quote = {
@@ -154,7 +154,7 @@ const BASE_URL = process.env.SWAPS_USE_DEV_APIS
 export async function getSwapAndSendQuotes(request: Request): Promise<Quote[]> {
   const { chainId, ...params } = request;
 
-  params.slippage = SWAP_AND_SEND_SLIPPAGE;
+  params.slippage = params.slippage ?? SWAP_AND_SEND_SLIPPAGE;
 
   const queryString = new URLSearchParams(params);
 
