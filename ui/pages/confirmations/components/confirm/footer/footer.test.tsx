@@ -204,7 +204,7 @@ describe('ConfirmFooter', () => {
 
     it('sets the alert modal visible when the review alerts button is clicked', () => {
       const { getByTestId } = render(stateWithAlertsMock);
-      fireEvent.click(getByTestId('confirm-footer-confirm-button'));
+      fireEvent.click(getByTestId('confirm-footer-button'));
       expect(getByTestId('alert-modal-button')).toBeDefined();
     });
   });
