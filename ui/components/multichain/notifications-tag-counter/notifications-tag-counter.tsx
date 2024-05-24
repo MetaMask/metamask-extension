@@ -96,7 +96,7 @@ export const NotificationsTagCounter = ({
       >
         <Text
           color={TextColor.errorInverse}
-          variant={TextVariant.bodySm}
+          variant={TextVariant.bodyXs}
           className="notifications-tag-counter__unread-dot"
         >
           {notificationsCount > 10 ? '9+' : notificationsCount}
@@ -116,7 +116,7 @@ export const NotificationsTagCounter = ({
     >
       <Text
         color={TextColor.errorInverse}
-        variant={TextVariant.bodySm}
+        variant={TextVariant.bodyXs}
         data-testid="global-menu-notification-count"
       >
         {notificationsCount > 10 ? '9+' : notificationsCount}
