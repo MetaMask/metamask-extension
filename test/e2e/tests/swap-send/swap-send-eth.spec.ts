@@ -69,7 +69,7 @@ describe('Swap-Send ETH', function () {
 
           await swapSendPage.verifyQuoteDisplay(
             '1 ETH = 301075.4807 TST',
-            '1500000. ETH', // TODO this looks weird
+            '1500000 ETH', // TODO this looks weird
             '≈ $4,515,000,000.00',
           );
 
