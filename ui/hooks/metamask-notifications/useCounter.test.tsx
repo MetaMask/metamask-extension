@@ -3,8 +3,8 @@ import { Provider } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { useCounter } from './useCounter';
 import { TRIGGER_TYPES } from '../../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
+import { useCounter } from './useCounter';
 
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);
