@@ -3341,7 +3341,7 @@ export function getSender(state) {
   return (
     draftTransaction?.fromAccount?.address ??
     sendState.selectedAccount.address ??
-    getSelectedInternalAccount(state).address
+    getSelectedInternalAccount(state)?.address
   );
 }
 
