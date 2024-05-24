@@ -364,6 +364,13 @@ class Driver {
     }, this.timeout);
   }
 
+  /**
+  * Waits until the expected number of tokens to be rendered
+  *
+  * @param {string | object} rawLocator - element locator
+  * @param {number} count - The expected number of elements.
+  * @returns {Promise} promise resolving when the count of elements is matched.
+  */
   async elementCountBecomesN(rawLocator, n, timeout = this.timeout) {
     const locator = this.buildLocator(rawLocator);
     try {
@@ -546,12 +553,14 @@ class Driver {
   }
 
   /**
-   * for instances where an element such as a scroll button does not
+   * Clicks on an element if it's present. If the element is not found,
+   * catch the exception, log the failure to the console, but do not cause the test to fail.
+   * For scenario where an element such as a scroll button does not
    * show up because of render differences, proceed to the next step
    * without causing a test failure, but provide a console log of why.
    *
-   * @param rawLocator
-   * @param timeout
+   * @param rawLocator - Element locator
+   * @param timeout - The maximum time in ms to wait for the element
    */
   async clickElementSafe(rawLocator, timeout = 1000) {
     try {

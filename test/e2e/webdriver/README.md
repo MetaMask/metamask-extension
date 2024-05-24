@@ -120,7 +120,7 @@ There are two types of XPath
 >
 >
 > <details><summary><b>Basic Xpath</b></summary>
->XPath expression select nodes or list of nodes on the basis of attributes like ID , Name, Classname and we could provide it directly as mentioned in the syntax.<br>
+>XPath expressions select nodes or lists of nodes based on attributes such as `id`,`name`,`classname` and these can be directly specified as shown in the syntax.<br>
 >
 > ![Screenshot displays ‘Confirm’ button in the send transaction page](image/xpath.png)
 >
@@ -354,12 +354,13 @@ Each of these actions requires first [locating](#locators) the web element you w
 <details><summary><b>clickElementSafe</b></summary>
 <br>
 
->**`clickElementSafe`** function is an asynchronous function designed to click on a web element. It is particularly useful in instances where an element requires scrolling, but the scroll button does not appear due to rendering differences. In such cases, the function proceeds to the next step without causing a test failure and logs the action in the console.
+>**`clickElementSafe`** clicks on an element if it's present. If the element is not found, catch the exception, log the failure to the console, but do not cause the test to fail. It is particularly useful in instances where an element requires scrolling, but the scroll button does not appear due to rendering differences.
 >
 >[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L382)
 >
 >**Arguments**<br>
->@param {string | object} rawLocator - Element locator
+>@param {string | object} rawLocator - Element locator<br>
+>@param timeout - The maximum time in ms to wait for the element
 >
 >**Returns**<br>
 >
@@ -596,7 +597,49 @@ This organization helps provide a clear structure for understanding the various 
 >```
 >>
 </details>
+<details><summary><b>clickElementAndWaitToDisappear</b></summary>
+<br>
 
+>**`clickElementAndWaitToDisappear`** function clicks on an element identified by the provided locator and waits for it to disappear.<br>
+>For scenarios where the clicked element, such as a notification or popup, needs to disappear afterward.
+>The wait ensures that subsequent interactions are not obscured by the initial notification or popup element.
+>
+>[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L406)
+>
+>**Arguments**<br>
+>@param rawLocator - Element locator<br>
+>@param timeout - The maximum time in ms to wait for the element to disappear after clicking.
+>
+>**Example**
+>
+>```jsx
+>await driver.clickElementAndWaitToDisappear({
+>          text: 'Got it',
+>          tag: 'button',
+>        });
+>```
+</details>
+<details><summary><b>elementCountBecomesN</b></summary>
+<br>
+
+>**`elementCountBecomesN`** function waits until the expected number of tokens to be rendered <br>
+>
+>[source](https://github.com/MetaMask/metamask-extension/blob/develop/test/e2e/webdriver/driver.js#L270)
+>
+>**Arguments**<br>
+>@param {string | object} rawLocator - element locator
+>@param {number} count - The expected number of elements.<br>
+>
+>**Returns**<br>
+>@returns {Promise} promise resolving when the count of elements is matched.
+>
+>**Example**
+>
+>```jsx
+>const expectedTokenListElementsAreFound =
+>          await driver.elementCountBecomesN('.multichain-token-list-item', 4);
+>```
+</details>
 <a id="waitX"></a>
 <details><summary><b>waitUntilXWindowHandles</b></summary>
 <br>
