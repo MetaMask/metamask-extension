@@ -64,15 +64,19 @@ async function openDappAndSwitchChain(driver, dappUrl, chainId) {
 
 async function selectDappClickSendGetNetwork(driver, dappUrl) {
   await driver.switchToWindowWithUrl(dappUrl);
-  const currentWindowHandles = await driver.getAllWindowHandles();
+  // Windows: MetaMask, TestDapp1, TestDapp2
   const expectedWindowHandles = 3;
+  await driver.waitUntilXWindowHandles(expectedWindowHandles);
+  const currentWindowHandles = await driver.getAllWindowHandles();
   await driver.clickElement('#sendButton');
 
   // Under mv3, we don't need to add to the current number of window handles
   // because the offscreen document returned by getAllWindowHandles provides
   // an extra window handle
   const newWindowHandles = await driver.waitUntilXWindowHandles(
-    process.env.ENABLE_MV3 ? expectedWindowHandles : expectedWindowHandles + 1,
+    process.env.ENABLE_MV3
+      ? currentWindowHandles.length
+      : currentWindowHandles.length + 1,
   );
   const [newNotificationWindowHandle] = newWindowHandles.filter(
     (h) => !currentWindowHandles.includes(h),
