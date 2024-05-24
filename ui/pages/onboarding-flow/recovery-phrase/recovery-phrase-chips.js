@@ -1,16 +1,20 @@
 import React from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import Box from '../../../components/ui/box';
-import Typography from '../../../components/ui/typography';
-import { Tag } from '../../../components/component-library/tag';
+import {
+  Box,
+  Text,
+  Tag,
+  Icon,
+  IconName,
+} from '../../../components/component-library';
 import { ChipWithInput } from '../../../components/ui/chip/chip-with-input';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  TypographyVariant,
+  TextVariant,
   BorderStyle,
-  Size,
-  DISPLAY,
+  BorderRadius,
+  Display,
   BorderColor,
   Color,
 } from '../../../helpers/constants/design-system';
@@ -32,8 +36,8 @@ export default function RecoveryPhraseChips({
       borderStyle={BorderStyle.solid}
       padding={4}
       borderWidth={1}
-      borderRadius={Size.MD}
-      display={DISPLAY.GRID}
+      borderRadius={BorderRadius.Md}
+      display={Display.Grid}
       marginBottom={4}
       className="recovery-phrase__secret"
     >
@@ -74,8 +78,10 @@ export default function RecoveryPhraseChips({
               <Tag
                 label={word}
                 data-testid={`recovery-phrase-chip-${index}`}
-                className={classnames('chip', 'recovery-phrase__chip')}
+                className="recovery-phrase__chip"
                 borderColor={BorderColor.borderDefault}
+                marginLeft={1}
+                marginRight={1}
               />
             </div>
           );
@@ -86,14 +92,14 @@ export default function RecoveryPhraseChips({
         <div className="recovery-phrase__secret-blocker">
           {!hiddenPhrase && (
             <>
-              <i className="far fa-eye" color="white" />
-              <Typography
-                variant={TypographyVariant.H6}
+              <Icon name={IconName.EyeSlash} />
+              <Text
+                variant={TextVariant.bodyMd}
                 color={Color.overlayInverse}
                 className="recovery-phrase__secret-blocker--text"
               >
                 {t('makeSureNoOneWatching')}
-              </Typography>
+              </Text>
             </>
           )}
         </div>
