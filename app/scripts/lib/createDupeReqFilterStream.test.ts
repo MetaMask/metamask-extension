@@ -1,10 +1,7 @@
 import { obj as createThroughStream } from 'through2';
-import { MINUTE } from '../../../shared/constants/time';
 import createDupeReqFilterStream, {
   THREE_MINUTES,
 } from './createDupeReqFilterStream';
-
-const TWO_MINUTES = MINUTE * 2;
 
 function createTestStream(output) {
   const throughStream = createDupeReqFilterStream();
@@ -128,7 +125,7 @@ describe('createDupeReqFilterStream', () => {
     expect(output).toEqual(expectedOutputAfterExpiryTime);
   });
 
-  it('does not expire single id after two minutes', () => {
+  it('does not expire single id after less than three', () => {
     const output = [];
     const testStream = createTestStream(output);
 
@@ -149,7 +146,7 @@ describe('createDupeReqFilterStream', () => {
     ];
     const expectedOutputAfterTimeElapses = expectedOutputBeforeTimeElapses;
 
-    jest.advanceTimersByTime(TWO_MINUTES);
+    jest.advanceTimersByTime(THREE_MINUTES - 1);
 
     requests2.forEach((request) => testStream.write(request));
     expect(output).toEqual(expectedOutputAfterTimeElapses);
@@ -268,7 +265,7 @@ describe('createDupeReqFilterStream', () => {
       { id: 3, method: 'baz' },
     ];
 
-    jest.advanceTimersByTime(TWO_MINUTES);
+    jest.advanceTimersByTime(THREE_MINUTES - 1);
 
     requests2.forEach((request) => testStream.write(request));
     expect(output).toEqual(expectedOutputAfterFirstExpiryTime);
@@ -288,7 +285,7 @@ describe('createDupeReqFilterStream', () => {
       { id: 4, method: 'buzz' },
     ];
 
-    jest.advanceTimersByTime(TWO_MINUTES);
+    jest.advanceTimersByTime(THREE_MINUTES - 1);
 
     requests3.forEach((request) => testStream.write(request));
     expect(output).toEqual(expectedOutputAfterSecondExpiryTime);
