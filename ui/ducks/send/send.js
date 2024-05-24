@@ -2559,7 +2559,7 @@ export function updateSendAsset(
         const hexBalance = balance[providedDetails.address]?.hex;
 
         providedDetails.balance = hexBalance
-          ? hexToDecimal(hexBalance)
+          ? addHexPrefix(hexBalance)
           : undefined;
 
         // regardless of if we get the balance or not, we should not consider it a missing property
@@ -2641,7 +2641,7 @@ export function updateSendAsset(
           if (isCurrentOwner) {
             asset.error = null;
             asset.balance = details.balance
-              ? addHexPrefix(decimalToHex(details.balance))
+              ? addHexPrefix(details.balance)
               : '0x1';
           } else {
             throw new Error(
