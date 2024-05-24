@@ -90,6 +90,7 @@ export default function AssetList({
               'multichain-asset-picker-list-item--selected': isSelected,
               'multichain-asset-picker-list-item--disabled': isDisabled,
             })}
+            data-testid="asset-list-item"
             onClick={() => {
               if (isDisabled) {
                 return;

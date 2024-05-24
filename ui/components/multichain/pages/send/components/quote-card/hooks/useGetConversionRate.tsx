@@ -19,17 +19,17 @@ export default function useGetConversionRate() {
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
 
   const sourceTokenSymbol =
-    sendAsset.type === AssetType.native
+    sendAsset?.type === AssetType.native
       ? nativeCurrencySymbol
-      : sendAsset.details?.symbol;
+      : sendAsset?.details?.symbol;
 
   const destinationTokenSymbol =
-    receiveAsset.type === AssetType.native
+    receiveAsset?.type === AssetType.native
       ? nativeCurrencySymbol
-      : receiveAsset.details?.symbol;
+      : receiveAsset?.details?.symbol;
 
   const formattedConversionRate = useMemo(() => {
-    if (bestQuote) {
+    if (bestQuote && sendAsset && receiveAsset) {
       const primaryTokenAmount = calcTokenAmount(
         bestQuote.sourceAmount,
         sendAsset.details?.decimals || NATIVE_CURRENCY_DECIMALS,
@@ -53,8 +53,8 @@ export default function useGetConversionRate() {
   }, [
     bestQuote?.sourceAmount,
     bestQuote?.destinationAmount,
-    sendAsset.details?.decimals,
-    receiveAsset.details?.decimals,
+    sendAsset?.details?.decimals,
+    receiveAsset?.details?.decimals,
     sourceTokenSymbol,
     destinationTokenSymbol,
   ]);

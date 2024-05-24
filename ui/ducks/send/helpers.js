@@ -232,7 +232,7 @@ export const addAdjustedReturnToQuotes = async (
       return quotes;
     }
 
-    quotes.forEach((quote) => {
+    return quotes.map((quote) => {
       // get trade+approval
       const totalGasLimit =
         (quote?.gasParams.maxGas || 0) +
