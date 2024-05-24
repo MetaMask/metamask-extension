@@ -43,6 +43,7 @@ import {
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
+import { FIXTURE_STATE_METADATA_VERSION } from '../../test/e2e/default-fixture';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -67,7 +68,6 @@ import {
   shouldEmitDappViewedEvent,
 } from './lib/util';
 import { generateSkipOnboardingState } from './skip-onboarding';
-import { FIXTURE_STATE_METADATA_VERSION } from '../../test/e2e/default-fixture';
 
 /* eslint-enable import/first */
 
