@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import { ButtonVariant } from '@metamask/snaps-sdk';
 
+import { SecurityProvider } from '../../../../../shared/constants/security-provider';
 import {
   Box,
   Button,
