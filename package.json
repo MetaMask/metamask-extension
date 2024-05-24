@@ -93,7 +93,7 @@
     "storybook:deploy": "storybook-to-ghpages --existing-output-dir storybook-build --remote storybook --branch master",
     "update-changelog": "auto-changelog update",
     "generate:migration": "./development/generate-migration.sh",
-    "lavamoat:build": "ENABLE_MV3=true lavamoat development/build/index.js --policy lavamoat/build-system/policy.json --policyOverride lavamoat/build-system/policy-override.json",
+    "lavamoat:build": "lavamoat development/build/index.js --policy lavamoat/build-system/policy.json --policyOverride lavamoat/build-system/policy-override.json",
     "lavamoat:build:auto": "yarn lavamoat:build --writeAutoPolicy",
     "lavamoat:debug:build": "yarn lavamoat:build --writeAutoPolicyDebug --policydebug lavamoat/build-system/policy-debug.json",
     "lavamoat:debug:webapp": "WRITE_AUTO_POLICY_DEBUG=1 yarn lavamoat:webapp:auto",
