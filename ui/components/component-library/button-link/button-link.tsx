@@ -17,7 +17,6 @@ export const ButtonLink: ButtonLinkComponent = React.forwardRef(
       color,
       danger = false,
       disabled = false,
-      disableUnderline = false,
       loading = false,
       size = ButtonLinkSize.Auto,
       endIconProps,
@@ -32,7 +31,6 @@ export const ButtonLink: ButtonLinkComponent = React.forwardRef(
           'mm-button-link--type-danger': danger,
           'mm-button-link--disabled': disabled,
           'mm-button-link--loading': loading,
-          'mm-button-link--disable-underline': disableUnderline,
           'mm-button-link--size-inherit': size === ButtonLinkSize.Inherit,
           'mm-button-link--size-auto': size === ButtonLinkSize.Auto,
         })}

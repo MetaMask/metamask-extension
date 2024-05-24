@@ -20,7 +20,6 @@ import {
 } from './button-icon.types';
 
 const buttonIconSizeToIconSize: Record<ButtonIconSize, IconSize> = {
-  [ButtonIconSize.Xs]: IconSize.Xs,
   [ButtonIconSize.Sm]: IconSize.Sm,
   [ButtonIconSize.Md]: IconSize.Md,
   [ButtonIconSize.Lg]: IconSize.Lg,

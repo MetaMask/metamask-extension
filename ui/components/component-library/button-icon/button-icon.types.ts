@@ -3,7 +3,6 @@ import { IconColor } from '../../../helpers/constants/design-system';
 import { PolymorphicComponentPropWithRef, StyleUtilityProps } from '../box';
 
 export enum ButtonIconSize {
-  Xs = 'xs',
   Sm = 'sm',
   Md = 'md',
   Lg = 'lg',
