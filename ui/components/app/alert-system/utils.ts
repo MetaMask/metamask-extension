@@ -32,17 +32,19 @@ export function getSeverityBackground(severity: Severity): BackgroundColor {
  * @returns The highest  severity.
  */
 export function getHighestSeverity(alerts: Alert[]): AlertSeverity {
-  return alerts.reduce((highestSeverity: AlertSeverity, alert: Alert) => {
+  let highestSeverity = Severity.Info;
+  alerts.forEach((alert: Alert) => {
     if (alert.severity === Severity.Danger) {
-      return Severity.Danger;
+      highestSeverity = Severity.Danger;
     } else if (
       alert.severity === Severity.Warning &&
       highestSeverity !== Severity.Danger
     ) {
-      return Severity.Warning;
+      highestSeverity = Severity.Warning;
     }
-    return highestSeverity;
-  }, Severity.Info);
+  });
+
+  return highestSeverity;
 }
 
 /**

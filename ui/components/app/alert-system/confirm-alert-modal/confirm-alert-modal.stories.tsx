@@ -9,10 +9,20 @@ import { baseAlertsMock } from '../alert-modal/alert-modal.stories';
 
 const OWNER_ID_MOCK = '123';
 
-const storeMock = configureStore({ confirmAlerts: {
-  alerts: {[OWNER_ID_MOCK]: baseAlertsMock},
-  confirmed: {[OWNER_ID_MOCK]: {'From': true, 'Data': true, 'Contract': true}},
-  } });
+const alertsMock = [
+  baseAlertsMock[0],
+  {
+    ...baseAlertsMock[1],
+    actions: undefined,
+  },
+  baseAlertsMock[2],
+];
+const storeMock = configureStore({
+  confirmAlerts: {
+    alerts: { [OWNER_ID_MOCK]: alertsMock },
+    confirmed: { [OWNER_ID_MOCK]: { From: true, Data: true, Contract: true } },
+  },
+});
 
 export default {
   title: 'Confirmations/Components/Alerts/ConfirmAlertModal',
@@ -79,7 +89,9 @@ export const TemplateStory: StoryFn<typeof ConfirmAlertModal> = (args) => {
           onSubmit={handleOnClose}
         />
       )}
-      <Button onClick={handleOnClick} danger={true}>Open confirm alert modal</Button>
+      <Button onClick={handleOnClick} danger={true}>
+        Open confirm alert modal
+      </Button>
     </Box>
   );
 };

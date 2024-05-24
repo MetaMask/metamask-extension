@@ -2,7 +2,7 @@ import React from 'react';
 import {
   SECURITY_PROVIDER_CONFIG,
   SecurityProvider,
-} from '../../../../../../../shared/constants/security-provider';
+} from '../../../../../shared/constants/security-provider';
 import {
   Box,
   ButtonLink,
@@ -11,8 +11,8 @@ import {
   IconName,
   IconSize,
   Text,
-} from '../../../../../../components/component-library';
-import { SizeNumber } from '../../../../../../components/component-library/box/box.types';
+} from '../../../component-library';
+import { SizeNumber } from '../../../component-library/box/box.types';
 import {
   AlignItems,
   Display,
@@ -20,8 +20,8 @@ import {
   TextAlign,
   TextColor,
   TextVariant,
-} from '../../../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../../../hooks/useI18nContext';
+} from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export type AlertProviderProps = {
   provider?: SecurityProvider;

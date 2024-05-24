@@ -18,7 +18,7 @@ export type AlertRowProps = ConfirmInfoRowProps & {
   ownerId: string;
 };
 
-export function getAlertTextColors(
+function getAlertTextColors(
   variant?: ConfirmInfoRowVariant | Severity,
 ): TextColor {
   switch (variant) {

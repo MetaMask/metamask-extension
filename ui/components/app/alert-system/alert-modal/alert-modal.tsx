@@ -32,8 +32,8 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import useAlerts from '../../../../hooks/useAlerts';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
-import { useAlertActionHandler } from '../../../../contexts/alertActionHandler';
-import { AlertProvider } from '../../../../pages/confirmations/components/confirm/alert-system/alert-provider';
+import { useAlertActionHandler } from '../contexts/alertActionHandler';
+import { AlertProvider } from '../alert-provider';
 
 export type AlertModalProps = {
   /**
@@ -341,7 +341,7 @@ export function AlertModal({
               <>
                 <AcknowledgeButton
                   onAcknowledgeClick={onAcknowledgeClick}
-                  isConfirmed={isAlertDanger ? isConfirmed : true}
+                  isConfirmed={!isAlertDanger || isConfirmed}
                   hasActions={Boolean(selectedAlert.actions)}
                   isBlocking={selectedAlert.isBlocking}
                 />

@@ -7,14 +7,26 @@ import { baseAlertsMock } from '../alert-modal/alert-modal.stories';
 import { useArgs } from '@storybook/client-api';
 import { Box, Button } from '../../../component-library';
 import { SecurityProvider } from '../../../../../shared/constants/security-provider';
+import { AlertActionHandlerProvider } from '../contexts/alertActionHandler';
 
 const OWNER_ID_MOCK = '123';
 
-const alertsMock = [baseAlertsMock[0], {...baseAlertsMock[1], actions: undefined, provider: SecurityProvider.Blockaid}, baseAlertsMock[2]];
-const storeMock = configureStore({ confirmAlerts: {
-  alerts: {[OWNER_ID_MOCK]: alertsMock},
-  confirmed: {[OWNER_ID_MOCK]: {'From': false, 'Data': false, 'Contract': false}},
-  } });
+const alertsMock = [
+  baseAlertsMock[0],
+  {
+    ...baseAlertsMock[1],
+    provider: SecurityProvider.Blockaid,
+  },
+  baseAlertsMock[2],
+];
+const storeMock = configureStore({
+  confirmAlerts: {
+    alerts: { [OWNER_ID_MOCK]: alertsMock },
+    confirmed: {
+      [OWNER_ID_MOCK]: { From: false, Data: false, Contract: false },
+    },
+  },
+});
 
 export default {
   title: 'Confirmations/Components/Alerts/MultipleAlertModal',
@@ -26,7 +38,8 @@ export default {
     },
     onActionClick: {
       action: 'onClick',
-      description: 'The function to execute a determinate action based on the action key.',
+      description:
+        'The function to execute a determinate action based on the action key.',
     },
     onAcknowledgeClick: {
       action: 'onClick',
@@ -45,7 +58,15 @@ export default {
   args: {
     ownerId: OWNER_ID_MOCK,
   },
-  decorators: [(story) => <Provider store={storeMock}>{story()}</Provider>],
+  decorators: [
+    (story) => (
+      <Provider store={storeMock}>
+        <AlertActionHandlerProvider onProcessAction={(_actionKey) => {}}>
+          {story()}
+        </AlertActionHandlerProvider>
+      </Provider>
+    ),
+  ],
 } as Meta<typeof MultipleAlertModal>;
 
 /**
@@ -69,7 +90,9 @@ export const TemplateStory: StoryFn<typeof MultipleAlertModal> = (args) => {
           onFinalAcknowledgeClick={handleOnClose}
         />
       )}
-      <Button onClick={handleOnClick} danger={true}>Open multiple alert modal</Button>
+      <Button onClick={handleOnClick} danger={true}>
+        Open multiple alert modal
+      </Button>
     </Box>
   );
 };
