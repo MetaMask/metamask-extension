@@ -29,6 +29,10 @@
   }
 
   // ButtonIcon Sizes
+  &--size-xs {
+    --button-icon-size: 20px;
+  }
+
   &--size-sm {
     --button-icon-size: 24px;
   }

@@ -57,19 +57,21 @@ export type Quote = {
   aggregatorType: string;
   error: null | object;
   fee: number;
+  // added on later
+  adjustAmountReceivedInNative?: number;
 };
 
 const QUOTE_VALIDATORS = [
   {
     property: 'gasParams',
     type: 'object',
-    validator: (gasParams: Record<string, any>) =>
+    validator: (gasParams: Record<string, number>) =>
       gasParams && isNumber(gasParams.maxGas),
   },
   {
     property: 'trade',
     type: 'object',
-    validator: (trade: Record<string, any>) =>
+    validator: (trade: Record<string, string>) =>
       trade &&
       validHex(trade.data) &&
       isValidHexAddress(trade.to, { allowNonPrefixed: false }) &&
@@ -79,7 +81,7 @@ const QUOTE_VALIDATORS = [
   {
     property: 'approvalNeeded',
     type: 'object',
-    validator: (approvalTx: Record<string, any>) =>
+    validator: (approvalTx: Record<string, string>) =>
       approvalTx === null ||
       (approvalTx &&
         validHex(approvalTx.data) &&
@@ -133,13 +135,16 @@ const QUOTE_VALIDATORS = [
   {
     property: 'error',
     type: 'object',
-    validator: (error: any) => error === null || typeof error === 'object',
+    validator: (error: unknown) => error === null || typeof error === 'object',
   },
   {
     property: 'fee',
     type: 'number',
   },
 ];
+
+const SWAP_AND_SEND_SLIPPAGE = '2';
+
 const SWAPS_API_VERSION = 'v2';
 
 const BASE_URL = process.env.SWAPS_USE_DEV_APIS
@@ -148,6 +153,8 @@ const BASE_URL = process.env.SWAPS_USE_DEV_APIS
 
 export async function getSwapAndSendQuotes(request: Request): Promise<Quote[]> {
   const { chainId, ...params } = request;
+
+  params.slippage = SWAP_AND_SEND_SLIPPAGE;
 
   const queryString = new URLSearchParams(params);
 
@@ -183,7 +190,9 @@ export async function getSwapAndSendQuotes(request: Request): Promise<Quote[]> {
         let { approvalNeeded } = quote;
 
         if (approvalNeeded) {
-          approvalNeeded = addHexPrefixToObjectValues(approvalNeeded) as any;
+          approvalNeeded = addHexPrefixToObjectValues(
+            approvalNeeded,
+          ) as Quote['approvalNeeded'];
         }
 
         return {
