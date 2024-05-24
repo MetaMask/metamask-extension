@@ -30,6 +30,9 @@ export class SwapSendPage {
     await ((
       await this.driver.findElements('[data-testid="asset-picker-button"]')
     )?.[isDest ? 1 : 0]).click();
+    await this.driver.waitForSelector(
+      '[data-testid="asset-picker-modal-search-input"]',
+    );
     await this.driver.fill(
       '[data-testid="asset-picker-modal-search-input"]',
       symbol,
@@ -38,13 +41,13 @@ export class SwapSendPage {
     assert.equal(
       (
         await this.driver.findElements(
-          '[data-testid="multichain-token-list-button"]',
+          '[data-testid="multichain-token-list-item"]',
         )
       ).length,
       1,
     );
     await this.driver.clickElement({
-      css: '[data-testid="multichain-token-list-button"]',
+      css: '[data-testid="multichain-token-list-item"]',
       text: symbol,
     });
     assert.equal(
@@ -92,6 +95,7 @@ export class SwapSendPage {
   };
 
   fillAmountInput = async (amount: string) => {
+    await this.driver.waitForSelector('[data-testid="currency-input"]');
     await this.driver.fill('[data-testid="currency-input"]', amount);
   };
 
