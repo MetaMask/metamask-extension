@@ -324,13 +324,6 @@ export class MetamaskNotificationsController extends BaseController<
         (a) => !currentAccountsSet.has(a),
       );
 
-      console.log({
-        prevAccountsSet,
-        currentAccountsSet,
-        accountsAdded,
-        accountsRemoved,
-      });
-
       // Update accounts seen
       this.update((state) => {
         state.subscriptionAccountsSeen = [...prevAccountsSet, ...accountsAdded];

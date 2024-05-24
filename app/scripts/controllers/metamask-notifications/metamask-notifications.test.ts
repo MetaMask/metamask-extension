@@ -90,7 +90,7 @@ describe('metamask-notifications - constructor()', () => {
     expect(mockDelete).not.toBeCalled();
   });
 
-  test('Keying Change Event with new triggers will update triggers correctly', async () => {
+  test('Keyring Change Event with new triggers will update triggers correctly', async () => {
     const { messenger, globalMessenger, mockListAccounts } = arrangeMocks();
 
     // initialize controller with 1 address
