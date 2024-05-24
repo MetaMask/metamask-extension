@@ -15,7 +15,6 @@ import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 import WhatsNewPopup from '../../components/app/whats-new-popup';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
-import { METAMETRICS_SETTINGS_LINK } from '../../helpers/constants/common';
 import SmartTransactionsOptInModal from '../../components/app/smart-transactions/smart-transactions-opt-in-modal';
 ///: END:ONLY_INCLUDE_IF
 import HomeNotification from '../../components/app/home-notification';
@@ -80,6 +79,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
+import { METAMETRICS_SETTINGS_LINK } from '../../helpers/constants/common';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   SUPPORT_LINK,
@@ -910,6 +910,8 @@ export default class Home extends PureComponent {
       setBasicFunctionalityModalOpen,
       forgottenPassword,
       history,
+      participateInMetaMetrics,
+      dataCollectionForMarketing,
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       connectedStatusPopoverHasBeenShown,
       isPopup,
@@ -919,10 +921,8 @@ export default class Home extends PureComponent {
       showWhatsNewPopup,
       hideWhatsNewPopup,
       completedOnboarding,
-      participateInMetaMetrics,
       onboardedInThisUISession,
       announcementsToShow,
-      dataCollectionForMarketing,
       firstTimeFlowType,
       newNetworkAddedConfigurationId,
       isSmartTransactionsOptInModalAvailable,
@@ -988,6 +988,10 @@ export default class Home extends PureComponent {
           exact
         />
         <div className="home__container">
+          {dataCollectionForMarketing === null &&
+          participateInMetaMetrics === true
+            ? this.renderOnboardingPopover()
+            : null}
           {
             ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
           }
@@ -1007,10 +1011,6 @@ export default class Home extends PureComponent {
           ) : null}
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()
-            : null}
-          {dataCollectionForMarketing === null &&
-          participateInMetaMetrics === true
-            ? this.renderOnboardingPopover()
             : null}
           {
             ///: END:ONLY_INCLUDE_IF
