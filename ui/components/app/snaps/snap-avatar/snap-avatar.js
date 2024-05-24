@@ -31,6 +31,7 @@ const SnapAvatar = ({
   avatarSize = IconSize.Lg,
   borderWidth = 2,
   className,
+  badgeBackgroundColor = BackgroundColor.backgroundAlternative,
 }) => {
   const subjectMetadata = useSelector((state) =>
     getTargetSubjectMetadata(state, snapId),
@@ -53,7 +54,7 @@ const SnapAvatar = ({
           iconName={IconName.Snaps}
           size={badgeSize}
           backgroundColor={IconColor.infoDefault}
-          borderColor={BackgroundColor.backgroundAlternative}
+          borderColor={badgeBackgroundColor}
           borderWidth={borderWidth}
           iconProps={{
             color: IconColor.infoInverse,
@@ -98,6 +99,10 @@ SnapAvatar.propTypes = {
   badgeSize: PropTypes.string,
   avatarSize: PropTypes.string,
   borderWidth: PropTypes.number,
+  /**
+   * The color of the badge background
+   */
+  badgeBackgroundColor: PropTypes.string,
   /**
    * The className of the SnapAvatar
    */
