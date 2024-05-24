@@ -1,5 +1,58 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`CurrencyInput Component rendering should disable unit input 1`] = `
+<div>
+  <div
+    class="unit-input"
+  >
+    <div
+      class="unit-input__inputs"
+    >
+      <div
+        class="unit-input__input-container"
+        style="display: inherit;"
+        title="0.0000001"
+      >
+        <input
+          class="unit-input__input"
+          data-testid="currency-input"
+          dir="ltr"
+          min="0"
+          placeholder="0"
+          step="any"
+          style="width: 9ch;"
+          type="number"
+          value="0"
+        />
+        <div
+          class="unit-input__suffix"
+        >
+          ETH
+        </div>
+      </div>
+      <div
+        class="mm-box currency-display-component currency-input__conversion-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+        title="$0.00"
+      >
+        <span
+          class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+        >
+          $0.00
+        </span>
+      </div>
+    </div>
+    <button
+      class="currency-input__swap-component"
+      data-testid="currency-swap"
+    >
+      <i
+        class="fa fa-retweet fa-lg"
+      />
+    </button>
+  </div>
+</div>
+`;
+
 exports[`CurrencyInput Component rendering should render properly with a fiat value 1`] = `
 <div>
   <div
@@ -200,6 +253,21 @@ exports[`CurrencyInput Component rendering should render properly without a suff
         class="fa fa-retweet fa-lg"
       />
     </button>
+  </div>
+</div>
+`;
+
+exports[`CurrencyInput Component rendering should show skeleton state 1`] = `
+<div>
+  <div
+    class="mm-box currency-input__skeleton-container mm-box--padding-right-4"
+  >
+    <div
+      class="mm-box currency-input__pulsing-bar mm-box--width-1/2"
+    />
+    <div
+      class="mm-box currency-input__pulsing-bar mm-box--width-1/3"
+    />
   </div>
 </div>
 `;
