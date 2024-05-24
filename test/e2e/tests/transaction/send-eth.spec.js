@@ -42,7 +42,7 @@ describe('Send ETH', function () {
 
           await driver.findElement({
             css: '[data-testid="send-page-amount-error"]',
-            text: 'Insufficient funds for gas',
+            text: '. Insufficient funds.',
           });
 
           await inputAmount.press(driver.Key.BACK_SPACE);

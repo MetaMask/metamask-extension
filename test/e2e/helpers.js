@@ -50,6 +50,7 @@ async function withFixtures(options, testSuite) {
     },
     useBundler,
     usePaymaster,
+    ethConversionInUsd,
   } = options;
 
   const fixtureServer = new FixtureServer();
@@ -135,6 +136,7 @@ async function withFixtures(options, testSuite) {
       testSpecificMock,
       {
         chainId: ganacheOptions?.chainId || 1337,
+        ethConversionInUsd,
       },
     );
     if ((await detectPort(8000)) !== 8000) {
@@ -646,8 +648,7 @@ const closeSRPReveal = async (driver) => {
     tag: 'button',
   });
   await driver.findVisibleElement({
-    text: tEn('tokens'),
-    tag: 'button',
+    xpath: `//*[contains(text(),"${tEn('tokens')}")]/parent::button`,
   });
 };
 
@@ -764,6 +765,12 @@ const editGasFeeForm = async (driver, gasLimit, gasPrice) => {
 
 const openActionMenuAndStartSendFlow = async (driver) => {
   await driver.clickElement('[data-testid="eth-overview-send"]');
+};
+
+const clickNestedButton = async (driver, tabName) => {
+  await driver.clickElement({
+    xpath: `//*[contains(text(),"${tabName}")]/parent::button`,
+  });
 };
 
 const sendScreenToConfirmScreen = async (
@@ -1150,4 +1157,5 @@ module.exports = {
   openActionMenuAndStartSendFlow,
   getCleanAppState,
   editGasFeeForm,
+  clickNestedButton,
 };

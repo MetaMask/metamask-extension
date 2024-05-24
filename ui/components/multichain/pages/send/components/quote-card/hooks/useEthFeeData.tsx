@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { isHexString } from '@metamask/utils';
 import { Numeric } from '../../../../../../../../shared/modules/Numeric';
 import {
   getConversionRate,
@@ -59,7 +60,12 @@ export default function useEthFeeData(gasLimit = 0) {
     if (!rawGasPrice) {
       return { formattedFiatGasFee: '', formattedEthGasFee: '' };
     }
-    const ethGasFee = new Numeric(rawGasPrice, 10, EtherDenomination.GWEI)
+
+    const ethGasFee = new Numeric(
+      rawGasPrice,
+      isHexString(rawGasPrice) ? 16 : 10,
+      EtherDenomination.GWEI,
+    )
       .times(new Numeric(gasLimit, 10))
       .toDenomination(EtherDenomination.ETH);
 
