@@ -39,7 +39,7 @@ export const box: UIComponentFactory<BoxElement> = ({
   props: {
     display: Display.Flex,
     flexDirection:
-      element.props.direction === 'vertical'
+      element.props.direction === 'horizontal'
         ? FlexDirection.Row
         : FlexDirection.Column,
     justifyContent: generateJustifyContent(element.props.alignment),
