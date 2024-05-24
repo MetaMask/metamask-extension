@@ -44,6 +44,10 @@ export default function useTokenExchangeRate(
   >({});
 
   return useMemo(() => {
+    if (!selectedNativeConversionRate) {
+      return undefined;
+    }
+
     const nativeConversionRate = new Numeric(selectedNativeConversionRate, 10);
 
     if (!tokenAddress) {
