@@ -145,7 +145,7 @@ export const getInitialSendStateWithExistingTxState = (draftTxState) => ({
         ...draftTxState.gas,
       },
       isSwapQuoteLoading: false,
-      quotes: null,
+      quotes: draftTxState.quotes ?? null,
       receiveAsset: {
         ...draftTransactionInitialState.receiveAsset,
         ...(draftTxState.receiveAsset ?? draftTxState.sendAsset),
