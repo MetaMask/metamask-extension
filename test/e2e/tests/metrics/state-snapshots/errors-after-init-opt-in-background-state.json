@@ -44,6 +44,8 @@
     "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
     "snapsInstallPrivacyWarningShown": true,
     "surveyLinkLastClickedOrClosed": "object",
+    "newPrivacyPolicyToastClickedOrClosed": "object",
+    "newPrivacyPolicyToastShownDate": "object",
     "signatureSecurityAlertResponses": "object",
     "switchedNetworkDetails": "object",
     "switchedNetworkNeverShowMessage": "boolean",
@@ -54,6 +56,7 @@
     "pendingApprovalCount": "number",
     "approvalFlows": "object"
   },
+  "AuthenticationController": { "isSignedIn": "boolean" },
   "CronjobController": { "jobs": "object" },
   "CurrencyController": {
     "currencyRates": {
@@ -98,6 +101,17 @@
     "previousUserTraits": "object",
     "fragments": "object",
     "segmentApiCalls": "object"
+  },
+  "MetamaskNotificationsController": {
+    "isMetamaskNotificationsFeatureSeen": "boolean",
+    "isMetamaskNotificationsEnabled": "boolean",
+    "isFeatureAnnouncementsEnabled": "boolean",
+    "metamaskNotificationsList": "object",
+    "metamaskNotificationsReadList": "object",
+    "isUpdatingMetamaskNotifications": "boolean",
+    "isFetchingMetamaskNotifications": "boolean",
+    "isUpdatingMetamaskNotificationsAccount": "object",
+    "isCheckingAccountsPresence": "boolean"
   },
   "NameController": { "names": "object", "nameSources": "object" },
   "NetworkController": {
@@ -174,7 +188,6 @@
       "useNativeCurrencyAsPrimaryCurrency": true,
       "petnamesEnabled": true
     },
-    "useExternalServices": "boolean",
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",
     "useAddressBarEnsResolution": true,
@@ -185,8 +198,10 @@
     "useExternalNameSources": "boolean",
     "useTransactionSimulations": true,
     "enableMV3TimestampSave": true,
+    "useExternalServices": "boolean",
     "selectedAddress": "string"
   },
+  "PushPlatformNotificationsController": { "fcmToken": "string" },
   "SelectedNetworkController": { "domains": "object" },
   "SignatureController": {
     "unapprovedMsgs": "object",
@@ -265,5 +280,9 @@
     "transactions": "object",
     "lastFetchedBlockNumbers": "object"
   },
-  "UserOperationController": { "userOperations": "object" }
+  "UserOperationController": { "userOperations": "object" },
+  "UserStorageController": {
+    "isProfileSyncingEnabled": true,
+    "isProfileSyncingUpdateLoading": "boolean"
+  }
 }

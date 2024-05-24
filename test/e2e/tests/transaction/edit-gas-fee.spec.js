@@ -1,10 +1,10 @@
 const { strict: assert } = require('assert');
 const {
-  getWindowHandles,
   withFixtures,
   openDapp,
   unlockWallet,
   generateGanacheOptions,
+  WINDOW_TITLES,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -176,8 +176,7 @@ describe('Editing Confirm Transaction', function () {
         });
 
         // check transaction in extension popup
-        const windowHandles = await getWindowHandles(driver, 3);
-        await driver.switchToWindow(windowHandles.popup);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector({
           text: 'Site suggested',
         });
@@ -207,7 +206,9 @@ describe('Editing Confirm Transaction', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         // transaction should correct values in activity tab
-        await driver.switchToWindow(windowHandles.extension);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
