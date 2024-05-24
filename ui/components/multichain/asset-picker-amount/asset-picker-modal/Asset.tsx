@@ -1,17 +1,19 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { isEqualCaseInsensitive } from '@metamask/assets-controllers/dist/TokenDetectionController';
+import { BigNumber } from 'bignumber.js';
 import { getTokenList } from '../../../../selectors';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { TokenListItem } from '../../token-list-item';
+import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
+import { formatAmount } from '../../../../pages/confirmations/components/simulation-details/formatAmount';
+import { getIntlLocale } from '../../../../ducks/locale/locale';
 
 type AssetProps = {
   address?: string | null;
   image?: string;
   symbol: string;
   decimalTokenAmount?: string;
-  onClick: (address: string) => void;
+  tooltipText?: string;
 };
 
 export default function Asset({
@@ -19,8 +21,10 @@ export default function Asset({
   image,
   symbol,
   decimalTokenAmount,
-  onClick,
+  tooltipText,
 }: AssetProps) {
+  const locale = useSelector(getIntlLocale);
+
   const tokenList = useSelector(getTokenList);
   const tokenData = address
     ? Object.values(tokenList).find(
@@ -42,12 +46,15 @@ export default function Asset({
 
   return (
     <TokenListItem
-      onClick={onClick}
       tokenSymbol={symbol}
       tokenImage={tokenImage}
-      primary={`${decimalTokenAmount || 0}`}
+      primary={formatAmount(
+        locale,
+        new BigNumber(decimalTokenAmount || '0', 10),
+      )}
       secondary={formattedFiat}
       title={title}
+      tooltipText={tooltipText}
     />
   );
 }

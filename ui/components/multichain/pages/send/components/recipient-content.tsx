@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   BannerAlert,
@@ -12,6 +12,7 @@ import {
   getBestQuote,
   getCurrentDraftTransaction,
   getSendAsset,
+  getSwapsBlockedTokens,
 } from '../../../../../ducks/send';
 import { AssetType } from '../../../../../../shared/constants/transaction';
 import { CONTRACT_ADDRESS_LINK } from '../../../../../helpers/constants/common';
@@ -23,6 +24,7 @@ import {
   getIsSwapsChain,
   getUseExternalServices,
 } from '../../../../../selectors';
+import type { Quote } from '../../../../../ducks/send/swap-and-send-utils';
 import { SendHexData, SendPageRow, QuoteCard } from '.';
 
 export const SendPageRecipientContent = ({
@@ -43,12 +45,17 @@ export const SendPageRecipientContent = ({
 
   const isBasicFunctionality = useSelector(getUseExternalServices);
   const isSwapsChain = useSelector(getIsSwapsChain);
+  const swapsBlockedTokens = useSelector(getSwapsBlockedTokens);
+  const memoizedSwapsBlockedTokens = useMemo(() => {
+    return new Set(swapsBlockedTokens);
+  }, [swapsBlockedTokens]);
   const isSwapAllowed =
     isSwapsChain &&
     [AssetType.token, AssetType.native].includes(sendAsset.type) &&
-    isBasicFunctionality;
+    isBasicFunctionality &&
+    !memoizedSwapsBlockedTokens.has(sendAsset.details?.address?.toLowerCase());
 
-  const bestQuote = useSelector(getBestQuote);
+  const bestQuote: Quote = useSelector(getBestQuote);
 
   const isLoadingInitialQuotes = !bestQuote && isSwapQuoteLoading;
 
@@ -74,20 +81,8 @@ export const SendPageRecipientContent = ({
   // Gas data
   const dispatch = useDispatch();
 
-  // FIXME: these should all be resolved before marking the PR as ready
-  // TODO: SWAP+SEND impl steps (all but step 3 correlate to a PR in the merge train):
-  // TODO: 1. begin design review + revisions
-  //          - handle repopulations
-  //          - resolve all TODOs
-  //          - handle approval gas
-  //          - Preserve dest token when returning to send page from tx page
-  //          - Ensure max button works with swaps (update on refresh? buffer?)
-  //          - Update best quotes logic
-  //          - Changes `quotes` in redux to array
-  //          - Investigate gasTotalForLayer1 for swap+send
-  // TODO: 2. add analytics + e2e tests + unit tests (check comments)
+  // FIXME: add analytics + e2e tests + unit tests (check comments)
   //       - use transaction lifecycle events once
-  // TODO: 3. final design and technical review + revisions
   return (
     <Box>
       {requireContractAddressAcknowledgement ? (
@@ -125,6 +120,7 @@ export const SendPageRecipientContent = ({
           )}
           isAmountLoading={isLoadingInitialQuotes}
           amount={amount}
+          isDisabled={!isSwapAllowed}
         />
       </SendPageRow>
       <QuoteCard scrollRef={scrollRef} />

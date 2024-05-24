@@ -11,9 +11,9 @@ import {
   TransactionEnvelopeType,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { ethErrors } from 'eth-rpc-errors';
 import {
   decimalToHex,
-  getValueFromWeiHex,
   hexToDecimal,
 } from '../../../shared/modules/conversion.utils';
 import { GasEstimateTypes, GAS_LIMITS } from '../../../shared/constants/gas';
@@ -54,6 +54,7 @@ import {
   getSelectedInternalAccountWithBalance,
   getUnapprovedTransactions,
   getSelectedNetworkClientId,
+  getIsSwapsChain,
 } from '../../selectors';
 import {
   displayWarning,
@@ -75,6 +76,8 @@ import {
   getBalancesInSingleCall,
   estimateGas,
   addTransactionAndWaitForPublish,
+  setDefaultHomeActiveTabName,
+  rejectPendingApproval,
 } from '../../store/actions';
 import { setCustomGasLimit } from '../gas/gas.duck';
 import {
@@ -99,6 +102,7 @@ import {
 } from '../../helpers/utils/util';
 import {
   getGasEstimateType,
+  getNativeCurrency,
   getProviderConfig,
   getTokens,
 } from '../metamask/metamask';
@@ -130,12 +134,19 @@ import { SWAPS_CHAINID_DEFAULT_TOKEN_MAP } from '../../../shared/constants/swaps
 import { setMaxValueMode } from '../confirm-transaction/confirm-transaction.duck';
 // used for typing
 // eslint-disable-next-line no-unused-vars
-import { Quote, getSwapAndSendQuotes } from './swap-and-send-utils';
+import {
+  CONFIRM_TRANSACTION_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../helpers/constants/routes';
+import { fetchBlockedTokens } from '../../pages/swaps/swaps.util';
+import { getSwapAndSendQuotes } from './swap-and-send-utils';
 import {
   estimateGasLimitForSend,
   generateTransactionParams,
   getRoundedGasPrice,
   calculateBestQuote,
+  addAdjustedReturnToQuotes,
+  getIsDraftSwapAndSend,
 } from './helpers';
 
 const RECENT_REQUEST_ERROR =
@@ -466,6 +477,7 @@ export const draftTransactionInitialState = {
  *  Comes from the GasFeeController.
  * @property {string} gasTotalForLayer1 -  Layer 1 gas fee total on multi-layer
  *  fee networks
+ * @property {object} prevSwapAndSendInput - form inputs for the last submitted swap and send transaction
  * @property {string} recipientInput - The user input of the recipient
  *  which is updated quickly to avoid delays in the UI reflecting manual entry
  *  of addresses.
@@ -482,6 +494,7 @@ export const draftTransactionInitialState = {
  * @property {MapValuesToUnion<SendStateStages>} stage - The stage of the
  *  send flow that the user has progressed to. Defaults to 'INACTIVE' which
  *  results in the send screen not being shown.
+ * @property {string[]} swapsBlockedTokens - list of tokens that are blocked by the swaps-api
  */
 
 /**
@@ -505,6 +518,7 @@ export const initialState = {
     balance: '0x0',
   },
   stage: SEND_STAGES.INACTIVE,
+  swapsBlockedTokens: [],
 };
 
 /**
@@ -713,10 +727,7 @@ export const initializeSendState = createAsyncThunk(
       const estimatedGasLimit = await estimateGasLimitForSend({
         gasPrice,
         blockGasLimit: metamask.currentBlockGasLimit,
-        selectedAddress:
-          draftTransaction.fromAccount?.address ??
-          sendState.selectedAccount.address ??
-          account.address,
+        selectedAddress: getSender(state),
         sendToken: draftTransaction.sendAsset.details,
         to: draftTransaction.recipient.address.toLowerCase(),
         value: draftTransaction.amount.value,
@@ -744,6 +755,10 @@ export const initializeSendState = createAsyncThunk(
       );
     }
 
+    const swapsBlockedTokens = getIsSwapsChain(state)
+      ? (await fetchBlockedTokens(chainId)).map((t) => t.toLowerCase())
+      : [];
+
     return {
       account,
       chainId: getCurrentChainId(state),
@@ -757,6 +772,7 @@ export const initializeSendState = createAsyncThunk(
       eip1559support,
       useTokenDetection: getUseTokenDetection(state),
       tokenAddressList: Object.keys(getTokenList(state)),
+      swapsBlockedTokens,
     };
   },
 );
@@ -781,11 +797,7 @@ const fetchSwapAndSendQuotes = createAsyncThunk(
     const draftTransaction =
       sendState.draftTransactions[sendState.currentTransactionUUID];
 
-    // TODO: move to util
-    const sender =
-      draftTransaction.fromAccount?.address ??
-      sendState.selectedAccount.address ??
-      getSelectedInternalAccount(state).address;
+    const sender = getSender(state);
 
     const sourceAmount = hexToDecimal(draftTransaction.amount.value);
 
@@ -799,7 +811,7 @@ const fetchSwapAndSendQuotes = createAsyncThunk(
       return { quotes: null, requestTimestamp };
     }
 
-    const quotes = await new Promise((resolve, reject) =>
+    let quotes = await new Promise((resolve, reject) =>
       setTimeout(async () => {
         if (requestTimestamp !== latestFetchTime) {
           reject(new Error(RECENT_REQUEST_ERROR));
@@ -816,7 +828,6 @@ const fetchSwapAndSendQuotes = createAsyncThunk(
             SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].address,
           sender,
           recipient: draftTransaction.recipient.address,
-          slippage: '5', // TODO: update when solution is available
         })
           .then((response) => resolve(response))
           .catch(() => reject(SWAPS_QUOTES_ERROR));
@@ -830,6 +841,12 @@ const fetchSwapAndSendQuotes = createAsyncThunk(
         );
       }
     }
+
+    quotes = await addAdjustedReturnToQuotes(
+      quotes,
+      state,
+      draftTransaction.receiveAsset?.details,
+    );
 
     if (!quotes?.length) {
       throw new Error(SWAPS_NO_QUOTES);
@@ -858,6 +875,9 @@ const fetchSwapAndSendQuotes = createAsyncThunk(
  * @typedef {(
  *  import('@reduxjs/toolkit').PayloadAction<SendState['recipientMode']>
  * )} UpdateRecipientModePayload
+ * @typedef {(
+ *  import('@reduxjs/toolkit').PayloadAction<SendState['prevSwapAndSendInput']>
+ * )} PrevSwapAndSendPayload
  */
 
 /**
@@ -1000,11 +1020,25 @@ const slice = createSlice({
       state.draftTransactions = {};
     },
     /**
-     * Clears the send state by setting it to the initial value
+     * Clears the send state by setting it to the initial value; preserves the previous swap and send input  object
      *
+     * @param state - A writable draft of the send state to be
+     *  updated.
      * @returns {SendState}
      */
-    resetSendState: () => initialState,
+    resetSendState: (state) => ({
+      ...initialState,
+      prevSwapAndSendInput: state.prevSwapAndSendInput,
+    }),
+    /**
+     * Sets the amount to the provided value and validates the field.
+     *
+     * @param {SendStateDraft} state - A writable draft of the send state to be
+     * @param {PrevSwapAndSendPayload} action - An action with payload that is
+     */
+    setPrevSwapAndSend: (state, action) => {
+      state.prevSwapAndSendInput = action.payload;
+    },
     /**
      * sets the amount mode to the provided value as long as it is one of the
      * supported modes (MAX|INPUT)
@@ -1047,9 +1081,14 @@ const slice = createSlice({
           16,
         ).add(new Numeric(state.gasTotalForLayer1 ?? '0x0', 16));
 
-        amount = new Numeric(draftTransaction.sendAsset.balance, 16)
-          .minus(_gasTotal)
-          .toString();
+        amount = new Numeric(
+          draftTransaction.sendAsset.balance,
+          16,
+        ).lessThanOrEqualTo(_gasTotal)
+          ? '0'
+          : new Numeric(draftTransaction.sendAsset.balance, 16)
+              .minus(_gasTotal)
+              .toString();
       }
       slice.caseReducers.updateSendAmount(state, {
         payload: amount,
@@ -1354,8 +1393,6 @@ const slice = createSlice({
         // checking if there is enough left to cover the gas fee.
         slice.caseReducers.validateGasField(state);
       }
-      // validate send state
-      slice.caseReducers.validateSendState(state);
     },
     /**
      * updates the userInputHexData state key
@@ -1424,6 +1461,9 @@ const slice = createSlice({
           draftTransaction.amount.error = isInsufficientWithoutGas
             ? INSUFFICIENT_FUNDS_ERROR
             : INSUFFICIENT_FUNDS_FOR_GAS_ERROR;
+          if (draftTransaction.status !== SEND_STATUSES.INVALID) {
+            slice.caseReducers.validateSendState(state);
+          }
           break;
         }
         // set error to INSUFFICIENT_TOKENS_ERROR if the token balance is lower
@@ -1435,6 +1475,9 @@ const slice = createSlice({
             decimals: draftTransaction.sendAsset.details.decimals,
           }):
           draftTransaction.amount.error = INSUFFICIENT_TOKENS_ERROR;
+          if (draftTransaction.status !== SEND_STATUSES.INVALID) {
+            slice.caseReducers.validateSendState(state);
+          }
           break;
         // INSUFFICIENT_TOKENS_ERROR if the user is attempting to transfer ERC1155 but has 0 amount selected
         // prevents the user from transferring 0 tokens
@@ -1443,6 +1486,9 @@ const slice = createSlice({
             TokenStandard.ERC1155 &&
           draftTransaction.amount.value === '0x0':
           draftTransaction.amount.error = NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR;
+          if (draftTransaction.status !== SEND_STATUSES.INVALID) {
+            slice.caseReducers.validateSendState(state);
+          }
           break;
         // set error to INSUFFICIENT_TOKENS_ERROR if the token balance is lower
         // than the amount of token the user is attempting to send.
@@ -1454,6 +1500,9 @@ const slice = createSlice({
             amount: draftTransaction.amount.value,
           }):
           draftTransaction.amount.error = INSUFFICIENT_FUNDS_ERROR;
+          if (draftTransaction.status !== SEND_STATUSES.INVALID) {
+            slice.caseReducers.validateSendState(state);
+          }
           break;
 
         // if the amount of tokens is a float, set error to FLOAT_TOKENS_ERROR
@@ -1461,10 +1510,16 @@ const slice = createSlice({
           draftTransaction.sendAsset.type === AssetType.NFT &&
           draftTransaction.sendAsset.details.standard === TokenStandard.ERC1155:
           draftTransaction.amount.error = FLOAT_TOKENS_ERROR;
+          if (draftTransaction.status !== SEND_STATUSES.INVALID) {
+            slice.caseReducers.validateSendState(state);
+          }
           break;
         // If none of the above are true, set error to null
         default:
           draftTransaction.amount.error = null;
+          if (draftTransaction.status === SEND_STATUSES.INVALID) {
+            slice.caseReducers.validateSendState(state);
+          }
       }
     },
     /**
@@ -1579,10 +1634,11 @@ const slice = createSlice({
         payload: 'Begin validating send state',
       });
 
-      const { quotes } = draftTransaction;
-      const bestQuote = quotes ? calculateBestQuote(quotes) : undefined;
-
       if (draftTransaction) {
+        const isSwapAndSend = getIsDraftSwapAndSend(draftTransaction);
+
+        const { quotes } = draftTransaction;
+        const bestQuote = quotes ? calculateBestQuote(quotes) : undefined;
         switch (true) {
           case Boolean(draftTransaction.amount.error):
             slice.caseReducers.addHistoryEntry(state, {
@@ -1665,7 +1721,10 @@ const slice = createSlice({
             break;
           case Boolean(
             bestQuote &&
-              bestQuote.recipient !== draftTransaction.recipient.address,
+              !isEqualCaseInsensitive(
+                bestQuote.recipient,
+                draftTransaction.recipient.address,
+              ),
           ):
             slice.caseReducers.addHistoryEntry(state, {
               payload: `Recipient is not match ${draftTransaction.recipient.address} ${bestQuote.recipient}`,
@@ -1673,7 +1732,11 @@ const slice = createSlice({
             draftTransaction.status = SEND_STATUSES.INVALID;
             break;
           case Boolean(
-            bestQuote && bestQuote.trade.from !== state.selectedAccount.address,
+            bestQuote &&
+              !isEqualCaseInsensitive(
+                bestQuote.trade.from,
+                state.selectedAccount.address,
+              ),
           ):
             slice.caseReducers.addHistoryEntry(state, {
               payload: `Sender is not match ${state.selectedAccount.address} ${bestQuote.trade.from}`,
@@ -1682,8 +1745,10 @@ const slice = createSlice({
             break;
           case Boolean(
             bestQuote &&
-              (draftTransaction.sendAsset?.details?.address ||
-                zeroAddress()) !== bestQuote.sourceToken,
+              !isEqualCaseInsensitive(
+                draftTransaction.sendAsset?.details?.address || zeroAddress(),
+                bestQuote.sourceToken,
+              ),
           ):
             slice.caseReducers.addHistoryEntry(state, {
               payload: `Source token is not match ${draftTransaction.sendAsset?.details?.address} ${bestQuote.sourceToken}`,
@@ -1692,18 +1757,20 @@ const slice = createSlice({
             break;
           case Boolean(
             bestQuote &&
-              bestQuote.destinationToken !==
-                (draftTransaction.receiveAsset?.details?.address ||
-                  zeroAddress()),
+              !isEqualCaseInsensitive(
+                bestQuote.destinationToken,
+                draftTransaction.receiveAsset?.details?.address ||
+                  zeroAddress(),
+              ),
           ):
             slice.caseReducers.addHistoryEntry(state, {
               payload: `Destination token is not match ${draftTransaction.receiveAsset?.details?.address} ${bestQuote.destinationToken}`,
             });
             draftTransaction.status = SEND_STATUSES.INVALID;
             break;
-          case draftTransaction.isSwapQuoteLoading:
+          case isSwapAndSend && !bestQuote:
             slice.caseReducers.addHistoryEntry(state, {
-              payload: `A swap quote is loading`,
+              payload: `No swap and send quote available`,
             });
             draftTransaction.status = SEND_STATUSES.INVALID;
             break;
@@ -1820,6 +1887,7 @@ const slice = createSlice({
         state.eip1559support = action.payload.eip1559support;
         state.selectedAccount.address = action.payload.account.address;
         state.selectedAccount.balance = action.payload.account.balance;
+        state.prevSwapAndSendInput = initialState.prevSwapAndSendInput;
         const draftTransaction =
           state.draftTransactions[state.currentTransactionUUID];
         if (draftTransaction) {
@@ -1860,12 +1928,16 @@ const slice = createSlice({
             },
           });
         }
+        state.swapsBlockedTokens = action.payload.swapsBlockedTokens;
         if (state.amountMode === AMOUNT_MODES.MAX) {
           slice.caseReducers.updateAmountToMax(state);
         }
         slice.caseReducers.validateAmountField(state);
         slice.caseReducers.validateGasField(state);
         slice.caseReducers.validateSendState(state);
+      })
+      .addCase(initializeSendState.rejected, (state) => {
+        state.prevSwapAndSendInput = initialState.prevSwapAndSendInput;
       })
       .addCase(fetchSwapAndSendQuotes.pending, (state, action) => {
         const draftTransaction =
@@ -1940,7 +2012,7 @@ const slice = createSlice({
             // reset asset to native asset
             if (
               draftTransaction?.sendAsset.type === AssetType.token ||
-              draftTransaction?.asset.type === AssetType.NFT
+              draftTransaction?.sendAsset.type === AssetType.NFT
             ) {
               draftTransaction.sendAsset.type =
                 draftTransactionInitialState.sendAsset.type;
@@ -1953,6 +2025,9 @@ const slice = createSlice({
 
               draftTransaction.receiveAsset =
                 draftTransactionInitialState.receiveAsset;
+
+              draftTransaction.amount.value =
+                draftTransactionInitialState.amount.value;
             }
 
             slice.caseReducers.validateAmountField(state);
@@ -2032,6 +2107,14 @@ const debouncedValidateRecipientUserInput = debounce(
   300,
 );
 
+const debouncedComputeEstimatedGasLimit = debounce((dispatch) => {
+  dispatch(computeEstimatedGasLimit());
+}, 300);
+
+const debouncedAddHistoryEntry = debounce((dispatch, payload) => {
+  dispatch(addHistoryEntry(payload));
+}, 100);
+
 /**
  * Begins a new draft transaction, derived from the txParams of an existing
  * transaction in the TransactionController. This action will first clear out
@@ -2054,7 +2137,34 @@ export function editExistingTransaction(assetType, transactionId) {
     const transaction = unapprovedTransactions[transactionId];
     const account = getTargetAccount(state, transaction.txParams.from);
 
-    if (assetType === AssetType.native) {
+    const isSwapAndSend = Boolean(state[name].prevSwapAndSendInput);
+
+    if (isSwapAndSend) {
+      const {
+        amountMode,
+        amount: { value: amount },
+        ...draftTxParams
+      } = state[name].prevSwapAndSendInput;
+
+      dispatch(
+        actions.addNewDraft({
+          ...draftTransactionInitialState,
+          ...draftTxParams,
+          id: transactionId,
+          fromAccount: account,
+          history: [
+            `sendFlow - user clicked edit on transaction with id ${transactionId} (swap and send)`,
+          ],
+        }),
+      );
+      if (amountMode === AMOUNT_MODES.MAX) {
+        dispatch(actions.updateAmountMode(AMOUNT_MODES.MAX));
+        dispatch(actions.updateAmountToMax());
+        dispatch(updateSendQuote());
+      } else {
+        dispatch(updateSendAmount(amount));
+      }
+    } else if (assetType === AssetType.native) {
       await dispatch(
         actions.addNewDraft({
           ...draftTransactionInitialState,
@@ -2184,28 +2294,37 @@ export function updateSendQuote(
     const draftTransaction =
       state[name].draftTransactions[state[name].currentTransactionUUID];
 
-    const isSwapAndSend =
-      draftTransaction?.sendAsset?.details?.address !==
-      draftTransaction?.receiveAsset?.details?.address;
+    const isSwapAndSend = getIsDraftSwapAndSend(draftTransaction);
+    const {
+      quotes,
+      swapQuotesError,
+      isSwapQuoteLoading,
+      swapQuotesLatestRequestTimestamp,
+    } = draftTransaction ?? {};
 
     if (isSwapAndSend) {
       const currentTime = Date.now();
       // set this synchronously so it can be used in fetchSwapAndSendQuotes thunks immediately
       latestFetchTime = currentTime;
-      await dispatch(
+      dispatch(
         fetchSwapAndSendQuotes({
           requestTimestamp: currentTime,
           isRefreshingQuotes,
         }),
       );
-    } else {
-      await dispatch({
+    } else if (
+      quotes ||
+      swapQuotesError ||
+      isSwapQuoteLoading ||
+      swapQuotesLatestRequestTimestamp
+    ) {
+      dispatch({
         type: CLEAR_SWAP_AND_SEND_STATE,
       });
     }
 
     if (isComputingSendGasLimit) {
-      await dispatch(computeEstimatedGasLimit());
+      debouncedComputeEstimatedGasLimit(dispatch);
     }
   };
 }
@@ -2258,12 +2377,7 @@ export function updateRecipientUserInput(userInput) {
     dispatch(actions.updateDraftTransactionStatus(SEND_STATUSES.INVALID));
     await dispatch(actions.updateRecipientUserInput(userInput));
     const state = getState();
-    const draftTransaction =
-      state[name].draftTransactions[state[name].currentTransactionUUID];
-    const sendingAddress =
-      draftTransaction.fromAccount?.address ??
-      state[name].selectedAccount.address ??
-      getSelectedInternalAccount(state).address;
+    const sendingAddress = getSender(state);
     const chainId = getCurrentChainId(state);
     const tokens = getTokens(state);
     const useTokenDetection = getUseTokenDetection(state);
@@ -2317,48 +2431,36 @@ export function updateRecipientUserInput(userInput) {
  * 1. If the current mode is MAX change to INPUT
  * 2. If sending a token, recompute the gasLimit estimate
  *
- * @param {string} amount - hex string representing value
+ * @param {string} hexAmount - hex string representing value
+ * @param {string} decimalAmount - decimal string representing value
  * @returns {ThunkAction<void>}
  */
-export function updateSendAmount(amount) {
+export function updateSendAmount(hexAmount, decimalAmount) {
   return async (dispatch, getState) => {
     const state = getState();
+    dispatch(actions.updateSendAmount(hexAmount));
+    if (state[name].amountMode === AMOUNT_MODES.MAX) {
+      dispatch(actions.updateAmountMode(AMOUNT_MODES.INPUT));
+    }
+    dispatch(updateSendQuote());
+
+    if (!decimalAmount) {
+      return;
+    }
+
     const { ticker } = getProviderConfig(state);
     const draftTransaction =
       state[name].draftTransactions[state[name].currentTransactionUUID];
-    let logAmount = amount;
+    let logAmount = hexAmount;
     if (draftTransaction.sendAsset.type === AssetType.token) {
-      const multiplier = Math.pow(
-        10,
-        Number(draftTransaction.sendAsset.details?.decimals || 0),
-      );
-      const decimalValueString = new Numeric(addHexPrefix(amount), 16)
-        .toBase(10)
-        .applyConversionRate(
-          draftTransaction.sendAsset.details?.symbol ? multiplier : 1,
-          true,
-        )
-        .toString();
-      logAmount = `${Number(decimalValueString) ? decimalValueString : ''} ${
-        draftTransaction.sendAsset.details?.symbol
-      }`;
+      logAmount = `${decimalAmount} ${draftTransaction.sendAsset.details?.symbol}`;
     } else {
-      const ethValue = getValueFromWeiHex({
-        value: amount,
-        toCurrency: EtherDenomination.ETH,
-        numberOfDecimals: 8,
-      });
-      logAmount = `${ethValue} ${ticker || EtherDenomination.ETH}`;
+      logAmount = `${decimalAmount} ${ticker || EtherDenomination.ETH}`;
     }
-    await dispatch(
-      addHistoryEntry(`sendFlow - user set amount to ${logAmount}`),
+    debouncedAddHistoryEntry(
+      dispatch,
+      `sendFlow - user set amount to ${logAmount}`,
     );
-    await dispatch(actions.updateSendAmount(amount));
-    if (state[name].amountMode === AMOUNT_MODES.MAX) {
-      await dispatch(actions.updateAmountMode(AMOUNT_MODES.INPUT));
-    }
-
-    await dispatch(updateSendQuote());
   };
 }
 
@@ -2375,7 +2477,6 @@ export function updateSendAmount(amount) {
  * @param payload.skipComputeEstimatedGasLimit
  * @returns {ThunkAction<void>}
  */
-// tag
 export function updateSendAsset(
   { type, details: providedDetails, skipComputeEstimatedGasLimit, isReceived },
   { initialAssetSet = false } = {},
@@ -2385,10 +2486,7 @@ export function updateSendAsset(
     const { ticker } = getProviderConfig(state);
     const draftTransaction =
       state[name].draftTransactions[state[name].currentTransactionUUID];
-    const sendingAddress =
-      draftTransaction.fromAccount?.address ??
-      state[name].selectedAccount.address ??
-      getSelectedInternalAccount(state).address;
+    const sendingAddress = getSender(state);
     const account = getTargetAccount(state, sendingAddress);
     if (type === AssetType.native) {
       const unapprovedTxs = getUnapprovedTransactions(state);
@@ -2448,10 +2546,7 @@ export function updateSendAsset(
       // attempt simple balance fetch if balance is missing
       if (missingProperty === 'balance') {
         const selectedNetworkClientId = getSelectedNetworkClientId(state);
-        const sender =
-          draftTransaction.fromAccount?.address ??
-          state[name].selectedAccount.address ??
-          getSelectedInternalAccount(state).address;
+        const sender = getSender(state);
 
         const balance = await getBalancesInSingleCall(
           sender,
@@ -2498,11 +2593,12 @@ export function updateSendAsset(
       };
 
       if (details.standard === TokenStandard.ERC20) {
-        asset.balance = details.balance
-          ? addHexPrefix(
-              calcTokenAmount(details.balance, details.decimals).toString(16),
-            )
-          : undefined;
+        asset.balance =
+          details.balance && details.decimals
+            ? addHexPrefix(
+                calcTokenAmount(details.balance, details.decimals).toString(16),
+              )
+            : undefined;
 
         await dispatch(
           addHistoryEntry(
@@ -2679,7 +2775,7 @@ export function resetSendState() {
  * @returns {ThunkAction<void>}
  */
 
-export function signTransaction() {
+export function signTransaction(history) {
   return async (dispatch, getState) => {
     const state = getState();
     const { stage, eip1559support, amountMode } = state[name];
@@ -2687,24 +2783,31 @@ export function signTransaction() {
       state[name].draftTransactions[state[name].currentTransactionUUID];
 
     let txParams;
-    const isSwapAndSend =
-      draftTransaction?.sendAsset?.details?.address !==
-      draftTransaction?.receiveAsset?.details?.address;
-
+    const isSwapAndSend = getIsDraftSwapAndSend(draftTransaction);
     const quotesAsArray = draftTransaction.quotes;
     const bestQuote = quotesAsArray
       ? calculateBestQuote(quotesAsArray)
       : undefined;
 
     if (isSwapAndSend) {
-      // TODO: update to selected quote
-
       txParams = { ...bestQuote.trade };
     } else {
       txParams = generateTransactionParams(state[name]);
     }
 
-    if (stage === SEND_STAGES.EDIT) {
+    const { amount, sendAsset, receiveAsset, recipient } = draftTransaction;
+    const prevSwapAndSendData = {
+      amount: { ...amount },
+      sendAsset: { ...sendAsset },
+      receiveAsset: { ...receiveAsset },
+      recipient: { ...recipient },
+      amountMode: state[name].amountMode,
+    };
+
+    await dispatch(actions.setPrevSwapAndSend(prevSwapAndSendData));
+
+    // you can only edit a basic send transaction
+    if (stage === SEND_STAGES.EDIT && !isSwapAndSend) {
       // When dealing with the edit flow there is already a transaction in
       // state that we must update, this branch is responsible for that logic.
       // We first must grab the previous transaction object from state and then
@@ -2718,7 +2821,7 @@ export function signTransaction() {
         from: txParams.from,
         to: txParams.to,
         value: txParams.value,
-        gas: unapprovedTx.userEditedGasLimit
+        gas: unapprovedTx?.userEditedGasLimit
           ? unapprovedTx.txParams.gas
           : txParams.gas,
       };
@@ -2749,13 +2852,14 @@ export function signTransaction() {
       await dispatch(
         updateTransactionGasFees(draftTransaction.id, editingTx.txParams),
       );
+
+      history.push(CONFIRM_TRANSACTION_ROUTE);
     } else {
       let transactionType =
         draftTransaction.recipient.type === RECIPIENT_TYPES.SMART_CONTRACT
           ? TransactionType.contractInteraction
           : TransactionType.simpleSend;
 
-      // TODO: check this for dest
       if (draftTransaction.sendAsset.type !== AssetType.native) {
         if (draftTransaction.sendAsset.type === AssetType.NFT) {
           if (
@@ -2775,31 +2879,114 @@ export function signTransaction() {
         ),
       );
 
-      if (isSwapAndSend) {
-        transactionType = TransactionType.contractInteraction;
-      }
+      let transactionId;
 
-      if (bestQuote?.approvalNeeded) {
-        addTransactionAndWaitForPublish(bestQuote.approvalNeeded, {
-          requireApproval: false,
-          type: TransactionType.swapApproval,
-          swaps: {
-            hasApproveTx: true,
-            meta: {
+      if (isSwapAndSend) {
+        // clear existing swap transaction if editing
+        if (stage === SEND_STAGES.EDIT) {
+          const unapprovedTxs = getUnapprovedTransactions(state);
+          const unapprovedSendTx = unapprovedTxs[draftTransaction.id];
+          if (unapprovedSendTx) {
+            await dispatch(
+              rejectPendingApproval(
+                unapprovedSendTx.id,
+                ethErrors.provider.userRejectedRequest().serialize(),
+              ),
+            );
+          }
+        }
+
+        const chainId = getCurrentChainId(state);
+        const NATIVE_CURRENCY_DECIMALS =
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].decimals;
+
+        const sourceTokenSymbol =
+          draftTransaction.sendAsset.details?.symbol ||
+          getNativeCurrency(state);
+        const destinationTokenSymbol =
+          draftTransaction.receiveAsset.details?.symbol ||
+          getNativeCurrency(state);
+        const destinationTokenDecimals =
+          draftTransaction.receiveAsset.details?.decimals ||
+          NATIVE_CURRENCY_DECIMALS;
+        const destinationTokenAddress =
+          draftTransaction.receiveAsset.details?.address ||
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].address;
+        const sourceTokenDecimals =
+          draftTransaction.sendAsset.details?.decimals ||
+          NATIVE_CURRENCY_DECIMALS;
+        const swapTokenValue = new Numeric(amount.value || '0x0', 16)
+          .toBase(10)
+          .shiftedBy(sourceTokenDecimals)
+          .toString();
+
+        const swapAndSendRecipient = draftTransaction.recipient.address;
+        const sourceTokenAddress =
+          draftTransaction.sendAsset.details?.address ||
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].address;
+        const sourceTokenAmount = bestQuote?.sourceAmount;
+        const destinationTokenAmount = bestQuote?.destinationAmount;
+
+        const meta = {
+          swapAndSendRecipient,
+          type: TransactionType.swapAndSend,
+          sourceTokenSymbol,
+          destinationTokenSymbol,
+          destinationTokenDecimals,
+          destinationTokenAddress,
+          swapTokenValue,
+          approvalTxId: undefined,
+          destinationTokenAmount,
+          sourceTokenAddress,
+          sourceTokenAmount,
+          sourceTokenDecimals,
+        };
+
+        if (bestQuote?.approvalNeeded) {
+          const { id } = await addTransactionAndWaitForPublish(
+            { ...bestQuote.approvalNeeded, amount: '0x0' },
+            {
+              requireApproval: false,
               type: TransactionType.swapApproval,
-              sourceTokenSymbol: draftTransaction.sendAsset.details.symbol,
+              swaps: {
+                hasApproveTx: true,
+                meta: {
+                  type: TransactionType.swapApproval,
+                  sourceTokenSymbol,
+                },
+              },
+            },
+          );
+          meta.approvalTxId = id;
+        }
+
+        const { id: swapAndSendTxId } = await addTransactionAndWaitForPublish(
+          txParams,
+          {
+            requireApproval: false,
+            sendFlowHistory: draftTransaction.history,
+            type: TransactionType.swapAndSend,
+            swaps: {
+              hasApproveTx: Boolean(bestQuote?.approvalNeeded),
+              meta,
             },
           },
-        });
+        );
+        transactionId = swapAndSendTxId;
+
+        await dispatch(setDefaultHomeActiveTabName('activity'));
+        history.push(DEFAULT_ROUTE);
+      } else {
+        // basic send
+        const { id: basicSendTxId } = await dispatch(
+          addTransactionAndRouteToConfirmationPage(txParams, {
+            sendFlowHistory: draftTransaction.history,
+            type: transactionType,
+          }),
+        );
+        transactionId = basicSendTxId;
+        history.push(CONFIRM_TRANSACTION_ROUTE);
       }
-
-      const { id: transactionId } = await dispatch(
-        addTransactionAndRouteToConfirmationPage(txParams, {
-          sendFlowHistory: draftTransaction.history,
-          type: transactionType,
-        }),
-      );
-
       await dispatch(
         setMaxValueMode(
           transactionId,
@@ -2808,6 +2995,7 @@ export function signTransaction() {
         ),
       );
     }
+    await dispatch(actions.setPrevSwapAndSend(prevSwapAndSendData));
   };
 }
 
@@ -2898,6 +3086,11 @@ export function getCurrentDraftTransaction(state) {
   return state[name].draftTransactions[getCurrentTransactionUUID(state)] ?? {};
 }
 
+/**
+ * Selector that returns the best swap and send quote
+ *
+ * @type {Selector?<Quote>}
+ */
 export const getBestQuote = createSelector(
   getCurrentDraftTransaction,
   ({ quotes, swapQuotesError }) => {
@@ -2909,6 +3102,38 @@ export const getBestQuote = createSelector(
     const bestQuote = calculateBestQuote(quotesAsArray);
 
     return bestQuote;
+  },
+);
+
+/**
+ * Selector that returns the layer 1 chain's gas fee, when applicable.
+ *
+ * @type {Selector<string>}
+ */
+export function getSendLayer1GasFee(state) {
+  return state[name].gasTotalForLayer1;
+}
+
+/**
+ * Selector that returns if a native send is possible based on the current gas value
+ *
+ * @type {Selector<boolean>}
+ */
+export const getIsNativeSendPossible = createSelector(
+  getCurrentDraftTransaction,
+  getSendLayer1GasFee,
+  ({ gas: { gasTotal: baseGasTotal }, sendAsset }, gasTotalForLayer1) => {
+    if (sendAsset.type !== AssetType.native) {
+      return true;
+    }
+
+    const nativeBalance = sendAsset.balance;
+
+    const gasTotal = new Numeric(baseGasTotal || '0x0', 16).add(
+      new Numeric(gasTotalForLayer1 ?? '0x0', 16),
+    );
+
+    return gasTotal.lessThan(nativeBalance, 16);
   },
 );
 
@@ -3100,6 +3325,24 @@ export function sendAmountIsInError(state) {
   return Boolean(getCurrentDraftTransaction(state).amount?.error);
 }
 
+/**
+ * Selector that returns the address of the current send sender
+ *
+ * @type {Selector?<string>}
+ */
+export function getSender(state) {
+  const sendState = state[name];
+
+  const draftTransaction =
+    sendState.draftTransactions[sendState.currentTransactionUUID];
+
+  return (
+    draftTransaction?.fromAccount?.address ??
+    sendState.selectedAccount.address ??
+    getSelectedInternalAccount(state).address
+  );
+}
+
 // Recipient Selectors
 /**
  * Selector that returns the current draft transaction's recipient.
@@ -3212,4 +3455,8 @@ export function getSendStage(state) {
 
 export function hasSendLayer1GasFee(state) {
   return state[name].gasTotalForLayer1 !== null;
+}
+
+export function getSwapsBlockedTokens(state) {
+  return state[name].swapsBlockedTokens;
 }

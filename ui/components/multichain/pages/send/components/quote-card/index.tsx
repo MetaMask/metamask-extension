@@ -112,6 +112,12 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
     return undefined;
   }, [isSwapQuoteLoading, bestQuote, timeLeft]);
 
+  const isContent = Boolean(infoText || bestQuote);
+
+  if (!isContent) {
+    return null;
+  }
+
   return (
     <Box
       display={Display.Flex}
@@ -152,15 +158,18 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
             </Text>
           </Box>
           <Box display={Display.Flex} alignItems={AlignItems.center}>
-            <Text
+            <Box
               display={Display.Flex}
-              color={TextColor.textAlternative}
               marginRight={'auto'}
               gap={1}
               alignItems={AlignItems.center}
-              variant={TextVariant.bodySm}
             >
-              {t('transactionDetailGasHeading')}
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+              >
+                {t('transactionDetailGasHeading')}
+              </Text>
               <Tooltip
                 interactive
                 position="left"
@@ -178,7 +187,6 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
                           /* istanbul ignore next */
                           trackEvent({
                             event: 'Clicked "Gas Fees: Learn More" Link',
-                            // TODO: update for swap and send
                             category: MetaMetricsEventCategory.Swaps,
                           });
                           global.platform.openTab({
@@ -197,7 +205,7 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
               >
                 <InfoTooltipIcon fillColor="var(--color-icon-alternative)" />
               </Tooltip>
-            </Text>
+            </Box>
             <Box display={Display.Flex} marginLeft={'auto'}>
               <Text variant={TextVariant.bodySm}>{formattedEthGasFee}</Text>
               {formattedFiatGasFee && (
@@ -220,15 +228,17 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
         </Text>
       )}
       {/* TOS LINK; doubles as anchor for scroll ref */}
-      <ButtonLink
-        variant={TextVariant.bodySm}
-        href={CONSENSYS_TERMS_OF_USE}
-        target="_blank"
-        className="quote-card__TOS"
-        disableUnderline
-      >
-        {t('termsOfService')}
-      </ButtonLink>
+      {bestQuote && (
+        <ButtonLink
+          variant={TextVariant.bodySm}
+          href={CONSENSYS_TERMS_OF_USE}
+          target="_blank"
+          className="quote-card__TOS"
+          disableUnderline
+        >
+          {t('termsOfService')}
+        </ButtonLink>
+      )}
       {/* SCROLL REF ANCHOR */}
       <div ref={scrollRef} />
     </Box>

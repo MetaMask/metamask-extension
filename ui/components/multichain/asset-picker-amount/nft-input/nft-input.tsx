@@ -4,7 +4,7 @@ import { Numeric } from '../../../../../shared/modules/Numeric';
 
 type NFTInputProps = {
   integerValue: number;
-  onChange?: (newHexValue: string) => void;
+  onChange?: (newAmountRaw: string, newAmountFormatted: string) => void;
   className?: string;
 };
 
@@ -22,12 +22,13 @@ export function NFTInput({ integerValue, onChange, className }: NFTInputProps) {
       return;
     }
 
-    onChange(newValue.toPrefixedHexString());
+    onChange(newValue.toPrefixedHexString(), String(newValueAsString));
   };
 
   return (
     <UnitInput
       isDisabled={!onChange}
+      isFocusOnInput={Boolean(onChange)}
       type="number"
       step={1}
       min={0}

@@ -32,6 +32,7 @@ export default class UnitInput extends PureComponent {
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     keyPressRegex: PropTypes.instanceOf(RegExp),
     isDisabled: PropTypes.bool,
+    isFocusOnInput: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -59,8 +60,20 @@ export default class UnitInput extends PureComponent {
   }
 
   handleFocus = () => {
-    this.unitInput.focus();
+    if (!['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+      this.unitInput.focus();
+    }
   };
+
+  componentDidMount() {
+    if (this.props.isFocusOnInput) {
+      document.addEventListener('keypress', this.handleFocus);
+    }
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keypress', this.handleFocus);
+  }
 
   handleInputFocus = ({ target: { value } }) => {
     if (value === '0') {
@@ -104,6 +117,13 @@ export default class UnitInput extends PureComponent {
     });
 
     this.props.onChange(value);
+  };
+
+  handleOnKeyPress = (e) => {
+    const isNumericInput = DECIMAL_INPUT_REGEX.test(e.key);
+    if (!isNumericInput) {
+      e.preventDefault();
+    }
   };
 
   // imperatively updates the overflow when the input is changed upstreamed
@@ -178,6 +198,7 @@ export default class UnitInput extends PureComponent {
               onChange={this.handleChange}
               onBlur={this.handleInputBlur}
               onFocus={this.handleInputFocus}
+              onKeyPress={this.handleOnKeyPress}
               min={0}
               step="any"
               style={{ width: this.getInputWidth(value) }}
