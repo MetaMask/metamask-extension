@@ -55,7 +55,7 @@ Tab.propTypes = {
   className: PropTypes.string,
   'data-testid': PropTypes.string,
   isActive: PropTypes.bool, // required, but added using React.cloneElement
-  name: PropTypes.string.isRequired,
+  name: PropTypes.node.isRequired,
   tabKey: PropTypes.string.isRequired, // for Tabs selection purpose
   onClick: PropTypes.func,
   tabIndex: PropTypes.number, // required, but added using React.cloneElement

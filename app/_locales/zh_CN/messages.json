@@ -2514,19 +2514,6 @@
     "message": "放弃在 Firefox 上支持 Ledger",
     "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
   },
-  "notificationsEmptyText": {
-    "message": "此处您可以从已安装的 snap 中查找通知。"
-  },
-  "notificationsHeader": {
-    "message": "通知"
-  },
-  "notificationsInfos": {
-    "message": "$1，来自$2",
-    "description": "$1 is the date at which the notification has been dispatched and $2 is the link to the snap that dispatched the notification."
-  },
-  "notificationsMarkAllAsRead": {
-    "message": "将所有标记为已读"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "在此账户中找到$1枚新代币",
     "description": "$1 is the number of new tokens detected"

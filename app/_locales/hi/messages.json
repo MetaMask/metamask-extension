@@ -2514,19 +2514,6 @@
     "message": "Firefox के लिए Ledger को मिलने वाला सपोर्ट खत्म किया जा रहा है",
     "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
   },
-  "notificationsEmptyText": {
-    "message": "यहाँ देखने के लिए कुछ नहीं है।"
-  },
-  "notificationsHeader": {
-    "message": "सूचनाएं"
-  },
-  "notificationsInfos": {
-    "message": "$1 को $2 से",
-    "description": "$1 is the date at which the notification has been dispatched and $2 is the link to the snap that dispatched the notification."
-  },
-  "notificationsMarkAllAsRead": {
-    "message": "सभी को पढ़ा हुआ चिन्हित करें"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "इस अकाउंट में $1 के नए टोकन पाए गए",
     "description": "$1 is the number of new tokens detected"

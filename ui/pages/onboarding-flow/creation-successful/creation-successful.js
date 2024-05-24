@@ -23,12 +23,20 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useCreateSession } from '../../../hooks/metamask-notifications/useCreateSession';
+import { selectIsProfileSyncingEnabled } from '../../../selectors/metamask-notifications/profile-syncing';
+import { selectParticipateInMetaMetrics } from '../../../selectors/metamask-notifications/authentication';
 
 export default function CreationSuccessful() {
   const history = useHistory();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+
+  const { createSession } = useCreateSession();
+
+  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+  const participateInMetaMetrics = useSelector(selectParticipateInMetaMetrics);
 
   return (
     <div className="creation-successful" data-testid="creation-successful">
@@ -110,6 +118,18 @@ export default function CreationSuccessful() {
                 method: firstTimeFlowType,
               },
             });
+            if (isProfileSyncingEnabled || participateInMetaMetrics) {
+              trackEvent({
+                category: MetaMetricsEventCategory.Onboarding,
+                event:
+                  MetaMetricsEventName.OnboardingWalletCreationCompleteWithAuthenticating,
+                properties: {
+                  isProfileSyncingEnabled,
+                  partedInMetaMetrics: participateInMetaMetrics,
+                },
+              });
+            }
+            createSession();
             history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
           }}
         >

@@ -6,9 +6,11 @@ import {
 import log from 'loglevel';
 
 import type { AuthenticationControllerGetBearerToken } from '../authentication/authentication-controller';
+import type { Notification } from '../metamask-notifications/types/notification/notification';
 import {
   activatePushNotifications,
   deactivatePushNotifications,
+  listenToPushNotifications,
   updateTriggerPushNotifications,
 } from './services/services';
 
@@ -18,32 +20,45 @@ export type PushPlatformNotificationsControllerState = {
   fcmToken: string;
 };
 
-export declare type PushPlatformNotificationsControllerEnablePushNotificationsAction =
+export declare type PushPlatformNotificationsControllerEnablePushNotifications =
   {
     type: `${typeof controllerName}:enablePushNotifications`;
     handler: PushPlatformNotificationsController['enablePushNotifications'];
   };
 
-export declare type PushPlatformNotificationsControllerDisablePushNotificationsAction =
+export declare type PushPlatformNotificationsControllerDisablePushNotifications =
   {
     type: `${typeof controllerName}:disablePushNotifications`;
     handler: PushPlatformNotificationsController['disablePushNotifications'];
   };
+export declare type PushPlatformNotificationsControllerUpdateTriggerPushNotifications =
+  {
+    type: `${typeof controllerName}:updateTriggerPushNotifications`;
+    handler: PushPlatformNotificationsController['updateTriggerPushNotifications'];
+  };
 
 export type PushPlatformNotificationsControllerMessengerActions =
-  | PushPlatformNotificationsControllerEnablePushNotificationsAction
-  | PushPlatformNotificationsControllerDisablePushNotificationsAction
+  | PushPlatformNotificationsControllerEnablePushNotifications
+  | PushPlatformNotificationsControllerDisablePushNotifications
+  | PushPlatformNotificationsControllerUpdateTriggerPushNotifications
   | ControllerGetStateAction<'state', PushPlatformNotificationsControllerState>;
 
 type AllowedActions = AuthenticationControllerGetBearerToken;
+
+export type PushPlatformNotificationsControllerOnNewNotificationEvent = {
+  type: `${typeof controllerName}:onNewNotifications`;
+  payload: [Notification];
+};
+
+type AllowedEvents = PushPlatformNotificationsControllerOnNewNotificationEvent;
 
 export type PushPlatformNotificationsControllerMessenger =
   RestrictedControllerMessenger<
     typeof controllerName,
     PushPlatformNotificationsControllerMessengerActions | AllowedActions,
-    never,
+    AllowedEvents,
     AllowedActions['type'],
-    never
+    AllowedEvents['type']
   >;
 
 const metadata = {
@@ -67,6 +82,8 @@ export class PushPlatformNotificationsController extends BaseController<
   PushPlatformNotificationsControllerState,
   PushPlatformNotificationsControllerMessenger
 > {
+  #firebaseUnsubscribe: (() => void) | undefined = undefined;
+
   constructor({
     messenger,
     state,
@@ -82,6 +99,23 @@ export class PushPlatformNotificationsController extends BaseController<
         fcmToken: state?.fcmToken || '',
       },
     });
+
+    this.#registerMessageHandlers();
+  }
+
+  #registerMessageHandlers(): void {
+    this.messagingSystem.registerActionHandler(
+      'PushPlatformNotificationsController:enablePushNotifications',
+      this.enablePushNotifications.bind(this),
+    );
+    this.messagingSystem.registerActionHandler(
+      'PushPlatformNotificationsController:disablePushNotifications',
+      this.disablePushNotifications.bind(this),
+    );
+    this.messagingSystem.registerActionHandler(
+      'PushPlatformNotificationsController:updateTriggerPushNotifications',
+      this.updateTriggerPushNotifications.bind(this),
+    );
   }
 
   async #getAndAssertBearerToken() {
@@ -109,18 +143,34 @@ export class PushPlatformNotificationsController extends BaseController<
    * @param UUIDs - An array of UUIDs to enable push notifications for.
    */
   public async enablePushNotifications(UUIDs: string[]) {
+    // TEMP: disabling push notifications if browser does not support MV3.
+    // Will need work to support firefox on MV2
+    if (!process.env.ENABLE_MV3) {
+      return;
+    }
+
     const bearerToken = await this.#getAndAssertBearerToken();
 
     try {
-      // 2. Call the activatePushNotifications method from PushPlatformNotificationsUtils
+      // Activate Push Notifications
       const regToken = await activatePushNotifications(bearerToken, UUIDs);
 
-      // 3. Update the state with the FCM token
-      if (regToken) {
-        this.update((state) => {
-          state.fcmToken = regToken;
-        });
+      if (!regToken) {
+        return;
       }
+
+      // Listen to push notifications
+      this.#firebaseUnsubscribe = await listenToPushNotifications((n) =>
+        this.messagingSystem.publish(
+          'PushPlatformNotificationsController:onNewNotifications',
+          n,
+        ),
+      );
+
+      // Update state
+      this.update((state) => {
+        state.fcmToken = regToken;
+      });
     } catch (error) {
       log.error('Failed to enable push notifications:', error);
       throw new Error('Failed to enable push notifications');
@@ -137,11 +187,17 @@ export class PushPlatformNotificationsController extends BaseController<
    * @param UUIDs - An array of UUIDs for which push notifications should be disabled.
    */
   public async disablePushNotifications(UUIDs: string[]) {
+    // TEMP: disabling push notifications if browser does not support MV3.
+    // Will need work to support firefox on MV2
+    if (!process.env.ENABLE_MV3) {
+      return;
+    }
+
     const bearerToken = await this.#getAndAssertBearerToken();
     let isPushNotificationsDisabled: boolean;
 
     try {
-      // 1. Send a request to the server to unregister the token/device
+      // Send a request to the server to unregister the token/device
       isPushNotificationsDisabled = await deactivatePushNotifications(
         this.state.fcmToken,
         bearerToken,
@@ -153,7 +209,15 @@ export class PushPlatformNotificationsController extends BaseController<
       throw new Error(errorMessage);
     }
 
-    // 2. Remove the FCM token from the state
+    // Remove the FCM token from the state
+    if (!isPushNotificationsDisabled) {
+      return;
+    }
+
+    // Unsubscribe from push notifications
+    this.#firebaseUnsubscribe?.();
+
+    // Update State
     if (isPushNotificationsDisabled) {
       this.update((state) => {
         state.fcmToken = '';
@@ -169,10 +233,27 @@ export class PushPlatformNotificationsController extends BaseController<
    * @param UUIDs - An array of UUIDs that should trigger push notifications.
    */
   public async updateTriggerPushNotifications(UUIDs: string[]) {
+    // TEMP: disabling push notifications if browser does not support MV3.
+    // Will need work to support firefox on MV2
+    if (!process.env.ENABLE_MV3) {
+      return;
+    }
+
     const bearerToken = await this.#getAndAssertBearerToken();
 
     try {
-      updateTriggerPushNotifications(this.state.fcmToken, bearerToken, UUIDs);
+      const { fcmToken } = await updateTriggerPushNotifications(
+        this.state.fcmToken,
+        bearerToken,
+        UUIDs,
+      );
+
+      // update the state with the new FCM token
+      if (fcmToken) {
+        this.update((state) => {
+          state.fcmToken = fcmToken;
+        });
+      }
     } catch (error) {
       const errorMessage = `Failed to update triggers for push notifications: ${error}`;
       log.error(errorMessage);

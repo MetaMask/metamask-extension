@@ -545,8 +545,9 @@ class Driver {
   }
 
   async openNewPage(url) {
-    const newHandle = await this.driver.switchTo().newWindow();
+    await this.driver.switchTo().newWindow();
     await this.openNewURL(url);
+    const newHandle = await this.driver.getWindowHandle();
     return newHandle;
   }
 
@@ -570,12 +571,12 @@ class Driver {
     return await this.driver.getAllWindowHandles();
   }
 
-  async waitUntilXWindowHandles(x, delayStep = 1000, timeout = this.timeout) {
+  async waitUntilXWindowHandles(_x, delayStep = 1000, timeout = this.timeout) {
+    const x = process.env.ENABLE_MV3 ? _x + 1 : _x;
     let timeElapsed = 0;
     let windowHandles = [];
     while (timeElapsed <= timeout) {
-      windowHandles = await this.driver.getAllWindowHandles();
-
+      windowHandles = await this.getAllWindowHandles();
       if (windowHandles.length === x) {
         return windowHandles;
       }

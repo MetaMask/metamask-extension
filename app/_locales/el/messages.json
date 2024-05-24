@@ -2514,19 +2514,6 @@
     "message": "Διακοπή της υποστήριξης του Ledger για τον Firefox",
     "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
   },
-  "notificationsEmptyText": {
-    "message": "Εδώ μπορείτε να βρείτε ειδοποιήσεις από τα εγκατεστημένα snaps."
-  },
-  "notificationsHeader": {
-    "message": "Ειδοποιήσεις"
-  },
-  "notificationsInfos": {
-    "message": "$1 από $2",
-    "description": "$1 is the date at which the notification has been dispatched and $2 is the link to the snap that dispatched the notification."
-  },
-  "notificationsMarkAllAsRead": {
-    "message": "Επισήμανση όλων ως αναγνωσμένων"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 νέα tokens βρέθηκαν σε αυτόν τον λογαριασμό",
     "description": "$1 is the number of new tokens detected"

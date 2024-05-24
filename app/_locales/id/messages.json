@@ -2514,19 +2514,6 @@
     "message": "Menghapus Dukungan Ledger untuk Firefox",
     "description": "Title for a notification in the 'See What's New' popup. Tells firefox users that ledger support is being dropped."
   },
-  "notificationsEmptyText": {
-    "message": "Di sinilah Anda bisa menemukan pemberitahuan dari snap yang Anda instal."
-  },
-  "notificationsHeader": {
-    "message": "Notifikasi"
-  },
-  "notificationsInfos": {
-    "message": "$1 dari $2",
-    "description": "$1 is the date at which the notification has been dispatched and $2 is the link to the snap that dispatched the notification."
-  },
-  "notificationsMarkAllAsRead": {
-    "message": "Tandai semua telah dibaca"
-  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 token baru ditemukan di akun ini",
     "description": "$1 is the number of new tokens detected"

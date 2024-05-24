@@ -34,6 +34,7 @@ export const NotificationDetailNft: FC<NotificationDetailNftProps> = ({
   networkName,
 }) => (
   <Box
+    paddingTop={1}
     paddingBottom={4}
     display={Display.Flex}
     alignItems={AlignItems.center}

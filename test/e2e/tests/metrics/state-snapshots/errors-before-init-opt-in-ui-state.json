@@ -1,5 +1,14 @@
 {
   "data": {
+    "AuthenticationController": { "isSignedIn": "boolean" },
+    "UserStorageController": { "isProfileSyncingEnabled": true },
+    "MetamaskNotificationsController": {
+      "isFeatureAnnouncementsEnabled": "boolean",
+      "isMetamaskNotificationsEnabled": "boolean",
+      "isMetamaskNotificationsFeatureSeen": "boolean",
+      "metamaskNotificationsList": "object",
+      "metamaskNotificationsReadList": "object"
+    },
     "AccountsController": {
       "internalAccounts": { "selectedAccount": "string", "accounts": "object" }
     },
@@ -20,9 +29,9 @@
       "connectedStatusPopoverHasBeenShown": true,
       "termsOfUseLastAgreed": "number",
       "defaultHomeActiveTabName": null,
-      "popupGasPollTokens": "object",
-      "notificationGasPollTokens": "object",
       "fullScreenGasPollTokens": "object",
+      "notificationGasPollTokens": "object",
+      "popupGasPollTokens": "object",
       "qrHardware": {},
       "recoveryPhraseReminderHasBeenShown": true,
       "recoveryPhraseReminderLastShown": "number",

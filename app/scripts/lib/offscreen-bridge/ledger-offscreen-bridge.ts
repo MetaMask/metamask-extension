@@ -131,7 +131,7 @@ export class LedgerOffscreenBridge implements LedgerBridge {
       chrome.runtime.sendMessage(
         {
           target: OffscreenCommunicationTarget.ledgerOffscreen,
-          action: LedgerAction.signMessage,
+          action: LedgerAction.signPersonalMessage,
           params,
         },
         (response) => {

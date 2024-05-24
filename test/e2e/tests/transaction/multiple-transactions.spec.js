@@ -5,6 +5,7 @@ const {
   regularDelayMs,
   unlockWallet,
   generateGanacheOptions,
+  WINDOW_TITLES,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
@@ -30,19 +31,15 @@ describe('Multiple transactions', function () {
           tag: 'button',
         });
         await driver.waitUntilXWindowHandles(3);
-        const windowHandles = await driver.getAllWindowHandles();
-        const extensionTab = windowHandles[0];
-        const dApp = windowHandles[1];
-        const confirmation = windowHandles[2];
 
-        await driver.switchToWindow(dApp);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // creates second transaction
         await driver.clickElement({
           text: 'Send EIP 1559 Transaction',
           tag: 'button',
         });
-        await driver.switchToWindow(confirmation);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // confirms second transaction
         await driver.waitForSelector({
@@ -50,7 +47,7 @@ describe('Multiple transactions', function () {
           tag: 'a',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.switchToWindow(confirmation);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // wait for the "Reject 2 transactions" to disappear
         await driver.assertElementNotPresent(
@@ -61,7 +58,9 @@ describe('Multiple transactions', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         await driver.waitUntilXWindowHandles(2);
-        await driver.switchToWindow(extensionTab);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
         await driver.delay(regularDelayMs);
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
@@ -98,17 +97,15 @@ describe('Multiple transactions', function () {
           tag: 'button',
         });
         await driver.waitUntilXWindowHandles(3);
-        const windowHandles = await driver.getAllWindowHandles();
-        const extension = windowHandles[0];
-        const confirmation = windowHandles[2];
-        await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // creates second transaction
         await driver.clickElement({
           text: 'Send EIP 1559 Transaction',
           tag: 'button',
         });
-        await driver.switchToWindow(confirmation);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // rejects second transaction
         await driver.waitForSelector({
@@ -121,7 +118,9 @@ describe('Multiple transactions', function () {
         await driver.clickElement({ text: 'Reject', tag: 'button' });
 
         await driver.waitUntilXWindowHandles(2);
-        await driver.switchToWindow(extension);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
         await driver.delay(regularDelayMs);
         await driver.clickElement('[data-testid="home__activity-tab"]');
 
