@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { AlertActionHandlerProvider } from '../../../contexts/alert-system/alertActionHandler';
+import { AlertActionHandlerProvider } from '../../../components/app/alert-system/contexts/alertActionHandler';
 import ScrollToBottom from '../components/confirm/scroll-to-bottom';
 import { Footer } from '../components/confirm/footer';
 import { Header } from '../components/confirm/header';

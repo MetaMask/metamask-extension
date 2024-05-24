@@ -14,7 +14,7 @@ const mockAlertActionHandlerProviderValue = {
   processAction: onProcessActionMock,
 };
 
-jest.mock('../../../../contexts/alert-system/alertActionHandler', () => ({
+jest.mock('../contexts/alertActionHandler', () => ({
   useAlertActionHandler: jest.fn(() => mockAlertActionHandlerProviderValue),
 }));
 
