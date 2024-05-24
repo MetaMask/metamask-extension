@@ -20,6 +20,7 @@ import { getNotifications } from '../../selectors';
 import {
   selectIsFeatureAnnouncementsEnabled,
   selectIsMetamaskNotificationsEnabled,
+  getMetamaskNotifications,
 } from '../../selectors/metamask-notifications/metamask-notifications';
 import type { Notification } from '../../../app/scripts/controllers/metamask-notifications/types/notification/notification';
 import { deleteExpiredNotifications } from '../../store/actions';
@@ -83,7 +84,7 @@ const useFeatureAnnouncementAndWalletNotifications = () => {
     selectIsMetamaskNotificationsEnabled,
   );
 
-  const { notificationsData } = useMetamaskNotificationsContext();
+  const notificationsData = useSelector(getMetamaskNotifications);
 
   const featureAnnouncementNotifications = useMemo(() => {
     return isFeatureAnnouncementsEnabled
