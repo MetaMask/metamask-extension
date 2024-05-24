@@ -141,11 +141,6 @@ exports[`CurrencyInput Component rendering should render properly with a native 
           ETH
         </div>
       </div>
-      <div
-        class="currency-input__conversion-component"
-      >
-        No conversion rate available
-      </div>
     </div>
   </div>
 </div>
@@ -168,12 +163,13 @@ exports[`CurrencyInput Component rendering should render properly with an ETH va
           class="unit-input__input"
           data-testid="currency-input"
           dir="ltr"
+          disabled=""
           min="0"
           placeholder="0"
           step="any"
           style="width: 1.5ch;"
           type="number"
-          value="0"
+          value="1"
         />
         <div
           class="unit-input__suffix"
@@ -215,12 +211,13 @@ exports[`CurrencyInput Component rendering should render properly without a suff
       <div
         class="unit-input__input-container"
         style="display: inherit;"
-        title=""
+        title="0"
       >
         <input
           class="unit-input__input"
           data-testid="currency-input"
           dir="ltr"
+          disabled=""
           min="0"
           placeholder="0"
           step="any"
