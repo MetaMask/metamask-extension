@@ -1,10 +1,11 @@
 import { ethErrors, serializeError } from 'eth-rpc-errors';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Button,
   ButtonSize,
   ButtonVariant,
+  IconName,
 } from '../../../../../components/component-library';
 import { Footer as PageFooter } from '../../../../../components/multichain/pages/page';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -19,13 +20,80 @@ import {
 } from '../../../../../store/actions';
 import { confirmSelector } from '../../../selectors';
 import { getConfirmationSender } from '../utils';
+import useAlerts from '../../../../../hooks/useAlerts';
+import { ConfirmAlertModal } from '../../../../../components/app/confirmations/alerts/confirm-alert-modal';
 import useIsDangerButton from './useIsDangerButton';
+
+function getIconName(hasUnconfirmedAlerts: boolean): IconName {
+  if (hasUnconfirmedAlerts) {
+    return IconName.SecuritySearch;
+  }
+  return IconName.Danger;
+}
+
+function ConfirmButton({
+  alertOwnerId = '',
+  disabled,
+  onSubmit,
+  onCancel,
+}: {
+  alertOwnerId?: string;
+  disabled: boolean;
+  onSubmit: () => void;
+  onCancel: () => void;
+}) {
+  const isDangerButton = useIsDangerButton();
+  const t = useI18nContext();
+
+  const [confirmModalVisible, setConfirmModalVisible] =
+    useState<boolean>(false);
+  const { alerts, isAlertConfirmed } = useAlerts(alertOwnerId);
+  const unconfirmedAlerts = alerts.filter(
+    (alert) => alert.field && !isAlertConfirmed(alert.key),
+  );
+  const hasAlerts = alerts.length > 0;
+  const hasUnconfirmedAlerts = unconfirmedAlerts.length > 0;
+
+  const handleCloseConfirmModal = useCallback(() => {
+    setConfirmModalVisible(false);
+  }, []);
+
+  const handleOpenConfirmModal = useCallback(() => {
+    setConfirmModalVisible(true);
+  }, [hasUnconfirmedAlerts]);
+
+  return (
+    <>
+      {confirmModalVisible && (
+        <ConfirmAlertModal
+          alertKey={alerts[0]?.key}
+          ownerId={alertOwnerId}
+          onClose={handleCloseConfirmModal}
+          onCancel={onCancel}
+          onSubmit={onSubmit}
+        />
+      )}
+      <Button
+        block
+        data-testid="confirm-footer-confirm-button"
+        startIconName={
+          hasAlerts ? getIconName(hasUnconfirmedAlerts) : undefined
+        }
+        onClick={hasAlerts ? handleOpenConfirmModal : onSubmit}
+        danger={hasAlerts ? true : isDangerButton}
+        size={ButtonSize.Lg}
+        disabled={hasUnconfirmedAlerts ? false : disabled}
+      >
+        {hasUnconfirmedAlerts ? t('reviewAlerts') : t('confirm')}
+      </Button>
+    </>
+  );
+}
 
 const Footer = () => {
   const dispatch = useDispatch();
   const t = useI18nContext();
   const confirm = useSelector(confirmSelector);
-  const isDangerButton = useIsDangerButton();
 
   const { currentConfirmation, isScrollToBottomNeeded } = confirm;
   const { from } = getConfirmationSender(currentConfirmation);
@@ -58,6 +126,7 @@ const Footer = () => {
     if (!currentConfirmation) {
       return;
     }
+
     dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -75,12 +144,9 @@ const Footer = () => {
       >
         {t('cancel')}
       </Button>
-      <Button
-        block
-        data-testid="confirm-footer-confirm-button"
-        onClick={onSubmit}
-        size={ButtonSize.Lg}
-        danger={isDangerButton}
+      <ConfirmButton
+        alertOwnerId={currentConfirmation?.id}
+        onSubmit={onSubmit}
         disabled={
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           mmiSubmitDisabled ||
@@ -88,9 +154,8 @@ const Footer = () => {
           isScrollToBottomNeeded ||
           hardwareWalletRequiresConnection
         }
-      >
-        {t('confirm')}
-      </Button>
+        onCancel={onCancel}
+      />
     </PageFooter>
   );
 };
