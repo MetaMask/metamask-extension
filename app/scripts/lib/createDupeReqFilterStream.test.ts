@@ -1,13 +1,13 @@
 import { obj as createThroughStream } from 'through2';
 import { MINUTE } from '../../../shared/constants/time';
-import createDupeReqFilterThroughStream, {
+import createDupeReqFilterStream, {
   THREE_MINUTES,
-} from './createDupeReqFilterThroughStream';
+} from './createDupeReqFilterStream';
 
 const TWO_MINUTES = MINUTE * 2;
 
 function createTestStream(output) {
-  const throughStream = createDupeReqFilterThroughStream();
+  const throughStream = createDupeReqFilterStream();
   const testOutStream = createThroughStream((chunk, _, cb) => {
     output.push(chunk);
     cb();
@@ -31,10 +31,10 @@ function runStreamTest(requests, advanceTimersTime = 10) {
     testStream.end();
 
     jest.advanceTimersByTime(advanceTimersTime);
-  });  
+  });
 }
 
-describe('createDupeReqFilterThroughStream', () => {
+describe('createDupeReqFilterStream', () => {
   beforeEach(() => {
     jest.useFakeTimers({ now: 10 });
   });

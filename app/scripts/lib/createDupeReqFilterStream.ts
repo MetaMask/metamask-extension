@@ -47,7 +47,7 @@ const makeExpirySet = () => {
  *
  * @returns The stream object.
  */
-export default function createDupeReqFilterThroughStream() {
+export default function createDupeReqFilterStream() {
   const seenRequestIds = makeExpirySet();
   return createThroughStream((chunk, _, cb) => {
     // JSON-RPC notifications have no ids; our only recourse is to let them through.

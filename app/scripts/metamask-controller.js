@@ -268,7 +268,7 @@ import { mmiKeyringBuilderFactory } from './mmi-keyring-builder-factory';
 ///: END:ONLY_INCLUDE_IF
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
-import createDupeReqFilterThroughStream from './lib/createDupeReqFilterThroughStream';
+import createDupeReqFilterStream from './lib/createDupeReqFilterStream';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
 import { createMethodMiddleware } from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
@@ -4921,7 +4921,7 @@ export default class MetamaskController extends EventEmitter {
       tabId,
     });
 
-    const dupeReqFilterThroughStream = createDupeReqFilterThroughStream();
+    const dupeReqFilterThroughStream = createDupeReqFilterStream();
 
     // setup connection
     const providerStream = createEngineStream({ engine });
