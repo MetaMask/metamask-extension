@@ -30,6 +30,19 @@
       }
     }
 
+    @mixin disabled-token {
+      .multichain-token-list-item a {
+        cursor: not-allowed;
+        @content;
+      }
+    }
+
+    &--disabled {
+      @include disabled-token {
+        opacity: 0.4;
+      }
+    }
+
     &__selected-indicator {
       width: 4px;
       height: calc(100% - 8px);

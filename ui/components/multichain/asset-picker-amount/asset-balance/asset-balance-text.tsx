@@ -12,7 +12,6 @@ import { AssetType } from '../../../../../shared/constants/transaction';
 import {
   TextColor,
   TextVariant,
-  FontWeight,
 } from '../../../../helpers/constants/design-system';
 import CurrencyDisplay from '../../../ui/currency-display';
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
@@ -91,7 +90,7 @@ export function AssetBalanceText({
   if (asset.type === AssetType.NFT) {
     const numberOfTokens = hexToDecimal(asset.balance || '0x0');
     return (
-      <Text fontWeight={FontWeight.Medium} {...commonProps.textProps}>
+      <Text {...commonProps.textProps}>
         {`${numberOfTokens} ${t(
           numberOfTokens === '1' ? 'token' : 'tokens',
         )?.toLowerCase()}${errorText}`}

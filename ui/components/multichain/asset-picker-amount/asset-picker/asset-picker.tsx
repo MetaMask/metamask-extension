@@ -30,6 +30,7 @@ import {
 import Tooltip from '../../../ui/tooltip';
 import { LARGE_SYMBOL_LENGTH } from '../constants';
 import { getAssetImageURL } from '../../../../helpers/utils/util';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export type AssetPickerProps = {
   asset: Asset;
@@ -41,6 +42,7 @@ export type AssetPickerProps = {
    * Sending asset for UI treatments; only for dest component
    */
   sendingAsset?: Asset;
+  isDisabled?: boolean;
 };
 
 // A component that lets the user pick from a list of assets.
@@ -48,7 +50,9 @@ export function AssetPicker({
   asset,
   onAssetChange,
   sendingAsset,
+  isDisabled = false,
 }: AssetPickerProps) {
+  const t = useI18nContext();
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
   const nativeCurrencyImageUrl = useSelector(getNativeCurrencyImage);
   // TODO: Replace `any` with type
@@ -109,6 +113,7 @@ export function AssetPicker({
       />
       <Button
         className="asset-picker"
+        disabled={isDisabled}
         display={Display.Flex}
         alignItems={AlignItems.center}
         gap={2}
@@ -119,7 +124,12 @@ export function AssetPicker({
         backgroundColor={BackgroundColor.transparent}
         onClick={() => setShowAssetPickerModal(true)}
         endIconName={IconName.ArrowDown}
-        endIconProps={{ color: IconColor.iconDefault, marginInlineStart: 0 }}
+        endIconProps={{
+          color: IconColor.iconDefault,
+          marginInlineStart: 0,
+          display: isDisabled ? Display.None : Display.InlineBlock,
+        }}
+        title={isDisabled ? t('swapTokenNotAvailable') : undefined}
       >
         <Box display={Display.Flex} alignItems={AlignItems.center} gap={3}>
           <AvatarToken

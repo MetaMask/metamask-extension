@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Box, Text } from '../../component-library';
@@ -14,9 +14,14 @@ import {
 } from '../../../helpers/constants/design-system';
 import { getSelectedInternalAccount } from '../../../selectors';
 
-import { TokenStandard } from '../../../../shared/constants/transaction';
+import {
+  AssetType,
+  TokenStandard,
+} from '../../../../shared/constants/transaction';
 import {
   getCurrentDraftTransaction,
+  getIsNativeSendPossible,
+  getSendMaxModeState,
   type Amount,
   type Asset,
 } from '../../../ducks/send';
@@ -28,7 +33,6 @@ import {
 } from './asset-picker/asset-picker';
 import { SwappableCurrencyInput } from './swappable-currency-input/swappable-currency-input';
 import { AssetBalance } from './asset-balance/asset-balance';
-import { getIsFiatPrimary } from './utils';
 
 type AssetPickerAmountProps = OverridingUnion<
   AssetPickerProps,
@@ -40,7 +44,10 @@ type AssetPickerAmountProps = OverridingUnion<
     /**
      * Callback for when the amount changes; disables the input when undefined
      */
-    onAmountChange?: (newAmount: string) => void;
+    onAmountChange?: (
+      newAmountRaw: string,
+      newAmountFormatted?: string,
+    ) => void;
   }
 >;
 
@@ -55,21 +62,59 @@ export const AssetPickerAmount = ({
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const t = useI18nContext();
 
-  const isFiatPrimary = useSelector(getIsFiatPrimary);
-
   const { swapQuotesError } = useSelector(getCurrentDraftTransaction);
   const isDisabled = !onAmountChange;
   const isSwapsErrorShown = isDisabled && swapQuotesError;
 
+  const isMaxMode = useSelector(getSendMaxModeState);
+  const isNativeSendPossible = useSelector(getIsNativeSendPossible);
+
+  useEffect(() => {
+    // if this input is immutable – avoids double fire
+    if (isDisabled) {
+      return;
+    }
+
+    // if native send is not possible
+    if (isNativeSendPossible) {
+      return;
+    }
+
+    // if max mode already enabled
+    if (!isMaxMode) {
+      return;
+    }
+
+    // disable max mode and replace with "0"
+    onAmountChange('0x0');
+  }, [isNativeSendPossible]);
+
   const [isFocused, setIsFocused] = useState(false);
+  const [isNFTInputChanged, setIsTokenInputChanged] = useState(false);
+
+  const handleChange = useCallback(
+    (newAmountRaw, newAmountFormatted) => {
+      if (!isNFTInputChanged && asset.type === AssetType.NFT) {
+        setIsTokenInputChanged(true);
+      }
+      onAmountChange?.(newAmountRaw, newAmountFormatted);
+    },
+    [onAmountChange, isNFTInputChanged, asset.type],
+  );
+
+  useEffect(() => {
+    setIsTokenInputChanged(false);
+  }, [asset]);
 
   const { error: rawError } = amount;
 
-  // if an error, like the 0 asset error, is out of scope, it shouldn't be shown in the AssetPickerAmount treatments
-  const error =
-    rawError && rawError !== NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR
-      ? rawError
-      : undefined;
+  // if input hasn't been touched, don't show the zero amount error
+  const isLowBalanceErrorInvalid =
+    rawError === NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR &&
+    asset.type === AssetType.NFT &&
+    !isNFTInputChanged;
+
+  const error = rawError && !isLowBalanceErrorInvalid ? rawError : undefined;
 
   useEffect(() => {
     if (!asset) {
@@ -110,7 +155,7 @@ export const AssetPickerAmount = ({
       >
         <AssetPicker asset={asset} {...assetPickerProps} />
         <SwappableCurrencyInput
-          onAmountChange={onAmountChange}
+          onAmountChange={onAmountChange ? handleChange : undefined}
           assetType={asset.type}
           asset={asset}
           amount={amount}
@@ -126,12 +171,9 @@ export const AssetPickerAmount = ({
           </Text>
         )}
         {/* The fiat value will always leave dust and is often inaccurate anyways */}
-        {onAmountChange &&
-          (isFiatPrimary ? (
-            <Box marginBottom={6} />
-          ) : (
-            <MaxClearButton asset={asset} />
-          ))}
+        {onAmountChange && isNativeSendPossible && (
+          <MaxClearButton asset={asset} />
+        )}
       </Box>
     </Box>
   );

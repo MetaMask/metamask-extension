@@ -1,8 +1,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 
 import { useSelector } from 'react-redux';
-import isEqual from 'lodash/isEqual';
-import { uniqBy } from 'lodash';
+import { isEqual, uniqBy } from 'lodash';
 import { Tab, Tabs } from '../../../ui/tabs';
 import NftsItems from '../../../app/nfts-items/nfts-items';
 import {
@@ -38,16 +37,24 @@ import { AssetType } from '../../../../../shared/constants/transaction';
 import { useNftsCollections } from '../../../../hooks/useNftsCollections';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import {
+  getCurrentChainId,
+  getCurrentCurrency,
+  getNativeCurrencyImage,
+  getSelectedAccountCachedBalance,
   getSelectedInternalAccount,
   getShouldHideZeroBalanceTokens,
+  getTokenExchangeRates,
   getTokenList,
 } from '../../../../selectors';
-import { getTokens } from '../../../../ducks/metamask/metamask';
+import {
+  getConversionRate,
+  getNativeCurrency,
+  getTokens,
+} from '../../../../ducks/metamask/metamask';
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { getTopAssets } from '../../../../ducks/swaps/swaps';
+import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import { useEqualityCheck } from '../../../../hooks/useEqualityCheck';
-import { useTokensToSearch } from '../../../../hooks/useTokensToSearch';
-import { TokenBucketPriority } from '../../../../../shared/constants/swaps';
 import AssetList from './AssetList';
 import { Asset, Collection, Token } from './types';
 
@@ -59,6 +66,8 @@ type AssetPickerModalProps = {
   sendingAssetImage?: string;
   sendingAssetSymbol?: string;
 };
+
+const MAX_UNOWNED_TOKENS_RENDERED = 30;
 
 export function AssetPickerModal({
   isOpen,
@@ -110,6 +119,15 @@ export function AssetPickerModal({
   const defaultActiveTabKey = asset?.type === AssetType.NFT ? 'nfts' : 'tokens';
 
   const isDest = sendingAssetImage && sendingAssetSymbol;
+  const chainId = useSelector(getCurrentChainId);
+
+  const nativeCurrencyImage = useSelector(getNativeCurrencyImage);
+  const nativeCurrency = useSelector(getNativeCurrency);
+  const balanceValue = useSelector(getSelectedAccountCachedBalance);
+
+  const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
+  const conversionRate = useSelector(getConversionRate);
+  const currentCurrency = useSelector(getCurrentCurrency);
 
   const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
   const shouldHideZeroBalanceTokens = useSelector(
@@ -123,30 +141,91 @@ export function AssetPickerModal({
   });
 
   // Swaps token list
-  const tokenList = useSelector(getTokenList, isEqual);
-  const shuffledTokensList = useMemo(
-    () => Object.values(tokenList),
-    [tokenList],
-  );
+  const tokenList = useSelector(getTokenList) as Record<string, Token>;
   const topTokens = useSelector(getTopAssets, isEqual);
 
   const usersTokens = uniqBy([...tokensWithBalances, ...tokens], 'address');
 
   const memoizedUsersTokens = useEqualityCheck(usersTokens);
 
-  const fromTokenList = useTokensToSearch({
-    usersTokens: memoizedUsersTokens,
-    topTokens,
-    shuffledTokensList,
-    tokenBucketPriority: TokenBucketPriority.owned,
-  });
+  const filteredTokenList = useMemo(() => {
+    const nativeToken = {
+      address: null,
+      symbol: nativeCurrency,
+      decimals: 18,
+      image: nativeCurrencyImage,
+      balance: balanceValue,
+      type: AssetType.native,
+    };
 
-  const toTokenList = useTokensToSearch({
-    usersTokens: memoizedUsersTokens,
+    const filteredTokens: Token[] = [];
+    // undefined would be the native token address
+    const filteredTokensAddresses = new Set<string | undefined>();
+
+    function* tokenGenerator() {
+      yield nativeToken;
+
+      for (const token of memoizedUsersTokens) {
+        yield token;
+      }
+
+      // topTokens should already be sorted by popularity
+      for (const address of Object.keys(topTokens)) {
+        const token = tokenList?.[address];
+        if (token) {
+          yield token;
+        }
+      }
+
+      for (const token of Object.values(tokenList)) {
+        yield token;
+      }
+    }
+
+    let token: Token;
+    for (token of tokenGenerator()) {
+      if (
+        token.symbol?.toLowerCase().includes(searchQuery.toLowerCase()) &&
+        !filteredTokensAddresses.has(token.address?.toLowerCase())
+      ) {
+        filteredTokensAddresses.add(token.address?.toLowerCase());
+        filteredTokens.push(
+          getRenderableTokenData(
+            token.address
+              ? {
+                  ...token,
+                  ...tokenList[token.address.toLowerCase()],
+                  type: AssetType.token,
+                }
+              : token,
+            tokenConversionRates,
+            conversionRate,
+            currentCurrency,
+            chainId,
+            tokenList,
+          ),
+        );
+      }
+
+      if (filteredTokens.length > MAX_UNOWNED_TOKENS_RENDERED) {
+        break;
+      }
+    }
+
+    return filteredTokens;
+  }, [
+    memoizedUsersTokens,
     topTokens,
-    shuffledTokensList,
-    tokenBucketPriority: TokenBucketPriority.top,
-  });
+    searchQuery,
+    nativeCurrency,
+    nativeCurrencyImage,
+    balanceValue,
+    tokenConversionRates,
+    conversionRate,
+    currentCurrency,
+    chainId,
+    tokenList,
+  ]);
 
   const Search = useCallback(
     () => (
@@ -216,9 +295,9 @@ export function AssetPickerModal({
               <Search />
               <AssetList
                 handleAssetChange={handleAssetChange}
-                searchQuery={searchQuery}
                 asset={asset}
-                tokenList={toTokenList}
+                tokenList={filteredTokenList}
+                sendingAssetSymbol={sendingAssetSymbol}
               />
             </>
           ) : (
@@ -238,9 +317,8 @@ export function AssetPickerModal({
                   <Search />
                   <AssetList
                     handleAssetChange={handleAssetChange}
-                    searchQuery={searchQuery}
                     asset={asset}
-                    tokenList={fromTokenList}
+                    tokenList={filteredTokenList}
                   />
                 </Tab>
               }

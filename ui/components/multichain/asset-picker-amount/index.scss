@@ -43,10 +43,12 @@
 
       // converted (secondary) value
       & > div.currency-input__conversion-component {
-        & > span{
+        & > span {
           color: var(--color-text-alternative);
         }
+
         @include design-system.H7;
+
         text-overflow: ellipsis;
         overflow: hidden;
         display: inline;
@@ -84,6 +86,7 @@
 // max button
 button.asset-picker-amount__max-clear {
   font-size: design-system.$font-size-h7;
+
   &:hover:not(.--disabled) {
     text-decoration: none;
   }

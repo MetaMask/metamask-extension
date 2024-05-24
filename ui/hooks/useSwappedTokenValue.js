@@ -45,7 +45,8 @@ export function useSwappedTokenValue(transactionGroup, currentAsset) {
       ));
 
   const swapTokenValue =
-    type === TransactionType.swap && isViewingReceivedTokenFromSwap
+    [TransactionType.swap, TransactionType.swapAndSend].includes(type) &&
+    isViewingReceivedTokenFromSwap
       ? getSwapsTokensReceivedFromTxMeta(
           primaryTransaction.destinationTokenSymbol,
           initialTransaction,
@@ -55,7 +56,8 @@ export function useSwappedTokenValue(transactionGroup, currentAsset) {
           null,
           chainId,
         )
-      : type === TransactionType.swap && primaryTransaction.swapTokenValue;
+      : [TransactionType.swap, TransactionType.swapAndSend].includes(type) &&
+        primaryTransaction.swapTokenValue;
 
   const isNegative =
     typeof swapTokenValue === 'string'
