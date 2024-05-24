@@ -42,7 +42,7 @@ const makeExpirySet = () => {
 };
 
 /**
- * Returns a stream that filters out requests whose ids we've already seen.
+ * Returns a "through" stream that filters out requests whose ids we've already seen.
  * Ignores JSON-RPC notifications, i.e. requests with an `undefined` id.
  *
  * @returns The stream object.
