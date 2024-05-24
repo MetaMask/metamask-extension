@@ -31,20 +31,25 @@ export default function useUpdateSwapsState() {
     if (!isSwapsChain) {
       return undefined;
     }
+
     fetchTokens(chainId)
       .then((tokens) => {
         dispatch(setSwapsTokens(tokens));
       })
       .catch((error) => console.error(error));
+
     fetchTopAssets(chainId).then((topAssets) => {
       dispatch(setTopAssets(topAssets));
     });
+
     fetchAggregatorMetadata(chainId).then((newAggregatorMetadata) => {
       dispatch(setAggregatorMetadata(newAggregatorMetadata));
     });
+
     if (!networkAndAccountSupports1559) {
       dispatch(fetchAndSetSwapsGasPriceInfo());
     }
+
     return () => {
       dispatch(prepareToLeaveSwaps());
     };
