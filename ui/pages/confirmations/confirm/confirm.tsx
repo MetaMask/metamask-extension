@@ -15,33 +15,39 @@ import syncConfirmPath from '../hooks/syncConfirmPath';
 import { BlockaidAlert } from '../components/confirm/blockaid-alert';
 ///: END:ONLY_INCLUDE_IF
 import { LedgerInfo } from '../components/confirm/ledger-info';
+import { AlertActionHandlerContext } from '../../../hooks/useAlertActionHandler';
+import useConfirmationAlertActions from '../hooks/useConfirmationAlertActions';
 
 const Confirm = () => {
   setCurrentConfirmation();
   syncConfirmPath();
 
+  const processAction = useConfirmationAlertActions();
+
   return (
-    <Page className="confirm_wrapper">
-      <Nav />
-      <Header />
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        <MMISignatureMismatchBanner />
-        ///: END:ONLY_INCLUDE_IF
-      }
-      <ScrollToBottom>
-        <LedgerInfo />
+    <AlertActionHandlerContext.Provider value={{ processAction }}>
+      <Page className="confirm_wrapper">
+        <Nav />
+        <Header />
         {
-          // todo: section below is to be removed once new alerts implementation is there
-          ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-          <BlockaidAlert marginTop={4} />
+          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+          <MMISignatureMismatchBanner />
           ///: END:ONLY_INCLUDE_IF
         }
-        <Title />
-        <Info />
-      </ScrollToBottom>
-      <Footer />
-    </Page>
+        <ScrollToBottom>
+          <LedgerInfo />
+          {
+            // todo: section below is to be removed once new alerts implementation is there
+            ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+            <BlockaidAlert marginTop={4} />
+            ///: END:ONLY_INCLUDE_IF
+          }
+          <Title />
+          <Info />
+        </ScrollToBottom>
+        <Footer />
+      </Page>
+    </AlertActionHandlerContext.Provider>
   );
 };
 

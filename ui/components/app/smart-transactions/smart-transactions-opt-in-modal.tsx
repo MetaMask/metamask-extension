@@ -89,7 +89,7 @@ const NoThanksLink = ({
       width={BlockSize.Full}
       className="mm-smart-transactions-opt-in-modal__no-thanks-link"
     >
-      {t('noThanks')}
+      {t('dontEnableEnhancedProtection')}
     </Button>
   );
 };
@@ -149,10 +149,7 @@ const Benefits = () => {
         text={t('smartTransactionsBenefit1')}
         iconName={IconName.Confirmation}
       />
-      <Benefit
-        text={t('smartTransactionsBenefit2')}
-        iconName={IconName.SecurityTick}
-      />
+      <Benefit text={t('smartTransactionsBenefit2')} iconName={IconName.Coin} />
       <Benefit
         text={t('smartTransactionsBenefit3')}
         iconName={IconName.Clock}

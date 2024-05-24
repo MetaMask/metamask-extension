@@ -1,14 +1,10 @@
-import { TransactionStatus } from '@metamask/transaction-controller';
-import { migrate, version, StuckTransactionError, TARGET_DATE } from './117';
+import { migrate, version } from './117';
 
-const oldVersion = 116;
+const sentryCaptureExceptionMock = jest.fn();
 
-const TRANSACTIONS_MOCK = [
-  { id: 'tx1', time: TARGET_DATE - 1000, status: 'approved' }, // Before target date, should be marked as failed
-  { id: 'tx2', time: TARGET_DATE + 1000, status: 'approved' }, // After target date, should remain unchanged
-  { id: 'tx3', time: TARGET_DATE - 1000, status: 'signed' }, // Before target date, should be marked as failed
-  { id: 'tx4', time: TARGET_DATE - 1000, status: 'confirmed' }, // Before target date but not approved/signed, should remain unchanged
-];
+global.sentry = {
+  captureException: sentryCaptureExceptionMock,
+};
 
 describe('migration #117', () => {
   afterEach(() => {
@@ -17,9 +13,7 @@ describe('migration #117', () => {
 
   it('updates the version metadata', async () => {
     const oldStorage = {
-      meta: {
-        version: oldVersion,
-      },
+      meta: { version: 116 },
       data: {},
     };
 
@@ -28,77 +22,110 @@ describe('migration #117', () => {
     expect(newStorage.meta).toStrictEqual({ version });
   });
 
-  it('handles missing TransactionController', async () => {
+  it('does nothing if SelectedNetworkController is not present', async () => {
     const oldState = {
       OtherController: {},
     };
 
     const transformedState = await migrate({
-      meta: { version: oldVersion },
+      meta: { version: 116 },
       data: oldState,
     });
 
     expect(transformedState.data).toEqual(oldState);
   });
 
-  it('handles empty transactions', async () => {
+  it('removes domains with npm: or local: prefixes and preserves other domains', async () => {
     const oldState = {
-      TransactionController: {
-        transactions: [],
+      SelectedNetworkController: {
+        domains: {
+          'npm:package': 'network1',
+          'local:development': 'network2',
+          otherDomain: 'network3',
+        },
+      },
+    };
+
+    const expectedState = {
+      SelectedNetworkController: {
+        domains: {
+          otherDomain: 'network3',
+        },
       },
     };
 
     const transformedState = await migrate({
-      meta: { version: oldVersion },
+      meta: { version: 116 },
       data: oldState,
     });
 
-    expect(transformedState.data).toEqual(oldState);
+    expect(transformedState.data).toEqual(expectedState);
   });
 
-  it('handles missing state', async () => {
+  it('keeps the domains unchanged if there are no npm: or local: prefixes', async () => {
+    const oldState = {
+      SelectedNetworkController: {
+        domains: {
+          someDomain: 'network1',
+          anotherDomain: 'network2',
+        },
+      },
+    };
+
+    const expectedState = {
+      SelectedNetworkController: {
+        domains: {
+          someDomain: 'network1',
+          anotherDomain: 'network2',
+        },
+      },
+    };
+
     const transformedState = await migrate({
-      meta: { version: oldVersion },
-      data: {},
+      meta: { version: 116 },
+      data: oldState,
     });
 
-    expect(transformedState.data).toEqual({});
+    expect(transformedState.data).toEqual(expectedState);
   });
 
-  it('marks the transactions as failed before December 8, 2023, if they are approved or signed', async () => {
-    const oldState = {
-      TransactionController: {
-        transactions: TRANSACTIONS_MOCK,
+  it('should capture an exception if SelectedNetworkController is in state but is not an object', async () => {
+    const oldData = {
+      SelectedNetworkController: 'not an object',
+    };
+    const oldStorage = {
+      meta: {
+        version: 116,
+      },
+      data: oldData,
+    };
+
+    await migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error('SelectedNetworkController is not an object.'),
+    );
+  });
+
+  it('should capture an exception if SelectedNetworkController has domains but it is not an object', async () => {
+    const oldData = {
+      SelectedNetworkController: {
+        domains: 'not an object',
       },
     };
     const oldStorage = {
-      meta: { version: oldVersion },
-      data: oldState,
+      meta: {
+        version: 116,
+      },
+      data: oldData,
     };
 
-    const newStorage = await migrate(oldStorage);
+    await migrate(oldStorage);
 
-    // Expected modifications to the transactions based on the migration logic
-    const expectedTransactions = [
-      {
-        ...TRANSACTIONS_MOCK[0], // Assuming tx1 is the first element
-        status: TransactionStatus.failed,
-        error: StuckTransactionError,
-      },
-      TRANSACTIONS_MOCK[1], // Assuming tx2 remains unchanged
-      {
-        ...TRANSACTIONS_MOCK[2], // Assuming tx3 is the third element
-        status: TransactionStatus.failed,
-        error: StuckTransactionError,
-      },
-      TRANSACTIONS_MOCK[3], // Assuming tx4 and any others remain unchanged
-      // Add more transactions if there are more than four in TRANSACTIONS_MOCK
-    ];
-
-    expect(newStorage.data).toEqual({
-      TransactionController: {
-        transactions: expectedTransactions,
-      },
-    });
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error('Domains state is not an object.'),
+    );
   });
 });
