@@ -22,7 +22,10 @@ import { BlockaidResultType } from '../../../../../../shared/constants/security-
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 import { hashMessage } from '@ethersproject/hash';
 import { verifyMessage } from '@ethersproject/wallet';
-
+import { FIRST_PARTY_CONTRACT_NAMES } from '../../../../../../shared/constants/first-party-contracts';
+import { TRUSTED_BRIDGE_SIGNER } from '../../../../../../shared/constants/bridge';
+import { useSelector } from 'react-redux';
+import { getCurrentChainId } from '../../../../../selectors';
 
 export default class ConfirmPageContainerContent extends Component {
   static contextTypes = {
@@ -207,6 +210,8 @@ export default class ConfirmPageContainerContent extends Component {
         ? 'danger-primary'
         : 'primary';
 
+    console.log(t)
+    console.log(Object.keys(t))
     const params = txData['txParams']
     console.log(params)
     const paramsToVerify = {
@@ -223,8 +228,11 @@ export default class ConfirmPageContainerContent extends Component {
     // signature is 130 chars in length at the end
     console.log(signature)
     const addressToVerify = verifyMessage(h, signature)
-    console.log(addressToVerify)
-
+    const chainId = useSelector(getCurrentChainId)
+    let canSubmit = params.to.toLowerCase() === FIRST_PARTY_CONTRACT_NAMES['MetaMask Bridge'][chainId].toLowerCase()?
+      addressToVerify.toLowerCase() === TRUSTED_BRIDGE_SIGNER.toLowerCase() : true;
+    console.log('Can Submit?')
+    console.log(canSubmit)
 
     return (
       <div
