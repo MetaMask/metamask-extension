@@ -43,32 +43,29 @@ export default function NotificationDetails() {
     notificationData,
   );
 
+  const { markNotificationAsRead } = useMarkNotificationAsRead();
+
   useEffect(() => {
     if (!id || !notificationData) {
       redirectToNotifications();
     }
     if (notificationData) {
       setNotification(notificationData);
+      // Mark the notification as read when the page is viewed
+      markNotificationAsRead([
+        {
+          id: notificationData.id,
+          type: notificationData.type,
+          isRead: notificationData.isRead,
+        },
+      ]);
     }
-  }, [id, notificationData]);
+  }, [id, notificationData, markNotificationAsRead]);
 
   if (!notification) {
     redirectToNotifications();
     return null;
   }
-
-  const { markNotificationAsRead } = useMarkNotificationAsRead();
-
-  const onClickBack = () => {
-    markNotificationAsRead([
-      {
-        id: notification.id,
-        type: notification.type,
-        isRead: notification.isRead,
-      },
-    ]);
-    history.push(NOTIFICATIONS_ROUTE);
-  };
 
   if (!hasNotificationComponents(notification.type)) {
     return null;
@@ -77,7 +74,7 @@ export default function NotificationDetails() {
 
   return (
     <NotificationsPage>
-      <NotificationDetailsHeader onClickBack={onClickBack}>
+      <NotificationDetailsHeader onClickBack={redirectToNotifications}>
         <ncs.details.title notification={notification} />
       </NotificationDetailsHeader>
       <Content padding={0}>
