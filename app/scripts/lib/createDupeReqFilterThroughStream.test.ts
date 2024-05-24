@@ -19,7 +19,7 @@ function createTestStream(output) {
 }
 
 function runStreamTest(requests, advanceTimersTime = 10) {
-  const promise = new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     const output = [];
     const testStream = createTestStream(output);
 
@@ -29,9 +29,9 @@ function runStreamTest(requests, advanceTimersTime = 10) {
 
     requests.forEach((request) => testStream.write(request));
     testStream.end();
-  });
-  jest.advanceTimersByTime(advanceTimersTime);
-  return promise;
+
+    jest.advanceTimersByTime(advanceTimersTime);
+  });  
 }
 
 describe('createDupeReqFilterThroughStream', () => {
