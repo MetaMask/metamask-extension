@@ -268,7 +268,7 @@ import { mmiKeyringBuilderFactory } from './mmi-keyring-builder-factory';
 ///: END:ONLY_INCLUDE_IF
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
-import createDupeReqFilterMiddleware from './lib/createDupeReqFilterMiddleware';
+import createDupeReqFilterThroughStream from './lib/createDupeReqFilterThroughStream';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
 import { createMethodMiddleware } from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
@@ -4921,23 +4921,31 @@ export default class MetamaskController extends EventEmitter {
       tabId,
     });
 
+    const dupeReqFilterThroughStream = createDupeReqFilterThroughStream();
+
     // setup connection
     const providerStream = createEngineStream({ engine });
 
     const connectionId = this.addConnection(origin, { engine });
 
-    pump(outStream, providerStream, outStream, (err) => {
-      // handle any middleware cleanup
-      engine._middleware.forEach((mid) => {
-        if (mid.destroy && typeof mid.destroy === 'function') {
-          mid.destroy();
+    pump(
+      outStream,
+      dupeReqFilterThroughStream,
+      providerStream,
+      outStream,
+      (err) => {
+        // handle any middleware cleanup
+        engine._middleware.forEach((mid) => {
+          if (mid.destroy && typeof mid.destroy === 'function') {
+            mid.destroy();
+          }
+        });
+        connectionId && this.removeConnection(origin, connectionId);
+        if (err) {
+          log.error(err);
         }
-      });
-      connectionId && this.removeConnection(origin, connectionId);
-      if (err) {
-        log.error(err);
-      }
-    });
+      },
+    );
   }
 
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -4971,10 +4979,6 @@ export default class MetamaskController extends EventEmitter {
 
     // append origin to each request
     engine.push(createOriginMiddleware({ origin }));
-
-    if (isManifestV3) {
-      engine.push(createDupeReqFilterMiddleware());
-    }
 
     // append selectedNetworkClientId to each request
     engine.push(createSelectedNetworkMiddleware(this.controllerMessenger));
