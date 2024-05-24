@@ -21,7 +21,7 @@ export async function scrollAndConfirmAndAssertConfirm (driver: Driver) {
   confirmButton.getAttribute('disabled').then((disabled) => {
     assert.equal(disabled, null);
   });
-  await driver.clickElement('[data-testid="confirm-footer-button"]')
+  await driver.clickElement('[data-testid="confirm-footer-button"]');
 }
 
 export function withRedesignConfirmationFixtures (title: string = '', testFunction: Function) {
