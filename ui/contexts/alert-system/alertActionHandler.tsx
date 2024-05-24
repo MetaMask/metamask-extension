@@ -15,9 +15,14 @@ export const AlertActionHandlerContext = createContext<
 
 export const AlertActionHandlerProvider: React.FC<{
   children: ReactElement;
-}> = ({ children }) => {
-  // eslint-disable-next-line no-empty-function
-  const processAction = useCallback((_actionKey: string) => {}, []);
+  onProcessAction: (actionKey: string) => void;
+}> = ({ children, onProcessAction }) => {
+  const processAction = useCallback(
+    (_actionKey: string) => {
+      onProcessAction(_actionKey);
+    },
+    [onProcessAction],
+  );
 
   return (
     <AlertActionHandlerContext.Provider value={{ processAction }}>

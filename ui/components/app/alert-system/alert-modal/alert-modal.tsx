@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react';
 import { ButtonVariant } from '@metamask/snaps-sdk';
 
-import { SecurityProvider } from '../../../../../shared/constants/security-provider';
 import {
   Box,
   Button,
@@ -36,7 +35,7 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import useAlerts from '../../../../hooks/useAlerts';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
-import { useAlertActionHandler } from '../../../../contexts/alertActionHandler';
+import { useAlertActionHandler } from '../../../../contexts/alert-system/alertActionHandler';
 import {
   SECURITY_PROVIDER_CONFIG,
   SecurityProvider,
