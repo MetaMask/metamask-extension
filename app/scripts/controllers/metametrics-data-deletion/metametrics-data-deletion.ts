@@ -4,10 +4,7 @@ import {
 } from '@metamask/base-controller';
 import { ObservableStore } from '@metamask/obs-store';
 import { MetaMetricsControllerState } from '../metametrics';
-import {
-  createDataDeletionRegulationTask,
-  fetchDeletionRegulationStatus,
-} from './services/services';
+import type { DataDeletionService } from './services/services';
 
 // Unique name for the controller
 const controllerName = 'MetaMetricsDataDeletionController';
@@ -109,19 +106,24 @@ export default class MetaMetricsDataDeletionController extends BaseController<
 > {
   private metaMetricsId;
 
+  #dataDeletionService: DataDeletionService;
+
   /**
    * Creates a MetaMetricsDataDeletionController instance.
    *
    * @param args - The arguments to this function.
+   * @param args.dataDeletionService - The service used for deleting data.
    * @param args.messenger - Messenger used to communicate with BaseV2 controller.
    * @param args.state - Initial state to set on this controller.
    * @param args.metaMetricsStore
    */
   constructor({
+    dataDeletionService,
     messenger,
     state,
     metaMetricsStore,
   }: {
+    dataDeletionService: DataDeletionService;
     messenger: MetaMetricsDataDeletionControllerMessenger;
     state?: MetaMetricsDataDeletionState;
     metaMetricsStore: ObservableStore<MetaMetricsControllerState>;
@@ -134,6 +136,7 @@ export default class MetaMetricsDataDeletionController extends BaseController<
       state: { ...defaultState, ...state },
     });
     this.metaMetricsId = metaMetricsStore.getState().metaMetricsId;
+    this.#dataDeletionService = dataDeletionService;
   }
 
   _formatDeletionDate() {
@@ -155,7 +158,10 @@ export default class MetaMetricsDataDeletionController extends BaseController<
       throw new Error('MetaMetrics ID not found');
     }
 
-    const { data } = await createDataDeletionRegulationTask(this.metaMetricsId);
+    const { data } =
+      await this.#dataDeletionService.createDataDeletionRegulationTask(
+        this.metaMetricsId,
+      );
     this.update((state) => {
       state.metaMetricsDataDeletionId = data?.regulateId;
       state.metaMetricsDataDeletionDate = this._formatDeletionDate();
@@ -173,7 +179,10 @@ export default class MetaMetricsDataDeletionController extends BaseController<
       throw new Error('Delete Regulation id not found');
     }
 
-    const { data } = await fetchDeletionRegulationStatus(deleteRegulationId);
+    const { data } =
+      await this.#dataDeletionService.fetchDeletionRegulationStatus(
+        deleteRegulationId,
+      );
 
     const regulation = data?.regulation;
     this.update((state) => {
