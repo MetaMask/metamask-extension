@@ -272,6 +272,7 @@ import AccountTracker from './lib/account-tracker';
 import createDupeReqFilterStream from './lib/createDupeReqFilterStream';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
 import {
+  createLegacyMethodMiddleware,
   createMethodMiddleware,
   createUnsupportedMethodMiddleware,
 } from './lib/rpc-method-middleware';
@@ -5154,6 +5155,14 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(createUnsupportedMethodMiddleware());
 
+    // Legacy RPC methods that need to be implemented _ahead of_ the permission
+    // middleware.
+    engine.push(
+      createLegacyMethodMiddleware({
+        getAccounts: this.getPermittedAccounts.bind(this, origin),
+      }),
+    );
+
     if (subjectType !== SubjectType.Internal) {
       engine.push(
         this.permissionController.createPermissionMiddleware({
@@ -5171,7 +5180,8 @@ export default class MetamaskController extends EventEmitter {
       );
     }
 
-    // Unrestricted/permissionless RPC method implementations
+    // Unrestricted/permissionless RPC method implementations.
+    // They must nevertheless be placed _behind_ the permission middleware.
     engine.push(
       createMethodMiddleware({
         origin,
