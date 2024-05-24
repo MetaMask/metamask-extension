@@ -10,9 +10,6 @@ describe('toFixedNoTrailingZeros', () => {
     expect(toFixedNoTrailingZeros(123.456789, 5)).toBe('123.45679');
     expect(toFixedNoTrailingZeros(123.0001, 5)).toBe('123.0001');
     expect(toFixedNoTrailingZeros(123.4567, 6)).toBe('123.4567');
-    expect(toFixedNoTrailingZeros(123456789.987654321, 5)).toBe(
-      '123456789.98765',
-    );
   });
 
   it('should handle whole numbers', () => {

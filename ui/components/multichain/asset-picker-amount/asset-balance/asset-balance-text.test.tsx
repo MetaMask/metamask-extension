@@ -4,6 +4,7 @@ import { render } from '@testing-library/react';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import mockSendState from '../../../../../test/data/mock-send-state.json';
 import configureStore from '../../../../store/store';
+import { TextColor } from '../../../../helpers/constants/design-system';
 import { AssetBalanceText } from './asset-balance-text';
 
 const store = configureStore({
@@ -66,9 +67,10 @@ describe('AssetBalanceText', () => {
     };
     const { asFragment } = render(
       <Provider store={store}>
-        {/* Replace `any` with type */}
-        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-        <AssetBalanceText asset={asset} balanceColor={'textColor' as any} />
+        <AssetBalanceText
+          asset={asset}
+          balanceColor={'textColor' as TextColor}
+        />
       </Provider>,
     );
     expect(asFragment()).toMatchSnapshot();
@@ -148,11 +150,9 @@ describe('AssetBalanceText', () => {
 
     const { getByText } = render(
       <Provider store={store}>
-        {/* Replace `any` with type */}
-        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         <AssetBalanceText
           asset={asset}
-          balanceColor={'textColor' as any}
+          balanceColor={'textColor' as TextColor}
           error="errorText"
         />
       </Provider>,

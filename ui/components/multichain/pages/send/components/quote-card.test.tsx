@@ -1,19 +1,16 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
   getCurrentDraftTransaction,
   getBestQuote,
-  updateSendQuote,
 } from '../../../../../ducks/send';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { SECOND } from '../../../../../../shared/constants/time';
 import useEthFeeData from './quote-card/hooks/useEthFeeData';
 import useTranslatedNetworkName from './quote-card/hooks/useTranslatedNetworkName';
 import useGetConversionRate from './quote-card/hooks/useGetConversionRate';
 import { QuoteCard } from './quote-card';
-import { MetaMetricsEventCategory } from '../../../../../../shared/constants/metametrics';
 
 jest.mock('react-redux', () => ({
   useDispatch: jest.fn(),

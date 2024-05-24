@@ -1,13 +1,13 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { useSelector } from 'react-redux';
-import AssetList from './AssetList';
 import { getSelectedAccountCachedBalance } from '../../../../selectors';
 import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferencedCurrency';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { getSwapsBlockedTokens } from '../../../../ducks/send';
+import AssetList from './AssetList';
 
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),

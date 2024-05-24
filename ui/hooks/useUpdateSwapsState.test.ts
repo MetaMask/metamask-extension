@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { useDispatch, useSelector } from 'react-redux';
-import useUpdateSwapsState from './useUpdateSwapsState';
+import { waitFor } from '@testing-library/react';
 import {
   fetchTokens,
   fetchTopAssets,
@@ -18,7 +18,7 @@ import {
   getCurrentChainId,
   getIsSwapsChain,
 } from '../selectors';
-import { waitFor } from '@testing-library/react';
+import useUpdateSwapsState from './useUpdateSwapsState';
 
 jest.mock('react-redux', () => ({
   useDispatch: jest.fn(),
@@ -91,6 +91,8 @@ describe('useUpdateSwapsState', () => {
     );
 
     expect(mockDispatch).toHaveBeenCalledWith(
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       setSwapsTokens(['token1', 'token2'] as any),
     );
     expect(mockDispatch).toHaveBeenCalledWith(
@@ -127,6 +129,8 @@ describe('useUpdateSwapsState', () => {
     );
 
     expect(mockDispatch).toHaveBeenCalledWith(
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       setSwapsTokens(['token1', 'token2'] as any),
     );
     expect(mockDispatch).toHaveBeenCalledWith(

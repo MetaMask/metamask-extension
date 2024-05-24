@@ -1,11 +1,11 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { useSelector } from 'react-redux';
-import Asset from './Asset';
 import { getTokenList } from '../../../../selectors';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { TokenListItem } from '../../token-list-item';
+import Asset from './Asset';
 
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
@@ -40,7 +40,7 @@ describe('Asset', () => {
     getIntlLocale: 'en-US',
   };
 
-  let mockState = { ...initialMockState };
+  const mockState = { ...initialMockState };
 
   (useTokenFiatAmount as jest.Mock).mockReturnValue('$10.10');
 

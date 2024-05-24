@@ -1,7 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { useSelector, useDispatch } from 'react-redux';
-import { SendPageRecipientContent } from './recipient-content';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   getCurrentDraftTransaction,
@@ -16,6 +15,7 @@ import {
 } from '../../../../../selectors';
 import { AssetType } from '../../../../../../shared/constants/transaction';
 import { getSendHexDataFeatureFlagState } from '../../../../../ducks/metamask/metamask';
+import { SendPageRecipientContent } from './recipient-content';
 
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),

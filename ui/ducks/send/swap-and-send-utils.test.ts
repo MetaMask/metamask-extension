@@ -1,4 +1,3 @@
-import { type Request, getSwapAndSendQuotes } from './swap-and-send-utils';
 import {
   SWAPS_API_V2_BASE_URL,
   SWAPS_CLIENT_ID,
@@ -7,6 +6,10 @@ import {
 import { SECOND } from '../../../shared/constants/time';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import { validateData } from '../../../shared/lib/swaps-utils';
+import {
+  type Request as APIRequest,
+  getSwapAndSendQuotes,
+} from './swap-and-send-utils';
 
 jest.mock('../../../shared/lib/fetch-with-cache');
 jest.mock('../../../shared/lib/swaps-utils', () => ({
@@ -19,7 +22,7 @@ const BASE_URL = process.env.SWAPS_USE_DEV_APIS
   : SWAPS_API_V2_BASE_URL;
 
 describe('getSwapAndSendQuotes', () => {
-  const mockRequest: Request = {
+  const mockRequest: APIRequest = {
     chainId: 1,
     sourceAmount: '1000000000000000000',
     sourceToken: '0xToken1',

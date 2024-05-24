@@ -1,9 +1,9 @@
-import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
-  fetchAggregatorMetadata,
   fetchTokens,
   fetchTopAssets,
+  fetchAggregatorMetadata,
 } from '../pages/swaps/swaps.util';
 import {
   fetchAndSetSwapsGasPriceInfo,

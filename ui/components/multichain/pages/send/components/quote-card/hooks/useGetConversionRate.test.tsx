@@ -1,11 +1,11 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
-import useGetConversionRate from './useGetConversionRate';
 import { getNativeCurrency } from '../../../../../../../ducks/metamask/metamask';
 import {
   getBestQuote,
   getCurrentDraftTransaction,
 } from '../../../../../../../ducks/send';
+import useGetConversionRate from './useGetConversionRate';
 
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
