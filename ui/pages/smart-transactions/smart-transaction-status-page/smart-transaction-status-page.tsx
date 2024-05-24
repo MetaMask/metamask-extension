@@ -302,6 +302,29 @@ const CloseExtensionButton = ({
   );
 };
 
+const FooterText = ({
+  isDapp,
+  isSmartTransactionPending,
+}: {
+  isDapp: boolean;
+  isSmartTransactionPending: boolean;
+}) => {
+  if (!isDapp || !isSmartTransactionPending) {
+    return null;
+  }
+  const t = useI18nContext();
+
+  return (
+    <Text
+      marginTop={2}
+      color={TextColor.textAlternative}
+      variant={TextVariant.bodySm}
+    >
+      {t('closeWindowAnytime')}
+    </Text>
+  );
+};
+
 const ViewActivityButton = ({
   isDapp,
   onViewActivity,
@@ -346,6 +369,10 @@ const SmartTransactionsStatusPageFooter = ({
       padding={4}
       paddingBottom={0}
     >
+      <FooterText
+        isDapp={isDapp}
+        isSmartTransactionPending={isSmartTransactionPending}
+      />
       <CloseExtensionButton
         isDapp={isDapp}
         isSmartTransactionPending={isSmartTransactionPending}

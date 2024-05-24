@@ -820,6 +820,9 @@
   "closeExtension": {
     "message": "Close extension"
   },
+  "closeWindowAnytime": {
+    "message": "You may close this window anytime."
+  },
   "coingecko": {
     "message": "CoinGecko"
   },
@@ -6221,7 +6224,7 @@
     "message": "View on Opensea"
   },
   "viewTransaction": {
-    "message": "View  transaction"
+    "message": "View transaction"
   },
   "viewinCustodianApp": {
     "message": "View in custodian app"
