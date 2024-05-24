@@ -112,6 +112,7 @@ export function AssetPicker({
         }
       />
       <Button
+        data-testid="asset-picker-button"
         className="asset-picker"
         disabled={isDisabled}
         display={Display.Flex}

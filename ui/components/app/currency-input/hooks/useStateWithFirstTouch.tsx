@@ -10,7 +10,7 @@ export default function useStateWithFirstTouch<T>(
     INITIAL_VALUE,
   );
   const value = rawValue === INITIAL_VALUE ? initialValue : rawValue;
-  const isChanged = rawValue === INITIAL_VALUE;
+  const isUnchanged = rawValue === INITIAL_VALUE;
 
-  return [value, setValue, isChanged];
+  return [value, setValue, isUnchanged];
 }

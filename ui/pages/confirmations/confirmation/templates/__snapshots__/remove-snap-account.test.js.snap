@@ -120,7 +120,7 @@ exports[`remove-snap-account confirmation should match snapshot 1`] = `
                           class=""
                           data-original-title="Not connected"
                           data-tooltipped=""
-                          style="display: inline;"
+                          style="display: flex;"
                           tabindex="0"
                         >
                           <div

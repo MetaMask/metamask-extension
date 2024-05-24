@@ -74,7 +74,7 @@ exports[`Connections Content should render correctly 1`] = `
                     class=""
                     data-original-title="Active"
                     data-tooltipped=""
-                    style="display: inline;"
+                    style="display: flex;"
                     tabindex="0"
                   >
                     <div

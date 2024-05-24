@@ -3,7 +3,7 @@
 exports[`SendPageYourAccounts render renders correctly 1`] = `
 <div>
   <div
-    class="mm-box mm-box--padding-bottom-6 mm-box--display-flex mm-box--flex-direction-column"
+    class="mm-box mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column"
   >
     <div
       class="mm-box multichain-account-list-item multichain-account-list-item--clickable mm-box--padding-4 mm-box--display-flex mm-box--background-color-transparent"
@@ -22,7 +22,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
               class=""
               data-original-title="Not connected"
               data-tooltipped=""
-              style="display: inline;"
+              style="display: flex;"
               tabindex="0"
             >
               <div
@@ -273,7 +273,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
               class=""
               data-original-title="Not connected"
               data-tooltipped=""
-              style="display: inline;"
+              style="display: flex;"
               tabindex="0"
             >
               <div
@@ -524,7 +524,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
               class=""
               data-original-title="Not connected"
               data-tooltipped=""
-              style="display: inline;"
+              style="display: flex;"
               tabindex="0"
             >
               <div
@@ -784,7 +784,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
               class=""
               data-original-title="Not connected"
               data-tooltipped=""
-              style="display: inline;"
+              style="display: flex;"
               tabindex="0"
             >
               <div
@@ -1035,7 +1035,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
               class=""
               data-original-title="Not connected"
               data-tooltipped=""
-              style="display: inline;"
+              style="display: flex;"
               tabindex="0"
             >
               <div
@@ -1299,7 +1299,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
               class=""
               data-original-title="Not connected"
               data-tooltipped=""
-              style="display: inline;"
+              style="display: flex;"
               tabindex="0"
             >
               <div
