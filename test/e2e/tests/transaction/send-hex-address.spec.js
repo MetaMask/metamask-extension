@@ -32,7 +32,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         );
         await driver.findElement({
           css: '.ens-input__selected-input__title',
-          text: hexPrefixedAddress,
+          text: '0x2f318...5C970',
         });
         await driver.clickElement({ text: 'Continue', tag: 'button' });
 
@@ -75,7 +75,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         );
         await driver.findElement({
           css: '.ens-input__selected-input__title',
-          text: hexPrefixedAddress,
+          text: '0x2f318...5C970',
         });
         await driver.clickElement({ text: 'Continue', tag: 'button' });
 
@@ -129,7 +129,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         );
         await driver.findElement({
           css: '.ens-input__selected-input__title',
-          text: hexPrefixedAddress,
+          text: '0x2f318...5C970',
         });
 
         await driver.clickElement({ text: 'Continue', tag: 'button' });
@@ -187,7 +187,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         );
         await driver.findElement({
           css: '.ens-input__selected-input__title',
-          text: hexPrefixedAddress,
+          text: '0x2f318...5C970',
         });
 
         await driver.clickElement({ text: 'Continue', tag: 'button' });
