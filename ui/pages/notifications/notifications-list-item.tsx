@@ -9,7 +9,6 @@ import {
 } from '../../helpers/constants/design-system';
 import { NOTIFICATIONS_ROUTE } from '../../helpers/constants/routes';
 import { useMarkNotificationAsRead } from '../../hooks/metamask-notifications/useNotifications';
-import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
 import {
   NotificationComponents,
   hasNotificationComponents,
@@ -21,7 +20,6 @@ export function NotificationsListItem({
   notification: Notification;
 }) {
   const history = useHistory();
-  const { listNotifications } = useMetamaskNotificationsContext();
 
   const { markNotificationAsRead } = useMarkNotificationAsRead();
 
@@ -33,9 +31,8 @@ export function NotificationsListItem({
         isRead: notification.isRead,
       },
     ]);
-    listNotifications();
     history.push(`${NOTIFICATIONS_ROUTE}/${notification.id}`);
-  }, [notification, markNotificationAsRead, listNotifications, history]);
+  }, [notification, markNotificationAsRead, history]);
 
   if (!hasNotificationComponents(notification.type)) {
     return null;
