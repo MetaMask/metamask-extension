@@ -7,7 +7,7 @@ export const processSnapNotifications = (
   const snaps = snapNotifications.map((snapNotification): SnapNotification => {
     return {
       id: snapNotification.id,
-      createdAt: new Date(snapNotification.createdDate * 1000).toISOString(),
+      createdAt: new Date(snapNotification.createdDate).toISOString(),
       isRead: Boolean(snapNotification.readDate),
       type: SNAP,
       data: snapNotification,
