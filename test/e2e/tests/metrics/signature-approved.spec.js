@@ -3,7 +3,6 @@ const {
   defaultGanacheOptions,
   switchToNotificationWindow,
   withFixtures,
-  regularDelayMs,
   openDapp,
   unlockWallet,
   getEventPayloads,

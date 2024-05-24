@@ -20,7 +20,6 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
-  Severity,
   TextVariant,
   AlignItems,
 } from '../../../helpers/constants/design-system';
