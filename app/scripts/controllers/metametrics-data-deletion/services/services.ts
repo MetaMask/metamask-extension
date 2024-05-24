@@ -13,9 +13,9 @@ import getFetchWithTimeout from '../../../../../shared/modules/fetch-with-timeou
 import { CurrentRegulationStatus, RegulationId } from '../types';
 
 const DEFAULT_ANALYTICS_DATA_DELETION_SOURCE_ID =
-  process.env.ANALYTICS_DATA_DELETION_SOURCE_ID;
+  process.env.ANALYTICS_DATA_DELETION_SOURCE_ID ?? 'test';
 const DEFAULT_ANALYTICS_DATA_DELETION_ENDPOINT =
-  process.env.ANALYTICS_DATA_DELETION_ENDPOINT;
+  process.env.ANALYTICS_DATA_DELETION_ENDPOINT ?? 'https://metametrics.metamask.test/';
 
 const fetchWithTimeout = getFetchWithTimeout();
 
