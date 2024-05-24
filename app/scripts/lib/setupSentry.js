@@ -64,6 +64,9 @@ export const SENTRY_BACKGROUND_STATE = {
   AnnouncementController: {
     announcements: false,
   },
+  AuthenticationController: {
+    isSignedIn: false,
+  },
   NetworkOrderController: {
     orderedNetworkList: [],
   },
@@ -144,6 +147,17 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   LoggingController: {
     logs: false,
+  },
+  MetamaskNotificationsController: {
+    isMetamaskNotificationsFeatureSeen: false,
+    isMetamaskNotificationsEnabled: false,
+    isFeatureAnnouncementsEnabled: false,
+    metamaskNotificationsList: false,
+    metamaskNotificationsReadList: false,
+    isCheckingAccountsPresence: false,
+    isFetchingMetamaskNotifications: false,
+    isUpdatingMetamaskNotifications: false,
+    isUpdatingMetamaskNotificationsAccount: false,
   },
   MetaMetricsController: {
     eventsBeforeMetricsOptIn: false,
@@ -244,6 +258,9 @@ export const SENTRY_BACKGROUND_STATE = {
     useTransactionSimulations: true,
     enableMV3TimestampSave: true,
     hasDismissedOpenSeaToBlockaidBanner: true,
+  },
+  PushPlatformNotificationsController: {
+    fcmToken: false,
   },
   SelectedNetworkController: { domains: false },
   SignatureController: {
@@ -349,6 +366,10 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   UserOperationController: {
     userOperations: false,
+  },
+  UserStorageController: {
+    isProfileSyncingEnabled: true,
+    isProfileSyncingUpdateLoading: false,
   },
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   ...MMI_SENTRY_BACKGROUND_STATE,

@@ -82,11 +82,13 @@
       font-size: 12px !important;
     }
   }
-}
 
-.list-item-custody-logo {
-  height: 32px;
-  padding: 1px;
-  margin-right: 8px;
-  margin-top: 5px;
+  .custody-logo {
+    height: 32px;
+    padding: 1px;
+    margin-right: 8px;
+    margin-top: 5px;
+    background: var(--brand-colors-white-white000);
+    border-radius: 5px;
+  }
 }
