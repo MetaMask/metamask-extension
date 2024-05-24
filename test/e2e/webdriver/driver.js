@@ -365,12 +365,13 @@ class Driver {
   }
 
   /**
-  * Waits until the expected number of tokens to be rendered
-  *
-  * @param {string | object} rawLocator - element locator
-  * @param {number} count - The expected number of elements.
-  * @returns {Promise} promise resolving when the count of elements is matched.
-  */
+   * Waits until the expected number of tokens to be rendered
+   *
+   * @param {string | object} rawLocator - element locator
+   * @param {number} n - The expected number of elements.
+   * @param timeout
+   * @returns {Promise} promise resolving when the count of elements is matched.
+   */
   async elementCountBecomesN(rawLocator, n, timeout = this.timeout) {
     const locator = this.buildLocator(rawLocator);
     try {
@@ -808,7 +809,7 @@ class Driver {
   /**
    * Waits until the specified number of window handles are present.
    *
-   * @param {number} x - The number of window handles to wait for
+   * @param {number} _x - The number of window handles to wait for
    * @param delayStep - defaults to 1000 milliseconds
    * @param {number} [timeout] - The amount of time in milliseconds to wait before timing out.
    * @returns {Promise} promise resolving when the target window handle count is met
