@@ -5,7 +5,7 @@ import { Severity } from '../../helpers/constants/design-system';
  */
 export type Alert = {
   /**
-   *Alternate actions the user can take, specific to the alert.
+   * Alternate actions the user can take, specific to the alert.
    */
   actions?: { key: string; label: string }[];
 
@@ -23,6 +23,12 @@ export type Alert = {
    * The unique key of the alert.
    */
   key: string;
+
+  /**
+   * Whether the alert is a blocker and un-acknowledgeable, preventing the user
+   * from proceeding and relying on actions to proceed. The default is `false`.
+   */
+  isBlocking?: boolean;
 
   /**
    * The message is a summary of the alert details.

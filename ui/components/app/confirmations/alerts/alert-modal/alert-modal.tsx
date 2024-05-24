@@ -61,10 +61,6 @@ export type AlertModalProps = {
    */
   headerStartAccessory?: React.ReactNode;
   /**
-   * The owner ID of the relevant alert from the `confirmAlerts` reducer.
-   */
-  ownerId: string;
-  /**
    * The function invoked when the user acknowledges the alert.
    */
   onAcknowledgeClick: () => void;
@@ -72,6 +68,10 @@ export type AlertModalProps = {
    * The function to be executed when the modal needs to be closed.
    */
   onClose: () => void;
+  /**
+   * The owner ID of the relevant alert from the `confirmAlerts` reducer.
+   */
+  ownerId: string;
 };
 
 export function getSeverityStyle(severity?: Severity) {
@@ -193,6 +193,10 @@ export function AcknowledgeCheckboxBase({
   isConfirmed: boolean;
   label?: string;
 }) {
+  if (selectedAlert.isBlocking) {
+    return null;
+  }
+
   const t = useI18nContext();
   const severityStyle = getSeverityStyle(selectedAlert.severity);
   return (
@@ -221,12 +225,18 @@ function AcknowledgeButton({
   onAcknowledgeClick,
   isConfirmed,
   hasActions,
+  isBlocking,
 }: {
   onAcknowledgeClick: () => void;
   isConfirmed: boolean;
   hasActions?: boolean;
+  isBlocking?: boolean;
 }) {
   const t = useI18nContext();
+
+  if (isBlocking) {
+    return null;
+  }
 
   return (
     <Button
@@ -333,6 +343,7 @@ export function AlertModal({
                   onAcknowledgeClick={onAcknowledgeClick}
                   isConfirmed={isConfirmed}
                   hasActions={Boolean(selectedAlert.actions)}
+                  isBlocking={selectedAlert.isBlocking}
                 />
                 {(selectedAlert.actions ?? []).map((action) => (
                   <ActionButton key={action.key} action={action} />
