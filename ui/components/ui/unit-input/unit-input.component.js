@@ -60,7 +60,7 @@ export default class UnitInput extends PureComponent {
   }
 
   handleFocus = () => {
-    if (document.activeElement.tagName !== 'INPUT') {
+    if (!['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
       this.unitInput.focus();
     }
   };
