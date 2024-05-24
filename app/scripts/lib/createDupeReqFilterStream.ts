@@ -57,7 +57,7 @@ export default function createDupeReqFilterStream() {
     if (hasNoId || requestNotYetSeen) {
       cb(null, chunk);
     } else {
-      log.info(`RPC request with id "${chunk.id}" already seen.`);
+      log.debug(`RPC request with id "${chunk.id}" already seen.`);
       cb();
     }
   });
