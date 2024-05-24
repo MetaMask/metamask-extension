@@ -30,7 +30,11 @@ export function AssetBalance({ asset, error }: AssetBalanceProps) {
       <AssetBalanceText asset={asset} balanceColor={balanceColor} />
       {error ? (
         <Text variant={TextVariant.bodySm} color={TextColor.errorDefault}>
-          . {t(error)}
+          .{' '}
+          {
+            // @ts-expect-error purposely widened string
+            t(error)
+          }
         </Text>
       ) : null}
     </Box>

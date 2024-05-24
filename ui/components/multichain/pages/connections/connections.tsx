@@ -265,7 +265,9 @@ export const Connections = () => {
                   menuType={AccountListItemMenuTypes.Connection}
                   currentTabOrigin={activeTabOrigin}
                   isActive={
-                    mergedAccountsProps.isAccountActive ? t('active') : null
+                    mergedAccountsProps.isAccountActive
+                      ? Boolean(t('active'))
+                      : Boolean(null)
                   }
                   onActionClick={setShowAccountDisconnectedToast}
                 />
