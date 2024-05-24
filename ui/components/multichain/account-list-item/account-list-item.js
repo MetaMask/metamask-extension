@@ -328,9 +328,8 @@ export const AccountListItem = ({
             position={PopoverPosition.Bottom}
             offset={[0, 0]}
             padding={0}
-            isPortal
+            isPortal={false}
             preventOverflow
-            flip
             isOpen={isPopoverOpen}
           >
             <Box
