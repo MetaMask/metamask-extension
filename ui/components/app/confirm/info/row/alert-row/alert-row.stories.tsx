@@ -1,40 +1,40 @@
 import React from 'react';
-import { ConfirmInfoRow, ConfirmInfoRowVariant } from '../row';
-import { AlertRow, AlertRowProps } from './alert-row';
-import { Severity } from '../../../../../../helpers/constants/design-system';
-import { Alert } from '../../../../../../ducks/confirm-alerts/confirm-alerts';
+import { ConfirmInfoRowVariant } from '../row';
+import { AlertRow } from './alert-row';
 import configureStore from '../../../../../../store/store';
 import { Provider } from 'react-redux';
 import { Meta } from '@storybook/react';
+import { baseAlertsMock } from '../../../../confirmations/alerts/alert-modal/alert-modal.stories';
 
 const LABEL_FROM_MOCK = 'From';
-const alertsMock: Alert[] = [
-  {
-    key: LABEL_FROM_MOCK,
-    field: LABEL_FROM_MOCK,
-    severity: Severity.Danger,
-    message: 'Description of what may happen if this alert was ignored',
-    reason: 'Reason for the alert 1',
-    alertDetails: [
-      'We found the contract Petname 0xEqT3b9773b1763efa556f55ccbeb20441962d82x to be malicious',
-      'Operator is an externally owned account (EOA) ',
-      'Operator is untrusted according to previous activity',
-    ],
-  },
-];
+const DATA_FROM_MOCK = 'Data';
+const CONTRACT_FROM_MOCK = 'Contract';
 const OWNER_ID_MOCK = '123';
+
+const pendingApprovalMock = {
+  id: OWNER_ID_MOCK,
+  status: 'unapproved',
+  time: new Date().getTime(),
+  type: 'personal_sign',
+};
 const storeMock = configureStore({
+  metamask: {
+    pendingApprovals: {
+      [OWNER_ID_MOCK]: pendingApprovalMock,
+    },
+  },
   confirmAlerts: {
-    alerts: { [OWNER_ID_MOCK]: alertsMock },
-    confirmed: { [OWNER_ID_MOCK]: { [LABEL_FROM_MOCK]: false, 'data': false, 'contract': false } },
+    alerts: { [OWNER_ID_MOCK]: baseAlertsMock },
+    confirmed: {
+      [OWNER_ID_MOCK]: {
+        [LABEL_FROM_MOCK]: false,
+        [DATA_FROM_MOCK]: false,
+        [CONTRACT_FROM_MOCK]: false,
+      },
+    },
   },
   confirm: {
-    currentConfirmation: {
-      id: OWNER_ID_MOCK,
-      status: 'unapproved',
-      time: new Date().getTime(),
-      type: 'json_request',
-    },
+    currentConfirmation: pendingApprovalMock,
   },
 });
 
@@ -76,7 +76,7 @@ AlertRowCritical.args = {
   label: LABEL_FROM_MOCK,
   children: 'Value',
   alertKey: LABEL_FROM_MOCK,
-  alertOwnerId: OWNER_ID_MOCK,
+  ownerId: OWNER_ID_MOCK,
   variant: ConfirmInfoRowVariant.Critical,
 };
 
@@ -85,10 +85,10 @@ AlertRowCritical.args = {
  */
 export const AlertRowWarning = DefaultStory.bind({});
 AlertRowWarning.args = {
-  label: LABEL_FROM_MOCK,
+  label: DATA_FROM_MOCK,
   children: 'Value',
-  alertKey: LABEL_FROM_MOCK,
-  alertOwnerId: OWNER_ID_MOCK,
+  alertKey: DATA_FROM_MOCK,
+  ownerId: OWNER_ID_MOCK,
   variant: ConfirmInfoRowVariant.Warning,
 };
 
@@ -97,9 +97,9 @@ AlertRowWarning.args = {
  */
 export const AlertRowInformative = DefaultStory.bind({});
 AlertRowInformative.args = {
-  label: LABEL_FROM_MOCK,
+  label: CONTRACT_FROM_MOCK,
   children: 'Value',
-  alertKey: LABEL_FROM_MOCK,
-  alertOwnerId: OWNER_ID_MOCK,
+  alertKey: CONTRACT_FROM_MOCK,
+  ownerId: OWNER_ID_MOCK,
   variant: ConfirmInfoRowVariant.Default,
 };

@@ -17,8 +17,15 @@ describe('confirmAlertsReducer', () => {
       message: 'Alert 1',
       reason: 'Reason 1',
       alertDetails: ['Detail 1', 'Detail 2'],
+      isBlocking: true,
     },
-    { key: 'to', severity: Severity.Danger, message: 'Alert 2' },
+    {
+      key: 'to',
+      severity: Severity.Danger,
+      message: 'Alert 2',
+      isBlocking: false,
+      actions: [{ key: 'action', label: 'Action' }],
+    },
   ];
   const initialState = {
     alerts: {
