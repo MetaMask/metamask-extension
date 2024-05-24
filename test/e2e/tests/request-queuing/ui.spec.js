@@ -64,6 +64,9 @@ async function openDappAndSwitchChain(driver, dappUrl, chainId) {
 
 async function selectDappClickSendGetNetwork(driver, dappUrl) {
   await driver.switchToWindowWithUrl(dappUrl);
+  // Windows: MetaMask, TestDapp1, TestDapp2
+  const expectedWindowHandles = 3;
+  await driver.waitUntilXWindowHandles(expectedWindowHandles);
   const currentWindowHandles = await driver.getAllWindowHandles();
   await driver.clickElement('#sendButton');
 
