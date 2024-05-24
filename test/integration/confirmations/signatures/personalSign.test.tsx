@@ -1,5 +1,5 @@
 import { fireEvent, waitFor } from '@testing-library/react';
-import mockMetaMaskState from '../../../data/integration-init-state.json';
+import mockMetaMaskState from '../../data/integration-init-state.json';
 import {
   integrationTestRenderWithProvider,
 } from '../../../lib/render-helpers';
