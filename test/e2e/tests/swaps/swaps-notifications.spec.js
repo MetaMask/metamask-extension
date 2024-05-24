@@ -1,3 +1,4 @@
+const { SWAPS_API_V2_BASE_URL } = require('../../../../shared/constants/swaps');
 const { withFixtures, unlockWallet } = require('../../helpers');
 const {
   withFixturesOptions,
@@ -9,7 +10,7 @@ const {
 describe('Swaps - notifications @no-mmi', function () {
   async function mockTradesApiPriceSlippageError(mockServer) {
     await mockServer
-      .forGet('https://swap.metaswap.codefi.network/networks/1/trades')
+      .forGet(`${SWAPS_API_V2_BASE_URL}/networks/1/trades`)
       .thenCallback(() => {
         return {
           statusCode: 200,

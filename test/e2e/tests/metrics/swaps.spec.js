@@ -20,7 +20,10 @@ const {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } = require('../../../../shared/constants/metametrics');
-const { GAS_API_BASE_URL } = require('../../../../shared/constants/swaps');
+const {
+  GAS_API_BASE_URL,
+  SWAPS_API_V2_BASE_URL,
+} = require('../../../../shared/constants/swaps');
 const {
   TOKENS_API_MOCK_RESULT,
   TOP_ASSETS_API_MOCK_RESULT,
@@ -43,18 +46,16 @@ async function mockSegmentAndMetaswapRequests(mockServer) {
       .times()
       .thenCallback(() => ({ statusCode: 200 })),
     await mockServer
-      .forGet('https://swap.metaswap.codefi.network/networks/1/tokens')
+      .forGet(`${SWAPS_API_V2_BASE_URL}/networks/1/tokens`)
       .thenCallback(() => ({ statusCode: 200, json: TOKENS_API_MOCK_RESULT })),
     await mockServer
-      .forGet('https://swap.metaswap.codefi.network/networks/1/topAssets')
+      .forGet(`${SWAPS_API_V2_BASE_URL}/networks/1/topAssets`)
       .thenCallback(() => ({
         statusCode: 200,
         json: TOP_ASSETS_API_MOCK_RESULT,
       })),
     await mockServer
-      .forGet(
-        'https://swap.metaswap.codefi.network/networks/1/aggregatorMetadata',
-      )
+      .forGet(`${SWAPS_API_V2_BASE_URL}/networks/1/aggregatorMetadata`)
       .thenCallback(() => ({
         statusCode: 200,
         json: AGGREGATOR_METADATA_API_MOCK_RESULT,
@@ -66,19 +67,19 @@ async function mockSegmentAndMetaswapRequests(mockServer) {
         json: GAS_PRICE_API_MOCK_RESULT,
       })),
     await mockServer
-      .forGet('https://swap.metaswap.codefi.network/featureFlags')
+      .forGet(`${SWAPS_API_V2_BASE_URL}/featureFlags`)
       .thenCallback(() => ({
         statusCode: 200,
         json: FEATURE_FLAGS_API_MOCK_RESULT,
       })),
     await mockServer
-      .forGet('https://swap.metaswap.codefi.network/networks/1/trades')
+      .forGet(`${SWAPS_API_V2_BASE_URL}/networks/1/trades`)
       .thenCallback(() => ({
         statusCode: 200,
         json: TRADES_API_MOCK_RESULT,
       })),
     await mockServer
-      .forGet('https://swap.metaswap.codefi.network/networks/1')
+      .forGet(`${SWAPS_API_V2_BASE_URL}/networks/1`)
       .thenCallback(() => ({
         statusCode: 200,
         json: NETWORKS_2_API_MOCK_RESULT,

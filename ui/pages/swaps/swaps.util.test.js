@@ -17,6 +17,7 @@ import {
   ZKSYNC_ERA,
   LINEA,
   BASE,
+  SWAPS_API_V2_BASE_URL,
 } from '../../../shared/constants/swaps';
 import {
   TOKENS,
@@ -49,7 +50,7 @@ describe('Swaps Util', () => {
 
   describe('fetchTokens', () => {
     beforeEach(() => {
-      nock('https://swap.metaswap.codefi.network')
+      nock(SWAPS_API_V2_BASE_URL)
         .persist()
         .get('/networks/1/tokens?includeBlockedTokens=true')
         .reply(200, TOKENS);
@@ -68,7 +69,7 @@ describe('Swaps Util', () => {
 
   describe('fetchAggregatorMetadata', () => {
     beforeEach(() => {
-      nock('https://swap.metaswap.codefi.network')
+      nock(SWAPS_API_V2_BASE_URL)
         .persist()
         .get('/networks/1/aggregatorMetadata')
         .reply(200, AGGREGATOR_METADATA);
@@ -87,7 +88,7 @@ describe('Swaps Util', () => {
 
   describe('fetchTopAssets', () => {
     beforeEach(() => {
-      nock('https://swap.metaswap.codefi.network')
+      nock(SWAPS_API_V2_BASE_URL)
         .persist()
         .get('/networks/1/topAssets')
         .reply(200, TOP_ASSETS);

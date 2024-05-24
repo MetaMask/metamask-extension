@@ -8,6 +8,7 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 import { setStorageItem } from '../../../shared/lib/storage-helpers';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import swapsReducer, * as swaps from './swaps';
+import { SWAPS_API_V2_BASE_URL } from '../../../shared/constants/swaps';
 
 const middleware = [thunk];
 
@@ -36,10 +37,7 @@ describe('Ducks - Swaps', () => {
 
   describe('fetchSwapsLivenessAndFeatureFlags', () => {
     const cleanFeatureFlagApiCache = () => {
-      setStorageItem(
-        'cachedFetch:https://swap.metaswap.codefi.network/featureFlags',
-        null,
-      );
+      setStorageItem(`cachedFetch:${SWAPS_API_V2_BASE_URL}/featureFlags`, null);
     };
 
     afterEach(() => {
@@ -50,9 +48,7 @@ describe('Ducks - Swaps', () => {
       featureFlagsResponse,
       replyWithError = false,
     } = {}) => {
-      const apiNock = nock('https://swap.metaswap.codefi.network').get(
-        '/featureFlags',
-      );
+      const apiNock = nock(SWAPS_API_V2_BASE_URL).get('/featureFlags');
       if (replyWithError) {
         return apiNock.replyWithError({
           message: 'Server error. Try again later',
