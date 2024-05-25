@@ -1,6 +1,7 @@
 import {
   constructPermission,
   PermissionType,
+  SubjectType,
 } from '@metamask/permission-controller';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import {
@@ -23,17 +24,22 @@ import {
  * The "keys" of all of permissions recognized by the PermissionController.
  * Permission keys and names have distinct meanings in the permission system.
  */
-const PermissionNames = Object.freeze({
+export const PermissionNames = Object.freeze({
   ...RestrictedMethods,
+  permittedChains: 'permittedChains',
 });
 
 /**
  * Factory functions for all caveat types recognized by the
  * PermissionController.
  */
-const CaveatFactories = Object.freeze({
+export const CaveatFactories = Object.freeze({
   [CaveatTypes.restrictReturnedAccounts]: (accounts) => {
     return { type: CaveatTypes.restrictReturnedAccounts, value: accounts };
+  },
+
+  [CaveatTypes.restrictNetworkSwitching]: (chainIds) => {
+    return { type: CaveatTypes.restrictNetworkSwitching, value: chainIds };
   },
 });
 
@@ -45,7 +51,10 @@ const CaveatFactories = Object.freeze({
  *   getInternalAccounts: () => Record<string, import('@metamask/keyring-api').InternalAccount>,
  * }} options - Options bag.
  */
-export const getCaveatSpecifications = ({ getInternalAccounts }) => {
+export const getCaveatSpecifications = ({
+  getInternalAccounts,
+  findNetworkClientIdByChainId,
+}) => {
   return {
     [CaveatTypes.restrictReturnedAccounts]: {
       type: CaveatTypes.restrictReturnedAccounts,
@@ -59,6 +68,11 @@ export const getCaveatSpecifications = ({ getInternalAccounts }) => {
 
       validator: (caveat, _origin, _target) =>
         validateCaveatAccounts(caveat.value, getInternalAccounts),
+    },
+    [CaveatTypes.restrictNetworkSwitching]: {
+      type: CaveatTypes.restrictNetworkSwitching,
+      validator: (caveat, _origin, _target) =>
+        validateCaveatNetworks(caveat.value, findNetworkClientIdByChainId),
     },
 
     ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -113,7 +127,6 @@ export const getPermissionSpecifications = ({
           ],
         });
       },
-
       methodImplementation: async (_args) => {
         const accounts = await getAllAccounts();
         const internalAccounts = getInternalAccounts();
@@ -162,7 +175,6 @@ export const getPermissionSpecifications = ({
           );
         });
       },
-
       validator: (permission, _origin, _target) => {
         const { caveats } = permission;
         if (
@@ -172,6 +184,43 @@ export const getPermissionSpecifications = ({
         ) {
           throw new Error(
             `${PermissionNames.eth_accounts} error: Invalid caveats. There must be a single caveat of type "${CaveatTypes.restrictReturnedAccounts}".`,
+          );
+        }
+      },
+    },
+
+    [PermissionNames.permittedChains]: {
+      permissionType: PermissionType.Endowment,
+      targetName: PermissionNames.permittedChains,
+      allowedCaveats: [CaveatTypes.restrictNetworkSwitching],
+      subjectTypes: [SubjectType.Website],
+
+      factory: (permissionOptions, requestData) => {
+        if (!requestData.approvedChainIds) {
+          throw new Error(
+            `${PermissionNames.permittedChains}: No approved networks specified.`,
+          );
+        }
+
+        return constructPermission({
+          ...permissionOptions,
+          caveats: [
+            CaveatFactories[CaveatTypes.restrictNetworkSwitching](
+              requestData.approvedChainIds,
+            ),
+          ],
+        });
+      },
+      endowmentGetter: async (_getterOptions) => undefined,
+      validator: (permission, _origin, _target) => {
+        const { caveats } = permission;
+        if (
+          !caveats ||
+          caveats.length !== 1 ||
+          caveats[0].type !== CaveatTypes.restrictNetworkSwitching
+        ) {
+          throw new Error(
+            `${PermissionNames.permittedChains} error: Invalid caveats. There must be a single caveat of type "${CaveatTypes.restrictNetworkSwitching}".`,
           );
         }
       },
@@ -211,6 +260,36 @@ function validateCaveatAccounts(accounts, getInternalAccounts) {
     ) {
       throw new Error(
         `${PermissionNames.eth_accounts} error: Received unrecognized address: "${address}".`,
+      );
+    }
+  });
+}
+
+/**
+ * Validates the networks associated with a caveat. Ensures that
+ * the networks value is an array of valid chain IDs.
+ *
+ * @param {string[]} chainIdsForCaveat - The list of chain IDs to validate.
+ * @param {function(string): string} findNetworkClientIdByChainId - Function to find network client ID by chain ID.
+ * @throws {Error} If the chainIdsForCaveat is not a non-empty array of valid chain IDs.
+ */
+function validateCaveatNetworks(
+  chainIdsForCaveat,
+  findNetworkClientIdByChainId,
+) {
+  if (!Array.isArray(chainIdsForCaveat) || chainIdsForCaveat.length === 0) {
+    throw new Error(
+      `${PermissionNames.permittedChains} error: Expected non-empty array of chainIds.`,
+    );
+  }
+
+  chainIdsForCaveat.forEach((chainId) => {
+    try {
+      findNetworkClientIdByChainId(chainId);
+    } catch (e) {
+      console.error(e);
+      throw new Error(
+        `${PermissionNames.permittedChains} error: Received unrecognized chainId: "${chainId}". Please try adding the network first via wallet_addEthereumChain.`,
       );
     }
   });
@@ -278,6 +357,7 @@ export const unrestrictedMethods = Object.freeze([
   'net_version',
   'personal_ecRecover',
   'personal_sign',
+  'wallet_switchEthereumChain',
   'wallet_watchAsset',
   'web3_clientVersion',
   'web3_sha3',
