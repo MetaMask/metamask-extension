@@ -15,9 +15,6 @@ const FixtureBuilder = require('../../fixture-builder');
 describe('Send ETH', function () {
   describe('from inside MetaMask', function () {
     it('finds the transaction in the transactions list using default gas', async function () {
-      if (process.env.MULTICHAIN) {
-        return;
-      }
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
@@ -34,7 +31,9 @@ describe('Send ETH', function () {
             '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
           );
 
-          const inputAmount = await driver.findElement('.unit-input__input');
+          const inputAmount = await driver.findElement(
+            'input[placeholder="0"]',
+          );
 
           await inputAmount.press('1');
           await inputAmount.press('0');
@@ -42,7 +41,7 @@ describe('Send ETH', function () {
           await inputAmount.press('0');
 
           await driver.findElement({
-            css: '.send-v2__error-amount',
+            css: '[data-testid="send-page-amount-error"]',
             text: 'Insufficient funds for gas',
           });
 
@@ -55,7 +54,7 @@ describe('Send ETH', function () {
           });
 
           const amountMax = await driver.findClickableElement(
-            '.send-v2__amount-max',
+            '[data-testid="max-clear-button"]',
           );
           await amountMax.click();
 
@@ -73,7 +72,7 @@ describe('Send ETH', function () {
           assert.equal(inputValue, '1');
 
           // Continue to next screen
-          await driver.clickElement({ text: 'Next', tag: 'button' });
+          await driver.clickElement({ text: 'Continue', tag: 'button' });
 
           await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
@@ -95,9 +94,6 @@ describe('Send ETH', function () {
 
     /* eslint-disable-next-line mocha/max-top-level-suites */
     it('finds the transaction in the transactions list using advanced gas modal', async function () {
-      if (process.env.MULTICHAIN) {
-        return;
-      }
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
@@ -116,14 +112,16 @@ describe('Send ETH', function () {
             '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
           );
 
-          const inputAmount = await driver.findElement('.unit-input__input');
+          const inputAmount = await driver.findElement(
+            'input[placeholder="0"]',
+          );
           await inputAmount.press('1');
 
           const inputValue = await inputAmount.getProperty('value');
           assert.equal(inputValue, '1');
 
           // Continue to next screen
-          await driver.clickElement({ text: 'Next', tag: 'button' });
+          await driver.clickElement({ text: 'Continue', tag: 'button' });
 
           await driver.delay(1000);
           const transactionAmounts = await driver.findElements(
@@ -173,21 +171,13 @@ describe('Send ETH', function () {
             contractAddress,
           );
 
-          const inputAmount = await driver.findElement('.unit-input__input');
+          const inputAmount = await driver.findElement(
+            'input[placeholder="0"]',
+          );
           await inputAmount.press('1');
 
-          if (!process.env.MULTICHAIN) {
-            // We need to wait for the text "Max Fee: 0.000xxxx ETH" before continuing
-            await driver.findElement({ text: '0.000', tag: 'span' });
-          }
-
           // Continue to next screen
-          if (process.env.MULTICHAIN) {
-            await driver.clickElement({ text: 'Continue', tag: 'button' });
-          } else {
-            await driver.clickElement({ text: 'Next', tag: 'button' });
-          }
-
+          await driver.clickElement({ text: 'Continue', tag: 'button' });
           await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
           // Go back to home screen to check txn
@@ -210,9 +200,6 @@ describe('Send ETH', function () {
     });
 
     it('shows no error when cancel transaction when sending via QR code', async function () {
-      if (process.env.MULTICHAIN) {
-        return;
-      }
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
@@ -419,9 +406,6 @@ describe('Send ETH', function () {
 
     describe('to non-contract address with data that matches ERC20 transfer data signature', function () {
       it('renders the correct recipient on the confirmation screen', async function () {
-        if (process.env.MULTICHAIN) {
-          return;
-        }
         await withFixtures(
           {
             fixtures: new FixtureBuilder()
@@ -445,6 +429,7 @@ describe('Send ETH', function () {
             assert.ok(/^[\d.]+\sETH$/u.test(await balance.getText()));
 
             await openActionMenuAndStartSendFlow(driver);
+
             await driver.fill(
               'input[placeholder="Enter public address (0x) or ENS name"]',
               '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
@@ -454,19 +439,12 @@ describe('Send ETH', function () {
               'textarea[placeholder="Optional',
               '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
             );
-            if (process.env.MULTICHAIN) {
-              await driver.findClickableElement({
-                text: 'Continue',
-                tag: 'button',
-              });
-              await driver.clickElement({ text: 'Continue', tag: 'button' });
-            } else {
-              await driver.findClickableElement({
-                text: 'Next',
-                tag: 'button',
-              });
-              await driver.clickElement({ text: 'Next', tag: 'button' });
-            }
+
+            await driver.findClickableElement({
+              text: 'Continue',
+              tag: 'button',
+            });
+            await driver.clickElement({ text: 'Continue', tag: 'button' });
 
             await driver.findClickableElement(
               '[data-testid="sender-to-recipient__name"]',
