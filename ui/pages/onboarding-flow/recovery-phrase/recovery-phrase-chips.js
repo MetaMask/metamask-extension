@@ -4,11 +4,11 @@ import PropTypes from 'prop-types';
 import {
   Box,
   Text,
-  Tag,
+  Input,
   Icon,
   IconName,
+  IconSize,
 } from '../../../components/component-library';
-import { ChipWithInput } from '../../../components/ui/chip/chip-with-input';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   TextVariant,
@@ -17,6 +17,12 @@ import {
   Display,
   BorderColor,
   Color,
+  BackgroundColor,
+  BlockSize,
+  FlexDirection,
+  AlignItems,
+  JustifyContent,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 
 export default function RecoveryPhraseChips({
@@ -32,6 +38,7 @@ export default function RecoveryPhraseChips({
   const hideSeedPhrase = phraseRevealed === false;
   return (
     <Box
+      className="recovery-phrase-chips"
       borderColor={BorderColor.borderMuted}
       borderStyle={BorderStyle.solid}
       padding={4}
@@ -39,70 +46,104 @@ export default function RecoveryPhraseChips({
       borderRadius={BorderRadius.Md}
       display={Display.Grid}
       marginBottom={4}
-      className="recovery-phrase__secret"
     >
-      <div
+      <Box
         data-testid="recovery-phrase-chips"
-        className={classnames('recovery-phrase__chips', {
-          'recovery-phrase__chips--hidden': hideSeedPhrase,
+        className={classnames('recovery-phrase-chips__chips', {
+          'recovery-phrase-chips__chips--hidden': hideSeedPhrase,
         })}
+        display={Display.Grid}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
       >
         {secretRecoveryPhrase.map((word, index) => {
-          if (
-            confirmPhase &&
-            indicesToCheck &&
-            indicesToCheck.includes(index)
-          ) {
-            return (
-              <div className="recovery-phrase__chip-item" key={index}>
-                <div className="recovery-phrase__chip-item__number">
-                  {`${index + 1}.`}
-                </div>
-                <ChipWithInput
-                  dataTestId={`recovery-phrase-input-${index}`}
-                  borderColor={BorderColor.primaryDefault}
-                  className="recovery-phrase__chip--with-input"
-                  inputValue={inputValue[index]}
-                  setInputValue={(value) => {
-                    setInputValue({ ...inputValue, [index]: value });
-                  }}
-                />
-              </div>
-            );
-          }
+          const isConfirmPhase =
+            confirmPhase && indicesToCheck?.includes(index);
           return (
-            <div className="recovery-phrase__chip-item" key={index}>
-              <div className="recovery-phrase__chip-item__number">
-                {`${index + 1}.`}
-              </div>
-              <Tag
-                label={word}
-                data-testid={`recovery-phrase-chip-${index}`}
-                className="recovery-phrase__chip"
-                borderColor={BorderColor.borderDefault}
-                marginLeft={1}
-                marginRight={1}
-              />
-            </div>
+            <Box
+              key={index}
+              display={Display.Flex}
+              width={BlockSize.Full}
+              padding={2}
+            >
+              <Text>{`${index + 1}.`}</Text>
+              {isConfirmPhase ? (
+                <Input
+                  data-testid={`recovery-phrase-input-${index}`}
+                  value={inputValue[index] || ''}
+                  onChange={(e) => {
+                    setInputValue({ ...inputValue, [index]: e.target.value });
+                  }}
+                  required
+                  borderRadius={BorderRadius.XL}
+                  borderWidth={1}
+                  borderColor={BorderColor.primaryDefault}
+                  backgroundColor={BackgroundColor.backgroundDefault}
+                  borderStyle={BorderStyle.solid}
+                  paddingTop={1}
+                  paddingBottom={1}
+                  paddingLeft={2}
+                  paddingRight={2}
+                  marginLeft={1}
+                  marginRight={1}
+                  display={Display.Flex}
+                  justifyContent={JustifyContent.center}
+                  alignItems={AlignItems.center}
+                  width={BlockSize.Full}
+                />
+              ) : (
+                <Text
+                  data-testid={`recovery-phrase-chip-${index}`}
+                  borderRadius={BorderRadius.XL}
+                  borderWidth={1}
+                  borderColor={BorderColor.borderDefault}
+                  borderStyle={BorderStyle.solid}
+                  paddingTop={1}
+                  paddingBottom={1}
+                  paddingLeft={2}
+                  paddingRight={2}
+                  marginLeft={1}
+                  marginRight={1}
+                  display={Display.Flex}
+                  justifyContent={JustifyContent.center}
+                  alignItems={AlignItems.center}
+                  width={BlockSize.Full}
+                >
+                  {word}
+                </Text>
+              )}
+            </Box>
           );
         })}
-      </div>
+      </Box>
 
       {hideSeedPhrase && (
-        <div className="recovery-phrase__secret-blocker">
+        <Box
+          className="recovery-phrase-chips__secret-blocker"
+          backgroundColor={BackgroundColor.overlayAlternative}
+          height={BlockSize.Full}
+          width={BlockSize.Full}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          alignItems={AlignItems.center}
+          justifyContent={JustifyContent.center}
+          padding={4}
+          borderRadius={BorderRadius.Sm}
+          color={TextColor.overlayInverse}
+          gap={2}
+        >
           {!hiddenPhrase && (
             <>
-              <Icon name={IconName.EyeSlash} />
+              <Icon name={IconName.Eye} size={IconSize.Lg} />
               <Text
-                variant={TextVariant.bodyMd}
+                variant={TextVariant.bodyLgMedium}
                 color={Color.overlayInverse}
-                className="recovery-phrase__secret-blocker--text"
               >
                 {t('makeSureNoOneWatching')}
               </Text>
             </>
           )}
-        </div>
+        </Box>
       )}
     </Box>
   );

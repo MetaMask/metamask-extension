@@ -1,0 +1,25 @@
+@use "design-system";
+
+.recovery-phrase-chips {
+  position: relative;
+
+  &__chips {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+
+    @include design-system.screen-sm-min {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    &--hidden {
+      filter: blur(5px);
+    }
+  }
+
+  &__secret-blocker {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+}
