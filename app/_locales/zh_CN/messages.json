@@ -3193,6 +3193,10 @@
   "securityAlerts": {
     "message": "安全提醒"
   },
+  "securityAlertsDescription": {
+    "message": "此功能通过主动审核交易和签名请求来提醒您恶意活动。$1",
+    "description": "Link to learn more about security alerts"
+  },
   "securityAndPrivacy": {
     "message": "安全和隐私"
   },
