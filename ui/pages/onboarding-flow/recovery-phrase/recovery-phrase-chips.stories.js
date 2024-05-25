@@ -1,5 +1,4 @@
-import React, { useState, useMemo } from 'react';
-import { debounce } from 'lodash';
+import React, { useState } from 'react';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
 // Define the stories
@@ -59,7 +58,6 @@ export const PhraseRevealed = Template.bind({});
 export const ConfirmPhase = (args) => {
   const splitSecretRecoveryPhrase = args.secretRecoveryPhrase;
   const indicesToCheck = [2, 3, 7];
-  const [matching, setMatching] = useState(false);
 
   // Removes seed phrase words from chips corresponding to the
   // indicesToCheck so that user has to complete the phrase and confirm
@@ -75,19 +73,8 @@ export const ConfirmPhase = (args) => {
     initializePhraseElements(),
   );
 
-  const validate = useMemo(
-    () =>
-      debounce((elements) => {
-        setMatching(
-          Object.values(elements).join(' ') === args.secretRecoveryPhrase,
-        );
-      }, 500),
-    [setMatching, args.secretRecoveryPhrase],
-  );
-
   const handleSetPhraseElements = (values) => {
     setPhraseElements(values);
-    validate(values);
   };
   return (
     <RecoveryPhraseChips
