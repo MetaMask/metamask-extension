@@ -765,6 +765,7 @@ const editGasFeeForm = async (driver, gasLimit, gasPrice) => {
 };
 
 const openActionMenuAndStartSendFlow = async (driver) => {
+  await driver.delay(250);
   await driver.clickElement('[data-testid="eth-overview-send"]');
 };
 
