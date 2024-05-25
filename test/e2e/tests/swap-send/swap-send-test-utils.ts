@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import FixtureBuilder from '../../fixture-builder';
 import { Mockttp } from 'mockttp';
-import { SWAPS_API_V2_BASE_URL } from '../../../../shared/constants/swaps';
+import { SWAPS_DEV_API_V2_BASE_URL } from '../../../../shared/constants/swaps';
 import { swapSendQuotesResponse_ETH_TST } from './mocks/eth-data';
 import { defaultGanacheOptions } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
@@ -223,8 +223,8 @@ export class SwapSendPage {
 export const mockSwapsApi =
   (quotes = swapSendQuotesResponse_ETH_TST) =>
   async (mockServer: Mockttp) => {
-    await mockServer
-      .forGet(`${SWAPS_API_V2_BASE_URL}/v2/networks/1337/quotes`)
+    return await mockServer
+      .forGet(`${SWAPS_DEV_API_V2_BASE_URL}/v2/networks/1337/quotes`)
       .always()
       .thenCallback(() => {
         return {
