@@ -648,7 +648,8 @@ const closeSRPReveal = async (driver) => {
     tag: 'button',
   });
   await driver.findVisibleElement({
-    xpath: `//*[contains(text(),"${tEn('tokens')}")]/parent::button`,
+    text: tEn('tokens'),
+    tag: 'button',
   });
 };
 
