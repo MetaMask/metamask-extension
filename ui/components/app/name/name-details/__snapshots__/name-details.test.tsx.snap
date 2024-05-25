@@ -34,7 +34,7 @@ exports[`NameDetails renders proposed names 1`] = `
           role="dialog"
         >
           <header
-            class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+            class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
           >
             <div
               class="mm-box mm-box--width-full"
@@ -293,7 +293,7 @@ exports[`NameDetails renders with no saved name 1`] = `
           role="dialog"
         >
           <header
-            class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+            class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
           >
             <div
               class="mm-box mm-box--width-full"
@@ -477,7 +477,7 @@ exports[`NameDetails renders with recognized name 1`] = `
           role="dialog"
         >
           <header
-            class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+            class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
           >
             <div
               class="mm-box mm-box--width-full"
@@ -666,7 +666,7 @@ exports[`NameDetails renders with saved name 1`] = `
           role="dialog"
         >
           <header
-            class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+            class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
           >
             <div
               class="mm-box mm-box--width-full"
