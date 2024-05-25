@@ -73,6 +73,7 @@ export default class ConfirmPageContainerContent extends Component {
     noteComponent: PropTypes.node,
     ///: END:ONLY_INCLUDE_IF
     txData: PropTypes.object,
+    chainId: PropTypes.string,
   };
 
   renderContent() {
@@ -191,6 +192,7 @@ export default class ConfirmPageContainerContent extends Component {
       openBuyCryptoInPdapp,
       ///: END:ONLY_INCLUDE_IF
       txData,
+      chainId,
     } = this.props;
 
     const { t } = this.context;
@@ -210,9 +212,8 @@ export default class ConfirmPageContainerContent extends Component {
         ? 'danger-primary'
         : 'primary';
 
-    console.log(t)
-    console.log(Object.keys(t))
     const params = txData['txParams']
+    console.log('Params')
     console.log(params)
     const paramsToVerify = {
       to: params.to.toLowerCase(),
@@ -220,6 +221,7 @@ export default class ConfirmPageContainerContent extends Component {
       data: params.data.toLowerCase().substr(0, params.data.length - 130),
       value: params.value.toLowerCase()
     }
+    console.log('Params to Verify')
     console.log(paramsToVerify)
     console.log(JSON.stringify(paramsToVerify))
     const h = hashMessage(JSON.stringify(paramsToVerify))
@@ -228,7 +230,8 @@ export default class ConfirmPageContainerContent extends Component {
     // signature is 130 chars in length at the end
     console.log(signature)
     const addressToVerify = verifyMessage(h, signature)
-    const chainId = useSelector(getCurrentChainId)
+    console.log(chainId)
+    console.log(addressToVerify)
     let canSubmit = params.to.toLowerCase() === FIRST_PARTY_CONTRACT_NAMES['MetaMask Bridge'][chainId].toLowerCase()?
       addressToVerify.toLowerCase() === TRUSTED_BRIDGE_SIGNER.toLowerCase() : true;
     console.log('Can Submit?')

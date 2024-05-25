@@ -49,6 +49,7 @@ import {
   getMetadataContractName,
   getNetworkIdentifier,
   getSwapsDefaultToken,
+  getCurrentChainId,
 } from '../../../../selectors';
 import useRamps from '../../../../hooks/experiences/useRamps';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -134,6 +135,7 @@ const ConfirmPageContainer = (props) => {
   const toMetadataName = useSelector((state) =>
     getMetadataContractName(state, toAddress),
   );
+  const chainId = useSelector(getCurrentChainId);
 
   // TODO: Move useRamps hook to the confirm-transaction-base parent component.
   // TODO: openBuyCryptoInPdapp should be passed to this component as a custom prop.
@@ -269,6 +271,7 @@ const ConfirmPageContainer = (props) => {
             isBuyableChain={isBuyableChain}
             openBuyCryptoInPdapp={openBuyCryptoInPdapp}
             txData={txData}
+            chainId={chainId}
             ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
             noteComponent={noteComponent}
             ///: END:ONLY_INCLUDE_IF
