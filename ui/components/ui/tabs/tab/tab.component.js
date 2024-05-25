@@ -38,18 +38,18 @@ const Tab = (props) => {
       }}
       key={tabKey}
     >
-      <Box
+      <Text
         as="button"
         padding={2}
         textAlign={TextAlign.Center}
         display={DISPLAY.BLOCK}
         width={BLOCK_SIZES.FULL}
         className={buttonClassName}
+        variant={TextVariant.bodyMd}
+        color={TextColor.inherit}
       >
-        <Text variant={TextVariant.bodyMd} color={TextColor.inherit}>
-          {name}
-        </Text>
-      </Box>
+        {name}
+      </Text>
     </Box>
   );
 };

@@ -209,13 +209,9 @@ exports[`SendPage render and initialization should render correctly even when a 
                   class="box tab tab--active box--flex-direction-row"
                 >
                   <button
-                    class="box box--padding-2 box--display-block box--flex-direction-row box--text-align-center box--width-full"
+                    class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-2 mm-box--display-block mm-box--width-full mm-box--color-inherit"
                   >
-                    <p
-                      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                    >
-                      Your accounts
-                    </p>
+                    Your accounts
                   </button>
                 </li>
                 <li
@@ -223,13 +219,9 @@ exports[`SendPage render and initialization should render correctly even when a 
                   data-testid="send-contacts-tab"
                 >
                   <button
-                    class="box box--padding-2 box--display-block box--flex-direction-row box--text-align-center box--width-full"
+                    class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-2 mm-box--display-block mm-box--width-full mm-box--color-inherit"
                   >
-                    <p
-                      class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                    >
-                      Contacts
-                    </p>
+                    Contacts
                   </button>
                 </li>
               </ul>
