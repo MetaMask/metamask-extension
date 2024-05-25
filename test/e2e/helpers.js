@@ -768,9 +768,13 @@ const openActionMenuAndStartSendFlow = async (driver) => {
 };
 
 const clickNestedButton = async (driver, tabName) => {
-  await driver.clickElement({
-    xpath: `//*[contains(text(),"${tabName}")]/parent::button`,
-  });
+  try {
+    await driver.clickElement({ text: tabName, tag: 'button' });
+  } catch (error) {
+    await driver.clickElement({
+      xpath: `//*[contains(text(),"${tabName}")]/parent::button`,
+    });
+  }
 };
 
 const sendScreenToConfirmScreen = async (
