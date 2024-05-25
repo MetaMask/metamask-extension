@@ -1,0 +1,11 @@
+@use "design-system";
+
+.recovery-phrase {
+  &__tips {
+    max-width: max-content;
+
+    ul {
+      list-style: disc;
+    }
+  }
+}

@@ -12,6 +12,7 @@ import {
   FlexDirection,
   Display,
   BlockSize,
+  FontWeight,
 } from '../../../helpers/constants/design-system';
 import {
   ThreeStepProgressBar,
@@ -153,23 +154,47 @@ export default function SecureYourWallet() {
         justifyContent={JustifyContent.spaceBetween}
         gap={4}
       >
-        <Button
-          data-testid="secure-wallet-later"
-          variant={BUTTON_VARIANT.SECONDARY}
-          size={BUTTON_SIZES.LG}
-          block
-          onClick={handleClickNotRecommended}
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          justifyContent={JustifyContent.center}
+          alignItems={AlignItems.center}
+          gap={2}
+          width={BlockSize.Full}
         >
-          {t('seedPhraseIntroNotRecommendedButtonCopy')}
-        </Button>
-        <Button
-          data-testid="secure-wallet-recommended"
-          size={BUTTON_SIZES.LG}
-          block
-          onClick={handleClickRecommended}
+          <Button
+            data-testid="secure-wallet-later"
+            variant={BUTTON_VARIANT.SECONDARY}
+            size={BUTTON_SIZES.LG}
+            block
+            onClick={handleClickNotRecommended}
+          >
+            {t('seedPhraseIntroNotRecommendedButtonCopy')}
+          </Button>
+          <Text fontWeight={FontWeight.Bold}>
+            {t('seedPhraseIntroNotRecommendedCopy')}
+          </Text>
+        </Box>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          justifyContent={JustifyContent.center}
+          alignItems={AlignItems.center}
+          gap={2}
+          width={BlockSize.Full}
         >
-          {t('seedPhraseIntroRecommendedButtonCopy')}
-        </Button>
+          <Button
+            data-testid="secure-wallet-recommended"
+            size={BUTTON_SIZES.LG}
+            block
+            onClick={handleClickRecommended}
+          >
+            {t('seedPhraseIntroRecommendedButtonCopy')}
+          </Button>
+          <Text fontWeight={FontWeight.Bold}>
+            {t('seedPhraseIntroRecommendedCopy')}
+          </Text>
+        </Box>
       </Box>
       <Box className="secure-your-wallet__desc">
         <Text as="h3" variant={TextVariant.headingSm}>

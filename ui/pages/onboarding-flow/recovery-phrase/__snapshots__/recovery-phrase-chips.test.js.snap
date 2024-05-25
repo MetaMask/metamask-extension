@@ -3,191 +3,191 @@
 exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
 <div>
   <div
-    class="box recovery-phrase__secret box--margin-bottom-4 box--padding-4 box--display-grid box--flex-direction-row box--rounded-md box--border-style-solid box--border-color-border-muted box--border-width-1"
+    class="mm-box recovery-phrase-chips mm-box--margin-bottom-4 mm-box--padding-4 mm-box--display-grid mm-box--border-style-solid mm-box--border-color-border-muted mm-box--border-width-1"
   >
     <div
-      class="recovery-phrase__chips"
+      class="mm-box recovery-phrase-chips__chips mm-box--display-grid mm-box--justify-content-center mm-box--align-items-center"
       data-testid="recovery-phrase-chips"
     >
       <div
-        class="recovery-phrase__chip-item"
+        class="mm-box mm-box--padding-2 mm-box--display-flex mm-box--align-items-center mm-box--width-full"
       >
-        <div
-          class="recovery-phrase__chip-item__number"
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           1.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--margin-left-1 mm-box--padding-top-1 mm-box--padding-right-2 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--rounded-xl mm-box--border-style-solid mm-box--border-color-border-default mm-box--border-width-1"
           data-testid="recovery-phrase-chip-0"
         >
           debris
-        </div>
+        </p>
       </div>
       <div
-        class="recovery-phrase__chip-item"
+        class="mm-box mm-box--padding-2 mm-box--display-flex mm-box--align-items-center mm-box--width-full"
       >
-        <div
-          class="recovery-phrase__chip-item__number"
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           2.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--margin-left-1 mm-box--padding-top-1 mm-box--padding-right-2 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--rounded-xl mm-box--border-style-solid mm-box--border-color-border-default mm-box--border-width-1"
           data-testid="recovery-phrase-chip-1"
         >
           dizzy
-        </div>
+        </p>
       </div>
       <div
-        class="recovery-phrase__chip-item"
+        class="mm-box mm-box--padding-2 mm-box--display-flex mm-box--align-items-center mm-box--width-full"
       >
-        <div
-          class="recovery-phrase__chip-item__number"
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           3.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--margin-left-1 mm-box--padding-top-1 mm-box--padding-right-2 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--rounded-xl mm-box--border-style-solid mm-box--border-color-border-default mm-box--border-width-1"
           data-testid="recovery-phrase-chip-2"
         >
           just
-        </div>
+        </p>
       </div>
       <div
-        class="recovery-phrase__chip-item"
+        class="mm-box mm-box--padding-2 mm-box--display-flex mm-box--align-items-center mm-box--width-full"
       >
-        <div
-          class="recovery-phrase__chip-item__number"
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           4.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--margin-left-1 mm-box--padding-top-1 mm-box--padding-right-2 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--rounded-xl mm-box--border-style-solid mm-box--border-color-border-default mm-box--border-width-1"
           data-testid="recovery-phrase-chip-3"
         >
           program
-        </div>
+        </p>
       </div>
       <div
-        class="recovery-phrase__chip-item"
+        class="mm-box mm-box--padding-2 mm-box--display-flex mm-box--align-items-center mm-box--width-full"
       >
-        <div
-          class="recovery-phrase__chip-item__number"
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           5.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--margin-left-1 mm-box--padding-top-1 mm-box--padding-right-2 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--rounded-xl mm-box--border-style-solid mm-box--border-color-border-default mm-box--border-width-1"
           data-testid="recovery-phrase-chip-4"
         >
           just
-        </div>
+        </p>
       </div>
       <div
-        class="recovery-phrase__chip-item"
+        class="mm-box mm-box--padding-2 mm-box--display-flex mm-box--align-items-center mm-box--width-full"
       >
-        <div
-          class="recovery-phrase__chip-item__number"
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           6.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--margin-left-1 mm-box--padding-top-1 mm-box--padding-right-2 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--rounded-xl mm-box--border-style-solid mm-box--border-color-border-default mm-box--border-width-1"
           data-testid="recovery-phrase-chip-5"
         >
           float
-        </div>
+        </p>
       </div>
       <div
-        class="recovery-phrase__chip-item"
+        class="mm-box mm-box--padding-2 mm-box--display-flex mm-box--align-items-center mm-box--width-full"
       >
-        <div
-          class="recovery-phrase__chip-item__number"
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           7.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--margin-left-1 mm-box--padding-top-1 mm-box--padding-right-2 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--rounded-xl mm-box--border-style-solid mm-box--border-color-border-default mm-box--border-width-1"
           data-testid="recovery-phrase-chip-6"
         >
           decrease
-        </div>
+        </p>
       </div>
       <div
-        class="recovery-phrase__chip-item"
+        class="mm-box mm-box--padding-2 mm-box--display-flex mm-box--align-items-center mm-box--width-full"
       >
-        <div
-          class="recovery-phrase__chip-item__number"
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           8.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--margin-left-1 mm-box--padding-top-1 mm-box--padding-right-2 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--rounded-xl mm-box--border-style-solid mm-box--border-color-border-default mm-box--border-width-1"
           data-testid="recovery-phrase-chip-7"
         >
           vacant
-        </div>
+        </p>
       </div>
       <div
-        class="recovery-phrase__chip-item"
+        class="mm-box mm-box--padding-2 mm-box--display-flex mm-box--align-items-center mm-box--width-full"
       >
-        <div
-          class="recovery-phrase__chip-item__number"
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           9.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--margin-left-1 mm-box--padding-top-1 mm-box--padding-right-2 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--rounded-xl mm-box--border-style-solid mm-box--border-color-border-default mm-box--border-width-1"
           data-testid="recovery-phrase-chip-8"
         >
           alarm
-        </div>
+        </p>
       </div>
       <div
-        class="recovery-phrase__chip-item"
+        class="mm-box mm-box--padding-2 mm-box--display-flex mm-box--align-items-center mm-box--width-full"
       >
-        <div
-          class="recovery-phrase__chip-item__number"
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           10.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--margin-left-1 mm-box--padding-top-1 mm-box--padding-right-2 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--rounded-xl mm-box--border-style-solid mm-box--border-color-border-default mm-box--border-width-1"
           data-testid="recovery-phrase-chip-9"
         >
           reduce
-        </div>
+        </p>
       </div>
       <div
-        class="recovery-phrase__chip-item"
+        class="mm-box mm-box--padding-2 mm-box--display-flex mm-box--align-items-center mm-box--width-full"
       >
-        <div
-          class="recovery-phrase__chip-item__number"
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           11.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--margin-left-1 mm-box--padding-top-1 mm-box--padding-right-2 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--rounded-xl mm-box--border-style-solid mm-box--border-color-border-default mm-box--border-width-1"
           data-testid="recovery-phrase-chip-10"
         >
           speak
-        </div>
+        </p>
       </div>
       <div
-        class="recovery-phrase__chip-item"
+        class="mm-box mm-box--padding-2 mm-box--display-flex mm-box--align-items-center mm-box--width-full"
       >
-        <div
-          class="recovery-phrase__chip-item__number"
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           12.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--margin-left-1 mm-box--padding-top-1 mm-box--padding-right-2 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--rounded-xl mm-box--border-style-solid mm-box--border-color-border-default mm-box--border-width-1"
           data-testid="recovery-phrase-chip-11"
         >
           stadium
-        </div>
+        </p>
       </div>
     </div>
   </div>
@@ -197,203 +197,197 @@ exports[`Recovery Phrase Chips Component should match snapshot 1`] = `
 exports[`Recovery Phrase Chips Component should match snapshot of confirm recovery phrase with inputs of indicies to check 1`] = `
 <div>
   <div
-    class="box recovery-phrase__secret box--margin-bottom-4 box--padding-4 box--display-grid box--flex-direction-row box--rounded-md box--border-style-solid box--border-color-border-muted box--border-width-1"
+    class="mm-box recovery-phrase-chips mm-box--margin-bottom-4 mm-box--padding-4 mm-box--display-grid mm-box--border-style-solid mm-box--border-color-border-muted mm-box--border-width-1"
   >
     <div
-      class="recovery-phrase__chips"
+      class="mm-box recovery-phrase-chips__chips mm-box--display-grid mm-box--justify-content-center mm-box--align-items-center"
       data-testid="recovery-phrase-chips"
     >
       <div
-        class="recovery-phrase__chip-item"
+        class="mm-box mm-box--padding-2 mm-box--display-flex mm-box--align-items-center mm-box--width-full"
       >
-        <div
-          class="recovery-phrase__chip-item__number"
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           1.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--margin-left-1 mm-box--padding-top-1 mm-box--padding-right-2 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--rounded-xl mm-box--border-style-solid mm-box--border-color-border-default mm-box--border-width-1"
           data-testid="recovery-phrase-chip-0"
         >
           debris
-        </div>
+        </p>
       </div>
       <div
-        class="recovery-phrase__chip-item"
+        class="mm-box mm-box--padding-2 mm-box--display-flex mm-box--align-items-center mm-box--width-full"
       >
-        <div
-          class="recovery-phrase__chip-item__number"
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           2.
-        </div>
-        <div
-          class="recovery-phrase__chip--with-input chip--with-input chip chip--border-color-primary-default chip--background-color-undefined chip--max-content"
-        >
-          <input
-            class="chip__input"
-            data-testid="recovery-phrase-input-1"
-            type="text"
-            value=""
-          />
-        </div>
+        </p>
+        <input
+          autocomplete="off"
+          class="mm-box mm-text mm-input mm-text--body-md mm-box--margin-0 mm-box--margin-right-1 mm-box--margin-left-1 mm-box--padding-0 mm-box--padding-top-1 mm-box--padding-right-2 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-style-solid mm-box--border-color-primary-default mm-box--border-width-1"
+          data-testid="recovery-phrase-input-1"
+          required=""
+          type="text"
+          value=""
+        />
       </div>
       <div
-        class="recovery-phrase__chip-item"
+        class="mm-box mm-box--padding-2 mm-box--display-flex mm-box--align-items-center mm-box--width-full"
       >
-        <div
-          class="recovery-phrase__chip-item__number"
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           3.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--margin-left-1 mm-box--padding-top-1 mm-box--padding-right-2 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--rounded-xl mm-box--border-style-solid mm-box--border-color-border-default mm-box--border-width-1"
           data-testid="recovery-phrase-chip-2"
         >
           just
-        </div>
+        </p>
       </div>
       <div
-        class="recovery-phrase__chip-item"
+        class="mm-box mm-box--padding-2 mm-box--display-flex mm-box--align-items-center mm-box--width-full"
       >
-        <div
-          class="recovery-phrase__chip-item__number"
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           4.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--margin-left-1 mm-box--padding-top-1 mm-box--padding-right-2 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--rounded-xl mm-box--border-style-solid mm-box--border-color-border-default mm-box--border-width-1"
           data-testid="recovery-phrase-chip-3"
         >
           program
-        </div>
+        </p>
       </div>
       <div
-        class="recovery-phrase__chip-item"
+        class="mm-box mm-box--padding-2 mm-box--display-flex mm-box--align-items-center mm-box--width-full"
       >
-        <div
-          class="recovery-phrase__chip-item__number"
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           5.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--margin-left-1 mm-box--padding-top-1 mm-box--padding-right-2 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--rounded-xl mm-box--border-style-solid mm-box--border-color-border-default mm-box--border-width-1"
           data-testid="recovery-phrase-chip-4"
         >
           just
-        </div>
+        </p>
       </div>
       <div
-        class="recovery-phrase__chip-item"
+        class="mm-box mm-box--padding-2 mm-box--display-flex mm-box--align-items-center mm-box--width-full"
       >
-        <div
-          class="recovery-phrase__chip-item__number"
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           6.
-        </div>
-        <div
-          class="recovery-phrase__chip--with-input chip--with-input chip chip--border-color-primary-default chip--background-color-undefined chip--max-content"
-        >
-          <input
-            class="chip__input"
-            data-testid="recovery-phrase-input-5"
-            type="text"
-            value=""
-          />
-        </div>
+        </p>
+        <input
+          autocomplete="off"
+          class="mm-box mm-text mm-input mm-text--body-md mm-box--margin-0 mm-box--margin-right-1 mm-box--margin-left-1 mm-box--padding-0 mm-box--padding-top-1 mm-box--padding-right-2 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-style-solid mm-box--border-color-primary-default mm-box--border-width-1"
+          data-testid="recovery-phrase-input-5"
+          required=""
+          type="text"
+          value=""
+        />
       </div>
       <div
-        class="recovery-phrase__chip-item"
+        class="mm-box mm-box--padding-2 mm-box--display-flex mm-box--align-items-center mm-box--width-full"
       >
-        <div
-          class="recovery-phrase__chip-item__number"
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           7.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--margin-left-1 mm-box--padding-top-1 mm-box--padding-right-2 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--rounded-xl mm-box--border-style-solid mm-box--border-color-border-default mm-box--border-width-1"
           data-testid="recovery-phrase-chip-6"
         >
           decrease
-        </div>
+        </p>
       </div>
       <div
-        class="recovery-phrase__chip-item"
+        class="mm-box mm-box--padding-2 mm-box--display-flex mm-box--align-items-center mm-box--width-full"
       >
-        <div
-          class="recovery-phrase__chip-item__number"
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           8.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--margin-left-1 mm-box--padding-top-1 mm-box--padding-right-2 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--rounded-xl mm-box--border-style-solid mm-box--border-color-border-default mm-box--border-width-1"
           data-testid="recovery-phrase-chip-7"
         >
           vacant
-        </div>
+        </p>
       </div>
       <div
-        class="recovery-phrase__chip-item"
+        class="mm-box mm-box--padding-2 mm-box--display-flex mm-box--align-items-center mm-box--width-full"
       >
-        <div
-          class="recovery-phrase__chip-item__number"
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           9.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--margin-left-1 mm-box--padding-top-1 mm-box--padding-right-2 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--rounded-xl mm-box--border-style-solid mm-box--border-color-border-default mm-box--border-width-1"
           data-testid="recovery-phrase-chip-8"
         >
           alarm
-        </div>
+        </p>
       </div>
       <div
-        class="recovery-phrase__chip-item"
+        class="mm-box mm-box--padding-2 mm-box--display-flex mm-box--align-items-center mm-box--width-full"
       >
-        <div
-          class="recovery-phrase__chip-item__number"
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           10.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--margin-left-1 mm-box--padding-top-1 mm-box--padding-right-2 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--rounded-xl mm-box--border-style-solid mm-box--border-color-border-default mm-box--border-width-1"
           data-testid="recovery-phrase-chip-9"
         >
           reduce
-        </div>
+        </p>
       </div>
       <div
-        class="recovery-phrase__chip-item"
+        class="mm-box mm-box--padding-2 mm-box--display-flex mm-box--align-items-center mm-box--width-full"
       >
-        <div
-          class="recovery-phrase__chip-item__number"
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           11.
-        </div>
-        <div
-          class="recovery-phrase__chip--with-input chip--with-input chip chip--border-color-primary-default chip--background-color-undefined chip--max-content"
-        >
-          <input
-            class="chip__input"
-            data-testid="recovery-phrase-input-10"
-            type="text"
-            value=""
-          />
-        </div>
+        </p>
+        <input
+          autocomplete="off"
+          class="mm-box mm-text mm-input mm-text--body-md mm-box--margin-0 mm-box--margin-right-1 mm-box--margin-left-1 mm-box--padding-0 mm-box--padding-top-1 mm-box--padding-right-2 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-style-solid mm-box--border-color-primary-default mm-box--border-width-1"
+          data-testid="recovery-phrase-input-10"
+          required=""
+          type="text"
+          value=""
+        />
       </div>
       <div
-        class="recovery-phrase__chip-item"
+        class="mm-box mm-box--padding-2 mm-box--display-flex mm-box--align-items-center mm-box--width-full"
       >
-        <div
-          class="recovery-phrase__chip-item__number"
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           12.
-        </div>
-        <div
-          class="recovery-phrase__chip chip chip--border-color-border-default chip--background-color-undefined chip--max-content"
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--margin-left-1 mm-box--padding-top-1 mm-box--padding-right-2 mm-box--padding-bottom-1 mm-box--padding-left-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--rounded-xl mm-box--border-style-solid mm-box--border-color-border-default mm-box--border-width-1"
           data-testid="recovery-phrase-chip-11"
         >
           stadium
-        </div>
+        </p>
       </div>
     </div>
   </div>

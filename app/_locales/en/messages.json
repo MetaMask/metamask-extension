@@ -4420,10 +4420,16 @@
     "message": "Confirm Secret Recovery Phrase"
   },
   "seedPhraseIntroNotRecommendedButtonCopy": {
-    "message": "Remind me later (not recommended)"
+    "message": "Remind me later"
+  },
+  "seedPhraseIntroNotRecommendedCopy": {
+    "message": "( Not recommended )"
   },
   "seedPhraseIntroRecommendedButtonCopy": {
-    "message": "Secure my wallet (recommended)"
+    "message": "Secure my wallet"
+  },
+  "seedPhraseIntroRecommendedCopy": {
+    "message": "( Recommended )"
   },
   "seedPhraseIntroSidebarBulletFour": {
     "message": "Write down and store in multiple secret places"
