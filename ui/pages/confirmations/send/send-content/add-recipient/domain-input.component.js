@@ -155,7 +155,7 @@ export default class DomainInput extends Component {
                 ariaLabel={t('close')}
                 onClick={this.props.onReset}
                 className="ens-input__wrapper__action-icon-button"
-                size={IconSize.Xs}
+                size={IconSize.Sm}
               />
             </>
           ) : (
