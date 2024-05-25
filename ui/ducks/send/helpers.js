@@ -282,7 +282,7 @@ export const calculateBestQuote = (quotesArray) =>
       Number(best?.destinationAmount || 0);
 
     return currentValue > bestValue ? current : best;
-  }, undefined);
+  }, quotesArray?.[0]);
 
 /**
  * Generates a txParams from the send slice.
