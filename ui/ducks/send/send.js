@@ -2434,7 +2434,7 @@ export function updateRecipientUserInput(userInput) {
  * 2. If sending a token, recompute the gasLimit estimate
  *
  * @param {string} hexAmount - hex string representing value
- * @param {string} decimalAmount - decimal string representing value
+ * @param {string} [decimalAmount] - decimal string representing value
  * @returns {ThunkAction<void>}
  */
 export function updateSendAmount(hexAmount, decimalAmount) {

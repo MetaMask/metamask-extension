@@ -75,8 +75,8 @@ describe('useEthFeeData', () => {
 
     const { result } = renderHook(() => useEthFeeData(gasLimit));
 
-    expect(result.current.formattedFiatGasFee).toBe('$0.84');
-    expect(result.current.formattedEthGasFee).toBe('0.00042 ETH');
+    expect(result.current.formattedFiatGasFee).toBe('$1.34');
+    expect(result.current.formattedEthGasFee).toBe('0.000672 ETH');
   });
 
   it('should return formatted gas fees for non-1559 network', () => {
@@ -85,8 +85,8 @@ describe('useEthFeeData', () => {
 
     const { result } = renderHook(() => useEthFeeData(gasLimit));
 
-    expect(result.current.formattedFiatGasFee).toBe('$2.10');
-    expect(result.current.formattedEthGasFee).toBe('0.00105 ETH');
+    expect(result.current.formattedFiatGasFee).toBe('$3.36');
+    expect(result.current.formattedEthGasFee).toBe('0.00168 ETH');
   });
 
   it('should return both empty strings if gas fee is not available', () => {
@@ -106,7 +106,7 @@ describe('useEthFeeData', () => {
     const { result } = renderHook(() => useEthFeeData(gasLimit));
 
     expect(result.current.formattedFiatGasFee).toBe('');
-    expect(result.current.formattedEthGasFee).toBe('0.00042 ETH');
+    expect(result.current.formattedEthGasFee).toBe('0.000672 ETH');
   });
 
   it('should dispatch fetchAndSetSwapsGasPriceInfo for non-1559 network and swaps chain', () => {
