@@ -1,5 +1,5 @@
-import { rpcErrors } from '@metamask/rpc-errors';
 import { ApprovalType } from '@metamask/controller-utils';
+import { rpcErrors } from '@metamask/rpc-errors';
 
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {

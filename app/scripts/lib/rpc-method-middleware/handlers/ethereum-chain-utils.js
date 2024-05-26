@@ -1,5 +1,5 @@
-import { errorCodes, ethErrors } from 'eth-rpc-errors';
 import { ApprovalType } from '@metamask/controller-utils';
+import { errorCodes, rpcErrors } from '@metamask/rpc-errors';
 
 import {
   BUILT_IN_INFURA_NETWORKS,
@@ -37,13 +37,13 @@ export function findExistingNetwork(chainId, findNetworkConfigurationBy) {
 export function validateChainId(chainId) {
   const _chainId = typeof chainId === 'string' && chainId.toLowerCase();
   if (!isPrefixedFormattedHexString(_chainId)) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Expected 0x-prefixed, unpadded, non-zero hexadecimal string 'chainId'. Received:\n${chainId}`,
     });
   }
 
   if (!isSafeChainId(parseInt(_chainId, 16))) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Invalid chain ID "${_chainId}": numerical value greater than max safe value. Received:\n${chainId}`,
     });
   }
@@ -53,7 +53,7 @@ export function validateChainId(chainId) {
 
 export function validateSwitchEthereumChainParams(req, end) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Expected single, object parameter. Received:\n${JSON.stringify(
         req.params,
       )}`,
@@ -62,7 +62,7 @@ export function validateSwitchEthereumChainParams(req, end) {
   const { chainId, ...otherParams } = req.params[0];
 
   if (Object.keys(otherParams).length > 0) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Received unexpected keys on object parameter. Unsupported keys:\n${Object.keys(
         otherParams,
       )}`,
@@ -74,7 +74,7 @@ export function validateSwitchEthereumChainParams(req, end) {
 
 export function validateAddEthereumChainParams(params, end) {
   if (!params || typeof params !== 'object') {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Expected single, object parameter. Received:\n${JSON.stringify(
         params,
       )}`,
@@ -91,7 +91,7 @@ export function validateAddEthereumChainParams(params, end) {
   } = params;
 
   if (Object.keys(otherParams).length > 0) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Received unexpected keys on object parameter. Unsupported keys:\n${Object.keys(
         otherParams,
       )}`,
@@ -100,7 +100,7 @@ export function validateAddEthereumChainParams(params, end) {
 
   const _chainId = validateChainId(chainId, end);
   if (!rpcUrls || !Array.isArray(rpcUrls) || rpcUrls.length === 0) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Expected an array with at least one valid string HTTPS url 'rpcUrls', Received:\n${rpcUrls}`,
     });
   }
@@ -124,19 +124,19 @@ export function validateAddEthereumChainParams(params, end) {
       : null;
 
   if (!firstValidRPCUrl) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Expected an array with at least one valid string HTTPS url 'rpcUrls', Received:\n${rpcUrls}`,
     });
   }
 
   if (blockExplorerUrls !== null && !firstValidBlockExplorerUrl) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Expected null or array with at least one valid string HTTPS URL 'blockExplorerUrl'. Received: ${blockExplorerUrls}`,
     });
   }
 
   if (typeof chainName !== 'string' || !chainName) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Expected non-empty string 'chainName'. Received:\n${chainName}`,
     });
   }
@@ -146,18 +146,18 @@ export function validateAddEthereumChainParams(params, end) {
 
   if (nativeCurrency !== null) {
     if (typeof nativeCurrency !== 'object' || Array.isArray(nativeCurrency)) {
-      throw ethErrors.rpc.invalidParams({
+      throw rpcErrors.invalidParams({
         message: `Expected null or object 'nativeCurrency'. Received:\n${nativeCurrency}`,
       });
     }
     if (nativeCurrency.decimals !== 18) {
-      throw ethErrors.rpc.invalidParams({
+      throw rpcErrors.invalidParams({
         message: `Expected the number 18 for 'nativeCurrency.decimals' when 'nativeCurrency' is provided. Received: ${nativeCurrency.decimals}`,
       });
     }
 
     if (!nativeCurrency.symbol || typeof nativeCurrency.symbol !== 'string') {
-      throw ethErrors.rpc.invalidParams({
+      throw rpcErrors.invalidParams({
         message: `Expected a string 'nativeCurrency.symbol'. Received: ${nativeCurrency.symbol}`,
       });
     }
@@ -168,7 +168,7 @@ export function validateAddEthereumChainParams(params, end) {
     ticker !== UNKNOWN_TICKER_SYMBOL &&
     (typeof ticker !== 'string' || ticker.length < 2 || ticker.length > 6)
   ) {
-    throw ethErrors.rpc.invalidParams({
+    throw rpcErrors.invalidParams({
       message: `Expected 2-6 character string 'nativeCurrency.symbol'. Received:\n${ticker}`,
     });
   }
