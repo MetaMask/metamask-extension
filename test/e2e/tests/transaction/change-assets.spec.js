@@ -305,6 +305,19 @@ describe('Change assets', function () {
           text: 'ETH',
         });
 
+        // Go back to Account 1
+        await driver.clickElement('[data-testid="send-page-account-picker"]');
+        await driver.clickElement({
+          css: `.multichain-account-list-item .multichain-account-list-item__account-name__button`,
+          text: 'Account 1',
+        });
+
+        // Ensure that the AssetPicker shows native currency and 0 value
+        await driver.waitForSelector({
+          css: '.asset-picker__symbol',
+          text: 'ETH',
+        });
+
         // Populate an amount, continue
         await driver.clickElement('[data-testid="currency-input"]');
         await driver.press('[data-testid="currency-input"]', '2');
