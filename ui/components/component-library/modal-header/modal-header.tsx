@@ -5,7 +5,6 @@ import {
   TextVariant,
   TextAlign,
   BlockSize,
-  AlignItems,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ModalHeaderProps } from '.';
@@ -44,7 +43,6 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
           />
         ))
       }
-      alignItems={AlignItems.center}
       endAccessory={
         endAccessory ||
         (onClose && (

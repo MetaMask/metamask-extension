@@ -648,7 +648,8 @@ const closeSRPReveal = async (driver) => {
     tag: 'button',
   });
   await driver.findVisibleElement({
-    xpath: `//*[contains(text(),"${tEn('tokens')}")]/parent::button`,
+    text: tEn('tokens'),
+    tag: 'button',
   });
 };
 
@@ -764,13 +765,18 @@ const editGasFeeForm = async (driver, gasLimit, gasPrice) => {
 };
 
 const openActionMenuAndStartSendFlow = async (driver) => {
+  await driver.delay(500);
   await driver.clickElement('[data-testid="eth-overview-send"]');
 };
 
 const clickNestedButton = async (driver, tabName) => {
-  await driver.clickElement({
-    xpath: `//*[contains(text(),"${tabName}")]/parent::button`,
-  });
+  try {
+    await driver.clickElement({ text: tabName, tag: 'button' });
+  } catch (error) {
+    await driver.clickElement({
+      xpath: `//*[contains(text(),"${tabName}")]/parent::button`,
+    });
+  }
 };
 
 const sendScreenToConfirmScreen = async (
@@ -900,6 +906,8 @@ async function unlockWallet(
 const logInWithBalanceValidation = async (driver, ganacheServer) => {
   await unlockWallet(driver);
   await locateAccountBalanceDOM(driver, ganacheServer);
+  // Wait for balance to load
+  await driver.delay(500);
 };
 
 function roundToXDecimalPlaces(number, decimalPlaces) {

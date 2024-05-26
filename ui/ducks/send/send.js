@@ -2288,6 +2288,7 @@ export function updateGasPrice(gasPrice) {
 export function updateSendQuote(
   isComputingSendGasLimit = true,
   isRefreshingQuotes = false,
+  isComputingSendGasLimitUrgent = true,
 ) {
   return async (dispatch, getState) => {
     const state = getState();
@@ -2326,7 +2327,11 @@ export function updateSendQuote(
     }
 
     if (isComputingSendGasLimit) {
-      await debouncedComputeEstimatedGasLimit(dispatch);
+      if (isComputingSendGasLimitUrgent) {
+        await dispatch(computeEstimatedGasLimit());
+      } else {
+        await debouncedComputeEstimatedGasLimit(dispatch);
+      }
     }
   };
 }
@@ -2444,7 +2449,7 @@ export function updateSendAmount(hexAmount, decimalAmount) {
     if (state[name].amountMode === AMOUNT_MODES.MAX) {
       dispatch(actions.updateAmountMode(AMOUNT_MODES.INPUT));
     }
-    await dispatch(updateSendQuote());
+    await dispatch(updateSendQuote(true, false, false));
 
     if (decimalAmount === undefined) {
       return;

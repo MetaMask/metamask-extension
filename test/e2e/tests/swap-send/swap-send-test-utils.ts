@@ -223,7 +223,7 @@ export class SwapSendPage {
 export const mockSwapsApi =
   (quotes = swapSendQuotesResponse_ETH_TST) =>
   async (mockServer: Mockttp) => {
-    await mockServer
+    return await mockServer
       .forGet(`${SWAPS_API_V2_BASE_URL}/v2/networks/1337/quotes`)
       .always()
       .thenCallback(() => {

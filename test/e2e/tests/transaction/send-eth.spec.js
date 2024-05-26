@@ -165,6 +165,9 @@ describe('Send ETH', function () {
           );
           await logInWithBalanceValidation(driver, ganacheServer);
 
+          // Wait for balance to load
+          await driver.delay(500);
+
           await driver.clickElement('[data-testid="eth-overview-send"]');
           await driver.fill(
             'input[placeholder="Enter public address (0x) or ENS name"]',
