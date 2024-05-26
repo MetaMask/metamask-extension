@@ -6422,7 +6422,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^29.0.2":
+"@metamask/transaction-controller@npm:^29.1.0":
   version: 29.1.0
   resolution: "@metamask/transaction-controller@npm:29.1.0"
   dependencies:
@@ -25142,7 +25142,7 @@ __metadata:
     "@metamask/snaps-utils": "npm:^7.4.0"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:^8.4.0"
-    "@metamask/transaction-controller": "npm:^29.0.2"
+    "@metamask/transaction-controller": "npm:^29.1.0"
     "@metamask/user-operation-controller": "npm:^8.0.1"
     "@metamask/utils": "npm:^8.2.1"
     "@ngraveio/bc-ur": "npm:^1.1.12"

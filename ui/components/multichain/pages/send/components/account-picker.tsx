@@ -33,10 +33,11 @@ export const SendPageAccountPicker = () => {
         name={internalAccount.metadata.name}
         onClick={() => setShowAccountPicker(true)}
         showAddress
-        borderColor={BorderColor.borderDefault}
+        borderColor={BorderColor.borderMuted}
         borderWidth={1}
         paddingTop={4}
         paddingBottom={4}
+        paddingLeft={3}
         block
         justifyContent={JustifyContent.flexStart}
         addressProps={{
@@ -45,7 +46,8 @@ export const SendPageAccountPicker = () => {
         }}
         labelProps={{
           style: { flexGrow: 1, textAlign: 'start' },
-          paddingInlineStart: 2,
+          paddingInlineStart: 1,
+          className: 'multichain-send-page__account-picker__label',
         }}
         textProps={{
           display: Display.Flex,

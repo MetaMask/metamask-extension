@@ -103,8 +103,7 @@ describe('ENS', function () {
         });
 
         await driver.findElement({
-          css: '.ens-input__selected-input__subtitle',
-          text: `0x${sampleAddress}`,
+          text: '0x11111...11111',
         });
       },
     );
