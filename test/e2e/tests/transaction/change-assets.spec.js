@@ -25,6 +25,9 @@ describe('Change assets', function () {
       async ({ driver, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
 
+        // Wait for balance to load
+        await driver.delay(500);
+
         // Click the Send button
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
@@ -104,6 +107,10 @@ describe('Change assets', function () {
           css: '[data-testid="multichain-token-list-button"] span',
           text: 'TST',
         });
+
+        // Wait for balance to load
+        await driver.delay(500);
+
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
         // Chose a recipient
