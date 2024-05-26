@@ -180,6 +180,9 @@ describe('Change assets', function () {
       async ({ driver, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
 
+        // Wait for balance to load
+        await driver.delay(500);
+
         // Choose the nft
         await driver.clickElement('[data-testid="home__nfts-tab"]');
         await driver.clickElement('[data-testid="nft-default-image"]');
@@ -258,6 +261,9 @@ describe('Change assets', function () {
       },
       async ({ driver, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
+
+        // Wait for balance to load
+        await driver.delay(500);
 
         // Create second account
         await driver.clickElement('[data-testid="account-menu-icon"]');

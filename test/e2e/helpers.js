@@ -906,6 +906,8 @@ async function unlockWallet(
 const logInWithBalanceValidation = async (driver, ganacheServer) => {
   await unlockWallet(driver);
   await locateAccountBalanceDOM(driver, ganacheServer);
+  // Wait for balance to load
+  await driver.delay(500);
 };
 
 function roundToXDecimalPlaces(number, decimalPlaces) {
