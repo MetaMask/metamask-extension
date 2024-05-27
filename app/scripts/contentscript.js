@@ -415,7 +415,9 @@ const initStreams = () => {
 
 // TODO:LegacyProvider: Delete
 function getNotificationTransformStream() {
-  return new Transform({
+  const stream = new Transform({
+    highWaterMark: 16,
+    objectMode: true,
     transform: (chunk, _, cb) => {
       if (chunk?.name === PROVIDER) {
         if (chunk.data?.method === 'metamask_accountsChanged') {
@@ -427,6 +429,7 @@ function getNotificationTransformStream() {
       cb(null, chunk);
     },
   });
+  return stream;
 }
 
 /**
