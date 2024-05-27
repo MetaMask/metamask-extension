@@ -282,7 +282,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
             class="box tab confirm-page-container-content__tab tab--active box--flex-direction-row"
           >
             <button
-              class="box box--padding-2 box--display-block box--flex-direction-row box--text-align-center box--width-full"
+              class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-2 mm-box--display-block mm-box--width-full mm-box--color-inherit"
             >
               Details
             </button>
@@ -291,7 +291,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
             class="box tab confirm-page-container-content__tab box--flex-direction-row"
           >
             <button
-              class="box box--padding-2 box--display-block box--flex-direction-row box--text-align-center box--width-full"
+              class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-2 mm-box--display-block mm-box--width-full mm-box--color-inherit"
             >
               Hex
             </button>

@@ -1,6 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { MetaMetricsContext } from '../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 import { useEnableNotifications } from '../../hooks/metamask-notifications/useNotifications';
 import { getIsUpdatingMetamaskNotifications } from '../../selectors/metamask-notifications/metamask-notifications';
 import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
@@ -27,7 +32,7 @@ import {
 
 export const NotificationsListTurnOnNotifications = () => {
   const t = useI18nContext();
-
+  const trackEvent = useContext(MetaMetricsContext);
   const { listNotifications } = useMetamaskNotificationsContext();
 
   const { enableNotifications, error: errorEnableNotifications } =
@@ -49,6 +54,10 @@ export const NotificationsListTurnOnNotifications = () => {
 
   const handleTurnOnNotifications = async () => {
     await enableNotifications();
+    trackEvent({
+      category: MetaMetricsEventCategory.NotificationInteraction,
+      event: MetaMetricsEventName.EnablingNotifications,
+    });
     if (!error && !isUpdatingMetamaskNotifications) {
       listNotifications();
     }

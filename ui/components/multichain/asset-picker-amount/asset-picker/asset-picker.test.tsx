@@ -160,4 +160,33 @@ describe('AssetPicker', () => {
     expect(getByText('symbol')).toBeInTheDocument();
     expect(getByText('?')).toBeInTheDocument();
   });
+
+  it('render if disabled', () => {
+    const asset = {
+      type: AssetType.token,
+      details: {
+        address: 'token address',
+        decimals: 2,
+        symbol: 'symbol',
+      },
+      balance: '100',
+    };
+    const mockAssetChange = jest.fn();
+
+    const { container } = render(
+      <Provider
+        store={store("SHOULDN'T MATTER", [
+          { address: 'token address', iconUrl: 'token icon url' },
+        ])}
+      >
+        <AssetPicker
+          asset={asset}
+          onAssetChange={() => mockAssetChange()}
+          isDisabled
+        />
+      </Provider>,
+    );
+
+    expect(container).toMatchSnapshot();
+  });
 });

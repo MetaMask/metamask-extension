@@ -130,11 +130,6 @@ exports[`SendContent Component render should match snapshot 1`] = `
                     ETH
                   </div>
                 </div>
-                <div
-                  class="currency-input__conversion-component"
-                >
-                  No conversion rate available
-                </div>
               </div>
             </div>
           </div>

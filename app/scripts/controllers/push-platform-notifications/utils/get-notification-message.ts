@@ -6,6 +6,7 @@ import { CHAIN_SYMBOLS } from '../../metamask-notifications/constants/notificati
 import type { TRIGGER_TYPES } from '../../metamask-notifications/constants/notification-schema';
 import type { OnChainRawNotification } from '../../metamask-notifications/types/on-chain-notification/on-chain-notification';
 import { t } from '../../../translate';
+import type { Notification } from '../../metamask-notifications/types/types';
 import { getAmount, formatAmount } from './get-notification-data';
 
 type PushNotificationMessage = {
@@ -13,9 +14,7 @@ type PushNotificationMessage = {
   description: string;
 };
 
-type NotificationMessage<
-  N extends OnChainRawNotification = OnChainRawNotification,
-> = {
+type NotificationMessage<N extends Notification = Notification> = {
   title: string | null;
   defaultDescription: string | null;
   getDescription?: (n: N) => string | null;
@@ -23,7 +22,7 @@ type NotificationMessage<
 
 type NotificationMessageDict = {
   [K in TRIGGER_TYPES]?: NotificationMessage<
-    Extract<OnChainRawNotification, { data: { kind: `${K}` } }>
+    Extract<Notification, { type: K }>
   >;
 };
 
@@ -33,14 +32,9 @@ function getChainSymbol(chainId: number) {
   return CHAIN_SYMBOLS[chainId] ?? null;
 }
 
-export async function onPushNotification(notification: unknown): Promise<void> {
-  if (!notification) {
-    return;
-  }
-  if (!isOnChainNotification(notification)) {
-    return;
-  }
-
+export async function onPushNotification(
+  notification: Notification,
+): Promise<void> {
   const notificationMessage = createNotificationMessage(notification);
   if (!notificationMessage) {
     return;
@@ -59,19 +53,23 @@ export async function onPushNotification(notification: unknown): Promise<void> {
   });
 }
 
-export async function onNotificationClick(event: NotificationEvent) {
+export async function onNotificationClick(
+  event: NotificationEvent,
+  emitEvent?: (n: Notification) => void,
+) {
   // Close notification
   event.notification.close();
 
   // Get Data
-  const data: OnChainRawNotification = event?.notification?.data;
+  const data: Notification = event?.notification?.data;
+  emitEvent?.(data);
 
   // Navigate
   const destination = `chrome-extension://${sw.location.host}/home.html#notifications/${data.id}`;
   event.waitUntil(sw.clients.openWindow(destination));
 }
 
-function isOnChainNotification(n: unknown): n is OnChainRawNotification {
+export function isOnChainNotification(n: unknown): n is OnChainRawNotification {
   const assumed = n as OnChainRawNotification;
 
   // We don't have a validation/parsing library to check all possible types of an on chain notification
@@ -228,12 +226,12 @@ const notificationMessageDict: NotificationMessageDict = {
 };
 
 export function createNotificationMessage(
-  n: OnChainRawNotification,
+  n: Notification,
 ): PushNotificationMessage | null {
-  if (!n?.data?.kind) {
+  if (!n?.type) {
     return null;
   }
-  const notificationMessage = notificationMessageDict[n.data.kind] as
+  const notificationMessage = notificationMessageDict[n.type] as
     | NotificationMessage
     | undefined;
 
