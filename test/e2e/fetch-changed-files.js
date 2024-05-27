@@ -8,7 +8,7 @@ async function fetchChangedE2eFiles() {
     const data = await fs.readFile(CHANGED_FILES_PATH, 'utf8');
     const changedFiles = data.split('\n');
 
-    const filesChanged = changedFiles
+    const changedE2eFiles = changedFiles
       .filter(
         (file) =>
           file.filename.startsWith('test/e2e/') &&
@@ -18,7 +18,7 @@ async function fetchChangedE2eFiles() {
       .map((file) => file.filename)
       .join('\n');
 
-    return filesChanged;
+    return changedE2eFiles;
   } catch (error) {
     console.error('Error making request:', error);
     return '';
