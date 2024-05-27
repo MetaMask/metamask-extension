@@ -49,7 +49,6 @@ import {
   getSelectedInternalAccount,
   getUnapprovedTransactions,
 } from '../../../selectors';
-import { selectIsMetamaskNotificationsEnabled } from '../../../selectors/metamask-notifications/metamask-notifications';
 import { AccountPicker, GlobalMenu } from '..';
 
 import { toggleAccountMenu, toggleNetworkMenu } from '../../../store/actions';
@@ -124,10 +123,6 @@ export const AppHeader = ({ location }) => {
   );
 
   const unapprovedTransactions = useSelector(getUnapprovedTransactions);
-
-  const isMetamaskNotificationsEnabled = useSelector(
-    selectIsMetamaskNotificationsEnabled,
-  );
 
   const hasUnapprovedTransactions =
     Object.keys(unapprovedTransactions).length > 0;
@@ -346,15 +341,14 @@ export const AppHeader = ({ location }) => {
                     justifyContent={JustifyContent.flexEnd}
                     width={BlockSize.Full}
                   >
-                    {isMetamaskNotificationsEnabled &&
-                      !accountOptionsMenuOpen && (
-                        <Box
-                          style={{ position: 'relative' }}
-                          onClick={() => handleMainMenuOpened()}
-                        >
-                          <NotificationsTagCounter noLabel />
-                        </Box>
-                      )}
+                    {!accountOptionsMenuOpen && (
+                      <Box
+                        style={{ position: 'relative' }}
+                        onClick={() => handleMainMenuOpened()}
+                      >
+                        <NotificationsTagCounter noLabel />
+                      </Box>
+                    )}
                     <ButtonIcon
                       iconName={IconName.MoreVertical}
                       data-testid="account-options-menu-button"

@@ -3103,6 +3103,9 @@
   "notificationDetailMaxFee": {
     "message": "Max fee per gas"
   },
+  "notificationDetailNetwork": {
+    "message": "Network"
+  },
   "notificationDetailNetworkFee": {
     "message": "Network fee"
   },
@@ -3122,13 +3125,13 @@
     "message": "Unable to retrieve fees currently"
   },
   "notificationItemFrom": {
-    "message": "From (You)"
+    "message": "From"
   },
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "Withdrawal Ready"
   },
-  "notificationItemLidoWithdrawalRequested": {
-    "message": "Withdrawal requested"
+  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
+    "message": "You can now withdraw your unstaked $1"
   },
   "notificationItemLidoWithdrawalRequestedMessage": {
     "message": "Your request to unstake $1 has been sent"
@@ -6322,6 +6325,9 @@
   },
   "yes": {
     "message": "Yes"
+  },
+  "you": {
+    "message": "You"
   },
   "youHaveAddedAll": {
     "message": "You've added all the popular networks. You can discover more networks $1 Or you can $2",
