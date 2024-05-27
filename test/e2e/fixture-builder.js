@@ -21,6 +21,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         isProfileSyncingEnabled: true,
       },
       MetamaskNotificationsController: {
+        subscriptionAccountsSeen: [],
         isFeatureAnnouncementsEnabled: false,
         isMetamaskNotificationsEnabled: false,
         isMetamaskNotificationsFeatureSeen: false,

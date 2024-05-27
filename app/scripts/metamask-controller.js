@@ -277,7 +277,7 @@ import createTabIdMiddleware from './lib/createTabIdMiddleware';
 import { NetworkOrderController } from './controllers/network-order';
 import { AccountOrderController } from './controllers/account-order';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
-import { setupMultiplex } from './lib/stream-utils';
+import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import PreferencesController from './controllers/preferences';
 import AppStateController from './controllers/app-state';
 import AlertController from './controllers/alert';
@@ -1431,14 +1431,42 @@ export default class MetamaskController extends EventEmitter {
       }),
     });
 
+    const pushPlatformNotificationsControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'PushPlatformNotificationsController',
+        allowedActions: ['AuthenticationController:getBearerToken'],
+      });
     this.pushPlatformNotificationsController =
       new PushPlatformNotificationsController({
         state: initState.PushPlatformNotificationsController,
-        messenger: this.controllerMessenger.getRestricted({
-          name: 'PushPlatformNotificationsController',
-          allowedActions: ['AuthenticationController:getBearerToken'],
-        }),
+        messenger: pushPlatformNotificationsControllerMessenger,
       });
+    pushPlatformNotificationsControllerMessenger.subscribe(
+      'PushPlatformNotificationsController:onNewNotifications',
+      (notification) => {
+        this.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.PushNotificationReceived,
+          category: MetaMetricsEventCategory.PushNotifications,
+          properties: {
+            notification_type: notification.type,
+            chain_id: notification?.chain_id,
+          },
+        });
+      },
+    );
+    pushPlatformNotificationsControllerMessenger.subscribe(
+      'PushPlatformNotificationsController:pushNotificationClicked',
+      (notification) => {
+        this.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.PushNotificationClicked,
+          category: MetaMetricsEventCategory.PushNotifications,
+          properties: {
+            notification_type: notification.type,
+            chain_id: notification?.chain_id,
+          },
+        });
+      },
+    );
 
     this.metamaskNotificationsController = new MetamaskNotificationsController({
       messenger: this.controllerMessenger.getRestricted({
@@ -4890,7 +4918,7 @@ export default class MetamaskController extends EventEmitter {
       ),
     );
     const handleUpdate = (update) => {
-      if (outStream._writableState.ended) {
+      if (!isStreamWritable(outStream)) {
         return;
       }
       // send notification to client-side
@@ -4902,7 +4930,7 @@ export default class MetamaskController extends EventEmitter {
     };
     this.on('update', handleUpdate);
     const startUISync = () => {
-      if (outStream._writableState.ended) {
+      if (!isStreamWritable(outStream)) {
         return;
       }
       // send notification to client-side

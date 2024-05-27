@@ -1,6 +1,6 @@
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import PortStream from 'extension-port-stream';
-import ObjectMultiplex from 'obj-multiplex';
+import ObjectMultiplex from '@metamask/object-multiplex';
 import pump from 'pump';
 import { obj as createThoughStream } from 'through2';
 import browser from 'webextension-polyfill';
@@ -94,8 +94,8 @@ const setupPhishingExtStreams = () => {
       {
         target: PHISHING_WARNING_PAGE, // the post-message-stream "target"
         data: {
-          // this object gets passed to obj-multiplex
-          name: PHISHING_SAFELIST, // the obj-multiplex channel name
+          // this object gets passed to @metamask/object-multiplex
+          name: PHISHING_SAFELIST, // the @metamask/object-multiplex channel name
           data: {
             jsonrpc: '2.0',
             method: 'METAMASK_STREAM_FAILURE',
@@ -456,8 +456,8 @@ function extensionStreamMessageListener(msg) {
       {
         target: INPAGE, // the post-message-stream "target"
         data: {
-          // this object gets passed to obj-multiplex
-          name: PROVIDER, // the obj-multiplex channel name
+          // this object gets passed to @metamask/object-multiplex
+          name: PROVIDER, // the @metamask/object-multiplex channel name
           data: {
             jsonrpc: '2.0',
             method: 'METAMASK_EXTENSION_CONNECT_CAN_RETRY',
@@ -472,15 +472,15 @@ function extensionStreamMessageListener(msg) {
 /**
  * This function must ONLY be called in pump destruction/close callbacks.
  * Notifies the inpage context that streams have failed, via window.postMessage.
- * Relies on obj-multiplex and post-message-stream implementation details.
+ * Relies on @metamask/object-multiplex and post-message-stream implementation details.
  */
 function notifyInpageOfStreamFailure() {
   window.postMessage(
     {
       target: INPAGE, // the post-message-stream "target"
       data: {
-        // this object gets passed to obj-multiplex
-        name: PROVIDER, // the obj-multiplex channel name
+        // this object gets passed to @metamask/object-multiplex
+        name: PROVIDER, // the @metamask/object-multiplex channel name
         data: {
           jsonrpc: '2.0',
           method: 'METAMASK_STREAM_FAILURE',

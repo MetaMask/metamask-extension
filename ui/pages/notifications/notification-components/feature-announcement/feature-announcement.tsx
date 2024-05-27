@@ -106,6 +106,7 @@ export const components: NotificationComponent<FeatureAnnouncementNotification> 
       Link: ({ notification }) =>
         notification.data.link ? (
           <NotificationDetailButton
+            notification={notification}
             variant={ButtonVariant.Primary}
             text={notification.data.link.linkText}
             href={notification.data.link.linkUrl}
@@ -117,6 +118,7 @@ export const components: NotificationComponent<FeatureAnnouncementNotification> 
       Action: ({ notification }) =>
         notification.data.action ? (
           <NotificationDetailButton
+            notification={notification}
             variant={ButtonVariant.Secondary}
             text={notification.data.action.actionText}
             href={notification.data.action.actionUrl}
