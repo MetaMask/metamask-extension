@@ -3,7 +3,7 @@ import PortStream from 'extension-port-stream';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { pipeline, Transform } from 'readable-stream';
 import browser from 'webextension-polyfill';
-import { EXTENSION_MESSAGES } from '../../shared/constants/app';
+import { EXTENSION_MESSAGES } from '../../shared/constants/extension-messages';
 import {
   checkForLastError,
   getIsBrowserPrerenderBroken,
