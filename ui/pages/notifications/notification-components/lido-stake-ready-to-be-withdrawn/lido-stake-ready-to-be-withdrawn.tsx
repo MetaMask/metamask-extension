@@ -165,6 +165,7 @@ export const components: NotificationComponent<LidoReadyWithDrawnNotification> =
         );
         return (
           <NotificationDetailButton
+            notification={notification}
             variant={ButtonVariant.Secondary}
             text={t('notificationItemCheckBlockExplorer') || ''}
             href={

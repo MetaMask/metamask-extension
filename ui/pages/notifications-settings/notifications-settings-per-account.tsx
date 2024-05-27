@@ -1,5 +1,10 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useContext } from 'react';
 import { useSelector } from 'react-redux';
+import { MetaMetricsContext } from '../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
 import {
   useSwitchAccountNotifications,
@@ -26,6 +31,7 @@ export const NotificationsSettingsPerAccount = ({
   loading,
 }: NotificationsSettingsPerAccountProps) => {
   const { listNotifications } = useMetamaskNotificationsContext();
+  const trackEvent = useContext(MetaMetricsContext);
 
   // Hooks
   const {
@@ -73,6 +79,15 @@ export const NotificationsSettingsPerAccount = ({
   const handleToggleAccountNotifications = useCallback(async () => {
     const originalValue = data?.[address];
     await onChangeAccountNotifications([address], !originalValue);
+    trackEvent({
+      category: MetaMetricsEventCategory.NotificationSettings,
+      event: originalValue
+        ? MetaMetricsEventName.DisablingAccountNotifications
+        : MetaMetricsEventName.EnablingAccountNotifications,
+      properties: {
+        address,
+      },
+    });
     listNotifications();
   }, [address, data, onChangeAccountNotifications]);
 

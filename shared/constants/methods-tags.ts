@@ -14,7 +14,7 @@ export const methodsRequiringNetworkSwitch = [
   'wallet_watchAsset',
   'eth_signTypedData_v4',
   'personal_sign',
-];
+] as const;
 
 /**
  * This is a list of methods that can cause a confirmation to be

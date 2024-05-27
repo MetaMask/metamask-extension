@@ -18,7 +18,6 @@ import type { NotificationListItemIconProps } from '../notification-list-item-ic
 import type { NotificationListItemTextProps } from '../notification-list-item-text/notification-list-item-text';
 import { NotificationListItemIcon } from '../notification-list-item-icon';
 import { NotificationListItemText } from '../notification-list-item-text';
-import { NotificationListSnapButton } from '../notification-list-snap-button';
 import { formatMenuItemDate } from '../../../helpers/utils/notification.util';
 
 export type NotificationListItemProps = {
@@ -30,10 +29,6 @@ export type NotificationListItemProps = {
   createdAt: Date;
   amount?: string;
   onClick?: () => void;
-  snapButton?: {
-    text: string;
-    onClick: () => void;
-  };
 };
 
 /**
@@ -48,7 +43,6 @@ export type NotificationListItemProps = {
  * @param props.amount - The amount associated with the notification, if applicable.
  * @param props.id - The id of the notification.
  * @param props.onClick - The function to call when the notification is clicked.
- * @param props.snapButton - The snap button to display on the notification.
  * @returns Returns a notification list item component.
  */
 export const NotificationListItem = ({
@@ -60,7 +54,6 @@ export const NotificationListItem = ({
   createdAt,
   amount,
   onClick,
-  snapButton,
 }: NotificationListItemProps) => {
   const handleClick = () => {
     onClick?.();
@@ -122,6 +115,7 @@ export const NotificationListItem = ({
             flexDirection={FlexDirection.Column}
             alignItems={AlignItems.flexStart}
             textAlign={TextAlign.Left}
+            width={BlockSize.Full}
           >
             {/* Notification Title */}
             <NotificationListItemText
@@ -160,13 +154,7 @@ export const NotificationListItem = ({
             </Text>
           )}
         </Box>
-        {/* Snap Button */}
       </Box>
-      {snapButton && (
-        <Box width={BlockSize.Full} paddingTop={4}>
-          <NotificationListSnapButton {...snapButton} />
-        </Box>
-      )}
     </Box>
   );
 };
