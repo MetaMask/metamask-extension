@@ -58,6 +58,9 @@
     "state": "CLOSED",
     "networkName": ""
   },
+  "localeMessages": {
+    "currentLocale": "en"
+  },
   "metamask": {
     "ipfsGateway": "",
     "dismissSeedBackUpReminder": false,
@@ -1214,7 +1217,8 @@
         ],
         "origin": "tmashuang.github.io"
       }
-    ]
+    ],
+    "swapsState": {}
   },
   "send": {
     "amountMode": "INPUT",
@@ -1224,12 +1228,6 @@
         "amount": {
           "error": null,
           "value": "0xde0b6b3a7640000"
-        },
-        "asset": {
-          "balance": "0x1158e460913d00000",
-          "details": null,
-          "error": null,
-          "type": "NATIVE"
         },
         "fromAccount": null,
         "gas": {
@@ -1243,6 +1241,14 @@
         },
         "history": [],
         "id": null,
+        "isSwapQuoteLoading": false,
+        "quotes": null,
+        "receiveAsset": {
+          "balance": "0x0",
+          "details": null,
+          "error": null,
+          "type": "NATIVE"
+        },
         "recipient": {
           "address": "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b",
           "error": null,
@@ -1251,7 +1257,15 @@
           "type": "",
           "recipientWarningAcknowledged": false
         },
+        "sendAsset": {
+          "balance": "0x1158e460913d00000",
+          "details": null,
+          "error": null,
+          "type": "NATIVE"
+        },
         "status": "VALID",
+        "swapQuotesError": null,
+        "swapQuotesLatestRequestTimestamp": null,
         "transactionType": "0x2",
         "userInputHexData": null
       }
@@ -1270,6 +1284,33 @@
       "balance": "0x4563918244f40000"
     },
     "stage": "DRAFT"
+  },
+  "swaps": {
+    "aggregatorMetadata": null,
+    "approveTxId": null,
+    "tradeTxId": null,
+    "balanceError": false,
+    "fetchingQuotes": false,
+    "fromToken": null,
+    "fromTokenInputValue": "",
+    "fromTokenError": null,
+    "isFeatureFlagLoaded": false,
+    "maxSlippage": "Slippage.default",
+    "quotesFetchStartTime": null,
+    "reviewSwapClickedTimestamp": null,
+    "topAssets": {},
+    "toToken": null,
+    "customGas": {
+      "price": null,
+      "limit": null,
+      "loading": "GAS_PRICES_LOADING_STATES.INITIAL",
+      "priceEstimates": {},
+      "fallBackPrice": null
+    },
+    "currentSmartTransactionsError": "",
+    "swapsSTXLoading": false,
+    "transactionSettingsOpened": false,
+    "latestAddedTokenTo": ""
   },
   "unconnectedAccount": {
     "state": "CLOSED"

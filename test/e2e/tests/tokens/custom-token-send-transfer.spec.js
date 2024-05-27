@@ -7,6 +7,7 @@ const {
   unlockWallet,
   editGasFeeForm,
   WINDOW_TITLES,
+  clickNestedButton,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
@@ -32,6 +33,7 @@ describe('Transfer custom tokens @no-mmi', function () {
           css: '[data-testid="multichain-token-list-item-value"]',
           text: '10 TST',
         });
+        await driver.delay(500);
         await driver.clickElement('[data-testid="eth-overview-send"]');
         await driver.fill(
           'input[placeholder="Enter public address (0x) or ENS name"]',
@@ -39,7 +41,7 @@ describe('Transfer custom tokens @no-mmi', function () {
         );
         await driver.waitForSelector({
           css: '.ens-input__selected-input__title',
-          text: recipientAddress,
+          text: '0x2f318...5C970',
         });
         await driver.fill('input[placeholder="0"]', '1');
         await driver.clickElement({ text: 'Continue', tag: 'button' });
@@ -63,10 +65,7 @@ describe('Transfer custom tokens @no-mmi', function () {
         );
 
         // check function name and hex data details in hex tab
-        await driver.clickElement({
-          text: 'Hex',
-          tag: 'button',
-        });
+        await clickNestedButton(driver, 'Hex');
         await driver.waitForSelector({
           text: 'Transfer',
           tag: 'span',
@@ -77,7 +76,7 @@ describe('Transfer custom tokens @no-mmi', function () {
         });
 
         // edit gas fee
-        await driver.clickElement({ text: 'Details', tag: 'button' });
+        await clickNestedButton(driver, 'Details');
         await driver.clickElement({ text: 'Edit', tag: 'button' });
         await editGasFeeForm(driver, '60000', '10');
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
@@ -131,17 +130,14 @@ describe('Transfer custom tokens @no-mmi', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await driver.clickElement({ tag: 'button', text: 'Activity' });
+        await clickNestedButton(driver, 'Activity');
         await driver.waitForSelector({
           css: '[data-testid="transaction-list-item-primary-currency"]',
           text: '-1.5 TST',
         });
 
         // check token amount is correct after transaction
-        await driver.clickElement({
-          text: 'Tokens',
-          tag: 'button',
-        });
+        await clickNestedButton(driver, 'Tokens');
         const tokenAmount = await driver.findElement(
           {
             css: '[data-testid="multichain-token-list-item-value"]',
@@ -186,7 +182,7 @@ describe('Transfer custom tokens @no-mmi', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await driver.clickElement({ tag: 'button', text: 'Activity' });
+        await clickNestedButton(driver, 'Activity');
         await driver.waitForSelector({
           css: '[data-testid="transaction-list-item-primary-currency"]',
           text: '-1.5 TST',
@@ -197,10 +193,7 @@ describe('Transfer custom tokens @no-mmi', function () {
         });
 
         // check token amount is correct after transaction
-        await driver.clickElement({
-          text: 'Tokens',
-          tag: 'button',
-        });
+        await clickNestedButton(driver, 'Tokens');
         const tokenAmount = await driver.findElement(
           {
             css: '[data-testid="multichain-token-list-item-value"]',

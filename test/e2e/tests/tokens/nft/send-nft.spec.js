@@ -48,7 +48,7 @@ describe('Send NFT', function () {
 
         assert.equal(
           await recipient.getText(),
-          '0xc427d562164062a23a5cff596a4a3208e72acd28',
+          '0xc427D...Acd28\n0xc427D...Acd28',
         );
 
         await driver.clickElement({
@@ -99,6 +99,7 @@ describe('Send NFT', function () {
         // Fill the send NFT form and confirm the transaction
         await driver.clickElement('[data-testid="home__nfts-tab"]');
 
+        await driver.delay(1000);
         const erc1155Token = await driver.findElement('.nft-item__container');
         await driver.scrollToElement(erc1155Token);
         await driver.delay(1000);
@@ -114,8 +115,6 @@ describe('Send NFT', function () {
         await driver.delay(1000);
 
         await driver.fill('input[placeholder="0"]', '1');
-
-        await driver.delay(1000);
 
         await driver.clickElement({
           text: 'Continue',
@@ -161,6 +160,49 @@ describe('Send NFT', function () {
           text: 'Previously Owned',
         });
         assert.equal(await previouslyOwnedNft.isDisplayed(), true);
+      },
+    );
+  });
+
+  it('should not be able to send ERC1155 NFT with invalid amount', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder().withNftControllerERC1155().build(),
+        ganacheOptions: defaultGanacheOptions,
+        smartContract: erc1155SmartContract,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+
+        // Fill the send NFT form and confirm the transaction
+        await driver.clickElement('[data-testid="home__nfts-tab"]');
+
+        const erc1155Token = await driver.findElement('.nft-item__container');
+        await driver.scrollToElement(erc1155Token);
+        await driver.delay(1000);
+        await driver.clickElement('.nft-item__container');
+
+        await driver.clickElement({ text: 'Send', tag: 'button' });
+
+        await driver.delay(10000);
+
+        await driver.fill(
+          'input[placeholder="Enter public address (0x) or ENS name"]',
+          '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
+        );
+
+        await driver.assertElementNotPresent(
+          '[data-testid="send-page-amount-error"]',
+        );
+        await driver.fill('input[placeholder="0"]', '0');
+        assert.ok(
+          await driver.findElement({
+            text: '1 token. Cannot send negative or zero amounts of asset.',
+            tag: 'p',
+          }),
+        );
       },
     );
   });
