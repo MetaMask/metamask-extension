@@ -1,12 +1,13 @@
 import { Transform } from 'stream';
+import { JsonRpcRequest } from '@metamask/utils';
 import createDupeReqFilterStream, {
   THREE_MINUTES,
 } from './createDupeReqFilterStream';
 
-function createTestStream(output) {
+function createTestStream(output: JsonRpcRequest[] = []) {
   const throughStream = createDupeReqFilterStream();
   const testOutStream = new Transform({
-    transform: (chunk, _, cb) => {
+    transform: (chunk: JsonRpcRequest, _, cb) => {
       output.push(chunk);
       cb();
     },
@@ -18,9 +19,12 @@ function createTestStream(output) {
   return throughStream;
 }
 
-function runStreamTest(requests, advanceTimersTime = 10) {
+function runStreamTest(
+  requests: JsonRpcRequest[] = [],
+  advanceTimersTime = 10,
+) {
   return new Promise((resolve, reject) => {
-    const output = [];
+    const output: JsonRpcRequest[] = [];
     const testStream = createTestStream(output);
 
     testStream
@@ -99,7 +103,7 @@ describe('createDupeReqFilterStream', () => {
   });
 
   it('expires single id after three minutes', () => {
-    const output = [];
+    const output: JsonRpcRequest[] = [];
     const testStream = createTestStream(output);
 
     const requests1 = [
@@ -129,7 +133,7 @@ describe('createDupeReqFilterStream', () => {
   });
 
   it('does not expire single id after less than three', () => {
-    const output = [];
+    const output: JsonRpcRequest[] = [];
     const testStream = createTestStream(output);
 
     const requests1 = [
@@ -156,7 +160,7 @@ describe('createDupeReqFilterStream', () => {
   });
 
   it('expires multiple ids after three minutes', () => {
-    const output = [];
+    const output: JsonRpcRequest[] = [];
     const testStream = createTestStream(output);
 
     const requests1 = [
@@ -200,7 +204,7 @@ describe('createDupeReqFilterStream', () => {
   });
 
   it('expires single id in three minute intervals', () => {
-    const output = [];
+    const output: JsonRpcRequest[] = [];
     const testStream = createTestStream(output);
 
     const requests1 = [
@@ -246,7 +250,7 @@ describe('createDupeReqFilterStream', () => {
   });
 
   it('expires somes ids at intervals while not expiring others', () => {
-    const output = [];
+    const output: JsonRpcRequest[] = [];
     const testStream = createTestStream(output);
 
     const requests1 = [
@@ -295,7 +299,7 @@ describe('createDupeReqFilterStream', () => {
   });
 
   it('handles running expiry job without seeing any ids', () => {
-    const output = [];
+    const output: JsonRpcRequest[] = [];
     const testStream = createTestStream(output);
 
     const requests1 = [{ id: 1, method: 'foo' }];

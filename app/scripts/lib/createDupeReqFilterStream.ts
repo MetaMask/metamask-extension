@@ -1,5 +1,6 @@
 import { Transform } from 'stream';
 import log from 'loglevel';
+import { JsonRpcRequest } from '@metamask/utils';
 import { MINUTE } from '../../../shared/constants/time';
 
 export const THREE_MINUTES = MINUTE * 3;
@@ -50,7 +51,7 @@ const makeExpirySet = () => {
 export default function createDupeReqFilterStream() {
   const seenRequestIds = makeExpirySet();
   return new Transform({
-    transform(chunk, _, cb) {
+    transform(chunk: JsonRpcRequest, _, cb) {
       // JSON-RPC notifications have no ids; our only recourse is to let them through.
       const hasNoId = chunk.id === undefined;
       const requestNotYetSeen = seenRequestIds.add(chunk.id);
