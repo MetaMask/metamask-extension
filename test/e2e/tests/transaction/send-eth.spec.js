@@ -42,7 +42,7 @@ describe('Send ETH', function () {
 
           await driver.findElement({
             css: '[data-testid="send-page-amount-error"]',
-            text: 'Insufficient funds for gas',
+            text: '. Insufficient funds.',
           });
 
           await inputAmount.press(driver.Key.BACK_SPACE);
@@ -164,6 +164,9 @@ describe('Send ETH', function () {
             smartContract,
           );
           await logInWithBalanceValidation(driver, ganacheServer);
+
+          // Wait for balance to load
+          await driver.delay(500);
 
           await driver.clickElement('[data-testid="eth-overview-send"]');
           await driver.fill(

@@ -50,6 +50,7 @@ async function withFixtures(options, testSuite) {
     },
     useBundler,
     usePaymaster,
+    ethConversionInUsd,
   } = options;
 
   const fixtureServer = new FixtureServer();
@@ -135,6 +136,7 @@ async function withFixtures(options, testSuite) {
       testSpecificMock,
       {
         chainId: ganacheOptions?.chainId || 1337,
+        ethConversionInUsd,
       },
     );
     if ((await detectPort(8000)) !== 8000) {
@@ -763,7 +765,18 @@ const editGasFeeForm = async (driver, gasLimit, gasPrice) => {
 };
 
 const openActionMenuAndStartSendFlow = async (driver) => {
+  await driver.delay(500);
   await driver.clickElement('[data-testid="eth-overview-send"]');
+};
+
+const clickNestedButton = async (driver, tabName) => {
+  try {
+    await driver.clickElement({ text: tabName, tag: 'button' });
+  } catch (error) {
+    await driver.clickElement({
+      xpath: `//*[contains(text(),"${tabName}")]/parent::button`,
+    });
+  }
 };
 
 const sendScreenToConfirmScreen = async (
@@ -893,6 +906,8 @@ async function unlockWallet(
 const logInWithBalanceValidation = async (driver, ganacheServer) => {
   await unlockWallet(driver);
   await locateAccountBalanceDOM(driver, ganacheServer);
+  // Wait for balance to load
+  await driver.delay(500);
 };
 
 function roundToXDecimalPlaces(number, decimalPlaces) {
@@ -1150,4 +1165,5 @@ module.exports = {
   openActionMenuAndStartSendFlow,
   getCleanAppState,
   editGasFeeForm,
+  clickNestedButton,
 };

@@ -214,7 +214,7 @@ describe('AccountListMenu', () => {
     expect(getByText('Import account')).toBeInTheDocument();
     expect(getByText('Add hardware wallet')).toBeInTheDocument();
     const header = document.querySelector('header');
-    expect(header.innerHTML).toBe('Add account');
+    expect(header.innerHTML).toContain('Add account');
     expect(
       document.querySelector('button[aria-label="Close"]'),
     ).toBeInTheDocument();
