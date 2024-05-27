@@ -335,6 +335,7 @@ export default class Home extends PureComponent {
     } else if (hasWatchNftPendingApprovals) {
       history.push(CONFIRM_ADD_SUGGESTED_NFT_ROUTE);
     } else if (pendingConfirmations.length > 0 || hasApprovalFlows) {
+      console.log('IM HERE ********************************');
       history.push(CONFIRMATION_V_NEXT_ROUTE);
     }
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)

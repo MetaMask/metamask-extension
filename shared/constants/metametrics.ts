@@ -792,6 +792,7 @@ export enum MetaMetricsEventErrorType {
 export enum MetaMetricsNetworkEventSource {
   CustomNetworkForm = 'custom_network_form',
   PopularNetworkList = 'popular_network_list',
+  NewAddNetworkFlow = 'new_add_network_flow',
   Dapp = 'dapp',
   DeprecatedNetworkModal = 'deprecated_network_modal',
 }

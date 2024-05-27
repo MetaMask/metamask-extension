@@ -14,6 +14,8 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   CONNECTIONS,
   DEFAULT_ROUTE,
+  NETWORKS_ROUTE,
+  NEW_ADD_NETWORK_ROUTE,
   SWAPS_ROUTE,
 } from '../../../helpers/constants/routes';
 
@@ -138,7 +140,12 @@ export const AppHeader = ({ location }) => {
 
   // Callback for network dropdown
   const networkOpenCallback = useCallback(() => {
-    dispatch(toggleNetworkMenu());
+    if (process.env.NEW_ADD_NETWORK_FLOW) {
+      history.push(NEW_ADD_NETWORK_ROUTE);
+    } else {
+      dispatch(toggleNetworkMenu());
+    }
+    history.push(NETWORKS_ROUTE);
     trackEvent({
       event: MetaMetricsEventName.NavNetworkMenuOpened,
       category: MetaMetricsEventCategory.Navigation,

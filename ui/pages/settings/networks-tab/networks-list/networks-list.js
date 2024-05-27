@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { useHistory } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import CustomContentSearch from '../custom-content-search';
 import {
@@ -9,6 +10,8 @@ import {
 } from '../../../../helpers/constants/design-system';
 import NetworksListItem from '../networks-list-item';
 import { Text } from '../../../../components/component-library';
+import { NetworkListMenu } from '../../../../components/multichain/network-list-menu/new-network-list-menu/network-list-menu';
+import { NEW_ADD_NETWORK_ROUTE } from '../../../../helpers/constants/routes';
 
 const NetworksList = ({
   networkIsSelected,
@@ -17,6 +20,7 @@ const NetworksList = ({
   selectedNetworkConfigurationId,
 }) => {
   const t = useI18nContext();
+  const history = useHistory();
   const [searchedNetworks, setSearchedNetworks] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const searchedNetworksToRender =
@@ -25,8 +29,15 @@ const NetworksList = ({
       : searchedNetworks;
   const searchedNetworksToRenderThatAreNotTestNetworks =
     searchedNetworksToRender.filter((network) => !network.isATestNetwork);
+
   const searchedNetworksToRenderThatAreTestNetworks =
     searchedNetworksToRender.filter((network) => network.isATestNetwork);
+
+  if (process.env.NEW_ADD_NETWORK_FLOW) {
+    console.log('Here ----- 111');
+    history.push(NEW_ADD_NETWORK_ROUTE);
+    return null;
+  }
 
   return (
     <div

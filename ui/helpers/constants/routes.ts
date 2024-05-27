@@ -14,6 +14,7 @@ const ALERTS_ROUTE = '/settings/alerts';
 const NETWORKS_ROUTE = '/settings/networks';
 const NETWORKS_FORM_ROUTE = '/settings/networks/form';
 const ADD_NETWORK_ROUTE = '/settings/networks/add-network';
+const NEW_ADD_NETWORK_ROUTE = '/settings/networks/new-add-network';
 const ADD_POPULAR_CUSTOM_NETWORK =
   '/settings/networks/add-popular-custom-network';
 const CONTACT_LIST_ROUTE = '/settings/contact-list';
@@ -127,6 +128,7 @@ const PATH_NAME_MAP = {
   [NETWORKS_ROUTE]: 'Network Settings Page',
   [NETWORKS_FORM_ROUTE]: 'Network Settings Page Form',
   [ADD_NETWORK_ROUTE]: 'Add Network From Settings Page Form',
+  [NEW_ADD_NETWORK_ROUTE]: 'New add Network From Settings Page Form',
   [ADD_POPULAR_CUSTOM_NETWORK]:
     'Add Network From A List Of Popular Custom Networks',
   [CONTACT_LIST_ROUTE]: 'Contact List Settings Page',
@@ -264,6 +266,7 @@ export {
   NETWORKS_ROUTE,
   NETWORKS_FORM_ROUTE,
   ADD_NETWORK_ROUTE,
+  NEW_ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
   CONNECT_ROUTE,
   CONNECT_CONFIRM_PERMISSIONS_ROUTE,

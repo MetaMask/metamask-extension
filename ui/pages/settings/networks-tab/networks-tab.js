@@ -23,6 +23,12 @@ import {
   NETWORK_TYPES,
   TEST_CHAINS,
 } from '../../../../shared/constants/network';
+import {
+  Box,
+  ButtonSecondary,
+  ButtonSecondarySize,
+  IconName,
+} from '../../../components/component-library';
 import { defaultNetworksData } from './networks-tab.constants';
 import NetworksTabContent from './networks-tab-content';
 import NetworksForm from './networks-form';
@@ -128,18 +134,35 @@ const NetworksTab = ({ addNewNetwork }) => {
             />
             {!isFullScreen && !shouldRenderNetworkForm ? (
               <div className="networks-tab__networks-list-popup-footer">
-                <Button
-                  type="primary"
-                  onClick={() => {
-                    isFullScreen
-                      ? history.push(ADD_POPULAR_CUSTOM_NETWORK)
-                      : global.platform.openExtensionInBrowser(
-                          ADD_POPULAR_CUSTOM_NETWORK,
-                        );
-                  }}
-                >
-                  {t('addNetwork')}
-                </Button>
+                {process.env.NEW_ADD_NETWORK_FLOW ? (
+                  <ButtonSecondary
+                    size={ButtonSecondarySize.Lg}
+                    startIconName={IconName.Add}
+                    block
+                    onClick={() => {
+                      isFullScreen
+                        ? history.push(ADD_POPULAR_CUSTOM_NETWORK)
+                        : global.platform.openExtensionInBrowser(
+                            ADD_POPULAR_CUSTOM_NETWORK,
+                          );
+                    }}
+                  >
+                    {t('addNetwork')}
+                  </ButtonSecondary>
+                ) : (
+                  <Button
+                    type="primary"
+                    onClick={() => {
+                      isFullScreen
+                        ? history.push(ADD_POPULAR_CUSTOM_NETWORK)
+                        : global.platform.openExtensionInBrowser(
+                            ADD_POPULAR_CUSTOM_NETWORK,
+                          );
+                    }}
+                  >
+                    {t('addNetwork')}
+                  </Button>
+                )}
               </div>
             ) : null}
           </>

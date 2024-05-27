@@ -21,6 +21,7 @@ import {
   ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
   DEFAULT_ROUTE,
+  NEW_ADD_NETWORK_ROUTE,
 } from '../../helpers/constants/routes';
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
@@ -43,6 +44,7 @@ import {
 import MetafoxLogo from '../../components/ui/metafox-logo';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
+import { NetworkListMenu } from '../../components/multichain/network-list-menu/new-network-list-menu/network-list-menu';
 import SettingsTab from './settings-tab';
 import AlertsTab from './alerts-tab';
 import NetworksTab from './networks-tab';
@@ -155,27 +157,32 @@ class SettingsPage extends PureComponent {
               </>
             )}
             {this.renderTitle()}
-            <Box
-              className="settings-page__header__title-container__search"
-              display={[Display.Block]}
-            >
-              <SettingsSearch
-                onSearch={({ searchQuery = '', results = [] }) => {
-                  this.setState({
-                    isSearchList: searchQuery !== '',
-                    searchResults: results,
-                    searchText: searchQuery,
-                  });
-                }}
-                settingsRoutesList={getSettingsRoutes()}
-              />
-              {isSearchList && searchText.length >= 3 && (
-                <SettingsSearchList
-                  results={searchResults}
-                  onClickSetting={(setting) => this.handleClickSetting(setting)}
+            {currentPath === NETWORKS_ROUTE ? null : (
+              <Box
+                className="settings-page__header__title-container__search"
+                display={[Display.Block]}
+              >
+                <SettingsSearch
+                  onSearch={({ searchQuery = '', results = [] }) => {
+                    this.setState({
+                      isSearchList: searchQuery !== '',
+                      searchResults: results,
+                      searchText: searchQuery,
+                    });
+                  }}
+                  settingsRoutesList={getSettingsRoutes()}
                 />
-              )}
-            </Box>
+                {isSearchList && searchText.length >= 3 && (
+                  <SettingsSearchList
+                    results={searchResults}
+                    onClickSetting={(setting) =>
+                      this.handleClickSetting(setting)
+                    }
+                  />
+                )}
+              </Box>
+            )}
+
             <ButtonIcon
               className="settings-page__header__title-container__close-button"
               iconName={IconName.Close}
@@ -208,12 +215,16 @@ class SettingsPage extends PureComponent {
 
   renderTitle() {
     const { t } = this.context;
-    const { isPopup, pathnameI18nKey, addressName } = this.props;
+    const { isPopup, pathnameI18nKey, addressName, currentPath } = this.props;
     let titleText;
     if (isPopup && addressName) {
       titleText = t('details');
     } else if (pathnameI18nKey && isPopup) {
-      titleText = t(pathnameI18nKey);
+      if (currentPath === NETWORKS_ROUTE && process.env.NEW_ADD_NETWORK_FLOW) {
+        titleText = t('networkMenuHeading');
+      } else {
+        titleText = t(pathnameI18nKey);
+      }
     } else {
       titleText = t('settings');
     }
@@ -385,6 +396,11 @@ class SettingsPage extends PureComponent {
           exact
           path={ADD_NETWORK_ROUTE}
           render={() => <NetworksTab addNewNetwork />}
+        />
+        <Route
+          exact
+          path={NEW_ADD_NETWORK_ROUTE}
+          render={() => <NetworkListMenu />}
         />
         <Route
           exact

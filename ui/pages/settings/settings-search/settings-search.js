@@ -80,6 +80,9 @@ export default function SettingsSearch({
     );
   };
 
+  if (process.env.NEW_ADD_NETWORK_FLOW) {
+    return null;
+  }
   return (
     <TextField
       id="search-settings"
