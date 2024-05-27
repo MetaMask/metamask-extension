@@ -192,6 +192,7 @@ export const components: NotificationComponent<ERC721Notification> = {
       );
       return (
         <NotificationDetailButton
+          notification={notification}
           variant={ButtonVariant.Secondary}
           text={t('notificationItemCheckBlockExplorer') || ''}
           href={
