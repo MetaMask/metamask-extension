@@ -1,17 +1,17 @@
 /* eslint-disable jest/no-done-callback */
-import { createThroughStream } from './stream-utils';
+import { obj as createThoughStream } from 'through2';
 import metaRPCClientFactory from './metaRPCClientFactory';
 
 describe('metaRPCClientFactory', () => {
   it('should be able to make an rpc request with the method', () => {
-    const streamTest = createThroughStream((chunk) => {
+    const streamTest = createThoughStream((chunk) => {
       expect(chunk.method).toStrictEqual('foo');
     });
     const metaRPCClient = metaRPCClientFactory(streamTest);
     metaRPCClient.foo();
   });
   it('should be able to make an rpc request/response with the method and params and node-style callback', (done) => {
-    const streamTest = createThroughStream();
+    const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
 
     // make a "foo" method call
@@ -30,7 +30,7 @@ describe('metaRPCClientFactory', () => {
     });
   });
   it('should be able to make an rpc request/error with the method and params and node-style callback', (done) => {
-    const streamTest = createThroughStream();
+    const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
 
     // make a "foo" method call
@@ -53,7 +53,7 @@ describe('metaRPCClientFactory', () => {
   });
 
   it('should be able to make an rpc request/response with the method and params and node-style callback with multiple instances of metaRPCClientFactory and the same connectionStream', (done) => {
-    const streamTest = createThroughStream();
+    const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
     const metaRPCClient2 = metaRPCClientFactory(streamTest);
 
@@ -86,7 +86,7 @@ describe('metaRPCClientFactory', () => {
   });
 
   it('should be able to handle notifications', (done) => {
-    const streamTest = createThroughStream();
+    const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
 
     metaRPCClient.onNotification((notification) => {
@@ -103,7 +103,7 @@ describe('metaRPCClientFactory', () => {
   });
 
   it('should be able to handle errors with no id', (done) => {
-    const streamTest = createThroughStream();
+    const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
 
     metaRPCClient.onUncaughtError((error) => {
@@ -121,7 +121,7 @@ describe('metaRPCClientFactory', () => {
   });
 
   it('should be able to handle errors with null id', (done) => {
-    const streamTest = createThroughStream();
+    const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
 
     metaRPCClient.onUncaughtError((error) => {
@@ -141,7 +141,7 @@ describe('metaRPCClientFactory', () => {
 
   it('should be able to handle no message within TIMEOUT secs for getState', async () => {
     jest.useFakeTimers();
-    const streamTest = createThroughStream();
+    const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
 
     const errorPromise = new Promise((_resolve, reject) =>
@@ -157,7 +157,7 @@ describe('metaRPCClientFactory', () => {
   });
 
   it('should fail all pending actions with a DisconnectError when the stream ends', (done) => {
-    const streamTest = createThroughStream();
+    const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);
 
     metaRPCClient.foo('bar', (err) => {

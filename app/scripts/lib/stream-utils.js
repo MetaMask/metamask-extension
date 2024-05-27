@@ -1,5 +1,5 @@
 import ObjectMultiplex from '@metamask/object-multiplex';
-import { pipeline, Transform } from 'readable-stream';
+import { pipeline } from 'readable-stream';
 
 import { EXTENSION_MESSAGES } from '../../../shared/constants/app';
 
@@ -48,23 +48,4 @@ export function isStreamWritable(stream) {
   return Boolean(
     stream.writable && !stream.destroyed && !stream._writableState?.ended,
   );
-}
-
-/**
- * Utility function to create a passthrough-stream form objects with optional transformation.
- * Ported from through2.
- *
- * @param {(chunk: any, encoding: BufferEncoding, callback: (error?: Error | null, data?: any) => void): void} transform - Stream-transformation to apply
- * @param {(callback: (error?: Error | null, data?: any) => void): void} flush - flush callback
- * @param {import("readable-stream").TransformOptions} options - Additional options passed to Transform constructor
- * @returns {Transform} A stream object
- */
-export function createThroughStream(transform, flush, options = {}) {
-  return new Transform({
-    flush,
-    highWaterMark: 16,
-    objectMode: true,
-    transform,
-    ...options,
-  });
 }
