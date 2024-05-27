@@ -16,6 +16,16 @@ import { parseCaipChainId } from '@metamask/utils';
 export type MultichainState = {
   metamask: {
     getMultichainNetworkConfirgurations: any;
+    // rates controller
+    rates: Record<
+      string,
+      {
+        conversionDate: number;
+        conversionRate: number;
+        usdConversionRate: number;
+      }
+    >;
+    cryptocurrencies: string[];
   };
 };
 
@@ -53,7 +63,6 @@ export const useMultichainNetwork = (): {
   const evmProvider: ProviderConfig = useSelector(getProviderConfig);
 
   const memoizedResult = useMemo(() => {
-    console.log('running memo');
     if (isEvm) {
       return {
         caip2: `eip155:${evmProvider.chainId}`,
@@ -83,4 +92,8 @@ export const useMultichainNetwork = (): {
   }, [isEvm, evmProvider, evmNetworks, nonEvmNetworks, selectedAccount]);
 
   return memoizedResult;
+};
+
+export const getNonEvmCoinRates = (state: MultichainState) => {
+  return state.metamask.rates;
 };

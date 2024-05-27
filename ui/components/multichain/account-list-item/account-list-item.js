@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import { useSelector } from 'react-redux';
+import { isEvmAccountType } from '@metamask/keyring-api';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../helpers/utils/util';
 
@@ -11,8 +12,6 @@ import { ConnectedAccountsMenu } from '../connected-accounts-menu';
 import {
   AvatarAccount,
   AvatarAccountVariant,
-  AvatarToken,
-  AvatarTokenSize,
   Box,
   ButtonIcon,
   Icon,
@@ -33,13 +32,11 @@ import {
   JustifyContent,
   Size,
   TextAlign,
-  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
-import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
+import { PRIMARY } from '../../../helpers/constants/common';
 import Tooltip from '../../ui/tooltip/tooltip';
 import {
   MetaMetricsEventCategory,
@@ -49,17 +46,18 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   isAccountConnectedToCurrentTab,
   getCurrentNetwork,
-  getNativeCurrencyImage,
   getShowFiatInTestnets,
   getUseBlockie,
+  getCurrentCurrency,
 } from '../../../selectors';
-import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { TEST_NETWORKS } from '../../../../shared/constants/network';
 import { ConnectedStatus } from '../connected-status/connected-status';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
 ///: END:ONLY_INCLUDE_IF
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/util';
+import { useAccountTotalFiatBalanceWrapper } from '../../../hooks/useAccountTotalFiatBalanceWrapper';
+import CurrencyDisplay from '../../ui/currency-display/currency-display.component';
 import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -86,21 +84,28 @@ export const AccountListItem = ({
     useState();
 
   const useBlockie = useSelector(getUseBlockie);
+  const isEvmAccount = isEvmAccountType(account.type);
   const currentNetwork = useSelector(getCurrentNetwork);
   const setAccountListItemMenuRef = (ref) => {
     setAccountListItemMenuElement(ref);
   };
+  const nativeCurrency = useSelector(getCurrentCurrency);
   const showFiatInTestnets = useSelector(getShowFiatInTestnets);
   const showFiat =
     TEST_NETWORKS.includes(currentNetwork?.nickname) && !showFiatInTestnets;
-  const { totalWeiBalance, orderedTokenList } = useAccountTotalFiatBalance(
-    account.address,
+
+  const accountTotalFiatBalances = useAccountTotalFiatBalanceWrapper(account);
+
+  const mappedOrderedTokenList = accountTotalFiatBalances.orderedTokenList.map(
+    (item) => ({
+      avatarValue: item.iconUrl,
+    }),
   );
-  const mappedOrderedTokenList = orderedTokenList.map((item) => ({
-    avatarValue: item.iconUrl,
-  }));
-  let balanceToTranslate = totalWeiBalance;
-  if (showFiat) {
+
+  let balanceToTranslate = isEvmAccount
+    ? accountTotalFiatBalances.totalWeiBalance
+    : accountTotalFiatBalances.totalFiatBalance;
+  if (showFiat && isEvmAccount) {
     balanceToTranslate = account.balance;
   }
 
@@ -120,8 +125,6 @@ export const AccountListItem = ({
   }, [itemRef, selected]);
 
   const trackEvent = useContext(MetaMetricsContext);
-  const primaryTokenImage = useSelector(getNativeCurrencyImage);
-  const nativeCurrency = useSelector(getNativeCurrency);
   const currentTabIsConnectedToSelectedAddress = useSelector((state) =>
     isAccountConnectedToCurrentTab(state, account.address),
   );
@@ -281,14 +284,23 @@ export const AccountListItem = ({
               ellipsis
               textAlign={TextAlign.End}
             >
-              <UserPreferencedCurrencyDisplay
-                ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                value={balanceToTranslate}
-                type={PRIMARY}
-                showFiat={
-                  !showFiat || !TEST_NETWORKS.includes(currentNetwork?.nickname)
-                }
-              />
+              {isEvmAccount ? (
+                <UserPreferencedCurrencyDisplay
+                  ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
+                  value={balanceToTranslate}
+                  type={PRIMARY}
+                  showFiat={
+                    !showFiat ||
+                    !TEST_NETWORKS.includes(currentNetwork?.nickname)
+                  }
+                />
+              ) : (
+                <CurrencyDisplay
+                  currency={nativeCurrency}
+                  numberOfDecimals={2}
+                  value={100}
+                />
+              )}
             </Text>
           </Box>
         </Box>
@@ -301,37 +313,7 @@ export const AccountListItem = ({
               {shortenAddress(normalizeSafeAddress(account.address))}
             </Text>
           </Box>
-          {mappedOrderedTokenList.length > 1 ? (
-            <AvatarGroup members={mappedOrderedTokenList} limit={4} />
-          ) : (
-            <Box
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              justifyContent={JustifyContent.center}
-              gap={1}
-              className="multichain-account-list-item__avatar-currency"
-            >
-              <AvatarToken
-                src={primaryTokenImage}
-                name={nativeCurrency}
-                size={AvatarTokenSize.Xs}
-                borderColor={BorderColor.borderDefault}
-              />
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
-                textAlign={TextAlign.End}
-                as="div"
-              >
-                <UserPreferencedCurrencyDisplay
-                  ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                  value={account.balance}
-                  type={SECONDARY}
-                  showNative
-                />
-              </Text>
-            </Box>
-          )}
+          <AvatarGroup members={mappedOrderedTokenList} limit={4} />
         </Box>
         {account.label ? (
           <Tag
@@ -408,6 +390,7 @@ AccountListItem.propTypes = {
     id: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
     balance: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
     metadata: PropTypes.shape({
       name: PropTypes.string.isRequired,
       snap: PropTypes.shape({

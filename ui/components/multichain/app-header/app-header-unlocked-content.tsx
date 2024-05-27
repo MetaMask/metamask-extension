@@ -239,7 +239,7 @@ export const AppHeaderUnlockedContent = ({
                 onClick={() => {
                   handleConnectionsRoute();
                 }}
-                disabled={isEvmNetwork}
+                disabled={!isEvmNetwork}
               />
             </Box>
           )}{' '}
