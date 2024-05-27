@@ -43,11 +43,11 @@ export default function ClearMetaMetricsData() {
 
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
 
-  function closeModal() {
+  const closeModal = () => {
     dispatch(hideDeleteMetaMetricsDataModal());
-  }
+  };
 
-  async function deleteMetaMetricsData() {
+  const deleteMetaMetricsData = async () => {
     try {
       await dispatch(createMetaMetricsDataDeletionTask());
       dispatch(markingMetaMetricsDataDeletion());
@@ -65,7 +65,7 @@ export default function ClearMetaMetricsData() {
     } finally {
       dispatch(hideDeleteMetaMetricsDataModal());
     }
-  }
+  };
 
   return (
     <Modal isOpen onClose={closeModal}>
