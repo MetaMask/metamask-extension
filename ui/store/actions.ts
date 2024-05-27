@@ -5090,15 +5090,19 @@ export function setName(
 /**
  * To create a data deletion regulation for MetaMetrics data deletion
  */
-export async function createMetaMetricsDataDeletionTask(): Promise<void> {
-  await submitRequestToBackground('createMetaMetricsDataDeletionTask');
+export function createMetaMetricsDataDeletionTask(): Promise<void> {
+  return async () => {
+    await submitRequestToBackground<void>('createMetaMetricsDataDeletionTask');
+  };
 }
 
 /**
  * To check the status of the current delete regulation.
  */
-export async function updateDataDeletionTaskStatus(): Promise<void> {
-  await submitRequestToBackground('updateDataDeletionTaskStatus');
+export function updateDataDeletionTaskStatus(): Promise<void> {
+  return async () => {
+    await submitRequestToBackground<void>('updateDataDeletionTaskStatus');
+  };
 }
 
 /**
