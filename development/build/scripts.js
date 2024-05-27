@@ -18,7 +18,6 @@ const envify = require('loose-envify/custom');
 const sourcemaps = require('gulp-sourcemaps');
 const applySourceMap = require('vinyl-sourcemaps-apply');
 const pify = require('pify');
-const through = require('through2');
 const finished = pify(require('readable-stream').finished);
 const labeledStreamSplicer = require('labeled-stream-splicer').obj;
 const wrapInStream = require('pumpify').obj;
@@ -29,6 +28,7 @@ const terser = require('terser');
 
 const bifyModuleGroups = require('bify-module-groups');
 
+const { createThroughStream } = require('../../app/scripts/lib/stream-utils');
 const { streamFlatMap } = require('../stream-flat-map');
 const { setEnvironmentVariables } = require('./set-environment-variables');
 const { BUILD_TARGETS } = require('./constants');
@@ -99,7 +99,7 @@ const standardScuttlingConfig = {
   },
 };
 
-const noopWriteStream = through.obj((_file, _fileEncoding, callback) =>
+const noopWriteStream = createThroughStream((_file, _fileEncoding, callback) =>
   callback(),
 );
 
@@ -1003,7 +1003,7 @@ function setupMinification(buildConfiguration) {
   events.on('configurePipeline', ({ pipeline }) => {
     pipeline.get('minify').push(
       // this is the "gulp-terser-js" wrapper around the latest version of terser
-      through.obj(
+      createThroughStream(
         callbackify(async (file, _enc) => {
           const input = {
             [file.sourceMap.file]: file.contents.toString(),
@@ -1033,7 +1033,7 @@ function setupScuttlingWrapping(buildConfiguration, applyLavaMoat, envVars) {
   const { events } = buildConfiguration;
   events.on('configurePipeline', ({ pipeline }) => {
     pipeline.get('scuttle').push(
-      through.obj(
+      createThroughStream(
         callbackify(async (file, _enc) => {
           const configForFile = scuttlingConfig[file.relative];
           if (applyLavaMoat && configForFile) {

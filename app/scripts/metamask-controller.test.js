@@ -3,7 +3,6 @@
  */
 import { cloneDeep } from 'lodash';
 import nock from 'nock';
-import { obj as createThoughStream } from 'through2';
 import EthQuery from '@metamask/eth-query';
 import { wordlist as englishWordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import {
@@ -28,6 +27,7 @@ import { LOG_EVENT } from '../../shared/constants/logs';
 import mockEncryptor from '../../test/lib/mock-encryptor';
 import * as tokenUtils from '../../shared/lib/token-util';
 import { flushPromises } from '../../test/lib/timer-helpers';
+import { createThroughStream } from './lib/stream-utils';
 import { deferredPromise } from './lib/util';
 import MetaMaskController from './metamask-controller';
 
@@ -1082,7 +1082,7 @@ describe('MetaMaskController', () => {
         };
 
         const { promise, resolve } = deferredPromise();
-        const streamTest = createThoughStream((chunk, _, cb) => {
+        const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.name !== 'phishing') {
             cb();
             return;
@@ -1107,7 +1107,7 @@ describe('MetaMaskController', () => {
           url: 'http://mycrypto.com',
           tab: { id: 456 },
         };
-        const streamTest = createThoughStream((chunk, _, cb) => {
+        const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.data && chunk.data.method) {
             cb(null, chunk);
             return;
@@ -1158,7 +1158,7 @@ describe('MetaMaskController', () => {
         const messageSender = {
           url: 'http://mycrypto.com',
         };
-        const streamTest = createThoughStream((chunk, _, cb) => {
+        const streamTest = createThroughStream((chunk, _, cb) => {
           if (chunk.data && chunk.data.method) {
             cb(null, chunk);
             return;
@@ -1208,7 +1208,7 @@ describe('MetaMaskController', () => {
           tab: {},
         };
         const { promise, resolve } = deferredPromise();
-        const streamTest = createThoughStream((chunk, _, cb) => {
+        const streamTest = createThroughStream((chunk, _, cb) => {
           expect(chunk.name).toStrictEqual('controller');
           resolve();
           cb();

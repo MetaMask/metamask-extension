@@ -617,7 +617,6 @@
     "stylelint": "^13.6.1",
     "superstruct": "^1.0.3",
     "terser": "^5.7.0",
-    "through2": "^4.0.2",
     "ts-node": "^10.9.2",
     "tsx": "^4.7.1",
     "ttest": "^2.1.1",

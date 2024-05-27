@@ -1,4 +1,4 @@
-import { obj as createThoughStream } from 'through2';
+import { createThroughStream } from './stream-utils';
 import createMetaRPCHandler from './createMetaRPCHandler';
 
 describe('createMetaRPCHandler', () => {
@@ -8,7 +8,7 @@ describe('createMetaRPCHandler', () => {
         expect(param1).toStrictEqual('bar');
       },
     };
-    const streamTest = createThoughStream();
+    const streamTest = createThroughStream();
     const handler = createMetaRPCHandler(api, streamTest);
     handler({
       id: 1,
@@ -23,7 +23,7 @@ describe('createMetaRPCHandler', () => {
         return 'foobarbaz';
       },
     };
-    const streamTest = createThoughStream();
+    const streamTest = createThroughStream();
     const handler = createMetaRPCHandler(api, streamTest);
     handler({
       id: 1,
@@ -43,7 +43,7 @@ describe('createMetaRPCHandler', () => {
         return 'foobarbaz';
       },
     };
-    const streamTest = createThoughStream();
+    const streamTest = createThroughStream();
     const handler = createMetaRPCHandler(api, streamTest);
     handler({
       id: 1,
@@ -62,7 +62,7 @@ describe('createMetaRPCHandler', () => {
         throw new Error('foo-error');
       },
     };
-    const streamTest = createThoughStream();
+    const streamTest = createThroughStream();
     const handler = createMetaRPCHandler(api, streamTest);
     handler({
       id: 1,
@@ -81,7 +81,7 @@ describe('createMetaRPCHandler', () => {
         throw new Error('foo-error');
       },
     };
-    const streamTest = createThoughStream();
+    const streamTest = createThroughStream();
     const handler = createMetaRPCHandler(api, streamTest);
     streamTest.end();
     expect(() => {
@@ -101,7 +101,7 @@ describe('createMetaRPCHandler', () => {
         };
       },
     };
-    const streamTest = createThoughStream();
+    const streamTest = createThroughStream();
     const handler = createMetaRPCHandler(api, streamTest);
     streamTest.end();
     expect(() => {
