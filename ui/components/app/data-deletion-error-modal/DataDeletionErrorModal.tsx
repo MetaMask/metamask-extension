@@ -28,7 +28,7 @@ import {
 } from '../../component-library';
 import { hideDataDeletionErrorModal } from '../../../ducks/app/app';
 
-export function DataDeletionErrorModal() {
+export default function DataDeletionErrorModal() {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
