@@ -112,7 +112,7 @@
   },
   "MetaMetricsDataDeletionController": {
     "metaMetricsDataDeletionId": "string",
-    "metaMetricsDataDeletionDate": "string"
+    "metaMetricsDataDeletionDate": 0
   },
   "MetamaskNotificationsController": {
     "subscriptionAccountsSeen": "object",
