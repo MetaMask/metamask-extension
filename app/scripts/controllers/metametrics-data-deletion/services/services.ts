@@ -16,14 +16,12 @@ const DEFAULT_ANALYTICS_DATA_DELETION_SOURCE_ID =
   process.env.ANALYTICS_DATA_DELETION_SOURCE_ID ?? 'test';
 const DEFAULT_ANALYTICS_DATA_DELETION_ENDPOINT =
   process.env.ANALYTICS_DATA_DELETION_ENDPOINT ??
-  'https://metametrics.metamask.test/';
-
-const fetchWithTimeout = getFetchWithTimeout();
+  'https://metametrics.metamask.test';
 
 /**
  * The number of times we retry a specific failed request to the data deletion API.
  */
-const RETRIES = 3;
+export const RETRIES = 3;
 
 /**
  * The maximum conseutive failures allowed before treating the server as inaccessible, and
@@ -31,13 +29,13 @@ const RETRIES = 3;
  *
  * Each update attempt will result (1 + retries) calls if the server is down.
  */
-const MAX_CONSECUTIVE_FAILURES = (1 + RETRIES) * 3;
+export const MAX_CONSECUTIVE_FAILURES = (1 + RETRIES) * 3;
 
 /**
  * When the circuit breaks, we wait for this period of time (in milliseconds) before allowing
  * a request to go through to the API.
  */
-const CIRCUIT_BREAK_DURATION = 30 * 60 * 1000;
+const DEFAULT_CIRCUIT_BREAK_DURATION = 30 * 60 * 1000;
 
 /**
  * The threshold (in milliseconds) for when a successful request is considered "degraded".
@@ -147,46 +145,60 @@ export class DataDeletionService {
 
   #createDataDeletionTaskPolicy: IPolicy;
 
+  #fetchWithTimeout: ReturnType<typeof getFetchWithTimeout>;
+
   /**
    * Construct a data deletion service.
    *
    * @param options - Options.
    * @param options.analyticsDataDeletionEndpoint - The base URL for the data deletion API.
    * @param options.analyticsDataDeletionSourceId - The Segment source ID to delete data from.
+   * @param options.circuitBreakDuration - The amount of time to wait when the circuit breaks
+   * from too many consecutive failures.
+   * @param options.degradedThreshold - The threshold between "normal" and "degrated" service,
+   * in milliseconds.
    * @param options.onBreak - An event handler for when the circuit breaks, useful for capturing
    * metrics about network failures.
    * @param options.onDegraded - An event handler for when the circuit remains closed, but requests
    * are failing or resolving too slowly (i.e. resolving more slowly than the `degradedThreshold`).
+   * @param options.timeout - The timeout allowed for network calls before they are aborted.
    */
   constructor({
     analyticsDataDeletionEndpoint = DEFAULT_ANALYTICS_DATA_DELETION_ENDPOINT,
     analyticsDataDeletionSourceId = DEFAULT_ANALYTICS_DATA_DELETION_SOURCE_ID,
+    circuitBreakDuration = DEFAULT_CIRCUIT_BREAK_DURATION,
+    degradedThreshold = DEFAULT_DEGRADED_THRESHOLD,
     onBreak,
     onDegraded,
+    timeout,
   }: {
     analyticsDataDeletionEndpoint?: string;
     analyticsDataDeletionSourceId?: string;
+    circuitBreakDuration?: number;
+    degradedThreshold?: number;
     onBreak?: () => void;
     onDegraded?: () => void;
+    timeout?: number;
   } = {}) {
     if (!analyticsDataDeletionEndpoint) {
       throw new Error('Missing ANALYTICS_DATA_DELETION_ENDPOINT');
     } else if (!analyticsDataDeletionSourceId) {
       throw new Error('Missing ANALYTICS_DATA_DELETION_SOURCE_ID');
     }
+    this.#fetchWithTimeout = getFetchWithTimeout(timeout);
     this.#analyticsDataDeletionEndpoint = analyticsDataDeletionEndpoint;
     this.#analyticsDataDeletionSourceId = analyticsDataDeletionSourceId;
     this.#createDataDeletionTaskPolicy = createRetryPolicy({
-      circuitBreakDuration: CIRCUIT_BREAK_DURATION,
-      degradedThreshold: DEFAULT_DEGRADED_THRESHOLD,
+      circuitBreakDuration,
+      degradedThreshold,
       maximumConsecutiveFailures: MAX_CONSECUTIVE_FAILURES,
       onBreak,
       onDegraded,
       retries: RETRIES,
     });
     this.#fetchStatusPolicy = createRetryPolicy({
-      circuitBreakDuration: CIRCUIT_BREAK_DURATION,
-      degradedThreshold: DEFAULT_DEGRADED_THRESHOLD,
+      circuitBreakDuration,
+      degradedThreshold,
       maximumConsecutiveFailures: MAX_CONSECUTIVE_FAILURES,
       onBreak,
       onDegraded,
@@ -207,7 +219,7 @@ export class DataDeletionService {
     metaMetricsId: string,
   ): Promise<RegulationId> {
     const response = await this.#createDataDeletionTaskPolicy.execute(() =>
-      fetchWithTimeout(
+      this.#fetchWithTimeout(
         `${this.#analyticsDataDeletionEndpoint}/regulations/sources/${
           this.#analyticsDataDeletionSourceId
         }`,
@@ -235,7 +247,7 @@ export class DataDeletionService {
     deleteRegulationId: string,
   ): Promise<CurrentRegulationStatus> {
     const response = await this.#fetchStatusPolicy.execute(() =>
-      fetchWithTimeout(
+      this.#fetchWithTimeout(
         `${
           this.#analyticsDataDeletionEndpoint
         }/regulations/${deleteRegulationId}`,
