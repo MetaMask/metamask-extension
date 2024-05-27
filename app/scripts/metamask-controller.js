@@ -10,6 +10,8 @@ import {
   TokenRatesController,
   TokensController,
   CodefiTokenPricesServiceV2,
+  RatesController,
+  fetchMultiExchangeRate,
 } from '@metamask/assets-controllers';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
@@ -692,6 +694,9 @@ export default class MetamaskController extends EventEmitter {
 
     this.nftDetectionController = new NftDetectionController({
       chainId: this.networkController.state.providerConfig.chainId,
+      getNetworkClientById: this.networkController.getNetworkClientById.bind(
+        this.networkController,
+      ),
       onNftsStateChange: (listener) => this.nftController.subscribe(listener),
       onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
         this.preferencesController.store,
@@ -1950,6 +1955,18 @@ export default class MetamaskController extends EventEmitter {
       state: initState.ChainController,
     });
 
+    const nonEvmRatesControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'RatesController',
+      });
+    this.nonEvmRatesController = new RatesController({
+      state: initState.nonEvmRatesController,
+      messenger: nonEvmRatesControllerMessenger,
+      interval: 2000,
+      includeUsdRate: true,
+      fetchMultiExchangeRate,
+    });
+
     this.metamaskMiddleware = createMetamaskMiddleware({
       static: {
         eth_syncing: false,
@@ -2114,6 +2131,8 @@ export default class MetamaskController extends EventEmitter {
       ///: END:ONLY_INCLUDE_IF
       NameController: this.nameController,
       UserOperationController: this.userOperationController,
+      ChainController: this.chainController,
+      NonEvmRatesController: this.nonEvmRatesController,
       ...resetOnRestartStore,
     });
 
@@ -2162,6 +2181,8 @@ export default class MetamaskController extends EventEmitter {
         ///: END:ONLY_INCLUDE_IF
         NameController: this.nameController,
         UserOperationController: this.userOperationController,
+        ChainController: this.chainController,
+        NonEvmRatesController: this.nonEvmRatesController,
         ...resetOnRestartStore,
       },
       controllerMessenger: this.controllerMessenger,
@@ -2262,6 +2283,8 @@ export default class MetamaskController extends EventEmitter {
     if (this.#isTokenListPollingRequired(preferencesControllerState)) {
       this.tokenListController.start();
     }
+
+    this.nonEvmRatesController.start();
   }
 
   stopNetworkRequests() {
@@ -2282,6 +2305,8 @@ export default class MetamaskController extends EventEmitter {
     if (this.#isTokenListPollingRequired(preferencesControllerState)) {
       this.tokenListController.stop();
     }
+
+    this.nonEvmRatesController.stop();
   }
 
   resetStates(resetMethods) {
