@@ -149,6 +149,7 @@ export const SENTRY_BACKGROUND_STATE = {
     logs: false,
   },
   MetamaskNotificationsController: {
+    subscriptionAccountsSeen: false,
     isMetamaskNotificationsFeatureSeen: false,
     isMetamaskNotificationsEnabled: false,
     isFeatureAnnouncementsEnabled: false,
