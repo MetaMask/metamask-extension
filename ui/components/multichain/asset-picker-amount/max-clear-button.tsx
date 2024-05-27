@@ -11,6 +11,7 @@ import { ButtonLink } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { AssetType } from '../../../../shared/constants/transaction';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 
 // A button that updates the send amount to max balance or 0.
 export default function MaxClearButton({ asset }: { asset: Asset }) {
@@ -32,12 +33,13 @@ export default function MaxClearButton({ asset }: { asset: Asset }) {
   };
 
   return asset.type === AssetType.NFT ||
-    parseInt(asset.balance || '0x0', 16) <= 0 ? null : (
+    Number(hexToDecimal(asset.balance || '0x0')) <= 0 ? null : (
     <ButtonLink
       className="asset-picker-amount__max-clear"
       onClick={onClick}
       marginLeft="auto"
       textProps={{ variant: TextVariant.bodySm }}
+      data-testid="max-clear-button"
     >
       {maxModeOn ? t('clear') : t('max')}
     </ButtonLink>
