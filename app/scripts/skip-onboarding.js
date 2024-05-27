@@ -5,7 +5,7 @@ import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { E2E_SRP, defaultFixture } from '../../test/e2e/default-fixture';
 import { encryptorFactory } from './lib/encryptor-factory';
 
-async function generateSkipOnboardingState() {
+export async function generateSkipOnboardingState() {
   const state = defaultFixture('0xaa36a7').data;
 
   state.AppStateController = generateAppStateControllerState();
@@ -149,5 +149,3 @@ function generateAccountsControllerState(account) {
     },
   };
 }
-
-module.exports = { generateSkipOnboardingState };
