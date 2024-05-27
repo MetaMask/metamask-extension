@@ -24,6 +24,7 @@ export const SendHexData = () => {
         }}
         placeholder={t('optional')}
         defaultValue={data || ''}
+        data-testid="send-hex-textarea"
       />
     </SendPageRow>
   );

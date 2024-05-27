@@ -80,10 +80,18 @@ export const NotificationDetailAsset: FC<NotificationDetailAssetProps> = ({
       position={icon.badge.position || BadgeWrapperPosition.topRight}
       badge={badgeIcon}
     >
-      <AvatarToken src={icon.src} />
+      <AvatarToken
+        src={icon.src}
+        borderColor={BorderColor.borderMuted}
+        className="notification-detail-asset__icon"
+      />
     </BadgeWrapper>
   ) : (
-    <AvatarToken src={icon.src} />
+    <AvatarToken
+      src={icon.src}
+      borderColor={BorderColor.borderMuted}
+      className="notification-detail-asset__icon"
+    />
   );
 
   const primaryTextLeft = createTextComponent(

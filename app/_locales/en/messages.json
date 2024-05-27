@@ -416,6 +416,12 @@
   "amount": {
     "message": "Amount"
   },
+  "amountReceived": {
+    "message": "Amount Received"
+  },
+  "amountSent": {
+    "message": "Amount Sent"
+  },
   "andForListItems": {
     "message": "$1, and $2",
     "description": "$1 is the first item, $2 is the last item in a list of items. Used in Snap Install Warning modal."
@@ -2818,7 +2824,7 @@
     "message": "Can not send negative amounts of ETH."
   },
   "negativeOrZeroAmountToken": {
-    "message": "Cannot send negative or zero amounts of Tokens"
+    "message": "Cannot send negative or zero amounts of asset."
   },
   "network": {
     "message": "Network:"
@@ -3097,6 +3103,9 @@
   "notificationDetailMaxFee": {
     "message": "Max fee per gas"
   },
+  "notificationDetailNetwork": {
+    "message": "Network"
+  },
   "notificationDetailNetworkFee": {
     "message": "Network fee"
   },
@@ -3116,13 +3125,13 @@
     "message": "Unable to retrieve fees currently"
   },
   "notificationItemFrom": {
-    "message": "From (You)"
+    "message": "From"
   },
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "Withdrawal Ready"
   },
-  "notificationItemLidoWithdrawalRequested": {
-    "message": "Withdrawal requested"
+  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
+    "message": "You can now withdraw your unstaked $1"
   },
   "notificationItemLidoWithdrawalRequestedMessage": {
     "message": "Your request to unstake $1 has been sent"
@@ -3275,10 +3284,6 @@
   "notificationsFeatureToggleDescription": {
     "message": "This enables wallet notifications like send/receive funds or nfts and feature announcements.",
     "description": "Description of the experimental notifications feature"
-  },
-  "notificationsInfos": {
-    "message": "$1 from $2",
-    "description": "$1 is the date at which the notification has been dispatched and $2 is the link to the snap that dispatched the notification."
   },
   "notificationsMarkAllAsRead": {
     "message": "Mark all as read"
@@ -3845,6 +3850,10 @@
   "permission_viewNamedBip32PublicKeys": {
     "message": "View your public key for $1.",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'."
+  },
+  "permission_walletSwitchEthereumChain": {
+    "message": "Switch to and use the following network",
+    "description": "The label for the `wallet_switchEthereumChain` permission"
   },
   "permission_webAssembly": {
     "message": "Support for WebAssembly.",
@@ -4470,9 +4479,6 @@
   "select": {
     "message": "Select"
   },
-  "selectAToken": {
-    "message": "Select a token"
-  },
   "selectAccounts": {
     "message": "Select the account(s) to use on this site"
   },
@@ -4534,15 +4540,32 @@
   "sendNoContactsTitle": {
     "message": "You don't have any contacts yet"
   },
+  "sendSelectReceiveAsset": {
+    "message": "Select asset to receive"
+  },
+  "sendSelectSendAsset": {
+    "message": "Select asset to send"
+  },
   "sendSpecifiedTokens": {
     "message": "Send $1",
     "description": "Symbol of the specified token"
   },
+  "sendSwapSubmissionWarning": {
+    "message": "Clicking this button will immediately initiate your swap transaction. Please review your transaction details before proceeding."
+  },
+
   "sendTo": {
     "message": "Send to"
   },
+  "sendTokenAsToken": {
+    "message": "Send $1 as $2",
+    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
+  },
   "sendTokens": {
     "message": "Send tokens"
+  },
+  "sendingAsset": {
+    "message": "Sending $1"
   },
   "sendingDisabled": {
     "message": "Sending of ERC-1155 NFT assets is not yet supported."
@@ -5233,6 +5256,9 @@
   "swapAmountReceivedInfo": {
     "message": "This is the minimum amount you will receive. You may receive more depending on slippage."
   },
+  "swapAndSend": {
+    "message": "Swap & Send"
+  },
   "swapAnyway": {
     "message": "Swap anyway"
   },
@@ -5310,7 +5336,7 @@
     "description": "A count of possible quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of resources that we check for quotes. Keep in mind that not all resources will have a quote for a particular swap."
   },
   "swapFetchingQuotes": {
-    "message": "Fetching quotes"
+    "message": "Fetching quotes..."
   },
   "swapFetchingQuotesErrorDescription": {
     "message": "Hmmm... something went wrong. Try again, or if errors persist, contact customer support."
@@ -5347,6 +5373,10 @@
   "swapIncludesMMFee": {
     "message": "Includes a $1% MetaMask fee.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+  },
+  "swapIncludesMMFeeAlt": {
+    "message": "Quote reflects $1% MetaMask fee",
+    "description": "Provides information about the fee that metamask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "Includes a $1% MetaMask fee – $2",
@@ -6295,6 +6325,9 @@
   },
   "yes": {
     "message": "Yes"
+  },
+  "you": {
+    "message": "You"
   },
   "youHaveAddedAll": {
     "message": "You've added all the popular networks. You can discover more networks $1 Or you can $2",

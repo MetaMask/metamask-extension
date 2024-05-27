@@ -33,6 +33,7 @@ import {
   TextColor,
   TextVariant,
 } from '../constants/design-system';
+import { PermissionNames } from '../../../app/scripts/controllers/permissions';
 ///: END:ONLY_INCLUDE_IF
 
 const UNKNOWN_PERMISSION = Symbol('unknown');
@@ -59,6 +60,11 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
   [RestrictedMethods.eth_accounts]: ({ t }) => ({
     label: t('permission_ethereumAccounts'),
     leftIcon: IconName.Eye,
+    weight: 3,
+  }),
+  [PermissionNames.permittedChains]: ({ t }) => ({
+    label: t('permission_walletSwitchEthereumChain'),
+    leftIcon: IconName.Wifi,
     weight: 3,
   }),
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
