@@ -27,8 +27,8 @@ const MOCK_INTERNAL_ACCOUNT = createMockInternalAccount({
   address: ADDRESS_MOCK,
   name: NAME_MOCK,
   keyringType: KeyringTypes.hd,
-  is4337: false,
   snapOptions: undefined,
+  type: 'eip155:eoa',
 });
 
 /**

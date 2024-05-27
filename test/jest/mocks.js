@@ -1,4 +1,9 @@
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import {
+  BtcAccountType,
+  BtcMethod,
+  EthAccountType,
+  EthMethod,
+} from '@metamask/keyring-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { v4 as uuidv4 } from 'uuid';
 import { keyringTypeToName } from '@metamask/accounts-controller';
@@ -159,10 +164,27 @@ export const getInitialSendStateWithExistingTxState = (draftTxState) => ({
 export function createMockInternalAccount({
   address = MOCK_DEFAULT_ADDRESS,
   name,
-  is4337 = false,
   keyringType = KeyringTypes.hd,
   snapOptions,
+  type = 'eip155:eoa',
 } = {}) {
+  const methods = {
+    [EthAccountType.Eoa]: [
+      EthMethod.PersonalSign,
+      EthMethod.Sign,
+      EthMethod.SignTransaction,
+      EthMethod.SignTypedDataV1,
+      EthMethod.SignTypedDataV3,
+      EthMethod.SignTypedDataV4,
+    ],
+    [EthAccountType.Erc4337]: [
+      EthMethod.PrepareUserOperation,
+      EthMethod.PatchUserOperation,
+      EthMethod.SignUserOperation,
+    ],
+    [BtcAccountType.P2wpkh]: [BtcMethod.SendMany],
+  };
+
   return {
     address,
     id: uuidv4(),
@@ -174,21 +196,8 @@ export function createMockInternalAccount({
       snap: snapOptions,
     },
     options: {},
-    methods: is4337
-      ? [
-          EthMethod.PrepareUserOperation,
-          EthMethod.PatchUserOperation,
-          EthMethod.SignUserOperation,
-        ]
-      : [
-          EthMethod.PersonalSign,
-          EthMethod.Sign,
-          EthMethod.SignTransaction,
-          EthMethod.SignTypedDataV1,
-          EthMethod.SignTypedDataV3,
-          EthMethod.SignTypedDataV4,
-        ],
-    type: is4337 ? EthAccountType.Erc4337 : EthAccountType.Eoa,
+    methods: methods[type] ?? [],
+    type,
   };
 }
 
