@@ -206,6 +206,7 @@ export const components: NotificationComponent<ETHNotification> = {
       }
       return (
         <NotificationDetailButton
+          notification={notification}
           variant={ButtonVariant.Secondary}
           text={t('notificationItemCheckBlockExplorer') || ''}
           href={`${nativeBlockExplorerUrl}/tx/${notification.tx_hash}`}

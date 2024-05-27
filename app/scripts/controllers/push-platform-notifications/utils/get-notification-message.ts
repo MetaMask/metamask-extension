@@ -6,8 +6,7 @@ import { CHAIN_SYMBOLS } from '../../metamask-notifications/constants/notificati
 import type { TRIGGER_TYPES } from '../../metamask-notifications/constants/notification-schema';
 import type { OnChainRawNotification } from '../../metamask-notifications/types/on-chain-notification/on-chain-notification';
 import { t } from '../../../translate';
-import { getPlatform } from '../../../lib/util';
-import { PLATFORM_FIREFOX } from '../../../../../shared/constants/app';
+import ExtensionPlatform from '../../../platforms/extension';
 import { getAmount, formatAmount } from './get-notification-data';
 
 type PushNotificationMessage = {
@@ -30,6 +29,7 @@ type NotificationMessageDict = {
 };
 
 const sw = self as unknown as ServiceWorkerGlobalScope;
+const extensionPlatform = new ExtensionPlatform();
 
 function getChainSymbol(chainId: number) {
   return CHAIN_SYMBOLS[chainId] ?? null;
@@ -69,12 +69,10 @@ export async function onNotificationClick(event: NotificationEvent) {
   const data: OnChainRawNotification = event?.notification?.data;
 
   // Navigate
-  const getPlatformResult = getPlatform();
-  const platform =
-    getPlatformResult === PLATFORM_FIREFOX
-      ? 'moz-extension'
-      : 'chrome-extension';
-  const destination = `${platform}://${sw.location.host}/home.html#notifications/${data.id}`;
+  const destination = `${extensionPlatform.getExtensionURL(
+    null,
+    null,
+  )}#notifications/${data.id}`;
   event.waitUntil(sw.clients.openWindow(destination));
 }
 

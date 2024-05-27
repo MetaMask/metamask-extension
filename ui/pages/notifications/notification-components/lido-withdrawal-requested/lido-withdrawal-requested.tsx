@@ -180,6 +180,7 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
         }
         return (
           <NotificationDetailButton
+            notification={notification}
             variant={ButtonVariant.Secondary}
             text={t('notificationItemCheckBlockExplorer') || ''}
             href={`${nativeBlockExplorerUrl}/tx/${notification.tx_hash}`}

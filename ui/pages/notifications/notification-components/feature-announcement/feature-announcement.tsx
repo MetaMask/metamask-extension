@@ -1,10 +1,8 @@
 import React from 'react';
 import { TRIGGER_TYPES } from '../../../../../app/scripts/controllers/metamask-notifications/constants/notification-schema';
-import { PLATFORM_FIREFOX } from '../../../../../shared/constants/app';
 import { type ExtractedNotification, isOfTypeNodeGuard } from '../node-guard';
 import type { NotificationComponent } from '../types/notifications/notifications';
 import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
-import { getPlatform } from '../../../../../app/scripts/lib/util';
 
 import {
   createTextItems,
@@ -44,11 +42,6 @@ const getDescription = (n: FeatureAnnouncementNotification) => {
   const items = createTextItems([n.data.shortDescription], TextVariant.bodyMd);
   return items;
 };
-
-const getPlatformResult = getPlatform();
-const platform =
-  getPlatformResult === PLATFORM_FIREFOX ? 'moz-extension' : 'chrome-extension';
-const destination = `${platform}://${window.location.host}/`;
 
 export const components: NotificationComponent<FeatureAnnouncementNotification> =
   {
@@ -115,9 +108,7 @@ export const components: NotificationComponent<FeatureAnnouncementNotification> 
           <NotificationDetailButton
             variant={ButtonVariant.Primary}
             text={notification.data.extensionLink.extensionLinkText}
-            href={
-              destination + notification.data.extensionLink.extensionLinkRoute
-            }
+            href={`/${notification.data.extensionLink.extensionLinkRoute}`}
             id={notification.id}
             endIconName={false}
             isExternal={true}
