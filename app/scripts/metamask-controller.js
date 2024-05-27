@@ -1431,14 +1431,42 @@ export default class MetamaskController extends EventEmitter {
       }),
     });
 
+    const pushPlatformNotificationsControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'PushPlatformNotificationsController',
+        allowedActions: ['AuthenticationController:getBearerToken'],
+      });
     this.pushPlatformNotificationsController =
       new PushPlatformNotificationsController({
         state: initState.PushPlatformNotificationsController,
-        messenger: this.controllerMessenger.getRestricted({
-          name: 'PushPlatformNotificationsController',
-          allowedActions: ['AuthenticationController:getBearerToken'],
-        }),
+        messenger: pushPlatformNotificationsControllerMessenger,
       });
+    pushPlatformNotificationsControllerMessenger.subscribe(
+      'PushPlatformNotificationsController:onNewNotifications',
+      (notification) => {
+        this.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.PushNotificationReceived,
+          category: MetaMetricsEventCategory.PushNotifications,
+          properties: {
+            notification_type: notification.type,
+            chain_id: notification?.chain_id,
+          },
+        });
+      },
+    );
+    pushPlatformNotificationsControllerMessenger.subscribe(
+      'PushPlatformNotificationsController:pushNotificationClicked',
+      (notification) => {
+        this.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.PushNotificationClicked,
+          category: MetaMetricsEventCategory.PushNotifications,
+          properties: {
+            notification_type: notification.type,
+            chain_id: notification?.chain_id,
+          },
+        });
+      },
+    );
 
     this.metamaskNotificationsController = new MetamaskNotificationsController({
       messenger: this.controllerMessenger.getRestricted({

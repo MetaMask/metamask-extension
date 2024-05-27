@@ -40,9 +40,9 @@ import type {
   MarkAsReadNotificationsParam,
 } from './types/notification/notification';
 import { OnChainRawNotification } from './types/on-chain-notification/on-chain-notification';
-import { FeatureAnnouncementRawNotification } from './types/feature-announcement/feature-announcement';
 import { processNotification } from './processors/process-notifications';
 import * as MetamaskNotificationsUtils from './utils/utils';
+import type { NotificationUnion } from './types/types';
 
 // Unique name for the controller
 const controllerName = 'MetamaskNotificationsController';
@@ -959,9 +959,7 @@ export class MetamaskNotificationsController extends BaseController<
 
       // Combined Notifications
       const isNotUndefined = <T>(t?: T): t is T => Boolean(t);
-      const processAndFilter = (
-        ns: (FeatureAnnouncementRawNotification | OnChainRawNotification)[],
-      ) =>
+      const processAndFilter = (ns: NotificationUnion[]) =>
         ns
           .map((n) => {
             try {
@@ -1112,9 +1110,7 @@ export class MetamaskNotificationsController extends BaseController<
 }
 
 const isNotUndefined = <T>(t?: T): t is T => Boolean(t);
-function processAndFilterSingleNotification(
-  n: FeatureAnnouncementRawNotification | OnChainRawNotification,
-) {
+function processAndFilterSingleNotification(n: NotificationUnion) {
   try {
     const processedNotification = processNotification(n);
     if (isNotUndefined(processedNotification)) {
