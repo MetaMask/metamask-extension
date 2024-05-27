@@ -8,9 +8,9 @@ import {
   renderWithProvider,
   createSwapsMockStore,
 } from '../../../../test/jest';
-import SmartTransactionsOptInModal from './smart-transactions-opt-in-modal';
 import { setSmartTransactionsOptInStatus } from '../../../store/actions';
 import { ADVANCED_ROUTE } from '../../../helpers/constants/routes';
+import SmartTransactionsOptInModal from './smart-transactions-opt-in-modal';
 
 const middleware = [thunk];
 
@@ -22,7 +22,7 @@ describe('SmartTransactionsOptInModal', () => {
     const { getByText, container } = renderWithProvider(
       <SmartTransactionsOptInModal
         isOpen={true}
-        hideWhatsNewPopup={() => {}}
+        hideWhatsNewPopup={jest.fn()}
       />,
       store,
     );
@@ -43,7 +43,7 @@ describe('SmartTransactionsOptInModal', () => {
     const { getByText } = renderWithProvider(
       <SmartTransactionsOptInModal
         isOpen={true}
-        hideWhatsNewPopup={() => {}}
+        hideWhatsNewPopup={jest.fn()}
       />,
       store,
     );
@@ -63,7 +63,7 @@ describe('SmartTransactionsOptInModal', () => {
     const { getByText } = renderWithProvider(
       <SmartTransactionsOptInModal
         isOpen={true}
-        hideWhatsNewPopup={() => {}}
+        hideWhatsNewPopup={jest.fn()}
       />,
       store,
     );
