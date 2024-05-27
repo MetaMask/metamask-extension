@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import testData from '../../../../.storybook/test-data';
 import configureStore from '../../../store/store';
 import { Checkbox } from '../../component-library';
+import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { AccountListItem, AccountListItemMenuTypes } from '.';
 
 const store = configureStore(testData);
@@ -72,6 +73,25 @@ const SNAP_ACCOUNT = {
   keyring: {
     type: 'Snap Keyring',
   },
+  balance: '0x152387ad22c3f0',
+};
+
+const NON_EVM_SNAP_ACCOUNT = {
+  ...createMockInternalAccount({
+    name: 'Btc Account',
+    address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
+    keyringType: 'Snap Keyring',
+    type: 'btc:p2wpkh',
+    snapOptions: {
+      name: 'BTC',
+      id: 'btc',
+      enabled: true,
+    },
+  }),
+  keyring: {
+    type: 'Snap Keyring',
+  },
+  label: 'Btc Account',
   balance: '0x152387ad22c3f0',
 };
 
@@ -196,5 +216,15 @@ export const SnapItem = (args) => (
 );
 SnapItem.args = { account: SNAP_ACCOUNT };
 SnapItem.decorators = [(story) => <Provider store={store}>{story()}</Provider>];
+
+export const NonEvmItem = (args) => (
+  <div {...CONTAINER_STYLES}>
+    <AccountListItem {...args} />
+  </div>
+);
+NonEvmItem.args = { account: NON_EVM_SNAP_ACCOUNT };
+NonEvmItem.decorators = [
+  (story) => <Provider store={store}>{story()}</Provider>,
+];
 
 DefaultStory.storyName = 'Default';
