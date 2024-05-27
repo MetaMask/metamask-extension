@@ -106,6 +106,7 @@ export const components: NotificationComponent<FeatureAnnouncementNotification> 
       ExtensionLink: ({ notification }) =>
         notification.data.extensionLink ? (
           <NotificationDetailButton
+            notification={notification}
             variant={ButtonVariant.Primary}
             text={notification.data.extensionLink.extensionLinkText}
             href={`/${notification.data.extensionLink.extensionLinkRoute}`}
