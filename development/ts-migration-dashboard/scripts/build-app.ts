@@ -7,7 +7,7 @@ import browserify from 'browserify';
 import pify from 'pify';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore-error types/readable-stream.d.ts does not get picked up by ts-node
+// @ts-expect-error types/readable-stream.d.ts does not get picked up by ts-node
 import { finished, pipeline } from 'readable-stream';
 import gulp from 'gulp';
 import gulpSass from 'gulp-sass';
