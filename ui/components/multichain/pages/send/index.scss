@@ -1,12 +1,27 @@
+@use "design-system";
+
 .multichain-send-page {
   width: 408px;
 
   &__account-picker {
     height: 62px;
+
+    &__label {
+      @include design-system.H6;
+
+      font-weight: 500;
+
+      @extend %ellipsify;
+    }
+  }
+
+  &__nav-button {
+    flex-basis: 50%;
   }
 
   &__recipient {
     .tabs__list {
+      font-size: design-system.$font-size-h6;
       border-bottom: 0;
       background-color: transparent;
       position: relative;

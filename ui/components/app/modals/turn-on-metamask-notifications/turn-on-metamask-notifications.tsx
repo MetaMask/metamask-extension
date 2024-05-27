@@ -4,10 +4,16 @@ import { useHistory } from 'react-router-dom';
 import { I18nContext } from '../../../../contexts/i18n';
 import { useModalProps } from '../../../../hooks/useModalProps';
 import { useMetamaskNotificationsContext } from '../../../../contexts/metamask-notifications/metamask-notifications';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
 import {
   selectIsMetamaskNotificationsEnabled,
   getIsUpdatingMetamaskNotifications,
 } from '../../../../selectors/metamask-notifications/metamask-notifications';
+import { selectIsProfileSyncingEnabled } from '../../../../selectors/metamask-notifications/profile-syncing';
 import { useCreateNotifications } from '../../../../hooks/metamask-notifications/useNotifications';
 import { NOTIFICATIONS_ROUTE } from '../../../../helpers/constants/routes';
 
@@ -34,6 +40,7 @@ export default function TurnOnMetamaskNotifications() {
   const { hideModal } = useModalProps();
   const history = useHistory();
   const t = useContext(I18nContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const { listNotifications } = useMetamaskNotificationsContext();
 
   const isNotificationEnabled = useSelector(
@@ -42,6 +49,7 @@ export default function TurnOnMetamaskNotifications() {
   const isUpdatingMetamaskNotifications = useSelector(
     getIsUpdatingMetamaskNotifications,
   );
+  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
 
   const [buttonState, setButtonState] = useState<boolean>(
     isUpdatingMetamaskNotifications,
@@ -52,10 +60,24 @@ export default function TurnOnMetamaskNotifications() {
   const handleTurnOnNotifications = async () => {
     setButtonState(true);
     await createNotifications();
+    trackEvent({
+      category: MetaMetricsEventCategory.EnableNotifications,
+      event: MetaMetricsEventName.EnablingNotifications,
+      properties: {
+        isProfileSyncingEnabled,
+      },
+    });
   };
 
   const handleHideModal = () => {
     hideModal();
+    trackEvent({
+      category: MetaMetricsEventCategory.EnableNotifications,
+      event: MetaMetricsEventName.DismissEnablingNotificationsFlow,
+      properties: {
+        isProfileSyncingEnabled,
+      },
+    });
   };
 
   useEffect(() => {

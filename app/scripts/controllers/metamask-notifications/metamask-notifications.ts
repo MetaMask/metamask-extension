@@ -40,9 +40,9 @@ import type {
   MarkAsReadNotificationsParam,
 } from './types/notification/notification';
 import { OnChainRawNotification } from './types/on-chain-notification/on-chain-notification';
-import { FeatureAnnouncementRawNotification } from './types/feature-announcement/feature-announcement';
 import { processNotification } from './processors/process-notifications';
 import * as MetamaskNotificationsUtils from './utils/utils';
+import type { NotificationUnion } from './types/types';
 
 // Unique name for the controller
 const controllerName = 'MetamaskNotificationsController';
@@ -51,6 +51,12 @@ const controllerName = 'MetamaskNotificationsController';
  * State shape for MetamaskNotificationsController
  */
 export type MetamaskNotificationsControllerState = {
+  /**
+   * We store and manage accounts that have been seen/visted through the
+   * account subscription. This allows us to track and add notifications for new accounts and not previous accounts added.
+   */
+  subscriptionAccountsSeen: string[];
+
   /**
    * Flag that indicates if the metamask notifications feature has been seen
    */
@@ -96,6 +102,11 @@ export type MetamaskNotificationsControllerState = {
 };
 
 const metadata: StateMetadata<MetamaskNotificationsControllerState> = {
+  subscriptionAccountsSeen: {
+    persist: true,
+    anonymous: true,
+  },
+
   isMetamaskNotificationsFeatureSeen: {
     persist: true,
     anonymous: false,
@@ -134,6 +145,7 @@ const metadata: StateMetadata<MetamaskNotificationsControllerState> = {
   },
 };
 export const defaultState: MetamaskNotificationsControllerState = {
+  subscriptionAccountsSeen: [],
   isMetamaskNotificationsFeatureSeen: false,
   isMetamaskNotificationsEnabled: false,
   isFeatureAnnouncementsEnabled: false,
@@ -281,8 +293,6 @@ export class MetamaskNotificationsController extends BaseController<
     },
   };
 
-  #prevAccountsSet = new Set<string>();
-
   #accounts = {
     /**
      * Used to get list of addresses from keyring (wallet addresses)
@@ -290,21 +300,35 @@ export class MetamaskNotificationsController extends BaseController<
      * @returns addresses removed, added, and latest list of addresses
      */
     listAccounts: async () => {
+      // Get previous and current account sets
       const nonChecksumAccounts = await this.messagingSystem.call(
         'KeyringController:getAccounts',
       );
       const accounts = nonChecksumAccounts.map((a) => toChecksumHexAddress(a));
       const currentAccountsSet = new Set(accounts);
+      const prevAccountsSet = new Set(this.state.subscriptionAccountsSeen);
 
-      const accountsAdded = accounts.filter(
-        (a) => !this.#prevAccountsSet.has(a),
-      );
+      // Invalid value you cannot have zero accounts
+      // Only occurs when the Accounts controller is initializing.
+      if (accounts.length === 0) {
+        return {
+          accountsAdded: [],
+          accountsRemoved: [],
+          accounts: [],
+        };
+      }
 
-      const accountsRemoved = [...this.#prevAccountsSet.values()].filter(
+      // Calculate added and removed addresses
+      const accountsAdded = accounts.filter((a) => !prevAccountsSet.has(a));
+      const accountsRemoved = [...prevAccountsSet.values()].filter(
         (a) => !currentAccountsSet.has(a),
       );
 
-      this.#prevAccountsSet = new Set(accounts);
+      // Update accounts seen
+      this.update((state) => {
+        state.subscriptionAccountsSeen = [...prevAccountsSet, ...accountsAdded];
+      });
+
       return {
         accountsAdded,
         accountsRemoved,
@@ -935,9 +959,7 @@ export class MetamaskNotificationsController extends BaseController<
 
       // Combined Notifications
       const isNotUndefined = <T>(t?: T): t is T => Boolean(t);
-      const processAndFilter = (
-        ns: (FeatureAnnouncementRawNotification | OnChainRawNotification)[],
-      ) =>
+      const processAndFilter = (ns: NotificationUnion[]) =>
         ns
           .map((n) => {
             try {
@@ -1088,9 +1110,7 @@ export class MetamaskNotificationsController extends BaseController<
 }
 
 const isNotUndefined = <T>(t?: T): t is T => Boolean(t);
-function processAndFilterSingleNotification(
-  n: FeatureAnnouncementRawNotification | OnChainRawNotification,
-) {
+function processAndFilterSingleNotification(n: NotificationUnion) {
   try {
     const processedNotification = processNotification(n);
     if (isNotUndefined(processedNotification)) {

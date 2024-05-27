@@ -18,6 +18,7 @@ import {
 } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { selectIsMetamaskNotificationsEnabled } from '../../../selectors/metamask-notifications/metamask-notifications';
+import { selectIsProfileSyncingEnabled } from '../../../selectors/metamask-notifications/profile-syncing';
 import {
   Box,
   IconName,
@@ -85,6 +86,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
+  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
 
   const hasUnapprovedTransactions =
     Object.keys(unapprovedTransactions).length > 0;
@@ -136,12 +138,28 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
       !hasNotifySnaps && !isMetamaskNotificationsEnabled;
 
     if (shouldShowEnableModal) {
+      trackEvent({
+        category: MetaMetricsEventCategory.EnableNotifications,
+        event: MetaMetricsEventName.StartEnablingNotificationsFlow,
+        properties: {
+          isProfileSyncingEnabled,
+          isMetamaskNotificationsEnabled,
+        },
+      });
       dispatch(showConfirmTurnOnMetamaskNotifications());
       closeMenu();
       return;
     }
 
     // Otherwise we can navigate to the notifications page
+    trackEvent({
+      category: MetaMetricsEventCategory.NotificationInteraction,
+      event: MetaMetricsEventName.NotificationPageOpened,
+      properties: {
+        isProfileSyncingEnabled,
+        isMetamaskNotificationsEnabled,
+      },
+    });
     history.push(NOTIFICATIONS_ROUTE);
     closeMenu();
   };
