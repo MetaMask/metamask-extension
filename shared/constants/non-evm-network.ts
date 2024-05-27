@@ -50,6 +50,7 @@ export const NON_EVM_PROVIDER_CONFIGS: Record<string, MultiChainNetwork> = {
     caip2: NON_EVM_CHAIN_IDS.BITCOIN,
     rpcUrl: '', // not used
     ticker: 'BTC',
+    nickname: 'Bitcoin',
     id: 'btc-mainnet',
     snapId: 'npm:mock-btc-snap',
     type: 'rpc',
@@ -62,6 +63,7 @@ export const NON_EVM_PROVIDER_CONFIGS: Record<string, MultiChainNetwork> = {
     caip2: NON_EVM_CHAIN_IDS.SOLANA,
     rpcUrl: '', // not used
     ticker: 'SOL',
+    nickname: 'Solana',
     id: 'solana-mainnet',
     snapId: 'npm:mock-solana-snap',
     type: 'rpc',
@@ -75,6 +77,7 @@ export const NON_EVM_PROVIDER_CONFIGS: Record<string, MultiChainNetwork> = {
     rpcUrl: '', // not used
     ticker: 'ATOM',
     id: 'cosmos',
+    nickname: 'Cosmos',
     snapId: 'npm:mock-cosmos-snap',
     type: 'rpc',
     rpcPrefs: {
