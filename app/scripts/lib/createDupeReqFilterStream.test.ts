@@ -1,4 +1,4 @@
-import { Transform } from 'stream';
+import { Transform } from 'readable-stream';
 import type { JsonRpcRequest } from '@metamask/utils';
 import createDupeReqFilterStream, {
   THREE_MINUTES,
