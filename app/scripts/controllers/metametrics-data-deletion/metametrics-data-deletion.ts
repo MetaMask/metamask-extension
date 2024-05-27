@@ -11,9 +11,9 @@ const controllerName = 'MetaMetricsDataDeletionController';
 
 /**
  * @type DataDeleteDate
- * Deletion date in DD/MM/YYYY format
+ * Timestamp at which regulation response is returned.
  */
-export type DataDeleteDate = string;
+export type DataDeleteDate = number;
 /**
  * @type DataDeleteDate
  * Regulation Id retuned while creating a delete regulation.
@@ -49,7 +49,7 @@ export type MetaMetricsDataDeletionState = {
 
 const defaultState: MetaMetricsDataDeletionState = {
   metaMetricsDataDeletionId: '',
-  metaMetricsDataDeletionDate: '',
+  metaMetricsDataDeletionDate: 0,
 };
 
 // Metadata for the controller state
@@ -164,7 +164,7 @@ export default class MetaMetricsDataDeletionController extends BaseController<
       );
     this.update((state) => {
       state.metaMetricsDataDeletionId = data?.regulateId;
-      state.metaMetricsDataDeletionDate = this._formatDeletionDate();
+      state.metaMetricsDataDeletionDate = Date.now();
       return state;
     });
     await this.updateDataDeletionTaskStatus();
