@@ -1,10 +1,7 @@
-/* eslint-disable import/unambiguous */
-const { ObjectMultiplex } = require('@metamask/object-multiplex');
-const { pipeline, Transform } = require('readable-stream');
+import ObjectMultiplex from '@metamask/object-multiplex';
+import { pipeline, Transform } from 'readable-stream';
 
-const {
-  EXTENSION_MESSAGES,
-} = require('../../../shared/constants/extension-messages');
+import { EXTENSION_MESSAGES } from '../../../shared/constants/app';
 
 /**
  * Sets up stream multiplexing for the given stream
@@ -12,7 +9,7 @@ const {
  * @param {any} connectionStream - the stream to mux
  * @returns {stream.Stream} the multiplexed stream
  */
-function setupMultiplex(connectionStream) {
+export function setupMultiplex(connectionStream) {
   const mux = new ObjectMultiplex();
   /**
    * We are using this streams to send keep alive message between backend/ui without setting up a multiplexer
@@ -34,7 +31,7 @@ function setupMultiplex(connectionStream) {
  * @param {stream.Stream} stream - the stream to check
  * @returns {boolean} if the stream can be written to
  */
-function isStreamWritable(stream) {
+export function isStreamWritable(stream) {
   /**
    * Roughly:
    *   stream.writable:
@@ -62,7 +59,7 @@ function isStreamWritable(stream) {
  * @param {import("readable-stream").TransformOptions} options - Additional options passed to Transform constructor
  * @returns {Transform} A stream object
  */
-function createThroughStream(transform, flush, options = {}) {
+export function createThroughStream(transform, flush, options = {}) {
   return new Transform({
     flush,
     highWaterMark: 16,
@@ -71,9 +68,3 @@ function createThroughStream(transform, flush, options = {}) {
     ...options,
   });
 }
-
-module.exports = {
-  createThroughStream,
-  isStreamWritable,
-  setupMultiplex,
-};
