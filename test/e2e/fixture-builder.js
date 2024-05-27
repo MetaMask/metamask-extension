@@ -237,6 +237,9 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         ignoredTokens: [],
         tokens: [],
       },
+      // TokenRatesController: {
+      //   contractExchangeRates: {},
+      // },
       TransactionController: {
         transactions: {},
       },
@@ -947,6 +950,11 @@ class FixtureBuilder {
     merge(this.fixture.data.TokensController, data);
     return this;
   }
+
+  // withTokenRatesController(data) {
+  //   merge(this.fixture.data.TokenRatesController, data);
+  //   return this;
+  // }
 
   withBadPreferencesControllerState() {
     merge(this.fixture.data, {
