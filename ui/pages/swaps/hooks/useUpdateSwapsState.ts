@@ -4,20 +4,20 @@ import {
   fetchTokens,
   fetchTopAssets,
   fetchAggregatorMetadata,
-} from '../pages/swaps/swaps.util';
+} from '../swaps.util';
 import {
   fetchAndSetSwapsGasPriceInfo,
   prepareToLeaveSwaps,
   setAggregatorMetadata,
   setTopAssets,
-} from '../ducks/swaps/swaps';
-import { setSwapsTokens } from '../store/actions';
+} from '../../../ducks/swaps/swaps';
+import { setSwapsTokens } from '../../../store/actions';
 import {
   checkNetworkAndAccountSupports1559,
   getCurrentChainId,
   getIsSwapsChain,
   getUseExternalServices,
-} from '../selectors';
+} from '../../../selectors';
 
 export default function useUpdateSwapsState() {
   const dispatch = useDispatch();
