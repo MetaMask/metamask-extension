@@ -1,15 +1,18 @@
+import { ExtensionStore } from '../../../shared/modules/Storage/ExtensionStore';
+import ReadOnlyNetworkStore from '../../../shared/modules/Storage/ReadOnlyNetworkStore';
 import { maskObject } from '../../../shared/modules/object.utils';
 import ExtensionPlatform from '../platforms/extension';
-import LocalStore from './local-store';
-import ReadOnlyNetworkStore from './network-store';
+import Migrator from './migrator';
 import { SENTRY_BACKGROUND_STATE } from './setupSentry';
 
 const platform = new ExtensionPlatform();
 
+const migrator = new Migrator();
+
 // This instance of `localStore` is used by Sentry to get the persisted state
 const sentryLocalStore = process.env.IN_TEST
-  ? new ReadOnlyNetworkStore()
-  : new LocalStore();
+  ? new ReadOnlyNetworkStore({ migrator })
+  : new ExtensionStore({ migrator });
 
 /**
  * Get the persisted wallet state.
