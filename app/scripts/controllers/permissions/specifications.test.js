@@ -17,10 +17,13 @@ describe('PermissionController specifications', () => {
   describe('caveat specifications', () => {
     it('getCaveatSpecifications returns the expected specifications object', () => {
       const caveatSpecifications = getCaveatSpecifications({});
-      expect(Object.keys(caveatSpecifications)).toHaveLength(12);
+      expect(Object.keys(caveatSpecifications)).toHaveLength(13);
       expect(
         caveatSpecifications[CaveatTypes.restrictReturnedAccounts].type,
       ).toStrictEqual(CaveatTypes.restrictReturnedAccounts);
+      expect(
+        caveatSpecifications[CaveatTypes.restrictNetworkSwitching].type,
+      ).toStrictEqual(CaveatTypes.restrictNetworkSwitching);
 
       expect(caveatSpecifications.permittedDerivationPaths.type).toStrictEqual(
         SnapCaveatType.PermittedDerivationPaths,
@@ -181,10 +184,13 @@ describe('PermissionController specifications', () => {
   describe('permission specifications', () => {
     it('getPermissionSpecifications returns the expected specifications object', () => {
       const permissionSpecifications = getPermissionSpecifications({});
-      expect(Object.keys(permissionSpecifications)).toHaveLength(1);
+      expect(Object.keys(permissionSpecifications)).toHaveLength(2);
       expect(
         permissionSpecifications[RestrictedMethods.eth_accounts].targetName,
       ).toStrictEqual(RestrictedMethods.eth_accounts);
+      expect(permissionSpecifications.permittedChains.targetName).toStrictEqual(
+        'permittedChains',
+      );
     });
 
     describe('eth_accounts', () => {

@@ -25,6 +25,9 @@ describe('Change assets', function () {
       async ({ driver, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
 
+        // Wait for balance to load
+        await driver.delay(500);
+
         // Click the Send button
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
@@ -104,6 +107,10 @@ describe('Change assets', function () {
           css: '[data-testid="multichain-token-list-button"] span',
           text: 'TST',
         });
+
+        // Wait for balance to load
+        await driver.delay(500);
+
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
         // Chose a recipient
@@ -172,6 +179,9 @@ describe('Change assets', function () {
       },
       async ({ driver, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
+
+        // Wait for balance to load
+        await driver.delay(500);
 
         // Choose the nft
         await driver.clickElement('[data-testid="home__nfts-tab"]');
@@ -252,6 +262,9 @@ describe('Change assets', function () {
       async ({ driver, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
 
+        // Wait for balance to load
+        await driver.delay(500);
+
         // Create second account
         await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement(
@@ -290,6 +303,19 @@ describe('Change assets', function () {
         await driver.clickElement({
           css: `.multichain-account-list-item .multichain-account-list-item__account-name__button`,
           text: 'Account 2',
+        });
+
+        // Ensure that the AssetPicker shows native currency and 0 value
+        await driver.waitForSelector({
+          css: '.asset-picker__symbol',
+          text: 'ETH',
+        });
+
+        // Go back to Account 1
+        await driver.clickElement('[data-testid="send-page-account-picker"]');
+        await driver.clickElement({
+          css: `.multichain-account-list-item .multichain-account-list-item__account-name__button`,
+          text: 'Account 1',
         });
 
         // Ensure that the AssetPicker shows native currency and 0 value
