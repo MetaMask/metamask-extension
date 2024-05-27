@@ -84,3 +84,6 @@ ui/components/component-library      @MetaMask/design-system-engineers
 # Slack handle: @accounts-team-devs | Slack channel: #metamask-accounts-team
 
 app/scripts/lib/snap-keyring         @MetaMask/accounts-engineers
+
+# Swaps team to own code for the swaps folder
+ui/pages/swaps                      @MetaMask/swaps-engineers
