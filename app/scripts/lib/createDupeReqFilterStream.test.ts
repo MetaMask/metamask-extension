@@ -1,13 +1,16 @@
-import { obj as createThroughStream } from 'through2';
+import { Transform } from 'stream';
 import createDupeReqFilterStream, {
   THREE_MINUTES,
 } from './createDupeReqFilterStream';
 
 function createTestStream(output) {
   const throughStream = createDupeReqFilterStream();
-  const testOutStream = createThroughStream((chunk, _, cb) => {
-    output.push(chunk);
-    cb();
+  const testOutStream = new Transform({
+    transform: (chunk, _, cb) => {
+      output.push(chunk);
+      cb();
+    },
+    objectMode: true,
   });
 
   throughStream.pipe(testOutStream);

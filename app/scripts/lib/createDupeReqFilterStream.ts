@@ -1,5 +1,5 @@
+import { Transform } from 'stream';
 import log from 'loglevel';
-import { obj as createThroughStream } from 'through2';
 import { MINUTE } from '../../../shared/constants/time';
 
 export const THREE_MINUTES = MINUTE * 3;
@@ -49,16 +49,19 @@ const makeExpirySet = () => {
  */
 export default function createDupeReqFilterStream() {
   const seenRequestIds = makeExpirySet();
-  return createThroughStream((chunk, _, cb) => {
-    // JSON-RPC notifications have no ids; our only recourse is to let them through.
-    const hasNoId = chunk.id === undefined;
-    const requestNotYetSeen = seenRequestIds.add(chunk.id);
+  return new Transform({
+    transform(chunk, _, cb) {
+      // JSON-RPC notifications have no ids; our only recourse is to let them through.
+      const hasNoId = chunk.id === undefined;
+      const requestNotYetSeen = seenRequestIds.add(chunk.id);
 
-    if (hasNoId || requestNotYetSeen) {
-      cb(null, chunk);
-    } else {
-      log.debug(`RPC request with id "${chunk.id}" already seen.`);
-      cb();
-    }
+      if (hasNoId || requestNotYetSeen) {
+        cb(null, chunk);
+      } else {
+        log.debug(`RPC request with id "${chunk.id}" already seen.`);
+        cb();
+      }
+    },
+    objectMode: true,
   });
 }
