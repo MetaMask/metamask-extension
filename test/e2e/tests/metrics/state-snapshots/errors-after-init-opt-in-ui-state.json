@@ -129,7 +129,7 @@
     "metaMetricsId": "fake-metrics-id",
     "marketingCampaignCookieId": null,
     "metaMetricsDataDeletionId": "string",
-    "metaMetricsDataDeletionDate": "string",
+    "metaMetricsDataDeletionDate": 0,
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
     "previousUserTraits": "object",
