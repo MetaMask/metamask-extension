@@ -55,8 +55,11 @@ aliases:
       mkdir -p ~/.ssh
       echo github.com ssh-ed25519 $GITHUB_SSH_KEY >> ~/.ssh/known_hosts
 
-      git clone --depth 1 --no-checkout "$CIRCLE_REPOSITORY_URL" .
-      git fetch --depth 1 origin "$CIRCLE_SHA1"
+      git clone --depth 20 --no-checkout "$CIRCLE_REPOSITORY_URL" .
+      git fetch --depth 20 origin "$CIRCLE_SHA1"
+
+      # Fetch the develop branch explicitly
+      git fetch origin develop
 
       if [ -n "${CIRCLE_TAG-}" ]; then
         echo "Checkout tag '${CIRCLE_TAG}' at commit '${CIRCLE_SHA1}'"
@@ -457,12 +460,17 @@ jobs:
           key: dependency-cache-{{ checksum "/tmp/YARN_VERSION" }}-{{ checksum "yarn.lock" }}
           paths:
             - .yarn/cache
+      - run:
+          name: Fetch changed files
+          command: |
+            chmod +x .circleci/scripts/get-changed-files.sh
+            .circleci/scripts/get-changed-files.sh
       - persist_to_workspace:
           root: .
           paths:
             - node_modules
             - build-artifacts
-
+            - changed-files
   validate-lavamoat-allow-scripts:
     executor: node-browsers-small
     steps:
