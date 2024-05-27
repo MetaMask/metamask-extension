@@ -4997,31 +4997,25 @@ export default class MetamaskController extends EventEmitter {
       tabId,
     });
 
-    const dupeReqFilterThroughStream = createDupeReqFilterStream();
+    const dupeReqFilterStream = createDupeReqFilterStream();
 
     // setup connection
     const providerStream = createEngineStream({ engine });
 
     const connectionId = this.addConnection(origin, { engine });
 
-    pump(
-      outStream,
-      dupeReqFilterThroughStream,
-      providerStream,
-      outStream,
-      (err) => {
-        // handle any middleware cleanup
-        engine._middleware.forEach((mid) => {
-          if (mid.destroy && typeof mid.destroy === 'function') {
-            mid.destroy();
-          }
-        });
-        connectionId && this.removeConnection(origin, connectionId);
-        if (err) {
-          log.error(err);
+    pump(outStream, dupeReqFilterStream, providerStream, outStream, (err) => {
+      // handle any middleware cleanup
+      engine._middleware.forEach((mid) => {
+        if (mid.destroy && typeof mid.destroy === 'function') {
+          mid.destroy();
         }
-      },
-    );
+      });
+      connectionId && this.removeConnection(origin, connectionId);
+      if (err) {
+        log.error(err);
+      }
+    });
   }
 
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)

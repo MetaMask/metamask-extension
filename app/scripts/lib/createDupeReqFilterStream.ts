@@ -1,6 +1,6 @@
 import { Transform } from 'stream';
 import log from 'loglevel';
-import { JsonRpcRequest } from '@metamask/utils';
+import type { JsonRpcRequest } from '@metamask/utils';
 import { MINUTE } from '../../../shared/constants/time';
 
 export const THREE_MINUTES = MINUTE * 3;
@@ -43,7 +43,7 @@ const makeExpirySet = () => {
 };
 
 /**
- * Returns a "through" stream that filters out requests whose ids we've already seen.
+ * Returns a transform stream that filters out requests whose ids we've already seen.
  * Ignores JSON-RPC notifications, i.e. requests with an `undefined` id.
  *
  * @returns The stream object.

@@ -1,11 +1,11 @@
 import { Transform } from 'stream';
-import { JsonRpcRequest } from '@metamask/utils';
+import type { JsonRpcRequest } from '@metamask/utils';
 import createDupeReqFilterStream, {
   THREE_MINUTES,
 } from './createDupeReqFilterStream';
 
 function createTestStream(output: JsonRpcRequest[] = []) {
-  const throughStream = createDupeReqFilterStream();
+  const transformStream = createDupeReqFilterStream();
   const testOutStream = new Transform({
     transform: (chunk: JsonRpcRequest, _, cb) => {
       output.push(chunk);
@@ -14,9 +14,9 @@ function createTestStream(output: JsonRpcRequest[] = []) {
     objectMode: true,
   });
 
-  throughStream.pipe(testOutStream);
+  transformStream.pipe(testOutStream);
 
-  return throughStream;
+  return transformStream;
 }
 
 function runStreamTest(
