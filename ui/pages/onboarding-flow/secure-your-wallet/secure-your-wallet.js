@@ -114,7 +114,7 @@ export default function SecureYourWallet() {
       >
         {t('seedPhraseIntroTitleCopy')}
       </Text>
-      { process.env.IN_TEST ? null : (
+      {process.env.IN_TEST ? null : (
         <Box
           as="video"
           borderRadius={BorderRadius.LG}
