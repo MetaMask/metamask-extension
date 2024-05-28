@@ -14,6 +14,7 @@ import { bold } from './bold';
 import { italic } from './italic';
 import { link } from './link';
 import { field } from './field';
+import { dropdown } from './dropdown';
 
 export const COMPONENT_MAPPING = {
   Box: box,
@@ -32,4 +33,5 @@ export const COMPONENT_MAPPING = {
   Italic: italic,
   Link: link,
   Field: field,
+  Dropdown: dropdown,
 };
