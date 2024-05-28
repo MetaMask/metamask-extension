@@ -31,13 +31,11 @@ The **`buildLocator`** function enhances element-matching capabilities by introd
 @throws {Error} Will throw an error if an invalid locator strategy is provided.
 
 <details><summary><b>Locate element by CSS</b></summary>
-<br>
-CSS Selectors in Selenium are string patterns used to identify an element based on a combination of HTML tag, id, class, and attributes.<br>
-<br>
+
+CSS Selectors in Selenium are string patterns used to identify an element based on a combination of HTML tag, id, class, and attributes.
 
 > <details><summary><b>Class - CSS Selector</b></summary>
-> <br>
-> To locate an element by its class using a CSS selector, prepend the class name with a dot (.) symbol.<br>
+> To locate an element by its class using a CSS selector, prepend the class name with a dot (.) symbol.
 >
 > ![Screenshot displays the send transaction screen of MetaMask, highlighting how to locate the amount text box using its class.](image/classSelector.png)
 >
@@ -49,8 +47,8 @@ CSS Selectors in Selenium are string patterns used to identify an element based 
 >
 > </details>
 > <details><summary><b>ID - CSS selector</b></summary>
-> <br>
-> To locate an element by its ID using a CSS selector, prepend the ID with a hash sign (#).<br>
+>
+> To locate an element by its ID using a CSS selector, prepend the ID with a hash sign (#).
 >
 > ![Screenshot displays the login screen of MetaMask, highlighting how to locate the password text box using its ID.](image/idSelector.png)
 >
@@ -62,8 +60,8 @@ CSS Selectors in Selenium are string patterns used to identify an element based 
 >
 > </details>
 > <details><summary><b>Attribute - CSS selector</b></summary>
-> <br>
-> To target an element based on its attribute using a CSS selector, use square brackets ([]) to specify the attribute name and its value.<br>
+>
+> To target an element based on its attribute using a CSS selector, use square brackets ([]) to specify the attribute name and its value.
 >
 > ![Screenshot displays the overview screen of MetaMask, highlighting how to locate the button ‘Buy & Sell’ using its unique attribute **data-testid and its value**.](image/attributeSelector.png)
 >
@@ -75,8 +73,8 @@ CSS Selectors in Selenium are string patterns used to identify an element based 
 >
 > </details>
 > <details><summary><b>Attribute and tag - CSS  Selector</b></summary>
-> <br>
-> Tag and attribute selectors provide a powerful way to precisely target and style HTML elements based on their type and characteristics.<br>
+>
+> Tag and attribute selectors provide a powerful way to precisely target and style HTML elements based on their type and characteristics.
 >
 > ![Screenshot displays the onboarding - Add custom network screen of MetaMask, highlighting how to locate the input field using the tag name and attribute type text.](image/attributeTagSelector.png)
 >
@@ -88,8 +86,8 @@ CSS Selectors in Selenium are string patterns used to identify an element based 
 >
 > </details>
 > <details><summary><b>Locate element by link text</b></summary>
-> <br>
-> This type of CSS locator applies only to hyperlink texts with the anchor tags.<br>
+>
+> This type of CSS locator applies only to hyperlink texts with the anchor tags.
 >
 > ![Screenshot displays the contacts screen of MetaMask, highlighting how to locate the ‘Delete contact’ link using its type as Anchor(a).](image/linkTextSelector.png)
 >
@@ -99,13 +97,9 @@ CSS Selectors in Selenium are string patterns used to identify an element based 
 > await driver.findElement({ text: 'Delete contact', tag: 'a' });
 > ```
 >
-> >
-
-</details>
 </details>
 
 <details><summary><b>Locate element by XPath</b></summary>
-<br>
 XPath is a language used for locating nodes in an XML document, which can also be applied to HTML documents for locating elements in the test automation. It utilizes path expressions to navigate through and select elements and attributes within the document.<br>
 <br>
 Below is the video to locate the element based on XPath.
@@ -115,8 +109,8 @@ https://github.com/MetaMask/metamask-extension/assets/539738/7a67a35f-5e42-465c-
 There are two types of XPath
 
 > <details><summary><b>Absolute XPath</b></summary>
-> <br>
-> This is the direct way to find the element, but the disadvantage of an absolute XPath is that if there are any changes made in the path of the element, then that XPath fails. Hence this locator strategy should be avoided.<br>
+>
+> This is the direct way to find the element, but the disadvantage of an absolute XPath is that if there are any changes made in the path of the element, then that XPath fails. Hence this locator strategy should be avoided.
 >
 > </details>
 > <details><summary><b>Relative XPath</b></summary>
@@ -141,7 +135,7 @@ There are two types of XPath
 > </details>
 >
 > <details><summary><b>Contains</b></summary>
-> Locate element with search text using the method `contains` in the XPath expression (mainly used when there is dynamic text)<br>
+> Locate element with search text using the method `contains` in the XPath expression (mainly used when there is dynamic text)
 >
 > ![Screenshot displays ‘Reject’ button in the send transaction page](image/xpath-contains.png)
 >
@@ -157,11 +151,10 @@ There are two types of XPath
 > await driver.clickElement({ text: 'Settings', tag: 'div' });
 > ```
 >
-> <br>
 > </details>
 >
 > <details><summary><b>With CSS selector</b></summary>
-> Locate element with a combination of the xpath format and using the CSS selector.<br>
+> Locate element with a combination of the xpath format and using the CSS selector.
 >
 > ![Screenshot displays the Send transaction page](image/xpath-css-selector.png)
 >
@@ -175,8 +168,6 @@ There are two types of XPath
 > });
 > ```
 
-<br>
-</details>
 </details>
 
 <details><summary><b>**** Note - locators ****</b></summary>
@@ -203,7 +194,6 @@ There are two types of XPath
 Finding web elements is a fundamental task in web automation and testing, allowing scripts to interact with various components of a web page, such as input fields, buttons, links, and more. One of the element identification functions listed below combines with the use [locators](#locators) to uniquely identify an element on the page.
 
 <details><summary><b>findElement</b></summary>
-<br>
 
 >  **`findElement`** returns a reference to the first element in the DOM that the provided locator matches.
 >
@@ -230,12 +220,9 @@ Finding web elements is a fundamental task in web automation and testing, allowi
 > });
 > ```
 >
-> >
-
 </details>
 
 <details><summary><b>findElements</b></summary>
-<br>
 
 > **`findElements`** function return a collection of element references. If there are no matches, an empty list is returned.
 >
@@ -261,12 +248,9 @@ Finding web elements is a fundamental task in web automation and testing, allowi
 > warningText = await warning.getText();
 > ```
 >
-> >
-
 </details>
 
 <details><summary><b>findVisibleElement</b></summary>
-<br>
 
 > **`findVisibleElement`** function is used to track (or) find DOM element which is visible
 >
@@ -286,12 +270,10 @@ Finding web elements is a fundamental task in web automation and testing, allowi
 > );
 > ```
 >
-> >
 
 </details>
 
 <details><summary><b>findClickableElement</b></summary>
-<br>
 
 > **`findClickableElement`** function is used to track (or) find DOM element which is clickable
 >
@@ -309,11 +291,9 @@ Finding web elements is a fundamental task in web automation and testing, allowi
 > await driver.findClickableElement('#depositButton');
 > ```
 >
-> >
-
+>
 </details>
 <details><summary><b>findClickableElements</b></summary>
-<br>
 
 > **`findClickableElements`** function is used to track (or) find DOM elements which are clickable
 >
@@ -334,8 +314,6 @@ Finding web elements is a fundamental task in web automation and testing, allowi
 > assert.equal(domains.length, 1);
 > ```
 >
-> >
-
 </details>
 
 ## Interactions
@@ -352,7 +330,6 @@ In this context, interacting with web elements implies simulating actions a user
 Each of these actions requires first [locating](#locators) the web element you want to interact with, which is usually done using selectors like IDs, class names, CSS selectors, or XPath expressions.
 
 <details><summary><b>fill</b></summary>
-<br>
 
 > **`fill`** function is designed to locate a web element on the page and input a specified text value into it. This function is particularly useful for automating interactions with text fields, such as username or password inputs, search boxes, or any editable text areas within a web application.
 >
@@ -374,11 +351,9 @@ Each of these actions requires first [locating](#locators) the web element you w
 > );
 > ```
 >
-> >
-
+>
 </details>
 <details><summary><b>clickElementSafe</b></summary>
-<br>
 
 > **`clickElementSafe`** clicks on an element if it's present. If the element is not found, catch the exception, log the failure to the console, but do not cause the test to fail. It is particularly useful in instances where an element requires scrolling, but the scroll button does not appear due to rendering differences.
 >
@@ -398,11 +373,8 @@ Each of these actions requires first [locating](#locators) the web element you w
 > await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 > ```
 >
-> >
-
 </details>
 <details><summary><b>clickElement</b></summary>
-<br>
 
 > **`clickElement`** function is an asynchronous function that aims to simulate a click action on a specified web element within a web page. This function is commonly used to interact with clickable elements such as buttons, links, checkboxes, or any other elements that respond to click events.
 >
@@ -411,7 +383,7 @@ Each of these actions requires first [locating](#locators) the web element you w
 > #### Arguments
 > @param {string | object} rawLocator - Element locator
 >
-> **Return**<br>
+> #### Returns
 > @returns `{Promise<WebElement>}` - promise that resolves to the WebElement
 >
 > **Example**
@@ -421,11 +393,9 @@ Each of these actions requires first [locating](#locators) the web element you w
 > await driver.clickElement(nextPageButton);
 > ```
 >
-> >
 
 </details>
 <details><summary><b>press</b></summary>
-<br>
 
 > **`press`** function enables the simulation of keyboard actions on a specified web element. This can include typing characters into a text field, activating keyboard shortcuts, or any other keyboard-related interactions within a web page.
 >
@@ -435,7 +405,7 @@ Each of these actions requires first [locating](#locators) the web element you w
 > @param {string | object} rawLocator - Element locator<br>
 > @param {string} keys - The key to press
 >
-> **Return**<br>
+> #### Returns
 > @returns `{Promise<WebElement>}` promise resolving to the filled element
 > **Example**
 >
@@ -457,11 +427,9 @@ Each of these actions requires first [locating](#locators) the web element you w
 >    };
 > ```
 >
-> >
 
 </details>
 <details><summary><b>getText</b></summary>
-<br>
 
 > **`getText`** function in Selenium is used to retrieve the visible text of a web element.
 >
@@ -504,7 +472,6 @@ Selenium provides several mechanisms for managing waits, crucial for handling th
 This organization helps provide a clear structure for understanding the various situations in which waiting may be necessary when working with web elements.
 
 <details><summary><b>wait</b></summary>
-<br>
 
 > **`wait`** function is an asynchronous function to wait for a specific condition to be met within a given timeout period, with an option to catch and handle any errors that occur during the wait.
 >
@@ -548,11 +515,8 @@ This organization helps provide a clear structure for understanding the various 
 > }, 3000);
 > ```
 >
-> >
-
 </details>
 <details><summary><b>waitForSelector</b></summary>
-<br>
 
 > **`waitForSelector`** function allows for flexible handling of element visibility and detachment from the DOM, making it useful for ensuring that web interactions occur only when the page is in the desired state. This function can be used in scenarios where you need to wait for an element to appear or disappear before performing further actions, such as:
 >
@@ -578,11 +542,8 @@ This organization helps provide a clear structure for understanding the various 
 > await driver.waitForSelector('.import-srp__actions');
 > ```
 >
-> >
-
 </details>
 <details><summary><b>waitForNonEmptyElement</b></summary>
-<br>
 
 > **`waitForNonEmptyElement`** function is an asynchronous function designed to wait until a specified web element contains some text, i.e., it's not empty. This can be particularly useful in scenarios where the content of an element is dynamically loaded or updated, and you need to ensure the element has content before proceeding with further actions. This function is useful when you need to wait for a message, label, or any piece of information to appear in a UI element before performing further actions, such as:
 >
@@ -607,11 +568,9 @@ This organization helps provide a clear structure for understanding the various 
 > await driver.waitForNonEmptyElement(revealedSeedPhrase);
 > ```
 >
-> >
-
+>
 </details>
 <details><summary><b>waitForElementState</b></summary>
-<br>
 
 > **`waitForElementState`** function waits for a specific state of an element.
 >
@@ -634,8 +593,6 @@ This organization helps provide a clear structure for understanding the various 
 > await networkSelectionModal.waitForElementState('hidden');
 > ```
 >
-> >
-
 </details>
 <details><summary><b>clickElementAndWaitToDisappear</b></summary>
 <br>
@@ -661,7 +618,6 @@ This organization helps provide a clear structure for understanding the various 
 
 </details>
 <details><summary><b>elementCountBecomesN</b></summary>
-<br>
 
 > **`elementCountBecomesN`** function waits until the expected number of tokens to be rendered <br>
 >
@@ -686,7 +642,6 @@ This organization helps provide a clear structure for understanding the various 
 </details>
 <a id="waitX"></a>
 <details><summary><b>waitUntilXWindowHandles</b></summary>
-<br>
 
 > **`waitUntilXWindowHandles`** function waits until the specified number of window handles are present.
 >
@@ -725,7 +680,6 @@ These interactions include keyboard and mouse actions.
 Selenium can simulate keyboard shortcuts by sending combinations of keys.
 
 <details><summary><b>sendKeys</b></summary>
-<br>
 
 ```jsx
 const approveInput = await driver.findElement('#approveTokenInput');
@@ -735,7 +689,6 @@ await approveInput.sendKeys('1');
 </details>
 
 <details><summary><b>clear</b></summary>
-<br>
 
 ```jsx
 const approveInput = await driver.findElement('#approveTokenInput');
@@ -745,7 +698,6 @@ await approveInput.clear();
 </details>
 
 <details><summary><b>pasteIntoField</b></summary>
-<br>
 
 > **`pasteIntoField`** function simulates the pasting of content into a specified field, employing a unique approach to managing the clipboard.
 >
@@ -765,8 +717,6 @@ await approveInput.clear();
 > await driver.pasteIntoField('#bip44Message', '1234');
 > ```
 >
-> >
-
 </details>
 
 ### Mouse
@@ -776,7 +726,6 @@ await approveInput.clear();
 A representation of any pointer device for interacting with a web page.
 
 <details><summary><b>clickElementUsingMouseMove</b></summary>
-<br>
 
 > **`clickElementUsingMouseMove`** function by simulating a more natural mouse movement towards the element before initiating a click. This is essential for web pages with buttons that only respond correctly to user interactions when the mouse physically moves to the button before clicking, as opposed to executing a direct click command.
 >
@@ -797,12 +746,9 @@ A representation of any pointer device for interacting with a web page.
 > });
 > ```
 >
-> >
-
 </details>
 
 <details><summary><b>scrollToElement</b></summary>
-<br>
 
 > **`scrollToElement`** function scrolls the web page until the specified element comes into view.
 >
@@ -824,12 +770,9 @@ A representation of any pointer device for interacting with a web page.
 > await driver.clickElement('[data-testid="remove-snap-button"]');
 > ```
 >
-> >
-
 </details>
 
 <details><summary><b>holdMouseDownOnElement</b></summary>
-<br>
 
 > **`holdMouseDownOnElement`** function simulates the action of pressing and holding down the mouse button on a specific element for a specified duration.
 >
@@ -853,13 +796,9 @@ A representation of any pointer device for interacting with a web page.
 >   2000,
 > );
 > ```
->
-> >
-
 </details>
 
 <details><summary><b>clickPoint</b></summary>
-<br>
 
 > **`clickPoint`** function is designed to click on a specific point, determined by the x and y coordinates
 >
@@ -873,8 +812,6 @@ A representation of any pointer device for interacting with a web page.
 > #### Returns
 > @returns `{Promise<void>}` - promise resolving after a click
 >
-> >
-
 </details>
 
 ## Navigation
@@ -886,7 +823,6 @@ Navigation refers to the process of moving through web pages within a browser se
 - **Handling Redirects**: Web pages might redirect to different URLs automatically. Automation scripts need to handle these redirects gracefully, ensuring they can continue to interact with the correct page elements after the redirect.
 
 <details><summary><b>navigate</b></summary>
-<br>
 
 > **`navigate`** function is an asynchronous function designed for navigating to different pages within a web application.
 >
@@ -917,12 +853,9 @@ Navigation refers to the process of moving through web pages within a browser se
 > await driver.navigate(PAGES.BACKGROUND);
 > ```
 >
-> >
-
 </details>
 
 <details><summary><b>getCurrentUrl</b></summary>
-<br>
 
 > **`getCurrentUrl`** function to retrieve the current URL of the browser session.
 >
@@ -937,12 +870,10 @@ Navigation refers to the process of moving through web pages within a browser se
 > const currentUrl = await driver.getCurrentUrl();
 > ```
 >
-> >
 
 </details>
 
 <details><summary><b>refresh</b></summary>
-<br>
 
 > **`refresh`** function to refresh the current page in the browser.
 >
@@ -958,7 +889,6 @@ Navigation refers to the process of moving through web pages within a browser se
 > await driver.refresh();
 > ```
 >
-> >
 
 </details>
 
@@ -970,7 +900,6 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 - **Opening and Closing Windows/Tabs**: Scripts can open new windows or tabs and close them as needed, just like a user might do manually.
 
 <details><summary><b>openNewPage</b></summary>
-<br>
 
 > **`openNewPage`** function to open a new browser tab or window and navigate to a specified URL.
 >
@@ -991,7 +920,6 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 </details>
 
 <details><summary><b>openNewURL</b></summary>
-<br>
 
 > **`openNewURL`** function to open a new URL in the browser window controlled by the driver.
 >
@@ -1012,7 +940,6 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 </details>
 
 <details><summary><b>switchToNewWindow</b></summary>
-<br>
 
 > **`switchToNewWindow`** function to open a new browser window and switch the WebDriver's context to this new window.
 >
@@ -1032,7 +959,6 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 ### Get window handle
 
 <details><summary><b>getAllWindowHandles</b></summary>
-<br>
 
 > **`getAllWindowHandles`** function retrieves all window handles that are currently open in the WebDriver session.
 >
@@ -1051,7 +977,6 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 </details>
 
 <details><summary><b>getWindowTitleByHandlerId</b></summary>
-<br>
 
 > **`getWindowTitleByHandlerId`** function changes to a specific window tab using its ID and gets its title.
 >
@@ -1076,7 +1001,6 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 ### Switching windows or tabs
 
 <details><summary><b>switchToWindow</b></summary>
-<br>
 
 > **`switchToWindow`** function designed to switch the context of the browser session to the window or tab with the given handle.
 >
@@ -1097,7 +1021,6 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 </details>
 
 <details><summary><b>switchToWindowWithUrl</b></summary>
-<br>
 
 > **`switchToWindowWithUrl`** function is intended switches the context of the browser session to the window tab with the given URL.
 >
@@ -1126,7 +1049,6 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 </details>
 
 <details><summary><b>switchToWindowWithTitle</b></summary>
-<br>
 
 > **`switchToWindowWithTitle`** function is intended for use in web automation testing and aims to switch the testing framework's context to a window or tab that matches a specific title. This functionality is especially valuable in complex testing scenarios involving multiple windows or tabs, allowing for interaction with a particular window or tab based on its title.
 >
@@ -1159,7 +1081,6 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 ### Closing windows or tabs
 
 <details><summary><b>closeWindow</b></summary>
-<br>
 
 > **`closeWindow`** function loses the current window tab in the browser session. This is particularly useful for cleaning up after a test or when switching between different window tabs.
 >
@@ -1177,7 +1098,6 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 </details>
 
 <details><summary><b>closeWindowHandle</b></summary>
-<br>
 
 > **`closeWindowHandle`** function closes a specific browser window or tab identified by its window handle.
 >
@@ -1202,7 +1122,6 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 </details>
 
 <details><summary><b>closeAllWindowHandlesExcept</b></summary>
-<br>
 
 > **`closeAllWindowHandlesExcept`** function close all browser windows or tabs except for those specified in a list of exceptions.
 >
@@ -1218,7 +1137,6 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 </details>
 
 <details><summary><b>quit</b></summary>
-<br>
 
 > **`quit`** function quits driver and closing every associated window.
 >
@@ -1242,7 +1160,6 @@ Alerts are pop-up messages that appear
 - **Handling Alerts**: Scripts must be able to detect when an alert has appeared, read its message, and interact with it by accepting, dismissing, or providing input (in the case of prompt alerts).
 
 <details><summary><b>closeAlertPopup</b></summary>
-<br>
 
 > **`closeAlertPopup` is method to handle and close alert popups in a web browser.**
 >
@@ -1267,7 +1184,6 @@ Web pages can be segmented into frames or IFrames, which are essentially documen
 - **Default Content**: After interacting with a frame, the script often needs to switch back to the main page or another frame, commonly referred to as switching back to the default content.
 
 <details><summary><b>switchToFrame</b></summary>
-<br>
 
 > **`switchToFrame`** is function to switch the WebDriver's context to a specified iframe or frame within a web page.
 >
@@ -1308,7 +1224,6 @@ They are used to verify that the application under test behaves as expected unde
 - Race condition: Sometimes, we might check something too quickly before everything is set up properly. This can lead to getting the wrong information, which might not match what we finally see or use.
 
 <details><summary><b>isElementPresent</b></summary>
-<br>
 
 > **`isElementPresent`** function to check if a specific web element, exists on the web page.
 >
@@ -1336,7 +1251,6 @@ They are used to verify that the application under test behaves as expected unde
 </details>
 
 <details><summary><b>isElementPresentAndVisible</b></summary>
-<br>
 
 > **`isElementPresentAndVisible`** function to check not only if a specific web element, exists on the web page but also if it is visible to the user.
 >
@@ -1364,7 +1278,6 @@ They are used to verify that the application under test behaves as expected unde
 </details>
 <a id="assertElemntNotPresent-click-here"></a>
 <details><summary><b>assertElementNotPresent</b></summary>
-<br>
 
 > **`assertElementNotPresent`** function wait until an element is absent. This function MUST have a guard to prevent a race condition. For example, when the previous step is to click a button that loads a new page, then of course during page load, the rawLocator element will be absent, even though it will appear a half-second later. The first choice for the guard is to use the findElementGuard, which executes before the search for the rawLocator element. The second choice for the guard is to use the waitAtLeastGuard parameter.
 >
@@ -1377,7 +1290,7 @@ They are used to verify that the application under test behaves as expected unde
 > @param {number} [guards.waitAtLeastGuard] - The minimum milliseconds to wait before passing<br>
 > @param {number} [guards.timeout] - The maximum milliseconds to wait before failing<br>
 >
-> **Return**<br>
+> #### Return
 > @returns `{Promise<void>}` - promise resolving after the element is not present<br>
 > @throws {Error} - throws an error if the element is present
 > **Example**
