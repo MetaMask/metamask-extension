@@ -76,7 +76,7 @@
     },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": "string",
-      "metaMetricsDataDeletionDate": 0
+      "metaMetricsDataDeletionDate": "number"
     },
     "NetworkController": {
       "selectedNetworkClientId": "string",
