@@ -10,7 +10,6 @@ import {
   getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
   getSelectedInternalAccount,
-  getSubjectMetadata,
   getTargetSubjectMetadata,
 } from '.';
 
@@ -92,6 +91,10 @@ export function getPermittedAccountsByOrigin(state) {
     }
     return acc;
   }, {});
+}
+
+export function getSubjectMetadata(state) {
+  return state.metamask.subjectMetadata;
 }
 
 /**
