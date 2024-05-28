@@ -3,6 +3,8 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { TransactionType } from '@metamask/transaction-controller';
 import { Json } from '@metamask/utils';
 
+import { sanitizeMessage } from '../../../helpers/utils/util';
+
 export const REDESIGN_APPROVAL_TYPES = [
   ApprovalType.EthSignTypedData,
   ApprovalType.PersonalSign,
@@ -23,3 +25,9 @@ const SIGNATURE_APPROVAL_TYPES = [
 export const isSignatureApprovalRequest = (
   request: ApprovalRequest<Record<string, Json>>,
 ) => SIGNATURE_APPROVAL_TYPES.includes(request.type as ApprovalType);
+
+export const parseTypedDataMessage = (dataToParse: string) => {
+  const { message, domain = {}, primaryType, types } = JSON.parse(dataToParse);
+  const sanitizedMessage = sanitizeMessage(message, primaryType, types);
+  return { domain, sanitizedMessage, primaryType };
+};

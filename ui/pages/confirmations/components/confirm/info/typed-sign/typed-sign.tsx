@@ -5,6 +5,7 @@ import { isValidAddress } from 'ethereumjs-util';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
+  ConfirmInfoRowDivider,
   ConfirmInfoRowUrl,
 } from '../../../../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
@@ -14,8 +15,9 @@ import {
   BackgroundColor,
   BorderRadius,
 } from '../../../../../../helpers/constants/design-system';
-import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
+import { PermitSignatureRequestPrimayType } from '../../../../constants';
 import { SignatureRequestType } from '../../../../types/confirm';
+import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
 
 const TypedSignInfo: React.FC = () => {
   const t = useI18nContext();
@@ -27,9 +29,11 @@ const TypedSignInfo: React.FC = () => {
     return null;
   }
 
-  const { domain = {} } = JSON.parse(
-    currentConfirmation.msgParams.data as string,
-  );
+  const {
+    domain,
+    domain: { verifyingContract },
+    primaryType,
+  } = JSON.parse(currentConfirmation.msgParams.data as string);
 
   return (
     <>
@@ -39,6 +43,14 @@ const TypedSignInfo: React.FC = () => {
         padding={2}
         marginBottom={4}
       >
+        {primaryType === PermitSignatureRequestPrimayType && (
+          <>
+            <ConfirmInfoRow label={t('approvingTo')}>
+              <ConfirmInfoRowAddress address={verifyingContract} />
+            </ConfirmInfoRow>
+            <ConfirmInfoRowDivider />
+          </>
+        )}
         <ConfirmInfoRow label={t('requestFrom')} tooltip={t('requestFromInfo')}>
           <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
         </ConfirmInfoRow>

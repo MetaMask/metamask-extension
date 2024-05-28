@@ -425,6 +425,14 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
 </div>
 `;
 
+exports[`TypedSignInfo should display approving to for permit signature type 1`] = `
+<p
+  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+>
+  Approving to
+</p>
+`;
+
 exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
 <div>
   <div
