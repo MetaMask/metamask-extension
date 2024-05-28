@@ -532,9 +532,8 @@ class Driver {
    * Function that aims to simulate a click action on a specified web element within a web page
    *
    * @param {string | object} rawLocator - Element locator
-   * @param {number} [retries=3] - The number of times to retry the click action if it fails
+   * @param {number} [retries] - The number of times to retry the click action if it fails
    * @returns {Promise} promise that resolves to the WebElement
-   *
    */
   async clickElement(rawLocator, retries = 3) {
     for (let attempt = 0; attempt < retries; attempt++) {
