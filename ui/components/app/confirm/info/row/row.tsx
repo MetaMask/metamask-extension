@@ -88,7 +88,7 @@ export const ConfirmInfoRow = ({
       marginBottom={2}
       paddingLeft={2}
       paddingRight={2}
-      color={color ?? (TEXT_COLORS[variant] as TextColor)}
+      color={TEXT_COLORS[variant] as TextColor}
       style={{
         overflowWrap: OverflowWrap.Anywhere,
         minHeight: '24px',
@@ -100,6 +100,7 @@ export const ConfirmInfoRow = ({
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
+        color={color}
       >
         <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
           {label}
