@@ -131,7 +131,7 @@
     "selectedAddress": "string",
     "metaMetricsId": "fake-metrics-id",
     "metaMetricsDataDeletionId": "string",
-    "metaMetricsDataDeletionDate": 0,
+    "metaMetricsDataDeletionDate": "number",
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
     "previousUserTraits": "object",
