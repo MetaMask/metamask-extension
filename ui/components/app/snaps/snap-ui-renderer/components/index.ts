@@ -15,6 +15,7 @@ import { italic } from './italic';
 import { link } from './link';
 import { field } from './field';
 import { dropdown } from './dropdown';
+import { value } from './value';
 
 export const COMPONENT_MAPPING = {
   Box: box,
@@ -34,4 +35,5 @@ export const COMPONENT_MAPPING = {
   Link: link,
   Field: field,
   Dropdown: dropdown,
+  Value: value,
 };
