@@ -3870,7 +3870,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jest/environment@npm:^29.1.2, @jest/environment@npm:^29.7.0":
+"@jest/environment@npm:^29.7.0":
   version: 29.7.0
   resolution: "@jest/environment@npm:29.7.0"
   dependencies:
@@ -3901,7 +3901,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jest/fake-timers@npm:^29.1.2, @jest/fake-timers@npm:^29.7.0":
+"@jest/fake-timers@npm:^29.7.0":
   version: 29.7.0
   resolution: "@jest/fake-timers@npm:29.7.0"
   dependencies:
@@ -4043,7 +4043,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jest/types@npm:^29.1.2, @jest/types@npm:^29.6.3":
+"@jest/types@npm:^29.6.3":
   version: 29.6.3
   resolution: "@jest/types@npm:29.6.3"
   dependencies:
@@ -9994,13 +9994,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:*, @types/jest@npm:^29.1.2":
-  version: 29.1.2
-  resolution: "@types/jest@npm:29.1.2"
+"@types/jest@npm:*, @types/jest@npm:^29.5.12":
+  version: 29.5.12
+  resolution: "@types/jest@npm:29.5.12"
   dependencies:
     expect: "npm:^29.0.0"
     pretty-format: "npm:^29.0.0"
-  checksum: 8908cdd41f31a4ea17aa34663c2c696b77df61de6103d0701c76b020780b5adfc5e14a0388420a44f28335fe31285ec626c84853a8a85d0ec51c665a79d4a55a
+  checksum: 312e8dcf92cdd5a5847d6426f0940829bca6fe6b5a917248f3d7f7ef5d85c9ce78ef05e47d2bbabc40d41a930e0e36db2d443d2610a9e3db9062da2d5c904211
   languageName: node
   linkType: hard
 
@@ -22523,19 +22523,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-environment-jsdom@npm:^29.1.2":
-  version: 29.1.2
-  resolution: "jest-environment-jsdom@npm:29.1.2"
+"jest-environment-jsdom@npm:^29.7.0":
+  version: 29.7.0
+  resolution: "jest-environment-jsdom@npm:29.7.0"
   dependencies:
-    "@jest/environment": "npm:^29.1.2"
-    "@jest/fake-timers": "npm:^29.1.2"
-    "@jest/types": "npm:^29.1.2"
+    "@jest/environment": "npm:^29.7.0"
+    "@jest/fake-timers": "npm:^29.7.0"
+    "@jest/types": "npm:^29.6.3"
     "@types/jsdom": "npm:^20.0.0"
     "@types/node": "npm:*"
-    jest-mock: "npm:^29.1.2"
-    jest-util: "npm:^29.1.2"
+    jest-mock: "npm:^29.7.0"
+    jest-util: "npm:^29.7.0"
     jsdom: "npm:^20.0.0"
-  checksum: 11c84012eebb48a8f9d4115b18061667172d1d3c99b30c4074e683c614a0765f1cb615e20e83746c812d627c73cb4069fa0a56cb297431384092c1894375c73e
+  peerDependencies:
+    canvas: ^2.5.0
+  peerDependenciesMeta:
+    canvas:
+      optional: true
+  checksum: 23bbfc9bca914baef4b654f7983175a4d49b0f515a5094ebcb8f819f28ec186f53c0ba06af1855eac04bab1457f4ea79dae05f70052cf899863e8096daa6e0f5
   languageName: node
   linkType: hard
 
@@ -22656,7 +22661,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-mock@npm:^29.1.2, jest-mock@npm:^29.7.0":
+"jest-mock@npm:^29.7.0":
   version: 29.7.0
   resolution: "jest-mock@npm:29.7.0"
   dependencies:
@@ -22846,7 +22851,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-util@npm:^29.1.2, jest-util@npm:^29.7.0":
+"jest-util@npm:^29.7.0":
   version: 29.7.0
   resolution: "jest-util@npm:29.7.0"
   dependencies:
@@ -22930,7 +22935,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest@npm:^29.1.2, jest@npm:^29.6.4":
+"jest@npm:^29.6.4, jest@npm:^29.7.0":
   version: 29.7.0
   resolution: "jest@npm:29.7.0"
   dependencies:
@@ -25202,7 +25207,7 @@ __metadata:
     "@types/gulp-sass": "npm:^5.0.0"
     "@types/gulp-sourcemaps": "npm:^0.0.35"
     "@types/he": "npm:^1"
-    "@types/jest": "npm:^29.1.2"
+    "@types/jest": "npm:^29.5.12"
     "@types/mocha": "npm:^10.0.3"
     "@types/node": "npm:^20"
     "@types/pify": "npm:^5.0.1"
@@ -25314,9 +25319,9 @@ __metadata:
     istanbul-lib-coverage: "npm:^3.2.0"
     istanbul-lib-report: "npm:^3.0.0"
     istanbul-reports: "npm:^3.1.5"
-    jest: "npm:^29.1.2"
+    jest: "npm:^29.7.0"
     jest-canvas-mock: "npm:^2.3.1"
-    jest-environment-jsdom: "npm:^29.1.2"
+    jest-environment-jsdom: "npm:^29.7.0"
     jest-junit: "npm:^14.0.1"
     jsdom: "npm:^16.7.0"
     json-rpc-engine: "npm:^6.1.0"
@@ -25336,7 +25341,7 @@ __metadata:
     mocha-junit-reporter: "npm:^2.2.1"
     mockttp: "npm:^3.10.1"
     nanoid: "npm:^2.1.6"
-    nock: "npm:^13.2.9"
+    nock: "patch:nock@npm%3A13.5.4#~/.yarn/patches/nock-npm-13.5.4-2c4f77b249.patch"
     node-fetch: "npm:^2.6.1"
     nyc: "npm:^15.1.0"
     pify: "npm:^5.0.0"
@@ -26614,15 +26619,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nock@npm:^13.2.9":
-  version: 13.2.9
-  resolution: "nock@npm:13.2.9"
+"nock@npm:13.5.4":
+  version: 13.5.4
+  resolution: "nock@npm:13.5.4"
   dependencies:
     debug: "npm:^4.1.0"
     json-stringify-safe: "npm:^5.0.1"
-    lodash: "npm:^4.17.21"
     propagate: "npm:^2.0.0"
-  checksum: 38e135b41b3ba0ce3202d4079a45642eb5721f1c1c78aea6b54c668e56cc05265100899ab67376bb99aec860456d11e4e30c5e9d5be3265c522edf3df54fa172
+  checksum: 75bad391bae4efb81b742734af5f2d87309cd93d3ca6b78372fd37946d78ccb254d79104676619866915e6734abfc1b00fee2aa42073a4843ca3c746aad35a4d
+  languageName: node
+  linkType: hard
+
+"nock@patch:nock@npm%3A13.5.4#~/.yarn/patches/nock-npm-13.5.4-2c4f77b249.patch":
+  version: 13.5.4
+  resolution: "nock@patch:nock@npm%3A13.5.4#~/.yarn/patches/nock-npm-13.5.4-2c4f77b249.patch::version=13.5.4&hash=ef8b14"
+  dependencies:
+    debug: "npm:^4.1.0"
+    json-stringify-safe: "npm:^5.0.1"
+    propagate: "npm:^2.0.0"
+  checksum: 195540d49cbbc42a4092fe8db80ffe646919ec5abef115be70eeffba81223331e38285bc3f37c024784a2fc5dff69b237aad1fcacc821ba815f4e5b7c57333d8
   languageName: node
   linkType: hard
 
