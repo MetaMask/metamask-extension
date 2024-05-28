@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { Dispatch, SetStateAction, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import {
   MetaMetricsEventCategory,
@@ -27,6 +27,9 @@ import Tooltip from '../../../../../components/ui/tooltip/tooltip';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
   AlignItems,
+  BackgroundColor,
+  BorderRadius,
+  Color,
   Display,
   FlexDirection,
   FontWeight,
@@ -43,7 +46,13 @@ import {
 import { useBalance } from '../../../hooks/useBalance';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
 
-const HeaderInfo = () => {
+const HeaderInfo = ({
+  showAdvancedDetails,
+  setShowAdvancedDetails,
+}: {
+  showAdvancedDetails: boolean;
+  setShowAdvancedDetails: Dispatch<SetStateAction<boolean>>;
+}) => {
   const useBlockie = useSelector(getUseBlockie);
   const [showAccountInfo, setShowAccountInfo] = React.useState(false);
 
@@ -90,6 +99,25 @@ const HeaderInfo = () => {
             }}
           />
         </Tooltip>
+        <Box
+          backgroundColor={
+            showAdvancedDetails
+              ? BackgroundColor.infoMuted
+              : BackgroundColor.transparent
+          }
+          borderRadius={BorderRadius.MD}
+        >
+          <ButtonIcon
+            ariaLabel={'Advanced tx details'}
+            color={IconColor.iconDefault}
+            iconName={IconName.AdvancedDetails}
+            data-testid="header-advanced-details-button"
+            size={ButtonIconSize.Md}
+            onClick={() => {
+              setShowAdvancedDetails(!showAdvancedDetails);
+            }}
+          />
+        </Box>
       </Box>
       <Modal
         isOpen={showAccountInfo}

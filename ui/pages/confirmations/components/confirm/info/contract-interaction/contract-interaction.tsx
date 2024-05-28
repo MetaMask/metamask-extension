@@ -8,9 +8,16 @@ import {
 } from '../../../../../../helpers/constants/design-system';
 import { currentConfirmationSelector } from '../../../../../../selectors';
 import { SimulationDetails } from '../../../simulation-details';
+import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
 import { TransactionDetails } from '../shared/transaction-details';
 
-const ContractInteractionInfo: React.FC = () => {
+interface InfoProps {
+  showAdvancedDetails: boolean;
+}
+
+const ContractInteractionInfo: React.FC<InfoProps> = ({
+  showAdvancedDetails,
+}) => {
   const currentConfirmation = useSelector(
     currentConfirmationSelector,
   ) as TransactionMeta;
@@ -40,6 +47,15 @@ const ContractInteractionInfo: React.FC = () => {
       >
         <TransactionDetails />
       </Box>
+      {showAdvancedDetails && (
+        <Box
+          backgroundColor={BackgroundColor.backgroundDefault}
+          borderRadius={BorderRadius.MD}
+          marginBottom={4}
+        >
+          <AdvancedDetails />
+        </Box>
+      )}
     </>
   );
 };
