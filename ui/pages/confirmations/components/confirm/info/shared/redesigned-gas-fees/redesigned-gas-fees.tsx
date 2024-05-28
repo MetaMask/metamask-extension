@@ -1,11 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import React, {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { EtherDenomination } from '../../../../../../../../shared/constants/common';
 import { EditGasModes } from '../../../../../../../../shared/constants/gas';
@@ -13,7 +7,6 @@ import {
   addHexes,
   getEthConversionFromWeiHex,
   getValueFromWeiHex,
-  hexToDecimal,
   subtractHexes,
 } from '../../../../../../../../shared/modules/conversion.utils';
 import { getMinimumGasTotalInHexWei } from '../../../../../../../../shared/modules/gas.utils';
@@ -29,7 +22,6 @@ import {
   IconName,
   Text,
 } from '../../../../../../../components/component-library';
-import { useTransactionModalContext } from '../../../../../../../contexts/transaction-modal';
 import { getConversionRate } from '../../../../../../../ducks/metamask/metamask';
 import {
   AlignItems,
@@ -46,12 +38,13 @@ import {
   currentConfirmationSelector,
   getCurrentCurrency,
 } from '../../../../../../../selectors';
-import { useTransactionEventFragment } from '../../../../../hooks/useTransactionEventFragment';
 import AdvancedGasFeePopover from '../../../../advanced-gas-fee-popover';
 import EditGasFeePopover from '../../../../edit-gas-fee-popover';
 import EditGasPopover from '../../../../edit-gas-popover';
 import GasTiming from '../../../../gas-timing';
 import { useSupportsEIP1559 } from '../../hooks/supports-eip-1559';
+import { useEIP1559TxFees } from '../../hooks/use-eip-1559-fees';
+import { EditGasIcon } from '../edit-gas-icon/edit-gas-icon';
 
 export const RedesignedGasFees = () => {
   const currentConfirmation = useSelector(
@@ -100,36 +93,13 @@ export const RedesignedGasFees = () => {
     Number(
       getValueFromWeiHex({
         value: gasEstimate,
-        conversionRate: conversionRate,
+        conversionRate,
         fromCurrency: EtherDenomination.GWEI,
         toCurrency: currentCurrency,
         numberOfDecimals: 2,
       }),
     ),
   );
-
-  const useEIP1559TxFees = (currentConfirmation: TransactionMeta) => {
-    const [maxFeePerGas, setMaxFeePerGas] = useState(0);
-    const [maxPriorityFeePerGas, setMaxPriorityFeePerGas] = useState(0);
-
-    useEffect(() => {
-      const newMaxFeePerGas = currentConfirmation?.txParams?.maxFeePerGas
-        ? Number(hexToDecimal(currentConfirmation.txParams.maxFeePerGas))
-        : 0;
-
-      const newMaxPriorityFeePerGas = currentConfirmation?.txParams
-        ?.maxPriorityFeePerGas
-        ? Number(
-            hexToDecimal(currentConfirmation.txParams.maxPriorityFeePerGas),
-          )
-        : 0;
-
-      setMaxFeePerGas(newMaxFeePerGas);
-      setMaxPriorityFeePerGas(newMaxPriorityFeePerGas);
-    }, [currentConfirmation]);
-
-    return { maxFeePerGas, maxPriorityFeePerGas };
-  };
 
   const { maxFeePerGas, maxPriorityFeePerGas } =
     useEIP1559TxFees(currentConfirmation);
@@ -154,7 +124,7 @@ export const RedesignedGasFees = () => {
         Number(
           getValueFromWeiHex({
             value: layer1GasFee,
-            conversionRate: conversionRate,
+            conversionRate,
             fromCurrency: EtherDenomination.GWEI,
             toCurrency: currentCurrency,
             numberOfDecimals: 2,
@@ -181,7 +151,7 @@ export const RedesignedGasFees = () => {
         Number(
           getValueFromWeiHex({
             value: getTransactionFeeTotal,
-            conversionRate: conversionRate,
+            conversionRate,
             fromCurrency: EtherDenomination.GWEI,
             toCurrency: currentCurrency,
             numberOfDecimals: 2,
@@ -360,46 +330,5 @@ export const RedesignedGasFees = () => {
         />
       )}
     </>
-  );
-};
-
-const EditGasIcon = ({
-  supportsEIP1559,
-  setShowCustomizeGasPopover,
-}: {
-  supportsEIP1559: boolean;
-  setShowCustomizeGasPopover: Dispatch<SetStateAction<boolean>>;
-}) => {
-  const { openModal } = useTransactionModalContext() as {
-    openModal: (modalId: string) => void;
-  };
-  const { updateTransactionEventFragment } = useTransactionEventFragment();
-
-  const openEditEIP1559TxGasFeeModal = () => {
-    updateTransactionEventFragment({
-      gas_edit_attempted: 'basic',
-    });
-    openModal('editGasFee');
-  };
-
-  const openEditGasFeeLegacyTxModal = () => {
-    setShowCustomizeGasPopover(true);
-  };
-
-  const openEditGasFeeModal = () =>
-    supportsEIP1559
-      ? openEditEIP1559TxGasFeeModal()
-      : openEditGasFeeLegacyTxModal();
-
-  return (
-    <Button
-      style={{ textDecoration: 'none' }}
-      size={ButtonSize.Sm}
-      variant={ButtonVariant.Link}
-      startIconName={IconName.Edit}
-      color={IconColor.primaryDefault}
-      data-testid="edit-gas-fee-icon"
-      onClick={openEditGasFeeModal}
-    />
   );
 };
