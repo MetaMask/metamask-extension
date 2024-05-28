@@ -585,7 +585,7 @@
     "mocha": "^10.2.0",
     "mocha-junit-reporter": "^2.2.1",
     "mockttp": "^3.10.1",
-    "nock": "^13.2.9",
+    "nock": "patch:nock@npm%3A13.5.4#~/.yarn/patches/nock-npm-13.5.4-2c4f77b249.patch",
     "node-fetch": "^2.6.1",
     "nyc": "^15.1.0",
     "postcss": "^8.4.32",
