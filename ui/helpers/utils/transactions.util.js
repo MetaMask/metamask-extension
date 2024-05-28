@@ -217,6 +217,9 @@ export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
     case TransactionType.swap: {
       return t('swap');
     }
+    case TransactionType.swapAndSend: {
+      return t('swapAndSend');
+    }
     case TransactionType.swapApproval: {
       return t('swapApproval');
     }

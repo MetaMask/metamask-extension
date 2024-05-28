@@ -13,7 +13,7 @@ export type NotificationUnion =
  * - `data` field (declared in the Raw shapes)
  */
 export type Notification = Compute<
-  (FeatureAnnouncementRawNotification | OnChainRawNotification) & {
+  NotificationUnion & {
     id: string;
     createdAt: string;
     isRead: boolean;
