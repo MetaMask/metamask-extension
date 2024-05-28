@@ -65,6 +65,7 @@ import { NetworkController } from '@metamask/network-controller';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import {
   PermissionController,
+  PermissionDoesNotExistError,
   PermissionsRequestNotFoundError,
   SubjectMetadataController,
   SubjectType,
@@ -276,7 +277,7 @@ import createTabIdMiddleware from './lib/createTabIdMiddleware';
 import { NetworkOrderController } from './controllers/network-order';
 import { AccountOrderController } from './controllers/account-order';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
-import { setupMultiplex } from './lib/stream-utils';
+import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import PreferencesController from './controllers/preferences';
 import AppStateController from './controllers/app-state';
 import AlertController from './controllers/alert';
@@ -294,6 +295,7 @@ import EncryptionPublicKeyController from './controllers/encryption-public-key';
 import AppMetadataController from './controllers/app-metadata';
 
 import {
+  CaveatFactories,
   CaveatMutatorFactories,
   getCaveatSpecifications,
   getChangedAccounts,
@@ -301,6 +303,7 @@ import {
   getPermissionSpecifications,
   getPermittedAccountsByOrigin,
   NOTIFICATION_NAMES,
+  PermissionNames,
   unrestrictedMethods,
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
@@ -1116,6 +1119,10 @@ export default class MetamaskController extends EventEmitter {
         getInternalAccounts: this.accountsController.listAccounts.bind(
           this.accountsController,
         ),
+        findNetworkClientIdByChainId:
+          this.networkController.findNetworkClientIdByChainId.bind(
+            this.networkController,
+          ),
       }),
       permissionSpecifications: {
         ...getPermissionSpecifications({
@@ -1424,14 +1431,42 @@ export default class MetamaskController extends EventEmitter {
       }),
     });
 
+    const pushPlatformNotificationsControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'PushPlatformNotificationsController',
+        allowedActions: ['AuthenticationController:getBearerToken'],
+      });
     this.pushPlatformNotificationsController =
       new PushPlatformNotificationsController({
         state: initState.PushPlatformNotificationsController,
-        messenger: this.controllerMessenger.getRestricted({
-          name: 'PushPlatformNotificationsController',
-          allowedActions: ['AuthenticationController:getBearerToken'],
-        }),
+        messenger: pushPlatformNotificationsControllerMessenger,
       });
+    pushPlatformNotificationsControllerMessenger.subscribe(
+      'PushPlatformNotificationsController:onNewNotifications',
+      (notification) => {
+        this.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.PushNotificationReceived,
+          category: MetaMetricsEventCategory.PushNotifications,
+          properties: {
+            notification_type: notification.type,
+            chain_id: notification?.chain_id,
+          },
+        });
+      },
+    );
+    pushPlatformNotificationsControllerMessenger.subscribe(
+      'PushPlatformNotificationsController:pushNotificationClicked',
+      (notification) => {
+        this.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.PushNotificationClicked,
+          category: MetaMetricsEventCategory.PushNotifications,
+          properties: {
+            notification_type: notification.type,
+            chain_id: notification?.chain_id,
+          },
+        });
+      },
+    );
 
     this.metamaskNotificationsController = new MetamaskNotificationsController({
       messenger: this.controllerMessenger.getRestricted({
@@ -3074,8 +3109,7 @@ export default class MetamaskController extends EventEmitter {
       },
       rollbackToPreviousProvider:
         networkController.rollbackToPreviousProvider.bind(networkController),
-      removeNetworkConfiguration:
-        networkController.removeNetworkConfiguration.bind(networkController),
+      removeNetworkConfiguration: this.removeNetworkConfiguration.bind(this),
       upsertNetworkConfiguration:
         this.networkController.upsertNetworkConfiguration.bind(
           this.networkController,
@@ -4438,6 +4472,48 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Stops exposing the specified chain ID to all third parties.
+   * Exposed chain IDs are stored in caveats of the permittedChains permission. This
+   * method uses `PermissionController.updatePermissionsByCaveat` to
+   * remove the specified chain ID from every permittedChains permission. If a
+   * permission only included this chain ID, the permission is revoked entirely.
+   *
+   * @param {string} targetChainId - The chain ID to stop exposing
+   * to third parties.
+   */
+  removeAllChainIdPermissions(targetChainId) {
+    this.permissionController.updatePermissionsByCaveat(
+      CaveatTypes.restrictNetworkSwitching,
+      (existingChainIds) =>
+        CaveatMutatorFactories[
+          CaveatTypes.restrictNetworkSwitching
+        ].removeChainId(targetChainId, existingChainIds),
+    );
+  }
+
+  removeNetworkConfiguration(networkConfigurationId) {
+    const { networkConfigurations } = this.networkController.state;
+    const { chainId } = networkConfigurations[networkConfigurationId] ?? {};
+    if (!chainId) {
+      throw new Error('Network configuration not found');
+    }
+    const hasOtherConfigsForChainId = Object.values(networkConfigurations).some(
+      (config) =>
+        config.chainId === chainId &&
+        config.id !== networkConfigurationId &&
+        config.type !== networkConfigurationId,
+    );
+
+    // if this network configuration is only one for a given chainId
+    // remove all permissions for that chainId
+    if (!hasOtherConfigsForChainId) {
+      this.removeAllChainIdPermissions(chainId);
+    }
+
+    this.networkController.removeNetworkConfiguration(networkConfigurationId);
+  }
+
+  /**
    * Stops exposing the account with the specified address to all third parties.
    * Exposed accounts are stored in caveats of the eth_accounts permission. This
    * method uses `PermissionController.updatePermissionsByCaveat` to
@@ -4842,7 +4918,7 @@ export default class MetamaskController extends EventEmitter {
       ),
     );
     const handleUpdate = (update) => {
-      if (outStream._writableState.ended) {
+      if (!isStreamWritable(outStream)) {
         return;
       }
       // send notification to client-side
@@ -4854,7 +4930,7 @@ export default class MetamaskController extends EventEmitter {
     };
     this.on('update', handleUpdate);
     const startUISync = () => {
-      if (outStream._writableState.ended) {
+      if (!isStreamWritable(outStream)) {
         return;
       }
       // send notification to client-side
@@ -5110,15 +5186,24 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController,
           origin,
         ),
-        hasPermissions: this.permissionController.hasPermissions.bind(
-          this.permissionController,
-          origin,
-        ),
         requestAccountsPermission:
           this.permissionController.requestPermissions.bind(
             this.permissionController,
             { origin },
             { eth_accounts: {} },
+          ),
+        requestPermittedChainsPermission: (chainIds) =>
+          this.permissionController.requestPermissions(
+            { origin },
+            {
+              [PermissionNames.permittedChains]: {
+                caveats: [
+                  CaveatFactories[CaveatTypes.restrictNetworkSwitching](
+                    chainIds,
+                  ),
+                ],
+              },
+            },
           ),
         requestPermissionsForOrigin:
           this.permissionController.requestPermissions.bind(
@@ -5139,33 +5224,58 @@ export default class MetamaskController extends EventEmitter {
             console.log(e);
           }
         },
-        getCurrentChainId: () =>
-          this.networkController.state.providerConfig.chainId,
+        getCaveat: ({ target, caveatType }) => {
+          try {
+            return this.permissionController.getCaveat(
+              origin,
+              target,
+              caveatType,
+            );
+          } catch (e) {
+            if (e instanceof PermissionDoesNotExistError) {
+              // suppress expected error in case that the origin
+              // does not have the target permission yet
+            } else {
+              throw e;
+            }
+          }
+
+          return undefined;
+        },
+        getChainPermissionsFeatureFlag: () =>
+          Boolean(process.env.CHAIN_PERMISSIONS),
         getCurrentRpcUrl: () =>
           this.networkController.state.providerConfig.rpcUrl,
         // network configuration-related
-        getNetworkConfigurations: () =>
-          this.networkController.state.networkConfigurations,
         upsertNetworkConfiguration:
           this.networkController.upsertNetworkConfiguration.bind(
             this.networkController,
           ),
-        setActiveNetwork: (networkClientId) => {
-          this.networkController.setActiveNetwork(networkClientId);
+        setActiveNetwork: async (networkClientId) => {
+          await this.networkController.setActiveNetwork(networkClientId);
+          // if the origin has the eth_accounts permission
+          // we set per dapp network selection state
+          if (
+            this.permissionController.hasPermission(
+              origin,
+              PermissionNames.eth_accounts,
+            )
+          ) {
+            this.selectedNetworkController.setNetworkClientIdForDomain(
+              origin,
+              networkClientId,
+            );
+          }
         },
-        findNetworkClientIdByChainId:
-          this.networkController.findNetworkClientIdByChainId.bind(
-            this.networkController,
-          ),
         findNetworkConfigurationBy: this.findNetworkConfigurationBy.bind(this),
-        setNetworkClientIdForDomain:
-          this.selectedNetworkController.setNetworkClientIdForDomain.bind(
-            this.selectedNetworkController,
-          ),
-
-        getProviderConfig: () => this.networkController.state.providerConfig,
-        setProviderType: (type) => {
-          return this.networkController.setProviderType(type);
+        getCurrentChainIdForDomain: (domain) => {
+          const networkClientId =
+            this.selectedNetworkController.getNetworkClientIdForDomain(domain);
+          const { chainId } =
+            this.networkController.getNetworkConfigurationByNetworkClientId(
+              networkClientId,
+            );
+          return chainId;
         },
 
         // Web3 shim-related
