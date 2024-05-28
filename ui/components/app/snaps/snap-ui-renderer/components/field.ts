@@ -19,7 +19,9 @@ export const field: UIComponentFactory<FieldElement> = ({ element, form }) => {
     case 'Input': {
       const input = child as InputElement;
       const button = children[1] as ButtonElement;
-      const buttonMapped = buttonFn({ element: button });
+      const buttonMapped =
+        button &&
+        buttonFn({ element: button } as UIComponentParams<ButtonElement>);
       return {
         element: 'SnapUIInput',
         props: {
@@ -33,13 +35,13 @@ export const field: UIComponentFactory<FieldElement> = ({ element, form }) => {
           form,
           error: element.props.error !== undefined,
           helpText: element.props.error,
-          propComponents: {
-            endAccessory: buttonMapped && {
-              ...buttonMapped,
-              props: {
-                ...buttonMapped.props,
-                padding: 0,
-              },
+        },
+        propComponents: {
+          endAccessory: buttonMapped && {
+            ...buttonMapped,
+            props: {
+              ...buttonMapped.props,
+              padding: 0,
             },
           },
         },
@@ -48,7 +50,9 @@ export const field: UIComponentFactory<FieldElement> = ({ element, form }) => {
 
     case 'Dropdown': {
       const dropdown = child as DropdownElement;
-      const dropdownMapped = dropdownFn({ element: dropdown });
+      const dropdownMapped = dropdownFn({
+        element: dropdown,
+      } as UIComponentParams<DropdownElement>);
       return {
         element: 'SnapUIDropdown',
         props: {
