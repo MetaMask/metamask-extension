@@ -51,6 +51,12 @@ describe('Snap Account Transfers', function (this: Suite) {
     driver: Driver,
     flowType: string,
   ) {
+    // testing to be removed
+    if (process.env.ENABLE_MV3) {
+      console.log('mv3 flag', process.env.ENABLE_MV3);
+      await driver.delay(2000);
+    }
+
     const isAsyncFlow = flowType !== 'sync';
 
     await installSnapSimpleKeyring(driver, isAsyncFlow);
