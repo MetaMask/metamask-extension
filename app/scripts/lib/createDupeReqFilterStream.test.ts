@@ -1,12 +1,18 @@
-import { Transform } from 'readable-stream';
+import NodeStream from 'node:stream';
+import OurReadableStream from 'readable-stream';
+import ReadableStream2 from 'readable-stream-2';
+import ReadableStream3 from 'readable-stream-3';
+
 import type { JsonRpcRequest } from '@metamask/utils';
 import createDupeReqFilterStream, {
   THREE_MINUTES,
 } from './createDupeReqFilterStream';
 
-function createTestStream(output: JsonRpcRequest[] = []) {
+const { Transform } = OurReadableStream;
+
+function createTestStream(output: JsonRpcRequest[] = [], S = Transform) {
   const transformStream = createDupeReqFilterStream();
-  const testOutStream = new Transform({
+  const testOutStream = new S({
     transform: (chunk: JsonRpcRequest, _, cb) => {
       output.push(chunk);
       cb();
@@ -22,10 +28,11 @@ function createTestStream(output: JsonRpcRequest[] = []) {
 function runStreamTest(
   requests: JsonRpcRequest[] = [],
   advanceTimersTime = 10,
+  S = Transform,
 ) {
   return new Promise((resolve, reject) => {
     const output: JsonRpcRequest[] = [];
-    const testStream = createTestStream(output);
+    const testStream = createTestStream(output, S);
 
     testStream
       .on('finish', () => resolve(output))
@@ -311,5 +318,75 @@ describe('createDupeReqFilterStream', () => {
     jest.advanceTimersByTime(THREE_MINUTES + 1);
 
     expect(output).toEqual(expectedOutputBeforeExpiryTime);
+  });
+
+  [
+    ['node:stream', NodeStream] as [string, typeof NodeStream],
+    // Redundantly include used version twice for regression-detection purposes
+    ['readable-stream', OurReadableStream] as [
+      string,
+      typeof OurReadableStream,
+    ],
+    ['readable-stream v2', ReadableStream2] as [string, typeof ReadableStream2],
+    ['readable-stream v3', ReadableStream3] as [string, typeof ReadableStream3],
+  ].forEach(([name, streamsImpl]) => {
+    describe(`Using Streams implementation: ${name}`, () => {
+      [
+        ['Duplex', streamsImpl.Duplex] as [string, typeof streamsImpl.Duplex],
+        ['Transform', streamsImpl.Transform] as [
+          string,
+          typeof streamsImpl.Transform,
+        ],
+        ['Writable', streamsImpl.Writable] as [
+          string,
+          typeof streamsImpl.Writable,
+        ],
+      ].forEach(([className, S]) => {
+        it(`handles a mix of request types coming through a ${className} stream`, async () => {
+          const requests = [
+            { id: 1, method: 'foo' },
+            { method: 'notify1' },
+            { id: 1, method: 'foo' },
+            { id: 2, method: 'bar' },
+            { method: 'notify2' },
+            { id: 2, method: 'bar' },
+            { id: 3, method: 'baz' },
+          ];
+
+          const expectedOutput = [
+            { id: 1, method: 'foo' },
+            { method: 'notify1' },
+            { id: 2, method: 'bar' },
+            { method: 'notify2' },
+            { id: 3, method: 'baz' },
+          ];
+
+          const output: JsonRpcRequest[] = [];
+          const testStream = createDupeReqFilterStream();
+          const testOutStream = new S({
+            transform: (chunk: JsonRpcRequest, _, cb) => {
+              output.push(chunk);
+              cb();
+            },
+            objectMode: true,
+          });
+
+          testOutStream._write = (
+            chunk: JsonRpcRequest,
+            _: BufferEncoding,
+            callback: (error?: Error | null) => void,
+          ) => {
+            output.push(chunk);
+            callback();
+          };
+
+          testStream.pipe(testOutStream);
+
+          requests.forEach((request) => testStream.write(request));
+
+          expect(output).toEqual(expectedOutput);
+        });
+      });
+    });
   });
 });
