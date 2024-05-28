@@ -8,6 +8,7 @@ import {
 import log from 'loglevel';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { KeyringControllerStateChangeEvent } from '@metamask/keyring-controller';
+import { AccountsControllerListAccountsAction } from '@metamask/accounts-controller';
 import {
   AuthenticationControllerGetBearerToken,
   AuthenticationControllerIsSignedIn,
@@ -33,7 +34,6 @@ import { OnChainRawNotification } from './types/on-chain-notification/on-chain-n
 import { FeatureAnnouncementRawNotification } from './types/feature-announcement/feature-announcement';
 import { processNotification } from './processors/process-notifications';
 import * as MetamaskNotificationsUtils from './utils/utils';
-import { AccountsControllerListAccountsAction } from '@metamask/accounts-controller';
 
 // Unique name for the controller
 const controllerName = 'MetamaskNotificationsController';

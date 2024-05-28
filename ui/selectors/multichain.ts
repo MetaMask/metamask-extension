@@ -63,7 +63,8 @@ export const useMultichainNetwork = (): {
   const evmProvider: ProviderConfig = useSelector(getProviderConfig);
 
   const memoizedResult = useMemo(() => {
-    if (isEvm) {
+    // there are no selected account during onboarding. we default to the current evm provider.
+    if (isEvm || !selectedAccount) {
       return {
         caip2: `eip155:${evmProvider.chainId}`,
         chainId: evmProvider.chainId,
