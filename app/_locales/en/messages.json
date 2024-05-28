@@ -4216,9 +4216,6 @@
   "requestFrom": {
     "message": "Request from"
   },
-  "signingInWith": {
-    "message": "Signing in with"
-  },
   "requestFromInfo": {
     "message": "This is the site asking for your signature."
   },
@@ -4687,6 +4684,9 @@
   },
   "signing": {
     "message": "Signing"
+  },
+  "signingInWith": {
+    "message": "Signing in with"
   },
   "simulationDetailsFailed": {
     "message": "There was an error loading your estimation."
