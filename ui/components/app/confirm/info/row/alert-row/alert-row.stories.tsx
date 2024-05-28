@@ -4,7 +4,7 @@ import { AlertRow } from './alert-row';
 import configureStore from '../../../../../../store/store';
 import { Provider } from 'react-redux';
 import { Meta } from '@storybook/react';
-import { baseAlertsMock } from '../../../../confirmations/alerts/alert-modal/alert-modal.stories';
+import { baseAlertsMock } from '../../../../alert-system/alert-modal/alert-modal.stories';
 
 const LABEL_FROM_MOCK = 'From';
 const DATA_FROM_MOCK = 'Data';
@@ -77,7 +77,6 @@ AlertRowCritical.args = {
   children: 'Value',
   alertKey: LABEL_FROM_MOCK,
   ownerId: OWNER_ID_MOCK,
-  variant: ConfirmInfoRowVariant.Critical,
 };
 
 /**
@@ -89,7 +88,6 @@ AlertRowWarning.args = {
   children: 'Value',
   alertKey: DATA_FROM_MOCK,
   ownerId: OWNER_ID_MOCK,
-  variant: ConfirmInfoRowVariant.Warning,
 };
 
 /**

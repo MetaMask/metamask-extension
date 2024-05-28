@@ -146,14 +146,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-
-        // TODO: Reload fix to have the confirmations show
-        await driver.executeScript(`window.location.reload()`);
-
-        // Second Switch Network
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
+        await driver.clickElement('[data-testid="home__activity-tab"]');
 
         // Check for unconfirmed transaction in tx list
         await driver.wait(async () => {

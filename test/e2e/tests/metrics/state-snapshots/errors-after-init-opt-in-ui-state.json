@@ -190,6 +190,7 @@
     "isSignedIn": "boolean",
     "isProfileSyncingEnabled": true,
     "isProfileSyncingUpdateLoading": "boolean",
+    "subscriptionAccountsSeen": "object",
     "isMetamaskNotificationsFeatureSeen": "boolean",
     "isMetamaskNotificationsEnabled": "boolean",
     "isFeatureAnnouncementsEnabled": "boolean",
