@@ -39,8 +39,8 @@ const toHumanReadableTime = (milliseconds = 1, t) => {
   return t('gasTimingMinutesShort', [Math.ceil(seconds / 60)]);
 };
 export default function GasTiming({
-  maxFeePerGas = 0,
-  maxPriorityFeePerGas = 0,
+  maxFeePerGas = '0',
+  maxPriorityFeePerGas = '0',
   gasWarnings,
 }) {
   const gasEstimateType = useSelector(getGasEstimateType);

@@ -1,4 +1,4 @@
-const { strict: assert } = require('assert');
+const { hexToNumber } = require('@metamask/utils');
 const {
   defaultGanacheOptions,
   defaultGanacheOptionsForType2Transactions,
@@ -9,7 +9,6 @@ const {
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { CHAIN_IDS } = require('../../../../shared/constants/network');
-const { hexToNumber } = require('@metamask/utils');
 
 describe('Confirmation Redesign Contract Interaction Component', function () {
   if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
