@@ -15,7 +15,7 @@ describe('migration #119', () => {
     expect(newStorage.meta).toStrictEqual({ version });
   });
 
-  it('should add importTime to InternalAccount if it is not defined"', async () => {
+  it('adds importTime attribute to InternalAccount if it is not defined"', async () => {
     const mockInternalAccount = createMockInternalAccount();
     // @ts-expect-error forcing the importTime to be undefined for migration test.
     mockInternalAccount.metadata.importTime = undefined;
