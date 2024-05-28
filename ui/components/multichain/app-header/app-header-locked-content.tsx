@@ -1,3 +1,4 @@
+import React from 'react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import MetafoxLogo from '../../ui/metafox-logo';
 import { PickerNetwork } from '../../component-library';
