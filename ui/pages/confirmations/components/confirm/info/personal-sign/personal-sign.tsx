@@ -38,7 +38,7 @@ const PersonalSignInfo: React.FC = () => {
         marginBottom={4}
       >
         <AlertRow
-          alertKey={t('requestFrom')}
+          alertKey="requestFrom"
           ownerId={currentConfirmation.id}
           label={t('requestFrom')}
           tooltip={t('requestFromInfo')}
@@ -53,7 +53,7 @@ const PersonalSignInfo: React.FC = () => {
         marginBottom={4}
       >
         <AlertRow
-          alertKey={t('message')}
+          alertKey="message"
           ownerId={currentConfirmation.id}
           label={t('message')}
         >
