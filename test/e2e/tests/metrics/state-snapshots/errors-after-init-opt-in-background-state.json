@@ -104,6 +104,7 @@
     "segmentApiCalls": "object"
   },
   "MetamaskNotificationsController": {
+    "subscriptionAccountsSeen": "object",
     "isMetamaskNotificationsFeatureSeen": "boolean",
     "isMetamaskNotificationsEnabled": "boolean",
     "isFeatureAnnouncementsEnabled": "boolean",

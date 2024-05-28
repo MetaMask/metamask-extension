@@ -254,6 +254,7 @@ export async function determineTransactionAssetType(
     try {
       // We don't need a balance check, so the second parameter to
       // getTokenStandardAndDetails is omitted.
+      // FIXME: should this be awaited?
       const details = getTokenStandardAndDetails(txMeta.txParams.to);
       if (details.standard) {
         return {

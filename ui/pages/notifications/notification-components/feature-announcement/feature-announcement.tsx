@@ -51,8 +51,8 @@ export const components: NotificationComponent<FeatureAnnouncementNotification> 
         id={notification.id}
         isRead={notification.isRead}
         icon={{
-          type: NotificationListItemIconType.Nft,
-          value: './images/logo/metamask-fox.svg',
+          type: NotificationListItemIconType.Token,
+          value: './images/product-announcement-logo.svg',
         }}
         title={getTitle(notification)}
         description={getDescription(notification)}
@@ -106,6 +106,7 @@ export const components: NotificationComponent<FeatureAnnouncementNotification> 
       Link: ({ notification }) =>
         notification.data.link ? (
           <NotificationDetailButton
+            notification={notification}
             variant={ButtonVariant.Primary}
             text={notification.data.link.linkText}
             href={notification.data.link.linkUrl}
@@ -117,6 +118,7 @@ export const components: NotificationComponent<FeatureAnnouncementNotification> 
       Action: ({ notification }) =>
         notification.data.action ? (
           <NotificationDetailButton
+            notification={notification}
             variant={ButtonVariant.Secondary}
             text={notification.data.action.actionText}
             href={notification.data.action.actionUrl}

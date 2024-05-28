@@ -21,14 +21,13 @@ import {
 import { confirmSelector } from '../../../selectors';
 import { getConfirmationSender } from '../utils';
 import useAlerts from '../../../../../hooks/useAlerts';
-import { ConfirmAlertModal } from '../../../../../components/app/confirmations/alerts/confirm-alert-modal';
+import { ConfirmAlertModal } from '../../../../../components/app/alert-system/confirm-alert-modal';
+import { Severity } from '../../../../../helpers/constants/design-system';
+import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import useIsDangerButton from './useIsDangerButton';
 
 function getIconName(hasUnconfirmedAlerts: boolean): IconName {
-  if (hasUnconfirmedAlerts) {
-    return IconName.SecuritySearch;
-  }
-  return IconName.Danger;
+  return hasUnconfirmedAlerts ? IconName.SecuritySearch : IconName.Danger;
 }
 
 function ConfirmButton({
@@ -47,12 +46,19 @@ function ConfirmButton({
 
   const [confirmModalVisible, setConfirmModalVisible] =
     useState<boolean>(false);
-  const { alerts, isAlertConfirmed } = useAlerts(alertOwnerId);
-  const unconfirmedAlerts = alerts.filter(
-    (alert) => alert.field && !isAlertConfirmed(alert.key),
+  const { alerts, isAlertConfirmed, fieldAlerts } = useAlerts(alertOwnerId);
+  const unconfirmedDangerAlerts = fieldAlerts.filter(
+    (alert: Alert) =>
+      !isAlertConfirmed(alert.key) && alert.severity === Severity.Danger,
   );
-  const hasAlerts = alerts.length > 0;
-  const hasUnconfirmedAlerts = unconfirmedAlerts.length > 0;
+
+  const hasDangerAlerts = alerts.some(
+    (alert: Alert) => alert.severity === Severity.Danger,
+  );
+  const hasDangerFieldAlerts = fieldAlerts.some(
+    (alert: Alert) => alert.severity === Severity.Danger,
+  );
+  const hasUnconfirmedDangerAlerts = unconfirmedDangerAlerts.length > 0;
 
   const handleCloseConfirmModal = useCallback(() => {
     setConfirmModalVisible(false);
@@ -60,13 +66,13 @@ function ConfirmButton({
 
   const handleOpenConfirmModal = useCallback(() => {
     setConfirmModalVisible(true);
-  }, [hasUnconfirmedAlerts]);
+  }, []);
 
   return (
     <>
       {confirmModalVisible && (
         <ConfirmAlertModal
-          alertKey={alerts[0]?.key}
+          alertKey={fieldAlerts[0]?.key}
           ownerId={alertOwnerId}
           onClose={handleCloseConfirmModal}
           onCancel={onCancel}
@@ -77,14 +83,14 @@ function ConfirmButton({
         block
         data-testid="confirm-footer-confirm-button"
         startIconName={
-          hasAlerts ? getIconName(hasUnconfirmedAlerts) : undefined
+          hasDangerAlerts ? getIconName(hasUnconfirmedDangerAlerts) : undefined
         }
-        onClick={hasAlerts ? handleOpenConfirmModal : onSubmit}
-        danger={hasAlerts ? true : isDangerButton}
+        onClick={hasDangerFieldAlerts ? handleOpenConfirmModal : onSubmit}
+        danger={hasDangerAlerts ? true : isDangerButton}
         size={ButtonSize.Lg}
-        disabled={hasUnconfirmedAlerts ? false : disabled}
+        disabled={hasUnconfirmedDangerAlerts ? false : disabled}
       >
-        {hasUnconfirmedAlerts ? t('reviewAlerts') : t('confirm')}
+        {hasUnconfirmedDangerAlerts ? t('reviewAlerts') : t('confirm')}
       </Button>
     </>
   );
