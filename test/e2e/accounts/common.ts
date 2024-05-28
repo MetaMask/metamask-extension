@@ -53,8 +53,13 @@ export async function installSnapSimpleKeyring(
 
   // navigate to test Snaps page and connect
   await driver.openNewPage(TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL);
+
   await driver.clickElement('#connectButton');
 
+  if (process.env.ENABLE_MV3) {
+    console.log('Delay before connect button');
+    await driver.delay(1500);
+  }
   await driver.delay(500);
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -85,6 +90,11 @@ export async function installSnapSimpleKeyring(
   });
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.SnapSimpleKeyringDapp);
+
+  if (process.env.ENABLE_MV3) {
+    console.log('Delay checking connected');
+    await driver.delay(1500);
+  }
 
   await driver.waitForSelector({
     text: 'Connected',
@@ -217,7 +227,10 @@ export async function disconnectFromTestDapp(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
   await driver.clickElement('[data-testid="account-options-menu-button"]');
   await driver.clickElement({ text: 'All Permissions', tag: 'div' });
-  await driver.clickElementAndWaitToDisappear({ text: 'Got it', tag: 'button' });
+  await driver.clickElementAndWaitToDisappear({
+    text: 'Got it',
+    tag: 'button',
+  });
   await driver.clickElement({
     text: '127.0.0.1:8080',
     tag: 'p',
