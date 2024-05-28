@@ -114,11 +114,11 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
             }}
             label={t('notificationItemSwapped') || ''}
             detail={notification.data.token_in.symbol}
-            fiatValue={`${getUsdAmount(
+            fiatValue={`$${getUsdAmount(
               notification.data.token_in.amount,
               notification.data.token_in.decimals,
               notification.data.token_in.usd,
-            )} $`}
+            )}`}
             value={`${getAmount(
               notification.data.token_in.amount,
               notification.data.token_in.decimals,
@@ -143,11 +143,11 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
             }}
             label={t('notificationItemSwapped') || ''}
             detail={notification.data.token_out.symbol}
-            fiatValue={`${getUsdAmount(
+            fiatValue={`$${getUsdAmount(
               notification.data.token_out.amount,
               notification.data.token_out.decimals,
               notification.data.token_out.usd,
-            )} $`}
+            )}`}
             value={`${getAmount(
               notification.data.token_out.amount,
               notification.data.token_out.decimals,
@@ -216,6 +216,7 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
       );
       return (
         <NotificationDetailButton
+          notification={notification}
           variant={ButtonVariant.Secondary}
           text={t('notificationItemCheckBlockExplorer') || ''}
           href={

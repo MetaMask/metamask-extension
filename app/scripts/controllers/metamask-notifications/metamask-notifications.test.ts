@@ -90,14 +90,16 @@ describe('metamask-notifications - constructor()', () => {
     expect(mockDelete).not.toBeCalled();
   });
 
-  test('Keying Change Event with new triggers', async () => {
+  test('Keyring Change Event with new triggers will update triggers correctly', async () => {
     const { messenger, globalMessenger, mockListAccounts } = arrangeMocks();
 
     // initialize controller with 1 address
-    mockListAccounts.mockResolvedValueOnce(['addr1']);
     const controller = new MetamaskNotificationsController({
       messenger,
-      state: { isMetamaskNotificationsEnabled: true },
+      state: {
+        isMetamaskNotificationsEnabled: true,
+        subscriptionAccountsSeen: ['addr1'],
+      },
     });
 
     const mockUpdate = jest
@@ -120,27 +122,28 @@ describe('metamask-notifications - constructor()', () => {
       mockDelete.mockClear();
     }
 
-    await act(['addr2'], () => {
-      expect(mockUpdate).toBeCalled();
-      expect(mockDelete).toBeCalled();
+    // Act - if list accounts has been seen, then will not update
+    await act(['addr1'], () => {
+      expect(mockUpdate).not.toBeCalled();
+      expect(mockDelete).not.toBeCalled();
     });
 
-    // Act - new accounts were added
+    // Act - if a new address in list, then will update
     await act(['addr1', 'addr2'], () => {
       expect(mockUpdate).toBeCalled();
       expect(mockDelete).not.toBeCalled();
     });
 
-    // Act - an account was removed
-    await act(['addr1'], () => {
+    // Act - if the list doesn't have an address, then we need to delete
+    await act(['addr2'], () => {
       expect(mockUpdate).not.toBeCalled();
       expect(mockDelete).toBeCalled();
     });
 
-    // Act - an account was added and removed
-    await act(['addr2'], () => {
-      expect(mockUpdate).toBeCalled();
-      expect(mockDelete).toBeCalled();
+    // If the address is added back to the list, because it is seen we won't update
+    await act(['addr1', 'addr2'], () => {
+      expect(mockUpdate).not.toBeCalled();
+      expect(mockDelete).not.toBeCalled();
     });
   });
 
