@@ -427,24 +427,24 @@ export default class PreferencesController {
    * Sets a custom label for an account
    *
    * @deprecated - Please use setAccountName from the AccountsController
-   * @param {string} account - the account to set a label for
+   * @param {string} address - the account to set a label for
    * @param {string} label - the custom label for the account
    * @returns {Promise<string>}
    */
-  async setAccountLabel(account, label) {
-    const accountToUpdate = this.messagingSystem.call(
+  async setAccountLabel(address, label) {
+    const account = this.messagingSystem.call(
       'AccountsController:getAccountByAddress',
-      account,
+      address,
     );
-    if (!account) {
+    if (!address) {
       throw new Error(
-        `setAccountLabel requires a valid address, got ${String(account)}`,
+        `setAccountLabel requires a valid address, got ${String(address)}`,
       );
     }
 
     this.messagingSystem.call(
       'AccountsController:setAccountName',
-      accountToUpdate.id,
+      account.id,
       label,
     );
 
