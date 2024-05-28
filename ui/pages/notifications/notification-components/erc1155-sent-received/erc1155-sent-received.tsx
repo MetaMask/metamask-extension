@@ -26,7 +26,7 @@ import {
   NotificationDetailInfo,
   NotificationDetailAsset,
   NotificationDetailNetworkFee,
-  NotificationDetailButton,
+  NotificationDetailBlockExplorerButton,
   NotificationDetailTitle,
   NotificationDetailCollection,
   NotificationDetailNft,
@@ -35,7 +35,6 @@ import { NotificationListItemIconType } from '../../../../components/multichain/
 import {
   BadgeWrapperPosition,
   IconName,
-  ButtonVariant,
 } from '../../../../components/component-library';
 
 type ERC1155Notification = ExtractedNotification<
@@ -187,19 +186,11 @@ export const components: NotificationComponent<ERC1155Notification> = {
   footer: {
     type: 'footer_onchain_notification',
     ScanLink: ({ notification }) => {
-      const chainId = decimalToHex(notification.chain_id);
-      const { nativeBlockExplorerUrl } = getNetworkDetailsByChainId(
-        `0x${chainId}` as keyof typeof CHAIN_IDS,
-      );
-      if (!nativeBlockExplorerUrl) {
-        return null;
-      }
       return (
-        <NotificationDetailButton
+        <NotificationDetailBlockExplorerButton
           notification={notification}
-          variant={ButtonVariant.Secondary}
-          text={t('notificationItemCheckBlockExplorer') || ''}
-          href={`${nativeBlockExplorerUrl}/tx/${notification.tx_hash}`}
+          chain_id={notification.chain_id}
+          tx_hash={notification.tx_hash}
           id={notification.id}
         />
       );

@@ -3113,7 +3113,7 @@
     "message": "Priority fee (GWEI)"
   },
   "notificationItemCheckBlockExplorer": {
-    "message": "Check on the BlockExplorer"
+    "message": "Check on the Block Explorer"
   },
   "notificationItemCollection": {
     "message": "Collection"
