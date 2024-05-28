@@ -5,6 +5,7 @@ import {
   KeyringControllerState,
   KeyringControllerStateChangeEvent,
 } from '@metamask/keyring-controller';
+import { waitFor } from '@testing-library/react';
 import {
   AuthenticationControllerGetBearerToken,
   AuthenticationControllerIsSignedIn,
@@ -145,6 +146,40 @@ describe('metamask-notifications - constructor()', () => {
       expect(mockUpdate).not.toBeCalled();
       expect(mockDelete).not.toBeCalled();
     });
+  });
+
+  test('Initializes push notifications', async () => {
+    const { messenger, mockEnablePushNotifications } = arrangeMocks();
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const _controller = new MetamaskNotificationsController({
+      messenger,
+      state: { isMetamaskNotificationsEnabled: true },
+    });
+
+    await waitFor(() => {
+      expect(mockEnablePushNotifications).toBeCalled();
+    });
+  });
+
+  test('Fails to initialize push notifications', async () => {
+    const { messenger, mockPerformGetStorage, mockEnablePushNotifications } =
+      arrangeMocks();
+
+    // test when user storage is empty
+    mockPerformGetStorage.mockResolvedValue(null);
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const _controller = new MetamaskNotificationsController({
+      messenger,
+      state: { isMetamaskNotificationsEnabled: true },
+    });
+
+    await waitFor(() => {
+      expect(mockPerformGetStorage).toBeCalled();
+    });
+
+    expect(mockEnablePushNotifications).not.toBeCalled();
   });
 
   function arrangeMocks() {
