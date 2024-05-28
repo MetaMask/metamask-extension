@@ -1,5 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { EtherDenomination } from '../../../../../../../../shared/constants/common';
 import { EditGasModes } from '../../../../../../../../shared/constants/gas';
@@ -202,8 +202,8 @@ export const RedesignedGasFees = () => {
           <Box display={Display.Flex} alignItems={AlignItems.center}>
             {/* TODO: Fix bug in the gas timing component after selection is made */}
             <GasTiming
-              maxFeePerGas={maxFeePerGas}
-              maxPriorityFeePerGas={maxPriorityFeePerGas}
+              maxFeePerGas={String(maxFeePerGas)}
+              maxPriorityFeePerGas={String(maxPriorityFeePerGas)}
             />
           </Box>
         </ConfirmInfoRow>
@@ -314,7 +314,6 @@ export const RedesignedGasFees = () => {
       )}
 
       {/* Modals */}
-
       {supportsEIP1559 && (
         <>
           <EditGasFeePopover />

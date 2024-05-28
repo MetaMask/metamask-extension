@@ -5,11 +5,20 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../../../
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
 import ContractInteractionInfo from './contract-interaction';
+import { waitFor } from '@testing-library/react';
+
+jest.mock('../../../../../../store/actions', () => ({
+  ...jest.requireActual('../../../../../../store/actions'),
+  getGasFeeTimeEstimate: jest.fn().mockResolvedValue({
+    lowerTimeBound: 0,
+    upperTimeBound: 60000,
+  }),
+}));
 
 describe('<ContractInteractionInfo />', () => {
   const middleware = [thunk];
 
-  it('renders component for contract interaction request', () => {
+  it('renders component for contract interaction request', async () => {
     const state = {
       ...mockState,
       confirm: {
@@ -17,11 +26,15 @@ describe('<ContractInteractionInfo />', () => {
       },
     };
     const mockStore = configureMockStore(middleware)(state);
+
     const { container } = renderWithProvider(
       <ContractInteractionInfo showAdvancedDetails={false} />,
       mockStore,
     );
-    expect(container).toMatchSnapshot();
+
+    await waitFor(() => {
+      expect(container).toMatchSnapshot();
+    });
   });
 
   it('does not render if required data is not present in the transaction (with advanced details)', () => {
