@@ -21,58 +21,6 @@
     }
   }
 
-  &__chips {
-    display: grid;
-    justify-items: center;
-    align-items: center;
-    row-gap: 16px;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-
-    @include design-system.screen-sm-min {
-      grid-template-columns: 1fr 1fr 1fr;
-    }
-
-    &--hidden {
-      filter: blur(5px);
-    }
-  }
-
-  &__secret {
-    position: relative;
-    width: 100%;
-  }
-
-  &__secret-blocker {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    height: 100%;
-    width: 100%;
-    background-color: var(--color-overlay-alternative);
-    display: flex;
-    flex-flow: column nowrap;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 0 18px;
-    border-radius: 4px;
-    color: var(--color-overlay-inverse);
-
-    &--text {
-      margin-top: 32px;
-    }
-  }
-
-  &__chip-item {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    text-align: center;
-
-    &__number {
-      font-size: design-system.$font-size-h5;
-    }
-  }
-
   &__footer {
     display: flex;
     flex-direction: column;

@@ -19,7 +19,7 @@ describe('Recovery Phrase Chips Component', () => {
 
     const recoveryPhraseChips = queryByTestId('recovery-phrase-chips');
     expect(recoveryPhraseChips).not.toHaveClass(
-      'recovery-phrase__chips--hidden',
+      'recovery-phrase-chips__chips--hidden',
     );
   });
 
@@ -34,7 +34,9 @@ describe('Recovery Phrase Chips Component', () => {
     );
 
     const recoveryPhraseChips = queryByTestId('recovery-phrase-chips');
-    expect(recoveryPhraseChips).toHaveClass('recovery-phrase__chips--hidden');
+    expect(recoveryPhraseChips).toHaveClass(
+      'recovery-phrase-chips__chips--hidden',
+    );
   });
 
   it('should match snapshot of confirm recovery phrase with inputs of indicies to check', () => {
