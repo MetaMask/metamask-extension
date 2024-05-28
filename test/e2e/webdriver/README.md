@@ -486,7 +486,7 @@ Each of these actions requires first [locating](#locators) the web element you w
 
 Selenium provides several mechanisms for managing waits, crucial for handling the asynchronous nature of web applications where elements may load at different times. These waits help avoid errors in test scripts that occur when trying to interact with elements that are not yet available on the web page
 
-## When do we need to wait?
+### When do we need to wait?
 
 - **Before Locating the Element:**
   - Ensure that the page or relevant components have fully loaded.
@@ -712,7 +712,7 @@ This organization helps provide a clear structure for understanding the various 
 
 ### \***\* NOTE - Delay \*\***
 
-**`delay`** function is hard-coded wait may be longer than needed, resulting in slower test execution. Please avoid using this function.
+** The `delay`** function is a hard-coded wait that may be longer than needed, resulting in slower test execution. Please avoid using this function.
 
 ## Actions
 
@@ -883,7 +883,7 @@ Navigation refers to the process of moving through web pages within a browser se
 
 - **Going to a URL**: This is the starting point of navigation, where you direct the browser to load a specific web page by providing its URL.
 - **Refreshing the Page**: Refreshes the current page to update content or re-execute certain actions.
-- **Handling Redirects**: Web pages might redirect to different URLs automatically. Automation scripts needs to handle these redirects gracefully, ensuring they can continue to interact with the correct page elements after the redirect.
+- **Handling Redirects**: Web pages might redirect to different URLs automatically. Automation scripts need to handle these redirects gracefully, ensuring they can continue to interact with the correct page elements after the redirect.
 
 <details><summary><b>navigate</b></summary>
 <br>
@@ -1292,7 +1292,7 @@ Web pages can be segmented into frames or IFrames, which are essentially documen
 
 Assertion is a statement that checks if a specified condition is true. If the condition is true, the program continues to execute. If the condition is false, throws an error or fails.
 
-# When do we need Assertions?
+### When do we need Assertions?
 
 They are used to verify that the application under test behaves as expected under various conditions. Common assertions include:
 
@@ -1301,7 +1301,7 @@ They are used to verify that the application under test behaves as expected unde
 - Ensuring that a web element is visible, contains specific text, or is enabled/disabled.
 - Verify that a certain condition holds at a specific point in the program or test case.
 
-# key points to remember
+### key points to remember
 
 - When writing assertions, provide clear and informative error messages. This helps in quickly understanding what went wrong when an assertion fails.
 - While assertions are powerful, overusing them can clutter the code and make tests harder to maintain. Use them to check critical conditions.
