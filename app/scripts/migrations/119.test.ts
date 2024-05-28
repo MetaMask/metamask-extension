@@ -5,7 +5,7 @@ const oldVersion = 118;
 const newVersion = 119;
 
 describe('migration #119', () => {
-  it('should update the version metadata', async () => {
+  it('updates the version metadata', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
       data: {},
