@@ -14,7 +14,7 @@ import { TypeActionFields } from '../types/feature-announcement/type-action';
 
 const spaceId = process.env.CONTENTFUL_ACCESS_SPACE_ID || '';
 const accessToken = process.env.CONTENTFUL_ACCESS_TOKEN || '';
-export const FEATURE_ANNOUNCEMENT_URL = `https://cdn.contentful.com/spaces/${spaceId}/environments/master/entries?access_token=${accessToken}&content_type=productAnnouncement&include=10`;
+export const FEATURE_ANNOUNCEMENT_URL = `https://cdn.contentful.com/spaces/${spaceId}/environments/master/entries?access_token=${accessToken}&content_type=productAnnouncement&include=10&fields.clients=extension`;
 
 export type ContentfulResult = {
   includes?: {

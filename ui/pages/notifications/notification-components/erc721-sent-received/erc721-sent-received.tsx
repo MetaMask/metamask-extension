@@ -93,17 +93,13 @@ export const components: NotificationComponent<ERC721Notification> = {
   },
   details: {
     title: ({ notification }) => {
-      const chainId = decimalToHex(notification.chain_id);
-      const { nativeCurrencySymbol } = getNetworkDetailsByChainId(
-        `0x${chainId}` as keyof typeof CHAIN_IDS,
-      );
       return (
         <NotificationDetailTitle
           title={`${
             isSent(notification)
               ? t('notificationItemSent')
               : t('notificationItemReceived')
-          } ${nativeCurrencySymbol}`}
+          } NFT`}
           date={formatIsoDateString(notification.createdAt)}
         />
       );
@@ -126,13 +122,17 @@ export const components: NotificationComponent<ERC721Notification> = {
       },
       From: ({ notification }) => (
         <NotificationDetailAddress
-          side={t('notificationItemFrom') || ''}
+          side={`${t('notificationItemFrom')}${
+            isSent(notification) ? ` (${t('you')})` : ''
+          }`}
           address={notification.data.from}
         />
       ),
       To: ({ notification }) => (
         <NotificationDetailAddress
-          side={t('notificationItemTo') || ''}
+          side={`${t('notificationItemTo')}${
+            isSent(notification) ? '' : ` (${t('you')})`
+          }`}
           address={notification.data.to}
         />
       ),
@@ -173,7 +173,7 @@ export const components: NotificationComponent<ERC721Notification> = {
             icon={{
               src: nativeCurrencyLogo,
             }}
-            label={t('network') || ''}
+            label={t('notificationDetailNetwork') || ''}
             detail={nativeCurrencyName}
           />
         );
@@ -192,6 +192,7 @@ export const components: NotificationComponent<ERC721Notification> = {
       );
       return (
         <NotificationDetailButton
+          notification={notification}
           variant={ButtonVariant.Secondary}
           text={t('notificationItemCheckBlockExplorer') || ''}
           href={

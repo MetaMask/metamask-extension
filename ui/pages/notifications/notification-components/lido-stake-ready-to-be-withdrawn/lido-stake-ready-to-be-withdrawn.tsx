@@ -48,7 +48,7 @@ const getDescription = (n: LidoReadyWithDrawnNotification) => {
   const description =
     // @ts-expect-error: Expected 0-1 arguments, but got an array
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    t('notificationItemLidoWithdrawalRequestedMessage', [
+    t('notificationItemLidoStakeReadyToBeWithdrawnMessage', [
       `${amount} ${n.data.staked_eth.symbol}`,
     ]) || '';
   const items = createTextItems([description], TextVariant.bodyMd);
@@ -89,7 +89,7 @@ export const components: NotificationComponent<LidoReadyWithDrawnNotification> =
     details: {
       title: ({ notification }) => (
         <NotificationDetailTitle
-          title={t('notificationItemUnStakingRequested') || ''}
+          title={t('notificationItemLidoStakeReadyToBeWithdrawn') || ''}
           date={formatIsoDateString(notification.createdAt)}
         />
       ),
@@ -120,13 +120,13 @@ export const components: NotificationComponent<LidoReadyWithDrawnNotification> =
                   position: BadgeWrapperPosition.topRight,
                 },
               }}
-              label={t('notificationItemUnStakingRequested') || ''}
+              label={t('notificationItemLidoStakeReadyToBeWithdrawn') || ''}
               detail={notification.data.staked_eth.symbol}
-              fiatValue={`${getUsdAmount(
+              fiatValue={`$${getUsdAmount(
                 notification.data.staked_eth.usd,
                 notification.data.staked_eth.decimals,
                 notification.data.staked_eth.usd,
-              )} $`}
+              )}`}
               value={`${getAmount(
                 notification.data.staked_eth.amount,
                 notification.data.staked_eth.decimals,
@@ -165,6 +165,7 @@ export const components: NotificationComponent<LidoReadyWithDrawnNotification> =
         );
         return (
           <NotificationDetailButton
+            notification={notification}
             variant={ButtonVariant.Secondary}
             text={t('notificationItemCheckBlockExplorer') || ''}
             href={
