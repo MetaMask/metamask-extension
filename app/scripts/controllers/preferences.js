@@ -383,15 +383,15 @@ export default class PreferencesController {
    * Setter for the `selectedAddress` property
    *
    * @deprecated - Please use setSelectedAccount from the AccountsController
-   * @param {string} _address - A new hex address for an account
+   * @param {string} address - A new hex address for an account
    */
-  setSelectedAddress(_address) {
+  setSelectedAddress(address) {
     const account = this.messagingSystem.call(
       'AccountsController:getAccountByAddress',
-      _address,
+      address,
     );
     if (!account) {
-      throw new Error(`Identity for '${_address} not found`);
+      throw new Error(`Identity for '${address} not found`);
     }
 
     this.messagingSystem.call(
@@ -613,25 +613,24 @@ export default class PreferencesController {
 
     const { identities, lostIdentities } = this.store.getState();
 
+    const addresses = Object.values(accounts).map((account) =>
+      account.address.toLowerCase(),
+    );
     Object.keys(identities).forEach((identity) => {
-      if (
-        !Object.values(accounts).find((account) =>
-          isEqualCaseInsensitive(account.address, identity),
-        )
-      ) {
+      if (addresses.includes(identity.toLowerCase())) {
         lostIdentities[identity] = identities[identity];
       }
     });
 
     const updatedIdentities = Object.values(accounts).reduce(
-      (identitesMap, account) => {
-        identitesMap[account.address] = {
+      (identitiesMap, account) => {
+        identitiesMap[account.address] = {
           address: account.address,
           name: account.metadata.name,
           lastSelected: account.metadata.lastSelected,
         };
 
-        return identitesMap;
+        return identitiesMap;
       },
       {},
     );

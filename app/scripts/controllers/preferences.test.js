@@ -108,10 +108,10 @@ describe('preferences controller', () => {
   });
 
   describe('setAccountLabel', () => {
+    const mockName = 'mockName';
+    const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
+    const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
     it('updating name from preference controller will update the name in accounts controller and preferences controller', () => {
-      const mockName = 'mockName';
-      const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
-      const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
       controllerMessenger.publish('KeyringController:stateChange', {
         isUnlocked: true,
         keyrings: [
@@ -156,9 +156,6 @@ describe('preferences controller', () => {
     });
 
     it('updating name from accounts controller should update the name in preferences controller', () => {
-      const mockName = 'mockName';
-      const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
-      const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
       controllerMessenger.publish('KeyringController:stateChange', {
         isUnlocked: true,
         keyrings: [
@@ -203,7 +200,7 @@ describe('preferences controller', () => {
   });
 
   describe('setSelectedAddress', () => {
-    it('updating selectedAddress from preference controller will update the selectedAccount in accounts controller and preferences controller', () => {
+    it('updating selectedAddress from preferences controller will update the selectedAccount in accounts controller and preferences controller', () => {
       const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
       const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
       controllerMessenger.publish('KeyringController:stateChange', {
@@ -512,7 +509,7 @@ describe('preferences controller', () => {
   });
 
   describe('AccountsController:stateChange subscription', () => {
-    it('should sync the identities with the accounts in the accounts controller', () => {
+    it('sync the identities with the accounts in the accounts controller', () => {
       const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
       const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
       controllerMessenger.publish('KeyringController:stateChange', {

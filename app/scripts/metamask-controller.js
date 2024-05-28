@@ -549,11 +549,11 @@ export default class MetamaskController extends EventEmitter {
     const preferencesMessenger = this.controllerMessenger.getRestricted({
       name: 'PreferencesController',
       allowedActions: [
-        `AccountsController:setSelectedAccount`,
-        `AccountsController:getAccountByAddress`,
-        `AccountsController:setAccountName`,
+        'AccountsController:setSelectedAccount',
+        'AccountsController:getAccountByAddress',
+        'AccountsController:setAccountName',
       ],
-      allowedEvents: [`AccountsController:stateChange`],
+      allowedEvents: ['AccountsController:stateChange'],
     });
 
     this.preferencesController = new PreferencesController({
