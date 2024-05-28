@@ -1,34 +1,30 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { getCurrentLocale } from '../ducks/locale/locale';
+import { getIntlLocale } from '../ducks/locale/locale';
 import { getCurrentCurrency } from '../selectors';
 import { useFiatFormatter } from './useFiatFormatter';
 
-// Mock the getCurrentLocale and getCurrentCurrency functions
 jest.mock('react-redux', () => ({
   useSelector: jest.fn((selector) => selector()),
 }));
 
 jest.mock('../ducks/locale/locale', () => ({
-  getCurrentLocale: jest.fn(),
+  getIntlLocale: jest.fn(),
 }));
 
 jest.mock('../selectors', () => ({
   getCurrentCurrency: jest.fn(),
 }));
 
-const mockGetCurrentLocale = getCurrentLocale as jest.Mock;
+const mockGetIntlLocale = getIntlLocale as unknown as jest.Mock;
 const mockGetCurrentCurrency = getCurrentCurrency as jest.Mock;
 
 describe('useFiatFormatter', () => {
   beforeEach(() => {
-    // Clear the mock implementations before each test
-    mockGetCurrentLocale.mockClear();
-    mockGetCurrentCurrency.mockClear();
+    jest.clearAllMocks();
   });
 
   it('should return a function that formats fiat amount correctly', () => {
-    // Mock the getCurrentLocale and getCurrentCurrency functions
-    mockGetCurrentLocale.mockReturnValue('en-US');
+    mockGetIntlLocale.mockReturnValue('en-US');
     mockGetCurrentCurrency.mockReturnValue('USD');
 
     const { result } = renderHook(() => useFiatFormatter());
@@ -40,13 +36,24 @@ describe('useFiatFormatter', () => {
   });
 
   it('should use the current locale and currency from the mocked functions', () => {
-    // Mock the getCurrentLocale and getCurrentCurrency functions
-    mockGetCurrentLocale.mockReturnValue('fr-FR');
+    mockGetIntlLocale.mockReturnValue('fr-FR');
     mockGetCurrentCurrency.mockReturnValue('EUR');
 
     renderHook(() => useFiatFormatter());
 
-    expect(getCurrentLocale).toHaveBeenCalledTimes(1);
+    expect(getIntlLocale).toHaveBeenCalledTimes(1);
     expect(getCurrentCurrency).toHaveBeenCalledTimes(1);
+  });
+
+  it('should gracefully handle unknown currencies by returning amount followed by currency code', () => {
+    mockGetCurrentCurrency.mockReturnValue('storj');
+
+    const { result } = renderHook(() => useFiatFormatter());
+    const formatFiat = result.current;
+
+    // Testing the fallback formatting for an unknown currency
+    expect(formatFiat(1000)).toBe('1000 storj');
+    expect(formatFiat(500.5)).toBe('500.5 storj');
+    expect(formatFiat(0)).toBe('0 storj');
   });
 });

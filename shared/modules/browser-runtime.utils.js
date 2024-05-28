@@ -2,8 +2,13 @@
  * Utility Functions to support browser.runtime JavaScript API
  */
 
+import Bowser from 'bowser';
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
+import {
+  BROKEN_PRERENDER_BROWSER_VERSIONS,
+  FIXED_PRERENDER_BROWSER_VERSIONS,
+} from '../../ui/helpers/constants/common';
 
 /**
  * Returns an Error if extension.runtime.lastError is present
@@ -52,4 +57,22 @@ export function checkForLastErrorAndWarn() {
   }
 
   return error;
+}
+
+/**
+ * Returns true if the browser is affected by a regression that causes the
+ * extension port stream established between the contentscript and background
+ * to be broken when a prerendered (eagerly rendered, hidden) page becomes active (visible to the user).
+ *
+ * @param {Bowser} bowser - optional Bowser instance to check against
+ * @returns {boolean} Whether the browser is affected by the prerender regression
+ */
+export function getIsBrowserPrerenderBroken(
+  bowser = Bowser.getParser(window.navigator.userAgent),
+) {
+  return (
+    (bowser.satisfies(BROKEN_PRERENDER_BROWSER_VERSIONS) &&
+      !bowser.satisfies(FIXED_PRERENDER_BROWSER_VERSIONS)) ??
+    false
+  );
 }

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
+  ORIGIN_METAMASK,
 } from '../../../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
 import NetworkDisplay from '../../../../../components/app/network-display';
@@ -18,6 +19,7 @@ export default function ConfirmPageContainerHeader({
   accountAddress,
   showAccountInHeader,
   children,
+  origin,
 }) {
   const t = useI18nContext();
   const windowType = getEnvironmentType();
@@ -48,23 +50,25 @@ export default function ConfirmPageContainerHeader({
             <AccountMismatchWarning address={accountAddress} />
           </div>
         ) : (
-          <div
-            className="confirm-page-container-header__back-button-container"
-            style={{
-              visibility: showEdit ? 'initial' : 'hidden',
-            }}
-          >
-            <Icon name={IconName.ArrowLeft} />
-            <span
-              data-testid="confirm-page-back-edit-button"
-              className="confirm-page-container-header__back-button"
-              onClick={() => onEdit()}
+          origin === ORIGIN_METAMASK && (
+            <div
+              className="confirm-page-container-header__back-button-container"
+              style={{
+                visibility: showEdit ? 'initial' : 'hidden',
+              }}
             >
-              {t('edit')}
-            </span>
-          </div>
+              <Icon name={IconName.ArrowLeft} />
+              <span
+                data-testid="confirm-page-back-edit-button"
+                className="confirm-page-container-header__back-button"
+                onClick={() => onEdit()}
+              >
+                {t('edit')}
+              </span>
+            </div>
+          )
         )}
-        {isFullScreen ? null : <NetworkDisplay />}
+        <NetworkDisplay />
       </div>
       {children}
     </div>
@@ -77,4 +81,5 @@ ConfirmPageContainerHeader.propTypes = {
   showEdit: PropTypes.bool,
   onEdit: PropTypes.func,
   children: PropTypes.node,
+  origin: PropTypes.string,
 };

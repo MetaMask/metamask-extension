@@ -1,25 +1,28 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { TransactionType } from '@metamask/transaction-controller';
 
 import { currentConfirmationSelector } from '../../../../../selectors';
-import { SecurityAlertResponse } from '../../../types/confirm';
+import useSignatureSecurityAlertResponse from '../../../hooks/useSignatureSecurityAlertResponse';
+import { SignatureRequestType } from '../../../types/confirm';
 import BlockaidBannerAlert from '../../security-provider-banner-alert/blockaid-banner-alert';
-
-type SignatureSecurityAlertResponsesState = {
-  metamask: {
-    signatureSecurityAlertResponses: SecurityAlertResponse[];
-  };
-};
 
 // todo: this component can be deleted once new alert imlementation is added
 const BlockaidAlert = ({ ...props }) => {
-  const currentConfirmation = useSelector(currentConfirmationSelector);
-  const signatureSecurityAlertResponses = useSelector(
-    (state: SignatureSecurityAlertResponsesState) =>
-      state.metamask.signatureSecurityAlertResponses,
+  const currentConfirmation = useSelector(
+    currentConfirmationSelector,
+  ) as SignatureRequestType;
+
+  const currentSecurityAlertId =
+    currentConfirmation?.securityAlertResponse?.securityAlertId;
+  const signatureSecurityAlertResponse = useSignatureSecurityAlertResponse(
+    currentSecurityAlertId,
   );
 
-  if (!currentConfirmation?.securityAlertResponse?.securityAlertId) {
+  if (
+    !currentSecurityAlertId ||
+    currentConfirmation?.type === TransactionType.personalSign
+  ) {
     return null;
   }
 
@@ -27,12 +30,7 @@ const BlockaidAlert = ({ ...props }) => {
     <BlockaidBannerAlert
       txData={{
         ...currentConfirmation,
-        securityAlertResponse:
-          signatureSecurityAlertResponses?.[
-            // TODO: Replace `any` with type
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            currentConfirmation?.securityAlertResponse?.securityAlertId as any
-          ],
+        securityAlertResponse: signatureSecurityAlertResponse,
       }}
       {...props}
     />

@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import BigNumber from 'bignumber.js';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
 import { getCurrentCurrency } from '../selectors';
 import {
@@ -12,9 +13,16 @@ import { TEST_NETWORK_TICKER_MAP } from '../../shared/constants/network';
 import { Numeric } from '../../shared/modules/Numeric';
 import { EtherDenomination } from '../../shared/constants/common';
 
-export const MIN_DISPLAY_AMOUNT = '<0.000001';
+// The smallest non-zero amount that can be displayed.
+export const MIN_AMOUNT = 0.000001;
 
-export const DEFAULT_PRECISION_DECIMALS = 6;
+// The string to display when 0 < amount < MIN_AMOUNT.
+// TODO(dbrans): Localize this string using Intl.NumberFormatter.
+const MIN_AMOUNT_DISPLAY = `<${MIN_AMOUNT}`;
+
+// The default precision for displaying currency values.
+// It set to the number of decimal places in the minimum amount.
+export const DEFAULT_PRECISION = new BigNumber(MIN_AMOUNT).decimalPlaces();
 
 /**
  * Defines the shape of the options parameter for useCurrencyDisplay
@@ -25,6 +33,7 @@ export const DEFAULT_PRECISION_DECIMALS = 6;
  * @property {number} [numberOfDecimals] - Number of significant decimals to display
  * @property {string} [denomination] - Denomination (wei, gwei) to convert to for display
  * @property {string} [currency] - Currency type to convert to. Will override nativeCurrency
+ * @property {boolean} [hideLabel] – hide the currency label
  */
 
 /**
@@ -66,12 +75,12 @@ export function useCurrencyDisplay(
     ) {
       const ethDisplayValue = new Numeric(inputValue, 16, EtherDenomination.WEI)
         .toDenomination(denomination || EtherDenomination.ETH)
-        .round(numberOfDecimals || DEFAULT_PRECISION_DECIMALS)
+        .round(numberOfDecimals || DEFAULT_PRECISION)
         .toBase(10)
         .toString();
 
       return ethDisplayValue === '0' && inputValue && Number(inputValue) !== 0
-        ? MIN_DISPLAY_AMOUNT
+        ? MIN_AMOUNT_DISPLAY
         : ethDisplayValue;
     } else if (isUserPreferredCurrency && conversionRate) {
       return formatCurrency(

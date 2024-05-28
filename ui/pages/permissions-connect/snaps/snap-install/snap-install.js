@@ -16,6 +16,7 @@ import {
   FontWeight,
   IconColor,
   Display,
+  BorderRadius,
 } from '../../../../helpers/constants/design-system';
 import { getSnapInstallWarnings } from '../util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
@@ -28,11 +29,11 @@ import {
 } from '../../../../components/component-library';
 import SnapPermissionsList from '../../../../components/app/snaps/snap-permissions-list';
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';
-import SiteOrigin from '../../../../components/ui/site-origin/site-origin';
 import InstallError from '../../../../components/app/snaps/install-error/install-error';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import { getSnapMetadata, getSnapsMetadata } from '../../../../selectors';
 import { getSnapName } from '../../../../helpers/utils/util';
+import PermissionConnectHeader from '../../../../components/app/permission-connect-header';
 
 export default function SnapInstall({
   request,
@@ -43,7 +44,7 @@ export default function SnapInstall({
 }) {
   const t = useI18nContext();
   const siteMetadata = useOriginMetadata(request?.metadata?.dappOrigin) || {};
-  const { origin, iconUrl, name } = siteMetadata;
+  const { origin, iconUrl } = siteMetadata;
   const [isShowingWarning, setIsShowingWarning] = useState(false);
   const snapsMetadata = useSelector(getSnapsMetadata);
 
@@ -92,34 +93,21 @@ export default function SnapInstall({
     } else if (isLoading) {
       return 'connect';
     }
-    return 'install';
+    return 'confirm';
   };
 
   return (
     <Box
-      className="page-container snap-install"
+      className="snap-install"
       display={Display.Flex}
       justifyContent={JustifyContent.spaceBetween}
       height={BlockSize.Full}
       borderStyle={BorderStyle.none}
       flexDirection={FlexDirection.Column}
+      backgroundColor={BackgroundColor.backgroundAlternative}
     >
       {isLoading || hasError ? (
-        <Box
-          display={Display.Flex}
-          width="full"
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.center}
-          paddingTop={4}
-        >
-          <SiteOrigin
-            chip
-            siteOrigin={origin}
-            title={origin}
-            iconSrc={iconUrl}
-            iconName={name}
-          />
-        </Box>
+        <PermissionConnectHeader origin={origin} iconUrl={iconUrl} />
       ) : (
         <SnapAuthorshipHeader snapId={targetSubjectMetadata.origin} />
       )}
@@ -131,6 +119,8 @@ export default function SnapInstall({
           overflowY: 'auto',
           flex: !isLoading && !hasError && '1',
         }}
+        paddingLeft={4}
+        paddingRight={4}
       >
         {isLoading && (
           <Box
@@ -158,7 +148,7 @@ export default function SnapInstall({
         {!hasError && !isLoading && (
           <>
             <Text
-              variant={TextVariant.headingLg}
+              variant={TextVariant.headingMd}
               paddingTop={4}
               paddingBottom={2}
               textAlign="center"
@@ -183,7 +173,15 @@ export default function SnapInstall({
                 </Text>,
               ])}
             </Text>
-            <Box marginLeft={4} marginRight={4} display={Display.Flex}>
+            <Box
+              display={Display.Flex}
+              backgroundColor={BackgroundColor.backgroundDefault}
+              paddingLeft={4}
+              paddingRight={4}
+              paddingTop={2}
+              paddingBottom={2}
+              borderRadius={BorderRadius.XL}
+            >
               <SnapPermissionsList
                 snapId={targetSubjectMetadata.origin}
                 snapName={snapName}
@@ -191,15 +189,17 @@ export default function SnapInstall({
               />
             </Box>
             {isScrollable && !isScrolledToBottom ? (
-              <AvatarIcon
-                className="snap-install__scroll-button"
-                data-testid="snap-install-scroll"
-                iconName={IconName.Arrow2Down}
-                backgroundColor={BackgroundColor.infoDefault}
-                color={IconColor.primaryInverse}
-                onClick={scrollToBottom}
-                style={{ cursor: 'pointer' }}
-              />
+              <Box className="snap-install__scroll-button-area">
+                <AvatarIcon
+                  className="snap-install__scroll-button"
+                  data-testid="snap-install-scroll"
+                  iconName={IconName.Arrow2Down}
+                  backgroundColor={BackgroundColor.infoDefault}
+                  color={IconColor.primaryInverse}
+                  onClick={scrollToBottom}
+                  style={{ cursor: 'pointer' }}
+                />
+              </Box>
             ) : null}
           </>
         )}
@@ -209,9 +209,7 @@ export default function SnapInstall({
         display={Display.Flex}
         alignItems={AlignItems.center}
         flexDirection={FlexDirection.Column}
-        style={{
-          boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
-        }}
+        backgroundColor={BackgroundColor.backgroundAlternative}
       >
         <PageContainerFooter
           cancelButtonType="default"

@@ -14,8 +14,6 @@ jest.mock('../../../../../store/actions', () => ({
       chainId: '0x5',
     }),
   ),
-  disconnectGasFeeEstimatePoller: jest.fn(),
-  getGasFeeEstimatesAndStartPolling: jest.fn().mockResolvedValue(null),
   addPollingTokenToAppState: jest.fn(),
   removePollingTokenFromAppState: jest.fn(),
 }));

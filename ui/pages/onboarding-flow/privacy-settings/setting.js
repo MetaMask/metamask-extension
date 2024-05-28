@@ -16,6 +16,7 @@ export const Setting = ({
   title,
   description,
   showToggle = true,
+  dataTestId,
 }) => {
   const t = useI18nContext();
 
@@ -27,6 +28,7 @@ export const Setting = ({
       marginTop={3}
       marginBottom={3}
       className="privacy-settings__setting__wrapper"
+      data-testid={dataTestId}
     >
       <div className="privacy-settings__setting">
         <Text variant={TextVariant.bodyMdMedium}>{title}</Text>
@@ -54,4 +56,5 @@ Setting.propTypes = {
   title: PropTypes.string,
   description: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
   showToggle: PropTypes.bool,
+  dataTestId: PropTypes.string,
 };

@@ -73,16 +73,12 @@ describe('EthOverview', () => {
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
+      useExternalServices: true,
       useCurrencyRateCheck: true,
       currentCurrency: 'usd',
       currencyRates: {
         ETH: {
           conversionRate: 2,
-        },
-      },
-      identities: {
-        '0x1': {
-          address: '0x1',
         },
       },
       accounts: {
@@ -91,7 +87,6 @@ describe('EthOverview', () => {
           balance: '0x1F4',
         },
       },
-      selectedAddress: '0x1',
       internalAccounts: {
         accounts: {
           'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {

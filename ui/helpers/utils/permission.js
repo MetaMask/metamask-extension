@@ -19,8 +19,6 @@ import {
 } from '../../../shared/constants/permissions';
 import Tooltip from '../../components/ui/tooltip';
 import {
-  AvatarIcon,
-  AvatarIconSize,
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   Icon,
   Text,
@@ -35,6 +33,7 @@ import {
   TextColor,
   TextVariant,
 } from '../constants/design-system';
+import { PermissionNames } from '../../../app/scripts/controllers/permissions';
 ///: END:ONLY_INCLUDE_IF
 
 const UNKNOWN_PERMISSION = Symbol('unknown');
@@ -44,18 +43,6 @@ const RIGHT_INFO_ICON = (
   <Icon name={IconName.Info} size={IconSize.Sm} color={IconColor.iconMuted} />
 );
 ///: END:ONLY_INCLUDE_IF
-
-function getLeftIcon(iconName) {
-  return (
-    <AvatarIcon
-      iconName={iconName}
-      size={AvatarIconSize.Sm}
-      iconProps={{
-        size: IconSize.Xs,
-      }}
-    />
-  );
-}
 
 function getSnapNameComponent(snapName) {
   return (
@@ -72,8 +59,12 @@ function getSnapNameComponent(snapName) {
 export const PERMISSION_DESCRIPTIONS = deepFreeze({
   [RestrictedMethods.eth_accounts]: ({ t }) => ({
     label: t('permission_ethereumAccounts'),
-    leftIcon: getLeftIcon(IconName.Eye),
-    rightIcon: null,
+    leftIcon: IconName.Eye,
+    weight: 3,
+  }),
+  [PermissionNames.permittedChains]: ({ t }) => ({
+    label: t('permission_walletSwitchEthereumChain'),
+    leftIcon: IconName.Wifi,
     weight: 3,
   }),
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -273,7 +264,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
   [RestrictedMethods.wallet_snap]: ({ t, permissionValue, getSubjectName }) => {
     const snaps = permissionValue.caveats[0].value;
     const baseDescription = {
-      leftIcon: getLeftIcon(IconName.Flash),
+      leftIcon: IconName.Flash,
       rightIcon: RIGHT_INFO_ICON,
     };
 
@@ -501,7 +492,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     description: t('permission_manageAccountsDescription', [
       getSnapNameComponent(subjectName),
     ]),
-    leftIcon: getLeftIcon(IconName.UserCircleAdd),
+    leftIcon: IconName.UserCircleAdd,
     rightIcon: null,
     weight: 3,
   }),
@@ -510,7 +501,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     description: t('permission_keyringDescription', [
       getSnapNameComponent(subjectName),
     ]),
-    leftIcon: getLeftIcon(IconName.UserCircleAdd),
+    leftIcon: IconName.UserCircleAdd,
     rightIcon: null,
     weight: 3,
   }),
@@ -519,7 +510,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
   [EndowmentPermissions['endowment:name-lookup']]: ({ t }) => ({
     label: t('permission_nameLookup'),
     description: t('permission_nameLookupDescription'),
-    leftIcon: getLeftIcon(IconName.Search),
+    leftIcon: IconName.Search,
     weight: 4,
   }),
   ///: END:ONLY_INCLUDE_IF
@@ -564,7 +555,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
 
   [UNKNOWN_PERMISSION]: ({ t, permissionName }) => ({
     label: t('permission_unknown', [permissionName ?? 'undefined']),
-    leftIcon: getLeftIcon(IconName.Question),
+    leftIcon: IconName.Question,
     rightIcon: null,
     weight: 5,
   }),
