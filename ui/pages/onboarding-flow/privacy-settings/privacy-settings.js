@@ -248,6 +248,7 @@ export default function PrivacySettings() {
           />
 
           <Setting
+            dataTestId="profile-sync-toggle"
             value={isProfileSyncingEnabled}
             setValue={handleUseProfileSync}
             title={t('profileSync')}
