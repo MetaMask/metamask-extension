@@ -85,7 +85,7 @@ export async function installSnapSimpleKeyring(
   });
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.SnapSimpleKeyringDapp);
-
+  await driver.refresh();
   await driver.waitForSelector({
     text: 'Connected',
     tag: 'span',
