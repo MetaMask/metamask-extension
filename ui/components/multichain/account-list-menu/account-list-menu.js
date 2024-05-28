@@ -15,7 +15,7 @@ import {
   Text,
 } from '../../component-library';
 import { ModalContent } from '../../component-library/modal-content/deprecated';
-import { ModalHeader } from '../../component-library/modal-header/deprecated';
+import { ModalHeader } from '../../component-library/modal-header';
 import { TextFieldSearch } from '../../component-library/text-field-search/deprecated';
 import {
   AccountListItem,

@@ -90,7 +90,7 @@ describe('SendContent Component', () => {
           draftTransactions: {
             '1-tx': {
               ...mockSendState.send.draftTransactions['1-tx'],
-              asset: {
+              sendAsset: {
                 balance: '0x3635c9adc5dea00000',
                 details: {
                   address: '0xAddress',
@@ -214,8 +214,8 @@ describe('SendContent Component', () => {
           draftTransactions: {
             '1-tx': {
               ...mockSendState.send.draftTransactions['1-tx'],
-              asset: {
-                ...mockSendState.send.draftTransactions['1-tx'].asset,
+              sendAsset: {
+                ...mockSendState.send.draftTransactions['1-tx'].sendAsset,
                 error: 'transactionError',
               },
             },

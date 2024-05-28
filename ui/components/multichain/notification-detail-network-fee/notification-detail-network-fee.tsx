@@ -169,8 +169,6 @@ export const NotificationDetailNetworkFee: FC<
 
   return (
     <Box
-      as="button"
-      onClick={handleClick}
       width={BlockSize.Full}
       backgroundColor={BackgroundColor.transparent}
       padding={0}
@@ -213,6 +211,8 @@ export const NotificationDetailNetworkFee: FC<
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.flexEnd}
             gap={2}
+            as="button"
+            onClick={handleClick}
           >
             <Text color={TextColor.primaryDefault} variant={TextVariant.bodyMd}>
               {t('notificationDetail')}
