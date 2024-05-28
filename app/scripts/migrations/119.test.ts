@@ -61,7 +61,7 @@ describe('migration #119', () => {
     expect(newStorage);
   });
 
-  it('should make no changes importTime already exists', async () => {
+  it('does not change the importTime attribute if it already exists', async () => {
     const mockInternalAccount = createMockInternalAccount();
     const mockAccountsControllerState = {
       internalAccounts: {
