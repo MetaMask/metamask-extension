@@ -1,5 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useSelector } from 'react-redux';
+import { MetaMetricsContext } from '../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
 import { useSwitchFeatureAnnouncementsChange } from '../../hooks/metamask-notifications/useSwitchNotifications';
@@ -28,6 +33,7 @@ export function NotificationsSettingsTypes({
   // Context
   const t = useI18nContext();
   const { listNotifications } = useMetamaskNotificationsContext();
+  const trackEvent = useContext(MetaMetricsContext);
 
   // Selectors
   const isFeatureAnnouncementsEnabled = useSelector(
@@ -48,6 +54,12 @@ export function NotificationsSettingsTypes({
     setFeatureAnnouncementsEnabled(!featureAnnouncementsEnabled);
     try {
       onChangeFeatureAnnouncements(!featureAnnouncementsEnabled);
+      trackEvent({
+        category: MetaMetricsEventCategory.NotificationInteraction,
+        event: featureAnnouncementsEnabled
+          ? MetaMetricsEventName.FeatureAnnouncementDisabled
+          : MetaMetricsEventName.FeatureAnnouncementEnabled,
+      });
       listNotifications();
     } catch (error) {
       setFeatureAnnouncementsEnabled(featureAnnouncementsEnabled);

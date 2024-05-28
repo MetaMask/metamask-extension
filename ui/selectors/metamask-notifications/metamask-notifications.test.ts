@@ -40,6 +40,7 @@ const mockNotifications: Notification[] = [
 describe('Metamask Notifications Selectors', () => {
   const mockState = {
     metamask: {
+      subscriptionAccountsSeen: [],
       isMetamaskNotificationsFeatureSeen: true,
       isMetamaskNotificationsEnabled: true,
       isFeatureAnnouncementsEnabled: true,
