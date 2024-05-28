@@ -38,7 +38,8 @@ const selectors = {
 const inputData = {
   networkName: 'Update Network',
   rpcUrl: 'test',
-  chainId: '0x539',
+  chainId_part1: '0x53',
+  chainId_part2: '9',
 };
 
 async function navigateToEditNetwork(driver: Driver) {
@@ -63,7 +64,14 @@ describe('Update Network:', function (this: Suite) {
           selectors.networkNameInputField,
           inputData.networkName,
         );
-        await driver.fill(selectors.chainIdInputField, inputData.chainId);
+
+        // We fill in the chain ID in two steps, allowing the error message time to disappear once the field is correctly completed.
+        await driver.fill(selectors.chainIdInputField, inputData.chainId_part1);
+        const chainIdInputField = await driver.findElement(
+          selectors.chainIdInputField,
+        );
+        await chainIdInputField.sendKeys(inputData.chainId_part2);
+
         await driver.clickElement(selectors.saveButton);
 
         // Validate the network name is updated

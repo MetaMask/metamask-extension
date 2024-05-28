@@ -5,8 +5,11 @@ import {
   BLOCK_SIZES,
   DISPLAY,
   TextAlign,
+  TextColor,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import Box from '../../box';
+import { Text } from '../../../component-library';
 
 const Tab = (props) => {
   const {
@@ -35,16 +38,18 @@ const Tab = (props) => {
       }}
       key={tabKey}
     >
-      <Box
+      <Text
         as="button"
         padding={2}
         textAlign={TextAlign.Center}
         display={DISPLAY.BLOCK}
         width={BLOCK_SIZES.FULL}
         className={buttonClassName}
+        variant={TextVariant.bodyMd}
+        color={TextColor.inherit}
       >
         {name}
-      </Box>
+      </Text>
     </Box>
   );
 };

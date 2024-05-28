@@ -19,7 +19,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
             class=""
             data-original-title="Not connected"
             data-tooltipped=""
-            style="display: inline;"
+            style="display: flex;"
             tabindex="0"
           >
             <div
