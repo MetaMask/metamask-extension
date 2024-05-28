@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import {
   ConfirmInfoRow,
+  ConfirmInfoRowAddress,
   ConfirmInfoRowText,
   ConfirmInfoRowUrl,
 } from '../../../../../../components/app/confirm/info/row';
@@ -18,6 +19,7 @@ import {
   sanitizeString,
 } from '../../../../../../helpers/utils/util';
 import { SignatureRequestType } from '../../../../types/confirm';
+import { isSIWESignatureRequest } from '../../../../utils';
 
 const PersonalSignInfo: React.FC = () => {
   const t = useI18nContext();
@@ -28,6 +30,10 @@ const PersonalSignInfo: React.FC = () => {
   if (!currentConfirmation?.msgParams) {
     return null;
   }
+
+  const { from } = currentConfirmation.msgParams;
+
+  console.log('=======', JSON.stringify(currentConfirmation));
 
   return (
     <>
@@ -40,6 +46,11 @@ const PersonalSignInfo: React.FC = () => {
         <ConfirmInfoRow label={t('requestFrom')} tooltip={t('requestFromInfo')}>
           <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
         </ConfirmInfoRow>
+        {isSIWESignatureRequest(currentConfirmation) && (
+          <ConfirmInfoRow label={t('signingInWith')}>
+            <ConfirmInfoRowAddress address={from} />
+          </ConfirmInfoRow>
+        )}
       </Box>
       <Box
         backgroundColor={BackgroundColor.backgroundDefault}

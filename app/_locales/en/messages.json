@@ -4216,6 +4216,9 @@
   "requestFrom": {
     "message": "Request from"
   },
+  "signingInWith": {
+    "message": "Signing in with"
+  },
   "requestFromInfo": {
     "message": "This is the site asking for your signature."
   },
