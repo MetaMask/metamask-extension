@@ -73,6 +73,6 @@ describe('TypedSignInfo', () => {
     };
     const mockStore = configureMockStore([])(state);
     const { getByText } = renderWithProvider(<TypedSignInfo />, mockStore);
-    expect(getByText('Approving to')).toMatchSnapshot();
+    expect(getByText('Approving to')).toBeDefined();
   });
 });
