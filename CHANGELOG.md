@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.16.2]
+
 ## [11.16.1]
 
 ## [11.16.0]
@@ -4750,7 +4752,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.16.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.16.2...HEAD
+[11.16.2]: https://github.com/MetaMask/metamask-extension/compare/v11.16.1...v11.16.2
 [11.16.1]: https://github.com/MetaMask/metamask-extension/compare/v11.16.0...v11.16.1
 [11.16.0]: https://github.com/MetaMask/metamask-extension/compare/v11.15.6...v11.16.0
 [11.15.6]: https://github.com/MetaMask/metamask-extension/compare/v11.15.5...v11.15.6
