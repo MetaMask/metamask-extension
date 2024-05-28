@@ -217,7 +217,10 @@ export async function disconnectFromTestDapp(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
   await driver.clickElement('[data-testid="account-options-menu-button"]');
   await driver.clickElement({ text: 'All Permissions', tag: 'div' });
-  await driver.clickElementAndWaitToDisappear({ text: 'Got it', tag: 'button' });
+  await driver.clickElementAndWaitToDisappear({
+    text: 'Got it',
+    tag: 'button',
+  });
   await driver.clickElement({
     text: '127.0.0.1:8080',
     tag: 'p',
