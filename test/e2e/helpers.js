@@ -471,9 +471,17 @@ const onboardingCreatePassword = async (driver, password) => {
  */
 const onboardingRevealAndConfirmSRP = async (driver) => {
   // secure my wallet
+  await driver.findVisibleElement({
+    tag: 'h2',
+    text: 'Secure your wallet',
+  });
   await driver.clickElement('[data-testid="secure-wallet-recommended"]');
 
   // reveal SRP
+  await driver.findVisibleElement({
+    tag: 'h2',
+    text: 'Write down your Secret Recovery Phrase',
+  });
   await driver.clickElement('[data-testid="recovery-phrase-reveal"]');
 
   const revealedSeedPhrase = await driver.findElement(
