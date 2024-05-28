@@ -19,14 +19,14 @@ In web automation testing, locators are crucial commands that guide the framewor
 
 ## buildLocator
 
-**`buildLocator`** function enhances element matching capabilities by introducing support for inline locators, offering an alternative to the traditional use of Selenium's By abstraction.
+The **`buildLocator`** function enhances element-matching capabilities by introducing support for inline locators, offering an alternative to the traditional use of Selenium's `By` abstraction.
 
 [source](https://github.com/MetaMask/metamask-extension/blob/1f2bfb388695034db8859877ed21b4b045514f9f/test/e2e/webdriver/driver.js#L190)
 
-**Arguments**<br>
+#### Arguments
 @param {string | object} locator - this could be 'css' or 'xpath' and value to use with the locator strategy.
 
-**Returns**<br>
+#### Returns
 @returns {object} By object that can be used to locate elements.<br>
 @throws {Error} Will throw an error if an invalid locator strategy is provided.
 
@@ -205,14 +205,14 @@ Finding web elements is a fundamental task in web automation and testing, allowi
 <details><summary><b>findElement</b></summary>
 <br>
 
-> **`findElement`** function is called on the driver instance, it returns a reference to the first element in the DOM that matches with the provided locator. This value can be stored and used for future element actions.
+>  **`findElement`** returns a reference to the first element in the DOM that the provided locator matches.
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/1f2bfb388695034db8859877ed21b4b045514f9f/test/e2e/webdriver/driver.js#L458)
 >
-> **Arguments**<br>
+> #### Arguments
 > @param {string} rawLocator - element locator
 >
-> **Returns**<br>
+> #### Returns
 > @return `{Promise<WebElement>}` A promise that resolves to the WebElement.
 >
 > **Example - Evaluating entire DOM**
@@ -241,10 +241,10 @@ Finding web elements is a fundamental task in web automation and testing, allowi
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L370)
 >
-> **Arguments**<br>
+> #### Arguments
 > @param {string | object} rawLocator - Element locator
 >
-> **Returns**<br>
+> #### Returns
 > @returns `{Promise<Array<WebElement>>} `A promise that resolves to an array of found elements.
 >
 > **Example for all matching FindElements**
@@ -272,10 +272,10 @@ Finding web elements is a fundamental task in web automation and testing, allowi
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L355)
 >
-> **Arguments**<br>
+> #### Arguments
 > @param {string | object} rawLocator - Element locator
 >
-> **Returns**<br>
+> #### Returns
 > @return `{Promise<WebElement>}` A promise that resolves to the WebElement.
 >
 > **Example for all matching** findVisibleElement
@@ -297,10 +297,10 @@ Finding web elements is a fundamental task in web automation and testing, allowi
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L361)
 >
-> **Arguments**<br>
+> #### Arguments
 > @param {string | object} rawLocator - Element locator
 >
-> **Returns**<br>
+> #### Returns
 > @return `{Promise<WebElement>}` A promise that resolves to the WebElement.
 >
 > **Example for f**indClickableElement
@@ -319,10 +319,10 @@ Finding web elements is a fundamental task in web automation and testing, allowi
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L379)
 >
-> **Arguments**<br>
+> #### Arguments
 > @param {string | object} rawLocator - Element locator
 >
-> **Returns**<br>
+> #### Returns
 > @return `{Promise<WebElement>}` A promise that resolves to the WebElement.
 >
 > **Example**
@@ -340,7 +340,7 @@ Finding web elements is a fundamental task in web automation and testing, allowi
 
 ## Interactions
 
-When we talk about interacting with web elements, we mean simulating the actions a user might take on a webpage. This includes:
+In this context, interacting with web elements implies simulating actions a user might take on a webpage. This includes:
 
 - **Clicking**: Simulating a mouse click on buttons, links, or any clickable elements.
 - **Typing**: Entering text into input fields like text boxes or text areas.
@@ -358,11 +358,11 @@ Each of these actions requires first [locating](#locators) the web element you w
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L208)
 >
-> **Arguments**<br>
+> #### Arguments
 > @param {string | object} rawLocator - Element locator<br>
 > @param {string} input - The value to fill the element
 >
-> **Returns**<br>
+> #### Returns
 > @returns `{Promise<WebElement>}` Promise resolving to the filled element
 >
 > **Example**
@@ -384,11 +384,11 @@ Each of these actions requires first [locating](#locators) the web element you w
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L420)
 >
-> **Arguments**<br>
+> #### Arguments
 > @param {string | object} rawLocator - Element locator<br>
 > @param timeout - The maximum time in ms to wait for the element
 >
-> **Returns**<br>
+> #### Returns
 >
 > @return `{Promise<WebElement>}` A promise that resolves to the WebElement.
 >
@@ -408,7 +408,7 @@ Each of these actions requires first [locating](#locators) the web element you w
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L393)
 >
-> **Arguments**<br>
+> #### Arguments
 > @param {string | object} rawLocator - Element locator
 >
 > **Return**<br>
@@ -431,7 +431,7 @@ Each of these actions requires first [locating](#locators) the web element you w
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L214)
 >
-> **Arguments**<br>
+> #### Arguments
 > @param {string | object} rawLocator - Element locator<br>
 > @param {string} keys - The key to press
 >
@@ -465,10 +465,10 @@ Each of these actions requires first [locating](#locators) the web element you w
 
 > **`getText`** function in Selenium is used to retrieve the visible text of a web element.
 >
-> **Arguments**<br>
+> #### Arguments
 > @param {string | object} rawLocator - Element locator
 >
-> **Returns**<br>
+> #### Returns
 > @returns {text} String
 >
 > **Example**
@@ -510,12 +510,12 @@ This organization helps provide a clear structure for understanding the various 
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L224)
 >
-> **Arguments**<br>
+> #### Arguments
 > @param {Function} condition - condition or function the method awaits to become true.<br>
 > @param {number} timeout - Optional parameter specifies the maximum milliseconds to wait.<br>
 > @param catchError - Optional parameter that determines whether errors during the wait should be caught and handled within the function
 >
-> **Returns**<br>
+> #### Returns
 > @returns {Promise} - promise resolving with a delay.<br>
 > @throws {Error} Will throw an error if the condition is not met within the timeout period.
 >
@@ -568,7 +568,7 @@ This organization helps provide a clear structure for understanding the various 
 > It defaults to 'visible', indicating that the function will wait until the element is visible on the page.<br>
 > The other supported state is 'detached', which means waiting until the element is removed from the DOM.
 >
-> **Returns**<br>
+> #### Returns
 > @returns `{Promise<WebElement>}` promise resolving when the element meets the state or timeout occurs.<br>
 > @throws {Error} Will throw an error if the element does not reach the specified state within the timeout period.
 >
@@ -591,10 +591,10 @@ This organization helps provide a clear structure for understanding the various 
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L262)
 >
-> **Arguments**<br>
+> #### Arguments
 > @param {string | object} element - Element locator
 >
-> **Returns**<br>
+> #### Returns
 > @returns `{Promise<WebElement>}` promise resolving once the element fills or timeout hits.<br>
 > @throws {Error} Will throw an error if the element does not become non-empty within the timeout period.
 >
@@ -617,12 +617,12 @@ This organization helps provide a clear structure for understanding the various 
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L55)
 >
-> **Arguments**<br>
+> #### Arguments
 > @param {WebElement} element - Element locator<br>
 > @param {string} state - state to wait for could be 'visible', 'hidden', 'enabled', 'disabled'
 > @param {number} [timeout=5000] - amount of time in milliseconds to wait before timing out
 >
-> **Returns**<br>
+> #### Returns
 > @returns `'{Promise<void>}'` A promise that resolves when the element is in the specified state. <br>
 > @throws {Error} Will throw an error if the element does not reach the specified state within the timeout period.
 >
@@ -646,7 +646,7 @@ This organization helps provide a clear structure for understanding the various 
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L406)
 >
-> **Arguments**<br>
+> #### Arguments
 > @param rawLocator - Element locator<br>
 > @param timeout - The maximum time in ms to wait for the element to disappear after clicking.
 >
@@ -667,11 +667,11 @@ This organization helps provide a clear structure for understanding the various 
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L270)
 >
-> **Arguments**<br>
+> #### Arguments
 > @param {string | object} rawLocator - element locator
 > @param {number} count - The expected number of elements.<br>
 >
-> **Returns**<br>
+> #### Returns
 > @returns {Promise} promise resolving when the count of elements is matched.
 >
 > **Example**
@@ -692,11 +692,11 @@ This organization helps provide a clear structure for understanding the various 
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L574)
 >
-> **Arguments**<br>
+> #### Arguments
 > @param {number} x - The number of window handles to wait for<br>
 > @param {number} [timeout=5000] - The amount of time in milliseconds to wait before timing out<br>
 >
-> **Returns**<br>
+> #### Returns
 > @returns `{Promise<void>}` promise resolving when the target window handle count is met<br>
 > @throws {Error} - throws an error if the target number of window handles isn't met by the timeout
 >
@@ -751,12 +751,12 @@ await approveInput.clear();
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L502)
 >
-> **Arguments**<br>
+> #### Arguments
 > @param {string | object} rawLocator - Element locator
 >
 > @param {string} contentToPaste - content to paste.
 >
-> **Returns**<br>
+> #### Returns
 > @return `{Promise<WebElement>}` A promise that resolves to the WebElement.
 >
 > **Example**
@@ -782,10 +782,10 @@ A representation of any pointer device for interacting with a web page.
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L440)
 >
-> **Arguments**<br>
+> #### Arguments
 > @param {string | object} rawLocator - Element locator
 >
-> **Returns**<br>
+> #### Returns
 > @returns `{Promise<void>}` promise that will be fulfilled when the click command has completed.
 >
 > **Example**
@@ -808,10 +808,10 @@ A representation of any pointer device for interacting with a web page.
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L471)
 >
-> **Arguments**<br>
+> #### Arguments
 > @param {string | object} element - Element locator
 >
-> **Returns**<br>
+> #### Returns
 > @returns `{Promise<void>}` - promise resolving after scrolling
 >
 > **Example**
@@ -835,11 +835,11 @@ A representation of any pointer device for interacting with a web page.
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L459)
 >
-> **Arguments**<br>
+> #### Arguments
 > @param {string | object} rawLocator - Element locator<br>
 > @param {int} ms - The number of milliseconds to hold the mouse button down
 >
-> **Returns**<br>
+> #### Returns
 > @returns `{Promise<void>}` - promise resolving after mouse down completed
 >
 > **Example**
@@ -865,12 +865,12 @@ A representation of any pointer device for interacting with a web page.
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L450)
 >
-> **Arguments**<br>
+> #### Arguments
 > @param {string | object} rawLocator - Element locator<br>
 > @param {number} x - x coordinate to click at<br>
 > @param {number} y - y coordinate to click at<br>
 >
-> **Returns**<br>
+> #### Returns
 > @returns `{Promise<void>}` - promise resolving after a click
 >
 > >
@@ -892,10 +892,10 @@ Navigation refers to the process of moving through web pages within a browser se
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L522)
 >
-> **Arguments**<br>
+> #### Arguments
 > @param {string} [page] - its optional parameter to specify the page you want to navigate. Defaults to home if no other page is specified.
 >
-> **Returns**<br>
+> #### Returns
 > @returns {Promise} promise resolves when the page has finished loading<br>
 > @throws {Error} Will throw an error if the navigation fails or the page does not load within the timeout period.
 >
@@ -928,7 +928,7 @@ Navigation refers to the process of moving through web pages within a browser se
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L532)
 >
-> **Returns**<br>
+> #### Returns
 > @returns `{Promise<string>}` promise resolves upon retrieving the text.
 >
 > **Example**
@@ -976,10 +976,10 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L547)
 >
-> **Arguments**<br>
+> #### Arguments
 > @param {string} url - The URL to navigate to in the new window tab.
 >
-> **Returns**<br>
+> #### Returns
 > @returns {newHandle} The handle of the new window tab. This handle can be used later to switch between different tab windows during the test.
 >
 > **Example**
@@ -997,10 +997,10 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L543)
 >
-> **Arguments**<br>
+> #### Arguments
 > @param {string} url - Any URL
 >
-> **Returns**<br>
+> #### Returns
 > @returns `{Promise<void>}` promise resolves when the URL page has finished loading
 >
 > **Example**
@@ -1018,7 +1018,7 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L562)
 >
-> **Returns**<br>
+> #### Returns
 > @returns `{Promise<void>}` A promise resolves after switching to the new window.
 >
 > **Example**
@@ -1038,7 +1038,7 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L570)
 >
-> **Returns**<br>
+> #### Returns
 > @returns {int} - number of windows<br>
 > @return `{Promise<Array<string>>}` A promise that will be resolved with an array of window handles.
 >
@@ -1057,10 +1057,10 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L589)
 >
-> **Arguments**<br>
+> #### Arguments
 > @param {int} handlerId - unique ID for the tab whose title is needed
 >
-> **Returns**<br>
+> #### Returns
 > @returns `{Promise<string>} `promise resolving to the window tab title after command completion
 >
 > **Example**
@@ -1082,10 +1082,10 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L558)
 >
-> **Arguments**<br>
+> #### Arguments
 > @param {int} handle - unique ID for the tab to which you want to switch.
 >
-> **Returns**<br>
+> #### Returns
 > @returns `{Promise<void>}` promise that resolves once the switch is complete
 >
 > **Example**
@@ -1103,7 +1103,7 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L631)
 >
-> **Arguments**<br>
+> #### Arguments
 > @param {string} url - The URL of the window tab to switch<br>
 > @param {string} [initialWindowHandles] - optional array of window handles to search through<br>
 > If not provided, the function fetches all current window handles.<br>
@@ -1112,7 +1112,7 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 > @param {int} retries - optional for retrying the URL fetch operation, defaults to starting at 8 ms<br>
 > @param {int} retryDelay - optional for retrying the URL fetch operation, with defaults max 2500 ms<br>
 >
-> **Returns**<br>
+> #### Returns
 > @returns `{Promise<void>} `- promise that resolves once the switch is complete<br>
 > @throws {Error} - throws an error if no window with the specified url is found
 >
@@ -1132,7 +1132,7 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L594)
 >
-> **Arguments**<br>
+> #### Arguments
 > @param {string} title - The title of the window tab to switch<br>
 > @param {string} [initialWindowHandles] - optional array of window handles to search through<br>
 > If not provided, the function fetches all current window handles<br>
@@ -1141,7 +1141,7 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 > @param {int} retries - optional for retrying the title fetch operation, defaults to starting at 8 ms<br>
 > @param {int} retryDelay - optional for retrying the title fetch operation, with defaults max 2500 ms<br>
 >
-> **Returns**<br>
+> #### Returns
 > @returns `{Promise<void>}` promise that resolves once the switch is complete<br>
 > @throws {Error} throws an error if no window with the specified title is found.
 >
@@ -1165,7 +1165,7 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L668)
 >
-> **Returns**<br>
+> #### Returns
 > @returns `{Promise<void>}` promise resolving after closing the current window
 >
 > **Example**
@@ -1183,10 +1183,10 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L672)
 >
-> **Arguments**<br>
+> #### Arguments
 > @param {string} windowHandle - representing the unique identifier of the browser window to be closed.
 >
-> **Returns**<br>
+> #### Returns
 > @returns `{Promise<void>} `- promise resolving after closing the specified window
 >
 > **Example**
@@ -1208,11 +1208,11 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L689)
 >
-> **Arguments**<br>
+> #### Arguments
 > @param {Array<string>} exceptions - list of window handle exceptions<br>
 > @param {Array} [windowHandles] - full list of window handles
 >
-> **Returns**<br>
+> #### Returns
 > @returns `{Promise<void>}`- promise resolving after closing the specified window
 
 </details>
@@ -1224,7 +1224,7 @@ Web browsers can have multiple windows or tabs open at the same time. In web aut
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L336)
 >
-> **Returns**<br>
+> #### Returns
 > @returns `{Promise<void>}` - promise resolving after quitting
 >
 > **Example**
@@ -1248,7 +1248,7 @@ Alerts are pop-up messages that appear
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L678)
 >
-> **Returns**<br>
+> #### Returns
 > @returns `{Promise<void>}` promise resolving when the alert is closed
 >
 > **Example**
@@ -1273,10 +1273,10 @@ Web pages can be segmented into frames or IFrames, which are essentially documen
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L566)
 >
-> **Arguments**<br>
+> #### Arguments
 > @param {string | object} rawLocator - Element locator
 >
-> **Returns**<br>
+> #### Returns
 > @returns `{Promise<void>}` promise that resolves once the switch is complete
 >
 > **Example**
@@ -1314,10 +1314,10 @@ They are used to verify that the application under test behaves as expected unde
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L478)
 >
-> **Arguments**<br>
+> #### Arguments
 > @param {string | object} rawLocator - Element locator
 >
-> **Returns**<br>
+> #### Returns
 > @returns `{Promise<boolean>}` - promise that resolves to a boolean indicating whether the element is present.
 >
 > **Example**
@@ -1342,10 +1342,10 @@ They are used to verify that the application under test behaves as expected unde
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L487)
 >
-> **Arguments**<br>
+> #### Arguments
 > @param {string | object} rawLocator - Element locator
 >
-> **Returns**<br>
+> #### Returns
 > @returns `{Promise<Boolean>}`- promise that resolves to a boolean indicating whether the element is present and visible.
 >
 > **Example**
@@ -1370,7 +1370,7 @@ They are used to verify that the application under test behaves as expected unde
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L303)
 >
-> **Arguments**<br>
+> #### Arguments
 > @param {string | object} rawLocator - Element locator<br>
 > @param {object} guards<br>
 > @param {string | object} [guards.findElementGuard] - A rawLocator to perform a findElement and act as a guard<br>
