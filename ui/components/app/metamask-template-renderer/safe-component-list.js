@@ -16,7 +16,11 @@ import { AvatarIcon, Text } from '../../component-library';
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
 import { AccountListItem } from '../../multichain';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-import { ConfirmInfoRow, ConfirmInfoRowAddress, ConfirmInfoRowValueDouble } from '../confirm/info/row';
+import {
+  ConfirmInfoRow,
+  ConfirmInfoRowAddress,
+  ConfirmInfoRowValueDouble,
+} from '../confirm/info/row';
 import { SnapDelineator } from '../snaps/snap-delineator';
 import { Copyable } from '../snaps/copyable';
 import Spinner from '../../ui/spinner';
