@@ -43,7 +43,7 @@ export default function DeprecatedNetworks() {
         severity={Severity.Warning}
         description={bannerAlertDescription}
         onClose={() => setIsShowingWarning(false)}
-        actionButtonLabel={t('learnMoreUpperCase')}
+        actionButtonLabel={actionBtnLinkURL && t('learnMoreUpperCase')}
         actionButtonProps={{
           className: 'deprecated-networks__content__inline-link',
           href: actionBtnLinkURL,
@@ -62,9 +62,13 @@ function getDeprecationWarningCopy(t, currentChainID) {
     bannerAlertDescription = t('deprecatedAuroraNetworkMsg');
     actionBtnLinkURL = 'https://mainnet.aurora.dev/';
   } else if (DEPRECATED_NETWORKS.includes(currentChainID)) {
-    bannerAlertDescription = t('deprecatedGoerliNtwrkMsg');
-    actionBtnLinkURL =
-      'https://github.com/eth-clients/goerli#goerli-goerlitzer-testnet';
+    if (currentChainID === CHAIN_IDS.POLYGON_TESTNET) {
+      bannerAlertDescription = t('deprecatedNetwork');
+    } else {
+      bannerAlertDescription = t('deprecatedGoerliNtwrkMsg');
+      actionBtnLinkURL =
+        'https://github.com/eth-clients/goerli#goerli-goerlitzer-testnet';
+    }
   }
 
   return { bannerAlertDescription, actionBtnLinkURL };

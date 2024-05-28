@@ -1,5 +1,10 @@
 import { useContext, useEffect, useState } from 'react';
-import { SimulationData } from '@metamask/transaction-controller';
+import {
+  SimulationData,
+  SimulationErrorCode,
+} from '@metamask/transaction-controller';
+import { BigNumber } from 'bignumber.js';
+import { renderHook } from '@testing-library/react-hooks';
 import { useTransactionEventFragment } from '../../hooks/useTransactionEventFragment';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import {
@@ -15,8 +20,10 @@ import {
   AssetType,
   FiatType,
   PetnameType,
+  UseSimulationMetricsProps,
   useSimulationMetrics,
 } from './useSimulationMetrics';
+import { useLoadingTime } from './useLoadingTime';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -30,6 +37,7 @@ jest.mock('react', () => ({
   useState: jest.fn(),
 }));
 
+jest.mock('./useLoadingTime');
 jest.mock('../../../../hooks/useDisplayName');
 jest.mock('../../../../hooks/useName');
 jest.mock('../../../../pages/confirmations/hooks/useTransactionEventFragment');
@@ -41,7 +49,7 @@ const SYMBOL_MOCK = 'TST';
 
 const BALANCE_CHANGE_MOCK = {
   asset: { address: ADDRESS_MOCK, standard: TokenStandard.ERC20 },
-  amount: { isNegative: true, quantity: '0x1', decimals: 18 },
+  amount: new BigNumber(-1),
   fiatAmount: 1.23,
 } as unknown as BalanceChange;
 
@@ -68,7 +76,14 @@ describe('useSimulationMetrics', () => {
   const useEffectMock = jest.mocked(useEffect);
   const useDisplayNamesMock = jest.mocked(useDisplayNames);
   const useContextMock = jest.mocked(useContext);
+  const useLoadingTimeMock = jest.mocked(useLoadingTime);
+  const setLoadingCompleteMock = jest.fn();
+
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let updateTransactionEventFragmentMock: jest.MockedFunction<any>;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let trackEventMock: jest.MockedFunction<any>;
 
   function expectUpdateTransactionEventFragmentCalled(
@@ -79,12 +94,15 @@ describe('useSimulationMetrics', () => {
       balanceChanges?: BalanceChange[];
       simulationData?: SimulationData | undefined;
     },
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expected: any,
   ) {
     useSimulationMetrics({
+      enableMetrics: true,
       balanceChanges: balanceChanges ?? [],
       simulationData,
-      loadingTime: LOADING_TIME_MOCK,
+      loading: false,
       transactionId: TRANSACTION_ID_MOCK,
     });
 
@@ -105,34 +123,57 @@ describe('useSimulationMetrics', () => {
       updateTransactionEventFragment: updateTransactionEventFragmentMock,
     });
 
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     useStateMock.mockImplementation(((initialValue: any) => [
       initialValue,
       jest.fn(),
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ]) as any);
 
     useEffectMock.mockImplementation((fn) => fn());
     useContextMock.mockReturnValue(trackEventMock);
     useDisplayNamesMock.mockReturnValue([DISPLAY_NAME_UNKNOWN_MOCK]);
+    useLoadingTimeMock.mockReturnValue({
+      loadingTime: LOADING_TIME_MOCK,
+      setLoadingComplete: setLoadingCompleteMock,
+    });
   });
 
   describe('updates transaction event fragment', () => {
-    it('with loading time', () => {
-      useDisplayNamesMock.mockReset();
-      useDisplayNamesMock.mockReturnValue([]);
+    it('with loading time', async () => {
+      const props = {
+        balanceChanges: [BALANCE_CHANGE_MOCK],
+        loading: false,
+        simulationData: { tokenBalanceChanges: [] } as SimulationData,
+        transactionId: 'test-transaction-id',
+        enableMetrics: true,
+      };
 
-      expectUpdateTransactionEventFragmentCalled(
-        { simulationData: undefined },
+      renderHook((p: UseSimulationMetricsProps) => useSimulationMetrics(p), {
+        initialProps: props,
+      });
+
+      expect(setLoadingCompleteMock).toHaveBeenCalledTimes(1);
+      expect(updateTransactionEventFragmentMock).toHaveBeenCalledWith(
         expect.objectContaining({
           properties: expect.objectContaining({
             simulation_latency: LOADING_TIME_MOCK,
           }),
         }),
+        'test-transaction-id',
       );
+      jest.restoreAllMocks();
     });
 
     it.each([
       ['in progress', undefined, 'simulation_in_progress'],
-      ['reverted', { error: { isReverted: true } }, 'transaction_revert'],
+      [
+        'reverted',
+        { error: { code: SimulationErrorCode.Reverted } },
+        'transaction_revert',
+      ],
       ['failed', { error: { message: 'testError' } }, 'failed'],
       ['no changes', { tokenBalanceChanges: [] }, 'no_balance_change'],
       ['changes', { tokenBalanceChanges: [{}] }, 'balance_change'],
@@ -161,7 +202,7 @@ describe('useSimulationMetrics', () => {
     ])('with asset quantity if %s', (_, isNegative, property) => {
       const balanceChange = {
         ...BALANCE_CHANGE_MOCK,
-        amount: { ...BALANCE_CHANGE_MOCK.amount, isNegative },
+        amount: new BigNumber(isNegative ? -1 : 1),
       };
 
       expectUpdateTransactionEventFragmentCalled(
@@ -240,7 +281,7 @@ describe('useSimulationMetrics', () => {
             {
               ...BALANCE_CHANGE_MOCK,
               asset: { ...BALANCE_CHANGE_MOCK.asset, standard },
-              amount: { ...BALANCE_CHANGE_MOCK.amount, isNegative },
+              amount: new BigNumber(isNegative ? -1 : 1),
             } as BalanceChange,
           ],
         },
@@ -286,10 +327,7 @@ describe('useSimulationMetrics', () => {
       (_, fiatAmount, isNegative, property, expected) => {
         const balanceChange = {
           ...BALANCE_CHANGE_MOCK,
-          amount: {
-            ...BALANCE_CHANGE_MOCK.amount,
-            isNegative,
-          },
+          amount: new BigNumber(isNegative ? -1 : 1),
           fiatAmount,
         };
 
@@ -380,10 +418,7 @@ describe('useSimulationMetrics', () => {
 
         const balanceChange = {
           ...BALANCE_CHANGE_MOCK,
-          amount: {
-            ...BALANCE_CHANGE_MOCK.amount,
-            isNegative,
-          },
+          amount: new BigNumber(isNegative ? -1 : 1),
           asset: { ...BALANCE_CHANGE_MOCK.asset, standard },
         };
 
@@ -406,10 +441,7 @@ describe('useSimulationMetrics', () => {
     ])('with asset total value if %s', (_, isNegative, property) => {
       const balanceChange1 = {
         ...BALANCE_CHANGE_MOCK,
-        amount: {
-          ...BALANCE_CHANGE_MOCK.amount,
-          isNegative,
-        },
+        amount: new BigNumber(isNegative ? -1 : 1),
         fiatAmount: 1.23,
       };
 
@@ -434,9 +466,10 @@ describe('useSimulationMetrics', () => {
   describe('creates incomplete asset event', () => {
     it('if petname is unknown', () => {
       useSimulationMetrics({
+        enableMetrics: true,
         balanceChanges: [BALANCE_CHANGE_MOCK],
         simulationData: undefined,
-        loadingTime: LOADING_TIME_MOCK,
+        loading: false,
         transactionId: TRANSACTION_ID_MOCK,
       });
 
@@ -460,9 +493,10 @@ describe('useSimulationMetrics', () => {
       useDisplayNamesMock.mockReturnValue([DISPLAY_NAME_SAVED_MOCK]);
 
       useSimulationMetrics({
+        enableMetrics: true,
         balanceChanges: [{ ...BALANCE_CHANGE_MOCK, fiatAmount: null }],
         simulationData: undefined,
-        loadingTime: LOADING_TIME_MOCK,
+        loading: false,
         transactionId: TRANSACTION_ID_MOCK,
       });
 
@@ -480,5 +514,29 @@ describe('useSimulationMetrics', () => {
         },
       });
     });
+  });
+
+  it.each([
+    [
+      'simulation disabled',
+      true,
+      { error: { code: SimulationErrorCode.Disabled } },
+    ],
+    [
+      'chain not supported',
+      true,
+      { error: { code: SimulationErrorCode.ChainNotSupported } },
+    ],
+    ['metrics not enabled', false, undefined],
+  ])('does not update fragment if %s', (_, enableMetrics, simulationData) => {
+    useSimulationMetrics({
+      enableMetrics,
+      balanceChanges: [BALANCE_CHANGE_MOCK],
+      simulationData: simulationData as SimulationData,
+      loading: false,
+      transactionId: TRANSACTION_ID_MOCK,
+    });
+
+    expect(updateTransactionEventFragmentMock).not.toHaveBeenCalled();
   });
 });

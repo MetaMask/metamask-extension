@@ -15,7 +15,7 @@ import {
   Text,
 } from '../../component-library';
 import { ModalContent } from '../../component-library/modal-content/deprecated';
-import { ModalHeader } from '../../component-library/modal-header/deprecated';
+import { ModalHeader } from '../../component-library/modal-header';
 import { TextFieldSearch } from '../../component-library/text-field-search/deprecated';
 import {
   AccountListItem,
@@ -391,12 +391,11 @@ export const AccountListMenu = ({
                         });
                         dispatch(setSelectedAccount(account.address));
                       }}
-                      identity={account}
+                      account={account}
                       key={account.address}
                       selected={selectedAccount.address === account.address}
                       closeMenu={onClose}
                       connectedAvatar={connectedSite?.iconUrl}
-                      connectedAvatarName={connectedSite?.name}
                       menuType={AccountListItemMenuTypes.Account}
                       isPinned={Boolean(account.pinned)}
                       isHidden={Boolean(account.hidden)}

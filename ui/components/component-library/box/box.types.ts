@@ -84,6 +84,8 @@ export type StylePropValueType =
   | undefined;
 
 export type ClassNamesObject = {
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 };
 

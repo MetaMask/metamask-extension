@@ -1,4 +1,8 @@
 import React, { FC } from 'react';
+import { useSelector } from 'react-redux';
+import { getIpfsGateway, getOpenSeaEnabled } from '../../../selectors';
+import NftDefaultImage from '../../app/nft-default-image/nft-default-image';
+import { isIpfsURL } from '../../../helpers/utils/notification.util';
 
 import {
   AvatarIcon,
@@ -37,6 +41,17 @@ export type NotificationListItemIconProps = {
   badge?: BadgeProps;
 };
 
+const useNftImageRenderability = (src: string) => {
+  const isIpfsEnabled = useSelector(getIpfsGateway);
+  const openSeaEnabled = useSelector(getOpenSeaEnabled);
+  const isIpfs = isIpfsURL(src);
+
+  const ipfsImageIsRenderable = isIpfsEnabled && isIpfs && src;
+  const openseaImageIsRenderable = openSeaEnabled && src && !isIpfs;
+
+  return { ipfsImageIsRenderable, openseaImageIsRenderable, isIpfs };
+};
+
 const AvatarTokenComponent = ({ src }: { src: string }): JSX.Element => (
   <AvatarToken
     data-testid="avatar-token"
@@ -46,18 +61,29 @@ const AvatarTokenComponent = ({ src }: { src: string }): JSX.Element => (
   />
 );
 
-const NftImage = ({ src }: { src: string }): JSX.Element => (
-  <Box
-    data-testid="nft-image"
-    as="img"
-    src={src}
-    display={Display.Block}
-    justifyContent={JustifyContent.center}
-    backgroundColor={BackgroundColor.primaryMuted}
-    borderRadius={BorderRadius.SM}
-    className="notification-list-item-icon__image"
-  />
-);
+const NftImage = ({ src }: { src: string }): JSX.Element => {
+  const { ipfsImageIsRenderable, openseaImageIsRenderable, isIpfs } =
+    useNftImageRenderability(src);
+
+  return ipfsImageIsRenderable || openseaImageIsRenderable ? (
+    <Box
+      data-testid="nft-image"
+      as="img"
+      src={src}
+      display={Display.Block}
+      justifyContent={JustifyContent.center}
+      backgroundColor={BackgroundColor.primaryMuted}
+      borderRadius={BorderRadius.SM}
+      className="notification-list-item-icon__image"
+    />
+  ) : (
+    <NftDefaultImage
+      className="nft-item__default-image notification-list-item-icon__image"
+      data-testid="nft-default-image"
+      clickable={isIpfs}
+    />
+  );
+};
 
 const DefaultIcon = (): JSX.Element => (
   <Box
@@ -97,7 +123,9 @@ const getBadge = (badge: BadgeProps, children: JSX.Element): JSX.Element => {
 
 const iconComponents = {
   [NotificationListItemIconType.Token]: AvatarTokenComponent,
-  [NotificationListItemIconType.Nft]: NftImage,
+  [NotificationListItemIconType.Nft]: ({ src }: { src: string }) => (
+    <NftImage src={src} />
+  ),
   default: DefaultIcon,
 };
 

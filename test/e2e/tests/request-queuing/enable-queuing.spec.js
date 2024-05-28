@@ -16,7 +16,6 @@ describe('Toggle Request Queuing Setting', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         // Open account menu button

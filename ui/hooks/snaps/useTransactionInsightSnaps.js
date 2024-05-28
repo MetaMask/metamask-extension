@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { getTransactionOriginCaveat } from '@metamask/snaps-rpc-methods';
-import { handleSnapRequest } from '../../store/actions';
+import { SeverityLevel } from '@metamask/snaps-sdk';
+import {
+  handleSnapRequest,
+  forceUpdateMetamaskState,
+} from '../../store/actions';
 import { getPermissionSubjectsDeepEqual } from '../../selectors';
 
 const INSIGHT_PERMISSION = 'endowment:transaction-insight';
@@ -11,38 +15,27 @@ export function useTransactionInsightSnaps({
   chainId,
   origin,
   insightSnaps,
-  eagerFetching = true,
-  insightSnapId = '',
 }) {
+  const dispatch = useDispatch();
   const subjects = useSelector(getPermissionSubjectsDeepEqual);
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(undefined);
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  const [hasFetchedV2Insight, setHasFetchedV2Insight] = useState(false);
-  ///: END:ONLY_INCLUDE_IF
+  const [hasFetchedInsight, setHasFetchedInsight] = useState(false);
+
   useEffect(() => {
     let cancelled = false;
 
     async function fetchInsight() {
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-      if (hasFetchedV2Insight) {
-        setLoading(false);
-        return;
-      }
-      ///: END:ONLY_INCLUDE_IF
-
-      if (!eagerFetching) {
+      if (hasFetchedInsight) {
         setLoading(false);
         return;
       }
 
       setLoading(true);
 
-      const snapIds = insightSnapId.length > 0 ? [insightSnapId] : insightSnaps;
-
       const newData = await Promise.allSettled(
-        snapIds.map((snapId) => {
+        insightSnaps.map((snapId) => {
           const permission = subjects[snapId]?.permissions[INSIGHT_PERMISSION];
           if (!permission) {
             return Promise.reject(
@@ -69,7 +62,7 @@ export function useTransactionInsightSnaps({
       );
 
       const reformattedData = newData.map((promise, idx) => {
-        const snapId = snapIds[idx];
+        const snapId = insightSnaps[idx];
         if (promise.status === 'rejected') {
           return {
             error: promise.reason,
@@ -85,9 +78,10 @@ export function useTransactionInsightSnaps({
       if (!cancelled) {
         setData(reformattedData);
         setLoading(false);
-        ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-        setHasFetchedV2Insight(true);
-        ///: END:ONLY_INCLUDE_IF
+        setHasFetchedInsight(true);
+        if (reformattedData.length > 0) {
+          forceUpdateMetamaskState(dispatch);
+        }
       }
     }
     if (transaction && Object.keys(transaction).length > 0) {
@@ -98,17 +92,24 @@ export function useTransactionInsightSnaps({
     };
   }, [
     transaction,
-    eagerFetching,
     chainId,
     origin,
     subjects,
     // TODO: Figure out how to improve this
     JSON.stringify(insightSnaps),
-    insightSnapId,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-    hasFetchedV2Insight,
-    ///: END:ONLY_INCLUDE_IF
+    hasFetchedInsight,
   ]);
 
-  return { data, loading };
+  const warnings = data?.reduce((warningsArr, promise) => {
+    if (promise.response?.severity === SeverityLevel.Critical) {
+      const {
+        snapId,
+        response: { id },
+      } = promise;
+      warningsArr.push({ snapId, id });
+    }
+    return warningsArr;
+  }, []);
+
+  return { data, loading, warnings };
 }

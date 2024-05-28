@@ -91,7 +91,7 @@ export async function mockRequest(
   }
 
 
-describe.skip('Simulation Details', () => {
+describe('Simulation Details', () => {
   it('renders send eth transaction', async function (this: Mocha.Context) {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, SEND_ETH_REQUEST_MOCK);
@@ -114,7 +114,7 @@ describe.skip('Simulation Details', () => {
 
       await switchToNotificationWindow(driver);
       await expectBalanceChange(driver, true, 0, '- 0.002', 'ETH');
-      await expectBalanceChange(driver, false, 0, '+ 6.756291', 'DAI');
+      await expectBalanceChange(driver, false, 0, '+ 6.756', 'DAI');
     });
   });
 

@@ -21,10 +21,13 @@ import {
   getSelectedInternalAccount,
 } from '../../../selectors';
 import { Box, Icon, IconName, Text } from '../../component-library';
+import { SignatureRequestType } from '../../../pages/confirmations/types/confirm';
 
 const MMISignatureMismatchBanner: React.FC = memo(() => {
   const t = useI18nContext();
-  const currentConfirmation = useSelector(currentConfirmationSelector);
+  const currentConfirmation = useSelector(
+    currentConfirmationSelector,
+  ) as SignatureRequestType;
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
 
@@ -57,7 +60,6 @@ const MMISignatureMismatchBanner: React.FC = memo(() => {
       display={Display.Flex}
       width={BlockSize.Full}
       padding={4}
-      marginBottom={4}
       backgroundColor={BackgroundColor.primaryMuted}
     >
       <Icon

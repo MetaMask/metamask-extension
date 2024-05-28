@@ -2,6 +2,7 @@ const {
   withFixtures,
   switchToNotificationWindow,
   unlockWallet,
+  WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
@@ -48,23 +49,26 @@ describe('Test Snap update via snaps component', function () {
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Install' });
+        await driver.waitForSelector({ text: 'Confirm' });
 
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
 
         // wait for permissions popover, click checkboxes and confirm
         await driver.waitForSelector('.mm-checkbox__input');
         await driver.clickElement('.mm-checkbox__input');
-        await driver.clickElement({
-          text: 'Confirm',
-          tag: 'button',
-        });
+        await driver.waitForSelector(
+          '[data-testid="snap-install-warning-modal-confirm"]',
+        );
+        await driver.clickElement(
+          '[data-testid="snap-install-warning-modal-confirm"]',
+        );
 
+        // deal with OK button
         await driver.waitForSelector({ text: 'OK' });
 
         await driver.clickElement({
@@ -73,12 +77,7 @@ describe('Test Snap update via snaps component', function () {
         });
 
         // navigate to test snap page
-        const windowHandles = await driver.waitUntilXWindowHandles(
-          2,
-          1000,
-          10000,
-        );
-        await driver.switchToWindow(windowHandles[1]);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // wait for npm installation success
         await driver.waitForSelector({
@@ -87,8 +86,9 @@ describe('Test Snap update via snaps component', function () {
         });
 
         // switch to the original MM tab
-        const extensionPage = windowHandles[0];
-        await driver.switchToWindow(extensionPage);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
 
         // click on the global action menu
         await driver.waitForSelector(
@@ -127,7 +127,7 @@ describe('Test Snap update via snaps component', function () {
         await driver.clickElementSafe('[data-testid="snap-update-scroll"]');
 
         await driver.clickElement({
-          text: 'Update',
+          text: 'Confirm',
           tag: 'button',
         });
 

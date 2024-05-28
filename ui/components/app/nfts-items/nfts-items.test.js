@@ -6,6 +6,7 @@ import { toHex } from '@metamask/controller-utils';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { updateNftDropDownState } from '../../../store/actions';
+import { getSelectedInternalAccountFromMockState } from '../../../../test/jest/mocks';
 import NftsItems from '.';
 
 const mockHistoryPush = jest.fn();
@@ -23,9 +24,12 @@ jest.mock('../../../store/actions.ts', () => ({
   updateNftDropDownState: jest.fn().mockReturnValue(jest.fn()),
 }));
 
+const mockSelectedInternalAccount =
+  getSelectedInternalAccountFromMockState(mockState);
+
 describe('NFTs Item Component', () => {
   const nfts =
-    mockState.metamask.allNfts[mockState.metamask.selectedAddress][toHex(5)];
+    mockState.metamask.allNfts[mockSelectedInternalAccount.address][toHex(5)];
   const props = {
     collections: {
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {

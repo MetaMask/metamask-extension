@@ -35,6 +35,7 @@ export const SUPPORTED_CHAIN_IDS: Hex[] = [
   CHAIN_IDS.BSC,
   CHAIN_IDS.LINEA_MAINNET,
   CHAIN_IDS.MAINNET,
+  CHAIN_IDS.OPBNB,
   CHAIN_IDS.OPTIMISM,
   CHAIN_IDS.POLYGON,
   CHAIN_IDS.SEPOLIA,
@@ -63,6 +64,8 @@ export function createPPOMMiddleware<
   ppomController: PPOMController,
   preferencesController: PreferencesController,
   networkController: NetworkController,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   appStateController: any,
   updateSecurityAlertResponseByTxId: (
     req: JsonRpcRequest<JsonRpcParams> & {

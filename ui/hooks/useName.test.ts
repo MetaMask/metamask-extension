@@ -9,6 +9,8 @@ import { getCurrentChainId, getNames } from '../selectors';
 import { useName } from './useName';
 
 jest.mock('react-redux', () => ({
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   useSelector: (selector: any) => selector(),
 }));
 
@@ -35,6 +37,8 @@ const PROPOSED_NAMES_MOCK = {
 describe('useName', () => {
   const getCurrentChainIdMock = jest.mocked(getCurrentChainId);
   const getNamesMock =
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     jest.mocked<(state: any) => NameControllerState['names']>(getNames);
 
   beforeEach(() => {

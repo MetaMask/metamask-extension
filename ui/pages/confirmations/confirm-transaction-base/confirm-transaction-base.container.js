@@ -25,6 +25,8 @@ import {
   addToAddressBook,
   updateTransaction,
   updateEditableParams,
+  setSwapsFeatureFlags,
+  fetchSmartTransactionsLiveness,
 } from '../../../store/actions';
 import { isBalanceSufficient } from '../send/send.utils';
 import { shortenAddress, valuesFor } from '../../../helpers/utils/util';
@@ -43,7 +45,6 @@ import {
   getPreferences,
   doesAddressRequireLedgerHidConnection,
   getTokenList,
-  getIsMultiLayerFeeNetwork,
   getIsBuyableChain,
   getEnsResolutionByAddress,
   getUnapprovedTransaction,
@@ -52,7 +53,12 @@ import {
   getUnapprovedTransactions,
   getInternalAccountByAddress,
   getApprovedAndSignedTransactions,
+  getSelectedNetworkClientId,
 } from '../../../selectors';
+import {
+  getCurrentChainSupportsSmartTransactions,
+  getSmartTransactionsOptInStatus,
+} from '../../../../shared/modules/selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
   isAddressLedger,
@@ -128,6 +134,7 @@ const mapStateToProps = (state, ownProps) => {
   } = ownProps;
   const { id: paramsTransactionId } = params;
   const isMainnet = getIsMainnet(state);
+  const selectedNetworkClientId = getSelectedNetworkClientId(state);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const envType = getEnvironmentType();
@@ -155,6 +162,9 @@ const mapStateToProps = (state, ownProps) => {
     data,
   } = (transaction && transaction.txParams) || txParams;
   const accounts = getMetaMaskAccounts(state);
+  const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(state);
+  const currentChainSupportsSmartTransactions =
+    getCurrentChainSupportsSmartTransactions(state);
 
   const transactionData = parseStandardTokenTransactionData(data);
   const tokenToAddress = getTokenAddressParam(transactionData);
@@ -255,7 +265,6 @@ const mapStateToProps = (state, ownProps) => {
   const hardwareWalletRequiresConnection =
     doesAddressRequireLedgerHidConnection(state, fromAddress);
 
-  const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
   const isUsingPaymaster = getIsUsingPaymaster(state);
 
   let isSigningOrSubmitting = Boolean(
@@ -303,6 +312,7 @@ const mapStateToProps = (state, ownProps) => {
     nextNonce,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     isMainnet,
+    selectedNetworkClientId,
     isEthGasPrice,
     noGasPrice,
     supportsEIP1559,
@@ -315,7 +325,6 @@ const mapStateToProps = (state, ownProps) => {
     showLedgerSteps: fromAddressIsLedger,
     nativeCurrency,
     hardwareWalletRequiresConnection,
-    isMultiLayerFeeNetwork,
     chainId,
     isBuyableChain,
     useCurrencyRateCheck: getUseCurrencyRateCheck(state),
@@ -328,6 +337,8 @@ const mapStateToProps = (state, ownProps) => {
     isUserOpContractDeployError,
     useMaxValue,
     maxValue,
+    smartTransactionsOptInStatus,
+    currentChainSupportsSmartTransactions,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     accountType,
     isNoteToTraderSupported,
@@ -381,6 +392,12 @@ export const mapDispatchToProps = (dispatch) => {
     },
     updateTransactionValue: (id, value) => {
       dispatch(updateEditableParams(id, { value }));
+    },
+    setSwapsFeatureFlags: (swapsFeatureFlags) => {
+      dispatch(setSwapsFeatureFlags(swapsFeatureFlags));
+    },
+    fetchSmartTransactionsLiveness: () => {
+      dispatch(fetchSmartTransactionsLiveness());
     },
     getNextNonce: () => dispatch(getNextNonce()),
     setDefaultHomeActiveTabName: (tabName) =>

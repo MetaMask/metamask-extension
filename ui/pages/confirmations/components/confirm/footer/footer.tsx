@@ -1,35 +1,113 @@
-import React, { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
-
+import React, { useCallback, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Button,
   ButtonSize,
   ButtonVariant,
+  IconName,
 } from '../../../../../components/component-library';
 import { Footer as PageFooter } from '../../../../../components/multichain/pages/page';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { useMMIConfirmations } from '../../../../../hooks/useMMIConfirmations';
+///: END:ONLY_INCLUDE_IF
+
 import { doesAddressRequireLedgerHidConnection } from '../../../../../selectors';
 import {
   rejectPendingApproval,
   resolvePendingApproval,
 } from '../../../../../store/actions';
 import { confirmSelector } from '../../../selectors';
+import { getConfirmationSender } from '../utils';
+import useAlerts from '../../../../../hooks/useAlerts';
+import { ConfirmAlertModal } from '../../../../../components/app/alert-system/confirm-alert-modal';
+import { Severity } from '../../../../../helpers/constants/design-system';
+import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import useIsDangerButton from './useIsDangerButton';
+
+function getIconName(hasUnconfirmedAlerts: boolean): IconName {
+  return hasUnconfirmedAlerts ? IconName.SecuritySearch : IconName.Danger;
+}
+
+function ConfirmButton({
+  alertOwnerId = '',
+  disabled,
+  onSubmit,
+  onCancel,
+}: {
+  alertOwnerId?: string;
+  disabled: boolean;
+  onSubmit: () => void;
+  onCancel: () => void;
+}) {
+  const isDangerButton = useIsDangerButton();
+  const t = useI18nContext();
+
+  const [confirmModalVisible, setConfirmModalVisible] =
+    useState<boolean>(false);
+  const { alerts, isAlertConfirmed, fieldAlerts } = useAlerts(alertOwnerId);
+  const unconfirmedDangerAlerts = fieldAlerts.filter(
+    (alert: Alert) =>
+      !isAlertConfirmed(alert.key) && alert.severity === Severity.Danger,
+  );
+
+  const hasDangerAlerts = alerts.some(
+    (alert: Alert) => alert.severity === Severity.Danger,
+  );
+  const hasDangerFieldAlerts = fieldAlerts.some(
+    (alert: Alert) => alert.severity === Severity.Danger,
+  );
+  const hasUnconfirmedDangerAlerts = unconfirmedDangerAlerts.length > 0;
+
+  const handleCloseConfirmModal = useCallback(() => {
+    setConfirmModalVisible(false);
+  }, []);
+
+  const handleOpenConfirmModal = useCallback(() => {
+    setConfirmModalVisible(true);
+  }, []);
+
+  return (
+    <>
+      {confirmModalVisible && (
+        <ConfirmAlertModal
+          alertKey={fieldAlerts[0]?.key}
+          ownerId={alertOwnerId}
+          onClose={handleCloseConfirmModal}
+          onCancel={onCancel}
+          onSubmit={onSubmit}
+        />
+      )}
+      <Button
+        block
+        data-testid="confirm-footer-confirm-button"
+        startIconName={
+          hasDangerAlerts ? getIconName(hasUnconfirmedDangerAlerts) : undefined
+        }
+        onClick={hasDangerFieldAlerts ? handleOpenConfirmModal : onSubmit}
+        danger={hasDangerAlerts ? true : isDangerButton}
+        size={ButtonSize.Lg}
+        disabled={hasUnconfirmedDangerAlerts ? false : disabled}
+      >
+        {hasUnconfirmedDangerAlerts ? t('reviewAlerts') : t('confirm')}
+      </Button>
+    </>
+  );
+}
 
 const Footer = () => {
+  const dispatch = useDispatch();
   const t = useI18nContext();
   const confirm = useSelector(confirmSelector);
+
   const { currentConfirmation, isScrollToBottomNeeded } = confirm;
+  const { from } = getConfirmationSender(currentConfirmation);
+
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const { mmiOnSignCallback, mmiSubmitDisabled } = useMMIConfirmations();
   ///: END:ONLY_INCLUDE_IF
 
-  let from: string | undefined;
-  // todo: extend to other confirmation types
-  if (currentConfirmation?.msgParams) {
-    from = currentConfirmation.msgParams.from;
-  }
   const hardwareWalletRequiresConnection = useSelector((state) => {
     if (from) {
       return doesAddressRequireLedgerHidConnection(state, from);
@@ -37,12 +115,11 @@ const Footer = () => {
     return false;
   });
 
-  const dispatch = useDispatch();
-
   const onCancel = useCallback(() => {
     if (!currentConfirmation) {
       return;
     }
+
     dispatch(
       rejectPendingApproval(
         currentConfirmation.id,
@@ -55,14 +132,16 @@ const Footer = () => {
     if (!currentConfirmation) {
       return;
     }
+
     dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
+
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     mmiOnSignCallback();
     ///: END:ONLY_INCLUDE_IF
   }, [currentConfirmation]);
 
   return (
-    <PageFooter>
+    <PageFooter className="confirm-footer_page-footer">
       <Button
         block
         onClick={onCancel}
@@ -71,11 +150,9 @@ const Footer = () => {
       >
         {t('cancel')}
       </Button>
-      <Button
-        block
-        data-testid="confirm-footer-confirm-button"
-        onClick={onSubmit}
-        size={ButtonSize.Lg}
+      <ConfirmButton
+        alertOwnerId={currentConfirmation?.id}
+        onSubmit={onSubmit}
         disabled={
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           mmiSubmitDisabled ||
@@ -83,9 +160,8 @@ const Footer = () => {
           isScrollToBottomNeeded ||
           hardwareWalletRequiresConnection
         }
-      >
-        {t('confirm')}
-      </Button>
+        onCancel={onCancel}
+      />
     </PageFooter>
   );
 };

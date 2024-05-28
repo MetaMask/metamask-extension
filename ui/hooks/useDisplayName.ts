@@ -30,7 +30,9 @@ export function useDisplayNames(
   const values = requests.map(({ value }) => value);
 
   const contractInfo = useSelector((state) =>
-    (getMemoizedMetadataContracts as any)(state, values),
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (getMemoizedMetadataContracts as any)(state, values, true),
   );
 
   const watchedNftNames = useSelector(getNftContractsByAddressOnCurrentChain);

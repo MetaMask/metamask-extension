@@ -3,6 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
 import {
+  useSetIsProfileSyncingEnabled,
+  useEnableProfileSyncing,
+} from '../../../hooks/metamask-notifications/useProfileSyncing';
+import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
@@ -10,6 +14,7 @@ import {
   COINGECKO_LINK,
   CRYPTOCOMPARE_LINK,
   PRIVACY_POLICY_LINK,
+  TRANSACTION_SIMULATIONS_LEARN_MORE_LINK,
 } from '../../../../shared/lib/ui-utils';
 import {
   Box,
@@ -28,7 +33,14 @@ import {
 } from '../../../helpers/constants/design-system';
 import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getAllNetworks, getCurrentNetwork } from '../../../selectors';
+import {
+  getAllNetworks,
+  getCurrentNetwork,
+  getPetnamesEnabled,
+  getExternalServicesOnboardingToggleState,
+} from '../../../selectors';
+import { selectIsProfileSyncingEnabled } from '../../../selectors/metamask-notifications/profile-syncing';
+import { selectParticipateInMetaMetrics } from '../../../selectors/metamask-notifications/authentication';
 import {
   setCompletedOnboarding,
   setIpfsGateway,
@@ -41,8 +53,15 @@ import {
   showModal,
   toggleNetworkMenu,
   setIncomingTransactionsPreferences,
+  toggleExternalServices,
   setUseTransactionSimulations,
+  setPetnamesEnabled,
+  performSignIn,
 } from '../../../store/actions';
+import {
+  onboardingToggleBasicFunctionalityOn,
+  openBasicFunctionalityModal,
+} from '../../../ducks/app/app';
 import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
 import { Setting } from './setting';
 
@@ -50,6 +69,14 @@ export default function PrivacySettings() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const { setIsProfileSyncingEnabled, error: setIsProfileSyncingEnabledError } =
+    useSetIsProfileSyncingEnabled();
+  const { enableProfileSyncing, error: disableProfileSyncingError } =
+    useEnableProfileSyncing();
+
+  const profileSyncingError =
+    setIsProfileSyncingEnabledError || disableProfileSyncingError;
 
   const defaultState = useSelector((state) => state.metamask);
   const {
@@ -63,6 +90,9 @@ export default function PrivacySettings() {
     useAddressBarEnsResolution,
     useTransactionSimulations,
   } = defaultState;
+  const petnamesEnabled = useSelector(getPetnamesEnabled);
+  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+  const participateInMetaMetrics = useSelector(selectParticipateInMetaMetrics);
 
   const [usePhishingDetection, setUsePhishingDetection] =
     useState(usePhishDetect);
@@ -84,12 +114,18 @@ export default function PrivacySettings() {
   const [addressBarResolution, setAddressBarResolution] = useState(
     useAddressBarEnsResolution,
   );
+  const [turnOnPetnames, setTurnOnPetnames] = useState(petnamesEnabled);
 
   const trackEvent = useContext(MetaMetricsContext);
   const currentNetwork = useSelector(getCurrentNetwork);
   const allNetworks = useSelector(getAllNetworks);
 
+  const externalServicesOnboardingToggleState = useSelector(
+    getExternalServicesOnboardingToggleState,
+  );
+
   const handleSubmit = () => {
+    dispatch(toggleExternalServices(externalServicesOnboardingToggleState));
     dispatch(setUsePhishDetect(usePhishingDetection));
     dispatch(setUse4ByteResolution(turnOn4ByteResolution));
     dispatch(setUseTokenDetection(turnOnTokenDetection));
@@ -100,6 +136,11 @@ export default function PrivacySettings() {
     dispatch(setCompletedOnboarding());
     dispatch(setUseAddressBarEnsResolution(addressBarResolution));
     setUseTransactionSimulations(isTransactionSimulationsEnabled);
+    dispatch(setPetnamesEnabled(turnOnPetnames));
+
+    if (!isProfileSyncingEnabled && participateInMetaMetrics) {
+      dispatch(performSignIn());
+    }
 
     if (ipfsURL && !ipfsError) {
       const { host } = new URL(addUrlProtocolPrefix(ipfsURL));
@@ -116,7 +157,44 @@ export default function PrivacySettings() {
       },
     });
 
+    const eventName =
+      isProfileSyncingEnabled || participateInMetaMetrics
+        ? MetaMetricsEventName.OnboardingWalletAdvancedSettingsWithAuthenticating
+        : MetaMetricsEventName.OnboardingWalletAdvancedSettingsWithoutAuthenticating;
+
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: eventName,
+      properties: {
+        isProfileSyncingEnabled,
+        participateInMetaMetrics,
+      },
+    });
+
     history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
+  };
+
+  const handleUseProfileSync = async () => {
+    if (isProfileSyncingEnabled) {
+      dispatch(
+        showModal({
+          name: 'CONFIRM_TURN_OFF_PROFILE_SYNCING',
+          turnOffProfileSyncing: () => {
+            setIsProfileSyncingEnabled(false);
+            trackEvent({
+              category: MetaMetricsEventCategory.Onboarding,
+              event:
+                MetaMetricsEventName.OnboardingWalletAdvancedSettingsTurnOffProfileSyncing,
+              properties: {
+                participateInMetaMetrics,
+              },
+            });
+          },
+        }),
+      );
+    } else {
+      await enableProfileSyncing();
+    }
   };
 
   const handleIPFSChange = (url) => {
@@ -147,6 +225,20 @@ export default function PrivacySettings() {
           className="privacy-settings__settings"
           data-testid="privacy-settings-settings"
         >
+          <Setting
+            dataTestId="basic-functionality-toggle"
+            value={externalServicesOnboardingToggleState}
+            setValue={(toggledValue) => {
+              if (toggledValue === false) {
+                dispatch(openBasicFunctionalityModal());
+              } else {
+                dispatch(onboardingToggleBasicFunctionalityOn());
+              }
+            }}
+            title={t('basicConfigurationLabel')}
+            description={t('basicConfigurationDescription')}
+          />
+
           <IncomingTransactionToggle
             allNetworks={allNetworks}
             setIncomingTransactionsPreferences={(chainId, value) =>
@@ -154,6 +246,35 @@ export default function PrivacySettings() {
             }
             incomingTransactionsPreferences={incomingTransactionsPreferences}
           />
+
+          <Setting
+            dataTestId="profile-sync-toggle"
+            value={isProfileSyncingEnabled}
+            setValue={handleUseProfileSync}
+            title={t('profileSync')}
+            description={t('profileSyncDescription', [
+              <a
+                href="https://consensys.io/privacy-policy/"
+                key="link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t('profileSyncPrivacyLink')}
+              </a>,
+            ])}
+          />
+          {profileSyncingError && (
+            <Box paddingBottom={4}>
+              <Text
+                as="p"
+                color={TextColor.errorDefault}
+                variant={TextVariant.bodySm}
+              >
+                {t('notificationsSettingsBoxError')}
+              </Text>
+            </Box>
+          )}
+
           <Setting
             value={usePhishingDetection}
             setValue={setUsePhishingDetection}
@@ -272,7 +393,16 @@ export default function PrivacySettings() {
             value={isTransactionSimulationsEnabled}
             setValue={setTransactionSimulationsEnabled}
             title={t('simulationsSettingSubHeader')}
-            description={t('simulationsSettingDescription')}
+            description={t('simulationsSettingDescription', [
+              <a
+                key="learn_more_link"
+                href={TRANSACTION_SIMULATIONS_LEARN_MORE_LINK}
+                rel="noreferrer"
+                target="_blank"
+              >
+                {t('learnMoreUpperCase')}
+              </a>,
+            ])}
           />
           <Setting
             value={addressBarResolution}
@@ -333,6 +463,12 @@ export default function PrivacySettings() {
                 {t('privacyMsg')}
               </a>,
             ])}
+          />
+          <Setting
+            value={turnOnPetnames}
+            setValue={setTurnOnPetnames}
+            title={t('petnamesEnabledToggle')}
+            description={t('petnamesEnabledToggleDescription')}
           />
           <ButtonPrimary
             size={ButtonPrimarySize.Lg}

@@ -86,6 +86,15 @@ module.exports = {
         patterns: [
           {
             from: path.join(
+              'ui',
+              'css',
+              'utilities',
+              'fonts/',
+            ),
+            to: 'fonts',
+          },
+          {
+            from: path.join(
               'node_modules',
               '@fortawesome',
               'fontawesome-free',

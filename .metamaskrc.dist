@@ -21,3 +21,10 @@ BLOCKAID_PUBLIC_KEY=
 ; SELENIUM_HEADLESS=
 ; Set this to 1 to make chrome e2e tests disable DoH/DoT and use system DNS
 ; SELENIUM_USE_SYSTEM_DNS=
+; Set this to true to enable the snap path for the Firefox WebDriver (Linux)
+; FIREFOX_SNAP=
+
+ENABLE_CONFIRMATION_REDESIGN=
+
+; Enables the Settings Page - Developer Options
+; ENABLE_SETTINGS_PAGE_DEV_OPTIONS=true

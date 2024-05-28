@@ -21,7 +21,7 @@ describe('migration #114', () => {
   });
 
   describe('deprecates transactionSecurityCheckEnabled in PreferencesController', () => {
-    it('sets securityAlertsEnabled to true if transactionSecurityCheckEnabled is true', async () => {
+    it('sets securityAlertsEnabled and hasMigratedFromOpenSeaToBlockaid to true if transactionSecurityCheckEnabled is true', async () => {
       const oldStorage = {
         PreferencesController: {
           transactionSecurityCheckEnabled: true,
@@ -32,6 +32,7 @@ describe('migration #114', () => {
       const expectedState = {
         PreferencesController: {
           securityAlertsEnabled: true,
+          hasMigratedFromOpenSeaToBlockaid: true,
         },
       };
 

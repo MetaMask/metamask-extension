@@ -1,11 +1,16 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
+import { waitFor } from '@testing-library/react';
 import mockState from '../../../../../test/data/mock-state.json';
 import configureStore from '../../../../store/store';
+import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
 import useTokenExchangeRate from './useTokenExchangeRate';
 
-const renderUseTokenExchangeRate = (tokenAddress?: string) => {
+const renderUseTokenExchangeRate = (
+  tokenAddress?: string,
+  metaMaskState?: Record<string, unknown>,
+) => {
   const state = {
     ...mockState,
     metamask: {
@@ -22,15 +27,22 @@ const renderUseTokenExchangeRate = (tokenAddress?: string) => {
       providerConfig: {
         ticker: 'ETH',
       },
+      ...metaMaskState,
     },
   };
 
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const wrapper = ({ children }: any) => (
     <Provider store={configureStore(state)}>{children}</Provider>
   );
 
   return renderHook(() => useTokenExchangeRate(tokenAddress), { wrapper });
 };
+
+jest.mock('../../../../helpers/utils/util', () => ({
+  fetchTokenExchangeRates: jest.fn(),
+}));
 
 describe('useProcessNewDecimalValue', () => {
   beforeEach(() => {
@@ -47,14 +59,59 @@ describe('useProcessNewDecimalValue', () => {
     expect(String(exchangeRate?.value)).toEqual('5.55');
   });
 
-  it('ERC-20: price is unavailable', () => {
+  it('ERC-20: price is unavailable through state but available through API', async () => {
+    (fetchTokenExchangeRates as jest.Mock).mockReturnValue(
+      Promise.resolve({
+        '0x0000000000000000000000000000000000000001': '2.34',
+      }),
+    );
+
     const {
       result: { current: exchangeRate },
     } = renderUseTokenExchangeRate(
       '0x0000000000000000000000000000000000000001',
     );
 
-    expect(exchangeRate?.value).toBe(undefined);
+    waitFor(() => {
+      expect(exchangeRate?.value).toBe('2.34');
+    });
+    expect(fetchTokenExchangeRates).toBeCalledTimes(1);
+  });
+
+  it('ERC-20: price is unavailable through state and through API', async () => {
+    (fetchTokenExchangeRates as jest.Mock).mockReturnValue(
+      Promise.resolve({
+        'Not token': '2.34',
+      }),
+    );
+
+    const {
+      result: { current: exchangeRate },
+    } = renderUseTokenExchangeRate(
+      '0x0000000000000000000000000000000000000001',
+    );
+
+    waitFor(() => {
+      expect(exchangeRate?.value).toBe(undefined);
+    });
+    expect(fetchTokenExchangeRates).toBeCalledTimes(1);
+  });
+
+  it('ERC-20: price is unavailable through state but API call fails', async () => {
+    (fetchTokenExchangeRates as jest.Mock).mockReturnValue(
+      Promise.reject(new Error('error')),
+    );
+
+    const {
+      result: { current: exchangeRate },
+    } = renderUseTokenExchangeRate(
+      '0x0000000000000000000000000000000000000001',
+    );
+
+    waitFor(() => {
+      expect(exchangeRate?.value).toBe(undefined);
+    });
+    expect(fetchTokenExchangeRates).toBeCalledTimes(1);
   });
 
   it('native: price is available', () => {
@@ -63,5 +120,13 @@ describe('useProcessNewDecimalValue', () => {
     } = renderUseTokenExchangeRate(undefined);
 
     expect(String(exchangeRate?.value)).toBe('11.1');
+  });
+
+  it('native: price is unavailable', () => {
+    const {
+      result: { current: exchangeRate },
+    } = renderUseTokenExchangeRate(undefined, { currencyRates: {} });
+
+    expect(exchangeRate?.value).toBe(undefined);
   });
 });

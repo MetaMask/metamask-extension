@@ -1,4 +1,6 @@
 import React from 'react';
+import { Router, Route } from 'react-router-dom'; // Import Router and Route
+import { createMemoryHistory } from 'history';
 import {
   fireEvent,
   renderWithProvider,
@@ -86,26 +88,46 @@ describe('Connections Content', () => {
   });
 
   it('should render correctly', () => {
+    const history = createMemoryHistory();
+    history.push('/connect/https%3A%2F%2Fmetamask.github.io');
+
     const { container, getByTestId } = renderWithProvider(
-      <Connections />,
+      <Router history={history}>
+        <Route path="/connect/:origin">
+          <Connections />
+        </Route>
+      </Router>,
       connectedStore,
     );
     expect(container).toMatchSnapshot();
     expect(getByTestId('connections-page')).toBeInTheDocument();
   });
 
-  it('it should render title of the dapp correctly', () => {
-    const { getByText } = renderWithProvider(<Connections />, connectedStore);
-    expect(getByText('metamask.github.io')).toBeInTheDocument();
-  });
-
   it('it should render Disconnect all Account button of the page', () => {
-    const { getByText } = renderWithProvider(<Connections />, connectedStore);
+    const history = createMemoryHistory();
+    history.push('/connect/https%3A%2F%2Fmetamask.github.io');
+
+    const { getByText } = renderWithProvider(
+      <Router history={history}>
+        <Route path="/connect/:origin">
+          <Connections />
+        </Route>
+      </Router>,
+      connectedStore,
+    );
     expect(getByText('Disconnect all accounts')).toBeInTheDocument();
   });
+
   it('it should trigger disconnect all accounts modal flow when disconnect all accounts button is clicked', async () => {
+    const history = createMemoryHistory();
+    history.push('/connect/https%3A%2F%2Fmetamask.github.io');
+
     const { getByText, getByTestId } = renderWithProvider(
-      <Connections />,
+      <Router history={history}>
+        <Route path="/connect/:origin">
+          <Connections />
+        </Route>
+      </Router>,
       connectedStore,
     );
 

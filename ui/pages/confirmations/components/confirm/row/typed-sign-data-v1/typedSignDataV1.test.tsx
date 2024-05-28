@@ -15,7 +15,9 @@ describe('ConfirmInfoRowTypedSignData', () => {
   });
 
   it('should return null if data is not defined', () => {
-    const { container } = render(<ConfirmInfoRowTypedSignDataV1 data={''} />);
+    const { container } = render(
+      <ConfirmInfoRowTypedSignDataV1 data={undefined} />,
+    );
     expect(container).toBeEmptyDOMElement();
   });
 });

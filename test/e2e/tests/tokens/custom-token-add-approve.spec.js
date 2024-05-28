@@ -5,8 +5,9 @@ const {
   withFixtures,
   openDapp,
   unlockWallet,
-  editGasfeeForm,
+  editGasFeeForm,
   WINDOW_TITLES,
+  clickNestedButton,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
@@ -40,13 +41,10 @@ describe('Create token, approve token and approve token without gas', function (
         // imports custom token from extension
         await driver.switchToWindow(extension);
         await driver.clickElement(`[data-testid="home__asset-tab"]`);
-        await driver.clickElement({ tag: 'button', text: 'Tokens' });
+        await clickNestedButton(driver, 'Tokens');
 
         await driver.clickElement({ text: 'Import tokens', tag: 'button' });
-        await driver.clickElement({
-          text: 'Custom token',
-          tag: 'button',
-        });
+        await clickNestedButton(driver, 'Custom token');
         await driver.fill(
           '[data-testid="import-tokens-modal-custom-address"]',
           contractAddress,
@@ -68,7 +66,8 @@ describe('Create token, approve token and approve token without gas', function (
 
         // renders balance for newly created token
         await driver.clickElement('.app-header__logo-container');
-        await driver.clickElement({ tag: 'button', text: 'Tokens' });
+
+        await clickNestedButton(driver, 'Tokens');
         await driver.waitForSelector({
           css: '[data-testid="multichain-token-list-item-value"]',
           text: '10 TST',
@@ -123,7 +122,7 @@ describe('Create token, approve token and approve token without gas', function (
 
         assert.equal(await modalTitle.getText(), 'Third-party details');
 
-        await driver.clickElement({
+        await driver.clickElementAndWaitToDisappear({
           text: 'Got it',
           tag: 'button',
         });
@@ -172,7 +171,7 @@ describe('Create token, approve token and approve token without gas', function (
         });
 
         await driver.switchToWindow(extension);
-        await driver.clickElement({ tag: 'button', text: 'Activity' });
+        await clickNestedButton(driver, 'Activity');
 
         // check list of pending transactions in extension
         await driver.wait(async () => {
@@ -238,6 +237,7 @@ describe('Create token, approve token and approve token without gas', function (
           text: 'View details',
           css: '.token-allowance-container__view-details',
         });
+
         await driver.clickElement({
           text: 'Next',
           tag: 'button',
@@ -253,13 +253,6 @@ describe('Create token, approve token and approve token without gas', function (
           '5 TST',
           'Default value is not correctly set',
         );
-        await driver.waitForSelector(
-          {
-            css: '.box--flex-direction-row > h6',
-            text: '0.000895 ETH',
-          },
-          { timeout: 15000 },
-        );
 
         // editing gas fee
         const editBtn = await driver.findElement({
@@ -269,20 +262,12 @@ describe('Create token, approve token and approve token without gas', function (
 
         editBtn.click();
 
-        await driver.clickElement({
-          text: 'Edit suggested gas fee',
-          tag: 'button',
-        });
-
         await driver.waitForSelector({
           text: 'Edit priority',
-        });
-        await driver.waitForSelector({
-          text: '0.00089526 ETH',
-          tag: 'h1',
+          tag: 'header',
         });
 
-        await editGasfeeForm(driver, '60001', '10');
+        await editGasFeeForm(driver, '60001', '10');
 
         await driver.waitForSelector(
           {
@@ -323,7 +308,7 @@ describe('Create token, approve token and approve token without gas', function (
 
         // finds the transaction in transaction list
         await driver.switchToWindow(extension);
-        await driver.clickElement({ tag: 'button', text: 'Activity' });
+        await clickNestedButton(driver, 'Activity');
 
         await driver.wait(async () => {
           const pendingTxes = await driver.findElements('.activity-list-item');
@@ -370,7 +355,7 @@ describe('Create token, approve token and approve token without gas', function (
         await driver.clickElement({ text: 'Approve Tokens', tag: 'button' });
 
         await driver.switchToWindow(extension);
-        await driver.clickElement({ tag: 'button', text: 'Activity' });
+        await clickNestedButton(driver, 'Activity');
 
         const pendingTxes = await driver.findElements(
           '.transaction-list__pending-transactions .activity-list-item',
@@ -454,7 +439,7 @@ describe('Create token, approve token and approve token without gas', function (
 
         // switch to extension
         await driver.switchToWindow(extension);
-        await driver.clickElement({ tag: 'button', text: 'Activity' });
+        await clickNestedButton(driver, 'Activity');
 
         const pendingTxes = await driver.findElements('.activity-list-item');
         pendingTxes[0].click();

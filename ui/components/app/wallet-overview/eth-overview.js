@@ -34,6 +34,7 @@ import {
   getPreferences,
   getSelectedInternalAccount,
   getSelectedAccountCachedBalance,
+  getUseExternalServices,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
   getCurrentKeyring,
@@ -87,15 +88,17 @@ const EthOverview = ({ className, showAddress }) => {
   const showFiat = useSelector(getShouldShowFiat);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const chainId = useSelector(getCurrentChainId);
-  const { ticker, type } = useSelector(getProviderConfig);
+  const { ticker, type, rpcUrl } = useSelector(getProviderConfig);
   const balance = useSelector(getSelectedAccountCachedBalance);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
     chainId,
     ticker,
     type,
+    rpcUrl,
   );
 
   const account = useSelector(getSelectedInternalAccount);
+  const isExternalServicesEnabled = useSelector(getUseExternalServices);
   const isSwapsChain = useSelector(getIsSwapsChain);
   const isSigningEnabled =
     account.methods.includes(EthMethod.SignTransaction) ||
@@ -323,7 +326,9 @@ const EthOverview = ({ className, showAddress }) => {
           />
           <IconButton
             className="eth-overview__button"
-            disabled={!isSwapsChain || !isSigningEnabled}
+            disabled={
+              !isSwapsChain || !isSigningEnabled || !isExternalServicesEnabled
+            }
             Icon={
               <Icon
                 name={IconName.SwapHorizontal}
