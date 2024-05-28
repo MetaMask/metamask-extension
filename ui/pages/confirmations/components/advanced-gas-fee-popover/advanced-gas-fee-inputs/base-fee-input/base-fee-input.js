@@ -1,13 +1,17 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { CHAINLIST_CHAIN_IDS_MAP } from '../../../../../../../shared/constants/network';
 import { HIGH_FEE_WARNING_MULTIPLIER } from '../../../../send/send.constants';
 import {
   EditGasModes,
   PriorityLevels,
 } from '../../../../../../../shared/constants/gas';
 import { PRIMARY } from '../../../../../../helpers/constants/common';
-import { getAdvancedGasFeeValues } from '../../../../../../selectors';
+import {
+  getAdvancedGasFeeValues,
+  getCurrentChainId,
+} from '../../../../../../selectors';
 import { useGasFeeContext } from '../../../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useUserPreferencedCurrency } from '../../../../../../hooks/useUserPreferencedCurrency';
@@ -20,14 +24,20 @@ import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
 import { decGWEIToHexWEI } from '../../../../../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../../../../../shared/modules/Numeric';
 
-const validateBaseFee = (value, gasFeeEstimates, maxPriorityFeePerGas) => {
+const validateBaseFee = (
+  value,
+  gasFeeEstimates,
+  maxPriorityFeePerGas,
+  chainId,
+) => {
   const baseFeeValue = new Numeric(value, 10);
   if (new Numeric(maxPriorityFeePerGas, 10).greaterThan(baseFeeValue)) {
     return 'editGasMaxBaseFeeGWEIImbalance';
   }
   if (
     gasFeeEstimates?.low &&
-    baseFeeValue.lessThan(gasFeeEstimates.low.suggestedMaxFeePerGas, 10)
+    baseFeeValue.lessThan(gasFeeEstimates.low.suggestedMaxFeePerGas, 10) &&
+    chainId !== CHAINLIST_CHAIN_IDS_MAP.MANTLE
   ) {
     return 'editGasMaxBaseFeeLow';
   }
@@ -68,6 +78,7 @@ const BaseFeeInput = () => {
   const { currency, numberOfDecimals } = useUserPreferencedCurrency(PRIMARY);
 
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
+  const chainId = useSelector(getCurrentChainId);
 
   const defaultBaseFee =
     estimateUsed !== PriorityLevels.custom &&
@@ -103,6 +114,7 @@ const BaseFeeInput = () => {
       baseFee,
       gasFeeEstimates,
       maxPriorityFeePerGas,
+      chainId,
     );
 
     setBaseFeeError(error);
@@ -110,6 +122,7 @@ const BaseFeeInput = () => {
     setMaxBaseFee(baseFee);
   }, [
     baseFee,
+    chainId,
     gasFeeEstimates,
     maxPriorityFeePerGas,
     setBaseFeeError,

@@ -7,7 +7,10 @@ import {
   PriorityLevels,
 } from '../../../../../../../shared/constants/gas';
 import { PRIMARY } from '../../../../../../helpers/constants/common';
-import { getAdvancedGasFeeValues } from '../../../../../../selectors';
+import {
+  getAdvancedGasFeeValues,
+  getCurrentChainId,
+} from '../../../../../../selectors';
 import { useCurrencyDisplay } from '../../../../../../hooks/useCurrencyDisplay';
 import { useGasFeeContext } from '../../../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
@@ -19,8 +22,9 @@ import { useAdvancedGasFeePopoverContext } from '../../context';
 import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
 import { decGWEIToHexWEI } from '../../../../../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../../../../../shared/modules/Numeric';
+import { CHAINLIST_CHAIN_IDS_MAP } from '../../../../../../../shared/constants/network';
 
-const validatePriorityFee = (value, gasFeeEstimates) => {
+const validatePriorityFee = (value, gasFeeEstimates, chainId) => {
   const priorityFeeValue = new Numeric(value, 10);
   if (priorityFeeValue.lessThan(0, 10)) {
     return 'editGasMaxPriorityFeeBelowMinimumV2';
@@ -30,7 +34,8 @@ const validatePriorityFee = (value, gasFeeEstimates) => {
     priorityFeeValue.lessThan(
       gasFeeEstimates.low.suggestedMaxPriorityFeePerGas,
       10,
-    )
+    ) &&
+    chainId !== CHAINLIST_CHAIN_IDS_MAP.MANTLE
   ) {
     return 'editGasMaxPriorityFeeLowV2';
   }
@@ -49,6 +54,7 @@ const validatePriorityFee = (value, gasFeeEstimates) => {
 
 const PriorityFeeInput = () => {
   const t = useI18nContext();
+  const chainId = useSelector(getCurrentChainId);
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
   const { gasLimit, setErrorValue, setMaxPriorityFeePerGas } =
     useAdvancedGasFeePopoverContext();
@@ -98,13 +104,14 @@ const PriorityFeeInput = () => {
 
   useEffect(() => {
     setMaxPriorityFeePerGas(priorityFee);
-    const error = validatePriorityFee(priorityFee, gasFeeEstimates);
+    const error = validatePriorityFee(priorityFee, gasFeeEstimates, chainId);
     setErrorValue(
       'maxPriorityFeePerGas',
       error === 'editGasMaxPriorityFeeBelowMinimumV2',
     );
     setPriorityFeeError(error);
   }, [
+    chainId,
     gasFeeEstimates,
     priorityFee,
     setErrorValue,

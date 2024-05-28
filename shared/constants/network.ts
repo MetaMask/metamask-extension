@@ -158,7 +158,7 @@ export const CHAIN_IDS = {
   CHZ: '0x15b38',
 } as const;
 
-const CHAINLIST_CHAIN_IDS_MAP = {
+export const CHAINLIST_CHAIN_IDS_MAP = {
   ...CHAIN_IDS,
   SCROLL: '0x82750',
   TAIKO_JOLNIR_L2_MAINNET: '0x28c5f',
