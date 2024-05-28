@@ -40,5 +40,8 @@
     "types",
     "ui",
     "*.ts"
-  ]
+  ],
+  "ts-node": {
+    "files": true
+  }
 }
