@@ -2,7 +2,6 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import {
-  ConfirmInfoRow,
   ConfirmInfoRowText,
   ConfirmInfoRowUrl,
 } from '../../../../../../components/app/confirm/info/row';
@@ -18,6 +17,7 @@ import {
   sanitizeString,
 } from '../../../../../../helpers/utils/util';
 import { SignatureRequestType } from '../../../../types/confirm';
+import { AlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 
 const PersonalSignInfo: React.FC = () => {
   const t = useI18nContext();
@@ -37,9 +37,14 @@ const PersonalSignInfo: React.FC = () => {
         padding={2}
         marginBottom={4}
       >
-        <ConfirmInfoRow label={t('requestFrom')} tooltip={t('requestFromInfo')}>
+        <AlertRow
+          alertKey={t('requestFrom')}
+          ownerId={currentConfirmation.id}
+          label={t('requestFrom')}
+          tooltip={t('requestFromInfo')}
+        >
           <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
-        </ConfirmInfoRow>
+        </AlertRow>
       </Box>
       <Box
         backgroundColor={BackgroundColor.backgroundDefault}
@@ -47,13 +52,17 @@ const PersonalSignInfo: React.FC = () => {
         padding={2}
         marginBottom={4}
       >
-        <ConfirmInfoRow label={t('message')}>
+        <AlertRow
+          alertKey={t('message')}
+          ownerId={currentConfirmation.id}
+          label={t('message')}
+        >
           <ConfirmInfoRowText
             text={sanitizeString(
               hexToText(currentConfirmation.msgParams?.data),
             )}
           />
-        </ConfirmInfoRow>
+        </AlertRow>
       </Box>
     </>
   );
