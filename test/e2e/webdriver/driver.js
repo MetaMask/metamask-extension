@@ -534,9 +534,23 @@ class Driver {
    * @param {string | object} rawLocator - Element locator
    * @returns {Promise} promise that resolves to the WebElement
    */
-  async clickElement(rawLocator) {
-    const element = await this.findClickableElement(rawLocator);
-    await element.click();
+  async clickElement(rawLocator, retries = 3) {
+    for (let attempt = 0; attempt < retries; attempt++) {
+      try {
+        const element = await this.findClickableElement(rawLocator);
+        await element.click();
+        return;
+      } catch (error) {
+        if (
+          error.name === 'StaleElementReferenceError' &&
+          attempt < retries - 1
+        ) {
+          await this.driver.delay(1000);
+        } else {
+          throw error;
+        }
+      }
+    }
   }
 
   /**
