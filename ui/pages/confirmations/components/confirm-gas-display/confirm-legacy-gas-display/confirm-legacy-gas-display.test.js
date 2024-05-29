@@ -111,7 +111,7 @@ describe('ConfirmLegacyGasDisplay', () => {
     });
   });
 
-  it('should contain L1 L2 fee details', async () => {
+  it('should display Estimated gas fee for L2 networks', async () => {
     render({
       ...mmState,
       confirmTransaction: {
@@ -124,8 +124,8 @@ describe('ConfirmLegacyGasDisplay', () => {
     });
 
     await waitFor(() => {
-      expect(screen.queryByText('Layer 1 fees')).toBeInTheDocument();
-      expect(screen.queryByText('Layer 2 gas fee')).toBeInTheDocument();
+      expect(screen.queryByText('Estimated gas fee')).toBeInTheDocument();
+      expect(screen.queryByText('Max fee:')).toBeInTheDocument();
     });
   });
 });
