@@ -110,7 +110,7 @@ const HeaderInfo = ({
           <ButtonIcon
             ariaLabel={'Advanced tx details'}
             color={IconColor.iconDefault}
-            iconName={IconName.AdvancedDetails}
+            iconName={IconName.Customize}
             data-testid="header-advanced-details-button"
             size={ButtonIconSize.Md}
             onClick={() => {

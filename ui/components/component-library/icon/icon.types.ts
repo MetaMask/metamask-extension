@@ -28,7 +28,6 @@ export enum IconSize {
 export enum IconName {
   AddSquare = 'add-square',
   Add = 'add',
-  // AdvancedDetails = 'advanced-details',
   Arrow2Down = 'arrow-2-down',
   Arrow2Left = 'arrow-2-left',
   Arrow2Right = 'arrow-2-right',
