@@ -8,7 +8,6 @@ export const NOTIFICATION_DROP_LEDGER_FIREFOX = 25;
 export const NOTIFICATION_U2F_LEDGER_LIVE = 28;
 export const NOTIFICATION_BLOCKAID_DEFAULT = 29;
 export const NOTIFICATION_PETNAMES = 31;
-export const NOTIFICATION_PORTFOLIO_V2 = 32;
 export const NOTIFICATION_SIMULATIONS = 33;
 
 type NotificationImage = {
@@ -60,14 +59,6 @@ export const UI_NOTIFICATIONS: UINotifications = {
     date: null,
     image: {
       src: 'images/petnames-whatsnew-banner.svg',
-      width: '100%',
-    },
-  },
-  [NOTIFICATION_PORTFOLIO_V2]: {
-    id: Number(NOTIFICATION_PORTFOLIO_V2),
-    date: null,
-    image: {
-      src: 'images/portfolio-v2-whatsnew-banner.png',
       width: '100%',
     },
   },
@@ -208,17 +199,6 @@ export const getTranslatedUINotifications = (
         t('notificationsPetnamesDescriptionTwo'),
       ],
       actionText: t('notificationsPetnamesActionText'),
-      date: '',
-    },
-    [NOTIFICATION_PORTFOLIO_V2]: {
-      ...UI_NOTIFICATIONS[NOTIFICATION_PORTFOLIO_V2],
-      title: t('notificationsPortfolioV2Title'),
-      description: [
-        t('notificationsPortfolioV2DescriptionOne'),
-        t('notificationsPortfolioV2DescriptionTwo'),
-        t('notificationsPortfolioV2DescriptionThree'),
-      ],
-      actionText: t('notificationsPortfolioV2ActionText'),
       date: '',
     },
     [NOTIFICATION_SIMULATIONS]: {
