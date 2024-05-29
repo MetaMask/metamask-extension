@@ -7,7 +7,7 @@ import { permitSignatureMsg } from '../../../../../../../test/data/confirmations
 import PermitSimulation from './permit-simulation';
 
 describe('PermitSimulation', () => {
-  it('renders origin for typed sign data request', () => {
+  it('renders component correctly', () => {
     const state = {
       ...mockState,
       confirm: {
