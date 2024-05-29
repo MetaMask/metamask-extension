@@ -349,6 +349,12 @@
   "alert": {
     "message": "Alert"
   },
+  "alertBannerMultipleAlertsDescription": {
+    "message": "If you approve this request, a third party known for scams might take all your assets."
+  },
+  "alertBannerMultipleAlertsTitle": {
+    "message": "Multiple alerts!"
+  },
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
   },
@@ -813,6 +819,9 @@
   },
   "closeExtension": {
     "message": "Close extension"
+  },
+  "closeWindowAnytime": {
+    "message": "You may close this window anytime."
   },
   "coingecko": {
     "message": "CoinGecko"
@@ -1528,9 +1537,6 @@
   },
   "done": {
     "message": "Done"
-  },
-  "dontEnableEnhancedProtection": {
-    "message": "Don't enable enhanced protection"
   },
   "dontShowThisAgain": {
     "message": "Don't show this again"
@@ -2612,6 +2618,9 @@
   "makeSureNoOneWatching": {
     "message": "Make sure nobody is looking",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
+  },
+  "manageInSettings": {
+    "message": "Manage in settings"
   },
   "max": {
     "message": "Max"
@@ -5182,7 +5191,7 @@
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
   "stxOptInDescription": {
-    "message": "Turn on Smart Transactions for more reliable and secure transactions on ETH Mainnet. $1"
+    "message": "Turn on Smart Transactions for more reliable and secure transactions on Ethereum Mainnet. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Privately submitting your Swap..."
@@ -6218,7 +6227,7 @@
     "message": "View on Opensea"
   },
   "viewTransaction": {
-    "message": "View  transaction"
+    "message": "View transaction"
   },
   "viewinCustodianApp": {
     "message": "View in custodian app"

@@ -185,9 +185,15 @@ export async function listenToPushNotifications(
   onNewNotification: (notification: Notification) => void,
   onNotificationClicked: (notification: Notification) => void,
 ): Promise<() => void> {
+  /*
+  Push notifications require 2 listeners that need tracking (when creating and for tearing down):
+  1. handling receiving a push notification (and the content we want to display)
+  2. handling when a user clicks on a push notification
+  */
+
   // Firebase
   const messaging = await getFirebaseMessaging();
-  const unsubscribeFirebase = onBackgroundMessage(
+  const unsubscribePushNotifications = onBackgroundMessage(
     messaging,
     async (payload: MessagePayload): Promise<void> => {
       const typedPayload = payload;
@@ -222,12 +228,12 @@ export async function listenToPushNotifications(
     onNotificationClick(event, onNotificationClicked);
   };
   sw.addEventListener('notificationclick', notificationClickHandler);
-  const unsubscribeClickListener = () =>
+  const unsubscribeNotificationClicks = () =>
     sw.removeEventListener('notificationclick', notificationClickHandler);
 
   const unsubscribe = () => {
-    unsubscribeFirebase();
-    unsubscribeClickListener();
+    unsubscribePushNotifications();
+    unsubscribeNotificationClicks();
   };
 
   return unsubscribe;

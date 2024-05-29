@@ -12,6 +12,7 @@ import PersonalSignInfo from './personal-sign';
 describe('PersonalSignInfo', () => {
   it('renders correctly for personal sign request', () => {
     const state = {
+      ...mockState,
       confirm: {
         currentConfirmation: unapprovedPersonalSignMsg,
       },
@@ -39,6 +40,7 @@ describe('PersonalSignInfo', () => {
 
   it('handle reverse string properly', () => {
     const state = {
+      ...mockState,
       confirm: {
         currentConfirmation: {
           id: '0050d5b0-c023-11ee-a0cb-3390a510a0ab',
