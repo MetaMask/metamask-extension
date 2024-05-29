@@ -1,5 +1,6 @@
-import { JsonRpcMiddleware } from 'json-rpc-engine';
+import { Transform } from 'readable-stream';
 import log from 'loglevel';
+import type { JsonRpcRequest } from '@metamask/utils';
 import { MINUTE } from '../../../shared/constants/time';
 
 export const THREE_MINUTES = MINUTE * 3;
@@ -42,24 +43,26 @@ const makeExpirySet = () => {
 };
 
 /**
- * Returns a middleware that filters out requests whose ids we've already seen.
+ * Returns a transform stream that filters out requests whose ids we've already seen.
  * Ignores JSON-RPC notifications, i.e. requests with an `undefined` id.
  *
- * @returns The middleware function.
+ * @returns The stream object.
  */
-export default function createDupeReqFilterMiddleware(): JsonRpcMiddleware<
-  unknown,
-  void
-> {
+export default function createDupeReqFilterStream() {
   const seenRequestIds = makeExpirySet();
-  return function filterDuplicateRequestMiddleware(req, _res, next, end) {
-    if (req.id === undefined) {
+  return new Transform({
+    transform(chunk: JsonRpcRequest, _, cb) {
       // JSON-RPC notifications have no ids; our only recourse is to let them through.
-      return next();
-    } else if (!seenRequestIds.add(req.id)) {
-      log.info(`RPC request with id "${req.id}" already seen.`);
-      return end();
-    }
-    return next();
-  };
+      const hasNoId = chunk.id === undefined;
+      const requestNotYetSeen = seenRequestIds.add(chunk.id);
+
+      if (hasNoId || requestNotYetSeen) {
+        cb(null, chunk);
+      } else {
+        log.debug(`RPC request with id "${chunk.id}" already seen.`);
+        cb();
+      }
+    },
+    objectMode: true,
+  });
 }
