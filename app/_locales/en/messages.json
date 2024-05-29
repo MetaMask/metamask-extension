@@ -3890,6 +3890,9 @@
   "permissionsPageTourTitle": {
     "message": "Connected sites are now permissions"
   },
+  "permitSimulationDetailInfo": {
+    "message": "This transaction gives permission to withdraw your tokens"
+  },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
@@ -4717,9 +4720,6 @@
   },
   "simulationDetailsTitleTooltip": {
     "message": "Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
-  },
-  "permitSimulationDetailInfo": {
-    "message": "This transaction gives permission to withdraw your tokens"
   },
   "simulationDetailsTotalFiat": {
     "message": "Total = $1",
