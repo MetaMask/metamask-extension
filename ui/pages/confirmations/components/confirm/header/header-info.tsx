@@ -29,7 +29,6 @@ import {
   AlignItems,
   BackgroundColor,
   BorderRadius,
-  Color,
   Display,
   FlexDirection,
   FontWeight,

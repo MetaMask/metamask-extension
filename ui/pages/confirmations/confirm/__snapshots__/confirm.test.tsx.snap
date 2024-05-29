@@ -108,6 +108,20 @@ exports[`Confirm matches snapshot for personal signature type 1`] = `
                 </button>
               </div>
             </div>
+            <div
+              class="mm-box mm-box--background-color-transparent mm-box--rounded-md"
+            >
+              <button
+                aria-label="Advanced tx details"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                data-testid="header-advanced-details-button"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/customize.svg');"
+                />
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -342,6 +356,20 @@ exports[`Confirm should match snapshot for typed sign signature 1`] = `
                   />
                 </button>
               </div>
+            </div>
+            <div
+              class="mm-box mm-box--background-color-transparent mm-box--rounded-md"
+            >
+              <button
+                aria-label="Advanced tx details"
+                class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+                data-testid="header-advanced-details-button"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                  style="mask-image: url('./images/icons/customize.svg');"
+                />
+              </button>
             </div>
           </div>
         </div>

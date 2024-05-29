@@ -11,9 +11,9 @@ import { SimulationDetails } from '../../../simulation-details';
 import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
 import { TransactionDetails } from '../shared/transaction-details';
 
-interface InfoProps {
+type InfoProps = {
   showAdvancedDetails: boolean;
-}
+};
 
 const ContractInteractionInfo: React.FC<InfoProps> = ({
   showAdvancedDetails,

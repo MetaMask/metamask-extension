@@ -23,7 +23,7 @@ export const ConfirmInfoRowText = ({
   text,
   onEditCallback,
 }: ConfirmInfoRowTextProps) => {
-  const isEditable = !!onEditCallback;
+  const isEditable = Boolean(onEditCallback);
 
   return (
     <Box
