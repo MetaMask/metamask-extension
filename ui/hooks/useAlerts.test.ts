@@ -71,6 +71,20 @@ describe('useAlerts', () => {
     });
   });
 
+  describe('fieldAlerts', () => {
+    it('returns all alerts with field property', () => {
+      const expectedFieldAlerts = alertsMock.find(
+        (alert) => alert.field === fromAlertKeyMock,
+      );
+      expect(result.current.fieldAlerts).toEqual([expectedFieldAlerts]);
+    });
+
+    it('returns empty array if no alerts with field property', () => {
+      const { result: resultAlerts } = renderHookUseAlert('mockedOwnerId');
+      expect(resultAlerts.current.fieldAlerts).toEqual([]);
+    });
+  });
+
   describe('isAlertConfirmed', () => {
     it('returns an if an alert is confirmed', () => {
       expect(result.current.isAlertConfirmed(fromAlertKeyMock)).toBe(true);
