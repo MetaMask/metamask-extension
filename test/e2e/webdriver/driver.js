@@ -862,7 +862,7 @@ class Driver {
    * allowing for interaction with a particular window or tab based on its title
    *
    * @param {string} title - The title of the window or tab to switch to.
-   * @param {string} [initialWindowHandles] - optional array of window handles to search through.
+   * @param {string[] | null} initialWindowHandles - optional array of window handles to search through.
    * If not provided, the function fetches all current window handles.
    * @param {int} delayStep - optional defaults to 1000 milliseconds
    * @param {int} timeout - optional set to the defaults to 1000 milliseconds in the file
@@ -872,7 +872,7 @@ class Driver {
    */
   async switchToWindowWithTitle(
     title,
-    initialWindowHandles,
+    initialWindowHandles = null,
     delayStep = 1000,
     timeout = this.timeout,
     { retries = 8, retryDelay = 2500 } = {},
