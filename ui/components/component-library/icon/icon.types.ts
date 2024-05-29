@@ -28,7 +28,7 @@ export enum IconSize {
 export enum IconName {
   AddSquare = 'add-square',
   Add = 'add',
-  AdvancedDetails = 'advanced-details',
+  // AdvancedDetails = 'advanced-details',
   Arrow2Down = 'arrow-2-down',
   Arrow2Left = 'arrow-2-left',
   Arrow2Right = 'arrow-2-right',
@@ -61,6 +61,7 @@ export enum IconName {
   Connect = 'connect',
   CopySuccess = 'copy-success',
   Copy = 'copy',
+  Customize = 'customize',
   Danger = 'danger',
   Dark = 'dark',
   Data = 'data',
