@@ -182,10 +182,10 @@ describe('Editing Confirm Transaction', function () {
         });
 
         await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
-        await driver.waitForSelector({
-          text: 'sec',
-          tag: 'span',
-        });
+        // -- should render the popover with no error
+        // this is to test in MV3 a racing issue when request for suggestedGasFees is not fetched properly
+        // some data would not be defined yet
+        await driver.waitForSelector('.edit-gas-fee-popover');
         await driver.clickElement(
           '[data-testid="edit-gas-fee-item-dappSuggested"]',
         );

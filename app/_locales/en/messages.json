@@ -349,6 +349,12 @@
   "alert": {
     "message": "Alert"
   },
+  "alertBannerMultipleAlertsDescription": {
+    "message": "If you approve this request, a third party known for scams might take all your assets."
+  },
+  "alertBannerMultipleAlertsTitle": {
+    "message": "Multiple alerts!"
+  },
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
   },
@@ -524,9 +530,8 @@
   "attributions": {
     "message": "Attributions"
   },
-  "auroraDeprecationWarning": {
-    "message": "MetaMask will be deprecating support for $1 network",
-    "description": "$1 is name of deprecated network"
+  "auroraRpcDeprecationMessage": {
+    "message": "The Infura RPC URL is no longer supporting Aurora."
   },
   "authorizedPermissions": {
     "message": "You have authorized the following permissions"
@@ -813,6 +818,9 @@
   },
   "closeExtension": {
     "message": "Close extension"
+  },
+  "closeWindowAnytime": {
+    "message": "You may close this window anytime."
   },
   "coingecko": {
     "message": "CoinGecko"
@@ -1318,9 +1326,6 @@
   "deposit": {
     "message": "Deposit"
   },
-  "deprecatedAuroraNetworkMsg": {
-    "message": "MetaMask will be deprecating support for Aurora network. Please add it as a custom network if you want to continue to use it"
-  },
   "deprecatedGoerliNtwrkMsg": {
     "message": "Because of updates to the Ethereum system, the Goerli test network will be phased out soon."
   },
@@ -1528,9 +1533,6 @@
   },
   "done": {
     "message": "Done"
-  },
-  "dontEnableEnhancedProtection": {
-    "message": "Don't enable enhanced protection"
   },
   "dontShowThisAgain": {
     "message": "Don't show this again"
@@ -2613,6 +2615,9 @@
     "message": "Make sure nobody is looking",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
+  "manageInSettings": {
+    "message": "Manage in settings"
+  },
   "max": {
     "message": "Max"
   },
@@ -3103,6 +3108,9 @@
   "notificationDetailMaxFee": {
     "message": "Max fee per gas"
   },
+  "notificationDetailNetwork": {
+    "message": "Network"
+  },
   "notificationDetailNetworkFee": {
     "message": "Network fee"
   },
@@ -3122,13 +3130,13 @@
     "message": "Unable to retrieve fees currently"
   },
   "notificationItemFrom": {
-    "message": "From (You)"
+    "message": "From"
   },
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "Withdrawal Ready"
   },
-  "notificationItemLidoWithdrawalRequested": {
-    "message": "Withdrawal requested"
+  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
+    "message": "You can now withdraw your unstaked $1"
   },
   "notificationItemLidoWithdrawalRequestedMessage": {
     "message": "Your request to unstake $1 has been sent"
@@ -5176,7 +5184,7 @@
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
   "stxOptInDescription": {
-    "message": "Turn on Smart Transactions for more reliable and secure transactions on ETH Mainnet. $1"
+    "message": "Turn on Smart Transactions for more reliable and secure transactions on Ethereum Mainnet. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Privately submitting your Swap..."
@@ -6212,7 +6220,7 @@
     "message": "View on Opensea"
   },
   "viewTransaction": {
-    "message": "View  transaction"
+    "message": "View transaction"
   },
   "viewinCustodianApp": {
     "message": "View in custodian app"
@@ -6322,6 +6330,9 @@
   },
   "yes": {
     "message": "Yes"
+  },
+  "you": {
+    "message": "You"
   },
   "youHaveAddedAll": {
     "message": "You've added all the popular networks. You can discover more networks $1 Or you can $2",
