@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import pump from 'pump';
+import { pipeline } from 'readable-stream';
 import {
   AssetsContractController,
   CurrencyRateController,
@@ -1291,6 +1291,13 @@ export default class MetamaskController extends EventEmitter {
       encryptor: encryptorFactory(600_000),
       getMnemonic: this.getPrimaryKeyringMnemonic.bind(this),
       preinstalledSnaps: PREINSTALLED_SNAPS,
+      getFeatureFlags: () => {
+        return {
+          disableSnaps:
+            this.preferencesController.store.getState().useExternalServices ===
+            false,
+        };
+      },
     });
 
     this.notificationController = new NotificationController({
@@ -5004,18 +5011,24 @@ export default class MetamaskController extends EventEmitter {
 
     const connectionId = this.addConnection(origin, { engine });
 
-    pump(outStream, dupeReqFilterStream, providerStream, outStream, (err) => {
-      // handle any middleware cleanup
-      engine._middleware.forEach((mid) => {
-        if (mid.destroy && typeof mid.destroy === 'function') {
-          mid.destroy();
+    pipeline(
+      outStream,
+      dupeReqFilterStream,
+      providerStream,
+      outStream,
+      (err) => {
+        // handle any middleware cleanup
+        engine._middleware.forEach((mid) => {
+          if (mid.destroy && typeof mid.destroy === 'function') {
+            mid.destroy();
+          }
+        });
+        connectionId && this.removeConnection(origin, connectionId);
+        if (err) {
+          log.error(err);
         }
-      });
-      connectionId && this.removeConnection(origin, connectionId);
-      if (err) {
-        log.error(err);
-      }
-    });
+      },
+    );
   }
 
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -5420,7 +5433,7 @@ export default class MetamaskController extends EventEmitter {
   setupPublicConfig(outStream) {
     const configStream = storeAsStream(this.publicConfigStore);
 
-    pump(configStream, outStream, (err) => {
+    pipeline(configStream, outStream, (err) => {
       configStream.destroy();
       if (err) {
         log.error(err);
