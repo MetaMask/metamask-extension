@@ -409,6 +409,8 @@ jobs:
 
             GH_LABEL=team-mmi
             if [ -z "$CIRCLE_PULL_REQUESTS" ]; then
+              echo "Skipping tag check; this is not a PR."
+              echo "false" > ./RUN_MMI_OPTIONAL
               exit 0
             fi
 
