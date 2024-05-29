@@ -2331,6 +2331,7 @@
         "setTimeout": true
       },
       "packages": {
+        "@metamask/base-controller": true,
         "@metamask/object-multiplex": true,
         "@metamask/permission-controller": true,
         "@metamask/post-message-stream": true,
