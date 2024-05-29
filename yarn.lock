@@ -5138,25 +5138,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-snap-keyring@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "@metamask/eth-snap-keyring@npm:4.0.0"
-  dependencies:
-    "@ethereumjs/tx": "npm:^4.2.0"
-    "@metamask/eth-sig-util": "npm:^7.0.1"
-    "@metamask/keyring-api": "npm:^6.0.0"
-    "@metamask/snaps-controllers": "npm:^7.0.1"
-    "@metamask/snaps-sdk": "npm:^4.0.1"
-    "@metamask/snaps-utils": "npm:^7.0.3"
-    "@metamask/utils": "npm:^8.4.0"
-    "@types/uuid": "npm:^9.0.1"
-    superstruct: "npm:^1.0.3"
-    uuid: "npm:^9.0.0"
-  checksum: 6f5a89ae400356a0f545f798d61d3cf1deb2dc17a24a9ab7304a5851a06be946573fe594787321d12cd1599ad86b61570bd43d7f700a23fb1aa65e52f981e118
-  languageName: node
-  linkType: hard
-
-"@metamask/eth-snap-keyring@npm:^4.2.0":
+"@metamask/eth-snap-keyring@npm:^4.0.0, @metamask/eth-snap-keyring@npm:^4.2.0":
   version: 4.2.0
   resolution: "@metamask/eth-snap-keyring@npm:4.2.0"
   dependencies:
@@ -5487,23 +5469,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-api@npm:^6.0.0":
-  version: 6.1.0
-  resolution: "@metamask/keyring-api@npm:6.1.0"
-  dependencies:
-    "@metamask/snaps-sdk": "npm:^4.0.0"
-    "@metamask/utils": "npm:^8.3.0"
-    "@types/uuid": "npm:^9.0.1"
-    bech32: "npm:^2.0.0"
-    superstruct: "npm:^1.0.3"
-    uuid: "npm:^9.0.0"
-  peerDependencies:
-    "@metamask/providers": ">=15 <17"
-  checksum: a1fc89907f462dcfdf6d9ed63953f73d98f5b1b3277754b77ca3a1787ba4b422e2b251949cdda26f2b7b0840ba482f1a1a42f0543bbc130e4077b949ba9db8ee
-  languageName: node
-  linkType: hard
-
-"@metamask/keyring-api@npm:^6.2.1, @metamask/keyring-api@npm:^6.3.1":
+"@metamask/keyring-api@npm:^6.0.0, @metamask/keyring-api@npm:^6.2.1, @metamask/keyring-api@npm:^6.3.1":
   version: 6.3.1
   resolution: "@metamask/keyring-api@npm:6.3.1"
   dependencies:
@@ -6223,42 +6189,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-controllers@npm:^7.0.1":
-  version: 7.0.1
-  resolution: "@metamask/snaps-controllers@npm:7.0.1"
-  dependencies:
-    "@metamask/approval-controller": "npm:^6.0.1"
-    "@metamask/base-controller": "npm:^5.0.1"
-    "@metamask/json-rpc-engine": "npm:^8.0.1"
-    "@metamask/json-rpc-middleware-stream": "npm:^7.0.1"
-    "@metamask/object-multiplex": "npm:^2.0.0"
-    "@metamask/permission-controller": "npm:^9.0.2"
-    "@metamask/phishing-controller": "npm:^9.0.1"
-    "@metamask/post-message-stream": "npm:^8.0.0"
-    "@metamask/rpc-errors": "npm:^6.2.1"
-    "@metamask/snaps-registry": "npm:^3.1.0"
-    "@metamask/snaps-rpc-methods": "npm:^8.0.0"
-    "@metamask/snaps-sdk": "npm:^4.0.0"
-    "@metamask/snaps-utils": "npm:^7.1.0"
-    "@metamask/utils": "npm:^8.3.0"
-    "@xstate/fsm": "npm:^2.0.0"
-    browserify-zlib: "npm:^0.2.0"
-    concat-stream: "npm:^2.0.0"
-    get-npm-tarball-url: "npm:^2.0.3"
-    immer: "npm:^9.0.6"
-    nanoid: "npm:^3.1.31"
-    readable-stream: "npm:^3.6.2"
-    readable-web-to-node-stream: "npm:^3.0.2"
-    tar-stream: "npm:^3.1.7"
-  peerDependencies:
-    "@metamask/snaps-execution-environments": ^6.0.0
-  peerDependenciesMeta:
-    "@metamask/snaps-execution-environments":
-      optional: true
-  checksum: 4c8208aee45635f206e0663caaaa32c64a48aa78a6fcc6b3507d2214c1740db186ae750d8e9eb972283fd89d3a8f4f054b4ddf77443519fdd1bd35e97f6141d2
-  languageName: node
-  linkType: hard
-
 "@metamask/snaps-controllers@npm:^8.1.1":
   version: 8.1.1
   resolution: "@metamask/snaps-controllers@npm:8.1.1"
@@ -6359,7 +6289,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-rpc-methods@npm:^8.0.0, @metamask/snaps-rpc-methods@npm:^8.1.0":
+"@metamask/snaps-rpc-methods@npm:^8.1.0":
   version: 8.1.0
   resolution: "@metamask/snaps-rpc-methods@npm:8.1.0"
   dependencies:
@@ -6435,7 +6365,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-utils@npm:^7.0.3, @metamask/snaps-utils@npm:^7.1.0, @metamask/snaps-utils@npm:^7.3.0, @metamask/snaps-utils@npm:^7.4.0":
+"@metamask/snaps-utils@npm:^7.1.0, @metamask/snaps-utils@npm:^7.3.0, @metamask/snaps-utils@npm:^7.4.0":
   version: 7.4.0
   resolution: "@metamask/snaps-utils@npm:7.4.0"
   dependencies:
@@ -10673,14 +10603,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/uuid@npm:^9.0.0, @types/uuid@npm:^9.0.1":
-  version: 9.0.2
-  resolution: "@types/uuid@npm:9.0.2"
-  checksum: 1754bcf3444e1e3aeadd6e774fc328eb53bc956665e2e8fb6ec127aa8e1f43d9a224c3d22a9a6233dca8dd81a12dc7fed4d84b8876dd5ec82d40f574f7ff8b68
-  languageName: node
-  linkType: hard
-
-"@types/uuid@npm:^9.0.8":
+"@types/uuid@npm:^9.0.0, @types/uuid@npm:^9.0.1, @types/uuid@npm:^9.0.8":
   version: 9.0.8
   resolution: "@types/uuid@npm:9.0.8"
   checksum: b8c60b7ba8250356b5088302583d1704a4e1a13558d143c549c408bf8920535602ffc12394ede77f8a8083511b023704bc66d1345792714002bfa261b17c5275
