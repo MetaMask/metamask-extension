@@ -4,7 +4,7 @@ import {
   DataDeletionService,
   RETRIES,
   MAX_CONSECUTIVE_FAILURES,
-} from './services';
+} from './data-deletion-service';
 
 // We're not customizing the default max delay
 // The default can be found here: https://github.com/connor4312/cockatiel?tab=readme-ov-file#exponentialbackoff
