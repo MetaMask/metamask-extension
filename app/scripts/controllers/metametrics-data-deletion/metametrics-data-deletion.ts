@@ -104,7 +104,7 @@ export default class MetaMetricsDataDeletionController extends BaseController<
 > {
   #dataDeletionService: DataDeletionService;
 
-  #getMetaMetricsId: () => string;
+  #getMetaMetricsId: () => string | null;
 
   /**
    * Creates a MetaMetricsDataDeletionController instance.
@@ -124,7 +124,7 @@ export default class MetaMetricsDataDeletionController extends BaseController<
     dataDeletionService: DataDeletionService;
     messenger: MetaMetricsDataDeletionControllerMessenger;
     state?: MetaMetricsDataDeletionState;
-    getMetaMetricsId: () => string;
+    getMetaMetricsId: () => string | null;
   }) {
     // Call the constructor of BaseControllerV2
     super({
