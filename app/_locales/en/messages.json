@@ -4718,6 +4718,9 @@
   "simulationDetailsTitleTooltip": {
     "message": "Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
   },
+  "permitSimulationDetailInfo": {
+    "message": "This transaction gives permission to withdraw your tokens"
+  },
   "simulationDetailsTotalFiat": {
     "message": "Total = $1",
     "description": "$1 is the total amount in fiat currency on one side of the transaction"
