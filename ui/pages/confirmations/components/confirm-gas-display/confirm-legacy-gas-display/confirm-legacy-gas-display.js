@@ -53,12 +53,12 @@ const ConfirmLegacyGasDisplay = ({ 'data-testid': dataTestId } = {}) => {
 
   const estimatedHexMinFeeTotal = addHexes(
     hexMinimumTransactionFee,
-    layer1GasFee ?? 0x0,
+    layer1GasFee ?? '0x0',
   );
 
   const estimatedHexMaxFeeTotal = addHexes(
     hexMaximumTransactionFee,
-    layer1GasFee ?? 0x0,
+    layer1GasFee ?? '0x0',
   );
 
   return (
