@@ -1,6 +1,9 @@
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import { migrate, version } from './119';
 
+const mockTimeStamp = 1716972230;
+jest.useFakeTimers().setSystemTime(new Date(mockTimeStamp));
+
 const oldVersion = 118;
 const newVersion = 119;
 
@@ -49,7 +52,7 @@ describe('migration #119', () => {
                 ...mockInternalAccount,
                 metadata: {
                   ...mockInternalAccount.metadata,
-                  importTime: expect.any(Number),
+                  importTime: mockTimeStamp,
                 },
               },
             },
