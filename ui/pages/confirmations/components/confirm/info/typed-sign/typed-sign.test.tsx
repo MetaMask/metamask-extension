@@ -64,7 +64,7 @@ describe('TypedSignInfo', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should display approving to for permit signature type', () => {
+  it('displays "Approving to" for permit signature type', () => {
     const state = {
       ...mockState,
       confirm: {
