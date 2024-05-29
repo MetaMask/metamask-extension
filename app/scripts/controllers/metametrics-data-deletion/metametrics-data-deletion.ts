@@ -4,7 +4,7 @@ import {
 } from '@metamask/base-controller';
 import { ObservableStore } from '@metamask/obs-store';
 import { MetaMetricsControllerState } from '../metametrics';
-import type { DataDeletionService } from './services/services';
+import type { DataDeletionService } from '../../services/data-deletion-service';
 
 // Unique name for the controller
 const controllerName = 'MetaMetricsDataDeletionController';
