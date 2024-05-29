@@ -401,7 +401,7 @@ class Driver {
           error.name === 'StaleElementReferenceError' &&
           attempt < retries - 1
         ) {
-          await this.driver.delay(1000);
+          await this.delay(1000);
         } else {
           throw error;
         }

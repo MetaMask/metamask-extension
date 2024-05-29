@@ -4559,7 +4559,7 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * Imports an account with the specified import strategy.
-   * These are defined in app/scripts/account-import-strategies
+   * These are defined in @metamask/keyring-controller
    * Each strategy represents a different way of serializing an Ethereum key pair.
    *
    * @param {'privateKey' | 'json'} strategy - A unique identifier for an account import strategy.
