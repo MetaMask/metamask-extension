@@ -34,8 +34,6 @@ const PersonalSignInfo: React.FC = () => {
 
   const { from } = currentConfirmation.msgParams;
 
-  console.log('=======', JSON.stringify(currentConfirmation));
-
   return (
     <>
       <Box
