@@ -1,4 +1,4 @@
-name: Check attributions
+name: Check attribution
 
 on:
   pull_request:
@@ -28,8 +28,8 @@ jobs:
         id: commit-sha
         run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
-  generate-and-validate-attributions:
-    name: Generate and Validate Attributions
+  generate-and-validate-attribution:
+    name: Generate and Validate Attribution
     runs-on: ubuntu-latest
     needs:
       - prepare
@@ -47,13 +47,13 @@ jobs:
       - name: Install dependencies from cache
         run: yarn --immutable --immutable-cache
       - name: Generate Atributions
-        run: yarn generate:attributions
-      - name: Check whether there are attributions changes
+        run: yarn generate:attribution
+      - name: Check whether there are attribution changes
         run: |
             if git diff --exit-code -- attribution.txt
           then
-            echo "No attributions changes. Pipeline succeeded."
+            echo "No attribution changes. Pipeline succeeded."
           else
-            echo "Attributions have changed. Failing pipeline."
+            echo "Attribution have changed. Failing pipeline."
             exit 1
           fi

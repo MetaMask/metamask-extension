@@ -7,7 +7,7 @@ set -o pipefail
 SCRIPT_DIRECTORY=$(cd "${BASH_SOURCE[0]%/*}" && pwd)
 PROJECT_DIRECTORY=$(cd "${SCRIPT_DIRECTORY}" && cd ../ && pwd)
 
-# Generate attributions
+# Generate attribution file
 #
 # Generate the file `attribution.txt`, which is a list of packages that we use
 # along with their licenses. This should include only production dependencies.
