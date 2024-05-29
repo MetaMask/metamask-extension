@@ -1,5 +1,4 @@
 import React from 'react';
-import { useArgs } from '@storybook/client-api';
 
 import {
   BorderStyle,
@@ -48,17 +47,10 @@ export default {
 };
 
 export const DefaultStory = (args) => {
-  const [{ value }, updateArgs] = useArgs();
-
-  const handleOnChange = (e) => {
-    updateArgs({
-      value: e.target.value,
-    });
-  };
   return (
     <>
       <label htmlFor="textarea">Label</label>
-      <Textarea {...args} value={value} onChange={handleOnChange} id="textarea">
+      <Textarea {...args} id="textarea">
         {args.children}
       </Textarea>
     </>
@@ -82,21 +74,9 @@ DefaultStory.args = {
 };
 
 export const Scrollable = (args) => {
-  const [{ value }, updateArgs] = useArgs();
-
-  const handleOnChange = (e) => {
-    updateArgs({
-      value: e.target.value,
-    });
-  };
   return (
     <div style={{ width: 280 }}>
-      <Textarea
-        {...args}
-        value={value}
-        onChange={handleOnChange}
-        aria-label="textarea"
-      >
+      <Textarea {...args} aria-label="textarea">
         {args.children}
       </Textarea>
     </div>

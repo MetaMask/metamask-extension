@@ -1,0 +1,36 @@
+🩺 The doctor is checking the health of your Storybook..
+╭ Incompatible packages found ───────────────────────────────────────╮
+│                                                                    │
+│   The following packages are incompatible with Storybook 8.0.9     │
+│   as they depend on different major versions of Storybook          │
+│   packages:                                                        │
+│   - @storybook/addon-designs@7.0.5                                 │
+│   Repo: https://github.com/storybookjs/addon-designs               │
+│   - @storybook/addon-knobs@7.0.2                                   │
+│   - @storybook/addons@7.6.18                                       │
+│   Repo: https://github.com/storybookjs/storybook/tree/next/code/   │
+│   deprecated/addons                                                │
+│   - @storybook/api@7.6.18                                          │
+│   Repo: https://github.com/storybookjs/storybook/tree/next/code/   │
+│   lib/api                                                          │
+│   - @storybook/client-api@7.6.18                                   │
+│   Repo: https://github.com/storybookjs/storybook/tree/next/code/   │
+│   deprecated/client-api                                            │
+│   - @storybook/test-runner@0.14.1                                  │
+│   - @whitespace/storybook-addon-html@5.1.6                         │
+│   - storybook-dark-mode@3.0.1                                      │
+│                                                                    │
+│                                                                    │
+│   Please consider updating your packages or contacting the         │
+│   maintainers for compatibility details.                           │
+│   For more on Storybook 8 compatibility, see the linked GitHub     │
+│   issue:                                                           │
+│   https://github.com/storybookjs/storybook/issues/26031            │
+│                                                                    │
+╰────────────────────────────────────────────────────────────────────╯
+
+You can always recheck the health of your project by running:
+npx storybook doctor
+
+Full logs are available in /Users/georgemarshall/Sites/metamask-extension/doctor-storybook.log
+

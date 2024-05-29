@@ -14,7 +14,7 @@ Some general documentation best practices to follow:
 
 - Put yourself in the shoes of another developer trying to use the component you just created for the first time
 - Write a brief description of the component and what it's used for in the `README.mdx` file
-- Display the component's API using the `<ArgsTable of={YourComponent} />` component from storybook docs. Add descriptions of each prop by using jsDoc style comments in the `propTypes`.
+- Display the component's API using the `<ArgTypes of={YourComponent} />` component from storybook docs. Add descriptions of each prop by using jsDoc style comments in the `propTypes`.
 - Use the [controls](https://storybook.js.org/addons/@storybook/addon-controls/) over [knobs](https://storybook.js.org/addons/@storybook/addon-knobs)(deprecated)
 - Use the [action argType annotation](https://storybook.js.org/docs/react/essentials/actions#action-argtype-annotation) over importing the actions plugin directly
 
@@ -32,7 +32,6 @@ import MyComponent from '.';
 
 export default {
   title: 'Components/UI/MyComponent', // title should follow the folder structure location of the component. Don't use spaces.
-
 };
 
 export const DefaultStory = () => <MyComponent />;
@@ -146,9 +145,9 @@ Now the storybook components are complete, the `README.mdx` documentation should
 ```md
 <!-- import the necessary blocks from storybook docs  -->
 
-import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+import { Story, Canvas, ArgTypes } from '@storybook/addon-docs';
 
-<!-- import the component to use for the ArgsTable under ## Props  -->
+<!-- import the component to use for the ArgTypes under ## Props  -->
 
 import Button from '.';
 
@@ -168,10 +167,10 @@ Buttons communicate actions that users can take.
 
 ## Props
 
-<!-- Display the Props using the ArgsTable. Use JSDoc style comments in the PropTypes of your component to add descriptions for props. See button.component.js Button.propTypes for an example of jsDoc style comments
+<!-- Display the Props using the ArgTypes. Use JSDoc style comments in the PropTypes of your component to add descriptions for props. See button.component.js Button.propTypes for an example of jsDoc style comments
 -->
 
-<ArgsTable of={Button} />
+<ArgTypes of={Button} />
 
 ## Usage
 

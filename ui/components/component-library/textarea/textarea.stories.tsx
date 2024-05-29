@@ -1,6 +1,5 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-import { useArgs } from '@storybook/client-api';
 
 import {
   FlexDirection,
@@ -85,10 +84,6 @@ export default {
 } as Meta<typeof Textarea>;
 
 const Template: StoryFn<typeof Textarea> = (args) => {
-  const [{ value }, updateArgs] = useArgs();
-  const handleOnChange = (e) => {
-    updateArgs({ value: e.target.value });
-  };
   return <Textarea {...args} value={value} onChange={handleOnChange} />;
 };
 

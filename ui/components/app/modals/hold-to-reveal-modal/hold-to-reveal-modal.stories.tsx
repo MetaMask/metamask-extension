@@ -1,7 +1,5 @@
-import { useArgs } from '@storybook/client-api';
 import { Meta, StoryFn } from '@storybook/react';
 import React from 'react';
-import { Button } from '../../../component-library';
 import HoldToRevealModal from './hold-to-reveal-modal';
 
 export default {
@@ -14,22 +12,8 @@ export default {
   },
 } as Meta<typeof HoldToRevealModal>;
 
-export const DefaultStory: StoryFn<typeof HoldToRevealModal> = () => {
-  const [{ isShowingModal }, updateArgs] = useArgs();
-
-  return (
-    <>
-      <Button onClick={() => updateArgs({ isShowingModal: true })}>
-        Open modal
-      </Button>
-      {isShowingModal && (
-        <HoldToRevealModal
-          isOpen={isShowingModal}
-          onClose={() => updateArgs({ isShowingModal: false })}
-        />
-      )}
-    </>
-  );
-};
+export const DefaultStory: StoryFn<typeof HoldToRevealModal> = (args) => (
+  <HoldToRevealModal {...args} />
+);
 
 DefaultStory.storyName = 'Default';

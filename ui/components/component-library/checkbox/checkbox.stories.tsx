@@ -1,5 +1,4 @@
 import { StoryFn, Meta } from '@storybook/react';
-import { useArgs } from '@storybook/client-api';
 import React from 'react';
 
 import { Box } from '..';
@@ -33,20 +32,7 @@ export default {
   },
 } as Meta<typeof Checkbox>;
 
-const Template: StoryFn<typeof Checkbox> = (args) => {
-  const [{ isChecked }, updateArgs] = useArgs();
-  return (
-    <Checkbox
-      {...args}
-      onChange={() =>
-        updateArgs({
-          isChecked: !isChecked,
-        })
-      }
-      isChecked={isChecked}
-    />
-  );
-};
+const Template: StoryFn<typeof Checkbox> = (args) => <Checkbox {...args} />;
 
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';

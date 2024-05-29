@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Meta, StoryFn } from '@storybook/react';
-import { useState } from '@storybook/addons';
 import {
   Display,
   FlexDirection,

@@ -222,9 +222,9 @@ export default {
   },
 } as Meta<typeof Box>;
 
-export const BoxDefaultStory: StoryFn<typeof Box> = (args) => <Box {...args} />;
+export const DefaultStory: StoryFn<typeof Box> = (args) => <Box {...args} />;
 
-BoxDefaultStory.args = {
+DefaultStory.args = {
   children: 'Box component',
   display: Display.Flex,
   justifyContent: JustifyContent.center,
@@ -236,7 +236,7 @@ BoxDefaultStory.args = {
   padding: 4,
 };
 
-BoxDefaultStory.storyName = 'Default';
+DefaultStory.storyName = 'Default';
 
 export const Margin: StoryFn<typeof Box> = (args) => {
   return (

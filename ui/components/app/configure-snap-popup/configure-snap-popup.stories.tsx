@@ -1,6 +1,5 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { useArgs } from '@storybook/client-api';
 import { Button } from '../../component-library';
 import ConfigureSnapPopup, {
   ConfigureSnapPopupType,
@@ -46,40 +45,12 @@ export const Configure: Story = {
   args: {
     type: ConfigureSnapPopupType.CONFIGURE,
   },
-  render: (args) => {
-    const [{ isOpen }, updateArgs] = useArgs();
-    const handleClose = () => {
-      updateArgs({ isOpen: false });
-    };
-    const handleOpen = () => {
-      updateArgs({ isOpen: true });
-    };
-    return (
-      <div>
-        <Button onClick={handleOpen}>Open</Button>
-        <ConfigureSnapPopup {...args} isOpen={isOpen} onClose={handleClose} />
-      </div>
-    );
-  },
+  render: (args) => <ConfigureSnapPopup {...args} />,
 };
 
 export const Install: Story = {
   args: {
     type: ConfigureSnapPopupType.INSTALL,
   },
-  render: (args) => {
-    const [{ isOpen }, updateArgs] = useArgs();
-    const handleClose = () => {
-      updateArgs({ isOpen: false });
-    };
-    const handleOpen = () => {
-      updateArgs({ isOpen: true });
-    };
-    return (
-      <div>
-        <Button onClick={handleOpen}>Open</Button>
-        <ConfigureSnapPopup {...args} isOpen={isOpen} onClose={handleClose} />
-      </div>
-    );
-  },
+  render: (args) => <ConfigureSnapPopup {...args} />,
 };
