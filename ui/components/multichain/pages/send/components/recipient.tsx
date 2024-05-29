@@ -20,12 +20,11 @@ import {
   Box,
 } from '../../../../component-library';
 import { Tab, Tabs } from '../../../../ui/tabs';
-import { SendPageAddressBook, SendPageRow, SendPageYourAccounts } from '.';
 import DomainInputResolutionCell from '../../../../../pages/confirmations/send/send-content/add-recipient/domain-input-resolution-cell';
+import { SendPageAddressBook, SendPageRow, SendPageYourAccounts } from '.';
 
 const CONTACTS_TAB_KEY = 'contacts';
 const ACCOUNTS_TAB_KEY = 'accounts';
-
 
 export const SendPageRecipient = () => {
   const t = useContext(I18nContext);
@@ -44,7 +43,11 @@ export const SendPageRecipient = () => {
   const showWarningBanner =
     !showErrorBanner && (domainWarning || recipient.warning);
 
-  const onClick = (address, nickname, type = 'user input') => {
+  const onClick = (
+    address: string,
+    nickname: string,
+    type: string = 'user input',
+  ) => {
     dispatch(
       addHistoryEntry(
         `sendFlow - User clicked recipient from ${type}. address: ${address}, nickname ${nickname}`,
@@ -52,7 +55,7 @@ export const SendPageRecipient = () => {
     );
     dispatch(updateRecipient({ address, nickname }));
     dispatch(updateRecipientUserInput(address));
-  }
+  };
 
   let contents;
   if (recipient.address) {
@@ -66,19 +69,21 @@ export const SendPageRecipient = () => {
     );
   } else if (domainResolutions?.length > 0 && !recipient.error) {
     contents = domainResolutions.map((domainResolution) => {
-      const {
-        resolvedAddress,
-        resolvingSnap,
-        addressBookEntryName,
-        protocol,
-      } = domainResolution;
+      const { resolvedAddress, resolvingSnap, addressBookEntryName, protocol } =
+        domainResolution;
       return (
         <DomainInputResolutionCell
           key={`${resolvedAddress}${resolvingSnap}${protocol}`}
           domainType={domainType}
           address={resolvedAddress}
           domainName={addressBookEntryName || userInput}
-          onClick={() => onClick(resolvedAddress, addressBookEntryName || userInput, 'Domain resolution')}
+          onClick={() =>
+            onClick(
+              resolvedAddress,
+              addressBookEntryName || userInput,
+              'Domain resolution',
+            )
+          }
           protocol={protocol}
           resolvingSnap={resolvingSnap}
         />
@@ -87,7 +92,9 @@ export const SendPageRecipient = () => {
   } else {
     contents = (
       <Tabs
-        defaultActiveTabKey={userInput.length > 0 ? CONTACTS_TAB_KEY : ACCOUNTS_TAB_KEY}
+        defaultActiveTabKey={
+          userInput.length > 0 ? CONTACTS_TAB_KEY : ACCOUNTS_TAB_KEY
+        }
       >
         {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment

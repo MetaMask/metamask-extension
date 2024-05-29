@@ -37,7 +37,7 @@ export default function DomainInputResolutionCell({
   address,
   domainName,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  resolvingSnap,
+  resolvingSnap = '',
   ///: END:ONLY_INCLUDE_IF
   onClick,
   protocol,
