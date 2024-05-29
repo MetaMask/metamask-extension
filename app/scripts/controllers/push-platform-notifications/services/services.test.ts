@@ -178,9 +178,10 @@ describe('PushPlatformNotificationsServices', () => {
     });
 
     it('should update triggers for push notifications', async () => {
-      jest
-        .spyOn(services, 'updateTriggerPushNotifications')
-        .mockResolvedValue(true);
+      jest.spyOn(services, 'updateTriggerPushNotifications').mockResolvedValue({
+        isTriggersLinkedToPushNotifications: true,
+        fcmToken: 'fcm-token',
+      });
 
       const res = await services.updateTriggerPushNotifications(
         MOCK_REG_TOKEN,
@@ -188,13 +189,17 @@ describe('PushPlatformNotificationsServices', () => {
         MOCK_TRIGGERS,
       );
 
-      expect(res).toBe(true);
+      expect(res).toEqual({
+        isTriggersLinkedToPushNotifications: true,
+        fcmToken: 'fcm-token',
+      });
     });
 
     it('should fail if unable to update triggers', async () => {
-      jest
-        .spyOn(services, 'updateTriggerPushNotifications')
-        .mockResolvedValue(false);
+      jest.spyOn(services, 'updateTriggerPushNotifications').mockResolvedValue({
+        isTriggersLinkedToPushNotifications: false,
+        fcmToken: undefined,
+      });
 
       const res = await services.updateTriggerPushNotifications(
         MOCK_REG_TOKEN,
@@ -202,7 +207,10 @@ describe('PushPlatformNotificationsServices', () => {
         MOCK_TRIGGERS,
       );
 
-      expect(res).toBe(false);
+      expect(res).toEqual({
+        isTriggersLinkedToPushNotifications: false,
+        fcmToken: undefined,
+      });
     });
 
     afterEach(() => {
