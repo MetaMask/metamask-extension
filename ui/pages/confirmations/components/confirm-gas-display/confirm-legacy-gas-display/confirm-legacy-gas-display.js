@@ -28,6 +28,7 @@ import {
   IconName,
   Text,
 } from '../../../../../components/component-library';
+import { addHexes } from '../../../../../../shared/modules/conversion.utils';
 
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST ? null : <LoadingHeartBeat />;
@@ -42,13 +43,21 @@ const ConfirmLegacyGasDisplay = ({ 'data-testid': dataTestId } = {}) => {
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
   const transactionData = useDraftTransactionWithTxParams();
   const txData = useSelector((state) => txDataSelector(state));
-  const { id: transactionId, dappSuggestedGasFees } = txData;
+  const { id: transactionId, dappSuggestedGasFees, layer1GasFee } = txData;
   const transaction = Object.keys(transactionData).length
     ? transactionData
     : unapprovedTxs[transactionId] || {};
   const { hexMinimumTransactionFee, hexMaximumTransactionFee } = useSelector(
     (state) => transactionFeeSelector(state, transaction),
   );
+
+  const estimatedHexMinFeeTotal = layer1GasFee
+    ? addHexes(hexMinimumTransactionFee, layer1GasFee ?? 0)
+    : hexMinimumTransactionFee;
+
+  const estimatedHexMaxFeeTotal = layer1GasFee
+    ? addHexes(hexMaximumTransactionFee, layer1GasFee ?? 0)
+    : hexMinimumTransactionFee;
 
   return (
     <TransactionDetailItem
@@ -101,7 +110,7 @@ const ConfirmLegacyGasDisplay = ({ 'data-testid': dataTestId } = {}) => {
             {renderHeartBeatIfNotInTest()}
             <UserPreferencedCurrencyDisplay
               type={SECONDARY}
-              value={hexMinimumTransactionFee}
+              value={estimatedHexMinFeeTotal}
               hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
             />
           </div>
@@ -112,7 +121,7 @@ const ConfirmLegacyGasDisplay = ({ 'data-testid': dataTestId } = {}) => {
           {renderHeartBeatIfNotInTest()}
           <UserPreferencedCurrencyDisplay
             type={PRIMARY}
-            value={hexMinimumTransactionFee}
+            value={estimatedHexMinFeeTotal}
             hideLabel={!useNativeCurrencyAsPrimaryCurrency}
             numberOfDecimals={6}
           />
@@ -128,7 +137,7 @@ const ConfirmLegacyGasDisplay = ({ 'data-testid': dataTestId } = {}) => {
             <UserPreferencedCurrencyDisplay
               key="editGasSubTextFeeAmount"
               type={PRIMARY}
-              value={hexMaximumTransactionFee}
+              value={estimatedHexMaxFeeTotal}
               hideLabel={!useNativeCurrencyAsPrimaryCurrency}
             />
           </div>
