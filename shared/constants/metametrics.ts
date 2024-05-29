@@ -717,6 +717,9 @@ export enum MetaMetricsEventName {
   TurnOnProfileSyncing = 'Turn On Profile Syncing',
   TurnOnMetaMetrics = 'Turn On MetaMetrics',
   TurnOffMetaMetrics = 'Turn Off MetaMetrics',
+  // Notifications
+  PushNotificationReceived = 'Push Notification Received',
+  PushNotificationClicked = 'Push Notification Clicked',
 }
 
 export enum MetaMetricsEventAccountType {
@@ -756,6 +759,7 @@ export enum MetaMetricsEventCategory {
   NotificationSettings = 'Notification Settings',
   Petnames = 'Petnames',
   Phishing = 'Phishing',
+  PushNotifications = 'Notifications',
   Retention = 'Retention',
   Settings = 'Settings',
   Snaps = 'Snaps',

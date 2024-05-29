@@ -50,7 +50,14 @@ export type PushPlatformNotificationsControllerOnNewNotificationEvent = {
   payload: [Notification];
 };
 
-type AllowedEvents = PushPlatformNotificationsControllerOnNewNotificationEvent;
+export type PushPlatformNotificationsControllerPushNotificationClicked = {
+  type: `${typeof controllerName}:pushNotificationClicked`;
+  payload: [Notification];
+};
+
+type AllowedEvents =
+  | PushPlatformNotificationsControllerOnNewNotificationEvent
+  | PushPlatformNotificationsControllerPushNotificationClicked;
 
 export type PushPlatformNotificationsControllerMessenger =
   RestrictedControllerMessenger<
@@ -82,7 +89,7 @@ export class PushPlatformNotificationsController extends BaseController<
   PushPlatformNotificationsControllerState,
   PushPlatformNotificationsControllerMessenger
 > {
-  #firebaseUnsubscribe: (() => void) | undefined = undefined;
+  #pushListenerUnsubscribe: (() => void) | undefined = undefined;
 
   constructor({
     messenger,
@@ -160,11 +167,17 @@ export class PushPlatformNotificationsController extends BaseController<
       }
 
       // Listen to push notifications
-      this.#firebaseUnsubscribe = await listenToPushNotifications((n) =>
-        this.messagingSystem.publish(
-          'PushPlatformNotificationsController:onNewNotifications',
-          n,
-        ),
+      this.#pushListenerUnsubscribe ??= await listenToPushNotifications(
+        (n) =>
+          this.messagingSystem.publish(
+            'PushPlatformNotificationsController:onNewNotifications',
+            n,
+          ),
+        (n) =>
+          this.messagingSystem.publish(
+            'PushPlatformNotificationsController:pushNotificationClicked',
+            n,
+          ),
       );
 
       // Update state
@@ -215,7 +228,7 @@ export class PushPlatformNotificationsController extends BaseController<
     }
 
     // Unsubscribe from push notifications
-    this.#firebaseUnsubscribe?.();
+    this.#pushListenerUnsubscribe?.();
 
     // Update State
     if (isPushNotificationsDisabled) {

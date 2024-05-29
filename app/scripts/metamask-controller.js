@@ -269,7 +269,7 @@ import { mmiKeyringBuilderFactory } from './mmi-keyring-builder-factory';
 ///: END:ONLY_INCLUDE_IF
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
-import createDupeReqFilterMiddleware from './lib/createDupeReqFilterMiddleware';
+import createDupeReqFilterStream from './lib/createDupeReqFilterStream';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
 import { createMethodMiddleware } from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
@@ -277,7 +277,7 @@ import createTabIdMiddleware from './lib/createTabIdMiddleware';
 import { NetworkOrderController } from './controllers/network-order';
 import { AccountOrderController } from './controllers/account-order';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
-import { setupMultiplex } from './lib/stream-utils';
+import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import PreferencesController from './controllers/preferences';
 import AppStateController from './controllers/app-state';
 import AlertController from './controllers/alert';
@@ -1431,14 +1431,42 @@ export default class MetamaskController extends EventEmitter {
       }),
     });
 
+    const pushPlatformNotificationsControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'PushPlatformNotificationsController',
+        allowedActions: ['AuthenticationController:getBearerToken'],
+      });
     this.pushPlatformNotificationsController =
       new PushPlatformNotificationsController({
         state: initState.PushPlatformNotificationsController,
-        messenger: this.controllerMessenger.getRestricted({
-          name: 'PushPlatformNotificationsController',
-          allowedActions: ['AuthenticationController:getBearerToken'],
-        }),
+        messenger: pushPlatformNotificationsControllerMessenger,
       });
+    pushPlatformNotificationsControllerMessenger.subscribe(
+      'PushPlatformNotificationsController:onNewNotifications',
+      (notification) => {
+        this.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.PushNotificationReceived,
+          category: MetaMetricsEventCategory.PushNotifications,
+          properties: {
+            notification_type: notification.type,
+            chain_id: notification?.chain_id,
+          },
+        });
+      },
+    );
+    pushPlatformNotificationsControllerMessenger.subscribe(
+      'PushPlatformNotificationsController:pushNotificationClicked',
+      (notification) => {
+        this.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.PushNotificationClicked,
+          category: MetaMetricsEventCategory.PushNotifications,
+          properties: {
+            notification_type: notification.type,
+            chain_id: notification?.chain_id,
+          },
+        });
+      },
+    );
 
     this.metamaskNotificationsController = new MetamaskNotificationsController({
       messenger: this.controllerMessenger.getRestricted({
@@ -4531,7 +4559,7 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * Imports an account with the specified import strategy.
-   * These are defined in app/scripts/account-import-strategies
+   * These are defined in @metamask/keyring-controller
    * Each strategy represents a different way of serializing an Ethereum key pair.
    *
    * @param {'privateKey' | 'json'} strategy - A unique identifier for an account import strategy.
@@ -4890,7 +4918,7 @@ export default class MetamaskController extends EventEmitter {
       ),
     );
     const handleUpdate = (update) => {
-      if (outStream._writableState.ended) {
+      if (!isStreamWritable(outStream)) {
         return;
       }
       // send notification to client-side
@@ -4902,7 +4930,7 @@ export default class MetamaskController extends EventEmitter {
     };
     this.on('update', handleUpdate);
     const startUISync = () => {
-      if (outStream._writableState.ended) {
+      if (!isStreamWritable(outStream)) {
         return;
       }
       // send notification to client-side
@@ -4969,12 +4997,14 @@ export default class MetamaskController extends EventEmitter {
       tabId,
     });
 
+    const dupeReqFilterStream = createDupeReqFilterStream();
+
     // setup connection
     const providerStream = createEngineStream({ engine });
 
     const connectionId = this.addConnection(origin, { engine });
 
-    pump(outStream, providerStream, outStream, (err) => {
+    pump(outStream, dupeReqFilterStream, providerStream, outStream, (err) => {
       // handle any middleware cleanup
       engine._middleware.forEach((mid) => {
         if (mid.destroy && typeof mid.destroy === 'function') {
@@ -5051,10 +5081,6 @@ export default class MetamaskController extends EventEmitter {
     subscriptionManager.events.on('notification', (message) =>
       engine.emit('notification', message),
     );
-
-    if (isManifestV3) {
-      engine.push(createDupeReqFilterMiddleware());
-    }
 
     // append tabId to each request if it exists
     if (tabId) {
