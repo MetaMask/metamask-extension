@@ -431,3 +431,13 @@ export const getNetworkFees = async (notification: OnChainRawNotification) => {
     );
   }
 };
+
+/**
+ * Checks if a given URL is an IPFS URL.
+ *
+ * @param url - The URL to check.
+ * @returns True if the URL is an IPFS URL, false otherwise.
+ */
+export const isIpfsURL = (url: string): boolean => {
+  return url.startsWith('ipfs://');
+};

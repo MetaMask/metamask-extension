@@ -81,6 +81,9 @@ If you are using VS Code and are unable to make commits from the source control 
 
 To start a development build (e.g. with logging and file watching) run `yarn start`.
 
+Alternatively, one can skip wallet onboarding and preload the vault state with a specific SRP by adding `TEST_SRP='<insert SRP here>'` and `PASSWORD='<insert wallet password here>'` to the `.metamaskrc` file and running `yarn start:skip-onboarding`.
+
+
 #### React and Redux DevTools
 
 To start the [React DevTools](https://github.com/facebook/react-devtools), run `yarn devtools:react` with a development build installed in a browser. This will open in a separate window; no browser extension is required.

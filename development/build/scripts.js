@@ -19,7 +19,7 @@ const sourcemaps = require('gulp-sourcemaps');
 const applySourceMap = require('vinyl-sourcemaps-apply');
 const pify = require('pify');
 const through = require('through2');
-const endOfStream = pify(require('end-of-stream'));
+const finished = pify(require('readable-stream').finished);
 const labeledStreamSplicer = require('labeled-stream-splicer').obj;
 const wrapInStream = require('pumpify').obj;
 const { Eta } = require('eta');
@@ -1126,7 +1126,7 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
     // nothing will consume pipeline, so let it flow
     pipeline.resume();
 
-    await endOfStream(pipeline);
+    await finished(pipeline);
 
     // call the completion event to handle any post-processing
     events.emit('bundleDone');
