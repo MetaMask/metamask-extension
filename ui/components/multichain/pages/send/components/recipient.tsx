@@ -43,6 +43,13 @@ export const SendPageRecipient = () => {
   const showWarningBanner =
     !showErrorBanner && (domainWarning || recipient.warning);
 
+  type DomainResolution = {
+    resolvedAddress: string;
+    resolvingSnap?: string;
+    protocol: string;
+    addressBookEntryName?: string;
+  };
+
   const onClick = (
     address: string,
     nickname: string,
@@ -68,7 +75,7 @@ export const SendPageRecipient = () => {
       />
     );
   } else if (domainResolutions?.length > 0 && !recipient.error) {
-    contents = domainResolutions.map((domainResolution) => {
+    contents = domainResolutions.map((domainResolution: DomainResolution) => {
       const { resolvedAddress, resolvingSnap, addressBookEntryName, protocol } =
         domainResolution;
       return (
