@@ -1,11 +1,5 @@
-import React from 'react';
-import {
-  Box,
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-} from '../../../../component-library';
+import React, { useContext } from 'react';
+import { I18nContext } from '../../../../../contexts/i18n';
 import {
   AlignItems,
   Display,
@@ -13,6 +7,7 @@ import {
   IconColor,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
+import { Box, ButtonIcon, IconName, Text } from '../../../../component-library';
 
 export type ConfirmInfoRowTextProps = {
   text: string;
@@ -23,6 +18,8 @@ export const ConfirmInfoRowText = ({
   text,
   onEditCallback,
 }: ConfirmInfoRowTextProps) => {
+  const t = useContext(I18nContext);
+
   const isEditable = Boolean(onEditCallback);
 
   return (
@@ -36,12 +33,12 @@ export const ConfirmInfoRowText = ({
         {text}
       </Text>
       {isEditable ? (
-        <Icon
+        <ButtonIcon
           color={IconColor.primaryDefault}
+          ariaLabel={t('edit')} // Note required aria label prop for accessibility for screen readers
           marginLeft={4}
-          name={IconName.Edit}
+          iconName={IconName.Edit}
           onClick={onEditCallback}
-          size={IconSize.Sm}
         />
       ) : null}
     </Box>

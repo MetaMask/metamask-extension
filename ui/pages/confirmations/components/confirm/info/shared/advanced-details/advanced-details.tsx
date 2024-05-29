@@ -7,6 +7,9 @@ import {
 } from '../../../../../../../components/app/confirm/info/row';
 import {
   Box,
+  Button,
+  ButtonSize,
+  ButtonVariant,
   Icon,
   IconName,
 } from '../../../../../../../components/component-library';
@@ -142,31 +145,25 @@ const HexDetails = () => {
         </ConfirmInfoRow>
 
         <Tooltip position="right" title={copied ? t('copiedExclamation') : ''}>
-          <button
+          <Button
             onClick={() => {
               (handleCopy as (text: string) => void)?.(
                 currentConfirmation.txParams.data || '',
               );
             }}
-            className="copy-raw-data__button"
+            variant={ButtonVariant.Link}
+            size={ButtonSize.Lg}
+            startIconName={copied ? IconName.CopySuccess : IconName.Copy}
           >
-            <div className="copy-raw-data__icon">
-              <Icon
-                name={copied ? IconName.CopySuccess : IconName.Copy}
-                color={IconColor.iconDefault}
-              />
-            </div>
-            <div className="copy-raw-data__label">
-              {t('copyRawTransactionData')}
-            </div>
-          </button>
+            {t('copyRawTransactionData')}
+          </Button>
         </Tooltip>
       </Box>
     </>
   );
 };
 
-export const AdvancedDetails = () => {
+export const AdvancedDetails: React.FC = () => {
   return (
     <>
       <NonceDetails />
