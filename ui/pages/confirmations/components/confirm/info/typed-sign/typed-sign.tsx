@@ -15,7 +15,7 @@ import {
   BackgroundColor,
   BorderRadius,
 } from '../../../../../../helpers/constants/design-system';
-import { PermitSignatureRequestPrimayType } from '../../../../constants';
+import { EIP712_PRIMARY_TYPE_PERMIT } from '../../../../constants';
 import { SignatureRequestType } from '../../../../types/confirm';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
 import PermitSimulation from './permit-simulation';
@@ -45,7 +45,7 @@ const TypedSignInfo: React.FC = () => {
         padding={2}
         marginBottom={4}
       >
-        {primaryType === PermitSignatureRequestPrimayType && (
+        {primaryType === EIP712_PRIMARY_TYPE_PERMIT && (
           <>
             <ConfirmInfoRow label={t('approvingTo')}>
               <ConfirmInfoRowAddress address={verifyingContract} />
