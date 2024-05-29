@@ -9,14 +9,27 @@ import {
   wrap,
   CircuitState,
 } from 'cockatiel';
-import getFetchWithTimeout from '../../../../../shared/modules/fetch-with-timeout';
-import { CurrentRegulationStatus, RegulationId } from '../types';
+import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
 
 const DEFAULT_ANALYTICS_DATA_DELETION_SOURCE_ID =
   process.env.ANALYTICS_DATA_DELETION_SOURCE_ID ?? 'test';
 const DEFAULT_ANALYTICS_DATA_DELETION_ENDPOINT =
   process.env.ANALYTICS_DATA_DELETION_ENDPOINT ??
   'https://metametrics.metamask.test';
+
+/**
+ * @type RegulationId
+ * Response from API after the delete regulation creation.
+ */
+export type RegulationId = { data: Record<string, string> };
+
+/**
+ * @type CurrentRegulationStatus
+ * Response from API after the status check of current delete regulation.
+ */
+export type CurrentRegulationStatus = {
+  data: Record<string, Record<string, string>>;
+};
 
 /**
  * The number of times we retry a specific failed request to the data deletion API.
