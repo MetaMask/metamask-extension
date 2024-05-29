@@ -9743,15 +9743,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/end-of-stream@npm:^1.4.1":
-  version: 1.4.1
-  resolution: "@types/end-of-stream@npm:1.4.1"
-  dependencies:
-    "@types/node": "npm:*"
-  checksum: 2aa91282bb1b2ee90f01b7075ac8c0d5480468e613211787d69249b910b0db339328ee5a0e6d7a0e7a7cd806549b811f1d9578e1af51c5425bec7ccc7a17349a
-  languageName: node
-  linkType: hard
-
 "@types/escodegen@npm:^0.0.6":
   version: 0.0.6
   resolution: "@types/escodegen@npm:0.0.6"
@@ -10257,15 +10248,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/pump@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "@types/pump@npm:1.1.1"
-  dependencies:
-    "@types/node": "npm:*"
-  checksum: dd4a1485f2f6052cacb71a94b48d9f360e07a2fc3fac03782ae4caa9856e6df7017ee89515d70ecefcfe281553311cde4a3748219c9fcd757fdb77f3a47e0f29
-  languageName: node
-  linkType: hard
-
 "@types/punycode@npm:^2.1.0":
   version: 2.1.0
   resolution: "@types/punycode@npm:2.1.0"
@@ -10357,7 +10339,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/readable-stream-2@npm:@types/readable-stream@^2.3.15, @types/readable-stream@npm:^2.3.15":
+"@types/readable-stream-2@npm:@types/readable-stream@^2.3.15":
   version: 2.3.15
   resolution: "@types/readable-stream@npm:2.3.15"
   dependencies:
@@ -10367,7 +10349,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/readable-stream-3@npm:@types/readable-stream@^4.0.4":
+"@types/readable-stream-3@npm:@types/readable-stream@^4.0.4, @types/readable-stream@npm:4.0.4":
   version: 4.0.4
   resolution: "@types/readable-stream@npm:4.0.4"
   dependencies:
@@ -25213,7 +25195,6 @@ __metadata:
     "@types/babelify": "npm:^7.3.7"
     "@types/browserify": "npm:^12.0.37"
     "@types/currency-formatter": "npm:^1.5.1"
-    "@types/end-of-stream": "npm:^1.4.1"
     "@types/fs-extra": "npm:^9.0.13"
     "@types/gulp": "npm:^4.0.9"
     "@types/gulp-autoprefixer": "npm:^0.0.33"
@@ -25224,13 +25205,12 @@ __metadata:
     "@types/mocha": "npm:^10.0.3"
     "@types/node": "npm:^20"
     "@types/pify": "npm:^5.0.1"
-    "@types/pump": "npm:^1.1.1"
     "@types/react": "npm:^16.9.53"
     "@types/react-beautiful-dnd": "npm:^13"
     "@types/react-dom": "npm:^17.0.11"
     "@types/react-redux": "npm:^7.1.25"
     "@types/react-router-dom": "npm:^5.3.3"
-    "@types/readable-stream": "npm:^2.3.15"
+    "@types/readable-stream": "npm:4.0.4"
     "@types/readable-stream-2": "npm:^2.3.15"
     "@types/readable-stream-3": "npm:^4.0.4"
     "@types/redux-mock-store": "npm:1.0.6"
@@ -25280,7 +25260,6 @@ __metadata:
     detect-port: "npm:^1.5.1"
     dotenv: "npm:^16.4.5"
     duplexify: "npm:^4.1.1"
-    end-of-stream: "npm:^1.4.4"
     eslint: "patch:eslint@npm%3A8.57.0#~/.yarn/patches/eslint-npm-8.57.0-4286e12a3a.patch"
     eslint-config-prettier: "npm:^8.5.0"
     eslint-import-resolver-node: "npm:^0.3.4"
@@ -25366,7 +25345,6 @@ __metadata:
     promise-to-callback: "npm:^1.0.0"
     prop-types: "npm:^15.6.1"
     proxyquire: "npm:^2.1.3"
-    pump: "npm:^3.0.0"
     pumpify: "npm:^2.0.1"
     punycode: "npm:^2.1.1"
     qrcode-generator: "npm:1.4.1"
@@ -25390,7 +25368,7 @@ __metadata:
     react-toggle-button: "npm:^2.2.0"
     react-transition-group: "npm:^1.2.1"
     read-installed: "npm:^4.0.3"
-    readable-stream: "npm:^2.3.3"
+    readable-stream: "npm:^3.6.2"
     readable-stream-2: "npm:^2.3.3"
     readable-stream-3: "npm:^3.6.2"
     redux: "npm:^4.0.5"
