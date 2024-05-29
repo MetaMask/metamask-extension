@@ -46,7 +46,7 @@ jobs:
           cache: 'yarn'
       - name: Install dependencies from cache
         run: yarn --immutable --immutable-cache
-      - name: Generate Atributions
+      - name: Generate Atribution
         run: yarn generate:attribution
       - name: Check whether there are attribution changes
         run: |
