@@ -1,15 +1,11 @@
-const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
-  defaultGanacheOptionsForType2Transactions,
   openDapp,
   unlockWallet,
   WINDOW_TITLES,
   withFixtures,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
-const { CHAIN_IDS } = require('../../../../shared/constants/network');
-const { hexToNumber } = require('@metamask/utils');
 
 describe('Confirmation Redesign Contract Interaction Component', function () {
   if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {

@@ -31,20 +31,8 @@ import {
 } from '../../../../../../../store/actions';
 import { useKnownMethodDataInTransaction } from '../../hooks/known-method-data-in-transaction';
 
-// TODO(Pedro): Localization
-// TODO(Pedro): Unit test for advanced details
-
-export const AdvancedDetails = () => {
-  return (
-    <>
-      <NonceDetails />
-      <DataDetails />
-      <HexDetails />
-    </>
-  );
-};
-
 const NonceDetails = () => {
+  const t = useI18nContext();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -73,7 +61,10 @@ const NonceDetails = () => {
 
   return (
     <Box padding={2}>
-      <ConfirmInfoRow label={'Nonce'} tooltip={'Nonce tooltip text'}>
+      <ConfirmInfoRow
+        label={t('advancedDetailsNonceDesc')}
+        tooltip={t('advancedDetailsNonceTooltip')}
+      >
         <ConfirmInfoRowText
           text={`${displayedNonce}`}
           onEditCallback={() => openEditNonceModal()}
@@ -83,7 +74,17 @@ const NonceDetails = () => {
   );
 };
 
+const Divider = () => (
+  <Box
+    borderColor={BorderColor.borderMuted}
+    borderWidth={1}
+    width={BlockSize.Full}
+  />
+);
+
 const DataDetails = () => {
+  const t = useI18nContext();
+
   const currentConfirmation = useSelector(
     currentConfirmationSelector,
   ) as TransactionMeta;
@@ -111,7 +112,7 @@ const DataDetails = () => {
     <>
       <Divider />
       <Box padding={2}>
-        <ConfirmInfoRow label={'Data'} tooltip={'Data tooltip text'}>
+        <ConfirmInfoRow label={t('advancedDetailsDataDesc')}>
           <ConfirmInfoRowText text={methodDataString} />
         </ConfirmInfoRow>
       </Box>
@@ -136,7 +137,7 @@ const HexDetails = () => {
     <>
       <Divider />
       <Box padding={2}>
-        <ConfirmInfoRow label={'Hex'} tooltip={'Hex tooltip text'}>
+        <ConfirmInfoRow label={t('advancedDetailsHexDesc')}>
           <ConfirmInfoRowText text={currentConfirmation.txParams.data || ''} />
         </ConfirmInfoRow>
 
@@ -165,10 +166,12 @@ const HexDetails = () => {
   );
 };
 
-const Divider = () => (
-  <Box
-    borderColor={BorderColor.borderMuted}
-    borderWidth={1}
-    width={BlockSize.Full}
-  />
-);
+export const AdvancedDetails = () => {
+  return (
+    <>
+      <NonceDetails />
+      <DataDetails />
+      <HexDetails />
+    </>
+  );
+};
