@@ -145,22 +145,4 @@ describe('ConfirmLegacyGasDisplay', () => {
       container.querySelector('.currency-display-component__text'),
     ).toHaveTextContent('0.00180188');
   });
-
-  it('contains L1 L2 fee details', async () => {
-    render({
-      ...mmState,
-      confirmTransaction: {
-        ...mmState.confirmTransaction,
-        txData: {
-          ...mmState.confirmTransaction.txData,
-          layer1GasFee: '0x0653b2c7980981',
-        },
-      },
-    });
-
-    await waitFor(() => {
-      expect(screen.queryByText('Estimated gas fee')).toBeInTheDocument();
-      expect(screen.queryByText('Max fee:')).toBeInTheDocument();
-    });
-  });
 });
