@@ -4,6 +4,7 @@ import {
   selectGeneralAlerts,
   selectConfirmedAlertKeys,
   AlertsState,
+  selectFieldAlerts,
 } from './alerts';
 
 describe('Alerts Selectors', () => {
@@ -98,6 +99,22 @@ describe('Alerts Selectors', () => {
         ownerId3Mock,
       );
       expect(confirmedAlertKeys).toEqual([]);
+    });
+  });
+
+  describe('selectFieldAlerts', () => {
+    it('returns field alerts for a specific owner', () => {
+      const fieldAlerts = selectFieldAlerts(mockedState, ownerId1Mock);
+      const expectedFieldAlerts = mockedState.confirmAlerts.alerts[
+        ownerId1Mock
+      ].filter((alert) => alert.field);
+
+      expect(fieldAlerts).toEqual(expectedFieldAlerts);
+    });
+
+    it('returns an empty array if owner has no field alerts', () => {
+      const fieldAlerts = selectFieldAlerts(mockedState, 'no-alerts-owner-id');
+      expect(fieldAlerts).toEqual([]);
     });
   });
 });
