@@ -1998,7 +1998,7 @@
     "message": "Hesabı $1 üzerinde görüntüleyin"
   },
   "getStartedWithNFTs": {
-    "message": "NFT satın almak için $1$ edinin",
+    "message": "NFT satın almak için $1 edinin",
     "description": "$1 is the token symbol"
   },
   "getStartedWithNFTsDescription": {
