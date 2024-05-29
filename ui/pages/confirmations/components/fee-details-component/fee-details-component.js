@@ -140,14 +140,16 @@ export default function FeeDetailsComponent({
               boldHeadings={false}
             />
           )}
-          <TransactionDetailItem
-            detailTitle={t('total')}
-            detailText={
-              useCurrencyRateCheck &&
-              renderTotalDetailText(getTransactionFeeTotal)
-            }
-            detailTotal={renderTotalDetailValue(getTransactionFeeTotal)}
-          />
+          {!hasLayer1GasFee && (
+            <TransactionDetailItem
+              detailTitle={t('total')}
+              detailText={
+                useCurrencyRateCheck &&
+                renderTotalDetailText(getTransactionFeeTotal)
+              }
+              detailTotal={renderTotalDetailValue(getTransactionFeeTotal)}
+            />
+          )}
         </Box>
       )}
     </>
