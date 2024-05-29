@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AlertProvider renders correctly with required props 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--padding-top-1 mm-box--text-align-center"
+  >
+    <p
+      class="mm-box mm-text mm-text--body-sm mm-box--margin-top-1 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-alternative"
+    >
+      <span
+        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-primary-default"
+        style="mask-image: url('./images/icons/security-tick.svg');"
+      />
+      [securityProviderPoweredBy]
+    </p>
+  </div>
+</div>
+`;
