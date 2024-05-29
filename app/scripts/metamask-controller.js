@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import pump from 'pump';
+import { pipeline } from 'readable-stream';
 import {
   AssetsContractController,
   CurrencyRateController,
@@ -269,7 +269,7 @@ import { mmiKeyringBuilderFactory } from './mmi-keyring-builder-factory';
 ///: END:ONLY_INCLUDE_IF
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
-import createDupeReqFilterMiddleware from './lib/createDupeReqFilterMiddleware';
+import createDupeReqFilterStream from './lib/createDupeReqFilterStream';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
 import { createMethodMiddleware } from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
@@ -1291,6 +1291,13 @@ export default class MetamaskController extends EventEmitter {
       encryptor: encryptorFactory(600_000),
       getMnemonic: this.getPrimaryKeyringMnemonic.bind(this),
       preinstalledSnaps: PREINSTALLED_SNAPS,
+      getFeatureFlags: () => {
+        return {
+          disableSnaps:
+            this.preferencesController.store.getState().useExternalServices ===
+            false,
+        };
+      },
     });
 
     this.notificationController = new NotificationController({
@@ -4997,23 +5004,31 @@ export default class MetamaskController extends EventEmitter {
       tabId,
     });
 
+    const dupeReqFilterStream = createDupeReqFilterStream();
+
     // setup connection
     const providerStream = createEngineStream({ engine });
 
     const connectionId = this.addConnection(origin, { engine });
 
-    pump(outStream, providerStream, outStream, (err) => {
-      // handle any middleware cleanup
-      engine._middleware.forEach((mid) => {
-        if (mid.destroy && typeof mid.destroy === 'function') {
-          mid.destroy();
+    pipeline(
+      outStream,
+      dupeReqFilterStream,
+      providerStream,
+      outStream,
+      (err) => {
+        // handle any middleware cleanup
+        engine._middleware.forEach((mid) => {
+          if (mid.destroy && typeof mid.destroy === 'function') {
+            mid.destroy();
+          }
+        });
+        connectionId && this.removeConnection(origin, connectionId);
+        if (err) {
+          log.error(err);
         }
-      });
-      connectionId && this.removeConnection(origin, connectionId);
-      if (err) {
-        log.error(err);
-      }
-    });
+      },
+    );
   }
 
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -5079,10 +5094,6 @@ export default class MetamaskController extends EventEmitter {
     subscriptionManager.events.on('notification', (message) =>
       engine.emit('notification', message),
     );
-
-    if (isManifestV3) {
-      engine.push(createDupeReqFilterMiddleware());
-    }
 
     // append tabId to each request if it exists
     if (tabId) {
@@ -5422,7 +5433,7 @@ export default class MetamaskController extends EventEmitter {
   setupPublicConfig(outStream) {
     const configStream = storeAsStream(this.publicConfigStore);
 
-    pump(configStream, outStream, (err) => {
+    pipeline(configStream, outStream, (err) => {
       configStream.destroy();
       if (err) {
         log.error(err);
