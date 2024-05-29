@@ -31,14 +31,14 @@ jobs:
   generate-and-validate-attribution:
     name: Generate and Validate Attribution
     runs-on: ubuntu-latest
-    needs:
-      - prepare
+    needs: prepare
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      COMMIT_SHA: ${{ needs.prepare.outputs.COMMIT_SHA }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -46,14 +46,7 @@ jobs:
           cache: 'yarn'
       - name: Install dependencies from cache
         run: yarn --immutable --immutable-cache
-      - name: Generate Atribution
+      - name: Generate Attribution
         run: yarn generate:attribution
-      - name: Check whether there are attribution changes
-        run: |
-            if git diff --exit-code -- attribution.txt
-          then
-            echo "No attribution changes. Pipeline succeeded."
-          else
-            echo "Attribution have changed. Failing pipeline."
-            exit 1
-          fi
+      - name: Check attribution changes
+        run: yarn test:attribution-check
