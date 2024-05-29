@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { FC } from 'react';
 import type { OnChainRawNotificationsWithNetworkFields } from '../../../../app/scripts/controllers/metamask-notifications/types/on-chain-notification/on-chain-notification';
 
@@ -98,31 +98,30 @@ export const NotificationDetailNetworkFee: FC<
 
   const nativeCurrency = getNativeCurrency(notification);
 
-  const fetchNetworkFees = useCallback(async () => {
-    try {
-      const networkFeesData = await getNetworkFees(notification);
-      if (networkFeesData) {
-        setNetworkFees({
-          transactionFee: {
-            transactionFeeInEther: networkFeesData.transactionFeeInEth,
-            transactionFeeInUsd: networkFeesData.transactionFeeInUsd,
-          },
-          gasLimitUnits: networkFeesData.gasLimit,
-          gasUsedUnits: networkFeesData.gasUsed,
-          baseFee: networkFeesData.baseFee,
-          priorityFee: networkFeesData.priorityFee,
-          maxFeePerGas: networkFeesData.maxFeePerGas,
-        });
-      }
-    } catch (err) {
-      setNetworkFeesError(true);
-    }
-  }, [notification]);
-
   // Effect - get the transaction network fees
   useEffect(() => {
+    const fetchNetworkFees = async () => {
+      try {
+        const networkFeesData = await getNetworkFees(notification);
+        if (networkFeesData) {
+          setNetworkFees({
+            transactionFee: {
+              transactionFeeInEther: networkFeesData.transactionFeeInEth,
+              transactionFeeInUsd: networkFeesData.transactionFeeInUsd,
+            },
+            gasLimitUnits: networkFeesData.gasLimit,
+            gasUsedUnits: networkFeesData.gasUsed,
+            baseFee: networkFeesData.baseFee,
+            priorityFee: networkFeesData.priorityFee,
+            maxFeePerGas: networkFeesData.maxFeePerGas,
+          });
+        }
+      } catch (err) {
+        setNetworkFeesError(true);
+      }
+    };
     fetchNetworkFees();
-  }, [fetchNetworkFees]);
+  }, []);
 
   const handleClick = () => {
     setIsOpen(!isOpen);
