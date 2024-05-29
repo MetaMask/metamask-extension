@@ -23,8 +23,9 @@ import useAlerts from '../../../../../hooks/useAlerts';
 import { confirmSelector } from '../../../selectors';
 import { getConfirmationSender } from '../utils';
 
-const getIconName = (hasUnconfirmedAlerts: boolean): IconName =>
-  hasUnconfirmedAlerts ? IconName.SecuritySearch : IconName.Danger;
+function getIconName(hasUnconfirmedAlerts: boolean): IconName {
+  return hasUnconfirmedAlerts ? IconName.SecuritySearch : IconName.Danger;
+}
 
 const ConfirmButton = ({
   alertOwnerId = '',
