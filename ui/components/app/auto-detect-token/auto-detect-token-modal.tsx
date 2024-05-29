@@ -12,6 +12,8 @@ import {
   ButtonSecondary,
   ButtonPrimarySize,
   ButtonSecondarySize,
+  ModalBody,
+  ModalFooter,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -68,30 +70,33 @@ function AutoDetectTokenModal({ isOpen, onClose }: AutoDetectTokenModalProps) {
       onClose={() => onClose(true)}
       isClosedOnOutsideClick={false}
       isClosedOnEscapeKey={false}
-      className="mm-modal__custom-scrollbar mm-auto-detect-in-modal"
+      className="mm-modal__custom-scrollbar auto-detect-in-modal"
       autoFocus={false}
     >
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent
+        modalDialogProps={{ className: 'auto-detect-token-modal__dialog' }}
+      >
         <ModalHeader
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.center}
         >
           Enable token autodetection
         </ModalHeader>
-        <Box
+        <ModalBody
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
           paddingLeft={4}
           paddingRight={4}
         >
           <Box
-            className="image-default"
             display={Display.Flex}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
             borderRadius={BorderRadius.SM}
-          />
+          >
+            <img src="/images/wallet-alpha.png" />
+          </Box>
           <Text
             variant={TextVariant.bodyMd}
             textAlign={TextAlign.Justify}
@@ -110,29 +115,19 @@ function AutoDetectTokenModal({ isOpen, onClose }: AutoDetectTokenModalProps) {
               </Text>
             </Box>
           </Text>
-          <Box>
-            <Box paddingTop={8}>
-              <ButtonPrimary
-                onClick={() => handleTokenAutoDetection(true)}
-                variant={TextVariant.bodyMd}
-                size={ButtonPrimarySize.Md}
-                block
-              >
-                {t('allow')}
-              </ButtonPrimary>
-            </Box>
-            <Box paddingTop={4} paddingBottom={4}>
-              <ButtonSecondary
-                onClick={() => handleTokenAutoDetection(false)}
-                variant={TextVariant.bodyMd}
-                size={ButtonSecondarySize.Md}
-                block
-              >
-                {t('notRightNow')}
-              </ButtonSecondary>
-            </Box>
-          </Box>
-        </Box>
+        </ModalBody>
+        <ModalFooter
+          onSubmit={() => handleTokenAutoDetection(true)}
+          submitButtonProps={{
+            children: t('allow'),
+            block: true,
+          }}
+          onCancel={() => handleTokenAutoDetection(false)}
+          cancelButtonProps={{
+            children: t('notRightNow'),
+            block: true,
+          }}
+        />
       </ModalContent>
     </Modal>
   );

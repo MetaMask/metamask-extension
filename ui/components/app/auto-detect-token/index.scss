@@ -1,21 +1,11 @@
-.mm-auto-detect-in-modal {
+.auto-detect-in-modal {
   &__benefit {
     flex: 1;
   }
 
-  .mm-modal-content {
-    &__dialog {
-      background-position: -80px 16px;
-      background-repeat: no-repeat;
-    }
+  &__dialog {
+    background-position: -80px 16px;
+    background-repeat: no-repeat;
   }
-}
 
-.image-default {
-  padding-top: 80%;
-  position: relative;
-  background-image: url('/images/wallet-alpha.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center center;
 }
