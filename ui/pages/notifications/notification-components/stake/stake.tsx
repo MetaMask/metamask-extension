@@ -255,8 +255,8 @@ export const components: NotificationComponent<StakeNotification> = {
       return (
         <NotificationDetailBlockExplorerButton
           notification={notification}
-          chain_id={notification.chain_id}
-          tx_hash={notification.tx_hash}
+          chainId={notification.chain_id}
+          txHash={notification.tx_hash}
           id={notification.id}
         />
       );

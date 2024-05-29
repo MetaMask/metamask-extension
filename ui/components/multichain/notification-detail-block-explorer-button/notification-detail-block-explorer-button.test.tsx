@@ -1,10 +1,10 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import type { Notification } from '../../../../app/scripts/controllers/metamask-notifications/types/notification/notification';
 import { Provider } from 'react-redux';
-import { NotificationDetailBlockExplorerButton } from './notification-detail-block-explorer-button';
 import configureStore from 'redux-mock-store';
+import type { Notification } from '../../../../app/scripts/controllers/metamask-notifications/types/notification/notification';
 import mockState from '../../../../test/data/mock-state.json';
+import { NotificationDetailBlockExplorerButton } from './notification-detail-block-explorer-button';
 
 const mockStore = configureStore();
 const store = mockStore({
@@ -50,8 +50,8 @@ describe('NotificationDetailBlockExplorerButton', () => {
       <Provider store={store}>
         <NotificationDetailBlockExplorerButton
           notification={mockNotification as Notification}
-          chain_id={1}
-          tx_hash="0xf8d58eb524e9ac1ba924599adef1df3b75a3dfa1de68d20918979934db4eb379"
+          chainId={1}
+          txHash="0xf8d58eb524e9ac1ba924599adef1df3b75a3dfa1de68d20918979934db4eb379"
           id="button1"
         />
       </Provider>,
