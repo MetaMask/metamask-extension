@@ -17,7 +17,7 @@ Driver is a custom class designed for handling web automation interactions, serv
 
 In web automation testing, locators are crucial commands that guide the framework to identify and select [HTML elements](https://www.w3schools.com/html/default.asp) on a webpage for interaction. They play a vital role in executing various actions such as clicking buttons, fill text, or retrieving data from web pages. Gaining a solid understanding of locators is a key step in initiating web testing automation, as they form the foundation for engaging with web elements.
 
-## buildLocator
+### buildLocator
 
 The **`buildLocator`** function enhances element-matching capabilities by introducing support for inline locators, offering an alternative to the traditional use of Selenium's `By` abstraction.
 
