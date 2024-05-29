@@ -11,6 +11,7 @@ import {
 import {
   getDomainError,
   getDomainResolutions,
+  getDomainType,
   getDomainWarning,
 } from '../../../../../ducks/domains';
 import {
@@ -18,41 +19,13 @@ import {
   BannerAlertSeverity,
   Box,
 } from '../../../../component-library';
-import { getAddressBookEntry } from '../../../../../selectors';
 import { Tab, Tabs } from '../../../../ui/tabs';
-import { AddressListItem } from '../../../address-list-item';
 import { SendPageAddressBook, SendPageRow, SendPageYourAccounts } from '.';
+import DomainInputResolutionCell from '../../../../../pages/confirmations/send/send-content/add-recipient/domain-input-resolution-cell';
 
 const CONTACTS_TAB_KEY = 'contacts';
 const ACCOUNTS_TAB_KEY = 'accounts';
 
-const ENS_RESOLUTION_TYPE = 'ENS resolution';
-
-const renderExplicitAddress = (
-  address: string,
-  nickname: string,
-  type: string,
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  dispatch: any,
-) => {
-  return (
-    <AddressListItem
-      address={address}
-      label={nickname}
-      useConfusable={type === ENS_RESOLUTION_TYPE}
-      onClick={() => {
-        dispatch(
-          addHistoryEntry(
-            `sendFlow - User clicked recipient from ${type}. address: ${address}, nickname ${nickname}`,
-          ),
-        );
-        dispatch(updateRecipient({ address, nickname }));
-        dispatch(updateRecipientUserInput(address));
-      }}
-    />
-  );
-};
 
 export const SendPageRecipient = () => {
   const t = useContext(I18nContext);
@@ -64,40 +37,57 @@ export const SendPageRecipient = () => {
   const domainResolutions = useSelector(getDomainResolutions) || [];
   const domainError = useSelector(getDomainError);
   const domainWarning = useSelector(getDomainWarning);
-
-  let addressBookEntryName = '';
-  const domainResolution = domainResolutions[0];
-  const entry = useSelector((state) =>
-    getAddressBookEntry(state, domainResolution?.resolvedAddress),
-  );
-  if (domainResolution?.resolvedAddress && entry?.name) {
-    addressBookEntryName = entry.name;
-  }
+  const domainType = useSelector(getDomainType);
 
   const showErrorBanner =
     domainError || (recipient.error && recipient.error !== 'required');
   const showWarningBanner =
     !showErrorBanner && (domainWarning || recipient.warning);
 
+  const onClick = (address, nickname, type = 'user input') => {
+    dispatch(
+      addHistoryEntry(
+        `sendFlow - User clicked recipient from ${type}. address: ${address}, nickname ${nickname}`,
+      ),
+    );
+    dispatch(updateRecipient({ address, nickname }));
+    dispatch(updateRecipientUserInput(address));
+  }
+
   let contents;
   if (recipient.address) {
-    contents = renderExplicitAddress(
-      recipient.address,
-      recipient.nickname,
-      'validated user input',
-      dispatch,
+    contents = (
+      <DomainInputResolutionCell
+        domainType={domainType}
+        address={recipient.address}
+        domainName={recipient.nickname}
+        onClick={() => onClick(recipient.address, recipient.nickname)}
+      />
     );
-  } else if (domainResolution && !recipient.error) {
-    contents = renderExplicitAddress(
-      domainResolution.resolvedAddress,
-      addressBookEntryName || userInput,
-      ENS_RESOLUTION_TYPE,
-      dispatch,
-    );
+  } else if (domainResolutions?.length > 0 && !recipient.error) {
+    contents = domainResolutions.map((domainResolution) => {
+      const {
+        resolvedAddress,
+        resolvingSnap,
+        addressBookEntryName,
+        protocol,
+      } = domainResolution;
+      return (
+        <DomainInputResolutionCell
+          key={`${resolvedAddress}${resolvingSnap}${protocol}`}
+          domainType={domainType}
+          address={resolvedAddress}
+          domainName={addressBookEntryName || userInput}
+          onClick={() => onClick(resolvedAddress, addressBookEntryName || userInput, 'Domain resolution')}
+          protocol={protocol}
+          resolvingSnap={resolvingSnap}
+        />
+      );
+    });
   } else {
     contents = (
       <Tabs
-        defaultActiveTabKey={userInput ? CONTACTS_TAB_KEY : ACCOUNTS_TAB_KEY}
+        defaultActiveTabKey={userInput.length > 0 ? CONTACTS_TAB_KEY : ACCOUNTS_TAB_KEY}
       >
         {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
