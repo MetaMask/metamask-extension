@@ -237,6 +237,7 @@ export const AppHeaderUnlockedContent = ({
             <Box ref={menuRef}>
               <ConnectedStatusIndicator
                 onClick={() => {
+                  if (!isEvmNetwork) return;
                   handleConnectionsRoute();
                 }}
                 disabled={!isEvmNetwork}
