@@ -51,7 +51,6 @@ module.exports = {
     '<rootDir>/app/scripts/controllers/preferences.test.js',
     '<rootDir>/app/scripts/controllers/sign.test.ts',
     '<rootDir>/app/scripts/controllers/decrypt-message.test.ts',
-    '<rootDir>/app/scripts/controllers/metametrics-data-deletion/**/*.test.(js|ts)',
     '<rootDir>/app/scripts/controllers/authentication/**/*.test.ts',
     '<rootDir>/app/scripts/controllers/push-platform-notifications/**/*.test.ts',
     '<rootDir>/app/scripts/controllers/user-storage/**/*.test.ts',
