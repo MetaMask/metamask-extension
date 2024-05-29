@@ -104,7 +104,7 @@ export default class MetaMetricsDataDeletionController extends BaseController<
 > {
   #dataDeletionService: DataDeletionService;
 
-  #getMetaMetricsId: () => string
+  #getMetaMetricsId: () => string;
 
   /**
    * Creates a MetaMetricsDataDeletionController instance.
@@ -113,7 +113,7 @@ export default class MetaMetricsDataDeletionController extends BaseController<
    * @param args.dataDeletionService - The service used for deleting data.
    * @param args.messenger - Messenger used to communicate with BaseV2 controller.
    * @param args.state - Initial state to set on this controller.
-   * @param args.metaMetricsStore
+   * @param args.getMetaMetricsId - A function that returns the current MetaMetrics ID.
    */
   constructor({
     dataDeletionService,
