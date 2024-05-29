@@ -2,8 +2,6 @@ import {
   BaseController,
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
-import { ObservableStore } from '@metamask/obs-store';
-import { MetaMetricsControllerState } from '../metametrics';
 import type { DataDeletionService } from '../../services/data-deletion-service';
 
 // Unique name for the controller
@@ -104,9 +102,9 @@ export default class MetaMetricsDataDeletionController extends BaseController<
   MetaMetricsDataDeletionState,
   MetaMetricsDataDeletionControllerMessenger
 > {
-  private metaMetricsId;
-
   #dataDeletionService: DataDeletionService;
+
+  #getMetaMetricsId: () => string
 
   /**
    * Creates a MetaMetricsDataDeletionController instance.
@@ -121,12 +119,12 @@ export default class MetaMetricsDataDeletionController extends BaseController<
     dataDeletionService,
     messenger,
     state,
-    metaMetricsStore,
+    getMetaMetricsId,
   }: {
     dataDeletionService: DataDeletionService;
     messenger: MetaMetricsDataDeletionControllerMessenger;
     state?: MetaMetricsDataDeletionState;
-    metaMetricsStore: ObservableStore<MetaMetricsControllerState>;
+    getMetaMetricsId: () => string;
   }) {
     // Call the constructor of BaseControllerV2
     super({
@@ -135,7 +133,7 @@ export default class MetaMetricsDataDeletionController extends BaseController<
       name: controllerName,
       state: { ...defaultState, ...state },
     });
-    this.metaMetricsId = metaMetricsStore.getState().metaMetricsId;
+    this.#getMetaMetricsId = getMetaMetricsId;
     this.#dataDeletionService = dataDeletionService;
   }
 
@@ -154,13 +152,14 @@ export default class MetaMetricsDataDeletionController extends BaseController<
    *
    */
   async createMetaMetricsDataDeletionTask(): Promise<void> {
-    if (!this.metaMetricsId) {
+    const metaMetricsId = this.#getMetaMetricsId();
+    if (!metaMetricsId) {
       throw new Error('MetaMetrics ID not found');
     }
 
     const { data } =
       await this.#dataDeletionService.createDataDeletionRegulationTask(
-        this.metaMetricsId,
+        metaMetricsId,
       );
     this.update((state) => {
       state.metaMetricsDataDeletionId = data?.regulateId;
