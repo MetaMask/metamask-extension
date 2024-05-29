@@ -1,4 +1,4 @@
-name: Check attribution
+name: Check attributions
 
 on:
   pull_request:
@@ -9,33 +9,9 @@ on:
       - synchronize
 
 jobs:
-  prepare:
-    name: Prepare dependencies
+  generate-and-validate-attributions:
+    name: Generate and Validate Attributions
     runs-on: ubuntu-latest
-    outputs:
-      COMMIT_SHA: ${{ steps.commit-sha.outputs.COMMIT_SHA }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'yarn'
-      - name: Install Yarn dependencies
-        run: yarn --immutable
-      - name: Get commit SHA
-        id: commit-sha
-        run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
-
-  generate-and-validate-attribution:
-    name: Generate and Validate Attribution
-    runs-on: ubuntu-latest
-    needs: prepare
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      PR_NUMBER: ${{ github.event.pull_request.number }}
-      COMMIT_SHA: ${{ needs.prepare.outputs.COMMIT_SHA }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -45,8 +21,8 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'yarn'
       - name: Install dependencies from cache
-        run: yarn --immutable --immutable-cache
-      - name: Generate Attribution
-        run: yarn generate:attribution
-      - name: Check attribution changes
-        run: yarn test:attribution-check
+        run: yarn --immutable
+      - name: Generate Attributions
+        run: yarn generate:attributions
+      - name: Check attributions changes
+        run: yarn test:attributions-check

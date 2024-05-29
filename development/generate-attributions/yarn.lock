@@ -1081,9 +1081,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"metamask-extension-generate-attribution@workspace:.":
+"metamask-extension-generate-attributions@workspace:.":
   version: 0.0.0-use.local
-  resolution: "metamask-extension-generate-attribution@workspace:."
+  resolution: "metamask-extension-generate-attributions@workspace:."
   dependencies:
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@lavamoat/preinstall-always-fail": "npm:^2.0.0"
