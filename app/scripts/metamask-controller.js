@@ -809,6 +809,19 @@ export default class MetamaskController extends EventEmitter {
       messenger: currencyRateMessenger,
       state: initState.CurrencyController,
     });
+    const initialFetchExchangeRate =
+      this.currencyRateController.fetchExchangeRate.bind(
+        this.currencyRateController,
+      );
+    this.currencyRateController.fetchExchangeRate = (...args) => {
+      if (this.preferencesController.store.getState().useCurrencyRateCheck) {
+        return initialFetchExchangeRate(...args);
+      }
+      return {
+        conversionRate: 0,
+        usdConversionRate: 0,
+      };
+    };
 
     const phishingControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'PhishingController',
