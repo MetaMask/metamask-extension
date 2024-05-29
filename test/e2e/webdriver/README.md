@@ -525,7 +525,7 @@ This organization helps provide a clear structure for understanding the various 
 >
 > [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L236)
 >
-> **Arguments**
+> #### Arguments
 >
 > @param {string | object} rawLocator - Element locator<br>
 > @param {number} timeout - optional parameter that specifies the maximum amount of time (in milliseconds) to wait for the condition to be met and desired state of the element to wait for.<br>
@@ -705,7 +705,6 @@ await approveInput.clear();
 >
 > #### Arguments
 > @param {string | object} rawLocator - Element locator
->
 > @param {string} contentToPaste - content to paste.
 >
 > #### Returns
