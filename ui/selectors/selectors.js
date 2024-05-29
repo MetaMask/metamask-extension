@@ -197,7 +197,7 @@ export function getCurrentKeyring(state) {
  * both of them support EIP-1559.
  *
  * @param state
- * @param networkClientId - The optional network client ID to check network and account for EIP-1559 support
+ * @param [networkClientId] - The optional network client ID to check network and account for EIP-1559 support
  */
 export function checkNetworkAndAccountSupports1559(state, networkClientId) {
   const networkSupports1559 = isEIP1559Network(state, networkClientId);
@@ -476,19 +476,20 @@ export const getConfirmationExchangeRates = (state) => {
   return state.metamask.confirmationExchangeRates;
 };
 
-export function getSelectedAccount(state) {
-  const accounts = getMetaMaskAccounts(state);
-  const selectedAccount = getSelectedInternalAccount(state);
-
-  // At the time of onboarding there is no selected account
-  if (selectedAccount) {
-    return {
-      ...selectedAccount,
-      ...accounts[selectedAccount.address],
-    };
-  }
-  return undefined;
-}
+export const getSelectedAccount = createDeepEqualSelector(
+  getMetaMaskAccounts,
+  getSelectedInternalAccount,
+  (accounts, selectedAccount) => {
+    // At the time of onboarding there is no selected account
+    if (selectedAccount) {
+      return {
+        ...selectedAccount,
+        ...accounts[selectedAccount.address],
+      };
+    }
+    return undefined;
+  },
+);
 
 export function getTargetAccount(state, targetAddress) {
   const accounts = getMetaMaskAccounts(state);

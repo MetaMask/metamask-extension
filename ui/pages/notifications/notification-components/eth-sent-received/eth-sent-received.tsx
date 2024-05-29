@@ -121,13 +121,17 @@ export const components: NotificationComponent<ETHNotification> = {
       type: 'body_onchain_notification',
       From: ({ notification }) => (
         <NotificationDetailAddress
-          side={t('notificationItemFrom') || ''}
+          side={`${t('notificationItemFrom')}${
+            isSent(notification) ? ` (${t('you')})` : ''
+          }`}
           address={notification.data.from}
         />
       ),
       To: ({ notification }) => (
         <NotificationDetailAddress
-          side={t('notificationItemTo') || ''}
+          side={`${t('notificationItemTo')}${
+            isSent(notification) ? '' : ` (${t('you')})`
+          }`}
           address={notification.data.to}
         />
       ),
@@ -163,11 +167,11 @@ export const components: NotificationComponent<ETHNotification> = {
             }}
             label={t('asset') || ''}
             detail={nativeCurrencySymbol}
-            fiatValue={`${getUsdAmount(
+            fiatValue={`$${getUsdAmount(
               notification.data.amount.eth,
               '18',
               notification.data.amount.usd,
-            )} $`}
+            )}`}
             value={`${getAmount(notification.data.amount.eth, '18', {
               shouldEllipse: true,
             })} ${nativeCurrencySymbol}`}
@@ -184,7 +188,7 @@ export const components: NotificationComponent<ETHNotification> = {
             icon={{
               src: nativeCurrencyLogo,
             }}
-            label={t('network') || ''}
+            label={t('notificationDetailNetwork') || ''}
             detail={nativeCurrencyName}
           />
         );
@@ -203,6 +207,7 @@ export const components: NotificationComponent<ETHNotification> = {
       );
       return (
         <NotificationDetailButton
+          notification={notification}
           variant={ButtonVariant.Secondary}
           text={t('notificationItemCheckBlockExplorer') || ''}
           href={

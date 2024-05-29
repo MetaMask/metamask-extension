@@ -1,5 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { MetaMetricsContext } from '../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 import type {
   Notification,
   MarkAsReadNotificationsParam,
@@ -22,6 +27,7 @@ export const NotificationsListReadAllButton = ({
   const dispatch = useDispatch();
   const t = useI18nContext();
   const { markNotificationAsRead } = useMarkNotificationAsRead();
+  const trackEvent = useContext(MetaMetricsContext);
 
   const unreadNotifications = useSelector(getUnreadNotifications);
 
@@ -47,6 +53,11 @@ export const NotificationsListReadAllButton = ({
   }, [notifications]);
 
   const handleOnClick = () => {
+    trackEvent({
+      category: MetaMetricsEventCategory.NotificationInteraction,
+      event: MetaMetricsEventName.MarkAllNotificationsRead,
+    });
+
     // Mark all metamask notifications as read
     markNotificationAsRead(notificationReadArray);
 

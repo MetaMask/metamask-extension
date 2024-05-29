@@ -76,12 +76,12 @@ export type TransactionMetricsRequest = {
   getEIP1559GasFeeEstimates(options?: FetchGasFeeEstimateOptions): Promise<any>;
   getParticipateInMetrics: () => boolean;
   getSelectedAddress: () => string;
-  getTokenStandardAndDetails: () => {
+  getTokenStandardAndDetails: () => Promise<{
     decimals?: string;
     balance?: string;
     symbol?: string;
     standard?: TokenStandard;
-  };
+  }>;
   getTransaction: (transactionId: string) => TransactionMeta;
   provider: Provider;
   snapAndHardwareMessenger: SnapAndHardwareMessenger;
@@ -884,6 +884,7 @@ async function buildEventFragmentProperties({
       TransactionType.tokenMethodTransfer,
       TransactionType.tokenMethodTransferFrom,
       TransactionType.swap,
+      TransactionType.swapAndSend,
       TransactionType.swapApproval,
     ].includes(type);
 
