@@ -18620,7 +18620,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ******************************
 
 @metamask/design-tokens
-2.1.1 <https://github.com/MetaMask/design-tokens>
+3.0.0 <https://github.com/MetaMask/design-tokens>
 license: MIT
 authors: undefined
 
