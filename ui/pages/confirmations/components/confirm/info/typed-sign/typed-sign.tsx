@@ -38,7 +38,7 @@ const TypedSignInfo: React.FC = () => {
 
   return (
     <>
-      {primaryType === PermitSignatureRequestPrimayType && <PermitSimulation />}
+      {primaryType === EIP712_PRIMARY_TYPE_PERMIT && <PermitSimulation />}
       <Box
         backgroundColor={BackgroundColor.backgroundDefault}
         borderRadius={BorderRadius.MD}
