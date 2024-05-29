@@ -118,6 +118,7 @@ export async function addDappTransaction(
 const PPOM_EXCLUDED_TRANSACTION_TYPES = [
   TransactionType.swap,
   TransactionType.swapApproval,
+  TransactionType.swapAndSend,
 ];
 ///: END:ONLY_INCLUDE_IF
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { TransactionType } from '@metamask/transaction-controller';
 
 import { currentConfirmationSelector } from '../../../../../selectors';
 import useSignatureSecurityAlertResponse from '../../../hooks/useSignatureSecurityAlertResponse';
@@ -18,7 +19,10 @@ const BlockaidAlert = ({ ...props }) => {
     currentSecurityAlertId,
   );
 
-  if (!currentSecurityAlertId) {
+  if (
+    !currentSecurityAlertId ||
+    currentConfirmation?.type === TransactionType.personalSign
+  ) {
     return null;
   }
 

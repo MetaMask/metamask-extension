@@ -7,6 +7,10 @@ import {
   AuthenticationControllerPerformSignIn,
 } from '../authentication/authentication-controller';
 import {
+  MetamaskNotificationsControllerDisableMetamaskNotifications,
+  MetamaskNotificationsControllerSelectIsMetamaskNotificationsEnabled,
+} from '../metamask-notifications/metamask-notifications';
+import {
   MOCK_STORAGE_DATA,
   MOCK_STORAGE_KEY,
   MOCK_STORAGE_KEY_SIGNATURE,
@@ -27,6 +31,7 @@ describe('user-storage/user-storage-controller - constructor() tests', () => {
     const { messengerMocks } = arrangeMocks();
     const controller = new UserStorageController({
       messenger: messengerMocks.messenger,
+      getMetaMetricsState: () => true,
     });
 
     expect(controller.state.isProfileSyncingEnabled).toBe(true);
@@ -44,6 +49,7 @@ describe('user-storage/user-storage-controller - performGetStorage() tests', () 
     const { messengerMocks, mockAPI } = arrangeMocks();
     const controller = new UserStorageController({
       messenger: messengerMocks.messenger,
+      getMetaMetricsState: () => true,
     });
 
     const result = await controller.performGetStorage('notification_settings');
@@ -55,7 +61,11 @@ describe('user-storage/user-storage-controller - performGetStorage() tests', () 
     const { messengerMocks } = arrangeMocks();
     const controller = new UserStorageController({
       messenger: messengerMocks.messenger,
-      state: { isProfileSyncingEnabled: false },
+      getMetaMetricsState: () => true,
+      state: {
+        isProfileSyncingEnabled: false,
+        isProfileSyncingUpdateLoading: false,
+      },
     });
 
     await expect(
@@ -83,6 +93,7 @@ describe('user-storage/user-storage-controller - performGetStorage() tests', () 
     arrangeFailureCase(messengerMocks);
     const controller = new UserStorageController({
       messenger: messengerMocks.messenger,
+      getMetaMetricsState: () => true,
     });
 
     await expect(
@@ -103,6 +114,7 @@ describe('user-storage/user-storage-controller - performSetStorage() tests', () 
     const { messengerMocks, mockAPI } = arrangeMocks();
     const controller = new UserStorageController({
       messenger: messengerMocks.messenger,
+      getMetaMetricsState: () => true,
     });
 
     await controller.performSetStorage('notification_settings', 'new data');
@@ -113,7 +125,11 @@ describe('user-storage/user-storage-controller - performSetStorage() tests', () 
     const { messengerMocks } = arrangeMocks();
     const controller = new UserStorageController({
       messenger: messengerMocks.messenger,
-      state: { isProfileSyncingEnabled: false },
+      getMetaMetricsState: () => true,
+      state: {
+        isProfileSyncingEnabled: false,
+        isProfileSyncingUpdateLoading: false,
+      },
     });
 
     await expect(
@@ -141,6 +157,7 @@ describe('user-storage/user-storage-controller - performSetStorage() tests', () 
     arrangeFailureCase(messengerMocks);
     const controller = new UserStorageController({
       messenger: messengerMocks.messenger,
+      getMetaMetricsState: () => true,
     });
 
     await expect(
@@ -154,6 +171,7 @@ describe('user-storage/user-storage-controller - performSetStorage() tests', () 
     });
     const controller = new UserStorageController({
       messenger: messengerMocks.messenger,
+      getMetaMetricsState: () => true,
     });
     await expect(
       controller.performSetStorage('notification_settings', 'new data'),
@@ -173,6 +191,7 @@ describe('user-storage/user-storage-controller - performSetStorage() tests', () 
     const { messengerMocks } = arrangeMocks();
     const controller = new UserStorageController({
       messenger: messengerMocks.messenger,
+      getMetaMetricsState: () => true,
     });
 
     const result = await controller.getStorageKey();
@@ -183,7 +202,11 @@ describe('user-storage/user-storage-controller - performSetStorage() tests', () 
     const { messengerMocks } = arrangeMocks();
     const controller = new UserStorageController({
       messenger: messengerMocks.messenger,
-      state: { isProfileSyncingEnabled: false },
+      getMetaMetricsState: () => true,
+      state: {
+        isProfileSyncingEnabled: false,
+        isProfileSyncingUpdateLoading: false,
+      },
     });
 
     await expect(controller.getStorageKey()).rejects.toThrow();
@@ -201,6 +224,7 @@ describe('user-storage/user-storage-controller - disableProfileSyncing() tests',
     const { messengerMocks } = arrangeMocks();
     const controller = new UserStorageController({
       messenger: messengerMocks.messenger,
+      getMetaMetricsState: () => true,
     });
 
     expect(controller.state.isProfileSyncingEnabled).toBe(true);
@@ -222,7 +246,11 @@ describe('user-storage/user-storage-controller - enableProfileSyncing() tests', 
 
     const controller = new UserStorageController({
       messenger: messengerMocks.messenger,
-      state: { isProfileSyncingEnabled: false },
+      getMetaMetricsState: () => true,
+      state: {
+        isProfileSyncingEnabled: false,
+        isProfileSyncingUpdateLoading: false,
+      },
     });
 
     expect(controller.state.isProfileSyncingEnabled).toBe(false);
@@ -251,6 +279,9 @@ function mockUserStorageMessenger() {
       'AuthenticationController:getSessionProfile',
       'AuthenticationController:isSignedIn',
       'AuthenticationController:performSignIn',
+      'AuthenticationController:performSignOut',
+      'MetamaskNotificationsController:disableMetamaskNotifications',
+      'MetamaskNotificationsController:selectIsMetamaskNotificationsEnabled',
     ],
   });
 
@@ -280,6 +311,21 @@ function mockUserStorageMessenger() {
     typedMockFn<
       AuthenticationControllerIsSignedIn['handler']
     >().mockReturnValue(true);
+
+  const mockAuthPerformSignOut =
+    typedMockFn<
+      AuthenticationControllerIsSignedIn['handler']
+    >().mockReturnValue(true);
+
+  const mockMetamaskNotificationsIsMetamaskNotificationsEnabled =
+    typedMockFn<
+      MetamaskNotificationsControllerSelectIsMetamaskNotificationsEnabled['handler']
+    >().mockReturnValue(true);
+
+  const mockMetamaskNotificationsDisableNotifications =
+    typedMockFn<
+      MetamaskNotificationsControllerDisableMetamaskNotifications['handler']
+    >().mockResolvedValue();
 
   jest.spyOn(messenger, 'call').mockImplementation((...args) => {
     const [actionType, params] = args;
@@ -313,6 +359,24 @@ function mockUserStorageMessenger() {
       return mockAuthIsSignedIn();
     }
 
+    if (
+      actionType ===
+      'MetamaskNotificationsController:selectIsMetamaskNotificationsEnabled'
+    ) {
+      return mockMetamaskNotificationsIsMetamaskNotificationsEnabled();
+    }
+
+    if (
+      actionType ===
+      'MetamaskNotificationsController:disableMetamaskNotifications'
+    ) {
+      return mockMetamaskNotificationsDisableNotifications();
+    }
+
+    if (actionType === 'AuthenticationController:performSignOut') {
+      return mockAuthPerformSignOut();
+    }
+
     function exhaustedMessengerMocks(action: never) {
       throw new Error(`MOCK_FAIL - unsupported messenger call: ${action}`);
     }
@@ -328,5 +392,8 @@ function mockUserStorageMessenger() {
     mockAuthGetSessionProfile,
     mockAuthPerformSignIn,
     mockAuthIsSignedIn,
+    mockMetamaskNotificationsIsMetamaskNotificationsEnabled,
+    mockMetamaskNotificationsDisableNotifications,
+    mockAuthPerformSignOut,
   };
 }

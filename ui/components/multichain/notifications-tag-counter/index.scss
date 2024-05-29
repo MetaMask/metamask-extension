@@ -1,0 +1,10 @@
+.notifications-tag-counter {
+  padding-left: 6px;
+  padding-right: 6px;
+
+  &__unread-dot {
+    padding-left: 3px;
+    padding-right: 3px;
+    line-height: 1.4;
+  }
+}

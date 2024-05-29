@@ -4,6 +4,7 @@ import {
   AlertsState,
   selectAlerts,
   selectConfirmedAlertKeys,
+  selectFieldAlerts,
   selectGeneralAlerts,
 } from '../selectors/alerts';
 import {
@@ -24,6 +25,10 @@ const useAlerts = (ownerId: string) => {
 
   const generalAlerts = useSelector((state) =>
     selectGeneralAlerts(state as AlertsState, ownerId),
+  );
+
+  const fieldAlerts = useSelector((state) =>
+    selectFieldAlerts(state as AlertsState, ownerId),
   );
 
   const getFieldAlerts = useCallback(
@@ -54,6 +59,7 @@ const useAlerts = (ownerId: string) => {
   return {
     alerts,
     generalAlerts,
+    fieldAlerts,
     getFieldAlerts,
     setAlertConfirmed,
     isAlertConfirmed,
