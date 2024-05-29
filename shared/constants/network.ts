@@ -212,10 +212,9 @@ const CHAINLIST_CHAIN_IDS_MAP = {
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
-// `DEPRECATED_NETWORKS` and as a new case to `getDeprecationWarningCopy() in
+// `DEPRECATED_NETWORKS` and optionally add network specific logic to
 // `ui/components/ui/deprecated-networks/deprecated-networks.js`.
 export const DEPRECATED_NETWORKS = [
-  CHAIN_IDS.AURORA,
   CHAIN_IDS.GOERLI,
   CHAIN_IDS.ARBITRUM_GOERLI,
   CHAIN_IDS.OPTIMISM_GOERLI,
@@ -249,7 +248,7 @@ export const CELO_DISPLAY_NAME = 'Celo Mainnet';
 export const GNOSIS_DISPLAY_NAME = 'Gnosis';
 export const ZK_SYNC_ERA_DISPLAY_NAME = 'zkSync Era Mainnet';
 export const BASE_DISPLAY_NAME = 'Base Mainnet';
-export const AURORA_ETH_DISPLAY_NAME = 'Aurora';
+export const AURORA_DISPLAY_NAME = 'Aurora Mainnet';
 export const CRONOS_DISPLAY_NAME = 'Cronos';
 export const POLYGON_ZKEVM_DISPLAY_NAME = 'Polygon zkEVM';
 export const MOONBEAM_DISPLAY_NAME = 'Moonbeam';
