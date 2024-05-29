@@ -23,16 +23,15 @@ main() {
   # Remove the .yarn/plugins/@yarnpkg/plugin-allow-scripts.cjs plugin from yarnrc.
   # This is a workaround for an issue where the allow scripts plugin, defined in devDependencies,
   # is not needed for the attribution generation script.
-  node "${PROJECT_DIRECTORY}/development/generate-attributions/override-yarnrc.js" "${PROJECT_DIRECTORY}/${tmp}"
+  node "${SCRIPT_DIRECTORY}/generate-attribution/remove-yarn-allow-scripts-plugin.js" "${PROJECT_DIRECTORY}/${tmp}"
 
-  # Run yarn command
   yarn workspaces focus --production
 
   # Restore original .yarnrc.yml
   mv "$tmp" ".yarnrc.yml"
 
   # Change directory to the sub-project
-  cd "${PROJECT_DIRECTORY}/development/generate-attributions"
+  cd "${SCRIPT_DIRECTORY}/generate-attribution"
 
   # Install sub-project that just contains attribution generation package
   # so that it can be used without installing `devDependencies` in root.

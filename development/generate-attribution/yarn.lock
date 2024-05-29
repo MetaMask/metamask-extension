@@ -30,7 +30,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/allow-scripts@npm:^3.0.1":
+"@lavamoat/allow-scripts@npm:^3.0.4":
   version: 3.0.4
   resolution: "@lavamoat/allow-scripts@npm:3.0.4"
   dependencies:
@@ -1081,11 +1081,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"metamask-extension-generate-attributions@workspace:.":
+"metamask-extension-generate-attribution@workspace:.":
   version: 0.0.0-use.local
-  resolution: "metamask-extension-generate-attributions@workspace:."
+  resolution: "metamask-extension-generate-attribution@workspace:."
   dependencies:
-    "@lavamoat/allow-scripts": "npm:^3.0.1"
+    "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@lavamoat/preinstall-always-fail": "npm:^2.0.0"
     "@metamask/oss-attribution-generator": "npm:^2.0.2"
   languageName: unknown

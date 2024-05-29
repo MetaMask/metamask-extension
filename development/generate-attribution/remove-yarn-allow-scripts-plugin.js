@@ -1,33 +1,34 @@
 const fs = require('fs');
 
 const targetPath = '.yarn/plugins/@yarnpkg/plugin-allow-scripts.cjs';
-const lines = fs.readFileSync(process.argv[2], 'utf8').split('\n');
+const yarnrcPath = process.argv[2];
+const lines = fs.readFileSync(yarnrcPath, 'utf8').split('\n');
 let inPluginsSection = false;
 let inTargetPluginBlock = false;
 const result = [];
 lines.forEach((line) => {
   if (line.trim() === 'plugins:') {
-    inPluginsSection = true; // Start of plugins section
+    inPluginsSection = true;
     result.push(line);
     return;
   }
   if (inPluginsSection) {
     if (line.trim().startsWith('- path:') && line.includes(targetPath)) {
-      inTargetPluginBlock = true; // Found the target plugin block, start skipping
+      inTargetPluginBlock = true;
       return;
     }
     if (line.trim().startsWith('- path:')) {
-      inTargetPluginBlock = false; // Found a new plugin block, ensure not skipping this
+      inTargetPluginBlock = false;
     }
     if (line.trim() === '' || !line.startsWith(' ')) {
-      inPluginsSection = false; // Likely end of plugins section
+      inPluginsSection = false;
       inTargetPluginBlock = false;
     }
     if (!inTargetPluginBlock) {
-      result.push(line); // Add line if not in target plugin block
+      result.push(line);
     }
   } else {
-    result.push(line); // Outside plugins section, always add line
+    result.push(line);
   }
 });
 fs.writeFileSync('.yarnrc.yml', result.join('\n'));
