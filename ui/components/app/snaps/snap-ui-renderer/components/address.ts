@@ -1,9 +1,10 @@
-import { Address } from '@metamask/snaps-sdk';
+import { AddressElement } from '@metamask/snaps-sdk/jsx';
 import { UIComponentFactory } from './types';
 
-export const address: UIComponentFactory<Address> = ({ element }) => ({
+export const address: UIComponentFactory<AddressElement> = ({ element }) => ({
   element: 'ConfirmInfoRowAddress',
   props: {
-    address: element.value,
+    address: element.props.address,
+    isSnapUsingThis: true,
   },
 });

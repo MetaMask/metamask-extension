@@ -1,11 +1,14 @@
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import PortStream from 'extension-port-stream';
-import ObjectMultiplex from 'obj-multiplex';
+import ObjectMultiplex from '@metamask/object-multiplex';
 import pump from 'pump';
 import { obj as createThoughStream } from 'through2';
 import browser from 'webextension-polyfill';
 import { EXTENSION_MESSAGES } from '../../shared/constants/app';
-import { checkForLastError } from '../../shared/modules/browser-runtime.utils';
+import {
+  checkForLastError,
+  getIsBrowserPrerenderBroken,
+} from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
 
@@ -91,8 +94,8 @@ const setupPhishingExtStreams = () => {
       {
         target: PHISHING_WARNING_PAGE, // the post-message-stream "target"
         data: {
-          // this object gets passed to obj-multiplex
-          name: PHISHING_SAFELIST, // the obj-multiplex channel name
+          // this object gets passed to @metamask/object-multiplex
+          name: PHISHING_SAFELIST, // the @metamask/object-multiplex channel name
           data: {
             jsonrpc: '2.0',
             method: 'METAMASK_STREAM_FAILURE',
@@ -453,8 +456,8 @@ function extensionStreamMessageListener(msg) {
       {
         target: INPAGE, // the post-message-stream "target"
         data: {
-          // this object gets passed to obj-multiplex
-          name: PROVIDER, // the obj-multiplex channel name
+          // this object gets passed to @metamask/object-multiplex
+          name: PROVIDER, // the @metamask/object-multiplex channel name
           data: {
             jsonrpc: '2.0',
             method: 'METAMASK_EXTENSION_CONNECT_CAN_RETRY',
@@ -469,15 +472,15 @@ function extensionStreamMessageListener(msg) {
 /**
  * This function must ONLY be called in pump destruction/close callbacks.
  * Notifies the inpage context that streams have failed, via window.postMessage.
- * Relies on obj-multiplex and post-message-stream implementation details.
+ * Relies on @metamask/object-multiplex and post-message-stream implementation details.
  */
 function notifyInpageOfStreamFailure() {
   window.postMessage(
     {
       target: INPAGE, // the post-message-stream "target"
       data: {
-        // this object gets passed to obj-multiplex
-        name: PROVIDER, // the obj-multiplex channel name
+        // this object gets passed to @metamask/object-multiplex
+        name: PROVIDER, // the @metamask/object-multiplex channel name
         data: {
           jsonrpc: '2.0',
           method: 'METAMASK_STREAM_FAILURE',
@@ -519,11 +522,7 @@ const start = () => {
   if (shouldInjectProvider()) {
     initStreams();
 
-    // https://bugs.chromium.org/p/chromium/issues/detail?id=1457040
-    // Temporary workaround for chromium bug that breaks the content script <=> background connection
-    // for prerendered pages. This resets potentially broken extension streams if a page transitions
-    // from the prerendered state to the active state.
-    if (document.prerendering) {
+    if (document.prerendering && getIsBrowserPrerenderBroken()) {
       document.addEventListener('prerenderingchange', () => {
         onDisconnectDestroyStreams(
           new Error('Prerendered page has become active.'),

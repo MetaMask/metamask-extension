@@ -37,13 +37,12 @@ import {
   getSnaps,
   getSubjectsWithSnapPermission,
   getPermissions,
-  getTargetSubjectMetadata,
   getSnapLatestVersion,
+  getSnapMetadata,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  getMemoizedMetaMaskIdentities,
+  getMemoizedMetaMaskInternalAccounts,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
-import { getSnapName } from '../../../helpers/utils/util';
 import {
   Box,
   Button,
@@ -78,7 +77,7 @@ function SnapSettings({ snapId }) {
   // eslint-disable-next-line no-unused-vars -- Main build does not use setKeyringAccounts
   const [keyringAccounts, setKeyringAccounts] = useState([]);
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  const identities = useSelector(getMemoizedMetaMaskIdentities);
+  const internalAccounts = useSelector(getMemoizedMetaMaskInternalAccounts);
   ///: END:ONLY_INCLUDE_IF
 
   const connectedSubjects = useSelector((state) =>
@@ -87,8 +86,9 @@ function SnapSettings({ snapId }) {
   const permissions = useSelector(
     (state) => snap && getPermissions(state, snap.id),
   );
-  const targetSubjectMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, snap?.id),
+
+  const { name: snapName, description } = useSelector((state) =>
+    getSnapMetadata(state, snapId),
   );
 
   let isKeyringSnap = false;
@@ -99,20 +99,19 @@ function SnapSettings({ snapId }) {
     if (isKeyringSnap) {
       (async () => {
         const addresses = await getSnapAccountsById(snap.id);
-        const snapIdentities = Object.values(identities).filter((identity) =>
-          addresses.includes(identity.address.toLowerCase()),
+        const snapIdentities = Object.values(internalAccounts).filter(
+          (internalAccount) =>
+            addresses.includes(internalAccount.address.toLowerCase()),
         );
         setKeyringAccounts(snapIdentities);
       })();
     }
-  }, [snap?.id, identities, isKeyringSnap]);
+  }, [snap?.id, internalAccounts, isKeyringSnap]);
   ///: END:ONLY_INCLUDE_IF
 
   const onDisconnect = (connectedOrigin) => {
     dispatch(disconnectOriginFromSnap(connectedOrigin, snap.id));
   };
-
-  const snapName = getSnapName(snap.id, targetSubjectMetadata);
 
   const latestRegistryVersion = useSelector((state) =>
     snap ? getSnapLatestVersion(state, snap?.id) : null,
@@ -148,16 +147,18 @@ function SnapSettings({ snapId }) {
       <Box className="snap-view__content__description" marginTop={[4, 7]}>
         <SnapDelineator type={DelineatorType.Description} snapName={snapName}>
           <ShowMore buttonBackground={BackgroundColor.backgroundDefault}>
-            <Text>{snap?.manifest.description}</Text>
+            <Text>{description}</Text>
           </ShowMore>
         </SnapDelineator>
       </Box>
       <Box className="snap-view__content__permissions" marginTop={12}>
-        <Text variant={TextVariant.bodyLgMedium}>{t('permissions')}</Text>
+        <Text variant={TextVariant.bodyLgMedium} marginBottom={1}>
+          {t('permissions')}
+        </Text>
         <SnapPermissionsList
           snapId={snapId}
+          snapName={snapName}
           permissions={permissions ?? {}}
-          targetSubjectMetadata={targetSubjectMetadata}
           showOptions
         />
       </Box>

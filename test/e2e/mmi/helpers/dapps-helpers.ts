@@ -32,6 +32,8 @@ export async function callTestDappBtn(
   // Setup testnetwork in settings
   const mainMenuPage = new MMIMainMenuPage(page, extensionId as string);
   await mainMenuPage.goto();
+  await mainMenuPage.fillPassword();
+  await mainMenuPage.finishOnboarding();
   await mainMenuPage.selectMenuOption('settings');
   await mainMenuPage.selectSettings('Advance');
   await mainMenuPage.switchTestNetwork();
@@ -41,7 +43,9 @@ export async function callTestDappBtn(
   // Check network
   const networkPage = new MMINetworkPage(page);
   await networkPage.open();
-  await networkPage.selectNetwork(process.env.MMI_E2E_TEST_NETWORK ?? SEPOLIA_DISPLAY_NAME);
+  await networkPage.selectNetwork(
+    process.env.MMI_E2E_TEST_NETWORK ?? SEPOLIA_DISPLAY_NAME,
+  );
 
   // get token to access saturn
   // changed to get it from Saturn endpoint to avoid calling Auth0 API
@@ -68,5 +72,8 @@ export async function callTestDappBtn(
     isSign,
     signedTransactionTime,
   );
-  return signedTransactionTime;
+  return {
+    dummyDApp,
+    signedTransactionTime
+  }
 }

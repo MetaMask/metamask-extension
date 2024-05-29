@@ -36,11 +36,12 @@
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": false,
+      "smartTransactionsOptInStatus": false,
       "useNativeCurrencyAsPrimaryCurrency": true
     },
     "theme": "light",
     "useBlockie": false,
-    "useRequestQueue": false,
+    "useRequestQueue": true,
     "useNftDetection": false,
     "useNonceField": false,
     "usePhishDetect": true,

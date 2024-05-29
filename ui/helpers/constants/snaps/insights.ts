@@ -11,7 +11,7 @@ type InsightLanguageMapper = {
  */
 export const InsightWarningLanguage: InsightLanguageMapper = {
   confirming: {
-    noun: 'confirmation',
+    noun: 'transaction',
     imperative: 'confirm',
   },
   signing: {

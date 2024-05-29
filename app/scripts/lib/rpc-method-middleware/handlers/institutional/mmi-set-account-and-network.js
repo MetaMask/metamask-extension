@@ -1,5 +1,5 @@
 import { ethErrors } from 'eth-rpc-errors';
-import { RPC_ALLOWED_ORIGINS } from '@metamask-institutional/rpc-allowlist';
+import { isAllowedRPCOrigin } from '@metamask-institutional/rpc-allowlist';
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
 
 const mmiSetAccountAndNetwork = {
@@ -37,13 +37,8 @@ async function mmiSetAccountAndNetworkHandler(
   { handleMmiSetAccountAndNetwork },
 ) {
   try {
-    let validUrl = false;
-    RPC_ALLOWED_ORIGINS[MESSAGE_TYPE.MMI_PORTFOLIO].forEach((regexp) => {
-      // eslint-disable-next-line require-unicode-regexp
-      if (regexp.test(req.origin)) {
-        validUrl = true;
-      }
-    });
+    const validUrl = isAllowedRPCOrigin(MESSAGE_TYPE.MMI_PORTFOLIO, req.origin);
+
     // eslint-disable-next-line no-negated-condition
     if (!validUrl) {
       throw new Error('Unauthorized');

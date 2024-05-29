@@ -227,7 +227,8 @@ export default class AddRecipient extends Component {
     if (userInput) {
       ownedAccounts = ownedAccounts.filter(
         (item) =>
-          item.name.toLowerCase().indexOf(userInput.toLowerCase()) > -1 ||
+          item.metadata.name.toLowerCase().indexOf(userInput.toLowerCase()) >
+            -1 ||
           item.address.toLowerCase().indexOf(userInput.toLowerCase()) > -1,
       );
     }

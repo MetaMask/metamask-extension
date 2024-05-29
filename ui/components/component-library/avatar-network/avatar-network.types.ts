@@ -12,6 +12,8 @@ export enum AvatarNetworkSize {
 /**
  * Props for the AvatarNetwork component
  */
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface AvatarNetworkStyleUtilityProps
   extends Omit<AvatarBaseStyleUtilityProps, 'size' | 'children'> {
   /**

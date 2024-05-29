@@ -5,10 +5,7 @@ import {
   BorderColor,
   Color,
 } from '../../../helpers/constants/design-system';
-import {
-  getAddressConnectedSubjectMap,
-  getOriginOfCurrentTab,
-} from '../../../selectors';
+import { isAccountConnectedToCurrentTab } from '../../../selectors';
 import {
   STATUS_CONNECTED,
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
@@ -21,21 +18,22 @@ export type ConnectedStatusProps = {
   address: string;
   isActive?: boolean;
 };
+export type AddressConnectedSubjectMap = {
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [address: string]: any;
+};
 
 export const ConnectedStatus: React.FC<ConnectedStatusProps> = ({
   address = '',
   isActive,
 }): JSX.Element => {
-  const t = useSelector(useI18nContext);
+  const t = useI18nContext();
 
-  const addressConnectedSubjectMap: any = useSelector(
-    getAddressConnectedSubjectMap,
-  );
-  const originOfCurrentTab = useSelector(getOriginOfCurrentTab);
-
-  const selectedAddressSubjectMap = addressConnectedSubjectMap[address];
-  const currentTabIsConnectedToSelectedAddress = Boolean(
-    selectedAddressSubjectMap?.[originOfCurrentTab],
+  const currentTabIsConnectedToSelectedAddress = useSelector((state) =>
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (isAccountConnectedToCurrentTab as any)(state, address),
   );
 
   let status = STATUS_NOT_CONNECTED;

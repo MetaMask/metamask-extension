@@ -11,6 +11,9 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
+/* eslint-disable jsdoc/require-param-name */
+// eslint-disable-next-line jsdoc/require-param
+/** @param {PropTypes.InferProps<typeof CurrencyDisplayPropTypes>>} */
 export default function CurrencyDisplay({
   value,
   displayValue,
@@ -86,7 +89,7 @@ export default function CurrencyDisplay({
   );
 }
 
-CurrencyDisplay.propTypes = {
+const CurrencyDisplayPropTypes = {
   className: PropTypes.string,
   currency: PropTypes.string,
   'data-testid': PropTypes.string,
@@ -107,3 +110,5 @@ CurrencyDisplay.propTypes = {
   textProps: PropTypes.object,
   suffixProps: PropTypes.object,
 };
+
+CurrencyDisplay.propTypes = CurrencyDisplayPropTypes;

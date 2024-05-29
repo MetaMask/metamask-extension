@@ -37,12 +37,16 @@ function createNameControllerMock(
   return {
     state,
     setName: jest.fn(),
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any;
 }
 
 function createMessengerMock(): jest.Mocked<PetnamesBridgeMessenger> {
   return {
     subscribe: jest.fn(),
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any;
 }
 

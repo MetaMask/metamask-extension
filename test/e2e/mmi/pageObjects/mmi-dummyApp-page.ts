@@ -1,4 +1,9 @@
-import { type BrowserContext, type Locator, type Page } from '@playwright/test';
+import {
+  expect,
+  type BrowserContext,
+  type Locator,
+  type Page,
+} from '@playwright/test';
 
 // eslint-disable-next-line node/no-unsupported-features/es-syntax
 export class DummyAppPage {
@@ -19,6 +24,10 @@ export class DummyAppPage {
     await this.page.goto(process.env.MMI_E2E_MMI_TEST_DAPP_URL as string);
   }
 
+  async bringToFront() {
+    await this.page.bringToFront();
+  }
+
   async connectMMI(context: BrowserContext) {
     const [popup1] = await Promise.all([
       context.waitForEvent('page'),
@@ -27,9 +36,8 @@ export class DummyAppPage {
     await popup1.waitForLoadState();
     // Check which account is selected and select if required
     await popup1.locator('.check-box__indeterminate');
-    // await popup1.locator('text=Custody Ac... (0x8b2...b3ad)').click()
     await popup1.locator('button:has-text("Next")').click();
-    await popup1.locator('button:has-text("Connect")').click();
+    await popup1.locator('button:has-text("Confirm")').click();
     await popup1.close();
   }
 
@@ -50,7 +58,7 @@ export class DummyAppPage {
     await popup.waitForLoadState();
 
     if (isSign) {
-      await popup.click('button:has-text("Sign")');
+      await popup.click('button:has-text("Confirm")');
     } else {
       // Confirm
       await popup.getByTestId('page-container-footer-next').click();
@@ -61,5 +69,12 @@ export class DummyAppPage {
       // }
     }
     await popup.close();
+  }
+
+  async checkContractStatus(status: string | RegExp) {
+    await expect(this.page.locator('#contractStatus')).toHaveText(status, {
+      timeout: 60000,
+      ignoreCase: true,
+    });
   }
 }

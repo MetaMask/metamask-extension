@@ -8,14 +8,13 @@ const {
   regularDelayMs,
   WINDOW_TITLES,
   defaultGanacheOptions,
+  largeDelayMs,
+  switchToNotificationWindow,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 
-// TODO: Have to turn on the setting every time we want to test the setting!?!
-// TODO: Test this in prod, refresh the extension when the setting is on and you have to disable/enable it for the switchEthereumChain notification to work.
-
 describe('Request Queuing for Multiple Dapps and Txs on different networks.', function () {
-  it('should show switch network confirmations for per dapp selected networks when calling send transactions @no-mmi', async function () {
+  it('should switch to the dapps network automatically when handling sendTransaction calls @no-mmi', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
@@ -23,50 +22,50 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleGanache()
-          .withPermissionControllerConnectedToTwoTestDapps()
+          .withPreferencesControllerUseRequestQueueEnabled()
           .withSelectedNetworkControllerPerDomain()
           .build(),
         dappOptions: { numberOfDapps: 2 },
         ganacheOptions: {
           ...defaultGanacheOptions,
-          concurrent: {
-            port,
-            chainId,
-            ganacheOptions2: defaultGanacheOptions,
-          },
+          concurrent: [
+            {
+              port,
+              chainId,
+              ganacheOptions2: defaultGanacheOptions,
+            },
+          ],
         },
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        // Open account menu button
-        const accountOptionsMenuSelector =
-          '[data-testid="account-options-menu-button"]';
-        await driver.waitForSelector(accountOptionsMenuSelector);
-        await driver.clickElement(accountOptionsMenuSelector);
-
-        // Click settings from dropdown menu
-        const globalMenuSettingsSelector =
-          '[data-testid="global-menu-settings"]';
-        await driver.waitForSelector(globalMenuSettingsSelector);
-        await driver.clickElement(globalMenuSettingsSelector);
-
-        // Click Experimental tab
-        const securityAndPrivacyTabRawLocator = {
-          text: 'Experimental',
-          tag: 'div',
-        };
-        await driver.clickElement(securityAndPrivacyTabRawLocator);
-
-        // Toggle request queue setting
-        await driver.clickElement('.request-queue-toggle');
-
         // Navigate to extension home screen
         await driver.navigate(PAGES.HOME);
 
         // Open Dapp One
         await openDapp(driver, undefined, DAPP_URL);
+
+        // Connect to dapp 1
+        await driver.findClickableElement({ text: 'Connect', tag: 'button' });
+        await driver.clickElement('#connectButton');
+
+        await driver.delay(regularDelayMs);
+
+        await switchToNotificationWindow(driver);
+
+        await driver.clickElement({
+          text: 'Next',
+          tag: 'button',
+          css: '[data-testid="page-container-footer-next"]',
+        });
+
+        await driver.clickElement({
+          text: 'Confirm',
+          tag: 'button',
+          css: '[data-testid="page-container-footer-next"]',
+        });
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
@@ -81,32 +80,55 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
           css: 'p',
         });
 
+        // Wait for the first dapp's connect confirmation to disappear
+        await driver.waitUntilXWindowHandles(2);
+
         // TODO: Request Queuing bug when opening both dapps at the same time will have them stuck on the same network, with will be incorrect for one of them.
         // Open Dapp Two
         await openDapp(driver, undefined, DAPP_ONE_URL);
 
-        // Window Handling
-        const windowHandles = await driver.getAllWindowHandles();
-        const dappOne = windowHandles[1];
-        const dappTwo = windowHandles[2];
+        // Connect to dapp 2
+        await driver.findClickableElement({ text: 'Connect', tag: 'button' });
+        await driver.clickElement('#connectButton');
+
+        await driver.delay(regularDelayMs);
+
+        await switchToNotificationWindow(driver, 4);
+
+        await driver.clickElement({
+          text: 'Next',
+          tag: 'button',
+          css: '[data-testid="page-container-footer-next"]',
+        });
+
+        await driver.clickElement({
+          text: 'Confirm',
+          tag: 'button',
+          css: '[data-testid="page-container-footer-next"]',
+        });
 
         // Dapp one send tx
-        await driver.switchToWindow(dappOne);
+        await driver.switchToWindowWithUrl(DAPP_URL);
+        await driver.delay(largeDelayMs);
         await driver.clickElement('#sendButton');
+
+        await driver.delay(largeDelayMs);
 
         // Dapp two send tx
-        await driver.switchToWindow(dappTwo);
+        await driver.switchToWindowWithUrl(DAPP_ONE_URL);
+        await driver.delay(largeDelayMs);
         await driver.clickElement('#sendButton');
 
-        // First switch network confirmation
+        // First switch network
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await driver.clickElement({ text: 'Switch network', tag: 'button' });
 
         // Wait for confirm tx after switch network confirmation.
-        await driver.delay(regularDelayMs);
+        await driver.delay(largeDelayMs);
 
         await driver.waitUntilXWindowHandles(4);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+        await driver.delay(largeDelayMs);
 
         // Find correct network on confirm tx
         await driver.findElement({
@@ -115,7 +137,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         });
 
         // Reject Transaction
-        await driver.findClickableElement({ text: 'Confirm', tag: 'button' });
+        await driver.findClickableElement({ text: 'Reject', tag: 'button' });
         await driver.clickElement(
           '[data-testid="page-container-footer-cancel"]',
         );
@@ -124,26 +146,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-
-        // TODO: Reload fix to have the confirmations show
-        await driver.executeScript(`window.location.reload()`);
-
-        // Second Switch Network Confirmation
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
-        await driver.findElement({
-          css: '[data-testid="network-switch-from-network"]',
-          text: 'Localhost 8545',
-        });
-
-        await driver.findElement({
-          css: '[data-testid="network-switch-to-network"]',
-          text: 'Localhost 8546',
-        });
-
-        // Switch Network
-        await driver.clickElement({ text: 'Switch network', tag: 'button' });
+        await driver.clickElement('[data-testid="home__activity-tab"]');
 
         // Check for unconfirmed transaction in tx list
         await driver.wait(async () => {

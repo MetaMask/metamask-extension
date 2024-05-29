@@ -4,7 +4,11 @@ import {
   NameType,
   SetNameRequest,
 } from '@metamask/name-controller';
-import { RestrictedControllerMessenger } from '@metamask/base-controller';
+import {
+  ActionConstraint,
+  EventConstraint,
+  RestrictedControllerMessenger,
+} from '@metamask/base-controller';
 
 // Use the same type for both the source entries and the argument to NameController::setName.
 export type PetnameEntry = SetNameRequest & {
@@ -28,14 +32,17 @@ enum SyncDirection {
 // A list of changes, grouped by type.
 type ChangeList = Record<ChangeType, PetnameEntry[]>;
 
-type AllowedEvents = NameStateChange;
+type PetnamesBridgeAllowedEvents = NameStateChange;
 
-export type PetnamesBridgeMessenger = RestrictedControllerMessenger<
+export type PetnamesBridgeMessenger<
+  Event extends EventConstraint = never,
+  Action extends ActionConstraint = never,
+> = RestrictedControllerMessenger<
   'PetnamesBridge',
-  never,
-  AllowedEvents,
-  never,
-  AllowedEvents['type']
+  Action,
+  PetnamesBridgeAllowedEvents | Event,
+  Action['type'],
+  (PetnamesBridgeAllowedEvents | Event)['type']
 >;
 
 /**
@@ -56,14 +63,17 @@ function getKey({ type, variation, value }: PetnameEntry): string {
  * Abstract class representing a bridge between petnames and a data source.
  * Provides methods for synchronizing petnames with the data source and handling changes.
  */
-export abstract class AbstractPetnamesBridge {
+export abstract class AbstractPetnamesBridge<
+  Event extends EventConstraint = never,
+  Action extends ActionConstraint = never,
+> {
   #isTwoWay: boolean;
 
   #nameController: NameController;
 
   #synchronizingDirection: SyncDirection | null = null;
 
-  #messenger: PetnamesBridgeMessenger;
+  protected messenger: PetnamesBridgeMessenger<Event, Action>;
 
   /**
    * @param options
@@ -78,17 +88,17 @@ export abstract class AbstractPetnamesBridge {
   }: {
     isTwoWay: boolean;
     nameController: NameController;
-    messenger: PetnamesBridgeMessenger;
+    messenger: PetnamesBridgeMessenger<Event, Action>;
   }) {
     this.#isTwoWay = isTwoWay;
     this.#nameController = nameController;
-    this.#messenger = messenger;
+    this.messenger = messenger;
   }
 
   // Initializes listeners
   init(): void {
     if (this.#isTwoWay) {
-      this.#messenger.subscribe('NameController:stateChange', () =>
+      this.messenger.subscribe('NameController:stateChange', () =>
         this.#synchronize(SyncDirection.PETNAMES_TO_SOURCE),
       );
     }

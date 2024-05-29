@@ -5,6 +5,8 @@ import { NetworkStatus } from '@metamask/network-controller';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { CHAIN_IDS } from '../shared/constants/network';
 import { copyable, divider, heading, panel, text } from '@metamask/snaps-sdk';
+import { getJsxElementFromComponent } from '@metamask/snaps-utils';
+import { FirstTimeFlowType } from '../shared/constants/onboarding';
 
 const state = {
   invalidCustomNetwork: {
@@ -280,18 +282,13 @@ const state = {
     },
     interfaces: {
       'test-interface': {
-        content: panel([
+        content: getJsxElementFromComponent(panel([
           heading('Foo bar'),
           text('Description'),
           divider(),
           text('More text'),
           copyable('Text you can copy'),
-        ]),
-        state: {},
-        snapId: 'local:http://localhost:8080/',
-      },
-      'error-interface': {
-        content: 'foo',
+        ])),
         state: {},
         snapId: 'local:http://localhost:8080/',
       },
@@ -363,6 +360,19 @@ const state = {
             name: 'Account 4',
             keyring: {
               type: 'HD Key Tree',
+            },
+          },
+          options: {},
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
+        },
+        'b990b846-b384-4508-93d9-587461f1123e': {
+          address: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
+          id: 'b990b846-b384-4508-93d9-587461f1123e',
+          metadata: {
+            name: 'Test Account 1',
+            keyring: {
+              type: 'Test Keyring',
             },
           },
           options: {},
@@ -657,7 +667,7 @@ const state = {
       [CHAIN_IDS.OPTIMISM_TESTNET]: false,
       [CHAIN_IDS.AVALANCHE_TESTNET]: true,
     },
-    firstTimeFlowType: 'create',
+    firstTimeFlowType: FirstTimeFlowType.create,
     completedOnboarding: true,
     knownMethodData: {
       '0x60806040': {

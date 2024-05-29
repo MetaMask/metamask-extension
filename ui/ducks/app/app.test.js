@@ -5,15 +5,7 @@ import reduceApp from './app';
 const actions = actionConstants;
 
 describe('App State', () => {
-  const metamaskState = {
-    selectedAddress: '0xAddress',
-    identities: {
-      '0xAddress': {
-        name: 'account 1',
-        address: '0xAddress',
-      },
-    },
-  };
+  const metamaskState = {};
 
   it('app init state', () => {
     const initState = reduceApp(metamaskState, {});

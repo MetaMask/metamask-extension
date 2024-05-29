@@ -20,3 +20,5 @@ app/_locales/** linguist-generated
 # yarn berry suggested .gitattributes
 /.yarn/releases/** binary
 /.yarn/plugins/** binary
+
+app/*.html linguist-language=EJS

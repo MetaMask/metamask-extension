@@ -11,6 +11,7 @@ const {
 const cssToXPath = require('css-to-xpath');
 const { sprintf } = require('sprintf-js');
 const { retry } = require('../../../development/lib/retry');
+const { quoteXPathText } = require('../../helpers/quoteXPathText');
 
 const PAGES = {
   BACKGROUND: 'background',
@@ -109,6 +110,14 @@ until.elementIsNotPresent = function elementIsNotPresent(locator) {
   });
 };
 
+until.foundElementCountIs = function foundElementCountIs(locator, n) {
+  return new Condition(`Element count is ${n}`, function (driver) {
+    return driver.findElements(locator).then(function (elements) {
+      return elements.length === n;
+    });
+  });
+};
+
 /**
  * This is MetaMask's custom E2E test driver, wrapping the Selenium WebDriver.
  * For Selenium WebDriver API documentation, see:
@@ -186,10 +195,10 @@ class Driver {
           .toXPath();
         return By.xpath(xpath);
       }
+
+      const quoted = quoteXPathText(locator.text);
       // The tag prop is optional and further refines which elements match
-      return By.xpath(
-        `//${locator.tag ?? '*'}[contains(text(), '${locator.text}')]`,
-      );
+      return By.xpath(`//${locator.tag ?? '*'}[contains(text(), ${quoted})]`);
     }
     throw new Error(
       `The locator '${locator}' is not supported by the E2E test driver`,
@@ -256,6 +265,20 @@ class Driver {
       const empty = elemText === '';
       return !empty;
     }, this.timeout);
+  }
+
+  async elementCountBecomesN(rawLocator, n, timeout = this.timeout) {
+    const locator = this.buildLocator(rawLocator);
+    try {
+      await this.driver.wait(until.foundElementCountIs(locator, n), timeout);
+      return true;
+    } catch (e) {
+      const elements = await this.findElements(locator);
+      console.error(
+        `Waiting for count of ${locator} elements to be ${n}, but it is ${elements.length}`,
+      );
+      return false;
+    }
   }
 
   /**
@@ -367,9 +390,37 @@ class Driver {
     return elements.map((element) => wrapElementWithAPI(element, this));
   }
 
-  async clickElement(rawLocator) {
+  async clickElement(rawLocator, retries = 3) {
+    for (let attempt = 0; attempt < retries; attempt++) {
+      try {
+        const element = await this.findClickableElement(rawLocator);
+        await element.click();
+        return;
+      } catch (error) {
+        if (
+          error.name === 'StaleElementReferenceError' &&
+          attempt < retries - 1
+        ) {
+          await this.delay(1000);
+        } else {
+          throw error;
+        }
+      }
+    }
+  }
+
+  /**
+   * Clicks on an element identified by the provided locator and waits for it to disappear.
+   * For scenarios where the clicked element, such as a notification or popup, needs to disappear afterward.
+   * The wait ensures that subsequent interactions are not obscured by the initial notification or popup element.
+   *
+   * @param rawLocator - The locator used to identify the element to be clicked
+   * @param timeout - The maximum time in ms to wait for the element to disappear after clicking.
+   */
+  async clickElementAndWaitToDisappear(rawLocator, timeout = 2000) {
     const element = await this.findClickableElement(rawLocator);
     await element.click();
+    await element.waitForElementState('hidden', timeout);
   }
 
   /**
@@ -378,11 +429,18 @@ class Driver {
    * without causing a test failure, but provide a console log of why.
    *
    * @param rawLocator
+   * @param timeout
    */
-  async clickElementSafe(rawLocator) {
+  async clickElementSafe(rawLocator, timeout = 1000) {
     try {
-      const element = await this.findClickableElement(rawLocator);
-      await element.click();
+      const locator = this.buildLocator(rawLocator);
+
+      const elements = await this.driver.wait(
+        until.elementsLocated(locator),
+        timeout,
+      );
+
+      await elements[0].click();
     } catch (e) {
       console.log(`Element ${rawLocator} not found (${e})`);
     }
@@ -469,6 +527,10 @@ class Driver {
     await this.fill(rawLocator, Key.chord(this.Key.MODIFIER, 'v'));
   }
 
+  async pasteFromClipboardIntoField(rawLocator) {
+    await this.fill(rawLocator, Key.chord(this.Key.MODIFIER, 'v'));
+  }
+
   // Navigation
 
   async navigate(page = PAGES.HOME) {
@@ -497,8 +559,9 @@ class Driver {
   }
 
   async openNewPage(url) {
-    const newHandle = await this.driver.switchTo().newWindow();
+    await this.driver.switchTo().newWindow();
     await this.openNewURL(url);
+    const newHandle = await this.driver.getWindowHandle();
     return newHandle;
   }
 
@@ -522,12 +585,12 @@ class Driver {
     return await this.driver.getAllWindowHandles();
   }
 
-  async waitUntilXWindowHandles(x, delayStep = 1000, timeout = this.timeout) {
+  async waitUntilXWindowHandles(_x, delayStep = 1000, timeout = this.timeout) {
+    const x = process.env.ENABLE_MV3 ? _x + 1 : _x;
     let timeElapsed = 0;
     let windowHandles = [];
     while (timeElapsed <= timeout) {
-      windowHandles = await this.driver.getAllWindowHandles();
-
+      windowHandles = await this.getAllWindowHandles();
       if (windowHandles.length === x) {
         return windowHandles;
       }
@@ -577,6 +640,43 @@ class Driver {
     }
 
     throw new Error(`No window with title: ${title}`);
+  }
+
+  async switchToWindowWithUrl(
+    url,
+    initialWindowHandles,
+    delayStep = 1000,
+    timeout = this.timeout,
+    { retries = 8, retryDelay = 2500 } = {},
+  ) {
+    let windowHandles =
+      initialWindowHandles || (await this.driver.getAllWindowHandles());
+    let timeElapsed = 0;
+
+    while (timeElapsed <= timeout) {
+      for (const handle of windowHandles) {
+        const handleUrl = await retry(
+          {
+            retries,
+            delay: retryDelay,
+          },
+          async () => {
+            await this.driver.switchTo().window(handle);
+            return await this.driver.getCurrentUrl();
+          },
+        );
+
+        if (handleUrl === `${url}/`) {
+          return handle;
+        }
+      }
+      await this.delay(delayStep);
+      timeElapsed += delayStep;
+      // refresh the window handles
+      windowHandles = await this.driver.getAllWindowHandles();
+    }
+
+    throw new Error(`No window with url: ${url}`);
   }
 
   async closeWindow() {

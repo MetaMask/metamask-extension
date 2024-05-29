@@ -1,5 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import mockState from '../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import ConfirmDecryptMessage from './confirm-decrypt-message.component';
@@ -80,7 +81,16 @@ const baseProps = {
   fromAccount: {
     address: '0x123456789abcdef',
     balance: '0x346ba7725f412cbfdb',
-    name: 'Antonio',
+    id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+    metadata: {
+      name: 'Antonio',
+      keyring: {
+        type: 'HD Key Tree',
+      },
+    },
+    options: {},
+    methods: [...Object.values(EthMethod)],
+    type: EthAccountType.Eoa,
   },
 };
 

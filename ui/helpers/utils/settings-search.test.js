@@ -1,5 +1,5 @@
 import React from 'react';
-import { SETTINGS_CONSTANTS } from '../constants/settings';
+import SETTINGS_CONSTANTS from '../constants/settings';
 import {
   getSettingsRoutes,
   getNumberOfSettingRoutesInTab,
@@ -36,6 +36,8 @@ const t = (key) => {
       return 'Select this to show gas price and limit controls directly on the send and confirm screens.';
     case 'showHexData':
       return 'Show hex data';
+    case 'smartTransactions':
+      return 'Smart transactions';
     case 'showHexDataDescription':
       return 'Select this to show the hex data field on the send screen';
     case 'showFiatConversionInTestnets':
@@ -94,6 +96,8 @@ const t = (key) => {
       return 'Sepolia test network';
     case 'localhost':
       return 'Localhost 8545';
+    case 'developerOptions':
+      return 'Developer Options';
     case 'experimental':
       return 'Experimental';
     case 'autoDetectTokens':
@@ -142,7 +146,11 @@ const t = (key) => {
 describe('Settings Search Utils', () => {
   describe('getSettingsRoutes', () => {
     it('should be an array of settings routes objects', () => {
-      expect(getSettingsRoutes()).toHaveLength(SETTINGS_CONSTANTS.length);
+      const NUM_OF_ENV_FEATURE_FLAG_SETTINGS = 4;
+
+      expect(getSettingsRoutes()).toHaveLength(
+        SETTINGS_CONSTANTS.length - NUM_OF_ENV_FEATURE_FLAG_SETTINGS,
+      );
     });
   });
 
@@ -152,7 +160,7 @@ describe('Settings Search Utils', () => {
     });
 
     it('returns "Advanced" section count', () => {
-      expect(getNumberOfSettingRoutesInTab(t, t('advanced'))).toStrictEqual(12);
+      expect(getNumberOfSettingRoutesInTab(t, t('advanced'))).toStrictEqual(13);
     });
 
     it('returns "Contact" section count', () => {
@@ -170,13 +178,19 @@ describe('Settings Search Utils', () => {
     });
 
     it('returns "Network" section count', () => {
-      expect(getNumberOfSettingRoutesInTab(t, t('networks'))).toStrictEqual(6);
+      expect(getNumberOfSettingRoutesInTab(t, t('networks'))).toStrictEqual(7);
     });
 
     it('returns "Experimental" section count', () => {
       expect(getNumberOfSettingRoutesInTab(t, t('experimental'))).toStrictEqual(
-        2,
+        4,
       );
+    });
+
+    it('returns 0 "Developer Options" section count when env flag is disabled', () => {
+      expect(
+        getNumberOfSettingRoutesInTab(t, t('developerOptions')),
+      ).toStrictEqual(0);
     });
 
     it('returns "About" section count', () => {

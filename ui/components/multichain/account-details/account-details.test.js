@@ -1,5 +1,4 @@
 import { LavaDomeDebug } from '@lavamoat/lavadome-core';
-import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
@@ -14,17 +13,21 @@ import {
   setAccountDetailsAddress,
 } from '../../../store/actions';
 import configureStore from '../../../store/store';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { AccountDetailsKey } from './account-details-key';
 import { AccountDetails } from '.';
 
 jest.mock('../../../store/actions.ts');
 
 describe('AccountDetails', () => {
-  const address = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+  const account = Object.values(
+    mockState.metamask.internalAccounts.accounts,
+  )[0];
+  const { address } = account;
+  const mockSetAccountDetailsAddress = jest.fn();
   const mockClearAccountDetails = jest.fn();
   const mockExportAccount = jest.fn().mockResolvedValue(true);
   const mockHideWarning = jest.fn();
-  const mockSetAccountDetailsAddress = jest.fn();
 
   beforeEach(() => {
     clearAccountDetails.mockReturnValue(mockClearAccountDetails);

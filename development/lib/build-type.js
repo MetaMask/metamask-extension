@@ -18,7 +18,7 @@ const {
   never,
   literal,
 } = require('superstruct');
-const yaml = require('js-yaml');
+const yaml = require('yaml');
 const { uniqWith } = require('lodash');
 
 const BUILDS_YML_PATH = path.resolve('./builds.yml');
@@ -135,9 +135,7 @@ function loadBuildTypesConfig() {
   if (cachedBuildTypes !== null) {
     return cachedBuildTypes;
   }
-  const buildsData = yaml.load(fs.readFileSync(BUILDS_YML_PATH, 'utf8'), {
-    json: true,
-  });
+  const buildsData = yaml.parse(fs.readFileSync(BUILDS_YML_PATH, 'utf8'));
   const [err, result] = validate(buildsData, BuildTypesStruct, {
     coerce: true,
   });
@@ -147,7 +145,7 @@ function loadBuildTypesConfig() {
     });
   }
   cachedBuildTypes = result;
-  return buildsData;
+  return cachedBuildTypes;
 }
 
 /**

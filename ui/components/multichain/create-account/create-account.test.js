@@ -26,14 +26,14 @@ describe('CreateAccount', () => {
   it('displays account name input and suggests name', () => {
     const { getByPlaceholderText } = render();
 
-    expect(getByPlaceholderText('Account 6')).toBeInTheDocument();
+    expect(getByPlaceholderText('Account 7')).toBeInTheDocument();
   });
 
   it('fires onActionComplete when clicked', async () => {
     const onActionComplete = jest.fn();
     const { getByText, getByPlaceholderText } = render({ onActionComplete });
 
-    const input = getByPlaceholderText('Account 6');
+    const input = getByPlaceholderText('Account 7');
     const newAccountName = 'New Account Name';
 
     fireEvent.change(input, {
@@ -54,7 +54,7 @@ describe('CreateAccount', () => {
   it(`doesn't allow duplicate account names`, async () => {
     const { getByText, getByPlaceholderText } = render();
 
-    const input = getByPlaceholderText('Account 6');
+    const input = getByPlaceholderText('Account 7');
     const usedAccountName = 'Account 4';
 
     fireEvent.change(input, {

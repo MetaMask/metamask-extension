@@ -19,6 +19,8 @@ export const ButtonLink: ButtonLinkComponent = React.forwardRef(
       disabled = false,
       loading = false,
       size = ButtonLinkSize.Auto,
+      endIconProps,
+      startIconProps,
       ...props
     }: ButtonLinkProps<C>,
     ref?: PolymorphicRef<C>,
@@ -41,10 +43,24 @@ export const ButtonLink: ButtonLinkComponent = React.forwardRef(
         startIconProps={{
           size:
             size === ButtonLinkSize.Inherit ? IconSize.Inherit : IconSize.Sm,
+          ...startIconProps,
+          className:
+            size === ButtonLinkSize.Inherit
+              ? `mm-button-link--size-inherit__icon ${
+                  startIconProps?.className || ''
+                }`
+              : '',
         }}
         endIconProps={{
           size:
             size === ButtonLinkSize.Inherit ? IconSize.Inherit : IconSize.Sm,
+          ...endIconProps,
+          className:
+            size === ButtonLinkSize.Inherit
+              ? `mm-button-link--size-inherit__icon ${
+                  endIconProps?.className || ''
+                }`
+              : '',
         }}
         iconLoadingProps={{
           size:

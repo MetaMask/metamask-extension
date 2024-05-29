@@ -35,7 +35,9 @@ export const MESSAGE_TYPE = {
   ETH_GET_BLOCK_BY_NUMBER: 'eth_getBlockByNumber',
   ETH_REQUEST_ACCOUNTS: 'eth_requestAccounts',
   ETH_SIGN: 'eth_sign',
+  ETH_SIGN_TRANSACTION: 'eth_signTransaction',
   ETH_SIGN_TYPED_DATA: 'eth_signTypedData',
+  ETH_SIGN_TYPED_DATA_V1: 'eth_signTypedData_v1',
   ETH_SIGN_TYPED_DATA_V3: 'eth_signTypedData_v3',
   ETH_SIGN_TYPED_DATA_V4: 'eth_signTypedData_v4',
   GET_PROVIDER_STATE: 'metamask_getProviderState',
@@ -80,6 +82,11 @@ export const SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES = {
   showSnapAccountRedirect: 'showSnapAccountRedirect',
 };
 ///: END:ONLY_INCLUDE_IF
+
+export const SMART_TRANSACTION_CONFIRMATION_TYPES = {
+  showSmartTransactionStatusPage:
+    'smartTransaction:showSmartTransactionStatusPage',
+};
 
 /**
  * Custom messages to send and be received by the extension

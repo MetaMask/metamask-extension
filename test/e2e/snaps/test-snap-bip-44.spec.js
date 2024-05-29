@@ -40,22 +40,26 @@ describe('Test Snap bip-44', function () {
           text: 'Connect',
           tag: 'button',
         });
-        await driver.waitForSelector({ text: 'Install' });
+        await driver.waitForSelector({ text: 'Confirm' });
 
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
 
         // deal with permissions popover
         await driver.waitForSelector('.mm-checkbox__input');
         await driver.clickElement('.mm-checkbox__input');
-        await driver.clickElement({
-          text: 'Confirm',
-          tag: 'button',
-        });
+        await driver.waitForSelector(
+          '[data-testid="snap-install-warning-modal-confirm"]',
+        );
+        await driver.clickElement(
+          '[data-testid="snap-install-warning-modal-confirm"]',
+        );
+
+        // deal with OK button
         await driver.waitForSelector({ text: 'OK' });
         await driver.clickElement({
           text: 'OK',

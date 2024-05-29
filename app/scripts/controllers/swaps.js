@@ -43,7 +43,6 @@ import {
   calcGasTotal,
   calcTokenAmount,
 } from '../../../shared/lib/transactions-controller-utils';
-import fetchEstimatedL1Fee from '../../../ui/helpers/utils/optimism/fetchEstimatedL1Fee';
 
 import { Numeric } from '../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
@@ -118,6 +117,7 @@ export default class SwapsController {
       getTokenRatesState,
       fetchTradesInfo = defaultFetchTradesInfo,
       getCurrentChainId,
+      getLayer1GasFee,
       getEIP1559GasFeeEstimates,
       trackMetaMetricsEvent,
     },
@@ -142,6 +142,8 @@ export default class SwapsController {
     this._fetchTradesInfo = fetchTradesInfo;
     this._getCurrentChainId = getCurrentChainId;
     this._getEIP1559GasFeeEstimates = getEIP1559GasFeeEstimates;
+
+    this._getLayer1GasFee = getLayer1GasFee;
 
     this.getBufferedGasLimit = getBufferedGasLimit;
     this.getTokenRatesState = getTokenRatesState;
@@ -314,18 +316,18 @@ export default class SwapsController {
       destinationTokenInfo: fetchParamsMetaData.destinationTokenInfo,
     }));
 
-    if (chainId === CHAIN_IDS.OPTIMISM && Object.values(newQuotes).length > 0) {
+    if (
+      (chainId === CHAIN_IDS.OPTIMISM || chainId === CHAIN_IDS.BASE) &&
+      Object.values(newQuotes).length > 0
+    ) {
       await Promise.all(
         Object.values(newQuotes).map(async (quote) => {
           if (quote.trade) {
-            const multiLayerL1TradeFeeTotal = await fetchEstimatedL1Fee(
+            const multiLayerL1TradeFeeTotal = await this._getLayer1GasFee({
+              transactionParams: quote.trade,
               chainId,
-              {
-                txParams: quote.trade,
-                chainId,
-              },
-              this.ethersProvider,
-            );
+            });
+
             quote.multiLayerL1TradeFeeTotal = multiLayerL1TradeFeeTotal;
           }
           return quote;

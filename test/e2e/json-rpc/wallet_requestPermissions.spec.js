@@ -43,7 +43,7 @@ describe('wallet_requestPermissions', function () {
         });
 
         await driver.clickElement({
-          text: 'Connect',
+          text: 'Confirm',
           tag: 'button',
         });
 

@@ -5,6 +5,7 @@ import { getSnapPrefix, stripSnapPrefix } from '@metamask/snaps-utils';
 import {
   getSnap,
   getSnapRegistryData,
+  getSnapMetadata,
   getTargetSubjectMetadata,
 } from '../../../../selectors';
 import {
@@ -32,7 +33,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import SnapAvatar from '../snap-avatar';
-import { formatDate, getSnapName } from '../../../../helpers/utils/util';
+import { formatDate } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import { SnapDelineator } from '../snap-delineator';
@@ -49,6 +50,10 @@ export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
     getTargetSubjectMetadata(state, snapId),
   );
 
+  const { name: snapName, description } = useSelector((state) =>
+    getSnapMetadata(state, snapId),
+  );
+
   const snap = useSelector((state) => getSnap(state, snapId));
 
   const versionHistory = snap?.versionHistory ?? [];
@@ -58,7 +63,6 @@ export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
 
   const installOrigin = useOriginMetadata(installInfo?.origin);
 
-  const snapName = getSnapName(snapId, subjectMetadata);
   const snapPrefix = getSnapPrefix(snapId);
   const packageName = stripSnapPrefix(snapId);
   const isNPM = snapPrefix === 'npm:';
@@ -224,7 +228,7 @@ export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
             boxProps={{ marginTop: 4 }}
           >
             <ShowMore>
-              <Text>{snap?.manifest.description}</Text>
+              <Text>{description}</Text>
             </ShowMore>
           </SnapDelineator>
         </Box>

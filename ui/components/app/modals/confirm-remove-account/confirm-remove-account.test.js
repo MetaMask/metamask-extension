@@ -1,6 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import ConfirmRemoveAccount from '.';
 
@@ -10,15 +11,42 @@ describe('Confirm Remove Account', () => {
       providerConfig: {
         chainId: '0x99',
       },
+      internalAccounts: {
+        accounts: {
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            metadata: {
+              name: 'Account 1',
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
+          },
+        },
+        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      },
     },
   };
 
   const props = {
     hideModal: jest.fn(),
     removeAccount: jest.fn().mockResolvedValue(),
-    identity: {
+    account: {
       address: '0x0',
-      name: 'Account 1',
+      id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      metadata: {
+        name: 'Account 1',
+        keyring: {
+          type: 'HD Key Tree',
+        },
+      },
+      options: {},
+      mmethods: [...Object.values(EthMethod)],
+      type: EthAccountType.Eoa,
     },
     chainId: '0x99',
     rpcPrefs: {},
@@ -47,7 +75,7 @@ describe('Confirm Remove Account', () => {
     expect(props.hideModal).toHaveBeenCalled();
   });
 
-  it('should call remove account with identity address', async () => {
+  it('should call method removeAccount with account address', async () => {
     const { queryByText } = renderWithProvider(
       <ConfirmRemoveAccount.WrappedComponent {...props} />,
       mockStore,
@@ -55,7 +83,7 @@ describe('Confirm Remove Account', () => {
 
     fireEvent.click(queryByText('Remove'));
 
-    expect(props.removeAccount).toHaveBeenCalledWith(props.identity.address);
+    expect(props.removeAccount).toHaveBeenCalledWith(props.account.address);
     expect(props.hideModal).toHaveBeenCalled();
   });
 

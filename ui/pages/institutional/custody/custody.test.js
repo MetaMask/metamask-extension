@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor, screen, act } from '@testing-library/react';
 import thunk from 'redux-thunk';
+import Fuse from 'fuse.js';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import CustodyPage from '.';
 
@@ -28,6 +29,8 @@ jest.mock('../../../store/institutional/institution-background', () => ({
   }),
 }));
 
+jest.mock('fuse.js');
+
 describe('CustodyPage', function () {
   const mockStore = {
     metamask: {
@@ -51,6 +54,8 @@ describe('CustodyPage', function () {
             production: true,
             refreshTokenUrl: null,
             isNoteToTraderSupported: false,
+            isManualTokenInputSupported: true,
+            isQRCodeSupported: false,
             version: 1,
             website: 'test website',
           },
@@ -64,6 +69,8 @@ describe('CustodyPage', function () {
             production: true,
             refreshTokenUrl: null,
             isNoteToTraderSupported: false,
+            isManualTokenInputSupported: false,
+            isQRCodeSupported: false,
             version: 1,
             website: 'test website',
           },
@@ -77,6 +84,71 @@ describe('CustodyPage', function () {
       },
       history: {
         mostRecentOverviewPage: '/',
+      },
+      internalAccounts: {
+        accounts: {
+          '694225f4-d30b-4e77-a900-c8bbce735b42': {
+            address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
+            id: '694225f4-d30b-4e77-a900-c8bbce735b42',
+            metadata: {
+              name: 'Custody 1',
+              keyring: {
+                type: 'Custody test',
+              },
+            },
+            options: {},
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+          },
+          '2d4193b2-e10d-412c-ae33-c0b689e6ddd8': {
+            address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
+            id: '2d4193b2-e10d-412c-ae33-c0b689e6ddd8',
+            metadata: {
+              name: 'Custody 2',
+              keyring: {
+                type: 'Custody test',
+              },
+            },
+            options: {},
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+          },
+          '434621b7-23e6-4568-962d-b576a5e2ec43': {
+            address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
+            id: '434621b7-23e6-4568-962d-b576a5e2ec43',
+            metadata: {
+              name: 'Custody 3',
+              keyring: {
+                type: 'Custody test',
+              },
+            },
+            options: {},
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+          },
+        },
+        selectedAccount: '694225f4-d30b-4e77-a900-c8bbce735b42',
       },
     },
   };
@@ -239,9 +311,21 @@ describe('CustodyPage', function () {
     expect(screen.getByTestId('custody-accounts-empty')).toBeDefined();
   });
 
-  it('renders the list of custodians in mmiController when the user clicks on cancel button', async () => {
-    act(() => {
-      renderWithProvider(<CustodyPage />, store);
+  it('renders the list of custodians when the user clicks on cancel button', async () => {
+    const newMockStore = {
+      ...mockStore,
+      metamask: {
+        ...mockStore.metamask,
+        institutionalFeatures: {
+          connectRequests: [],
+        },
+      },
+    };
+
+    const newStore = configureMockStore([thunk])(newMockStore);
+
+    await act(async () => {
+      renderWithProvider(<CustodyPage />, newStore);
     });
 
     await waitFor(() => {
@@ -249,7 +333,7 @@ describe('CustodyPage', function () {
       fireEvent.click(custodyBtns[0]);
     });
 
-    act(() => {
+    await act(async () => {
       const custodyCancelBtn = screen.getAllByTestId('custody-cancel-button');
       fireEvent.click(custodyCancelBtn[0]);
     });
@@ -390,6 +474,8 @@ describe('CustodyPage', function () {
             {
               ...mockStore.metamask.mmiConfiguration.custodians[0],
               displayName: 'Saturn Custody B',
+              isManualTokenInputSupported: false,
+              isQRCodeSupported: false,
             },
           ],
         },
@@ -410,5 +496,84 @@ describe('CustodyPage', function () {
     expect(
       screen.queryByTestId('confirm-connect-custodian-modal'),
     ).toBeInTheDocument();
+  });
+
+  it('filters accounts based on search query', async () => {
+    const accounts = [
+      {
+        name: 'Saturn Test A',
+        address: '0x123',
+        balance: '0x1',
+        custodianDetails: 'custodianDetails',
+        labels: [{ key: 'key', value: 'testLabels' }],
+        chanId: 'chanId',
+      },
+      {
+        name: 'Saturn Test B',
+        address: '0x1234',
+        balance: '0x1',
+        custodianDetails: 'custodianDetails',
+        labels: [{ key: 'key', value: 'testLabels' }],
+        chanId: 'chanId',
+      },
+    ];
+
+    mockedGetCustodianAccounts.mockImplementation(() => async (dispatch) => {
+      dispatch({ type: 'TYPE', payload: accounts });
+      return accounts;
+    });
+
+    Fuse.mockImplementation(() => ({
+      search: jest.fn().mockReturnValue([
+        {
+          name: 'Saturn Test A',
+          address: '0x123',
+        },
+      ]),
+    }));
+
+    const newMockStore = {
+      ...mockStore,
+      metamask: {
+        ...mockStore.metamask,
+        institutionalFeatures: {
+          connectRequests: [
+            {
+              token: 'token',
+              environment: 'Saturn A',
+              service: 'Saturn A',
+            },
+          ],
+        },
+      },
+    };
+
+    const newStore = configureMockStore([thunk])(newMockStore);
+
+    await act(async () => {
+      renderWithProvider(<CustodyPage />, newStore);
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByPlaceholderText('Search accounts'),
+      ).toBeInTheDocument();
+    });
+
+    fireEvent.change(screen.getByPlaceholderText('Search accounts'), {
+      target: { value: 'Saturn Test A' },
+    });
+
+    expect(Fuse).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({
+        keys: ['name', 'address'],
+        tokenize: true,
+        matchAllTokens: true,
+        threshold: 0.0,
+      }),
+    );
+
+    expect(screen.getByText('Saturn Test A')).toBeDefined();
   });
 });

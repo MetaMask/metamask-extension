@@ -65,6 +65,7 @@ export default function GasTiming({
   const previousIsUnknownLow = usePrevious(isUnknownLow);
 
   useEffect(() => {
+    let isMounted = true;
     const priority = maxPriorityFeePerGas;
     const fee = maxFeePerGas;
 
@@ -78,7 +79,11 @@ export default function GasTiming({
         new BigNumber(priority, 10).toString(10),
         new BigNumber(fee, 10).toString(10),
       ).then((result) => {
-        if (maxFeePerGas === fee && maxPriorityFeePerGas === priority) {
+        if (
+          maxFeePerGas === fee &&
+          maxPriorityFeePerGas === priority &&
+          isMounted
+        ) {
           setCustomEstimatedTime(result);
         }
       });
@@ -87,6 +92,10 @@ export default function GasTiming({
     if (isUnknownLow !== false && previousIsUnknownLow === true) {
       setCustomEstimatedTime(null);
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [
     maxPriorityFeePerGas,
     maxFeePerGas,

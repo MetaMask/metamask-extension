@@ -11,6 +11,8 @@ export enum AvatarFaviconSize {
   Xl = 'xl',
 }
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface AvatarFaviconStyleUtilityProps
   extends Omit<AvatarBaseStyleUtilityProps, 'size' | 'children'> {
   /**

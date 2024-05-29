@@ -70,7 +70,7 @@ const SignatureRequestHeader = ({ txData }) => {
   return (
     <NetworkAccountBalanceHeader
       networkName={currentNetwork}
-      accountName={fromAccount.name}
+      accountName={fromAccount.metadata.name}
       accountBalance={balanceInBaseAsset}
       tokenName={
         conversionRate ? currentCurrency?.toUpperCase() : nativeCurrency

@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { toChecksumHexAddress } from '@metamask/controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { useSelector } from 'react-redux';
 import { getSelectedInternalAccount } from '../../../selectors';
@@ -26,6 +25,7 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MINUTE } from '../../../../shared/constants/time';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 
 export const AddressCopyButton = ({
   address,

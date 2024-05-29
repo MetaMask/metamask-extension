@@ -16,7 +16,18 @@ import {
   getUnapprovedConfirmations,
   ///: END:ONLY_INCLUDE_IF
   getShowExtensionInFullSizeView,
+  getSelectedAccount,
+  getPermittedAccountsForCurrentTab,
+  getSwitchedNetworkDetails,
+  getNeverShowSwitchedNetworkMessage,
+  getNetworkToAutomaticallySwitchTo,
+  getNumberOfAllUnapprovedTransactionsAndMessages,
+  getShowSurveyToast,
+  getNewPrivacyPolicyToastShownDate,
+  getShowPrivacyPolicyToast,
+  getUseRequestQueue,
 } from '../../selectors';
+import { getSmartTransactionsOptInStatus } from '../../../shared/modules/selectors';
 import {
   lockMetamask,
   hideImportNftsModal,
@@ -27,6 +38,13 @@ import {
   toggleNetworkMenu,
   hideImportTokensModal,
   hideDeprecatedNetworkModal,
+  addPermittedAccount,
+  setSurveyLinkLastClickedOrClosed,
+  setNewPrivacyPolicyToastClickedOrClosed,
+  setNewPrivacyPolicyToastShownDate,
+  automaticallySwitchNetwork,
+  clearSwitchedNetworkDetails,
+  neverShowSwitchedNetworkMessage,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   hideKeyringRemovalResultModal,
   ///: END:ONLY_INCLUDE_IF
@@ -35,6 +53,7 @@ import { pageChanged } from '../../ducks/history/history';
 import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps';
 import { getSendStage } from '../../ducks/send';
 import {
+  getAlertEnabledness,
   getIsUnlocked,
   getProviderConfig,
 } from '../../ducks/metamask/metamask';
@@ -42,15 +61,36 @@ import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferen
 import Routes from './routes.component';
 
 function mapStateToProps(state) {
-  const { appState } = state;
+  const { activeTab, appState } = state;
   const { alertOpen, alertMessage, isLoading, loadingMessage } = appState;
   const { autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT } =
     getPreferences(state);
   const { completedOnboarding } = state.metamask;
 
+  // If there is more than one connected account to activeTabOrigin,
+  // *BUT* the current account is not one of them, show the banner
+  const allowShowAccountSetting = getAlertEnabledness(state).unconnectedAccount;
+  const account = getSelectedAccount(state);
+  const activeTabOrigin = activeTab?.origin;
+  const connectedAccounts = getPermittedAccountsForCurrentTab(state);
+  const showConnectAccountToast = Boolean(
+    allowShowAccountSetting &&
+      account &&
+      activeTabOrigin &&
+      connectedAccounts.length > 0 &&
+      !connectedAccounts.find((address) => address === account.address),
+  );
+
+  const networkToAutomaticallySwitchTo =
+    getNetworkToAutomaticallySwitchTo(state);
+  const switchedNetworkDetails = getSwitchedNetworkDetails(state);
+
   return {
     alertOpen,
     alertMessage,
+    account,
+    showConnectAccountToast,
+    activeTabOrigin,
     textDirection: state.metamask.textDirection,
     isLoading,
     loadingMessage,
@@ -68,6 +108,7 @@ function mapStateToProps(state) {
     allAccountsOnNetworkAreEmpty: getAllAccountsOnNetworkAreEmpty(state),
     isTestNet: getIsTestnet(state),
     showExtensionInFullSizeView: getShowExtensionInFullSizeView(state),
+    smartTransactionsOptInStatus: getSmartTransactionsOptInStatus(state),
     currentChainId: getCurrentChainId(state),
     shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
     forgottenPassword: state.metamask.forgottenPassword,
@@ -76,10 +117,21 @@ function mapStateToProps(state) {
     isAccountMenuOpen: state.metamask.isAccountMenuOpen,
     isNetworkMenuOpen: state.metamask.isNetworkMenuOpen,
     isImportTokensModalOpen: state.appState.importTokensModalOpen,
+    isBasicConfigurationModalOpen: state.appState.showBasicFunctionalityModal,
     isDeprecatedNetworkModalOpen: state.appState.deprecatedNetworkModalOpen,
     accountDetailsAddress: state.appState.accountDetailsAddress,
     isImportNftsModalOpen: state.appState.importNftsModal.open,
     isIpfsModalOpen: state.appState.showIpfsModalOpen,
+    switchedNetworkDetails,
+    networkToAutomaticallySwitchTo,
+    unapprovedTransactions:
+      getNumberOfAllUnapprovedTransactionsAndMessages(state),
+    neverShowSwitchedNetworkMessage: getNeverShowSwitchedNetworkMessage(state),
+    currentExtensionPopupId: state.metamask.currentExtensionPopupId,
+    useRequestQueue: getUseRequestQueue(state),
+    newPrivacyPolicyToastShownDate: getNewPrivacyPolicyToastShownDate(state),
+    showPrivacyPolicyToast: getShowPrivacyPolicyToast(state),
+    showSurveyToast: getShowSurveyToast(state),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal:
       state.appState.showKeyringRemovalSnapModal,
@@ -101,6 +153,19 @@ function mapDispatchToProps(dispatch) {
     hideIpfsModal: () => dispatch(hideIpfsModal()),
     hideImportTokensModal: () => dispatch(hideImportTokensModal()),
     hideDeprecatedNetworkModal: () => dispatch(hideDeprecatedNetworkModal()),
+    addPermittedAccount: (activeTabOrigin, address) =>
+      dispatch(addPermittedAccount(activeTabOrigin, address)),
+    clearSwitchedNetworkDetails: () => dispatch(clearSwitchedNetworkDetails()),
+    setSwitchedNetworkNeverShowMessage: () =>
+      dispatch(neverShowSwitchedNetworkMessage()),
+    automaticallySwitchNetwork: (networkId, selectedTabOrigin) =>
+      dispatch(automaticallySwitchNetwork(networkId, selectedTabOrigin)),
+    setSurveyLinkLastClickedOrClosed: (time) =>
+      dispatch(setSurveyLinkLastClickedOrClosed(time)),
+    setNewPrivacyPolicyToastClickedOrClosed: () =>
+      dispatch(setNewPrivacyPolicyToastClickedOrClosed()),
+    setNewPrivacyPolicyToastShownDate: (date) =>
+      dispatch(setNewPrivacyPolicyToastShownDate(date)),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     hideShowKeyringSnapRemovalResultModal: () =>
       dispatch(hideKeyringRemovalResultModal()),

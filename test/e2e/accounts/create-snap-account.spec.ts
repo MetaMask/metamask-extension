@@ -8,7 +8,7 @@ import {
   withFixtures,
 } from '../helpers';
 import { Driver } from '../webdriver/driver';
-import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../../../ui/helpers/constants/common';
+import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../constants';
 
 describe('Create Snap Account', function (this: Suite) {
   it('create Snap account popup contains correct Snap name and snapId', async function () {
@@ -33,12 +33,13 @@ describe('Create Snap Account', function (this: Suite) {
         });
 
         // scroll to the bottom of the page
+        await driver.waitForSelector({ text: 'Confirm' });
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
         // click the install button to install the snap
-        await driver.waitForSelector({ text: 'Install' });
+        await driver.waitForSelector({ text: 'Confirm' });
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
         await driver.waitForSelector({ text: 'OK' });
@@ -111,12 +112,13 @@ describe('Create Snap Account', function (this: Suite) {
         });
 
         // scroll to the bottom of the page
+        await driver.waitForSelector({ text: 'Confirm' });
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
         // click the install button to install the snap
-        await driver.waitForSelector({ text: 'Install' });
+        await driver.waitForSelector({ text: 'Confirm' });
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
         await driver.waitForSelector({ text: 'OK' });
@@ -202,12 +204,13 @@ describe('Create Snap Account', function (this: Suite) {
         });
 
         // scroll to the bottom of the page
+        await driver.waitForSelector({ text: 'Confirm' });
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
         // click the install button to install the snap
-        await driver.waitForSelector({ text: 'Install' });
+        await driver.waitForSelector({ text: 'Confirm' });
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
         await driver.waitForSelector({ text: 'OK' });

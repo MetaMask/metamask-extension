@@ -13,16 +13,15 @@ import { MMIMainPage } from '../pageObjects/mmi-main-page';
 const portfolio = `${process.env.MMI_E2E_MMI_DASHBOARD_URL}/portfolio`;
 const swap = `${process.env.MMI_E2E_MMI_DASHBOARD_URL}/swap`;
 const stake = `${process.env.MMI_E2E_MMI_DASHBOARD_URL}/stake`;
-const support = 'https://mmi-support.zendesk.com/hc/en-us';
+const support = 'https://mmi-support.metamask.io/hc/en-us';
 const supportContactUs =
-  'https://mmi-support.zendesk.com/hc/en-us/requests/new';
+  'https://mmi-support.metamask.io/hc/en-us/requests/new';
 const mmiHomePage = 'https://metamask.io/institutions/';
 const privacyAndPolicy = 'https://consensys.io/privacy-policy';
-const hwWalletPrivacyAndSecurity =
-  'https://support.metamask.io/hc/en-us/articles/4408552261275';
 const openSeaTermsOfUse = 'https://opensea.io/securityproviderterms';
 const metamaskAttributions = 'https://metamask.io/attributions/';
 const termsOfUse = 'https://consensys.io/terms-of-use';
+const learnMoreArticles = 'https://support.metamask.io/hc/en-us/articles';
 
 test.describe('MMI Navigation', () => {
   test('MMI full navigation links', async ({ context }) => {
@@ -56,6 +55,8 @@ test.describe('MMI Navigation', () => {
       await getPageAndCloseRepeated(context, 'home.html'),
     );
 
+    await mainPage.finishOnboarding();
+
     // Check main page links
     await checkLinkURL(
       context,
@@ -66,8 +67,6 @@ test.describe('MMI Navigation', () => {
     );
 
     await checkLinkURL(context, mainPage.page, 'Stake', stake, 'button');
-
-    await checkLinkURL(context, mainPage.page, 'Swap', swap, 'button');
 
     await checkLinkURL(
       context,
@@ -123,7 +122,7 @@ test.describe('MMI Navigation', () => {
       context,
       mainMenuPage.page,
       'learn more',
-      hwWalletPrivacyAndSecurity,
+      'https://support.metamask.io',
     );
 
     await mainMenuPage.selectSettings('Security & privacy');
@@ -136,8 +135,8 @@ test.describe('MMI Navigation', () => {
     await checkLinkURL(
       context,
       mainMenuPage.page,
-      'Learn More',
-      privacyAndPolicy,
+      'requests. Learn more',
+      learnMoreArticles,
     );
 
     await mainMenuPage.selectSettings('Experimental');

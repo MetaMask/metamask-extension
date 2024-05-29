@@ -54,6 +54,7 @@ const mockBaseStore = {
         status: NetworkStatus.Available,
       },
     },
+    snaps: {},
   },
 };
 

@@ -10,12 +10,12 @@ import LedgerInstructionField from '../ledger-instruction-field';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   getURLHostName,
+  hexToText,
   sanitizeString,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   shortenAddress,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../helpers/utils/util';
-import { stripHexPrefix } from '../../../../../shared/modules/hexstring-utils';
 import { isSuspiciousResponse } from '../../../../../shared/modules/security-provider.utils';
 import SiteOrigin from '../../../../components/ui/site-origin';
 import Typography from '../../../../components/ui/typography/typography';
@@ -54,11 +54,10 @@ import SecurityProviderBannerMessage from '../security-provider-banner-message/s
 import SignatureRequestHeader from '../signature-request-header';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import SnapLegacyAuthorshipHeader from '../../../../components/app/snaps/snap-legacy-authorship-header';
-///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import InsightWarnings from '../../../../components/app/snaps/insight-warnings';
 ///: END:ONLY_INCLUDE_IF
 import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
+import { BlockaidUnavailableBannerAlert } from '../blockaid-unavailable-banner-alert/blockaid-unavailable-banner-alert';
 import SignatureRequestOriginalWarning from './signature-request-original-warning';
 
 export default class SignatureRequestOriginal extends Component {
@@ -91,26 +90,16 @@ export default class SignatureRequestOriginal extends Component {
     selectedAccount: PropTypes.object,
     mmiOnSignCallback: PropTypes.func,
     ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     warnings: PropTypes.array,
     ///: END:ONLY_INCLUDE_IF
   };
 
   state = {
     showSignatureRequestWarning: false,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     showSignatureInsights: false,
     ///: END:ONLY_INCLUDE_IF
-  };
-
-  msgHexToText = (hex) => {
-    try {
-      const stripped = stripHexPrefix(hex);
-      const buff = Buffer.from(stripped, 'hex');
-      return buff.length === 32 ? hex : buff.toString('utf8');
-    } catch (e) {
-      return hex;
-    }
   };
 
   renderTypedData = (data) => {
@@ -149,9 +138,7 @@ export default class SignatureRequestOriginal extends Component {
     } = txData;
 
     if (type === MESSAGE_TYPE.PERSONAL_SIGN) {
-      rows = [
-        { name: this.context.t('message'), value: this.msgHexToText(data) },
-      ];
+      rows = [{ name: this.context.t('message'), value: hexToText(data) }];
     } else if (type === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA) {
       rows = data;
     } else if (type === MESSAGE_TYPE.ETH_SIGN) {
@@ -166,7 +153,12 @@ export default class SignatureRequestOriginal extends Component {
       <div className="request-signature__body">
         {
           ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-          <BlockaidBannerAlert txData={txData} margin={4} />
+          <BlockaidBannerAlert
+            txData={txData}
+            marginTop={4}
+            marginLeft={4}
+            marginRight={4}
+          />
           ///: END:ONLY_INCLUDE_IF
         }
         {isSuspiciousResponse(txData?.securityProviderResponse) && (
@@ -174,13 +166,14 @@ export default class SignatureRequestOriginal extends Component {
             securityProviderResponse={txData.securityProviderResponse}
           />
         )}
+        <BlockaidUnavailableBannerAlert />
         {
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           this.props.selectedAccount.address ===
           this.props.fromAccount.address ? null : (
             <Box
               className="request-signature__mismatch-info"
-              Display={Display.Flex}
+              display={Display.Flex}
               width={BlockSize.Full}
               padding={4}
               marginBottom={4}
@@ -318,7 +311,7 @@ export default class SignatureRequestOriginal extends Component {
       txData,
       hardwareWalletRequiresConnection,
       rejectPendingApproval,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       warnings,
       ///: END:ONLY_INCLUDE_IF
     } = this.props;
@@ -344,7 +337,7 @@ export default class SignatureRequestOriginal extends Component {
           if (txData.type === MESSAGE_TYPE.ETH_SIGN) {
             return this.setState({ showSignatureRequestWarning: true });
           }
-          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
           if (warnings?.length >= 1) {
             return this.setState({ showSignatureInsights: true });
           }
@@ -388,7 +381,7 @@ export default class SignatureRequestOriginal extends Component {
       messagesCount,
       fromAccount: { address, name },
       txData,
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       warnings,
       ///: END:ONLY_INCLUDE_IF
     } = this.props;
@@ -416,7 +409,7 @@ export default class SignatureRequestOriginal extends Component {
             senderAddress={address}
             name={name}
             onSubmit={async () => {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+              ///: BEGIN:ONLY_INCLUDE_IF(snaps)
               if (warnings?.length >= 1) {
                 return this.setState({
                   showSignatureInsights: true,
@@ -430,7 +423,7 @@ export default class SignatureRequestOriginal extends Component {
           />
         )}
         {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
         }
         {this.state.showSignatureInsights && (
           <InsightWarnings

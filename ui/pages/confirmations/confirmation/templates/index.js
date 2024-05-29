@@ -7,8 +7,14 @@ import {
   setNewNetworkAdded,
   upsertNetworkConfiguration,
 } from '../../../../store/actions';
+import {
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+  ///: END:ONLY_INCLUDE_IF
+  SMART_TRANSACTION_CONFIRMATION_TYPES,
+} from '../../../../../shared/constants/app';
+import smartTransactionStatusPage from './smart-transaction-status-page';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../../shared/constants/app';
 import createSnapAccount from './create-snap-account';
 import removeSnapAccount from './remove-snap-account';
 import snapAccountRedirect from './snap-account-redirect';
@@ -29,6 +35,8 @@ const APPROVAL_TEMPLATES = {
   // Use ApprovalType from utils controller
   [ApprovalType.ResultSuccess]: success,
   [ApprovalType.ResultError]: error,
+  [SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage]:
+    smartTransactionStatusPage,
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   [ApprovalType.SnapDialogAlert]: snapAlert,
   [ApprovalType.SnapDialogConfirmation]: snapConfirmation,
@@ -50,6 +58,7 @@ export const TEMPLATED_CONFIRMATION_APPROVAL_TYPES =
 const ALLOWED_TEMPLATE_KEYS = [
   'cancelText',
   'content',
+  'onLoad',
   'onCancel',
   'onSubmit',
   'networkDisplay',
@@ -150,8 +159,16 @@ function getAttenuatedDispatch(dispatch) {
  * @param {Function} dispatch - Redux dispatch function.
  * @param {object} history - The application's history object.
  * @param {object} data - The data object passed into the template from the confirmation page.
+ * @param {object} contexts - Contexts objects passed into the template from the confirmation page.
  */
-export function getTemplateValues(pendingApproval, t, dispatch, history, data) {
+export function getTemplateValues(
+  pendingApproval,
+  t,
+  dispatch,
+  history,
+  data,
+  contexts,
+) {
   const fn = APPROVAL_TEMPLATES[pendingApproval.type]?.getValues;
   if (!fn) {
     throw new Error(
@@ -160,7 +177,7 @@ export function getTemplateValues(pendingApproval, t, dispatch, history, data) {
   }
 
   const safeActions = getAttenuatedDispatch(dispatch);
-  const values = fn(pendingApproval, t, safeActions, history, data);
+  const values = fn(pendingApproval, t, safeActions, history, data, contexts);
   const extraneousKeys = omit(values, ALLOWED_TEMPLATE_KEYS);
   const safeValues = pick(values, ALLOWED_TEMPLATE_KEYS);
   if (extraneousKeys.length > 0) {

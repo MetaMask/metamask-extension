@@ -8,6 +8,9 @@ describe('isBlockedUrl', () => {
     name: 'PhishingController',
   });
   const phishingController = new PhishingController({
+    // @ts-expect-error The PhishingController uses a newer verison of the package
+    // `@metamask/base-controller`, which has a different messenger type. This error will be
+    // resolved shortly when the `@metamask/base-controller` package is updated.
     messenger: phishingControllerMessenger,
     state: {
       phishingLists: [
@@ -36,6 +39,8 @@ describe('isBlockedUrl', () => {
     [1, true],
     [0, true],
     [-1, true],
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ])('"%s" is blocked: %s', async (url: any, expected: boolean) => {
     const result = await isBlockedUrl(
       url,

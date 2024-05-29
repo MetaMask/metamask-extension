@@ -1,0 +1,16 @@
+.toasts-container {
+  position: sticky;
+  bottom: 10px;
+  margin-inline-start: 10px;
+  margin-inline-end: 10px;
+  z-index: 200;
+  display: flex;
+  gap: 10px;
+  width: 90%;
+  flex-direction: column;
+  max-width: 600px;
+}
+
+.toast-text {
+  word-break: break-word;
+}

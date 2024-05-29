@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
@@ -15,6 +16,7 @@ import {
   BackgroundColor,
   IconColor,
   TextAlign,
+  Display,
 } from '../../../../helpers/constants/design-system';
 import {
   AvatarIcon,
@@ -25,7 +27,7 @@ import {
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import InstallError from '../../../../components/app/snaps/install-error/install-error';
 import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorship-header';
-import { getSnapName } from '../../../../helpers/utils/util';
+import { getSnapMetadata } from '../../../../selectors';
 
 export default function SnapResult({
   request,
@@ -42,9 +44,8 @@ export default function SnapResult({
 
   const hasError = !requestState.loading && requestState.error;
   const isLoading = requestState.loading;
-  const snapName = getSnapName(
-    targetSubjectMetadata.origin,
-    targetSubjectMetadata,
+  const { name: snapName } = useSelector((state) =>
+    getSnapMetadata(state, targetSubjectMetadata.origin),
   );
 
   function getSuccessScreen(requestType, snapNameToRender) {
@@ -68,6 +69,7 @@ export default function SnapResult({
         height={BlockSize.Full}
         paddingTop={2}
         paddingBottom={2}
+        backgroundColor={BackgroundColor.backgroundAlternative}
       >
         <AvatarIcon
           className="snap-result__header__icon"
@@ -137,6 +139,7 @@ export default function SnapResult({
       height={BlockSize.Full}
       borderStyle={BorderStyle.none}
       flexDirection={FlexDirection.Column}
+      backgroundColor={BackgroundColor.backgroundAlternative}
     >
       <SnapAuthorshipHeader snapId={targetSubjectMetadata.origin} />
       <Box
@@ -148,13 +151,17 @@ export default function SnapResult({
         style={{
           overflowY: 'auto',
         }}
+        backgroundColor={BackgroundColor.backgroundAlternative}
+        height={BlockSize.Full}
       >
         {isLoading && (
           <Box
             className="snap-result__content__loader-container"
+            display={Display.Flex}
             flexDirection={FlexDirection.Column}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
+            height={BlockSize.Full}
           >
             <PulseLoader />
           </Box>
@@ -168,9 +175,7 @@ export default function SnapResult({
         className="snap-result__footer"
         alignItems={AlignItems.center}
         flexDirection={FlexDirection.Column}
-        style={{
-          boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
-        }}
+        backgroundColor={BackgroundColor.backgroundAlternative}
       >
         <PageContainerFooter
           hideCancel

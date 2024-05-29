@@ -1,4 +1,4 @@
-import { rawEncode } from 'ethereumjs-abi';
+import { encode } from '@metamask/abi-utils';
 
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import {
@@ -12,8 +12,8 @@ import {
   generateERC721TransferData,
 } from './send.utils';
 
-jest.mock('ethereumjs-abi', () => ({
-  rawEncode: jest.fn().mockReturnValue(16, 1100),
+jest.mock('@metamask/abi-utils', () => ({
+  encode: jest.fn().mockReturnValue(16, 1100),
 }));
 
 describe('send utils', () => {
@@ -28,13 +28,13 @@ describe('send utils', () => {
       ).toBeUndefined();
     });
 
-    it('should call abi.rawEncode with the correct params', () => {
+    it('should call abi-utils.encode with the correct params', () => {
       generateERC20TransferData({
         toAddress: 'mockAddress',
         amount: 'ab',
         sendToken: { address: '0x0' },
       });
-      expect(rawEncode.mock.calls[0].toString()).toStrictEqual(
+      expect(encode.mock.calls[0].toString()).toStrictEqual(
         [
           ['address', 'uint256'],
           ['0xmockAddress', '0xab'],

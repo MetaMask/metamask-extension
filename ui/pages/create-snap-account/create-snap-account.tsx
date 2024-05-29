@@ -22,10 +22,10 @@ import {
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header';
 import { useI18nContext } from '../../hooks/useI18nContext';
 
-export interface CreateSnapAccountProps {
+export type CreateSnapAccountProps = {
   snapId: string;
   snapName: string;
-}
+};
 
 const CreateSnapAccount = ({ snapId, snapName }: CreateSnapAccountProps) => {
   const t = useI18nContext();
