@@ -50,12 +50,13 @@ async function getExtensionStorageFilePath(driver) {
  */
 async function closePopoverIfPresent(driver) {
   const popoverButtonSelector = '[data-testid="popover-close"]';
-  const linkNoThanks = {
-    text: "Don't enable enhanced protection",
+  // It shows in the Smart Transactions Opt-In Modal.
+  const enableButtonSelector = {
+    text: 'Enable',
     tag: 'button',
   };
   await driver.clickElementSafe(popoverButtonSelector);
-  await driver.clickElementSafe(linkNoThanks);
+  await driver.clickElementSafe(enableButtonSelector);
 }
 
 /**
