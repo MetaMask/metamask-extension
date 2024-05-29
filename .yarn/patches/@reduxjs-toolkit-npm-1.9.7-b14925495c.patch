@@ -16,7 +16,7 @@ index bb433432ec76331e12d6b62e200f06530055cb16..2738dec3958f9deac89c652f757390ce
 --- a/dist/redux-toolkit.cjs.development.js
 +++ b/dist/redux-toolkit.cjs.development.js
 @@ -1,3 +1,13 @@
-+var __define = (this && this.__define) || (function (obj, key, value) {
++var __define = (this && this.__define) || function (obj, key, value) {
 +    Object.defineProperty(obj, key, {
 +        value: value,
 +        enumerable: true,
@@ -24,7 +24,7 @@ index bb433432ec76331e12d6b62e200f06530055cb16..2738dec3958f9deac89c652f757390ce
 +        writable: true
 +    });
 +    return obj[key];
-+})();
++};
 +
  var __extends = (this && this.__extends) || (function () {
      var extendStatics = function (d, b) {
