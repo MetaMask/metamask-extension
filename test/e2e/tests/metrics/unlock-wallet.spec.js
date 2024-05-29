@@ -40,6 +40,7 @@ describe('Unlock wallet', function () {
         await unlockWallet(driver);
         await waitForAccountRendered(driver);
         const events = await getEventPayloads(driver, mockedEndpoint);
+        console.log(events);
         assert.equal(events.length, 3);
         assertBatchValue(events[0], 'Home', '/');
         assertBatchValue(events[1], 'Unlock Page', '/unlock');

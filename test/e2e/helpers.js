@@ -33,6 +33,11 @@ const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
 
 const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 
+function getRelativeUrl(fullUrl) {
+  const url = new URL(fullUrl);
+  return `${url.pathname}${url.hash}`;
+}
+
 async function withFixtures(options, testSuite) {
   const {
     dapp,
@@ -430,11 +435,14 @@ const completeImportSRPOnboardingFlowWordByWord = async (
  * @param {WebDriver} driver
  */
 const onboardingBeginCreateNewWallet = async (driver) => {
+  console.log('========URL:', getRelativeUrl(await driver.getCurrentUrl()));
   // agree to terms of use
   await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
+  console.log('========URL:', getRelativeUrl(await driver.getCurrentUrl()));
 
   // welcome
   await driver.clickElement('[data-testid="onboarding-create-wallet"]');
+  console.log('========URL:', getRelativeUrl(await driver.getCurrentUrl()));
 };
 
 /**
@@ -444,9 +452,11 @@ const onboardingBeginCreateNewWallet = async (driver) => {
  * @param {boolean} option - true to opt into metrics, default is false
  */
 const onboardingChooseMetametricsOption = async (driver, option = false) => {
+  console.log('========URL:', getRelativeUrl(await driver.getCurrentUrl()));
   const optionIdentifier = option ? 'i-agree' : 'no-thanks';
   // metrics
   await driver.clickElement(`[data-testid="metametrics-${optionIdentifier}"]`);
+  console.log('========URL:', getRelativeUrl(await driver.getCurrentUrl()));
 };
 
 /**
@@ -456,11 +466,13 @@ const onboardingChooseMetametricsOption = async (driver, option = false) => {
  * @param {string} password - Password to set
  */
 const onboardingCreatePassword = async (driver, password) => {
+  console.log('========URL:', getRelativeUrl(await driver.getCurrentUrl()));
   // create password
   await driver.fill('[data-testid="create-password-new"]', password);
   await driver.fill('[data-testid="create-password-confirm"]', password);
   await driver.clickElement('[data-testid="create-password-terms"]');
   await driver.clickElement('[data-testid="create-password-wallet"]');
+  console.log('========URL:', getRelativeUrl(await driver.getCurrentUrl()));
 };
 
 /**
@@ -470,12 +482,13 @@ const onboardingCreatePassword = async (driver, password) => {
  * @param {WebDriver} driver
  */
 const onboardingRevealAndConfirmSRP = async (driver) => {
+  console.log('========URL:', getRelativeUrl(await driver.getCurrentUrl()));
   // secure my wallet
   await driver.clickElement('[data-testid="secure-wallet-recommended"]');
-
+  console.log('========URL:', getRelativeUrl(await driver.getCurrentUrl()));
   // reveal SRP
   await driver.clickElement('[data-testid="recovery-phrase-reveal"]');
-
+  console.log('========URL:', getRelativeUrl(await driver.getCurrentUrl()));
   const revealedSeedPhrase = await driver.findElement(
     '[data-testid="recovery-phrase-chips"]',
   );
@@ -483,6 +496,7 @@ const onboardingRevealAndConfirmSRP = async (driver) => {
   const recoveryPhrase = await revealedSeedPhrase.getText();
 
   await driver.clickElement('[data-testid="recovery-phrase-next"]');
+  console.log('========URL:', getRelativeUrl(await driver.getCurrentUrl()));
 
   // confirm SRP
   const words = recoveryPhrase.split(/\s*(?:[0-9)]+|\n|\.|^$|$)\s*/u);
@@ -496,6 +510,7 @@ const onboardingRevealAndConfirmSRP = async (driver) => {
   await driver.clickElement('[data-testid="confirm-recovery-phrase"]');
 
   await driver.clickElement({ text: 'Confirm', tag: 'button' });
+  console.log('========URL:', getRelativeUrl(await driver.getCurrentUrl()));
 };
 
 /**
@@ -506,8 +521,10 @@ const onboardingRevealAndConfirmSRP = async (driver) => {
  */
 const onboardingCompleteWalletCreation = async (driver) => {
   // complete
+  console.log('========URL:', getRelativeUrl(await driver.getCurrentUrl()));
   await driver.findElement({ text: 'Wallet creation successful', tag: 'h2' });
   await driver.clickElement('[data-testid="onboarding-complete-done"]');
+  console.log('========URL:', getRelativeUrl(await driver.getCurrentUrl()));
 };
 
 const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
@@ -542,9 +559,11 @@ const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
  * @param {WebDriver} driver
  */
 const onboardingPinExtension = async (driver) => {
+  console.log('========URL:', getRelativeUrl(await driver.getCurrentUrl()));
   // pin extension
   await driver.clickElement('[data-testid="pin-extension-next"]');
   await driver.clickElement('[data-testid="pin-extension-done"]');
+  console.log('========URL:', getRelativeUrl(await driver.getCurrentUrl()));
 };
 
 const completeCreateNewWalletOnboardingFlowWithOptOut = async (
@@ -570,12 +589,14 @@ const completeCreateNewWalletOnboardingFlow = async (driver, password) => {
 const importWrongSRPOnboardingFlow = async (driver, seedPhrase) => {
   // agree to terms of use
   await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
-
+  console.log('========URL:', getRelativeUrl(await driver.getCurrentUrl()));
   // welcome
   await driver.clickElement('[data-testid="onboarding-import-wallet"]');
+  console.log('========URL:', getRelativeUrl(await driver.getCurrentUrl()));
 
   // metrics
   await driver.clickElement('[data-testid="metametrics-no-thanks"]');
+  console.log('========URL:', getRelativeUrl(await driver.getCurrentUrl()));
 
   // import with recovery phrase
   await driver.pasteIntoField(
