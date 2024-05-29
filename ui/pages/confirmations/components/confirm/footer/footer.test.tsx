@@ -169,7 +169,7 @@ describe('ConfirmFooter', () => {
       {
         key: KEY_ALERT_KEY_MOCK,
         field: KEY_ALERT_KEY_MOCK,
-        severity: Severity.Warning,
+        severity: Severity.Danger,
         message: ALERT_MESSAGE_MOCK,
         reason: 'Reason 1',
         alertDetails: ['Detail 1', 'Detail 2'],
