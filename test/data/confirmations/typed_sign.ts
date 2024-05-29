@@ -134,7 +134,7 @@ export const unapprovedTypedSignMsgV4 = {
   },
 };
 
-export const permitSignatyeMsg = {
+export const permitSignatureMsg = {
   id: '0b1787a0-1c44-11ef-b70d-e7064bd7b659',
   securityAlertResponse: {
     reason: 'loading',
