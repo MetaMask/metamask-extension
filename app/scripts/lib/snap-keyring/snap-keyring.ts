@@ -124,9 +124,9 @@ export const snapKeyringBuilder = (
         address: string,
         snapId: string,
         handleUserInput: (accepted: boolean) => Promise<void>,
+        _accountNameSuggestion?: string,
+        displayConfirmation: boolean = false,
       ) => {
-        const preinstalledSnap = isSnapPreinstalled(snapId);
-
         const snapName = getSnapName(snapId);
 
         const trackSnapAccountEvent = (event: MetaMetricsEventName) => {
@@ -144,11 +144,14 @@ export const snapKeyringBuilder = (
         const learnMoreLink =
           'https://support.metamask.io/hc/en-us/articles/360015289452-How-to-add-accounts-in-your-wallet';
 
+        // If snap is preinstalled and does not request confirmation, skip the confirmation dialog
+        const skipConfirmation =
+          isSnapPreinstalled(snapId) && !displayConfirmation;
         // Since we use this in the finally, better to give it a default value if the controller call fails
-        let confirmationResult = preinstalledSnap;
+        let confirmationResult = skipConfirmation;
         let addAccountApprovalId = '';
         try {
-          if (!preinstalledSnap) {
+          if (!skipConfirmation) {
             const { id } = controllerMessenger.call(
               'ApprovalController:startFlow',
             );
@@ -191,18 +194,7 @@ export const snapKeyringBuilder = (
                 MetaMetricsEventName.AddSnapAccountSuccessViewed,
               );
 
-              if (preinstalledSnap) {
-                // For preinstalled snaps redirect to account page for newly added account
-                await controllerMessenger.call(
-                  'ApprovalController:addRequest',
-                  {
-                    origin: snapId,
-                    type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.preinstalledSnap,
-                  },
-                  false,
-                );
-              } else {
-                // Show success dialog for added account
+              if (!skipConfirmation) {
                 await showSuccess(
                   controllerMessenger,
                   snapId,
@@ -260,7 +252,8 @@ export const snapKeyringBuilder = (
           if (confirmationResult) {
             trackSnapAccountEvent(MetaMetricsEventName.AccountAdded);
           }
-          if (!preinstalledSnap) {
+          // End the approval flow if it was started
+          if (!skipConfirmation) {
             controllerMessenger.call('ApprovalController:endFlow', {
               id: addAccountApprovalId,
             });
