@@ -269,7 +269,7 @@ import { mmiKeyringBuilderFactory } from './mmi-keyring-builder-factory';
 ///: END:ONLY_INCLUDE_IF
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
-import createDupeReqFilterMiddleware from './lib/createDupeReqFilterMiddleware';
+import createDupeReqFilterStream from './lib/createDupeReqFilterStream';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
 import { createMethodMiddleware } from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
@@ -4563,7 +4563,7 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * Imports an account with the specified import strategy.
-   * These are defined in app/scripts/account-import-strategies
+   * These are defined in @metamask/keyring-controller
    * Each strategy represents a different way of serializing an Ethereum key pair.
    *
    * @param {'privateKey' | 'json'} strategy - A unique identifier for an account import strategy.
@@ -5001,12 +5001,14 @@ export default class MetamaskController extends EventEmitter {
       tabId,
     });
 
+    const dupeReqFilterStream = createDupeReqFilterStream();
+
     // setup connection
     const providerStream = createEngineStream({ engine });
 
     const connectionId = this.addConnection(origin, { engine });
 
-    pump(outStream, providerStream, outStream, (err) => {
+    pump(outStream, dupeReqFilterStream, providerStream, outStream, (err) => {
       // handle any middleware cleanup
       engine._middleware.forEach((mid) => {
         if (mid.destroy && typeof mid.destroy === 'function') {
@@ -5083,10 +5085,6 @@ export default class MetamaskController extends EventEmitter {
     subscriptionManager.events.on('notification', (message) =>
       engine.emit('notification', message),
     );
-
-    if (isManifestV3) {
-      engine.push(createDupeReqFilterMiddleware());
-    }
 
     // append tabId to each request if it exists
     if (tabId) {
