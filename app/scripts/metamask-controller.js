@@ -1291,6 +1291,13 @@ export default class MetamaskController extends EventEmitter {
       encryptor: encryptorFactory(600_000),
       getMnemonic: this.getPrimaryKeyringMnemonic.bind(this),
       preinstalledSnaps: PREINSTALLED_SNAPS,
+      getFeatureFlags: () => {
+        return {
+          disableSnaps:
+            this.preferencesController.store.getState().useExternalServices ===
+            false,
+        };
+      },
     });
 
     this.notificationController = new NotificationController({
