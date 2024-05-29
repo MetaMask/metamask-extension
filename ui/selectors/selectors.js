@@ -127,6 +127,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getOrderedConnectedAccountsForActiveTab,
   getOrderedConnectedAccountsForConnectedDapp,
+  getSubjectMetadata,
 } from './permissions';
 import { createDeepEqualSelector } from './util';
 
