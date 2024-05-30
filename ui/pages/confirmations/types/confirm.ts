@@ -26,6 +26,9 @@ export type SignatureRequestType = {
     origin: string;
     data: string | TypedSignDataV1Type;
     version?: string;
+    siwe?: {
+      isSIWEMessage: boolean;
+    };
   };
   type: TransactionType;
   custodyId?: string;
