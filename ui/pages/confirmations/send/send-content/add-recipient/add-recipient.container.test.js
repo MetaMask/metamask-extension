@@ -21,9 +21,14 @@ jest.mock('../../../../../selectors', () => ({
 }));
 
 jest.mock('../../../../../ducks/domains', () => ({
-  getDomainResolution: (s) => `mockSendDomainResolution:${s}`,
+  getDomainResolutions: (s) => [
+    {
+      resolvedAddress: `mockSendDomainResolution:${s}`,
+      resolvingSnap: `mockSendResolvingSnap:${s}`,
+      addressBookEntryName: `mockAddressBookEntryName:${s}`,
+    },
+  ],
   getDomainType: (s) => `mockSendDomainType:${s}`,
-  getResolvingSnap: (s) => `mockSendResolvingSnap:${s}`,
   getDomainError: (s) => `mockSendDomainResolutionError:${s}`,
   getDomainWarning: (s) => `mockSendDomainResolutionWarning:${s}`,
   useMyAccountsForRecipientSearch: (s) =>
@@ -48,7 +53,7 @@ describe('add-recipient container', () => {
     it('should map the correct properties to props', () => {
       expect(mapStateToProps('mockState')).toStrictEqual({
         addressBook: [{ name: 'mockAddressBook:mockState' }],
-        addressBookEntryName: undefined,
+        addressBookEntryName: `mockAddressBookEntryName:mockState`,
         contacts: [{ name: 'mockAddressBook:mockState' }],
         domainResolution: 'mockSendDomainResolution:mockState',
         domainError: 'mockSendDomainResolutionError:mockState',

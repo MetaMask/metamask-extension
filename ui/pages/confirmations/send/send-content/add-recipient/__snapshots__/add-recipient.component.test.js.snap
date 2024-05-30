@@ -469,61 +469,98 @@ exports[`Add Recipient Component Domain Resolution should match snapshot 1`] = `
       </button>
     </div>
     <div
-      class="send__select-recipient-wrapper__group-item"
+      class="send__select-recipient-wrapper__list"
     >
       <div
-        class=""
+        class="box box--margin-top-2 box--margin-right-4 box--margin-bottom-2 box--margin-left-4 box--flex-direction-row"
       >
-        <div
-          class="identicon"
-          style="height: 28px; width: 28px; border-radius: 14px;"
+        <p
+          class="mm-box mm-text mm-text--body-lg-medium mm-box--color-text-alternative"
         >
-          <div
-            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 28px; height: 28px; display: inline-block; background: rgb(24, 151, 242);"
-          >
-            <svg
-              height="28"
-              width="28"
-              x="0"
-              y="0"
-            >
-              <rect
-                fill="#2362E1"
-                height="28"
-                transform="translate(3.140663911693453 -4.667521795329333) rotate(458.4 14 14)"
-                width="28"
-                x="0"
-                y="0"
-              />
-              <rect
-                fill="#F94301"
-                height="28"
-                transform="translate(-13.443026878443934 6.993307681050803) rotate(268.8 14 14)"
-                width="28"
-                x="0"
-                y="0"
-              />
-              <rect
-                fill="#FA7900"
-                height="28"
-                transform="translate(-7.941722319388745 25.795013895597954) rotate(117.3 14 14)"
-                width="28"
-                x="0"
-                y="0"
-              />
-            </svg>
-          </div>
-        </div>
+          Contacts
+        </p>
       </div>
       <div
-        class="send__select-recipient-wrapper__group-item__content"
+        class="send__select-recipient-wrapper__list"
       >
         <div
-          class="send__select-recipient-wrapper__group-item__title"
+          class="send__select-recipient-wrapper__recent-group-wrapper"
+        />
+        <button
+          class="mm-box address-list-item mm-box--padding-4 mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
         >
-          DNS Re...tion
-        </div>
-        
+          <div
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+          >
+            <div
+              class="mm-avatar-account__jazzicon"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(249, 100, 1);"
+              >
+                <svg
+                  height="32"
+                  width="32"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#C81432"
+                    height="32"
+                    transform="translate(-0.583645999400264 -3.1039565032560605) rotate(331.7 16 16)"
+                    width="32"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#187AF2"
+                    height="32"
+                    transform="translate(-12.717635568312648 6.331674609038503) rotate(160.5 16 16)"
+                    width="32"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#FB183E"
+                    height="32"
+                    transform="translate(28.6680862233552 -2.984235702254764) rotate(517.6 16 16)"
+                    width="32"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+            style="overflow: hidden;"
+          >
+            <p
+              class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
+              data-testid="address-list-item-label"
+            >
+              Address Book Account 1
+            </p>
+            <div
+              class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
+              data-testid="address-list-item-address"
+            >
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-14"
+                  class=""
+                  data-original-title="0xc42edfcc21ed14dda456aa0756c153f7985d8813"
+                  data-tooltipped=""
+                  style="display: inline;"
+                  tabindex="0"
+                >
+                  0xc42ed...d8813
+                </div>
+              </div>
+            </div>
+          </div>
+        </button>
       </div>
     </div>
   </div>
