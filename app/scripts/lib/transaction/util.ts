@@ -13,26 +13,18 @@ import type { Hex } from '@metamask/utils';
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { PPOMController } from '@metamask/ppom-validator';
 import { addHexPrefix } from 'ethereumjs-util';
-import { SUPPORTED_CHAIN_IDS } from '../ppom/ppom-middleware';
 
 import {
   generateSecurityAlertId,
   handlePPOMError,
   validateRequestWithPPOM,
 } from '../ppom/ppom-util';
+import { SecurityAlertResponse } from '../ppom/types';
+import {
+  PPOM_EXCLUDED_TRANSACTION_TYPES,
+  PPOM_SUPPORTED_CHAIN_IDS,
+} from '../ppom/constants';
 ///: END:ONLY_INCLUDE_IF
-
-/**
- * Type for security alert response from transaction validator.
- */
-export type SecurityAlertResponse = {
-  reason: string;
-  features?: string[];
-  result_type: string;
-  providerRequestsCount?: Record<string, number>;
-  securityAlertId?: string;
-  description?: string;
-};
 
 export type AddTransactionOptions = NonNullable<
   Parameters<TransactionController['addTransaction']>[1]
@@ -96,14 +88,6 @@ export async function addDappTransaction(
 
   return (await waitForHash()) as string;
 }
-
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-const PPOM_EXCLUDED_TRANSACTION_TYPES = [
-  TransactionType.swap,
-  TransactionType.swapApproval,
-  TransactionType.swapAndSend,
-];
-///: END:ONLY_INCLUDE_IF
 
 export async function addTransaction(
   request: AddTransactionRequest,
@@ -256,7 +240,7 @@ function validateSecurity(request: AddTransactionRequest) {
 
   if (
     !securityAlertsEnabled ||
-    !SUPPORTED_CHAIN_IDS.includes(chainId) ||
+    !PPOM_SUPPORTED_CHAIN_IDS.includes(chainId) ||
     !typeIsExcludedFromPPOM
   ) {
     return;

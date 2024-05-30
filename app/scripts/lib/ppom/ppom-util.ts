@@ -8,28 +8,15 @@ import { Hex, JsonRpcRequest } from '@metamask/utils';
 import { v4 as uuid } from 'uuid';
 import { PPOM } from '@blockaid/ppom_release';
 import { SignatureController } from '@metamask/signature-controller';
-import { SecurityAlertResponse } from '../transaction/util';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
+import { AppStateController } from '../../controllers/app-state';
+import { SecurityAlertResponse } from './types';
 
 const { sentry } = global;
-
-export const SUPPORTED_CHAIN_IDS: Hex[] = [
-  CHAIN_IDS.ARBITRUM,
-  CHAIN_IDS.AVALANCHE,
-  CHAIN_IDS.BASE,
-  CHAIN_IDS.BSC,
-  CHAIN_IDS.LINEA_MAINNET,
-  CHAIN_IDS.MAINNET,
-  CHAIN_IDS.OPBNB,
-  CHAIN_IDS.OPTIMISM,
-  CHAIN_IDS.POLYGON,
-  CHAIN_IDS.SEPOLIA,
-];
 
 const METHOD_SEND_TRANSACTION = 'eth_sendTransaction';
 
@@ -69,8 +56,7 @@ export async function updateSecurityAlertResponse({
   signatureController,
   transactionController,
 }: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  appStateController: any;
+  appStateController: AppStateController;
   method: string;
   securityAlertId: string;
   securityAlertResponse: SecurityAlertResponse;

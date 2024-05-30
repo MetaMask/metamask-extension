@@ -1,7 +1,6 @@
 import { PPOMController } from '@metamask/ppom-validator';
 import { NetworkController } from '@metamask/network-controller';
 import {
-  Hex,
   Json,
   JsonRpcParams,
   JsonRpcRequest,
@@ -12,34 +11,22 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { PreferencesController } from '../../controllers/preferences';
-import { SecurityAlertResponse } from '../transaction/util';
+import { AppStateController } from '../../controllers/app-state';
 import {
   generateSecurityAlertId,
   handlePPOMError,
   validateRequestWithPPOM,
 } from './ppom-util';
+import { SecurityAlertResponse } from './types';
+import { PPOM_SUPPORTED_CHAIN_IDS } from './constants';
 
 const CONFIRMATION_METHODS = Object.freeze([
   'eth_sendRawTransaction',
   'eth_sendTransaction',
   ...SIGNING_METHODS,
 ]);
-
-export const SUPPORTED_CHAIN_IDS: Hex[] = [
-  CHAIN_IDS.ARBITRUM,
-  CHAIN_IDS.AVALANCHE,
-  CHAIN_IDS.BASE,
-  CHAIN_IDS.BSC,
-  CHAIN_IDS.LINEA_MAINNET,
-  CHAIN_IDS.MAINNET,
-  CHAIN_IDS.OPBNB,
-  CHAIN_IDS.OPTIMISM,
-  CHAIN_IDS.POLYGON,
-  CHAIN_IDS.SEPOLIA,
-];
 
 /**
  * Middleware function that handles JSON RPC requests.
@@ -64,9 +51,7 @@ export function createPPOMMiddleware<
   ppomController: PPOMController,
   preferencesController: PreferencesController,
   networkController: NetworkController,
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  appStateController: any,
+  appStateController: AppStateController,
   updateSecurityAlertResponse: (
     method: string,
     signatureAlertId: string,
@@ -87,7 +72,7 @@ export function createPPOMMiddleware<
       if (
         !securityAlertsEnabled ||
         !CONFIRMATION_METHODS.includes(req.method) ||
-        !SUPPORTED_CHAIN_IDS.includes(chainId)
+        !PPOM_SUPPORTED_CHAIN_IDS.includes(chainId)
       ) {
         return;
       }

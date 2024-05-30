@@ -113,8 +113,8 @@ import {
   SURVEY_START_TIME,
 } from '../helpers/constants/survey';
 import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
-import { SUPPORTED_CHAIN_IDS } from '../../app/scripts/lib/ppom/ppom-middleware';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
+import { PPOM_SUPPORTED_CHAIN_IDS } from '../../app/scripts/lib/ppom/constants';
 import {
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
@@ -2013,7 +2013,7 @@ export function getNetworkConfigurations(state) {
 
 export function getIsNetworkSupportedByBlockaid(state) {
   const currentChainId = getCurrentChainId(state);
-  const isSupported = SUPPORTED_CHAIN_IDS.includes(currentChainId);
+  const isSupported = PPOM_SUPPORTED_CHAIN_IDS.includes(currentChainId);
 
   return isSupported;
 }
