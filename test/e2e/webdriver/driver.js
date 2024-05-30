@@ -586,6 +586,7 @@ class Driver {
   }
 
   async waitUntilXWindowHandles(_x, delayStep = 1000, timeout = this.timeout) {
+    console.log("process.env.ENABLE_MV3: " + process.env.ENABLE_MV3)
     const x = process.env.ENABLE_MV3 ? _x + 1 : _x;
     let timeElapsed = 0;
     let windowHandles = [];
