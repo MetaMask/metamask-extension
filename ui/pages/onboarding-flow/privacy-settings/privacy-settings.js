@@ -138,8 +138,10 @@ export default function PrivacySettings() {
     setUseTransactionSimulations(isTransactionSimulationsEnabled);
     dispatch(setPetnamesEnabled(turnOnPetnames));
 
-    if (!isProfileSyncingEnabled && participateInMetaMetrics) {
-      dispatch(performSignIn());
+    if (externalServicesOnboardingToggleState) {
+      if (!isProfileSyncingEnabled && participateInMetaMetrics) {
+        dispatch(performSignIn());
+      }
     }
 
     if (ipfsURL && !ipfsError) {
