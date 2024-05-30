@@ -82,19 +82,19 @@ export function validateAddEthereumChainParams(params, end) {
     });
   }
 
-  const otherKeys = Object.keys(
-    omit(params, [
-      'chainId',
-      'chainName',
-      'blockExplorerUrls',
-      'nativeCurrency',
-      'rpcUrls',
-      'iconUrls',
-    ]),
-  );
+  const {
+    chainId,
+    chainName,
+    blockExplorerUrls,
+    nativeCurrency,
+    rpcUrls,
+    ...otherParams
+  } = params;
 
-  const { chainId, chainName, blockExplorerUrls, nativeCurrency, rpcUrls } =
-    params;
+  const otherKeys = Object.keys(otherParams).filter(
+    // iconUrls is a valid optional but not currently used parameter
+    (v) => !['iconUrls'].includes(v),
+  );
 
   if (otherKeys.length > 0) {
     throw ethErrors.rpc.invalidParams({
