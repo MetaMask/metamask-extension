@@ -597,9 +597,6 @@
   "basicConfigurationBannerTitle": {
     "message": "La fonctionnalité de base est désactivée"
   },
-  "basicConfigurationDescription": {
-    "message": "Comprend les données et la valeur des jetons, les réglages optimaux du gaz, et plus encore. Si vous utilisez ces services, votre adresse IP sera partagée avec MetaMask, comme lorsque vous visitez un site web."
-  },
   "basicConfigurationLabel": {
     "message": "Fonctionnalité de base"
   },
