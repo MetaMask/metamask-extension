@@ -391,7 +391,7 @@
     "nanoid": "^2.1.6",
     "pify": "^5.0.0",
     "promise-to-callback": "^1.0.0",
-    "prop-types": "^15.6.1",
+    "prop-types": "^15.8.1",
     "punycode": "^2.1.1",
     "qrcode-generator": "1.4.1",
     "qrcode.react": "^3.1.0",
