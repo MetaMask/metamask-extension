@@ -106,13 +106,17 @@ export const components: NotificationComponent<ERC20Notification> = {
       type: 'body_onchain_notification',
       From: ({ notification }) => (
         <NotificationDetailAddress
-          side={t('notificationItemFrom') || ''}
+          side={`${t('notificationItemFrom')}${
+            isSent(notification) ? ` (${t('you')})` : ''
+          }`}
           address={notification.data.from}
         />
       ),
       To: ({ notification }) => (
         <NotificationDetailAddress
-          side={t('notificationItemTo') || ''}
+          side={`${t('notificationItemTo')}${
+            isSent(notification) ? '' : ` (${t('you')})`
+          }`}
           address={notification.data.to}
         />
       ),
@@ -149,11 +153,11 @@ export const components: NotificationComponent<ERC20Notification> = {
             }}
             label={t('asset') || ''}
             detail={notification.data.token.symbol}
-            fiatValue={`${getUsdAmount(
+            fiatValue={`$${getUsdAmount(
               notification.data.token.amount,
               notification.data.token.decimals,
               notification.data.token.usd,
-            )} $`}
+            )}`}
             value={`${getAmount(
               notification.data.token.amount,
               notification.data.token.decimals,
@@ -172,7 +176,7 @@ export const components: NotificationComponent<ERC20Notification> = {
             icon={{
               src: nativeCurrencyLogo,
             }}
-            label={t('network') || ''}
+            label={t('notificationDetailNetwork') || ''}
             detail={nativeCurrencyName}
           />
         );
@@ -191,6 +195,7 @@ export const components: NotificationComponent<ERC20Notification> = {
       );
       return (
         <NotificationDetailButton
+          notification={notification}
           variant={ButtonVariant.Secondary}
           text={t('notificationItemCheckBlockExplorer') || ''}
           href={

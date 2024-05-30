@@ -63,6 +63,7 @@ export enum BackgroundColor {
   backgroundDefault = 'background-default',
   backgroundAlternative = 'background-alternative',
   overlayDefault = 'overlay-default',
+  overlayAlternative = 'overlay-alternative',
   primaryDefault = 'primary-default',
   primaryAlternative = 'primary-alternative',
   primaryMuted = 'primary-muted',

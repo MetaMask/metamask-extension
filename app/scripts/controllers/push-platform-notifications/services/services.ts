@@ -2,17 +2,17 @@ import { getToken, deleteToken } from 'firebase/messaging';
 import type { FirebaseApp } from 'firebase/app';
 import { getApp, initializeApp } from 'firebase/app';
 import { getMessaging, onBackgroundMessage } from 'firebase/messaging/sw';
-import type {
-  Messaging,
-  MessagePayload,
-  Unsubscribe,
-} from 'firebase/messaging/sw';
+import type { Messaging, MessagePayload } from 'firebase/messaging/sw';
 import log from 'loglevel';
 import {
   onNotificationClick,
   onPushNotification,
 } from '../utils/get-notification-message';
-import { Notification } from '../../metamask-notifications/types/types';
+import {
+  Notification,
+  NotificationUnion,
+} from '../../metamask-notifications/types/types';
+import { processNotification } from '../../metamask-notifications/processors/process-notifications';
 
 const url = process.env.PUSH_NOTIFICATIONS_SERVICE_URL;
 const REGISTRATION_TOKENS_ENDPOINT = `${url}/v1/link`;
@@ -183,27 +183,35 @@ export async function activatePushNotifications(
 
 export async function listenToPushNotifications(
   onNewNotification: (notification: Notification) => void,
-): Promise<Unsubscribe> {
+  onNotificationClicked: (notification: Notification) => void,
+): Promise<() => void> {
+  /*
+  Push notifications require 2 listeners that need tracking (when creating and for tearing down):
+  1. handling receiving a push notification (and the content we want to display)
+  2. handling when a user clicks on a push notification
+  */
+
   // Firebase
   const messaging = await getFirebaseMessaging();
-  const unsubscribe = onBackgroundMessage(
+  const unsubscribePushNotifications = onBackgroundMessage(
     messaging,
     async (payload: MessagePayload): Promise<void> => {
       const typedPayload = payload;
 
       // if the payload does not contain data, do nothing
       try {
-        const notificationData = typedPayload?.data?.data
+        const notificationData: NotificationUnion = typedPayload?.data?.data
           ? JSON.parse(typedPayload?.data?.data)
           : undefined;
+
         if (!notificationData) {
           return;
         }
 
-        // update the notification list
-        onNewNotification(notificationData);
+        const notification = processNotification(notificationData);
+        onNewNotification(notification);
 
-        await onPushNotification(notificationData);
+        await onPushNotification(notification);
       } catch (error) {
         // Do Nothing, cannot parse a bad notification
         log.error('Unable to send push notification:', {
@@ -215,13 +223,25 @@ export async function listenToPushNotifications(
     },
   );
 
+  // Notification Click Listener
+  const notificationClickHandler = (event: NotificationEvent) => {
+    onNotificationClick(event, onNotificationClicked);
+  };
+  sw.addEventListener('notificationclick', notificationClickHandler);
+  const unsubscribeNotificationClicks = () =>
+    sw.removeEventListener('notificationclick', notificationClickHandler);
+
+  const unsubscribe = () => {
+    unsubscribePushNotifications();
+    unsubscribeNotificationClicks();
+  };
+
   return unsubscribe;
 }
 
 /**
  * Handle Clicking Notifications.
  */
-sw.addEventListener('notificationclick', onNotificationClick);
 
 /**
  * Disables push notifications by removing the registration token and unlinking triggers.
