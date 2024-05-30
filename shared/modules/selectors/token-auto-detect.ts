@@ -5,6 +5,7 @@ type TokenAutoDetectionMetaMaskState = {
     preferences: {
       showTokenAutodetectModal: boolean | null;
     };
+    showTokenAutodetectModalOnUpgrade: boolean | null;
   };
 };
 
@@ -17,6 +18,14 @@ export const getShowTokenAutodetectModal = (
 export const getIsShowTokenAutodetectModal = (
   state: TokenAutoDetectionMetaMaskState,
 ) => {
+  // Upgrade case
+  if (state.metamask.showTokenAutodetectModalOnUpgrade === null) {
+    return (
+      !getUseTokenDetection(state) &&
+      state.metamask.showTokenAutodetectModalOnUpgrade === null
+    );
+  }
+
   return (
     !getUseTokenDetection(state) && getShowTokenAutodetectModal(state) === null
   );

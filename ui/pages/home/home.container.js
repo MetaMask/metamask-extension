@@ -72,6 +72,7 @@ import {
   setActiveNetwork,
   setNewTokensImportedError,
   setShowTokenAutodetectModal,
+  setShowTokenAutodetectModalOnUpgrade,
 } from '../../store/actions';
 import {
   hideWhatsNewPopup,
@@ -255,6 +256,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     setTokenAutodetectModal: (val) => {
       dispatch(setShowTokenAutodetectModal(val));
+    },
+    setShowTokenAutodetectModalOnUpgrade: (val) => {
+      dispatch(setShowTokenAutodetectModalOnUpgrade(val));
     },
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     setWaitForConfirmDeepLinkDialog: (wait) =>

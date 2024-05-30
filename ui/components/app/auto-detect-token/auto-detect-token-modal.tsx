@@ -8,10 +8,6 @@ import {
   ModalHeader,
   Box,
   Text,
-  ButtonPrimary,
-  ButtonSecondary,
-  ButtonPrimarySize,
-  ButtonSecondarySize,
   ModalBody,
   ModalFooter,
 } from '../../component-library';
@@ -38,8 +34,13 @@ import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 type AutoDetectTokenModalProps = {
   isOpen: boolean;
   onClose: (arg: boolean) => void;
+  setShowTokenAutodetectModalOnUpgrade: (arg: boolean) => void;
 };
-function AutoDetectTokenModal({ isOpen, onClose }: AutoDetectTokenModalProps) {
+function AutoDetectTokenModal({
+  isOpen,
+  onClose,
+  setShowTokenAutodetectModalOnUpgrade,
+}: AutoDetectTokenModalProps) {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
@@ -60,6 +61,7 @@ function AutoDetectTokenModal({ isOpen, onClose }: AutoDetectTokenModalProps) {
       });
       dispatch(setUseTokenDetection(val));
       onClose(val);
+      setShowTokenAutodetectModalOnUpgrade(val);
     },
     [dispatch],
   );

@@ -198,6 +198,8 @@ export default class Home extends PureComponent {
     setActiveNetwork: PropTypes.func,
     // eslint-disable-next-line react/no-unused-prop-types
     setTokenAutodetectModal: PropTypes.func,
+    // eslint-disable-next-line react/no-unused-prop-types
+    setShowTokenAutodetectModalOnUpgrade: PropTypes.func,
     hasAllowedPopupRedirectApprovals: PropTypes.bool.isRequired,
     useExternalServices: PropTypes.bool,
     setBasicFunctionalityModalOpen: PropTypes.func,
@@ -831,6 +833,7 @@ export default class Home extends PureComponent {
       isSmartTransactionsOptInModalAvailable,
       isShowTokenAutodetectModal,
       setTokenAutodetectModal,
+      setShowTokenAutodetectModalOnUpgrade,
       ///: END:ONLY_INCLUDE_IF
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       mmiPortfolioEnabled,
@@ -908,6 +911,9 @@ export default class Home extends PureComponent {
           <AutoDetectTokenModal
             isOpen={showAutoDetectionModal}
             onClose={setTokenAutodetectModal}
+            setShowTokenAutodetectModalOnUpgrade={
+              setShowTokenAutodetectModalOnUpgrade
+            }
           />
 
           {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}

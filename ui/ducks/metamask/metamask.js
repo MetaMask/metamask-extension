@@ -209,6 +209,13 @@ export default function reduceMetamask(state = initialState, action) {
       };
     }
 
+    case actionConstants.SET_SHOW_TOKEN_AUTO_DETECT_MODAL_UPGRADE: {
+      return {
+        ...metamaskState,
+        showTokenAutodetectModalOnUpgrade: action.value,
+      };
+    }
+
     case actionConstants.SET_NEXT_NONCE: {
       return {
         ...metamaskState,

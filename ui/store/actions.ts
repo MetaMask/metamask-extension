@@ -4084,6 +4084,27 @@ export function setFirstTimeFlowType(
   };
 }
 
+export function setShowTokenAutodetectModalOnUpgrade(
+  val: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setShowTokenAutodetectModalOnUpgrade`);
+    callBackgroundMethod(
+      'setShowTokenAutodetectModalOnUpgrade',
+      [val],
+      (err) => {
+        if (err) {
+          dispatch(displayWarning(err));
+        }
+      },
+    );
+    dispatch({
+      type: actionConstants.SET_SHOW_TOKEN_AUTO_DETECT_MODAL_UPGRADE,
+      value: val,
+    });
+  };
+}
+
 export function setSelectedNetworkConfigurationId(
   networkConfigurationId: string,
 ): PayloadAction<string> {

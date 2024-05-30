@@ -25,7 +25,11 @@ describe('AutoDetectTokenModal', () => {
 
   it('renders the modal when isOpen is true', () => {
     renderWithProvider(
-      <AutoDetectTokenModal isOpen={true} onClose={() => ({})} />,
+      <AutoDetectTokenModal
+        isOpen={true}
+        onClose={() => ({})}
+        setShowTokenAutodetectModalOnUpgrade={() => ({})}
+      />,
       mockStore,
     );
 
@@ -38,7 +42,11 @@ describe('AutoDetectTokenModal', () => {
     useDispatchMock.mockReturnValue(jest.fn().mockResolvedValue({}));
     const handleClose = jest.fn();
     renderWithProvider(
-      <AutoDetectTokenModal isOpen={true} onClose={handleClose} />,
+      <AutoDetectTokenModal
+        isOpen={true}
+        onClose={handleClose}
+        setShowTokenAutodetectModalOnUpgrade={() => ({})}
+      />,
       mockStore,
     );
 
@@ -49,8 +57,15 @@ describe('AutoDetectTokenModal', () => {
   it('calls onClose with false when Not right now button is clicked', () => {
     useDispatchMock.mockReturnValue(jest.fn().mockResolvedValue({}));
     const handleClose = jest.fn();
+    const handleSetShowTokenAutodetectModalOnUpgrade = jest.fn();
     renderWithProvider(
-      <AutoDetectTokenModal isOpen={true} onClose={handleClose} />,
+      <AutoDetectTokenModal
+        isOpen={true}
+        onClose={handleClose}
+        setShowTokenAutodetectModalOnUpgrade={
+          handleSetShowTokenAutodetectModalOnUpgrade
+        }
+      />,
       mockStore,
     );
 
