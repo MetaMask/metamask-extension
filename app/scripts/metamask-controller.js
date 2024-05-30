@@ -1541,6 +1541,8 @@ export default class MetamaskController extends EventEmitter {
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
           const { address } = this.accountsController.getSelectedAccount();
 
+          this._addAccountsWithBalance();
+
           this.postOnboardingInitialization();
           this.triggerNetworkrequests();
           // execute once the token detection on the post-onboarding
@@ -3933,43 +3935,12 @@ export default class MetamaskController extends EventEmitter {
         this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer),
       );
 
-      // Scan accounts until we find an empty one
-      const { chainId } = this.networkController.state.providerConfig;
-      const ethQuery = new EthQuery(this.provider);
-      const accounts = await this.keyringController.getAccounts();
-      let address = accounts[accounts.length - 1];
+      const { completedOnboarding } =
+        this.onboardingController.store.getState();
 
-      for (let count = accounts.length; ; count++) {
-        const balance = await this.getBalance(address, ethQuery);
-
-        if (balance === '0x0') {
-          // This account has no balance, so check for tokens
-          await this.tokenDetectionController.detectTokens({
-            selectedAddress: address,
-          });
-
-          const tokens =
-            this.tokensController.state.allTokens?.[chainId]?.[address];
-          const detectedTokens =
-            this.tokensController.state.allDetectedTokens?.[chainId]?.[address];
-
-          if (
-            (tokens?.length ?? 0) === 0 &&
-            (detectedTokens?.length ?? 0) === 0
-          ) {
-            // This account has no balance or tokens
-            if (count !== 1) {
-              await this.removeAccount(address);
-            }
-            break;
-          }
-        }
-
-        // This account has assets, so check the next one
-        ({ addedAccountAddress: address } =
-          await this.keyringController.addNewAccount(count));
+      if (completedOnboarding) {
+        await this._addAccountsWithBalance();
       }
-
       // This must be set as soon as possible to communicate to the
       // keyring's iframe and have the setting initialized properly
       // Optimistically called to not block MetaMask login due to
@@ -3979,6 +3950,45 @@ export default class MetamaskController extends EventEmitter {
       return vault;
     } finally {
       releaseLock();
+    }
+  }
+
+  async _addAccountsWithBalance() {
+    // Scan accounts until we find an empty one
+    const { chainId } = this.networkController.state.providerConfig;
+    const ethQuery = new EthQuery(this.provider);
+    const accounts = await this.keyringController.getAccounts();
+    let address = accounts[accounts.length - 1];
+
+    for (let count = accounts.length; ; count++) {
+      const balance = await this.getBalance(address, ethQuery);
+
+      if (balance === '0x0') {
+        // This account has no balance, so check for tokens
+        await this.tokenDetectionController.detectTokens({
+          selectedAddress: address,
+        });
+
+        const tokens =
+          this.tokensController.state.allTokens?.[chainId]?.[address];
+        const detectedTokens =
+          this.tokensController.state.allDetectedTokens?.[chainId]?.[address];
+
+        if (
+          (tokens?.length ?? 0) === 0 &&
+          (detectedTokens?.length ?? 0) === 0
+        ) {
+          // This account has no balance or tokens
+          if (count !== 1) {
+            await this.removeAccount(address);
+          }
+          break;
+        }
+      }
+
+      // This account has assets, so check the next one
+      ({ addedAccountAddress: address } =
+        await this.keyringController.addNewAccount(count));
     }
   }
 
