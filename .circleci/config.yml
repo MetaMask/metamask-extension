@@ -118,6 +118,9 @@ workflows:
       - prep-build:
           requires:
             - prep-deps
+      - prep-build-mv2:
+          requires:
+            - prep-deps
       - prep-build-desktop:
           filters:
             branches:
@@ -125,6 +128,9 @@ workflows:
           requires:
             - prep-deps
       - prep-build-flask:
+          requires:
+            - prep-deps
+      - prep-build-flask-mv2:
           requires:
             - prep-deps
       - prep-build-test:
@@ -239,6 +245,9 @@ workflows:
       - validate-source-maps:
           requires:
             - prep-build
+      - validate-source-maps-mv2:
+          requires:
+            - prep-build-mv2
       - validate-source-maps-beta:
           requires:
             - trigger-beta-build
@@ -254,10 +263,13 @@ workflows:
       - validate-source-maps-flask:
           requires:
             - prep-build-flask
-      - test-mozilla-lint:
+      - validate-source-maps-flask-mv2:
+          requires:
+            - prep-build-flask-mv2
+      - test-mozilla-lint-mv2:
           requires:
             - prep-deps
-            - prep-build
+            - prep-build-mv2
       - test-mozilla-lint-desktop:
           filters:
             branches:
@@ -265,10 +277,10 @@ workflows:
           requires:
             - prep-deps
             - prep-build-desktop
-      - test-mozilla-lint-flask:
+      - test-mozilla-lint-flask-mv2:
           requires:
             - prep-deps
-            - prep-build-flask
+            - prep-build-flask-mv2
       - all-tests-pass:
           requires:
             - test-deps-depcheck
@@ -289,9 +301,9 @@ workflows:
             - validate-source-maps-desktop
             - validate-source-maps-flask
             - validate-source-maps-mmi
-            - test-mozilla-lint
+            - test-mozilla-lint-mv2
             - test-mozilla-lint-desktop
-            - test-mozilla-lint-flask
+            - test-mozilla-lint-flask-mv2
             - test-e2e-chrome
             - test-e2e-chrome-multichain
             - test-e2e-chrome-multiple-providers
@@ -317,10 +329,12 @@ workflows:
           requires:
             - prep-deps
             - prep-build
+            - prep-build-mv2
             - trigger-beta-build
             - prep-build-desktop
             - prep-build-mmi
             - prep-build-flask
+            - prep-build-flask-mv2
             - prep-build-storybook
             - prep-build-ts-migration-dashboard
             - benchmark
@@ -334,9 +348,11 @@ workflows:
           requires:
             - prep-deps
             - prep-build
+            - prep-build-mv2
             - prep-build-desktop
             - prep-build-mmi
             - prep-build-flask
+            - prep-build-flask-mv2
             - all-tests-pass
       - job-publish-storybook:
           filters:
@@ -545,6 +561,48 @@ jobs:
             - dist
             - builds
 
+  prep-build-mv2:
+    executor: node-browsers-medium-plus
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - when:
+          condition:
+            not:
+              matches:
+                pattern: /^master$/
+                value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:dist
+                command: ENABLE_MV3=false yarn build dist
+      - when:
+          condition:
+            matches:
+              pattern: /^master$/
+              value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:prod
+                command: ENABLE_MV3=false yarn build prod
+      - run:
+          name: build:debug
+          command: find dist/ -type f -exec md5sum {} \; | sort -k 2
+      - run:
+          name: Move mmi build to 'dist-mv2' to avoid conflict with production build
+          command: mv ./dist ./dist-mv2
+      - run:
+          name: Move mmi zips to 'builds-mv2' to avoid conflict with production build
+          command: mv ./builds ./builds-mv2
+      - store_artifacts:
+          path: builds-mv2
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-mv2
+            - builds-mv2
+
   prep-build-desktop:
     executor: node-browsers-medium-plus
     steps:
@@ -651,6 +709,46 @@ jobs:
           paths:
             - dist-flask
             - builds-flask
+
+  prep-build-flask-mv2:
+    executor: node-browsers-medium-plus
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - when:
+          condition:
+            not:
+              matches:
+                pattern: /^master$/
+                value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:dist
+                command: ENABLE_MV3=false yarn build --build-type flask dist
+      - when:
+          condition:
+            matches:
+              pattern: /^master$/
+              value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:prod
+                command: yarn build --build-type flask prod
+      - run:
+          name: build:debug
+          command: find dist/ -type f -exec md5sum {} \; | sort -k 2
+      - run:
+          name: Move flask build to 'dist-flask' to avoid conflict with production build
+          command: mv ./dist ./dist-flask-mv2
+      - run:
+          name: Move flask zips to 'builds-flask' to avoid conflict with production build
+          command: mv ./builds ./builds-flask-mv2
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-flask-mv2
+            - builds-flask-mv2
 
   prep-build-test-flask:
     executor: node-browsers-medium-plus
@@ -1456,8 +1554,14 @@ jobs:
           path: builds-flask
           destination: builds-flask
       - store_artifacts:
+          path: builds-flask-mv2
+          destination: builds-flask-mv2
+      - store_artifacts:
           path: builds-mmi
           destination: builds-mmi
+      - store_artifacts:
+          path: builds-mv2
+          destination: builds-mv2
       - store_artifacts:
           path: builds-test
       - store_artifacts:
@@ -1684,12 +1788,50 @@ jobs:
           name: Validate source maps
           command: yarn validate-source-maps
 
-  test-mozilla-lint:
+  validate-source-maps-flask-mv2:
+    executor: node-browsers-small
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move flask build to dist
+          command: mv ./dist-flask-mv2 ./dist
+      - run:
+          name: Move flask zips to builds
+          command: mv ./builds-flask-mv2 ./builds
+      - run:
+          name: Validate source maps
+          command: yarn validate-source-maps
+
+  validate-source-maps-mv2:
+    executor: node-browsers-small
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move flask build to dist
+          command: mv ./dist-mv2 ./dist
+      - run:
+          name: Move flask zips to builds
+          command: mv ./builds-mv2 ./builds
+      - run:
+          name: Validate source maps
+          command: yarn validate-source-maps
+
+  test-mozilla-lint-mv2:
     executor: node-browsers-medium
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
           at: .
+      - run:
+          name: Move flask build to dist
+          command: mv ./dist-mv2 ./dist
+      - run:
+          name: Move flask zips to builds
+          command: mv ./builds-mv2 ./builds
       - run:
           name: test:mozilla-lint
           command: yarn mozilla-lint
@@ -1710,7 +1852,7 @@ jobs:
           name: test:mozilla-lint
           command: yarn mozilla-lint
 
-  test-mozilla-lint-flask:
+  test-mozilla-lint-flask-mv2:
     executor: node-browsers-medium
     steps:
       - run: *shallow-git-clone
@@ -1718,10 +1860,10 @@ jobs:
           at: .
       - run:
           name: Move flask build to dist
-          command: mv ./dist-flask ./dist
+          command: mv ./dist-flask-mv2 ./dist
       - run:
           name: Move flask zips to builds
-          command: mv ./builds-flask ./builds
+          command: mv ./builds-flask-mv2 ./builds
       - run:
           name: test:mozilla-lint
           command: yarn mozilla-lint
