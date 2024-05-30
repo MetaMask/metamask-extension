@@ -25,10 +25,9 @@ export async function migrate(
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function transformState(state: Record<string, any>) {
-  const AccountsController = state?.AccountsController || {};
+  const accountsController = state?.AccountsController || {};
 
   if (
-    hasProperty(state, 'AccountsController') &&
     isObject(state.AccountsController) &&
     hasProperty(state.AccountsController, 'internalAccounts') &&
     hasProperty(
@@ -41,7 +40,7 @@ function transformState(state: Record<string, any>) {
         .accounts,
     ).length > 0
   ) {
-    Object.values(AccountsController.internalAccounts.accounts).forEach(
+    Object.values(accountsController.internalAccounts.accounts).forEach(
       (internalAccount: InternalAccount) => {
         if (!internalAccount.metadata?.importTime) {
           internalAccount.metadata.importTime = Date.now();
@@ -52,6 +51,6 @@ function transformState(state: Record<string, any>) {
 
   return {
     ...state,
-    AccountsController,
+    AccountsController: accountsController,
   };
 }

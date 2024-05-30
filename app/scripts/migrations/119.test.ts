@@ -18,6 +18,38 @@ describe('migration #119', () => {
     expect(newStorage.meta).toStrictEqual({ version });
   });
 
+  it('returns the default state if the AccountsController state is undefined', async () => {
+    const oldStorage = {
+      meta: {
+        version: oldVersion,
+      },
+      data: {
+        AccountsController: {
+          internalAccounts: {
+            accounts: {},
+            selectedAccount: '',
+          },
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+    expect(newStorage).toStrictEqual({
+      meta: {
+        version: newVersion,
+      },
+      data: {
+        AccountsController: {
+          internalAccounts: {
+            accounts: {},
+            selectedAccount: '',
+          },
+        },
+      },
+    });
+    expect(newStorage);
+  });
+
   it('adds importTime attribute to InternalAccount if it is not defined"', async () => {
     const mockInternalAccount = createMockInternalAccount();
     // @ts-expect-error forcing the importTime to be undefined for migration test.
