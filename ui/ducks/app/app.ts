@@ -101,7 +101,6 @@ type AppState = {
   showDeleteMetaMetricsDataModal: boolean;
   showDataDeletionErrorModal: boolean;
   metaMetricsDataDeletionMarked: boolean;
-  hasRecordedMetricsSinceDeletion: boolean;
   snapsInstallPrivacyWarningShown: boolean;
 };
 
@@ -187,7 +186,6 @@ const initialState: AppState = {
   showDeleteMetaMetricsDataModal: false,
   showDataDeletionErrorModal: false,
   metaMetricsDataDeletionMarked: false,
-  hasRecordedMetricsSinceDeletion: false,
   snapsInstallPrivacyWarningShown: false,
 };
 
@@ -621,16 +619,6 @@ export default function reduceApp(
         ...appState,
         metaMetricsDataDeletionMarked: false,
       };
-    case actionConstants.METAMETRICS_DATA_RECORDING:
-      return {
-        ...appState,
-        hasRecordedMetricsSinceDeletion: true,
-      };
-    case actionConstants.METAMETRICS_DATA_NOT_RECORDING:
-      return {
-        ...appState,
-        hasRecordedMetricsSinceDeletion: false,
-      };
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case actionConstants.SHOW_KEYRING_SNAP_REMOVAL_RESULT:
       return {
@@ -774,17 +762,5 @@ export function markingMetaMetricsDataDeletion(): Action {
 export function unMarkingMetaMetricsDataDeletion(): Action {
   return {
     type: actionConstants.METAMETRICS_DATA_DELETION_UNMARKED,
-  };
-}
-
-export function continueRecordingMetaMetricsData(): Action {
-  return {
-    type: actionConstants.METAMETRICS_DATA_RECORDING,
-  };
-}
-
-export function stopRecordingMetaMetricsData(): Action {
-  return {
-    type: actionConstants.METAMETRICS_DATA_NOT_RECORDING,
   };
 }

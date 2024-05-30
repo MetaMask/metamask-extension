@@ -3,8 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   hideDeleteMetaMetricsDataModal,
   markingMetaMetricsDataDeletion,
-  continueRecordingMetaMetricsData,
-  stopRecordingMetaMetricsData,
   openDataDeletionErrorModal,
 } from '../../../ducks/app/app';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -28,7 +26,10 @@ import {
   JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { createMetaMetricsDataDeletionTask } from '../../../store/actions';
+import {
+  createMetaMetricsDataDeletionTask,
+  setHasMetaMetricsDataRecorded,
+} from '../../../store/actions';
 import { getParticipateInMetaMetrics } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -52,13 +53,13 @@ export default function ClearMetaMetricsData() {
       await dispatch(createMetaMetricsDataDeletionTask());
       dispatch(markingMetaMetricsDataDeletion());
       if (participateInMetaMetrics) {
-        dispatch(continueRecordingMetaMetricsData());
+        dispatch(setHasMetaMetricsDataRecorded(true));
         trackEvent({
           category: MetaMetricsEventCategory.Settings,
           event: MetaMetricsEventName.MetricsDataDeletionRequest,
         });
       } else {
-        dispatch(stopRecordingMetaMetricsData());
+        dispatch(setHasMetaMetricsDataRecorded(false));
       }
     } catch (error: unknown) {
       dispatch(openDataDeletionErrorModal());
