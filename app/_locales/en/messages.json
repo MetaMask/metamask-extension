@@ -4691,6 +4691,9 @@
   "signing": {
     "message": "Signing"
   },
+  "signingInWith": {
+    "message": "Signing in with"
+  },
   "simulationDetailsFailed": {
     "message": "There was an error loading your estimation."
   },
