@@ -25,6 +25,8 @@ BLOCKAID_PUBLIC_KEY=
 ; FIREFOX_SNAP=
 
 ENABLE_CONFIRMATION_REDESIGN=
+; Enable the new add/edit network UI flow
+ENABLE_NETWORK_UI_REDESIGN=
 
 ; Enables the Settings Page - Developer Options
 ; ENABLE_SETTINGS_PAGE_DEV_OPTIONS=true
