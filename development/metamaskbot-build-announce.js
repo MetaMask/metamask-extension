@@ -309,7 +309,7 @@ async function start() {
         path.resolve(
           __dirname,
           '..',
-          path.join('test-artifacts', 'chrome', 'mv3', 'bundle_size.json'),
+          path.join('test-artifacts', 'chrome', 'bundle_size.json'),
         ),
         'utf-8',
       ),
