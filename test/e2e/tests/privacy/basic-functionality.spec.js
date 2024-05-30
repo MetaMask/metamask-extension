@@ -19,6 +19,17 @@ async function mockApis(mockServer) {
           body: [{ fakedata: true }],
         };
       }),
+    await mockServer
+      .forGet('https://min-api.cryptocompare.com/data/price')
+      .withQuery({ fsym: 'ETH', tsyms: 'USD' })
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            fakedata: 0,
+          },
+        };
+      }),
   ];
 }
 
@@ -45,6 +56,9 @@ describe('MetaMask onboarding @no-mmi', function () {
         );
         await driver.clickElement('[id="basic-configuration-checkbox"]');
         await driver.clickElement({ text: 'Turn off', tag: 'button' });
+        await driver.clickElement(
+          '[data-testid="currency-rate-check-toggle"] .toggle-button',
+        );
         await driver.clickElement({ text: 'Done', tag: 'button' });
 
         await driver.clickElement('[data-testid="network-display"]');
