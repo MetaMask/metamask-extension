@@ -38,8 +38,8 @@ main() {
 
   # Check if the script is running in a CI environment (GitHub Actions sets the CI variable to true)
   if [ -z "${CI:-}" ]; then
-    # If not running in CI, prompt to restore development dependencies
-    echo "To restore development dependencies, please run 'yarn install'"
+    # If not running in CI, restore development dependencies
+    yarn
   fi
 }
 

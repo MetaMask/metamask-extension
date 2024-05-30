@@ -36,7 +36,6 @@
     "dapp-chain": "GANACHE_ARGS='-b 2' concurrently -k -n ganache,dapp -p '[{time}][{name}]' 'yarn ganache:start' 'sleep 5 && yarn dapp'",
     "forwarder": "node ./development/static-server.js ./node_modules/@metamask/forwarder/dist/ --port 9010",
     "dapp-forwarder": "concurrently -k -n forwarder,dapp -p '[{time}][{name}]' 'yarn forwarder' 'yarn dapp'",
-    "test:attributions-check": "./development/attributions-check.sh",
     "test:unit": "node ./test/run-unit-tests.js --mocha --jestGlobal --jestDev",
     "test:unit:jest": "node ./test/run-unit-tests.js --jestGlobal --jestDev",
     "test:unit:jest:watch": "node --inspect ./node_modules/.bin/jest --watch",
@@ -95,7 +94,6 @@
     "storybook:deploy": "storybook-to-ghpages --existing-output-dir storybook-build --remote storybook --branch master",
     "update-changelog": "auto-changelog update",
     "generate:migration": "./development/generate-migration.sh",
-    "generate:attributions": "./development/generate-attributions.sh",
     "lavamoat:build": "lavamoat development/build/index.js --policy lavamoat/build-system/policy.json --policyOverride lavamoat/build-system/policy-override.json",
     "lavamoat:build:auto": "yarn lavamoat:build --writeAutoPolicy",
     "lavamoat:debug:build": "yarn lavamoat:build --writeAutoPolicyDebug --policydebug lavamoat/build-system/policy-debug.json",
@@ -121,7 +119,9 @@
     "download-builds": "tsx .devcontainer/download-builds.ts prep-build",
     "download-builds:test": "tsx .devcontainer/download-builds.ts prep-build-test",
     "master-sync": "node development/master-sync.js",
-    "update-mock-cdn": "node test/e2e/mock-cdn/update-mock-cdn-files.js"
+    "update-mock-cdn": "node test/e2e/mock-cdn/update-mock-cdn-files.js",
+    "attributions:check": "./development/attributions-check.sh",
+    "attributions:generate": "./development/generate-attributions.sh"
   },
   "resolutions": {
     "simple-update-notifier@^1.0.0": "^2.0.0",

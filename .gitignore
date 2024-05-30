@@ -72,3 +72,6 @@ test/e2e/mmi/specs/**/*-darwin.png
 test/e2e/mmi/dist/
 
 lavamoat/**/policy-debug.json
+
+# Attributions
+licenseInfos.json

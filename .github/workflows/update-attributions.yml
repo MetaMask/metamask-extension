@@ -71,7 +71,7 @@ jobs:
       - name: Install dependencies from cache
         run: yarn --immutable --immutable-cache
       - name: Generate Atributions
-        run: yarn generate:attributions
+        run: yarn attributions:generate
       - name: Cache attributions file
         uses: actions/cache/save@v3
         with:
