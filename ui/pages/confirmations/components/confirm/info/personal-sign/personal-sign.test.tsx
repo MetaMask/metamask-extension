@@ -1,9 +1,12 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
-import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
-import { unapprovedPersonalSignMsg } from '../../../../../../../test/data/confirmations/personal_sign';
 import mockState from '../../../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
+import {
+  signatureRequestSIWE,
+  unapprovedPersonalSignMsg,
+} from '../../../../../../../test/data/confirmations/personal_sign';
 import PersonalSignInfo from './personal-sign';
 
 describe('PersonalSignInfo', () => {
@@ -57,5 +60,17 @@ describe('PersonalSignInfo', () => {
     const mockStore = configureMockStore([])(state);
     const { container } = renderWithProvider(<PersonalSignInfo />, mockStore);
     expect(container).toMatchSnapshot();
+  });
+
+  it('display signing in from for SIWE request', () => {
+    const state = {
+      ...mockState,
+      confirm: {
+        currentConfirmation: signatureRequestSIWE,
+      },
+    };
+    const mockStore = configureMockStore([])(state);
+    const { getByText } = renderWithProvider(<PersonalSignInfo />, mockStore);
+    expect(getByText('Signing in with')).toBeDefined();
   });
 });

@@ -4915,15 +4915,7 @@ export default class MetamaskController extends EventEmitter {
     this.emit('controllerConnectionChanged', this.activeControllerConnections);
 
     // set up postStream transport
-    outStream.on(
-      'data',
-      createMetaRPCHandler(
-        api,
-        outStream,
-        this.store,
-        this.localStoreApiWrapper,
-      ),
-    );
+    outStream.on('data', createMetaRPCHandler(api, outStream));
     const handleUpdate = (update) => {
       if (!isStreamWritable(outStream)) {
         return;
@@ -5843,6 +5835,7 @@ export default class MetamaskController extends EventEmitter {
 
   toggleExternalServices(useExternal) {
     this.preferencesController.toggleExternalServices(useExternal);
+    this.tokenListController.updatePreventPollingOnNetworkRestart(!useExternal);
     if (useExternal) {
       this.tokenDetectionController.enable();
       this.gasFeeController.enableNonRPCGasFeeApis();
