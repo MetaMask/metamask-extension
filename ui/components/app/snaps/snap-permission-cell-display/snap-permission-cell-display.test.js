@@ -3,7 +3,7 @@ import React from 'react';
 import { renderWithProvider } from '../../../../../test/jest';
 import SnapPermissionCellDisplay from './snap-permission-cell-display';
 
-describe('Snap Permission List', () => {
+describe('Snap Permission Cell', () => {
   const mockSnapId = 'mock-snap-id';
   const mockPermissionConnection = 'https://snaps.metamask.io';
   const mockIndex = 1;
@@ -57,7 +57,7 @@ describe('Snap Permission List', () => {
       <SnapPermissionCellDisplay
         snapId={mockSnapId}
         showOptions={false}
-        subjectMetadata={
+        connectionSubjectMetadata={
           mockTargetSubjectsMetadata[mockConnectionData.connection]
         }
         permission={mockConnectionData}

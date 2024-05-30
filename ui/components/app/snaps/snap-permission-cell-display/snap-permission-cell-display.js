@@ -26,7 +26,7 @@ export default function SnapPermissionCellDisplay({
   snapId,
   showOptions,
   permission,
-  subjectMetadata,
+  connectionSubjectMetadata,
   index,
   revoked,
   approved,
@@ -35,7 +35,7 @@ export default function SnapPermissionCellDisplay({
   let { label, description, leftIcon } = permission;
 
   if (permission.connection) {
-    if (subjectMetadata?.subjectType === SubjectType.Snap) {
+    if (connectionSubjectMetadata?.subjectType === SubjectType.Snap) {
       label = t('snapConnectTo', [
         <Text
           key="connectToMain"
@@ -43,7 +43,7 @@ export default function SnapPermissionCellDisplay({
           variant={TextVariant.inherit}
           color={TextColor.inherit}
         >
-          {subjectMetadata.name}
+          {connectionSubjectMetadata.name}
         </Text>,
       ]);
       description = t('snapConnectionPermissionDescription', [
@@ -56,17 +56,17 @@ export default function SnapPermissionCellDisplay({
           {permission.subjectName}
         </Text>,
         <Text
-          key={`permissionSubjectDescription_${subjectMetadata.name}`}
+          key={`permissionSubjectDescription_${connectionSubjectMetadata.name}`}
           fontWeight={FontWeight.Medium}
           variant={TextVariant.inherit}
           color={TextColor.inherit}
         >
-          {subjectMetadata.name}
+          {connectionSubjectMetadata.name}
         </Text>,
       ]);
     }
 
-    const faviconUrl = subjectMetadata?.iconUrl;
+    const faviconUrl = connectionSubjectMetadata?.iconUrl;
 
     leftIcon = faviconUrl ? (
       <AvatarFavicon
@@ -114,7 +114,7 @@ SnapPermissionCellDisplay.propTypes = {
   snapId: PropTypes.string.isRequired,
   showOptions: PropTypes.bool,
   permission: PropTypes.object.isRequired,
-  subjectMetadata: PropTypes.object,
+  connectionSubjectMetadata: PropTypes.object,
   index: PropTypes.number,
   revoked: PropTypes.bool,
   approved: PropTypes.bool,

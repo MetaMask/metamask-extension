@@ -193,7 +193,6 @@ export default function SnapUpdate({
                 revokedConnections={revokedConnections}
                 newConnections={newConnections}
                 targetSubjectMetadata={targetSubjectMetadata}
-                connections={requestState.connections || {}}
               />
             </Box>
             {isScrollable && !isScrolledToBottom ? (

@@ -39,7 +39,9 @@ export default function SnapPermissionsList({
         <SnapPermissionCellDisplay
           snapId={snapId}
           showOptions={showOptions}
-          subjectMetadata={targetSubjectsMetadata[permission.connection]}
+          connectionSubjectMetadata={
+            targetSubjectsMetadata[permission.connection]
+          }
           permission={permission}
           index={index}
           key={`permissionCellDisplay_${snapId}_${index}`}

@@ -20,7 +20,6 @@ export default function UpdateSnapPermissionList({
   revokedConnections,
   newConnections,
   targetSubjectMetadata,
-  connections,
 }) {
   const t = useI18nContext();
   const snapId = targetSubjectMetadata.origin;
@@ -30,7 +29,11 @@ export default function UpdateSnapPermissionList({
   );
 
   const targetSubjectsMetadata = useSelector((state) =>
-    getMultipleTargetsSubjectMetadata(state, connections),
+    getMultipleTargetsSubjectMetadata(state, {
+      ...newConnections,
+      ...approvedConnections,
+      ...revokedConnections,
+    }),
   );
 
   const snapsMetadata = useSelector(getSnapsMetadata);
@@ -61,7 +64,9 @@ export default function UpdateSnapPermissionList({
       }).map((permission, index) => (
         <SnapPermissionCellDisplay
           snapId={snapId}
-          subjectMetadata={targetSubjectsMetadata[permission.connection]}
+          connectionSubjectMetadata={
+            targetSubjectsMetadata[permission.connection]
+          }
           permission={permission}
           index={index}
           key={`permissionCellDisplay_${snapId}_${index}`}
@@ -75,7 +80,9 @@ export default function UpdateSnapPermissionList({
       }).map((permission, index) => (
         <SnapPermissionCellDisplay
           snapId={snapId}
-          subjectMetadata={targetSubjectsMetadata[permission.connection]}
+          connectionSubjectMetadata={
+            targetSubjectsMetadata[permission.connection]
+          }
           permission={permission}
           index={index}
           key={`permissionCellDisplay_${snapId}_${index}`}
@@ -90,7 +97,9 @@ export default function UpdateSnapPermissionList({
       }).map((permission, index) => (
         <SnapPermissionCellDisplay
           snapId={snapId}
-          subjectMetadata={targetSubjectsMetadata[permission.connection]}
+          connectionSubjectMetadata={
+            targetSubjectsMetadata[permission.connection]
+          }
           permission={permission}
           index={index}
           key={`permissionCellDisplay_${snapId}_${index}`}
@@ -127,8 +136,4 @@ UpdateSnapPermissionList.propTypes = {
    */
   newConnections: PropTypes.object.isRequired,
   targetSubjectMetadata: PropTypes.object.isRequired,
-  /**
-   * Pre-approved connections used by Snaps for Snaps or websites.
-   */
-  connections: PropTypes.object,
 };

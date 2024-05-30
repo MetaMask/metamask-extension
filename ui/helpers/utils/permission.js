@@ -554,6 +554,8 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
 
     return result;
   },
+  // connection_permission is pseudo permission used only for
+  // displaying pre-approved connections alongside other permissions
   [ConnectionPermission.connection_permission]: ({
     t,
     permissionValue,
