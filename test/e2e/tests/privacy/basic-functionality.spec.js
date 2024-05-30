@@ -95,7 +95,7 @@ describe('MetaMask onboarding @no-mmi', function () {
 
           assert.equal(
             requests.length,
-            0,
+            1,
             `${mockedEndpoints[i]} should make requests after onboarding`,
           );
         }
