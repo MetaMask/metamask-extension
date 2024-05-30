@@ -635,7 +635,10 @@ export default class MetamaskController extends EventEmitter {
 
     const nftControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'NftController',
-      allowedActions: [`${this.approvalController.name}:addRequest`,`${this.networkController.name}:getNetworkClientById`],
+      allowedActions: [
+        `${this.approvalController.name}:addRequest`,
+        `${this.networkController.name}:getNetworkClientById`,
+      ],
     });
     this.nftController = new NftController(
       {
@@ -696,7 +699,9 @@ export default class MetamaskController extends EventEmitter {
 
     this.nftDetectionController = new NftDetectionController({
       chainId: this.networkController.state.providerConfig.chainId,
-      getNetworkClientById: this.networkController.getNetworkClientById.bind(this.networkController),
+      getNetworkClientById: this.networkController.getNetworkClientById.bind(
+        this.networkController,
+      ),
       onNftsStateChange: (listener) => this.nftController.subscribe(listener),
       onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
         this.preferencesController.store,
