@@ -23,7 +23,7 @@ const TEMP_PROFILE_PATH_PREFIX = path.join(os.tmpdir(), 'MetaMask-Fx-Profile');
  *
  * @type {string}
  */
-const DEFAULT_PROXY_HOST = '127.0.0.1:8000';
+const DEFAULT_PROXY_HOST = 'http://127.0.0.1:8000';
 
 /**
  * Selenium Envar proxy host to use for HTTPS requests
