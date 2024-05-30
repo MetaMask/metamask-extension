@@ -156,6 +156,7 @@ export const CHAIN_IDS = {
   SCROLL_SEPOLIA: '0x8274f',
   WETHIO: '0x4e',
   CHZ: '0x15b38',
+  NUMBERS: '0x290b',
 } as const;
 
 const CHAINLIST_CHAIN_IDS_MAP = {
@@ -209,6 +210,7 @@ const CHAINLIST_CHAIN_IDS_MAP = {
   ZKATANA: '0x133e40',
   ZORA_MAINNET: '0x76adf1',
   FILECOIN: '0x13a',
+  NUMBERS: '0x290b',
 } as const;
 
 // To add a deprecation warning to a network, add it to the array
@@ -438,6 +440,8 @@ export const ZKATANA_MAINNET_IMAGE_URL = './images/zkatana.png';
 export const ZORA_MAINNET_IMAGE_URL = './images/zora.svg';
 export const FILECOIN_MAINNET_IMAGE_URL = './images/filecoin.svg';
 export const SCROLL_IMAGE_URL = './images/scroll.svg';
+export const NUMBERS_MAINNET_IMAGE_URL = './images/numbers-mainnet.svg';
+export const NUMBERS_TOKEN_IMAGE_URL = './images/numbers-token.png';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -767,6 +771,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.ZORA_MAINNET]: ZORA_MAINNET_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.FILECOIN]: FILECOIN_MAINNET_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.BASE]: BASE_TOKEN_IMAGE_URL,
+  [CHAINLIST_CHAIN_IDS_MAP.NUMBERS]: NUMBERS_MAINNET_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -791,6 +796,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.FILECOIN]: FILECOIN_MAINNET_IMAGE_URL,
   [CHAIN_IDS.SCROLL]: SCROLL_IMAGE_URL,
   [CHAIN_IDS.SCROLL_SEPOLIA]: SCROLL_IMAGE_URL,
+  [CHAIN_IDS.NUMBERS]: NUMBERS_TOKEN_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
@@ -937,6 +943,7 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.SCROLL_SEPOLIA
     | typeof CHAIN_IDS.WETHIO
     | typeof CHAIN_IDS.CHZ
+    | typeof CHAIN_IDS.NUMBERS
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {
