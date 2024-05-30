@@ -19,11 +19,25 @@ const { retry } = require('../../../development/lib/retry');
 const TEMP_PROFILE_PATH_PREFIX = path.join(os.tmpdir(), 'MetaMask-Fx-Profile');
 
 /**
- * Proxy host to use for HTTPS requests
+ * Default proxy host to use for HTTPS requests
+ *
+ * @type {string}
  */
-const HTTPS_PROXY_HOST = new URL(
-  process.env.SELENIUM_HTTPS_PROXY || 'http://127.0.0.1:8000',
-);
+const DEFAULT_PROXY_HOST = '127.0.0.1:8000';
+
+/**
+ * Selenium Envar proxy host to use for HTTPS requests
+ *
+ * @type {string}
+ */
+const { SELENIUM_HTTPS_PROXY } = process.env;
+
+function getProxyServerURL(proxyPort) {
+  if (proxyPort) {
+    return new URL(`http://127.0.0.1:${proxyPort}`);
+  }
+  return new URL(SELENIUM_HTTPS_PROXY || DEFAULT_PROXY_HOST);
+}
 
 /**
  * A wrapper around a {@code WebDriver} instance exposing Firefox-specific functionality
@@ -35,18 +49,21 @@ class FirefoxDriver {
    * @param {object} options - the options for the build
    * @param options.responsive
    * @param options.port
+   * @param options.proxyPort
    * @returns {Promise<{driver: !ThenableWebDriver, extensionUrl: string, extensionId: string}>}
    */
-  static async build({ responsive, port }) {
+  static async build({ responsive, port, proxyPort }) {
     const templateProfile = fs.mkdtempSync(TEMP_PROFILE_PATH_PREFIX);
     const options = new firefox.Options().setProfile(templateProfile);
 
+    const proxyServerURL = getProxyServerURL(proxyPort);
+
     // Set proxy in the way that doesn't interfere with Selenium Manager
     options.setPreference('network.proxy.type', 1);
-    options.setPreference('network.proxy.ssl', HTTPS_PROXY_HOST.hostname);
+    options.setPreference('network.proxy.ssl', proxyServerURL.hostname);
     options.setPreference(
       'network.proxy.ssl_port',
-      parseInt(HTTPS_PROXY_HOST.port, 10),
+      parseInt(proxyServerURL.port, 10),
     );
 
     options.setAcceptInsecureCerts(true);
