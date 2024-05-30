@@ -61,6 +61,7 @@ describe('Change assets', function () {
         await driver.waitForSelector({ css: 'p', text: '#1' });
 
         // Click continue
+        await driver.assertElementNotPresent('.mm-modal-content');
         await driver.clickElement({ text: 'Continue', css: 'button' });
 
         // Ensure NFT is showing
@@ -143,6 +144,7 @@ describe('Change assets', function () {
         await driver.waitForSelector({ css: 'p', text: '#1' });
 
         // Click continue
+        await driver.assertElementNotPresent('.mm-modal-content');
         await driver.clickElement({ text: 'Continue', css: 'button' });
 
         // Ensure NFT is showing
@@ -224,6 +226,7 @@ describe('Change assets', function () {
         // Populate an amount, continue
         await driver.clickElement('[data-testid="currency-input"]');
         await driver.press('[data-testid="currency-input"]', '2');
+        await driver.assertElementNotPresent('.mm-modal-content');
         await driver.clickElement({ text: 'Continue', css: 'button' });
 
         // Validate the send amount
