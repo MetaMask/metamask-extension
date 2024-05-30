@@ -5835,6 +5835,7 @@ export default class MetamaskController extends EventEmitter {
 
   toggleExternalServices(useExternal) {
     this.preferencesController.toggleExternalServices(useExternal);
+    this.tokenListController.updatePreventPollingOnNetworkRestart(!useExternal);
     if (useExternal) {
       this.tokenDetectionController.enable();
       this.gasFeeController.enableNonRPCGasFeeApis();
