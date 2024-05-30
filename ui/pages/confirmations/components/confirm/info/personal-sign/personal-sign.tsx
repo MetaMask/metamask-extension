@@ -2,6 +2,8 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import {
+  ConfirmInfoRow,
+  ConfirmInfoRowAddress,
   ConfirmInfoRowText,
   ConfirmInfoRowUrl,
 } from '../../../../../../components/app/confirm/info/row';
@@ -17,6 +19,7 @@ import {
   sanitizeString,
 } from '../../../../../../helpers/utils/util';
 import { SignatureRequestType } from '../../../../types/confirm';
+import { isSIWESignatureRequest } from '../../../../utils';
 import { AlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 
 const PersonalSignInfo: React.FC = () => {
@@ -28,6 +31,8 @@ const PersonalSignInfo: React.FC = () => {
   if (!currentConfirmation?.msgParams) {
     return null;
   }
+
+  const { from } = currentConfirmation.msgParams;
 
   return (
     <>
@@ -45,6 +50,11 @@ const PersonalSignInfo: React.FC = () => {
         >
           <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
         </AlertRow>
+        {isSIWESignatureRequest(currentConfirmation) && (
+          <ConfirmInfoRow label={t('signingInWith')}>
+            <ConfirmInfoRowAddress address={from} />
+          </ConfirmInfoRow>
+        )}
       </Box>
       <Box
         backgroundColor={BackgroundColor.backgroundDefault}
