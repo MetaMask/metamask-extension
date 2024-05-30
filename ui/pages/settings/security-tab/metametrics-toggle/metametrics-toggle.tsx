@@ -21,7 +21,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { continueRecordingMetaMetricsData } from '../../../../ducks/app/app';
+import { setHasMetaMetricsDataRecorded } from '../../../../store/actions';
 
 const MetametricsToggle = ({
   dataCollectionForMarketing,
@@ -74,7 +74,7 @@ const MetametricsToggle = ({
           participateInMetaMetrics,
         },
       });
-      dispatch(continueRecordingMetaMetricsData());
+      dispatch(setHasMetaMetricsDataRecorded(true));
     }
 
     if (dataCollectionForMarketing) {

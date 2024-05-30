@@ -28,7 +28,6 @@ import {
   getPetnamesEnabled,
 } from '../../../selectors';
 import {
-  continueRecordingMetaMetricsData,
   openBasicFunctionalityModal,
   unMarkingMetaMetricsDataDeletion,
 } from '../../../ducks/app/app';
@@ -126,9 +125,6 @@ const mapDispatchToProps = (dispatch) => {
     },
     unMarkingMetaMetricsDataDeletion: () => {
       return dispatch(unMarkingMetaMetricsDataDeletion());
-    },
-    continueRecordingMetaMetricsData: () => {
-      return dispatch(continueRecordingMetaMetricsData());
     },
     setSecurityAlertsEnabled: (value) => setSecurityAlertsEnabled(value),
   };
