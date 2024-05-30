@@ -98,9 +98,7 @@ export function validateAddEthereumChainParams(params, end) {
 
   if (otherKeys.length > 0) {
     throw ethErrors.rpc.invalidParams({
-      message: `Received unexpected keys on object parameter. Unsupported keys:\n${Object.keys(
-        otherKeys,
-      )}`,
+      message: `Received unexpected keys on object parameter. Unsupported keys:\n${otherKeys}`,
     });
   }
 
