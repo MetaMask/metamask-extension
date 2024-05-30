@@ -669,6 +669,9 @@
   "blockaid": {
     "message": "Blockaid"
   },
+  "blockaidAlertInfo": {
+    "message": "If you sign in, a third party known for scams might take all your assets. Please review the alerts before you proceed."
+  },
   "blockaidDescriptionApproveFarming": {
     "message": "If you approve this request, a third party known for scams might take all your assets."
   },
@@ -850,6 +853,9 @@
   },
   "confirmAlertModalAcknowledge": {
     "message": "I have acknowledged the alerts and still want to proceed"
+  },
+  "confirmAlertModalAcknowledgeBlockaid": {
+    "message": "I have acknowledged the alert and still want to proceed"
   },
   "confirmAlertModalDetails": {
     "message": "If you sign in, a third party known for scams might take all your assets. Please review the alerts before you proceed."
