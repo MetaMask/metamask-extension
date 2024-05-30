@@ -1002,7 +1002,16 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-item">
           <span>{t('basicConfigurationLabel')}</span>
           <div className="settings-page__content-description">
-            {t('basicConfigurationDescription')}
+            {t('basicConfigurationDescription', [
+              <a
+                href="https://consensys.io/privacy-policy"
+                key="link"
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                {t('privacyMsg')}
+              </a>,
+            ])}
           </div>
         </div>
 
