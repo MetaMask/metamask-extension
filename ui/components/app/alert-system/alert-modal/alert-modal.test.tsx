@@ -158,7 +158,7 @@ describe('AlertModal', () => {
       },
     });
 
-    useAlertsSpy.mockReturnValue({
+    (useAlertsSpy as jest.Mock).mockReturnValue({
       setAlertConfirmed: setAlertConfirmedMock,
       alerts: [alertsMock[1]],
       generalAlerts: [],

@@ -12,7 +12,7 @@ index 6b889a8c93e4c546dd2b1905c968ade143435134..8a63cf3cbc152d84864e1cec07da5c08
 \ No newline at end of file
 +module.exports = require('./redux-toolkit.cjs.development.js')
 diff --git a/dist/redux-toolkit.cjs.development.js b/dist/redux-toolkit.cjs.development.js
-index bb433432ec76331e12d6b62e200f06530055cb16..2738dec3958f9deac89c652f757390ce11abc087 100644
+index bb433432ec76331e12d6b62e200f06530055cb16..9caf4051aa96bd14ee2890ef6c79bf5b0fb685c6 100644
 --- a/dist/redux-toolkit.cjs.development.js
 +++ b/dist/redux-toolkit.cjs.development.js
 @@ -1,3 +1,13 @@
@@ -65,3 +65,30 @@ index bb433432ec76331e12d6b62e200f06530055cb16..2738dec3958f9deac89c652f757390ce
      return MiddlewareArray;
  }(Array));
  var EnhancerArray = /** @class */ (function (_super) {
+@@ -353,14 +363,14 @@ var EnhancerArray = /** @class */ (function (_super) {
+         enumerable: false,
+         configurable: true
+     });
+-    EnhancerArray.prototype.concat = function () {
++    __define(EnhancerArray.prototype, 'concat', function () {
+         var arr = [];
+         for (var _i = 0; _i < arguments.length; _i++) {
+             arr[_i] = arguments[_i];
+         }
+         return _super.prototype.concat.apply(this, arr);
+-    };
+-    EnhancerArray.prototype.prepend = function () {
++    });
++    __define(EnhancerArray.prototype, 'prepend', function () {
+         var arr = [];
+         for (var _i = 0; _i < arguments.length; _i++) {
+             arr[_i] = arguments[_i];
+@@ -369,7 +379,7 @@ var EnhancerArray = /** @class */ (function (_super) {
+             return new (EnhancerArray.bind.apply(EnhancerArray, __spreadArray([void 0], arr[0].concat(this))))();
+         }
+         return new (EnhancerArray.bind.apply(EnhancerArray, __spreadArray([void 0], arr.concat(this))))();
+-    };
++    });
+     return EnhancerArray;
+ }(Array));
+ function freezeDraftable(val) {

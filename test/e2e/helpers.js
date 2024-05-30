@@ -528,7 +528,7 @@ const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
   await Promise.all(
     (
       await driver.findClickableElements(
-        '.toggle-button.toggle-button--on:not([data-testid="basic-functionality-toggle"] .toggle-button)',
+        '.toggle-button.toggle-button--on:not([data-testid="basic-functionality-toggle"] .toggle-button):not([data-testid="profile-sync-toggle"] .toggle-button)',
       )
     ).map((toggle) => toggle.click()),
   );

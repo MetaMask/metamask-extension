@@ -594,9 +594,6 @@
   "basicConfigurationBannerTitle": {
     "message": "Chức năng cơ bản đã tắt"
   },
-  "basicConfigurationDescription": {
-    "message": "Bao gồm dữ liệu và giá trị của token, cài đặt gas tối ưu, v.v. Sử dụng các dịch vụ này sẽ chia sẻ địa chỉ IP của bạn với MetaMask, giống như khi bạn truy cập một trang web."
-  },
   "basicConfigurationLabel": {
     "message": "Chức năng cơ bản"
   },
