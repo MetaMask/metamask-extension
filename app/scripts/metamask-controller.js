@@ -635,7 +635,7 @@ export default class MetamaskController extends EventEmitter {
 
     const nftControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'NftController',
-      allowedActions: [`${this.approvalController.name}:addRequest`],
+      allowedActions: [`${this.approvalController.name}:addRequest`,`${this.networkController.name}:getNetworkClientById`],
     });
     this.nftController = new NftController(
       {
