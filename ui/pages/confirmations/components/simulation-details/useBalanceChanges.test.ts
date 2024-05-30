@@ -338,6 +338,19 @@ describe('useBalanceChanges', () => {
       expect(result.current.value[0].fiatAmount).toBe(-663.3337769927953);
     });
 
+    it('handles unavailable native fiat rate', async () => {
+      mockGetConversionRate.mockReturnValue(null);
+      const { result, waitForNextUpdate } = setupHook({
+        ...dummyBalanceChange,
+        difference: DIFFERENCE_ETH_MOCK,
+        isDecrease: true,
+      });
+
+      await waitForNextUpdate();
+
+      expect(result.current.value[0].fiatAmount).toBe(FIAT_UNAVAILABLE);
+    });
+
     it('handles no native balance change', async () => {
       const { result, waitForNextUpdate } = setupHook(undefined);
       await waitForNextUpdate();
