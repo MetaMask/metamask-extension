@@ -16,7 +16,11 @@ import { AvatarIcon, Text } from '../../component-library';
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
 import { AccountListItem } from '../../multichain';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-import { ConfirmInfoRow, ConfirmInfoRowAddress } from '../confirm/info/row';
+import {
+  ConfirmInfoRow,
+  ConfirmInfoRowAddress,
+  ConfirmInfoRowValueDouble,
+} from '../confirm/info/row';
 import { SnapDelineator } from '../snaps/snap-delineator';
 import { Copyable } from '../snaps/copyable';
 import Spinner from '../../ui/spinner';
@@ -27,6 +31,7 @@ import { SnapUIImage } from '../snaps/snap-ui-image';
 import { SnapUIInput } from '../snaps/snap-ui-input';
 import { SnapUIForm } from '../snaps/snap-ui-form';
 import { SnapUIButton } from '../snaps/snap-ui-button';
+import { SnapUIDropdown } from '../snaps/snap-ui-dropdown';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { SnapAccountSuccessMessage } from '../../../pages/confirmations/components/snap-account-success-message';
@@ -75,9 +80,11 @@ export const safeComponentList = {
   Spinner,
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
+  ConfirmInfoRowValueDouble,
   SnapUIInput,
   SnapUIButton,
   SnapUIForm,
+  SnapUIDropdown,
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   CreateSnapAccount,

@@ -70,7 +70,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
   SnapInterfaceContextProviderProps
 > = ({ children, interfaceId, snapId }) => {
   const dispatch = useDispatch();
-  const { state: initialState } = useSelector(
+  const { state: initialState, context } = useSelector(
     (state) => getMemoizedInterface(state, interfaceId),
     // Prevents the selector update.
     // We do this to avoid useless re-renders.
@@ -107,6 +107,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
             ...(value !== undefined && value !== null ? { value } : {}),
           },
           id: interfaceId,
+          context,
         },
       },
     }).then(() => forceUpdateMetamaskState(dispatch));
