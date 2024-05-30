@@ -1,4 +1,4 @@
-name: Check attributions
+name: Generate and Validate Attributions
 
 on:
   pull_request:
@@ -10,7 +10,6 @@ on:
 
 jobs:
   generate-and-validate-attributions:
-    name: Generate and Validate Attributions
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

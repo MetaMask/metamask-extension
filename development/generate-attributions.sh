@@ -27,6 +27,7 @@ main() {
   # relative to the project root irrespective of where this script was run.
   cd "${PROJECT_DIRECTORY}"
 
+  # Instruct Yarn to only install production dependencies
   yarn workspaces focus --production
 
   # Change directory to the sub-project
