@@ -6,8 +6,8 @@ import { handlers as localHandlers, legacyHandlers } from './handlers';
 
 const allHandlers = [...localHandlers, ...permissionRpcMethods.handlers];
 
-// The primary home of RPC method implementations in MetaMask. MUST succeed
-// our permissioning logic in the JSON-RPC middleware pipeline.
+// The primary home of RPC method implementations in MetaMask. MUST be subsequent
+// to our permissioning logic in the JSON-RPC middleware pipeline.
 export const createMethodMiddleware = makeMethodMiddlewareMaker(allHandlers);
 
 // A collection of RPC method implementations that, for legacy reasons, MAY precede
