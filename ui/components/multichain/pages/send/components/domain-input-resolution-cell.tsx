@@ -39,7 +39,7 @@ type DomainInputResolutionCellArgs = {
   protocol?: string;
   domainName: string;
   resolvingSnap?: string;
-  onClick: Function;
+  onClick: () => void;
 };
 
 export const DomainInputResolutionCell = ({
@@ -201,7 +201,7 @@ export const DomainInputResolutionCell = ({
       </div>
     </div>
   );
-}
+};
 
 DomainInputResolutionCell.propTypes = {
   domainType: PropTypes.string.isRequired,
