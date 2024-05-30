@@ -1,18 +1,28 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Fuse from 'fuse.js';
-
+import Identicon from '../../../../../components/ui/identicon';
 import Dialog from '../../../../../components/ui/dialog';
 import ContactList from '../../../../../components/app/contact-list';
 import RecipientGroup from '../../../../../components/app/contact-list/recipient-group/recipient-group.component';
-
-import { Text } from '../../../../../components/component-library';
+import { ellipsify } from '../../send.utils';
+import Confusable from '../../../../../components/ui/confusable';
+import {
+  Text,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  AvatarIcon,
+  AvatarIconSize,
+  IconName,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../../../components/component-library';
 import Box from '../../../../../components/ui/box';
 import {
   TextColor,
   TextVariant,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  IconColor,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../../../helpers/constants/design-system';
-import DomainInputResolutionCell from './domain-input-resolution-cell';
 
 export default class AddRecipient extends Component {
   static propTypes = {
@@ -20,9 +30,10 @@ export default class AddRecipient extends Component {
     ownedAccounts: PropTypes.array,
     addressBook: PropTypes.array,
     updateRecipient: PropTypes.func,
-    domainResolutions: PropTypes.arrayOf(PropTypes.object),
+    domainResolution: PropTypes.string,
     domainError: PropTypes.string,
     domainWarning: PropTypes.string,
+    addressBookEntryName: PropTypes.string,
     contacts: PropTypes.array,
     nonContacts: PropTypes.array,
     addHistoryEntry: PropTypes.func,
@@ -32,7 +43,10 @@ export default class AddRecipient extends Component {
       error: PropTypes.string,
       warning: PropTypes.string,
     }),
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     domainType: PropTypes.string,
+    resolvingSnap: PropTypes.string,
+    ///: END:ONLY_INCLUDE_IF
     updateRecipientUserInput: PropTypes.func,
   };
 
@@ -103,56 +117,28 @@ export default class AddRecipient extends Component {
 
   render() {
     const {
-      domainResolutions,
+      domainResolution,
       recipient,
       userInput,
+      addressBookEntryName,
       ownedAccounts = [],
-      domainType,
     } = this.props;
 
     let content;
 
     if (recipient.address) {
-      content = (
-        <DomainInputResolutionCell
-          domainType={domainType}
-          address={recipient.address}
-          domainName={recipient.nickname}
-          onClick={() =>
-            this.selectRecipient(
-              recipient.address,
-              recipient.nickname,
-              'validated user input',
-            )
-          }
-        />
+      content = this.renderExplicitAddress(
+        recipient.address,
+        recipient.nickname,
+        'validated user input',
       );
-    } else if (domainResolutions?.length > 0 && !recipient.error) {
-      content = domainResolutions.map((domainResolution) => {
-        const {
-          resolvedAddress,
-          resolvingSnap,
-          addressBookEntryName,
-          protocol,
-        } = domainResolution;
-        return (
-          <DomainInputResolutionCell
-            key={`${resolvedAddress}${resolvingSnap}${protocol}`}
-            domainType={domainType}
-            address={resolvedAddress}
-            domainName={addressBookEntryName || userInput}
-            onClick={() =>
-              this.selectRecipient(
-                resolvedAddress,
-                addressBookEntryName || userInput,
-                'Domain resolution',
-              )
-            }
-            protocol={protocol}
-            resolvingSnap={resolvingSnap}
-          />
-        );
-      });
+    } else if (domainResolution && !recipient.error) {
+      content = this.renderExplicitAddress(
+        domainResolution,
+        addressBookEntryName || userInput,
+        'Domain resolution',
+      );
+      // TODO: Domain lookup fails silently, maybe we allow for a generic error message from snaps in the future?
     }
 
     return (
@@ -164,6 +150,72 @@ export default class AddRecipient extends Component {
         {this.renderDialogs()}
         {content || this.renderMain()}
       </Box>
+    );
+  }
+
+  renderExplicitAddress(address, name, type) {
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    const { t } = this.context;
+    const { domainType } = this.props;
+    if (domainType === 'Other') {
+      // Snap provided resolution.
+      // Pulling the proposed name from the manifest,
+      // because domain resolution isn't in stable + no hardcoded metadata to pull from.
+      // TODO: If there are multiple resolutions (conflicts), we should render all of them
+      const { resolvingSnap } = this.props;
+      return (
+        <div
+          key={address}
+          className="send__select-recipient-wrapper__group-item"
+          onClick={() => this.selectRecipient(address, name, type)}
+        >
+          <Identicon address={address} diameter={28} />
+          <div className="send__select-recipient-wrapper__group-item__content">
+            <div className="send__select-recipient-wrapper__group-item__title">
+              <Confusable input={name} />
+              <Text paddingLeft={2}>{ellipsify(address)}</Text>
+            </div>
+            <div className="send__select-recipient-wrapper__group-item__subtitle">
+              <Text paddingRight={1}>{t('suggestedBy')}</Text>
+              <AvatarIcon
+                iconName={IconName.Snaps}
+                size={AvatarIconSize.Xs}
+                backgroundColor={IconColor.infoDefault}
+                marginRight={1}
+                iconProps={{
+                  color: IconColor.infoInverse,
+                }}
+              />
+              <Text
+                color={TextColor.infoDefault}
+                style={{ textOverflow: 'ellipsis' }}
+              >
+                {resolvingSnap}
+              </Text>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    ///: END:ONLY_INCLUDE_IF
+    return (
+      <div
+        key={address}
+        className="send__select-recipient-wrapper__group-item"
+        onClick={() => this.selectRecipient(address, name, type)}
+      >
+        <Identicon address={address} diameter={28} />
+        <div className="send__select-recipient-wrapper__group-item__content">
+          <div className="send__select-recipient-wrapper__group-item__title">
+            {name ? <Confusable input={name} /> : ellipsify(address)}
+          </div>
+          {name && (
+            <div className="send__select-recipient-wrapper__group-item__subtitle">
+              {ellipsify(address)}
+            </div>
+          )}
+        </div>
+      </div>
     );
   }
 
