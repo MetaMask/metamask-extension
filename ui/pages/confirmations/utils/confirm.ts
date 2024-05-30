@@ -4,6 +4,7 @@ import { TransactionType } from '@metamask/transaction-controller';
 import { Json } from '@metamask/utils';
 
 import { sanitizeMessage } from '../../../helpers/utils/util';
+import { SignatureRequestType } from '../types/confirm';
 
 export const REDESIGN_APPROVAL_TYPES = [
   ApprovalType.EthSignTypedData,
@@ -31,3 +32,6 @@ export const parseTypedDataMessage = (dataToParse: string) => {
   const sanitizedMessage = sanitizeMessage(message, primaryType, types);
   return { domain, sanitizedMessage, primaryType };
 };
+
+export const isSIWESignatureRequest = (request: SignatureRequestType) =>
+  request.msgParams?.siwe?.isSIWEMessage;
