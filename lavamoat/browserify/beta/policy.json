@@ -1962,22 +1962,6 @@
         "eslint>optionator>fast-levenshtein": true
       }
     },
-    "@metamask/post-message-stream": {
-      "globals": {
-        "MessageEvent.prototype": true,
-        "WorkerGlobalScope": true,
-        "addEventListener": true,
-        "browser": true,
-        "chrome": true,
-        "location.origin": true,
-        "postMessage": true,
-        "removeEventListener": true
-      },
-      "packages": {
-        "@metamask/utils": true,
-        "readable-stream": true
-      }
-    },
     "@metamask/ppom-validator>elliptic": {
       "packages": {
         "@metamask/ppom-validator>elliptic>brorand": true,
@@ -2462,9 +2446,6 @@
       }
     },
     "@metamask/snaps-execution-environments": {
-      "globals": {
-        "document.getElementById": true
-      },
       "packages": {
         "@metamask/post-message-stream": true,
         "@metamask/snaps-utils": true,
@@ -2965,37 +2946,6 @@
     "@storybook/addon-knobs>qs": {
       "packages": {
         "string.prototype.matchall>side-channel": true
-      }
-    },
-    "@trezor/connect-web": {
-      "globals": {
-        "URLSearchParams": true,
-        "__TREZOR_CONNECT_SRC": true,
-        "addEventListener": true,
-        "btoa": true,
-        "chrome": true,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console.warn": true,
-        "document.body": true,
-        "document.createElement": true,
-        "document.createTextNode": true,
-        "document.getElementById": true,
-        "document.querySelectorAll": true,
-        "location": true,
-        "navigator": true,
-        "open": true,
-        "origin": true,
-        "removeEventListener": true,
-        "setInterval": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@trezor/connect-web>@trezor/connect": true,
-        "@trezor/connect-web>@trezor/connect-common": true,
-        "@trezor/connect-web>@trezor/utils": true,
-        "@trezor/connect-web>tslib": true,
-        "webpack>events": true
       }
     },
     "@trezor/connect-web>@trezor/connect": {
