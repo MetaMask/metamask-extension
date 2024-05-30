@@ -147,13 +147,13 @@ export const snapKeyringBuilder = (
           isSnapPreinstalled(snapId) && !displayConfirmation;
         // If confirmation dialog are skipped, we consider the account creation to be confirmed
         let confirmationResult = skipConfirmation;
-        let addAccountApprovalId = '';
+        let confirmationApprovalId = '';
         try {
           if (!skipConfirmation) {
             const { id } = controllerMessenger.call(
               'ApprovalController:startFlow',
             );
-            addAccountApprovalId = id;
+            confirmationApprovalId = id;
             confirmationResult = Boolean(
               await controllerMessenger.call(
                 'ApprovalController:addRequest',
@@ -253,7 +253,7 @@ export const snapKeyringBuilder = (
           // End the approval flow if it was started
           if (!skipConfirmation) {
             controllerMessenger.call('ApprovalController:endFlow', {
-              id: addAccountApprovalId,
+              id: confirmationApprovalId,
             });
           }
         }
