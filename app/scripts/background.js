@@ -61,7 +61,11 @@ import rawFirstTimeState from './first-time-state';
 import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
-import { deferredPromise, getPlatform } from './lib/util';
+import {
+  deferredPromise,
+  getPlatform,
+  shouldEmitDappViewedEvent,
+} from './lib/util';
 
 /* eslint-enable import/first */
 
@@ -466,6 +470,11 @@ function emitDappViewedMetricEvent(
   connectSitePermissions,
   preferencesController,
 ) {
+  const { metaMetricsId } = controller.metaMetricsController.state;
+  if (!shouldEmitDappViewedEvent(metaMetricsId)) {
+    return;
+  }
+
   // A dapp may have other permissions than eth_accounts.
   // Since we are only interested in dapps that use Ethereum accounts, we bail out otherwise.
   if (!hasProperty(connectSitePermissions.permissions, 'eth_accounts')) {
