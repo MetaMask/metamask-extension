@@ -60,7 +60,7 @@ describe('FeeDetailsComponent', () => {
     await act(async () => {
       screen.getByRole('button').click();
     });
-    expect(screen.getAllByTitle('0 ETH')).toHaveLength(3);
+    expect(screen.getAllByTitle('0 ETH')).toHaveLength(2);
     expect(screen.getAllByTitle('0 ETH')[0]).toBeInTheDocument();
   });
 
@@ -88,5 +88,34 @@ describe('FeeDetailsComponent', () => {
       },
     });
     expect(screen.queryByText('Fee details')).toBeInTheDocument();
+  });
+
+  it('should not display total in details section for layer 2 network', async () => {
+    await render({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        networkDetails: {
+          EIPS: {
+            1559: false,
+          },
+        },
+        networksMetadata: {
+          goerli: {
+            EIPS: {
+              1559: false,
+            },
+            status: 'available',
+          },
+        },
+        providerConfig: {
+          chainId: CHAIN_IDS.OPTIMISM,
+        },
+      },
+    });
+    await act(async () => {
+      screen.getByRole('button').click();
+    });
+    expect(screen.queryByText('Totals')).not.toBeInTheDocument();
   });
 });
