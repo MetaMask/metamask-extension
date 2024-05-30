@@ -3910,6 +3910,9 @@ export default class MetamaskController extends EventEmitter {
   async createNewVaultAndRestore(password, encodedSeedPhrase) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
+      const { completedOnboarding } =
+        this.onboardingController.store.getState();
+
       const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
 
       // clear permissions
@@ -3927,16 +3930,15 @@ export default class MetamaskController extends EventEmitter {
 
       this.txController.clearUnapprovedTransactions();
 
-      this.tokenDetectionController.enable();
+      if (completedOnboarding) {
+        this.tokenDetectionController.enable();
+      }
 
       // create new vault
       const vault = await this.keyringController.createNewVaultAndRestore(
         password,
         this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer),
       );
-
-      const { completedOnboarding } =
-        this.onboardingController.store.getState();
 
       if (completedOnboarding) {
         await this._addAccountsWithBalance();
