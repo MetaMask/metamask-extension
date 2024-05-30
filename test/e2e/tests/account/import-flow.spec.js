@@ -87,6 +87,7 @@ describe('Import flow @no-mmi', function () {
 
         // accepts the account password after lock
         await unlockWallet(driver, {
+          navigate: false,
           waitLoginSuccess: false,
         });
 
