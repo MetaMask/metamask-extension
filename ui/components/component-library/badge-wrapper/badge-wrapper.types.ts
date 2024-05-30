@@ -46,6 +46,9 @@ export interface BadgeWrapperStyleUtilityProps extends StyleUtilityProps {
     right?: number | string;
     bottom?: number | string;
     left?: number | string;
+    transform?: string;
+    width?: string;
+    height?: string;
   };
   /**
    * The shape of the anchor element. Possible values could be 'BadgeWrapperAnchorElementShape.circular', 'BadgeWrapperAnchorElementShape.square'

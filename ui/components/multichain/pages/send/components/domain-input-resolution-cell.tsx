@@ -10,29 +10,39 @@ import PropTypes from 'prop-types';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { I18nContext } from '../../../../../contexts/i18n';
 ///: END:ONLY_INCLUDE_IF
-import Identicon from '../../../../../components/ui/identicon';
-import Confusable from '../../../../../components/ui/confusable';
+import Identicon from '../../../../ui/identicon';
+import Confusable from '../../../../ui/confusable';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   AvatarIcon,
+  AvatarIconSize,
   BadgeWrapper,
   IconName,
-  IconSize,
   ///: END:ONLY_INCLUDE_IF
   Text,
-} from '../../../../../components/component-library';
+} from '../../../../component-library';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   BackgroundColor,
+  BorderColor,
   IconColor,
   ///: END:ONLY_INCLUDE_IF
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { ellipsify } from '../../send.utils';
-import Tooltip from '../../../../../components/ui/tooltip';
+import { ellipsify } from '../../../../../pages/confirmations/send/send.utils';
+import Tooltip from '../../../../ui/tooltip';
 
-export default function DomainInputResolutionCell({
+type DomainInputResolutionCellArgs = {
+  domainType: string;
+  address: string;
+  protocol?: string;
+  domainName: string;
+  resolvingSnap?: string;
+  onClick: Function;
+};
+
+export const DomainInputResolutionCell = ({
   domainType,
   address,
   domainName,
@@ -41,20 +51,24 @@ export default function DomainInputResolutionCell({
   ///: END:ONLY_INCLUDE_IF
   onClick,
   protocol,
-}) {
+}: DomainInputResolutionCellArgs) => {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const t = useContext(I18nContext);
   ///: END:ONLY_INCLUDE_IF
-  const titleRef = useRef(null);
-  const breakpointRef = useRef(null);
+  const titleRef = useRef<null | HTMLDivElement>(null);
+  const breakpointRef = useRef<null | number>(null);
   const [isTitleOverflowing, setIsTitleOverflowing] = useState(false);
 
   useEffect(() => {
+    if (!titleRef.current) {
+      return;
+    }
+
     let isOverflowing =
       titleRef.current.offsetWidth < titleRef.current.scrollWidth;
-    const breakpointLength = titleRef.current.textContent.length;
+    const breakpointLength = titleRef.current.textContent?.length;
 
-    if (isOverflowing && !breakpointRef.current) {
+    if (isOverflowing && !breakpointRef.current && breakpointLength) {
       breakpointRef.current = breakpointLength;
     }
 
@@ -76,15 +90,15 @@ export default function DomainInputResolutionCell({
 
   const OverflowingTitle = () => (
     <Tooltip
-      containerClassName="send__select-recipient-wrapper__group-item__title-tooltip"
-      wrapperClassName="send__select-recipient-wrapper__group-item__title-tooltip-container"
+      containerClassName="multichain-send-page__recipient__item__title-tooltip"
+      wrapperClassName="multichain-send-page__recipient__item__title-tooltip-container"
       position="bottom"
       title={domainName}
     >
       <Confusable
         asText
         input={domainName}
-        confusableWrapperName="send__select-recipient-wrapper__group-item__title-confusable-wrapper"
+        confusableWrapperName="multichain-send-page__recipient__item__title-confusable-wrapper"
       />
     </Tooltip>
   );
@@ -95,22 +109,23 @@ export default function DomainInputResolutionCell({
     return (
       <div
         key={address}
-        className="send__select-recipient-wrapper__group-item"
-        onClick={onClick}
+        className="multichain-send-page__recipient__item"
+        onClick={() => onClick()}
       >
         <Tooltip title={t('suggestedBy', [resolvingSnap])}>
           <BadgeWrapper
             badge={
               <AvatarIcon
                 iconName={IconName.Snaps}
-                size={IconSize.Xs}
-                className="send__select-recipient-wrapper__group-item__avatar"
-                backgroundColor={IconColor.infoDefault}
-                borderColor={BackgroundColor.backgroundDefault}
+                size={AvatarIconSize.Xs}
+                className="multichain-send-page__recipient__item__avatar"
+                backgroundColor={BackgroundColor.infoDefault}
+                borderColor={BorderColor.backgroundDefault}
                 borderWidth={2}
                 iconProps={{
                   color: IconColor.infoInverse,
                   style: { width: '12px', height: '12px' },
+                  name: IconName.Snaps,
                 }}
               />
             }
@@ -125,10 +140,10 @@ export default function DomainInputResolutionCell({
             <Identicon address={address} diameter={32} />
           </BadgeWrapper>
         </Tooltip>
-        <div className="send__select-recipient-wrapper__group-item__content">
+        <div className="multichain-send-page__recipient__item__content">
           <div
             ref={titleRef}
-            className="send__select-recipient-wrapper__group-item__title"
+            className="multichain-send-page__recipient__item__title"
           >
             {isTitleOverflowing ? (
               <OverflowingTitle />
@@ -137,7 +152,7 @@ export default function DomainInputResolutionCell({
             )}
           </div>
           <Text color={TextColor.textAlternative}>{ellipsify(address)}</Text>
-          <div className="send__select-recipient-wrapper__group-item__subtitle">
+          <div className="multichain-send-page__recipient__item__subtitle">
             <Text
               color={TextColor.textAlternative}
               variant={TextVariant.bodySm}
@@ -150,7 +165,7 @@ export default function DomainInputResolutionCell({
     );
   }
   ///: END:ONLY_INCLUDE_IF
-  const Title = () => {
+  const getTitle = () => {
     if (domainName && isTitleOverflowing) {
       return <OverflowingTitle />;
     } else if (domainName && !isTitleOverflowing) {
@@ -162,19 +177,19 @@ export default function DomainInputResolutionCell({
   return (
     <div
       key={address}
-      className="send__select-recipient-wrapper__group-item"
-      onClick={onClick}
+      className="multichain-send-page__recipient__item"
+      onClick={() => onClick()}
     >
       <Identicon address={address} diameter={32} />
-      <div className="send__select-recipient-wrapper__group-item__content">
+      <div className="multichain-send-page__recipient__item__content">
         <div
           ref={titleRef}
-          className="send__select-recipient-wrapper__group-item__title"
+          className="multichain-send-page__recipient__item__title"
         >
-          <Title />
+          {getTitle()}
         </div>
         {domainName && (
-          <div className="send__select-recipient-wrapper__group-item__subtitle">
+          <div className="multichain-send-page__recipient__item__subtitle">
             <Text color={TextColor.textAlternative}>{ellipsify(address)}</Text>
           </div>
         )}

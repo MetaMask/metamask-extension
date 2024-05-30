@@ -11,7 +11,7 @@ import {
   isValidHexAddress,
 } from '../../../../../shared/modules/hexstring-utils';
 import { INVALID_RECIPIENT_ADDRESS_ERROR } from '../../../confirmations/send/send.constants';
-import DomainInputResolutionCell from '../../../confirmations/send/send-content/add-recipient/domain-input-resolution-cell';
+import { DomainInputResolutionCell } from '../../../../components/multichain/pages/send/components/domain-input-resolution-cell';
 
 export default class AddContact extends PureComponent {
   static contextTypes = {

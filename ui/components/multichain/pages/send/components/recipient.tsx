@@ -20,7 +20,7 @@ import {
   Box,
 } from '../../../../component-library';
 import { Tab, Tabs } from '../../../../ui/tabs';
-import DomainInputResolutionCell from '../../../../../pages/confirmations/send/send-content/add-recipient/domain-input-resolution-cell';
+import { DomainInputResolutionCell } from './domain-input-resolution-cell';
 import { SendPageAddressBook, SendPageRow, SendPageYourAccounts } from '.';
 
 const CONTACTS_TAB_KEY = 'contacts';
