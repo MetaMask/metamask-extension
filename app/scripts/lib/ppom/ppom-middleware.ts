@@ -80,7 +80,6 @@ export function createPPOMMiddleware<
       const securityAlertId = generateSecurityAlertId();
 
       validateRequestWithPPOM({
-        chainId,
         ppomController,
         request: req,
         securityAlertId,
