@@ -5,6 +5,7 @@ const {
   unlockWallet,
   WINDOW_TITLES,
   defaultGanacheOptions,
+  clickNestedButton,
 } = require('../../../helpers');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const FixtureBuilder = require('../../../fixture-builder');
@@ -93,7 +94,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         });
         await driver.clickElement({ text: 'Add NFTs', tag: 'button' });
         await driver.switchToWindow(extension);
-        await driver.clickElement({ text: 'NFTs', tag: 'button' });
+        await clickNestedButton(driver, 'NFTs');
         await driver.findElement({ text: 'TestDappNFTs (3)' });
         const nftsListItemsFirstCheck = await driver.findElements(
           '.nft-item__container',
@@ -128,7 +129,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         });
         await driver.clickElement({ text: 'Add NFTs', tag: 'button' });
         await driver.switchToWindow(extension);
-        await driver.clickElement({ text: 'NFTs', tag: 'button' });
+        await clickNestedButton(driver, 'NFTs');
         await driver.findElement({ text: 'TestDappNFTs (6)' });
         const nftsListItemsSecondCheck = await driver.findElements(
           '.nft-item__container',
@@ -221,7 +222,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
 
         await driver.clickElement({ text: 'Add NFTs', tag: 'button' });
         await driver.switchToWindow(extension);
-        await driver.clickElement({ text: 'NFTs', tag: 'button' });
+        await clickNestedButton(driver, 'NFTs');
         await driver.findElement({ text: 'TestDappNFTs (5)' });
         const nftsListItemsSecondCheck = await driver.findElements(
           '.nft-item__container',
