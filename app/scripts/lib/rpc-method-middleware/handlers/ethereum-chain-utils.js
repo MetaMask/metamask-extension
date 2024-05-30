@@ -1,6 +1,5 @@
 import { errorCodes, ethErrors } from 'eth-rpc-errors';
 import { ApprovalType } from '@metamask/controller-utils';
-import { omit } from 'lodash';
 
 import {
   BUILT_IN_INFURA_NETWORKS,
