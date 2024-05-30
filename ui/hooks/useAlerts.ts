@@ -11,6 +11,7 @@ import {
   Alert,
   setAlertConfirmed as setAlertConfirmedAction,
 } from '../ducks/confirm-alerts/confirm-alerts';
+import { Severity } from '../helpers/constants/design-system';
 
 const useAlerts = (ownerId: string) => {
   const dispatch = useDispatch();
@@ -56,13 +57,27 @@ const useAlerts = (ownerId: string) => {
     [confirmedAlertKeys],
   );
 
+  const unconfirmedDangerAlerts = alerts.filter(
+    (alert) =>
+      !isAlertConfirmed(alert.key) && alert.severity === Severity.Danger,
+  );
+  const hasAlerts = alerts.length > 0;
+  const hasDangerAlerts = alerts.some(
+    (alert) => alert.severity === Severity.Danger,
+  );
+  const hasUnconfirmedDangerAlerts = unconfirmedDangerAlerts.length > 0;
+
   return {
     alerts,
-    generalAlerts,
     fieldAlerts,
+    generalAlerts,
     getFieldAlerts,
-    setAlertConfirmed,
+    hasAlerts,
+    hasDangerAlerts,
+    hasUnconfirmedDangerAlerts,
     isAlertConfirmed,
+    setAlertConfirmed,
+    unconfirmedDangerAlerts,
   };
 };
 
