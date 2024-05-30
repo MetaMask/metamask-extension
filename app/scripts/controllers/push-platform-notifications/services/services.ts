@@ -15,7 +15,7 @@ import {
 import { processNotification } from '../../metamask-notifications/processors/process-notifications';
 
 const url = process.env.PUSH_NOTIFICATIONS_SERVICE_URL;
-const REGISTRATION_TOKENS_ENDPOINT = `${url}/v1/link`;
+export const REGISTRATION_TOKENS_ENDPOINT = `${url}/v1/link`;
 const sw = self as unknown as ServiceWorkerGlobalScope;
 
 export type RegToken = {
@@ -33,7 +33,7 @@ export type LinksResult = {
  *
  * @returns The Firebase app instance.
  */
-export async function createFirebaseApp(): Promise<FirebaseApp> {
+async function createFirebaseApp(): Promise<FirebaseApp> {
   try {
     return getApp();
   } catch {
@@ -58,7 +58,7 @@ export async function createFirebaseApp(): Promise<FirebaseApp> {
  *
  * @returns A promise that resolves with the Firebase Messaging service instance.
  */
-export async function getFirebaseMessaging(): Promise<Messaging> {
+async function getFirebaseMessaging(): Promise<Messaging> {
   const app = await createFirebaseApp();
   return getMessaging(app);
 }
@@ -68,7 +68,7 @@ export async function getFirebaseMessaging(): Promise<Messaging> {
  *
  * @returns A promise that resolves with the registration token or null if an error occurs.
  */
-export async function createRegToken(): Promise<string | null> {
+async function createRegToken(): Promise<string | null> {
   try {
     const messaging = await getFirebaseMessaging();
     const token = await getToken(messaging, {
@@ -86,7 +86,7 @@ export async function createRegToken(): Promise<string | null> {
  *
  * @returns A promise that resolves with true if the token was successfully deleted, false otherwise.
  */
-export async function deleteRegToken(): Promise<boolean> {
+async function deleteRegToken(): Promise<boolean> {
   try {
     const messaging = await getFirebaseMessaging();
     await deleteToken(messaging);
