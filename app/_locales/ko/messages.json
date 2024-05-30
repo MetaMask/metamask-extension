@@ -594,9 +594,6 @@
   "basicConfigurationBannerTitle": {
     "message": "기본 기능이 꺼져 있습니다."
   },
-  "basicConfigurationDescription": {
-    "message": "토큰 데이터, 및 값, 최적의 가스 설정 등을 포함합니다. 이 서비스를 사용하면 웹사이트를 방문할 때와 마찬가지로 사용자의 IP 주소를 MetaMask와 공유하게 됩니다."
-  },
   "basicConfigurationLabel": {
     "message": "기본 기능"
   },
