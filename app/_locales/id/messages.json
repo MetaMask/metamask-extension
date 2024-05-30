@@ -597,9 +597,6 @@
   "basicConfigurationBannerTitle": {
     "message": "Fungsionalitas dasar tidak aktif"
   },
-  "basicConfigurationDescription": {
-    "message": "Meliputi nilai dan data token, pengaturan gas optimal, dan banyak lagi. MetaMask akan mengetahui alamat IP Anda saat menggunakan layanan ini, seperti halnya saat mengunjungi situs web."
-  },
   "basicConfigurationLabel": {
     "message": "Fungsionalitas dasar"
   },

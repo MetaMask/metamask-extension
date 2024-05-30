@@ -594,9 +594,6 @@
   "basicConfigurationBannerTitle": {
     "message": "बेसिक फंक्शनलिटी बंद है"
   },
-  "basicConfigurationDescription": {
-    "message": "इसमें टोकन डेटा और मूल्य, ऑप्टीमल गैस सेटिंग्स और बहुत कुछ शामिल है। इन सेवाओं का उपयोग करने से आपका आईपी ​​एड्रेस MetaMask के साथ शेयर हो जाता है, ठीक उसी तरह जब आप किसी वेबसाइट पर जाते हैं।"
-  },
   "basicConfigurationLabel": {
     "message": "बेसिक फंक्शनलिटी"
   },
