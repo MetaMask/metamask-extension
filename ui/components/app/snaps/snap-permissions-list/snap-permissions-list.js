@@ -9,7 +9,7 @@ import {
   getSnapsMetadata,
 } from '../../../../selectors';
 import { getSnapName } from '../../../../helpers/utils/util';
-import SnapPermissionCellDisplay from '../snap-permission-cell-display';
+import SnapPermissionCell from '../snap-permission-cell-display';
 
 export default function SnapPermissionsList({
   snapId,
@@ -36,7 +36,7 @@ export default function SnapPermissionsList({
         subjectName: snapName,
         getSubjectName: getSnapName(snapsMetadata),
       }).map((permission, index) => (
-        <SnapPermissionCellDisplay
+        <SnapPermissionCell
           snapId={snapId}
           showOptions={showOptions}
           connectionSubjectMetadata={

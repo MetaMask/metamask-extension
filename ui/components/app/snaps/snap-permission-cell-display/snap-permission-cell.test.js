@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 import React from 'react';
 import { renderWithProvider } from '../../../../../test/jest';
-import SnapPermissionCellDisplay from './snap-permission-cell-display';
+import SnapPermissionCell from './snap-permission-cell';
 
 describe('Snap Permission Cell', () => {
   const mockSnapId = 'mock-snap-id';
@@ -38,7 +38,7 @@ describe('Snap Permission Cell', () => {
 
   it('renders permissions cell with permission', () => {
     renderWithProvider(
-      <SnapPermissionCellDisplay
+      <SnapPermissionCell
         snapId={mockSnapId}
         showOptions={false}
         permission={mockPermissionData}
@@ -54,7 +54,7 @@ describe('Snap Permission Cell', () => {
 
   it('renders permissions cell with connection', () => {
     renderWithProvider(
-      <SnapPermissionCellDisplay
+      <SnapPermissionCell
         snapId={mockSnapId}
         showOptions={false}
         connectionSubjectMetadata={

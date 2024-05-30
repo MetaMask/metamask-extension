@@ -22,7 +22,7 @@ import { getAvatarFallbackLetter } from '../../../../helpers/utils/util';
 import PermissionCell from '../../permission-cell';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-export default function SnapPermissionCellDisplay({
+export default function SnapPermissionCell({
   snapId,
   showOptions,
   permission,
@@ -110,7 +110,7 @@ export default function SnapPermissionCellDisplay({
   );
 }
 
-SnapPermissionCellDisplay.propTypes = {
+SnapPermissionCell.propTypes = {
   snapId: PropTypes.string.isRequired,
   showOptions: PropTypes.bool,
   permission: PropTypes.object.isRequired,

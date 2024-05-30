@@ -10,7 +10,7 @@ import {
   getSnapsMetadata,
 } from '../../../../selectors';
 import { getSnapName } from '../../../../helpers/utils/util';
-import SnapPermissionCellDisplay from '../snap-permission-cell-display';
+import SnapPermissionCell from '../snap-permission-cell-display';
 
 export default function UpdateSnapPermissionList({
   approvedPermissions,
@@ -62,7 +62,7 @@ export default function UpdateSnapPermissionList({
         subjectName: snapName,
         getSubjectName: snapsNameGetter,
       }).map((permission, index) => (
-        <SnapPermissionCellDisplay
+        <SnapPermissionCell
           snapId={snapId}
           connectionSubjectMetadata={
             targetSubjectsMetadata[permission.connection]
@@ -78,7 +78,7 @@ export default function UpdateSnapPermissionList({
         subjectName: snapName,
         getSubjectName: snapsNameGetter,
       }).map((permission, index) => (
-        <SnapPermissionCellDisplay
+        <SnapPermissionCell
           snapId={snapId}
           connectionSubjectMetadata={
             targetSubjectsMetadata[permission.connection]
@@ -95,7 +95,7 @@ export default function UpdateSnapPermissionList({
         subjectName: snapName,
         getSubjectName: snapsNameGetter,
       }).map((permission, index) => (
-        <SnapPermissionCellDisplay
+        <SnapPermissionCell
           snapId={snapId}
           connectionSubjectMetadata={
             targetSubjectsMetadata[permission.connection]
