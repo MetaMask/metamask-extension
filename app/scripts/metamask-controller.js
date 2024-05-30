@@ -5574,7 +5574,11 @@ export default class MetamaskController extends EventEmitter {
 
     Object.keys(this.connections).forEach((origin) => {
       Object.values(this.connections[origin]).forEach(async (conn) => {
-        this.notifyConnection(conn, await getPayload(origin));
+        try {
+          this.notifyConnection(conn, await getPayload(origin));
+        } catch (err) {
+          console.error(err);
+        }
       });
     });
   }
