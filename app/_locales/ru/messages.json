@@ -597,9 +597,6 @@
   "basicConfigurationBannerTitle": {
     "message": "Базовый функционал отключен"
   },
-  "basicConfigurationDescription": {
-    "message": "Включает данные и стоимость токена, оптимальные настройки газа и многое другое. При использовании этих сервисов ваш IP-адрес передается MetaMask, как при посещении веб-сайта."
-  },
   "basicConfigurationLabel": {
     "message": "Базовый функционал"
   },
