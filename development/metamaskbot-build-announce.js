@@ -68,18 +68,20 @@ async function start() {
   const platforms = ['chrome', 'firefox'];
   const buildLinks = platforms
     .map((platform) => {
-      const url = platform === 'firefox'
-        ? `${BUILD_LINK_BASE}/builds-mv2/metamask-${platform}-${VERSION}.zip`;
-        : `${BUILD_LINK_BASE}/builds/metamask-${platform}-${VERSION}.zip`;
+      const url =
+        platform === 'firefox'
+          ? `${BUILD_LINK_BASE}/builds-mv2/metamask-${platform}-${VERSION}.zip`
+          : `${BUILD_LINK_BASE}/builds/metamask-${platform}-${VERSION}.zip`;
       return `<a href="${url}">${platform}</a>`;
     })
     .join(', ');
   const betaBuildLinks = `<a href="${BUILD_LINK_BASE}/builds-beta/metamask-beta-chrome-${VERSION}.zip">chrome</a>`;
   const flaskBuildLinks = platforms
     .map((platform) => {
-      const url = platform === 'firefox'
-        ? `${BUILD_LINK_BASE}/builds-flask-mv2/metamask-flask-${platform}-${VERSION}-flask.0.zip`;
-        : `${BUILD_LINK_BASE}/builds-flask/metamask-flask-${platform}-${VERSION}-flask.0.zip`;
+      const url =
+        platform === 'firefox'
+          ? `${BUILD_LINK_BASE}/builds-flask-mv2/metamask-flask-${platform}-${VERSION}-flask.0.zip`
+          : `${BUILD_LINK_BASE}/builds-flask/metamask-flask-${platform}-${VERSION}-flask.0.zip`;
       return `<a href="${url}">${platform}</a>`;
     })
     .join(', ');
@@ -91,17 +93,19 @@ async function start() {
     .join(', ');
   const testBuildLinks = platforms
     .map((platform) => {
-      const url = platform === 'firefox'
-        ? ${BUILD_LINK_BASE}/builds-test-mv2/metamask-${platform}-${VERSION}.zip`;
-        : ${BUILD_LINK_BASE}/builds-test/metamask-${platform}-${VERSION}.zip`;
+      const url =
+        platform === 'firefox'
+          ? `${BUILD_LINK_BASE}/builds-test-mv2/metamask-${platform}-${VERSION}.zip`
+          : `${BUILD_LINK_BASE}/builds-test/metamask-${platform}-${VERSION}.zip`;
       return `<a href="${url}">${platform}</a>`;
     })
     .join(', ');
   const testFlaskBuildLinks = platforms
     .map((platform) => {
-      const url = platform === 'firefox'
-        ? `${BUILD_LINK_BASE}/builds-test-flask-mv2/metamask-flask-${platform}-${VERSION}-flask.0.zip`;
-        ? `${BUILD_LINK_BASE}/builds-test-flask/metamask-flask-${platform}-${VERSION}-flask.0.zip`;
+      const url =
+        platform === 'firefox'
+          ? `${BUILD_LINK_BASE}/builds-test-flask-mv2/metamask-flask-${platform}-${VERSION}-flask.0.zip`
+          : `${BUILD_LINK_BASE}/builds-test-flask/metamask-flask-${platform}-${VERSION}-flask.0.zip`;
       return `<a href="${url}">${platform}</a>`;
     })
     .join(', ');
