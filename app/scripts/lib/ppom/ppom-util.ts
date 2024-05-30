@@ -4,7 +4,7 @@ import {
   TransactionParams,
   normalizeTransactionParams,
 } from '@metamask/transaction-controller';
-import { Hex, JsonRpcRequest } from '@metamask/utils';
+import { JsonRpcRequest } from '@metamask/utils';
 import { v4 as uuid } from 'uuid';
 import { PPOM } from '@blockaid/ppom_release';
 import { SignatureController } from '@metamask/signature-controller';
@@ -30,7 +30,6 @@ export async function validateRequestWithPPOM({
   request,
   securityAlertId,
 }: {
-  chainId: Hex;
   ppomController: PPOMController;
   request: JsonRpcRequest;
   securityAlertId: string;
