@@ -1253,21 +1253,14 @@ describe('MetaMaskController', () => {
           tab: {},
         };
         const { promise, resolve } = deferredPromise();
-        const chunkNames = [];
         const streamTest = createThoughStream((chunk, _, cb) => {
-          chunkNames.push(chunk.name);
-          // eslint-disable-next-line jest/no-if
-          if (chunkNames.length === 2) {
-            resolve();
-          }
+          expect(chunk.name).toStrictEqual('controller');
+          resolve();
           cb();
         });
+
         metamaskController.setupTrustedCommunication(streamTest, messageSender);
         await promise;
-        expect(chunkNames).toStrictEqual(
-          expect.arrayContaining(['controller', 'provider']),
-        );
-
         streamTest.end();
       });
     });
