@@ -973,7 +973,7 @@ function setupBundlerDefaults(
     // Setup source maps
     setupSourcemaps(buildConfiguration, { buildTarget });
     // Setup wrapping of code against scuttling (before sourcemaps generation)
-    setupScuttlingWrapping(buildConfiguration, applyLavaMoat);
+    setupScuttlingWrapping(buildConfiguration, applyLavaMoat, envVars);
   }
 }
 
@@ -1027,10 +1027,13 @@ function setupMinification(buildConfiguration) {
   });
 }
 
-function setupScuttlingWrapping(buildConfiguration, applyLavaMoat) {
-  const scuttlingConfig = isEnableMV3
-    ? mv3ScuttlingConfig
-    : standardScuttlingConfig;
+function setupScuttlingWrapping(buildConfiguration, applyLavaMoat, envVars) {
+  const scuttlingConfig =
+    envVars.ENABLE_MV3 === 'true' ||
+    envVars.ENABLE_MV3 === undefined ||
+    envVars.ENABLE_MV3 === true
+      ? mv3ScuttlingConfig
+      : standardScuttlingConfig;
   const { events } = buildConfiguration;
   events.on('configurePipeline', ({ pipeline }) => {
     pipeline.get('scuttle').push(

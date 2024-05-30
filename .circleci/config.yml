@@ -130,13 +130,22 @@ workflows:
       - prep-build-test:
           requires:
             - prep-deps
+      - prep-build-test-mv2:
+          requires:
+            - prep-deps
       - prep-build-multichain-test:
           requires:
             - prep-deps
       - prep-build-confirmation-redesign-test:
           requires:
             - prep-deps
+      - prep-build-confirmation-redesign-test-mv2:
+          requires:
+            - prep-deps
       - prep-build-test-flask:
+          requires:
+            - prep-deps
+      - prep-build-test-flask-mv2:
           requires:
             - prep-deps
       - prep-build-test-mmi:
@@ -173,10 +182,10 @@ workflows:
             - prep-build-confirmation-redesign-test
       - test-e2e-firefox:
           requires:
-            - prep-build-test
+            - prep-build-test-mv2
       - test-e2e-firefox-confirmation-redesign:
           requires:
-            - prep-build-confirmation-redesign-test
+            - prep-build-confirmation-redesign-test-mv2
       - test-e2e-chrome-rpc:
           requires:
             - prep-build-test
@@ -188,7 +197,7 @@ workflows:
             - prep-build-test-flask
       - test-e2e-firefox-flask:
           requires:
-            - prep-build-test-flask
+            - prep-build-test-flask-mv2
       - test-e2e-chrome-mmi:
           requires:
             - prep-build-test-mmi
@@ -664,6 +673,27 @@ jobs:
             - dist-test-flask
             - builds-test-flask
 
+  prep-build-test-flask-mv2:
+    executor: node-browsers-medium-plus
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build extension for testing
+          command: yarn build:test:flask:mv2
+      - run:
+          name: Move test build to 'dist-test-flask' to avoid conflict with production build
+          command: mv ./dist ./dist-test-flask-mv2
+      - run:
+          name: Move test zips to 'builds-test-flask' to avoid conflict with production build
+          command: mv ./builds ./builds-test-flask-mv2
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-test-flask-mv2
+            - builds-test-flask-mv2
+
   prep-build-test-mmi:
     executor: node-browsers-medium-plus
     steps:
@@ -736,6 +766,29 @@ jobs:
             - dist-test
             - builds-test
 
+  prep-build-test-mv2:
+    executor: node-browsers-medium-plus
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build extension for testing
+          command: yarn build:test:mv2
+      - run:
+          name: Move test build to 'dist-test-mv2' to avoid conflict with production build
+          command: mv ./dist ./dist-test-mv2
+      - run:
+          name: Move test zips to 'builds-test-mv2' to avoid conflict with production build
+          command: mv ./builds ./builds-test-mv2
+      - store_artifacts:
+          path: builds-test-mv2
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-test-mv2
+            - builds-test-mv2
+
   prep-build-multichain-test:
     executor: node-browsers-medium-plus
     steps:
@@ -777,6 +830,27 @@ jobs:
           paths:
             - dist-test-confirmations
             - builds-test-confirmations
+
+  prep-build-confirmation-redesign-test-mv2:
+    executor: node-browsers-medium-plus
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build extension for testing
+          command: ENABLE_CONFIRMATION_REDESIGN=1 yarn build:test:mv2
+      - run:
+          name: Move test build to 'dist-test-confirmations-mv2' to avoid conflict with production build
+          command: mv ./dist ./dist-test-confirmations-mv2
+      - run:
+          name: Move test zips to 'builds-test-confirmations-mv2' to avoid conflict with production build
+          command: mv ./builds ./builds-test-confirmations-mv2
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-test-confirmations-mv2
+            - builds-test-confirmations-mv2
 
   prep-build-storybook:
     executor: node-browsers-medium-plus
@@ -1099,10 +1173,10 @@ jobs:
           at: .
       - run:
           name: Move test build to dist
-          command: mv ./dist-test-flask ./dist
+          command: mv ./dist-test-flask-mv2 ./dist
       - run:
           name: Move test zips to builds
-          command: mv ./builds-test-flask ./builds
+          command: mv ./builds-test-flask-mv2 ./builds
       - run:
           name: test:e2e:firefox:flask
           command: |
@@ -1222,10 +1296,10 @@ jobs:
           at: .
       - run:
           name: Move test build to dist
-          command: mv ./dist-test ./dist
+          command: mv ./dist-test-mv2 ./dist
       - run:
           name: Move test zips to builds
-          command: mv ./builds-test ./builds
+          command: mv ./builds-test-mv2 ./builds
       - run:
           name: test:e2e:firefox
           command: |
@@ -1250,10 +1324,10 @@ jobs:
           at: .
       - run:
           name: Move test build to dist
-          command: mv ./dist-test-confirmations ./dist
+          command: mv ./dist-test-confirmations-mv2 ./dist
       - run:
           name: Move test zips to builds
-          command: mv ./builds-test-confirmations ./builds
+          command: mv ./builds-test-confirmations-mv2 ./builds
       - run:
           name: test:e2e:firefox-confirmation-redesign
           command: |
@@ -1270,7 +1344,6 @@ jobs:
           destination: test-artifacts
       - store_test_results:
           path: test/test-results/e2e
-
 
   benchmark:
     executor: node-browsers-small
