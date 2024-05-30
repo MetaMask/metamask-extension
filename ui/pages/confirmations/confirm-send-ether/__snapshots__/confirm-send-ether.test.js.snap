@@ -163,7 +163,6 @@ exports[`ConfirmSendEther should render correct information for for confirm send
             <div
               aria-describedby="tippy-tooltip-1"
               class="sender-to-recipient__tooltip-container"
-              data-original-title="null"
               data-tooltipped=""
               style="display: inline;"
               tabindex="0"
@@ -364,7 +363,6 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                   <div
                     aria-describedby="tippy-tooltip-2"
                     class="info-tooltip__tooltip-container"
-                    data-original-title="null"
                     data-tooltipped=""
                     style="display: inline;"
                     tabindex="0"
