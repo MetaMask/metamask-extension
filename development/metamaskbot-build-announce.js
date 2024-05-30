@@ -38,6 +38,59 @@ function getPercentageChange(from, to) {
   return parseFloat(((to - from) / Math.abs(from)) * 100).toFixed(2);
 }
 
+async function readJsonFile(filePath) {
+  try {
+    const data = await fs.readFile(filePath, 'utf8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error(`Error reading JSON file at ${filePath}: ${error.message}`);
+    return null;
+  }
+}
+
+async function createUserActionsTable(
+  userActionsMv2StatsUrl,
+  userActionsMv3StatsUrl,
+) {
+  const userActionsMv2Stats = await readJsonFile(userActionsMv2StatsUrl);
+  const userActionsMv3Stats = await readJsonFile(userActionsMv3StatsUrl);
+
+  if (!userActionsMv2Stats || !userActionsMv3Stats) {
+    console.error('Failed to load one or both JSON files.');
+    return '';
+  }
+
+  const actions = ['loadNewAccount', 'confirmTx'];
+  const buildTypes = [
+    { type: 'mv2', data: userActionsMv2Stats },
+    { type: 'mv3', data: userActionsMv3Stats },
+  ];
+
+  const tableRows = buildTypes.flatMap((buildType) =>
+    actions.map(
+      (action) =>
+        `<tr>
+        <td>${buildType.type}</td>
+        <td>${action}</td>
+        <td align="right">${buildType.data[action]}</td>
+      </tr>`,
+    ),
+  );
+
+  const tableHeader = `
+    <thead>
+      <tr>
+        <th>Build type</th>
+        <th>Action</th>
+        <th>Time (ms)</th>
+      </tr>
+    </thead>`;
+  const tableBody = `<tbody>${tableRows.join('')}</tbody>`;
+  const userActionsTable = `<table>${tableHeader}${tableBody}</table>`;
+
+  return userActionsTable;
+}
+
 async function start() {
   const {
     GITHUB_COMMENT_TOKEN,
@@ -152,8 +205,11 @@ async function start() {
   const moduleLoadStatsLink = `<a href="${moduleLoadStatsUrl}">Module Load Stats</a>`;
   const bundleSizeStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/mv3/bundle_size.json`;
   const bundleSizeStatsLink = `<a href="${bundleSizeStatsUrl}">Bundle Size Stats</a>`;
-  const userActionsStatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/benchmark/user_actions.json`;
-  const userActionsStatsLink = `<a href="${userActionsStatsUrl}">E2e Actions Stats</a>`;
+  const userActionsMv2StatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/benchmark/user_actions_mv2.json`;
+  const userActionsMv3StatsUrl = `${BUILD_LINK_BASE}/test-artifacts/chrome/benchmark/user_actions_mv3.json`;
+
+  const userActionsMv2StatsLink = `<a href="${userActionsMv2StatsUrl}">E2e Actions MV2 Stats</a>`;
+  const userActionsMv3StatsLink = `<a href="${userActionsMv3StatsUrl}">E2e Actions MV3 Stats</a>`;
 
   // link to artifacts
   const allArtifactsUrl = `https://circleci.com/gh/MetaMask/metamask-extension/${CIRCLE_BUILD_NUM}#artifacts/containers/0`;
@@ -170,7 +226,8 @@ async function start() {
     `mv3: ${moduleInitStatsUILink}`,
     `mv3: ${moduleLoadStatsLink}`,
     `mv3: ${bundleSizeStatsLink}`,
-    `mv2: ${userActionsStatsLink}`,
+    `mv2: ${userActionsMv2StatsLink}`,
+    `mv3: ${userActionsMv3StatsLink}`,
     `code coverage: ${coverageLink}`,
     `storybook: ${storybookLink}`,
     `typescript migration: ${tsMigrationDashboardLink}`,
@@ -185,6 +242,8 @@ async function start() {
     .join('\n')}</ul>`;
   const exposedContent = `Builds ready [${SHORT_SHA1}]`;
   const artifactsBody = `<details><summary>${exposedContent}</summary>${hiddenContent}</details>\n\n`;
+
+  await createUserActionsTable(userActionsMv2StatsUrl, userActionsMv3StatsUrl);
 
   const benchmarkResults = {};
   for (const platform of platforms) {

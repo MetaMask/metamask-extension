@@ -304,9 +304,12 @@ workflows:
       - benchmark:
           requires:
             - prep-build-test
-      - user-actions-benchmark:
+      - user-actions-mv2-benchmark:
           requires:
             - prep-build-test
+      - user-actions-mv3-benchmark:
+          requires:
+            - prep-build-test-mv3
       - stats-module-load-init:
           requires:
             - prep-build-test-mv3
@@ -322,7 +325,8 @@ workflows:
             - prep-build-ts-migration-dashboard
             - prep-build-test-mv3
             - benchmark
-            - user-actions-benchmark
+            - user-actions-mv2-benchmark
+            - user-actions-mv3-benchmark
             - stats-module-load-init
             - all-tests-pass
       - job-publish-release:
@@ -1345,7 +1349,7 @@ jobs:
           paths:
             - test-artifacts
 
-  user-actions-benchmark:
+  user-actions-mv2-benchmark:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
@@ -1359,7 +1363,7 @@ jobs:
           command: mv ./builds-test ./builds
       - run:
           name: Run page load benchmark
-          command: yarn user-actions-benchmark:chrome --out test-artifacts/chrome/benchmark/user_actions.json --retries 2
+          command: yarn user-actions-benchmark:chrome --out test-artifacts/chrome/benchmark/user_actions_mv2.json --retries 2
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -1367,7 +1371,28 @@ jobs:
           root: .
           paths:
             - test-artifacts
-
+  user-actions-mv3-benchmark:
+    executor: node-browsers-small
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-mv3 ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-mv3 ./builds
+      - run:
+          name: Run page load benchmark
+          command: yarn user-actions-benchmark:chrome --out test-artifacts/chrome/benchmark/user_actions_mv3.json --retries 2
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - persist_to_workspace:
+          root: .
+          paths:
+            - test-artifacts
   stats-module-load-init:
     executor: node-browsers-small
     steps:
