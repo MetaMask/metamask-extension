@@ -177,10 +177,6 @@ export default function PrivacySettings() {
   };
 
   const handleUseProfileSync = async () => {
-    if (!externalServicesOnboardingToggleState) {
-      return;
-    }
-
     if (isProfileSyncingEnabled) {
       dispatch(
         showModal({
