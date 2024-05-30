@@ -409,7 +409,7 @@
     "react-simple-file-input": "^2.1.0",
     "react-tippy": "^1.4.0",
     "react-toggle-button": "^2.2.0",
-    "react-transition-group": "^2.9.0",
+    "react-transition-group": "^1.2.1",
     "readable-stream": "^3.6.2",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
