@@ -1,5 +1,6 @@
 import { errorCodes, ethErrors } from 'eth-rpc-errors';
 import { ApprovalType } from '@metamask/controller-utils';
+import { omit } from 'lodash';
 
 import {
   BUILT_IN_INFURA_NETWORKS,
@@ -81,19 +82,24 @@ export function validateAddEthereumChainParams(params, end) {
     });
   }
 
-  const {
-    chainId,
-    chainName,
-    blockExplorerUrls,
-    nativeCurrency,
-    rpcUrls,
-    ...otherParams
-  } = params;
+  const otherKeys = Object.keys(
+    omit(params, [
+      'chainId',
+      'chainName',
+      'blockExplorerUrls',
+      'nativeCurrency',
+      'rpcUrls',
+      'iconUrls',
+    ]),
+  );
 
-  if (Object.keys(otherParams).length > 0) {
+  const { chainId, chainName, blockExplorerUrls, nativeCurrency, rpcUrls } =
+    params;
+
+  if (otherKeys.length > 0) {
     throw ethErrors.rpc.invalidParams({
       message: `Received unexpected keys on object parameter. Unsupported keys:\n${Object.keys(
-        otherParams,
+        otherKeys,
       )}`,
     });
   }
