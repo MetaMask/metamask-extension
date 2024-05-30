@@ -7,8 +7,7 @@ import {
 } from '@metamask/transaction-controller';
 import { UserOperationController } from '@metamask/user-operation-controller';
 import { cloneDeep } from 'lodash';
-import { PPOMController } from '@metamask/ppom-validator';
-import { normalizePPOMRequest } from '../ppom/ppom-util';
+import { validateRequestWithPPOM } from '../ppom/ppom-util';
 import {
   AddDappTransactionRequest,
   AddTransactionOptions,
@@ -75,29 +74,17 @@ function createUserOperationControllerMock() {
   } as unknown as jest.Mocked<UserOperationController>;
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-function createPPOMControllerMock() {
-  return {
-    usePPOM: jest.fn().mockResolvedValue({
-      reason: 'testReason',
-      result_type: 'testResultType',
-    }),
-  } as unknown as jest.Mocked<PPOMController>;
-}
-///: END:ONLY_INCLUDE_IF
-
 async function flushPromises() {
   return new Promise((resolve) => setImmediate(resolve));
 }
 
 describe('Transaction Utils', () => {
-  const normalizePPOMRequestMock = jest.mocked(normalizePPOMRequest);
   let request: AddTransactionRequest;
   let dappRequest: AddDappTransactionRequest;
   let transactionController: jest.Mocked<TransactionController>;
   let userOperationController: jest.Mocked<UserOperationController>;
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  let ppomController: jest.Mocked<PPOMController>;
+  const validateRequestWithPPOMMock = jest.mocked(validateRequestWithPPOM);
   ///: END:ONLY_INCLUDE_IF
 
   beforeEach(() => {
@@ -107,8 +94,8 @@ describe('Transaction Utils', () => {
     transactionController = createTransactionControllerMock();
     userOperationController = createUserOperationControllerMock();
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-    ppomController = createPPOMControllerMock();
-    request.ppomController = ppomController;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    request.ppomController = {} as any;
     ///: END:ONLY_INCLUDE_IF
 
     transactionController.addTransaction.mockResolvedValue({
@@ -408,24 +395,12 @@ describe('Transaction Utils', () => {
         ).toHaveBeenCalledTimes(1);
         expect(
           request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
-          ...TRANSACTION_OPTIONS_MOCK,
-          securityAlertResponse: {
-            reason: 'loading',
-            result_type: 'validation_in_progress',
-          },
-        });
+        ).toHaveBeenCalledWith(
+          TRANSACTION_PARAMS_MOCK,
+          TRANSACTION_OPTIONS_MOCK,
+        );
 
-        expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(1);
-        expect(request.ppomController.usePPOM).toHaveBeenCalledWith(
-          expect.any(Function),
-        );
-        expect(request.ppomController.usePPOM).toHaveReturnedWith(
-          Promise.resolve({
-            reason: 'testReason',
-            result_type: 'testResultType',
-          }),
-        );
+        expect(validateRequestWithPPOMMock).toHaveBeenCalledTimes(1);
       });
 
       it('does not validate if blockaid is enabled and chain id is not supported', async () => {
@@ -444,7 +419,7 @@ describe('Transaction Utils', () => {
           ...TRANSACTION_OPTIONS_MOCK,
         });
 
-        expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(0);
+        expect(validateRequestWithPPOMMock).toHaveBeenCalledTimes(0);
       });
 
       it('does not validate if blockaid is enabled and chain id is supported, but transaction type is swap', async () => {
@@ -466,7 +441,7 @@ describe('Transaction Utils', () => {
           type: TransactionType.swap,
         });
 
-        expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(0);
+        expect(validateRequestWithPPOMMock).toHaveBeenCalledTimes(0);
       });
 
       it('does not validate if blockaid is enabled and chain id is supported, but transaction type is swapApproval', async () => {
@@ -488,44 +463,7 @@ describe('Transaction Utils', () => {
           type: TransactionType.swapApproval,
         });
 
-        expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(0);
-      });
-
-      it('normalizes transaction requests before validation', async () => {
-        const ppomRequestMock = {
-          method: 'eth_sendTransaction',
-          id: 'mockActionId',
-          origin: 'mockOrigin',
-          params: [TRANSACTION_PARAMS_MOCK],
-        };
-
-        const ppomRequestNormalizedMock = {
-          ...ppomRequestMock,
-          id: 'mockActionId2',
-          origin: 'mockOrigin2',
-        };
-
-        const validateMock = jest.fn();
-
-        const ppomMock = {
-          validateJsonRpc: validateMock,
-        };
-
-        normalizePPOMRequestMock.mockReturnValue(ppomRequestNormalizedMock);
-
-        request.securityAlertsEnabled = true;
-        request.chainId = '0x1';
-        // TODO: Replace `any` with type
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        request.ppomController.usePPOM = (callback: any) => callback(ppomMock);
-
-        await addTransaction(request);
-
-        expect(validateMock).toHaveBeenCalledTimes(1);
-        expect(validateMock).toHaveBeenCalledWith(ppomRequestNormalizedMock);
-
-        expect(normalizePPOMRequest).toHaveBeenCalledTimes(1);
-        expect(normalizePPOMRequest).toHaveBeenCalledWith(ppomRequestMock);
+        expect(validateRequestWithPPOMMock).toHaveBeenCalledTimes(0);
       });
     });
 
@@ -546,7 +484,7 @@ describe('Transaction Utils', () => {
           ...TRANSACTION_OPTIONS_MOCK,
         });
 
-        expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(0);
+        expect(validateRequestWithPPOMMock).toHaveBeenCalledTimes(0);
       });
 
       it('does not validate if blockaid is disabled and chain id is not supported', async () => {
@@ -565,7 +503,7 @@ describe('Transaction Utils', () => {
           ...TRANSACTION_OPTIONS_MOCK,
         });
 
-        expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(0);
+        expect(validateRequestWithPPOMMock).toHaveBeenCalledTimes(0);
       });
     });
   });

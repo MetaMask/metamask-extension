@@ -241,7 +241,7 @@ function validateSecurity(request: AddTransactionRequest) {
   if (
     !securityAlertsEnabled ||
     !PPOM_SUPPORTED_CHAIN_IDS.includes(chainId) ||
-    !typeIsExcludedFromPPOM
+    typeIsExcludedFromPPOM
   ) {
     return;
   }
@@ -267,7 +267,6 @@ function validateSecurity(request: AddTransactionRequest) {
     const securityAlertId = generateSecurityAlertId();
 
     validateRequestWithPPOM({
-      chainId,
       ppomController,
       request: ppomRequest,
       securityAlertId,
