@@ -809,6 +809,19 @@ export default class MetamaskController extends EventEmitter {
       messenger: currencyRateMessenger,
       state: initState.CurrencyController,
     });
+    const initialFetchExchangeRate =
+      this.currencyRateController.fetchExchangeRate.bind(
+        this.currencyRateController,
+      );
+    this.currencyRateController.fetchExchangeRate = (...args) => {
+      if (this.preferencesController.store.getState().useCurrencyRateCheck) {
+        return initialFetchExchangeRate(...args);
+      }
+      return {
+        conversionRate: null,
+        usdConversionRate: null,
+      };
+    };
 
     const phishingControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'PhishingController',
@@ -4789,6 +4802,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} [options.subjectType] - The type of the sender, i.e. subject.
    */
   setupUntrustedCommunication({ connectionStream, sender, subjectType }) {
+    const { completedOnboarding } = this.onboardingController.store.getState();
     const { usePhishDetect } = this.preferencesController.store.getState();
 
     let _subjectType;
@@ -4800,12 +4814,12 @@ export default class MetamaskController extends EventEmitter {
       _subjectType = SubjectType.Website;
     }
 
-    if (sender.url) {
+    if (usePhishDetect && completedOnboarding && sender.url) {
       const { hostname } = new URL(sender.url);
       this.phishingController.maybeUpdateState();
       // Check if new connection is blocked if phishing detection is on
       const phishingTestResponse = this.phishingController.test(hostname);
-      if (usePhishDetect && phishingTestResponse?.result) {
+      if (phishingTestResponse?.result) {
         this.sendPhishingWarning(connectionStream, hostname);
         this.metaMetricsController.trackEvent({
           event: MetaMetricsEventName.PhishingPageDisplayed,
@@ -5835,6 +5849,7 @@ export default class MetamaskController extends EventEmitter {
 
   toggleExternalServices(useExternal) {
     this.preferencesController.toggleExternalServices(useExternal);
+    this.tokenListController.updatePreventPollingOnNetworkRestart(!useExternal);
     if (useExternal) {
       this.tokenDetectionController.enable();
       this.gasFeeController.enableNonRPCGasFeeApis();
