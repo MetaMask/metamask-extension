@@ -597,9 +597,6 @@
   "basicConfigurationBannerTitle": {
     "message": "Grundfunktionalität ist ausgeschaltet"
   },
-  "basicConfigurationDescription": {
-    "message": "Enthält Token-Daten und -Werte, optimale Gas-Einstellungen und mehr. Wenn Sie diese Dienste nutzen, wird Ihre IP-Adresse wie beim Besuch einer Website mit MetaMask geteilt."
-  },
   "basicConfigurationLabel": {
     "message": "Grundfunktionalität"
   },
