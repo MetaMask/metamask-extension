@@ -7,8 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [11.16.2]
+### Fixed
+- Fix gas fee displays on the Scroll network ([#24854](https://github.com/MetaMask/metamask-extension/pull/24854))
 
 ## [11.16.1]
+### Changed
+- Update Smart Transactions opt-in moda ([#24771](https://github.com/MetaMask/metamask-extension/pull/24771))
 
 ## [11.16.0]
 ### Added
