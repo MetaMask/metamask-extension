@@ -591,9 +591,9 @@
         "@material-ui/core>@material-ui/utils": true,
         "@material-ui/core>clsx": true,
         "@material-ui/core>popper.js": true,
+        "@material-ui/core>react-is": true,
         "@material-ui/core>react-transition-group": true,
         "prop-types": true,
-        "prop-types>react-is": true,
         "react": true,
         "react-dom": true,
         "react-redux>hoist-non-react-statics": true
@@ -690,7 +690,8 @@
     },
     "@material-ui/core>@material-ui/system": {
       "globals": {
-        "console.error": true
+        "console.error": true,
+        "console.warn": true
       },
       "packages": {
         "@babel/runtime": true,
@@ -701,8 +702,13 @@
     "@material-ui/core>@material-ui/utils": {
       "packages": {
         "@babel/runtime": true,
-        "prop-types": true,
-        "prop-types>react-is": true
+        "@material-ui/core>@material-ui/utils>react-is": true,
+        "prop-types": true
+      }
+    },
+    "@material-ui/core>@material-ui/utils>react-is": {
+      "globals": {
+        "console": true
       }
     },
     "@material-ui/core>popper.js": {
@@ -720,6 +726,11 @@
         "navigator": true,
         "requestAnimationFrame": true,
         "setTimeout": true
+      }
+    },
+    "@material-ui/core>react-is": {
+      "globals": {
+        "console": true
       }
     },
     "@material-ui/core>react-transition-group": {
@@ -2786,9 +2797,6 @@
       }
     },
     "@metamask/snaps-execution-environments": {
-      "globals": {
-        "document.getElementById": true
-      },
       "packages": {
         "@metamask/post-message-stream": true,
         "@metamask/snaps-utils": true,
@@ -3302,37 +3310,6 @@
     "@storybook/addon-knobs>qs": {
       "packages": {
         "string.prototype.matchall>side-channel": true
-      }
-    },
-    "@trezor/connect-web": {
-      "globals": {
-        "URLSearchParams": true,
-        "__TREZOR_CONNECT_SRC": true,
-        "addEventListener": true,
-        "btoa": true,
-        "chrome": true,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console.warn": true,
-        "document.body": true,
-        "document.createElement": true,
-        "document.createTextNode": true,
-        "document.getElementById": true,
-        "document.querySelectorAll": true,
-        "location": true,
-        "navigator": true,
-        "open": true,
-        "origin": true,
-        "removeEventListener": true,
-        "setInterval": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@trezor/connect-web>@trezor/connect": true,
-        "@trezor/connect-web>@trezor/connect-common": true,
-        "@trezor/connect-web>@trezor/utils": true,
-        "@trezor/connect-web>tslib": true,
-        "webpack>events": true
       }
     },
     "@trezor/connect-web>@trezor/connect": {
