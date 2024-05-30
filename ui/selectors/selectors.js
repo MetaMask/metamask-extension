@@ -3,11 +3,7 @@ import { SubjectType } from '@metamask/permission-controller';
 ///: END:ONLY_INCLUDE_IF
 import { ApprovalType } from '@metamask/controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-import {
-  getLocalizedSnapManifest,
-  SnapStatus,
-  stripSnapPrefix,
-} from '@metamask/snaps-utils';
+import { getLocalizedSnapManifest, SnapStatus, stripSnapPrefix } from '@metamask/snaps-utils';
 import { memoize } from 'lodash';
 import semver from 'semver';
 ///: END:ONLY_INCLUDE_IF
@@ -69,13 +65,11 @@ import {
 
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
 
-import {
-  getAccountByAddress,
-  getURLHostName,
-  shortenAddress,
-} from '../helpers/utils/util';
+import { getAccountByAddress, getURLHostName, shortenAddress } from '../helpers/utils/util';
 
-import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmations/confirmation/templates';
+import {
+  TEMPLATED_CONFIRMATION_APPROVAL_TYPES,
+} from '../pages/confirmations/confirmation/templates';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
@@ -88,15 +82,9 @@ import {
   isEIP1559Network,
   isNotEIP1559Network,
 } from '../ducks/metamask/metamask';
-import {
-  getLedgerTransportStatus,
-  getLedgerWebHidConnectedStatus,
-} from '../ducks/app/app';
+import { getLedgerTransportStatus, getLedgerWebHidConnectedStatus } from '../ducks/app/app';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import {
-  getValueFromWeiHex,
-  hexToDecimal,
-} from '../../shared/modules/conversion.utils';
+import { getValueFromWeiHex, hexToDecimal } from '../../shared/modules/conversion.utils';
 import { BackgroundColor } from '../helpers/constants/design-system';
 import {
   NOTIFICATION_BLOCKAID_DEFAULT,
@@ -105,18 +93,11 @@ import {
   NOTIFICATION_SIMULATIONS,
   NOTIFICATION_U2F_LEDGER_LIVE,
 } from '../../shared/notifications';
-import {
-  SURVEY_DATE,
-  SURVEY_END_TIME,
-  SURVEY_START_TIME,
-} from '../helpers/constants/survey';
+import { SURVEY_DATE, SURVEY_END_TIME, SURVEY_START_TIME } from '../helpers/constants/survey';
 import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
 import { SUPPORTED_CHAIN_IDS } from '../../app/scripts/lib/ppom/ppom-middleware';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
-import {
-  getCurrentNetworkTransactions,
-  getUnapprovedTransactions,
-} from './transactions';
+import { getCurrentNetworkTransactions, getUnapprovedTransactions } from './transactions';
 // eslint-disable-next-line import/order
 import {
   getConnectedSubjectsForAllAddresses,
@@ -798,10 +779,10 @@ export function getUnapprovedTxCount(state) {
   return Object.keys(unapprovedTxs).length;
 }
 
-export function getUnapprovedConfirmations(state) {
-  const { pendingApprovals = {} } = state.metamask;
-  return Object.values(pendingApprovals);
-}
+export const getUnapprovedConfirmations = createDeepEqualSelector(
+  (state) => state.metamask.pendingApprovals || {},
+  (pendingApprovals) => Object.values(pendingApprovals),
+);
 
 export function getUnapprovedTemplatedConfirmations(state) {
   const unapprovedConfirmations = getUnapprovedConfirmations(state);
