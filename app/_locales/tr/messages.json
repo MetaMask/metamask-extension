@@ -597,9 +597,6 @@
   "basicConfigurationBannerTitle": {
     "message": "Temel işlevsellik kapalı"
   },
-  "basicConfigurationDescription": {
-    "message": "Token verileri ve değeri, en iyi gaz ayarları ve daha fazlasını içerir. Bu hizmetleri kullanırken tıpkı bir web sitesini ziyaret ederken olduğu gibi IP adresiniz MetaMask ile paylaşılır."
-  },
   "basicConfigurationLabel": {
     "message": "Temel işlevsellik"
   },

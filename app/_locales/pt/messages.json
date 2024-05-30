@@ -597,9 +597,6 @@
   "basicConfigurationBannerTitle": {
     "message": "A funcionalidade básica está desativada"
   },
-  "basicConfigurationDescription": {
-    "message": "Inclui os dados e o valor dos tokens, as configurações ideais de gás e mais. Se você utilizar esses serviços, seu endereço IP será informado à MetaMask, assim como quando você visita um site."
-  },
   "basicConfigurationLabel": {
     "message": "Funcionalidade básica"
   },
