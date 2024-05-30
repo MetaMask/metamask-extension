@@ -236,7 +236,16 @@ export default function PrivacySettings() {
               }
             }}
             title={t('basicConfigurationLabel')}
-            description={t('basicConfigurationDescription')}
+            description={t('basicConfigurationDescription', [
+              <a
+                href="https://consensys.io/privacy-policy"
+                key="link"
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                {t('privacyMsg')}
+              </a>,
+            ])}
           />
 
           <IncomingTransactionToggle
