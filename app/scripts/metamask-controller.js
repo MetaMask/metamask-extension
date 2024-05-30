@@ -818,8 +818,8 @@ export default class MetamaskController extends EventEmitter {
         return initialFetchExchangeRate(...args);
       }
       return {
-        conversionRate: 0,
-        usdConversionRate: 0,
+        conversionRate: null,
+        usdConversionRate: null,
       };
     };
 
