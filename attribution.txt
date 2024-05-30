@@ -459,7 +459,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************
 
 array-buffer-byte-length
-1.0.1 <https://github.com/inspect-js/array-buffer-byte-length>
+1.0.0 <https://github.com/inspect-js/array-buffer-byte-length>
 MIT License
 
 Copyright (c) 2023 Inspect JS
@@ -617,33 +617,6 @@ SOFTWARE.
 
 ******************************
 
-available-typed-arrays
-1.0.7 <https://github.com/inspect-js/available-typed-arrays>
-MIT License
-
-Copyright (c) 2020 Inspect JS
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-
-******************************
-
 await-semaphore
 0.1.3 <https://github.com/notenoughneon/await-semaphore>
 The MIT License (MIT)
@@ -762,7 +735,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 @babel/compat-data
-7.24.4 <https://github.com/babel/babel>
+7.23.2 <https://github.com/babel/babel>
 MIT License
 
 Copyright (c) 2014-present Sebastian McKenzie and other contributors
@@ -874,7 +847,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 @babel/helper-compilation-targets
-7.23.6 <https://github.com/babel/babel>
+7.22.15 <https://github.com/babel/babel>
 MIT License
 
 Copyright (c) 2014-present Sebastian McKenzie and other contributors
@@ -3295,7 +3268,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 call-bind
-1.0.7 <https://github.com/ljharb/call-bind>
+1.0.6 <https://github.com/ljharb/call-bind>
 MIT License
 
 Copyright (c) 2020 Jordan Harband
@@ -3322,7 +3295,7 @@ SOFTWARE.
 ******************************
 
 caniuse-lite
-1.0.30001616 <https://github.com/browserslist/caniuse-lite>
+1.0.30001600 <https://github.com/browserslist/caniuse-lite>
 Attribution 4.0 International
 
 =======================================================================
@@ -4279,7 +4252,7 @@ ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 clone
-1.0.4 <https://github.com/pvorb/node-clone>
+1.0.3 <https://github.com/pvorb/node-clone>
 Copyright © 2011-2015 Paul Vorbach <paul@vorba.ch>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -5163,7 +5136,7 @@ SOFTWARE.
 ******************************
 
 csstype
-3.1.3 <https://github.com/frenic/csstype>
+3.0.11 <https://github.com/frenic/csstype>
 Copyright (c) 2017-2018 Fredrik Nicol
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -5364,7 +5337,7 @@ THE SOFTWARE.
 ******************************
 
 define-data-property
-1.1.4 <https://github.com/ljharb/define-data-property>
+1.1.2 <https://github.com/ljharb/define-data-property>
 MIT License
 
 Copyright (c) 2023 Jordan Harband
@@ -5851,13 +5824,6 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 
 elliptic
 6.5.4 <https://github.com/indutny/elliptic>
-license: MIT
-authors: Fedor Indutny <fedor@indutny.com>
-
-******************************
-
-elliptic
-6.5.5 <https://github.com/indutny/elliptic>
 license: MIT
 authors: Fedor Indutny <fedor@indutny.com>
 
@@ -6377,33 +6343,6 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-
-
-******************************
-
-es-define-property
-1.0.0 <https://github.com/ljharb/es-define-property>
-MIT License
-
-Copyright (c) 2024 Jordan Harband
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
 
 
 ******************************
@@ -12727,7 +12666,7 @@ SOFTWARE.
 ******************************
 
 get-tsconfig
-4.7.4 <https://github.com/privatenumber/get-tsconfig>
+4.7.5 <https://github.com/privatenumber/get-tsconfig>
 MIT License
 
 Copyright (c) Hiroki Osame <hiroki.osame@gmail.com>
@@ -12778,7 +12717,7 @@ freely, subject to the following restrictions:
 ******************************
 
 glob
-10.3.15 <https://github.com/isaacs/node-glob>
+10.4.1 <https://github.com/isaacs/node-glob>
 The ISC License
 
 Copyright (c) 2009-2023 Isaac Z. Schlueter and Contributors
@@ -13440,7 +13379,7 @@ authors: Fedor Indutny <fedor@indutny.com>
 ******************************
 
 hasown
-2.0.2 <https://github.com/inspect-js/hasOwn>
+2.0.0 <https://github.com/inspect-js/hasOwn>
 MIT License
 
 Copyright (c) Jordan Harband and contributors
@@ -13467,7 +13406,7 @@ SOFTWARE.
 ******************************
 
 has-property-descriptors
-1.0.2 <https://github.com/inspect-js/has-property-descriptors>
+1.0.1 <https://github.com/inspect-js/has-property-descriptors>
 MIT License
 
 Copyright (c) 2022 Inspect JS
@@ -13494,7 +13433,7 @@ SOFTWARE.
 ******************************
 
 has-proto
-1.0.3 <https://github.com/inspect-js/has-proto>
+1.0.1 <https://github.com/inspect-js/has-proto>
 MIT License
 
 Copyright (c) 2022 Inspect JS
@@ -13548,7 +13487,7 @@ SOFTWARE.
 ******************************
 
 has-tostringtag
-1.0.2 <https://github.com/inspect-js/has-tostringtag>
+1.0.0 <https://github.com/inspect-js/has-tostringtag>
 MIT License
 
 Copyright (c) 2021 Inspect JS
@@ -14109,7 +14048,7 @@ SOFTWARE.
 ******************************
 
 internal-slot
-1.0.7 <https://github.com/ljharb/internal-slot>
+1.0.6 <https://github.com/ljharb/internal-slot>
 MIT License
 
 Copyright (c) 2019 Jordan Harband
@@ -14304,7 +14243,7 @@ SOFTWARE.
 ******************************
 
 is-array-buffer
-3.0.4 <https://github.com/inspect-js/is-array-buffer>
+3.0.2 <https://github.com/inspect-js/is-array-buffer>
 MIT License
 
 Copyright (c) 2015 Chen Gengyuan, Inspect JS
@@ -14894,7 +14833,7 @@ SOFTWARE.
 ******************************
 
 is-shared-array-buffer
-1.0.3 <https://github.com/inspect-js/is-shared-array-buffer>
+1.0.2 <https://github.com/inspect-js/is-shared-array-buffer>
 MIT License
 
 Copyright (c) 2021 Inspect JS
@@ -15034,34 +14973,6 @@ SOFTWARE.
 
 ******************************
 
-is-typed-array
-1.1.13 <https://github.com/inspect-js/is-typed-array>
-The MIT License (MIT)
-
-Copyright (c) 2015 Jordan Harband
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-
-
-******************************
-
 is-weakmap
 2.0.1 <https://github.com/inspect-js/is-weakmap>
 MIT License
@@ -15117,7 +15028,7 @@ SOFTWARE.
 ******************************
 
 jackspeak
-2.3.6 <https://github.com/isaacs/jackspeak>
+3.1.2 <https://github.com/isaacs/jackspeak>
 # Blue Oak Model License
 
 Version 1.0.0
@@ -15499,7 +15410,7 @@ SOFTWARE.
 ******************************
 
 @jridgewell/resolve-uri
-3.1.2 <https://github.com/jridgewell/resolve-uri>
+3.1.1 <https://github.com/jridgewell/resolve-uri>
 Copyright 2019 Justin Ridgewell <jridgewell@google.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -16854,7 +16765,7 @@ The above copyright notice and this permission notice shall be included in all c
 ******************************
 
 lines-and-columns
-1.2.4 <https://github.com/eventualbuddha/lines-and-columns>
+1.1.6 <https://github.com/eventualbuddha/lines-and-columns>
 The MIT License (MIT)
 
 Copyright (c) 2015 Brian Donovan
@@ -20222,7 +20133,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 @metamask/post-message-stream
-8.0.0 <https://github.com/MetaMask/post-message-stream>
+8.1.0 <https://github.com/MetaMask/post-message-stream>
 ISC License
 
 Copyright (c) 2020 MetaMask
@@ -20609,7 +20520,7 @@ If you have any questions, comments or interest in pursuing any other use cases,
 ******************************
 
 @metamask/snaps-controllers
-8.1.1 <https://github.com/MetaMask/snaps>
+8.2.0 <https://github.com/MetaMask/snaps>
 Copyright ConsenSys Software Inc. 2021. All rights reserved.
  
 You acknowledge and agree that ConsenSys Software Inc. (“ConsenSys”) (or ConsenSys’s licensors) own all legal right, title and interest in and to the work, software, application, source code, documentation and any other documents in this repository (collectively, the “Program”), including any intellectual property rights which subsist in the Program (whether those rights happen to be registered or not, and wherever in the world those rights may exist), whether in source code or any other form.
@@ -20633,7 +20544,7 @@ If you have any questions, comments or interest in pursuing any other use cases,
 ******************************
 
 @metamask/snaps-execution-environments
-6.1.0 <https://github.com/MetaMask/snaps>
+6.2.0 <https://github.com/MetaMask/snaps>
 Copyright ConsenSys Software Inc. 2022. All rights reserved.
 
 You acknowledge and agree that ConsenSys Software Inc. (“ConsenSys”) (or ConsenSys’s licensors) own all legal right, title and interest in and to the work, software, application, source code, documentation and any other documents in this repository (collectively, the “Program”), including any intellectual property rights which subsist in the Program (whether those rights happen to be registered or not, and wherever in the world those rights may exist), whether in source code or any other form.
@@ -20914,31 +20825,7 @@ If you have any questions, comments or interest in pursuing any other use cases,
 ******************************
 
 @metamask/snaps-rpc-methods
-8.1.0 <https://github.com/MetaMask/snaps>
-Copyright ConsenSys Software Inc. 2021. All rights reserved.
- 
-You acknowledge and agree that ConsenSys Software Inc. (“ConsenSys”) (or ConsenSys’s licensors) own all legal right, title and interest in and to the work, software, application, source code, documentation and any other documents in this repository (collectively, the “Program”), including any intellectual property rights which subsist in the Program (whether those rights happen to be registered or not, and wherever in the world those rights may exist), whether in source code or any other form.
- 
-Subject to the limited license below, you may not (and you may not permit anyone else to) distribute, publish, copy, modify, merge, combine with another program, create derivative works of, reverse engineer, decompile or otherwise attempt to extract the source code of, the Program or any part thereof, except that you may contribute to this repository.
- 
-You are granted a non-exclusive, non-transferable, non-sublicensable license to distribute, publish, copy, modify, merge, combine with another program or create derivative works of the Program (such resulting program, collectively, the “Resulting Program”) solely for Non-Commercial Use as long as you:
- 1. give prominent notice (“Notice”) with each copy of the Resulting Program that the Program is used in the Resulting Program and that the Program is the copyright of ConsenSys; and
- 2. subject the Resulting Program and any distribution, publication, copy, modification, merger therewith, combination with another program or derivative works thereof to the same Notice requirement and Non-Commercial Use restriction set forth herein.
- 
-“Non-Commercial Use” means each use as described in clauses (1)-(3) below, as reasonably determined by ConsenSys in its sole discretion: 
- 1. personal use for research, personal study, private entertainment, hobby projects or amateur pursuits, in each case without any anticipated commercial application;
- 2. use by any charitable organization, educational institution, public research organization, public safety or health organization, environmental protection organization or government institution; or
- 3. the number of monthly active users of the Resulting Program across all versions thereof and platforms globally do not exceed 10,000 at any time.
- 
-You will not use any trade mark, service mark, trade name, logo of ConsenSys or any other company or organization in a way that is likely or intended to cause confusion about the owner or authorized user of such marks, names or logos.
- 
-If you have any questions, comments or interest in pursuing any other use cases, please reach out to us at metamask.license@consensys.net.
-
-
-******************************
-
-@metamask/snaps-rpc-methods
-9.0.0 <https://github.com/MetaMask/snaps>
+9.1.0 <https://github.com/MetaMask/snaps>
 Copyright ConsenSys Software Inc. 2021. All rights reserved.
  
 You acknowledge and agree that ConsenSys Software Inc. (“ConsenSys”) (or ConsenSys’s licensors) own all legal right, title and interest in and to the work, software, application, source code, documentation and any other documents in this repository (collectively, the “Program”), including any intellectual property rights which subsist in the Program (whether those rights happen to be registered or not, and wherever in the world those rights may exist), whether in source code or any other form.
@@ -20962,7 +20849,7 @@ If you have any questions, comments or interest in pursuing any other use cases,
 ******************************
 
 @metamask/snaps-sdk
-4.2.0 <https://github.com/MetaMask/snaps>
+4.3.0 <https://github.com/MetaMask/snaps>
 ISC License
 
 Copyright (c) 2023 MetaMask
@@ -21358,7 +21245,7 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 minipass
-7.1.0 <https://github.com/isaacs/minipass>
+7.1.2 <https://github.com/isaacs/minipass>
 The ISC License
 
 Copyright (c) 2017-2023 npm, Inc., Isaac Z. Schlueter, and Contributors
@@ -21723,10 +21610,14 @@ THE SOFTWARE.
 ******************************
 
 nan
-2.19.0 <https://github.com/nodejs/nan>
+2.15.0 <https://github.com/nodejs/nan>
 The MIT License (MIT)
+=====================
 
-Copyright (c) 2018 [NAN contributors](<https://github.com/nodejs/nan#wg-members--collaborators>)
+Copyright (c) 2018 NAN contributors
+-----------------------------------
+
+*NAN contributors listed at <https://github.com/nodejs/nan#contributors>*
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -22266,7 +22157,7 @@ THE SOFTWARE.
 ******************************
 
 object.assign
-4.1.5 <https://github.com/ljharb/object.assign>
+4.1.4 <https://github.com/ljharb/object.assign>
 The MIT License (MIT)
 
 Copyright (c) 2014 Jordan Harband
@@ -22292,7 +22183,7 @@ SOFTWARE.
 ******************************
 
 object-inspect
-1.13.1 <https://github.com/inspect-js/object-inspect>
+1.12.3 <https://github.com/inspect-js/object-inspect>
 MIT License
 
 Copyright (c) 2013 James Halliday
@@ -22427,7 +22318,7 @@ SOFTWARE.
 ******************************
 
 pako
-1.0.11 <https://github.com/nodeca/pako>
+1.0.6 <https://github.com/nodeca/pako>
 (The MIT License)
 
 Copyright (C) 2014-2017 by Vitaly Puzrin and Andrei Tuputcyn
@@ -23067,33 +22958,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ******************************
 
-possible-typed-array-names
-1.0.0 <https://github.com/ljharb/possible-typed-array-names>
-MIT License
-
-Copyright (c) 2024 Jordan Harband
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-
-******************************
-
 printj
 1.1.2 <https://github.com/SheetJS/printj>
 Copyright (C) 2016-present  SheetJS
@@ -23680,32 +23544,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ******************************
 
-pump
-3.0.0 <https://github.com/mafintosh/pump>
-The MIT License (MIT)
-
-Copyright (c) 2014 Mathias Buus
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
-******************************
-
 punycode
 2.1.0 <https://github.com/bestiejs/punycode.js>
 Copyright Mathias Bynens <https://mathiasbynens.be/>
@@ -23827,7 +23665,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 ******************************
 
 qs
-6.12.1 <https://github.com/ljharb/qs>
+6.11.2 <https://github.com/ljharb/qs>
 BSD 3-Clause License
 
 Copyright (c) 2014, Nathan LaFreniere and other [contributors](https://github.com/ljharb/qs/graphs/contributors)
@@ -24466,7 +24304,7 @@ authors: undefined
 ******************************
 
 react-transition-group
-4.4.5 <https://github.com/reactjs/react-transition-group>
+4.4.2 <https://github.com/reactjs/react-transition-group>
 BSD 3-Clause License
 
 Copyright (c) 2018, React Community
@@ -24502,7 +24340,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************
 
 readable-stream
-2.3.8 <https://github.com/nodejs/readable-stream>
+2.3.7 <https://github.com/nodejs/readable-stream>
 Node.js is licensed for use as follows:
 
 """
@@ -24695,7 +24533,7 @@ SOFTWARE.
 ******************************
 
 @reduxjs/toolkit
-1.6.2 <https://github.com/reduxjs/redux-toolkit>
+1.9.7 <https://github.com/reduxjs/redux-toolkit>
 MIT License
 
 Copyright (c) 2018 Mark Erikson
@@ -24776,7 +24614,7 @@ SOFTWARE.
 ******************************
 
 regexp.prototype.flags
-1.5.2 <https://github.com/es-shims/RegExp.prototype.flags>
+1.5.1 <https://github.com/es-shims/RegExp.prototype.flags>
 The MIT License (MIT)
 
 Copyright (C) 2014 Jordan Harband
@@ -26385,33 +26223,6 @@ THE SOFTWARE.
 ******************************
 
 @scure/base
-1.1.5 <https://github.com/paulmillr/scure-base>
-The MIT License (MIT)
-
-Copyright (c) 2022 Paul Miller (https://paulmillr.com)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the “Software”), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
-
-******************************
-
-@scure/base
 1.1.6 <https://github.com/paulmillr/scure-base>
 The MIT License (MIT)
 
@@ -27044,7 +26855,7 @@ ses
 ******************************
 
 set-function-length
-1.2.2 <https://github.com/ljharb/set-function-length>
+1.2.1 <https://github.com/ljharb/set-function-length>
 MIT License
 
 Copyright (c) Jordan Harband and contributors
@@ -27071,7 +26882,7 @@ SOFTWARE.
 ******************************
 
 set-function-name
-2.0.2 <https://github.com/ljharb/set-function-name>
+2.0.1 <https://github.com/ljharb/set-function-name>
 MIT License
 
 Copyright (c) Jordan Harband and contributors
@@ -27216,7 +27027,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 ******************************
 
 side-channel
-1.0.6 <https://github.com/ljharb/side-channel>
+1.0.4 <https://github.com/ljharb/side-channel>
 MIT License
 
 Copyright (c) 2019 Jordan Harband
@@ -27265,7 +27076,7 @@ ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 signal-exit
-4.1.0 <https://github.com/tapjs/signal-exit>
+4.0.2 <https://github.com/tapjs/signal-exit>
 The ISC License
 
 Copyright (c) 2015-2023 Benjamin Coe, Isaac Z. Schlueter, and Contributors
@@ -27423,7 +27234,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 socks
-2.8.3 <https://github.com/JoshGlazebrook/socks>
+2.8.1 <https://github.com/JoshGlazebrook/socks>
 The MIT License (MIT)
 
 Copyright (c) 2013 Josh Glazebrook
@@ -29382,7 +29193,7 @@ SOFTWARE.
 ******************************
 
 @types/debug
-4.1.12 <https://github.com/DefinitelyTyped/DefinitelyTyped>
+4.1.7 <https://github.com/DefinitelyTyped/DefinitelyTyped>
     MIT License
 
     Copyright (c) Microsoft Corporation.
@@ -29470,7 +29281,7 @@ authors: Mohamed Hegazy <https://github.com/mhegazy>
 ******************************
 
 @types/lodash
-4.17.1 <https://github.com/DefinitelyTyped/DefinitelyTyped>
+4.14.184 <https://github.com/DefinitelyTyped/DefinitelyTyped>
     MIT License
 
     Copyright (c) Microsoft Corporation.
@@ -29578,7 +29389,7 @@ authors: Mohamed Hegazy <https://github.com/mhegazy>
 ******************************
 
 @types/node
-20.12.8 <https://github.com/DefinitelyTyped/DefinitelyTyped>
+20.12.7 <https://github.com/DefinitelyTyped/DefinitelyTyped>
     MIT License
 
     Copyright (c) Microsoft Corporation.
@@ -29713,7 +29524,7 @@ authors: Mohamed Hegazy <https://github.com/mhegazy>
 ******************************
 
 @types/react-transition-group
-4.4.10 <https://github.com/DefinitelyTyped/DefinitelyTyped>
+4.4.6 <https://github.com/DefinitelyTyped/DefinitelyTyped>
     MIT License
 
     Copyright (c) Microsoft Corporation.
@@ -30065,7 +29876,7 @@ SOFTWARE.
 ******************************
 
 unified
-9.2.2 <https://github.com/unifiedjs/unified>
+9.2.0 <https://github.com/unifiedjs/unified>
 (The MIT License)
 
 Copyright (c) 2015 Titus Wormer <tituswormer@gmail.com>
@@ -31759,34 +31570,6 @@ SOFTWARE.
 ******************************
 
 which-typed-array
-1.1.15 <https://github.com/inspect-js/which-typed-array>
-The MIT License (MIT)
-
-Copyright (c) 2015 Jordan Harband
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-
-
-******************************
-
-which-typed-array
 1.1.9 <https://github.com/inspect-js/which-typed-array>
 The MIT License (MIT)
 
@@ -31959,7 +31742,7 @@ SOFTWARE.
 ******************************
 
 ws
-8.17.0 <https://github.com/websockets/ws>
+8.16.0 <https://github.com/websockets/ws>
 Copyright (c) 2011 Einar Otto Stangvik <einaros@gmail.com>
 Copyright (c) 2013 Arnout Kazemier and contributors
 Copyright (c) 2016 Luigi Pinca and contributors
