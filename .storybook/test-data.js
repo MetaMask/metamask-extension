@@ -282,13 +282,15 @@ const state = {
     },
     interfaces: {
       'test-interface': {
-        content: getJsxElementFromComponent(panel([
-          heading('Foo bar'),
-          text('Description'),
-          divider(),
-          text('More text'),
-          copyable('Text you can copy'),
-        ])),
+        content: getJsxElementFromComponent(
+          panel([
+            heading('Foo bar'),
+            text('Description'),
+            divider(),
+            text('More text'),
+            copyable('Text you can copy'),
+          ]),
+        ),
         state: {},
         snapId: 'local:http://localhost:8080/',
       },
@@ -467,8 +469,28 @@ const state = {
         isEns: true,
       },
     ],
-    contractExchangeRates: {
-      '0xaD6D458402F60fD3Bd25163575031ACDce07538D': 0,
+    marketData: {
+      '0xaa36a7': {
+        '0xaD6D458402F60fD3Bd25163575031ACDce07538D': {
+          value: 0,
+          contractPercentChange1d: 0.004,
+          priceChange1d: 0.00004,
+        },
+      },
+      '0x1': {
+        '0xaD6D458402F60fD3Bd25163575031ACDce07538D': {
+          value: 0,
+          contractPercentChange1d: 0.004,
+          priceChange1d: 0.00004,
+        },
+      },
+      '0x5': {
+        '0xaD6D458402F60fD3Bd25163575031ACDce07538D': {
+          value: 0,
+          contractPercentChange1d: 0.004,
+          priceChange1d: 0.00004,
+        },
+      },
     },
     tokens: [
       {
