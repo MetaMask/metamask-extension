@@ -3,7 +3,11 @@ import { SubjectType } from '@metamask/permission-controller';
 ///: END:ONLY_INCLUDE_IF
 import { ApprovalType } from '@metamask/controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-import { getLocalizedSnapManifest, SnapStatus, stripSnapPrefix } from '@metamask/snaps-utils';
+import {
+  stripSnapPrefix,
+  getLocalizedSnapManifest,
+  SnapStatus,
+} from '@metamask/snaps-utils';
 import { memoize } from 'lodash';
 import semver from 'semver';
 ///: END:ONLY_INCLUDE_IF
@@ -12,45 +16,45 @@ import { NameType } from '@metamask/name-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { addHexPrefix, getEnvironmentType } from '../../app/scripts/lib/util';
 import {
-  ARBITRUM_DISPLAY_NAME,
-  AVALANCHE_DISPLAY_NAME,
-  BASE_DISPLAY_NAME,
-  BSC_DISPLAY_NAME,
+  TEST_CHAINS,
   BUYABLE_CHAINS_MAP,
-  CELO_DISPLAY_NAME,
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  MAINNET_DISPLAY_NAME,
+  BSC_DISPLAY_NAME,
+  POLYGON_DISPLAY_NAME,
+  AVALANCHE_DISPLAY_NAME,
   CHAIN_ID_TO_RPC_URL_MAP,
-  CHAIN_ID_TOKEN_IMAGE_MAP,
   CHAIN_IDS,
-  CRONOS_DISPLAY_NAME,
-  CURRENCY_SYMBOLS,
-  ETH_TOKEN_IMAGE_URL,
-  FANTOM_DISPLAY_NAME,
-  GNOSIS_DISPLAY_NAME,
+  NETWORK_TYPES,
+  NetworkStatus,
+  SEPOLIA_DISPLAY_NAME,
   GOERLI_DISPLAY_NAME,
+  ETH_TOKEN_IMAGE_URL,
   LINEA_GOERLI_DISPLAY_NAME,
+  CURRENCY_SYMBOLS,
+  TEST_NETWORK_TICKER_MAP,
   LINEA_GOERLI_TOKEN_IMAGE_URL,
   LINEA_MAINNET_DISPLAY_NAME,
   LINEA_MAINNET_TOKEN_IMAGE_URL,
-  LINEA_SEPOLIA_DISPLAY_NAME,
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  ARBITRUM_DISPLAY_NAME,
+  OPTIMISM_DISPLAY_NAME,
+  BASE_DISPLAY_NAME,
+  ZK_SYNC_ERA_DISPLAY_NAME,
+  CHAIN_ID_TOKEN_IMAGE_MAP,
   LINEA_SEPOLIA_TOKEN_IMAGE_URL,
-  MAINNET_DISPLAY_NAME,
+  LINEA_SEPOLIA_DISPLAY_NAME,
+  CRONOS_DISPLAY_NAME,
+  CELO_DISPLAY_NAME,
+  GNOSIS_DISPLAY_NAME,
+  FANTOM_DISPLAY_NAME,
+  POLYGON_ZKEVM_DISPLAY_NAME,
   MOONBEAM_DISPLAY_NAME,
   MOONRIVER_DISPLAY_NAME,
-  NETWORK_TYPES,
-  NetworkStatus,
-  OPTIMISM_DISPLAY_NAME,
-  POLYGON_DISPLAY_NAME,
-  POLYGON_ZKEVM_DISPLAY_NAME,
-  SEPOLIA_DISPLAY_NAME,
-  TEST_CHAINS,
-  TEST_NETWORK_TICKER_MAP,
-  ZK_SYNC_ERA_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import {
-  HardwareTransportStates,
-  LedgerTransportTypes,
   WebHIDConnectedStatuses,
+  LedgerTransportTypes,
+  HardwareTransportStates,
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import { getIsSmartTransaction } from '../../shared/modules/selectors';
@@ -58,52 +62,71 @@ import { getIsSmartTransaction } from '../../shared/modules/selectors';
 import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
 
 import {
-  ALLOWED_DEV_SWAPS_CHAIN_IDS,
-  ALLOWED_PROD_SWAPS_CHAIN_IDS,
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
+  ALLOWED_PROD_SWAPS_CHAIN_IDS,
+  ALLOWED_DEV_SWAPS_CHAIN_IDS,
 } from '../../shared/constants/swaps';
 
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
 
-import { getAccountByAddress, getURLHostName, shortenAddress } from '../helpers/utils/util';
-
 import {
-  TEMPLATED_CONFIRMATION_APPROVAL_TYPES,
-} from '../pages/confirmations/confirmation/templates';
+  shortenAddress,
+  getAccountByAddress,
+  getURLHostName,
+} from '../helpers/utils/util';
+
+import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmations/confirmation/templates';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
 import {
-  getConversionRate,
-  getIsUnlocked,
-  getLedgerTransportType,
   getProviderConfig,
-  isAddressLedger,
-  isEIP1559Network,
+  getConversionRate,
   isNotEIP1559Network,
+  isEIP1559Network,
+  getLedgerTransportType,
+  isAddressLedger,
+  getIsUnlocked,
 } from '../ducks/metamask/metamask';
-import { getLedgerTransportStatus, getLedgerWebHidConnectedStatus } from '../ducks/app/app';
+import {
+  getLedgerWebHidConnectedStatus,
+  getLedgerTransportStatus,
+} from '../ducks/app/app';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { getValueFromWeiHex, hexToDecimal } from '../../shared/modules/conversion.utils';
+import {
+  getValueFromWeiHex,
+  hexToDecimal,
+} from '../../shared/modules/conversion.utils';
 import { BackgroundColor } from '../helpers/constants/design-system';
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   NOTIFICATION_BLOCKAID_DEFAULT,
+  ///: END:ONLY_INCLUDE_IF
   NOTIFICATION_DROP_LEDGER_FIREFOX,
   NOTIFICATION_PETNAMES,
-  NOTIFICATION_SIMULATIONS,
   NOTIFICATION_U2F_LEDGER_LIVE,
+  NOTIFICATION_SIMULATIONS,
 } from '../../shared/notifications';
-import { SURVEY_DATE, SURVEY_END_TIME, SURVEY_START_TIME } from '../helpers/constants/survey';
+import {
+  SURVEY_DATE,
+  SURVEY_END_TIME,
+  SURVEY_START_TIME,
+} from '../helpers/constants/survey';
 import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
 import { SUPPORTED_CHAIN_IDS } from '../../app/scripts/lib/ppom/ppom-middleware';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
-import { getCurrentNetworkTransactions, getUnapprovedTransactions } from './transactions';
+import {
+  getCurrentNetworkTransactions,
+  getUnapprovedTransactions,
+} from './transactions';
 // eslint-disable-next-line import/order
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+  getPermissionSubjects,
   getConnectedSubjectsForAllAddresses,
+  ///: END:ONLY_INCLUDE_IF
   getOrderedConnectedAccountsForActiveTab,
   getOrderedConnectedAccountsForConnectedDapp,
-  getPermissionSubjects,
 } from './permissions';
 import { createDeepEqualSelector } from './util';
 
@@ -174,8 +197,7 @@ export function getCurrentKeyring(state) {
  * both of them support EIP-1559.
  *
  * @param state
- * @param [networkClientId] - The optional network client ID to check network and account for
- *   EIP-1559 support
+ * @param [networkClientId] - The optional network client ID to check network and account for EIP-1559 support
  */
 export function checkNetworkAndAccountSupports1559(state, networkClientId) {
   const networkSupports1559 = isEIP1559Network(state, networkClientId);
@@ -379,8 +401,7 @@ export function getMetaMaskKeyrings(state) {
  * Get account balances state.
  *
  * @param {object} state - Redux state
- * @returns {object} A map of account addresses to account objects (which includes the account
- *   balance)
+ * @returns {object} A map of account addresses to account objects (which includes the account balance)
  */
 export function getMetaMaskAccountBalances(state) {
   return state.metamask.accounts;
@@ -1504,8 +1525,7 @@ export const getSnap = createDeepEqualSelector(
  * Get a selector that returns all Snaps metadata (name and description) for all Snaps.
  *
  * @param {object} state - The Redux state object.
- * @returns {object} An object mapping all installed snaps to their metadata, which contains the
- *   snap name and description.
+ * @returns {object} An object mapping all installed snaps to their metadata, which contains the snap name and description.
  */
 export const getSnapsMetadata = createDeepEqualSelector(
   getLocale,
@@ -1613,10 +1633,8 @@ export const getNotifySnaps = createDeepEqualSelector(
  * @typedef {object} Notification
  * @property {string} id - A unique identifier for the notification
  * @property {string} origin - A string identifing the snap origin
- * @property {EpochTimeStamp} createdDate - A date in epochTimeStramps, identifying when the
- *   notification was first committed
- * @property {EpochTimeStamp} readDate - A date in epochTimeStramps, identifying when the
- *   notification was read by the user
+ * @property {EpochTimeStamp} createdDate - A date in epochTimeStramps, identifying when the notification was first committed
+ * @property {EpochTimeStamp} readDate - A date in epochTimeStramps, identifying when the notification was read by the user
  * @property {string} message - A string containing the notification message
  */
 
@@ -1688,8 +1706,7 @@ function getAllowedAnnouncementIds(state) {
 /**
  * @typedef {object} Announcement
  * @property {number} id - A unique identifier for the announcement
- * @property {string} date - A date in YYYY-MM-DD format, identifying when the notification was
- *   first committed
+ * @property {string} date - A date in YYYY-MM-DD format, identifying when the notification was first committed
  */
 
 /**
@@ -1826,12 +1843,10 @@ export function getShowTermsOfUse(state) {
 }
 
 /**
- * Determines if the survey toast should be shown based on the current time, survey start and end
- * times, and whether the survey link was last clicked or closed.
+ * Determines if the survey toast should be shown based on the current time, survey start and end times, and whether the survey link was last clicked or closed.
  *
  * @param {*} state - The application state containing the necessary survey data.
- * @returns {boolean} True if the current time is between the survey start and end times and the
- *   survey link was not last clicked or closed. False otherwise.
+ * @returns {boolean} True if the current time is between the survey start and end times and the survey link was not last clicked or closed. False otherwise.
  */
 export function getShowSurveyToast(state) {
   const { surveyLinkLastClickedOrClosed } = state.metamask;
@@ -1842,12 +1857,10 @@ export function getShowSurveyToast(state) {
 }
 
 /**
- * Determines if the privacy policy toast should be shown based on the current date and whether the
- * new privacy policy toast was clicked or closed.
+ * Determines if the privacy policy toast should be shown based on the current date and whether the new privacy policy toast was clicked or closed.
  *
  * @param {*} state - The application state containing the privacy policy data.
- * @returns {boolean} True if the current date is on or after the new privacy policy date and the
- *   privacy policy toast was not clicked or closed. False otherwise.
+ * @returns {boolean} True if the current date is on or after the new privacy policy date and the privacy policy toast was not clicked or closed. False otherwise.
  */
 export function getShowPrivacyPolicyToast(state) {
   const { newPrivacyPolicyToastClickedOrClosed } = state.metamask;
@@ -1941,8 +1954,7 @@ export function getTheme(state) {
  * from the tokens controller if token detection is enabled, or the static list if not.
  *
  * @param {*} state
- * @param {boolean} forceRemote - Whether to force the use of the remote token list regardless of
- *   the user preference. Defaults to false.
+ * @param {boolean} forceRemote - Whether to force the use of the remote token list regardless of the user preference. Defaults to false.
  * @returns {object}
  */
 export function getTokenList(state, forceRemote = false) {
@@ -2191,8 +2203,7 @@ export function getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state) {
 }
 
 /**
- * To get the `useRequestQueue` value which determines whether we use a request queue infront of
- * provider api calls. This will have the effect of implementing per-dapp network switching.
+ * To get the `useRequestQueue` value which determines whether we use a request queue infront of provider api calls. This will have the effect of implementing per-dapp network switching.
  *
  * @param {*} state
  * @returns Boolean
