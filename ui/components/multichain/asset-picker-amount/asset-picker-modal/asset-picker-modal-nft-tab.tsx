@@ -20,9 +20,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import Spinner from '../../../ui/spinner';
-import { useScrollRequired } from '../../../../hooks/useScrollRequired';
 import { getIsStillNftsFetching } from '../../../../ducks/metamask/metamask';
-import PropTypes from 'prop-types';
 
 type NFT = {
   address: string;
@@ -42,22 +40,27 @@ type Collection = {
   nfts: NFT[];
 };
 
+type PreviouslyOwnedCollections = {
+  collectionName: string;
+  nfts: NFT[];
+};
+
 type AssetPickerModalNftTabProps = {
   collectionDataFiltered: Collection[];
-  previouslyOwnedCollection: any;
+  previouslyOwnedCollection: PreviouslyOwnedCollections;
   onClose: () => void;
+  renderSearch: () => void;
 };
 
 export function AssetPickerModalNftTab({
   collectionDataFiltered,
   previouslyOwnedCollection,
-  onClose
+  onClose,
+  renderSearch,
 }: AssetPickerModalNftTabProps) {
   const t = useI18nContext();
 
   const hasAnyNfts = Object.keys(collectionDataFiltered).length > 0;
-  const { isScrollable, isScrolledToBottom, ref, onScroll } =
-  useScrollRequired();
   const isNftsStillFetched = useSelector(getIsStillNftsFetching);
   const [showLoader, setShowLoader] = useState(true);
 
@@ -84,30 +87,25 @@ export function AssetPickerModalNftTab({
 
   if (hasAnyNfts) {
     return (
-      <Box
-      className="modal-tab__main-view"
-      ref={ref}
-      onScroll={onScroll}
-    >
-      <NftsItems
-        collections={collectionDataFiltered}
-        previouslyOwnedCollection={previouslyOwnedCollection}
-        isModal={true}
-        onCloseModal={() => onClose()}
-        showTokenId={true}
-        displayPreviouslyOwnedCollection={false}
-      />
-      {isScrollable &&
-      isScrolledToBottom &&
-      isNftsStillFetched.isFetchingInProgress ? (
-        <Box className="modal-tab__loading">
-          <Spinner
-            color="var(--color-warning-default)"
-            className="loading-overlay__spinner"
-          />
-        </Box>
-      ) : null}
-    </Box>
+      <Box className="modal-tab__main-view">
+        {renderSearch()}
+        <NftsItems
+          collections={collectionDataFiltered}
+          previouslyOwnedCollection={previouslyOwnedCollection}
+          isModal={true}
+          onCloseModal={() => onClose()}
+          showTokenId={true}
+          displayPreviouslyOwnedCollection={false}
+        />
+        {isNftsStillFetched.isFetchingInProgress ? (
+          <Box className="modal-tab__fetching">
+            <Spinner
+              color="var(--color-warning-default)"
+              className="loading-overlay__spinner"
+            />
+          </Box>
+        ) : null}
+      </Box>
     );
   }
   return (

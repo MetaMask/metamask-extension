@@ -101,5 +101,13 @@
       justify-content: center;
       padding: 15px;
     }
+
+    &__fetching {
+      display: flex;
+      height: 100px;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+    }
   }
 }
