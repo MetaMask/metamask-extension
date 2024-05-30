@@ -1,37 +1,33 @@
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
 import {
   Button,
   ButtonSize,
   ButtonVariant,
   IconName,
 } from '../../../../../components/component-library';
+import { ConfirmAlertModal } from '../../../../../components/app/alert-system/confirm-alert-modal';
 import { Footer as PageFooter } from '../../../../../components/multichain/pages/page';
+import { doesAddressRequireLedgerHidConnection } from '../../../../../selectors';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { useMMIConfirmations } from '../../../../../hooks/useMMIConfirmations';
 ///: END:ONLY_INCLUDE_IF
-
-import { doesAddressRequireLedgerHidConnection } from '../../../../../selectors';
 import {
   rejectPendingApproval,
   resolvePendingApproval,
 } from '../../../../../store/actions';
+import useAlerts from '../../../../../hooks/useAlerts';
 import { confirmSelector } from '../../../selectors';
 import { getConfirmationSender } from '../utils';
-import useAlerts from '../../../../../hooks/useAlerts';
-import { ConfirmAlertModal } from '../../../../../components/app/confirmations/alerts/confirm-alert-modal';
-import useIsDangerButton from './useIsDangerButton';
 
 function getIconName(hasUnconfirmedAlerts: boolean): IconName {
-  if (hasUnconfirmedAlerts) {
-    return IconName.SecuritySearch;
-  }
-  return IconName.Danger;
+  return hasUnconfirmedAlerts ? IconName.SecuritySearch : IconName.Danger;
 }
 
-function ConfirmButton({
+const ConfirmButton = ({
   alertOwnerId = '',
   disabled,
   onSubmit,
@@ -41,18 +37,14 @@ function ConfirmButton({
   disabled: boolean;
   onSubmit: () => void;
   onCancel: () => void;
-}) {
-  const isDangerButton = useIsDangerButton();
+}) => {
   const t = useI18nContext();
 
   const [confirmModalVisible, setConfirmModalVisible] =
     useState<boolean>(false);
-  const { alerts, isAlertConfirmed } = useAlerts(alertOwnerId);
-  const unconfirmedAlerts = alerts.filter(
-    (alert) => alert.field && !isAlertConfirmed(alert.key),
-  );
-  const hasAlerts = alerts.length > 0;
-  const hasUnconfirmedAlerts = unconfirmedAlerts.length > 0;
+
+  const { alerts, hasDangerAlerts, hasUnconfirmedDangerAlerts } =
+    useAlerts(alertOwnerId);
 
   const handleCloseConfirmModal = useCallback(() => {
     setConfirmModalVisible(false);
@@ -60,7 +52,7 @@ function ConfirmButton({
 
   const handleOpenConfirmModal = useCallback(() => {
     setConfirmModalVisible(true);
-  }, [hasUnconfirmedAlerts]);
+  }, []);
 
   return (
     <>
@@ -77,18 +69,18 @@ function ConfirmButton({
         block
         data-testid="confirm-footer-confirm-button"
         startIconName={
-          hasAlerts ? getIconName(hasUnconfirmedAlerts) : undefined
+          hasDangerAlerts ? getIconName(hasUnconfirmedDangerAlerts) : undefined
         }
-        onClick={hasAlerts ? handleOpenConfirmModal : onSubmit}
-        danger={hasAlerts ? true : isDangerButton}
+        onClick={hasDangerAlerts ? handleOpenConfirmModal : onSubmit}
+        danger={hasDangerAlerts}
         size={ButtonSize.Lg}
-        disabled={hasUnconfirmedAlerts ? false : disabled}
+        disabled={hasUnconfirmedDangerAlerts ? false : disabled}
       >
-        {hasUnconfirmedAlerts ? t('reviewAlerts') : t('confirm')}
+        {hasUnconfirmedDangerAlerts ? t('reviewAlerts') : t('confirm')}
       </Button>
     </>
   );
-}
+};
 
 const Footer = () => {
   const dispatch = useDispatch();

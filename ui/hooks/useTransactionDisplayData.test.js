@@ -159,6 +159,19 @@ const expectedResults = [
     displayedStatusKey: TransactionStatus.confirmed,
     isPending: false,
   },
+  {
+    title: 'Send BAT as ETH',
+    category: TransactionType.swapAndSend,
+    subtitle: 'metamask',
+    subtitleContainsOrigin: true,
+    date: formatDateWithYearContext(1585088013000),
+    primaryCurrency: '-0 BAT',
+    senderAddress: '0x0a985a957b490f4d05bef05bc7ec556dd8535946',
+    recipientAddress: '0xc6f6ca03d790168758285264bcbf7fb30d27322b',
+    secondaryCurrency: '-0 ETH',
+    isPending: false,
+    displayedStatusKey: TransactionStatus.confirmed,
+  },
 ];
 
 let useSelector, useI18nContext, useTokenFiatAmount;
