@@ -2611,7 +2611,7 @@ export function removeFromAddressBook(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.removeFromAddressBook`);
 
-  return async () => {
+  return async (dispatch) => {
     await submitRequestToBackground('removeFromAddressBook', [
       chainId,
       toChecksumHexAddress(addressToRemove),

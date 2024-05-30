@@ -1396,14 +1396,18 @@ describe('Actions', () => {
         .stub()
         .callsFake((_, __, ___, ____, cb) => cb());
 
+      const getStateStub = sinon.stub();
+
       background.getApi.returns({
         setAddressBook: setAddressBookStub,
+        getState: getStateStub,
       });
 
       setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.addToAddressBook('0x0000'));
       expect(setAddressBookStub.callCount).toStrictEqual(1);
+      expect(getStateStub.callCount).toStrictEqual(1);
       sinon.restore();
     });
   });
