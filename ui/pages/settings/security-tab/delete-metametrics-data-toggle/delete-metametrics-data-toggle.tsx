@@ -11,6 +11,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getMetaMetricsDataDeletionDate,
   getMetaMetricsDataDeletionStatus,
+  getMetaMetricsId,
   getShowDataDeletionErrorModal,
   getShowDeleteMetaMetricsDataModal,
   hasRecordedMetricsSinceDeletion,
@@ -19,12 +20,14 @@ import {
 import { DeleteRegulationStatus } from '../../../../../app/scripts/controllers/metametrics-data-deletion/metametrics-data-deletion';
 import { openDeleteMetaMetricsDataModal } from '../../../../ducks/app/app';
 import DataDeletionErrorModal from '../../../../components/app/data-deletion-error-modal';
+import { formatDate } from '../../../../helpers/utils/util';
 
 const DeleteMetaMetricsDataToggle = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  const hasMetricsDataRecordedAfterLastDeletion = useSelector(
+  const metaMetricsId = useSelector(getMetaMetricsId);
+  const hasMetricsRecordedAfterDeletion = useSelector(
     hasRecordedMetricsSinceDeletion,
   );
   const metaMetricsDataDeletionStatus = useSelector(
@@ -33,6 +36,8 @@ const DeleteMetaMetricsDataToggle = () => {
   const metaMetricsDataDeletionDate = useSelector(
     getMetaMetricsDataDeletionDate,
   );
+  const formatedDate = formatDate(metaMetricsDataDeletionDate, 'd/MM/y');
+
   const metaMetricsDataDeletionMarked = useSelector(
     isMetaMetricsDataDeletionMarked,
   );
@@ -40,18 +45,17 @@ const DeleteMetaMetricsDataToggle = () => {
     getShowDeleteMetaMetricsDataModal,
   );
   const showDataDeletionErrorModal = useSelector(getShowDataDeletionErrorModal);
-  console.log(showDataDeletionErrorModal);
 
-  let dataDeletionButtonDisabled = false;
-  if (metaMetricsDataDeletionStatus) {
+  let dataDeletionButtonDisabled =
+    metaMetricsDataDeletionMarked || Boolean(!metaMetricsId) || !hasMetricsRecordedAfterDeletion;
+  if (!dataDeletionButtonDisabled && metaMetricsDataDeletionStatus) {
     dataDeletionButtonDisabled =
-      metaMetricsDataDeletionMarked ||
-      ([
+      [
         DeleteRegulationStatus.INITIALIZED,
         DeleteRegulationStatus.RUNNING,
         DeleteRegulationStatus.FINISHED,
       ].includes(metaMetricsDataDeletionStatus) &&
-        !hasMetricsDataRecordedAfterLastDeletion);
+      !hasMetricsRecordedAfterDeletion;
   }
 
   const privacyPolicyLink = (
@@ -78,7 +82,7 @@ const DeleteMetaMetricsDataToggle = () => {
           <div className="settings-page__content-description">
             {dataDeletionButtonDisabled
               ? t('deleteMetaMetricsDataRequestedDescription', [
-                  metaMetricsDataDeletionDate,
+                  formatedDate,
                   privacyPolicyLink,
                 ])
               : t('deleteMetaMetricsDataDescription', [privacyPolicyLink])}
@@ -88,7 +92,6 @@ const DeleteMetaMetricsDataToggle = () => {
           <ButtonPrimary
             className="settings-page__button"
             onClick={() => {
-              // event.preventDefault();
               dispatch(openDeleteMetaMetricsDataModal());
             }}
             disabled={dataDeletionButtonDisabled}
