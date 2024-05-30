@@ -27,6 +27,15 @@ export const isSignatureApprovalRequest = (
   request: ApprovalRequest<Record<string, Json>>,
 ) => SIGNATURE_APPROVAL_TYPES.includes(request.type as ApprovalType);
 
+const SIGNATURE_TRANSACTION_TYPES = [
+  TransactionType.personalSign,
+  TransactionType.signTypedData,
+];
+
+export const isSignatureTransactionType = (request?: Record<string, unknown>) =>
+  request &&
+  SIGNATURE_TRANSACTION_TYPES.includes(request.type as TransactionType);
+
 export const parseTypedDataMessage = (dataToParse: string) => {
   const { message, domain = {}, primaryType, types } = JSON.parse(dataToParse);
   const sanitizedMessage = sanitizeMessage(message, primaryType, types);
