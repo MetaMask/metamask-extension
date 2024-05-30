@@ -594,9 +594,6 @@
   "basicConfigurationBannerTitle": {
     "message": "Naka-off ang batayang kapakinabangan"
   },
-  "basicConfigurationDescription": {
-    "message": "Kasama ang data at halaga ng token, optimal na settings sa gas, at marami pang iba. Ang paggamit ng mga serbisyong ito ay nagbabahagi ng iyong IP address sa MetaMask, tulad kapag bumisita ka sa website."
-  },
   "basicConfigurationLabel": {
     "message": "Batayang kapakinabangan"
   },
