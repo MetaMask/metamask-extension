@@ -594,9 +594,6 @@
   "basicConfigurationBannerTitle": {
     "message": "基本機能はオフになっています"
   },
-  "basicConfigurationDescription": {
-    "message": "トークンのデータと値、最適なガス設定などを含みます。これらのサービスを使用すると、Webサイトにアクセスした場合と同様に、MetaMaskにIPアドレスが共有されます。"
-  },
   "basicConfigurationLabel": {
     "message": "基本機能"
   },
