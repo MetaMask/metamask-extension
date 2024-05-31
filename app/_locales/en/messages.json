@@ -2595,9 +2595,6 @@
   "loading": {
     "message": "Loading..."
   },
-  "loadingNFTs": {
-    "message": "Loading NFTs..."
-  },
   "loadingScreenHardwareWalletMessage": {
     "message": "Please complete the transaction on the hardware wallet."
   },

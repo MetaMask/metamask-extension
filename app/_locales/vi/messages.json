@@ -2555,9 +2555,6 @@
   "loading": {
     "message": "Đang tải..."
   },
-  "loadingNFTs": {
-    "message": "Đang tải NFT..."
-  },
   "loadingScreenHardwareWalletMessage": {
     "message": "Vui lòng hoàn tất giao dịch trên ví cứng."
   },
