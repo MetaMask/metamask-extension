@@ -18,7 +18,6 @@ describe('Create token, approve token and approve token without gas', function (
   it('imports and renders the balance for the new token', async function () {
     await withFixtures(
       {
-        dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
