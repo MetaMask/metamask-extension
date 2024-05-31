@@ -1257,7 +1257,7 @@ export async function handleSnapRequest(args: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     params?: Record<string, any>;
   };
-}): Promise<void> {
+}): Promise<unknown> {
   return submitRequestToBackground('handleSnapRequest', [args]);
 }
 
@@ -3625,14 +3625,9 @@ export function setPendingTokens(pendingTokens: {
       : selectedTokens;
 
   Object.keys(tokens).forEach((tokenAddress) => {
-    const found = tokenAddressList.find((addr) =>
+    tokens[tokenAddress].unlisted = !tokenAddressList.find((addr) =>
       isEqualCaseInsensitive(addr, tokenAddress),
     );
-
-    tokens[tokenAddress] = {
-      ...tokens[tokenAddress],
-      unlisted: !found,
-    };
   });
 
   return {
@@ -5566,4 +5561,11 @@ export function setIsProfileSyncingEnabled(
       dispatch(hideLoadingIndication());
     }
   };
+}
+
+export async function getNextAvailableAccountName(): Promise<string> {
+  return await submitRequestToBackground<string>(
+    'getNextAvailableAccountName',
+    [],
+  );
 }

@@ -275,7 +275,10 @@
     "description": "$1 is Learn more link"
   },
   "addNewAccount": {
-    "message": "Add a new account"
+    "message": "Add a new Ethereum account"
+  },
+  "addNewBitcoinAccount": {
+    "message": "Add a new Bitcoin account"
   },
   "addNewToken": {
     "message": "Add new token"
@@ -348,12 +351,6 @@
   },
   "alert": {
     "message": "Alert"
-  },
-  "alertBannerMultipleAlertsDescription": {
-    "message": "If you approve this request, a third party known for scams might take all your assets."
-  },
-  "alertBannerMultipleAlertsTitle": {
-    "message": "Multiple alerts!"
   },
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
@@ -530,8 +527,9 @@
   "attributions": {
     "message": "Attributions"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "The Infura RPC URL is no longer supporting Aurora."
+  "auroraDeprecationWarning": {
+    "message": "MetaMask will be deprecating support for $1 network",
+    "description": "$1 is name of deprecated network"
   },
   "authorizedPermissions": {
     "message": "You have authorized the following permissions"
@@ -598,8 +596,7 @@
     "message": "Basic functionality is off"
   },
   "basicConfigurationDescription": {
-    "message": "MetaMask offers basic features like token details and gas settings through internet services. When you use internet services, your IP address is shared, in this case with MetaMask. This is just like when you visit any website. MetaMask uses this data temporarily and never sells your data. You can use a VPN or turn off these services, but it may affect your MetaMask experience. To learn more read our $1.",
-    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+    "message": "Includes token data and value, optimal gas settings, and more. Using these services shares your IP address with MetaMask, just like when you visit a website."
   },
   "basicConfigurationLabel": {
     "message": "Basic functionality"
@@ -668,9 +665,6 @@
   },
   "blockaid": {
     "message": "Blockaid"
-  },
-  "blockaidAlertInfo": {
-    "message": "If you sign in, a third party known for scams might take all your assets. Please review the alerts before you proceed."
   },
   "blockaidDescriptionApproveFarming": {
     "message": "If you approve this request, a third party known for scams might take all your assets."
@@ -823,9 +817,6 @@
   "closeExtension": {
     "message": "Close extension"
   },
-  "closeWindowAnytime": {
-    "message": "You may close this window anytime."
-  },
   "coingecko": {
     "message": "CoinGecko"
   },
@@ -853,9 +844,6 @@
   },
   "confirmAlertModalAcknowledge": {
     "message": "I have acknowledged the alerts and still want to proceed"
-  },
-  "confirmAlertModalAcknowledgeBlockaid": {
-    "message": "I have acknowledged the alert and still want to proceed"
   },
   "confirmAlertModalDetails": {
     "message": "If you sign in, a third party known for scams might take all your assets. Please review the alerts before you proceed."
@@ -1333,6 +1321,9 @@
   "deposit": {
     "message": "Deposit"
   },
+  "deprecatedAuroraNetworkMsg": {
+    "message": "MetaMask will be deprecating support for Aurora network. Please add it as a custom network if you want to continue to use it"
+  },
   "deprecatedGoerliNtwrkMsg": {
     "message": "Because of updates to the Ethereum system, the Goerli test network will be phased out soon."
   },
@@ -1540,6 +1531,9 @@
   },
   "done": {
     "message": "Done"
+  },
+  "dontEnableEnhancedProtection": {
+    "message": "Don't enable enhanced protection"
   },
   "dontShowThisAgain": {
     "message": "Don't show this again"
@@ -2622,9 +2616,6 @@
     "message": "Make sure nobody is looking",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "manageInSettings": {
-    "message": "Manage in settings"
-  },
   "max": {
     "message": "Max"
   },
@@ -3115,9 +3106,6 @@
   "notificationDetailMaxFee": {
     "message": "Max fee per gas"
   },
-  "notificationDetailNetwork": {
-    "message": "Network"
-  },
   "notificationDetailNetworkFee": {
     "message": "Network fee"
   },
@@ -3137,13 +3125,13 @@
     "message": "Unable to retrieve fees currently"
   },
   "notificationItemFrom": {
-    "message": "From"
+    "message": "From (You)"
   },
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "Withdrawal Ready"
   },
-  "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
-    "message": "You can now withdraw your unstaked $1"
+  "notificationItemLidoWithdrawalRequested": {
+    "message": "Withdrawal requested"
   },
   "notificationItemLidoWithdrawalRequestedMessage": {
     "message": "Your request to unstake $1 has been sent"
@@ -4697,9 +4685,6 @@
   "signing": {
     "message": "Signing"
   },
-  "signingInWith": {
-    "message": "Signing in with"
-  },
   "simulationDetailsFailed": {
     "message": "There was an error loading your estimation."
   },
@@ -5194,7 +5179,7 @@
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
   "stxOptInDescription": {
-    "message": "Turn on Smart Transactions for more reliable and secure transactions on Ethereum Mainnet. $1"
+    "message": "Turn on Smart Transactions for more reliable and secure transactions on ETH Mainnet. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Privately submitting your Swap..."
@@ -6230,7 +6215,7 @@
     "message": "View on Opensea"
   },
   "viewTransaction": {
-    "message": "View transaction"
+    "message": "View  transaction"
   },
   "viewinCustodianApp": {
     "message": "View in custodian app"
@@ -6340,9 +6325,6 @@
   },
   "yes": {
     "message": "Yes"
-  },
-  "you": {
-    "message": "You"
   },
   "youHaveAddedAll": {
     "message": "You've added all the popular networks. You can discover more networks $1 Or you can $2",
