@@ -5,7 +5,6 @@ import {
 } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 
 const mainNetworks = {
   [CHAIN_IDS.MAINNET]: true,
