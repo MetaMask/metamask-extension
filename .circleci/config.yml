@@ -118,6 +118,9 @@ workflows:
       - prep-build:
           requires:
             - prep-deps
+      - prep-build-mv2:
+          requires:
+            - prep-deps
       - prep-build-desktop:
           filters:
             branches:
@@ -127,7 +130,13 @@ workflows:
       - prep-build-flask:
           requires:
             - prep-deps
+      - prep-build-flask-mv2:
+          requires:
+            - prep-deps
       - prep-build-test:
+          requires:
+            - prep-deps
+      - prep-build-test-mv2:
           requires:
             - prep-deps
       - prep-build-multichain-test:
@@ -136,10 +145,13 @@ workflows:
       - prep-build-confirmation-redesign-test:
           requires:
             - prep-deps
-      - prep-build-test-mv3:
+      - prep-build-confirmation-redesign-test-mv2:
           requires:
             - prep-deps
       - prep-build-test-flask:
+          requires:
+            - prep-deps
+      - prep-build-test-flask-mv2:
           requires:
             - prep-deps
       - prep-build-test-mmi:
@@ -176,10 +188,10 @@ workflows:
             - prep-build-confirmation-redesign-test
       - test-e2e-firefox:
           requires:
-            - prep-build-test
+            - prep-build-test-mv2
       - test-e2e-firefox-confirmation-redesign:
           requires:
-            - prep-build-confirmation-redesign-test
+            - prep-build-confirmation-redesign-test-mv2
       - test-e2e-chrome-rpc:
           requires:
             - prep-build-test
@@ -191,7 +203,7 @@ workflows:
             - prep-build-test-flask
       - test-e2e-firefox-flask:
           requires:
-            - prep-build-test-flask
+            - prep-build-test-flask-mv2
       - test-e2e-chrome-mmi:
           requires:
             - prep-build-test-mmi
@@ -201,9 +213,6 @@ workflows:
       - test-e2e-chrome-rpc-mmi:
           requires:
             - prep-build-test-mmi
-      - test-e2e-chrome-mv3:
-          requires:
-            - prep-build-test-mv3
       - test-e2e-chrome-vault-decryption:
           filters:
             branches:
@@ -236,6 +245,9 @@ workflows:
       - validate-source-maps:
           requires:
             - prep-build
+      - validate-source-maps-mv2:
+          requires:
+            - prep-build-mv2
       - validate-source-maps-beta:
           requires:
             - trigger-beta-build
@@ -251,10 +263,13 @@ workflows:
       - validate-source-maps-flask:
           requires:
             - prep-build-flask
-      - test-mozilla-lint:
+      - validate-source-maps-flask-mv2:
+          requires:
+            - prep-build-flask-mv2
+      - test-mozilla-lint-mv2:
           requires:
             - prep-deps
-            - prep-build
+            - prep-build-mv2
       - test-mozilla-lint-desktop:
           filters:
             branches:
@@ -262,10 +277,10 @@ workflows:
           requires:
             - prep-deps
             - prep-build-desktop
-      - test-mozilla-lint-flask:
+      - test-mozilla-lint-flask-mv2:
           requires:
             - prep-deps
-            - prep-build-flask
+            - prep-build-flask-mv2
       - all-tests-pass:
           requires:
             - test-deps-depcheck
@@ -286,9 +301,9 @@ workflows:
             - validate-source-maps-desktop
             - validate-source-maps-flask
             - validate-source-maps-mmi
-            - test-mozilla-lint
+            - test-mozilla-lint-mv2
             - test-mozilla-lint-desktop
-            - test-mozilla-lint-flask
+            - test-mozilla-lint-flask-mv2
             - test-e2e-chrome
             - test-e2e-chrome-multichain
             - test-e2e-chrome-multiple-providers
@@ -309,18 +324,19 @@ workflows:
             - prep-build-test
       - stats-module-load-init:
           requires:
-            - prep-build-test-mv3
+            - prep-build-test
       - job-publish-prerelease:
           requires:
             - prep-deps
             - prep-build
+            - prep-build-mv2
             - trigger-beta-build
             - prep-build-desktop
             - prep-build-mmi
             - prep-build-flask
+            - prep-build-flask-mv2
             - prep-build-storybook
             - prep-build-ts-migration-dashboard
-            - prep-build-test-mv3
             - benchmark
             - user-actions-benchmark
             - stats-module-load-init
@@ -332,9 +348,11 @@ workflows:
           requires:
             - prep-deps
             - prep-build
+            - prep-build-mv2
             - prep-build-desktop
             - prep-build-mmi
             - prep-build-flask
+            - prep-build-flask-mv2
             - all-tests-pass
       - job-publish-storybook:
           filters:
@@ -543,6 +561,48 @@ jobs:
             - dist
             - builds
 
+  prep-build-mv2:
+    executor: node-browsers-medium-plus
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - when:
+          condition:
+            not:
+              matches:
+                pattern: /^master$/
+                value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:dist
+                command: ENABLE_MV3=false yarn build dist
+      - when:
+          condition:
+            matches:
+              pattern: /^master$/
+              value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:prod
+                command: ENABLE_MV3=false yarn build prod
+      - run:
+          name: build:debug
+          command: find dist/ -type f -exec md5sum {} \; | sort -k 2
+      - run:
+          name: Move mmi build to 'dist-mv2' to avoid conflict with production build
+          command: mv ./dist ./dist-mv2
+      - run:
+          name: Move mmi zips to 'builds-mv2' to avoid conflict with production build
+          command: mv ./builds ./builds-mv2
+      - store_artifacts:
+          path: builds-mv2
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-mv2
+            - builds-mv2
+
   prep-build-desktop:
     executor: node-browsers-medium-plus
     steps:
@@ -650,6 +710,46 @@ jobs:
             - dist-flask
             - builds-flask
 
+  prep-build-flask-mv2:
+    executor: node-browsers-medium-plus
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - when:
+          condition:
+            not:
+              matches:
+                pattern: /^master$/
+                value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:dist
+                command: ENABLE_MV3=false yarn build --build-type flask dist
+      - when:
+          condition:
+            matches:
+              pattern: /^master$/
+              value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:prod
+                command: yarn build --build-type flask prod
+      - run:
+          name: build:debug
+          command: find dist/ -type f -exec md5sum {} \; | sort -k 2
+      - run:
+          name: Move flask build to 'dist-flask' to avoid conflict with production build
+          command: mv ./dist ./dist-flask-mv2
+      - run:
+          name: Move flask zips to 'builds-flask' to avoid conflict with production build
+          command: mv ./builds ./builds-flask-mv2
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-flask-mv2
+            - builds-flask-mv2
+
   prep-build-test-flask:
     executor: node-browsers-medium-plus
     steps:
@@ -670,6 +770,27 @@ jobs:
           paths:
             - dist-test-flask
             - builds-test-flask
+
+  prep-build-test-flask-mv2:
+    executor: node-browsers-medium-plus
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build extension for testing
+          command: yarn build:test:flask:mv2
+      - run:
+          name: Move test build to 'dist-test-flask' to avoid conflict with production build
+          command: mv ./dist ./dist-test-flask-mv2
+      - run:
+          name: Move test zips to 'builds-test-flask' to avoid conflict with production build
+          command: mv ./builds ./builds-test-flask-mv2
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-test-flask-mv2
+            - builds-test-flask-mv2
 
   prep-build-test-mmi:
     executor: node-browsers-medium-plus
@@ -720,27 +841,6 @@ jobs:
           path: builds-test-mmi-playwright
           destination: builds-test-mmi-playwright
 
-  prep-build-test-mv3:
-    executor: node-browsers-medium-plus
-    steps:
-      - run: *shallow-git-clone
-      - attach_workspace:
-          at: .
-      - run:
-          name: Build extension in mv3 for testing
-          command: yarn build:test:mv3
-      - run:
-          name: Move test build to 'dist-test' to avoid conflict with production build
-          command: mv ./dist ./dist-test-mv3
-      - run:
-          name: Move test zips to 'builds-test-mv3' to avoid conflict with production build
-          command: mv ./builds ./builds-test-mv3
-      - persist_to_workspace:
-          root: .
-          paths:
-            - dist-test-mv3
-            - builds-test-mv3
-
   prep-build-test:
     executor: node-browsers-medium-plus
     steps:
@@ -763,6 +863,29 @@ jobs:
           paths:
             - dist-test
             - builds-test
+
+  prep-build-test-mv2:
+    executor: node-browsers-medium-plus
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build extension for testing
+          command: yarn build:test:mv2
+      - run:
+          name: Move test build to 'dist-test-mv2' to avoid conflict with production build
+          command: mv ./dist ./dist-test-mv2
+      - run:
+          name: Move test zips to 'builds-test-mv2' to avoid conflict with production build
+          command: mv ./builds ./builds-test-mv2
+      - store_artifacts:
+          path: builds-test-mv2
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-test-mv2
+            - builds-test-mv2
 
   prep-build-multichain-test:
     executor: node-browsers-medium-plus
@@ -805,6 +928,27 @@ jobs:
           paths:
             - dist-test-confirmations
             - builds-test-confirmations
+
+  prep-build-confirmation-redesign-test-mv2:
+    executor: node-browsers-medium-plus
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build extension for testing
+          command: ENABLE_CONFIRMATION_REDESIGN=1 yarn build:test:mv2
+      - run:
+          name: Move test build to 'dist-test-confirmations-mv2' to avoid conflict with production build
+          command: mv ./dist ./dist-test-confirmations-mv2
+      - run:
+          name: Move test zips to 'builds-test-confirmations-mv2' to avoid conflict with production build
+          command: mv ./builds ./builds-test-confirmations-mv2
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-test-confirmations-mv2
+            - builds-test-confirmations-mv2
 
   prep-build-storybook:
     executor: node-browsers-medium-plus
@@ -1023,33 +1167,6 @@ jobs:
       - store_test_results:
           path: test/test-results/e2e
 
-  test-e2e-chrome-mv3:
-    executor: node-browsers-medium-plus
-    parallelism: 16
-    steps:
-      - run: *shallow-git-clone
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test-mv3 ./dist
-      - run:
-          name: Move test zips to builds
-          command: mv ./builds-test-mv3 ./builds
-      - run:
-          name: test:e2e:chrome
-          command: |
-            export ENABLE_MV3=true
-            if .circleci/scripts/test-run-e2e.sh; then
-              timeout 20m yarn test:e2e:chrome --retries 2
-            fi
-          no_output_timeout: 5m
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-      - store_test_results:
-                path: test/test-results/e2e
-
   test-e2e-chrome-rpc:
     executor: node-browsers-medium
     parallelism: 1
@@ -1154,13 +1271,14 @@ jobs:
           at: .
       - run:
           name: Move test build to dist
-          command: mv ./dist-test-flask ./dist
+          command: mv ./dist-test-flask-mv2 ./dist
       - run:
           name: Move test zips to builds
-          command: mv ./builds-test-flask ./builds
+          command: mv ./builds-test-flask-mv2 ./builds
       - run:
           name: test:e2e:firefox:flask
           command: |
+            export ENABLE_MV3=false
             if .circleci/scripts/test-run-e2e.sh
             then
               timeout 20m yarn test:e2e:firefox:flask --retries 2
@@ -1276,13 +1394,14 @@ jobs:
           at: .
       - run:
           name: Move test build to dist
-          command: mv ./dist-test ./dist
+          command: mv ./dist-test-mv2 ./dist
       - run:
           name: Move test zips to builds
-          command: mv ./builds-test ./builds
+          command: mv ./builds-test-mv2 ./builds
       - run:
           name: test:e2e:firefox
           command: |
+            export ENABLE_MV3=false
             if .circleci/scripts/test-run-e2e.sh
             then
               timeout 20m yarn test:e2e:firefox --retries 2
@@ -1303,13 +1422,14 @@ jobs:
           at: .
       - run:
           name: Move test build to dist
-          command: mv ./dist-test-confirmations ./dist
+          command: mv ./dist-test-confirmations-mv2 ./dist
       - run:
           name: Move test zips to builds
-          command: mv ./builds-test-confirmations ./builds
+          command: mv ./builds-test-confirmations-mv2 ./builds
       - run:
           name: test:e2e:firefox-confirmation-redesign
           command: |
+            export ENABLE_MV3=false
             if .circleci/scripts/test-run-e2e.sh
             then
               timeout 20m yarn test:e2e:firefox --retries 2
@@ -1322,7 +1442,6 @@ jobs:
           destination: test-artifacts
       - store_test_results:
           path: test/test-results/e2e
-
 
   benchmark:
     executor: node-browsers-small
@@ -1378,21 +1497,21 @@ jobs:
           at: .
       - run:
           name: Move test build to dist
-          command: mv ./dist-test-mv3 ./dist
+          command: mv ./dist-test ./dist
       - run:
           name: Move test zips to builds
-          command: mv ./builds-test-mv3 ./builds
+          command: mv ./builds-test ./builds
       - run:
           name: Run page load benchmark
           command: |
-            mkdir -p test-artifacts/chrome/mv3
-            cp -R development/charts/flamegraph test-artifacts/chrome/mv3/initialisation
-            cp -R development/charts/flamegraph/chart test-artifacts/chrome/mv3/initialisation/background
-            cp -R development/charts/flamegraph/chart test-artifacts/chrome/mv3/initialisation/ui
-            cp -R development/charts/table test-artifacts/chrome/mv3/load_time
+            mkdir -p test-artifacts/chrome/
+            cp -R development/charts/flamegraph test-artifacts/chrome/initialisation
+            cp -R development/charts/flamegraph/chart test-artifacts/chrome/initialisation/background
+            cp -R development/charts/flamegraph/chart test-artifacts/chrome/initialisation/ui
+            cp -R development/charts/table test-artifacts/chrome/load_time
       - run:
           name: Run page load benchmark
-          command: yarn mv3:stats:chrome --out test-artifacts/chrome/mv3
+          command: yarn mv3:stats:chrome --out test-artifacts/chrome
       - run:
           name: Install jq
           command: sudo apt install jq -y
@@ -1435,8 +1554,14 @@ jobs:
           path: builds-flask
           destination: builds-flask
       - store_artifacts:
+          path: builds-flask-mv2
+          destination: builds-flask-mv2
+      - store_artifacts:
           path: builds-mmi
           destination: builds-mmi
+      - store_artifacts:
+          path: builds-mv2
+          destination: builds-mv2
       - store_artifacts:
           path: builds-test
       - store_artifacts:
@@ -1663,12 +1788,50 @@ jobs:
           name: Validate source maps
           command: yarn validate-source-maps
 
-  test-mozilla-lint:
+  validate-source-maps-flask-mv2:
+    executor: node-browsers-small
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move flask build to dist
+          command: mv ./dist-flask-mv2 ./dist
+      - run:
+          name: Move flask zips to builds
+          command: mv ./builds-flask-mv2 ./builds
+      - run:
+          name: Validate source maps
+          command: yarn validate-source-maps
+
+  validate-source-maps-mv2:
+    executor: node-browsers-small
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move flask build to dist
+          command: mv ./dist-mv2 ./dist
+      - run:
+          name: Move flask zips to builds
+          command: mv ./builds-mv2 ./builds
+      - run:
+          name: Validate source maps
+          command: yarn validate-source-maps
+
+  test-mozilla-lint-mv2:
     executor: node-browsers-medium
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
           at: .
+      - run:
+          name: Move flask build to dist
+          command: mv ./dist-mv2 ./dist
+      - run:
+          name: Move flask zips to builds
+          command: mv ./builds-mv2 ./builds
       - run:
           name: test:mozilla-lint
           command: yarn mozilla-lint
@@ -1689,7 +1852,7 @@ jobs:
           name: test:mozilla-lint
           command: yarn mozilla-lint
 
-  test-mozilla-lint-flask:
+  test-mozilla-lint-flask-mv2:
     executor: node-browsers-medium
     steps:
       - run: *shallow-git-clone
@@ -1697,10 +1860,10 @@ jobs:
           at: .
       - run:
           name: Move flask build to dist
-          command: mv ./dist-flask ./dist
+          command: mv ./dist-flask-mv2 ./dist
       - run:
           name: Move flask zips to builds
-          command: mv ./builds-flask ./builds
+          command: mv ./builds-flask-mv2 ./builds
       - run:
           name: test:mozilla-lint
           command: yarn mozilla-lint
