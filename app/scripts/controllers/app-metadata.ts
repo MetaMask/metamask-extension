@@ -9,6 +9,7 @@ export type AppMetadataControllerState = {
   previousAppVersion: string;
   previousMigrationVersion: number;
   currentMigrationVersion: number;
+  showTokenAutodetectModalOnUpgrade: boolean | null;
 };
 
 /**
@@ -25,6 +26,7 @@ const defaultState: AppMetadataControllerState = {
   previousAppVersion: '',
   previousMigrationVersion: 0,
   currentMigrationVersion: 0,
+  showTokenAutodetectModalOnUpgrade: false,
 };
 
 /**
@@ -76,6 +78,7 @@ export default class AppMetadataController extends EventEmitter {
       this.store.updateState({
         currentAppVersion: maybeNewAppVersion,
         previousAppVersion: oldCurrentAppVersion,
+        showTokenAutodetectModalOnUpgrade: null,
       });
     }
   }
@@ -95,5 +98,14 @@ export default class AppMetadataController extends EventEmitter {
         currentMigrationVersion: maybeNewMigrationVersion,
       });
     }
+  }
+
+  /**
+   * Setter for the `showTokenAutodetectModalOnUpgrade` property
+   *
+   * @param val - Indicates the value of showTokenAutodetectModalOnUpgrade
+   */
+  setShowTokenAutodetectModalOnUpgrade(val: boolean): void {
+    this.store.updateState({ showTokenAutodetectModalOnUpgrade: val });
   }
 }
