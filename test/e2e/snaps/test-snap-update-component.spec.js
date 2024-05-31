@@ -131,11 +131,7 @@ describe('Test Snap update via snaps component', function () {
           tag: 'button',
         });
 
-        await driver.clickElement({
-          text: 'Install',
-          tag: 'span',
-        });
-
+        await driver.clickElement('.mm-checkbox__input');
         await driver.clickElement(
           '[data-testid="snap-install-warning-modal-confirm"]',
         );
