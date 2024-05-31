@@ -5,7 +5,7 @@ import Box from '../../../../components/ui/box/box';
 import Tooltip from '../../../../components/ui/tooltip/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Identicon from '../../../../components/ui/identicon';
-import Typography from '../../../../components/ui/typography/typography';
+import { Text } from '../../../../components/component-library';
 import {
   FONT_WEIGHT,
   TypographyVariant,
@@ -14,6 +14,7 @@ import {
   JustifyContent,
   TextColor,
   Color,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import { ButtonIcon, IconName } from '../../../../components/component-library';
@@ -36,15 +37,14 @@ export default function ContractTokenValues({
       gap={2}
     >
       <Identicon address={address} diameter={24} />
-      <Typography
-        variant={TypographyVariant.H2}
-        fontWeight={FONT_WEIGHT.BOLD}
+      <Text
+        variant={TextVariant.headingLgBold}
         color={TextColor.textAlternative}
         marginTop={0}
         marginBottom={0}
       >
         {tokenName}
-      </Typography>
+      </Text>
       <Tooltip
         position="top"
         title={copied ? t('copiedExclamation') : t('copyToClipboard')}
