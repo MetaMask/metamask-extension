@@ -92,6 +92,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
+      - run: corepack enable
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
