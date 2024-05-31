@@ -7597,7 +7597,7 @@ __metadata:
 
 "@reduxjs/toolkit@patch:@reduxjs/toolkit@npm%3A1.9.7#~/.yarn/patches/@reduxjs-toolkit-npm-1.9.7-b14925495c.patch":
   version: 1.9.7
-  resolution: "@reduxjs/toolkit@patch:@reduxjs/toolkit@npm%3A1.9.7#~/.yarn/patches/@reduxjs-toolkit-npm-1.9.7-b14925495c.patch::version=1.9.7&hash=546717"
+  resolution: "@reduxjs/toolkit@patch:@reduxjs/toolkit@npm%3A1.9.7#~/.yarn/patches/@reduxjs-toolkit-npm-1.9.7-b14925495c.patch::version=1.9.7&hash=f36203"
   dependencies:
     immer: "npm:^9.0.21"
     redux: "npm:^4.2.1"
@@ -7611,7 +7611,7 @@ __metadata:
       optional: true
     react-redux:
       optional: true
-  checksum: 2720ea47c2e9b1886713d39f1ddadbb32912c485b0bd830e05344c759519da1283e53877a70092e25061d1aa494e4d345d75ddd56f0ca73b05c2a705dbc53b8d
+  checksum: dc2c6e8429001e4f0251700bce44192aff40c86bde7a8a63642dd7cd06f0fafb76109d024f9fba6e553e75f7b15e4a491789e0447a8d99ddc516d10e61958824
   languageName: node
   linkType: hard
 
