@@ -18,7 +18,8 @@
     "currentAppVersion": "string",
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
-    "currentMigrationVersion": "number"
+    "currentMigrationVersion": "number",
+    "showTokenAutodetectModalOnUpgrade": "object"
   },
   "AppStateController": {
     "connectedStatusPopoverHasBeenShown": true,
@@ -187,7 +188,8 @@
       "showTestNetworks": false,
       "smartTransactionsOptInStatus": false,
       "useNativeCurrencyAsPrimaryCurrency": true,
-      "petnamesEnabled": true
+      "petnamesEnabled": true,
+      "showTokenAutodetectModal": "boolean"
     },
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",
