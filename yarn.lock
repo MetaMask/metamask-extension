@@ -5623,31 +5623,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:^18.1.2":
+"@metamask/network-controller@patch:@metamask/network-controller@npm%3A18.1.2#~/.yarn/patches/@metamask-network-controller-npm-18.1.2-1bcb8d8610.patch":
   version: 18.1.2
-  resolution: "@metamask/network-controller@npm:18.1.2"
-  dependencies:
-    "@metamask/base-controller": "npm:^5.0.2"
-    "@metamask/controller-utils": "npm:^9.1.0"
-    "@metamask/eth-block-tracker": "npm:^9.0.2"
-    "@metamask/eth-json-rpc-infura": "npm:^9.1.0"
-    "@metamask/eth-json-rpc-middleware": "npm:^12.1.1"
-    "@metamask/eth-json-rpc-provider": "npm:^3.0.2"
-    "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/json-rpc-engine": "npm:^8.0.2"
-    "@metamask/rpc-errors": "npm:^6.2.1"
-    "@metamask/swappable-obj-proxy": "npm:^2.2.0"
-    "@metamask/utils": "npm:^8.3.0"
-    async-mutex: "npm:^0.2.6"
-    immer: "npm:^9.0.6"
-    uuid: "npm:^8.3.2"
-  checksum: 546829c5d24fa64aa2cae2e7b5f29edf4acb12e1367d7ae92ca30e2b1f56b79d53c4d069bc671029d06b0105eec3581204bcedcdf88896aacb38f7cc0e014cf8
-  languageName: node
-  linkType: hard
-
-"@metamask/network-controller@patch:@metamask/network-controller@npm%3A18.1.0#~/.yarn/patches/@metamask-network-controller-npm-18.1.0-680908c29a.patch":
-  version: 18.1.0
-  resolution: "@metamask/network-controller@patch:@metamask/network-controller@npm%3A18.1.0#~/.yarn/patches/@metamask-network-controller-npm-18.1.0-680908c29a.patch::version=18.1.0&hash=da1bba"
+  resolution: "@metamask/network-controller@patch:@metamask/network-controller@npm%3A18.1.2#~/.yarn/patches/@metamask-network-controller-npm-18.1.2-1bcb8d8610.patch::version=18.1.2&hash=b6da0e"
   dependencies:
     "@metamask/base-controller": "npm:^5.0.2"
     "@metamask/controller-utils": "npm:^9.1.0"
