@@ -476,19 +476,20 @@ export const getConfirmationExchangeRates = (state) => {
   return state.metamask.confirmationExchangeRates;
 };
 
-export function getSelectedAccount(state) {
-  const accounts = getMetaMaskAccounts(state);
-  const selectedAccount = getSelectedInternalAccount(state);
-
-  // At the time of onboarding there is no selected account
-  if (selectedAccount) {
-    return {
-      ...selectedAccount,
-      ...accounts[selectedAccount.address],
-    };
-  }
-  return undefined;
-}
+export const getSelectedAccount = createDeepEqualSelector(
+  getMetaMaskAccounts,
+  getSelectedInternalAccount,
+  (accounts, selectedAccount) => {
+    // At the time of onboarding there is no selected account
+    if (selectedAccount) {
+      return {
+        ...selectedAccount,
+        ...accounts[selectedAccount.address],
+      };
+    }
+    return undefined;
+  },
+);
 
 export function getTargetAccount(state, targetAddress) {
   const accounts = getMetaMaskAccounts(state);
@@ -799,10 +800,10 @@ export function getUnapprovedTxCount(state) {
   return Object.keys(unapprovedTxs).length;
 }
 
-export function getUnapprovedConfirmations(state) {
-  const { pendingApprovals = {} } = state.metamask;
-  return Object.values(pendingApprovals);
-}
+export const getUnapprovedConfirmations = createDeepEqualSelector(
+  (state) => state.metamask.pendingApprovals || {},
+  (pendingApprovals) => Object.values(pendingApprovals),
+);
 
 export function getUnapprovedTemplatedConfirmations(state) {
   const unapprovedConfirmations = getUnapprovedConfirmations(state);
