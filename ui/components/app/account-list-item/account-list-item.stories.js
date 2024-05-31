@@ -31,7 +31,9 @@ const account = {
     },
   },
   options: {},
-  methods: [...Object.values(EthMethod)],
+  methods: [...Object.values(EthMethod)].filter(
+    (method) => !method.includes('UserOperation'),
+  ),
   type: EthAccountType.Eoa,
   address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
   balance: '0x2d3142f5000',

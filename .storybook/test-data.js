@@ -282,13 +282,15 @@ const state = {
     },
     interfaces: {
       'test-interface': {
-        content: getJsxElementFromComponent(panel([
-          heading('Foo bar'),
-          text('Description'),
-          divider(),
-          text('More text'),
-          copyable('Text you can copy'),
-        ])),
+        content: getJsxElementFromComponent(
+          panel([
+            heading('Foo bar'),
+            text('Description'),
+            divider(),
+            text('More text'),
+            copyable('Text you can copy'),
+          ]),
+        ),
         state: {},
         snapId: 'local:http://localhost:8080/',
       },
@@ -324,7 +326,9 @@ const state = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: [...Object.values(EthMethod)].filter(
+            (method) => !method.includes('UserOperation'),
+          ),
           type: EthAccountType.Eoa,
         },
         '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
@@ -337,7 +341,9 @@ const state = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: [...Object.values(EthMethod)].filter(
+            (method) => !method.includes('UserOperation'),
+          ),
           type: EthAccountType.Eoa,
         },
         '15e69915-2a1a-4019-93b3-916e11fd432f': {
@@ -350,7 +356,9 @@ const state = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: [...Object.values(EthMethod)].filter(
+            (method) => !method.includes('UserOperation'),
+          ),
           type: EthAccountType.Eoa,
         },
         '784225f4-d30b-4e77-a900-c8bbce735b88': {
@@ -363,7 +371,9 @@ const state = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: [...Object.values(EthMethod)].filter(
+            (method) => !method.includes('UserOperation'),
+          ),
           type: EthAccountType.Eoa,
         },
         'b990b846-b384-4508-93d9-587461f1123e': {
@@ -376,7 +386,9 @@ const state = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: [...Object.values(EthMethod)].filter(
+            (method) => !method.includes('UserOperation'),
+          ),
           type: EthAccountType.Eoa,
         },
       },

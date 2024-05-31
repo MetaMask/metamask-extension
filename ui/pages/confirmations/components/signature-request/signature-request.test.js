@@ -507,7 +507,9 @@ describe('Signature Request Component', () => {
                     },
                   },
                   options: {},
-                  methods: [...Object.values(EthMethod)],
+                  methods: [...Object.values(EthMethod)].filter(
+                    (method) => !method.includes('UserOperation'),
+                  ),
                   type: EthAccountType.Eoa,
                 },
                 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -520,7 +522,9 @@ describe('Signature Request Component', () => {
                     },
                   },
                   options: {},
-                  methods: [...Object.values(EthMethod)],
+                  methods: [...Object.values(EthMethod)].filter(
+                    (method) => !method.includes('UserOperation'),
+                  ),
                   type: EthAccountType.Eoa,
                 },
               },

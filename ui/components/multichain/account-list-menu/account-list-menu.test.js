@@ -147,7 +147,9 @@ describe('AccountListMenu', () => {
                 },
               },
               options: {},
-              methods: [...Object.values(EthMethod)],
+              methods: [...Object.values(EthMethod)].filter(
+                (method) => !method.includes('UserOperation'),
+              ),
               type: EthAccountType.Eoa,
             },
           },

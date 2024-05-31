@@ -23,7 +23,9 @@ describe('Confirm Remove Account', () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: [...Object.values(EthMethod)].filter(
+              (method) => !method.includes('UserOperation'),
+            ),
             type: EthAccountType.Eoa,
           },
         },
@@ -45,7 +47,9 @@ describe('Confirm Remove Account', () => {
         },
       },
       options: {},
-      mmethods: [...Object.values(EthMethod)],
+      mmethods: [...Object.values(EthMethod)].filter(
+        (method) => !method.includes('UserOperation'),
+      ),
       type: EthAccountType.Eoa,
     },
     chainId: '0x99',

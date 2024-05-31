@@ -34,7 +34,9 @@ const state = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: [...Object.values(EthMethod)].filter(
+            (method) => !method.includes('UserOperation'),
+          ),
           type: EthAccountType.Eoa,
         },
         '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
@@ -47,7 +49,9 @@ const state = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: [...Object.values(EthMethod)].filter(
+            (method) => !method.includes('UserOperation'),
+          ),
           type: EthAccountType.Eoa,
         },
       },

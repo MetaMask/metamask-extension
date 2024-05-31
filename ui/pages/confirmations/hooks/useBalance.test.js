@@ -33,7 +33,9 @@ const renderUseBalance = (fromAddress, stateVariables = {}) => {
           'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
             address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
             id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-            methods: [...Object.values(EthMethod)],
+            methods: [...Object.values(EthMethod)].filter(
+              (method) => !method.includes('UserOperation'),
+            ),
             type: EthAccountType.Eoa,
           },
         },

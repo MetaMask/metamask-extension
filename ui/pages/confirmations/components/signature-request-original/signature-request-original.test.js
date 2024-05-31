@@ -77,7 +77,9 @@ const props = {
       },
     },
     options: {},
-    methods: [...Object.values(EthMethod)],
+    methods: [...Object.values(EthMethod)].filter(
+      (method) => !method.includes('UserOperation'),
+    ),
     type: EthAccountType.Eoa,
   },
 };
@@ -235,7 +237,9 @@ describe('SignatureRequestOriginal', () => {
         },
       },
       options: {},
-      methods: [...Object.values(EthMethod)],
+      methods: [...Object.values(EthMethod)].filter(
+        (method) => !method.includes('UserOperation'),
+      ),
       type: EthAccountType.Eoa,
     };
     const mismatchAccountText = `Your selected account (${shortenAddress(

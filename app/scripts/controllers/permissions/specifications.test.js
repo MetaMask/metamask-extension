@@ -149,7 +149,9 @@ describe('PermissionController specifications', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: [...Object.values(EthMethod)].filter(
+                  (method) => !method.includes('UserOperation'),
+                ),
                 type: EthAccountType.Eoa,
               },
               {
@@ -163,7 +165,9 @@ describe('PermissionController specifications', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: [...Object.values(EthMethod)].filter(
+                  (method) => !method.includes('UserOperation'),
+                ),
                 type: EthAccountType.Eoa,
               },
             ];
@@ -290,7 +294,9 @@ describe('PermissionController specifications', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: [...Object.values(EthMethod)].filter(
+                  (method) => !method.includes('UserOperation'),
+                ),
                 type: EthAccountType.Eoa,
               },
               {
@@ -303,7 +309,9 @@ describe('PermissionController specifications', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: [...Object.values(EthMethod)].filter(
+                  (method) => !method.includes('UserOperation'),
+                ),
                 type: EthAccountType.Eoa,
               },
               {
@@ -317,7 +325,9 @@ describe('PermissionController specifications', () => {
                   lastSelected: 3,
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: [...Object.values(EthMethod)].filter(
+                  (method) => !method.includes('UserOperation'),
+                ),
                 type: EthAccountType.Eoa,
               },
               {
@@ -331,7 +341,9 @@ describe('PermissionController specifications', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: [...Object.values(EthMethod)].filter(
+                  (method) => !method.includes('UserOperation'),
+                ),
                 type: EthAccountType.Eoa,
               },
             ];
@@ -367,7 +379,9 @@ describe('PermissionController specifications', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: [...Object.values(EthMethod)].filter(
+                  (method) => !method.includes('UserOperation'),
+                ),
                 type: EthAccountType.Eoa,
               },
               {
@@ -381,7 +395,9 @@ describe('PermissionController specifications', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: [...Object.values(EthMethod)].filter(
+                  (method) => !method.includes('UserOperation'),
+                ),
                 type: EthAccountType.Eoa,
               },
             ];
@@ -415,7 +431,9 @@ describe('PermissionController specifications', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: [...Object.values(EthMethod)].filter(
+                  (method) => !method.includes('UserOperation'),
+                ),
                 type: EthAccountType.Eoa,
               },
               {
@@ -429,7 +447,9 @@ describe('PermissionController specifications', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: [...Object.values(EthMethod)].filter(
+                  (method) => !method.includes('UserOperation'),
+                ),
                 type: EthAccountType.Eoa,
               },
             ];

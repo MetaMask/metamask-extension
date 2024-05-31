@@ -49,7 +49,9 @@ const mockAccount = {
     },
   },
   options: {},
-  methods: [...Object.values(EthMethod)],
+  methods: [...Object.values(EthMethod)].filter(
+    (method) => !method.includes('UserOperation'),
+  ),
   type: EthAccountType.Eoa,
 };
 const mockAccount2 = {
@@ -62,7 +64,9 @@ const mockAccount2 = {
     },
   },
   options: {},
-  methods: [...Object.values(EthMethod)],
+  methods: [...Object.values(EthMethod)].filter(
+    (method) => !method.includes('UserOperation'),
+  ),
   type: EthAccountType.Eoa,
 };
 
@@ -349,7 +353,7 @@ describe('MMIController', function () {
   });
 
   describe('getAllCustodianAccountsWithToken', () => {
-    it('should return custodian accounts with tokens', async () => { });
+    it('should return custodian accounts with tokens', async () => {});
   });
 
   describe('handleMmiDashboardData', () => {
@@ -438,7 +442,11 @@ describe('MMIController', function () {
           getCustodianAccounts: mockCustodialKeyring,
         });
 
-      await mmiController.getCustodianAccounts('token', 'neptune-custody', 'ECA3');
+      await mmiController.getCustodianAccounts(
+        'token',
+        'neptune-custody',
+        'ECA3',
+      );
 
       expect(selectedAccountSpy).toHaveBeenCalledTimes(0);
 

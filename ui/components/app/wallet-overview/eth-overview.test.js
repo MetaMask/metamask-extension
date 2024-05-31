@@ -99,7 +99,9 @@ describe('EthOverview', () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: [...Object.values(EthMethod)].filter(
+              (method) => !method.includes('UserOperation'),
+            ),
             type: EthAccountType.Eoa,
           },
           'e9b992f9-e151-4317-b8b7-c771bb73dd02': {
@@ -112,7 +114,9 @@ describe('EthOverview', () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: [...Object.values(EthMethod)].filter(
+              (method) => !method.includes('UserOperation'),
+            ),
             type: EthAccountType.Eoa,
           },
         },
