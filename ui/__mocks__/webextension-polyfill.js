@@ -1,3 +1,3 @@
 module.exports = {
-  runtime: { getManifest: () => ({ manifest_version: 2 }) },
+  runtime: { getManifest: () => ({ manifest_version: 3 }) },
 };
