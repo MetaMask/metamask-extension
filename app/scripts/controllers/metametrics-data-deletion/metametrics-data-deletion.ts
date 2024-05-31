@@ -8,6 +8,15 @@ import type { DataDeletionService } from '../../services/data-deletion-service';
 const controllerName = 'MetaMetricsDataDeletionController';
 
 /**
+ * Get a type representing the public interface of the given type. The
+ * returned type will have all public properties, but will omit private
+ * properties.
+ *
+ * @template Interface - The interface to return a public representation of.
+ */
+type PublicInterface<Interface> = Pick<Interface, keyof Interface>;
+
+/**
  * @type DataDeleteDate
  * Timestamp at which regulation response is returned.
  */
@@ -97,12 +106,12 @@ export type MetaMetricsDataDeletionControllerMessenger =
  * Controller responsible for maintaining
  * state related to Metametrics data deletion
  */
-export default class MetaMetricsDataDeletionController extends BaseController<
+export class MetaMetricsDataDeletionController extends BaseController<
   typeof controllerName,
   MetaMetricsDataDeletionState,
   MetaMetricsDataDeletionControllerMessenger
 > {
-  #dataDeletionService: DataDeletionService;
+  #dataDeletionService: PublicInterface<DataDeletionService>;
 
   #getMetaMetricsId: () => string | null;
 
@@ -121,7 +130,7 @@ export default class MetaMetricsDataDeletionController extends BaseController<
     state,
     getMetaMetricsId,
   }: {
-    dataDeletionService: DataDeletionService;
+    dataDeletionService: PublicInterface<DataDeletionService>;
     messenger: MetaMetricsDataDeletionControllerMessenger;
     state?: MetaMetricsDataDeletionState;
     getMetaMetricsId: () => string | null;
