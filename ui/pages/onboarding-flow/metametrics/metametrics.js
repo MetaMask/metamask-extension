@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import Typography from '../../../components/ui/typography/typography';
+import { Text } from '../../../components/component-library';
+import { TextVariant } from '../../../helpers/constants/design-system';
 import {
-  TypographyVariant,
   FONT_WEIGHT,
   TEXT_ALIGN,
   TextColor,
@@ -83,25 +83,24 @@ export default function OnboardingMetametrics() {
         className="onboarding-metametrics"
         data-testid="onboarding-legacy-metametrics"
       >
-        <Typography
-          variant={TypographyVariant.H2}
+        <Text
+          variant={TextVariant.headingLg}
           align={TEXT_ALIGN.CENTER}
-          fontWeight={FONT_WEIGHT.BOLD}
         >
           {t('onboardingMetametricsTitle')}
-        </Typography>
-        <Typography
+        </Text>
+        <Text
           className="onboarding-metametrics__desc"
           align={TEXT_ALIGN.CENTER}
         >
           {t('onboardingMetametricsDescriptionLegacy')}
-        </Typography>
-        <Typography
+        </Text>
+        <Text
           className="onboarding-metametrics__desc"
           align={TEXT_ALIGN.CENTER}
         >
           {t('onboardingMetametricsDescription2Legacy')}
-        </Typography>
+        </Text>
         <ul>
           <li>
             <Icon
@@ -128,14 +127,13 @@ export default function OnboardingMetametrics() {
                 color={IconColor.errorDefault}
               />
               {t('onboardingMetametricsNeverCollectLegacy', [
-                <Typography
-                  variant={TypographyVariant.span}
+                <Text
+                  variant={TextVariant.bodyMdBold}
                   key="never"
-                  fontWeight={FONT_WEIGHT.BOLD}
                   marginTop={0}
                 >
                   {t('onboardingMetametricsNeverEmphasisLegacy')}
-                </Typography>,
+                </Text>,
               ])}
             </Box>
           </li>
@@ -148,13 +146,12 @@ export default function OnboardingMetametrics() {
                 color={IconColor.errorDefault}
               />
               {t('onboardingMetametricsNeverCollectIPLegacy', [
-                <Typography
-                  variant={TypographyVariant.span}
+                <Text
+                  variant={TextVariant.bodyMdBold}
                   key="never-collect"
-                  fontWeight={FONT_WEIGHT.BOLD}
                 >
                   {t('onboardingMetametricsNeverEmphasisLegacy')}
-                </Typography>,
+                </Text>,
               ])}
             </Box>
           </li>
@@ -167,29 +164,28 @@ export default function OnboardingMetametrics() {
                 color={IconColor.errorDefault}
               />
               {t('onboardingMetametricsNeverSellDataLegacy', [
-                <Typography
-                  variant={TypographyVariant.span}
+                <Text
+                  variant={TextVariant.bodyMdBold}
                   key="never-sell"
-                  fontWeight={FONT_WEIGHT.BOLD}
                 >
                   {t('onboardingMetametricsNeverEmphasisLegacy')}
-                </Typography>,
+                </Text>,
               ])}
             </Box>{' '}
           </li>
         </ul>
-        <Typography
+        <Text
           color={TextColor.textAlternative}
           align={TEXT_ALIGN.CENTER}
-          variant={TypographyVariant.H6}
+          variant={TextVariant.bodySm}
           className="onboarding-metametrics__terms"
         >
           {t('onboardingMetametricsDataTermsLegacy')}
-        </Typography>
-        <Typography
+        </Text>
+        <Text
           color={TextColor.textAlternative}
           align={TEXT_ALIGN.CENTER}
-          variant={TypographyVariant.H6}
+          variant={TextVariant.bodySm}
           className="onboarding-metametrics__terms"
         >
           {t('onboardingMetametricsInfuraTermsLegacy', [
@@ -210,7 +206,7 @@ export default function OnboardingMetametrics() {
               {t('onboardingMetametricsInfuraTermsPolicyLegacy')}
             </a>,
           ])}
-        </Typography>
+        </Text>
 
         <div className="onboarding-metametrics__buttons">
           <Button
@@ -240,25 +236,24 @@ export default function OnboardingMetametrics() {
         className="onboarding-metametrics"
         data-testid="onboarding-metametrics"
       >
-        <Typography
-          variant={TypographyVariant.H2}
+        <Text
+          variant={TextVariant.headingLg}
           align={TEXT_ALIGN.CENTER}
-          fontWeight={FONT_WEIGHT.BOLD}
         >
           {t('onboardingMetametricsTitle')}
-        </Typography>
-        <Typography
+        </Text>
+        <Text
           className="onboarding-metametrics__desc"
           align={TEXT_ALIGN.LEFT}
         >
           {t('onboardingMetametricsDescription')}
-        </Typography>
-        <Typography
+        </Text>
+        <Text
           className="onboarding-metametrics__desc"
           align={TEXT_ALIGN.LEFT}
         >
           {t('onboardingMetametricsDescription2')}
-        </Typography>
+        </Text>
         <ul>
           <li>
             <Box>
@@ -269,14 +264,13 @@ export default function OnboardingMetametrics() {
                 color={IconColor.successDefault}
               />
               {t('onboardingMetametricsNeverCollect', [
-                <Typography
-                  variant={TypographyVariant.span}
+                <Text
+                  variant={TextVariant.bodyMdBold}
                   key="never"
-                  fontWeight={FONT_WEIGHT.BOLD}
                   marginTop={0}
                 >
                   {t('onboardingMetametricsNeverCollectEmphasis')}
-                </Typography>,
+                </Text>,
               ])}
             </Box>
           </li>
@@ -289,13 +283,12 @@ export default function OnboardingMetametrics() {
                 color={IconColor.successDefault}
               />
               {t('onboardingMetametricsNeverCollectIP', [
-                <Typography
-                  variant={TypographyVariant.span}
+                <Text
+                  variant={TextVariant.bodyMdBold}
                   key="never-collect"
-                  fontWeight={FONT_WEIGHT.BOLD}
                 >
                   {t('onboardingMetametricsNeverCollectIPEmphasis')}
-                </Typography>,
+                </Text>,
               ])}
             </Box>
           </li>
@@ -308,21 +301,20 @@ export default function OnboardingMetametrics() {
                 color={IconColor.successDefault}
               />
               {t('onboardingMetametricsNeverSellData', [
-                <Typography
-                  variant={TypographyVariant.span}
+                <Text
+                  variant={TextVariant.bodyMdBold}
                   key="never-sell"
-                  fontWeight={FONT_WEIGHT.BOLD}
                 >
                   {t('onboardingMetametricsNeverSellDataEmphasis')}
-                </Typography>,
+                </Text>,
               ])}
             </Box>{' '}
           </li>
         </ul>
-        <Typography
+        <Text
           color={TextColor.textAlternative}
           align={TEXT_ALIGN.LEFT}
-          variant={TypographyVariant.H6}
+          variant={TextVariant.bodySm}
           className="onboarding-metametrics__terms"
         >
           {t('onboardingMetametricsInfuraTerms', [
@@ -335,7 +327,7 @@ export default function OnboardingMetametrics() {
               {t('onboardingMetametricsInfuraTermsPolicy')}
             </a>,
           ])}
-        </Typography>
+        </Text>
 
         <div className="onboarding-metametrics__buttons">
           <Button
