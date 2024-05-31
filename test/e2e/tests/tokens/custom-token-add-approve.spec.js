@@ -19,7 +19,6 @@ describe('Create token, approve token and approve token without gas', function (
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions: defaultGanacheOptions,
         smartContract,
