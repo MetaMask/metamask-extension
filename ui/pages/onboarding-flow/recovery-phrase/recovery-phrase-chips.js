@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import Chip from '../../../components/ui/chip';
 import Box from '../../../components/ui/box';
-import { Text } from '../../../components/component-library'; // Corrected import path
+import { Text } from '../../../components/component-library';
 import { ChipWithInput } from '../../../components/ui/chip/chip-with-input';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
