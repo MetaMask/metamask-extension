@@ -79,6 +79,7 @@ export const SENTRY_BACKGROUND_STATE = {
     currentMigrationVersion: true,
     previousAppVersion: true,
     previousMigrationVersion: true,
+    showTokenAutodetectModalOnUpgrade: false,
   },
   ApprovalController: {
     approvalFlows: false,

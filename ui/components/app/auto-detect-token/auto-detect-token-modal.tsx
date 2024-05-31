@@ -83,7 +83,7 @@ function AutoDetectTokenModal({
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.center}
         >
-          Enable token autodetection
+          {t('enableTokenAutoDetection')}
         </ModalHeader>
         <ModalBody
           display={Display.Flex}

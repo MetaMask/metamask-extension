@@ -18,7 +18,8 @@
     "currentAppVersion": "string",
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
-    "currentMigrationVersion": "number"
+    "currentMigrationVersion": "number",
+    "showTokenAutodetectModalOnUpgrade": "boolean"
   },
   "AppStateController": {
     "connectedStatusPopoverHasBeenShown": true,
