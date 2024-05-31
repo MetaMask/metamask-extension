@@ -5948,23 +5948,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/rpc-errors@npm:6.2.1":
-  version: 6.2.1
-  resolution: "@metamask/rpc-errors@npm:6.2.1"
+"@metamask/rpc-errors@npm:6.3.0-rc1":
+  version: 6.3.0-rc1
+  resolution: "@metamask/rpc-errors@npm:6.3.0-rc1"
   dependencies:
     "@metamask/utils": "npm:^8.3.0"
     fast-safe-stringify: "npm:^2.0.6"
-  checksum: 789f0a2090339c1aa43d45ee496f4f115e141bc55b98e4ce27498497568f9e85fb5527ecf1f113b156d88fc4f1e63a572ced74bdc1ba16826bf648391b223f7b
-  languageName: node
-  linkType: hard
-
-"@metamask/rpc-errors@patch:@metamask/rpc-errors@npm%3A6.2.1#~/.yarn/patches/@metamask-rpc-errors-npm-6.2.1-9f2b83a911.patch":
-  version: 6.2.1
-  resolution: "@metamask/rpc-errors@patch:@metamask/rpc-errors@npm%3A6.2.1#~/.yarn/patches/@metamask-rpc-errors-npm-6.2.1-9f2b83a911.patch::version=6.2.1&hash=c6a40f"
-  dependencies:
-    "@metamask/utils": "npm:^8.3.0"
-    fast-safe-stringify: "npm:^2.0.6"
-  checksum: 3db08e24c46026c3cd00d62a02367cd010b82d0310512648f09c89ebcfa534a9b06f9dd91de12db8fc4e05203fb12a9209e21de8b0e1de33287177caa19ca1ec
+  checksum: 35b53c713b39382e5b4bc81a0524d0e1e26f625540980e6f4548d2c38d523a46cc7c24fbadd209ee0171bd8f1440e1911079571e566a1352a86aac41e2998ea1
   languageName: node
   linkType: hard
 
@@ -25135,7 +25125,7 @@ __metadata:
     "@metamask/providers": "npm:^14.0.2"
     "@metamask/queued-request-controller": "npm:^0.10.0"
     "@metamask/rate-limit-controller": "npm:^5.0.1"
-    "@metamask/rpc-errors": "patch:@metamask/rpc-errors@npm%3A6.2.1#~/.yarn/patches/@metamask-rpc-errors-npm-6.2.1-9f2b83a911.patch"
+    "@metamask/rpc-errors": "npm:6.3.0-rc1"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^13.0.0"
