@@ -67,6 +67,8 @@ export default function CreatePassword({
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [termsChecked, setTermsChecked] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
+    useState(false);
   const history = useHistory();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const trackEvent = useContext(MetaMetricsContext);
@@ -91,7 +93,7 @@ export default function CreatePassword({
   )}`;
 
   useEffect(() => {
-    if (currentKeyring) {
+    if (currentKeyring && !newAccountCreationInProgress) {
       if (firstTimeFlowType === FirstTimeFlowType.import) {
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         history.replace(ONBOARDING_COMPLETION_ROUTE);
@@ -110,7 +112,12 @@ export default function CreatePassword({
         ///: END:ONLY_INCLUDE_IF
       }
     }
-  }, [currentKeyring, history, firstTimeFlowType]);
+  }, [
+    currentKeyring,
+    history,
+    firstTimeFlowType,
+    newAccountCreationInProgress,
+  ]);
 
   const isValid = useMemo(() => {
     if (!password || !confirmPassword || password !== confirmPassword) {
@@ -219,6 +226,7 @@ export default function CreatePassword({
       // Otherwise we are in create new wallet flow
       try {
         if (createNewAccount) {
+          setNewAccountCreationInProgress(true);
           await createNewAccount(password);
         }
         ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)

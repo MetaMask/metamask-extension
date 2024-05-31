@@ -3,7 +3,10 @@ const path = require('path');
 const childProcess = require('child_process');
 const { mergeWith, cloneDeep } = require('lodash');
 
-const baseManifest = process.env.ENABLE_MV3
+const IS_MV3_ENABLED =
+  process.env.ENABLE_MV3 === 'true' || process.env.ENABLE_MV3 === undefined;
+
+const baseManifest = IS_MV3_ENABLED
   ? require('../../app/manifest/v3/_base.json')
   : require('../../app/manifest/v2/_base.json');
 const { loadBuildTypesConfig } = require('../lib/build-type');
@@ -32,7 +35,7 @@ function createManifestTasks({
             '..',
             '..',
             'app',
-            process.env.ENABLE_MV3 ? 'manifest/v3' : 'manifest/v2',
+            IS_MV3_ENABLED ? 'manifest/v3' : 'manifest/v2',
             `${platform}.json`,
           ),
         );
@@ -136,7 +139,7 @@ function createManifestTasks({
       buildType,
       applyLavaMoat,
       shouldIncludeSnow,
-      shouldIncludeMV3: process.env.ENABLE_MV3,
+      shouldIncludeMV3: IS_MV3_ENABLED,
     });
 
     manifest.description = `${environment} build from git id: ${gitRevisionStr}`;

@@ -116,7 +116,8 @@
         "showTestNetworks": false,
         "smartTransactionsOptInStatus": false,
         "useNativeCurrencyAsPrimaryCurrency": true,
-        "petnamesEnabled": true
+        "petnamesEnabled": true,
+        "showTokenAutodetectModal": "boolean"
       },
       "selectedAddress": "string",
       "theme": "light",

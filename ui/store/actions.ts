@@ -3115,6 +3115,10 @@ export function setSmartTransactionsOptInStatus(
   };
 }
 
+export function setShowTokenAutodetectModal(value: boolean) {
+  return setPreference('showTokenAutodetectModal', value);
+}
+
 export function setAutoLockTimeLimit(value: boolean) {
   return setPreference('autoLockTimeLimit', value);
 }
@@ -4076,6 +4080,27 @@ export function setFirstTimeFlowType(
     dispatch({
       type: actionConstants.SET_FIRST_TIME_FLOW_TYPE,
       value: type,
+    });
+  };
+}
+
+export function setShowTokenAutodetectModalOnUpgrade(
+  val: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setShowTokenAutodetectModalOnUpgrade`);
+    callBackgroundMethod(
+      'setShowTokenAutodetectModalOnUpgrade',
+      [val],
+      (err) => {
+        if (err) {
+          dispatch(displayWarning(err));
+        }
+      },
+    );
+    dispatch({
+      type: actionConstants.SET_SHOW_TOKEN_AUTO_DETECT_MODAL_UPGRADE,
+      value: val,
     });
   };
 }
