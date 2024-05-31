@@ -287,10 +287,7 @@ function validateSecurity(request: AddTransactionRequest) {
     request.transactionOptions.securityAlertResponse =
       loadingSecurityAlertResponse;
   } catch (error) {
-    request.transactionOptions.securityAlertResponse = handlePPOMError(
-      error,
-      'Error validating JSON RPC using PPOM: ',
-    );
+    handlePPOMError(error, 'Error validating JSON RPC using PPOM: ');
   }
   ///: END:ONLY_INCLUDE_IF
 }
