@@ -375,7 +375,7 @@ const onMessageSetUpExtensionStreams = (msg) => {
  * Ends two-way communication streams between browser extension and
  * the local per-page browser context.
  */
-const destroyStreams = () => {
+function destroyStreams() {
   extensionPort.onDisconnect.removeListener(onDisconnectDestroyStreams);
 
   destroyExtensionStreams();
@@ -391,7 +391,7 @@ const destroyStreams = () => {
  *
  * @param {Error} [err] - Stream connection error
  */
-const onDisconnectDestroyStreams = (err) => {
+function onDisconnectDestroyStreams(err) {
   const lastErr = err || checkForLastError();
 
   destroyStreams();
@@ -407,7 +407,7 @@ const onDisconnectDestroyStreams = (err) => {
     console.warn(`${lastErr} Resetting the streams.`);
     setTimeout(setupExtensionStreams, 1000);
   }
-};
+}
 
 /**
  * Initializes two-way communication streams between the browser extension and
