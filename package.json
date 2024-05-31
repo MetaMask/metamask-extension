@@ -704,7 +704,8 @@
       "@lavamoat/lavadome-react>@lavamoat/preinstall-always-fail": false,
       "tsx>esbuild": false,
       "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": false,
-      "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs": false
+      "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs": false,
+      "@metamask/desktop>eciesjs>secp256k1": false
     }
   },
   "packageManager": "yarn@4.0.2"
