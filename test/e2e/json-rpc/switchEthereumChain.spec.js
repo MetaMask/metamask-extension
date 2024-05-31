@@ -275,7 +275,11 @@ describe('Switch Ethereum Chain for two dapps', function () {
         // if this is an MV3 build(3 or 4 total)
         await driver.wait(async () => {
           const windowHandles = await driver.getAllWindowHandles();
-          const numberOfWindowHandlesToExpect = process.env.ENABLE_MV3 ? 4 : 3;
+          const numberOfWindowHandlesToExpect =
+            process.env.ENABLE_MV3 === 'true' ||
+            process.env.ENABLE_MV3 === undefined
+              ? 4
+              : 3;
           return windowHandles.length === numberOfWindowHandlesToExpect;
         });
       },
