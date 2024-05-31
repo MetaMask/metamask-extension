@@ -83,6 +83,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/lib/ui-utils';
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
+import AutoDetectNftModal from '../../components/app/auto-detect-nft/auto-detect-nft-modal';
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
@@ -91,8 +92,6 @@ import FlaskHomeFooter from './flask/flask-home-footer.component';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import InstitutionalHomeFooter from './institutional/institutional-home-footer';
 ///: END:ONLY_INCLUDE_IF
-
-import AutoDetectNftModal from '../../components/app/auto-detect-nft/auto-detect-nft-modal';
 
 function shouldCloseNotificationPopup({
   isNotification,
