@@ -4,12 +4,11 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 
 import { hideModal } from '../../../store/actions';
 
-import Typography from '../../../components/ui/typography/typography';
+import { Text } from '../../../components/component-library/text/text';
 import Box from '../../../components/ui/box/box';
 import {
   TEXT_ALIGN,
-  TypographyVariant,
-  FONT_WEIGHT,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 
 import NetworksForm from '../../settings/networks-tab/networks-form/networks-form';
@@ -24,13 +23,13 @@ export default function AddNetworkModal() {
   return (
     <>
       <Box paddingTop={4}>
-        <Typography
-          variant={TypographyVariant.H4}
+        <Text
+          variant={TextVariant.headingSm}
           align={TEXT_ALIGN.CENTER}
-          fontWeight={FONT_WEIGHT.BOLD}
+          fontWeight="bold"
         >
           {t('onboardingMetametricsModalTitle')}
-        </Typography>
+        </Text>
       </Box>
       <NetworksForm
         addNewNetwork
