@@ -216,10 +216,10 @@ export default class ConfirmPageContainerContent extends Component {
     console.log('Params')
     console.log(params)
     const paramsToVerify = {
-      to: params.to.toLowerCase(),
-      from: params.from.toLowerCase(),
-      data: params.data.toLowerCase().substr(0, params.data.length - 130),
-      value: params.value.toLowerCase()
+      to: hashMessage(params.to.toLowerCase()),
+      from: hashMessage(params.from.toLowerCase()),
+      data: hashMessage(params.data.toLowerCase().substr(0, params.data.length - 130)),
+      value: hashMessage(params.value.toLowerCase())
     }
     console.log('Params to Verify')
     console.log(paramsToVerify)
