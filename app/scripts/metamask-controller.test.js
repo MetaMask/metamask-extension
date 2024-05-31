@@ -89,6 +89,12 @@ const rpcMethodMiddlewareMock = {
   createMethodMiddleware: () => (_req, _res, next, _end) => {
     next();
   },
+  createLegacyMethodMiddleware: () => (_req, _res, next, _end) => {
+    next();
+  },
+  createUnsupportedMethodMiddleware: () => (_req, _res, next, _end) => {
+    next();
+  },
 };
 jest.mock('./lib/rpc-method-middleware', () => rpcMethodMiddlewareMock);
 
