@@ -203,7 +203,6 @@
     "fcmToken": "string",
     "accounts": "object",
     "accountsByChainId": "object",
-    "contractExchangeRatesByChainId": "object",
     "unapprovedDecryptMsgs": "object",
     "unapprovedDecryptMsgCount": 0,
     "unapprovedEncryptionPublicKeyMsgs": "object",
