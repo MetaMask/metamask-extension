@@ -21,6 +21,7 @@ import {
 } from '../ppom/ppom-util';
 import { SecurityAlertResponse } from '../ppom/types';
 import {
+  LOADING_SECURITY_ALERT_RESPONSE,
   PPOM_EXCLUDED_TRANSACTION_TYPES,
   PPOM_SUPPORTED_CHAIN_IDS,
 } from '../ppom/constants';
@@ -271,14 +272,25 @@ function validateSecurity(request: AddTransactionRequest) {
       request: ppomRequest,
       securityAlertId,
     }).then((securityAlertResponse) => {
-      updateSecurityAlertResponse?.(
+      updateSecurityAlertResponse(
         ppomRequest.method,
         securityAlertId,
         securityAlertResponse,
       );
     });
+
+    const loadingSecurityAlertResponse: SecurityAlertResponse = {
+      ...LOADING_SECURITY_ALERT_RESPONSE,
+      securityAlertId,
+    };
+
+    request.transactionOptions.securityAlertResponse =
+      loadingSecurityAlertResponse;
   } catch (error) {
-    handlePPOMError(error, 'Error validating JSON RPC using PPOM: ');
+    request.transactionOptions.securityAlertResponse = handlePPOMError(
+      error,
+      'Error validating JSON RPC using PPOM: ',
+    );
   }
   ///: END:ONLY_INCLUDE_IF
 }

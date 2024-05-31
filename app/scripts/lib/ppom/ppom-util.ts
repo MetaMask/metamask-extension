@@ -166,7 +166,7 @@ async function findConfirmationBySecurityAlertId(
       confirmation = transactionController.state.transactions.find(
         (meta) =>
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (meta.securityAlertResponse as any).securityAlertId ===
+          (meta.securityAlertResponse as any)?.securityAlertId ===
           securityAlertId,
       );
     }

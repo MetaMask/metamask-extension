@@ -1,6 +1,11 @@
 import { Hex } from '@metamask/utils';
 import { TransactionType } from '@metamask/transaction-controller';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import {
+  BlockaidReason,
+  BlockaidResultType,
+} from '../../../../shared/constants/security-provider';
+import { SecurityAlertResponse } from './types';
 
 export const PPOM_SUPPORTED_CHAIN_IDS: Hex[] = [
   CHAIN_IDS.ARBITRUM,
@@ -20,3 +25,8 @@ export const PPOM_EXCLUDED_TRANSACTION_TYPES = [
   TransactionType.swapApproval,
   TransactionType.swapAndSend,
 ];
+
+export const LOADING_SECURITY_ALERT_RESPONSE: SecurityAlertResponse = {
+  result_type: BlockaidResultType.Loading,
+  reason: BlockaidReason.inProgress,
+};

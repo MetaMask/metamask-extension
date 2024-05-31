@@ -7,10 +7,6 @@ import {
   JsonRpcResponse,
 } from '@metamask/utils';
 
-import {
-  BlockaidReason,
-  BlockaidResultType,
-} from '../../../../shared/constants/security-provider';
 import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { PreferencesController } from '../../controllers/preferences';
 import { AppStateController } from '../../controllers/app-state';
@@ -20,7 +16,10 @@ import {
   validateRequestWithPPOM,
 } from './ppom-util';
 import { SecurityAlertResponse } from './types';
-import { PPOM_SUPPORTED_CHAIN_IDS } from './constants';
+import {
+  LOADING_SECURITY_ALERT_RESPONSE,
+  PPOM_SUPPORTED_CHAIN_IDS,
+} from './constants';
 
 const CONFIRMATION_METHODS = Object.freeze([
   'eth_sendRawTransaction',
@@ -92,8 +91,7 @@ export function createPPOMMiddleware<
       });
 
       const loadingSecurityAlertResponse: SecurityAlertResponse = {
-        result_type: BlockaidResultType.Loading,
-        reason: BlockaidReason.inProgress,
+        ...LOADING_SECURITY_ALERT_RESPONSE,
         securityAlertId,
       };
 
