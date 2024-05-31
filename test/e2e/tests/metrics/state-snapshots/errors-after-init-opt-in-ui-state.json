@@ -92,7 +92,7 @@
     "previousMigrationVersion": 0,
     "currentMigrationVersion": "number",
     "selectedNetworkClientId": "string",
-    "showTokenAutodetectModalOnUpgrade": "boolean",
+    "showTokenAutodetectModalOnUpgrade": "object",
     "networksMetadata": {
       "networkConfigurationId": {
         "EIPS": { "1559": false },

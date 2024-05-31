@@ -77,7 +77,7 @@ function AutoDetectTokenModal({
     >
       <ModalOverlay />
       <ModalContent
-        modalDialogProps={{ className: 'auto-detect-token-modal__dialog' }}
+        modalDialogProps={{ className: 'auto-detect-in-modal__dialog' }}
       >
         <ModalHeader
           alignItems={AlignItems.center}
