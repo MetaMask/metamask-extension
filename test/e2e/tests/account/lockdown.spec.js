@@ -72,6 +72,7 @@ describe('lockdown', function () {
       },
       async ({ driver }) => {
         await driver.navigate(PAGES.HOME);
+        await driver.delay(1000);
         assert.equal(
           await driver.executeScript(lockdownTestScript),
           true,
