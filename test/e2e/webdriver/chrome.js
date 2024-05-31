@@ -3,11 +3,6 @@ const chrome = require('selenium-webdriver/chrome');
 const { ThenableWebDriver } = require('selenium-webdriver'); // eslint-disable-line no-unused-vars -- this is imported for JSDoc
 
 /**
- * Default proxy host to use for HTTPS requests
- *
- * @type {string}
- */
-/**
  * Determine the appropriate proxy server value to use
  *
  * @param {string|number} [proxyPort] - The proxy port to use

@@ -19,20 +19,15 @@ const { retry } = require('../../../development/lib/retry');
 const TEMP_PROFILE_PATH_PREFIX = path.join(os.tmpdir(), 'MetaMask-Fx-Profile');
 
 /**
- * Default proxy host to use for HTTPS requests
+ * Determine the appropriate proxy server value to use
  *
- * @type {string}
+ * @param {string|number} [proxyPort] - The proxy port to use
+ * @returns {string} The proxy server URL
  */
-const DEFAULT_PROXY_HOST = 'http://127.0.0.1:8000';
-
-/**
- * Selenium Envar proxy host to use for HTTPS requests
- *
- * @type {string}
- */
-const { SELENIUM_HTTPS_PROXY } = process.env;
-
 function getProxyServerURL(proxyPort) {
+  const DEFAULT_PROXY_HOST = 'http://127.0.0.1:8000';
+  const { SELENIUM_HTTPS_PROXY } = process.env;
+
   if (proxyPort) {
     return new URL(`http://127.0.0.1:${proxyPort}`);
   }
