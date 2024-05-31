@@ -141,7 +141,7 @@ exports[`AddressListItem uses a confusable when it should 1`] = `
         <span
           class=""
         >
-          <div
+          <span
             aria-describedby="tippy-tooltip-2"
             class=""
             data-original-title="'m' is similar to 'rn'."
@@ -154,7 +154,7 @@ exports[`AddressListItem uses a confusable when it should 1`] = `
             >
               m
             </span>
-          </div>
+          </span>
         </span>
         e
         t
@@ -162,7 +162,7 @@ exports[`AddressListItem uses a confusable when it should 1`] = `
         <span
           class=""
         >
-          <div
+          <span
             aria-describedby="tippy-tooltip-3"
             class=""
             data-original-title="'m' is similar to 'rn'."
@@ -175,7 +175,7 @@ exports[`AddressListItem uses a confusable when it should 1`] = `
             >
               m
             </span>
-          </div>
+          </span>
         </span>
         a
         s

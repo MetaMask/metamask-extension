@@ -133,7 +133,6 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
           <div
             aria-describedby="tippy-tooltip-1"
             class="sender-to-recipient__tooltip-container"
-            data-original-title="null"
             data-tooltipped=""
             style="display: inline;"
             tabindex="0"
@@ -328,7 +327,6 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                       <div
                         aria-describedby="tippy-tooltip-2"
                         class="info-tooltip__tooltip-container"
-                        data-original-title="null"
                         data-tooltipped=""
                         style="display: inline;"
                         tabindex="0"
@@ -386,7 +384,6 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                             <div
                               aria-describedby="tippy-tooltip-3"
                               class="info-tooltip__tooltip-container"
-                              data-original-title="null"
                               data-tooltipped=""
                               style="display: inline;"
                               tabindex="0"

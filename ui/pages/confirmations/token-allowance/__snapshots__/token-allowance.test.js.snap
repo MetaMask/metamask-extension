@@ -365,7 +365,6 @@ exports[`TokenAllowancePage when mounted should match snapshot 1`] = `
                 <div
                   aria-describedby="tippy-tooltip-3"
                   class=""
-                  data-original-title="null"
                   data-tooltipped=""
                   style="display: inline;"
                   tabindex="0"

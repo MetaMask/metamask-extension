@@ -88,7 +88,6 @@ exports[`Connect More Accounts Modal should render correctly 1`] = `
                   <div
                     aria-describedby="tippy-tooltip-1"
                     class=""
-                    data-original-title="null"
                     data-tooltipped=""
                     style="display: inline;"
                     tabindex="0"

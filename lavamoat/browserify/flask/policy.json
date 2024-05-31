@@ -638,9 +638,9 @@
         "@material-ui/core>@material-ui/utils": true,
         "@material-ui/core>clsx": true,
         "@material-ui/core>popper.js": true,
+        "@material-ui/core>react-is": true,
         "@material-ui/core>react-transition-group": true,
         "prop-types": true,
-        "prop-types>react-is": true,
         "react": true,
         "react-dom": true,
         "react-redux>hoist-non-react-statics": true
@@ -737,7 +737,8 @@
     },
     "@material-ui/core>@material-ui/system": {
       "globals": {
-        "console.error": true
+        "console.error": true,
+        "console.warn": true
       },
       "packages": {
         "@babel/runtime": true,
@@ -748,8 +749,13 @@
     "@material-ui/core>@material-ui/utils": {
       "packages": {
         "@babel/runtime": true,
-        "prop-types": true,
-        "prop-types>react-is": true
+        "@material-ui/core>@material-ui/utils>react-is": true,
+        "prop-types": true
+      }
+    },
+    "@material-ui/core>@material-ui/utils>react-is": {
+      "globals": {
+        "console": true
       }
     },
     "@material-ui/core>popper.js": {
@@ -767,6 +773,11 @@
         "navigator": true,
         "requestAnimationFrame": true,
         "setTimeout": true
+      }
+    },
+    "@material-ui/core>react-is": {
+      "globals": {
+        "console": true
       }
     },
     "@material-ui/core>react-transition-group": {
@@ -4664,7 +4675,6 @@
         "console": true
       },
       "packages": {
-        "prop-types": true,
         "react>object-assign": true
       }
     },
@@ -4760,15 +4770,12 @@
         "jest": true,
         "location.protocol": true,
         "navigator.userAgent.indexOf": true,
-        "performance": true,
         "removeEventListener": true,
         "self": true,
         "setTimeout": true,
-        "top": true,
-        "trustedTypes": true
+        "top": true
       },
       "packages": {
-        "prop-types": true,
         "react": true,
         "react-dom>scheduler": true,
         "react>object-assign": true
@@ -4780,7 +4787,6 @@
         "cancelAnimationFrame": true,
         "clearTimeout": true,
         "console": true,
-        "navigator": true,
         "performance": true,
         "requestAnimationFrame": true,
         "setTimeout": true
@@ -4846,11 +4852,21 @@
     },
     "react-idle-timer": {
       "globals": {
+        "BroadcastChannel": true,
+        "addEventListener": true,
+        "clearInterval": true,
         "clearTimeout": true,
+        "console.error": true,
+        "dispatchEvent": true,
         "document": true,
+        "localStorage": true,
+        "navigator.userAgent.toLowerCase": true,
+        "removeEventListener": true,
+        "setInterval": true,
         "setTimeout": true
       },
       "packages": {
+        "@babel/runtime": true,
         "prop-types": true,
         "react": true
       }
@@ -4976,6 +4992,7 @@
       "packages": {
         "@popperjs/core": true,
         "react": true,
+        "react-dom": true,
         "react-popper>react-fast-compare": true,
         "react-popper>warning": true
       }
@@ -5017,7 +5034,6 @@
     },
     "react-responsive-carousel": {
       "globals": {
-        "HTMLElement": true,
         "addEventListener": true,
         "clearTimeout": true,
         "console.warn": true,
@@ -5029,7 +5045,6 @@
       "packages": {
         "classnames": true,
         "react": true,
-        "react-dom": true,
         "react-responsive-carousel>react-easy-swipe": true
       }
     },
@@ -5079,7 +5094,6 @@
         "react": true,
         "react-redux>hoist-non-react-statics": true,
         "react-router-dom>react-router>history": true,
-        "react-router-dom>react-router>mini-create-react-context": true,
         "react-router-dom>tiny-invariant": true,
         "react-router-dom>tiny-warning": true,
         "sinon>nise>path-to-regexp": true
@@ -5099,15 +5113,6 @@
         "react-router-dom>history>resolve-pathname": true,
         "react-router-dom>history>value-equal": true,
         "react-router-dom>tiny-invariant": true,
-        "react-router-dom>tiny-warning": true
-      }
-    },
-    "react-router-dom>react-router>mini-create-react-context": {
-      "packages": {
-        "@babel/runtime": true,
-        "prop-types": true,
-        "react": true,
-        "react-router-dom>react-router>mini-create-react-context>gud": true,
         "react-router-dom>tiny-warning": true
       }
     },
