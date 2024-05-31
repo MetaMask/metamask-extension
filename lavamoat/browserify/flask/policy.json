@@ -750,7 +750,7 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
         "@metamask/accounts-controller>@metamask/base-controller": true,
-        "@metamask/accounts-controller>@metamask/eth-snap-keyring": true,
+        "@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
         "uuid": true
@@ -762,26 +762,6 @@
       },
       "packages": {
         "immer": true
-      }
-    },
-    "@metamask/accounts-controller>@metamask/eth-snap-keyring": {
-      "globals": {
-        "URL": true,
-        "console.error": true
-      },
-      "packages": {
-        "@ethereumjs/tx": true,
-        "@metamask/accounts-controller>@metamask/eth-snap-keyring>uuid": true,
-        "@metamask/eth-sig-util": true,
-        "@metamask/keyring-api": true,
-        "@metamask/utils": true,
-        "superstruct": true,
-        "webpack>events": true
-      }
-    },
-    "@metamask/accounts-controller>@metamask/eth-snap-keyring>uuid": {
-      "globals": {
-        "crypto": true
       }
     },
     "@metamask/address-book-controller": {
@@ -2740,7 +2720,6 @@
     },
     "@metamask/user-operation-controller": {
       "globals": {
-        "console.log": true,
         "fetch": true
       },
       "packages": {
