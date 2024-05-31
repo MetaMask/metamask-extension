@@ -5,6 +5,7 @@ import { TransactionType } from '@metamask/transaction-controller';
 import {
   isSignatureApprovalRequest,
   isSignatureTransactionType,
+  parseSanitizeTypedDataMessage,
   parseTypedDataMessage,
 } from './confirm';
 
@@ -33,14 +34,25 @@ describe('confirm util', () => {
 
   describe('parseTypedDataMessage', () => {
     it('parses data passed correctly', () => {
-      const result = parseTypedDataMessage(typedDataMsg);
-      expect(result.domain.chainId).toBe(97);
+      const result = parseTypedDataMessage('{"test": "dummy"}');
+      expect(result.test).toBe('dummy');
+    });
+    it('throw error for invalid typedDataMessage', () => {
+      expect(() => {
+        parseSanitizeTypedDataMessage('');
+      }).toThrow();
+    });
+  });
+
+  describe('parseSanitizeTypedDataMessage', () => {
+    it('parses and sanitizes data passed correctly', () => {
+      const result = parseSanitizeTypedDataMessage(typedDataMsg);
       expect(result.sanitizedMessage.type).toBe('Mail');
       expect(result.primaryType).toBe('Mail');
     });
     it('throw error for invalid typedDataMessage', () => {
       expect(() => {
-        parseTypedDataMessage('{}');
+        parseSanitizeTypedDataMessage('{}');
       }).toThrow();
     });
   });

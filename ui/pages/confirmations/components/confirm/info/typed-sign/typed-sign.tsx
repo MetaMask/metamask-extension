@@ -17,6 +17,7 @@ import {
 } from '../../../../../../helpers/constants/design-system';
 import { EIP712_PRIMARY_TYPE_PERMIT } from '../../../../constants';
 import { SignatureRequestType } from '../../../../types/confirm';
+import { parseTypedDataMessage } from '../../../../utils';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
 
 const TypedSignInfo: React.FC = () => {
@@ -33,7 +34,7 @@ const TypedSignInfo: React.FC = () => {
     domain,
     domain: { verifyingContract },
     primaryType,
-  } = JSON.parse(currentConfirmation.msgParams.data as string);
+  } = parseTypedDataMessage(currentConfirmation.msgParams.data as string);
 
   return (
     <>
