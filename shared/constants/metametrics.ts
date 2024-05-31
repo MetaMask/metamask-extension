@@ -802,6 +802,7 @@ export enum MetaMetricsNetworkEventSource {
   CustomNetworkForm = 'custom_network_form',
   PopularNetworkList = 'popular_network_list',
   Dapp = 'dapp',
+  DeprecatedNetworkModal = 'deprecated_network_modal',
 }
 
 export enum MetaMetricsSwapsEventSource {
