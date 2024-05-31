@@ -8,7 +8,7 @@ const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap update via snaps component', function () {
-  it('can install an old and then update via the snaps component', async function () {
+  it.only('can install an old and then update via the snaps component', async function () {
     const ganacheOptions = {
       accounts: [
         {
@@ -130,6 +130,15 @@ describe('Test Snap update via snaps component', function () {
           text: 'Confirm',
           tag: 'button',
         });
+
+        await driver.clickElement({
+          text: 'Install',
+          tag: 'span',
+        });
+
+        await driver.clickElement(
+          '[data-testid="snap-install-warning-modal-confirm"]',
+        );
 
         await driver.waitForSelector({ text: 'OK' });
 
