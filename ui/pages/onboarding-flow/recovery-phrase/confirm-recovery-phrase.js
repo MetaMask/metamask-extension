@@ -5,12 +5,11 @@ import { debounce } from 'lodash';
 import PropTypes from 'prop-types';
 import Box from '../../../components/ui/box';
 import Button from '../../../components/ui/button';
-import Typography from '../../../components/ui/typography';
+import { Text } from '../../../components/component-library/text';
 import {
   TEXT_ALIGN,
-  TypographyVariant,
+  TextVariant,
   JustifyContent,
-  FONT_WEIGHT,
 } from '../../../helpers/constants/design-system';
 import {
   ThreeStepProgressBar,
@@ -76,21 +75,21 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
         textAlign={TEXT_ALIGN.CENTER}
         marginBottom={4}
       >
-        <Typography
-          variant={TypographyVariant.H2}
-          fontWeight={FONT_WEIGHT.BOLD}
+        <Text
+          variant={TextVariant.headingLg}
+          fontWeight={TextVariant.bodyMdBold}
         >
           {t('seedPhraseConfirm')}
-        </Typography>
+        </Text>
       </Box>
       <Box
         justifyContent={JustifyContent.center}
         textAlign={TEXT_ALIGN.CENTER}
         marginBottom={4}
       >
-        <Typography variant={TypographyVariant.H4}>
+        <Text variant={TextVariant.headingSm}>
           {t('seedPhraseEnterMissingWords')}
-        </Typography>
+        </Text>
       </Box>
       <RecoveryPhraseChips
         secretRecoveryPhrase={splitSecretRecoveryPhrase}
