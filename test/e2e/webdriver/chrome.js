@@ -7,15 +7,6 @@ const { ThenableWebDriver } = require('selenium-webdriver'); // eslint-disable-l
  *
  * @type {string}
  */
-const DEFAULT_PROXY_HOST = '127.0.0.1:8000';
-
-/**
- * Selenium Envar proxy host to use for HTTPS requests
- *
- * @type {string}
- */
-const { SELENIUM_HTTPS_PROXY } = process.env;
-
 /**
  * Determine the appropriate proxy server value to use
  *
@@ -23,6 +14,8 @@ const { SELENIUM_HTTPS_PROXY } = process.env;
  * @returns {string} The proxy server address
  */
 function getProxyServer(proxyPort) {
+  const DEFAULT_PROXY_HOST = '127.0.0.1:8000';
+  const { SELENIUM_HTTPS_PROXY } = process.env;
   if (proxyPort) {
     return `127.0.0.1:${proxyPort}`;
   }
