@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [11.16.3]
+### Changed
+- Update Trezor logo ([#24343]https://github.com/MetaMask/metamask-extension/pull/24343)
 
 ## [11.16.2]
 ### Fixed
