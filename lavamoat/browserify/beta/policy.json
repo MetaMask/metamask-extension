@@ -2076,7 +2076,7 @@
         "@metamask/smart-transactions-controller>@metamask/transaction-controller>@ethereumjs/tx": true,
         "@metamask/smart-transactions-controller>@metamask/transaction-controller>@ethereumjs/util": true,
         "@metamask/smart-transactions-controller>@metamask/transaction-controller>eth-method-registry": true,
-        "@metamask/transaction-controller>nonce-tracker": true,
+        "@metamask/smart-transactions-controller>@metamask/transaction-controller>nonce-tracker": true,
         "@metamask/utils": true,
         "bn.js": true,
         "browserify>buffer": true,
@@ -2159,6 +2159,23 @@
     "@metamask/smart-transactions-controller>@metamask/transaction-controller>eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-rpc": {
       "packages": {
         "promise-to-callback": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/transaction-controller>nonce-tracker": {
+      "packages": {
+        "@ethersproject/providers": true,
+        "@metamask/network-controller>eth-block-tracker": true,
+        "@metamask/smart-transactions-controller>@metamask/transaction-controller>nonce-tracker>async-mutex": true,
+        "browserify>assert": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/transaction-controller>nonce-tracker>async-mutex": {
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@trezor/connect-web>tslib": true
       }
     },
     "@metamask/smart-transactions-controller>bignumber.js": {
@@ -2325,15 +2342,15 @@
         "@ethersproject/abi": true,
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
-        "@metamask/controller-utils": true,
         "@metamask/eth-query": true,
         "@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/name-controller>async-mutex": true,
         "@metamask/network-controller": true,
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/transaction-controller>@metamask/base-controller": true,
-        "@metamask/transaction-controller>nonce-tracker": true,
+        "@metamask/transaction-controller>@metamask/controller-utils": true,
+        "@metamask/transaction-controller>@metamask/nonce-tracker": true,
+        "@metamask/transaction-controller>async-mutex": true,
         "@metamask/utils": true,
         "bn.js": true,
         "browserify>buffer": true,
@@ -2352,15 +2369,41 @@
         "immer": true
       }
     },
-    "@metamask/transaction-controller>nonce-tracker": {
+    "@metamask/transaction-controller>@metamask/controller-utils": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "@metamask/ethjs>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "bn.js": true,
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true
+      }
+    },
+    "@metamask/transaction-controller>@metamask/nonce-tracker": {
       "packages": {
         "@ethersproject/providers": true,
-        "@metamask/network-controller>eth-block-tracker": true,
-        "@metamask/transaction-controller>nonce-tracker>async-mutex": true,
+        "@metamask/transaction-controller>@metamask/nonce-tracker>async-mutex": true,
         "browserify>assert": true
       }
     },
-    "@metamask/transaction-controller>nonce-tracker>async-mutex": {
+    "@metamask/transaction-controller>@metamask/nonce-tracker>async-mutex": {
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@trezor/connect-web>tslib": true
+      }
+    },
+    "@metamask/transaction-controller>async-mutex": {
       "globals": {
         "clearTimeout": true,
         "setTimeout": true
