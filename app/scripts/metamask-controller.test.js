@@ -624,6 +624,10 @@ describe('MetaMaskController', () => {
             }
           });
 
+        jest
+          .spyOn(metamaskController.onboardingController.store, 'getState')
+          .mockReturnValue({ completedOnboarding: true });
+
         // Give account 2 a token
         jest
           .spyOn(metamaskController.tokensController, 'state', 'get')
@@ -1113,7 +1117,9 @@ describe('MetaMaskController', () => {
         metamaskController.preferencesController.setSecurityAlertsEnabled(
           false,
         );
-        metamaskController.onboardingController.completeOnboarding();
+        jest
+          .spyOn(metamaskController.onboardingController.store, 'getState')
+          .mockReturnValue({ completedOnboarding: true });
         metamaskController.preferencesController.setUsePhishDetect(true);
       });
 
