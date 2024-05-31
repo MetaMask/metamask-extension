@@ -41,24 +41,33 @@ const TypedSignInfo: React.FC = () => {
       <Box
         backgroundColor={BackgroundColor.backgroundDefault}
         borderRadius={BorderRadius.MD}
-        padding={2}
         marginBottom={4}
+        padding={0}
       >
         {primaryType === EIP712_PRIMARY_TYPE_PERMIT && (
           <>
-            <ConfirmInfoRow label={t('approvingTo')}>
-              <ConfirmInfoRowAddress address={verifyingContract} />
-            </ConfirmInfoRow>
+            <Box padding={2}>
+              <ConfirmInfoRow label={t('approvingTo')}>
+                <ConfirmInfoRowAddress address={verifyingContract} />
+              </ConfirmInfoRow>
+            </Box>
             <ConfirmInfoRowDivider />
           </>
         )}
-        <ConfirmInfoRow label={t('requestFrom')} tooltip={t('requestFromInfo')}>
-          <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
-        </ConfirmInfoRow>
-        {isValidAddress(domain.verifyingContract) && (
-          <ConfirmInfoRow label={t('interactingWith')}>
-            <ConfirmInfoRowAddress address={domain.verifyingContract} />
+        <Box padding={2}>
+          <ConfirmInfoRow
+            label={t('requestFrom')}
+            tooltip={t('requestFromInfo')}
+          >
+            <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
           </ConfirmInfoRow>
+        </Box>
+        {isValidAddress(domain.verifyingContract) && (
+          <Box padding={2}>
+            <ConfirmInfoRow label={t('interactingWith')}>
+              <ConfirmInfoRowAddress address={domain.verifyingContract} />
+            </ConfirmInfoRow>
+          </Box>
         )}
       </Box>
       <Box
