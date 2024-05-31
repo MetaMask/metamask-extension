@@ -271,7 +271,11 @@ import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
 import createDupeReqFilterStream from './lib/createDupeReqFilterStream';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
-import { createMethodMiddleware } from './lib/rpc-method-middleware';
+import {
+  createLegacyMethodMiddleware,
+  createMethodMiddleware,
+  createUnsupportedMethodMiddleware,
+} from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
 import createTabIdMiddleware from './lib/createTabIdMiddleware';
 import { NetworkOrderController } from './controllers/network-order';
@@ -5075,23 +5079,15 @@ export default class MetamaskController extends EventEmitter {
    * @param {tabId} [options.tabId] - The tab ID of the sender - if the sender is within a tab
    */
   setupProviderEngine({ origin, subjectType, sender, tabId }) {
-    // setup json rpc engine stack
     const engine = new JsonRpcEngine();
 
-    // append origin to each request
+    // Append origin to each request
     engine.push(createOriginMiddleware({ origin }));
 
-    // append selectedNetworkClientId to each request
+    // Append selectedNetworkClientId to each request
     engine.push(createSelectedNetworkMiddleware(this.controllerMessenger));
 
-    // if the origin is not in the selectedNetworkController's `domains` state
-    // when the provider engine is created, the selectedNetworkController will
-    // fetch the globally selected networkClient from the networkController and wrap
-    // it in a proxy which can be switched to use its own state if/when the origin
-    // is added to the `domains` state
-    const proxyClient =
-      this.selectedNetworkController.getProviderAndBlockTracker(origin);
-
+    // Add a middleware that will switch chain on each request (as needed)
     const requestQueueMiddleware = createQueuedRequestMiddleware({
       enqueueRequest: this.queuedRequestController.enqueueRequest.bind(
         this.queuedRequestController,
@@ -5101,24 +5097,29 @@ export default class MetamaskController extends EventEmitter {
       ),
       methodsWithConfirmation,
     });
-    // add some middleware that will switch chain on each request (as needed)
     engine.push(requestQueueMiddleware);
 
-    // create filter polyfill middleware
-    const filterMiddleware = createFilterMiddleware(proxyClient);
+    // If the origin is not in the selectedNetworkController's `domains` state
+    // when the provider engine is created, the selectedNetworkController will
+    // fetch the globally selected networkClient from the networkController and wrap
+    // it in a proxy which can be switched to use its own state if/when the origin
+    // is added to the `domains` state
+    const proxyClient =
+      this.selectedNetworkController.getProviderAndBlockTracker(origin);
 
-    // create subscription polyfill middleware
+    // We create the filter and subscription manager middleware now, but they will
+    // be inserted into the engine later.
+    const filterMiddleware = createFilterMiddleware(proxyClient);
     const subscriptionManager = createSubscriptionManager(proxyClient);
     subscriptionManager.events.on('notification', (message) =>
       engine.emit('notification', message),
     );
 
-    // append tabId to each request if it exists
+    // Append tabId to each request if it exists
     if (tabId) {
       engine.push(createTabIdMiddleware({ tabId }));
     }
 
-    // logging
     engine.push(createLoggerMiddleware({ origin }));
     engine.push(this.permissionLogController.createMiddleware());
 
@@ -5164,7 +5165,24 @@ export default class MetamaskController extends EventEmitter {
       }),
     );
 
-    // onboarding
+    engine.push(createUnsupportedMethodMiddleware());
+
+    // Legacy RPC methods that need to be implemented _ahead of_ the permission
+    // middleware.
+    engine.push(
+      createLegacyMethodMiddleware({
+        getAccounts: this.getPermittedAccounts.bind(this, origin),
+      }),
+    );
+
+    if (subjectType !== SubjectType.Internal) {
+      engine.push(
+        this.permissionController.createPermissionMiddleware({
+          origin,
+        }),
+      );
+    }
+
     if (subjectType === SubjectType.Website) {
       engine.push(
         createOnboardingMiddleware({
@@ -5174,7 +5192,8 @@ export default class MetamaskController extends EventEmitter {
       );
     }
 
-    // Unrestricted/permissionless RPC method implementations
+    // Unrestricted/permissionless RPC method implementations.
+    // They must nevertheless be placed _behind_ the permission middleware.
     engine.push(
       createMethodMiddleware({
         origin,
@@ -5418,17 +5437,8 @@ export default class MetamaskController extends EventEmitter {
     );
     ///: END:ONLY_INCLUDE_IF
 
-    // filter and subscription polyfills
     engine.push(filterMiddleware);
     engine.push(subscriptionManager.middleware);
-    if (subjectType !== SubjectType.Internal) {
-      // permissions
-      engine.push(
-        this.permissionController.createPermissionMiddleware({
-          origin,
-        }),
-      );
-    }
 
     engine.push(this.metamaskMiddleware);
 
