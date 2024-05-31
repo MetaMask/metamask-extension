@@ -159,7 +159,6 @@ class Driver {
   }
 
   buildLocator(locator) {
-    console.log('buildLocator: ', locator);
     if (typeof locator === 'string') {
       // If locator is a string we assume its a css selector
       return By.css(locator);
