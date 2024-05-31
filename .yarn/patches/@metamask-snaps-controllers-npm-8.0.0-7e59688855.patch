@@ -149,18 +149,9 @@ index 1ace9d2de3101797650c7d1be19c184b782b4163..9142d804a6acbe2bb0d961c5a5bb1e63
  removeSnapHooks_fn = function(snapId) {
    _chunkEXN2TFDJjs.__privateGet.call(void 0, this, _snapRpcHooks).delete(snapId);
 diff --git a/dist/chunk-M2NMZ4ER.js b/dist/chunk-M2NMZ4ER.js
-index 5e56452ad179871bb8e9580437f53016c0094273..fc05b901d6998ad09a5cf07c8ebc74d20eed4928 100644
+index 5e56452ad179871bb8e9580437f53016c0094273..a634cc4a0b2012cf3af314bd3d72131e971046cd 100644
 --- a/dist/chunk-M2NMZ4ER.js
 +++ b/dist/chunk-M2NMZ4ER.js
-@@ -13,7 +13,7 @@ var _chunkEXN2TFDJjs = require('./chunk-EXN2TFDJ.js');
- // src/services/proxy/ProxyExecutionService.ts
- var _nanoid = require('nanoid');
- var _stream;
--var ProxyExecutionService = class extends _chunkJZCXZEFVjs.AbstractExecutionService {
-+var ProxyExecutionService = class extends _chunkSIW7ZXQFjs.AbstractExecutionService {
-   /**
-    * Create a new proxy execution service.
-    *
 @@ -32,7 +32,8 @@ var ProxyExecutionService = class extends _chunkJZCXZEFVjs.AbstractExecutionServ
    }) {
      super({
