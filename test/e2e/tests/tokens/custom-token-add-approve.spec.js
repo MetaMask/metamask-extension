@@ -32,14 +32,7 @@ describe('Create token, approve token and approve token without gas', function (
         );
         await unlockWallet(driver);
 
-        // create token
-        await openDapp(driver, contractAddress);
-
-        const windowHandles = await driver.getAllWindowHandles();
-        const extension = windowHandles[0];
-
         // imports custom token from extension
-        await driver.switchToWindow(extension);
         await driver.clickElement(`[data-testid="home__asset-tab"]`);
         await clickNestedButton(driver, 'Tokens');
 
@@ -52,14 +45,12 @@ describe('Create token, approve token and approve token without gas', function (
         await driver.waitForSelector(
           '[data-testid="import-tokens-modal-custom-decimals"]',
         );
-        await driver.delay(2000);
 
         await driver.clickElement({
           text: 'Next',
           tag: 'button',
         });
 
-        await driver.delay(2000);
         await driver.clickElement(
           '[data-testid="import-tokens-modal-import-button"]',
         );
