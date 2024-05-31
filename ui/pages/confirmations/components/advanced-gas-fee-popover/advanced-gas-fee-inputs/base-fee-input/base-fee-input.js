@@ -1,17 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { CHAINLIST_CHAIN_IDS_MAP } from '../../../../../../../shared/constants/network';
 import { HIGH_FEE_WARNING_MULTIPLIER } from '../../../../send/send.constants';
 import {
   EditGasModes,
   PriorityLevels,
 } from '../../../../../../../shared/constants/gas';
 import { PRIMARY } from '../../../../../../helpers/constants/common';
-import {
-  getAdvancedGasFeeValues,
-  getCurrentChainId,
-} from '../../../../../../selectors';
+import { getAdvancedGasFeeValues } from '../../../../../../selectors';
 import { useGasFeeContext } from '../../../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useUserPreferencedCurrency } from '../../../../../../hooks/useUserPreferencedCurrency';
@@ -23,6 +19,7 @@ import { useAdvancedGasFeePopoverContext } from '../../context';
 import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
 import { decGWEIToHexWEI } from '../../../../../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../../../../../shared/modules/Numeric';
+import { IGNORE_GAS_LIMIT_CHAIN_IDS } from '../../../../constants';
 
 const validateBaseFee = (
   value,
@@ -37,7 +34,7 @@ const validateBaseFee = (
   if (
     gasFeeEstimates?.low &&
     baseFeeValue.lessThan(gasFeeEstimates.low.suggestedMaxFeePerGas, 10) &&
-    chainId !== CHAINLIST_CHAIN_IDS_MAP.MANTLE
+    IGNORE_GAS_LIMIT_CHAIN_IDS.includes(chainId)
   ) {
     return 'editGasMaxBaseFeeLow';
   }
@@ -61,6 +58,7 @@ const BaseFeeInput = () => {
     estimateUsed,
     maxFeePerGas: maxBaseFeeNumber,
     editGasMode,
+    transaction: { chainId },
   } = useGasFeeContext();
   const maxFeePerGas = new Numeric(maxBaseFeeNumber, 10).toString();
   const {
@@ -78,7 +76,6 @@ const BaseFeeInput = () => {
   const { currency, numberOfDecimals } = useUserPreferencedCurrency(PRIMARY);
 
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
-  const chainId = useSelector(getCurrentChainId);
 
   const defaultBaseFee =
     estimateUsed !== PriorityLevels.custom &&

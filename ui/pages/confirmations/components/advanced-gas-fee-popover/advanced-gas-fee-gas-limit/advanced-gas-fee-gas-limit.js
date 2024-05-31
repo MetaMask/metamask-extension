@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 
-import { CHAINLIST_CHAIN_IDS_MAP } from '../../../../../../shared/constants/network';
 import { useGasFeeContext } from '../../../../../contexts/gasFee';
 import { bnGreaterThan, bnLessThan } from '../../../../../helpers/utils/util';
 import { TextVariant } from '../../../../../helpers/constants/design-system';
@@ -9,10 +7,10 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { MAX_GAS_LIMIT_DEC } from '../../../send/send.constants';
 import Button from '../../../../../components/ui/button';
 import FormField from '../../../../../components/ui/form-field';
-import { getCurrentChainId } from '../../../../../selectors';
 
 import { useAdvancedGasFeePopoverContext } from '../context';
 import { Text } from '../../../../../components/component-library';
+import { IGNORE_GAS_LIMIT_CHAIN_IDS } from '../../../constants';
 
 const validateGasLimit = (gasLimit, minimumGasLimitDec) => {
   return bnLessThan(gasLimit, minimumGasLimitDec) ||
@@ -25,12 +23,14 @@ const AdvancedGasFeeGasLimit = () => {
   const t = useI18nContext();
   const { setGasLimit: setGasLimitInContext, setErrorValue } =
     useAdvancedGasFeePopoverContext();
-  const { gasLimit: gasLimitInTransaction, minimumGasLimitDec } =
-    useGasFeeContext();
+  const {
+    gasLimit: gasLimitInTransaction,
+    minimumGasLimitDec,
+    transaction: { chainId },
+  } = useGasFeeContext();
   const [isEditing, setEditing] = useState(false);
   const [gasLimit, setGasLimit] = useState(gasLimitInTransaction);
   const [gasLimitError, setGasLimitError] = useState();
-  const chainId = useSelector(getCurrentChainId);
 
   const updateGasLimit = (value) => {
     setGasLimit(value);
@@ -38,7 +38,7 @@ const AdvancedGasFeeGasLimit = () => {
 
   useEffect(() => {
     setGasLimitInContext(gasLimit);
-    if (chainId === CHAINLIST_CHAIN_IDS_MAP.MANTLE) {
+    if (IGNORE_GAS_LIMIT_CHAIN_IDS.includes(chainId)) {
       return;
     }
     const error = validateGasLimit(gasLimit, minimumGasLimitDec);

@@ -7,10 +7,7 @@ import {
   PriorityLevels,
 } from '../../../../../../../shared/constants/gas';
 import { PRIMARY } from '../../../../../../helpers/constants/common';
-import {
-  getAdvancedGasFeeValues,
-  getCurrentChainId,
-} from '../../../../../../selectors';
+import { getAdvancedGasFeeValues } from '../../../../../../selectors';
 import { useCurrencyDisplay } from '../../../../../../hooks/useCurrencyDisplay';
 import { useGasFeeContext } from '../../../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
@@ -22,7 +19,7 @@ import { useAdvancedGasFeePopoverContext } from '../../context';
 import AdvancedGasFeeInputSubtext from '../../advanced-gas-fee-input-subtext';
 import { decGWEIToHexWEI } from '../../../../../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../../../../../shared/modules/Numeric';
-import { CHAINLIST_CHAIN_IDS_MAP } from '../../../../../../../shared/constants/network';
+import { IGNORE_GAS_LIMIT_CHAIN_IDS } from '../../../../constants';
 
 const validatePriorityFee = (value, gasFeeEstimates, chainId) => {
   const priorityFeeValue = new Numeric(value, 10);
@@ -35,7 +32,7 @@ const validatePriorityFee = (value, gasFeeEstimates, chainId) => {
       gasFeeEstimates.low.suggestedMaxPriorityFeePerGas,
       10,
     ) &&
-    chainId !== CHAINLIST_CHAIN_IDS_MAP.MANTLE
+    IGNORE_GAS_LIMIT_CHAIN_IDS.includes(chainId)
   ) {
     return 'editGasMaxPriorityFeeLowV2';
   }
@@ -54,7 +51,6 @@ const validatePriorityFee = (value, gasFeeEstimates, chainId) => {
 
 const PriorityFeeInput = () => {
   const t = useI18nContext();
-  const chainId = useSelector(getCurrentChainId);
   const advancedGasFeeValues = useSelector(getAdvancedGasFeeValues);
   const { gasLimit, setErrorValue, setMaxPriorityFeePerGas } =
     useAdvancedGasFeePopoverContext();
@@ -63,6 +59,7 @@ const PriorityFeeInput = () => {
     estimateUsed,
     gasFeeEstimates,
     maxPriorityFeePerGas: maxPriorityFeePerGasNumber,
+    transaction: { chainId },
   } = useGasFeeContext();
   const maxPriorityFeePerGas = new Numeric(
     maxPriorityFeePerGasNumber,
