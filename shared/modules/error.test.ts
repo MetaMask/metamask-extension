@@ -26,7 +26,7 @@ describe('error module', () => {
 
     it('calls loglevel.error with string representation of parameter passed in when parameter is not an instance of Error', () => {
       logErrorWithMessage({ test: 'test' });
-      expect(log.error).toHaveBeenCalledWith('[object Object]');
+      expect(log.error).toHaveBeenCalledWith({ test: 'test' });
     });
   });
 });

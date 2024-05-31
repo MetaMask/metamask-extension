@@ -29,5 +29,9 @@ export function getErrorMessage(error: unknown): string {
 }
 
 export function logErrorWithMessage(error: unknown) {
-  log.error(getErrorMessage(error));
+  log.error(
+    isErrorWithMessage(error)
+      ? getErrorMessage(error)
+      : error
+  );
 }
