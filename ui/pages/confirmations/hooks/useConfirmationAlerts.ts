@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
-import usePersonalSignAlerts from './alerts/usePersonalSignAlerts';
+import useBlockaidAlerts from './alerts/useBlockaidAlert';
 
 const useConfirmationAlerts = () => {
-  const personalSignAlerts = usePersonalSignAlerts();
+  const blockaidAlerts = useBlockaidAlerts();
 
-  return useMemo(() => [...personalSignAlerts], [personalSignAlerts]);
+  return useMemo(() => [...blockaidAlerts], [blockaidAlerts]);
 };
 
 export default useConfirmationAlerts;
