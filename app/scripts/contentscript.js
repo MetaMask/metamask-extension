@@ -548,14 +548,14 @@ const start = () => {
 
     window.addEventListener('pageshow', (event) => {
       if (event.persisted) {
-        onDisconnectDestroyStreams(
-          new Error('BFCached page has become active.'),
-        );
+        console.warn('BFCached page has become active. Restoring the streams.');
+        setupExtensionStreams();
       }
     });
 
     window.addEventListener('pagehide', (event) => {
       if (event.persisted) {
+        console.warn('Page may become BFCached. Destroying the streams.');
         destroyStreams();
       }
     });
