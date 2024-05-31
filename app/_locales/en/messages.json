@@ -405,6 +405,9 @@
   "allow": {
     "message": "Allow"
   },
+  "allowMetaMaskToDetectNFTs": {
+    "message": "Allow MetaMask to detect and display your NFTs with autodetection. You’ll be able to:"
+  },
   "allowMetaMaskToDetectTokens": {
     "message": "Allow MetaMask to detect and display your tokens with autodetection. You’ll be able to:"
   },
@@ -1532,6 +1535,9 @@
   "displayNftMediaDescription": {
     "message": "Displaying NFT media and data exposes your IP address to OpenSea or other third parties. This can allow attackers to associate your IP address with your Ethereum address. NFT autodetection relies on this setting, and won't be available when this is turned off."
   },
+  "diveStraightIntoUsingYourNFTs": {
+    "message": "Dive straight into using your NFTs"
+  },
   "diveStraightIntoUsingYourTokens": {
     "message": "Dive straight into using your tokens"
   },
@@ -1674,6 +1680,9 @@
   },
   "enableFromSettings": {
     "message": " Enable it from Settings."
+  },
+  "enableNftAutoDetection": {
+    "message": "Enable NFT autodetection"
   },
   "enableSnap": {
     "message": "Enable"
@@ -2172,6 +2181,9 @@
   },
   "imToken": {
     "message": "imToken"
+  },
+  "immediateAccessToYourNFTs": {
+    "message": "Immediately access your NFTs"
   },
   "immediateAccessToYourTokens": {
     "message": "Immediate access to your tokens"

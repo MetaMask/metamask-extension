@@ -2130,6 +2130,7 @@ export default class MetamaskController extends EventEmitter {
         this.encryptionPublicKeyController.newRequestEncryptionPublicKey.bind(
           this.encryptionPublicKeyController,
         ),
+
       processDecryptMessage:
         this.decryptMessageController.newRequestDecryptMessage.bind(
           this.decryptMessageController,
@@ -3400,6 +3401,11 @@ export default class MetamaskController extends EventEmitter {
       // AppMetadataController
       setShowTokenAutodetectModalOnUpgrade:
         appMetadataController.setShowTokenAutodetectModalOnUpgrade.bind(
+          appMetadataController,
+        ),
+
+      setShowNftAutodetectModalOnUpgrade:
+        appMetadataController.setShowNftAutodetectModalOnUpgrade.bind(
           appMetadataController,
         ),
 

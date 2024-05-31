@@ -130,7 +130,7 @@ export default function NftsTab() {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       setShowLoader(false);
-    }, 2000);
+    }, 3000);
     return () => clearTimeout(timeoutId);
   }, []);
 

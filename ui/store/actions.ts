@@ -5581,3 +5581,24 @@ export function setIsProfileSyncingEnabled(
     }
   };
 }
+
+export function setShowNftAutodetectModal(value: boolean) {
+  return setPreference('showNftAutodetectModal', value);
+}
+
+export function setShowNftAutodetectModalOnUpgrade(
+  val: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setShowNftAutodetectModalOnUpgrade`);
+    callBackgroundMethod('setShowNftAutodetectModalOnUpgrade', [val], (err) => {
+      if (err) {
+        dispatch(displayWarning(err));
+      }
+    });
+    dispatch({
+      type: actionConstants.SET_SHOW_NFT_AUTO_DETECT_MODAL_UPGRADE,
+      value: val,
+    });
+  };
+}
