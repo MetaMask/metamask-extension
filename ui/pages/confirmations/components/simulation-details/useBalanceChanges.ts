@@ -113,16 +113,18 @@ async function fetchTokenFiatRates(
 // Compiles the balance change for the native asset
 function getNativeBalanceChange(
   nativeBalanceChange: SimulationBalanceChange | undefined,
-  nativeFiatRate: number,
+  nativeFiatRate: number | undefined,
 ): BalanceChange | undefined {
   if (!nativeBalanceChange) {
     return undefined;
   }
   const asset = NATIVE_ASSET_IDENTIFIER;
   const amount = getAssetAmount(nativeBalanceChange, NATIVE_DECIMALS);
-  const fiatAmount = amount
-    .times(convertNumberToStringWithPrecisionWarning(nativeFiatRate))
-    .toNumber();
+  const fiatAmount = nativeFiatRate
+    ? amount
+        .times(convertNumberToStringWithPrecisionWarning(nativeFiatRate))
+        .toNumber()
+    : FIAT_UNAVAILABLE;
   return { asset, amount, fiatAmount };
 }
 
