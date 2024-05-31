@@ -6,13 +6,14 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import Button from '../../../components/ui/button';
 import Popover from '../../../components/ui/popover';
 import Box from '../../../components/ui/box';
-import { Text } from '../../../components/component-library';
+import Typography from '../../../components/ui/typography';
 import {
   AlignItems,
   IconColor,
   FLEX_DIRECTION,
+  FONT_WEIGHT,
   JustifyContent,
-  TextVariant,
+  TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import { setSeedPhraseBackedUp } from '../../../store/actions';
 import Checkbox from '../../../components/ui/check-box';
@@ -90,11 +91,12 @@ export default function SkipSRPBackup({ handleClose }) {
           className="skip-srp-backup-popover__icon"
           color={IconColor.errorDefault}
         />
-        <Text
-          variant={TextVariant.headingMdBold}
+        <Typography
+          variant={TypographyVariant.H3}
+          fontWeight={FONT_WEIGHT.BOLD}
         >
           {t('skipAccountSecurity')}
-        </Text>
+        </Typography>
         <Box justifyContent={JustifyContent.center} margin={3}>
           <label className="skip-srp-backup-popover__label">
             <Checkbox
@@ -103,12 +105,12 @@ export default function SkipSRPBackup({ handleClose }) {
               checked={checked}
               dataTestId="skip-srp-backup-popover-checkbox"
             />
-            <Text
+            <Typography
               className="skip-srp-backup-popover__details"
-              variant={TextVariant.bodySm}
+              variant={TypographyVariant.H7}
             >
               {t('skipAccountSecurityDetails')}
-            </Text>
+            </Typography>
           </label>
         </Box>
       </Box>
