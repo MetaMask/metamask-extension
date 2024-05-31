@@ -41,7 +41,7 @@ export class WeakRefObjectMap<RecordType extends Record<string, object>>
   set(key: string, value: RecordType): this {
     const weakRefValue: Partial<WeakRefObject<RecordType>> = {};
     for (const keyValue in value) {
-      if (!Object.hasOwn(value, keyValue)) {
+      if (!Object.prototype.hasOwnProperty.call(value, keyValue)) {
         continue;
       }
       const item: RecordType[typeof keyValue] = value[keyValue];
@@ -74,7 +74,7 @@ export class WeakRefObjectMap<RecordType extends Record<string, object>>
 
     const deRefValue: Partial<RecordType> = {};
     for (const keyValue in weakRefValue) {
-      if (!Object.hasOwn(weakRefValue, keyValue)) {
+      if (!Object.prototype.hasOwnProperty.call(weakRefValue, keyValue)) {
         continue;
       }
       const deref = weakRefValue[keyValue].deref();
