@@ -660,7 +660,9 @@ async function mockTokenNameProvider(server) {
     const name = namesByAddress[address];
 
     await server
-      .forGet(/https:\/\/token-api\.metaswap\.codefi\.network\/token\/.*/gu)
+      .forGet(
+        /https:\/\/(?:token-api\.metaswap\.codefi\.network|token\.api\.cx\.metamask\.io)\/token\/.*/gu,
+      )
       .withQuery({ address })
       .thenCallback(() => {
         return {
