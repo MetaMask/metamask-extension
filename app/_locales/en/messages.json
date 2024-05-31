@@ -759,9 +759,6 @@
   "cancel": {
     "message": "Cancel"
   },
-  "cancelEdit": {
-    "message": "Cancel edit"
-  },
   "cancelPopoverTitle": {
     "message": "Cancel transaction"
   },
@@ -3441,7 +3438,6 @@
   "onboardingMetametricsDescriptionLegacy": {
     "message": "MetaMask would like to gather usage data to better understand how our users interact with MetaMask. This data will be used to provide the service, which includes improving the service based on your use."
   },
-
   "onboardingMetametricsDisagree": {
     "message": "No thanks"
   },
@@ -4586,16 +4582,9 @@
   "sendSwapSubmissionWarning": {
     "message": "Clicking this button will immediately initiate your swap transaction. Please review your transaction details before proceeding."
   },
-
-  "sendTo": {
-    "message": "Send to"
-  },
   "sendTokenAsToken": {
     "message": "Send $1 as $2",
     "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
-  "sendTokens": {
-    "message": "Send tokens"
   },
   "sendingAsset": {
     "message": "Sending $1"
@@ -5265,9 +5254,6 @@
   },
   "submitted": {
     "message": "Submitted"
-  },
-  "suggestedBy": {
-    "message": "Suggested by"
   },
   "suggestedTokenSymbol": {
     "message": "Suggested ticker symbol:"
@@ -6062,19 +6048,15 @@
   "turnOnMetamaskNotificationsMessageFirst": {
     "message": "Stay in the loop on what's happening in your wallet with notifications."
   },
-
   "turnOnMetamaskNotificationsMessagePrivacyBold": {
     "message": "Settings > Notifications."
   },
-
   "turnOnMetamaskNotificationsMessagePrivacyLink": {
     "message": "Learn how we protect your privacy while using this feature."
   },
-
   "turnOnMetamaskNotificationsMessageSecond": {
     "message": "To use wallet notifications, we use a profile to sync some settings across your devices. $1"
   },
-
   "turnOnMetamaskNotificationsMessageThird": {
     "message": "You can turn off notifications at any time in $1"
   },
