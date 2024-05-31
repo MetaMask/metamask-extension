@@ -1554,8 +1554,6 @@ export default class MetamaskController extends EventEmitter {
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
           const { address } = this.accountsController.getSelectedAccount();
 
-          this._addAccountsWithBalance();
-
           this.postOnboardingInitialization();
           this.triggerNetworkrequests();
           // execute once the token detection on the post-onboarding
@@ -3923,9 +3921,6 @@ export default class MetamaskController extends EventEmitter {
   async createNewVaultAndRestore(password, encodedSeedPhrase) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
-      const { completedOnboarding } =
-        this.onboardingController.store.getState();
-
       const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
 
       // clear permissions
@@ -3943,9 +3938,7 @@ export default class MetamaskController extends EventEmitter {
 
       this.txController.clearUnapprovedTransactions();
 
-      if (completedOnboarding) {
-        this.tokenDetectionController.enable();
-      }
+      this.tokenDetectionController.enable();
 
       // create new vault
       const vault = await this.keyringController.createNewVaultAndRestore(
@@ -3953,57 +3946,57 @@ export default class MetamaskController extends EventEmitter {
         this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer),
       );
 
-      if (completedOnboarding) {
-        await this._addAccountsWithBalance();
+      // Scan accounts until we find an empty one
+      const { chainId } = this.networkController.state.providerConfig;
+      const ethQuery = new EthQuery(this.provider);
+      const accounts = await this.keyringController.getAccounts();
+      let address = accounts[accounts.length - 1];
+
+      for (let count = accounts.length; ; count++) {
+        const balance = await this.getBalance(address, ethQuery);
+
+        if (balance === '0x0') {
+          // This account has no balance, so check for tokens
+          await this.tokenDetectionController.detectTokens({
+            selectedAddress: address,
+          });
+
+          const tokens =
+            this.tokensController.state.allTokens?.[chainId]?.[address];
+          const detectedTokens =
+            this.tokensController.state.allDetectedTokens?.[chainId]?.[address];
+
+          if (
+            (tokens?.length ?? 0) === 0 &&
+            (detectedTokens?.length ?? 0) === 0
+          ) {
+            // This account has no balance or tokens
+            if (count !== 1) {
+              await this.removeAccount(address);
+            }
+            break;
+          }
+        }
+
+        // This account has assets, so check the next one
+        ({ addedAccountAddress: address } =
+          await this.keyringController.addNewAccount(count));
       }
+
+      const { completedOnboarding } =
+        this.onboardingController.store.getState();
+
       // This must be set as soon as possible to communicate to the
       // keyring's iframe and have the setting initialized properly
       // Optimistically called to not block MetaMask login due to
       // Ledger Keyring GitHub downtime
-      this.setLedgerTransportPreference();
+      if (completedOnboarding) {
+        this.setLedgerTransportPreference();
+      }
 
       return vault;
     } finally {
       releaseLock();
-    }
-  }
-
-  async _addAccountsWithBalance() {
-    // Scan accounts until we find an empty one
-    const { chainId } = this.networkController.state.providerConfig;
-    const ethQuery = new EthQuery(this.provider);
-    const accounts = await this.keyringController.getAccounts();
-    let address = accounts[accounts.length - 1];
-
-    for (let count = accounts.length; ; count++) {
-      const balance = await this.getBalance(address, ethQuery);
-
-      if (balance === '0x0') {
-        // This account has no balance, so check for tokens
-        await this.tokenDetectionController.detectTokens({
-          selectedAddress: address,
-        });
-
-        const tokens =
-          this.tokensController.state.allTokens?.[chainId]?.[address];
-        const detectedTokens =
-          this.tokensController.state.allDetectedTokens?.[chainId]?.[address];
-
-        if (
-          (tokens?.length ?? 0) === 0 &&
-          (detectedTokens?.length ?? 0) === 0
-        ) {
-          // This account has no balance or tokens
-          if (count !== 1) {
-            await this.removeAccount(address);
-          }
-          break;
-        }
-      }
-
-      // This account has assets, so check the next one
-      ({ addedAccountAddress: address } =
-        await this.keyringController.addNewAccount(count));
     }
   }
 
@@ -4068,6 +4061,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} password - The user's password
    */
   async submitPassword(password) {
+    const { completedOnboarding } = this.onboardingController.store.getState();
     await this.keyringController.submitPassword(password);
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -4086,7 +4080,9 @@ export default class MetamaskController extends EventEmitter {
     // keyring's iframe and have the setting initialized properly
     // Optimistically called to not block MetaMask login due to
     // Ledger Keyring GitHub downtime
-    this.setLedgerTransportPreference();
+    if (completedOnboarding) {
+      this.setLedgerTransportPreference();
+    }
   }
 
   async _loginUser(password) {
@@ -4245,6 +4241,10 @@ export default class MetamaskController extends EventEmitter {
    */
   async connectHardware(deviceName, page, hdPath) {
     const keyring = await this.getKeyringForDevice(deviceName, hdPath);
+
+    if (deviceName === HardwareDeviceNames.ledger) {
+      await this.setLedgerTransportPreference(keyring);
+    }
 
     let accounts = [];
     switch (page) {
@@ -5898,14 +5898,16 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Sets the Ledger Live preference to use for Ledger hardware wallet support
    *
+   * @param _keyring
    * @deprecated This method is deprecated and will be removed in the future.
    * Only webhid connections are supported in chrome and u2f in firefox.
    */
-  async setLedgerTransportPreference() {
+  async setLedgerTransportPreference(_keyring) {
     const transportType = window.navigator.hid
       ? LedgerTransportTypes.webhid
       : LedgerTransportTypes.u2f;
-    const keyring = await this.getKeyringForDevice(HardwareDeviceNames.ledger);
+    const keyring =
+      _keyring || (await this.getKeyringForDevice(HardwareDeviceNames.ledger));
     if (keyring?.updateTransportMethod) {
       return keyring.updateTransportMethod(transportType).catch((e) => {
         throw e;

@@ -123,11 +123,11 @@ Before running e2e tests, ensure you've run `yarn install` to download dependenc
    - `yarn build:test` for main build
    - `yarn build:test:flask` for flask build
    - `yarn build:test:mmi` for mmi build
-   - `yarn build:test:mv3` for mv3 build
+   - `yarn build:test:mv2` for mv2 build
 3. Start a test build with live changes: `yarn start:test` is particularly useful for development. It starts a test build that automatically recompiles application code upon changes. This option is ideal for iterative testing and development. This command also allows you to generate test builds for various types, including:
    - `yarn start:test` for main build
    - `yarn start:test:flask` for flask build
-   - `yarn start:test:mv3` for mv3 build
+   - `yarn start:test:mv2` for mv2 build
 
 Note: The `yarn start:test` command (which initiates the testDev build type) has LavaMoat disabled for both the build system and the application, offering a streamlined testing experience during development. On the other hand, `yarn build:test` enables LavaMoat for enhanced security in both the build system and application, mirroring production environments more closely.
 
@@ -183,7 +183,7 @@ Different build types have different e2e tests sets. In order to run them look i
 ```console
     "test:e2e:chrome:mmi": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --mmi",
     "test:e2e:chrome:snaps": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --snaps",
-    "test:e2e:chrome:mv3": "ENABLE_MV3=true SELENIUM_BROWSER=chrome node test/e2e/run-all.js",
+    "test:e2e:firefox": "ENABLE_MV3=false SELENIUM_BROWSER=firefox node test/e2e/run-all.js",
 ```
 
 #### Note: Running MMI e2e tests
