@@ -337,7 +337,7 @@ describe('Send ETH', function () {
 
             await driver.assertElementNotPresent(
               { text: 'Data', tag: 'li' },
-              { findElementGuard: { text: 'Estimated fee', tag: 'p' } }, // make sure the Dialog has loaded
+              { findElementGuard: { text: 'Estimated fee' } }, // make sure the Dialog has loaded
             );
 
             await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
