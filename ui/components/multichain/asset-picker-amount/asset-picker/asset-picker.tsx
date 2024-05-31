@@ -111,6 +111,7 @@ export function AssetPicker({
           sendingAsset?.details?.symbol || nativeCurrencySymbol
         }
       />
+
       <Button
         data-testid="asset-picker-button"
         className="asset-picker"
