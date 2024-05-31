@@ -13726,6 +13726,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"chain-function@npm:^1.0.0":
+  version: 1.0.1
+  resolution: "chain-function@npm:1.0.1"
+  checksum: 10/11b2c4aaea5b37a74717181197312bc95ddfe61a6de7c2b275b34ebb8c2d1e72ce3f20b828dc84982c0b2defc5fc0814bbd3e50f294420f252392ec04de5c806
+  languageName: node
+  linkType: hard
+
 "chalk@npm:4.1.2, chalk@npm:^4.0.0, chalk@npm:^4.0.2, chalk@npm:^4.1.0, chalk@npm:^4.1.2":
   version: 4.1.2
   resolution: "chalk@npm:4.1.2"
@@ -16083,7 +16090,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dom-helpers@npm:^3.4.0":
+"dom-helpers@npm:^3.2.0":
   version: 3.4.0
   resolution: "dom-helpers@npm:3.4.0"
   dependencies:
@@ -25188,7 +25195,7 @@ __metadata:
     react-syntax-highlighter: "npm:^15.5.0"
     react-tippy: "npm:^1.4.0"
     react-toggle-button: "npm:^2.2.0"
-    react-transition-group: "npm:^2.9.0"
+    react-transition-group: "npm:^1.2.1"
     read-installed: "npm:^4.0.3"
     readable-stream: "npm:^3.6.2"
     readable-stream-2: "npm:^2.3.3"
@@ -28690,7 +28697,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.5.7, prop-types@npm:^15.5.8, prop-types@npm:^15.6.0, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
+"prop-types@npm:^15.5.6, prop-types@npm:^15.5.7, prop-types@npm:^15.5.8, prop-types@npm:^15.6.0, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -29601,18 +29608,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-transition-group@npm:^2.9.0":
-  version: 2.9.0
-  resolution: "react-transition-group@npm:2.9.0"
+"react-transition-group@npm:^1.2.1":
+  version: 1.2.1
+  resolution: "react-transition-group@npm:1.2.1"
   dependencies:
-    dom-helpers: "npm:^3.4.0"
-    loose-envify: "npm:^1.4.0"
-    prop-types: "npm:^15.6.2"
-    react-lifecycles-compat: "npm:^3.0.4"
+    chain-function: "npm:^1.0.0"
+    dom-helpers: "npm:^3.2.0"
+    loose-envify: "npm:^1.3.1"
+    prop-types: "npm:^15.5.6"
+    warning: "npm:^3.0.0"
   peerDependencies:
-    react: ">=15.0.0"
-    react-dom: ">=15.0.0"
-  checksum: 10/1c26e2f7807547d7ebb9c317b8b63c0edaa7542bf2734309c9036484af4825cebb7e32e0ecdd94d7fbffa3c65666530bde9a84f673d438acf9a4d49e0aaed180
+    react: ^15.0.0 || ^16.0.0
+    react-dom: ^15.0.0 || ^16.0.0
+  checksum: 10/d9dfee0d870d797dfd85a187fccbca103e9803947f5e79ced7238539c75adf06e281fee5048bde2dba05a33d28c41296c9d437d398ff020633ac4bb7726e4e3f
   languageName: node
   linkType: hard
 
@@ -35108,6 +35116,15 @@ __metadata:
   dependencies:
     makeerror: "npm:1.0.12"
   checksum: 10/ad7a257ea1e662e57ef2e018f97b3c02a7240ad5093c392186ce0bcf1f1a60bbadd520d073b9beb921ed99f64f065efb63dfc8eec689a80e569f93c1c5d5e16c
+  languageName: node
+  linkType: hard
+
+"warning@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "warning@npm:3.0.0"
+  dependencies:
+    loose-envify: "npm:^1.0.0"
+  checksum: 10/c9f99a12803aab81b29858e7dc3415bf98b41baee3a4c3acdeb680d98c47b6e17490f1087dccc54432deed5711a5ce0ebcda2b27e9b5eb054c32ae50acb4419c
   languageName: node
   linkType: hard
 
