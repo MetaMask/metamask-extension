@@ -6,6 +6,8 @@
   &__currency-container,
   &__gasfee-label {
     position: relative;
-    white-space: nowrap;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: end;
   }
 }
