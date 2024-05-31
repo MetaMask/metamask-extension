@@ -372,6 +372,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - when:
@@ -401,6 +402,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -453,6 +455,7 @@ jobs:
     executor: node-browsers-medium
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - run:
           name: Save Yarn version
           command: |
@@ -487,6 +490,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -500,6 +504,7 @@ jobs:
     executor: node-browsers-medium
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -516,6 +521,7 @@ jobs:
         type: string
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -529,6 +535,7 @@ jobs:
     executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - when:
@@ -607,6 +614,7 @@ jobs:
     executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -631,6 +639,7 @@ jobs:
     executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - when:
@@ -674,6 +683,7 @@ jobs:
     executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - when:
@@ -754,6 +764,7 @@ jobs:
     executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -796,6 +807,7 @@ jobs:
     executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -816,10 +828,11 @@ jobs:
   prep-build-test-mmi-playwright:
     executor: node-browsers-medium-plus
     steps:
-      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run: *check-mmi-optional
+      - run: *shallow-git-clone
+      - run: sudo corepack enable
       - run:
           name: Build MMI extension for Playwright e2e
           command: |
@@ -845,6 +858,7 @@ jobs:
     executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -891,6 +905,7 @@ jobs:
     executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -912,6 +927,7 @@ jobs:
     executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -954,6 +970,7 @@ jobs:
     executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -968,6 +985,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -982,6 +1000,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -992,6 +1011,7 @@ jobs:
     executor: node-browsers-medium
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1005,6 +1025,7 @@ jobs:
     executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1024,9 +1045,10 @@ jobs:
           command: ./development/shellcheck.sh
 
   test-lint-lockfile:
-    executor: node-browsers-small
+    executor: node-browsers-medium
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1040,6 +1062,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - when:
@@ -1066,6 +1089,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1076,6 +1100,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1087,6 +1112,7 @@ jobs:
     parallelism: 20
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1114,6 +1140,7 @@ jobs:
     parallelism: 20
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1143,6 +1170,7 @@ jobs:
     parallelism: 20
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1172,6 +1200,7 @@ jobs:
     parallelism: 1
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1199,6 +1228,7 @@ jobs:
     parallelism: 1
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1225,6 +1255,7 @@ jobs:
     executor: node-browsers-medium
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1251,6 +1282,7 @@ jobs:
     executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1267,6 +1299,7 @@ jobs:
     parallelism: 10
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1295,6 +1328,7 @@ jobs:
     parallelism: 8
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1322,6 +1356,7 @@ jobs:
     parallelism: 12
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1348,10 +1383,11 @@ jobs:
     executor: playwright
     parallelism: 2
     steps:
-      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run: *check-mmi-optional
+      - run: *shallow-git-clone
+      - run: corepack enable
       - run:
           name: Move test build to dist
           command: mv ./dist-test-mmi-playwright ./dist
@@ -1390,6 +1426,7 @@ jobs:
     parallelism: 24
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1418,6 +1455,7 @@ jobs:
     parallelism: 20
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1447,6 +1485,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1470,6 +1509,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1493,6 +1533,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1530,6 +1571,7 @@ jobs:
     executor: node-browsers-medium
     steps:
       - checkout
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1598,6 +1640,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1621,6 +1664,7 @@ jobs:
           fingerprints:
             - '3d:49:29:f4:b2:e8:ea:af:d1:32:eb:2a:fc:15:85:d8'
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1636,6 +1680,7 @@ jobs:
           fingerprints:
             - '8b:21:e3:20:7c:c9:db:82:74:2d:86:d6:11:a7:2f:49'
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1650,6 +1695,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1665,6 +1711,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1682,6 +1729,7 @@ jobs:
     parallelism: 8
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1698,6 +1746,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - codecov/upload
@@ -1713,6 +1762,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1723,6 +1773,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1733,6 +1784,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1744,6 +1796,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1760,6 +1813,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1776,6 +1830,7 @@ jobs:
     executor: node-browsers-small
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1824,6 +1879,7 @@ jobs:
     executor: node-browsers-medium
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1840,6 +1896,7 @@ jobs:
     executor: node-browsers-medium
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
@@ -1856,6 +1913,7 @@ jobs:
     executor: node-browsers-medium
     steps:
       - run: *shallow-git-clone
+      - run: sudo corepack enable
       - attach_workspace:
           at: .
       - run:
