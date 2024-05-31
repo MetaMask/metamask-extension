@@ -138,8 +138,10 @@ export default function PrivacySettings() {
     setUseTransactionSimulations(isTransactionSimulationsEnabled);
     dispatch(setPetnamesEnabled(turnOnPetnames));
 
-    if (!isProfileSyncingEnabled && participateInMetaMetrics) {
-      dispatch(performSignIn());
+    if (externalServicesOnboardingToggleState) {
+      if (!isProfileSyncingEnabled && participateInMetaMetrics) {
+        dispatch(performSignIn());
+      }
     }
 
     if (ipfsURL && !ipfsError) {
@@ -446,6 +448,7 @@ export default function PrivacySettings() {
             value={turnOnCurrencyRateCheck}
             setValue={setTurnOnCurrencyRateCheck}
             title={t('currencyRateCheckToggle')}
+            dataTestId="currency-rate-check-toggle"
             description={t('currencyRateCheckToggleDescription', [
               <a
                 key="coingecko_link"
