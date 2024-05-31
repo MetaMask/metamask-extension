@@ -380,7 +380,10 @@ const destroyStreams = () => {
 
   destroyExtensionStreams();
   destroyLegacyExtensionStreams();
-};
+
+  extensionPort.disconnect();
+  extensionPort = null;
+}
 
 /**
  * This listener destroys the extension streams when the extension port is disconnected,
