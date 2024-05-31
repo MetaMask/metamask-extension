@@ -17,6 +17,7 @@ import {
 } from '../../../../../../helpers/constants/design-system';
 import { EIP712_PRIMARY_TYPE_PERMIT } from '../../../../constants';
 import { SignatureRequestType } from '../../../../types/confirm';
+import { parseTypedDataMessage } from '../../../../utils';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
 import PermitSimulation from './permit-simulation';
 
@@ -34,7 +35,7 @@ const TypedSignInfo: React.FC = () => {
     domain,
     domain: { verifyingContract },
     primaryType,
-  } = JSON.parse(currentConfirmation.msgParams.data as string);
+  } = parseTypedDataMessage(currentConfirmation.msgParams.data as string);
 
   return (
     <>
@@ -42,24 +43,33 @@ const TypedSignInfo: React.FC = () => {
       <Box
         backgroundColor={BackgroundColor.backgroundDefault}
         borderRadius={BorderRadius.MD}
-        padding={2}
         marginBottom={4}
+        padding={0}
       >
         {primaryType === EIP712_PRIMARY_TYPE_PERMIT && (
           <>
-            <ConfirmInfoRow label={t('approvingTo')}>
-              <ConfirmInfoRowAddress address={verifyingContract} />
-            </ConfirmInfoRow>
+            <Box padding={2}>
+              <ConfirmInfoRow label={t('approvingTo')}>
+                <ConfirmInfoRowAddress address={verifyingContract} />
+              </ConfirmInfoRow>
+            </Box>
             <ConfirmInfoRowDivider />
           </>
         )}
-        <ConfirmInfoRow label={t('requestFrom')} tooltip={t('requestFromInfo')}>
-          <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
-        </ConfirmInfoRow>
-        {isValidAddress(domain.verifyingContract) && (
-          <ConfirmInfoRow label={t('interactingWith')}>
-            <ConfirmInfoRowAddress address={domain.verifyingContract} />
+        <Box padding={2}>
+          <ConfirmInfoRow
+            label={t('requestFrom')}
+            tooltip={t('requestFromInfo')}
+          >
+            <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
           </ConfirmInfoRow>
+        </Box>
+        {isValidAddress(domain.verifyingContract) && (
+          <Box padding={2}>
+            <ConfirmInfoRow label={t('interactingWith')}>
+              <ConfirmInfoRowAddress address={domain.verifyingContract} />
+            </ConfirmInfoRow>
+          </Box>
         )}
       </Box>
       <Box

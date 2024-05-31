@@ -9,7 +9,7 @@ import {
 } from '../../../../../../components/app/confirm/info/row';
 
 import { DataTree } from '../dataTree';
-import { parseTypedDataMessage } from '../../../../utils';
+import { parseSanitizeTypedDataMessage } from '../../../../utils';
 
 export const ConfirmInfoRowTypedSignData = ({ data }: { data: string }) => {
   const t = useI18nContext();
@@ -18,7 +18,7 @@ export const ConfirmInfoRowTypedSignData = ({ data }: { data: string }) => {
     return null;
   }
 
-  const { sanitizedMessage, primaryType } = parseTypedDataMessage(data);
+  const { sanitizedMessage, primaryType } = parseSanitizeTypedDataMessage(data);
 
   return (
     <Box width={BlockSize.Full}>
