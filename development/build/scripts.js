@@ -1,5 +1,4 @@
 // TODO(ritave): Remove switches on hardcoded build types
-
 const { callbackify } = require('util');
 const path = require('path');
 const { writeFileSync, readFileSync, unlinkSync } = require('fs');
@@ -19,7 +18,7 @@ const sourcemaps = require('gulp-sourcemaps');
 const applySourceMap = require('vinyl-sourcemaps-apply');
 const pify = require('pify');
 const through = require('through2');
-const endOfStream = pify(require('end-of-stream'));
+const finished = pify(require('readable-stream').finished);
 const labeledStreamSplicer = require('labeled-stream-splicer').obj;
 const wrapInStream = require('pumpify').obj;
 const { Eta } = require('eta');
@@ -52,6 +51,9 @@ const {
 const {
   createRemoveFencedCodeTransform,
 } = require('./transforms/remove-fenced-code');
+
+const isEnableMV3 =
+  process.env.ENABLE_MV3 === 'true' || process.env.ENABLE_MV3 === undefined;
 
 // map dist files to bag of needed native APIs against LM scuttling
 const scuttlingConfigBase = {
@@ -189,7 +191,7 @@ function createScriptTasks({
 
     // In MV3 we will need to build our offscreen entry point bundle and any
     // entry points for iframes that we want to lockdown with LavaMoat.
-    if (process.env.ENABLE_MV3 === 'true') {
+    if (isEnableMV3) {
       standardEntryPoints.push('offscreen');
     }
 
@@ -350,7 +352,7 @@ function createScriptTasks({
       () => {
         // MV3 injects inpage into the tab's main world, but in MV2 we need
         // to do it manually:
-        if (process.env.ENABLE_MV3) {
+        if (isEnableMV3) {
           return;
         }
         // stringify scripts/inpage.js into itself, and then make it inject itself into the page
@@ -714,7 +716,7 @@ function createFactoredBuild({
               applyLavaMoat,
               destinationFileName: 'load-background.js',
             });
-            if (process.env.ENABLE_MV3) {
+            if (isEnableMV3) {
               const jsBundles = [
                 ...commonSet.values(),
                 ...groupSet.values(),
@@ -1027,7 +1029,9 @@ function setupMinification(buildConfiguration) {
 
 function setupScuttlingWrapping(buildConfiguration, applyLavaMoat, envVars) {
   const scuttlingConfig =
-    envVars.ENABLE_MV3 === 'true'
+    envVars.ENABLE_MV3 === 'true' ||
+    envVars.ENABLE_MV3 === undefined ||
+    envVars.ENABLE_MV3 === true
       ? mv3ScuttlingConfig
       : standardScuttlingConfig;
   const { events } = buildConfiguration;
@@ -1126,7 +1130,7 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
     // nothing will consume pipeline, so let it flow
     pipeline.resume();
 
-    await endOfStream(pipeline);
+    await finished(pipeline);
 
     // call the completion event to handle any post-processing
     events.emit('bundleDone');
