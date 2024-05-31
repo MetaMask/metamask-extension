@@ -122,10 +122,14 @@ export const snapKeyringBuilder = (
         address: string,
         snapId: string,
         handleUserInput: (accepted: boolean) => Promise<void>,
-        _accountNameSuggestion?: string,
+        accountNameSuggestion?: string,
         displayConfirmation: boolean = false,
       ) => {
         const snapName = getSnapName(snapId);
+
+        console.log(
+          `[snap-keyring] account name suggestion: ${accountNameSuggestion}`,
+        );
 
         const trackSnapAccountEvent = (event: MetaMetricsEventName) => {
           trackEvent({
