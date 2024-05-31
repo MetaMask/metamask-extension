@@ -78,6 +78,8 @@ var(--color-overlay-inverse) [DEPRECATED]
 
 /** User Actions */
 var(--color-primary-default)
+var(--color-primary-default-hover)
+var(--color-primary-default-pressed)
 var(--color-primary-alternative)
 var(--color-primary-muted)
 var(--color-primary-inverse)
@@ -91,6 +93,8 @@ var(--color-secondary-disabled) [DEPRECATED]
 /** States */
 /** Error */
 var(--color-error-default)
+var(--color-error-default-hover)
+var(--color-error-default-pressed)
 var(--color-error-alternative)
 var(--color-error-muted)
 var(--color-error-inverse)
@@ -127,8 +131,8 @@ Another level of abstraction is component tier colors that you can define at the
   --color-text-primary: var(--color-primary-inverse);
   --color-border-primary: var(--color-primary-default);
 
-  --color-background-primary-hover: var(--color-primary-alternative);
-  --color-border-primary-hover: var(--color-primary-alternative);
+  --color-background-primary-hover: var(--color-primary-default-hover);
+  --color-border-primary-hover: var(--color-primary-default-hover);
 
   .btn-primary {
     background-color: var(--color-background-primary);
