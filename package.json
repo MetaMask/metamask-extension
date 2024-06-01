@@ -707,5 +707,5 @@
       "@metamask/desktop>ws>utf-8-validate": false
     }
   },
-  "packageManager": "yarn@4.0.2"
+  "packageManager": "yarn@4.2.2"
 }
