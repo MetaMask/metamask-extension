@@ -76,7 +76,7 @@ describe('TypedSignInfo', () => {
     expect(getByText('Estimated changes')).toBeDefined();
   });
 
-  it('displays "Approving to" for permit signature type', () => {
+  it('displays "Spender" for permit signature type', () => {
     const state = {
       ...mockState,
       confirm: {
@@ -85,6 +85,6 @@ describe('TypedSignInfo', () => {
     };
     const mockStore = configureMockStore([])(state);
     const { getByText } = renderWithProvider(<TypedSignInfo />, mockStore);
-    expect(getByText('Approving to')).toBeDefined();
+    expect(getByText('Spender')).toBeDefined();
   });
 });
