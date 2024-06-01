@@ -20,7 +20,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 'v20'
+          node-version: 'lts/*'
       - run: corepack enable
 
       - name: Checkout repository
