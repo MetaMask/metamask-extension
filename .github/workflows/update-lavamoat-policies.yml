@@ -21,6 +21,7 @@ jobs:
         id: is-fork
         run: echo "IS_FORK=$(gh pr view --json isCrossRepository --jq '.isCrossRepository' "${PR_NUMBER}" )" >> "$GITHUB_OUTPUT"
         env:
+          GITHUB_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.issue.number }}
 
   react-to-comment:
@@ -46,6 +47,7 @@ jobs:
             -f content='+1'
         env:
           COMMENT_ID: ${{ github.event.comment.id }}
+          GITHUB_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
 
   prepare:
@@ -71,6 +73,7 @@ jobs:
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
         env:
+          GITHUB_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.issue.number }}
       - name: Use Node.js
         uses: actions/setup-node@v4
@@ -103,6 +106,7 @@ jobs:
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
         env:
+          GITHUB_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.issue.number }}
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -145,6 +149,7 @@ jobs:
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
         env:
+          GITHUB_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.issue.number }}
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -186,9 +191,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          # Use PAT to ensure that the commit later can trigger status check workflows
+          token: ${{ github.token }}
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
         env:
+          GITHUB_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.issue.number }}
       - name: Get commit SHA
         id: commit-sha
@@ -252,6 +261,7 @@ jobs:
           fi
         env:
           HAS_CHANGES: ${{ steps.policy-changes.outputs.HAS_CHANGES }}
+          GITHUB_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.issue.number }}
 
   check-status:
@@ -280,7 +290,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          token: ${{ github.token }}
       - name: Post comment if the update failed
         run: |
           passed="${{ needs.check-status.outputs.PASSED }}"
@@ -288,5 +298,6 @@ jobs:
             gh pr comment "${PR_NUMBER}" --body "Policy update failed. You can [review the logs or retry the policy update here](${ACTION_RUN_URL})"
           fi
         env:
+          GITHUB_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.issue.number }}
           ACTION_RUN_URL: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
