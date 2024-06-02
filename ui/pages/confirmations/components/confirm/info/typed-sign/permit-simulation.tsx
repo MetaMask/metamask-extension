@@ -13,7 +13,6 @@ import {
   BorderRadius,
   Display,
   TextAlign,
-  TextColor,
 } from '../../../../../../helpers/constants/design-system';
 import { SignatureRequestType } from '../../../../types/confirm';
 
