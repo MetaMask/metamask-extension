@@ -53,7 +53,7 @@ export const DomainInputResolutionCell = ({
   protocol,
 }: DomainInputResolutionCellArgs) => {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  const t = useContext(I18nContext);
+  const t: (key: string, params: unknown[]) => string = useContext(I18nContext);
   ///: END:ONLY_INCLUDE_IF
   const titleRef = useRef<null | HTMLDivElement>(null);
   const breakpointRef = useRef<null | number>(null);
