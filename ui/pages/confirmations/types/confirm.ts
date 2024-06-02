@@ -28,6 +28,16 @@ export type SignatureRequestType = {
     version?: string;
     siwe?: {
       isSIWEMessage: boolean;
+      parsedMessage: {
+        domain: string;
+        address: string;
+        statement: string;
+        uri: string;
+        version: string;
+        chainId: number;
+        nonce: string;
+        issuedAt: string;
+      };
     };
   };
   type: TransactionType;

@@ -4761,8 +4761,32 @@
   "simulationsSettingSubHeader": {
     "message": "Estimate balance changes"
   },
+  "siweAccount": {
+    "message": "Account"
+  },
+  "siweChainID": {
+    "message": "Chain ID"
+  },
+  "siweIssued": {
+    "message": "Issued"
+  },
+  "siweNetwork": {
+    "message": "Network"
+  },
+  "siweNonce": {
+    "message": "Nonce"
+  },
+  "siweOriginalMessage": {
+    "message": "Original Message"
+  },
   "siweSignatureSimulationDetailInfo": {
     "message": "This type of signature is not able to move your assets and is used for signing in."
+  },
+  "siweURI": {
+    "message": "URL"
+  },
+  "siweVersion": {
+    "message": "Version"
   },
   "skip": {
     "message": "Skip"

@@ -21,6 +21,7 @@ import {
 import { SignatureRequestType } from '../../../../types/confirm';
 import { isSIWESignatureRequest } from '../../../../utils';
 import { AlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { SIWESignInfo } from './siwe-sign';
 
 const PersonalSignInfo: React.FC = () => {
   const t = useI18nContext();
@@ -78,17 +79,21 @@ const PersonalSignInfo: React.FC = () => {
         padding={2}
         marginBottom={4}
       >
-        <AlertRow
-          alertKey="message"
-          ownerId={currentConfirmation.id}
-          label={t('message')}
-        >
-          <ConfirmInfoRowText
-            text={sanitizeString(
-              hexToText(currentConfirmation.msgParams?.data),
-            )}
-          />
-        </AlertRow>
+        {isSiweSigReq ? (
+          <SIWESignInfo />
+        ) : (
+          <AlertRow
+            alertKey="message"
+            ownerId={currentConfirmation.id}
+            label={t('message')}
+          >
+            <ConfirmInfoRowText
+              text={sanitizeString(
+                hexToText(currentConfirmation.msgParams?.data),
+              )}
+            />
+          </AlertRow>
+        )}
       </Box>
     </>
   );
