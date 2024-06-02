@@ -61,7 +61,7 @@ exports[`PermitSimulation renders component correctly 1`] = `
         class="mm-box mm-box--display-flex"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-inline-2 mm-box--color-error-default mm-box--background-color-error-muted mm-box--rounded-xl"
+          class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-inline-2 mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
         >
           3000
         </p>
