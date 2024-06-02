@@ -2740,15 +2740,15 @@ export function useMyAccountsForRecipientSearch() {
  * @returns {ThunkAction<void>}
  */
 export function resetRecipientInput() {
-  return async (dispatch, getState) => {
+  return (dispatch, getState) => {
     const state = getState();
     const chainId = getCurrentChainId(state);
     showLoadingIndication();
-    await dispatch(addHistoryEntry(`sendFlow - user cleared recipient input`));
-    await dispatch(resetDomainResolution());
-    await dispatch(updateRecipientUserInput(''));
-    await dispatch(updateRecipient({ address: '', nickname: '' }));
-    await dispatch(validateRecipientUserInput({ chainId }));
+    dispatch(addHistoryEntry(`sendFlow - user cleared recipient input`));
+    dispatch(resetDomainResolution());
+    dispatch(updateRecipientUserInput(''));
+    dispatch(updateRecipient({ address: '', nickname: '' }));
+    dispatch(validateRecipientUserInput({ chainId }));
     hideLoadingIndication();
   };
 }

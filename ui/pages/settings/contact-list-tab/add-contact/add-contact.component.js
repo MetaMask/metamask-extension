@@ -127,7 +127,11 @@ export default class AddContact extends PureComponent {
               {t('ethereumPublicAddress')}
             </div>
             {this.renderInput()}
-            <div className="address-book__view-contact__group__resolution-list">
+            <div
+              className={`address-book__view-contact__group__${
+                domainResolutions?.length === 1 ? 'single-' : ''
+              }resolution-list`}
+            >
               {domainResolutions?.length > 0 &&
                 domainResolutions.map((resolution) => {
                   const {

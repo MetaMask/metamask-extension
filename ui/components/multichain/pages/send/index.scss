@@ -1,7 +1,7 @@
 @use "design-system";
 
 .multichain-send-page {
-  width: 408px;
+  width: 100%;
 
   &__account-picker {
     height: 62px;
@@ -20,6 +20,8 @@
   }
 
   &__recipient {
+    width: 100%;
+
     .tabs__list {
       font-size: design-system.$font-size-h6;
       border-bottom: 0;
@@ -32,6 +34,25 @@
     }
 
     &__item {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      padding-bottom: 8px;
+
+      &__avatar-wrapper {
+        display: flex;
+        align-items: center;
+      }
+
+      &__title {
+        display: flex;
+      }
+
+      &__content {
+        padding-left: 16px;
+        overflow: hidden;
+      }
+
       &__title-tooltip > * {
         display: inline;
       }
@@ -56,5 +77,9 @@
         border-radius: 10px;
       }
     }
+  }
+
+  &__recipient:last-child {
+    padding-bottom: 0px;
   }
 }

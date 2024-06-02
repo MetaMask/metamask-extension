@@ -130,8 +130,8 @@ export const DomainInputResolutionCell = ({
               />
             }
             positionObj={{
-              bottom: '30%',
-              right: '30%',
+              bottom: '25%',
+              right: '10%',
               transform: 'scale(1) translate(25%, 70%)',
               width: '20px',
               height: '20px',
@@ -180,7 +180,9 @@ export const DomainInputResolutionCell = ({
       className="multichain-send-page__recipient__item"
       onClick={() => onClick()}
     >
-      <Identicon address={address} diameter={32} />
+      <div className="multichain-send-page__recipient__item__avatar-wrapper">
+        <Identicon address={address} diameter={32} />
+      </div>
       <div className="multichain-send-page__recipient__item__content">
         <div
           ref={titleRef}
