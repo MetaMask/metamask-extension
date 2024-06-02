@@ -28,7 +28,7 @@ export type SignatureRequestType = {
     version?: string;
     siwe?: {
       isSIWEMessage: boolean;
-      parsedMessage: {
+      parsedMessage: null | {
         domain: string;
         address: string;
         statement: string;
