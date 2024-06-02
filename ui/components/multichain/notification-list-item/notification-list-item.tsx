@@ -4,6 +4,7 @@ import { Box, Icon, IconName, Text } from '../../component-library';
 import {
   AlignItems,
   BlockSize,
+  BackgroundColor,
   Display,
   FlexDirection,
   FontWeight,
@@ -27,6 +28,7 @@ export type NotificationListItemProps = {
   description: NotificationListItemTextProps;
   createdAt: Date;
   amount?: string;
+  onClick?: () => void;
 };
 
 /**
@@ -40,6 +42,7 @@ export type NotificationListItemProps = {
  * @param props.createdAt - The date of the notification.
  * @param props.amount - The amount associated with the notification, if applicable.
  * @param props.id - The id of the notification.
+ * @param props.onClick - The function to call when the notification is clicked.
  * @returns Returns a notification list item component.
  */
 export const NotificationListItem = ({
@@ -50,9 +53,10 @@ export const NotificationListItem = ({
   description,
   createdAt,
   amount,
+  onClick,
 }: NotificationListItemProps) => {
   const handleClick = () => {
-    console.log('clicked', id);
+    onClick?.();
   };
 
   return (
@@ -61,83 +65,95 @@ export const NotificationListItem = ({
         isRead ? '' : 'notification-list-item--unread'
       }`}
       display={Display.Flex}
+      flexDirection={FlexDirection.Column}
       justifyContent={JustifyContent.spaceBetween}
       alignItems={AlignItems.flexStart}
-      as="button"
       width={BlockSize.Full}
       paddingBottom={3}
       paddingRight={5}
       paddingLeft={5}
       paddingTop={3}
-      onClick={handleClick}
+      key={id}
     >
-      {!isRead && (
-        <Box
-          display={Display.Block}
-          className="notification-list-item__unread-dot__wrapper"
-        >
-          <Icon
-            name={IconName.FullCircle}
-            color={IconColor.primaryDefault}
-            className="notification-list-item__unread-dot__dot"
-            data-testid="unread-dot"
-          />
-        </Box>
-      )}
-
       <Box
         display={Display.Flex}
-        gap={4}
-        paddingRight={4}
-        height={BlockSize.Full}
+        justifyContent={JustifyContent.spaceBetween}
+        flexDirection={FlexDirection.Row}
         alignItems={AlignItems.flexStart}
+        as="button"
+        onClick={handleClick}
+        width={BlockSize.Full}
+        backgroundColor={BackgroundColor.transparent}
       >
-        <Box height={BlockSize.Full} className="notification-list-item__icon">
-          <NotificationListItemIcon {...icon} />
-        </Box>
+        {!isRead && (
+          <Box
+            display={Display.Block}
+            className="notification-list-item__unread-dot__wrapper"
+          >
+            <Icon
+              name={IconName.FullCircle}
+              color={IconColor.primaryDefault}
+              className="notification-list-item__unread-dot__dot"
+              data-testid="unread-dot"
+            />
+          </Box>
+        )}
 
         <Box
-          display={Display.Block}
-          flexDirection={FlexDirection.Column}
+          display={Display.Flex}
+          gap={4}
+          paddingRight={4}
+          height={BlockSize.Full}
           alignItems={AlignItems.flexStart}
-          textAlign={TextAlign.Left}
         >
-          {/* Notification Title */}
-          <NotificationListItemText
-            {...title}
-            color={TextColor.textAlternative}
-          />
-          {/* Notification Description */}
-          <NotificationListItemText {...description} />
+          <Box height={BlockSize.Full} className="notification-list-item__icon">
+            <NotificationListItemIcon {...icon} />
+          </Box>
+
+          <Box
+            display={Display.Block}
+            flexDirection={FlexDirection.Column}
+            alignItems={AlignItems.flexStart}
+            textAlign={TextAlign.Left}
+            width={BlockSize.Full}
+          >
+            {/* Notification Title */}
+            <NotificationListItemText
+              {...title}
+              color={TextColor.textAlternative}
+            />
+            {/* Notification Description */}
+            <NotificationListItemText {...description} />
+          </Box>
         </Box>
-      </Box>
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.flexEnd}
-        textAlign={TextAlign.Right}
-        className="notification-list-item__right-container"
-      >
-        {/* Date */}
-        <Text
-          color={TextColor.textMuted}
-          variant={TextVariant.bodySm}
-          fontWeight={FontWeight.Normal}
-          as="p"
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          alignItems={AlignItems.flexEnd}
+          textAlign={TextAlign.Right}
+          className="notification-list-item__right-container"
         >
-          {formatMenuItemDate(createdAt)}
-        </Text>
-        {/* Amount */}
-        {amount && (
+          {/* Date */}
           <Text
-            color={TextColor.textDefault}
-            variant={TextVariant.bodyMd}
+            color={TextColor.textMuted}
+            variant={TextVariant.bodySm}
             fontWeight={FontWeight.Normal}
             as="p"
           >
-            {amount}
+            {formatMenuItemDate(createdAt)}
           </Text>
-        )}
+          {/* Amount */}
+          {amount && (
+            <Text
+              color={TextColor.textDefault}
+              variant={TextVariant.bodyMd}
+              fontWeight={FontWeight.Normal}
+              as="p"
+            >
+              {amount}
+            </Text>
+          )}
+        </Box>
       </Box>
     </Box>
   );

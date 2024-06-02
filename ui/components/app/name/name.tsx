@@ -26,6 +26,12 @@ export type NameProps = {
 
   /** The raw value to display the name of. */
   value: string;
+
+  /**
+   * Applies to recognized contracts with no petname saved:
+   * If true the contract symbol (e.g. WBTC) will be used instead of the contract name.
+   */
+  preferContractSymbol?: boolean;
 };
 
 function formatValue(value: string, type: NameType): string {
@@ -43,11 +49,16 @@ export default function Name({
   type,
   disableEdit,
   internal,
+  preferContractSymbol = false,
 }: NameProps) {
   const [modalOpen, setModalOpen] = useState(false);
   const trackEvent = useContext(MetaMetricsContext);
 
-  const { name, hasPetname } = useDisplayName(value, type);
+  const { name, hasPetname } = useDisplayName(
+    value,
+    type,
+    preferContractSymbol,
+  );
 
   useEffect(() => {
     if (internal) {
@@ -90,12 +101,12 @@ export default function Name({
         onClick={handleClick}
       >
         {hasDisplayName ? (
-          <Identicon address={value} diameter={18} />
+          <Identicon address={value} diameter={16} />
         ) : (
           <Icon
             name={IconName.Question}
             className="name__icon"
-            size={IconSize.Lg}
+            size={IconSize.Md}
           />
         )}
         {hasDisplayName ? (

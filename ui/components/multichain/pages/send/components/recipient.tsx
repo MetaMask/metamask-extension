@@ -26,16 +26,21 @@ import { SendPageAddressBook, SendPageRow, SendPageYourAccounts } from '.';
 const CONTACTS_TAB_KEY = 'contacts';
 const ACCOUNTS_TAB_KEY = 'accounts';
 
+const ENS_RESOLUTION_TYPE = 'ENS resolution';
+
 const renderExplicitAddress = (
   address: string,
   nickname: string,
   type: string,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dispatch: any,
 ) => {
   return (
     <AddressListItem
       address={address}
       label={nickname}
+      useConfusable={type === ENS_RESOLUTION_TYPE}
       onClick={() => {
         dispatch(
           addHistoryEntry(
@@ -85,7 +90,7 @@ export const SendPageRecipient = () => {
     contents = renderExplicitAddress(
       domainResolution,
       addressBookEntryName || userInput,
-      'ENS resolution',
+      ENS_RESOLUTION_TYPE,
       dispatch,
     );
   } else {

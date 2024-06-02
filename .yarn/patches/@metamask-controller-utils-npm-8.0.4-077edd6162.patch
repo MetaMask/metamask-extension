@@ -1,0 +1,14 @@
+diff --git a/dist/util.js b/dist/util.js
+index b9d1a7cca20c9da0d5d72010868dd84a58ea7442..6133b38ff6d584e3682eab627f9404d3e157c162 100644
+--- a/dist/util.js
++++ b/dist/util.js
+@@ -246,6 +246,9 @@ exports.safelyExecuteWithTimeout = safelyExecuteWithTimeout;
+  * @returns A 0x-prefixed hexidecimal checksummed address, if address is valid. Otherwise original input 0x-prefixe, if address is valid. Otherwise original input 0x-prefixed.
+  */
+ function toChecksumHexAddress(address) {
++    if (address === undefined || address === null) {
++      return address;
++    }
+     const hexPrefixed = (0, utils_1.add0x)(address);
+     if (!(0, utils_1.isHexString)(hexPrefixed)) {
+         // Version 5.1 of ethereumjs-utils would have returned '0xY' for input 'y'

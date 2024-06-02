@@ -5,6 +5,7 @@ const {
   withFixtures,
   unlockWallet,
   WINDOW_TITLES,
+  clickNestedButton,
 } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const { CHAIN_IDS } = require('../../../../shared/constants/network');
@@ -53,7 +54,7 @@ describe('Add hide token', function () {
         let assets = await driver.findElements('.multichain-token-list-item');
         assert.equal(assets.length, 2);
 
-        await driver.clickElement({ text: 'Tokens', tag: 'button' });
+        await clickNestedButton(driver, 'Tokens');
 
         await driver.clickElement({ text: 'TST', tag: 'span' });
 
@@ -136,18 +137,10 @@ describe('Add existing token using search', function () {
         );
         await tkn.click();
 
-        // TODO: Simplify once MMI has the new asset page
-        try {
-          await driver.waitForSelector({
-            css: '[data-testid="multichain-token-list-item-value"]',
-            text: '0 BAT',
-          });
-        } catch {
-          await driver.waitForSelector({
-            css: '.token-overview__primary-balance',
-            text: '0 BAT',
-          });
-        }
+        await driver.waitForSelector({
+          css: '.token-overview__primary-balance',
+          text: '0 BAT',
+        });
       },
     );
   });

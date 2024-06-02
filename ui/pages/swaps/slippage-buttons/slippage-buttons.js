@@ -5,33 +5,12 @@ import { I18nContext } from '../../../contexts/i18n';
 import ButtonGroup from '../../../components/ui/button-group';
 import Button from '../../../components/ui/button';
 import InfoTooltip from '../../../components/ui/info-tooltip';
-import ToggleButton from '../../../components/ui/toggle-button';
-import Box from '../../../components/ui/box';
-import {
-  TextVariant,
-  FontWeight,
-  AlignItems,
-  Display,
-} from '../../../helpers/constants/design-system';
-import { getTranslatedStxErrorMessage } from '../swaps.util';
-import {
-  Slippage,
-  SMART_SWAPS_FAQ_AND_RISK_DISCLOSURES_URL,
-} from '../../../../shared/constants/swaps';
-import {
-  Text,
-  ButtonLink,
-  ButtonLinkSize,
-} from '../../../components/component-library';
+import { Slippage } from '../../../../shared/constants/swaps';
 
 export default function SlippageButtons({
   onSelect,
   maxAllowedSlippage,
   currentSlippage,
-  smartTransactionsEnabled,
-  smartTransactionsOptInStatus,
-  setSmartTransactionsOptInStatus,
-  currentSmartTransactionsError,
   isDirectWrappingEnabled,
 }) {
   const t = useContext(I18nContext);
@@ -207,57 +186,6 @@ export default function SlippageButtons({
                 </ButtonGroup>
               </div>
             )}
-            {smartTransactionsEnabled && (
-              <Box marginTop={2} display={Display.Flex}>
-                <Box
-                  display={Display.Flex}
-                  alignItems={AlignItems.center}
-                  paddingRight={3}
-                >
-                  <Text
-                    variant={TextVariant.bodySm}
-                    as="h6"
-                    paddingRight={2}
-                    fontWeight={FontWeight.Bold}
-                  >
-                    {t('smartSwaps')}
-                  </Text>
-                  {currentSmartTransactionsError ? (
-                    <InfoTooltip
-                      position="top"
-                      contentText={getTranslatedStxErrorMessage(
-                        currentSmartTransactionsError,
-                        t,
-                      )}
-                    />
-                  ) : (
-                    <InfoTooltip
-                      position="top"
-                      contentText={t('smartSwapsTooltip', [
-                        <ButtonLink
-                          key="smart-swaps-faq-and-risk-disclosures"
-                          size={ButtonLinkSize.Inherit}
-                          href={SMART_SWAPS_FAQ_AND_RISK_DISCLOSURES_URL}
-                          externalLink
-                          display={Display.Inline}
-                        >
-                          {t('faqAndRiskDisclosures')}
-                        </ButtonLink>,
-                      ])}
-                    />
-                  )}
-                </Box>
-                <ToggleButton
-                  value={smartTransactionsOptInStatus}
-                  onToggle={(value) => {
-                    setSmartTransactionsOptInStatus(!value, value);
-                  }}
-                  offLabel={t('off')}
-                  onLabel={t('on')}
-                  disabled={Boolean(currentSmartTransactionsError)}
-                />
-              </Box>
-            )}
           </>
         )}
         {errorText && (
@@ -272,9 +200,5 @@ SlippageButtons.propTypes = {
   onSelect: PropTypes.func.isRequired,
   maxAllowedSlippage: PropTypes.number.isRequired,
   currentSlippage: PropTypes.number,
-  smartTransactionsEnabled: PropTypes.bool.isRequired,
-  smartTransactionsOptInStatus: PropTypes.bool,
-  setSmartTransactionsOptInStatus: PropTypes.func,
-  currentSmartTransactionsError: PropTypes.string,
   isDirectWrappingEnabled: PropTypes.bool,
 };

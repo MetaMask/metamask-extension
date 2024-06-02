@@ -9,7 +9,7 @@ import {
   ConfirmInfoRowText,
 } from '../../../../../../components/app/confirm/info/row';
 
-import { DataTree } from './dataTree';
+import { DataTree } from '../dataTree';
 
 const parseMessage = (dataToParse: string) => {
   const { message, primaryType, types } = JSON.parse(dataToParse);
@@ -27,11 +27,14 @@ export const ConfirmInfoRowTypedSignData = ({ data }: { data: string }) => {
   const { sanitizedMessage, primaryType } = parseMessage(data);
 
   return (
-    <Box width={BlockSize.Full} style={{ margin: '0 -8px' }}>
-      <ConfirmInfoRow label={`${t('primaryType')}:`}>
+    <Box width={BlockSize.Full}>
+      <ConfirmInfoRow
+        label={`${t('primaryType')}:`}
+        style={{ paddingLeft: 0, paddingRight: 0 }}
+      >
         <ConfirmInfoRowText text={primaryType} />
       </ConfirmInfoRow>
-      <Box style={{ margin: '0 -8px' }}>
+      <Box style={{ marginLeft: -8 }}>
         <DataTree data={sanitizedMessage.value} />
       </Box>
     </Box>

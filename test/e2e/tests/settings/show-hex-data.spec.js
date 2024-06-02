@@ -14,22 +14,18 @@ const selectors = {
   appHeaderLogo: '[data-testid="app-header-logo"]',
   ethOverviewSend: '[data-testid="eth-overview-send"]',
   ensInput: '[data-testid="ens-input"]',
-  quantity: '.unit-input__input',
-  hexDataInput: '.send-v2__hex-data__input',
-  nextPageButton: '[data-testid="page-container-footer-next"]',
+  quantity: 'input[placeholder="0"]',
+  hexDataInput: '[data-testid="send-hex-textarea"]',
+  nextPageButton: { text: 'Continue', tag: 'button' },
   hexButton: { text: 'Hex', tag: 'button' },
   detailsTab: { text: 'Details', tag: 'button' },
   containerContent: '.confirm-page-container-content',
-  confirmButton: {
-    text: 'Confirm',
-    tag: 'button',
-    css: '[data-testid="page-container-footer-next"]',
-  },
+  confirmButton: { text: 'Confirm', tag: 'button' },
 };
 
 const inputData = {
   recipientAddress: '0x985c30949c92df7a0bd42e0f3e3d539ece98db24',
-  hexDataText: '0xabc',
+  hexDataText: '0x0abc',
 };
 
 // Function to click elements in sequence
@@ -70,9 +66,6 @@ async function sendTransactionAndVerifyHexData(driver) {
 // Main test suite
 describe('Check the toggle for hex data', function () {
   it('Setting the hex data toggle and verify that the textbox appears', async function () {
-    if (process.env.MULTICHAIN) {
-      return;
-    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),

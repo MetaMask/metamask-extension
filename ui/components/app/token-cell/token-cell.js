@@ -11,7 +11,8 @@ export default function TokenCell({ address, image, symbol, string, onClick }) {
   const tokenList = useSelector(getTokenList);
   const tokenData = Object.values(tokenList).find(
     (token) =>
-      token.symbol === symbol && isEqualCaseInsensitive(token.address, address),
+      isEqualCaseInsensitive(token.symbol, symbol) &&
+      isEqualCaseInsensitive(token.address, address),
   );
   const title = tokenData?.name || symbol;
   const tokenImage = tokenData?.iconUrl || image;
@@ -20,7 +21,7 @@ export default function TokenCell({ address, image, symbol, string, onClick }) {
 
   return (
     <TokenListItem
-      onClick={onClick ? () => onClick(address) : undefined}
+      onClick={() => onClick(address)}
       tokenSymbol={symbol}
       tokenImage={tokenImage}
       primary={`${string || 0}`}
@@ -35,6 +36,6 @@ TokenCell.propTypes = {
   address: PropTypes.string,
   symbol: PropTypes.string,
   string: PropTypes.string,
-  onClick: PropTypes.func,
+  onClick: PropTypes.func.isRequired,
   image: PropTypes.string,
 };

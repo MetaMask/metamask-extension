@@ -105,16 +105,22 @@ function createNameControllerMock(
   return {
     state,
     setName: jest.fn(),
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any;
 }
 
 function simulateSubscribe(
   messenger: jest.Mocked<AccountIdentitiesPetnamesBridgeMessenger>,
   stateChange: AccountsControllerState,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   patch: any[],
 ) {
   const listener = messenger.subscribe.mock.calls[0][1] as (
     stateChange: AccountsControllerState,
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     patch: any[],
   ) => void;
   listener(stateChange, patch);

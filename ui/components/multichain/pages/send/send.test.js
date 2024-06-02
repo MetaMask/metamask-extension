@@ -4,7 +4,6 @@ import configureMockStore from 'redux-mock-store';
 import { NetworkType } from '@metamask/controller-utils';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { act } from '@testing-library/react';
-import mockState from '../../../../../test/data/mock-state.json';
 import {
   renderWithProvider,
   waitFor,
@@ -126,7 +125,6 @@ const baseStore = {
         gasEstimateType: GasEstimateTypes.legacy,
       },
     },
-    selectedAddress: '0x0',
     internalAccounts: {
       accounts: {
         'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -195,7 +193,6 @@ const baseStore = {
     accounts: {
       '0x0': { balance: '0x0', address: '0x0', name: 'Account 1' },
     },
-    identities: { '0x0': { address: '0x0' } },
     tokenAddress: '0x32e6c34cd57087abbd59b5a4aecc4cb495924356',
     tokenList: {
       '0x32e6c34cd57087abbd59b5a4aecc4cb495924356': {
@@ -299,7 +296,7 @@ describe('SendPage', () => {
       it('should call reset send state and route to recent page without cancelling tx', async () => {
         const {
           result: { queryByText },
-        } = await render(mockState);
+        } = await render(mockSendState);
 
         const cancelText = queryByText('Cancel');
         await act(async () => {
@@ -312,7 +309,7 @@ describe('SendPage', () => {
 
       it('should reject/cancel tx when coming from tx editing and route to index', async () => {
         const sendDataState = {
-          ...mockState,
+          ...mockSendState,
           send: {
             currentTransactionUUID: '01',
             draftTransactions: {
@@ -321,11 +318,17 @@ describe('SendPage', () => {
                 amount: {
                   value: '0x1',
                 },
-                asset: {
+                sendAsset: {
                   type: AssetType.token,
                   balance: '0xaf',
                   details: {},
                 },
+                receiveAsset: {
+                  type: AssetType.token,
+                  balance: '0xaf',
+                  details: {},
+                },
+                gas: {},
               },
             },
             stage: SEND_STAGES.EDIT,

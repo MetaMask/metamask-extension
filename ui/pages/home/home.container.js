@@ -18,6 +18,7 @@ import { getInstitutionalConnectRequests } from '../../ducks/institutional/insti
 ///: END:ONLY_INCLUDE_IF
 import {
   activeTabHasPermissions,
+  getUseExternalServices,
   getFirstPermissionRequest,
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getFirstSnapInstallOrUpdateRequest,
@@ -42,13 +43,17 @@ import {
   getSuggestedTokens,
   getSuggestedNfts,
   getApprovalFlows,
-  getShowSurveyToast,
   getNewTokensImportedError,
   hasPendingApprovals,
+  getSelectedInternalAccount,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getAccountType,
   ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
+import {
+  getIsShowTokenAutodetectModal,
+  getIsSmartTransactionsOptInModalAvailable,
+} from '../../../shared/modules/selectors';
 
 import {
   closeNotificationPopup,
@@ -65,10 +70,14 @@ import {
   setRemoveNftMessage,
   setNewTokensImported,
   setActiveNetwork,
-  setSurveyLinkLastClickedOrClosed,
   setNewTokensImportedError,
+  setShowTokenAutodetectModal,
+  setShowTokenAutodetectModalOnUpgrade,
 } from '../../store/actions';
-import { hideWhatsNewPopup } from '../../ducks/app/app';
+import {
+  hideWhatsNewPopup,
+  openBasicFunctionalityModal,
+} from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
 import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -91,13 +100,13 @@ const mapStateToProps = (state) => {
   const { metamask, appState } = state;
   const {
     seedPhraseBackedUp,
-    selectedAddress,
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
     swapsState,
     firstTimeFlowType,
     completedOnboarding,
   } = metamask;
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
   const { forgottenPassword } = metamask;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
   const swapsEnabled = getSwapsFeatureIsLive(state);
@@ -142,6 +151,8 @@ const mapStateToProps = (state) => {
   ]);
 
   return {
+    useExternalServices: getUseExternalServices(state),
+    isBasicConfigurationModalOpen: appState.showBasicFunctionalityModal,
     forgottenPassword,
     hasWatchTokenPendingApprovals,
     hasWatchNftPendingApprovals,
@@ -181,7 +192,6 @@ const mapStateToProps = (state) => {
     newTokensImportedError: getNewTokensImportedError(state),
     newNetworkAddedConfigurationId: appState.newNetworkAddedConfigurationId,
     onboardedInThisUISession: appState.onboardedInThisUISession,
-    showSurveyToast: getShowSurveyToast(state),
     hasAllowedPopupRedirectApprovals,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     waitForConfirmDeepLinkDialog: getWaitForConfirmDeepLinkDialog(state),
@@ -193,6 +203,9 @@ const mapStateToProps = (state) => {
     custodianDeepLink: getCustodianDeepLink(state),
     accountType: getAccountType(state),
     ///: END:ONLY_INCLUDE_IF
+    isSmartTransactionsOptInModalAvailable:
+      getIsSmartTransactionsOptInModalAvailable(state),
+    isShowTokenAutodetectModal: getIsShowTokenAutodetectModal(state),
   };
 };
 
@@ -241,6 +254,12 @@ const mapDispatchToProps = (dispatch) => {
     setActiveNetwork: (networkConfigurationId) => {
       dispatch(setActiveNetwork(networkConfigurationId));
     },
+    setTokenAutodetectModal: (val) => {
+      dispatch(setShowTokenAutodetectModal(val));
+    },
+    setShowTokenAutodetectModalOnUpgrade: (val) => {
+      dispatch(setShowTokenAutodetectModalOnUpgrade(val));
+    },
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     setWaitForConfirmDeepLinkDialog: (wait) =>
       dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
@@ -269,8 +288,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setCustodianDeepLink({}));
     },
     ///: END:ONLY_INCLUDE_IF
-    setSurveyLinkLastClickedOrClosed: (time) =>
-      dispatch(setSurveyLinkLastClickedOrClosed(time)),
+    setBasicFunctionalityModalOpen: () =>
+      dispatch(openBasicFunctionalityModal()),
   };
 };
 

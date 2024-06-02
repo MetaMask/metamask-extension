@@ -18,10 +18,9 @@ class ChromeDriver {
   static async build({ openDevToolsForTabs, port }) {
     const args = [
       `--proxy-server=${HTTPS_PROXY_HOST}`, // Set proxy in the way that doesn't interfere with Selenium Manager
-      '--disable-features=OptimizationGuideModelDownloading,OptimizationHintsFetching,OptimizationTargetPredicition,OptimizationHints,NetworkTimeServiceQuerying', // Stop chrome from calling home so much (auto-downloads of AI models; time sync)
+      '--disable-features=OptimizationGuideModelDownloading,OptimizationHintsFetching,OptimizationTargetPrediction,OptimizationHints,NetworkTimeServiceQuerying', // Stop chrome from calling home so much (auto-downloads of AI models; time sync)
       '--disable-component-update', // Stop chrome from calling home so much (auto-update)
-      `--disable-gpu`,
-      `--disable-dev-shm-usage`,
+      '--disable-dev-shm-usage',
     ];
 
     if (process.env.MULTIPROVIDER) {
@@ -36,13 +35,13 @@ class ChromeDriver {
       args.push('--auto-open-devtools-for-tabs');
     }
 
-    if (process.env.ENABLE_MV3) {
-      args.push('--log-level=0');
-      args.push('--enable-logging');
-      args.push(`--user-data-dir=${process.cwd()}/test-artifacts/chrome`);
-    } else {
-      args.push('--log-level=3');
+    args.push('--log-level=3');
+    args.push('--enable-logging');
+
+    if (process.env.CI || process.env.CODESPACES) {
+      args.push('--disable-gpu');
     }
+
     if (process.env.SELENIUM_HEADLESS) {
       // TODO: Remove notice and consider non-experimental when results are consistent
       console.warn(
@@ -50,11 +49,13 @@ class ChromeDriver {
       );
       args.push('--headless=new');
     }
+
     const options = new chrome.Options().addArguments(args);
     options.setAcceptInsecureCerts(true);
     options.setUserPreferences({
       'download.default_directory': `${process.cwd()}/test-artifacts/downloads`,
     });
+
     // Allow disabling DoT local testing
     if (process.env.SELENIUM_USE_SYSTEM_DN) {
       options.setLocalState({
@@ -62,6 +63,7 @@ class ChromeDriver {
         'dns_over_https.templates': '',
       });
     }
+
     const builder = new Builder()
       .forBrowser('chrome')
       .setChromeOptions(options);
@@ -73,9 +75,11 @@ class ChromeDriver {
     if (process.env.ENABLE_CHROME_LOGGING !== 'false') {
       service.setStdio('inherit').enableChromeLogging();
     }
+
     if (port) {
       service.setPort(port);
     }
+
     builder.setChromeService(service);
     const driver = builder.build();
     const chromeDriver = new ChromeDriver(driver);

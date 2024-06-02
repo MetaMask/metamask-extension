@@ -13,7 +13,7 @@ const store = configureStore({
     currentTransactionUUID: '1-tx',
     draftTransactions: {
       '1-tx': {
-        asset: {
+        sendAsset: {
           balance: '0x1158e460913d00000', // 20000000000000000000
           details: {
             name: 'Catnip Spicywright From The Artist Known As',

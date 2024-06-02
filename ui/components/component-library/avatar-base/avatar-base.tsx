@@ -3,7 +3,6 @@ import classnames from 'classnames';
 
 import {
   BackgroundColor,
-  BorderColor,
   TextColor,
   Display,
   JustifyContent,
@@ -28,7 +27,6 @@ export const AvatarBase: AvatarBaseComponent = React.forwardRef(
       size = AvatarBaseSize.Md,
       children,
       backgroundColor = BackgroundColor.backgroundAlternative,
-      borderColor = BorderColor.borderDefault,
       color = TextColor.textDefault,
       className = '',
       ...props
@@ -59,7 +57,7 @@ export const AvatarBase: AvatarBaseComponent = React.forwardRef(
         borderRadius={BorderRadius.full}
         variant={fallbackTextVariant}
         textTransform={TextTransform.Uppercase}
-        {...{ backgroundColor, borderColor, color }}
+        {...{ backgroundColor, color }}
         {...(props as TextProps<C>)}
       >
         {children}
