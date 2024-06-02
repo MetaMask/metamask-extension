@@ -160,7 +160,8 @@
         width: 100%;
       }
 
-      &__resolution-list, &__single-resolution-list {
+      &__resolution-list,
+      &__single-resolution-list {
         background: var(--color-background-default);
         box-sizing: border-box;
         box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
@@ -173,12 +174,13 @@
         overflow-y: auto;
       }
 
-      &__resolution-list > *, &__single-resolution-list > * {
+      &__resolution-list > *,
+      &__single-resolution-list > * {
         padding: 8px;
       }
 
       &__resolution-list > * {
-        padding-bottom: 0px;
+        padding-bottom: 0;
       }
 
       &__resolution-list {
