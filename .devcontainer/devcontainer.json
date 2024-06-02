@@ -1,4 +1,4 @@
-{
+"ghcr.io/devcontainers-contrib/features/bandit:2": {}{
   "customizations": {
     "vscode": {
       "extensions": [
