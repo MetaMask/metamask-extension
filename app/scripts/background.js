@@ -9,7 +9,7 @@
 import './lib/setup-initial-state-hooks';
 
 import EventEmitter from 'events';
-import { finished, pipeline } from 'readable-stream';
+import { Transform, finished, pipeline, Duplex } from 'readable-stream';
 import debounce from 'debounce-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
@@ -195,7 +195,8 @@ const sendReadyMessageToTabs = async () => {
 
 // These are set after initialization
 let connectRemote;
-let connectExternal;
+let connectExternalLegacy;
+let connectExternalDapp;
 
 browser.runtime.onConnect.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
@@ -208,7 +209,16 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   await isInitialized;
   // This is set in `setupController`, which is called as part of initialization
-  connectExternal(...args);
+  const port = args[0];
+
+  if (port.sender.tab?.id) {
+    // unwrap envelope here
+    console.log('onConnectExternal inpage', ...args);
+    connectExternalDapp(...args);
+  } else {
+    console.log('onConnectExternal extension', ...args);
+    connectExternalLegacy(...args);
+  }
 });
 
 function saveTimestamp() {
@@ -766,12 +776,12 @@ export function setupController(
           }
         });
       }
-      connectExternal(remotePort);
+      connectExternalLegacy(remotePort);
     }
   };
 
   // communication with page or other extension
-  connectExternal = (remotePort) => {
+  connectExternalLegacy = (remotePort) => {
     ///: BEGIN:ONLY_INCLUDE_IF(desktop)
     if (
       DesktopManager.isDesktopEnabled() &&
@@ -790,8 +800,121 @@ export function setupController(
     });
   };
 
+  connectExternalDapp = async (remotePort) => {
+    if (metamaskBlockedPorts.includes(remotePort.name)) {
+      return;
+    }
+
+    // this is triggered when a new tab is opened, or origin(url) is changed
+    if (remotePort.sender && remotePort.sender.tab && remotePort.sender.url) {
+      const tabId = remotePort.sender.tab.id;
+      const url = new URL(remotePort.sender.url);
+      const { origin } = url;
+
+      // store the orgin to corresponding tab so it can provide infor for onActivated listener
+      if (!Object.keys(tabOriginMapping).includes(tabId)) {
+        tabOriginMapping[tabId] = origin;
+      }
+      // const connectSitePermissions =
+      //   controller.permissionController.state.subjects[origin];
+      // // when the dapp is not connected, connectSitePermissions is undefined
+      // const isConnectedToDapp = connectSitePermissions !== undefined;
+      // // when open a new tab, this event will trigger twice, only 2nd time is with dapp loaded
+      // const isTabLoaded = remotePort.sender.tab.title !== 'New Tab';
+
+      // // *** Emit DappViewed metric event when ***
+      // // - refresh the dapp
+      // // - open dapp in a new tab
+      // if (isConnectedToDapp && isTabLoaded) {
+      //   emitDappViewedMetricEvent(
+      //     origin,
+      //     connectSitePermissions,
+      //     controller.preferencesController,
+      //   );
+      // }
+
+      remotePort.onMessage.addListener((msg) => {
+        if (msg.data && msg.data.method === MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS) {
+          requestAccountTabIds[origin] = tabId;
+        }
+      });
+    }
+
+    const portStream =
+      overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+
+    class WalletStream extends Duplex {
+      constructor() {
+        super({objectMode: true})
+      }
+
+      _read(_size) {
+        // this.push()
+      }
+      _write(_value, _encoding, callback) {
+        console.log('wallet stream write', _value)
+        this.push(_value)
+        callback();
+      }
+    }
+
+    class TransformableInStream extends Transform {
+      constructor() {
+        super({objectMode: true});
+      }
+
+      // Filter and wrap caip-x envelope to metamask-provider multiplex stream
+      _transform(value, _encoding, callback) {
+        console.log('transformIn', value)
+        if (value.type === 'caip-x') {
+          this.push({
+            name: 'metamask-provider',
+            data: value.data,
+          });
+        }
+        callback();
+      }
+    }
+
+    class TransformableOutStream extends Transform {
+      constructor() {
+        super({objectMode: true});
+      }
+
+      // Filter and wrap metamask-provider multiplex stream to caip-x envelope
+      _transform(value, _encoding, callback) {
+        console.log('transformOut', value)
+        if (value.name === 'metamask-provider') {
+          this.push({
+            type: 'caip-x',
+            data: value.data,
+          });
+        }
+        callback();
+      }
+    }
+
+    const walletStream = new WalletStream();
+    const transformInStream = new TransformableInStream();
+    const transformOutStream = new TransformableOutStream();
+
+    pipeline(
+      portStream,
+      transformInStream,
+      walletStream,
+      transformOutStream,
+      portStream,
+      (err) => console.log('MetaMask wallet stream', err),
+    );
+
+    controller.setupUntrustedCommunication({
+      connectionStream: walletStream,
+      sender: remotePort.sender,
+    });
+  };
+
   if (overrides?.registerConnectListeners) {
-    overrides.registerConnectListeners(connectRemote, connectExternal);
+    overrides.registerConnectListeners(connectRemote, connectExternalLegacy);
   }
 
   //
