@@ -79,7 +79,7 @@ export const FullscreenStory = (args) => (
       <Content background={BackgroundColor.successAlternative}>
         {scrollingContent}
       </Content>
-      <Footer backgroundColor={BackgroundColor.warningAlternative}>
+      <Footer backgroundColor={BackgroundColor.warningDefault}>
         <ButtonPrimary block disabled>
           Cancel
         </ButtonPrimary>
@@ -112,7 +112,7 @@ export const HeaderFooterStory = (args) => (
       <Content backgroundColor={BackgroundColor.successAlternative}>
         Content
       </Content>
-      <Footer backgroundColor={BackgroundColor.warningAlternative}>
+      <Footer backgroundColor={BackgroundColor.warningDefault}>
         <ButtonPrimary block disabled>
           Cancel
         </ButtonPrimary>
@@ -142,7 +142,7 @@ export const ScrollingStory = (args) => (
       <Content background={BackgroundColor.successAlternative}>
         {scrollingContent}
       </Content>
-      <Footer backgroundColor={BackgroundColor.warningAlternative}>
+      <Footer backgroundColor={BackgroundColor.warningDefault}>
         <ButtonPrimary block disabled>
           Cancel
         </ButtonPrimary>
