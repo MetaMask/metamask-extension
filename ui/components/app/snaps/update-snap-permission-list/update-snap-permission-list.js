@@ -10,7 +10,7 @@ import {
   getSnapsMetadata,
 } from '../../../../selectors';
 import { getSnapName } from '../../../../helpers/utils/util';
-import SnapPermissionCell from '../snap-permission-cell-display';
+import SnapPermissionCell from '../snap-permission-cell';
 
 export default function UpdateSnapPermissionList({
   approvedPermissions,
