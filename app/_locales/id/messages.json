@@ -4575,9 +4575,6 @@
   "serviceWorkerKeepAlive": {
     "message": "Service Worker Tetap Menyala"
   },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "MetaMask menggunakan layanan pihak ketiga tepercaya ini untuk meningkatkan kegunaan dan keamanan produk."
-  },
   "setApprovalForAll": {
     "message": "Atur persetujuan untuk semua"
   },

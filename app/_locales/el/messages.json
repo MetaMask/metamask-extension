@@ -4575,9 +4575,6 @@
   "serviceWorkerKeepAlive": {
     "message": "Διατηρήστε το Service Worker"
   },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "Το MetaMask χρησιμοποιεί αυτές τις αξιόπιστες υπηρεσίες τρίτων για να ενισχύσει τη χρηστικότητα και την ασφάλεια των προϊόντων."
-  },
   "setApprovalForAll": {
     "message": "Ρύθμιση έγκρισης για όλους"
   },

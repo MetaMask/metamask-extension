@@ -4572,9 +4572,6 @@
   "serviceWorkerKeepAlive": {
     "message": "सेवाकर्मी जीवित रहें"
   },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "MetaMask उत्पाद की उपयोगिता और सुरक्षा को बढ़ाने के लिए इन विश्वसनीय तीसरे-पक्ष की सेवाओं का इस्तेमाल करता है।"
-  },
   "setApprovalForAll": {
     "message": "सभी के लिए स्वीकृति सेट करें"
   },

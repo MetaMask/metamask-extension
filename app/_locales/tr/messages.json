@@ -4575,9 +4575,6 @@
   "serviceWorkerKeepAlive": {
     "message": "Service Worker'ı Canlı Tut"
   },
-  "setAdvancedPrivacySettingsDetails": {
-    "message": "MetaMask, ürünün kullanılabilirliğini ve güvenliğini iyileştirmek amacıyla bu güvenilir üçüncü taraf hizmetlerini kullanır."
-  },
   "setApprovalForAll": {
     "message": "Tümüne onay ver"
   },
