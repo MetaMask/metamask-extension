@@ -1189,7 +1189,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:chrome --retries 1
+              timeout 20m yarn test:e2e:chrome:confirmation-redesign --retries 1
             fi
           no_output_timeout: 5m
           environment:
