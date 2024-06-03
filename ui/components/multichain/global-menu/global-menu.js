@@ -2,7 +2,9 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { useCounter } from '../../../hooks/metamask-notifications/useCounter';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
+import { NewFeatureTag } from '../../../pages/notifications/NewFeatureTag';
 import {
   SETTINGS_ROUTE,
   DEFAULT_ROUTE,
@@ -17,7 +19,11 @@ import {
   showConfirmTurnOnMetamaskNotifications,
 } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { selectIsMetamaskNotificationsEnabled } from '../../../selectors/metamask-notifications/metamask-notifications';
+import {
+  selectIsMetamaskNotificationsEnabled,
+  selectIsMetamaskNotificationsFeatureSeen,
+} from '../../../selectors/metamask-notifications/metamask-notifications';
+import { selectIsProfileSyncingEnabled } from '../../../selectors/metamask-notifications/profile-syncing';
 import {
   Box,
   IconName,
@@ -78,13 +84,20 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
 
   const history = useHistory();
 
+  const { notificationsCount } = useCounter();
+
   const account = useSelector(getSelectedInternalAccount);
 
   const unapprovedTransactions = useSelector(getUnapprovedTransactions);
 
+  const isMetamaskNotificationFeatureSeen = useSelector(
+    selectIsMetamaskNotificationsFeatureSeen,
+  );
+
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
+  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
 
   const hasUnapprovedTransactions =
     Object.keys(unapprovedTransactions).length > 0;
@@ -136,12 +149,28 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
       !hasNotifySnaps && !isMetamaskNotificationsEnabled;
 
     if (shouldShowEnableModal) {
+      trackEvent({
+        category: MetaMetricsEventCategory.EnableNotifications,
+        event: MetaMetricsEventName.StartEnablingNotificationsFlow,
+        properties: {
+          isProfileSyncingEnabled,
+          isMetamaskNotificationsEnabled,
+        },
+      });
       dispatch(showConfirmTurnOnMetamaskNotifications());
       closeMenu();
       return;
     }
 
     // Otherwise we can navigate to the notifications page
+    trackEvent({
+      category: MetaMetricsEventCategory.NotificationInteraction,
+      event: MetaMetricsEventName.NotificationPageOpened,
+      properties: {
+        isProfileSyncingEnabled,
+        isMetamaskNotificationsEnabled,
+      },
+    });
     history.push(NOTIFICATIONS_ROUTE);
     closeMenu();
   };
@@ -172,6 +201,9 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
             justifyContent={JustifyContent.spaceBetween}
           >
             {t('notifications')}
+            {notificationsCount === 0 && !isMetamaskNotificationFeatureSeen && (
+              <NewFeatureTag />
+            )}
             <NotificationsTagCounter />
           </Box>
         </MenuItem>

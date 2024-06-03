@@ -49,7 +49,7 @@ const isStakeNotification = isOfTypeNodeGuard([
 ]);
 
 const TITLE_MAP = {
-  [TRIGGER_TYPES.LIDO_STAKE_COMPLETED]: t('notificationItemStakeCompleted'),
+  [TRIGGER_TYPES.LIDO_STAKE_COMPLETED]: t('notificationItemStaked'),
   [TRIGGER_TYPES.LIDO_WITHDRAWAL_COMPLETED]: t(
     'notificationItemUnStakeCompleted',
   ),
@@ -92,6 +92,15 @@ const getDescription = (n: StakeNotification) => {
 export const components: NotificationComponent<StakeNotification> = {
   guardFn: isStakeNotification,
   item: ({ notification, onClick }) => {
+    const direction = DIRECTION_MAP[notification.type];
+    const stakingProp =
+      direction === 'staked'
+        ? notification.data.stake_in
+        : notification.data.stake_out;
+
+    const amount = getAmount(stakingProp.amount, stakingProp.decimals, {
+      shouldEllipse: true,
+    });
     return (
       <NotificationListItem
         id={notification.id}
@@ -107,13 +116,11 @@ export const components: NotificationComponent<StakeNotification> = {
         title={getTitle(notification)}
         description={getDescription(notification)}
         createdAt={new Date(notification.createdAt)}
-        amount={getAmount(
-          notification.data.stake_out.amount,
-          notification.data.stake_out.decimals,
-          {
-            shouldEllipse: true,
-          },
-        )}
+        amount={`${amount} ${
+          direction === 'staked'
+            ? notification.data.stake_in.symbol
+            : notification.data.stake_out.symbol
+        }`}
         onClick={onClick}
       />
     );
@@ -159,11 +166,11 @@ export const components: NotificationComponent<StakeNotification> = {
                 : t('notificationItemUnStaked') || ''
             }
             detail={notification.data.stake_in.symbol}
-            fiatValue={`${getUsdAmount(
+            fiatValue={`$${getUsdAmount(
               notification.data.stake_in.amount,
               notification.data.stake_in.decimals,
               notification.data.stake_in.usd,
-            )} $`}
+            )}`}
             value={`${getAmount(
               notification.data.stake_in.amount,
               notification.data.stake_in.decimals,
@@ -173,7 +180,6 @@ export const components: NotificationComponent<StakeNotification> = {
         );
       },
       AssetReceived: ({ notification }) => {
-        const direction = DIRECTION_MAP[notification.type];
         const chainId = decimalToHex(notification.chain_id);
         const { nativeCurrencyLogo } = getNetworkDetailsByChainId(
           `0x${chainId}` as keyof typeof CHAIN_IDS,
@@ -187,17 +193,13 @@ export const components: NotificationComponent<StakeNotification> = {
                 position: BadgeWrapperPosition.topRight,
               },
             }}
-            label={
-              direction === 'staked'
-                ? t('notificationItemStaked') || ''
-                : t('notificationItemUnStaked') || ''
-            }
+            label={t('notificationItemReceived') || ''}
             detail={notification.data.stake_out.symbol}
-            fiatValue={`${getUsdAmount(
+            fiatValue={`$${getUsdAmount(
               notification.data.stake_out.amount,
               notification.data.stake_out.decimals,
               notification.data.stake_out.usd,
-            )} $`}
+            )}`}
             value={`${getAmount(
               notification.data.stake_out.amount,
               notification.data.stake_out.decimals,
@@ -257,6 +259,7 @@ export const components: NotificationComponent<StakeNotification> = {
       );
       return (
         <NotificationDetailButton
+          notification={notification}
           variant={ButtonVariant.Secondary}
           text={t('notificationItemCheckBlockExplorer') || ''}
           href={
