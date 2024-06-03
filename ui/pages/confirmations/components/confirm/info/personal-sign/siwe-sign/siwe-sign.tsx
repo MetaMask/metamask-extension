@@ -55,8 +55,8 @@ const SIWESignInfo: React.FC = () => {
       </ConfirmInfoRow>
       <ConfirmInfoRow label={t('siweIssued')}>
         <ConfirmInfoRowText
-          text={DateTime.fromJSDate(new Date(siweMessage.issuedAt)).toLocaleString(
-            DateTime.DATETIME_MED,
+          text={DateTime.fromJSDate(new Date(siweMessage.issuedAt)).toFormat(
+            'dd/MM/yyyy mm:ss',
           )}
         />
       </ConfirmInfoRow>
