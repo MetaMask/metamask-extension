@@ -53,7 +53,6 @@ import {
 import {
   getIsShowTokenAutodetectModal,
   getIsSmartTransactionsOptInModalAvailable,
-  getIsSmartTransactionsOptInModalAvailable,
   getIsShowNftAutodetectModal,
 } from '../../../shared/modules/selectors';
 
