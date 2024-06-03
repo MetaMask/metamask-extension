@@ -15,8 +15,10 @@ import {
 } from '../../../../../../../components/component-library';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import {
+  BackgroundColor,
   BlockSize,
   BorderColor,
+  BorderRadius,
   IconColor,
 } from '../../../../../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../../../../../hooks/useCopyToClipboard';
@@ -52,7 +54,7 @@ const NonceDetails = () => {
     dispatch(getNextNonce());
   }, [dispatch]);
 
-  const useNonceField = useSelector(getUseNonceField);
+  const enableCustomNonce = useSelector(getUseNonceField);
   const nextNonce = useSelector(getNextSuggestedNonce);
   const customNonceValue = useSelector(getCustomNonceValue);
 
@@ -60,9 +62,8 @@ const NonceDetails = () => {
     dispatch(
       showModal({
         name: 'CUSTOMIZE_NONCE',
-        useNonceField,
-        nextNonce,
         customNonceValue,
+        nextNonce,
         updateCustomNonce: (value: string) => {
           dispatch(updateCustomNonce(value));
         },
@@ -80,7 +81,9 @@ const NonceDetails = () => {
       >
         <ConfirmInfoRowText
           text={`${displayedNonce}`}
-          onEditClick={() => openEditNonceModal()}
+          onEditClick={
+            enableCustomNonce ? () => openEditNonceModal() : undefined
+          }
         />
       </ConfirmInfoRow>
     </Box>
@@ -165,10 +168,14 @@ const HexDetails = () => {
 
 export const AdvancedDetails: React.FC = () => {
   return (
-    <>
+    <Box
+      backgroundColor={BackgroundColor.backgroundDefault}
+      borderRadius={BorderRadius.MD}
+      marginBottom={4}
+    >
       <NonceDetails />
       <DataDetails />
       <HexDetails />
-    </>
+    </Box>
   );
 };

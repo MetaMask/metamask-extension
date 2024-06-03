@@ -39,23 +39,8 @@ const ContractInteractionInfo: React.FC<InfoProps> = ({
           isTransactionsRedesign
         />
       </Box>
-      <Box
-        backgroundColor={BackgroundColor.backgroundDefault}
-        borderRadius={BorderRadius.MD}
-        padding={2}
-        marginBottom={4}
-      >
-        <TransactionDetails />
-      </Box>
-      {showAdvancedDetails && (
-        <Box
-          backgroundColor={BackgroundColor.backgroundDefault}
-          borderRadius={BorderRadius.MD}
-          marginBottom={4}
-        >
-          <AdvancedDetails />
-        </Box>
-      )}
+      <TransactionDetails />
+      {showAdvancedDetails && <AdvancedDetails />}
     </>
   );
 };

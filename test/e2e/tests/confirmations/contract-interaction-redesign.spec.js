@@ -30,47 +30,57 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
         await unlockWallet(driver);
         await openDapp(driver);
 
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await driver.clickElement(`#deployButton`);
+        await createContractDeploymentTransaction(driver);
+        await confirmContractDeploymentTransaction(driver);
 
-        await driver.delay(2000);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        await driver.waitForSelector({
-          css: '.confirm-page-container-summary__action__name',
-          text: 'Contract deployment',
-        });
-
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.waitUntilXWindowHandles(2);
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
-        await driver.clickElement({ text: 'Activity', tag: 'button' });
-        await driver.waitForSelector(
-          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
-        );
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await driver.clickElement(`#depositButton`);
-
-        await driver.delay(2000);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        await driver.waitForSelector({
-          css: 'h2',
-          text: 'Transaction request',
-        });
-
-        await driver.clickElement(
-          `[data-testid="header-advanced-details-button"]`,
-        );
-
-        await driver.waitForSelector({
-          css: 'p',
-          text: 'Nonce',
-        });
+        await createDepositTransaction(driver);
+        await confirmDepositTransaction(driver);
       },
     );
   });
 });
+
+async function createContractDeploymentTransaction(driver) {
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+  await driver.clickElement(`#deployButton`);
+}
+
+async function confirmContractDeploymentTransaction(driver) {
+  await driver.delay(2000);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+  await driver.waitForSelector({
+    css: '.confirm-page-container-summary__action__name',
+    text: 'Contract deployment',
+  });
+
+  await driver.clickElement({ text: 'Confirm', tag: 'button' });
+  await driver.waitUntilXWindowHandles(2);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+  await driver.clickElement({ text: 'Activity', tag: 'button' });
+  await driver.waitForSelector(
+    '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
+  );
+}
+
+async function createDepositTransaction(driver) {
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+  await driver.clickElement(`#depositButton`);
+}
+
+async function confirmDepositTransaction(driver) {
+  await driver.delay(2000);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+  await driver.waitForSelector({
+    css: 'h2',
+    text: 'Transaction request',
+  });
+
+  await driver.clickElement(`[data-testid="header-advanced-details-button"]`);
+
+  await driver.waitForSelector({
+    css: 'p',
+    text: 'Nonce',
+  });
+}
