@@ -1,9 +1,8 @@
 import React from 'react';
-
 import { act } from 'react-dom/test-utils';
+import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { setBackgroundConnection } from '../../../store/background-connection';
-import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import ConfirmSendEther from './confirm-send-ether';
 
