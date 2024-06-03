@@ -125,7 +125,6 @@ export default function PrivacySettings() {
   );
 
   const handleSubmit = () => {
-    console.log('IM HERE ========>');
     dispatch(toggleExternalServices(externalServicesOnboardingToggleState));
     dispatch(setUsePhishDetect(usePhishingDetection));
     dispatch(setUse4ByteResolution(turnOn4ByteResolution));

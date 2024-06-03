@@ -6,9 +6,9 @@ import {
   NETWORK_TYPES,
   TEST_NETWORK_TICKER_MAP,
 } from '../../../shared/constants/network';
-import { migrate, version } from './119';
+import { migrate, version } from './120';
 
-const oldVersion = 118;
+const oldVersion = 119;
 
 const ethereumProviderConfig = {
   chainId: '0x1',
@@ -72,7 +72,7 @@ const lineaGoerliState = {
   },
 };
 
-describe('migration #119', () => {
+describe('migration #120', () => {
   it('updates the version metadata', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
