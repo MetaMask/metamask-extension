@@ -45,7 +45,6 @@ import {
 import { useBalance } from '../../../hooks/useBalance';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
 import { REDESIGN_TRANSACTION_TYPES } from '../../../utils';
-import { TransactionMeta } from '@metamask/transaction-controller';
 
 const HeaderInfo = ({
   showAdvancedDetails,
@@ -78,9 +77,10 @@ const HeaderInfo = ({
     });
   }
 
-  const isShowAdvancedDetailsToggle: boolean =
-    !!currentConfirmation?.type &&
-    REDESIGN_TRANSACTION_TYPES.includes(currentConfirmation?.type);
+  const isShowAdvancedDetailsToggle: boolean = Boolean(
+    currentConfirmation?.type &&
+      REDESIGN_TRANSACTION_TYPES.includes(currentConfirmation?.type),
+  );
 
   return (
     <>
