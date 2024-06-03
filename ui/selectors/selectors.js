@@ -502,7 +502,7 @@ export const getTokenExchangeRates = (state) => {
 
   return Object.entries(contractMarketData).reduce(
     (acc, [address, marketData]) => {
-      acc[address] = marketData.value;
+      acc[address] = marketData?.value ?? null;
       return acc;
     },
     {},
