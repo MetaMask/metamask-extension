@@ -621,11 +621,6 @@ export default class MetamaskController extends EventEmitter {
       },
       state: initState.TokensController,
     });
-    // TODO: Remove once `TokensController` is upgraded to extend from `BaseControllerV2`
-    this.controllerMessenger.registerActionHandler(
-      'TokensController:getState',
-      () => this.tokensController.state,
-    );
 
     const nftControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'NftController',
@@ -633,99 +628,76 @@ export default class MetamaskController extends EventEmitter {
         `${this.approvalController.name}:addRequest`,
         `${this.accountsController.name}:getAccount`,
         `${this.accountsController.name}:getSelectedAccount`,
+        `${this.networkController.name}:getNetworkClientById`,
       ],
-      allowedEvents: ['AccountsController:selectedEvmAccountChange'],
+      allowedEvents: [
+        'AccountsController:selectedEvmAccountChange',
+        'PreferencesController:stateChange',
+        'NetworkController:networkDidChange',
+      ],
     });
-    this.nftController = new NftController(
-      {
-        messenger: nftControllerMessenger,
-        chainId: this.networkController.state.providerConfig.chainId,
-        onPreferencesStateChange:
-          this.preferencesController.store.subscribe.bind(
-            this.preferencesController.store,
-          ),
-        onNetworkStateChange: networkControllerMessenger.subscribe.bind(
-          networkControllerMessenger,
-          'NetworkController:stateChange',
-        ),
-        getERC721AssetName:
-          this.assetsContractController.getERC721AssetName.bind(
-            this.assetsContractController,
-          ),
-        getERC721AssetSymbol:
-          this.assetsContractController.getERC721AssetSymbol.bind(
-            this.assetsContractController,
-          ),
-        getERC721TokenURI: this.assetsContractController.getERC721TokenURI.bind(
+    this.nftController = new NftController({
+      messenger: nftControllerMessenger,
+      chainId: this.networkController.state.providerConfig.chainId,
+      selectedAccountId: this.accountsController.getSelectedAccount(),
+      getERC721AssetName: this.assetsContractController.getERC721AssetName.bind(
+        this.assetsContractController,
+      ),
+      getERC721AssetSymbol:
+        this.assetsContractController.getERC721AssetSymbol.bind(
           this.assetsContractController,
         ),
-        getERC721OwnerOf: this.assetsContractController.getERC721OwnerOf.bind(
+      getERC721TokenURI: this.assetsContractController.getERC721TokenURI.bind(
+        this.assetsContractController,
+      ),
+      getERC721OwnerOf: this.assetsContractController.getERC721OwnerOf.bind(
+        this.assetsContractController,
+      ),
+      getERC1155BalanceOf:
+        this.assetsContractController.getERC1155BalanceOf.bind(
           this.assetsContractController,
         ),
-        getERC1155BalanceOf:
-          this.assetsContractController.getERC1155BalanceOf.bind(
-            this.assetsContractController,
-          ),
-        getERC1155TokenURI:
-          this.assetsContractController.getERC1155TokenURI.bind(
-            this.assetsContractController,
-          ),
-        onNftAdded: ({ address, symbol, tokenId, standard, source }) =>
-          this.metaMetricsController.trackEvent({
-            event: MetaMetricsEventName.NftAdded,
-            category: MetaMetricsEventCategory.Wallet,
-            sensitiveProperties: {
-              token_contract_address: address,
-              token_symbol: symbol,
-              token_id: tokenId,
-              token_standard: standard,
-              asset_type: AssetType.NFT,
-              source,
-            },
-          }),
-        getNetworkClientById: this.networkController.getNetworkClientById.bind(
-          this.networkController,
-        ),
-      },
-      {},
-      initState.NftController,
-    );
+      getERC1155TokenURI: this.assetsContractController.getERC1155TokenURI.bind(
+        this.assetsContractController,
+      ),
+      onNftAdded: ({ address, symbol, tokenId, standard, source }) =>
+        this.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.NftAdded,
+          category: MetaMetricsEventCategory.Wallet,
+          sensitiveProperties: {
+            token_contract_address: address,
+            token_symbol: symbol,
+            token_id: tokenId,
+            token_standard: standard,
+            asset_type: AssetType.NFT,
+            source,
+          },
+        }),
+      state: initState.NftController,
+    });
 
     this.nftController.setApiKey(process.env.OPENSEA_KEY);
 
+    const nftDetectionControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'NftDetectionController',
+        allowedActions: [
+          'ApprovalController:addRequest',
+          'NetworkController:getNetworkClientById',
+          'NetworkController:getState',
+          'AccountsController:getSelectedAccount',
+          'NftController:stateChange',
+          'PreferencesController:getState',
+        ],
+        allowedEvents: [
+          'NetworkController:stateChange',
+          'PreferencesController:stateChange',
+        ],
+      });
+
     this.nftDetectionController = new NftDetectionController({
-      chainId: this.networkController.state.providerConfig.chainId,
-      getNetworkClientById: this.networkController.getNetworkClientById.bind(
-        this.networkController,
-      ),
-      onNftsStateChange: (listener) => this.nftController.subscribe(listener),
-      onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
-        this.preferencesController.store,
-      ),
-      onSelectedAccountChange: (listener) =>
-        this.controllerMessenger.subscribe(
-          `AccountsController:selectedEvmAccountChange`,
-          (newlySelectedInternalAccount) => {
-            listener(newlySelectedInternalAccount);
-          },
-        ),
-      getInternalAccount: this.accountsController.getAccount.bind(
-        this.accountsController,
-      ),
-      getSelectedAccount: this.accountsController.getSelectedAccount.bind(
-        this.accountsController,
-      ),
-      onNetworkStateChange: networkControllerMessenger.subscribe.bind(
-        networkControllerMessenger,
-        'NetworkController:stateChange',
-      ),
-      getOpenSeaApiKey: () => this.nftController.openSeaApiKey,
-      getBalancesInSingleCall:
-        this.assetsContractController.getBalancesInSingleCall.bind(
-          this.assetsContractController,
-        ),
+      messenger: nftDetectionControllerMessenger,
       addNft: this.nftController.addNft.bind(this.nftController),
-      getNftApi: this.nftController.getNftApi.bind(this.nftController),
       getNftState: () => this.nftController.state,
       // added this to track previous value of useNftDetection, should be true on very first initializing of controller[]
       disabled:
@@ -733,8 +705,6 @@ export default class MetamaskController extends EventEmitter {
         undefined
           ? true
           : !this.preferencesController.store.getState().useNftDetection,
-      selectedAccountId:
-        this.accountsController.getSelectedAccount('eip155:*').id,
     });
 
     this.metaMetricsController = new MetaMetricsController({
@@ -894,7 +864,10 @@ export default class MetamaskController extends EventEmitter {
         selectedAccountId:
           this.accountsController.getSelectedAccount('eip155:*').id,
         onTokensStateChange: (listener) =>
-          this.tokensController.subscribe(listener),
+          this.controllerMessenger.subscribe(
+            'TokensController:stateChange',
+            listener,
+          ),
         onNetworkStateChange: networkControllerMessenger.subscribe.bind(
           networkControllerMessenger,
           'NetworkController:stateChange',
