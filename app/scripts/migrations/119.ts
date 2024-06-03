@@ -35,6 +35,12 @@ function transformState(state: Record<string, any>) {
         .internalAccounts as AccountsControllerState['internalAccounts'],
       'accounts',
     ) &&
+    Array.isArray(
+      Object.values(
+        (state.AccountsController as AccountsControllerState).internalAccounts
+          .accounts,
+      ),
+    ) &&
     Object.values(
       (state.AccountsController as AccountsControllerState).internalAccounts
         .accounts,

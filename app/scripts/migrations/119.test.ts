@@ -19,17 +19,19 @@ describe('migration #119', () => {
   });
 
   it('returns the default state if the AccountsController state is undefined', async () => {
+    const defaultState = {
+      internalAccounts: {
+        accounts: {},
+        selectedAccount: '',
+      },
+    };
+
     const oldStorage = {
       meta: {
         version: oldVersion,
       },
       data: {
-        AccountsController: {
-          internalAccounts: {
-            accounts: {},
-            selectedAccount: '',
-          },
-        },
+        AccountsController: defaultState,
       },
     };
 
@@ -39,12 +41,7 @@ describe('migration #119', () => {
         version: newVersion,
       },
       data: {
-        AccountsController: {
-          internalAccounts: {
-            accounts: {},
-            selectedAccount: '',
-          },
-        },
+        AccountsController: defaultState,
       },
     });
     expect(newStorage);
