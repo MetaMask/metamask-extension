@@ -6944,14 +6944,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:^1.39.0":
-  version: 1.39.0
-  resolution: "@playwright/test@npm:1.39.0"
+"@playwright/test@npm:^1.44.1":
+  version: 1.44.1
+  resolution: "@playwright/test@npm:1.44.1"
   dependencies:
-    playwright: "npm:1.39.0"
+    playwright: "npm:1.44.1"
   bin:
     playwright: cli.js
-  checksum: 10/5d039234609395f3eab46b5954b259bdd80dacf79efe531369c1633647dcafce25a78d497e61e671d661274bf66076426a1bd46be585c44addf23bb5bfaa15a2
+  checksum: 10/572b4c97834fae54fda833939b8f376df2c301b724f9825a3c705533efc124beb346dd9406f54cd771b3f79c00f0e5c70b5469ef33818a0d2e2ea17b19636f9a
   languageName: node
   linkType: hard
 
@@ -26102,7 +26102,7 @@ __metadata:
     "@noble/ciphers": "npm:^0.5.2"
     "@noble/hashes": "npm:^1.3.3"
     "@octokit/core": "npm:^3.6.0"
-    "@playwright/test": "npm:^1.39.0"
+    "@playwright/test": "npm:^1.44.1"
     "@popperjs/core": "npm:^2.4.0"
     "@reduxjs/toolkit": "patch:@reduxjs/toolkit@npm%3A1.9.7#~/.yarn/patches/@reduxjs-toolkit-npm-1.9.7-b14925495c.patch"
     "@segment/loosely-validate-event": "npm:^2.0.0"
@@ -26279,7 +26279,6 @@ __metadata:
     node-fetch: "npm:^2.6.1"
     nyc: "npm:^15.1.0"
     pify: "npm:^5.0.0"
-    playwright: "npm:^1.39.0"
     polyfill-crypto.getrandomvalues: "npm:^1.0.0"
     postcss: "npm:^8.4.32"
     postcss-rtlcss: "npm:^4.0.9"
@@ -29276,15 +29275,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.39.0":
-  version: 1.39.0
-  resolution: "playwright-core@npm:1.39.0"
-  bin:
-    playwright-core: cli.js
-  checksum: 10/e4e01ddea024c7564bbfacdba5f545b004a4017b466af08ae90e5184da4f5bc61e74c96e37cc5e30b7d4f97341c0883cfb2038c8cfbfab65316d714f65b82d83
-  languageName: node
-  linkType: hard
-
 "playwright-core@npm:1.44.0":
   version: 1.44.0
   resolution: "playwright-core@npm:1.44.0"
@@ -29303,18 +29293,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright@npm:1.39.0":
-  version: 1.39.0
-  resolution: "playwright@npm:1.39.0"
+"playwright@npm:1.44.1":
+  version: 1.44.1
+  resolution: "playwright@npm:1.44.1"
   dependencies:
     fsevents: "npm:2.3.2"
-    playwright-core: "npm:1.39.0"
+    playwright-core: "npm:1.44.1"
   dependenciesMeta:
     fsevents:
       optional: true
   bin:
     playwright: cli.js
-  checksum: 10/6f6b2f4381fccfbc560c4cd25e164f5093fec4e2046990587282e18618151d723b299b56c16741ce08e44a759c22e38c3e705b716d31238320e08e6ffcfa7319
+  checksum: 10/3207178a78f1c971dddf99c9a08052e462c882092e0d47e3dd8287ced40897a49e387e545a61d31e5d68f7e443d7818660aa12ce43ab662d01d95bcfcfeca2ca
   languageName: node
   linkType: hard
 
@@ -29330,21 +29320,6 @@ __metadata:
   bin:
     playwright: cli.js
   checksum: 10/a7d8d6c0dee6262f97ab7fe52ec80ddeff7ad21178a9b90eefae56779fb573e8a3987f27619de6e98d8b9b78e9bb66b94f3caf9fbd51c0f1964dcd744dcb3cae
-  languageName: node
-  linkType: hard
-
-"playwright@npm:^1.39.0":
-  version: 1.44.1
-  resolution: "playwright@npm:1.44.1"
-  dependencies:
-    fsevents: "npm:2.3.2"
-    playwright-core: "npm:1.44.1"
-  dependenciesMeta:
-    fsevents:
-      optional: true
-  bin:
-    playwright: cli.js
-  checksum: 10/3207178a78f1c971dddf99c9a08052e462c882092e0d47e3dd8287ced40897a49e387e545a61d31e5d68f7e443d7818660aa12ce43ab662d01d95bcfcfeca2ca
   languageName: node
   linkType: hard
 

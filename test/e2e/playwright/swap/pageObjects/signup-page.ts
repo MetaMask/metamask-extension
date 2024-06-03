@@ -1,7 +1,7 @@
 import { type Locator, type Page } from '@playwright/test';
 
 const SEED_PHRASE =
-  'buzz pill embody elite name festival crystal pigeon grief memory allow blue';
+  'ancient cloth onion decline gloom air scare addict action exhaust neck auto';
 const ACCOUNT_PASSWORD = '123123123';
 
 export class SignUpPage {
@@ -35,7 +35,9 @@ export class SignUpPage {
 
   readonly nextBtn: Locator;
 
-  readonly popoverCloseBtn: Locator;
+  readonly closeBtn: Locator;
+
+  readonly enableButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -57,7 +59,8 @@ export class SignUpPage {
     this.doneBtn = page.getByTestId('pin-extension-done');
     this.gotItBtn = page.getByTestId('onboarding-complete-done');
     this.nextBtn = page.getByTestId('pin-extension-next');
-    this.popoverCloseBtn = page.getByTestId('popover-close');
+    this.agreeBtn = page.locator('button:has-text("I agree")');
+    this.enableButton = page.locator('button:has-text("Enable")');
   }
 
   async importWallet() {
@@ -79,6 +82,6 @@ export class SignUpPage {
     await this.gotItBtn.click();
     await this.nextBtn.click();
     await this.doneBtn.click();
-    await this.popoverCloseBtn.click();
+    await this.enableButton.click()
   }
 }
