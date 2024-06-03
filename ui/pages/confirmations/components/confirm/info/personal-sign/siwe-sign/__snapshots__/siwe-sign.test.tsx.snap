@@ -230,6 +230,7 @@ exports[`SIWESignInfo renders correctly for personal sign request 1`] = `
         Issued
       </p>
     </div>
+    **
     <div
       class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
     >
@@ -237,7 +238,7 @@ exports[`SIWESignInfo renders correctly for personal sign request 1`] = `
         class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
         style="white-space: pre-wrap;"
       >
-        September 30, 2021 at 21:55
+        30 September 2021, 16:25
       </p>
     </div>
   </div>

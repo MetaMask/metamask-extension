@@ -15,15 +15,18 @@ import { fa } from '../../../../../../../../.storybook/locales';
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
-  const options = {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  };
-  return date.toLocaleString('en-US', options as Intl.DateTimeFormatOptions);
+  const months = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+
+  const day = String(date.getUTCDate()).padStart(2, '0');
+  const month = months[date.getUTCMonth()];
+  const year = date.getUTCFullYear();
+  const hours = String(date.getUTCHours()).padStart(2, '0');
+  const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+
+  return `${day} ${month} ${year}, ${hours}:${minutes}`;
 };
 
 const SIWESignInfo: React.FC = () => {
@@ -67,6 +70,7 @@ const SIWESignInfo: React.FC = () => {
         <ConfirmInfoRowText text={siweMessage.nonce} />
       </ConfirmInfoRow>
       <ConfirmInfoRow label={t('siweIssued')}>
+        **
         <ConfirmInfoRowText text={formatDate(siweMessage.issuedAt)} />
       </ConfirmInfoRow>
     </>
