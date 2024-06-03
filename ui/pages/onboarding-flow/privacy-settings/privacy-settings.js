@@ -258,32 +258,36 @@ export default function PrivacySettings() {
             incomingTransactionsPreferences={incomingTransactionsPreferences}
           />
 
-          <Setting
-            dataTestId="profile-sync-toggle"
-            value={isProfileSyncingEnabled}
-            setValue={handleUseProfileSync}
-            title={t('profileSync')}
-            description={t('profileSyncDescription', [
-              <a
-                href="https://consensys.io/privacy-policy/"
-                key="link"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {t('profileSyncPrivacyLink')}
-              </a>,
-            ])}
-          />
-          {profileSyncingError && (
-            <Box paddingBottom={4}>
-              <Text
-                as="p"
-                color={TextColor.errorDefault}
-                variant={TextVariant.bodySm}
-              >
-                {t('notificationsSettingsBoxError')}
-              </Text>
-            </Box>
+          {externalServicesOnboardingToggleState && (
+            <>
+              <Setting
+                dataTestId="profile-sync-toggle"
+                value={isProfileSyncingEnabled}
+                setValue={handleUseProfileSync}
+                title={t('profileSync')}
+                description={t('profileSyncDescription', [
+                  <a
+                    href="https://consensys.io/privacy-policy/"
+                    key="link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {t('profileSyncPrivacyLink')}
+                  </a>,
+                ])}
+              />
+              {profileSyncingError && (
+                <Box paddingBottom={4}>
+                  <Text
+                    as="p"
+                    color={TextColor.errorDefault}
+                    variant={TextVariant.bodySm}
+                  >
+                    {t('notificationsSettingsBoxError')}
+                  </Text>
+                </Box>
+              )}
+            </>
           )}
 
           <Setting
