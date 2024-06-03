@@ -16,9 +16,8 @@ import mmiSetAccountAndNetwork from './institutional/mmi-set-account-and-network
 import mmiOpenAddHardwareWallet from './institutional/mmi-open-add-hardware-wallet';
 ///: END:ONLY_INCLUDE_IF
 
-const handlers = [
+export const handlers = [
   addEthereumChain,
-  ethAccounts,
   getProviderState,
   logWeb3ShimUsage,
   requestAccounts,
@@ -35,4 +34,4 @@ const handlers = [
   ///: END:ONLY_INCLUDE_IF
 ];
 
-export default handlers;
+export const legacyHandlers = [ethAccounts];
