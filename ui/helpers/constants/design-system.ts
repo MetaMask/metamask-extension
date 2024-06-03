@@ -31,7 +31,6 @@ export enum Color {
   warningDefault = 'warning-default',
   warningMuted = 'warning-muted',
   warningInverse = 'warning-inverse',
-  warningDisabled = 'warning-disabled',
   successDefault = 'success-default',
   successAlternative = 'success-alternative',
   successMuted = 'success-muted',
