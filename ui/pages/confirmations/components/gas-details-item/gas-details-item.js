@@ -106,8 +106,10 @@ const GasDetailsItem = ({
           {t('estimatedFee')}
           <Tooltip
             wrapperClassName="gas-details-item__dangerTooltip"
-            interactive position="top"
-            html={t('networkIsBusy')}>
+            interactive
+            position="top"
+            html={t('networkIsBusy')}
+          >
             <Icon
               data-testid="network-busy-tooltip"
               name={IconName.Danger}
