@@ -1843,7 +1843,7 @@ export default class MetamaskController extends EventEmitter {
         'AccountsController:setAccountName',
         'AccountsController:listAccounts',
         'AccountsController:getSelectedAccount',
-        'AccountsController:setSelectedAccount'
+        'AccountsController:setSelectedAccount',
       ],
     });
 
