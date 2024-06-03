@@ -36,11 +36,6 @@ describe('Swap-Send ETH', function () {
           await swapSendPage.fillRecipientAddressInput(RECIPIENT_ADDRESS);
           await swapSendPage.fillAmountInput('1');
 
-          await swapSendPage.verifyMaxButtonClick(
-            ['ETH', 'ETH'],
-            ['24.995559472', '24.995559472'],
-          );
-
           await swapSendPage.searchAndSelectToken('TST', 'src');
           await swapSendPage.verifyAssetSymbolsAndAmounts(
             ['TST', 'TST'],
@@ -94,5 +89,34 @@ describe('Swap-Send ETH', function () {
         },
       );
     });
+  });
+
+  it('sets max amount', async function () {
+    await withFixtures(
+      getSwapSendFixtures(this.test?.fullTitle()),
+      async ({
+        driver,
+        ganacheServer,
+      }: {
+        // TODO: Replace `any` with type
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        driver: any;
+        ganacheServer: Ganache;
+      }) => {
+        const swapSendPage = new SwapSendPage(driver);
+        await logInWithBalanceValidation(driver, ganacheServer);
+
+        // START SWAP AND SEND FLOW
+        await openActionMenuAndStartSendFlow(driver);
+
+        await swapSendPage.fillRecipientAddressInput(RECIPIENT_ADDRESS);
+        await swapSendPage.fillAmountInput('1');
+
+        await swapSendPage.verifyMaxButtonClick(
+          ['ETH', 'ETH'],
+          ['24.995559472', '24.995559472'],
+        );
+      },
+    );
   });
 });
