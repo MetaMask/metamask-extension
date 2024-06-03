@@ -11,6 +11,7 @@ import {
   ConfirmInfoRowAddress,
   ConfirmInfoRowText,
 } from '../../../../../../../components/app/confirm/info/row';
+import { fa } from '../../../../../../../../.storybook/locales';
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -18,10 +19,9 @@ const formatDate = (dateString: string) => {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-    second: 'numeric',
-    timeZone: 'UTC',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
   };
   return date.toLocaleString('en-US', options as Intl.DateTimeFormatOptions);
 };
