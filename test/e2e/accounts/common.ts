@@ -53,6 +53,7 @@ export async function installSnapSimpleKeyring(
 
   // navigate to test Snaps page and connect
   await driver.openNewPage(TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL);
+
   await driver.clickElement('#connectButton');
 
   await driver.delay(500);
@@ -246,7 +247,7 @@ export async function approveOrRejectRequest(driver: Driver, flowType: string) {
   // get the JSON from the screen
   const requestJSON = await (
     await driver.findElement({
-      text: '"scope": "",',
+      text: '"scope":',
       tag: 'div',
     })
   ).getText();
