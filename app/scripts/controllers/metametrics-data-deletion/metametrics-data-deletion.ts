@@ -28,8 +28,10 @@ export type DataDeleteDate = number;
 export type DataDeleteRegulationId = string;
 
 /**
- * @type DeleteRegulationStatus
  * The status on which to filter the returned regulations.
+ * Mentioned here: https://docs.segmentapis.com/tag/Deletion-and-Suppression#operation/listRegulationsFromSource
+ *
+ * @type DeleteRegulationStatus
  */
 export enum DeleteRegulationStatus {
   FAILED = 'FAILED',
@@ -47,11 +49,13 @@ export enum DeleteRegulationStatus {
  * @property metaMetricsDataDeletionId - Regulation Id retuned while creating a delete regulation.
  * @property metaMetricsDataDeletionDate - Date at which the most recent regulation is created/requested for.
  * @property metaMetricsDataDeletionStatus - Status of the current delete regulation.
+ * @property hasMetaMetricsDataRecorded - optional variable which records whether data was collected after last deletion
  */
 export type MetaMetricsDataDeletionState = {
   metaMetricsDataDeletionId: DataDeleteRegulationId;
   metaMetricsDataDeletionDate: DataDeleteDate;
   metaMetricsDataDeletionStatus?: DeleteRegulationStatus;
+  hasMetaMetricsDataRecorded?: boolean;
 };
 
 const defaultState: MetaMetricsDataDeletionState = {
@@ -73,6 +77,10 @@ const metadata = {
     persist: true,
     anonymous: true,
   },
+  hasMetaMetricsDataRecorded: {
+    persist: true,
+    anonymous: true,
+  },
 };
 
 // Describes the action creating the delete regulation task
@@ -81,18 +89,25 @@ export type CreateMetaMetricsDataDeletionTaskAction = {
   handler: MetaMetricsDataDeletionController['createMetaMetricsDataDeletionTask'];
 };
 
-// Describes the action to check teh existing regulation status
+// Describes the action to check the existing regulation status
 export type UpdateDataDeletionTaskStatusAction = {
   type: `${typeof controllerName}:updateDataDeletionTaskStatus`;
   handler: MetaMetricsDataDeletionController['updateDataDeletionTaskStatus'];
 };
 
+// Describes the action to records whether data was collected after last deletion
+export type SetHasMetaMetricsDataRecordedAction = {
+  type: `${typeof controllerName}:setHasMetaMetricsDataRecorded`;
+  handler: MetaMetricsDataDeletionController['setHasMetaMetricsDataRecorded'];
+};
+
 // Union of all possible actions for the messenger
 export type MetaMetricsDataDeletionControllerMessengerActions =
   | CreateMetaMetricsDataDeletionTaskAction
-  | UpdateDataDeletionTaskStatusAction;
+  | UpdateDataDeletionTaskStatusAction
+  | SetHasMetaMetricsDataRecordedAction;
 
-// Type for the messenger of AccountOrderController
+// Type for the messenger of MetaMetricsDataDeletionController
 export type MetaMetricsDataDeletionControllerMessenger =
   RestrictedControllerMessenger<
     typeof controllerName,
@@ -146,16 +161,6 @@ export class MetaMetricsDataDeletionController extends BaseController<
     this.#dataDeletionService = dataDeletionService;
   }
 
-  _formatDeletionDate() {
-    const currentDate = new Date();
-    const day = currentDate.getUTCDate();
-    const month = currentDate.getUTCMonth() + 1;
-    const year = currentDate.getUTCFullYear();
-
-    // format the date in the format DD/MM/YYYY
-    return `${day}/${month}/${year}`;
-  }
-
   /**
    * Creating the delete regulation using source regulation
    *
@@ -179,7 +184,7 @@ export class MetaMetricsDataDeletionController extends BaseController<
   }
 
   /**
-   * To check eth status of the current delete regulation.
+   * To check the status of the current delete regulation.
    */
   async updateDataDeletionTaskStatus(): Promise<void> {
     const deleteRegulationId = this.state.metaMetricsDataDeletionId;
@@ -197,6 +202,18 @@ export class MetaMetricsDataDeletionController extends BaseController<
       state.metaMetricsDataDeletionStatus =
         regulation.overallStatus as DeleteRegulationStatus;
 
+      return state;
+    });
+  }
+
+  /**
+   * To records whether data was collected after last deletion
+   *
+   * @param record - boolean value to determine data is being recorded.
+   */
+  setHasMetaMetricsDataRecorded(record: boolean): void {
+    this.update((state) => {
+      state.hasMetaMetricsDataRecorded = record;
       return state;
     });
   }
