@@ -841,7 +841,7 @@ export default class Home extends PureComponent {
       !newNetworkAddedConfigurationId;
 
     const showSmartTransactionsOptInModal =
-      canSeeModals && isSmartTransactionsOptInModalAvailable;
+      false && canSeeModals && isSmartTransactionsOptInModalAvailable;
 
     const showWhatsNew =
       canSeeModals &&
