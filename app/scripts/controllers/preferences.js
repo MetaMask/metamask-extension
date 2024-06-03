@@ -96,6 +96,7 @@ export default class PreferencesController {
         petnamesEnabled: true,
         redesignedConfirmationsEnabled: true,
         featureNotificationsEnabled: false,
+        showTokenAutodetectModal: null,
       },
       // ENS decentralized website resolution
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,

@@ -26,7 +26,7 @@ export default class SendContent extends Component {
     warning: PropTypes.string,
     error: PropTypes.string,
     gasIsExcessive: PropTypes.bool.isRequired,
-    isEthGasPrice: PropTypes.bool,
+    isEthGasPriceFetched: PropTypes.bool,
     noGasPrice: PropTypes.bool,
     networkOrAccountNotSupports1559: PropTypes.bool,
     asset: PropTypes.object,
@@ -42,7 +42,7 @@ export default class SendContent extends Component {
       warning,
       error,
       gasIsExcessive,
-      isEthGasPrice,
+      isEthGasPriceFetched,
       noGasPrice,
       networkOrAccountNotSupports1559,
       asset,
@@ -70,7 +70,7 @@ export default class SendContent extends Component {
       <PageContainerContent>
         <div className="send-v2__form">
           {assetError ? this.renderError(assetError) : null}
-          {isEthGasPrice
+          {isEthGasPriceFetched
             ? this.renderWarning(ETH_GAS_PRICE_FETCH_WARNING_KEY)
             : null}
           {error ? this.renderError(error) : null}
