@@ -12,7 +12,7 @@
 const PPID = Number(process.env.PPID);
 if (isNaN(PPID) || PPID !== process.ppid) {
   throw new Error(
-    `${__filename} must be run with a \`PPID\` environment variable0. See ${__dirname}/launch.ts for an example.`,
+    `${__filename} must be run with a \`PPID\` environment variable. See ${__dirname}/launch.ts for an example.`,
   );
 }
 
