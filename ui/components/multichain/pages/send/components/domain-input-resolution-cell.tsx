@@ -112,7 +112,7 @@ export const DomainInputResolutionCell = ({
         className="multichain-send-page__recipient__item"
         onClick={() => onClick()}
       >
-        <Tooltip title={t('suggestedBy', [resolvingSnap])}>
+        <Tooltip title={t('suggestedBySnap', [resolvingSnap])}>
           <BadgeWrapper
             badge={
               <AvatarIcon

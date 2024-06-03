@@ -5217,7 +5217,8 @@
     "message": "已提交"
   },
   "suggestedBy": {
-    "message": "建议方："
+    "message": "建议方：",
+    "description": "$1 is the snap name"
   },
   "suggestedTokenSymbol": {
     "message": "建议的股票代码："

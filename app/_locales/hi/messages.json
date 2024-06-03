@@ -5217,7 +5217,8 @@
     "message": "सबमिट किया गया"
   },
   "suggestedBy": {
-    "message": "के द्वारा सुझाव दिया गया"
+    "message": "के द्वारा सुझाव दिया गया",
+    "description": "$1 is the snap name"
   },
   "suggestedTokenSymbol": {
     "message": "सुझाया गया टिकर सिंबल:"

@@ -5220,7 +5220,8 @@
     "message": "Gönderildi"
   },
   "suggestedBy": {
-    "message": "Öneren"
+    "message": "Öneren",
+    "description": "$1 is the snap name"
   },
   "suggestedTokenSymbol": {
     "message": "Önerilen ticker sembolü:"

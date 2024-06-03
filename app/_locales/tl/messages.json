@@ -5217,7 +5217,8 @@
     "message": "Naisumite"
   },
   "suggestedBy": {
-    "message": "Iminumungkahi ng"
+    "message": "Iminumungkahi ng",
+    "description": "$1 is the snap name"
   },
   "suggestedTokenSymbol": {
     "message": "Iminumungkahing ticket symbol:"
