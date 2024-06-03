@@ -19,7 +19,7 @@ const createStore = ({
         ...mockSendState.metamask.marketData,
         '0x5': {
           ...mockSendState.metamask.marketData['0x5'],
-          '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e': { value: 2 },
+          '0x0bc529c00c6401aef6d220be8c6ea1667f6ad93e': { price: 2 },
         },
       },
     },

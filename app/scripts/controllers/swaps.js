@@ -838,7 +838,7 @@ export default class SwapsController {
           Object.keys(tokenConversionRates).find((tokenAddress) =>
             isEqualCaseInsensitive(tokenAddress, destinationToken),
           )
-        ]?.value;
+        ]?.price;
       const conversionRateForSorting = tokenConversionRate || 1;
 
       const ethValueOfTokens = decimalAdjustedDestinationAmount.times(

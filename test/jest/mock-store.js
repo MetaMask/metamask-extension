@@ -233,12 +233,12 @@ export const createSwapsMockStore = () => {
       marketData: {
         '0x1': {
           '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': {
-            value: 2,
+            price: 2,
             contractPercentChange1d: 0.004,
             priceChange1d: 0.00004,
           },
           '0x1111111111111111111111111111111111111111': {
-            value: 0.1,
+            price: 0.1,
             contractPercentChange1d: 0.01,
             priceChange1d: 0.001,
           },

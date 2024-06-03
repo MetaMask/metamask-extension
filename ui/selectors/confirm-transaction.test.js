@@ -45,7 +45,7 @@ describe('Confirm Transaction Selector', () => {
       metamask: {
         marketData: {
           '0x5': {
-            '0xTokenAddress': { value: '10' },
+            '0xTokenAddress': { price: '10' },
           },
         },
         providerConfig: {

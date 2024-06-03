@@ -34,7 +34,7 @@ describe('Token Cell', () => {
     metamask: {
       marketData: {
         '0x1': {
-          '0xAnotherToken': { value: 0.015 },
+          '0xAnotherToken': { price: 0.015 },
         },
       },
       currentCurrency: 'usd',

@@ -83,8 +83,8 @@ const MOCK_FETCH_METADATA = {
 const MOCK_TOKEN_RATES_STORE = () => ({
   marketData: {
     '0x1': {
-      '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': { value: 2 },
-      '0x1111111111111111111111111111111111111111': { value: 0.1 },
+      '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': { price: 2 },
+      '0x1111111111111111111111111111111111111111': { price: 0.1 },
     },
   },
 });

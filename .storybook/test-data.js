@@ -473,21 +473,21 @@ const state = {
     marketData: {
       '0xaa36a7': {
         '0xaD6D458402F60fD3Bd25163575031ACDce07538D': {
-          value: 0,
+          price: 0,
           contractPercentChange1d: 0.004,
           priceChange1d: 0.00004,
         },
       },
       '0x1': {
         '0xaD6D458402F60fD3Bd25163575031ACDce07538D': {
-          value: 0,
+          price: 0,
           contractPercentChange1d: 0.004,
           priceChange1d: 0.00004,
         },
       },
       '0x5': {
         '0xaD6D458402F60fD3Bd25163575031ACDce07538D': {
-          value: 0,
+          price: 0,
           contractPercentChange1d: 0.004,
           priceChange1d: 0.00004,
         },

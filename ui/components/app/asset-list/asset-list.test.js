@@ -87,14 +87,14 @@ const render = (balance = ETH_BALANCE, chainId = CHAIN_IDS.MAINNET) => {
       },
       marketData: {
         [CHAIN_IDS.MAINNET]: {
-          [USDC_CONTRACT]: { value: 0.00062566 },
-          [LINK_CONTRACT]: { value: 0.00423239 },
-          [WBTC_CONTRACT]: { value: 16.66575 },
+          [USDC_CONTRACT]: { price: 0.00062566 },
+          [LINK_CONTRACT]: { price: 0.00423239 },
+          [WBTC_CONTRACT]: { price: 16.66575 },
         },
         '0x0': {
-          [USDC_CONTRACT]: { value: 0.00062566 },
-          [LINK_CONTRACT]: { value: 0.00423239 },
-          [WBTC_CONTRACT]: { value: 16.66575 },
+          [USDC_CONTRACT]: { price: 0.00062566 },
+          [LINK_CONTRACT]: { price: 0.00423239 },
+          [WBTC_CONTRACT]: { price: 16.66575 },
         },
       },
     },

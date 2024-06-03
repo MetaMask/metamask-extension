@@ -153,7 +153,7 @@ const contractExchangeRatesSelector = (state) => {
 
   return Object.entries(contractMarketData).reduce(
     (acc, [address, marketData]) => {
-      acc[address] = marketData?.value ?? null;
+      acc[address] = marketData?.price ?? null;
       return acc;
     },
     {},
