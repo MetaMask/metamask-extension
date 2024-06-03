@@ -127,7 +127,7 @@ async function createDepositTransaction(driver) {
   await driver.clickElement(`#depositButton`);
 }
 
-async function confirmDepositTransaction(driver, customNonce) {
+async function confirmDepositTransaction(driver) {
   await driver.delay(2000);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
