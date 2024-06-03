@@ -12,7 +12,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
     return;
   }
 
-  it(`Opens a contract interaction type 0 transaction with nonce enabled`, async function () {
+  it(`Sends a contract interaction type 0 transaction without custom nonce editing`, async function () {
     await withFixtures(
       {
         dapp: true,
@@ -20,7 +20,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({
             preferences: { redesignedConfirmationsEnabled: true },
-            useNonceField: true,
           })
           .build(),
         ganacheOptions: defaultGanacheOptions,
@@ -38,9 +37,69 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
       },
     );
   });
+
+  it(`Sends a contract interaction type 0 transaction with custom nonce editing`, async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .withPreferencesController({
+            preferences: { redesignedConfirmationsEnabled: true },
+          })
+          .build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+        await openDapp(driver);
+
+        await toggleOnCustomNonce(driver);
+
+        await createContractDeploymentTransaction(driver);
+        await confirmContractDeploymentTransaction(driver);
+
+        await createDepositTransaction(driver);
+        await confirmDepositTransactionWithCustomNonce(driver, '3');
+      },
+    );
+  });
 });
 
+async function toggleOnCustomNonce(driver) {
+  // switch to metamask page and open the three dots menu
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+
+  // Open settings menu button
+  const accountOptionsMenuSelector =
+    '[data-testid="account-options-menu-button"]';
+  await driver.waitForSelector(accountOptionsMenuSelector);
+  await driver.clickElement(accountOptionsMenuSelector);
+
+  // Click settings from dropdown menu
+  const globalMenuSettingsSelector = '[data-testid="global-menu-settings"]';
+  await driver.waitForSelector(globalMenuSettingsSelector);
+  await driver.clickElement(globalMenuSettingsSelector);
+
+  // Click Advanced tab
+  const advancedTabRawLocator = {
+    text: 'Advanced',
+    tag: 'div',
+  };
+  await driver.clickElement(advancedTabRawLocator);
+
+  // Toggle on custom toggle setting (off by default)
+  await driver.clickElement('.custom-nonce-toggle');
+
+  // Close settings
+  await driver.clickElement(
+    '.settings-page__header__title-container__close-button',
+  );
+}
+
 async function createContractDeploymentTransaction(driver) {
+  // console.log('createContractDeploymentTransaction');
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await driver.clickElement(`#deployButton`);
 }
@@ -68,7 +127,7 @@ async function createDepositTransaction(driver) {
   await driver.clickElement(`#depositButton`);
 }
 
-async function confirmDepositTransaction(driver) {
+async function confirmDepositTransaction(driver, customNonce) {
   await driver.delay(2000);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
@@ -83,4 +142,31 @@ async function confirmDepositTransaction(driver) {
     css: 'p',
     text: 'Nonce',
   });
+
+  await driver.clickElement(`[data-testid="confirm-footer-button"]`);
+}
+
+async function confirmDepositTransactionWithCustomNonce(driver, customNonce) {
+  await driver.delay(2000);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+  await driver.waitForSelector({
+    css: 'h2',
+    text: 'Transaction request',
+  });
+
+  await driver.clickElement(`[data-testid="header-advanced-details-button"]`);
+
+  await driver.waitForSelector({
+    css: 'p',
+    text: 'Nonce',
+  });
+
+  await driver.clickElement('.edit-nonce-btn');
+  await driver.fill('[data-testid="custom-nonce-input"]', customNonce);
+  await driver.clickElement({
+    text: 'Save',
+    tag: 'button',
+  });
+  await driver.clickElement(`[data-testid="confirm-footer-button"]`);
 }

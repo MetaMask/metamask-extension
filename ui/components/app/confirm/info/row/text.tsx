@@ -12,11 +12,13 @@ import { Box, ButtonIcon, IconName, Text } from '../../../../component-library';
 export type ConfirmInfoRowTextProps = {
   text: string;
   onEditClick?: () => void;
+  editIconClassName?: string;
 };
 
 export const ConfirmInfoRowText: React.FC<ConfirmInfoRowTextProps> = ({
   text,
   onEditClick,
+  editIconClassName,
 }) => {
   const t = useContext(I18nContext);
 
@@ -34,6 +36,7 @@ export const ConfirmInfoRowText: React.FC<ConfirmInfoRowTextProps> = ({
       </Text>
       {isEditable ? (
         <ButtonIcon
+          className={editIconClassName ? editIconClassName : null}
           color={IconColor.primaryDefault}
           ariaLabel={t('edit')}
           marginLeft={4}
