@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { SubjectType } from '@metamask/permission-controller';
 import React from 'react';
+import { useSelector } from 'react-redux';
 import {
   AvatarBase,
   AvatarBaseSize,
@@ -18,9 +19,13 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { getAvatarFallbackLetter } from '../../../../helpers/utils/util';
+import {
+  getAvatarFallbackLetter,
+  getSnapName,
+} from '../../../../helpers/utils/util';
 import PermissionCell from '../../permission-cell';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getSnapsMetadata } from '../../../../selectors';
 
 export default function SnapPermissionCell({
   snapId,
@@ -32,10 +37,16 @@ export default function SnapPermissionCell({
   approved,
 }) {
   const t = useI18nContext();
+
   let { label, description, leftIcon } = permission;
+
+  const snapsMetadata = useSelector(getSnapsMetadata);
 
   if (permission.connection) {
     if (connectionSubjectMetadata?.subjectType === SubjectType.Snap) {
+      const snapName = getSnapName(snapsMetadata)(
+        connectionSubjectMetadata.origin,
+      );
       label = t('snapConnectTo', [
         <Text
           key="connectToMain"
@@ -43,7 +54,7 @@ export default function SnapPermissionCell({
           variant={TextVariant.inherit}
           color={TextColor.inherit}
         >
-          {connectionSubjectMetadata.name}
+          {snapName}
         </Text>,
       ]);
       description = t('snapConnectionPermissionDescription', [
@@ -56,12 +67,12 @@ export default function SnapPermissionCell({
           {permission.subjectName}
         </Text>,
         <Text
-          key={`permissionSubjectDescription_${connectionSubjectMetadata.name}`}
+          key={`permissionSubjectDescription_${snapName}`}
           fontWeight={FontWeight.Medium}
           variant={TextVariant.inherit}
           color={TextColor.inherit}
         >
-          {connectionSubjectMetadata.name}
+          {snapName}
         </Text>,
       ]);
     }
