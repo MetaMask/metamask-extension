@@ -56,10 +56,6 @@ export async function installSnapSimpleKeyring(
 
   await driver.clickElement('#connectButton');
 
-  if (process.env.ENABLE_MV3) {
-    console.log('Delay before connect button');
-    await driver.delay(1500);
-  }
   await driver.delay(500);
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -90,11 +86,6 @@ export async function installSnapSimpleKeyring(
   });
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.SnapSimpleKeyringDapp);
-
-  if (process.env.ENABLE_MV3) {
-    console.log('Delay checking connected');
-    await driver.delay(1500);
-  }
 
   await driver.waitForSelector({
     text: 'Connected',
