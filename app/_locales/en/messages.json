@@ -2436,6 +2436,9 @@
     "message": "Learn how to $1",
     "description": "$1 is link to cancel or speed up transactions"
   },
+  "learnHowToKeepWordsSafe": {
+    "message": "Learn how to keep this set of words safe so you can always access your funds."
+  },
   "learnMore": {
     "message": "learn more"
   },
@@ -4014,7 +4017,7 @@
     "message": "Rejected"
   },
   "rememberSRPIfYouLooseAccess": {
-    "message": "Remember, if you lose your Secret Recovery Phrase, you lose access to your wallet. Learn how to keep this set of words safe so you can always access your funds."
+    "message": "Remember, if you lose your Secret Recovery Phrase, you lose access to your wallet. $1"
   },
   "reminderSet": {
     "message": "Reminder set!"

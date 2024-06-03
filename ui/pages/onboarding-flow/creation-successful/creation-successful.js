@@ -43,6 +43,8 @@ export default function CreationSuccessful() {
   const seedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
   const learnMoreLink =
     'https://support.metamask.io/hc/en-us/articles/360015489591-Basic-Safety-and-Security-Tips-for-MetaMask';
+  const learnHowToKeepWordsSafe =
+    'https://community.metamask.io/t/what-is-a-secret-recovery-phrase-and-how-to-keep-your-crypto-wallet-secure/3440';
 
   return (
     <Box
@@ -94,7 +96,23 @@ export default function CreationSuccessful() {
         </Text>
         <Text variant={TextVariant.bodyLgMedium} marginBottom={6}>
           {firstTimeFlowType === FirstTimeFlowType.import &&
-            t('rememberSRPIfYouLooseAccess')}
+            t('rememberSRPIfYouLooseAccess', [
+              <ButtonLink
+                key="rememberSRPIfYouLooseAccess"
+                size={ButtonLinkSize.Inherit}
+                textProps={{
+                  variant: TextVariant.bodyMd,
+                  alignItems: AlignItems.flexStart,
+                }}
+                as="a"
+                href={learnHowToKeepWordsSafe}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t('learnHowToKeepWordsSafe')}
+              </ButtonLink>,
+            ])}
+
           {firstTimeFlowType === FirstTimeFlowType.create &&
             seedPhraseBackedUp &&
             t('walletProtectedAndReadyToUse', [
