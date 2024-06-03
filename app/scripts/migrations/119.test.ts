@@ -5,7 +5,7 @@ const mockTimeStamp = 1716972230;
 jest.useFakeTimers().setSystemTime(new Date(mockTimeStamp));
 
 const oldVersion = 118;
-const newVersion = 119;
+const newVersion = version;
 
 describe('migration #119', () => {
   it('updates the version metadata', async () => {
