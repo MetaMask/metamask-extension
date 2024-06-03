@@ -167,7 +167,6 @@ the child and shuts down, leaving the child to run in the background so the cach
 - Make LiveReload, Hot Module Reloading, and/or React Refresh work
   - prerequisite: https://github.com/MetaMask/metamask-extension/issues/22450
 - Make the build tool even faster (switch to RSPack once it hits 1.0.0?)
-- Make it work with E2E tests
 - enable `yarn webpack completion`. It doesn't work with multiple-word commands (`yarn webpack ...`) and is currently disabled.
 
 ### Ideas
