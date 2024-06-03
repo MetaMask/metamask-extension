@@ -2574,4 +2574,25 @@ describe('Actions', () => {
       expect(updateDataDeletionTaskStatusStub.callCount).toStrictEqual(1);
     });
   });
+  describe('#setHasMetaMetricsDataRecorded', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls setHasMetaMetricsDataRecorded in background', async () => {
+      const store = mockStore();
+
+      const setHasMetaMetricsDataRecordedStub = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
+      background.getApi.returns({
+        setHasMetaMetricsDataRecorded: setHasMetaMetricsDataRecordedStub,
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.setHasMetaMetricsDataRecorded());
+      expect(setHasMetaMetricsDataRecordedStub.callCount).toStrictEqual(1);
+    });
+  });
 });
