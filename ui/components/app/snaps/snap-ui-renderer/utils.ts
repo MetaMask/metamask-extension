@@ -88,9 +88,11 @@ function generateKey(
 export const mapToTemplate = (params: MapToTemplateParams): UIComponent => {
   const { type, key } = params.element;
   const elementKey = key ?? generateKey(params.map, params.element);
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const mapped = COMPONENT_MAPPING[type](params as any);
+  const mapped = COMPONENT_MAPPING[
+    type as Exclude<JSXElement['type'], 'Option'>
+    // TODO: Replace `any` with type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ](params as any);
   return { ...mapped, key: elementKey } as UIComponent;
 };
 

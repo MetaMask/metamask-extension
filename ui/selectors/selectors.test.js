@@ -13,6 +13,7 @@ import {
 import { SURVEY_DATE, SURVEY_GMT } from '../helpers/constants/survey';
 import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
 import { createMockInternalAccount } from '../../test/jest/mocks';
+import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import * as selectors from './selectors';
 
 jest.mock('../../app/scripts/lib/util', () => ({
@@ -87,7 +88,7 @@ describe('Selectors', () => {
           },
         },
         options: {},
-        methods: [...Object.values(EthMethod)],
+        methods: ETH_EOA_METHODS,
         type: EthAccountType.Eoa,
       };
       expect(

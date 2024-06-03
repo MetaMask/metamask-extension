@@ -138,8 +138,10 @@ export default function PrivacySettings() {
     setUseTransactionSimulations(isTransactionSimulationsEnabled);
     dispatch(setPetnamesEnabled(turnOnPetnames));
 
-    if (!isProfileSyncingEnabled && participateInMetaMetrics) {
-      dispatch(performSignIn());
+    if (externalServicesOnboardingToggleState) {
+      if (!isProfileSyncingEnabled && participateInMetaMetrics) {
+        dispatch(performSignIn());
+      }
     }
 
     if (ipfsURL && !ipfsError) {
@@ -236,7 +238,16 @@ export default function PrivacySettings() {
               }
             }}
             title={t('basicConfigurationLabel')}
-            description={t('basicConfigurationDescription')}
+            description={t('basicConfigurationDescription', [
+              <a
+                href="https://consensys.io/privacy-policy"
+                key="link"
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                {t('privacyMsg')}
+              </a>,
+            ])}
           />
 
           <IncomingTransactionToggle
@@ -437,6 +448,7 @@ export default function PrivacySettings() {
             value={turnOnCurrencyRateCheck}
             setValue={setTurnOnCurrencyRateCheck}
             title={t('currencyRateCheckToggle')}
+            dataTestId="currency-rate-check-toggle"
             description={t('currencyRateCheckToggleDescription', [
               <a
                 key="coingecko_link"
