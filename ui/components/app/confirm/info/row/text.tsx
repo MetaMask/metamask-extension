@@ -11,16 +11,16 @@ import { Box, ButtonIcon, IconName, Text } from '../../../../component-library';
 
 export type ConfirmInfoRowTextProps = {
   text: string;
-  onEditCallback?: () => void;
+  onEditClick?: () => void;
 };
 
-export const ConfirmInfoRowText = ({
+export const ConfirmInfoRowText: React.FC<ConfirmInfoRowTextProps> = ({
   text,
-  onEditCallback,
-}: ConfirmInfoRowTextProps) => {
+  onEditClick,
+}) => {
   const t = useContext(I18nContext);
 
-  const isEditable = Boolean(onEditCallback);
+  const isEditable = Boolean(onEditClick);
 
   return (
     <Box
@@ -35,10 +35,10 @@ export const ConfirmInfoRowText = ({
       {isEditable ? (
         <ButtonIcon
           color={IconColor.primaryDefault}
-          ariaLabel={t('edit')} // Note required aria label prop for accessibility for screen readers
+          ariaLabel={t('edit')}
           marginLeft={4}
           iconName={IconName.Edit}
-          onClick={onEditCallback}
+          onClick={onEditClick}
         />
       ) : null}
     </Box>

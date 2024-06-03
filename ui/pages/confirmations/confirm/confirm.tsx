@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { AlertActionHandlerProvider } from '../../../components/app/alert-system/contexts/alertActionHandler';
 import { Page } from '../../../components/multichain/pages/page';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -22,7 +22,7 @@ const Confirm = () => {
   syncConfirmPath();
   setConfirmationAlerts();
   const processAction = useConfirmationAlertActions();
-  const [showAdvancedDetails, setShowAdvancedDetails] = React.useState(false);
+  const [showAdvancedDetails, setShowAdvancedDetails] = useState(false);
 
   return (
     <AlertActionHandlerProvider onProcessAction={processAction}>

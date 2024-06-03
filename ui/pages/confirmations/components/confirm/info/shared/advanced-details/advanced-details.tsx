@@ -34,6 +34,16 @@ import {
 } from '../../../../../../../store/actions';
 import { useKnownMethodDataInTransaction } from '../../hooks/known-method-data-in-transaction';
 
+const getMethodDataString = (rawMethodData: {
+  name: string;
+  params: { type: string }[];
+}): string => {
+  const paramsStr = rawMethodData.params.map((param) => param.type).join(',');
+  const result = `FUNCTION TYPE: ${rawMethodData.name} (${paramsStr})`;
+
+  return result;
+};
+
 const NonceDetails = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -70,7 +80,7 @@ const NonceDetails = () => {
       >
         <ConfirmInfoRowText
           text={`${displayedNonce}`}
-          onEditCallback={() => openEditNonceModal()}
+          onEditClick={() => openEditNonceModal()}
         />
       </ConfirmInfoRow>
     </Box>
@@ -98,16 +108,6 @@ const DataDetails = () => {
   if (!knownMethodData?.name) {
     return null;
   }
-
-  const getMethodDataString = (rawMethodData: {
-    name: string;
-    params: { type: string }[];
-  }): string => {
-    const paramsStr = rawMethodData.params.map((param) => param.type).join(',');
-    const result = `FUNCTION TYPE: ${rawMethodData.name} (${paramsStr})`;
-
-    return result;
-  };
 
   const methodDataString = getMethodDataString(knownMethodData);
 

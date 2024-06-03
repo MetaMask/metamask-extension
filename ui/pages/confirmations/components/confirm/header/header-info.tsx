@@ -44,6 +44,8 @@ import {
 } from '../../../../../selectors';
 import { useBalance } from '../../../hooks/useBalance';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
+import { REDESIGN_TRANSACTION_TYPES } from '../../../utils';
+import { TransactionMeta } from '@metamask/transaction-controller';
 
 const HeaderInfo = ({
   showAdvancedDetails,
@@ -76,6 +78,10 @@ const HeaderInfo = ({
     });
   }
 
+  const isShowAdvancedDetailsToggle: boolean =
+    !!currentConfirmation?.type &&
+    REDESIGN_TRANSACTION_TYPES.includes(currentConfirmation?.type);
+
   return (
     <>
       <Box
@@ -98,25 +104,27 @@ const HeaderInfo = ({
             }}
           />
         </Tooltip>
-        <Box
-          backgroundColor={
-            showAdvancedDetails
-              ? BackgroundColor.infoMuted
-              : BackgroundColor.transparent
-          }
-          borderRadius={BorderRadius.MD}
-        >
-          <ButtonIcon
-            ariaLabel={'Advanced tx details'}
-            color={IconColor.iconDefault}
-            iconName={IconName.Customize}
-            data-testid="header-advanced-details-button"
-            size={ButtonIconSize.Md}
-            onClick={() => {
-              setShowAdvancedDetails(!showAdvancedDetails);
-            }}
-          />
-        </Box>
+        {isShowAdvancedDetailsToggle && (
+          <Box
+            backgroundColor={
+              showAdvancedDetails
+                ? BackgroundColor.infoMuted
+                : BackgroundColor.transparent
+            }
+            borderRadius={BorderRadius.MD}
+          >
+            <ButtonIcon
+              ariaLabel={'Advanced tx details'}
+              color={IconColor.iconDefault}
+              iconName={IconName.Customize}
+              data-testid="header-advanced-details-button"
+              size={ButtonIconSize.Md}
+              onClick={() => {
+                setShowAdvancedDetails(!showAdvancedDetails);
+              }}
+            />
+          </Box>
+        )}
       </Box>
       <Modal
         isOpen={showAccountInfo}
