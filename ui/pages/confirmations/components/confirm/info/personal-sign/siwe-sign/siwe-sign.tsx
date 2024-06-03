@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { toHex } from '@metamask/controller-utils';
-import { DateTime } from 'luxon';
 
 import { NETWORK_TO_NAME_MAP } from '../../../../../../../../shared/constants/network';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
@@ -13,22 +12,18 @@ import {
   ConfirmInfoRowText,
 } from '../../../../../../../components/app/confirm/info/row';
 
-const parseDate = (dateString: string) => {
-  const b = dateString.split(/\D+/);
-  const offsetMult = dateString.indexOf('+') !== -1 ? -1 : 1;
-  const hrOffset = offsetMult * (+b[7] || 0);
-  const minOffset = offsetMult * (+b[8] || 0);
-  return new Date(
-    Date.UTC(
-      +b[0],
-      +b[1] - 1,
-      +b[2],
-      +b[3] + hrOffset,
-      +b[4] + minOffset,
-      +b[5],
-      +b[6] || 0,
-    ),
-  );
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  const options = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+    timeZone: 'UTC',
+  };
+  return date.toLocaleString('en-US', options as Intl.DateTimeFormatOptions);
 };
 
 const SIWESignInfo: React.FC = () => {
@@ -72,11 +67,7 @@ const SIWESignInfo: React.FC = () => {
         <ConfirmInfoRowText text={siweMessage.nonce} />
       </ConfirmInfoRow>
       <ConfirmInfoRow label={t('siweIssued')}>
-        <ConfirmInfoRowText
-          text={DateTime.fromJSDate(parseDate(siweMessage.issuedAt)).toFormat(
-            'dd LLL yyyy, HH:mm',
-          )}
-        />
+        <ConfirmInfoRowText text={formatDate(siweMessage.issuedAt)} />
       </ConfirmInfoRow>
     </>
   );
