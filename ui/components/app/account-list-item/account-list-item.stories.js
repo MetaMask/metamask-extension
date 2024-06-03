@@ -1,5 +1,6 @@
 import React from 'react';
-import { EthMethod, EthAccountType } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import README from './README.mdx';
 import AccountListItem from './account-list-item';
 
@@ -31,9 +32,7 @@ const account = {
     },
   },
   options: {},
-  methods: [...Object.values(EthMethod)].filter(
-    (method) => !method.includes('UserOperation'),
-  ),
+  methods: ETH_EOA_METHODS,
   type: EthAccountType.Eoa,
   address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
   balance: '0x2d3142f5000',

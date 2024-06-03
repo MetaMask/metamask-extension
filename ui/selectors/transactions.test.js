@@ -1,7 +1,11 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { CHAIN_IDS } from '../../shared/constants/network';
+import {
+  ETH_4337_METHODS,
+  ETH_EOA_METHODS,
+} from '../../shared/constants/eth-methods';
 import {
   unapprovedMessagesSelector,
   transactionsSelector,
@@ -48,9 +52,7 @@ describe('Transaction Selectors', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)].filter(
-                  (method) => !method.includes('UserOperation'),
-                ),
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
             },
@@ -148,9 +150,7 @@ describe('Transaction Selectors', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)].filter(
-                  (method) => !method.includes('UserOperation'),
-                ),
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
             },
@@ -297,9 +297,7 @@ describe('Transaction Selectors', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)].filter(
-                  (method) => !method.includes('UserOperation'),
-                ),
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
             },
@@ -402,9 +400,7 @@ describe('Transaction Selectors', () => {
                 },
               },
               options: {},
-              methods: [...Object.values(EthMethod)].filter(
-                (method) => !method.includes('UserOperation'),
-              ),
+              methods: ETH_4337_METHODS,
               type: EthAccountType.Eoa,
             },
           },

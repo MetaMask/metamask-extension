@@ -1,6 +1,7 @@
 import React from 'react';
 import { action } from '@storybook/addon-actions';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
+import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import ConnectedAccounts from './connected-accounts.component';
 
 export default {
@@ -66,9 +67,7 @@ const accounts = [
       },
     },
     options: {},
-    methods: [...Object.values(EthMethod)].filter(
-      (method) => !method.includes('UserOperation'),
-    ),
+    methods: ETH_EOA_METHODS,
     type: EthAccountType.Eoa,
   },
   {
@@ -81,9 +80,7 @@ const accounts = [
       },
     },
     options: {},
-    methods: [...Object.values(EthMethod)].filter(
-      (method) => !method.includes('UserOperation'),
-    ),
+    methods: ETH_EOA_METHODS,
     type: EthAccountType.Eoa,
   },
 ];

@@ -1,9 +1,10 @@
 import React from 'react';
 import configureStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import AccountListItem from './account-list-item';
 
 describe('AccountListItem Component', () => {
@@ -22,9 +23,7 @@ describe('AccountListItem Component', () => {
           },
         },
         options: {},
-        methods: [...Object.values(EthMethod)].filter(
-          (method) => !method.includes('UserOperation'),
-        ),
+        methods: ETH_EOA_METHODS,
         type: EthAccountType.Eoa,
       },
       className: 'mockClassName',
@@ -79,9 +78,7 @@ describe('AccountListItem Component', () => {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)].filter(
-            (method) => !method.includes('UserOperation'),
-          ),
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
         },
       };

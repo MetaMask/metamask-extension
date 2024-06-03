@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import { BigNumber } from '@ethersproject/bignumber';
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { waitFor } from '@testing-library/react';
 import {
@@ -34,6 +34,7 @@ import {
   getInitialSendStateWithExistingTxState,
   INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
 } from '../../../test/jest/mocks';
+import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import sendReducer, {
   initialState,
   initializeSendState,
@@ -1501,9 +1502,7 @@ describe('Send Slice', () => {
                     },
                   },
                   options: {},
-                  methods: [...Object.values(EthMethod)].filter(
-                    (method) => !method.includes('UserOperation'),
-                  ),
+                  methods: ETH_EOA_METHODS,
                   type: EthAccountType.Eoa,
                 },
               },
@@ -1690,9 +1689,7 @@ describe('Send Slice', () => {
                     },
                   },
                   options: {},
-                  methods: [...Object.values(EthMethod)].filter(
-                    (method) => !method.includes('UserOperation'),
-                  ),
+                  methods: ETH_EOA_METHODS,
                   type: EthAccountType.Eoa,
                 },
               },
@@ -1765,9 +1762,7 @@ describe('Send Slice', () => {
                     },
                   },
                   options: {},
-                  methods: [...Object.values(EthMethod)].filter(
-                    (method) => !method.includes('UserOperation'),
-                  ),
+                  methods: ETH_EOA_METHODS,
                   type: EthAccountType.Eoa,
                 },
               },
@@ -1834,9 +1829,7 @@ describe('Send Slice', () => {
                     },
                   },
                   options: {},
-                  methods: [...Object.values(EthMethod)].filter(
-                    (method) => !method.includes('UserOperation'),
-                  ),
+                  methods: ETH_EOA_METHODS,
                   type: EthAccountType.Eoa,
                 },
               },
@@ -1914,9 +1907,7 @@ describe('Send Slice', () => {
                     },
                   },
                   options: {},
-                  methods: [...Object.values(EthMethod)].filter(
-                    (method) => !method.includes('UserOperation'),
-                  ),
+                  methods: ETH_EOA_METHODS,
                   type: EthAccountType.Eoa,
                 },
               },
@@ -1988,9 +1979,7 @@ describe('Send Slice', () => {
                     },
                   },
                   options: {},
-                  methods: [...Object.values(EthMethod)].filter(
-                    (method) => !method.includes('UserOperation'),
-                  ),
+                  methods: ETH_EOA_METHODS,
                   type: EthAccountType.Eoa,
                 },
               },
@@ -2054,9 +2043,7 @@ describe('Send Slice', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)].filter(
-                  (method) => !method.includes('UserOperation'),
-                ),
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
             },
@@ -2350,9 +2337,7 @@ describe('Send Slice', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)].filter(
-                  (method) => !method.includes('UserOperation'),
-                ),
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
             },
@@ -2670,9 +2655,7 @@ describe('Send Slice', () => {
                     },
                   },
                   options: {},
-                  methods: [...Object.values(EthMethod)].filter(
-                    (method) => !method.includes('UserOperation'),
-                  ),
+                  methods: ETH_EOA_METHODS,
                   type: EthAccountType.Eoa,
                 },
               },
@@ -2906,9 +2889,7 @@ describe('Send Slice', () => {
                     },
                   },
                   options: {},
-                  methods: [...Object.values(EthMethod)].filter(
-                    (method) => !method.includes('UserOperation'),
-                  ),
+                  methods: ETH_EOA_METHODS,
                   type: EthAccountType.Eoa,
                 },
               },
@@ -3210,9 +3191,7 @@ describe('Send Slice', () => {
                     },
                   },
                   options: {},
-                  methods: [...Object.values(EthMethod)].filter(
-                    (method) => !method.includes('UserOperation'),
-                  ),
+                  methods: ETH_EOA_METHODS,
                   type: EthAccountType.Eoa,
                 },
               },
@@ -3292,9 +3271,7 @@ describe('Send Slice', () => {
                 },
               },
               options: {},
-              methods: [...Object.values(EthMethod)].filter(
-                (method) => !method.includes('UserOperation'),
-              ),
+              methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
               balance: '0x0',
             },
@@ -3393,9 +3370,7 @@ describe('Send Slice', () => {
                     },
                   },
                   options: {},
-                  methods: [...Object.values(EthMethod)].filter(
-                    (method) => !method.includes('UserOperation'),
-                  ),
+                  methods: ETH_EOA_METHODS,
                   type: EthAccountType.Eoa,
                 },
               },
@@ -3477,9 +3452,7 @@ describe('Send Slice', () => {
                 },
               },
               options: {},
-              methods: [...Object.values(EthMethod)].filter(
-                (method) => !method.includes('UserOperation'),
-              ),
+              methods: ETH_EOA_METHODS,
               type: EthAccountType.Eoa,
               balance: '0x0',
             },
@@ -3589,9 +3562,7 @@ describe('Send Slice', () => {
                 address: mockAddress1,
                 id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
                 options: {},
-                methods: [...Object.values(EthMethod)].filter(
-                  (method) => !method.includes('UserOperation'),
-                ),
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
                 metadata: {
                   name: 'Test Account',
@@ -3711,9 +3682,7 @@ describe('Send Slice', () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)].filter(
-              (method) => !method.includes('UserOperation'),
-            ),
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
             balance: '0x0',
           },
@@ -3819,9 +3788,7 @@ describe('Send Slice', () => {
                 address: mockAddress1,
                 id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
                 options: {},
-                methods: [...Object.values(EthMethod)].filter(
-                  (method) => !method.includes('UserOperation'),
-                ),
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
                 metadata: {
                   name: 'Test Account',

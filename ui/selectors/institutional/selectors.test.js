@@ -1,7 +1,8 @@
 import { toChecksumAddress } from 'ethereumjs-util';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { toHex } from '@metamask/controller-utils';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
+import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import {
   getConfiguredCustodians,
   getCustodianIconForAddress,
@@ -38,14 +39,8 @@ function buildState(overrides = {}) {
               },
             },
             options: {},
-            methods: [
-              EthMethod.PersonalSign,
-              EthMethod.Sign,
-              EthMethod.SignTransaction,
-              EthMethod.SignTypedDataV1,
-              EthMethod.SignTypedDataV3,
-              EthMethod.SignTypedDataV4,
-            ],
+            methods: ETH_EOA_METHODS,
+
             type: EthAccountType.Eoa,
             code: '0x',
             balance: '0x47c9d71831c76efe',
@@ -196,9 +191,7 @@ describe('Institutional selectors', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)].filter(
-                  (method) => !method.includes('UserOperation'),
-                ),
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
                 code: '0x',
                 balance: '0x47c9d71831c76efe',
@@ -239,9 +232,7 @@ describe('Institutional selectors', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)].filter(
-                  (method) => !method.includes('UserOperation'),
-                ),
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
                 code: '0x',
                 balance: '0x47c9d71831c76efe',
@@ -293,9 +284,7 @@ describe('Institutional selectors', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)].filter(
-                  (method) => !method.includes('UserOperation'),
-                ),
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
             },
@@ -325,9 +314,7 @@ describe('Institutional selectors', () => {
                   name: 'Custody Account A',
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)].filter(
-                  (method) => !method.includes('UserOperation'),
-                ),
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
                 code: '0x',
                 balance: '0x47c9d71831c76efe',
@@ -363,9 +350,7 @@ describe('Institutional selectors', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)].filter(
-                  (method) => !method.includes('UserOperation'),
-                ),
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
                 code: '0x',
                 balance: '0x47c9d71831c76efe',
@@ -406,9 +391,7 @@ describe('Institutional selectors', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)].filter(
-                  (method) => !method.includes('UserOperation'),
-                ),
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
                 code: '0x',
                 balance: '0x47c9d71831c76efe',
@@ -453,9 +436,7 @@ describe('Institutional selectors', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)].filter(
-                  (method) => !method.includes('UserOperation'),
-                ),
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
                 code: '0x',
                 balance: '0x47c9d71831c76efe',
@@ -502,9 +483,7 @@ describe('Institutional selectors', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)].filter(
-                  (method) => !method.includes('UserOperation'),
-                ),
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
                 code: '0x',
                 balance: '0x47c9d71831c76efe',
@@ -551,9 +530,7 @@ describe('Institutional selectors', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)].filter(
-                  (method) => !method.includes('UserOperation'),
-                ),
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
                 code: '0x',
                 balance: '0x47c9d71831c76efe',
