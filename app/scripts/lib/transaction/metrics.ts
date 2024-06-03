@@ -7,6 +7,7 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { SmartTransaction } from '@metamask/smart-transactions-controller/dist/types';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import {
   determineTransactionAssetType,
@@ -38,6 +39,7 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { getBlockaidMetricsProps } from '../../../../ui/helpers/utils/metrics';
 ///: END:ONLY_INCLUDE_IF
+import { getSmartTransactionMetricsProperties } from '../../../../shared/modules/metametrics';
 import {
   getSnapAndHardwareInfoForMetrics,
   type SnapAndHardwareMessenger,
@@ -74,24 +76,33 @@ export type TransactionMetricsRequest = {
   getEIP1559GasFeeEstimates(options?: FetchGasFeeEstimateOptions): Promise<any>;
   getParticipateInMetrics: () => boolean;
   getSelectedAddress: () => string;
-  getTokenStandardAndDetails: () => {
+  getTokenStandardAndDetails: () => Promise<{
     decimals?: string;
     balance?: string;
     symbol?: string;
     standard?: TokenStandard;
-  };
+  }>;
   getTransaction: (transactionId: string) => TransactionMeta;
   provider: Provider;
   snapAndHardwareMessenger: SnapAndHardwareMessenger;
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   trackEvent: (payload: any) => void;
+  getIsSmartTransaction: () => boolean;
+  getSmartTransactionByMinedTxHash: (
+    txhash: string | undefined,
+  ) => SmartTransaction;
 };
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
 
 export type TransactionEventPayload = {
   transactionMeta: TransactionMeta;
+  actionId?: string;
+  error?: string;
+};
+
+export type TransactionMetaEventPayload = TransactionMeta & {
   actionId?: string;
   error?: string;
 };
@@ -191,16 +202,16 @@ export const handleTransactionFailed = async (
  */
 export const handleTransactionConfirmed = async (
   transactionMetricsRequest: TransactionMetricsRequest,
-  transactionEventPayload: TransactionEventPayload,
+  transactionEventPayload: TransactionMetaEventPayload,
 ) => {
-  if (!transactionEventPayload.transactionMeta) {
+  if (Object.keys(transactionEventPayload).length === 0) {
     return;
   }
 
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const extraParams = {} as Record<string, any>;
-  const { transactionMeta } = transactionEventPayload;
+  const transactionMeta = { ...transactionEventPayload };
   const { txReceipt } = transactionMeta;
 
   extraParams.gas_used = txReceipt?.gasUsed;
@@ -217,7 +228,10 @@ export const handleTransactionConfirmed = async (
   await createUpdateFinalizeTransactionEventFragment({
     eventName: TransactionMetaMetricsEvent.finalized,
     extraParams,
-    transactionEventPayload,
+    transactionEventPayload: {
+      actionId: transactionMeta.actionId,
+      transactionMeta,
+    },
     transactionMetricsRequest,
   });
 };
@@ -869,8 +883,8 @@ async function buildEventFragmentProperties({
       TransactionType.tokenMethodSetApprovalForAll,
       TransactionType.tokenMethodTransfer,
       TransactionType.tokenMethodTransferFrom,
-      TransactionType.smart,
       TransactionType.swap,
+      TransactionType.swapAndSend,
       TransactionType.swapApproval,
     ].includes(type);
 
@@ -968,6 +982,12 @@ async function buildEventFragmentProperties({
     uiCustomizations.push(MetaMetricsEventUiCustomization.GasEstimationFailed);
   }
 
+  const smartTransactionMetricsProperties =
+    getSmartTransactionMetricsProperties(
+      transactionMetricsRequest,
+      transactionMeta,
+    );
+
   /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
   let properties = {
     chain_id: chainId,
@@ -994,6 +1014,7 @@ async function buildEventFragmentProperties({
     ///: END:ONLY_INCLUDE_IF
     // ui_customizations must come after ...blockaidProperties
     ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
+    ...smartTransactionMetricsProperties,
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as Record<string, any>;

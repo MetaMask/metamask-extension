@@ -64,6 +64,9 @@ export const SENTRY_BACKGROUND_STATE = {
   AnnouncementController: {
     announcements: false,
   },
+  AuthenticationController: {
+    isSignedIn: false,
+  },
   NetworkOrderController: {
     orderedNetworkList: [],
   },
@@ -76,6 +79,7 @@ export const SENTRY_BACKGROUND_STATE = {
     currentMigrationVersion: true,
     previousAppVersion: true,
     previousMigrationVersion: true,
+    showTokenAutodetectModalOnUpgrade: false,
   },
   ApprovalController: {
     approvalFlows: false,
@@ -86,6 +90,7 @@ export const SENTRY_BACKGROUND_STATE = {
     browserEnvironment: true,
     connectedStatusPopoverHasBeenShown: true,
     currentPopupId: false,
+    currentExtensionPopupId: false,
     defaultHomeActiveTabName: true,
     fullScreenGasPollTokens: true,
     hadAdvancedGasFeesSetPriorToMigration92_3: true,
@@ -99,7 +104,6 @@ export const SENTRY_BACKGROUND_STATE = {
     recoveryPhraseReminderLastShown: true,
     showBetaHeader: true,
     showPermissionsTour: true,
-    showProductTour: true,
     showNetworkBanner: true,
     showAccountBanner: true,
     switchedNetworkDetails: false,
@@ -136,6 +140,7 @@ export const SENTRY_BACKGROUND_STATE = {
     gasEstimateType: true,
     gasFeeEstimates: true,
     gasFeeEstimatesByChainId: true,
+    nonRPCGasFeeApisDisabled: false,
   },
   KeyringController: {
     isUnlocked: true,
@@ -143,6 +148,18 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   LoggingController: {
     logs: false,
+  },
+  MetamaskNotificationsController: {
+    subscriptionAccountsSeen: false,
+    isMetamaskNotificationsFeatureSeen: false,
+    isMetamaskNotificationsEnabled: false,
+    isFeatureAnnouncementsEnabled: false,
+    metamaskNotificationsList: false,
+    metamaskNotificationsReadList: false,
+    isCheckingAccountsPresence: false,
+    isFetchingMetamaskNotifications: false,
+    isUpdatingMetamaskNotifications: false,
+    isUpdatingMetamaskNotificationsAccount: false,
   },
   MetaMetricsController: {
     eventsBeforeMetricsOptIn: false,
@@ -221,9 +238,12 @@ export const SENTRY_BACKGROUND_STATE = {
       showExtensionInFullSizeView: true,
       showFiatInTestnets: true,
       showTestNetworks: true,
+      smartTransactionsOptInStatus: true,
       useNativeCurrencyAsPrimaryCurrency: true,
       petnamesEnabled: true,
+      showTokenAutodetectModal: false,
     },
+    useExternalServices: false,
     selectedAddress: false,
     snapRegistryList: false,
     theme: true,
@@ -239,7 +259,11 @@ export const SENTRY_BACKGROUND_STATE = {
     useTokenDetection: true,
     useRequestQueue: true,
     useTransactionSimulations: true,
+    enableMV3TimestampSave: true,
     hasDismissedOpenSeaToBlockaidBanner: true,
+  },
+  PushPlatformNotificationsController: {
+    fcmToken: false,
   },
   SelectedNetworkController: { domains: false },
   SignatureController: {
@@ -346,6 +370,10 @@ export const SENTRY_BACKGROUND_STATE = {
   UserOperationController: {
     userOperations: false,
   },
+  UserStorageController: {
+    isProfileSyncingEnabled: true,
+    isProfileSyncingUpdateLoading: false,
+  },
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   ...MMI_SENTRY_BACKGROUND_STATE,
   ///: END:ONLY_INCLUDE_IF
@@ -385,6 +413,8 @@ export const SENTRY_UI_STATE = {
     ///: END:ONLY_INCLUDE_IF
     switchedNetworkDetails: false,
     switchedNetworkNeverShowMessage: false,
+    newPrivacyPolicyToastClickedOrClosed: false,
+    newPrivacyPolicyToastShownDate: false,
   },
   unconnectedAccount: true,
 };
@@ -479,10 +509,18 @@ export default function setupSentry({ release, getState }) {
         `Missing SENTRY_DSN environment variable in production environment`,
       );
     }
+
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    sentryTarget = process.env.SENTRY_MMI_DSN;
+    ///: END:ONLY_INCLUDE_IF
+
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+    sentryTarget = process.env.SENTRY_DSN;
+    ///: END:ONLY_INCLUDE_IF
+
     console.log(
       `Setting up Sentry Remote Error Reporting for '${environment}': SENTRY_DSN`,
     );
-    sentryTarget = process.env.SENTRY_DSN;
   } else {
     console.log(
       `Setting up Sentry Remote Error Reporting for '${environment}': SENTRY_DSN_DEV`,
@@ -497,6 +535,10 @@ export default function setupSentry({ release, getState }) {
    * @returns `true` if MetaMetrics is enabled, `false` otherwise.
    */
   async function getMetaMetricsEnabled() {
+    if (METAMASK_BUILD_TYPE === 'mmi') {
+      return true;
+    }
+
     const appState = getState();
     if (appState.state || appState.persistedState) {
       return getMetaMetricsEnabledFromAppState(appState);
@@ -510,6 +552,22 @@ export default function setupSentry({ release, getState }) {
       console.error(error);
       return false;
     }
+  }
+
+  /**
+   * Returns whether Sentry should be enabled or not. If the build type is mmi
+   * it will always be enabled, if it's main it will first check for MetaMetrics
+   * value before returning true or false
+   *
+   * @returns `true` if Sentry should be enabled, depends on the build type and
+   * whether MetaMetrics is on or off for all build types except mmi
+   */
+  async function getSentryEnabled() {
+    // For MMI we want Sentry always logging, doesn't depend on MetaMetrics being on or off
+    if (METAMASK_BUILD_TYPE === 'mmi') {
+      return true;
+    }
+    return getMetaMetricsEnabled();
   }
 
   Sentry.init({
@@ -581,7 +639,7 @@ export default function setupSentry({ release, getState }) {
   const startSession = async () => {
     const hub = Sentry.getCurrentHub?.();
     const options = hub.getClient?.().getOptions?.() ?? {};
-    if (hub && (await getMetaMetricsEnabled()) === true) {
+    if (hub && (await getSentryEnabled()) === true) {
       options.autoSessionTracking = true;
       hub.startSession();
     }
@@ -595,7 +653,7 @@ export default function setupSentry({ release, getState }) {
   const endSession = async () => {
     const hub = Sentry.getCurrentHub?.();
     const options = hub.getClient?.().getOptions?.() ?? {};
-    if (hub && (await getMetaMetricsEnabled()) === false) {
+    if (hub && (await getSentryEnabled()) === false) {
       options.autoSessionTracking = false;
       hub.endSession();
     }
@@ -611,14 +669,11 @@ export default function setupSentry({ release, getState }) {
     const options = hub.getClient?.().getOptions?.() ?? {
       autoSessionTracking: false,
     };
-    const isMetaMetricsEnabled = await getMetaMetricsEnabled();
-    if (
-      isMetaMetricsEnabled === true &&
-      options.autoSessionTracking === false
-    ) {
+    const isSentryEnabled = await getSentryEnabled();
+    if (isSentryEnabled === true && options.autoSessionTracking === false) {
       await startSession();
     } else if (
-      isMetaMetricsEnabled === false &&
+      isSentryEnabled === false &&
       options.autoSessionTracking === true
     ) {
       await endSession();

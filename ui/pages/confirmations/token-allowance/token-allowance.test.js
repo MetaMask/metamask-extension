@@ -4,9 +4,10 @@ import { act, fireEvent } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { KeyringType } from '../../../../shared/constants/keyring';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import TokenAllowance from './token-allowance';
 
 const testTokenAddress = '0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F';
@@ -22,17 +23,6 @@ const state = {
       },
     },
     gasEstimateType: 'none',
-    selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-    identities: {
-      '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        name: 'Account 1',
-      },
-      '0xc42edfcc21ed14dda456aa0756c153f7985d8813': {
-        address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-        name: 'Account 2',
-      },
-    },
     internalAccounts: {
       accounts: {
         'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -45,7 +35,7 @@ const state = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
         },
         '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
@@ -58,7 +48,7 @@ const state = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
         },
       },
@@ -138,15 +128,11 @@ const mockShowModal = jest.fn();
 const mockedState = jest.mocked(state);
 
 jest.mock('../../../store/actions', () => ({
-  disconnectGasFeeEstimatePoller: jest.fn(),
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
   gasFeeStartPollingByNetworkClientId: jest
     .fn()
     .mockResolvedValue('pollingToken'),
   gasFeeStopPollingByPollingToken: jest.fn(),
-  getGasFeeEstimatesAndStartPolling: jest
-    .fn()
-    .mockImplementation(() => Promise.resolve()),
   addPollingTokenToAppState: jest.fn(),
   removePollingTokenFromAppState: jest.fn(),
   getNetworkConfigurationByNetworkClientId: jest.fn().mockImplementation(() =>
@@ -194,7 +180,6 @@ describe('TokenAllowancePage', () => {
     ethTransactionTotal: '0.0012',
     fiatTransactionTotal: '1.6',
     hexTransactionTotal: '0x44364c5bb0000',
-    isMultiLayerFeeNetwork: false,
     supportsEIP1559: true,
     userAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     tokenAddress: '0x55797717b9947b31306f4aac7ad1365c6e3923bd',
@@ -538,7 +523,6 @@ describe('TokenAllowancePage', () => {
       ...state,
       metamask: {
         ...state.metamask,
-        selectedAddress: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
       },
     };
     const newStore = configureMockStore([thunk])(newState);

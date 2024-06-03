@@ -3,14 +3,17 @@ import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import * as actions from '../../../store/actions';
+import { getSelectedInternalAccountFromMockState } from '../../../../test/jest/mocks';
 import { AccountDetailsMenuItem } from '.';
+
+const mockInternalAccount = getSelectedInternalAccountFromMockState(mockState);
 
 const render = () => {
   const store = configureStore(mockState);
   return renderWithProvider(
     <AccountDetailsMenuItem
       metricsLocation="Global Menu"
-      address={mockState.metamask.selectedAddress}
+      address={mockInternalAccount.address}
       closeMenu={jest.fn()}
     />,
     store,
@@ -32,7 +35,7 @@ describe('AccountDetailsMenuItem', () => {
     fireEvent.click(getByTestId('account-list-menu-details'));
 
     expect(actions.setAccountDetailsAddress).toHaveBeenCalledWith(
-      mockState.metamask.selectedAddress,
+      mockInternalAccount.address,
     );
   });
 });

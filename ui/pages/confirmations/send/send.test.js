@@ -3,7 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { useLocation } from 'react-router-dom';
 import { NetworkType } from '@metamask/controller-utils';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { SEND_STAGES, startNewDraftTransaction } from '../../../ducks/send';
 import { domainInitialState } from '../../../ducks/domains';
 import { setBackgroundConnection } from '../../../store/background-connection';
@@ -16,6 +16,7 @@ import { renderWithProvider } from '../../../../test/jest';
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../../test/jest/mocks';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import Send from './send';
 
 const middleware = [thunk];
@@ -47,7 +48,6 @@ jest.mock('react-router-dom', () => {
 
 setBackgroundConnection({
   getGasFeeTimeEstimate: jest.fn(),
-  getGasFeeEstimatesAndStartPolling: jest.fn(),
   promisifiedBackground: jest.fn(),
 });
 
@@ -82,7 +82,6 @@ const baseStore = {
       medium: '1',
       fast: '2',
     },
-    selectedAddress: '0x0',
     internalAccounts: {
       accounts: {
         'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -95,7 +94,7 @@ const baseStore = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
         },
       },
@@ -135,7 +134,6 @@ const baseStore = {
     accounts: {
       '0x0': { balance: '0x0', address: '0x0' },
     },
-    identities: { '0x0': { address: '0x0' } },
     tokenAddress: '0x32e6c34cd57087abbd59b5a4aecc4cb495924356',
     tokenList: {
       '0x32e6c34cd57087abbd59b5a4aecc4cb495924356': {

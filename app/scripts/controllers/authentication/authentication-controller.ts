@@ -4,6 +4,7 @@ import {
   StateMetadata,
 } from '@metamask/base-controller';
 import { HandleSnapRequest } from '@metamask/snaps-controllers';
+import { UserStorageControllerDisableProfileSyncing } from '../user-storage/user-storage-controller';
 import {
   createSnapPublicKeyRequest,
   createSnapSignMessageRequest,
@@ -23,28 +24,28 @@ const controllerName = 'AuthenticationController';
 type SessionProfile = {
   identifierId: string;
   profileId: string;
-  metametricsId: string;
+};
+
+type SessionData = {
+  /** profile - anonymous profile data for the given logged in user */
+  profile: SessionProfile;
+  /** accessToken - used to make requests authorized endpoints */
+  accessToken: string;
+  /** expiresIn - string date to determine if new access token is required  */
+  expiresIn: string;
+};
+
+type MetaMetricsAuth = {
+  getMetaMetricsId: () => string;
 };
 
 export type AuthenticationControllerState = {
   /**
    * Global isSignedIn state.
-   * Can be used to determine if "Profile Syncing" is enabled or not.
+   * Can be used to determine if "Profile Syncing" is enabled.
    */
   isSignedIn: boolean;
-
-  /**
-   * These tokens & session data will expire every 30 mins.
-   *
-   * @property profile - anonymous profile data for the given logged in user
-   * @property accessToken - used to make requests authorized endpoints
-   * @property expiresIn - string date to determine if new access token is required
-   */
-  sessionData?: {
-    profile: SessionProfile;
-    accessToken: string;
-    expiresIn: string;
-  };
+  sessionData?: SessionData;
 };
 const defaultState: AuthenticationControllerState = { isSignedIn: false };
 const metadata: StateMetadata<AuthenticationControllerState> = {
@@ -66,7 +67,11 @@ type CreateActionsObj<T extends keyof AuthenticationController> = {
   };
 };
 type ActionsObj = CreateActionsObj<
-  'performSignIn' | 'performSignOut' | 'getBearerToken' | 'getSessionProfile'
+  | 'performSignIn'
+  | 'performSignOut'
+  | 'getBearerToken'
+  | 'getSessionProfile'
+  | 'isSignedIn'
 >;
 export type Actions = ActionsObj[keyof ActionsObj];
 export type AuthenticationControllerPerformSignIn = ActionsObj['performSignIn'];
@@ -76,9 +81,12 @@ export type AuthenticationControllerGetBearerToken =
   ActionsObj['getBearerToken'];
 export type AuthenticationControllerGetSessionProfile =
   ActionsObj['getSessionProfile'];
+export type AuthenticationControllerIsSignedIn = ActionsObj['isSignedIn'];
 
 // Allowed Actions
-type AllowedActions = HandleSnapRequest;
+export type AllowedActions =
+  | HandleSnapRequest
+  | UserStorageControllerDisableProfileSyncing;
 
 // Messenger
 export type AuthenticationControllerMessenger = RestrictedControllerMessenger<
@@ -98,12 +106,20 @@ export default class AuthenticationController extends BaseController<
   AuthenticationControllerState,
   AuthenticationControllerMessenger
 > {
+  #metametrics: MetaMetricsAuth;
+
   constructor({
     messenger,
     state,
+    metametrics,
   }: {
     messenger: AuthenticationControllerMessenger;
     state?: AuthenticationControllerState;
+    /**
+     * Not using the Messaging System as we
+     * do not want to tie this strictly to extension
+     */
+    metametrics: MetaMetricsAuth;
   }) {
     super({
       messenger,
@@ -111,6 +127,41 @@ export default class AuthenticationController extends BaseController<
       name: controllerName,
       state: { ...defaultState, ...state },
     });
+
+    this.#metametrics = metametrics;
+
+    this.#registerMessageHandlers();
+  }
+
+  /**
+   * Constructor helper for registering this controller's messaging system
+   * actions.
+   */
+  #registerMessageHandlers(): void {
+    this.messagingSystem.registerActionHandler(
+      'AuthenticationController:getBearerToken',
+      this.getBearerToken.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      'AuthenticationController:getSessionProfile',
+      this.getSessionProfile.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      'AuthenticationController:isSignedIn',
+      this.isSignedIn.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      'AuthenticationController:performSignIn',
+      this.performSignIn.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      'AuthenticationController:performSignOut',
+      this.performSignOut.bind(this),
+    );
   }
 
   public async performSignIn(): Promise<string> {
@@ -130,7 +181,7 @@ export default class AuthenticationController extends BaseController<
   public async getBearerToken(): Promise<string> {
     this.#assertLoggedIn();
 
-    if (this.#hasValidAuthTokens(this.state.sessionData)) {
+    if (this.#hasValidSession(this.state.sessionData)) {
       return this.state.sessionData.accessToken;
     }
 
@@ -139,19 +190,24 @@ export default class AuthenticationController extends BaseController<
   }
 
   /**
-   * NOTE this will be changed to use profileId in future task.
+   * Will return a session profile.
+   * Throws if a user is not logged in.
    *
-   * @returns the identifier id
+   * @returns profile for the session.
    */
   public async getSessionProfile(): Promise<SessionProfile> {
     this.#assertLoggedIn();
 
-    if (this.#hasValidAuthTokens(this.state.sessionData)) {
+    if (this.#hasValidSession(this.state.sessionData)) {
       return this.state.sessionData.profile;
     }
 
     const { profile } = await this.#performAuthenticationFlow();
     return profile;
+  }
+
+  public isSignedIn(): boolean {
+    return this.state.isSignedIn;
   }
 
   #assertLoggedIn(): void {
@@ -177,7 +233,11 @@ export default class AuthenticationController extends BaseController<
       // 2. Login
       const rawMessage = createLoginRawMessage(nonce, publicKey);
       const signature = await this.#snapSignMessage(rawMessage);
-      const loginResponse = await login(rawMessage, signature);
+      const loginResponse = await login(
+        rawMessage,
+        signature,
+        this.#metametrics.getMetaMetricsId(),
+      );
       if (!loginResponse?.token) {
         throw new Error(`Unable to login`);
       }
@@ -185,7 +245,6 @@ export default class AuthenticationController extends BaseController<
       const profile: SessionProfile = {
         identifierId: loginResponse.profile.identifier_id,
         profileId: loginResponse.profile.profile_id,
-        metametricsId: loginResponse.profile.metametrics_id,
       };
 
       // 3. Trade for Access Token
@@ -211,6 +270,9 @@ export default class AuthenticationController extends BaseController<
         accessToken,
       };
     } catch (e) {
+      console.error('Failed to authenticate', e);
+      // Disable Profile Syncing
+      this.messagingSystem.call('UserStorageController:disableProfileSyncing');
       const errorMessage =
         e instanceof Error ? e.message : JSON.stringify(e ?? '');
       throw new Error(
@@ -219,16 +281,14 @@ export default class AuthenticationController extends BaseController<
     }
   }
 
-  #hasValidAuthTokens(
-    ephemeralTokens: AuthenticationControllerState['sessionData'],
-  ): ephemeralTokens is NonNullable<
-    AuthenticationControllerState['sessionData']
-  > {
-    if (!ephemeralTokens) {
+  #hasValidSession(
+    sessionData: SessionData | undefined,
+  ): sessionData is SessionData {
+    if (!sessionData) {
       return false;
     }
 
-    const prevDate = Date.parse(ephemeralTokens.expiresIn);
+    const prevDate = Date.parse(sessionData.expiresIn);
     if (isNaN(prevDate)) {
       return false;
     }

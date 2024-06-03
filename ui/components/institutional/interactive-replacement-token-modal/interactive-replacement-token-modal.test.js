@@ -46,7 +46,6 @@ describe('Interactive Replacement Token Modal', function () {
       providerConfig: {
         type: 'test',
       },
-      selectedAddress: '0xAddress',
       isUnlocked: true,
       interactiveReplacementToken: {
         oldRefreshToken: 'abc',

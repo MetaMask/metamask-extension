@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { NonEmptyArray } from '@metamask/utils';
 import {
   AlignItems,
@@ -13,21 +13,19 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import {
-  CONNECT_ROUTE,
-  DEFAULT_ROUTE,
-} from '../../../../helpers/constants/routes';
+import { CONNECT_ROUTE } from '../../../../helpers/constants/routes';
 import { getURLHost } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getConnectedSitesList,
   getInternalAccounts,
-  getOrderedConnectedAccountsForActiveTab,
-  getOriginOfCurrentTab,
+  getOrderedConnectedAccountsForConnectedDapp,
   getPermissionSubjects,
   getPermittedAccountsByOrigin,
+  getPermittedAccountsForSelectedTab,
   getSelectedAccount,
   getSubjectMetadata,
+  getUnconnectedAccounts,
 } from '../../../../selectors';
 import {
   AvatarFavicon,
@@ -45,8 +43,6 @@ import {
   IconSize,
   Text,
 } from '../../../component-library';
-import { Tab } from '../../../ui/tabs';
-import Tabs from '../../../ui/tabs/tabs.component';
 import { mergeAccounts } from '../../account-list-menu/account-list-menu';
 import {
   AccountListItem,
@@ -89,8 +85,10 @@ export const Connections = () => {
     setShowDisconnectedAllAccountsUpdatedToast,
   ] = useState(false);
 
-  const CONNECTED_ACCOUNTS_TAB_KEY = 'connected-accounts';
-  const activeTabOrigin: string = useSelector(getOriginOfCurrentTab);
+  const urlParams: { origin: string } = useParams();
+  const securedOrigin = decodeURIComponent(urlParams.origin);
+
+  const activeTabOrigin: string = securedOrigin;
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const subjectMetadata: { [key: string]: any } = useSelector(
@@ -104,9 +102,11 @@ export const Connections = () => {
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { id } = useSelector((state: any) => state.activeTab);
-
-  const connectedAccounts = useSelector(
-    getOrderedConnectedAccountsForActiveTab,
+  const unconnectedAccounts = useSelector((state) =>
+    getUnconnectedAccounts(state, activeTabOrigin),
+  );
+  const connectedAccounts = useSelector((state) =>
+    getOrderedConnectedAccountsForConnectedDapp(state, activeTabOrigin),
   );
   const selectedAccount = useSelector(getSelectedAccount);
   const internalAccounts = useSelector(getInternalAccounts);
@@ -135,6 +135,10 @@ export const Connections = () => {
     history.push(`${CONNECT_ROUTE}/${requestId}`);
   };
   const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
+
+  const permittedAccounts = useSelector((state) =>
+    getPermittedAccountsForSelectedTab(state, activeTabOrigin),
+  );
 
   const disconnectAllAccounts = () => {
     const subject = (subjects as SubjectsType)[activeTabOrigin];
@@ -196,7 +200,8 @@ export const Connections = () => {
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
             color={IconColor.iconDefault}
-            onClick={() => history.push(DEFAULT_ROUTE)}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            onClick={() => (history as any).goBack()}
             size={ButtonIconSize.Sm}
           />
         }
@@ -227,57 +232,46 @@ export const Connections = () => {
             textAlign={TextAlign.Center}
             ellipsis
           >
-            {getURLHost(activeTabOrigin)}
+            {getURLHost(securedOrigin)}
           </Text>
         </Box>
       </Header>
       <Content padding={0}>
-        {connectedSubjectsMetadata && mergeAccounts.length > 0 ? (
-          <Tabs defaultActiveTabKey="connections">
-            {
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              <Tab
-                tabKey={CONNECTED_ACCOUNTS_TAB_KEY}
-                name={t('connectedaccountsTabKey')}
-                padding={4}
-              >
-                {/* TODO: Replace `any` with type */}
-                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                {mergedAccounts.map((account: AccountType, index: any) => {
-                  const connectedSites: ConnectedSites = {};
-                  const connectedSite = connectedSites[account.address]?.find(
-                    ({ origin }) => origin === activeTabOrigin,
-                  );
-                  const isSelectedAccount =
-                    selectedAccount.address === account.address;
-                  // Match the index of latestSelected Account with the index of all the accounts and set the active status
-                  let mergedAccountsProps;
-                  if (index === latestSelected) {
-                    mergedAccountsProps = { ...account, isAccountActive: true };
-                  } else {
-                    mergedAccountsProps = { ...account };
+        {permittedAccounts.length > 0 && mergeAccounts.length > 0 ? (
+          <Box>
+            {/* TODO: Replace `any` with type */}
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+            {mergedAccounts.map((account: AccountType, index: any) => {
+              const connectedSites: ConnectedSites = {};
+              const connectedSite = connectedSites[account.address]?.find(
+                ({ origin }) => origin === activeTabOrigin,
+              );
+              const isSelectedAccount =
+                selectedAccount.address === account.address;
+              // Match the index of latestSelected Account with the index of all the accounts and set the active status
+              let mergedAccountsProps;
+              if (index === latestSelected) {
+                mergedAccountsProps = { ...account, isAccountActive: true };
+              } else {
+                mergedAccountsProps = { ...account };
+              }
+              return (
+                <AccountListItem
+                  account={mergedAccountsProps}
+                  key={account.address}
+                  accountsCount={mergedAccounts.length}
+                  selected={isSelectedAccount}
+                  connectedAvatar={connectedSite?.iconUrl}
+                  menuType={AccountListItemMenuTypes.Connection}
+                  currentTabOrigin={activeTabOrigin}
+                  isActive={
+                    mergedAccountsProps.isAccountActive ? t('active') : null
                   }
-                  return (
-                    <AccountListItem
-                      identity={mergedAccountsProps}
-                      key={account.address}
-                      accountsCount={mergedAccounts.length}
-                      selected={isSelectedAccount}
-                      connectedAvatar={connectedSite?.iconUrl}
-                      connectedAvatarName={connectedSite?.name}
-                      menuType={AccountListItemMenuTypes.Connection}
-                      currentTabOrigin={activeTabOrigin}
-                      isActive={
-                        mergedAccountsProps.isAccountActive ? t('active') : null
-                      }
-                      onActionClick={setShowAccountDisconnectedToast}
-                    />
-                  );
-                })}
-              </Tab>
-            }
-          </Tabs>
+                  onActionClick={setShowAccountDisconnectedToast}
+                />
+              );
+            })}
+          </Box>
         ) : (
           <NoConnectionContent />
         )}
@@ -285,6 +279,7 @@ export const Connections = () => {
           <ConnectAccountsModal
             onClose={() => setShowConnectAccountsModal(false)}
             onAccountsUpdate={() => setShowConnectedAccountsUpdatedToast(true)}
+            activeTabOrigin={activeTabOrigin}
           />
         ) : null}
         {showDisconnectAllModal ? (
@@ -310,9 +305,9 @@ export const Connections = () => {
                 onClose={() => setShowConnectedAccountsUpdatedToast(false)}
                 startAdornment={
                   <AvatarFavicon
-                    name={connectedSubjectsMetadata.name}
+                    name={connectedSubjectsMetadata?.name}
                     size={AvatarFaviconSize.Sm}
-                    src={connectedSubjectsMetadata.iconUrl}
+                    src={connectedSubjectsMetadata?.iconUrl}
                   />
                 }
               />
@@ -329,9 +324,9 @@ export const Connections = () => {
                 }
                 startAdornment={
                   <AvatarFavicon
-                    name={connectedSiteMetadata.name}
+                    name={connectedSiteMetadata?.name}
                     size={AvatarFaviconSize.Sm}
-                    src={connectedSiteMetadata.iconUrl}
+                    src={connectedSiteMetadata?.iconUrl}
                   />
                 }
               />
@@ -347,15 +342,15 @@ export const Connections = () => {
                 onClose={() => setShowAccountDisconnectedToast('')}
                 startAdornment={
                   <AvatarFavicon
-                    name={connectedSubjectsMetadata.name}
+                    name={connectedSiteMetadata?.name}
                     size={AvatarFaviconSize.Sm}
-                    src={connectedSubjectsMetadata.iconUrl}
+                    src={connectedSiteMetadata?.iconUrl}
                   />
                 }
               />
             </ToastContainer>
           ) : null}
-          {connectedSubjectsMetadata && mergeAccounts.length > 0 ? (
+          {permittedAccounts.length > 0 && mergeAccounts.length > 0 ? (
             <Box
               display={Display.Flex}
               gap={2}
@@ -367,6 +362,7 @@ export const Connections = () => {
                 size={ButtonSize.Lg}
                 block
                 variant={ButtonVariant.Secondary}
+                disabled={unconnectedAccounts.length === 0}
                 startIconName={IconName.Add}
                 onClick={() => setShowConnectAccountsModal(true)}
               >

@@ -10,7 +10,7 @@ import { SignatureController } from '@metamask/signature-controller';
 
 import { NetworkController } from '@metamask/network-controller';
 import { AccountsController } from '@metamask/accounts-controller';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 
 import { CustodyController } from '@metamask-institutional/custody-controller';
 import {
@@ -30,6 +30,7 @@ jest.mock('@metamask-institutional/portfolio-dashboard', () => ({
 }));
 
 import * as PortfolioDashboard from '@metamask-institutional/portfolio-dashboard';
+import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 
 jest.mock('./permissions', () => ({
   getPermissionBackgroundApiMethods: jest.fn().mockImplementation(() => {
@@ -49,7 +50,7 @@ const mockAccount = {
     },
   },
   options: {},
-  methods: [...Object.values(EthMethod)],
+  methods: ETH_EOA_METHODS,
   type: EthAccountType.Eoa,
 };
 const mockAccount2 = {
@@ -62,7 +63,7 @@ const mockAccount2 = {
     },
   },
   options: {},
-  methods: [...Object.values(EthMethod)],
+  methods: ETH_EOA_METHODS,
   type: EthAccountType.Eoa,
 };
 
@@ -201,10 +202,10 @@ describe('MMIController', function () {
       initState: {
         custodyAccountDetails: {
           [mockAccount.address]: {
-            custodyType: 'Custody - Jupiter',
+            custodyType: 'Custody - ECA3',
           },
           [mockAccount2.address]: {
-            custodyType: 'Custody - Jupiter',
+            custodyType: 'Custody - ECA3',
           },
         },
       },
@@ -438,11 +439,15 @@ describe('MMIController', function () {
           getCustodianAccounts: mockCustodialKeyring,
         });
 
-      await mmiController.getCustodianAccounts('token', 'mock url', 'JUPITER');
+      await mmiController.getCustodianAccounts(
+        'token',
+        'neptune-custody',
+        'ECA3',
+      );
 
       expect(selectedAccountSpy).toHaveBeenCalledTimes(0);
 
-      expect(keyringControllerSpy).toHaveBeenCalledWith('Custody - Jupiter');
+      expect(keyringControllerSpy).toHaveBeenCalledWith('Custody - ECA3');
       expect(mockCustodialKeyring).toHaveBeenCalled();
     });
 
@@ -454,14 +459,14 @@ describe('MMIController', function () {
           getCustodianAccounts: mockCustodialKeyring,
         });
 
-      await mmiController.getCustodianAccounts('token', 'mock url');
+      await mmiController.getCustodianAccounts('token', 'neptune-custody');
 
       expect(selectedAccountSpy).toHaveBeenCalledWith(
         'AccountsController:getSelectedAccount',
       );
       expect(selectedAccountSpy).toHaveReturnedWith(mockAccount);
 
-      expect(keyringControllerSpy).toHaveBeenCalledWith('Custody - Jupiter');
+      expect(keyringControllerSpy).toHaveBeenCalledWith('Custody - ECA3');
       expect(mockCustodialKeyring).toHaveBeenCalled();
     });
   });

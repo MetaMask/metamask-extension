@@ -5,5 +5,6 @@ export { SendPageYourAccounts } from './your-accounts';
 export { SendPageRecipientInput } from './recipient-input';
 export { SendPageAddressBook } from './address-book';
 export { SendPageRecipient } from './recipient';
-export { SendPageContent } from './content';
+export { SendPageRecipientContent } from './recipient-content';
 export { SendHexData } from './hex';
+export { QuoteCard } from './quote-card';

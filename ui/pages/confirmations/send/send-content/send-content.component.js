@@ -26,7 +26,7 @@ export default class SendContent extends Component {
     warning: PropTypes.string,
     error: PropTypes.string,
     gasIsExcessive: PropTypes.bool.isRequired,
-    isEthGasPrice: PropTypes.bool,
+    isEthGasPriceFetched: PropTypes.bool,
     noGasPrice: PropTypes.bool,
     networkOrAccountNotSupports1559: PropTypes.bool,
     asset: PropTypes.object,
@@ -34,7 +34,7 @@ export default class SendContent extends Component {
     recipient: PropTypes.object,
     acknowledgeRecipientWarning: PropTypes.func,
     recipientWarningAcknowledged: PropTypes.bool,
-    isMultiLayerFeeNetwork: PropTypes.bool,
+    hasLayer1GasFee: PropTypes.bool,
   };
 
   render() {
@@ -42,14 +42,14 @@ export default class SendContent extends Component {
       warning,
       error,
       gasIsExcessive,
-      isEthGasPrice,
+      isEthGasPriceFetched,
       noGasPrice,
       networkOrAccountNotSupports1559,
       asset,
       assetError,
       recipient,
       recipientWarningAcknowledged,
-      isMultiLayerFeeNetwork,
+      hasLayer1GasFee,
     } = this.props;
 
     let gasError;
@@ -70,7 +70,7 @@ export default class SendContent extends Component {
       <PageContainerContent>
         <div className="send-v2__form">
           {assetError ? this.renderError(assetError) : null}
-          {isEthGasPrice
+          {isEthGasPriceFetched
             ? this.renderWarning(ETH_GAS_PRICE_FETCH_WARNING_KEY)
             : null}
           {error ? this.renderError(error) : null}
@@ -82,7 +82,7 @@ export default class SendContent extends Component {
           <SendAmountRow />
           {networkOrAccountNotSupports1559 ? <SendGasRow /> : null}
           {showHexData ? <SendHexDataRow /> : null}
-          {!isMultiLayerFeeNetwork && <GasDisplay gasError={gasError} />}
+          {!hasLayer1GasFee && <GasDisplay gasError={gasError} />}
         </div>
       </PageContainerContent>
     );

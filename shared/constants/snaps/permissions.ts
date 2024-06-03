@@ -7,8 +7,8 @@ export const EndowmentPermissions = Object.freeze({
   'endowment:webassembly': 'endowment:webassembly',
   'endowment:lifecycle-hooks': 'endowment:lifecycle-hooks',
   'endowment:page-home': 'endowment:page-home',
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   'endowment:signature-insight': 'endowment:signature-insight',
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   'endowment:name-lookup': 'endowment:name-lookup',
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -25,8 +25,6 @@ export const ExcludedSnapPermissions = Object.freeze({
 export const ExcludedSnapEndowments = Object.freeze({
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   'endowment:name-lookup':
-    'This endowment is experimental and therefore not available.',
-  'endowment:signature-insight':
     'This endowment is experimental and therefore not available.',
   ///: END:ONLY_INCLUDE_IF
 });

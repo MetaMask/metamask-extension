@@ -17,19 +17,22 @@ export const useTransactionEventFragment = () => {
     }),
   );
 
+  const fragmentExists = Boolean(fragment);
+  const gasTransactionId = transaction?.id;
+
   const updateTransactionEventFragment = useCallback(
     async (params, _transactionId) => {
-      const transactionId = _transactionId || transaction?.id;
+      const transactionId = _transactionId || gasTransactionId;
 
       if (!transactionId) {
         return;
       }
-      if (!fragment) {
+      if (!fragmentExists) {
         await createTransactionEventFragment(transactionId);
       }
       updateEventFragment(`transaction-added-${transactionId}`, params);
     },
-    [fragment, transaction],
+    [fragmentExists, gasTransactionId],
   );
 
   return {

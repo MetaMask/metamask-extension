@@ -226,7 +226,7 @@ export const BUY_ERC721_REQUEST_2_MOCK: MockRequestResponse = {
           {
             "from": SENDER_ADDRESS_MOCK,
             "to": "0xef9c21e3ba31a74910fc7e7cb3fc814ad842ad6e",
-            "data": `0x70a08231000000000000000000000000${SENDER_ADDRESS_NO_0x_MOCK}`
+            "data": `0x6352211e00000000000000000000000000000000000000000000000000000000000002cf`
           },
           {
             "chainId": "0x1",
@@ -238,7 +238,7 @@ export const BUY_ERC721_REQUEST_2_MOCK: MockRequestResponse = {
           {
             "from": SENDER_ADDRESS_MOCK,
             "to": "0xef9c21e3ba31a74910fc7e7cb3fc814ad842ad6e",
-            "data": `0x70a08231000000000000000000000000${SENDER_ADDRESS_NO_0x_MOCK}`
+            "data": `0x6352211e00000000000000000000000000000000000000000000000000000000000002cf`
           }
         ]
       }
@@ -355,7 +355,7 @@ export const BUY_ERC721_REQUEST_2_MOCK: MockRequestResponse = {
           "baseFeePerGas": 42103363836
         },
         {
-          "return": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "return": `0x00000000000000000000000000000000${SENDER_ADDRESS_NO_0x_MOCK}`,
           "status": "0x1",
           "gasUsed": "0x5f66",
           "gasLimit": "0x60b9",

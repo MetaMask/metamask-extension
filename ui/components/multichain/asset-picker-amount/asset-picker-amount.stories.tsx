@@ -70,7 +70,7 @@ const store = configureStore({
           error: null,
           value: '0xde0b6b3a7640000',
         },
-        asset: {
+        sendAsset: {
           balance: '0x1158e460913d00000',
           details: null,
           error: null,

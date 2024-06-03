@@ -59,7 +59,6 @@ test-results/
 .yarn/*
 !.yarn/patches
 !.yarn/plugins
-!.yarn/releases
 !.yarn/sdks
 !.yarn/versions
 
@@ -70,3 +69,4 @@ test/e2e/mmi/playwright.config.ts
 test/e2e/mmi/specs/**/*-darwin.png
 test/e2e/mmi/dist/
 
+lavamoat/**/policy-debug.json

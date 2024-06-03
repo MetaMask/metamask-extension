@@ -1,0 +1,15 @@
+.snap-ui-button {
+  background: none;
+  text-align: center;
+
+  &:not(&--disabled) {
+    &:hover {
+      cursor: pointer;
+      opacity: 0.75;
+    }
+  }
+
+  &--disabled {
+    cursor: default !important;
+  }
+}

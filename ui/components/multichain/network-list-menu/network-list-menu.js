@@ -14,8 +14,9 @@ import {
   showModal,
   toggleNetworkMenu,
   updateNetworksList,
+  setNetworkClientIdForDomain,
 } from '../../../store/actions';
-import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
+import { TEST_CHAINS } from '../../../../shared/constants/network';
 import {
   getCurrentChainId,
   getCurrentNetwork,
@@ -25,6 +26,8 @@ import {
   getOrderedNetworksList,
   getOnboardedInThisUISession,
   getShowNetworkBanner,
+  getOriginOfCurrentTab,
+  getUseRequestQueue,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -70,6 +73,9 @@ export const NetworkListMenu = ({ onClose }) => {
   const testNetworks = useSelector(getTestNetworks);
   const showTestNetworks = useSelector(getShowTestNetworks);
   const currentChainId = useSelector(getCurrentChainId);
+
+  const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
+  const useRequestQueue = useSelector(getUseRequestQueue);
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -176,8 +182,6 @@ export const NetworkListMenu = ({ onClose }) => {
       const canDeleteNetwork =
         isUnlocked && !isCurrentNetwork && network.removable;
 
-      const isDeprecatedNetwork = network.chainId === CHAIN_IDS.AURORA;
-
       return (
         <NetworkListItem
           name={network.nickname}
@@ -203,7 +207,6 @@ export const NetworkListMenu = ({ onClose }) => {
               },
             });
           }}
-          isDeprecatedNetwork={isDeprecatedNetwork}
           onDeleteClick={
             canDeleteNetwork
               ? () => {
@@ -352,6 +355,17 @@ export const NetworkListMenu = ({ onClose }) => {
                                     } else {
                                       dispatch(setActiveNetwork(network.id));
                                     }
+
+                                    // If presently on a dapp, communicate a change to
+                                    // the dapp via silent switchEthereumChain that the
+                                    // network has changed due to user action
+                                    if (useRequestQueue && selectedTabOrigin) {
+                                      setNetworkClientIdForDomain(
+                                        selectedTabOrigin,
+                                        network.id,
+                                      );
+                                    }
+
                                     trackEvent({
                                       event:
                                         MetaMetricsEventName.NavNetworkSwitched,

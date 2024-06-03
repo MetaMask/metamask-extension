@@ -4,11 +4,11 @@ import {
   SimulationData,
   SimulationTokenStandard,
 } from '@metamask/transaction-controller';
+import { BigNumber } from 'bignumber.js';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { getConversionRate } from '../../../../ducks/metamask/metamask';
-import { getTokenExchangeRates } from '../../../../selectors';
 import { getTokenStandardAndDetails } from '../../../../store/actions';
-import { Numeric } from '../../../../../shared/modules/Numeric';
+import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
 import { useBalanceChanges } from './useBalanceChanges';
 import { FIAT_UNAVAILABLE } from './types';
 
@@ -21,8 +21,12 @@ jest.mock('../../../../ducks/metamask/metamask', () => ({
 }));
 
 jest.mock('../../../../selectors', () => ({
-  getTokenExchangeRates: jest.fn(),
-  getConfirmationExchangeRates: jest.fn().mockReturnValue({}),
+  getCurrentChainId: jest.fn(),
+  getCurrentCurrency: jest.fn(),
+}));
+
+jest.mock('../../../../helpers/utils/util', () => ({
+  fetchTokenExchangeRates: jest.fn(),
 }));
 
 jest.mock('../../../../store/actions', () => ({
@@ -30,17 +34,19 @@ jest.mock('../../../../store/actions', () => ({
 }));
 
 const mockGetConversionRate = getConversionRate as jest.Mock;
-const mockGetTokenExchangeRates = getTokenExchangeRates as unknown as jest.Mock;
 const mockGetTokenStandardAndDetails = getTokenStandardAndDetails as jest.Mock;
+const mockFetchTokenExchangeRates = fetchTokenExchangeRates as jest.Mock;
 
 const ETH_TO_FIAT_RATE = 3;
 
 const ERC20_TOKEN_ADDRESS_1_MOCK: Hex = '0x0erc20_1';
 const ERC20_TOKEN_ADDRESS_2_MOCK: Hex = '0x0erc20_2';
+const ERC20_TOKEN_ADDRESS_3_MOCK: Hex = '0x0erc20_3';
 const ERC20_DECIMALS_1_MOCK = 3;
 const ERC20_DECIMALS_2_MOCK = 4;
-const ERC20_TO_ETH_RATE_1_MOCK = 0.5;
-const ERC20_TO_ETH_RATE_2_MOCK = 2;
+const ERC20_DECIMALS_INVALID_MOCK = 'xyz';
+const ERC20_TO_FIAT_RATE_1_MOCK = 1.5;
+const ERC20_TO_FIAT_RATE_2_MOCK = 6;
 
 const NFT_TOKEN_ADDRESS_MOCK: Hex = '0x0nft';
 
@@ -55,51 +61,90 @@ const dummyBalanceChange = {
   newBalance: '0xIGNORE' as Hex,
 };
 
+const PENDING_PROMISE = () =>
+  new Promise(() => {
+    /* unresolved promise */
+  });
+
 describe('useBalanceChanges', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetTokenStandardAndDetails.mockImplementation((address: Hex) => {
-      const decimalMap: Record<Hex, number> = {
+      const decimalMap: Record<Hex, number | string> = {
         [ERC20_TOKEN_ADDRESS_1_MOCK]: ERC20_DECIMALS_1_MOCK,
         [ERC20_TOKEN_ADDRESS_2_MOCK]: ERC20_DECIMALS_2_MOCK,
+        [ERC20_TOKEN_ADDRESS_3_MOCK]: ERC20_DECIMALS_INVALID_MOCK,
       };
-      return Promise.resolve({
-        decimals: decimalMap[address]?.toString() ?? undefined,
-      });
+      if (decimalMap[address]) {
+        return Promise.resolve({
+          decimals: decimalMap[address]?.toString() ?? undefined,
+        });
+      }
+      return Promise.reject(new Error('Unable to determine token standard'));
     });
     mockGetConversionRate.mockReturnValue(ETH_TO_FIAT_RATE);
-    mockGetTokenExchangeRates.mockReturnValue({
-      [ERC20_TOKEN_ADDRESS_1_MOCK]: ERC20_TO_ETH_RATE_1_MOCK,
-      [ERC20_TOKEN_ADDRESS_2_MOCK]: ERC20_TO_ETH_RATE_2_MOCK,
+    mockFetchTokenExchangeRates.mockResolvedValue({
+      [ERC20_TOKEN_ADDRESS_1_MOCK]: ERC20_TO_FIAT_RATE_1_MOCK,
+      [ERC20_TOKEN_ADDRESS_2_MOCK]: ERC20_TO_FIAT_RATE_2_MOCK,
     });
   });
 
-  it('handles no simulation data', async () => {
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useBalanceChanges(undefined),
-    );
-    expect(result.current).toEqual({ pending: expect.any(Boolean), value: [] });
-    await waitForNextUpdate();
-  });
+  describe('pending states', () => {
+    it('returns pending=true if no simulation data', async () => {
+      const { result, waitForNextUpdate } = renderHook(() =>
+        useBalanceChanges(undefined),
+      );
+      expect(result.current).toEqual({ pending: true, value: [] });
+      await waitForNextUpdate();
+    });
 
-  it('returns pending state when fetching token details', async () => {
-    const simulationData: SimulationData = {
-      nativeBalanceChange: undefined,
-      tokenBalanceChanges: [
-        {
-          ...dummyBalanceChange,
-          difference: DIFFERENCE_1_MOCK,
-          isDecrease: true,
-          address: ERC20_TOKEN_ADDRESS_1_MOCK,
-          standard: SimulationTokenStandard.erc20,
-        },
-      ],
-    };
-    const { result, unmount } = renderHook(() =>
-      useBalanceChanges(simulationData),
-    );
-    expect(result.current).toEqual({ pending: true, value: [] });
-    unmount();
+    it('returns pending=true while fetching token decimals', async () => {
+      mockGetTokenStandardAndDetails.mockImplementation(PENDING_PROMISE);
+      const simulationData: SimulationData = {
+        nativeBalanceChange: undefined,
+        tokenBalanceChanges: [
+          {
+            ...dummyBalanceChange,
+            difference: DIFFERENCE_1_MOCK,
+            isDecrease: true,
+            address: ERC20_TOKEN_ADDRESS_1_MOCK,
+            standard: SimulationTokenStandard.erc20,
+          },
+        ],
+      };
+      const { result, unmount, waitForNextUpdate } = renderHook(() =>
+        useBalanceChanges(simulationData),
+      );
+
+      await waitForNextUpdate();
+
+      expect(result.current).toEqual({ pending: true, value: [] });
+      unmount();
+    });
+
+    it('returns pending=true while fetching token fiat rates', async () => {
+      mockFetchTokenExchangeRates.mockImplementation(PENDING_PROMISE);
+      const simulationData: SimulationData = {
+        nativeBalanceChange: undefined,
+        tokenBalanceChanges: [
+          {
+            ...dummyBalanceChange,
+            difference: DIFFERENCE_1_MOCK,
+            isDecrease: true,
+            address: ERC20_TOKEN_ADDRESS_1_MOCK,
+            standard: SimulationTokenStandard.erc20,
+          },
+        ],
+      };
+      const { result, unmount, waitForNextUpdate } = renderHook(() =>
+        useBalanceChanges(simulationData),
+      );
+
+      await waitForNextUpdate();
+
+      expect(result.current).toEqual({ pending: true, value: [] });
+      unmount();
+    });
   });
 
   describe('with token balance changes', () => {
@@ -117,7 +162,7 @@ describe('useBalanceChanges', () => {
       const { result, waitForNextUpdate } = setupHook([
         {
           ...dummyBalanceChange,
-          difference: DIFFERENCE_1_MOCK,
+          difference: '0x11',
           isDecrease: true,
           address: ERC20_TOKEN_ADDRESS_1_MOCK,
           standard: SimulationTokenStandard.erc20,
@@ -134,16 +179,11 @@ describe('useBalanceChanges', () => {
             standard: TokenStandard.ERC20,
             tokenId: undefined,
           },
-          amount: {
-            isNegative: true,
-            quantity: DIFFERENCE_1_MOCK,
-            decimals: 3,
-            numeric: expect.any(Numeric),
-          },
-          fiatAmount: Number('-0.0255'),
+          amount: new BigNumber('-0.017'),
+          fiatAmount: -0.0255,
         },
       ]);
-      expect(changes[0].amount.numeric.toString()).toBe('-0.017');
+      expect(changes[0].amount.toString()).toBe('-0.017');
     });
 
     it('handles multiple token balance changes', async () => {
@@ -168,9 +208,9 @@ describe('useBalanceChanges', () => {
 
       const changes = result.current.value;
       expect(changes).toHaveLength(2);
-      expect(changes[0].amount.numeric.toString()).toBe('-0.017');
+      expect(changes[0].amount.toString()).toBe('-0.017');
       expect(changes[0].fiatAmount).toBe(Number('-0.0255'));
-      expect(changes[1].amount.numeric.toString()).toBe('0.0002');
+      expect(changes[1].amount.toString()).toBe('0.0002');
       expect(changes[1].fiatAmount).toBe(Number('0.0012'));
     });
 
@@ -178,7 +218,7 @@ describe('useBalanceChanges', () => {
       const { result, waitForNextUpdate } = setupHook([
         {
           ...dummyBalanceChange,
-          difference: DIFFERENCE_1_MOCK,
+          difference: '0x1',
           isDecrease: true,
           address: NFT_TOKEN_ADDRESS_MOCK,
           standard: SimulationTokenStandard.erc721,
@@ -195,12 +235,7 @@ describe('useBalanceChanges', () => {
             standard: TokenStandard.ERC721,
             tokenId: TOKEN_ID_1_MOCK,
           },
-          amount: {
-            isNegative: true,
-            quantity: DIFFERENCE_1_MOCK,
-            decimals: 0,
-            numeric: expect.any(Numeric),
-          },
+          amount: new BigNumber('-1'),
           fiatAmount: FIAT_UNAVAILABLE,
         },
       ]);
@@ -219,7 +254,42 @@ describe('useBalanceChanges', () => {
 
       await waitForNextUpdate();
 
-      expect(result.current.value[0].amount.decimals).toBe(18);
+      expect(result.current.value[0].amount.decimalPlaces()).toBe(18);
+    });
+
+    it('uses default decimals when token details are not valid numbers', async () => {
+      const { result, waitForNextUpdate } = setupHook([
+        {
+          ...dummyBalanceChange,
+          difference: DIFFERENCE_1_MOCK,
+          isDecrease: true,
+          address: ERC20_TOKEN_ADDRESS_3_MOCK,
+          standard: SimulationTokenStandard.erc20,
+        },
+      ]);
+
+      await waitForNextUpdate();
+
+      expect(result.current.value[0].amount.decimalPlaces()).toBe(18);
+    });
+
+    it('handles token fiat rate with more than 15 significant digits', async () => {
+      mockFetchTokenExchangeRates.mockResolvedValue({
+        [ERC20_TOKEN_ADDRESS_1_MOCK]: 0.1234567890123456,
+      });
+      const { result, waitForNextUpdate } = setupHook([
+        {
+          ...dummyBalanceChange,
+          difference: DIFFERENCE_1_MOCK,
+          isDecrease: true,
+          address: ERC20_TOKEN_ADDRESS_1_MOCK,
+          standard: SimulationTokenStandard.erc20,
+        },
+      ]);
+
+      await waitForNextUpdate();
+
+      expect(result.current.value[0].fiatAmount).toBe(-0.002098765413209875);
     });
   });
 
@@ -249,18 +319,36 @@ describe('useBalanceChanges', () => {
           asset: {
             standard: TokenStandard.none,
           },
-          amount: {
-            isNegative: true,
-            quantity: DIFFERENCE_ETH_MOCK,
-            decimals: 18,
-            numeric: expect.any(Numeric),
-          },
+          amount: new BigNumber('-5373.003641998677469065'),
           fiatAmount: Number('-16119.010925996032'),
         },
       ]);
-      expect(changes[0].amount.numeric.toString()).toBe(
-        '-5373.003641998677469065',
-      );
+    });
+
+    it('handles native fiat rate with more than 15 significant digits', async () => {
+      mockGetConversionRate.mockReturnValue(0.1234567890123456);
+      const { result, waitForNextUpdate } = setupHook({
+        ...dummyBalanceChange,
+        difference: DIFFERENCE_ETH_MOCK,
+        isDecrease: true,
+      });
+
+      await waitForNextUpdate();
+
+      expect(result.current.value[0].fiatAmount).toBe(-663.3337769927953);
+    });
+
+    it('handles unavailable native fiat rate', async () => {
+      mockGetConversionRate.mockReturnValue(null);
+      const { result, waitForNextUpdate } = setupHook({
+        ...dummyBalanceChange,
+        difference: DIFFERENCE_ETH_MOCK,
+        isDecrease: true,
+      });
+
+      await waitForNextUpdate();
+
+      expect(result.current.value[0].fiatAmount).toBe(FIAT_UNAVAILABLE);
     });
 
     it('handles no native balance change', async () => {
@@ -298,14 +386,14 @@ describe('useBalanceChanges', () => {
     expect(changes[0].asset).toEqual({
       standard: TokenStandard.none,
     });
-    expect(changes[0].amount.numeric.toString()).toBe(
-      '-5373.003641998677469065',
+    expect(changes[0].amount).toEqual(
+      new BigNumber('-5373.003641998677469065'),
     );
     expect(changes[0].fiatAmount).toBe(Number('-16119.010925996032'));
     expect(changes[1].asset).toEqual({
       address: ERC20_TOKEN_ADDRESS_1_MOCK,
       standard: TokenStandard.ERC20,
     });
-    expect(changes[1].amount.numeric.toString()).toBe('0.002');
+    expect(changes[1].amount).toEqual(new BigNumber('0.002'));
   });
 });

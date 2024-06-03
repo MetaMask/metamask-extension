@@ -2,7 +2,11 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
   BannerAlert,
+  Box,
   ButtonLink,
+  Icon,
+  IconName,
+  IconSize,
   Text,
 } from '../../../../components/component-library';
 import Disclosure from '../../../../components/ui/disclosure';
@@ -10,12 +14,19 @@ import { DisclosureVariant } from '../../../../components/ui/disclosure/disclosu
 
 import { I18nContext } from '../../../../contexts/i18n';
 import {
+  AlignItems,
+  Color,
   Display,
+  IconColor,
   Severity,
   Size,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 
-import { SecurityProvider } from '../../../../../shared/constants/security-provider';
+import {
+  SecurityProvider,
+  SECURITY_PROVIDER_CONFIG,
+} from '../../../../../shared/constants/security-provider';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 
 function SecurityProviderBannerAlert({
@@ -39,22 +50,52 @@ function SecurityProviderBannerAlert({
     >
       <Text marginTop={2}>{description}</Text>
 
-      <Disclosure title={t('seeDetails')} variant={DisclosureVariant.Arrow}>
-        {details}
-        <Text marginTop={3} display={Display.Flex}>
-          {t('somethingDoesntLookRight', [
+      <Box marginTop={3}>
+        <Disclosure title={t('seeDetails')} variant={DisclosureVariant.Arrow}>
+          {details}
+          <Text marginTop={3} display={Display.Flex}>
+            {t('somethingDoesntLookRight', [
+              <ButtonLink
+                key={`security-provider-button-supporturl-${provider}`}
+                size={Size.inherit}
+                href={reportUrl || ZENDESK_URLS.SUPPORT_URL}
+                externalLink
+                onClick={onClickSupportLink}
+              >
+                {t('reportIssue')}
+              </ButtonLink>,
+            ])}
+          </Text>
+        </Disclosure>
+      </Box>
+
+      {provider && (
+        <Text
+          marginTop={3}
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          color={Color.textAlternative}
+          variant={TextVariant.bodySm}
+        >
+          <Icon
+            className="disclosure__summary--icon"
+            color={IconColor.primaryDefault}
+            name={IconName.SecurityTick}
+            size={IconSize.Sm}
+            marginInlineEnd={1}
+          />
+          {t('securityProviderPoweredBy', [
             <ButtonLink
-              key={`security-provider-button-supporturl-${provider}`}
+              key={`security-provider-button-link-${provider}`}
               size={Size.inherit}
-              href={reportUrl || ZENDESK_URLS.SUPPORT_URL}
+              href={SECURITY_PROVIDER_CONFIG[provider].url}
               externalLink
-              onClick={onClickSupportLink}
             >
-              {t('reportIssue')}
+              {t(SECURITY_PROVIDER_CONFIG[provider].tKeyName)}
             </ButtonLink>,
           ])}
         </Text>
-      </Disclosure>
+      )}
     </BannerAlert>
   );
 }
