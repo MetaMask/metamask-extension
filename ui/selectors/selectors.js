@@ -1174,7 +1174,7 @@ const selectOrigins = (_state, origins) => origins;
  * @param origins - Object containing keys that represent subject's identification.
  * @returns Key:value object containing metadata attached to each subject key.
  */
-export const getMultipleTargetsSubjectMetadata = createSelector(
+export const getMultipleTargetsSubjectMetadata = createDeepEqualSelector(
   [rawStateSelector, selectOrigins],
   (state, origins) => {
     return Object.keys(origins ?? {}).reduce((originsMetadata, origin) => {
