@@ -13,6 +13,24 @@ import {
   ConfirmInfoRowText,
 } from '../../../../../../../components/app/confirm/info/row';
 
+const parseDate = (dateString: string) => {
+  const b = dateString.split(/\D+/);
+  const offsetMult = dateString.indexOf('+') !== -1 ? -1 : 1;
+  const hrOffset = offsetMult * (+b[7] || 0);
+  const minOffset = offsetMult * (+b[8] || 0);
+  return new Date(
+    Date.UTC(
+      +b[0],
+      +b[1] - 1,
+      +b[2],
+      +b[3] + hrOffset,
+      +b[4] + minOffset,
+      +b[5],
+      +b[6] || 0,
+    ),
+  );
+};
+
 const SIWESignInfo: React.FC = () => {
   const t = useI18nContext();
   const currentConfirmation = useSelector(
@@ -55,7 +73,7 @@ const SIWESignInfo: React.FC = () => {
       </ConfirmInfoRow>
       <ConfirmInfoRow label={t('siweIssued')}>
         <ConfirmInfoRowText
-          text={DateTime.fromJSDate(new Date(siweMessage.issuedAt)).toFormat(
+          text={DateTime.fromJSDate(parseDate(siweMessage.issuedAt)).toFormat(
             'dd LLL yyyy, HH:mm',
           )}
         />
