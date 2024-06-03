@@ -4721,7 +4721,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^4.1.0, @metamask/base-controller@npm:^4.1.1":
+"@metamask/base-controller@npm:^4.1.1":
   version: 4.1.1
   resolution: "@metamask/base-controller@npm:4.1.1"
   dependencies:
