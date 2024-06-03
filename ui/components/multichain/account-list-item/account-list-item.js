@@ -59,7 +59,7 @@ import { ConnectedStatus } from '../connected-status/connected-status';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
 ///: END:ONLY_INCLUDE_IF
-import { normalizeSafeAddress } from '../../../../app/scripts/lib/util';
+import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { AccountListItemMenuTypes } from './account-list-item.types';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;

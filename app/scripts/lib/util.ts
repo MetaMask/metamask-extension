@@ -1,5 +1,4 @@
 import urlLib from 'url';
-import { is } from 'superstruct';
 import { AccessList } from '@ethereumjs/tx';
 import BN from 'bn.js';
 import { memoize } from 'lodash';
@@ -7,8 +6,6 @@ import {
   TransactionEnvelopeType,
   TransactionMeta,
 } from '@metamask/transaction-controller';
-import { normalize as normalizeEthAddress } from '@metamask/eth-sig-util';
-import { EthAddressStruct } from '@metamask/keyring-api';
 import {
   ENVIRONMENT_TYPE_BACKGROUND,
   ENVIRONMENT_TYPE_FULLSCREEN,
@@ -21,10 +18,7 @@ import {
   PLATFORM_OPERA,
 } from '../../../shared/constants/app';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
-import {
-  toChecksumHexAddress,
-  stripHexPrefix,
-} from '../../../shared/modules/hexstring-utils';
+import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 
 /**
  * @see {@link getEnvironmentType}
@@ -369,18 +363,4 @@ export function formatTxMetaForRpcResult(
   }
 
   return formattedTxMeta;
-}
-
-export function isEthAddress(address: string) {
-  return is(address, EthAddressStruct);
-}
-
-export function normalizeAddress(address: string) {
-  // FIXME: We should probably have detecting which kind of address we are using.
-  return isEthAddress(address) ? normalizeEthAddress(address) : address;
-}
-
-export function normalizeSafeAddress(address: string) {
-  // FIXME: We should probably have detecting which kind of address we are using.
-  return isEthAddress(address) ? toChecksumHexAddress(address) : address;
 }
