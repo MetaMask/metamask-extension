@@ -1,6 +1,9 @@
 import { screen } from '@testing-library/react';
 import React from 'react';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../test/jest';
+import mockState from '../../../../../test/data/mock-state.json';
 import SnapPermissionCell from './snap-permission-cell';
 
 describe('Snap Permission Cell', () => {
@@ -35,6 +38,7 @@ describe('Snap Permission Cell', () => {
       subjectType: 'website',
     },
   };
+  const mockStore = configureMockStore([thunk])(mockState);
 
   it('renders permissions cell with permission', () => {
     renderWithProvider(
@@ -45,6 +49,7 @@ describe('Snap Permission Cell', () => {
         index={mockIndex}
         key={`permissionCellDisplay_${mockSnapId}_${mockIndex}`}
       />,
+      mockStore,
     );
     expect(
       screen.getByText('Display dialog windows in MetaMask.'),
@@ -64,6 +69,7 @@ describe('Snap Permission Cell', () => {
         index={mockIndex}
         key={`permissionCellDisplay_${mockSnapId}_${mockIndex}`}
       />,
+      mockStore,
     );
     expect(
       screen.getByText('Connect to snaps.metamask.io'),
