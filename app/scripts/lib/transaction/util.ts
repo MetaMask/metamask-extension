@@ -10,9 +10,9 @@ import {
   UserOperationController,
 } from '@metamask/user-operation-controller';
 import type { Hex } from '@metamask/utils';
+import { addHexPrefix } from 'ethereumjs-util';
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { PPOMController } from '@metamask/ppom-validator';
-import { addHexPrefix } from 'ethereumjs-util';
 
 import {
   generateSecurityAlertId,
@@ -22,9 +22,9 @@ import {
 import { SecurityAlertResponse } from '../ppom/types';
 import {
   LOADING_SECURITY_ALERT_RESPONSE,
-  PPOM_EXCLUDED_TRANSACTION_TYPES,
-  PPOM_SUPPORTED_CHAIN_IDS,
-} from '../ppom/constants';
+  SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES,
+  SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS,
+} from '../../../../shared/constants/security-provider';
 ///: END:ONLY_INCLUDE_IF
 
 export type AddTransactionOptions = NonNullable<
@@ -235,13 +235,14 @@ function validateSecurity(request: AddTransactionRequest) {
 
   const { type } = transactionOptions;
 
-  const typeIsExcludedFromPPOM = PPOM_EXCLUDED_TRANSACTION_TYPES.includes(
-    type as TransactionType,
-  );
+  const typeIsExcludedFromPPOM =
+    SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES.includes(
+      type as TransactionType,
+    );
 
   if (
     !securityAlertsEnabled ||
-    !PPOM_SUPPORTED_CHAIN_IDS.includes(chainId) ||
+    !SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS.includes(chainId) ||
     typeIsExcludedFromPPOM
   ) {
     return;

@@ -11,15 +11,15 @@ import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { PreferencesController } from '../../controllers/preferences';
 import { AppStateController } from '../../controllers/app-state';
 import {
+  LOADING_SECURITY_ALERT_RESPONSE,
+  SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS,
+} from '../../../../shared/constants/security-provider';
+import {
   generateSecurityAlertId,
   handlePPOMError,
   validateRequestWithPPOM,
 } from './ppom-util';
 import { SecurityAlertResponse } from './types';
-import {
-  LOADING_SECURITY_ALERT_RESPONSE,
-  PPOM_SUPPORTED_CHAIN_IDS,
-} from './constants';
 
 const CONFIRMATION_METHODS = Object.freeze([
   'eth_sendRawTransaction',
@@ -71,7 +71,7 @@ export function createPPOMMiddleware<
       if (
         !securityAlertsEnabled ||
         !CONFIRMATION_METHODS.includes(req.method) ||
-        !PPOM_SUPPORTED_CHAIN_IDS.includes(chainId)
+        !SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS.includes(chainId)
       ) {
         return;
       }
