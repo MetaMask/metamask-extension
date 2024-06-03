@@ -128,4 +128,4 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
       )}
     </Box>
   </ConfirmInfoRowContext.Provider>
-));
+);
