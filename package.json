@@ -703,5 +703,5 @@
       "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs": false
     }
   },
-  "packageManager": "yarn@4.0.2"
+  "packageManager": "yarn@4.2.2"
 }
