@@ -201,10 +201,10 @@ describe('MMIController', function () {
       initState: {
         custodyAccountDetails: {
           [mockAccount.address]: {
-            custodyType: 'Custody - Jupiter',
+            custodyType: 'Custody - ECA3',
           },
           [mockAccount2.address]: {
-            custodyType: 'Custody - Jupiter',
+            custodyType: 'Custody - ECA3',
           },
         },
       },
@@ -349,7 +349,7 @@ describe('MMIController', function () {
   });
 
   describe('getAllCustodianAccountsWithToken', () => {
-    it('should return custodian accounts with tokens', async () => {});
+    it('should return custodian accounts with tokens', async () => { });
   });
 
   describe('handleMmiDashboardData', () => {
@@ -438,11 +438,11 @@ describe('MMIController', function () {
           getCustodianAccounts: mockCustodialKeyring,
         });
 
-      await mmiController.getCustodianAccounts('token', 'mock url', 'JUPITER');
+      await mmiController.getCustodianAccounts('token', 'neptune-custody', 'ECA3');
 
       expect(selectedAccountSpy).toHaveBeenCalledTimes(0);
 
-      expect(keyringControllerSpy).toHaveBeenCalledWith('Custody - Jupiter');
+      expect(keyringControllerSpy).toHaveBeenCalledWith('Custody - ECA3');
       expect(mockCustodialKeyring).toHaveBeenCalled();
     });
 
@@ -454,14 +454,14 @@ describe('MMIController', function () {
           getCustodianAccounts: mockCustodialKeyring,
         });
 
-      await mmiController.getCustodianAccounts('token', 'mock url');
+      await mmiController.getCustodianAccounts('token', 'neptune-custody');
 
       expect(selectedAccountSpy).toHaveBeenCalledWith(
         'AccountsController:getSelectedAccount',
       );
       expect(selectedAccountSpy).toHaveReturnedWith(mockAccount);
 
-      expect(keyringControllerSpy).toHaveBeenCalledWith('Custody - Jupiter');
+      expect(keyringControllerSpy).toHaveBeenCalledWith('Custody - ECA3');
       expect(mockCustodialKeyring).toHaveBeenCalled();
     });
   });

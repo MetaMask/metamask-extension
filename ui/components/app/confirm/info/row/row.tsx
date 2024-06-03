@@ -34,6 +34,8 @@ export type ConfirmInfoRowProps = {
   tooltip?: string;
   variant?: ConfirmInfoRowVariant;
   style?: React.CSSProperties;
+  labelChildren?: React.ReactNode;
+  color?: TextColor;
 };
 
 const BACKGROUND_COLORS = {
@@ -70,6 +72,8 @@ export const ConfirmInfoRow = ({
   variant = ConfirmInfoRowVariant.Default,
   tooltip,
   style,
+  labelChildren,
+  color,
 }: ConfirmInfoRowProps) => (
   <ConfirmInfoRowContext.Provider value={{ variant }}>
     <Box
@@ -96,10 +100,12 @@ export const ConfirmInfoRow = ({
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
+        color={color}
       >
         <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
           {label}
         </Text>
+        {labelChildren}
         {tooltip && tooltip.length > 0 && (
           <Tooltip
             position="bottom"

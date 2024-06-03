@@ -16,10 +16,10 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 type KeyOfNetworkName = keyof typeof NETWORK_TO_NAME_MAP;
 
 function useConfirmationNetworkInfo() {
+  const t = useI18nContext();
   const currentConfirmation = useSelector(currentConfirmationSelector);
   const allNetworks = useSelector(getAllNetworks);
   const providerConfig = useSelector(getProviderConfig);
-  const t = useI18nContext();
 
   let networkDisplayName = '';
   let confirmationNetwork;

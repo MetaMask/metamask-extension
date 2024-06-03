@@ -59,11 +59,6 @@ exports[`SendAmountRow Component render Native Asset Type should match snapshot 
                 ETH
               </div>
             </div>
-            <div
-              class="currency-input__conversion-component"
-            >
-              No conversion rate available
-            </div>
           </div>
         </div>
       </div>

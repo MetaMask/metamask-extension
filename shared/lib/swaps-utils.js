@@ -163,6 +163,8 @@ export const getBaseApi = function (type, chainId) {
       return `${baseUrl}/aggregatorMetadata`;
     case 'gasPrices':
       return `${baseUrl}/gasPrices`;
+    case 'blockedTokens':
+      return `${baseUrl}/blockedTokens`;
     case 'network':
       return baseUrl;
     default:

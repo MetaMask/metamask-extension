@@ -9,8 +9,7 @@
 import './lib/setup-initial-state-hooks';
 
 import EventEmitter from 'events';
-import endOfStream from 'end-of-stream';
-import pump from 'pump';
+import { finished, pipeline } from 'readable-stream';
 import debounce from 'debounce-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
@@ -43,6 +42,7 @@ import {
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
+import { FIXTURE_STATE_METADATA_VERSION } from '../../test/e2e/default-fixture';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
@@ -66,6 +66,7 @@ import {
   getPlatform,
   shouldEmitDappViewedEvent,
 } from './lib/util';
+import { generateSkipOnboardingState } from './skip-onboarding';
 
 /* eslint-enable import/first */
 
@@ -86,7 +87,7 @@ global.stateHooks.getMostRecentPersistedState = () =>
   localStore.mostRecentRetrievedState;
 
 const { sentry } = global;
-const firstTimeState = { ...rawFirstTimeState };
+let firstTimeState = { ...rawFirstTimeState };
 
 const metamaskInternalProcessHash = {
   [ENVIRONMENT_TYPE_POPUP]: true,
@@ -279,6 +280,7 @@ function saveTimestamp() {
 async function initialize() {
   try {
     const initData = await loadStateFromPersistence();
+
     const initState = initData.data;
     const initLangCode = await getFirstPreferredLangCode();
 
@@ -287,13 +289,16 @@ async function initialize() {
     ///: END:ONLY_INCLUDE_IF
 
     let isFirstMetaMaskControllerSetup;
+
     if (isManifestV3) {
       // Save the timestamp immediately and then every `SAVE_TIMESTAMP_INTERVAL`
       // miliseconds. This keeps the service worker alive.
-      const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000;
+      if (initState.PreferencesController?.enableMV3TimestampSave !== false) {
+        const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000;
 
-      saveTimestamp();
-      setInterval(saveTimestamp, SAVE_TIMESTAMP_INTERVAL_MS);
+        saveTimestamp();
+        setInterval(saveTimestamp, SAVE_TIMESTAMP_INTERVAL_MS);
+      }
 
       const sessionData = await browser.storage.session.get([
         'isFirstMetaMaskControllerSetup',
@@ -401,8 +406,18 @@ async function loadPhishingWarningPage() {
  */
 export async function loadStateFromPersistence() {
   // migrations
-  const migrator = new Migrator({ migrations });
+  const migrator = new Migrator({
+    migrations,
+    defaultVersion: process.env.SKIP_ONBOARDING
+      ? FIXTURE_STATE_METADATA_VERSION
+      : null,
+  });
   migrator.on('error', console.warn);
+
+  if (process.env.SKIP_ONBOARDING) {
+    const skipOnboardingStateOverrides = await generateSkipOnboardingState();
+    firstTimeState = { ...firstTimeState, ...skipOnboardingStateOverrides };
+  }
 
   // read from disk
   // first from preferred, async API:
@@ -564,7 +579,7 @@ export function setupController(
   });
 
   // setup state persistence
-  pump(
+  pipeline(
     storeAsStream(controller.store),
     debounce(1000),
     createStreamSink(async (state) => {
@@ -667,7 +682,7 @@ export function setupController(
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         openPopupCount += 1;
-        endOfStream(portStream, () => {
+        finished(portStream, () => {
           openPopupCount -= 1;
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
@@ -678,7 +693,7 @@ export function setupController(
       if (processName === ENVIRONMENT_TYPE_NOTIFICATION) {
         notificationIsOpen = true;
 
-        endOfStream(portStream, () => {
+        finished(portStream, () => {
           notificationIsOpen = false;
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
@@ -693,7 +708,7 @@ export function setupController(
         const tabId = remotePort.sender.tab.id;
         openMetamaskTabsIDs[tabId] = true;
 
-        endOfStream(portStream, () => {
+        finished(portStream, () => {
           delete openMetamaskTabsIDs[tabId];
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
@@ -974,7 +989,7 @@ const addAppInstalledEvent = () => {
   setTimeout(() => {
     // If the controller is not set yet, we wait and try to add the "App Installed" event again.
     addAppInstalledEvent();
-  }, 1000);
+  }, 500);
 };
 
 // On first install, open a new tab with MetaMask

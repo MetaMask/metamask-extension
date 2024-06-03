@@ -16,7 +16,7 @@ import {
   updateNetworksList,
   setNetworkClientIdForDomain,
 } from '../../../store/actions';
-import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
+import { TEST_CHAINS } from '../../../../shared/constants/network';
 import {
   getCurrentChainId,
   getCurrentNetwork,
@@ -182,8 +182,6 @@ export const NetworkListMenu = ({ onClose }) => {
       const canDeleteNetwork =
         isUnlocked && !isCurrentNetwork && network.removable;
 
-      const isDeprecatedNetwork = network.chainId === CHAIN_IDS.AURORA;
-
       return (
         <NetworkListItem
           name={network.nickname}
@@ -209,7 +207,6 @@ export const NetworkListMenu = ({ onClose }) => {
               },
             });
           }}
-          isDeprecatedNetwork={isDeprecatedNetwork}
           onDeleteClick={
             canDeleteNetwork
               ? () => {
@@ -362,11 +359,7 @@ export const NetworkListMenu = ({ onClose }) => {
                                     // If presently on a dapp, communicate a change to
                                     // the dapp via silent switchEthereumChain that the
                                     // network has changed due to user action
-                                    if (
-                                      process.env.MULTICHAIN &&
-                                      useRequestQueue &&
-                                      selectedTabOrigin
-                                    ) {
+                                    if (useRequestQueue && selectedTabOrigin) {
                                       setNetworkClientIdForDomain(
                                         selectedTabOrigin,
                                         network.id,

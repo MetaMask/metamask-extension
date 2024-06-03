@@ -13,7 +13,7 @@ const store = configureStore({
     currentTransactionUUID: '1-tx',
     draftTransactions: {
       '1-tx': {
-        asset: {
+        sendAsset: {
           balance: '0x1158e460913d00000', // 20000000000000000000
           details: {
             name: 'Catnip Spicywright From The Artist Known As',
@@ -56,7 +56,7 @@ export default {
     noGasPrice: {
       control: 'boolean',
     },
-    isEthGasPrice: {
+    isEthGasPriceFetched: {
       control: 'boolean',
     },
 
@@ -103,7 +103,7 @@ DefaultStory.args = {
   showHexData: false,
   isOwnedAccount: true,
   noGasPrice: false,
-  isEthGasPrice: false,
+  isEthGasPriceFetched: false,
   gasIsExcessive: false,
   error: 'connecting',
   warning: 'connecting',
@@ -139,7 +139,7 @@ NftStory.args = {
   showHexData: false,
   isOwnedAccount: true,
   noGasPrice: false,
-  isEthGasPrice: false,
+  isEthGasPriceFetched: false,
   gasIsExcessive: false,
   error: 'connecting',
   warning: 'connecting',

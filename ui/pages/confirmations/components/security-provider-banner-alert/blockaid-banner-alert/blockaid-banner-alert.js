@@ -26,7 +26,7 @@ import { getReportUrl } from './blockaid-banner-utils';
 const zlib = require('zlib');
 
 /** Reason to description translation key mapping. Grouped by translations. */
-const REASON_TO_DESCRIPTION_TKEY = Object.freeze({
+export const REASON_TO_DESCRIPTION_TKEY = Object.freeze({
   [BlockaidReason.approvalFarming]: 'blockaidDescriptionApproveFarming',
   [BlockaidReason.permitFarming]: 'blockaidDescriptionApproveFarming',
   [BlockaidReason.setApprovalForAll]: 'blockaidDescriptionApproveFarming',
@@ -50,7 +50,7 @@ const REASON_TO_DESCRIPTION_TKEY = Object.freeze({
 });
 
 /** Reason to title translation key mapping. */
-const REASON_TO_TITLE_TKEY = Object.freeze({
+export const REASON_TO_TITLE_TKEY = Object.freeze({
   [BlockaidReason.errored]: 'blockaidTitleMayNotBeSafe',
   [BlockaidReason.rawSignatureFarming]: 'blockaidTitleSuspicious',
 });
@@ -84,7 +84,6 @@ function BlockaidBannerAlert({ txData, ...props }) {
     reason,
     result_type: resultType,
   } = securityAlertResponse;
-
   if (resultType === BlockaidResultType.Benign) {
     return null;
   }

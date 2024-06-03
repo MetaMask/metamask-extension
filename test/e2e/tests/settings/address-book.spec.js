@@ -11,10 +11,6 @@ const FixtureBuilder = require('../../fixture-builder');
 
 describe('Address Book', function () {
   it('Sends to an address book entry', async function () {
-    // TODO: Update Test when Multichain Send Flow is added
-    if (process.env.MULTICHAIN) {
-      return;
-    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -37,21 +33,21 @@ describe('Address Book', function () {
       },
       async ({ driver, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
-
         await openActionMenuAndStartSendFlow(driver);
-        const recipientRowTitle = await driver.findElement(
-          '.send__select-recipient-wrapper__group-item__title',
+
+        await driver.clickElement({ css: 'button', text: 'Contacts' });
+
+        const recipientTitle = await driver.findElement(
+          '.address-list-item__label',
         );
 
-        const recipientRowTitleString = await recipientRowTitle.getText();
+        const recipientRowTitleString = await recipientTitle.getText();
         assert.equal(recipientRowTitleString, 'Test Name 1');
-        await driver.clickElement(
-          '.send__select-recipient-wrapper__group-item',
-        );
+        await driver.clickElement('.address-list-item__label');
 
-        await driver.fill('.unit-input__input', '2');
+        await driver.fill('input[placeholder="0"]', '2');
 
-        await driver.clickElement({ text: 'Next', tag: 'button' });
+        await driver.clickElement({ text: 'Continue', tag: 'button' });
 
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
@@ -99,14 +95,10 @@ describe('Address Book', function () {
         );
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Contacts', tag: 'div' });
-        if (process.env.MULTICHAIN) {
-          await driver.clickElement({
-            text: 'Test Name 1',
-            css: '.address-list-item__label',
-          });
-        } else {
-          await driver.clickElement({ text: 'Test Name 1', tag: 'p' });
-        }
+        await driver.clickElement({
+          text: 'Test Name 1',
+          css: '.address-list-item__label',
+        });
 
         await driver.clickElement({ text: 'Edit', tag: 'button' });
         const inputUsername = await driver.findElement('#nickname');
@@ -117,18 +109,10 @@ describe('Address Book', function () {
 
         await driver.clickElement('[data-testid="page-container-footer-next"]');
 
-        let recipientUsername;
-        if (process.env.MULTICHAIN) {
-          recipientUsername = await driver.findElement({
-            text: 'Test Name Edit',
-            css: '.address-list-item__label',
-          });
-        } else {
-          recipientUsername = await driver.findElement({
-            text: 'Test Name Edit',
-            tag: 'p',
-          });
-        }
+        const recipientUsername = await driver.findElement({
+          text: 'Test Name Edit',
+          css: '.address-list-item__label',
+        });
 
         assert.equal(
           await recipientUsername.getText(),
@@ -136,33 +120,19 @@ describe('Address Book', function () {
           'Username is not edited correctly',
         );
 
-        if (process.env.MULTICHAIN) {
-          const recipientAddress = await driver.findElement(
-            '[data-testid="address-list-item-address"]',
-          );
-          assert.equal(
-            await recipientAddress.getText(),
-            shortenAddress('0x74cE91B75935D6Bedc27eE002DeFa566c5946f74'),
-            'Recipient address is not edited correctly',
-          );
-        } else {
-          const recipientAddress = await driver.findElement(
-            '.send__select-recipient-wrapper__group-item__subtitle',
-          );
-          assert.equal(
-            await recipientAddress.getText(),
-            '0x74cE...6f74',
-            'Recipient address is not edited correctly',
-          );
-        }
+        const recipientAddress = await driver.findElement(
+          '[data-testid="address-list-item-address"]',
+        );
+        assert.equal(
+          await recipientAddress.getText(),
+          shortenAddress('0x74cE91B75935D6Bedc27eE002DeFa566c5946f74'),
+          'Recipient address is not edited correctly',
+        );
       },
     );
   });
 
   it('Deletes existing entry from address book', async function () {
-    if (process.env.MULTICHAIN) {
-      return;
-    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -192,13 +162,11 @@ describe('Address Book', function () {
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Contacts', tag: 'div' });
 
-        await driver.clickElement({ text: 'Test Name 1', tag: 'p' });
+        await driver.clickElement({ text: '0x2f318...5C970', tag: 'div' });
         await driver.clickElement({ text: 'Edit', tag: 'button' });
         await driver.clickElement({ text: 'Delete contact', tag: 'a' });
 
-        const contact = await driver.findElement(
-          '.send__select-recipient-wrapper__group-item',
-        );
+        const contact = await driver.findElement('.address-list-item__label');
 
         // it checks if account is deleted
         const exists = await driver.isElementPresent(contact);

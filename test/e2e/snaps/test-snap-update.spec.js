@@ -3,6 +3,7 @@ const {
   withFixtures,
   switchToNotificationWindow,
   unlockWallet,
+  WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
@@ -42,6 +43,7 @@ describe('Test Snap update', function () {
 
         await driver.waitForSelector({ text: 'Confirm' });
 
+        // scroll to bottom
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
         await driver.clickElement({
@@ -50,30 +52,21 @@ describe('Test Snap update', function () {
         });
 
         // wait for permissions popover, click checkboxes and confirm
-        await driver.delay(500);
+        const permissionsConfirmButtonSelector =
+          '[data-testid="snap-install-warning-modal-confirm"]';
+        await driver.waitForSelector(permissionsConfirmButtonSelector);
         await driver.clickElement('.mm-checkbox__input');
-        await driver.waitForSelector(
-          '[data-testid="snap-install-warning-modal-confirm"]',
-        );
-        await driver.clickElement(
-          '[data-testid="snap-install-warning-modal-confirm"]',
+
+        await driver.findClickableElement(permissionsConfirmButtonSelector);
+        await driver.clickElementAndWaitToDisappear(
+          permissionsConfirmButtonSelector,
         );
 
-        // deal with OK button
-        await driver.waitForSelector({ text: 'OK' });
-
-        await driver.clickElement({
-          text: 'OK',
-          tag: 'button',
-        });
+        // finish the permission with OK button
+        await driver.clickElement('[data-testid="page-container-footer-next"]');
 
         // navigate to test snap page
-        let windowHandles = await driver.waitUntilXWindowHandles(
-          1,
-          1000,
-          10000,
-        );
-        await driver.switchToWindow(windowHandles[0]);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // wait for npm installation success
         await driver.waitForSelector({
@@ -89,26 +82,20 @@ describe('Test Snap update', function () {
 
         // switch to metamask extension and update
         await switchToNotificationWindow(driver, 2);
+        await driver.waitForSelector({ text: 'Update request' });
 
-        await driver.waitForSelector({ text: 'Update' });
-
+        // Scroll to bottom of dialog
         await driver.clickElementSafe('[data-testid="snap-update-scroll"]');
-
-        await driver.clickElement({
-          text: 'Confirm',
-          tag: 'button',
-        });
-
+        // Click confirm button
+        await driver.clickElementAndWaitToDisappear(
+          '[data-testid="page-container-footer-next"]',
+        );
+        // When it is confirmed, click okay button
         await driver.waitForSelector({ text: 'OK' });
-
-        await driver.clickElement({
-          text: 'OK',
-          tag: 'button',
-        });
+        await driver.clickElement('[data-testid="page-container-footer-next"]');
 
         // navigate to test snap page
-        windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
-        await driver.switchToWindow(windowHandles[0]);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // look for the correct version text
         await driver.waitForSelector({

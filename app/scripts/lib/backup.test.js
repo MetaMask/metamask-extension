@@ -163,13 +163,14 @@ const jsonData = JSON.stringify({
       showTestNetworks: true,
       smartTransactionsOptInStatus: false,
       useNativeCurrencyAsPrimaryCurrency: true,
+      showTokenAutodetectModal: false,
     },
     ipfsGateway: 'dweb.link',
     ledgerTransportType: 'webhid',
     theme: 'light',
     customNetworkListEnabled: false,
     textDirection: 'auto',
-    useRequestQueue: false,
+    useRequestQueue: true,
   },
   internalAccounts: {
     accounts: {
