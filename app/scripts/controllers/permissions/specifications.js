@@ -115,8 +115,8 @@ export const getPermissionSpecifications = ({
       },
 
       methodImplementation: async (_args) => {
-        const accounts = await getAllAccounts();
-        const internalAccounts = getInternalAccounts();
+        const accounts = (await getAllAccounts()).filter(isEthAddress);
+        const internalAccounts = getInternalAccounts('eip155:*');
 
         return accounts.sort((firstAddress, secondAddress) => {
           const firstAccount = internalAccounts.find(
@@ -216,6 +216,16 @@ function validateCaveatAccounts(accounts, getInternalAccounts) {
   });
 }
 
+export const UnrestrictedEthSigningMethods = Object.freeze([
+  'eth_sendRawTransaction',
+  'eth_sendTransaction',
+  'eth_sign',
+  'eth_signTypedData',
+  'eth_signTypedData_v1',
+  'eth_signTypedData_v3',
+  'eth_signTypedData_v4',
+]);
+
 /**
  * All unrestricted methods recognized by the PermissionController.
  * Unrestricted methods are ignored by the permission system, but every
@@ -224,6 +234,7 @@ function validateCaveatAccounts(accounts, getInternalAccounts) {
  * "method not found" error.
  */
 export const unrestrictedMethods = Object.freeze([
+  ...UnrestrictedEthSigningMethods,
   'eth_blockNumber',
   'eth_call',
   'eth_chainId',
@@ -260,13 +271,6 @@ export const unrestrictedMethods = Object.freeze([
   'eth_newFilter',
   'eth_newPendingTransactionFilter',
   'eth_protocolVersion',
-  'eth_sendRawTransaction',
-  'eth_sendTransaction',
-  'eth_sign',
-  'eth_signTypedData',
-  'eth_signTypedData_v1',
-  'eth_signTypedData_v3',
-  'eth_signTypedData_v4',
   'eth_submitHashrate',
   'eth_submitWork',
   'eth_syncing',
