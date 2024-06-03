@@ -1,4 +1,4 @@
-import { ethErrors } from 'eth-rpc-errors';
+import { providerErrors } from '@metamask/rpc-errors';
 import React from 'react';
 import { infuraProjectId } from '../../../../../shared/constants/network';
 import {
@@ -424,7 +424,7 @@ function getValues(pendingApproval, t, actions, history, data) {
     onCancel: () =>
       actions.rejectPendingApproval(
         pendingApproval.id,
-        ethErrors.provider.userRejectedRequest().serialize(),
+        providerErrors.userRejectedRequest().serialize(),
       ),
     networkDisplay: !originIsMetaMask,
   };

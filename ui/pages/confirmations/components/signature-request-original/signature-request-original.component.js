@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { ObjectInspector } from 'react-inspector';
-import { ethErrors, serializeError } from 'eth-rpc-errors';
+import { providerErrors, serializeError } from '@metamask/rpc-errors';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { SubjectType } from '@metamask/permission-controller';
 ///: END:ONLY_INCLUDE_IF
@@ -297,7 +297,7 @@ export default class SignatureRequestOriginal extends Component {
 
     await rejectPendingApproval(
       id,
-      serializeError(ethErrors.provider.userRejectedRequest()),
+      serializeError(providerErrors.userRejectedRequest()),
     );
     clearConfirmTransaction();
     history.push(mostRecentOverviewPage);
@@ -328,7 +328,7 @@ export default class SignatureRequestOriginal extends Component {
         onCancel={async () => {
           await rejectPendingApproval(
             txData.id,
-            serializeError(ethErrors.provider.userRejectedRequest()),
+            serializeError(providerErrors.userRejectedRequest()),
           );
           clearConfirmTransaction();
           history.push(mostRecentOverviewPage);

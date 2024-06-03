@@ -12,7 +12,10 @@ import {
   submitRequestToBackground,
 } from '../background-connection';
 import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../store';
-import { isErrorWithMessage } from '../../../shared/modules/error';
+import {
+  isErrorWithMessage,
+  getErrorMessage,
+} from '../../../shared/modules/error';
 import { ConnectionRequest } from '../../../shared/constants/mmi-controller';
 
 export function showInteractiveReplacementTokenBanner({
@@ -34,8 +37,8 @@ export function showInteractiveReplacementTokenBanner({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       if (err) {
-        dispatch(displayWarning(err.message));
-        throw new Error(err.message);
+        dispatch(displayWarning(err));
+        throw new Error(getErrorMessage(err));
       }
     }
   };
@@ -65,7 +68,7 @@ export function setTypedMessageInProgress(msgId: string) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       log.error(error);
-      dispatch(displayWarning(error.message));
+      dispatch(displayWarning(error));
     } finally {
       await forceUpdateMetamaskState(dispatch);
       dispatch(hideLoadingIndication());
@@ -82,7 +85,7 @@ export function setPersonalMessageInProgress(msgId: string) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       log.error(error);
-      dispatch(displayWarning(error.message));
+      dispatch(displayWarning(error));
     } finally {
       await forceUpdateMetamaskState(dispatch);
       dispatch(hideLoadingIndication());
@@ -120,7 +123,7 @@ export function mmiActionsFactory() {
       } catch (error) {
         dispatch(displayWarning(error));
         if (isErrorWithMessage(error)) {
-          throw new Error(error.message);
+          throw new Error(getErrorMessage(error));
         } else {
           throw error;
         }
@@ -142,7 +145,7 @@ export function mmiActionsFactory() {
     return () => {
       callBackgroundMethod(name, [payload], (err) => {
         if (isErrorWithMessage(err)) {
-          throw new Error(err.message);
+          throw new Error(getErrorMessage(err));
         }
       });
     };

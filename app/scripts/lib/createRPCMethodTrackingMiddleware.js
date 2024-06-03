@@ -1,5 +1,5 @@
 import { ApprovalType, detectSIWE } from '@metamask/controller-utils';
-import { errorCodes } from 'eth-rpc-errors';
+import { errorCodes } from '@metamask/rpc-errors';
 import { isValidAddress } from 'ethereumjs-util';
 import { MESSAGE_TYPE, ORIGIN_METAMASK } from '../../../shared/constants/app';
 import {
@@ -19,6 +19,7 @@ import {
 import { SIGNING_METHODS } from '../../../shared/constants/transaction';
 import { getBlockaidMetricsProps } from '../../../ui/helpers/utils/metrics';
 ///: END:ONLY_INCLUDE_IF
+import { getErrorMessage } from '../../../shared/modules/error';
 import { REDESIGN_APPROVAL_TYPES } from '../../../ui/pages/confirmations/utils/confirm';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 
@@ -350,6 +351,9 @@ export default function createRPCMethodTrackingMiddleware({
       const isDisabledRPCMethod = isDisabledEthSignAdvancedSetting;
 
       let event;
+
+      const errorMessage = getErrorMessage(res.error);
+
       if (isDisabledRPCMethod) {
         event = eventType.FAILED;
         eventProperties.error = res.error;
@@ -357,11 +361,13 @@ export default function createRPCMethodTrackingMiddleware({
         event = eventType.REJECTED;
       } else if (
         res.error?.code === errorCodes.rpc.internal &&
-        res.error?.message === 'Request rejected by user or snap.'
+        [errorMessage, res.error.message].includes(
+          'Request rejected by user or snap.',
+        )
       ) {
         // The signature was approved in MetaMask but rejected in the snap
         event = eventType.REJECTED;
-        eventProperties.status = res.error.message;
+        eventProperties.status = errorMessage;
       } else {
         event = eventType.APPROVED;
       }
