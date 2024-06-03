@@ -7,7 +7,10 @@ import {
 import ConfirmPageContainer from '../components/confirm-page-container';
 import { isBalanceSufficient } from '../send/send.utils';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-
+import {
+  TextVariant,
+  TextColor,
+} from '../../../helpers/constants/design-system';
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   GAS_LIMIT_TOO_LOW_ERROR_KEY,
@@ -16,6 +19,7 @@ import {
   IS_SIGNING_OR_SUBMITTING,
   USER_OP_CONTRACT_DEPLOY_ERROR_KEY,
 } from '../../../helpers/constants/error-keys';
+
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
 
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
@@ -34,6 +38,7 @@ import NoteToTrader from '../../../components/institutional/note-to-trader';
 import { TransactionModalContextProvider } from '../../../contexts/transaction-modal';
 import TransactionDetail from '../components/transaction-detail/transaction-detail.component';
 import TransactionDetailItem from '../components/transaction-detail-item/transaction-detail-item.component';
+import { Text } from '../../../components/component-library';
 import LoadingHeartBeat from '../../../components/ui/loading-heartbeat';
 import LedgerInstructionField from '../components/ledger-instruction-field';
 import {
@@ -409,7 +414,10 @@ export default class ConfirmTransactionBase extends Component {
       );
     };
 
-    const renderTotalMaxAmount = (useMaxFee) => {
+    const renderTotalMaxAmount = ({
+      useMaxFee,
+      isBoldTextAndNotOverridden = false,
+    } = {}) => {
       if (
         primaryTotalTextOverrideMaxAmount === undefined &&
         secondaryTotalTextOverride === undefined
@@ -429,9 +437,15 @@ export default class ConfirmTransactionBase extends Component {
       const primaryTotal = useMaxFee
         ? primaryTotalTextOverrideMaxAmount
         : primaryTotalTextOverride;
-      return useNativeCurrencyAsPrimaryCurrency
+      const totalMaxAmount = useNativeCurrencyAsPrimaryCurrency
         ? primaryTotal
         : secondaryTotalTextOverride;
+
+      return isBoldTextAndNotOverridden ? (
+        <Text variant={TextVariant.bodyMdBold}>{totalMaxAmount}</Text>
+      ) : (
+        totalMaxAmount
+      );
     };
 
     const renderTotalDetailText = (value) => {
@@ -447,6 +461,14 @@ export default class ConfirmTransactionBase extends Component {
               type={SECONDARY}
               key="total-detail-text"
               value={value}
+              suffixProps={{
+                color: TextColor.textDefault,
+                variant: TextVariant.bodyMdBold,
+              }}
+              textProps={{
+                color: TextColor.textDefault,
+                variant: TextVariant.bodyMdBold,
+              }}
               hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
             />
           </div>
@@ -548,17 +570,25 @@ export default class ConfirmTransactionBase extends Component {
                   useCurrencyRateCheck &&
                   renderTotalDetailText(getTotalAmount())
                 }
-                detailTotal={renderTotalMaxAmount(false)}
+                detailTotal={renderTotalMaxAmount({
+                  useMaxFee: false,
+                  isBoldTextAndNotOverridden: true,
+                })}
                 subTitle={t('transactionDetailGasTotalSubtitle')}
                 subText={
                   <div className="confirm-page-container-content__total-amount">
                     <LoadingHeartBeat
                       estimateUsed={this.props.txData?.userFeeLevel}
                     />
-                    <strong key="editGasSubTextAmountLabel">
+                    <Text
+                      color={TextColor.textAlternative}
+                      variant={TextVariant.bodySmMedium}
+                    >
                       {t('editGasSubTextAmountLabel')}
-                    </strong>{' '}
-                    {renderTotalMaxAmount(true)}
+                    </Text>{' '}
+                    {renderTotalMaxAmount({
+                      useMaxFee: true,
+                    })}
                   </div>
                 }
               />,
