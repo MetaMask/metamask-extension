@@ -4355,8 +4355,6 @@
         "devicePixelRatio": true
       },
       "packages": {
-        "prop-types": true,
-        "qrcode.react>qr.js": true,
         "react": true
       }
     },
