@@ -190,6 +190,7 @@ describe('ConnectHardwareForm', () => {
         expect(getByText('CoolWallet')).toBeInTheDocument();
         expect(getByText("D'Cent")).toBeInTheDocument();
         expect(getByText('imToken')).toBeInTheDocument();
+        expect(getByText('OneKey')).toBeInTheDocument();
       });
     });
   });

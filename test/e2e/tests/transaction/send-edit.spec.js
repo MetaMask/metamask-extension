@@ -9,9 +9,6 @@ const FixtureBuilder = require('../../fixture-builder');
 
 describe('Editing Confirm Transaction', function () {
   it('goes back from confirm page to edit eth value, gas price and gas limit', async function () {
-    if (process.env.MULTICHAIN) {
-      return;
-    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -35,14 +32,14 @@ describe('Editing Confirm Transaction', function () {
           '.confirm-page-container-header__back-button',
         );
 
-        const inputAmount = await driver.findElement('.unit-input__input');
+        const inputAmount = await driver.findElement('input[placeholder="0"]');
 
         await inputAmount.press(driver.Key.BACK_SPACE);
         await inputAmount.press('2');
         await inputAmount.press('.');
         await inputAmount.press('2');
 
-        await driver.clickElement({ text: 'Next', tag: 'button' });
+        await driver.clickElement({ text: 'Continue', tag: 'button' });
 
         await driver.clickElement({ text: 'Edit', tag: 'button' });
 
@@ -84,9 +81,6 @@ describe('Editing Confirm Transaction', function () {
   });
 
   it('goes back from confirm page to edit eth value, baseFee, priorityFee and gas limit - 1559 V2', async function () {
-    if (process.env.MULTICHAIN) {
-      return;
-    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -110,14 +104,14 @@ describe('Editing Confirm Transaction', function () {
           '.confirm-page-container-header__back-button',
         );
 
-        const inputAmount = await driver.findElement('.unit-input__input');
+        const inputAmount = await driver.findElement('input[placeholder="0"]');
 
         await inputAmount.press(driver.Key.BACK_SPACE);
         await inputAmount.press('2');
         await inputAmount.press('.');
         await inputAmount.press('2');
 
-        await driver.clickElement({ text: 'Next', tag: 'button' });
+        await driver.clickElement({ text: 'Continue', tag: 'button' });
 
         // open gas fee popover
         await driver.clickElement('[data-testid="edit-gas-fee-icon"]');

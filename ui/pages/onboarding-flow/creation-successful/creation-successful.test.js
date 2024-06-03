@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {
@@ -125,12 +125,14 @@ describe('Creation Successful Onboarding View', () => {
     );
   });
 
-  it('should route to pin extension route when "Done" button is clicked', () => {
+  it('should route to pin extension route when "Done" button is clicked', async () => {
     const { getByText } = renderWithProvider(<CreationSuccessful />, store);
     const doneButton = getByText('Done');
     fireEvent.click(doneButton);
-    expect(mockHistoryPush).toHaveBeenCalledWith(
-      ONBOARDING_PIN_EXTENSION_ROUTE,
-    );
+    await waitFor(() => {
+      expect(mockHistoryPush).toHaveBeenCalledWith(
+        ONBOARDING_PIN_EXTENSION_ROUTE,
+      );
+    });
   });
 });

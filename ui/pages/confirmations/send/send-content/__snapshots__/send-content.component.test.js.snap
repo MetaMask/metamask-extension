@@ -130,11 +130,6 @@ exports[`SendContent Component render should match snapshot 1`] = `
                     ETH
                   </div>
                 </div>
-                <div
-                  class="currency-input__conversion-component"
-                >
-                  No conversion rate available
-                </div>
               </div>
             </div>
           </div>
@@ -180,19 +175,15 @@ exports[`SendContent Component render should match snapshot 1`] = `
                 class="transaction-detail-item__row"
               >
                 <h6
-                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--display-flex mm-box--flex-wrap-nowrap mm-box--align-items-center mm-box--color-text-default"
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--padding-bottom-1 mm-box--display-flex mm-box--flex-wrap-nowrap mm-box--color-text-default"
                 >
-                  <p
-                    class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-                  >
-                    Estimated fee
-                  </p>
+                  Estimated fee
                 </h6>
                 <div
                   class="transaction-detail-item__detail-values"
                 >
                   <h6
-                    class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--text-align-right mm-box--margin-left-1 mm-box--color-text-default"
+                    class="mm-box mm-text mm-text--body-md mm-text--text-align-right mm-box--margin-left-1 mm-box--color-text-default"
                   >
                     <div
                       class="gas-details-item__currency-container"
@@ -202,12 +193,12 @@ exports[`SendContent Component render should match snapshot 1`] = `
                         title="0.0000315 ETH"
                       >
                         <span
-                          class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                          class="mm-box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis mm-box--color-text-alternative"
                         >
                           0.0000315
                         </span>
                         <span
-                          class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+                          class="mm-box mm-text currency-display-component__suffix mm-text--body-md mm-box--margin-inline-start-1 mm-box--color-text-alternative"
                         >
                           ETH
                         </span>
@@ -221,15 +212,15 @@ exports[`SendContent Component render should match snapshot 1`] = `
               >
                 <div>
                   <div
-                    class="mm-box mm-box--display-flex"
+                    class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap"
                   >
                     <p
-                      class="mm-box mm-text mm-text--body-xs mm-box--color-text-muted"
+                      class="mm-box mm-text mm-text--body-sm mm-box--padding-inline-end-1 mm-box--color-text-muted"
                     >
                       Unknown processing time
                     </p>
                     <p
-                      class="mm-box mm-text mm-text--body-xs mm-box--margin-left-1 mm-box--color-error-default"
+                      class="mm-box mm-text mm-text--body-sm mm-box--color-error-default"
                     >
                       <span
                         data-testid="gas-timing-time"
@@ -247,26 +238,29 @@ exports[`SendContent Component render should match snapshot 1`] = `
                     class="box gas-details-item__gasfee-label box--display-inline-flex box--flex-direction-row"
                   >
                     <div
-                      class="box box--margin-right-1 box--flex-direction-row"
+                      class="box box--flex-direction-row"
                     >
-                      <strong>
+                      <p
+                        class="mm-box mm-text mm-text--body-sm-medium mm-box--color-text-alternative"
+                      >
                         Max fee:
-                      </strong>
+                      </p>
                     </div>
                     <div
                       class="gas-details-item__currency-container"
+                      paddingstart="1"
                     >
                       <div
                         class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                         title="0.0000315 ETH"
                       >
                         <span
-                          class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                          class="mm-box mm-text currency-display-component__text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
                         >
                           0.0000315
                         </span>
                         <span
-                          class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+                          class="mm-box mm-text currency-display-component__suffix mm-text--body-sm mm-box--margin-inline-start-1 mm-box--color-text-alternative"
                         >
                           ETH
                         </span>

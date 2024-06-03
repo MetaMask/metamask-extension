@@ -136,14 +136,22 @@ export const getInitialSendStateWithExistingTxState = (draftTxState) => ({
         ...draftTransactionInitialState.amount,
         ...draftTxState.amount,
       },
-      asset: {
-        ...draftTransactionInitialState.asset,
-        ...draftTxState.asset,
+      sendAsset: {
+        ...draftTransactionInitialState.sendAsset,
+        ...draftTxState.sendAsset,
       },
       gas: {
         ...draftTransactionInitialState.gas,
         ...draftTxState.gas,
       },
+      isSwapQuoteLoading: false,
+      quotes: draftTxState.quotes ?? null,
+      receiveAsset: {
+        ...draftTransactionInitialState.receiveAsset,
+        ...(draftTxState.receiveAsset ?? draftTxState.sendAsset),
+      },
+      swapQuotesError: null,
+      swapQuotesLatestRequestTimestamp: null,
       recipient: {
         ...draftTransactionInitialState.recipient,
         ...draftTxState.recipient,

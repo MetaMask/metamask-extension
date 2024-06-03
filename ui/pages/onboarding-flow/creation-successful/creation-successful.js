@@ -34,6 +34,9 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useCreateSession } from '../../../hooks/metamask-notifications/useCreateSession';
+import { selectIsProfileSyncingEnabled } from '../../../selectors/metamask-notifications/profile-syncing';
+import { selectParticipateInMetaMetrics } from '../../../selectors/metamask-notifications/authentication';
 
 export default function CreationSuccessful() {
   const history = useHistory();
@@ -45,6 +48,11 @@ export default function CreationSuccessful() {
     'https://support.metamask.io/hc/en-us/articles/360015489591-Basic-Safety-and-Security-Tips-for-MetaMask';
   const learnHowToKeepWordsSafe =
     'https://community.metamask.io/t/what-is-a-secret-recovery-phrase-and-how-to-keep-your-crypto-wallet-secure/3440';
+
+  const { createSession } = useCreateSession();
+
+  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+  const participateInMetaMetrics = useSelector(selectParticipateInMetaMetrics);
 
   return (
     <Box
@@ -198,6 +206,18 @@ export default function CreationSuccessful() {
                 method: firstTimeFlowType,
               },
             });
+            if (isProfileSyncingEnabled || participateInMetaMetrics) {
+              trackEvent({
+                category: MetaMetricsEventCategory.Onboarding,
+                event:
+                  MetaMetricsEventName.OnboardingWalletCreationCompleteWithAuthenticating,
+                properties: {
+                  isProfileSyncingEnabled,
+                  partedInMetaMetrics: participateInMetaMetrics,
+                },
+              });
+            }
+            createSession();
             history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
           }}
         >

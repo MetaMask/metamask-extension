@@ -32,6 +32,7 @@ export type TypeFeatureAnnouncementFields = {
     longDescription: EntryFieldTypes.RichText;
     link?: EntryFieldTypes.EntryLink<TypeLinkFields>;
     action?: EntryFieldTypes.EntryLink<TypeActionFields>;
+    clients?: EntryFieldTypes.Text<'extension' | 'mobile' | 'portfolio'>;
   };
   contentTypeId: 'productAnnouncement';
 };

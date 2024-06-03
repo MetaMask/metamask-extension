@@ -52,7 +52,7 @@ describe('SendAmountRow Component', () => {
           currentTransactionUUID: '1-tx',
           draftTransactions: {
             '1-tx': {
-              asset: {
+              sendAsset: {
                 balance: '0x1158e460913d00000', // 20000000000000000000
                 details: {
                   address: '0x617b3f8050a0BD94b6b1da02B4384eE5B4DF13F4',
@@ -89,7 +89,7 @@ describe('SendAmountRow Component', () => {
             currentTransactionUUID: '1-tx',
             draftTransactions: {
               '1-tx': {
-                asset: {
+                sendAsset: {
                   balance: '',
                   details: {
                     standard: TokenStandard.ERC721,
@@ -116,7 +116,7 @@ describe('SendAmountRow Component', () => {
             currentTransactionUUID: '1-tx',
             draftTransactions: {
               '1-tx': {
-                asset: {
+                sendAsset: {
                   balance: '',
                   details: {
                     balance: '2',
@@ -166,7 +166,7 @@ describe('SendAmountRow Component', () => {
           currentTransactionUUID: '1-tx',
           draftTransactions: {
             '1-tx': {
-              asset: {
+              sendAsset: {
                 balance: '',
                 details: {
                   standard: TokenStandard.ERC1155,

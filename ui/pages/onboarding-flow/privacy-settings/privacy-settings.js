@@ -4,6 +4,10 @@ import { useHistory } from 'react-router-dom';
 import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
 
 import {
+  useSetIsProfileSyncingEnabled,
+  useEnableProfileSyncing,
+} from '../../../hooks/metamask-notifications/useProfileSyncing';
+import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
@@ -45,6 +49,8 @@ import {
   getPetnamesEnabled,
   getExternalServicesOnboardingToggleState,
 } from '../../../selectors';
+import { selectIsProfileSyncingEnabled } from '../../../selectors/metamask-notifications/profile-syncing';
+import { selectParticipateInMetaMetrics } from '../../../selectors/metamask-notifications/authentication';
 import {
   setIpfsGateway,
   setUseCurrencyRateCheck,
@@ -59,6 +65,7 @@ import {
   toggleExternalServices,
   setUseTransactionSimulations,
   setPetnamesEnabled,
+  performSignIn,
 } from '../../../store/actions';
 import {
   onboardingToggleBasicFunctionalityOn,
@@ -75,6 +82,13 @@ export default function PrivacySettings() {
   const [showDetail, setShowDetail] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [hiddenClass, setHiddenClass] = useState(true);
+  const { setIsProfileSyncingEnabled, error: setIsProfileSyncingEnabledError } =
+    useSetIsProfileSyncingEnabled();
+  const { enableProfileSyncing, error: disableProfileSyncingError } =
+    useEnableProfileSyncing();
+
+  const profileSyncingError =
+    setIsProfileSyncingEnabledError || disableProfileSyncingError;
 
   const defaultState = useSelector((state) => state.metamask);
   const {
@@ -89,6 +103,8 @@ export default function PrivacySettings() {
     useTransactionSimulations,
   } = defaultState;
   const petnamesEnabled = useSelector(getPetnamesEnabled);
+  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+  const participateInMetaMetrics = useSelector(selectParticipateInMetaMetrics);
 
   const [usePhishingDetection, setUsePhishingDetection] =
     useState(usePhishDetect);
@@ -133,6 +149,12 @@ export default function PrivacySettings() {
     setUseTransactionSimulations(isTransactionSimulationsEnabled);
     dispatch(setPetnamesEnabled(turnOnPetnames));
 
+    if (externalServicesOnboardingToggleState) {
+      if (!isProfileSyncingEnabled && participateInMetaMetrics) {
+        dispatch(performSignIn());
+      }
+    }
+
     if (ipfsURL && !ipfsError) {
       const { host } = new URL(addUrlProtocolPrefix(ipfsURL));
       dispatch(setIpfsGateway(host));
@@ -148,7 +170,44 @@ export default function PrivacySettings() {
       },
     });
 
+    const eventName =
+      isProfileSyncingEnabled || participateInMetaMetrics
+        ? MetaMetricsEventName.OnboardingWalletAdvancedSettingsWithAuthenticating
+        : MetaMetricsEventName.OnboardingWalletAdvancedSettingsWithoutAuthenticating;
+
+    trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: eventName,
+      properties: {
+        isProfileSyncingEnabled,
+        participateInMetaMetrics,
+      },
+    });
+
     history.push(ONBOARDING_COMPLETION_ROUTE);
+  };
+
+  const handleUseProfileSync = async () => {
+    if (isProfileSyncingEnabled) {
+      dispatch(
+        showModal({
+          name: 'CONFIRM_TURN_OFF_PROFILE_SYNCING',
+          turnOffProfileSyncing: () => {
+            setIsProfileSyncingEnabled(false);
+            trackEvent({
+              category: MetaMetricsEventCategory.Onboarding,
+              event:
+                MetaMetricsEventName.OnboardingWalletAdvancedSettingsTurnOffProfileSyncing,
+              properties: {
+                participateInMetaMetrics,
+              },
+            });
+          },
+        }),
+      );
+    } else {
+      await enableProfileSyncing();
+    }
   };
 
   const handleIPFSChange = (url) => {
@@ -344,8 +403,46 @@ export default function PrivacySettings() {
                       }
                     }}
                     title={t('basicConfigurationLabel')}
-                    description={t('basicConfigurationDescription')}
+                    description={t('basicConfigurationDescription', [
+                      <a
+                        href="https://consensys.io/privacy-policy"
+                        key="link"
+                        target="_blank"
+                        rel="noreferrer noopener"
+                      >
+                        {t('privacyMsg')}
+                      </a>,
+                    ])}
                   />
+
+                  <Setting
+                    dataTestId="profile-sync-toggle"
+                    value={isProfileSyncingEnabled}
+                    setValue={handleUseProfileSync}
+                    title={t('profileSync')}
+                    description={t('profileSyncDescription', [
+                      <a
+                        href="https://consensys.io/privacy-policy/"
+                        key="link"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {t('profileSyncPrivacyLink')}
+                      </a>,
+                    ])}
+                  />
+                  {profileSyncingError && (
+                    <Box paddingBottom={4}>
+                      <Text
+                        as="p"
+                        color={TextColor.errorDefault}
+                        variant={TextVariant.bodySm}
+                      >
+                        {t('notificationsSettingsBoxError')}
+                      </Text>
+                    </Box>
+                  )}
+
                   <Setting
                     title={t('onboardingAdvancedPrivacyNetworkTitle')}
                     showToggle={false}

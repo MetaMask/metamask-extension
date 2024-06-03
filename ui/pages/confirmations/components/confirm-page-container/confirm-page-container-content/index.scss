@@ -33,7 +33,6 @@
     text-transform: uppercase;
 
     & button {
-      font-size: unset;
       color: var(--color-text-alternative);
       text-transform: uppercase;
       max-width: 170px;
@@ -54,6 +53,18 @@
     & .dropdown__icon-caret-down {
       top: 40%;
     }
+  }
+
+  &__total-amount {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  &__total-value {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
   }
 
   .page-container__footer {
