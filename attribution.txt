@@ -25997,7 +25997,7 @@ Exhibit B - "Incompatible With Secondary Licenses" Notice
 ******************************
 
 rpc-websockets
-7.11.0 <https://github.com/elpheria/rpc-websockets>
+7.11.1 <https://github.com/elpheria/rpc-websockets>
 Copyright (c) Elpheria j.d.o.o.
 
 rpc-websockets is an Open Source project licensed under the terms of
