@@ -189,14 +189,17 @@ env:
   - SUPPORT_REQUEST_LINK: https://metamask.zendesk.com/hc/en-us
   - SKIP_BACKGROUND_INITIALIZATION: false
 
-  # TODO(ritave): Move ManifestV3 into a feature?
-  - ENABLE_MV3: false
+  - ENABLE_MV3: true
   # These are exclusively used for MV3
   - APPLY_LAVAMOAT
   - FILE_NAMES
 
   # This variable is read by Trezor's source and breaks build if not included
   - ASSET_PREFIX: null
+  - SUITE_TYPE: null
+  - COMMITHASH: null
+  - VERSION: null
+  - IS_CODESIGN_BUILD: null
 
   - SENTRY_MMI_DSN: ''
 
