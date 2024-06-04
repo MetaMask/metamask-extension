@@ -1,7 +1,11 @@
 const fs = require('fs').promises;
 const path = require('path');
 
-const CHANGED_FILES_PATH = path.join(__dirname, 'changed-files', 'changed-files.txt');
+const CHANGED_FILES_PATH = path.join(
+  __dirname,
+  'changed-files',
+  'changed-files.txt',
+);
 
 async function fetchChangedE2eFiles() {
   try {

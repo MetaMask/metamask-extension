@@ -11,6 +11,10 @@ const { fetchChangedE2eFiles } = require('./fetch-changed-files');
 // These tests should only be run on Flask for now.
 const FLASK_ONLY_TESTS = ['test-snap-namelookup.spec.js'];
 
+// Quality Gate Retries
+const RETRIES_FOR_NEW_OR_CHANGED_TESTS = 5;
+let changedOrNewTests;
+
 const getTestPathsForTestDir = async (testDir) => {
   const testFilenames = await fs.promises.readdir(testDir, {
     withFileTypes: true,
@@ -32,8 +36,15 @@ const getTestPathsForTestDir = async (testDir) => {
 };
 
 // For running E2Es in parallel in CI
-function runningOnCircleCI(testPaths) {
-  const fullTestList = testPaths.join('\n');
+async function runningOnCircleCI(testPaths) {
+  let fullTestList = testPaths.join('\n');
+
+  // Quality Gate Logic
+  changedOrNewTests = await fetchChangedE2eFiles();
+  for (let i = 0; i < RETRIES_FOR_NEW_OR_CHANGED_TESTS; i++) {
+    fullTestList += changedOrNewTests;
+  }
+
   console.log('Full test list:', fullTestList);
   fs.writeFileSync('test/test-results/fullTestList.txt', fullTestList);
 
@@ -213,28 +224,18 @@ async function main() {
 
   console.log('My test list:', myTestList);
 
-  const changedOrNewTests = await fetchChangedE2eFiles();
-  const retriesForChangedOrNewTests = 5;
-
-  console.log('Spec files that will be re-run:', changedOrNewTests);
-
   // spawn `run-e2e-test.js` for each test in myTestList
   for (let testPath of myTestList) {
     if (testPath !== '') {
       testPath = testPath.replace('\n', ''); // sometimes there's a newline at the end of the testPath
       console.log(`\nExecuting testPath: ${testPath}\n`);
-
       const testFileName = testPath.split('/').pop();
       const isTestChangedOrNew = changedOrNewTests?.includes(testFileName);
-      const retryIndex = args.indexOf('--retries');
-      if (retryIndex !== -1) {
-        args.splice(retryIndex, 2);
-      }
 
-      const extraArgs = isTestChangedOrNew
-        ? ['--retry-until-failure', `--retries=${retriesForChangedOrNewTests}`]
+      const qualityGateArg = isTestChangedOrNew
+        ? ['--stop-after-one-failure']
         : [];
-      await runInShell('node', [...args, ...extraArgs, testPath]);
+      await runInShell('node', [...args, ...qualityGateArg, testPath]);
     }
   }
 }
