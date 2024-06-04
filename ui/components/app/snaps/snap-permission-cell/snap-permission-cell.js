@@ -42,44 +42,8 @@ export default function SnapPermissionCell({
 
   const snapsMetadata = useSelector(getSnapsMetadata);
 
-  if (permission.connection) {
-    if (connectionSubjectMetadata?.subjectType === SubjectType.Snap) {
-      const snapName = getSnapName(snapsMetadata)(
-        connectionSubjectMetadata.origin,
-      );
-      label = t('snapConnectTo', [
-        <Text
-          key="connectToMain"
-          fontWeight={FontWeight.Medium}
-          variant={TextVariant.inherit}
-          color={TextColor.inherit}
-        >
-          {snapName}
-        </Text>,
-      ]);
-      description = t('snapConnectionPermissionDescription', [
-        <Text
-          key={`permissionSubject_${permission.subjectName}`}
-          fontWeight={FontWeight.Medium}
-          variant={TextVariant.inherit}
-          color={TextColor.inherit}
-        >
-          {permission.subjectName}
-        </Text>,
-        <Text
-          key={`permissionSubjectDescription_${snapName}`}
-          fontWeight={FontWeight.Medium}
-          variant={TextVariant.inherit}
-          color={TextColor.inherit}
-        >
-          {snapName}
-        </Text>,
-      ]);
-    }
-
-    const faviconUrl = connectionSubjectMetadata?.iconUrl;
-
-    leftIcon = faviconUrl ? (
+  const createConnectionIcon = (faviconUrl, permissionSubject) => {
+    return faviconUrl ? (
       <AvatarFavicon
         backgroundColor={BackgroundColor.backgroundAlternative}
         size={AvatarFaviconSize.Md}
@@ -87,7 +51,7 @@ export default function SnapPermissionCell({
           size: IconSize.Sm,
         }}
         src={faviconUrl}
-        name={permission.connection}
+        name={permissionSubject.connection}
       />
     ) : (
       <AvatarBase
@@ -99,8 +63,57 @@ export default function SnapPermissionCell({
         style={{ borderWidth: '0px' }}
         backgroundColor={BackgroundColor.backgroundAlternative}
       >
-        {getAvatarFallbackLetter(permission.connectionName)}
+        {getAvatarFallbackLetter(permissionSubject.connectionName)}
       </AvatarBase>
+    );
+  };
+
+  const createSnapConnectionLabel = (snapName) => {
+    return t('snapConnectTo', [
+      <Text
+        key="snapConnectTo"
+        fontWeight={FontWeight.Medium}
+        variant={TextVariant.inherit}
+        color={TextColor.inherit}
+      >
+        {snapName}
+      </Text>,
+    ]);
+  };
+
+  const createSnapConnectionDescription = (snapName) => {
+    return t('snapConnectionPermissionDescription', [
+      <Text
+        key={`permissionSubject_${permission.subjectName}`}
+        fontWeight={FontWeight.Medium}
+        variant={TextVariant.inherit}
+        color={TextColor.inherit}
+      >
+        {permission.subjectName}
+      </Text>,
+      <Text
+        key={`permissionSubjectDescription_${snapName}`}
+        fontWeight={FontWeight.Medium}
+        variant={TextVariant.inherit}
+        color={TextColor.inherit}
+      >
+        {snapName}
+      </Text>,
+    ]);
+  };
+
+  if (permission.connection) {
+    if (connectionSubjectMetadata?.subjectType === SubjectType.Snap) {
+      const snapName = getSnapName(snapsMetadata)(
+        connectionSubjectMetadata.origin,
+      );
+      label = createSnapConnectionLabel(snapName);
+      description = createSnapConnectionDescription(snapName);
+    }
+
+    leftIcon = createConnectionIcon(
+      connectionSubjectMetadata?.iconUrl,
+      permission,
     );
   }
 
