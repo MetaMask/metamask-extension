@@ -60,6 +60,9 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getAccountLabel } from '../../../helpers/utils/accounts';
 import { HiddenAccountList } from './hidden-account-list';
+import { BITCOIN_MANAGER_SNAP_ID, BitcoinManagerSnapSender } from '../../../../app/scripts/lib/snap-keyring/bitcoin-manager-snap';
+import { KeyringClient } from '@metamask/keyring-api';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 
 const ACTION_MODES = {
   // Displays the search box and account list
@@ -98,6 +101,16 @@ export const mergeAccounts = (accountsWithBalances, internalAccounts) => {
     return account;
   });
 };
+
+const createBitcoinAccount = async () => {
+  // Client to create the account using the Bitcoin Snap
+  const client = new KeyringClient(new BitcoinManagerSnapSender());
+
+  // This will trigger the Snap account creation flow (+ account renaming)
+  await client.createAccount({
+    scope: MultichainNetworks.BITCOIN, // Mainnet
+  });
+}
 
 export const AccountListMenu = ({
   onClose,
@@ -219,6 +232,33 @@ export const AccountListMenu = ({
                 data-testid="multichain-account-menu-popover-add-account"
               >
                 {t('addNewAccount')}
+              </ButtonLink>
+            </Box>
+            <Box marginTop={4}>
+              <ButtonLink
+                size={Size.SM}
+                startIconName={IconName.Add}
+                onClick={async () => {
+                  trackEvent({
+                    category: MetaMetricsEventCategory.Navigation,
+                    event: MetaMetricsEventName.AccountAddSelected,
+                    properties: {
+                      account_type: MetaMetricsEventAccountType.Snap,
+                      snap_id: BITCOIN_MANAGER_SNAP_ID,
+                      snap_name: 'Bitcoin Manager', // TODO: Dynamically get the name from the Snap?
+                      location: 'Main Menu',
+                    },
+                  });
+
+                  // The account creation + renaming is handled by the Snap account bridge, so we
+                  // need to close the current model
+                  onClose();
+
+                  await createBitcoinAccount();
+                }}
+                data-testid="multichain-account-menu-popover-add-btc-account"
+              >
+                {t('addNewBitcoinAccount')}
               </ButtonLink>
             </Box>
             <Box marginTop={4}>

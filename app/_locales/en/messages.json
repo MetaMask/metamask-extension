@@ -281,7 +281,10 @@
     "description": "$1 is Learn more link"
   },
   "addNewAccount": {
-    "message": "Add a new account"
+    "message": "Add a new Ethereum account"
+  },
+  "addNewBitcoinAccount": {
+    "message": "Add a new Bitcoin account"
   },
   "addNewToken": {
     "message": "Add new token"
