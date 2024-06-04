@@ -33,6 +33,119 @@ describe('MetaMetricsDataDeletionController', () => {
         metaMetricsDataDeletionDate: expect.any(Number),
       });
     });
+    it('calls updateDataDeletionTaskStatus right after creating the delete regulation', async () => {
+      const mockMetaMetricsId = 'mockId';
+      const mockTaskId = 'mockTaskId';
+      const { controller, dataDeletionService } = setupController({
+        options: {
+          getMetaMetricsId: jest.fn().mockReturnValue(mockMetaMetricsId),
+        },
+        dataDeletionService: {
+          createDataDeletionRegulationTask: jest
+            .fn()
+            .mockResolvedValue({ data: { regulateId: mockTaskId } }),
+          fetchDeletionRegulationStatus: jest.fn().mockResolvedValue({
+            data: {
+              regulation: {
+                overallStatus: 'UNKNOWN',
+              },
+            },
+          }),
+        },
+      });
+
+      await controller.createMetaMetricsDataDeletionTask();
+
+      expect(
+        dataDeletionService.createDataDeletionRegulationTask,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        dataDeletionService.fetchDeletionRegulationStatus,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        dataDeletionService.createDataDeletionRegulationTask,
+      ).toHaveBeenCalledWith(mockMetaMetricsId);
+      expect(controller.state).toMatchObject({
+        metaMetricsDataDeletionId: mockTaskId,
+        metaMetricsDataDeletionDate: expect.any(Number),
+        metaMetricsDataDeletionStatus: 'UNKNOWN',
+      });
+    });
+  });
+  describe('updateDataDeletionTaskStatus', () => {
+    it('fetches and stores status of the delete regulation using delete regulation ID', async () => {
+      const mockMetaMetricsId = 'mockId';
+      const mockTaskId = 'mockTaskId';
+      const { controller, dataDeletionService } = setupController({
+        options: {
+          getMetaMetricsId: jest.fn().mockReturnValue(mockMetaMetricsId),
+        },
+        dataDeletionService: {
+          createDataDeletionRegulationTask: jest
+            .fn()
+            .mockResolvedValue({ data: { regulateId: mockTaskId } }),
+          fetchDeletionRegulationStatus: jest.fn().mockResolvedValue({
+            data: {
+              regulation: {
+                overallStatus: 'UNKNOWN',
+              },
+            },
+          }),
+        },
+      });
+      await controller.createMetaMetricsDataDeletionTask();
+      await controller.updateDataDeletionTaskStatus();
+      expect(
+        dataDeletionService.fetchDeletionRegulationStatus,
+      ).toHaveBeenCalledTimes(2);
+      expect(
+        dataDeletionService.fetchDeletionRegulationStatus,
+      ).toHaveBeenCalledWith(mockTaskId);
+      expect(controller.state).toMatchObject({
+        metaMetricsDataDeletionId: mockTaskId,
+        metaMetricsDataDeletionDate: expect.any(Number),
+        metaMetricsDataDeletionStatus: 'UNKNOWN',
+      });
+    });
+  });
+  describe('setHasMetaMetricsDataRecorded', () => {
+    it('updating hasMetaMetricsDataRecorded variable', async () => {
+      const { controller } = setupController();
+      controller.setHasMetaMetricsDataRecorded(true);
+      expect(controller.state).toMatchObject({
+        hasMetaMetricsDataRecorded: true,
+      });
+    });
+    it('creates a data deletion task and updating hasMetaMetricsDataRecorded to false', async () => {
+      const mockMetaMetricsId = 'mockId';
+      const mockTaskId = 'mockTaskId';
+      const { controller, dataDeletionService } = setupController({
+        options: {
+          getMetaMetricsId: jest.fn().mockReturnValue(mockMetaMetricsId),
+        },
+        dataDeletionService: {
+          createDataDeletionRegulationTask: jest
+            .fn()
+            .mockResolvedValue({ data: { regulateId: mockTaskId } }),
+        },
+      });
+
+      await controller.createMetaMetricsDataDeletionTask();
+      controller.setHasMetaMetricsDataRecorded(false);
+
+      expect(
+        dataDeletionService.createDataDeletionRegulationTask,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        dataDeletionService.fetchDeletionRegulationStatus,
+      ).toHaveBeenCalledTimes(1);
+      expect(controller.state).toMatchObject({
+        metaMetricsDataDeletionId: mockTaskId,
+        metaMetricsDataDeletionDate: expect.any(Number),
+        metaMetricsDataDeletionStatus: 'UNKNOWN',
+        hasMetaMetricsDataRecorded: false,
+      });
+    });
   });
 });
 
