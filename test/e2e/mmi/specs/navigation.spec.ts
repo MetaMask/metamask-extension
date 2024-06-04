@@ -19,7 +19,7 @@ const mmiHomePage = 'https://metamask.io/institutions/';
 const privacyAndPolicy = 'https://consensys.io/privacy-policy';
 const openSeaTermsOfUse = 'https://opensea.io/securityproviderterms';
 const metamaskAttributions =
-  'https://github.com/MetaMask/metamask-extension/blob/develop/attribution.txt';
+  'https://raw.githubusercontent.com/MetaMask/metamask-extension/develop/attribution.txt';
 const termsOfUse = 'https://consensys.io/terms-of-use';
 const learnMoreArticles = 'https://support.metamask.io/hc/en-us/articles';
 
