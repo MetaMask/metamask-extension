@@ -16,6 +16,11 @@ describe('Test Snap Signature Insights', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
+          .withPreferencesController({
+            disabledRpcMethodPreferences: {
+              eth_sign: true,
+            },
+          })
           .build(),
         ganacheOptions: defaultGanacheOptions,
         failOnConsoleError: false,
@@ -72,7 +77,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#personalSign');
 
         // switch back to MetaMask window and switch to tx insights pane
-        await switchToNotificationWindow(driver, 4);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // wait for and click sign
         await driver.waitForSelector({
@@ -85,7 +90,6 @@ describe('Test Snap Signature Insights', function () {
         });
 
         // look for returned signature insights data
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector({
           text: '0x4578616d706c652060706572736f6e616c5f7369676e60206d657373616765',
           tag: 'p',
@@ -113,7 +117,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#signTypedData');
 
         // switch back to MetaMask window and switch to tx insights pane
-        await switchToNotificationWindow(driver, 4);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // wait for and click sign
         await driver.waitForSelector({
@@ -126,7 +130,6 @@ describe('Test Snap Signature Insights', function () {
         });
 
         // look for returned signature insights data
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector({
           text: '1',
           tag: 'p',
@@ -154,7 +157,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#signTypedDataV3');
 
         // switch back to MetaMask window and switch to tx insights pane
-        await switchToNotificationWindow(driver, 4);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // click down arrow
         await driver.waitForSelector('.fa-arrow-down');
@@ -171,7 +174,6 @@ describe('Test Snap Signature Insights', function () {
         });
 
         // look for returned signature insights data
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector({
           text: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC has been identified as a malicious verifying contract.',
           tag: 'p',
@@ -199,7 +201,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#signTypedDataV4');
 
         // switch back to MetaMask window and switch to tx insights pane
-        await switchToNotificationWindow(driver, 4);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // click down arrow
         await driver.waitForSelector('.fa-arrow-down');
@@ -216,7 +218,6 @@ describe('Test Snap Signature Insights', function () {
         });
 
         // look for returned signature insights data
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector({
           text: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC has been identified as a malicious verifying contract.',
           tag: 'p',
@@ -238,57 +239,6 @@ describe('Test Snap Signature Insights', function () {
         });
 
         // TEST FIVE: eth_sign
-        // switch to metamask window
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
-
-        // click on the global action menu
-        await driver.waitForSelector(
-          '[data-testid="account-options-menu-button"]',
-        );
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
-
-        // try to click on the settings item
-        await driver.clickElement({
-          text: 'Settings',
-          tag: 'div',
-        });
-
-        // try to click on the advanced item
-        await driver.clickElement({
-          text: 'Advanced',
-          tag: 'div',
-        });
-
-        // scroll to and click on Eth_sign requests toggle
-        const ethSignToggle1 = await driver.findElement('.eth-sign-toggle');
-        await driver.scrollToElement(ethSignToggle1);
-        await driver.clickElement('.eth-sign-toggle');
-
-        // wait for and click checkbox on modal and click continue
-        await driver.waitForSelector('#eth-sign-checkbox');
-        await driver.clickElement('#eth-sign-checkbox');
-        await driver.clickElement({
-          text: 'Continue',
-          tag: 'button',
-        });
-
-        // fill in annoyance field and click enable
-        await driver.waitForSelector('#enter-eth-sign-text');
-        await driver.fill(
-          '#enter-eth-sign-text',
-          'I only sign what I understand',
-        );
-        await driver.clickElement({
-          text: 'Enable',
-          tag: 'button',
-        });
-
-        // switch back to test-dapp window
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // scroll to and click eth sign button
         const ethSignButton1 = await driver.findElement('#ethSign');
