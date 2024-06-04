@@ -188,6 +188,7 @@ export const DomainInputResolutionCell = ({
         <div
           ref={titleRef}
           className="multichain-send-page__recipient__item__title"
+          data-testid="multichain-send-page__recipient__item__title"
         >
           {getTitle()}
         </div>
