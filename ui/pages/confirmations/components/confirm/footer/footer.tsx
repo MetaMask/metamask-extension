@@ -1,33 +1,32 @@
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { ConfirmAlertModal } from '../../../../../components/app/alert-system/confirm-alert-modal';
 import {
   Button,
   ButtonSize,
   ButtonVariant,
   IconName,
 } from '../../../../../components/component-library';
-import { ConfirmAlertModal } from '../../../../../components/app/alert-system/confirm-alert-modal';
 import { Footer as PageFooter } from '../../../../../components/multichain/pages/page';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   doesAddressRequireLedgerHidConnection,
   getCustomNonceValue,
 } from '../../../../../selectors';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { useMMIConfirmations } from '../../../../../hooks/useMMIConfirmations';
 ///: END:ONLY_INCLUDE_IF
+import { TransactionMeta } from '@metamask/transaction-controller';
+import useAlerts from '../../../../../hooks/useAlerts';
 import {
   rejectPendingApproval,
+  resolvePendingApproval,
   updateAndApproveTx,
 } from '../../../../../store/actions';
-import useAlerts from '../../../../../hooks/useAlerts';
 import { confirmSelector } from '../../../selectors';
+import { REDESIGN_TRANSACTION_TYPES } from '../../../utils';
 import { getConfirmationSender } from '../utils';
-import { TransactionMeta } from '@metamask/transaction-controller';
-import { clearConfirmTransaction } from '../../../../../ducks/confirm-transaction/confirm-transaction.duck';
-import { getMostRecentOverviewPage } from '../../../../../ducks/history/history';
-import { useHistory } from 'react-router-dom';
 
 function getIconName(hasUnconfirmedAlerts: boolean): IconName {
   return hasUnconfirmedAlerts ? IconName.SecuritySearch : IconName.Danger;
@@ -126,49 +125,28 @@ const Footer = () => {
       return;
     }
 
-    // if (transaction) {
-
-    // here it goes function
-
-    const mergeTxDataWithNonce = (transactionData: TransactionMeta) =>
-      customNonceValue
-        ? { ...transactionData, customNonceValue }
-        : transactionData;
-
-    const updatedTx = mergeTxDataWithNonce(
-      currentConfirmation as TransactionMeta,
+    const isTransactionConfirmation = REDESIGN_TRANSACTION_TYPES.find(
+      (type) => type === currentConfirmation?.type,
     );
+    if (isTransactionConfirmation) {
+      const mergeTxDataWithNonce = (transactionData: TransactionMeta) =>
+        customNonceValue
+          ? { ...transactionData, customNonceValue }
+          : transactionData;
 
-    console.log('inside approveAndClear()', { updatedTx });
+      const updatedTx = mergeTxDataWithNonce(
+        currentConfirmation as TransactionMeta,
+      );
 
-    dispatch(updateAndApproveTx(updatedTx, true, ''));
+      dispatch(updateAndApproveTx(updatedTx, true, ''));
+    } else {
+      dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
 
-    // dispatch(clearConfirmTransaction());
-
-    // const history = useHistory();
-    // const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
-    // history.push(mostRecentOverviewPage);
-
-    // } else {
-    //   dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    //   mmiOnSignCallback();
-    // }
-
-    ///: END:ONLY_INCLUDE_IF
-  }, [currentConfirmation]);
-
-  const mergeTxDataWithNonce = (transactionData: TransactionMeta) =>
-    customNonceValue
-      ? { ...transactionData, customNonceValue }
-      : transactionData;
-
-  const updatedTx = mergeTxDataWithNonce(
-    currentConfirmation as TransactionMeta,
-  );
-
-  console.log('inside render function', { updatedTx });
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+      mmiOnSignCallback();
+      ///: END:ONLY_INCLUDE_IF
+    }
+  }, [currentConfirmation, customNonceValue]);
 
   return (
     <PageFooter className="confirm-footer_page-footer">
@@ -183,10 +161,7 @@ const Footer = () => {
       </Button>
       <ConfirmButton
         alertOwnerId={currentConfirmation?.id}
-        onSubmit={() => {
-          console.log('inside Footer', { currentConfirmation });
-          onSubmit();
-        }}
+        onSubmit={() => onSubmit()}
         disabled={
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           mmiSubmitDisabled ||

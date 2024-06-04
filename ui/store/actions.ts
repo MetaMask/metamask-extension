@@ -1075,8 +1075,6 @@ export function updateAndApproveTx(
   unknown,
   AnyAction
 > {
-  console.log('inside updateAndApproveTx in actions', { txMeta });
-
   return (dispatch: MetaMaskReduxDispatch) => {
     !dontShowLoadingIndicator &&
       dispatch(showLoadingIndication(loadingIndicatorMessage));
