@@ -382,7 +382,7 @@ export default class PreferencesController {
   /**
    * Setter for the `selectedAddress` property
    *
-   * @deprecated - Please use setSelectedAccount from the AccountsController
+   * @deprecated - Use setSelectedAccount from the AccountsController
    * @param {string} address - A new hex address for an account
    */
   setSelectedAddress(address) {
@@ -403,7 +403,7 @@ export default class PreferencesController {
   /**
    * Getter for the `selectedAddress` property
    *
-   * @deprecated - Please use the getSelectedAccount from the AccountsController
+   * @deprecated - Use the getSelectedAccount from the AccountsController
    * @returns {string} The hex address for the currently selected account
    */
   getSelectedAddress() {
@@ -426,7 +426,7 @@ export default class PreferencesController {
   /**
    * Sets a custom label for an account
    *
-   * @deprecated - Please use setAccountName from the AccountsController
+   * @deprecated - Use setAccountName from the AccountsController
    * @param {string} address - the account to set a label for
    * @param {string} label - the custom label for the account
    * @returns {Promise<string>}

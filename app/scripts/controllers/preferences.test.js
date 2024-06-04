@@ -111,6 +111,7 @@ describe('preferences controller', () => {
     const mockName = 'mockName';
     const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
     const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
+
     it('updating name from preference controller will update the name in accounts controller and preferences controller', () => {
       controllerMessenger.publish('KeyringController:stateChange', {
         isUnlocked: true,
@@ -155,7 +156,7 @@ describe('preferences controller', () => {
       );
     });
 
-    it('updating name from accounts controller should update the name in preferences controller', () => {
+    it('updating name from accounts controller updates the name in preferences controller', () => {
       controllerMessenger.publish('KeyringController:stateChange', {
         isUnlocked: true,
         keyrings: [
@@ -200,7 +201,7 @@ describe('preferences controller', () => {
   });
 
   describe('setSelectedAddress', () => {
-    it('updating selectedAddress from preferences controller will update the selectedAccount in accounts controller and preferences controller', () => {
+    it('updating selectedAddress from preferences controller updates the selectedAccount in accounts controller and preferences controller', () => {
       const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
       const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
       controllerMessenger.publish('KeyringController:stateChange', {
@@ -230,7 +231,7 @@ describe('preferences controller', () => {
       expect(updatedSelectedAddress).toBe(updatedSelectedAccount.address);
     });
 
-    it('updating selectedAccount from accounts controller should update the selectedAddress in preferences controller', () => {
+    it('updating selectedAccount from accounts controller updates the selectedAddress in preferences controller', () => {
       const firstAddress = '0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326';
       const secondAddress = '0x0affb0a96fbefaa97dce488dfd97512346cf3ab8';
       controllerMessenger.publish('KeyringController:stateChange', {
