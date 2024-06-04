@@ -59,7 +59,7 @@ aliases:
       git fetch --depth 100 origin "$CIRCLE_SHA1"
 
       # Fetch the develop branch explicitly
-      git fetch origin origin/develop
+      git fetch origin develop
 
       if [ -n "${CIRCLE_TAG-}" ]; then
         echo "Checkout tag '${CIRCLE_TAG}' at commit '${CIRCLE_SHA1}'"
