@@ -299,7 +299,7 @@
     "@metamask/ethjs-query": "^0.7.1",
     "@metamask/gas-fee-controller": "^15.1.2",
     "@metamask/jazzicon": "^2.0.0",
-    "@metamask/keyring-api": "^6.1.0",
+    "@metamask/keyring-api": "^6.4.0",
     "@metamask/keyring-controller": "npm:@metamask-previews/keyring-controller@16.0.0-preview-eb2b1875",
     "@metamask/logging-controller": "^3.0.1",
     "@metamask/logo": "^3.1.2",
