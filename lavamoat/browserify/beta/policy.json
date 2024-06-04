@@ -1027,7 +1027,7 @@
       "packages": {
         "@metamask/eth-json-rpc-middleware>@metamask/json-rpc-engine": true,
         "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true,
-        "@metamask/eth-sig-util": true,
+        "@metamask/message-manager>@metamask/eth-sig-util": true,
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "pify": true,
@@ -1054,8 +1054,8 @@
         "@ethereumjs/tx": true,
         "@ethereumjs/tx>@ethereumjs/rlp": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/eth-sig-util": true,
         "@metamask/eth-trezor-keyring>hdkey": true,
+        "@metamask/message-manager>@metamask/eth-sig-util": true,
         "browserify>buffer": true,
         "webpack>events": true
       }
@@ -1066,36 +1066,6 @@
         "watchify>xtend": true
       }
     },
-    "@metamask/eth-sig-util": {
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@ethereumjs/tx>ethereum-cryptography": true,
-        "@metamask/abi-utils": true,
-        "@metamask/eth-sig-util>tweetnacl": true,
-        "@metamask/eth-sig-util>tweetnacl-util": true,
-        "@metamask/utils": true,
-        "browserify>buffer": true
-      }
-    },
-    "@metamask/eth-sig-util>tweetnacl": {
-      "globals": {
-        "crypto": true,
-        "msCrypto": true,
-        "nacl": "write"
-      },
-      "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
-    "@metamask/eth-sig-util>tweetnacl-util": {
-      "globals": {
-        "atob": true,
-        "btoa": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
     "@metamask/eth-snap-keyring": {
       "globals": {
         "URL": true,
@@ -1103,9 +1073,9 @@
       },
       "packages": {
         "@ethereumjs/tx": true,
-        "@metamask/eth-sig-util": true,
         "@metamask/eth-snap-keyring>uuid": true,
         "@metamask/keyring-api": true,
+        "@metamask/message-manager>@metamask/eth-sig-util": true,
         "@metamask/utils": true,
         "superstruct": true,
         "webpack>events": true
@@ -1248,7 +1218,7 @@
     },
     "@metamask/eth-trezor-keyring>@trezor/connect-plugin-ethereum": {
       "packages": {
-        "@metamask/eth-sig-util": true,
+        "@metamask/message-manager>@metamask/eth-sig-util": true,
         "@trezor/connect-web>tslib": true
       }
     },
@@ -1479,11 +1449,11 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/browser-passworder": true,
-        "@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/base-controller": true,
         "@metamask/keyring-controller>@metamask/eth-hd-keyring": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
+        "@metamask/message-manager>@metamask/eth-sig-util": true,
         "@metamask/name-controller>async-mutex": true,
         "@metamask/utils": true
       }
@@ -1503,7 +1473,7 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
-        "@metamask/eth-sig-util": true,
+        "@metamask/message-manager>@metamask/eth-sig-util": true,
         "@metamask/scure-bip39": true,
         "@metamask/utils": true,
         "browserify>buffer": true
@@ -1513,7 +1483,7 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
-        "@metamask/eth-sig-util": true,
+        "@metamask/message-manager>@metamask/eth-sig-util": true,
         "@metamask/utils": true,
         "browserify>buffer": true,
         "mocha>serialize-javascript>randombytes": true
@@ -1594,8 +1564,8 @@
     "@metamask/message-manager": {
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/eth-sig-util": true,
         "@metamask/message-manager>@metamask/controller-utils": true,
+        "@metamask/message-manager>@metamask/eth-sig-util": true,
         "@metamask/message-manager>jsonschema": true,
         "@metamask/utils": true,
         "browserify>buffer": true,
@@ -1619,6 +1589,36 @@
         "browserify>buffer": true,
         "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true
+      }
+    },
+    "@metamask/message-manager>@metamask/eth-sig-util": {
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
+        "@metamask/abi-utils": true,
+        "@metamask/message-manager>@metamask/eth-sig-util>tweetnacl": true,
+        "@metamask/message-manager>@metamask/eth-sig-util>tweetnacl-util": true,
+        "@metamask/utils": true,
+        "browserify>buffer": true
+      }
+    },
+    "@metamask/message-manager>@metamask/eth-sig-util>tweetnacl": {
+      "globals": {
+        "crypto": true,
+        "msCrypto": true,
+        "nacl": "write"
+      },
+      "packages": {
+        "browserify>browser-resolve": true
+      }
+    },
+    "@metamask/message-manager>@metamask/eth-sig-util>tweetnacl-util": {
+      "globals": {
+        "atob": true,
+        "btoa": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
       }
     },
     "@metamask/message-manager>jsonschema": {
@@ -1953,7 +1953,7 @@
     "@metamask/signature-controller>@metamask/message-manager": {
       "packages": {
         "@metamask/controller-utils": true,
-        "@metamask/eth-sig-util": true,
+        "@metamask/message-manager>@metamask/eth-sig-util": true,
         "@metamask/message-manager>jsonschema": true,
         "@metamask/signature-controller>@metamask/base-controller": true,
         "@metamask/utils": true,
