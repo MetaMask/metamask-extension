@@ -61,7 +61,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
         await confirmContractDeploymentTransaction(driver);
 
         await createDepositTransaction(driver);
-        await confirmDepositTransactionWithCustomNonce(driver, '3');
+        await confirmDepositTransactionWithCustomNonce(driver, '10');
       },
     );
   });
@@ -99,7 +99,6 @@ async function toggleOnCustomNonce(driver) {
 }
 
 async function createContractDeploymentTransaction(driver) {
-  // console.log('createContractDeploymentTransaction');
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   await driver.clickElement(`#deployButton`);
 }
@@ -169,4 +168,19 @@ async function confirmDepositTransactionWithCustomNonce(driver, customNonce) {
     tag: 'button',
   });
   await driver.clickElement(`[data-testid="confirm-footer-button"]`);
+
+  // Confirm tx was submitted with the higher nonce
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+
+  await driver.delay(500);
+
+  const sendTransactionListItem = await driver.findElement(
+    '.transaction-list__pending-transactions .activity-list-item',
+  );
+  await sendTransactionListItem.click();
+
+  await driver.waitForSelector({
+    css: '.transaction-breakdown__value',
+    text: customNonce,
+  });
 }
