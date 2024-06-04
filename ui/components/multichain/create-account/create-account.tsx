@@ -1,16 +1,12 @@
-import React, { useContext, useState } from 'react';
-import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useContext, useEffect, useState, KeyboardEvent } from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { InternalAccount } from '@metamask/keyring-api';
 import { Box, ButtonPrimary, ButtonSecondary } from '../../component-library';
 import { FormTextField } from '../../component-library/form-text-field/deprecated';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAccountNameErrorMessage } from '../../../helpers/utils/accounts';
-import {
-  getMetaMaskAccountsOrdered,
-  getInternalAccounts,
-} from '../../../selectors';
-import { addNewAccount, setAccountLabel } from '../../../store/actions';
+import { getMetaMaskAccountsOrdered } from '../../../selectors';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
   MetaMetricsEventAccountType,
@@ -20,19 +16,41 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { Display } from '../../../helpers/constants/design-system';
 
-export const CreateAccount = ({ onActionComplete }) => {
+type CreateAccountOptions = {
+  /**
+   * Callback to get the next available account name.
+   */
+  getNextAvailableAccountName: (accounts: InternalAccount[]) => Promise<string>;
+
+  /**
+   * Callback to create the account.
+   */
+  onCreateAccount: (name: string) => Promise<void>;
+
+  /**
+   * Callback called once the account has been created
+   */
+  onActionComplete: (completed: boolean) => Promise<void>;
+};
+
+export const CreateAccount = ({
+  getNextAvailableAccountName,
+  onCreateAccount,
+  onActionComplete,
+}: CreateAccountOptions) => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
 
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const accounts = useSelector(getMetaMaskAccountsOrdered);
-  const internalAccounts = useSelector(getInternalAccounts);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
 
-  const newAccountNumber = Object.keys(internalAccounts).length + 1;
-  const defaultAccountName = t('newAccountNumberName', [newAccountNumber]);
+  const accounts: InternalAccount[] = useSelector(getMetaMaskAccountsOrdered);
+
+  const [defaultAccountName, setDefaultAccountName] = useState('');
+  useEffect(() => {
+    getNextAvailableAccountName(accounts).then(setDefaultAccountName);
+  }, [accounts]);
 
   const [newAccountName, setNewAccountName] = useState('');
   const trimmedAccountName = newAccountName.trim();
@@ -44,19 +62,11 @@ export const CreateAccount = ({ onActionComplete }) => {
     defaultAccountName,
   );
 
-  const onCreateAccount = async (name) => {
-    const newAccountAddress = await dispatch(addNewAccount());
-    if (name) {
-      dispatch(setAccountLabel(newAccountAddress, name));
-    }
-  };
-
-  const onSubmit = async (event) => {
+  const onSubmit = async (event: KeyboardEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     try {
       await onCreateAccount(trimmedAccountName || defaultAccountName);
-      onActionComplete(true);
       trackEvent({
         category: MetaMetricsEventCategory.Accounts,
         event: MetaMetricsEventName.AccountAdded,
@@ -72,7 +82,7 @@ export const CreateAccount = ({ onActionComplete }) => {
         event: MetaMetricsEventName.AccountAddFailed,
         properties: {
           account_type: MetaMetricsEventAccountType.Default,
-          error: error.message,
+          error: (error as Error).message,
         },
       });
     }
@@ -85,17 +95,19 @@ export const CreateAccount = ({ onActionComplete }) => {
         id="account-name"
         label={t('accountName')}
         placeholder={defaultAccountName}
-        onChange={(event) => setNewAccountName(event.target.value)}
+        onChange={(e: Event) =>
+          setNewAccountName((e.target as HTMLTextAreaElement).value)
+        }
         helpText={errorMessage}
         error={!isValidAccountName}
-        onKeyPress={(e) => {
+        onKeyPress={(e: KeyboardEvent<HTMLFormElement>) => {
           if (e.key === 'Enter') {
             onSubmit(e);
           }
         }}
       />
       <Box display={Display.Flex} marginTop={6} gap={2}>
-        <ButtonSecondary onClick={() => onActionComplete()} block>
+        <ButtonSecondary onClick={async () => onActionComplete(false)} block>
           {t('cancel')}
         </ButtonSecondary>
         <ButtonPrimary type="submit" disabled={!isValidAccountName} block>
@@ -104,11 +116,4 @@ export const CreateAccount = ({ onActionComplete }) => {
       </Box>
     </Box>
   );
-};
-
-CreateAccount.propTypes = {
-  /**
-   * Executes when the Create button is clicked
-   */
-  onActionComplete: PropTypes.func.isRequired,
 };
