@@ -6,7 +6,7 @@ const { hideBin } = require('yargs/helpers');
 const { runInShell } = require('../../development/lib/run-command');
 const { exitWithError } = require('../../development/lib/exit-with-error');
 const { loadBuildTypesConfig } = require('../../development/lib/build-type');
-const { fetchChangedE2eFiles } = require('./fetch-changed-files');
+const { filterE2eChangedFiles } = require('./changedFilesUtil');
 
 // These tests should only be run on Flask for now.
 const FLASK_ONLY_TESTS = ['test-snap-namelookup.spec.js'];
@@ -40,7 +40,7 @@ async function runningOnCircleCI(testPaths) {
   let fullTestList = testPaths.join('\n');
 
   // Quality Gate Logic
-  changedOrNewTests = await fetchChangedE2eFiles();
+  changedOrNewTests = await filterE2eChangedFiles();
   for (let i = 0; i < RETRIES_FOR_NEW_OR_CHANGED_TESTS; i++) {
     fullTestList += changedOrNewTests;
   }
