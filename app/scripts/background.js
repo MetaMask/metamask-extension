@@ -217,6 +217,29 @@ function saveTimestamp() {
   browser.storage.session.set({ timestamp });
 }
 
+browser.webNavigation.onBeforeNavigate.addListener((details) => {
+  const url = new URL(details.url);
+
+  // Phishing check happens here now instead of in the metamask-controller
+  if (isPhishingUrl(url)) {
+    console.log(
+      '[webRequest.onBeforeNavigate] Blocking request with details: ',
+      details,
+    );
+
+    // Redirect happens here now instead of in the content-script
+    browser.tabs.update(details.tabId, {
+      url: 'https://metamask.github.io/phishing-warning/v3.0.3/?some-params-here-',
+    });
+  }
+});
+
+// This is here as an example, we would want to tap into our actual phishing list.
+function isPhishingUrl(url) {
+  const phishingList = ['evil.com'];
+  return phishingList.includes(url.hostname);
+}
+
 /**
  * @typedef {import('@metamask/transaction-controller').TransactionMeta} TransactionMeta
  */
