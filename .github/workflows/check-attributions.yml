@@ -1,15 +1,18 @@
-name: Generate and Validate Attributions
+name: Check Attributions
 
 on:
+  push:
+    branches: Version-v*
   pull_request:
-    branches:
-      - develop
+    branches: Version-v*
     types:
       - opened
+      - reopened
       - synchronize
+      - ready_for_review
 
 jobs:
-  generate-and-validate-attributions:
+  check-attributions:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
