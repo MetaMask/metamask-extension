@@ -4016,8 +4016,7 @@ export default class MetamaskController extends EventEmitter {
       }
 
       // This account has assets, so check the next one
-      ({ addedAccountAddress: address } =
-        await this.keyringController.addNewAccount(count));
+      address = await this.keyringController.addNewAccount(count);
     }
   }
 
@@ -4447,7 +4446,7 @@ export default class MetamaskController extends EventEmitter {
   async addNewAccount(accountCount) {
     const oldAccounts = await this.keyringController.getAccounts();
 
-    const { addedAccountAddress } = await this.keyringController.addNewAccount(
+    const addedAccountAddress = await this.keyringController.addNewAccount(
       accountCount,
     );
 
