@@ -2,6 +2,7 @@ import path from 'path';
 import { test as base, chromium } from '@playwright/test';
 
 import { isHeadless } from '../../../helpers/env';
+
 const extensionPath = path.join(__dirname, '../../../../dist/chrome');
 
 export const test = base.extend({

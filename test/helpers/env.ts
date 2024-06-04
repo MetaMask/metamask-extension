@@ -9,7 +9,7 @@ export function isHeadless(serviceName: HeadlessCapableServiceName): boolean {
       return parseBoolean(env[serviceKey]);
     }
   }
-  return !!env.HEADLESS && parseBoolean(env.HEADLESS);
+  return Boolean(env.HEADLESS) && parseBoolean(env.HEADLESS);
 }
 
 export function parseBoolean(value: undefined | string): boolean {
@@ -22,7 +22,7 @@ export function parseBoolean(value: undefined | string): boolean {
   if (typeof value !== 'string') {
     throw new Error(`Not-a-Boolean: '${value}'`);
   }
-  switch(value.toLowerCase().trim()) {
+  switch (value.toLowerCase().trim()) {
     case 'false':
     case '0':
     case '':
