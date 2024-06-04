@@ -101,34 +101,30 @@ export const PermissionCellStatus = ({
     </Box>
   );
 
-  const statusApprovedOn =
-    accounts && accounts.length
-      ? t('approvedOnForAccounts', [
-          formatDate(dateApproved, 'yyyy-MM-dd'),
-          renderAccountsGroup(),
-        ])
-      : t('approvedOn', [formatDate(dateApproved, 'yyyy-MM-dd')]);
-  const statusApproved = t('approved');
-  const statusRevoked =
-    accounts && accounts.length
-      ? t('permissionRevokedForAccounts', [renderAccountsGroup()])
-      : t('permissionRevoked');
-  const statusRequestedNow =
-    accounts && accounts.length
+  const getStatusMessage = () => {
+    if (revoked) {
+      return accounts && accounts.length
+        ? t('permissionRevokedForAccounts', [renderAccountsGroup()])
+        : t('permissionRevoked');
+    }
+
+    if (dateApproved) {
+      return accounts && accounts.length
+        ? t('approvedOnForAccounts', [
+            formatDate(dateApproved, 'yyyy-MM-dd'),
+            renderAccountsGroup(),
+          ])
+        : t('approvedOn', [formatDate(dateApproved, 'yyyy-MM-dd')]);
+    }
+
+    if (approved) {
+      return t('approved');
+    }
+
+    return accounts && accounts.length
       ? t('permissionRequestedForAccounts', [renderAccountsGroup()])
       : t('permissionRequested');
-
-  let statusToShow;
-
-  if (revoked) {
-    statusToShow = statusRevoked;
-  } else if (dateApproved) {
-    statusToShow = statusApprovedOn;
-  } else if (approved) {
-    statusToShow = statusApproved;
-  } else {
-    statusToShow = statusRequestedNow;
-  }
+  };
 
   return (
     <Text
@@ -138,7 +134,7 @@ export const PermissionCellStatus = ({
       color={TextColor.textAlternative}
       display={Display.Flex}
     >
-      {statusToShow}
+      {getStatusMessage()}
     </Text>
   );
 };
