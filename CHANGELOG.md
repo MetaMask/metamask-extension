@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.16.6]
+
 ## [11.16.5]
 ### Changed
 - Re-enable the opt-in modal (2df1eb566b)
@@ -4768,7 +4770,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.16.5...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.16.6...HEAD
+[11.16.6]: https://github.com/MetaMask/metamask-extension/compare/v11.16.5...v11.16.6
 [11.16.5]: https://github.com/MetaMask/metamask-extension/compare/v11.16.4...v11.16.5
 [11.16.4]: https://github.com/MetaMask/metamask-extension/compare/v11.16.3...v11.16.4
 [11.16.3]: https://github.com/MetaMask/metamask-extension/compare/v11.16.2...v11.16.3
