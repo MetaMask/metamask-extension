@@ -56,7 +56,7 @@ export default {
     noGasPrice: {
       control: 'boolean',
     },
-    isEthGasPrice: {
+    isEthGasPriceFetched: {
       control: 'boolean',
     },
 
@@ -103,7 +103,7 @@ DefaultStory.args = {
   showHexData: false,
   isOwnedAccount: true,
   noGasPrice: false,
-  isEthGasPrice: false,
+  isEthGasPriceFetched: false,
   gasIsExcessive: false,
   error: 'connecting',
   warning: 'connecting',
@@ -139,7 +139,7 @@ NftStory.args = {
   showHexData: false,
   isOwnedAccount: true,
   noGasPrice: false,
-  isEthGasPrice: false,
+  isEthGasPriceFetched: false,
   gasIsExcessive: false,
   error: 'connecting',
   warning: 'connecting',
