@@ -151,7 +151,6 @@ export const components: NotificationComponent<ETHNotification> = {
         />
       ),
       Asset: ({ notification }) => {
-        console.log('notification', notification);
         const chainId = decimalToHex(notification.chain_id);
         const { nativeCurrencyLogo, nativeCurrencySymbol } =
           getNetworkDetailsByChainId(`0x${chainId}` as keyof typeof CHAIN_IDS);
