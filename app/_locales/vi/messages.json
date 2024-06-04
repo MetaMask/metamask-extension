@@ -5217,8 +5217,7 @@
     "message": "Đã gửi"
   },
   "suggestedBy": {
-    "message": "Được đề xuất bởi",
-    "description": "$1 is the snap name"
+    "message": "Được đề xuất bởi"
   },
   "suggestedTokenSymbol": {
     "message": "Mã chứng khoán được đề xuất:"

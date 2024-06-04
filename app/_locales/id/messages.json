@@ -5220,8 +5220,7 @@
     "message": "Terkirim"
   },
   "suggestedBy": {
-    "message": "Disarankan oleh",
-    "description": "$1 is the snap name"
+    "message": "Disarankan oleh"
   },
   "suggestedTokenSymbol": {
     "message": "Simbol ticker yang disarankan:"

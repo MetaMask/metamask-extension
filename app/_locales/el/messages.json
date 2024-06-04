@@ -5220,8 +5220,7 @@
     "message": "Υποβλήθηκε"
   },
   "suggestedBy": {
-    "message": "Προτείνεται από",
-    "description": "$1 is the snap name"
+    "message": "Προτείνεται από"
   },
   "suggestedTokenSymbol": {
     "message": "Προτεινόμενο σύμβολο μετοχής:"

@@ -5220,8 +5220,7 @@
     "message": "Отправлено"
   },
   "suggestedBy": {
-    "message": "Рекомендовано",
-    "description": "$1 is the snap name"
+    "message": "Рекомендовано"
   },
   "suggestedTokenSymbol": {
     "message": "Рекомендуемый символ-тикер:"

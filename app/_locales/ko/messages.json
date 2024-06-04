@@ -5217,8 +5217,7 @@
     "message": "제출됨"
   },
   "suggestedBy": {
-    "message": "추천자:",
-    "description": "$1 is the snap name"
+    "message": "추천자:"
   },
   "suggestedTokenSymbol": {
     "message": "추천 티커 심볼:"

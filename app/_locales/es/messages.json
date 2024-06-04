@@ -5217,8 +5217,7 @@
     "message": "Enviado"
   },
   "suggestedBy": {
-    "message": "Sugerido por",
-    "description": "$1 is the snap name"
+    "message": "Sugerido por"
   },
   "suggestedTokenSymbol": {
     "message": "Símbolo de cotización sugerido:"

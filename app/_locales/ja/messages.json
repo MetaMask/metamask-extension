@@ -5217,8 +5217,7 @@
     "message": "送信済み"
   },
   "suggestedBy": {
-    "message": "提案元:",
-    "description": "$1 is the snap name"
+    "message": "提案元:"
   },
   "suggestedTokenSymbol": {
     "message": "推奨ティッカーシンボル:"
