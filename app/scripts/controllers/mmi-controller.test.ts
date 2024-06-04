@@ -10,7 +10,7 @@ import { SignatureController } from '@metamask/signature-controller';
 
 import { NetworkController } from '@metamask/network-controller';
 import { AccountsController } from '@metamask/accounts-controller';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 
 import { CustodyController } from '@metamask-institutional/custody-controller';
 import {
@@ -30,6 +30,7 @@ jest.mock('@metamask-institutional/portfolio-dashboard', () => ({
 }));
 
 import * as PortfolioDashboard from '@metamask-institutional/portfolio-dashboard';
+import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 
 jest.mock('./permissions', () => ({
   getPermissionBackgroundApiMethods: jest.fn().mockImplementation(() => {
@@ -49,7 +50,7 @@ const mockAccount = {
     },
   },
   options: {},
-  methods: [...Object.values(EthMethod)],
+  methods: ETH_EOA_METHODS,
   type: EthAccountType.Eoa,
 };
 const mockAccount2 = {
@@ -62,7 +63,7 @@ const mockAccount2 = {
     },
   },
   options: {},
-  methods: [...Object.values(EthMethod)],
+  methods: ETH_EOA_METHODS,
   type: EthAccountType.Eoa,
 };
 
@@ -349,7 +350,7 @@ describe('MMIController', function () {
   });
 
   describe('getAllCustodianAccountsWithToken', () => {
-    it('should return custodian accounts with tokens', async () => { });
+    it('should return custodian accounts with tokens', async () => {});
   });
 
   describe('handleMmiDashboardData', () => {
@@ -438,7 +439,11 @@ describe('MMIController', function () {
           getCustodianAccounts: mockCustodialKeyring,
         });
 
-      await mmiController.getCustodianAccounts('token', 'neptune-custody', 'ECA3');
+      await mmiController.getCustodianAccounts(
+        'token',
+        'neptune-custody',
+        'ECA3',
+      );
 
       expect(selectedAccountSpy).toHaveBeenCalledTimes(0);
 
