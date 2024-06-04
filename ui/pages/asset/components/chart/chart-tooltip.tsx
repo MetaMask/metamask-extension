@@ -1,4 +1,5 @@
 import React from 'react';
+// @ts-expect-error suppress CommonJS vs ECMAScript error
 import { Point } from 'chart.js';
 import {
   Box,
