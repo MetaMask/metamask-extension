@@ -61,6 +61,7 @@
     },
     "connectedStatusPopoverHasBeenShown": true,
     "defaultHomeActiveTabName": null,
+    "bridgeState": {},
     "browserEnvironment": { "os": "string", "browser": "string" },
     "popupGasPollTokens": "object",
     "notificationGasPollTokens": "object",

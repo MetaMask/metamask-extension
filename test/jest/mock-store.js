@@ -674,5 +674,11 @@ export const createBridgeMockStore = () => {
     bridge: {
       toChain: null,
     },
+    metamask: {
+      ...swapsStore.metamask,
+      bridgeState: {
+        ...(swapsStore.metamask.bridgeState ?? {}),
+      },
+    },
   };
 };
