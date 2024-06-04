@@ -34,7 +34,7 @@ async function mockApis(mockServer) {
 }
 
 describe('MetaMask onboarding @no-mmi', function () {
-  it('should prevent network requests to basic functionality endpoints when the basica functionality toggle is off', async function () {
+  it('should prevent network requests to basic functionality endpoints when the basic functionality toggle is off', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
@@ -50,17 +50,28 @@ describe('MetaMask onboarding @no-mmi', function () {
           WALLET_PASSWORD,
         );
 
-        await driver.clickElement({ text: 'Advanced configuration', tag: 'a' });
+        await driver.clickElement({
+          text: 'Manage default settings',
+          tag: 'button',
+        });
+        await driver.clickElement('[data-testid="category-item-General"]');
         await driver.clickElement(
           '[data-testid="basic-functionality-toggle"] .toggle-button',
         );
         await driver.clickElement('[id="basic-configuration-checkbox"]');
         await driver.clickElement({ text: 'Turn off', tag: 'button' });
+        await driver.clickElement('[data-testid="category-back-button"]');
+        await driver.clickElement('[data-testid="category-item-Assets"]');
         await driver.clickElement(
           '[data-testid="currency-rate-check-toggle"] .toggle-button',
         );
+        await driver.clickElement('[data-testid="category-back-button"]');
+        await driver.clickElement(
+          '[data-testid="privacy-settings-back-button"]',
+        );
         await driver.clickElement({ text: 'Done', tag: 'button' });
-
+        await driver.clickElement('[data-testid="pin-extension-next"]');
+        await driver.clickElement({ text: 'Done', tag: 'button' });
         await driver.clickElement('[data-testid="network-display"]');
 
         await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'p' });
@@ -79,7 +90,7 @@ describe('MetaMask onboarding @no-mmi', function () {
     );
   });
 
-  it('should not prevent network requests to basic functionality endpoints when the basica functionality toggle is on', async function () {
+  it('should not prevent network requests to basic functionality endpoints when the basic functionality toggle is on', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
@@ -95,8 +106,17 @@ describe('MetaMask onboarding @no-mmi', function () {
           WALLET_PASSWORD,
         );
 
-        await driver.clickElement({ text: 'Advanced configuration', tag: 'a' });
-
+        await driver.clickElement({
+          text: 'Manage default settings',
+          tag: 'button',
+        });
+        await driver.clickElement('[data-testid="category-item-General"]');
+        await driver.clickElement('[data-testid="category-back-button"]');
+        await driver.clickElement(
+          '[data-testid="privacy-settings-back-button"]',
+        );
+        await driver.clickElement({ text: 'Done', tag: 'button' });
+        await driver.clickElement('[data-testid="pin-extension-next"]');
         await driver.clickElement({ text: 'Done', tag: 'button' });
 
         await driver.clickElement('[data-testid="network-display"]');
