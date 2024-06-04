@@ -304,8 +304,6 @@ env:
   - CHAIN_PERMISSIONS: ''
   # Enables use of test gas fee flow to debug gas fee estimation
   - TEST_GAS_FEE_FLOWS: false
-  # Determines if feature flagged NEW_ADD_NETWORK_FLOW UI should be used
-  - NEW_ADD_NETWORK_FLOW: ''
 
     # Enables the notifications feature within the build:
   - NOTIFICATIONS: ''

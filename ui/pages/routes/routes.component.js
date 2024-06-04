@@ -40,7 +40,6 @@ import {
   ToastContainer,
   Toast,
 } from '../../components/multichain';
-import { NetworkListMenu as NetworkListMenu2 } from '../../components/multichain/network-list-menu/new-network-list-menu/network-list-menu';
 import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
 import Asset from '../asset';
@@ -106,7 +105,6 @@ import {
   NOTIFICATIONS_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
   NETWORKS_ROUTE,
-  NEW_ADD_NETWORK_ROUTE,
 } from '../../helpers/constants/routes';
 
 ///: BEGIN:ONLY_INCLUDE_IF(desktop)
@@ -405,12 +403,6 @@ export default class Routes extends Component {
         />
         <Authenticated path={SEND_ROUTE} component={SendPage} exact />
 
-        {/* <Authenticated
-          path={NEW_ADD_NETWORK_ROUTE}
-          component={NetworkListMenu2}
-          exact
-        /> */}
-
         <Authenticated
           path={`${TOKEN_DETAILS}/:address/`}
           component={TokenDetailsPage}
@@ -576,7 +568,7 @@ export default class Routes extends Component {
       return true;
     }
 
-    if (process.env.NEW_ADD_NETWORK_FLOW) {
+    if (process.env.ENABLE_NETWORK_UI_REDESIGN) {
       const isNetworkSettingPage = Boolean(
         matchPath(location.pathname, {
           path: `${NETWORKS_ROUTE}`,

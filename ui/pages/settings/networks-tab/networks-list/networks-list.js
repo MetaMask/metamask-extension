@@ -33,8 +33,7 @@ const NetworksList = ({
   const searchedNetworksToRenderThatAreTestNetworks =
     searchedNetworksToRender.filter((network) => network.isATestNetwork);
 
-  if (process.env.NEW_ADD_NETWORK_FLOW) {
-    console.log('Here ----- 111');
+  if (process.env.ENABLE_NETWORK_UI_REDESIGN) {
     history.push(NEW_ADD_NETWORK_ROUTE);
     return null;
   }

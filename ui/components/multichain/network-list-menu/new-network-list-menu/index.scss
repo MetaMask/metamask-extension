@@ -1,0 +1,10 @@
+.new-network-list-menu-content-wrapper {
+  &__network {
+    height: 200px;
+  }
+}
+
+.new-network-list-menu {
+  max-height: 100%;
+  overflow: auto;
+}

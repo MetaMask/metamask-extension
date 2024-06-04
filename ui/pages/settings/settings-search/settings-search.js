@@ -80,7 +80,7 @@ export default function SettingsSearch({
     );
   };
 
-  if (process.env.NEW_ADD_NETWORK_FLOW) {
+  if (process.env.ENABLE_NETWORK_UI_REDESIGN) {
     return null;
   }
   return (

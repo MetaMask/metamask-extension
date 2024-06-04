@@ -140,7 +140,7 @@ export const AppHeader = ({ location }) => {
 
   // Callback for network dropdown
   const networkOpenCallback = useCallback(() => {
-    if (process.env.NEW_ADD_NETWORK_FLOW) {
+    if (process.env.ENABLE_NETWORK_UI_REDESIGN) {
       history.push(NEW_ADD_NETWORK_ROUTE);
     } else {
       dispatch(toggleNetworkMenu());

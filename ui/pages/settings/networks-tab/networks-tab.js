@@ -134,7 +134,7 @@ const NetworksTab = ({ addNewNetwork }) => {
             />
             {!isFullScreen && !shouldRenderNetworkForm ? (
               <div className="networks-tab__networks-list-popup-footer">
-                {process.env.NEW_ADD_NETWORK_FLOW ? (
+                {process.env.ENABLE_NETWORK_UI_REDESIGN ? (
                   <ButtonSecondary
                     size={ButtonSecondarySize.Lg}
                     startIconName={IconName.Add}
