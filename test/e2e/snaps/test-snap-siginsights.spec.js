@@ -2,6 +2,7 @@ const {
   withFixtures,
   defaultGanacheOptions,
   openDapp,
+  regularDelayMs,
   unlockWallet,
   switchToNotificationWindow,
   WINDOW_TITLES,
@@ -80,10 +81,7 @@ describe('Test Snap Signature Insights', function () {
         await switchToNotificationWindow(driver, 4);
 
         // wait for and click sign
-        await driver.waitForSelector({
-          text: 'Sign',
-          tag: 'button',
-        });
+        await driver.delay(regularDelayMs);
         await driver.clickElement({
           text: 'Sign',
           tag: 'button',
@@ -120,10 +118,8 @@ describe('Test Snap Signature Insights', function () {
         await switchToNotificationWindow(driver, 4);
 
         // wait for and click sign
-        await driver.waitForSelector({
-          text: 'Sign',
-          tag: 'button',
-        });
+        await driver.delay(regularDelayMs);
+
         await driver.clickElement({
           text: 'Sign',
           tag: 'button',
@@ -164,10 +160,8 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('.fa-arrow-down');
 
         // wait for and click sign
-        await driver.waitForSelector({
-          text: 'Sign',
-          tag: 'button',
-        });
+        await driver.delay(regularDelayMs);
+
         await driver.clickElement({
           text: 'Sign',
           tag: 'button',
@@ -208,10 +202,8 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('.fa-arrow-down');
 
         // wait for and click sign
-        await driver.waitForSelector({
-          text: 'Sign',
-          tag: 'button',
-        });
+        await driver.delay(regularDelayMs);
+
         await driver.clickElement({
           text: 'Sign',
           tag: 'button',
@@ -247,11 +239,10 @@ describe('Test Snap Signature Insights', function () {
 
         // switch back to MetaMask window and switch to tx insights pane
         await switchToNotificationWindow(driver, 4);
+
         // wait for and click sign
-        await driver.waitForSelector({
-          text: 'Sign',
-          tag: 'button',
-        });
+        await driver.delay(regularDelayMs);
+
         await driver.clickElement({
           text: 'Sign',
           tag: 'button',
