@@ -1,11 +1,14 @@
+import { SecurityProvider } from '../../../shared/constants/security-provider';
 import { Severity } from '../../helpers/constants/design-system';
+
+export type AlertSeverity = Severity.Danger | Severity.Warning | Severity.Info;
 
 /**
  * A confirmable alert to be displayed in the UI.
  */
 export type Alert = {
   /**
-   *Alternate actions the user can take, specific to the alert.
+   * Alternate actions the user can take, specific to the alert.
    */
   actions?: { key: string; label: string }[];
 
@@ -25,9 +28,20 @@ export type Alert = {
   key: string;
 
   /**
+   * Whether the alert is a blocker and un-acknowledgeable, preventing the user
+   * from proceeding and relying on actions to proceed. The default is `false`.
+   */
+  isBlocking?: boolean;
+
+  /**
    * The message is a summary of the alert details.
    */
   message: string;
+
+  /**
+   * The security provider associated with the alert.
+   */
+  provider?: SecurityProvider;
 
   /**
    * The reason for the alert.
@@ -37,7 +51,7 @@ export type Alert = {
   /**
    * The severity of the alert.
    */
-  severity: Severity.Danger | Severity.Warning | Severity.Info;
+  severity: AlertSeverity;
 };
 
 /**

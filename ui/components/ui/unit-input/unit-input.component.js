@@ -31,6 +31,8 @@ export default class UnitInput extends PureComponent {
     hideSuffix: PropTypes.bool,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     keyPressRegex: PropTypes.instanceOf(RegExp),
+    isDisabled: PropTypes.bool,
+    isFocusOnInput: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -58,8 +60,20 @@ export default class UnitInput extends PureComponent {
   }
 
   handleFocus = () => {
-    this.unitInput.focus();
+    if (!['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+      this.unitInput.focus();
+    }
   };
+
+  componentDidMount() {
+    if (this.props.isFocusOnInput) {
+      document.addEventListener('keypress', this.handleFocus);
+    }
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keypress', this.handleFocus);
+  }
 
   handleInputFocus = ({ target: { value } }) => {
     if (value === '0') {
@@ -105,6 +119,21 @@ export default class UnitInput extends PureComponent {
     this.props.onChange(value);
   };
 
+  handleOnKeyPress = (e) => {
+    const isNumericInput = DECIMAL_INPUT_REGEX.test(e.key);
+    if (!isNumericInput) {
+      e.preventDefault();
+    }
+  };
+
+  // imperatively updates the overflow when the input is changed upstreamed
+  updateIsOverflowing = () => {
+    this.setState({
+      ...this.state,
+      isOverflowing: this.getIsOverflowing(),
+    });
+  };
+
   getInputWidth(value) {
     const valueString = String(value);
     const valueLength = valueString.length || 1;
@@ -135,6 +164,7 @@ export default class UnitInput extends PureComponent {
       actionComponent,
       children,
       dataTestId,
+      isDisabled,
     } = this.props;
     const { value, isOverflowing } = this.state;
 
@@ -150,7 +180,7 @@ export default class UnitInput extends PureComponent {
         <div className="unit-input__inputs">
           <Tooltip
             title={value}
-            disabled={!isOverflowing}
+            disabled={!isOverflowing || !value}
             arrow
             hideOnClick={false}
             className="unit-input__input-container"
@@ -158,6 +188,7 @@ export default class UnitInput extends PureComponent {
             style={{ display: 'inherit' }}
           >
             <input
+              disabled={isDisabled}
               data-testid={dataTestId}
               type="number"
               dir="ltr"
@@ -167,6 +198,7 @@ export default class UnitInput extends PureComponent {
               onChange={this.handleChange}
               onBlur={this.handleInputBlur}
               onFocus={this.handleInputFocus}
+              onKeyPress={this.handleOnKeyPress}
               min={0}
               step="any"
               style={{ width: this.getInputWidth(value) }}

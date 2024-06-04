@@ -4,7 +4,15 @@ import { getApp, initializeApp } from 'firebase/app';
 import { getMessaging, onBackgroundMessage } from 'firebase/messaging/sw';
 import type { Messaging, MessagePayload } from 'firebase/messaging/sw';
 import log from 'loglevel';
-import { onPushNotification } from '../utils/get-notification-message';
+import {
+  onNotificationClick,
+  onPushNotification,
+} from '../utils/get-notification-message';
+import {
+  Notification,
+  NotificationUnion,
+} from '../../metamask-notifications/types/types';
+import { processNotification } from '../../metamask-notifications/processors/process-notifications';
 
 const url = process.env.PUSH_NOTIFICATIONS_SERVICE_URL;
 const REGISTRATION_TOKENS_ENDPOINT = `${url}/v1/link`;
@@ -102,10 +110,12 @@ export async function getPushNotificationLinks(
       headers: { Authorization: `Bearer ${bearerToken}` },
     });
     if (!response.ok) {
-      throw new Error('Failed to fetch links');
+      log.error('Failed to fetch the push notification links');
+      throw new Error('Failed to fetch the push notification links');
     }
     return response.json() as Promise<LinksResult>;
-  } catch {
+  } catch (error) {
+    log.error('Failed to fetch the push notification links', error);
     return null;
   }
 }
@@ -128,17 +138,14 @@ export async function updateLinksAPI(
       trigger_ids: triggers,
       registration_tokens: regTokens,
     };
-    const response = await fetch(
-      `${process.env.PUSH_NOTIFICATIONS_SERVICE_URL}/v1/link`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${bearerToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
+    const response = await fetch(REGISTRATION_TOKENS_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${bearerToken}`,
+        'Content-Type': 'application/json',
       },
-    );
+      body: JSON.stringify(body),
+    });
     return response.status === 200;
   } catch {
     return false;
@@ -157,6 +164,7 @@ export async function activatePushNotifications(
   triggers: string[],
 ): Promise<string | null> {
   const notificationLinks = await getPushNotificationLinks(bearerToken);
+
   if (!notificationLinks) {
     return null;
   }
@@ -166,23 +174,44 @@ export async function activatePushNotifications(
     return null;
   }
 
-  const messaging = await getFirebaseMessaging();
+  const newRegTokens = new Set(notificationLinks.registration_tokens);
+  newRegTokens.add({ token: regToken, platform: 'extension' });
 
-  onBackgroundMessage(
+  await updateLinksAPI(bearerToken, triggers, Array.from(newRegTokens));
+  return regToken;
+}
+
+export async function listenToPushNotifications(
+  onNewNotification: (notification: Notification) => void,
+  onNotificationClicked: (notification: Notification) => void,
+): Promise<() => void> {
+  /*
+  Push notifications require 2 listeners that need tracking (when creating and for tearing down):
+  1. handling receiving a push notification (and the content we want to display)
+  2. handling when a user clicks on a push notification
+  */
+
+  // Firebase
+  const messaging = await getFirebaseMessaging();
+  const unsubscribePushNotifications = onBackgroundMessage(
     messaging,
     async (payload: MessagePayload): Promise<void> => {
       const typedPayload = payload;
 
       // if the payload does not contain data, do nothing
       try {
-        const notificationData = typedPayload?.data?.data
+        const notificationData: NotificationUnion = typedPayload?.data?.data
           ? JSON.parse(typedPayload?.data?.data)
           : undefined;
+
         if (!notificationData) {
           return;
         }
 
-        await onPushNotification(notificationData);
+        const notification = processNotification(notificationData);
+        onNewNotification(notification);
+
+        await onPushNotification(notification);
       } catch (error) {
         // Do Nothing, cannot parse a bad notification
         log.error('Unable to send push notification:', {
@@ -194,12 +223,25 @@ export async function activatePushNotifications(
     },
   );
 
-  const newRegTokens = new Set(notificationLinks.registration_tokens);
-  newRegTokens.add({ token: regToken, platform: 'extension' });
+  // Notification Click Listener
+  const notificationClickHandler = (event: NotificationEvent) => {
+    onNotificationClick(event, onNotificationClicked);
+  };
+  sw.addEventListener('notificationclick', notificationClickHandler);
+  const unsubscribeNotificationClicks = () =>
+    sw.removeEventListener('notificationclick', notificationClickHandler);
 
-  await updateLinksAPI(bearerToken, triggers, Array.from(newRegTokens));
-  return regToken;
+  const unsubscribe = () => {
+    unsubscribePushNotifications();
+    unsubscribeNotificationClicks();
+  };
+
+  return unsubscribe;
 }
+
+/**
+ * Handle Clicking Notifications.
+ */
 
 /**
  * Disables push notifications by removing the registration token and unlinking triggers.
@@ -247,30 +289,38 @@ export async function deactivatePushNotifications(
 
 /**
  * Updates the triggers linked to push notifications for a given registration token.
+ * If the provided registration token does not exist or is not in the current set of registration tokens,
+ * a new registration token is created and used for the update.
  *
- * @param regToken - The registration token to update triggers for.
+ * @param regToken - The registration token to update triggers for. If null or not found, a new token will be created.
  * @param bearerToken - The JSON Web Token used for authorization.
  * @param triggers - An array of new trigger identifiers to link.
- * @returns A promise that resolves with true if the triggers were successfully updated, false otherwise.
+ * @returns A promise that resolves with an object containing:
+ * - isTriggersLinkedToPushNotifications: boolean indicating if the triggers were successfully updated.
+ * - fcmToken: the new or existing Firebase Cloud Messaging token used for the update, if applicable.
  */
 export async function updateTriggerPushNotifications(
   regToken: string,
   bearerToken: string,
   triggers: string[],
-): Promise<boolean> {
+): Promise<{
+  isTriggersLinkedToPushNotifications: boolean;
+  fcmToken?: string | null;
+}> {
   const notificationLinks = await getPushNotificationLinks(bearerToken);
   if (!notificationLinks) {
-    return false;
+    return { isTriggersLinkedToPushNotifications: false };
   }
-
   // Create new registration token if doesn't exist
   const hasRegToken = Boolean(
     regToken &&
       notificationLinks.registration_tokens.some((r) => r.token === regToken),
   );
+
+  let newRegToken: string | null = null;
   if (!hasRegToken) {
     await deleteRegToken();
-    const newRegToken = await createRegToken();
+    newRegToken = await createRegToken();
     if (!newRegToken) {
       throw new Error('Failed to create a new registration token');
     }
@@ -286,5 +336,8 @@ export async function updateTriggerPushNotifications(
     notificationLinks.registration_tokens,
   );
 
-  return isTriggersLinkedToPushNotifications;
+  return {
+    isTriggersLinkedToPushNotifications,
+    fcmToken: newRegToken ?? null,
+  };
 }

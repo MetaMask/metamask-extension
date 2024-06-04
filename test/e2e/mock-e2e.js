@@ -64,9 +64,14 @@ const browserAPIRequestDomains =
  * @param {(server: Mockttp) => MockedEndpoint} testSpecificMock - A function for setting up test-specific network mocks
  * @param {object} options - Network mock options.
  * @param {string} options.chainId - The chain ID used by the default configured network.
+ * @param {string} options.ethConversionInUsd - The USD conversion rate for ETH.
  * @returns {SetupMockReturn}
  */
-async function setupMocking(server, testSpecificMock, { chainId }) {
+async function setupMocking(
+  server,
+  testSpecificMock,
+  { chainId, ethConversionInUsd = '1700' },
+) {
   const privacyReport = new Set();
   await server.forAnyRequest().thenPassThrough({
     beforeRequest: (req) => {
@@ -485,7 +490,7 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
       return {
         statusCode: 200,
         json: {
-          USD: '1700',
+          USD: ethConversionInUsd,
         },
       };
     });
@@ -576,6 +581,17 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
 
   await mockLensNameProvider(server);
   await mockTokenNameProvider(server, chainId);
+
+  // IPFS endpoint for NFT metadata
+  await server
+    .forGet(
+      'https://bafybeidxfmwycgzcp4v2togflpqh2gnibuexjy4m4qqwxp7nh3jx5zlh4y.ipfs.dweb.link/1.json',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+      };
+    });
 
   /**
    * Returns an array of alphanumerically sorted hostnames that were requested
