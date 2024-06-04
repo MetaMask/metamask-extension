@@ -7,6 +7,7 @@ const {
   unlockWallet,
 } = require('../../helpers');
 const { shortenAddress } = require('../../../../ui/helpers/utils/util');
+const { By } = require('selenium-webdriver');
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Address Book', function () {
@@ -166,10 +167,10 @@ describe('Address Book', function () {
         await driver.clickElement({ text: 'Edit', tag: 'button' });
         await driver.clickElement({ text: 'Delete contact', tag: 'a' });
 
-        const contact = await driver.findElement('.address-list-item__label');
-
         // it checks if account is deleted
-        const exists = await driver.isElementPresent(contact);
+        const exists = await driver.isElementPresent(
+          By.css('.address-list-item__label'),
+        );
         assert.equal(exists, false, 'Contact is not deleted');
       },
     );
