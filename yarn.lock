@@ -5903,7 +5903,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/smart-transactions-controller@npm:^10.1.0":
+"@metamask/smart-transactions-controller@npm:^10.1.1":
   version: 10.1.1
   resolution: "@metamask/smart-transactions-controller@npm:10.1.1"
   dependencies:
@@ -24761,7 +24761,7 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^13.0.0"
     "@metamask/signature-controller": "npm:^14.0.1"
-    "@metamask/smart-transactions-controller": "npm:^10.1.0"
+    "@metamask/smart-transactions-controller": "npm:^10.1.1"
     "@metamask/snaps-controllers": "npm:^8.2.0"
     "@metamask/snaps-execution-environments": "npm:^6.2.0"
     "@metamask/snaps-rpc-methods": "npm:^9.1.0"
