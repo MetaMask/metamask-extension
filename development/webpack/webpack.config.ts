@@ -135,7 +135,7 @@ const plugins: WebpackPluginInstance[] = [
     ...(args.zip
       ? {
           zipOptions: {
-            outFilePath: `../../../builds/metamask-[browser]-${variables.get(
+            outFilePath: `../../builds/metamask-[browser]-${variables.get(
               'METAMASK_VERSION',
             )}.zip`, // relative to output.path
             mtime: getLatestCommit().timestamp(),
