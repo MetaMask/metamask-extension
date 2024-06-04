@@ -1,10 +1,7 @@
-import { TransactionParams } from '@metamask/transaction-controller';
 import {
   withFixtures,
   unlockWallet,
-  openDapp,
   switchToNotificationWindow,
-  DAPP_URL,
   WINDOW_TITLES,
   sendTransaction,
   convertETHToHexGwei,

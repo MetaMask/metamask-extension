@@ -1,9 +1,10 @@
-import { EthMethod, EthAccountType } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { SnapCaveatType } from '@metamask/snaps-rpc-methods';
 import {
   CaveatTypes,
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import {
   getCaveatSpecifications,
   getPermissionSpecifications,
@@ -17,10 +18,13 @@ describe('PermissionController specifications', () => {
   describe('caveat specifications', () => {
     it('getCaveatSpecifications returns the expected specifications object', () => {
       const caveatSpecifications = getCaveatSpecifications({});
-      expect(Object.keys(caveatSpecifications)).toHaveLength(12);
+      expect(Object.keys(caveatSpecifications)).toHaveLength(13);
       expect(
         caveatSpecifications[CaveatTypes.restrictReturnedAccounts].type,
       ).toStrictEqual(CaveatTypes.restrictReturnedAccounts);
+      expect(
+        caveatSpecifications[CaveatTypes.restrictNetworkSwitching].type,
+      ).toStrictEqual(CaveatTypes.restrictNetworkSwitching);
 
       expect(caveatSpecifications.permittedDerivationPaths.type).toStrictEqual(
         SnapCaveatType.PermittedDerivationPaths,
@@ -146,7 +150,7 @@ describe('PermissionController specifications', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
               {
@@ -160,7 +164,7 @@ describe('PermissionController specifications', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
             ];
@@ -181,10 +185,13 @@ describe('PermissionController specifications', () => {
   describe('permission specifications', () => {
     it('getPermissionSpecifications returns the expected specifications object', () => {
       const permissionSpecifications = getPermissionSpecifications({});
-      expect(Object.keys(permissionSpecifications)).toHaveLength(1);
+      expect(Object.keys(permissionSpecifications)).toHaveLength(2);
       expect(
         permissionSpecifications[RestrictedMethods.eth_accounts].targetName,
       ).toStrictEqual(RestrictedMethods.eth_accounts);
+      expect(permissionSpecifications.permittedChains.targetName).toStrictEqual(
+        'permittedChains',
+      );
     });
 
     describe('eth_accounts', () => {
@@ -284,7 +291,7 @@ describe('PermissionController specifications', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
               {
@@ -297,7 +304,7 @@ describe('PermissionController specifications', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
               {
@@ -311,7 +318,7 @@ describe('PermissionController specifications', () => {
                   lastSelected: 3,
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
               {
@@ -325,7 +332,7 @@ describe('PermissionController specifications', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
             ];
@@ -361,7 +368,7 @@ describe('PermissionController specifications', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
               {
@@ -375,7 +382,7 @@ describe('PermissionController specifications', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
             ];
@@ -409,7 +416,7 @@ describe('PermissionController specifications', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
               {
@@ -423,7 +430,7 @@ describe('PermissionController specifications', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
             ];

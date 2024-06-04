@@ -50,7 +50,10 @@ import {
   getAccountType,
   ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
-import { getIsSmartTransactionsOptInModalAvailable } from '../../../shared/modules/selectors';
+import {
+  getIsShowTokenAutodetectModal,
+  getIsSmartTransactionsOptInModalAvailable,
+} from '../../../shared/modules/selectors';
 
 import {
   closeNotificationPopup,
@@ -68,6 +71,8 @@ import {
   setNewTokensImported,
   setActiveNetwork,
   setNewTokensImportedError,
+  setShowTokenAutodetectModal,
+  setShowTokenAutodetectModalOnUpgrade,
 } from '../../store/actions';
 import {
   hideWhatsNewPopup,
@@ -201,6 +206,7 @@ const mapStateToProps = (state) => {
     isSmartTransactionsOptInModalAvailable:
       getIsSmartTransactionsOptInModalAvailable(state),
     account: getSelectedInternalAccount(state),
+    isShowTokenAutodetectModal: getIsShowTokenAutodetectModal(state),
   };
 };
 
@@ -248,6 +254,12 @@ const mapDispatchToProps = (dispatch) => {
     },
     setActiveNetwork: (networkConfigurationId) => {
       dispatch(setActiveNetwork(networkConfigurationId));
+    },
+    setTokenAutodetectModal: (val) => {
+      dispatch(setShowTokenAutodetectModal(val));
+    },
+    setShowTokenAutodetectModalOnUpgrade: (val) => {
+      dispatch(setShowTokenAutodetectModalOnUpgrade(val));
     },
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     setWaitForConfirmDeepLinkDialog: (wait) =>

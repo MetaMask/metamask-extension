@@ -1146,11 +1146,11 @@
         "@lavamoat/lavapack>combine-source-map": true,
         "@lavamoat/lavapack>convert-source-map": true,
         "@lavamoat/lavapack>json-stable-stringify": true,
-        "@lavamoat/lavapack>readable-stream": true,
         "@lavamoat/lavapack>umd": true,
         "browserify>JSONStream": true,
         "eslint>espree": true,
         "lavamoat-viz>lavamoat-core": true,
+        "readable-stream": true,
         "through2": true
       }
     },
@@ -1193,25 +1193,6 @@
         "string.prototype.matchall>call-bind": true
       }
     },
-    "@lavamoat/lavapack>readable-stream": {
-      "builtin": {
-        "buffer.Buffer": true,
-        "events.EventEmitter": true,
-        "stream": true,
-        "util": true
-      },
-      "globals": {
-        "process.env.READABLE_STREAM": true,
-        "process.nextTick": true,
-        "process.stderr": true,
-        "process.stdout": true
-      },
-      "packages": {
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true,
-        "readable-stream>util-deprecate": true
-      }
-    },
     "@metamask/build-utils": {
       "packages": {
         "@metamask/utils": true
@@ -1230,6 +1211,11 @@
     "@metamask/jazzicon>color>color-convert": {
       "packages": {
         "@metamask/jazzicon>color>color-convert>color-name": true
+      }
+    },
+    "@metamask/object-multiplex>once": {
+      "packages": {
+        "@metamask/object-multiplex>once>wrappy": true
       }
     },
     "@metamask/utils": {
@@ -1410,7 +1396,7 @@
       "packages": {
         "bify-module-groups>through2": true,
         "pify": true,
-        "pump": true
+        "pumpify>pump": true
       }
     },
     "bify-module-groups>through2": {
@@ -1421,26 +1407,7 @@
         "process.nextTick": true
       },
       "packages": {
-        "bify-module-groups>through2>readable-stream": true
-      }
-    },
-    "bify-module-groups>through2>readable-stream": {
-      "builtin": {
-        "buffer.Buffer": true,
-        "events.EventEmitter": true,
-        "stream": true,
-        "util": true
-      },
-      "globals": {
-        "process.env.READABLE_STREAM": true,
-        "process.nextTick": true,
-        "process.stderr": true,
-        "process.stdout": true
-      },
-      "packages": {
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true,
-        "readable-stream>util-deprecate": true
+        "readable-stream": true
       }
     },
     "browserify": {
@@ -1521,8 +1488,47 @@
         "process.nextTick": true
       },
       "packages": {
-        "readable-stream": true,
+        "browserify>browser-pack>through2>readable-stream": true,
         "watchify>xtend": true
+      }
+    },
+    "browserify>browser-pack>through2>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "browserify>browser-pack>through2>readable-stream>isarray": true,
+        "browserify>browser-pack>through2>readable-stream>safe-buffer": true,
+        "browserify>browser-pack>through2>readable-stream>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream-2>core-util-is": true,
+        "readable-stream-2>process-nextick-args": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "browserify>browser-pack>through2>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "browserify>browser-pack>through2>readable-stream>string_decoder": {
+      "packages": {
+        "browserify>browser-pack>through2>readable-stream>string_decoder>safe-buffer": true
+      }
+    },
+    "browserify>browser-pack>through2>readable-stream>string_decoder>safe-buffer": {
+      "builtin": {
+        "buffer": true
       }
     },
     "browserify>browser-resolve": {
@@ -1553,10 +1559,44 @@
         "Buffer.isBuffer": true
       },
       "packages": {
+        "browserify>concat-stream>readable-stream": true,
         "browserify>concat-stream>typedarray": true,
         "pumpify>inherits": true,
-        "readable-stream": true,
         "terser>source-map-support>buffer-from": true
+      }
+    },
+    "browserify>concat-stream>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "browserify>concat-stream>readable-stream>isarray": true,
+        "browserify>concat-stream>readable-stream>safe-buffer": true,
+        "browserify>concat-stream>readable-stream>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream-2>core-util-is": true,
+        "readable-stream-2>process-nextick-args": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "browserify>concat-stream>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "browserify>concat-stream>readable-stream>string_decoder": {
+      "packages": {
+        "browserify>concat-stream>readable-stream>safe-buffer": true
       }
     },
     "browserify>deps-sort": {
@@ -1573,13 +1613,81 @@
         "process.nextTick": true
       },
       "packages": {
-        "readable-stream": true,
+        "browserify>deps-sort>through2>readable-stream": true,
         "watchify>xtend": true
+      }
+    },
+    "browserify>deps-sort>through2>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "browserify>deps-sort>through2>readable-stream>isarray": true,
+        "browserify>deps-sort>through2>readable-stream>safe-buffer": true,
+        "browserify>deps-sort>through2>readable-stream>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream-2>core-util-is": true,
+        "readable-stream-2>process-nextick-args": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "browserify>deps-sort>through2>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "browserify>deps-sort>through2>readable-stream>string_decoder": {
+      "packages": {
+        "browserify>deps-sort>through2>readable-stream>safe-buffer": true
       }
     },
     "browserify>duplexer2": {
       "packages": {
-        "readable-stream": true
+        "browserify>duplexer2>readable-stream": true
+      }
+    },
+    "browserify>duplexer2>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "browserify>duplexer2>readable-stream>isarray": true,
+        "browserify>duplexer2>readable-stream>safe-buffer": true,
+        "browserify>duplexer2>readable-stream>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream-2>core-util-is": true,
+        "readable-stream-2>process-nextick-args": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "browserify>duplexer2>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "browserify>duplexer2>readable-stream>string_decoder": {
+      "packages": {
+        "browserify>duplexer2>readable-stream>safe-buffer": true
       }
     },
     "browserify>has": {
@@ -1615,8 +1723,42 @@
         "process.nextTick": true
       },
       "packages": {
-        "readable-stream": true,
+        "browserify>insert-module-globals>through2>readable-stream": true,
         "watchify>xtend": true
+      }
+    },
+    "browserify>insert-module-globals>through2>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "browserify>insert-module-globals>through2>readable-stream>isarray": true,
+        "browserify>insert-module-globals>through2>readable-stream>safe-buffer": true,
+        "browserify>insert-module-globals>through2>readable-stream>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream-2>core-util-is": true,
+        "readable-stream-2>process-nextick-args": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "browserify>insert-module-globals>through2>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "browserify>insert-module-globals>through2>readable-stream>string_decoder": {
+      "packages": {
+        "browserify>insert-module-globals>through2>readable-stream>safe-buffer": true
       }
     },
     "browserify>insert-module-globals>undeclared-identifiers": {
@@ -1654,13 +1796,13 @@
         "browserify>concat-stream": true,
         "browserify>duplexer2": true,
         "browserify>module-deps>detective": true,
+        "browserify>module-deps>readable-stream": true,
         "browserify>module-deps>stream-combiner2": true,
         "browserify>module-deps>through2": true,
         "browserify>parents": true,
         "depcheck>resolve": true,
         "loose-envify": true,
         "pumpify>inherits": true,
-        "readable-stream": true,
         "watchify>defined": true,
         "watchify>xtend": true
       }
@@ -1671,10 +1813,78 @@
         "watchify>defined": true
       }
     },
+    "browserify>module-deps>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "browserify>module-deps>readable-stream>isarray": true,
+        "browserify>module-deps>readable-stream>safe-buffer": true,
+        "browserify>module-deps>readable-stream>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream-2>core-util-is": true,
+        "readable-stream-2>process-nextick-args": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "browserify>module-deps>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "browserify>module-deps>readable-stream>string_decoder": {
+      "packages": {
+        "browserify>module-deps>readable-stream>safe-buffer": true
+      }
+    },
     "browserify>module-deps>stream-combiner2": {
       "packages": {
         "browserify>duplexer2": true,
-        "readable-stream": true
+        "browserify>module-deps>stream-combiner2>readable-stream": true
+      }
+    },
+    "browserify>module-deps>stream-combiner2>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "browserify>module-deps>stream-combiner2>readable-stream>isarray": true,
+        "browserify>module-deps>stream-combiner2>readable-stream>safe-buffer": true,
+        "browserify>module-deps>stream-combiner2>readable-stream>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream-2>core-util-is": true,
+        "readable-stream-2>process-nextick-args": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "browserify>module-deps>stream-combiner2>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "browserify>module-deps>stream-combiner2>readable-stream>string_decoder": {
+      "packages": {
+        "browserify>module-deps>stream-combiner2>readable-stream>safe-buffer": true
       }
     },
     "browserify>module-deps>through2": {
@@ -1685,7 +1895,7 @@
         "process.nextTick": true
       },
       "packages": {
-        "readable-stream": true,
+        "browserify>module-deps>readable-stream": true,
         "watchify>xtend": true
       }
     },
@@ -1712,7 +1922,75 @@
     },
     "browserify>read-only-stream": {
       "packages": {
-        "readable-stream": true
+        "browserify>read-only-stream>readable-stream": true
+      }
+    },
+    "browserify>read-only-stream>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "browserify>read-only-stream>readable-stream>isarray": true,
+        "browserify>read-only-stream>readable-stream>safe-buffer": true,
+        "browserify>read-only-stream>readable-stream>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream-2>core-util-is": true,
+        "readable-stream-2>process-nextick-args": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "browserify>read-only-stream>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "browserify>read-only-stream>readable-stream>string_decoder": {
+      "packages": {
+        "browserify>read-only-stream>readable-stream>safe-buffer": true
+      }
+    },
+    "browserify>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "browserify>readable-stream>isarray": true,
+        "browserify>readable-stream>safe-buffer": true,
+        "browserify>readable-stream>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream-2>core-util-is": true,
+        "readable-stream-2>process-nextick-args": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "browserify>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "browserify>readable-stream>string_decoder": {
+      "packages": {
+        "browserify>readable-stream>safe-buffer": true
       }
     },
     "browserify>shasum-object": {
@@ -1756,7 +2034,7 @@
         "process.nextTick": true
       },
       "packages": {
-        "readable-stream": true,
+        "browserify>readable-stream": true,
         "watchify>xtend": true
       }
     },
@@ -2157,37 +2435,18 @@
         "process.nextTick": true
       },
       "packages": {
-        "duplexify>readable-stream": true,
+        "duplexify>end-of-stream": true,
         "duplexify>stream-shift": true,
-        "end-of-stream": true,
-        "pumpify>inherits": true
-      }
-    },
-    "duplexify>readable-stream": {
-      "builtin": {
-        "buffer.Buffer": true,
-        "events.EventEmitter": true,
-        "stream": true,
-        "util": true
-      },
-      "globals": {
-        "process.env.READABLE_STREAM": true,
-        "process.nextTick": true,
-        "process.stderr": true,
-        "process.stdout": true
-      },
-      "packages": {
-        "browserify>string_decoder": true,
         "pumpify>inherits": true,
-        "readable-stream>util-deprecate": true
+        "readable-stream": true
       }
     },
-    "end-of-stream": {
+    "duplexify>end-of-stream": {
       "globals": {
         "process.nextTick": true
       },
       "packages": {
-        "pump>once": true
+        "@metamask/object-multiplex>once": true
       }
     },
     "eslint": {
@@ -3601,8 +3860,42 @@
         "process.nextTick": true
       },
       "packages": {
-        "readable-stream": true,
+        "gulp-sort>through2>readable-stream": true,
         "watchify>xtend": true
+      }
+    },
+    "gulp-sort>through2>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "gulp-sort>through2>readable-stream>isarray": true,
+        "gulp-sort>through2>readable-stream>safe-buffer": true,
+        "gulp-sort>through2>readable-stream>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream-2>core-util-is": true,
+        "readable-stream-2>process-nextick-args": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "gulp-sort>through2>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "gulp-sort>through2>readable-stream>string_decoder": {
+      "packages": {
+        "gulp-sort>through2>readable-stream>safe-buffer": true
       }
     },
     "gulp-sourcemaps": {
@@ -3681,26 +3974,7 @@
         "process.nextTick": true
       },
       "packages": {
-        "gulp-sourcemaps>@gulp-sourcemaps/identity-map>through2>readable-stream": true
-      }
-    },
-    "gulp-sourcemaps>@gulp-sourcemaps/identity-map>through2>readable-stream": {
-      "builtin": {
-        "buffer.Buffer": true,
-        "events.EventEmitter": true,
-        "stream": true,
-        "util": true
-      },
-      "globals": {
-        "process.env.READABLE_STREAM": true,
-        "process.nextTick": true,
-        "process.stderr": true,
-        "process.stdout": true
-      },
-      "packages": {
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true,
-        "readable-stream>util-deprecate": true
+        "readable-stream": true
       }
     },
     "gulp-sourcemaps>@gulp-sourcemaps/map-sources": {
@@ -3722,8 +3996,42 @@
         "process.nextTick": true
       },
       "packages": {
-        "readable-stream": true,
+        "gulp-sourcemaps>@gulp-sourcemaps/map-sources>through2>readable-stream": true,
         "watchify>xtend": true
+      }
+    },
+    "gulp-sourcemaps>@gulp-sourcemaps/map-sources>through2>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "gulp-sourcemaps>@gulp-sourcemaps/map-sources>through2>readable-stream>isarray": true,
+        "gulp-sourcemaps>@gulp-sourcemaps/map-sources>through2>readable-stream>safe-buffer": true,
+        "gulp-sourcemaps>@gulp-sourcemaps/map-sources>through2>readable-stream>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream-2>core-util-is": true,
+        "readable-stream-2>process-nextick-args": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "gulp-sourcemaps>@gulp-sourcemaps/map-sources>through2>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "gulp-sourcemaps>@gulp-sourcemaps/map-sources>through2>readable-stream>string_decoder": {
+      "packages": {
+        "gulp-sourcemaps>@gulp-sourcemaps/map-sources>through2>readable-stream>safe-buffer": true
       }
     },
     "gulp-sourcemaps>acorn": {
@@ -3835,8 +4143,42 @@
         "process.nextTick": true
       },
       "packages": {
-        "readable-stream": true,
+        "gulp-sourcemaps>through2>readable-stream": true,
         "watchify>xtend": true
+      }
+    },
+    "gulp-sourcemaps>through2>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "gulp-sourcemaps>through2>readable-stream>isarray": true,
+        "gulp-sourcemaps>through2>readable-stream>safe-buffer": true,
+        "gulp-sourcemaps>through2>readable-stream>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream-2>core-util-is": true,
+        "readable-stream-2>process-nextick-args": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "gulp-sourcemaps>through2>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "gulp-sourcemaps>through2>readable-stream>string_decoder": {
+      "packages": {
+        "gulp-sourcemaps>through2>readable-stream>safe-buffer": true
       }
     },
     "gulp-stylelint": {
@@ -3868,26 +4210,7 @@
         "process.nextTick": true
       },
       "packages": {
-        "gulp-stylelint>through2>readable-stream": true
-      }
-    },
-    "gulp-stylelint>through2>readable-stream": {
-      "builtin": {
-        "buffer.Buffer": true,
-        "events.EventEmitter": true,
-        "stream": true,
-        "util": true
-      },
-      "globals": {
-        "process.env.READABLE_STREAM": true,
-        "process.nextTick": true,
-        "process.stderr": true,
-        "process.stdout": true
-      },
-      "packages": {
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true,
-        "readable-stream>util-deprecate": true
+        "readable-stream": true
       }
     },
     "gulp-watch": {
@@ -3910,11 +4233,11 @@
         "gulp-watch>chokidar": true,
         "gulp-watch>fancy-log": true,
         "gulp-watch>path-is-absolute": true,
+        "gulp-watch>readable-stream": true,
         "gulp-watch>slash": true,
         "gulp-watch>vinyl-file": true,
         "gulp-zip>plugin-error": true,
         "react>object-assign": true,
-        "readable-stream": true,
         "vinyl": true
       }
     },
@@ -4856,7 +5179,7 @@
       "packages": {
         "del>graceful-fs": true,
         "gulp-watch>chokidar>anymatch>micromatch": true,
-        "readable-stream": true
+        "gulp-watch>readable-stream": true
       }
     },
     "gulp-watch>chokidar>upath": {
@@ -4880,6 +5203,40 @@
     "gulp-watch>path-is-absolute": {
       "globals": {
         "process.platform": true
+      }
+    },
+    "gulp-watch>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "gulp-watch>readable-stream>isarray": true,
+        "gulp-watch>readable-stream>safe-buffer": true,
+        "gulp-watch>readable-stream>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream-2>core-util-is": true,
+        "readable-stream-2>process-nextick-args": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "gulp-watch>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "gulp-watch>readable-stream>string_decoder": {
+      "packages": {
+        "gulp-watch>readable-stream>safe-buffer": true
       }
     },
     "gulp-watch>vinyl-file": {
@@ -4921,7 +5278,41 @@
         "setImmediate": true
       },
       "packages": {
-        "readable-stream": true
+        "gulp-watch>vinyl-file>strip-bom-stream>first-chunk-stream>readable-stream": true
+      }
+    },
+    "gulp-watch>vinyl-file>strip-bom-stream>first-chunk-stream>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "gulp-watch>vinyl-file>strip-bom-stream>first-chunk-stream>readable-stream>isarray": true,
+        "gulp-watch>vinyl-file>strip-bom-stream>first-chunk-stream>readable-stream>safe-buffer": true,
+        "gulp-watch>vinyl-file>strip-bom-stream>first-chunk-stream>readable-stream>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream-2>core-util-is": true,
+        "readable-stream-2>process-nextick-args": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "gulp-watch>vinyl-file>strip-bom-stream>first-chunk-stream>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "gulp-watch>vinyl-file>strip-bom-stream>first-chunk-stream>readable-stream>string_decoder": {
+      "packages": {
+        "gulp-watch>vinyl-file>strip-bom-stream>first-chunk-stream>readable-stream>safe-buffer": true
       }
     },
     "gulp-watch>vinyl-file>vinyl": {
@@ -4979,7 +5370,7 @@
         "Buffer.concat": true
       },
       "packages": {
-        "pump": true
+        "pumpify>pump": true
       }
     },
     "gulp-zip>plugin-error": {
@@ -5012,26 +5403,7 @@
         "process.nextTick": true
       },
       "packages": {
-        "gulp-zip>through2>readable-stream": true
-      }
-    },
-    "gulp-zip>through2>readable-stream": {
-      "builtin": {
-        "buffer.Buffer": true,
-        "events.EventEmitter": true,
-        "stream": true,
-        "util": true
-      },
-      "globals": {
-        "process.env.READABLE_STREAM": true,
-        "process.nextTick": true,
-        "process.stderr": true,
-        "process.stdout": true
-      },
-      "packages": {
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true,
-        "readable-stream>util-deprecate": true
+        "readable-stream": true
       }
     },
     "gulp-zip>yazl": {
@@ -5212,10 +5584,10 @@
         "process.nextTick": true
       },
       "packages": {
-        "end-of-stream": true,
+        "@metamask/object-multiplex>once": true,
+        "duplexify>end-of-stream": true,
         "gulp>glob-watcher>async-done>stream-exhaust": true,
-        "pump>once": true,
-        "readable-stream>process-nextick-args": true
+        "readable-stream-2>process-nextick-args": true
       }
     },
     "gulp>glob-watcher>async-done>stream-exhaust": {
@@ -5353,7 +5725,41 @@
       "packages": {
         "del>graceful-fs": true,
         "gulp>glob-watcher>anymatch>micromatch": true,
-        "readable-stream": true
+        "gulp>glob-watcher>chokidar>readdirp>readable-stream": true
+      }
+    },
+    "gulp>glob-watcher>chokidar>readdirp>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "gulp>glob-watcher>chokidar>readdirp>readable-stream>isarray": true,
+        "gulp>glob-watcher>chokidar>readdirp>readable-stream>safe-buffer": true,
+        "gulp>glob-watcher>chokidar>readdirp>readable-stream>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream-2>core-util-is": true,
+        "readable-stream-2>process-nextick-args": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "gulp>glob-watcher>chokidar>readdirp>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "gulp>glob-watcher>chokidar>readdirp>readable-stream>string_decoder": {
+      "packages": {
+        "gulp>glob-watcher>chokidar>readdirp>readable-stream>safe-buffer": true
       }
     },
     "gulp>glob-watcher>chokidar>upath": {
@@ -5583,6 +5989,7 @@
         "gulp>vinyl-fs>lead": true,
         "gulp>vinyl-fs>object.assign": true,
         "gulp>vinyl-fs>pumpify": true,
+        "gulp>vinyl-fs>readable-stream": true,
         "gulp>vinyl-fs>remove-bom-buffer": true,
         "gulp>vinyl-fs>remove-bom-stream": true,
         "gulp>vinyl-fs>resolve-options": true,
@@ -5590,7 +5997,6 @@
         "gulp>vinyl-fs>to-through": true,
         "gulp>vinyl-fs>value-or-function": true,
         "gulp>vinyl-fs>vinyl-sourcemap": true,
-        "readable-stream": true,
         "vinyl": true
       }
     },
@@ -5615,8 +6021,42 @@
         "process.nextTick": true
       },
       "packages": {
-        "readable-stream": true,
+        "gulp>vinyl-fs>fs-mkdirp-stream>through2>readable-stream": true,
         "watchify>xtend": true
+      }
+    },
+    "gulp>vinyl-fs>fs-mkdirp-stream>through2>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "gulp>vinyl-fs>fs-mkdirp-stream>through2>readable-stream>isarray": true,
+        "gulp>vinyl-fs>fs-mkdirp-stream>through2>readable-stream>safe-buffer": true,
+        "gulp>vinyl-fs>fs-mkdirp-stream>through2>readable-stream>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream-2>core-util-is": true,
+        "readable-stream-2>process-nextick-args": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "gulp>vinyl-fs>fs-mkdirp-stream>through2>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "gulp>vinyl-fs>fs-mkdirp-stream>through2>readable-stream>string_decoder": {
+      "packages": {
+        "gulp>vinyl-fs>fs-mkdirp-stream>through2>readable-stream>safe-buffer": true
       }
     },
     "gulp>vinyl-fs>glob-stream": {
@@ -5632,11 +6072,11 @@
         "gulp>glob-watcher>is-negated-glob": true,
         "gulp>vinyl-fs>glob-stream>ordered-read-streams": true,
         "gulp>vinyl-fs>glob-stream>pumpify": true,
+        "gulp>vinyl-fs>glob-stream>readable-stream": true,
         "gulp>vinyl-fs>glob-stream>to-absolute-glob": true,
         "gulp>vinyl-fs>glob-stream>unique-stream": true,
         "nyc>glob": true,
         "react-markdown>unified>extend": true,
-        "readable-stream": true,
         "vinyl>remove-trailing-separator": true
       }
     },
@@ -5645,7 +6085,41 @@
         "util.inherits": true
       },
       "packages": {
-        "readable-stream": true
+        "gulp>vinyl-fs>glob-stream>ordered-read-streams>readable-stream": true
+      }
+    },
+    "gulp>vinyl-fs>glob-stream>ordered-read-streams>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "gulp>vinyl-fs>glob-stream>ordered-read-streams>readable-stream>isarray": true,
+        "gulp>vinyl-fs>glob-stream>ordered-read-streams>readable-stream>safe-buffer": true,
+        "gulp>vinyl-fs>glob-stream>ordered-read-streams>readable-stream>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream-2>core-util-is": true,
+        "readable-stream-2>process-nextick-args": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "gulp>vinyl-fs>glob-stream>ordered-read-streams>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "gulp>vinyl-fs>glob-stream>ordered-read-streams>readable-stream>string_decoder": {
+      "packages": {
+        "gulp>vinyl-fs>glob-stream>ordered-read-streams>readable-stream>safe-buffer": true
       }
     },
     "gulp>vinyl-fs>glob-stream>pumpify": {
@@ -5661,10 +6135,10 @@
         "process.nextTick": true
       },
       "packages": {
+        "duplexify>end-of-stream": true,
         "duplexify>stream-shift": true,
-        "end-of-stream": true,
-        "pumpify>inherits": true,
-        "readable-stream": true
+        "gulp>vinyl-fs>glob-stream>readable-stream": true,
+        "pumpify>inherits": true
       }
     },
     "gulp>vinyl-fs>glob-stream>pumpify>pump": {
@@ -5672,8 +6146,42 @@
         "fs": true
       },
       "packages": {
-        "end-of-stream": true,
-        "pump>once": true
+        "@metamask/object-multiplex>once": true,
+        "duplexify>end-of-stream": true
+      }
+    },
+    "gulp>vinyl-fs>glob-stream>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "gulp>vinyl-fs>glob-stream>readable-stream>isarray": true,
+        "gulp>vinyl-fs>glob-stream>readable-stream>safe-buffer": true,
+        "gulp>vinyl-fs>glob-stream>readable-stream>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream-2>core-util-is": true,
+        "readable-stream-2>process-nextick-args": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "gulp>vinyl-fs>glob-stream>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "gulp>vinyl-fs>glob-stream>readable-stream>string_decoder": {
+      "packages": {
+        "gulp>vinyl-fs>glob-stream>readable-stream>safe-buffer": true
       }
     },
     "gulp>vinyl-fs>glob-stream>to-absolute-glob": {
@@ -5709,8 +6217,42 @@
         "process.nextTick": true
       },
       "packages": {
-        "readable-stream": true,
+        "gulp>vinyl-fs>glob-stream>unique-stream>through2-filter>through2>readable-stream": true,
         "watchify>xtend": true
+      }
+    },
+    "gulp>vinyl-fs>glob-stream>unique-stream>through2-filter>through2>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "gulp>vinyl-fs>glob-stream>unique-stream>through2-filter>through2>readable-stream>isarray": true,
+        "gulp>vinyl-fs>glob-stream>unique-stream>through2-filter>through2>readable-stream>safe-buffer": true,
+        "gulp>vinyl-fs>glob-stream>unique-stream>through2-filter>through2>readable-stream>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream-2>core-util-is": true,
+        "readable-stream-2>process-nextick-args": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "gulp>vinyl-fs>glob-stream>unique-stream>through2-filter>through2>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "gulp>vinyl-fs>glob-stream>unique-stream>through2-filter>through2>readable-stream>string_decoder": {
+      "packages": {
+        "gulp>vinyl-fs>glob-stream>unique-stream>through2-filter>through2>readable-stream>safe-buffer": true
       }
     },
     "gulp>vinyl-fs>lazystream": {
@@ -5718,7 +6260,41 @@
         "util.inherits": true
       },
       "packages": {
-        "readable-stream": true
+        "gulp>vinyl-fs>lazystream>readable-stream": true
+      }
+    },
+    "gulp>vinyl-fs>lazystream>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "gulp>vinyl-fs>lazystream>readable-stream>isarray": true,
+        "gulp>vinyl-fs>lazystream>readable-stream>safe-buffer": true,
+        "gulp>vinyl-fs>lazystream>readable-stream>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream-2>core-util-is": true,
+        "readable-stream-2>process-nextick-args": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "gulp>vinyl-fs>lazystream>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "gulp>vinyl-fs>lazystream>readable-stream>string_decoder": {
+      "packages": {
+        "gulp>vinyl-fs>lazystream>readable-stream>safe-buffer": true
       }
     },
     "gulp>vinyl-fs>lead": {
@@ -5734,8 +6310,42 @@
         "Buffer": true
       },
       "packages": {
+        "gulp>vinyl-fs>lead>flush-write-stream>readable-stream": true,
+        "pumpify>inherits": true
+      }
+    },
+    "gulp>vinyl-fs>lead>flush-write-stream>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "gulp>vinyl-fs>lead>flush-write-stream>readable-stream>isarray": true,
+        "gulp>vinyl-fs>lead>flush-write-stream>readable-stream>safe-buffer": true,
+        "gulp>vinyl-fs>lead>flush-write-stream>readable-stream>string_decoder": true,
         "pumpify>inherits": true,
-        "readable-stream": true
+        "readable-stream-2>core-util-is": true,
+        "readable-stream-2>process-nextick-args": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "gulp>vinyl-fs>lead>flush-write-stream>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "gulp>vinyl-fs>lead>flush-write-stream>readable-stream>string_decoder": {
+      "packages": {
+        "gulp>vinyl-fs>lead>flush-write-stream>readable-stream>safe-buffer": true
       }
     },
     "gulp>vinyl-fs>object.assign": {
@@ -5759,10 +6369,10 @@
         "process.nextTick": true
       },
       "packages": {
+        "duplexify>end-of-stream": true,
         "duplexify>stream-shift": true,
-        "end-of-stream": true,
-        "pumpify>inherits": true,
-        "readable-stream": true
+        "gulp>vinyl-fs>readable-stream": true,
+        "pumpify>inherits": true
       }
     },
     "gulp>vinyl-fs>pumpify>pump": {
@@ -5770,8 +6380,42 @@
         "fs": true
       },
       "packages": {
-        "end-of-stream": true,
-        "pump>once": true
+        "@metamask/object-multiplex>once": true,
+        "duplexify>end-of-stream": true
+      }
+    },
+    "gulp>vinyl-fs>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "gulp>vinyl-fs>readable-stream>isarray": true,
+        "gulp>vinyl-fs>readable-stream>safe-buffer": true,
+        "gulp>vinyl-fs>readable-stream>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream-2>core-util-is": true,
+        "readable-stream-2>process-nextick-args": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "gulp>vinyl-fs>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "gulp>vinyl-fs>readable-stream>string_decoder": {
+      "packages": {
+        "gulp>vinyl-fs>readable-stream>safe-buffer": true
       }
     },
     "gulp>vinyl-fs>remove-bom-buffer": {
@@ -5795,8 +6439,47 @@
         "process.nextTick": true
       },
       "packages": {
-        "readable-stream": true,
+        "gulp>vinyl-fs>remove-bom-stream>through2>readable-stream": true,
         "watchify>xtend": true
+      }
+    },
+    "gulp>vinyl-fs>remove-bom-stream>through2>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "gulp>vinyl-fs>remove-bom-stream>through2>readable-stream>isarray": true,
+        "gulp>vinyl-fs>remove-bom-stream>through2>readable-stream>safe-buffer": true,
+        "gulp>vinyl-fs>remove-bom-stream>through2>readable-stream>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream-2>core-util-is": true,
+        "readable-stream-2>process-nextick-args": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "gulp>vinyl-fs>remove-bom-stream>through2>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "gulp>vinyl-fs>remove-bom-stream>through2>readable-stream>string_decoder": {
+      "packages": {
+        "gulp>vinyl-fs>remove-bom-stream>through2>readable-stream>string_decoder>safe-buffer": true
+      }
+    },
+    "gulp>vinyl-fs>remove-bom-stream>through2>readable-stream>string_decoder>safe-buffer": {
+      "builtin": {
+        "buffer": true
       }
     },
     "gulp>vinyl-fs>resolve-options": {
@@ -5812,7 +6495,7 @@
         "process.nextTick": true
       },
       "packages": {
-        "readable-stream": true,
+        "gulp>vinyl-fs>readable-stream": true,
         "watchify>xtend": true
       }
     },
@@ -5829,8 +6512,42 @@
         "process.nextTick": true
       },
       "packages": {
-        "readable-stream": true,
+        "gulp>vinyl-fs>to-through>through2>readable-stream": true,
         "watchify>xtend": true
+      }
+    },
+    "gulp>vinyl-fs>to-through>through2>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "gulp>vinyl-fs>to-through>through2>readable-stream>isarray": true,
+        "gulp>vinyl-fs>to-through>through2>readable-stream>safe-buffer": true,
+        "gulp>vinyl-fs>to-through>through2>readable-stream>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream-2>core-util-is": true,
+        "readable-stream-2>process-nextick-args": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "gulp>vinyl-fs>to-through>through2>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "gulp>vinyl-fs>to-through>through2>readable-stream>string_decoder": {
+      "packages": {
+        "gulp>vinyl-fs>to-through>through2>readable-stream>safe-buffer": true
       }
     },
     "gulp>vinyl-fs>vinyl-sourcemap": {
@@ -5876,7 +6593,7 @@
     },
     "gulp>vinyl-fs>vinyl-sourcemap>now-and-later": {
       "packages": {
-        "pump>once": true
+        "@metamask/object-multiplex>once": true
       }
     },
     "ini": {
@@ -5912,8 +6629,42 @@
         "setImmediate": true
       },
       "packages": {
+        "labeled-stream-splicer>stream-splicer>readable-stream": true,
+        "pumpify>inherits": true
+      }
+    },
+    "labeled-stream-splicer>stream-splicer>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "labeled-stream-splicer>stream-splicer>readable-stream>isarray": true,
+        "labeled-stream-splicer>stream-splicer>readable-stream>safe-buffer": true,
+        "labeled-stream-splicer>stream-splicer>readable-stream>string_decoder": true,
         "pumpify>inherits": true,
-        "readable-stream": true
+        "readable-stream-2>core-util-is": true,
+        "readable-stream-2>process-nextick-args": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "labeled-stream-splicer>stream-splicer>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "labeled-stream-splicer>stream-splicer>readable-stream>string_decoder": {
+      "packages": {
+        "labeled-stream-splicer>stream-splicer>readable-stream>safe-buffer": true
       }
     },
     "lavamoat-browserify": {
@@ -5938,9 +6689,9 @@
         "browserify>browser-resolve": true,
         "duplexify": true,
         "lavamoat-browserify>concat-stream": true,
-        "lavamoat-browserify>readable-stream": true,
         "lavamoat-viz>lavamoat-core": true,
         "lavamoat>@lavamoat/aa": true,
+        "readable-stream": true,
         "through2": true
       }
     },
@@ -5951,28 +6702,9 @@
       },
       "packages": {
         "browserify>concat-stream>typedarray": true,
-        "lavamoat-browserify>readable-stream": true,
         "pumpify>inherits": true,
+        "readable-stream": true,
         "terser>source-map-support>buffer-from": true
-      }
-    },
-    "lavamoat-browserify>readable-stream": {
-      "builtin": {
-        "buffer.Buffer": true,
-        "events.EventEmitter": true,
-        "stream": true,
-        "util": true
-      },
-      "globals": {
-        "process.env.READABLE_STREAM": true,
-        "process.nextTick": true,
-        "process.stderr": true,
-        "process.stdout": true
-      },
-      "packages": {
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true,
-        "readable-stream>util-deprecate": true
       }
     },
     "lavamoat-viz>lavamoat-core": {
@@ -6253,11 +6985,11 @@
         "process.platform": true
       },
       "packages": {
+        "@metamask/object-multiplex>once": true,
         "eslint>minimatch": true,
         "gulp-watch>path-is-absolute": true,
         "nyc>glob>fs.realpath": true,
         "nyc>glob>inflight": true,
-        "pump>once": true,
         "pumpify>inherits": true
       }
     },
@@ -6291,8 +7023,8 @@
         "process.nextTick": true
       },
       "packages": {
-        "pump>once": true,
-        "pump>once>wrappy": true
+        "@metamask/object-multiplex>once": true,
+        "@metamask/object-multiplex>once>wrappy": true
       }
     },
     "nyc>resolve-from": {
@@ -7193,7 +7925,19 @@
         "process.env.NODE_ENV": true
       }
     },
-    "pump": {
+    "pumpify": {
+      "packages": {
+        "duplexify": true,
+        "pumpify>inherits": true,
+        "pumpify>pump": true
+      }
+    },
+    "pumpify>inherits": {
+      "builtin": {
+        "util.inherits": true
+      }
+    },
+    "pumpify>pump": {
       "builtin": {
         "fs": true
       },
@@ -7201,25 +7945,8 @@
         "process.version": true
       },
       "packages": {
-        "end-of-stream": true,
-        "pump>once": true
-      }
-    },
-    "pump>once": {
-      "packages": {
-        "pump>once>wrappy": true
-      }
-    },
-    "pumpify": {
-      "packages": {
-        "duplexify": true,
-        "pump": true,
-        "pumpify>inherits": true
-      }
-    },
-    "pumpify>inherits": {
-      "builtin": {
-        "util.inherits": true
+        "@metamask/object-multiplex>once": true,
+        "duplexify>end-of-stream": true
       }
     },
     "randomcolor": {
@@ -7287,46 +8014,31 @@
     },
     "readable-stream": {
       "builtin": {
+        "buffer.Buffer": true,
         "events.EventEmitter": true,
         "stream": true,
         "util": true
       },
       "globals": {
-        "process.browser": true,
         "process.env.READABLE_STREAM": true,
+        "process.nextTick": true,
         "process.stderr": true,
-        "process.stdout": true,
-        "process.version.slice": true,
-        "setImmediate": true
+        "process.stdout": true
       },
       "packages": {
+        "browserify>string_decoder": true,
         "pumpify>inherits": true,
-        "readable-stream>core-util-is": true,
-        "readable-stream>isarray": true,
-        "readable-stream>process-nextick-args": true,
-        "readable-stream>safe-buffer": true,
-        "readable-stream>string_decoder": true,
         "readable-stream>util-deprecate": true
       }
     },
-    "readable-stream>core-util-is": {
+    "readable-stream-2>core-util-is": {
       "globals": {
         "Buffer.isBuffer": true
       }
     },
-    "readable-stream>process-nextick-args": {
+    "readable-stream-2>process-nextick-args": {
       "globals": {
         "process": true
-      }
-    },
-    "readable-stream>safe-buffer": {
-      "builtin": {
-        "buffer": true
-      }
-    },
-    "readable-stream>string_decoder": {
-      "packages": {
-        "readable-stream>safe-buffer": true
       }
     },
     "readable-stream>util-deprecate": {
@@ -8017,11 +8729,11 @@
       },
       "packages": {
         "pumpify>inherits": true,
+        "readable-stream": true,
         "stylelint>postcss-html>htmlparser2>domelementtype": true,
         "stylelint>postcss-html>htmlparser2>domhandler": true,
         "stylelint>postcss-html>htmlparser2>domutils": true,
-        "stylelint>postcss-html>htmlparser2>entities": true,
-        "stylelint>postcss-html>htmlparser2>readable-stream": true
+        "stylelint>postcss-html>htmlparser2>entities": true
       }
     },
     "stylelint>postcss-html>htmlparser2>domhandler": {
@@ -8039,25 +8751,6 @@
       "packages": {
         "stylelint>postcss-html>htmlparser2>domelementtype": true,
         "stylelint>postcss-html>htmlparser2>entities": true
-      }
-    },
-    "stylelint>postcss-html>htmlparser2>readable-stream": {
-      "builtin": {
-        "buffer.Buffer": true,
-        "events.EventEmitter": true,
-        "stream": true,
-        "util": true
-      },
-      "globals": {
-        "process.env.READABLE_STREAM": true,
-        "process.nextTick": true,
-        "process.stderr": true,
-        "process.stdout": true
-      },
-      "packages": {
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true,
-        "readable-stream>util-deprecate": true
       }
     },
     "stylelint>postcss-less": {
@@ -8436,26 +9129,7 @@
     },
     "through2": {
       "packages": {
-        "through2>readable-stream": true
-      }
-    },
-    "through2>readable-stream": {
-      "builtin": {
-        "buffer.Buffer": true,
-        "events.EventEmitter": true,
-        "stream": true,
-        "util": true
-      },
-      "globals": {
-        "process.env.READABLE_STREAM": true,
-        "process.nextTick": true,
-        "process.stderr": true,
-        "process.stdout": true
-      },
-      "packages": {
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true,
-        "readable-stream>util-deprecate": true
+        "readable-stream": true
       }
     },
     "ts-node": {
@@ -8606,6 +9280,7 @@
         "crypto": true,
         "fs": true,
         "inspector": true,
+        "module.findPnpApi": true,
         "os.EOL": true,
         "os.platform": true,
         "path.dirname": true,
@@ -8667,7 +9342,46 @@
       },
       "packages": {
         "koa>content-disposition>safe-buffer": true,
-        "readable-stream": true
+        "vinyl-buffer>bl>readable-stream": true
+      }
+    },
+    "vinyl-buffer>bl>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "pumpify>inherits": true,
+        "readable-stream-2>core-util-is": true,
+        "readable-stream-2>process-nextick-args": true,
+        "readable-stream>util-deprecate": true,
+        "vinyl-buffer>bl>readable-stream>isarray": true,
+        "vinyl-buffer>bl>readable-stream>safe-buffer": true,
+        "vinyl-buffer>bl>readable-stream>string_decoder": true
+      }
+    },
+    "vinyl-buffer>bl>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "vinyl-buffer>bl>readable-stream>string_decoder": {
+      "packages": {
+        "vinyl-buffer>bl>readable-stream>string_decoder>safe-buffer": true
+      }
+    },
+    "vinyl-buffer>bl>readable-stream>string_decoder>safe-buffer": {
+      "builtin": {
+        "buffer": true
       }
     },
     "vinyl-buffer>through2": {
@@ -8678,7 +9392,7 @@
         "process.nextTick": true
       },
       "packages": {
-        "readable-stream": true,
+        "vinyl-buffer>bl>readable-stream": true,
         "watchify>xtend": true
       }
     },
@@ -8702,8 +9416,42 @@
         "process.nextTick": true
       },
       "packages": {
-        "readable-stream": true,
+        "vinyl-source-stream>through2>readable-stream": true,
         "watchify>xtend": true
+      }
+    },
+    "vinyl-source-stream>through2>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "pumpify>inherits": true,
+        "readable-stream-2>core-util-is": true,
+        "readable-stream-2>process-nextick-args": true,
+        "readable-stream>util-deprecate": true,
+        "vinyl-source-stream>through2>readable-stream>isarray": true,
+        "vinyl-source-stream>through2>readable-stream>safe-buffer": true,
+        "vinyl-source-stream>through2>readable-stream>string_decoder": true
+      }
+    },
+    "vinyl-source-stream>through2>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "vinyl-source-stream>through2>readable-stream>string_decoder": {
+      "packages": {
+        "vinyl-source-stream>through2>readable-stream>safe-buffer": true
       }
     },
     "vinyl-sourcemaps-apply": {
@@ -8747,8 +9495,47 @@
         "process.nextTick": true
       },
       "packages": {
-        "readable-stream": true,
+        "vinyl>cloneable-readable>through2>readable-stream": true,
         "watchify>xtend": true
+      }
+    },
+    "vinyl>cloneable-readable>through2>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "pumpify>inherits": true,
+        "readable-stream-2>core-util-is": true,
+        "readable-stream>util-deprecate": true,
+        "vinyl>cloneable-readable>through2>readable-stream>isarray": true,
+        "vinyl>cloneable-readable>through2>readable-stream>process-nextick-args": true,
+        "vinyl>cloneable-readable>through2>readable-stream>safe-buffer": true,
+        "vinyl>cloneable-readable>through2>readable-stream>string_decoder": true
+      }
+    },
+    "vinyl>cloneable-readable>through2>readable-stream>process-nextick-args": {
+      "globals": {
+        "process": true
+      }
+    },
+    "vinyl>cloneable-readable>through2>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "vinyl>cloneable-readable>through2>readable-stream>string_decoder": {
+      "packages": {
+        "vinyl>cloneable-readable>through2>readable-stream>safe-buffer": true
       }
     },
     "vinyl>remove-trailing-separator": {
