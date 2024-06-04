@@ -531,10 +531,33 @@ export default class MetamaskController extends EventEmitter {
       allowedEvents: ['NetworkController:stateChange'],
     });
 
+    const accountsControllerMessenger = this.controllerMessenger.getRestricted({
+      name: 'AccountsController',
+      allowedEvents: [
+        'SnapController:stateChange',
+        'KeyringController:accountRemoved',
+        'KeyringController:stateChange',
+      ],
+      allowedActions: [
+        'KeyringController:getAccounts',
+        'KeyringController:getKeyringsByType',
+        'KeyringController:getKeyringForAccount',
+      ],
+    });
+
+    this.accountsController = new AccountsController({
+      messenger: accountsControllerMessenger,
+      state: initState.AccountsController,
+    });
+
     const preferencesMessenger = this.controllerMessenger.getRestricted({
       name: 'PreferencesController',
-      allowedActions: [],
-      allowedEvents: [],
+      allowedActions: [
+        'AccountsController:setSelectedAccount',
+        'AccountsController:getAccountByAddress',
+        'AccountsController:setAccountName',
+      ],
+      allowedEvents: ['AccountsController:stateChange'],
     });
 
     this.preferencesController = new PreferencesController({
@@ -543,11 +566,6 @@ export default class MetamaskController extends EventEmitter {
       messenger: preferencesMessenger,
       provider: this.provider,
       networkConfigurations: this.networkController.state.networkConfigurations,
-      onKeyringStateChange: (listener) =>
-        this.controllerMessenger.subscribe(
-          'KeyringController:stateChange',
-          listener,
-        ),
     });
 
     this.tokenListController = new TokenListController({
@@ -886,32 +904,6 @@ export default class MetamaskController extends EventEmitter {
     this.accountOrderController = new AccountOrderController({
       messenger: accountOrderMessenger,
       state: initState.AccountOrderController,
-    });
-
-    const accountsControllerMessenger = this.controllerMessenger.getRestricted({
-      name: 'AccountsController',
-      allowedEvents: [
-        'SnapController:stateChange',
-        'KeyringController:accountRemoved',
-        'KeyringController:stateChange',
-        'AccountsController:selectedAccountChange',
-      ],
-      allowedActions: [
-        'AccountsController:setCurrentAccount',
-        'AccountsController:setAccountName',
-        'AccountsController:listAccounts',
-        'AccountsController:getSelectedAccount',
-        'AccountsController:getAccountByAddress',
-        'AccountsController:updateAccounts',
-        'KeyringController:getAccounts',
-        'KeyringController:getKeyringsByType',
-        'KeyringController:getKeyringForAccount',
-      ],
-    });
-
-    this.accountsController = new AccountsController({
-      messenger: accountsControllerMessenger,
-      state: initState.AccountsController,
     });
 
     // token exchange rate tracker
@@ -1563,6 +1555,8 @@ export default class MetamaskController extends EventEmitter {
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
           const { address } = this.accountsController.getSelectedAccount();
 
+          this._addAccountsWithBalance();
+
           this.postOnboardingInitialization();
           this.triggerNetworkrequests();
           // execute once the token detection on the post-onboarding
@@ -1845,6 +1839,8 @@ export default class MetamaskController extends EventEmitter {
         'AccountsController:getAccountByAddress',
         'AccountsController:setAccountName',
         'AccountsController:listAccounts',
+        'AccountsController:getSelectedAccount',
+        'AccountsController:setSelectedAccount',
       ],
     });
 
@@ -2422,7 +2418,7 @@ export default class MetamaskController extends EventEmitter {
   }
   ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   trackInsightSnapView(snapId) {
     this.metaMetricsController.trackEvent({
       event: MetaMetricsEventName.InsightSnapViewed,
@@ -2966,6 +2962,7 @@ export default class MetamaskController extends EventEmitter {
       networkController,
       announcementController,
       onboardingController,
+      appMetadataController,
       permissionController,
       preferencesController,
       swapsController,
@@ -3158,7 +3155,6 @@ export default class MetamaskController extends EventEmitter {
         const account = this.accountsController.getAccountByAddress(address);
         if (account) {
           this.accountsController.setSelectedAccount(account.id);
-          this.preferencesController.setSelectedAddress(address);
         } else {
           throw new Error(`No account found for address: ${address}`);
         }
@@ -3203,7 +3199,6 @@ export default class MetamaskController extends EventEmitter {
       setSelectedInternalAccount: (id) => {
         const account = this.accountsController.getAccount(id);
         if (account) {
-          this.preferencesController.setSelectedAddress(account.address);
           this.accountsController.setSelectedAccount(id);
         }
       },
@@ -3399,6 +3394,12 @@ export default class MetamaskController extends EventEmitter {
       cancelEncryptionPublicKey:
         this.encryptionPublicKeyController.cancelEncryptionPublicKey.bind(
           this.encryptionPublicKeyController,
+        ),
+
+      // AppMetadataController
+      setShowTokenAutodetectModalOnUpgrade:
+        appMetadataController.setShowTokenAutodetectModalOnUpgrade.bind(
+          appMetadataController,
         ),
 
       // onboarding controller
@@ -3634,7 +3635,7 @@ export default class MetamaskController extends EventEmitter {
       finalizeEventFragment: metaMetricsController.finalizeEventFragment.bind(
         metaMetricsController,
       ),
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       trackInsightSnapView: this.trackInsightSnapView.bind(this),
       ///: END:ONLY_INCLUDE_IF
       // approval controller
@@ -3932,6 +3933,9 @@ export default class MetamaskController extends EventEmitter {
   async createNewVaultAndRestore(password, encodedSeedPhrase) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
+      const { completedOnboarding } =
+        this.onboardingController.store.getState();
+
       const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
 
       // clear permissions
@@ -3949,7 +3953,9 @@ export default class MetamaskController extends EventEmitter {
 
       this.txController.clearUnapprovedTransactions();
 
-      this.tokenDetectionController.enable();
+      if (completedOnboarding) {
+        this.tokenDetectionController.enable();
+      }
 
       // create new vault
       const vault = await this.keyringController.createNewVaultAndRestore(
@@ -3957,57 +3963,58 @@ export default class MetamaskController extends EventEmitter {
         this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer),
       );
 
-      // Scan accounts until we find an empty one
-      const { chainId } = this.networkController.state.providerConfig;
-      const ethQuery = new EthQuery(this.provider);
-      const accounts = await this.keyringController.getAccounts();
-      let address = accounts[accounts.length - 1];
-
-      for (let count = accounts.length; ; count++) {
-        const balance = await this.getBalance(address, ethQuery);
-
-        if (balance === '0x0') {
-          // This account has no balance, so check for tokens
-          await this.tokenDetectionController.detectTokens({
-            selectedAddress: address,
-          });
-
-          const tokens =
-            this.tokensController.state.allTokens?.[chainId]?.[address];
-          const detectedTokens =
-            this.tokensController.state.allDetectedTokens?.[chainId]?.[address];
-
-          if (
-            (tokens?.length ?? 0) === 0 &&
-            (detectedTokens?.length ?? 0) === 0
-          ) {
-            // This account has no balance or tokens
-            if (count !== 1) {
-              await this.removeAccount(address);
-            }
-            break;
-          }
-        }
-
-        // This account has assets, so check the next one
-        ({ addedAccountAddress: address } =
-          await this.keyringController.addNewAccount(count));
-      }
-
-      const { completedOnboarding } =
-        this.onboardingController.store.getState();
-
-      // This must be set as soon as possible to communicate to the
-      // keyring's iframe and have the setting initialized properly
-      // Optimistically called to not block MetaMask login due to
-      // Ledger Keyring GitHub downtime
       if (completedOnboarding) {
+        await this._addAccountsWithBalance();
+
+        // This must be set as soon as possible to communicate to the
+        // keyring's iframe and have the setting initialized properly
+        // Optimistically called to not block MetaMask login due to
+        // Ledger Keyring GitHub downtime
         this.setLedgerTransportPreference();
       }
 
       return vault;
     } finally {
       releaseLock();
+    }
+  }
+
+  async _addAccountsWithBalance() {
+    // Scan accounts until we find an empty one
+    const { chainId } = this.networkController.state.providerConfig;
+    const ethQuery = new EthQuery(this.provider);
+    const accounts = await this.keyringController.getAccounts();
+    let address = accounts[accounts.length - 1];
+
+    for (let count = accounts.length; ; count++) {
+      const balance = await this.getBalance(address, ethQuery);
+
+      if (balance === '0x0') {
+        // This account has no balance, so check for tokens
+        await this.tokenDetectionController.detectTokens({
+          selectedAddress: address,
+        });
+
+        const tokens =
+          this.tokensController.state.allTokens?.[chainId]?.[address];
+        const detectedTokens =
+          this.tokensController.state.allDetectedTokens?.[chainId]?.[address];
+
+        if (
+          (tokens?.length ?? 0) === 0 &&
+          (detectedTokens?.length ?? 0) === 0
+        ) {
+          // This account has no balance or tokens
+          if (count !== 1) {
+            await this.removeAccount(address);
+          }
+          break;
+        }
+      }
+
+      // This account has assets, so check the next one
+      ({ addedAccountAddress: address } =
+        await this.keyringController.addNewAccount(count));
     }
   }
 
@@ -5849,7 +5856,7 @@ export default class MetamaskController extends EventEmitter {
       getEIP1559GasFeeEstimates:
         this.gasFeeController.fetchGasFeeEstimates.bind(this.gasFeeController),
       getSelectedAddress: () =>
-        this.preferencesController.store.getState().selectedAddress,
+        this.accountsController.getSelectedAccount().address,
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
       getTransaction: (id) =>
         this.txController.state.transactions.find((tx) => tx.id === id),
@@ -6298,7 +6305,7 @@ export default class MetamaskController extends EventEmitter {
       ...transactionMeta,
       txParams: {
         ...transactionMeta.txParams,
-        from: this.preferencesController.getSelectedAddress(),
+        from: this.accountsController.getSelectedAccount().address,
       },
     };
 

@@ -70,7 +70,22 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         },
       },
       NetworkOrderController: {
-        orderedNetworkList: [],
+        orderedNetworkList: [
+          {
+            networkId: '0x1',
+            networkRpcUrl:
+              'https://mainnet.infura.io/v3/00000000000000000000000000000000',
+          },
+          {
+            networkId: '0xe708',
+            networkRpcUrl:
+              'https://linea-mainnet.infura.io/v3/00000000000000000000000000000000',
+          },
+          {
+            networkId: '0x539',
+            networkRpcUrl: 'http://localhost:8545',
+          },
+        ],
       },
       AccountOrderController: {
         pinnedAccountList: [],
@@ -190,6 +205,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           smartTransactionsOptInStatus: false,
           useNativeCurrencyAsPrimaryCurrency: true,
           petnamesEnabled: true,
+          showTokenAutodetectModal: false,
         },
         selectedAddress: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         theme: 'light',
