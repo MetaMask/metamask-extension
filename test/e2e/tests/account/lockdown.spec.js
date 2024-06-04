@@ -79,6 +79,7 @@ describe('lockdown', function () {
         );
 
         await driver.navigate(PAGES.BACKGROUND);
+        await driver.delay(1000);
         assert.equal(
           await driver.executeScript(lockdownTestScript),
           true,

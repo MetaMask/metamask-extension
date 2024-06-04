@@ -64,6 +64,7 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { NotificationsTagCounter } from '../notifications-tag-counter';
 import { MultichainMetaFoxLogo } from './multichain-meta-fox-logo';
 
 export const AppHeader = ({ location }) => {
@@ -151,6 +152,18 @@ export const AppHeader = ({ location }) => {
   const handleConnectionsRoute = () => {
     history.push(`${CONNECTIONS}/${encodeURIComponent(origin)}`);
   };
+
+  const handleMainMenuOpened = () => {
+    trackEvent({
+      event: MetaMetricsEventName.NavMainMenuOpened,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: {
+        location: 'Home',
+      },
+    });
+    setAccountOptionsMenuOpen(true);
+  };
+
   // This is required to ensure send and confirmation screens
   // look as desired
   const headerBottomMargin = !popupStatus && disableNetworkPicker ? 4 : 0;
@@ -328,20 +341,19 @@ export const AppHeader = ({ location }) => {
                     justifyContent={JustifyContent.flexEnd}
                     width={BlockSize.Full}
                   >
+                    {!accountOptionsMenuOpen && (
+                      <Box
+                        style={{ position: 'relative' }}
+                        onClick={() => handleMainMenuOpened()}
+                      >
+                        <NotificationsTagCounter noLabel />
+                      </Box>
+                    )}
                     <ButtonIcon
                       iconName={IconName.MoreVertical}
                       data-testid="account-options-menu-button"
                       ariaLabel={t('accountOptions')}
-                      onClick={() => {
-                        trackEvent({
-                          event: MetaMetricsEventName.NavMainMenuOpened,
-                          category: MetaMetricsEventCategory.Navigation,
-                          properties: {
-                            location: 'Home',
-                          },
-                        });
-                        setAccountOptionsMenuOpen(true);
-                      }}
+                      onClick={() => handleMainMenuOpened()}
                       size={ButtonIconSize.Sm}
                     />
                   </Box>

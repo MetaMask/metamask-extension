@@ -51,10 +51,30 @@ export default class SelectHardware extends Component {
 
   state = {
     selectedDevice: null,
+    trezorRequestDevicePending: false,
   };
 
-  connect = () => {
+  connect = async () => {
     if (this.state.selectedDevice) {
+      if (this.state.selectedDevice === 'trezor') {
+        this.setState({ trezorRequestDevicePending: true });
+        try {
+          await window.navigator.usb.requestDevice({
+            filters: [
+              { vendorId: 0x534c, productId: 0x0001 },
+              { vendorId: 0x1209, productId: 0x53c0 },
+              { vendorId: 0x1209, productId: 0x53c1 },
+            ],
+          });
+        } catch (e) {
+          if (!e.message.match('No device selected')) {
+            throw e;
+          }
+        } finally {
+          this.setState({ trezorRequestDevicePending: false });
+        }
+      }
+
       this.props.connectToHardwareWallet(this.state.selectedDevice);
     }
     return null;
@@ -63,6 +83,7 @@ export default class SelectHardware extends Component {
   renderConnectToTrezorButton() {
     return (
       <button
+        data-testid="connect-trezor-btn"
         className={classnames('hw-connect__btn', {
           selected: this.state.selectedDevice === HardwareDeviceNames.trezor,
         })}
@@ -78,6 +99,7 @@ export default class SelectHardware extends Component {
   renderConnectToLatticeButton() {
     return (
       <button
+        data-testid="connect-lattice-btn"
         className={classnames('hw-connect__btn', {
           selected: this.state.selectedDevice === HardwareDeviceNames.lattice,
         })}
@@ -93,6 +115,7 @@ export default class SelectHardware extends Component {
   renderConnectToLedgerButton() {
     return (
       <button
+        data-testid="connect-ledger-btn"
         className={classnames('hw-connect__btn', {
           selected: this.state.selectedDevice === HardwareDeviceNames.ledger,
         })}
@@ -108,6 +131,7 @@ export default class SelectHardware extends Component {
   renderConnectToQRButton() {
     return (
       <button
+        data-testid="connect-qr-btn"
         className={classnames('hw-connect__btn', {
           selected: this.state.selectedDevice === HardwareDeviceNames.qr,
         })}
@@ -145,7 +169,9 @@ export default class SelectHardware extends Component {
         size={BUTTON_SIZES.LG}
         className="hw-connect__connect-btn"
         onClick={this.connect}
-        disabled={!this.state.selectedDevice}
+        disabled={
+          !this.state.selectedDevice || this.state.trezorRequestDevicePending
+        }
       >
         {this.context.t('continue')}
       </Button>
@@ -710,6 +736,41 @@ export default class SelectHardware extends Component {
                   event: 'Clicked imToken Tutorial',
                 });
                 openWindow(HardwareAffiliateTutorialLinks.imtoken);
+              }}
+            >
+              {this.context.t('tutorial')}
+            </Button>
+          </>
+        ),
+      },
+      {
+        message: (
+          <>
+            <p className="hw-connect__QR-subtitle">
+              {this.context.t('onekey')}
+            </p>
+            <Button
+              className="hw-connect__external-btn-first"
+              variant={BUTTON_VARIANT.SECONDARY}
+              onClick={() => {
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Navigation,
+                  event: 'Clicked OneKey Learn More',
+                });
+                openWindow(HardwareAffiliateLinks.onekey);
+              }}
+            >
+              {this.context.t('buyNow')}
+            </Button>
+            <Button
+              className="hw-connect__external-btn"
+              variant={BUTTON_VARIANT.SECONDARY}
+              onClick={() => {
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Navigation,
+                  event: 'Clicked OneKey Tutorial',
+                });
+                openWindow(HardwareAffiliateTutorialLinks.onekey);
               }}
             >
               {this.context.t('tutorial')}

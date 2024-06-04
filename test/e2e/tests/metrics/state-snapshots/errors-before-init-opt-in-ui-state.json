@@ -1,5 +1,15 @@
 {
   "data": {
+    "AuthenticationController": { "isSignedIn": "boolean" },
+    "UserStorageController": { "isProfileSyncingEnabled": true },
+    "MetamaskNotificationsController": {
+      "subscriptionAccountsSeen": "object",
+      "isFeatureAnnouncementsEnabled": "boolean",
+      "isMetamaskNotificationsEnabled": "boolean",
+      "isMetamaskNotificationsFeatureSeen": "boolean",
+      "metamaskNotificationsList": "object",
+      "metamaskNotificationsReadList": "object"
+    },
     "AccountsController": {
       "internalAccounts": { "selectedAccount": "string", "accounts": "object" }
     },
@@ -20,9 +30,9 @@
       "connectedStatusPopoverHasBeenShown": true,
       "termsOfUseLastAgreed": "number",
       "defaultHomeActiveTabName": null,
-      "popupGasPollTokens": "object",
-      "notificationGasPollTokens": "object",
       "fullScreenGasPollTokens": "object",
+      "notificationGasPollTokens": "object",
+      "popupGasPollTokens": "object",
       "qrHardware": {},
       "recoveryPhraseReminderHasBeenShown": true,
       "recoveryPhraseReminderLastShown": "number",
@@ -102,7 +112,8 @@
         "showTestNetworks": false,
         "smartTransactionsOptInStatus": false,
         "useNativeCurrencyAsPrimaryCurrency": true,
-        "petnamesEnabled": true
+        "petnamesEnabled": true,
+        "showTokenAutodetectModal": "boolean"
       },
       "selectedAddress": "string",
       "theme": "light",

@@ -3,7 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { useLocation } from 'react-router-dom';
 import { NetworkType } from '@metamask/controller-utils';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { SEND_STAGES, startNewDraftTransaction } from '../../../ducks/send';
 import { domainInitialState } from '../../../ducks/domains';
 import { setBackgroundConnection } from '../../../store/background-connection';
@@ -16,6 +16,7 @@ import { renderWithProvider } from '../../../../test/jest';
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../../test/jest/mocks';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import Send from './send';
 
 const middleware = [thunk];
@@ -93,7 +94,7 @@ const baseStore = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
         },
       },
