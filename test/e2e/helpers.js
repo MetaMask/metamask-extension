@@ -507,9 +507,17 @@ const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
   await driver.findElement({ text: 'Wallet creation successful', tag: 'h2' });
   // opt-out from third party API
   await driver.clickElement({ text: 'Advanced configuration', tag: 'a' });
+  await driver.clickElement(
+    '[data-testid="basic-functionality-toggle"] .toggle-button',
+  );
+  await driver.clickElement('[id="basic-configuration-checkbox"]');
+  await driver.clickElement({ text: 'Turn off', tag: 'button' });
+
   await Promise.all(
     (
-      await driver.findClickableElements('.toggle-button.toggle-button--on')
+      await driver.findClickableElements(
+        '.toggle-button.toggle-button--on:not([data-testid="basic-functionality-toggle"] .toggle-button)',
+      )
     ).map((toggle) => toggle.click()),
   );
   // complete onboarding

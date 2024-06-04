@@ -20,6 +20,7 @@ import {
   getIsBridgeChain,
   getMetaMetricsId,
   getUseTokenDetection,
+  getUseExternalServices,
 } from '../../../selectors';
 import { setFirstTimeUsedNetwork } from '../../../store/actions';
 import {
@@ -43,6 +44,7 @@ export default function NewNetworkInfo() {
   const [showPopup, setShowPopup] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const autoDetectToken = useSelector(getUseTokenDetection);
+  const areExternalServicesEnabled = useSelector(getUseExternalServices);
   const providerConfig = useSelector(getProviderConfig);
   const currentNetwork = useSelector(getCurrentNetwork);
   const metaMetricsId = useSelector(getMetaMetricsId);
@@ -65,6 +67,9 @@ export default function NewNetworkInfo() {
   }, [providerConfig.chainId]);
 
   useEffect(() => {
+    if (!areExternalServicesEnabled) {
+      return;
+    }
     checkTokenDetection();
     // we want to only fetch once
     // eslint-disable-next-line react-hooks/exhaustive-deps

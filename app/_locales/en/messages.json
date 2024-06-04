@@ -556,6 +556,34 @@
   "basic": {
     "message": "Basic"
   },
+  "basicConfigurationBannerCTA": {
+    "message": "Turn on basic functionality"
+  },
+  "basicConfigurationBannerTitle": {
+    "message": "Basic functionality is off"
+  },
+  "basicConfigurationDescription": {
+    "message": "MetaMask offers basic features like token details and gas settings through internet services. When you use internet services, your IP address is shared, in this case with MetaMask. This is just like when you visit any website. MetaMask uses this data temporarily and never sells your data. You can use a VPN or turn off these services, but it may affect your MetaMask experience. To learn more read our $1.",
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
+  },
+  "basicConfigurationLabel": {
+    "message": "Basic functionality"
+  },
+  "basicConfigurationModalCheckbox": {
+    "message": "I understand and want to continue"
+  },
+  "basicConfigurationModalDisclaimerOff": {
+    "message": "This means you won't fully optimize your time on MetaMask. Basic features (like token details, optimal gas settings, and others) won't be available to you."
+  },
+  "basicConfigurationModalDisclaimerOn": {
+    "message": "To optimize your time on MetaMask, you’ll need to turn on this feature. Basic functions (like token details, optimal gas settings, and others) are important to the web3 experience."
+  },
+  "basicConfigurationModalHeadingOff": {
+    "message": "Turn off basic functionality"
+  },
+  "basicConfigurationModalHeadingOn": {
+    "message": "Turn on basic functionality"
+  },
   "beCareful": {
     "message": "Be careful"
   },
@@ -5705,6 +5733,12 @@
   },
   "tryAgain": {
     "message": "Try again"
+  },
+  "turnOff": {
+    "message": "Turn off"
+  },
+  "turnOn": {
+    "message": "Turn on"
   },
   "turnOnTokenDetection": {
     "message": "Turn on enhanced token detection"
