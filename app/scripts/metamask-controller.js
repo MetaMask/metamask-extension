@@ -1071,7 +1071,7 @@ export default class MetamaskController extends EventEmitter {
     };
 
     const isSnapPreinstalled = (id) => {
-      return PREINSTALLED_SNAPS.some(snap => snap.snapId === id);
+      return PREINSTALLED_SNAPS.some((snap) => snap.snapId === id);
     };
 
     additionalKeyrings.push(
