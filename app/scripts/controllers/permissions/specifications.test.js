@@ -281,7 +281,7 @@ describe('PermissionController specifications', () => {
           const getInternalAccounts = jest.fn().mockImplementationOnce(() => {
             return [
               {
-                address: '0x1',
+                address: '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
                 id: '21066553-d8c8-4cdc-af33-efc921cd3ca9',
                 metadata: {
                   name: 'Test Account',
@@ -295,7 +295,7 @@ describe('PermissionController specifications', () => {
                 type: EthAccountType.Eoa,
               },
               {
-                address: '0x2',
+                address: '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
                 id: '0bd7348e-bdfe-4f67-875c-de831a583857',
                 metadata: {
                   name: 'Test Account',
@@ -308,7 +308,7 @@ describe('PermissionController specifications', () => {
                 type: EthAccountType.Eoa,
               },
               {
-                address: '0x3',
+                address: '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
                 id: 'ff8fda69-d416-4d25-80a2-efb77bc7d4ad',
                 metadata: {
                   name: 'Test Account',
@@ -322,7 +322,7 @@ describe('PermissionController specifications', () => {
                 type: EthAccountType.Eoa,
               },
               {
-                address: '0x4',
+                address: '0x04eBa9B766477d8eCA77F5f0e67AE1863C95a7E3',
                 id: '0bd7348e-bdfe-4f67-875c-de831a583857',
                 metadata: {
                   name: 'Test Account',
@@ -339,7 +339,12 @@ describe('PermissionController specifications', () => {
           });
           const getAllAccounts = jest
             .fn()
-            .mockImplementationOnce(() => ['0x1', '0x2', '0x3', '0x4']);
+            .mockImplementationOnce(() => [
+              '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
+              '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
+              '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
+              '0x04eBa9B766477d8eCA77F5f0e67AE1863C95a7E3',
+            ]);
 
           const { methodImplementation } = getPermissionSpecifications({
             getInternalAccounts,
@@ -347,10 +352,10 @@ describe('PermissionController specifications', () => {
           })[RestrictedMethods.eth_accounts];
 
           expect(await methodImplementation()).toStrictEqual([
-            '0x3',
-            '0x4',
-            '0x1',
-            '0x2',
+            '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
+            '0x04eBa9B766477d8eCA77F5f0e67AE1863C95a7E3',
+            '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
+            '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
           ]);
         });
 
@@ -358,7 +363,7 @@ describe('PermissionController specifications', () => {
           const getInternalAccounts = jest.fn().mockImplementationOnce(() => {
             return [
               {
-                address: '0x2',
+                address: '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
                 id: '0bd7348e-bdfe-4f67-875c-de831a583857',
                 metadata: {
                   name: 'Test Account',
@@ -372,7 +377,7 @@ describe('PermissionController specifications', () => {
                 type: EthAccountType.Eoa,
               },
               {
-                address: '0x3',
+                address: '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
                 id: 'ff8fda69-d416-4d25-80a2-efb77bc7d4ad',
                 metadata: {
                   name: 'Test Account',
@@ -389,7 +394,11 @@ describe('PermissionController specifications', () => {
           });
           const getAllAccounts = jest
             .fn()
-            .mockImplementationOnce(() => ['0x1', '0x2', '0x3']);
+            .mockImplementationOnce(() => [
+              '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
+              '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
+              '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
+            ]);
 
           const { methodImplementation } = getPermissionSpecifications({
             getInternalAccounts,
@@ -398,7 +407,7 @@ describe('PermissionController specifications', () => {
           })[RestrictedMethods.eth_accounts];
 
           await expect(() => methodImplementation()).rejects.toThrow(
-            'Missing identity for address: "0x1".',
+            'Missing identity for address: "0x7A2Bd22810088523516737b4Dc238A4bC37c23F2".',
           );
         });
 
@@ -406,7 +415,7 @@ describe('PermissionController specifications', () => {
           const getInternalAccounts = jest.fn().mockImplementationOnce(() => {
             return [
               {
-                address: '0x1',
+                address: '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
                 id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
                 metadata: {
                   name: 'Test Account',
@@ -420,7 +429,7 @@ describe('PermissionController specifications', () => {
                 type: EthAccountType.Eoa,
               },
               {
-                address: '0x3',
+                address: '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
                 id: 'ff8fda69-d416-4d25-80a2-efb77bc7d4ad',
                 metadata: {
                   name: 'Test Account',
@@ -437,7 +446,11 @@ describe('PermissionController specifications', () => {
           });
           const getAllAccounts = jest
             .fn()
-            .mockImplementationOnce(() => ['0x1', '0x2', '0x3']);
+            .mockImplementationOnce(() => [
+              '0x7A2Bd22810088523516737b4Dc238A4bC37c23F2',
+              '0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3',
+              '0xDe70d2FF1995DC03EF1a3b584e3ae14da020C616',
+            ]);
 
           const { methodImplementation } = getPermissionSpecifications({
             getInternalAccounts,
@@ -446,7 +459,7 @@ describe('PermissionController specifications', () => {
           })[RestrictedMethods.eth_accounts];
 
           await expect(() => methodImplementation()).rejects.toThrow(
-            'Missing identity for address: "0x2".',
+            'Missing identity for address: "0x7152f909e5EB3EF198f17e5Cb087c5Ced88294e3".',
           );
         });
       });
