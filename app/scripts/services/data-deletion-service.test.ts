@@ -1152,7 +1152,7 @@ async function fetchWithFakeTimers({
     const intervalLength = defaultMaxRetryDelay / 10;
     const numberOfIntervals = defaultMaxRetryDelay / intervalLength;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    for (const _ of new Array(numberOfIntervals).keys()) {
+    for (const _interval of new Array(numberOfIntervals).keys()) {
       if (resolved) {
         break;
       }
