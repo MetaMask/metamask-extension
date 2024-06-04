@@ -41,7 +41,7 @@ export const getAccountsBySnapId = async (
  * @param trackEvent - A function to track MetaMetrics events.
  * @param getSnapName - A function to get a snap's localized
  * (or non-localized if there are no localization files) name from its manifest.
- * @param isSnapPreinstalled
+ * @param isSnapPreinstalled - A function to check if a Snap is pre-installed.
  * @returns The constructed SnapKeyring builder instance with the following methods:
  * - `saveState`: Persists all keyrings in the keyring controller.
  * - `addAccount`: Initiates the process of adding an account with user confirmation and handling the user input.
