@@ -69,9 +69,7 @@ describe('MetaMask onboarding @no-mmi', function () {
         await driver.clickElement(
           '[data-testid="privacy-settings-back-button"]',
         );
-        await driver.clickElement({ text: 'Done', tag: 'button' });
-        await driver.clickElement('[data-testid="pin-extension-next"]');
-        await driver.clickElement({ text: 'Done', tag: 'button' });
+
         await driver.clickElement('[data-testid="network-display"]');
 
         await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'p' });
@@ -115,9 +113,6 @@ describe('MetaMask onboarding @no-mmi', function () {
         await driver.clickElement(
           '[data-testid="privacy-settings-back-button"]',
         );
-        await driver.clickElement({ text: 'Done', tag: 'button' });
-        await driver.clickElement('[data-testid="pin-extension-next"]');
-        await driver.clickElement({ text: 'Done', tag: 'button' });
 
         await driver.clickElement('[data-testid="network-display"]');
 

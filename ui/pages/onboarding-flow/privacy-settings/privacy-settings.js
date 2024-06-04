@@ -52,6 +52,7 @@ import {
 import { selectIsProfileSyncingEnabled } from '../../../selectors/metamask-notifications/profile-syncing';
 import { selectParticipateInMetaMetrics } from '../../../selectors/metamask-notifications/authentication';
 import {
+  setCompletedOnboarding,
   setIpfsGateway,
   setUseCurrencyRateCheck,
   setUseMultiAccountBalanceChecker,
@@ -145,6 +146,7 @@ export default function PrivacySettings() {
       setUseMultiAccountBalanceChecker(isMultiAccountBalanceCheckerEnabled),
     );
     dispatch(setUseCurrencyRateCheck(turnOnCurrencyRateCheck));
+    dispatch(setCompletedOnboarding());
     dispatch(setUseAddressBarEnsResolution(addressBarResolution));
     setUseTransactionSimulations(isTransactionSimulationsEnabled);
     dispatch(setPetnamesEnabled(turnOnPetnames));
