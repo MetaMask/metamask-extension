@@ -23,11 +23,15 @@ import {
 ///: END:ONLY_INCLUDE_IF
 import {
   getCurrentChainId,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getCurrentKeyring,
   getIsBridgeChain,
   getIsBuyableChain,
+  ///: END:ONLY_INCLUDE_IF
   getIsSwapsChain,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getMetaMetricsId,
+  ///: END:ONLY_INCLUDE_IF
   getSelectedInternalAccount,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
