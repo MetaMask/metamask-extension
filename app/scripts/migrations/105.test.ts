@@ -1,6 +1,7 @@
 import { v4 as uuid } from 'uuid';
 import { sha256FromString } from 'ethereumjs-util';
-import { EthMethod, InternalAccount } from '@metamask/keyring-api';
+import { InternalAccount } from '@metamask/keyring-api';
+import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import { migrate } from './105';
 
 const MOCK_ADDRESS = '0x0';
@@ -73,14 +74,7 @@ function expectedInternalAccount(
       lastSelected: lastSelected ? expect.any(Number) : undefined,
     },
     options: {},
-    methods: [
-      EthMethod.Sign,
-      EthMethod.PersonalSign,
-      EthMethod.SignTransaction,
-      EthMethod.SignTypedDataV1,
-      EthMethod.SignTypedDataV3,
-      EthMethod.SignTypedDataV4,
-    ],
+    methods: ETH_EOA_METHODS,
     type: 'eip155:eoa',
   };
 }

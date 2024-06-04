@@ -1,5 +1,7 @@
-import { cloneDeep } from 'lodash';
-import { hasProperty, isObject } from '@metamask/utils';
+import { cloneDeep, isObject } from 'lodash';
+import { hasProperty } from '@metamask/utils';
+import { AccountsControllerState } from '@metamask/accounts-controller';
+import { InternalAccount } from '@metamask/keyring-api';
 
 type VersionedData = {
   meta: { version: number };
@@ -9,13 +11,9 @@ type VersionedData = {
 export const version = 119;
 
 /**
- * This migration sets preference useRequestQueue to true
+ * Add a default value for importTime in the InternalAccount
  *
- * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
- * @param originalVersionedData.meta - State metadata.
- * @param originalVersionedData.meta.version - The current state version.
- * @param originalVersionedData.data - The persisted MetaMask state, keyed by controller.
- * @returns Updated versioned MetaMask extension state.
+ * @param originalVersionedData
  */
 export async function migrate(
   originalVersionedData: VersionedData,
@@ -25,28 +23,40 @@ export async function migrate(
   transformState(versionedData.data);
   return versionedData;
 }
-
-// TODO: Replace `any` with specific type
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function transformState(state: Record<string, any>) {
-  if (!hasProperty(state, 'PreferencesController')) {
-    return state;
-  }
-
-  if (!isObject(state.PreferencesController)) {
-    const controllerType = typeof state.PreferencesController;
-    global.sentry?.captureException?.(
-      new Error(`state.PreferencesController is type: ${controllerType}`),
-    );
-    state.PreferencesController = {};
-  }
+  const accountsController = state?.AccountsController || {};
 
   if (
-    state.PreferencesController.useRequestQueue === false ||
-    state.PreferencesController.useRequestQueue === undefined
+    isObject(state.AccountsController) &&
+    hasProperty(state.AccountsController, 'internalAccounts') &&
+    hasProperty(
+      state.AccountsController
+        .internalAccounts as AccountsControllerState['internalAccounts'],
+      'accounts',
+    ) &&
+    Array.isArray(
+      Object.values(
+        (state.AccountsController as AccountsControllerState).internalAccounts
+          .accounts,
+      ),
+    ) &&
+    Object.values(
+      (state.AccountsController as AccountsControllerState).internalAccounts
+        .accounts,
+    ).length > 0
   ) {
-    state.PreferencesController.useRequestQueue = true;
+    Object.values(accountsController.internalAccounts.accounts).forEach(
+      (internalAccount: InternalAccount) => {
+        if (!internalAccount.metadata?.importTime) {
+          internalAccount.metadata.importTime = Date.now();
+        }
+      },
+    );
   }
 
-  return state;
+  return {
+    ...state,
+    AccountsController: accountsController,
+  };
 }

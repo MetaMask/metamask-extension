@@ -105,7 +105,6 @@ import {
   NOTIFICATION_DROP_LEDGER_FIREFOX,
   NOTIFICATION_PETNAMES,
   NOTIFICATION_U2F_LEDGER_LIVE,
-  NOTIFICATION_PORTFOLIO_V2,
   NOTIFICATION_SIMULATIONS,
 } from '../../shared/notifications';
 import {
@@ -198,7 +197,7 @@ export function getCurrentKeyring(state) {
  * both of them support EIP-1559.
  *
  * @param state
- * @param networkClientId - The optional network client ID to check network and account for EIP-1559 support
+ * @param [networkClientId] - The optional network client ID to check network and account for EIP-1559 support
  */
 export function checkNetworkAndAccountSupports1559(state, networkClientId) {
   const networkSupports1559 = isEIP1559Network(state, networkClientId);
@@ -477,19 +476,20 @@ export const getConfirmationExchangeRates = (state) => {
   return state.metamask.confirmationExchangeRates;
 };
 
-export function getSelectedAccount(state) {
-  const accounts = getMetaMaskAccounts(state);
-  const selectedAccount = getSelectedInternalAccount(state);
-
-  // At the time of onboarding there is no selected account
-  if (selectedAccount) {
-    return {
-      ...selectedAccount,
-      ...accounts[selectedAccount.address],
-    };
-  }
-  return undefined;
-}
+export const getSelectedAccount = createDeepEqualSelector(
+  getMetaMaskAccounts,
+  getSelectedInternalAccount,
+  (accounts, selectedAccount) => {
+    // At the time of onboarding there is no selected account
+    if (selectedAccount) {
+      return {
+        ...selectedAccount,
+        ...accounts[selectedAccount.address],
+      };
+    }
+    return undefined;
+  },
+);
 
 export function getTargetAccount(state, targetAddress) {
   const accounts = getMetaMaskAccounts(state);
@@ -800,10 +800,10 @@ export function getUnapprovedTxCount(state) {
   return Object.keys(unapprovedTxs).length;
 }
 
-export function getUnapprovedConfirmations(state) {
-  const { pendingApprovals = {} } = state.metamask;
-  return Object.values(pendingApprovals);
-}
+export const getUnapprovedConfirmations = createDeepEqualSelector(
+  (state) => state.metamask.pendingApprovals || {},
+  (pendingApprovals) => Object.values(pendingApprovals),
+);
 
 export function getUnapprovedTemplatedConfirmations(state) {
   const unapprovedConfirmations = getUnapprovedConfirmations(state);
@@ -1155,6 +1155,34 @@ export const getMemoizedInterfaceContent = createDeepEqualSelector(
   (content) => content,
 );
 
+///: END:ONLY_INCLUDE_IF
+
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
+/**
+ * Input selector providing a way to pass the origins as an argument.
+ *
+ * @param _state - Redux state object.
+ * @param origins - Object containing origins.
+ * @returns object - Object with keys that can be used as input selector.
+ */
+const selectOrigins = (_state, origins) => origins;
+
+/**
+ * Retrieve metadata for multiple subjects (origins).
+ *
+ * @param state - Redux state object.
+ * @param origins - Object containing keys that represent subject's identification.
+ * @returns Key:value object containing metadata attached to each subject key.
+ */
+export const getMultipleTargetsSubjectMetadata = createDeepEqualSelector(
+  [rawStateSelector, selectOrigins],
+  (state, origins) => {
+    return Object.keys(origins ?? {}).reduce((originsMetadata, origin) => {
+      originsMetadata[origin] = getTargetSubjectMetadata(state, origin);
+      return originsMetadata;
+    }, {});
+  },
+);
 ///: END:ONLY_INCLUDE_IF
 
 export function getRpcPrefsForCurrentProvider(state) {
@@ -1699,7 +1727,6 @@ function getAllowedAnnouncementIds(state) {
     [NOTIFICATION_BLOCKAID_DEFAULT]: true,
     ///: END:ONLY_INCLUDE_IF
     [NOTIFICATION_PETNAMES]: true,
-    [NOTIFICATION_PORTFOLIO_V2]: true,
     [NOTIFICATION_SIMULATIONS]: true,
   };
 }
