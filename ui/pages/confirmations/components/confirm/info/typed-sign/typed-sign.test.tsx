@@ -64,6 +64,7 @@ describe('TypedSignInfo', () => {
     expect(container).toMatchSnapshot();
   });
 
+<<<<<<< HEAD
   it('display simulation details for permit signature', () => {
     const state = {
       ...mockState,
@@ -76,6 +77,8 @@ describe('TypedSignInfo', () => {
     expect(getByText('Estimated changes')).toBeDefined();
   });
 
+=======
+>>>>>>> 2d84e322030cc33d6cd43298951ce0f5f151a92b
   it('displays "Approving to" for permit signature type', () => {
     const state = {
       ...mockState,
