@@ -14,7 +14,7 @@ import {
   METAMASK_STALELIST_FILE,
   METAMASK_HOTLIST_DIFF_FILE,
 } from '@metamask/phishing-controller';
-import { EthMethod, EthAccountType } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { NetworkType } from '@metamask/controller-utils';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { LoggingController, LogType } from '@metamask/logging-controller';
@@ -28,6 +28,7 @@ import { LOG_EVENT } from '../../shared/constants/logs';
 import mockEncryptor from '../../test/lib/mock-encryptor';
 import * as tokenUtils from '../../shared/lib/token-util';
 import { flushPromises } from '../../test/lib/timer-helpers';
+import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { deferredPromise } from './lib/util';
 import MetaMaskController from './metamask-controller';
 
@@ -141,7 +142,7 @@ const TEST_INTERNAL_ACCOUNT = {
     lastSelected: 0,
   },
   options: {},
-  methods: [...Object.values(EthMethod)],
+  methods: ETH_EOA_METHODS,
   type: EthAccountType.Eoa,
 };
 
@@ -636,6 +637,10 @@ describe('MetaMaskController', () => {
             }
           });
 
+        jest
+          .spyOn(metamaskController.onboardingController.store, 'getState')
+          .mockReturnValue({ completedOnboarding: true });
+
         // Give account 2 a token
         jest
           .spyOn(metamaskController.tokensController, 'state', 'get')
@@ -1075,7 +1080,9 @@ describe('MetaMaskController', () => {
         metamaskController.preferencesController.setSecurityAlertsEnabled(
           false,
         );
-        metamaskController.onboardingController.completeOnboarding();
+        jest
+          .spyOn(metamaskController.onboardingController.store, 'getState')
+          .mockReturnValue({ completedOnboarding: true });
         metamaskController.preferencesController.setUsePhishDetect(true);
       });
 

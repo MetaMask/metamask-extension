@@ -90,11 +90,14 @@ export function validateAddEthereumChainParams(params, end) {
     ...otherParams
   } = params;
 
-  if (Object.keys(otherParams).length > 0) {
+  const otherKeys = Object.keys(otherParams).filter(
+    // iconUrls is a valid optional but not currently used parameter
+    (v) => !['iconUrls'].includes(v),
+  );
+
+  if (otherKeys.length > 0) {
     throw ethErrors.rpc.invalidParams({
-      message: `Received unexpected keys on object parameter. Unsupported keys:\n${Object.keys(
-        otherParams,
-      )}`,
+      message: `Received unexpected keys on object parameter. Unsupported keys:\n${otherKeys}`,
     });
   }
 
