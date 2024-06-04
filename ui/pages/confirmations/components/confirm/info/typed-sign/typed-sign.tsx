@@ -19,7 +19,6 @@ import { EIP712_PRIMARY_TYPE_PERMIT } from '../../../../constants';
 import { SignatureRequestType } from '../../../../types/confirm';
 import { parseTypedDataMessage } from '../../../../utils';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
-import PermitSimulation from './permit-simulation';
 
 const TypedSignInfo: React.FC = () => {
   const t = useI18nContext();
@@ -39,7 +38,6 @@ const TypedSignInfo: React.FC = () => {
 
   return (
     <>
-      {primaryType === EIP712_PRIMARY_TYPE_PERMIT && <PermitSimulation />}
       <Box
         backgroundColor={BackgroundColor.backgroundDefault}
         borderRadius={BorderRadius.MD}
