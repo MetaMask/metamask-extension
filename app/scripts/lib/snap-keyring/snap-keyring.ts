@@ -122,7 +122,7 @@ export const snapKeyringBuilder = (
         address: string,
         snapId: string,
         handleUserInput: (accepted: boolean) => Promise<void>,
-        accountNameSuggestion?: string,
+        accountNameSuggestion: string = '',
         displayConfirmation: boolean = false,
       ) => {
         const snapName = getSnapName(snapId);
@@ -151,13 +151,13 @@ export const snapKeyringBuilder = (
           isSnapPreinstalled(snapId) && !displayConfirmation;
         // If confirmation dialog are skipped, we consider the account creation to be confirmed
         let confirmationResult = skipConfirmation;
-        let confirmationApprovalId = '';
+        let addAccountApprovalId = '';
         try {
           if (!skipConfirmation) {
             const { id } = controllerMessenger.call(
               'ApprovalController:startFlow',
             );
-            confirmationApprovalId = id;
+            addAccountApprovalId = id;
             confirmationResult = Boolean(
               await controllerMessenger.call(
                 'ApprovalController:addRequest',
@@ -175,6 +175,7 @@ export const snapKeyringBuilder = (
               await handleUserInput(confirmationResult);
               await persistKeyringHelper();
               setSelectedAccountHelper(address);
+              // Get the new internal account for the address
               const internalAccount = controllerMessenger.call(
                 'AccountsController:getAccountByAddress',
                 address,
@@ -184,6 +185,39 @@ export const snapKeyringBuilder = (
                   `Internal account not found for address: ${address}`,
                 );
               }
+              // End the approval flow for new account creation if it was started
+              if (!skipConfirmation) {
+                controllerMessenger.call('ApprovalController:endFlow', {
+                  id: addAccountApprovalId,
+                });
+              }
+              // Start flow to show the account name suggestion dialog
+              const { id: accountNameApprovalId } = controllerMessenger.call(
+                'ApprovalController:startFlow',
+              );
+              const accountName = await controllerMessenger.call(
+                'ApprovalController:addRequest',
+                {
+                  origin: snapId,
+                  type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
+                  requestData: {
+                    accountId: internalAccount.id,
+                    accountNameSuggestion,
+                  },
+                },
+                true,
+              );
+              // End the approval flow for account name suggestion dialog
+              controllerMessenger.call('ApprovalController:endFlow', {
+                id: accountNameApprovalId,
+              });
+
+              // Set the account name and the selected account
+              controllerMessenger.call(
+                'AccountsController:setAccountName',
+                internalAccount.id,
+                accountName,
+              );
               controllerMessenger.call(
                 'AccountsController:setSelectedAccount',
                 internalAccount.id,
@@ -246,6 +280,13 @@ export const snapKeyringBuilder = (
             // User has cancelled account creation
             await handleUserInput(confirmationResult);
 
+            // End the approval flow for new account creation if it was started
+            if (!skipConfirmation) {
+              controllerMessenger.call('ApprovalController:endFlow', {
+                id: addAccountApprovalId,
+              });
+            }
+
             throw new Error('User denied account creation');
           }
         } finally {
@@ -253,12 +294,6 @@ export const snapKeyringBuilder = (
           // canceled by the user, thus it's not a "fail" (not an error).
           if (confirmationResult) {
             trackSnapAccountEvent(MetaMetricsEventName.AccountAdded);
-          }
-          // End the approval flow if it was started
-          if (!skipConfirmation) {
-            controllerMessenger.call('ApprovalController:endFlow', {
-              id: confirmationApprovalId,
-            });
           }
         }
       },
