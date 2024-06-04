@@ -92,10 +92,10 @@ describe('ENS', function () {
 
         await driver.waitForSelector({
           text: sampleEnsDomain,
-          css: '[data-testid="address-list-item-label"]',
+          css: '[data-testid="multichain-send-page__recipient__item__title"]',
         });
 
-        await driver.clickElement('.address-list-item');
+        await driver.clickElement('.multichain-send-page__recipient__item');
 
         await driver.findElement({
           css: '.ens-input__selected-input__title',
