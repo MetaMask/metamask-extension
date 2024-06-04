@@ -77,7 +77,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#personalSign');
 
         // switch back to MetaMask window and switch to tx insights pane
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver, 4);
 
         // wait for and click sign
         await driver.waitForSelector({
@@ -117,7 +117,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#signTypedData');
 
         // switch back to MetaMask window and switch to tx insights pane
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver, 4);
 
         // wait for and click sign
         await driver.waitForSelector({
@@ -157,7 +157,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#signTypedDataV3');
 
         // switch back to MetaMask window and switch to tx insights pane
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver, 4);
 
         // click down arrow
         await driver.waitForSelector('.fa-arrow-down');
@@ -201,7 +201,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('#signTypedDataV4');
 
         // switch back to MetaMask window and switch to tx insights pane
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver, 4);
 
         // click down arrow
         await driver.waitForSelector('.fa-arrow-down');
@@ -247,7 +247,6 @@ describe('Test Snap Signature Insights', function () {
 
         // switch back to MetaMask window and switch to tx insights pane
         await switchToNotificationWindow(driver, 4);
-
         // wait for and click sign
         await driver.waitForSelector({
           text: 'Sign',
@@ -259,7 +258,6 @@ describe('Test Snap Signature Insights', function () {
         });
 
         // wait for and click signature warning sign button
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector(
           '[data-testid="signature-warning-sign-button"]',
         );
