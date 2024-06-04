@@ -30,12 +30,13 @@ start().catch((error) => {
  * @param {JestParams} params - Configuration for jest test runner
  */
 async function runJest(
-  { target, coverage, currentShard, totalShards, maxWorkers } = {
+  { target, coverage, currentShard, totalShards, maxWorkers, silent } = {
     target: 'global',
     coverage: false,
     currentShard: 1,
     totalShards: 1,
     maxWorkers: 2,
+    silent: false,
   },
 ) {
   const options = [
@@ -47,6 +48,9 @@ async function runJest(
   options.push(`--maxWorkers=${maxWorkers}`);
   if (coverage) {
     options.push('--coverage');
+  }
+  if (silent) {
+    options.push('--silent')
   }
   // We use jest's new 'shard' feature to run tests in parallel across many
   // different processes if totalShards > 1
@@ -91,7 +95,7 @@ async function runMocha({ coverage }) {
 
 async function start() {
   const {
-    argv: { mocha, jestGlobal, jestDev, coverage, fakeParallelism, maxWorkers },
+    argv: { mocha, jestGlobal, jestDev, coverage, fakeParallelism, maxWorkers, silent },
   } = yargs(hideBin(process.argv)).usage(
     '$0 [options]',
     'Run unit tests on the application code.',
@@ -139,6 +143,14 @@ async function start() {
             'The safer way to increase performance locally, sets the number of processes to use internally. Recommended 2',
           type: 'number',
         })
+        .option('silent', {
+          alias: ['s'],
+          default: false,
+          demandOption: false,
+          description:
+            'Disable logging in jest tests. Recommended for CI runs but not for local development',
+          type: 'boolean',
+        })
         .strict(),
   );
 
@@ -167,6 +179,7 @@ async function start() {
             totalShards: fakeParallelism,
             currentShard: x + 1,
             maxWorkers: 1, // ignore maxWorker option on purpose
+            silent,
           }),
         );
       }
@@ -178,6 +191,7 @@ async function start() {
       currentShard: currentProcess + 1,
       totalShards: maxProcesses,
       maxWorkers,
+      silent,
     };
     if (mocha) {
       await runMocha(options);
