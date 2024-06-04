@@ -9,9 +9,7 @@ import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import {
   createTextItems,
-  getAmount,
   formatAmount,
-  getUsdAmount,
   formatIsoDateString,
   getNetworkDetailsByChainId,
 } from '../../../../helpers/utils/notification.util';
@@ -153,6 +151,7 @@ export const components: NotificationComponent<ETHNotification> = {
         />
       ),
       Asset: ({ notification }) => {
+        console.log('notification', notification);
         const chainId = decimalToHex(notification.chain_id);
         const { nativeCurrencyLogo, nativeCurrencySymbol } =
           getNetworkDetailsByChainId(`0x${chainId}` as keyof typeof CHAIN_IDS);
@@ -167,12 +166,13 @@ export const components: NotificationComponent<ETHNotification> = {
             }}
             label={t('asset') || ''}
             detail={nativeCurrencySymbol}
-            fiatValue={`$${getUsdAmount(
-              notification.data.amount.eth,
-              '18',
-              notification.data.amount.usd,
+            fiatValue={`$${formatAmount(
+              parseFloat(notification.data.amount.usd),
+              {
+                shouldEllipse: true,
+              },
             )}`}
-            value={`${getAmount(notification.data.amount.eth, '18', {
+            value={`${formatAmount(parseFloat(notification.data.amount.eth), {
               shouldEllipse: true,
             })} ${nativeCurrencySymbol}`}
           />
