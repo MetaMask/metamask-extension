@@ -145,7 +145,7 @@ export const snapKeyringBuilder = (
         // If snap is preinstalled and does not request confirmation, skip the confirmation dialog
         const skipConfirmation =
           isSnapPreinstalled(snapId) && !displayConfirmation;
-        // If confirmation dialog are skipped, we consider the account creation to be confirmed
+        // If confirmation dialog is skipped, we consider the account creation to be confirmed
         let confirmationResult = skipConfirmation;
         let confirmationApprovalId = '';
         try {
