@@ -1075,11 +1075,14 @@ export function updateAndApproveTx(
   unknown,
   AnyAction
 > {
+  console.log('inside updateAndApproveTx in actions', { txMeta });
+
   return (dispatch: MetaMaskReduxDispatch) => {
     !dontShowLoadingIndicator &&
       dispatch(showLoadingIndication(loadingIndicatorMessage));
     return new Promise((resolve, reject) => {
       const actionId = generateActionId();
+
       callBackgroundMethod(
         'resolvePendingApproval',
         [String(txMeta.id), { txMeta, actionId }, { waitForResult: true }],

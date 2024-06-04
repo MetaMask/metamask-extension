@@ -110,13 +110,16 @@ import { subtractHexes } from '../../../../shared/modules/conversion.utils';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
 
 let customNonceValue = '';
-const customNonceMerge = (txData) =>
-  customNonceValue
+const customNonceMerge = (txData) => {
+  console.log('after customNonceMerge', { ...txData, customNonceValue });
+
+  return customNonceValue
     ? {
         ...txData,
         customNonceValue,
       }
     : txData;
+};
 
 function addressIsNew(toAccounts, newAddress) {
   const newAddressNormalized = newAddress.toLowerCase();
@@ -236,6 +239,8 @@ const mapStateToProps = (state, ownProps) => {
     customTxParamsData,
     hexTransactionAmount,
   );
+
+  console.log('confirm-transaction-base.container', { fullTxData });
 
   customNonceValue = getCustomNonceValue(state);
   const isEthGasPriceFetched = getIsEthGasPriceFetched(state);
