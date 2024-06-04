@@ -214,7 +214,7 @@ exports[`AssetPage TokenOverview should render a native asset 1`] = `
                   TEST
                 </span>
                 <p
-                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-alternative"
+                  class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-alternative"
                   data-testid="multichain-token-list-item-token-name"
                 >
                   TEST
@@ -228,7 +228,7 @@ exports[`AssetPage TokenOverview should render a native asset 1`] = `
                   data-testid="multichain-token-list-item-secondary-value"
                 />
                 <p
-                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-alternative"
+                  class="mm-box mm-text mm-text--body-md mm-text--text-align-end mm-box--color-text-alternative"
                   data-testid="multichain-token-list-item-value"
                 >
                   0 TEST
@@ -497,7 +497,7 @@ exports[`AssetPage TokenOverview should render a token asset 1`] = `
                   TEST
                 </span>
                 <p
-                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-alternative"
+                  class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-alternative"
                   data-testid="multichain-token-list-item-token-name"
                 >
                   TEST
@@ -511,7 +511,7 @@ exports[`AssetPage TokenOverview should render a token asset 1`] = `
                   data-testid="multichain-token-list-item-secondary-value"
                 />
                 <p
-                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-alternative"
+                  class="mm-box mm-text mm-text--body-md mm-text--text-align-end mm-box--color-text-alternative"
                   data-testid="multichain-token-list-item-value"
                 >
                   0
