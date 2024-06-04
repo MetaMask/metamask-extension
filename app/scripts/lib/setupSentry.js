@@ -615,7 +615,7 @@ export default function setupSentry({ release, getState }) {
       new FilterEvents({ getMetaMetricsEnabled }),
       new Dedupe(),
       new ExtraErrorData(),
-      new Sentry.BrowserTracing(),
+      Sentry.browserTracingIntegration()
     ],
     release,
     /**
@@ -626,7 +626,7 @@ export default function setupSentry({ release, getState }) {
      * transactions are sent. By setting `tracesSampleRate` to a value lower than 1.0, we
      * reduce the volume of transactions to a more reasonable amount.
      */
-    tracesSampleRate: 0.01,
+    tracesSampleRate: 1,
     beforeSend: (report) => rewriteReport(report, getState),
     beforeBreadcrumb: beforeBreadcrumb(getState),
   });
