@@ -1,4 +1,5 @@
 const { strict: assert } = require('assert');
+const { By } = require('selenium-webdriver');
 const {
   defaultGanacheOptions,
   withFixtures,
@@ -7,7 +8,6 @@ const {
   unlockWallet,
 } = require('../../helpers');
 const { shortenAddress } = require('../../../../ui/helpers/utils/util');
-const { By } = require('selenium-webdriver');
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Address Book', function () {
