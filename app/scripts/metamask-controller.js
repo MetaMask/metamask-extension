@@ -3961,7 +3961,7 @@ export default class MetamaskController extends EventEmitter {
       }
 
       // create new vault
-      const vault = await this.keyringController.createNewVaultAndRestore(
+      await this.keyringController.createNewVaultAndRestore(
         password,
         this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer),
       );
@@ -3975,8 +3975,6 @@ export default class MetamaskController extends EventEmitter {
         // Ledger Keyring GitHub downtime
         this.setLedgerTransportPreference();
       }
-
-      return vault;
     } finally {
       releaseLock();
     }

@@ -188,26 +188,20 @@ describe('MetaMaskController', function () {
 
   describe('#createNewVaultAndRestore', function () {
     it('two successive calls with same inputs give same result', async function () {
-      const result1 = await metamaskController.createNewVaultAndRestore(
-        'test@123',
-        TEST_SEED,
-      );
-      const result2 = await metamaskController.createNewVaultAndRestore(
-        'test@123',
-        TEST_SEED,
-      );
+      await metamaskController.createNewVaultAndRestore('test@123', TEST_SEED);
+      const result1 = metamaskController.keyringController.state;
+      await metamaskController.createNewVaultAndRestore('test@123', TEST_SEED);
+      const result2 = metamaskController.keyringController.state;
       assert.deepEqual(result1, result2);
     });
   });
 
   describe('#createNewVaultAndKeychain', function () {
     it('two successive calls with same inputs give same result', async function () {
-      const result1 = await metamaskController.createNewVaultAndKeychain(
-        'test@123',
-      );
-      const result2 = await metamaskController.createNewVaultAndKeychain(
-        'test@123',
-      );
+      await metamaskController.createNewVaultAndKeychain('test@123');
+      const result1 = metamaskController.keyringController.state;
+      await metamaskController.createNewVaultAndKeychain('test@123');
+      const result2 = metamaskController.keyringController.state;
       assert.notEqual(result1, undefined);
       assert.deepEqual(result1, result2);
     });
