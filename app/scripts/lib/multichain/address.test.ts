@@ -1,4 +1,3 @@
-import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
 import {
   isEthAddress,
   normalizeAddress,
@@ -35,10 +34,6 @@ const NON_EVM_ADDRESSES = [
   },
 ];
 
-function toLowerCaseEthAddress(address: string) {
-  return `0x${stripHexPrefix(address).toLowerCase()}`;
-}
-
 describe('address', () => {
   describe('isEthAddress', () => {
     // @ts-expect-error This is missing from the Mocha type definitions
@@ -46,7 +41,7 @@ describe('address', () => {
       'returns true if address is an ethereum address: $address',
       ({ address }: TestAddress) => {
         expect(isEthAddress(address)).toBe(true);
-        expect(isEthAddress(toLowerCaseEthAddress(address))).toBe(true);
+        expect(isEthAddress(address.toLowerCase())).toBe(true);
       },
     );
 
@@ -65,9 +60,7 @@ describe('address', () => {
       'normalizes address: $address',
       ({ address, normalizedAddress }: TestAddress) => {
         expect(normalizeAddress(address)).toBe(normalizedAddress);
-        expect(normalizeAddress(toLowerCaseEthAddress(address))).toBe(
-          normalizedAddress,
-        );
+        expect(normalizeAddress(address.toLowerCase())).toBe(normalizedAddress);
       },
     );
 
@@ -86,7 +79,7 @@ describe('address', () => {
       'normalizes address to its "safe" form: $address to: $checksumAddress',
       ({ address, checksumAddress }: TestAddress) => {
         expect(normalizeSafeAddress(address)).toBe(checksumAddress);
-        expect(normalizeSafeAddress(toLowerCaseEthAddress(address))).toBe(
+        expect(normalizeSafeAddress(address.toLowerCase())).toBe(
           checksumAddress,
         );
       },
