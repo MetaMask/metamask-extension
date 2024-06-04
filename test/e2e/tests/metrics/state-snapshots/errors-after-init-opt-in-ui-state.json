@@ -2,6 +2,7 @@
   "DNS": "object",
   "activeTab": "object",
   "appState": "object",
+  "bridge": "object",
   "confirm": "object",
   "confirmAlerts": "object",
   "confirmTransaction": "object",

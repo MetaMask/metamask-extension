@@ -666,3 +666,13 @@ export const createSwapsMockStore = () => {
     },
   };
 };
+
+export const createBridgeMockStore = () => {
+  const swapsStore = createSwapsMockStore();
+  return {
+    ...swapsStore,
+    bridge: {
+      toChain: null,
+    },
+  };
+};
