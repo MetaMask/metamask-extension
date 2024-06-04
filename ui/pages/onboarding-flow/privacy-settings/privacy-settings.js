@@ -448,6 +448,7 @@ export default function PrivacySettings() {
             value={turnOnCurrencyRateCheck}
             setValue={setTurnOnCurrencyRateCheck}
             title={t('currencyRateCheckToggle')}
+            dataTestId="currency-rate-check-toggle"
             description={t('currencyRateCheckToggleDescription', [
               <a
                 key="coingecko_link"

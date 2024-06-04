@@ -14,7 +14,7 @@ import {
   METAMASK_STALELIST_FILE,
   METAMASK_HOTLIST_DIFF_FILE,
 } from '@metamask/phishing-controller';
-import { EthMethod, EthAccountType } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { NetworkType } from '@metamask/controller-utils';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { LoggingController, LogType } from '@metamask/logging-controller';
@@ -28,6 +28,7 @@ import { LOG_EVENT } from '../../shared/constants/logs';
 import mockEncryptor from '../../test/lib/mock-encryptor';
 import * as tokenUtils from '../../shared/lib/token-util';
 import { flushPromises } from '../../test/lib/timer-helpers';
+import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { deferredPromise } from './lib/util';
 import MetaMaskController from './metamask-controller';
 
@@ -89,6 +90,12 @@ const rpcMethodMiddlewareMock = {
   createMethodMiddleware: () => (_req, _res, next, _end) => {
     next();
   },
+  createLegacyMethodMiddleware: () => (_req, _res, next, _end) => {
+    next();
+  },
+  createUnsupportedMethodMiddleware: () => (_req, _res, next, _end) => {
+    next();
+  },
 };
 jest.mock('./lib/rpc-method-middleware', () => rpcMethodMiddlewareMock);
 
@@ -135,7 +142,7 @@ const TEST_INTERNAL_ACCOUNT = {
     lastSelected: 0,
   },
   options: {},
-  methods: [...Object.values(EthMethod)],
+  methods: ETH_EOA_METHODS,
   type: EthAccountType.Eoa,
 };
 
@@ -630,6 +637,10 @@ describe('MetaMaskController', () => {
             }
           });
 
+        jest
+          .spyOn(metamaskController.onboardingController.store, 'getState')
+          .mockReturnValue({ completedOnboarding: true });
+
         // Give account 2 a token
         jest
           .spyOn(metamaskController.tokensController, 'state', 'get')
@@ -1069,6 +1080,10 @@ describe('MetaMaskController', () => {
         metamaskController.preferencesController.setSecurityAlertsEnabled(
           false,
         );
+        jest
+          .spyOn(metamaskController.onboardingController.store, 'getState')
+          .mockReturnValue({ completedOnboarding: true });
+        metamaskController.preferencesController.setUsePhishDetect(true);
       });
 
       afterAll(() => {
@@ -1100,6 +1115,49 @@ describe('MetaMaskController', () => {
         });
         await promise;
         streamTest.end();
+      });
+
+      it('checks the sender hostname with the phishing controller', async () => {
+        jest
+          .spyOn(metamaskController.phishingController, 'maybeUpdateState')
+          .mockReturnValue();
+
+        jest
+          .spyOn(metamaskController.phishingController, 'test')
+          .mockReturnValue({ result: 'mock' });
+
+        jest.spyOn(metamaskController, 'sendPhishingWarning').mockReturnValue();
+        const phishingMessageSender = {
+          url: 'http://test.metamask-phishing.io',
+          tab: {},
+        };
+
+        const { resolve } = deferredPromise();
+        const streamTest = createThoughStream((chunk, _, cb) => {
+          if (chunk.name !== 'phishing') {
+            cb();
+            return;
+          }
+          expect(chunk.data.hostname).toStrictEqual(
+            new URL(phishingMessageSender.url).hostname,
+          );
+          resolve();
+          cb();
+        });
+
+        metamaskController.setupUntrustedCommunication({
+          connectionStream: streamTest,
+          sender: phishingMessageSender,
+        });
+
+        expect(
+          metamaskController.phishingController.maybeUpdateState,
+        ).toHaveBeenCalled();
+        expect(metamaskController.phishingController.test).toHaveBeenCalled();
+        expect(metamaskController.sendPhishingWarning).toHaveBeenCalledWith(
+          expect.anything(),
+          'test.metamask-phishing.io',
+        );
       });
 
       it('adds a tabId, origin and networkClient to requests', async () => {
