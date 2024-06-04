@@ -307,9 +307,6 @@ describe('MetaMask onboarding @no-mmi', function () {
         await driver.clickElement(
           '[data-testid="privacy-settings-back-button"]',
         );
-        await driver.clickElement('[data-testid="onboarding-complete-done"]');
-        await driver.clickElement('[data-testid="pin-extension-next"]');
-        await driver.clickElement('[data-testid="pin-extension-done"]');
 
         // Check localhost 8546 is selected and its balance value is correct
         await driver.findElement({
@@ -351,9 +348,6 @@ describe('MetaMask onboarding @no-mmi', function () {
         await driver.clickElement(
           '[data-testid="privacy-settings-back-button"]',
         );
-        await driver.clickElement('[data-testid="onboarding-complete-done"]');
-        await driver.clickElement('[data-testid="pin-extension-next"]');
-        await driver.clickElement('[data-testid="pin-extension-done"]');
 
         // Check that the 'basic functionality is off' banner is displayed on the home screen after onboarding completion
         await driver.waitForSelector({
