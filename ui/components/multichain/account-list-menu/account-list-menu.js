@@ -22,6 +22,7 @@ import {
   CreateEthAccount,
   ImportAccount,
   AccountListItemMenuTypes,
+  CreateBtcAccount,
 } from '..';
 import {
   AlignItems,
@@ -68,8 +69,30 @@ const ACTION_MODES = {
   MENU: 'menu',
   // Displays the add account form controls
   ADD: 'add',
+  // Displays the add account form controls (for bitcoin account)
+  ADD_BITCOIN: 'add-bitcoin',
   // Displays the import account form controls
   IMPORT: 'import',
+};
+
+/**
+ * Gets the title for a given action mode.
+ *
+ * @param t - Function to translate text.
+ * @param actionMode - An action mode.
+ * @returns The title for this action mode.
+ */
+export const getActionTitle = (t, actionMode) => {
+  switch (actionMode) {
+    case ACTION_MODES.ADD:
+    case ACTION_MODES.ADD_BITCOIN:
+    case ACTION_MODES.MENU:
+      return t('addAccount');
+    case ACTION_MODES.IMPORT:
+      return t('importAccount');
+    default:
+      return t('selectAnAccount');
+  }
 };
 
 /**
@@ -136,12 +159,7 @@ export const AccountListMenu = ({
   }
   searchResults = mergeAccounts(searchResults, accounts);
 
-  let title = t('selectAnAccount');
-  if (actionMode === ACTION_MODES.ADD || actionMode === ACTION_MODES.MENU) {
-    title = t('addAccount');
-  } else if (actionMode === ACTION_MODES.IMPORT) {
-    title = t('importAccount');
-  }
+  const title = getActionTitle(t, actionMode);
 
   let onBack = null;
   if (actionMode !== ACTION_MODES.LIST) {
@@ -170,6 +188,19 @@ export const AccountListMenu = ({
         {actionMode === ACTION_MODES.ADD ? (
           <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
             <CreateEthAccount
+              onActionComplete={(confirmed) => {
+                if (confirmed) {
+                  onClose();
+                } else {
+                  setActionMode(ACTION_MODES.LIST);
+                }
+              }}
+            />
+          </Box>
+        ) : null}
+        {actionMode === ACTION_MODES.ADD_BITCOIN ? (
+          <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+            <CreateBtcAccount
               onActionComplete={(confirmed) => {
                 if (confirmed) {
                   onClose();
@@ -219,6 +250,26 @@ export const AccountListMenu = ({
                 data-testid="multichain-account-menu-popover-add-account"
               >
                 {t('addNewAccount')}
+              </ButtonLink>
+            </Box>
+            <Box marginTop={4}>
+              <ButtonLink
+                size={Size.SM}
+                startIconName={IconName.Add}
+                onClick={() => {
+                  trackEvent({
+                    category: MetaMetricsEventCategory.Navigation,
+                    event: MetaMetricsEventName.AccountAddSelected,
+                    properties: {
+                      account_type: MetaMetricsEventAccountType.Default,
+                      location: 'Main Menu',
+                    },
+                  });
+                  setActionMode(ACTION_MODES.ADD_BITCOIN);
+                }}
+                data-testid="multichain-account-menu-popover-add-account"
+              >
+                {t('addNewBitcoinAccount')}
               </ButtonLink>
             </Box>
             <Box marginTop={4}>
