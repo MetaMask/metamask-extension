@@ -509,6 +509,9 @@
     "message": "Approved on $1 for $2",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
+  "approvingTo": {
+    "message": "Approving to"
+  },
   "areYouSure": {
     "message": "Are you sure?"
   },
@@ -4755,6 +4758,9 @@
   "simulationsSettingSubHeader": {
     "message": "Estimate balance changes"
   },
+  "siweSignatureSimulationDetailInfo": {
+    "message": "This type of signature is not able to move your assets and is used for signing in."
+  },
   "skip": {
     "message": "Skip"
   },
@@ -4857,6 +4863,14 @@
   },
   "snapAccountsDescription": {
     "message": "Accounts controlled by third-party Snaps."
+  },
+  "snapConnectTo": {
+    "message": "Connect to $1",
+    "description": "$1 is the website URL or a Snap name. Used for Snaps pre-approved connections."
+  },
+  "snapConnectionPermissionDescription": {
+    "message": "Let $1 automatically connect to $2 without your approval.",
+    "description": "Used for Snap pre-approved connections. $1 is the Snap name, $2 is a website URL."
   },
   "snapConnectionWarning": {
     "message": "$1 wants to use $2",
