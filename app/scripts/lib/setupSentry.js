@@ -120,6 +120,9 @@ export const SENTRY_BACKGROUND_STATE = {
   MultichainBalancesController: {
     balances: false,
   },
+  BridgeController: {
+    bridgeState: {},
+  },
   CronjobController: {
     jobs: false,
   },

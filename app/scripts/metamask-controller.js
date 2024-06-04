@@ -322,6 +322,7 @@ import { createTxVerificationMiddleware } from './lib/tx-verification/tx-verific
 import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
 import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
 import { isEthAddress } from './lib/multichain/address';
+import BridgeController from './controllers/bridge';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1945,6 +1946,7 @@ export default class MetamaskController extends EventEmitter {
       },
       initState.SwapsController,
     );
+    this.bridgeController = new BridgeController();
     this.smartTransactionsController = new SmartTransactionsController(
       {
         getNetworkClientById: this.networkController.getNetworkClientById.bind(
@@ -2174,6 +2176,7 @@ export default class MetamaskController extends EventEmitter {
       EncryptionPublicKeyController: this.encryptionPublicKeyController,
       SignatureController: this.signatureController,
       SwapsController: this.swapsController.store,
+      BridgeController: this.bridgeController.store,
       EnsController: this.ensController,
       ApprovalController: this.approvalController,
       ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
