@@ -4755,6 +4755,9 @@
   "simulationsSettingSubHeader": {
     "message": "Estimate balance changes"
   },
+  "siweSignatureSimulationDetailInfo": {
+    "message": "This type of signature is not able to move your assets and is used for signing in."
+  },
   "skip": {
     "message": "Skip"
   },
