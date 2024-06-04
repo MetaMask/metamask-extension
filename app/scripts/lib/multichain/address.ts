@@ -1,5 +1,4 @@
-import { is } from 'superstruct';
-import { EthAddressStruct } from '@metamask/keyring-api';
+import { Hex, isValidHexAddress } from '@metamask/utils';
 import { normalize as normalizeEthAddress } from '@metamask/eth-sig-util';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 
@@ -10,7 +9,7 @@ import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils
  * @returns True if the address is an ethereum one, false otherwise.
  */
 export function isEthAddress(address: string): boolean {
-  return is(address, EthAddressStruct);
+  return isValidHexAddress(address as Hex);
 }
 
 /**
