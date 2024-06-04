@@ -1,9 +1,10 @@
+import { Suite } from 'mocha';
 import {
   withFixtures,
   openActionMenuAndStartSendFlow,
   logInWithBalanceValidation,
 } from '../../helpers';
-import { Suite } from 'mocha';
+import type { Ganache } from '../../seeder/ganache';
 import {
   NATIVE_TOKEN_SYMBOL,
   SwapSendPage,
@@ -23,8 +24,10 @@ describe('Swap-Send ETH', function () {
           driver,
           ganacheServer,
         }: {
+          // TODO: Replace `any` with type
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           driver: any;
-          ganacheServer: any;
+          ganacheServer: Ganache;
         }) => {
           const swapSendPage = new SwapSendPage(driver);
           await logInWithBalanceValidation(driver, ganacheServer);
