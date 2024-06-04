@@ -1,18 +1,27 @@
 import React, { useState, useContext } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import Box from '../../../components/ui/box';
-import Button from '../../../components/ui/button';
-import Typography from '../../../components/ui/typography';
+import {
+  Box,
+  Button,
+  Text,
+  Container,
+  ContainerMaxWidth,
+  IconName,
+  ButtonVariant,
+  ButtonSize,
+} from '../../../components/component-library';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ONBOARDING_CONFIRM_SRP_ROUTE } from '../../../helpers/constants/routes';
 import {
-  TEXT_ALIGN,
-  TypographyVariant,
+  Display,
+  TextAlign,
+  TextVariant,
+  FontWeight,
+  FlexDirection,
   JustifyContent,
-  FONT_WEIGHT,
-  IconColor,
+  BlockSize,
 } from '../../../helpers/constants/design-system';
 import {
   ThreeStepProgressBar,
@@ -23,7 +32,6 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { Icon, IconName } from '../../../components/component-library';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
 export default function RecoveryPhrase({ secretRecoveryPhrase }) {
@@ -41,76 +49,106 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
 
   return (
     <div className="recovery-phrase" data-testid="recovery-phrase">
-      <ThreeStepProgressBar stage={threeStepStages.RECOVERY_PHRASE_REVIEW} />
-      <Box
-        justifyContent={JustifyContent.center}
-        textAlign={TEXT_ALIGN.CENTER}
-        marginBottom={4}
+      <Container
+        maxWidth={ContainerMaxWidth.Lg}
+        marginLeft="auto"
+        marginRight="auto"
       >
-        <Typography
-          variant={TypographyVariant.H2}
-          fontWeight={FONT_WEIGHT.BOLD}
-          className="recovery-phrase__header"
+        <ThreeStepProgressBar stage={threeStepStages.RECOVERY_PHRASE_REVIEW} />
+        <Text
+          variant={TextVariant.headingLg}
+          fontWeight={FontWeight.Bold}
+          textAlign={TextAlign.Center}
+          marginBottom={4}
+          marginTop={4}
         >
           {t('seedPhraseWriteDownHeader')}
-        </Typography>
-      </Box>
-      <Box
-        justifyContent={JustifyContent.center}
-        textAlign={TEXT_ALIGN.CENTER}
-        marginBottom={4}
-      >
-        <Typography variant={TypographyVariant.H4}>
-          {t('seedPhraseWriteDownDetails')}
-        </Typography>
-      </Box>
-      <Box
-        textAlign={TEXT_ALIGN.LEFT}
-        marginBottom={4}
-        className="recovery-phrase__tips"
-      >
-        <Typography
-          variant={TypographyVariant.H4}
-          fontWeight={FONT_WEIGHT.BOLD}
+        </Text>
+        <Text
+          variant={TextVariant.bodyLgMedium}
+          textAlign={TextAlign.Center}
+          marginBottom={4}
         >
-          {t('tips')}:
-        </Typography>
-        <ul>
-          <li>
-            <Typography variant={TypographyVariant.H4}>
+          {t('seedPhraseWriteDownDetails')}
+        </Text>
+        <Box
+          className="recovery-phrase__tips"
+          marginLeft="auto"
+          marginRight="auto"
+          marginBottom={4}
+        >
+          <Text
+            variant={TextVariant.bodyLgMedium}
+            fontWeight={FontWeight.Bold}
+            marginBottom={2}
+          >
+            {t('tips')}:
+          </Text>
+          <Box
+            as="ul"
+            marginLeft={4}
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            gap={1}
+          >
+            <Text
+              as="li"
+              variant={TextVariant.bodyLgMedium}
+              fontWeight={FontWeight.Normal}
+            >
               {t('seedPhraseIntroSidebarBulletOne')}
-            </Typography>
-          </li>
-          <li>
-            <Typography variant={TypographyVariant.H4}>
+            </Text>
+            <Text
+              as="li"
+              variant={TextVariant.bodyLgMedium}
+              fontWeight={FontWeight.Normal}
+            >
               {t('seedPhraseIntroSidebarBulletThree')}
-            </Typography>
-          </li>
-          <li>
-            <Typography variant={TypographyVariant.H4}>
+            </Text>
+            <Text
+              as="li"
+              variant={TextVariant.bodyLgMedium}
+              fontWeight={FontWeight.Normal}
+            >
               {t('seedPhraseIntroSidebarBulletFour')}
-            </Typography>
-          </li>
-        </ul>
-      </Box>
-      <RecoveryPhraseChips
-        secretRecoveryPhrase={secretRecoveryPhrase.split(' ')}
-        phraseRevealed={phraseRevealed && !hiddenPhrase}
-        hiddenPhrase={hiddenPhrase}
-      />
-      <div className="recovery-phrase__footer">
+            </Text>
+          </Box>
+        </Box>
+      </Container>
+
+      <Container
+        maxWidth={ContainerMaxWidth.Lg}
+        marginLeft="auto"
+        marginRight="auto"
+      >
+        <RecoveryPhraseChips
+          secretRecoveryPhrase={secretRecoveryPhrase.split(' ')}
+          phraseRevealed={phraseRevealed && !hiddenPhrase}
+          hiddenPhrase={hiddenPhrase}
+        />
+      </Container>
+      <Container
+        maxWidth={ContainerMaxWidth.Lg}
+        marginLeft="auto"
+        marginRight="auto"
+        display={Display.Flex}
+      >
         {phraseRevealed ? (
-          <div className="recovery-phrase__footer__copy-and-hide">
-            <div className="recovery-phrase__footer__copy-and-hide__area">
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            justifyContent={JustifyContent.center}
+            gap={4}
+            width={BlockSize.Full}
+          >
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
+              justifyContent={JustifyContent.spaceBetween}
+            >
               <Button
-                type="link"
-                icon={
-                  <i
-                    className={`far fa-eye${hiddenPhrase ? '' : '-slash'}`}
-                    color="var(--color-primary-default)"
-                  />
-                }
-                className="recovery-phrase__footer__copy-and-hide__button recovery-phrase__footer__copy-and-hide__button__hide-seed"
+                variant={ButtonVariant.Link}
+                startIconName={hiddenPhrase ? IconName.Eye : IconName.EyeSlash}
                 onClick={() => {
                   setHiddenPhrase(!hiddenPhrase);
                 }}
@@ -118,25 +156,19 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
                 {hiddenPhrase ? t('revealTheSeedPhrase') : t('hideSeedPhrase')}
               </Button>
               <Button
+                variant={ButtonVariant.Link}
                 onClick={() => {
                   handleCopy(secretRecoveryPhrase);
                 }}
-                icon={
-                  <Icon
-                    name={copied ? IconName.CopySuccess : IconName.Copy}
-                    color={IconColor.primaryDefault}
-                  />
-                }
-                className="recovery-phrase__footer__copy-and-hide__button recovery-phrase__footer__copy-and-hide__button__copy-to-clipboard"
-                type="link"
+                startIconName={copied ? IconName.CopySuccess : IconName.Copy}
               >
                 {copied ? t('copiedExclamation') : t('copyToClipboard')}
               </Button>
-            </div>
+            </Box>
             <Button
               data-testid="recovery-phrase-next"
-              type="primary"
-              className="recovery-phrase__footer--button"
+              size={ButtonSize.Lg}
+              block
               onClick={() => {
                 trackEvent({
                   category: MetaMetricsEventCategory.Onboarding,
@@ -150,12 +182,12 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
             >
               {t('next')}
             </Button>
-          </div>
+          </Box>
         ) : (
           <Button
             data-testid="recovery-phrase-reveal"
-            type="primary"
-            className="recovery-phrase__footer--button"
+            size={ButtonSize.Lg}
+            block
             onClick={() => {
               trackEvent({
                 category: MetaMetricsEventCategory.Onboarding,
@@ -168,7 +200,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
             {t('revealSeedWords')}
           </Button>
         )}
-      </div>
+      </Container>
     </div>
   );
 }
