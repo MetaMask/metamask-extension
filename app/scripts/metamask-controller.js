@@ -1076,6 +1076,10 @@ export default class MetamaskController extends EventEmitter {
       return snap.manifest.proposedName;
     };
 
+    const isSnapPreinstalled = (id) => {
+      return PREINSTALLED_SNAPS.some((snap) => snap.snapId === id);
+    };
+
     additionalKeyrings.push(
       snapKeyringBuilder(
         snapKeyringBuildMessenger,
@@ -1085,6 +1089,7 @@ export default class MetamaskController extends EventEmitter {
         (address) => this.removeAccount(address),
         this.metaMetricsController.trackEvent.bind(this.metaMetricsController),
         getSnapName,
+        isSnapPreinstalled,
       ),
     );
 
