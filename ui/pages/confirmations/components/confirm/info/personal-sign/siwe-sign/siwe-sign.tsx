@@ -16,8 +16,18 @@ import { fa } from '../../../../../../../../.storybook/locales';
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
   const months = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ];
 
   const day = String(date.getUTCDate()).padStart(2, '0');
@@ -70,9 +80,20 @@ const SIWESignInfo: React.FC = () => {
         <ConfirmInfoRowText text={siweMessage.nonce} />
       </ConfirmInfoRow>
       <ConfirmInfoRow label={t('siweIssued')}>
-        **
         <ConfirmInfoRowText text={formatDate(siweMessage.issuedAt)} />
       </ConfirmInfoRow>
+      {siweMessage.requestId && (
+        <ConfirmInfoRow label={t('siweRequestId')}>
+          <ConfirmInfoRowText text={siweMessage.requestId} />
+        </ConfirmInfoRow>
+      )}
+      {siweMessage.resources && (
+        <ConfirmInfoRow label={t('siweResources')}>
+          {siweMessage.resources.map((resource) => (
+            <ConfirmInfoRowText text={resource} />
+          ))}
+        </ConfirmInfoRow>
+      )}
     </>
   );
 };

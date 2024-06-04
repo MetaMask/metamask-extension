@@ -37,6 +37,8 @@ export type SignatureRequestType = {
         chainId: number;
         nonce: string;
         issuedAt: string;
+        requestId?: string;
+        resources?: string[];
       };
     };
   };

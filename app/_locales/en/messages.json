@@ -4777,7 +4777,13 @@
     "message": "Nonce"
   },
   "siweOriginalMessage": {
-    "message": "Original Message"
+    "message": "Message"
+  },
+  "siweRequestId": {
+    "message": "Request Id"
+  },
+  "siweResources": {
+    "message": "Resources"
   },
   "siweSignatureSimulationDetailInfo": {
     "message": "This type of signature is not able to move your assets and is used for signing in."
