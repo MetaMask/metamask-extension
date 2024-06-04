@@ -26,7 +26,7 @@ jest.mock('../../../../shared/constants/network', () => ({
     },
   },
 }));
-let openTabSpy;
+let openTabSpy: jest.SpyInstance;
 
 describe('AssetPage', () => {
   const mockStore = {
@@ -219,7 +219,7 @@ describe('AssetPage', () => {
       expect(buyButton).toBeInTheDocument();
       expect(buyButton).not.toBeDisabled();
 
-      fireEvent.click(buyButton);
+      fireEvent.click(buyButton as HTMLElement);
       expect(openTabSpy).toHaveBeenCalledTimes(1);
 
       await waitFor(() =>
@@ -240,7 +240,7 @@ describe('AssetPage', () => {
       expect(bridgeButton).toBeInTheDocument();
       expect(bridgeButton).not.toBeDisabled();
 
-      fireEvent.click(bridgeButton);
+      fireEvent.click(bridgeButton as HTMLElement);
       expect(openTabSpy).toHaveBeenCalledTimes(1);
 
       await waitFor(() =>
