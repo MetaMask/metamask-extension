@@ -11,7 +11,6 @@ import {
   ConfirmInfoRowAddress,
   ConfirmInfoRowText,
 } from '../../../../../../../components/app/confirm/info/row';
-import { fa } from '../../../../../../../../.storybook/locales';
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
