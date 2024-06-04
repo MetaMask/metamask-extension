@@ -1257,7 +1257,7 @@ export async function handleSnapRequest(args: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     params?: Record<string, any>;
   };
-}): Promise<unknown> {
+}): Promise<void> {
   return submitRequestToBackground('handleSnapRequest', [args]);
 }
 
@@ -3629,9 +3629,14 @@ export function setPendingTokens(pendingTokens: {
       : selectedTokens;
 
   Object.keys(tokens).forEach((tokenAddress) => {
-    tokens[tokenAddress].unlisted = !tokenAddressList.find((addr) =>
+    const found = tokenAddressList.find((addr) =>
       isEqualCaseInsensitive(addr, tokenAddress),
     );
+
+    tokens[tokenAddress] = {
+      ...tokens[tokenAddress],
+      unlisted: !found,
+    };
   });
 
   return {
