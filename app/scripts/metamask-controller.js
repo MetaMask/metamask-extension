@@ -214,6 +214,7 @@ import {
   getSmartTransactionsOptInStatus,
   getCurrentChainSupportsSmartTransactions,
 } from '../../shared/modules/selectors';
+import { BalancesController } from './lib/accounts/BalancesController';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -641,11 +642,6 @@ export default class MetamaskController extends EventEmitter {
       },
       state: initState.TokensController,
     });
-    // TODO: Remove once `TokensController` is upgraded to extend from `BaseControllerV2`
-    this.controllerMessenger.registerActionHandler(
-      'TokensController:getState',
-      () => this.tokensController.state,
-    );
 
     const nftControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'NftController',
@@ -903,6 +899,23 @@ export default class MetamaskController extends EventEmitter {
       messenger: accountOrderMessenger,
       state: initState.AccountOrderController,
     });
+
+    const balancesControllerMessenger = this.controllerMessenger.getRestricted({
+      name: 'BalancesController',
+      allowedEvents: [],
+      allowedActions: [
+        'AccountsController:listAccounts',
+        'BalancesController:getBalances',
+        'SnapController:handleRequest',
+      ],
+    });
+
+    this.balancesController = new BalancesController({
+      messenger: balancesControllerMessenger,
+      state: {},
+    });
+
+    this.balancesController.updateBalances();
 
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController(
@@ -2154,6 +2167,7 @@ export default class MetamaskController extends EventEmitter {
       AccountsController: this.accountsController,
       AppStateController: this.appStateController.store,
       AppMetadataController: this.appMetadataController.store,
+      BalancesController: this.balancesController,
       TransactionController: this.txController,
       KeyringController: this.keyringController,
       PreferencesController: this.preferencesController.store,
@@ -2210,6 +2224,7 @@ export default class MetamaskController extends EventEmitter {
         AccountsController: this.accountsController,
         AppStateController: this.appStateController.store,
         AppMetadataController: this.appMetadataController.store,
+        BalancesController: this.balancesController,
         NetworkController: this.networkController,
         KeyringController: this.keyringController,
         PreferencesController: this.preferencesController.store,
