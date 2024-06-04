@@ -208,7 +208,11 @@ function getCopyTargets(
     allCopyTargets.push({
       src: getPathInsideNodeModules('@blockaid/ppom_release', '/'),
       pattern: '*.wasm',
-      dest: process.env.ENABLE_MV3 ? 'scripts/' : '',
+      dest:
+        process.env.ENABLE_MV3 === 'true' ||
+        process.env.ENABLE_MV3 === undefined
+          ? 'scripts/'
+          : '',
     });
   }
 
