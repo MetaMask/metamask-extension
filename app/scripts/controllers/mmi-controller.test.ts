@@ -9,8 +9,9 @@ import { TransactionUpdateController } from '@metamask-institutional/transaction
 import { SignatureController } from '@metamask/signature-controller';
 import { NetworkController } from '@metamask/network-controller';
 import { AccountsController } from '@metamask/accounts-controller';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { CustodyController } from '@metamask-institutional/custody-controller';
+import * as PortfolioDashboard from '@metamask-institutional/portfolio-dashboard';
 import {
   CHAIN_IDS,
   NETWORK_TYPES,
@@ -21,7 +22,7 @@ import AppStateController from './app-state';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { mmiKeyringBuilderFactory } from '../mmi-keyring-builder-factory';
 import MetaMetricsController from './metametrics';
-import * as PortfolioDashboard from '@metamask-institutional/portfolio-dashboard';
+import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 
 jest.mock('@metamask-institutional/portfolio-dashboard', () => ({
   handleMmiPortfolio: jest.fn(),
@@ -45,7 +46,7 @@ const mockAccount = {
     },
   },
   options: {},
-  methods: [...Object.values(EthMethod)],
+  methods: ETH_EOA_METHODS,
   type: EthAccountType.Eoa,
 };
 const mockAccount2 = {
@@ -58,7 +59,7 @@ const mockAccount2 = {
     },
   },
   options: {},
-  methods: [...Object.values(EthMethod)],
+  methods: ETH_EOA_METHODS,
   type: EthAccountType.Eoa,
 };
 
@@ -414,8 +415,8 @@ describe('MMIController', function () {
 
       const result = await mmiController.getCustodianAccounts(
         'token',
-        'envName',
-        'mock-custodian-type',
+        'neptune-custody',
+        'ECA3',
         true
       );
 
@@ -438,7 +439,7 @@ describe('MMIController', function () {
 
       const result = await mmiController.getCustodianAccounts(
         'token',
-        'envName'
+        'neptune-custody',
       );
 
       expect(result).toEqual(['account1']);
