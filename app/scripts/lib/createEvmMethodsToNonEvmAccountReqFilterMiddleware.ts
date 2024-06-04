@@ -21,7 +21,7 @@ export default function createEvmMethodsToNonEvmAccountReqFilterMiddleware({
     end,
   ) {
     const selectedAccount = messenger.call(
-      'AccountsController:getSelectedMultichainAccount',
+      'AccountsController:getSelectedAccount',
     );
 
     const isEvmAccount = isEvmAccountType(selectedAccount.type);
