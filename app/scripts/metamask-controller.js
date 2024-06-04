@@ -2421,7 +2421,7 @@ export default class MetamaskController extends EventEmitter {
   }
   ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   trackInsightSnapView(snapId) {
     this.metaMetricsController.trackEvent({
       event: MetaMetricsEventName.InsightSnapViewed,
@@ -3638,7 +3638,7 @@ export default class MetamaskController extends EventEmitter {
       finalizeEventFragment: metaMetricsController.finalizeEventFragment.bind(
         metaMetricsController,
       ),
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       trackInsightSnapView: this.trackInsightSnapView.bind(this),
       ///: END:ONLY_INCLUDE_IF
       // approval controller
