@@ -14,7 +14,9 @@ describe('Test Snap Signature Insights', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
         ganacheOptions: defaultGanacheOptions,
         failOnConsoleError: false,
         title: this.test.fullTitle(),
@@ -62,27 +64,6 @@ describe('Test Snap Signature Insights', function () {
         await openDapp(driver);
 
         // poll windowHandles and switch to test-dapp
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-
-        // find and scroll to basic actions and click connect
-        const connectButton1 = await driver.findElement('#connectButton');
-        await driver.scrollToElement(connectButton1);
-        await driver.clickElement('#connectButton');
-
-        // switch back to MetaMask window and deal with dialogs
-        await switchToNotificationWindow(driver, 4);
-        await driver.clickElement({
-          text: 'Next',
-          tag: 'button',
-        });
-        await driver.delay(1000);
-        await driver.clickElement({
-          text: 'Confirm',
-          tag: 'button',
-        });
-
-        // switch to test-dapp page and send tx
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // TEST ONE: personal sign
         // find and scroll to personal sign and click sign
@@ -104,6 +85,7 @@ describe('Test Snap Signature Insights', function () {
         });
 
         // look for returned signature insights data
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector({
           text: '0x4578616d706c652060706572736f6e616c5f7369676e60206d657373616765',
           tag: 'p',
@@ -144,6 +126,7 @@ describe('Test Snap Signature Insights', function () {
         });
 
         // look for returned signature insights data
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector({
           text: '1',
           tag: 'p',
@@ -188,6 +171,7 @@ describe('Test Snap Signature Insights', function () {
         });
 
         // look for returned signature insights data
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector({
           text: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC has been identified as a malicious verifying contract.',
           tag: 'p',
@@ -232,6 +216,7 @@ describe('Test Snap Signature Insights', function () {
         });
 
         // look for returned signature insights data
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector({
           text: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC has been identified as a malicious verifying contract.',
           tag: 'p',
@@ -324,6 +309,7 @@ describe('Test Snap Signature Insights', function () {
         });
 
         // wait for and click signature warning sign button
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector(
           '[data-testid="signature-warning-sign-button"]',
         );
