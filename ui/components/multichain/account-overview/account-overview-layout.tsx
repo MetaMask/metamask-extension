@@ -1,23 +1,22 @@
 import React from 'react';
 import {
-  AccountOverviewTabsOptions,
+  AccountOverviewTabsProps,
   AccountOverviewTabs,
 } from './account-overview-tabs';
 
-export type AccountOverviewLayoutOptions = AccountOverviewTabsOptions & {
+export type AccountOverviewLayoutProps = AccountOverviewTabsProps & {
   children: React.ReactElement;
 };
 
-export const AccountOverviewLayout = (
-  options: AccountOverviewLayoutOptions,
-) => {
-  const { children, ...tabsOptions } = options;
-
+export const AccountOverviewLayout = ({
+  children,
+  ...tabsProps
+}: AccountOverviewLayoutProps) => {
   return (
     <>
       <div className="home__balance-wrapper">{children}</div>
 
-      <AccountOverviewTabs {...tabsOptions}></AccountOverviewTabs>
+      <AccountOverviewTabs {...tabsProps}></AccountOverviewTabs>
     </>
   );
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import { AccountOverviewEth } from './account-overview-eth'
-import { AccountOverviewCommonOptions } from './common';
+import { AccountOverviewCommonProps } from './common';
 
 export default {
   title: 'Components/Multichain/AccountOverviewEth',
@@ -8,5 +8,5 @@ export default {
 };
 
 export const DefaultStory = (
-  args: JSX.IntrinsicAttributes & AccountOverviewCommonOptions
+  args: JSX.IntrinsicAttributes & AccountOverviewCommonProps
 ) => <AccountOverviewEth {...args} />;

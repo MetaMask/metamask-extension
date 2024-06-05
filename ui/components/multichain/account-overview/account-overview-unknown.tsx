@@ -1,19 +1,17 @@
 import React from 'react';
 import { Box } from '../../component-library';
-import { AccountOverviewCommonOptions } from './common';
+import { AccountOverviewCommonProps } from './common';
 import { AccountOverviewLayout } from './account-overview-layout';
 
-export type AccountOverviewUnknownOptions = AccountOverviewCommonOptions;
+export type AccountOverviewUnknownProps = AccountOverviewCommonProps;
 
-export const AccountOverviewUnknown = (
-  options: AccountOverviewUnknownOptions,
-) => {
+export const AccountOverviewUnknown = (props: AccountOverviewUnknownProps) => {
   return (
     <AccountOverviewLayout
       showTokens={false}
       showNfts={false}
       showActivity={true}
-      {...options}
+      {...props}
     >
       <div className="home__balance-wrapper">
         <Box className="account-overview-unknown__empty">

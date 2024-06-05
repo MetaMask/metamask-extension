@@ -5,19 +5,19 @@ import { BannerAlert, BannerAlertSeverity } from '../../component-library';
 import { isSelectedInternalAccountEth } from '../../../selectors';
 import { AccountOverviewEth } from './account-overview-eth';
 import { AccountOverviewUnknown } from './account-overview-unknown';
-import { AccountOverviewCommonOptions } from './common';
+import { AccountOverviewCommonProps } from './common';
 
-export type AccountOverviewOptions = AccountOverviewCommonOptions & {
+export type AccountOverviewProps = AccountOverviewCommonProps & {
   useExternalServices: boolean;
 };
 
-export const AccountOverview = (options: AccountOverviewOptions) => {
+export function AccountOverview(props: AccountOverviewProps) {
   const t = useI18nContext();
 
   const isEth = useSelector(isSelectedInternalAccountEth);
   const isUnknown = !isEth;
 
-  const { useExternalServices, setBasicFunctionalityModalOpen } = options;
+  const { useExternalServices, setBasicFunctionalityModalOpen } = props;
 
   return (
     <>
@@ -33,10 +33,10 @@ export const AccountOverview = (options: AccountOverviewOptions) => {
           title={t('basicConfigurationBannerTitle')}
         ></BannerAlert>
       )}
-      {isEth && <AccountOverviewEth {...options}></AccountOverviewEth>}
+      {isEth && <AccountOverviewEth {...props}></AccountOverviewEth>}
       {isUnknown && (
-        <AccountOverviewUnknown {...options}></AccountOverviewUnknown>
+        <AccountOverviewUnknown {...props}></AccountOverviewUnknown>
       )}
     </>
   );
-};
+}

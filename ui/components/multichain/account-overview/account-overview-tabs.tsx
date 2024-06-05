@@ -33,27 +33,25 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import InstitutionalHomeFooter from '../../../pages/home/institutional/institutional-home-footer';
 ///: END:ONLY_INCLUDE_IF
-import { AccountOverviewCommonOptions } from './common';
+import { AccountOverviewCommonProps } from './common';
 
-export type AccountOverviewTabsOptions = AccountOverviewCommonOptions & {
+export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
   showTokens: boolean;
   showNfts: boolean;
   showActivity: boolean;
 };
 
-export const AccountOverviewTabs = (options: AccountOverviewTabsOptions) => {
+export const AccountOverviewTabs = ({
+  onTabClick,
+  onSupportLinkClick,
+  defaultHomeActiveTabName,
+  showTokens,
+  showNfts,
+  showActivity,
+}: AccountOverviewTabsProps) => {
   const history = useHistory();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
-
-  const {
-    onTabClick,
-    onSupportLinkClick,
-    defaultHomeActiveTabName,
-    showTokens,
-    showNfts,
-    showActivity,
-  } = options;
 
   const tabPadding = 4;
   const tabProps = {
