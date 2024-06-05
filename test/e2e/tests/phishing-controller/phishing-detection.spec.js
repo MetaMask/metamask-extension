@@ -88,10 +88,7 @@ describe('Phishing Detection', function () {
               text: 'continue to the site.',
             });
             const header = await driver.findElement('h1');
-            assert.equal(await header.getText(), 'E2E Test Dapp');
-            await driver.clickElement({
-              text: 'DOES NOT EXIST.',
-            });
+            assert.equal(await header.getText(), 'Deceptive site ahead');
           },
         );
       },

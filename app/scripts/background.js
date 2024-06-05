@@ -176,90 +176,34 @@ const sendReadyMessageToTabs = async () => {
   }
 };
 
-const interceptors = {
-  onBeforeRedirect: [
-    undefined,
-    ['responseHeaders'],
-    ['extraHeaders'],
-    ['responseHeaders', 'extraHeaders'],
-  ],
-  onBeforeRequest: [
-    undefined,
-    ['requestBody'],
-    ['extraHeaders'],
-    ['requestBody', 'extraHeaders'],
-  ],
-  onBeforeSendHeaders: [
-    undefined,
-    ['requestHeaders'],
-    ['extraHeaders'],
-    ['requestHeaders', 'extraHeaders'],
-  ],
-  onCompleted: [
-    undefined,
-    ['responseHeaders'],
-    ['extraHeaders'],
-    ['responseHeaders', 'extraHeaders'],
-  ],
-  // onErrorOccurred: [undefined, 'extraHeaders'],
-  onHeadersReceived: [
-    undefined,
-    ['responseHeaders'],
-    ['extraHeaders'],
-    ['responseHeaders', 'extraHeaders'],
-  ],
-  onResponseStarted: [
-    undefined,
-    ['responseHeaders'],
-    ['extraHeaders'],
-    ['responseHeaders', 'extraHeaders'],
-  ],
-  onSendHeaders: [
-    undefined,
-    ['requestHeaders'],
-    ['extraHeaders'],
-    ['requestHeaders', 'extraHeaders'],
-  ],
-};
-
-function getHandler(prefix) {
-  return (details) => {
+browser.webRequest.onBeforeRequest.addListener(
+  (details) => {
     const { usePhishDetect } =
       controller.preferencesController.store.getState();
+
     if (usePhishDetect) {
-      const { hostname } = new URL(details.url);
+      const { hostname, href } = new URL(details.url);
+      const baseUrl = process.env.PHISHING_WARNING_PAGE_URL;
+      const querystring = new URLSearchParams({ hostname, href });
+
       const phishingTestResponse = controller.phishingController.test(hostname);
+
       if (phishingTestResponse?.result) {
-        if (details.tabId === -1) {
-          console.log(`[${prefix}] cannot burn ${hostname}, no tab id`);
-        } else {
-          console.log(`[${prefix}] burn ${hostname} with ${details.tabId}`);
-          controller.updateBurnedTabIds(details.tabId);
-        }
+        browser.tabs.update(details.tabId, {
+          url: `${baseUrl}#${querystring}`,
+        });
       } else {
         console.log(
-          `[${prefix}] do not burn ${hostname} with ${details.tabId}`,
+          `[onBeforeRequest] do not burn ${hostname} with ${details.tabId}`,
         );
       }
     } else {
-      console.log(`[${prefix}] skipping burn check, disabled`);
+      console.log(`[onBeforeRequest] skipping burn check, disabled`);
     }
-  };
-}
-
-for (const [interceptor, optionSets] of Object.entries(interceptors)) {
-  optionSets.forEach((options, index) => {
-    console.log(`adding ${interceptor} with ${index}`);
-    browser.webRequest[interceptor].addListener(
-      getHandler(`${interceptor}:${index}`),
-      {
-        types: ['main_frame', 'sub_frame'],
-        urls: ['http://*/*', 'https://*/*'],
-      },
-      options,
-    );
-  });
-}
+  },
+  { types: ['main_frame', 'sub_frame'], urls: ['http://*/*', 'https://*/*'] },
+  [],
+);
 
 // These are set after initialization
 let connectRemote;
