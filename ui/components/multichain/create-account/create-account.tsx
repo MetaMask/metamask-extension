@@ -4,6 +4,7 @@ import React, {
   useState,
   KeyboardEvent,
   ChangeEvent,
+  useCallback,
 } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -85,31 +86,34 @@ export const CreateAccount: CreateAccountComponent = React.forwardRef(
       defaultAccountName,
     );
 
-    const onSubmit = async (event: KeyboardEvent<HTMLFormElement>) => {
-      event.preventDefault();
+    const onSubmit = useCallback(
+      async (event: KeyboardEvent<HTMLFormElement>) => {
+        event.preventDefault();
 
-      try {
-        await onCreateAccount(trimmedAccountName || defaultAccountName);
-        trackEvent({
-          category: MetaMetricsEventCategory.Accounts,
-          event: MetaMetricsEventName.AccountAdded,
-          properties: {
-            account_type: MetaMetricsEventAccountType.Default,
-            location: 'Home',
-          },
-        });
-        history.push(mostRecentOverviewPage);
-      } catch (error) {
-        trackEvent({
-          category: MetaMetricsEventCategory.Accounts,
-          event: MetaMetricsEventName.AccountAddFailed,
-          properties: {
-            account_type: MetaMetricsEventAccountType.Default,
-            error: (error as Error).message,
-          },
-        });
-      }
-    };
+        try {
+          await onCreateAccount(trimmedAccountName || defaultAccountName);
+          trackEvent({
+            category: MetaMetricsEventCategory.Accounts,
+            event: MetaMetricsEventName.AccountAdded,
+            properties: {
+              account_type: MetaMetricsEventAccountType.Default,
+              location: 'Home',
+            },
+          });
+          history.push(mostRecentOverviewPage);
+        } catch (error) {
+          trackEvent({
+            category: MetaMetricsEventCategory.Accounts,
+            event: MetaMetricsEventName.AccountAddFailed,
+            properties: {
+              account_type: MetaMetricsEventAccountType.Default,
+              error: (error as Error).message,
+            },
+          });
+        }
+      },
+      [trimmedAccountName, defaultAccountName, mostRecentOverviewPage],
+    );
 
     return (
       <Box as="form" onSubmit={onSubmit}>
