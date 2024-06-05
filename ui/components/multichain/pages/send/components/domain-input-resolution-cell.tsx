@@ -14,9 +14,12 @@ import Identicon from '../../../../ui/identicon';
 import Confusable from '../../../../ui/confusable';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  AvatarAccount,
   AvatarIcon,
   AvatarIconSize,
   BadgeWrapper,
+  BadgeWrapperAnchorElementShape,
+  BadgeWrapperPosition,
   IconName,
   ///: END:ONLY_INCLUDE_IF
   Text,
@@ -32,6 +35,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { ellipsify } from '../../../../../pages/confirmations/send/send.utils';
 import Tooltip from '../../../../ui/tooltip';
+import { Avatar } from '@material-ui/core';
 
 type DomainInputResolutionCellArgs = {
   domainType: string;
@@ -120,24 +124,14 @@ export const DomainInputResolutionCell = ({
                 size={AvatarIconSize.Xs}
                 className="multichain-send-page__recipient__item__avatar"
                 backgroundColor={BackgroundColor.infoDefault}
+                color={IconColor.infoInverse}
                 borderColor={BorderColor.backgroundDefault}
                 borderWidth={2}
-                iconProps={{
-                  color: IconColor.infoInverse,
-                  style: { width: '12px', height: '12px' },
-                  name: IconName.Snaps,
-                }}
               />
             }
-            positionObj={{
-              bottom: '25%',
-              right: '10%',
-            }}
-            badgeContainerProps={{
-              className: 'multichain-send-page__recipient__item__badge',
-            }}
+            position={BadgeWrapperPosition.bottomRight}
           >
-            <Identicon address={address} diameter={32} />
+            <AvatarAccount address={address} />
           </BadgeWrapper>
         </Tooltip>
         <div className="multichain-send-page__recipient__item__content">
@@ -182,7 +176,7 @@ export const DomainInputResolutionCell = ({
       onClick={() => onClick()}
     >
       <div className="multichain-send-page__recipient__item__avatar-wrapper">
-        <Identicon address={address} diameter={32} />
+        <AvatarAccount address={address} />
       </div>
       <div className="multichain-send-page__recipient__item__content">
         <div

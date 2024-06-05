@@ -1,7 +1,6 @@
 import React from 'react';
 import { DomainInputResolutionCell } from '.';
 
-
 export default {
   title: 'Components/Multichain/DomainInputResolutionCell',
   component: DomainInputResolutionCell,
@@ -23,7 +22,7 @@ export default {
     },
     onClick: {
       action: 'onClick',
-    }
+    },
   },
   args: {
     domainType: 'ENS',
@@ -32,7 +31,7 @@ export default {
     domainName: 'hamer.eth',
     resolvingSnap: '',
     onClick: () => undefined,
-  }
+  },
 };
 
 export const DefaultStory = (args) => <DomainInputResolutionCell {...args} />;
