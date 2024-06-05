@@ -292,7 +292,7 @@ async function setupMocking(
     });
 
   await server
-    .forGet(`https://token-api.metaswap.codefi.network/tokens/${chainId}`)
+    .forGet(`https://token.api.cx.metamask.io/tokens/${chainId}`)
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -464,7 +464,7 @@ async function setupMocking(
     });
 
   await server
-    .forGet(`https://token-api.metaswap.codefi.network/token/${chainId}`)
+    .forGet(`https://token.api.cx.metamask.io/token/${chainId}`)
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -660,7 +660,9 @@ async function mockTokenNameProvider(server) {
     const name = namesByAddress[address];
 
     await server
-      .forGet(/https:\/\/token-api\.metaswap\.codefi\.network\/token\/.*/gu)
+      .forGet(
+        /https:\/\/(?:token-api\.metaswap\.codefi\.network|token\.api\.cx\.metamask\.io)\/token\/.*/gu,
+      )
       .withQuery({ address })
       .thenCallback(() => {
         return {
