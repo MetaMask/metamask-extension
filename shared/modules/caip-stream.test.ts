@@ -5,8 +5,19 @@ import {
   MultiplexToCaipStream,
 } from './caip-stream'
 import { deferredPromise } from '../../app/scripts/lib/util'
-import { PassThrough } from 'readable-stream'
-import { WriteStream } from 'fs'
+import { Writable } from 'readable-stream';
+import { Duplex } from 'stream';
+
+const writeToStream = async (stream: Duplex, message: unknown) => {
+  const {
+    promise: isWritten,
+    resolve: writeCallback,
+  } = deferredPromise();
+
+  stream.write(message, writeCallback)
+  await isWritten
+}
+
 
 describe('CAIP Stream', () => {
   describe('SplitStream', () => {
@@ -23,14 +34,8 @@ describe('CAIP Stream', () => {
         innerStreamChunks.push(chunk)
       })
 
-      const {
-        promise: isWritten,
-        resolve: writeCallback,
-      } = deferredPromise();
+      await writeToStream(splitStream, {foo: 'bar'})
 
-      splitStream.write({foo: 'bar'}, writeCallback)
-
-      await isWritten
       expect(outerStreamChunks).toStrictEqual([])
       expect(innerStreamChunks).toStrictEqual([{foo: 'bar'}])
     })
@@ -48,16 +53,74 @@ describe('CAIP Stream', () => {
         innerStreamChunks.push(chunk)
       })
 
-      const {
-        promise: isWritten,
-        resolve: writeCallback,
-      } = deferredPromise();
+      await writeToStream(splitStream.substream, {foo: 'bar'})
 
-      splitStream.substream.write({foo: 'bar'}, writeCallback)
-
-      await isWritten
       expect(outerStreamChunks).toStrictEqual([{foo: 'bar'}])
       expect(innerStreamChunks).toStrictEqual([])
+    })
+  })
+
+  describe('CaipToMultiplexStream', () => {
+    it('drops non caip-x messages', async () => {
+      const caipToMultiplexStream = new CaipToMultiplexStream()
+
+      const streamChunks: unknown[] = []
+      caipToMultiplexStream.on('data', (chunk: unknown) => {
+        streamChunks.push(chunk)
+      })
+
+      await writeToStream(caipToMultiplexStream, {foo: 'bar'})
+      await writeToStream(caipToMultiplexStream, {type: 'caip-wrong', data: {foo: 'bar'}})
+
+      expect(streamChunks).toStrictEqual([])
+    })
+
+    it('rewraps caip-x messages into multiplexed `metamask-provider` messages', async () => {
+      const caipToMultiplexStream = new CaipToMultiplexStream()
+
+      const streamChunks: unknown[] = []
+      caipToMultiplexStream.on('data', (chunk: unknown) => {
+        streamChunks.push(chunk)
+      })
+
+      await writeToStream(caipToMultiplexStream, {type: 'caip-x', data: {foo: 'bar'}})
+
+      expect(streamChunks).toStrictEqual([{
+        name: 'metamask-provider',
+        data: {foo: 'bar'}
+      }])
+    })
+  })
+
+  describe('MultiplexToCaipStream', () => {
+    it('drops non multiplexed `metamask-provider` messages', async () => {
+      const multiplexToCaipStream = new MultiplexToCaipStream()
+
+      const streamChunks: unknown[] = []
+      multiplexToCaipStream.on('data', (chunk: unknown) => {
+        streamChunks.push(chunk)
+      })
+
+      await writeToStream(multiplexToCaipStream, {foo: 'bar'})
+      await writeToStream(multiplexToCaipStream, {name: 'wrong-multiplex', data: {foo: 'bar'}})
+
+      expect(streamChunks).toStrictEqual([])
+    })
+
+    it('rewraps multiplexed `metamask-provider` messages into caip-x messages', async () => {
+      const multiplexToCaipStream = new MultiplexToCaipStream()
+
+      const streamChunks: unknown[] = []
+      multiplexToCaipStream.on('data', (chunk: unknown) => {
+        streamChunks.push(chunk)
+      })
+
+      await writeToStream(multiplexToCaipStream, {name: 'metamask-provider', data: {foo: 'bar'}})
+
+      expect(streamChunks).toStrictEqual([{
+        type: 'caip-x',
+        data: {foo: 'bar'}
+      }])
     })
   })
 })
