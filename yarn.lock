@@ -25051,7 +25051,7 @@ __metadata:
     pumpify: "npm:^2.0.1"
     punycode: "npm:^2.1.1"
     qrcode-generator: "npm:1.4.1"
-    qrcode.react: "npm:^1.0.1"
+    qrcode.react: "npm:^3.1.0"
     randomcolor: "npm:^0.5.4"
     react: "npm:^16.12.0"
     react-beautiful-dnd: "npm:^13.1.1"
@@ -28791,13 +28791,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qr.js@npm:0.0.0":
-  version: 0.0.0
-  resolution: "qr.js@npm:0.0.0"
-  checksum: 10/a05943d13cbc478e48935de8669b72312fe02de05057c35ebfab59a574c084530a9afb9ee651d53c8c870a54f9ec93ea7b63231de202740ce16a71c797e37ce9
-  languageName: node
-  linkType: hard
-
 "qrcode-generator@npm:1.4.1":
   version: 1.4.1
   resolution: "qrcode-generator@npm:1.4.1"
@@ -28805,16 +28798,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qrcode.react@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "qrcode.react@npm:1.0.1"
-  dependencies:
-    loose-envify: "npm:^1.4.0"
-    prop-types: "npm:^15.6.0"
-    qr.js: "npm:0.0.0"
+"qrcode.react@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "qrcode.react@npm:3.1.0"
   peerDependencies:
-    react: ^15.5.3 || ^16.0.0 || ^17.0.0
-  checksum: 10/8e8290e25da10918735d5763fe830c8a497bb8964797d156b9b03822087f25484fc3add0dcb14fcbeedf61dfde480bdd3aef3ba289ec492d8e8b6c87fb9958b3
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+  checksum: 10/71953241f151ca5ad4013c034cb13033e1ebad56a1db77297a7ddd7fd4d5f137f37f3be51133aeef0b54dc52d6c76630429d2269bd72e6858c3209fe42310498
   languageName: node
   linkType: hard
 
