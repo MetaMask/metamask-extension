@@ -55,6 +55,7 @@ import {
   getUnapprovedTransactions,
   getSelectedNetworkClientId,
   getIsSwapsChain,
+  getUseExternalServices,
 } from '../../selectors';
 import {
   displayWarning,
@@ -756,9 +757,10 @@ export const initializeSendState = createAsyncThunk(
       );
     }
 
-    const swapsBlockedTokens = getIsSwapsChain(state)
-      ? (await fetchBlockedTokens(chainId)).map((t) => t.toLowerCase())
-      : [];
+    const swapsBlockedTokens =
+      getIsSwapsChain(state) && getUseExternalServices(state)
+        ? (await fetchBlockedTokens(chainId)).map((t) => t.toLowerCase())
+        : [];
 
     return {
       account,
