@@ -16,14 +16,11 @@ export class ActivityListPage {
     this.status = this.page.locator('.transaction-status-label').first();
   }
 
-  async checkActivityIsConfirmed(options: any) {
+  async checkActivityIsConfirmed(options: { activity: string }) {
     // await this.page.waitForTimeout(20000000);
     const itemText = await this.activityItem.innerText();
     await expect(itemText).toEqual(options.activity);
 
-    const status = await this.page.$(
-      '[data-testid="activity-list-item-action"] + div',
-    );
     const itemStatus = await this.status.innerText();
     await expect(itemStatus).toEqual('Confirmed');
   }

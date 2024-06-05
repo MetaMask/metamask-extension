@@ -60,7 +60,7 @@ export class SwapPage {
     this.backButton = this.page.locator('[title="Cancel"]');
   }
 
-  async fetchQuote(options: any) {
+  async fetchQuote(options: { from?: string; to: string; qty: string }) {
     if (options.from) {
       this.swapFromDropDown.click();
       await this.tokenSearch.fill(options.from);
