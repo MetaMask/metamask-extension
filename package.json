@@ -121,7 +121,8 @@
     "download-builds": "tsx .devcontainer/download-builds.ts prep-build",
     "download-builds:test": "tsx .devcontainer/download-builds.ts prep-build-test",
     "master-sync": "node development/master-sync.js",
-    "update-mock-cdn": "node test/e2e/mock-cdn/update-mock-cdn-files.js"
+    "update-mock-cdn": "node test/e2e/mock-cdn/update-mock-cdn-files.js",
+    "git-diff-develop": "node ./.circleci/scripts/git-diff-develop.js"
   },
   "resolutions": {
     "simple-update-notifier@^1.0.0": "^2.0.0",

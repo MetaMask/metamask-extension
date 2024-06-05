@@ -484,10 +484,8 @@ jobs:
           paths:
             - .yarn/cache
       - run:
-          name: Fetch changed files
-          command: |
-            chmod +x .circleci/scripts/get-changed-files.sh
-            .circleci/scripts/get-changed-files.sh
+          name: Get changed files with git diff
+          command: yarn git-diff-develop
       - persist_to_workspace:
           root: .
           paths:
