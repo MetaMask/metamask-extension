@@ -27,7 +27,7 @@ export const isSignatureApprovalRequest = (
   request: ApprovalRequest<Record<string, Json>>,
 ) => SIGNATURE_APPROVAL_TYPES.includes(request.type as ApprovalType);
 
-const SIGNATURE_TRANSACTION_TYPES = [
+export const SIGNATURE_TRANSACTION_TYPES = [
   TransactionType.personalSign,
   TransactionType.signTypedData,
 ];
