@@ -219,6 +219,7 @@ import {
   getSmartTransactionsOptInStatus,
   getCurrentChainSupportsSmartTransactions,
 } from '../../shared/modules/selectors';
+import { BaseUrl } from '../../shared/constants/urls';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
@@ -5119,7 +5120,7 @@ export default class MetamaskController extends EventEmitter {
     engine.push(createLoggerMiddleware({ origin }));
     engine.push(this.permissionLogController.createMiddleware());
 
-    if (origin === 'https://portfolio.metamask.io' || 'http://localhost:3000') {
+    if (origin === BaseUrl.Portfolio) {
       engine.push(createTxVerificationMiddleware(this.networkController));
     }
 
