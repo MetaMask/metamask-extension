@@ -51,6 +51,11 @@ jobs:
     outputs:
       COMMIT_SHA: ${{ steps.commit-sha.outputs.COMMIT_SHA }}
     steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+      - run: corepack enable
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Checkout pull request
@@ -75,6 +80,11 @@ jobs:
     needs:
       - prepare
     steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+      - run: corepack enable
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Checkout pull request
@@ -109,6 +119,11 @@ jobs:
       - prepare
       - update-lavamoat-build-policy
     steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+      - run: corepack enable
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Checkout pull request
