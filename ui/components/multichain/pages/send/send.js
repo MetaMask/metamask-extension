@@ -195,6 +195,14 @@ export const SendPage = () => {
     }
     dispatch(resetSendState());
 
+    trackEvent({
+      event: MetaMetricsEventName.sendFlowExited,
+      category: MetaMetricsEventCategory.Send,
+      properties: {
+        ...sendAnalytics,
+      },
+    });
+
     const nextRoute =
       sendStage === SEND_STAGES.EDIT ? DEFAULT_ROUTE : mostRecentOverviewPage;
     history.push(nextRoute);
