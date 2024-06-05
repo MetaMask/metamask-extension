@@ -6,6 +6,8 @@
  */
 export const NOTIFICATION_DROP_LEDGER_FIREFOX = 25;
 
+const TEMPORARILY_DISABLE_WHATS_NEW = true;
+
 type NotificationImage = {
   src: string;
   width: string;
@@ -70,6 +72,10 @@ export const getTranslatedUINotifications = (
 ): TranslatedUINotifications => {
   // Added return type here
   const formattedLocale = locale?.replace('_', '-');
+
+  if (TEMPORARILY_DISABLE_WHATS_NEW) {
+    return {};
+  }
 
   return {
     // This syntax is unusual, but very helpful here.  It's equivalent to `unnamedObject[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
