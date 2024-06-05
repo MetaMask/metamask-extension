@@ -748,6 +748,9 @@ export default class MetamaskController extends EventEmitter {
           : !this.preferencesController.store.getState().useNftDetection,
       selectedAddress:
         this.preferencesController.store.getState().selectedAddress,
+      getNetworkClientById: this.networkController.getNetworkClientById.bind(
+        this.networkController,
+      ),
     });
 
     this.metaMetricsController = new MetaMetricsController({
