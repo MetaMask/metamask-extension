@@ -211,14 +211,15 @@ export const snapKeyringBuilder = (
             const { id: accountNameApprovalId } = controllerMessenger.call(
               'ApprovalController:startFlow',
             );
-            const accountName = await controllerMessenger.call(
+            await controllerMessenger.call(
               'ApprovalController:addRequest',
               {
                 origin: snapId,
                 type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
                 requestData: {
+                  // onActionComplete: onActionComplete, ???
                   accountId: internalAccount.id,
-                  accountNameSuggestion,
+                  snapSuggestedAccountName: accountNameSuggestion,
                 },
               },
               true,
@@ -228,12 +229,7 @@ export const snapKeyringBuilder = (
               id: accountNameApprovalId,
             });
 
-            // Set the account name and the selected account
-            controllerMessenger.call(
-              'AccountsController:setAccountName',
-              internalAccount.id,
-              accountName,
-            );
+            // Set the selected account to the new account
             controllerMessenger.call(
               'AccountsController:setSelectedAccount',
               internalAccount.id,
