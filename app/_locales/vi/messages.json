@@ -743,9 +743,6 @@
   "cancel": {
     "message": "Hủy"
   },
-  "cancelEdit": {
-    "message": "Hủy chỉnh sửa"
-  },
   "cancelPopoverTitle": {
     "message": "Hủy giao dịch"
   },
@@ -4551,15 +4548,9 @@
   "sendSwapSubmissionWarning": {
     "message": "Bằng cách nhấp vào nút này, giao dịch hoán đổi của bạn sẽ ngay lập tức bắt đầu. Vui lòng xem lại chi tiết giao dịch của bạn trước khi tiếp tục."
   },
-  "sendTo": {
-    "message": "Gửi đến"
-  },
   "sendTokenAsToken": {
     "message": "Gửi $1 dưới dạng $2",
     "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
-  "sendTokens": {
-    "message": "Gửi token"
   },
   "sendingAsset": {
     "message": "Đang gửi $1"
@@ -5215,9 +5206,6 @@
   },
   "submitted": {
     "message": "Đã gửi"
-  },
-  "suggestedBy": {
-    "message": "Được đề xuất bởi"
   },
   "suggestedTokenSymbol": {
     "message": "Mã chứng khoán được đề xuất:"

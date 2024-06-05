@@ -746,9 +746,6 @@
   "cancel": {
     "message": "Annuler"
   },
-  "cancelEdit": {
-    "message": "Annuler la modification"
-  },
   "cancelPopoverTitle": {
     "message": "Annuler la transaction"
   },
@@ -4554,15 +4551,9 @@
   "sendSwapSubmissionWarning": {
     "message": "En cliquant sur ce bouton, vous entamez immédiatement l’opération d’échange. Veuillez vérifier les détails de votre transaction avant de continuer."
   },
-  "sendTo": {
-    "message": "Envoyer à"
-  },
   "sendTokenAsToken": {
     "message": "Échanger des $1 contre des $2 et les envoyer",
     "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
-  "sendTokens": {
-    "message": "Envoyer des jetons"
   },
   "sendingAsset": {
     "message": "Envoi de $1"
@@ -5218,9 +5209,6 @@
   },
   "submitted": {
     "message": "Envoyé"
-  },
-  "suggestedBy": {
-    "message": "Suggéré par"
   },
   "suggestedTokenSymbol": {
     "message": "Symbole boursier suggéré :"

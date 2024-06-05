@@ -226,7 +226,7 @@ exports[`Security Tab should match snapshot 1`] = `
                 Creates a profile that MetaMask uses to sync some settings among your devices. This is required to get notifications. 
                 <a
                   data-testid="privacyPolicyLink"
-                  href="https://consensys.io/privacy-policy/"
+                  href="https://support.metamask.io/privacy-and-security/profile-privacy"
                   rel="noopener noreferrer"
                   target="_blank"
                 >

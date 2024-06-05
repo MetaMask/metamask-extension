@@ -746,9 +746,6 @@
   "cancel": {
     "message": "Отмена"
   },
-  "cancelEdit": {
-    "message": "Отменить изменение"
-  },
   "cancelPopoverTitle": {
     "message": "Отменить транзакцию"
   },
@@ -4554,15 +4551,9 @@
   "sendSwapSubmissionWarning": {
     "message": "Нажатие этой кнопки немедленно инициирует транзакцию обмена. Прежде чем продолжить, проверьте детали транзакции."
   },
-  "sendTo": {
-    "message": "Отправить в адрес"
-  },
   "sendTokenAsToken": {
     "message": "Отправить $1 как $2",
     "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
-  "sendTokens": {
-    "message": "Отправить токены"
   },
   "sendingAsset": {
     "message": "Идет отправка $1"
@@ -5218,9 +5209,6 @@
   },
   "submitted": {
     "message": "Отправлено"
-  },
-  "suggestedBy": {
-    "message": "Рекомендовано"
   },
   "suggestedTokenSymbol": {
     "message": "Рекомендуемый символ-тикер:"

@@ -743,9 +743,6 @@
   "cancel": {
     "message": "취소"
   },
-  "cancelEdit": {
-    "message": "편집 취소"
-  },
   "cancelPopoverTitle": {
     "message": "트랜잭션 취소"
   },
@@ -4551,15 +4548,9 @@
   "sendSwapSubmissionWarning": {
     "message": "이 버튼을 클릭하면 즉시 스왑 트랜젝션이 시작됩니다. 계속하기 전에 트랜젝션 세부 정보를 검토하세요."
   },
-  "sendTo": {
-    "message": "보낼 대상:"
-  },
   "sendTokenAsToken": {
     "message": "$2(으)로 $1 전송하기",
     "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
-  "sendTokens": {
-    "message": "토큰 보내기"
   },
   "sendingAsset": {
     "message": "$1 전송하기"
@@ -5215,9 +5206,6 @@
   },
   "submitted": {
     "message": "제출됨"
-  },
-  "suggestedBy": {
-    "message": "추천자:"
   },
   "suggestedTokenSymbol": {
     "message": "추천 티커 심볼:"

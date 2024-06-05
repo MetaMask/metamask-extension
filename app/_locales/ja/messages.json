@@ -743,9 +743,6 @@
   "cancel": {
     "message": "キャンセル"
   },
-  "cancelEdit": {
-    "message": "編集をキャンセル"
-  },
   "cancelPopoverTitle": {
     "message": "トランザクションをキャンセル"
   },
@@ -4551,15 +4548,9 @@
   "sendSwapSubmissionWarning": {
     "message": "このボタンをクリックすると、直ちにスワップトランザクションが開始します。続ける前に、以下のトランザクションの詳細を確認してください。"
   },
-  "sendTo": {
-    "message": "送金先:"
-  },
   "sendTokenAsToken": {
     "message": "$1を$2として送金",
     "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
-  "sendTokens": {
-    "message": "トークンを送信"
   },
   "sendingAsset": {
     "message": "$1を送信中"
@@ -5215,9 +5206,6 @@
   },
   "submitted": {
     "message": "送信済み"
-  },
-  "suggestedBy": {
-    "message": "提案元:"
   },
   "suggestedTokenSymbol": {
     "message": "推奨ティッカーシンボル:"

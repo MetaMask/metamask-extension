@@ -746,9 +746,6 @@
   "cancel": {
     "message": "Άκυρο"
   },
-  "cancelEdit": {
-    "message": "Ακύρωση επεξεργασίας"
-  },
   "cancelPopoverTitle": {
     "message": "Ακύρωση συναλλαγής"
   },
@@ -4554,15 +4551,9 @@
   "sendSwapSubmissionWarning": {
     "message": "Κάνοντας κλικ σε αυτό το κουμπί θα ξεκινήσει αμέσως η συναλλαγή ανταλλαγής. Ελέγξτε τις λεπτομέρειες της συναλλαγής σας πριν συνεχίσετε."
   },
-  "sendTo": {
-    "message": "Αποστολή σε"
-  },
   "sendTokenAsToken": {
     "message": "Στείλατε $1 ως $2",
     "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
-  "sendTokens": {
-    "message": "Στείλτε tokens"
   },
   "sendingAsset": {
     "message": "Αποστολή $1"
@@ -5218,9 +5209,6 @@
   },
   "submitted": {
     "message": "Υποβλήθηκε"
-  },
-  "suggestedBy": {
-    "message": "Προτείνεται από"
   },
   "suggestedTokenSymbol": {
     "message": "Προτεινόμενο σύμβολο μετοχής:"
