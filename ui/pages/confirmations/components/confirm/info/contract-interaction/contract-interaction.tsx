@@ -9,6 +9,8 @@ import {
 import { currentConfirmationSelector } from '../../../../../../selectors';
 import { SimulationDetails } from '../../../simulation-details';
 import { TransactionDetails } from '../shared/transaction-details';
+import { ConfirmInfoRowText } from '../../../../../../components/app/confirm/info/row';
+import { AlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 
 const ContractInteractionInfo: React.FC = () => {
   const currentConfirmation = useSelector(
@@ -39,6 +41,16 @@ const ContractInteractionInfo: React.FC = () => {
         marginBottom={4}
       >
         <TransactionDetails />
+        <AlertRow
+          label="Estimated fee"
+          tooltip="Estimated fee"
+          alertKey="estimatedFee"
+          ownerId={currentConfirmation.id}
+        >
+          <ConfirmInfoRowText
+            text={currentConfirmation?.txParams?.maxFeePerGas ?? '-'}
+          />
+        </AlertRow>
       </Box>
     </>
   );

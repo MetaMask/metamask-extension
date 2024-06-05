@@ -74,7 +74,7 @@ export const AlertRow = ({
     <>
       {alertModalVisible && (
         <MultipleAlertModal
-          alertKey={alertKey}
+          alertKey={fieldAlerts[0].key}
           ownerId={ownerId}
           onFinalAcknowledgeClick={handleCloseModal}
           onClose={handleCloseModal}

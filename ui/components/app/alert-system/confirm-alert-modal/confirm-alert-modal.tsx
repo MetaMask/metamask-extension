@@ -112,7 +112,6 @@ function ConfirmDetails({
 }
 
 export function ConfirmAlertModal({
-  alertKey,
   onCancel,
   onClose,
   onSubmit,
@@ -121,9 +120,8 @@ export function ConfirmAlertModal({
   const t = useI18nContext();
   const { alerts, unconfirmedDangerAlerts } = useAlerts(ownerId);
 
-  const selectedAlert = alerts.find((alert) => alert.key === alertKey);
-
   const [confirmCheckbox, setConfirmCheckbox] = useState<boolean>(false);
+
   // if there are multiple alerts, show the multiple alert modal
   const [multipleAlertModalVisible, setMultipleAlertModalVisible] =
     useState<boolean>(unconfirmedDangerAlerts.length > 1);
@@ -138,16 +136,11 @@ export function ConfirmAlertModal({
 
   const handleConfirmCheckbox = useCallback(() => {
     setConfirmCheckbox(!confirmCheckbox);
-  }, [confirmCheckbox, selectedAlert]);
-
-  if (!selectedAlert) {
-    return null;
-  }
+  }, [confirmCheckbox]);
 
   if (multipleAlertModalVisible) {
     return (
       <MultipleAlertModal
-        alertKey={alertKey}
         ownerId={ownerId}
         onFinalAcknowledgeClick={handleCloseMultipleAlertModal}
         onClose={handleCloseMultipleAlertModal}
@@ -155,15 +148,21 @@ export function ConfirmAlertModal({
     );
   }
 
+  const selectedAlert = alerts[0];
+
+  if (!selectedAlert) {
+    return null;
+  }
+
   return (
     <AlertModal
       ownerId={ownerId}
       onAcknowledgeClick={onClose}
-      alertKey={alertKey}
+      alertKey={selectedAlert.key}
       onClose={onClose}
       customTitle={t('confirmAlertModalTitle')}
       customDetails={
-        selectedAlert?.provider === SecurityProvider.Blockaid ? (
+        selectedAlert.provider === SecurityProvider.Blockaid ? (
           SecurityProvider.Blockaid
         ) : (
           <ConfirmDetails onAlertLinkClick={handleOpenMultipleAlertModal} />
