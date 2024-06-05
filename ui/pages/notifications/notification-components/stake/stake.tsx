@@ -13,6 +13,7 @@ import {
   NotificationDetailTitle,
   NotificationDetailAsset,
   NotificationDetailCopyButton,
+  NotificationDetailAddress,
 } from '../../../../components/multichain';
 import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
 import {
@@ -145,6 +146,17 @@ export const components: NotificationComponent<StakeNotification> = {
     },
     body: {
       type: 'body_onchain_notification',
+      Account: ({ notification }) => {
+        if (!notification.address) {
+          return null;
+        }
+        return (
+          <NotificationDetailAddress
+            side={t('account') || ''}
+            address={notification.address}
+          />
+        );
+      },
       Asset: ({ notification }) => {
         const direction = DIRECTION_MAP[notification.type];
         const chainId = decimalToHex(notification.chain_id);
