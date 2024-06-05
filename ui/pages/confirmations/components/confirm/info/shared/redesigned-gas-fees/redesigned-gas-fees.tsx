@@ -42,9 +42,9 @@ import AdvancedGasFeePopover from '../../../../advanced-gas-fee-popover';
 import EditGasFeePopover from '../../../../edit-gas-fee-popover';
 import EditGasPopover from '../../../../edit-gas-popover';
 import GasTiming from '../../../../gas-timing';
-import { useSupportsEIP1559 } from '../../hooks/supports-eip-1559';
-import { useEIP1559TxFees } from '../../hooks/use-eip-1559-fees';
-import { EditGasIcon } from '../edit-gas-icon/edit-gas-icon';
+import { useSupportsEIP1559 } from '../../hooks/useSupportsEIP1559';
+import { useEIP1559TxFees } from '../../hooks/useEIP1559TxFees';
+import { EditGasIconButton } from '../edit-gas-icon/edit-gas-icon-button';
 
 export const RedesignedGasFees = () => {
   const currentConfirmation = useSelector(
@@ -187,7 +187,7 @@ export const RedesignedGasFees = () => {
             <Text color={TextColor.textAlternative}>{nativeCurrencyFees}</Text>
           </Box>
 
-          <EditGasIcon
+          <EditGasIconButton
             supportsEIP1559={supportsEIP1559}
             setShowCustomizeGasPopover={setShowCustomizeGasPopover}
           />
