@@ -10,7 +10,6 @@ import PropTypes from 'prop-types';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { I18nContext } from '../../../../../contexts/i18n';
 ///: END:ONLY_INCLUDE_IF
-import Identicon from '../../../../ui/identicon';
 import Confusable from '../../../../ui/confusable';
 import {
   AvatarAccount,
