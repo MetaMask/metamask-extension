@@ -206,7 +206,6 @@ export const RedesignedGasFees = () => {
           </Box>
         </ConfirmInfoRow>
       )}
-
       {/* TODO: Add separator */}
       <ConfirmInfoRow
         label="Total"
@@ -240,21 +239,13 @@ export const RedesignedGasFees = () => {
         </>
       )}
 
-      {/* Modals */}
-      {supportsEIP1559 && (
-        <>
-          <EditGasFeePopover />
-          <AdvancedGasFeePopover />
-        </>
-      )}
-
       {!supportsEIP1559 && showCustomizeGasPopover && (
-        <EditGasPopover
-          onClose={closeCustomizeGasPopover}
-          mode={EditGasModes.modifyInPlace}
-          transaction={currentConfirmation}
+        <Type0TxGasModal
+          closeCustomizeGasPopover={closeCustomizeGasPopover}
+          currentConfirmation={currentConfirmation}
         />
       )}
+      {supportsEIP1559 && <Type2TxGasModal />}
     </>
   );
 };
@@ -364,5 +355,30 @@ const TotalFeesRow = ({
         <Text color={TextColor.textAlternative}>{nativeCurrencyTotalFees}</Text>
       </Box>
     </ConfirmInfoRow>
+  );
+};
+
+const Type0TxGasModal = ({
+  closeCustomizeGasPopover,
+  currentConfirmation,
+}: {
+  closeCustomizeGasPopover: () => void;
+  currentConfirmation: TransactionMeta;
+}) => {
+  return (
+    <EditGasPopover
+      onClose={closeCustomizeGasPopover}
+      mode={EditGasModes.modifyInPlace}
+      transaction={currentConfirmation}
+    />
+  );
+};
+
+const Type2TxGasModal = () => {
+  return (
+    <>
+      <EditGasFeePopover />
+      <AdvancedGasFeePopover />
+    </>
   );
 };
