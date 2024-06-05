@@ -83,22 +83,17 @@ export const NotificationDetailNetworkFee: FC<
   NotificationDetailNetworkFeeProps
 > = ({ notification }) => {
   const t = useI18nContext();
-
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [networkFees, setNetworkFees] = useState<NetworkFees>(null);
   const [networkFeesError, setNetworkFeesError] = useState<boolean>(false);
 
   const getNativeCurrency = (n: OnChainRawNotificationsWithNetworkFields) => {
     const chainId = decimalToHex(n.chain_id);
-    const nativeCurrency = getNetworkDetailsByChainId(
-      `0x${chainId}` as keyof typeof CHAIN_IDS,
-    );
-    return nativeCurrency;
+    return getNetworkDetailsByChainId(`0x${chainId}` as keyof typeof CHAIN_IDS);
   };
 
   const nativeCurrency = getNativeCurrency(notification);
 
-  // Effect - get the transaction network fees
   useEffect(() => {
     const fetchNetworkFees = async () => {
       try {
