@@ -372,162 +372,6 @@ workflows:
               only: develop
           requires:
             - prep-build-ts-migration-dashboard
-            - prep-build-test-mswapmi-playwright
-            - prep-build-test-swap-playwright
-      - test-e2e-mmi-playwright - OPTIONAL:
-          requires:
-            - prep-build-test-mmi-playwright
-      - test-e2e-swap-playwright - OPTIONAL:
-          requires:
-            - prep-build-test-swap-playwright
-      - test-e2e-chrome-rpc-mmi:
-          requires:
-            - prep-build-test-mmi
-      - test-e2e-chrome-mv3:
-          requires:
-            - prep-build-test-mv3
-      - test-e2e-chrome-vault-decryption:
-          filters:
-            branches:
-              only:
-                - develop
-                - /^Version-v(\d+)[.](\d+)[.](\d+)/
-          requires:
-            - prep-build
-      - test-unit-mocha:
-          requires:
-            - prep-deps
-      - test-unit-jest-main:
-          requires:
-            - prep-deps
-      - test-unit-jest-development:
-          requires:
-            - prep-deps
-      - upload-and-validate-coverage:
-          requires:
-            - test-unit-jest-main
-            - test-unit-jest-development
-            - test-unit-mocha
-      - test-unit-global:
-          requires:
-            - prep-deps
-      - test-storybook:
-          requires:
-            - prep-deps
-            - prep-build-storybook
-      - validate-source-maps:
-          requires:
-            - prep-build
-      - validate-source-maps-beta:
-          requires:
-            - trigger-beta-build
-      - validate-source-maps-desktop:
-          filters:
-            branches:
-              only: develop
-          requires:
-            - prep-build-desktop
-      - validate-source-maps-mmi:
-          requires:
-            - prep-build-mmi
-      - validate-source-maps-flask:
-          requires:
-            - prep-build-flask
-      - test-mozilla-lint:
-          requires:
-            - prep-deps
-            - prep-build
-      - test-mozilla-lint-desktop:
-          filters:
-            branches:
-              only: develop
-          requires:
-            - prep-deps
-            - prep-build-desktop
-      - test-mozilla-lint-flask:
-          requires:
-            - prep-deps
-            - prep-build-flask
-      - all-tests-pass:
-          requires:
-            - test-deps-depcheck
-            - validate-lavamoat-allow-scripts
-            - validate-lavamoat-policy-build
-            - validate-lavamoat-policy-webapp
-            - test-lint
-            - test-lint-shellcheck
-            - test-lint-lockfile
-            - test-lint-changelog
-            - test-unit-jest-main
-            - test-unit-jest-development
-            - test-unit-global
-            - test-unit-mocha
-            - upload-and-validate-coverage
-            - validate-source-maps
-            - validate-source-maps-beta
-            - validate-source-maps-desktop
-            - validate-source-maps-flask
-            - validate-source-maps-mmi
-            - test-mozilla-lint
-            - test-mozilla-lint-desktop
-            - test-mozilla-lint-flask
-            - test-e2e-chrome
-            - test-e2e-chrome-multichain
-            - test-e2e-chrome-multiple-providers
-            - test-e2e-firefox
-            - test-e2e-chrome-flask
-            - test-e2e-firefox-flask
-            - test-e2e-chrome-mmi
-            - test-e2e-chrome-rpc-mmi
-            - test-e2e-chrome-vault-decryption
-            - test-storybook
-      - benchmark:
-          requires:
-            - prep-build-test
-      - user-actions-benchmark:
-          requires:
-            - prep-build-test
-      - stats-module-load-init:
-          requires:
-            - prep-build-test-mv3
-      - job-publish-prerelease:
-          requires:
-            - prep-deps
-            - prep-build
-            - trigger-beta-build
-            - prep-build-desktop
-            - prep-build-mmi
-            - prep-build-flask
-            - prep-build-storybook
-            - prep-build-ts-migration-dashboard
-            - prep-build-test-mv3
-            - benchmark
-            - user-actions-benchmark
-            - stats-module-load-init
-            - all-tests-pass
-      - job-publish-release:
-          filters:
-            branches:
-              only: master
-          requires:
-            - prep-deps
-            - prep-build
-            - prep-build-desktop
-            - prep-build-mmi
-            - prep-build-flask
-            - all-tests-pass
-      - job-publish-storybook:
-          filters:
-            branches:
-              only: develop
-          requires:
-            - prep-build-storybook
-      - job-publish-ts-migration-dashboard:
-          filters:
-            branches:
-              only: develop
-          requires:
-            - prep-build-ts-migration-dashboard
 
 jobs:
   trigger-beta-build:
@@ -1042,27 +886,6 @@ jobs:
       - store_artifacts:
           path: builds-test-swap-playwright
           destination: builds-test-swap-playwright
-
-  prep-build-test-mv3:
-    executor: node-browsers-medium-plus
-    steps:
-      - run: *shallow-git-clone
-      - attach_workspace:
-          at: .
-      - run:
-          name: Build extension in mv3 for testing
-          command: yarn build:test:mv3
-      - run:
-          name: Move test build to 'dist-test' to avoid conflict with production build
-          command: mv ./dist ./dist-test-mv3
-      - run:
-          name: Move test zips to 'builds-test-mv3' to avoid conflict with production build
-          command: mv ./builds ./builds-test-mv3
-      - persist_to_workspace:
-          root: .
-          paths:
-            - dist-test-mv3
-            - builds-test-mv3
 
   prep-build-test:
     executor: node-browsers-medium-plus
@@ -1612,18 +1435,18 @@ jobs:
           command: |
             TESTFILES=$(circleci tests glob "test/e2e/mmi/**/*.spec.ts")
             echo "$TESTFILES"
-            echo "$TESTFILES" | timeout 20m circleci tests run --command="xvfb-run xargs yarn playwright test --project=mmi --project=mmi.visual" verbose --split-by=timings
+            echo "$TESTFILES" | timeout 20m circleci tests run --command="xvfb-run xargs yarn playwright test" verbose --split-by=timings
           no_output_timeout: 10m
       - slack/notify:
           branch_pattern: Version-v*
           event: fail
-          mentions: <@antonio.regadas>
+          mentions: <@antonio.regadas>, @ramon.acitores134
           template: basic_fail_1
           channel: C01LUJL3T98
       - slack/notify:
           branch_pattern: develop
           event: fail
-          mentions: <@antonio.regadas>
+          mentions: <@antonio.regadas>, @ramon.acitores134
           template: basic_fail_1
           channel: C05QXJA7NP8
       - store_artifacts:
@@ -1633,7 +1456,7 @@ jobs:
           name: report for pipeline integration
           path: public/playwright/playwright-reports/junit/test-results.xml
 
-  test-e2e-swap-playwright - OPTIONAL:
+test-e2e-swap-playwright - OPTIONAL:
     executor: playwright
     parallelism: 2
     steps:
