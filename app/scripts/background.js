@@ -9,7 +9,7 @@
 import './lib/setup-initial-state-hooks';
 
 import EventEmitter from 'events';
-import { Transform, finished, pipeline, Duplex } from 'readable-stream';
+import { Transform, finished, pipeline, Duplex, PassThrough } from 'readable-stream';
 import debounce from 'debounce-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
@@ -843,20 +843,38 @@ export function setupController(
     const portStream =
       overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
 
-    class WalletStream extends Duplex {
-      constructor() {
-        super({objectMode: true})
+      class WalletStream extends Duplex {
+        constructor() {
+          super({objectMode: true})
+        }
+
+        _read() {
+          return undefined;
+        }
+
+        _write(value, _encoding, callback) {
+          console.log('wallet stream write', value)
+          if (value.name === 'metamask-provider') {
+            remotePort.postMessage({
+              type: 'caip-x',
+              data: value.data,
+            })
+          }
+          return callback();
+        }
       }
 
-      _read(_size) {
-        // this.push()
-      }
-      _write(_value, _encoding, callback) {
-        console.log('wallet stream write', _value)
-        this.push(_value)
-        callback();
-      }
-    }
+      const walletStream = new WalletStream();
+      remotePort.onMessage.addListener((message) => {
+        console.log('remotePort onMessage', message)
+
+        if (message.type === 'caip-x') {
+          walletStream.push({
+            name: 'metamask-provider',
+            data: message.data,
+          });
+        }
+      })
 
     class TransformableInStream extends Transform {
       constructor() {
@@ -894,18 +912,21 @@ export function setupController(
       }
     }
 
-    const walletStream = new WalletStream();
+    // const walletStream = new PassThrough({objectMode: true});
     const transformInStream = new TransformableInStream();
     const transformOutStream = new TransformableOutStream();
 
-    pipeline(
-      portStream,
-      transformInStream,
-      walletStream,
-      transformOutStream,
-      portStream,
-      (err) => console.log('MetaMask wallet stream', err),
-    );
+    // portStream.pipe(walletStream)
+    // walletStream.pipe(portStream)
+
+    // pipeline(
+    //   portStream,
+    //   // transformInStream,
+    //   walletStream,
+    //   // transformOutStream,
+    //   portStream,
+    //   (err) => console.log('MetaMask wallet stream', err),
+    // );
 
     controller.setupUntrustedCommunication({
       connectionStream: walletStream,

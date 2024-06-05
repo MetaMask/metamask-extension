@@ -34,7 +34,7 @@ cleanContextForImports();
 import log from 'loglevel';
 import { v4 as uuid } from 'uuid';
 import PortStream from 'extension-port-stream';
-import { Transform, finished, pipeline, Duplex } from 'readable-stream';
+import { Transform, finished, pipeline, Duplex, PassThrough } from 'readable-stream';
 import { initializeProvider } from '@metamask/providers/dist/initializeInpageProvider';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
 
@@ -52,7 +52,7 @@ log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn');
 if (shouldInjectProvider()) {
   // setup background connection
   const extensionPort = chrome.runtime.connect(EXTENSION_ID);
-  const portStream = new PortStream(extensionPort);
+  // const portStream = new PortStream(extensionPort);
 
 
   class WalletStream extends Duplex {
@@ -60,16 +60,33 @@ if (shouldInjectProvider()) {
       super({objectMode: true})
     }
 
-    _read(value) {
-      console.log('wallet stream read', value)
+    _read() {
+      return undefined;
     }
 
-    _write(_value, _encoding, callback) {
-      console.log('wallet stream write', _value)
-      this.push(_value)
-      callback();
+    _write(value, _encoding, callback) {
+      console.log('wallet stream write', value)
+      if (value.name === 'metamask-provider') {
+        extensionPort.postMessage({
+          type: 'caip-x',
+          data: value.data,
+        })
+      }
+      return callback();
     }
   }
+
+  const walletStream = new WalletStream();
+  extensionPort.onMessage.addListener((message) => {
+    console.log('extensionPort onMessage', message)
+
+    if (message.type === 'caip-x') {
+      walletStream.push({
+        name: 'metamask-provider',
+        data: message.data,
+      });
+    }
+  })
   // {
   //   objectMode: true,
   //   read: () => undefined,
@@ -112,20 +129,19 @@ if (shouldInjectProvider()) {
     }
   }
 
-  const walletStream = new WalletStream();
+  // const walletStream = new WalletStream();
   const transformInStream = new TransformableInStream();
   const transformOutStream = new TransformableOutStream();
 
-  pipeline(
-    portStream,
-    transformInStream,
-    walletStream,
-    transformOutStream,
-    portStream,
-    (err) => console.log('MetaMask inpage stream', err),
-  );
+  // pipeline(
+  //   walletStream,
+  //   // transformInStream,
+  //   // transformOutStream,
+  //   portStream,
+  //   walletStream,
+  //   (err) => console.log('MetaMask inpage stream', err),
+  // );
 
-  extensionPort.onMessage.addListener((message) => console.log('extensionPort onMessage', message))
 
   initializeProvider({
     connectionStream: walletStream,
