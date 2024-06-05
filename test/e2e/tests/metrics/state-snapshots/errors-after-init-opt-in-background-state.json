@@ -60,7 +60,11 @@
   },
   "AuthenticationController": { "isSignedIn": "boolean" },
   "BridgeController": {
-    "bridgeState": {}
+    "bridgeState": {
+      "bridgeFeatureFlags": {
+        "extensionSupport": "boolean"
+      }
+    }
   },
   "CronjobController": { "jobs": "object" },
   "CurrencyController": {

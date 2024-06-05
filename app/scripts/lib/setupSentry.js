@@ -121,7 +121,11 @@ export const SENTRY_BACKGROUND_STATE = {
     balances: false,
   },
   BridgeController: {
-    bridgeState: {},
+    bridgeState: {
+      bridgeFeatureFlags: {
+        extensionSupport: false,
+      },
+    },
   },
   CronjobController: {
     jobs: false,
