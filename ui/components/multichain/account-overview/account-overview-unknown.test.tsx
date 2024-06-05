@@ -24,7 +24,9 @@ describe('AccountOverviewUnknown', () => {
       onSupportLinkClick: jest.fn(),
     });
 
-    expect(queryByTestId('account-overview__asset-tab')).not.toBeInTheDocument();
+    expect(
+      queryByTestId('account-overview__asset-tab'),
+    ).not.toBeInTheDocument();
     expect(queryByTestId('account-overview__nfts-tab')).not.toBeInTheDocument();
     expect(queryByTestId('account-overview__activity-tab')).toBeInTheDocument();
   });
