@@ -75,9 +75,11 @@ export const CreateAccount: CreateAccountComponent = React.memo(
       );
 
       const [defaultAccountName, setDefaultAccountName] = useState('');
+      // We are not using `accounts` as a dependency here to avoid having the input
+      // updating when the new account will be created.
       useEffect(() => {
         getNextAvailableAccountName(accounts).then(setDefaultAccountName);
-      }, [accounts]);
+      }, []);
 
       const [newAccountName, setNewAccountName] = useState('');
       const trimmedAccountName = newAccountName.trim();
