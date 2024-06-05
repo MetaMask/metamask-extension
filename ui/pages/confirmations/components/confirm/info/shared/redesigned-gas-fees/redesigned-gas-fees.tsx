@@ -1,5 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { EtherDenomination } from '../../../../../../../../shared/constants/common';
 import { EditGasModes } from '../../../../../../../../shared/constants/gas';
@@ -42,8 +42,8 @@ import AdvancedGasFeePopover from '../../../../advanced-gas-fee-popover';
 import EditGasFeePopover from '../../../../edit-gas-fee-popover';
 import EditGasPopover from '../../../../edit-gas-popover';
 import GasTiming from '../../../../gas-timing';
-import { useSupportsEIP1559 } from '../../hooks/useSupportsEIP1559';
 import { useEIP1559TxFees } from '../../hooks/useEIP1559TxFees';
+import { useSupportsEIP1559 } from '../../hooks/useSupportsEIP1559';
 import { EditGasIconButton } from '../edit-gas-icon/edit-gas-icon-button';
 
 export const RedesignedGasFees = () => {
@@ -59,22 +59,24 @@ export const RedesignedGasFees = () => {
   const closeCustomizeGasPopover = () => setShowCustomizeGasPopover(false);
   const { supportsEIP1559 } = useSupportsEIP1559(currentConfirmation);
 
+  const { maxFeePerGas, maxPriorityFeePerGas } =
+    useEIP1559TxFees(currentConfirmation);
+
+  const { gas: gasLimit } = currentConfirmation.txParams;
+
   let gasEstimate;
   if (supportsEIP1559) {
-    const baseFeePerGas = subtractHexes(
-      currentConfirmation.txParams.maxFeePerGas as string,
-      currentConfirmation.txParams.maxPriorityFeePerGas as string,
-    );
+    const baseFeePerGas = subtractHexes(maxFeePerGas, maxPriorityFeePerGas);
 
     gasEstimate = getMinimumGasTotalInHexWei({
       ...currentConfirmation.txParams,
-      gasLimit: currentConfirmation.txParams.gas,
+      gasLimit,
       baseFeePerGas,
     });
   } else {
     gasEstimate = getMinimumGasTotalInHexWei({
       ...currentConfirmation.txParams,
-      gasLimit: currentConfirmation.txParams.gas,
+      gasLimit,
     });
   }
 
@@ -101,11 +103,7 @@ export const RedesignedGasFees = () => {
     ),
   );
 
-  const { maxFeePerGas, maxPriorityFeePerGas } =
-    useEIP1559TxFees(currentConfirmation);
-
   // Layer 2 fees breakdown
-
   const layer1GasFee = currentConfirmation?.layer1GasFee ?? null;
   const hasLayer1GasFee = layer1GasFee !== null;
   const [expandFeeDetails, setExpandFeeDetails] = useState(false);
@@ -202,15 +200,14 @@ export const RedesignedGasFees = () => {
           <Box display={Display.Flex} alignItems={AlignItems.center}>
             {/* TODO: Fix bug in the gas timing component after selection is made */}
             <GasTiming
-              maxFeePerGas={String(maxFeePerGas)}
-              maxPriorityFeePerGas={String(maxPriorityFeePerGas)}
+              maxFeePerGas={maxFeePerGas}
+              maxPriorityFeePerGas={maxPriorityFeePerGas}
             />
           </Box>
         </ConfirmInfoRow>
       )}
 
       {/* TODO: Add separator */}
-
       <ConfirmInfoRow
         label="Total"
         variant={ConfirmInfoRowVariant.Default}
@@ -220,7 +217,6 @@ export const RedesignedGasFees = () => {
       </ConfirmInfoRow>
 
       {/* L2 Fees Breakdown */}
-
       {hasLayer1GasFee && (
         <Box
           padding={4}
