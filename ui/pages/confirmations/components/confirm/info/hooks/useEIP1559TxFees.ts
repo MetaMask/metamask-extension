@@ -8,12 +8,10 @@ export const useEIP1559TxFees = (transactionMeta: TransactionMeta) => {
     transactionMeta?.txParams?.maxPriorityFeePerGas;
 
   return useMemo(() => {
-    const maxFeePerGas = hexMaxFeePerGas
-      ? Number(hexToDecimal(hexMaxFeePerGas))
-      : 0;
+    const maxFeePerGas = hexMaxFeePerGas ? hexToDecimal(hexMaxFeePerGas) : '0';
     const maxPriorityFeePerGas = hexMaxPriorityFeePerGas
-      ? Number(hexToDecimal(hexMaxPriorityFeePerGas))
-      : 0;
+      ? hexToDecimal(hexMaxPriorityFeePerGas)
+      : '0';
 
     return { maxFeePerGas, maxPriorityFeePerGas };
   }, [hexMaxFeePerGas, hexMaxPriorityFeePerGas]);
