@@ -1,8 +1,8 @@
 const {
   withFixtures,
+  clickSignOnSignatureConfirmation,
   defaultGanacheOptions,
   openDapp,
-  regularDelayMs,
   unlockWallet,
   switchToNotificationWindow,
   WINDOW_TITLES,
@@ -81,10 +81,9 @@ describe('Test Snap Signature Insights', function () {
         await switchToNotificationWindow(driver, 4);
 
         // wait for and click sign
-        await driver.delay(regularDelayMs);
-        await driver.clickElement({
-          text: 'Sign',
-          tag: 'button',
+        await clickSignOnSignatureConfirmation({
+          driver,
+          snapSigInsights: true,
         });
 
         // look for returned signature insights data
@@ -118,11 +117,9 @@ describe('Test Snap Signature Insights', function () {
         await switchToNotificationWindow(driver, 4);
 
         // wait for and click sign
-        await driver.delay(regularDelayMs);
-
-        await driver.clickElement({
-          text: 'Sign',
-          tag: 'button',
+        await clickSignOnSignatureConfirmation({
+          driver,
+          snapSigInsights: true,
         });
 
         // look for returned signature insights data
@@ -160,11 +157,9 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('.fa-arrow-down');
 
         // wait for and click sign
-        await driver.delay(regularDelayMs);
-
-        await driver.clickElement({
-          text: 'Sign',
-          tag: 'button',
+        await clickSignOnSignatureConfirmation({
+          driver,
+          snapSigInsights: true,
         });
 
         // look for returned signature insights data
@@ -202,11 +197,9 @@ describe('Test Snap Signature Insights', function () {
         await driver.clickElement('.fa-arrow-down');
 
         // wait for and click sign
-        await driver.delay(regularDelayMs);
-
-        await driver.clickElement({
-          text: 'Sign',
-          tag: 'button',
+        await clickSignOnSignatureConfirmation({
+          driver,
+          snapSigInsights: true,
         });
 
         // look for returned signature insights data
@@ -241,21 +234,13 @@ describe('Test Snap Signature Insights', function () {
         await switchToNotificationWindow(driver, 4);
 
         // wait for and click sign
-        await driver.delay(regularDelayMs);
-
-        await driver.clickElement({
-          text: 'Sign',
-          tag: 'button',
+        await clickSignOnSignatureConfirmation({
+          driver,
+          snapSigInsights: true,
+          locatorID: '#ethSign',
         });
 
         // wait for and click signature warning sign button
-        await driver.waitForSelector(
-          '[data-testid="signature-warning-sign-button"]',
-        );
-        await driver.clickElement(
-          '[data-testid="signature-warning-sign-button"]',
-        );
-
         // click checkbox to authorize signing
         await driver.clickElement('.mm-checkbox__input-wrapper');
 
