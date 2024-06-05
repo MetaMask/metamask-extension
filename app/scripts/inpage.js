@@ -54,6 +54,10 @@ if (shouldInjectProvider()) {
   const extensionPort = chrome.runtime.connect(EXTENSION_ID);
   const portStream = new PortStream(extensionPort);
 
+  extensionPort.onMessage.addListener((message) => {
+    console.log('extensionPort onMessage', message)
+  })
+
 
   class Substream extends Duplex {
     constructor({parentStream}) {
@@ -90,23 +94,6 @@ if (shouldInjectProvider()) {
       return callback();
     }
   }
-
-  const walletStream = new WalletStream();
-  // extensionPort.onMessage.addListener((message) => {
-  //   console.log('extensionPort onMessage', message)
-
-  //   if (message.type === 'caip-x') {
-  //     walletStream.push({
-  //       name: 'metamask-provider',
-  //       data: message.data,
-  //     });
-  //   }
-  // })
-
-    extensionPort.onMessage.addListener((message) => {
-    console.log('extensionPort onMessage', message)
-  })
-
   class TransformableInStream extends Transform {
     constructor() {
       super({objectMode: true});
@@ -143,7 +130,7 @@ if (shouldInjectProvider()) {
     }
   }
 
-  // const walletStream = new WalletStream();
+  const walletStream = new WalletStream();
   const transformInStream = new TransformableInStream();
   const transformOutStream = new TransformableOutStream();
 
