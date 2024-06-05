@@ -80,7 +80,6 @@ describe('AssetPage', () => {
           accounts: [],
         },
       ],
-      contractExchangeRates: {},
       mmiConfiguration: {
         portfolio: {
           enabled: true,

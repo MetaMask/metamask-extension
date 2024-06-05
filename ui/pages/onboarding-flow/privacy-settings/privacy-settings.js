@@ -265,7 +265,7 @@ export default function PrivacySettings() {
             title={t('profileSync')}
             description={t('profileSyncDescription', [
               <a
-                href="https://consensys.io/privacy-policy/"
+                href="https://support.metamask.io/privacy-and-security/profile-privacy"
                 key="link"
                 target="_blank"
                 rel="noopener noreferrer"
