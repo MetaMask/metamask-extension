@@ -33,7 +33,7 @@ function getValues(pendingApproval, t, actions, _history, _data, contexts) {
       },
     ],
     cancelText: t('cancel'),
-    submitText: t('Add account'),
+    submitText: t('addAccount'),
     onLoad: () =>
       trackSnapAccountEvent(MetaMetricsEventName.AddSnapAccountViewed),
     onSubmit: () => {
