@@ -2924,7 +2924,7 @@ export function signTransaction(history) {
         const sourceTokenDecimals =
           draftTransaction.sendAsset.details?.decimals ||
           NATIVE_CURRENCY_DECIMALS;
-        const swapTokenValue = new Numeric(amount.value || '0x0', 16)
+        const swapTokenValue = new Numeric(amount?.value || '0x0', 16)
           .toBase(10)
           .shiftedBy(sourceTokenDecimals)
           .toString();
