@@ -62,6 +62,7 @@ test-results/
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+**/.yarn/*
 
 # MMI Playwright
 public/playwright
@@ -71,3 +72,6 @@ test/e2e/mmi/specs/**/*-darwin.png
 test/e2e/mmi/dist/
 
 lavamoat/**/policy-debug.json
+
+# Attributions
+licenseInfos.json

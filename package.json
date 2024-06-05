@@ -119,7 +119,9 @@
     "download-builds": "tsx .devcontainer/download-builds.ts prep-build",
     "download-builds:test": "tsx .devcontainer/download-builds.ts prep-build-test",
     "master-sync": "node development/master-sync.js",
-    "update-mock-cdn": "node test/e2e/mock-cdn/update-mock-cdn-files.js"
+    "update-mock-cdn": "node test/e2e/mock-cdn/update-mock-cdn-files.js",
+    "attributions:check": "./development/attributions-check.sh",
+    "attributions:generate": "./development/generate-attributions.sh"
   },
   "resolutions": {
     "simple-update-notifier@^1.0.0": "^2.0.0",
@@ -697,7 +699,10 @@
       "@storybook/test-runner>@swc/core": false,
       "@lavamoat/lavadome-react>@lavamoat/preinstall-always-fail": false,
       "tsx>esbuild": false,
-      "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": false
+      "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": false,
+      "@lavamoat/lavadome-core>@lavamoat/preinstall-always-fail": false,
+      "@metamask/desktop>ws>bufferutil": false,
+      "@metamask/desktop>ws>utf-8-validate": false
     }
   },
   "packageManager": "yarn@4.0.2"
