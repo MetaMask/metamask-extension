@@ -14,7 +14,7 @@ export const AccountOverviewLayout = ({
 }: AccountOverviewLayoutProps) => {
   return (
     <>
-      <div className="home__balance-wrapper">{children}</div>
+      <div className="account-overview__balance-wrapper">{children}</div>
 
       <AccountOverviewTabs {...tabsProps}></AccountOverviewTabs>
     </>

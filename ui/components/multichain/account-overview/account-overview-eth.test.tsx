@@ -24,8 +24,8 @@ describe('AccountOverviewEth', () => {
       onSupportLinkClick: jest.fn(),
     });
 
-    expect(queryByTestId('home__asset-tab')).toBeInTheDocument();
-    expect(queryByTestId('home__nfts-tab')).toBeInTheDocument();
-    expect(queryByTestId('home__activity-tab')).toBeInTheDocument();
+    expect(queryByTestId('account-overview__asset-tab')).toBeInTheDocument();
+    expect(queryByTestId('account-overview__nfts-tab')).toBeInTheDocument();
+    expect(queryByTestId('account-overview__activity-tab')).toBeInTheDocument();
   });
 });

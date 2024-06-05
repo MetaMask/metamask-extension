@@ -13,14 +13,12 @@ export const AccountOverviewUnknown = (props: AccountOverviewUnknownProps) => {
       showActivity={true}
       {...props}
     >
-      <div className="home__balance-wrapper">
-        <Box className="account-overview-unknown__empty">
-          <Box className="account-overview-unknown__empty-text">
-            {/* TODO: Use a localized message here! */}
-            <span>Account type not supported yet!</span>
-          </Box>
+      <Box className="account-overview-unknown__empty">
+        <Box className="account-overview-unknown__empty-text">
+          {/* TODO: Use a localized message here! */}
+          <span>Account type not supported yet!</span>
         </Box>
-      </div>
+      </Box>
     </AccountOverviewLayout>
   );
 };

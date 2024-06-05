@@ -55,8 +55,8 @@ export const AccountOverviewTabs = ({
 
   const tabPadding = 4;
   const tabProps = {
-    activeClassName: 'home__tab--active',
-    className: 'home__tab',
+    activeClassName: 'account-overview__tab--active',
+    className: 'account-overview__tab',
   };
 
   const getEventFromTabName = (tabName: string) => {
@@ -118,13 +118,13 @@ export const AccountOverviewTabs = ({
             event: getEventFromTabName(tabName),
           });
         }}
-        tabsClassName="home__tabs"
+        tabsClassName="account-overview__tabs"
       >
         {showTokens && (
           <Tab
             name={t('tokens')}
             tabKey="tokens"
-            data-testid="home__asset-tab"
+            data-testid="account-overview__asset-tab"
             {...tabProps}
           >
             <Box marginTop={2}>
@@ -146,7 +146,7 @@ export const AccountOverviewTabs = ({
           <Tab
             name={t('nfts')}
             tabKey="nfts"
-            data-testid="home__nfts-tab"
+            data-testid="account-overview__nfts-tab"
             {...tabProps}
           >
             <NftsTab />
@@ -162,7 +162,7 @@ export const AccountOverviewTabs = ({
           <Tab
             name={t('activity')}
             tabKey="activity"
-            data-testid="home__activity-tab"
+            data-testid="account-overview__activity-tab"
             {...tabProps}
           >
             <TransactionList />
