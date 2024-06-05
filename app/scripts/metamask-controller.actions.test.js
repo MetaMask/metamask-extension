@@ -158,31 +158,20 @@ describe('MetaMaskController', function () {
 
   describe('#importAccountWithStrategy', function () {
     it('two sequential calls with same strategy give same result', async function () {
-      let keyringControllerState1;
-      let keyringControllerState2;
       const importPrivkey =
         '4cfd3e90fc78b0f86bf7524722150bb8da9c60cd532564d7ff43f5716514f553';
-
       await metamaskController.createNewVaultAndKeychain('test@123');
-      await Promise.all([
-        metamaskController.importAccountWithStrategy('privateKey', [
+
+      const firstImportedAccount =
+        await metamaskController.importAccountWithStrategy('privateKey', [
           importPrivkey,
-        ]),
-        Promise.resolve(1).then(() => {
-          keyringControllerState1 = JSON.stringify(
-            metamaskController.keyringController.state,
-          );
-          metamaskController.importAccountWithStrategy('privateKey', [
-            importPrivkey,
-          ]);
-        }),
-        Promise.resolve(2).then(() => {
-          keyringControllerState2 = JSON.stringify(
-            metamaskController.keyringController.state,
-          );
-        }),
-      ]);
-      assert.deepEqual(keyringControllerState1, keyringControllerState2);
+        ]);
+      const secondImportedAccount =
+        await metamaskController.importAccountWithStrategy('privateKey', [
+          importPrivkey,
+        ]);
+
+      assert.deepEqual(firstImportedAccount, secondImportedAccount);
     });
   });
 
