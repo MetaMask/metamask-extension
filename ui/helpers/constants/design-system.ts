@@ -34,7 +34,6 @@ export enum Color {
   successDefault = 'success-default',
   successMuted = 'success-muted',
   successInverse = 'success-inverse',
-  successDisabled = 'success-disabled',
   infoDefault = 'info-default',
   infoAlternative = 'info-alternative',
   infoMuted = 'info-muted',
