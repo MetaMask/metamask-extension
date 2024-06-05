@@ -7,7 +7,10 @@ import { SwapPage } from '../pageObjects/swap-page';
 import { WalletPage } from '../pageObjects/wallet-page';
 import { ActivityListPage } from '../pageObjects/activity-list-page';
 
-let swapPage, networkController, walletPage, activityListPage;
+let swapPage: SwapPage;
+let networkController: NetworkController;
+let walletPage: WalletPage;
+let activityListPage: ActivityListPage;
 
 test.beforeEach('Initialize extension and import wallet', async () => {
   const extension = new ChromeExtensionPage();

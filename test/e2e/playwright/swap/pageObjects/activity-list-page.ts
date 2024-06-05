@@ -16,7 +16,7 @@ export class ActivityListPage {
     this.status = this.page.locator('.transaction-status-label').first();
   }
 
-  async checkActivityIsConfirmed(options) {
+  async checkActivityIsConfirmed(options: any) {
     // await this.page.waitForTimeout(20000000);
     const itemText = await this.activityItem.innerText();
     await expect(itemText).toEqual(options.activity);

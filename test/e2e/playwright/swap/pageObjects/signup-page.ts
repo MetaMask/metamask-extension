@@ -35,8 +35,6 @@ export class SignUpPage {
 
   readonly nextBtn: Locator;
 
-  readonly closeBtn: Locator;
-
   readonly enableButton: Locator;
 
   constructor(page: Page) {
@@ -82,6 +80,6 @@ export class SignUpPage {
     await this.gotItBtn.click();
     await this.nextBtn.click();
     await this.doneBtn.click();
-    await this.enableButton.click()
+    await this.enableButton.click();
   }
 }

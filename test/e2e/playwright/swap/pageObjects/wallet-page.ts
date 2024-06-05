@@ -1,7 +1,6 @@
 import { type Locator, type Page } from '@playwright/test';
 
 export class WalletPage {
-
   private page: Page;
 
   readonly importTokensButton: Locator;
@@ -18,7 +17,6 @@ export class WalletPage {
     this.importTokensButton = this.page.getByText('Import tokens').first();
     this.importButton = this.page.getByText('Import (');
     this.activityListTab = this.page.getByTestId('home__activity-tab');
-
   }
 
   async importTokens() {
@@ -29,12 +27,11 @@ export class WalletPage {
   }
 
   async selectSwapAction() {
-    await this.swapButton.waitFor({state: "visible"})
+    await this.swapButton.waitFor({ state: 'visible' });
     await this.swapButton.click();
   }
 
   async selectActivityList() {
-    await this.activityListTab.click()
+    await this.activityListTab.click();
   }
-
 }

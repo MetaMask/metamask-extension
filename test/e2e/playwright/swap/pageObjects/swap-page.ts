@@ -1,7 +1,6 @@
 import { type Locator, type Page } from '@playwright/test';
 
 export class SwapPage {
-
   private page: Page;
 
   readonly manageSettingsButton: Locator;
@@ -29,7 +28,6 @@ export class SwapPage {
   readonly switchTokensButton: Locator;
 
   readonly closeButton: Locator;
-
 
   constructor(page: Page) {
     this.page = page;
@@ -62,7 +60,7 @@ export class SwapPage {
     this.backButton = this.page.locator('[title="Cancel"]');
   }
 
-  async fetchQuote(options) {
+  async fetchQuote(options: any) {
     if (options.from) {
       this.swapFromDropDown.click();
       await this.tokenSearch.fill(options.from);
