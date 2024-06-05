@@ -48,6 +48,8 @@ import { useEIP1559TxFees } from '../../hooks/useEIP1559TxFees';
 import { useSupportsEIP1559 } from '../../hooks/useSupportsEIP1559';
 import { EditGasIconButton } from '../edit-gas-icon/edit-gas-icon-button';
 
+// TODO(pnf): review localization once design and copy are finalized
+
 export const RedesignedGasFees = () => {
   const currentConfirmation = useSelector(
     currentConfirmationSelector,
@@ -64,23 +66,12 @@ export const RedesignedGasFees = () => {
   const { maxFeePerGas, maxPriorityFeePerGas } =
     useEIP1559TxFees(currentConfirmation);
 
-  const { gas: gasLimit } = currentConfirmation.txParams;
-
-  let gasEstimate;
-  if (supportsEIP1559) {
-    const baseFeePerGas = subtractHexes(maxFeePerGas, maxPriorityFeePerGas);
-
-    gasEstimate = getMinimumGasTotalInHexWei({
-      ...currentConfirmation.txParams,
-      gasLimit,
-      baseFeePerGas,
-    });
-  } else {
-    gasEstimate = getMinimumGasTotalInHexWei({
-      ...currentConfirmation.txParams,
-      gasLimit,
-    });
-  }
+  const gasEstimate = getGasEstimate(
+    currentConfirmation,
+    supportsEIP1559,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
+  );
 
   const nativeCurrencyFees = getEthConversionFromWeiHex({
     value: gasEstimate,
@@ -105,61 +96,48 @@ export const RedesignedGasFees = () => {
     ),
   );
 
-  // Layer 2 fees breakdown
-  const layer1GasFee = currentConfirmation?.layer1GasFee ?? null;
-  const hasLayer1GasFee = layer1GasFee !== null;
-  const [expandFeeDetails, setExpandFeeDetails] = useState(false);
+  return (
+    <>
+      <GasFeeInfo
+        currentCurrencyFees={currentCurrencyFees}
+        nativeCurrencyFees={nativeCurrencyFees}
+        supportsEIP1559={supportsEIP1559}
+        setShowCustomizeGasPopover={setShowCustomizeGasPopover}
+        maxFeePerGas={maxFeePerGas}
+        maxPriorityFeePerGas={maxPriorityFeePerGas}
+      />
 
-  // L1
-  const nativeCurrencyL1Fees = layer1GasFee
-    ? getEthConversionFromWeiHex({
-        value: layer1GasFee,
-        fromCurrency: EtherDenomination.GWEI,
-        numberOfDecimals: 4,
-      })
-    : null;
+      <Layer2GasFeesDetails
+        currentConfirmation={currentConfirmation}
+        gasEstimate={gasEstimate}
+      />
 
-  const currentCurrencyL1Fees = layer1GasFee
-    ? fiatFormatter(
-        Number(
-          getValueFromWeiHex({
-            value: layer1GasFee,
-            conversionRate,
-            fromCurrency: EtherDenomination.GWEI,
-            toCurrency: currentCurrency,
-            numberOfDecimals: 2,
-          }),
-        ),
-      )
-    : null;
+      {!supportsEIP1559 && showCustomizeGasPopover && (
+        <Type0TxGasModal
+          closeCustomizeGasPopover={closeCustomizeGasPopover}
+          currentConfirmation={currentConfirmation}
+        />
+      )}
+      {supportsEIP1559 && <Type2TxGasModal />}
+    </>
+  );
+};
 
-  // Total
-  const getTransactionFeeTotal = useMemo(() => {
-    return addHexes(gasEstimate, (layer1GasFee as string) ?? 0);
-  }, [gasEstimate, layer1GasFee]);
-
-  const nativeCurrencyTotalFees = layer1GasFee
-    ? getEthConversionFromWeiHex({
-        value: getTransactionFeeTotal,
-        fromCurrency: EtherDenomination.GWEI,
-        numberOfDecimals: 4,
-      })
-    : null;
-
-  const currentCurrencyTotalFees = layer1GasFee
-    ? fiatFormatter(
-        Number(
-          getValueFromWeiHex({
-            value: getTransactionFeeTotal,
-            conversionRate,
-            fromCurrency: EtherDenomination.GWEI,
-            toCurrency: currentCurrency,
-            numberOfDecimals: 2,
-          }),
-        ),
-      )
-    : null;
-
+const GasFeeInfo = ({
+  currentCurrencyFees,
+  nativeCurrencyFees,
+  supportsEIP1559,
+  setShowCustomizeGasPopover,
+  maxFeePerGas,
+  maxPriorityFeePerGas,
+}: {
+  currentCurrencyFees;
+  nativeCurrencyFees;
+  supportsEIP1559;
+  setShowCustomizeGasPopover;
+  maxFeePerGas;
+  maxPriorityFeePerGas;
+}) => {
   return (
     <>
       <EditGasFeesRow
@@ -176,38 +154,6 @@ export const RedesignedGasFees = () => {
       )}
       <Divider />
       <TotalGasFees nativeCurrencyFees={nativeCurrencyFees} />
-
-      {hasLayer1GasFee && (
-        <Layer2GasFeesExpandBtn
-          expandFeeDetails={expandFeeDetails}
-          setExpandFeeDetails={setExpandFeeDetails}
-        />
-      )}
-
-      {hasLayer1GasFee && expandFeeDetails && (
-        <>
-          <Layer2FeesRow
-            currentCurrencyFees={currentCurrencyFees}
-            nativeCurrencyFees={nativeCurrencyFees}
-          />
-          <Layer1FeesRow
-            currentCurrencyL1Fees={currentCurrencyL1Fees}
-            nativeCurrencyL1Fees={nativeCurrencyL1Fees}
-          />
-          <TotalFeesRow
-            currentCurrencyTotalFees={currentCurrencyTotalFees}
-            nativeCurrencyTotalFees={nativeCurrencyTotalFees}
-          />
-        </>
-      )}
-
-      {!supportsEIP1559 && showCustomizeGasPopover && (
-        <Type0TxGasModal
-          closeCustomizeGasPopover={closeCustomizeGasPopover}
-          currentConfirmation={currentConfirmation}
-        />
-      )}
-      {supportsEIP1559 && <Type2TxGasModal />}
     </>
   );
 };
@@ -299,6 +245,117 @@ const TotalGasFees = ({
     >
       <Text>{nativeCurrencyFees}</Text>
     </ConfirmInfoRow>
+  );
+};
+
+const Layer2GasFeesDetails = ({
+  currentConfirmation,
+  gasEstimate,
+}: {
+  currentConfirmation: TransactionMeta;
+  gasEstimate: string;
+}) => {
+  const fiatFormatter = useFiatFormatter();
+
+  const currentCurrency = useSelector(getCurrentCurrency);
+  const conversionRate = useSelector(getConversionRate);
+
+  const nativeCurrencyFees = getEthConversionFromWeiHex({
+    value: gasEstimate,
+    fromCurrency: EtherDenomination.GWEI,
+    numberOfDecimals: 4,
+  });
+  const currentCurrencyFees = fiatFormatter(
+    Number(
+      getValueFromWeiHex({
+        value: gasEstimate,
+        conversionRate,
+        fromCurrency: EtherDenomination.GWEI,
+        toCurrency: currentCurrency,
+        numberOfDecimals: 2,
+      }),
+    ),
+  );
+
+  const layer1GasFee = currentConfirmation?.layer1GasFee ?? null;
+  const hasLayer1GasFee = layer1GasFee !== null;
+  const [expandFeeDetails, setExpandFeeDetails] = useState(false);
+
+  // L1
+  const nativeCurrencyL1Fees = layer1GasFee
+    ? getEthConversionFromWeiHex({
+        value: layer1GasFee,
+        fromCurrency: EtherDenomination.GWEI,
+        numberOfDecimals: 4,
+      })
+    : null;
+
+  const currentCurrencyL1Fees = layer1GasFee
+    ? fiatFormatter(
+        Number(
+          getValueFromWeiHex({
+            value: layer1GasFee,
+            conversionRate,
+            fromCurrency: EtherDenomination.GWEI,
+            toCurrency: currentCurrency,
+            numberOfDecimals: 2,
+          }),
+        ),
+      )
+    : null;
+
+  // Total
+  const getTransactionFeeTotal = useMemo(() => {
+    return addHexes(gasEstimate, (layer1GasFee as string) ?? 0);
+  }, [gasEstimate, layer1GasFee]);
+
+  const nativeCurrencyTotalFees = layer1GasFee
+    ? getEthConversionFromWeiHex({
+        value: getTransactionFeeTotal,
+        fromCurrency: EtherDenomination.GWEI,
+        numberOfDecimals: 4,
+      })
+    : null;
+
+  const currentCurrencyTotalFees = layer1GasFee
+    ? fiatFormatter(
+        Number(
+          getValueFromWeiHex({
+            value: getTransactionFeeTotal,
+            conversionRate,
+            fromCurrency: EtherDenomination.GWEI,
+            toCurrency: currentCurrency,
+            numberOfDecimals: 2,
+          }),
+        ),
+      )
+    : null;
+
+  return (
+    <>
+      {hasLayer1GasFee && (
+        <Layer2GasFeesExpandBtn
+          expandFeeDetails={expandFeeDetails}
+          setExpandFeeDetails={setExpandFeeDetails}
+        />
+      )}
+      {hasLayer1GasFee && expandFeeDetails && (
+        <>
+          <Layer2FeesRow
+            currentCurrencyFees={currentCurrencyFees}
+            nativeCurrencyFees={nativeCurrencyFees}
+          />
+          <Layer1FeesRow
+            currentCurrencyL1Fees={currentCurrencyL1Fees}
+            nativeCurrencyL1Fees={nativeCurrencyL1Fees}
+          />
+          <TotalFeesRow
+            currentCurrencyTotalFees={currentCurrencyTotalFees}
+            nativeCurrencyTotalFees={nativeCurrencyTotalFees}
+          />
+        </>
+      )}
+    </>
   );
 };
 
@@ -434,3 +491,30 @@ const Type2TxGasModal = () => {
     </>
   );
 };
+
+function getGasEstimate(
+  currentConfirmation: TransactionMeta,
+  supportsEIP1559: boolean,
+  maxFeePerGas: string,
+  maxPriorityFeePerGas: string,
+): string {
+  const { gas: gasLimit } = (currentConfirmation as TransactionMeta).txParams;
+
+  let gasEstimate;
+  if (supportsEIP1559) {
+    const baseFeePerGas = subtractHexes(maxFeePerGas, maxPriorityFeePerGas);
+
+    gasEstimate = getMinimumGasTotalInHexWei({
+      ...currentConfirmation.txParams,
+      gasLimit,
+      baseFeePerGas,
+    });
+  } else {
+    gasEstimate = getMinimumGasTotalInHexWei({
+      ...currentConfirmation.txParams,
+      gasLimit,
+    });
+  }
+
+  return gasEstimate;
+}
