@@ -32,6 +32,12 @@ import SelectHardware from './select-hardware';
 import AccountList from './account-list';
 
 const U2F_ERROR = 'U2F';
+const LEDGER_ERRORS_CODES = {
+  '0x650f': 'ledgerErrorConnectionIssue',
+  '0x5515': 'ledgerErrorDevicedLocked',
+  '0x6501': 'ledgerErrorEthAppNotOpen',
+  '0x6a80': 'ledgerErrorTransactionDataNotPadded',
+};
 
 const LEDGER_LIVE_PATH = `m/44'/60'/0'/0/0`;
 const MEW_PATH = `m/44'/60'/0'`;
@@ -68,6 +74,21 @@ const HD_PATHS = {
   ledger: LEDGER_HD_PATHS,
   lattice: LATTICE_HD_PATHS,
   trezor: TREZOR_HD_PATHS,
+};
+
+const getErrorMessage = (errorCode, t) => {
+  switch (errorCode) {
+    case '0x650f':
+      return t('ledgerErrorConnectionIssue');
+    case '0x5515':
+      return t('ledgerErrorDevicedLocked');
+    case '0x6501':
+      return t('ledgerErrorEthAppNotOpen');
+    case '0x6a80':
+      return t('ledgerErrorTransactionDataNotPadded');
+    default:
+      return errorCode;
+  }
 };
 
 class ConnectHardwareForm extends Component {
@@ -194,6 +215,9 @@ class ConnectHardwareForm extends Component {
       })
       .catch((e) => {
         const errorMessage = typeof e === 'string' ? e : e.message;
+        const ledgerErrorCode = Object.keys(LEDGER_ERRORS_CODES).find(
+          (errorCode) => errorMessage.includes(errorCode),
+        );
         if (errorMessage === 'Window blocked') {
           this.setState({ browserSupported: false, error: null });
         } else if (errorMessage.includes(U2F_ERROR)) {
@@ -208,6 +232,10 @@ class ConnectHardwareForm extends Component {
         } else if (errorMessage.includes('timeout')) {
           this.setState({
             error: this.context.t('ledgerTimeout'),
+          });
+        } else if (ledgerErrorCode) {
+          this.setState({
+            error: `${errorMessage} - ${getErrorMessage(ledgerErrorCode)}`,
           });
         } else if (
           errorMessage

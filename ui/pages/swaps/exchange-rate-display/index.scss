@@ -1,5 +1,7 @@
+@use "design-system";
+
 .exchange-rate-display {
-  @include H6;
+  @include design-system.H6;
 
   display: flex;
   align-items: flex-end;
@@ -7,10 +9,6 @@
   color: var(--color-text-default);
   width: 100%;
   flex-wrap: wrap;
-
-  span {
-    margin-right: 4px;
-  }
 
   &__bold {
     font-weight: bold;

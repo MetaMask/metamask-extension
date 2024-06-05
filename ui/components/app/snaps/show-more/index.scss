@@ -1,3 +1,5 @@
+@use "design-system";
+
 .show-more {
   max-height: 5.5rem;
 
@@ -5,7 +7,7 @@
     text-overflow: ellipsis;
   }
 
-  @include screen-md-min {
+  @include design-system.screen-md-min {
     max-height: 6rem;
   }
 

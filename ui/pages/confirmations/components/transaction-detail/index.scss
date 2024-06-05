@@ -1,0 +1,24 @@
+@use "design-system";
+
+.transaction-detail {
+  margin: 15px;
+  padding: 16px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border-default);
+  position: relative;
+
+  .transaction-detail-edit {
+    text-align: end;
+    padding-bottom: 4px;
+
+    button {
+      @include design-system.H7;
+
+      color: var(--color-primary-default);
+      background: transparent;
+      border: 0;
+      padding-inline-end: 0;
+      text-transform: uppercase;
+    }
+  }
+}

@@ -50,6 +50,7 @@ import {
   TextAlign,
   TextVariant,
   BlockSize,
+  TextColor,
 } from '../../helpers/constants/design-system';
 import NetworkAccountBalanceHeader from '../../components/app/network-account-balance-header/network-account-balance-header';
 import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
@@ -294,6 +295,7 @@ const ConfirmAddSuggestedNFT = () => {
                           )}
                           <Text
                             variant={TextVariant.bodyMd}
+                            color={TextColor.textAlternative}
                             className="confirm-add-suggested-nft__nft-tokenId"
                           >
                             #{tokenId}
@@ -359,6 +361,7 @@ const ConfirmAddSuggestedNFT = () => {
                         )}
                         <Text
                           variant={TextVariant.bodySm}
+                          color={TextColor.textAlternative}
                           className="confirm-add-suggested-nft__nft-tokenId"
                         >
                           #{tokenId}

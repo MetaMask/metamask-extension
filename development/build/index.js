@@ -26,34 +26,46 @@ const createScriptTasks = require('./scripts');
 const createStyleTasks = require('./styles');
 const createStaticAssetTasks = require('./static');
 const createEtcTasks = require('./etc');
-const { getBrowserVersionMap, getEnvironment } = require('./utils');
+const {
+  getBrowserVersionMap,
+  getEnvironment,
+  isDevBuild,
+  isTestBuild,
+} = require('./utils');
 const { getConfig } = require('./config');
 
-// Packages required dynamically via browserify configuration in dependencies
-// Required for LavaMoat policy generation
-require('loose-envify');
-require('globalthis');
-require('@babel/preset-env');
-require('@babel/preset-react');
-require('@babel/preset-typescript');
-require('@babel/core');
-// ESLint-related
-require('@babel/eslint-parser');
-require('@babel/eslint-plugin');
-require('@metamask/eslint-config');
-require('@metamask/eslint-config-nodejs');
-require('@typescript-eslint/parser');
-require('eslint');
-require('eslint-config-prettier');
-require('eslint-import-resolver-node');
-require('eslint-import-resolver-typescript');
-require('eslint-plugin-import');
-require('eslint-plugin-jsdoc');
-require('eslint-plugin-node');
-require('eslint-plugin-prettier');
-require('eslint-plugin-react');
-require('eslint-plugin-react-hooks');
-require('eslint-plugin-jest');
+/* eslint-disable no-constant-condition, node/global-require */
+if (false) {
+  // Packages required dynamically via browserify/eslint configuration in
+  // dependencies. This is a workaround for LavaMoat's static analyzer used in
+  // policy generation. To avoid the case where we need to write policy
+  // overrides for these packages we can plop them here and they will be
+  // included in the policy. Neat!
+  require('loose-envify');
+  require('@babel/preset-env');
+  require('@babel/preset-react');
+  require('@babel/preset-typescript');
+  require('@babel/core');
+  // ESLint-related
+  require('@babel/eslint-parser');
+  require('@babel/eslint-plugin');
+  require('@metamask/eslint-config');
+  require('@metamask/eslint-config-nodejs');
+  // eslint-disable-next-line import/no-unresolved
+  require('@typescript-eslint/parser');
+  require('eslint');
+  require('eslint-config-prettier');
+  require('eslint-import-resolver-node');
+  require('eslint-import-resolver-typescript');
+  require('eslint-plugin-import');
+  require('eslint-plugin-jsdoc');
+  require('eslint-plugin-node');
+  require('eslint-plugin-prettier');
+  require('eslint-plugin-react');
+  require('eslint-plugin-react-hooks');
+  require('eslint-plugin-jest');
+}
+/* eslint-enable no-constant-condition, node/global-require */
 
 defineAndRunBuildTasks().catch((error) => {
   console.error(error.stack || error);
@@ -102,6 +114,8 @@ async function defineAndRunBuildTasks() {
       'WeakSet',
       'Event',
       'Image', // Used by browser to generate notifications
+      'fetch', // Used by browser to generate notifications
+      'OffscreenCanvas', // Used by browser to generate notifications
       // globals chromedriver needs to function
       /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
       'performance',
@@ -183,6 +197,7 @@ async function defineAndRunBuildTasks() {
   const styleTasks = createStyleTasks({ livereload });
 
   const scriptTasks = createScriptTasks({
+    shouldIncludeSnow,
     applyLavaMoat,
     browserPlatforms,
     buildType,
@@ -373,8 +388,9 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
     platform,
   } = argv;
 
-  // Manually default this to `false` for dev builds only.
-  const shouldLintFenceFiles = lintFenceFiles ?? !/dev/iu.test(task);
+  // Manually default this to `false` for dev and test builds.
+  const shouldLintFenceFiles =
+    lintFenceFiles ?? (!isDevBuild(task) && !isTestBuild(task));
 
   const version = getVersion(buildType, buildVersion);
 

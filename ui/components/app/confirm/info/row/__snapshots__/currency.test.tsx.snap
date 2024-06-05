@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ConfirmInfoRowCurrency should display in currency passed 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+    style="column-gap: 8px;"
+  >
+    <div
+      class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+      title="$82.65 USD"
+    >
+      <span
+        class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+      >
+        $82.65
+      </span>
+      <span
+        class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+      >
+        USD
+      </span>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ConfirmInfoRowCurrency should display value in user preferred currency by default 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+    style="column-gap: 8px;"
+  >
+    <div
+      class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+      title="0.14861879 ETH"
+    >
+      <span
+        class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+      >
+        0.14861879
+      </span>
+      <span
+        class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+      >
+        ETH
+      </span>
+    </div>
+  </div>
+</div>
+`;

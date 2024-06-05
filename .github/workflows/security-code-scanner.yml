@@ -1,0 +1,36 @@
+name: "MetaMask Security Code Scanner"
+
+on:
+  push:
+    branches: [ 'develop' ]
+  pull_request:
+    branches: [ 'develop' ]
+
+jobs:
+  run-security-scan:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+      - name: MetaMask Security Code Scanner
+        uses: MetaMask/Security-Code-Scanner@main
+        with:
+          repo: ${{ github.repository }}
+          paths_ignored: |
+            test/
+            docs/
+            storybook/
+            .storybook/
+            '**/*.test.js'
+            '**/*.test.ts'
+            '**/*.test.jsx'
+            '**/*.test.tsx'
+            '**/*.stories.tsx'
+            development/chromereload.js
+            node_modules
+          rules_excluded:
+            example
+          project_metrics_token: ${{secrets.SECURITY_SCAN_METRICS_TOKEN}}
+          slack_webhook: ${{ secrets.APPSEC_BOT_SLACK_WEBHOOK }}

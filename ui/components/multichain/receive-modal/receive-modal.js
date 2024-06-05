@@ -9,12 +9,12 @@ import {
   Modal,
   ModalOverlay,
   Text,
+  ModalContent,
+  ModalHeader,
 } from '../../component-library';
-import { ModalContent } from '../../component-library/modal-content/deprecated';
-import { ModalHeader } from '../../component-library/modal-header/deprecated';
-import QrView from '../../ui/qr-code';
+import QrCodeView from '../../ui/qr-code-view';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getMetaMaskAccountsOrdered, getUseBlockie } from '../../../selectors';
+import { getInternalAccountByAddress, getUseBlockie } from '../../../selectors';
 import {
   AlignItems,
   BlockSize,
@@ -28,8 +28,9 @@ import {
 export const ReceiveModal = ({ address, onClose }) => {
   const t = useI18nContext();
   const useBlockie = useSelector(getUseBlockie);
-  const accounts = useSelector(getMetaMaskAccountsOrdered);
-  const { name } = accounts.find((account) => account.address === address);
+  const {
+    metadata: { name },
+  } = useSelector((state) => getInternalAccountByAddress(state, address));
 
   return (
     <Modal isOpen onClose={onClose}>
@@ -60,13 +61,14 @@ export const ReceiveModal = ({ address, onClose }) => {
         >
           {name}
         </Text>
-
         <Box
           display={Display.Flex}
           alignItems={AlignItems.center}
           flexDirection={FlexDirection.Column}
+          paddingInlineEnd={4}
+          paddingInlineStart={4}
         >
-          <QrView Qr={{ data: address }} />
+          <QrCodeView Qr={{ data: address }} />
         </Box>
       </ModalContent>
     </Modal>

@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import { EtherDenomination } from '../../../../shared/constants/common';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import CurrencyDisplay from '../../ui/currency-display';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
@@ -8,6 +9,9 @@ import { AvatarNetwork, AvatarNetworkSize } from '../../component-library';
 import { getCurrentNetwork } from '../../../selectors';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 
+/* eslint-disable jsdoc/require-param-name */
+// eslint-disable-next-line jsdoc/require-param
+/** @param {PropTypes.InferProps<typeof UserPreferencedCurrencyDisplayPropTypes>>} */
 export default function UserPreferencedCurrencyDisplay({
   'data-testid': dataTestId,
   ethNumberOfDecimals,
@@ -16,6 +20,7 @@ export default function UserPreferencedCurrencyDisplay({
   showEthLogo,
   type,
   showFiat,
+  showNative,
   showCurrencySuffix,
   ...restProps
 }) {
@@ -26,6 +31,7 @@ export default function UserPreferencedCurrencyDisplay({
     fiatNumberOfDecimals,
     numberOfDecimals: propsNumberOfDecimals,
     showFiatOverride: showFiat,
+    showNativeOverride: showNative,
   });
   const prefixComponent = useMemo(() => {
     return (
@@ -56,7 +62,8 @@ export default function UserPreferencedCurrencyDisplay({
     />
   );
 }
-UserPreferencedCurrencyDisplay.propTypes = {
+
+const UserPreferencedCurrencyDisplayPropTypes = {
   className: PropTypes.string,
   'data-testid': PropTypes.string,
   prefix: PropTypes.string,
@@ -77,9 +84,24 @@ UserPreferencedCurrencyDisplay.propTypes = {
     PropTypes.number,
   ]),
   showFiat: PropTypes.bool,
+  showNative: PropTypes.bool,
   showCurrencySuffix: PropTypes.bool,
   /**
+   * Following are the props from CurrencyDisplay component.
    * UserPreferencedCurrencyDisplay component should also accept all the props from Currency component
    */
-  ...CurrencyDisplay.propTypes,
+  currency: PropTypes.string,
+  denomination: PropTypes.oneOf([
+    EtherDenomination.GWEI,
+    EtherDenomination.ETH,
+  ]),
+  displayValue: PropTypes.string,
+  prefixComponent: PropTypes.node,
+  suffix: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+  prefixComponentWrapperProps: PropTypes.object,
+  textProps: PropTypes.object,
+  suffixProps: PropTypes.object,
 };
+
+UserPreferencedCurrencyDisplay.propTypes =
+  UserPreferencedCurrencyDisplayPropTypes;

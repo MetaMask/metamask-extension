@@ -32,15 +32,14 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
 
   const isHTTP = urlObject?.protocol === 'http:';
 
+  const urlWithoutProtocol = url?.replace(/https?:\/\//u, '');
+
   return (
     <Box
       display={Display.Flex}
       alignItems={AlignItems.center}
       flexWrap={FlexWrap.Wrap}
-      style={{
-        // TODO: Box should support this
-        columnGap: '8px',
-      }}
+      gap={2}
     >
       {isHTTP && (
         <Text
@@ -62,7 +61,7 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
           HTTP
         </Text>
       )}
-      <Text color={TextColor.inherit}>{url}</Text>
+      <Text color={TextColor.inherit}>{urlWithoutProtocol}</Text>
     </Box>
   );
 };

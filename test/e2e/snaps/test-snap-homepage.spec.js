@@ -2,6 +2,7 @@ const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
+  switchToNotificationWindow,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -13,7 +14,6 @@ describe('Test Snap Homepage', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
-        failOnConsoleError: false,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -21,34 +21,30 @@ describe('Test Snap Homepage', function () {
 
         // navigate to test snaps page and connect
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
-        await driver.delay(1000);
+
+        // wait for page to load
+        await driver.waitForSelector({
+          text: 'Installed Snaps',
+          tag: 'h2',
+        });
 
         // find and scroll to the honmepage test and connect
         const snapButton1 = await driver.findElement('#connecthomepage');
         await driver.scrollToElement(snapButton1);
         await driver.delay(1000);
         await driver.clickElement('#connecthomepage');
-        await driver.delay(1000);
 
         // switch to metamask extension and click connect
-        const windowHandles = await driver.waitUntilXWindowHandles(
-          3,
-          1000,
-          10000,
-        );
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Dialog,
-          windowHandles,
-        );
+        await switchToNotificationWindow(driver);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Install' });
+        await driver.waitForSelector({ text: 'Confirm' });
 
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
 
@@ -62,7 +58,6 @@ describe('Test Snap Homepage', function () {
         // switch to metamask page and open the three dots menu
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
-          windowHandles,
         );
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',

@@ -1,7 +1,8 @@
 /**
  * @jest-environment node
  */
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
+import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import Backup from './backup';
 
 function getMockPreferencesController() {
@@ -161,14 +162,16 @@ const jsonData = JSON.stringify({
       showExtensionInFullSizeView: false,
       showFiatInTestnets: false,
       showTestNetworks: true,
+      smartTransactionsOptInStatus: false,
       useNativeCurrencyAsPrimaryCurrency: true,
+      showTokenAutodetectModal: false,
     },
     ipfsGateway: 'dweb.link',
     ledgerTransportType: 'webhid',
     theme: 'light',
     customNetworkListEnabled: false,
     textDirection: 'auto',
-    useRequestQueue: false,
+    useRequestQueue: true,
   },
   internalAccounts: {
     accounts: {
@@ -183,7 +186,7 @@ const jsonData = JSON.stringify({
           lastSelected: 1693289751176,
         },
         options: {},
-        methods: [...Object.values(EthMethod)],
+        methods: ETH_EOA_METHODS,
         type: EthAccountType.Eoa,
       },
     },

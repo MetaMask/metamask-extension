@@ -12,7 +12,7 @@ import {
 } from '../../../helpers/constants/common';
 import { isBeta } from '../../../helpers/utils/build-types';
 import {
-  getNumberOfSettingsInSection,
+  getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 import {
@@ -38,7 +38,7 @@ export default class InfoTab extends PureComponent {
   };
 
   settingsRefs = Array(
-    getNumberOfSettingsInSection(this.context.t, this.context.t('about')),
+    getNumberOfSettingRoutesInTab(this.context.t, this.context.t('about')),
   )
     .fill(undefined)
     .map(() => {

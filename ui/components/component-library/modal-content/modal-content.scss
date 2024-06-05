@@ -1,8 +1,10 @@
+@use "design-system";
+
 .mm-modal-content {
   position: fixed;
   left: 0;
   top: 0;
-  z-index: $modal-z-index;
+  z-index: design-system.$modal-z-index;
   overflow: auto;
   overscroll-behavior-y: none;
 

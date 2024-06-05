@@ -1,3 +1,5 @@
+@use "design-system";
+
 .info-box {
   border-radius: 4px;
   background-color: var(--color-background-alternative);
@@ -19,6 +21,6 @@
   }
 
   &__description {
-    @include H7;
+    @include design-system.H7;
   }
 }

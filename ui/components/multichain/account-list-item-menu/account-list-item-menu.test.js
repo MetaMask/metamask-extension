@@ -8,24 +8,25 @@ import mockState from '../../../../test/data/mock-state.json';
 import { AccountListItemMenu } from '.';
 
 const mockShowModal = jest.fn();
+const mockAddPermittedAccount = jest.fn();
 
 jest.mock('../../../store/institutional/institution-background');
 
 jest.mock('../../../store/actions', () => {
   return {
     showModal: () => mockShowModal,
+    addPermittedAccount: () => mockAddPermittedAccount,
   };
 });
 
-const identity = {
-  ...mockState.metamask.identities[
-    '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
+const account = {
+  ...mockState.metamask.internalAccounts.accounts[
+    'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
   ],
-  balance: '0x152387ad22c3f0',
 };
 
 const DEFAULT_PROPS = {
-  identity,
+  account,
   onClose: jest.fn(),
   onHide: jest.fn(),
   isRemovable: false,
@@ -36,6 +37,9 @@ const render = (props = {}) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
+    },
+    activeTab: {
+      origin: 'https://uniswap.org/',
     },
   });
   const allProps = { ...DEFAULT_PROPS, ...props };
@@ -61,14 +65,14 @@ describe('AccountListItem', () => {
       getAllCustodianAccountsWithToken: mockedGetAllCustodianAccountsWithToken,
     });
 
-    const newIdentity = {
-      ...mockState.metamask.identities[
-        '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281'
+    const newAccount = {
+      ...mockState.metamask.internalAccounts.accounts[
+        '694225f4-d30b-4e77-a900-c8bbce735b42'
       ],
       balance: '0x152387ad22c3f0',
     };
 
-    const { getByTestId } = render({ identity: newIdentity });
+    const { getByTestId } = render({ account: newAccount });
 
     const removeJWTButton = getByTestId('account-options-menu__remove-jwt');
 
@@ -77,7 +81,7 @@ describe('AccountListItem', () => {
     fireEvent.click(removeJWTButton);
 
     await act(async () => {
-      expect(mockedGetCustodianToken).toHaveBeenCalledWith(newIdentity.address);
+      expect(mockedGetCustodianToken).toHaveBeenCalledWith(newAccount.address);
     });
 
     await act(async () => {

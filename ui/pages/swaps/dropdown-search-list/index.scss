@@ -1,3 +1,5 @@
+@use "design-system";
+
 .dropdown-search-list {
   &__search-list-open {
     margin: 24px;
@@ -81,7 +83,7 @@
   }
 
   &__closed-primary-label {
-    @include H4;
+    @include design-system.H4;
 
     color: var(--color-text-default);
     max-width: 100%;
@@ -122,7 +124,7 @@
   }
 
   &__placeholder {
-    @include H6;
+    @include design-system.H6;
 
     padding: 16px;
     color: var(--color-text-alternative);

@@ -1,21 +1,70 @@
-import { InternalAccount } from '@metamask/keyring-api';
+import { EthAccountType, InternalAccount } from '@metamask/keyring-api';
 import {
   TransactionController,
   TransactionMeta,
   TransactionParams,
+  WalletDevice,
+  TransactionType,
+  SendFlowHistoryEntry,
+  Result,
 } from '@metamask/transaction-controller';
 import {
   AddUserOperationOptions,
   UserOperationController,
 } from '@metamask/user-operation-controller';
+import type { Hex } from '@metamask/utils';
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+import { PPOMController } from '@metamask/ppom-validator';
+import { captureException } from '@sentry/browser';
 import { addHexPrefix } from 'ethereumjs-util';
+import { v4 as uuid } from 'uuid';
+import { SUPPORTED_CHAIN_IDS } from '../ppom/ppom-middleware';
+import {
+  BlockaidReason,
+  BlockaidResultType,
+} from '../../../../shared/constants/security-provider';
+import { normalizePPOMRequest } from '../ppom/ppom-util';
+///: END:ONLY_INCLUDE_IF
+
+/**
+ * Type for security alert response from transaction validator.
+ */
+export type SecurityAlertResponse = {
+  reason: string;
+  features?: string[];
+  result_type: string;
+  providerRequestsCount?: Record<string, number>;
+  securityAlertId?: string;
+  description?: string;
+};
 
 export type AddTransactionOptions = NonNullable<
-  Parameters<TransactionController['addTransaction']>[1]
+  Parameters<
+    (
+      txParams: TransactionParams,
+      options?: {
+        actionId?: string;
+        deviceConfirmedOn?: WalletDevice;
+        method?: string;
+        origin?: string;
+        requireApproval?: boolean | undefined;
+        securityAlertResponse?: SecurityAlertResponse;
+        sendFlowHistory?: SendFlowHistoryEntry[];
+        swaps?: {
+          hasApproveTx?: boolean;
+          meta?: Partial<TransactionMeta>;
+        };
+        type?: TransactionType;
+      },
+    ) => Promise<Result>
+  >[1]
 >;
 
 type BaseAddTransactionRequest = {
+  chainId: Hex;
   networkClientId: string;
+  ppomController: PPOMController;
+  securityAlertsEnabled: boolean;
   selectedAccount: InternalAccount;
   transactionParams: TransactionParams;
   transactionController: TransactionController;
@@ -31,6 +80,8 @@ export type AddTransactionRequest = FinalAddTransactionRequest & {
 };
 
 export type AddDappTransactionRequest = BaseAddTransactionRequest & {
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dappRequest: Record<string, any>;
 };
 
@@ -63,16 +114,102 @@ export async function addDappTransaction(
   return (await waitForHash()) as string;
 }
 
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+const PPOM_EXCLUDED_TRANSACTION_TYPES = [
+  TransactionType.swap,
+  TransactionType.swapApproval,
+  TransactionType.swapAndSend,
+];
+///: END:ONLY_INCLUDE_IF
+
 export async function addTransaction(
   request: AddTransactionRequest,
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  updateSecurityAlertResponseByTxId?: (
+    req: AddTransactionOptions | undefined,
+    securityAlertResponse: SecurityAlertResponse,
+  ) => void,
+  ///: END:ONLY_INCLUDE_IF
 ): Promise<TransactionMeta> {
-  const { waitForSubmit } = request;
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  const {
+    transactionParams,
+    transactionOptions,
+    ppomController,
+    securityAlertsEnabled,
+    chainId,
+  } = request;
+
+  const typeIsExcludedFromPPOM =
+    transactionOptions.type &&
+    PPOM_EXCLUDED_TRANSACTION_TYPES.includes(transactionOptions.type);
+
+  if (
+    securityAlertsEnabled &&
+    SUPPORTED_CHAIN_IDS.includes(chainId) &&
+    !typeIsExcludedFromPPOM
+  ) {
+    try {
+      const ppomRequest = normalizePPOMRequest({
+        method: 'eth_sendTransaction',
+        id: 'actionId' in transactionOptions ? transactionOptions.actionId : '',
+        origin: 'origin' in transactionOptions ? transactionOptions.origin : '',
+        params: [
+          {
+            from: transactionParams.from,
+            to: transactionParams.to,
+            value: transactionParams.value,
+            data: transactionParams.data,
+          },
+        ],
+      });
+
+      const securityAlertId = uuid();
+
+      ppomController
+        .usePPOM(async (ppom) => {
+          try {
+            const securityAlertResponse = await ppom.validateJsonRpc(
+              ppomRequest,
+            );
+            return securityAlertResponse;
+          } catch (e) {
+            captureException(e);
+            const errorObject = e as unknown as Error;
+            console.error('Error validating JSON RPC using PPOM: ', e);
+            const securityAlertResponse = {
+              securityAlertId,
+              result_type: BlockaidResultType.Errored,
+              reason: BlockaidReason.errored,
+              description: `${errorObject.name}: ${errorObject.message}`,
+            };
+            return securityAlertResponse;
+          }
+        })
+        .then((securityAlertResponse) => {
+          updateSecurityAlertResponseByTxId?.(request.transactionOptions, {
+            ...securityAlertResponse,
+            securityAlertId,
+          });
+        });
+
+      request.transactionOptions.securityAlertResponse = {
+        reason: BlockaidResultType.Loading,
+        result_type: BlockaidReason.inProgress,
+        securityAlertId,
+      };
+    } catch (e) {
+      console.error('Error validating JSON RPC using PPOM: ', e);
+      captureException(e);
+    }
+  }
+  ///: END:ONLY_INCLUDE_IF
 
   const { transactionMeta, waitForHash } = await addTransactionOrUserOperation(
     request,
   );
 
-  if (!waitForSubmit) {
+  if (!request.waitForSubmit) {
     waitForHash().catch(() => {
       // Not concerned with result.
     });
@@ -95,7 +232,8 @@ async function addTransactionOrUserOperation(
 ) {
   const { selectedAccount } = request;
 
-  const isSmartContractAccount = selectedAccount.type === 'eip155:eip4337';
+  const isSmartContractAccount =
+    selectedAccount.type === EthAccountType.Erc4337;
 
   if (isSmartContractAccount) {
     return addUserOperationWithController(request);
@@ -107,14 +245,17 @@ async function addTransactionOrUserOperation(
 async function addTransactionWithController(
   request: FinalAddTransactionRequest,
 ) {
-  const { transactionController, transactionOptions, transactionParams } =
-    request;
-
+  const {
+    transactionController,
+    transactionOptions,
+    transactionParams,
+    networkClientId,
+  } = request;
   const { result, transactionMeta } =
-    await transactionController.addTransaction(
-      transactionParams,
-      transactionOptions,
-    );
+    await transactionController.addTransaction(transactionParams, {
+      ...transactionOptions,
+      ...(process.env.TRANSACTION_MULTICHAIN ? { networkClientId } : {}),
+    });
 
   return {
     transactionMeta,
@@ -134,6 +275,8 @@ async function addUserOperationWithController(
   } = request;
 
   const { maxFeePerGas, maxPriorityFeePerGas } = transactionParams;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { origin, requireApproval, type } = transactionOptions as any;
 
   const normalisedTransaction: TransactionParams = {
@@ -154,7 +297,7 @@ async function addUserOperationWithController(
     requireApproval,
     swaps,
     type,
-  } as any;
+  };
 
   const result = await userOperationController.addUserOperationFromTransaction(
     normalisedTransaction,

@@ -1,19 +1,20 @@
-import React, { useCallback, useContext, useRef, useState } from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { I18nContext } from '../../../contexts/i18n';
-import {
-  AlignItems,
-  Display,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import PropTypes from 'prop-types';
+import React, { useCallback, useContext, useRef, useState } from 'react';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { Button, Box } from '../../component-library';
+import { I18nContext } from '../../../contexts/i18n';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  AlignItems,
+  BlockSize,
+  Display,
+  JustifyContent,
+} from '../../../helpers/constants/design-system';
+import { Box, Button } from '../../component-library';
 
 const radius = 14;
 const strokeWidth = 2;
@@ -196,6 +197,7 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
 
   return (
     <Button
+      width={BlockSize.Full}
       onPointerDown={onMouseDown} // allows for touch and mouse events
       onPointerUp={onMouseUp} // allows for touch and mouse events
       className="hold-to-reveal-button__button-hold"

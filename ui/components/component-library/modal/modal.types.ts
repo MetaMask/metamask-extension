@@ -1,5 +1,7 @@
 import type { ModalFocusProps } from '../modal-focus';
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface ModalProps extends ModalFocusProps {
   /**
    * If the modal is open or not

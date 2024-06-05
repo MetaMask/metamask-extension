@@ -9,7 +9,11 @@ const SnapAccountRedirectMessage = ({
   snapName,
   url,
   message,
-}: Pick<SnapAccountRedirectProps, 'snapName' | 'url' | 'message'>) => {
+  onSubmit,
+}: Pick<
+  SnapAccountRedirectProps,
+  'snapName' | 'url' | 'message' | 'onSubmit'
+>) => {
   /* eslint-disable no-negated-condition */
   return (
     <SnapDelineator
@@ -26,7 +30,7 @@ const SnapAccountRedirectMessage = ({
       ) : null}
       {url.length > 0 ? (
         <Box paddingTop={2} display={Display.Flex}>
-          <UrlDisplayBox url={url} />
+          <UrlDisplayBox url={url} onSubmit={onSubmit} />
         </Box>
       ) : null}
     </SnapDelineator>

@@ -1,3 +1,7 @@
+/*
+Disabling Stylelint's hex color rule here because the TypeScript migration dashboard, being external to the main app, doesn't use design tokens.
+*/
+/* stylelint-disable color-no-hex */
 .tippy-touch {
   cursor: pointer !important;
 }

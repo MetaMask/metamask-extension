@@ -1,3 +1,5 @@
+@use "design-system";
+
 .account-list-item {
   &__top-row {
     display: flex;
@@ -7,7 +9,7 @@
   }
 
   &__account-name {
-    @include Paragraph;
+    @include design-system.Paragraph;
 
     margin-left: 8px;
   }

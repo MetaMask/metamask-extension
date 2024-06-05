@@ -2,8 +2,12 @@ import { draftTransactionInitialState } from '../ui/ducks/send';
 import { KeyringType } from '../shared/constants/keyring';
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { CHAIN_IDS } from '../shared/constants/network';
+import { copyable, divider, heading, panel, text } from '@metamask/snaps-sdk';
+import { getJsxElementFromComponent } from '@metamask/snaps-utils';
+import { FirstTimeFlowType } from '../shared/constants/onboarding';
+import { ETH_EOA_METHODS } from '../shared/constants/eth-methods';
 
 const state = {
   invalidCustomNetwork: {
@@ -25,9 +29,6 @@ const state = {
       22: {
         id: 22,
         date: null,
-        image: {
-          src: 'images/global-menu-block-explorer.svg',
-        },
       },
     },
     orderedNetworkList: [],
@@ -115,7 +116,7 @@ const state = {
         address: '0x6b175474e89094c44da98b954eedeac495271d0f',
         symbol: 'ETH',
         decimals: 18,
-        image: './images/eth_logo.png',
+        image: './images/eth_logo.svg',
         unlisted: false,
       },
       '0xB8c77482e45F1F44dE1745F52C74426C631bDD52': {
@@ -280,6 +281,21 @@ const state = {
         ],
       },
     },
+    interfaces: {
+      'test-interface': {
+        content: getJsxElementFromComponent(
+          panel([
+            heading('Foo bar'),
+            text('Description'),
+            divider(),
+            text('More text'),
+            copyable('Text you can copy'),
+          ]),
+        ),
+        state: {},
+        snapId: 'local:http://localhost:8080/',
+      },
+    },
     accountArray: [
       {
         name: 'This is a Really Long Account Name',
@@ -311,7 +327,7 @@ const state = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
         },
         '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
@@ -324,7 +340,7 @@ const state = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
         },
         '15e69915-2a1a-4019-93b3-916e11fd432f': {
@@ -337,7 +353,7 @@ const state = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
         },
         '784225f4-d30b-4e77-a900-c8bbce735b88': {
@@ -350,7 +366,20 @@ const state = {
             },
           },
           options: {},
-          methods: [...Object.values(EthMethod)],
+          methods: ETH_EOA_METHODS,
+          type: EthAccountType.Eoa,
+        },
+        'b990b846-b384-4508-93d9-587461f1123e': {
+          address: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
+          id: 'b990b846-b384-4508-93d9-587461f1123e',
+          metadata: {
+            name: 'Test Account 1',
+            keyring: {
+              type: 'Test Keyring',
+            },
+          },
+          options: {},
+          methods: ETH_EOA_METHODS,
           type: EthAccountType.Eoa,
         },
       },
@@ -457,7 +486,7 @@ const state = {
       },
     ],
     allDetectedTokens: {
-      '0x5': {
+      '0xaa36a7': {
         '0x9d0ba4ddac06032527b140912ec808ab9451b788': [
           {
             address: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
@@ -641,7 +670,7 @@ const state = {
       [CHAIN_IDS.OPTIMISM_TESTNET]: false,
       [CHAIN_IDS.AVALANCHE_TESTNET]: true,
     },
-    firstTimeFlowType: 'create',
+    firstTimeFlowType: FirstTimeFlowType.create,
     completedOnboarding: true,
     knownMethodData: {
       '0x60806040': {
@@ -657,11 +686,11 @@ const state = {
     swapsWelcomeMessageHasBeenShown: true,
     defaultHomeActiveTabName: 'Tokens',
     providerConfig: {
-      type: 'goerli',
+      type: 'sepolia',
       ticker: 'ETH',
-      nickname: 'Goerli',
+      nickname: 'Sepolia',
       rpcUrl: '',
-      chainId: '0x5',
+      chainId: '0xaa36a7',
     },
     network: '5',
     accounts: {

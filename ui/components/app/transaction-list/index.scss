@@ -1,3 +1,5 @@
+@use "design-system";
+
 .transaction-list {
   display: flex;
   flex-direction: column;
@@ -10,14 +12,14 @@
   }
 
   &__header {
-    @include H6;
+    @include design-system.H6;
 
     flex: 0 0 auto;
     color: var(--color-text-muted);
     border-bottom: 1px solid var(--color-border-muted);
     padding: 8px 0 8px 20px;
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       padding: 8px 0 8px 16px;
     }
   }

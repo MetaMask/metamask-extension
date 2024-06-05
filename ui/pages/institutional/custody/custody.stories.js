@@ -25,6 +25,7 @@ const customData = {
           refreshTokenUrl: null,
           isNoteToTraderSupported: false,
           version: 1,
+          envName: 'saturn',
         },
       ],
     },

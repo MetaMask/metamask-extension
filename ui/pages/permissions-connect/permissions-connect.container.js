@@ -8,7 +8,7 @@ import {
   getAccountsWithLabels,
   getLastConnectedInfo,
   getPermissionsRequests,
-  getSelectedAddress,
+  getSelectedInternalAccount,
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getSnapInstallOrUpdateRequests,
   getRequestState,
@@ -57,7 +57,7 @@ const mapStateToProps = (state, ownProps) => {
     ...getSnapInstallOrUpdateRequests(state),
   ];
   ///: END:ONLY_INCLUDE_IF
-  const currentAddress = getSelectedAddress(state);
+  const { address: currentAddress } = getSelectedInternalAccount(state);
 
   const permissionsRequest = permissionsRequests.find(
     (req) => req.metadata.id === permissionsRequestId,

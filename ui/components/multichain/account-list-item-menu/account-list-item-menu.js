@@ -19,7 +19,6 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IF
-import { findKeyringForAddress } from '../../../ducks/metamask/metamask';
 import { MenuItem } from '../../ui/menu';
 import {
   IconName,
@@ -49,7 +48,7 @@ export const AccountListItemMenu = ({
   onClose,
   closeMenu,
   isRemovable,
-  identity,
+  account,
   isOpen,
   isPinned,
   isHidden,
@@ -62,9 +61,7 @@ export const AccountListItemMenu = ({
 
   const deviceName = useSelector(getHardwareWalletType);
 
-  const keyring = useSelector((state) =>
-    findKeyringForAddress(state, identity.address),
-  );
+  const { keyring } = account.metadata;
   const accountType = formatAccountType(getAccountTypeForKeyring(keyring));
 
   const pinnedAccountList = useSelector(getPinnedAccountsList);
@@ -170,28 +167,29 @@ export const AccountListItemMenu = ({
       isOpen={isOpen}
       isPortal
       preventOverflow
+      flip
     >
       <ModalFocus restoreFocus initialFocusRef={anchorElement}>
         <div onKeyDown={handleKeyDown} ref={popoverDialogRef}>
           <AccountDetailsMenuItem
             metricsLocation={METRICS_LOCATION}
             closeMenu={closeMenu}
-            address={identity.address}
+            address={account.address}
             textProps={{ variant: TextVariant.bodySm }}
           />
           <ViewExplorerMenuItem
             metricsLocation={METRICS_LOCATION}
             closeMenu={closeMenu}
             textProps={{ variant: TextVariant.bodySm }}
-            address={identity.address}
+            address={account.address}
           />
           {isHidden ? null : (
             <MenuItem
               data-testid="account-list-menu-pin"
               onClick={() => {
                 isPinned
-                  ? handleUnpinning(identity.address)
-                  : handlePinning(identity.address);
+                  ? handleUnpinning(account.address)
+                  : handlePinning(account.address);
                 onClose();
               }}
               iconName={isPinned ? IconName.Unpin : IconName.Pin}
@@ -205,8 +203,8 @@ export const AccountListItemMenu = ({
             data-testid="account-list-menu-hide"
             onClick={() => {
               isHidden
-                ? handleUnhidding(identity.address)
-                : handleHidding(identity.address);
+                ? handleUnhidding(account.address)
+                : handleHidding(account.address);
               onClose();
             }}
             iconName={isHidden ? IconName.Eye : IconName.EyeSlash}
@@ -223,7 +221,7 @@ export const AccountListItemMenu = ({
                 dispatch(
                   showModal({
                     name: 'CONFIRM_REMOVE_ACCOUNT',
-                    identity,
+                    account,
                   }),
                 );
                 trackEvent({
@@ -251,7 +249,7 @@ export const AccountListItemMenu = ({
                 data-testid="account-options-menu__remove-jwt"
                 onClick={async () => {
                   const token = await dispatch(
-                    mmiActions.getCustodianToken(identity.address),
+                    mmiActions.getCustodianToken(account.address),
                   );
 
                   const custodyAccountDetails = await dispatch(
@@ -267,7 +265,7 @@ export const AccountListItemMenu = ({
                       token,
                       custodyAccountDetails,
                       accounts,
-                      selectedAddress: toChecksumHexAddress(identity.address),
+                      selectedAddress: toChecksumHexAddress(account.address),
                     }),
                   );
                   onClose();
@@ -318,11 +316,22 @@ AccountListItemMenu.propTypes = {
    */
   isHidden: PropTypes.bool,
   /**
-   * Identity of the account
+   * An account object that has name, address, and balance data
    */
-  identity: PropTypes.shape({
-    name: PropTypes.string.isRequired,
+  account: PropTypes.shape({
+    id: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
     balance: PropTypes.string.isRequired,
+    metadata: PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      snap: PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        name: PropTypes.string,
+        enabled: PropTypes.bool,
+      }),
+      keyring: PropTypes.shape({
+        type: PropTypes.string.isRequired,
+      }).isRequired,
+    }).isRequired,
   }).isRequired,
 };

@@ -156,6 +156,7 @@ export default class MetaMetricsController {
       metaMetricsId: null,
       eventsBeforeMetricsOptIn: [],
       traits: {},
+      previousUserTraits: {},
       ...initState,
       fragments: {
         ...initState?.fragments,
@@ -651,6 +652,16 @@ export default class MetaMetricsController {
     });
   }
 
+  // Retrieve (or generate if doesn't exist) the client metametrics id
+  getMetaMetricsId() {
+    let { metaMetricsId } = this.state;
+    if (!metaMetricsId) {
+      metaMetricsId = this.generateMetaMetricsId();
+      this.store.updateState({ metaMetricsId });
+    }
+    return metaMetricsId;
+  }
+
   /** PRIVATE METHODS */
 
   /**
@@ -763,13 +774,7 @@ export default class MetaMetricsController {
         : null;
     ///: END:ONLY_INCLUDE_IF
     const { traits, previousUserTraits } = this.store.getState();
-    let securityProvider;
-    if (metamaskState.securityAlertsEnabled) {
-      securityProvider = 'blockaid';
-    }
-    if (metamaskState.transactionSecurityCheckEnabled) {
-      securityProvider = 'opensea';
-    }
+
     /** @type {MetaMetricsTraits} */
     const currentTraits = {
       [MetaMetricsUserTrait.AddressBookEntries]: sum(
@@ -790,7 +795,7 @@ export default class MetaMetricsController {
       [MetaMetricsUserTrait.NftAutodetectionEnabled]:
         metamaskState.useNftDetection,
       [MetaMetricsUserTrait.NumberOfAccounts]: Object.values(
-        metamaskState.identities,
+        metamaskState.internalAccounts.accounts,
       ).length,
       [MetaMetricsUserTrait.NumberOfNftCollections]:
         this._getAllUniqueNFTAddressesLength(metamaskState.allNfts),
@@ -804,6 +809,8 @@ export default class MetaMetricsController {
       [MetaMetricsUserTrait.Theme]: metamaskState.theme || 'default',
       [MetaMetricsUserTrait.TokenDetectionEnabled]:
         metamaskState.useTokenDetection,
+      [MetaMetricsUserTrait.UseNativeCurrencyAsPrimaryCurrency]:
+        metamaskState.useNativeCurrencyAsPrimaryCurrency,
       ///: BEGIN:ONLY_INCLUDE_IF(desktop)
       [MetaMetricsUserTrait.DesktopEnabled]:
         metamaskState.desktopEnabled || false,
@@ -813,13 +820,10 @@ export default class MetaMetricsController {
       [MetaMetricsUserTrait.MmiAccountAddress]: mmiAccountAddress,
       [MetaMetricsUserTrait.MmiIsCustodian]: Boolean(mmiAccountAddress),
       ///: END:ONLY_INCLUDE_IF
-      [MetaMetricsUserTrait.SecurityProviders]: securityProvider
-        ? [securityProvider]
-        : [],
-      ///: BEGIN:ONLY_INCLUDE_IF(petnames)
+      [MetaMetricsUserTrait.SecurityProviders]:
+        metamaskState.securityAlertsEnabled ? ['blockaid'] : [],
       [MetaMetricsUserTrait.PetnameAddressCount]:
         this._getPetnameAddressCount(metamaskState),
-      ///: END:ONLY_INCLUDE_IF
     };
 
     if (!previousUserTraits) {

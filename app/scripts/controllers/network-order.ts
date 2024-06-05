@@ -15,11 +15,15 @@ const controllerName = 'NetworkOrderController';
 /**
  * The network ID of a network.
  */
-export type NetworkId = string;
+
+export type NetworksInfo = {
+  networkId: string;
+  networkRpcUrl: string;
+};
 
 // State shape for NetworkOrderController
 export type NetworkOrderControllerState = {
-  orderedNetworkList: NetworkId[];
+  orderedNetworkList: NetworksInfo[];
 };
 
 // Describes the structure of a state change event
@@ -48,7 +52,7 @@ export type NetworkOrderControllerMessenger = RestrictedControllerMessenger<
 >;
 
 // Default state for the controller
-const defaultState = {
+const defaultState: NetworkOrderControllerState = {
   orderedNetworkList: [],
 };
 
@@ -116,17 +120,40 @@ export class NetworkOrderController extends BaseController<
     const combinedNetworks = [...MAINNET_CHAINS, ...networkConfigurations];
 
     // Extract unique chainIds from the combined networks
-    const uniqueChainIds = combinedNetworks.map((item) => item.chainId);
+    const uniqueChainIds = combinedNetworks.map((item) => ({
+      networkId: item.chainId,
+      networkRpcUrl: item.rpcUrl,
+    }));
+
+    // Arrays to store reordered and new unique chainIds
+    let reorderedNetworks: NetworksInfo[] = [];
+    const newUniqueNetworks: NetworksInfo[] = [];
+
+    // Iterate through uniqueChainIds to reorder existing elements
+    uniqueChainIds.forEach((newItem) => {
+      const existingIndex = this.state.orderedNetworkList.findIndex(
+        (item) =>
+          item.networkId === newItem.networkId &&
+          item.networkRpcUrl === newItem.networkRpcUrl,
+      );
+      // eslint-disable-next-line no-negated-condition
+      if (existingIndex !== -1) {
+        // Reorder existing element
+        reorderedNetworks[existingIndex] = newItem;
+      } else {
+        // Add new unique element
+        newUniqueNetworks.push(newItem);
+      }
+    });
+
+    // Filter out null values and concatenate reordered and new unique networks
+    reorderedNetworks = reorderedNetworks
+      .filter((item) => Boolean(item))
+      .concat(newUniqueNetworks);
 
     // Update the state with the new networks list
     this.update((state) => {
-      // Combine existing networks with unique chainIds, excluding duplicates
-      state.orderedNetworkList = [
-        ...state.orderedNetworkList,
-        ...uniqueChainIds.filter(
-          (id) => !state.orderedNetworkList.includes(id),
-        ),
-      ];
+      state.orderedNetworkList = reorderedNetworks;
     });
   }
 

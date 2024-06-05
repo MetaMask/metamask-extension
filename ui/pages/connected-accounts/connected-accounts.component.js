@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-utils';
 import Popover from '../../components/ui/popover';
 import ConnectedAccountsList from '../../components/app/connected-accounts-list';
@@ -9,6 +10,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import ConnectedSnaps from '../../components/app/connected-sites-list/connected-snaps';
 import { TextColor, TextVariant } from '../../helpers/constants/design-system';
 import { Box, Text } from '../../components/component-library';
+import { getInternalAccounts } from '../../selectors';
 
 export default function ConnectedAccounts({
   accountToConnect = null,
@@ -21,12 +23,13 @@ export default function ConnectedAccounts({
   permissions = undefined,
   selectedAddress,
   removePermittedAccount,
-  setSelectedAddress,
+  setSelectedAccount,
   subjectMetadata,
   originOfActiveTab,
   permissionSubjects,
 }) {
   const t = useI18nContext();
+  const internalAccounts = useSelector(getInternalAccounts);
   const connectedSubjectsMetadata = subjectMetadata[originOfActiveTab];
   const subjectHasSnaps =
     permissionSubjects[originOfActiveTab]?.origin ===
@@ -99,7 +102,12 @@ export default function ConnectedAccounts({
           connectedAccounts={connectedAccounts}
           selectedAddress={selectedAddress}
           removePermittedAccount={removePermittedAccount}
-          setSelectedAddress={setSelectedAddress}
+          setSelectedAddress={(address) => {
+            const { id: accountId } = internalAccounts.find(
+              (internalAccount) => internalAccount.address === address,
+            );
+            setSelectedAccount(accountId);
+          }}
           shouldRenderListOptions
         />
       </Box>
@@ -130,7 +138,7 @@ ConnectedAccounts.propTypes = {
   isActiveTabExtension: PropTypes.bool.isRequired,
   selectedAddress: PropTypes.string.isRequired,
   removePermittedAccount: PropTypes.func.isRequired,
-  setSelectedAddress: PropTypes.func.isRequired,
+  setSelectedAccount: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   subjectMetadata: PropTypes.arrayOf(PropTypes.object).isRequired,
   originOfActiveTab: PropTypes.string,

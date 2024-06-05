@@ -13,14 +13,14 @@ import { Tab, Tabs } from '../../ui/tabs';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getCurrentChainId,
+  getInternalAccounts,
   getIsDynamicTokenListAvailable,
   getIsMainnet,
   getIsTokenDetectionInactiveOnMainnet,
   getIsTokenDetectionSupported,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
-  getMetaMaskIdentities,
   getRpcPrefsForCurrentProvider,
-  getSelectedAddress,
+  getSelectedInternalAccount,
   getSelectedNetworkClientId,
   getTokenDetectionSupportNetworkByChainId,
   getTokenList,
@@ -132,9 +132,9 @@ export const ImportTokensModal = ({ onClose }) => {
   const isDynamicTokenListAvailable = useSelector(
     getIsDynamicTokenListAvailable,
   );
-  const selectedAddress = useSelector(getSelectedAddress);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
   const isMainnet = useSelector(getIsMainnet);
-  const identities = useSelector(getMetaMaskIdentities);
+  const accounts = useSelector(getInternalAccounts);
   const tokens = useSelector((state) => state.metamask.tokens);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const contractExchangeRates = useSelector(contractExchangeRateSelector);
@@ -411,7 +411,7 @@ export const ImportTokensModal = ({ onClose }) => {
       try {
         ({ standard } = await getTokenStandardAndDetails(
           standardAddress,
-          selectedAddress,
+          selectedAccount.address,
           null,
         ));
       } catch (error) {
@@ -459,7 +459,12 @@ export const ImportTokensModal = ({ onClose }) => {
         setShowSymbolAndDecimals(false);
         break;
 
-      case Boolean(identities[standardAddress]):
+      case Boolean(
+        accounts.find(
+          (internalAccount) =>
+            internalAccount.address.toLowerCase() === standardAddress,
+        ),
+      ):
         setCustomAddressError(t('personalAddressDetected'));
         setShowSymbolAndDecimals(false);
         break;

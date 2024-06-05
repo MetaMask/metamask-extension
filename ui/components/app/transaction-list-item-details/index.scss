@@ -1,3 +1,5 @@
+@use "design-system";
+
 .transaction-list-item-details {
   div.disclosure + div.disclosure {
     margin-top: 0;
@@ -84,7 +86,7 @@
 
   & &__header-button {
     &-rounded-button {
-      @include H8;
+      @include design-system.H8;
 
       padding: 8px;
       min-width: 75px;

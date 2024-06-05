@@ -23,8 +23,8 @@ import {
  * that the keyring can call into for specific functions. The bridge then makes
  * whatever calls or requests it needs to in order to fulfill the request from
  * the keyring. In this case, the bridge is used to communicate with the
- * Offscreen Document. Inside the Offscreen document the trezor-iframe is
- * embedded that will listen for these calls and communicate with the
+ * Offscreen Document. Inside the Offscreen document the trezor script is
+ * loaded and registers a listener for these calls and communicate with the
  * trezor/connect-web library.
  */
 export class TrezorOffscreenBridge implements TrezorBridge {

@@ -19,24 +19,28 @@ import {
   Box,
 } from '../../../../component-library';
 import { getAddressBookEntry } from '../../../../../selectors';
-import Confusable from '../../../../ui/confusable';
 import { Tab, Tabs } from '../../../../ui/tabs';
 import { AddressListItem } from '../../../address-list-item';
-import { SendPageAddressBook, SendPageRow, SendPageYourAccount } from '.';
+import { SendPageAddressBook, SendPageRow, SendPageYourAccounts } from '.';
 
 const CONTACTS_TAB_KEY = 'contacts';
 const ACCOUNTS_TAB_KEY = 'accounts';
+
+const ENS_RESOLUTION_TYPE = 'ENS resolution';
 
 const renderExplicitAddress = (
   address: string,
   nickname: string,
   type: string,
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dispatch: any,
 ) => {
   return (
     <AddressListItem
       address={address}
-      label={<Confusable input={nickname} />}
+      label={nickname}
+      useConfusable={type === ENS_RESOLUTION_TYPE}
       onClick={() => {
         dispatch(
           addHistoryEntry(
@@ -55,7 +59,7 @@ export const SendPageRecipient = () => {
   const dispatch = useDispatch();
 
   const recipient = useSelector(getRecipient);
-  const userInput = useSelector(getRecipientUserInput);
+  const userInput = useSelector(getRecipientUserInput) || '';
 
   const domainResolution = useSelector(getDomainResolution);
   const domainError = useSelector(getDomainError);
@@ -85,8 +89,8 @@ export const SendPageRecipient = () => {
   } else if (domainResolution && !recipient.error) {
     contents = renderExplicitAddress(
       domainResolution,
-      addressBookEntryName ?? userInput,
-      'ENS resolution',
+      addressBookEntryName || userInput,
+      ENS_RESOLUTION_TYPE,
       dispatch,
     );
   } else {
@@ -98,13 +102,17 @@ export const SendPageRecipient = () => {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           <Tab tabKey={ACCOUNTS_TAB_KEY} name={t('yourAccounts')}>
-            <SendPageYourAccount />
+            <SendPageYourAccounts />
           </Tab>
         }
         {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
-          <Tab tabKey={CONTACTS_TAB_KEY} name={t('contacts')}>
+          <Tab
+            tabKey={CONTACTS_TAB_KEY}
+            name={t('contacts')}
+            data-testid="send-contacts-tab"
+          >
             <SendPageAddressBook />
           </Tab>
         }
@@ -116,14 +124,20 @@ export const SendPageRecipient = () => {
     <>
       {showErrorBanner ? (
         <SendPageRow>
-          <BannerAlert severity={BannerAlertSeverity.Danger}>
+          <BannerAlert
+            severity={BannerAlertSeverity.Danger}
+            data-testid="send-recipient-error"
+          >
             {t(domainError ?? recipient.error)}
           </BannerAlert>
         </SendPageRow>
       ) : null}
       {showWarningBanner ? (
         <SendPageRow>
-          <BannerAlert severity={BannerAlertSeverity.Warning}>
+          <BannerAlert
+            severity={BannerAlertSeverity.Warning}
+            data-testid="send-recipient-warning"
+          >
             {t(domainWarning ?? recipient.warning)}
           </BannerAlert>
         </SendPageRow>

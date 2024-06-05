@@ -32,6 +32,7 @@ export default class ConfirmDeleteNetwork extends PureComponent {
         submitText={t('delete')}
         cancelText={t('cancel')}
         submitType="danger-primary"
+        testId="confirm-delete-network-modal"
       >
         <ModalContent
           title={t('deleteNetworkTitle', [networkNickname])}

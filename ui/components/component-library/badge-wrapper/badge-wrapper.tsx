@@ -3,7 +3,7 @@ import classnames from 'classnames';
 
 import { Display } from '../../../helpers/constants/design-system';
 import { Box } from '..';
-import type { PolymorphicRef } from '../box';
+import type { BoxProps, PolymorphicRef } from '..';
 
 import {
   BadgeWrapperPosition,
@@ -30,7 +30,7 @@ export const BadgeWrapper: BadgeWrapperComponent = React.forwardRef(
       className={classnames('mm-badge-wrapper', className)}
       ref={ref}
       display={Display.InlineBlock}
-      {...props} // TODO: There is a typing issue with spreading props to the Box component. It still works but TypeScript complains.
+      {...(props as BoxProps<C>)}
     >
       {/* Generally the AvatarAccount or AvatarToken */}
       {children}

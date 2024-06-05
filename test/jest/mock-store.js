@@ -1,10 +1,11 @@
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
-import { CHAIN_IDS } from '../../shared/constants/network';
+import { EthAccountType } from '@metamask/keyring-api';
+import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../shared/constants/network';
 import { KeyringType } from '../../shared/constants/keyring';
+import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 
-const createGetSmartTransactionFeesApiResponse = () => {
+export const createGetSmartTransactionFeesApiResponse = () => {
   return {
     tradeTxFees: {
       // Approval tx.
@@ -150,6 +151,8 @@ export const createSwapsMockStore = () => {
       },
       preferences: {
         showFiatInTestnets: true,
+        smartTransactionsOptInStatus: true,
+        showTokenAutodetectModal: false,
       },
       transactions: [
         {
@@ -261,7 +264,7 @@ export const createSwapsMockStore = () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
           },
           '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
@@ -274,7 +277,7 @@ export const createSwapsMockStore = () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
           },
           '15e69915-2a1a-4019-93b3-916e11fd432f': {
@@ -287,7 +290,7 @@ export const createSwapsMockStore = () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
           },
           '784225f4-d30b-4e77-a900-c8bbce735b88': {
@@ -300,7 +303,24 @@ export const createSwapsMockStore = () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
+            type: EthAccountType.Eoa,
+          },
+          '36eb02e0-7925-47f0-859f-076608f09b69': {
+            address: '0x95222290DD7278Aa3Ddd389Cc1E1d165CC4BAfe6',
+            id: '36eb02e0-7925-47f0-859f-076608f09b69',
+            metadata: {
+              name: 'Snap Account 1',
+              keyring: {
+                type: 'Snap Keyring',
+              },
+              snap: {
+                id: 'snap-id',
+                name: 'snap name',
+              },
+            },
+            options: {},
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
           },
         },
@@ -344,7 +364,13 @@ export const createSwapsMockStore = () => {
           accounts: ['0xd85a4b6a394794842887b8284293d69163007bbb'],
         },
       ],
-      networkConfigurations: {},
+      networkConfigurations: {
+        'network-configuration-id-1': {
+          chainId: CHAIN_IDS.MAINNET,
+          ticker: CURRENCY_SYMBOLS.ETH,
+          rpcUrl: 'https://mainnet.infura.io/v3/',
+        },
+      },
       tokens: [
         {
           erc20: true,
@@ -361,6 +387,15 @@ export const createSwapsMockStore = () => {
       ],
       swapsState: {
         swapsFeatureFlags: {
+          ethereum: {
+            extensionActive: true,
+            mobileActive: false,
+            smartTransactions: {
+              expectedDeadline: 45,
+              maxDeadline: 150,
+              returnTxHashAsap: false,
+            },
+          },
           smartTransactions: {
             mobileActive: true,
             extensionActive: true,

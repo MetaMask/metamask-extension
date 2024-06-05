@@ -1,5 +1,7 @@
+@use "design-system";
+
 .dialog {
-  @include H7;
+  @include design-system.H7;
 
   padding: 1rem;
   box-sizing: border-box;

@@ -1,3 +1,5 @@
+@use "design-system";
+
 $progress-bar-width: calc(100% - 34px); // 100% - (circle size + (circle border size * 2))
 $progress-bar-position-left: calc(-50% + 17px); // -50% + ((circle size / 2) + circle border size)
 
@@ -13,7 +15,7 @@ ul.two-steps {
 }
 
 .progressbar li {
-  @include H7;
+  @include design-system.H7;
 
   list-style-type: none;
   position: relative;

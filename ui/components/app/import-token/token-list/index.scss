@@ -1,8 +1,10 @@
+@use "design-system";
+
 .token-list {
   &__empty-list {
     height: 214.5px;
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       height: 207.5px;
     }
   }
@@ -13,7 +15,7 @@
     overflow: auto;
     max-height: 214.5px;
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       max-height: 207.5px;
     }
   }

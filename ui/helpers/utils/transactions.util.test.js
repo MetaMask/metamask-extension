@@ -1,4 +1,4 @@
-import { HttpProvider } from 'ethjs';
+import { HttpProvider } from '@metamask/ethjs';
 import nock from 'nock';
 import {
   TransactionEnvelopeType,

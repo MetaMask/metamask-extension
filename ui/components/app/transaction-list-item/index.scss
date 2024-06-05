@@ -1,3 +1,5 @@
+@use "design-system";
+
 .transaction-list-item {
   border-top: none;
 
@@ -8,7 +10,7 @@
   }
 
   &__secondary-currency {
-    @include H7;
+    @include design-system.H7;
 
     margin-top: 4px;
     color: var(--color-text-alternative);
@@ -26,7 +28,7 @@
     display: flex;
 
     .button {
-      @include H6;
+      @include design-system.H6;
 
       width: 90px;
       white-space: nowrap;

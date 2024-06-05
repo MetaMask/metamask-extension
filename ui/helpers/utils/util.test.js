@@ -465,6 +465,14 @@ describe('util', () => {
       };
     });
 
+    it('should not be vulnerable to ReDoS when stripping nesting', () => {
+      const startTime = Date.now();
+      util.stripOneLayerofNesting(`${'['.repeat(90000)}|[]`);
+      const endTime = Date.now();
+      const executionTime = endTime - startTime;
+      expect(executionTime).toBeLessThan(3000);
+    });
+
     it('should throw an error if types is undefined', () => {
       expect(() =>
         util.sanitizeMessage(message, primaryType, undefined),
@@ -1015,6 +1023,23 @@ describe('util', () => {
           data,
         ),
       ).toBeFalsy();
+    });
+  });
+
+  describe('hexToText', () => {
+    const hexValue =
+      '0x4578616d706c652060706572736f6e616c5f7369676e60206d657373616765';
+    it('return correct string value for hex data passed', () => {
+      expect(util.hexToText(hexValue)).toBe('Example `personal_sign` message');
+    });
+    it('return no value if hex is not defined', () => {
+      expect(util.hexToText()).toBe(undefined);
+    });
+    it('return the hex vale unchanged in case an exception occurs', () => {
+      jest.spyOn(Buffer, 'from').mockImplementation(() => {
+        throw new Error('some error');
+      });
+      expect(util.hexToText(hexValue)).toBe(hexValue);
     });
   });
 });

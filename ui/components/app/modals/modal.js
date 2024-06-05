@@ -33,6 +33,11 @@ import EthSignModal from './eth-sign-modal/eth-sign-modal';
 import FadeModal from './fade-modal';
 import NewAccountModal from './new-account-modal';
 import RejectTransactions from './reject-transactions';
+import TransactionAlreadyConfirmed from './transaction-already-confirmed';
+
+// Metamask Notifications
+import ConfirmTurnOffProfileSyncing from './confirm-turn-off-profile-syncing';
+import TurnOnMetamaskNotifications from './turn-on-metamask-notifications/turn-on-metamask-notifications';
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -113,6 +118,7 @@ const custodyConfirmModalStyle = {
 const MODALS = {
   ONBOARDING_ADD_NETWORK: {
     contents: <AddNetworkModal />,
+    testId: 'add-network-modal',
     ...accountModalStyle,
   },
   NEW_ACCOUNT: {
@@ -144,6 +150,7 @@ const MODALS = {
 
   HIDE_TOKEN_CONFIRMATION: {
     contents: <HideTokenConfirmationModal />,
+    testId: 'hide-token-confirmation-modal',
     mobileModalStyle: {
       width: '95%',
       top: getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
@@ -262,8 +269,20 @@ const MODALS = {
     },
   },
 
+  TRANSACTION_ALREADY_CONFIRMED: {
+    disableBackdropClick: true,
+    contents: <TransactionAlreadyConfirmed />,
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+  },
+
   QR_SCANNER: {
     contents: <QRScanner />,
+    testId: 'qr-scanner-modal',
     mobileModalStyle: {
       ...modalContainerMobileStyle,
     },
@@ -348,6 +367,32 @@ const MODALS = {
   },
   ///: END:ONLY_INCLUDE_IF
 
+  CONFIRM_TURN_OFF_PROFILE_SYNCING: {
+    contents: <ConfirmTurnOffProfileSyncing />,
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
+  TURN_ON_METAMASK_NOTIFICATIONS: {
+    contents: <TurnOnMetamaskNotifications />,
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
   DEFAULT: {
     contents: [],
     mobileModalStyle: {},
@@ -423,7 +468,7 @@ class Modal extends Component {
 
   render() {
     const modal = MODALS[this.props.modalState.name || 'DEFAULT'];
-    const { contents: children, disableBackdropClick = false } = modal;
+    const { contents: children, disableBackdropClick = false, testId } = modal;
     const modalStyle =
       modal[isMobileView() ? 'mobileModalStyle' : 'laptopModalStyle'];
     const contentStyle = modal.contentStyle || {};
@@ -451,6 +496,7 @@ class Modal extends Component {
         contentStyle={contentStyle}
         backdropStyle={BACKDROPSTYLE}
         closeOnClick={!disableBackdropClick}
+        testId={testId}
       >
         {children}
       </FadeModal>

@@ -1,7 +1,9 @@
+@use "design-system";
+
 .interactive-replacement-token-notification {
   height: 24px;
 
-  @media screen and (min-width: $break-large) {
+  @media screen and (min-width: design-system.$break-large) {
     width: 85vw;
   }
 

@@ -1,3 +1,20 @@
+const fs = require('fs');
+
+const { GAS_API_BASE_URL } = require('../../shared/constants/swaps');
+
+const CDN_CONFIG_PATH = 'test/e2e/mock-cdn/cdn-config.txt';
+const CDN_STALE_DIFF_PATH = 'test/e2e/mock-cdn/cdn-stale-diff.txt';
+const CDN_STALE_PATH = 'test/e2e/mock-cdn/cdn-stale.txt';
+const PPOM_VERSION_PATH = 'test/e2e/mock-cdn/ppom-version.json';
+const PPOM_VERSION_HEADERS_PATH = 'test/e2e/mock-cdn/ppom-version-headers.json';
+
+const CDN_CONFIG_RES_HEADERS_PATH =
+  'test/e2e/mock-cdn/cdn-config-res-headers.json';
+const CDN_STALE_DIFF_RES_HEADERS_PATH =
+  'test/e2e/mock-cdn/cdn-stale-diff-res-headers.json';
+const CDN_STALE_RES_HEADERS_PATH =
+  'test/e2e/mock-cdn/cdn-stale-res-headers.json';
+
 const blacklistedHosts = [
   'arbitrum-mainnet.infura.io',
   'goerli.infura.io',
@@ -47,9 +64,14 @@ const browserAPIRequestDomains =
  * @param {(server: Mockttp) => MockedEndpoint} testSpecificMock - A function for setting up test-specific network mocks
  * @param {object} options - Network mock options.
  * @param {string} options.chainId - The chain ID used by the default configured network.
+ * @param {string} options.ethConversionInUsd - The USD conversion rate for ETH.
  * @returns {SetupMockReturn}
  */
-async function setupMocking(server, testSpecificMock, { chainId }) {
+async function setupMocking(
+  server,
+  testSpecificMock,
+  { chainId, ethConversionInUsd = '1700' },
+) {
   const privacyReport = new Set();
   await server.forAnyRequest().thenPassThrough({
     beforeRequest: (req) => {
@@ -100,6 +122,9 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
     .forPost(
       'https://arbitrum-mainnet.infura.io/v3/00000000000000000000000000000000',
     )
+    .withJsonBodyIncluding({
+      method: 'eth_chainId',
+    })
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -157,20 +182,60 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
       };
     });
 
+  const gasPricesCallbackMock = () => ({
+    statusCode: 200,
+    json: {
+      SafeGasPrice: '1',
+      ProposeGasPrice: '2',
+      FastGasPrice: '3',
+    },
+  });
+  const suggestedGasFeesCallbackMock = () => ({
+    statusCode: 200,
+    json: {
+      low: {
+        suggestedMaxPriorityFeePerGas: '1',
+        suggestedMaxFeePerGas: '20.44436136',
+        minWaitTimeEstimate: 15000,
+        maxWaitTimeEstimate: 30000,
+      },
+      medium: {
+        suggestedMaxPriorityFeePerGas: '1.5',
+        suggestedMaxFeePerGas: '25.80554517',
+        minWaitTimeEstimate: 15000,
+        maxWaitTimeEstimate: 45000,
+      },
+      high: {
+        suggestedMaxPriorityFeePerGas: '2',
+        suggestedMaxFeePerGas: '27.277766977',
+        minWaitTimeEstimate: 15000,
+        maxWaitTimeEstimate: 60000,
+      },
+      estimatedBaseFee: '19.444436136',
+      networkCongestion: 0.14685,
+      latestPriorityFeeRange: ['0.378818859', '6.555563864'],
+      historicalPriorityFeeRange: ['0.1', '248.262969261'],
+      historicalBaseFeeRange: ['14.146999781', '28.825256275'],
+      priorityFeeTrend: 'down',
+      baseFeeTrend: 'up',
+    },
+  });
+
   await server
-    .forGet(
-      `https://gas-api.metaswap.codefi.network/networks/${chainId}/gasPrices`,
-    )
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          SafeGasPrice: '1',
-          ProposeGasPrice: '2',
-          FastGasPrice: '3',
-        },
-      };
-    });
+    .forGet(`${GAS_API_BASE_URL}/networks/${chainId}/gasPrices`)
+    .thenCallback(gasPricesCallbackMock);
+
+  await server
+    .forGet(`${GAS_API_BASE_URL}/networks/1/gasPrices`)
+    .thenCallback(gasPricesCallbackMock);
+
+  await server
+    .forGet(`${GAS_API_BASE_URL}/networks/1/suggestedGasFees`)
+    .thenCallback(suggestedGasFeesCallbackMock);
+
+  await server
+    .forGet(`${GAS_API_BASE_URL}/networks/${chainId}/suggestedGasFees`)
+    .thenCallback(suggestedGasFeesCallbackMock);
 
   await server
     .forGet('https://swap.metaswap.codefi.network/networks/1/token')
@@ -185,43 +250,6 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
           address: '0x72c9fb7ed19d3ce51cea5c56b3e023cd918baadf',
           occurences: 1,
           aggregators: ['dynamic'],
-        },
-      };
-    });
-
-  await server
-    .forGet(
-      `https://gas-api.metaswap.codefi.network/networks/${chainId}/suggestedGasFees`,
-    )
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          low: {
-            suggestedMaxPriorityFeePerGas: '1',
-            suggestedMaxFeePerGas: '20.44436136',
-            minWaitTimeEstimate: 15000,
-            maxWaitTimeEstimate: 30000,
-          },
-          medium: {
-            suggestedMaxPriorityFeePerGas: '1.5',
-            suggestedMaxFeePerGas: '25.80554517',
-            minWaitTimeEstimate: 15000,
-            maxWaitTimeEstimate: 45000,
-          },
-          high: {
-            suggestedMaxPriorityFeePerGas: '2',
-            suggestedMaxFeePerGas: '27.277766977',
-            minWaitTimeEstimate: 15000,
-            maxWaitTimeEstimate: 60000,
-          },
-          estimatedBaseFee: '19.444436136',
-          networkCongestion: 0.14685,
-          latestPriorityFeeRange: ['0.378818859', '6.555563864'],
-          historicalPriorityFeeRange: ['0.1', '248.262969261'],
-          historicalBaseFeeRange: ['14.146999781', '28.825256275'],
-          priorityFeeTrend: 'down',
-          baseFeeTrend: 'up',
         },
       };
     });
@@ -288,6 +316,38 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
               'zeroEx',
             ],
             occurrences: 9,
+          },
+          {
+            address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+            symbol: 'DAI',
+            decimals: 18,
+            name: 'Dai Stablecoin',
+            iconUrl:
+              'https://raw.githubusercontent.com/MetaMask/contract-metadata/master/images/dai.svg',
+            type: 'erc20',
+            aggregators: [
+              'metamask',
+              'aave',
+              'bancor',
+              'cmc',
+              'cryptocom',
+              'coinGecko',
+              'oneInch',
+              'pmm',
+              'sushiswap',
+              'zerion',
+              'lifi',
+              'socket',
+              'squid',
+              'openswap',
+              'sonarwatch',
+              'uniswapLabs',
+              'coinmarketcap',
+            ],
+            occurrences: 17,
+            erc20Permit: true,
+            fees: { '0xb0da5965d43369968574d399dbe6374683773a65': 0 },
+            storage: { balance: 2 },
           },
         ],
       };
@@ -430,15 +490,84 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
       return {
         statusCode: 200,
         json: {
-          USD: '1700',
+          USD: ethConversionInUsd,
         },
+      };
+    });
+
+  const PPOM_VERSION = fs.readFileSync(PPOM_VERSION_PATH);
+  const PPOM_VERSION_HEADERS = fs.readFileSync(PPOM_VERSION_HEADERS_PATH);
+  const CDN_CONFIG = fs.readFileSync(CDN_CONFIG_PATH);
+  const CDN_STALE = fs.readFileSync(CDN_STALE_PATH);
+  const CDN_STALE_DIFF = fs.readFileSync(CDN_STALE_DIFF_PATH);
+  const CDN_CONFIG_RES_HEADERS = fs.readFileSync(CDN_CONFIG_RES_HEADERS_PATH);
+  const CDN_STALE_RES_HEADERS = fs.readFileSync(CDN_STALE_RES_HEADERS_PATH);
+  const CDN_STALE_DIFF_RES_HEADERS = fs.readFileSync(
+    CDN_STALE_DIFF_RES_HEADERS_PATH,
+  );
+
+  await server
+    .forHead(
+      'https://static.cx.metamask.io/api/v1/confirmations/ppom/ppom_version.json',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+      };
+    });
+
+  await server
+    .forGet(
+      'https://static.cx.metamask.io/api/v1/confirmations/ppom/ppom_version.json',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: JSON.parse(PPOM_VERSION),
+        headers: JSON.parse(PPOM_VERSION_HEADERS),
+      };
+    });
+
+  await server
+    .forGet(
+      /^https:\/\/static.cx.metamask.io\/api\/v1\/confirmations\/ppom\/config\/0x1\/(.*)/u,
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        rawBody: CDN_CONFIG,
+        headers: JSON.parse(CDN_CONFIG_RES_HEADERS),
+      };
+    });
+
+  await server
+    .forGet(
+      /^https:\/\/static.cx.metamask.io\/api\/v1\/confirmations\/ppom\/stale_diff\/0x1\/(.*)/u,
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        rawBody: CDN_STALE_DIFF,
+        headers: JSON.parse(CDN_STALE_DIFF_RES_HEADERS),
+      };
+    });
+
+  await server
+    .forGet(
+      /^https:\/\/static.cx.metamask.io\/api\/v1\/confirmations\/ppom\/stale\/0x1\/(.*)/u,
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        rawBody: CDN_STALE,
+        headers: JSON.parse(CDN_STALE_RES_HEADERS),
       };
     });
 
   await mockEmptyStalelistAndHotlist(server);
 
   await server
-    .forPost('https://customnetwork.com/api/customRPC')
+    .forPost('https://customnetwork.test/api/customRPC')
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -452,6 +581,17 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
 
   await mockLensNameProvider(server);
   await mockTokenNameProvider(server, chainId);
+
+  // IPFS endpoint for NFT metadata
+  await server
+    .forGet(
+      'https://bafybeidxfmwycgzcp4v2togflpqh2gnibuexjy4m4qqwxp7nh3jx5zlh4y.ipfs.dweb.link/1.json',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+      };
+    });
 
   /**
    * Returns an array of alphanumerically sorted hostnames that were requested
@@ -485,10 +625,12 @@ async function mockLensNameProvider(server) {
     '0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826': 'test.lens',
     '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb': 'test2.lens',
     '0xcccccccccccccccccccccccccccccccccccccccc': 'test3.lens',
+    '0x0c54fccd2e384b4bb6f2e405bf5cbc15a017aafb': 'test4.lens',
   };
 
-  await server.forPost('https://api.lens.dev').thenCallback((request) => {
-    const address = request.body?.json?.variables?.address;
+  await server.forPost('https://api.lens.dev').thenCallback(async (request) => {
+    const json = await request.body?.getJson();
+    const address = json?.variables?.address;
     const handle = handlesByAddress[address];
 
     return {

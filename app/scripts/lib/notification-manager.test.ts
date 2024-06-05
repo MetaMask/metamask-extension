@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck types are very broken
 import browser from 'webextension-polyfill';
 import NotificationManager from './notification-manager';
 
@@ -44,7 +46,7 @@ describe('Notification Manager', () => {
   let notificationManager: NotificationManager,
     setCurrentPopupIdSpy: (a: number) => void,
     focusWindowSpy: () => void,
-    currentPopupId: number;
+    currentPopupId: number | undefined;
 
   beforeEach(() => {
     notificationManager = new NotificationManager();
@@ -65,7 +67,8 @@ describe('Notification Manager', () => {
     browser.windows.getAll.mockReturnValue([]);
     browser.windows.create.mockReturnValue(newPopupWindow);
     currentPopupId = undefined;
-    await notificationManager.showPopup(setCurrentPopupIdSpy, currentPopupId);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    await notificationManager.showPopup(setCurrentPopupIdSpy, currentPopupId!);
     expect(setCurrentPopupIdSpy).toHaveBeenCalledTimes(1);
     expect(setCurrentPopupIdSpy).toHaveBeenCalledWith(newPopupWindow.id);
   });
@@ -82,7 +85,8 @@ describe('Notification Manager', () => {
       width: 120, // make sure this is smalled than NOTIFICATION_WIDTH
     });
     currentPopupId = undefined;
-    await notificationManager.showPopup(setCurrentPopupIdSpy, currentPopupId);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    await notificationManager.showPopup(setCurrentPopupIdSpy, currentPopupId!);
     expect(createSpy).toHaveBeenCalledTimes(1);
     expect(createSpy).toHaveBeenCalledWith({
       height: 620,

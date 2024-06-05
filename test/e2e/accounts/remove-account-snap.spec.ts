@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import FixtureBuilder from '../fixture-builder';
 import { WINDOW_TITLES, defaultGanacheOptions, withFixtures } from '../helpers';
@@ -10,13 +11,19 @@ describe('Remove Account Snap', function (this: Suite) {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
-        failOnConsoleError: false,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
         await installSnapSimpleKeyring(driver, false);
 
         await makeNewAccountAndSwitch(driver);
+
+        // Check accounts after adding the snap account.
+        await driver.clickElement('[data-testid="account-menu-icon"]');
+        const accountMenuItemsWithSnapAdded = await driver.findElements(
+          '.multichain-account-list-item',
+        );
+        await driver.clickElement('.mm-box button[aria-label="Close"]');
 
         // Navigate to settings.
         await driver.switchToWindowWithTitle(
@@ -70,6 +77,17 @@ describe('Remove Account Snap', function (this: Suite) {
           text: "You don't have any snaps installed.",
           tag: 'p',
         });
+        await driver.clickElement('.mm-box button[aria-label="Close"]');
+
+        // Assert that an account was removed.
+        await driver.clickElement('[data-testid="account-menu-icon"]');
+        const accountMenuItemsAfterRemoval = await driver.findElements(
+          '.multichain-account-list-item',
+        );
+        assert.equal(
+          accountMenuItemsAfterRemoval.length,
+          accountMenuItemsWithSnapAdded.length - 1,
+        );
       },
     );
   });

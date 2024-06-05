@@ -1,12 +1,11 @@
 import { ObservableStore } from '@metamask/obs-store';
-import { normalize as normalizeAddress } from 'eth-sig-util';
+import { normalize as normalizeAddress } from '@metamask/eth-sig-util';
 import {
   CHAIN_IDS,
   IPFS_DEFAULT_GATEWAY_URL,
 } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
-import { shouldShowLineaMainnet } from '../../../shared/modules/network.utils';
 
 const mainNetworks = {
   [CHAIN_IDS.MAINNET]: true,
@@ -17,6 +16,7 @@ const testNetworks = {
   [CHAIN_IDS.GOERLI]: true,
   [CHAIN_IDS.SEPOLIA]: true,
   [CHAIN_IDS.LINEA_GOERLI]: true,
+  [CHAIN_IDS.LINEA_SEPOLIA]: true,
 };
 
 export default class PreferencesController {
@@ -24,6 +24,7 @@ export default class PreferencesController {
    *
    * @typedef {object} PreferencesController
    * @param {object} opts - Overrides the defaults for the initial state of this.store
+   * @property {object} messenger - The controller messenger
    * @property {object} store The stored object containing a users preferences, stored in local storage
    * @property {boolean} store.useBlockie The users preference for blockie identicons within the UI
    * @property {boolean} store.useNonceField The users preference for nonce field within the UI
@@ -52,14 +53,15 @@ export default class PreferencesController {
         eth_sign: false,
       },
       useMultiAccountBalanceChecker: true,
+      hasDismissedOpenSeaToBlockaidBanner: false,
       useSafeChainsListValidation: true,
       // set to true means the dynamic list from the API is being used
       // set to false will be using the static list from contract-metadata
-      useTokenDetection: false,
+      useTokenDetection: opts?.initState?.useTokenDetection ?? true,
       useNftDetection: false,
       use4ByteResolution: true,
       useCurrencyRateCheck: true,
-      useRequestQueue: false,
+      useRequestQueue: true,
       openSeaEnabled: false,
       ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
       securityAlertsEnabled: true,
@@ -89,11 +91,17 @@ export default class PreferencesController {
         showExtensionInFullSizeView: false,
         showFiatInTestnets: false,
         showTestNetworks: false,
+        smartTransactionsOptInStatus: null, // null means we will show the Smart Transactions opt-in modal to a user if they are eligible
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
+        petnamesEnabled: true,
+        redesignedConfirmationsEnabled: true,
+        featureNotificationsEnabled: false,
+        showTokenAutodetectModal: null,
       },
       // ENS decentralized website resolution
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
+      isIpfsGatewayEnabled: true,
       useAddressBarEnsResolution: true,
       // Ledger transport type is deprecated. We currently only support webhid
       // on chrome, and u2f on firefox.
@@ -101,15 +109,17 @@ export default class PreferencesController {
         ? LedgerTransportTypes.webhid
         : LedgerTransportTypes.u2f,
       snapRegistryList: {},
-      transactionSecurityCheckEnabled: false,
       theme: ThemeType.os,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       snapsAddSnapAccountModalDismissed: false,
       ///: END:ONLY_INCLUDE_IF
-      isLineaMainnetReleased: false,
-      ///: BEGIN:ONLY_INCLUDE_IF(petnames)
       useExternalNameSources: true,
-      ///: END:ONLY_INCLUDE_IF
+      useTransactionSimulations: true,
+      enableMV3TimestampSave: true,
+      // Turning OFF basic functionality toggle means turning OFF this useExternalServices flag.
+      // Whenever useExternalServices is false, certain features will be disabled.
+      // The flag is true by Default, meaning the toggle is ON by default.
+      useExternalServices: true,
       ...opts.initState,
     };
 
@@ -117,13 +127,32 @@ export default class PreferencesController {
 
     this.store = new ObservableStore(initState);
     this.store.setMaxListeners(13);
-    this.tokenListController = opts.tokenListController;
+
+    opts.onKeyringStateChange((state) => {
+      const accounts = new Set();
+      for (const keyring of state.keyrings) {
+        for (const address of keyring.accounts) {
+          accounts.add(address);
+        }
+      }
+      if (accounts.size > 0) {
+        this.#syncAddresses(Array.from(accounts));
+      }
+    });
+
+    this.messagingSystem = opts.messenger;
+    this.messagingSystem?.registerActionHandler(
+      `PreferencesController:getState`,
+      () => this.store.getState(),
+    );
+    this.messagingSystem?.registerInitialEventPayload({
+      eventType: `PreferencesController:stateChange`,
+      getPayload: () => [this.store.getState(), []],
+    });
 
     global.setPreference = (key, value) => {
       return this.setFeatureFlag(key, value);
     };
-
-    this._showShouldLineaMainnetNetwork();
   }
   // PUBLIC METHODS
 
@@ -173,12 +202,30 @@ export default class PreferencesController {
   }
 
   /**
+   * Setter for the `dismissOpenSeaToBlockaidBanner` property
+   *
+   */
+  dismissOpenSeaToBlockaidBanner() {
+    this.store.updateState({ hasDismissedOpenSeaToBlockaidBanner: true });
+  }
+
+  /**
    * Setter for the `useSafeChainsListValidation` property
    *
    * @param {boolean} val - Whether or not the user prefers to turn off/on validation for manually adding networks
    */
   setUseSafeChainsListValidation(val) {
     this.store.updateState({ useSafeChainsListValidation: val });
+  }
+
+  toggleExternalServices(useExternalServices) {
+    this.store.updateState({ useExternalServices });
+    this.setUseTokenDetection(useExternalServices);
+    this.setUseCurrencyRateCheck(useExternalServices);
+    this.setUsePhishDetect(useExternalServices);
+    this.setUseAddressBarEnsResolution(useExternalServices);
+    this.setOpenSeaEnabled(useExternalServices);
+    this.setUseNftDetection(useExternalServices);
   }
 
   /**
@@ -188,13 +235,6 @@ export default class PreferencesController {
    */
   setUseTokenDetection(val) {
     this.store.updateState({ useTokenDetection: val });
-    this.tokenListController.updatePreventPollingOnNetworkRestart(!val);
-    if (val) {
-      this.tokenListController.start();
-    } else {
-      this.tokenListController.clearingTokenListData();
-      this.tokenListController.stop();
-    }
   }
 
   /**
@@ -271,7 +311,6 @@ export default class PreferencesController {
   }
   ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(petnames)
   /**
    * Setter for the `useExternalNameSources` property
    *
@@ -282,7 +321,17 @@ export default class PreferencesController {
       useExternalNameSources,
     });
   }
-  ///: END:ONLY_INCLUDE_IF
+
+  /**
+   * Setter for the `useTransactionSimulations` property
+   *
+   * @param {boolean} useTransactionSimulations - Whether or not to use simulations in the transaction confirmations.
+   */
+  setUseTransactionSimulations(useTransactionSimulations) {
+    this.store.updateState({
+      useTransactionSimulations,
+    });
+  }
 
   /**
    * Setter for the `advancedGasFee` property
@@ -311,17 +360,6 @@ export default class PreferencesController {
   }
 
   /**
-   * Setter for the `transactionSecurityCheckEnabled` property
-   *
-   * @param transactionSecurityCheckEnabled
-   */
-  setTransactionSecurityCheckEnabled(transactionSecurityCheckEnabled) {
-    this.store.updateState({
-      transactionSecurityCheckEnabled,
-    });
-  }
-
-  /**
    * Add new methodData to state, to avoid requesting this information again through Infura
    *
    * @param {string} fourBytePrefix - Four-byte method signature
@@ -347,24 +385,6 @@ export default class PreferencesController {
       textDirection,
     });
     return textDirection;
-  }
-
-  /**
-   * Updates identities to only include specified addresses. Removes identities
-   * not included in addresses array
-   *
-   * @param {string[]} addresses - An array of hex addresses
-   */
-  setAddresses(addresses) {
-    const oldIdentities = this.store.getState().identities;
-
-    const identities = addresses.reduce((ids, address, index) => {
-      const oldId = oldIdentities[address] || {};
-      ids[address] = { name: `Account ${index + 1}`, address, ...oldId };
-      return ids;
-    }, {});
-
-    this.store.updateState({ identities });
   }
 
   /**
@@ -410,50 +430,6 @@ export default class PreferencesController {
       identities[address] = { name: `Account ${identityCount + 1}`, address };
     });
     this.store.updateState({ identities });
-  }
-
-  /**
-   * Synchronizes identity entries with known accounts.
-   * Removes any unknown identities, and returns the resulting selected address.
-   *
-   * @param {Array<string>} addresses - known to the vault.
-   * @returns {string} selectedAddress the selected address.
-   */
-  syncAddresses(addresses) {
-    if (!Array.isArray(addresses) || addresses.length === 0) {
-      throw new Error('Expected non-empty array of addresses. Error #11201');
-    }
-
-    const { identities, lostIdentities } = this.store.getState();
-
-    const newlyLost = {};
-    Object.keys(identities).forEach((identity) => {
-      if (!addresses.includes(identity)) {
-        newlyLost[identity] = identities[identity];
-        delete identities[identity];
-      }
-    });
-
-    // Identities are no longer present.
-    if (Object.keys(newlyLost).length > 0) {
-      // store lost accounts
-      Object.keys(newlyLost).forEach((key) => {
-        lostIdentities[key] = newlyLost[key];
-      });
-    }
-
-    this.store.updateState({ identities, lostIdentities });
-    this.addAddresses(addresses);
-
-    // If the selected account is no longer valid,
-    // select an arbitrary other account:
-    let selected = this.getSelectedAddress();
-    if (!addresses.includes(selected)) {
-      [selected] = addresses;
-      this.setSelectedAddress(selected);
-    }
-
-    return selected;
   }
 
   /**
@@ -581,6 +557,15 @@ export default class PreferencesController {
   }
 
   /**
+   * A setter for the `isIpfsGatewayEnabled` property
+   *
+   * @param {boolean} enabled - Whether or not IPFS is enabled
+   */
+  async setIsIpfsGatewayEnabled(enabled) {
+    this.store.updateState({ isIpfsGatewayEnabled: enabled });
+  }
+
+  /**
    * A setter for the `useAddressBarEnsResolution` property
    *
    * @param {boolean} useAddressBarEnsResolution - Whether or not user prefers IPFS resolution for domains
@@ -644,6 +629,10 @@ export default class PreferencesController {
     this.store.updateState({ incomingTransactionsPreferences: updatedValue });
   }
 
+  setServiceWorkerKeepAlivePreference(value) {
+    this.store.updateState({ enableMV3TimestampSave: value });
+  }
+
   getRpcMethodPreferences() {
     return this.store.getState().disabledRpcMethodPreferences;
   }
@@ -655,10 +644,38 @@ export default class PreferencesController {
   ///: END:ONLY_INCLUDE_IF
 
   /**
-   * A method to check is the linea mainnet network should be displayed
+   * Synchronizes identity entries with known accounts.
+   * Removes any unknown identities, and returns the resulting selected address.
+   *
+   * @param {Array<string>} addresses - known to the vault.
+   * @returns {string} selectedAddress the selected address.
    */
-  _showShouldLineaMainnetNetwork() {
-    const showLineaMainnet = shouldShowLineaMainnet();
-    this.store.updateState({ isLineaMainnetReleased: showLineaMainnet });
+  #syncAddresses(addresses) {
+    if (!Array.isArray(addresses) || addresses.length === 0) {
+      throw new Error('Expected non-empty array of addresses. Error #11201');
+    }
+
+    const { identities, lostIdentities } = this.store.getState();
+
+    Object.keys(identities).forEach((identity) => {
+      if (!addresses.includes(identity)) {
+        // store lost accounts
+        lostIdentities[identity] = identities[identity];
+        delete identities[identity];
+      }
+    });
+
+    this.store.updateState({ identities, lostIdentities });
+    this.addAddresses(addresses);
+
+    // If the selected account is no longer valid,
+    // select an arbitrary other account:
+    let selected = this.getSelectedAddress();
+    if (!addresses.includes(selected)) {
+      [selected] = addresses;
+      this.setSelectedAddress(selected);
+    }
+
+    return selected;
   }
 }

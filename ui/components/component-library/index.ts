@@ -22,7 +22,13 @@ export {
 } from './badge-wrapper';
 export type { BadgeWrapperProps } from './badge-wrapper';
 export { Box } from './box';
-export type { BoxProps, StyleUtilityProps } from './box';
+export type {
+  BoxProps,
+  BoxComponent,
+  StyleUtilityProps,
+  PolymorphicRef,
+  PolymorphicComponentPropWithRef,
+} from './box';
 export {
   Button,
   ButtonVariant,

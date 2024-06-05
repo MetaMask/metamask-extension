@@ -11,7 +11,6 @@ const customData = {
   metamask: {
     ...testData.metamask,
     modal: { props: address },
-    selectedAddress: address,
     interactiveReplacementToken: {
       url: 'https://saturn-custody-ui.codefi.network/',
     },
@@ -42,8 +41,7 @@ const customData = {
           token: 'testToken',
           feature: 'custodian',
           service: 'Jupiter',
-          apiUrl: 'https://',
-          environment: 'Jupiter',
+          environment: 'jupiter',
         },
       ],
     },

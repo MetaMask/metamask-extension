@@ -1,3 +1,5 @@
+@use "design-system";
+
 @import 'quote-details/index';
 
 .select-quote-popover {
@@ -9,7 +11,7 @@
   &__popover-wrap {
     height: 100%;
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       height: 620px;
       width: 348px;
     }
@@ -31,7 +33,7 @@
     background: var(--color-background-alternative);
     opacity: 1;
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       opacity: 0.5;
     }
   }
@@ -55,7 +57,7 @@
   }
 
   &__column-headers {
-    @include H8;
+    @include design-system.H8;
 
     font-weight: bold;
     color: var(--color-text-default);
@@ -69,7 +71,7 @@
   }
 
   &__row {
-    @include H6;
+    @include design-system.H6;
 
     cursor: pointer;
     color: var(--color-text-default);

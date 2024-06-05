@@ -77,6 +77,8 @@ class RemoveFencedCodeTransform extends Transform {
  *   - `.js`
  *   - `.cjs`
  *   - `.mjs`
+ *   - `.ts`
+ *   - `.tsx`
  *
  * For details on how the transform mutates source files, see
  * {@link removeFencedCode} and the documentation.
@@ -109,7 +111,9 @@ function createRemoveFencedCodeTransform(
    * @returns {Transform} The transform stream.
    */
   return function removeFencedCodeTransform(filePath) {
-    if (!['.js', '.cjs', '.mjs', '.ts'].includes(path.extname(filePath))) {
+    if (
+      !['.js', '.cjs', '.mjs', '.ts', '.tsx'].includes(path.extname(filePath))
+    ) {
       return new PassThrough();
     }
 

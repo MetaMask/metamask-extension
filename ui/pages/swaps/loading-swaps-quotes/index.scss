@@ -1,3 +1,5 @@
+@use "design-system";
+
 .loading-swaps-quotes {
   display: flex;
   flex-flow: column;
@@ -15,7 +17,7 @@
   }
 
   &__quote-counter {
-    @include H7;
+    @include design-system.H7;
 
     color: var(--color-text-alternative);
     margin-top: 3px;
@@ -26,7 +28,7 @@
   }
 
   &__quote-name-check {
-    @include H4;
+    @include design-system.H4;
 
     font-weight: bold;
     color: var(--color-text-default);

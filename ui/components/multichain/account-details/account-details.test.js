@@ -1,4 +1,4 @@
-import { toChecksumHexAddress } from '@metamask/controller-utils';
+import { LavaDomeDebug } from '@lavamoat/lavadome-core';
 import { fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
@@ -13,17 +13,21 @@ import {
   setAccountDetailsAddress,
 } from '../../../store/actions';
 import configureStore from '../../../store/store';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { AccountDetailsKey } from './account-details-key';
 import { AccountDetails } from '.';
 
 jest.mock('../../../store/actions.ts');
 
 describe('AccountDetails', () => {
-  const address = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+  const account = Object.values(
+    mockState.metamask.internalAccounts.accounts,
+  )[0];
+  const { address } = account;
+  const mockSetAccountDetailsAddress = jest.fn();
   const mockClearAccountDetails = jest.fn();
   const mockExportAccount = jest.fn().mockResolvedValue(true);
   const mockHideWarning = jest.fn();
-  const mockSetAccountDetailsAddress = jest.fn();
 
   beforeEach(() => {
     clearAccountDetails.mockReturnValue(mockClearAccountDetails);
@@ -93,16 +97,22 @@ describe('AccountDetails', () => {
 
   it('displays the private key when sent in props', () => {
     const samplePrivateKey = '8675309';
+    const textHook = 'FIND_ME';
 
     const { queryByText } = renderWithProvider(
-      <AccountDetailsKey
-        accountName="Account 1"
-        onClose={jest.fn()}
-        privateKey={samplePrivateKey}
-      />,
+      <div>
+        {textHook}
+        <AccountDetailsKey
+          accountName="Account 1"
+          onClose={jest.fn()}
+          privateKey={samplePrivateKey}
+        />
+      </div>,
     );
 
-    expect(queryByText(samplePrivateKey)).toBeInTheDocument();
+    const hook = queryByText(textHook);
+    const rootNode = hook.parentElement.querySelector('span');
+    expect(LavaDomeDebug.getTextByRoot(rootNode)).toContain(samplePrivateKey);
   });
 
   it('should call AccountDetails.onClose()', () => {
@@ -111,5 +121,13 @@ describe('AccountDetails', () => {
     fireEvent.click(screen.getByLabelText('Close'));
 
     expect(screen.queryByText('Account 1')).toBeNull();
+  });
+
+  it('should show the snap account name', async () => {
+    render({ address: '0xb552685e3d2790efd64a175b00d51f02cdafee5d' });
+
+    const accountName = screen.getByText('Snap Account 1');
+
+    expect(accountName).toBeInTheDocument();
   });
 });

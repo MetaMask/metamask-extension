@@ -94,7 +94,7 @@ export function getIsCustodianSupportedChain(state) {
 
 export function getMMIAddressFromModalOrAddress(state) {
   const modalAddress = state?.appState?.modal?.modalState?.props?.address;
-  const selectedAddress = state?.metamask?.selectedAddress;
+  const selectedAddress = getSelectedInternalAccount(state)?.address;
 
   return modalAddress || selectedAddress;
 }
@@ -105,6 +105,10 @@ export function getMMIConfiguration(state) {
 
 export function getInteractiveReplacementToken(state) {
   return state.metamask.interactiveReplacementToken || {};
+}
+
+export function getCustodianDeepLink(state) {
+  return state.metamask.custodianDeepLink || {};
 }
 
 export function getIsNoteToTraderSupported(state, fromChecksumHexAddress) {

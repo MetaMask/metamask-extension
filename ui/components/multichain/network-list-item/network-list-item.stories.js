@@ -43,7 +43,7 @@ export const IconStory = (args) => (
     <NetworkListItem {...args} />
   </div>
 );
-IconStory.args = { iconSrc: './images/matic-token.png', name: 'Polygon' };
+IconStory.args = { iconSrc: './images/matic-token.svg', name: 'Polygon' };
 
 export const SelectedStory = (args) => (
   <div

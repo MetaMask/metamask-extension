@@ -19,7 +19,7 @@ describe('Input', () => {
   });
   it('should render and be able to input text', () => {
     const { getByTestId } = render(<Input data-testid="input" />);
-    const InputComponent = getByTestId('input');
+    const InputComponent = getByTestId('input') as HTMLInputElement;
 
     expect(InputComponent.value).toBe(''); // initial value is empty string
     fireEvent.change(InputComponent, { target: { value: 'text value' } });
@@ -52,10 +52,11 @@ describe('Input', () => {
     expect(onBlur).toHaveBeenCalledTimes(1);
   });
   it('should pass ref to allow input to focus through another element', () => {
-    const ref = React.createRef();
+    const ref = React.createRef<HTMLInputElement>();
     const { getByRole } = renderWithUserEvent(<Input ref={ref} />);
 
-    act(() => ref.current.focus());
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    act(() => ref.current!.focus());
     expect(getByRole('textbox')).toHaveFocus();
   });
   it('should render and fire onChange event', async () => {
@@ -97,7 +98,9 @@ describe('Input', () => {
   });
   it('should render with a defaultValue', () => {
     const { getByRole } = render(<Input defaultValue="default value" />);
-    expect(getByRole('textbox').value).toBe('default value');
+    expect((getByRole('textbox') as HTMLInputElement).value).toBe(
+      'default value',
+    );
   });
   it('should render in disabled state and not focus or be clickable', async () => {
     const mockOnFocus = jest.fn();
@@ -111,7 +114,7 @@ describe('Input', () => {
   });
   it('should render with maxLength and not allow more than the set characters', async () => {
     const { getByRole, user } = renderWithUserEvent(<Input maxLength={5} />);
-    const InputComponent = getByRole('textbox');
+    const InputComponent = getByRole('textbox') as HTMLInputElement;
     await user.type(InputComponent, '1234567890');
     expect(getByRole('textbox')).toBeDefined();
     expect(InputComponent.maxLength).toBe(5);
@@ -124,7 +127,7 @@ describe('Input', () => {
     );
     const InputComponent = getByTestId('read-only');
     await user.type(InputComponent, '1234567890');
-    expect(getByRole('textbox').value).toBe('');
+    expect((getByRole('textbox') as HTMLInputElement).value).toBe('');
     expect(getByRole('textbox')).toHaveAttribute('readonly', '');
   });
   it('should render with required attr when required is true', () => {

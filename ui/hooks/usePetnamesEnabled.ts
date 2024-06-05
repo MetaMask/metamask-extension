@@ -1,9 +1,6 @@
+import { useStore } from 'react-redux';
+import { getPetnamesEnabled } from '../selectors';
+
 export function usePetnamesEnabled(): boolean {
-  let enabled = false;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(petnames)
-  enabled = true;
-  ///: END:ONLY_INCLUDE_IF
-
-  return enabled;
+  return getPetnamesEnabled(useStore().getState());
 }

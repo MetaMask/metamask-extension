@@ -7,17 +7,18 @@ import {
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
-  ButtonSize,
-  ButtonVariant,
   Box,
   Button,
+  ButtonSize,
+  ButtonVariant,
+  Container,
   Modal,
+  ModalContent,
+  ModalHeader,
   ModalOverlay,
   Text,
 } from '../../../component-library';
-import { ModalContent } from '../../../component-library/modal-content/deprecated';
-import { ModalHeader } from '../../../component-library/modal-header/deprecated';
-import HoldToRevealButton from '../../hold-to-reveal-button';
+import HoldToRevealButton from '../../hold-to-reveal-button/hold-to-reveal-button';
 
 type HoldToRevealModalProps = {
   isOpen: boolean;
@@ -62,7 +63,7 @@ export default function HoldToRevealModal({
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         gap={4}
-        marginTop={6}
+        marginTop={4}
         marginBottom={6}
       >
         <Text variant={TextVariant.bodyMd}>
@@ -106,13 +107,13 @@ export default function HoldToRevealModal({
       <ModalOverlay />
       <ModalContent>
         <ModalHeader onClose={onClose}>{t(holdToRevealTitle)}</ModalHeader>
-        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+        <Container paddingLeft={4} paddingRight={4}>
           <MainContent />
           <HoldToRevealButton
             buttonText={t(holdToRevealButton)}
             onLongPressed={onLongPressed}
           />
-        </Box>
+        </Container>
       </ModalContent>
     </Modal>
   );

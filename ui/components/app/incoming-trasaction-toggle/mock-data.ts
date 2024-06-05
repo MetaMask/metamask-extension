@@ -4,7 +4,7 @@ export const ALL_NETWORKS_DATA = [
     nickname: 'Ethereum Mainnet',
     rpcUrl: 'https://mainnet.infura.io/v3/6c21df2a8dcb4a77b9bbcc1b65ee9ded',
     rpcPrefs: {
-      imageUrl: './images/eth_logo.png',
+      imageUrl: './images/eth_logo.svg',
     },
     providerType: 'mainnet',
     ticker: 'ETH',
@@ -17,7 +17,7 @@ export const ALL_NETWORKS_DATA = [
     rpcUrl:
       'https://linea-mainnet.infura.io/v3/6c21df2a8dcb4a77b9bbcc1b65ee9ded',
     rpcPrefs: {
-      imageUrl: './images/linea-logo-mainnet.png',
+      imageUrl: './images/linea-logo-mainnet.svg',
     },
     providerType: 'linea-mainnet',
     id: 'linea-mainnet',
@@ -61,6 +61,19 @@ export const ALL_NETWORKS_DATA = [
     id: 'linea-goerli',
     removable: false,
   },
+  {
+    chainId: '0xe705',
+    nickname: 'Linea Sepolia',
+    rpcUrl:
+      'https://linea-sepolia.infura.io/v3/6c21df2a8dcb4a77b9bbcc1b65ee9ded',
+    rpcPrefs: {
+      imageUrl: './images/linea-logo-testnet.png',
+    },
+    providerType: 'linea-sepolia',
+    ticker: 'LineaETH',
+    id: 'linea-sepolia',
+    removable: false,
+  },
 ];
 
 export const INCOMING_DATA = {
@@ -70,4 +83,5 @@ export const INCOMING_DATA = {
   '0x5': false,
   '0xaa36a7': true,
   '0xe704': true,
+  '0xe705': true,
 };

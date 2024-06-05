@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
 import InfoTooltip from '../../../components/ui/info-tooltip';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import TransactionDetail from '../../../components/app/transaction-detail/transaction-detail.component';
-import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
+import TransactionDetail from '../../confirmations/components/transaction-detail/transaction-detail.component';
+import TransactionDetailItem from '../../confirmations/components/transaction-detail-item/transaction-detail-item.component';
 import {
   TextColor,
   TextVariant,
@@ -13,11 +13,9 @@ import {
 } from '../../../helpers/constants/design-system';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import { GAS_FEES_LEARN_MORE_URL } from '../../../../shared/lib/ui-utils';
 import { getUseCurrencyRateCheck } from '../../../selectors';
 import { Text } from '../../../components/component-library';
-
-const GAS_FEES_LEARN_MORE_URL =
-  'https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172';
 
 export default function FeeCard({
   primaryFee,
@@ -56,6 +54,8 @@ export default function FeeCard({
         return t('networkNameZkSyncEra');
       case CHAIN_IDS.LINEA_MAINNET:
         return t('networkNameLinea');
+      case CHAIN_IDS.BASE:
+        return t('networkNameBase');
       default:
         throw new Error('This network is not supported for token swaps');
     }

@@ -1,6 +1,8 @@
+@use "design-system";
+
 .transaction-settings {
   &__content {
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       height: 100%;
     }
   }

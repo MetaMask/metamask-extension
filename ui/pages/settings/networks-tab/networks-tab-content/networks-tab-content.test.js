@@ -52,7 +52,6 @@ describe('NetworksTabContent Component', () => {
       renderComponent(props);
 
     expect(queryByText('Ethereum Mainnet')).toBeInTheDocument();
-    expect(queryByText('Goerli test network')).toBeInTheDocument();
     expect(queryByText('Sepolia test network')).toBeInTheDocument();
 
     expect(queryByText('Network name')).toBeInTheDocument();

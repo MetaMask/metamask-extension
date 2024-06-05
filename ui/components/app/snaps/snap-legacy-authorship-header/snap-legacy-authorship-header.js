@@ -15,10 +15,9 @@ import {
   BorderColor,
   BorderRadius,
 } from '../../../../helpers/constants/design-system';
-import { getSnapName } from '../../../../helpers/utils/util';
 
 import { Box, Text } from '../../../component-library';
-import { getTargetSubjectMetadata } from '../../../../selectors';
+import { getSnapMetadata } from '../../../../selectors';
 import SnapAvatar from '../snap-avatar';
 
 const SnapLegacyAuthorshipHeader = ({
@@ -28,12 +27,9 @@ const SnapLegacyAuthorshipHeader = ({
   marginRight,
 }) => {
   const packageName = snapId && stripSnapPrefix(snapId);
-
-  const subjectMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, snapId),
+  const { name: snapName } = useSelector((state) =>
+    getSnapMetadata(state, snapId),
   );
-
-  const friendlyName = snapId && getSnapName(snapId, subjectMetadata);
 
   return (
     <Box
@@ -59,7 +55,7 @@ const SnapLegacyAuthorshipHeader = ({
         style={{ overflow: 'hidden' }}
       >
         <Text ellipsis fontWeight={FontWeight.Medium}>
-          {friendlyName}
+          {snapName}
         </Text>
         <Text
           ellipsis

@@ -1,10 +1,12 @@
+@use "design-system";
+
 .detected-token-aggregators {
   .typography {
     display: inline;
   }
 
   & &__link {
-    @include H7;
+    @include design-system.H7;
 
     padding: 0;
     display: inline;

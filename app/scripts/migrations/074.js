@@ -53,7 +53,7 @@ function transformState(state) {
     (chainId) => chainId === provider?.chainId,
   );
 
-  // If the user does not want to see test networks, and if the the user is not on a deprecated test network, then
+  // If the user does not want to see test networks, and if the user is not on a deprecated test network, then
   // no need to migrate the test network data to a custom network
   if (
     !preferences.showTestNetworks &&

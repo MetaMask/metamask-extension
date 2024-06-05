@@ -2,6 +2,7 @@ const {
   withFixtures,
   switchToNotificationWindow,
   unlockWallet,
+  WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
@@ -21,7 +22,6 @@ describe('Test Snap update via snaps component', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        failOnConsoleError: false,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -29,14 +29,18 @@ describe('Test Snap update via snaps component', function () {
 
         // open a new tab and navigate to test snaps page
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
-        await driver.delay(1000);
+
+        // wait for page to load
+        await driver.waitForSelector({
+          text: 'Installed Snaps',
+          tag: 'h2',
+        });
 
         // find and scroll to the correct card and connect to update snap
         const snapButton = await driver.findElement('#connectUpdate');
         await driver.scrollToElement(snapButton);
         await driver.delay(1000);
         await driver.clickElement('#connectUpdate');
-        await driver.delay(1000);
 
         // switch to metamask extension and click connect
         await switchToNotificationWindow(driver, 3);
@@ -45,23 +49,26 @@ describe('Test Snap update via snaps component', function () {
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Install' });
+        await driver.waitForSelector({ text: 'Confirm' });
 
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
-        await driver.clickElement({
-          text: 'Install',
-          tag: 'button',
-        });
-
-        // wait for permissions popover, click checkboxes and confirm
-        await driver.delay(500);
-        await driver.clickElement('.mm-checkbox__input');
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
         });
 
+        // wait for permissions popover, click checkboxes and confirm
+        await driver.waitForSelector('.mm-checkbox__input');
+        await driver.clickElement('.mm-checkbox__input');
+        await driver.waitForSelector(
+          '[data-testid="snap-install-warning-modal-confirm"]',
+        );
+        await driver.clickElement(
+          '[data-testid="snap-install-warning-modal-confirm"]',
+        );
+
+        // deal with OK button
         await driver.waitForSelector({ text: 'OK' });
 
         await driver.clickElement({
@@ -70,12 +77,7 @@ describe('Test Snap update via snaps component', function () {
         });
 
         // navigate to test snap page
-        const windowHandles = await driver.waitUntilXWindowHandles(
-          2,
-          1000,
-          10000,
-        );
-        await driver.switchToWindow(windowHandles[1]);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // wait for npm installation success
         await driver.waitForSelector({
@@ -84,11 +86,14 @@ describe('Test Snap update via snaps component', function () {
         });
 
         // switch to the original MM tab
-        const extensionPage = windowHandles[0];
-        await driver.switchToWindow(extensionPage);
-        await driver.delay(1000);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
 
         // click on the global action menu
+        await driver.waitForSelector(
+          '[data-testid="account-options-menu-button"]',
+        );
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
@@ -98,12 +103,12 @@ describe('Test Snap update via snaps component', function () {
           text: 'Snaps',
           tag: 'div',
         });
+
+        // click into snap view and attempt to update the snap
         await driver.waitForSelector({
           text: 'BIP-32 Example Snap',
           tag: 'p',
         });
-
-        // click into snap view and attempt to update the snap
         await driver.clickElement({
           text: 'BIP-32 Example Snap',
           tag: 'p',
@@ -122,9 +127,14 @@ describe('Test Snap update via snaps component', function () {
         await driver.clickElementSafe('[data-testid="snap-update-scroll"]');
 
         await driver.clickElement({
-          text: 'Update',
+          text: 'Confirm',
           tag: 'button',
         });
+
+        await driver.clickElement('.mm-checkbox__input');
+        await driver.clickElement(
+          '[data-testid="snap-install-warning-modal-confirm"]',
+        );
 
         await driver.waitForSelector({ text: 'OK' });
 
@@ -157,11 +167,21 @@ describe('Test Snap update via snaps component', function () {
           text: 'BIP-32 Example Snap',
           tag: 'p',
         });
-        await driver.assertElementNotPresent({
-          css: '.mm-button-link',
-          text: 'Update',
-          tag: 'button',
-        });
+
+        await driver.assertElementNotPresent(
+          {
+            css: '.mm-button-link',
+            text: 'Update',
+            tag: 'button',
+          },
+          {
+            // make sure the Snap page has loaded
+            findElementGuard: {
+              text: 'Description from BIP-32 Example Snap',
+              tag: 'p',
+            },
+          },
+        );
       },
     );
   });

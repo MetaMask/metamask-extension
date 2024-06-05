@@ -5,11 +5,13 @@ import { hideBin } from 'yargs/helpers';
 import chokidar from 'chokidar';
 import browserify from 'browserify';
 import pify from 'pify';
-import endOfStream from 'end-of-stream';
-import pump from 'pump';
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error types/readable-stream.d.ts does not get picked up by ts-node
+import { finished, pipeline } from 'readable-stream';
 import gulp from 'gulp';
 import gulpSass from 'gulp-sass';
-import sass from 'sass';
+import * as sass from 'sass-embedded';
 import sourcemaps from 'gulp-sourcemaps';
 import autoprefixer from 'gulp-autoprefixer';
 import fg from 'fast-glob';
@@ -25,7 +27,7 @@ import {
   FINAL_BUILD_DIRECTORY_PATH,
 } from '../common/constants';
 
-const promisifiedPump = pify(pump);
+const promisifiedPipeline = pify(pipeline);
 
 main().catch((error) => {
   console.error(error);
@@ -67,15 +69,13 @@ async function compileScripts(src: string, dest: string) {
   bundler.add(src);
   // Run TypeScript files through Babel
   bundler.transform('babelify', { extensions });
-  // Inline `fs.readFileSync` files
-  bundler.transform('brfs');
 
   const bundleStream = bundler.bundle();
   bundleStream.pipe(fs.createWriteStream(dest));
   bundleStream.on('error', (error: unknown) => {
     console.error(`Couldn't compile scripts: ${error}`);
   });
-  await pify(endOfStream(bundleStream));
+  await pify(finished)(bundleStream);
 
   console.log(
     `- Compiled scripts: ${path.relative(
@@ -92,7 +92,7 @@ async function compileScripts(src: string, dest: string) {
  * @param dest - The path to the compiled CSS file.
  */
 async function compileStylesheets(src: string, dest: string): Promise<void> {
-  await promisifiedPump(
+  await promisifiedPipeline(
     gulp.src(src),
     sourcemaps.init(),
     gulpSass(sass)().on('error', (error: unknown) => {

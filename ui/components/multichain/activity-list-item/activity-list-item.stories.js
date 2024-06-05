@@ -44,7 +44,7 @@ DefaultStory.args = {
           data-testid="activity-tx-network-badge"
           size={AvatarNetworkSize.Xs}
           name="Network Name"
-          src="./images/eth_logo.png"
+          src="./images/eth_logo.svg"
           borderWidth={1}
           borderColor={BackgroundColor.backgroundDefault}
         />

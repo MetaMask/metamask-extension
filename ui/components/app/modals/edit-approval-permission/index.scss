@@ -1,3 +1,5 @@
+@use "design-system";
+
 .edit-approval-permission {
   width: 100%;
 
@@ -22,7 +24,7 @@
   }
 
   &__title {
-    @include H4;
+    @include design-system.H4;
 
     font-weight: bold;
   }
@@ -33,7 +35,7 @@
 
     &__account,
     &__balance {
-      @include H6;
+      @include design-system.H6;
 
       font-weight: normal;
       color: var(--color-text-default);
@@ -59,14 +61,14 @@
     padding: 24px;
 
     &__title {
-      @include H6;
+      @include design-system.H6;
 
       font-weight: bold;
       color: var(--color-text-default);
     }
 
     &__description {
-      @include H7;
+      @include design-system.H7;
 
       font-weight: normal;
       color: var(--color-text-alternative);
@@ -90,7 +92,7 @@
 
     &__option-label,
     &__option-label--selected {
-      @include H6;
+      @include design-system.H6;
 
       font-weight: normal;
       color: var(--color-text-alternative);
@@ -101,7 +103,7 @@
     }
 
     &__option-description {
-      @include H7;
+      @include design-system.H7;
 
       color: var(--color-text-alternative);
       margin-top: 8px;
@@ -109,7 +111,7 @@
     }
 
     &__option-value {
-      @include H4;
+      @include design-system.H4;
 
       color: var(--color-text-default);
     }

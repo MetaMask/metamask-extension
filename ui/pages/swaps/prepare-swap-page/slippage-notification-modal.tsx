@@ -21,13 +21,13 @@ import {
 } from '../../../../shared/constants/swaps';
 import SwapsBannerAlert from '../swaps-banner-alert/swaps-banner-alert';
 
-interface Props {
+type Props = {
   isOpen: boolean;
   slippageErrorKey: string;
   setSlippageNotificationModalOpened: (isOpen: boolean) => void;
   onSwapSubmit: (opts: { acknowledgedSlippage: boolean }) => void;
   currentSlippage: number;
-}
+};
 
 export default function SlippageNotificationModal({
   isOpen,

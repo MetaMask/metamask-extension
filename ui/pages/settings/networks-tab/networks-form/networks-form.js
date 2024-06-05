@@ -18,6 +18,8 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import {
   BUILT_IN_NETWORKS,
+  CHAIN_IDS,
+  CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION,
   FEATURED_RPCS,
   infuraProjectId,
 } from '../../../../../shared/constants/network';
@@ -40,6 +42,7 @@ import {
   editAndSetNetworkConfiguration,
   setNewNetworkAdded,
   setSelectedNetworkConfigurationId,
+  showDeprecatedNetworkModal,
   showModal,
   upsertNetworkConfiguration,
 } from '../../../../store/actions';
@@ -55,6 +58,10 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+import {
+  getMatchedChain,
+  getMatchedSymbols,
+} from '../../../../helpers/utils/network-helper';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -90,6 +97,7 @@ const prefixChainId = (chainId) => {
 
 const NetworksForm = ({
   addNewNetwork,
+  setActiveOnSubmit = false,
   restrictHeight,
   isCurrentRpcTarget,
   networksToRender,
@@ -99,6 +107,7 @@ const NetworksForm = ({
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const DEFAULT_SUGGESTED_TICKER = [];
   const { label, labelKey, viewOnly, rpcPrefs } = selectedNetwork;
   const selectedNetworkName =
     label || (labelKey && t(getNetworkLabelKey(labelKey)));
@@ -106,7 +115,9 @@ const NetworksForm = ({
   const [rpcUrl, setRpcUrl] = useState(selectedNetwork?.rpcUrl || '');
   const [chainId, setChainId] = useState(selectedNetwork?.chainId || '');
   const [ticker, setTicker] = useState(selectedNetwork?.ticker || '');
-  const [suggestedTicker, setSuggestedTicker] = useState('');
+  const [suggestedTicker, setSuggestedTicker] = useState(
+    DEFAULT_SUGGESTED_TICKER,
+  );
   const [blockExplorerUrl, setBlockExplorerUrl] = useState(
     selectedNetwork?.blockExplorerUrl || '',
   );
@@ -142,7 +153,21 @@ const NetworksForm = ({
             chainList[index].nativeCurrency.symbol = network.ticker;
           }
         });
-        safeChainsList.current = chainList;
+        safeChainsList.current = [
+          ...chainList,
+          {
+            chainId: 78,
+            nativeCurrency: {
+              symbol: CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION.WETHIO,
+            },
+          },
+          {
+            chainId: 88888,
+            nativeCurrency: {
+              symbol: CHAINLIST_CURRENCY_SYMBOLS_MAP_NETWORK_COLLISION.CHZ,
+            },
+          },
+        ];
       } catch (error) {
         log.warn('Failed to fetch chainList from chainid.network', error);
       }
@@ -160,7 +185,7 @@ const NetworksForm = ({
     setBlockExplorerUrl(selectedNetwork?.blockExplorerUrl);
     setErrors({});
     setWarnings({});
-    setSuggestedTicker('');
+    setSuggestedTicker([]);
     setIsSubmitting(false);
     setIsEditing(false);
     setPreviousNetwork(selectedNetwork);
@@ -258,18 +283,28 @@ const NetworksForm = ({
   const autoSuggestTicker = useCallback((formChainId) => {
     const decimalChainId = getDisplayChainId(formChainId);
     if (decimalChainId.trim() === '' || safeChainsList.current.length === 0) {
-      setSuggestedTicker('');
+      setSuggestedTicker([]);
       return;
     }
     const matchedChain = safeChainsList.current?.find(
       (chain) => chain.chainId.toString() === decimalChainId,
     );
+
+    const matchedSymbol = safeChainsList.current?.reduce(
+      (accumulator, currentNetwork) => {
+        if (currentNetwork.chainId.toString() === decimalChainId) {
+          accumulator.push(currentNetwork.nativeCurrency?.symbol);
+        }
+        return accumulator;
+      },
+      [],
+    );
+
     if (matchedChain === undefined) {
-      setSuggestedTicker('');
+      setSuggestedTicker([]);
       return;
     }
-    const returnedTickerSymbol = matchedChain.nativeCurrency?.symbol;
-    setSuggestedTicker(returnedTickerSymbol);
+    setSuggestedTicker([...matchedSymbol]);
   }, []);
 
   const hasErrors = () => {
@@ -439,25 +474,26 @@ const NetworksForm = ({
         warningKey = 'failedToFetchTickerSymbolData';
         warningMessage = t('failedToFetchTickerSymbolData');
       } else {
-        const matchedChain = safeChainsList.current?.find(
-          (chain) => chain.chainId.toString() === decimalChainId,
+        const matchedChain = getMatchedChain(
+          decimalChainId,
+          safeChainsList.current,
+        );
+        const matchedSymbols = getMatchedSymbols(
+          decimalChainId,
+          safeChainsList.current,
         );
 
         if (matchedChain === undefined) {
           warningKey = 'failedToFetchTickerSymbolData';
           warningMessage = t('failedToFetchTickerSymbolData');
-        } else {
-          const returnedTickerSymbol = matchedChain.nativeCurrency?.symbol;
-          if (
-            returnedTickerSymbol.toLowerCase() !==
-            formTickerSymbol.toLowerCase()
-          ) {
-            warningKey = 'chainListReturnedDifferentTickerSymbol';
-            warningMessage = t('chainListReturnedDifferentTickerSymbol', [
-              returnedTickerSymbol,
-            ]);
-            setSuggestedTicker(returnedTickerSymbol);
-          }
+        } else if (
+          !matchedSymbols.some(
+            (symbol) => symbol.toLowerCase() === formTickerSymbol.toLowerCase(),
+          )
+        ) {
+          warningKey = 'chainListReturnedDifferentTickerSymbol';
+          warningMessage = t('chainListReturnedDifferentTickerSymbol');
+          setSuggestedTicker([...matchedSymbols]);
         }
       }
 
@@ -572,7 +608,9 @@ const NetworksForm = ({
       const prefixedChainId = prefixChainId(formChainId);
       let networkConfigurationId;
       // After this point, isSubmitting will be reset in componentDidUpdate
-      if (selectedNetwork.rpcUrl && rpcUrl !== selectedNetwork.rpcUrl) {
+      if (prefixedChainId === CHAIN_IDS.GOERLI) {
+        dispatch(showDeprecatedNetworkModal());
+      } else if (selectedNetwork.rpcUrl && rpcUrl !== selectedNetwork.rpcUrl) {
         await dispatch(
           editAndSetNetworkConfiguration(
             {
@@ -607,20 +645,11 @@ const NetworksForm = ({
               },
             },
             {
-              setActive: true,
+              setActive: setActiveOnSubmit,
               source: MetaMetricsNetworkEventSource.CustomNetworkForm,
             },
           ),
         );
-      }
-      if (addNewNetwork) {
-        dispatch(
-          setNewNetworkAdded({
-            nickname: networkName,
-            networkConfigurationId,
-          }),
-        );
-
         trackEvent({
           event: MetaMetricsEventName.CustomNetworkAdded,
           category: MetaMetricsEventCategory.Network,
@@ -633,9 +662,21 @@ const NetworksForm = ({
             token_symbol: ticker,
           },
         });
-
-        submitCallback?.();
       }
+
+      if (
+        addNewNetwork &&
+        !setActiveOnSubmit &&
+        prefixedChainId !== CHAIN_IDS.GOERLI
+      ) {
+        dispatch(
+          setNewNetworkAdded({
+            nickname: networkName,
+            networkConfigurationId,
+          }),
+        );
+      }
+      submitCallback?.();
     } catch (error) {
       setIsSubmitting(false);
       throw error;
@@ -675,6 +716,12 @@ const NetworksForm = ({
     !rpcUrl ||
     !chainId ||
     !ticker;
+  let displayRpcUrl = rpcUrl?.includes(`/v3/${infuraProjectId}`)
+    ? rpcUrl.replace(`/v3/${infuraProjectId}`, '')
+    : rpcUrl;
+  if (viewOnly) {
+    displayRpcUrl = displayRpcUrl?.toLowerCase();
+  }
 
   return (
     <div
@@ -711,6 +758,7 @@ const NetworksForm = ({
           titleText={t('networkName')}
           value={networkName}
           disabled={viewOnly}
+          dataTestId="network-form-network-name"
         />
         <FormField
           error={errors.rpcUrl?.msg || ''}
@@ -719,12 +767,9 @@ const NetworksForm = ({
             setRpcUrl(value);
           }}
           titleText={t('rpcUrl')}
-          value={
-            rpcUrl?.includes(`/v3/${infuraProjectId}`)
-              ? rpcUrl.replace(`/v3/${infuraProjectId}`, '')
-              : rpcUrl
-          }
+          value={displayRpcUrl}
           disabled={viewOnly}
+          dataTestId="network-form-rpc-url"
         />
         <FormField
           warning={warnings.chainId?.msg || ''}
@@ -738,30 +783,38 @@ const NetworksForm = ({
           value={chainId}
           disabled={viewOnly}
           tooltipText={viewOnly ? null : t('networkSettingsChainIdDescription')}
+          dataTestId="network-form-chain-id"
         />
         <FormTextField
           data-testid="network-form-ticker"
           helpText={
-            suggestedTicker ? (
+            suggestedTicker &&
+            !suggestedTicker.some(
+              (symbolSuggested) => symbolSuggested === ticker,
+            ) ? (
               <Text
                 as="span"
                 variant={TextVariant.bodySm}
                 color={TextColor.textDefault}
+                data-testid="network-form-ticker-suggestion"
               >
                 {t('suggestedTokenSymbol')}
-                <ButtonLink
-                  as="button"
-                  variant={TextVariant.bodySm}
-                  color={TextColor.primaryDefault}
-                  onClick={() => {
-                    setTicker(suggestedTicker);
-                  }}
-                  paddingLeft={1}
-                  paddingRight={1}
-                  style={{ verticalAlign: 'baseline' }}
-                >
-                  {suggestedTicker}
-                </ButtonLink>
+                {suggestedTicker.map((suggestedSymbol, i) => (
+                  <ButtonLink
+                    as="button"
+                    variant={TextVariant.bodySm}
+                    color={TextColor.primaryDefault}
+                    onClick={() => {
+                      setTicker(suggestedSymbol);
+                    }}
+                    paddingLeft={1}
+                    paddingRight={1}
+                    style={{ verticalAlign: 'baseline' }}
+                    key={i}
+                  >
+                    {suggestedSymbol}
+                  </ButtonLink>
+                ))}
               </Text>
             ) : null
           }
@@ -804,6 +857,7 @@ const NetworksForm = ({
           value={blockExplorerUrl}
           disabled={viewOnly}
           autoFocus={window.location.hash.split('#')[2] === 'blockExplorerUrl'}
+          dataTestId="network-form-block-explorer-url"
         />
       </div>
       <div
@@ -848,6 +902,7 @@ NetworksForm.propTypes = {
   cancelCallback: PropTypes.func,
   submitCallback: PropTypes.func,
   restrictHeight: PropTypes.bool,
+  setActiveOnSubmit: PropTypes.bool,
 };
 
 NetworksForm.defaultProps = {

@@ -13,6 +13,8 @@ export enum ButtonBaseSize {
 
 export type ValidButtonTagType = 'button' | 'a';
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface ButtonBaseStyleUtilityProps
   extends Omit<TextStyleUtilityProps, 'as' | 'children' | 'ellipsis'> {
   /**
@@ -52,7 +54,7 @@ export interface ButtonBaseStyleUtilityProps
   /**
    * iconProps accepts all the props from Icon
    */
-  startIconProps?: IconProps<'span'>;
+  startIconProps?: Partial<IconProps<'span'>>;
   /**
    * Add icon to end (right side) of button text passing icon name
    * The name of the icon to display. Should be one of IconName
@@ -61,11 +63,11 @@ export interface ButtonBaseStyleUtilityProps
   /**
    * iconProps accepts all the props from Icon
    */
-  endIconProps?: IconProps<'span'>;
+  endIconProps?: Partial<IconProps<'span'>>;
   /**
    * iconLoadingProps accepts all the props from Icon
    */
-  iconLoadingProps?: IconProps<'span'>;
+  iconLoadingProps?: Partial<IconProps<'span'>>;
   /**
    * Boolean to show loading spinner in button
    */

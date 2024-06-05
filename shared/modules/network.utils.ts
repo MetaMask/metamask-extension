@@ -42,11 +42,19 @@ export function isTokenDetectionEnabledForNetwork(chainId: string | undefined) {
     case CHAIN_IDS.POLYGON:
     case CHAIN_IDS.AVALANCHE:
     case CHAIN_IDS.LINEA_GOERLI:
+    case CHAIN_IDS.LINEA_SEPOLIA:
     case CHAIN_IDS.LINEA_MAINNET:
     case CHAIN_IDS.ARBITRUM:
     case CHAIN_IDS.OPTIMISM:
     case CHAIN_IDS.BASE:
     case CHAIN_IDS.ZKSYNC_ERA:
+    case CHAIN_IDS.CRONOS:
+    case CHAIN_IDS.CELO:
+    case CHAIN_IDS.GNOSIS:
+    case CHAIN_IDS.FANTOM:
+    case CHAIN_IDS.POLYGON_ZKEVM:
+    case CHAIN_IDS.MOONBEAM:
+    case CHAIN_IDS.MOONRIVER:
       return true;
     default:
       return false;
@@ -62,10 +70,6 @@ export function isTokenDetectionEnabledForNetwork(chainId: string | undefined) {
  */
 function isSafeInteger(value: unknown): value is number {
   return Number.isSafeInteger(value);
-}
-
-export function shouldShowLineaMainnet(): boolean {
-  return new Date().getTime() > Date.UTC(2023, 6, 11, 18);
 }
 
 /**

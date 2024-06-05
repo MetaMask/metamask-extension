@@ -43,6 +43,10 @@
     font-size: inherit;
     line-height: inherit;
     letter-spacing: inherit;
+
+    &__icon {
+      top: 0;
+    }
   }
 
   &--size-inherit:hover:not(&--disabled) {

@@ -56,7 +56,7 @@ export default {
   },
   args: {
     name: 'eth',
-    src: './images/eth_logo.png',
+    src: './images/eth_logo.svg',
     size: AvatarTokenSize.Md,
     showHalo: false,
   },
@@ -121,7 +121,7 @@ export const SizeStory: StoryFn<typeof AvatarToken> = (args) => (
       <BadgeWrapper
         badge={
           <AvatarNetwork
-            src="./images/eth_logo.png"
+            src="./images/eth_logo.svg"
             name="ETH"
             size={AvatarNetworkSize.Xs}
             borderColor={BorderColor.backgroundDefault}
@@ -134,7 +134,7 @@ export const SizeStory: StoryFn<typeof AvatarToken> = (args) => (
       <BadgeWrapper
         badge={
           <AvatarNetwork
-            src="./images/eth_logo.png"
+            src="./images/eth_logo.svg"
             name="ETH"
             size={AvatarNetworkSize.Xs}
             borderColor={BorderColor.backgroundDefault}
@@ -147,7 +147,7 @@ export const SizeStory: StoryFn<typeof AvatarToken> = (args) => (
       <BadgeWrapper
         badge={
           <AvatarNetwork
-            src="./images/eth_logo.png"
+            src="./images/eth_logo.svg"
             name="ETH"
             size={AvatarNetworkSize.Xs}
             borderColor={BorderColor.backgroundDefault}
@@ -160,7 +160,7 @@ export const SizeStory: StoryFn<typeof AvatarToken> = (args) => (
       <BadgeWrapper
         badge={
           <AvatarNetwork
-            src="./images/eth_logo.png"
+            src="./images/eth_logo.svg"
             name="ETH"
             size={AvatarNetworkSize.Xs}
             borderColor={BorderColor.backgroundDefault}
@@ -173,7 +173,7 @@ export const SizeStory: StoryFn<typeof AvatarToken> = (args) => (
       <BadgeWrapper
         badge={
           <AvatarNetwork
-            src="./images/eth_logo.png"
+            src="./images/eth_logo.svg"
             name="ETH"
             size={AvatarNetworkSize.Sm}
             borderColor={BorderColor.backgroundDefault}
@@ -292,7 +292,7 @@ Name.args = {
 
 export const Src: StoryFn<typeof AvatarToken> = (args) => (
   <Box display={Display.Flex} gap={1}>
-    <AvatarToken {...args} src="./images/eth_logo.png" />
+    <AvatarToken {...args} src="./images/eth_logo.svg" />
     <AvatarToken {...args} src="./images/arbitrum.svg" />
     <AvatarToken {...args} src="./images/bnb.png" />
     <AvatarToken

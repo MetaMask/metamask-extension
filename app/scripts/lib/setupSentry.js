@@ -24,6 +24,19 @@ export const ERROR_URL_ALLOWLIST = {
   SEGMENT: 'segment.io',
 };
 
+export const MMI_SENTRY_BACKGROUND_STATE = {
+  MMIController: {
+    opts: true,
+  },
+  CustodyController: {
+    store: true,
+  },
+  MmiConfigurationController: {
+    store: true,
+    configurationClient: true,
+  },
+};
+
 // This describes the subset of background controller state attached to errors
 // sent to Sentry These properties have some potential to be useful for
 // debugging, and they do not contain any identifiable information.
@@ -51,6 +64,9 @@ export const SENTRY_BACKGROUND_STATE = {
   AnnouncementController: {
     announcements: false,
   },
+  AuthenticationController: {
+    isSignedIn: false,
+  },
   NetworkOrderController: {
     orderedNetworkList: [],
   },
@@ -63,6 +79,7 @@ export const SENTRY_BACKGROUND_STATE = {
     currentMigrationVersion: true,
     previousAppVersion: true,
     previousMigrationVersion: true,
+    showTokenAutodetectModalOnUpgrade: false,
   },
   ApprovalController: {
     approvalFlows: false,
@@ -73,6 +90,7 @@ export const SENTRY_BACKGROUND_STATE = {
     browserEnvironment: true,
     connectedStatusPopoverHasBeenShown: true,
     currentPopupId: false,
+    currentExtensionPopupId: false,
     defaultHomeActiveTabName: true,
     fullScreenGasPollTokens: true,
     hadAdvancedGasFeesSetPriorToMigration92_3: true,
@@ -85,9 +103,11 @@ export const SENTRY_BACKGROUND_STATE = {
     recoveryPhraseReminderHasBeenShown: true,
     recoveryPhraseReminderLastShown: true,
     showBetaHeader: true,
-    showProductTour: true,
+    showPermissionsTour: true,
     showNetworkBanner: true,
     showAccountBanner: true,
+    switchedNetworkDetails: false,
+    switchedNetworkNeverShowMessage: false,
     showTestnetMessageInDropdown: true,
     surveyLinkLastClickedOrClosed: true,
     snapsInstallPrivacyWarningShown: true,
@@ -113,12 +133,14 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   EnsController: {
     ensResolutionsByAddress: false,
+    ensEntries: false,
   },
   GasFeeController: {
     estimatedGasFeeTimeBounds: true,
     gasEstimateType: true,
     gasFeeEstimates: true,
     gasFeeEstimatesByChainId: true,
+    nonRPCGasFeeApisDisabled: false,
   },
   KeyringController: {
     isUnlocked: true,
@@ -126,6 +148,18 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   LoggingController: {
     logs: false,
+  },
+  MetamaskNotificationsController: {
+    subscriptionAccountsSeen: false,
+    isMetamaskNotificationsFeatureSeen: false,
+    isMetamaskNotificationsEnabled: false,
+    isFeatureAnnouncementsEnabled: false,
+    metamaskNotificationsList: false,
+    metamaskNotificationsReadList: false,
+    isCheckingAccountsPresence: false,
+    isFetchingMetamaskNotifications: false,
+    isUpdatingMetamaskNotifications: false,
+    isUpdatingMetamaskNotificationsAccount: false,
   },
   MetaMetricsController: {
     eventsBeforeMetricsOptIn: false,
@@ -135,6 +169,11 @@ export const SENTRY_BACKGROUND_STATE = {
     previousUserTraits: false,
     segmentApiCalls: false,
     traits: false,
+  },
+  NameController: {
+    names: false,
+    nameSources: false,
+    useExternalNameSources: false,
   },
   NetworkController: {
     networkConfigurations: false,
@@ -165,7 +204,6 @@ export const SENTRY_BACKGROUND_STATE = {
     seedPhraseBackedUp: true,
   },
   PPOMController: {
-    chainStatus: true,
     securityAlertsEnabled: false,
     storageMetadata: [],
     versionFileETag: false,
@@ -188,8 +226,8 @@ export const SENTRY_BACKGROUND_STATE = {
     forgottenPassword: true,
     identities: false,
     incomingTransactionsPreferences: true,
+    isIpfsGatewayEnabled: false,
     ipfsGateway: false,
-    isLineaMainnetReleased: true,
     knownMethodData: false,
     ledgerTransportType: true,
     lostIdentities: false,
@@ -200,12 +238,16 @@ export const SENTRY_BACKGROUND_STATE = {
       showExtensionInFullSizeView: true,
       showFiatInTestnets: true,
       showTestNetworks: true,
+      smartTransactionsOptInStatus: true,
       useNativeCurrencyAsPrimaryCurrency: true,
+      petnamesEnabled: true,
+      showTokenAutodetectModal: false,
     },
+    useExternalServices: false,
     selectedAddress: false,
     snapRegistryList: false,
     theme: true,
-    transactionSecurityCheckEnabled: true,
+    signatureSecurityAlertResponses: false,
     use4ByteResolution: true,
     useAddressBarEnsResolution: true,
     useBlockie: true,
@@ -216,8 +258,14 @@ export const SENTRY_BACKGROUND_STATE = {
     usePhishDetect: true,
     useTokenDetection: true,
     useRequestQueue: true,
+    useTransactionSimulations: true,
+    enableMV3TimestampSave: true,
+    hasDismissedOpenSeaToBlockaidBanner: true,
   },
-  SelectedNetworkController: { domains: true, perDomainNetwork: false },
+  PushPlatformNotificationsController: {
+    fcmToken: false,
+  },
+  SelectedNetworkController: { domains: false },
   SignatureController: {
     unapprovedMsgCount: true,
     unapprovedMsgs: false,
@@ -243,9 +291,13 @@ export const SENTRY_BACKGROUND_STATE = {
     snapStates: false,
     snaps: false,
   },
+  SnapInterface: {
+    interfaces: false,
+  },
   SnapsRegistry: {
     database: false,
     lastUpdated: false,
+    databaseUnavailable: false,
   },
   SubjectMetadataController: {
     subjectMetadata: false,
@@ -278,6 +330,9 @@ export const SENTRY_BACKGROUND_STATE = {
       topAggId: false,
       tradeTxId: false,
     },
+  },
+  TokenDetectionController: {
+    [AllProperties]: false,
   },
   TokenListController: {
     preventPollingOnNetworkRestart: true,
@@ -315,6 +370,13 @@ export const SENTRY_BACKGROUND_STATE = {
   UserOperationController: {
     userOperations: false,
   },
+  UserStorageController: {
+    isProfileSyncingEnabled: true,
+    isProfileSyncingUpdateLoading: false,
+  },
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  ...MMI_SENTRY_BACKGROUND_STATE,
+  ///: END:ONLY_INCLUDE_IF
 };
 
 const flattenedBackgroundStateMask = Object.values(
@@ -349,6 +411,10 @@ export const SENTRY_UI_STATE = {
     addSnapAccountEnabled: false,
     snapsAddSnapAccountModalDismissed: false,
     ///: END:ONLY_INCLUDE_IF
+    switchedNetworkDetails: false,
+    switchedNetworkNeverShowMessage: false,
+    newPrivacyPolicyToastClickedOrClosed: false,
+    newPrivacyPolicyToastShownDate: false,
   },
   unconnectedAccount: true,
 };
@@ -443,10 +509,18 @@ export default function setupSentry({ release, getState }) {
         `Missing SENTRY_DSN environment variable in production environment`,
       );
     }
+
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    sentryTarget = process.env.SENTRY_MMI_DSN;
+    ///: END:ONLY_INCLUDE_IF
+
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+    sentryTarget = process.env.SENTRY_DSN;
+    ///: END:ONLY_INCLUDE_IF
+
     console.log(
       `Setting up Sentry Remote Error Reporting for '${environment}': SENTRY_DSN`,
     );
-    sentryTarget = process.env.SENTRY_DSN;
   } else {
     console.log(
       `Setting up Sentry Remote Error Reporting for '${environment}': SENTRY_DSN_DEV`,
@@ -461,6 +535,10 @@ export default function setupSentry({ release, getState }) {
    * @returns `true` if MetaMetrics is enabled, `false` otherwise.
    */
   async function getMetaMetricsEnabled() {
+    if (METAMASK_BUILD_TYPE === 'mmi') {
+      return true;
+    }
+
     const appState = getState();
     if (appState.state || appState.persistedState) {
       return getMetaMetricsEnabledFromAppState(appState);
@@ -474,6 +552,22 @@ export default function setupSentry({ release, getState }) {
       console.error(error);
       return false;
     }
+  }
+
+  /**
+   * Returns whether Sentry should be enabled or not. If the build type is mmi
+   * it will always be enabled, if it's main it will first check for MetaMetrics
+   * value before returning true or false
+   *
+   * @returns `true` if Sentry should be enabled, depends on the build type and
+   * whether MetaMetrics is on or off for all build types except mmi
+   */
+  async function getSentryEnabled() {
+    // For MMI we want Sentry always logging, doesn't depend on MetaMetrics being on or off
+    if (METAMASK_BUILD_TYPE === 'mmi') {
+      return true;
+    }
+    return getMetaMetricsEnabled();
   }
 
   Sentry.init({
@@ -535,7 +629,7 @@ export default function setupSentry({ release, getState }) {
   const startSession = async () => {
     const hub = Sentry.getCurrentHub?.();
     const options = hub.getClient?.().getOptions?.() ?? {};
-    if (hub && (await getMetaMetricsEnabled()) === true) {
+    if (hub && (await getSentryEnabled()) === true) {
       options.autoSessionTracking = true;
       hub.startSession();
     }
@@ -549,7 +643,7 @@ export default function setupSentry({ release, getState }) {
   const endSession = async () => {
     const hub = Sentry.getCurrentHub?.();
     const options = hub.getClient?.().getOptions?.() ?? {};
-    if (hub && (await getMetaMetricsEnabled()) === false) {
+    if (hub && (await getSentryEnabled()) === false) {
       options.autoSessionTracking = false;
       hub.endSession();
     }
@@ -565,14 +659,11 @@ export default function setupSentry({ release, getState }) {
     const options = hub.getClient?.().getOptions?.() ?? {
       autoSessionTracking: false,
     };
-    const isMetaMetricsEnabled = await getMetaMetricsEnabled();
-    if (
-      isMetaMetricsEnabled === true &&
-      options.autoSessionTracking === false
-    ) {
+    const isSentryEnabled = await getSentryEnabled();
+    if (isSentryEnabled === true && options.autoSessionTracking === false) {
       await startSession();
     } else if (
-      isMetaMetricsEnabled === false &&
+      isSentryEnabled === false &&
       options.autoSessionTracking === true
     ) {
       await endSession();

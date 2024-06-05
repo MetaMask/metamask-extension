@@ -1,23 +1,15 @@
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import PortStream from 'extension-port-stream';
-import ObjectMultiplex from 'obj-multiplex';
-import pump from 'pump';
-import { obj as createThoughStream } from 'through2';
+import ObjectMultiplex from '@metamask/object-multiplex';
+import { pipeline, Transform } from 'readable-stream';
 import browser from 'webextension-polyfill';
 import { EXTENSION_MESSAGES } from '../../shared/constants/app';
-import { checkForLastError } from '../../shared/modules/browser-runtime.utils';
+import {
+  checkForLastError,
+  getIsBrowserPrerenderBroken,
+} from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
-
-// These require calls need to use require to be statically recognized by browserify
-const fs = require('fs');
-const path = require('path');
-
-const inpageContent = fs.readFileSync(
-  path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js'),
-  'utf8',
-);
-const inpageBundle = inpageContent;
 
 // contexts
 const CONTENT_SCRIPT = 'metamask-contentscript';
@@ -62,24 +54,6 @@ let extensionMux,
   pageChannel;
 
 /**
- * Injects a script tag into the current document
- *
- * @param {string} content - Code to be executed in the current document
- */
-function injectScript(content) {
-  try {
-    const container = document.head || document.documentElement;
-    const scriptTag = document.createElement('script');
-    scriptTag.setAttribute('async', 'false');
-    scriptTag.textContent = content;
-    container.insertBefore(scriptTag, container.children[0]);
-    container.removeChild(scriptTag);
-  } catch (error) {
-    console.error('MetaMask: Provider injection failed.', error);
-  }
-}
-
-/**
  * PHISHING STREAM LOGIC
  */
 
@@ -95,7 +69,7 @@ function setupPhishingPageStreams() {
   phishingPageMux = new ObjectMultiplex();
   phishingPageMux.setMaxListeners(25);
 
-  pump(phishingPageMux, phishingPageStream, phishingPageMux, (err) =>
+  pipeline(phishingPageMux, phishingPageStream, phishingPageMux, (err) =>
     logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
   );
 
@@ -113,14 +87,14 @@ const setupPhishingExtStreams = () => {
   phishingExtMux = new ObjectMultiplex();
   phishingExtMux.setMaxListeners(25);
 
-  pump(phishingExtMux, phishingExtStream, phishingExtMux, (err) => {
+  pipeline(phishingExtMux, phishingExtStream, phishingExtMux, (err) => {
     logStreamDisconnectWarning('MetaMask Background Multiplex', err);
     window.postMessage(
       {
         target: PHISHING_WARNING_PAGE, // the post-message-stream "target"
         data: {
-          // this object gets passed to obj-multiplex
-          name: PHISHING_SAFELIST, // the obj-multiplex channel name
+          // this object gets passed to @metamask/object-multiplex
+          name: PHISHING_SAFELIST, // the @metamask/object-multiplex channel name
           data: {
             jsonrpc: '2.0',
             method: 'METAMASK_STREAM_FAILURE',
@@ -133,11 +107,15 @@ const setupPhishingExtStreams = () => {
 
   // forward communication across inpage-background for these channels only
   phishingExtChannel = phishingExtMux.createStream(PHISHING_SAFELIST);
-  pump(phishingPageChannel, phishingExtChannel, phishingPageChannel, (error) =>
-    console.debug(
-      `MetaMask: Muxed traffic for channel "${PHISHING_SAFELIST}" failed.`,
-      error,
-    ),
+  pipeline(
+    phishingPageChannel,
+    phishingExtChannel,
+    phishingPageChannel,
+    (error) =>
+      console.debug(
+        `MetaMask: Muxed traffic for channel "${PHISHING_SAFELIST}" failed.`,
+        error,
+      ),
   );
 
   // eslint-disable-next-line no-use-before-define
@@ -231,7 +209,7 @@ const setupPageStreams = () => {
   pageMux = new ObjectMultiplex();
   pageMux.setMaxListeners(25);
 
-  pump(pageMux, pageStream, pageMux, (err) =>
+  pipeline(pageMux, pageStream, pageMux, (err) =>
     logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
   );
 
@@ -253,14 +231,14 @@ const setupExtensionStreams = () => {
   extensionMux.setMaxListeners(25);
   extensionMux.ignoreStream(LEGACY_PUBLIC_CONFIG); // TODO:LegacyProvider: Delete
 
-  pump(extensionMux, extensionStream, extensionMux, (err) => {
+  pipeline(extensionMux, extensionStream, extensionMux, (err) => {
     logStreamDisconnectWarning('MetaMask Background Multiplex', err);
     notifyInpageOfStreamFailure();
   });
 
   // forward communication across inpage-background for these channels only
   extensionChannel = extensionMux.createStream(PROVIDER);
-  pump(pageChannel, extensionChannel, pageChannel, (error) =>
+  pipeline(pageChannel, extensionChannel, pageChannel, (error) =>
     console.debug(
       `MetaMask: Muxed traffic for channel "${PROVIDER}" failed.`,
       error,
@@ -303,7 +281,7 @@ const setupLegacyPageStreams = () => {
   legacyPageMux = new ObjectMultiplex();
   legacyPageMux.setMaxListeners(25);
 
-  pump(legacyPageMux, legacyPageStream, legacyPageMux, (err) =>
+  pipeline(legacyPageMux, legacyPageStream, legacyPageMux, (err) =>
     logStreamDisconnectWarning('MetaMask Legacy Inpage Multiplex', err),
   );
 
@@ -319,7 +297,7 @@ const setupLegacyExtensionStreams = () => {
   legacyExtMux.setMaxListeners(25);
 
   notificationTransformStream = getNotificationTransformStream();
-  pump(
+  pipeline(
     legacyExtMux,
     extensionStream,
     notificationTransformStream,
@@ -331,7 +309,7 @@ const setupLegacyExtensionStreams = () => {
   );
 
   legacyExtChannel = legacyExtMux.createStream(PROVIDER);
-  pump(
+  pipeline(
     legacyPageMuxLegacyProviderChannel,
     legacyExtChannel,
     legacyPageMuxLegacyProviderChannel,
@@ -344,7 +322,7 @@ const setupLegacyExtensionStreams = () => {
 
   legacyExtPublicConfigChannel =
     legacyExtMux.createStream(LEGACY_PUBLIC_CONFIG);
-  pump(
+  pipeline(
     legacyPagePublicConfigChannel,
     legacyExtPublicConfigChannel,
     legacyPagePublicConfigChannel,
@@ -437,16 +415,21 @@ const initStreams = () => {
 
 // TODO:LegacyProvider: Delete
 function getNotificationTransformStream() {
-  return createThoughStream((chunk, _, cb) => {
-    if (chunk?.name === PROVIDER) {
-      if (chunk.data?.method === 'metamask_accountsChanged') {
-        chunk.data.method = 'wallet_accountsChanged';
-        chunk.data.result = chunk.data.params;
-        delete chunk.data.params;
+  const stream = new Transform({
+    highWaterMark: 16,
+    objectMode: true,
+    transform: (chunk, _, cb) => {
+      if (chunk?.name === PROVIDER) {
+        if (chunk.data?.method === 'metamask_accountsChanged') {
+          chunk.data.method = 'wallet_accountsChanged';
+          chunk.data.result = chunk.data.params;
+          delete chunk.data.params;
+        }
       }
-    }
-    cb(null, chunk);
+      cb(null, chunk);
+    },
   });
+  return stream;
 }
 
 /**
@@ -481,8 +464,8 @@ function extensionStreamMessageListener(msg) {
       {
         target: INPAGE, // the post-message-stream "target"
         data: {
-          // this object gets passed to obj-multiplex
-          name: PROVIDER, // the obj-multiplex channel name
+          // this object gets passed to @metamask/object-multiplex
+          name: PROVIDER, // the @metamask/object-multiplex channel name
           data: {
             jsonrpc: '2.0',
             method: 'METAMASK_EXTENSION_CONNECT_CAN_RETRY',
@@ -495,17 +478,17 @@ function extensionStreamMessageListener(msg) {
 }
 
 /**
- * This function must ONLY be called in pump destruction/close callbacks.
+ * This function must ONLY be called in pipeline destruction/close callbacks.
  * Notifies the inpage context that streams have failed, via window.postMessage.
- * Relies on obj-multiplex and post-message-stream implementation details.
+ * Relies on @metamask/object-multiplex and post-message-stream implementation details.
  */
 function notifyInpageOfStreamFailure() {
   window.postMessage(
     {
       target: INPAGE, // the post-message-stream "target"
       data: {
-        // this object gets passed to obj-multiplex
-        name: PROVIDER, // the obj-multiplex channel name
+        // this object gets passed to @metamask/object-multiplex
+        name: PROVIDER, // the @metamask/object-multiplex channel name
         data: {
           jsonrpc: '2.0',
           method: 'METAMASK_STREAM_FAILURE',
@@ -545,16 +528,9 @@ const start = () => {
   }
 
   if (shouldInjectProvider()) {
-    if (!isManifestV3) {
-      injectScript(inpageBundle);
-    }
     initStreams();
 
-    // https://bugs.chromium.org/p/chromium/issues/detail?id=1457040
-    // Temporary workaround for chromium bug that breaks the content script <=> background connection
-    // for prerendered pages. This resets potentially broken extension streams if a page transitions
-    // from the prerendered state to the active state.
-    if (document.prerendering) {
+    if (document.prerendering && getIsBrowserPrerenderBroken()) {
       document.addEventListener('prerenderingchange', () => {
         onDisconnectDestroyStreams(
           new Error('Prerendered page has become active.'),

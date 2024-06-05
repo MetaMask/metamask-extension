@@ -14,7 +14,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import { ButtonVariant, Box, Button, Text } from '../../component-library';
 import TextArea from '../../ui/textarea';
-import TextField from '../../ui/text-field';
 import JwtDropdown from '../jwt-dropdown';
 
 const JwtUrlForm = (props) => {
@@ -101,40 +100,15 @@ const JwtUrlForm = (props) => {
           </Box>
         )}
       </Box>
-      <Box width={BlockSize.Full}>
-        <Text display={Display.Block} variant={TextVariant.bodyMd}>
-          {props.urlInputText}
-        </Text>
-        <Box marginTop={4}>
-          <TextField
-            fullWidth
-            id="api-url-box"
-            data-testid="jwt-api-url-input"
-            type="text"
-            onChange={(e) => {
-              props.onUrlChange(e.target.value);
-            }}
-            value={props.apiUrl}
-            inputProps={{
-              backgroundColor: BackgroundColor.backgroundDefault,
-              color: TextColor.textDefault,
-              padding: 2,
-            }}
-          />
-        </Box>
-      </Box>
     </Box>
   );
 };
 
 JwtUrlForm.propTypes = {
   jwtList: PropTypes.array.isRequired,
-  onUrlChange: PropTypes.func.isRequired,
   onJwtChange: PropTypes.func.isRequired,
   currentJwt: PropTypes.string,
   jwtInputText: PropTypes.string,
-  apiUrl: PropTypes.string,
-  urlInputText: PropTypes.string,
 };
 
 export default JwtUrlForm;

@@ -1,9 +1,10 @@
-import { EthMethod, EthAccountType } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import { SnapCaveatType } from '@metamask/snaps-rpc-methods';
 import {
   CaveatTypes,
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import {
   getCaveatSpecifications,
   getPermissionSpecifications,
@@ -17,10 +18,13 @@ describe('PermissionController specifications', () => {
   describe('caveat specifications', () => {
     it('getCaveatSpecifications returns the expected specifications object', () => {
       const caveatSpecifications = getCaveatSpecifications({});
-      expect(Object.keys(caveatSpecifications)).toHaveLength(9);
+      expect(Object.keys(caveatSpecifications)).toHaveLength(13);
       expect(
         caveatSpecifications[CaveatTypes.restrictReturnedAccounts].type,
       ).toStrictEqual(CaveatTypes.restrictReturnedAccounts);
+      expect(
+        caveatSpecifications[CaveatTypes.restrictNetworkSwitching].type,
+      ).toStrictEqual(CaveatTypes.restrictNetworkSwitching);
 
       expect(caveatSpecifications.permittedDerivationPaths.type).toStrictEqual(
         SnapCaveatType.PermittedDerivationPaths,
@@ -37,6 +41,9 @@ describe('PermissionController specifications', () => {
       expect(caveatSpecifications.transactionOrigin.type).toStrictEqual(
         SnapCaveatType.TransactionOrigin,
       );
+      expect(caveatSpecifications.signatureOrigin.type).toStrictEqual(
+        SnapCaveatType.SignatureOrigin,
+      );
       expect(caveatSpecifications.rpcOrigin.type).toStrictEqual(
         SnapCaveatType.RpcOrigin,
       );
@@ -45,6 +52,12 @@ describe('PermissionController specifications', () => {
       );
       expect(caveatSpecifications.keyringOrigin.type).toStrictEqual(
         SnapCaveatType.KeyringOrigin,
+      );
+      expect(caveatSpecifications.maxRequestTime.type).toStrictEqual(
+        SnapCaveatType.MaxRequestTime,
+      );
+      expect(caveatSpecifications.lookupMatchers.type).toStrictEqual(
+        SnapCaveatType.LookupMatchers,
       );
     });
 
@@ -137,7 +150,7 @@ describe('PermissionController specifications', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
               {
@@ -151,7 +164,7 @@ describe('PermissionController specifications', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
             ];
@@ -172,10 +185,13 @@ describe('PermissionController specifications', () => {
   describe('permission specifications', () => {
     it('getPermissionSpecifications returns the expected specifications object', () => {
       const permissionSpecifications = getPermissionSpecifications({});
-      expect(Object.keys(permissionSpecifications)).toHaveLength(1);
+      expect(Object.keys(permissionSpecifications)).toHaveLength(2);
       expect(
         permissionSpecifications[RestrictedMethods.eth_accounts].targetName,
       ).toStrictEqual(RestrictedMethods.eth_accounts);
+      expect(permissionSpecifications.permittedChains.targetName).toStrictEqual(
+        'permittedChains',
+      );
     });
 
     describe('eth_accounts', () => {
@@ -223,7 +239,7 @@ describe('PermissionController specifications', () => {
           ).toThrow(/No approved accounts specified\.$/u);
         });
 
-        it('throws an error if any caveats are specified directly', () => {
+        it('uses the approved accounts even if caveats are specified', () => {
           const getInternalAccounts = jest.fn();
           const getAllAccounts = jest.fn();
           const { factory } = getPermissionSpecifications({
@@ -231,7 +247,7 @@ describe('PermissionController specifications', () => {
             getAllAccounts,
           })[RestrictedMethods.eth_accounts];
 
-          expect(() =>
+          expect(
             factory(
               {
                 caveats: [
@@ -243,9 +259,20 @@ describe('PermissionController specifications', () => {
                 invoker: 'foo.bar',
                 target: 'eth_accounts',
               },
-              { approvedAccounts: ['0x1'] },
+              { approvedAccounts: ['0x1', '0x3'] },
             ),
-          ).toThrow(/Received unexpected caveats./u);
+          ).toStrictEqual({
+            caveats: [
+              {
+                type: CaveatTypes.restrictReturnedAccounts,
+                value: ['0x1', '0x3'],
+              },
+            ],
+            date: 1,
+            id: expect.any(String),
+            invoker: 'foo.bar',
+            parentCapability: 'eth_accounts',
+          });
         });
       });
 
@@ -264,7 +291,7 @@ describe('PermissionController specifications', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
               {
@@ -277,7 +304,7 @@ describe('PermissionController specifications', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
               {
@@ -291,7 +318,7 @@ describe('PermissionController specifications', () => {
                   lastSelected: 3,
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
               {
@@ -305,7 +332,7 @@ describe('PermissionController specifications', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
             ];
@@ -341,7 +368,7 @@ describe('PermissionController specifications', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
               {
@@ -355,7 +382,7 @@ describe('PermissionController specifications', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
             ];
@@ -389,7 +416,7 @@ describe('PermissionController specifications', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
               {
@@ -403,7 +430,7 @@ describe('PermissionController specifications', () => {
                   },
                 },
                 options: {},
-                methods: [...Object.values(EthMethod)],
+                methods: ETH_EOA_METHODS,
                 type: EthAccountType.Eoa,
               },
             ];

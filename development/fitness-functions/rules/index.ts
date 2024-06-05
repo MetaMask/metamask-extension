@@ -14,11 +14,11 @@ const RULES: IRule[] = [
   },
 ];
 
-interface IRule {
+type IRule = {
   name: string;
   fn: (diff: string) => boolean;
   docURL?: string;
-}
+};
 
 function runFitnessFunctionRule(rule: IRule, diff: string): void {
   const { name, fn, docURL } = rule;

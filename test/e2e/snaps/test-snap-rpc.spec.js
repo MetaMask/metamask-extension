@@ -3,6 +3,7 @@ const {
   withFixtures,
   switchToNotificationWindow,
   unlockWallet,
+  WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
@@ -13,7 +14,6 @@ describe('Test Snap RPC', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
-        failOnConsoleError: false,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -21,14 +21,18 @@ describe('Test Snap RPC', function () {
 
         // navigate to test snaps page
         await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
-        await driver.delay(1000);
+
+        // wait for page to load
+        await driver.waitForSelector({
+          text: 'Installed Snaps',
+          tag: 'h2',
+        });
 
         // find and scroll to the bip32 test and connect
         const snapButton1 = await driver.findElement('#connectbip32');
         await driver.scrollToElement(snapButton1);
         await driver.delay(1000);
         await driver.clickElement('#connectbip32');
-        await driver.delay(1000);
 
         // switch to metamask extension and click connect
         await switchToNotificationWindow(driver, 2);
@@ -37,18 +41,49 @@ describe('Test Snap RPC', function () {
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Install' });
+        await driver.waitForSelector({ text: 'Confirm' });
 
         await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
         await driver.clickElement({
-          text: 'Install',
+          text: 'Confirm',
           tag: 'button',
         });
 
         // wait for permissions popover, click checkboxes and confirm
-        await driver.delay(500);
+        await driver.waitForSelector('.mm-checkbox__input');
         await driver.clickElement('.mm-checkbox__input');
+        await driver.waitForSelector(
+          '[data-testid="snap-install-warning-modal-confirm"]',
+        );
+        await driver.clickElement(
+          '[data-testid="snap-install-warning-modal-confirm"]',
+        );
+
+        // deal with OK button
+        await driver.waitForSelector({ text: 'OK' });
+
+        await driver.clickElement({
+          text: 'OK',
+          tag: 'button',
+        });
+
+        // switch back to test-snaps window
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+
+        const snapButton2 = await driver.findElement('#connectjson-rpc');
+        await driver.scrollToElement(snapButton2);
+        await driver.delay(1000);
+        await driver.clickElement('#connectjson-rpc');
+
+        await switchToNotificationWindow(driver, 2);
+        await driver.clickElement({
+          text: 'Connect',
+          tag: 'button',
+        });
+
+        await driver.waitForSelector({ text: 'Confirm' });
+
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
@@ -61,36 +96,7 @@ describe('Test Snap RPC', function () {
           tag: 'button',
         });
 
-        // switch back to test-snaps window
-        await driver.switchToWindowWithTitle('Test Snaps');
-
-        const snapButton2 = await driver.findElement('#connectjson-rpc');
-        await driver.scrollToElement(snapButton2);
-        await driver.delay(1000);
-        await driver.clickElement('#connectjson-rpc');
-        await driver.delay(1000);
-
-        await switchToNotificationWindow(driver, 2);
-        await driver.clickElement({
-          text: 'Connect',
-          tag: 'button',
-        });
-
-        await driver.waitForSelector({ text: 'Install' });
-
-        await driver.clickElement({
-          text: 'Install',
-          tag: 'button',
-        });
-
-        await driver.waitForSelector({ text: 'OK' });
-
-        await driver.clickElement({
-          text: 'OK',
-          tag: 'button',
-        });
-
-        await driver.switchToWindowWithTitle('Test Snaps');
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // wait for npm installation success
         await driver.waitForSelector({

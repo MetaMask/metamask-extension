@@ -1,4 +1,6 @@
 import React from 'react';
+import { EthAccountType } from '@metamask/keyring-api';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import ConnectedAccountsList from '.';
 
 export default {
@@ -13,6 +15,9 @@ export default {
     },
     shouldRenderListOptions: {
       control: 'boolean',
+    },
+    accountToConnect: {
+      control: 'object',
     },
   },
   args: {
@@ -30,6 +35,19 @@ export default {
         balance: '0x2d3142f5000',
       },
     ],
+    accountToConnect: {
+      address: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
+      id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      metadata: {
+        name: 'This is a Really Long Account Name',
+        keyring: {
+          type: 'HD Key Tree',
+        },
+      },
+      options: {},
+      methods: ETH_EOA_METHODS,
+      type: EthAccountType.Eoa,
+    },
   },
 };
 

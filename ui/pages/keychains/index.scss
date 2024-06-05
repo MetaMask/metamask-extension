@@ -1,3 +1,5 @@
+@use "design-system";
+
 .first-view-main-wrapper {
   display: flex;
   width: 100%;
@@ -13,7 +15,7 @@
 }
 
 
-@include screen-lg-min {
+@include design-system.screen-lg-min {
   .first-view-main {
     width: 62vw;
   }
@@ -27,7 +29,7 @@
   max-width: initial;
 }
 
-@include screen-sm-max {
+@include design-system.screen-sm-max {
   .import-account {
     margin: 24px;
     display: flex;
@@ -58,7 +60,7 @@
 
 .import-account {
   &__back-button {
-    @include Paragraph;
+    @include design-system.Paragraph;
 
     margin-bottom: 18px;
     color: var(--color-text-default);

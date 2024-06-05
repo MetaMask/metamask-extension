@@ -1,3 +1,5 @@
+@use "design-system";
+
 .popover-wrap.terms-of-use__popover {
   .terms-of-use {
     &__terms-list {
@@ -19,12 +21,12 @@
     border-top: none;
   }
 
-  @include screen-sm-min {
+  @include design-system.screen-sm-min {
     max-height: 750px;
     width: 500px;
   }
 
-  @include screen-sm-max {
+  @include design-system.screen-sm-max {
     max-height: 568px;
   }
 }

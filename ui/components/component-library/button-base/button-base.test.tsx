@@ -108,9 +108,15 @@ describe('ButtonBase', () => {
       <ButtonBase
         data-testid="icon"
         startIconName={IconName.AddSquare}
-        startIconProps={{ 'data-testid': 'start-button-icon' }}
+        startIconProps={{
+          'data-testid': 'start-button-icon',
+          name: IconName.AddSquare,
+        }}
         endIconName={IconName.AddSquare}
-        endIconProps={{ 'data-testid': 'end-button-icon' }}
+        endIconProps={{
+          'data-testid': 'end-button-icon',
+          name: IconName.AddSquare,
+        }}
       />,
     );
 

@@ -13,6 +13,7 @@
   }
 
   &--unapproved,
+  &--signing,
   &--pending {
     color: var(--color-warning-default);
   }

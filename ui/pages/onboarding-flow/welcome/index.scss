@@ -1,4 +1,9 @@
-@import "./react-gallery/carousel.min.css";
+@use "design-system";
+// by using @use, and dropping the file extension, sass will inline the
+// stylesheet instead of creating generating an `import(carousel.css)`. This is
+// desirable because it reduces the number of render-blocking requests on app
+// startup.
+@use "react-responsive-carousel/lib/styles/carousel";
 
 .onboarding-welcome {
   .control-dots .dot {
@@ -15,7 +20,7 @@
     opacity: 1;
     color: var(--color-icon-default);
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       padding: 40px;
     }
   }

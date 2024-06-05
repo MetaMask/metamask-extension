@@ -5,6 +5,7 @@
         "$root$": true,
         "@babel/preset-env": true,
         "@babel/preset-react": true,
+        "@babel/plugin-transform-logical-assignment-operators": true,
         "@babel/plugin-transform-runtime": true,
         "@babel/plugin-proposal-class-properties": true,
         "@babel/plugin-proposal-nullish-coalescing-operator": true,
@@ -30,6 +31,13 @@
       },
       "globals": {
         "process.versions": true
+      }
+    },
+    "@babel/plugin-transform-logical-assignment-operators": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/preset-env>@babel/helper-plugin-utils": true,
+        "@babel/preset-env>@babel/plugin-syntax-logical-assignment-operators": true
       }
     },
     "depcheck>@babel/traverse": {
@@ -170,7 +178,6 @@
         "@typescript-eslint/eslint-plugin>tsutils": true,
         "eslint-plugin-jest>@typescript-eslint/utils": true,
         "eslint>debug": true,
-        "madge>debug": true,
         "typescript": true,
         "nock>debug": true
       }

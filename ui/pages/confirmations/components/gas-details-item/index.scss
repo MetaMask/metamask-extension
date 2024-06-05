@@ -1,0 +1,23 @@
+.gas-details-item {
+  &__gas-fee-warning {
+    color: var(--color-warning-default);
+  }
+
+  &__currency-container,
+  &__gasfee-label {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: end;
+  }
+
+  &__dangerTooltip {
+    position: relative;
+
+    .mm-icon {
+      position: relative;
+      top: 2px;
+      margin-inline-start: 4px;
+    }
+  }
+}

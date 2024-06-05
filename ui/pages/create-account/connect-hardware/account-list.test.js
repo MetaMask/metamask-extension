@@ -82,6 +82,13 @@ describe('AccountList', () => {
     ).toHaveLength(2);
   });
 
+  it('renders AccountList component and find expected titles on explorer links', () => {
+    render();
+    expect(screen.getAllByTitle('View account on etherscan.io')).toHaveLength(
+      5,
+    );
+  });
+
   it('disables the Prev button as the first account has an index of 0', () => {
     render();
 

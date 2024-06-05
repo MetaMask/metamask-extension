@@ -1,0 +1,26 @@
+@use "design-system";
+
+@import 'confirm-page-container-content/index';
+@import 'confirm-page-container-header/index';
+@import 'confirm-detail-row/index';
+@import 'confirm-page-container-navigation/index';
+
+.confirm-page-container {
+  &__dialog {
+    margin: 12px 16px;
+  }
+}
+
+.page-container {
+  &__content-component-wrapper {
+    height: 100%;
+  }
+
+  &__link {
+    background: transparent;
+    border: 0 transparent;
+    display: inline;
+    padding: 0;
+    font-size: design-system.$font-size-h7;
+  }
+}

@@ -22,7 +22,7 @@ async function profilePageLoad() {
   const parsedLogs = {};
   try {
     await withFixtures(
-      { fixtures: new FixtureBuilder().build(), failOnConsoleError: false },
+      { fixtures: new FixtureBuilder().build() },
       async ({ driver }) => {
         await driver.delay(tinyDelayMs);
         await driver.navigate();

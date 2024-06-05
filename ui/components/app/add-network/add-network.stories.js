@@ -1,10 +1,10 @@
 import React from 'react';
 import AddNetwork from './add-network';
 
-const MATIC_TOKEN_IMAGE_URL = './images/matic-token.png';
+const MATIC_TOKEN_IMAGE_URL = './images/matic-token.svg';
 const ARBITRUM_IMAGE_URL = './images/arbitrum.svg';
 const OPTIMISM_IMAGE_URL = './images/optimism.svg';
-const AVALANCHE_IMAGE_URL = './images/avax-token.png';
+const AVALANCHE_IMAGE_URL = './images/avax-token.svg';
 const PALM_IMAGE_URL = './images/palm.svg';
 const BSC_IMAGE_URL = './images/bsc-filled.svg';
 

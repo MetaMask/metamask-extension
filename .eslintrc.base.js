@@ -12,6 +12,9 @@ module.exports = {
   },
 
   rules: {
+    // TODO: re-enable once the proposed feature at https://github.com/gajus/eslint-plugin-jsdoc/pull/964#issuecomment-1936470252 is available
+    'jsdoc/check-line-alignment': 'off',
+
     'default-param-last': 'off',
     'prefer-object-spread': 'error',
     'require-atomic-updates': 'off',

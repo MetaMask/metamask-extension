@@ -24,6 +24,7 @@ const NETWORK_CONFIGURATION_DATA = {
 describe('preferences controller', () => {
   let preferencesController;
   let tokenListController;
+  let onKeyringStateChangeListener;
 
   beforeEach(() => {
     const tokenListMessenger = new ControllerMessenger().getRestricted({
@@ -41,6 +42,9 @@ describe('preferences controller', () => {
       initLangCode: 'en_US',
       tokenListController,
       networkConfigurations: NETWORK_CONFIGURATION_DATA,
+      onKeyringStateChange: (listener) => {
+        onKeyringStateChangeListener = listener;
+      },
     });
   });
 
@@ -72,44 +76,20 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('setAddresses', () => {
-    it('should keep a map of addresses to names and addresses in the store', () => {
-      preferencesController.setAddresses(['0xda22le', '0x7e57e2']);
-
-      const { identities } = preferencesController.store.getState();
-      expect(identities).toStrictEqual({
-        '0xda22le': {
-          name: 'Account 1',
-          address: '0xda22le',
-        },
-        '0x7e57e2': {
-          name: 'Account 2',
-          address: '0x7e57e2',
-        },
-      });
-    });
-
-    it('should replace its list of addresses', () => {
-      preferencesController.setAddresses(['0xda22le', '0x7e57e2']);
-      preferencesController.setAddresses(['0xda22le77', '0x7e57e277']);
-
-      const { identities } = preferencesController.store.getState();
-      expect(identities).toStrictEqual({
-        '0xda22le77': {
-          name: 'Account 1',
-          address: '0xda22le77',
-        },
-        '0x7e57e277': {
-          name: 'Account 2',
-          address: '0x7e57e277',
-        },
-      });
-    });
-  });
-
   describe('removeAddress', () => {
     it('should remove an address from state', () => {
-      preferencesController.setAddresses(['0xda22le', '0x7e57e2']);
+      preferencesController.store.updateState({
+        identities: {
+          '0xda22le': {
+            name: 'Account 1',
+            address: '0xda22le',
+          },
+          '0x7e57e2': {
+            name: 'Account 2',
+            address: '0x7e57e2',
+          },
+        },
+      });
 
       preferencesController.removeAddress('0xda22le');
 
@@ -119,10 +99,22 @@ describe('preferences controller', () => {
     });
 
     it('should switch accounts if the selected address is removed', () => {
-      preferencesController.setAddresses(['0xda22le', '0x7e57e2']);
-
+      preferencesController.store.updateState({
+        identities: {
+          '0xda22le': {
+            name: 'Account 1',
+            address: '0xda22le',
+          },
+          '0x7e57e2': {
+            name: 'Account 2',
+            address: '0x7e57e2',
+          },
+        },
+      });
       preferencesController.setSelectedAddress('0x7e57e2');
+
       preferencesController.removeAddress('0x7e57e2');
+
       expect(preferencesController.getSelectedAddress()).toStrictEqual(
         '0xda22le',
       );
@@ -131,16 +123,21 @@ describe('preferences controller', () => {
 
   describe('setAccountLabel', () => {
     it('should update a label for the given account', () => {
-      preferencesController.setAddresses(['0xda22le', '0x7e57e2']);
-
-      expect(
-        preferencesController.store.getState().identities['0xda22le'],
-      ).toStrictEqual({
-        name: 'Account 1',
-        address: '0xda22le',
+      preferencesController.store.updateState({
+        identities: {
+          '0xda22le': {
+            name: 'Account 1',
+            address: '0xda22le',
+          },
+          '0x7e57e2': {
+            name: 'Account 2',
+            address: '0x7e57e2',
+          },
+        },
       });
 
       preferencesController.setAccountLabel('0xda22le', 'Dazzle');
+
       expect(
         preferencesController.store.getState().identities['0xda22le'],
       ).toStrictEqual({
@@ -195,6 +192,23 @@ describe('preferences controller', () => {
     });
   });
 
+  describe('dismissOpenSeaToBlockaidBanner', () => {
+    it('hasDismissedOpenSeaToBlockaidBanner should default to false', () => {
+      expect(
+        preferencesController.store.getState()
+          .hasDismissedOpenSeaToBlockaidBanner,
+      ).toStrictEqual(false);
+    });
+
+    it('should set the hasDismissedOpenSeaToBlockaidBanner property in state', () => {
+      preferencesController.dismissOpenSeaToBlockaidBanner();
+      expect(
+        preferencesController.store.getState()
+          .hasDismissedOpenSeaToBlockaidBanner,
+      ).toStrictEqual(true);
+    });
+  });
+
   describe('setUseSafeChainsListValidation', function () {
     it('should default to true', function () {
       const state = preferencesController.store.getState();
@@ -216,10 +230,10 @@ describe('preferences controller', () => {
   });
 
   describe('setUseTokenDetection', function () {
-    it('should default to false', function () {
+    it('should default to true for new users', function () {
       const state = preferencesController.store.getState();
 
-      expect(state.useTokenDetection).toStrictEqual(false);
+      expect(state.useTokenDetection).toStrictEqual(true);
     });
 
     it('should set the useTokenDetection property in state', () => {
@@ -227,6 +241,22 @@ describe('preferences controller', () => {
       expect(
         preferencesController.store.getState().useTokenDetection,
       ).toStrictEqual(true);
+    });
+
+    it('should keep initial value of useTokenDetection for existing users', function () {
+      const preferencesControllerExistingUser = new PreferencesController({
+        initLangCode: 'en_US',
+        tokenListController,
+        initState: {
+          useTokenDetection: false,
+        },
+        networkConfigurations: NETWORK_CONFIGURATION_DATA,
+        onKeyringStateChange: (listener) => {
+          onKeyringStateChangeListener = listener;
+        },
+      });
+      const state = preferencesControllerExistingUser.store.getState();
+      expect(state.useTokenDetection).toStrictEqual(false);
     });
   });
 
@@ -343,6 +373,7 @@ describe('preferences controller', () => {
         [CHAIN_IDS.GOERLI]: true,
         [CHAIN_IDS.SEPOLIA]: true,
         [CHAIN_IDS.LINEA_GOERLI]: true,
+        [CHAIN_IDS.LINEA_SEPOLIA]: true,
       });
     });
 
@@ -360,7 +391,26 @@ describe('preferences controller', () => {
         [CHAIN_IDS.GOERLI]: true,
         [CHAIN_IDS.SEPOLIA]: true,
         [CHAIN_IDS.LINEA_GOERLI]: true,
+        [CHAIN_IDS.LINEA_SEPOLIA]: true,
       });
+    });
+  });
+
+  describe('onKeyringStateChange', () => {
+    it('should sync the identities with the keyring', () => {
+      const mockKeyringControllerState = {
+        keyrings: [
+          {
+            accounts: ['0x1', '0x2', '0x3', '0x4'],
+          },
+        ],
+      };
+
+      onKeyringStateChangeListener(mockKeyringControllerState);
+
+      expect(
+        Object.keys(preferencesController.store.getState().identities),
+      ).toStrictEqual(mockKeyringControllerState.keyrings[0].accounts);
     });
   });
 
@@ -380,4 +430,34 @@ describe('preferences controller', () => {
     });
   });
   ///: END:ONLY_INCLUDE_IF
+
+  describe('setUseTransactionSimulations', () => {
+    it('should default to true', () => {
+      expect(
+        preferencesController.store.getState().useExternalNameSources,
+      ).toStrictEqual(true);
+    });
+
+    it('should set the setUseTransactionSimulations property in state', () => {
+      preferencesController.setUseTransactionSimulations(false);
+      expect(
+        preferencesController.store.getState().useTransactionSimulations,
+      ).toStrictEqual(false);
+    });
+  });
+
+  describe('setServiceWorkerKeepAlivePreference', () => {
+    it('should default to true', () => {
+      expect(
+        preferencesController.store.getState().enableMV3TimestampSave,
+      ).toStrictEqual(true);
+    });
+
+    it('should set the setServiceWorkerKeepAlivePreference property in state', () => {
+      preferencesController.setServiceWorkerKeepAlivePreference(false);
+      expect(
+        preferencesController.store.getState().enableMV3TimestampSave,
+      ).toStrictEqual(false);
+    });
+  });
 });

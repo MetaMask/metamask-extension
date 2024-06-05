@@ -17,7 +17,7 @@ export default {
     isRemovable: {
       control: 'boolean',
     },
-    identity: {
+    account: {
       control: 'object',
     },
     isOpen: {
@@ -26,9 +26,25 @@ export default {
   },
   args: {
     anchorElement: null,
-    identity: {
+    account: {
       address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
-      name: 'Account 1',
+      id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      metadata: {
+        name: 'Account 1',
+        keyring: {
+          type: 'HD Key Tree',
+        },
+      },
+      options: {},
+      methods: [
+        'personal_sign',
+        'eth_sign',
+        'eth_signTransaction',
+        'eth_signTypedData_v1',
+        'eth_signTypedData_v3',
+        'eth_signTypedData_v4',
+      ],
+      type: 'eip155:eoa',
       balance: '0x152387ad22c3f0',
       tokenBalance: '32.09 ETH',
     },

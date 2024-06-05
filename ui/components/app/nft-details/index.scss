@@ -1,3 +1,5 @@
+@use "design-system";
+
 $card-width-break-large: 224px;
 $link-title-width: 160px;
 $spacer-break-large: 24px;
@@ -6,7 +8,7 @@ $spacer-break-small: 16px;
 .nft-details {
   padding: 0 $spacer-break-small;
 
-  @include screen-sm-min {
+  @include design-system.screen-sm-min {
     padding: 0 $spacer-break-large;
   }
 
@@ -21,14 +23,14 @@ $spacer-break-small: 16px;
     box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
     padding: $spacer-break-large;
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       margin-bottom: $spacer-break-large;
       flex-direction: row;
     }
   }
 
   &__info {
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       max-width:
         calc(
           100% - #{$card-width-break-large} - #{$spacer-break-large}
@@ -41,7 +43,7 @@ $spacer-break-small: 16px;
     overflow: hidden;
     margin-bottom: $spacer-break-small;
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       margin-right: $spacer-break-large;
       margin-bottom: 0;
       max-width: $card-width-break-large;
@@ -53,7 +55,7 @@ $spacer-break-small: 16px;
   &__nft-item {
     margin-bottom: $spacer-break-small;
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       margin-right: $spacer-break-large;
       margin-bottom: 0;
       max-width: $card-width-break-large;
@@ -76,7 +78,7 @@ $spacer-break-small: 16px;
   }
 
   &__contract-copy-button {
-    @include H6;
+    @include design-system.H6;
 
     width: 80px;
     display: flex;
@@ -114,7 +116,7 @@ $spacer-break-small: 16px;
   &__send-button {
     margin-inline-end: 8px;
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       max-width: 160px;
     }
   }

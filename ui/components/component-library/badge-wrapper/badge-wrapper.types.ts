@@ -3,7 +3,8 @@ import React from 'react';
 import type {
   StyleUtilityProps,
   PolymorphicComponentPropWithRef,
-} from '../box';
+  BoxProps,
+} from '..';
 
 export enum BadgeWrapperPosition {
   topRight = 'top-right',
@@ -17,6 +18,8 @@ export enum BadgeWrapperAnchorElementShape {
   circular = 'circular',
 }
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface BadgeWrapperStyleUtilityProps extends StyleUtilityProps {
   /**
    * The element to be wrapped by the BadgeWrapper and for the badge to be positioned on top of
@@ -29,7 +32,7 @@ export interface BadgeWrapperStyleUtilityProps extends StyleUtilityProps {
   /**
    * The BadgeWrapper props of the component. All Box props can be used
    */
-  badgeContainerProps?: any; // TODO: Replace with Box types when the syntax and typing is properly figured out. Needs to accept everything Box accepts
+  badgeContainerProps?: BoxProps<'div'>;
   /**
    * The position of the Badge. Possible values could be 'BadgeWrapperPosition.topRight', 'BadgeWrapperPosition.bottomRight','BadgeWrapperPosition.topLeft', 'BadgeWrapperPosition.bottomLeft'
    * Defaults to 'BadgeWrapperPosition.topRight'

@@ -1,3 +1,5 @@
+@use "design-system";
+
 @keyframes shift {
   to {
     background-position: 100% 0;
@@ -68,7 +70,7 @@
   }
 
   &__cancel-swap-link {
-    font-size: $font-size-h7;
+    font-size: design-system.$font-size-h7;
   }
 
   &__swaps-footer {

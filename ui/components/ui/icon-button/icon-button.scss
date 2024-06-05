@@ -1,3 +1,5 @@
+@use "design-system";
+
 .icon-button {
   display: flex;
   flex-direction: column;
@@ -6,7 +8,7 @@
   text-align: center;
   width: 60px;
 
-  @include H7;
+  @include design-system.H7;
 
   font-size: 13px;
   cursor: pointer;

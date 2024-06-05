@@ -1,0 +1,21 @@
+@use "design-system";
+
+.confirm-page-container-warning {
+  background-color: var(--color-warning-muted);
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--color-border-muted);
+  padding: 12px 24px;
+
+  &__icon {
+    flex: 0 0 auto;
+    margin-right: 8px;
+    color: var(--color-warning-default);
+  }
+
+  &__warning {
+    @include design-system.H7;
+
+    color: var(--color-text-default);
+  }
+}

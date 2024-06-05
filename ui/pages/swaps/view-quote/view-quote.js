@@ -18,7 +18,7 @@ import SelectQuotePopover from '../select-quote-popover';
 import { useEthFiatAmount } from '../../../hooks/useEthFiatAmount';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import { usePrevious } from '../../../hooks/usePrevious';
-import { useGasFeeInputs } from '../../../hooks/gasFeeInput/useGasFeeInputs';
+import { useGasFeeInputs } from '../../confirmations/hooks/useGasFeeInputs';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import FeeCard from '../fee-card';
 import {
@@ -42,10 +42,8 @@ import {
   swapsQuoteSelected,
   getSwapsQuoteRefreshTime,
   getReviewSwapClickedTimestamp,
-  getSmartTransactionsOptInStatus,
   signAndSendSwapsSmartTransaction,
   getSwapsNetworkConfig,
-  getSmartTransactionsEnabled,
   getSmartTransactionsError,
   getCurrentSmartTransactionsError,
   getSwapsSTXLoading,
@@ -64,10 +62,14 @@ import {
   getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
   getUSDConversionRate,
-  getIsMultiLayerFeeNetwork,
 } from '../../../selectors';
+import {
+  getSmartTransactionsOptInStatus,
+  getSmartTransactionsEnabled,
+} from '../../../../shared/modules/selectors';
 import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
 import {
+  getLayer1GasFee,
   safeRefetchQuotes,
   setCustomApproveTxData,
   setSwapsErrorKey,
@@ -83,7 +85,7 @@ import {
   AWAITING_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 import MainQuoteSummary from '../main-quote-summary';
-import { getCustomTxParamsData } from '../../confirm-approve/confirm-approve.util';
+import { getCustomTxParamsData } from '../../confirmations/confirm-approve/confirm-approve.util';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import {
   quotesToRenderableData,
@@ -108,7 +110,6 @@ import {
 } from '../../../../shared/lib/transactions-controller-utils';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
-import fetchEstimatedL1Fee from '../../../helpers/utils/optimism/fetchEstimatedL1Fee';
 import {
   addHexes,
   decGWEIToHexWEI,
@@ -168,7 +169,6 @@ export default function ViewQuote() {
   const { balance: ethBalance } = useSelector(getSelectedAccount, shallowEqual);
   const conversionRate = useSelector(conversionRateSelector);
   const USDConversionRate = useSelector(getUSDConversionRate);
-  const isMultiLayerFeeNetwork = useSelector(getIsMultiLayerFeeNetwork);
   const currentCurrency = useSelector(getCurrentCurrency);
   const swapsTokens = useSelector(getTokens, isEqual);
   const networkAndAccountSupports1559 = useSelector(
@@ -888,20 +888,23 @@ export default function ViewQuote() {
   ]);
 
   useEffect(() => {
-    if (!isMultiLayerFeeNetwork || !usedQuote?.multiLayerL1TradeFeeTotal) {
+    if (!usedQuote?.multiLayerL1TradeFeeTotal) {
       return;
     }
     const getEstimatedL1Fees = async () => {
       try {
         let l1ApprovalFeeTotal = '0x0';
         if (approveTxParams) {
-          l1ApprovalFeeTotal = await fetchEstimatedL1Fee(chainId, {
-            txParams: {
-              ...approveTxParams,
-              gasPrice: addHexPrefix(approveTxParams.gasPrice),
-              value: '0x0', // For approval txs we need to use "0x0" here.
-            },
-          });
+          l1ApprovalFeeTotal = await dispatch(
+            getLayer1GasFee({
+              transactionParams: {
+                ...approveTxParams,
+                gasPrice: addHexPrefix(approveTxParams.gasPrice),
+                value: '0x0', // For approval txs we need to use "0x0" here.
+              },
+              chainId,
+            }),
+          );
           setMultiLayerL1ApprovalFeeTotal(l1ApprovalFeeTotal);
         }
         const l1FeeTotal = sumHexes(
@@ -916,13 +919,7 @@ export default function ViewQuote() {
       }
     };
     getEstimatedL1Fees();
-  }, [
-    unsignedTransaction,
-    approveTxParams,
-    isMultiLayerFeeNetwork,
-    chainId,
-    usedQuote,
-  ]);
+  }, [unsignedTransaction, approveTxParams, chainId, usedQuote]);
 
   useEffect(() => {
     if (isSmartTransaction) {

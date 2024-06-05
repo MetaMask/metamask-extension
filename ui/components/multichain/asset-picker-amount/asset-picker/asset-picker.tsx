@@ -2,12 +2,11 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   AvatarTokenSize,
-  Icon,
   IconName,
-  IconSize,
   AvatarToken,
   Text,
   Box,
+  Button,
 } from '../../../component-library';
 import { Asset } from '../../../../ducks/send';
 import {
@@ -15,30 +14,89 @@ import {
   BackgroundColor,
   BorderRadius,
   Display,
+  IconColor,
+  JustifyContent,
+  TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { AssetType } from '../../../../../shared/constants/transaction';
-import { getNativeCurrencyImage, getTokenList } from '../../../../selectors';
-import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import { AssetPickerModal } from '../asset-picker-modal/asset-picker-modal';
+import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
+import {
+  getIpfsGateway,
+  getNativeCurrencyImage,
+  getTokenList,
+} from '../../../../selectors';
+import Tooltip from '../../../ui/tooltip';
+import { LARGE_SYMBOL_LENGTH } from '../constants';
+import { getAssetImageURL } from '../../../../helpers/utils/util';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+
+export type AssetPickerProps = {
+  asset: Asset;
+  /**
+   * Needs to be wrapped in a callback
+   */
+  onAssetChange: (newAsset: Asset) => void;
+  /**
+   * Sending asset for UI treatments; only for dest component
+   */
+  sendingAsset?: Asset;
+  isDisabled?: boolean;
+};
 
 // A component that lets the user pick from a list of assets.
-export default function AssetPicker({ asset }: { asset: Asset }) {
-  const nativeCurrency = useSelector(getNativeCurrency);
-  const nativeCurrencyImage = useSelector(getNativeCurrencyImage);
-  const tokenList = useSelector(getTokenList);
+export function AssetPicker({
+  asset,
+  onAssetChange,
+  sendingAsset,
+  isDisabled = false,
+}: AssetPickerProps) {
+  const t = useI18nContext();
+  const nativeCurrencySymbol = useSelector(getNativeCurrency);
+  const nativeCurrencyImageUrl = useSelector(getNativeCurrencyImage);
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const tokenList: Record<string, any> = useSelector(getTokenList);
+
+  const ipfsGateway = useSelector(getIpfsGateway);
+
   const [showAssetPickerModal, setShowAssetPickerModal] = useState(false);
 
-  const image =
-    asset.type === AssetType.native
-      ? nativeCurrencyImage
-      : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore: type 'string' can't be used to index type '{}'
-        tokenList?.[asset.details?.address?.toLowerCase()]?.iconUrl;
+  let primaryTokenImage: string | undefined;
 
-  // TODO: Handle long symbols in the UI
+  if (asset.type === AssetType.native) {
+    primaryTokenImage = nativeCurrencyImageUrl;
+  } else if (tokenList && asset.details) {
+    primaryTokenImage =
+      getAssetImageURL(asset.details?.image, ipfsGateway) ||
+      tokenList[asset.details.address?.toLowerCase()]?.iconUrl;
+  }
+
+  let sendingTokenImage: string | undefined;
+
+  if (sendingAsset) {
+    if (sendingAsset.type === AssetType.native) {
+      sendingTokenImage = nativeCurrencyImageUrl;
+    } else if (tokenList && sendingAsset.details) {
+      sendingTokenImage =
+        getAssetImageURL(sendingAsset.details?.image, ipfsGateway) ||
+        tokenList[sendingAsset.details.address?.toLowerCase()]?.iconUrl;
+    }
+  }
+
   const symbol =
-    asset.type === AssetType.native ? nativeCurrency : asset.details?.symbol;
+    asset.type === AssetType.native
+      ? nativeCurrencySymbol
+      : asset.details?.symbol;
+
+  const isSymbolLong = symbol?.length > LARGE_SYMBOL_LENGTH;
+  const isNFT = asset.type === AssetType.NFT;
+
+  const formattedSymbol =
+    isSymbolLong && !isNFT
+      ? `${symbol.substring(0, LARGE_SYMBOL_LENGTH - 1)}...`
+      : symbol;
 
   return (
     <>
@@ -47,23 +105,57 @@ export default function AssetPicker({ asset }: { asset: Asset }) {
         isOpen={showAssetPickerModal}
         onClose={() => setShowAssetPickerModal(false)}
         asset={asset}
+        onAssetChange={onAssetChange}
+        sendingAssetImage={sendingTokenImage}
+        sendingAssetSymbol={
+          sendingAsset?.details?.symbol || nativeCurrencySymbol
+        }
       />
 
-      <Box
+      <Button
+        data-testid="asset-picker-button"
         className="asset-picker"
+        disabled={isDisabled}
         display={Display.Flex}
         alignItems={AlignItems.center}
+        gap={2}
         padding={2}
-        backgroundColor={BackgroundColor.backgroundAlternative}
-        borderRadius={BorderRadius.pill}
+        paddingLeft={2}
+        paddingRight={2}
+        justifyContent={isNFT ? JustifyContent.spaceBetween : undefined}
+        backgroundColor={BackgroundColor.transparent}
         onClick={() => setShowAssetPickerModal(true)}
+        endIconName={IconName.ArrowDown}
+        endIconProps={{
+          color: IconColor.iconDefault,
+          marginInlineStart: 0,
+          display: isDisabled ? Display.None : Display.InlineBlock,
+        }}
+        title={isDisabled ? t('swapTokenNotAvailable') : undefined}
       >
-        <AvatarToken src={image} size={AvatarTokenSize.Xs} />
-        <Text variant={TextVariant.bodyXs} marginLeft="auto" marginRight="auto">
-          {symbol}
-        </Text>
-        <Icon name={IconName.ArrowDown} size={IconSize.Xs} />
-      </Box>
+        <Box display={Display.Flex} alignItems={AlignItems.center} gap={3}>
+          <AvatarToken
+            borderRadius={isNFT ? BorderRadius.LG : BorderRadius.full}
+            src={primaryTokenImage}
+            size={AvatarTokenSize.Md}
+            showHalo={!isNFT}
+            {...(isNFT && { backgroundColor: BackgroundColor.transparent })}
+          />
+          <Tooltip disabled={!isSymbolLong} title={symbol} position="bottom">
+            <Text className="asset-picker__symbol" variant={TextVariant.bodyMd}>
+              {formattedSymbol}
+            </Text>
+            {asset.details?.tokenId && (
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+              >
+                #{asset.details.tokenId}
+              </Text>
+            )}
+          </Tooltip>
+        </Box>
+      </Button>
     </>
   );
 }

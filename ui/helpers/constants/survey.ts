@@ -1,4 +1,4 @@
-const SURVEY_DATE = 'January 17 2023';
+const SURVEY_DATE = 'February 28 2024';
 const SURVEY_GMT = 'GMT-0600';
 const SURVEY_START_HOUR = '12:00:00';
 const SURVEY_END_HOUR = '13:00:00';

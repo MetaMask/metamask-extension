@@ -1,3 +1,9 @@
+
+<!--
+Please submit this PR as a draft initially.
+Do not mark it as "Ready for review" until the template has been completely filled out, and PR status checks have passed at least once.
+-->
+
 ## **Description**
 
 <!--
@@ -5,6 +11,8 @@ Write a short description of the changes included in this pull request, also inc
 1. What is the reason for the change?
 2. What is the improvement/solution?
 -->
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/MetaMask/metamask-extension/pull/PR?quickstart=1)
 
 ## **Related issues**
 
@@ -31,16 +39,10 @@ Fixes:
 ## **Pre-merge author checklist**
 
 - [ ] I’ve followed [MetaMask Coding Standards](https://github.com/MetaMask/metamask-extension/blob/develop/.github/guidelines/CODING_GUIDELINES.md).
-- [ ] I've clearly explained what problem this PR is solving and how it is solved.
-- [ ] I've linked related issues
-- [ ] I've included manual testing steps
-- [ ] I've included screenshots/recordings if applicable
+- [ ] I've completed the PR template to the best of my ability
 - [ ] I’ve included tests if applicable
 - [ ] I’ve documented my code using [JSDoc](https://jsdoc.app/) format if applicable
 - [ ] I’ve applied the right labels on the PR (see [labeling guidelines](https://github.com/MetaMask/metamask-extension/blob/develop/.github/guidelines/LABELING_GUIDELINES.md)). Not required for external contributors.
-- [ ] I’ve properly set the pull request status:
-  - [ ] In case it's not yet "ready for review", I've set it to "draft".
-  - [ ] In case it's "ready for review", I've changed it from "draft" to "non-draft".
 
 ## **Pre-merge reviewer checklist**
 

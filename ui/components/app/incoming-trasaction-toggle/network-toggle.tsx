@@ -23,17 +23,17 @@ import Tooltip from '../../ui/tooltip';
 
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 20;
 
-interface NetworkPreferences {
+type NetworkPreferences = {
   isShowIncomingTransactions: boolean;
   label: string;
   imageUrl: string;
-}
+};
 
-interface NetworkToggleProps {
+type NetworkToggleProps = {
   networkPreferences: NetworkPreferences;
   toggleSingleNetwork: (chainId: string, value: boolean) => void;
   chainId: string;
-}
+};
 
 const NetworkToggle = ({
   networkPreferences,

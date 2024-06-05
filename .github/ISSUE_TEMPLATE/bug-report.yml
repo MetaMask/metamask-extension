@@ -104,6 +104,8 @@ body:
        - Keystone
        - GridPlus Lattice1
        - AirGap Vault
+       - imToken
+       - OneKey
        - Other (please elaborate in the "Additional Context" section)
  - type: textarea
    id: additional

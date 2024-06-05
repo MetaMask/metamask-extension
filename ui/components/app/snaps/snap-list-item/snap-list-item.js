@@ -47,11 +47,17 @@ const SnapListItem = ({
         <Box>
           <SnapAvatar snapId={snapId} />
         </Box>
-        <Box paddingLeft={4} paddingRight={4} width={BlockSize.Full}>
+        <Box
+          paddingLeft={4}
+          paddingRight={4}
+          width={BlockSize.Full}
+          style={{ overflow: 'hidden' }}
+        >
           <Text
             className="snap-list-item__title"
             color={Color.textDefault}
             variant={TextVariant.bodyMd}
+            ellipsis
           >
             {name}
           </Text>
@@ -59,6 +65,7 @@ const SnapListItem = ({
             className="snap-list-item__url"
             color={Color.textAlternative}
             variant={TextVariant.bodySm}
+            ellipsis
           >
             {packageName}
           </Text>

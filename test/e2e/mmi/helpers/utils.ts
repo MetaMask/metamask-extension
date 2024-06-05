@@ -9,6 +9,8 @@ export const generateAccounts = () => {
   return alphabet;
 };
 
+export const SEPOLIA_DISPLAY_NAME = 'Sepolia';
+
 export async function checkLinkURL(
   context: BrowserContext,
   page: Page,

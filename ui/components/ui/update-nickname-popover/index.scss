@@ -1,3 +1,4 @@
+@use "design-system";
 
 .update-nickname {
   &__wrapper {
@@ -13,7 +14,7 @@
       border-radius: 10px;
     }
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       width: 96%;
       height: 96%;
     }

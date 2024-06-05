@@ -112,13 +112,13 @@ export const Size: StoryFn<typeof AvatarBase> = (args) => (
 export const Children: StoryFn<typeof AvatarBase> = (args) => (
   <Box display={Display.Flex} gap={1}>
     <AvatarBase {...args}>
-      <img src="./images/eth_logo.png" />
+      <img src="./images/eth_logo.svg" />
     </AvatarBase>
     <AvatarBase {...args}>
       <img width="100%" src="./images/arbitrum.svg" />
     </AvatarBase>
     <AvatarBase {...args}>
-      <img width="100%" src="./images/avax-token.png" />
+      <img width="100%" src="./images/avax-token.svg" />
     </AvatarBase>
     <AvatarBase {...args}>A</AvatarBase>
     <AvatarBase

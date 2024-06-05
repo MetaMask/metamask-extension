@@ -1,3 +1,5 @@
+@use "design-system";
+
 .import-tokens-modal {
   $self: &;
 
@@ -25,7 +27,7 @@
     overflow: auto;
     height: 332px;
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       height: 320px;
     }
   }
@@ -80,7 +82,7 @@
       overflow: auto;
       height: 384px;
 
-      @include screen-sm-max {
+      @include design-system.screen-sm-max {
         height: 370px;
       }
     }

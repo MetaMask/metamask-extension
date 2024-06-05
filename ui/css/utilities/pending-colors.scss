@@ -1,0 +1,27 @@
+/**
+  These colors are pending to be approved for the design system's design-token package
+  Disabling Stylelint's hex color rule so this file is ignored.
+  Before adding a color here make sure that there isn't a design token available.
+**/
+/* stylelint-disable color-no-hex */
+
+/**
+* Dark Theme Colors
+* Colors for dark theme
+*/
+
+:root {
+  --color-error-muted-hover: #d738473f; // This is var(--brand-colors-red-red100) but with 20% opacity
+  --color-error-muted-pressed: #d738474c; // This is var(--brand-colors-red-red200) but with 30% opacity
+}
+
+
+/**
+* Dark Theme Colors
+* Colors for dark theme
+*/
+
+[data-theme='dark'] {
+  --color-error-muted-hover: #d738473f; // This is var(--brand-colors-red-red100) but with 20% opacity
+  --color-error-muted-pressed: #d738474c; // This is var(--brand-colors-red-red200) but with 30% opacity
+}

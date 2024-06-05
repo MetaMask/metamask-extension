@@ -12,7 +12,7 @@ import txHelper from '../helpers/utils/tx-helper';
 import { SmartTransactionStatus } from '../../shared/constants/transaction';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { getProviderConfig } from '../ducks/metamask/metamask';
-import { getCurrentChainId, getSelectedAddress } from './selectors';
+import { getCurrentChainId, getSelectedInternalAccount } from './selectors';
 import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
 import { createDeepEqualSelector } from './util';
 
@@ -56,6 +56,19 @@ export const getUnapprovedTransactions = createDeepEqualSelector(
   (transactions) => transactions,
 );
 
+export const getApprovedAndSignedTransactions = createDeepEqualSelector(
+  (state) => {
+    const currentNetworkTransactions = getCurrentNetworkTransactions(state);
+
+    return currentNetworkTransactions.filter((transaction) =>
+      [TransactionStatus.approved, TransactionStatus.signed].includes(
+        transaction.status,
+      ),
+    );
+  },
+  (transactions) => transactions,
+);
+
 export const incomingTxListSelector = createDeepEqualSelector(
   (state) => {
     const { incomingTransactionsPreferences } = state.metamask;
@@ -64,7 +77,7 @@ export const incomingTxListSelector = createDeepEqualSelector(
     }
 
     const currentNetworkTransactions = getCurrentNetworkTransactions(state);
-    const selectedAddress = getSelectedAddress(state);
+    const { address: selectedAddress } = getSelectedInternalAccount(state);
 
     return currentNetworkTransactions.filter(
       (tx) =>
@@ -84,26 +97,43 @@ export const unapprovedEncryptionPublicKeyMsgsSelector = (state) =>
 export const unapprovedTypedMessagesSelector = (state) =>
   state.metamask.unapprovedTypedMessages;
 
-export const smartTransactionsListSelector = (state) =>
-  state.metamask.smartTransactionsState?.smartTransactions?.[
+export const smartTransactionsListSelector = (state) => {
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
+  return state.metamask.smartTransactionsState?.smartTransactions?.[
     getCurrentChainId(state)
   ]
-    ?.filter((stx) => !stx.confirmed)
+    ?.filter((stx) => {
+      const isCancelledSmartTransaction = stx.status?.startsWith('cancelled');
+      return (
+        stx.txParams?.from === selectedAddress &&
+        !stx.confirmed &&
+        (!isCancelledSmartTransaction ||
+          // We only want to show cancelled Smart Transactions for Swaps in Activity,
+          // since other transaction types will show the "Failed" status in Activity instead,
+          // because they are mostly processed via the TransactionController. In the future, we
+          // should have the same behavior for Swaps as well, so all transaction types
+          // would be handled the same way for Smart Transactions.
+          (isCancelledSmartTransaction && stx.type === TransactionType.swap))
+      );
+    })
     .map((stx) => ({
       ...stx,
-      transactionType: TransactionType.smart,
+      isSmartTransaction: true,
       status: stx.status?.startsWith('cancelled')
         ? SmartTransactionStatus.cancelled
         : stx.status,
     }));
+};
 
 export const selectedAddressTxListSelector = createSelector(
-  getSelectedAddress,
+  getSelectedInternalAccount,
   getCurrentNetworkTransactions,
   smartTransactionsListSelector,
-  (selectedAddress, transactions = [], smTransactions = []) => {
+  (selectedInternalAccount, transactions = [], smTransactions = []) => {
     return transactions
-      .filter(({ txParams }) => txParams.from === selectedAddress)
+      .filter(
+        ({ txParams }) => txParams.from === selectedInternalAccount.address,
+      )
       .filter(({ type }) => type !== TransactionType.incoming)
       .concat(smTransactions);
   },

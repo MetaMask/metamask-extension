@@ -6,10 +6,13 @@ import {
   Display,
   TextAlign,
   TextVariant,
+  JustifyContent,
 } from '../../../../../../helpers/constants/design-system';
 
 import type { StyleUtilityProps } from '../../../../../component-library/box';
 
+// TODO: Convert to a `type` in a future major version.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 interface HeaderProps extends StyleUtilityProps {
   /**
    * Elements that go in the page footer
@@ -40,6 +43,7 @@ export const Header = ({
     <HeaderBase
       padding={4}
       width={BlockSize.Full}
+      justifyContent={JustifyContent.center}
       className={classnames('multichain-page-header', className)}
       startAccessory={startAccessory}
       endAccessory={endAccessory}

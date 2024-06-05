@@ -5,12 +5,14 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import {
   CHAIN_IDS,
+  GOERLI_DISPLAY_NAME,
   MAINNET_DISPLAY_NAME,
   NETWORK_TYPES,
 } from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import EthOverview from './eth-overview';
 
 // Mock BUYABLE_CHAINS_MAP
@@ -49,24 +51,35 @@ describe('EthOverview', () => {
         type: NETWORK_TYPES.MAINNET,
         ticker: 'ETH',
       },
+      networkConfigurations: {
+        testNetworkConfigurationId: {
+          rpcUrl: 'https://testrpc.com',
+          chainId: '0x89',
+          nickname: 'Custom Mainnet RPC',
+          type: 'rpc',
+          id: 'custom-mainnet',
+        },
+      },
       accountsByChainId: {
         [CHAIN_IDS.MAINNET]: {
           '0x1': { address: '0x1', balance: '0x1F4' },
         },
       },
+      tokenList: [],
+      cachedBalances: {
+        '0x1': {
+          '0x1': '0x1F4',
+        },
+      },
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
+      useExternalServices: true,
       useCurrencyRateCheck: true,
       currentCurrency: 'usd',
       currencyRates: {
         ETH: {
           conversionRate: 2,
-        },
-      },
-      identities: {
-        '0x1': {
-          address: '0x1',
         },
       },
       accounts: {
@@ -75,7 +88,6 @@ describe('EthOverview', () => {
           balance: '0x1F4',
         },
       },
-      selectedAddress: '0x1',
       internalAccounts: {
         accounts: {
           'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -88,7 +100,7 @@ describe('EthOverview', () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
           },
           'e9b992f9-e151-4317-b8b7-c771bb73dd02': {
@@ -101,7 +113,7 @@ describe('EthOverview', () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
           },
         },
@@ -126,8 +138,8 @@ describe('EthOverview', () => {
   const ETH_OVERVIEW_BRIDGE = 'eth-overview-bridge';
   const ETH_OVERVIEW_PORTFOLIO = 'eth-overview-portfolio';
   const ETH_OVERVIEW_SWAP = 'token-overview-button-swap';
+  const ETH_OVERVIEW_SEND = 'eth-overview-send';
   const ETH_OVERVIEW_PRIMARY_CURRENCY = 'eth-overview__primary-currency';
-  const ETH_OVERVIEW_SECONDARY_CURRENCY = 'eth-overview__secondary-currency';
 
   afterEach(() => {
     store.clearActions();
@@ -191,14 +203,6 @@ describe('EthOverview', () => {
       expect(queryByText('*')).toBeInTheDocument();
     });
 
-    it('should show the secondary balance', async () => {
-      const { queryByTestId } = renderWithProvider(<EthOverview />, store);
-
-      const secondaryBalance = queryByTestId(ETH_OVERVIEW_SECONDARY_CURRENCY);
-      expect(secondaryBalance).toBeInTheDocument();
-      expect(secondaryBalance).toHaveTextContent('0');
-    });
-
     it('should have the Bridge button enabled if chain id is part of supported chains', () => {
       const mockedAvalancheStore = {
         ...mockStore,
@@ -207,6 +211,15 @@ describe('EthOverview', () => {
           providerConfig: {
             ...mockStore.metamask.providerConfig,
             chainId: '0xa86a',
+          },
+          networkConfigurations: {
+            testNetworkConfigurationId: {
+              rpcUrl: 'https://testrpc.com',
+              chainId: '0x89',
+              nickname: 'Custom Mainnet RPC',
+              type: 'rpc',
+              id: 'custom-mainnet',
+            },
           },
         },
       };
@@ -297,6 +310,15 @@ describe('EthOverview', () => {
             ...mockStore.metamask.providerConfig,
             chainId: '0xfa',
           },
+          networkConfigurations: {
+            testNetworkConfigurationId: {
+              rpcUrl: 'https://testrpc.com',
+              chainId: '0x89',
+              nickname: 'Custom Mainnet RPC',
+              type: 'rpc',
+              id: 'custom-mainnet',
+            },
+          },
         },
       };
       const mockedStore = configureMockStore([thunk])(mockedFantomStore);
@@ -348,7 +370,11 @@ describe('EthOverview', () => {
       const mockedStoreWithUnbuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          providerConfig: { type: 'test', chainId: CHAIN_IDS.FANTOM },
+          providerConfig: {
+            type: 'test',
+            chainId: CHAIN_IDS.GOERLI,
+            nickname: GOERLI_DISPLAY_NAME,
+          },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -368,7 +394,20 @@ describe('EthOverview', () => {
       const mockedStoreWithUnbuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+          providerConfig: {
+            chainId: '0x89',
+            type: 'rpc',
+            id: 'custom-mainnet',
+          },
+          networkConfigurations: {
+            testNetworkConfigurationId: {
+              rpcUrl: 'https://testrpc.com',
+              chainId: '0x89',
+              nickname: 'Custom Mainnet RPC',
+              type: 'rpc',
+              id: 'custom-mainnet',
+            },
+          },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -388,7 +427,20 @@ describe('EthOverview', () => {
       const mockedStoreWithBuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+          providerConfig: {
+            chainId: '0x89',
+            type: 'rpc',
+            id: 'custom-mainnet',
+          },
+          networkConfigurations: {
+            testNetworkConfigurationId: {
+              rpcUrl: 'https://testrpc.com',
+              chainId: '0x89',
+              nickname: 'Custom Mainnet RPC',
+              type: 'rpc',
+              id: 'custom-mainnet',
+            },
+          },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -415,5 +467,41 @@ describe('EthOverview', () => {
         }),
       );
     });
+  });
+
+  describe('Disabled buttons when an account cannot sign transactions', () => {
+    const buttonTestCases = [
+      { testId: ETH_OVERVIEW_BUY, buttonText: 'Buy & Sell' },
+      { testId: ETH_OVERVIEW_SEND, buttonText: 'Send' },
+      { testId: ETH_OVERVIEW_SWAP, buttonText: 'Swap' },
+      { testId: ETH_OVERVIEW_BRIDGE, buttonText: 'Bridge' },
+    ];
+
+    it.each(buttonTestCases)(
+      'should have the $buttonText button disabled when an account cannot sign transactions or user operations',
+      ({ testId, buttonText }) => {
+        mockStore.metamask.internalAccounts.accounts[
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+        ].methods = Object.values(EthMethod).filter(
+          (method) =>
+            method !== EthMethod.SignTransaction &&
+            method !== EthMethod.SignUserOperation,
+        );
+
+        const mockedStore = configureMockStore([thunk])(mockStore);
+        const { queryByTestId, queryByText } = renderWithProvider(
+          <EthOverview />,
+          mockedStore,
+        );
+
+        const button = queryByTestId(testId);
+        expect(button).toBeInTheDocument();
+        expect(button).toBeDisabled();
+        expect(queryByText(buttonText).parentElement).toHaveAttribute(
+          'data-original-title',
+          'Not supported with this account.',
+        );
+      },
+    );
   });
 });

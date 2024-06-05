@@ -2,6 +2,7 @@ import React from 'react';
 import { waitFor, fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import { Snap } from '@metamask/snaps-utils';
+import userEvent from '@testing-library/user-event';
 import mockStore from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/jest';
 import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
@@ -40,7 +41,9 @@ const defaultArgs = {
 };
 
 describe('Keyring Snap Remove Warning', () => {
-  let store;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let store: any;
   beforeAll(() => {
     store = configureMockStore()(mockStore);
   });
@@ -101,8 +104,28 @@ describe('Keyring Snap Remove Warning', () => {
     });
   });
 
+  it('prevents pasting of the snap name to remove the snap', async () => {
+    const { getByText, getByTestId } = renderWithProvider(
+      <KeyringSnapRemovalWarning {...defaultArgs} />,
+      store,
+    );
+
+    const nextButton = getByText('Continue');
+
+    fireEvent.click(nextButton);
+    const confirmationInput = getByTestId('remove-snap-confirmation-input');
+
+    confirmationInput.focus();
+
+    await userEvent.paste(mockSnap.manifest?.proposedName);
+
+    await waitFor(() => {
+      expect(confirmationInput).toHaveValue('');
+    });
+  });
+
   it('opens block explorer for account', async () => {
-    global.platform = { openTab: jest.fn() };
+    global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
     const { getByText, getAllByTestId } = renderWithProvider(
       <KeyringSnapRemovalWarning {...defaultArgs} />,
       store,

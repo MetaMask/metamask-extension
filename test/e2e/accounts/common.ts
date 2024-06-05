@@ -9,11 +9,12 @@ import {
   unlockWallet,
   validateContractDetails,
   multipleGanacheOptions,
+  regularDelayMs,
+  openDapp,
 } from '../helpers';
 import { Driver } from '../webdriver/driver';
-
-export const TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL =
-  'https://metamask.github.io/snap-simple-keyring/1.0.1/';
+import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../constants';
+import { retry } from '../../../development/lib/retry';
 
 /**
  * These are fixtures specific to Account Snap E2E tests:
@@ -35,7 +36,6 @@ export const accountSnapFixtures = (title: string | undefined) => {
       })
       .build(),
     ganacheOptions: multipleGanacheOptions,
-    failOnConsoleError: false,
     title,
   };
 };
@@ -53,6 +53,7 @@ export async function installSnapSimpleKeyring(
 
   // navigate to test Snaps page and connect
   await driver.openNewPage(TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL);
+
   await driver.clickElement('#connectButton');
 
   await driver.delay(500);
@@ -66,12 +67,14 @@ export async function installSnapSimpleKeyring(
     tag: 'button',
   });
 
-  await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
+  await driver.findElement({ text: 'Add to MetaMask', tag: 'h3' });
 
-  await driver.waitForSelector({ text: 'Install' });
+  await driver.clickElementSafe('[data-testid="snap-install-scroll"]', 200);
+
+  await driver.waitForSelector({ text: 'Confirm' });
 
   await driver.clickElement({
-    text: 'Install',
+    text: 'Confirm',
     tag: 'button',
   });
 
@@ -97,10 +100,7 @@ export async function installSnapSimpleKeyring(
 async function toggleAsyncFlow(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.SnapSimpleKeyringDapp);
 
-  // click the parent of #use-sync-flow-toggle (trying to click the element itself gives "ElementNotInteractableError: could not be scrolled into view")
-  await driver.clickElement({
-    xpath: '//input[@id="use-sync-flow-toggle"]/..',
-  });
+  await driver.clickElement('[data-testid="use-sync-flow-toggle"]');
 }
 
 export async function importKeyAndSwitch(driver: Driver) {
@@ -177,16 +177,30 @@ async function switchToAccount2(driver: Driver) {
     text: 'Snap Account 1',
   });
 
-  await driver.waitForElementNotPresent({
+  await driver.assertElementNotPresent({
     tag: 'header',
     text: 'Select an account',
   });
 }
 
 export async function connectAccountToTestDapp(driver: Driver) {
-  await switchToOrOpenDapp(driver);
+  try {
+    // Do an unusually fast switchToWindowWithTitle, just 1 second
+    await driver.switchToWindowWithTitle(
+      WINDOW_TITLES.TestDApp,
+      null,
+      1000,
+      1000,
+    );
+  } catch {
+    await driver.switchToWindowWithTitle(
+      WINDOW_TITLES.ExtensionInFullScreenView,
+    );
+    await openDapp(driver);
+  }
   await driver.clickElement('#connectButton');
 
+  await driver.delay(regularDelayMs);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElement({
     text: 'Next',
@@ -194,7 +208,7 @@ export async function connectAccountToTestDapp(driver: Driver) {
     css: '[data-testid="page-container-footer-next"]',
   });
   await driver.clickElement({
-    text: 'Connect',
+    text: 'Confirm',
     tag: 'button',
     css: '[data-testid="page-container-footer-next"]',
   });
@@ -203,9 +217,18 @@ export async function connectAccountToTestDapp(driver: Driver) {
 export async function disconnectFromTestDapp(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
   await driver.clickElement('[data-testid="account-options-menu-button"]');
-  await driver.clickElement('[data-testid="global-menu-connected-sites"]');
-  await driver.clickElement({ text: 'Disconnect', tag: 'a' });
+  await driver.clickElement({ text: 'All Permissions', tag: 'div' });
+  await driver.clickElementAndWaitToDisappear({
+    text: 'Got it',
+    tag: 'button',
+  });
+  await driver.clickElement({
+    text: '127.0.0.1:8080',
+    tag: 'p',
+  });
+  await driver.clickElement('[data-testid="account-list-item-menu-button"]');
   await driver.clickElement({ text: 'Disconnect', tag: 'button' });
+  await driver.clickElement('[data-testid ="disconnect-all"]');
 }
 
 export async function approveOrRejectRequest(driver: Driver, flowType: string) {
@@ -224,7 +247,7 @@ export async function approveOrRejectRequest(driver: Driver, flowType: string) {
   // get the JSON from the screen
   const requestJSON = await (
     await driver.findElement({
-      text: '"scope": "",',
+      text: '"scope":',
       tag: 'div',
     })
   ).getText();
@@ -257,6 +280,9 @@ export async function approveOrRejectRequest(driver: Driver, flowType: string) {
     });
   }
 
+  // Close the SnapSimpleKeyringDapp, so that 6 of the same tab doesn't pile up
+  await driver.closeWindow();
+
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 }
 
@@ -268,17 +294,23 @@ export async function signData(
 ) {
   const isAsyncFlow = flowType !== 'sync';
 
-  await switchToOrOpenDapp(driver);
+  // This step can frequently fail, so retry it
+  await retry(
+    {
+      retries: 3,
+      delay: 2000,
+    },
+    async () => {
+      await switchToOrOpenDapp(driver);
 
-  await driver.clickElement(locatorID);
+      await driver.clickElement(locatorID);
 
-  // behavior of chrome and firefox is different,
-  // chrome needs extra time to load the popup
-  if (driver.browser === 'chrome') {
-    await driver.delay(500);
-  }
+      // take extra time to load the popup
+      await driver.delay(500);
 
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+      await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+    },
+  );
 
   // these three don't have a contract details page
   if (!['#ethSign', '#personalSign', '#signTypedData'].includes(locatorID)) {
@@ -288,14 +320,23 @@ export async function signData(
   await clickSignOnSignatureConfirmation(driver, 3, locatorID);
 
   if (isAsyncFlow) {
-    await driver.delay(1000);
+    await driver.delay(2000);
 
-    // // Navigate to the Notification window and click 'Go to site' button
-    await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await driver.clickElement({
-      text: 'Go to site',
-      tag: 'button',
-    });
+    // This step can frequently fail, so retry it
+    await retry(
+      {
+        retries: 3,
+        delay: 1000,
+      },
+      async () => {
+        // Navigate to the Notification window and click 'Go to site' button
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await driver.clickElement({
+          text: 'Go to site',
+          tag: 'button',
+        });
+      },
+    );
 
     await driver.delay(1000);
     await approveOrRejectRequest(driver, flowType);

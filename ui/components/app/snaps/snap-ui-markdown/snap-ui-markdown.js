@@ -5,11 +5,14 @@ import {
   TextVariant,
   OverflowWrap,
   TextColor,
+  Display,
 } from '../../../../helpers/constants/design-system';
 import {
   ButtonLink,
   ButtonLinkSize,
+  Icon,
   IconName,
+  IconSize,
   Text,
 } from '../../../component-library';
 import SnapLinkWarning from '../snap-link-warning';
@@ -17,8 +20,6 @@ import SnapLinkWarning from '../snap-link-warning';
 const Paragraph = (props) => (
   <Text
     {...props}
-    marginTop={1}
-    marginBottom={1}
     variant={TextVariant.bodyMd}
     className="snap-ui-markdown__text"
     overflowWrap={OverflowWrap.Anywhere}
@@ -29,15 +30,15 @@ const Paragraph = (props) => (
 const Link = ({ onClick, children, ...rest }) => (
   <ButtonLink
     {...rest}
-    marginTop={1}
-    marginBottom={1}
+    as="a"
     onClick={onClick}
     externalLink
     size={ButtonLinkSize.Inherit}
-    endIconName={IconName.Export}
+    display={Display.Inline}
     className="snap-ui-markdown__link"
   >
     {children}
+    <Icon name={IconName.Export} size={IconSize.Inherit} marginLeft={1} />
   </ButtonLink>
 );
 

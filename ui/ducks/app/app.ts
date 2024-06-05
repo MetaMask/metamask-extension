@@ -6,13 +6,15 @@ import {
 } from '../../../shared/constants/hardware-wallets';
 import * as actionConstants from '../../store/actionConstants';
 
-interface AppState {
+type AppState = {
   shouldClose: boolean;
   menuOpen: boolean;
   modal: {
     open: boolean;
     modalState: {
       name: string | null;
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       props: Record<string, any>;
     };
     previousModalState: {
@@ -39,7 +41,7 @@ interface AppState {
   };
   showKeyringRemovalSnapModal: boolean;
   importTokensModalOpen: boolean;
-  showSelectActionModal: boolean;
+  deprecatedNetworkModalOpen: boolean;
   accountDetail: {
     subview?: string;
     accountExport?: string;
@@ -49,6 +51,8 @@ interface AppState {
   loadingMessage: string | null;
   scrollToBottom: boolean;
   warning: string | null | undefined;
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   buyView: Record<string, any>;
   defaultHdPaths: {
     trezor: string;
@@ -58,6 +62,8 @@ interface AppState {
   networksTabSelectedRpcUrl: string | null;
   requestAccountTabs: Record<string, number>; // [url.origin]: tab.id
   openMetaMaskTabs: Record<string, boolean>; // openMetamaskTabsIDs[tab.id]): true/false
+  // TODO: Replace `any` with type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   currentWindowTab: Record<string, any>; // tabs.tab https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/Tab
   showWhatsNewPopup: boolean;
   showTermsOfUsePopup: boolean;
@@ -69,6 +75,8 @@ interface AppState {
   smartTransactionsErrorMessageDismissed: boolean;
   ledgerWebHidConnectedStatus: WebHIDConnectedStatuses;
   ledgerTransportStatus: HardwareTransportStates;
+  showBasicFunctionalityModal: boolean;
+  externalServicesOnboardingToggleState: boolean;
   newNftAddedMessage: string;
   removeNftMessage: string;
   newNetworkAddedName: string;
@@ -84,11 +92,11 @@ interface AppState {
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   snapsInstallPrivacyWarningShown: boolean;
   ///: END:ONLY_INCLUDE_IF
-}
+};
 
-interface AppSliceState {
+type AppSliceState = {
   appState: AppState;
-}
+};
 
 // default state
 const initialState: AppState = {
@@ -110,13 +118,15 @@ const initialState: AppState = {
   networkDropdownOpen: false,
   importNftsModal: { open: false },
   showIpfsModalOpen: false,
+  showBasicFunctionalityModal: false,
+  externalServicesOnboardingToggleState: true,
   keyringRemovalSnapModal: {
     snapName: '',
     result: 'none',
   },
   showKeyringRemovalSnapModal: false,
   importTokensModalOpen: false,
-  showSelectActionModal: false,
+  deprecatedNetworkModalOpen: false,
   accountDetail: {
     privateKey: '',
   },
@@ -203,6 +213,29 @@ export default function reduceApp(
         },
       };
 
+    case actionConstants.SHOW_BASIC_FUNCTIONALITY_MODAL_OPEN:
+      return {
+        ...appState,
+        showBasicFunctionalityModal: true,
+      };
+
+    case actionConstants.SHOW_BASIC_FUNCTIONALITY_MODAL_CLOSE:
+      return {
+        ...appState,
+        showBasicFunctionalityModal: false,
+      };
+
+    case actionConstants.ONBOARDING_TOGGLE_BASIC_FUNCTIONALITY_ON:
+      return {
+        ...appState,
+        externalServicesOnboardingToggleState: true,
+      };
+    case actionConstants.ONBOARDING_TOGGLE_BASIC_FUNCTIONALITY_OFF:
+      return {
+        ...appState,
+        externalServicesOnboardingToggleState: false,
+      };
+
     case actionConstants.SHOW_IPFS_MODAL_OPEN:
       return {
         ...appState,
@@ -227,16 +260,16 @@ export default function reduceApp(
         importTokensModalOpen: false,
       };
 
-    case actionConstants.SELECT_ACTION_MODAL_OPEN:
+    case actionConstants.DEPRECATED_NETWORK_POPOVER_OPEN:
       return {
         ...appState,
-        showSelectActionModal: true,
+        deprecatedNetworkModalOpen: true,
       };
 
-    case actionConstants.SELECT_ACTION_MODAL_CLOSE:
+    case actionConstants.DEPRECATED_NETWORK_POPOVER_CLOSE:
       return {
         ...appState,
-        showSelectActionModal: false,
+        deprecatedNetworkModalOpen: false,
       };
 
     // alert methods
@@ -301,12 +334,12 @@ export default function reduceApp(
     case actionConstants.MODAL_CLOSE:
       return {
         ...appState,
-        modal: Object.assign(
-          appState.modal,
-          { open: false },
-          { modalState: { name: null, props: {} } },
-          { previousModalState: appState.modal.modalState },
-        ),
+        modal: {
+          ...appState.modal,
+          open: false,
+          modalState: { name: null, props: {} },
+          previousModalState: { ...appState.modal.modalState },
+        },
       };
 
     case actionConstants.CLEAR_ACCOUNT_DETAILS:
@@ -375,6 +408,8 @@ export default function reduceApp(
 
     case actionConstants.SET_HARDWARE_WALLET_DEFAULT_HD_PATH: {
       const { device, path } = action.payload;
+      // TODO: Replace `any` with type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const newDefaults = { ...appState.defaultHdPaths } as any;
       newDefaults[device] = path;
 
@@ -544,6 +579,30 @@ export default function reduceApp(
 export function hideWhatsNewPopup(): Action {
   return {
     type: actionConstants.HIDE_WHATS_NEW_POPUP,
+  };
+}
+
+export function openBasicFunctionalityModal(): Action {
+  return {
+    type: actionConstants.SHOW_BASIC_FUNCTIONALITY_MODAL_OPEN,
+  };
+}
+
+export function hideBasicFunctionalityModal(): Action {
+  return {
+    type: actionConstants.SHOW_BASIC_FUNCTIONALITY_MODAL_CLOSE,
+  };
+}
+
+export function onboardingToggleBasicFunctionalityOn(): Action {
+  return {
+    type: actionConstants.ONBOARDING_TOGGLE_BASIC_FUNCTIONALITY_ON,
+  };
+}
+
+export function onboardingToggleBasicFunctionalityOff(): Action {
+  return {
+    type: actionConstants.ONBOARDING_TOGGLE_BASIC_FUNCTIONALITY_OFF,
   };
 }
 
