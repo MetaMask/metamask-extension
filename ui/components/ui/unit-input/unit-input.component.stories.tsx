@@ -1,14 +1,6 @@
 import React from 'react';
 import { Meta } from '@storybook/react';
-import { Provider } from 'react-redux';
-import configureStore from '../../../store/store';
 import UnitInput from './unit-input.component';
-
-const storeMock = configureStore({
-  metamask: {
-    // Add necessary mock data for the store
-  },
-});
 
 const UnitInputStory = {
   title: 'Components/UI/UnitInput',
@@ -29,7 +21,6 @@ const UnitInputStory = {
     isDisabled: { control: 'boolean' },
     isFocusOnInput: { control: 'boolean' },
   },
-  decorators: [(story) => <Provider store={storeMock}>{story()}</Provider>],
 } as Meta<typeof UnitInput>;
 
 export const DefaultStory = (args) => <UnitInput {...args} />;
