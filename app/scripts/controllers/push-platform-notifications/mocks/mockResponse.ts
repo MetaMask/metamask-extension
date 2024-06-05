@@ -1,7 +1,5 @@
-import {
-  LinksResult,
-  REGISTRATION_TOKENS_ENDPOINT,
-} from '../services/services';
+import { REGISTRATION_TOKENS_ENDPOINT } from '../services/endpoints';
+import { LinksResult } from '../services/services';
 
 type MockResponse = {
   url: string | RegExp;

@@ -13,9 +13,8 @@ import {
   NotificationUnion,
 } from '../../metamask-notifications/types/types';
 import { processNotification } from '../../metamask-notifications/processors/process-notifications';
+import { REGISTRATION_TOKENS_ENDPOINT } from './endpoints';
 
-const url = process.env.PUSH_NOTIFICATIONS_SERVICE_URL;
-export const REGISTRATION_TOKENS_ENDPOINT = `${url}/v1/link`;
 const sw = self as unknown as ServiceWorkerGlobalScope;
 
 export type RegToken = {

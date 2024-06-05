@@ -1,4 +1,4 @@
-import { FEATURE_ANNOUNCEMENT_URL } from '../services/feature-announcements';
+import { FEATURE_ANNOUNCEMENT_API } from '../services/feature-announcements';
 import {
   NOTIFICATION_API_LIST_ENDPOINT,
   NOTIFICATION_API_MARK_ALL_AS_READ_ENDPOINT,
@@ -17,7 +17,7 @@ export const CONTENTFUL_RESPONSE = createMockFeatureAnnouncementAPIResult();
 
 export function getMockFeatureAnnouncementResponse() {
   return {
-    url: FEATURE_ANNOUNCEMENT_URL,
+    url: FEATURE_ANNOUNCEMENT_API,
     requestMethod: 'GET',
     response: CONTENTFUL_RESPONSE,
   } satisfies MockResponse;
