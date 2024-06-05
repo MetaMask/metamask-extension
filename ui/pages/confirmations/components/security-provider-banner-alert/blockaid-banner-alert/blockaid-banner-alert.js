@@ -89,14 +89,14 @@ function BlockaidBannerAlert({ txData, ...props }) {
   if (resultType === BlockaidResultType.Benign) {
     return null;
   } else if (resultType === BlockaidResultType.Warning) {
-    // When `result_type` is warning, the reason should no longer be relevant for
-    // determining the copy and we should always use the new copy. The reason for
-    // that is because Blockaid has lower certainty when they flag something as
-    // warning so that requires a softer and broader message than the ones we use
-    // when `result_type` is `Malicious` or `Error`.
+    // When `result_type` is `Warning`, the `reason` is no longer relevant for
+    // determining the copy. This is because Blockaid has lower certainty when
+    // they flag something as warning so that requires a softer and broader
+    // message than the ones we use when `result_type` is `Malicious` or
+    // `Error`.
 
     title = t(REASON_TO_TITLE_TKEY[BlockaidReason.errored]);
-    description = t(REASON_TO_DESCRIPTION_TKEY[BlockaidReason.errored]);
+    description = t('blockaidDescriptionWarning');
   } else {
     if (!REASON_TO_DESCRIPTION_TKEY[reason]) {
       captureException(`BlockaidBannerAlert: Unidentified reason '${reason}'`);
