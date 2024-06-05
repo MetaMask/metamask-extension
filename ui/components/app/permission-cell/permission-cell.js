@@ -36,6 +36,7 @@ const PermissionCell = ({
   avatarIcon,
   dateApproved,
   revoked,
+  approved,
   showOptions,
   hideStatus,
   accounts,
@@ -51,7 +52,7 @@ const PermissionCell = ({
     infoIconColor = IconColor.warningDefault;
   }
 
-  if (dateApproved) {
+  if (dateApproved || approved) {
     iconColor = IconColor.iconMuted;
     iconBackgroundColor = Color.backgroundAlternative;
   }
@@ -110,6 +111,7 @@ const PermissionCell = ({
         {!hideStatus && (
           <PermissionCellStatus
             revoked={revoked}
+            approved={approved}
             dateApproved={dateApproved}
             accounts={accounts}
           />
@@ -157,6 +159,7 @@ PermissionCell.propTypes = {
   avatarIcon: PropTypes.any.isRequired,
   dateApproved: PropTypes.number,
   revoked: PropTypes.bool,
+  approved: PropTypes.bool,
   showOptions: PropTypes.bool,
   hideStatus: PropTypes.bool,
   accounts: PropTypes.array,
