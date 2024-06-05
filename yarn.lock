@@ -5590,7 +5590,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/selected-network-controller@npm:^12.0.1":
+"@metamask/selected-network-controller@npm:12.0.1":
   version: 12.0.1
   resolution: "@metamask/selected-network-controller@npm:12.0.1"
   dependencies:
@@ -5604,6 +5604,23 @@ __metadata:
     "@metamask/network-controller": ^18.0.0
     "@metamask/permission-controller": ^9.0.0
   checksum: a0ff5119cd9382cb7b30036bca018452bfe26e8a9bfec4f2a34e66b4f72f251839c063a903fb8edf05c88cf1e85ba1282fe2be2e85c3182eb617c1440508b17f
+  languageName: node
+  linkType: hard
+
+"@metamask/selected-network-controller@patch:@metamask/selected-network-controller@npm%3A12.0.1#~/.yarn/patches/@metamask-selected-network-controller-npm-12.0.1-34b2edf62d.patch":
+  version: 12.0.1
+  resolution: "@metamask/selected-network-controller@patch:@metamask/selected-network-controller@npm%3A12.0.1#~/.yarn/patches/@metamask-selected-network-controller-npm-12.0.1-34b2edf62d.patch::version=12.0.1&hash=808666"
+  dependencies:
+    "@metamask/base-controller": "npm:^5.0.1"
+    "@metamask/json-rpc-engine": "npm:^8.0.1"
+    "@metamask/network-controller": "npm:^18.1.0"
+    "@metamask/permission-controller": "npm:^9.0.2"
+    "@metamask/swappable-obj-proxy": "npm:^2.2.0"
+    "@metamask/utils": "npm:^8.3.0"
+  peerDependencies:
+    "@metamask/network-controller": ^18.0.0
+    "@metamask/permission-controller": ^9.0.0
+  checksum: 04471191561f4305b651bbefc5c6885eb26878fb24ee9ecf77f9a0f24367a33132453e6c1e8f315b8374fecbc0336eeb83a3043dfbbc3af1b2c13965a87383a0
   languageName: node
   linkType: hard
 
@@ -25121,7 +25138,7 @@ __metadata:
     "@metamask/rate-limit-controller": "npm:^3.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
-    "@metamask/selected-network-controller": "npm:^12.0.1"
+    "@metamask/selected-network-controller": "patch:@metamask/selected-network-controller@npm%3A12.0.1#~/.yarn/patches/@metamask-selected-network-controller-npm-12.0.1-34b2edf62d.patch"
     "@metamask/signature-controller": "npm:^12.0.0"
     "@metamask/smart-transactions-controller": "npm:^10.0.1"
     "@metamask/snaps-controllers": "patch:@metamask/snaps-controllers@npm%3A8.0.0#~/.yarn/patches/@metamask-snaps-controllers-npm-8.0.0-7e59688855.patch"
