@@ -3474,3 +3474,91 @@ export function hasSendLayer1GasFee(state) {
 export function getSwapsBlockedTokens(state) {
   return state[name].swapsBlockedTokens;
 }
+
+export const getSendAnalyticProperties = createSelector(
+  getProviderConfig,
+  getCurrentDraftTransaction,
+  getNativeCurrency,
+  getBestQuote,
+  ({ chainId }, draftTransaction, nativeCurrencySymbol, bestQuote) => {
+    try {
+      const NATIVE_CURRENCY_DECIMALS =
+        SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].decimals;
+
+      const NATIVE_CURRENCY_ADDRESS =
+        SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].address;
+
+      const isSwapAndSend = getIsDraftSwapAndSend(draftTransaction);
+      const {
+        quotes,
+        amount,
+        sendAsset,
+        receiveAsset,
+        swapQuotesError,
+        timeToFetchQuotes,
+      } = draftTransaction;
+
+      const sourceTokenSymbol =
+        draftTransaction?.sendAsset?.details?.symbol || nativeCurrencySymbol;
+      const destinationTokenSymbol =
+        draftTransaction?.receiveAsset?.details?.symbol || nativeCurrencySymbol;
+      const destinationTokenDecimals =
+        draftTransaction?.receiveAsset?.details?.decimals ||
+        NATIVE_CURRENCY_DECIMALS;
+
+      const sourceTokenDecimals =
+        draftTransaction?.sendAsset?.details?.decimals ||
+        NATIVE_CURRENCY_DECIMALS;
+
+      const userInputTokenAmount = new Numeric(amount?.value || '0x0', 16)
+        .toBase(10)
+        .shiftedBy(sourceTokenDecimals)
+        .toString();
+
+      const sourceTokenAmount = bestQuote?.sourceAmount;
+      const destinationTokenAmount = bestQuote?.destinationAmount;
+
+      const destinationTokenAddress =
+        draftTransaction?.receiveAsset?.details?.address ||
+        NATIVE_CURRENCY_ADDRESS;
+      const sourceTokenAddress =
+        draftTransaction?.sendAsset?.details?.address ||
+        NATIVE_CURRENCY_ADDRESS;
+
+      return {
+        is_swap_and_send: isSwapAndSend,
+        chain_id: chainId,
+        token_amount_source:
+          sourceTokenAmount && sourceTokenDecimals
+            ? calcTokenAmount(sourceTokenAmount, sourceTokenDecimals).toString()
+            : userInputTokenAmount,
+        token_amount_dest_estimate:
+          destinationTokenAmount && destinationTokenDecimals
+            ? calcTokenAmount(
+                destinationTokenAmount,
+                destinationTokenDecimals,
+              ).toString()
+            : undefined,
+        token_symbol_source: sourceTokenSymbol,
+        token_symbol_destination: destinationTokenSymbol,
+        token_address_source: sourceTokenAddress,
+        token_address_destination: destinationTokenAddress,
+        results_count: quotes?.length,
+        quotes_load_time_ms: timeToFetchQuotes,
+        aggregator_list: quotes?.map(
+          ({ aggregator, error }) => `${aggregator} (${error || 'no error'})`,
+        ),
+        aggregator_recommended: bestQuote?.aggregator,
+        errors: [
+          amount?.error,
+          sendAsset?.error,
+          receiveAsset?.error,
+          swapQuotesError,
+        ].filter(Boolean),
+      };
+    } catch (error) {
+      // ensure analytics do not break the app
+      return { analyticsError: error };
+    }
+  },
+);
