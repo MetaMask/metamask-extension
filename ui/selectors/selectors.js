@@ -1450,10 +1450,11 @@ export const getConnectedSitesListWithNetworkInfo = createDeepEqualSelector(
   getConnectedSitesList,
   getAllDomains,
   getAllNetworks,
-  (sitesList, domains, networks) => {
+  getSelectedNetworkClientId,
+  (sitesList, domains, networks, selectedNetworkClientId) => {
     Object.keys(sitesList).forEach((siteKey) => {
       const connectedNetwork = networks.find(
-        (network) => network.id === domains[siteKey],
+        (network) => network.id === domains[siteKey] || selectedNetworkClientId,
       );
       // For the testnets, if we do not have an image, we will have a fallback string
       sitesList[siteKey].networkIconUrl =
