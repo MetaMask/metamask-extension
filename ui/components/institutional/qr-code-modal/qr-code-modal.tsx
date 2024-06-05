@@ -216,25 +216,25 @@ const QRCodeModal: React.FC<QRCodeModalProps> = ({
               {error}
             </Text>
           )}
-          {qrCodeValue ? (
-            <Box
-              className="institutional-qr-code-modal__qr-code"
-              data-testid="qr-code-visible"
-              paddingTop={6}
-              paddingBottom={6}
-              marginBottom={4}
-              marginTop={4}
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              flexDirection={FlexDirection.Column}
-              borderColor={BorderColor.borderMuted}
-              borderWidth={1}
-            >
+          <Box
+            className="institutional-qr-code-modal__qr-code"
+            data-testid="qr-code-visible"
+            paddingTop={6}
+            paddingBottom={6}
+            marginBottom={4}
+            marginTop={4}
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            flexDirection={FlexDirection.Column}
+            borderColor={BorderColor.borderMuted}
+            borderWidth={1}
+          >
+            {qrCodeValue ? (
               <QRCode value={qrCodeValue} size={270} />
-            </Box>
-          ) : (
-            <Spinner />
-          )}
+            ) : (
+              <Spinner className="institutional-qr-code-modal__spinner" />
+            )}
+          </Box>
           <Text
             paddingBottom={4}
             color={TextColor.textDefault}
