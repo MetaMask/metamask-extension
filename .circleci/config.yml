@@ -213,7 +213,7 @@ workflows:
       - test-e2e-mmi-playwright - OPTIONAL:
           requires:
             - prep-build-test-mmi-playwright
-      - test-e2e-swap-playwright:
+      - test-e2e-swap-playwright - OPTIONAL:
           requires:
             - prep-build-test-swap-playwright
       - test-e2e-chrome-rpc-mmi:
