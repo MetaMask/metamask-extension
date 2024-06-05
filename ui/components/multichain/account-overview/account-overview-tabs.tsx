@@ -18,7 +18,9 @@ import TransactionList from '../../app/transaction-list';
 import { Tabs, Tab } from '../../ui/tabs';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi)
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   Display,
+  ///: END:ONLY_INCLUDE_IF
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 ///: END:ONLY_INCLUDE_IF
