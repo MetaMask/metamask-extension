@@ -121,7 +121,7 @@ export const DomainInputResolutionCell = ({
             badge={
               <AvatarIcon
                 iconName={IconName.Snaps}
-                size={AvatarIconSize.Xs}
+                size={AvatarIconSize.Sm}
                 className="multichain-send-page__recipient__item__avatar"
                 backgroundColor={BackgroundColor.infoDefault}
                 color={IconColor.infoInverse}
