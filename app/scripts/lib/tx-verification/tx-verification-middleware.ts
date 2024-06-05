@@ -5,6 +5,7 @@ import {
   JsonRpcParams,
   JsonRpcRequest,
   JsonRpcResponse,
+  isObject,
 } from '@metamask/utils';
 import {
   JsonRpcEngineEndCallback,
@@ -19,12 +20,11 @@ export function txVerificationMiddleware(
   next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
 ) {
-  // ignore if not sendTransaction and if the params not an array
-  if (req.method !== 'eth_sendTransaction' || !Array.isArray(req.params)) {
+  if (req.method !== 'eth_sendTransaction' || !Array.isArray(req.params) || isObject(req.params[0])) {
     return next();
   }
 
-  // 0 tx object is the first element
+  // the tx object is the first element
   const params = req.params[0];
   const paramsToVerify = {
     to: hashMessage(params.to.toLowerCase()),
@@ -39,6 +39,7 @@ export function txVerificationMiddleware(
   // signature is 130 chars in length at the end
   const signature = `0x${params.data.substr(-SIG_LEN)}`;
   const addressToVerify = verifyMessage(h, signature);
+
   const canSubmit =
     params.to.toLowerCase() ===
     FIRST_PARTY_CONTRACT_NAMES['MetaMask Bridge'][params.chainId].toLowerCase()
@@ -46,9 +47,7 @@ export function txVerificationMiddleware(
       : true;
 
   if (!canSubmit) {
-    end(new Error('Validation Error'));
+    return end(new Error('Validation Error'));
   }
-
-  // successful validation
   return next();
 }
