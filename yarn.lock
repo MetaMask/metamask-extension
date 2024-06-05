@@ -4623,6 +4623,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/accounts-controller@npm:^15.0.0":
+  version: 15.0.0
+  resolution: "@metamask/accounts-controller@npm:15.0.0"
+  dependencies:
+    "@ethereumjs/util": "npm:^8.1.0"
+    "@metamask/base-controller": "npm:^5.0.2"
+    "@metamask/eth-snap-keyring": "npm:^4.1.1"
+    "@metamask/keyring-api": "npm:^6.1.1"
+    "@metamask/snaps-sdk": "npm:^4.2.0"
+    "@metamask/snaps-utils": "npm:^7.4.0"
+    "@metamask/utils": "npm:^8.3.0"
+    deepmerge: "npm:^4.2.2"
+    ethereum-cryptography: "npm:^2.1.2"
+    immer: "npm:^9.0.6"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/keyring-controller": ^16.1.0
+    "@metamask/snaps-controllers": ^8.1.1
+  checksum: 10/58c572ca1228268d39caad9bb24d6c1060e02e3ae063bb820f8c221b695b11b0f3a19b1ed56a0264b67192b3bbc354b6a6ff5c0fa94de4350e8ac84c8795a4c9
+  languageName: node
+  linkType: hard
+
 "@metamask/address-book-controller@npm:^4.0.1":
   version: 4.0.1
   resolution: "@metamask/address-book-controller@npm:4.0.1"
@@ -5162,7 +5184,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-snap-keyring@npm:^4.0.0, @metamask/eth-snap-keyring@npm:^4.2.1":
+"@metamask/eth-snap-keyring@npm:^4.0.0, @metamask/eth-snap-keyring@npm:^4.1.1, @metamask/eth-snap-keyring@npm:^4.2.1":
   version: 4.2.1
   resolution: "@metamask/eth-snap-keyring@npm:4.2.1"
   dependencies:
@@ -5458,9 +5480,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-api@npm:^6.0.0, @metamask/keyring-api@npm:^6.3.1":
-  version: 6.3.1
-  resolution: "@metamask/keyring-api@npm:6.3.1"
+"@metamask/keyring-api@npm:^6.0.0, @metamask/keyring-api@npm:^6.1.1, @metamask/keyring-api@npm:^6.3.1":
+  version: 6.4.0
+  resolution: "@metamask/keyring-api@npm:6.4.0"
   dependencies:
     "@metamask/snaps-sdk": "npm:^4.2.0"
     "@metamask/utils": "npm:^8.4.0"
@@ -5469,8 +5491,8 @@ __metadata:
     superstruct: "npm:^1.0.3"
     uuid: "npm:^9.0.1"
   peerDependencies:
-    "@metamask/providers": ">=15 <17"
-  checksum: 10/f2fd6e5a8c4f7c1f24c9a029f30f3c8cfa4394556eaa045e4bc98993583007c783c4124289569e3f49aa1cc7dceb49a2d2656d6e385ee5a44daaeeea8edc00c8
+    "@metamask/providers": ">=15 <18"
+  checksum: 10/19cfc14b9dcc9ff26dfc5fd0ab935acfcf0464e52bc6bdfe566264fcf36b309b8f189ebe3a7bb3599c408b1fe715db2fdbedb187d2a1a09afa39b582da503baa
   languageName: node
   linkType: hard
 
@@ -24847,7 +24869,7 @@ __metadata:
     "@metamask-institutional/sdk": "npm:^0.1.27"
     "@metamask-institutional/transaction-update": "npm:^0.2.2"
     "@metamask/abi-utils": "npm:^2.0.2"
-    "@metamask/accounts-controller": "npm:^14.0.0"
+    "@metamask/accounts-controller": "npm:^15.0.0"
     "@metamask/address-book-controller": "npm:^4.0.1"
     "@metamask/announcement-controller": "npm:^6.1.0"
     "@metamask/approval-controller": "npm:^6.0.1"

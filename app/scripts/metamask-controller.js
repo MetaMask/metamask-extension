@@ -3095,6 +3095,8 @@ export default class MetamaskController extends EventEmitter {
       resetAccount: this.resetAccount.bind(this),
       removeAccount: this.removeAccount.bind(this),
       importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
+      getNextAvailableAccountName:
+        accountsController.getNextAvailableAccountName.bind(accountsController),
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       getAccountsBySnapId: (snapId) => getAccountsBySnapId(this, snapId),
       ///: END:ONLY_INCLUDE_IF
