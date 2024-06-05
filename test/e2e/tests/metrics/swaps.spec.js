@@ -84,7 +84,7 @@ async function mockSegmentAndMetaswapRequests(mockServer) {
         json: NETWORKS_2_API_MOCK_RESULT,
       })),
     await mockServer
-      .forGet('https://token-api.metaswap.codefi.network/token/1337')
+      .forGet('https://token.api.cx.metamask.io/token/1337')
       .thenCallback(() => ({
         statusCode: 200,
         json: {},
