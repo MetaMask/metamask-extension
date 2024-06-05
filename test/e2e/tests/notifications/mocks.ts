@@ -30,6 +30,7 @@ type MockResponse = {
 
 /**
  * E2E mock setup for notification APIs (Auth, Storage, Notifications, Push Notifications)
+ *
  * @param server - server obj used to mock our endpoints
  */
 export function mockNotificationServices(server: Mockttp) {
@@ -57,23 +58,22 @@ export function mockNotificationServices(server: Mockttp) {
 }
 
 function mockAPICall(server: Mockttp, response: MockResponse) {
-  const url: string | RegExp = response.url;
   let requestRuleBuilder: RequestRuleBuilder | undefined;
 
   if (response.requestMethod === 'GET') {
-    requestRuleBuilder = server.forGet(url);
+    requestRuleBuilder = server.forGet(response.url);
   }
 
   if (response.requestMethod === 'POST') {
-    requestRuleBuilder = server.forPost(url);
+    requestRuleBuilder = server.forPost(response.url);
   }
 
   if (response.requestMethod === 'PUT') {
-    requestRuleBuilder = server.forPut(url);
+    requestRuleBuilder = server.forPut(response.url);
   }
 
   if (response.requestMethod === 'DELETE') {
-    requestRuleBuilder = server.forDelete(url);
+    requestRuleBuilder = server.forDelete(response.url);
   }
 
   requestRuleBuilder?.thenCallback(() => ({
