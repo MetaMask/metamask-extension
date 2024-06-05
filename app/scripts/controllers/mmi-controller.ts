@@ -641,7 +641,9 @@ export default class MMIController extends EventEmitter {
   async getCustodianToken(address: string) {
     const keyring = await this.keyringController.getKeyringForAccount(address);
     const { authDetails } = keyring.getAccountDetails(address);
-    return keyring ? authDetails.jwt || authDetails.refreshToken : '';
+    return keyring
+      ? (authDetails && (authDetails.jwt || authDetails.refreshToken)) || ''
+      : '';
   }
 
   // Based on a custodian name, get all the tokens associated with that custodian
