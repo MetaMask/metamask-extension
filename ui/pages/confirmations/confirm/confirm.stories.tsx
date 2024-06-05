@@ -6,13 +6,17 @@ import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import ConfirmPage from './confirm';
 
-const mockMetamaskState = { ...mockState.metamask };
+const ConfirmPageStory = {
+  title: 'Pages/Confirm/ConfirmPage',
+  decorators: [(story) => <div style={{ height: '600px' }}>{story()}</div>],
+}
 
 const argsSignature = {
   data: '0x4578616d706c652060706572736f6e616c5f7369676e60206d657373616765',
   from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
   origin: 'https://metamask.github.io',
 }
+
 const argTypesSignature = {
   data: {
     control: 'text',
@@ -28,12 +32,7 @@ const argTypesSignature = {
   },
 }
 
-const ConfirmPageStory = {
-  title: 'Pages/Confirm/ConfirmPage',
-  decorators: [(story) => <div style={{ height: '600px' }}>{story()}</div>],
-}
-
-export const PersonalSignStory = (args) => {
+function SignatureStoryTemplate(args, confirmation) {
   const { data, from, origin } = args;
   const mockConfirmation = cloneDeep(unapprovedPersonalSignMsg);
 
@@ -45,10 +44,14 @@ export const PersonalSignStory = (args) => {
     confirm: {
       currentConfirmation: mockConfirmation,
     },
-    metamask: mockMetamaskState,
+    metamask: { ...mockState.metamask },
   });
 
   return <Provider store={store}><ConfirmPage /></Provider>;
+}
+
+export const PersonalSignStory = (args) => {
+  return SignatureStoryTemplate(args, unapprovedPersonalSignMsg);
 };
 
 PersonalSignStory.storyName = 'Personal Sign';
@@ -56,21 +59,7 @@ PersonalSignStory.args = argsSignature;
 PersonalSignStory.argTypes = argTypesSignature;
 
 export const SignInWithEthereumSIWEStory = (args) => {
-  const { data, from, origin } = args;
-  const mockConfirmation = cloneDeep(signatureRequestSIWE);
-
-  mockConfirmation.msgParams.data = data;
-  mockConfirmation.msgParams.from = from;
-  mockConfirmation.msgParams.origin = origin;
-
-  const store = configureStore({
-    confirm: {
-      currentConfirmation: mockConfirmation,
-    },
-    metamask: mockMetamaskState,
-  });
-
-  return <Provider store={store}><ConfirmPage /></Provider>;
+  return SignatureStoryTemplate(args, signatureRequestSIWE);
 };
 
 SignInWithEthereumSIWEStory.storyName = 'Sign-in With Ethereum (SIWE)';
