@@ -6,6 +6,7 @@ import { usePendingTransactionAlerts } from './alerts/transactions/usePendingTra
 import { useGasFeeLowAlerts } from './alerts/transactions/useGasFeeLowAlerts';
 import { usePaymasterAlerts } from './alerts/transactions/usePaymasterAlerts';
 import { useSigningOrSubmittingAlerts } from './alerts/transactions/useSigningOrSubmittingAlerts';
+import { useGasTooLowAlerts } from './alerts/transactions/useGasTooLowAlerts';
 
 const useConfirmationAlerts = () => {
   const blockaidAlerts = useBlockaidAlerts();
@@ -15,6 +16,7 @@ const useConfirmationAlerts = () => {
   const gasFeeLowAlerts = useGasFeeLowAlerts();
   const usingPaymasterAlerts = usePaymasterAlerts();
   const signingOrSubmittingAlerts = useSigningOrSubmittingAlerts();
+  const gasTooLowAlerts = useGasTooLowAlerts();
 
   return useMemo(
     () => [
@@ -25,6 +27,7 @@ const useConfirmationAlerts = () => {
       ...gasFeeLowAlerts,
       ...usingPaymasterAlerts,
       ...signingOrSubmittingAlerts,
+      ...gasTooLowAlerts,
     ],
     [
       blockaidAlerts,
@@ -34,6 +37,7 @@ const useConfirmationAlerts = () => {
       gasFeeLowAlerts,
       usingPaymasterAlerts,
       signingOrSubmittingAlerts,
+      gasTooLowAlerts,
     ],
   );
 };
