@@ -11,9 +11,6 @@ const store = (
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tokenList = {} as any,
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  contractExchangeRates = {} as any,
 ) =>
   configureStore({
     ...mockSendState,
@@ -24,7 +21,6 @@ const store = (
           conversionRate: 11.1,
         },
       },
-      contractExchangeRates,
       providerConfig: {
         chainId: '0x1',
         ticker: nativeTicker,
