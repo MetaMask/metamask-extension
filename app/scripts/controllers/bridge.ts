@@ -1,7 +1,19 @@
 import { ObservableStore } from '@metamask/obs-store';
 
+export enum BridgeFeatureFlagsKey {
+  EXTENSION_SUPPORT = 'extensionSupport',
+}
+
+export type BridgeFeatureFlags = {
+  [BridgeFeatureFlagsKey.EXTENSION_SUPPORT]: boolean;
+};
+
 const initialState = {
-  bridgeState: {},
+  bridgeState: {
+    bridgeFeatureFlags: {
+      [BridgeFeatureFlagsKey.EXTENSION_SUPPORT]: false,
+    },
+  },
 };
 
 export default class BridgeController {
@@ -12,6 +24,13 @@ export default class BridgeController {
       bridgeState: {
         ...initialState.bridgeState,
       },
+    });
+  };
+
+  setBridgeFeatureFlags = (bridgeFeatureFlags: BridgeFeatureFlags) => {
+    const { bridgeState } = this.store.getState();
+    this.store.updateState({
+      bridgeState: { ...bridgeState, bridgeFeatureFlags },
     });
   };
 }

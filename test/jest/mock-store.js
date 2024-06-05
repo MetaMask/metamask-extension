@@ -678,6 +678,9 @@ export const createBridgeMockStore = () => {
       ...swapsStore.metamask,
       bridgeState: {
         ...(swapsStore.metamask.bridgeState ?? {}),
+        bridgeFeatureFlags: {
+          extensionSupport: false,
+        },
       },
     },
   };
