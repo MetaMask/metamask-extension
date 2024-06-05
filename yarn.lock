@@ -5610,14 +5610,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/name-controller@npm:^6.0.1":
-  version: 6.0.1
-  resolution: "@metamask/name-controller@npm:6.0.1"
+"@metamask/name-controller@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "@metamask/name-controller@npm:8.0.0"
   dependencies:
-    "@metamask/base-controller": "npm:^5.0.1"
+    "@metamask/base-controller": "npm:^6.0.0"
+    "@metamask/controller-utils": "npm:^11.0.0"
     "@metamask/utils": "npm:^8.3.0"
-    async-mutex: "npm:^0.2.6"
-  checksum: 10/6e1d09682519cde68ecf67bb433b1877996bab48f457edc7c0a322af85723b2f9885758f0d745f1626adb358bec65921c340747c64fa2669143571225f63c5a9
+    async-mutex: "npm:^0.5.0"
+  checksum: 10/c467c31a8a6d651b10bda62a24883356b0ebc9dfd56dbd550dc88c75fbd209be68d7f2dc0f85885db13b9af011d59ac67104b19d327fb4460599e4f182903f9b
   languageName: node
   linkType: hard
 
@@ -24857,7 +24858,7 @@ __metadata:
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^1.0.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
-    "@metamask/controller-utils": "npm:^9.1.0"
+    "@metamask/controller-utils": "npm:^10.0.0"
     "@metamask/design-tokens": "npm:^3.0.0"
     "@metamask/desktop": "npm:^0.3.0"
     "@metamask/ens-controller": "npm:^10.0.1"
@@ -24889,7 +24890,7 @@ __metadata:
     "@metamask/message-manager": "npm:^7.3.0"
     "@metamask/message-signing-snap": "npm:^0.3.3"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/name-controller": "npm:^6.0.1"
+    "@metamask/name-controller": "npm:^8.0.0"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A18.1.2#~/.yarn/patches/@metamask-network-controller-npm-18.1.2-1bcb8d8610.patch"
     "@metamask/notification-controller": "npm:^3.0.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
