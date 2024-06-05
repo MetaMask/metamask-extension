@@ -27,6 +27,7 @@ import {
   getDraftTransactionID,
   getRecipient,
   getRecipientWarningAcknowledgement,
+  getSendAnalyticProperties,
   getSendErrors,
   getSendStage,
   isSendFormInvalid,
@@ -47,7 +48,10 @@ import {
   DEFAULT_ROUTE,
   SEND_ROUTE,
 } from '../../../../helpers/constants/routes';
-import { MetaMetricsEventCategory } from '../../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
 import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
 import { AssetPickerAmount } from '../..';
 import useUpdateSwapsState from '../../../../hooks/useUpdateSwapsState';
@@ -68,7 +72,11 @@ export const SendPage = () => {
 
   const draftTransaction = useSelector(getCurrentDraftTransaction);
 
-  const { sendAsset: transactionAsset, amount } = draftTransaction;
+  const {
+    sendAsset: transactionAsset,
+    amount,
+    swapQuotesError,
+  } = draftTransaction;
 
   const draftTransactionID = useSelector(getDraftTransactionID);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
@@ -77,6 +85,7 @@ export const SendPage = () => {
   const history = useHistory();
   const location = useLocation();
   const trackEvent = useContext(MetaMetricsContext);
+  const sendAnalytics = useSelector(getSendAnalyticProperties);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -190,6 +199,20 @@ export const SendPage = () => {
       sendStage === SEND_STAGES.EDIT ? DEFAULT_ROUTE : mostRecentOverviewPage;
     history.push(nextRoute);
   };
+
+  useEffect(() => {
+    if (swapQuotesError) {
+      trackEvent({
+        event: MetaMetricsEventName.sendSwapQuoteError,
+        category: MetaMetricsEventCategory.Send,
+        properties: {
+          ...sendAnalytics,
+        },
+      });
+    }
+    // sendAnalytics should not result in the event refiring
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [trackEvent, swapQuotesError]);
 
   const onSubmit = async (event) => {
     event.preventDefault();
