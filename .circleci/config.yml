@@ -1444,10 +1444,10 @@ jobs:
     executor: playwright
     parallelism: 2
     steps:
-      - attach_workspace:
-        at: .
       - run: *shallow-git-clone
       - run: corepack enable
+      - attach_workspace:
+          at: .
       - run:
           name: Move test build to dist
           command: mv ./dist-test-swap-playwright ./dist
