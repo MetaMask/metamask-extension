@@ -618,9 +618,6 @@
   "send": {
     "message": "Pošlji"
   },
-  "sendTokens": {
-    "message": "Pošlji žetone"
-  },
   "settings": {
     "message": "Nastavitve"
   },
