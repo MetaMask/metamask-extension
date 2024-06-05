@@ -157,7 +157,7 @@ export const CHAIN_IDS = {
   WETHIO: '0x4e',
   CHZ: '0x15b38',
   NUMBERS: '0x290b',
-  SEI: '0x531'
+  SEI: '0x531',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
