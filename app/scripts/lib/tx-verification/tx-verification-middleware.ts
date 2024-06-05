@@ -48,8 +48,16 @@ export function createTxVerificationMiddleware(
 
     const chainId =
       typeof params.chainId === 'string'
-        ? params.chainId.toLowerCase() as `0x${string}`
+        ? (params.chainId.toLowerCase() as `0x${string}`)
         : networkController.state.providerConfig.chainId;
+
+    // if the recipient address is not the bridge contract, skip verification
+    if (
+      params.to.toLowerCase() !==
+      FIRST_PARTY_CONTRACT_NAMES['MetaMask Bridge'][chainId].toLowerCase()
+    ) {
+      return next();
+    }
 
     const paramsToVerify = {
       to: hashMessage(params.to.toLowerCase()),
@@ -65,13 +73,7 @@ export function createTxVerificationMiddleware(
     const signature = `0x${params.data.substring(-SIG_LEN)}`;
     const addressToVerify = verifyMessage(h, signature);
 
-    const canSubmit =
-      params.to.toLowerCase() ===
-      FIRST_PARTY_CONTRACT_NAMES['MetaMask Bridge'][chainId].toLowerCase()
-        ? addressToVerify.toLowerCase() === TRUSTED_BRIDGE_SIGNER.toLowerCase()
-        : true;
-
-    if (!canSubmit) {
+    if (addressToVerify.toLowerCase() !== TRUSTED_BRIDGE_SIGNER.toLowerCase()) {
       return end(new Error('Validation Error'));
     }
     return next();
