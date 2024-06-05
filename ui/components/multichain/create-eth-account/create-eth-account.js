@@ -19,7 +19,7 @@ export const CreateEthAccount = ({ onActionComplete }) => {
     onActionComplete(true);
   };
 
-  const getNextAvailableAccountName = async (_accounts) => {
+  const getNextAvailableAccountName = async () => {
     return await getNextAvailableAccountNameFromController();
   };
 
