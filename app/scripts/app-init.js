@@ -161,6 +161,7 @@ const registerInPageContentScript = async () => {
         js: ['scripts/inpage.js'],
         runAt: 'document_start',
         world: 'MAIN',
+        allFrames: true,
       },
     ]);
   } catch (err) {
