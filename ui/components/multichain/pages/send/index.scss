@@ -76,6 +76,12 @@
         max-width: 20px;
         border-radius: 10px;
       }
+
+      &__badge {
+        transform: scale(1) translate(25%, 70%);
+        width: '20px';
+        height: '20px';
+      }
     }
   }
 

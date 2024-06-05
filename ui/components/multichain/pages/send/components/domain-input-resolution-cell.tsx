@@ -132,9 +132,9 @@ export const DomainInputResolutionCell = ({
             positionObj={{
               bottom: '25%',
               right: '10%',
-              transform: 'scale(1) translate(25%, 70%)',
-              width: '20px',
-              height: '20px',
+            }}
+            badgeContainerProps={{
+              className: 'multichain-send-page__recipient__item__badge',
             }}
           >
             <Identicon address={address} diameter={32} />
