@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Identicon from '../../ui/identicon';
 import AccountMismatchWarning from '../../ui/account-mismatch-warning/account-mismatch-warning.component';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 
 export default function AccountListItem({
   account,
@@ -53,7 +53,7 @@ export default function AccountListItem({
       </div>
       {displayAddress && name && (
         <div className="account-list-item__account-address">
-          {toChecksumHexAddress(address)}
+          {normalizeSafeAddress(address)}
         </div>
       )}
     </div>
