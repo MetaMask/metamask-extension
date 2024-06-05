@@ -166,6 +166,7 @@ class SettingsPage extends PureComponent {
               </>
             )}
             {this.renderTitle()}
+            {/* <Text>IM HERE ...</Text> */}
             {currentPath === NEW_ADD_NETWORK_ROUTE ? null : (
               <Box
                 className="settings-page__header__title-container__search"
@@ -219,7 +220,8 @@ class SettingsPage extends PureComponent {
           </div>
         </div>
         {currentPath === NEW_ADD_NETWORK_ROUTE &&
-        process.env.ENABLE_NETWORK_UI_REDESIGN ? (
+        process.env.ENABLE_NETWORK_UI_REDESIGN &&
+        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? (
           <Box
             className="sticky-button-container"
             backgroundColor={BackgroundColor.backgroundDefault}
@@ -246,16 +248,13 @@ class SettingsPage extends PureComponent {
     const { t } = this.context;
     const { isPopup, pathnameI18nKey, addressName, currentPath } = this.props;
     let titleText;
-    console.log('IM HERE ++++++++', currentPath, pathnameI18nKey);
     if (isPopup && addressName) {
       titleText = t('details');
     } else if (pathnameI18nKey && isPopup) {
-      console.log('IM HERE ---------->', currentPath);
       if (
         currentPath === NEW_ADD_NETWORK_ROUTE &&
         process.env.ENABLE_NETWORK_UI_REDESIGN
       ) {
-        console.log('IM HERE 22 ---------->');
         titleText = t('networkMenuHeading');
       } else {
         titleText = t(pathnameI18nKey);
@@ -264,7 +263,6 @@ class SettingsPage extends PureComponent {
       titleText = t('settings');
     }
 
-    console.log('titleText ----', titleText);
     return (
       <div className="settings-page__header__title-container__title">
         <Text variant={TextVariant.headingMd}>{titleText}</Text>

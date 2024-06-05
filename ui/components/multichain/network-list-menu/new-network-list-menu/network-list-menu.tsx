@@ -680,6 +680,25 @@ export const NetworkListMenu2 = () => {
           </Box>
         ) : null}
       </Box>
+      {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? (
+        <Box
+          className="sticky-button-container"
+          backgroundColor={BackgroundColor.backgroundDefault}
+          textAlign={TextAlign.Center}
+          padding={4}
+        >
+          <ButtonSecondary
+            backgroundColor={BackgroundColor.backgroundDefault}
+            textAlign={TextAlign.Center}
+            variant={TextVariant.bodyMd}
+            size={ButtonSecondarySize.Lg}
+            width={BlockSize.FourFifths}
+            startIconName={IconName.Add}
+          >
+            {t('addCustomNetwork')}
+          </ButtonSecondary>
+        </Box>
+      ) : null}
     </Box>
   );
 };

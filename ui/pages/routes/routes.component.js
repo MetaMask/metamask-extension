@@ -105,6 +105,7 @@ import {
   NOTIFICATIONS_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
   NETWORKS_ROUTE,
+  NEW_ADD_NETWORK_ROUTE,
 } from '../../helpers/constants/routes';
 
 ///: BEGIN:ONLY_INCLUDE_IF(desktop)
@@ -571,7 +572,7 @@ export default class Routes extends Component {
     if (process.env.ENABLE_NETWORK_UI_REDESIGN) {
       const isNetworkSettingPage = Boolean(
         matchPath(location.pathname, {
-          path: `${NETWORKS_ROUTE}`,
+          path: `${NEW_ADD_NETWORK_ROUTE}`,
           exact: false,
         }),
       );
