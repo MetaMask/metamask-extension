@@ -53,96 +53,103 @@ type CreateAccountComponent = <C extends React.ElementType = 'form'>(
   props: CreateAccountProps<C>,
 ) => React.ReactElement | null;
 
-export const CreateAccount: CreateAccountComponent = React.forwardRef(
-  <C extends React.ElementType = 'form'>(
-    {
-      getNextAvailableAccountName,
-      onCreateAccount,
-      onActionComplete,
-    }: CreateAccountProps<C>,
-    ref?: PolymorphicRef<C>,
-  ) => {
-    const t = useI18nContext();
+export const CreateAccount: CreateAccountComponent = React.memo(
+  React.forwardRef(
+    <C extends React.ElementType = 'form'>(
+      {
+        getNextAvailableAccountName,
+        onCreateAccount,
+        onActionComplete,
+      }: CreateAccountProps<C>,
+      ref?: PolymorphicRef<C>,
+    ) => {
+      const t = useI18nContext();
 
-    const history = useHistory();
-    const trackEvent = useContext(MetaMetricsContext);
+      const history = useHistory();
+      const trackEvent = useContext(MetaMetricsContext);
 
-    const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
+      const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
 
-    const accounts: InternalAccount[] = useSelector(getMetaMaskAccountsOrdered);
+      const accounts: InternalAccount[] = useSelector(
+        getMetaMaskAccountsOrdered,
+      );
 
-    const [defaultAccountName, setDefaultAccountName] = useState('');
-    useEffect(() => {
-      getNextAvailableAccountName(accounts).then(setDefaultAccountName);
-    }, [accounts]);
+      const [defaultAccountName, setDefaultAccountName] = useState('');
+      useEffect(() => {
+        getNextAvailableAccountName(accounts).then(setDefaultAccountName);
+      }, [accounts]);
 
-    const [newAccountName, setNewAccountName] = useState('');
-    const trimmedAccountName = newAccountName.trim();
+      const [newAccountName, setNewAccountName] = useState('');
+      const trimmedAccountName = newAccountName.trim();
 
-    const { isValidAccountName, errorMessage } = getAccountNameErrorMessage(
-      accounts,
-      { t },
-      trimmedAccountName || defaultAccountName,
-      defaultAccountName,
-    );
+      const { isValidAccountName, errorMessage } = getAccountNameErrorMessage(
+        accounts,
+        { t },
+        trimmedAccountName || defaultAccountName,
+        defaultAccountName,
+      );
 
-    const onSubmit = useCallback(
-      async (event: KeyboardEvent<HTMLFormElement>) => {
-        event.preventDefault();
+      const onSubmit = useCallback(
+        async (event: KeyboardEvent<HTMLFormElement>) => {
+          event.preventDefault();
 
-        try {
-          await onCreateAccount(trimmedAccountName || defaultAccountName);
-          trackEvent({
-            category: MetaMetricsEventCategory.Accounts,
-            event: MetaMetricsEventName.AccountAdded,
-            properties: {
-              account_type: MetaMetricsEventAccountType.Default,
-              location: 'Home',
-            },
-          });
-          history.push(mostRecentOverviewPage);
-        } catch (error) {
-          trackEvent({
-            category: MetaMetricsEventCategory.Accounts,
-            event: MetaMetricsEventName.AccountAddFailed,
-            properties: {
-              account_type: MetaMetricsEventAccountType.Default,
-              error: (error as Error).message,
-            },
-          });
-        }
-      },
-      [trimmedAccountName, defaultAccountName, mostRecentOverviewPage],
-    );
-
-    return (
-      <Box as="form" onSubmit={onSubmit}>
-        <FormTextField
-          ref={ref}
-          autoFocus
-          id="account-name"
-          label={t('accountName')}
-          placeholder={defaultAccountName}
-          onChange={(e: ChangeEvent<HTMLInputElement>) =>
-            setNewAccountName(e.target.value)
+          try {
+            await onCreateAccount(trimmedAccountName || defaultAccountName);
+            trackEvent({
+              category: MetaMetricsEventCategory.Accounts,
+              event: MetaMetricsEventName.AccountAdded,
+              properties: {
+                account_type: MetaMetricsEventAccountType.Default,
+                location: 'Home',
+              },
+            });
+            history.push(mostRecentOverviewPage);
+          } catch (error) {
+            trackEvent({
+              category: MetaMetricsEventCategory.Accounts,
+              event: MetaMetricsEventName.AccountAddFailed,
+              properties: {
+                account_type: MetaMetricsEventAccountType.Default,
+                error: (error as Error).message,
+              },
+            });
           }
-          helpText={errorMessage}
-          error={!isValidAccountName}
-          onKeyPress={(e: KeyboardEvent<HTMLFormElement>) => {
-            if (e.key === 'Enter') {
-              onSubmit(e);
+        },
+        [trimmedAccountName, defaultAccountName, mostRecentOverviewPage],
+      );
+
+      return (
+        <Box as="form" onSubmit={onSubmit}>
+          <FormTextField
+            ref={ref}
+            autoFocus
+            id="account-name"
+            label={t('accountName')}
+            placeholder={defaultAccountName}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setNewAccountName(e.target.value)
             }
-          }}
-        />
-        <Box display={Display.Flex} marginTop={6} gap={2}>
-          <ButtonSecondary onClick={async () => onActionComplete(false)} block>
-            {t('cancel')}
-          </ButtonSecondary>
-          <ButtonPrimary type="submit" disabled={!isValidAccountName} block>
-            {t('create')}
-          </ButtonPrimary>
+            helpText={errorMessage}
+            error={!isValidAccountName}
+            onKeyPress={(e: KeyboardEvent<HTMLFormElement>) => {
+              if (e.key === 'Enter') {
+                onSubmit(e);
+              }
+            }}
+          />
+          <Box display={Display.Flex} marginTop={6} gap={2}>
+            <ButtonSecondary
+              onClick={async () => onActionComplete(false)}
+              block
+            >
+              {t('cancel')}
+            </ButtonSecondary>
+            <ButtonPrimary type="submit" disabled={!isValidAccountName} block>
+              {t('create')}
+            </ButtonPrimary>
+          </Box>
         </Box>
-      </Box>
-    );
-  },
+      );
+    },
+  ),
 );
