@@ -61,6 +61,7 @@ import DeveloperOptionsTab from './developer-options-tab';
 import ExperimentalTab from './experimental-tab';
 import SettingsSearch from './settings-search';
 import SettingsSearchList from './settings-search-list';
+import NetworksFormSubheader from './networks-tab/networks-tab-subheader/networks-tab-subheader';
 
 class SettingsPage extends PureComponent {
   static propTypes = {
@@ -167,7 +168,8 @@ class SettingsPage extends PureComponent {
             )}
             {this.renderTitle()}
             {/* <Text>IM HERE ...</Text> */}
-            {currentPath === NEW_ADD_NETWORK_ROUTE ? null : (
+            {process.env.ENABLE_NETWORK_UI_REDESIGN &&
+            getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? null : (
               <Box
                 className="settings-page__header__title-container__search"
                 display={[Display.Block]}

@@ -80,9 +80,6 @@ export default function SettingsSearch({
     );
   };
 
-  if (process.env.ENABLE_NETWORK_UI_REDESIGN) {
-    return null;
-  }
   return (
     <TextField
       id="search-settings"

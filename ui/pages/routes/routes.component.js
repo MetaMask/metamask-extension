@@ -569,7 +569,10 @@ export default class Routes extends Component {
       return true;
     }
 
-    if (process.env.ENABLE_NETWORK_UI_REDESIGN) {
+    if (
+      process.env.ENABLE_NETWORK_UI_REDESIGN &&
+      getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+    ) {
       const isNetworkSettingPage = Boolean(
         matchPath(location.pathname, {
           path: `${NEW_ADD_NETWORK_ROUTE}`,

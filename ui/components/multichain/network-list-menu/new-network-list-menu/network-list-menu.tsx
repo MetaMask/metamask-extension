@@ -89,6 +89,7 @@ import Popover from '../../../ui/popover';
 import ConfirmationPage from '../../../../pages/confirmations/confirmation/confirmation';
 import ScrollToBottom from '../../../../pages/confirmations/components/confirm/scroll-to-bottom';
 import { PageContainerFooter } from '../../../ui/page-container';
+import NetworksFormSubheader from '../../../../pages/settings/networks-tab/networks-tab-subheader/networks-tab-subheader';
 
 export const NetworkListMenu2 = () => {
   const t = useI18nContext();
@@ -234,7 +235,7 @@ export const NetworkListMenu2 = () => {
       shouldSort: true,
       keys: ['nickname', 'chainId', 'ticker'],
     });
-    const fuse2 = new Fuse(searchAddNetworkResults, {
+    const fuseForPopularNetworks = new Fuse(searchAddNetworkResults, {
       threshold: 0.2,
       location: 0,
       distance: 100,
@@ -248,18 +249,22 @@ export const NetworkListMenu2 = () => {
     console.log('searchQuery ------------', searchAddNetworkResults);
 
     fuse.setCollection(searchResults);
-    fuse2.setCollection(searchAddNetworkResults);
+    fuseForPopularNetworks.setCollection(searchAddNetworkResults);
     const fuseResults = fuse.search(searchQuery);
-    const fuse2Results = fuse.search(searchQuery);
+    const fuseForPopularNetworksResults =
+      fuseForPopularNetworks.search(searchQuery);
 
-    console.log('fuse2Results ------------', fuse2Results);
+    console.log(
+      'fuseForPopularNetworksResults ------------',
+      fuseForPopularNetworksResults,
+    );
 
     // Ensure order integrity with original list
     searchResults = searchResults.filter((network) =>
       fuseResults.includes(network),
     );
     searchAddNetworkResults = searchAddNetworkResults.filter((network) =>
-      fuse2Results.includes(network),
+      fuseForPopularNetworksResults.includes(network),
     );
   }
 
@@ -345,6 +350,12 @@ export const NetworkListMenu2 = () => {
       className="new-network-list-menu-content-wrapper__network"
       backgroundColor={BackgroundColor.backgroundDefault}
     >
+      {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? (
+        <Box padding={4}>
+          <NetworksFormSubheader addNewNetwork={false} />
+        </Box>
+      ) : null}
+
       <Box paddingLeft={4} paddingRight={4} paddingBottom={4} paddingTop={0}>
         <TextFieldSearch
           size={Size.LG}
@@ -680,25 +691,6 @@ export const NetworkListMenu2 = () => {
           </Box>
         ) : null}
       </Box>
-      {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? (
-        <Box
-          className="sticky-button-container"
-          backgroundColor={BackgroundColor.backgroundDefault}
-          textAlign={TextAlign.Center}
-          padding={4}
-        >
-          <ButtonSecondary
-            backgroundColor={BackgroundColor.backgroundDefault}
-            textAlign={TextAlign.Center}
-            variant={TextVariant.bodyMd}
-            size={ButtonSecondarySize.Lg}
-            width={BlockSize.FourFifths}
-            startIconName={IconName.Add}
-          >
-            {t('addCustomNetwork')}
-          </ButtonSecondary>
-        </Box>
-      ) : null}
     </Box>
   );
 };
