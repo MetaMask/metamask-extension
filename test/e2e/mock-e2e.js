@@ -24,6 +24,7 @@ const blacklistedHosts = [
 const {
   mockEmptyStalelistAndHotlist,
 } = require('./tests/phishing-controller/mocks');
+const { mockNotificationServices } = require('./tests/notifications/mocks');
 
 const emptyHtmlPage = () => `<!DOCTYPE html>
 <html lang="en">
@@ -592,6 +593,9 @@ async function setupMocking(
         statusCode: 200,
       };
     });
+
+  // Notification APIs
+  mockNotificationServices(server);
 
   /**
    * Returns an array of alphanumerically sorted hostnames that were requested
