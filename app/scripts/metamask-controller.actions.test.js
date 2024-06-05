@@ -198,9 +198,9 @@ describe('MetaMaskController', function () {
 
   describe('#setLocked', function () {
     it('should lock the wallet', async function () {
-      const { isUnlocked, keyrings } = await metamaskController.setLocked();
-      assert(!isUnlocked);
-      assert.deepEqual(keyrings, []);
+      await metamaskController.setLocked();
+      assert(!metamaskController.keyringController.state.isUnlocked);
+      assert.deepEqual(metamaskController.keyringController.state.keyrings, []);
     });
   });
 
