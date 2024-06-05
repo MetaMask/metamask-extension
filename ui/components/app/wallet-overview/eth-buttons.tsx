@@ -15,12 +15,12 @@ import {
 } from '../../../selectors/institutional/selectors';
 ///: END:ONLY_INCLUDE_IF
 import { I18nContext } from '../../../contexts/i18n';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   BUILD_QUOTE_ROUTE,
+  ///: END:ONLY_INCLUDE_IF
   SEND_ROUTE,
 } from '../../../helpers/constants/routes';
-///: END:ONLY_INCLUDE_IF
 import {
   getCurrentChainId,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
