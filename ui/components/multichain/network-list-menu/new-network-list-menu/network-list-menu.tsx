@@ -565,6 +565,7 @@ export const NetworkListMenu2 = () => {
               <Box
                 paddingBottom={4}
                 paddingTop={4}
+                marginBottom={4}
                 display={Display.Flex}
                 justifyContent={JustifyContent.spaceBetween}
               >
@@ -581,7 +582,7 @@ export const NetworkListMenu2 = () => {
                 >
                   <Box display={Display.Flex} alignItems={AlignItems.center}>
                     <AvatarNetwork
-                      size={AvatarNetworkSize.Sm}
+                      size={AvatarNetworkSize.Md}
                       src={item.rpcPrefs?.imageUrl}
                       name={item.nickname}
                     />
