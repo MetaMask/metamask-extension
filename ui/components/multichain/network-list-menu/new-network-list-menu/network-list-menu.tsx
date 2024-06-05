@@ -554,18 +554,18 @@ export const NetworkListMenu2 = () => {
             </Box>
           </Box>
         ) : (
-          <Box className="add-network__networks-container">
+          <Box className="new-network-list__networks-container">
             <Box
               marginTop={
                 getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? 0 : 4
               }
               marginBottom={1}
-              className="add-network__main-container"
+              paddingLeft={4}
+              paddingRight={4}
             >
               <Box
-                paddingBottom={4}
-                paddingTop={4}
-                marginBottom={4}
+                marginTop={4}
+                marginBottom={8}
                 display={Display.Flex}
                 justifyContent={JustifyContent.spaceBetween}
               >
@@ -578,7 +578,7 @@ export const NetworkListMenu2 = () => {
                   alignItems={AlignItems.center}
                   justifyContent={JustifyContent.spaceBetween}
                   marginBottom={6}
-                  className="add-network__list-of-networks"
+                  className="new-network-list__list-of-networks"
                 >
                   <Box display={Display.Flex} alignItems={AlignItems.center}>
                     <AvatarNetwork
@@ -588,9 +588,9 @@ export const NetworkListMenu2 = () => {
                     />
                     <Box marginLeft={2}>
                       <Text
-                        variant={TextVariant.bodySmBold}
-                        as="h6"
                         color={TextColor.textDefault}
+                        backgroundColor={BackgroundColor.transparent}
+                        ellipsis
                       >
                         {item.nickname}
                       </Text>
@@ -650,6 +650,7 @@ export const NetworkListMenu2 = () => {
           padding={4}
           display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
+          className="new-network-list__test-networks-container"
         >
           <Text>{t('showTestnetNetworks')}</Text>
           <ToggleButton

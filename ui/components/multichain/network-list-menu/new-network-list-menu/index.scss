@@ -1,7 +1,4 @@
-.new-network-list-menu-content-wrapper {
-  &__network {
-  }
-}
+@use "design-system";
 
 .new-network-list-menu {
   // max-height: 100%;
@@ -12,3 +9,30 @@
   position: sticky;
   bottom: 0;
 }
+
+.new-network-list {
+  &__list-of-networks {
+    @include design-system.screen-sm-min {
+      width: 100%;
+    }
+  }
+
+  &__networks-container {
+    padding-inline-end: 24px;
+
+    @include design-system.screen-sm-max {
+      padding: 0;
+    }
+  }
+
+  &__test-networks-container {
+    padding-inline-end: 24px;
+
+    @include design-system.screen-sm-max {
+      padding: 0;
+    }
+  }
+}
+
+
+
