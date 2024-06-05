@@ -1,4 +1,5 @@
-export const PERSONAL_SIGN_SENDER_ADDRESS = '0x8eeee1781fd885ff5ddef7789486676961873d12';
+export const PERSONAL_SIGN_SENDER_ADDRESS =
+  '0x8eeee1781fd885ff5ddef7789486676961873d12';
 
 export const unapprovedPersonalSignMsg = {
   id: '0050d5b0-c023-11ee-a0cb-3390a510a0ab',
