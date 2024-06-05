@@ -1,6 +1,7 @@
 import { hashMessage } from '@ethersproject/hash';
 import { verifyMessage } from '@ethersproject/wallet';
 import type { NetworkController } from '@metamask/network-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { Json, JsonRpcParams, hasProperty, isObject } from '@metamask/utils';
 import {
   JsonRpcRequest,
@@ -74,7 +75,9 @@ export function createTxVerificationMiddleware(
     const addressToVerify = verifyMessage(h, signature);
 
     if (addressToVerify.toLowerCase() !== TRUSTED_BRIDGE_SIGNER.toLowerCase()) {
-      return end(new Error('Validation Error'));
+      return end(
+        rpcErrors.invalidParams('Invalid bridge transaction signature.'),
+      );
     }
     return next();
   };
