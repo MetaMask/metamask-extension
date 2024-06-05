@@ -1,5 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import React, { useMemo, useState } from 'react';
+import React, { Dispatch, SetStateAction, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { EtherDenomination } from '../../../../../../../../shared/constants/common';
 import { EditGasModes } from '../../../../../../../../shared/constants/gas';
@@ -25,6 +25,8 @@ import {
 import { getConversionRate } from '../../../../../../../ducks/metamask/metamask';
 import {
   AlignItems,
+  BlockSize,
+  BorderColor,
   Display,
   FlexDirection,
   IconColor,
@@ -160,60 +162,20 @@ export const RedesignedGasFees = () => {
 
   return (
     <>
-      <ConfirmInfoRow
-        label="Estimated fee"
-        variant={ConfirmInfoRowVariant.Default}
-        tooltip="estimated fee tooltip"
-      >
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          justifyContent={JustifyContent.spaceBetween}
-          alignItems={AlignItems.center}
-          textAlign={TextAlign.Center}
-          style={{ flexGrow: '1' }}
-        >
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            justifyContent={JustifyContent.spaceEvenly}
-            alignItems={AlignItems.center}
-            textAlign={TextAlign.Center}
-            style={{ flexGrow: '1' }}
-          >
-            <Text color={TextColor.textAlternative}>{currentCurrencyFees}</Text>
-            <Text color={TextColor.textAlternative}>{nativeCurrencyFees}</Text>
-          </Box>
-
-          <EditGasIconButton
-            supportsEIP1559={supportsEIP1559}
-            setShowCustomizeGasPopover={setShowCustomizeGasPopover}
-          />
-        </Box>
-      </ConfirmInfoRow>
-
+      <EditGasFeesRow
+        currentCurrencyFees={currentCurrencyFees}
+        nativeCurrencyFees={nativeCurrencyFees}
+        supportsEIP1559={supportsEIP1559}
+        setShowCustomizeGasPopover={setShowCustomizeGasPopover}
+      />
       {supportsEIP1559 && (
-        <ConfirmInfoRow
-          label="Gas speed"
-          variant={ConfirmInfoRowVariant.Default}
-        >
-          <Box display={Display.Flex} alignItems={AlignItems.center}>
-            {/* TODO: Fix bug in the gas timing component after selection is made */}
-            <GasTiming
-              maxFeePerGas={maxFeePerGas}
-              maxPriorityFeePerGas={maxPriorityFeePerGas}
-            />
-          </Box>
-        </ConfirmInfoRow>
+        <GasTimings
+          maxFeePerGas={maxFeePerGas}
+          maxPriorityFeePerGas={maxPriorityFeePerGas}
+        />
       )}
-      {/* TODO: Add separator */}
-      <ConfirmInfoRow
-        label="Total"
-        variant={ConfirmInfoRowVariant.Default}
-        tooltip="total tooltip"
-      >
-        <Text>{nativeCurrencyFees}</Text>
-      </ConfirmInfoRow>
+      <Divider />
+      <TotalGasFees nativeCurrencyFees={nativeCurrencyFees} />
 
       {hasLayer1GasFee && (
         <Layer2GasFeesExpandBtn
@@ -247,6 +209,96 @@ export const RedesignedGasFees = () => {
       )}
       {supportsEIP1559 && <Type2TxGasModal />}
     </>
+  );
+};
+
+const EditGasFeesRow = ({
+  currentCurrencyFees,
+  nativeCurrencyFees,
+  supportsEIP1559,
+  setShowCustomizeGasPopover,
+}: {
+  currentCurrencyFees: string;
+  nativeCurrencyFees: string | undefined;
+  supportsEIP1559: boolean;
+  setShowCustomizeGasPopover: Dispatch<SetStateAction<boolean>>;
+}) => {
+  return (
+    <ConfirmInfoRow
+      label="Estimated fee"
+      variant={ConfirmInfoRowVariant.Default}
+      tooltip="estimated fee tooltip"
+    >
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        alignItems={AlignItems.center}
+        textAlign={TextAlign.Center}
+        style={{ flexGrow: '1' }}
+      >
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          justifyContent={JustifyContent.spaceEvenly}
+          alignItems={AlignItems.center}
+          textAlign={TextAlign.Center}
+          style={{ flexGrow: '1' }}
+        >
+          <Text color={TextColor.textAlternative}>{currentCurrencyFees}</Text>
+          <Text color={TextColor.textAlternative}>{nativeCurrencyFees}</Text>
+        </Box>
+
+        <EditGasIconButton
+          supportsEIP1559={supportsEIP1559}
+          setShowCustomizeGasPopover={setShowCustomizeGasPopover}
+        />
+      </Box>
+    </ConfirmInfoRow>
+  );
+};
+
+const GasTimings = ({
+  maxFeePerGas,
+  maxPriorityFeePerGas,
+}: {
+  maxFeePerGas: string;
+  maxPriorityFeePerGas: string;
+}) => {
+  return (
+    <ConfirmInfoRow label="Gas speed" variant={ConfirmInfoRowVariant.Default}>
+      <Box display={Display.Flex} alignItems={AlignItems.center}>
+        {/* TODO: Fix bug in the gas timing component after selection is made */}
+        <GasTiming
+          maxFeePerGas={maxFeePerGas}
+          maxPriorityFeePerGas={maxPriorityFeePerGas}
+        />
+      </Box>
+    </ConfirmInfoRow>
+  );
+};
+
+const Divider = () => (
+  <Box
+    borderColor={BorderColor.borderMuted}
+    borderWidth={1}
+    width={BlockSize.Full}
+  />
+);
+
+const TotalGasFees = ({
+  nativeCurrencyFees,
+}: {
+  nativeCurrencyFees: string | undefined;
+}) => {
+  return (
+    <ConfirmInfoRow
+      label="Total"
+      variant={ConfirmInfoRowVariant.Default}
+      tooltip="total tooltip"
+    >
+      <Text>{nativeCurrencyFees}</Text>
+    </ConfirmInfoRow>
   );
 };
 
