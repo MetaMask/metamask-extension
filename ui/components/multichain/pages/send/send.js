@@ -81,6 +81,7 @@ export const SendPage = () => {
   const draftTransactionID = useSelector(getDraftTransactionID);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const sendStage = useSelector(getSendStage);
+  const isSwapAndSend = getIsDraftSwapAndSend(draftTransaction);
 
   const history = useHistory();
   const location = useLocation();
@@ -235,7 +236,8 @@ export const SendPage = () => {
       category: MetaMetricsEventCategory.Transactions,
       event: 'Complete',
       properties: {
-        action: 'Edit Screen',
+        ...sendAnalytics,
+        action: isSwapAndSend ? 'Submit Immediately' : 'Edit Screen',
         legacy_event: true,
       },
     });
@@ -278,8 +280,6 @@ export const SendPage = () => {
       dispatch(updateSendAmount(newAmountRaw, newAmountFormatted)),
     [dispatch],
   );
-
-  const isSwapAndSend = getIsDraftSwapAndSend(draftTransaction);
 
   return (
     <Page className="multichain-send-page">
