@@ -9,7 +9,7 @@ import { useTransactionModalContext } from '../../../../../../../contexts/transa
 import { IconColor } from '../../../../../../../helpers/constants/design-system';
 import { useTransactionEventFragment } from '../../../../../hooks/useTransactionEventFragment';
 
-export const EditGasIcon = ({
+export const EditGasIconButton = ({
   supportsEIP1559,
   setShowCustomizeGasPopover,
 }: {
