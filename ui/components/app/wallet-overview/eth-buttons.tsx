@@ -35,8 +35,8 @@ import {
   getSelectedInternalAccount,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
-  getUseExternalServices,
   ///: END:ONLY_INCLUDE_IF
+  getUseExternalServices,
 } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
