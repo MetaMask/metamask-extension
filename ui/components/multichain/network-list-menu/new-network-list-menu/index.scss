@@ -1,20 +1,11 @@
 .new-network-list-menu-content-wrapper {
   &__network {
-    // height: 200px;
-    display: flex;
-    flex-direction: column;
-    // height: 100vh;
   }
 }
 
 .new-network-list-menu {
   // max-height: 100%;
   overflow: auto;
-}
-
-.content-todo {
-  flex: 1; /* This makes the content area flexible to fill the space */
-  // overflow-y: auto;  /* Adds scroll to the content area if it overflows */
 }
 
 .sticky-button-container {
