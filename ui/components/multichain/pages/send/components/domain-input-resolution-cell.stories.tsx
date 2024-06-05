@@ -1,0 +1,52 @@
+import React from 'react';
+import { DomainInputResolutionCell } from '.';
+
+
+export default {
+  title: 'Components/Multichain/DomainInputResolutionCell',
+  component: DomainInputResolutionCell,
+  argTypes: {
+    domainType: {
+      control: 'text',
+    },
+    address: {
+      control: 'text',
+    },
+    protocol: {
+      control: 'text',
+    },
+    domainName: {
+      control: 'text',
+    },
+    resolvingSnap: {
+      control: 'text',
+    },
+    onClick: {
+      action: 'onClick',
+    }
+  },
+  args: {
+    domainType: 'ENS',
+    address: '0xc0ffee254729296a45a3885639AC7E10F9d54979',
+    protocol: 'Ethereum Name Service',
+    domainName: 'hamer.eth',
+    resolvingSnap: '',
+    onClick: () => undefined,
+  }
+};
+
+export const DefaultStory = (args) => <DomainInputResolutionCell {...args} />;
+
+DefaultStory.storyName = 'ENS Resolution';
+
+export const LensStory = (args) => <DomainInputResolutionCell {...args} />;
+LensStory.args = {
+  domainType: 'Other',
+  address: '0xc0ffee254729296a45a3885639AC7E10F9d54979',
+  protocol: 'Lens Protocol',
+  domainName: 'm0nt0y4.lens',
+  resolvingSnap: 'Lens Resolver Snap',
+  onClick: () => undefined,
+};
+
+LensStory.storyName = 'Lens Resolution';
