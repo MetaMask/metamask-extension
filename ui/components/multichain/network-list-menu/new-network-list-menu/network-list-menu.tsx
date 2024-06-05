@@ -50,6 +50,7 @@ import {
   FlexDirection,
   JustifyContent,
   Size,
+  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
@@ -63,6 +64,7 @@ import {
   ButtonVariant,
   ButtonSecondary,
   ButtonSecondarySize,
+  IconName,
 } from '../../../component-library';
 import { TextFieldSearch } from '../../../component-library/text-field-search/deprecated';
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
@@ -86,6 +88,7 @@ import { ApprovalType } from '@metamask/controller-utils';
 import Popover from '../../../ui/popover';
 import ConfirmationPage from '../../../../pages/confirmations/confirmation/confirmation';
 import ScrollToBottom from '../../../../pages/confirmations/components/confirm/scroll-to-bottom';
+import { PageContainerFooter } from '../../../ui/page-container';
 
 export const NetworkListMenu2 = () => {
   const t = useI18nContext();
@@ -291,7 +294,6 @@ export const NetworkListMenu2 = () => {
           selected={isCurrentNetwork}
           focus={isCurrentNetwork}
           onClick={() => {
-            dispatch(toggleNetworkMenu());
             if (network.providerType) {
               dispatch(setProviderType(network.providerType));
             } else {
@@ -312,7 +314,6 @@ export const NetworkListMenu2 = () => {
           onDeleteClick={
             canDeleteNetwork
               ? () => {
-                  dispatch(toggleNetworkMenu());
                   dispatch(
                     showModal({
                       name: 'CONFIRM_DELETE_NETWORK',
@@ -340,7 +341,10 @@ export const NetworkListMenu2 = () => {
   };
 
   return (
-    <Box className="new-network-list-menu-content-wrapper__network">
+    <Box
+      className="new-network-list-menu-content-wrapper__network"
+      backgroundColor={BackgroundColor.backgroundDefault}
+    >
       <Box className="content-todo">
         <ScrollToBottom>
           {/* search content */}
@@ -445,7 +449,6 @@ export const NetworkListMenu2 = () => {
                                   selected={isCurrentNetwork}
                                   focus={isCurrentNetwork && !showSearch}
                                   onClick={() => {
-                                    dispatch(toggleNetworkMenu());
                                     if (network.providerType) {
                                       dispatch(
                                         setProviderType(network.providerType),
@@ -480,7 +483,6 @@ export const NetworkListMenu2 = () => {
                                   onDeleteClick={
                                     canDeleteNetwork
                                       ? () => {
-                                          dispatch(toggleNetworkMenu());
                                           dispatch(
                                             showModal({
                                               name: 'CONFIRM_DELETE_NETWORK',
@@ -699,9 +701,6 @@ export const NetworkListMenu2 = () => {
             ) : null}
           </Box>
         </ScrollToBottom>
-      </Box>
-      <Box className="sticky-button">
-        <ButtonSecondary size={ButtonSecondarySize.Lg}>Test</ButtonSecondary>
       </Box>
     </Box>
   );

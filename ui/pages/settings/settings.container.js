@@ -27,6 +27,7 @@ import {
   EXPERIMENTAL_ROUTE,
   ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
+  NEW_ADD_NETWORK_ROUTE,
 } from '../../helpers/constants/routes';
 import Settings from './settings.component';
 
@@ -45,6 +46,7 @@ const ROUTES_TO_I18N_KEYS = {
   [GENERAL_ROUTE]: 'general',
   [NETWORKS_FORM_ROUTE]: 'networks',
   [NETWORKS_ROUTE]: 'networks',
+  [NEW_ADD_NETWORK_ROUTE]: 'newAddNetwork',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
 };
 

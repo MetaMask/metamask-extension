@@ -33,12 +33,17 @@ import {
   IconName,
   Box,
   Text,
+  ButtonSecondary,
+  ButtonSecondarySize,
 } from '../../components/component-library';
 import {
   AlignItems,
+  BackgroundColor,
+  BlockSize,
   Color,
   Display,
   FlexDirection,
+  TextAlign,
   TextVariant,
 } from '../../helpers/constants/design-system';
 import MetafoxLogo from '../../components/ui/metafox-logo';
@@ -121,6 +126,7 @@ class SettingsPage extends PureComponent {
     const { searchResults, isSearchList, searchText } = this.state;
     const { t } = this.context;
     const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
+    const customGap = process.env.ENABLE_NETWORK_UI_REDESIGN ? 0 : 4;
 
     return (
       <div
@@ -133,7 +139,10 @@ class SettingsPage extends PureComponent {
           padding={4}
           paddingBottom={[2, 4]}
         >
-          <div className="settings-page__header__title-container">
+          <Box
+            className="settings-page__header__title-container"
+            gap={customGap}
+          >
             {isPopup && (
               <>
                 {currentPath === SETTINGS_ROUTE ? (
@@ -157,7 +166,7 @@ class SettingsPage extends PureComponent {
               </>
             )}
             {this.renderTitle()}
-            {currentPath === NETWORKS_ROUTE ? null : (
+            {currentPath === NEW_ADD_NETWORK_ROUTE ? null : (
               <Box
                 className="settings-page__header__title-container__search"
                 display={[Display.Block]}
@@ -197,7 +206,7 @@ class SettingsPage extends PureComponent {
               size={ButtonIconSize.Sm}
               marginLeft="auto"
             />
-          </div>
+          </Box>
         </Box>
 
         <div className="settings-page__content">
@@ -209,6 +218,26 @@ class SettingsPage extends PureComponent {
             {this.renderContent()}
           </div>
         </div>
+        {currentPath === NEW_ADD_NETWORK_ROUTE &&
+        process.env.ENABLE_NETWORK_UI_REDESIGN ? (
+          <Box
+            className="sticky-button-container"
+            backgroundColor={BackgroundColor.backgroundDefault}
+            textAlign={TextAlign.Center}
+            padding={4}
+          >
+            <ButtonSecondary
+              backgroundColor={BackgroundColor.backgroundDefault}
+              textAlign={TextAlign.Center}
+              variant={TextVariant.bodyMd}
+              size={ButtonSecondarySize.Lg}
+              width={BlockSize.FourFifths}
+              startIconName={IconName.Add}
+            >
+              {t('addCustomNetwork')}
+            </ButtonSecondary>
+          </Box>
+        ) : null}
       </div>
     );
   }
@@ -217,13 +246,16 @@ class SettingsPage extends PureComponent {
     const { t } = this.context;
     const { isPopup, pathnameI18nKey, addressName, currentPath } = this.props;
     let titleText;
+    console.log('IM HERE ++++++++', currentPath, pathnameI18nKey);
     if (isPopup && addressName) {
       titleText = t('details');
     } else if (pathnameI18nKey && isPopup) {
+      console.log('IM HERE ---------->', currentPath);
       if (
-        currentPath === NETWORKS_ROUTE &&
+        currentPath === NEW_ADD_NETWORK_ROUTE &&
         process.env.ENABLE_NETWORK_UI_REDESIGN
       ) {
+        console.log('IM HERE 22 ---------->');
         titleText = t('networkMenuHeading');
       } else {
         titleText = t(pathnameI18nKey);
@@ -232,6 +264,7 @@ class SettingsPage extends PureComponent {
       titleText = t('settings');
     }
 
+    console.log('titleText ----', titleText);
     return (
       <div className="settings-page__header__title-container__title">
         <Text variant={TextVariant.headingMd}>{titleText}</Text>
