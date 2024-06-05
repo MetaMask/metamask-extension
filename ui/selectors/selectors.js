@@ -98,15 +98,7 @@ import {
   hexToDecimal,
 } from '../../shared/modules/conversion.utils';
 import { BackgroundColor } from '../helpers/constants/design-system';
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  NOTIFICATION_BLOCKAID_DEFAULT,
-  ///: END:ONLY_INCLUDE_IF
-  NOTIFICATION_DROP_LEDGER_FIREFOX,
-  NOTIFICATION_PETNAMES,
-  NOTIFICATION_U2F_LEDGER_LIVE,
-  NOTIFICATION_SIMULATIONS,
-} from '../../shared/notifications';
+import { NOTIFICATION_DROP_LEDGER_FIREFOX } from '../../shared/notifications';
 import {
   SURVEY_DATE,
   SURVEY_END_TIME,
@@ -1723,23 +1715,10 @@ export const getUnreadNotificationsCount = createSelector(
 function getAllowedAnnouncementIds(state) {
   const currentKeyring = getCurrentKeyring(state);
   const currentKeyringIsLedger = currentKeyring?.type === KeyringType.ledger;
-  const supportsWebHid = window.navigator.hid !== undefined;
-  const currentlyUsingLedgerLive =
-    getLedgerTransportType(state) === LedgerTransportTypes.live;
   const isFirefox = window.navigator.userAgent.includes('Firefox');
 
   return {
-    8: supportsWebHid && currentKeyringIsLedger && currentlyUsingLedgerLive,
-    20: currentKeyringIsLedger && isFirefox,
-    24: state.metamask.hadAdvancedGasFeesSetPriorToMigration92_3 === true,
-    // This syntax is unusual, but very helpful here.  It's equivalent to `unnamedObject[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
     [NOTIFICATION_DROP_LEDGER_FIREFOX]: currentKeyringIsLedger && isFirefox,
-    [NOTIFICATION_U2F_LEDGER_LIVE]: currentKeyringIsLedger && !isFirefox,
-    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-    [NOTIFICATION_BLOCKAID_DEFAULT]: true,
-    ///: END:ONLY_INCLUDE_IF
-    [NOTIFICATION_PETNAMES]: true,
-    [NOTIFICATION_SIMULATIONS]: true,
   };
 }
 
