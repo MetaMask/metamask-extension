@@ -1456,7 +1456,7 @@ jobs:
           name: report for pipeline integration
           path: public/playwright/playwright-reports/junit/test-results.xml
 
-test-e2e-swap-playwright - OPTIONAL:
+  test-e2e-swap-playwright - OPTIONAL:
     executor: playwright
     parallelism: 2
     steps:
