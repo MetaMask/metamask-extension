@@ -1643,7 +1643,7 @@ jobs:
       - run:
           name: Move test build to dist
           command: mv ./dist-test-swap-playwright ./dist
-gi      - run:
+      - run:
           name: Install chromium
           command: |
             yarn playwright install chromium
