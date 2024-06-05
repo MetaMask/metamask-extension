@@ -1172,24 +1172,11 @@
       "packages": {
         "@metamask/eth-json-rpc-middleware>@metamask/json-rpc-engine": true,
         "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true,
-        "@metamask/eth-sig-util": true,
+        "@metamask/message-manager>@metamask/eth-sig-util": true,
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "pify": true,
         "sass-loader>klona": true
-      }
-    },
-    "@metamask/eth-json-rpc-middleware>@metamask/eth-json-rpc-provider": {
-      "packages": {
-        "@metamask/eth-json-rpc-middleware>@metamask/eth-json-rpc-provider>@metamask/json-rpc-engine": true,
-        "@metamask/safe-event-emitter": true
-      }
-    },
-    "@metamask/eth-json-rpc-middleware>@metamask/eth-json-rpc-provider>@metamask/json-rpc-engine": {
-      "packages": {
-        "@metamask/providers>@metamask/rpc-errors": true,
-        "@metamask/safe-event-emitter": true,
-        "@metamask/utils": true
       }
     },
     "@metamask/eth-json-rpc-middleware>@metamask/json-rpc-engine": {
@@ -1212,8 +1199,8 @@
         "@ethereumjs/tx": true,
         "@ethereumjs/tx>@ethereumjs/rlp": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/eth-sig-util": true,
         "@metamask/eth-trezor-keyring>hdkey": true,
+        "@metamask/message-manager>@metamask/eth-sig-util": true,
         "browserify>buffer": true,
         "webpack>events": true
       }
@@ -1224,36 +1211,6 @@
         "watchify>xtend": true
       }
     },
-    "@metamask/eth-sig-util": {
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@ethereumjs/tx>ethereum-cryptography": true,
-        "@metamask/abi-utils": true,
-        "@metamask/eth-sig-util>tweetnacl": true,
-        "@metamask/eth-sig-util>tweetnacl-util": true,
-        "@metamask/utils": true,
-        "browserify>buffer": true
-      }
-    },
-    "@metamask/eth-sig-util>tweetnacl": {
-      "globals": {
-        "crypto": true,
-        "msCrypto": true,
-        "nacl": "write"
-      },
-      "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
-    "@metamask/eth-sig-util>tweetnacl-util": {
-      "globals": {
-        "atob": true,
-        "btoa": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
     "@metamask/eth-snap-keyring": {
       "globals": {
         "URL": true,
@@ -1261,9 +1218,9 @@
       },
       "packages": {
         "@ethereumjs/tx": true,
-        "@metamask/eth-sig-util": true,
         "@metamask/eth-snap-keyring>uuid": true,
         "@metamask/keyring-api": true,
+        "@metamask/message-manager>@metamask/eth-sig-util": true,
         "@metamask/utils": true,
         "superstruct": true,
         "webpack>events": true
@@ -1406,7 +1363,7 @@
     },
     "@metamask/eth-trezor-keyring>@trezor/connect-plugin-ethereum": {
       "packages": {
-        "@metamask/eth-sig-util": true,
+        "@metamask/message-manager>@metamask/eth-sig-util": true,
         "@trezor/connect-web>tslib": true
       }
     },
@@ -1637,11 +1594,11 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/browser-passworder": true,
-        "@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/base-controller": true,
         "@metamask/keyring-controller>@metamask/eth-hd-keyring": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
+        "@metamask/message-manager>@metamask/eth-sig-util": true,
         "@metamask/name-controller>async-mutex": true,
         "@metamask/utils": true
       }
@@ -1661,7 +1618,7 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
-        "@metamask/eth-sig-util": true,
+        "@metamask/message-manager>@metamask/eth-sig-util": true,
         "@metamask/scure-bip39": true,
         "@metamask/utils": true,
         "browserify>buffer": true
@@ -1671,7 +1628,7 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
-        "@metamask/eth-sig-util": true,
+        "@metamask/message-manager>@metamask/eth-sig-util": true,
         "@metamask/utils": true,
         "browserify>buffer": true,
         "mocha>serialize-javascript>randombytes": true
@@ -1752,8 +1709,8 @@
     "@metamask/message-manager": {
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/eth-sig-util": true,
         "@metamask/message-manager>@metamask/controller-utils": true,
+        "@metamask/message-manager>@metamask/eth-sig-util": true,
         "@metamask/message-manager>jsonschema": true,
         "@metamask/utils": true,
         "browserify>buffer": true,
@@ -1777,6 +1734,36 @@
         "browserify>buffer": true,
         "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true
+      }
+    },
+    "@metamask/message-manager>@metamask/eth-sig-util": {
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
+        "@metamask/abi-utils": true,
+        "@metamask/message-manager>@metamask/eth-sig-util>tweetnacl": true,
+        "@metamask/message-manager>@metamask/eth-sig-util>tweetnacl-util": true,
+        "@metamask/utils": true,
+        "browserify>buffer": true
+      }
+    },
+    "@metamask/message-manager>@metamask/eth-sig-util>tweetnacl": {
+      "globals": {
+        "crypto": true,
+        "msCrypto": true,
+        "nacl": "write"
+      },
+      "packages": {
+        "browserify>browser-resolve": true
+      }
+    },
+    "@metamask/message-manager>@metamask/eth-sig-util>tweetnacl-util": {
+      "globals": {
+        "atob": true,
+        "btoa": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
       }
     },
     "@metamask/message-manager>jsonschema": {
@@ -1829,11 +1816,11 @@
         "@metamask/controller-utils": true,
         "@metamask/eth-json-rpc-middleware": true,
         "@metamask/eth-query": true,
+        "@metamask/eth-token-tracker>@metamask/eth-block-tracker": true,
         "@metamask/network-controller>@metamask/base-controller": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-provider": true,
         "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
-        "@metamask/network-controller>eth-block-tracker": true,
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-engine": true,
         "@metamask/utils": true,
@@ -1854,11 +1841,17 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/eth-json-rpc-middleware>@metamask/eth-json-rpc-provider": true,
+        "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/eth-json-rpc-provider": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/json-rpc-engine": true,
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "node-fetch": true
+      }
+    },
+    "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/eth-json-rpc-provider": {
+      "packages": {
+        "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/json-rpc-engine": true,
+        "@metamask/safe-event-emitter": true
       }
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/json-rpc-engine": {
@@ -1872,19 +1865,6 @@
       "packages": {
         "@metamask/safe-event-emitter": true,
         "@metamask/snaps-controllers>@metamask/json-rpc-engine": true
-      }
-    },
-    "@metamask/network-controller>eth-block-tracker": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/eth-query>json-rpc-random-id": true,
-        "@metamask/safe-event-emitter": true,
-        "@metamask/utils": true,
-        "pify": true
       }
     },
     "@metamask/notification-controller": {
@@ -2163,7 +2143,7 @@
     "@metamask/signature-controller>@metamask/message-manager": {
       "packages": {
         "@metamask/controller-utils": true,
-        "@metamask/eth-sig-util": true,
+        "@metamask/message-manager>@metamask/eth-sig-util": true,
         "@metamask/message-manager>jsonschema": true,
         "@metamask/signature-controller>@metamask/base-controller": true,
         "@metamask/utils": true,
@@ -2272,7 +2252,7 @@
         "@metamask/smart-transactions-controller>@metamask/transaction-controller>@ethereumjs/tx": true,
         "@metamask/smart-transactions-controller>@metamask/transaction-controller>@ethereumjs/util": true,
         "@metamask/smart-transactions-controller>@metamask/transaction-controller>eth-method-registry": true,
-        "@metamask/transaction-controller>nonce-tracker": true,
+        "@metamask/transaction-controller>@metamask/nonce-tracker": true,
         "@metamask/utils": true,
         "bn.js": true,
         "browserify>buffer": true,
@@ -2630,7 +2610,7 @@
         "@metamask/network-controller": true,
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/transaction-controller>@metamask/base-controller": true,
-        "@metamask/transaction-controller>nonce-tracker": true,
+        "@metamask/transaction-controller>@metamask/nonce-tracker": true,
         "@metamask/utils": true,
         "bn.js": true,
         "browserify>buffer": true,
@@ -2649,15 +2629,14 @@
         "immer": true
       }
     },
-    "@metamask/transaction-controller>nonce-tracker": {
+    "@metamask/transaction-controller>@metamask/nonce-tracker": {
       "packages": {
         "@ethersproject/providers": true,
-        "@metamask/network-controller>eth-block-tracker": true,
-        "@metamask/transaction-controller>nonce-tracker>async-mutex": true,
+        "@metamask/transaction-controller>@metamask/nonce-tracker>async-mutex": true,
         "browserify>assert": true
       }
     },
-    "@metamask/transaction-controller>nonce-tracker>async-mutex": {
+    "@metamask/transaction-controller>@metamask/nonce-tracker>async-mutex": {
       "globals": {
         "clearTimeout": true,
         "setTimeout": true
