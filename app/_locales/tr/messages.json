@@ -746,9 +746,6 @@
   "cancel": {
     "message": "İptal"
   },
-  "cancelEdit": {
-    "message": "Düzenlemeyi İptal Et"
-  },
   "cancelPopoverTitle": {
     "message": "İşlemi iptal et"
   },
@@ -4554,15 +4551,9 @@
   "sendSwapSubmissionWarning": {
     "message": "Bu düğmeye tıklandığında swap işleminiz anında başlatılır. İlerlemeden önce lütfen işlem ayrıntılarınızı inceleyin."
   },
-  "sendTo": {
-    "message": "Şuraya gönder:"
-  },
   "sendTokenAsToken": {
     "message": "$2 olarak $1 gönder",
     "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
-  "sendTokens": {
-    "message": "Token gönder"
   },
   "sendingAsset": {
     "message": "$1 gönderiliyor"
@@ -5218,9 +5209,6 @@
   },
   "submitted": {
     "message": "Gönderildi"
-  },
-  "suggestedBy": {
-    "message": "Öneren"
   },
   "suggestedTokenSymbol": {
     "message": "Önerilen ticker sembolü:"

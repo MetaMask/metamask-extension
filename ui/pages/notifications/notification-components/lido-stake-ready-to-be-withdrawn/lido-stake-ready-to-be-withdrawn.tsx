@@ -9,6 +9,7 @@ import {
   NotificationDetailTitle,
   NotificationDetailAsset,
   NotificationDetailButton,
+  NotificationDetailAddress,
 } from '../../../../components/multichain';
 import { t } from '../../../../../app/scripts/translate';
 import {
@@ -95,6 +96,17 @@ export const components: NotificationComponent<LidoReadyWithDrawnNotification> =
       ),
       body: {
         type: 'body_onchain_notification',
+        Account: ({ notification }) => {
+          if (!notification.address) {
+            return null;
+          }
+          return (
+            <NotificationDetailAddress
+              side={t('account') || ''}
+              address={notification.address}
+            />
+          );
+        },
         Status: () => (
           <NotificationDetailInfo
             icon={{

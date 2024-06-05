@@ -69,7 +69,7 @@ function BlockaidBannerAlert({ txData, ...props }) {
     Object.keys(securityAlertResponse).length === 0
   ) {
     return null;
-  } else if (securityAlertResponse.reason === 'loading') {
+  } else if (securityAlertResponse.result_type === BlockaidResultType.Loading) {
     return (
       <LoadingIndicator
         isLoading
