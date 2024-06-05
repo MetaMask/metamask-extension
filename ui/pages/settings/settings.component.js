@@ -237,6 +237,11 @@ class SettingsPage extends PureComponent {
               size={ButtonSecondarySize.Lg}
               width={BlockSize.FourFifths}
               startIconName={IconName.Add}
+              onClick={() => {
+                getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+                  ? global.platform.openExtensionInBrowser(ADD_NETWORK_ROUTE)
+                  : this.props.history.push(ADD_NETWORK_ROUTE);
+              }}
             >
               {t('addCustomNetwork')}
             </ButtonSecondary>

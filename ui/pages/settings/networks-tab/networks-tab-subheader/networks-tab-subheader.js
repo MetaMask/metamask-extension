@@ -2,7 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../../helpers/constants/routes';
+import {
+  ADD_POPULAR_CUSTOM_NETWORK,
+  ADD_NETWORK_ROUTE,
+} from '../../../../helpers/constants/routes';
 import Button from '../../../../components/ui/button';
 import {
   ButtonSecondary,
@@ -10,6 +13,8 @@ import {
   IconName,
   Text,
 } from '../../../../components/component-library';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
+import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import {
   BackgroundColor,
   BlockSize,
@@ -49,6 +54,11 @@ const NetworksFormSubheader = ({ addNewNetwork }) => {
           size={ButtonSecondarySize.Md}
           width={BlockSize.Full}
           startIconName={IconName.Add}
+          onClick={() => {
+            getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+              ? global.platform.openExtensionInBrowser(ADD_NETWORK_ROUTE)
+              : history.push(ADD_NETWORK_ROUTE);
+          }}
         >
           {t('addCustomNetwork')}
         </ButtonSecondary>
