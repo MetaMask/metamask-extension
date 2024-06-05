@@ -163,11 +163,7 @@ import {
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IF
 
-import {
-  AssetType,
-  TokenStandard,
-  SIGNING_METHODS,
-} from '../../shared/constants/transaction';
+import { AssetType, TokenStandard } from '../../shared/constants/transaction';
 import { SWAPS_CLIENT_ID } from '../../shared/constants/swaps';
 import {
   CHAIN_IDS,
@@ -333,6 +329,7 @@ import AuthenticationController from './controllers/authentication/authenticatio
 import UserStorageController from './controllers/user-storage/user-storage-controller';
 import { PushPlatformNotificationsController } from './controllers/push-platform-notifications/push-platform-notifications';
 import { MetamaskNotificationsController } from './controllers/metamask-notifications/metamask-notifications';
+import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -657,7 +654,10 @@ export default class MetamaskController extends EventEmitter {
 
     const nftControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'NftController',
-      allowedActions: [`${this.approvalController.name}:addRequest`],
+      allowedActions: [
+        `${this.approvalController.name}:addRequest`,
+        `${this.networkController.name}:getNetworkClientById`,
+      ],
     });
     this.nftController = new NftController(
       {
@@ -742,6 +742,9 @@ export default class MetamaskController extends EventEmitter {
           : !this.preferencesController.store.getState().useNftDetection,
       selectedAddress:
         this.preferencesController.store.getState().selectedAddress,
+      getNetworkClientById: this.networkController.getNetworkClientById.bind(
+        this.networkController,
+      ),
     });
 
     this.metaMetricsController = new MetaMetricsController({
@@ -3092,6 +3095,8 @@ export default class MetamaskController extends EventEmitter {
       resetAccount: this.resetAccount.bind(this),
       removeAccount: this.removeAccount.bind(this),
       importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
+      getNextAvailableAccountName:
+        accountsController.getNextAvailableAccountName.bind(accountsController),
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       getAccountsBySnapId: (snapId) => getAccountsBySnapId(this, snapId),
       ///: END:ONLY_INCLUDE_IF
@@ -3336,7 +3341,6 @@ export default class MetamaskController extends EventEmitter {
             transactionOptions,
             waitForSubmit: false,
           }),
-          this.updateSecurityAlertResponseByTxId.bind(this),
         ),
       addTransactionAndWaitForPublish: (
         transactionParams,
@@ -3348,7 +3352,6 @@ export default class MetamaskController extends EventEmitter {
             transactionOptions,
             waitForSubmit: true,
           }),
-          this.updateSecurityAlertResponseByTxId.bind(this),
         ),
       createTransactionEventFragment:
         createTransactionEventFragmentWithTxId.bind(
@@ -4641,10 +4644,11 @@ export default class MetamaskController extends EventEmitter {
       transactionParams,
       userOperationController: this.userOperationController,
       ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+      chainId: this.networkController.state.providerConfig.chainId,
       ppomController: this.ppomController,
       securityAlertsEnabled:
         this.preferencesController.store.getState()?.securityAlertsEnabled,
-      chainId: this.networkController.state.providerConfig.chainId,
+      updateSecurityAlertResponse: this.updateSecurityAlertResponse.bind(this),
       ///: END:ONLY_INCLUDE_IF
     };
   }
@@ -4737,40 +4741,19 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
-  async updateSecurityAlertResponseByTxId(req, securityAlertResponse) {
-    let foundConfirmation = false;
-
-    while (!foundConfirmation) {
-      if (SIGNING_METHODS.includes(req.method)) {
-        foundConfirmation = Object.values(
-          this.signatureController.messages,
-        ).find(
-          (message) =>
-            message.securityAlertResponse?.securityAlertId ===
-            req.securityAlertResponse.securityAlertId,
-        );
-      } else {
-        foundConfirmation = this.txController.state.transactions.find(
-          (meta) =>
-            meta.securityAlertResponse?.securityAlertId ===
-            req.securityAlertResponse.securityAlertId,
-        );
-      }
-      if (!foundConfirmation) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-      }
-    }
-
-    if (SIGNING_METHODS.includes(req.method)) {
-      this.appStateController.addSignatureSecurityAlertResponse(
-        securityAlertResponse,
-      );
-    } else {
-      this.txController.updateSecurityAlertResponse(
-        foundConfirmation.id,
-        securityAlertResponse,
-      );
-    }
+  async updateSecurityAlertResponse(
+    method,
+    securityAlertId,
+    securityAlertResponse,
+  ) {
+    updateSecurityAlertResponse({
+      appStateController: this.appStateController,
+      method,
+      securityAlertId,
+      securityAlertResponse,
+      signatureController: this.signatureController,
+      transactionController: this.txController,
+    });
   }
 
   //=============================================================================
@@ -5142,7 +5125,7 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController,
         this.networkController,
         this.appStateController,
-        this.updateSecurityAlertResponseByTxId.bind(this),
+        this.updateSecurityAlertResponse.bind(this),
       ),
     );
     ///: END:ONLY_INCLUDE_IF

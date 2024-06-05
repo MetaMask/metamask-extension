@@ -113,8 +113,8 @@ import {
   SURVEY_START_TIME,
 } from '../helpers/constants/survey';
 import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
-import { SUPPORTED_CHAIN_IDS } from '../../app/scripts/lib/ppom/ppom-middleware';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
+import { SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS } from '../../shared/constants/security-provider';
 import {
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
@@ -496,8 +496,23 @@ export function getTargetAccount(state, targetAddress) {
   return accounts[targetAddress];
 }
 
-export const getTokenExchangeRates = (state) =>
-  state.metamask.contractExchangeRates;
+export const getTokenExchangeRates = (state) => {
+  const chainId = getCurrentChainId(state);
+  const contractMarketData = state.metamask.marketData?.[chainId] ?? {};
+
+  return Object.entries(contractMarketData).reduce(
+    (acc, [address, marketData]) => {
+      acc[address] = marketData?.price ?? null;
+      return acc;
+    },
+    {},
+  );
+};
+
+export const getTokensMarketData = (state) => {
+  const chainId = getCurrentChainId(state);
+  return state.metamask.marketData?.[chainId];
+};
 
 export function getAddressBook(state) {
   const chainId = getCurrentChainId(state);
@@ -2041,7 +2056,9 @@ export function getNetworkConfigurations(state) {
 
 export function getIsNetworkSupportedByBlockaid(state) {
   const currentChainId = getCurrentChainId(state);
-  const isSupported = SUPPORTED_CHAIN_IDS.includes(currentChainId);
+
+  const isSupported =
+    SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS.includes(currentChainId);
 
   return isSupported;
 }
