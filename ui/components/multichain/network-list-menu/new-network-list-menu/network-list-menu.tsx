@@ -555,34 +555,6 @@ export const NetworkListMenu2 = () => {
           </Box>
         ) : (
           <Box className="add-network__networks-container">
-            {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN && (
-              <Box
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                flexDirection={FlexDirection.Row}
-                marginTop={7}
-                marginBottom={4}
-                paddingBottom={2}
-                className="add-network__header"
-              >
-                <Text
-                  variant={TextVariant.headingSm}
-                  color={TextColor.textMuted}
-                  as="h4"
-                >
-                  {t('networks')}
-                </Text>
-                <span className="add-network__header__subtitle">{'  >  '}</span>
-                <Text
-                  variant={TextVariant.headingSm}
-                  as="h4"
-                  color={TextColor.textDefault}
-                  data-testid="add-network-button"
-                >
-                  {t('addANetwork')}
-                </Text>
-              </Box>
-            )}
             <Box
               marginTop={
                 getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? 0 : 4
@@ -596,7 +568,7 @@ export const NetworkListMenu2 = () => {
                 display={Display.Flex}
                 justifyContent={JustifyContent.spaceBetween}
               >
-                <Text> {t('popularCustomNetworks')}</Text>
+                <Text> {t('additionalNetworks')}</Text>
               </Box>
               {searchAddNetworkResults.map((item, index) => (
                 <Box
