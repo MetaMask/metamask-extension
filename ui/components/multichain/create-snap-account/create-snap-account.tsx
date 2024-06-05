@@ -28,9 +28,7 @@ export const CreateSnapAccount: React.FC<CreateSnapAccountProps> = ({
   const onCreateAccount = async (name: string) => {
     const newAccountAddress = dispatch(addNewAccount()) as unknown as string;
     if (newAccountAddress) {
-      if (name) {
-        dispatch(setAccountLabel(newAccountAddress, name));
-      }
+      dispatch(setAccountLabel(newAccountAddress, name));
       await onActionComplete(true);
     } else {
       console.error(
