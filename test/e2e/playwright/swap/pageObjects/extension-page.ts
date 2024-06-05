@@ -1,12 +1,12 @@
 import path from 'path';
 import { type Page, chromium } from '@playwright/test';
 
-const wait = (n) => new Promise((resolve) => setTimeout(resolve, n));
+const wait = (n: number) => new Promise((resolve) => setTimeout(resolve, n));
 
 const extensionPath = path.join(__dirname, '../../../../../dist/chrome');
 
 export class ChromeExtensionPage {
-  private page: Page;
+  private page!: Page;
 
   async initExtension() {
     const launchOptions = {
