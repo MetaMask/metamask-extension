@@ -1,22 +1,26 @@
 import { SecurityAlertResponse } from '../../types/confirm';
 import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
 import { Severity } from '../../../../helpers/constants/design-system';
-import { getProviderAlertSeverity, providerAlertNormalizer } from './utils';
+import { getProviderAlertSeverity, normalizeProviderAlert } from './utils';
 
 describe('Utils', () => {
   describe('getProviderAlertSeverity', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [BlockaidResultType.Malicious, Severity.Danger],
       [BlockaidResultType.Warning, Severity.Warning],
       ['Other', Severity.Info],
-    ])('maps %s to %s', (inputSeverity, expectedSeverity) => {
-      expect(
-        getProviderAlertSeverity(inputSeverity as BlockaidResultType),
-      ).toBe(expectedSeverity);
-    });
+    ])(
+      'maps %s to %s',
+      (inputSeverity: BlockaidResultType, expectedSeverity: Severity) => {
+        expect(
+          getProviderAlertSeverity(inputSeverity as BlockaidResultType),
+        ).toBe(expectedSeverity);
+      },
+    );
   });
 
-  describe('providerAlertNormalizer', () => {
+  describe('normalizeProviderAlert', () => {
     const mockT = jest.fn((key) => key);
 
     const mockResponse: SecurityAlertResponse = {
@@ -27,7 +31,7 @@ describe('Utils', () => {
     };
 
     it('normalizes a security alert response correctly', () => {
-      const normalizedAlert = providerAlertNormalizer(mockResponse, mockT);
+      const normalizedAlert = normalizeProviderAlert(mockResponse, mockT);
       expect(normalizedAlert.key).toBe('test-id');
       expect(normalizedAlert.reason).toBe('blockaidTitleDeceptive');
       expect(normalizedAlert.severity).toBe(Severity.Danger);

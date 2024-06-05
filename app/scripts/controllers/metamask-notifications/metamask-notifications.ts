@@ -291,6 +291,19 @@ export class MetamaskNotificationsController extends BaseController<
         },
       );
     },
+    initializePushNotifications: async () => {
+      if (!this.state.isMetamaskNotificationsEnabled) {
+        return;
+      }
+
+      const storage = await this.#getUserStorage();
+      if (!storage) {
+        return;
+      }
+
+      const uuids = MetamaskNotificationsUtils.getAllUUIDs(storage);
+      await this.#pushNotifications.enablePushNotifications(uuids);
+    },
   };
 
   #accounts = {
@@ -398,6 +411,7 @@ export class MetamaskNotificationsController extends BaseController<
     this.#registerMessageHandlers();
     this.#clearLoadingStates();
     this.#accounts.initialize();
+    this.#pushNotifications.initializePushNotifications();
     this.#accounts.subscribe();
     this.#pushNotifications.subscribe();
   }

@@ -1,4 +1,4 @@
-import { BoxElement, JSXElement } from '@metamask/snaps-sdk/jsx';
+import { BoxElement, JSXElement, BoxProps } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
 import {
   Display,
@@ -7,6 +7,26 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { mapToTemplate } from '../utils';
 import { UIComponentFactory } from './types';
+
+function generateJustifyContent(alignment?: BoxProps['alignment']) {
+  switch (alignment) {
+    default:
+    case 'start':
+      return 'flex-start';
+
+    case 'center':
+      return 'center';
+
+    case 'end':
+      return 'flex-end';
+
+    case 'space-between':
+      return 'space-between';
+
+    case 'space-around':
+      return 'space-around';
+  }
+}
 
 export const box: UIComponentFactory<BoxElement> = ({
   element,
@@ -18,7 +38,11 @@ export const box: UIComponentFactory<BoxElement> = ({
   ),
   props: {
     display: Display.Flex,
-    flexDirection: FlexDirection.Column,
+    flexDirection:
+      element.props.direction === 'horizontal'
+        ? FlexDirection.Row
+        : FlexDirection.Column,
+    justifyContent: generateJustifyContent(element.props.alignment),
     className: 'snap-ui-renderer__panel',
     color: TextColor.textDefault,
   },

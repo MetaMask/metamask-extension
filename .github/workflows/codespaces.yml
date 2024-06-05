@@ -13,6 +13,12 @@ jobs:
     name: Generate cache image
     runs-on: ubuntu-latest
     steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+      - run: corepack enable
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
