@@ -13,6 +13,7 @@ import {
   NotificationDetailButton,
   NotificationDetailTitle,
   NotificationDetailCopyButton,
+  NotificationDetailAddress,
 } from '../../../../components/multichain';
 import { NotificationListItemIconType } from '../../../../components/multichain/notification-list-item-icon/notification-list-item-icon';
 import {
@@ -98,6 +99,17 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
     ),
     body: {
       type: 'body_onchain_notification',
+      Account: ({ notification }) => {
+        if (!notification.address) {
+          return null;
+        }
+        return (
+          <NotificationDetailAddress
+            side={t('account') || ''}
+            address={notification.address}
+          />
+        );
+      },
       Asset: ({ notification }) => {
         const chainId = decimalToHex(notification.chain_id);
         const { nativeCurrencyLogo } = getNetworkDetailsByChainId(
@@ -141,7 +153,7 @@ export const components: NotificationComponent<SwapCompletedNotification> = {
                 position: BadgeWrapperPosition.topRight,
               },
             }}
-            label={t('notificationItemSwapped') || ''}
+            label={t('notificationItemTo') || ''}
             detail={notification.data.token_out.symbol}
             fiatValue={`$${getUsdAmount(
               notification.data.token_out.amount,
