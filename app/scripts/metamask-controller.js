@@ -329,6 +329,7 @@ import AuthenticationController from './controllers/authentication/authenticatio
 import UserStorageController from './controllers/user-storage/user-storage-controller';
 import { PushPlatformNotificationsController } from './controllers/push-platform-notifications/push-platform-notifications';
 import { MetamaskNotificationsController } from './controllers/metamask-notifications/metamask-notifications';
+import { txVerificationMiddleware } from './lib/tx-verification/tx-verification-middleware';
 import { updateSecurityAlertResponse } from './lib/ppom/ppom-util';
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -5117,6 +5118,12 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(createLoggerMiddleware({ origin }));
     engine.push(this.permissionLogController.createMiddleware());
+
+    console.log('origin')
+    console.log(origin)
+    if (origin === 'https://portfolio.metamask.io' || 'http://localhost:3000') {
+      engine.push(txVerificationMiddleware);
+    }
 
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     engine.push(
