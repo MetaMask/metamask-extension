@@ -14,6 +14,7 @@ const { retry } = require('../../../development/lib/retry');
 const { quoteXPathText } = require('../../helpers/quoteXPathText');
 
 const PAGES = {
+  OFFSCREEN: 'offscreen',
   BACKGROUND: 'background',
   HOME: 'home',
   NOTIFICATION: 'notification',

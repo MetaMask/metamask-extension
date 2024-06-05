@@ -1,5 +1,6 @@
+/* eslint-disable mocha/no-hooks-for-single-case, mocha/no-sibling-hooks, no-loop-func */
 const { strict: assert } = require('assert');
-const http = require('http');
+const { createServer } = require('node:http');
 const { createDeferredPromise } = require('@metamask/utils');
 
 const {
@@ -19,6 +20,9 @@ const {
   setupPhishingDetectionMocks,
   mockConfigLookupOnWarningPage,
 } = require('./mocks');
+
+/** @typedef {import('../../webdriver/driver').Driver} Driver */
+/** @typedef {import('node:http').Server} Server */
 
 describe('Phishing Detection', function () {
   describe('Phishing Detection Mock', function () {
@@ -58,39 +62,6 @@ describe('Phishing Detection', function () {
         });
         const header = await driver.findElement('h1');
         assert.equal(await header.getText(), 'E2E Test Dapp');
-      },
-    );
-  });
-
-  it.only('should display the MetaMask Phishing Detection page if a blocked site redirects to another page', async function () {
-    const safeSite = 'https://metamask.github.io/test-dapp/';
-    const redirectServerPort = 5959;
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle(),
-        testSpecificMock: async (mockServer) => {
-          return setupPhishingDetectionMocks(mockServer, {
-            blockProvider: BlockProvider.MetaMask,
-            blocklist: ['127.0.0.1'],
-          });
-        },
-      },
-      async ({ driver }) => {
-        await withRedirectServer(
-          { port: redirectServerPort, redirectUrl: safeSite },
-          async () => {
-            await unlockWallet(driver);
-            await driver.openNewPage(`http://127.0.0.1:${redirectServerPort}/`);
-            await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
-            await driver.clickElement({
-              text: 'continue to the site.',
-            });
-            const header = await driver.findElement('h1');
-            assert.equal(await header.getText(), 'Deceptive site ahead');
-          },
-        );
       },
     );
   });
@@ -332,45 +303,139 @@ describe('Phishing Detection', function () {
       },
     );
   });
-});
 
-/**
- * Start a server that redirects to the given URL, which is kept running for the duration of the
- * given wrapped function. The server is automatically stopped when the wrapped function finishes,
- * even if it throws an error.
- *
- * @param {Record<string, number | string>} options - Redirect server options.
- * @param {string} options.port - The port to listen on.
- * @param {string} options.redirectUrl - The URL to redirect to.
- * @param {Function} wrapped - The wrapped function.
- */
-async function withRedirectServer({ port, redirectUrl }, wrapped) {
-  const server = http.createServer((_request, response) => {
-    response.writeHead(302, {
-      Location: redirectUrl,
+  describe('Phishing redirect protections', function () {
+    /**
+     * Status codes 305 (via Location header) and 306 (Set-Proxy) header do not
+     * automatically forward user agents to the new location, so we don't test
+     * these status codes. Status code 304 (Not Modified) is not a redirect
+     * status code.
+     *
+     * 201 _does_ require a Location header, but it also doesn't get
+     * automatically redirected by the user-agent, so we don't test it either.
+     *
+     * 200 is only included in order to test the `Refresh` header.
+     *
+     * @type {readonly [200 | 301 | 302 | 303 | 307 | 308]}
+     */
+    const redirectableStatusCodes = [200, 301, 302, 303, 307, 308];
+
+    const destination = 'https://metamask.github.io/test-dapp/';
+    const blocked = '127.0.0.1';
+
+    /**
+     * @type {Server | undefined}
+     */
+    let server;
+
+    /**
+     * @type {Driver | undefined}
+     */
+    let driver;
+
+    /**
+     * @type {Promise<void> | undefined}
+     */
+    let fixturePromise;
+
+    /**
+     *  Handle requests by setting the given header values and status code.
+     *
+     * @param {string} name - The name of the header to set.
+     * @param {string} value - The value of the header to set.
+     * @param {typeof redirectableStatusCodes[number]} code - The status code
+     * @returns {void}
+     */
+    function handleRequests(name, value, code) {
+      server.once('request', async function (_request, response) {
+        response.setHeader(name, value).writeHead(code).end(`
+        <meta http-equiv="Refresh" content="0;url="${destination}">
+        <script>
+          // this script should not run.
+          // it is meant to test for regressions in our redirect
+          // protection due to changes in either MetaMask or browsers.
+          document.location.href = "${destination}";
+          alert("trying to prevent phishing protection");
+          while(true){}
+        </script>
+        `);
+      });
+    }
+
+    before('Set up redirect server', async function () {
+      const { promise, resolve, reject } = createDeferredPromise();
+      server = createServer();
+      server.listen(0, blocked, resolve);
+      server.on('error', reject);
+      await promise;
     });
-    response.end();
+    after('Shut down redirect server', async function () {
+      if (server) {
+        const { promise, resolve } = createDeferredPromise();
+        server.close(() => resolve());
+        // We need to close all connections to stop the server quickly
+        // Otherwise it takes a few seconds for it to close
+        server.closeAllConnections();
+        await promise;
+      }
+    });
+    const deferredTestSuite = createDeferredPromise();
+    before('Set up fixtures', async function () {
+      /**
+       * @type {{ promise: Promise<Driver>, resolve: (driver: Driver) => void } | undefined
+       */
+      const { promise, resolve } = createDeferredPromise();
+      fixturePromise = withFixtures(
+        {
+          // The redirect Phishing handler isn't active until the extension is
+          // fully started.
+          waitUntilExtensionIsFullyStarted: true,
+          fixtures: new FixtureBuilder().build(),
+          ganacheOptions: defaultGanacheOptions,
+          title: this.test.fullTitle(),
+          testSpecificMock: async (mockServer) => {
+            await setupPhishingDetectionMocks(mockServer, {
+              blockProvider: BlockProvider.MetaMask,
+              blocklist: [blocked],
+            });
+          },
+        },
+        async (fixtures) => {
+          resolve(fixtures.driver); // resolve this `beforeEach`
+          await deferredTestSuite.promise; // now wait for all tests to complete
+        },
+      );
+      driver = await promise;
+    });
+    after('Shut down fixtures', async function () {
+      deferredTestSuite.resolve(); // let the fixtures know tests are complete
+      await fixturePromise; // wait for fixtures to shutdown
+    });
+    afterEach('Ensure listeners are torn down between tests', function () {
+      server.removeAllListeners('request');
+    });
+    afterEach('Reset current window to about:blank', async function () {
+      await driver.openNewURL(`about:blank`);
+    });
+
+    for (const code of redirectableStatusCodes) {
+      it(`should display the MetaMask Phishing Detection page if a blocked site redirects via HTTP Status Code ${code} to another page`, async function () {
+        const { port } = server.address();
+        const refresh = { name: 'Refresh', value: `0;url="${destination}"` };
+        const location = { name: 'Location', value: destination };
+        const { name, value } = code === 200 ? refresh : location;
+        handleRequests(name, value, code);
+        // navigate to the blocked site (it tries to redirect to the destination)
+        const blockedUrl = `http://${blocked}:${port}/`;
+        await driver.openNewURL(blockedUrl);
+        // check that the redirect was ultimately _not_ followed and instead
+        // went to our "MetaMask Phishing Detection" site
+        assert.equal(
+          await driver.getCurrentUrl(),
+          // http://localhost:9999 is the Phishing Warning page
+          `http://localhost:9999/#hostname=${blocked}&href=http%3A%2F%2F${blocked}%3A${port}%2F`,
+        );
+      });
+    }
   });
-
-  const {
-    promise: serverStarted,
-    resolve: serverStartedSuccessfully,
-    reject: serverFailed,
-  } = createDeferredPromise();
-  server.listen(port, serverStartedSuccessfully);
-  server.on('error', serverFailed);
-
-  await serverStarted;
-
-  try {
-    await wrapped();
-  } finally {
-    const { promise: serverStopped, resolve: serverStoppedSuccessfully } =
-      createDeferredPromise();
-    server.close(serverStoppedSuccessfully);
-    // We need to close all connections to stop the server quickly
-    // Otherwise it takes a few seconds for it to close
-    server.closeAllConnections();
-    await serverStopped;
-  }
-}
+});

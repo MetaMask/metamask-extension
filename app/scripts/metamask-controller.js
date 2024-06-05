@@ -347,8 +347,6 @@ export default class MetamaskController extends EventEmitter {
 
     const { isFirstMetaMaskControllerSetup } = opts;
 
-    this.burnedTabIds = {};
-
     this.defaultMaxListeners = 20;
 
     this.sendUpdate = debounce(
@@ -4776,10 +4774,6 @@ export default class MetamaskController extends EventEmitter {
    * @property {string} snapId - The ID of the snap.
    */
 
-  updateBurnedTabIds(tabId) {
-    this.burnedTabIds[tabId] = true;
-  }
-
   /**
    * Used to create a multiplexed stream for connecting to an untrusted context
    * like a Dapp or other extension.
@@ -4790,8 +4784,27 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} [options.subjectType] - The type of the sender, i.e. subject.
    */
   setupUntrustedCommunication({ connectionStream, sender, subjectType }) {
-    const { completedOnboarding } = this.onboardingController.store.getState();
-    const { usePhishDetect } = this.preferencesController.store.getState();
+    if (sender.url) {
+      if (this.onboardingController.store.getState().completedOnboarding) {
+        if (this.preferencesController.store.getState().usePhishDetect) {
+          const { hostname } = new URL(sender.url);
+          this.phishingController.maybeUpdateState();
+          // Check if new connection is blocked if phishing detection is on
+          const phishingTestResponse = this.phishingController.test(hostname);
+          if (phishingTestResponse?.result) {
+            this.sendPhishingWarning(connectionStream, hostname);
+            this.metaMetricsController.trackEvent({
+              event: MetaMetricsEventName.PhishingPageDisplayed,
+              category: MetaMetricsEventCategory.Phishing,
+              properties: {
+                url: hostname,
+              },
+            });
+            return;
+          }
+        }
+      }
+    }
 
     let _subjectType;
     if (subjectType) {
@@ -4800,29 +4813,6 @@ export default class MetamaskController extends EventEmitter {
       _subjectType = SubjectType.Extension;
     } else {
       _subjectType = SubjectType.Website;
-    }
-
-    if (usePhishDetect && completedOnboarding && sender.url) {
-      const { hostname } = new URL(sender.url);
-      this.phishingController.maybeUpdateState();
-      // Check if new connection is blocked if phishing detection is on
-      const phishingTestResponse = this.phishingController.test(hostname);
-      console.log(
-        `testing ${hostname} with tab ID ${sender.tab?.id} which is ${
-          sender.tab?.id in this.burnedTabIds ? ' ' : 'NOT '
-        }burned`,
-      );
-      if (phishingTestResponse?.result || this.burnedTabIds[sender.tab?.id]) {
-        this.sendPhishingWarning(connectionStream, hostname);
-        this.metaMetricsController.trackEvent({
-          event: MetaMetricsEventName.PhishingPageDisplayed,
-          category: MetaMetricsEventCategory.Phishing,
-          properties: {
-            url: hostname,
-          },
-        });
-        return;
-      }
     }
 
     // setup multiplexing
