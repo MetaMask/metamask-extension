@@ -43,8 +43,13 @@ describe('Confirm Transaction Selector', () => {
   describe('contractExchangeRateSelector', () => {
     const state = {
       metamask: {
-        contractExchangeRates: {
-          '0xTokenAddress': '10',
+        marketData: {
+          '0x5': {
+            '0xTokenAddress': { price: '10' },
+          },
+        },
+        providerConfig: {
+          chainId: '0x5',
         },
       },
       confirmTransaction: {
