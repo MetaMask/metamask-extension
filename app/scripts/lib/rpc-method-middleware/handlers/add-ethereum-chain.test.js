@@ -91,6 +91,7 @@ describe('addEthereumChainHandler', () => {
                 decimals: 18,
               },
               blockExplorerUrls: ['https://optimistic.etherscan.io'],
+              iconUrls: ['https://optimism.icon.com'],
             },
           ],
         },
@@ -424,6 +425,47 @@ describe('addEthereumChainHandler', () => {
       });
     });
   });
+
+  it('should return an error if an unexpected parameter is provided', async () => {
+    const mocks = makeMocks({
+      permissionsFeatureFlagIsActive: false,
+    });
+    const mockEnd = jest.fn();
+
+    const unexpectedParam = 'unexpected';
+
+    await addEthereumChainHandler(
+      {
+        origin: 'example.com',
+        params: [
+          {
+            chainId: createMockNonInfuraConfiguration().chainId,
+            chainName: createMockNonInfuraConfiguration().nickname,
+            rpcUrls: [createMockNonInfuraConfiguration().rpcUrl],
+            nativeCurrency: {
+              symbol: createMockNonInfuraConfiguration().ticker,
+              decimals: 18,
+            },
+            blockExplorerUrls: [
+              createMockNonInfuraConfiguration().rpcPrefs.blockExplorerUrl,
+            ],
+            [unexpectedParam]: 'parameter',
+          },
+        ],
+      },
+      {},
+      jest.fn(),
+      mockEnd,
+      mocks,
+    );
+
+    expect(mockEnd).toHaveBeenCalledWith(
+      ethErrors.rpc.invalidParams({
+        message: `Received unexpected keys on object parameter. Unsupported keys:\n${unexpectedParam}`,
+      }),
+    );
+  });
+
   it('should handle errors during the switch network permission request', async () => {
     const mockError = new Error('Permission request failed');
     const mocks = makeMocks({
@@ -463,6 +505,7 @@ describe('addEthereumChainHandler', () => {
     expect(mockEnd).toHaveBeenCalledWith(mockError);
     expect(mocks.setActiveNetwork).not.toHaveBeenCalled();
   });
+
   it('should return an error if nativeCurrency.symbol does not match an existing network with the same chainId', async () => {
     const mocks = makeMocks({
       permissionedChainIds: [CHAIN_IDS.MAINNET],
