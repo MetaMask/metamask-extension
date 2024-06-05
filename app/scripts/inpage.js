@@ -60,15 +60,21 @@ if (shouldInjectProvider()) {
       super({objectMode: true})
     }
 
-    _read(_size) {
-      // this.push()
+    _read(value) {
+      console.log('wallet stream read', value)
     }
+
     _write(_value, _encoding, callback) {
       console.log('wallet stream write', _value)
       this.push(_value)
       callback();
     }
   }
+  // {
+  //   objectMode: true,
+  //   read: () => undefined,
+  //   write: processMessage,
+  // }
 
   class TransformableInStream extends Transform {
     constructor() {
@@ -119,7 +125,7 @@ if (shouldInjectProvider()) {
     (err) => console.log('MetaMask inpage stream', err),
   );
 
-  extensionPort.onMessage.addListener(console.log);
+  extensionPort.onMessage.addListener((message) => console.log('extensionPort onMessage', message))
 
   initializeProvider({
     connectionStream: walletStream,
