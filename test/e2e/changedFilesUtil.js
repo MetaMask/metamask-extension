@@ -23,11 +23,9 @@ async function filterE2eChangedFiles() {
   const e2eChangedFiles = changedFiles
     .filter(
       (file) =>
-        file.filename.startsWith('test/e2e/') &&
-        (file.filename.endsWith('.spec.js') ||
-          file.filename.endsWith('.spec.ts')),
+        file.startsWith('test/e2e/') &&
+        (file.endsWith('.spec.js') || file.endsWith('.spec.ts')),
     )
-    .map((file) => file.filename)
     .join('\n');
 
   return e2eChangedFiles;
