@@ -224,14 +224,20 @@ export const RedesignedGasFees = () => {
       )}
 
       {hasLayer1GasFee && expandFeeDetails && (
-        <Layer2GasFees
-          currentCurrencyFees={currentCurrencyFees}
-          nativeCurrencyFees={nativeCurrencyFees}
-          currentCurrencyL1Fees={currentCurrencyL1Fees}
-          nativeCurrencyL1Fees={nativeCurrencyL1Fees}
-          currentCurrencyTotalFees={currentCurrencyTotalFees}
-          nativeCurrencyTotalFees={nativeCurrencyTotalFees}
-        />
+        <>
+          <Layer2FeesRow
+            currentCurrencyFees={currentCurrencyFees}
+            nativeCurrencyFees={nativeCurrencyFees}
+          />
+          <Layer1FeesRow
+            currentCurrencyL1Fees={currentCurrencyL1Fees}
+            nativeCurrencyL1Fees={nativeCurrencyL1Fees}
+          />
+          <TotalFeesRow
+            currentCurrencyTotalFees={currentCurrencyTotalFees}
+            nativeCurrencyTotalFees={nativeCurrencyTotalFees}
+          />
+        </>
       )}
 
       {/* Modals */}
@@ -284,71 +290,79 @@ const Layer2GasFeesExpandBtn = ({
   );
 };
 
-const Layer2GasFees = ({
+const Layer2FeesRow = ({
   currentCurrencyFees,
   nativeCurrencyFees,
-  currentCurrencyL1Fees,
-  nativeCurrencyL1Fees,
-  currentCurrencyTotalFees,
-  nativeCurrencyTotalFees,
 }: {
   currentCurrencyFees: string;
   nativeCurrencyFees: string | undefined;
+}) => {
+  return (
+    <ConfirmInfoRow label="L2 Fees" variant={ConfirmInfoRowVariant.Default}>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        alignItems={AlignItems.center}
+        textAlign={TextAlign.Center}
+        style={{ flexGrow: '1' }}
+        marginLeft={8}
+      >
+        <Text color={TextColor.textAlternative}>{currentCurrencyFees}</Text>
+        <Text color={TextColor.textAlternative}>{nativeCurrencyFees}</Text>
+      </Box>
+    </ConfirmInfoRow>
+  );
+};
+
+const Layer1FeesRow = ({
+  currentCurrencyL1Fees,
+  nativeCurrencyL1Fees,
+}: {
   currentCurrencyL1Fees: string | null;
   nativeCurrencyL1Fees: string | null | undefined;
+}) => {
+  return (
+    <ConfirmInfoRow label="L1 Fees" variant={ConfirmInfoRowVariant.Default}>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        alignItems={AlignItems.center}
+        textAlign={TextAlign.Center}
+        style={{ flexGrow: '1' }}
+        marginLeft={8}
+      >
+        <Text color={TextColor.textAlternative}>{currentCurrencyL1Fees}</Text>
+        <Text color={TextColor.textAlternative}>{nativeCurrencyL1Fees}</Text>
+      </Box>
+    </ConfirmInfoRow>
+  );
+};
+
+const TotalFeesRow = ({
+  currentCurrencyTotalFees,
+  nativeCurrencyTotalFees,
+}: {
   currentCurrencyTotalFees: string | null;
   nativeCurrencyTotalFees: string | null | undefined;
 }) => {
   return (
-    <>
-      <ConfirmInfoRow label="L2 Fees" variant={ConfirmInfoRowVariant.Default}>
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          justifyContent={JustifyContent.spaceBetween}
-          alignItems={AlignItems.center}
-          textAlign={TextAlign.Center}
-          style={{ flexGrow: '1' }}
-          marginLeft={8}
-        >
-          <Text color={TextColor.textAlternative}>{currentCurrencyFees}</Text>
-          <Text color={TextColor.textAlternative}>{nativeCurrencyFees}</Text>
-        </Box>
-      </ConfirmInfoRow>
-
-      <ConfirmInfoRow label="L1 Fees" variant={ConfirmInfoRowVariant.Default}>
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          justifyContent={JustifyContent.spaceBetween}
-          alignItems={AlignItems.center}
-          textAlign={TextAlign.Center}
-          style={{ flexGrow: '1' }}
-          marginLeft={8}
-        >
-          <Text color={TextColor.textAlternative}>{currentCurrencyL1Fees}</Text>
-          <Text color={TextColor.textAlternative}>{nativeCurrencyL1Fees}</Text>
-        </Box>
-      </ConfirmInfoRow>
-
-      <ConfirmInfoRow label="Total" variant={ConfirmInfoRowVariant.Default}>
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          justifyContent={JustifyContent.spaceBetween}
-          alignItems={AlignItems.center}
-          textAlign={TextAlign.Center}
-          style={{ flexGrow: '1' }}
-          marginLeft={8}
-        >
-          <Text color={TextColor.textAlternative}>
-            {currentCurrencyTotalFees}
-          </Text>
-          <Text color={TextColor.textAlternative}>
-            {nativeCurrencyTotalFees}
-          </Text>
-        </Box>
-      </ConfirmInfoRow>
-    </>
+    <ConfirmInfoRow label="Total" variant={ConfirmInfoRowVariant.Default}>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        alignItems={AlignItems.center}
+        textAlign={TextAlign.Center}
+        style={{ flexGrow: '1' }}
+        marginLeft={8}
+      >
+        <Text color={TextColor.textAlternative}>
+          {currentCurrencyTotalFees}
+        </Text>
+        <Text color={TextColor.textAlternative}>{nativeCurrencyTotalFees}</Text>
+      </Box>
+    </ConfirmInfoRow>
   );
 };
