@@ -948,6 +948,7 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.WETHIO
     | typeof CHAIN_IDS.CHZ
     | typeof CHAIN_IDS.NUMBERS
+    | typeof CHAIN_IDS.SEI
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {
