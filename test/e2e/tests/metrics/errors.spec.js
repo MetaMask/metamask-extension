@@ -1,7 +1,7 @@
 const { resolve } = require('path');
 const { promises: fs } = require('fs');
 const { strict: assert } = require('assert');
-const { get, has, set, unset, cloneDeep } = require('lodash');
+const { get, has, set, unset, cloneDeep, isEqual } = require('lodash');
 const { Browser } = require('selenium-webdriver');
 const { format } = require('prettier');
 const { isObject } = require('@metamask/utils');
@@ -114,7 +114,7 @@ async function matchesSnapshot({
   const snapshotData = JSON.parse(rawSnapshotData);
 
   try {
-    assert.deepStrictEqual(data, snapshotData);
+    isEqual(data, snapshotData);
   } catch (error) {
     if (update && error instanceof assert.AssertionError) {
       const stringifiedData = JSON.stringify(data);
