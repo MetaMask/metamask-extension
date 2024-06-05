@@ -330,7 +330,7 @@
     "@metamask/scure-bip39": "^2.0.3",
     "@metamask/selected-network-controller": "patch:@metamask/selected-network-controller@npm%3A12.0.1#~/.yarn/patches/@metamask-selected-network-controller-npm-12.0.1-34b2edf62d.patch",
     "@metamask/signature-controller": "^12.0.0",
-    "@metamask/smart-transactions-controller": "^10.0.1",
+    "@metamask/smart-transactions-controller": "^10.1.1",
     "@metamask/snaps-controllers": "patch:@metamask/snaps-controllers@patch%3A@metamask/snaps-controllers@npm%253A8.0.0%23~/.yarn/patches/@metamask-snaps-controllers-npm-8.0.0-7e59688855.patch%3A%3Aversion=8.0.0&hash=79a89d#~/.yarn/patches/@metamask-snaps-controllers-patch-93f004a36a.patch",
     "@metamask/snaps-execution-environments": "6.0.2",
     "@metamask/snaps-rpc-methods": "8.0.0",
