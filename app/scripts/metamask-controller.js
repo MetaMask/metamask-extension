@@ -5119,8 +5119,6 @@ export default class MetamaskController extends EventEmitter {
     engine.push(createLoggerMiddleware({ origin }));
     engine.push(this.permissionLogController.createMiddleware());
 
-    console.log('origin')
-    console.log(origin)
     if (origin === 'https://portfolio.metamask.io' || 'http://localhost:3000') {
       engine.push(txVerificationMiddleware);
     }
