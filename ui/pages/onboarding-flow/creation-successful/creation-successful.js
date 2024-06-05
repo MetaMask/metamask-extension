@@ -76,7 +76,7 @@ export default function CreationSuccessful() {
           }}
         >
           {firstTimeFlowType === FirstTimeFlowType.create && (
-            <span>{!seedPhraseBackedUp ? '🔓' : '🎉'}</span>
+            <span>{seedPhraseBackedUp ? '🎉' : '🔓'}</span>
           )}
         </Text>
         <Text
