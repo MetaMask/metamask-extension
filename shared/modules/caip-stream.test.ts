@@ -1,4 +1,4 @@
-import { Duplex } from 'stream';
+import { Duplex } from 'readable-stream';
 import { deferredPromise } from '../../app/scripts/lib/util';
 import {
   createCaipStream,
@@ -134,4 +134,29 @@ describe('CAIP Stream', () => {
       ]);
     });
   });
+
+  describe('createCaipStream', () => {
+    it('pipes a caip-x message from source stream to the substream as a multiplexed `metamask-provider` message', async () => {
+      const sourceStreamChunks: unknown[] = []
+      const sourceStream = new Duplex({
+        objectMode: true,
+        read: () => undefined,
+        write: (chunk, _encoding, callback) => {
+          sourceStreamChunks.push(chunk)
+          callback()
+        }
+      })
+
+      const providerStream = createCaipStream(sourceStream)
+      const providerStreamChunks: unknown[] = [];
+      providerStream.on('data', (chunk: unknown) => {
+        providerStreamChunks.push(chunk);
+      });
+
+      await writeToStream(sourceStream, {type: 'caip-x', data: {foo: 'bar'}})
+
+      expect(sourceStreamChunks).toStrictEqual([{type: 'caip-x', data: {foo: 'bar'}}])
+      expect(providerStreamChunks).toStrictEqual([{name: 'metamask-provider', data: {foo: 'bar'}}])
+    })
+  })
 });

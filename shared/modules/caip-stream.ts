@@ -10,7 +10,9 @@ export class SplitStream extends Duplex {
     this.substream = substream ?? new SplitStream(this);
   }
 
-  _read() {}
+  _read() {
+    return undefined;
+  }
 
   _write(
     value: unknown,
@@ -62,7 +64,7 @@ export class MultiplexToCaipStream extends Transform {
   }
 }
 
-export const createCaipStream = (portStream: PortStream): Duplex => {
+export const createCaipStream = (portStream: Duplex): Duplex => {
   const splitStream = new SplitStream();
   const caipToMultiplexStream = new CaipToMultiplexStream();
   const multiplexToCaipStream = new MultiplexToCaipStream();
