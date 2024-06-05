@@ -18,7 +18,7 @@
     "transactions": "object",
     "networkConfigurations": "object",
     "addressBook": "object",
-    "contractExchangeRates": "object",
+    "marketData": "object",
     "confirmationExchangeRates": {},
     "pendingTokens": "object",
     "customNonceValue": "",
@@ -33,7 +33,8 @@
       "showTestNetworks": false,
       "smartTransactionsOptInStatus": false,
       "useNativeCurrencyAsPrimaryCurrency": true,
-      "petnamesEnabled": true
+      "petnamesEnabled": true,
+      "showTokenAutodetectModal": "boolean"
     },
     "firstTimeFlowType": "import",
     "completedOnboarding": true,
@@ -91,6 +92,7 @@
     "previousMigrationVersion": 0,
     "currentMigrationVersion": "number",
     "selectedNetworkClientId": "string",
+    "showTokenAutodetectModalOnUpgrade": "object",
     "networksMetadata": {
       "networkConfigurationId": {
         "EIPS": { "1559": false },
@@ -203,7 +205,6 @@
     "fcmToken": "string",
     "accounts": "object",
     "accountsByChainId": "object",
-    "contractExchangeRatesByChainId": "object",
     "unapprovedDecryptMsgs": "object",
     "unapprovedDecryptMsgCount": 0,
     "unapprovedEncryptionPublicKeyMsgs": "object",

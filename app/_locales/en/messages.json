@@ -405,6 +405,9 @@
   "allow": {
     "message": "Allow"
   },
+  "allowMetaMaskToDetectTokens": {
+    "message": "Allow MetaMask to detect and display your tokens with autodetection. You’ll be able to:"
+  },
   "allowMmiToConnectToCustodian": {
     "message": "This will allow MMI to connect to $1 to import your accounts."
   },
@@ -506,6 +509,9 @@
     "message": "Approved on $1 for $2",
     "description": "$1 is the approval date for a permission. $2 is the AvatarGroup component displaying account images."
   },
+  "approvingTo": {
+    "message": "Approving to"
+  },
   "areYouSure": {
     "message": "Are you sure?"
   },
@@ -530,9 +536,8 @@
   "attributions": {
     "message": "Attributions"
   },
-  "auroraDeprecationWarning": {
-    "message": "MetaMask will be deprecating support for $1 network",
-    "description": "$1 is name of deprecated network"
+  "auroraRpcDeprecationMessage": {
+    "message": "The Infura RPC URL is no longer supporting Aurora."
   },
   "authorizedPermissions": {
     "message": "You have authorized the following permissions"
@@ -599,7 +604,8 @@
     "message": "Basic functionality is off"
   },
   "basicConfigurationDescription": {
-    "message": "Includes token data and value, optimal gas settings, and more. Using these services shares your IP address with MetaMask, just like when you visit a website."
+    "message": "MetaMask offers basic features like token details and gas settings through internet services. When you use internet services, your IP address is shared, in this case with MetaMask. This is just like when you visit any website. MetaMask uses this data temporarily and never sells your data. You can use a VPN or turn off these services, but it may affect your MetaMask experience. To learn more read our $1.",
+    "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
   "basicConfigurationLabel": {
     "message": "Basic functionality"
@@ -668,6 +674,9 @@
   },
   "blockaid": {
     "message": "Blockaid"
+  },
+  "blockaidAlertInfo": {
+    "message": "If you sign in, a third party known for scams might take all your assets. Please review the alerts before you proceed."
   },
   "blockaidDescriptionApproveFarming": {
     "message": "If you approve this request, a third party known for scams might take all your assets."
@@ -749,9 +758,6 @@
   },
   "cancel": {
     "message": "Cancel"
-  },
-  "cancelEdit": {
-    "message": "Cancel edit"
   },
   "cancelPopoverTitle": {
     "message": "Cancel transaction"
@@ -850,6 +856,9 @@
   },
   "confirmAlertModalAcknowledge": {
     "message": "I have acknowledged the alerts and still want to proceed"
+  },
+  "confirmAlertModalAcknowledgeBlockaid": {
+    "message": "I have acknowledged the alert and still want to proceed"
   },
   "confirmAlertModalDetails": {
     "message": "If you sign in, a third party known for scams might take all your assets. Please review the alerts before you proceed."
@@ -1327,9 +1336,6 @@
   "deposit": {
     "message": "Deposit"
   },
-  "deprecatedAuroraNetworkMsg": {
-    "message": "MetaMask will be deprecating support for Aurora network. Please add it as a custom network if you want to continue to use it"
-  },
   "deprecatedGoerliNtwrkMsg": {
     "message": "Because of updates to the Ethereum system, the Goerli test network will be phased out soon."
   },
@@ -1526,6 +1532,9 @@
   "displayNftMediaDescription": {
     "message": "Displaying NFT media and data exposes your IP address to OpenSea or other third parties. This can allow attackers to associate your IP address with your Ethereum address. NFT autodetection relies on this setting, and won't be available when this is turned off."
   },
+  "diveStraightIntoUsingYourTokens": {
+    "message": "Dive straight into using your tokens"
+  },
   "doNotShare": {
     "message": "Do not share this with anyone"
   },
@@ -1654,6 +1663,9 @@
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "Edit speed up gas fee"
   },
+  "effortlesslyNavigateYourDigitalAssets": {
+    "message": "Effortlessly navigate your digital assets"
+  },
   "enable": {
     "message": "Enable"
   },
@@ -1669,6 +1681,9 @@
   "enableToken": {
     "message": "enable $1",
     "description": "$1 is a token symbol, e.g. ETH"
+  },
+  "enableTokenAutoDetection": {
+    "message": "Enable token autodetection"
   },
   "enabled": {
     "message": "Enabled"
@@ -2157,6 +2172,9 @@
   },
   "imToken": {
     "message": "imToken"
+  },
+  "immediateAccessToYourTokens": {
+    "message": "Immediate access to your tokens"
   },
   "import": {
     "message": "Import",
@@ -3091,6 +3109,9 @@
   "notEnoughGas": {
     "message": "Not enough gas"
   },
+  "notRightNow": {
+    "message": "Not right now"
+  },
   "note": {
     "message": "Note"
   },
@@ -3417,7 +3438,6 @@
   "onboardingMetametricsDescriptionLegacy": {
     "message": "MetaMask would like to gather usage data to better understand how our users interact with MetaMask. This data will be used to provide the service, which includes improving the service based on your use."
   },
-
   "onboardingMetametricsDisagree": {
     "message": "No thanks"
   },
@@ -4562,16 +4582,9 @@
   "sendSwapSubmissionWarning": {
     "message": "Clicking this button will immediately initiate your swap transaction. Please review your transaction details before proceeding."
   },
-
-  "sendTo": {
-    "message": "Send to"
-  },
   "sendTokenAsToken": {
     "message": "Send $1 as $2",
     "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
-  "sendTokens": {
-    "message": "Send tokens"
   },
   "sendingAsset": {
     "message": "Sending $1"
@@ -4694,6 +4707,9 @@
   "signing": {
     "message": "Signing"
   },
+  "signingInWith": {
+    "message": "Signing in with"
+  },
   "simulationDetailsFailed": {
     "message": "There was an error loading your estimation."
   },
@@ -4730,6 +4746,9 @@
   },
   "simulationsSettingSubHeader": {
     "message": "Estimate balance changes"
+  },
+  "siweSignatureSimulationDetailInfo": {
+    "message": "This type of signature is not able to move your assets and is used for signing in."
   },
   "skip": {
     "message": "Skip"
@@ -4833,6 +4852,14 @@
   },
   "snapAccountsDescription": {
     "message": "Accounts controlled by third-party Snaps."
+  },
+  "snapConnectTo": {
+    "message": "Connect to $1",
+    "description": "$1 is the website URL or a Snap name. Used for Snaps pre-approved connections."
+  },
+  "snapConnectionPermissionDescription": {
+    "message": "Let $1 automatically connect to $2 without your approval.",
+    "description": "Used for Snap pre-approved connections. $1 is the Snap name, $2 is a website URL."
   },
   "snapConnectionWarning": {
     "message": "$1 wants to use $2",
@@ -5227,9 +5254,6 @@
   },
   "submitted": {
     "message": "Submitted"
-  },
-  "suggestedBy": {
-    "message": "Suggested by"
   },
   "suggestedTokenSymbol": {
     "message": "Suggested ticker symbol:"
@@ -6024,19 +6048,15 @@
   "turnOnMetamaskNotificationsMessageFirst": {
     "message": "Stay in the loop on what's happening in your wallet with notifications."
   },
-
   "turnOnMetamaskNotificationsMessagePrivacyBold": {
     "message": "Settings > Notifications."
   },
-
   "turnOnMetamaskNotificationsMessagePrivacyLink": {
     "message": "Learn how we protect your privacy while using this feature."
   },
-
   "turnOnMetamaskNotificationsMessageSecond": {
     "message": "To use wallet notifications, we use a profile to sync some settings across your devices. $1"
   },
-
   "turnOnMetamaskNotificationsMessageThird": {
     "message": "You can turn off notifications at any time in $1"
   },

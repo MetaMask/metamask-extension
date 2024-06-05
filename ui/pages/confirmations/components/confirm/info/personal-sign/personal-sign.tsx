@@ -2,6 +2,8 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import {
+  ConfirmInfoRow,
+  ConfirmInfoRowAddress,
   ConfirmInfoRowText,
   ConfirmInfoRowUrl,
 } from '../../../../../../components/app/confirm/info/row';
@@ -17,6 +19,7 @@ import {
   sanitizeString,
 } from '../../../../../../helpers/utils/util';
 import { SignatureRequestType } from '../../../../types/confirm';
+import { isSIWESignatureRequest } from '../../../../utils';
 import { AlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 
 const PersonalSignInfo: React.FC = () => {
@@ -29,8 +32,26 @@ const PersonalSignInfo: React.FC = () => {
     return null;
   }
 
+  const { from } = currentConfirmation.msgParams;
+  const isSiweSigReq = isSIWESignatureRequest(currentConfirmation);
+
   return (
     <>
+      {isSiweSigReq && (
+        <Box
+          backgroundColor={BackgroundColor.backgroundDefault}
+          borderRadius={BorderRadius.MD}
+          padding={2}
+          marginBottom={4}
+        >
+          <ConfirmInfoRow
+            label={t('simulationDetailsTitle')}
+            tooltip={t('simulationDetailsTitleTooltip')}
+          >
+            <ConfirmInfoRowText text={t('siweSignatureSimulationDetailInfo')} />
+          </ConfirmInfoRow>
+        </Box>
+      )}
       <Box
         backgroundColor={BackgroundColor.backgroundDefault}
         borderRadius={BorderRadius.MD}
@@ -45,6 +66,11 @@ const PersonalSignInfo: React.FC = () => {
         >
           <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
         </AlertRow>
+        {isSiweSigReq && (
+          <ConfirmInfoRow label={t('signingInWith')}>
+            <ConfirmInfoRowAddress address={from} />
+          </ConfirmInfoRow>
+        )}
       </Box>
       <Box
         backgroundColor={BackgroundColor.backgroundDefault}

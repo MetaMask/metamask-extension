@@ -31,7 +31,6 @@ const initialState = {
   transactions: [],
   networkConfigurations: {},
   addressBook: [],
-  contractExchangeRates: {},
   confirmationExchangeRates: {},
   pendingTokens: {},
   customNonceValue: '',
@@ -50,6 +49,7 @@ const initialState = {
     useNativeCurrencyAsPrimaryCurrency: true,
     petnamesEnabled: true,
     featureNotificationsEnabled: false,
+    showTokenAutodetectModal: false,
   },
   firstTimeFlowType: null,
   completedOnboarding: false,
@@ -205,6 +205,13 @@ export default function reduceMetamask(state = initialState, action) {
       return {
         ...metamaskState,
         firstTimeFlowType: action.value,
+      };
+    }
+
+    case actionConstants.SET_SHOW_TOKEN_AUTO_DETECT_MODAL_UPGRADE: {
+      return {
+        ...metamaskState,
+        showTokenAutodetectModalOnUpgrade: action.value,
       };
     }
 
@@ -525,6 +532,7 @@ export function getIsNetworkBusyByChainId(state, chainId) {
 export function getCompletedOnboarding(state) {
   return state.metamask.completedOnboarding;
 }
+
 export function getIsInitialized(state) {
   return state.metamask.isInitialized;
 }
