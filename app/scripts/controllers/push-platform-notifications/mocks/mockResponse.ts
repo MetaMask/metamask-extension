@@ -45,7 +45,7 @@ export const MOCK_FCM_RESPONSE = {
 
 export function getMockCreateFCMRegistrationTokenResponse() {
   return {
-    url: /https:\/\/fcmregistrations\.googleapis\.com\/v1\/projects\/.*/u,
+    url: /^https:\/\/fcmregistrations\.googleapis\.com\/v1\/projects\/.*$/u,
     requestMethod: 'POST',
     response: MOCK_FCM_RESPONSE,
   } satisfies MockResponse;
@@ -53,7 +53,7 @@ export function getMockCreateFCMRegistrationTokenResponse() {
 
 export function getMockDeleteFCMRegistrationTokenResponse() {
   return {
-    url: 'https://fcmregistrations.googleapis.com/v1/projects/*',
+    url: /^https:\/\/fcmregistrations\.googleapis\.com\/v1\/projects\/.*$/u,
     requestMethod: 'POST',
     response: {},
   } satisfies MockResponse;
