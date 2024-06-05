@@ -36,9 +36,7 @@ export const NotificationDetailBlockExplorerButton = ({
   }, [defaultNetworks]);
 
   const blockExplorerUrl =
-    defaultNetwork?.rpcPrefs?.blockExplorerUrl ??
-    defaultNetwork?.rpcUrl ??
-    nativeBlockExplorerUrl;
+    defaultNetwork?.rpcPrefs?.blockExplorerUrl ?? nativeBlockExplorerUrl;
 
   if (!blockExplorerUrl) {
     return null;
