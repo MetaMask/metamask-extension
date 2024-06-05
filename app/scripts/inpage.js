@@ -34,9 +34,9 @@ cleanContextForImports();
 import log from 'loglevel';
 import { v4 as uuid } from 'uuid';
 import PortStream from 'extension-port-stream';
-import { Transform, finished, pipeline, Duplex, PassThrough } from 'readable-stream';
 import { initializeProvider } from '@metamask/providers/dist/initializeInpageProvider';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
+import { createCaipStream } from '../../shared/modules/create-caip-stream';
 
 // contexts
 const EXTENSION_ID = 'nonfpcflonapegmnfeafnddgdniflbnk';
@@ -53,98 +53,10 @@ if (shouldInjectProvider()) {
   // setup background connection
   const extensionPort = chrome.runtime.connect(EXTENSION_ID);
   const portStream = new PortStream(extensionPort);
-
-  extensionPort.onMessage.addListener((message) => {
-    console.log('extensionPort onMessage', message)
-  })
-
-
-  class Substream extends Duplex {
-    constructor({parentStream}) {
-      super({
-        objectMode: true,
-      });
-      this.parentStream = parentStream
-    }
-
-    _read() {
-      return undefined;
-    }
-
-    _write(value, _encoding, callback) {
-      console.log('substream write, push to parent', value)
-      this.parentStream.push(value)
-      callback()
-    }
-  }
-
-  class WalletStream extends Duplex {
-    constructor() {
-      super({objectMode: true})
-      this.substream = new Substream({parentStream: this})
-    }
-
-    _read() {
-      return undefined;
-    }
-
-    _write(value, _encoding, callback) {
-      console.log('wallet stream write, push to substream', value)
-      this.substream.push(value)
-      return callback();
-    }
-  }
-  class TransformableInStream extends Transform {
-    constructor() {
-      super({objectMode: true});
-    }
-
-    // Filter and wrap caip-x envelope to metamask-provider multiplex stream
-    _transform(value, _encoding, callback) {
-      console.log('transformIn', value)
-      if (value.type === 'caip-x') {
-        this.push({
-          name: 'metamask-provider',
-          data: value.data,
-        });
-      }
-      callback();
-    }
-  }
-
-  class TransformableOutStream extends Transform {
-    constructor() {
-      super({objectMode: true});
-    }
-
-    // Filter and wrap metamask-provider multiplex stream to caip-x envelope
-    _transform(value, _encoding, callback) {
-      console.log('transformOut', value)
-      if (value.name === 'metamask-provider') {
-        this.push({
-          type: 'caip-x',
-          data: value.data,
-        });
-      }
-      callback();
-    }
-  }
-
-  const walletStream = new WalletStream();
-  const transformInStream = new TransformableInStream();
-  const transformOutStream = new TransformableOutStream();
-
-  pipeline(
-    portStream,
-    transformInStream,
-    walletStream,
-    transformOutStream,
-    portStream,
-    (err) => console.log('MetaMask inpage stream front', err),
-  );
+  const connectionStream = createCaipStream(portStream);
 
   initializeProvider({
-    connectionStream: walletStream.substream,
+    connectionStream,
     logger: log,
     shouldShimWeb3: true,
     providerInfo: {

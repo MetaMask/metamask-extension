@@ -9,7 +9,7 @@
 import './lib/setup-initial-state-hooks';
 
 import EventEmitter from 'events';
-import { Transform, finished, pipeline, Duplex, PassThrough } from 'readable-stream';
+import { finished, pipeline } from 'readable-stream';
 import debounce from 'debounce-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
@@ -50,6 +50,7 @@ import LocalStore from './lib/local-store';
 import ReadOnlyNetworkStore from './lib/network-store';
 import { SENTRY_BACKGROUND_STATE } from './lib/setupSentry';
 
+import { createCaipStream } from '../../shared/modules/create-caip-stream';
 import createStreamSink from './lib/createStreamSink';
 import NotificationManager, {
   NOTIFICATION_MANAGER_EVENTS,
@@ -843,93 +844,10 @@ export function setupController(
     const portStream =
       overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
 
-      class WalletStream extends Duplex {
-        constructor() {
-          super({objectMode: true})
-        }
-
-        _read() {
-          return undefined;
-        }
-
-        _write(value, _encoding, callback) {
-          console.log('wallet stream write', value)
-          if (value.name === 'metamask-provider') {
-            remotePort.postMessage({
-              type: 'caip-x',
-              data: value.data,
-            })
-          }
-          return callback();
-        }
-      }
-
-      const walletStream = new WalletStream();
-      remotePort.onMessage.addListener((message) => {
-        console.log('remotePort onMessage', message)
-
-        if (message.type === 'caip-x') {
-          walletStream.push({
-            name: 'metamask-provider',
-            data: message.data,
-          });
-        }
-      })
-
-    class TransformableInStream extends Transform {
-      constructor() {
-        super({objectMode: true});
-      }
-
-      // Filter and wrap caip-x envelope to metamask-provider multiplex stream
-      _transform(value, _encoding, callback) {
-        console.log('transformIn', value)
-        if (value.type === 'caip-x') {
-          this.push({
-            name: 'metamask-provider',
-            data: value.data,
-          });
-        }
-        callback();
-      }
-    }
-
-    class TransformableOutStream extends Transform {
-      constructor() {
-        super({objectMode: true});
-      }
-
-      // Filter and wrap metamask-provider multiplex stream to caip-x envelope
-      _transform(value, _encoding, callback) {
-        console.log('transformOut', value)
-        if (value.name === 'metamask-provider') {
-          this.push({
-            type: 'caip-x',
-            data: value.data,
-          });
-        }
-        callback();
-      }
-    }
-
-    // const walletStream = new PassThrough({objectMode: true});
-    const transformInStream = new TransformableInStream();
-    const transformOutStream = new TransformableOutStream();
-
-    // portStream.pipe(walletStream)
-    // walletStream.pipe(portStream)
-
-    // pipeline(
-    //   portStream,
-    //   // transformInStream,
-    //   walletStream,
-    //   // transformOutStream,
-    //   portStream,
-    //   (err) => console.log('MetaMask wallet stream', err),
-    // );
+    const connectionStream = createCaipStream(portStream);
 
     controller.setupUntrustedCommunication({
-      connectionStream: walletStream,
+      connectionStream,
       sender: remotePort.sender,
     });
   };
