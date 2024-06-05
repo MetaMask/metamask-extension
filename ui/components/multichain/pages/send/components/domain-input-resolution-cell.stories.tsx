@@ -1,5 +1,6 @@
 import React from 'react';
 import { DomainInputResolutionCell } from '.';
+import { Box } from '../../../../component-library';
 
 
 export default {
@@ -50,3 +51,20 @@ LensStory.args = {
 };
 
 LensStory.storyName = 'Lens Resolution';
+
+export const OverflowingTitleStory = (args) => (
+  <div style={{ width: '308px', padding: '16px', border: '1px solid black', }}>
+    <DomainInputResolutionCell {...args} />
+  </div>
+);
+
+OverflowingTitleStory.args = {
+  domainType: 'Other',
+  address: '0xc0ffee254729296a45a3885639AC7E10F9d54979',
+  protocol: 'Test Protocol',
+  domainName: 'superduperlongnamethatisoverflowingthiscontainer.testprotocol',
+  resolvingSnap: 'Test Resolver Snap',
+  onClick: () => undefined,
+}
+
+OverflowingTitleStory.storyName = 'Overflowing Domain Resolution';
