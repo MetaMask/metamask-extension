@@ -84,17 +84,29 @@ function BlockaidBannerAlert({ txData, ...props }) {
     reason,
     result_type: resultType,
   } = securityAlertResponse;
+
+  let title, description;
   if (resultType === BlockaidResultType.Benign) {
     return null;
-  }
+  } else if (resultType === BlockaidResultType.Warning) {
+    // When `result_type` is warning, the reason should no longer be relevant for
+    // determining the copy and we should always use the new copy. The reason for
+    // that is because Blockaid has lower certainty when they flag something as
+    // warning so that requires a softer and broader message than the ones we use
+    // when `result_type` is `Malicious` or `Error`.
 
-  if (!REASON_TO_DESCRIPTION_TKEY[reason]) {
-    captureException(`BlockaidBannerAlert: Unidentified reason '${reason}'`);
-  }
+    title = t(REASON_TO_TITLE_TKEY[BlockaidReason.errored]);
+    description = t(REASON_TO_DESCRIPTION_TKEY[BlockaidReason.errored]);
+  } else {
+    if (!REASON_TO_DESCRIPTION_TKEY[reason]) {
+      captureException(`BlockaidBannerAlert: Unidentified reason '${reason}'`);
+    }
 
-  const description = t(
-    REASON_TO_DESCRIPTION_TKEY[reason] || REASON_TO_DESCRIPTION_TKEY.other,
-  );
+    title = t(REASON_TO_TITLE_TKEY[reason] || 'blockaidTitleDeceptive');
+    description = t(
+      REASON_TO_DESCRIPTION_TKEY[reason] || REASON_TO_DESCRIPTION_TKEY.other,
+    );
+  }
 
   const details = features?.length ? (
     <Text as="ul" overflowWrap={OverflowWrap.BreakWord}>
@@ -106,12 +118,13 @@ function BlockaidBannerAlert({ txData, ...props }) {
 
   const isFailedResultType = resultType === BlockaidResultType.Errored;
 
+  // On the banner colors:
+  // Malicious -> red
+  // Error and Warning -> orange
   const severity =
     resultType === BlockaidResultType.Malicious
       ? BannerAlertSeverity.Danger
       : BannerAlertSeverity.Warning;
-
-  const title = t(REASON_TO_TITLE_TKEY[reason] || 'blockaidTitleDeceptive');
 
   /** Data we pass to Blockaid false reporting portal. As far as I know, there are no documents that exist that specifies these key values */
   const reportUrl = (() => {
