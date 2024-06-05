@@ -73,4 +73,16 @@ describe('PersonalSignInfo', () => {
     const { getByText } = renderWithProvider(<PersonalSignInfo />, mockStore);
     expect(getByText('Signing in with')).toBeDefined();
   });
+
+  it('display simulation for SIWE request', () => {
+    const state = {
+      ...mockState,
+      confirm: {
+        currentConfirmation: signatureRequestSIWE,
+      },
+    };
+    const mockStore = configureMockStore([])(state);
+    const { getByText } = renderWithProvider(<PersonalSignInfo />, mockStore);
+    expect(getByText('Estimated changes')).toBeDefined();
+  });
 });
