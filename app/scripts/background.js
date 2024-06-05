@@ -50,7 +50,7 @@ import LocalStore from './lib/local-store';
 import ReadOnlyNetworkStore from './lib/network-store';
 import { SENTRY_BACKGROUND_STATE } from './lib/setupSentry';
 
-import { createCaipStream } from '../../shared/modules/create-caip-stream';
+import { createCaipStream } from '../../shared/modules/caip-stream';
 import createStreamSink from './lib/createStreamSink';
 import NotificationManager, {
   NOTIFICATION_MANAGER_EVENTS,

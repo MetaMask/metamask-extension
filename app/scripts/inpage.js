@@ -36,7 +36,7 @@ import { v4 as uuid } from 'uuid';
 import PortStream from 'extension-port-stream';
 import { initializeProvider } from '@metamask/providers/dist/initializeInpageProvider';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
-import { createCaipStream } from '../../shared/modules/create-caip-stream';
+import { createCaipStream } from '../../shared/modules/caip-stream';
 
 // contexts
 const EXTENSION_ID = 'nonfpcflonapegmnfeafnddgdniflbnk';
