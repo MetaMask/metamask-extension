@@ -52,12 +52,15 @@ log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn');
 if (shouldInjectProvider()) {
   // setup background connection
   const extensionPort = chrome.runtime.connect(EXTENSION_ID);
-  // const portStream = new PortStream(extensionPort);
+  const portStream = new PortStream(extensionPort);
 
 
-  class WalletStream extends Duplex {
-    constructor() {
-      super({objectMode: true})
+  class Substream extends Duplex {
+    constructor({parentStream}) {
+      super({
+        objectMode: true,
+      });
+      this.parentStream = parentStream
     }
 
     _read() {
@@ -65,33 +68,44 @@ if (shouldInjectProvider()) {
     }
 
     _write(value, _encoding, callback) {
-      console.log('wallet stream write', value)
-      if (value.name === 'metamask-provider') {
-        extensionPort.postMessage({
-          type: 'caip-x',
-          data: value.data,
-        })
-      }
+      console.log('substream write, push to parent', value)
+      this.parentStream.push(value)
+      callback()
+    }
+  }
+
+  class WalletStream extends Duplex {
+    constructor() {
+      super({objectMode: true})
+      this.substream = new Substream({parentStream: this})
+    }
+
+    _read() {
+      return undefined;
+    }
+
+    _write(value, _encoding, callback) {
+      console.log('wallet stream write, push to substream', value)
+      this.substream.push(value)
       return callback();
     }
   }
 
   const walletStream = new WalletStream();
-  extensionPort.onMessage.addListener((message) => {
-    console.log('extensionPort onMessage', message)
+  // extensionPort.onMessage.addListener((message) => {
+  //   console.log('extensionPort onMessage', message)
 
-    if (message.type === 'caip-x') {
-      walletStream.push({
-        name: 'metamask-provider',
-        data: message.data,
-      });
-    }
+  //   if (message.type === 'caip-x') {
+  //     walletStream.push({
+  //       name: 'metamask-provider',
+  //       data: message.data,
+  //     });
+  //   }
+  // })
+
+    extensionPort.onMessage.addListener((message) => {
+    console.log('extensionPort onMessage', message)
   })
-  // {
-  //   objectMode: true,
-  //   read: () => undefined,
-  //   write: processMessage,
-  // }
 
   class TransformableInStream extends Transform {
     constructor() {
@@ -133,18 +147,17 @@ if (shouldInjectProvider()) {
   const transformInStream = new TransformableInStream();
   const transformOutStream = new TransformableOutStream();
 
-  // pipeline(
-  //   walletStream,
-  //   // transformInStream,
-  //   // transformOutStream,
-  //   portStream,
-  //   walletStream,
-  //   (err) => console.log('MetaMask inpage stream', err),
-  // );
-
+  pipeline(
+    portStream,
+    transformInStream,
+    walletStream,
+    transformOutStream,
+    portStream,
+    (err) => console.log('MetaMask inpage stream front', err),
+  );
 
   initializeProvider({
-    connectionStream: walletStream,
+    connectionStream: walletStream.substream,
     logger: log,
     shouldShimWeb3: true,
     providerInfo: {
