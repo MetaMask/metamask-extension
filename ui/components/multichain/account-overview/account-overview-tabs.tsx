@@ -95,18 +95,16 @@ export const AccountOverviewTabs = ({
   ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-  const needHelpButtonLink = (
+  const NeedHelpButtonLink = (props) => (
     <ButtonLink
       size={ButtonLinkSize.Md}
       startIconName={IconName.MessageQuestion}
       data-testid="need-help-link"
       href={SUPPORT_LINK}
       display={Display.Flex}
-      justifyContent={JustifyContent.center}
-      marginBottom={4}
-      marginTop={4}
       onClick={onSupportLinkClick}
       externalLink
+      {...props}
     >
       {t('needHelpLinkText')}
     </ButtonLink>
@@ -141,7 +139,11 @@ export const AccountOverviewTabs = ({
               />
               {
                 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-                needHelpButtonLink
+                <NeedHelpButtonLink
+                  justifyContent={JustifyContent.flexStart}
+                  paddingLeft={4}
+                  marginBottom={4}
+                ></NeedHelpButtonLink>
                 ///: END:ONLY_INCLUDE_IF
               }
             </Box>
@@ -158,7 +160,11 @@ export const AccountOverviewTabs = ({
             <NftsTab />
             {
               ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-              needHelpButtonLink
+              <NeedHelpButtonLink
+                justifyContent={JustifyContent.flexStart}
+                paddingLeft={4}
+                marginBottom={4}
+              ></NeedHelpButtonLink>
               ///: END:ONLY_INCLUDE_IF
             }
           </Tab>
@@ -174,7 +180,11 @@ export const AccountOverviewTabs = ({
             <TransactionList />
             {
               ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-              needHelpButtonLink
+              <NeedHelpButtonLink
+                justifyContent={JustifyContent.center}
+                marginBottom={4}
+                marginTop={4}
+              ></NeedHelpButtonLink>
               ///: END:ONLY_INCLUDE_IF
             }
           </Tab>
