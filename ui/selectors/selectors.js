@@ -14,6 +14,7 @@ import semver from 'semver';
 import { createSelector } from 'reselect';
 import { NameType } from '@metamask/name-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
+import { EthAccountType } from '@metamask/keyring-api';
 import { addHexPrefix, getEnvironmentType } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
@@ -338,6 +339,13 @@ export function getInternalAccountByAddress(state, address) {
 export function getSelectedInternalAccount(state) {
   const accountId = state.metamask.internalAccounts.selectedAccount;
   return state.metamask.internalAccounts.accounts[accountId];
+}
+
+export function isSelectedInternalAccountEth(state) {
+  const { type } = getSelectedInternalAccount(state);
+  return Boolean(
+    type === EthAccountType.Eoa || type === EthAccountType.Erc4337,
+  );
 }
 
 export function checkIfMethodIsEnabled(state, methodName) {
