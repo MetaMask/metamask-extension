@@ -13,6 +13,7 @@ import { I18nContext } from '../../../../../contexts/i18n';
 import Identicon from '../../../../ui/identicon';
 import Confusable from '../../../../ui/confusable';
 import {
+  AvatarAccount,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   AvatarIcon,
   AvatarIconSize,
@@ -137,7 +138,7 @@ export const DomainInputResolutionCell = ({
               className: 'multichain-send-page__recipient__item__badge',
             }}
           >
-            <Identicon address={address} diameter={32} />
+            <AvatarAccount address={address} />
           </BadgeWrapper>
         </Tooltip>
         <div className="multichain-send-page__recipient__item__content">
@@ -182,7 +183,7 @@ export const DomainInputResolutionCell = ({
       onClick={() => onClick()}
     >
       <div className="multichain-send-page__recipient__item__avatar-wrapper">
-        <Identicon address={address} diameter={32} />
+        <AvatarAccount address={address} />
       </div>
       <div className="multichain-send-page__recipient__item__content">
         <div
