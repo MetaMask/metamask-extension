@@ -388,7 +388,7 @@ export const RECIPIENT_SEARCH_MODES = {
  * @property {Recipient} recipient - An object that describes the intended
  *  recipient of the transaction.
  * @property {string} [swapQuotesError] - error message for swap quotes
- * @property {number} [swapQuotesLatestRequestTimestamp] - timestamp of most recent swap quotes request
+ * @property {number} [timeToFetchQuotes] time to fetch most recent swap+send quotes
  * @property {MapValuesToUnion<DraftTxStatus>} status - Describes the
  *  validity of the draft transaction, which will be either 'VALID' or
  *  'INVALID', depending on our ability to generate a valid txParams object for
@@ -446,6 +446,7 @@ export const draftTransactionInitialState = {
   isSwapQuoteLoading: false,
   swapQuotesError: null,
   swapQuotesLatestRequestTimestamp: null,
+  timeToFetchQuotes: null,
   quotes: null,
 };
 
@@ -1842,6 +1843,8 @@ const slice = createSlice({
           draftTransactionInitialState.isSwapQuoteLoading;
         draftTransaction.swapQuotesLatestRequestTimestamp =
           draftTransactionInitialState.swapQuotesLatestRequestTimestamp;
+        draftTransaction.timeToFetchQuotes =
+          draftTransactionInitialState.timeToFetchQuotes;
       })
       .addCase(computeEstimatedGasLimit.pending, (state) => {
         // When we begin to fetch gasLimit we should indicate we are loading
@@ -1968,6 +1971,8 @@ const slice = createSlice({
           action.payload.requestTimestamp ===
             draftTransaction.swapQuotesLatestRequestTimestamp
         ) {
+          draftTransaction.timeToFetchQuotes =
+            Date.now() - action.payload.requestTimestamp;
           draftTransaction.isSwapQuoteLoading = false;
           draftTransaction.swapQuotesError = null;
           if (action.payload) {
