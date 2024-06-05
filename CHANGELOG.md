@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [11.16.6]
+### Added
+- Add a Basic Functionality Toggle to settings, enabling users to opt-out of some features that send network requests to external services  ([#23456](https://github.com/MetaMask/metamask-extension/pull/23456))
+
+### Changed
+- Update MetaMask Chrome builds to Manifest V3 ([#24746](https://github.com/MetaMask/metamask-extension/pull/24746))
+
+### Fixed
+- Ensure network requests are not made during onboarding
+	- ([#24890](https://github.com/MetaMask/metamask-extension/pull/24890))
+	- ([#24891](https://github.com/MetaMask/metamask-extension/pull/24891))
+	- ([#24887](https://github.com/MetaMask/metamask-extension/pull/24887))
 
 ## [11.16.5]
 ### Changed
