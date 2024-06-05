@@ -953,7 +953,7 @@ async function clickSignOnSignatureConfirmation({
   snapSigInsights = false,
 }) {
   if (snapSigInsights) {
-    // there is no condition to we can wait for to know the snap is ready,
+    // there is no condition we can wait for to know the snap is ready,
     // so we have to add a small delay as the last alternative.
     await driver.delay(regularDelayMs);
   }
