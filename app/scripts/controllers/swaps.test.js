@@ -13,7 +13,8 @@ import {
   FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
   FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
 } from '../../../shared/constants/smartTransactions';
-import SwapsController, { utils } from './swaps';
+import SwapsController from './swaps';
+import { getMedianEthValueQuote } from './swaps.utils';
 
 const MOCK_FETCH_PARAMS = {
   slippage: 3,
@@ -188,7 +189,7 @@ describe('SwapsController', function () {
         swapsController.getBufferedGasLimit,
         MOCK_GET_BUFFERED_GAS_LIMIT,
       );
-      assert.strictEqual(swapsController.pollCount, 0);
+      assert.strictEqual(swapsController._pollCount, 0);
       assert.deepStrictEqual(
         swapsController.getProviderConfig,
         MOCK_GET_PROVIDER_CONFIG,
@@ -720,7 +721,7 @@ describe('SwapsController', function () {
 
         const timedoutGasReturnResult = { gasLimit: 1000000 };
         const timedoutGasReturnStub = sandbox
-          .stub(swapsController, 'timedoutGasReturn')
+          .stub(swapsController, '_timedoutGasReturn')
           .resolves(timedoutGasReturnResult);
 
         await swapsController.fetchAndSetQuotes(
@@ -810,14 +811,14 @@ describe('SwapsController', function () {
 
         const _swapsController = getSwapsController();
 
-        const currentEthersInstance = _swapsController.ethersProvider;
+        const currentEthersInstance = _swapsController._ethersProvider;
 
         await _swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS, {
           ...MOCK_FETCH_METADATA,
           chainId: CHAIN_IDS.GOERLI,
         });
 
-        const newEthersInstance = _swapsController.ethersProvider;
+        const newEthersInstance = _swapsController._ethersProvider;
         assert.notStrictEqual(
           currentEthersInstance,
           newEthersInstance,
@@ -834,14 +835,14 @@ describe('SwapsController', function () {
           fetchTradesInfo: fetchTradesInfoStub,
           getCurrentChainId: getCurrentChainIdStub,
         });
-        const currentEthersInstance = _swapsController.ethersProvider;
+        const currentEthersInstance = _swapsController._ethersProvider;
 
         await swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS, {
           ...MOCK_FETCH_METADATA,
           chainId: CHAIN_IDS.MAINNET,
         });
 
-        const newEthersInstance = _swapsController.ethersProvider;
+        const newEthersInstance = _swapsController._ethersProvider;
         assert.strictEqual(
           currentEthersInstance,
           newEthersInstance,
@@ -860,7 +861,7 @@ describe('SwapsController', function () {
           getLayer1GasFee: getLayer1GasFeeStub,
           getNetworkClientId: getNetworkClientIdStub,
         });
-        const firstEthersInstance = _swapsController.ethersProvider;
+        const firstEthersInstance = _swapsController._ethersProvider;
         const firstEthersProviderChainId =
           _swapsController._ethersProviderChainId;
 
@@ -869,7 +870,7 @@ describe('SwapsController', function () {
           chainId: CHAIN_IDS.GOERLI,
         });
 
-        const secondEthersInstance = _swapsController.ethersProvider;
+        const secondEthersInstance = _swapsController._ethersProvider;
         const secondEthersProviderChainId =
           _swapsController._ethersProviderChainId;
 
@@ -889,7 +890,7 @@ describe('SwapsController', function () {
           chainId: CHAIN_IDS.LOCALHOST,
         });
 
-        const thirdEthersInstance = _swapsController.ethersProvider;
+        const thirdEthersInstance = _swapsController._ethersProvider;
         const thirdEthersProviderChainId =
           _swapsController._ethersProviderChainId;
 
@@ -948,23 +949,23 @@ describe('SwapsController', function () {
       });
 
       it('clears polling timeout', function () {
-        swapsController.pollingTimeout = setTimeout(
+        swapsController._pollingTimeout = setTimeout(
           () => assert.fail(),
           POLLING_TIMEOUT,
         );
         swapsController.resetSwapsState();
-        assert.strictEqual(swapsController.pollingTimeout._idleTimeout, -1);
+        assert.strictEqual(swapsController._pollingTimeout._idleTimeout, -1);
       });
     });
 
     describe('stopPollingForQuotes', function () {
       it('clears polling timeout', function () {
-        swapsController.pollingTimeout = setTimeout(
+        swapsController._pollingTimeout = setTimeout(
           () => assert.fail(),
           POLLING_TIMEOUT,
         );
         swapsController.stopPollingForQuotes();
-        assert.strictEqual(swapsController.pollingTimeout._idleTimeout, -1);
+        assert.strictEqual(swapsController._pollingTimeout._idleTimeout, -1);
       });
 
       it('resets quotes state correctly', function () {
@@ -977,12 +978,12 @@ describe('SwapsController', function () {
 
     describe('resetPostFetchState', function () {
       it('clears polling timeout', function () {
-        swapsController.pollingTimeout = setTimeout(
+        swapsController._pollingTimeout = setTimeout(
           () => assert.fail(),
           POLLING_TIMEOUT,
         );
         swapsController.resetPostFetchState();
-        assert.strictEqual(swapsController.pollingTimeout._idleTimeout, -1);
+        assert.strictEqual(swapsController._pollingTimeout._idleTimeout, -1);
       });
 
       it('updates state correctly', function () {
@@ -1024,8 +1025,6 @@ describe('SwapsController', function () {
 
   describe('utils', function () {
     describe('getMedianEthValueQuote', function () {
-      const { getMedianEthValueQuote } = utils;
-
       it('calculates median correctly with uneven sample', function () {
         const expectedResult = {
           ethFee: '10',
