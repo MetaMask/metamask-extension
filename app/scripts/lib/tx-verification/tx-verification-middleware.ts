@@ -10,7 +10,7 @@ import {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
 } from 'json-rpc-engine';
-import { TRUSTED_BRIDGE_SIGNER } from '../../../../shared/constants/bridge';
+import { SIG_LEN, TRUSTED_BRIDGE_SIGNER } from '../../../../shared/constants/bridge';
 import { FIRST_PARTY_CONTRACT_NAMES } from '../../../../shared/constants/first-party-contracts';
 
 export function txVerificationMiddleware(
@@ -30,13 +30,14 @@ export function txVerificationMiddleware(
     to: hashMessage(params.to.toLowerCase()),
     from: hashMessage(params.from.toLowerCase()),
     data: hashMessage(
-      params.data.toLowerCase().substr(0, params.data.length - 130),
+      // strip signature from data
+      params.data.toLowerCase().substr(0, params.data.length - SIG_LEN),
     ),
     value: hashMessage(params.value.toLowerCase()),
   };
   const h = hashMessage(JSON.stringify(paramsToVerify));
-  const signature = `0x${params.data.substr(-130)}`;
   // signature is 130 chars in length at the end
+  const signature = `0x${params.data.substr(-SIG_LEN)}`;
   const addressToVerify = verifyMessage(h, signature);
   const canSubmit =
     params.to.toLowerCase() ===
