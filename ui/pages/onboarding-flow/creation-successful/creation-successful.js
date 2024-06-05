@@ -75,11 +75,8 @@ export default function CreationSuccessful() {
             fontSize: '70px',
           }}
         >
-          {firstTimeFlowType === FirstTimeFlowType.create &&
-          !seedPhraseBackedUp ? (
-            <span>🔓</span>
-          ) : (
-            <span>🎉</span>
+          {firstTimeFlowType === FirstTimeFlowType.create && (
+            <span>{!seedPhraseBackedUp ? '🔓' : '🎉'}</span>
           )}
         </Text>
         <Text

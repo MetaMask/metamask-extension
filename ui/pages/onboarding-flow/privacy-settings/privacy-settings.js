@@ -398,10 +398,10 @@ export default function PrivacySettings() {
                     dataTestId="basic-functionality-toggle"
                     value={externalServicesOnboardingToggleState}
                     setValue={(toggledValue) => {
-                      if (toggledValue === false) {
-                        dispatch(openBasicFunctionalityModal());
-                      } else {
+                      if (toggledValue) {
                         dispatch(onboardingToggleBasicFunctionalityOn());
+                      } else {
+                        dispatch(openBasicFunctionalityModal());
                       }
                     }}
                     title={t('basicConfigurationLabel')}
