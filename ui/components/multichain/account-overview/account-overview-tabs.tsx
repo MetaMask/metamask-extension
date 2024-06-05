@@ -16,18 +16,18 @@ import NftsTab from '../../app/nfts-tab';
 import AssetList from '../../app/asset-list';
 import TransactionList from '../../app/transaction-list';
 import { Tabs, Tab } from '../../ui/tabs';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi)
 import {
   Display,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi)
   JustifyContent,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/design-system';
+///: END:ONLY_INCLUDE_IF
 import {
-  IconName,
   Box,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   ButtonLink,
   ButtonLinkSize,
+  IconName,
   ///: END:ONLY_INCLUDE_IF
 } from '../../component-library';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -43,7 +43,9 @@ export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
 
 export const AccountOverviewTabs = ({
   onTabClick,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   onSupportLinkClick,
+  ///: END:ONLY_INCLUDE_IF
   defaultHomeActiveTabName,
   showTokens,
   showNfts,

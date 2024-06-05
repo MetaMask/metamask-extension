@@ -892,7 +892,9 @@ export default class Home extends PureComponent {
           <div className="home__main-view">
             <AccountOverview
               onTabClick={onTabClick}
+              ///: BEGIN:ONLY_INCLUDE_IF(build-main)
               onSupportLinkClick={this.onSupportLinkClick}
+              ///: END:ONLY_INCLUDE_IF
               defaultHomeActiveTabName={defaultHomeActiveTabName}
               useExternalServices={useExternalServices}
               setBasicFunctionalityModalOpen={setBasicFunctionalityModalOpen}
