@@ -1,6 +1,9 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import { scrollAndConfirmAndAssertConfirm, withRedesignConfirmationFixtures } from '../helpers';
+import {
+  scrollAndConfirmAndAssertConfirm,
+  withRedesignConfirmationFixtures,
+} from '../helpers';
 import {
   DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
@@ -12,12 +15,20 @@ import { Ganache } from '../../../seeder/ganache';
 import { Driver } from '../../../webdriver/driver';
 
 describe('Confirmation Signature - Permit', function (this: Suite) {
-  if (!process.env.ENABLE_CONFIRMATION_REDESIGN) { return; }
+  if (!process.env.ENABLE_CONFIRMATION_REDESIGN) {
+    return;
+  }
 
   it('initiates and confirms', async function () {
     await withRedesignConfirmationFixtures(
       this.test?.fullTitle(),
-      async ({ driver, ganacheServer }: { driver: Driver, ganacheServer: Ganache }) => {
+      async ({
+        driver,
+        ganacheServer,
+      }: {
+        driver: Driver;
+        ganacheServer: Ganache;
+      }) => {
         const addresses = await ganacheServer.getAccounts();
         const publicAddress = addresses?.[0] as string;
 
@@ -42,7 +53,9 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
         await driver.clickElement('#signPermit');
         await switchToNotificationWindow(driver);
 
-        await driver.clickElement('[data-testid="confirm-footer-cancel-button"]');
+        await driver.clickElement(
+          '[data-testid="confirm-footer-cancel-button"]',
+        );
 
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -66,7 +79,10 @@ async function assertInfoValues(driver: Driver) {
 
   const primaryType = driver.findElement({ text: 'Permit' });
   const owner = driver.findElement({ css: '.name__name', text: 'Account 1' });
-  const spender = driver.findElement({ css: '.name__value', text: '0x5B38D...eddC4' });
+  const spender = driver.findElement({
+    css: '.name__value',
+    text: '0x5B38D...eddC4',
+  });
   const value = driver.findElement({ text: '3000' });
   const nonce = driver.findElement({ text: '0' });
   const deadline = driver.findElement({ text: '50000000000' });
@@ -95,11 +111,22 @@ async function assertVerifiedResults(driver: Driver, publicAddress: string) {
     css: '#signPermitVerifyResult',
     text: publicAddress,
   });
-  const verifyRecoverAddress = await driver.findElement('#signPermitVerifyResult');
+  const verifyRecoverAddress = await driver.findElement(
+    '#signPermitVerifyResult',
+  );
 
-  assert.equal(await verifyResult.getText(), '0x0a396f89ee073214f7e055e700048abd7b4aba6ecca0352937d6a2ebb7176f2f43c63097ad7597632e34d6a801695702ba603d5872a33ee7d7562fcdb9e816ee1c');
-  assert.equal(await verifyResultR.getText(), 'r: 0x0a396f89ee073214f7e055e700048abd7b4aba6ecca0352937d6a2ebb7176f2f');
-  assert.equal(await verifyResultS.getText(), 's: 0x43c63097ad7597632e34d6a801695702ba603d5872a33ee7d7562fcdb9e816ee');
+  assert.equal(
+    await verifyResult.getText(),
+    '0x0a396f89ee073214f7e055e700048abd7b4aba6ecca0352937d6a2ebb7176f2f43c63097ad7597632e34d6a801695702ba603d5872a33ee7d7562fcdb9e816ee1c',
+  );
+  assert.equal(
+    await verifyResultR.getText(),
+    'r: 0x0a396f89ee073214f7e055e700048abd7b4aba6ecca0352937d6a2ebb7176f2f',
+  );
+  assert.equal(
+    await verifyResultS.getText(),
+    's: 0x43c63097ad7597632e34d6a801695702ba603d5872a33ee7d7562fcdb9e816ee',
+  );
   assert.equal(await verifyResultV.getText(), 'v: 28');
   assert.equal(await verifyRecoverAddress.getText(), publicAddress);
 }
