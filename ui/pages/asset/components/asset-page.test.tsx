@@ -275,7 +275,5 @@ describe('AssetPage', () => {
       expect(mmiStakeButton).toBeInTheDocument();
       expect(mmiPortfolioButton).toBeInTheDocument();
     });
-
-    // TODO more unit tests, click buttons, chart, verify market data on page, etc
   });
 });

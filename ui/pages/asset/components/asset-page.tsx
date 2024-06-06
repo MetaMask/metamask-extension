@@ -89,8 +89,6 @@ const AssetPage = ({
   const t = useI18nContext();
   const history = useHistory();
   const currency = useSelector(getCurrentCurrency);
-
-  // TODO if this is undefined some stuff below can end up NaN
   const conversionRate = useSelector(getConversionRate);
   const allMarketData = useSelector(getTokensMarketData);
 
@@ -102,6 +100,11 @@ const AssetPage = ({
       : '0x0000000000000000000000000000000000000000';
 
   const marketData = allMarketData?.[address];
+
+  const currentPrice =
+    conversionRate !== undefined && marketData?.price !== undefined
+      ? conversionRate * marketData.price
+      : undefined;
 
   return (
     <Box
@@ -138,7 +141,7 @@ const AssetPage = ({
       <AssetChart
         chainId={chainId}
         address={address}
-        currentPrice={conversionRate * marketData?.price}
+        currentPrice={currentPrice}
         currency={currency}
       />
       <Box marginTop={4}>
@@ -215,7 +218,7 @@ const AssetPage = ({
               </Box>
             </Box>
           )}
-          {conversionRate > 0 && // TODO
+          {conversionRate > 0 &&
             (marketData?.marketCap > 0 ||
               marketData?.totalVolume > 0 ||
               marketData?.circulatingSupply > 0 ||
@@ -233,7 +236,7 @@ const AssetPage = ({
                   {marketData?.marketCap > 0 &&
                     renderRow(
                       t('marketCap'),
-                      <Text data-testid='asset-market-cap'>
+                      <Text data-testid="asset-market-cap">
                         {localizeLargeNumber(
                           t,
                           conversionRate * marketData.marketCap,
