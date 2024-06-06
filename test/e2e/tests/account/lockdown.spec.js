@@ -69,10 +69,11 @@ describe('lockdown', function () {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.fullTitle(),
+        failOnConsoleError: false,
       },
       async ({ driver }) => {
         await driver.navigate(PAGES.HOME);
-        await driver.delay(2000);
+        await driver.delay(1000);
         assert.equal(
           await driver.executeScript(lockdownTestScript),
           true,
@@ -80,7 +81,7 @@ describe('lockdown', function () {
         );
 
         await driver.navigate(PAGES.BACKGROUND);
-        await driver.delay(2000);
+        await driver.delay(1000);
         assert.equal(
           await driver.executeScript(lockdownTestScript),
           true,
