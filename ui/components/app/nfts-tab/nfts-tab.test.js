@@ -234,12 +234,27 @@ describe('NFT Items', () => {
     jest.clearAllMocks();
   });
 
+  function delay(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
   describe('NFTs Detection Notice', () => {
-    it('should render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has no nfts', () => {
+    it('should not render the NFTs Detection Notice when currently selected network is Mainnet because it is enabled by default', () => {
       render({
         selectedAddress: ACCOUNT_2,
         nfts: NFTS,
       });
+      expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
+    });
+
+    it('should render the NFTs Detection Notice when currently selected network is Mainnet and nft detection is set to false and user has no nfts', async () => {
+      render({
+        selectedAddress: ACCOUNT_2,
+        nfts: NFTS,
+        useNftDetection: false,
+      });
+      // wait for spinner to be removed
+      await delay(3000);
       expect(screen.queryByText('NFT autodetection')).toBeInTheDocument();
     });
     it('should not render the NFTs Detection Notice when currently selected network is Mainnet and currently selected account has NFTs', () => {
@@ -249,11 +264,14 @@ describe('NFT Items', () => {
       });
       expect(screen.queryByText('NFT autodetection')).not.toBeInTheDocument();
     });
-    it('should take user to the experimental settings tab in settings when user clicks "Turn on NFT detection in Settings"', () => {
+    it('should take user to the experimental settings tab in settings when user clicks "Turn on NFT detection in Settings" and nft detection is set to false', async () => {
       render({
         selectedAddress: ACCOUNT_2,
         nfts: NFTS,
+        useNftDetection: false,
       });
+      // wait for spinner to be removed
+      await delay(3000);
       fireEvent.click(screen.queryByText('Turn on NFT detection in Settings'));
       expect(historyPushMock).toHaveBeenCalledTimes(1);
       expect(historyPushMock).toHaveBeenCalledWith(
@@ -337,11 +355,13 @@ describe('NFT Items', () => {
   });
 
   describe('NFT Tab Ramps Card', () => {
-    it('shows the ramp card when user balance is zero', () => {
+    it('shows the ramp card when user balance is zero', async () => {
       const { queryByText } = render({
         selectedAddress: ACCOUNT_1,
         balance: '0x0',
       });
+      // wait for spinner to be removed
+      await delay(3000);
       expect(queryByText('Get ETH to buy NFTs')).toBeInTheDocument();
     });
 
