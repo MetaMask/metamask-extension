@@ -26,7 +26,7 @@ const PermitSimulation: React.FC = () => {
   const currentConfirmation = useSelector(
     currentConfirmationSelector,
   ) as SignatureRequestType;
-  const [faitValue, setFiatValue] = useState<number>();
+  const [fiatValue, setFiatValue] = useState<number>();
 
   const {
     domain: { verifyingContract },
