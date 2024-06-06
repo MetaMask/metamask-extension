@@ -82,11 +82,10 @@ function useProfileSyncingProps(basicFunctionalityOnboarding) {
 
   const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
 
-  // Effect - toggle profile syncing off when basic functionality is off
+  // Effect - toggle profile syncing on/off based on basic functionality toggle
   useEffect(() => {
-    if (basicFunctionalityOnboarding === false) {
-      setIsProfileSyncingEnabled(false);
-    }
+    const changeProfileSync = basicFunctionalityOnboarding === true;
+    setIsProfileSyncingEnabled(changeProfileSync);
   }, [basicFunctionalityOnboarding, setIsProfileSyncingEnabled]);
 
   return {
@@ -168,7 +167,7 @@ export default function PrivacySettings() {
     // Profile Syncing Setup
     if (externalServicesOnboardingToggleState) {
       if (
-        !profileSyncingProps.isProfileSyncingEnabled &&
+        profileSyncingProps.isProfileSyncingEnabled ||
         participateInMetaMetrics
       ) {
         dispatch(performSignIn());
@@ -228,7 +227,7 @@ export default function PrivacySettings() {
         }),
       );
     } else {
-      await profileSyncingProps.enableProfileSyncing();
+      profileSyncingProps.setIsProfileSyncingEnabled(true);
     }
   };
 
@@ -308,17 +307,6 @@ export default function PrivacySettings() {
               </a>,
             ])}
           />
-          {!externalServicesOnboardingToggleState && (
-            <Box paddingBottom={4}>
-              <Text
-                as="p"
-                color={TextColor.warningDefault}
-                variant={TextVariant.bodySm}
-              >
-                {t('profileSyncingBasicFunctionalityWarning')}
-              </Text>
-            </Box>
-          )}
           {profileSyncingProps.profileSyncingError && (
             <Box paddingBottom={4}>
               <Text

@@ -29,7 +29,7 @@ import {
 import Preloader from '../../../../components/ui/icon/preloader/preloader-icon.component';
 import { getUseExternalServices } from '../../../../selectors';
 
-function useEffectProfileSyncBasicFunctionalitySetting() {
+function ProfileSyncBasicFunctionalitySetting() {
   const basicFunctionality: boolean = useSelector(getUseExternalServices);
   const { setIsProfileSyncingEnabled } = useSetIsProfileSyncingEnabled();
 
@@ -39,6 +39,10 @@ function useEffectProfileSyncBasicFunctionalitySetting() {
       setIsProfileSyncingEnabled(false);
     }
   }, [basicFunctionality, setIsProfileSyncingEnabled]);
+
+  return {
+    isProfileSyncDisabled: !basicFunctionality,
+  };
 }
 
 const ProfileSyncToggle = () => {
@@ -50,7 +54,7 @@ const ProfileSyncToggle = () => {
   const { disableProfileSyncing, error: disableProfileSyncingError } =
     useDisableProfileSyncing();
 
-  useEffectProfileSyncBasicFunctionalitySetting();
+  const { isProfileSyncDisabled } = ProfileSyncBasicFunctionalitySetting();
 
   const error = enableProfileSyncingError || disableProfileSyncingError;
 
@@ -129,6 +133,7 @@ const ProfileSyncToggle = () => {
         {!isProfileSyncingUpdateLoading && (
           <div className="settings-page__content-item-col">
             <ToggleButton
+              disabled={isProfileSyncDisabled}
               value={isProfileSyncingEnabled}
               onToggle={handleUseProfileSync}
               offLabel={t('off')}
