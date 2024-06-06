@@ -8,9 +8,17 @@ import ButtonGroup from '../../../components/ui/button-group';
 import Button from '../../../components/ui/button';
 import InfoTooltip from '../../../components/ui/info-tooltip';
 import Box from '../../../components/ui/box';
-import Typography from '../../../components/ui/typography';
 import {
-  TypographyVariant,
+  Text,
+  BannerAlert,
+  Modal,
+  ModalOverlay,
+  ButtonPrimary,
+  ModalContent,
+  ModalHeader,
+} from '../../../components/component-library';
+import {
+  TextVariant,
   AlignItems,
   JustifyContent,
   DISPLAY,
@@ -22,14 +30,6 @@ import {
   SLIPPAGE_VERY_HIGH_ERROR,
   SLIPPAGE_NEGATIVE_ERROR,
 } from '../../../../shared/constants/swaps';
-import {
-  BannerAlert,
-  Modal,
-  ModalOverlay,
-  ButtonPrimary,
-} from '../../../components/component-library';
-import { ModalContent } from '../../../components/component-library/modal-content/deprecated';
-import { ModalHeader } from '../../../components/component-library/modal-header/deprecated';
 import { setSwapsErrorKey } from '../../../store/actions';
 import { getSwapsErrorKey } from '../../../ducks/swaps/swaps';
 
@@ -156,12 +156,12 @@ export default function TransactionSettings({
               {!isDirectWrappingEnabled && (
                 <>
                   <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
-                    <Typography
-                      variant={TypographyVariant.H6}
-                      boxProps={{ paddingRight: 2 }}
+                    <Text
+                      variant={TextVariant.headingSm}
+                      paddingRight={2}
                     >
                       {t('swapsMaxSlippage')}
-                    </Typography>
+                    </Text>
                     <InfoTooltip
                       position="top"
                       iconFillColor="var(--color-icon-muted)"
@@ -269,12 +269,12 @@ export default function TransactionSettings({
                   title={notificationTitle}
                   titleProps={{ 'data-testid': 'swaps-banner-title' }}
                 >
-                  <Typography
-                    variant={TypographyVariant.H6}
+                  <Text
+                    variant={TextVariant.headingSm}
                     testId="mm-banner-alert-notification-text"
                   >
                     {notificationText}
-                  </Typography>
+                  </Text>
                 </BannerAlert>
               </Box>
             )}
