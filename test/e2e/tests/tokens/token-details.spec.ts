@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
@@ -10,9 +11,6 @@ import {
   withFixtures,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-
-import { strict as assert } from 'assert';
-
 
 describe('Token Details', function () {
   it('shows details for an ERC20 token', async function () {
@@ -108,7 +106,10 @@ describe('Token Details', function () {
           await driver.findElement('[data-testid="asset-market-cap"]')
         ).getText();
 
-        assert.equal(marketCap, `${marketData.marketCap * ethConversionInUsd}.00`)
+        assert.equal(
+          marketCap,
+          `${marketData.marketCap * ethConversionInUsd}.00`,
+        );
       },
     );
   });
