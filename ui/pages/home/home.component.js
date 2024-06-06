@@ -19,7 +19,6 @@ import AutoDetectTokenModal from '../../components/app/auto-detect-token/auto-de
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
 import Typography from '../../components/ui/typography/typography';
-import Popover from '../../components/ui/popover';
 import Button from '../../components/ui/button';
 import ConnectedSites from '../connected-sites';
 import ConnectedAccounts from '../connected-accounts';
@@ -41,6 +40,7 @@ import {
   Box,
   Text,
   Icon,
+  Popover,
 } from '../../components/component-library';
 import {
   RESTORE_VAULT_ROUTE,
