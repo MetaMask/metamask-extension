@@ -4,6 +4,7 @@ module.exports = {
     '<rootDir>/app/scripts/controllers/permissions/**/*.js',
     '<rootDir>/app/scripts/controllers/sign.ts',
     '<rootDir>/app/scripts/controllers/decrypt-message.ts',
+    '<rootDir>/app/scripts/controllers/encryption-public-key.ts',
     '<rootDir>/app/scripts/controllers/transactions/etherscan.ts',
     '<rootDir>/app/scripts/controllers/transactions/EtherscanRemoteTransactionSource.ts',
     '<rootDir>/app/scripts/controllers/transactions/IncomingTransactionHelper.ts',
@@ -41,6 +42,7 @@ module.exports = {
   testMatch: [
     '<rootDir>/app/scripts/constants/error-utils.test.js',
     '<rootDir>/app/scripts/controllers/app-state.test.js',
+    '<rootDir>/app/scripts/controllers/encryption-public-key.test.ts',
     '<rootDir>/app/scripts/controllers/transactions/etherscan.test.ts',
     '<rootDir>/app/scripts/controllers/transactions/EtherscanRemoteTransactionSource.test.ts',
     '<rootDir>/app/scripts/controllers/transactions/IncomingTransactionHelper.test.ts',
