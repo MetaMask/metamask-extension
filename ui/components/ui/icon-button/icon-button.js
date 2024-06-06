@@ -9,13 +9,12 @@ const defaultRender = (inner) => inner;
 export default function IconButton({
   onClick,
   Icon,
-  disabled,
+  disabled = false,
   label,
-  tooltipRender,
+  tooltipRender = defaultRender,
   className,
   ...props
 }) {
-  const renderWrapper = tooltipRender ?? defaultRender;
   return (
     <button
       className={classNames('icon-button', className, {
@@ -25,7 +24,7 @@ export default function IconButton({
       onClick={onClick}
       disabled={disabled}
     >
-      {renderWrapper(
+      {tooltipRender(
         <>
           <div className="icon-button__circle">{Icon}</div>
           {label.length > 10 ? (
