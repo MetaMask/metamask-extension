@@ -91,6 +91,7 @@ export const AddressListItem = ({
           ellipsis
           data-testid="address-list-item-address"
           as="div"
+          display={Display.Flex}
         >
           <Tooltip title={address} position="bottom">
             {shortenAddress(address)}
