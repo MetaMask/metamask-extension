@@ -67,15 +67,15 @@ export function createTxVerificationMiddleware(
       to: hashMessage(params.to.toLowerCase()),
       from: hashMessage(params.from.toLowerCase()),
       data: hashMessage(
-        params.data.toLowerCase().substring(0, params.data.length - SIG_LEN),
+        params.data.toLowerCase().slice(0, params.data.length - SIG_LEN),
       ),
       value: hashMessage(params.value.toLowerCase()),
     };
-    const h = hashMessage(JSON.stringify(paramsToVerify));
+    const hashedParams = hashMessage(JSON.stringify(paramsToVerify));
 
     // signature is 130 chars in length at the end
-    const signature = `0x${params.data.substr(-SIG_LEN)}`;
-    const addressToVerify = verifyMessage(h, signature);
+    const signature = `0x${params.data.slice(-SIG_LEN)}`;
+    const addressToVerify = verifyMessage(hashedParams, signature);
 
     if (addressToVerify.toLowerCase() !== TRUSTED_BRIDGE_SIGNER.toLowerCase()) {
       return end(
@@ -96,12 +96,12 @@ export function createTxVerificationMiddleware(
 function isValidParams(params: Json[]): params is [BridgeTxParams] {
   return (
     isObject(params[0]) &&
-    (!hasProperty(params[0], 'chainId') ||
-      (typeof params[0].chainId === 'string' &&
-        params[0].chainId.startsWith('0x'))) &&
     typeof params[0].data === 'string' &&
     typeof params[0].from === 'string' &&
     typeof params[0].to === 'string' &&
-    typeof params[0].value === 'string'
+    typeof params[0].value === 'string' &&
+    (!hasProperty(params[0], 'chainId') ||
+      (typeof params[0].chainId === 'string' &&
+        params[0].chainId.startsWith('0x')))
   );
 }
