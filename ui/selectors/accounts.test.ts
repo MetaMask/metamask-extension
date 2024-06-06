@@ -68,6 +68,7 @@ const MOCK_STATE: AccountsState = {
 
 describe('Accounts Selectors', () => {
   describe('isSelectedInternalAccountEth', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       { type: MOCK_ACCOUNT_EOA.type, id: MOCK_ACCOUNT_EOA.id, isEth: true },
       {
@@ -80,12 +81,15 @@ describe('Accounts Selectors', () => {
         id: MOCK_ACCOUNT_BIP122_P2WPKH.id,
         isEth: false,
       },
-    ])('returns $isEth if the account is: $type', ({ id, isEth }) => {
-      const state = MOCK_STATE;
+    ])(
+      'returns $isEth if the account is: $type',
+      ({ id, isEth }: { id: string; isEth: boolean }) => {
+        const state = MOCK_STATE;
 
-      state.metamask.internalAccounts.selectedAccount = id;
-      expect(isSelectedInternalAccountEth(state)).toBe(isEth);
-    });
+        state.metamask.internalAccounts.selectedAccount = id;
+        expect(isSelectedInternalAccountEth(state)).toBe(isEth);
+      },
+    );
 
     it('returns false if none account is selected', () => {
       const state = MOCK_STATE;
