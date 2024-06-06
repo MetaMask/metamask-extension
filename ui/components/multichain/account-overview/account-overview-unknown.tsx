@@ -2,10 +2,13 @@ import React from 'react';
 import { Box } from '../../component-library';
 import { AccountOverviewCommonProps } from './common';
 import { AccountOverviewLayout } from './account-overview-layout';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export type AccountOverviewUnknownProps = AccountOverviewCommonProps;
 
 export const AccountOverviewUnknown = (props: AccountOverviewUnknownProps) => {
+  const t = useI18nContext();
+
   return (
     <AccountOverviewLayout
       showTokens={false}
@@ -15,8 +18,7 @@ export const AccountOverviewUnknown = (props: AccountOverviewUnknownProps) => {
     >
       <Box className="account-overview-unknown__empty">
         <Box className="account-overview-unknown__empty-text">
-          {/* TODO: Use a localized message here! */}
-          <span>Account type not supported yet!</span>
+          <span>{t('accountTypeNotSupported')}</span>
         </Box>
       </Box>
     </AccountOverviewLayout>

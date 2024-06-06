@@ -168,6 +168,9 @@
   "accountsConnected": {
     "message": "Accounts connected"
   },
+  "accountTypeNotSupported": {
+    "message": "Account type not supported"
+  },
   "active": {
     "message": "Active"
   },
