@@ -147,7 +147,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
               {t('cancel')}
             </ButtonSecondary>
             <ButtonPrimary type="submit" disabled={!isValidAccountName} block>
-              {t('addAccount')}
+              {t('create')}
             </ButtonPrimary>
           </Box>
         </Box>
