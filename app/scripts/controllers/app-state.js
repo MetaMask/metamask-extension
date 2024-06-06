@@ -288,10 +288,12 @@ export default class AppStateController extends EventEmitter {
       return;
     }
 
+    const timeoutToSet = Number(timeoutMinutes);
+
     if (isManifestV3) {
       this.extension.alarms.create(AUTO_LOCK_TIMEOUT_ALARM, {
-        delayInMinutes: timeoutMinutes,
-        periodInMinutes: timeoutMinutes,
+        delayInMinutes: timeoutToSet,
+        periodInMinutes: timeoutToSet,
       });
       this.extension.alarms.onAlarm.addListener((alarmInfo) => {
         if (alarmInfo.name === AUTO_LOCK_TIMEOUT_ALARM) {
@@ -302,7 +304,7 @@ export default class AppStateController extends EventEmitter {
     } else {
       this.timer = setTimeout(
         () => this.onInactiveTimeout(),
-        timeoutMinutes * MINUTE,
+        timeoutToSet * MINUTE,
       );
     }
   }

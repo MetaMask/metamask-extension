@@ -613,7 +613,7 @@ export default class AdvancedTab extends PureComponent {
     if (autoLockTimeLimitBeforeNormalization === '') {
       this.setState({
         autoLockTimeLimitBeforeNormalization,
-        autoLockTimeLimit: DEFAULT_AUTO_LOCK_TIME_LIMIT.toString(),
+        autoLockTimeLimit: DEFAULT_AUTO_LOCK_TIME_LIMIT,
         lockTimeError: '',
       });
       return;
