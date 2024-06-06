@@ -58,6 +58,7 @@ const createMessengerMock = () =>
     registerActionHandler: jest.fn(),
     publish: jest.fn(),
     call: jest.fn(),
+    registerInitialEventPayload: jest.fn(),
     // TODO: Replace `any` with type
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any as jest.Mocked<EncryptionPublicKeyControllerMessenger>);
