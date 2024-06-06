@@ -305,7 +305,7 @@
     "@metamask/ethjs": "^0.6.0",
     "@metamask/ethjs-contract": "^0.4.1",
     "@metamask/ethjs-query": "^0.7.1",
-    "@metamask/gas-fee-controller": "^15.1.2",
+    "@metamask/gas-fee-controller": "^17.0.0",
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/keyring-api": "^8.0.0",
     "@metamask/keyring-controller": "patch:@metamask/keyring-controller@npm%3A15.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-15.0.0-fa070ce311.patch",
