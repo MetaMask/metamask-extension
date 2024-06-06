@@ -31,7 +31,7 @@ describe('Settings', function () {
         await driver.clickElement(
           '.settings-page__header__title-container__close-button',
         );
-        await driver.clickElement('[data-testid="home__nfts-tab"]');
+        await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
         const importedNftImage = await driver.findVisibleElement(
           '.nft-item__container',
         );

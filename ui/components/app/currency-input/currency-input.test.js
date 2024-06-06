@@ -29,6 +29,9 @@ describe('CurrencyInput Component', () => {
       preferences: {
         showFiatInTestnets: true,
       },
+      marketData: {
+        '0x5': {},
+      },
       useCurrencyRateCheck: true,
     },
   };
