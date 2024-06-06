@@ -7,6 +7,10 @@ import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import ConfirmPage from './confirm';
 
+/**
+ * @note When we extend this storybook page to support more confirmation types,
+ * consider creating a new storybook pages.
+ */
 const ConfirmPageStory = {
   title: 'Pages/Confirm/ConfirmPage',
   decorators: [(story) => <div style={{ height: '600px' }}>{story()}</div>],
