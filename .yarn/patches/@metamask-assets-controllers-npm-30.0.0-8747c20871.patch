@@ -1,3 +1,325 @@
+diff --git a/dist/chunk-FMZML3V5.js b/dist/chunk-FMZML3V5.js
+index ee6155cd938366918de155e8867c7d359b8ea826..0d1907f91ca9a118498226bbc0c94734af9f6002 100644
+--- a/dist/chunk-FMZML3V5.js
++++ b/dist/chunk-FMZML3V5.js
+@@ -14,6 +14,7 @@ var BlockaidResultType = /* @__PURE__ */ ((BlockaidResultType2) => {
+   BlockaidResultType2["Malicious"] = "Malicious";
+   return BlockaidResultType2;
+ })(BlockaidResultType || {});
++const supportedNftDetectionNetworks= [_controllerutils.ChainId.mainnet];
+ var NftDetectionController = class extends _pollingcontroller.StaticIntervalPollingControllerV1 {
+   /**
+    * Creates an NftDetectionController instance.
+@@ -25,6 +26,7 @@ var NftDetectionController = class extends _pollingcontroller.StaticIntervalPoll
+    * @param options.onNetworkStateChange - Allows subscribing to network controller state changes.
+    * @param options.getOpenSeaApiKey - Gets the OpenSea API key, if one is set.
+    * @param options.addNft - Add an NFT.
++   * @param options.updateNftFetchingProgressStatus - update Nft fetching progress status for an address.
+    * @param options.getNftApi - Gets the URL to fetch an NFT from OpenSea.
+    * @param options.getNftState - Gets the current state of the Assets controller.
+    * @param options.disabled - Represents previous value of useNftDetection. Used to detect changes of useNftDetection. Default value is true.
+@@ -40,6 +42,7 @@ var NftDetectionController = class extends _pollingcontroller.StaticIntervalPoll
+     onNetworkStateChange,
+     getOpenSeaApiKey,
+     addNft,
++    updateNftFetchingProgressStatus,
+     getNftApi,
+     getNftState,
+     disabled: initialDisabled,
+@@ -72,11 +75,6 @@ var NftDetectionController = class extends _pollingcontroller.StaticIntervalPoll
+       const { selectedAddress: previouslySelectedAddress, disabled } = this.config;
+       if (selectedAddress !== previouslySelectedAddress || !useNftDetection !== disabled) {
+         this.configure({ selectedAddress, disabled: !useNftDetection });
+-        if (useNftDetection) {
+-          this.start();
+-        } else {
+-          this.stop();
+-        }
+       }
+     });
+     onNetworkStateChange(({ selectedNetworkClientId }) => {
+@@ -88,38 +86,38 @@ var NftDetectionController = class extends _pollingcontroller.StaticIntervalPoll
+     });
+     this.getOpenSeaApiKey = getOpenSeaApiKey;
+     this.addNft = addNft;
++    this.updateNftFetchingProgressStatus = updateNftFetchingProgressStatus;
+     this.getNftApi = getNftApi;
+     this.setIntervalLength(this.config.interval);
+   }
+   getOwnerNftApi({
++    chainId,
+     address,
+     next
+   }) {
+-    return `${_controllerutils.NFT_API_BASE_URL}/users/${address}/tokens?chainIds=1&limit=50&includeTopBid=true&continuation=${next ?? ""}`;
++    return `${_controllerutils.NFT_API_BASE_URL}/users/${address}/tokens?chainIds=${chainId}&limit=50&includeTopBid=true&continuation=${next ?? ""}`;
+   }
+-  async getOwnerNfts(address) {
+-    let nftApiResponse;
+-    let nfts = [];
+-    let next;
+-    do {
+-      nftApiResponse = await _controllerutils.fetchWithErrorHandling.call(void 0, {
+-        url: this.getOwnerNftApi({ address, next }),
+-        options: {
+-          headers: {
+-            Version: "1"
+-          }
++  async getOwnerNfts(
++    address,
++    chainId,
++    cursor,
++  ) {
++    // Convert hex chainId to number
++    const convertedChainId = (0, _controllerutils.convertHexToDecimal)(chainId).toString();
++    const nftApiResponse = await _controllerutils.fetchWithErrorHandling.call(void 0, {
++      url: this.getOwnerNftApi({
++        chainId: convertedChainId,
++        address,
++        next: cursor,
++      }),
++      options: {
++        headers: {
++          Version: "1"
+         },
+-        timeout: 15e3
+-      });
+-      if (!nftApiResponse) {
+-        return nfts;
+-      }
+-      const newNfts = nftApiResponse.tokens.filter(
+-        (elm) => elm.token.isSpam === false && (elm.blockaidResult?.result_type ? elm.blockaidResult?.result_type === "Benign" /* Benign */ : true)
+-      );
+-      nfts = [...nfts, ...newNfts];
+-    } while (next = nftApiResponse.continuation);
+-    return nfts;
++      },
++      timeout: 15e3
++    });
++    return nftApiResponse;
+   }
+   async _executePoll(networkClientId, options) {
+     await this.detectNfts({ networkClientId, userAddress: options.address });
+@@ -169,62 +167,90 @@ var NftDetectionController = class extends _pollingcontroller.StaticIntervalPoll
+     networkClientId,
+     userAddress
+   } = { userAddress: this.config.selectedAddress }) {
+-    if (!this.isMainnet() || this.disabled) {
++    const { chainId } = this.config;
++    if (!supportedNftDetectionNetworks.includes(chainId) || this.disabled) {
+       return;
+     }
+     if (!userAddress) {
+       return;
+     }
+-    const apiNfts = await this.getOwnerNfts(userAddress);
+-    const addNftPromises = apiNfts.map(async (nft) => {
+-      const {
+-        tokenId: token_id,
+-        contract,
+-        kind,
+-        image: image_url,
+-        imageSmall: image_thumbnail_url,
+-        metadata: { imageOriginal: image_original_url } = {},
+-        name,
+-        description,
+-        attributes,
+-        topBid,
+-        lastSale,
+-        rarityRank,
+-        rarityScore,
+-        collection
+-      } = nft.token;
+-      let ignored;
+-      const { ignoredNfts } = this.getNftState();
+-      if (ignoredNfts.length) {
+-        ignored = ignoredNfts.find((c) => {
+-          return c.address === _controllerutils.toChecksumHexAddress.call(void 0, contract) && c.tokenId === token_id;
+-        });
+-      }
+-      if (!ignored) {
+-        const nftMetadata = Object.assign(
+-          {},
+-          { name },
+-          description && { description },
+-          image_url && { image: image_url },
+-          image_thumbnail_url && { imageThumbnail: image_thumbnail_url },
+-          image_original_url && { imageOriginal: image_original_url },
+-          kind && { standard: kind.toUpperCase() },
+-          lastSale && { lastSale },
+-          attributes && { attributes },
+-          topBid && { topBid },
+-          rarityRank && { rarityRank },
+-          rarityScore && { rarityScore },
+-          collection && { collection }
+-        );
+-        await this.addNft(contract, token_id, {
+-          nftMetadata,
+-          userAddress,
+-          source: "detected" /* Detected */,
+-          networkClientId
+-        });
+-      }
+-    });
+-    await Promise.all(addNftPromises);
++
++    const { isNftFetchingInProgress } = this.getNftState();
++
++    if (isNftFetchingInProgress[userAddress]?.[chainId].isFetchingInProgress) {
++      return;
++    }
++
++    let next;
++    let apiNfts= [];
++    let resultNftApi;
++
++    do {
++      resultNftApi = await this.getOwnerNfts(userAddress, chainId, next);
++      apiNfts = resultNftApi.tokens.filter(
++        (elm) =>
++          elm.token.isSpam === false &&
++          (elm.blockaidResult?.result_type
++           ? elm.blockaidResult?.result_type === BlockaidResultType.Benign
++          : true),
++       );
++      const addNftPromises = apiNfts.map(async (nft) => {
++        const {
++          tokenId: token_id,
++          contract,
++          kind,
++          image: image_url,
++          imageSmall: image_thumbnail_url,
++          metadata: { imageOriginal: image_original_url } = {},
++          name,
++          description,
++          attributes,
++          topBid,
++          lastSale,
++          rarityRank,
++          rarityScore,
++          collection,
++          } = nft.token;
++      
++        let ignored;
++        /* istanbul ignore else */
++        const { ignoredNfts } = this.getNftState();
++        if (ignoredNfts.length) {
++          ignored = ignoredNfts.find((c) => {
++            return c.address === _controllerutils.toChecksumHexAddress.call(void 0, contract) && c.tokenId === token_id;
++          });
++        }
++        /* istanbul ignore else */
++        if (!ignored) {
++          const nftMetadata = Object.assign(
++            {},
++            { name },
++            description && { description },
++            image_url && { image: image_url },
++            image_thumbnail_url && { imageThumbnail: image_thumbnail_url },
++            image_original_url && { imageOriginal: image_original_url },
++            kind && { standard: kind.toUpperCase() },
++            lastSale && { lastSale },
++            attributes && { attributes },
++            topBid && { topBid },
++            rarityRank && { rarityRank },
++            rarityScore && { rarityScore },
++            collection && { collection }
++          );
++          await this.addNft(contract, token_id, {
++            nftMetadata,
++            userAddress,
++            source: "detected" /* Detected */,
++            networkClientId
++          });
++        }
++      });
++      await Promise.all(addNftPromises);
++      // update status
++      const isStillFetching = Boolean(resultNftApi.continuation);
++      
++      this.updateNftFetchingProgressStatus(isStillFetching);
++    } while ((next = resultNftApi.continuation));
+   }
+ };
+ var NftDetectionController_default = NftDetectionController;
+diff --git a/dist/chunk-LAU6ZDZR.js b/dist/chunk-LAU6ZDZR.js
+index d429be1a0b174e7874672df1a847e25841161d0c..441a09ddd178f087df77bea0bc9a3cb4b04f296c 100644
+--- a/dist/chunk-LAU6ZDZR.js
++++ b/dist/chunk-LAU6ZDZR.js
+@@ -26,11 +26,13 @@ var _events = require('events');
+ var _uuid = require('uuid');
+ var ALL_NFTS_STATE_KEY = "allNfts";
+ var ALL_NFTS_CONTRACTS_STATE_KEY = "allNftContracts";
++var IS_NFTS_FETCHING_IN_PROGRESS_KEY = 'isNftFetchingInProgress';
+ var getDefaultNftState = () => {
+   return {
+     allNftContracts: {},
+     allNfts: {},
+-    ignoredNfts: []
++    ignoredNfts: [],
++    isNftFetchingInProgress: {}
+   };
+ };
+ var NftController = class extends _basecontroller.BaseControllerV1 {
+@@ -161,6 +163,31 @@ var NftController = class extends _basecontroller.BaseControllerV1 {
+       [baseStateKey]: newState
+     });
+   }
++  /**
++   * Helper function to update the status of nft fetching for a specific address.
++   *
++   * @param newStatus - The new status to set in state
++   * @param passedConfig - Object containing selectedAddress and chainId
++   * @param passedConfig.userAddress - the address passed through the detectNfts function
++   * @param passedConfig.chainId - the chainId passed through the detectNfts function
++   */
++  updateNestedNftFetchingProgressStatus(newStatus, { userAddress, chainId }) {
++    const { [IS_NFTS_FETCHING_IN_PROGRESS_KEY]: oldState } = this.state;
++    const addressState = oldState[userAddress];
++    const newAddressState = {
++      ...addressState,
++      ...{ [chainId]: {
++        isFetchingInProgress: newStatus,
++     }}
++    };
++    const newState = {
++      ...oldState,
++      ...{ [userAddress]: newAddressState }
++    };
++    this.update({
++      [IS_NFTS_FETCHING_IN_PROGRESS_KEY]: newState
++    });
++  }
+   /**
+    * Request individual NFT information from NFT API.
+    *
+@@ -610,6 +637,26 @@ var NftController = class extends _basecontroller.BaseControllerV1 {
+       chainId
+     });
+   }
++  /**
++   * Update Nft fetching status for a selectedAddress on a specific chain
++   * @param newValue - fetching status to set in state
++   * @param passedConfig - Object containing selectedAddress and chainId
++   * @param passedConfig.userAddress - the address passed through the detectNfts function
++   * @param passedConfig.networkClientId - the networkClientId passed through the detectNfts function
++   */
++  updateNftFetchingProgressStatus(
++    newValue,
++    {
++      userAddress = this.config.selectedAddress ,
++      networkClientId,
++    } = { userAddress: this.config.selectedAddress }
++    ) {
++      const chainId = this.getCorrectChainId({ networkClientId });
++      this.updateNestedNftFetchingProgressStatus(newValue, {
++        userAddress,
++        chainId,
++      });
++    }
+   /**
+    * Removes an NFT contract to the stored NFT contracts list.
+    *
 diff --git a/dist/chunk-Z6TBQQE5.js b/dist/chunk-Z6TBQQE5.js
 index 2f1b66f2c39794d660553bbdc395697775f90e1d..18d7d5620d827419100c75736f6ec809161da212 100644
 --- a/dist/chunk-Z6TBQQE5.js
