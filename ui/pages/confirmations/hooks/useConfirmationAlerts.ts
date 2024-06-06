@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
 import useBlockaidAlerts from './alerts/useBlockaidAlert';
 import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
 import { useGasEstimateFailedAlerts } from './alerts/transactions/useGasEstimateFailedAlerts';
@@ -7,39 +8,48 @@ import { useGasFeeLowAlerts } from './alerts/transactions/useGasFeeLowAlerts';
 import { usePaymasterAlerts } from './alerts/transactions/usePaymasterAlerts';
 import { useSigningOrSubmittingAlerts } from './alerts/transactions/useSigningOrSubmittingAlerts';
 import { useGasTooLowAlerts } from './alerts/transactions/useGasTooLowAlerts';
+import { useNoGasPriceAlerts } from './alerts/transactions/useNoGasPriceAlerts';
 
-const useConfirmationAlerts = () => {
-  const blockaidAlerts = useBlockaidAlerts();
-  const insufficientBalanceAlerts = useInsufficientBalanceAlerts();
+function useTransactionAlerts(): Alert[] {
   const gasEstimateFailedAlerts = useGasEstimateFailedAlerts();
-  const pendingTransactionAlerts = usePendingTransactionAlerts();
   const gasFeeLowAlerts = useGasFeeLowAlerts();
-  const usingPaymasterAlerts = usePaymasterAlerts();
-  const signingOrSubmittingAlerts = useSigningOrSubmittingAlerts();
   const gasTooLowAlerts = useGasTooLowAlerts();
+  const insufficientBalanceAlerts = useInsufficientBalanceAlerts();
+  const noGasPriceAlerts = useNoGasPriceAlerts();
+  const pendingTransactionAlerts = usePendingTransactionAlerts();
+  const signingOrSubmittingAlerts = useSigningOrSubmittingAlerts();
+  const usingPaymasterAlerts = usePaymasterAlerts();
 
   return useMemo(
     () => [
-      ...blockaidAlerts,
-      ...insufficientBalanceAlerts,
       ...gasEstimateFailedAlerts,
-      ...pendingTransactionAlerts,
       ...gasFeeLowAlerts,
-      ...usingPaymasterAlerts,
-      ...signingOrSubmittingAlerts,
       ...gasTooLowAlerts,
+      ...insufficientBalanceAlerts,
+      ...noGasPriceAlerts,
+      ...pendingTransactionAlerts,
+      ...signingOrSubmittingAlerts,
+      ...usingPaymasterAlerts,
     ],
     [
-      blockaidAlerts,
-      insufficientBalanceAlerts,
       gasEstimateFailedAlerts,
-      pendingTransactionAlerts,
       gasFeeLowAlerts,
-      usingPaymasterAlerts,
-      signingOrSubmittingAlerts,
       gasTooLowAlerts,
+      insufficientBalanceAlerts,
+      noGasPriceAlerts,
+      pendingTransactionAlerts,
+      signingOrSubmittingAlerts,
+      usingPaymasterAlerts,
     ],
   );
-};
+}
 
-export default useConfirmationAlerts;
+export default function useConfirmationAlerts(): Alert[] {
+  const blockaidAlerts = useBlockaidAlerts();
+  const transactionAlerts = useTransactionAlerts();
+
+  return useMemo(
+    () => [...blockaidAlerts, ...transactionAlerts],
+    [blockaidAlerts, transactionAlerts],
+  );
+}

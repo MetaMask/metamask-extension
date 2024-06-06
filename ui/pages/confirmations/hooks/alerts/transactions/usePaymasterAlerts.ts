@@ -21,7 +21,7 @@ export function usePaymasterAlerts(): Alert[] {
         message: t('paymasterInUse'),
         reason: 'Using Paymaster',
         severity: Severity.Warning,
-      } as Alert,
+      },
     ];
   }, [isUsingPaymaster]);
 }

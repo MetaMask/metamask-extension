@@ -5,8 +5,9 @@ import { selectTransactionMetadata } from '../../../../../selectors';
 import { useMemo } from 'react';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 
-export function useGasEstimateFailedAlerts() {
+export function useGasEstimateFailedAlerts(): Alert[] {
   const { currentConfirmation } = useCurrentConfirmation();
   const transaction = (currentConfirmation ?? {}) as TransactionMeta;
   const { id: transactionId } = transaction;

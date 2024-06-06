@@ -3,10 +3,11 @@ import { useSelector } from 'react-redux';
 import { submittedPendingTransactionsSelector } from '../../../../../selectors';
 import { useMemo } from 'react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import { Severity } from '../../../../../helpers/constants/design-system';
 
-export function usePendingTransactionAlerts() {
+export function usePendingTransactionAlerts(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useCurrentConfirmation();
   const pendingTransactions = useSelector(submittedPendingTransactionsSelector);
   const pendingTransactionCount = pendingTransactions.length;
 
@@ -26,7 +27,7 @@ export function usePendingTransactionAlerts() {
         key: 'pendingTransactions',
         message,
         reason: 'Pending Transactions',
-        severity: 'warning',
+        severity: Severity.Warning,
       },
     ];
   }, [pendingTransactionCount]);

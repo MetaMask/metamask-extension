@@ -61,7 +61,7 @@ export function useInsufficientBalanceAlerts(): Alert[] {
         ]),
         reason: 'Insufficient Balance',
         severity: Severity.Danger,
-      } as Alert,
+      },
     ];
   }, [insufficientBalance]);
 }
