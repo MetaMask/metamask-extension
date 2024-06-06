@@ -239,7 +239,7 @@ async function setupMocking(
     .thenCallback(suggestedGasFeesCallbackMock);
 
   await server
-    .forGet('https://swap.metaswap.codefi.network/networks/1/token')
+    .forGet('https://swap.api.cx.metamask.io/networks/1/token')
     .withQuery({ address: '0x72c9Fb7ED19D3ce51cea5C56B3e023cd918baaDf' })
     .thenCallback(() => {
       return {
@@ -256,7 +256,7 @@ async function setupMocking(
     });
 
   await server
-    .forGet('https://swap.metaswap.codefi.network/featureFlags')
+    .forGet('https://swap.api.cx.metamask.io/featureFlags')
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -355,7 +355,7 @@ async function setupMocking(
     });
 
   await server
-    .forGet('https://swap.metaswap.codefi.network/networks/1/tokens')
+    .forGet('https://swap.api.cx.metamask.io/networks/1/tokens')
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -366,7 +366,7 @@ async function setupMocking(
             decimals: 18,
             type: 'native',
             iconUrl:
-              'https://token.metaswap.codefi.network/assets/nativeCurrencyLogos/ethereum.svg',
+              'https://token.api.cx.metamask.io/assets/nativeCurrencyLogos/ethereum.svg',
             coingeckoId: 'ethereum',
             address: '0x0000000000000000000000000000000000000000',
             occurrences: 100,
@@ -439,7 +439,7 @@ async function setupMocking(
     });
 
   await server
-    .forGet('https://swap.metaswap.codefi.network/networks/1/topAssets')
+    .forGet('https://swap.api.cx.metamask.io/networks/1/topAssets')
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -473,9 +473,9 @@ async function setupMocking(
       };
     });
 
-  // It disables loading of token icons, e.g. this URL: https://static.metafi.codefi.network/api/v1/tokenIcons/1337/0x0000000000000000000000000000000000000000.png
+  // It disables loading of token icons, e.g. this URL: https://static.cx.metamask.io/api/v1/tokenIcons/1337/0x0000000000000000000000000000000000000000.png
   const tokenIconRegex = new RegExp(
-    `^https:\\/\\/static\\.metafi\\.codefi\\.network\\/api\\/vi\\/tokenIcons\\/${chainId}\\/.*\\.png`,
+    `^https:\\/\\/static\\.cx\\.metamask\\.io\\/api\\/vi\\/tokenIcons\\/${chainId}\\/.*\\.png`,
     'u',
   );
   await server.forGet(tokenIconRegex).thenCallback(() => {
@@ -664,9 +664,7 @@ async function mockTokenNameProvider(server) {
     const name = namesByAddress[address];
 
     await server
-      .forGet(
-        /https:\/\/(?:token-api\.metaswap\.codefi\.network|token\.api\.cx\.metamask\.io)\/token\/.*/gu,
-      )
+      .forGet(/https:\/\/token\.api\.cx\.metamask\.io\/token\/.*/gu)
       .withQuery({ address })
       .thenCallback(() => {
         return {
