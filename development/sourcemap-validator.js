@@ -22,11 +22,18 @@ start().catch((error) => {
 
 async function start() {
   const targetFiles = [
-    `common-0.js`,
-    `background-0.js`,
-    `ui-0.js`,
-    `scripts/contentscript.js`,
-    // `scripts/inpage.js`, skipped because the validator can't sample the inlined `scripts/inpage.js` script
+    'background-0.js',
+    'common-0.js',
+    'content-script-0.js',
+    'offscreen-0.js',
+    'ui-0.js',
+    'scripts/app-init.js',
+    'scripts/contentscript.js',
+    'scripts/disable-console.js',
+    `scripts/inpage.js`,
+    'scripts/policy-load.js',
+    // TODO: Investigate why this is failing
+    // 'scripts/sentry-install.js',
   ];
   let valid = true;
 
