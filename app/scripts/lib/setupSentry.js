@@ -80,6 +80,7 @@ export const SENTRY_BACKGROUND_STATE = {
     previousAppVersion: true,
     previousMigrationVersion: true,
     showTokenAutodetectModalOnUpgrade: false,
+    showNftAutodetectModalOnUpgrade: false,
   },
   ApprovalController: {
     approvalFlows: false,
@@ -193,6 +194,7 @@ export const SENTRY_BACKGROUND_STATE = {
     allNftContracts: false,
     allNfts: false,
     ignoredNfts: false,
+    isNftFetchingInProgress: false,
   },
   NotificationController: {
     notifications: false,

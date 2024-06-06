@@ -19,7 +19,8 @@
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
     "currentMigrationVersion": "number",
-    "showTokenAutodetectModalOnUpgrade": "object"
+    "showTokenAutodetectModalOnUpgrade": "object",
+    "showNftAutodetectModalOnUpgrade": "boolean"
   },
   "AppStateController": {
     "connectedStatusPopoverHasBeenShown": true,
@@ -141,7 +142,8 @@
   "NftController": {
     "allNftContracts": "object",
     "allNfts": "object",
-    "ignoredNfts": "object"
+    "ignoredNfts": "object",
+    "isNftFetchingInProgress": "object"
   },
   "NotificationController": { "notifications": "object" },
   "OnboardingController": {

@@ -93,6 +93,7 @@
     "currentMigrationVersion": "number",
     "selectedNetworkClientId": "string",
     "showTokenAutodetectModalOnUpgrade": "object",
+    "showNftAutodetectModalOnUpgrade": "boolean",
     "networksMetadata": {
       "networkConfigurationId": {
         "EIPS": { "1559": false },
@@ -173,6 +174,7 @@
     "allNftContracts": "object",
     "allNfts": "object",
     "ignoredNfts": "object",
+    "isNftFetchingInProgress": "object",
     "domains": "object",
     "logs": "object",
     "methodData": "object",
