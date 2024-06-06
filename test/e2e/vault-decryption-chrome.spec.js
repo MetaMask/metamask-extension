@@ -57,6 +57,13 @@ async function closePopoverIfPresent(driver) {
   };
   await driver.clickElementSafe(popoverButtonSelector);
   await driver.clickElementSafe(enableButtonSelector);
+
+  // Token Autodetection Independent Announcement
+  const tokenAutodetection = {
+    text: 'Not right now',
+    tag: 'button',
+  };
+  await driver.clickElementSafe(tokenAutodetection);
 }
 
 /**
