@@ -526,6 +526,47 @@ function emitDappViewedMetricEvent(
 }
 
 /**
+ * Track dapp connection when loaded and permissioned
+ *
+ * @param {Port} remotePort - The port provided by a new context.
+ * @param {object} preferencesController - Preference Controller to get total created accounts
+ * @param {object} permissionController - Permission Controller to check if origin is permitted
+ */
+function trackDappView(
+  remotePort,
+  preferencesController,
+  permissionController,
+) {
+  if (!remotePort.sender || !remotePort.sender.tab || !remotePort.sender.url) {
+    return;
+  }
+  const tabId = remotePort.sender.tab.id;
+  const url = new URL(remotePort.sender.url);
+  const { origin } = url;
+
+  // store the orgin to corresponding tab so it can provide infor for onActivated listener
+  if (!Object.keys(tabOriginMapping).includes(tabId)) {
+    tabOriginMapping[tabId] = origin;
+  }
+  const connectSitePermissions = permissionController.state.subjects[origin];
+  // when the dapp is not connected, connectSitePermissions is undefined
+  const isConnectedToDapp = connectSitePermissions !== undefined;
+  // when open a new tab, this event will trigger twice, only 2nd time is with dapp loaded
+  const isTabLoaded = remotePort.sender.tab.title !== 'New Tab';
+
+  // *** Emit DappViewed metric event when ***
+  // - refresh the dapp
+  // - open dapp in a new tab
+  if (isConnectedToDapp && isTabLoaded) {
+    emitDappViewedMetricEvent(
+      origin,
+      connectSitePermissions,
+      preferencesController,
+    );
+  }
+}
+
+/**
  * Initializes the MetaMask Controller with any initial state and default language.
  * Configures platform-specific error reporting strategy.
  * Streams emitted state updates to platform-specific storage strategy.
@@ -742,27 +783,11 @@ export function setupController(
         const url = new URL(remotePort.sender.url);
         const { origin } = url;
 
-        // store the orgin to corresponding tab so it can provide infor for onActivated listener
-        if (!Object.keys(tabOriginMapping).includes(tabId)) {
-          tabOriginMapping[tabId] = origin;
-        }
-        const connectSitePermissions =
-          controller.permissionController.state.subjects[origin];
-        // when the dapp is not connected, connectSitePermissions is undefined
-        const isConnectedToDapp = connectSitePermissions !== undefined;
-        // when open a new tab, this event will trigger twice, only 2nd time is with dapp loaded
-        const isTabLoaded = remotePort.sender.tab.title !== 'New Tab';
-
-        // *** Emit DappViewed metric event when ***
-        // - refresh the dapp
-        // - open dapp in a new tab
-        if (isConnectedToDapp && isTabLoaded) {
-          emitDappViewedMetricEvent(
-            origin,
-            connectSitePermissions,
-            controller.preferencesController,
-          );
-        }
+        trackDappView(
+          remotePort,
+          controller.preferencesController,
+          controller.permissionController,
+        );
 
         remotePort.onMessage.addListener((msg) => {
           if (
@@ -808,30 +833,19 @@ export function setupController(
       const url = new URL(remotePort.sender.url);
       const { origin } = url;
 
-      // store the orgin to corresponding tab so it can provide infor for onActivated listener
-      if (!Object.keys(tabOriginMapping).includes(tabId)) {
-        tabOriginMapping[tabId] = origin;
-      }
-      // const connectSitePermissions =
-      //   controller.permissionController.state.subjects[origin];
-      // // when the dapp is not connected, connectSitePermissions is undefined
-      // const isConnectedToDapp = connectSitePermissions !== undefined;
-      // // when open a new tab, this event will trigger twice, only 2nd time is with dapp loaded
-      // const isTabLoaded = remotePort.sender.tab.title !== 'New Tab';
+      trackDappView(
+        remotePort,
+        controller.preferencesController,
+        controller.permissionController,
+      );
 
-      // // *** Emit DappViewed metric event when ***
-      // // - refresh the dapp
-      // // - open dapp in a new tab
-      // if (isConnectedToDapp && isTabLoaded) {
-      //   emitDappViewedMetricEvent(
-      //     origin,
-      //     connectSitePermissions,
-      //     controller.preferencesController,
-      //   );
-      // }
-
+      // TODO: remove this when we separate the legacy and multichain rpc pipelines
       remotePort.onMessage.addListener((msg) => {
-        if (msg.data && msg.data.method === MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS) {
+        if (
+          msg.type === 'caip-x' &&
+          msg.data &&
+          msg.data.method === MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS
+        ) {
           requestAccountTabIds[origin] = tabId;
         }
       });
