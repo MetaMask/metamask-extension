@@ -17,6 +17,7 @@ import {
 
 import {
   AlignItems,
+  BlockSize,
   Display,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
@@ -74,13 +75,21 @@ export default class EditContact extends PureComponent {
           className="settings-page__header address-book__header--edit"
           paddingLeft={6}
           paddingRight={6}
+          width={BlockSize.Full}
+          alignItems={AlignItems.center}
         >
-          <Box display={Display.Flex} alignItems={AlignItems.center}>
+          <Box
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            style={{ overflow: 'hidden' }}
+            paddingRight={2}
+          >
             <AvatarAccount size={AvatarAccountSize.Lg} address={address} />
             <Text
               className="address-book__header__name"
               variant={TextVariant.bodyLgMedium}
               marginInlineStart={4}
+              style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
             >
               {name || address}
             </Text>
@@ -92,6 +101,7 @@ export default class EditContact extends PureComponent {
               await removeFromAddressBook(chainId, address);
               history.push(listRoute);
             }}
+            style={{ display: 'contents' }}
           >
             {t('deleteContact')}
           </Button>
