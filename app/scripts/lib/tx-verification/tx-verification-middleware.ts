@@ -9,10 +9,13 @@ import {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
 } from 'json-rpc-engine';
-import { SIG_LEN, TRUSTED_BRIDGE_SIGNER } from '../../../../shared/constants/bridge';
+import {
+  SIG_LEN,
+  TRUSTED_BRIDGE_SIGNER,
+} from '../../../../shared/constants/bridge';
 import { FIRST_PARTY_CONTRACT_NAMES } from '../../../../shared/constants/first-party-contracts';
 
-type TxParams = {
+export type BridgeTxParams = {
   chainId?: `0x${string}`;
   data: string;
   from: string;
@@ -90,7 +93,7 @@ export function createTxVerificationMiddleware(
  * @param params - The params to validate.
  * @returns Whether the params are valid.
  */
-function isValidParams(params: Json[]): params is [TxParams] {
+function isValidParams(params: Json[]): params is [BridgeTxParams] {
   return (
     isObject(params[0]) &&
     (!hasProperty(params[0], 'chainId') ||
