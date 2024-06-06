@@ -29,11 +29,11 @@ import {
 import Preloader from '../../../../components/ui/icon/preloader/preloader-icon.component';
 import { getUseExternalServices } from '../../../../selectors';
 
-export function useEffectProfileSyncBasicFunctionalitySetting() {
+function useEffectProfileSyncBasicFunctionalitySetting() {
   const basicFunctionality: boolean = useSelector(getUseExternalServices);
   const { setIsProfileSyncingEnabled } = useSetIsProfileSyncingEnabled();
 
-  // Effect - we need to toggle profile syncing off when basic functionality is off
+  // Effect - toggle profile syncing off when basic functionality is off
   useEffect(() => {
     if (basicFunctionality === false) {
       setIsProfileSyncingEnabled(false);

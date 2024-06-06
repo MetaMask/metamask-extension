@@ -82,6 +82,7 @@ function useProfileSyncingProps(basicFunctionalityOnboarding) {
 
   const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
 
+  // Effect - toggle profile syncing off when basic functionality is off
   useEffect(() => {
     if (basicFunctionalityOnboarding === false) {
       setIsProfileSyncingEnabled(false);
