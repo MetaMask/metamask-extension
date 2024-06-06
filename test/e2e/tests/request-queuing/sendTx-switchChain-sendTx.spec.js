@@ -4,7 +4,6 @@ const {
   openDapp,
   unlockWallet,
   DAPP_URL,
-  regularDelayMs,
   WINDOW_TITLES,
   switchToNotificationWindow,
   defaultGanacheOptions,

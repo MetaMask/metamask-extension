@@ -6,7 +6,6 @@ const {
   DAPP_URL,
   regularDelayMs,
   WINDOW_TITLES,
-  switchToNotificationWindow,
   defaultGanacheOptions,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');

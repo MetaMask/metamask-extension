@@ -4,10 +4,7 @@ const {
   openDapp,
   unlockWallet,
   DAPP_URL,
-  regularDelayMs,
-  WINDOW_TITLES,
   defaultGanacheOptions,
-  switchToNotificationWindow,
 } = require('../../helpers');
 const { PAGES } = require('../../webdriver/driver');
 
