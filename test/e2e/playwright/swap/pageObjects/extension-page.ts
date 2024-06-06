@@ -16,6 +16,8 @@ export class ChromeExtensionPage {
     await context.newPage();
     await context.waitForEvent('page');
     const pages = context.pages();
-    return pages[pages.length - 1]; // return last tab
+    const page = pages[pages.length - 1]; // return last tab
+    await page.waitForLoadState();
+    return page;
   }
 }
