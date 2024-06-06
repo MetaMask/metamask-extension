@@ -212,12 +212,9 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
   // This is set in `setupController`, which is called as part of initialization
   const port = args[0];
 
-  if (port.sender.tab?.id) {
-    // unwrap envelope here
-    console.log('onConnectExternal inpage', ...args);
+  if (port.sender.tab?.id && process.env.BARAD_DUR) {
     connectExternalDapp(...args);
   } else {
-    console.log('onConnectExternal extension', ...args);
     connectExternalLegacy(...args);
   }
 });
