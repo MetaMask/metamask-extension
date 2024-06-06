@@ -75,9 +75,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
         textAlign={TextAlign.Center}
         marginBottom={4}
       >
-        <Text variant={TextVariant.headingLg}>
-          {t('seedPhraseConfirm')}
-        </Text>
+        <Text variant={TextVariant.headingLg}>{t('seedPhraseConfirm')}</Text>
       </Box>
       <Box
         justifyContent={JustifyContent.center}
