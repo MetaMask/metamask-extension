@@ -95,7 +95,7 @@ export const AccountOverviewTabs = ({
   ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-  const NeedHelpButtonLink = (props) => (
+  const NeedHelpButtonLink = (props: Record<string, any>) => (
     <ButtonLink
       size={ButtonLinkSize.Md}
       startIconName={IconName.MessageQuestion}
