@@ -26,7 +26,9 @@ describe('Send ERC20 token to contract address', function () {
         await unlockWallet(driver);
 
         // Send TST
-        await driver.clickElement('[data-testid="home__asset-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__asset-tab"]',
+        );
         await driver.clickElement(
           '[data-testid="multichain-token-list-button"]',
         );

@@ -132,7 +132,10 @@ describe('Blockaid Banner Alert', () => {
     const { getByText } = renderWithProvider(
       <BlockaidBannerAlert
         txData={{
-          securityAlertResponse: mockSecurityAlertResponse,
+          securityAlertResponse: {
+            ...mockSecurityAlertResponse,
+            result_type: BlockaidResultType.Errored,
+          },
         }}
       />,
       configureStore(),
@@ -163,6 +166,7 @@ describe('Blockaid Banner Alert', () => {
         txData={{
           securityAlertResponse: {
             ...mockSecurityAlertResponse,
+            result_type: BlockaidResultType.Errored,
             reason: BlockaidReason.rawSignatureFarming,
           },
         }}
@@ -306,6 +310,7 @@ describe('Blockaid Banner Alert', () => {
             txData={{
               securityAlertResponse: {
                 ...mockSecurityAlertResponse,
+                result_type: BlockaidResultType.Errored,
                 reason,
               },
             }}
@@ -327,6 +332,7 @@ describe('Blockaid Banner Alert', () => {
           txData={{
             securityAlertResponse: {
               ...mockSecurityAlertResponse,
+              result_type: BlockaidResultType.Errored,
               reason: 'unmappedReason',
             },
           }}

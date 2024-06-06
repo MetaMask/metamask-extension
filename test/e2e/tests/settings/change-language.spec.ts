@@ -15,7 +15,7 @@ const selectors = {
   localeSelect: '[data-testid="locale-select"]',
   ethOverviewSend: '[data-testid="eth-overview-send"]',
   ensInput: '[data-testid="ens-input"]',
-  nftsTab: '[data-testid="home__nfts-tab"]',
+  nftsTab: '[data-testid="account-overview__nfts-tab"]',
   labelSpanish: { tag: 'span', text: 'Idioma actual' },
   currentLanguageLabel: { tag: 'span', text: 'Current language' },
   advanceText: { text: 'Avanceret', tag: 'div' },
