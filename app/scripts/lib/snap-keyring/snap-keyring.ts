@@ -217,7 +217,6 @@ export const snapKeyringBuilder = (
                 origin: snapId,
                 type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
                 requestData: {
-                  // onActionComplete: onActionComplete, ???
                   accountId: internalAccount.id,
                   snapSuggestedAccountName: accountNameSuggestion,
                 },

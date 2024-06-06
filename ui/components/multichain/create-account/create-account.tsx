@@ -1,10 +1,10 @@
 import React, {
+  ChangeEvent,
+  KeyboardEvent,
+  useCallback,
   useContext,
   useEffect,
   useState,
-  KeyboardEvent,
-  ChangeEvent,
-  useCallback,
 } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -43,7 +43,7 @@ type Props = {
   /**
    * Callback called once the account has been created
    */
-  onActionComplete: (completed: boolean) => Promise<void>;
+  onActionComplete?: (completed: boolean) => Promise<void>;
 };
 
 type CreateAccountProps<C extends React.ElementType> =
@@ -141,7 +141,11 @@ export const CreateAccount: CreateAccountComponent = React.memo(
           />
           <Box display={Display.Flex} marginTop={6} gap={2}>
             <ButtonSecondary
-              onClick={async () => onActionComplete(false)}
+              onClick={async () => {
+                if (onActionComplete) {
+                  await onActionComplete(false);
+                }
+              }}
               block
             >
               {t('cancel')}

@@ -11,7 +11,7 @@ type CreateSnapAccountProps = {
   /**
    * Callback called once the account has been created
    */
-  onActionComplete: (completed: boolean) => Promise<void>;
+  onActionComplete?: (completed: boolean) => Promise<void>;
 
   /**
    * Suggested account name from the snap
@@ -29,12 +29,16 @@ export const CreateSnapAccount: React.FC<CreateSnapAccountProps> = ({
     const newAccountAddress = dispatch(addNewAccount()) as unknown as string;
     if (newAccountAddress) {
       dispatch(setAccountLabel(newAccountAddress, name));
-      await onActionComplete(true);
+      if (onActionComplete) {
+        await onActionComplete(true);
+      }
     } else {
       console.error(
         'Failed to create new account or invalid account address type.',
       );
-      await onActionComplete(false);
+      if (onActionComplete) {
+        await onActionComplete(false);
+      }
     }
   };
 
