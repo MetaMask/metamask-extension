@@ -12,11 +12,11 @@ const ConfirmPageStory = {
   decorators: [(story) => <div style={{ height: '600px' }}>{story()}</div>],
 }
 
-const argsSignature = {
+const ARGS_SIGNATURE = {
   msgParams: { ...unapprovedPersonalSignMsg.msgParams },
 }
 
-const argTypesSignature = {
+const ARG_TYPES_SIGNATURE = {
   msgParams: {
     control: 'object',
     description: '(non-param) overrides currentConfirmation.msgParams',
@@ -42,17 +42,17 @@ export const PersonalSignStory = (args) => {
 };
 
 PersonalSignStory.storyName = 'Personal Sign';
-PersonalSignStory.argTypes = argTypesSignature;
-PersonalSignStory.args = argsSignature;
+PersonalSignStory.argTypes = ARG_TYPES_SIGNATURE;
+PersonalSignStory.args = ARGS_SIGNATURE;
 
 export const SignInWithEthereumSIWEStory = (args) => {
   return SignatureStoryTemplate(args, signatureRequestSIWE);
 };
 
 SignInWithEthereumSIWEStory.storyName = 'Sign-in With Ethereum (SIWE)';
-SignInWithEthereumSIWEStory.argTypes = argTypesSignature;
+SignInWithEthereumSIWEStory.argTypes = ARG_TYPES_SIGNATURE;
 SignInWithEthereumSIWEStory.args = {
-  ...argsSignature,
+  ...ARGS_SIGNATURE,
   msgParams: signatureRequestSIWE.msgParams,
 };
 
@@ -61,9 +61,9 @@ export const SignTypedDataStory = (args) => {
 };
 
 SignTypedDataStory.storyName = 'SignTypedData';
-SignTypedDataStory.argTypes = argTypesSignature;
+SignTypedDataStory.argTypes = ARG_TYPES_SIGNATURE;
 SignTypedDataStory.args = {
-  ...argsSignature,
+  ...ARGS_SIGNATURE,
   msgParams: unapprovedTypedSignMsgV1.msgParams,
 };
 
@@ -72,9 +72,9 @@ export const PermitStory = (args) => {
 };
 
 PermitStory.storyName = 'SignTypedData Permit';
-PermitStory.argTypes = argTypesSignature;
+PermitStory.argTypes = ARG_TYPES_SIGNATURE;
 PermitStory.args = {
-  ...argsSignature,
+  ...ARGS_SIGNATURE,
   msgParams: permitSignatureMsg.msgParams,
 };
 
@@ -83,9 +83,9 @@ export const SignTypedDataV4Story = (args) => {
 };
 
 SignTypedDataV4Story.storyName = 'SignTypedData V4';
-SignTypedDataV4Story.argTypes = argTypesSignature;
+SignTypedDataV4Story.argTypes = ARG_TYPES_SIGNATURE;
 SignTypedDataV4Story.args = {
-  ...argsSignature,
+  ...ARGS_SIGNATURE,
   msgParams: unapprovedTypedSignMsgV4.msgParams,
 };
 
