@@ -132,37 +132,34 @@ export default class AddContact extends PureComponent {
                 domainResolutions?.length === 1 ? 'single-' : ''
               }resolution-list`}
             >
-              {domainResolutions?.length > 0 &&
-                domainResolutions.map((resolution) => {
-                  const {
-                    resolvedAddress,
-                    resolvingSnap,
-                    addressBookEntryName,
-                    protocol,
-                  } = resolution;
-                  const domainName = addressBookEntryName || this.state.input;
-                  return (
-                    <DomainInputResolutionCell
-                      key={`${resolvedAddress}${resolvingSnap}${protocol}`}
-                      domainType={
-                        protocol === 'Ethereum Name Service' ? 'ENS' : 'Other'
-                      }
-                      address={resolvedAddress}
-                      domainName={domainName}
-                      onClick={() => {
-                        this.setState({
-                          selectedAddress: resolvedAddress,
-                        });
-                        if (!this.state.newName) {
-                          this.setState({ newName: domainName });
-                        }
-                        this.props.resetDomainResolution();
-                      }}
-                      protocol={protocol}
-                      resolvingsnap={resolvingSnap}
-                    />
-                  );
-                })}
+              {domainResolutions?.map((resolution) => {
+                const {
+                  resolvedAddress,
+                  resolvingSnap,
+                  addressBookEntryName,
+                  protocol,
+                } = resolution;
+                const domainName = addressBookEntryName || this.state.input;
+                return (
+                  <DomainInputResolutionCell
+                    key={`${resolvedAddress}${resolvingSnap}${protocol}`}
+                    domainType={
+                      protocol === 'Ethereum Name Service' ? 'ENS' : 'Other'
+                    }
+                    address={resolvedAddress}
+                    domainName={domainName}
+                    onClick={() => {
+                      this.setState({
+                        selectedAddress: resolvedAddress,
+                        newName: this.state.newName || domainName,
+                      });
+                      this.props.resetDomainResolution();
+                    }}
+                    protocol={protocol}
+                    resolvingsnap={resolvingSnap}
+                  />
+                );
+              })}
             </div>
             {errorToRender && (
               <div className="address-book__add-contact__error">

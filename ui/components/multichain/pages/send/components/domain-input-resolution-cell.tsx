@@ -17,14 +17,17 @@ import {
   AvatarIcon,
   AvatarIconSize,
   BadgeWrapper,
+  Box,
   IconName,
   ///: END:ONLY_INCLUDE_IF
   Text,
 } from '../../../../component-library';
 import {
+  AlignItems,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   BackgroundColor,
   BorderColor,
+  Display,
   IconColor,
   ///: END:ONLY_INCLUDE_IF
   TextColor,
@@ -107,10 +110,14 @@ export const DomainInputResolutionCell = ({
   if (domainType === 'Other') {
     // Snap provided resolution.
     return (
-      <div
+      <Box
         key={address}
         className="multichain-send-page__recipient__item"
         onClick={() => onClick()}
+        display={Display.Flex}
+        alignItems={AlignItems.center}
+        paddingBottom={2}
+        style={{ cursor: 'pointer' }}
       >
         <Tooltip title={t('suggestedBySnap', [resolvingSnap])}>
           <BadgeWrapper
@@ -140,29 +147,34 @@ export const DomainInputResolutionCell = ({
             <AvatarAccount address={address} />
           </BadgeWrapper>
         </Tooltip>
-        <div className="multichain-send-page__recipient__item__content">
-          <div
+        <Box
+          className="multichain-send-page__recipient__item__content"
+          paddingLeft={4}
+          style={{ overflow: 'hidden' }}
+        >
+          <Box
             ref={titleRef}
             className="multichain-send-page__recipient__item__title"
             data-testid="multichain-send-page__recipient__item__title"
+            display={Display.Flex}
           >
             {isTitleOverflowing ? (
               <OverflowingTitle />
             ) : (
               <Confusable asText input={domainName} />
             )}
-          </div>
+          </Box>
           <Text color={TextColor.textAlternative}>{ellipsify(address)}</Text>
-          <div className="multichain-send-page__recipient__item__subtitle">
+          <Box className="multichain-send-page__recipient__item__subtitle">
             <Text
               color={TextColor.textAlternative}
               variant={TextVariant.bodySm}
             >
               {protocol}
             </Text>
-          </div>
-        </div>
-      </div>
+          </Box>
+        </Box>
+      </Box>
     );
   }
   ///: END:ONLY_INCLUDE_IF
@@ -176,34 +188,47 @@ export const DomainInputResolutionCell = ({
   };
 
   return (
-    <div
+    <Box
       key={address}
       className="multichain-send-page__recipient__item"
       onClick={() => onClick()}
+      display={Display.Flex}
+      alignItems={AlignItems.center}
+      paddingBottom={2}
+      style={{ cursor: 'pointer' }}
     >
-      <div className="multichain-send-page__recipient__item__avatar-wrapper">
+      <Box
+        className="multichain-send-page__recipient__item__avatar-wrapper"
+        display={Display.Flex}
+        alignItems={AlignItems.center}
+      >
         <AvatarAccount address={address} />
-      </div>
-      <div className="multichain-send-page__recipient__item__content">
-        <div
+      </Box>
+      <Box
+        className="multichain-send-page__recipient__item__content"
+        paddingLeft={4}
+        style={{ overflow: 'hidden' }}
+      >
+        <Box
           ref={titleRef}
           className="multichain-send-page__recipient__item__title"
           data-testid="multichain-send-page__recipient__item__title"
+          display={Display.Flex}
         >
           {getTitle()}
-        </div>
+        </Box>
         {domainName && (
-          <div className="multichain-send-page__recipient__item__subtitle">
+          <Box className="multichain-send-page__recipient__item__subtitle">
             <Text color={TextColor.textAlternative}>{ellipsify(address)}</Text>
-          </div>
+          </Box>
         )}
         {domainType === 'ENS' && (
           <Text color={TextColor.textAlternative} variant={TextVariant.bodySm}>
             {protocol}
           </Text>
         )}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

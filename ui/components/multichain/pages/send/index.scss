@@ -34,24 +34,6 @@
     }
 
     &__item {
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      padding-bottom: 8px;
-
-      &__avatar-wrapper {
-        display: flex;
-        align-items: center;
-      }
-
-      &__title {
-        display: flex;
-      }
-
-      &__content {
-        padding-left: 16px;
-        overflow: hidden;
-      }
 
       &__title-tooltip > * {
         display: inline;

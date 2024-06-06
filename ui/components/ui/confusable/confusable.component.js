@@ -29,11 +29,9 @@ const Confusable = ({ input, asText, confusableWrapperName = '' }) => {
         }
         wrapperClassName={confusableWrapperName}
       >
-        {asText ? (
-          <Text className="confusable__point">{zeroWidth ? '?' : point}</Text>
-        ) : (
-          <span className="confusable__point">{zeroWidth ? '?' : point}</span>
-        )}
+        <Text className="confusable__point" as={asText ? 'p' : 'span'}>
+          {zeroWidth ? '?' : point}
+        </Text>
       </Tooltip>
     );
   });
