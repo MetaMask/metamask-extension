@@ -362,6 +362,33 @@ export const NetworkListMenu2 = () => {
     }
   };
 
+  const renderFooter = () => {
+    return (
+      <Box
+        className="sticky-button-container"
+        backgroundColor={BackgroundColor.backgroundDefault}
+        textAlign={TextAlign.Center}
+        padding={4}
+      >
+        <ButtonSecondary
+          backgroundColor={BackgroundColor.backgroundDefault}
+          textAlign={TextAlign.Center}
+          variant={TextVariant.bodyMd}
+          size={ButtonSecondarySize.Lg}
+          width={BlockSize.FourFifths}
+          startIconName={IconName.Add}
+          onClick={() => {
+            // getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+            //   ? global.platform.openExtensionInBrowser(ADD_NETWORK_ROUTE)
+            //   : this.props.history.push(ADD_NETWORK_ROUTE);
+          }}
+        >
+          {t('addCustomNetwork')}
+        </ButtonSecondary>
+      </Box>
+    );
+  };
+
   const renderHeader = () => {
     return (
       <HeaderBase
@@ -719,6 +746,7 @@ export const NetworkListMenu2 = () => {
           </Box>
         ) : null}
       </Box>
+      {renderFooter()}
     </Box>
   );
 };
