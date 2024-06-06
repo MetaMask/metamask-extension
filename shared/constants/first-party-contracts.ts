@@ -11,7 +11,7 @@ export const FIRST_PARTY_CONTRACT_NAMES: Record<string, Record<Hex, Hex>> = {
   'MetaMask Pooled Staking': {
     [CHAIN_IDS.MAINNET]: '0x4FEF9D741011476750A243aC70b9789a63dd47Df',
   },
-  'Liquid Staking': {
+  'MetaMask Third Party Staking': {
     [CHAIN_IDS.MAINNET]: '0x1f6692E78dDE07FF8da75769B6d7c716215bC7D0',
   },
   'MetaMask Pool Staking (v1)': {
