@@ -75,6 +75,7 @@ import {
   HeaderBase,
   ButtonIcon,
   ButtonIconSize,
+  ModalContentSize,
 } from '../../../component-library';
 import { TextFieldSearch } from '../../../component-library/text-field-search/deprecated';
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
@@ -385,7 +386,13 @@ export const NetworkListMenu2 = ({ onClose }: { onClose: () => void }) => {
     );
   };
 
-  const renderHeader = () => {
+  const renderHeader = ({
+    isModal = false,
+    onClose,
+  }: {
+    isModal: boolean;
+    onClose?: () => void;
+  }) => {
     return (
       <HeaderBase
         paddingTop={5}
@@ -393,19 +400,21 @@ export const NetworkListMenu2 = ({ onClose }: { onClose: () => void }) => {
         paddingLeft={4}
         paddingRight={4}
         startAccessory={
-          <ButtonIcon
-            size={ButtonIconSize.Sm}
-            iconName={IconName.ArrowLeft}
-            ariaLabel="back"
-            onClick={redirectToDefaultRoute}
-          />
+          isModal ? null : (
+            <ButtonIcon
+              size={ButtonIconSize.Sm}
+              iconName={IconName.ArrowLeft}
+              ariaLabel="back"
+              onClick={redirectToDefaultRoute}
+            />
+          )
         }
         endAccessory={
           <ButtonIcon
             size={ButtonIconSize.Sm}
             iconName={IconName.Close}
             ariaLabel="close"
-            onClick={redirectToDefaultRoute}
+            onClick={isModal ? onClose : redirectToDefaultRoute}
           />
         }
       >
@@ -495,12 +504,13 @@ export const NetworkListMenu2 = ({ onClose }: { onClose: () => void }) => {
                 <Button
                   key="button"
                   type="inline"
-                  // onClick={(event) => {
-                  //   event.preventDefault();
-                  //   getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-                  //     ? platform.openExtensionInBrowser(ADD_NETWORK_ROUTE)
-                  //     : history.push(ADD_NETWORK_ROUTE);
-                  // }}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+                      ? //@ts-ignore
+                        platform.openExtensionInBrowser(ADD_NETWORK_ROUTE)
+                      : history.push(ADD_NETWORK_ROUTE);
+                  }}
                 >
                   <Text
                     variant={TextVariant.bodySm}
@@ -567,6 +577,9 @@ export const NetworkListMenu2 = ({ onClose }: { onClose: () => void }) => {
                   className="add-network__add-button"
                   variant={ButtonVariant.Link}
                   onClick={async () => {
+                    if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN) {
+                      onClose();
+                    }
                     await dispatch(
                       requestUserApproval({
                         origin: ORIGIN_METAMASK,
@@ -767,7 +780,7 @@ export const NetworkListMenu2 = ({ onClose }: { onClose: () => void }) => {
           className="new-network-list-menu-content-wrapper__network"
           backgroundColor={BackgroundColor.backgroundDefault}
         >
-          {renderHeader()}
+          {renderHeader({ isModal: false })}
           {renderSearchBar()}
           {renderBanner()}
           {renderEnabledNetwork()}
@@ -782,8 +795,8 @@ export const NetworkListMenu2 = ({ onClose }: { onClose: () => void }) => {
     return (
       <Modal isOpen onClose={onClose}>
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>{renderHeader()}</ModalHeader>
+        <ModalContent size={ModalContentSize.Md}>
+          <ModalHeader>{renderHeader({ isModal: true, onClose })}</ModalHeader>
           <ModalBody>
             {renderSearchBar()}
             {renderBanner()}
