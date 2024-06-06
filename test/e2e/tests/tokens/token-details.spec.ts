@@ -31,7 +31,6 @@ describe('Token Details', function () {
           ...defaultGanacheOptions,
           chainId: parseInt(chainId, 16),
         },
-        // @ts-ignore
         title: this.test?.fullTitle(),
         ethConversionInUsd,
         testSpecificMock: async (mockServer: Mockttp) => [
