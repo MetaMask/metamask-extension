@@ -14,9 +14,9 @@ import {
   Modal,
   ModalOverlay,
   ButtonPrimary,
-  ModalContent,
-  ModalHeader,
 } from '../../../components/component-library';
+import { ModalContent } from '../../../components/component-library/modal-content/deprecated';
+import { ModalHeader } from '../../../components/component-library/modal-header/deprecated';
 import {
   TextVariant,
   AlignItems,
@@ -156,10 +156,7 @@ export default function TransactionSettings({
               {!isDirectWrappingEnabled && (
                 <>
                   <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
-                    <Text
-                      variant={TextVariant.headingSm}
-                      paddingRight={2}
-                    >
+                    <Text variant={TextVariant.bodySm} paddingRight={2}>
                       {t('swapsMaxSlippage')}
                     </Text>
                     <InfoTooltip
@@ -270,7 +267,7 @@ export default function TransactionSettings({
                   titleProps={{ 'data-testid': 'swaps-banner-title' }}
                 >
                   <Text
-                    variant={TextVariant.headingSm}
+                    variant={TextVariant.bodySm}
                     testId="mm-banner-alert-notification-text"
                   >
                     {notificationText}
