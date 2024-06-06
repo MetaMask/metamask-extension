@@ -4,6 +4,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
 import {
   PRIORITY_STATUS_HASH,
   PENDING_STATUS_HASH,
@@ -19,6 +20,12 @@ import { createDeepEqualSelector } from './util';
 const INVALID_INITIAL_TRANSACTION_TYPES = [
   TransactionType.cancel,
   TransactionType.retry,
+];
+const allowedSwapsSmartTransactionStatusesForActivityList = [
+  SmartTransactionStatuses.PENDING,
+  SmartTransactionStatuses.UNKNOWN,
+  SmartTransactionStatuses.RESOLVED,
+  SmartTransactionStatuses.CANCELLED,
 ];
 
 export const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
@@ -102,18 +109,25 @@ export const smartTransactionsListSelector = (state) => {
   return state.metamask.smartTransactionsState?.smartTransactions?.[
     getCurrentChainId(state)
   ]
-    ?.filter((stx) => {
-      const isCancelledSmartTransaction = stx.status?.startsWith('cancelled');
+    ?.filter((smartTransaction) => {
+      if (
+        smartTransaction.txParams?.from !== selectedAddress ||
+        smartTransaction.confirmed
+      ) {
+        return false;
+      }
+      if (smartTransaction.status === SmartTransactionStatuses.PENDING) {
+        return true;
+      }
+      // In the future we should have the same behavior for Swaps and non-Swaps transactions.
+      // For that we need to submit Smart Swaps via the TransactionController as we do for
+      // non-Swaps Smart Transactions.
       return (
-        stx.txParams?.from === selectedAddress &&
-        !stx.confirmed &&
-        (!isCancelledSmartTransaction ||
-          // We only want to show cancelled Smart Transactions for Swaps in Activity,
-          // since other transaction types will show the "Failed" status in Activity instead,
-          // because they are mostly processed via the TransactionController. In the future, we
-          // should have the same behavior for Swaps as well, so all transaction types
-          // would be handled the same way for Smart Transactions.
-          (isCancelledSmartTransaction && stx.type === TransactionType.swap))
+        (smartTransaction.type === TransactionType.swap ||
+          smartTransaction.type === TransactionType.swapApproval) &&
+        allowedSwapsSmartTransactionStatusesForActivityList.includes(
+          smartTransaction.status,
+        )
       );
     })
     .map((stx) => ({
