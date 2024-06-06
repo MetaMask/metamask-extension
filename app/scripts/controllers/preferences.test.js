@@ -374,10 +374,10 @@ describe('preferences controller', () => {
   });
 
   describe('setUseNftDetection', () => {
-    it('should default to false', () => {
+    it('should default to true', () => {
       expect(
         preferencesController.store.getState().useNftDetection,
-      ).toStrictEqual(false);
+      ).toStrictEqual(true);
     });
 
     it('should set the useNftDetection property in state', () => {
@@ -405,10 +405,10 @@ describe('preferences controller', () => {
   });
 
   describe('setOpenSeaEnabled', () => {
-    it('should default to false', () => {
+    it('should default to true', () => {
       expect(
         preferencesController.store.getState().openSeaEnabled,
-      ).toStrictEqual(false);
+      ).toStrictEqual(true);
     });
 
     it('should set the openSeaEnabled property in state', () => {
