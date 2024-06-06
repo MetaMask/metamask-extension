@@ -148,7 +148,7 @@ exports[`AddressListItem uses a confusable when it should 1`] = `
             tabindex="0"
           >
             <span
-              class="confusable__point"
+              class="mm-box mm-text confusable__point mm-text--body-md mm-box--color-text-default"
             >
               m
             </span>
@@ -169,7 +169,7 @@ exports[`AddressListItem uses a confusable when it should 1`] = `
             tabindex="0"
           >
             <span
-              class="confusable__point"
+              class="mm-box mm-text confusable__point mm-text--body-md mm-box--color-text-default"
             >
               m
             </span>
