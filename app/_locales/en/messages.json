@@ -4016,6 +4016,9 @@
   "profileSyncPrivacyLink": {
     "message": "Learn how we protect your privacy"
   },
+  "profileSyncingBasicFunctionalityWarning": {
+    "message": "This is only available with basic functionality."
+  },
   "proposedApprovalLimit": {
     "message": "Proposed approval limit"
   },
