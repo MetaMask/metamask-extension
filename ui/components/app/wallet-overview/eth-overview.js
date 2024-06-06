@@ -38,6 +38,7 @@ const EthOverview = ({ className }) => {
       balance={balance}
       balanceIsCached={balanceIsCached}
       className={className}
+      classPrefix="eth"
       chainId={chainId}
       isSigningEnabled={isSigningEnabled}
       isSwapsChain={isSwapsChain}

@@ -66,6 +66,7 @@ export type CoinOverviewOptions = {
   balance: string;
   balanceIsCached: boolean;
   className: string;
+  classPrefix: string;
   chainId: CaipChainId | number;
   showAddress: boolean;
   isSigningEnabled: boolean;
@@ -83,6 +84,7 @@ export const CoinOverview = (options: CoinOverviewOptions) => {
     balance,
     balanceIsCached,
     className,
+    classPrefix,
     chainId,
     isSigningEnabled,
     isSwapsChain,
@@ -180,7 +182,7 @@ export const CoinOverview = (options: CoinOverviewOptions) => {
     return (
       <>
         <IconButton
-          className="coin-overview__button"
+          className={`${classPrefix}-overview__button`}
           Icon={<Icon name={IconName.Stake} color={IconColor.primaryInverse} />}
           label={t('stake')}
           onClick={() => {
@@ -192,7 +194,7 @@ export const CoinOverview = (options: CoinOverviewOptions) => {
         />
         {mmiPortfolioEnabled && (
           <IconButton
-            className="coin-overview__button"
+            className={`${classPrefix}-overview__button`}
             Icon={
               <Icon name={IconName.Diagram} color={IconColor.primaryInverse} />
             }
@@ -222,15 +224,15 @@ export const CoinOverview = (options: CoinOverviewOptions) => {
           title={t('balanceOutdated')}
           disabled={!balanceIsCached}
         >
-          <div className="coin-overview__balance">
-            <div className="coin-overview__primary-container">
+          <div className={`${classPrefix}-overview__balance`}>
+            <div className={`${classPrefix}-overview__primary-container`}>
               {balance ? (
                 <UserPreferencedCurrencyDisplay
                   style={{ display: 'contents' }}
-                  className={classnames('coin-overview__primary-balance', {
-                    'coin-overview__cached-balance': balanceIsCached,
+                  className={classnames(`${classPrefix}-overview__primary-balance`, {
+                    [`${classPrefix}-overview__cached-balance`]: balanceIsCached,
                   })}
-                  data-testid="coin-overview__primary-currency"
+                  data-testid={`${classPrefix}-overview__primary-currency`}
                   value={balance}
                   type={
                     showPrimaryCurrency(
@@ -250,16 +252,16 @@ export const CoinOverview = (options: CoinOverviewOptions) => {
                 />
               )}
               {balanceIsCached ? (
-                <span className="coin-overview__cached-star">*</span>
+                <span className={`${classPrefix}-overview__cached-star`}>*</span>
               ) : null}
             </div>
             {showFiat && isOriginalNativeSymbol && balance && (
               <UserPreferencedCurrencyDisplay
                 className={classnames({
-                  'coin-overview__cached-secondary-balance': balanceIsCached,
-                  'coin-overview__secondary-balance': !balanceIsCached,
+                  [`${classPrefix}__cached-secondary-balance`]: balanceIsCached,
+                  [`${classPrefix}__secondary-balance`]: !balanceIsCached,
                 })}
-                data-testid="coin-overview__secondary-currency"
+                data-testid={`${classPrefix}-overview__secondary-currency`}
                 value={balance}
                 type={SECONDARY}
                 ethNumberOfDecimals={4}
@@ -274,7 +276,7 @@ export const CoinOverview = (options: CoinOverviewOptions) => {
           {
             ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
             <IconButton
-              className="coin-overview__button"
+              className={`${classPrefix}-overview__button`}
               Icon={
                 <Icon
                   name={IconName.PlusMinus}
@@ -282,7 +284,7 @@ export const CoinOverview = (options: CoinOverviewOptions) => {
                 />
               }
               disabled={!isBuyableChain || !isSigningEnabled}
-              data-testid="coin-overview-buy"
+              data-testid={`${classPrefix}-overview-buy`}
               label={t('buyAndSell')}
               onClick={() => {
                 openBuyCryptoInPdapp();
@@ -311,8 +313,8 @@ export const CoinOverview = (options: CoinOverviewOptions) => {
           }
 
           <IconButton
-            className="coin-overview__button"
-            data-testid="coin-overview-send"
+            className={`${classPrefix}-overview__button`}
+            data-testid={`${classPrefix}-overview-send`}
             Icon={
               <Icon
                 name={IconName.Arrow2UpRight}
@@ -343,7 +345,7 @@ export const CoinOverview = (options: CoinOverviewOptions) => {
             }
           />
           <IconButton
-            className="coin-overview__button"
+            className={`${classPrefix}-overview__button`}
             disabled={
               !isSwapsChain || !isSigningEnabled || !isExternalServicesEnabled
             }
@@ -392,9 +394,9 @@ export const CoinOverview = (options: CoinOverviewOptions) => {
           {
             ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
             <IconButton
-              className="coin-overview__button"
+              className={`${classPrefix}-overview__button`}
               disabled={!isBridgeChain || !isSigningEnabled}
-              data-testid="coin-overview-bridge"
+              data-testid={`${classPrefix}-overview-bridge`}
               Icon={
                 <Icon name={IconName.Bridge} color={IconColor.primaryInverse} />
               }
@@ -432,8 +434,8 @@ export const CoinOverview = (options: CoinOverviewOptions) => {
           {
             ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
             <IconButton
-              className="coin-overview__button"
-              data-testid="coin-overview-portfolio"
+              className={`${classPrefix}-overview__button`}
+              data-testid={`${classPrefix}-overview-portfolio`}
               Icon={
                 <Icon
                   name={IconName.Diagram}
