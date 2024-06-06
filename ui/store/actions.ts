@@ -5600,3 +5600,9 @@ export function setShowNftAutodetectModalOnUpgrade(
     });
   };
 }
+export async function getNextAvailableAccountName(): Promise<string> {
+  return await submitRequestToBackground<string>(
+    'getNextAvailableAccountName',
+    [],
+  );
+}
