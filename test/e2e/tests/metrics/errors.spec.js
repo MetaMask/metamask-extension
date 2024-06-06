@@ -114,7 +114,7 @@ async function matchesSnapshot({
   const snapshotData = JSON.parse(rawSnapshotData);
 
   try {
-    isEqual(data, snapshotData);
+    assert(isEqual(data, snapshotData));
   } catch (error) {
     if (update && error instanceof assert.AssertionError) {
       const stringifiedData = JSON.stringify(data);
