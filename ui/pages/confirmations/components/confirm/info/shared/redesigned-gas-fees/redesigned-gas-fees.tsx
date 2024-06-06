@@ -36,10 +36,7 @@ import {
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
 import { useFiatFormatter } from '../../../../../../../hooks/useFiatFormatter';
-import {
-  currentConfirmationSelector,
-  getCurrentCurrency,
-} from '../../../../../../../selectors';
+import { getCurrentCurrency } from '../../../../../../../selectors';
 import AdvancedGasFeePopover from '../../../../advanced-gas-fee-popover';
 import EditGasFeePopover from '../../../../edit-gas-fee-popover';
 import EditGasPopover from '../../../../edit-gas-popover';
@@ -50,24 +47,24 @@ import { EditGasIconButton } from '../edit-gas-icon/edit-gas-icon-button';
 
 // TODO(pnf): review localization once design and copy are finalized
 
-export const RedesignedGasFees = () => {
-  const currentConfirmation = useSelector(
-    currentConfirmationSelector,
-  ) as TransactionMeta;
-
-  if (!currentConfirmation?.txParams) {
+export const RedesignedGasFees = ({
+  transactionMeta,
+}: {
+  transactionMeta: TransactionMeta;
+}) => {
+  if (!transactionMeta?.txParams) {
     return null;
   }
 
   const [showCustomizeGasPopover, setShowCustomizeGasPopover] = useState(false);
   const closeCustomizeGasPopover = () => setShowCustomizeGasPopover(false);
-  const { supportsEIP1559 } = useSupportsEIP1559(currentConfirmation);
+  const { supportsEIP1559 } = useSupportsEIP1559(transactionMeta);
 
   const { maxFeePerGas, maxPriorityFeePerGas } =
-    useEIP1559TxFees(currentConfirmation);
+    useEIP1559TxFees(transactionMeta);
 
   const gasEstimate = getGasEstimate(
-    currentConfirmation,
+    transactionMeta,
     supportsEIP1559,
     maxFeePerGas,
     maxPriorityFeePerGas,
@@ -108,14 +105,14 @@ export const RedesignedGasFees = () => {
       />
 
       <Layer2GasFeesDetails
-        currentConfirmation={currentConfirmation}
+        transactionMeta={transactionMeta}
         gasEstimate={gasEstimate}
       />
 
       {!supportsEIP1559 && showCustomizeGasPopover && (
         <Type0TxGasModal
           closeCustomizeGasPopover={closeCustomizeGasPopover}
-          currentConfirmation={currentConfirmation}
+          transactionMeta={transactionMeta}
         />
       )}
       {supportsEIP1559 && <Type2TxGasModal />}
@@ -131,12 +128,12 @@ const GasFeeInfo = ({
   maxFeePerGas,
   maxPriorityFeePerGas,
 }: {
-  currentCurrencyFees;
-  nativeCurrencyFees;
-  supportsEIP1559;
-  setShowCustomizeGasPopover;
-  maxFeePerGas;
-  maxPriorityFeePerGas;
+  currentCurrencyFees: string;
+  nativeCurrencyFees: string | undefined;
+  supportsEIP1559: boolean;
+  setShowCustomizeGasPopover: Dispatch<SetStateAction<boolean>>;
+  maxFeePerGas: string;
+  maxPriorityFeePerGas: string;
 }) => {
   return (
     <>
@@ -249,10 +246,10 @@ const TotalGasFees = ({
 };
 
 const Layer2GasFeesDetails = ({
-  currentConfirmation,
+  transactionMeta,
   gasEstimate,
 }: {
-  currentConfirmation: TransactionMeta;
+  transactionMeta: TransactionMeta;
   gasEstimate: string;
 }) => {
   const fiatFormatter = useFiatFormatter();
@@ -277,7 +274,7 @@ const Layer2GasFeesDetails = ({
     ),
   );
 
-  const layer1GasFee = currentConfirmation?.layer1GasFee ?? null;
+  const layer1GasFee = transactionMeta?.layer1GasFee ?? null;
   const hasLayer1GasFee = layer1GasFee !== null;
   const [expandFeeDetails, setExpandFeeDetails] = useState(false);
 
@@ -469,16 +466,16 @@ const TotalFeesRow = ({
 
 const Type0TxGasModal = ({
   closeCustomizeGasPopover,
-  currentConfirmation,
+  transactionMeta,
 }: {
   closeCustomizeGasPopover: () => void;
-  currentConfirmation: TransactionMeta;
+  transactionMeta: TransactionMeta;
 }) => {
   return (
     <EditGasPopover
       onClose={closeCustomizeGasPopover}
       mode={EditGasModes.modifyInPlace}
-      transaction={currentConfirmation}
+      transaction={transactionMeta}
     />
   );
 };
@@ -493,25 +490,25 @@ const Type2TxGasModal = () => {
 };
 
 function getGasEstimate(
-  currentConfirmation: TransactionMeta,
+  transactionMeta: TransactionMeta,
   supportsEIP1559: boolean,
   maxFeePerGas: string,
   maxPriorityFeePerGas: string,
 ): string {
-  const { gas: gasLimit } = (currentConfirmation as TransactionMeta).txParams;
+  const { gas: gasLimit } = (transactionMeta as TransactionMeta).txParams;
 
   let gasEstimate;
   if (supportsEIP1559) {
     const baseFeePerGas = subtractHexes(maxFeePerGas, maxPriorityFeePerGas);
 
     gasEstimate = getMinimumGasTotalInHexWei({
-      ...currentConfirmation.txParams,
+      ...transactionMeta.txParams,
       gasLimit,
       baseFeePerGas,
     });
   } else {
     gasEstimate = getMinimumGasTotalInHexWei({
-      ...currentConfirmation.txParams,
+      ...transactionMeta.txParams,
       gasLimit,
     });
   }
