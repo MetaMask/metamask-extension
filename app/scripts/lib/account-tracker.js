@@ -479,7 +479,6 @@ export default class AccountTracker {
     } else {
       const selectedAddress = this.controllerMessenger.call(
         'AccountsController:getSelectedAccount',
-        'eip155:*',
       ).address;
 
       addresses = [selectedAddress];
