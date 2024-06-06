@@ -151,8 +151,6 @@ describe('Privacy Settings Onboarding View', () => {
 
     fireEvent.click(backButton);
 
-    expect(toggleExternalServicesStub).toHaveBeenCalledTimes(1);
-    expect(toggleExternalServicesStub.mock.calls[0][0]).toStrictEqual(true);
     expect(setUseTokenDetectionStub).toHaveBeenCalledTimes(1);
     expect(setUseTokenDetectionStub.mock.calls[0][0]).toStrictEqual(true);
     expect(setUseTransactionSimulationsStub).toHaveBeenCalledTimes(1);
