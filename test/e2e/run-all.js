@@ -38,7 +38,7 @@ const getTestPathsForTestDir = async (testDir) => {
 // For running E2Es in parallel in CI
 async function runningOnCircleCI(testPaths) {
   let fullTestList = testPaths.join('\n');
-  console.log("FULL TEST LIST BEFORE", fullTestList);
+  console.log('FULL TEST LIST BEFORE', fullTestList);
   // Quality Gate Logic
   changedOrNewTests = await filterE2eChangedFiles();
   for (let i = 0; i < RETRIES_FOR_NEW_OR_CHANGED_TESTS; i++) {

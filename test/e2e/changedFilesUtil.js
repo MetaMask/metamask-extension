@@ -1,11 +1,7 @@
 const fs = require('fs').promises;
-const path = require('path');
 
-const CHANGED_FILES_PATH = path.join(
-  __dirname,
-  'changed-files',
-  'changed-files.txt',
-);
+const CHANGED_FILES_PATH =
+  '/home/circleci/project/changed-files/changed-files.txt';
 
 async function readChangedFiles() {
   try {
@@ -27,7 +23,7 @@ async function filterE2eChangedFiles() {
         (file.endsWith('.spec.js') || file.endsWith('.spec.ts')),
     )
     .join('\n');
-
+    console.log('e2e changed files', e2eChangedFiles);
   return e2eChangedFiles;
 }
 
