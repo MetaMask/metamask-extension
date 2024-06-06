@@ -1,27 +1,6 @@
-import nock from 'nock';
-import {
-  ContentfulResult,
-  FEATURE_ANNOUNCEMENT_URL,
-} from '../services/feature-announcements';
+import { ContentfulResult } from '../services/feature-announcements';
 import { FeatureAnnouncementRawNotification } from '../types/feature-announcement/feature-announcement';
 import { TRIGGER_TYPES } from '../constants/notification-schema';
-
-type MockReply = {
-  status: nock.StatusCode;
-  body?: nock.Body;
-};
-
-export function mockFetchFeatureAnnouncementNotifications(
-  mockReply?: MockReply,
-) {
-  const reply = mockReply ?? { status: 200, body: { items: [] } };
-  const mockEndpoint = nock(FEATURE_ANNOUNCEMENT_URL)
-    .get('')
-    .query(true)
-    .reply(reply.status, reply.body);
-
-  return mockEndpoint;
-}
 
 export function createMockFeatureAnnouncementAPIResult(): ContentfulResult {
   return {
