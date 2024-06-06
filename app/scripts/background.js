@@ -80,6 +80,8 @@ import DesktopManager from '@metamask/desktop/dist/desktop-manager';
 ///: END:ONLY_INCLUDE_IF
 /* eslint-enable import/order */
 
+import { TRIGGER_TYPES } from './controllers/metamask-notifications/constants/notification-schema';
+
 // Setup global hook for improved Sentry state snapshots during initialization
 const inTest = process.env.IN_TEST;
 const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
@@ -826,6 +828,21 @@ export function setupController(
     updateBadge,
   );
 
+  controller.controllerMessenger.subscribe(
+    METAMASK_CONTROLLER_EVENTS.METAMASK_NOTIFICATIONS_LIST_UPDATED,
+    updateBadge,
+  );
+
+  controller.controllerMessenger.subscribe(
+    METAMASK_CONTROLLER_EVENTS.METAMASK_NOTIFICATIONS_MARK_AS_READ,
+    updateBadge,
+  );
+
+  controller.controllerMessenger.subscribe(
+    METAMASK_CONTROLLER_EVENTS.NOTIFICATIONS_STATE_CHANGE,
+    updateBadge,
+  );
+
   controller.txController.initApprovals();
 
   /**
@@ -833,30 +850,81 @@ export function setupController(
    * The number reflects the current number of pending transactions or message signatures needing user approval.
    */
   function updateBadge() {
+    const unapprovedTransactionCount = getUnapprovedTransactionCount();
+    const unreadNotificationsCount = getUnreadNotificationsCount();
+
     let label = '';
-    const count = getUnapprovedTransactionCount();
-    if (count) {
-      label = String(count);
+    // eslint-disable-next-line @metamask/design-tokens/color-no-hex
+    let badgeColor = '#0376C9';
+    if (unapprovedTransactionCount) {
+      label = '\u22EF'; // unicode ellipsis
+    } else if (unreadNotificationsCount > 0) {
+      label =
+        unreadNotificationsCount > 9
+          ? String('9+')
+          : String(unreadNotificationsCount);
+      // eslint-disable-next-line @metamask/design-tokens/color-no-hex
+      badgeColor = '#D73847';
     }
-    // browserAction has been replaced by action in MV3
-    if (isManifestV3) {
-      browser.action.setBadgeText({ text: label });
-      browser.action.setBadgeBackgroundColor({ color: '#037DD6' });
-    } else {
-      browser.browserAction.setBadgeText({ text: label });
-      browser.browserAction.setBadgeBackgroundColor({ color: '#037DD6' });
+
+    try {
+      const badgeText = { text: label };
+      const badgeBackgroundColor = { color: badgeColor };
+
+      if (isManifestV3) {
+        browser.action.setBadgeText(badgeText);
+        browser.action.setBadgeBackgroundColor(badgeBackgroundColor);
+      } else {
+        browser.browserAction.setBadgeText(badgeText);
+        browser.browserAction.setBadgeBackgroundColor(badgeBackgroundColor);
+      }
+    } catch (error) {
+      console.error('Error updating browser badge:', error);
     }
   }
 
   function getUnapprovedTransactionCount() {
-    let count =
+    let unapprovedTransactionCount =
       controller.appStateController.waitingForUnlock.length +
       controller.approvalController.getTotalApprovalCount();
 
     if (controller.preferencesController.getUseRequestQueue()) {
-      count += controller.queuedRequestController.state.queuedRequestCount;
+      unapprovedTransactionCount +=
+        controller.queuedRequestController.state.queuedRequestCount;
     }
-    return count;
+    return unapprovedTransactionCount;
+  }
+
+  function getUnreadNotificationsCount() {
+    const { isMetamaskNotificationsEnabled, isFeatureAnnouncementsEnabled } =
+      controller.metamaskNotificationsController.state;
+
+    const snapNotificationCount = Object.values(
+      controller.notificationController.state.notifications,
+    ).filter((notification) => notification.readDate === null).length;
+
+    const featureAnnouncementCount = isFeatureAnnouncementsEnabled
+      ? controller.metamaskNotificationsController.state.metamaskNotificationsList.filter(
+          (notification) =>
+            !notification.isRead &&
+            notification.type === TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
+        ).length
+      : 0;
+
+    const walletNotificationCount = isMetamaskNotificationsEnabled
+      ? controller.metamaskNotificationsController.state.metamaskNotificationsList.filter(
+          (notification) =>
+            !notification.isRead &&
+            notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
+        ).length
+      : 0;
+
+    const unreadNotificationsCount =
+      snapNotificationCount +
+      featureAnnouncementCount +
+      walletNotificationCount;
+
+    return unreadNotificationsCount;
   }
 
   notificationManager.on(
