@@ -5192,7 +5192,10 @@ export default class MetamaskController extends EventEmitter {
     // this middleware intecepts these requests and returns an error.
     engine.push(
       createEvmMethodsToNonEvmAccountReqFilterMiddleware({
-        messenger: this.controllerMessenger,
+        messenger: this.controllerMessenger.getRestricted({
+          name: 'EvmMethodsToNonEvmAccountFilterMessenger',
+          allowedActions: ['AccountsController:getSelectedAccount'],
+        }),
       }),
     );
 
