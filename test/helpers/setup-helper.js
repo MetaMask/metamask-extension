@@ -1,5 +1,7 @@
 /* eslint-disable-next-line */
 import { TextEncoder, TextDecoder } from 'util';
+import fs from 'node:fs/promises';
+import path from 'path';
 import nock from 'nock';
 import log from 'loglevel';
 import { JSDOM } from 'jsdom';
@@ -89,10 +91,35 @@ window.document.body.appendChild(popoverContent);
 // eslint-disable-next-line no-shadow
 const { default: fetch, Headers, Request, Response } = require('node-fetch');
 
-Object.assign(window, { fetch, Headers, Request, Response });
+const shimmedFetch = (url, ...args) => {
+  return fetch(url, ...args).catch((error) => {
+    if (error.message === 'Only absolute URLs are supported') {
+      const regex = /_locales\/([^/]+)\/messages\.json/gu;
+      const localeRelativePathRequest = url.match(regex);
+      if (localeRelativePathRequest && localeRelativePathRequest.length > 0) {
+        const fullLocalePath = path.join(
+          process.cwd(),
+          'app',
+          localeRelativePathRequest[0],
+        );
+
+        return fs
+          .readFile(fullLocalePath, { encoding: 'utf8' })
+          .then((data) => new Response(data))
+          .catch((fileError) => {
+            throw new Error(`Failed to fetch ${url}: ${fileError.message}`);
+          });
+      }
+    }
+
+    throw error;
+  });
+};
+
+Object.assign(window, { fetch: shimmedFetch, Headers, Request, Response });
 // some of our libraries currently assume that `fetch` is globally available,
 // so we need to assign this for tests to run
-global.fetch = fetch;
+global.fetch = shimmedFetch;
 
 // localStorage
 window.localStorage = {
