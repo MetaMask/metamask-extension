@@ -58,9 +58,6 @@ aliases:
       git clone --depth 50 --no-checkout "$CIRCLE_REPOSITORY_URL" .
       git fetch --depth 50 origin "$CIRCLE_SHA1"
 
-      # Fetch the develop branch explicitly
-      git fetch origin develop
-
       if [ -n "${CIRCLE_TAG-}" ]; then
         echo "Checkout tag '${CIRCLE_TAG}' at commit '${CIRCLE_SHA1}'"
         git checkout "$CIRCLE_TAG"
@@ -485,7 +482,7 @@ jobs:
             - .yarn/cache
       - run:
           name: Get changed files with git diff
-          command: yarn git-diff-develop
+          command: node .circleci/scripts/git-diff-develop.js
       - persist_to_workspace:
           root: .
           paths:
