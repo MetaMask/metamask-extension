@@ -9,7 +9,7 @@ import {
 import { CreateAccount } from '..';
 import { getAccountById } from '../../../selectors';
 
-type CreateSnapAccountProps = {
+type CreateNamedSnapAccountProps = {
   /**
    * Callback called once the account has been created
    */
@@ -26,7 +26,7 @@ type CreateSnapAccountProps = {
   snapSuggestedAccountName?: string;
 };
 
-export const CreateNamedSnapAccount: React.FC<CreateSnapAccountProps> = ({
+export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
   onActionComplete,
   accountId,
   snapSuggestedAccountName,
@@ -34,10 +34,13 @@ export const CreateNamedSnapAccount: React.FC<CreateSnapAccountProps> = ({
   const dispatch = useDispatch();
 
   const onCreateAccount = async (name: string) => {
-    console.log(`[CreateNamedSnapAccount] onCreateAccount: ${name}`);
+    console.log(`[CreateNamedSnapAccount] onCreateAccount name: ${name}`);
     const newAccountAddress =
       (useSelector(getAccountById(accountId)) as InternalAccount).address ||
       dispatch(addNewAccount());
+    console.log(
+      `[CreateNamedSnapAccount] onCreateAccount newAccountAddress: ${newAccountAddress}`,
+    );
     if (newAccountAddress) {
       dispatch(setAccountLabel(newAccountAddress, name));
       await onActionComplete(true);
@@ -53,7 +56,7 @@ export const CreateNamedSnapAccount: React.FC<CreateSnapAccountProps> = ({
     const defaultAccountName =
       await getNextAvailableAccountNameFromController();
     console.log(
-      `[CreateNamedSnapAccount] getNextAccountName: ${snapSuggestedAccountName}`,
+      `[CreateNamedSnapAccount] getNextAccountName snapSuggestedAccountName: ${snapSuggestedAccountName}`,
     );
     return snapSuggestedAccountName || defaultAccountName;
   };
