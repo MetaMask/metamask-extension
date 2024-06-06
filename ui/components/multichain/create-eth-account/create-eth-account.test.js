@@ -3,37 +3,42 @@ import React from 'react';
 import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
-import { CreateAccount } from '.';
+import { CreateEthAccount } from '.';
 
 const render = (props = { onActionComplete: () => jest.fn() }) => {
   const store = configureStore(mockState);
-  return renderWithProvider(<CreateAccount {...props} />, store);
+  return renderWithProvider(<CreateEthAccount {...props} />, store);
 };
 
 const mockAddNewAccount = jest.fn().mockReturnValue({ type: 'TYPE' });
 const mockSetAccountLabel = jest.fn().mockReturnValue({ type: 'TYPE' });
+const mockGetNextAvailableAccountName = jest.fn().mockReturnValue('Account 7');
 
 jest.mock('../../../store/actions', () => ({
   addNewAccount: (...args) => mockAddNewAccount(...args),
   setAccountLabel: (...args) => mockSetAccountLabel(...args),
+  getNextAvailableAccountName: (...args) =>
+    mockGetNextAvailableAccountName(...args),
 }));
 
-describe('CreateAccount', () => {
+describe('CreateEthAccount', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('displays account name input and suggests name', () => {
+  it('displays account name input and suggests name', async () => {
     const { getByPlaceholderText } = render();
 
-    expect(getByPlaceholderText('Account 7')).toBeInTheDocument();
+    await waitFor(() =>
+      expect(getByPlaceholderText('Account 7')).toBeInTheDocument(),
+    );
   });
 
   it('fires onActionComplete when clicked', async () => {
     const onActionComplete = jest.fn();
     const { getByText, getByPlaceholderText } = render({ onActionComplete });
 
-    const input = getByPlaceholderText('Account 7');
+    const input = await waitFor(() => getByPlaceholderText('Account 7'));
     const newAccountName = 'New Account Name';
 
     fireEvent.change(input, {
@@ -54,7 +59,7 @@ describe('CreateAccount', () => {
   it(`doesn't allow duplicate account names`, async () => {
     const { getByText, getByPlaceholderText } = render();
 
-    const input = getByPlaceholderText('Account 7');
+    const input = await waitFor(() => getByPlaceholderText('Account 7'));
     const usedAccountName = 'Account 4';
 
     fireEvent.change(input, {
