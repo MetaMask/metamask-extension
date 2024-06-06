@@ -5,7 +5,11 @@ import Box from '../../../../components/ui/box/box';
 import Tooltip from '../../../../components/ui/tooltip/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Identicon from '../../../../components/ui/identicon';
-import { Text, ButtonIcon, IconName } from '../../../../components/component-library';
+import {
+  Text,
+  ButtonIcon,
+  IconName,
+} from '../../../../components/component-library';
 import {
   TextVariant,
   DISPLAY,
