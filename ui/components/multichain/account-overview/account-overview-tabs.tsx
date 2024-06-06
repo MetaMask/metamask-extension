@@ -103,7 +103,7 @@ export const AccountOverviewTabs = ({
   ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-  const NeedHelpButtonLink = (props: Record<string, any>) => (
+  const NeedHelpButtonLink = React.memo((props: Record<string, any>) => (
     <ButtonLink
       size={ButtonLinkSize.Md}
       startIconName={IconName.MessageQuestion}
@@ -116,7 +116,7 @@ export const AccountOverviewTabs = ({
     >
       {t('needHelpLinkText')}
     </ButtonLink>
-  );
+  ));
   ///: END:ONLY_INCLUDE_IF
 
   return (
