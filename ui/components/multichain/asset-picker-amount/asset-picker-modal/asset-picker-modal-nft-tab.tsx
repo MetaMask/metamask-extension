@@ -76,7 +76,7 @@ export function AssetPickerModalNftTab({
 
   if (!hasAnyNfts && showLoader) {
     return (
-      <Box className="modal-tab__loading">
+      <Box className="modal-tab__loading" data-testid="spinner">
         <Spinner
           color="var(--color-warning-default)"
           className="loading-overlay__spinner"
@@ -97,7 +97,7 @@ export function AssetPickerModalNftTab({
           showTokenId={true}
           displayPreviouslyOwnedCollection={false}
         />
-        {isNftsStillFetched.isFetchingInProgress ? (
+        {isNftsStillFetched?.isFetchingInProgress ? (
           <Box className="modal-tab__fetching">
             <Spinner
               color="var(--color-warning-default)"

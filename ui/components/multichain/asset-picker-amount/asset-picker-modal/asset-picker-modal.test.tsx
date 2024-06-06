@@ -167,8 +167,9 @@ describe('AssetPickerModal', () => {
     );
 
     fireEvent.click(screen.getByText('nfts'));
-    expect(screen.getByText('noNFTs')).toBeInTheDocument();
-    expect(screen.getByText('learnMoreUpperCase')).toBeInTheDocument();
+
+    const spinner = screen.getAllByTestId('spinner');
+    expect(spinner.length).toBe(1);
   });
 
   it('filters tokens based on search query', () => {

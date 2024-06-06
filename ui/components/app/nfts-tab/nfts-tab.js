@@ -172,7 +172,7 @@ export default function NftsTab() {
               previouslyOwnedCollection={previouslyOwnedCollection}
             />
 
-            {isNftsStillFetched.isFetchingInProgress ? (
+            {isNftsStillFetched?.isFetchingInProgress ? (
               <Box className="nfts-tab__fetching">
                 <Spinner
                   color="var(--color-warning-default)"
