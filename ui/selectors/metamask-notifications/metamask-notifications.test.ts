@@ -21,6 +21,7 @@ const mockNotifications: Notification[] = [
     created_at: '2022-03-01T00:00:00Z',
     createdAt: '2022-03-01T00:00:00Z',
     isRead: false,
+    address: '0x881D40237659C251811CEC9c364ef91dC08D300C',
     data: {
       kind: 'eth_received',
       network_fee: {
