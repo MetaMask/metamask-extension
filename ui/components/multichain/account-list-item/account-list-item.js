@@ -195,11 +195,9 @@ export const AccountListItem = ({
                 data-testid="custody-logo"
                 className="custody-logo"
                 alt="custody logo"
-                style={
-                  theme === 'light'
-                    ? { backgroundColor: 'transparent' }
-                    : { backgroundColor: 'white' }
-                }
+                style={{
+                  backgroundColor: theme === 'light' ? 'transparent' : 'white',
+                }}
               />
             ) : (
               <AvatarAccount
