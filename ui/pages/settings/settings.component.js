@@ -49,7 +49,6 @@ import {
 import MetafoxLogo from '../../components/ui/metafox-logo';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
-import { NetworkListMenu2 } from '../../components/multichain/network-list-menu/new-network-list-menu/network-list-menu';
 import SettingsTab from './settings-tab';
 import AlertsTab from './alerts-tab';
 import NetworksTab from './networks-tab';
@@ -253,19 +252,12 @@ class SettingsPage extends PureComponent {
 
   renderTitle() {
     const { t } = this.context;
-    const { isPopup, pathnameI18nKey, addressName, currentPath } = this.props;
+    const { isPopup, pathnameI18nKey, addressName } = this.props;
     let titleText;
     if (isPopup && addressName) {
       titleText = t('details');
     } else if (pathnameI18nKey && isPopup) {
-      if (
-        currentPath === NEW_ADD_NETWORK_ROUTE &&
-        process.env.ENABLE_NETWORK_UI_REDESIGN
-      ) {
-        titleText = t('networkMenuHeading');
-      } else {
-        titleText = t(pathnameI18nKey);
-      }
+      titleText = t(pathnameI18nKey);
     } else {
       titleText = t('settings');
     }
@@ -437,11 +429,6 @@ class SettingsPage extends PureComponent {
           exact
           path={ADD_NETWORK_ROUTE}
           render={() => <NetworksTab addNewNetwork />}
-        />
-        <Route
-          exact
-          path={NEW_ADD_NETWORK_ROUTE}
-          render={() => <NetworkListMenu2 />}
         />
         <Route
           exact

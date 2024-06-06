@@ -140,12 +140,14 @@ export const AppHeader = ({ location }) => {
 
   // Callback for network dropdown
   const networkOpenCallback = useCallback(() => {
-    if (process.env.ENABLE_NETWORK_UI_REDESIGN) {
+    if (
+      process.env.ENABLE_NETWORK_UI_REDESIGN &&
+      getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+    ) {
       history.push(NEW_ADD_NETWORK_ROUTE);
     } else {
       dispatch(toggleNetworkMenu());
     }
-    history.push(NETWORKS_ROUTE);
     trackEvent({
       event: MetaMetricsEventName.NavNetworkMenuOpened,
       category: MetaMetricsEventCategory.Navigation,

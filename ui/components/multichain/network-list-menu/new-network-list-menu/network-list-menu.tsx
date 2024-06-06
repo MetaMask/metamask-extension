@@ -45,6 +45,7 @@ import {
   AlignItems,
   BackgroundColor,
   BlockSize,
+  BorderColor,
   BorderRadius,
   Display,
   FlexDirection,
@@ -65,6 +66,14 @@ import {
   ButtonSecondary,
   ButtonSecondarySize,
   IconName,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  HeaderBase,
+  ButtonIcon,
+  ButtonIconSize,
 } from '../../../component-library';
 import { TextFieldSearch } from '../../../component-library/text-field-search/deprecated';
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
@@ -90,6 +99,8 @@ import ConfirmationPage from '../../../../pages/confirmations/confirmation/confi
 import ScrollToBottom from '../../../../pages/confirmations/components/confirm/scroll-to-bottom';
 import { PageContainerFooter } from '../../../ui/page-container';
 import NetworksFormSubheader from '../../../../pages/settings/networks-tab/networks-tab-subheader/networks-tab-subheader';
+import Modal from '../../../app/modals/modal';
+import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 
 export const NetworkListMenu2 = () => {
   const t = useI18nContext();
@@ -214,6 +225,12 @@ export const NetworkListMenu2 = () => {
     dispatch(updateNetworksList(orderedArray));
 
     setItems(newItems);
+  };
+
+  const redirectToDefaultRoute = async () => {
+    history.push({
+      pathname: DEFAULT_ROUTE,
+    });
   };
 
   let searchResults =
@@ -345,17 +362,39 @@ export const NetworkListMenu2 = () => {
     }
   };
 
-  return (
-    <Box
-      className="new-network-list-menu-content-wrapper__network"
-      backgroundColor={BackgroundColor.backgroundDefault}
-    >
-      {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? (
-        <Box padding={4}>
-          <NetworksFormSubheader addNewNetwork={false} />
-        </Box>
-      ) : null}
+  const renderHeader = () => {
+    return (
+      <HeaderBase
+        paddingTop={5}
+        paddingBottom={5}
+        paddingLeft={4}
+        paddingRight={4}
+        startAccessory={
+          <ButtonIcon
+            size={ButtonIconSize.Sm}
+            iconName={IconName.ArrowLeft}
+            ariaLabel="back"
+            onClick={redirectToDefaultRoute}
+          />
+        }
+        endAccessory={
+          <ButtonIcon
+            size={ButtonIconSize.Sm}
+            iconName={IconName.Close}
+            ariaLabel="close"
+            onClick={redirectToDefaultRoute}
+          />
+        }
+      >
+        <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
+          {t('networkMenuHeading')}
+        </Text>
+      </HeaderBase>
+    );
+  };
 
+  const renderSearchBar = () => {
+    return (
       <Box paddingLeft={4} paddingRight={4} paddingBottom={4} paddingTop={0}>
         <TextFieldSearch
           size={Size.LG}
@@ -372,10 +411,12 @@ export const NetworkListMenu2 = () => {
           endAccessory={undefined}
         />
       </Box>
-      {/* ------ end of search content -------- */}
-      {/* ------- banner content --------- */}
+    );
+  };
 
-      {showBanner ? (
+  const renderBanner = () => {
+    if (showBanner) {
+      return (
         <BannerBase
           className="network-list-menu__banner"
           marginLeft={4}
@@ -394,9 +435,164 @@ export const NetworkListMenu2 = () => {
           onClose={() => hideNetworkBanner()}
           description={t('dragAndDropBanner')}
         />
-      ) : null}
-      {/* ------- end of banner content --------- */}
+      );
+    }
+    return null;
+  };
 
+  const generatePopularNetwork = () => {
+    if (Object.keys(searchAddNetworkResults).length === 0) {
+      return (
+        <Box
+          className="add-network__edge-case-box"
+          borderRadius={BorderRadius.MD}
+          padding={4}
+          marginTop={4}
+          marginRight={6}
+          marginLeft={6}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          backgroundColor={BackgroundColor.backgroundAlternative}
+        >
+          <Box marginRight={4}>
+            <img src="images/info-fox.svg" />
+          </Box>
+          <Box>
+            <Text variant={TextVariant.bodySm} as="h6">
+              {t('youHaveAddedAll', [
+                <a
+                  key="link"
+                  className="add-network__edge-case-box__link"
+                  href="https://chainlist.wtf/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {t('here')}.
+                </a>,
+                <Button
+                  key="button"
+                  type="inline"
+                  // onClick={(event) => {
+                  //   event.preventDefault();
+                  //   getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+                  //     ? platform.openExtensionInBrowser(ADD_NETWORK_ROUTE)
+                  //     : history.push(ADD_NETWORK_ROUTE);
+                  // }}
+                >
+                  <Text
+                    variant={TextVariant.bodySm}
+                    as="h6"
+                    color={TextColor.infoDefault}
+                  >
+                    {t('addMoreNetworks')}.
+                  </Text>
+                </Button>,
+              ])}
+            </Text>
+          </Box>
+        </Box>
+      );
+    }
+    return (
+      <Box className="new-network-list__networks-container">
+        <Box
+          marginTop={getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? 0 : 4}
+          marginBottom={1}
+          paddingLeft={4}
+          paddingRight={4}
+        >
+          <Box
+            marginTop={4}
+            marginBottom={8}
+            display={Display.Flex}
+            justifyContent={JustifyContent.spaceBetween}
+          >
+            <Text> {t('additionalNetworks')}</Text>
+          </Box>
+          {searchAddNetworkResults.map((item, index) => (
+            <Box
+              key={index}
+              display={Display.Flex}
+              alignItems={AlignItems.center}
+              justifyContent={JustifyContent.spaceBetween}
+              marginBottom={6}
+              className="new-network-list__list-of-networks"
+            >
+              <Box display={Display.Flex} alignItems={AlignItems.center}>
+                <AvatarNetwork
+                  size={AvatarNetworkSize.Md}
+                  src={item.rpcPrefs?.imageUrl}
+                  name={item.nickname}
+                />
+                <Box marginLeft={2}>
+                  <Text
+                    color={TextColor.textDefault}
+                    backgroundColor={BackgroundColor.transparent}
+                    ellipsis
+                  >
+                    {item.nickname}
+                  </Text>
+                </Box>
+              </Box>
+              <Box
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                marginLeft={1}
+              >
+                <Button
+                  type="inline"
+                  className="add-network__add-button"
+                  variant={ButtonVariant.Link}
+                  onClick={async () => {
+                    await dispatch(
+                      requestUserApproval({
+                        origin: ORIGIN_METAMASK,
+                        type: ApprovalType.AddEthereumChain,
+                        requestData: {
+                          chainId: item.chainId,
+                          rpcUrl: item.rpcUrl,
+                          ticker: item.ticker,
+                          rpcPrefs: item.rpcPrefs,
+                          imageUrl: item.rpcPrefs?.imageUrl,
+                          chainName: item.nickname,
+                          referrer: ORIGIN_METAMASK,
+                          source:
+                            MetaMetricsNetworkEventSource.NewAddNetworkFlow,
+                        },
+                      }),
+                    );
+                  }}
+                >
+                  {t('add')}
+                </Button>
+              </Box>
+            </Box>
+          ))}
+        </Box>
+        <Box
+          padding={
+            getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+              ? [2, 0, 2, 6]
+              : [2, 0, 2, 0]
+          }
+        ></Box>
+        {showPopover && (
+          <Popover>
+            <ConfirmationPage redirectToHomeOnZeroConfirmations={false} />
+          </Popover>
+        )}
+      </Box>
+    );
+  };
+
+  return (
+    <Box
+      className="new-network-list-menu-content-wrapper__network"
+      backgroundColor={BackgroundColor.backgroundDefault}
+    >
+      {renderHeader()}
+      {renderSearchBar()}
+      {renderBanner()}
       <Box className="new-network-list-menu">
         <Box
           padding={4}
@@ -504,155 +700,13 @@ export const NetworkListMenu2 = () => {
           </DragDropContext>
         )}
 
-        {Object.keys(searchAddNetworkResults).length === 0 ? (
-          <Box
-            className="add-network__edge-case-box"
-            borderRadius={BorderRadius.MD}
-            padding={4}
-            marginTop={4}
-            marginRight={6}
-            marginLeft={6}
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            backgroundColor={BackgroundColor.backgroundAlternative}
-          >
-            <Box marginRight={4}>
-              <img src="images/info-fox.svg" />
-            </Box>
-            <Box>
-              <Text variant={TextVariant.bodySm} as="h6">
-                {t('youHaveAddedAll', [
-                  <a
-                    key="link"
-                    className="add-network__edge-case-box__link"
-                    href="https://chainlist.wtf/"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    {t('here')}.
-                  </a>,
-                  <Button
-                    key="button"
-                    type="inline"
-                    // onClick={(event) => {
-                    //   event.preventDefault();
-                    //   getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-                    //     ? platform.openExtensionInBrowser(ADD_NETWORK_ROUTE)
-                    //     : history.push(ADD_NETWORK_ROUTE);
-                    // }}
-                  >
-                    <Text
-                      variant={TextVariant.bodySm}
-                      as="h6"
-                      color={TextColor.infoDefault}
-                    >
-                      {t('addMoreNetworks')}.
-                    </Text>
-                  </Button>,
-                ])}
-              </Text>
-            </Box>
-          </Box>
-        ) : (
-          <Box className="new-network-list__networks-container">
-            <Box
-              marginTop={
-                getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? 0 : 4
-              }
-              marginBottom={1}
-              paddingLeft={4}
-              paddingRight={4}
-            >
-              <Box
-                marginTop={4}
-                marginBottom={8}
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
-              >
-                <Text> {t('additionalNetworks')}</Text>
-              </Box>
-              {searchAddNetworkResults.map((item, index) => (
-                <Box
-                  key={index}
-                  display={Display.Flex}
-                  alignItems={AlignItems.center}
-                  justifyContent={JustifyContent.spaceBetween}
-                  marginBottom={6}
-                  className="new-network-list__list-of-networks"
-                >
-                  <Box display={Display.Flex} alignItems={AlignItems.center}>
-                    <AvatarNetwork
-                      size={AvatarNetworkSize.Md}
-                      src={item.rpcPrefs?.imageUrl}
-                      name={item.nickname}
-                    />
-                    <Box marginLeft={2}>
-                      <Text
-                        color={TextColor.textDefault}
-                        backgroundColor={BackgroundColor.transparent}
-                        ellipsis
-                      >
-                        {item.nickname}
-                      </Text>
-                    </Box>
-                  </Box>
-                  <Box
-                    display={Display.Flex}
-                    alignItems={AlignItems.center}
-                    marginLeft={1}
-                  >
-                    <Button
-                      type="inline"
-                      className="add-network__add-button"
-                      variant={ButtonVariant.Link}
-                      onClick={async () => {
-                        await dispatch(
-                          requestUserApproval({
-                            origin: ORIGIN_METAMASK,
-                            type: ApprovalType.AddEthereumChain,
-                            requestData: {
-                              chainId: item.chainId,
-                              rpcUrl: item.rpcUrl,
-                              ticker: item.ticker,
-                              rpcPrefs: item.rpcPrefs,
-                              imageUrl: item.rpcPrefs?.imageUrl,
-                              chainName: item.nickname,
-                              referrer: ORIGIN_METAMASK,
-                              source:
-                                MetaMetricsNetworkEventSource.NewAddNetworkFlow,
-                            },
-                          }),
-                        );
-                      }}
-                    >
-                      {t('add')}
-                    </Button>
-                  </Box>
-                </Box>
-              ))}
-            </Box>
-            <Box
-              padding={
-                getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-                  ? [2, 0, 2, 6]
-                  : [2, 0, 2, 0]
-              }
-              className="add-network__footer"
-            ></Box>
-            {showPopover && (
-              <Popover>
-                <ConfirmationPage redirectToHomeOnZeroConfirmations={false} />
-              </Popover>
-            )}
-          </Box>
-        )}
+        {generatePopularNetwork()}
         <Box
-          padding={4}
           display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
-          className="new-network-list__test-networks-container"
+          borderColor={BorderColor.backgroundDefault}
         >
-          <Text>{t('showTestnetNetworks')}</Text>
+          <Text paddingLeft={4}>{t('showTestnetNetworks')}</Text>
           <ToggleButton
             value={showTestNetworks}
             disabled={currentlyOnTestNetwork}

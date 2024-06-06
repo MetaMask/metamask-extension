@@ -20,7 +20,6 @@ const NetworksList = ({
   selectedNetworkConfigurationId,
 }) => {
   const t = useI18nContext();
-  const history = useHistory();
   const [searchedNetworks, setSearchedNetworks] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const searchedNetworksToRender =
@@ -32,11 +31,6 @@ const NetworksList = ({
 
   const searchedNetworksToRenderThatAreTestNetworks =
     searchedNetworksToRender.filter((network) => network.isATestNetwork);
-
-  if (process.env.ENABLE_NETWORK_UI_REDESIGN) {
-    history.push(NEW_ADD_NETWORK_ROUTE);
-    return null;
-  }
 
   return (
     <div

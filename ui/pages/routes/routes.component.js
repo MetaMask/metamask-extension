@@ -148,6 +148,7 @@ import { getURLHost } from '../../helpers/utils/util';
 import { BorderColor, IconColor } from '../../helpers/constants/design-system';
 import { MILLISECOND } from '../../../shared/constants/time';
 import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/multichain-meta-fox-logo';
+import { NetworkListMenu2 } from '../../components/multichain/network-list-menu/new-network-list-menu/network-list-menu';
 
 const isConfirmTransactionRoute = (pathname) =>
   Boolean(
@@ -403,6 +404,12 @@ export default class Routes extends Component {
           component={ConfirmTransaction}
         />
         <Authenticated path={SEND_ROUTE} component={SendPage} exact />
+
+        <Authenticated
+          path={NEW_ADD_NETWORK_ROUTE}
+          component={NetworkListMenu2}
+          exact
+        />
 
         <Authenticated
           path={`${TOKEN_DETAILS}/:address/`}

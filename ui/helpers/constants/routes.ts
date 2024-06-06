@@ -14,7 +14,7 @@ const ALERTS_ROUTE = '/settings/alerts';
 const NETWORKS_ROUTE = '/settings/networks';
 const NETWORKS_FORM_ROUTE = '/settings/networks/form';
 const ADD_NETWORK_ROUTE = '/settings/networks/add-network';
-const NEW_ADD_NETWORK_ROUTE = '/settings/networks/new-add-network';
+const NEW_ADD_NETWORK_ROUTE = '/new-add-network';
 const ADD_POPULAR_CUSTOM_NETWORK =
   '/settings/networks/add-popular-custom-network';
 const CONTACT_LIST_ROUTE = '/settings/contact-list';
