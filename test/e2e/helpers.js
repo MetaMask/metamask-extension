@@ -835,7 +835,7 @@ const sendTransaction = async (
 
   // the default is to do this block, but if we're testing an async flow, it would get stuck here
   if (!isAsyncFlow) {
-    await driver.clickElement('[data-testid="home__activity-tab"]');
+    await driver.clickElement('[data-testid="account-overview__activity-tab"]');
     await driver.assertElementNotPresent('.transaction-list-item--unconfirmed');
     await driver.findElement('.transaction-list-item');
   }
