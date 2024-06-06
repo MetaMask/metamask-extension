@@ -66,6 +66,7 @@ import {
   ButtonSecondary,
   ButtonSecondarySize,
   IconName,
+  Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
@@ -99,13 +100,12 @@ import ConfirmationPage from '../../../../pages/confirmations/confirmation/confi
 import ScrollToBottom from '../../../../pages/confirmations/components/confirm/scroll-to-bottom';
 import { PageContainerFooter } from '../../../ui/page-container';
 import NetworksFormSubheader from '../../../../pages/settings/networks-tab/networks-tab-subheader/networks-tab-subheader';
-import Modal from '../../../app/modals/modal';
 import {
   ADD_NETWORK_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../../helpers/constants/routes';
 
-export const NetworkListMenu2 = () => {
+export const NetworkListMenu2 = ({ onClose }: { onClose: () => void }) => {
   const t = useI18nContext();
 
   const nonTestNetworks = useSelector(getNonTestNetworks);
@@ -608,42 +608,6 @@ export const NetworkListMenu2 = () => {
     );
   };
 
-  const renderTestsNetwork = () => {
-    return (
-      <Box>
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
-          borderColor={BorderColor.backgroundDefault}
-        >
-          <Text paddingLeft={4}>{t('showTestnetNetworks')}</Text>
-          <ToggleButton
-            value={showTestNetworks}
-            disabled={currentlyOnTestNetwork}
-            onToggle={handleToggle}
-          />
-        </Box>
-        {showTestNetworks || currentlyOnTestNetwork ? (
-          <Box className="new-network-list-menu">
-            {generateMenuItems(
-              testNetworks as {
-                id: string;
-                rpcUrl: string;
-                removable: boolean;
-                chainId: string;
-                nickname: string;
-                rpcPrefs: {
-                  imageUrl: string;
-                };
-                providerType: NetworkType;
-              }[],
-            )}
-          </Box>
-        ) : null}
-      </Box>
-    );
-  };
-
   const renderEnabledNetwork = () => {
     return (
       <Box className="new-network-list-menu">
@@ -754,13 +718,50 @@ export const NetworkListMenu2 = () => {
         )}
 
         {renderPopularNetwork()}
-        {renderTestsNetwork()}
+      </Box>
+    );
+  };
+
+  const renderTestsNetwork = () => {
+    return (
+      <Box>
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.spaceBetween}
+          borderColor={BorderColor.backgroundDefault}
+        >
+          <Text paddingLeft={4}>{t('showTestnetNetworks')}</Text>
+          <ToggleButton
+            value={showTestNetworks}
+            disabled={currentlyOnTestNetwork}
+            onToggle={handleToggle}
+          />
+        </Box>
+        {showTestNetworks || currentlyOnTestNetwork ? (
+          <Box className="new-network-list-menu">
+            {generateMenuItems(
+              testNetworks as {
+                id: string;
+                rpcUrl: string;
+                removable: boolean;
+                chainId: string;
+                nickname: string;
+                rpcPrefs: {
+                  imageUrl: string;
+                };
+                providerType: NetworkType;
+              }[],
+            )}
+          </Box>
+        ) : null}
       </Box>
     );
   };
 
   const renderNetworkManagement = () => {
+    console.log('>>> inside net management');
     if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+      console.log('>>> inside getEnvironmentType() === ENVIRONMENT_TYPE_POPUP');
       return (
         <Box
           className="new-network-list-menu-content-wrapper__network"
@@ -775,13 +776,21 @@ export const NetworkListMenu2 = () => {
         </Box>
       );
     }
+    console.log(
+      '>>> inside getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN',
+    );
     return (
-      <Modal>
+      <Modal isOpen onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader></ModalHeader>
-          <ModalBody></ModalBody>
-          <ModalFooter></ModalFooter>
+          <ModalHeader>{renderHeader()}</ModalHeader>
+          <ModalBody>
+            {renderSearchBar()}
+            {renderBanner()}
+            {renderEnabledNetwork()}
+            {renderTestsNetwork()}
+          </ModalBody>
+          <ModalFooter>{renderFooter()}</ModalFooter>
         </ModalContent>
       </Modal>
     );

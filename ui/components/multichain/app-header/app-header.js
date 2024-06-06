@@ -146,8 +146,10 @@ export const AppHeader = ({ location }) => {
     ) {
       history.push(NEW_ADD_NETWORK_ROUTE);
     } else {
+      console.log('>>> dispatch(toggleNetworkMenu()');
       dispatch(toggleNetworkMenu());
     }
+
     trackEvent({
       event: MetaMetricsEventName.NavNetworkMenuOpened,
       category: MetaMetricsEventCategory.Navigation,

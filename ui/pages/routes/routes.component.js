@@ -956,6 +956,9 @@ export default class Routes extends Component {
         {!process.env.ENABLE_NETWORK_UI_REDESIGN && isNetworkMenuOpen ? (
           <NetworkListMenu onClose={() => toggleNetworkMenu()} />
         ) : null}
+        {process.env.ENABLE_NETWORK_UI_REDESIGN && isNetworkMenuOpen ? (
+          <NetworkListMenu2 onClose={() => toggleNetworkMenu()} />
+        ) : null}
         {accountDetailsAddress ? (
           <AccountDetails address={accountDetailsAddress} />
         ) : null}

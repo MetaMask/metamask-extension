@@ -3231,6 +3231,7 @@ export function toggleAccountMenu() {
 }
 
 export function toggleNetworkMenu() {
+  console.log('>>> toggleNetworkMenu');
   return {
     type: actionConstants.TOGGLE_NETWORK_MENU,
   };
