@@ -86,7 +86,7 @@ describe('ENS', function () {
         await openActionMenuAndStartSendFlow(driver);
 
         await driver.pasteIntoField(
-          'input[placeholder="Enter public address (0x) or ENS name"]',
+          '.ens-input__wrapper__input',
           sampleEnsDomain,
         );
 
