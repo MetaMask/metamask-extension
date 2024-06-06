@@ -4760,18 +4760,22 @@
         "document": true
       },
       "packages": {
-        "@babel/runtime": true,
         "prop-types": true,
-        "prop-types>react-is": true,
         "react": true,
         "react-dom": true,
+        "react-redux>@babel/runtime": true,
         "react-redux>hoist-non-react-statics": true,
-        "redux": true
+        "react-redux>react-is": true
       }
     },
     "react-redux>hoist-non-react-statics": {
       "packages": {
         "prop-types>react-is": true
+      }
+    },
+    "react-redux>react-is": {
+      "globals": {
+        "console": true
       }
     },
     "react-responsive-carousel": {
