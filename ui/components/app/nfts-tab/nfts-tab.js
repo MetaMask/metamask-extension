@@ -48,9 +48,9 @@ import {
   RampsCard,
 } from '../../multichain/ramps-card/ramps-card';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
+///: END:ONLY_INCLUDE_IF
 import { getIsStillNftsFetching } from '../../../ducks/metamask/metamask';
 import Spinner from '../../ui/spinner';
-///: END:ONLY_INCLUDE_IF
 
 export default function NftsTab() {
   const useNftDetection = useSelector(getUseNftDetection);
@@ -65,19 +65,18 @@ export default function NftsTab() {
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
-
-  const isNftsStillFetched = useSelector(getIsStillNftsFetching);
-
   const { totalFiatBalance } = useAccountTotalFiatBalance(
     selectedAddress,
     shouldHideZeroBalanceTokens,
   );
   const balanceIsZero = Number(totalFiatBalance) === 0;
-  const [showLoader, setShowLoader] = useState(true);
-  const [showRefreshLoader, setShowRefreshLoader] = useState(false);
   const isBuyableChain = useSelector(getIsBuyableChain);
   const showRampsCard = isBuyableChain && balanceIsZero;
   ///: END:ONLY_INCLUDE_IF
+
+  const isNftsStillFetched = useSelector(getIsStillNftsFetching);
+  const [showRefreshLoader, setShowRefreshLoader] = useState(false);
+  const [showLoader, setShowLoader] = useState(true);
 
   const { nftsLoading, collections, previouslyOwnedCollection } =
     useNftsCollections();
