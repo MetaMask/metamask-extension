@@ -1,12 +1,13 @@
-const { strict: assert } = require('assert');
+import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-const {
+
+import { Driver } from '../../webdriver/driver';
+import {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
-} = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
-import { Driver } from '../../webdriver/driver';
+} from '../../helpers';
+import FixtureBuilder from '../../fixture-builder';
 
 const selectors = {
   accountOptionsMenuButton: '[data-testid="account-options-menu-button"]',

@@ -64,3 +64,23 @@ ui/selectors/institutional           @MetaMask/mmi
 # Design System to own code for the component-library folder
 # Slack handle: @metamask-design-system-team | Slack channel: #metamask-design-system
 ui/components/component-library      @MetaMask/design-system-engineers
+
+# The Notifications team is responsible for code related to notifications,
+# authentication, and profile syncing inside the Extension.
+
+# Controllers
+**/controllers/authentication/**                    @MetaMask/notifications
+**/controllers/metamask-notifications/**            @MetaMask/notifications
+**/controllers/push-platform-notifications/**       @MetaMask/notifications
+**/controllers/user-storage/**                      @MetaMask/notifications
+
+# UI
+**/metamask-notifications/**                        @MetaMask/notifications
+**/multichain/notification*/**                      @MetaMask/notifications
+**/pages/notification*/**                           @MetaMask/notifications
+**/utils/notification.util.ts                       @MetaMask/notifications
+
+# Accounts team is responsible for code related with snap management accounts
+# Slack handle: @accounts-team-devs | Slack channel: #metamask-accounts-team
+
+app/scripts/lib/snap-keyring         @MetaMask/accounts-engineers

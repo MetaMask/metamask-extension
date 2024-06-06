@@ -176,6 +176,7 @@ export function createMockInternalAccount({
     id: uuidv4(),
     metadata: {
       name: name ?? `${keyringTypeToName(keyringType)} 1`,
+      importTime: Date.now(),
       keyring: {
         type: keyringType,
       },
