@@ -1,6 +1,9 @@
 import { jsonrpc2 } from '@metamask/utils';
-import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './createEvmMethodsToNonEvmAccountReqFilterMiddleware';
 import { BtcAccountType, EthAccountType } from '@metamask/keyring-api';
+import createEvmMethodsToNonEvmAccountReqFilterMiddleware, {
+  EvmMethodsToNonEvmAccountFilterMessenger,
+} from './createEvmMethodsToNonEvmAccountReqFilterMiddleware';
+import { Json } from 'json-rpc-engine';
 
 describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
   const getMockRequest = (method: string, params?: any) => ({
@@ -17,35 +20,29 @@ describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
     {
       method: 'eth_accounts',
       calledNext: false,
-      calledEnd: true,
     },
     {
       method: 'eth_sendRawTransaction',
       calledNext: false,
-      calledEnd: true,
     },
     {
       method: 'eth_sendTransaction',
       calledNext: false,
-      calledEnd: true,
     },
     { method: 'eth_sign', calledNext: false, calledEnd: true },
     { method: 'eth_signTypedData', calledNext: false, calledEnd: true },
     {
       method: 'eth_signTypedData_v1',
       calledNext: false,
-      calledEnd: true,
     },
     {
       method: 'eth_signTypedData_v3',
       calledNext: false,
-      calledEnd: true,
     },
     {
       method: 'eth_signTypedData_v4',
 
       calledNext: false,
-      calledEnd: true,
     },
 
     // evm requests not associated with an account
@@ -58,37 +55,43 @@ describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
     {
       method: 'wallet_requestSnaps',
       calledNext: true,
-      calledEnd: false,
     },
     {
       method: 'snap_getClientStatus',
       calledNext: true,
-      calledEnd: false,
     },
     {
       method: 'wallet_addEthereumChain',
       calledNext: true,
-      calledEnd: false,
     },
     {
       method: 'wallet_getPermissions',
       calledNext: true,
-      calledEnd: false,
     },
     {
       method: 'wallet_requestPermissions',
       calledNext: true,
-      calledEnd: false,
     },
     {
       method: 'wallet_revokePermissions',
       calledNext: true,
-      calledEnd: false,
     },
     {
       method: 'wallet_switchEthereumChain',
       calledNext: true,
-      calledEnd: false,
+    },
+
+    // wallet_requestPermissions request
+    {
+      method: 'wallet_requestPermissions',
+      params: [{ eth_accounts: {} }],
+      calledNext: false,
+    },
+
+    {
+      method: 'wallet_requestPermissions',
+      params: [{ snap_getClientStatus: {} }],
+      calledNext: true,
     },
   ])(
     `method $method with non-EVM account is passed to next called $calledNext times`,
@@ -96,17 +99,15 @@ describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
       method,
       params,
       calledNext,
-      calledEnd,
     }: {
       method: string;
-      params: any;
+      params?: Json;
       calledNext: number;
-      calledEnd: number;
     }) => {
       const filterFn = createEvmMethodsToNonEvmAccountReqFilterMiddleware({
         messenger: {
           call: jest.fn().mockReturnValue({ type: BtcAccountType.P2wpkh }),
-        },
+        } as unknown as EvmMethodsToNonEvmAccountFilterMessenger,
       });
       const nextMock = jest.fn();
       const endMock = jest.fn();
@@ -119,7 +120,7 @@ describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
       );
 
       expect(nextMock).toHaveBeenCalledTimes(calledNext ? 1 : 0);
-      expect(endMock).toHaveBeenCalledTimes(calledEnd ? 1 : 0);
+      expect(endMock).toHaveBeenCalledTimes(calledNext ? 0 : 1);
     },
   );
 
@@ -129,34 +130,28 @@ describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
     {
       method: 'eth_accounts',
       calledNext: true,
-      calledEnd: false,
     },
     {
       method: 'eth_sendRawTransaction',
       calledNext: true,
-      calledEnd: false,
     },
     {
       method: 'eth_sendTransaction',
       calledNext: true,
-      calledEnd: false,
     },
     { method: 'eth_sign', calledNext: true, calledEnd: false },
     { method: 'eth_signTypedData', calledNext: true, calledEnd: false },
     {
       method: 'eth_signTypedData_v1',
       calledNext: true,
-      calledEnd: false,
     },
     {
       method: 'eth_signTypedData_v3',
       calledNext: true,
-      calledEnd: false,
     },
     {
       method: 'eth_signTypedData_v4',
       calledNext: true,
-      calledEnd: false,
     },
 
     // evm requests not associated with an account
@@ -169,37 +164,43 @@ describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
     {
       method: 'wallet_requestSnaps',
       calledNext: true,
-      calledEnd: false,
     },
     {
       method: 'snap_getClientStatus',
       calledNext: true,
-      calledEnd: false,
     },
     {
       method: 'wallet_addEthereumChain',
       calledNext: true,
-      calledEnd: false,
     },
     {
       method: 'wallet_getPermissions',
       calledNext: true,
-      calledEnd: false,
     },
     {
       method: 'wallet_requestPermissions',
       calledNext: true,
-      calledEnd: false,
     },
     {
       method: 'wallet_revokePermissions',
       calledNext: true,
-      calledEnd: false,
     },
     {
       method: 'wallet_switchEthereumChain',
       calledNext: true,
-      calledEnd: false,
+    },
+
+    // wallet_requestPermissions request
+    {
+      method: 'wallet_requestPermissions',
+      params: [{ eth_accounts: {} }],
+      calledNext: true,
+    },
+
+    {
+      method: 'wallet_requestPermissions',
+      params: [{ snap_getClientStatus: {} }],
+      calledNext: true,
     },
   ])(
     `method $method with EVM account is passed to next called $calledNext times`,
@@ -207,17 +208,15 @@ describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
       method,
       params,
       calledNext,
-      calledEnd,
     }: {
       method: string;
-      params: any;
+      params?: Json;
       calledNext: number;
-      calledEnd: number;
     }) => {
       const filterFn = createEvmMethodsToNonEvmAccountReqFilterMiddleware({
         messenger: {
           call: jest.fn().mockReturnValue({ type: EthAccountType.Eoa }),
-        },
+        } as unknown as EvmMethodsToNonEvmAccountFilterMessenger,
       });
       const nextMock = jest.fn();
       const endMock = jest.fn();
@@ -230,7 +229,7 @@ describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
       );
 
       expect(nextMock).toHaveBeenCalledTimes(calledNext ? 1 : 0);
-      expect(endMock).toHaveBeenCalledTimes(calledEnd ? 1 : 0);
+      expect(endMock).toHaveBeenCalledTimes(calledNext ? 0 : 1);
     },
   );
 });

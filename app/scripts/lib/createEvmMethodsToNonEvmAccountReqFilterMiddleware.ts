@@ -1,18 +1,33 @@
 import { isEvmAccountType } from '@metamask/keyring-api';
+import { RestrictedControllerMessenger } from '@metamask/base-controller';
+import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import { JsonRpcMiddleware } from 'json-rpc-engine';
 import log from 'loglevel';
-import { RestrictedMethods } from '../../../shared/constants/permissions';
+import { RestrictedEthMethods } from '../../../shared/constants/permissions';
 import { UnrestrictedEthSigningMethods } from '../controllers/permissions';
+
+type AllowedActions = AccountsControllerGetSelectedAccountAction;
+
+export type EvmMethodsToNonEvmAccountFilterMessenger =
+  RestrictedControllerMessenger<
+    'EvmMethodsToNonEvmAccountFilterMessenger',
+    AllowedActions,
+    never,
+    AllowedActions['type'],
+    never
+  >;
 
 /**
  * Returns a middleware that filters out requests whose requests are restricted to EVM accounts.
  *
+ * @param opt - The middleware options.
+ * @param opt.messenger - The messenger object.
  * @returns The middleware function.
  */
 export default function createEvmMethodsToNonEvmAccountReqFilterMiddleware({
   messenger,
 }: {
-  messenger: any;
+  messenger: EvmMethodsToNonEvmAccountFilterMessenger;
 }): JsonRpcMiddleware<unknown, void> {
   return function filterEvmRequestToNonEvmAccountsMiddleware(
     req,
@@ -30,7 +45,7 @@ export default function createEvmMethodsToNonEvmAccountReqFilterMiddleware({
     }
 
     const ethMethodsRequiringEthAccount = [
-      ...Object.values(RestrictedMethods),
+      ...Object.values(RestrictedEthMethods),
       ...UnrestrictedEthSigningMethods,
     ].includes(req.method);
 
@@ -43,24 +58,26 @@ export default function createEvmMethodsToNonEvmAccountReqFilterMiddleware({
     const isWalletRequestPermission =
       req.method === 'wallet_requestPermissions';
 
-    const permissionMethodRequest = (
-      (req?.params as Array<{ [key: string]: {} }>) || []
-    ).map((request) => Object.keys(request)[0]);
-
-    const isEvmPermissionRequest = [...Object.values(RestrictedMethods)].some(
-      (method) => permissionMethodRequest.includes(method),
-    );
-
-    if (isWalletRequestPermission && isEvmPermissionRequest) {
-      log.debug(
-        "Non evm account can't request this method",
-        permissionMethodRequest,
+    if (req?.params && Array.isArray(req.params)) {
+      const permissionMethodRequest = req.params.map(
+        (request) => Object.keys(request)[0],
       );
-      return end(
-        new Error(
-          `Non evm account can't request this method: ${permissionMethodRequest.toString()}`,
-        ),
-      );
+
+      const isEvmPermissionRequest = [
+        ...Object.values(RestrictedEthMethods),
+      ].some((method) => permissionMethodRequest.includes(method));
+
+      if (isWalletRequestPermission && isEvmPermissionRequest) {
+        log.debug(
+          "Non evm account can't request this method",
+          permissionMethodRequest,
+        );
+        return end(
+          new Error(
+            `Non evm account can't request this method: ${permissionMethodRequest.toString()}`,
+          ),
+        );
+      }
     }
 
     return next();
