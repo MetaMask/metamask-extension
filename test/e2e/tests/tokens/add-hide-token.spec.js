@@ -129,7 +129,9 @@ describe('Add existing token using search', function () {
         await driver.clickElement(
           '[data-testid="import-tokens-modal-import-button"]',
         );
-        await driver.clickElement('[data-testid="home__asset-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__asset-tab"]',
+        );
         const [, tkn] = await driver.findElements(
           '[data-testid="multichain-token-list-button"]',
         );

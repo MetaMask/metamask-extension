@@ -38,7 +38,9 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
 
         // Confirm transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__activity-tab"]',
+        );
         const sendTransactionListItem = await driver.findElement(
           '.transaction-list__completed-transactions .activity-list-item',
         );
@@ -81,7 +83,9 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
 
         // Confirm transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__activity-tab"]',
+        );
         await driver.clickElement(
           '.transaction-list__completed-transactions .activity-list-item',
         );
@@ -117,7 +121,9 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         await logInWithBalanceValidation(driver, ganacheServer);
 
         // Send TST
-        await driver.clickElement('[data-testid="home__asset-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__asset-tab"]',
+        );
         await driver.clickElement(
           '[data-testid="multichain-token-list-button"]',
         );
@@ -140,7 +146,9 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           text: '0',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__activity-tab"]',
+        );
         await driver.findElement(
           '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
         );
@@ -174,7 +182,9 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
       async ({ driver, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
         // Send TST
-        await driver.clickElement('[data-testid="home__asset-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__asset-tab"]',
+        );
         await driver.clickElement(
           '[data-testid="multichain-token-list-button"]',
         );
@@ -198,7 +208,9 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           text: '0',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__activity-tab"]',
+        );
         await driver.findElement(
           '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
         );
