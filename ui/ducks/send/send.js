@@ -1641,10 +1641,20 @@ const slice = createSlice({
       if (draftTransaction) {
         const isSwapAndSend = getIsDraftSwapAndSend(draftTransaction);
 
+        const getIsIgnorableAmountError = () =>
+          [
+            INSUFFICIENT_TOKENS_ERROR,
+            INSUFFICIENT_FUNDS_ERROR,
+            INSUFFICIENT_FUNDS_FOR_GAS_ERROR,
+          ].includes(draftTransaction.amount.error) &&
+          !draftTransaction.sendAsset.balance;
+
         const { quotes } = draftTransaction;
         const bestQuote = quotes ? calculateBestQuote(quotes) : undefined;
         switch (true) {
-          case Boolean(draftTransaction.amount.error):
+          case Boolean(
+            draftTransaction.amount.error && !getIsIgnorableAmountError(),
+          ):
             slice.caseReducers.addHistoryEntry(state, {
               payload: `Amount is in error ${draftTransaction.amount.error}`,
             });
