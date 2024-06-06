@@ -12,21 +12,19 @@ export class ChromeExtensionPage {
   async initExtension() {
     const launchOptions = {
       headless: false,
-      args: [
-        `--disable-extensions-except=${extensionPath}`,
-        `--load-extension=${extensionPath}`,
-      ],
+      args: [`--disable-extensions-except=${extensionPath}`],
     };
-
+    if (process.env.HEADLESS === 'true') {
+      launchOptions.args.push('--headless=new');
+    }
     const context = await chromium.launchPersistentContext('', launchOptions);
     // let the extension load on the second tab of the browser
-    await wait(2000);
+    await wait(10000);
     console.log(context);
-
-    const filePath = 'dist/chrome/home.html';
+    console.log(extensionPath);
 
     // Check if the file exists
-    if (fs.existsSync(filePath)) {
+    if (fs.existsSync(extensionPath)) {
       console.log('File exists.');
     } else {
       console.log('File does not exist.');
