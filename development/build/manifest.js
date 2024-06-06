@@ -10,8 +10,8 @@ const baseManifest = IS_MV3_ENABLED
   ? require('../../app/manifest/v3/_base.json')
   : require('../../app/manifest/v2/_base.json');
 const baradDurManifest = IS_MV3_ENABLED
-? require('../../app/manifest/v3/_barad_dur.json')
-: require('../../app/manifest/v2/_barad_dur.json');
+  ? require('../../app/manifest/v3/_barad_dur.json')
+  : require('../../app/manifest/v2/_barad_dur.json');
 const { loadBuildTypesConfig } = require('../lib/build-type');
 
 const { TASKS, ENVIRONMENT } = require('./constants');
