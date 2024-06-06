@@ -5,6 +5,7 @@ const fs = require('fs');
 async function fetchWithDepthIncrement(depth) {
   try {
     await exec(`git fetch --depth ${depth} origin develop`);
+    await exec(`git fetch --depth ${depth} origin ${process.env.CIRCLE_BRANCH}`);
     return true;
   } catch (error) {
     console.error(`Failed to fetch with depth ${depth}:`, error.message);
