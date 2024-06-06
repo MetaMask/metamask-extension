@@ -306,15 +306,15 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
         class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex"
+          class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap"
         >
           <p
-            class="mm-box mm-text mm-text--body-xs mm-box--color-text-muted"
+            class="mm-box mm-text mm-text--body-sm mm-box--padding-inline-end-1 mm-box--color-text-muted"
           >
             Market
           </p>
           <p
-            class="mm-box mm-text mm-text--body-xs mm-box--margin-left-1 mm-box--color-success-default"
+            class="mm-box mm-text mm-text--body-sm mm-box--color-success-default"
           >
             <span
               data-testid="gas-timing-time"
@@ -326,6 +326,9 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
         </div>
       </div>
     </div>
+    <div
+      class="mm-box mm-box--width-full mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+    />
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px;"
@@ -370,7 +373,7 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
     class="mm-box mm-box--margin-bottom-4 mm-box--background-color-background-default mm-box--rounded-md"
   >
     <div
-      class="mm-box simulation-details-layout mm-box--padding-3 mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--rounded-md mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+      class="mm-box simulation-details-layout mm-box--padding-3 mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--rounded-lg mm-box--border-color-transparent box--border-style-solid box--border-width-1"
       data-testid="simulation-details-layout"
     >
       <div
@@ -403,7 +406,7 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
                 >
                   <path
                     d="M5 0C2.2 0 0 2.2 0 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5zm0 2c.4 0 .7.3.7.7s-.3.7-.7.7-.7-.2-.7-.6.3-.8.7-.8zm.7 6H4.3V4.3h1.5V8z"
-                    fill="var(--color-icon-muted)"
+                    fill="var(--color-icon-alternative)"
                   />
                 </svg>
               </div>
@@ -709,15 +712,15 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
         class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex"
+          class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap"
         >
           <p
-            class="mm-box mm-text mm-text--body-xs mm-box--color-text-muted"
+            class="mm-box mm-text mm-text--body-sm mm-box--padding-inline-end-1 mm-box--color-text-muted"
           >
             Market
           </p>
           <p
-            class="mm-box mm-text mm-text--body-xs mm-box--margin-left-1 mm-box--color-success-default"
+            class="mm-box mm-text mm-text--body-sm mm-box--color-success-default"
           >
             <span
               data-testid="gas-timing-time"
@@ -729,6 +732,9 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
         </div>
       </div>
     </div>
+    <div
+      class="mm-box mm-box--width-full mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+    />
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px;"
@@ -773,7 +779,7 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
     class="mm-box mm-box--margin-bottom-4 mm-box--background-color-background-default mm-box--rounded-md"
   >
     <div
-      class="mm-box simulation-details-layout mm-box--padding-3 mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--rounded-md mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+      class="mm-box simulation-details-layout mm-box--padding-3 mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--rounded-lg mm-box--border-color-transparent box--border-style-solid box--border-width-1"
       data-testid="simulation-details-layout"
     >
       <div
@@ -806,7 +812,7 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
                 >
                   <path
                     d="M5 0C2.2 0 0 2.2 0 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5zm0 2c.4 0 .7.3.7.7s-.3.7-.7.7-.7-.2-.7-.6.3-.8.7-.8zm.7 6H4.3V4.3h1.5V8z"
-                    fill="var(--color-icon-muted)"
+                    fill="var(--color-icon-alternative)"
                   />
                 </svg>
               </div>
@@ -1109,15 +1115,15 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
         class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex"
+          class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap"
         >
           <p
-            class="mm-box mm-text mm-text--body-xs mm-box--color-text-muted"
+            class="mm-box mm-text mm-text--body-sm mm-box--padding-inline-end-1 mm-box--color-text-muted"
           >
             Market
           </p>
           <p
-            class="mm-box mm-text mm-text--body-xs mm-box--margin-left-1 mm-box--color-success-default"
+            class="mm-box mm-text mm-text--body-sm mm-box--color-success-default"
           >
             <span
               data-testid="gas-timing-time"
@@ -1129,6 +1135,9 @@ exports[`<ContractInteractionInfo /> renders component for contract interaction 
         </div>
       </div>
     </div>
+    <div
+      class="mm-box mm-box--width-full mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+    />
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px;"
