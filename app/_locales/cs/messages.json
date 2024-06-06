@@ -289,9 +289,6 @@
   "send": {
     "message": "Odeslat"
   },
-  "sendTokens": {
-    "message": "Odeslat tokeny"
-  },
   "settings": {
     "message": "Nastavení"
   },

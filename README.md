@@ -81,6 +81,9 @@ If you are using VS Code and are unable to make commits from the source control 
 
 To start a development build (e.g. with logging and file watching) run `yarn start`.
 
+Alternatively, one can skip wallet onboarding and preload the vault state with a specific SRP by adding `TEST_SRP='<insert SRP here>'` and `PASSWORD='<insert wallet password here>'` to the `.metamaskrc` file and running `yarn start:skip-onboarding`.
+
+
 #### React and Redux DevTools
 
 To start the [React DevTools](https://github.com/facebook/react-devtools), run `yarn devtools:react` with a development build installed in a browser. This will open in a separate window; no browser extension is required.
@@ -216,6 +219,9 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
       - `rm -rf node_modules/ && yarn && yarn lavamoat:auto`
     - Keep in mind that any kind of dynamic import or dynamic use of globals may elude LavaMoat's static analysis.
       Refer to the LavaMoat documentation or ask for help if you run into any issues.
+- The Attributions file
+  - If you are a MetaMask team member and your PR is on a repository branch, you can use the bot command `@metamaskbot update-attributions` to ask the MetaMask bot to automatically update the attributions file for you.
+  - Manual update: run `yarn attributions:generate`.
 
 ## Architecture
 

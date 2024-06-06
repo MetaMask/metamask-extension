@@ -11,9 +11,6 @@ const store = (
   // TODO: Replace `any` with type
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tokenList = {} as any,
-  // TODO: Replace `any` with type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  contractExchangeRates = {} as any,
 ) =>
   configureStore({
     ...mockSendState,
@@ -24,7 +21,6 @@ const store = (
           conversionRate: 11.1,
         },
       },
-      contractExchangeRates,
       providerConfig: {
         chainId: '0x1',
         ticker: nativeTicker,
@@ -159,5 +155,34 @@ describe('AssetPicker', () => {
     );
     expect(getByText('symbol')).toBeInTheDocument();
     expect(getByText('?')).toBeInTheDocument();
+  });
+
+  it('render if disabled', () => {
+    const asset = {
+      type: AssetType.token,
+      details: {
+        address: 'token address',
+        decimals: 2,
+        symbol: 'symbol',
+      },
+      balance: '100',
+    };
+    const mockAssetChange = jest.fn();
+
+    const { container } = render(
+      <Provider
+        store={store("SHOULDN'T MATTER", [
+          { address: 'token address', iconUrl: 'token icon url' },
+        ])}
+      >
+        <AssetPicker
+          asset={asset}
+          onAssetChange={() => mockAssetChange()}
+          isDisabled
+        />
+      </Provider>,
+    );
+
+    expect(container).toMatchSnapshot();
   });
 });

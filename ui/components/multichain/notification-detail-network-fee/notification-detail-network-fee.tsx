@@ -1,5 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { FC } from 'react';
+import type { OnChainRawNotificationsWithNetworkFields } from '../../../../app/scripts/controllers/metamask-notifications/types/on-chain-notification/on-chain-notification';
+
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  getNetworkFees,
+  getNetworkDetailsByChainId,
+} from '../../../helpers/utils/notification.util';
+import { decimalToHex } from '../../../../shared/modules/conversion.utils';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 import { NotificationDetail } from '../notification-detail';
 import {
@@ -22,14 +31,22 @@ import {
   IconColor,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
+import Preloader from '../../ui/icon/preloader/preloader-icon.component';
+
+type NetworkFees = {
+  transactionFee: {
+    transactionFeeInEther: string;
+    transactionFeeInUsd: string;
+  };
+  gasLimitUnits: number;
+  gasUsedUnits: number;
+  baseFee: string | null;
+  priorityFee: string | null;
+  maxFeePerGas: string | null;
+} | null;
 
 export type NotificationDetailNetworkFeeProps = {
-  networkFee: string;
-  gasLimit: string;
-  gasUsed: string;
-  baseFee: string;
-  priorityFee: string;
-  maxFee: string;
+  notification: OnChainRawNotificationsWithNetworkFields;
 };
 
 const FeeDetail = ({ label, value }: { label: string; value: string }) => (
@@ -59,32 +76,93 @@ const FeeDetail = ({ label, value }: { label: string; value: string }) => (
  * NotificationDetailNetworkFee component displays the network fee details.
  *
  * @param props - The props object.
- * @param props.networkFee - The network fee.
- * @param props.gasLimit - The gas limit.
- * @param props.gasUsed - The gas used.
- * @param props.baseFee - The base fee.
- * @param props.priorityFee - The priority fee.
- * @param props.maxFee - The max fee.
+ * @param props.notification - The notification object.
  * @returns The NotificationDetailNetworkFee component.
  */
 export const NotificationDetailNetworkFee: FC<
   NotificationDetailNetworkFeeProps
-> = ({
-  networkFee,
-  gasLimit,
-  gasUsed,
-  baseFee,
-  priorityFee,
-  maxFee,
-}): JSX.Element => {
+> = ({ notification }) => {
+  const t = useI18nContext();
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [networkFees, setNetworkFees] = useState<NetworkFees>(null);
+  const [networkFeesError, setNetworkFeesError] = useState<boolean>(false);
+
+  const getNativeCurrency = (n: OnChainRawNotificationsWithNetworkFields) => {
+    const chainId = decimalToHex(n.chain_id);
+    return getNetworkDetailsByChainId(`0x${chainId}` as keyof typeof CHAIN_IDS);
+  };
+
+  const nativeCurrency = getNativeCurrency(notification);
+
+  useEffect(() => {
+    const fetchNetworkFees = async () => {
+      try {
+        const networkFeesData = await getNetworkFees(notification);
+        if (networkFeesData) {
+          setNetworkFees({
+            transactionFee: {
+              transactionFeeInEther: networkFeesData.transactionFeeInEth,
+              transactionFeeInUsd: networkFeesData.transactionFeeInUsd,
+            },
+            gasLimitUnits: networkFeesData.gasLimit,
+            gasUsedUnits: networkFeesData.gasUsed,
+            baseFee: networkFeesData.baseFee,
+            priorityFee: networkFeesData.priorityFee,
+            maxFeePerGas: networkFeesData.maxFeePerGas,
+          });
+        }
+      } catch (err) {
+        setNetworkFeesError(true);
+      }
+    };
+    fetchNetworkFees();
+  }, []);
+
   const handleClick = () => {
     setIsOpen(!isOpen);
   };
+
+  if (!networkFees && !networkFeesError) {
+    return (
+      <Box
+        height={BlockSize.Full}
+        width={BlockSize.Full}
+        display={Display.Flex}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
+        flexDirection={FlexDirection.Column}
+        data-testid="notifications-list-loading"
+      >
+        <Preloader size={36} />
+      </Box>
+    );
+  }
+
+  if (!networkFees && networkFeesError) {
+    return (
+      <Box
+        height={BlockSize.Full}
+        width={BlockSize.Full}
+        display={Display.Flex}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
+        flexDirection={FlexDirection.Column}
+        data-testid="notifications-list-loading"
+        paddingTop={4}
+      >
+        <Text
+          as="p"
+          color={TextColor.errorDefault}
+          variant={TextVariant.bodyMd}
+        >
+          {t('notificationItemError')}
+        </Text>
+      </Box>
+    );
+  }
+
   return (
     <Box
-      as="button"
-      onClick={handleClick}
       width={BlockSize.Full}
       backgroundColor={BackgroundColor.transparent}
       padding={0}
@@ -103,7 +181,7 @@ export const NotificationDetailNetworkFee: FC<
             fontWeight={FontWeight.Medium}
             color={TextColor.textDefault}
           >
-            Network Fee
+            {t('notificationDetailNetworkFee')}
           </Text>
         }
         secondaryTextLeft={
@@ -112,12 +190,14 @@ export const NotificationDetailNetworkFee: FC<
             fontWeight={FontWeight.Normal}
             color={TextColor.textAlternative}
           >
-            {networkFee}
+            {networkFees?.transactionFee.transactionFeeInEther}{' '}
+            {nativeCurrency?.nativeCurrencySymbol} (
+            {networkFees?.transactionFee.transactionFeeInUsd} USD)
           </Text>
         }
         secondaryTextRight={
           <Box
-            padding-paddingLeft={0}
+            paddingLeft={0}
             paddingRight={0}
             paddingTop={0}
             backgroundColor={BackgroundColor.transparent}
@@ -125,9 +205,11 @@ export const NotificationDetailNetworkFee: FC<
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.flexEnd}
             gap={2}
+            as="button"
+            onClick={handleClick}
           >
             <Text color={TextColor.primaryDefault} variant={TextVariant.bodyMd}>
-              Details
+              {t('notificationDetail')}
             </Text>
             <Icon
               name={isOpen ? IconName.ArrowUp : IconName.ArrowDown}
@@ -145,11 +227,26 @@ export const NotificationDetailNetworkFee: FC<
           justifyContent={JustifyContent.flexStart}
           width={BlockSize.Full}
         >
-          <FeeDetail label="Gas limit (units)" value={gasLimit} />
-          <FeeDetail label="Gas used (units)" value={gasUsed} />
-          <FeeDetail label="Base fee (GWEI)" value={baseFee} />
-          <FeeDetail label="Priority fee (GWEI)" value={priorityFee} />
-          <FeeDetail label="Max fee per gas" value={maxFee} />
+          <FeeDetail
+            label={t('notificationDetailGasLimit')}
+            value={networkFees?.gasLimitUnits.toString() || ''}
+          />
+          <FeeDetail
+            label={t('notificationDetailGasUsed')}
+            value={networkFees?.gasUsedUnits.toString() || ''}
+          />
+          <FeeDetail
+            label={t('notificationDetailBaseFee')}
+            value={networkFees?.baseFee || ''}
+          />
+          <FeeDetail
+            label={t('notificationDetailPriorityFee')}
+            value={networkFees?.priorityFee || ''}
+          />
+          <FeeDetail
+            label={t('notificationDetailMaxFee')}
+            value={networkFees?.maxFeePerGas || ''}
+          />
         </Box>
       )}
     </Box>

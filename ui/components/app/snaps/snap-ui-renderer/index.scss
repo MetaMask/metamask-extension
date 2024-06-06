@@ -17,7 +17,18 @@
     gap: 8px;
   }
 
-  &__content > &__panel:has(.snap-ui-renderer__panel) {
-    gap: 16px;
+  &__text {
+    i {
+      font-style: revert;
+    }
+
+    b {
+      font-weight: revert;
+    }
+
+    span {
+      font-style: inherit;
+      font-weight: inherit;
+    }
   }
 }
