@@ -60,18 +60,13 @@ export const AccountOverviewTabs = ({
   const trackEvent = useContext(MetaMetricsContext);
 
   const tabPadding = 4;
-  const tabProps = useMemo(() => ({
-    activeClassName: 'account-overview__tab--active',
-    className: 'account-overview__tab',
-  }), []);
-
-  const handleTabClick = useCallback((tabName: string) => {
-    onTabClick(tabName);
-    trackEvent({
-      category: MetaMetricsEventCategory.Home,
-      event: getEventFromTabName(tabName),
-    });
-  }, [onTabClick]);
+  const tabProps = useMemo(
+    () => ({
+      activeClassName: 'account-overview__tab--active',
+      className: 'account-overview__tab',
+    }),
+    [],
+  );
 
   const getEventFromTabName = (tabName: string) => {
     switch (tabName) {
@@ -83,6 +78,17 @@ export const AccountOverviewTabs = ({
         return MetaMetricsEventName.TokenScreenOpened;
     }
   };
+
+  const handleTabClick = useCallback(
+    (tabName: string) => {
+      onTabClick(tabName);
+      trackEvent({
+        category: MetaMetricsEventCategory.Home,
+        event: getEventFromTabName(tabName),
+      });
+    },
+    [onTabClick],
+  );
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   // The style in activity screen for support is different
@@ -103,7 +109,7 @@ export const AccountOverviewTabs = ({
   ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-  const NeedHelpButtonLink = React.memo((props: Record<string, any>) => (
+  const NeedHelpButtonLink = React.memo((props: Record<string, unknown>) => (
     <ButtonLink
       size={ButtonLinkSize.Md}
       startIconName={IconName.MessageQuestion}

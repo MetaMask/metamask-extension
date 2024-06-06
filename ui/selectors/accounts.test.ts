@@ -5,11 +5,11 @@ import {
   BtcMethod,
   BtcAccountType,
 } from '@metamask/keyring-api';
-import { AccountsState, isSelectedInternalAccountEth } from './accounts';
 import {
   ETH_EOA_METHODS,
   ETH_4337_METHODS,
 } from '../../shared/constants/eth-methods';
+import { AccountsState, isSelectedInternalAccountEth } from './accounts';
 
 const MOCK_ACCOUNT_EOA: InternalAccount = {
   id: '4974fc00-c0fb-4a18-8535-8407ec6d1952',
@@ -80,15 +80,12 @@ describe('Accounts Selectors', () => {
         id: MOCK_ACCOUNT_BIP122_P2WPKH.id,
         isEth: false,
       },
-    ])(
-      'returns $isEth if the account is: $type',
-      ({ id, isEth }) => {
-        const state = MOCK_STATE;
+    ])('returns $isEth if the account is: $type', ({ id, isEth }) => {
+      const state = MOCK_STATE;
 
-        state.metamask.internalAccounts.selectedAccount = id;
-        expect(isSelectedInternalAccountEth(state)).toBe(isEth);
-      },
-    );
+      state.metamask.internalAccounts.selectedAccount = id;
+      expect(isSelectedInternalAccountEth(state)).toBe(isEth);
+    });
 
     it('returns false if none account is selected', () => {
       const state = MOCK_STATE;

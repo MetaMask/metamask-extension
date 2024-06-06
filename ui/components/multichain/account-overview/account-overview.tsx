@@ -34,9 +34,7 @@ export function AccountOverview(props: AccountOverviewProps) {
         />
       )}
       {isEth && <AccountOverviewEth {...props} />}
-      {isUnknown && (
-        <AccountOverviewUnknown {...props} />
-      )}
+      {isUnknown && <AccountOverviewUnknown {...props} />}
     </>
   );
 }
