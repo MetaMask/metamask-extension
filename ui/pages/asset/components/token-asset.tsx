@@ -1,13 +1,12 @@
 import React, { useContext } from 'react';
 import { Token } from '@metamask/assets-controllers';
-import { useSelector, useDispatch, shallowEqual } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import { useHistory } from 'react-router-dom';
 import {
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
   getSelectedInternalAccount,
-  getTokenExchangeRates,
   getTokenList,
 } from '../../../selectors';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
@@ -21,8 +20,6 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { showModal } from '../../../store/actions';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-import { getConversionRate } from '../../../ducks/metamask/metamask';
 import AssetOptions from './asset-options';
 import AssetPage from './asset-page';
 
@@ -33,8 +30,6 @@ const TokenAsset = ({ token }: { token: Token }) => {
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const { address: walletAddress } = useSelector(getSelectedInternalAccount);
-  const exchangeRates = useSelector(getTokenExchangeRates, shallowEqual);
-  const conversionRate = useSelector(getConversionRate);
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -54,12 +49,6 @@ const TokenAsset = ({ token }: { token: Token }) => {
 
   const balance = tokensWithBalances?.[0];
   const fiat = useTokenFiatAmount(address, balance?.string, symbol, {}, false);
-  const exchangeRate = exchangeRates?.[toChecksumHexAddress(address)];
-
-  const currentPrice =
-    exchangeRate > 0 && conversionRate > 0
-      ? exchangeRate * conversionRate
-      : undefined;
 
   const tokenTrackerLink = getTokenTrackerLink(
     token.address,
@@ -80,7 +69,6 @@ const TokenAsset = ({ token }: { token: Token }) => {
         decimals: token.decimals,
         image: iconUrl,
         aggregators,
-        currentPrice,
         balance: {
           value: balance?.balance,
           display: `${roundToDecimalPlacesRemovingExtraZeroes(

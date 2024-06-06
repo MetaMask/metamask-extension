@@ -14,7 +14,6 @@ import {
 import { Line } from 'react-chartjs-2';
 import classnames from 'classnames';
 import { brandColor } from '@metamask/design-tokens';
-import { useSelector } from 'react-redux';
 import { useTheme } from '../../../../hooks/useTheme';
 import {
   BackgroundColor,
@@ -23,19 +22,16 @@ import {
   TextColor,
   TextVariant,
   BorderRadius,
-  TextAlign,
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
 import {
   Box,
   ButtonBase,
   ButtonBaseSize,
-  Text,
 } from '../../../../components/component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { TimeRange, useHistoricalPrices } from '../../useHistoricalPrices';
-import { getShouldShowFiat } from '../../../../selectors';
-import { chainSupportsPricing, loadingOpacity } from '../../util';
+import { loadingOpacity } from '../../util';
 import AssetPrice from '../asset-price';
 import ChartTooltip from './chart-tooltip';
 import { CrosshairPlugin } from './crosshair-plugin';
@@ -92,9 +88,6 @@ const AssetChart = ({
   const t = useI18nContext();
   const theme = useTheme();
 
-  const showFiat = useSelector(getShouldShowFiat);
-  const chainSupported = showFiat && chainSupportsPricing(chainId);
-
   const [timeRange, setTimeRange] = useState<TimeRange>('1D');
 
   const chartRef = useRef<Chart<'line', Point[]>>();
@@ -122,15 +115,12 @@ const AssetChart = ({
     },
   } as const;
 
-  const noPriceHistory = !loading && !prices;
-  const noPrices = noPriceHistory && !currentPrice;
+  if (!currentPrice || (!loading && !prices)) {
+    return null;
+  }
 
-  return !currentPrice || noPriceHistory ? null : (
-    <Box
-      className={classnames({ [`asset__chart--no-data-${theme}`]: noPrices })}
-      marginTop={noPrices ? 6 : 0}
-      borderRadius={BorderRadius.LG}
-    >
+  return (
+    <Box borderRadius={BorderRadius.LG}>
       <AssetPrice
         ref={priceRef}
         loading={loading}
@@ -140,10 +130,7 @@ const AssetChart = ({
         comparePrice={prices?.[0]?.y}
       />
       <Box
-        className={classnames({
-          [`asset__chart--no-data-${theme}`]: noPriceHistory,
-        })}
-        {...(noPriceHistory ? { paddingTop: 4 } : { marginTop: 4 })}
+        marginTop={4}
         borderRadius={BorderRadius.LG}
         backgroundColor={
           loading && !prices
@@ -161,59 +148,43 @@ const AssetChart = ({
               currentPrice ? JustifyContent.flexEnd : JustifyContent.flexStart
             }
           >
-            {/* TODO Clean this up if we're removing the chart instead of placeholder when no prices */}
-            {noPriceHistory ? (
-              <Box textAlign={TextAlign.Center}>
-                <img width="33%" src="./images/chart.webp"></img>
-                <Text
-                  variant={TextVariant.bodySmMedium}
-                  color={TextColor.textAlternative}
-                  paddingTop={2}
-                >
-                  {chainSupported
-                    ? t('historicalPricesWereNotFound')
-                    : t('pricingIsNotSupportedOnThisNetwork')}
-                </Text>
-              </Box>
-            ) : (
-              <Line
-                ref={chartRef}
-                data={{ datasets: [{ data: prices }] }}
-                options={options}
-                updateMode="none"
-                // Update the price display on chart hover
-                onMouseMove={(event) => {
-                  const data = chartRef?.current?.data?.datasets?.[0]?.data;
-                  if (data) {
-                    const target = event.target as HTMLElement;
-                    const index = Math.max(
-                      0,
-                      Math.min(
-                        data.length - 1,
-                        Math.round(
-                          (event.nativeEvent.offsetX / target.clientWidth) *
-                            data.length,
-                        ),
+            <Line
+              ref={chartRef}
+              data={{ datasets: [{ data: prices }] }}
+              options={options}
+              updateMode="none"
+              // Update the price display on chart hover
+              onMouseMove={(event) => {
+                const data = chartRef?.current?.data?.datasets?.[0]?.data;
+                if (data) {
+                  const target = event.target as HTMLElement;
+                  const index = Math.max(
+                    0,
+                    Math.min(
+                      data.length - 1,
+                      Math.round(
+                        (event.nativeEvent.offsetX / target.clientWidth) *
+                          data.length,
                       ),
-                    );
-                    const point = data[index];
-                    if (point) {
-                      priceRef?.current?.setPrice({
-                        price: point.y,
-                        date: point.x,
-                      });
-                    }
+                    ),
+                  );
+                  const point = data[index];
+                  if (point) {
+                    priceRef?.current?.setPrice({
+                      price: point.y,
+                      date: point.x,
+                    });
                   }
-                }}
-                // Revert to current price when not hovering
-                onMouseOut={() => {
-                  priceRef?.current?.setPrice({
-                    price: currentPrice,
-                    date: Date.now(),
-                  });
-                }}
-              />
-            )}
+                }
+              }}
+              // Revert to current price when not hovering
+              onMouseOut={() => {
+                priceRef?.current?.setPrice({
+                  price: currentPrice,
+                  date: Date.now(),
+                });
+              }}
+            />
           </Box>
           <ChartTooltip point={yMin} {...edges} currency={currency} />
         </Box>
@@ -227,7 +198,6 @@ const AssetChart = ({
           marginRight={4}
         >
           {((buttons: [string, TimeRange][]) =>
-            !noPrices &&
             buttons.map(([label, range]) => (
               <ButtonBase
                 key={range}

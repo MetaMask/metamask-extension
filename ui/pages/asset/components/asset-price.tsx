@@ -81,6 +81,7 @@ const AssetPrice = forwardRef(
     return (
       <Box marginLeft={4} marginRight={4}>
         <Text
+          data-testid="asset-hovered-price"
           style={{ width: '100px' }}
           variant={TextVariant.headingLg}
           borderRadius={BorderRadius.LG}
