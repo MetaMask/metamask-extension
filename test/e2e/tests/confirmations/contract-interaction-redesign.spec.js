@@ -12,7 +12,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
     return;
   }
 
-  it(`Sends a contract interaction type 0 transaction without custom nonce editing`, async function () {
+  it('Sends a contract interaction type 0 transaction without custom nonce editing', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -38,7 +38,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
     );
   });
 
-  it(`Sends a contract interaction type 0 transaction with custom nonce editing`, async function () {
+  it('Sends a contract interaction type 0 transaction with custom nonce editing', async function () {
     await withFixtures(
       {
         dapp: true,

@@ -10,7 +10,6 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
-  Icon,
   IconName,
 } from '../../../../../../../components/component-library';
 import Tooltip from '../../../../../../../components/ui/tooltip';
@@ -19,7 +18,6 @@ import {
   BlockSize,
   BorderColor,
   BorderRadius,
-  IconColor,
 } from '../../../../../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../../../../../hooks/useCopyToClipboard';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
