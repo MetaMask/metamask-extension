@@ -10,6 +10,7 @@ import {
 import { ProviderConfig } from '@metamask/network-controller';
 import { parseCaipChainId } from '@metamask/utils';
 import { getAllNetworks, getSelectedInternalAccount } from '.';
+import { isEqual } from 'lodash';
 
 export type MultichainState = {
   metamask: {
@@ -52,13 +53,13 @@ export const useMultichainNetwork = (): {
   network?: ProviderConfig | MultiChainNetwork;
   isEvmNetwork: boolean;
 } => {
-  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const selectedAccount = useSelector(getSelectedInternalAccount, isEqual);
   const isEvm = useSelector(isEvmSelectedAccount);
   const nonEvmNetworks = useSelector(getNonEvmNetworks);
 
   // evm only selectors
   const evmNetworks: ProviderConfig[] = useSelector(getAllNetworks);
-  const evmProvider: ProviderConfig = useSelector(getProviderConfig);
+  const evmProvider: ProviderConfig = useSelector(getProviderConfig, isEqual);
 
   const memoizedResult = useMemo(() => {
     // there are no selected account during onboarding. we default to the current evm provider.
