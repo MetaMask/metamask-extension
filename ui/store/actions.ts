@@ -5590,3 +5590,10 @@ export function setIsProfileSyncingEnabled(
     }
   };
 }
+
+export async function getNextAvailableAccountName(): Promise<string> {
+  return await submitRequestToBackground<string>(
+    'getNextAvailableAccountName',
+    [],
+  );
+}
