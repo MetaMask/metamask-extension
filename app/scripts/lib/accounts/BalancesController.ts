@@ -160,19 +160,14 @@ export class BalancesController extends BaseController<
   }
 
   async updateBalances() {
-    console.log('!!! Updating balances');
     const accounts = await this.#listAccounts();
-    console.log('!!! Accounts:', accounts);
     for (const account of accounts) {
-      console.log('!!! Account:', account);
       if (account.metadata.snap) {
         const balances = await this.#getBalances(
           account.id,
           account.metadata.snap.id,
           ASSETS_LIST,
         );
-
-        console.log('!!! Balances:', balances);
 
         this.update((state: Draft<BalancesControllerState>) => {
           state.balances[account.id] = {
