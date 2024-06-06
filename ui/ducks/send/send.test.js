@@ -2671,7 +2671,7 @@ describe('Send Slice', () => {
         await store.dispatch(resetRecipientInput());
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(11);
+        expect(actionResult).toHaveLength(13);
         expect(actionResult[0]).toMatchObject({
           type: 'send/addHistoryEntry',
           payload: 'sendFlow - user cleared recipient input',
@@ -2686,17 +2686,23 @@ describe('Send Slice', () => {
         );
         expect(actionResult[4].payload).toStrictEqual('');
         expect(actionResult[5].type).toStrictEqual('send/updateRecipient');
-        expect(actionResult[6].type).toStrictEqual(
+        expect(actionResult[6].type).toStrictEqual('send/addHistoryEntry');
+        expect(actionResult[7].type).toStrictEqual(
           'send/validateRecipientUserInput',
         );
-        expect(actionResult[7].type).toStrictEqual('send/addHistoryEntry');
         expect(actionResult[8].type).toStrictEqual(
-          'send/validateRecipientUserInput',
-        );
-        expect(actionResult[9].type).toStrictEqual(
           'send/computeEstimatedGasLimit/pending',
         );
-        expect(actionResult[10].type).toStrictEqual('GET_LAYER_1_GAS_FEE');
+        expect(actionResult[9].type).toStrictEqual('GET_LAYER_1_GAS_FEE');
+        expect(actionResult[10].type).toStrictEqual(
+          'metamask/gas/SET_CUSTOM_GAS_LIMIT',
+        );
+        expect(actionResult[11].type).toStrictEqual(
+          'send/computeEstimatedGasLimit/fulfilled',
+        );
+        expect(actionResult[12].type).toStrictEqual(
+          'send/validateRecipientUserInput',
+        );
       });
     });
 
