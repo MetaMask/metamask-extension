@@ -6,6 +6,7 @@ import { useMemo } from 'react';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 
 export function useGasEstimateFailedAlerts(): Alert[] {
   const { currentConfirmation } = useCurrentConfirmation();
@@ -27,7 +28,7 @@ export function useGasEstimateFailedAlerts(): Alert[] {
 
     return [
       {
-        field: 'estimatedFee',
+        field: RowAlertKey.EstimatedFee,
         key: 'gasEstimateFailed',
         message: t('simulationErrorMessageV2'),
         reason: 'Gas Estimation Failed',
