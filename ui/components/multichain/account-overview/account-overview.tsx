@@ -21,7 +21,7 @@ export function AccountOverview(props: AccountOverviewProps) {
 
   return (
     <>
-      {useExternalServices ? null : (
+      {!useExternalServices && (
         <BannerAlert
           margin={4}
           marginBottom={0}
@@ -31,11 +31,11 @@ export function AccountOverview(props: AccountOverviewProps) {
             setBasicFunctionalityModalOpen();
           }}
           title={t('basicConfigurationBannerTitle')}
-        ></BannerAlert>
+        />
       )}
-      {isEth && <AccountOverviewEth {...props}></AccountOverviewEth>}
+      {isEth && <AccountOverviewEth {...props} />}
       {isUnknown && (
-        <AccountOverviewUnknown {...props}></AccountOverviewUnknown>
+        <AccountOverviewUnknown {...props} />
       )}
     </>
   );
