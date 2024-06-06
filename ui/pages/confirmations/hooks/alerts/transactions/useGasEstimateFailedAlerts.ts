@@ -1,7 +1,9 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import useCurrentConfirmation from '../../useCurrentConfirmation';
 import { useSelector } from 'react-redux';
-import { selectTransactionMetadata } from '../../../../../selectors';
+import {
+  currentConfirmationSelector,
+  selectTransactionMetadata,
+} from '../../../../../selectors';
 import { useMemo } from 'react';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -9,7 +11,8 @@ import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 
 export function useGasEstimateFailedAlerts(): Alert[] {
-  const { currentConfirmation } = useCurrentConfirmation();
+  const t = useI18nContext();
+  const currentConfirmation = useSelector(currentConfirmationSelector);
   const transaction = (currentConfirmation ?? {}) as TransactionMeta;
   const { id: transactionId } = transaction;
 
@@ -18,8 +21,6 @@ export function useGasEstimateFailedAlerts(): Alert[] {
   );
 
   const estimationFailed = Boolean(transactionMetadata?.simulationFails);
-
-  const t = useI18nContext();
 
   return useMemo(() => {
     if (!estimationFailed) {
