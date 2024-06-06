@@ -30,7 +30,9 @@ describe('Create token, approve token and approve token without gas', function (
         await unlockWallet(driver);
 
         // imports custom token from extension
-        await driver.clickElement(`[data-testid="home__asset-tab"]`);
+        await driver.clickElement(
+          `[data-testid="account-overview__asset-tab"]`,
+        );
         await clickNestedButton(driver, 'Tokens');
 
         await driver.clickElement({ text: 'Import tokens', tag: 'button' });
