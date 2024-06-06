@@ -1,10 +1,11 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   useEnableProfileSyncing,
   useDisableProfileSyncing,
+  useSetIsProfileSyncingEnabled,
 } from '../../../../hooks/metamask-notifications/useProfileSyncing';
 import {
   selectIsProfileSyncingEnabled,
@@ -26,6 +27,19 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import Preloader from '../../../../components/ui/icon/preloader/preloader-icon.component';
+import { getUseExternalServices } from '../../../../selectors';
+
+export function useEffectProfileSyncBasicFunctionalitySetting() {
+  const basicFunctionality: boolean = useSelector(getUseExternalServices);
+  const { setIsProfileSyncingEnabled } = useSetIsProfileSyncingEnabled();
+
+  // Effect - we need to toggle profile syncing off when basic functionality is off
+  useEffect(() => {
+    if (basicFunctionality === false) {
+      setIsProfileSyncingEnabled(false);
+    }
+  }, [basicFunctionality, setIsProfileSyncingEnabled]);
+}
 
 const ProfileSyncToggle = () => {
   const t = useI18nContext();
@@ -35,6 +49,8 @@ const ProfileSyncToggle = () => {
     useEnableProfileSyncing();
   const { disableProfileSyncing, error: disableProfileSyncingError } =
     useDisableProfileSyncing();
+
+  useEffectProfileSyncBasicFunctionalitySetting();
 
   const error = enableProfileSyncingError || disableProfileSyncingError;
 
