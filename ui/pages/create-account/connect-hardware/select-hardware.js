@@ -794,6 +794,7 @@ export default class SelectHardware extends Component {
                 });
                 openWindow(HardwareAffiliateLinks.ngrave);
               }}
+              data-testid="ngrave-brand-buy-now-btn"
             >
               {this.context.t('buyNow')}
             </Button>
@@ -807,6 +808,7 @@ export default class SelectHardware extends Component {
                 });
                 openWindow(HardwareAffiliateTutorialLinks.ngrave);
               }}
+              data-testid="ngrave-brand-learn-more-btn"
             >
               {this.context.t('learnMoreUpperCase')}
             </Button>

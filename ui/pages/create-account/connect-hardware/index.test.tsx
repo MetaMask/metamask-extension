@@ -195,4 +195,29 @@ describe('ConnectHardwareForm', () => {
       });
     });
   });
+
+  describe('Select Hardware', () => {
+    it('should check link buttons for NGRAVE ZERO brand', async () => {
+      window.open = jest.fn();
+
+      const { getByLabelText, getByTestId } = renderWithProvider(
+        <ConnectHardwareForm {...mockProps} />,
+        mockStore,
+      );
+
+      const qrButton = getByLabelText('QRCode');
+
+      fireEvent.click(qrButton);
+
+      const buyNowButton = getByTestId('ngrave-brand-buy-now-btn');
+      expect(buyNowButton).toBeInTheDocument();
+      fireEvent.click(buyNowButton);
+      expect(window.open).toHaveBeenCalled();
+
+      const learnMoreButton = getByTestId('ngrave-brand-learn-more-btn');
+      expect(learnMoreButton).toBeInTheDocument();
+      fireEvent.click(learnMoreButton);
+      expect(window.open).toHaveBeenCalled();
+    });
+  });
 });
