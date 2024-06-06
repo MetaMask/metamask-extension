@@ -50,7 +50,8 @@ async function storeGitDiffOutput() {
     console.log(diffOutput);
 
     // Create the directory
-    fs.mkdirSync('changed-files', { recursive: true });
+    const outputDir = 'changed-files';
+    fs.mkdirSync(outputDir, { recursive: true });
 
     // Store the output of git diff
     const outputPath = path.resolve(outputDir, 'changed-files.txt');
