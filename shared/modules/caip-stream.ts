@@ -1,5 +1,4 @@
 import { isObject } from '@metamask/utils';
-import PortStream from 'extension-port-stream';
 import { Transform, pipeline, Duplex } from 'readable-stream';
 
 export class SplitStream extends Duplex {
