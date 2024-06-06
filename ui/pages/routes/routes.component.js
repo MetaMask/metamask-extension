@@ -405,11 +405,13 @@ export default class Routes extends Component {
         />
         <Authenticated path={SEND_ROUTE} component={SendPage} exact />
 
-        <Authenticated
-          path={NEW_ADD_NETWORK_ROUTE}
-          component={NetworkListMenu2}
-          exact
-        />
+        {getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? (
+          <Authenticated
+            path={NEW_ADD_NETWORK_ROUTE}
+            component={NetworkListMenu2}
+            exact
+          />
+        ) : null}
 
         <Authenticated
           path={`${TOKEN_DETAILS}/:address/`}
@@ -951,7 +953,7 @@ export default class Routes extends Component {
         {isAccountMenuOpen ? (
           <AccountListMenu onClose={() => toggleAccountMenu()} />
         ) : null}
-        {isNetworkMenuOpen ? (
+        {!process.env.ENABLE_NETWORK_UI_REDESIGN && isNetworkMenuOpen ? (
           <NetworkListMenu onClose={() => toggleNetworkMenu()} />
         ) : null}
         {accountDetailsAddress ? (

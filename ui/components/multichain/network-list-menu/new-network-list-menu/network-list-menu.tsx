@@ -265,19 +265,11 @@ export const NetworkListMenu2 = () => {
       keys: ['nickname', 'chainId', 'ticker'],
     });
 
-    console.log('IM IN RESEARCH ------------', searchAddNetworkResults);
-    console.log('searchQuery ------------', searchAddNetworkResults);
-
     fuse.setCollection(searchResults);
     fuseForPopularNetworks.setCollection(searchAddNetworkResults);
     const fuseResults = fuse.search(searchQuery);
     const fuseForPopularNetworksResults =
       fuseForPopularNetworks.search(searchQuery);
-
-    console.log(
-      'fuseForPopularNetworksResults ------------',
-      fuseForPopularNetworksResults,
-    );
 
     // Ensure order integrity with original list
     searchResults = searchResults.filter((network) =>
@@ -471,7 +463,7 @@ export const NetworkListMenu2 = () => {
     return null;
   };
 
-  const generatePopularNetwork = () => {
+  const renderPopularNetwork = () => {
     if (Object.keys(searchAddNetworkResults).length === 0) {
       return (
         <Box
@@ -616,14 +608,44 @@ export const NetworkListMenu2 = () => {
     );
   };
 
-  return (
-    <Box
-      className="new-network-list-menu-content-wrapper__network"
-      backgroundColor={BackgroundColor.backgroundDefault}
-    >
-      {renderHeader()}
-      {renderSearchBar()}
-      {renderBanner()}
+  const renderTestsNetwork = () => {
+    return (
+      <Box>
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.spaceBetween}
+          borderColor={BorderColor.backgroundDefault}
+        >
+          <Text paddingLeft={4}>{t('showTestnetNetworks')}</Text>
+          <ToggleButton
+            value={showTestNetworks}
+            disabled={currentlyOnTestNetwork}
+            onToggle={handleToggle}
+          />
+        </Box>
+        {showTestNetworks || currentlyOnTestNetwork ? (
+          <Box className="new-network-list-menu">
+            {generateMenuItems(
+              testNetworks as {
+                id: string;
+                rpcUrl: string;
+                removable: boolean;
+                chainId: string;
+                nickname: string;
+                rpcPrefs: {
+                  imageUrl: string;
+                };
+                providerType: NetworkType;
+              }[],
+            )}
+          </Box>
+        ) : null}
+      </Box>
+    );
+  };
+
+  const renderEnabledNetwork = () => {
+    return (
       <Box className="new-network-list-menu">
         <Box
           padding={4}
@@ -731,26 +753,39 @@ export const NetworkListMenu2 = () => {
           </DragDropContext>
         )}
 
-        {generatePopularNetwork()}
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
-          borderColor={BorderColor.backgroundDefault}
-        >
-          <Text paddingLeft={4}>{t('showTestnetNetworks')}</Text>
-          <ToggleButton
-            value={showTestNetworks}
-            disabled={currentlyOnTestNetwork}
-            onToggle={handleToggle}
-          />
-        </Box>
-        {showTestNetworks || currentlyOnTestNetwork ? (
-          <Box className="new-network-list-menu">
-            {generateMenuItems(testNetworks)}
-          </Box>
-        ) : null}
+        {renderPopularNetwork()}
+        {renderTestsNetwork()}
       </Box>
-      {renderFooter()}
-    </Box>
-  );
+    );
+  };
+
+  const renderNetworkManagement = () => {
+    if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+      return (
+        <Box
+          className="new-network-list-menu-content-wrapper__network"
+          backgroundColor={BackgroundColor.backgroundDefault}
+        >
+          {renderHeader()}
+          {renderSearchBar()}
+          {renderBanner()}
+          {renderEnabledNetwork()}
+          {renderTestsNetwork()}
+          {renderFooter()}
+        </Box>
+      );
+    }
+    return (
+      <Modal>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader></ModalHeader>
+          <ModalBody></ModalBody>
+          <ModalFooter></ModalFooter>
+        </ModalContent>
+      </Modal>
+    );
+  };
+
+  return renderNetworkManagement();
 };
