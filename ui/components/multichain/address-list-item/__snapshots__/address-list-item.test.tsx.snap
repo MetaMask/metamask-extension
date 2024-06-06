@@ -59,7 +59,7 @@ exports[`AddressListItem renders the address and label 1`] = `
         metamask.eth
       </p>
       <div
-        class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
+        class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--display-flex mm-box--color-text-alternative"
         data-testid="address-list-item-address"
       >
         <div>
@@ -184,7 +184,7 @@ exports[`AddressListItem uses a confusable when it should 1`] = `
         h
       </p>
       <div
-        class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
+        class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--display-flex mm-box--color-text-alternative"
         data-testid="address-list-item-address"
       >
         <div>
