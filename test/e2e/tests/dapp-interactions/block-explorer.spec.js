@@ -8,7 +8,7 @@ const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Block Explorer', function () {
-  it('CHANGED TO TEST CI - links to the users account on the explorer, ', async function () {
+  it('links to the users account on the explorer, ', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -25,7 +25,7 @@ describe('Block Explorer', function () {
         await unlockWallet(driver);
 
         // View account on explorer
-        await driver.clickElement('[data-testid="WRONG-ID-TO-TEST-CI"]');
+        await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement(
           '[data-testid="account-list-item-menu-button"]',
         );

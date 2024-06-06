@@ -58,9 +58,6 @@ async function storeGitDiffOutput() {
     fs.writeFileSync(outputPath, diffOutput);
 
     console.log(`Git diff results saved to ${outputPath}`);
-
-    console.log("Git diff results saved to changed-files/changed-files.txt");
-
     process.exit(0);
   } catch (error) {
     console.error('An error occurred:', error.message);
