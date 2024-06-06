@@ -144,6 +144,8 @@ export function createMockNotificationERC721Sent() {
     data: {
       to: '0xf47f628fe3bd2595e9ab384bfffc3859b448e451',
       nft: {
+        // This is not a hex color
+        // eslint-disable-next-line @metamask/design-tokens/color-no-hex
         name: 'Captainz #8680',
         image:
           'https://i.seadn.io/s/raw/files/ae0fc06714ff7fb40217340d8a242c0e.gif?w=500&auto=format',
@@ -184,6 +186,8 @@ export function createMockNotificationERC721Received() {
     data: {
       to: '0xba7f3daa8adfdad686574406ab9bd5d2f0a49d2e',
       nft: {
+        // This is not a hex color
+        // eslint-disable-next-line @metamask/design-tokens/color-no-hex
         name: 'The Plague #2722',
         image:
           'https://i.seadn.io/s/raw/files/a96f90ec8ebf55a2300c66a0c46d6a16.png?w=500&auto=format',
