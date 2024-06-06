@@ -36,6 +36,7 @@ import {
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
 import { useFiatFormatter } from '../../../../../../../hooks/useFiatFormatter';
+import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { getCurrentCurrency } from '../../../../../../../selectors';
 import AdvancedGasFeePopover from '../../../../advanced-gas-fee-popover';
 import EditGasFeePopover from '../../../../edit-gas-fee-popover';
@@ -363,6 +364,8 @@ const Layer2GasFeesExpandBtn = ({
   expandFeeDetails: boolean;
   setExpandFeeDetails: (currentExpandFeeDetails: boolean) => void;
 }) => {
+  const t = useI18nContext();
+
   return (
     <Box
       padding={4}
@@ -380,7 +383,7 @@ const Layer2GasFeesExpandBtn = ({
         onClick={() => setExpandFeeDetails(!expandFeeDetails)}
       >
         <Text variant={TextVariant.bodySm} color={IconColor.primaryDefault}>
-          {'feeDetails'}
+          {t('feeDetails')}
         </Text>
       </Button>
     </Box>

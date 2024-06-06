@@ -402,3 +402,11 @@ async function initiateContractInteractionTx(driver) {
     text: 'Transaction request',
   });
 }
+
+async function openAdvancedDetailsAndCheckTheyExist(driver) {
+  await driver.waitForSelector({ css: 'p', text: 'Fee details' });
+  await driver.clickElement({ css: 'p', text: 'Fee details' });
+
+  await driver.waitForSelector({ css: 'p', text: 'L2 Fees' });
+  await driver.waitForSelector({ css: 'p', text: 'L1 Fees' });
+}
