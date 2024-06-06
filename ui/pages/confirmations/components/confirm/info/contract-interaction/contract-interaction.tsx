@@ -20,11 +20,11 @@ type InfoProps = {
 const ContractInteractionInfo: React.FC<InfoProps> = ({
   showAdvancedDetails,
 }) => {
-  const currentConfirmation = useSelector(
+  const transactionMeta = useSelector(
     currentConfirmationSelector,
   ) as TransactionMeta;
 
-  if (!currentConfirmation?.txParams) {
+  if (!transactionMeta?.txParams) {
     return null;
   }
 
@@ -32,8 +32,8 @@ const ContractInteractionInfo: React.FC<InfoProps> = ({
     <>
       <ConfirmInfoSection noPadding>
         <SimulationDetails
-          simulationData={currentConfirmation.simulationData}
-          transactionId={currentConfirmation.id}
+          simulationData={transactionMeta.simulationData}
+          transactionId={transactionMeta.id}
           isTransactionsRedesign
         />
       </ConfirmInfoSection>
@@ -51,7 +51,7 @@ const ContractInteractionInfo: React.FC<InfoProps> = ({
         padding={2}
         marginBottom={4}
       >
-        <RedesignedGasFees />
+        <RedesignedGasFees transactionMeta={transactionMeta} />
       </Box>
       {showAdvancedDetails && <AdvancedDetails />}
     </>

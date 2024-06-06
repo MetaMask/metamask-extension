@@ -8,7 +8,7 @@ const { NetworkStatus } = require('@metamask/network-controller');
 
 const { CHAIN_IDS, NETWORK_TYPES } = require('../../shared/constants/network');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
-const { DAPP_URL, DAPP_ONE_URL } = require('./helpers');
+const { DAPP_URL, DAPP_ONE_URL, ACCOUNT_1 } = require('./helpers');
 const { DEFAULT_FIXTURE_ACCOUNT, ERC_4337_ACCOUNT } = require('./constants');
 const {
   defaultFixture,
@@ -1228,7 +1228,7 @@ class FixtureBuilder {
   }
 
   withTransactionControllerOPLayer2Transaction() {
-    const FROM_ADDRESS = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
+    const FROM_ADDRESS = ACCOUNT_1;
     const TRANSACTION_ID = 'f0fc75d0-181d-11ef-9546-8b2366f13afd';
     const TRANSACTION_TYPE = 'contractInteraction';
     const TEST_NETWORK_CLIENT_ID = 'networkConfigurationId';
