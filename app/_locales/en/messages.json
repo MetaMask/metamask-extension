@@ -162,6 +162,9 @@
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
+  "accountTypeNotSupported": {
+    "message": "Account type not supported"
+  },
   "accounts": {
     "message": "Accounts"
   },
@@ -701,6 +704,9 @@
   },
   "blockaidDescriptionTransferFarming": {
     "message": "If you approve this request, a third party known for scams will take all your assets."
+  },
+  "blockaidDescriptionWarning": {
+    "message": "This could be a deceptive request. Only continue if you trust every address involved."
   },
   "blockaidMessage": {
     "message": "Privacy preserving - no data is shared with third parties. Available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon, Base and Sepolia."
