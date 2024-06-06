@@ -1448,41 +1448,6 @@ const slice = createSlice({
       const amountValue = new Numeric(draftTransaction.amount.value, 16);
 
       switch (true) {
-        // set error to INSUFFICIENT_FUNDS_FOR_GAS_ERROR if the account balance is lower
-        // than the total price of the transaction inclusive of gas fees.
-        case draftTransaction.sendAsset.type === AssetType.native &&
-          !isBalanceSufficient({
-            amount: draftTransaction.amount.value,
-            balance: draftTransaction.sendAsset.balance,
-            gasTotal: draftTransaction.gas.gasTotal ?? '0x0',
-          }): {
-          const isInsufficientWithoutGas = !isBalanceSufficient({
-            amount: draftTransaction.amount.value,
-            balance: draftTransaction.sendAsset.balance,
-            gasTotal: '0x0', // assume gas is free
-          });
-
-          draftTransaction.amount.error = isInsufficientWithoutGas
-            ? INSUFFICIENT_FUNDS_ERROR
-            : INSUFFICIENT_FUNDS_FOR_GAS_ERROR;
-          if (draftTransaction.status !== SEND_STATUSES.INVALID) {
-            slice.caseReducers.validateSendState(state);
-          }
-          break;
-        }
-        // set error to INSUFFICIENT_TOKENS_ERROR if the token balance is lower
-        // than the amount of token the user is attempting to send.
-        case draftTransaction.sendAsset.type === AssetType.token &&
-          !isTokenBalanceSufficient({
-            tokenBalance: draftTransaction.sendAsset.balance ?? '0x0',
-            amount: draftTransaction.amount.value,
-            decimals: draftTransaction.sendAsset.details.decimals,
-          }):
-          draftTransaction.amount.error = INSUFFICIENT_TOKENS_ERROR;
-          if (draftTransaction.status !== SEND_STATUSES.INVALID) {
-            slice.caseReducers.validateSendState(state);
-          }
-          break;
         // INSUFFICIENT_TOKENS_ERROR if the user is attempting to transfer ERC1155 but has 0 amount selected
         // prevents the user from transferring 0 tokens
         case draftTransaction.sendAsset.type === AssetType.NFT &&
@@ -1514,6 +1479,41 @@ const slice = createSlice({
           draftTransaction.sendAsset.type === AssetType.NFT &&
           draftTransaction.sendAsset.details.standard === TokenStandard.ERC1155:
           draftTransaction.amount.error = FLOAT_TOKENS_ERROR;
+          if (draftTransaction.status !== SEND_STATUSES.INVALID) {
+            slice.caseReducers.validateSendState(state);
+          }
+          break;
+        // set error to INSUFFICIENT_FUNDS_FOR_GAS_ERROR if the account balance is lower
+        // than the total price of the transaction inclusive of gas fees.
+        case draftTransaction.sendAsset.type === AssetType.native &&
+          !isBalanceSufficient({
+            amount: draftTransaction.amount.value,
+            balance: draftTransaction.sendAsset.balance,
+            gasTotal: draftTransaction.gas.gasTotal ?? '0x0',
+          }): {
+          const isInsufficientWithoutGas = !isBalanceSufficient({
+            amount: draftTransaction.amount.value,
+            balance: draftTransaction.sendAsset.balance,
+            gasTotal: '0x0', // assume gas is free
+          });
+
+          draftTransaction.amount.error = isInsufficientWithoutGas
+            ? INSUFFICIENT_FUNDS_ERROR
+            : INSUFFICIENT_FUNDS_FOR_GAS_ERROR;
+          if (draftTransaction.status !== SEND_STATUSES.INVALID) {
+            slice.caseReducers.validateSendState(state);
+          }
+          break;
+        }
+        // set error to INSUFFICIENT_TOKENS_ERROR if the token balance is lower
+        // than the amount of token the user is attempting to send.
+        case draftTransaction.sendAsset.type === AssetType.token &&
+          !isTokenBalanceSufficient({
+            tokenBalance: draftTransaction.sendAsset.balance ?? '0x0',
+            amount: draftTransaction.amount.value,
+            decimals: draftTransaction.sendAsset.details.decimals,
+          }):
+          draftTransaction.amount.error = INSUFFICIENT_TOKENS_ERROR;
           if (draftTransaction.status !== SEND_STATUSES.INVALID) {
             slice.caseReducers.validateSendState(state);
           }
