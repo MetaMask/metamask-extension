@@ -13,11 +13,11 @@ import { I18nContext } from '../../../../../contexts/i18n';
 import Confusable from '../../../../ui/confusable';
 import {
   AvatarAccount,
+  Box,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   AvatarIcon,
   AvatarIconSize,
   BadgeWrapper,
-  Box,
   IconName,
   ///: END:ONLY_INCLUDE_IF
   Text,
