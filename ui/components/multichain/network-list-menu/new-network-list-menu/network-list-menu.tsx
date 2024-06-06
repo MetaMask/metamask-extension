@@ -100,7 +100,10 @@ import ScrollToBottom from '../../../../pages/confirmations/components/confirm/s
 import { PageContainerFooter } from '../../../ui/page-container';
 import NetworksFormSubheader from '../../../../pages/settings/networks-tab/networks-tab-subheader/networks-tab-subheader';
 import Modal from '../../../app/modals/modal';
-import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  ADD_NETWORK_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../../../helpers/constants/routes';
 
 export const NetworkListMenu2 = () => {
   const t = useI18nContext();
@@ -378,9 +381,10 @@ export const NetworkListMenu2 = () => {
           width={BlockSize.FourFifths}
           startIconName={IconName.Add}
           onClick={() => {
-            // getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-            //   ? global.platform.openExtensionInBrowser(ADD_NETWORK_ROUTE)
-            //   : this.props.history.push(ADD_NETWORK_ROUTE);
+            getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+              ? // @ts-ignore-next-line
+                platform.openExtensionInBrowser(ADD_NETWORK_ROUTE)
+              : history.push(ADD_NETWORK_ROUTE);
           }}
         >
           {t('addCustomNetwork')}
