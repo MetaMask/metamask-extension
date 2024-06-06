@@ -13,33 +13,19 @@ const ConfirmPageStory = {
 }
 
 const argsSignature = {
-  data: '0x4578616d706c652060706572736f6e616c5f7369676e60206d657373616765',
-  from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-  origin: 'https://metamask.github.io',
+  msgParams: { ...unapprovedPersonalSignMsg.msgParams },
 }
 
 const argTypesSignature = {
-  data: {
-    control: 'text',
-    description: '(non-param) overrides msgParams.data',
-  },
-  from: {
-    control: 'text',
-    description: '(non-param) overrides msgParams.from',
-  },
-  origin: {
-    control: 'text',
-    description: '(non-param) overrides msgParams.origin',
+  msgParams: {
+    control: 'object',
+    description: '(non-param) overrides currentConfirmation.msgParams',
   },
 }
 
 function SignatureStoryTemplate(args, confirmation) {
-  const { data, from, origin } = args;
   const mockConfirmation = cloneDeep(confirmation);
-
-  mockConfirmation.msgParams.data = data;
-  mockConfirmation.msgParams.from = from;
-  mockConfirmation.msgParams.origin = origin;
+  mockConfirmation.msgParams = args.msgParams;
 
   const store = configureStore({
     confirm: {
@@ -56,35 +42,29 @@ export const PersonalSignStory = (args) => {
 };
 
 PersonalSignStory.storyName = 'Personal Sign';
-PersonalSignStory.args = argsSignature;
 PersonalSignStory.argTypes = argTypesSignature;
+PersonalSignStory.args = argsSignature;
 
 export const SignInWithEthereumSIWEStory = (args) => {
   return SignatureStoryTemplate(args, signatureRequestSIWE);
 };
 
 SignInWithEthereumSIWEStory.storyName = 'Sign-in With Ethereum (SIWE)';
+SignInWithEthereumSIWEStory.argTypes = argTypesSignature;
 SignInWithEthereumSIWEStory.args = {
   ...argsSignature,
-  data: signatureRequestSIWE.msgParams.data,
+  msgParams: signatureRequestSIWE.msgParams,
 };
-SignInWithEthereumSIWEStory.argTypes = argTypesSignature;
 
 export const SignTypedDataStory = (args) => {
   return SignatureStoryTemplate(args, unapprovedTypedSignMsgV1);
 };
 
 SignTypedDataStory.storyName = 'SignTypedData';
+SignTypedDataStory.argTypes = argTypesSignature;
 SignTypedDataStory.args = {
   ...argsSignature,
-  data: unapprovedTypedSignMsgV1.msgParams.data,
-};
-SignTypedDataStory.argTypes = {
-  ...argTypesSignature,
-  data: {
-    control: 'array',
-    description: '(non-param) overrides msgParams.data',
-  },
+  msgParams: unapprovedTypedSignMsgV1.msgParams,
 };
 
 export const PermitStory = (args) => {
@@ -92,22 +72,21 @@ export const PermitStory = (args) => {
 };
 
 PermitStory.storyName = 'SignTypedData Permit';
+PermitStory.argTypes = argTypesSignature;
 PermitStory.args = {
   ...argsSignature,
-  data: permitSignatureMsg.msgParams.data,
+  msgParams: permitSignatureMsg.msgParams,
 };
-PermitStory.argTypes = argTypesSignature;
 
 export const SignTypedDataV4Story = (args) => {
   return SignatureStoryTemplate(args, unapprovedTypedSignMsgV4);
 };
 
 SignTypedDataV4Story.storyName = 'SignTypedData V4';
+SignTypedDataV4Story.argTypes = argTypesSignature;
 SignTypedDataV4Story.args = {
   ...argsSignature,
-  data: unapprovedTypedSignMsgV4.msgParams.data,
+  msgParams: unapprovedTypedSignMsgV4.msgParams,
 };
-SignTypedDataV4Story.argTypes = argTypesSignature;
-
 
 export default ConfirmPageStory;
