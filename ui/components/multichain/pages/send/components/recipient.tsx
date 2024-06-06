@@ -83,11 +83,11 @@ export const SendPageRecipient = () => {
           key={`${resolvedAddress}${resolvingSnap}${protocol}`}
           domainType={domainType}
           address={resolvedAddress}
-          domainName={addressBookEntryName || userInput}
+          domainName={addressBookEntryName ?? userInput}
           onClick={() =>
             onClick(
               resolvedAddress,
-              addressBookEntryName || userInput,
+              addressBookEntryName ?? userInput,
               'Domain resolution',
             )
           }
