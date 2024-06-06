@@ -1,17 +1,24 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { InternalAccount } from '@metamask/keyring-api';
 import {
   addNewAccount,
   getNextAvailableAccountName as getNextAvailableAccountNameFromController,
   setAccountLabel,
 } from '../../../store/actions';
 import { CreateAccount } from '..';
+import { getAccountById } from '../../../selectors';
 
 type CreateSnapAccountProps = {
   /**
    * Callback called once the account has been created
    */
-  onActionComplete?: (completed: boolean) => Promise<void>;
+  onActionComplete: (completed: boolean) => Promise<void>;
+
+  /**
+   * Account ID
+   */
+  accountId?: string;
 
   /**
    * Suggested account name from the snap
@@ -19,32 +26,35 @@ type CreateSnapAccountProps = {
   snapSuggestedAccountName?: string;
 };
 
-export const CreateSnapAccount: React.FC<CreateSnapAccountProps> = ({
+export const CreateNamedSnapAccount: React.FC<CreateSnapAccountProps> = ({
   onActionComplete,
+  accountId,
   snapSuggestedAccountName,
 }) => {
   const dispatch = useDispatch();
 
   const onCreateAccount = async (name: string) => {
-    const newAccountAddress = dispatch(addNewAccount()) as unknown as string;
+    console.log(`[CreateNamedSnapAccount] onCreateAccount: ${name}`);
+    const newAccountAddress =
+      (useSelector(getAccountById(accountId)) as InternalAccount).address ||
+      dispatch(addNewAccount());
     if (newAccountAddress) {
       dispatch(setAccountLabel(newAccountAddress, name));
-      if (onActionComplete) {
-        await onActionComplete(true);
-      }
+      await onActionComplete(true);
     } else {
       console.error(
         'Failed to create new account or invalid account address type.',
       );
-      if (onActionComplete) {
-        await onActionComplete(false);
-      }
+      await onActionComplete(false);
     }
   };
 
   const getNextAccountName = async (): Promise<string> => {
     const defaultAccountName =
       await getNextAvailableAccountNameFromController();
+    console.log(
+      `[CreateNamedSnapAccount] getNextAccountName: ${snapSuggestedAccountName}`,
+    );
     return snapSuggestedAccountName || defaultAccountName;
   };
 

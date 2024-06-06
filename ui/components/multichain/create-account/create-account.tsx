@@ -43,7 +43,7 @@ type Props = {
   /**
    * Callback called once the account has been created
    */
-  onActionComplete?: (completed: boolean) => Promise<void>;
+  onActionComplete: (completed: boolean) => Promise<void>;
 };
 
 type CreateAccountProps<C extends React.ElementType> =
@@ -97,6 +97,9 @@ export const CreateAccount: CreateAccountComponent = React.memo(
 
           try {
             await onCreateAccount(trimmedAccountName || defaultAccountName);
+            console.log(
+              `[CreateAccount] defaultAccountName: ${defaultAccountName}`,
+            );
             trackEvent({
               category: MetaMetricsEventCategory.Accounts,
               event: MetaMetricsEventName.AccountAdded,
@@ -105,6 +108,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
                 location: 'Home',
               },
             });
+            await onActionComplete(true);
             history.push(mostRecentOverviewPage);
           } catch (error) {
             trackEvent({
@@ -115,6 +119,7 @@ export const CreateAccount: CreateAccountComponent = React.memo(
                 error: (error as Error).message,
               },
             });
+            await onActionComplete(false);
           }
         },
         [trimmedAccountName, defaultAccountName, mostRecentOverviewPage],
@@ -141,17 +146,13 @@ export const CreateAccount: CreateAccountComponent = React.memo(
           />
           <Box display={Display.Flex} marginTop={6} gap={2}>
             <ButtonSecondary
-              onClick={async () => {
-                if (onActionComplete) {
-                  await onActionComplete(false);
-                }
-              }}
+              onClick={async () => await onActionComplete(false)}
               block
             >
               {t('cancel')}
             </ButtonSecondary>
             <ButtonPrimary type="submit" disabled={!isValidAccountName} block>
-              {t('create')}
+              {t('addAccount')}
             </ButtonPrimary>
           </Box>
         </Box>

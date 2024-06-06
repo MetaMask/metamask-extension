@@ -21,6 +21,16 @@ function getValues(pendingApproval, t, actions, _history, _data, contexts) {
     });
   };
 
+  const onActionComplete = (success) => {
+    if (success) {
+      trackSnapAccountEvent(MetaMetricsEventName.AddSnapAccountConfirmed);
+      actions.resolvePendingApproval(pendingApproval.id, true);
+    } else {
+      trackSnapAccountEvent(MetaMetricsEventName.AddSnapAccountCanceled);
+      actions.resolvePendingApproval(pendingApproval.id, false);
+    }
+  };
+
   return {
     content: [
       {
@@ -28,26 +38,18 @@ function getValues(pendingApproval, t, actions, _history, _data, contexts) {
         key: 'create-named-snap-account',
         props: {
           snapSuggestedAccountName,
+          onActionComplete,
         },
       },
     ],
-    cancelText: t('cancel'),
-    submitText: t('addAccount'),
+    hideSubmitButton: true,
     onLoad: () =>
       trackSnapAccountEvent(MetaMetricsEventName.AddSnapAccountViewed),
-    onSubmit: () => {
-      trackSnapAccountEvent(MetaMetricsEventName.AddSnapAccountConfirmed);
-      actions.resolvePendingApproval(pendingApproval.id, true);
-    },
-    onCancel: () => {
-      trackSnapAccountEvent(MetaMetricsEventName.AddSnapAccountCanceled);
-      actions.resolvePendingApproval(pendingApproval.id, false);
-    },
   };
 }
 
-const createSnapAccount = {
+const createNamedSnapAccount = {
   getValues,
 };
 
-export default createSnapAccount;
+export default createNamedSnapAccount;
