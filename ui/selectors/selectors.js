@@ -2514,8 +2514,19 @@ export function getSnapsList(state) {
   const snaps = getSnaps(state);
   return Object.entries(snaps)
     .filter(
-      ([_key, snap]) =>
-        !snap.preinstalled && snap.status !== SnapStatus.Installing,
+      ([_key, snap]) => {
+        // Always hide installing Snaps.
+        if (snap.status === SnapStatus.Installing) {
+          return false;
+        }
+
+        // For backwards compatibility, preinstalled Snaps must specify hidden = false to be displayed.
+        if (snap.preinstalled) {
+          return snap.hidden === false;
+        }
+
+        return true;
+      }
     )
     .map(([key, snap]) => {
       const targetSubjectMetadata = getTargetSubjectMetadata(state, snap?.id);
