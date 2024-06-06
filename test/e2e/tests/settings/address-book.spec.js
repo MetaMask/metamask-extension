@@ -167,7 +167,7 @@ describe('Address Book', function () {
 
         await driver.clickElement({ text: '0x2f318...5C970', tag: 'div' });
         await driver.clickElement({ text: 'Edit', tag: 'button' });
-        await driver.clickElement({ text: 'Delete contact', tag: 'a' });
+        await driver.clickElement('.settings-page__address-book-button');
 
         // it checks if account is deleted
         const exists = await driver.isElementPresent(

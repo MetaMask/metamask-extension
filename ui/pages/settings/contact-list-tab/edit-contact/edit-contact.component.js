@@ -94,17 +94,18 @@ export default class EditContact extends PureComponent {
               {name || address}
             </Text>
           </Box>
-          <Button
-            type="link"
-            className="settings-page__address-book-button"
-            onClick={async () => {
-              await removeFromAddressBook(chainId, address);
-              history.push(listRoute);
-            }}
-            style={{ display: 'contents' }}
-          >
-            {t('deleteContact')}
-          </Button>
+          <Box className="settings-page__address-book-button">
+            <Button
+              type="link"
+              onClick={async () => {
+                await removeFromAddressBook(chainId, address);
+                history.push(listRoute);
+              }}
+              style={{ display: 'contents' }}
+            >
+              {t('deleteContact')}
+            </Button>
+          </Box>
         </Box>
         <div className="address-book__edit-contact__content">
           <div className="address-book__view-contact__group">
