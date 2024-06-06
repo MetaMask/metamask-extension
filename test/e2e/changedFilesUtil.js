@@ -22,8 +22,9 @@ async function filterE2eChangedFiles() {
         file.startsWith('test/e2e/') &&
         (file.endsWith('.spec.js') || file.endsWith('.spec.ts')),
     )
+    .map((file) => `/home/circleci/project/${file}`)
     .join('\n');
-    console.log('e2e changed files', e2eChangedFiles);
+  console.log('e2e changed files', e2eChangedFiles);
   return e2eChangedFiles;
 }
 

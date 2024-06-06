@@ -42,7 +42,7 @@ async function runningOnCircleCI(testPaths) {
   // Quality Gate Logic
   changedOrNewTests = await filterE2eChangedFiles();
   for (let i = 0; i < RETRIES_FOR_NEW_OR_CHANGED_TESTS; i++) {
-    fullTestList += changedOrNewTests;
+    fullTestList += `\n${changedOrNewTests}`;
   }
 
   console.log('Full test list:', fullTestList);
