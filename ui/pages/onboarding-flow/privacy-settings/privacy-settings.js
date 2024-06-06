@@ -52,7 +52,6 @@ import {
 import { selectIsProfileSyncingEnabled } from '../../../selectors/metamask-notifications/profile-syncing';
 import { selectParticipateInMetaMetrics } from '../../../selectors/metamask-notifications/authentication';
 import {
-  setCompletedOnboarding,
   setIpfsGateway,
   setUseCurrencyRateCheck,
   setUseMultiAccountBalanceChecker,
@@ -63,10 +62,8 @@ import {
   showModal,
   toggleNetworkMenu,
   setIncomingTransactionsPreferences,
-  toggleExternalServices,
   setUseTransactionSimulations,
   setPetnamesEnabled,
-  performSignIn,
 } from '../../../store/actions';
 import {
   onboardingToggleBasicFunctionalityOn,
@@ -138,7 +135,6 @@ export default function PrivacySettings() {
   );
 
   const handleSubmit = () => {
-    dispatch(toggleExternalServices(externalServicesOnboardingToggleState));
     dispatch(setUsePhishDetect(usePhishingDetection));
     dispatch(setUse4ByteResolution(turnOn4ByteResolution));
     dispatch(setUseTokenDetection(turnOnTokenDetection));
@@ -146,16 +142,9 @@ export default function PrivacySettings() {
       setUseMultiAccountBalanceChecker(isMultiAccountBalanceCheckerEnabled),
     );
     dispatch(setUseCurrencyRateCheck(turnOnCurrencyRateCheck));
-    dispatch(setCompletedOnboarding());
     dispatch(setUseAddressBarEnsResolution(addressBarResolution));
     setUseTransactionSimulations(isTransactionSimulationsEnabled);
     dispatch(setPetnamesEnabled(turnOnPetnames));
-
-    if (externalServicesOnboardingToggleState) {
-      if (!isProfileSyncingEnabled && participateInMetaMetrics) {
-        dispatch(performSignIn());
-      }
-    }
 
     if (ipfsURL && !ipfsError) {
       const { host } = new URL(addUrlProtocolPrefix(ipfsURL));
@@ -315,13 +304,17 @@ export default function PrivacySettings() {
                 className="privacy-settings__categories-list"
               >
                 {items.map((item) => (
-                  <Box marginTop={5} marginBottom={5} key={item.id}>
+                  <Box
+                    marginTop={5}
+                    marginBottom={5}
+                    key={item.id}
+                    onClick={() => handleItemSelected(item)}
+                  >
                     <Box
                       display={Display.Flex}
                       alignItems={AlignItems.flexStart}
                       justifyContent={JustifyContent.spaceBetween}
                       className="categories-item-header"
-                      onClick={() => handleItemSelected(item)}
                       data-testid={`category-item-${item.title}`}
                     >
                       <Text variant={TextVariant.bodyLgMedium}>

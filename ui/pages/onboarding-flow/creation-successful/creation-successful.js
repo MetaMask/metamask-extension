@@ -75,9 +75,12 @@ export default function CreationSuccessful() {
             fontSize: '70px',
           }}
         >
-          {firstTimeFlowType === FirstTimeFlowType.create && (
-            <span>{seedPhraseBackedUp ? '🎉' : '🔓'}</span>
-          )}
+          <span>
+            {firstTimeFlowType === FirstTimeFlowType.create &&
+            !seedPhraseBackedUp
+              ? '🔓'
+              : '🎉'}
+          </span>
         </Text>
         <Text
           variant={TextVariant.headingLg}
@@ -114,7 +117,7 @@ export default function CreationSuccessful() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {t('learnHowToKeepWordsSafe')}
+                {t('learnHow')}
               </ButtonLink>,
             ])}
 
