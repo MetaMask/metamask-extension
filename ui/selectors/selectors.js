@@ -113,8 +113,8 @@ import {
   SURVEY_START_TIME,
 } from '../helpers/constants/survey';
 import { PRIVACY_POLICY_DATE } from '../helpers/constants/privacy-policy';
-import { SUPPORTED_CHAIN_IDS } from '../../app/scripts/lib/ppom/ppom-middleware';
 import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
+import { SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS } from '../../shared/constants/security-provider';
 import {
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
@@ -127,6 +127,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getOrderedConnectedAccountsForActiveTab,
   getOrderedConnectedAccountsForConnectedDapp,
+  getSubjectMetadata,
 } from './permissions';
 import { createDeepEqualSelector } from './util';
 
@@ -496,8 +497,23 @@ export function getTargetAccount(state, targetAddress) {
   return accounts[targetAddress];
 }
 
-export const getTokenExchangeRates = (state) =>
-  state.metamask.contractExchangeRates;
+export const getTokenExchangeRates = (state) => {
+  const chainId = getCurrentChainId(state);
+  const contractMarketData = state.metamask.marketData?.[chainId] ?? {};
+
+  return Object.entries(contractMarketData).reduce(
+    (acc, [address, marketData]) => {
+      acc[address] = marketData?.price ?? null;
+      return acc;
+    },
+    {},
+  );
+};
+
+export const getTokensMarketData = (state) => {
+  const chainId = getCurrentChainId(state);
+  return state.metamask.marketData?.[chainId];
+};
 
 export function getAddressBook(state) {
   const chainId = getCurrentChainId(state);
@@ -933,10 +949,6 @@ export function getCustomNonceValue(state) {
   return String(state.metamask.customNonceValue);
 }
 
-export function getSubjectMetadata(state) {
-  return state.metamask.subjectMetadata;
-}
-
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 /**
  * @param {string} svgString - The raw SVG string to make embeddable.
@@ -1155,6 +1167,34 @@ export const getMemoizedInterfaceContent = createDeepEqualSelector(
   (content) => content,
 );
 
+///: END:ONLY_INCLUDE_IF
+
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
+/**
+ * Input selector providing a way to pass the origins as an argument.
+ *
+ * @param _state - Redux state object.
+ * @param origins - Object containing origins.
+ * @returns object - Object with keys that can be used as input selector.
+ */
+const selectOrigins = (_state, origins) => origins;
+
+/**
+ * Retrieve metadata for multiple subjects (origins).
+ *
+ * @param state - Redux state object.
+ * @param origins - Object containing keys that represent subject's identification.
+ * @returns Key:value object containing metadata attached to each subject key.
+ */
+export const getMultipleTargetsSubjectMetadata = createDeepEqualSelector(
+  [rawStateSelector, selectOrigins],
+  (state, origins) => {
+    return Object.keys(origins ?? {}).reduce((originsMetadata, origin) => {
+      originsMetadata[origin] = getTargetSubjectMetadata(state, origin);
+      return originsMetadata;
+    }, {});
+  },
+);
 ///: END:ONLY_INCLUDE_IF
 
 export function getRpcPrefsForCurrentProvider(state) {
@@ -2013,7 +2053,9 @@ export function getNetworkConfigurations(state) {
 
 export function getIsNetworkSupportedByBlockaid(state) {
   const currentChainId = getCurrentChainId(state);
-  const isSupported = SUPPORTED_CHAIN_IDS.includes(currentChainId);
+
+  const isSupported =
+    SECURITY_PROVIDER_SUPPORTED_CHAIN_IDS.includes(currentChainId);
 
   return isSupported;
 }
@@ -2327,75 +2369,76 @@ export function getUnconnectedAccounts(state, activeTab) {
   return unConnectedAccounts;
 }
 
-export function getUpdatedAndSortedAccounts(state) {
-  const accounts = getMetaMaskAccountsOrdered(state);
-  const pinnedAddresses = getPinnedAccountsList(state);
-  const hiddenAddresses = getHiddenAccountsList(state);
-  const connectedAccounts = getOrderedConnectedAccountsForActiveTab(state);
+export const getUpdatedAndSortedAccounts = createDeepEqualSelector(
+  getMetaMaskAccountsOrdered,
+  getPinnedAccountsList,
+  getHiddenAccountsList,
+  getOrderedConnectedAccountsForActiveTab,
+  (accounts, pinnedAddresses, hiddenAddresses, connectedAccounts) => {
+    connectedAccounts.forEach((connection) => {
+      // Find if the connection exists in accounts
+      const matchingAccount = accounts.find(
+        (account) => account.id === connection.id,
+      );
 
-  connectedAccounts.forEach((connection) => {
-    // Find if the connection exists in accounts
-    const matchingAccount = accounts.find(
-      (account) => account.id === connection.id,
+      // If a matching account is found and the connection has metadata, add the connections property to true and lastSelected timestamp from metadata
+      if (matchingAccount && connection.metadata) {
+        matchingAccount.connections = true;
+        matchingAccount.lastSelected = connection.metadata.lastSelected;
+      }
+    });
+
+    // Find the account with the most recent lastSelected timestamp among accounts with metadata
+    const accountsWithLastSelected = accounts.filter(
+      (account) => account.connections && account.lastSelected,
     );
 
-    // If a matching account is found and the connection has metadata, add the connections property to true and lastSelected timestamp from metadata
-    if (matchingAccount && connection.metadata) {
-      matchingAccount.connections = true;
-      matchingAccount.lastSelected = connection.metadata.lastSelected;
-    }
-  });
+    const mostRecentAccount =
+      accountsWithLastSelected.length > 0
+        ? accountsWithLastSelected.reduce((prev, current) =>
+            prev.lastSelected > current.lastSelected ? prev : current,
+          )
+        : null;
 
-  // Find the account with the most recent lastSelected timestamp among accounts with metadata
-  const accountsWithLastSelected = accounts.filter(
-    (account) => account.connections && account.lastSelected,
-  );
+    accounts.forEach((account) => {
+      account.pinned = Boolean(pinnedAddresses.includes(account.address));
+      account.hidden = Boolean(hiddenAddresses.includes(account.address));
+      account.active = Boolean(
+        mostRecentAccount && account.id === mostRecentAccount.id,
+      );
+    });
 
-  const mostRecentAccount =
-    accountsWithLastSelected.length > 0
-      ? accountsWithLastSelected.reduce((prev, current) => {
-          return prev.lastSelected > current.lastSelected ? prev : current;
-        })
-      : null;
+    const sortedPinnedAccounts = pinnedAddresses
+      ?.map((address) =>
+        accounts.find((account) => account.address === address),
+      )
+      .filter((account) =>
+        Boolean(
+          account &&
+            pinnedAddresses.includes(account.address) &&
+            !hiddenAddresses?.includes(account.address),
+        ),
+      );
 
-  accounts.forEach((account) => {
-    account.pinned = Boolean(pinnedAddresses.includes(account.address));
-    account.hidden = Boolean(hiddenAddresses.includes(account.address));
-    if (mostRecentAccount && account.id === mostRecentAccount.id) {
-      account.active = true;
-    } else {
-      account.active = false;
-    }
-  });
-
-  const sortedPinnedAccounts = pinnedAddresses
-    ?.map((address) => accounts.find((account) => account.address === address))
-    .filter((account) =>
-      Boolean(
-        account &&
-          pinnedAddresses.includes(account.address) &&
-          !hiddenAddresses?.includes(account.address),
-      ),
+    const notPinnedAccounts = accounts.filter(
+      (account) =>
+        !pinnedAddresses.includes(account.address) &&
+        !hiddenAddresses.includes(account.address),
     );
 
-  const notPinnedAccounts = accounts.filter(
-    (account) =>
-      !pinnedAddresses.includes(account.address) &&
-      !hiddenAddresses.includes(account.address),
-  );
+    const filteredHiddenAccounts = accounts.filter((account) =>
+      hiddenAddresses.includes(account.address),
+    );
 
-  const filteredHiddenAccounts = accounts.filter((account) =>
-    hiddenAddresses.includes(account.address),
-  );
+    const sortedSearchResults = [
+      ...sortedPinnedAccounts,
+      ...notPinnedAccounts,
+      ...filteredHiddenAccounts,
+    ];
 
-  const sortedSearchResults = [
-    ...sortedPinnedAccounts,
-    ...notPinnedAccounts,
-    ...filteredHiddenAccounts,
-  ];
-
-  return sortedSearchResults;
-}
+    return sortedSearchResults;
+  },
+);
 
 export function getOnboardedInThisUISession(state) {
   return state.appState.onboardedInThisUISession;
