@@ -170,7 +170,7 @@ describe('AssetPage', () => {
       expect(actions[0].type).toBe('UI_MODAL_OPEN');
       expect(actions[0].payload).toStrictEqual({
         name: 'CONVERT_TOKEN_TO_NFT',
-        tokenAddress: '0x123',
+        tokenAddress: token.address,
       });
     });
 
@@ -245,7 +245,7 @@ describe('AssetPage', () => {
       await waitFor(() =>
         expect(openTabSpy).toHaveBeenCalledWith({
           url: expect.stringContaining(
-            '/bridge?metamaskEntry=ext_bridge_button&metametricsId=&token=0x123',
+            `/bridge?metamaskEntry=ext_bridge_button&metametricsId=&token=${token.address}`,
           ),
         }),
       );

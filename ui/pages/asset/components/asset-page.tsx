@@ -2,7 +2,6 @@ import React, { ReactNode } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { useSelector } from 'react-redux';
-import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { getCurrentCurrency, getTokensMarketData } from '../../../selectors';
 import {
   Display,
@@ -32,6 +31,7 @@ import { getPricePrecision, localizeLargeNumber } from '../util';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import EthButtons from '../../../components/app/wallet-overview/eth-buttons';
 import { getConversionRate } from '../../../ducks/metamask/metamask';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
 
