@@ -734,9 +734,6 @@
   "cancel": {
     "message": "Kanselahin"
   },
-  "cancelEdit": {
-    "message": "Kanselahin ang Pag-edit"
-  },
   "cancelPopoverTitle": {
     "message": "Kanselahin ang transaksyon"
   },
@@ -4539,15 +4536,9 @@
   "sendSwapSubmissionWarning": {
     "message": "Ang pag-click sa button na ito ay kaagad na magpapasimula sa iyong swap na transaksyon. Mangyaring suriin ang detalye ng iyong mga transaksyon bago magpatuloy."
   },
-  "sendTo": {
-    "message": "Ipadala kay"
-  },
   "sendTokenAsToken": {
     "message": "Ipadala ang $1 bilang $2",
     "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens in involved in the swap."
-  },
-  "sendTokens": {
-    "message": "Magpadala ng Mga Token"
   },
   "sendingAsset": {
     "message": "Ipinapadala ang $1"
@@ -5200,9 +5191,6 @@
   },
   "submitted": {
     "message": "Naisumite"
-  },
-  "suggestedBy": {
-    "message": "Iminumungkahi ng"
   },
   "suggestedTokenSymbol": {
     "message": "Iminumungkahing ticket symbol:"
