@@ -12,9 +12,10 @@ import { ImageFields } from '../types/feature-announcement/type-feature-announce
 import { TypeLinkFields } from '../types/feature-announcement/type-link';
 import { TypeActionFields } from '../types/feature-announcement/type-action';
 
-const spaceId = process.env.CONTENTFUL_ACCESS_SPACE_ID || '';
+const spaceId = process.env.CONTENTFUL_ACCESS_SPACE_ID || ':space_id';
 const accessToken = process.env.CONTENTFUL_ACCESS_TOKEN || '';
-export const FEATURE_ANNOUNCEMENT_URL = `https://cdn.contentful.com/spaces/${spaceId}/environments/master/entries?access_token=${accessToken}&content_type=productAnnouncement&include=10&fields.clients=extension`;
+export const FEATURE_ANNOUNCEMENT_API = `https://cdn.contentful.com/spaces/${spaceId}/environments/master/entries`;
+export const FEATURE_ANNOUNCEMENT_URL = `${FEATURE_ANNOUNCEMENT_API}?access_token=${accessToken}&content_type=productAnnouncement&include=10&fields.clients=extension`;
 
 export type ContentfulResult = {
   includes?: {
