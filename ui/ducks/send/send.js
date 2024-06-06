@@ -3476,11 +3476,10 @@ export function getSwapsBlockedTokens(state) {
 }
 
 export const getSendAnalyticProperties = createSelector(
-  getProviderConfig,
+  (state) => state.metamask.providerConfig,
   getCurrentDraftTransaction,
-  getNativeCurrency,
   getBestQuote,
-  ({ chainId }, draftTransaction, nativeCurrencySymbol, bestQuote) => {
+  ({ chainId, ticker: nativeCurrencySymbol }, draftTransaction, bestQuote) => {
     try {
       const NATIVE_CURRENCY_DECIMALS =
         SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].decimals;
