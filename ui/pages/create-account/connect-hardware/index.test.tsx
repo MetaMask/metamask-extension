@@ -191,6 +191,7 @@ describe('ConnectHardwareForm', () => {
         expect(getByText("D'Cent")).toBeInTheDocument();
         expect(getByText('imToken')).toBeInTheDocument();
         expect(getByText('OneKey')).toBeInTheDocument();
+        expect(getByText('NGRAVE ZERO')).toBeInTheDocument();
       });
     });
   });
