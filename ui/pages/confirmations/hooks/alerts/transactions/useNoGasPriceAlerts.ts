@@ -16,7 +16,7 @@ export function useNoGasPriceAlerts(): Alert[] {
   const transactionMeta = useSelector((state) => selectTransactionMetadata(state, transactionId));
   const isCustomGasPrice = transactionMeta?.userFeeLevel === UserFeeLevel.CUSTOM || txParamsAreDappSuggested(transactionMeta);
   const isNoGasPriceFetched = useSelector(getNoGasPriceFetched);
-  const noGasPrice = true;
+  const noGasPrice = !isCustomGasPrice && isNoGasPriceFetched;
 
   return useMemo(() => {
     if (!noGasPrice) {
