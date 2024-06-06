@@ -47,6 +47,8 @@ function SnapView() {
     return null;
   }
 
+  const isSettingsAvailable = !snap.preinstalled;
+
   const handleSettingsClick = () => {
     setShowSettings(true);
   };
@@ -73,6 +75,7 @@ function SnapView() {
             />
           }
           endAccessory={
+            isSettingsAvailable &&
             !showSettings && (
               <ButtonIcon
                 ariaLabel="Settings"
