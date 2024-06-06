@@ -37,6 +37,7 @@ import { AssetType } from '../../../../../shared/constants/transaction';
 import { useNftsCollections } from '../../../../hooks/useNftsCollections';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import {
+  getAllTokens,
   getCurrentChainId,
   getCurrentCurrency,
   getNativeCurrencyImage,
@@ -49,7 +50,6 @@ import {
 import {
   getConversionRate,
   getNativeCurrency,
-  getTokens,
 } from '../../../../ducks/metamask/metamask';
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { getTopAssets } from '../../../../ducks/swaps/swaps';
@@ -153,7 +153,10 @@ export function AssetPickerModal({
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
-  const tokens = useSelector(getTokens, isEqual);
+
+  const detectedTokens = useSelector(getAllTokens);
+  const tokens = detectedTokens?.[chainId]?.[selectedAddress] ?? [];
+
   const { tokensWithBalances } = useTokenTracker({
     tokens,
     address: selectedAddress,
