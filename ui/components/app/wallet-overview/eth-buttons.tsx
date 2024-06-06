@@ -283,7 +283,6 @@ const EthButtons = () => {
             });
             dispatch(setSwapsFromToken(defaultSwapsToken));
             if (usingHardwareWallet) {
-              // todo 2nd and 3rd arguments?
               global.platform.openExtensionInBrowser?.(
                 BUILD_QUOTE_ROUTE,
                 undefined,
