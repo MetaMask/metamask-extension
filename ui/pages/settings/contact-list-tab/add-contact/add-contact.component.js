@@ -156,7 +156,7 @@ export default class AddContact extends PureComponent {
                       this.props.resetDomainResolution();
                     }}
                     protocol={protocol}
-                    resolvingsnap={resolvingSnap}
+                    resolvingSnap={resolvingSnap}
                   />
                 );
               })}
