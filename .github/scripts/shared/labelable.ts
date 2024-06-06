@@ -51,18 +51,7 @@ export async function addLabelToLabelable(
     label,
   );
 
-  const addLabelsToLabelableMutation = `
-      mutation AddLabelsToLabelable($labelableId: ID!, $labelIds: [ID!]!) {
-        addLabelsToLabelable(input: {labelableId: $labelableId, labelIds: $labelIds}) {
-          clientMutationId
-        }
-      }
-    `;
-
-  await octokit.graphql(addLabelsToLabelableMutation, {
-    labelableId: labelable?.id,
-    labelIds: [labelId],
-  });
+  await addLabelByIdToLabelable(octokit, labelable, labelId);
 }
 
 // This function adds label by id to a labelable object (i.e. a pull request or an issue)
