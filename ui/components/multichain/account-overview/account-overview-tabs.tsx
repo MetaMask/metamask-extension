@@ -60,10 +60,10 @@ export const AccountOverviewTabs = ({
   const trackEvent = useContext(MetaMetricsContext);
 
   const tabPadding = 4;
-  const tabProps = {
+  const tabProps = useMemo(() => ({
     activeClassName: 'account-overview__tab--active',
     className: 'account-overview__tab',
-  };
+  }), []);
 
   const getEventFromTabName = (tabName: string) => {
     switch (tabName) {
