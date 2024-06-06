@@ -251,7 +251,8 @@
     "ts-mixer@npm:^6.0.3": "patch:ts-mixer@npm%3A6.0.4#~/.yarn/patches/ts-mixer-npm-6.0.4-5d9747bdf5.patch",
     "sucrase@npm:3.34.0": "^3.35.0",
     "@expo/config/glob": "^10.3.10",
-    "@expo/config-plugins/glob": "^10.3.10"
+    "@expo/config-plugins/glob": "^10.3.10",
+    "@solana/web3.js/rpc-websockets": "^8.0.1"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
