@@ -145,7 +145,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         selectedNetworkClientId: 'networkConfigurationId',
         networksMetadata: {
           networkConfigurationId: {
-            EIPS: {},
+            EIPS: { 1559: false },
             status: NetworkStatus.Available,
           },
         },
