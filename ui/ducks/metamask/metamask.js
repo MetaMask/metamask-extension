@@ -31,7 +31,6 @@ const initialState = {
   transactions: [],
   networkConfigurations: {},
   addressBook: [],
-  contractExchangeRates: {},
   confirmationExchangeRates: {},
   pendingTokens: {},
   customNonceValue: '',
