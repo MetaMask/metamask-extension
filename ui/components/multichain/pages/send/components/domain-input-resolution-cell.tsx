@@ -24,10 +24,10 @@ import {
 } from '../../../../component-library';
 import {
   AlignItems,
+  Display,
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   BackgroundColor,
   BorderColor,
-  Display,
   IconColor,
   ///: END:ONLY_INCLUDE_IF
   TextColor,
