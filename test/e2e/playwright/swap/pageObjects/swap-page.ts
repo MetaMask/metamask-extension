@@ -73,7 +73,7 @@ export class SwapPage {
     await this.tokenSearch.fill(options.to);
     await this.page.waitForTimeout(1000);
     await this.tokenList.first().click();
-    await this.page.waitForSelector('text=/New quotes in 0:26/');
+    await this.page.waitForSelector('text=/New quotes/');
   }
 
   async swap() {
@@ -89,7 +89,7 @@ export class SwapPage {
   async switchTokens() {
     await this.switchTokensButton.click();
     await this.page.waitForTimeout(2000);
-    await this.page.waitForSelector('text=/New quotes in 0:18/');
+    await this.page.waitForSelector('text=/New quotes/');
   }
 
   async gotBack() {
