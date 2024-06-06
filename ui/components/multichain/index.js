@@ -1,6 +1,7 @@
 export { AccountListItem, AccountListItemMenuTypes } from './account-list-item';
 export { AccountListItemMenu } from './account-list-item-menu';
 export { AccountListMenu } from './account-list-menu';
+export { AccountOverview } from './account-overview';
 export { AccountPicker } from './account-picker';
 export { ActivityListItem } from './activity-list-item';
 export { AppHeader } from './app-header';
@@ -16,6 +17,7 @@ export { NetworkListMenu } from './network-list-menu';
 export { ProductTour } from './product-tour-popover';
 export { AccountDetails } from './account-details';
 export { CreateAccount } from './create-account';
+export { CreateEthAccount } from './create-eth-account';
 export { ConnectedAccountsMenu } from './connected-accounts-menu';
 export { ImportAccount } from './import-account';
 export { ImportNftsModal } from './import-nfts-modal';

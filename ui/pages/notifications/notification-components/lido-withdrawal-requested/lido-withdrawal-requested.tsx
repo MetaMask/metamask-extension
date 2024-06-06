@@ -11,6 +11,7 @@ import {
   NotificationDetailBlockExplorerButton,
   NotificationDetailCopyButton,
   NotificationDetailTitle,
+  NotificationDetailAddress,
 } from '../../../../components/multichain';
 import {
   createTextItems,
@@ -100,6 +101,17 @@ export const components: NotificationComponent<LidoWithdrawalRequestedNotificati
       },
       body: {
         type: 'body_onchain_notification',
+        Account: ({ notification }) => {
+          if (!notification.address) {
+            return null;
+          }
+          return (
+            <NotificationDetailAddress
+              side={t('account') || ''}
+              address={notification.address}
+            />
+          );
+        },
         Status: ({ notification }) => (
           <NotificationDetailInfo
             icon={{

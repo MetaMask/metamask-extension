@@ -39,7 +39,9 @@ describe('Token Details', function () {
         );
 
         // Go to details page
-        await driver.clickElement('[data-testid="home__asset-tab"]');
+        await driver.clickElement(
+          '[data-testid="account-overview__asset-tab"]',
+        );
         const [, tkn] = await driver.findElements(
           '[data-testid="multichain-token-list-button"]',
         );

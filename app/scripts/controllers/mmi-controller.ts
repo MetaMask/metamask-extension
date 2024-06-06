@@ -38,10 +38,10 @@ import {
   ConnectionRequest,
 } from '../../../shared/constants/mmi-controller';
 import AccountTracker from '../lib/account-tracker';
-import AppStateController from './app-state';
 import MetaMetricsController from './metametrics';
 import { getPermissionBackgroundApiMethods } from './permissions';
 import { PreferencesController } from './preferences';
+import { AppStateController } from './app-state';
 
 type UpdateCustodianTransactionsParameters = {
   keyring: CustodyKeyring;
