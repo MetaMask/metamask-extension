@@ -76,7 +76,7 @@ export const FullscreenStory = (args) => (
       >
         Connect
       </Header>
-      <Content background={BackgroundColor.successDefault}>
+      <Content backgroundColor={BackgroundColor.successDefault}>
         {scrollingContent}
       </Content>
       <Footer backgroundColor={BackgroundColor.warningAlternative}>
@@ -139,7 +139,7 @@ export const ScrollingStory = (args) => (
       >
         Connect
       </Header>
-      <Content background={BackgroundColor.successDefault}>
+      <Content backgroundColor={BackgroundColor.successDefault}>
         {scrollingContent}
       </Content>
       <Footer backgroundColor={BackgroundColor.warningAlternative}>
