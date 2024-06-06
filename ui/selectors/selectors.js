@@ -619,11 +619,6 @@ export function getTargetAccountWithSendEtherInfo(state, targetAddress) {
   return getAccountByAddress(accounts, targetAddress);
 }
 
-export function getAccountById(state, targetId) {
-  const accounts = getMetaMaskAccounts(state);
-  return accounts[targetId];
-}
-
 export function getCurrentEthBalance(state) {
   return getCurrentAccountWithSendEtherInfo(state)?.balance;
 }

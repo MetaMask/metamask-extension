@@ -166,10 +166,6 @@ export const snapKeyringBuilder = (
       ) => {
         const snapName = getSnapName(snapId);
 
-        console.log(
-          `[snap-keyring] account name suggestion: ${accountNameSuggestion}`,
-        );
-
         const trackSnapAccountEvent = (event: MetaMetricsEventName) => {
           trackEvent({
             event,

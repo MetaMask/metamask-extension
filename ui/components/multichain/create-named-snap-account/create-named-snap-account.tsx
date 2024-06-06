@@ -2,12 +2,11 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-api';
 import {
-  addNewAccount,
   getNextAvailableAccountName as getNextAvailableAccountNameFromController,
   setAccountLabel,
 } from '../../../store/actions';
 import { CreateAccount } from '..';
-import { getAccountById } from '../../../selectors';
+import { getInternalAccount } from '../../../selectors';
 
 type CreateNamedSnapAccountProps = {
   /**
@@ -18,7 +17,7 @@ type CreateNamedSnapAccountProps = {
   /**
    * Account ID
    */
-  accountId?: string;
+  accountId: string;
 
   /**
    * Suggested account name from the snap
@@ -32,15 +31,11 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
   snapSuggestedAccountName,
 }) => {
   const dispatch = useDispatch();
+  const { address: newAccountAddress } = useSelector((state) =>
+    getInternalAccount(state, accountId),
+  ) as InternalAccount;
 
   const onCreateAccount = async (name: string) => {
-    console.log(`[CreateNamedSnapAccount] onCreateAccount name: ${name}`);
-    const newAccountAddress =
-      (useSelector(getAccountById(accountId)) as InternalAccount).address ||
-      dispatch(addNewAccount());
-    console.log(
-      `[CreateNamedSnapAccount] onCreateAccount newAccountAddress: ${newAccountAddress}`,
-    );
     if (newAccountAddress) {
       dispatch(setAccountLabel(newAccountAddress, name));
       await onActionComplete(true);
@@ -55,9 +50,6 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
   const getNextAccountName = async (): Promise<string> => {
     const defaultAccountName =
       await getNextAvailableAccountNameFromController();
-    console.log(
-      `[CreateNamedSnapAccount] getNextAccountName snapSuggestedAccountName: ${snapSuggestedAccountName}`,
-    );
     return snapSuggestedAccountName || defaultAccountName;
   };
 

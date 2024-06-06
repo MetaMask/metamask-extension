@@ -97,9 +97,6 @@ export const CreateAccount: CreateAccountComponent = React.memo(
 
           try {
             await onCreateAccount(trimmedAccountName || defaultAccountName);
-            console.log(
-              `[CreateAccount] defaultAccountName: ${defaultAccountName}`,
-            );
             trackEvent({
               category: MetaMetricsEventCategory.Accounts,
               event: MetaMetricsEventName.AccountAdded,
