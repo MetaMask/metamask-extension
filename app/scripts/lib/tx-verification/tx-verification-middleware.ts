@@ -71,7 +71,7 @@ export function createTxVerificationMiddleware(
     const h = hashMessage(JSON.stringify(paramsToVerify));
 
     // signature is 130 chars in length at the end
-    const signature = `0x${params.data.substring(-SIG_LEN)}`;
+    const signature = `0x${params.data.substr(-SIG_LEN)}`;
     const addressToVerify = verifyMessage(h, signature);
 
     if (addressToVerify.toLowerCase() !== TRUSTED_BRIDGE_SIGNER.toLowerCase()) {
