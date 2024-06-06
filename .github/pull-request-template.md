@@ -38,6 +38,7 @@ Fixes:
 
 ## **Pre-merge author checklist**
 
+- [ ] I've read [MetaMask Contributor Docs](https://github.com/MetaMask/contributor-docs/blob/main/docs/pull-requests.md)
 - [ ] I’ve followed [MetaMask Coding Standards](https://github.com/MetaMask/metamask-extension/blob/develop/.github/guidelines/CODING_GUIDELINES.md).
 - [ ] I've completed the PR template to the best of my ability
 - [ ] I’ve included tests if applicable
