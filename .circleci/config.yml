@@ -1417,9 +1417,9 @@ jobs:
       - run:
           name: test:e2e:chrome:mmi
           command: |
-            TESTFILES=$(circleci tests glob "test/e2e/mmi/**/*.spec.ts")
+            TESTFILES=$(circleci tests glob "test/e2e/playwright/mmi/**/*.spec.ts")
             echo "$TESTFILES"
-            echo "$TESTFILES" | timeout 20m circleci tests run --command="xvfb-run xargs yarn playwright test" verbose --split-by=timings
+            echo "$TESTFILES" | timeout 20m circleci tests run --command="xvfb-run xargs yarn playwright test --project=mmi" verbose --split-by=timings
           no_output_timeout: 10m
       - slack/notify:
           branch_pattern: Version-v*
