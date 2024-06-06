@@ -268,6 +268,9 @@ export const getSwapSendFixtures = (
         },
       })
       // TODO fix TST exchange rate (not visible atm)
+      // Note: The token rates controller has deprecated `contractExchangeRates` in favor of
+      //       a new `marketData` structure.  See https://github.com/MetaMask/core/pull/4206
+      //
       // .withTokenRatesController({
       //   contractExchangeRates: {
       //     '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947':

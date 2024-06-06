@@ -24,7 +24,7 @@ describe('Send NFT', function () {
         await unlockWallet(driver);
 
         // Fill the send NFT form and confirm the transaction
-        await driver.clickElement('[data-testid="home__nfts-tab"]');
+        await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
         await driver.clickElement('.nft-item__container');
         // TODO: Update Test when Multichain Send Flow is added
         await driver.clickElement({ text: 'Send', tag: 'button' });
@@ -74,7 +74,7 @@ describe('Send NFT', function () {
         assert.equal(await sendNftItem.isDisplayed(), true);
 
         // Go back to NFTs tab and check the imported NFT is shown as previously owned
-        await driver.clickElement('[data-testid="home__nfts-tab"]');
+        await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
         const previouslyOwnedNft = await driver.findElement({
           css: 'h5',
           text: 'Previously Owned',
@@ -97,7 +97,7 @@ describe('Send NFT', function () {
         await unlockWallet(driver);
 
         // Fill the send NFT form and confirm the transaction
-        await driver.clickElement('[data-testid="home__nfts-tab"]');
+        await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
 
         await driver.delay(1000);
         const erc1155Token = await driver.findElement('.nft-item__container');
@@ -146,7 +146,7 @@ describe('Send NFT', function () {
         assert.equal(await sendNftItem.isDisplayed(), true);
 
         // Go back to NFTs tab and check the imported NFT is shown as previously owned
-        await driver.clickElement('[data-testid="home__nfts-tab"]');
+        await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
 
         const refreshList = await driver.findElement(
           '[data-testid="refresh-list-button"]',
@@ -177,7 +177,7 @@ describe('Send NFT', function () {
         await unlockWallet(driver);
 
         // Fill the send NFT form and confirm the transaction
-        await driver.clickElement('[data-testid="home__nfts-tab"]');
+        await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
 
         const erc1155Token = await driver.findElement('.nft-item__container');
         await driver.scrollToElement(erc1155Token);
