@@ -133,12 +133,12 @@ describe('EthOverview', () => {
   };
 
   const store = configureMockStore([thunk])(mockStore);
-  const ETH_OVERVIEW_BUY = 'coin-overview-buy';
-  const ETH_OVERVIEW_BRIDGE = 'coin-overview-bridge';
-  const ETH_OVERVIEW_PORTFOLIO = 'coin-overview-portfolio';
+  const ETH_OVERVIEW_BUY = 'eth-overview-buy';
+  const ETH_OVERVIEW_BRIDGE = 'eth-overview-bridge';
+  const ETH_OVERVIEW_PORTFOLIO = 'eth-overview-portfolio';
   const ETH_OVERVIEW_SWAP = 'token-overview-button-swap';
-  const ETH_OVERVIEW_SEND = 'coin-overview-send';
-  const ETH_OVERVIEW_PRIMARY_CURRENCY = 'coin-overview__primary-currency';
+  const ETH_OVERVIEW_SEND = 'eth-overview-send';
+  const ETH_OVERVIEW_PRIMARY_CURRENCY = 'eth-overview__primary-currency';
 
   afterEach(() => {
     store.clearActions();
