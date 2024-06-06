@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ASSET_ROUTE } from '../../../helpers/constants/routes';
@@ -65,6 +65,14 @@ export const AccountOverviewTabs = ({
     className: 'account-overview__tab',
   }), []);
 
+  const handleTabClick = useCallback((tabName: string) => {
+    onTabClick(tabName);
+    trackEvent({
+      category: MetaMetricsEventCategory.Home,
+      event: getEventFromTabName(tabName),
+    });
+  }, [onTabClick]);
+
   const getEventFromTabName = (tabName: string) => {
     switch (tabName) {
       case 'nfts':
@@ -115,13 +123,7 @@ export const AccountOverviewTabs = ({
     <Box style={{ flexGrow: '1' }} paddingTop={tabPadding}>
       <Tabs
         defaultActiveTabKey={defaultHomeActiveTabName}
-        onTabClick={(tabName) => {
-          onTabClick(tabName);
-          trackEvent({
-            category: MetaMetricsEventCategory.Home,
-            event: getEventFromTabName(tabName),
-          });
-        }}
+        onTabClick={handleTabClick}
         tabsClassName="account-overview__tabs"
       >
         {showTokens && (
