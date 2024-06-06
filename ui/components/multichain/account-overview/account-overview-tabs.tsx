@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ASSET_ROUTE } from '../../../helpers/constants/routes';
