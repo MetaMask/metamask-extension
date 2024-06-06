@@ -883,47 +883,57 @@ export function setupController(
   }
 
   function getUnapprovedTransactionCount() {
-    let unapprovedTransactionCount =
-      controller.appStateController.waitingForUnlock.length +
-      controller.approvalController.getTotalApprovalCount();
+    try {
+      let unapprovedTransactionCount =
+        controller.appStateController.waitingForUnlock.length +
+        controller.approvalController.getTotalApprovalCount();
 
-    if (controller.preferencesController.getUseRequestQueue()) {
-      unapprovedTransactionCount +=
-        controller.queuedRequestController.state.queuedRequestCount;
+      if (controller.preferencesController.getUseRequestQueue()) {
+        unapprovedTransactionCount +=
+          controller.queuedRequestController.state.queuedRequestCount;
+      }
+      return unapprovedTransactionCount;
+    } catch (error) {
+      console.error('Failed to get unapproved transaction count:', error);
+      return 0;
     }
-    return unapprovedTransactionCount;
   }
 
   function getUnreadNotificationsCount() {
-    const { isMetamaskNotificationsEnabled, isFeatureAnnouncementsEnabled } =
-      controller.metamaskNotificationsController.state;
+    try {
+      const { isMetamaskNotificationsEnabled, isFeatureAnnouncementsEnabled } =
+        controller.metamaskNotificationsController.state;
 
-    const snapNotificationCount = Object.values(
-      controller.notificationController.state.notifications,
-    ).filter((notification) => notification.readDate === null).length;
+      const snapNotificationCount = Object.values(
+        controller.notificationController.state.notifications,
+      ).filter((notification) => notification.readDate === null).length;
 
-    const featureAnnouncementCount = isFeatureAnnouncementsEnabled
-      ? controller.metamaskNotificationsController.state.metamaskNotificationsList.filter(
-          (notification) =>
-            !notification.isRead &&
-            notification.type === TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
-        ).length
-      : 0;
+      const featureAnnouncementCount = isFeatureAnnouncementsEnabled
+        ? controller.metamaskNotificationsController.state.metamaskNotificationsList.filter(
+            (notification) =>
+              !notification.isRead &&
+              notification.type === TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
+          ).length
+        : 0;
 
-    const walletNotificationCount = isMetamaskNotificationsEnabled
-      ? controller.metamaskNotificationsController.state.metamaskNotificationsList.filter(
-          (notification) =>
-            !notification.isRead &&
-            notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
-        ).length
-      : 0;
+      const walletNotificationCount = isMetamaskNotificationsEnabled
+        ? controller.metamaskNotificationsController.state.metamaskNotificationsList.filter(
+            (notification) =>
+              !notification.isRead &&
+              notification.type !== TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
+          ).length
+        : 0;
 
-    const unreadNotificationsCount =
-      snapNotificationCount +
-      featureAnnouncementCount +
-      walletNotificationCount;
+      const unreadNotificationsCount =
+        snapNotificationCount +
+        featureAnnouncementCount +
+        walletNotificationCount;
 
-    return unreadNotificationsCount;
+      return unreadNotificationsCount;
+    } catch (error) {
+      console.error('Failed to get unread notifications count:', error);
+      return 0;
+    }
   }
 
   notificationManager.on(
