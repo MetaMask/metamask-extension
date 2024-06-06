@@ -5799,7 +5799,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/smart-transactions-controller@npm:^10.1.1":
+"@metamask/smart-transactions-controller@npm:^10.1.2":
   version: 10.1.6
   resolution: "@metamask/smart-transactions-controller@npm:10.1.6"
   dependencies:
@@ -25367,7 +25367,7 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "patch:@metamask/selected-network-controller@npm%3A12.0.1#~/.yarn/patches/@metamask-selected-network-controller-npm-12.0.1-34b2edf62d.patch"
     "@metamask/signature-controller": "npm:^12.0.0"
-    "@metamask/smart-transactions-controller": "npm:^10.1.1"
+    "@metamask/smart-transactions-controller": "npm:^10.1.2"
     "@metamask/snaps-controllers": "patch:@metamask/snaps-controllers@patch%3A@metamask/snaps-controllers@npm%253A8.0.0%23~/.yarn/patches/@metamask-snaps-controllers-npm-8.0.0-7e59688855.patch%3A%3Aversion=8.0.0&hash=79a89d#~/.yarn/patches/@metamask-snaps-controllers-patch-93f004a36a.patch"
     "@metamask/snaps-execution-environments": "npm:6.0.2"
     "@metamask/snaps-rpc-methods": "npm:8.0.0"
