@@ -254,7 +254,6 @@ const TokenButtons = ({
               }),
             );
             if (usingHardwareWallet) {
-              // todo
               global.platform.openExtensionInBrowser?.(
                 BUILD_QUOTE_ROUTE,
                 undefined,
