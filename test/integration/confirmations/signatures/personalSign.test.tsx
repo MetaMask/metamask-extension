@@ -1,8 +1,7 @@
 import { fireEvent, waitFor } from '@testing-library/react';
+import { ApprovalType } from '@metamask/controller-utils';
 import mockMetaMaskState from '../../data/integration-init-state.json';
-import {
-  integrationTestRenderWithProvider,
-} from '../../../lib/render-helpers';
+import { integrationTestRender } from '../../../lib/render-helpers';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import {
@@ -10,7 +9,6 @@ import {
   MetaMetricsEventName,
   MetaMetricsEventLocation,
 } from '../../../../shared/constants/metametrics';
-import { ApprovalType } from '@metamask/controller-utils';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
@@ -82,11 +80,10 @@ describe('PersonalSign', () => {
       pendingApprovalCount: 1,
     };
 
-    const { getByTestId, queryByTestId } =
-      await integrationTestRenderWithProvider({
-        preloadedState: mockedMetaMaskState,
-        backgroundConnection: backgroundConnectionMocked,
-      });
+    const { getByTestId, queryByTestId } = await integrationTestRender({
+      preloadedState: mockedMetaMaskState,
+      backgroundConnection: backgroundConnectionMocked,
+    });
 
     expect(getByTestId('header-account-name')).toHaveTextContent(accountName);
     expect(getByTestId('header-network-display-name')).toHaveTextContent(
@@ -184,7 +181,7 @@ describe('PersonalSign', () => {
       pendingApprovalCount: 1,
     };
 
-    const { getByText } = await integrationTestRenderWithProvider({
+    const { getByText } = await integrationTestRender({
       preloadedState: mockedMetaMaskState,
       backgroundConnection: backgroundConnectionMocked,
     });
@@ -199,7 +196,9 @@ describe('PersonalSign', () => {
 
   it('displays the MMI header warning when account signing is not the same as the account selected', async () => {
     const account =
-      mockMetaMaskState.internalAccounts.accounts['07c2cfec-36c9-46c4-8115-3836d3ac9047'];
+      mockMetaMaskState.internalAccounts.accounts[
+        '07c2cfec-36c9-46c4-8115-3836d3ac9047'
+      ];
     const selectedAccount =
       mockMetaMaskState.internalAccounts.accounts[
         mockMetaMaskState.internalAccounts
@@ -244,7 +243,7 @@ describe('PersonalSign', () => {
       pendingApprovalCount: 1,
     };
 
-    const { getByText, container } = await integrationTestRenderWithProvider({
+    const { getByText } = await integrationTestRender({
       preloadedState: mockedMetaMaskState,
       backgroundConnection: backgroundConnectionMocked,
     });

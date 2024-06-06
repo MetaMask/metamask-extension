@@ -1,8 +1,6 @@
 import { fireEvent, waitFor } from '@testing-library/react';
 import mockMetaMaskState from '../data/onboarding-completion-route.json';
-import {
-  integrationTestRenderWithProvider,
-} from '../../lib/render-helpers';
+import { integrationTestRender } from '../../lib/render-helpers';
 import * as backgroundConnection from '../../../ui/store/background-connection';
 import {
   MetaMetricsEventCategory,
@@ -34,20 +32,17 @@ describe('Wallet Created Events', () => {
   });
 
   it('are sent when onboarding user who chooses to opt in metrics', async () => {
-    const { getByTestId, getByText } =
-      await integrationTestRenderWithProvider({
-        preloadedState: mockMetaMaskState,
-        backgroundConnection: backgroundConnectionMocked,
-      });
+    const { getByTestId, getByText } = await integrationTestRender({
+      preloadedState: mockMetaMaskState,
+      backgroundConnection: backgroundConnectionMocked,
+    });
 
     expect(getByText('Wallet creation successful')).toBeInTheDocument();
 
     fireEvent.click(getByTestId('onboarding-complete-done'));
 
     await waitFor(() => {
-      expect(
-        getByTestId('onboarding-pin-extension'),
-      ).toBeInTheDocument();
+      expect(getByTestId('onboarding-pin-extension')).toBeInTheDocument();
 
       const confirmAccountDetailsModalMetricsEvent =
         mockedBakcgroundConnection.submitRequestToBackground.mock.calls?.find(
@@ -70,40 +65,40 @@ describe('Wallet Created Events', () => {
       );
     });
 
-    fireEvent.click(
-      getByTestId('pin-extension-next'),
-    );
+    fireEvent.click(getByTestId('pin-extension-next'));
 
     await waitFor(() => {
       expect(
-        getByText(`Pin MetaMask on your browser so it's accessible and easy to view transaction confirmations.`),
+        getByText(
+          `Pin MetaMask on your browser so it's accessible and easy to view transaction confirmations.`,
+        ),
       ).toBeInTheDocument();
     });
 
-    fireEvent.click(
-      getByTestId('pin-extension-done'),
-    );
+    fireEvent.click(getByTestId('pin-extension-done'));
 
     await waitFor(() => {
       const completeOnboardingBackgroundRequest =
-      mockedBakcgroundConnection.submitRequestToBackground.mock.calls?.find(
-        (call) => call[0] === 'completeOnboarding',
-      );
+        mockedBakcgroundConnection.submitRequestToBackground.mock.calls?.find(
+          (call) => call[0] === 'completeOnboarding',
+        );
 
-      const OnboardingWalletSetupCompleteEvent = mockedBakcgroundConnection.submitRequestToBackground.mock.calls?.find(
-        (call) => {
-          if (call[0] === 'trackMetaMetricsEvent') {
-            const callArgs = call[1] as unknown as Record<string,unknown>[];
+      const OnboardingWalletSetupCompleteEvent =
+        mockedBakcgroundConnection.submitRequestToBackground.mock.calls?.find(
+          (call) => {
+            if (call[0] === 'trackMetaMetricsEvent') {
+              const callArgs = call[1] as unknown as Record<string, unknown>[];
 
-            return callArgs[0].event === MetaMetricsEventName.OnboardingWalletSetupComplete;
-          }
+              return (
+                callArgs[0].event ===
+                MetaMetricsEventName.OnboardingWalletSetupComplete
+              );
+            }
 
-          return false;
-        }
-      );
-      expect(
-        completeOnboardingBackgroundRequest,
-      ).toBeTruthy();
+            return false;
+          },
+        );
+      expect(completeOnboardingBackgroundRequest).toBeTruthy();
 
       expect(OnboardingWalletSetupCompleteEvent?.[1]).toEqual(
         expect.arrayContaining([
@@ -112,7 +107,7 @@ describe('Wallet Created Events', () => {
             event: MetaMetricsEventName.OnboardingWalletSetupComplete,
             properties: {
               wallet_setup_type: 'new',
-              new_wallet: true
+              new_wallet: true,
             },
           }),
         ]),
