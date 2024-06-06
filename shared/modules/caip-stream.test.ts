@@ -1,4 +1,4 @@
-import { Duplex } from 'readable-stream';
+import { Duplex, PassThrough } from 'readable-stream';
 import { deferredPromise } from '../../app/scripts/lib/util';
 import {
   createCaipStream,
@@ -137,15 +137,11 @@ describe('CAIP Stream', () => {
 
   describe('createCaipStream', () => {
     it('pipes a caip-x message from source stream to the substream as a multiplexed `metamask-provider` message', async () => {
+      const sourceStream = new PassThrough({objectMode: true})
       const sourceStreamChunks: unknown[] = []
-      const sourceStream = new Duplex({
-        objectMode: true,
-        read: () => undefined,
-        write: (chunk, _encoding, callback) => {
-          sourceStreamChunks.push(chunk)
-          callback()
-        }
-      })
+      sourceStream.on('data', (chunk: unknown) => {
+        sourceStreamChunks.push(chunk);
+      });
 
       const providerStream = createCaipStream(sourceStream)
       const providerStreamChunks: unknown[] = [];
@@ -157,6 +153,30 @@ describe('CAIP Stream', () => {
 
       expect(sourceStreamChunks).toStrictEqual([{type: 'caip-x', data: {foo: 'bar'}}])
       expect(providerStreamChunks).toStrictEqual([{name: 'metamask-provider', data: {foo: 'bar'}}])
+    })
+
+    it('pipes a multiplexed `metamask-provider` message from the substream to the source stream as a caip-x message', async () => {
+      // using a SplitStream here instead of PassThrough to prevent a loop
+      // when sourceStream gets written to at the end of the CAIP pipeline
+      const sourceStream = new SplitStream()
+      const sourceStreamChunks: unknown[] = []
+      sourceStream.substream.on('data', (chunk: unknown) => {
+        sourceStreamChunks.push(chunk);
+      });
+
+      const providerStream = createCaipStream(sourceStream)
+      const providerStreamChunks: unknown[] = [];
+      providerStream.on('data', (chunk: unknown) => {
+        providerStreamChunks.push(chunk);
+      });
+
+      await writeToStream(providerStream, {name: 'metamask-provider', data: {foo: 'bar'}})
+
+      await new Promise(resolve => {setTimeout(resolve, 1000)})
+
+      // Note that it's not possible to verify the output side of the internal SplitStream
+      // instantiated inside createCaipStream as only the substream is actually exported
+      expect(sourceStreamChunks).toStrictEqual([{type: 'caip-x', data: {foo: 'bar'}}])
     })
   })
 });
