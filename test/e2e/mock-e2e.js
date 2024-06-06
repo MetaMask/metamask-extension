@@ -24,6 +24,7 @@ const blacklistedHosts = [
 const {
   mockEmptyStalelistAndHotlist,
 } = require('./tests/phishing-controller/mocks');
+const { mockNotificationServices } = require('./tests/notifications/mocks');
 
 const emptyHtmlPage = () => `<!DOCTYPE html>
 <html lang="en">
@@ -292,7 +293,7 @@ async function setupMocking(
     });
 
   await server
-    .forGet(`https://token-api.metaswap.codefi.network/tokens/${chainId}`)
+    .forGet(`https://token.api.cx.metamask.io/tokens/${chainId}`)
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -464,7 +465,7 @@ async function setupMocking(
     });
 
   await server
-    .forGet(`https://token-api.metaswap.codefi.network/token/${chainId}`)
+    .forGet(`https://token.api.cx.metamask.io/token/${chainId}`)
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -593,6 +594,9 @@ async function setupMocking(
       };
     });
 
+  // Notification APIs
+  mockNotificationServices(server);
+
   /**
    * Returns an array of alphanumerically sorted hostnames that were requested
    * during the current test suite.
@@ -660,7 +664,9 @@ async function mockTokenNameProvider(server) {
     const name = namesByAddress[address];
 
     await server
-      .forGet(/https:\/\/token-api\.metaswap\.codefi\.network\/token\/.*/gu)
+      .forGet(
+        /https:\/\/(?:token-api\.metaswap\.codefi\.network|token\.api\.cx\.metamask\.io)\/token\/.*/gu,
+      )
       .withQuery({ address })
       .thenCallback(() => {
         return {
