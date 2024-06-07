@@ -653,9 +653,8 @@ describe('Sentry errors', function () {
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
         },
-        async ({ driver, mockedEndpoint }) => {
-          await driver.navigate();
-          await driver.findElement('#password');
+        async ({ driver, ganacheServer, mockedEndpoint }) => {
+          await logInWithBalanceValidation(driver, ganacheServer);
 
           // Trigger error
           await driver.executeScript(
