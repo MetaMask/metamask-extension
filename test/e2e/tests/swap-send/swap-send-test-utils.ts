@@ -100,42 +100,19 @@ export class SwapSendPage {
     assert.ok(await assetPickers[1].getText(), expectedAssetSymbols[1]);
 
     const inputAmounts = await this.driver.findElements('.asset-picker-amount');
-    assert.equal(
-      inputAmounts.length,
-      2,
-      "Expected to find 2 '.asset-picker-amount' elements",
-    );
-
+    assert.equal(inputAmounts.length, 2);
     await Promise.all(
       // TODO: Replace `any` with type
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       inputAmounts.map(async (e: any, index: number) => {
-        await this.driver.delay(delayInMs); // Ensure elements are ready
-        try {
-          const i = await e.nestedFindElement('input');
-          assert.ok(i, `Input element not found at index ${index}`);
-          const v = await i.getProperty('value');
-          assert.equal(
-            v,
-            expectedInputValues[index],
-            `Unexpected input value at index ${index}`,
-          );
-          const isDisabled = !(await i.isEnabled());
-          if (index > 0) {
-            assert.ok(
-              isDisabled,
-              `Input at index ${index} is expected to be disabled`,
-            );
-          }
-        } catch (error) {
-          if (index > 0) {
-            console.warn(
-              `Input element at index ${index} is optional and was not found.`,
-              error,
-            );
-          } else {
-            throw error; // Rethrow if it's an unexpected error
-          }
+        await this.driver.delay(delayInMs);
+        const i = await e.nestedFindElement('input');
+        assert.ok(i);
+        const v = await i.getProperty('value');
+        assert.equal(v, expectedInputValues[index]);
+        const isDisabled = !(await i.isEnabled());
+        if (index > 0) {
+          assert.ok(isDisabled);
         }
       }),
     );
