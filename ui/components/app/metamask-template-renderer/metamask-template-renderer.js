@@ -14,6 +14,31 @@ function getElement(section) {
   return Element;
 }
 
+function renderElement(element) {
+  const Element = getElement(element);
+  const propsAsComponents = element.propComponents
+    ? getPropComponents(element.propComponents)
+    : {};
+  return (
+    <Element {...element.props} {...propsAsComponents}>
+      {typeof element.children === 'object' ? (
+        <MetaMaskTemplateRenderer sections={element.children} />
+      ) : (
+        element?.children
+      )}
+    </Element>
+  );
+}
+
+function getPropComponents(components) {
+  return Object.entries(components).reduce((accumulator, [key, component]) => {
+    if (component) {
+      accumulator[key] = renderElement(component);
+    }
+    return accumulator;
+  }, {});
+}
+
 const MetaMaskTemplateRenderer = ({ sections }) => {
   if (!sections) {
     // If sections is null eject early by returning null
@@ -27,16 +52,7 @@ const MetaMaskTemplateRenderer = ({ sections }) => {
     !Array.isArray(sections)
   ) {
     // If dealing with a single entry, then render a single object without key
-    const Element = getElement(sections);
-    return (
-      <Element {...sections.props}>
-        {typeof sections.children === 'object' ? (
-          <MetaMaskTemplateRenderer sections={sections.children} />
-        ) : (
-          sections?.children
-        )}
-      </Element>
-    );
+    return renderElement(sections);
   }
 
   // The last case is dealing with an array of objects
@@ -67,8 +83,11 @@ const MetaMaskTemplateRenderer = ({ sections }) => {
           } else {
             // Otherwise render the element.
             const Element = getElement(child);
+            const propsAsComponents = child.propComponents
+              ? getPropComponents(child.propComponents)
+              : {};
             allChildren.push(
-              <Element key={child.key} {...child.props}>
+              <Element key={child.key} {...child.props} {...propsAsComponents}>
                 {child?.children}
               </Element>,
             );

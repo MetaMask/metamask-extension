@@ -9,7 +9,12 @@ import {
   AuthenticationControllerGetSessionProfile,
   AuthenticationControllerIsSignedIn,
   AuthenticationControllerPerformSignIn,
+  AuthenticationControllerPerformSignOut,
 } from '../authentication/authentication-controller';
+import {
+  MetamaskNotificationsControllerDisableMetamaskNotifications,
+  MetamaskNotificationsControllerSelectIsMetamaskNotificationsEnabled,
+} from '../metamask-notifications/metamask-notifications';
 import { createSnapSignMessageRequest } from '../authentication/auth-snap-requests';
 import { getUserStorage, upsertUserStorage } from './services';
 import { UserStorageEntryKeys } from './schema';
@@ -23,14 +28,25 @@ export type UserStorageControllerState = {
    * Condition used by UI and to determine if we can use some of the User Storage methods.
    */
   isProfileSyncingEnabled: boolean;
+  /**
+   * Loading state for the profile syncing update
+   */
+  isProfileSyncingUpdateLoading: boolean;
 };
+
 const defaultState: UserStorageControllerState = {
   isProfileSyncingEnabled: true,
+  isProfileSyncingUpdateLoading: false,
 };
+
 const metadata: StateMetadata<UserStorageControllerState> = {
   isProfileSyncingEnabled: {
     persist: true,
     anonymous: true,
+  },
+  isProfileSyncingUpdateLoading: {
+    persist: false,
+    anonymous: false,
   },
 };
 
@@ -67,7 +83,11 @@ export type AllowedActions =
   | AuthenticationControllerGetBearerToken
   | AuthenticationControllerGetSessionProfile
   | AuthenticationControllerPerformSignIn
-  | AuthenticationControllerIsSignedIn;
+  | AuthenticationControllerIsSignedIn
+  | AuthenticationControllerPerformSignOut
+  // Metamask Notifications
+  | MetamaskNotificationsControllerDisableMetamaskNotifications
+  | MetamaskNotificationsControllerSelectIsMetamaskNotificationsEnabled;
 
 // Messenger
 export type UserStorageControllerMessenger = RestrictedControllerMessenger<
@@ -111,11 +131,32 @@ export default class UserStorageController extends BaseController<
         'AuthenticationController:performSignIn',
       );
     },
+    signOut: async () => {
+      return await this.messagingSystem.call(
+        'AuthenticationController:performSignOut',
+      );
+    },
   };
+
+  #metamaskNotifications = {
+    disableMetamaskNotifications: async () => {
+      return await this.messagingSystem.call(
+        'MetamaskNotificationsController:disableMetamaskNotifications',
+      );
+    },
+    selectIsMetamaskNotificationsEnabled: async () => {
+      return await this.messagingSystem.call(
+        'MetamaskNotificationsController:selectIsMetamaskNotificationsEnabled',
+      );
+    },
+  };
+
+  getMetaMetricsState: () => boolean;
 
   constructor(params: {
     messenger: UserStorageControllerMessenger;
     state?: UserStorageControllerState;
+    getMetaMetricsState: () => boolean;
   }) {
     super({
       messenger: params.messenger,
@@ -124,6 +165,7 @@ export default class UserStorageController extends BaseController<
       state: { ...defaultState, ...params.state },
     });
 
+    this.getMetaMetricsState = params.getMetaMetricsState;
     this.#registerMessageHandlers();
   }
 
@@ -159,12 +201,9 @@ export default class UserStorageController extends BaseController<
   }
 
   public async enableProfileSyncing(): Promise<void> {
-    const isAlreadyEnabled = this.state.isProfileSyncingEnabled;
-    if (isAlreadyEnabled) {
-      return;
-    }
-
     try {
+      this.#setIsProfileSyncingUpdateLoading(true);
+
       const authEnabled = this.#auth.isAuthEnabled();
       if (!authEnabled) {
         await this.#auth.signIn();
@@ -173,12 +212,23 @@ export default class UserStorageController extends BaseController<
       this.update((state) => {
         state.isProfileSyncingEnabled = true;
       });
+
+      this.#setIsProfileSyncingUpdateLoading(false);
     } catch (e) {
+      this.#setIsProfileSyncingUpdateLoading(false);
       const errorMessage = e instanceof Error ? e.message : e;
       throw new Error(
         `${controllerName} - failed to enable profile syncing - ${errorMessage}`,
       );
     }
+  }
+
+  public async setIsProfileSyncingEnabled(
+    isProfileSyncingEnabled: boolean,
+  ): Promise<void> {
+    this.update((state) => {
+      state.isProfileSyncingEnabled = isProfileSyncingEnabled;
+    });
   }
 
   public async disableProfileSyncing(): Promise<void> {
@@ -187,9 +237,36 @@ export default class UserStorageController extends BaseController<
       return;
     }
 
-    this.update((state) => {
-      state.isProfileSyncingEnabled = false;
-    });
+    try {
+      this.#setIsProfileSyncingUpdateLoading(true);
+
+      const isMetamaskNotificationsEnabled =
+        await this.#metamaskNotifications.selectIsMetamaskNotificationsEnabled();
+
+      if (isMetamaskNotificationsEnabled) {
+        await this.#metamaskNotifications.disableMetamaskNotifications();
+      }
+
+      const isMetaMetricsParticipation = this.getMetaMetricsState();
+
+      if (!isMetaMetricsParticipation) {
+        await this.messagingSystem.call(
+          'AuthenticationController:performSignOut',
+        );
+      }
+
+      this.#setIsProfileSyncingUpdateLoading(false);
+
+      this.update((state) => {
+        state.isProfileSyncingEnabled = false;
+      });
+    } catch (e) {
+      this.#setIsProfileSyncingUpdateLoading(false);
+      const errorMessage = e instanceof Error ? e.message : e;
+      throw new Error(
+        `${controllerName} - failed to disable profile syncing - ${errorMessage}`,
+      );
+    }
   }
 
   /**
@@ -299,5 +376,13 @@ export default class UserStorageController extends BaseController<
       'SnapController:handleRequest',
       createSnapSignMessageRequest(message),
     ) as Promise<string>;
+  }
+
+  async #setIsProfileSyncingUpdateLoading(
+    isProfileSyncingUpdateLoading: boolean,
+  ): Promise<void> {
+    this.update((state) => {
+      state.isProfileSyncingUpdateLoading = isProfileSyncingUpdateLoading;
+    });
   }
 }

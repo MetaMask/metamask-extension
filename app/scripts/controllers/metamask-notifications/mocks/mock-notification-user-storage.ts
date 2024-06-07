@@ -63,10 +63,10 @@ export function createMockUserStorageWithTriggers(
 }
 
 export function createMockFullUserStorage(
-  props: { triggersEnabled?: boolean } = {},
+  props: { triggersEnabled?: boolean; address?: string } = {},
 ): UserStorage {
   return initializeUserStorage(
-    [{ address: MOCK_USER_STORAGE_ACCOUNT }],
+    [{ address: props.address ?? MOCK_USER_STORAGE_ACCOUNT }],
     props.triggersEnabled ?? true,
   );
 }

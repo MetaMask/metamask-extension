@@ -36,9 +36,8 @@ export class DummyAppPage {
     await popup1.waitForLoadState();
     // Check which account is selected and select if required
     await popup1.locator('.check-box__indeterminate');
-    // await popup1.locator('text=Custody Ac... (0x8b2...b3ad)').click()
     await popup1.locator('button:has-text("Next")').click();
-    await popup1.locator('button:has-text("Connect")').click();
+    await popup1.locator('button:has-text("Confirm")').click();
     await popup1.close();
   }
 
@@ -59,7 +58,7 @@ export class DummyAppPage {
     await popup.waitForLoadState();
 
     if (isSign) {
-      await popup.click('button:has-text("Sign")');
+      await popup.click('button:has-text("Confirm")');
     } else {
       // Confirm
       await popup.getByTestId('page-container-footer-next').click();

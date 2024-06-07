@@ -1,12 +1,13 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import reactRouterDom from 'react-router-dom';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { EthAccountType } from '@metamask/keyring-api';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/jest';
 import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { CHAIN_IDS, NETWORK_TYPES } from '../../../../shared/constants/network';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import NftsTab from '.';
 
 const ETH_BALANCE = '0x16345785d8a0000'; // 0.1 ETH
@@ -168,6 +169,10 @@ const render = ({
           [chainId]: nftContracts,
         },
       },
+      marketData: {
+        [CHAIN_IDS.MAINNET]: {},
+        [CHAIN_IDS.GOERLI]: {},
+      },
       providerConfig: { chainId, type: NETWORK_TYPES.MAINNET },
       accounts: {
         [selectedAddress]: {
@@ -191,7 +196,7 @@ const render = ({
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
           },
         },
