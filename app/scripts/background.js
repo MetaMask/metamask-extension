@@ -82,6 +82,13 @@ import DesktopManager from '@metamask/desktop/dist/desktop-manager';
 
 import { TRIGGER_TYPES } from './controllers/metamask-notifications/constants/notification-schema';
 
+// eslint-disable-next-line @metamask/design-tokens/color-no-hex
+const BADGE_COLOR_APPROVAL = '#0376C9';
+// eslint-disable-next-line @metamask/design-tokens/color-no-hex
+const BADGE_COLOR_NOTIFICATION = '#D73847';
+const BADGE_LABEL_APPROVAL = '\u22EF'; // unicode ellipsis
+const BADGE_MAX_NOTIFICATION_COUNT = '9';
+
 // Setup global hook for improved Sentry state snapshots during initialization
 const inTest = process.env.IN_TEST;
 const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
@@ -849,21 +856,20 @@ export function setupController(
    * The number reflects the current number of pending transactions or message signatures needing user approval.
    */
   function updateBadge() {
-    const unapprovedTransactionCount = getUnapprovedTransactionCount();
+    const pendingApprovalCount = getPendingApprovalCount();
     const unreadNotificationsCount = getUnreadNotificationsCount();
 
     let label = '';
-    // eslint-disable-next-line @metamask/design-tokens/color-no-hex
-    let badgeColor = '#0376C9';
-    if (unapprovedTransactionCount) {
-      label = '\u22EF'; // unicode ellipsis
+    let badgeColor = BADGE_COLOR_APPROVAL;
+
+    if (pendingApprovalCount) {
+      label = BADGE_LABEL_APPROVAL;
     } else if (unreadNotificationsCount > 0) {
       label =
-        unreadNotificationsCount > 9
-          ? String('9+')
+        unreadNotificationsCount > BADGE_MAX_NOTIFICATION_COUNT
+          ? `${BADGE_MAX_NOTIFICATION_COUNT}+`
           : String(unreadNotificationsCount);
-      // eslint-disable-next-line @metamask/design-tokens/color-no-hex
-      badgeColor = '#D73847';
+      badgeColor = BADGE_COLOR_NOTIFICATION;
     }
 
     try {
@@ -882,17 +888,17 @@ export function setupController(
     }
   }
 
-  function getUnapprovedTransactionCount() {
+  function getPendingApprovalCount() {
     try {
-      let unapprovedTransactionCount =
+      let pendingApprovalCount =
         controller.appStateController.waitingForUnlock.length +
         controller.approvalController.getTotalApprovalCount();
 
       if (controller.preferencesController.getUseRequestQueue()) {
-        unapprovedTransactionCount +=
+        pendingApprovalCount +=
           controller.queuedRequestController.state.queuedRequestCount;
       }
-      return unapprovedTransactionCount;
+      return pendingApprovalCount;
     } catch (error) {
       console.error('Failed to get unapproved transaction count:', error);
       return 0;
@@ -941,7 +947,7 @@ export function setupController(
     ({ automaticallyClosed }) => {
       if (!automaticallyClosed) {
         rejectUnapprovedNotifications();
-      } else if (getUnapprovedTransactionCount() > 0) {
+      } else if (getPendingApprovalCount() > 0) {
         triggerUi();
       }
 
