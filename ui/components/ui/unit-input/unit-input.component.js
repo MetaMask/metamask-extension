@@ -86,9 +86,12 @@ export default class UnitInput extends PureComponent {
   };
 
   handleInputBlur = ({ target: { value } }) => {
-    setTimeout(() => {
-      this.unitInput.scrollLeft = this.unitInput.scrollWidth;
-    }, 0);
+    if (this.unitInput.scrollWidth) {
+      // use timeout to ensure it happens after blur
+      setTimeout(() => {
+        this.unitInput.scrollLeft = this.unitInput.scrollWidth;
+      }, 0);
+    }
 
     if (value === '') {
       this.setState({
