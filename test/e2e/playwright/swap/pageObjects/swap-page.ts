@@ -63,8 +63,8 @@ export class SwapPage {
   async fetchQuote(options: { from?: string; to: string; qty: string }) {
     if (options.from) {
       await this.page.waitForTimeout(3000);
-      //clicking too fast after switching network
-      //can cause failures later, known bug
+      // Clicking too fast after switching network
+      // can cause failures later, known bug
       this.swapFromDropDown.click();
       await this.tokenSearch.fill(options.from);
       await this.page.waitForTimeout(500);
