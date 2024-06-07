@@ -3096,6 +3096,9 @@
   "noDomainResolution": {
     "message": "No resolution for domain provided."
   },
+  "noHardwareWalletOrSnapsSupport": {
+    "message": "Snaps, and most hardware wallets, will not work with your current browser version."
+  },
   "noNFTs": {
     "message": "No NFTs yet"
   },
@@ -3175,7 +3178,7 @@
     "message": "Priority fee (GWEI)"
   },
   "notificationItemCheckBlockExplorer": {
-    "message": "Check on the BlockExplorer"
+    "message": "Check on the Block Explorer"
   },
   "notificationItemCollection": {
     "message": "Collection"
