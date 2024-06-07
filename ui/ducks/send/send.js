@@ -1801,7 +1801,10 @@ const slice = createSlice({
                   : undefined,
               balance: state.selectedAccount.balance,
               gasTotal: calcGasTotal(
-                bestQuote?.gasParams?.maxGas ?? '0x0',
+                new Numeric(
+                  bestQuote?.gasParams?.maxGas || 0,
+                  10,
+                ).toPrefixedHexString(),
                 derivedGasPrice ?? '0x0',
               ),
             }): {
