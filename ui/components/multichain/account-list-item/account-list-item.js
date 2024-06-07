@@ -18,6 +18,9 @@ import {
   Icon,
   IconName,
   IconSize,
+  Popover,
+  PopoverPosition,
+  PopoverRole,
   Tag,
   Text,
 } from '../../component-library';
@@ -85,7 +88,18 @@ export const AccountListItem = ({
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
+  const [referenceElement, setReferenceElement] = useState();
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const setBoxRef = (ref) => {
+    setReferenceElement(ref);
+  };
+  const handleMouseEnter = () => {
+    setIsPopoverOpen(true);
+  };
 
+  const handleMouseLeave = () => {
+    setIsPopoverOpen(false);
+  };
   const useBlockie = useSelector(getUseBlockie);
   const currentNetwork = useSelector(getCurrentNetwork);
   const setAccountListItemMenuRef = (ref) => {
@@ -306,15 +320,29 @@ export const AccountListItem = ({
               {shortenAddress(normalizeSafeAddress(account.address))}
             </Text>
           </Box>
-          {mappedOrderedTokenList.length > 1 ? (
+          <Box
+            ref={setBoxRef}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
             <AvatarGroup members={mappedOrderedTokenList} limit={4} />
-          ) : (
+          </Box>
+          <Popover
+            referenceElement={referenceElement}
+            role={PopoverRole.Tooltip}
+            position={PopoverPosition.Bottom}
+            offset={[0, 0]}
+            padding={0}
+            isPortal={false}
+            preventOverflow
+            isOpen={isPopoverOpen}
+          >
             <Box
               display={Display.Flex}
               alignItems={AlignItems.center}
               justifyContent={JustifyContent.center}
               gap={1}
-              className="multichain-account-list-item__avatar-currency"
+              data-testid="account-list-item-popover"
             >
               <AvatarToken
                 src={primaryTokenImage}
@@ -336,7 +364,7 @@ export const AccountListItem = ({
                 />
               </Text>
             </Box>
-          )}
+          </Popover>
         </Box>
         {account.label ? (
           <Tag
