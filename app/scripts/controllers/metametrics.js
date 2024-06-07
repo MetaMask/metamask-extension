@@ -154,6 +154,7 @@ export default class MetaMetricsController {
     this.store = new ObservableStore({
       participateInMetaMetrics: null,
       metaMetricsId: null,
+      dataCollectionForMarketing: null,
       eventsBeforeMetricsOptIn: [],
       traits: {},
       previousUserTraits: {},

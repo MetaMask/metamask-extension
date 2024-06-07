@@ -773,25 +773,13 @@ export default class Home extends PureComponent {
       });
     };
 
-    const handleDisagree = () => {
-      setDataCollectionForMarketing(false);
+    const handleConsent = (consent) => {
+      setDataCollectionForMarketing(consent);
       this.context.trackEvent({
         category: MetaMetricsEventCategory.Home,
         event: MetaMetricsEventName.AnalyticsPreferenceSelected,
         properties: {
-          has_marketing_consent: false,
-          location: 'marketing_consent_modal',
-        },
-      });
-    };
-
-    const handleAccept = () => {
-      setDataCollectionForMarketing(true);
-      this.context.trackEvent({
-        category: MetaMetricsEventCategory.Home,
-        event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-        properties: {
-          has_marketing_consent: true,
+          has_marketing_consent: consent,
           location: 'marketing_consent_modal',
         },
       });
@@ -849,10 +837,10 @@ export default class Home extends PureComponent {
               gap={2}
               width={BlockSize.Full}
             >
-              <Button type="secondary" onClick={handleDisagree}>
+              <Button type="secondary" onClick={() => handleConsent(false)}>
                 {t('onboardedMetametricsDisagree')}
               </Button>
-              <Button type="primary" onClick={handleAccept}>
+              <Button type="primary" onClick={() => handleConsent(true)}>
                 {t('onboardedMetametricsAccept')}
               </Button>
             </Box>
