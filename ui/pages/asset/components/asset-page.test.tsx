@@ -145,22 +145,6 @@ describe('AssetPage', () => {
       },
     } as const;
 
-    it('should render a native asset', () => {
-      const { container } = renderWithProvider(
-        <AssetPage asset={native} optionsButton={null} />,
-        store,
-      );
-      expect(container).toMatchSnapshot();
-    });
-
-    it('should render a token asset', () => {
-      const { container } = renderWithProvider(
-        <AssetPage asset={token} optionsButton={null} />,
-        store,
-      );
-      expect(container).toMatchSnapshot();
-    });
-
     it('should not show a modal when token passed in props is not an ERC721', () => {
       renderWithProvider(
         <AssetPage asset={token} optionsButton={null} />,
@@ -286,7 +270,15 @@ describe('AssetPage', () => {
       expect(mmiPortfolioButton).toBeInTheDocument();
     });
 
-    it('should not render a chart when price history is not available', async () => {
+    it('should render a native asset', () => {
+      const { container } = renderWithProvider(
+        <AssetPage asset={native} optionsButton={null} />,
+        store,
+      );
+      expect(container).toMatchSnapshot();
+    });
+
+    it('should render an ERC20 asset without prices', async () => {
       const address = '0x309375769E79382beFDEc5bdab51063AeBDC4936';
 
       // Mock no price history
@@ -295,7 +287,7 @@ describe('AssetPage', () => {
         .query(true)
         .reply(200, {});
 
-      const { queryByTestId } = renderWithProvider(
+      const { container, queryByTestId } = renderWithProvider(
         <AssetPage asset={{ ...token, address }} optionsButton={null} />,
         configureMockStore([thunk])({
           ...mockStore,
@@ -312,14 +304,18 @@ describe('AssetPage', () => {
         }),
       );
 
+      // Verify no chart is rendered
       await waitFor(() => {
         const chart = queryByTestId('asset-price-chart');
         expect(chart).toBeNull();
       });
+
+      expect(container).toMatchSnapshot();
     });
 
-    it('should render a chart when price history is available', async () => {
+    it('should render an ERC20 token with prices', async () => {
       const address = '0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55';
+      const marketCap = 456;
 
       // Mock price history
       nock('https://price.api.cx.metamask.io')
@@ -327,7 +323,7 @@ describe('AssetPage', () => {
         .query(true)
         .reply(200, { prices: [[1, 1]] });
 
-      const { queryByTestId } = renderWithProvider(
+      const { queryByTestId, container } = renderWithProvider(
         <AssetPage asset={{ ...token, address }} optionsButton={null} />,
         configureMockStore([thunk])({
           ...mockStore,
@@ -337,6 +333,7 @@ describe('AssetPage', () => {
               [CHAIN_IDS.MAINNET]: {
                 [address]: {
                   price: 123,
+                  marketCap
                 },
               },
             },
@@ -349,33 +346,14 @@ describe('AssetPage', () => {
         const chart = queryByTestId('asset-price-chart');
         expect(chart).toHaveClass('mm-box--background-color-transparent');
       });
-    });
 
-    it('should render market data', async () => {
-      const marketCap = 456;
-
-      const { queryByTestId } = renderWithProvider(
-        <AssetPage asset={token} optionsButton={null} />,
-        configureMockStore([thunk])({
-          ...mockStore,
-          metamask: {
-            ...mockStore.metamask,
-            marketData: {
-              [CHAIN_IDS.MAINNET]: {
-                [token.address]: {
-                  price: 123,
-                  marketCap,
-                },
-              },
-            },
-          },
-        }),
-      );
-
+      // Verify market data is rendered
       const marketCapElement = queryByTestId('asset-market-cap');
       expect(marketCapElement).toHaveTextContent(
         `${marketCap * mockStore.metamask.currencyRates.ETH.conversionRate}`,
       );
+
+      expect(container).toMatchSnapshot();
     });
   });
 });
