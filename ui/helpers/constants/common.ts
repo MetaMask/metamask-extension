@@ -15,13 +15,13 @@ export const CONTRACT_ADDRESS_LINK = _contractAddressLink;
 export const PASSWORD_MIN_LENGTH = 8;
 export const OUTDATED_BROWSER_VERSIONS = {
   // Chrome and Edge should match the latest Chrome version released ~2 years ago
-  chrome: '<90',
-  edge: '<90',
+  chrome: '<109',
+  edge: '<109',
   // Firefox should match the most recent end-of-life extended support release
   firefox: '<91',
   // Opera should be set to the equivalent of the Chrome version set
   // See https://en.wikipedia.org/wiki/History_of_the_Opera_web_browser
-  opera: '<76',
+  opera: '<109',
 };
 
 /**
