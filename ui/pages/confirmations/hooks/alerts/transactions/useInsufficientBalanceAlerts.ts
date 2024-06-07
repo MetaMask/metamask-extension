@@ -5,6 +5,7 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import useCurrentConfirmation from '../../useCurrentConfirmation';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import {
+  currentConfirmationSelector,
   selectTransactionAvailableBalance,
   selectTransactionFeeById,
   selectTransactionValue,
@@ -14,9 +15,8 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Severity } from '../../../../../helpers/constants/design-system';
 
 export function useInsufficientBalanceAlerts(): Alert[] {
-  const { currentConfirmation } = useCurrentConfirmation();
-  const transaction = (currentConfirmation ?? {}) as TransactionMeta;
-  const { id: transactionId } = transaction;
+  const currentConfirmation = useSelector(currentConfirmationSelector);
+  const { id: transactionId } = currentConfirmation ?? {};
 
   const balance = useSelector((state) =>
     selectTransactionAvailableBalance(state, transactionId),
