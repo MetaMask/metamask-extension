@@ -130,7 +130,7 @@ const AssetPage = ({
             iconName={IconName.ArrowLeft}
             onClick={() => history.push(DEFAULT_ROUTE)}
           />
-          <Text color={TextColor.textAlternative}>
+          <Text data-testid="asset-name" color={TextColor.textAlternative}>
             {name && symbol && name !== symbol
               ? `${name} (${symbol})`
               : name ?? symbol}

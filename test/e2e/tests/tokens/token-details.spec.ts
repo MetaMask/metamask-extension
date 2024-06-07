@@ -13,9 +13,101 @@ import {
 import { Driver } from '../../webdriver/driver';
 
 describe('Token Details', function () {
-  it('shows details for an ERC20 token', async function () {
-    const chainId = CHAIN_IDS.MAINNET;
-    const tokenAddress = '0x2efa2cb29c2341d8e5ba7d3262c9e9d6f1bf3711';
+  const chainId = CHAIN_IDS.MAINNET;
+  const tokenAddress = '0x2EFA2Cb29C2341d8E5Ba7D3262C9e9d6f1Bf3711';
+  const symbol = 'foo';
+
+  const fixtures = {
+    fixtures: new FixtureBuilder({ inputChainId: chainId }).build(),
+    ganacheOptions: {
+      ...defaultGanacheOptions,
+      chainId: parseInt(chainId, 16),
+    },
+  };
+
+  const importToken = async (driver: Driver) => {
+    await driver.clickElement({ text: 'Import tokens', tag: 'button' });
+    await clickNestedButton(driver, 'Custom token');
+    await driver.fill(
+      '[data-testid="import-tokens-modal-custom-address"]',
+      tokenAddress,
+    );
+    await driver.waitForSelector('p.mm-box--color-error-default');
+    await driver.fill(
+      '[data-testid="import-tokens-modal-custom-symbol"]',
+      symbol,
+    );
+    await driver.clickElement({ text: 'Next', tag: 'button' });
+    await driver.clickElement(
+      '[data-testid="import-tokens-modal-import-button"]',
+    );
+  };
+
+  const openTokenDetails = async (driver: Driver) => {
+    await driver.clickElement('[data-testid="account-overview__asset-tab"]');
+    const [, tkn] = await driver.findElements(
+      '[data-testid="multichain-token-list-button"]',
+    );
+    await tkn.click();
+  };
+
+  const verifyToken = async (driver: Driver) => {
+    // Verify token name
+    const name = await (
+      await driver.findElement('[data-testid="asset-name"]')
+    ).getText();
+    assert.equal(name, symbol);
+
+    // Verify token address
+    const address = await (
+      await driver.findElement('[data-testid="address-copy-button-text"]')
+    ).getText();
+    assert.equal(
+      address,
+      `${tokenAddress.slice(0, 7)}...${tokenAddress.slice(37)}`,
+    );
+  };
+
+  it('shows details for an ERC20 token without prices available', async function () {
+    await withFixtures(
+      {
+        ...fixtures,
+        // @ts-expect-error 'this' implicitly has type 'any'
+        title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: Mockttp) => [
+          // Mock no current price
+          await mockServer
+            .forGet(
+              `https://price.api.cx.metamask.io/v2/chains/${parseInt(
+                chainId,
+                16,
+              )}/spot-prices`,
+            )
+            .thenCallback(() => ({
+              statusCode: 200,
+              json: {},
+            })),
+          // Mock no historical prices
+          await mockServer
+            .forGet(
+              `https://price.api.cx.metamask.io/v1/chains/${chainId}/historical-prices/${tokenAddress}`,
+            )
+            .thenCallback(() => ({
+              statusCode: 200,
+              json: {},
+            })),
+        ],
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await unlockWallet(driver);
+        await importToken(driver);
+        await openTokenDetails(driver);
+        await verifyToken(driver);
+      },
+    );
+  });
+
+  it('shows details for an ERC20 token with prices available', async function () {
     const ethConversionInUsd = 10000;
 
     // Prices are in ETH
@@ -26,11 +118,8 @@ describe('Token Details', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ inputChainId: chainId }).build(),
-        ganacheOptions: {
-          ...defaultGanacheOptions,
-          chainId: parseInt(chainId, 16),
-        },
+        ...fixtures,
+        // @ts-expect-error 'this' implicitly has type 'any'
         title: this.test?.fullTitle(),
         ethConversionInUsd,
         testSpecificMock: async (mockServer: Mockttp) => [
@@ -44,7 +133,7 @@ describe('Token Details', function () {
             )
             .thenCallback(() => ({
               statusCode: 200,
-              json: { [tokenAddress]: marketData },
+              json: { [tokenAddress.toLowerCase()]: marketData },
             })),
           // Mock historical prices
           await mockServer
@@ -67,48 +156,30 @@ describe('Token Details', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
+        await importToken(driver);
+        await openTokenDetails(driver);
+        await verifyToken(driver);
 
-        // Import the token
-        await driver.clickElement({ text: 'Import tokens', tag: 'button' });
-        await clickNestedButton(driver, 'Custom token');
-        await driver.fill(
-          '[data-testid="import-tokens-modal-custom-address"]',
-          tokenAddress,
-        );
-        await driver.waitForSelector('p.mm-box--color-error-default');
-        await driver.fill(
-          '[data-testid="import-tokens-modal-custom-symbol"]',
-          'foo',
-        );
-        await driver.clickElement({ text: 'Next', tag: 'button' });
-        await driver.clickElement(
-          '[data-testid="import-tokens-modal-import-button"]',
-        );
-
-        // Go to details page
-        await driver.clickElement('[data-testid="home__asset-tab"]');
-        const [, tkn] = await driver.findElements(
-          '[data-testid="multichain-token-list-button"]',
-        );
-        await tkn.click();
-
+        // Verify token price
         const price = await (
           await driver.findElement('[data-testid="asset-hovered-price"]')
         ).getText();
-
         assert.equal(
           price,
           formatCurrency(`${marketData.price * ethConversionInUsd}`, 'USD'),
         );
 
+        // Verify token market data
         const marketCap = await (
           await driver.findElement('[data-testid="asset-market-cap"]')
         ).getText();
-
         assert.equal(
           marketCap,
           `${marketData.marketCap * ethConversionInUsd}.00`,
         );
+
+        // Verify a chart was rendered
+        await driver.waitForSelector('[data-testid="asset-price-chart"]');
       },
     );
   });
