@@ -2587,3 +2587,7 @@ export function getKeyringSnapRemovalResult(state) {
 }
 
 ///: END:ONLY_INCLUDE_IF
+
+export function getLocalDeveloperFlag(flagName) {
+  return process.env[flagName] || window.metamaskFeatureFlags?.[flagName];
+}

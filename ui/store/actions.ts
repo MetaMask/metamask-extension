@@ -5597,3 +5597,10 @@ export async function getNextAvailableAccountName(): Promise<string> {
     [],
   );
 }
+
+export function setLocalDeveloperFlag(
+  flagName: string,
+  value: string | boolean,
+) {
+  process.env[flagName] = value;
+}

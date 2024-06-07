@@ -1087,6 +1087,16 @@ async function getCleanAppState(driver) {
   );
 }
 
+// Should execute at the beginning of a test
+async function setLocalDeveloperFlag(driver, flagName, value) {
+  return await driver.executeScript(() => {
+    window.metamaskFeatureFlags = {
+      ...(window.metamaskFeatureFlags || {}),
+      [flagName]: value,
+    };
+  });
+}
+
 async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
   try {
     const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
@@ -1179,4 +1189,5 @@ module.exports = {
   getCleanAppState,
   editGasFeeForm,
   clickNestedButton,
+  setLocalDeveloperFlag,
 };
