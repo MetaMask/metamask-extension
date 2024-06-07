@@ -257,11 +257,11 @@ export function AssetPickerModal({
   ]);
 
   const Search = useCallback(
-    () => (
+    ({ isNFTSearch = false }: { isNFTSearch?: boolean }) => (
       <Box padding={1} paddingLeft={4} paddingRight={4}>
         <TextFieldSearch
           borderRadius={BorderRadius.LG}
-          placeholder={t('searchTokenOrNFT')}
+          placeholder={t(isNFTSearch ? 'searchNfts' : 'searchTokens')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           error={false}
@@ -363,7 +363,7 @@ export function AssetPickerModal({
                 >
                   {hasAnyNfts ? (
                     <Box className="modal-tab__main-view">
-                      <Search />
+                      <Search isNFTSearch />
                       <NftsItems
                         collections={collectionDataFiltered}
                         previouslyOwnedCollection={previouslyOwnedCollection}
