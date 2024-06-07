@@ -8,8 +8,8 @@ const { isObject } = require('@metamask/utils');
 const { SENTRY_UI_STATE } = require('../../../../app/scripts/lib/setupSentry');
 const FixtureBuilder = require('../../fixture-builder');
 const {
-  logInWithBalanceValidation,
   convertToHexValue,
+  logInWithBalanceValidation,
   withFixtures,
 } = require('../../helpers');
 
@@ -485,9 +485,9 @@ describe('Sentry errors', function () {
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
         },
-        async ({ driver, ganacheServer, mockedEndpoint }) => {
-          await logInWithBalanceValidation(driver, ganacheServer);
-
+        async ({ driver, mockedEndpoint }) => {
+          await driver.navigate();
+          await driver.findElement('#password');
           // Erase `getSentryAppState` hook, simulating a "before initialization" state
           await driver.executeScript(
             'window.stateHooks.getSentryAppState = undefined',
@@ -747,9 +747,8 @@ describe('Sentry errors', function () {
           title: this.test.fullTitle(),
           testSpecificMock: mockSentryTestError,
         },
-        async ({ driver, mockedEndpoint }) => {
-          await driver.navigate();
-          await driver.findElement('#password');
+        async ({ driver, ganacheServer, mockedEndpoint }) => {
+          await logInWithBalanceValidation(driver, ganacheServer);
 
           // Trigger error
           await driver.executeScript('window.stateHooks.throwTestError()');
