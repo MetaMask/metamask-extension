@@ -3219,55 +3219,6 @@
   "notifications": {
     "message": "Notifications"
   },
-  "notifications20ActionText": {
-    "message": "En savoir plus",
-    "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a ledger page to resolve the U2F connection issue."
-  },
-  "notifications20Description": {
-    "message": "Si vous utilisez la dernière version de Firefox, il se peut que vous rencontriez un problème, car Firefox ne prend plus en charge la norme d’authentification U2F.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the U2F support being dropped by firefox and that it affects ledger users."
-  },
-  "notifications20Title": {
-    "message": "Les utilisateurs de Ledger et de Firefox rencontrent des problèmes de connexion",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
-  },
-  "notifications24ActionText": {
-    "message": "J’ai compris"
-  },
-  "notifications24Description": {
-    "message": "Les paramètres des frais de gaz avancés sont désormais ajustés en fonction du réseau que vous utilisez. Cela signifie que vous pouvez définir des frais de gaz avancés pour chaque réseau et éviter de payer trop cher pour le gaz ou le blocage des transactions."
-  },
-  "notifications24Title": {
-    "message": "Frais de gaz avancés pour chaque réseau"
-  },
-  "notifications8ActionText": {
-    "message": "Allez dans Paramètres > Avancés",
-    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced settings page."
-  },
-  "notifications8DescriptionOne": {
-    "message": "Depuis MetaMask v10.4.0, vous n’avez plus besoin de Ledger Live pour connecter votre appareil Ledger à MetaMask.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes changes for how Ledger Live is no longer needed to connect the device."
-  },
-  "notifications8DescriptionTwo": {
-    "message": "Pour améliorer votre expérience utilisateur, allez dans Paramètres > Avancés et changez le « Type de connexion préférée au Ledger » en « WebHID ».",
-    "description": "Description of a notification in the 'See What's New' popup. Describes how the user can turn off the Ledger Live setting."
-  },
-  "notifications8Title": {
-    "message": "Amélioration de la connexion Ledger",
-    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
-  },
-  "notificationsBlockaidDefaultDescriptionActionText": {
-    "message": "D’accord"
-  },
-  "notificationsBlockaidDefaultDescriptionOne": {
-    "message": "Évitez les arnaques tout en protégeant votre vie privée grâce aux alertes de sécurité fournies par Blockaid. Cette fonctionnalité est disponible sur Arbitrum, Avalanche, BNB chain, Linea, Optimism, Polygon, Base, Sepolia et le réseau principal Ethereum."
-  },
-  "notificationsBlockaidDefaultDescriptionTwo": {
-    "message": "Vous devez faire preuve de diligence raisonnable avant d’approuver toute demande."
-  },
-  "notificationsBlockaidDefaultTitle": {
-    "message": "Restez en sécurité grâce aux alertes de sécurité"
-  },
   "notificationsDropLedgerFirefoxDescription": {
     "message": "Firefox ne prend plus en charge la norme d’authentification U2F, donc Ledger ne fonctionnera pas avec MetaMask sur Firefox. Essayez plutôt d’utiliser MetaMask sur Google Chrome.",
     "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
@@ -3299,18 +3250,6 @@
   "notificationsPageNoNotificationsContent": {
     "message": "Vous n’avez pas encore reçu de notifications."
   },
-  "notificationsPetnamesActionText": {
-    "message": "D’accord"
-  },
-  "notificationsPetnamesDescriptionOne": {
-    "message": "Si vous cliquez sur une adresse lors de l’exécution d’une transaction, vous pourrez voir les pseudonymes suggérés par des sources tierces telles que ENS, Lens et Etherscan."
-  },
-  "notificationsPetnamesDescriptionTwo": {
-    "message": "Cela vous permettra d’identifier plus facilement les adresses à l’avenir. Veillez donc à donner un pseudonyme aux adresses auxquelles vous faites confiance."
-  },
-  "notificationsPetnamesTitle": {
-    "message": "La proposition de pseudonymes est enfin disponible !"
-  },
   "notificationsSettingsBoxError": {
     "message": "Un problème est survenu, veuillez réessayer."
   },
@@ -3319,20 +3258,6 @@
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Découvrez comment nous protégeons vos données personnelles lorsque vous utilisez cette fonctionnalité."
-  },
-  "notificationsSimulationsDescriptionOne": {
-    "message": "Vous pouvez désormais connaître le résultat potentiel de vos transactions avant de les effectuer !"
-  },
-  "notificationsSimulationsDescriptionTwo": {
-    "message": "Il s’agit d’une simple simulation, nous ne pouvons donc pas garantir le résultat final. Vous pouvez la désactiver à tout moment dans Paramètres > Sécurité et confidentialité. "
-  },
-  "notificationsU2FLedgerLiveDescription": {
-    "message": "U2F et Ledger Live ne sont plus disponibles sur Chrome. Vous pouvez toujours connecter des appareils Ledger sur Chrome à l’aide de Webhid.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the U2F and Ledger Live connection modes are now deprecated"
-  },
-  "notificationsU2FLedgerLiveTitle": {
-    "message": "Obsolescence de U2F et de Ledger Live",
-    "description": "Title for a notification in the 'See What's New' popup. Tells ledger and chrome users that U2F and Ledger Live options are now deprecated."
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 nouveaux jetons trouvés dans ce compte",
