@@ -246,8 +246,7 @@
     "pendingApprovals": "object",
     "pendingApprovalCount": "number",
     "approvalFlows": "object",
-    "storageMetadata": {},
-    "versionFileETag": "string"
+    "storageMetadata": {}
   },
   "send": "object",
   "swaps": "object",
