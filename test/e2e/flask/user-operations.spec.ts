@@ -232,10 +232,6 @@ describe('User Operations', function () {
   });
 
   it('from send transaction', async function (this: Mocha.Context) {
-    if (process.env.MULTICHAIN) {
-      return;
-    }
-
     await withAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver, bundlerServer) => {
