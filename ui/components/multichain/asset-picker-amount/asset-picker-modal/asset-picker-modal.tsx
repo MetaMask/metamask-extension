@@ -67,6 +67,7 @@ import {
   getSwapsBlockedTokens,
 } from '../../../../ducks/send';
 import NFTsDetectionNoticeNFTsTab from '../../../app/nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
+import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { Asset, Collection, Token } from './types';
 import AssetList from './AssetList';
 
@@ -199,8 +200,19 @@ export function AssetPickerModal({
     // undefined would be the native token address
     const filteredTokensAddresses = new Set<string | undefined>();
 
+    const getIsDisabled = ({ address, symbol }: Token) => {
+      const isDisabled = sendingAssetSymbol
+        ? !isEqualCaseInsensitive(sendingAssetSymbol, symbol) &&
+          memoizedSwapsBlockedTokens.has(address || '')
+        : false;
+
+      return isDisabled;
+    };
+
     function* tokenGenerator() {
       yield nativeToken;
+
+      const blockedTokens = [];
 
       for (const token of memoizedUsersTokens) {
         yield token;
@@ -210,11 +222,20 @@ export function AssetPickerModal({
       for (const address of Object.keys(topTokens)) {
         const token = tokenList?.[address];
         if (token) {
-          yield token;
+          if (isDest && getIsDisabled(token)) {
+            blockedTokens.push(token);
+            continue;
+          } else {
+            yield token;
+          }
         }
       }
 
       for (const token of Object.values(tokenList)) {
+        yield token;
+      }
+
+      for (const token of blockedTokens) {
         yield token;
       }
     }
