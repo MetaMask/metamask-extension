@@ -55,9 +55,10 @@ export class NetworkController {
     await formField[1].fill(options.url);
     await formField[2].fill(options.chainID);
     await this.networkTickerInput.fill(options.symbol);
+    await this.saveBtn.waitFor({ state: 'visible' });
     await this.saveBtn.click();
+    await this.switchToNetworkBtn.waitFor({ state: 'visible' });
     await this.switchToNetworkBtn.click();
-    await this.page.waitForTimeout(1000);
   }
 
   async addPopularNetwork(options: { networkName: string }) {
