@@ -667,7 +667,7 @@ This organization helps provide a clear structure for understanding the various 
 
 > **`getWindowTitleWaitUntilLoads`** function waits until the title of the window tab is loaded
 >
-> [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L574)
+> [source](https://github.com/MetaMask/metamask-extension/blob/055724218e851d871dba75472cdc0742f3e447e6/test/e2e/webdriver/driver.js#L860)
 >
 > #### Arguments
 > @param {string} title - Title of the window<br>
