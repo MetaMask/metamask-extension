@@ -2507,9 +2507,10 @@ export function getSnapsList(state) {
       }
 
       // For backwards compatibility, preinstalled Snaps must specify hidden = false to be displayed.
-      if (snap.preinstalled) {
-        return snap.hidden === false;
-      }
+      // TODO: enable this check again
+      // if (snap.preinstalled) {
+      //   return snap.hidden === false;
+      // }
 
       return true;
     })

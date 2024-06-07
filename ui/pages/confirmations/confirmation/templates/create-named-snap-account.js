@@ -4,9 +4,9 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 
-function getValues(pendingApproval, _t, actions, _history, _data, contexts) {
+function getValues(pendingApproval, t, actions, _history, _data, contexts) {
   const { origin: snapId, snapName, requestData } = pendingApproval;
-  const { accountId, snapSuggestedAccountName } = requestData;
+  const { address, snapSuggestedAccountName } = requestData;
   const { trackEvent } = contexts;
 
   const trackSnapAccountEvent = (event) => {
@@ -21,12 +21,16 @@ function getValues(pendingApproval, _t, actions, _history, _data, contexts) {
     });
   };
 
-  const onActionComplete = (success) => {
+  const onActionComplete = async (success) => {
     if (success) {
       trackSnapAccountEvent(MetaMetricsEventName.AddSnapAccountConfirmed);
       actions.resolvePendingApproval(pendingApproval.id, true);
     } else {
       trackSnapAccountEvent(MetaMetricsEventName.AddSnapAccountCanceled);
+      actions.rejectPendingApproval(
+        pendingApproval.id,
+        'User rejected account creation.',
+      );
       actions.resolvePendingApproval(pendingApproval.id, false);
     }
   };
@@ -38,11 +42,12 @@ function getValues(pendingApproval, _t, actions, _history, _data, contexts) {
         key: 'create-named-snap-account',
         props: {
           onActionComplete,
-          accountId,
+          address,
           snapSuggestedAccountName,
         },
       },
     ],
+    loadingText: t('addingAccount'),
     hideSubmitButton: true,
     onLoad: () =>
       trackSnapAccountEvent(MetaMetricsEventName.AddSnapAccountViewed),
