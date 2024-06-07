@@ -848,17 +848,23 @@ class Driver {
     throw new Error('waitUntilXWindowHandles timed out polling window handles');
   }
 
-   /**
+  /**
    * Waits until the title of the window tab is loaded
    *
    * @param {string} title - Title of the window
+   * @param handlerId - unique ID for the tab whose title is needed.
    * @param delayStep - defaults to 1000 milliseconds
    * @param {number} [timeout] - The amount of time in milliseconds to wait before timing out.
    * @returns {Promise} window title after the command completion
    */
-   async getWindowTitleWaitUntilLoads(title,handlerId, delayStep = 1000, timeout = this.timeout) {
+  async getWindowTitleWaitUntilLoads(
+    title,
+    handlerId,
+    delayStep = 1000,
+    timeout = this.timeout,
+  ) {
     let timeElapsed = 0;
-    let windowTitle
+    let windowTitle;
     while (timeElapsed <= timeout) {
       windowTitle = await this.getWindowTitleByHandlerId(handlerId);
       if (windowTitle === title) {
