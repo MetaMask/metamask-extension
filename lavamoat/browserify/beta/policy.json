@@ -910,7 +910,6 @@
         "@metamask/controller-utils": true,
         "@metamask/eth-query": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/name-controller>async-mutex": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "bn.js": true,
