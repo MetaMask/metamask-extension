@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
 import { EthMethod } from '@metamask/keyring-api';
+import { isEqual } from 'lodash';
 import {
   isBalanceCached,
   getIsSwapsChain,
@@ -21,13 +22,15 @@ const EthOverview = ({ className }) => {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const isBridgeChain = useSelector(getIsBridgeChain);
   const isBuyableChain = useSelector(getIsBuyableChain);
-  const defaultSwapsToken = useSelector(getSwapsDefaultToken);
+  // FIXME: This causes re-renders, so use isEqual to avoid this
+  const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
   ///: END:ONLY_INCLUDE_IF
   const balanceIsCached = useSelector(isBalanceCached);
   const chainId = useSelector(getCurrentChainId);
   const balance = useSelector(getSelectedAccountCachedBalance);
 
-  const account = useSelector(getSelectedInternalAccount);
+  // FIXME: This causes re-renders, so use isEqual to avoid this
+  const account = useSelector(getSelectedInternalAccount, isEqual);
   const isSwapsChain = useSelector(getIsSwapsChain);
   const isSigningEnabled =
     account.methods.includes(EthMethod.SignTransaction) ||
