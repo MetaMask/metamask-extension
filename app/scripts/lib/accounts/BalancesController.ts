@@ -1,4 +1,6 @@
 import { type AccountsControllerListAccountsAction } from '@metamask/accounts-controller';
+import { assert } from 'superstruct';
+
 import { JsonRpcRequest } from '@metamask/utils';
 import {
   BaseController,
@@ -8,6 +10,7 @@ import {
 } from '@metamask/base-controller';
 import {
   BtcAccountType,
+  GetAccountBalancesResponseStruct,
   InternalAccount,
   KeyringRpcMethod,
   type Balance,
@@ -192,13 +195,16 @@ export class BalancesController extends BaseController<
     snapId: string,
     assetTypes: CaipAssetType[],
   ): Promise<Record<CaipAssetType, Balance>> {
-    return (await this.#handleRequest(snapId, {
+    const response = await this.#handleRequest(snapId, {
       method: KeyringRpcMethod.GetAccountBalances,
       params: {
         id: accountId,
         assets: assetTypes,
       },
-    })) as Record<CaipAssetType, Balance>;
+    });
+
+    assert(response, GetAccountBalancesResponseStruct);
+    return response;
   }
 
   /**
