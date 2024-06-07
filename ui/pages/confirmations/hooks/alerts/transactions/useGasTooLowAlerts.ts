@@ -1,18 +1,21 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import useCurrentConfirmation from '../../useCurrentConfirmation';
 import { MIN_GAS_LIMIT_DEC } from '../../../send/send.constants';
 import { hexToDecimal } from '../../../../../../shared/modules/conversion.utils';
 import { useMemo } from 'react';
-import { t } from '../../../../../../app/scripts/translate';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { useSelector } from 'react-redux';
+import { currentConfirmationSelector } from '../../../selectors';
+import { selectTransactionMetadata } from '../../../../../selectors';
+import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 
 export function useGasTooLowAlerts(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useCurrentConfirmation();
-  const transaction = (currentConfirmation ?? {}) as TransactionMeta;
-  const gas = transaction.txParams?.gas;
+  const currentConfirmation = useSelector(currentConfirmationSelector);
+  const {id: transactionId} = (currentConfirmation ?? {}) as TransactionMeta;
+  const transactionMeta = useSelector(state => selectTransactionMetadata(state, transactionId));
+  const gas = transactionMeta?.txParams?.gas;
 
   const gasTooLow =
     gas && Number(hexToDecimal(gas)) < Number(MIN_GAS_LIMIT_DEC);
@@ -24,7 +27,7 @@ export function useGasTooLowAlerts(): Alert[] {
 
     return [
       {
-        field: 'estimatedFee',
+        field: RowAlertKey.EstimatedFee,
         isBlocking: true,
         key: 'gasTooLow',
         message: t('gasLimitTooLow'),
