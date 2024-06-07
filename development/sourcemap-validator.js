@@ -68,7 +68,7 @@ async function validateSourcemapForFile({ buildName, optional = false }) {
   } catch (_) {
     // empty
   }
-  if (!rawBuild)
+  if (!rawBuild) {
     if (optional) {
       console.warn(`SourcemapValidator - file not found, skipping "${buildName}"`);
     }
