@@ -184,7 +184,7 @@ describe('Change assets', function () {
         await driver.delay(500);
 
         // Choose the nft
-        await driver.clickElement('[data-testid="home__nfts-tab"]');
+        await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
         await driver.clickElement('[data-testid="nft-default-image"]');
         await driver.clickElement('[data-testid="nft-send-button"]');
 
@@ -284,7 +284,7 @@ describe('Change assets', function () {
         });
 
         // Choose the nft
-        await driver.clickElement('[data-testid="home__nfts-tab"]');
+        await driver.clickElement('[data-testid="account-overview__nfts-tab"]');
         await driver.clickElement('[data-testid="nft-default-image"]');
         await driver.clickElement('[data-testid="nft-send-button"]');
 
