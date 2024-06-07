@@ -4,6 +4,7 @@ import { Severity } from '../../../../../helpers/constants/design-system';
 import { PriorityLevels } from '../../../../../../shared/constants/gas';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 
 export function useGasFeeLowAlerts(): Alert[] {
   const t = useI18nContext();
@@ -17,7 +18,7 @@ export function useGasFeeLowAlerts(): Alert[] {
 
     return [
       {
-        field: 'estimatedFee',
+        field: RowAlertKey.EstimatedFee,
         key: 'gasFeeLow',
         message: t('lowPriorityMessage'),
         reason: 'Low Gas Fee',

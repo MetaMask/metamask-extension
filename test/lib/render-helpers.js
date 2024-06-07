@@ -75,11 +75,24 @@ export function renderWithProvider(component, store, pathname = '/') {
   };
 }
 
-export function renderHookWithProvider(hook, state, pathname = '/') {
+export function renderHookWithProvider(hook, state, pathname = '/', Container) {
   const store = state ? configureStore(state) : undefined;
-  const { history, Wrapper } = createProviderWrapper(store, pathname);
+
+  const { history, Wrapper: ProviderWrapper } = createProviderWrapper(
+    store,
+    pathname,
+  );
+
+  const wrapper = Container
+    ? ({ children }) => (
+        <ProviderWrapper>
+          <Container>{children}</Container>
+        </ProviderWrapper>
+      )
+    : ProviderWrapper;
+
   return {
-    ...renderHook(hook, { wrapper: Wrapper }),
+    ...renderHook(hook, { wrapper }),
     history,
   };
 }
