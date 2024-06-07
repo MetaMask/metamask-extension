@@ -21,11 +21,19 @@ const INVALID_INITIAL_TRANSACTION_TYPES = [
   TransactionType.cancel,
   TransactionType.retry,
 ];
+
+// The statuses listed below are permitted in the Activity list for Smart Swaps because
+// a Smart Swap with these statuses hasn't been added to the TransactionController's regular transaction list yet.
+// The SUCCESS status is not allowed because once a Smart Swap is successful,
+// the "this.confirmExternalTransaction" function is called, which moves the transaction
+// to the regular transaction list in the TransactionController.
+// TODO: When Swaps and non-Swaps transactions are treated the same,
+// we will only allow the PENDING smart transaction status in the Activity list.
 const allowedSwapsSmartTransactionStatusesForActivityList = [
   SmartTransactionStatuses.PENDING,
   SmartTransactionStatuses.UNKNOWN,
   SmartTransactionStatuses.RESOLVED,
-  SmartTransactionStatuses.CANCELLED,
+  SmartTransactionStatuses.CANCELLED, // Other CANCELLED_ statuses are deprecated.
 ];
 
 export const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
@@ -116,6 +124,7 @@ export const smartTransactionsListSelector = (state) => {
       ) {
         return false;
       }
+      // If a swap or non-swap smart transaction is pending, we want to show it in the Activity list.
       if (smartTransaction.status === SmartTransactionStatuses.PENDING) {
         return true;
       }
