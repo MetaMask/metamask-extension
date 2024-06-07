@@ -249,9 +249,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         ignoredTokens: [],
         tokens: [],
       },
-      // TokenRatesController: {
-      //   contractExchangeRates: {},
-      // },
       TransactionController: {
         transactions: {},
       },
