@@ -57,7 +57,7 @@ const PermitSimulation: React.FC = () => {
       <ConfirmInfoRow label={t('approve')}>
         <Box>
           <Box display={Display.Flex}>
-            <Box display={Display.Inline} marginRight={1}>
+            <Box display={Display.Inline} marginInlineEnd={1}>
               <Text
                 backgroundColor={BackgroundColor.backgroundAlternative}
                 borderRadius={BorderRadius.XL}
