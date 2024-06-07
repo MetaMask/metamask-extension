@@ -6,7 +6,7 @@ const TOKENS_API_MOCK_RESULT = [
     decimals: 18,
     type: 'native',
     iconUrl:
-      'https://token.metaswap.codefi.network/assets/nativeCurrencyLogos/ethereum.svg',
+      'https://token.api.cx.metamask.io/assets/nativeCurrencyLogos/ethereum.svg',
     coingeckoId: 'ethereum',
     address: '0x0000000000000000000000000000000000000000',
     occurrences: 100,

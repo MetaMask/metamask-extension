@@ -3119,7 +3119,7 @@ export function setShowTokenAutodetectModal(value: boolean) {
   return setPreference('showTokenAutodetectModal', value);
 }
 
-export function setAutoLockTimeLimit(value: boolean) {
+export function setAutoLockTimeLimit(value: number | null) {
   return setPreference('autoLockTimeLimit', value);
 }
 
@@ -5589,4 +5589,11 @@ export function setIsProfileSyncingEnabled(
       dispatch(hideLoadingIndication());
     }
   };
+}
+
+export async function getNextAvailableAccountName(): Promise<string> {
+  return await submitRequestToBackground<string>(
+    'getNextAvailableAccountName',
+    [],
+  );
 }
