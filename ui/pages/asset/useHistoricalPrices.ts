@@ -36,7 +36,7 @@ export const useHistoricalPrices = ({
       setLoading(true);
       fetchWithCache({
         url: `https://price.api.cx.metamask.io/v1/chains/${chainId}/historical-prices/${address}?vsCurrency=${currency}&timePeriod=${timeRange}`,
-        cacheOptions: { cacheRefreshTime: 3 * MINUTE },
+        cacheOptions: { cacheRefreshTime: 5 * MINUTE },
         functionName: 'GetAssetHistoricalPrices',
       })
         .catch(() => ({}))
