@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { ApprovalType } from '@metamask/controller-utils';
 import Popover from '../../../../ui/popover';
 import ConfirmationPage from '../../../../../pages/confirmations/confirmation/confirmation';
-import { ApprovalType } from '@metamask/controller-utils';
-import { useSelector } from 'react-redux';
 import { getUnapprovedConfirmations } from '../../../../../selectors';
 
 const NetworkConfirmationPopover = () => {
@@ -17,7 +17,6 @@ const NetworkConfirmationPopover = () => {
           confirmation.origin === 'metamask' &&
           confirmation.type === ApprovalType.AddEthereumChain,
       );
-
     if (!showPopover && anAddNetworkConfirmationFromMetaMaskExists) {
       setShowPopover(true);
     } else if (showPopover && !anAddNetworkConfirmationFromMetaMaskExists) {
