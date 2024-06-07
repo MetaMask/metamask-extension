@@ -87,7 +87,7 @@ const BADGE_COLOR_APPROVAL = '#0376C9';
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_NOTIFICATION = '#D73847';
 const BADGE_LABEL_APPROVAL = '\u22EF'; // unicode ellipsis
-const BADGE_MAX_NOTIFICATION_COUNT = '9';
+const BADGE_MAX_NOTIFICATION_COUNT = 9;
 
 // Setup global hook for improved Sentry state snapshots during initialization
 const inTest = process.env.IN_TEST;
