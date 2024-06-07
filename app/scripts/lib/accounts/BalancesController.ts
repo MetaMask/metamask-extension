@@ -112,7 +112,23 @@ const balancesControllerMetadata = {
   },
 };
 
-const ASSETS_LIST = ['bip122:000000000019d6689c085ae165831e93/slip44:0'];
+const BTC_TESTNET_ASSETS = ['bip122:000000000933ea01ad0ee984209779ba/slip44:0'];
+const BTC_MAINNET_ASSETS = ['bip122:000000000019d6689c085ae165831e93/slip44:0'];
+
+/**
+ * Returns whether an address is on the Bitcoin mainnet.
+ *
+ * This function only checks the prefix of the address to determine if it's on
+ * the mainnet or not. It doesn't validate the address itself, and should only
+ * be used as a temporary solution until this information is included in the
+ * account object.
+ *
+ * @param address - The address to check.
+ * @returns `true` if the address is on the Bitcoin mainnet, `false` otherwise.
+ */
+function isBtcMainnet(address: string): boolean {
+  return address.startsWith('bc1') || address.startsWith('1');
+}
 
 /**
  * The BalancesController is responsible for fetching and caching account
@@ -162,6 +178,10 @@ export class BalancesController extends BaseController<
     return accounts.filter((account) => account.type === BtcAccountType.P2wpkh);
   }
 
+  /**
+   * Updates the balances of all supported accounts. This method doesn't return
+   * anything, but it updates the state of the controller.
+   */
   async updateBalances() {
     const accounts = await this.#listAccounts();
     for (const account of accounts) {
@@ -169,7 +189,9 @@ export class BalancesController extends BaseController<
         const balances = await this.#getBalances(
           account.id,
           account.metadata.snap.id,
-          ASSETS_LIST,
+          isBtcMainnet(account.address)
+            ? BTC_MAINNET_ASSETS
+            : BTC_TESTNET_ASSETS,
         );
 
         this.update((state: Draft<BalancesControllerState>) => {
