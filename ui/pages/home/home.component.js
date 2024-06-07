@@ -474,7 +474,7 @@ export default class Home extends PureComponent {
       isMv3ButOffscreenDocIsMissing ? (
         <div>
           <p>{t('outdatedBrowserNotification')}</p>
-          <p>{t('browserDoesntSupportHWandSnaps')}</p>
+          <p>{t('noHardwareWalletsOrSnapsSupport')}</p>
         </div>
       ) : (
         t('outdatedBrowserNotification')
