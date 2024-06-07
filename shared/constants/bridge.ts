@@ -15,4 +15,4 @@ export const ALLOWED_BRIDGE_CHAIN_IDS = [
 export const TRUSTED_BRIDGE_SIGNER =
   '0xe672b534ccf9876a7554a1dd1685a2a5c2cc8e8c';
 
-export const SIG_LEN = 130
+export const SIG_LEN = 130;

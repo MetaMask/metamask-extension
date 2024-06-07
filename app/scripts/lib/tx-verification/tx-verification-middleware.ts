@@ -9,10 +9,13 @@ import {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
 } from 'json-rpc-engine';
-import { SIG_LEN, TRUSTED_BRIDGE_SIGNER } from '../../../../shared/constants/bridge';
+import {
+  SIG_LEN,
+  TRUSTED_BRIDGE_SIGNER,
+} from '../../../../shared/constants/bridge';
 import { FIRST_PARTY_CONTRACT_NAMES } from '../../../../shared/constants/first-party-contracts';
 
-type TxParams = {
+export type BridgeTxParams = {
   chainId?: `0x${string}`;
   data: string;
   from: string;
@@ -52,10 +55,14 @@ export function createTxVerificationMiddleware(
         ? (params.chainId.toLowerCase() as `0x${string}`)
         : networkController.state.providerConfig.chainId;
 
-    // if the recipient address is not the bridge contract, skip verification
+    // skip verification if bridge is not deployed on the specified chain.
+    // skip verification to address is not the bridge contract
     if (
+      !Object.keys(FIRST_PARTY_CONTRACT_NAMES['MetaMask Bridge']).includes(
+        chainId,
+      ) ||
       params.to.toLowerCase() !==
-      FIRST_PARTY_CONTRACT_NAMES['MetaMask Bridge'][chainId].toLowerCase()
+        FIRST_PARTY_CONTRACT_NAMES['MetaMask Bridge'][chainId].toLowerCase()
     ) {
       return next();
     }
@@ -64,15 +71,15 @@ export function createTxVerificationMiddleware(
       to: hashMessage(params.to.toLowerCase()),
       from: hashMessage(params.from.toLowerCase()),
       data: hashMessage(
-        params.data.toLowerCase().substring(0, params.data.length - SIG_LEN),
+        params.data.toLowerCase().slice(0, params.data.length - SIG_LEN),
       ),
       value: hashMessage(params.value.toLowerCase()),
     };
-    const h = hashMessage(JSON.stringify(paramsToVerify));
+    const hashedParams = hashMessage(JSON.stringify(paramsToVerify));
 
     // signature is 130 chars in length at the end
-    const signature = `0x${params.data.substr(-SIG_LEN)}`;
-    const addressToVerify = verifyMessage(h, signature);
+    const signature = `0x${params.data.slice(-SIG_LEN)}`;
+    const addressToVerify = verifyMessage(hashedParams, signature);
 
     if (addressToVerify.toLowerCase() !== TRUSTED_BRIDGE_SIGNER.toLowerCase()) {
       return end(
@@ -90,15 +97,15 @@ export function createTxVerificationMiddleware(
  * @param params - The params to validate.
  * @returns Whether the params are valid.
  */
-function isValidParams(params: Json[]): params is [TxParams] {
+function isValidParams(params: Json[]): params is [BridgeTxParams] {
   return (
     isObject(params[0]) &&
-    (!hasProperty(params[0], 'chainId') ||
-      (typeof params[0].chainId === 'string' &&
-        params[0].chainId.startsWith('0x'))) &&
     typeof params[0].data === 'string' &&
     typeof params[0].from === 'string' &&
     typeof params[0].to === 'string' &&
-    typeof params[0].value === 'string'
+    typeof params[0].value === 'string' &&
+    (!hasProperty(params[0], 'chainId') ||
+      (typeof params[0].chainId === 'string' &&
+        params[0].chainId.startsWith('0x')))
   );
 }
