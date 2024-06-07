@@ -8,7 +8,7 @@ export const RestrictedEthMethods = Object.freeze({
 });
 
 export const RestrictedMethods = Object.freeze({
-  ...RestrictedEthMethods,
+  eth_accounts: 'eth_accounts',
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   snap_dialog: 'snap_dialog',
   snap_notify: 'snap_notify',

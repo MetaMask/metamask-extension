@@ -314,7 +314,6 @@ function validateCaveatNetworks(
  * "method not found" error.
  */
 export const unrestrictedMethods = Object.freeze([
-  ...UnrestrictedEthSigningMethods,
   'eth_blockNumber',
   'eth_call',
   'eth_chainId',
@@ -351,6 +350,14 @@ export const unrestrictedMethods = Object.freeze([
   'eth_newFilter',
   'eth_newPendingTransactionFilter',
   'eth_protocolVersion',
+  'eth_requestAccounts',
+  'eth_sendRawTransaction',
+  'eth_sendTransaction',
+  'eth_sign',
+  'eth_signTypedData',
+  'eth_signTypedData_v1',
+  'eth_signTypedData_v3',
+  'eth_signTypedData_v4',
   'eth_submitHashrate',
   'eth_submitWork',
   'eth_subscribe',
