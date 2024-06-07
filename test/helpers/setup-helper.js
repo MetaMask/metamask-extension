@@ -91,29 +91,39 @@ window.document.body.appendChild(popoverContent);
 // eslint-disable-next-line no-shadow
 const { default: fetch, Headers, Request, Response } = require('node-fetch');
 
-const shimmedFetch = (url, ...args) => {
-  return fetch(url, ...args).catch((error) => {
-    if (error.message === 'Only absolute URLs are supported') {
-      const regex = /_locales\/([^/]+)\/messages\.json/gu;
-      const localeRelativePathRequest = url.match(regex);
-      if (localeRelativePathRequest && localeRelativePathRequest.length > 0) {
-        const fullLocalePath = path.join(
-          process.cwd(),
-          'app',
-          localeRelativePathRequest[0],
-        );
+const handleRelativePathRequest = async (url, localeRelativePathRequest) => {
+  try {
+    const fullLocalePath = path.join(
+      process.cwd(),
+      'app',
+      localeRelativePathRequest[0],
+    );
 
-        return fs
-          .readFile(fullLocalePath, { encoding: 'utf8' })
-          .then((data) => new Response(data))
-          .catch((fileError) => {
-            throw new Error(`Failed to fetch ${url}: ${fileError.message}`);
-          });
-      }
+    const content = await fs.readFile(fullLocalePath, { encoding: 'utf8' });
+
+    return new Response(content);
+  } catch (error) {
+    throw new Error(`Failed to fetch ${url}: ${error.message}`);
+  }
+};
+
+const shimmedFetch = async (url, ...args) => {
+  try {
+    return await fetch(url, ...args);
+  } catch (error) {
+    if (error.message !== 'Only absolute URLs are supported') {
+      throw error;
     }
 
-    throw error;
-  });
+    const regex = /_locales\/([^/]+)\/messages\.json/gu;
+    const localeRelativePathRequest = url.match(regex);
+
+    if (!localeRelativePathRequest?.length) {
+      throw error;
+    }
+
+    return handleRelativePathRequest(url, localeRelativePathRequest);
+  }
 };
 
 Object.assign(window, { fetch: shimmedFetch, Headers, Request, Response });
