@@ -476,7 +476,7 @@ export default class Home extends PureComponent {
           <Text>{t('outdatedBrowserNotification')}</Text>
           <br />
           <Text fontWeight={FontWeight.Bold} color={TextColor.warningDefault}>
-            {t('noHardwareWalletsOrSnapsSupport')}
+            {t('noHardwareWalletOrSnapsSupport')}
           </Text>
         </div>
       ) : (
