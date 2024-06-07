@@ -69,7 +69,7 @@ export default function AssetList({
         const isSelected = tokenAddress === selectedToken?.toLowerCase();
         const isDisabled = sendingAssetSymbol
           ? !isEqualCaseInsensitive(sendingAssetSymbol, token.symbol) &&
-            memoizedSwapsBlockedTokens.has(tokenAddress || '')
+            memoizedSwapsBlockedTokens.has(tokenAddress as string)
           : false;
         return (
           <Box
