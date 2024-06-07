@@ -38,9 +38,6 @@
     "showNetworkBanner": true,
     "showAccountBanner": true,
     "trezorModel": null,
-    "onboardingDate": "object",
-    "newPrivacyPolicyToastClickedOrClosed": "boolean",
-    "newPrivacyPolicyToastShownDate": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "nftsDropdownState": {},
     "termsOfUseLastAgreed": "number",
@@ -90,9 +87,11 @@
     "nonRPCGasFeeApisDisabled": "boolean"
   },
   "KeyringController": {
-    "isUnlocked": false,
+    "isUnlocked": true,
     "keyrings": "object",
-    "vault": "string"
+    "vault": "string",
+    "encryptionKey": "string",
+    "encryptionSalt": "string"
   },
   "LoggingController": { "logs": "object" },
   "MetaMetricsController": {
@@ -271,9 +270,7 @@
     "tokensChainsCache": {},
     "preventPollingOnNetworkRestart": false
   },
-  "TokenRatesController": {
-    "marketData": "object"
-  },
+  "TokenRatesController": { "marketData": "object" },
   "TokensController": {
     "tokens": "object",
     "ignoredTokens": "object",
