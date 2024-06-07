@@ -333,7 +333,7 @@ describe('AssetPage', () => {
               [CHAIN_IDS.MAINNET]: {
                 [address]: {
                   price: 123,
-                  marketCap
+                  marketCap,
                 },
               },
             },
