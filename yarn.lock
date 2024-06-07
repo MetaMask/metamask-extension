@@ -4731,7 +4731,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A30.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-30.0.0-8747c20871.patch":
+"@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A30.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-30.0.0-8747c20871.patch::version=30.0.0&hash=9269c8":
   version: 30.0.0
   resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A30.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-30.0.0-8747c20871.patch::version=30.0.0&hash=9269c8"
   dependencies:
@@ -4770,6 +4770,48 @@ __metadata:
     "@metamask/network-controller": ^18.1.2
     "@metamask/preferences-controller": ^11.0.0
   checksum: 10/3131138f6cc8c9930151e96270b3eb0cdb2f525580402a70f7c0ba1bdf0bba0d444d51152cee44dcf049824171c199077ccdbdc372a91815731e495dfbe37781
+  languageName: node
+  linkType: hard
+
+"@metamask/assets-controllers@patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A30.0.0%23~/.yarn/patches/@metamask-assets-controllers-npm-30.0.0-8747c20871.patch%3A%3Aversion=30.0.0&hash=9269c8#~/.yarn/patches/@metamask-assets-controllers-patch-26d4328777.patch":
+  version: 30.0.0
+  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A30.0.0%23~/.yarn/patches/@metamask-assets-controllers-npm-30.0.0-8747c20871.patch%3A%3Aversion=30.0.0&hash=9269c8#~/.yarn/patches/@metamask-assets-controllers-patch-26d4328777.patch::version=30.0.0&hash=1ba1a6"
+  dependencies:
+    "@ethereumjs/util": "npm:^8.1.0"
+    "@ethersproject/address": "npm:^5.7.0"
+    "@ethersproject/bignumber": "npm:^5.7.0"
+    "@ethersproject/contracts": "npm:^5.7.0"
+    "@ethersproject/providers": "npm:^5.7.0"
+    "@metamask/abi-utils": "npm:^2.0.2"
+    "@metamask/accounts-controller": "npm:^14.0.0"
+    "@metamask/approval-controller": "npm:^6.0.2"
+    "@metamask/base-controller": "npm:^5.0.2"
+    "@metamask/contract-metadata": "npm:^2.4.0"
+    "@metamask/controller-utils": "npm:^10.0.0"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/keyring-controller": "npm:^16.0.0"
+    "@metamask/metamask-eth-abis": "npm:^3.1.1"
+    "@metamask/network-controller": "npm:^18.1.2"
+    "@metamask/polling-controller": "npm:^6.0.2"
+    "@metamask/preferences-controller": "npm:^11.0.0"
+    "@metamask/rpc-errors": "npm:^6.2.1"
+    "@metamask/utils": "npm:^8.3.0"
+    "@types/bn.js": "npm:^5.1.5"
+    "@types/uuid": "npm:^8.3.0"
+    async-mutex: "npm:^0.2.6"
+    bn.js: "npm:^5.2.1"
+    cockatiel: "npm:^3.1.2"
+    lodash: "npm:^4.17.21"
+    multiformats: "npm:^9.5.2"
+    single-call-balance-checker-abi: "npm:^1.0.0"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/accounts-controller": ^14.0.0
+    "@metamask/approval-controller": ^6.0.0
+    "@metamask/keyring-controller": ^16.0.0
+    "@metamask/network-controller": ^18.1.2
+    "@metamask/preferences-controller": ^11.0.0
+  checksum: 10/ad68d530dac4ebc37f51453011ca6de50f19fe96880c5d8bc67c33d7302122aa1dcb80fa163d46c4c6ecc94dd9cd5f42b0061a2ca6eeac5a1c2856658503fde6
   languageName: node
   linkType: hard
 
@@ -5452,7 +5494,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/key-tree@npm:^9.1.0":
+"@metamask/key-tree@npm:^9.1.1":
   version: 9.1.1
   resolution: "@metamask/key-tree@npm:9.1.1"
   dependencies:
@@ -5632,14 +5674,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/name-controller@npm:^6.0.1":
-  version: 6.0.1
-  resolution: "@metamask/name-controller@npm:6.0.1"
+"@metamask/name-controller@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "@metamask/name-controller@npm:8.0.0"
   dependencies:
-    "@metamask/base-controller": "npm:^5.0.1"
+    "@metamask/base-controller": "npm:^6.0.0"
+    "@metamask/controller-utils": "npm:^11.0.0"
     "@metamask/utils": "npm:^8.3.0"
-    async-mutex: "npm:^0.2.6"
-  checksum: 10/6e1d09682519cde68ecf67bb433b1877996bab48f457edc7c0a322af85723b2f9885758f0d745f1626adb358bec65921c340747c64fa2669143571225f63c5a9
+    async-mutex: "npm:^0.5.0"
+  checksum: 10/c467c31a8a6d651b10bda62a24883356b0ebc9dfd56dbd550dc88c75fbd209be68d7f2dc0f85885db13b9af011d59ac67104b19d327fb4460599e4f182903f9b
   languageName: node
   linkType: hard
 
@@ -5802,16 +5845,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-controller@npm:^9.0.1, @metamask/phishing-controller@npm:^9.0.2":
-  version: 9.0.2
-  resolution: "@metamask/phishing-controller@npm:9.0.2"
+"@metamask/phishing-controller@npm:^9.0.1, @metamask/phishing-controller@npm:^9.0.3":
+  version: 9.0.3
+  resolution: "@metamask/phishing-controller@npm:9.0.3"
   dependencies:
     "@metamask/base-controller": "npm:^5.0.2"
     "@metamask/controller-utils": "npm:^9.1.0"
     "@types/punycode": "npm:^2.1.0"
     eth-phishing-detect: "npm:^1.2.0"
     punycode: "npm:^2.1.1"
-  checksum: 10/2a1fa922502a42e831567ac3965489e1b61b75fc5bcd1619b417ee3747b98ab3a1381a17b68b70a121154667858ca666c91bf1c1743892640b6f1f3d221e2bde
+  checksum: 10/effc72b2fa136e8d0c2dfd2bef45ade7ae07ac5fa6ac79b3b3de988cb2cbf29b3069ea1297f6297a62cfe73e281dec6a8e948ba4fe644a7e924202b17289d384
   languageName: node
   linkType: hard
 
@@ -5934,9 +5977,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/providers@npm:^16.1.0":
-  version: 16.1.0
-  resolution: "@metamask/providers@npm:16.1.0"
+"@metamask/providers@npm:^17.0.0":
+  version: 17.0.0
+  resolution: "@metamask/providers@npm:17.0.0"
   dependencies:
     "@metamask/json-rpc-engine": "npm:^8.0.1"
     "@metamask/json-rpc-middleware-stream": "npm:^7.0.1"
@@ -5949,8 +5992,9 @@ __metadata:
     fast-deep-equal: "npm:^3.1.3"
     is-stream: "npm:^2.0.0"
     readable-stream: "npm:^3.6.2"
-    webextension-polyfill: "npm:^0.10.0"
-  checksum: 10/596bcc0206355e5698cc41458b07caa748f589790e1a3210f1a32d21103a3318902d953a641d4583b8179d653659ba29c42e65fba019a98533bdcf68316bf915
+  peerDependencies:
+    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
+  checksum: 10/9e6b84120276035c9d7e776da4f7e18243116c53fd0c33efca17034971981164720e808dff055e871d08b9ed9d78dc9ebd0d974238baa599d7d91e1560fc1abb
   languageName: node
   linkType: hard
 
@@ -6061,9 +6105,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/smart-transactions-controller@npm:^10.1.1":
-  version: 10.1.1
-  resolution: "@metamask/smart-transactions-controller@npm:10.1.1"
+"@metamask/smart-transactions-controller@npm:^10.1.2":
+  version: 10.1.2
+  resolution: "@metamask/smart-transactions-controller@npm:10.1.2"
   dependencies:
     "@babel/runtime": "npm:^7.24.1"
     "@ethereumjs/tx": "npm:^5.2.1"
@@ -6079,13 +6123,13 @@ __metadata:
     events: "npm:^3.3.0"
     fast-json-patch: "npm:^3.1.0"
     lodash: "npm:^4.17.21"
-  checksum: 10/9560f73a695f52e573637aef97a3316625218fc835537a8c128fce835ab78a84df1bdb55b5ad09f0585d16362a5203910b4fb9d6d38d369c6418793d199b5ff6
+  checksum: 10/178ce39935c31d431bd9ef9c8a9388292ac0216c32d1721b5ceeafd7f1fb7a467e6921fbf6ad947b0be68f3a6383b325838116e5701b71226e97c35f2beef6b3
   languageName: node
   linkType: hard
 
-"@metamask/snaps-controllers@npm:^8.1.1, @metamask/snaps-controllers@npm:^8.2.0":
-  version: 8.2.0
-  resolution: "@metamask/snaps-controllers@npm:8.2.0"
+"@metamask/snaps-controllers@npm:^8.1.1, @metamask/snaps-controllers@npm:^8.4.0":
+  version: 8.4.0
+  resolution: "@metamask/snaps-controllers@npm:8.4.0"
   dependencies:
     "@metamask/approval-controller": "npm:^6.0.2"
     "@metamask/base-controller": "npm:^5.0.2"
@@ -6097,9 +6141,9 @@ __metadata:
     "@metamask/post-message-stream": "npm:^8.1.0"
     "@metamask/rpc-errors": "npm:^6.2.1"
     "@metamask/snaps-registry": "npm:^3.1.0"
-    "@metamask/snaps-rpc-methods": "npm:^9.1.0"
-    "@metamask/snaps-sdk": "npm:^4.3.0"
-    "@metamask/snaps-utils": "npm:^7.4.0"
+    "@metamask/snaps-rpc-methods": "npm:^9.1.2"
+    "@metamask/snaps-sdk": "npm:^4.4.2"
+    "@metamask/snaps-utils": "npm:^7.5.0"
     "@metamask/utils": "npm:^8.3.0"
     "@xstate/fsm": "npm:^2.0.0"
     browserify-zlib: "npm:^0.2.0"
@@ -6112,30 +6156,30 @@ __metadata:
     readable-web-to-node-stream: "npm:^3.0.2"
     tar-stream: "npm:^3.1.7"
   peerDependencies:
-    "@metamask/snaps-execution-environments": ^6.2.0
+    "@metamask/snaps-execution-environments": ^6.3.0
   peerDependenciesMeta:
     "@metamask/snaps-execution-environments":
       optional: true
-  checksum: 10/498cd0617a303fe00249b24018e3d21423ed3bb1c2679e6f3a33a5d20c829912a8668eec86cfba380e5d72322f40ca580c0e15c7ef01121cda99eaa43741d76c
+  checksum: 10/12943073dea4c9c6c06294ade19aac6ad5b132f9eb7b39587a974ef5fe62ad58abb8c0b22e018cf49090f5f6435e5204ce01912485da77889170fa9aea3d4267
   languageName: node
   linkType: hard
 
-"@metamask/snaps-execution-environments@npm:^6.2.0":
-  version: 6.2.0
-  resolution: "@metamask/snaps-execution-environments@npm:6.2.0"
+"@metamask/snaps-execution-environments@npm:^6.3.0":
+  version: 6.3.0
+  resolution: "@metamask/snaps-execution-environments@npm:6.3.0"
   dependencies:
     "@metamask/json-rpc-engine": "npm:^8.0.1"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/post-message-stream": "npm:^8.1.0"
-    "@metamask/providers": "npm:^16.1.0"
+    "@metamask/providers": "npm:^17.0.0"
     "@metamask/rpc-errors": "npm:^6.2.1"
-    "@metamask/snaps-sdk": "npm:^4.3.0"
+    "@metamask/snaps-sdk": "npm:^4.4.0"
     "@metamask/snaps-utils": "npm:^7.4.0"
     "@metamask/utils": "npm:^8.3.0"
     nanoid: "npm:^3.1.31"
     readable-stream: "npm:^3.6.2"
     superstruct: "npm:^1.0.3"
-  checksum: 10/87ef8a45e00aebeade441ede3b24ba062c2e4a56282d048ce27e197fd0e5069e376485d936148ae2dbcb42822a56cbcaa87f5fc7eae8bc77c6a07447e0cb9ac0
+  checksum: 10/9ee030a5b8134cc4a4dad533e23e09a5008f66b3b87b05f74b6e1c2988dd3e1c9c9f961e0e549867034b20270edbddc1e9f6dcb99d8c2424e3f227e3e869056a
   languageName: node
   linkType: hard
 
@@ -6151,49 +6195,49 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-rpc-methods@npm:^9.1.0":
-  version: 9.1.0
-  resolution: "@metamask/snaps-rpc-methods@npm:9.1.0"
+"@metamask/snaps-rpc-methods@npm:^9.1.2":
+  version: 9.1.2
+  resolution: "@metamask/snaps-rpc-methods@npm:9.1.2"
   dependencies:
-    "@metamask/key-tree": "npm:^9.1.0"
+    "@metamask/key-tree": "npm:^9.1.1"
     "@metamask/permission-controller": "npm:^9.0.2"
     "@metamask/rpc-errors": "npm:^6.2.1"
-    "@metamask/snaps-sdk": "npm:^4.3.0"
-    "@metamask/snaps-utils": "npm:^7.4.0"
+    "@metamask/snaps-sdk": "npm:^4.4.1"
+    "@metamask/snaps-utils": "npm:^7.4.1"
     "@metamask/utils": "npm:^8.3.0"
     "@noble/hashes": "npm:^1.3.1"
     superstruct: "npm:^1.0.3"
-  checksum: 10/caa169c8a5151fdad875f570d55195bb04f1944c5b371b2c39dfd7c180d6ad823bf1d318acb089af95146d9856c7e291fa387b067fd491ede255f27c8bc3503f
+  checksum: 10/c24bcf81c4a53dc600ba63bddbaf4b307ac53517081a47417970ccc5e50e5ef385228ec1a18df7f24151e438040a20e7a3dd982d683720a4143ccbedc67ad057
   languageName: node
   linkType: hard
 
-"@metamask/snaps-sdk@npm:^4.3.0":
-  version: 4.3.0
-  resolution: "@metamask/snaps-sdk@npm:4.3.0"
+"@metamask/snaps-sdk@npm:^4.4.2":
+  version: 4.4.2
+  resolution: "@metamask/snaps-sdk@npm:4.4.2"
   dependencies:
-    "@metamask/key-tree": "npm:^9.1.0"
-    "@metamask/providers": "npm:^16.1.0"
+    "@metamask/key-tree": "npm:^9.1.1"
+    "@metamask/providers": "npm:^17.0.0"
     "@metamask/rpc-errors": "npm:^6.2.1"
     "@metamask/utils": "npm:^8.3.0"
     fast-xml-parser: "npm:^4.3.4"
     superstruct: "npm:^1.0.3"
-  checksum: 10/fbc80f13a80298e3d32e80a5a835e88063a11a205f911086329de824c7696b7f3c05aa47840dc17ce1a0d3ea5bd6a2d8ae7b92c8f8e4e78704c430d385d544de
+  checksum: 10/32be48679eb306ec97c2ee16b4146ce69875e665feb61c04f7e63a23361c445b49ad4a0c8f6176560e7973b09c56e5a26055ba7cd894d67111c8c3cedf90dc4f
   languageName: node
   linkType: hard
 
-"@metamask/snaps-utils@npm:^7.1.0, @metamask/snaps-utils@npm:^7.4.0":
-  version: 7.4.0
-  resolution: "@metamask/snaps-utils@npm:7.4.0"
+"@metamask/snaps-utils@npm:^7.1.0, @metamask/snaps-utils@npm:^7.4.0, @metamask/snaps-utils@npm:^7.4.1, @metamask/snaps-utils@npm:^7.5.0":
+  version: 7.5.0
+  resolution: "@metamask/snaps-utils@npm:7.5.0"
   dependencies:
     "@babel/core": "npm:^7.23.2"
     "@babel/types": "npm:^7.23.0"
     "@metamask/base-controller": "npm:^5.0.2"
-    "@metamask/key-tree": "npm:^9.1.0"
+    "@metamask/key-tree": "npm:^9.1.1"
     "@metamask/permission-controller": "npm:^9.0.2"
     "@metamask/rpc-errors": "npm:^6.2.1"
     "@metamask/slip44": "npm:^3.1.0"
     "@metamask/snaps-registry": "npm:^3.1.0"
-    "@metamask/snaps-sdk": "npm:^4.2.0"
+    "@metamask/snaps-sdk": "npm:^4.4.2"
     "@metamask/utils": "npm:^8.3.0"
     "@noble/hashes": "npm:^1.3.1"
     "@scure/base": "npm:^1.1.1"
@@ -6207,7 +6251,7 @@ __metadata:
     ses: "npm:^1.1.0"
     superstruct: "npm:^1.0.3"
     validate-npm-package-name: "npm:^5.0.0"
-  checksum: 10/718db1e30291204bc56523503f8cffdbaf448933c5703d98eec52087f8f551ef391773b026562dfb91a220d8ac78949d1b12e94e4166e34b9351739a88a0a2e7
+  checksum: 10/34e22ee984d99f692db7d0f3fdb6426ba5ea31f3d83b9dfd65f074eb5e52d916f675cf631430bc4c5e369b85052e08ccc04f0f84bbfca1c07ccab3e35a7e4fe7
   languageName: node
   linkType: hard
 
@@ -10470,14 +10514,14 @@ __metadata:
   linkType: hard
 
 "@typescript-eslint/eslint-plugin@npm:^7.10.0":
-  version: 7.11.0
-  resolution: "@typescript-eslint/eslint-plugin@npm:7.11.0"
+  version: 7.10.0
+  resolution: "@typescript-eslint/eslint-plugin@npm:7.10.0"
   dependencies:
     "@eslint-community/regexpp": "npm:^4.10.0"
-    "@typescript-eslint/scope-manager": "npm:7.11.0"
-    "@typescript-eslint/type-utils": "npm:7.11.0"
-    "@typescript-eslint/utils": "npm:7.11.0"
-    "@typescript-eslint/visitor-keys": "npm:7.11.0"
+    "@typescript-eslint/scope-manager": "npm:7.10.0"
+    "@typescript-eslint/type-utils": "npm:7.10.0"
+    "@typescript-eslint/utils": "npm:7.10.0"
+    "@typescript-eslint/visitor-keys": "npm:7.10.0"
     graphemer: "npm:^1.4.0"
     ignore: "npm:^5.3.1"
     natural-compare: "npm:^1.4.0"
@@ -10488,7 +10532,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10/be95ed0bbd5b34c47239677ea39d531bcd8a18717a67d70a297bed5b0050b256159856bb9c1e894ac550d011c24bb5b4abf8056c5d70d0d5895f0cc1accd14ea
+  checksum: 10/dfe505cdf718dd29e8637b902e4c544c6b7d246d2051fd1936090423eb3dadfe2bd757de51e565e6fd80e74cf1918e191c26fee6df515100484ec3efd9b8d111
   languageName: node
   linkType: hard
 
@@ -10511,20 +10555,20 @@ __metadata:
   linkType: hard
 
 "@typescript-eslint/parser@npm:^7.10.0":
-  version: 7.11.0
-  resolution: "@typescript-eslint/parser@npm:7.11.0"
+  version: 7.10.0
+  resolution: "@typescript-eslint/parser@npm:7.10.0"
   dependencies:
-    "@typescript-eslint/scope-manager": "npm:7.11.0"
-    "@typescript-eslint/types": "npm:7.11.0"
-    "@typescript-eslint/typescript-estree": "npm:7.11.0"
-    "@typescript-eslint/visitor-keys": "npm:7.11.0"
+    "@typescript-eslint/scope-manager": "npm:7.10.0"
+    "@typescript-eslint/types": "npm:7.10.0"
+    "@typescript-eslint/typescript-estree": "npm:7.10.0"
+    "@typescript-eslint/visitor-keys": "npm:7.10.0"
     debug: "npm:^4.3.4"
   peerDependencies:
     eslint: ^8.56.0
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10/0a32417aec62d7de04427323ab3fc8159f9f02429b24f739d8748e8b54fc65b0e3dbae8e4779c4b795f0d8e5f98a4d83a43b37ea0f50ebda51546cdcecf73caa
+  checksum: 10/1fa71049b2debf2f7f5366fb433e3d4c8e1591c2061a15fa8797d14623a2b6984340a59e7717acc013ce8c6a2ed32c5c0e811fe948b5936d41c2a5a09b61d130
   languageName: node
   linkType: hard
 
@@ -10548,22 +10592,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/scope-manager@npm:7.11.0":
-  version: 7.11.0
-  resolution: "@typescript-eslint/scope-manager@npm:7.11.0"
+"@typescript-eslint/scope-manager@npm:7.10.0":
+  version: 7.10.0
+  resolution: "@typescript-eslint/scope-manager@npm:7.10.0"
   dependencies:
-    "@typescript-eslint/types": "npm:7.11.0"
-    "@typescript-eslint/visitor-keys": "npm:7.11.0"
-  checksum: 10/79eff310405c6657ff092641e3ad51c6698c6708b915ecef945ebdd1737bd48e1458c5575836619f42dec06143ec0e3a826f3e551af590d297367da3d08f329e
+    "@typescript-eslint/types": "npm:7.10.0"
+    "@typescript-eslint/visitor-keys": "npm:7.10.0"
+  checksum: 10/838a7a9573577d830b2f65801ce045abe6fad08ac7e04bac4cc9b2e5b7cbac07e645de9c79b9485f4cc361fe25da5319025aa0336fad618023fff62e4e980638
   languageName: node
   linkType: hard
 
-"@typescript-eslint/type-utils@npm:7.11.0":
-  version: 7.11.0
-  resolution: "@typescript-eslint/type-utils@npm:7.11.0"
+"@typescript-eslint/type-utils@npm:7.10.0":
+  version: 7.10.0
+  resolution: "@typescript-eslint/type-utils@npm:7.10.0"
   dependencies:
-    "@typescript-eslint/typescript-estree": "npm:7.11.0"
-    "@typescript-eslint/utils": "npm:7.11.0"
+    "@typescript-eslint/typescript-estree": "npm:7.10.0"
+    "@typescript-eslint/utils": "npm:7.10.0"
     debug: "npm:^4.3.4"
     ts-api-utils: "npm:^1.3.0"
   peerDependencies:
@@ -10571,7 +10615,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10/ab6ebeff68a60fc40d0ace88e03d6b4242b8f8fe2fa300db161780d58777b57f69fa077cd482e1b673316559459bd20b8cc89a7f9f30e644bfed8293f77f0e4b
+  checksum: 10/e62db9ffbfbccce60258108f7ed025005e04df18da897ff1b30049e3c10a47150e94c2fb5ac0ab9711ebb60517521213dcccbea6d08125107a87a67088a79042
   languageName: node
   linkType: hard
 
@@ -10596,10 +10640,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/types@npm:7.11.0":
-  version: 7.11.0
-  resolution: "@typescript-eslint/types@npm:7.11.0"
-  checksum: 10/c6a0b47ef43649a59c9d51edfc61e367b55e519376209806b1c98385a8385b529e852c7a57e081fb15ef6a5dc0fc8e90bd5a508399f5ac2137f4d462e89cdc30
+"@typescript-eslint/types@npm:7.10.0":
+  version: 7.10.0
+  resolution: "@typescript-eslint/types@npm:7.10.0"
+  checksum: 10/76075a7b87ddfff8e7e4aebf3d225e67bf79ead12a7709999d4d5c31611d9c0813ca69a9298f320efb018fe493ce3763c964a0e670a4c953d8eff000f10672c0
   languageName: node
   linkType: hard
 
@@ -10640,12 +10684,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/typescript-estree@npm:7.11.0":
-  version: 7.11.0
-  resolution: "@typescript-eslint/typescript-estree@npm:7.11.0"
+"@typescript-eslint/typescript-estree@npm:7.10.0":
+  version: 7.10.0
+  resolution: "@typescript-eslint/typescript-estree@npm:7.10.0"
   dependencies:
-    "@typescript-eslint/types": "npm:7.11.0"
-    "@typescript-eslint/visitor-keys": "npm:7.11.0"
+    "@typescript-eslint/types": "npm:7.10.0"
+    "@typescript-eslint/visitor-keys": "npm:7.10.0"
     debug: "npm:^4.3.4"
     globby: "npm:^11.1.0"
     is-glob: "npm:^4.0.3"
@@ -10655,7 +10699,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10/b98b101e42d3b91003510a5c5a83f4350b6c1cf699bf2e409717660579ffa71682bc280c4f40166265c03f9546ed4faedc3723e143f1ab0ed7f5990cc3dff0ae
+  checksum: 10/d11d0c45749c9bd4a187b6dfdf5600e36ba8c87667cd2020d9158667c47c32ec0bcb1ef3b7eee5577b667def5f7f33d8131092a0f221b3d3e8105078800f923f
   languageName: node
   linkType: hard
 
@@ -10677,17 +10721,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/utils@npm:7.11.0":
-  version: 7.11.0
-  resolution: "@typescript-eslint/utils@npm:7.11.0"
+"@typescript-eslint/utils@npm:7.10.0":
+  version: 7.10.0
+  resolution: "@typescript-eslint/utils@npm:7.10.0"
   dependencies:
     "@eslint-community/eslint-utils": "npm:^4.4.0"
-    "@typescript-eslint/scope-manager": "npm:7.11.0"
-    "@typescript-eslint/types": "npm:7.11.0"
-    "@typescript-eslint/typescript-estree": "npm:7.11.0"
+    "@typescript-eslint/scope-manager": "npm:7.10.0"
+    "@typescript-eslint/types": "npm:7.10.0"
+    "@typescript-eslint/typescript-estree": "npm:7.10.0"
   peerDependencies:
     eslint: ^8.56.0
-  checksum: 10/fbef14e166a70ccc4527c0731e0338acefa28218d1a018aa3f5b6b1ad9d75c56278d5f20bda97cf77da13e0a67c4f3e579c5b2f1c2e24d676960927921b55851
+  checksum: 10/62327b585295f9c3aa2508aefac639d562b6f7f270a229aa3a2af8dbd055f4a4d230a8facae75a8a53bb8222b0041162072d259add56b541f8bdfda8da36ea5f
   languageName: node
   linkType: hard
 
@@ -10739,13 +10783,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/visitor-keys@npm:7.11.0":
-  version: 7.11.0
-  resolution: "@typescript-eslint/visitor-keys@npm:7.11.0"
+"@typescript-eslint/visitor-keys@npm:7.10.0":
+  version: 7.10.0
+  resolution: "@typescript-eslint/visitor-keys@npm:7.10.0"
   dependencies:
-    "@typescript-eslint/types": "npm:7.11.0"
+    "@typescript-eslint/types": "npm:7.10.0"
     eslint-visitor-keys: "npm:^3.4.3"
-  checksum: 10/1f2cf1214638e9e78e052393c9e24295196ec4781b05951659a3997e33f8699a760ea3705c17d770e10eda2067435199e0136ab09e5fac63869e22f2da184d89
+  checksum: 10/44b555a075bdff38e3e13c454ceaac50aa2546635e81f907d1ea84822c8887487d1d6bb4ff690f627da9585dc19ad07e228847c162c30bb06c46fb119899d8cc
   languageName: node
   linkType: hard
 
@@ -24873,13 +24917,13 @@ __metadata:
     "@metamask/address-book-controller": "npm:^4.0.1"
     "@metamask/announcement-controller": "npm:^6.1.0"
     "@metamask/approval-controller": "npm:^6.0.1"
-    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A30.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-30.0.0-8747c20871.patch"
+    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A30.0.0%23~/.yarn/patches/@metamask-assets-controllers-npm-30.0.0-8747c20871.patch%3A%3Aversion=30.0.0&hash=9269c8#~/.yarn/patches/@metamask-assets-controllers-patch-26d4328777.patch"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^4.1.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^1.0.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
-    "@metamask/controller-utils": "npm:^9.1.0"
+    "@metamask/controller-utils": "npm:^10.0.0"
     "@metamask/design-tokens": "npm:^3.0.0"
     "@metamask/desktop": "npm:^0.3.0"
     "@metamask/ens-controller": "npm:^10.0.1"
@@ -24911,14 +24955,14 @@ __metadata:
     "@metamask/message-manager": "npm:^7.3.0"
     "@metamask/message-signing-snap": "npm:^0.3.3"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/name-controller": "npm:^6.0.1"
+    "@metamask/name-controller": "npm:^8.0.0"
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A18.1.2#~/.yarn/patches/@metamask-network-controller-npm-18.1.2-1bcb8d8610.patch"
     "@metamask/notification-controller": "npm:^3.0.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/permission-controller": "npm:^9.0.1"
     "@metamask/permission-log-controller": "npm:^2.0.1"
-    "@metamask/phishing-controller": "npm:^9.0.2"
+    "@metamask/phishing-controller": "npm:^9.0.3"
     "@metamask/phishing-warning": "npm:^3.0.3"
     "@metamask/post-message-stream": "npm:^8.0.0"
     "@metamask/ppom-validator": "npm:^0.30.0"
@@ -24929,12 +24973,12 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^13.0.0"
     "@metamask/signature-controller": "npm:^14.0.1"
-    "@metamask/smart-transactions-controller": "npm:^10.1.1"
-    "@metamask/snaps-controllers": "npm:^8.2.0"
-    "@metamask/snaps-execution-environments": "npm:^6.2.0"
-    "@metamask/snaps-rpc-methods": "npm:^9.1.0"
-    "@metamask/snaps-sdk": "npm:^4.3.0"
-    "@metamask/snaps-utils": "npm:^7.4.0"
+    "@metamask/smart-transactions-controller": "npm:^10.1.2"
+    "@metamask/snaps-controllers": "npm:^8.4.0"
+    "@metamask/snaps-execution-environments": "npm:^6.3.0"
+    "@metamask/snaps-rpc-methods": "npm:^9.1.2"
+    "@metamask/snaps-sdk": "npm:^4.4.2"
+    "@metamask/snaps-utils": "npm:^7.5.0"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:^8.4.0"
     "@metamask/transaction-controller": "npm:^32.0.0"
@@ -30771,9 +30815,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rpc-websockets@npm:^7.11.0":
-  version: 7.11.1
-  resolution: "rpc-websockets@npm:7.11.1"
+"rpc-websockets@npm:^8.0.1":
+  version: 8.0.1
+  resolution: "rpc-websockets@npm:8.0.1"
   dependencies:
     bufferutil: "npm:^4.0.1"
     eventemitter3: "npm:^4.0.7"
@@ -30785,7 +30829,7 @@ __metadata:
       optional: true
     utf-8-validate:
       optional: true
-  checksum: 10/6b23cc7a54eb2158f4098545c0adbf118e9240d6006e262048b3dd5125e352892f989df7337b4ca70a1505699a480c92d6f3c58ebb8f4d3a483dda9606890a28
+  checksum: 10/ec50bebb6d85f977d3ab16c31d107ff7f546ea472be8f827d6236d2bbbb6d807481a7028a16f3fa7a9163b2338d9957a97e78f03761a9adc0e04b68586973c1c
   languageName: node
   linkType: hard
 
