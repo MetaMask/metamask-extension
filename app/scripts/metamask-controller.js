@@ -1247,12 +1247,12 @@ export default class MetamaskController extends EventEmitter {
             iframeUrl: new URL(process.env.IFRAME_EXECUTION_ENVIRONMENT_URL),
           })
         : new ProxyExecutionService({
-          ...snapExecutionServiceArgs,
-          stream: new BrowserRuntimePostMessageStream({
-            name: 'parent',
-            target: 'child',
-          })
-        });
+            ...snapExecutionServiceArgs,
+            stream: new BrowserRuntimePostMessageStream({
+              name: 'parent',
+              target: 'child',
+            }),
+          });
 
     const snapControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'SnapController',
