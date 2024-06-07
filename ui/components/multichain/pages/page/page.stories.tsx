@@ -55,7 +55,7 @@ export const HeaderStory = (args) => (
       >
         Connect
       </Header>
-      <Content backgroundColor={BackgroundColor.successAlternative}>
+      <Content backgroundColor={BackgroundColor.successDefault}>
         Contents!
       </Content>
     </Page>
@@ -76,7 +76,7 @@ export const FullscreenStory = (args) => (
       >
         Connect
       </Header>
-      <Content background={BackgroundColor.successAlternative}>
+      <Content backgroundColor={BackgroundColor.successDefault}>
         {scrollingContent}
       </Content>
       <Footer backgroundColor={BackgroundColor.warningAlternative}>
@@ -109,7 +109,7 @@ export const HeaderFooterStory = (args) => (
       >
         Connect
       </Header>
-      <Content backgroundColor={BackgroundColor.successAlternative}>
+      <Content backgroundColor={BackgroundColor.successDefault}>
         Content
       </Content>
       <Footer backgroundColor={BackgroundColor.warningAlternative}>
@@ -139,7 +139,7 @@ export const ScrollingStory = (args) => (
       >
         Connect
       </Header>
-      <Content background={BackgroundColor.successAlternative}>
+      <Content backgroundColor={BackgroundColor.successDefault}>
         {scrollingContent}
       </Content>
       <Footer backgroundColor={BackgroundColor.warningAlternative}>
