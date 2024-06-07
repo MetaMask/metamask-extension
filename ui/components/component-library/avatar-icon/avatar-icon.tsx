@@ -52,6 +52,11 @@ export const AvatarIcon: AvatarIconComponent = React.forwardRef(
           name={iconName}
           size={iconSize}
           {...iconProps}
+          className={classnames(
+            'mm-avatar-icon__icon',
+            `mm-avatar-icon__icon--size-${size}`,
+            iconProps?.className || '',
+          )}
         />
       </AvatarBase>
     );
