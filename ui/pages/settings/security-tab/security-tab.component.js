@@ -66,7 +66,7 @@ export default class SecurityTab extends PureComponent {
     setOpenSeaEnabled: PropTypes.func,
     useNftDetection: PropTypes.bool,
     setUseNftDetection: PropTypes.func,
-    dataCollectionForMarketing: PropTypes.bool.isRequired,
+    dataCollectionForMarketing: PropTypes.bool,
     setDataCollectionForMarketing: PropTypes.func.isRequired,
     participateInMetaMetrics: PropTypes.bool.isRequired,
     setParticipateInMetaMetrics: PropTypes.func.isRequired,

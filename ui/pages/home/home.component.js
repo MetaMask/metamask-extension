@@ -162,7 +162,7 @@ export default class Home extends PureComponent {
     haveSwapsQuotes: PropTypes.bool.isRequired,
     showAwaitingSwapScreen: PropTypes.bool.isRequired,
     setDataCollectionForMarketing: PropTypes.func.isRequired,
-    dataCollectionForMarketing: PropTypes.bool.isRequired,
+    dataCollectionForMarketing: PropTypes.bool,
     swapsFetchParams: PropTypes.object,
     location: PropTypes.object,
     shouldShowWeb3ShimUsageNotification: PropTypes.bool.isRequired,
