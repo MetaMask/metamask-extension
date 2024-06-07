@@ -72,7 +72,6 @@ describe('Token Details', function () {
     await withFixtures(
       {
         ...fixtures,
-        // @ts-expect-error 'this' implicitly has type 'any'
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => [
           // Mock no current price
@@ -119,7 +118,6 @@ describe('Token Details', function () {
     await withFixtures(
       {
         ...fixtures,
-        // @ts-expect-error 'this' implicitly has type 'any'
         title: this.test?.fullTitle(),
         ethConversionInUsd,
         testSpecificMock: async (mockServer: Mockttp) => [
