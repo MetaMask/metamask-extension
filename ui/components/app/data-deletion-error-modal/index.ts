@@ -1,1 +1,1 @@
-export { default } from './DataDeletionErrorModal';
+export { default } from './data-deletion-error-modal';

@@ -1,1 +1,1 @@
-export { default } from './ClearMetaMetricsData';
+export { default } from './clear-metametrics-data';

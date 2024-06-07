@@ -17,10 +17,10 @@ import {
   hasRecordedMetricsSinceDeletion,
   isMetaMetricsDataDeletionMarked,
 } from '../../../../selectors';
-import { DeleteRegulationStatus } from '../../../../../app/scripts/controllers/metametrics-data-deletion/metametrics-data-deletion';
 import { openDeleteMetaMetricsDataModal } from '../../../../ducks/app/app';
 import DataDeletionErrorModal from '../../../../components/app/data-deletion-error-modal';
 import { formatDate } from '../../../../helpers/utils/util';
+import { DeleteRegulationStatus } from '../../../../../shared/constants/metametrics';
 
 const DeleteMetaMetricsDataToggle = () => {
   const t = useI18nContext();
@@ -47,7 +47,7 @@ const DeleteMetaMetricsDataToggle = () => {
   const showDataDeletionErrorModal = useSelector(getShowDataDeletionErrorModal);
 
   let dataDeletionButtonDisabled =
-    metaMetricsDataDeletionMarked || Boolean(!metaMetricsId) || !hasMetricsRecordedAfterDeletion;
+    metaMetricsDataDeletionMarked || Boolean(!metaMetricsId);
   if (!dataDeletionButtonDisabled && metaMetricsDataDeletionStatus) {
     dataDeletionButtonDisabled =
       [
@@ -72,7 +72,7 @@ const DeleteMetaMetricsDataToggle = () => {
     <>
       <Box
         className="settings-page__content-row"
-        data-testid="delete-metametrics-data"
+        data-testid="delete-metametrics-data-toggle"
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         gap={4}
