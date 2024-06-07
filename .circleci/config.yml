@@ -1131,7 +1131,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:chrome --retries 1
+              timeout 20m yarn test:e2e:chrome --retries 0
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -1159,7 +1159,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:chrome --retries 1
+              timeout 20m yarn test:e2e:chrome --retries 0
             fi
           no_output_timeout: 5m
           environment:
@@ -1189,7 +1189,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:chrome:confirmation-redesign --retries 1
+              timeout 20m yarn test:e2e:chrome:confirmation-redesign --retries 0
             fi
           no_output_timeout: 5m
           environment:
@@ -1219,7 +1219,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:chrome:rpc --retries 1
+              timeout 20m yarn test:e2e:chrome:rpc --retries 0
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -1247,7 +1247,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome:multi-provider --retries 1
+              yarn test:e2e:chrome:multi-provider --retries 0
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -1274,7 +1274,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:chrome:rpc --retries 1 --build-type=mmi
+              timeout 20m yarn test:e2e:chrome:rpc --retries 0 --build-type=mmi
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -1295,7 +1295,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.js --browser chrome --retries 1
+              yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.js --browser chrome --retries 0
             fi
           no_output_timeout: 5m
 
@@ -1319,7 +1319,7 @@ jobs:
             export ENABLE_MV3=false
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:firefox:flask --retries 1
+              timeout 20m yarn test:e2e:firefox:flask --retries 0
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -1347,7 +1347,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:chrome:flask --retries 1
+              timeout 20m yarn test:e2e:chrome:flask --retries 0
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -1375,7 +1375,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:chrome:mmi --retries 1 --build-type=mmi
+              timeout 20m yarn test:e2e:chrome:mmi --retries 0 --build-type=mmi
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -1446,7 +1446,7 @@ jobs:
             export ENABLE_MV3=false
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:firefox --retries 1
+              timeout 20m yarn test:e2e:firefox --retries 0
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -1475,7 +1475,7 @@ jobs:
             export ENABLE_MV3=false
             if .circleci/scripts/test-run-e2e.sh
             then
-              timeout 20m yarn test:e2e:firefox --retries 1
+              timeout 20m yarn test:e2e:firefox --retries 0
             fi
           no_output_timeout: 5m
           environment:
