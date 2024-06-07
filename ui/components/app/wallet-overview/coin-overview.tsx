@@ -253,11 +253,11 @@ export const CoinOverview = ({
                   className="loading-overlay__spinner"
                 />
               )}
-              {balanceIsCached ? (
+              {balanceIsCached && (
                 <span className={`${classPrefix}-overview__cached-star`}>
                   *
                 </span>
-              ) : null}
+              )}
             </div>
             {showFiat && isOriginalNativeSymbol && balance && (
               <UserPreferencedCurrencyDisplay
