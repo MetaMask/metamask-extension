@@ -4307,9 +4307,6 @@
   "searchAccounts": {
     "message": "Maghanap ng mga account"
   },
-  "searchTokenOrNFT": {
-    "message": "Maghanap ng token o NFT"
-  },
   "searchTokens": {
     "message": "Maghanap ng mga token"
   },

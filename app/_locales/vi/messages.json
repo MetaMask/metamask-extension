@@ -4307,9 +4307,6 @@
   "searchAccounts": {
     "message": "Tìm kiếm tài khoản"
   },
-  "searchTokenOrNFT": {
-    "message": "Tìm kiếm token hoặc NFT"
-  },
   "searchTokens": {
     "message": "Tìm kiếm token"
   },
