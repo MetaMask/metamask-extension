@@ -39,9 +39,6 @@ async function mockTrezor(mockServer) {
 
 describe('Import flow @no-mmi', function () {
   it('Import wallet using Secret Recovery Phrase', async function () {
-    if (process.env.MULTICHAIN) {
-      return;
-    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
