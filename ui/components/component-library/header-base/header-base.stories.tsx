@@ -150,7 +150,7 @@ export const UseCaseDemos = (args) => (
         marginBottom={4}
         startAccessory={
           <ButtonIcon
-            backgroundColor={BackgroundColor.successAlternative}
+            backgroundColor={BackgroundColor.successDefault}
             size={ButtonIconSize.Sm}
             iconName={IconName.ArrowLeft}
             ariaLabel="back"
@@ -173,7 +173,7 @@ export const UseCaseDemos = (args) => (
         marginBottom={4}
         startAccessory={
           <ButtonIcon
-            backgroundColor={BackgroundColor.successAlternative}
+            backgroundColor={BackgroundColor.successDefault}
             size={ButtonIconSize.Sm}
             iconName={IconName.ArrowLeft}
             ariaLabel="back"
@@ -204,7 +204,7 @@ export const UseCaseDemos = (args) => (
         marginBottom={4}
         startAccessory={
           <Button
-            backgroundColor={BackgroundColor.successAlternative}
+            backgroundColor={BackgroundColor.successDefault}
             style={{ whiteSpace: 'nowrap' }}
             size={ButtonSize.Sm}
           >
@@ -238,7 +238,7 @@ export const UseCaseDemos = (args) => (
         marginBottom={4}
         startAccessory={
           <Button
-            backgroundColor={BackgroundColor.successAlternative}
+            backgroundColor={BackgroundColor.successDefault}
             style={{ whiteSpace: 'nowrap' }}
             size={ButtonSize.Sm}
           >
@@ -275,7 +275,7 @@ export const UseCaseDemos = (args) => (
         alignItems={AlignItems.center}
         startAccessory={
           <ButtonIcon
-            backgroundColor={BackgroundColor.successAlternative}
+            backgroundColor={BackgroundColor.successDefault}
             size={ButtonIconSize.Sm}
             iconName={IconName.Close}
             ariaLabel="close"
@@ -303,7 +303,7 @@ export const UseCaseDemos = (args) => (
         marginBottom={4}
         startAccessory={
           <Button
-            backgroundColor={BackgroundColor.successAlternative}
+            backgroundColor={BackgroundColor.successDefault}
             size={ButtonSize.Sm}
           >
             Unlock
