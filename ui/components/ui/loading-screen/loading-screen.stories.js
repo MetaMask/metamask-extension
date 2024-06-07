@@ -10,7 +10,6 @@ const Template = (args) => <LoadingScreen {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {
-  // header: <h1>Loading Screen</h1>,
   loadingMessage: 'Loading...',
   showLoadingSpinner: true,
 };
