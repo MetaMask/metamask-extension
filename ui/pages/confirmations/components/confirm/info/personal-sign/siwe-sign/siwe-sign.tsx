@@ -19,52 +19,62 @@ const SIWESignInfo: React.FC = () => {
     currentConfirmationSelector,
   ) as SignatureRequestType;
 
-  if (!currentConfirmation.msgParams?.siwe?.parsedMessage) {
+  const siweMessage = currentConfirmation?.msgParams?.siwe?.parsedMessage;
+
+  if (!siweMessage) {
     return null;
   }
 
-  const siweMessage = currentConfirmation.msgParams.siwe?.parsedMessage;
-  const chainId = toHex(siweMessage.chainId);
+  const {
+    address,
+    chainId,
+    domain,
+    issuedAt,
+    nonce,
+    requestId,
+    statement,
+    resources,
+    version,
+  } = siweMessage;
+  const hexChainId = toHex(chainId);
+  const network =
+    (NETWORK_TO_NAME_MAP as Record<string, string>)[hexChainId] ?? hexChainId;
 
   return (
     <>
       <ConfirmInfoRow label={t('siweOriginalMessage')}>
-        <ConfirmInfoRowText text={siweMessage.statement} />
+        <ConfirmInfoRowText text={statement} />
       </ConfirmInfoRow>
       <ConfirmInfoRow label={t('siweURI')}>
-        <ConfirmInfoRowText text={siweMessage.domain} />
+        <ConfirmInfoRowText text={domain} />
       </ConfirmInfoRow>
       <ConfirmInfoRow label={t('siweNetwork')}>
-        <ConfirmInfoRowText
-          text={
-            (NETWORK_TO_NAME_MAP as Record<string, string>)[chainId] ?? chainId
-          }
-        />
+        <ConfirmInfoRowText text={network} />
       </ConfirmInfoRow>
       <ConfirmInfoRow label={t('siweAccount')}>
-        <ConfirmInfoRowAddress address={siweMessage.address} />
+        <ConfirmInfoRowAddress address={address} />
       </ConfirmInfoRow>
       <ConfirmInfoRow label={t('siweVersion')}>
-        <ConfirmInfoRowText text={siweMessage.version} />
+        <ConfirmInfoRowText text={version} />
       </ConfirmInfoRow>
       <ConfirmInfoRow label={t('siweChainID')}>
-        <ConfirmInfoRowText text={`${siweMessage.chainId}`} />
+        <ConfirmInfoRowText text={`${chainId}`} />
       </ConfirmInfoRow>
       <ConfirmInfoRow label={t('siweNonce')}>
-        <ConfirmInfoRowText text={siweMessage.nonce} />
+        <ConfirmInfoRowText text={nonce} />
       </ConfirmInfoRow>
       <ConfirmInfoRow label={t('siweIssued')}>
-        <ConfirmInfoRowText text={formatDate(siweMessage.issuedAt)} />
+        <ConfirmInfoRowText text={formatDate(issuedAt)} />
       </ConfirmInfoRow>
-      {siweMessage.requestId && (
+      {requestId && (
         <ConfirmInfoRow label={t('siweRequestId')}>
-          <ConfirmInfoRowText text={siweMessage.requestId} />
+          <ConfirmInfoRowText text={requestId} />
         </ConfirmInfoRow>
       )}
-      {siweMessage.resources && (
+      {resources && (
         <ConfirmInfoRow label={t('siweResources')}>
-          {siweMessage.resources.map((resource) => (
-            <ConfirmInfoRowText text={resource} />
+          {resources.map((resource, index) => (
+            <ConfirmInfoRowText key={`resource-${index}`} text={resource} />
           ))}
         </ConfirmInfoRow>
       )}

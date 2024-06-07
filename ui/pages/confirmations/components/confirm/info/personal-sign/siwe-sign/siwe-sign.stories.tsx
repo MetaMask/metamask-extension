@@ -1,7 +1,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 
-import { signatureRequestSIWE } from '../../../../../../../../test/data/confirmations/personal_sign';
+import { SignatureRequestSIWEWithResources } from '../../../../../../../../test/data/confirmations/personal_sign';
 import mockState from '../../../../../../../../test/data/mock-state.json';
 import configureStore from '../../../../../../../store/store';
 
@@ -12,7 +12,7 @@ const store = configureStore({
     ...mockState.metamask,
   },
   confirm: {
-    currentConfirmation: signatureRequestSIWE,
+    currentConfirmation: SignatureRequestSIWEWithResources,
   },
 });
 

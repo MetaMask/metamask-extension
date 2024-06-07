@@ -34,11 +34,11 @@ const PersonalSignInfo: React.FC = () => {
   }
 
   const { from } = currentConfirmation.msgParams;
-  const isSiweSigReq = isSIWESignatureRequest(currentConfirmation);
+  const isSIWE = isSIWESignatureRequest(currentConfirmation);
 
   return (
     <>
-      {isSiweSigReq && (
+      {isSIWE && (
         <Box
           backgroundColor={BackgroundColor.backgroundDefault}
           borderRadius={BorderRadius.MD}
@@ -67,7 +67,7 @@ const PersonalSignInfo: React.FC = () => {
         >
           <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
         </AlertRow>
-        {isSiweSigReq && (
+        {isSIWE && (
           <ConfirmInfoRow label={t('signingInWith')}>
             <ConfirmInfoRowAddress address={from} />
           </ConfirmInfoRow>
@@ -79,7 +79,7 @@ const PersonalSignInfo: React.FC = () => {
         padding={2}
         marginBottom={4}
       >
-        {isSiweSigReq ? (
+        {isSIWE ? (
           <SIWESignInfo />
         ) : (
           <AlertRow
