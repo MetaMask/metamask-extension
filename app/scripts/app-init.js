@@ -186,7 +186,7 @@ registerInPageContentScript();
  * folder for more details.
  */
 async function createOffscreen() {
-  if (await chrome.offscreen.hasDocument()) {
+  if (!chrome.offscreen || (await chrome.offscreen.hasDocument())) {
     return;
   }
 
