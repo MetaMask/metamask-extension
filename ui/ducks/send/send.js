@@ -1483,6 +1483,19 @@ const slice = createSlice({
             slice.caseReducers.validateSendState(state);
           }
           break;
+        // set error to INSUFFICIENT_TOKENS_ERROR if the token balance is lower
+        // than the amount of token the user is attempting to send.
+        case draftTransaction.sendAsset.type === AssetType.token &&
+          !isTokenBalanceSufficient({
+            tokenBalance: draftTransaction.sendAsset.balance ?? '0x0',
+            amount: draftTransaction.amount.value,
+            decimals: draftTransaction.sendAsset.details.decimals,
+          }):
+          draftTransaction.amount.error = INSUFFICIENT_TOKENS_ERROR;
+          if (draftTransaction.status !== SEND_STATUSES.INVALID) {
+            slice.caseReducers.validateSendState(state);
+          }
+          break;
         // set error to INSUFFICIENT_FUNDS_FOR_GAS_ERROR if the account balance is lower
         // than the total price of the transaction inclusive of gas fees.
         case draftTransaction.sendAsset.type === AssetType.native &&
@@ -1505,19 +1518,6 @@ const slice = createSlice({
           }
           break;
         }
-        // set error to INSUFFICIENT_TOKENS_ERROR if the token balance is lower
-        // than the amount of token the user is attempting to send.
-        case draftTransaction.sendAsset.type === AssetType.token &&
-          !isTokenBalanceSufficient({
-            tokenBalance: draftTransaction.sendAsset.balance ?? '0x0',
-            amount: draftTransaction.amount.value,
-            decimals: draftTransaction.sendAsset.details.decimals,
-          }):
-          draftTransaction.amount.error = INSUFFICIENT_TOKENS_ERROR;
-          if (draftTransaction.status !== SEND_STATUSES.INVALID) {
-            slice.caseReducers.validateSendState(state);
-          }
-          break;
         // If none of the above are true, set error to null
         default:
           draftTransaction.amount.error = null;
