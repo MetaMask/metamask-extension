@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useContext } from 'react';
 
 import { useSelector } from 'react-redux';
 import { isEqual, uniqBy } from 'lodash';
@@ -55,8 +55,14 @@ import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { getTopAssets } from '../../../../ducks/swaps/swaps';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import { useEqualityCheck } from '../../../../hooks/useEqualityCheck';
-import AssetList from './AssetList';
+import {
+  MetaMetricsEventName,
+  MetaMetricsEventCategory,
+} from '../../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { getSendAnalyticProperties } from '../../../../ducks/send';
 import { Asset, Collection, Token } from './types';
+import AssetList from './AssetList';
 
 type AssetPickerModalProps = {
   isOpen: boolean;
@@ -78,6 +84,8 @@ export function AssetPickerModal({
   sendingAssetSymbol,
 }: AssetPickerModalProps) {
   const t = useI18nContext();
+  const trackEvent = useContext(MetaMetricsContext);
+  const sendAnalytics = useSelector(getSendAnalyticProperties);
 
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -108,9 +116,22 @@ export function AssetPickerModal({
     (collection) => collection.nfts.length > 0,
   );
 
+  const isDest = sendingAssetImage && sendingAssetSymbol;
+
   const handleAssetChange = useCallback(
     (token: Token) => {
       onAssetChange(token);
+      trackEvent({
+        event: MetaMetricsEventName.sendAssetSelected,
+        category: MetaMetricsEventCategory.Send,
+        properties: {
+          ...sendAnalytics,
+          is_destination_asset_picker_modal: Boolean(isDest),
+          new_asset_symbol: token.symbol,
+          new_asset_address: token.address,
+          is_nft: false,
+        },
+      });
       onClose();
     },
     [onAssetChange],
@@ -118,7 +139,6 @@ export function AssetPickerModal({
 
   const defaultActiveTabKey = asset?.type === AssetType.NFT ? 'nfts' : 'tokens';
 
-  const isDest = sendingAssetImage && sendingAssetSymbol;
   const chainId = useSelector(getCurrentChainId);
 
   const nativeCurrencyImage = useSelector(getNativeCurrencyImage);
