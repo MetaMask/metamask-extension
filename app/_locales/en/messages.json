@@ -3070,6 +3070,9 @@
   "noDomainResolution": {
     "message": "No resolution for domain provided."
   },
+  "noHardwareWalletOrSnapsSupport": {
+    "message": "Snaps, and most hardware wallets, will not work with your current browser version."
+  },
   "noNFTs": {
     "message": "No NFTs yet"
   },
