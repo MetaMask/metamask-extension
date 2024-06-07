@@ -218,20 +218,6 @@ export const CoinOverview = ({
   const { openBuyCryptoInPdapp } = useRamps();
   ///: END:ONLY_INCLUDE_IF
 
-  const handleBuyAndSellOnClick = useCallback(() => {
-    openBuyCryptoInPdapp();
-    trackEvent({
-      event: MetaMetricsEventName.NavBuyButtonClicked,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        location: 'Home',
-        text: 'Buy',
-        chain_id: chainId,
-        token_symbol: defaultSwapsToken,
-      },
-    });
-  }, [chainId, defaultSwapsToken]);
-
   const handleSendOnClick = useCallback(async () => {
     trackEvent({
       event: MetaMetricsEventName.NavSendButtonClicked,
@@ -287,6 +273,21 @@ export const CoinOverview = ({
     ///: END:ONLY_INCLUDE_IF
   ]);
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  const handleBuyAndSellOnClick = useCallback(() => {
+    openBuyCryptoInPdapp();
+    trackEvent({
+      event: MetaMetricsEventName.NavBuyButtonClicked,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: {
+        location: 'Home',
+        text: 'Buy',
+        chain_id: chainId,
+        token_symbol: defaultSwapsToken,
+      },
+    });
+  }, [chainId, defaultSwapsToken]);
+
   const handleBridgeOnClick = useCallback(() => {
     if (isBridgeChain) {
       const portfolioUrl = getPortfolioUrl(
@@ -312,13 +313,8 @@ export const CoinOverview = ({
     }
   }, [isBridgeChain, chainId, metaMetricsId]);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const handlePortfolioOnClick = useCallback(() => {
-    const url = getPortfolioUrl(
-      '',
-      'ext_portfolio_button',
-      metaMetricsId,
-    );
+    const url = getPortfolioUrl('', 'ext_portfolio_button', metaMetricsId);
     global.platform.openTab({ url });
     trackEvent({
       category: MetaMetricsEventCategory.Navigation,
