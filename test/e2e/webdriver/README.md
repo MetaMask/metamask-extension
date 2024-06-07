@@ -663,6 +663,33 @@ This organization helps provide a clear structure for understanding the various 
 
 </details>
 
+<details><summary><b>getWindowTitleWaitUntilLoads</b></summary>
+
+> **`getWindowTitleWaitUntilLoads`** function waits until the title of the window tab is loaded
+>
+> [source](https://github.com/MetaMask/metamask-extension/blob/671c9975424a83904a4752dfb8a7cf728ae67355/test/e2e/webdriver/driver.js#L574)
+>
+> #### Arguments
+> @param {string} title - Title of the window<br>
+> @param delayStep - defaults to 1000 milliseconds
+> @param {number} [timeout] - The amount of time in milliseconds to wait before timing out<br>
+>
+> #### Returns
+> @returns `{Promise<void>}` window title after the command completion<br>
+>
+> **Example**
+>
+> ```jsx
+> const newWindowTitle = await driver.getWindowTitleWaitUntilLoads(
+>          WINDOW_TITLES.Dialog,
+>          newWindowHandle,
+>          1000,
+>          10000,
+>        );
+> ```
+
+</details>
+
 #### [assertElementNotPresent](#assertElemntNotPresent-click-here)
 
 ### \***\* NOTE - Delay \*\***
