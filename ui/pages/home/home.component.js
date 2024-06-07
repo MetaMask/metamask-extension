@@ -32,6 +32,8 @@ import {
   TextVariant,
   FlexDirection,
   BlockSize,
+  AlignItems,
+  JustifyContent,
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
 import {
@@ -41,6 +43,12 @@ import {
   Box,
   Text,
   Icon,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
 } from '../../components/component-library';
 import {
   RESTORE_VAULT_ROUTE,
@@ -753,91 +761,104 @@ export default class Home extends PureComponent {
     const { t } = this.context;
     const { setDataCollectionForMarketing } = this.props;
 
+    const handleClose = () => {
+      setDataCollectionForMarketing(false);
+      this.context.trackEvent({
+        category: MetaMetricsEventCategory.Home,
+        event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+        properties: {
+          has_marketing_consent: false,
+          location: 'marketing_consent_modal',
+        },
+      });
+    };
+
+    const handleDisagree = () => {
+      setDataCollectionForMarketing(false);
+      this.context.trackEvent({
+        category: MetaMetricsEventCategory.Home,
+        event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+        properties: {
+          has_marketing_consent: false,
+          location: 'marketing_consent_modal',
+        },
+      });
+    };
+
+    const handleAccept = () => {
+      setDataCollectionForMarketing(true);
+      this.context.trackEvent({
+        category: MetaMetricsEventCategory.Home,
+        event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+        properties: {
+          has_marketing_consent: true,
+          location: 'marketing_consent_modal',
+        },
+      });
+    };
+
     return (
-      <Popover
-        wrapTitle
-        centerTitle
-        onClose={() => {
-          setDataCollectionForMarketing(false);
-          this.context.trackEvent({
-            category: MetaMetricsEventCategory.Home,
-            event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-            properties: {
-              has_marketing_consent: false,
-              location: 'marketing_consent_modal',
-            },
-          });
-        }}
-        title={t('onboardedMetametricsTitle')}
-        footer={
-          <Box
-            gap={2}
+      <Modal isOpen onClose={handleClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader
+            onClose={handleClose}
             display={Display.Flex}
-            width={BlockSize.Full}
             flexDirection={FlexDirection.Row}
+            fontWeight={FontWeight.Bold}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
+            gap={4}
+            size={18}
+            paddingBottom={0}
           >
-            <Button
-              type="secondary"
-              onClick={() => {
-                setDataCollectionForMarketing(false);
-                this.context.trackEvent({
-                  category: MetaMetricsEventCategory.Home,
-                  event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-                  properties: {
-                    has_marketing_consent: false,
-                    location: 'marketing_consent_modal',
-                  },
-                });
-              }}
+            {t('onboardedMetametricsTitle')}
+          </ModalHeader>
+          <ModalBody>
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              gap={2}
+              margin={4}
             >
-              {t('onboardedMetametricsDisagree')}
-            </Button>
-            <Button
-              type="primary"
-              onClick={() => {
-                setDataCollectionForMarketing(true);
-                this.context.trackEvent({
-                  category: MetaMetricsEventCategory.Home,
-                  event: MetaMetricsEventName.AnalyticsPreferenceSelected,
-                  properties: {
-                    has_marketing_consent: true,
-                    location: 'marketing_consent_modal',
-                  },
-                });
-              }}
+              <Typography>
+                {t('onboardedMetametricsParagraph1', [
+                  <a
+                    href={METAMETRICS_SETTINGS_LINK}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    key="retention-link"
+                  >
+                    {t('onboardedMetametricsLink')}
+                  </a>,
+                ])}
+              </Typography>
+              <Typography>{t('onboardedMetametricsParagraph2')}</Typography>
+              <ul className="home__onboarding_list">
+                <li>{t('onboardedMetametricsKey1')}</li>
+                <li>{t('onboardedMetametricsKey2')}</li>
+                <li>{t('onboardedMetametricsKey3')}</li>
+              </ul>
+              <Typography>{t('onboardedMetametricsParagraph3')}</Typography>
+            </Box>
+          </ModalBody>
+          <ModalFooter>
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
+              gap={2}
+              width={BlockSize.Full}
             >
-              {t('onboardedMetametricsAccept')}
-            </Button>
-          </Box>
-        }
-      >
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          gap={2}
-          margin={4}
-        >
-          <Typography>
-            {t('onboardedMetametricsParagraph1', [
-              <a
-                href={METAMETRICS_SETTINGS_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
-                key="retention-link"
-              >
-                {t('onboardedMetametricsLink')}
-              </a>,
-            ])}
-          </Typography>
-          <Typography>{t('onboardedMetametricsParagraph2')}</Typography>
-          <ul className="home__onboarding_list">
-            <li>{t('onboardedMetametricsKey1')}</li>
-            <li>{t('onboardedMetametricsKey2')}</li>
-            <li>{t('onboardedMetametricsKey3')}</li>
-          </ul>
-          <Typography>{t('onboardedMetametricsParagraph3')}</Typography>
-        </Box>
-      </Popover>
+              <Button type="secondary" onClick={handleDisagree}>
+                {t('onboardedMetametricsDisagree')}
+              </Button>
+              <Button type="primary" onClick={handleAccept}>
+                {t('onboardedMetametricsAccept')}
+              </Button>
+            </Box>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     );
   };
 
