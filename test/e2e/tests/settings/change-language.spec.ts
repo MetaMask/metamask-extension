@@ -1,12 +1,13 @@
-const { strict: assert } = require('assert');
+import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-const {
+
+import { Driver } from '../../webdriver/driver';
+import {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
-} = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
-import { Driver } from '../../webdriver/driver';
+} from '../../helpers';
+import FixtureBuilder from '../../fixture-builder';
 
 const selectors = {
   accountOptionsMenuButton: '[data-testid="account-options-menu-button"]',
@@ -14,21 +15,21 @@ const selectors = {
   localeSelect: '[data-testid="locale-select"]',
   ethOverviewSend: '[data-testid="eth-overview-send"]',
   ensInput: '[data-testid="ens-input"]',
-  nftsTab: '[data-testid="home__nfts-tab"]',
+  nftsTab: '[data-testid="account-overview__nfts-tab"]',
   labelSpanish: { tag: 'span', text: 'Idioma actual' },
   currentLanguageLabel: { tag: 'span', text: 'Current language' },
   advanceText: { text: 'Avanceret', tag: 'div' },
   waterText: '[placeholder="Søg"]',
   headerTextDansk: { text: 'Indstillinger', tag: 'h3' },
   buttonText: { css: '[data-testid="auto-lockout-button"]', text: 'Gem' },
-  dialogText: { text: 'Empfängeradresse ist unzulässig', tag: 'div' },
+  dialogText: { text: 'Empfängeradresse ist unzulässig', tag: 'p' },
   accountTooltipText: '[data-original-title="क्लिपबोर्ड पर कॉपी करें"]',
   bridgeTooltipText: '[data-original-title="इस नेटवर्क पर उपलब्ध नहीं है"]',
   hyperText: { text: 'Tudjon meg többet', tag: 'a' },
   headerText: { text: 'الإعدادات', tag: 'h3' },
 };
 
-async function changeLanguage(driver: Driver , languageIndex: number) {
+async function changeLanguage(driver: Driver, languageIndex: number) {
   await driver.clickElement(selectors.accountOptionsMenuButton);
   await driver.clickElement(selectors.settingsOption);
 
@@ -91,7 +92,7 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
 
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
-        await changeLanguage(driver, languageIndex );
+        await changeLanguage(driver, languageIndex);
 
         await driver.assertElementNotPresent('.loading-overlay__spinner');
 
@@ -134,7 +135,6 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
     if (process.env.MULTICHAIN) {
       return;
     }
-
     const languageIndex = 7;
     await withFixtures(
       {
@@ -145,7 +145,7 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
 
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
-        await changeLanguage( driver, languageIndex );
+        await changeLanguage(driver, languageIndex);
         await driver.navigate();
         await driver.clickElement(selectors.ethOverviewSend);
         await driver.fill(selectors.ensInput, 'test');
@@ -167,7 +167,6 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
     if (process.env.MULTICHAIN) {
       return;
     }
-
     const languageIndex = 19;
     await withFixtures(
       {
@@ -178,7 +177,7 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
 
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
-        await changeLanguage( driver, languageIndex );
+        await changeLanguage(driver, languageIndex);
         await driver.navigate();
 
         // Validate the account tooltip
@@ -216,7 +215,7 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
         // selects "Magyar" language
-        await changeLanguage( driver, languageIndex );
+        await changeLanguage(driver, languageIndex);
         await driver.navigate();
         await driver.clickElement(selectors.nftsTab);
 
@@ -243,7 +242,7 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
-        await changeLanguage( driver, languageIndex );
+        await changeLanguage(driver, languageIndex);
 
         // Validate the header text
         const isHeaderTextChanged = await driver.isElementPresent(

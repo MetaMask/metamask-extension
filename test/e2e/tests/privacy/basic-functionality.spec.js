@@ -12,7 +12,7 @@ const FixtureBuilder = require('../../fixture-builder');
 async function mockApis(mockServer) {
   return [
     await mockServer
-      .forGet('https://token-api.metaswap.codefi.network/tokens/1')
+      .forGet('https://token.api.cx.metamask.io/tokens/1')
       .thenCallback(() => {
         return {
           statusCode: 200,
