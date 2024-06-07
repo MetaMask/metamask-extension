@@ -20,7 +20,7 @@ export function usePaymasterAlerts(): Alert[] {
         key: 'usingPaymaster',
         message: t('paymasterInUse'),
         reason: 'Using Paymaster',
-        severity: Severity.Warning,
+        severity: Severity.Info,
       },
     ];
   }, [isUsingPaymaster]);
