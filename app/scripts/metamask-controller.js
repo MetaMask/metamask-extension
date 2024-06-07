@@ -80,6 +80,7 @@ import { LoggingController, LogType } from '@metamask/logging-controller';
 import { PermissionLogController } from '@metamask/permission-log-controller';
 
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+import { BrowserRuntimePostMessageStream } from '@metamask/post-message-stream';
 import { RateLimitController } from '@metamask/rate-limit-controller';
 import { NotificationController } from '@metamask/notification-controller';
 import {
@@ -88,7 +89,7 @@ import {
   SnapController,
   IframeExecutionService,
   SnapInterfaceController,
-  OffscreenExecutionService,
+  ProxyExecutionService,
 } from '@metamask/snaps-controllers';
 import {
   createSnapsMethodMiddleware,
@@ -1245,11 +1246,13 @@ export default class MetamaskController extends EventEmitter {
             ...snapExecutionServiceArgs,
             iframeUrl: new URL(process.env.IFRAME_EXECUTION_ENVIRONMENT_URL),
           })
-        : new OffscreenExecutionService({
-            // eslint-disable-next-line no-undef
-            documentUrl: chrome.runtime.getURL('./offscreen.html'),
-            ...snapExecutionServiceArgs,
-          });
+        : new ProxyExecutionService({
+          ...snapExecutionServiceArgs,
+          stream: new BrowserRuntimePostMessageStream({
+            name: 'parent',
+            target: 'child',
+          })
+        });
 
     const snapControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'SnapController',
