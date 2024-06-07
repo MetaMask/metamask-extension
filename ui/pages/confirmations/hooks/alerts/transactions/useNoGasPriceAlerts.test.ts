@@ -55,6 +55,7 @@ function runHook({
     gasEstimateType,
     transaction,
   });
+
   const response = renderHookWithProvider(useNoGasPriceAlerts, state);
 
   return response.result.current;
