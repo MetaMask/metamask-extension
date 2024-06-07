@@ -1,13 +1,15 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { waitFor } from '@testing-library/react';
+import { waitFor, act } from '@testing-library/react';
 
 import { NetworkStatus } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 
 import Confirmation from '../confirmation';
+import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import fetchWithCache from '../../../../../shared/lib/fetch-with-cache';
 
 jest.mock('../../../../../shared/lib/fetch-with-cache');
 
@@ -77,6 +79,51 @@ describe('add-ethereum-chain confirmation', () => {
       ).toBeInTheDocument();
       expect(container.querySelector('.callout')).toBeDefined();
       expect(container).toMatchSnapshot();
+    });
+  });
+
+  it('should show deprecation alert', async () => {
+    const testStore = {
+      metamask: {
+        ...mockBaseStore.metamask,
+        useSafeChainsListValidation: true,
+        pendingApprovals: {
+          [mockApprovalId]: {
+            ...mockApproval,
+            requestData: {
+              rpcUrl: 'https://rpcurl.test.chain',
+              rpcPrefs: {
+                blockExplorerUrl: 'https://blockexplorer.test.chain',
+              },
+              chainName: 'Test chain',
+              ticker: 'TST',
+              chainId: CHAIN_IDS.LINEA_GOERLI, // mumbai chainId
+              nickname: 'Test chain',
+            },
+            type: MESSAGE_TYPE.ADD_ETHEREUM_CHAIN,
+          },
+        },
+      },
+    };
+
+    const store = configureMockStore(middleware)(testStore);
+    fetchWithCache.mockResolvedValue([
+      {
+        name: 'Linea Goerli',
+        title: 'Linea Goerli Testnet',
+        shortName: 'linea-goerli',
+        chainId: 59140,
+      },
+    ]);
+
+    let result;
+    act(() => {
+      result = renderWithProvider(<Confirmation />, store);
+    });
+    const { getByText } = result;
+
+    await waitFor(() => {
+      expect(getByText('This network is deprecated')).toBeInTheDocument();
     });
   });
 
