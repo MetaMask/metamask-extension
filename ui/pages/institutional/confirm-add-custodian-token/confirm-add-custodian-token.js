@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import classnames from 'classnames';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import { CUSTODY_ACCOUNT_ROUTE } from '../../../helpers/constants/routes';
 import {
@@ -11,7 +12,6 @@ import {
   TextVariant,
   BorderColor,
 } from '../../../helpers/constants/design-system';
-import Chip from '../../../components/ui/chip';
 import { BUILT_IN_NETWORKS } from '../../../../shared/constants/network';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -25,6 +25,7 @@ import {
   ButtonVariant,
   Box,
   Text,
+  Tag,
 } from '../../../components/component-library';
 import {
   MetaMetricsEventCategory,
@@ -135,14 +136,21 @@ const ConfirmAddCustodianToken = () => {
   return (
     <Box className="page-container">
       <Box paddingTop={6} paddingLeft={4} paddingRight={4}>
-        <Chip
+        <Tag
           borderColor={BorderColor.borderMuted}
           label={connectRequest.origin}
-          maxContent={false}
-          leftIconUrl={custodian?.iconUrl}
+          startIconName={custodian?.name}
+          startIconProps={custodian}
+          className={classnames(
+            'chip',
+            `chip--border-color-${BorderColor.borderMuted}`,
+          )}
           labelProps={{
-            textAlign: TextAlign.Center,
+            variant: TextVariant.bodyMd,
+            className: classnames('box--margin-bottom-1', 'box--margin-top-1'),
+            color: TextColor.textAlternative,
           }}
+          style={{ width: 'auto' }}
         />
       </Box>
       <Box padding={4} className="page-container__content">
