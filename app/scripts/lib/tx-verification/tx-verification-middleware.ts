@@ -55,10 +55,14 @@ export function createTxVerificationMiddleware(
         ? (params.chainId.toLowerCase() as `0x${string}`)
         : networkController.state.providerConfig.chainId;
 
-    // if the recipient address is not the bridge contract, skip verification
+    // skip verification if bridge is not deployed on the specified chain.
+    // skip verification to address is not the bridge contract
     if (
+      !Object.keys(FIRST_PARTY_CONTRACT_NAMES['MetaMask Bridge']).includes(
+        chainId,
+      ) ||
       params.to.toLowerCase() !==
-      FIRST_PARTY_CONTRACT_NAMES['MetaMask Bridge'][chainId].toLowerCase()
+        FIRST_PARTY_CONTRACT_NAMES['MetaMask Bridge'][chainId].toLowerCase()
     ) {
       return next();
     }

@@ -104,6 +104,25 @@ describe('tx verification middleware', () => {
     },
   );
 
+  // @ts-expect-error Our test types are broken
+  it.each(['0x11111', '0x111', '0x222222'])(
+    'ignores transactions that do not have a bridge contract deployed for chain %s',
+    (chainId: `0x${string}`) => {
+      const middleware = createTxVerificationMiddleware(
+        getMockNetworkController(),
+      );
+
+      const { req, res, next, end } = getMiddlewareParams(
+        'eth_sendTransaction',
+        getBridgeTxParams({ chainId, to: '0x1' }),
+      );
+      middleware(req, res, next, end);
+
+      expect(next).toHaveBeenCalledTimes(1);
+      expect(end).not.toHaveBeenCalled();
+    },
+  );
+
   it('passes through a valid bridge transaction', () => {
     const middleware = createTxVerificationMiddleware(
       getMockNetworkController(),
