@@ -268,8 +268,8 @@ export const CoinOverview = ({
   }, [
     isSwapsChain,
     chainId,
-    usingHardwareWallet,
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+    usingHardwareWallet,
     defaultSwapsToken,
     ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
