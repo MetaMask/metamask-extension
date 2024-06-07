@@ -16,7 +16,10 @@ import {
   updateNetworksList,
   setNetworkClientIdForDomain,
 } from '../../../store/actions';
-import { TEST_CHAINS } from '../../../../shared/constants/network';
+import {
+  FEATURED_RPCS,
+  TEST_CHAINS,
+} from '../../../../shared/constants/network';
 import {
   getCurrentChainId,
   getCurrentNetwork,
@@ -28,6 +31,7 @@ import {
   getShowNetworkBanner,
   getOriginOfCurrentTab,
   getUseRequestQueue,
+  getNetworkConfigurations,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -49,9 +53,9 @@ import {
   Text,
   BannerBase,
   IconName,
+  ModalContent,
+  ModalHeader,
 } from '../../component-library';
-import { ModalContent } from '../../component-library/modal-content/deprecated';
-import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import { TextFieldSearch } from '../../component-library/text-field-search/deprecated';
 import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -65,6 +69,7 @@ import {
   getCompletedOnboarding,
   getIsUnlocked,
 } from '../../../ducks/metamask/metamask';
+import PopularNetworkList from './popular-network-list/popular-network-list';
 
 export const NetworkListMenu = ({ onClose }) => {
   const t = useI18nContext();
@@ -76,6 +81,7 @@ export const NetworkListMenu = ({ onClose }) => {
 
   const selectedTabOrigin = useSelector(getOriginOfCurrentTab);
   const useRequestQueue = useSelector(getUseRequestQueue);
+  const networkConfigurations = useSelector(getNetworkConfigurations);
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -95,6 +101,17 @@ export const NetworkListMenu = ({ onClose }) => {
 
   const orderedNetworksList = useSelector(getOrderedNetworksList);
 
+  const networkConfigurationChainIds = Object.values(networkConfigurations).map(
+    (net) => net.chainId,
+  );
+
+  const nets = FEATURED_RPCS.sort((a, b) =>
+    a.nickname > b.nickname ? 1 : -1,
+  ).slice(0, FEATURED_RPCS.length);
+
+  const notExistingNetworkConfigurations = nets.filter(
+    (net) => networkConfigurationChainIds.indexOf(net.chainId) === -1,
+  );
   const newOrderNetworks = () => {
     if (!orderedNetworksList || orderedNetworksList.length === 0) {
       return nonTestNetworks;
@@ -153,6 +170,13 @@ export const NetworkListMenu = ({ onClose }) => {
 
   let searchResults =
     [...networksList].length === items.length ? items : [...networksList];
+
+  const searchAddNetworkResults =
+    [...notExistingNetworkConfigurations].length === items.length
+      ? items
+      : [...notExistingNetworkConfigurations];
+
+  console.log('HERE +++++++++', searchAddNetworkResults);
   const isSearching = searchQuery !== '';
 
   if (isSearching) {
@@ -241,7 +265,7 @@ export const NetworkListMenu = ({ onClose }) => {
     <Modal isOpen onClose={onClose}>
       <ModalOverlay />
       <ModalContent
-        className="multichain-network-list-menu-content-wrapper"
+        // className="multichain-network-list-menu-content-wrapper"
         modalDialogProps={{
           className: 'multichain-network-list-menu-content-wrapper__dialog',
           display: Display.Flex,
@@ -257,7 +281,7 @@ export const NetworkListMenu = ({ onClose }) => {
         >
           {t('networkMenuHeading')}
         </ModalHeader>
-        <>
+        <Box className="multichain-network-list-menu">
           {showSearch ? (
             <Box
               paddingLeft={4}
@@ -418,6 +442,12 @@ export const NetworkListMenu = ({ onClose }) => {
               onToggle={handleToggle}
             />
           </Box>
+          {process.env.ENABLE_NETWORK_UI_REDESIGN ? (
+            <PopularNetworkList
+              searchAddNetworkResults={searchAddNetworkResults}
+            />
+          ) : null}
+
           {showTestNetworks || currentlyOnTestNetwork ? (
             <Box className="multichain-network-list-menu">
               {generateMenuItems(testNetworks)}
@@ -450,7 +480,7 @@ export const NetworkListMenu = ({ onClose }) => {
               {t('addNetwork')}
             </ButtonSecondary>
           </Box>
-        </>
+        </Box>
       </ModalContent>
     </Modal>
   );
