@@ -86,6 +86,10 @@ export default class UnitInput extends PureComponent {
   };
 
   handleInputBlur = ({ target: { value } }) => {
+    setTimeout(() => {
+      this.unitInput.scrollLeft = this.unitInput.scrollWidth;
+    }, 0);
+
     if (value === '') {
       this.setState({
         ...this.state,

@@ -48,6 +48,10 @@
     text-overflow: ellipsis;
     height: 16px;
     outline: none;
+
+    &:not(:focus):not(:disabled) {
+      text-overflow: clip;
+    }
   }
 
   &__input-container {
