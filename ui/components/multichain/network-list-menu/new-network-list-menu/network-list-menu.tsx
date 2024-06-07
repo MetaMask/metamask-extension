@@ -98,13 +98,11 @@ import { useHistory } from 'react-router-dom';
 import { ApprovalType } from '@metamask/controller-utils';
 import Popover from '../../../ui/popover';
 import ConfirmationPage from '../../../../pages/confirmations/confirmation/confirmation';
-import ScrollToBottom from '../../../../pages/confirmations/components/confirm/scroll-to-bottom';
-import { PageContainerFooter } from '../../../ui/page-container';
-import NetworksFormSubheader from '../../../../pages/settings/networks-tab/networks-tab-subheader/networks-tab-subheader';
 import {
   ADD_NETWORK_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../../helpers/constants/routes';
+import NetworkConfirmationPopover from './network-confirmation-popover/network-confirmation-popover';
 
 export const NetworkListMenu2 = ({ onClose }: { onClose: () => void }) => {
   const t = useI18nContext();
@@ -149,7 +147,8 @@ export const NetworkListMenu2 = ({ onClose }: { onClose: () => void }) => {
     (net) => networkConfigurationChainIds.indexOf(net.chainId) === -1,
   );
 
-  const unapprovedConfirmations = useSelector(getUnapprovedConfirmations);
+  const isPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
+  const isFullScreen = getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN;
 
   const newOrderNetworks = () => {
     if (!orderedNetworksList || orderedNetworksList.length === 0) {
@@ -180,31 +179,12 @@ export const NetworkListMenu2 = ({ onClose }: { onClose: () => void }) => {
 
   const networksList = newOrderNetworks();
   const [items, setItems] = useState([...networksList]);
-  const [showPopover, setShowPopover] = useState(false);
 
   useEffect(() => {
     if (currentlyOnTestNetwork) {
       dispatch(setShowTestNetworks(currentlyOnTestNetwork));
     }
   }, [dispatch, currentlyOnTestNetwork]);
-
-  useEffect(() => {
-    // const anAddNetworkConfirmationFromMetaMaskExists =
-    //   unapprovedConfirmations?.find((confirmation) => {
-    //     return (
-    //       confirmation.origin === 'metamask' &&
-    //       confirmation.type === ApprovalType.AddEthereumChain
-    //     );
-    //   });
-    // if (!showPopover && anAddNetworkConfirmationFromMetaMaskExists) {
-    //   setShowPopover(true);
-    // }
-
-    // if (showPopover && !anAddNetworkConfirmationFromMetaMaskExists) {
-    //   setShowPopover(false);
-    // }
-    setShowPopover(true);
-  }, [unapprovedConfirmations]);
 
   const [searchQuery, setSearchQuery] = useState('');
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
@@ -375,7 +355,7 @@ export const NetworkListMenu2 = ({ onClose }: { onClose: () => void }) => {
           width={BlockSize.FourFifths}
           startIconName={IconName.Add}
           onClick={() => {
-            getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+            isPopUp
               ? // @ts-ignore-next-line
                 platform.openExtensionInBrowser(ADD_NETWORK_ROUTE)
               : history.push(ADD_NETWORK_ROUTE);
@@ -507,7 +487,7 @@ export const NetworkListMenu2 = ({ onClose }: { onClose: () => void }) => {
                   type="inline"
                   onClick={(event) => {
                     event.preventDefault();
-                    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+                    isPopUp
                       ? //@ts-ignore
                         platform.openExtensionInBrowser(ADD_NETWORK_ROUTE)
                       : history.push(ADD_NETWORK_ROUTE);
@@ -530,7 +510,7 @@ export const NetworkListMenu2 = ({ onClose }: { onClose: () => void }) => {
     return (
       <Box className="new-network-list__networks-container">
         <Box
-          marginTop={getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? 0 : 4}
+          marginTop={isPopUp ? 0 : 4}
           marginBottom={1}
           paddingLeft={4}
           paddingRight={4}
@@ -578,7 +558,7 @@ export const NetworkListMenu2 = ({ onClose }: { onClose: () => void }) => {
                   className="add-network__add-button"
                   variant={ButtonVariant.Link}
                   onClick={async () => {
-                    if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN) {
+                    if (isFullScreen) {
                       onClose();
                     }
                     await dispatch(
@@ -606,18 +586,8 @@ export const NetworkListMenu2 = ({ onClose }: { onClose: () => void }) => {
             </Box>
           ))}
         </Box>
-        <Box
-          padding={
-            getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-              ? [2, 0, 2, 6]
-              : [2, 0, 2, 0]
-          }
-        ></Box>
-        {true && (
-          <Popover>
-            <ConfirmationPage redirectToHomeOnZeroConfirmations={false} />
-          </Popover>
-        )}
+        <Box padding={isPopUp ? [2, 0, 2, 6] : [2, 0, 2, 0]}></Box>
+        <NetworkConfirmationPopover />
       </Box>
     );
   };
@@ -708,6 +678,9 @@ export const NetworkListMenu2 = ({ onClose }: { onClose: () => void }) => {
                               onDeleteClick={
                                 canDeleteNetwork
                                   ? () => {
+                                      if (isFullScreen) {
+                                        onClose();
+                                      }
                                       dispatch(
                                         showModal({
                                           name: 'CONFIRM_DELETE_NETWORK',
@@ -773,9 +746,7 @@ export const NetworkListMenu2 = ({ onClose }: { onClose: () => void }) => {
   };
 
   const renderNetworkManagement = () => {
-    console.log('>>> inside net management');
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-      console.log('>>> inside getEnvironmentType() === ENVIRONMENT_TYPE_POPUP');
+    if (isPopUp) {
       return (
         <Box
           className="new-network-list-menu-content-wrapper__network"
@@ -790,9 +761,6 @@ export const NetworkListMenu2 = ({ onClose }: { onClose: () => void }) => {
         </Box>
       );
     }
-    console.log(
-      '>>> inside getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN',
-    );
     return (
       <Modal isOpen onClose={onClose}>
         <ModalOverlay />

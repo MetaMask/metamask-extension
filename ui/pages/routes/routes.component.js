@@ -113,6 +113,7 @@ import { EXTENSION_ERROR_PAGE_TYPES } from '../../../shared/constants/desktop';
 ///: END:ONLY_INCLUDE_IF
 
 import {
+  ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -149,6 +150,7 @@ import { BorderColor, IconColor } from '../../helpers/constants/design-system';
 import { MILLISECOND } from '../../../shared/constants/time';
 import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/multichain-meta-fox-logo';
 import { NetworkListMenu2 } from '../../components/multichain/network-list-menu/new-network-list-menu/network-list-menu';
+import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/new-network-list-menu/network-confirmation-popover/network-confirmation-popover';
 
 const isConfirmTransactionRoute = (pathname) =>
   Boolean(
@@ -959,6 +961,11 @@ export default class Routes extends Component {
         {process.env.ENABLE_NETWORK_UI_REDESIGN && isNetworkMenuOpen ? (
           <NetworkListMenu2 onClose={() => toggleNetworkMenu()} />
         ) : null}
+        {process.env.ENABLE_NETWORK_UI_REDESIGN &&
+        getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? (
+          <NetworkConfirmationPopover />
+        ) : null}
+
         {accountDetailsAddress ? (
           <AccountDetails address={accountDetailsAddress} />
         ) : null}

@@ -63,7 +63,7 @@ const QRHardwarePopover = () => {
     }
     return _title;
   }, [showSignRequest, showWalletImporter, t, errorTitle]);
-  return showPopover ? (
+  return false ? (
     <Popover
       title={title}
       onClose={showWalletImporter ? walletImporterCancel : signRequestCancel}
