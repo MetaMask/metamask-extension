@@ -64,10 +64,13 @@ function wrapElementWithAPI(element, driver) {
     }
   };
 
-  element.nestedFindElement = async (rawLocator) => {
+  element.nestedFindElement = async (rawLocator, timeout = 4000) => {
     const locator = driver.buildLocator(rawLocator);
-    const newElement = await element.findElement(locator);
-    return wrapElementWithAPI(newElement, driver);
+    const nestedElement = await driver.driver.wait(
+      until.elementLocated(locator),
+      timeout,
+    );
+    return nestedElement;
   };
 
   // We need to hold a pointer to the original click() method so that we can call it in the replaced click() method
