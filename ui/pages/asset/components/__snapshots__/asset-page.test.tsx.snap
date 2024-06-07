@@ -564,7 +564,7 @@ exports[`AssetPage TokenOverview should render a token asset 1`] = `
                     <div
                       class="mm-box mm-box--display-flex"
                     >
-                      0x123
+                      0xF0906...525C0
                     </div>
                   </span>
                   <span

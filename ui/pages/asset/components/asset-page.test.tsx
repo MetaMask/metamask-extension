@@ -3,12 +3,16 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { EthAccountType } from '@metamask/keyring-api';
+import nock from 'nock';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import AssetPage from './asset-page';
+
+// Mock the price chart
+jest.mock('react-chartjs-2', () => ({ Line: () => null }));
 
 // Mock BUYABLE_CHAINS_MAP
 jest.mock('../../../../shared/constants/network', () => ({
@@ -46,9 +50,15 @@ describe('AssetPage', () => {
       providerConfig: {
         id: '1',
         type: 'test',
+        ticker: 'ETH',
         chainId: CHAIN_IDS.MAINNET,
       },
-      currencyRates: {},
+      currencyRates: {
+        ETH: {
+          conversionRate: 123,
+        },
+      },
+      useCurrencyRateCheck: true,
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
@@ -125,7 +135,7 @@ describe('AssetPage', () => {
     const token = {
       type: AssetType.token,
       chainId: '0x1',
-      address: '0x123',
+      address: '0xF0906D83c5a0bD6b74bC9b62D7D9F2014c6525C0',
       symbol: 'TEST',
       decimals: 18,
       image: '',
@@ -274,6 +284,98 @@ describe('AssetPage', () => {
 
       expect(mmiStakeButton).toBeInTheDocument();
       expect(mmiPortfolioButton).toBeInTheDocument();
+    });
+
+    it('should not render a chart when price history is not available', async () => {
+      const address = '0x309375769E79382beFDEc5bdab51063AeBDC4936';
+
+      // Mock no price history
+      nock('https://price.api.cx.metamask.io')
+        .get(`/v1/chains/${CHAIN_IDS.MAINNET}/historical-prices/${address}`)
+        .query(true)
+        .reply(200, {});
+
+      const { queryByTestId } = renderWithProvider(
+        <AssetPage asset={{ ...token, address }} optionsButton={null} />,
+        configureMockStore([thunk])({
+          ...mockStore,
+          metamask: {
+            ...mockStore.metamask,
+            marketData: {
+              [CHAIN_IDS.MAINNET]: {
+                [address]: {
+                  price: 123,
+                },
+              },
+            },
+          },
+        }),
+      );
+
+      await waitFor(() => {
+        const chart = queryByTestId('asset-price-chart');
+        expect(chart).toBeNull();
+      });
+    });
+
+    it('should render a chart when price history is available', async () => {
+      const address = '0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55';
+
+      // Mock price history
+      nock('https://price.api.cx.metamask.io')
+        .get(`/v1/chains/${CHAIN_IDS.MAINNET}/historical-prices/${address}`)
+        .query(true)
+        .reply(200, { prices: [[1, 1]] });
+
+      const { queryByTestId } = renderWithProvider(
+        <AssetPage asset={{ ...token, address }} optionsButton={null} />,
+        configureMockStore([thunk])({
+          ...mockStore,
+          metamask: {
+            ...mockStore.metamask,
+            marketData: {
+              [CHAIN_IDS.MAINNET]: {
+                [address]: {
+                  price: 123,
+                },
+              },
+            },
+          },
+        }),
+      );
+
+      // Verify chart is rendered
+      await waitFor(() => {
+        const chart = queryByTestId('asset-price-chart');
+        expect(chart).toHaveClass('mm-box--background-color-transparent');
+      });
+    });
+
+    it('should render market data', async () => {
+      const marketCap = 456;
+
+      const { queryByTestId } = renderWithProvider(
+        <AssetPage asset={token} optionsButton={null} />,
+        configureMockStore([thunk])({
+          ...mockStore,
+          metamask: {
+            ...mockStore.metamask,
+            marketData: {
+              [CHAIN_IDS.MAINNET]: {
+                [token.address]: {
+                  price: 123,
+                  marketCap,
+                },
+              },
+            },
+          },
+        }),
+      );
+
+      const marketCapElement = queryByTestId('asset-market-cap');
+      expect(marketCapElement).toHaveTextContent(
+        `${marketCap * mockStore.metamask.currencyRates.ETH.conversionRate}`,
+      );
     });
   });
 });

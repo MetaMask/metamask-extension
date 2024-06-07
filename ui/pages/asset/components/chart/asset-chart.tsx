@@ -130,6 +130,7 @@ const AssetChart = ({
         comparePrice={prices?.[0]?.y}
       />
       <Box
+        data-testid="asset-price-chart"
         marginTop={4}
         borderRadius={BorderRadius.LG}
         backgroundColor={
