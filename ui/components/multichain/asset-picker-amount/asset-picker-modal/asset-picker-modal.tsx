@@ -283,6 +283,7 @@ export function AssetPickerModal({
     currentCurrency,
     chainId,
     tokenList,
+    sendingAssetSymbol,
   ]);
 
   const Search = useCallback(
