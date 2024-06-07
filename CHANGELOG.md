@@ -8,9 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [11.16.8]
 ### Changed
+- Prepare for increasing the minimum Chromium version supported by MetaMask ([#25142](https://github.com/MetaMask/metamask-extension/pull/25142))
+	- Users on Chromium versions lower than 109 will now see a warning that they need to update their browser.
+	Assuming their Chromium browser does not support the Offscreen Document api, the warning will include a note
+	that Snaps and Hardware wallets do not work on their current browser version.
 - [MMI] Updates MMI packages to latest versions ([#24581](https://github.com/MetaMask/metamask-extension/pull/24581))
 
 ### Fixed
+- Fix bug that could cause users to be locked out of MetaMask if they previously emptied the "Auto-lock timer" advanced setting
+input field and save it in that empty state. ([#25109](https://github.com/MetaMask/metamask-extension/pull/25109))
+- Fix bug that can prevent updates to network data in connected dapps after manually switching the network in the wallet ui ([#25127](https://github.com/MetaMask/metamask-extension/pull/25127))
 - [MMI] Fixed an issue that prevented MMI transactions from being sent correctly ([#24947](https://github.com/MetaMask/metamask-extension/pull/24947))
 - [MMI] Better support for MMI Portfolio Dashboard with an update to the allow list  ([#24992](https://github.com/MetaMask/metamask-extension/pull/24992))
 
