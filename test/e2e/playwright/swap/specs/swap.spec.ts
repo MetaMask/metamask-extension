@@ -12,7 +12,7 @@ let networkController: NetworkController;
 let walletPage: WalletPage;
 let activityListPage: ActivityListPage;
 
-let networks = {
+const networks = {
   Tenderly: {
     Mainnet: {
       name: 'Tenderly',
