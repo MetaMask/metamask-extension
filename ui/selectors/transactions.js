@@ -31,7 +31,7 @@ const allowedSwapsSmartTransactionStatusesForActivityList = [
   SmartTransactionStatuses.PENDING,
   SmartTransactionStatuses.UNKNOWN,
   SmartTransactionStatuses.RESOLVED,
-  SmartTransactionStatuses.CANCELLED, // Other CANCELLED_ statuses are deprecated.
+  SmartTransactionStatuses.CANCELLED,
 ];
 
 export const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
