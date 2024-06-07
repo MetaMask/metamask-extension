@@ -5,7 +5,6 @@ type NftAutoDetectionMetaMaskState = {
     preferences: {
       showNftAutodetectModal: boolean | null;
     };
-    showNftAutodetectModalOnUpgrade: boolean | null;
   };
 };
 
@@ -18,15 +17,9 @@ export const getShowNftAutodetectModal = (
 export const getIsShowNftAutodetectModal = (
   state: NftAutoDetectionMetaMaskState,
 ) => {
-  // Upgrade case
-  if (state.metamask.showNftAutodetectModalOnUpgrade === null) {
-    return (
-      !getUseNftDetection(state) &&
-      state.metamask.showNftAutodetectModalOnUpgrade === null
-    );
-  }
-
   return (
-    !getUseNftDetection(state) && getShowNftAutodetectModal(state) === null
+    !getUseNftDetection(state) &&
+    (getShowNftAutodetectModal(state) === null ||
+      getShowNftAutodetectModal(state) === undefined)
   );
 };

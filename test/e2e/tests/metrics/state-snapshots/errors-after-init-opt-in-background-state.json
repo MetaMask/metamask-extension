@@ -19,8 +19,7 @@
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
     "currentMigrationVersion": "number",
-    "showTokenAutodetectModalOnUpgrade": "object",
-    "showNftAutodetectModalOnUpgrade": "boolean"
+    "showTokenAutodetectModalOnUpgrade": "object"
   },
   "AppStateController": {
     "connectedStatusPopoverHasBeenShown": true,

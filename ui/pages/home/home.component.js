@@ -185,8 +185,6 @@ export default class Home extends PureComponent {
     setShowTokenAutodetectModalOnUpgrade: PropTypes.func,
     // eslint-disable-next-line react/no-unused-prop-types
     setNftAutodetectModal: PropTypes.func,
-    // eslint-disable-next-line react/no-unused-prop-types
-    setShowNftAutodetectModalOnUpgrade: PropTypes.func,
     hasAllowedPopupRedirectApprovals: PropTypes.bool.isRequired,
     useExternalServices: PropTypes.bool,
     setBasicFunctionalityModalOpen: PropTypes.func,
@@ -820,7 +818,6 @@ export default class Home extends PureComponent {
       setShowTokenAutodetectModalOnUpgrade,
       isShowNftAutodetectModal,
       setNftAutodetectModal,
-      setShowNftAutodetectModalOnUpgrade,
       ///: END:ONLY_INCLUDE_IF
     } = this.props;
 
@@ -891,9 +888,6 @@ export default class Home extends PureComponent {
           <AutoDetectNftModal
             isOpen={showNftAutoDetectionModal}
             onClose={setNftAutodetectModal}
-            setShowNftAutodetectModalOnUpgrade={
-              setShowNftAutodetectModalOnUpgrade
-            }
           />
           {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
           {!showWhatsNew && showRecoveryPhraseReminder ? (

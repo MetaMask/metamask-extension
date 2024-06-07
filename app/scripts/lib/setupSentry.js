@@ -80,7 +80,6 @@ export const SENTRY_BACKGROUND_STATE = {
     previousAppVersion: true,
     previousMigrationVersion: true,
     showTokenAutodetectModalOnUpgrade: false,
-    showNftAutodetectModalOnUpgrade: false,
   },
   ApprovalController: {
     approvalFlows: false,

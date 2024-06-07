@@ -93,7 +93,6 @@
     "currentMigrationVersion": "number",
     "selectedNetworkClientId": "string",
     "showTokenAutodetectModalOnUpgrade": "object",
-    "showNftAutodetectModalOnUpgrade": "boolean",
     "networksMetadata": {
       "networkConfigurationId": {
         "EIPS": { "1559": false },

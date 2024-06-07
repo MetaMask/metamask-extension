@@ -75,7 +75,6 @@ import {
   setShowTokenAutodetectModal,
   setShowTokenAutodetectModalOnUpgrade,
   setShowNftAutodetectModal,
-  setShowNftAutodetectModalOnUpgrade,
 } from '../../store/actions';
 import {
   hideWhatsNewPopup,
@@ -266,9 +265,6 @@ const mapDispatchToProps = (dispatch) => {
     },
     setNftAutodetectModal: (val) => {
       dispatch(setShowNftAutodetectModal(val));
-    },
-    setShowNftAutodetectModalOnUpgrade: (val) => {
-      dispatch(setShowNftAutodetectModalOnUpgrade(val));
     },
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     setWaitForConfirmDeepLinkDialog: (wait) =>

@@ -34,13 +34,8 @@ import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 type AutoDetectNftModalProps = {
   isOpen: boolean;
   onClose: (arg: boolean) => void;
-  setShowNftAutodetectModalOnUpgrade: (arg: boolean) => void;
 };
-function AutoDetectNftModal({
-  isOpen,
-  onClose,
-  setShowNftAutodetectModalOnUpgrade,
-}: AutoDetectNftModalProps) {
+function AutoDetectNftModal({ isOpen, onClose }: AutoDetectNftModalProps) {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
@@ -61,7 +56,6 @@ function AutoDetectNftModal({
       });
       dispatch(setUseNftDetection(val));
       onClose(val);
-      setShowNftAutodetectModalOnUpgrade(val);
     },
     [dispatch],
   );

@@ -3404,11 +3404,6 @@ export default class MetamaskController extends EventEmitter {
           appMetadataController,
         ),
 
-      setShowNftAutodetectModalOnUpgrade:
-        appMetadataController.setShowNftAutodetectModalOnUpgrade.bind(
-          appMetadataController,
-        ),
-
       // onboarding controller
       setSeedPhraseBackedUp:
         onboardingController.setSeedPhraseBackedUp.bind(onboardingController),

@@ -25,11 +25,7 @@ describe('AutoDetectNftModal', () => {
 
   it('renders the modal when isOpen is true', () => {
     renderWithProvider(
-      <AutoDetectNftModal
-        isOpen={true}
-        onClose={() => ({})}
-        setShowNftAutodetectModalOnUpgrade={() => ({})}
-      />,
+      <AutoDetectNftModal isOpen={true} onClose={() => ({})} />,
       mockStore,
     );
 
@@ -42,11 +38,7 @@ describe('AutoDetectNftModal', () => {
     useDispatchMock.mockReturnValue(jest.fn().mockResolvedValue({}));
     const handleClose = jest.fn();
     renderWithProvider(
-      <AutoDetectNftModal
-        isOpen={true}
-        onClose={handleClose}
-        setShowNftAutodetectModalOnUpgrade={() => ({})}
-      />,
+      <AutoDetectNftModal isOpen={true} onClose={handleClose} />,
       mockStore,
     );
 
@@ -57,15 +49,8 @@ describe('AutoDetectNftModal', () => {
   it('calls onClose with false when Not right now button is clicked', () => {
     useDispatchMock.mockReturnValue(jest.fn().mockResolvedValue({}));
     const handleClose = jest.fn();
-    const handleSetShowTokenAutodetectModalOnUpgrade = jest.fn();
     renderWithProvider(
-      <AutoDetectNftModal
-        isOpen={true}
-        onClose={handleClose}
-        setShowNftAutodetectModalOnUpgrade={
-          handleSetShowTokenAutodetectModalOnUpgrade
-        }
-      />,
+      <AutoDetectNftModal isOpen={true} onClose={handleClose} />,
       mockStore,
     );
 
