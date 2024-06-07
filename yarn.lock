@@ -5730,15 +5730,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/nonce-tracker@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "@metamask/nonce-tracker@npm:5.0.0"
+"@metamask/nonce-tracker@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@metamask/nonce-tracker@npm:6.0.0"
   dependencies:
     "@ethersproject/providers": "npm:^5.7.2"
     async-mutex: "npm:^0.3.1"
   peerDependencies:
     "@metamask/eth-block-tracker": ">=9"
-  checksum: 10/72bce31702c5575b6dd583dd772312994103ff25389643526284d0e4320588cb0c7b389739fbdb1828f3e6ab387deddfc8cf2b674aa65bf3054db089cafce1db
+  checksum: 10/e62edd38eeaba6d917bc3aed38017294f2bfdb59120a9fb4f093fe96a46d8d9214453a802fe782faaf4a007f4cd5f393607c70a2ff8479ecd7ef18827cad067a
   languageName: node
   linkType: hard
 

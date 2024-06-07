@@ -253,6 +253,7 @@
     "@expo/config/glob": "^10.3.10",
     "@expo/config-plugins/glob": "^10.3.10",
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A18.1.2#~/.yarn/patches/@metamask-network-controller-npm-18.1.2-1bcb8d8610.patch",
+    "@metamask/nonce-tracker": "^6.0.0",
     "@solana/web3.js/rpc-websockets": "^8.0.1"
   },
   "dependencies": {
