@@ -3119,7 +3119,7 @@ export function setShowTokenAutodetectModal(value: boolean) {
   return setPreference('showTokenAutodetectModal', value);
 }
 
-export function setAutoLockTimeLimit(value: number) {
+export function setAutoLockTimeLimit(value: number | null) {
   return setPreference('autoLockTimeLimit', value);
 }
 
