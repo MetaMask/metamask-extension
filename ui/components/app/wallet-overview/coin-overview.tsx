@@ -227,9 +227,13 @@ export const CoinOverview = ({
               {balance ? (
                 <UserPreferencedCurrencyDisplay
                   style={{ display: 'contents' }}
-                  className={classnames(`${classPrefix}-overview__primary-balance`, {
-                    [`${classPrefix}-overview__cached-balance`]: balanceIsCached,
-                  })}
+                  className={classnames(
+                    `${classPrefix}-overview__primary-balance`,
+                    {
+                      [`${classPrefix}-overview__cached-balance`]:
+                        balanceIsCached,
+                    },
+                  )}
                   data-testid={`${classPrefix}-overview__primary-currency`}
                   value={balance}
                   type={
@@ -250,7 +254,9 @@ export const CoinOverview = ({
                 />
               )}
               {balanceIsCached ? (
-                <span className={`${classPrefix}-overview__cached-star`}>*</span>
+                <span className={`${classPrefix}-overview__cached-star`}>
+                  *
+                </span>
               ) : null}
             </div>
             {showFiat && isOriginalNativeSymbol && balance && (
