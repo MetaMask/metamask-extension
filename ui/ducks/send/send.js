@@ -1503,7 +1503,10 @@ const slice = createSlice({
             draftTransaction.sendAsset.type === AssetType.native
               ? draftTransaction.amount.value
               : undefined,
-          balance: state.selectedAccount.balance,
+          balance:
+            draftTransaction.sendAsset.type === AssetType.native
+              ? draftTransaction.sendAsset.balance
+              : state.selectedAccount.balance,
           gasTotal: draftTransaction.gas.gasTotal ?? '0x0',
         }): {
           const isInsufficientWithoutGas =
