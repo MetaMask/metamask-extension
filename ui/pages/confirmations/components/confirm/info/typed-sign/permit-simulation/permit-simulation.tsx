@@ -33,7 +33,7 @@ const PermitSimulation: React.FC = () => {
     message: { value },
   } = JSON.parse(currentConfirmation?.msgParams?.data as string);
 
-  const exchangeRate = useTokenExchangeRate('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
+  const exchangeRate = useTokenExchangeRate(verifyingContract);
 
   useEffect(() => {
     if (exchangeRate && value) {
@@ -67,7 +67,7 @@ const PermitSimulation: React.FC = () => {
                 {value}
               </Text>
             </Box>
-            <Name value={'0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'} type={NameType.ETHEREUM_ADDRESS} />
+            <Name value={verifyingContract} type={NameType.ETHEREUM_ADDRESS} />
           </Box>
           <Box>
             {fiatValue && <IndividualFiatDisplay fiatAmount={fiatValue} />}
