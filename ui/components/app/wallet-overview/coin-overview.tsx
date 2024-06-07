@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
 import {
@@ -176,6 +176,20 @@ export const CoinOverview = ({
     });
   };
 
+  const handleMmiStakingOnClick = useCallback(() => {
+    stakingEvent();
+    global.platform.openTab({
+      url: `${mmiPortfolioUrl}/stake`,
+    });
+  }, [mmiPortfolioUrl]);
+
+  const handleMmiPortfolioOnClick = useCallback(() => {
+    portfolioEvent();
+    global.platform.openTab({
+      url: mmiPortfolioUrl,
+    });
+  }, [mmiPortfolioUrl]);
+
   const renderInstitutionalButtons = () => {
     return (
       <>
@@ -183,12 +197,7 @@ export const CoinOverview = ({
           className={`${classPrefix}-overview__button`}
           Icon={<Icon name={IconName.Stake} color={IconColor.primaryInverse} />}
           label={t('stake')}
-          onClick={() => {
-            stakingEvent();
-            global.platform.openTab({
-              url: `${mmiPortfolioUrl}/stake`,
-            });
-          }}
+          onClick={handleMmiStakingOnClick}
         />
         {mmiPortfolioEnabled && (
           <IconButton
@@ -197,12 +206,7 @@ export const CoinOverview = ({
               <Icon name={IconName.Diagram} color={IconColor.primaryInverse} />
             }
             label={t('portfolio')}
-            onClick={() => {
-              portfolioEvent();
-              global.platform.openTab({
-                url: mmiPortfolioUrl,
-              });
-            }}
+            onClick={handleMmiPortfolioOnClick}
           />
         )}
       </>
@@ -212,6 +216,121 @@ export const CoinOverview = ({
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const { openBuyCryptoInPdapp } = useRamps();
+  ///: END:ONLY_INCLUDE_IF
+
+  const handleBuyAndSellOnClick = useCallback(() => {
+    openBuyCryptoInPdapp();
+    trackEvent({
+      event: MetaMetricsEventName.NavBuyButtonClicked,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: {
+        location: 'Home',
+        text: 'Buy',
+        chain_id: chainId,
+        token_symbol: defaultSwapsToken,
+      },
+    });
+  }, [chainId, defaultSwapsToken]);
+
+  const handleSendOnClick = useCallback(async () => {
+    trackEvent({
+      event: MetaMetricsEventName.NavSendButtonClicked,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: {
+        token_symbol: 'ETH',
+        location: 'Home',
+        text: 'Send',
+        chain_id: chainId,
+      },
+    });
+    // FIXME: .then does exist on dispatch, so use await here?
+    await dispatch(startNewDraftTransaction({ type: AssetType.native }));
+    history.push(SEND_ROUTE);
+  }, [chainId]);
+
+  const handleSwapOnClick = useCallback(async () => {
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    global.platform.openTab({
+      url: `${mmiPortfolioUrl}/swap`,
+    });
+    ///: END:ONLY_INCLUDE_IF
+
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+    if (isSwapsChain) {
+      trackEvent({
+        event: MetaMetricsEventName.NavSwapButtonClicked,
+        category: MetaMetricsEventCategory.Swaps,
+        properties: {
+          token_symbol: 'ETH',
+          location: MetaMetricsSwapsEventSource.MainView,
+          text: 'Swap',
+          chain_id: chainId,
+        },
+      });
+      dispatch(setSwapsFromToken(defaultSwapsToken));
+      if (usingHardwareWallet) {
+        if (global.platform.openExtensionInBrowser) {
+          global.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE);
+        }
+      } else {
+        history.push(BUILD_QUOTE_ROUTE);
+      }
+    }
+    ///: END:ONLY_INCLUDE_IF
+  }, [
+    isSwapsChain,
+    chainId,
+    defaultSwapsToken,
+    usingHardwareWallet,
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    mmiPortfolioUrl,
+    ///: END:ONLY_INCLUDE_IF
+  ]);
+
+  const handleBridgeOnClick = useCallback(() => {
+    if (isBridgeChain) {
+      const portfolioUrl = getPortfolioUrl(
+        'bridge',
+        'ext_bridge_button',
+        metaMetricsId,
+      );
+      global.platform.openTab({
+        url: `${portfolioUrl}${
+          location.pathname.includes('asset') ? '&token=native' : ''
+        }`,
+      });
+      trackEvent({
+        category: MetaMetricsEventCategory.Navigation,
+        event: MetaMetricsEventName.BridgeLinkClicked,
+        properties: {
+          location: 'Home',
+          text: 'Bridge',
+          chain_id: chainId,
+          token_symbol: 'ETH',
+        },
+      });
+    }
+  }, [isBridgeChain, chainId, metaMetricsId]);
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  const handlePortfolioOnClick = useCallback(() => {
+    const url = getPortfolioUrl(
+      '',
+      'ext_portfolio_button',
+      metaMetricsId,
+    );
+    global.platform.openTab({ url });
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.PortfolioLinkClicked,
+      properties: {
+        location: 'Home',
+        text: 'Portfolio',
+        chain_id: chainId,
+        token_symbol: 'ETH',
+      },
+    });
+  }, [chainId, metaMetricsId]);
   ///: END:ONLY_INCLUDE_IF
 
   return (
@@ -290,19 +409,7 @@ export const CoinOverview = ({
               disabled={!isBuyableChain || !isSigningEnabled}
               data-testid={`${classPrefix}-overview-buy`}
               label={t('buyAndSell')}
-              onClick={() => {
-                openBuyCryptoInPdapp();
-                trackEvent({
-                  event: MetaMetricsEventName.NavBuyButtonClicked,
-                  category: MetaMetricsEventCategory.Navigation,
-                  properties: {
-                    location: 'Home',
-                    text: 'Buy',
-                    chain_id: chainId,
-                    token_symbol: defaultSwapsToken,
-                  },
-                });
-              }}
+              onClick={handleBuyAndSellOnClick}
               tooltipRender={(contents: React.ReactElement) =>
                 generateTooltip('buyButton', contents)
               }
@@ -327,23 +434,7 @@ export const CoinOverview = ({
             }
             disabled={!isSigningEnabled}
             label={t('send')}
-            onClick={async () => {
-              trackEvent({
-                event: MetaMetricsEventName.NavSendButtonClicked,
-                category: MetaMetricsEventCategory.Navigation,
-                properties: {
-                  token_symbol: 'ETH',
-                  location: 'Home',
-                  text: 'Send',
-                  chain_id: chainId,
-                },
-              });
-              // FIXME: .then does exist on dispatch, so use await here?
-              await dispatch(
-                startNewDraftTransaction({ type: AssetType.native }),
-              );
-              history.push(SEND_ROUTE);
-            }}
+            onClick={handleSendOnClick}
             tooltipRender={(contents: React.ReactElement) =>
               generateTooltip('sendButton', contents)
             }
@@ -359,36 +450,7 @@ export const CoinOverview = ({
                 color={IconColor.primaryInverse}
               />
             }
-            onClick={() => {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-              global.platform.openTab({
-                url: `${mmiPortfolioUrl}/swap`,
-              });
-              ///: END:ONLY_INCLUDE_IF
-
-              ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-              if (isSwapsChain) {
-                trackEvent({
-                  event: MetaMetricsEventName.NavSwapButtonClicked,
-                  category: MetaMetricsEventCategory.Swaps,
-                  properties: {
-                    token_symbol: 'ETH',
-                    location: MetaMetricsSwapsEventSource.MainView,
-                    text: 'Swap',
-                    chain_id: chainId,
-                  },
-                });
-                dispatch(setSwapsFromToken(defaultSwapsToken));
-                if (usingHardwareWallet) {
-                  if (global.platform.openExtensionInBrowser) {
-                    global.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE);
-                  }
-                } else {
-                  history.push(BUILD_QUOTE_ROUTE);
-                }
-              }
-              ///: END:ONLY_INCLUDE_IF
-            }}
+            onClick={handleSwapOnClick}
             label={t('swap')}
             data-testid="token-overview-button-swap"
             tooltipRender={(contents: React.ReactElement) =>
@@ -405,30 +467,7 @@ export const CoinOverview = ({
                 <Icon name={IconName.Bridge} color={IconColor.primaryInverse} />
               }
               label={t('bridge')}
-              onClick={() => {
-                if (isBridgeChain) {
-                  const portfolioUrl = getPortfolioUrl(
-                    'bridge',
-                    'ext_bridge_button',
-                    metaMetricsId,
-                  );
-                  global.platform.openTab({
-                    url: `${portfolioUrl}${
-                      location.pathname.includes('asset') ? '&token=native' : ''
-                    }`,
-                  });
-                  trackEvent({
-                    category: MetaMetricsEventCategory.Navigation,
-                    event: MetaMetricsEventName.BridgeLinkClicked,
-                    properties: {
-                      location: 'Home',
-                      text: 'Bridge',
-                      chain_id: chainId,
-                      token_symbol: 'ETH',
-                    },
-                  });
-                }
-              }}
+              onClick={handleBridgeOnClick}
               tooltipRender={(contents: React.ReactElement) =>
                 generateTooltip('bridgeButton', contents)
               }
@@ -447,24 +486,7 @@ export const CoinOverview = ({
                 />
               }
               label={t('portfolio')}
-              onClick={() => {
-                const url = getPortfolioUrl(
-                  '',
-                  'ext_portfolio_button',
-                  metaMetricsId,
-                );
-                global.platform.openTab({ url });
-                trackEvent({
-                  category: MetaMetricsEventCategory.Navigation,
-                  event: MetaMetricsEventName.PortfolioLinkClicked,
-                  properties: {
-                    location: 'Home',
-                    text: 'Portfolio',
-                    chain_id: chainId,
-                    token_symbol: 'ETH',
-                  },
-                });
-              }}
+              onClick={handlePortfolioOnClick}
             />
             ///: END:ONLY_INCLUDE_IF
           }
