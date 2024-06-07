@@ -1,6 +1,9 @@
 import { ethErrors } from 'eth-rpc-errors';
 import React from 'react';
-import { infuraProjectId } from '../../../../../shared/constants/network';
+import {
+  infuraProjectId,
+  DEPRECATED_NETWORKS,
+} from '../../../../../shared/constants/network';
 import {
   Severity,
   TypographyVariant,
@@ -69,6 +72,20 @@ const MISMATCHED_CHAIN_RECOMMENDATION = {
             },
           },
         ],
+      },
+    },
+  },
+};
+
+const DEPRECATED_CHAIN_ALERT = {
+  id: 'DEPRECATED_CHAIN_ALERT',
+  severity: Severity.Warning,
+  content: {
+    element: 'span',
+    children: {
+      element: 'MetaMaskTranslation',
+      props: {
+        translationKey: 'deprecatedNetwork',
       },
     },
   },
@@ -171,6 +188,9 @@ async function getAlerts(pendingApproval, data) {
       !data.matchedChain.rpc?.map((rpc) => new URL(rpc).origin).includes(origin)
     ) {
       alerts.push(MISMATCHED_NETWORK_RPC);
+    }
+    if (DEPRECATED_NETWORKS.includes(pendingApproval.requestData.chainId)) {
+      alerts.push(DEPRECATED_CHAIN_ALERT);
     }
   }
 
