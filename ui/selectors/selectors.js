@@ -32,7 +32,6 @@ import {
   LINEA_GOERLI_DISPLAY_NAME,
   CURRENCY_SYMBOLS,
   TEST_NETWORK_TICKER_MAP,
-  LINEA_GOERLI_TOKEN_IMAGE_URL,
   LINEA_MAINNET_DISPLAY_NAME,
   LINEA_MAINNET_TOKEN_IMAGE_URL,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -708,18 +707,6 @@ export const getTestNetworks = createDeepEqualSelector(
         providerType: NETWORK_TYPES.LINEA_SEPOLIA,
         ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_SEPOLIA],
         id: NETWORK_TYPES.LINEA_SEPOLIA,
-        removable: false,
-      },
-      {
-        chainId: CHAIN_IDS.LINEA_GOERLI,
-        nickname: LINEA_GOERLI_DISPLAY_NAME,
-        rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_GOERLI],
-        rpcPrefs: {
-          imageUrl: LINEA_GOERLI_TOKEN_IMAGE_URL,
-        },
-        providerType: NETWORK_TYPES.LINEA_GOERLI,
-        ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_GOERLI],
-        id: NETWORK_TYPES.LINEA_GOERLI,
         removable: false,
       },
       // Localhosts
@@ -2513,10 +2500,19 @@ export function getIsDesktopEnabled(state) {
 export function getSnapsList(state) {
   const snaps = getSnaps(state);
   return Object.entries(snaps)
-    .filter(
-      ([_key, snap]) =>
-        !snap.preinstalled && snap.status !== SnapStatus.Installing,
-    )
+    .filter(([_key, snap]) => {
+      // Always hide installing Snaps.
+      if (snap.status === SnapStatus.Installing) {
+        return false;
+      }
+
+      // For backwards compatibility, preinstalled Snaps must specify hidden = false to be displayed.
+      if (snap.preinstalled) {
+        return snap.hidden === false;
+      }
+
+      return true;
+    })
     .map(([key, snap]) => {
       const targetSubjectMetadata = getTargetSubjectMetadata(state, snap?.id);
       return {
