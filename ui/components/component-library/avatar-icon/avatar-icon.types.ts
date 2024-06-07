@@ -1,5 +1,5 @@
 import { IconColor, TextColor } from '../../../helpers/constants/design-system';
-import { IconName, IconProps, IconSize } from '../icon';
+import { IconName, IconProps } from '../icon';
 import type { PolymorphicComponentPropWithRef } from '../box';
 import type { AvatarBaseStyleUtilityProps } from '../avatar-base/avatar-base.types';
 
@@ -10,14 +10,6 @@ export enum AvatarIconSize {
   Lg = 'lg',
   Xl = 'xl',
 }
-
-export const avatarIconSizeToIconSize: Record<AvatarIconSize, IconSize> = {
-  [AvatarIconSize.Xs]: IconSize.Xs,
-  [AvatarIconSize.Sm]: IconSize.Sm,
-  [AvatarIconSize.Md]: IconSize.Md,
-  [AvatarIconSize.Lg]: IconSize.Lg,
-  [AvatarIconSize.Xl]: IconSize.Xl,
-};
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions

@@ -32,33 +32,29 @@ export const AvatarIcon: AvatarIconComponent = React.forwardRef(
       ...props
     }: AvatarIconProps<C>,
     ref?: PolymorphicRef<C>,
-  ) => {
-    const iconSize = avatarIconSizeToIconSize[size];
-    return (
-      <AvatarBase
-        ref={ref}
-        size={size}
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
-        color={color as TextColor}
-        backgroundColor={backgroundColor}
-        borderColor={BorderColor.transparent}
-        className={classnames('mm-avatar-icon', className)}
-        {...(props as AvatarBaseProps<C>)}
-      >
-        <Icon
-          color={IconColor.inherit}
-          name={iconName}
-          size={iconSize}
-          {...iconProps}
-          className={classnames(
-            'mm-avatar-icon__icon',
-            `mm-avatar-icon__icon--size-${size}`,
-            iconProps?.className || '',
-          )}
-        />
-      </AvatarBase>
-    );
-  },
+  ) => (
+    <AvatarBase
+      ref={ref}
+      size={size}
+      display={Display.Flex}
+      alignItems={AlignItems.center}
+      justifyContent={JustifyContent.center}
+      color={color as TextColor}
+      backgroundColor={backgroundColor}
+      borderColor={BorderColor.transparent}
+      className={classnames('mm-avatar-icon', className)}
+      {...(props as AvatarBaseProps<C>)}
+    >
+      <Icon
+        color={IconColor.inherit}
+        name={iconName}
+        {...iconProps}
+        className={classnames(
+          'mm-avatar-icon__icon',
+          `mm-avatar-icon__icon--size-${size}`,
+          iconProps?.className || '',
+        )}
+      />
+    </AvatarBase>
+  ),
 );
