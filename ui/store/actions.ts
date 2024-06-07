@@ -3102,7 +3102,7 @@ export function setSmartTransactionsOptInStatus(
   };
 }
 
-export function setAutoLockTimeLimit(value: boolean) {
+export function setAutoLockTimeLimit(value: number | null) {
   return setPreference('autoLockTimeLimit', value);
 }
 

@@ -6,6 +6,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.16.8]
+### Changed
+- Prepare for increasing the minimum Chromium version supported by MetaMask ([#25142](https://github.com/MetaMask/metamask-extension/pull/25142))
+	- Users on Chromium versions lower than 109 will now see a warning that they need to update their browser.
+	Assuming their Chromium browser does not support the Offscreen Document api, the warning will include a note
+	that Snaps and Hardware wallets do not work on their current browser version.
+- [MMI] Updates MMI packages to latest versions ([#24581](https://github.com/MetaMask/metamask-extension/pull/24581))
+
+### Fixed
+- Fix bug that could cause users to be locked out of MetaMask if they previously emptied the "Auto-lock timer" advanced setting
+input field and save it in that empty state. ([#25109](https://github.com/MetaMask/metamask-extension/pull/25109))
+- Fix bug that can prevent updates to network data in connected dapps after manually switching the network in the wallet ui ([#25127](https://github.com/MetaMask/metamask-extension/pull/25127))
+- [MMI] Fixed an issue that prevented MMI transactions from being sent correctly ([#24947](https://github.com/MetaMask/metamask-extension/pull/24947))
+- [MMI] Better support for MMI Portfolio Dashboard with an update to the allow list  ([#24992](https://github.com/MetaMask/metamask-extension/pull/24992))
+
 ## [11.16.7]
 ### Fixed
 - Fix bug that breaks dapps that expect users to switch chains manually([#25046]https://github.com/MetaMask/metamask-extension/pull/25046)
@@ -4785,7 +4800,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.16.7...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.16.8...HEAD
+[11.16.8]: https://github.com/MetaMask/metamask-extension/compare/v11.16.7...v11.16.8
 [11.16.7]: https://github.com/MetaMask/metamask-extension/compare/v11.16.6...v11.16.7
 [11.16.6]: https://github.com/MetaMask/metamask-extension/compare/v11.16.5...v11.16.6
 [11.16.5]: https://github.com/MetaMask/metamask-extension/compare/v11.16.4...v11.16.5
