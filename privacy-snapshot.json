@@ -49,6 +49,5 @@
   "authentication.api.cx.metamask.io",
   "oidc.api.cx.metamask.io",
   "price.api.cx.metamask.io",
-  "token.api.cx.metamask.io",
-  "sepolia.infura.io"
+  "token.api.cx.metamask.io"
 ]
