@@ -62,7 +62,10 @@ import {
   MetaMetricsEventCategory,
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { getSendAnalyticProperties } from '../../../../ducks/send';
+import {
+  getSendAnalyticProperties,
+  getSwapsBlockedTokens,
+} from '../../../../ducks/send';
 import NFTsDetectionNoticeNFTsTab from '../../../app/nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
 import { Asset, Collection, Token } from './types';
 import AssetList from './AssetList';
@@ -118,6 +121,11 @@ export function AssetPickerModal({
   const collectionDataFiltered = (collectionsData as Collection[]).filter(
     (collection) => collection.nfts.length > 0,
   );
+
+  const swapsBlockedTokens = useSelector(getSwapsBlockedTokens);
+  const memoizedSwapsBlockedTokens = useMemo(() => {
+    return new Set<string>(swapsBlockedTokens);
+  }, [swapsBlockedTokens]);
 
   const isDest = sendingAssetImage && sendingAssetSymbol;
 
@@ -327,6 +335,7 @@ export function AssetPickerModal({
                 asset={asset}
                 tokenList={filteredTokenList}
                 sendingAssetSymbol={sendingAssetSymbol}
+                memoizedSwapsBlockedTokens={memoizedSwapsBlockedTokens}
               />
             </>
           ) : (
@@ -348,6 +357,7 @@ export function AssetPickerModal({
                     handleAssetChange={handleAssetChange}
                     asset={asset}
                     tokenList={filteredTokenList}
+                    memoizedSwapsBlockedTokens={memoizedSwapsBlockedTokens}
                   />
                 </Tab>
               }
