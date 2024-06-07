@@ -17,6 +17,3 @@ export default {
 const Template = (args) => <EthOverview {...args} />;
 
 export const Default = Template.bind({});
-Default.args = {
-  // Add any necessary props here
-};
