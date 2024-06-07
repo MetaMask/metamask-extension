@@ -18,10 +18,7 @@ const AppLoadingSpinner = ({ className }) => {
       role="alert"
       aria-busy="true"
     >
-      <Spinner
-        color="var(--color-icon-muted)"
-        className="app-loading-spinner__inner"
-      />
+      <Spinner className="app-loading-spinner__inner" />
     </div>
   );
 };
