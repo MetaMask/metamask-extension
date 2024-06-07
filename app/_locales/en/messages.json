@@ -2734,6 +2734,9 @@
   "mismatchedRpcUrl": {
     "message": "According to our records the submitted RPC URL value does not match a known provider for this chain ID."
   },
+  "browserDoesntSupportHWandSnaps": {
+    "message": "Snaps, and most hardware wallets, will not work with your current browser version."
+  },
   "missingSetting": {
     "message": "Can't find a setting?"
   },
