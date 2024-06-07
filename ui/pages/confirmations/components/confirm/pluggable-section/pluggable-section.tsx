@@ -5,15 +5,15 @@ import { useSelector } from 'react-redux';
 import { currentConfirmationSelector } from '../../../selectors';
 
 // Components to be plugged into confirmation page can be added to the array below
-const PluggedInSections: ReactComponentLike[] = [];
+const pluggedInSections: ReactComponentLike[] = [];
 
 const PluggableSection = () => {
   const currentConfirmation = useSelector(currentConfirmationSelector);
 
   return (
     <>
-      {PluggedInSections.map((Section) => (
-        <Section confirmation={currentConfirmation} />
+      {pluggedInSections.map((Section, index) => (
+        <Section key={`section-${index}`} confirmation={currentConfirmation} />
       ))}
     </>
   );
