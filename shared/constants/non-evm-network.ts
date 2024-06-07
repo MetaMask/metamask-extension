@@ -3,11 +3,23 @@ import { Caip2ChainId } from '@metamask/snaps-utils';
 
 export type MultichainState = {
   metamask: {
-    getMultichainNetworkConfirgurations: any;
+    // rates controller
+    rates: Record<
+      string,
+      {
+        conversionDate: number;
+        conversionRate: number;
+        usdConversionRate: number;
+      }
+    >;
+    cryptocurrencies: string[];
   };
 };
 
-type ProviderConfigWithImageUrl = Omit<ProviderConfig, 'chainId'> & {
+export type ProviderConfigWithImageUrl = Pick<
+  ProviderConfig,
+  Exclude<keyof ProviderConfig, 'chainId'>
+> & {
   rpcPrefs?: { imageUrl?: string };
 };
 

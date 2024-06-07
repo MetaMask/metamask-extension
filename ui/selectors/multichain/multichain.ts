@@ -1,19 +1,18 @@
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { useSelector } from 'react-redux';
-import { getProviderConfig } from '../../ducks/metamask/metamask';
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import { isEqual } from 'lodash';
+import { ProviderConfig } from '@metamask/network-controller';
+import { parseCaipChainId } from '@metamask/utils';
+import { getProviderConfig } from '../../ducks/metamask/metamask';
 import {
   MultiChainNetwork,
   NON_EVM_PROVIDER_CONFIGS,
 } from '../../../shared/constants/non-evm-network';
-import { ProviderConfig } from '@metamask/network-controller';
-import { parseCaipChainId } from '@metamask/utils';
-import { getAllNetworks, getSelectedInternalAccount } from '../';
-import { isEqual } from 'lodash';
+import { getAllNetworks, getSelectedInternalAccount } from '..';
 
 export type MultichainState = {
   metamask: {
-    getMultichainNetworkConfirgurations: any;
     // non-EVM rates controller
     rates: Record<
       string,

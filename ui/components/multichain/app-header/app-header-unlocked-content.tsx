@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import browser from 'webextension-polyfill';
 
+import { InternalAccount } from '@metamask/keyring-api';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   AlignItems,
   BackgroundColor,
@@ -11,7 +13,6 @@ import {
   FontWeight,
   IconColor,
   JustifyContent,
-  Size,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -27,7 +28,6 @@ import {
   Text,
 } from '../../component-library';
 import Tooltip from '../../ui/tooltip';
-import { useHistory } from 'react-router-dom';
 import {
   MetaMetricsEventName,
   MetaMetricsEventCategory,
@@ -37,8 +37,6 @@ import { toggleAccountMenu } from '../../../store/actions';
 import ConnectedStatusIndicator from '../../app/connected-status-indicator';
 import { AccountPicker } from '../account-picker';
 import { GlobalMenu } from '../global-menu';
-import { InternalAccount } from '@metamask/keyring-api';
-import { useDispatch, useSelector } from 'react-redux';
 import {
   getSelectedInternalAccount,
   getTestNetworkBackgroundColor,
@@ -47,20 +45,23 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { useContext, useState } from 'react';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
+import {
+  MultiChainNetwork,
+  ProviderConfigWithImageUrl,
+} from '../../../../shared/constants/non-evm-network';
 
 type AppHeaderUnlockedContentProps = {
   popupStatus: boolean;
   isEvmNetwork: boolean;
-  currentNetwork: any;
+  currentNetwork: ProviderConfigWithImageUrl | MultiChainNetwork;
   networkOpenCallback: () => void;
   disableNetworkPicker: boolean;
   disableAccountPicker: boolean;
-  menuRef: any;
+  menuRef: React.RefObject<HTMLButtonElement>;
   internalAccount: InternalAccount;
 };
 
@@ -75,7 +76,6 @@ export const AppHeaderUnlockedContent = ({
 }: AppHeaderUnlockedContentProps) => {
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
-  const history = useHistory();
   const dispatch = useDispatch();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
@@ -126,8 +126,8 @@ export const AppHeaderUnlockedContent = ({
               className="multichain-app-header__contents--avatar-network"
               ref={menuRef}
               as="button"
-              src={currentNetwork?.rpcPrefs?.imageUrl}
-              label={currentNetwork?.nickname}
+              src={currentNetwork?.rpcPrefs?.imageUrl ?? ''}
+              label={currentNetwork?.nickname ?? ''}
               aria-label={`${t('networkMenu')} ${currentNetwork?.nickname}`}
               labelProps={{
                 display: Display.None,
@@ -152,7 +152,7 @@ export const AppHeaderUnlockedContent = ({
             }}
             margin={2}
             aria-label={`${t('networkMenu')} ${currentNetwork?.nickname}`}
-            label={currentNetwork?.nickname}
+            label={currentNetwork?.nickname ?? ''}
             src={currentNetwork?.rpcPrefs?.imageUrl}
             onClick={(e: React.MouseEvent<HTMLElement>) => {
               e.stopPropagation();
@@ -241,7 +241,9 @@ export const AppHeaderUnlockedContent = ({
             <Box ref={menuRef}>
               <ConnectedStatusIndicator
                 onClick={() => {
-                  if (!isEvmNetwork) return;
+                  if (!isEvmNetwork) {
+                    return;
+                  }
                   handleMainMenuOpened();
                 }}
                 disabled={!isEvmNetwork}

@@ -1,14 +1,18 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import MetafoxLogo from '../../ui/metafox-logo';
 import { PickerNetwork } from '../../component-library';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { getTestNetworkBackgroundColor } from '../../../selectors';
+import {
+  MultiChainNetwork,
+  ProviderConfigWithImageUrl,
+} from '../../../../shared/constants/non-evm-network';
 
 type AppHeaderLockedContentProps = {
-  currentNetwork: any;
+  currentNetwork: ProviderConfigWithImageUrl | MultiChainNetwork;
   networkOpenCallback: () => void;
 };
 
@@ -31,7 +35,7 @@ export const AppHeaderLockedContent = ({
             name: currentNetwork?.nickname ?? '',
           }}
           aria-label={`${t('networkMenu')} ${currentNetwork?.nickname}`}
-          label={currentNetwork?.nickname}
+          label={currentNetwork?.nickname ?? ''}
           src={currentNetwork?.rpcPrefs?.imageUrl}
           onClick={(e: React.MouseEvent<HTMLElement>) => {
             e.stopPropagation();
