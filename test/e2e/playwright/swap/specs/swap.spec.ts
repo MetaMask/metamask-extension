@@ -12,26 +12,12 @@ let networkController: NetworkController;
 let walletPage: WalletPage;
 let activityListPage: ActivityListPage;
 
-const networks = {
-  Tenderly: {
-    Mainnet: {
-      name: 'Tenderly',
-      url: 'https://rpc.tenderly.co/fork/cdbcd795-097d-4624-aa16-680374d89a43',
-      chainID: '1',
-      symbol: 'ETH',
-    },
-    Arbitrum: {
-      name: 'Arbitrum',
-      url: 'https://rpc.tenderly.co/fork/fbe32ca8-6038-4b8d-8671-8eb8a28790da',
-      chainID: '42161',
-      symbol: 'ETH',
-    },
-    Optimism: {
-      name: 'Optimism',
-      url: 'https://rpc.tenderly.co/fork/dc477dc7-d3ae-4a5b-9afd-f16476e39bec',
-      chainID: '10',
-      symbol: 'ETH',
-    },
+const Tenderly = {
+  Mainnet: {
+    name: 'Tenderly',
+    url: 'https://rpc.tenderly.co/fork/cdbcd795-097d-4624-aa16-680374d89a43',
+    chainID: '1',
+    symbol: 'ETH',
   },
 };
 
@@ -48,9 +34,7 @@ test.beforeEach(
     swapPage = new SwapPage(page);
     activityListPage = new ActivityListPage(page);
 
-    await networkController.addCustomNetwork(networks.Tenderly.Arbitrum);
-    await networkController.addCustomNetwork(networks.Tenderly.Optimism);
-    await networkController.addCustomNetwork(networks.Tenderly.Mainnet);
+    await networkController.addCustomNetwork(Tenderly.Mainnet);
     walletPage = new WalletPage(page);
     await walletPage.importTokens();
   },
@@ -66,19 +50,15 @@ test('Swap ETH to DAI - Switch to Arbitrum and fetch quote - Switch ETH - WETH',
     activity: 'Swap ETH to DAI',
   });
 
-  await networkController.selectNetwork({ networkName: 'Arbitrum' });
+  await networkController.addPopularNetwork({ networkName: 'Arbitrum One' });
   await walletPage.selectSwapAction();
   await swapPage.fetchQuote({ to: 'USDC', qty: '.001' });
-  await swapPage.swap();
-  await swapPage.waitForTransactionToComplete();
-  await walletPage.selectActivityList();
-  await activityListPage.checkActivityIsConfirmed({
-    activity: 'Swap ETH to USDC',
-  });
+  await swapPage.waitForInsufficentBalance();
+  await swapPage.gotBack();
 
   await networkController.selectNetwork({ networkName: 'Tenderly' });
   await walletPage.selectSwapAction();
-  await swapPage.fetchQuote({ to: 'WETH', qty: '.001' });
+  await swapPage.fetchQuote({ from: 'ETH', to: 'WETH', qty: '.001' });
   await swapPage.swap();
   await swapPage.waitForTransactionToComplete();
   await walletPage.selectActivityList();
@@ -86,7 +66,7 @@ test('Swap ETH to DAI - Switch to Arbitrum and fetch quote - Switch ETH - WETH',
     activity: 'Swap ETH to WETH',
   });
 });
-/*
+
 test('Swap WETH to ETH - Switch to Avalanche and fetch quote - Switch DAI - USDC', async () => {
   await walletPage.selectSwapAction();
   await swapPage.fetchQuote({ from: 'ETH', to: 'WETH', qty: '.001' });
@@ -95,7 +75,7 @@ test('Swap WETH to ETH - Switch to Avalanche and fetch quote - Switch DAI - USDC
   await swapPage.waitForTransactionToComplete();
   await walletPage.selectActivityList();
   await activityListPage.checkActivityIsConfirmed({
-    activity: 'Swap WETH to ETH',
+    activity: 'Swap ETH to WETH',
   });
 
   await networkController.addPopularNetwork({
@@ -116,4 +96,3 @@ test('Swap WETH to ETH - Switch to Avalanche and fetch quote - Switch DAI - USDC
     activity: 'Swap DAI to USDC',
   });
 });
-*/

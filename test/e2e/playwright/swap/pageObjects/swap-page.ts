@@ -62,6 +62,9 @@ export class SwapPage {
 
   async fetchQuote(options: { from?: string; to: string; qty: string }) {
     if (options.from) {
+      await this.page.waitForTimeout(3000);
+      //clicking too fast after switching network
+      //can cause failures later, known bug
       this.swapFromDropDown.click();
       await this.tokenSearch.fill(options.from);
       await this.page.waitForTimeout(500);
@@ -73,23 +76,24 @@ export class SwapPage {
     await this.tokenSearch.fill(options.to);
     await this.page.waitForTimeout(1000);
     await this.tokenList.first().click();
-    await this.page.waitForSelector('text=/New quotes/');
   }
 
   async swap() {
+    await this.page.waitForSelector('text=/New quotes in 0:23/');
     const swapAnywayButton = await this.page.$('text=/Swap anyway/');
     if (swapAnywayButton) {
       // Click only if it is present
       await swapAnywayButton.click();
     }
-    await this.swapTokenButton.last().click(); // Swap button
-    await this.page.waitForTimeout(1000);
+    const swapButton = this.swapTokenButton.last();
+    await swapButton.waitFor({ state: 'visible' });
+    await swapButton.click();
   }
 
   async switchTokens() {
     await this.switchTokensButton.click();
     await this.page.waitForTimeout(2000);
-    await this.page.waitForSelector('text=/New quotes/');
+    await this.page.waitForSelector('text=/New quotes in 0:23/');
   }
 
   async gotBack() {

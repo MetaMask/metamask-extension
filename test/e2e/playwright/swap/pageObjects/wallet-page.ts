@@ -16,7 +16,9 @@ export class WalletPage {
     this.swapButton = this.page.getByTestId('token-overview-button-swap');
     this.importTokensButton = this.page.getByText('Import tokens').first();
     this.importButton = this.page.getByText('Import (');
-    this.activityListTab = this.page.getByTestId('home__activity-tab');
+    this.activityListTab = this.page.getByTestId(
+      'account-overview__activity-tab',
+    );
   }
 
   async importTokens() {
@@ -27,7 +29,6 @@ export class WalletPage {
   }
 
   async selectSwapAction() {
-    await this.swapButton.waitFor({ state: 'visible' });
     await this.swapButton.click();
   }
 
