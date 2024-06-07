@@ -9,12 +9,12 @@ import {
   NotificationDetailTitle,
   NotificationDetailAsset,
   NotificationDetailButton,
+  NotificationDetailAddress,
 } from '../../../../components/multichain';
 import { t } from '../../../../../app/scripts/translate';
 import {
   createTextItems,
-  getAmount,
-  getUsdAmount,
+  formatAmount,
   formatIsoDateString,
   getNetworkDetailsByChainId,
 } from '../../../../helpers/utils/notification.util';
@@ -38,13 +38,9 @@ const isLidoReadyWithDrawnNotification = isOfTypeNodeGuard([
 ]);
 
 const getDescription = (n: LidoReadyWithDrawnNotification) => {
-  const amount = getAmount(
-    n.data.staked_eth.amount,
-    n.data.staked_eth.decimals,
-    {
-      shouldEllipse: true,
-    },
-  );
+  const amount = formatAmount(parseFloat(n.data.staked_eth.amount), {
+    shouldEllipse: true,
+  });
   const description =
     // @ts-expect-error: Expected 0-1 arguments, but got an array
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -95,6 +91,17 @@ export const components: NotificationComponent<LidoReadyWithDrawnNotification> =
       ),
       body: {
         type: 'body_onchain_notification',
+        Account: ({ notification }) => {
+          if (!notification.address) {
+            return null;
+          }
+          return (
+            <NotificationDetailAddress
+              side={t('account') || ''}
+              address={notification.address}
+            />
+          );
+        },
         Status: () => (
           <NotificationDetailInfo
             icon={{
@@ -122,14 +129,12 @@ export const components: NotificationComponent<LidoReadyWithDrawnNotification> =
               }}
               label={t('notificationItemLidoStakeReadyToBeWithdrawn') || ''}
               detail={notification.data.staked_eth.symbol}
-              fiatValue={`$${getUsdAmount(
-                notification.data.staked_eth.usd,
-                notification.data.staked_eth.decimals,
-                notification.data.staked_eth.usd,
+              fiatValue={`$${formatAmount(
+                parseFloat(notification.data.staked_eth.usd),
+                { shouldEllipse: true },
               )}`}
-              value={`${getAmount(
-                notification.data.staked_eth.amount,
-                notification.data.staked_eth.decimals,
+              value={`${formatAmount(
+                parseFloat(notification.data.staked_eth.amount),
                 { shouldEllipse: true },
               )} ${notification.data.staked_eth.symbol}`}
             />
