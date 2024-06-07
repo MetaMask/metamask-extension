@@ -252,7 +252,7 @@ export default function QRCodeScanner({ hideModal, qrCodeDetected }) {
               }}
             />
             {isReady !== READY_STATE.READY && (
-              <Spinner color="var(--color-warning-default)" />
+              <Spinner color="var(--color-icon-muted)" />
             )}
           </div>
         </div>

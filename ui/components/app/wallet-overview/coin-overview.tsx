@@ -368,7 +368,7 @@ export const CoinOverview = ({
                 />
               ) : (
                 <Spinner
-                  color="var(--color-secondary-default)"
+                  color="var(--color-icon-muted)"
                   className="loading-overlay__spinner"
                 />
               )}

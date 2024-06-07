@@ -32,7 +32,7 @@ const LoadingScreen = ({
       <Box className="loading-overlay__container" marginBottom={3}>
         {showLoadingSpinner && (
           <Spinner
-            color="var(--color-warning-default)"
+            color="var(--color-icon-muted)"
             className="loading-overlay__spinner"
           />
         )}
