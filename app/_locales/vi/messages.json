@@ -3216,55 +3216,6 @@
   "notifications": {
     "message": "Thông báo"
   },
-  "notifications20ActionText": {
-    "message": "Tìm hiểu thêm",
-    "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a ledger page to resolve the U2F connection issue."
-  },
-  "notifications20Description": {
-    "message": "Nếu đang sử dụng phiên bản Firefox mới nhất, bạn có thể gặp sự cố liên quan đến việc Firefox không còn hỗ trợ U2F.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the U2F support being dropped by firefox and that it affects ledger users."
-  },
-  "notifications20Title": {
-    "message": "Người dùng Ledger và Firefox gặp sự cố kết nối",
-    "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
-  },
-  "notifications24ActionText": {
-    "message": "Đã hiểu"
-  },
-  "notifications24Description": {
-    "message": "Cài đặt phí gas nâng cao hiện được ghi nhớ dựa trên mạng mà bạn đang sử dụng. Nghĩa là bạn có thể đặt các mức phí gas nâng cao cụ thể cho từng mạng và tránh phải trả quá nhiều tiền cho phí gas hoặc các giao dịch bị mắc kẹt."
-  },
-  "notifications24Title": {
-    "message": "Phí gas nâng cao theo mạng"
-  },
-  "notifications8ActionText": {
-    "message": "Đến Cài đặt > Nâng cao",
-    "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced settings page."
-  },
-  "notifications8DescriptionOne": {
-    "message": "Kể từ phiên bản MetaMask v10.4.0, bạn không cần phần mềm Ledger Live để kết nối thiết bị Ledger của mình với MetaMask nữa.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes changes for how Ledger Live is no longer needed to connect the device."
-  },
-  "notifications8DescriptionTwo": {
-    "message": "Để có trải nghiệm sử dụng thiết bị Ledger dễ dàng và ổn định hơn, hãy đến Cài đặt > Nâng cao và chuyển \"Dạng kết nối Ledger ưu tiên\" thành \"WebHID\".",
-    "description": "Description of a notification in the 'See What's New' popup. Describes how the user can turn off the Ledger Live setting."
-  },
-  "notifications8Title": {
-    "message": "Cải thiện kết nối Ledger",
-    "description": "Title for a notification in the 'See What's New' popup. Notifies ledger users that there is an improvement in how they can connect their device."
-  },
-  "notificationsBlockaidDefaultDescriptionActionText": {
-    "message": "Đã hiểu"
-  },
-  "notificationsBlockaidDefaultDescriptionOne": {
-    "message": "Tránh xa các hành vi gian lận đã biết trong khi vẫn bảo vệ quyền riêng tư của bạn với các cảnh báo bảo mật do Blockaid cung cấp. Tính năng này có sẵn trên Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon, Base và Sepolia."
-  },
-  "notificationsBlockaidDefaultDescriptionTwo": {
-    "message": "Luôn tự thẩm định trước khi chấp thuận các yêu cầu."
-  },
-  "notificationsBlockaidDefaultTitle": {
-    "message": "Đảm bảo an toàn với cảnh báo bảo mật"
-  },
   "notificationsDropLedgerFirefoxDescription": {
     "message": "Firefox không còn hỗ trợ U2F nên Ledger sẽ không hoạt động với MetaMask trên Firefox. Thay vào đó hãy dùng thử MetaMask trên Google Chrome.",
     "description": "Description of a notification in the 'See What's New' popup. Describes that ledger will not longer be supported for firefox users and they should use MetaMask on chrome for ledger support instead."
@@ -3296,18 +3247,6 @@
   "notificationsPageNoNotificationsContent": {
     "message": "Bạn chưa nhận được bất kỳ thông báo nào."
   },
-  "notificationsPetnamesActionText": {
-    "message": "Đã hiểu"
-  },
-  "notificationsPetnamesDescriptionOne": {
-    "message": "Khi bạn nhấn vào một địa chỉ trong quá trình giao dịch, bạn có thể nhìn thấy các biệt danh được đề xuất từ các nguồn bên thứ ba như ENS, Lens và Etherscan."
-  },
-  "notificationsPetnamesDescriptionTwo": {
-    "message": "Điều này giúp bạn dễ nhận biết các địa chỉ hơn trong tương lai, vậy nên nhớ đặt biệt danh cho các địa chỉ mà bạn tin tưởng."
-  },
-  "notificationsPetnamesTitle": {
-    "message": "Đây là các biệt danh được đề xuất!"
-  },
   "notificationsSettingsBoxError": {
     "message": "Đã xảy ra lỗi. Vui lòng thử lại."
   },
@@ -3316,20 +3255,6 @@
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Tìm hiểu cách chúng tôi bảo vệ quyền riêng tư của bạn khi sử dụng tính năng này."
-  },
-  "notificationsSimulationsDescriptionOne": {
-    "message": "Bây giờ bạn có thể xem kết quả tiềm năng của các giao dịch trước khi thực hiện!"
-  },
-  "notificationsSimulationsDescriptionTwo": {
-    "message": "Đây chỉ là mô phỏng, vì vậy chúng tôi không thể đảm bảo kết quả cuối cùng. Bạn có thể tắt tính năng này bất cứ lúc nào trong phần \nCài đặt > Bảo mật & Quyền riêng tư. "
-  },
-  "notificationsU2FLedgerLiveDescription": {
-    "message": "U2F và Ledger Live không còn khả dụng trên Chrome. Bạn vẫn có thể kết nối các thiết bị Ledger trên Chrome bằng cách sử dụng Webhid.",
-    "description": "Description of a notification in the 'See What's New' popup. Describes the U2F and Ledger Live connection modes are now deprecated"
-  },
-  "notificationsU2FLedgerLiveTitle": {
-    "message": "Ngừng sử dụng U2F và Ledger Live",
-    "description": "Title for a notification in the 'See What's New' popup. Tells ledger and chrome users that U2F and Ledger Live options are now deprecated."
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "Tìm thấy $1 token mới trong tài khoản này",
