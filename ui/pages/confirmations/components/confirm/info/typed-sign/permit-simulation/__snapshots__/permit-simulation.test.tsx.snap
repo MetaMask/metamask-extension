@@ -64,7 +64,7 @@ exports[`PermitSimulation renders component correctly 1`] = `
           class="mm-box mm-box--display-flex"
         >
           <div
-            class="mm-box mm-box--margin-right-1 mm-box--display-inline"
+            class="mm-box mm-box--margin-inline-end-1 mm-box--display-inline"
           >
             <p
               class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--padding-inline-2 mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
@@ -83,7 +83,7 @@ exports[`PermitSimulation renders component correctly 1`] = `
               <p
                 class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
               >
-                0xCcCCc...ccccC
+                0xA0b86...6eB48
               </p>
             </div>
           </div>
