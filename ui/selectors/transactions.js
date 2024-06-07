@@ -23,7 +23,7 @@ const INVALID_INITIAL_TRANSACTION_TYPES = [
 ];
 
 // The statuses listed below are allowed in the Activity list for Smart Swaps.
-// SUCCESS and REVERTED statuses are excluded because smart transactions with 
+// SUCCESS and REVERTED statuses are excluded because smart transactions with
 // those statuses are already in the regular transaction list.
 // TODO: When Swaps and non-Swaps transactions are treated the same,
 // we will only allow the PENDING smart transaction status in the Activity list.
