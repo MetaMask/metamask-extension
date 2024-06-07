@@ -62,39 +62,37 @@ import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { showPrimaryCurrency } from '../../../../shared/modules/currency-display.utils';
 import WalletOverview from './wallet-overview';
 
-export type CoinOverviewOptions = {
+export type CoinOverviewProps = {
   balance: string;
   balanceIsCached: boolean;
   className: string;
   classPrefix: string;
   chainId: CaipChainId | number;
   showAddress: boolean;
-  isSigningEnabled: boolean;
-  isSwapsChain: boolean;
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  isBridgeChain: boolean;
-  isBuyableChain: boolean;
   // FIXME: This seems to be for Ethereum only
   defaultSwapsToken?: SwapsEthToken;
+  isBridgeChain: boolean;
+  isBuyableChain: boolean;
   ///: END:ONLY_INCLUDE_IF
+  isSwapsChain: boolean;
+  isSigningEnabled: boolean;
 };
 
-export const CoinOverview = (options: CoinOverviewOptions) => {
-  const {
-    balance,
-    balanceIsCached,
-    className,
-    classPrefix = 'coin',
-    chainId,
-    isSigningEnabled,
-    isSwapsChain,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    isBridgeChain,
-    isBuyableChain,
-    defaultSwapsToken,
-    ///: END:ONLY_INCLUDE_IF
-  } = options;
-
+export const CoinOverview = ({
+  balance,
+  balanceIsCached,
+  className,
+  classPrefix = 'coin',
+  chainId,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  defaultSwapsToken,
+  isBridgeChain,
+  isBuyableChain,
+  ///: END:ONLY_INCLUDE_IF
+  isSwapsChain,
+  isSigningEnabled,
+}: CoinOverviewProps) => {
   // Pre-conditions
   if (isSwapsChain && defaultSwapsToken === undefined) {
     throw new Error('defaultSwapsToken is required');
