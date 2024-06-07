@@ -4385,9 +4385,6 @@
   "searchAccounts": {
     "message": "Αναζήτηση λογαριασμών"
   },
-  "searchTokenOrNFT": {
-    "message": "Αναζήτηση tokens ή NFC"
-  },
   "searchTokens": {
     "message": "Αναζήτηση tokens"
   },
