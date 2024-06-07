@@ -335,7 +335,7 @@
     "@metamask/snaps-rpc-methods": "8.0.0",
     "@metamask/snaps-sdk": "4.0.1",
     "@metamask/snaps-utils": "7.2.0",
-    "@metamask/transaction-controller": "^29.0.2",
+    "@metamask/transaction-controller": "patch:@metamask/transaction-controller@npm%3A29.1.0#~/.yarn/patches/@metamask-transaction-controller-npm-29.1.0-22871eb356.patch",
     "@metamask/user-operation-controller": "^6.0.0",
     "@metamask/utils": "^8.2.1",
     "@ngraveio/bc-ur": "^1.1.12",
