@@ -1797,7 +1797,7 @@ const slice = createSlice({
             !isBalanceSufficient({
               amount:
                 draftTransaction.sendAsset.type === AssetType.native
-                  ? draftTransaction.sendAsset.balance
+                  ? draftTransaction.amount.value
                   : undefined,
               balance: state.selectedAccount.balance,
               gasTotal: calcGasTotal(
