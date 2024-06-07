@@ -1653,8 +1653,15 @@ const slice = createSlice({
           ].includes(draftTransaction.amount.error) &&
           !draftTransaction.sendAsset.balance;
 
-        const { quotes } = draftTransaction;
+        const { quotes, gas } = draftTransaction;
         const bestQuote = quotes ? calculateBestQuote(quotes) : undefined;
+
+        const derivedGasPrice =
+          hexToDecimal(gas?.gasTotal || '0x0') > 0 &&
+          hexToDecimal(gas?.gasLimit || '0x0') > 0
+            ? new Numeric(gas.gasTotal, 16).divide(gas.gasLimit, 16).toString()
+            : undefined;
+
         switch (true) {
           case Boolean(
             draftTransaction.amount.error && !getIsIgnorableAmountError(),
@@ -1786,6 +1793,24 @@ const slice = createSlice({
             });
             draftTransaction.status = SEND_STATUSES.INVALID;
             break;
+          case bestQuote &&
+            !isBalanceSufficient({
+              amount:
+                draftTransaction.sendAsset.type === AssetType.native
+                  ? draftTransaction.sendAsset.balance
+                  : undefined,
+              balance: state.selectedAccount.balance,
+              gasTotal: calcGasTotal(
+                bestQuote?.gasParams?.maxGas ?? '0x0',
+                derivedGasPrice ?? '0x0',
+              ),
+            }): {
+            if (!draftTransaction.amount.error) {
+              draftTransaction.amount.error = INSUFFICIENT_FUNDS_FOR_GAS_ERROR;
+            }
+            draftTransaction.status = SEND_STATUSES.INVALID;
+            break;
+          }
           case isSwapAndSend && !bestQuote:
             slice.caseReducers.addHistoryEntry(state, {
               payload: `No swap and send quote available`,
