@@ -40,12 +40,14 @@ import {
   getAllTokens,
   getCurrentChainId,
   getCurrentCurrency,
+  getIsMainnet,
   getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
   getSelectedInternalAccount,
   getShouldHideZeroBalanceTokens,
   getTokenExchangeRates,
   getTokenList,
+  getUseNftDetection,
 } from '../../../../selectors';
 import {
   getConversionRate,
@@ -61,6 +63,7 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { getSendAnalyticProperties } from '../../../../ducks/send';
+import NFTsDetectionNoticeNFTsTab from '../../../app/nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
 import { Asset, Collection, Token } from './types';
 import AssetList from './AssetList';
 
@@ -153,6 +156,9 @@ export function AssetPickerModal({
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
+
+  const useNftDetection = useSelector(getUseNftDetection);
+  const isMainnet = useSelector(getIsMainnet);
 
   const detectedTokens = useSelector(getAllTokens);
   const tokens = detectedTokens?.[chainId]?.[selectedAddress] ?? [];
@@ -368,40 +374,51 @@ export function AssetPickerModal({
                       />
                     </Box>
                   ) : (
-                    <Box
-                      padding={12}
-                      display={Display.Flex}
-                      flexDirection={FlexDirection.Column}
-                      alignItems={AlignItems.center}
-                      justifyContent={JustifyContent.center}
-                    >
-                      <Box justifyContent={JustifyContent.center}>
-                        <img src="./images/no-nfts.svg" />
-                      </Box>
+                    <>
+                      {isMainnet && !useNftDetection && (
+                        <Box
+                          paddingTop={4}
+                          paddingInlineStart={4}
+                          paddingInlineEnd={4}
+                        >
+                          <NFTsDetectionNoticeNFTsTab />
+                        </Box>
+                      )}
                       <Box
+                        padding={12}
                         display={Display.Flex}
-                        justifyContent={JustifyContent.center}
-                        alignItems={AlignItems.center}
                         flexDirection={FlexDirection.Column}
-                        className="nfts-tab__link"
+                        alignItems={AlignItems.center}
+                        justifyContent={JustifyContent.center}
                       >
-                        <Text
-                          color={TextColor.textMuted}
-                          variant={TextVariant.headingSm}
-                          textAlign={TextAlign.Center}
-                          as="h4"
+                        <Box justifyContent={JustifyContent.center}>
+                          <img src="./images/no-nfts.svg" />
+                        </Box>
+                        <Box
+                          display={Display.Flex}
+                          justifyContent={JustifyContent.center}
+                          alignItems={AlignItems.center}
+                          flexDirection={FlexDirection.Column}
+                          className="nfts-tab__link"
                         >
-                          {t('noNFTs')}
-                        </Text>
-                        <ButtonLink
-                          size={ButtonLinkSize.Sm}
-                          href={ZENDESK_URLS.NFT_TOKENS}
-                          externalLink
-                        >
-                          {t('learnMoreUpperCase')}
-                        </ButtonLink>
+                          <Text
+                            color={TextColor.textMuted}
+                            variant={TextVariant.headingSm}
+                            textAlign={TextAlign.Center}
+                            as="h4"
+                          >
+                            {t('noNFTs')}
+                          </Text>
+                          <ButtonLink
+                            size={ButtonLinkSize.Sm}
+                            href={ZENDESK_URLS.NFT_TOKENS}
+                            externalLink
+                          >
+                            {t('learnMoreUpperCase')}
+                          </ButtonLink>
+                        </Box>
                       </Box>
-                    </Box>
+                    </>
                   )}
                 </Tab>
               }
