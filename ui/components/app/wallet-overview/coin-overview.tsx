@@ -84,7 +84,7 @@ export const CoinOverview = (options: CoinOverviewOptions) => {
     balance,
     balanceIsCached,
     className,
-    classPrefix,
+    classPrefix = 'coin',
     chainId,
     isSigningEnabled,
     isSwapsChain,
