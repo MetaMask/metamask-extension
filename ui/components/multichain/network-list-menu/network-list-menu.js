@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { NetworkListItem } from '../network-list-item';
@@ -53,9 +52,6 @@ import {
 import { ModalContent } from '../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import { TextFieldSearch } from '../../component-library/text-field-search/deprecated';
-import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -65,9 +61,21 @@ import {
   getCompletedOnboarding,
   getIsUnlocked,
 } from '../../../ducks/metamask/metamask';
+import NetworksForm from '../../../pages/settings/networks-tab/networks-form';
+
+const ACTION_MODES = {
+  // Displays the search box and network list
+  LIST: '',
+  // Displays the Add form
+  ADD: 'add',
+  // Displays the Edit form
+  EDIT: 'edit',
+};
 
 export const NetworkListMenu = ({ onClose }) => {
   const t = useI18nContext();
+
+  const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
 
   const nonTestNetworks = useSelector(getNonTestNetworks);
   const testNetworks = useSelector(getTestNetworks);
@@ -78,14 +86,10 @@ export const NetworkListMenu = ({ onClose }) => {
   const useRequestQueue = useSelector(getUseRequestQueue);
 
   const dispatch = useDispatch();
-  const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
 
   const currentNetwork = useSelector(getCurrentNetwork);
   const currentlyOnTestNetwork = TEST_CHAINS.includes(currentChainId);
-
-  const environmentType = getEnvironmentType();
-  const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
 
   const completedOnboarding = useSelector(getCompletedOnboarding);
 
@@ -237,6 +241,13 @@ export const NetworkListMenu = ({ onClose }) => {
     }
   };
 
+  let title = t('networkMenuHeading');
+  if (actionMode === ACTION_MODES.ADD) {
+    title = 'Add a custom network';
+  } else if (actionMode === ACTION_MODES.EDIT) {
+    title = '()'; // TODO: Network Name here
+  }
+
   return (
     <Modal isOpen onClose={onClose}>
       <ModalOverlay />
@@ -255,202 +266,211 @@ export const NetworkListMenu = ({ onClose }) => {
           paddingBottom={6}
           onClose={onClose}
         >
-          {t('networkMenuHeading')}
+          {title}
         </ModalHeader>
-        <>
-          {showSearch ? (
-            <Box
-              paddingLeft={4}
-              paddingRight={4}
-              paddingBottom={4}
-              paddingTop={0}
-            >
-              <TextFieldSearch
-                size={Size.SM}
-                width={BlockSize.Full}
-                placeholder={t('search')}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                clearButtonOnClick={() => setSearchQuery('')}
-                clearButtonProps={{
-                  size: Size.SM,
-                }}
-                inputProps={{ autoFocus: true }}
-              />
-            </Box>
-          ) : null}
-          {showBanner ? (
-            <BannerBase
-              className="network-list-menu__banner"
-              marginLeft={4}
-              marginRight={4}
-              marginBottom={4}
-              backgroundColor={BackgroundColor.backgroundAlternative}
-              startAccessory={
-                <Box
-                  display={Display.Flex}
-                  alignItems={AlignItems.center}
-                  justifyContent={JustifyContent.center}
-                >
-                  <img
-                    src="./images/dragging-animation.svg"
-                    alt="drag-and-drop"
-                  />
-                </Box>
-              }
-              onClose={() => hideNetworkBanner()}
-              description={t('dragAndDropBanner')}
-            />
-          ) : null}
-          <Box className="multichain-network-list-menu">
-            {searchResults.length === 0 && isSearching ? (
-              <Text
+        {actionMode === ACTION_MODES.LIST ? (
+          <>
+            {showSearch ? (
+              <Box
                 paddingLeft={4}
                 paddingRight={4}
-                color={TextColor.textMuted}
-                data-testid="multichain-network-menu-popover-no-results"
+                paddingBottom={4}
+                paddingTop={0}
               >
-                {t('noNetworksFound')}
-              </Text>
-            ) : (
-              <DragDropContext onDragEnd={onDragEnd}>
-                <Droppable droppableId="characters">
-                  {(provided) => (
-                    <Box
-                      className="characters"
-                      {...provided.droppableProps}
-                      ref={provided.innerRef}
-                    >
-                      {searchResults.map((network, index) => {
-                        const isCurrentNetwork =
-                          currentNetwork.id === network.id;
+                <TextFieldSearch
+                  size={Size.SM}
+                  width={BlockSize.Full}
+                  placeholder={t('search')}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  clearButtonOnClick={() => setSearchQuery('')}
+                  clearButtonProps={{
+                    size: Size.SM,
+                  }}
+                  inputProps={{ autoFocus: true }}
+                />
+              </Box>
+            ) : null}
+            {showBanner ? (
+              <BannerBase
+                className="network-list-menu__banner"
+                marginLeft={4}
+                marginRight={4}
+                marginBottom={4}
+                backgroundColor={BackgroundColor.backgroundAlternative}
+                startAccessory={
+                  <Box
+                    display={Display.Flex}
+                    alignItems={AlignItems.center}
+                    justifyContent={JustifyContent.center}
+                  >
+                    <img
+                      src="./images/dragging-animation.svg"
+                      alt="drag-and-drop"
+                    />
+                  </Box>
+                }
+                onClose={() => hideNetworkBanner()}
+                description={t('dragAndDropBanner')}
+              />
+            ) : null}
+            <Box className="multichain-network-list-menu">
+              {searchResults.length === 0 && isSearching ? (
+                <Text
+                  paddingLeft={4}
+                  paddingRight={4}
+                  color={TextColor.textMuted}
+                  data-testid="multichain-network-menu-popover-no-results"
+                >
+                  {t('noNetworksFound')}
+                </Text>
+              ) : (
+                <DragDropContext onDragEnd={onDragEnd}>
+                  <Droppable droppableId="characters">
+                    {(provided) => (
+                      <Box
+                        className="characters"
+                        {...provided.droppableProps}
+                        ref={provided.innerRef}
+                      >
+                        {searchResults.map((network, index) => {
+                          const isCurrentNetwork =
+                            currentNetwork.id === network.id;
 
-                        const canDeleteNetwork =
-                          isUnlocked && !isCurrentNetwork && network.removable;
+                          const canDeleteNetwork =
+                            isUnlocked &&
+                            !isCurrentNetwork &&
+                            network.removable;
 
-                        return (
-                          <Draggable
-                            key={network.id}
-                            draggableId={network.id}
-                            index={index}
-                          >
-                            {(providedDrag) => (
-                              <Box
-                                ref={providedDrag.innerRef}
-                                {...providedDrag.draggableProps}
-                                {...providedDrag.dragHandleProps}
-                              >
-                                <NetworkListItem
-                                  name={network.nickname}
-                                  iconSrc={network?.rpcPrefs?.imageUrl}
-                                  key={network.id}
-                                  selected={isCurrentNetwork}
-                                  focus={isCurrentNetwork && !showSearch}
-                                  onClick={() => {
-                                    dispatch(toggleNetworkMenu());
-                                    if (network.providerType) {
-                                      dispatch(
-                                        setProviderType(network.providerType),
-                                      );
-                                    } else {
-                                      dispatch(setActiveNetwork(network.id));
+                          return (
+                            <Draggable
+                              key={network.id}
+                              draggableId={network.id}
+                              index={index}
+                            >
+                              {(providedDrag) => (
+                                <Box
+                                  ref={providedDrag.innerRef}
+                                  {...providedDrag.draggableProps}
+                                  {...providedDrag.dragHandleProps}
+                                >
+                                  <NetworkListItem
+                                    name={network.nickname}
+                                    iconSrc={network?.rpcPrefs?.imageUrl}
+                                    key={network.id}
+                                    selected={isCurrentNetwork}
+                                    focus={isCurrentNetwork && !showSearch}
+                                    onClick={() => {
+                                      dispatch(toggleNetworkMenu());
+                                      if (network.providerType) {
+                                        dispatch(
+                                          setProviderType(network.providerType),
+                                        );
+                                      } else {
+                                        dispatch(setActiveNetwork(network.id));
+                                      }
+
+                                      // If presently on a dapp, communicate a change to
+                                      // the dapp via silent switchEthereumChain that the
+                                      // network has changed due to user action
+                                      if (
+                                        useRequestQueue &&
+                                        selectedTabOrigin
+                                      ) {
+                                        setNetworkClientIdForDomain(
+                                          selectedTabOrigin,
+                                          network.id,
+                                        );
+                                      }
+
+                                      trackEvent({
+                                        event:
+                                          MetaMetricsEventName.NavNetworkSwitched,
+                                        category:
+                                          MetaMetricsEventCategory.Network,
+                                        properties: {
+                                          location: 'Network Menu',
+                                          chain_id: currentChainId,
+                                          from_network: currentChainId,
+                                          to_network: network.chainId,
+                                        },
+                                      });
+                                    }}
+                                    onDeleteClick={
+                                      canDeleteNetwork
+                                        ? () => {
+                                            dispatch(toggleNetworkMenu());
+                                            dispatch(
+                                              showModal({
+                                                name: 'CONFIRM_DELETE_NETWORK',
+                                                target: network.id,
+                                                onConfirm: () => undefined,
+                                              }),
+                                            );
+                                          }
+                                        : null
                                     }
-
-                                    // If presently on a dapp, communicate a change to
-                                    // the dapp via silent switchEthereumChain that the
-                                    // network has changed due to user action
-                                    if (useRequestQueue && selectedTabOrigin) {
-                                      setNetworkClientIdForDomain(
-                                        selectedTabOrigin,
-                                        network.id,
-                                      );
-                                    }
-
-                                    trackEvent({
-                                      event:
-                                        MetaMetricsEventName.NavNetworkSwitched,
-                                      category:
-                                        MetaMetricsEventCategory.Network,
-                                      properties: {
-                                        location: 'Network Menu',
-                                        chain_id: currentChainId,
-                                        from_network: currentChainId,
-                                        to_network: network.chainId,
-                                      },
-                                    });
-                                  }}
-                                  onDeleteClick={
-                                    canDeleteNetwork
-                                      ? () => {
-                                          dispatch(toggleNetworkMenu());
-                                          dispatch(
-                                            showModal({
-                                              name: 'CONFIRM_DELETE_NETWORK',
-                                              target: network.id,
-                                              onConfirm: () => undefined,
-                                            }),
-                                          );
-                                        }
-                                      : null
-                                  }
-                                />
-                              </Box>
-                            )}
-                          </Draggable>
-                        );
-                      })}
-                      {provided.placeholder}
-                    </Box>
-                  )}
-                </Droppable>
-              </DragDropContext>
-            )}
-          </Box>
-          <Box
-            padding={4}
-            display={Display.Flex}
-            justifyContent={JustifyContent.spaceBetween}
-          >
-            <Text>{t('showTestnetNetworks')}</Text>
-            <ToggleButton
-              value={showTestNetworks}
-              disabled={currentlyOnTestNetwork}
-              onToggle={handleToggle}
+                                  />
+                                </Box>
+                              )}
+                            </Draggable>
+                          );
+                        })}
+                        {provided.placeholder}
+                      </Box>
+                    )}
+                  </Droppable>
+                </DragDropContext>
+              )}
+            </Box>
+            <Box
+              padding={4}
+              display={Display.Flex}
+              justifyContent={JustifyContent.spaceBetween}
+            >
+              <Text>{t('showTestnetNetworks')}</Text>
+              <ToggleButton
+                value={showTestNetworks}
+                disabled={currentlyOnTestNetwork}
+                onToggle={handleToggle}
+              />
+            </Box>
+            {showTestNetworks || currentlyOnTestNetwork ? (
+              <Box className="multichain-network-list-menu">
+                {generateMenuItems(testNetworks)}
+              </Box>
+            ) : null}
+            <Box padding={4}>
+              <ButtonSecondary
+                size={ButtonSecondarySize.Lg}
+                startIconName={IconName.Add}
+                block
+                onClick={() => {
+                  setActionMode(ACTION_MODES.ADD);
+                  trackEvent({
+                    event: MetaMetricsEventName.AddNetworkButtonClick,
+                    category: MetaMetricsEventCategory.Network,
+                  });
+                }}
+              >
+                {t('addNetwork')}
+              </ButtonSecondary>
+            </Box>
+          </>
+        ) : null}
+        {actionMode === ACTION_MODES.ADD ? (
+          <Box>
+            <NetworksForm
+              addNewNetwork
+              restrictHeight
+              setActiveOnSubmit
+              networksToRender={[]}
+              cancelCallback={() => setActionMode(ACTION_MODES.LIST)}
+              submitCallback={() => setActionMode(ACTION_MODES.LIST)}
             />
           </Box>
-          {showTestNetworks || currentlyOnTestNetwork ? (
-            <Box className="multichain-network-list-menu">
-              {generateMenuItems(testNetworks)}
-            </Box>
-          ) : null}
-          <Box padding={4}>
-            <ButtonSecondary
-              size={ButtonSecondarySize.Lg}
-              startIconName={IconName.Add}
-              block
-              onClick={() => {
-                if (isFullScreen) {
-                  if (completedOnboarding) {
-                    history.push(ADD_POPULAR_CUSTOM_NETWORK);
-                  } else {
-                    dispatch(showModal({ name: 'ONBOARDING_ADD_NETWORK' }));
-                  }
-                } else {
-                  global.platform.openExtensionInBrowser(
-                    ADD_POPULAR_CUSTOM_NETWORK,
-                  );
-                }
-                dispatch(toggleNetworkMenu());
-                trackEvent({
-                  event: MetaMetricsEventName.AddNetworkButtonClick,
-                  category: MetaMetricsEventCategory.Network,
-                });
-              }}
-            >
-              {t('addNetwork')}
-            </ButtonSecondary>
-          </Box>
-        </>
+        ) : null}
+        {actionMode === ACTION_MODES.EDIT ? <Box>TODO: FORM HERE</Box> : null}
       </ModalContent>
     </Modal>
   );
