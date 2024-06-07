@@ -93,10 +93,12 @@ export const CoinOverview = ({
   isSwapsChain,
   isSigningEnabled,
 }: CoinOverviewProps) => {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   // Pre-conditions
   if (isSwapsChain && defaultSwapsToken === undefined) {
     throw new Error('defaultSwapsToken is required');
   }
+  ///: END:ONLY_INCLUDE_IF
 
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
@@ -266,8 +268,10 @@ export const CoinOverview = ({
   }, [
     isSwapsChain,
     chainId,
-    defaultSwapsToken,
     usingHardwareWallet,
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+    defaultSwapsToken,
+    ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     mmiPortfolioUrl,
     ///: END:ONLY_INCLUDE_IF
