@@ -21,7 +21,7 @@ export const OUTDATED_BROWSER_VERSIONS = {
   firefox: '<91',
   // Opera should be set to the equivalent of the Chrome version set
   // See https://en.wikipedia.org/wiki/History_of_the_Opera_web_browser
-  opera: '<109',
+  opera: '<95',
 };
 
 /**
