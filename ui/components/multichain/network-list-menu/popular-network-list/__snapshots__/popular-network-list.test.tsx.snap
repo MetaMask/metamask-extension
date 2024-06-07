@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PopularNetworkList renders popular list component 1`] = `
+<div>
+  <div
+    class="mm-box add-network__edge-case-box mm-box--margin-top-4 mm-box--margin-right-6 mm-box--margin-left-6 mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-row mm-box--background-color-background-alternative mm-box--rounded-md"
+  >
+    <div
+      class="mm-box mm-box--margin-right-4"
+    >
+      <img
+        src="images/info-fox.svg"
+      />
+    </div>
+    <div
+      class="mm-box"
+    >
+      <h6
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+        data-testid="all-networks-added"
+      >
+        <span>
+           
+          You've added all the popular networks. You can discover more networks 
+          <a
+            class="add-network__edge-case-box__link"
+            href="https://chainlist.wtf/"
+            rel="noreferrer"
+            target="_blank"
+          >
+            here
+            .
+          </a>
+           Or you can 
+          <button
+            class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+            type="inline"
+          >
+            <span
+              class="mm-box mm-text mm-text--inherit mm-box--color-primary-inverse"
+            >
+              <h6
+                class="mm-box mm-text mm-text--body-sm mm-box--color-info-default"
+              >
+                add more networks manually
+                .
+              </h6>
+            </span>
+          </button>
+          
+           
+        </span>
+      </h6>
+    </div>
+  </div>
+</div>
+`;
