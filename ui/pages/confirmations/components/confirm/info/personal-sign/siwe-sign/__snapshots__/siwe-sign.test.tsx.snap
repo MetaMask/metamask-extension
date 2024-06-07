@@ -495,7 +495,7 @@ exports[`SIWESignInfo renders correctly for SIWE signature request with resource
       <p
         class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
       >
-        Request Id
+        Request ID
       </p>
     </div>
     <div
