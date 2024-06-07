@@ -473,8 +473,11 @@ export default class Home extends PureComponent {
     const outdatedBrowserNotificationDescriptionText =
       isMv3ButOffscreenDocIsMissing ? (
         <div>
-          <p>{t('outdatedBrowserNotification')}</p>
-          <p>{t('noHardwareWalletsOrSnapsSupport')}</p>
+          <Text>{t('outdatedBrowserNotification')}</Text>
+          <br />
+          <Text fontWeight={FontWeight.Bold} color={TextColor.warningDefault}>
+            {t('noHardwareWalletsOrSnapsSupport')}
+          </Text>
         </div>
       ) : (
         t('outdatedBrowserNotification')
