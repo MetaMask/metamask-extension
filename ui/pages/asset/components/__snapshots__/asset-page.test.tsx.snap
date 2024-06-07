@@ -22,6 +22,7 @@ exports[`AssetPage TokenOverview should render a native asset 1`] = `
         </button>
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+          data-testid="asset-name"
         >
           TEST
         </p>
@@ -323,6 +324,7 @@ exports[`AssetPage TokenOverview should render an ERC20 asset without prices 1`]
         </button>
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+          data-testid="asset-name"
         >
           TEST
         </p>
@@ -671,6 +673,7 @@ exports[`AssetPage TokenOverview should render an ERC20 token with prices 1`] = 
         </button>
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+          data-testid="asset-name"
         >
           TEST
         </p>
@@ -728,7 +731,7 @@ exports[`AssetPage TokenOverview should render an ERC20 token with prices 1`] = 
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--display-inline-block mm-box--color-text-alternative"
             >
-              Jun 6, 10:08 PM
+              Jun 6, 11:16 PM
             </p>
           </div>
         </div>
