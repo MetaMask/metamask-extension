@@ -1,12 +1,13 @@
 import { BoxElement, JSXElement, BoxProps } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
+import { NonEmptyArray } from '@metamask/utils';
 import {
   Display,
   FlexDirection,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
 import { mapToTemplate } from '../utils';
-import { UIComponentFactory } from './types';
+import { UIComponent, UIComponentFactory } from './types';
 
 function generateJustifyContent(alignment?: BoxProps['alignment']) {
   switch (alignment) {
@@ -35,7 +36,7 @@ export const box: UIComponentFactory<BoxElement> = ({
   element: 'Box',
   children: getJsxChildren(element).map((children) =>
     mapToTemplate({ ...params, element: children as JSXElement }),
-  ),
+  ) as NonEmptyArray<UIComponent>,
   props: {
     display: Display.Flex,
     flexDirection:
