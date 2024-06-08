@@ -5815,13 +5815,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/permission-controller@npm:^9.0.1, @metamask/permission-controller@npm:^9.0.2":
-  version: 9.0.2
-  resolution: "@metamask/permission-controller@npm:9.0.2"
+"@metamask/permission-controller@npm:^9.0.2, @metamask/permission-controller@npm:^9.1.0":
+  version: 9.1.0
+  resolution: "@metamask/permission-controller@npm:9.1.0"
   dependencies:
-    "@metamask/base-controller": "npm:^5.0.1"
-    "@metamask/controller-utils": "npm:^9.0.1"
-    "@metamask/json-rpc-engine": "npm:^8.0.1"
+    "@metamask/base-controller": "npm:^5.0.2"
+    "@metamask/controller-utils": "npm:^9.1.0"
+    "@metamask/json-rpc-engine": "npm:^8.0.2"
     "@metamask/rpc-errors": "npm:^6.2.1"
     "@metamask/utils": "npm:^8.3.0"
     "@types/deep-freeze-strict": "npm:^1.1.0"
@@ -5830,7 +5830,7 @@ __metadata:
     nanoid: "npm:^3.1.31"
   peerDependencies:
     "@metamask/approval-controller": ^6.0.0
-  checksum: 10/8af8b2949f19ace5b2c2580b5291a5ee5745fad4d24b333f53477d9c5daddf2d53aeb05d15eb23338f60c78ad96a8033fcebf4e1d6d3e6a26640fd65dfce0660
+  checksum: 10/bfae4c16cbe5b180b00ef029c3fa8d7f770247dfad4c0afc11822f4b0bd36373d6f749ac5507f23cf5dbd848096fa86ad2546be190c665c419cae58fcf0d7f00
   languageName: node
   linkType: hard
 
@@ -24960,7 +24960,7 @@ __metadata:
     "@metamask/notification-controller": "npm:^3.0.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
-    "@metamask/permission-controller": "npm:^9.0.1"
+    "@metamask/permission-controller": "npm:^9.1.0"
     "@metamask/permission-log-controller": "npm:^2.0.1"
     "@metamask/phishing-controller": "npm:^9.0.3"
     "@metamask/phishing-warning": "npm:^3.0.3"
