@@ -4422,8 +4422,8 @@
   "searchAccounts": {
     "message": "Search accounts"
   },
-  "searchTokenOrNFT": {
-    "message": "Search token or NFT"
+  "searchNfts": {
+    "message": "Search NFTs"
   },
   "searchTokens": {
     "message": "Search tokens"
