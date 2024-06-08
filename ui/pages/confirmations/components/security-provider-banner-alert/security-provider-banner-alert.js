@@ -48,7 +48,7 @@ function SecurityProviderBannerAlert({
       severity={severity}
       {...props}
     >
-      <Text marginTop={2}>{description}</Text>
+      <Text marginTop={2}>***{description}</Text>
 
       <Box marginTop={3}>
         <Disclosure title={t('seeDetails')} variant={DisclosureVariant.Arrow}>

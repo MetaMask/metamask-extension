@@ -137,7 +137,11 @@ function AlertHeader({
 
 function BlockaidAlertDetails() {
   const t = useI18nContext();
-  return <Text textAlign={TextAlign.Center}>{t('blockaidAlertInfo')}</Text>;
+  return (
+    <Text textAlign={TextAlign.Center} variant={TextVariant.bodyMd}>
+      {t('blockaidAlertInfo')}
+    </Text>
+  );
 }
 
 function AlertDetails({
@@ -164,7 +168,7 @@ function AlertDetails({
           <Text variant={TextVariant.bodyMd}>{selectedAlert.message}</Text>
           {selectedAlert.alertDetails?.length ? (
             <Text variant={TextVariant.bodyMdBold} marginTop={1}>
-              {t('alertModalDetails')}
+              ***{t('alertModalDetails')}
             </Text>
           ) : null}
           <Box as="ul" className={'alert-modal__alert-details'} paddingLeft={6}>
