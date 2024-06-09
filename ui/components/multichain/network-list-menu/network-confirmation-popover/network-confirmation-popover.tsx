@@ -17,6 +17,8 @@ const NetworkConfirmationPopover = () => {
           confirmation.origin === 'metamask' &&
           confirmation.type === ApprovalType.AddEthereumChain,
       );
+    console.log('HERE ====>', unapprovedConfirmations);
+
     if (!showPopover && anAddNetworkConfirmationFromMetaMaskExists) {
       setShowPopover(true);
     } else if (showPopover && !anAddNetworkConfirmationFromMetaMaskExists) {
@@ -27,7 +29,7 @@ const NetworkConfirmationPopover = () => {
   return (
     <>
       {showPopover && (
-        <Popover>
+        <Popover data-testid="network-popover">
           <ConfirmationPage redirectToHomeOnZeroConfirmations={false} />
         </Popover>
       )}
