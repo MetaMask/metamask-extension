@@ -135,13 +135,15 @@ export const CoinOverview = ({
       buttons={
         <CoinButtons
           {...{
-            classPrefix,
-            isBuyableChain,
-            isSigningEnabled,
-            isSwapsChain,
-            isBridgeChain,
             chainId,
+            isSwapsChain,
+            isSigningEnabled,
+            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+            isBridgeChain,
+            isBuyableChain,
             defaultSwapsToken,
+            ///: END:ONLY_INCLUDE_IF
+            classPrefix,
           }}
         />
       }
