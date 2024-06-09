@@ -112,15 +112,19 @@ describe('AssetPage', () => {
     openTabSpy = jest.spyOn(global.platform, 'openTab');
   });
 
-  const realDateNow = Date.now;
   beforeEach(() => {
-    Date.now = () => 1717963846564;
     openTabSpy.mockClear();
+
+    // Mocking Date.now would not be sufficient, since it would render differently
+    // depending on the machine's timezone. Mock the formatter instead.
+    jest.spyOn(Intl, 'DateTimeFormat').mockImplementation(() => {
+      return { format: () => 'Jun 9, 8:10 PM' };
+    });
   });
 
   afterEach(() => {
-    Date.now = realDateNow;
     store.clearActions();
+    jest.restoreAllMocks();
   });
 
   const native = {

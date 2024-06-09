@@ -731,7 +731,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--display-inline-block mm-box--color-text-alternative"
             >
-              Jun 9, 1:10 PM
+              Jun 9, 8:10 PM
             </p>
           </div>
         </div>

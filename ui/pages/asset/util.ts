@@ -1,12 +1,13 @@
 import { SUPPORTED_CHAIN_IDS } from '@metamask/assets-controllers';
 
 /** Formats a datetime in a short human readable format like 'Feb 8, 12:11 PM' */
-export const shortDateFormatter = Intl.DateTimeFormat(navigator.language, {
-  month: 'short',
-  day: 'numeric',
-  hour: 'numeric',
-  minute: 'numeric',
-});
+export const getShortDateFormatter = () =>
+  Intl.DateTimeFormat(navigator.language, {
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+  });
 
 /**
  * Formats a potentially large number to the nearest unit.
