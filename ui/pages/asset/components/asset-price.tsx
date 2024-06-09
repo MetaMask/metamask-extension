@@ -8,7 +8,11 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Box, Text } from '../../../components/component-library';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
-import { getPricePrecision, loadingOpacity, getShortDateFormatter } from '../util';
+import {
+  getPricePrecision,
+  loadingOpacity,
+  getShortDateFormatter,
+} from '../util';
 
 const chartUp = (
   <svg

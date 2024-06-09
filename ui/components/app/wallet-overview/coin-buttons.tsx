@@ -60,13 +60,15 @@ import useRamps from '../../../hooks/experiences/useRamps';
 
 const CoinButtons = ({
   classPrefix = 'coin',
-  isBuyableChain,
-  isSigningEnabled,
-  isSwapsChain,
-  isBridgeChain,
   chainId,
+  isSwapsChain,
+  isSigningEnabled,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+  isBridgeChain,
+  isBuyableChain,
   defaultSwapsToken,
-}: {
+}: ///: END:ONLY_INCLUDE_IF
+{
   classPrefix?: string;
   isBuyableChain: boolean;
   isSigningEnabled: boolean;
